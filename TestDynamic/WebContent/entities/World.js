@@ -6,7 +6,7 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		this._addedEntities = [];
 		this._changedEntities = [];
 		this._removedEntities = [];
-		
+
 		this._entityManager = new EntityManager();
 		this.setManager("EntityManager", this._entityManager);
 	}
@@ -42,7 +42,7 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 				observer.removed(entity);
 			}
 		});
-		
+
 		for (systemIndex in this._systems) {
 			var system = this._systems[systemIndex];
 			if (!system.passive) {
@@ -65,7 +65,6 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		}
 		entities.length = 0;
 	};
-
 
 	return World;
 });

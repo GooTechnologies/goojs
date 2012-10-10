@@ -28,6 +28,9 @@ require([ 'entities/World', 'entities/Entity' ], function(World, Entity) {
 	var entity3 = world.createEntity();
 	entity3.addToWorld();
 
+	var transformComponent = new TransformComponent();
+	entity3.setComponent(transformComponent);
+
 	world.process();
 
 	console.log(world.getEntities());
