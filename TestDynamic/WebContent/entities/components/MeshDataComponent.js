@@ -1,8 +1,8 @@
 define(function() {
-	function MeshDataComponent(geometry) {
+	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
-		this.geometry = geometry;
+		this.meshData = meshData;
 	}
 
 	return MeshDataComponent;

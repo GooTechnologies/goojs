@@ -15,6 +15,35 @@ define(function() {
 	};
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
+		var shaderInfo = {
+			meshData : entity.MeshDataComponent.meshData,
+			transform : entity.TransformComponent.transform,
+			materials : entity.MeshRendererComponent.materials
+		};
+
+		for (i in shaderInfo.materials) {
+			var material = shaderInfo.materials[i];
+
+			material.applyShader(shaderInfo, renderer);
+
+			if (meshData.getIndices() != null) {
+				renderer.bindData(meshData.getIndexData());
+				if (meshData.getIndexLengths() != null) {
+					renderer.drawElementsVBO(meshData.getIndices(), meshData.getIndexModes(), meshData
+							.getIndexLengths());
+				} else {
+					renderer.drawElementsVBO(meshData.getIndices(), meshData.getIndexModes(), meshData.getIndices()
+							.limit());
+				}
+			} else {
+				if (meshData.getIndexLengths() != null) {
+					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
+				} else {
+					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getVertexCount());
+				}
+			}
+
+		}
 
 	};
 
