@@ -1,14 +1,12 @@
-define(function() {
+define([ 'entities/systems/System' ], function(System) {
 	function TransformSystem() {
-		this.type = 'TransformSystem';
-		this.interests = [ 'TransformComponent' ];
+		System.call(this, 'TransformSystem', [ 'TransformComponent' ]);
 	}
 
-	TransformSystem.prototype.process = function(entities) {
-		for (i in entities) {
-			var entity = entities[i];
+	TransformSystem.prototype = Object.create(System.prototype);
 
-		}
+	TransformSystem.prototype.process = function(entities) {
+
 	};
 
 	return TransformSystem;

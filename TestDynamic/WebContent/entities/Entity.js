@@ -1,7 +1,7 @@
 define(function() {
 	function Entity(world) {
 		this._world = world;
-		this._components = {};
+		this._components = [];
 
 		Object.defineProperty(this, 'id', {
 			value : Entity.ENTITY_COUNT++,
@@ -19,11 +19,34 @@ define(function() {
 	};
 
 	Entity.prototype.setComponent = function(component) {
-		this._components[component.type] = component;
+		var index = this._components.indexOf(component);
+		if (index == -1) {
+			this._components.push(component);
+		} else {
+			this._components[index] = component;
+		}
+		this[component.type] = component;
+
+		this._world.changedEntity(this);
 	};
 
-	Entity.prototype.clearComponent = function(component) {
-		delete this._components[component.type];
+	Entity.prototype.getComponent = function(type) {
+		return this[type];
+	};
+
+	Entity.prototype.clearComponent = function(type) {
+		var component = this[type];
+		var index = this._components.indexOf(component);
+		if (index != -1) {
+			this._components.splice(index, 1);
+		}
+		delete this[type];
+
+		this._world.changedEntity(this);
+	};
+
+	Entity.prototype.toString = function() {
+		return this.name + ' [' + this._components.length + ']';
 	};
 
 	Entity.ENTITY_COUNT = 0;

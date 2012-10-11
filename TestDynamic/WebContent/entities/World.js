@@ -11,8 +11,12 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		this.setManager("EntityManager", this._entityManager);
 	}
 
-	World.prototype.setManager = function(name, manager) {
-		this._managers[name] = manager;
+	World.prototype.setManager = function(manager) {
+		this._managers[manager.type] = manager;
+	};
+
+	World.prototype.setSystem = function(system) {
+		this._systems[system.type] = system;
 	};
 
 	World.prototype.createEntity = function() {
@@ -31,10 +35,19 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		this._removedEntities.push(entity);
 	};
 
+	World.prototype.changedEntity = function(entity) {
+		this._changedEntities.push(entity);
+	};
+
 	World.prototype.process = function() {
 		this._check(this._addedEntities, function(observer, entity) {
 			if (observer.added) {
 				observer.added(entity);
+			}
+		});
+		this._check(this._changedEntities, function(observer, entity) {
+			if (observer.changed) {
+				observer.changed(entity);
 			}
 		});
 		this._check(this._removedEntities, function(observer, entity) {
@@ -46,7 +59,7 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		for (systemIndex in this._systems) {
 			var system = this._systems[systemIndex];
 			if (!system.passive) {
-				system.process();
+				system._process();
 			}
 		}
 	};

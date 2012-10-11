@@ -1,5 +1,7 @@
 define(function() {
 	function EntityManager() {
+		this.type = 'EntityManager';
+
 		this._entities = {};
 	}
 

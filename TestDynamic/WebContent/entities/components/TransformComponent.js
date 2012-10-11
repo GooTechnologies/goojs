@@ -6,6 +6,9 @@ define([ 'math/Transform' ], function(Transform) {
 		this.children = [];
 		this.transform = new Transform();
 		this.worldTransform = new Transform();
+
+		this._dirty = true;
+		this._updated = false;
 	}
 
 	TransformComponent.prototype.attachChild = function(childComponent) {
@@ -18,7 +21,7 @@ define([ 'math/Transform' ], function(Transform) {
 			childComponent.parent.remove(childComponent);
 		}
 		childComponent.parent = this;
-		children.push(childComponent);
+		this.children.push(childComponent);
 	};
 
 	TransformComponent.prototype.detachChild = function(childComponent) {
@@ -32,6 +35,16 @@ define([ 'math/Transform' ], function(Transform) {
 			childComponent.parent = undefined;
 			this.children.splice(index, 1);
 		}
+	};
+
+	TransformComponent.prototype.updateWorldTransform = function() {
+		if (parent != null) {
+			parent.worldTransform.multiply(this.transform, this.worldTransform);
+		} else {
+			this.worldTransform.set(this.transform);
+		}
+		_dirty = false;
+		_updates = true;
 	};
 
 	return TransformComponent;
