@@ -5,13 +5,9 @@ define(function() {
 		this._target = target;
 
 		this._dataRefs = {};
-		this._dataUsage = Usage.StaticDraw;
+		this._dataUsage = 'StaticDraw';
 		this._dataNeedsRefresh = false;
 	}
-
-	BufferData.prototype.added = function(entity) {
-		this._entities[entity.id] = entity;
-	};
 
 	return BufferData;
 });

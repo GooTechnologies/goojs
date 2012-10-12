@@ -1,6 +1,6 @@
 define(function() {
 	function PartitioningSystem(renderList) {
-		System.call(this, 'PartitioningSystem', [ 'TransformComponent', 'MeshDataComponent', 'MeshRendererComponent' ]);
+		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
 
 		this.renderList = renderList;
 	}

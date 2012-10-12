@@ -1,4 +1,4 @@
-define(function() {
+define([ 'entities/systems/System' ], function(System) {
 	function RenderSystem(renderList) {
 		System.call(this, 'RenderSystem', null, true);
 

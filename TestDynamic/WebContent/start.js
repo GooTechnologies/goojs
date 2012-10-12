@@ -5,62 +5,101 @@
 //});
 
 require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entities/systems/TransformSystem',
-		'entities/systems/RenderSystem', 'entities/components/TransformComponent' ], function(World, Entity, System,
-		TransformSystem, RenderSystem, TransformComponent) {
-	var world = new World();
+		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
+		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent', 'renderer/MeshData' ],
+		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+				MeshRendererComponent, MeshData) {
 
-	// world.setManager({
-	// type : 'TestManager',
-	// added : function(entity) {
-	// console.log('TestManager Added: ' + entity.name);
-	// },
-	// changed : function(entity) {
-	// console.log('TestManager Changed: ' + entity.name);
-	// },
-	// removed : function(entity) {
-	// console.log('TestManager Removed: ' + entity.name);
-	// }
-	// });
+			function init() {
+				var world = new World();
 
-	var TestSystem = function() {
-		System.apply(this, arguments);
-	};
-	TestSystem.prototype = Object.create(System.prototype);
-	TestSystem.prototype.process = function(entities) {
-		console.log("TestSystem entitycount: " + entities.length);
-	};
-	var testSystem = new TestSystem('TestSystem', null);
-	world.setSystem(testSystem);
+				// world.setManager({
+				// type : 'TestManager',
+				// added : function(entity) {
+				// console.log('TestManager Added: ' + entity.name);
+				// },
+				// changed : function(entity) {
+				// console.log('TestManager Changed: ' + entity.name);
+				// },
+				// removed : function(entity) {
+				// console.log('TestManager Removed: ' + entity.name);
+				// }
+				// });
 
-	world.setSystem(new TransformSystem());
+				var TestSystem = function() {
+					System.apply(this, arguments);
+				};
+				TestSystem.prototype = Object.create(System.prototype);
+				TestSystem.prototype.process = function(entities) {
+					console.log("TestSystem entitycount: " + entities.length);
+				};
+				var testSystem = new TestSystem('TestSystem', null);
+				world.setSystem(testSystem);
 
-	var renderList = [];
-	var partitioningSystem = new PartitioningSystem(renderList);
-	world.setSystem(partitioningSystem);
-	var renderSystem = new RenderSystem(renderList);
-	world.setSystem(renderSystem);
+				world.setSystem(new TransformSystem());
 
-	var entity1 = world.createEntity();
-	entity1.addToWorld();
-	var entity2 = world.createEntity();
-	entity2.addToWorld();
+				// var renderList = [];
+				// var partitioningSystem = new PartitioningSystem(renderList);
+				// world.setSystem(partitioningSystem);
+				// var renderSystem = new RenderSystem(renderList);
+				// world.setSystem(renderSystem);
+				//
+				// var entity1 = world.createEntity();
+				// entity1.addToWorld();
+				// var entity2 = world.createEntity();
+				// entity2.addToWorld();
+				//
+				// world.process();
+				//
+				// entity2.removeFromWorld();
+				//
+				// world.process();
+				//
+				// var entity3 = world.createEntity();
+				// entity3.addToWorld();
+				//
+				// var transformComponent = new TransformComponent();
+				// entity3.setComponent(transformComponent);
+				// entity3.TransformComponent.transform.translation.x = 5;
 
-	world.process();
+				var triangleEntity = createTriangleEntity(world);
+				triangleEntity.addToWorld();
 
-	entity2.removeFromWorld();
+				// world.process();
+				//
+				// entity3.clearComponent('TransformComponent');
+				//
+				// world.process();
+			}
 
-	world.process();
+			function createTriangleEntity(world) {
+				var dataMap = {
+					vertexByteSize : 12, // count*bytes
+					descriptors : [ {
+						attributeName : 'POSITION',
+						count : 3,
+						type : 'Float',
+						offset : 0,
+					} ]
+				};
 
-	var entity3 = world.createEntity();
-	entity3.addToWorld();
+				var meshData = new MeshData(dataMap, 3, 3);
+				meshData.getAttributeBuffer('POSITION').set([ 0, 0, 0, -5, 5, 0, 5, 5, 0 ]);
+				meshData.getIndexBuffer().set([ 0, 1, 2 ]);
 
-	var transformComponent = new TransformComponent();
-	entity3.setComponent(transformComponent);
-	entity3.TransformComponent.transform.translation.x = 5;
+				var entity = world.createEntity();
 
-	world.process();
+				var transformComponent = new TransformComponent();
+				entity.setComponent(transformComponent);
 
-	entity3.clearComponent('TransformComponent');
+				var meshDataComponent = new MeshDataComponent(meshData);
+				entity.setComponent(meshDataComponent);
 
-	world.process();
-});
+				var meshRendererComponent = new MeshRendererComponent();
+				entity.setComponent(meshRendererComponent);
+
+				return entity;
+			}
+
+			init();
+		});

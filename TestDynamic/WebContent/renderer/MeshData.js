@@ -1,75 +1,88 @@
-define(function() {
-	function MeshData(dataMap, vertexCount) {
-	    /** Number of primitives represented by this data. */
-	    this._primitiveCounts = [];
+define([ 'renderer/BufferData' ], function(BufferData) {
+	function MeshData(dataMap, vertexCount, indexCount) {
+		this._primitiveCounts = [];
+		this._dataMap = dataMap;
+		this._dataViews = {};
 
-	    /** Map for generating data views */
-	    this._dataMap = dataMap;;
+		this._indexLengths = null;
+		this._indexModes = [ 'Triangles' ];
+		this._indexBuffer = null;
 
-	    /** Vertex attribute data. */
-	    /** Vertex data views */
-	    this._dataViews = {};
-
-	    /** Index data. */
-	    this._indexData = null;
-	    this._indexLengths = null;
-	    this._indexModes = [ 'Triangles' ];
-	    /** Index view */
-	    this._indexBuffer = null;
-
-	    this.rebuildData(vertexCount);
+		this.rebuildData(vertexCount, indexCount);
 	}
 
-	MeshData.prototype.rebuildData = function(vertexCount) {
-        this._limitVertexCount = this._totalVertexCount = vertexCount;
-        this._vertexData = new BufferData(new ArrayBuffer(_dataMap.getVertexByteSize() * vertexCount), Target.ArrayBuffer);
-        generateDataViews();
-    };
+	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
+		this._vertexCount = vertexCount;
+		this._limitVertexCount = this._vertexCount;
+		this._indexCount = indexCount;
+
+		this._vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
+				'ArrayBuffer');
+
+		var indices;
+		if (this._vertexCount < 256) { // 2^8
+			indices = new Int8Array(this._indexCount);
+		} else if (this._vertexCount < 65536) { // 2^16
+			indices = new Int16Array(this._indexCount);
+		} else { // 2^32
+			indices = new Int32Array(this._indexCount);
+		}
+		this._indexData = new BufferData(indices, 'ElementArrayBuffer');
+
+		this.generateDataViews();
+	};
 
 	MeshData.prototype.generateDataViews = function() {
-        _dataViews.clear();
-        var data = _this.vertexData.data;
-        for (final VertexDataDescriptor d : _dataMap.getDescriptors()) {
-            AbstractBuffer<?, ?> view = null;
-            switch (d.getType()) {
-                case Byte:
-                    view = new ByteBuffer(Int8Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case UnsignedByte:
-                    view = new UByteBuffer(Uint8Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case Short:
-                    view = new ShortBuffer(Int16Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case UnsignedShort:
-                    view = new UShortBuffer(Uint16Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case Int:
-                    view = new IntBuffer(Int32Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case UnsignedInt:
-                    view = new UIntBuffer(Uint32Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case Float:
-                    view = new FloatBuffer(Float32Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case Double:
-                    view = new DoubleBuffer(Float64Array.create(data, d.getOffset()), d.getCount(), d.getStride());
-                    break;
-                case HalfFloat:
-                    // XXX: Support?
-                    break;
-            }
-            if (view != null) {
-                _dataViews.put(d.getAttributeName(), view);
-            } else {
-                throw new Ardor3dException("Unsupported DataType: " + d.getType());
-            }
-        }
-    }
-    
-	MeshData.prototype.added = function(entity) {
-		this._entities[entity.id] = entity;
+		this._dataViews = {};
+		var data = this._vertexData.data;
+		var view;
+		for ( var i in this._dataMap.descriptors) {
+			var d = this._dataMap.descriptors[i];
+			switch (d.type) {
+				case 'Byte':
+					view = new Int8Array(data, d.offset);
+					break;
+				case 'UnsignedByte':
+					view = new Uint8Array(data, d.offset);
+					break;
+				case 'Short':
+					view = new Int16Array(data, d.offset);
+					break;
+				case 'UnsignedShort':
+					view = new Uint16Array(data, d.offset);
+					break;
+				case 'Int':
+					view = new Int32Array(data, d.offset);
+					break;
+				case 'UnsignedInt':
+					view = new Uint32Array(data, d.offset);
+					break;
+				case 'Float':
+					view = new Float32Array(data, d.offset);
+					break;
+				case 'Double':
+					view = new Float64Array(data, d.offset);
+					break;
+				case 'HalfFloat':
+					// XXX: Support?
+					console.log("Unsupported DataType: " + d.type);
+					return;
+				default:
+					console.log("Unsupported DataType: " + d.type);
+					return;
+			}
+
+			this._dataViews[d.attributeName] = view;
+		}
+	};
+
+	MeshData.prototype.getAttributeBuffer = function(attributeName) {
+		console.log(this);
+		return this._dataViews[attributeName];
+	};
+
+	MeshData.prototype.getIndexBuffer = function() {
+		return this._indexData.data;
 	};
 
 	return MeshData;
