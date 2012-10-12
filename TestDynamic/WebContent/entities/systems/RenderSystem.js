@@ -8,8 +8,8 @@ define([ 'entities/systems/System' ], function(System) {
 	RenderSystem.prototype = Object.create(System.prototype);
 
 	RenderSystem.prototype.render = function(renderer) {
-		for (i in renderList) {
-			var entity = renderList[i];
+		for (i in this.renderList) {
+			var entity = this.renderList[i];
 			this.renderEntity(renderer, entity);
 		}
 	};
@@ -24,16 +24,26 @@ define([ 'entities/systems/System' ], function(System) {
 		for (i in shaderInfo.materials) {
 			var material = shaderInfo.materials[i];
 
-			material.applyShader(shaderInfo, renderer);
+			if (material.shader == null) {
+				return;
+			}
 
-			if (meshData.getIndices() != null) {
+			// for (final StateType type : StateType.values) {
+			// renderer.applyState(type, material.getRenderState(type));
+			// }
+
+			shaderInfo.material = material;
+			material.shader.apply(shaderInfo, renderer);
+
+			var meshData = shaderInfo.meshData;
+			if (meshData.getIndexBuffer() != null) {
 				renderer.bindData(meshData.getIndexData());
 				if (meshData.getIndexLengths() != null) {
-					renderer.drawElementsVBO(meshData.getIndices(), meshData.getIndexModes(), meshData
+					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
 							.getIndexLengths());
 				} else {
-					renderer.drawElementsVBO(meshData.getIndices(), meshData.getIndexModes(), meshData.getIndices()
-							.limit());
+					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
+							.getIndexBuffer().length);
 				}
 			} else {
 				if (meshData.getIndexLengths() != null) {
@@ -42,9 +52,7 @@ define([ 'entities/systems/System' ], function(System) {
 					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getVertexCount());
 				}
 			}
-
 		}
-
 	};
 
 	return RenderSystem;

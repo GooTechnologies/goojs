@@ -24,11 +24,20 @@ define(function() {
 
 	System.prototype._check = function(entity) {
 		var isInterested = this.interests == null;
-		if (!isInterested && this.interests.length == entity._components.length) {
+		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
-			for (i in entity._components) {
-				var component = entity._components[i];
-				if (this.interests.indexOf(component.type) == -1) {
+			for (i in this.interests) {
+				var interest = this.interests[i];
+				var found = false;
+				for (j in entity._components) {
+					var component = entity._components[j];
+					if (component.type === interest) {
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
 					isInterested = false;
 					break;
 				}

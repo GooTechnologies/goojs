@@ -6,7 +6,6 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 
 		this._indexLengths = null;
 		this._indexModes = [ 'Triangles' ];
-		this._indexBuffer = null;
 
 		this.rebuildData(vertexCount, indexCount);
 	}
@@ -65,8 +64,6 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 					break;
 				case 'HalfFloat':
 					// XXX: Support?
-					console.log("Unsupported DataType: " + d.type);
-					return;
 				default:
 					console.log("Unsupported DataType: " + d.type);
 					return;
@@ -77,12 +74,23 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
-		console.log(this);
 		return this._dataViews[attributeName];
+	};
+
+	MeshData.prototype.getIndexData = function() {
+		return this._indexData;
 	};
 
 	MeshData.prototype.getIndexBuffer = function() {
 		return this._indexData.data;
+	};
+
+	MeshData.prototype.getIndexLengths = function() {
+		return this._indexLengths;
+	};
+
+	MeshData.prototype.getIndexModes = function() {
+		return this._indexModes;
 	};
 
 	return MeshData;

@@ -1,4 +1,4 @@
-define(function() {
+define([ 'entities/systems/System' ], function(System) {
 	function PartitioningSystem(renderList) {
 		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
 
@@ -16,17 +16,16 @@ define(function() {
 	};
 
 	PartitioningSystem.prototype.process = function(entities) {
-		renderList.length = 0;
+		this.renderList.length = 0;
 		for (i in entities) {
 			var entity = entities[i];
 
-			var bounds = entity.MeshRendererComponent.worldBound;
+			// var bounds = entity.MeshRendererComponent.worldBound;
+			// var isVisible = THREE.WebGLRenderer._frustum.contains(bounds);
 
-			var isVisible = THREE.WebGLRenderer._frustum.contains(bounds);
-
-			if (isVisible) {
-				renderList.push(entity);
-			}
+			// if (isVisible) {
+			this.renderList.push(entity);
+			// }
 		}
 	};
 

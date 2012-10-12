@@ -8,7 +8,7 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 		this._removedEntities = [];
 
 		this._entityManager = new EntityManager();
-		this.setManager("EntityManager", this._entityManager);
+		this.setManager(this._entityManager);
 	}
 
 	World.prototype.setManager = function(manager) {

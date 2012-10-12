@@ -4,11 +4,14 @@
 //	}
 //});
 
-require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entities/systems/TransformSystem',
-		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
-		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent', 'renderer/MeshData' ],
+require(
+		[ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entities/systems/TransformSystem',
+				'entities/systems/RenderSystem', 'entities/components/TransformComponent',
+				'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent',
+				'entities/systems/PartitioningSystem', 'renderer/MeshData', 'renderer/Renderer', 'renderer/Material',
+				'renderer/Shader' ],
 		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
-				MeshRendererComponent, MeshData) {
+				MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader) {
 
 			function init() {
 				var world = new World();
@@ -38,12 +41,12 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 
 				world.setSystem(new TransformSystem());
 
-				// var renderList = [];
-				// var partitioningSystem = new PartitioningSystem(renderList);
-				// world.setSystem(partitioningSystem);
-				// var renderSystem = new RenderSystem(renderList);
-				// world.setSystem(renderSystem);
-				//
+				var renderList = [];
+				var partitioningSystem = new PartitioningSystem(renderList);
+				world.setSystem(partitioningSystem);
+				var renderSystem = new RenderSystem(renderList);
+				world.setSystem(renderSystem);
+
 				// var entity1 = world.createEntity();
 				// entity1.addToWorld();
 				// var entity2 = world.createEntity();
@@ -69,7 +72,12 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 				//
 				// entity3.clearComponent('TransformComponent');
 				//
-				// world.process();
+				world.process();
+
+				var renderer = new Renderer();
+				renderSystem.render(renderer);
+
+				world.getEntities();
 			}
 
 			function createTriangleEntity(world) {
@@ -96,6 +104,11 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 				entity.setComponent(meshDataComponent);
 
 				var meshRendererComponent = new MeshRendererComponent();
+				var material = new Material('TestMaterial');
+				var vs = 'attribute vec3 position; //!POSITION\nuniform vec3 ape;\n void main() { gl_Position = vec4(position*ape,1.0); }';
+				var fs = 'uniform sampler2D diffuse;\n void main() { gl_FragColor = vec4(1.0,0.0,0.0,1.0) * texture2D(diffuse, vec2(0.0,0.0)); }';
+				material.shader = new Shader('TestShader', vs, fs);
+				meshRendererComponent.materials.push(material);
 				entity.setComponent(meshRendererComponent);
 
 				return entity;
