@@ -5,6 +5,7 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
+				document.body.appendChild(_canvas);
 
 				this.lineRecord = null;// new LineRecord();
 				this.shaderRecord = new ShaderRecord();
@@ -28,11 +29,25 @@ define(
 					// };
 
 					if (!(this.context = _canvas.getContext('experimental-webgl'))) {
+						console.error('Error creating WebGL context.');
 						throw 'Error creating WebGL context.';
 					}
 				} catch (error) {
 					console.error(error);
 				}
+
+				this.context.clearColor(0.5, 0.5, 0.5, 1);
+				this.context.clearDepth(1);
+				this.context.clearStencil(0);
+
+				this.context.enable(this.context.DEPTH_TEST);
+				this.context.depthFunc(this.context.LEQUAL);
+
+				// this.context.frontFace(this.context.CCW);
+				// this.context.cullFace(this.context.BACK);
+				// this.context.enable(this.context.CULL_FACE);
+
+				console.log(this.context);
 			}
 
 			Renderer.prototype.bindData = function(bufferData) {
@@ -75,7 +90,6 @@ define(
 
 			Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
 				console.log('drawElementsVBO');
-				console.log(arguments);
 
 				var offset = 0;
 				var indexModeCounter = 0;
@@ -87,9 +101,9 @@ define(
 
 					var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
 
-					console.log(indices);
-					var type = this.getGLDataType(indices);
-					var byteSize = indices.getDataType().getBytesPerEntry();
+					console.log(arguments);
+					var type = this.getGLArrayType(indices);
+					var byteSize = this.getGLByteSize(indices);
 
 					// offset in this call is done in bytes.
 					this.context.drawElements(glIndexMode, count, type, offset * byteSize);
@@ -120,18 +134,30 @@ define(
 				return this.context.ARRAY_BUFFER;
 			};
 
-			Renderer.prototype.getGLDataType = function(indices) {
+			Renderer.prototype.getGLArrayType = function(indices) {
 				if (indices instanceof Int8Array) {
-					return WebGLRenderingContext.UNSIGNED_BYTE;
+					return this.context.UNSIGNED_BYTE;
 				} else if (indices instanceof Int16Array) {
-					return WebGLRenderingContext.UNSIGNED_SHORT;
+					return this.context.UNSIGNED_SHORT;
 				} else if (indices instanceof Int32Array) {
-					return WebGLRenderingContext.UNSIGNED_INT;
+					return this.context.UNSIGNED_INT;
 				}
 
 				return null;
 				// throw new IllegalArgumentException("Unknown buffer type: " +
 				// indices);
+			};
+
+			Renderer.prototype.getGLByteSize = function(indices) {
+				if (indices instanceof Int8Array) {
+					return 1;
+				} else if (indices instanceof Int16Array) {
+					return 2;
+				} else if (indices instanceof Int32Array) {
+					return 4;
+				}
+
+				return 1;
 			};
 
 			Renderer.prototype.getGLBufferUsage = function(usage) {

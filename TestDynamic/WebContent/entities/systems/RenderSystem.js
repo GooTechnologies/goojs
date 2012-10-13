@@ -45,14 +45,14 @@ define([ 'entities/systems/System' ], function(System) {
 					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
 							.getIndexLengths());
 				} else {
-					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
-							.getIndexBuffer().length);
+					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [ meshData
+							.getIndexBuffer().length ]);
 				}
 			} else {
 				if (meshData.getIndexLengths() != null) {
 					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
 				} else {
-					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getVertexCount());
+					renderer.drawArraysVBO(meshData.getIndexModes(), [ meshData.getVertexCount() ]);
 				}
 			}
 		}

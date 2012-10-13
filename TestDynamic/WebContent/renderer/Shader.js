@@ -18,6 +18,10 @@ define(
 				this.patternStr = '\\b(attribute|uniform)\\s+(vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\\s+(\\w+);(?:\\s*//\\s*!\\s*(\\w+))*';
 				this.regExp = new RegExp(this.patternStr, 'g');
 				this.textureCount = 0;
+
+				this.defaultCallbacks = {};
+				// this.setupDefaultCallbacks();
+				this.currentCallbacks = {};
 			}
 
 			Shader.prototype.apply = function(shaderInfoRetriever, renderer) {
