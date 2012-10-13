@@ -1,11 +1,6 @@
 define(
 		[ 'renderer/ShaderCall' ],
 		function(ShaderCall) {
-			// private final static String patternStr =
-			// "\\b(attribute|uniform)\\s+(vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\\s+(\\w+);(?:\\s*//\\s*!\\s*(\\w+))*";
-			// private final RegExp regExp = RegExp.compile(Shader.patternStr,
-			// "g");
-
 			function Shader(name, vertexSource, fragmentSource) {
 				this.name = name;
 				this.vertexSource = vertexSource;
@@ -26,10 +21,38 @@ define(
 			}
 
 			Shader.prototype.apply = function(shaderInfoRetriever, renderer) {
+				var glContext = renderer.context;
+				var record = renderer.shaderRecord;
+
 				if (this.shaderProgram == null) {
 					this.investigateShaders();
 					this.compile(renderer);
 				}
+
+				// Set the ShaderProgram active
+				if (record.usedProgram != this.shaderProgram) {
+					glContext.useProgram(this.shaderProgram);
+					record.usedProgram = this.shaderProgram;
+				}
+
+				// Bind attributes
+				var descriptors = shaderInfoRetriever.meshData._dataMap.descriptors;
+				for (key in descriptors) {
+					var descriptor = descriptors[key];
+					var i = this.attributeMapping[descriptor.attributeName];
+					if (i != undefined) {
+						renderer.bindVertexAttribute(i, descriptor.count, descriptor.type, descriptor.normalized,
+								descriptor.stride * this.getBytes(descriptor.type), descriptor.offset, record);
+					}
+				}
+
+				// for (final Entry<String, ShaderCallback> entry :
+				// getCallbacks().entrySet()) {
+				// entry.getValue().setUniforms(uniformCallMapping,
+				// shaderInfoRetriever);
+				// }
+
+				// record.valid = true;
 			};
 
 			Shader.prototype.investigateShaders = function() {
@@ -75,6 +98,7 @@ define(
 
 			Shader.prototype.compile = function(renderer) {
 				var glContext = renderer.context;
+				var record = renderer.shaderRecord;
 
 				var vertexShader = this._getShader(glContext, glContext.VERTEX_SHADER, this.vertexSource);
 				console.log("Created vertex shader");
@@ -122,13 +146,13 @@ define(
 
 					var shaderCall = new ShaderCall(glContext);
 
-					// var uniformRecord =
-					// record.uniformRecords.get(record.usedProgram);
-					// if (uniformRecord == null) {
-					// uniformRecord = new ShaderUniformRecord();
-					// record.uniformRecords.put(record.usedProgram,
-					// uniformRecord);
-					// }
+					var uniformRecord = record.uniformRecords.get(this.shaderProgram);
+					if (uniformRecord == null) {
+						uniformRecord = {
+							boundValues : new Hashtable()
+						};
+						record.uniformRecords.put(this.shaderProgram, uniformRecord);
+					}
 					var uniformRecord = {};
 					uniformRecord.boundValues = new Hashtable();
 
@@ -153,7 +177,40 @@ define(
 				}
 
 				return shader;
-			}
+			};
+
+			// Byte(1), UnsignedByte(1), Short(2), UnsignedShort(2), Int(4),
+			// UnsignedInt(4),
+			// HalfFloat(2), Float(4), Double(8);
+
+			Shader.prototype.getBytes = function(type) {
+				switch (type) {
+					case 'Byte':
+						return 1;
+						break;
+					case 'UnsignedByte':
+						return 1;
+						break;
+					case 'Short':
+						return 2;
+						break;
+					case 'UnsignedShort':
+						return 2;
+						break;
+					case 'Int':
+						return 4;
+						break;
+					case 'HalfFloat':
+						return 2;
+						break;
+					case 'Float':
+						return 4;
+						break;
+					case 'Double':
+						return 8;
+						break;
+				}
+			};
 
 			return Shader;
 		});

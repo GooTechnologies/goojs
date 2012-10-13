@@ -21,6 +21,9 @@ define([ 'entities/systems/System' ], function(System) {
 			materials : entity.MeshRendererComponent.materials
 		};
 
+		// bind our interleaved data
+		renderer.bindData(shaderInfo.meshData._vertexData);
+
 		for (i in shaderInfo.materials) {
 			var material = shaderInfo.materials[i];
 

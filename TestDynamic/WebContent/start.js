@@ -88,6 +88,8 @@ require(
 						count : 3,
 						type : 'Float',
 						offset : 0,
+						stride : 0,
+						normalized : true,
 					} ]
 				};
 
