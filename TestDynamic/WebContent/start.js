@@ -8,10 +8,18 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
 		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent',
 		'entities/systems/PartitioningSystem', 'renderer/MeshData', 'renderer/Renderer', 'renderer/Material',
-		'renderer/Shader' ], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-		MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader) {
+		'renderer/Shader', 'renderer/DataMap' ], function(World, Entity, System, TransformSystem, RenderSystem,
+		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
+		Shader, DataMap) {
 
 	function init() {
+		// console.log(DataMap.defaultMap());
+		// console.log(DataMap.defaultMap([ 'POSITION' ]));
+
+		buildWorld();
+	}
+
+	function buildWorld() {
 		var world = new World();
 
 		// world.setManager({
@@ -45,31 +53,31 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 		var renderSystem = new RenderSystem(renderList);
 		world.setSystem(renderSystem);
 
-		// var entity1 = world.createEntity();
-		// entity1.addToWorld();
-		// var entity2 = world.createEntity();
-		// entity2.addToWorld();
-		//
-		// world.process();
-		//
-		// entity2.removeFromWorld();
-		//
-		// world.process();
-		//
-		// var entity3 = world.createEntity();
-		// entity3.addToWorld();
-		//
-		// var transformComponent = new TransformComponent();
-		// entity3.setComponent(transformComponent);
-		// entity3.TransformComponent.transform.translation.x = 5;
+		var entity1 = world.createEntity();
+		entity1.addToWorld();
+		var entity2 = world.createEntity();
+		entity2.addToWorld();
+
+		world.process();
+
+		entity2.removeFromWorld();
+
+		world.process();
+
+		var entity3 = world.createEntity();
+		entity3.addToWorld();
+
+		var transformComponent = new TransformComponent();
+		entity3.setComponent(transformComponent);
+		entity3.TransformComponent.transform.translation.x = 5;
 
 		var triangleEntity = createTriangleEntity(world);
 		triangleEntity.addToWorld();
 
-		// world.process();
-		//
-		// entity3.clearComponent('TransformComponent');
-		//
+		world.process();
+
+		entity3.clearComponent('TransformComponent');
+
 		world.process();
 
 		var renderer = new Renderer();
@@ -77,18 +85,7 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 	}
 
 	function createTriangleEntity(world) {
-		var dataMap = {
-			vertexByteSize : 12, // count*bytes
-			descriptors : [ {
-				attributeName : 'POSITION',
-				count : 3,
-				type : 'Float',
-				offset : 0,
-				stride : 0,
-				normalized : true,
-			} ]
-		};
-
+		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
 		meshData.getAttributeBuffer('POSITION').set([ 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0 ]);
 		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
@@ -103,8 +100,17 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 
 		var meshRendererComponent = new MeshRendererComponent();
 		var material = new Material('TestMaterial');
-		var vs = 'attribute vec3 position; //!POSITION\nvoid main() { gl_Position = vec4(position,1.0); }';
-		var fs = 'void main() { gl_FragColor = vec4(1.0,0.0,0.0,1.0); }';
+		var vs = [ //
+		'attribute vec3 position; //!POSITION', //
+		'void main() {', //
+		'gl_Position = vec4(position,1.0);', //
+		'}' //
+		].join('\n');
+		var fs = [ //
+		'void main() {', //
+		'gl_FragColor = vec4(1.0,0.0,0.0,1.0);', //
+		'}' //
+		].join('\n');
 		material.shader = new Shader('TestShader', vs, fs);
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);

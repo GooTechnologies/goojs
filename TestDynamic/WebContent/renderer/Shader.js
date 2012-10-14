@@ -1,6 +1,6 @@
 define(
-		[ 'renderer/ShaderCall' ],
-		function(ShaderCall) {
+		[ 'renderer/ShaderCall', 'renderer/Util' ],
+		function(ShaderCall, Util) {
 			function Shader(name, vertexSource, fragmentSource) {
 				this.name = name;
 				this.vertexSource = vertexSource;
@@ -46,7 +46,7 @@ define(
 					var i = this.attributeMapping[descriptor.attributeName];
 					if (i != undefined) {
 						renderer.bindVertexAttribute(i, descriptor.count, descriptor.type, descriptor.normalized,
-								descriptor.stride * this.getBytes(descriptor.type), descriptor.offset, record);
+								descriptor.stride * Util.getByteSize(descriptor.type), descriptor.offset, record);
 					}
 				}
 
@@ -186,35 +186,6 @@ define(
 			// Byte(1), UnsignedByte(1), Short(2), UnsignedShort(2), Int(4),
 			// UnsignedInt(4),
 			// HalfFloat(2), Float(4), Double(8);
-
-			Shader.prototype.getBytes = function(type) {
-				switch (type) {
-					case 'Byte':
-						return 1;
-						break;
-					case 'UnsignedByte':
-						return 1;
-						break;
-					case 'Short':
-						return 2;
-						break;
-					case 'UnsignedShort':
-						return 2;
-						break;
-					case 'Int':
-						return 4;
-						break;
-					case 'HalfFloat':
-						return 2;
-						break;
-					case 'Float':
-						return 4;
-						break;
-					case 'Double':
-						return 8;
-						break;
-				}
-			};
 
 			return Shader;
 		});
