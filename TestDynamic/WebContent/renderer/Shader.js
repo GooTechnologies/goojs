@@ -20,8 +20,18 @@ define(
 				this.textureCount = 0;
 
 				this.defaultCallbacks = {};
-				// this.setupDefaultCallbacks();
+				setupDefaultCallbacks(this.defaultCallbacks);
 				this.currentCallbacks = {};
+			}
+
+			function setupDefaultCallbacks(defaultCallbacks) {
+				defaultCallbacks['PROJECTION_MATRIX'] = {
+					setUniforms : function(uniformMapping, shaderInfoRetriever) {
+						var shaderCall = uniformMapping['PROJECTION_MATRIX'];
+						shaderCall
+								.uniformMatrix4fv(false, camera.getProjectionMatrix().toFloatBuffer(store).getArray());
+					}
+				};
 			}
 
 			Shader.prototype.apply = function(shaderInfoRetriever, renderer) {
@@ -50,13 +60,16 @@ define(
 					}
 				}
 
-				// for (final Entry<String, ShaderCallback> entry :
-				// getCallbacks().entrySet()) {
-				// entry.getValue().setUniforms(uniformCallMapping,
-				// shaderInfoRetriever);
-				// }
+				for (i in this.currentCallbacks) {
+					var shaderCallback = this.currentCallbacks[i];
+					shaderCallback.setUniforms(this.uniformCallMapping, shaderInfoRetriever);
+				}
 
 				// record.valid = true;
+			};
+
+			Shader.prototype.bindCallback = function(name, callback) {
+				this.currentCallbacks[name] = callback;
 			};
 
 			Shader.prototype.investigateShaders = function() {
@@ -82,19 +95,16 @@ define(
 
 					if ("attribute" === type) {
 						this.attributeMapping[bindingName] = variableName;
-						// bindAttribute(bindingName, variableName);
 					} else {
 						if (format.indexOf("sampler") == 0) {
 							this.textureCount++;
 						}
 						this.uniformMapping[bindingName] = variableName;
-						// bindUniform(bindingName, variableName);
 					}
 
-					// if (Shader.defaultCallbacks.containsKey(bindingName)) {
-					// currentCallbacks.put(bindingName,
-					// Shader.defaultCallbacks.get(bindingName));
-					// }
+					if (this.defaultCallbacks[bindingName] != undefined) {
+						currentCallbacks[bindingName] = this.defaultCallbacks[bindingName];
+					}
 
 					matcher = this.regExp.exec(source);
 				}
@@ -118,7 +128,7 @@ define(
 				this.shaderProgram = glContext.createProgram();
 				var error = glContext.getError();
 				if (this.shaderProgram == null || error != glContext.NO_ERROR) {
-					console.error("Program errror: " + error + "[shader: " + name + "]");
+					console.error("Program error: " + error + "[shader: " + name + "]");
 					// throw new RuntimeException("program error");
 				}
 
@@ -145,7 +155,6 @@ define(
 
 				for (key in this.uniformMapping) {
 					var uniform = glContext.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
-					console.log(uniform);
 					this.uniformLocationMapping[key] = uniform;
 
 					var shaderCall = new ShaderCall(glContext);

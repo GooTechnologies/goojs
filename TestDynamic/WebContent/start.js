@@ -8,80 +8,16 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
 		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent',
 		'entities/systems/PartitioningSystem', 'renderer/MeshData', 'renderer/Renderer', 'renderer/Material',
-		'renderer/Shader', 'renderer/DataMap' ], function(World, Entity, System, TransformSystem, RenderSystem,
-		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-		Shader, DataMap) {
+		'renderer/Shader', 'renderer/DataMap', 'entities/GooRunner' ], function(World, Entity, System, TransformSystem,
+		RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData,
+		Renderer, Material, Shader, DataMap, GooRunner) {
 
 	function init() {
-		// console.log(DataMap.defaultMap());
-		// console.log(DataMap.defaultMap([ 'POSITION' ]));
+		var goo = new GooRunner();
+		document.body.appendChild(goo.renderer.domElement);
 
-		buildWorld();
-	}
-
-	function buildWorld() {
-		var world = new World();
-
-		// world.setManager({
-		// type : 'TestManager',
-		// added : function(entity) {
-		// console.log('TestManager Added: ' + entity.name);
-		// },
-		// changed : function(entity) {
-		// console.log('TestManager Changed: ' + entity.name);
-		// },
-		// removed : function(entity) {
-		// console.log('TestManager Removed: ' + entity.name);
-		// }
-		// });
-
-		var TestSystem = function() {
-			System.apply(this, arguments);
-		};
-		TestSystem.prototype = Object.create(System.prototype);
-		TestSystem.prototype.process = function(entities) {
-			console.log("TestSystem entitycount: " + entities.length);
-		};
-		var testSystem = new TestSystem('TestSystem', null);
-		world.setSystem(testSystem);
-
-		world.setSystem(new TransformSystem());
-
-		var renderList = [];
-		var partitioningSystem = new PartitioningSystem(renderList);
-		world.setSystem(partitioningSystem);
-		var renderSystem = new RenderSystem(renderList);
-		world.setSystem(renderSystem);
-
-		var entity1 = world.createEntity();
-		entity1.addToWorld();
-		var entity2 = world.createEntity();
-		entity2.addToWorld();
-
-		world.process();
-
-		entity2.removeFromWorld();
-
-		world.process();
-
-		var entity3 = world.createEntity();
-		entity3.addToWorld();
-
-		var transformComponent = new TransformComponent();
-		entity3.setComponent(transformComponent);
-		entity3.TransformComponent.transform.translation.x = 5;
-
-		var triangleEntity = createTriangleEntity(world);
+		var triangleEntity = createTriangleEntity(goo.world);
 		triangleEntity.addToWorld();
-
-		world.process();
-
-		entity3.clearComponent('TransformComponent');
-
-		world.process();
-
-		var renderer = new Renderer();
-		renderSystem.render(renderer);
 	}
 
 	function createTriangleEntity(world) {

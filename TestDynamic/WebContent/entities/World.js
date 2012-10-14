@@ -9,6 +9,8 @@ define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity
 
 		this._entityManager = new EntityManager();
 		this.setManager(this._entityManager);
+
+		this.tpf = 1.0;
 	}
 
 	World.prototype.setManager = function(manager) {

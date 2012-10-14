@@ -5,7 +5,7 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
-				document.body.appendChild(_canvas);
+				this.domElement = _canvas;
 
 				this.lineRecord = null;// new LineRecord();
 				this.shaderRecord = new ShaderRecord();
@@ -48,8 +48,6 @@ define(
 				// this.context.frontFace(this.context.CCW);
 				// this.context.cullFace(this.context.BACK);
 				// this.context.enable(this.context.CULL_FACE);
-
-				console.log(this.context);
 			}
 
 			Renderer.prototype.setClearColor = function(red, green, blue, alpha) {
@@ -63,8 +61,6 @@ define(
 			};
 
 			Renderer.prototype.bindData = function(bufferData) {
-				console.log('bindData: ' + arguments);
-
 				var glBuffer = null;
 				if (bufferData != null) {
 					glBuffer = bufferData._dataRefs.get(this.context);
@@ -103,8 +99,6 @@ define(
 			};
 
 			Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
-				console.log('drawElementsVBO');
-
 				var offset = 0;
 				var indexModeCounter = 0;
 				// if (Constants.extraGLErrorChecks) {
@@ -115,7 +109,6 @@ define(
 
 					var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
 
-					console.log(arguments);
 					var type = this.getGLArrayType(indices);
 					var byteSize = this.getGLByteSize(indices);
 
@@ -216,11 +209,9 @@ define(
 						break;
 				}
 				return glMode;
-			}
+			};
 
 			Renderer.prototype.setBoundBuffer = function(buffer, target) {
-				console.log(target);
-				console.log(this.rendererRecord);
 				if (!this.rendererRecord.currentBuffer[target].valid
 						|| this.rendererRecord.currentBuffer[target].buffer != buffer) {
 					this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
@@ -233,7 +224,6 @@ define(
 
 			Renderer.prototype.bindVertexAttribute = function(attribIndex, tupleSize, type, normalized, stride, offset,
 					record) {
-				console.log('bindVertexAttribute: ' + arguments);
 				this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride,
 						offset);
 
