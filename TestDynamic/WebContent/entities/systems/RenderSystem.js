@@ -8,10 +8,14 @@ define([ 'entities/systems/System' ], function(System) {
 	RenderSystem.prototype = Object.create(System.prototype);
 
 	RenderSystem.prototype.render = function(renderer) {
+		renderer.clear();
+
 		for (i in this.renderList) {
 			var entity = this.renderList[i];
 			this.renderEntity(renderer, entity);
 		}
+
+		renderer.flush();
 	};
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
@@ -22,7 +26,7 @@ define([ 'entities/systems/System' ], function(System) {
 		};
 
 		// bind our interleaved data
-		renderer.bindData(shaderInfo.meshData._vertexData);
+		renderer.bindData(shaderInfo.meshData.vertexData);
 
 		for (i in shaderInfo.materials) {
 			var material = shaderInfo.materials[i];

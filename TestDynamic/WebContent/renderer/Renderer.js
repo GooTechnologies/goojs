@@ -1,6 +1,6 @@
 define(
-		[ 'renderer/ShaderRecord', 'renderer/RendererRecord' ],
-		function(ShaderRecord, RendererRecord) {
+		[ 'renderer/ShaderRecord', 'renderer/RendererRecord', 'renderer/Camera' ],
+		function(ShaderRecord, RendererRecord, Camera) {
 			function Renderer(parameters) {
 				parameters = parameters || {};
 
@@ -36,7 +36,9 @@ define(
 					console.error(error);
 				}
 
-				this.context.clearColor(0.5, 0.5, 0.5, 1);
+				this.camera = new Camera();
+
+				this.setClearColor(0.8, 0.8, 0.8, 1.0);
 				this.context.clearDepth(1);
 				this.context.clearStencil(0);
 
@@ -50,6 +52,16 @@ define(
 				console.log(this.context);
 			}
 
+			Renderer.prototype.setClearColor = function(red, green, blue, alpha) {
+				this.clearColor = {
+					red : 0.8,
+					green : 0.8,
+					blue : 0.8,
+					alpha : 1.0
+				};
+				this.context.clearColor(red, green, blue, alpha);
+			};
+
 			Renderer.prototype.bindData = function(bufferData) {
 				console.log('bindData: ' + arguments);
 
@@ -57,10 +69,12 @@ define(
 				if (bufferData != null) {
 					glBuffer = bufferData._dataRefs.get(this.context);
 					if (glBuffer != null) {
-						updateBuffer(bufferData, this.rendererRecord, this.context);
+						// updateBuffer(bufferData, this.rendererRecord,
+						// this.context);
 						if (bufferData._dataNeedsRefresh) {
 							this.setBoundBuffer(bufferData.getDataRef(context), bufferData.getTarget());
-							_gl.bufferSubData(this.getGLBufferTarget(bufferData.getTarget()), 0, bufferData.getData());
+							this.context.bufferSubData(this.getGLBufferTarget(bufferData.getTarget()), 0, bufferData
+									.getData());
 							bufferData._dataNeedsRefresh = false;
 						}
 						// if (Constants.extraGLErrorChecks) {
@@ -251,6 +265,26 @@ define(
 					case 'UnsignedInt':
 						return this.context.UNSIGNED_INT;
 				}
+			};
+
+			Renderer.prototype.clear = function(color, depth, stencil) {
+				var bits = 0;
+
+				if (color === undefined || color) {
+					bits |= this.context.COLOR_BUFFER_BIT;
+				}
+				if (depth === undefined || depth) {
+					bits |= this.context.DEPTH_BUFFER_BIT;
+				}
+				if (stencil === undefined || stencil) {
+					bits |= this.context.STENCIL_BUFFER_BIT;
+				}
+
+				this.context.clear(bits);
+			};
+
+			Renderer.prototype.flush = function(buffer, target) {
+				this.context.flush();
 			};
 
 			return Renderer;

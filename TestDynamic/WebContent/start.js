@@ -89,9 +89,9 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 			} ]
 		};
 
-		var meshData = new MeshData(dataMap, 3, 3);
-		meshData.getAttributeBuffer('POSITION').set([ 0, 0, 0, 0, 1, 0, 1, 0, 0 ]);
-		meshData.getIndexBuffer().set([ 0, 1, 2 ]);
+		var meshData = new MeshData(dataMap, 4, 6);
+		meshData.getAttributeBuffer('POSITION').set([ 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0 ]);
+		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
 
 		var entity = world.createEntity();
 

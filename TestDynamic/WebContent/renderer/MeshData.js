@@ -15,7 +15,7 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 		this._limitVertexCount = this._vertexCount;
 		this._indexCount = indexCount;
 
-		this._vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
+		this.vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
 				'ArrayBuffer');
 
 		var indices;
@@ -26,14 +26,14 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 		} else { // 2^32
 			indices = new Int32Array(this._indexCount);
 		}
-		this._indexData = new BufferData(indices, 'ElementArrayBuffer');
+		this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 
 		this.generateDataViews();
 	};
 
 	MeshData.prototype.generateDataViews = function() {
 		this._dataViews = {};
-		var data = this._vertexData.data;
+		var data = this.vertexData.data;
 		var view;
 		for ( var i in this._dataMap.descriptors) {
 			var d = this._dataMap.descriptors[i];
@@ -78,11 +78,11 @@ define([ 'renderer/BufferData' ], function(BufferData) {
 	};
 
 	MeshData.prototype.getIndexData = function() {
-		return this._indexData;
+		return this.indexData;
 	};
 
 	MeshData.prototype.getIndexBuffer = function() {
-		return this._indexData.data;
+		return this.indexData.data;
 	};
 
 	MeshData.prototype.getIndexLengths = function() {
