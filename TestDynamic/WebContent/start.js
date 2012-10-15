@@ -23,7 +23,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		// Create simple quad
 		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
-		meshData.getAttributeBuffer('POSITION').set([ -0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0, 0.5, -0.5, 0 ]);
+		meshData.getAttributeBuffer('POSITION').set([ -5, -5, 0, -5, 5, 0, 5, 5, 0, 5, -5, 0 ]);
 		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
 
 		// Create entity

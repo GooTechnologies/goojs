@@ -30,8 +30,8 @@ define(
 							GooRunner.renderer.camera.cam.projectionMatrix.elements);
 				};
 				defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
-					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false,
-							GooRunner.renderer.camera.cam.matrixWorld.elements);
+					uniformMapping['VIEW_MATRIX'].uniformMatrix4fv(false,
+							GooRunner.renderer.camera.cam.matrixWorldInverse.elements);
 				};
 				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);
