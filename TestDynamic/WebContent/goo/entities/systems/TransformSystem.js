@@ -1,4 +1,4 @@
-define([ 'entities/systems/System' ], function(System) {
+define([ 'goo/entities/systems/System' ], function(System) {
 	function TransformSystem() {
 		System.call(this, 'TransformSystem', [ 'TransformComponent' ]);
 	}

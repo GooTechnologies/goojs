@@ -1,4 +1,4 @@
-define([ 'renderer/Util' ], function(Util) {
+define([ 'goo/renderer/Util' ], function(Util) {
 	function DataMap() {
 
 	}

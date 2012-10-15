@@ -1,5 +1,5 @@
 define(
-		[ 'renderer/ShaderCall', 'renderer/Util' ],
+		[ 'goo/renderer/ShaderCall', 'goo/renderer/Util' ],
 		function(ShaderCall, Util) {
 			function Shader(name, vertexSource, fragmentSource) {
 				this.name = name;

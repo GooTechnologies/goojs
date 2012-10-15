@@ -1,4 +1,4 @@
-define([ 'math/Transform' ], function(Transform) {
+define([ 'goo/math/Transform' ], function(Transform) {
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 

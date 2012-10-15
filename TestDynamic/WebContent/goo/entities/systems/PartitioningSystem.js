@@ -1,4 +1,4 @@
-define([ 'entities/systems/System' ], function(System) {
+define([ 'goo/entities/systems/System' ], function(System) {
 	function PartitioningSystem(renderList) {
 		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
 

@@ -1,4 +1,4 @@
-define([ 'renderer/BufferData' ], function(BufferData) {
+define([ 'goo/renderer/BufferData' ], function(BufferData) {
 	function MeshData(dataMap, vertexCount, indexCount) {
 		this._primitiveCounts = [];
 		this._dataMap = dataMap;

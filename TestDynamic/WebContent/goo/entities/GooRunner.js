@@ -1,10 +1,10 @@
-define([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entities/systems/TransformSystem',
-		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
-		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent',
-		'entities/systems/PartitioningSystem', 'renderer/MeshData', 'renderer/Renderer', 'renderer/Material',
-		'renderer/Shader', 'renderer/DataMap' ], function(World, Entity, System, TransformSystem, RenderSystem,
-		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-		Shader, DataMap) {
+define([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System',
+		'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
+		'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
+		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem',
+		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
+		'goo/renderer/DataMap' ], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
+		MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, DataMap) {
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();

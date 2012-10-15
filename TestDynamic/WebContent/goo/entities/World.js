@@ -1,4 +1,4 @@
-define([ 'entities/Entity', 'entities/managers/EntityManager' ], function(Entity, EntityManager) {
+define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
 	function World() {
 		this._managers = {};
 		this._systems = {};

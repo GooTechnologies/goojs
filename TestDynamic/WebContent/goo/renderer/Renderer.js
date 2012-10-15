@@ -1,5 +1,5 @@
 define(
-		[ 'renderer/ShaderRecord', 'renderer/RendererRecord', 'renderer/Camera' ],
+		[ 'goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera' ],
 		function(ShaderRecord, RendererRecord, Camera) {
 			function Renderer(parameters) {
 				parameters = parameters || {};
