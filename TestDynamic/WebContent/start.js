@@ -8,38 +8,46 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		Renderer, Material, Shader, DataMap, GooRunner) {
 
 	function init() {
+		// Create typical goo application
 		var goo = new GooRunner();
 		document.body.appendChild(goo.renderer.domElement);
 
-		var triangleEntity = createTriangleEntity(goo.world);
-		triangleEntity.addToWorld();
+		// Add quad
+		var quadEntity = createQuadEntity(goo.world);
+		quadEntity.addToWorld();
 	}
 
-	function createTriangleEntity(world) {
+	function createQuadEntity(world) {
+		// Create simple quad
 		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
 		meshData.getAttributeBuffer('POSITION').set([ -0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0, 0.5, -0.5, 0 ]);
 		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
 
+		// Create entity
 		var entity = world.createEntity();
 
+		// Create transform component
 		var transformComponent = new TransformComponent();
 		entity.setComponent(transformComponent);
 
+		// Create meshdata component using above data
 		var meshDataComponent = new MeshDataComponent(meshData);
 		entity.setComponent(meshDataComponent);
 
+		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
 		var material = new Material('TestMaterial');
 		var vs = [ //
 		'attribute vec3 position; //!POSITION', //
+		'uniform mat4 worldMatrix; //!WORLD_MATRIX', //
 		'void main() {', //
-		'gl_Position = vec4(position,1.0);', //
+		'	gl_Position = vec4(position,1.0);', //
 		'}' //
 		].join('\n');
 		var fs = [ //
 		'void main() {', //
-		'gl_FragColor = vec4(1.0,0.0,0.0,1.0);', //
+		'	gl_FragColor = vec4(1.0,0.0,0.0,1.0);', //
 		'}' //
 		].join('\n');
 		material.shader = new Shader('TestShader', vs, fs);

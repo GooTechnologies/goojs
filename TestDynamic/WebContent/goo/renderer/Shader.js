@@ -25,16 +25,16 @@ define(
 			}
 
 			function setupDefaultCallbacks(defaultCallbacks) {
-				defaultCallbacks['PROJECTION_MATRIX'] = {
-					setUniforms : function(uniformMapping, shaderInfoRetriever) {
-						var shaderCall = uniformMapping['PROJECTION_MATRIX'];
-						shaderCall
-								.uniformMatrix4fv(false, camera.getProjectionMatrix().toFloatBuffer(store).getArray());
-					}
+				defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
+					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false, camera.getProjectionMatrix()
+							.toFloatBuffer(store).getArray());
+				};
+				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
+					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);
 				};
 			}
 
-			Shader.prototype.apply = function(shaderInfoRetriever, renderer) {
+			Shader.prototype.apply = function(shaderInfo, renderer) {
 				var glContext = renderer.context;
 				var record = renderer.shaderRecord;
 
@@ -50,19 +50,18 @@ define(
 				}
 
 				// Bind attributes
-				var descriptors = shaderInfoRetriever.meshData._dataMap.descriptors;
+				var descriptors = shaderInfo.meshData._dataMap.descriptors;
 				for (key in descriptors) {
 					var descriptor = descriptors[key];
-					var i = this.attributeMapping[descriptor.attributeName];
-					if (i != undefined) {
+					var attribute = this.attributeMapping[descriptor.attributeName];
+					if (attribute != undefined) {
 						renderer.bindVertexAttribute(i, descriptor.count, descriptor.type, descriptor.normalized,
 								descriptor.stride * Util.getByteSize(descriptor.type), descriptor.offset, record);
 					}
 				}
 
 				for (i in this.currentCallbacks) {
-					var shaderCallback = this.currentCallbacks[i];
-					shaderCallback.setUniforms(this.uniformCallMapping, shaderInfoRetriever);
+					this.currentCallbacks[i](this.uniformCallMapping, shaderInfo);
 				}
 
 				// record.valid = true;
@@ -79,7 +78,6 @@ define(
 			};
 
 			Shader.prototype.investigateShader = function(source) {
-				// TODO: do regexp
 				this.regExp.lastIndex = 0;
 				var matcher = this.regExp.exec(source);
 
@@ -103,7 +101,7 @@ define(
 					}
 
 					if (this.defaultCallbacks[bindingName] != undefined) {
-						currentCallbacks[bindingName] = this.defaultCallbacks[bindingName];
+						this.currentCallbacks[bindingName] = this.defaultCallbacks[bindingName];
 					}
 
 					matcher = this.regExp.exec(source);
@@ -122,14 +120,12 @@ define(
 
 				if (vertexShader == null || fragmentShader == null) {
 					console.error("Shader error - no shaders");
-					// throw new RuntimeException("shader error");
 				}
 
 				this.shaderProgram = glContext.createProgram();
 				var error = glContext.getError();
 				if (this.shaderProgram == null || error != glContext.NO_ERROR) {
 					console.error("Program error: " + error + "[shader: " + name + "]");
-					// throw new RuntimeException("program error");
 				}
 
 				console.log("Shader program created");
@@ -142,9 +138,6 @@ define(
 				glContext.linkProgram(this.shaderProgram);
 				if (!glContext.getProgramParameter(this.shaderProgram, glContext.LINK_STATUS)) {
 					console.error("Could not initialise shaders: " + glContext.getProgramInfoLog(shaderProgram));
-					// throw new RuntimeException("Could not initialise shaders:
-					// " +
-					// glContext.getProgramInfoLog(shaderProgram));
 				}
 				console.log("Shader program linked");
 
@@ -161,13 +154,9 @@ define(
 
 					var uniformRecord = record.uniformRecords.get(this.shaderProgram);
 					if (uniformRecord == null) {
-						uniformRecord = {
-							boundValues : new Hashtable()
-						};
+						uniformRecord = new Hashtable();
 						record.uniformRecords.put(this.shaderProgram, uniformRecord);
 					}
-					var uniformRecord = {};
-					uniformRecord.boundValues = new Hashtable();
 
 					shaderCall.currentRecord = uniformRecord;
 					shaderCall.location = uniform;
