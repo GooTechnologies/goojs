@@ -13,11 +13,13 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		document.body.appendChild(goo.renderer.domElement);
 
 		// Add quad
-		var quadEntity = createQuadEntity(goo.world);
+		var quadEntity = createQuadEntity(goo);
 		quadEntity.addToWorld();
 	}
 
-	function createQuadEntity(world) {
+	function createQuadEntity(goo) {
+		var world = goo.world;
+
 		// Create simple quad
 		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
@@ -38,23 +40,40 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
 		var material = new Material('TestMaterial');
-		var vs = [ //
-		'attribute vec3 position; //!POSITION', //
-		'uniform mat4 worldMatrix; //!WORLD_MATRIX', //
-		'void main() {', //
-		'	gl_Position = vec4(position,1.0);', //
-		'}' //
-		].join('\n');
-		var fs = [ //
-		'void main() {', //
-		'	gl_FragColor = vec4(1.0,0.0,0.0,1.0);', //
-		'}' //
-		].join('\n');
+
+		var vs = getShader('vshader');
+		var fs = getShader('fshader');
+
 		material.shader = new Shader('TestShader', vs, fs);
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 
+		// var t = 0;
+		// material.shader.bindCallback('dostuff', function(uniformMapping,
+		// shaderInfo) {
+		// uniformMapping['time'].uniform1f(t);
+		// t += world.tpf;
+		// });
+
 		return entity;
+	}
+
+	function getShader(id) {
+		var shaderScript = document.getElementById(id);
+		if (!shaderScript) {
+			return null;
+		}
+
+		var str = "";
+		var k = shaderScript.firstChild;
+		while (k) {
+			if (k.nodeType == 3) {
+				str += k.textContent;
+			}
+			k = k.nextSibling;
+		}
+
+		return str;
 	}
 
 	init();

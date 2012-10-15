@@ -8,8 +8,29 @@
 <script type="text/javascript" src="lib/three.min.js"></script>
 <script data-main="start"
 	src="http://requirejs.org/docs/release/1.0.8/comments/require.js"></script>
+
+<script id="vshader" type="x-shader/x-vertex">
+			attribute vec3 vertexPosition; //!POSITION
+			
+			uniform mat4 viewMatrix; //!VIEW_MATRIX
+			uniform mat4 projectionMatrix; //!PROJECTION_MATRIX
+			uniform mat4 worldMatrix; //!WORLD_MATRIX
+			
+			void main(void) {
+				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);
+			}
+</script>
+<script id="fshader" type="x-shader/x-fragment">
+			precision mediump float;
+			
+			void main(void)
+			{
+				gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+			}
+</script>
+
 </head>
 <body>
-<p>Test</p>
+	<p>Test</p>
 </body>
 </html>

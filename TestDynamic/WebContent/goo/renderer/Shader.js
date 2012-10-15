@@ -1,6 +1,6 @@
 define(
-		[ 'goo/renderer/ShaderCall', 'goo/renderer/Util' ],
-		function(ShaderCall, Util) {
+		[ 'goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner' ],
+		function(ShaderCall, Util, GooRunner) {
 			function Shader(name, vertexSource, fragmentSource) {
 				this.name = name;
 				this.vertexSource = vertexSource;
@@ -15,7 +15,7 @@ define(
 				this.uniformCallMapping = {};
 				this.uniformLocationMapping = {};
 
-				this.patternStr = '\\b(attribute|uniform)\\s+(vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\\s+(\\w+);(?:\\s*//\\s*!\\s*(\\w+))*';
+				this.patternStr = '\\b(attribute|uniform)\\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\\s+(\\w+);(?:\\s*//\\s*!\\s*(\\w+))*';
 				this.regExp = new RegExp(this.patternStr, 'g');
 				this.textureCount = 0;
 
@@ -26,8 +26,12 @@ define(
 
 			function setupDefaultCallbacks(defaultCallbacks) {
 				defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
-					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false, camera.getProjectionMatrix()
-							.toFloatBuffer(store).getArray());
+					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false,
+							GooRunner.renderer.camera.cam.projectionMatrix.elements);
+				};
+				defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
+					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false,
+							GooRunner.renderer.camera.cam.matrixWorld.elements);
 				};
 				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);
@@ -162,7 +166,6 @@ define(
 					shaderCall.location = uniform;
 					this.uniformCallMapping[key] = shaderCall;
 				}
-
 			};
 
 			Shader.prototype._getShader = function(glContext, type, source) {

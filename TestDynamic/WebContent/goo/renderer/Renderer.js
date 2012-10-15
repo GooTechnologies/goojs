@@ -68,9 +68,8 @@ define(
 						// updateBuffer(bufferData, this.rendererRecord,
 						// this.context);
 						if (bufferData._dataNeedsRefresh) {
-							this.setBoundBuffer(bufferData.getDataRef(context), bufferData.getTarget());
-							this.context.bufferSubData(this.getGLBufferTarget(bufferData.getTarget()), 0, bufferData
-									.getData());
+							this.setBoundBuffer(bufferData._dataRefs.get(this.context), bufferData.target);
+							this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
 							bufferData._dataNeedsRefresh = false;
 						}
 						// if (Constants.extraGLErrorChecks) {

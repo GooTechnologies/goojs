@@ -8,6 +8,7 @@ define([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();
+		GooRunner.renderer = this.renderer;
 
 		this.world.setSystem(new TransformSystem());
 
@@ -21,12 +22,18 @@ define([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// this.run();
 		window.requestAnimationFrame(run);
 
+		this.callbacks = [];
+
 		var that = this;
 		var start = Date.now();
 		function run(time) {
-			that.world.tpf = time - start;
+			that.world.tpf = (time - start) / 1000000.0;
 			that.world.process();
 			renderSystem.render(that.renderer);
+
+			for (i in that.callbacks) {
+				that.callbacks[i](that.world.tpf);
+			}
 
 			window.requestAnimationFrame(run);
 		}
