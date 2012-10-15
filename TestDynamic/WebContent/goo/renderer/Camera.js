@@ -4,11 +4,9 @@ define(function() {
 		tmpCam.position.set(10, 5, 10);
 		tmpCam.lookAt(new THREE.Vector3(0, 0, 0));
 
-		tmpCam.updateMatrix();
-		tmpCam.updateMatrixWorld();
-		tmpCam.matrixWorldInverse.getInverse(tmpCam.matrixWorld);
-
 		this.cam = tmpCam;
+
+		this.update();
 
 		// camera.updateMatrix(); // make sure camera's local matrix is updated
 		// camera.updateMatrixWorld(); // make sure camera's world matrix is
@@ -24,8 +22,12 @@ define(function() {
 		// camera.projectionMatrix, camera.matrixWorldInverse ) );
 		// alert( frustum.contains( plane ) );
 	}
-	
-	Camera.prototype.
+
+	Camera.prototype.update = function() {
+		this.cam.updateMatrix();
+		this.cam.updateMatrixWorld();
+		this.cam.matrixWorldInverse.getInverse(this.cam.matrixWorld);
+	};
 
 	return Camera;
 });
