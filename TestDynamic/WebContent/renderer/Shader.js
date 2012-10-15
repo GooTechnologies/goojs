@@ -185,16 +185,11 @@ define(
 				// check if the Shader is successfully compiled
 				if (!glContext.getShaderParameter(shader, glContext.COMPILE_STATUS)) {
 					console.error(glContext.getShaderInfoLog(shader));
-					// console.error( addLineNumbers( string ) );
 					return null;
 				}
 
 				return shader;
 			};
-
-			// Byte(1), UnsignedByte(1), Short(2), UnsignedShort(2), Int(4),
-			// UnsignedInt(4),
-			// HalfFloat(2), Float(4), Double(8);
 
 			return Shader;
 		});

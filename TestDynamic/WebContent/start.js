@@ -1,9 +1,3 @@
-//require.config({
-//	paths : {
-//		"three" : "three.min"
-//	}
-//});
-
 require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entities/systems/TransformSystem',
 		'entities/systems/RenderSystem', 'entities/components/TransformComponent',
 		'entities/components/MeshDataComponent', 'entities/components/MeshRendererComponent',
@@ -23,7 +17,7 @@ require([ 'entities/World', 'entities/Entity', 'entities/systems/System', 'entit
 	function createTriangleEntity(world) {
 		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
-		meshData.getAttributeBuffer('POSITION').set([ 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0 ]);
+		meshData.getAttributeBuffer('POSITION').set([ -0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0, 0.5, -0.5, 0 ]);
 		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
 
 		var entity = world.createEntity();
