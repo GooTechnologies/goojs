@@ -21,7 +21,7 @@ define([ 'goo/entities/systems/System' ], function(System) {
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
 		var shaderInfo = {
 			meshData : entity.MeshDataComponent.meshData,
-			transform : entity.TransformComponent.transform,
+			transform : entity.TransformComponent.worldTransform,
 			materials : entity.MeshRendererComponent.materials
 		};
 

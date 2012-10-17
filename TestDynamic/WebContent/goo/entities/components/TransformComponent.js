@@ -2,9 +2,14 @@ define([ 'goo/math/Transform' ], function(Transform) {
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
-		this.parent = undefined;
 		this.children = [];
 		this.transform = new Transform();
+		var that = this;
+		this.transform.watch(function() {
+			// console.log(arguments);
+			// console.log("transform change: " + arguments.toString());
+			that._dirty = true;
+		});
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
@@ -37,11 +42,15 @@ define([ 'goo/math/Transform' ], function(Transform) {
 		}
 	};
 
+	TransformComponent.prototype.updateTransform = function() {
+		this.transform.update();
+	};
+
 	TransformComponent.prototype.updateWorldTransform = function() {
-		if (parent != null) {
-			parent.worldTransform.multiply(this.transform, this.worldTransform);
+		if (this.parent !== undefined) {
+			this.parent.worldTransform.multiply(this.transform, this.worldTransform);
 		} else {
-			this.worldTransform.set(this.transform);
+			this.worldTransform.copy(this.transform);
 		}
 		_dirty = false;
 		_updates = true;

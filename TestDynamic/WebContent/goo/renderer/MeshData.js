@@ -1,4 +1,4 @@
-define([ 'goo/renderer/BufferData' ], function(BufferData) {
+define([ 'goo/renderer/BufferData', 'goo/renderer/Util' ], function(BufferData, Util) {
 	function MeshData(dataMap, vertexCount, indexCount) {
 		this._primitiveCounts = [];
 		this._dataMap = dataMap;
@@ -35,32 +35,36 @@ define([ 'goo/renderer/BufferData' ], function(BufferData) {
 		this._dataViews = {};
 		var data = this.vertexData.data;
 		var view;
+		var offset = 0;
 		for ( var i in this._dataMap.descriptors) {
 			var d = this._dataMap.descriptors[i];
+			d.offset = offset;
+			var length = this._vertexCount * d.count;
+			offset += length * Util.getByteSize(d.type);
 			switch (d.type) {
 				case 'Byte':
-					view = new Int8Array(data, d.offset);
+					view = new Int8Array(data, d.offset, length);
 					break;
 				case 'UnsignedByte':
-					view = new Uint8Array(data, d.offset);
+					view = new Uint8Array(data, d.offset, length);
 					break;
 				case 'Short':
-					view = new Int16Array(data, d.offset);
+					view = new Int16Array(data, d.offset, length);
 					break;
 				case 'UnsignedShort':
-					view = new Uint16Array(data, d.offset);
+					view = new Uint16Array(data, d.offset, length);
 					break;
 				case 'Int':
-					view = new Int32Array(data, d.offset);
+					view = new Int32Array(data, d.offset, length);
 					break;
 				case 'UnsignedInt':
-					view = new Uint32Array(data, d.offset);
+					view = new Uint32Array(data, d.offset, length);
 					break;
 				case 'Float':
-					view = new Float32Array(data, d.offset);
+					view = new Float32Array(data, d.offset, length);
 					break;
 				case 'Double':
-					view = new Float64Array(data, d.offset);
+					view = new Float64Array(data, d.offset, length);
 					break;
 				case 'HalfFloat':
 					// XXX: Support?

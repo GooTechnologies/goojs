@@ -21,9 +21,12 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		var world = goo.world;
 
 		// Create simple quad
-		var dataMap = DataMap.defaultMap([ 'POSITION' ]);
+		var dataMap = DataMap.defaultMap([ 'POSITION', 'COLOR', 'TEXCOORD0' ]);
 		var meshData = new MeshData(dataMap, 4, 6);
 		meshData.getAttributeBuffer('POSITION').set([ -5, -5, 0, -5, 5, 0, 5, 5, 0, 5, -5, 0 ]);
+		meshData.getAttributeBuffer('COLOR').set(
+				[ 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, ]);
+		meshData.getAttributeBuffer('TEXCOORD0').set([ 0, 0, 0, 1, 1, 1, 1, 0 ]);
 		meshData.getIndexBuffer().set([ 0, 1, 3, 1, 2, 3 ]);
 
 		// Create entity
@@ -54,6 +57,14 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		// uniformMapping['time'].uniform1f(t);
 		// t += world.tpf;
 		// });
+
+		var t = 0;
+		goo.callbacks.push(function(tpf) {
+			transformComponent.transform.translation.x = Math.sin(t * 2) * 5;
+			transformComponent.transform.rotation.x = Math.sin(t) * 2;
+			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+			t += tpf;
+		});
 
 		return entity;
 	}

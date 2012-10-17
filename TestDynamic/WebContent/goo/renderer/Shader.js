@@ -62,10 +62,11 @@ define(
 				var descriptors = shaderInfo.meshData._dataMap.descriptors;
 				for (key in descriptors) {
 					var descriptor = descriptors[key];
-					var attribute = this.attributeMapping[descriptor.attributeName];
+					var attribute = this.attributeIndexMapping[descriptor.attributeName];
 					if (attribute != undefined) {
-						renderer.bindVertexAttribute(i, descriptor.count, descriptor.type, descriptor.normalized,
-								descriptor.stride * Util.getByteSize(descriptor.type), descriptor.offset, record);
+						renderer.bindVertexAttribute(attribute, descriptor.count, descriptor.type,
+								descriptor.normalized, descriptor.stride * Util.getByteSize(descriptor.type),
+								descriptor.offset, record);
 					}
 				}
 

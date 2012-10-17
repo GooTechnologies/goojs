@@ -1,8 +1,8 @@
 define([ 'goo/entities/systems/System' ], function(System) {
-	function PartitioningSystem(renderList) {
+	function PartitioningSystem() {
 		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
 
-		this.renderList = renderList;
+		this.renderList = [];
 	}
 
 	PartitioningSystem.prototype = Object.create(System.prototype);

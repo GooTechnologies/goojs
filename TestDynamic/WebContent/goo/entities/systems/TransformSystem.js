@@ -6,7 +6,27 @@ define([ 'goo/entities/systems/System' ], function(System) {
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function(entities) {
+		for (i in entities) {
+			var transformComponent = entities[i].TransformComponent;
+			transformComponent._updated = false;
+			if (transformComponent._dirty) {
+				transformComponent.updateTransform();
+			}
+		}
+		for (i in entities) {
+			var transformComponent = entities[i].TransformComponent;
+			if (transformComponent._dirty) {
+				this.updateWorldTransform(transformComponent);
+			}
+		}
+	};
 
+	TransformSystem.prototype.updateWorldTransform = function(transformComponent) {
+		transformComponent.updateWorldTransform();
+
+		for (i in transformComponent.children) {
+			this.updateWorldTransform(transformComponent.children[i]);
+		}
 	};
 
 	return TransformSystem;

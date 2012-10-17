@@ -11,21 +11,31 @@
 
 <script id="vshader" type="x-shader/x-vertex">
 			attribute vec3 vertexPosition; //!POSITION
+			attribute vec4 colors; //!COLOR
+			attribute vec2 texCoord0; //!TEXCOORD0
 			
 			uniform mat4 viewMatrix; //!VIEW_MATRIX
 			uniform mat4 projectionMatrix; //!PROJECTION_MATRIX
 			uniform mat4 worldMatrix; //!WORLD_MATRIX
+
+			varying vec4 color;
+			varying vec2 tex;
 			
 			void main(void) {
+				color = colors;
+				tex = texCoord0;
 				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);
 			}
 </script>
 <script id="fshader" type="x-shader/x-fragment">
 			precision mediump float;
 			
+			varying vec4 color;
+			varying vec2 tex;
+
 			void main(void)
 			{
-				gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+				gl_FragColor = color * vec4(tex,1.0,1.0);
 			}
 </script>
 

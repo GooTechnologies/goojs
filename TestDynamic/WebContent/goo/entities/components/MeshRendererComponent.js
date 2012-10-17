@@ -3,7 +3,7 @@ define(function() {
 		this.type = 'MeshRendererComponent';
 
 		this.materials = [];
-		this.worldBound = {};
+		this.worldBound = null;
 	}
 
 	MeshRendererComponent.prototype.updateBounds = function(bounding, transform) {

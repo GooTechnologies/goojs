@@ -8,24 +8,14 @@ define([ 'goo/renderer/Util' ], function(Util) {
 		var descriptors = {};
 		return {
 			add : function(descriptor) {
-				descriptor.offset = 0;
-				descriptor.stride = 0;
-				descriptor.normalized = true;
+				descriptor.offset = descriptor.offset | 0;
+				descriptor.stride = descriptor.stride | 0;
+				descriptor.normalized = descriptor.normalized | true;
 				descriptors[descriptor.attributeName] = descriptor;
 				vertexByteSize += Util.getByteSize(descriptor.type) * descriptor.count;
 				return this;
 			},
 			build : function() {
-				var offset = 0;
-				for (i in this._map) {
-					var d = this._map[i];
-
-					d.offset = offset;
-					// d.stride = vertexByteSize /
-					// d.getType().getBytesPerEntry();
-
-					offset += Util.getByteSize(d.type) * d.count;
-				}
 				return {
 					vertexByteSize : vertexByteSize,
 					descriptors : descriptors
