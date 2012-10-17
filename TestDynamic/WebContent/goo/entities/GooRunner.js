@@ -74,7 +74,6 @@ define(
 					};
 				}
 			}
-			;
 
 			return GooRunner;
 		});

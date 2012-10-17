@@ -5,7 +5,10 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
+				_canvas.width = 500;
+				_canvas.height = 500;
 				this.domElement = _canvas;
+				this.domElement.id = 'goo';
 
 				this.lineRecord = null;// new LineRecord();
 				this.shaderRecord = new ShaderRecord();

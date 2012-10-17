@@ -1,6 +1,6 @@
 define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
 	function World() {
-		initObserverWatch1();
+		initObserverWatch();
 
 		this._managers = {};
 		this._systems = {};
@@ -83,7 +83,11 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 		entities.length = 0;
 	};
 
-	function initObserverWatch1() {
+	function initObserverWatch() {
+		String.prototype.endsWith = function(suffix) {
+			return this.indexOf(suffix, this.length - suffix.length) !== -1;
+		};
+
 		var $watchjs$ = {
 			isFunction : function(functionToCheck) {
 				var getType = {};
@@ -323,46 +327,6 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 			});
 
 		});
-	}
-
-	function initObserverWatch2() {
-		if (!Object.prototype.watch) {
-			Object.defineProperty(Object.prototype, "watch", {
-				enumerable : false,
-				configurable : true,
-				writable : false,
-				value : function(prop, handler) {
-					var oldval = this[prop], newval = oldval, getter = function() {
-						return newval;
-					}, setter = function(val) {
-						oldval = newval;
-						return newval = handler.call(this, prop, oldval, val);
-					};
-
-					if (delete this[prop]) { // can't watch constants
-						Object.defineProperty(this, prop, {
-							get : getter,
-							set : setter,
-							enumerable : true,
-							configurable : true
-						});
-					}
-				}
-			});
-		}
-
-		if (!Object.prototype.unwatch) {
-			Object.defineProperty(Object.prototype, "unwatch", {
-				enumerable : false,
-				configurable : true,
-				writable : false,
-				value : function(prop) {
-					var val = this[prop];
-					delete this[prop]; // remove accessors
-					this[prop] = val;
-				}
-			});
-		}
 	}
 
 	return World;
