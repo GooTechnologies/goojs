@@ -13,20 +13,22 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util' ], function(BufferData, 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
 		this._vertexCount = vertexCount;
 		this._limitVertexCount = this._vertexCount;
-		this._indexCount = indexCount;
+		this._indexCount = indexCount || 0;
 
 		this.vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
 				'ArrayBuffer');
 
-		var indices;
-		if (this._vertexCount < 256) { // 2^8
-			indices = new Int8Array(this._indexCount);
-		} else if (this._vertexCount < 65536) { // 2^16
-			indices = new Int16Array(this._indexCount);
-		} else { // 2^32
-			indices = new Int32Array(this._indexCount);
+		if (this._indexCount > 0) {
+			var indices;
+			if (this._vertexCount < 256) { // 2^8
+				indices = new Int8Array(this._indexCount);
+			} else if (this._vertexCount < 65536) { // 2^16
+				indices = new Int16Array(this._indexCount);
+			} else { // 2^32
+				indices = new Int32Array(this._indexCount);
+			}
+			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		}
-		this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 
 		this.generateDataViews();
 	};
@@ -96,6 +98,15 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util' ], function(BufferData, 
 	MeshData.prototype.getIndexModes = function() {
 		return this._indexModes;
 	};
+
+	MeshData.POSITION = 'POSITION';
+	MeshData.NORMAL = 'NORMAL';
+	MeshData.COLOR = 'COLOR';
+	MeshData.TEXCOORD0 = 'TEXCOORD0';
+	MeshData.TEXCOORD1 = 'TEXCOORD1';
+
+	MeshData.WEIGHTS = 'WEIGHTS';
+	MeshData.JOINTIDS = 'JOINTIDS';
 
 	return MeshData;
 });

@@ -1,4 +1,4 @@
-define([ 'goo/renderer/Util' ], function(Util) {
+define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData) {
 	function DataMap() {
 
 	}
@@ -25,10 +25,10 @@ define([ 'goo/renderer/Util' ], function(Util) {
 	};
 
 	var defaults = {};
-	createDefault('POSITION', 3, 'Float');
-	createDefault('NORMAL', 3, 'Float');
-	createDefault('COLOR', 4, 'Float');
-	createDefault('TEXCOORD0', 2, 'Float');
+	createDefault(MeshData.POSITION, 3, 'Float');
+	createDefault(MeshData.NORMAL, 3, 'Float');
+	createDefault(MeshData.COLOR, 4, 'Float');
+	createDefault(MeshData.TEXCOORD0, 2, 'Float');
 
 	function createDefault(attributeName, count, type) {
 		defaults[attributeName] = {
@@ -36,7 +36,16 @@ define([ 'goo/renderer/Util' ], function(Util) {
 			count : count,
 			type : type
 		};
+		// DataMap.createDescriptor(attributeName, count, type);
 	}
+
+	DataMap.createDescriptor = function(attributeName, count, type) {
+		return {
+			attributeName : attributeName,
+			count : count,
+			type : type
+		};
+	};
 
 	function buildMap(types) {
 		var builder = DataMap.builder();

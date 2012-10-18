@@ -10,6 +10,10 @@ define(function() {
 		this.eulerOrder = 'XYZ';
 	}
 
+	Transform.prototype.multiply = function(other) {
+		this.matrix.multiplySelf(other.matrix);
+	};
+
 	Transform.prototype.update = function() {
 		this.matrix.setPosition(this.translation);
 

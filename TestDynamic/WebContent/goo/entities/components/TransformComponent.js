@@ -48,7 +48,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 	TransformComponent.prototype.updateWorldTransform = function() {
 		if (this.parent !== undefined) {
-			this.parent.worldTransform.multiply(this.transform, this.worldTransform);
+			this.parent.worldTransform.multiply(this.transform);
 		} else {
 			this.worldTransform.copy(this.transform);
 		}
