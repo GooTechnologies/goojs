@@ -13,12 +13,12 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		var goo = new GooRunner();
 		document.body.appendChild(goo.renderer.domElement);
 
-		var importer = new JSONImporter(goo.world);
-		var entities = importer.import('resources/head.model');
-		console.log(entities);
-		for (i in entities) {
-			entities[i].addToWorld();
-		}
+		// var importer = new JSONImporter(goo.world);
+		// var entities = importer.import('resources/head.model');
+		// console.log(entities);
+		// for (i in entities) {
+		// entities[i].addToWorld();
+		// }
 
 		// Add quad
 		var quadEntity = createQuadEntity(goo);
