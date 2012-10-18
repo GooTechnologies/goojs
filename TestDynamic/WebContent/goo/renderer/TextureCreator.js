@@ -4,7 +4,6 @@ define([ 'goo/renderer/Loader', 'goo/renderer/Texture' ], function(Loader, Textu
 
 		this.verticalFlip = settings.verticalFlip || true;
 		this.storeFormat = settings.storeFormat || 'RGBA'; // Alpha, RGB, RGBA,
-
 		// Luminance,
 		// LuminanceAlpha;
 		this.minFilter = settings.verticalFlip || 'Trilinear';

@@ -46,7 +46,6 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 
 			for (i = 0; i < material.shader.textureCount; i++) {
 				var texture = material.textures[i];
-				// console.log(material);
 				if (texture === undefined || texture.image.dataReady === undefined) {
 					return;
 					texture = TextureCreator.DEFAULT_TEXTURE;
@@ -54,31 +53,34 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 
 				if (texture.glTexture == null) {
 					texture.glTexture = renderer.context.createTexture();
-
-					var unit = 0;
-					context.activeTexture(context.TEXTURE0 + unit);
-					context.bindTexture(context.TEXTURE_2D, texture.glTexture);
-					// context.bindTexture(GwtGLTextureStateUtil.getGLType(texture.getType()),
-					// texRef);
-
-					// set alignment to support images with width % 4 != 0, as
-					// images are not aligned
-					context.pixelStorei(context.UNPACK_ALIGNMENT, 1);
-
-					// set if we want to flip on Y
-					context.pixelStorei(context.UNPACK_FLIP_Y_WEBGL, texture.flipY ? 1 : 0);
-
-					console.log(texture);
-					context.texImage2D(context.TEXTURE_2D, 0, getGLInternalFormat(texture.format, context),
-							getGLInternalFormat(texture.format, context), getGLPixelDataType(texture.type, context),
-							texture.image);
-
-					if (texture.generateMipmaps) {
-						context.generateMipmap(context.TEXTURE_2D);
-					}
-
+					updateTexture(context, texture, i);
 				} else if (texture.needsUpdate) {
 					texture.needsUpdate = false;
+					updateTexture(context, texture, i);
+				} else {
+					bindTexture(context, texture, i);
+				}
+
+				// TODO: bind?
+				context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MAG_FILTER, getGLMagFilter(
+						texture.magFilter, context));
+				context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MIN_FILTER, getGLMinFilter(
+						texture.minFilter, context));
+
+				// TODO: bind?
+				// GwtGLTextureStateUtil.applyWrap(gl, texture, texRecord, i,
+				// record, caps);
+				if (texture.variant === '2D') {
+					// GwtGLTextureStateUtil.applyWrap(gl, (Texture2D) texture,
+					// texRecord, unit, record, caps);
+					var wrapS = getGLWrap(texture.wrapS, context);
+					var wrapT = getGLWrap(texture.wrapT, context);
+					context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, wrapS);
+					context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, wrapT);
+				} else if (texture.variant === 'CUBE') {
+					// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
+					// texture, texRecord,
+					// unit, record, caps);
 				}
 			}
 
@@ -102,8 +104,52 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 		}
 	};
 
+	function bindTexture(context, texture, unit) {
+		context.activeTexture(context.TEXTURE0 + unit);
+		context.bindTexture(context.TEXTURE_2D, texture.glTexture);
+	}
+
+	function getGLType(type, context) {
+		switch (type) {
+			case '2D':
+				return context.TEXTURE_2D;
+			case 'CUBE':
+				return context.TEXTURE_CUBE_MAP;
+		}
+		throw "invalid texture type: " + type;
+	}
+
+	function updateTexture(context, texture, unit) {
+		bindTexture(context, texture, unit);
+
+		// set alignment to support images with width % 4 != 0, as
+		// images are not aligned
+		context.pixelStorei(context.UNPACK_ALIGNMENT, 1);
+
+		// set if we want to flip on Y
+		context.pixelStorei(context.UNPACK_FLIP_Y_WEBGL, texture.flipY ? 1 : 0);
+
+		context.texImage2D(context.TEXTURE_2D, 0, getGLInternalFormat(texture.format, context), getGLInternalFormat(
+				texture.format, context), getGLPixelDataType(texture.type, context), texture.image);
+
+		if (texture.generateMipmaps) {
+			context.generateMipmap(context.TEXTURE_2D);
+		}
+	}
+
+	function getGLWrap(wrap, context) {
+		switch (wrap) {
+			case 'Repeat':
+				return context.REPEAT;
+			case 'MirroredRepeat':
+				return context.MIRRORED_REPEAT;
+			case 'EdgeClamp':
+				return context.CLAMP_TO_EDGE;
+		}
+		throw "invalid WrapMode type: " + wrap;
+	}
+
 	function getGLInternalFormat(format, context) {
-		console.log(format);
 		switch (format) {
 			case 'RGBA':
 				return context.RGBA;
@@ -135,6 +181,35 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 			default:
 				throw "Unsupported type: " + type;
 		}
+	}
+
+	function getGLMagFilter(magFilter, context) {
+		switch (magFilter) {
+			case 'Bilinear':
+				return context.LINEAR;
+			case 'NearestNeighbor':
+			default:
+				return context.NEAREST;
+
+		}
+	}
+
+	function getGLMinFilter(filter, context) {
+		switch (filter) {
+			case 'BilinearNoMipMaps':
+				return context.LINEAR;
+			case 'Trilinear':
+				return context.LINEAR_MIPMAP_LINEAR;
+			case 'BilinearNearestMipMap':
+				return context.LINEAR_MIPMAP_NEAREST;
+			case 'NearestNeighborNoMipMaps':
+				return context.NEAREST;
+			case 'NearestNeighborNearestMipMap':
+				return context.NEAREST_MIPMAP_NEAREST;
+			case 'NearestNeighborLinearMipMap':
+				return context.NEAREST_MIPMAP_LINEAR;
+		}
+		throw "invalid MinificationFilter type: " + filter;
 	}
 
 	return RenderSystem;
