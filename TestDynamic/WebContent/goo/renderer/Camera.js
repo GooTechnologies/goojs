@@ -1,7 +1,7 @@
 define(function() {
 	function Camera(fov, aspect, near, far) {
 		var tmpCam = new THREE.PerspectiveCamera(45, 1, 1, 1000);
-		tmpCam.position.set(30, 15, 30);
+		tmpCam.position.set(300, 15, 300);
 		tmpCam.lookAt(new THREE.Vector3(0, 0, 0));
 
 		this.cam = tmpCam;

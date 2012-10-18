@@ -1,4 +1,5 @@
-define([ 'goo/renderer/BufferData', 'goo/renderer/Util' ], function(BufferData, Util) {
+define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils' ], function(BufferData, Util,
+		BufferUtils) {
 	function MeshData(dataMap, vertexCount, indexCount) {
 		this._primitiveCounts = [];
 		this._dataMap = dataMap;
@@ -19,14 +20,7 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util' ], function(BufferData, 
 				'ArrayBuffer');
 
 		if (this._indexCount > 0) {
-			var indices;
-			if (this._vertexCount < 256) { // 2^8
-				indices = new Int8Array(this._indexCount);
-			} else if (this._vertexCount < 65536) { // 2^16
-				indices = new Int16Array(this._indexCount);
-			} else { // 2^32
-				indices = new Int32Array(this._indexCount);
-			}
+			var indices = BufferUtils.createIntBuffer(this._indexCount, this._vertexCount);
 			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		}
 

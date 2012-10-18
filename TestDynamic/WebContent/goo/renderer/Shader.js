@@ -123,10 +123,7 @@ define(
 				var record = renderer.shaderRecord;
 
 				var vertexShader = this._getShader(glContext, glContext.VERTEX_SHADER, this.vertexSource);
-				console.log("Created vertex shader");
-
 				var fragmentShader = this._getShader(glContext, glContext.FRAGMENT_SHADER, this.fragmentSource);
-				console.log("Created fragment shader");
 
 				if (vertexShader == null || fragmentShader == null) {
 					console.error("Shader error - no shaders");
@@ -138,18 +135,14 @@ define(
 					console.error("Program error: " + error + "[shader: " + name + "]");
 				}
 
-				console.log("Shader program created");
 				glContext.attachShader(this.shaderProgram, vertexShader);
-				console.log("vertex shader attached to shader program");
 				glContext.attachShader(this.shaderProgram, fragmentShader);
-				console.log("fragment shader attached to shader program");
 
 				// Link the Shader Program
 				glContext.linkProgram(this.shaderProgram);
 				if (!glContext.getProgramParameter(this.shaderProgram, glContext.LINK_STATUS)) {
 					console.error("Could not initialise shaders: " + glContext.getProgramInfoLog(shaderProgram));
 				}
-				console.log("Shader program linked");
 
 				for (key in this.attributeMapping) {
 					var attributeIndex = glContext.getAttribLocation(this.shaderProgram, this.attributeMapping[key]);
@@ -172,6 +165,8 @@ define(
 					shaderCall.location = uniform;
 					this.uniformCallMapping[key] = shaderCall;
 				}
+
+				console.log("Shader [" + this.name + "] compiled");
 			};
 
 			Shader.prototype._getShader = function(glContext, type, source) {

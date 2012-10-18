@@ -5,8 +5,10 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
-				_canvas.width = 500;
-				_canvas.height = 500;
+				_canvas.width = 300;
+				_canvas.height = 200;
+				_canvas.style.width = '300px';
+				_canvas.style.height = '200px';
 				this.domElement = _canvas;
 				this.domElement.id = 'goo';
 

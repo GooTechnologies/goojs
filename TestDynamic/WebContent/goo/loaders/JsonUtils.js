@@ -1,11 +1,11 @@
-define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData) {
+define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils' ], function(Util, MeshData,
+		BufferUtils) {
 	function JsonUtils() {
 
 	}
 
 	JsonUtils.fillAttributeBufferFromCompressedString = function(attribs, meshData, attributeKey, scales, offsets) {
 		var buffer = meshData.getAttributeBuffer(attributeKey);
-		console.log(attributeKey + ' - ' + buffer);
 		var stride = scales.length;
 		var tuples = attribs.length / scales.length;
 		var prev, word, outIndex, i, j;
@@ -19,6 +19,23 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData
 				buffer.set([ val ], outIndex);
 			}
 		}
+	};
+
+	JsonUtils.getIntBuffer = function(indices, vertexCount) {
+		var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
+		indexBuffer.set(indices);
+		return indexBuffer;
+	};
+
+	JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
+		var prev = 0;
+		var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
+		for ( var i = 0; i < indices.length; ++i) {
+			var word = indices.charAt(i);
+			prev += JsonUtils.unzip(word);
+			indexBuffer.set([ prev ], i);
+		}
+		return indexBuffer;
 	};
 
 	JsonUtils.unzip = function(word) {
