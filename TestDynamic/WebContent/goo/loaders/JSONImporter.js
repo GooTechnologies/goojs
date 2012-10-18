@@ -46,7 +46,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 		// parse scene
 		this.parseSpatial(root.Scene);
 
-		return this.loadedEntities.slice(0);
+		return this.loadedEntities;
 	};
 
 	JSONImporter.prototype.parseSpatial = function(object) {
@@ -64,7 +64,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					var child = object.Children[i];
 					var childEntity = this.parseSpatial(child);
 					if (childEntity != null) {
-						entity.TransformComponent.attachChild(childEntity.TransformComponent);
+						// entity.TransformComponent.attachChild(childEntity.TransformComponent);
 					}
 				}
 			}
@@ -112,7 +112,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 		if (vertexCount == 0) {
 			return null;
 		}
-		var indexCount = object.IndexLengths[0];
+		var indexCount = object.IndexLengths ? object.IndexLengths[0] : 0;
 
 		var builder = DataMap.builder();
 		if (object.Vertices) {
@@ -254,8 +254,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 		if (object.IndexModes) {
 			var modes = object.IndexModes;
-			var length = modes.length;
-			if (length == 1) {
+			if (modes.length == 1) {
 				meshData._indexModes[0] = modes[0];
 			} else {
 				var modeArray = [];
@@ -268,9 +267,8 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 		if (object.IndexLengths) {
 			var lengths = object.IndexLengths;
-			var length = lengths.length;
 			var lengthArray = [];
-			for ( var i = 0; i < length; i++) {
+			for ( var i = 0; i < lengths.length; i++) {
 				lengthArray[i] = lengths[i];
 			}
 			meshData._indexLengths = lengthArray;

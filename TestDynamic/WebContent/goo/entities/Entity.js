@@ -27,7 +27,9 @@ define(function() {
 		}
 		this[component.type] = component;
 
-		this._world.changedEntity(this);
+		if (this._world._entityManager.contains(this)) {
+			this._world.changedEntity(this);
+		}
 	};
 
 	Entity.prototype.getComponent = function(type) {
@@ -42,7 +44,9 @@ define(function() {
 		}
 		delete this[type];
 
-		this._world.changedEntity(this);
+		if (this._world._entityManager.contains(this)) {
+			this._world.changedEntity(this);
+		}
 	};
 
 	Entity.prototype.toString = function() {

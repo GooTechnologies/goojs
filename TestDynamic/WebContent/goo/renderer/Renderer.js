@@ -1,6 +1,6 @@
 define(
-		[ 'goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera' ],
-		function(ShaderRecord, RendererRecord, Camera) {
+		[ 'goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util' ],
+		function(ShaderRecord, RendererRecord, Camera, Util) {
 			function Renderer(parameters) {
 				parameters = parameters || {};
 
@@ -9,6 +9,12 @@ define(
 				_canvas.height = 200;
 				_canvas.style.width = '300px';
 				_canvas.style.height = '200px';
+
+				// _canvas.style.position = 'absolute';
+				// _canvas.style.left = '0px';
+				// _canvas.style.top = '10%';
+				// _canvas.style.width = '300px';
+				// _canvas.style.height = '50%';
 				this.domElement = _canvas;
 				this.domElement.id = 'goo';
 
@@ -103,10 +109,13 @@ define(
 			};
 
 			Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
+				// console.log(arguments);
+
 				var offset = 0;
 				var indexModeCounter = 0;
 				// if (Constants.extraGLErrorChecks) {
 				// checkCardError();
+				Util.checkGLError(this.context);
 				// }
 				for ( var i = 0; i < indexLengths.length; i++) {
 					var count = indexLengths[i];
@@ -130,6 +139,7 @@ define(
 				}
 				// if (Constants.extraGLErrorChecks) {
 				// checkCardError();
+				Util.checkGLError(this.context);
 				// }
 			};
 

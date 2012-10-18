@@ -36,10 +36,12 @@ define(
 				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);
 				};
-				for (i = 0; i < 16; i++) {
-					defaultCallbacks['TEXTURE' + i] = function(uniformMapping, shaderInfo) {
-						uniformMapping['TEXTURE' + i].uniform1i(i);
-					};
+				for ( var i = 0; i < 16; i++) {
+					defaultCallbacks['TEXTURE' + i] = (function(i) {
+						return function(uniformMapping, shaderInfo) {
+							uniformMapping['TEXTURE' + i].uniform1i(i);
+						};
+					})(i);
 				}
 			}
 
@@ -132,7 +134,7 @@ define(
 				this.shaderProgram = glContext.createProgram();
 				var error = glContext.getError();
 				if (this.shaderProgram == null || error != glContext.NO_ERROR) {
-					console.error("Program error: " + error + "[shader: " + name + "]");
+					console.error("Shader error: " + error + " [shader: " + this.name + "]");
 				}
 
 				glContext.attachShader(this.shaderProgram, vertexShader);

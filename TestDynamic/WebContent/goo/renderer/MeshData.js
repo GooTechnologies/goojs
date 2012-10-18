@@ -13,7 +13,7 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
 		this._vertexCount = vertexCount;
-		this._limitVertexCount = this._vertexCount;
+		this._vertexCountStore = this._vertexCount;
 		this._indexCount = indexCount || 0;
 
 		this.vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
@@ -93,12 +93,16 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 		return this._indexModes;
 	};
 
+	MeshData.prototype.resetVertexCount = function() {
+		this._vertexCount = this._vertexCountStore;
+	};
+
 	MeshData.POSITION = 'POSITION';
 	MeshData.NORMAL = 'NORMAL';
 	MeshData.COLOR = 'COLOR';
+	MeshData.TANGENT = 'TANGENT';
 	MeshData.TEXCOORD0 = 'TEXCOORD0';
 	MeshData.TEXCOORD1 = 'TEXCOORD1';
-
 	MeshData.WEIGHTS = 'WEIGHTS';
 	MeshData.JOINTIDS = 'JOINTIDS';
 

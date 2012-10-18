@@ -19,6 +19,9 @@ define(function() {
 		var index = this._activeEntities.indexOf(entity);
 		if (index != -1) {
 			this._activeEntities.splice(index, 1);
+			if (this.deleted) {
+				this.deleted(entity);
+			}
 		}
 	};
 

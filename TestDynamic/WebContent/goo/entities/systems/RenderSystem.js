@@ -44,45 +44,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 			shaderInfo.material = material;
 			material.shader.apply(shaderInfo, renderer);
 
-			for (i = 0; i < material.shader.textureCount; i++) {
-				var texture = material.textures[i];
-				if (texture === undefined || texture.image.dataReady === undefined) {
-					return;
-					texture = TextureCreator.DEFAULT_TEXTURE;
-				}
-
-				if (texture.glTexture == null) {
-					texture.glTexture = renderer.context.createTexture();
-					updateTexture(context, texture, i);
-				} else if (texture.needsUpdate) {
-					texture.needsUpdate = false;
-					updateTexture(context, texture, i);
-				} else {
-					bindTexture(context, texture, i);
-				}
-
-				// TODO: bind?
-				context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MAG_FILTER, getGLMagFilter(
-						texture.magFilter, context));
-				context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MIN_FILTER, getGLMinFilter(
-						texture.minFilter, context));
-
-				// TODO: bind?
-				// GwtGLTextureStateUtil.applyWrap(gl, texture, texRecord, i,
-				// record, caps);
-				if (texture.variant === '2D') {
-					// GwtGLTextureStateUtil.applyWrap(gl, (Texture2D) texture,
-					// texRecord, unit, record, caps);
-					var wrapS = getGLWrap(texture.wrapS, context);
-					var wrapT = getGLWrap(texture.wrapT, context);
-					context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, wrapS);
-					context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, wrapT);
-				} else if (texture.variant === 'CUBE') {
-					// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
-					// texture, texRecord,
-					// unit, record, caps);
-				}
-			}
+			updateTextures(material, renderer);
 
 			var meshData = shaderInfo.meshData;
 			if (meshData.getIndexBuffer() != null) {
@@ -103,6 +65,49 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 			}
 		}
 	};
+
+	function updateTextures(material, renderer) {
+		var context = renderer.context;
+		for (i = 0; i < material.shader.textureCount; i++) {
+			var texture = material.textures[i];
+			if (texture === undefined || texture.image.dataReady === undefined) {
+				return;
+				texture = TextureCreator.DEFAULT_TEXTURE;
+			}
+
+			if (texture.glTexture == null) {
+				texture.glTexture = renderer.context.createTexture();
+				updateTexture(context, texture, i);
+			} else if (texture.needsUpdate) {
+				texture.needsUpdate = false;
+				updateTexture(context, texture, i);
+			} else {
+				bindTexture(context, texture, i);
+			}
+
+			// TODO: bind?
+			context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MAG_FILTER, getGLMagFilter(
+					texture.magFilter, context));
+			context.texParameteri(getGLType(texture.variant, context), context.TEXTURE_MIN_FILTER, getGLMinFilter(
+					texture.minFilter, context));
+
+			// TODO: bind?
+			// GwtGLTextureStateUtil.applyWrap(gl, texture, texRecord, i,
+			// record, caps);
+			if (texture.variant === '2D') {
+				// GwtGLTextureStateUtil.applyWrap(gl, (Texture2D) texture,
+				// texRecord, unit, record, caps);
+				var wrapS = getGLWrap(texture.wrapS, context);
+				var wrapT = getGLWrap(texture.wrapT, context);
+				context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, wrapS);
+				context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, wrapT);
+			} else if (texture.variant === 'CUBE') {
+				// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
+				// texture, texRecord,
+				// unit, record, caps);
+			}
+		}
+	}
 
 	function bindTexture(context, texture, unit) {
 		context.activeTexture(context.TEXTURE0 + unit);

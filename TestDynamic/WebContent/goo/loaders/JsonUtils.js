@@ -16,7 +16,7 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 				outIndex = i * stride + j;
 				prev += JsonUtils.unzip(word);
 				var val = (prev + offsets[j]) * scales[j];
-				buffer.set([ val ], outIndex);
+				buffer[outIndex] = val;
 			}
 		}
 	};
@@ -30,10 +30,10 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 	JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
-		for ( var i = 0; i < indices.length; ++i) {
+		for ( var i = 0; i < indices.length; ++i) { // ++i?
 			var word = indices.charAt(i);
 			prev += JsonUtils.unzip(word);
-			indexBuffer.set([ prev ], i);
+			indexBuffer[i] = prev;
 		}
 		return indexBuffer;
 	};
