@@ -33,7 +33,7 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 		var that = this;
 		var start = Date.now();
 		function run(time) {
-			that.world.tpf = (time - start) / 1000.0;
+			that.world.tpf = 0;// (time - start) / 1000.0;
 			start = time;
 
 			that.world.process();

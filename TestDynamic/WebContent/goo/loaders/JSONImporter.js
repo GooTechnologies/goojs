@@ -348,10 +348,13 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 			JSONImporter.prototype.parseMaterial = function(object, entity) {
 				// look for material
 				if (object.Material) {
-					// TODO
-					var material = entity.MeshRendererComponent.materials[0];
 					var info = this.materials[object.Material];
 					if (info != undefined) {
+						// TODO
+						var material = new Material(info.materialName);
+						material.shader = entity.MeshRendererComponent.materials[0].shader;
+						entity.MeshRendererComponent.materials[0] = material;
+
 						// info.connectedMeshes.push(mesh);
 
 						// apply material state
