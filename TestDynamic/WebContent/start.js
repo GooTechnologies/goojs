@@ -25,7 +25,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 
 	function loadModels(goo) {
 		var importer = new JSONImporter(goo.world);
-		var entities = importer.import('resources/girl.model');
+		var entities = importer.import('resources/girl.model', 'resources/');
 		for ( var i in entities) {
 			entities[i].addToWorld();
 		}
@@ -42,7 +42,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			};
 		})(entities));
 
-		var entities = importer.import('resources/head.model');
+		var entities = importer.import('resources/head.model', 'resources/');
 		for ( var i in entities) {
 			entities[i].addToWorld();
 		}
