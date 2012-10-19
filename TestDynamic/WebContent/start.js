@@ -76,6 +76,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			transformComponent.transform.translation.x = Math.sin(t * 2) * 5;
 			transformComponent.transform.rotation.x = Math.sin(t) * 2;
 			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+
 			t += tpf;
 		});
 

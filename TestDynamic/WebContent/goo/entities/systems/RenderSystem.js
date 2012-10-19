@@ -8,6 +8,8 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 	RenderSystem.prototype = Object.create(System.prototype);
 
 	RenderSystem.prototype.render = function(renderer) {
+		renderer.checkResize();
+
 		renderer.clear();
 
 		for (i in this.renderList) {

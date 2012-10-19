@@ -5,16 +5,8 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
-				_canvas.width = 300;
-				_canvas.height = 200;
-				_canvas.style.width = '300px';
-				_canvas.style.height = '200px';
-
-				// _canvas.style.position = 'absolute';
-				// _canvas.style.left = '0px';
-				// _canvas.style.top = '10%';
-				// _canvas.style.width = '300px';
-				// _canvas.style.height = '50%';
+				_canvas.width = 500;
+				_canvas.height = 500;
 				this.domElement = _canvas;
 				this.domElement.id = 'goo';
 
@@ -47,7 +39,7 @@ define(
 					console.error(error);
 				}
 
-				this.camera = new Camera();
+				this.camera = new Camera(45, 1, 1, 1000);
 
 				this.setClearColor(0.8, 0.8, 0.8, 1.0);
 				this.context.clearDepth(1);
@@ -60,6 +52,17 @@ define(
 				// this.context.cullFace(this.context.BACK);
 				// this.context.enable(this.context.CULL_FACE);
 			}
+
+			Renderer.prototype.checkResize = function() {
+				if (this.domElement.offsetWidth != this.domElement.width
+						|| this.domElement.offsetHeight != this.domElement.height) {
+					this.domElement.width = this.domElement.offsetWidth;
+					this.domElement.height = this.domElement.offsetHeight;
+					this.camera.aspect = this.domElement.width / this.domElement.height;
+					this.context.viewport(0, 0, this.domElement.width, this.domElement.height);
+					this.camera.updateProjection();
+				}
+			};
 
 			Renderer.prototype.setClearColor = function(red, green, blue, alpha) {
 				this.clearColor = {

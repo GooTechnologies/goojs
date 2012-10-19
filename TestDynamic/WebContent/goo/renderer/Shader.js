@@ -27,11 +27,11 @@ define(
 			function setupDefaultCallbacks(defaultCallbacks) {
 				defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false,
-							GooRunner.renderer.camera.cam.projectionMatrix.elements);
+							GooRunner.renderer.camera.projectionMatrix.elements);
 				};
 				defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['VIEW_MATRIX'].uniformMatrix4fv(false,
-							GooRunner.renderer.camera.cam.matrixWorldInverse.elements);
+							GooRunner.renderer.camera.matrixWorldInverse.elements);
 				};
 				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);

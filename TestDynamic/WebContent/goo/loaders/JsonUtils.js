@@ -19,6 +19,7 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 				buffer[outIndex] = val;
 			}
 		}
+		console.log('out: ' + stride * tuples);
 	};
 
 	JsonUtils.getIntBuffer = function(indices, vertexCount) {
@@ -30,21 +31,31 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 	JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
+		var min = 10000000;
+		var max = 0;
 		for ( var i = 0; i < indices.length; ++i) { // ++i?
 			var word = indices.charAt(i);
 			prev += JsonUtils.unzip(word);
 			indexBuffer[i] = prev;
+			if (prev > max) {
+				max = prev;
+			}
+			if (prev < min) {
+				min = prev;
+			}
 		}
+		console.log(min + ' - ' + max);
 		return indexBuffer;
 	};
 
 	JsonUtils.unzip = function(word) {
-		if (word >= 0xD800 + 0x0800) {
+		if (word >= 0xE000) {
 			word -= 0x0800;
 		}
 		word -= 0x23;
 		// un-zigzag
-		word = word >> 1 ^ -(word & 1);
+		word = (word >> 1) ^ (-(word & 1));
+
 		return word;
 	};
 
