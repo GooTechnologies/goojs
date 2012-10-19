@@ -29,7 +29,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		for ( var i in entities) {
 			entities[i].addToWorld();
 		}
-		entities[0].TransformComponent.transform.scale.set(0.1, 0.1, 0.1);
+		entities[0].TransformComponent.transform.scale.set(0.15, 0.15, 0.15);
 		goo.callbacks.push((function(entities) {
 			var t = 0;
 			return function(tpf) {
@@ -37,6 +37,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 				transformComponent.transform.translation.x = Math.sin(t) * 30;
 				transformComponent.transform.translation.z = Math.cos(t) * 30;
 				transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+				transformComponent.setUpdated();
 
 				t += tpf;
 			};
@@ -46,7 +47,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		for ( var i in entities) {
 			entities[i].addToWorld();
 		}
-		entities[0].TransformComponent.transform.scale.set(20, 20, 20);
+		entities[0].TransformComponent.transform.scale.set(30, 30, 30);
 		var t = 0;
 		goo.callbacks.push(function(tpf) {
 			var transformComponent = entities[0].TransformComponent;
@@ -54,6 +55,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			transformComponent.transform.translation.z = Math.cos(t + 2) * 30;
 			transformComponent.transform.rotation.x = Math.sin(t) * 2;
 			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+			transformComponent.setUpdated();
 
 			t += tpf;
 		});
@@ -107,6 +109,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 				var transformComponent = entity.TransformComponent;
 				transformComponent.transform.translation.x = Math.sin(this.t + 4) * 30;
 				transformComponent.transform.translation.z = Math.cos(this.t + 4) * 30;
+				transformComponent.setUpdated();
 
 				this.t += entity._world.tpf;
 			}

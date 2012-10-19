@@ -2,8 +2,9 @@
 
 define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
 		'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
-		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem' ], function(World,
-		TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem) {
+		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
+		'goo/entities/systems/LightingSystem' ], function(World, TransformSystem, RenderSystem, PartitioningSystem,
+		Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem) {
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();
@@ -17,7 +18,7 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 		// world.setSystem(new VelocitySystem());
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
-		// world.setSystem(new LightingSystem());
+		this.world.setSystem(new LightingSystem());
 
 		var partitioningSystem = new PartitioningSystem();
 		this.world.setSystem(partitioningSystem);
@@ -33,7 +34,7 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 		var that = this;
 		var start = Date.now();
 		function run(time) {
-			that.world.tpf = 0;// (time - start) / 1000.0;
+			that.world.tpf = (time - start) / 1000.0;
 			start = time;
 
 			that.world.process();

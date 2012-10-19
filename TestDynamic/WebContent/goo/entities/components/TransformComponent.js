@@ -7,16 +7,15 @@ define([ 'goo/math/Transform' ], function(Transform) {
 		this.children = [];
 		this.transform = new Transform();
 		var that = this;
-		this.transform.watch(function() {
-			// console.log(arguments);
-			// console.log("transform change: " + arguments.toString());
-			that._dirty = true;
-		});
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
 		this._updated = false;
 	}
+
+	TransformComponent.prototype.setUpdated = function(childComponent) {
+		this._dirty = true;
+	};
 
 	TransformComponent.prototype.attachChild = function(childComponent) {
 		if (childComponent === this) {

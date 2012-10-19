@@ -8,12 +8,6 @@ define(function() {
 		this.lookAt(new THREE.Vector3(0, 0, 0));
 
 		var that = this;
-		this.position.watch(function() {
-			that.updateWorld();
-		});
-		this.projectionMatrix.watch(function() {
-			that.updateProjection();
-		});
 
 		this.updateWorld();
 
