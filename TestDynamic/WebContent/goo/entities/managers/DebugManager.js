@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function DebugManager() {
 		this.type = 'DebugManager';

@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData) {
 	function DataMap() {
 
@@ -49,7 +51,7 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData
 
 	function buildMap(types) {
 		var builder = DataMap.builder();
-		for (i in types) {
+		for ( var i in types) {
 			var type = types[i];
 			builder.add(defaults[type]);
 		}

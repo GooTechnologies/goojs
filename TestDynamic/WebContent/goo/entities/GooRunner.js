@@ -1,79 +1,80 @@
-define(
-		[ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
-				'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
-				'goo/entities/systems/BoundingUpdateSystem' ], function(World, TransformSystem, RenderSystem,
-				PartitioningSystem, Renderer, BoundingUpdateSystem) {
-			function GooRunner() {
-				this.world = new World();
-				this.renderer = new Renderer();
-				GooRunner.renderer = this.renderer;
+"use strict";
 
-				// world.setManager(new TagManager());
-				// world.setManager(new LightManager());
+define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
+		'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
+		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem' ], function(World,
+		TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem) {
+	function GooRunner() {
+		this.world = new World();
+		this.renderer = new Renderer();
+		GooRunner.renderer = this.renderer;
 
-				// world.setSystem(new LoadingSystem());
-				// world.setSystem(new ScriptSystem());
-				// world.setSystem(new VelocitySystem());
-				this.world.setSystem(new TransformSystem());
-				this.world.setSystem(new BoundingUpdateSystem());
-				// world.setSystem(new LightingSystem());
+		// world.setManager(new TagManager());
+		// world.setManager(new LightManager());
 
-				var partitioningSystem = new PartitioningSystem();
-				this.world.setSystem(partitioningSystem);
+		// world.setSystem(new LoadingSystem());
+		this.world.setSystem(new ScriptSystem());
+		// world.setSystem(new VelocitySystem());
+		this.world.setSystem(new TransformSystem());
+		this.world.setSystem(new BoundingUpdateSystem());
+		// world.setSystem(new LightingSystem());
 
-				var renderSystem = new RenderSystem(partitioningSystem.renderList);
-				this.world.setSystem(renderSystem);
+		var partitioningSystem = new PartitioningSystem();
+		this.world.setSystem(partitioningSystem);
 
-				init();
-				window.requestAnimationFrame(run);
+		var renderSystem = new RenderSystem(partitioningSystem.renderList);
+		this.world.setSystem(renderSystem);
 
-				this.callbacks = [];
+		init();
+		window.requestAnimationFrame(run);
 
-				var that = this;
-				var start = Date.now();
-				function run(time) {
-					that.world.tpf = (time - start) / 1000.0;
-					start = time;
+		this.callbacks = [];
 
-					that.world.process();
+		var that = this;
+		var start = Date.now();
+		function run(time) {
+			that.world.tpf = (time - start) / 1000.0;
+			start = time;
 
-					renderSystem.render(that.renderer);
+			that.world.process();
 
-					for (i in that.callbacks) {
-						that.callbacks[i](that.world.tpf);
-					}
+			renderSystem.render(that.renderer);
 
-					window.requestAnimationFrame(run);
-				}
+			for ( var i in that.callbacks) {
+				that.callbacks[i](that.world.tpf);
 			}
 
-			function init() {
-				var lastTime = 0;
-				var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+			window.requestAnimationFrame(run);
+		}
+	}
 
-				for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-					window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-					window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
-							|| window[vendors[x] + 'CancelRequestAnimationFrame'];
-				}
+	function init() {
+		var lastTime = 0;
+		var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
 
-				if (window.requestAnimationFrame === undefined) {
-					window.requestAnimationFrame = function(callback, element) {
-						var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-						var id = window.setTimeout(function() {
-							callback(currTime + timeToCall);
-						}, timeToCall);
-						lastTime = currTime + timeToCall;
-						return id;
-					};
-				}
+		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
+					|| window[vendors[x] + 'CancelRequestAnimationFrame'];
+		}
 
-				if (window.cancelAnimationFrame === undefined) {
-					window.cancelAnimationFrame = function(id) {
-						clearTimeout(id);
-					};
-				}
-			}
+		if (window.requestAnimationFrame === undefined) {
+			window.requestAnimationFrame = function(callback, element) {
+				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
+				var id = window.setTimeout(function() {
+					callback(currTime + timeToCall);
+				}, timeToCall);
+				lastTime = currTime + timeToCall;
+				return id;
+			};
+		}
 
-			return GooRunner;
-		});
+		if (window.cancelAnimationFrame === undefined) {
+			window.cancelAnimationFrame = function(id) {
+				clearTimeout(id);
+			};
+		}
+	}
+
+	return GooRunner;
+});

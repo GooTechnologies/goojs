@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function Entity(world) {
 		this._world = world;

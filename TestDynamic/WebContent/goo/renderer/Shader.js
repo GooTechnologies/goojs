@@ -1,3 +1,5 @@
+"use strict";
+
 define(
 		[ 'goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner' ],
 		function(ShaderCall, Util, GooRunner) {
@@ -62,7 +64,7 @@ define(
 
 				// Bind attributes
 				var descriptors = shaderInfo.meshData._dataMap.descriptors;
-				for (key in descriptors) {
+				for ( var key in descriptors) {
 					var descriptor = descriptors[key];
 					var attribute = this.attributeIndexMapping[descriptor.attributeName];
 					if (attribute != undefined) {
@@ -72,7 +74,7 @@ define(
 					}
 				}
 
-				for (i in this.currentCallbacks) {
+				for ( var i in this.currentCallbacks) {
 					this.currentCallbacks[i](this.uniformCallMapping, shaderInfo);
 				}
 
@@ -146,12 +148,12 @@ define(
 					console.error("Could not initialise shaders: " + glContext.getProgramInfoLog(shaderProgram));
 				}
 
-				for (key in this.attributeMapping) {
+				for ( var key in this.attributeMapping) {
 					var attributeIndex = glContext.getAttribLocation(this.shaderProgram, this.attributeMapping[key]);
 					this.attributeIndexMapping[key] = attributeIndex;
 				}
 
-				for (key in this.uniformMapping) {
+				for ( var key in this.uniformMapping) {
 					var uniform = glContext.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
 					this.uniformLocationMapping[key] = uniform;
 

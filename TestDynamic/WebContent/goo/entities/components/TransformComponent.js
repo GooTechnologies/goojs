@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/math/Transform' ], function(Transform) {
 	function TransformComponent() {
 		this.type = 'TransformComponent';
@@ -48,12 +50,12 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 	TransformComponent.prototype.updateWorldTransform = function() {
 		if (this.parent !== undefined) {
-			this.parent.worldTransform.multiply(this.transform);
+			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
 		} else {
 			this.worldTransform.copy(this.transform);
 		}
-		_dirty = false;
-		_updates = true;
+		this._dirty = false;
+		this._updated = true;
 	};
 
 	return TransformComponent;

@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function BufferData(data, target) {
 		this.data = data;

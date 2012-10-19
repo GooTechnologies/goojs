@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
@@ -5,10 +7,15 @@ define(function() {
 		this.meshData = meshData;
 
 		this.modelBound = {
+			center : new THREE.Vector3(),
 			radius : 0,
 			computeFromPoints : function(verts) {
 				// calcWelzl(points);
-				radius = 5;
+				this.radius = 5;
+			},
+			transform : function(transform, bound) {
+				// this.bound.center.addSelf(transform.translation);
+				return bound;
 			}
 		};
 		this.autoCompute = true;

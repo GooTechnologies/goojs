@@ -1,28 +1,62 @@
+"use strict";
+
 require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System',
 		'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
 		'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
 		'goo/renderer/DataMap', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
-		'goo/loaders/JSONImporter' ], function(World, Entity, System, TransformSystem, RenderSystem,
-		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-		Shader, DataMap, GooRunner, TextureCreator, Loader, JSONImporter) {
+		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent' ], function(World, Entity, System,
+		TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent,
+		PartitioningSystem, MeshData, Renderer, Material, Shader, DataMap, GooRunner, TextureCreator, Loader,
+		JSONImporter, ScriptComponent) {
 
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner();
 		document.body.appendChild(goo.renderer.domElement);
 
-		// var importer = new JSONImporter(goo.world);
-		// var entities = importer.import('resources/head.model');
-		// console.log(entities);
-		// for (i in entities) {
-		// entities[i].addToWorld();
-		// }
+		loadModels(goo);
 
 		// Add quad
 		var quadEntity = createQuadEntity(goo);
 		quadEntity.addToWorld();
+	}
+
+	function loadModels(goo) {
+		var importer = new JSONImporter(goo.world);
+		var entities = importer.import('resources/girl.model');
+		for ( var i in entities) {
+			entities[i].addToWorld();
+		}
+		entities[0].TransformComponent.transform.scale.set(0.1, 0.1, 0.1);
+		goo.callbacks.push((function(entities) {
+			var t = 0;
+			return function(tpf) {
+				var transformComponent = entities[0].TransformComponent;
+				transformComponent.transform.translation.x = Math.sin(t) * 30;
+				transformComponent.transform.translation.z = Math.cos(t) * 30;
+				transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+
+				t += tpf;
+			};
+		})(entities));
+
+		var entities = importer.import('resources/head.model');
+		for ( var i in entities) {
+			entities[i].addToWorld();
+		}
+		entities[0].TransformComponent.transform.scale.set(20, 20, 20);
+		var t = 0;
+		goo.callbacks.push(function(tpf) {
+			var transformComponent = entities[0].TransformComponent;
+			transformComponent.transform.translation.x = Math.sin(t + 2) * 30;
+			transformComponent.transform.translation.z = Math.cos(t + 2) * 30;
+			transformComponent.transform.rotation.x = Math.sin(t) * 2;
+			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+
+			t += tpf;
+		});
 	}
 
 	function createQuadEntity(goo) {
@@ -63,22 +97,21 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 
-		// var t = 0;
-		// material.shader.bindCallback('dostuff',
-		// function(uniformMapping,
-		// shaderInfo) {
-		// uniformMapping['time'].uniform1f(t);
-		// t += world.tpf;
-		// });
+		// Add script component
+		var script = {
+			t : 0,
+			init : function(entity) {
 
-		var t = 0;
-		goo.callbacks.push(function(tpf) {
-			transformComponent.transform.translation.x = Math.sin(t * 2) * 5;
-			transformComponent.transform.rotation.x = Math.sin(t) * 2;
-			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+			},
+			run : function(entity) {
+				var transformComponent = entity.TransformComponent;
+				transformComponent.transform.translation.x = Math.sin(this.t + 4) * 30;
+				transformComponent.transform.translation.z = Math.cos(this.t + 4) * 30;
 
-			t += tpf;
-		});
+				this.t += entity._world.tpf;
+			}
+		};
+		entity.setComponent(new ScriptComponent(script));
 
 		return entity;
 	}

@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils' ], function(Util, MeshData,
 		BufferUtils) {
 	function JsonUtils() {
@@ -12,14 +14,13 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 		for (j = 0; j < stride; j++) {
 			prev = 0;
 			for (i = 0; i < tuples; i++) {
-				word = attribs.charAt(i + j * tuples);
+				word = attribs.charCodeAt(i + j * tuples);
 				outIndex = i * stride + j;
 				prev += JsonUtils.unzip(word);
 				var val = (prev + offsets[j]) * scales[j];
 				buffer[outIndex] = val;
 			}
 		}
-		console.log('out: ' + stride * tuples);
 	};
 
 	JsonUtils.getIntBuffer = function(indices, vertexCount) {
@@ -31,20 +32,11 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 	JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
-		var min = 10000000;
-		var max = 0;
-		for ( var i = 0; i < indices.length; ++i) { // ++i?
-			var word = indices.charAt(i);
+		for ( var i = 0; i < indices.length; ++i) {
+			var word = indices.charCodeAt(i);
 			prev += JsonUtils.unzip(word);
 			indexBuffer[i] = prev;
-			if (prev > max) {
-				max = prev;
-			}
-			if (prev < min) {
-				min = prev;
-			}
 		}
-		console.log(min + ' - ' + max);
 		return indexBuffer;
 	};
 

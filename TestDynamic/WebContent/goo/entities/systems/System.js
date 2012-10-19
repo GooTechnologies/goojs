@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function System(type, interests, isPassive) {
 		this.type = type;
@@ -29,10 +31,10 @@ define(function() {
 		var isInterested = this.interests == null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
-			for (i in this.interests) {
+			for ( var i in this.interests) {
 				var interest = this.interests[i];
 				var found = false;
-				for (j in entity._components) {
+				for ( var j in entity._components) {
 					var component = entity._components[j];
 					if (component.type === interest) {
 						found = true;

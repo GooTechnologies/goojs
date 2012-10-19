@@ -1,3 +1,5 @@
+"use strict";
+
 define(
 		[ 'goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util' ],
 		function(ShaderRecord, RendererRecord, Camera, Util) {

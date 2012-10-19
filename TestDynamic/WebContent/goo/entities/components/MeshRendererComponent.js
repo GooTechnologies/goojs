@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function MeshRendererComponent() {
 		this.type = 'MeshRendererComponent';
@@ -7,7 +9,7 @@ define(function() {
 	}
 
 	MeshRendererComponent.prototype.updateBounds = function(bounding, transform) {
-		worldBound = bounding.transform(transform, worldBound);
+		this.worldBound = bounding.transform(transform, this.worldBound);
 	};
 
 	return MeshRendererComponent;

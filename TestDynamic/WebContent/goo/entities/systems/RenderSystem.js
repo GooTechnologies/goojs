@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], function(System, TextureCreator) {
 	function RenderSystem(renderList) {
 		System.call(this, 'RenderSystem', null, true);
@@ -12,7 +14,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 
 		renderer.clear();
 
-		for (i in this.renderList) {
+		for ( var i in this.renderList) {
 			var entity = this.renderList[i];
 			this.renderEntity(renderer, entity);
 		}
@@ -32,7 +34,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 		// bind our interleaved data
 		renderer.bindData(shaderInfo.meshData.vertexData);
 
-		for (i in shaderInfo.materials) {
+		for ( var i in shaderInfo.materials) {
 			var material = shaderInfo.materials[i];
 
 			if (material.shader == null) {
@@ -70,7 +72,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 
 	function updateTextures(material, renderer) {
 		var context = renderer.context;
-		for (i = 0; i < material.shader.textureCount; i++) {
+		for ( var i = 0; i < material.shader.textureCount; i++) {
 			var texture = material.textures[i];
 			if (texture === undefined || texture.image.dataReady === undefined) {
 				return;

@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils' ], function(BufferData, Util,
 		BufferUtils) {
 	function MeshData(dataMap, vertexCount, indexCount) {

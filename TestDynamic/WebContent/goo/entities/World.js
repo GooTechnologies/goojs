@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
 	function World() {
 		initObserverWatch();
@@ -60,7 +62,7 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 			}
 		});
 
-		for (systemIndex in this._systems) {
+		for ( var systemIndex in this._systems) {
 			var system = this._systems[systemIndex];
 			if (!system.passive) {
 				system._process();
@@ -69,13 +71,13 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 	};
 
 	World.prototype._check = function(entities, callback) {
-		for (index in entities) {
+		for ( var index in entities) {
 			var entity = entities[index];
-			for (managerIndex in this._managers) {
+			for ( var managerIndex in this._managers) {
 				var manager = this._managers[managerIndex];
 				callback(manager, entity);
 			}
-			for (systemIndex in this._systems) {
+			for ( var systemIndex in this._systems) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}
@@ -231,7 +233,9 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 
 				obj.watchFunctions(prop);
 
-				if (JSON.stringify(oldval) != JSON.stringify(newval) && arguments.callee.caller != watcher) {
+				// if (JSON.stringify(oldval) != JSON.stringify(newval) &&
+				// arguments.callee.caller != watcher) {
+				if (JSON.stringify(oldval) != JSON.stringify(newval)) {
 					obj.callWatchers(prop, obj, oldval, newval);
 				}
 			};

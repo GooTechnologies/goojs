@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData',
 		'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material' ], function(DataMap,
@@ -64,7 +66,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					var child = object.Children[i];
 					var childEntity = this.parseSpatial(child);
 					if (childEntity != null) {
-						// entity.TransformComponent.attachChild(childEntity.TransformComponent);
+						entity.TransformComponent.attachChild(childEntity.TransformComponent);
 					}
 				}
 			}
@@ -118,26 +120,26 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 		if (object.Vertices) {
 			builder.add(DataMap.createDescriptor('POSITION', 3, 'Float'));
 		}
-		// if (object.Normals) {
-		// builder.add(DataMap.createDescriptor('NORMAL', 3, 'Float'));
-		// }
-		// if (object.Tangents) {
-		// builder.add(DataMap.createDescriptor('TANGENT', 4, 'Float'));
-		// }
-		// if (object.Colors) {
-		// builder.add(DataMap.createDescriptor('COLOR', 4, 'Float'));
-		// }
-		// if (weightsPerVert > 0 && object.Weights) {
-		// builder.add(DataMap.createDescriptor('WEIGHTS', 4, 'Float'));
-		// }
-		// if (weightsPerVert > 0 && object.Joints) {
-		// builder.add(DataMap.createDescriptor('JOINTIDS', 4, 'Short'));
-		// }
-		// if (object.TextureCoords) {
-		// for (i in object.TextureCoords) {
-		// builder.add(DataMap.createDescriptor('TEXCOORD' + i, 2, 'Float'));
-		// }
-		// }
+		if (object.Normals) {
+			builder.add(DataMap.createDescriptor('NORMAL', 3, 'Float'));
+		}
+		if (object.Tangents) {
+			builder.add(DataMap.createDescriptor('TANGENT', 4, 'Float'));
+		}
+		if (object.Colors) {
+			builder.add(DataMap.createDescriptor('COLOR', 4, 'Float'));
+		}
+		if (weightsPerVert > 0 && object.Weights) {
+			builder.add(DataMap.createDescriptor('WEIGHTS', 4, 'Float'));
+		}
+		if (weightsPerVert > 0 && object.Joints) {
+			builder.add(DataMap.createDescriptor('JOINTIDS', 4, 'Short'));
+		}
+		if (object.TextureCoords) {
+			for (i in object.TextureCoords) {
+				builder.add(DataMap.createDescriptor('TEXCOORD' + i, 2, 'Float'));
+			}
+		}
 
 		var meshData = new MeshData(builder.build(), vertexCount, indexCount);
 
@@ -151,109 +153,98 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 				JsonUtils.fillAttributeBuffer(object.Vertices, meshData, MeshData.POSITION);
 			}
 		}
-		// if (object.Weights) {
-		// if (this.useCompression) {
-		// var offset = 0;
-		// var scale = 1 / this.compressedVertsRange;
-		//
-		// JsonUtils.fillAttributeBufferFromCompressedString(object.Weights,
-		// meshData, MeshData.WEIGHTS,
-		// [ scale ], [ offset ]);
-		// } else {
-		// JsonUtils.fillAttributeBuffer(object.Weights, meshData,
-		// MeshData.WEIGHTS);
-		// }
-		// }
-		// if (object.Normals) {
-		// if (this.useCompression) {
-		// var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
-		// var scale = 1 / -offset;
-		//
-		// JsonUtils.fillAttributeBufferFromCompressedString(object.Normals,
-		// meshData, MeshData.NORMAL, [ scale,
-		// scale, scale ], [ offset, offset, offset ]);
-		// } else {
-		// JsonUtils.fillAttributeBuffer(object.Normals, meshData,
-		// MeshData.NORMAL);
-		// }
-		// }
-		// if (object.Tangents) {
-		// if (this.useCompression) {
-		// var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
-		// var scale = 1 / -offset;
-		//
-		// JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents,
-		// meshData, MeshData.TANGENT, [ scale,
-		// scale, scale, scale ], [ offset, offset, offset, offset ]);
-		// } else {
-		// JsonUtils.fillAttributeBuffer(object.Tangents, meshData,
-		// MeshData.TANGENT);
-		// }
-		// }
-		// if (object.Colors) {
-		// if (this.useCompression) {
-		// var offset = 0;
-		// var scale = 255 / (this.compressedColorsRange + 1);
-		// JsonUtils.fillAttributeBufferFromCompressedString(object.Colors,
-		// meshData, MeshData.COLOR, [ scale,
-		// scale, scale, scale ], [ offset, offset, offset, offset ]);
-		// } else {
-		// JsonUtils.fillAttributeBuffer(object.Colors, meshData,
-		// MeshData.COLOR);
-		// }
-		// }
-		// if (object.TextureCoords) {
-		// var textureUnits = object.TextureCoords;
-		// if (this.useCompression) {
-		// for ( var i = 0; i < textureUnits.length; i++) {
-		// var texObj = textureUnits[i];
-		// JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs,
-		// meshData, 'TEXCOORD' + i,
-		// texObj.UVScales, texObj.UVOffsets);
-		// }
-		// } else {
-		// for ( var i = 0; i < textureUnits.length; i++) {
-		// JsonUtils.fillAttributeBuffer(textureUnits[i], meshData, 'TEXCOORD' +
-		// i);
-		// }
-		// }
-		// }
-		// if (object.Joints) {
-		// var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
-		// var data;
-		// if (this.useCompression) {
-		// data = JsonUtils.getIntBufferFromCompressedString(object.Joints,
-		// 32767);
-		// } else {
-		// data = JsonUtils.getIntBuffer(object.Joints, 32767);
-		// }
-		//
-		// if (type === 'SkinnedMesh') {
-		// // map these joints to local.
-		// var localJointMap = {};
-		// var localIndex = 0;
-		// for ( var i = 0, max = data.length; i < max; i++) {
-		// var jointIndex = data[i];
-		// if (localJointMap[jointIndex] === undefined) {
-		// localJointMap[jointIndex] = localIndex++;
-		// }
-		//
-		// buffer.set([ localJointMap[jointIndex] ], i);
-		// }
-		//
-		// // store local map
-		// var localMap = [];
-		// for ( var jointIndex in localJointMap) {
-		// localIndex = localJointMap[jointIndex];
-		// localMap[localIndex] = jointIndex;
-		// }
-		// // ((SkinnedMesh) mesh).setPaletteMap(localMap);
-		// } else {
-		// for ( var i = 0, max = data.capacity(); i < max; i++) {
-		// buffer.putCast(i, data.get(i));
-		// }
-		// }
-		// }
+		if (object.Weights) {
+			if (this.useCompression) {
+				var offset = 0;
+				var scale = 1 / this.compressedVertsRange;
+
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Weights, meshData, MeshData.WEIGHTS,
+						[ scale ], [ offset ]);
+			} else {
+				JsonUtils.fillAttributeBuffer(object.Weights, meshData, MeshData.WEIGHTS);
+			}
+		}
+		if (object.Normals) {
+			if (this.useCompression) {
+				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
+				var scale = 1 / -offset;
+
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Normals, meshData, MeshData.NORMAL, [ scale,
+						scale, scale ], [ offset, offset, offset ]);
+			} else {
+				JsonUtils.fillAttributeBuffer(object.Normals, meshData, MeshData.NORMAL);
+			}
+		}
+		if (object.Tangents) {
+			if (this.useCompression) {
+				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
+				var scale = 1 / -offset;
+
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents, meshData, MeshData.TANGENT, [ scale,
+						scale, scale, scale ], [ offset, offset, offset, offset ]);
+			} else {
+				JsonUtils.fillAttributeBuffer(object.Tangents, meshData, MeshData.TANGENT);
+			}
+		}
+		if (object.Colors) {
+			if (this.useCompression) {
+				var offset = 0;
+				var scale = 255 / (this.compressedColorsRange + 1);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [ scale,
+						scale, scale, scale ], [ offset, offset, offset, offset ]);
+			} else {
+				JsonUtils.fillAttributeBuffer(object.Colors, meshData, MeshData.COLOR);
+			}
+		}
+		if (object.TextureCoords) {
+			var textureUnits = object.TextureCoords;
+			if (this.useCompression) {
+				for ( var i = 0; i < textureUnits.length; i++) {
+					var texObj = textureUnits[i];
+					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i,
+							texObj.UVScales, texObj.UVOffsets);
+				}
+			} else {
+				for ( var i = 0; i < textureUnits.length; i++) {
+					JsonUtils.fillAttributeBuffer(textureUnits[i], meshData, 'TEXCOORD' + i);
+				}
+			}
+		}
+		if (object.Joints) {
+			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
+			var data;
+			if (this.useCompression) {
+				data = JsonUtils.getIntBufferFromCompressedString(object.Joints, 32767);
+			} else {
+				data = JsonUtils.getIntBuffer(object.Joints, 32767);
+			}
+
+			if (type === 'SkinnedMesh') {
+				// map these joints to local.
+				var localJointMap = {};
+				var localIndex = 0;
+				for ( var i = 0, max = data.length; i < max; i++) {
+					var jointIndex = data[i];
+					if (localJointMap[jointIndex] === undefined) {
+						localJointMap[jointIndex] = localIndex++;
+					}
+
+					buffer.set([ localJointMap[jointIndex] ], i);
+				}
+
+				// store local map
+				var localMap = [];
+				for ( var jointIndex in localJointMap) {
+					localIndex = localJointMap[jointIndex];
+					localMap[localIndex] = jointIndex;
+				}
+				// ((SkinnedMesh) mesh).setPaletteMap(localMap);
+			} else {
+				for ( var i = 0, max = data.capacity(); i < max; i++) {
+					buffer.putCast(i, data.get(i));
+				}
+			}
+		}
 
 		if (object.Indices) {
 			if (this.useCompression) {

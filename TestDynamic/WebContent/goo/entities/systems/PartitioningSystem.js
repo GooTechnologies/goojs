@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/entities/systems/System' ], function(System) {
 	function PartitioningSystem() {
 		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
@@ -20,7 +22,7 @@ define([ 'goo/entities/systems/System' ], function(System) {
 
 	PartitioningSystem.prototype.process = function(entities) {
 		this.renderList.length = 0;
-		for (i in entities) {
+		for ( var i in entities) {
 			var entity = entities[i];
 
 			// var bounds = entity.MeshRendererComponent.worldBound;

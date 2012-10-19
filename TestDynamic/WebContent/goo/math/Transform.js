@@ -1,3 +1,5 @@
+"use strict";
+
 define(function() {
 	function Transform() {
 		this.matrix = new THREE.Matrix4();
@@ -10,8 +12,8 @@ define(function() {
 		this.eulerOrder = 'XYZ';
 	}
 
-	Transform.prototype.multiply = function(other) {
-		this.matrix.multiplySelf(other.matrix);
+	Transform.prototype.multiply = function(a, b) {
+		this.matrix.multiply(a.matrix, b.matrix);
 	};
 
 	Transform.prototype.update = function() {

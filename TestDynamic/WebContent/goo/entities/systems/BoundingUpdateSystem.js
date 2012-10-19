@@ -1,3 +1,5 @@
+"use strict";
+
 define([ 'goo/entities/systems/System' ], function(System) {
 	function BoundingUpdateSystem() {
 		System.call(this, 'BoundingUpdateSystem',
@@ -7,7 +9,7 @@ define([ 'goo/entities/systems/System' ], function(System) {
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
 
 	BoundingUpdateSystem.prototype.process = function(entities) {
-		for (i in entities) {
+		for ( var i in entities) {
 			var entity = entities[i];
 			var meshDataComponent = entity.MeshDataComponent;
 			var transformComponent = entity.TransformComponent;
