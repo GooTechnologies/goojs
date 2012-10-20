@@ -51,13 +51,13 @@ define(
 				var glContext = renderer.context;
 				var record = renderer.shaderRecord;
 
-				if (this.shaderProgram == null) {
+				if (this.shaderProgram === null) {
 					this.investigateShaders();
 					this.compile(renderer);
 				}
 
 				// Set the ShaderProgram active
-				if (record.usedProgram != this.shaderProgram) {
+				if (record.usedProgram !== this.shaderProgram) {
 					glContext.useProgram(this.shaderProgram);
 					record.usedProgram = this.shaderProgram;
 				}
@@ -67,7 +67,7 @@ define(
 				for ( var key in descriptors) {
 					var descriptor = descriptors[key];
 					var attribute = this.attributeIndexMapping[descriptor.attributeName];
-					if (attribute != undefined) {
+					if (attribute !== undefined) {
 						renderer.bindVertexAttribute(attribute, descriptor.count, descriptor.type,
 								descriptor.normalized, descriptor.stride * Util.getByteSize(descriptor.type),
 								descriptor.offset, record);
@@ -95,26 +95,26 @@ define(
 				this.regExp.lastIndex = 0;
 				var matcher = this.regExp.exec(source);
 
-				while (matcher != null) {
+				while (matcher !== null) {
 					var type = matcher[1];
 					var format = matcher[2];
 					var variableName = matcher[3];
 					var bindingName = matcher[4];
 
-					if (bindingName == undefined) {
+					if (bindingName === undefined) {
 						bindingName = variableName;
 					}
 
 					if ("attribute" === type) {
 						this.attributeMapping[bindingName] = variableName;
 					} else {
-						if (format.indexOf("sampler") == 0) {
+						if (format.indexOf("sampler") === 0) {
 							this.textureCount++;
 						}
 						this.uniformMapping[bindingName] = variableName;
 					}
 
-					if (this.defaultCallbacks[bindingName] != undefined) {
+					if (this.defaultCallbacks[bindingName] !== undefined) {
 						this.currentCallbacks[bindingName] = this.defaultCallbacks[bindingName];
 					}
 
@@ -129,13 +129,13 @@ define(
 				var vertexShader = this._getShader(glContext, glContext.VERTEX_SHADER, this.vertexSource);
 				var fragmentShader = this._getShader(glContext, glContext.FRAGMENT_SHADER, this.fragmentSource);
 
-				if (vertexShader == null || fragmentShader == null) {
+				if (vertexShader === null || fragmentShader === null) {
 					console.error("Shader error - no shaders");
 				}
 
 				this.shaderProgram = glContext.createProgram();
 				var error = glContext.getError();
-				if (this.shaderProgram == null || error != glContext.NO_ERROR) {
+				if (this.shaderProgram === null || error !== glContext.NO_ERROR) {
 					console.error("Shader error: " + error + " [shader: " + this.name + "]");
 				}
 
@@ -160,7 +160,7 @@ define(
 					var shaderCall = new ShaderCall(glContext);
 
 					var uniformRecord = record.uniformRecords.get(this.shaderProgram);
-					if (uniformRecord == null) {
+					if (uniformRecord === null) {
 						uniformRecord = new Hashtable();
 						record.uniformRecords.put(this.shaderProgram, uniformRecord);
 					}

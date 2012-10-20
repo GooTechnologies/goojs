@@ -59,7 +59,7 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData' ], function(Util, MeshData
 	}
 
 	DataMap.defaultMap = function(types) {
-		if (types == undefined) {
+		if (types === undefined) {
 			return buildMap(Object.keys(defaults));
 		} else {
 			return buildMap(types);

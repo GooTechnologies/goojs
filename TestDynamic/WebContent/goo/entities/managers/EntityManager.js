@@ -16,13 +16,28 @@ define(function() {
 	};
 
 	EntityManager.prototype.contains = function(entity) {
-		return this._entities[entity.id] != undefined;
+		return this._entities[entity.id] !== undefined;
 	};
 
 	EntityManager.prototype.getEntities = function() {
 		var entities = [];
 		for (key in this._entities) {
 			entities.push(this._entities[key]);
+		}
+		return entities;
+	};
+
+	EntityManager.prototype.getTopEntities = function() {
+		var entities = [];
+		for ( var key in this._entities) {
+			var entity = this._entities[key];
+			if (entity.TransformComponent) {
+				if (!entity.TransformComponent.parent) {
+					entities.push(entity);
+				}
+			} else {
+				entities.push(entity);
+			}
 		}
 		return entities;
 	};

@@ -19,7 +19,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform1fv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -39,7 +39,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform1iv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -50,8 +50,8 @@ define(function() {
 
 	ShaderCall.prototype.uniform2f = function(v0, v1) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 2 && curValue[0] == v0 && curValue[1] == v1) {
+		if (curValue !== null) {
+			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -61,7 +61,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform2fv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -72,8 +72,8 @@ define(function() {
 
 	ShaderCall.prototype.uniform2i = function(v0, v1) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 2 && curValue[0] == v0 && curValue[1] == v1) {
+		if (curValue !== null) {
+			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -83,7 +83,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform2iv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -94,8 +94,8 @@ define(function() {
 
 	ShaderCall.prototype.uniform3f = function(v0, v1, v2) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 3 && curValue[0] == v0 && curValue[1] == v1 && curValue[2] == v2) {
+		if (curValue !== null) {
+			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		}
@@ -105,7 +105,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform3fv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -116,8 +116,8 @@ define(function() {
 
 	ShaderCall.prototype.uniform3i = function(v0, v1, v2) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 3 && curValue[0] == v0 && curValue[1] == v1 && curValue[2] == v2) {
+		if (curValue !== null) {
+			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		}
@@ -127,7 +127,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform3iv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -138,9 +138,9 @@ define(function() {
 
 	ShaderCall.prototype.uniform4f = function(v0, v1, v2, v3) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 4 && curValue[0] == v0 && curValue[1] == v1 && curValue[2] == v2
-					&& curValue[3] == v3) {
+		if (curValue !== null) {
+			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2
+					&& curValue[3] === v3) {
 				return;
 			}
 		}
@@ -150,7 +150,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform4fv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}
@@ -161,9 +161,9 @@ define(function() {
 
 	ShaderCall.prototype.uniform4i = function(v0, v1, v2, v3) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
-			if (curValue.length == 4 && curValue[0] == v0 && curValue[1] == v1 && curValue[2] == v2
-					&& curValue[3] == v3) {
+		if (curValue !== null) {
+			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2
+					&& curValue[3] === v3) {
 				return;
 			}
 		}
@@ -173,7 +173,7 @@ define(function() {
 
 	ShaderCall.prototype.uniform4iv = function(values) {
 		var curValue = this.currentRecord.get(this.location);
-		if (curValue != null) {
+		if (curValue !== null) {
 			if (Arrays.equals(values, curValue)) {
 				return;
 			}

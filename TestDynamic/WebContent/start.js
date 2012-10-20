@@ -6,15 +6,18 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
 		'goo/renderer/DataMap', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent' ], function(World, Entity, System,
-		TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent,
+		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI' ], function(World,
+		Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent,
 		PartitioningSystem, MeshData, Renderer, Material, Shader, DataMap, GooRunner, TextureCreator, Loader,
-		JSONImporter, ScriptComponent) {
+		JSONImporter, ScriptComponent, DebugUI) {
 
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner();
 		document.body.appendChild(goo.renderer.domElement);
+
+		var ui = new DebugUI(goo);
+		console.log(ui);
 
 		// Examples of model loading
 		loadModels(goo);
@@ -161,7 +164,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		var str = "";
 		var k = shaderScript.firstChild;
 		while (k) {
-			if (k.nodeType == 3) {
+			if (k.nodeType === 3) {
 				str += k.textContent;
 			}
 			k = k.nextSibling;

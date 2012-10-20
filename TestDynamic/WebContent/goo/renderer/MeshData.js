@@ -7,6 +7,7 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 		this._dataMap = dataMap;
 		this._dataViews = {};
 
+		this._indexData = null;
 		this._indexLengths = null;
 		this._indexModes = [ 'Triangles' ];
 
@@ -84,7 +85,10 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 	};
 
 	MeshData.prototype.getIndexBuffer = function() {
-		return this.indexData.data;
+		if (this.indexData !== null) {
+			return this.indexData.data;
+		}
+		return null;
 	};
 
 	MeshData.prototype.getIndexLengths = function() {

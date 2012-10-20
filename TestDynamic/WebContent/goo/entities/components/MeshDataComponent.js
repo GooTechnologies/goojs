@@ -27,9 +27,9 @@ define(function() {
 	};
 
 	MeshDataComponent.prototype.computeBoundFromPoints = function() {
-		if (this.autoCompute && this.modelBound != null) {
+		if (this.autoCompute && this.modelBound !== null) {
 			var verts = this.meshData.getAttributeBuffer('POSITION');
-			if (verts != null) {
+			if (verts !== undefined) {
 				this.modelBound.computeFromPoints(verts);
 				this.autoCompute = false;
 			}

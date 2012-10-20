@@ -19,7 +19,7 @@ define(function() {
 
 	System.prototype.removed = function(entity) {
 		var index = this._activeEntities.indexOf(entity);
-		if (index != -1) {
+		if (index !== -1) {
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);
@@ -28,7 +28,7 @@ define(function() {
 	};
 
 	System.prototype._check = function(entity) {
-		var isInterested = this.interests == null;
+		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
 			for ( var i in this.interests) {
@@ -50,12 +50,12 @@ define(function() {
 		}
 
 		var index = this._activeEntities.indexOf(entity);
-		if (isInterested && index == -1) {
+		if (isInterested && index === -1) {
 			this._activeEntities.push(entity);
 			if (this.inserted) {
 				this.inserted(entity);
 			}
-		} else if (!isInterested && index != -1) {
+		} else if (!isInterested && index !== -1) {
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);

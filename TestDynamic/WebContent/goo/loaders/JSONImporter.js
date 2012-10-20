@@ -26,7 +26,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 			JSONImporter.prototype.load = function(modelSource, textureDir, asynchronous, callback) {
 				var async = asynchronous || false;
-				if (async && callback == undefined) {
+				if (async && callback === undefined) {
 					throw "Asynchronous mode needs a callback";
 				}
 
@@ -35,8 +35,8 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 				if (async) {
 					var that = this;
 					request.onreadystatechange = function() {
-						if (request.readyState == 4) {
-							if (request.status != 404) {
+						if (request.readyState === 4) {
+							if (request.status !== 404) {
 								var entities = that.parse(request.responseText, textureDir);
 								callback.onSuccess(entities);
 							} else {
@@ -48,7 +48,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 				} else {
 					request.send();
 					var entities = this.parse(request.responseText, textureDir);
-					if (callback != undefined) {
+					if (callback !== undefined) {
 						callback.onSuccess(entities);
 					}
 					return entities;
@@ -92,7 +92,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 			JSONImporter.prototype.parseSpatial = function(object) {
 				var type = object.Type;
-				var name = object.Name == null ? "null" : object.Name;
+				var name = object.Name === null ? "null" : object.Name;
 
 				var entity = this.world.createEntity();
 				entity.setComponent(new TransformComponent());
@@ -104,7 +104,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 						for ( var i in object.Children) {
 							var child = object.Children[i];
 							var childEntity = this.parseSpatial(child);
-							if (childEntity != null) {
+							if (childEntity !== null) {
 								entity.TransformComponent.attachChild(childEntity.TransformComponent);
 							}
 						}
@@ -117,7 +117,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					this.parseMaterial(object, entity);
 
 					var meshData = this.parseMeshData(object.MeshData, 0, entity, type);
-					if (meshData == null) {
+					if (meshData === null) {
 						return null;
 					}
 
@@ -130,7 +130,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					this.parseMaterial(object, entity);
 
 					var meshData = this.parseMeshData(object.MeshData, 4, entity, type);
-					if (meshData == null) {
+					if (meshData === null) {
 						return null;
 					}
 
@@ -153,7 +153,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 			JSONImporter.prototype.parseMeshData = function(object, weightsPerVert, entity, type) {
 				var vertexCount = object.VertexCount; // int
-				if (vertexCount == 0) {
+				if (vertexCount === 0) {
 					return null;
 				}
 				var indexCount = object.IndexLengths ? object.IndexLengths[0] : 0;
@@ -299,7 +299,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 
 				if (object.IndexModes) {
 					var modes = object.IndexModes;
-					if (modes.length == 1) {
+					if (modes.length === 1) {
 						meshData._indexModes[0] = modes[0];
 					} else {
 						var modeArray = [];
@@ -323,13 +323,13 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 			};
 
 			JSONImporter.prototype.parseMaterials = function(array) {
-				if (array == null) {
+				if (array === null) {
 					return;
 				}
 
 				for ( var i = 0, max = array.length; i < max; i++) {
 					var obj = array[i];
-					if (obj == null) {
+					if (obj === null) {
 						continue;
 					}
 
@@ -353,7 +353,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 							var fileName = entry.TextureSource || null;
 							var minificationFilterStr = entry.MinificationFilter || null;
 							var minificationFilter = 'Trilinear';
-							if (minificationFilterStr != null) {
+							if (minificationFilterStr !== null) {
 								try {
 									minificationFilter = 'minificationFilterStr';
 								} catch (e) {
@@ -376,7 +376,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 				// look for material
 				if (object.Material) {
 					var info = this.materials[object.Material];
-					if (info != undefined) {
+					if (info !== undefined) {
 						// TODO
 						var material = new Material(info.materialName);
 						material.shader = entity.MeshRendererComponent.materials[0].shader;
@@ -385,7 +385,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 						// info.connectedMeshes.push(mesh);
 
 						// apply material state
-						if (info.materialState != null) {
+						if (info.materialState !== null) {
 							// mesh.setRenderState(info.getMaterialState());
 						}
 
@@ -405,14 +405,14 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 						// apply textures
 						var foundTextures = false;
 						for ( var key in this.slotUnitMap) {
-							if (info.textureFileNames[key] != undefined) {
+							if (info.textureFileNames[key] !== undefined) {
 								var baseTexFileName = info.textureFileNames[key];
 								foundTextures = true;
 								var minificationFilter = info.textureMinificationFilters[key];
 								var flipTexture = info.textureFlipSettings[key];
 
 								var tex;
-								if (this.nameResolver != null) {
+								if (this.nameResolver !== undefined) {
 									tex = new TextureCreator().withMinificationFilter(minificationFilter)
 											.withVerticalFlip(flipTexture).withGooResourceCache(_useCache)
 											.makeTexture2D(nameResolver.resolveName(baseTexFileName));
@@ -421,7 +421,7 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 									// var rsrc =
 									// GooResourceManager.getImageResource(_useCache,
 									// baseTexFileName);
-									// if (rsrc != null) {
+									// if (rsrc !== null) {
 									// tex = new
 									// TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(
 									// flipTexture).withGooResourceCache(_useCache).makeTexture2D(baseTexFileName);

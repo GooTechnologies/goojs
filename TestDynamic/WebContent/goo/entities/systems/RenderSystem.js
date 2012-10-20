@@ -37,7 +37,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 		for ( var i in shaderInfo.materials) {
 			var material = shaderInfo.materials[i];
 
-			if (material.shader == null) {
+			if (material.shader === null) {
 				return;
 			}
 
@@ -51,9 +51,9 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 			updateTextures(material, renderer);
 
 			var meshData = shaderInfo.meshData;
-			if (meshData.getIndexBuffer() != null) {
+			if (meshData.getIndexBuffer() !== null) {
 				renderer.bindData(meshData.getIndexData());
-				if (meshData.getIndexLengths() != null) {
+				if (meshData.getIndexLengths() !== null) {
 					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
 							.getIndexLengths());
 				} else {
@@ -61,7 +61,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 							.getIndexBuffer().length ]);
 				}
 			} else {
-				if (meshData.getIndexLengths() != null) {
+				if (meshData.getIndexLengths() !== null) {
 					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
 				} else {
 					renderer.drawArraysVBO(meshData.getIndexModes(), [ meshData.getVertexCount() ]);
@@ -79,7 +79,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 				texture = TextureCreator.DEFAULT_TEXTURE;
 			}
 
-			if (texture.glTexture == null) {
+			if (texture.glTexture === null) {
 				texture.glTexture = renderer.context.createTexture();
 				updateTexture(context, texture, i);
 			} else if (texture.needsUpdate) {
@@ -131,7 +131,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator' ], functio
 	function updateTexture(context, texture, unit) {
 		bindTexture(context, texture, unit);
 
-		// set alignment to support images with width % 4 != 0, as
+		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
 		context.pixelStorei(context.UNPACK_ALIGNMENT, 1);
 

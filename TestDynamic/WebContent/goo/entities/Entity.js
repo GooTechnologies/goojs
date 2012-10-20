@@ -22,12 +22,16 @@ define(function() {
 
 	Entity.prototype.setComponent = function(component) {
 		var index = this._components.indexOf(component);
-		if (index == -1) {
+		if (index === -1) {
 			this._components.push(component);
 		} else {
 			this._components[index] = component;
 		}
 		this[component.type] = component;
+
+		if (component.type === 'TransformComponent') {
+			component.entity = this;
+		}
 
 		if (this._world._entityManager.contains(this)) {
 			this._world.changedEntity(this);
@@ -41,7 +45,11 @@ define(function() {
 	Entity.prototype.clearComponent = function(type) {
 		var component = this[type];
 		var index = this._components.indexOf(component);
-		if (index != -1) {
+		if (index !== -1) {
+			var component = this._components[index];
+			if (component.type === 'TransformComponent') {
+				component.entity = undefined;
+			}
 			this._components.splice(index, 1);
 		}
 		delete this[type];
@@ -52,7 +60,7 @@ define(function() {
 	};
 
 	Entity.prototype.toString = function() {
-		return this.name + ' [' + this._components.length + ']';
+		return this.name;
 	};
 
 	Entity.ENTITY_COUNT = 0;

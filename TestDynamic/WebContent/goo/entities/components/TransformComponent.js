@@ -6,7 +6,6 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 		this.children = [];
 		this.transform = new Transform();
-		var that = this;
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
@@ -24,7 +23,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 		}
 
 		if (childComponent.parent !== undefined) {
-			childComponent.parent.remove(childComponent);
+			childComponent.parent.detachChild(childComponent);
 		}
 		childComponent.parent = this;
 		this.children.push(childComponent);
@@ -38,7 +37,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 		var index = this.children.indexOf(childComponent);
 		if (index !== -1) {
-			childComponent.parent = undefined;
+			childComponent.parent = TransformComponent.root;
 			this.children.splice(index, 1);
 		}
 	};

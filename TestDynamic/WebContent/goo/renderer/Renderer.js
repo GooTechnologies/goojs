@@ -56,8 +56,8 @@ define(
 			}
 
 			Renderer.prototype.checkResize = function() {
-				if (this.domElement.offsetWidth != this.domElement.width
-						|| this.domElement.offsetHeight != this.domElement.height) {
+				if (this.domElement.offsetWidth !== this.domElement.width
+						|| this.domElement.offsetHeight !== this.domElement.height) {
 					this.domElement.width = this.domElement.offsetWidth;
 					this.domElement.height = this.domElement.offsetHeight;
 					this.camera.aspect = this.domElement.width / this.domElement.height;
@@ -78,9 +78,9 @@ define(
 
 			Renderer.prototype.bindData = function(bufferData) {
 				var glBuffer = null;
-				if (bufferData != null) {
+				if (bufferData !== null) {
 					glBuffer = bufferData._dataRefs.get(this.context);
-					if (glBuffer != null) {
+					if (glBuffer !== null) {
 						// updateBuffer(bufferData, this.rendererRecord,
 						// this.context);
 						if (bufferData._dataNeedsRefresh) {
@@ -102,7 +102,7 @@ define(
 					}
 				}
 
-				if (glBuffer != null) {
+				if (glBuffer !== null) {
 					this.setBoundBuffer(glBuffer, bufferData.target);
 				} else {
 					this.setBoundBuffer(null, bufferData.target);
@@ -153,7 +153,7 @@ define(
 			};
 
 			Renderer.prototype.getGLBufferTarget = function(target) {
-				if (target == 'ElementArrayBuffer') {
+				if (target === 'ElementArrayBuffer') {
 					return this.context.ELEMENT_ARRAY_BUFFER;
 				}
 
@@ -232,7 +232,7 @@ define(
 
 			Renderer.prototype.setBoundBuffer = function(buffer, target) {
 				if (!this.rendererRecord.currentBuffer[target].valid
-						|| this.rendererRecord.currentBuffer[target].buffer != buffer) {
+						|| this.rendererRecord.currentBuffer[target].buffer !== buffer) {
 					this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
 					this.rendererRecord.currentBuffer[target] = {
 						buffer : buffer,
@@ -246,7 +246,7 @@ define(
 				this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride,
 						offset);
 
-				if (record.boundAttributes.indexOf(attribIndex) == -1) {
+				if (record.boundAttributes.indexOf(attribIndex) === -1) {
 					this.context.enableVertexAttribArray(attribIndex);
 					record.boundAttributes.push(attribIndex);
 				}

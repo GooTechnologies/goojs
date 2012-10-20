@@ -34,7 +34,7 @@ define([ 'goo/renderer/Loader', 'goo/renderer/Texture' ], function(Loader, Textu
 				var key = TextureKey.getKey(null, _verticalFlip, _storeFormat, imageURL, _minFilter);
 				// check for cache version
 				var cached = findTexture2D(key);
-				if (cached != null) {
+				if (cached !== null) {
 					return cached;
 				}
 
