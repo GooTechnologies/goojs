@@ -58,6 +58,9 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 		transform.scale = JsonUtils.parseVector3(object.Scale);
 		// TODO
 		// transform.rotation = JsonUtils.parseMatrix3(object.Rotation);
+		var m = JsonUtils.parseMatrix3(object.Rotation).elements;
+		var mat4 = new THREE.Matrix4(m[0], m[1], m[2], 0, m[3], m[4], m[5], 0, m[6], m[7], m[8], 0, 0, 0, 0, 0);
+		transform.rotation.setEulerFromRotationMatrix(mat4, 'XYZ');
 
 		return transform;
 	};
