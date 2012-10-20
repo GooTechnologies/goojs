@@ -47,7 +47,11 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					request.send();
 				} else {
 					request.send();
-					return this.parse(request.responseText, textureDir);
+					var entities = this.parse(request.responseText, textureDir);
+					if (callback != undefined) {
+						callback.onSuccess(entities);
+					}
+					return entities;
 				}
 			};
 

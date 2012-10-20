@@ -16,6 +16,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		var goo = new GooRunner();
 		document.body.appendChild(goo.renderer.domElement);
 
+		// Examples of model loading
 		loadModels(goo);
 
 		// Add quad
@@ -44,7 +45,31 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			};
 		})(entities));
 
-		// Load asynchronous
+		// Load synchronous with callback
+		importer.load('resources/head.model', 'resources/', false, {
+			onSuccess : function(entities) {
+				for ( var i in entities) {
+					entities[i].addToWorld();
+				}
+				entities[0].TransformComponent.transform.scale.set(30, 30, 30);
+				var t = 0;
+				goo.callbacks.push(function(tpf) {
+					var transformComponent = entities[0].TransformComponent;
+					transformComponent.transform.translation.x = Math.sin(t + 3) * 30;
+					transformComponent.transform.translation.z = Math.cos(t + 3) * 30;
+					transformComponent.transform.rotation.x = Math.sin(t) * 2;
+					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+					transformComponent.setUpdated();
+
+					t += tpf;
+				});
+			},
+			onError : function(error) {
+				console.error(error);
+			}
+		});
+
+		// Load asynchronous (forced callback)
 		importer.load('resources/head.model', 'resources/', true, {
 			onSuccess : function(entities) {
 				for ( var i in entities) {
