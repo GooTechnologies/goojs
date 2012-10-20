@@ -24,8 +24,9 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 	}
 
 	function loadModels(goo) {
+		// Load synchronous
 		var importer = new JSONImporter(goo.world);
-		var entities = importer.import('resources/girl.model', 'resources/');
+		var entities = importer.load('resources/girl.model', 'resources/');
 		for ( var i in entities) {
 			entities[i].addToWorld();
 		}
@@ -43,21 +44,28 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			};
 		})(entities));
 
-		var entities = importer.import('resources/head.model', 'resources/');
-		for ( var i in entities) {
-			entities[i].addToWorld();
-		}
-		entities[0].TransformComponent.transform.scale.set(30, 30, 30);
-		var t = 0;
-		goo.callbacks.push(function(tpf) {
-			var transformComponent = entities[0].TransformComponent;
-			transformComponent.transform.translation.x = Math.sin(t + 2) * 30;
-			transformComponent.transform.translation.z = Math.cos(t + 2) * 30;
-			transformComponent.transform.rotation.x = Math.sin(t) * 2;
-			transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
-			transformComponent.setUpdated();
+		// Load asynchronous
+		importer.load('resources/head.model', 'resources/', true, {
+			onSuccess : function(entities) {
+				for ( var i in entities) {
+					entities[i].addToWorld();
+				}
+				entities[0].TransformComponent.transform.scale.set(30, 30, 30);
+				var t = 0;
+				goo.callbacks.push(function(tpf) {
+					var transformComponent = entities[0].TransformComponent;
+					transformComponent.transform.translation.x = Math.sin(t + 2) * 30;
+					transformComponent.transform.translation.z = Math.cos(t + 2) * 30;
+					transformComponent.transform.rotation.x = Math.sin(t) * 2;
+					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+					transformComponent.setUpdated();
 
-			t += tpf;
+					t += tpf;
+				});
+			},
+			onError : function(error) {
+				console.error(error);
+			}
 		});
 	}
 

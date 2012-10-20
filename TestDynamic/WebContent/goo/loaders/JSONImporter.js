@@ -24,15 +24,38 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 				this.baseTextureDir = '';
 			}
 
-			JSONImporter.prototype.import = function(modelSource, textureDir) {
+			JSONImporter.prototype.load = function(modelSource, textureDir, asynchronous, callback) {
+				var async = asynchronous || false;
+				if (async && callback == undefined) {
+					throw "Asynchronous mode needs a callback";
+				}
+
+				var request = new XMLHttpRequest();
+				request.open('GET', modelSource, async);
+				if (async) {
+					var that = this;
+					request.onreadystatechange = function() {
+						if (request.readyState == 4) {
+							if (request.status != 404) {
+								var entities = that.parse(request.responseText, textureDir);
+								callback.onSuccess(entities);
+							} else {
+								callback.orError(statusText);
+							}
+						}
+					};
+					request.send();
+				} else {
+					request.send();
+					return this.parse(request.responseText, textureDir);
+				}
+			};
+
+			JSONImporter.prototype.parse = function(modelSource, textureDir) {
 				this.baseTextureDir = textureDir || '';
 				this.loadedEntities = [];
 
-				var request = new XMLHttpRequest();
-				request.open('GET', modelSource, false);
-				request.send();
-
-				var root = JSON.parse(request.responseText);
+				var root = JSON.parse(modelSource);
 
 				// check if we're compressed or not
 				this.useCompression = root.UseCompression || false;
