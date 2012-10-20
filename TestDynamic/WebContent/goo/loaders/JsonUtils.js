@@ -1,7 +1,7 @@
 "use strict";
 
-define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils' ], function(Util, MeshData,
-		BufferUtils) {
+define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform' ], function(
+		Util, MeshData, BufferUtils, Transform) {
 	function JsonUtils() {
 
 	}
@@ -49,6 +49,27 @@ define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils
 		word = (word >> 1) ^ (-(word & 1));
 
 		return word;
+	};
+
+	JsonUtils.parseTransform = function(object) {
+		var transform = new Transform();
+
+		transform.translation = JsonUtils.parseVector3(object.Translation);
+		transform.scale = JsonUtils.parseVector3(object.Scale);
+		// TODO
+		// transform.rotation = JsonUtils.parseMatrix3(object.Rotation);
+
+		return transform;
+	};
+
+	JsonUtils.parseMatrix3 = function(array) {
+		var matrix = new THREE.Matrix3();
+		matrix.elements.set(array);
+		return matrix;
+	};
+
+	JsonUtils.parseVector3 = function(array) {
+		return new THREE.Vector3(array[0], array[1], array[2]);
 	};
 
 	return JsonUtils;

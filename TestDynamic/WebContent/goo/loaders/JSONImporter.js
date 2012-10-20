@@ -145,8 +145,8 @@ define([ 'goo/renderer/DataMap', 'goo/entities/components/TransformComponent', '
 					return;
 				}
 
-				// var transform = JsonUtils.parseTransform(object.Transform);
-				// spatial.setTransform(transform);
+				var transform = JsonUtils.parseTransform(object.Transform);
+				entity.TransformComponent.transform = transform;
 
 				return entity;
 			};
