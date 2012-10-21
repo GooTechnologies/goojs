@@ -5,11 +5,11 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
-		'goo/renderer/DataMap', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI' ], function(World,
-		Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent,
-		PartitioningSystem, MeshData, Renderer, Material, Shader, DataMap, GooRunner, TextureCreator, Loader,
-		JSONImporter, ScriptComponent, DebugUI) {
+		'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader', 'goo/loaders/JSONImporter',
+		'goo/entities/components/ScriptComponent', 'goo/util/DebugUI' ], function(World, Entity, System,
+		TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent,
+		PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
+		ScriptComponent, DebugUI) {
 
 	describe("Test world suite", function() {
 		var world;

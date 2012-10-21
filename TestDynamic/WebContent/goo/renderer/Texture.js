@@ -25,9 +25,9 @@ define([ 'goo/renderer/Loader' ], function(Loader) {
 		this.offset = new THREE.Vector2(0, 0);
 		this.repeat = new THREE.Vector2(1, 1);
 
-		this.generateMipmaps = true;
-		this.premultiplyAlpha = false;
-		this.flipY = true;
+		this.generateMipmaps = settings.generateMipmaps || true;
+		this.premultiplyAlpha = settings.premultiplyAlpha || false;
+		this.flipY = settings.flipY || true;
 
 		this.needsUpdate = false;
 	}

@@ -52,7 +52,7 @@ define(
 				var record = renderer.shaderRecord;
 
 				if (this.shaderProgram === null) {
-					this.investigateShaders();
+					this._investigateShaders();
 					this.compile(renderer);
 				}
 
@@ -63,14 +63,13 @@ define(
 				}
 
 				// Bind attributes
-				var descriptors = shaderInfo.meshData._dataMap.descriptors;
-				for ( var key in descriptors) {
-					var descriptor = descriptors[key];
-					var attribute = this.attributeIndexMapping[descriptor.attributeName];
-					if (attribute !== undefined) {
-						renderer.bindVertexAttribute(attribute, descriptor.count, descriptor.type,
-								descriptor.normalized, descriptor.stride * Util.getByteSize(descriptor.type),
-								descriptor.offset, record);
+				var attributeMap = shaderInfo.meshData.attributeMap;
+				for ( var key in attributeMap) {
+					var attribute = attributeMap[key];
+					var attributeIndex = this.attributeIndexMapping[key];
+					if (attributeIndex !== undefined) {
+						renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type,
+								attribute.normalized || true, 0, attribute.offset, record);
 					}
 				}
 
@@ -85,13 +84,13 @@ define(
 				this.currentCallbacks[name] = callback;
 			};
 
-			Shader.prototype.investigateShaders = function() {
+			Shader.prototype._investigateShaders = function() {
 				this.textureCount = 0;
-				this.investigateShader(this.vertexSource);
-				this.investigateShader(this.fragmentSource);
+				this._investigateShader(this.vertexSource);
+				this._investigateShader(this.fragmentSource);
 			};
 
-			Shader.prototype.investigateShader = function(source) {
+			Shader.prototype._investigateShader = function(source) {
 				this.regExp.lastIndex = 0;
 				var matcher = this.regExp.exec(source);
 

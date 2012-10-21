@@ -15,6 +15,7 @@
 			attribute vec3 vertexPosition; //!POSITION
 			attribute vec4 vertexColors; //!COLOR
 			attribute vec2 vertexUV0; //!TEXCOORD0
+			attribute float fish; //!Stuff
 			
 			uniform mat4 viewMatrix; //!VIEW_MATRIX
 			uniform mat4 projectionMatrix; //!PROJECTION_MATRIX
@@ -26,7 +27,7 @@
 			void main(void) {
 				color = vertexColors;
 				texCoord0 = vertexUV0;
-				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);
+				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition+vec3(fish*2.0), 1.0);
 			}
 </script>
 <script id="fshader" type="x-shader/x-fragment">

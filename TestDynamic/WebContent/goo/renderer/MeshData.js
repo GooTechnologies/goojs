@@ -2,82 +2,85 @@
 
 define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils' ], function(BufferData, Util,
 		BufferUtils) {
-	function MeshData(dataMap, vertexCount, indexCount) {
-		this._primitiveCounts = [];
-		this._dataMap = dataMap;
-		this._dataViews = {};
 
-		this._indexData = null;
-		this._indexLengths = null;
-		this._indexModes = [ 'Triangles' ];
+	function MeshData(attributeMap, vertexCount, indexCount) {
+		this.attributeMap = attributeMap;
+
+		this.indexData = null;
+		this.indexLengths = null;
+		this.indexModes = [ 'Triangles' ];
 
 		this.rebuildData(vertexCount, indexCount);
 	}
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
-		this._vertexCount = vertexCount;
-		this._vertexCountStore = this._vertexCount;
-		this._indexCount = indexCount || 0;
+		this.vertexCount = vertexCount;
+		this._vertexCountStore = this.vertexCount;
+		this.indexCount = indexCount || 0;
 
-		this.vertexData = new BufferData(new ArrayBuffer(this._dataMap.vertexByteSize * this._vertexCount),
-				'ArrayBuffer');
+		var vertexByteSize = 0;
+		for ( var i in this.attributeMap) {
+			var attribute = this.attributeMap[i];
+			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
+		}
 
-		if (this._indexCount > 0) {
-			var indices = BufferUtils.createIntBuffer(this._indexCount, this._vertexCount);
+		this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
+
+		if (this.indexCount > 0) {
+			var indices = BufferUtils.createIntBuffer(this.indexCount, this.vertexCount);
 			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		}
 
-		this.generateDataViews();
+		this.generateAttributeData();
 	};
 
-	MeshData.prototype.generateDataViews = function() {
-		this._dataViews = {};
+	MeshData.prototype.generateAttributeData = function() {
 		var data = this.vertexData.data;
 		var view;
 		var offset = 0;
-		for ( var i in this._dataMap.descriptors) {
-			var d = this._dataMap.descriptors[i];
-			d.offset = offset;
-			var length = this._vertexCount * d.count;
-			offset += length * Util.getByteSize(d.type);
-			switch (d.type) {
+		for ( var key in this.attributeMap) {
+			var attribute = this.attributeMap[key];
+			attribute.offset = offset;
+			var length = this.vertexCount * attribute.count;
+			offset += length * Util.getByteSize(attribute.type);
+			switch (attribute.type) {
 				case 'Byte':
-					view = new Int8Array(data, d.offset, length);
+					view = new Int8Array(data, attribute.offset, length);
 					break;
 				case 'UnsignedByte':
-					view = new Uint8Array(data, d.offset, length);
+					view = new Uint8Array(data, attribute.offset, length);
 					break;
 				case 'Short':
-					view = new Int16Array(data, d.offset, length);
+					view = new Int16Array(data, attribute.offset, length);
 					break;
 				case 'UnsignedShort':
-					view = new Uint16Array(data, d.offset, length);
+					view = new Uint16Array(data, attribute.offset, length);
 					break;
 				case 'Int':
-					view = new Int32Array(data, d.offset, length);
+					view = new Int32Array(data, attribute.offset, length);
 					break;
 				case 'UnsignedInt':
-					view = new Uint32Array(data, d.offset, length);
+					view = new Uint32Array(data, attribute.offset, length);
 					break;
 				case 'Float':
-					view = new Float32Array(data, d.offset, length);
+					view = new Float32Array(data, attribute.offset, length);
 					break;
 				case 'Double':
-					view = new Float64Array(data, d.offset, length);
+					view = new Float64Array(data, attribute.offset, length);
 					break;
 				case 'HalfFloat':
 					// XXX: Support?
 				default:
-					console.log("Unsupported DataType: " + d.type);
+					console.log("Unsupported DataType: " + attribute.type);
 					return;
 			}
 
-			this._dataViews[d.attributeName] = view;
+			this.attributeMap[key].array = view;
 		}
 	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
-		return this._dataViews[attributeName];
+		return this.attributeMap[attributeName].array;
 	};
 
 	MeshData.prototype.getIndexData = function() {
@@ -92,15 +95,15 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 	};
 
 	MeshData.prototype.getIndexLengths = function() {
-		return this._indexLengths;
+		return this.indexLengths;
 	};
 
 	MeshData.prototype.getIndexModes = function() {
-		return this._indexModes;
+		return this.indexModes;
 	};
 
 	MeshData.prototype.resetVertexCount = function() {
-		this._vertexCount = this._vertexCountStore;
+		this.vertexCount = this.vertexCountStore;
 	};
 
 	MeshData.POSITION = 'POSITION';
@@ -111,6 +114,41 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 	MeshData.TEXCOORD1 = 'TEXCOORD1';
 	MeshData.WEIGHTS = 'WEIGHTS';
 	MeshData.JOINTIDS = 'JOINTIDS';
+
+	MeshData.createAttribute = function(count, type) {
+		return {
+			count : count,
+			type : type
+		};
+	};
+
+	var defaults = {
+		POSITION : MeshData.createAttribute(3, 'Float'),
+		NORMAL : MeshData.createAttribute(3, 'Float'),
+		COLOR : MeshData.createAttribute(4, 'Float'),
+		TEXCOORD0 : MeshData.createAttribute(2, 'Float'),
+	};
+
+	function buildMap(types) {
+		var map = {};
+		for ( var i = 0; i < types.length; i++) {
+			var type = types[i];
+			if (defaults[type] !== undefined) {
+				map[type] = defaults[type];
+			} else {
+				throw "No default attribute named: " + type;
+			}
+		}
+		return map;
+	}
+
+	MeshData.defaultMap = function(types) {
+		if (types === undefined) {
+			return buildMap(Object.keys(defaults));
+		} else {
+			return buildMap(types);
+		}
+	};
 
 	return MeshData;
 });
