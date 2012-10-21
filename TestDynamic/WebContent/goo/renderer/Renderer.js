@@ -41,14 +41,30 @@ define(
 					console.error(error);
 				}
 
+				// function getAllVariables(object) {
+				// return Object.getOwnPropertyNames(object).filter(
+				// function(property) {
+				// return (typeof object[property] != 'function') && property
+				// !== 'caller'
+				// && property !== 'callee' && property !== 'arguments';
+				// });
+				// }
+				//
+				// var keys = getAllVariables(WebGLRenderingContext);
+				// for ( var prop in keys) {
+				// var key = keys[prop];
+				// var value = WebGLRenderingContext[key];
+				// Renderer[key] = value;
+				// }
+
 				this.camera = new Camera(45, 1, 1, 1000);
 
 				this.setClearColor(0.8, 0.8, 0.8, 1.0);
 				this.context.clearDepth(1);
 				this.context.clearStencil(0);
 
-				this.context.enable(this.context.DEPTH_TEST);
-				this.context.depthFunc(this.context.LEQUAL);
+				this.context.enable(WebGLRenderingContext.DEPTH_TEST);
+				this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
 				// this.context.frontFace(this.context.CCW);
 				// this.context.cullFace(this.context.BACK);
@@ -154,19 +170,19 @@ define(
 
 			Renderer.prototype.getGLBufferTarget = function(target) {
 				if (target === 'ElementArrayBuffer') {
-					return this.context.ELEMENT_ARRAY_BUFFER;
+					return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
 				}
 
-				return this.context.ARRAY_BUFFER;
+				return WebGLRenderingContext.ARRAY_BUFFER;
 			};
 
 			Renderer.prototype.getGLArrayType = function(indices) {
 				if (indices instanceof Int8Array) {
-					return this.context.UNSIGNED_BYTE;
+					return WebGLRenderingContext.UNSIGNED_BYTE;
 				} else if (indices instanceof Int16Array) {
-					return this.context.UNSIGNED_SHORT;
+					return WebGLRenderingContext.UNSIGNED_SHORT;
 				} else if (indices instanceof Int32Array) {
-					return this.context.UNSIGNED_INT;
+					return WebGLRenderingContext.UNSIGNED_INT;
 				}
 
 				return null;
@@ -187,44 +203,44 @@ define(
 			};
 
 			Renderer.prototype.getGLBufferUsage = function(usage) {
-				var glMode = this.context.STATIC_DRAW;
+				var glMode = WebGLRenderingContext.STATIC_DRAW;
 				switch (usage) {
 					case 'StaticDraw':
-						glMode = this.context.STATIC_DRAW;
+						glMode = WebGLRenderingContext.STATIC_DRAW;
 						break;
 					case 'DynamicDraw':
-						glMode = this.context.DYNAMIC_DRAW;
+						glMode = WebGLRenderingContext.DYNAMIC_DRAW;
 						break;
 					case 'StreamDraw':
-						glMode = this.context.STREAM_DRAW;
+						glMode = WebGLRenderingContext.STREAM_DRAW;
 						break;
 				}
 				return glMode;
 			};
 
 			Renderer.prototype.getGLIndexMode = function(indexMode) {
-				var glMode = this.context.TRIANGLES;
+				var glMode = WebGLRenderingContext.TRIANGLES;
 				switch (indexMode) {
 					case 'Triangles':
-						glMode = this.context.TRIANGLES;
+						glMode = WebGLRenderingContext.TRIANGLES;
 						break;
 					case 'TriangleStrip':
-						glMode = this.context.TRIANGLE_STRIP;
+						glMode = WebGLRenderingContext.TRIANGLE_STRIP;
 						break;
 					case 'TriangleFan':
-						glMode = this.context.TRIANGLE_FAN;
+						glMode = WebGLRenderingContext.TRIANGLE_FAN;
 						break;
 					case 'Lines':
-						glMode = this.context.LINES;
+						glMode = WebGLRenderingContext.LINES;
 						break;
 					case 'LineStrip':
-						glMode = this.context.LINE_STRIP;
+						glMode = WebGLRenderingContext.LINE_STRIP;
 						break;
 					case 'LineLoop':
-						glMode = this.context.LINE_LOOP;
+						glMode = WebGLRenderingContext.LINE_LOOP;
 						break;
 					case 'Points':
-						glMode = this.context.POINTS;
+						glMode = WebGLRenderingContext.POINTS;
 						break;
 				}
 				return glMode;
@@ -260,19 +276,19 @@ define(
 					case 'Float':
 					case 'HalfFloat':
 					case 'Double':
-						return this.context.FLOAT;
+						return WebGLRenderingContext.FLOAT;
 					case 'Byte':
-						return this.context.BYTE;
+						return WebGLRenderingContext.BYTE;
 					case 'UnsignedByte':
-						return this.context.UNSIGNED_BYTE;
+						return WebGLRenderingContext.UNSIGNED_BYTE;
 					case 'Short':
-						return this.context.SHORT;
+						return WebGLRenderingContext.SHORT;
 					case 'UnsignedShort':
-						return this.context.UNSIGNED_SHORT;
+						return WebGLRenderingContext.UNSIGNED_SHORT;
 					case 'Int':
-						return this.context.INT;
+						return WebGLRenderingContext.INT;
 					case 'UnsignedInt':
-						return this.context.UNSIGNED_INT;
+						return WebGLRenderingContext.UNSIGNED_INT;
 				}
 			};
 
@@ -280,13 +296,13 @@ define(
 				var bits = 0;
 
 				if (color === undefined || color) {
-					bits |= this.context.COLOR_BUFFER_BIT;
+					bits |= WebGLRenderingContext.COLOR_BUFFER_BIT;
 				}
 				if (depth === undefined || depth) {
-					bits |= this.context.DEPTH_BUFFER_BIT;
+					bits |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
 				}
 				if (stencil === undefined || stencil) {
-					bits |= this.context.STENCIL_BUFFER_BIT;
+					bits |= WebGLRenderingContext.STENCIL_BUFFER_BIT;
 				}
 
 				this.context.clear(bits);
