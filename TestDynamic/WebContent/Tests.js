@@ -11,9 +11,37 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		PartitioningSystem, MeshData, Renderer, Material, Shader, DataMap, GooRunner, TextureCreator, Loader,
 		JSONImporter, ScriptComponent, DebugUI) {
 
-	describe("A suite", function() {
-		it("contains spec with an expectation", function() {
-			expect(true).toBe(true);
+	describe("Test world suite", function() {
+		var world;
+		var entity;
+
+		it("New world has no entities", function() {
+			world = new World();
+			expect(world.getEntities().length).toBe(0);
+		});
+
+		it("New world has no entities after world.createEntity", function() {
+			entity = world.createEntity();
+			expect(world.getEntities().length).toBe(0);
+		});
+
+		it("Entity is setup correctly", function() {
+			expect(entity._world).toBe(world);
+			expect(entity._components.length).toBe(0);
+			expect(entity.id).toBe(0);
+		});
+
+		it("Correct handling of addToWorld", function() {
+			entity.addToWorld();
+			expect(world.getEntities().length).toBe(0);
+			expect(world._addedEntities.length).toBe(1);
+			expect(world._addedEntities).toContain(entity);
+		});
+
+		it("Correct state after world.process", function() {
+			world.process();
+			expect(world.getEntities().length).toBe(1);
+			expect(world._addedEntities.length).toBe(0);
 		});
 	});
 

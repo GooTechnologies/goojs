@@ -48,7 +48,7 @@ define(
 			}
 
 			Shader.prototype.apply = function(shaderInfo, renderer) {
-				var glContext = renderer.context;
+				var context = renderer.context;
 				var record = renderer.shaderRecord;
 
 				if (this.shaderProgram === null) {
@@ -58,7 +58,7 @@ define(
 
 				// Set the ShaderProgram active
 				if (record.usedProgram !== this.shaderProgram) {
-					glContext.useProgram(this.shaderProgram);
+					context.useProgram(this.shaderProgram);
 					record.usedProgram = this.shaderProgram;
 				}
 
@@ -123,41 +123,42 @@ define(
 			};
 
 			Shader.prototype.compile = function(renderer) {
-				var glContext = renderer.context;
+				var context = renderer.context;
 				var record = renderer.shaderRecord;
 
-				var vertexShader = this._getShader(glContext, glContext.VERTEX_SHADER, this.vertexSource);
-				var fragmentShader = this._getShader(glContext, glContext.FRAGMENT_SHADER, this.fragmentSource);
+				var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
+				var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER,
+						this.fragmentSource);
 
 				if (vertexShader === null || fragmentShader === null) {
 					console.error("Shader error - no shaders");
 				}
 
-				this.shaderProgram = glContext.createProgram();
-				var error = glContext.getError();
-				if (this.shaderProgram === null || error !== glContext.NO_ERROR) {
+				this.shaderProgram = context.createProgram();
+				var error = context.getError();
+				if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
 					console.error("Shader error: " + error + " [shader: " + this.name + "]");
 				}
 
-				glContext.attachShader(this.shaderProgram, vertexShader);
-				glContext.attachShader(this.shaderProgram, fragmentShader);
+				context.attachShader(this.shaderProgram, vertexShader);
+				context.attachShader(this.shaderProgram, fragmentShader);
 
 				// Link the Shader Program
-				glContext.linkProgram(this.shaderProgram);
-				if (!glContext.getProgramParameter(this.shaderProgram, glContext.LINK_STATUS)) {
-					console.error("Could not initialise shaders: " + glContext.getProgramInfoLog(shaderProgram));
+				context.linkProgram(this.shaderProgram);
+				if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
+					console.error("Could not initialise shaders: " + context.getProgramInfoLog(shaderProgram));
 				}
 
 				for ( var key in this.attributeMapping) {
-					var attributeIndex = glContext.getAttribLocation(this.shaderProgram, this.attributeMapping[key]);
+					var attributeIndex = context.getAttribLocation(this.shaderProgram, this.attributeMapping[key]);
 					this.attributeIndexMapping[key] = attributeIndex;
 				}
 
 				for ( var key in this.uniformMapping) {
-					var uniform = glContext.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
+					var uniform = context.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
 					this.uniformLocationMapping[key] = uniform;
 
-					var shaderCall = new ShaderCall(glContext);
+					var shaderCall = new ShaderCall(context);
 
 					var uniformRecord = record.uniformRecords.get(this.shaderProgram);
 					if (uniformRecord === null) {
@@ -173,15 +174,15 @@ define(
 				console.log("Shader [" + this.name + "] compiled");
 			};
 
-			Shader.prototype._getShader = function(glContext, type, source) {
-				var shader = glContext.createShader(type);
+			Shader.prototype._getShader = function(context, type, source) {
+				var shader = context.createShader(type);
 
-				glContext.shaderSource(shader, source);
-				glContext.compileShader(shader);
+				context.shaderSource(shader, source);
+				context.compileShader(shader);
 
 				// check if the Shader is successfully compiled
-				if (!glContext.getShaderParameter(shader, glContext.COMPILE_STATUS)) {
-					console.error(glContext.getShaderInfoLog(shader));
+				if (!context.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
+					console.error(context.getShaderInfoLog(shader));
 					return null;
 				}
 

@@ -136,7 +136,7 @@ define(
 				var indexModeCounter = 0;
 				// if (Constants.extraGLErrorChecks) {
 				// checkCardError();
-				Util.checkGLError(this.context);
+				// Util.checkGLError(this.context);
 				// }
 				for ( var i = 0; i < indexLengths.length; i++) {
 					var count = indexLengths[i];
@@ -160,7 +160,7 @@ define(
 				}
 				// if (Constants.extraGLErrorChecks) {
 				// checkCardError();
-				Util.checkGLError(this.context);
+				// Util.checkGLError(this.context);
 				// }
 			};
 

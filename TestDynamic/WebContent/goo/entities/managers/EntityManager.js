@@ -21,7 +21,7 @@ define(function() {
 
 	EntityManager.prototype.getEntities = function() {
 		var entities = [];
-		for (key in this._entities) {
+		for ( var key in this._entities) {
 			entities.push(this._entities[key]);
 		}
 		return entities;

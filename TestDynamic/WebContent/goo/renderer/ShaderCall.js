@@ -1,8 +1,8 @@
 "use strict";
 
 define(function() {
-	function ShaderCall(glContext) {
-		this.glContext = glContext;
+	function ShaderCall(context) {
+		this.context = context;
 
 		this.location = null;
 		this.currentRecord = null;
@@ -13,7 +13,7 @@ define(function() {
 		if (curValue === v0) {
 			return;
 		}
-		this.glContext.uniform1f(this.location, v0);
+		this.context.uniform1f(this.location, v0);
 		this.currentRecord.put(this.location, v0);
 	};
 
@@ -24,7 +24,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform1fv(this.location, values);
+		this.context.uniform1fv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -33,7 +33,7 @@ define(function() {
 		if (curValue === v0) {
 			return;
 		}
-		this.glContext.uniform1i(this.location, v0);
+		this.context.uniform1i(this.location, v0);
 		this.currentRecord.put(this.location, v0);
 	};
 
@@ -44,7 +44,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform1iv(this.location, values);
+		this.context.uniform1iv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -55,7 +55,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform2f(this.location, v0, v1);
+		this.context.uniform2f(this.location, v0, v1);
 		this.currentRecord.put(this.location, [ v0, v1 ]);
 	};
 
@@ -66,7 +66,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform2fv(this.location, values);
+		this.context.uniform2fv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -77,7 +77,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform2i(this.location, v0, v1);
+		this.context.uniform2i(this.location, v0, v1);
 		this.currentRecord.put(this.location, [ v0, v1 ]);
 	};
 
@@ -88,7 +88,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform2iv(this.location, values);
+		this.context.uniform2iv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -99,7 +99,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform3f(this.location, v0, v1, v2);
+		this.context.uniform3f(this.location, v0, v1, v2);
 		this.currentRecord.put(this.location, [ v0, v1, v2 ]);
 	};
 
@@ -110,7 +110,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform3fv(this.location, values);
+		this.context.uniform3fv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -121,7 +121,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform3i(this.location, v0, v1, v2);
+		this.context.uniform3i(this.location, v0, v1, v2);
 		this.currentRecord.put(this.location, [ v0, v1, v2 ]);
 	};
 
@@ -132,7 +132,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform3iv(this.location, values);
+		this.context.uniform3iv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -144,7 +144,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform4f(this.location, v0, v1, v2, v3);
+		this.context.uniform4f(this.location, v0, v1, v2, v3);
 		this.currentRecord.put(this.location, [ v0, v1, v2, v3 ]);
 	};
 
@@ -155,7 +155,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform4fv(this.location, values);
+		this.context.uniform4fv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
@@ -167,7 +167,7 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform4i(this.location, v0, v1, v2, v3);
+		this.context.uniform4i(this.location, v0, v1, v2, v3);
 		this.currentRecord.put(this.location, [ v0, v1, v2, v3 ]);
 	};
 
@@ -178,38 +178,38 @@ define(function() {
 				return;
 			}
 		}
-		this.glContext.uniform4iv(this.location, values);
+		this.context.uniform4iv(this.location, values);
 		this.currentRecord.put(this.location, values);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
-		this.glContext.uniformMatrix2fv(this.location, transpose, value);
+		this.context.uniformMatrix2fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
-		this.glContext.uniformMatrix2fv(this.location, transpose, value);
+		this.context.uniformMatrix2fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
-		this.glContext.uniformMatrix3fv(this.location, transpose, value);
+		this.context.uniformMatrix3fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
-		this.glContext.uniformMatrix3fv(this.location, transpose, value);
+		this.context.uniformMatrix3fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function(transpose, value) {
-		this.glContext.uniformMatrix4fv(this.location, transpose, value);
+		this.context.uniformMatrix4fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function(transpose, value) {
-		this.glContext.uniformMatrix4fv(this.location, transpose, value);
+		this.context.uniformMatrix4fv(this.location, transpose, value);
 	};
 
 	return ShaderCall;
