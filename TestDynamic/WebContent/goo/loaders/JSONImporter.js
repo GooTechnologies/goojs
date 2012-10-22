@@ -23,14 +23,14 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 		this.baseTextureDir = '';
 	}
 
-	JSONImporter.prototype.load = function(modelSource, textureDir, asynchronous, callback) {
+	JSONImporter.prototype.load = function(modelUrl, textureDir, asynchronous, callback) {
 		var async = asynchronous || false;
 		if (async && callback === undefined) {
 			throw "Asynchronous mode needs a callback";
 		}
 
 		var request = new XMLHttpRequest();
-		request.open('GET', modelSource, async);
+		request.open('GET', modelUrl, async);
 		if (async) {
 			var that = this;
 			request.onreadystatechange = function() {

@@ -27,8 +27,6 @@ define(function() {
 
 		if (this.scale.x !== 1 || this.scale.y !== 1 || this.scale.z !== 1) {
 			this.matrix.scale(this.scale);
-			// this.boundRadiusScale = Math.max( this.scale.x, Math.max(
-			// this.scale.y, this.scale.z ) );
 		}
 	};
 

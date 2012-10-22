@@ -2,8 +2,8 @@
 
 define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
 	function World() {
-		this._managers = {};
-		this._systems = {};
+		this._managers = [];
+		this._systems = [];
 
 		this._addedEntities = [];
 		this._changedEntities = [];
@@ -16,11 +16,29 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 	}
 
 	World.prototype.setManager = function(manager) {
-		this._managers[manager.type] = manager;
+		this._managers.push(manager);
+	};
+
+	World.prototype.getManager = function(type) {
+		for ( var i in this._managers) {
+			var manager = this._managers[i];
+			if (manager.type == type) {
+				return manager;
+			}
+		}
 	};
 
 	World.prototype.setSystem = function(system) {
-		this._systems[system.type] = system;
+		this._systems.push(system);
+	};
+
+	World.prototype.getSystem = function(type) {
+		for ( var i in this._systems) {
+			var system = this._systems[i];
+			if (system.type == type) {
+				return system;
+			}
+		}
 	};
 
 	World.prototype.createEntity = function() {

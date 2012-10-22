@@ -7,13 +7,10 @@ define(function() {
 		this.position.set(50, 30, 50);
 		this.lookAt(new THREE.Vector3(0, 0, 0));
 
-		var that = this;
+		this.frustum = new THREE.Frustum();
+		this._projScreenMatrix = new THREE.Matrix4();
 
 		this.updateWorld();
-
-		// var frustum = new THREE.Frustum();
-		// frustum.setFromMatrix( new THREE.Matrix4().multiply(
-		// camera.projectionMatrix, camera.matrixWorldInverse ) );
 	}
 
 	Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
@@ -27,6 +24,11 @@ define(function() {
 	Camera.prototype.updateProjection = function() {
 		this.updateProjectionMatrix();
 	};
+
+	Camera.prototype.updateFrustum = function() {
+		this._projScreenMatrix.multiply(this.projectionMatrix, this.matrixWorldInverse);
+		this.frustum.setFromMatrix(this._projScreenMatrix);
+	}
 
 	return Camera;
 });

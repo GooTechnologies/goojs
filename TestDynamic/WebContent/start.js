@@ -39,6 +39,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			return function(tpf) {
 				var transformComponent = entities[0].TransformComponent;
 				transformComponent.transform.translation.x = Math.sin(t) * 30;
+				transformComponent.transform.translation.y = Math.sin(t) * 130;
 				transformComponent.transform.translation.z = Math.cos(t) * 30;
 				transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
 				transformComponent.setUpdated();
@@ -96,10 +97,11 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		});
 	}
 
+	// Create simple quad
 	function createQuadEntity(goo) {
 		var world = goo.world;
 
-		// Create simple quad
+		// Setup default attributes
 		var attributeMap = MeshData.defaultMap([ MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0 ]);
 		// Add custom attribute
 		attributeMap.Stuff = {
@@ -109,6 +111,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 
 		var meshData = new MeshData(attributeMap, 4, 6);
 
+		// Fill attribute buffers
 		meshData.getAttributeBuffer(MeshData.POSITION).set([ -5, -5, 0, -5, 5, 0, 5, 5, 0, 5, -5, 0 ]);
 		meshData.getAttributeBuffer(MeshData.COLOR).set(
 				[ 1.0, 0.5, 0.5, 1.0, 0.5, 1.0, 0.5, 1.0, 0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, ]);

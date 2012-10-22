@@ -9,7 +9,7 @@ define(function() {
 	}
 
 	MeshRendererComponent.prototype.updateBounds = function(bounding, transform) {
-		this.worldBound = bounding.transform(transform, this.worldBound);
+		this.worldBound = bounding.transform(transform, bounding);
 	};
 
 	return MeshRendererComponent;

@@ -16,24 +16,24 @@ define(
 				this.shaderRecord = new ShaderRecord();
 				this.rendererRecord = new RendererRecord();
 
-				this._alpha = parameters.alpha !== undefined ? parameters.alpha : true;
+				this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
 				this._premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha
 						: true;
 				this._antialias = parameters.antialias !== undefined ? parameters.antialias : false;
-				this._stencil = parameters.stencil !== undefined ? parameters.stencil : true;
+				this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 				this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer
 						: false;
 
 				try {
-					// var settings = {
-					// alpha : this._alpha,
-					// premultipliedAlpha : this._premultipliedAlpha,
-					// antialias : this._antialias,
-					// stencil : this._stencil,
-					// preserveDrawingBuffer : this._preserveDrawingBuffer
-					// };
+					var settings = {
+						alpha : this._alpha,
+						premultipliedAlpha : this._premultipliedAlpha,
+						antialias : this._antialias,
+						stencil : this._stencil,
+						preserveDrawingBuffer : this._preserveDrawingBuffer
+					};
 
-					if (!(this.context = _canvas.getContext('experimental-webgl'))) {
+					if (!(this.context = _canvas.getContext('experimental-webgl', settings))) {
 						console.error('Error creating WebGL context.');
 						throw 'Error creating WebGL context.';
 					}

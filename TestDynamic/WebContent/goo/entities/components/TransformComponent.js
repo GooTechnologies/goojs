@@ -12,7 +12,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 		this._updated = false;
 	}
 
-	TransformComponent.prototype.setUpdated = function(childComponent) {
+	TransformComponent.prototype.setUpdated = function() {
 		this._dirty = true;
 	};
 

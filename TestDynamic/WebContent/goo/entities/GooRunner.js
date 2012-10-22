@@ -3,8 +3,9 @@
 define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
 		'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
 		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
-		'goo/entities/systems/LightingSystem' ], function(World, TransformSystem, RenderSystem, PartitioningSystem,
-		Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem) {
+		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner' ], function(World, TransformSystem,
+		RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem,
+		SimplePartitioner) {
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();
@@ -21,6 +22,7 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 		this.world.setSystem(new LightingSystem());
 
 		var partitioningSystem = new PartitioningSystem();
+		partitioningSystem.partitioner = new SimplePartitioner(this.renderer.camera);
 		this.world.setSystem(partitioningSystem);
 
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);

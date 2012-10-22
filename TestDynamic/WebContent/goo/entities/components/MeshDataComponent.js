@@ -1,23 +1,12 @@
 "use strict";
 
-define(function() {
+define([ 'goo/renderer/BoundingSphere' ], function(BoundingSphere) {
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
 		this.meshData = meshData;
 
-		this.modelBound = {
-			center : new THREE.Vector3(),
-			radius : 0,
-			computeFromPoints : function(verts) {
-				// calcWelzl(points);
-				this.radius = 5;
-			},
-			transform : function(transform, bound) {
-				// this.bound.center.addSelf(transform.translation);
-				return bound;
-			}
-		};
+		this.modelBound = new BoundingSphere();
 		this.autoCompute = true;
 	}
 
