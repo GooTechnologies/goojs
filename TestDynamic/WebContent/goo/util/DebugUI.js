@@ -24,6 +24,8 @@ define(function() {
 			var list = root.append('<ul></ul>');
 			that.root = root;
 
+			root.append('<div id=\'info\'></div>');
+
 			function Manager() {
 				this.type = 'UIManager';
 			}

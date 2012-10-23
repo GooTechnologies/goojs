@@ -50,6 +50,9 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 				case 'UnsignedByte':
 					view = new Uint8Array(data, attribute.offset, length);
 					break;
+				case 'UnsignedByteClamped':
+					view = new Uint8ClampedArray(data, attribute.offset, length);
+					break;
 				case 'Short':
 					view = new Int16Array(data, attribute.offset, length);
 					break;

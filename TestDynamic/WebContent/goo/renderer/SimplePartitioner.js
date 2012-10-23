@@ -6,11 +6,11 @@ define(function() {
 	}
 
 	SimplePartitioner.prototype.added = function(entity) {
-
+		// needed for things like quadtrees etc
 	};
 
 	SimplePartitioner.prototype.removed = function(entity) {
-
+		// needed for things like quadtrees etc
 	};
 
 	SimplePartitioner.prototype.process = function(entities, renderList) {
@@ -24,23 +24,19 @@ define(function() {
 				renderList.push(entity);
 			}
 		}
+
+		var str = 'Renderer objects: ' + renderList.length + ' - ' + renderList;
+		$('#info').html(str);
 	};
 
 	SimplePartitioner.prototype.contains = function(frustum, bounds) {
-		// var distance = 0.0;
-		// var planes = frustum.planes;
-		// var matrix = bounds.worldTransform.matrix;
-		// var me = matrix.elements;
-		//
-		// var radius = -bounds.radius * matrix.getMaxScaleOnAxis();
-		//
-		// for ( var i = 0; i < 6; i++) {
-		// distance = planes[i].x * me[12] + planes[i].y * me[13] + planes[i].z
-		// * me[14] + planes[i].w;
-		// if (distance <= radius) {
-		// return false;
-		// }
-		// }
+		var planes = frustum.planes;
+		for ( var i = 0; i < 6; i++) {
+			var side = bounds.whichSide(planes[i]);
+			if (side < 0) {
+				return false;
+			}
+		}
 
 		return true;
 	};
