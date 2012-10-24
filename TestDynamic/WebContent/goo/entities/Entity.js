@@ -27,9 +27,21 @@ define(function() {
 		} else {
 			this._components[index] = component;
 		}
+		// REVIEW: The API would look more natural if the attribute name was lower case.
+		// e.g. transformComponent instead of TransformComponent. Like:
+		//
+		// getTypeAttributeName = function(type) {
+		//   return component.type.charAt(0).toLowerCase() + component.type.substr(1)}
+		// }
+		// this[getTypeAttributeName[component.type] = component;
+		//
+		// Maybe even better to access component like entity.components.transform
+		// instead of entity.transformComponent?
+		// Perhaps just let the component.type be a short lower-case name?
 		this[component.type] = component;
 
 		if (component.type === 'TransformComponent') {
+			// REVIEW: Is there a reason not to do this on all kinds of components, not just TransformComponent?
 			component.entity = this;
 		}
 
@@ -63,6 +75,7 @@ define(function() {
 		return this.name;
 	};
 
+	// REVIEW: Why caps? It's not a constant.
 	Entity.ENTITY_COUNT = 0;
 
 	return Entity;

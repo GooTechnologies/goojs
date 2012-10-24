@@ -8,6 +8,7 @@ define([ 'goo/entities/systems/System' ], function(System) {
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function(entities) {
+		// REVIEW: "var i" and "var transformComponent" occur twice in this function.
 		for ( var i in entities) {
 			var transformComponent = entities[i].TransformComponent;
 			transformComponent._updated = false;

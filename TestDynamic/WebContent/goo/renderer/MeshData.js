@@ -43,6 +43,13 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
 			offset += length * Util.getByteSize(attribute.type);
+			// REVIEW: consider something like:
+			// var arrayTypes = {
+			//	Byte: Int8Array,
+			//	UnsignedByte: Uint8Array,
+			//	...
+			// };
+			// view = new arrayTypes[attribute.type](data, attribute.offset, length);
 			switch (attribute.type) {
 				case 'Byte':
 					view = new Int8Array(data, attribute.offset, length);

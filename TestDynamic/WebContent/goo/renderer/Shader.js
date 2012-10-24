@@ -17,6 +17,9 @@ define(
 				this.uniformCallMapping = {};
 				this.uniformLocationMapping = {};
 
+				// REVIEW: Use a regexp literal, i.e.
+				//this.regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+);(?:\s*\/\/\s*!\s*(\w+))*/g;
+				// REVIEW: The regexp is static. Don't put it in every Shader object.
 				this.patternStr = '\\b(attribute|uniform)\\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\\s+(\\w+);(?:\\s*//\\s*!\\s*(\\w+))*';
 				this.regExp = new RegExp(this.patternStr, 'g');
 				this.textureCount = 0;

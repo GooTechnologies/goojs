@@ -1,6 +1,7 @@
 "use strict";
 
 define(function() {
+	// REVIEW: What is the point of this class?
 	function BufferData(data, target) {
 		this.data = data;
 

@@ -24,6 +24,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 	}
 
 	JSONImporter.prototype.load = function(modelUrl, textureDir, asynchronous, callback) {
+		// REVIEW: We shouldn't support synchronous loading. It can freeze the whole browser.
+		// http://www.hunlock.com/blogs/Snippets:_Synchronous_AJAX
 		var async = asynchronous || false;
 		if (async && callback === undefined) {
 			throw "Asynchronous mode needs a callback";
@@ -35,11 +37,13 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 			var that = this;
 			request.onreadystatechange = function() {
 				if (request.readyState === 4) {
+					// REVIEW: 404 is not the only error that can occur.
+					// Instead check if it's in range 200..299, which are success codes.
 					if (request.status !== 404) {
 						var entities = that.parse(request.responseText, textureDir);
 						callback.onSuccess(entities);
 					} else {
-						callback.orError(statusText);
+						callback.onError(request.statusText);
 					}
 				}
 			};
@@ -358,6 +362,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 							console.warning("Bad texture minification filter: " + minificationFilterStr);
 						}
 					}
+					// REVIEW: This will set flipTexture to true if entry.Flip == false. Not right?
 					var flipTexture = entry.Flip || true;
 
 					info.textureReferences[textureSlot] = textureReference;
@@ -447,6 +452,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 	};
 
 	function MaterialInfo() {
+		// REVIEW: Unused expressions!?
 		this.materialName;
 		this.profile;
 		this.technique;

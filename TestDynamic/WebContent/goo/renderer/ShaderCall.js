@@ -182,6 +182,7 @@ define(function() {
 		this.currentRecord.put(this.location, values);
 	};
 
+	// REVIEW: Those functions are duplicated!
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
 		this.context.uniformMatrix2fv(this.location, transpose, value);
