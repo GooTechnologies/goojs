@@ -106,9 +106,6 @@ define(
 						this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
 						bufferData._dataNeedsRefresh = false;
 					}
-					// if (Constants.extraGLErrorChecks) {
-					// checkCardError();
-					// }
 				} else {
 					glBuffer = this.context.createBuffer();
 					bufferData._dataRefs.put(this.context, glBuffer);
@@ -126,6 +123,7 @@ define(
 				this.setBoundBuffer(null, bufferData.target);
 			}
 
+			// TODO: when/where to check for errors
 			// if (Constants.extraGLErrorChecks) {
 			// checkCardError();
 			// }
@@ -134,10 +132,7 @@ define(
 		Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
 			var offset = 0;
 			var indexModeCounter = 0;
-			// if (Constants.extraGLErrorChecks) {
-			// checkCardError();
-			// Util.checkGLError(this.context);
-			// }
+
 			for ( var i = 0; i < indexLengths.length; i++) {
 				var count = indexLengths[i];
 
@@ -146,11 +141,7 @@ define(
 				var type = this.getGLArrayType(indices);
 				var byteSize = this.getGLByteSize(indices);
 
-				// offset in this call is done in bytes.
 				this.context.drawElements(glIndexMode, count, type, offset * byteSize);
-				// if (Constants.stats) {
-				// addStats(indexModes[indexModeCounter], count);
-				// }
 
 				offset += count;
 
@@ -158,14 +149,25 @@ define(
 					indexModeCounter++;
 				}
 			}
-			// if (Constants.extraGLErrorChecks) {
-			// checkCardError();
-			// Util.checkGLError(this.context);
-			// }
 		};
 
 		Renderer.prototype.drawArraysVBO = function(indexModes, indexLengths) {
-			console.log('drawArraysVBO: ' + arguments);
+			var offset = 0;
+			var indexModeCounter = 0;
+
+			for ( var i = 0; i < indexLengths.length; i++) {
+				var count = indexLengths[i];
+
+				var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
+
+				this.context.drawArrays(glIndexMode, offset, count);
+
+				offset += count;
+
+				if (indexModeCounter < indexModes.length - 1) {
+					indexModeCounter++;
+				}
+			}
 		};
 
 		Renderer.prototype.getGLBufferTarget = function(target) {

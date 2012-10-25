@@ -67,7 +67,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 				if (meshData.getIndexLengths() !== null) {
 					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
 				} else {
-					renderer.drawArraysVBO(meshData.getIndexModes(), [meshData.getVertexCount()]);
+					renderer.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 				}
 			}
 		}

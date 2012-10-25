@@ -57,7 +57,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 
 			var arrayType = arrayTypes[attribute.type];
 			if (arrayType) {
-				view = new arrayTypes[attribute.type](data, attribute.offset, length);
+				view = new arrayType(data, attribute.offset, length);
 			} else {
 				throw "Unsupported DataType: " + attribute.type;
 			}
