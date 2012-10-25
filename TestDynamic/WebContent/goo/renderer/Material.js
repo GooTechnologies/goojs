@@ -69,6 +69,66 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'	gl_FragColor = texCol;',//
 			'}',//
 			].join('\n')
+		},
+		texturedLit : {
+			vshader : [ //
+			'attribute vec3 vertexPosition; //!POSITION', //
+			'attribute vec2 vertexNormal; //!NORMAL', //
+			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+
+			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
+			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
+			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+
+			'uniform vec3 cameraPosition; //!CAMERA', //
+			'uniform vec3 lightPosition; //!LIGHT0', //
+
+			'varying vec3 normal;',//
+			'varying vec3 lightDir;',//
+			'varying vec3 eyeVec;',//
+			'varying vec2 texCoord0;',//
+
+			'void main(void) {', //
+			'texCoord0 = vertexUV0;',//
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			'uniform sampler2D diffuseMap; //!TEXTURE0',//
+
+			'varying vec3 normal;',//
+			'varying vec3 lightDir;',//
+			'varying vec3 eyeVec;',//
+			'varying vec2 texCoord0;',//
+
+			'void main(void)',//
+			'{',//
+			'vec4 texCol = texture2D(diffuseMap, texCoord0);',//
+
+			'vec4 final_color = materialAmbient;',//
+
+			'vec3 N = normalize(normal);',//
+			'vec3 L = normalize(lightDir);',//
+
+			'float lambertTerm = dot(N,L);',//
+
+			'if(lambertTerm > 0.0)',//
+			'{',//
+			'	final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
+			'				   lambertTerm;	',//
+			'	vec3 E = normalize(eyeVec);',//
+			'	vec3 R = reflect(-L, N);',//
+			'	float specular = pow( max(dot(R, E), 0.0),',// 
+			'					materialSpecularPower);',//
+			'	final_color += materialSpecular * // gl_LightSource[0].specular * ',//
+			'				   specular;	',//
+			'}',//
+
+			'gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
+			'}',//
+			].join('\n')
 		}
 	};
 

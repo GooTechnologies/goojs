@@ -90,6 +90,24 @@ define(
 					};
 				})(i);
 			}
+			defaultCallbacks['LIGHT0'] = function(uniformMapping, shaderInfo) {
+				var uniform = uniformMapping['LIGHT0'];
+				var matrix = shaderInfo.transform.matrix;
+
+				var curValue = uniform.currentRecord.get(uniform);
+				if (curValue !== null) {
+					var equals = compareMatrices(curValue.elements, matrix.elements);
+					if (equals) {
+						return;
+					} else {
+						curValue.copy(matrix);
+					}
+				} else {
+					uniform.currentRecord.put(uniform, matrix.clone());
+				}
+
+				uniform.uniformMatrix4fv(false, matrix.elements);
+			};
 		}
 
 		function compareMatrices(e1, e2) {

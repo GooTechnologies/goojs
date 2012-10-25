@@ -6,9 +6,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
 		'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader', 'goo/loaders/JSONImporter',
-		'goo/entities/components/ScriptComponent', 'goo/util/DebugUI'], function(World, Entity, System,
-	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem,
-	MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI) {
+		'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
+		'goo/entities/EntityUtils'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
+	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils) {
 
 	function init() {
 		// Create typical goo application
@@ -24,6 +25,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Add quad
 		var quadEntity = createQuadEntity(goo);
 		quadEntity.addToWorld();
+
+		// Add box
+		// var boxEntity = createBoxEntity(goo);
+		// boxEntity.addToWorld();
 	}
 
 	function loadModels(goo) {
@@ -143,9 +148,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		material.shader = new Shader('TestShader', vs, fs);
 
-		// var texture = new
-		// TextureCreator().loadTexture2D('resources/pitcher.jpg');
-		// material.textures.push(texture);
+		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+		material.textures.push(texture);
 
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
@@ -166,6 +170,26 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		};
 		entity.setComponent(new ScriptComponent(script));
+
+		return entity;
+	}
+
+	function createBoxEntity(goo) {
+		var meshData = ShapeCreator.createBox(1, 1, 1);
+
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+
+		var material = new Material('TestMaterial');
+
+		var vs = Material.shaders.textured.vshader;
+		var fs = Material.shaders.textured.fshader;
+
+		material.shader = new Shader('TestShader', vs, fs);
+
+		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+		material.textures.push(texture);
+
+		entity.meshRendererComponent.materials.push(material);
 
 		return entity;
 	}

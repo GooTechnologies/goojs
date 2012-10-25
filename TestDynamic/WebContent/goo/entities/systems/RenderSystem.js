@@ -16,13 +16,12 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		renderer.clear();
 
 		for ( var i in this.renderList) {
-			var entity = this.renderList[i];
-			this.renderEntity(renderer, entity);
+			this.renderEntity(renderer, this.renderList[i]);
 		}
 
 		renderer.flush();
 
-		Util.checkGLError(renderer.context);
+		// Util.checkGLError(renderer.context);
 	};
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
@@ -31,8 +30,6 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 			transform : entity.transformComponent.worldTransform,
 			materials : entity.meshRendererComponent.materials
 		};
-
-		var context = renderer.context;
 
 		// bind our interleaved data
 		renderer.bindData(shaderInfo.meshData.vertexData);
