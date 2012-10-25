@@ -1,3 +1,7 @@
+// REVIEW: Applies to all files: Put "use strict" inside function.
+// It's safer for concatenating scripts, see
+// http://stackoverflow.com/questions/4462478/jslint-is-suddenly-reporting-use-the-function-form-of-use-strict
+
 "use strict";
 
 define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
@@ -87,6 +91,7 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 	};
 
 	World.prototype._check = function(entities, callback) {
+		// REVIEW: Code style? Spaces before and after "("?
 		for ( var index in entities) {
 			var entity = entities[index];
 			for ( var managerIndex in this._managers) {

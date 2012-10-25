@@ -25,6 +25,7 @@ define(function() {
 			}
 		}
 
+		// REVIEW: This looks like temporary code
 		var str = 'Renderer objects: ' + renderList.length + ' - ' + renderList;
 		$('#info').html(str);
 	};

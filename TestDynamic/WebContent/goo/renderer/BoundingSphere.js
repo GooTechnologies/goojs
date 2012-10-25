@@ -7,7 +7,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
-		var big = 10000000;
+		var big = 10000000;  // REVIEW: "big = Infinity" should do the trick
 		var vec = new THREE.Vector3();
 		var min = new THREE.Vector3(big, big, big);
 		var max = new THREE.Vector3(-big, -big, -big);

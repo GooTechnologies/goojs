@@ -31,6 +31,7 @@ define(function() {
 	Transform.prototype.update = function() {
 		this.matrix.setPosition(this.translation);
 
+		// REVIEW: "if (!this.useQuaternion)"
 		if (this.useQuaternion === false) {
 			this.matrix.setRotationFromEuler(this.rotation, this.eulerOrder);
 		} else {

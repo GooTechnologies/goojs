@@ -1,5 +1,6 @@
 "use strict";
 
+// REVIEW: Too many indentation steps
 define(
 		[ 'goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util' ],
 		function(ShaderRecord, RendererRecord, Camera, Util) {
@@ -7,9 +8,12 @@ define(
 				parameters = parameters || {};
 
 				var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas');
+				// REVIEW: Don't change the size of the canvas if it wasn't created above
 				_canvas.width = 500;
 				_canvas.height = 500;
 				this.domElement = _canvas;
+				// REVIEW: Is this only used for styling? I think we shouldn't be this invasive.
+				// (E.g. if you want to have more than one canvas, or there's already another element with id=goo)
 				this.domElement.id = 'goo';
 
 				this.lineRecord = null;// new LineRecord();

@@ -4,6 +4,7 @@ define(function() {
 	function DebugUI(goo) {
 		var that = this;
 
+		// REVIEW: too long function
 		jQuery(function($) {
 			var root = $('<div/>', {
 				'id' : 'debug',

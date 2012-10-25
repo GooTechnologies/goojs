@@ -1,5 +1,26 @@
 "use strict";
 
+// REVIEW: This is a better structure for version control + easier to spot mistakes:
+// define([
+// 	'goo/entities/World',
+// 	'goo/entities/systems/TransformSystem',
+// 	'goo/entities/systems/RenderSystem',
+// 	'goo/entities/systems/PartitioningSystem',
+// 	'goo/renderer/Renderer',
+// 	'goo/entities/systems/BoundingUpdateSystem',
+// 	'goo/entities/systems/ScriptSystem',
+// 	'goo/entities/systems/LightingSystem'
+// ], function(
+// 	World,
+// 	TransformSystem,
+// 	RenderSystem,
+// 	PartitioningSystem,
+// 	Renderer,
+// 	BoundingUpdateSystem,
+// 	ScriptSystem,
+// 	LightingSystem
+// ) {
+
 define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
 		'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
 		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
@@ -9,6 +30,7 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();
+		// REVIEW: Why do this?
 		GooRunner.renderer = this.renderer;
 
 		// world.setManager(new TagManager());

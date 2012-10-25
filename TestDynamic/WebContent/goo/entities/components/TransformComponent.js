@@ -18,10 +18,13 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 	TransformComponent.prototype.attachChild = function(childComponent) {
 		if (childComponent === this) {
+			// REVIEW: Do we need to check this recursively?
 			console.warn('attachChild: An object can\'t be added as a child of itself.');
 			return;
 		}
 
+		// REVIEW: I'd use null instead of undefined in this case, or just:
+		// if (!childComponent.parent) ...
 		if (childComponent.parent !== undefined) {
 			childComponent.parent.detachChild(childComponent);
 		}
@@ -37,6 +40,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 		var index = this.children.indexOf(childComponent);
 		if (index !== -1) {
+			// REVIEW: What is TransformComponent.root? Undefined?
 			childComponent.parent = TransformComponent.root;
 			this.children.splice(index, 1);
 		}
