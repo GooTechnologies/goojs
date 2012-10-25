@@ -1,13 +1,24 @@
-"use strict";
-
 define(function() {
-	// REVIEW: To avoid long parameter list Consider the pattern
-	// function System(settings) {
-	//	 settings = settings || {};
-	//   this.type = settings.type;
-	//   this.interests = settings.interests || ....;
-	//   this.isPassive = settings.isPassive || false;
-	// }
+	"use strict";
+
+	/**
+	 * Creates a new System
+	 * 
+	 * @name System
+	 * @class Base class for all entity systems
+	 *        <ul>
+	 *        <li> interests = null -> listen to all entities
+	 *        <li> interests = [] -> listen to entities with no components
+	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum
+	 *        'coolComponent' and 'testComponent'
+	 *        </ul>
+	 * @param {String} type System type name as a string
+	 * @param {String[]} interests Array of component types this system is interested in
+	 * @param {Boolean} isPassive If the system is active or not
+	 * @property {String} type System type
+	 * @property {String[]} interests Array of component types this system is interested in
+	 * @property {Boolean} isPassive If the system is active or not
+	 */
 	function System(type, interests, isPassive) {
 		this.type = type;
 		this.interests = interests;
@@ -16,6 +27,9 @@ define(function() {
 		this._activeEntities = [];
 	}
 
+	/**
+	 * @param entity
+	 */
 	System.prototype.added = function(entity) {
 		this._check(entity);
 	};
@@ -34,26 +48,23 @@ define(function() {
 		}
 	};
 
-	// REVIEW: I don't understand what this is supposed to do. High prio for documentation?
+	function getTypeAttributeName(type) {
+		return type.charAt(0).toLowerCase() + type.substr(1);
+	}
+
+	/**
+	 * Check if a system is interested in an entity based on its interests list.
+	 * 
+	 * @param entity {@link Entity} to check if the system is interested in
+	 */
 	System.prototype._check = function(entity) {
-		// REVIEW: Should there be a difference between interests is null and interests is an empty array?
-		// REVIEW: This is supposed to be "!==" instead of "==="?
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
 			for ( var i in this.interests) {
-				var interest = this.interests[i];
-				var found = false;
-				// REVIEW: No need to loop over _components. Use entity[interest].
-				for ( var j in entity._components) {
-					var component = entity._components[j];
-					if (component.type === interest) {
-						found = true;
-						break;
-					}
-				}
+				var interest = getTypeAttributeName(this.interests[i]);
 
-				if (!found) {
+				if (!entity[interest]) {
 					isInterested = false;
 					break;
 				}

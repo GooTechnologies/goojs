@@ -1,6 +1,16 @@
-"use strict";
+define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, TextureCreator) {
+	"use strict";
 
-define([ 'goo/renderer/Shader', 'goo/renderer/TextureCreator' ], function(Shader, TextureCreator) {
+	/**
+	 * Creates a new Material
+	 * 
+	 * @name Material
+	 * @class A Material defines the look of an object
+	 * @param {String} name Material name
+	 * @property {String} name Material name
+	 * @property {Shader} shader Shader to use when rendering
+	 * @property {Texture[]} textures Array of textures in use
+	 */
 	function Material(name) {
 		this.name = name;
 

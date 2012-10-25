@@ -1,8 +1,8 @@
-"use strict";
+define(['goo/entities/systems/System'], function(System) {
+	"use strict";
 
-define([ 'goo/entities/systems/System' ], function(System) {
 	function PartitioningSystem() {
-		System.call(this, 'PartitioningSystem', [ 'MeshRendererComponent' ]);
+		System.call(this, 'PartitioningSystem', ['MeshRendererComponent']);
 
 		this.renderList = [];
 	}

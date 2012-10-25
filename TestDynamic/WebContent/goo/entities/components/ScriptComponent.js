@@ -1,11 +1,10 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function ScriptComponent(script) {
 		this.type = 'ScriptComponent';
 
-		// REVIEW: No need for the "|| undefined" part.
-		this.script = script || undefined;
+		this.script = script;
 	}
 
 	ScriptComponent.prototype.run = function(entity) {

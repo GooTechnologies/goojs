@@ -1,6 +1,6 @@
-"use strict";
+define(['goo/renderer/Loader'], function(Loader) {
+	"use strict";
 
-define([ 'goo/renderer/Loader' ], function(Loader) {
 	function Texture(image, settings) {
 		this.image = image;
 

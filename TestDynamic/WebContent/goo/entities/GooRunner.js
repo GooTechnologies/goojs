@@ -1,32 +1,31 @@
-"use strict";
-
 // REVIEW: This is a better structure for version control + easier to spot mistakes:
 // define([
-// 	'goo/entities/World',
-// 	'goo/entities/systems/TransformSystem',
-// 	'goo/entities/systems/RenderSystem',
-// 	'goo/entities/systems/PartitioningSystem',
-// 	'goo/renderer/Renderer',
-// 	'goo/entities/systems/BoundingUpdateSystem',
-// 	'goo/entities/systems/ScriptSystem',
-// 	'goo/entities/systems/LightingSystem'
+// 'goo/entities/World',
+// 'goo/entities/systems/TransformSystem',
+// 'goo/entities/systems/RenderSystem',
+// 'goo/entities/systems/PartitioningSystem',
+// 'goo/renderer/Renderer',
+// 'goo/entities/systems/BoundingUpdateSystem',
+// 'goo/entities/systems/ScriptSystem',
+// 'goo/entities/systems/LightingSystem'
 // ], function(
-// 	World,
-// 	TransformSystem,
-// 	RenderSystem,
-// 	PartitioningSystem,
-// 	Renderer,
-// 	BoundingUpdateSystem,
-// 	ScriptSystem,
-// 	LightingSystem
+// World,
+// TransformSystem,
+// RenderSystem,
+// PartitioningSystem,
+// Renderer,
+// BoundingUpdateSystem,
+// ScriptSystem,
+// LightingSystem
 // ) {
 
-define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
+define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem',
 		'goo/entities/systems/PartitioningSystem', 'goo/renderer/Renderer',
 		'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
-		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner' ], function(World, TransformSystem,
-		RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem,
-		SimplePartitioner) {
+		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner'], function(World, TransformSystem,
+	RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner) {
+	"use strict";
+
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();
@@ -75,12 +74,12 @@ define([ 'goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/enti
 
 	function init() {
 		var lastTime = 0;
-		var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+		var vendors = ['ms', 'moz', 'webkit', 'o'];
 
 		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
 			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
 			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame']
-					|| window[vendors[x] + 'CancelRequestAnimationFrame'];
+				|| window[vendors[x] + 'CancelRequestAnimationFrame'];
 		}
 
 		if (window.requestAnimationFrame === undefined) {

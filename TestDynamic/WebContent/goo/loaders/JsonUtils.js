@@ -1,7 +1,7 @@
-"use strict";
+define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform'], function(Util,
+	MeshData, BufferUtils, Transform) {
+	"use strict";
 
-define([ 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform' ], function(
-		Util, MeshData, BufferUtils, Transform) {
 	function JsonUtils() {
 
 	}

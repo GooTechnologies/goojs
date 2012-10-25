@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function Transform() {
 		this.matrix = new THREE.Matrix4();
 
@@ -31,8 +31,7 @@ define(function() {
 	Transform.prototype.update = function() {
 		this.matrix.setPosition(this.translation);
 
-		// REVIEW: "if (!this.useQuaternion)"
-		if (this.useQuaternion === false) {
+		if (!this.useQuaternion) {
 			this.matrix.setRotationFromEuler(this.rotation, this.eulerOrder);
 		} else {
 			this.matrix.setRotationFromQuaternion(this.quaternion);

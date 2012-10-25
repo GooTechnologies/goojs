@@ -1,8 +1,8 @@
-"use strict";
+define(['goo/entities/systems/System'], function(System) {
+	"use strict";
 
-define([ 'goo/entities/systems/System' ], function(System) {
 	function LightingSystem() {
-		System.call(this, 'LightingSystem', [ 'LightComponent' ]);
+		System.call(this, 'LightingSystem', ['LightComponent']);
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);

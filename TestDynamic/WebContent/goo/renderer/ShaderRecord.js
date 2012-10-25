@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function ShaderRecord() {
 		this.usedProgram = null;
 		this.boundAttributes = [];

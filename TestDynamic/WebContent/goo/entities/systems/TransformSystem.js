@@ -1,23 +1,22 @@
-"use strict";
+define(['goo/entities/systems/System'], function(System) {
+	"use strict";
 
-define([ 'goo/entities/systems/System' ], function(System) {
 	function TransformSystem() {
-		System.call(this, 'TransformSystem', [ 'TransformComponent' ]);
+		System.call(this, 'TransformSystem', ['TransformComponent']);
 	}
 
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function(entities) {
-		// REVIEW: "var i" and "var transformComponent" occur twice in this function.
 		for ( var i in entities) {
-			var transformComponent = entities[i].TransformComponent;
+			var transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
 			}
 		}
-		for ( var i in entities) {
-			var transformComponent = entities[i].TransformComponent;
+		for (i in entities) {
+			transformComponent = entities[i].transformComponent;
 			if (transformComponent._dirty) {
 				this.updateWorldTransform(transformComponent);
 			}

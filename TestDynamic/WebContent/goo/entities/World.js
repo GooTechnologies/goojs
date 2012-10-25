@@ -1,10 +1,14 @@
-// REVIEW: Applies to all files: Put "use strict" inside function.
-// It's safer for concatenating scripts, see
-// http://stackoverflow.com/questions/4462478/jslint-is-suddenly-reporting-use-the-function-form-of-use-strict
+define(['goo/entities/Entity', 'goo/entities/managers/EntityManager'], function(Entity, EntityManager) {
+	"use strict";
 
-"use strict";
-
-define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], function(Entity, EntityManager) {
+	/**
+	 * Creates a new world object
+	 * 
+	 * @name World
+	 * @class Main handler for an entity world
+	 * @property {Float} tpf Timer per frame in seconds
+	 * @property {Manager} entityManager Main keeper of entities
+	 */
 	function World() {
 		this._managers = [];
 		this._systems = [];
@@ -13,16 +17,27 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 		this._changedEntities = [];
 		this._removedEntities = [];
 
-		this._entityManager = new EntityManager();
-		this.setManager(this._entityManager);
+		this.entityManager = new EntityManager();
+		this.setManager(this.entityManager);
 
 		this.tpf = 1.0;
 	}
 
+	/**
+	 * Adds a Manager to the world
+	 * 
+	 * @param {Manager} manager
+	 */
 	World.prototype.setManager = function(manager) {
 		this._managers.push(manager);
 	};
 
+	/**
+	 * Retrive a manager of type 'type'
+	 * 
+	 * @param {String} type Type of manager to retrieve
+	 * @returns manager
+	 */
 	World.prototype.getManager = function(type) {
 		for ( var i in this._managers) {
 			var manager = this._managers[i];
@@ -32,10 +47,21 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 		}
 	};
 
+	/**
+	 * Adds a {@link System} to the world
+	 * 
+	 * @param {System} system
+	 */
 	World.prototype.setSystem = function(system) {
 		this._systems.push(system);
 	};
 
+	/**
+	 * Retrive a {@link System} of type 'type'
+	 * 
+	 * @param {String} type Type of system to retrieve
+	 * @returns System
+	 */
 	World.prototype.getSystem = function(type) {
 		for ( var i in this._systems) {
 			var system = this._systems[i];
@@ -45,12 +71,17 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 		}
 	};
 
+	/**
+	 * Creates a new {@link Entity}
+	 * 
+	 * @returns {Entity}
+	 */
 	World.prototype.createEntity = function() {
 		return new Entity(this);
 	};
 
 	World.prototype.getEntities = function() {
-		return this._entityManager.getEntities();
+		return this.entityManager.getEntities();
 	};
 
 	World.prototype.addEntity = function(entity) {
@@ -65,6 +96,9 @@ define([ 'goo/entities/Entity', 'goo/entities/managers/EntityManager' ], functio
 		this._changedEntities.push(entity);
 	};
 
+	/**
+	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called each frame
+	 */
 	World.prototype.process = function() {
 		this._check(this._addedEntities, function(observer, entity) {
 			if (observer.added) {

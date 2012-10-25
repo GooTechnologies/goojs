@@ -1,6 +1,6 @@
-"use strict";
+define(['goo/renderer/BoundingSphere'], function(BoundingSphere) {
+	"use strict";
 
-define([ 'goo/renderer/BoundingSphere' ], function(BoundingSphere) {
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 

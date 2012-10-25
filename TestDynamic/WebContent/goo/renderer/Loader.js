@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function Loader() {
 		this.crossOrigin = 'anonymous';
 	}
@@ -9,15 +9,12 @@ define(function() {
 		var image = new Image();
 
 		callback = callback !== undefined ? callback : {};
-		// (function(image) {
 		image.addEventListener('load', function() {
-			console.log(image.src);
 			image.dataReady = true;
 			if (callback.onSuccess) {
 				callback.onSuccess(image);
 			}
 		}, false);
-		// })(image);
 
 		image.addEventListener('error', function() {
 			if (callback.onError) {

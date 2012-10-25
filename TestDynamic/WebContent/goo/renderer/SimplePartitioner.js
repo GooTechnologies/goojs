@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function SimplePartitioner(camera) {
 		this.camera = camera;
 	}
@@ -18,16 +18,12 @@ define(function() {
 		for ( var i in entities) {
 			var entity = entities[i];
 
-			var bounds = entity.MeshRendererComponent.worldBound;
+			var bounds = entity.meshRendererComponent.worldBound;
 			var isVisible = this.contains(this.camera.frustum, bounds);
 			if (isVisible) {
 				renderList.push(entity);
 			}
 		}
-
-		// REVIEW: This looks like temporary code
-		var str = 'Renderer objects: ' + renderList.length + ' - ' + renderList;
-		$('#info').html(str);
 	};
 
 	SimplePartitioner.prototype.contains = function(frustum, bounds) {

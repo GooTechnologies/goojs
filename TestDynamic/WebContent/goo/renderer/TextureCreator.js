@@ -1,6 +1,6 @@
-"use strict";
+define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture) {
+	"use strict";
 
-define([ 'goo/renderer/Loader', 'goo/renderer/Texture' ], function(Loader, Texture) {
 	function TextureCreator(settings) {
 		settings = settings || {};
 

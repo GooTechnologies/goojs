@@ -1,9 +1,9 @@
-"use strict";
-
-define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils',
+define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils',
 		'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent',
-		'goo/renderer/Material', 'goo/renderer/TextureCreator' ], function(TransformComponent, MeshData, JsonUtils,
-		MeshDataComponent, MeshRendererComponent, Material, TextureCreator) {
+		'goo/renderer/Material', 'goo/renderer/TextureCreator'], function(TransformComponent, MeshData, JsonUtils,
+	MeshDataComponent, MeshRendererComponent, Material, TextureCreator) {
+	"use strict";
+
 	function JSONImporter(world) {
 		this.world = world;
 
@@ -23,39 +23,21 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 		this.baseTextureDir = '';
 	}
 
-	JSONImporter.prototype.load = function(modelUrl, textureDir, asynchronous, callback) {
-		// REVIEW: We shouldn't support synchronous loading. It can freeze the whole browser.
-		// http://www.hunlock.com/blogs/Snippets:_Synchronous_AJAX
-		var async = asynchronous || false;
-		if (async && callback === undefined) {
-			throw "Asynchronous mode needs a callback";
-		}
-
+	JSONImporter.prototype.load = function(modelUrl, textureDir, callback) {
 		var request = new XMLHttpRequest();
-		request.open('GET', modelUrl, async);
-		if (async) {
-			var that = this;
-			request.onreadystatechange = function() {
-				if (request.readyState === 4) {
-					// REVIEW: 404 is not the only error that can occur.
-					// Instead check if it's in range 200..299, which are success codes.
-					if (request.status !== 404) {
-						var entities = that.parse(request.responseText, textureDir);
-						callback.onSuccess(entities);
-					} else {
-						callback.onError(request.statusText);
-					}
+		request.open('GET', modelUrl, true);
+		var that = this;
+		request.onreadystatechange = function() {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status <= 299) {
+					var entities = that.parse(request.responseText, textureDir);
+					callback.onSuccess(entities);
+				} else {
+					callback.onError(request.statusText);
 				}
-			};
-			request.send();
-		} else {
-			request.send();
-			var entities = this.parse(request.responseText, textureDir);
-			if (callback !== undefined) {
-				callback.onSuccess(entities);
 			}
-			return entities;
-		}
+		};
+		request.send();
 	};
 
 	JSONImporter.prototype.parse = function(modelSource, textureDir) {
@@ -108,7 +90,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 					var child = object.Children[i];
 					var childEntity = this.parseSpatial(child);
 					if (childEntity !== null) {
-						entity.TransformComponent.attachChild(childEntity.TransformComponent);
+						entity.transformComponent.attachChild(childEntity.transformComponent);
 					}
 				}
 			}
@@ -149,7 +131,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 		}
 
 		var transform = JsonUtils.parseTransform(object.Transform);
-		entity.TransformComponent.transform = transform;
+		entity.transformComponent.transform = transform;
 
 		return entity;
 	};
@@ -192,8 +174,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 			if (this.useCompression) {
 				var offsetObj = object.VertexOffsets;
 				JsonUtils.fillAttributeBufferFromCompressedString(object.Vertices, meshData, MeshData.POSITION, [
-						object.VertexScale, object.VertexScale, object.VertexScale ], [ offsetObj.xOffset,
-						offsetObj.yOffset, offsetObj.zOffset ]);
+						object.VertexScale, object.VertexScale, object.VertexScale], [offsetObj.xOffset,
+						offsetObj.yOffset, offsetObj.zOffset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Vertices, meshData, MeshData.POSITION);
 			}
@@ -203,8 +185,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 				var offset = 0;
 				var scale = 1 / this.compressedVertsRange;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Weights, meshData, MeshData.WEIGHTS,
-						[ scale ], [ offset ]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Weights, meshData, MeshData.WEIGHTS, [scale],
+					[offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Weights, meshData, MeshData.WEIGHTS);
 			}
@@ -214,8 +196,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Normals, meshData, MeshData.NORMAL, [ scale,
-						scale, scale ], [ offset, offset, offset ]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Normals, meshData, MeshData.NORMAL, [scale,
+						scale, scale], [offset, offset, offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Normals, meshData, MeshData.NORMAL);
 			}
@@ -225,8 +207,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents, meshData, MeshData.TANGENT, [ scale,
-						scale, scale, scale ], [ offset, offset, offset, offset ]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents, meshData, MeshData.TANGENT, [scale,
+						scale, scale, scale], [offset, offset, offset, offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Tangents, meshData, MeshData.TANGENT);
 			}
@@ -235,8 +217,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 255 / (this.compressedColorsRange + 1);
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [ scale,
-						scale, scale, scale ], [ offset, offset, offset, offset ]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [scale,
+						scale, scale, scale], [offset, offset, offset, offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Colors, meshData, MeshData.COLOR);
 			}
@@ -247,7 +229,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 				for ( var i = 0; i < textureUnits.length; i++) {
 					var texObj = textureUnits[i];
 					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i,
-							texObj.UVScales, texObj.UVOffsets);
+						texObj.UVScales, texObj.UVOffsets);
 				}
 			} else {
 				for ( var i = 0; i < textureUnits.length; i++) {
@@ -274,7 +256,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 						localJointMap[jointIndex] = localIndex++;
 					}
 
-					buffer.set([ localJointMap[jointIndex] ], i);
+					buffer.set([localJointMap[jointIndex]], i);
 				}
 
 				// store local map
@@ -362,8 +344,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 							console.warning("Bad texture minification filter: " + minificationFilterStr);
 						}
 					}
-					// REVIEW: This will set flipTexture to true if entry.Flip == false. Not right?
-					var flipTexture = entry.Flip || true;
+					var flipTexture = entry.Flip !== undefined ? entry.Flip : true;
 
 					info.textureReferences[textureSlot] = textureReference;
 					info.textureFileNames[textureSlot] = fileName;
@@ -382,8 +363,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 			if (info !== undefined) {
 				// TODO
 				var material = new Material(info.materialName);
-				material.shader = entity.MeshRendererComponent.materials[0].shader;
-				entity.MeshRendererComponent.materials[0] = material;
+				material.shader = entity.meshRendererComponent.materials[0].shader;
+				entity.meshRendererComponent.materials[0] = material;
 
 				// info.connectedMeshes.push(mesh);
 
@@ -417,8 +398,8 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 						var tex;
 						if (this.nameResolver !== undefined) {
 							tex = new TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(
-									flipTexture).withGooResourceCache(_useCache).makeTexture2D(
-									nameResolver.resolveName(baseTexFileName));
+								flipTexture).withGooResourceCache(_useCache).makeTexture2D(
+								nameResolver.resolveName(baseTexFileName));
 						} else {
 							// look for pak contents
 							// var rsrc =
@@ -451,6 +432,7 @@ define([ 'goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 
 		}
 	};
 
+	// TODO
 	function MaterialInfo() {
 		// REVIEW: Unused expressions!?
 		this.materialName;

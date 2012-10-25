@@ -1,9 +1,10 @@
-"use strict";
+define(['goo/math/Transform'], function(Transform) {
+	"use strict";
 
-define([ 'goo/math/Transform' ], function(Transform) {
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
+		this.parent = null;
 		this.children = [];
 		this.transform = new Transform();
 		this.worldTransform = new Transform();
@@ -18,14 +19,12 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 	TransformComponent.prototype.attachChild = function(childComponent) {
 		if (childComponent === this) {
-			// REVIEW: Do we need to check this recursively?
+			// REVIEW: Do we need to check this recursively? ANSWER: Yes
 			console.warn('attachChild: An object can\'t be added as a child of itself.');
 			return;
 		}
 
-		// REVIEW: I'd use null instead of undefined in this case, or just:
-		// if (!childComponent.parent) ...
-		if (childComponent.parent !== undefined) {
+		if (childComponent.parent) {
 			childComponent.parent.detachChild(childComponent);
 		}
 		childComponent.parent = this;
@@ -40,8 +39,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 
 		var index = this.children.indexOf(childComponent);
 		if (index !== -1) {
-			// REVIEW: What is TransformComponent.root? Undefined?
-			childComponent.parent = TransformComponent.root;
+			childComponent.parent = null;
 			this.children.splice(index, 1);
 		}
 	};
@@ -51,7 +49,7 @@ define([ 'goo/math/Transform' ], function(Transform) {
 	};
 
 	TransformComponent.prototype.updateWorldTransform = function() {
-		if (this.parent !== undefined) {
+		if (this.parent) {
 			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
 		} else {
 			this.worldTransform.copy(this.transform);

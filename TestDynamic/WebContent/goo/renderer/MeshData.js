@@ -1,14 +1,13 @@
-"use strict";
-
-define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils' ], function(BufferData, Util,
-		BufferUtils) {
+define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'], function(BufferData, Util,
+	BufferUtils) {
+	"use strict";
 
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
 		this.indexData = null;
 		this.indexLengths = null;
-		this.indexModes = [ 'Triangles' ];
+		this.indexModes = ['Triangles'];
 
 		this.rebuildData(vertexCount, indexCount);
 	}
@@ -34,6 +33,18 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 		this.generateAttributeData();
 	};
 
+	var arrayTypes = {
+		Byte : Int8Array,
+		UnsignedByte : Uint8Array,
+		UnsignedByteClamped : Uint8ClampedArray,
+		Short : Int16Array,
+		UnsignedShort : Uint16Array,
+		Int : Int32Array,
+		UnsignedInt : Uint32Array,
+		Float : Float32Array,
+		Double : Float64Array,
+	};
+
 	MeshData.prototype.generateAttributeData = function() {
 		var data = this.vertexData.data;
 		var view;
@@ -43,46 +54,12 @@ define([ 'goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUti
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
 			offset += length * Util.getByteSize(attribute.type);
-			// REVIEW: consider something like:
-			// var arrayTypes = {
-			//	Byte: Int8Array,
-			//	UnsignedByte: Uint8Array,
-			//	...
-			// };
-			// view = new arrayTypes[attribute.type](data, attribute.offset, length);
-			switch (attribute.type) {
-				case 'Byte':
-					view = new Int8Array(data, attribute.offset, length);
-					break;
-				case 'UnsignedByte':
-					view = new Uint8Array(data, attribute.offset, length);
-					break;
-				case 'UnsignedByteClamped':
-					view = new Uint8ClampedArray(data, attribute.offset, length);
-					break;
-				case 'Short':
-					view = new Int16Array(data, attribute.offset, length);
-					break;
-				case 'UnsignedShort':
-					view = new Uint16Array(data, attribute.offset, length);
-					break;
-				case 'Int':
-					view = new Int32Array(data, attribute.offset, length);
-					break;
-				case 'UnsignedInt':
-					view = new Uint32Array(data, attribute.offset, length);
-					break;
-				case 'Float':
-					view = new Float32Array(data, attribute.offset, length);
-					break;
-				case 'Double':
-					view = new Float64Array(data, attribute.offset, length);
-					break;
-				case 'HalfFloat':
-					// XXX: Support?
-				default:
-					console.log("Unsupported DataType: " + attribute.type);
-					return;
+
+			var arrayType = arrayTypes[attribute.type];
+			if (arrayType) {
+				view = new arrayTypes[attribute.type](data, attribute.offset, length);
+			} else {
+				throw "Unsupported DataType: " + attribute.type;
 			}
 
 			this.attributeMap[key].array = view;

@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function MeshRendererComponent() {
 		this.type = 'MeshRendererComponent';
 

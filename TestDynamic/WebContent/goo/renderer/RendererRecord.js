@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function RendererRecord() {
 		this.currentBuffer = {
 			'ArrayBuffer' : {

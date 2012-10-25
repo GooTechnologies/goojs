@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function Camera(fov, aspect, near, far) {
 		THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 

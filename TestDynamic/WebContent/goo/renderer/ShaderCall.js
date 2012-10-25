@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function ShaderCall(context) {
 		this.context = context;
 
@@ -56,7 +56,7 @@ define(function() {
 			}
 		}
 		this.context.uniform2f(this.location, v0, v1);
-		this.currentRecord.put(this.location, [ v0, v1 ]);
+		this.currentRecord.put(this.location, [v0, v1]);
 	};
 
 	ShaderCall.prototype.uniform2fv = function(values) {
@@ -78,7 +78,7 @@ define(function() {
 			}
 		}
 		this.context.uniform2i(this.location, v0, v1);
-		this.currentRecord.put(this.location, [ v0, v1 ]);
+		this.currentRecord.put(this.location, [v0, v1]);
 	};
 
 	ShaderCall.prototype.uniform2iv = function(values) {
@@ -100,7 +100,7 @@ define(function() {
 			}
 		}
 		this.context.uniform3f(this.location, v0, v1, v2);
-		this.currentRecord.put(this.location, [ v0, v1, v2 ]);
+		this.currentRecord.put(this.location, [v0, v1, v2]);
 	};
 
 	ShaderCall.prototype.uniform3fv = function(values) {
@@ -122,7 +122,7 @@ define(function() {
 			}
 		}
 		this.context.uniform3i(this.location, v0, v1, v2);
-		this.currentRecord.put(this.location, [ v0, v1, v2 ]);
+		this.currentRecord.put(this.location, [v0, v1, v2]);
 	};
 
 	ShaderCall.prototype.uniform3iv = function(values) {
@@ -140,12 +140,12 @@ define(function() {
 		var curValue = this.currentRecord.get(this.location);
 		if (curValue !== null) {
 			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2
-					&& curValue[3] === v3) {
+				&& curValue[3] === v3) {
 				return;
 			}
 		}
 		this.context.uniform4f(this.location, v0, v1, v2, v3);
-		this.currentRecord.put(this.location, [ v0, v1, v2, v3 ]);
+		this.currentRecord.put(this.location, [v0, v1, v2, v3]);
 	};
 
 	ShaderCall.prototype.uniform4fv = function(values) {
@@ -163,12 +163,12 @@ define(function() {
 		var curValue = this.currentRecord.get(this.location);
 		if (curValue !== null) {
 			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2
-					&& curValue[3] === v3) {
+				&& curValue[3] === v3) {
 				return;
 			}
 		}
 		this.context.uniform4i(this.location, v0, v1, v2, v3);
-		this.currentRecord.put(this.location, [ v0, v1, v2, v3 ]);
+		this.currentRecord.put(this.location, [v0, v1, v2, v3]);
 	};
 
 	ShaderCall.prototype.uniform4iv = function(values) {
@@ -182,12 +182,6 @@ define(function() {
 		this.currentRecord.put(this.location, values);
 	};
 
-	// REVIEW: Those functions are duplicated!
-	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
-		this.context.uniformMatrix2fv(this.location, transpose, value);
-	};
-
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
 		this.context.uniformMatrix2fv(this.location, transpose, value);
@@ -196,16 +190,6 @@ define(function() {
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
 		this.context.uniformMatrix3fv(this.location, transpose, value);
-	};
-
-	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
-		this.context.uniformMatrix3fv(this.location, transpose, value);
-	};
-
-	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix4fv = function(transpose, value) {
-		this.context.uniformMatrix4fv(this.location, transpose, value);
 	};
 
 	// NOTE: optimize check before calling.

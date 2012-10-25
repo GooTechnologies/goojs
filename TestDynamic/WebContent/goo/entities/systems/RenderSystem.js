@@ -1,7 +1,7 @@
-"use strict";
+define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util'], function(System,
+	TextureCreator, Util) {
+	"use strict";
 
-define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util' ], function(System,
-		TextureCreator, Util) {
 	function RenderSystem(renderList) {
 		System.call(this, 'RenderSystem', null, true);
 
@@ -27,9 +27,9 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
 		var shaderInfo = {
-			meshData : entity.MeshDataComponent.meshData,
-			transform : entity.TransformComponent.worldTransform,
-			materials : entity.MeshRendererComponent.materials
+			meshData : entity.meshDataComponent.meshData,
+			transform : entity.transformComponent.worldTransform,
+			materials : entity.meshRendererComponent.materials
 		};
 
 		var context = renderer.context;
@@ -58,22 +58,21 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 				renderer.bindData(meshData.getIndexData());
 				if (meshData.getIndexLengths() !== null) {
 					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData
-							.getIndexLengths());
+						.getIndexLengths());
 				} else {
-					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [ meshData
-							.getIndexBuffer().length ]);
+					renderer.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData
+						.getIndexBuffer().length]);
 				}
 			} else {
 				if (meshData.getIndexLengths() !== null) {
 					renderer.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
 				} else {
-					renderer.drawArraysVBO(meshData.getIndexModes(), [ meshData.getVertexCount() ]);
+					renderer.drawArraysVBO(meshData.getIndexModes(), [meshData.getVertexCount()]);
 				}
 			}
 		}
 	};
 
-	var count = 0;
 	function updateTextures(material, renderer) {
 		var context = renderer.context;
 		for ( var i = 0; i < material.shader.textureCount; i++) {
@@ -82,12 +81,6 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 			if (texture === undefined || texture.image.dataReady === undefined) {
 				texture = TextureCreator.DEFAULT_TEXTURE;
 			}
-
-			// if (count < 50) {
-			// console.log('texture: ' + texture.image.src + ', ' +
-			// texture.image.dataReady);
-			// count++;
-			// }
 
 			var unitrecord = renderer.rendererRecord.textureRecord[i];
 			if (unitrecord === undefined) {
@@ -113,12 +106,12 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 			// TODO: bind?
 			if (texrecord.magFilter !== texture.magFilter) {
 				context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MAG_FILTER,
-						getGLMagFilter(texture.magFilter));
+					getGLMagFilter(texture.magFilter));
 				texrecord.magFilter = texture.magFilter;
 			}
 			if (texrecord.minFilter !== texture.magFilter) {
 				context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER,
-						getGLMinFilter(texture.minFilter));
+					getGLMinFilter(texture.minFilter));
 				texrecord.minFilter = texture.minFilter;
 			}
 
@@ -134,14 +127,12 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 				var wrapT = getGLWrap(texture.wrapT, context);
 				if (texrecord.wrapS !== wrapS) {
 					context
-							.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S,
-									wrapS);
+						.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, wrapS);
 					texrecord.wrapS = wrapS;
 				}
 				if (texrecord.wrapT !== wrapT) {
 					context
-							.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T,
-									wrapT);
+						.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, wrapT);
 					texrecord.wrapT = wrapT;
 				}
 			} else if (texture.variant === 'CUBE') {
@@ -155,7 +146,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 	function bindTexture(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		if (record.boundTexture === undefined
-				|| (texture.glTexture !== undefined && record.boundTexture != texture.glTexture)) {
+			|| (texture.glTexture !== undefined && record.boundTexture != texture.glTexture)) {
 			context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
@@ -209,7 +200,7 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 		}
 
 		context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, getGLInternalFormat(texture.format),
-				getGLInternalFormat(texture.format), getGLPixelDataType(texture.type), texture.image);
+			getGLInternalFormat(texture.format), getGLPixelDataType(texture.type), texture.image);
 
 		if (texture.generateMipmaps) {
 			context.generateMipmap(context.TEXTURE_2D);

@@ -1,6 +1,6 @@
-"use strict";
-
 define(function() {
+	"use strict";
+
 	function DebugUI(goo) {
 		var that = this;
 
@@ -25,8 +25,6 @@ define(function() {
 			var list = root.append('<ul></ul>');
 			that.root = root;
 
-			root.append('<div id=\'info\'></div>');
-
 			function Manager() {
 				this.type = 'UIManager';
 			}
@@ -34,15 +32,15 @@ define(function() {
 			Manager.prototype = {
 				constructor : Manager,
 				added : function(entity) {
-					var entities = goo.world._entityManager.getTopEntities();
+					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
 				removed : function(entity) {
-					var entities = goo.world._entityManager.getTopEntities();
+					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
 				changed : function(entity) {
-					var entities = goo.world._entityManager.getTopEntities();
+					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
 				updateList : function(entities) {
