@@ -73,30 +73,54 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 		}
 	};
 
+	var count = 0;
 	function updateTextures(material, renderer) {
 		var context = renderer.context;
 		for ( var i = 0; i < material.shader.textureCount; i++) {
 			var texture = material.textures[i];
+
 			if (texture === undefined || texture.image.dataReady === undefined) {
-				return;
 				texture = TextureCreator.DEFAULT_TEXTURE;
 			}
 
+			// if (count < 50) {
+			// console.log('texture: ' + texture.image.src + ', ' +
+			// texture.image.dataReady);
+			// count++;
+			// }
+
+			var unitrecord = renderer.rendererRecord.textureRecord[i];
+			if (unitrecord === undefined) {
+				unitrecord = renderer.rendererRecord.textureRecord[i] = {};
+			}
+
 			if (texture.glTexture === null) {
-				texture.glTexture = renderer.context.createTexture();
-				updateTexture(context, texture, i);
+				texture.glTexture = context.createTexture();
+				updateTexture(context, texture, i, unitrecord);
 			} else if (texture.needsUpdate) {
+				updateTexture(context, texture, i, unitrecord);
 				texture.needsUpdate = false;
-				updateTexture(context, texture, i);
 			} else {
-				bindTexture(context, texture, i);
+				bindTexture(context, texture, i, unitrecord);
+			}
+
+			var texrecord = renderer.rendererRecord.textureglRecord.get(texture.glTexture);
+			if (texrecord === null) {
+				texrecord = {};
+				renderer.rendererRecord.textureglRecord.put(texture.glTexture, texrecord);
 			}
 
 			// TODO: bind?
-			context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MAG_FILTER,
-					getGLMagFilter(texture.magFilter));
-			context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER,
-					getGLMinFilter(texture.minFilter));
+			if (texrecord.magFilter !== texture.magFilter) {
+				context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MAG_FILTER,
+						getGLMagFilter(texture.magFilter));
+				texrecord.magFilter = texture.magFilter;
+			}
+			if (texrecord.minFilter !== texture.magFilter) {
+				context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER,
+						getGLMinFilter(texture.minFilter));
+				texrecord.minFilter = texture.minFilter;
+			}
 
 			// TODO: bind?
 			// GwtGLTextureStateUtil.applyWrap(gl, texture, texRecord,
@@ -108,8 +132,18 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 				// texRecord, unit, record, caps);
 				var wrapS = getGLWrap(texture.wrapS, context);
 				var wrapT = getGLWrap(texture.wrapT, context);
-				context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, wrapS);
-				context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, wrapT);
+				if (texrecord.wrapS !== wrapS) {
+					context
+							.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S,
+									wrapS);
+					texrecord.wrapS = wrapS;
+				}
+				if (texrecord.wrapT !== wrapT) {
+					context
+							.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T,
+									wrapT);
+					texrecord.wrapT = wrapT;
+				}
 			} else if (texture.variant === 'CUBE') {
 				// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
 				// texture, texRecord,
@@ -118,9 +152,13 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 		}
 	}
 
-	function bindTexture(context, texture, unit) {
+	function bindTexture(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-		context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
+		if (record.boundTexture === undefined
+				|| (texture.glTexture !== undefined && record.boundTexture != texture.glTexture)) {
+			context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
+			record.boundTexture = texture.glTexture;
+		}
 	}
 
 	function getGLType(type) {
@@ -133,8 +171,9 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 		throw "invalid texture type: " + type;
 	}
 
-	function updateTexture(context, texture, unit) {
-		bindTexture(context, texture, unit);
+	// var fisk = 0;
+	function updateTexture(context, texture, unit, record) {
+		bindTexture(context, texture, unit, record);
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
@@ -142,6 +181,32 @@ define([ 'goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rend
 
 		// set if we want to flip on Y
 		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY ? 1 : 0);
+
+		if (texture.generateMipmaps) {
+			var image = texture.image;
+			var newWidth = Util.nearestPowerOfTwo(image.width);
+			var newHeight = Util.nearestPowerOfTwo(image.height);
+			if (image.width !== newWidth || image.height !== newHeight) {
+				var canvas = document.createElement('canvas'); // !!!!!
+				canvas.width = newWidth;
+				canvas.height = newHeight;
+				var ctx = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+				document.body.appendChild(canvas);
+				canvas.dataReady = true;
+				texture.image = canvas;
+
+				// console.dir(canvas);
+				// canvas.style['position'] = 'absolute';
+				// canvas.style['top'] = (fisk * 105) + 'px';
+				// canvas.style['right'] = '10px';
+				// canvas.style['width'] = '100px';
+				// canvas.style['height'] = '100px';
+				// canvas.style['z-index'] = 5;
+				// fisk++;
+				canvas.parentNode.removeChild(canvas);
+			}
+		}
 
 		context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, getGLInternalFormat(texture.format),
 				getGLInternalFormat(texture.format), getGLPixelDataType(texture.type), texture.image);

@@ -52,7 +52,11 @@ define(function() {
 		if (wasError) {
 			throw "Stopping due to error";
 		}
-	}
+	};
+
+	Util.nearestPowerOfTwo = function(number) {
+		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
+	};
 
 	return Util;
 });

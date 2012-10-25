@@ -40,14 +40,14 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 			return function(tpf) {
 				var transformComponent = entities[0].TransformComponent;
 				transformComponent.transform.translation.x = Math.sin(t) * 30;
-				transformComponent.transform.translation.y = Math.sin(t) * 150;
+				transformComponent.transform.translation.y = Math.sin(t) * 0;
 				transformComponent.transform.translation.z = Math.cos(t) * 30;
 				transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
 				transformComponent.setUpdated();
 
-				goo.renderer.camera.position.x = Math.sin(t * 1.1) * 50;
-				goo.renderer.camera.position.y = Math.sin(t * 1.5) * 150;
-				goo.renderer.camera.position.z = Math.cos(t * 2.0) * 50;
+				goo.renderer.camera.position.x = Math.sin(t * 0.2) * 50;
+				// goo.renderer.camera.position.y = Math.sin(t * 0.5) * 150;
+				goo.renderer.camera.position.z = Math.cos(t * 0.8) * 50;
 				goo.renderer.camera.lookAt(zero);
 				goo.renderer.camera.updateWorld();
 
@@ -61,12 +61,12 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 				for ( var i in entities) {
 					entities[i].addToWorld();
 				}
-				entities[0].TransformComponent.transform.scale.set(60, 60, 60);
+				entities[0].TransformComponent.transform.scale.set(50, 50, 50);
 				var t = 0;
 				goo.callbacks.push(function(tpf) {
 					var transformComponent = entities[0].TransformComponent;
 					transformComponent.transform.translation.x = Math.sin(t + 3) * 30;
-					transformComponent.transform.translation.y = Math.sin(t) * 150;
+					transformComponent.transform.translation.y = Math.sin(t) * 0;
 					transformComponent.transform.translation.z = Math.cos(t + 3) * 30;
 					transformComponent.transform.rotation.x = Math.sin(t) * 2;
 					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
@@ -87,17 +87,8 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 					entities[i].addToWorld();
 				}
 				entities[0].TransformComponent.transform.scale.set(30, 30, 30);
-				var t = 0;
-				goo.callbacks.push(function(tpf) {
-					var transformComponent = entities[0].TransformComponent;
-					transformComponent.transform.translation.x = Math.sin(t + 2) * 30;
-					transformComponent.transform.translation.z = Math.cos(t + 2) * 30;
-					transformComponent.transform.rotation.x = Math.sin(t) * 2;
-					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
-					transformComponent.setUpdated();
-
-					t += tpf;
-				});
+				entities[0].TransformComponent.transform.translation.x = 50;
+				entities[0].TransformComponent.setUpdated();
 			},
 			onError : function(error) {
 				console.error(error);
@@ -114,7 +105,7 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 		// Add custom attribute
 		attributeMap.Stuff = {
 			count : 1,
-			type : 'Float'
+			type : 'Byte'
 		};
 
 		var meshData = new MeshData(attributeMap, 4, 6);
@@ -147,8 +138,9 @@ require([ 'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Sys
 
 		material.shader = new Shader('TestShader', vs, fs);
 
-		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
-		material.textures.push(texture);
+		// var texture = new
+		// TextureCreator().loadTexture2D('resources/pitcher.jpg');
+		// material.textures.push(texture);
 
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);

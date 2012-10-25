@@ -32,8 +32,5 @@ define([ 'goo/renderer/Loader' ], function(Loader) {
 		this.needsUpdate = false;
 	}
 
-	Texture.prototype.loadTexture2D = function(imageURL) {
-	};
-
 	return Texture;
 });

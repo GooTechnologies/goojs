@@ -14,8 +14,10 @@ define([ 'goo/renderer/Loader', 'goo/renderer/Texture' ], function(Loader, Textu
 		// '.png' : 'loader1',
 		// '.dds' : 'loader2'
 		};
+
 	}
 
+	TextureCreator.cache = {};
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
 
 	TextureCreator.prototype.loadTexture2D = function(imageURL) {
@@ -64,20 +66,23 @@ define([ 'goo/renderer/Loader', 'goo/renderer/Texture' ], function(Loader, Textu
 			}
 		}
 
-		var img = new Loader().loadImage(imageURL, {
-			onSuccess : function(image) {
-				image.dataReady = true;
-			}
-		});
+		if (TextureCreator.cache[imageURL] !== undefined) {
+			return TextureCreator.cache[imageURL];
+		}
+
+		var img = new Loader().loadImage(imageURL);
 		// var key = TextureKey.getKey(null, this.verticalFlip,
 		// this.storeFormat, img.getUrl(), this.minFilter);
 		// var tex = findOrCreateTexture2D(key);
 		var texture = new Texture(img);
 		// queueImageLoad(img, texture);
+
+		TextureCreator.cache[imageURL] = texture;
+
 		return texture;
 	};
 
-	TextureCreator.DEFAULT_TEXTURE = new Texture();
+	TextureCreator.DEFAULT_TEXTURE = new Texture(new Loader().loadImage('resources/checkerboard.png'));
 
 	return TextureCreator;
 });

@@ -18,12 +18,15 @@ define(function() {
 		this.enabledTextures = 0;
 		this.texturesValid = false;
 		this.currentTextureArraysUnit = 0;
+
+		this.textureRecord = [];
+		this.textureglRecord = new Hashtable();
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function(target) {
 		this.currentBuffer.buffer = null;
 		this.currentBuffer.valid = false;
-	}
+	};
 
 	return RendererRecord;
 });

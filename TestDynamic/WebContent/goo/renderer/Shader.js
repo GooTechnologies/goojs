@@ -28,15 +28,60 @@ define(
 
 			function setupDefaultCallbacks(defaultCallbacks) {
 				defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
-					uniformMapping['PROJECTION_MATRIX'].uniformMatrix4fv(false,
-							GooRunner.renderer.camera.projectionMatrix.elements);
+					var camera = GooRunner.renderer.camera;
+					var uniform = uniformMapping['PROJECTION_MATRIX'];
+					var matrix = camera.projectionMatrix;
+
+					var curValue = uniform.currentRecord.get(uniform);
+					if (curValue !== null) {
+						var equals = compareMatrices(curValue.elements, matrix.elements);
+						if (equals) {
+							return;
+						} else {
+							curValue.copy(matrix);
+						}
+					} else {
+						uniform.currentRecord.put(uniform, matrix.clone());
+					}
+
+					uniform.uniformMatrix4fv(false, matrix.elements);
 				};
 				defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
-					uniformMapping['VIEW_MATRIX'].uniformMatrix4fv(false,
-							GooRunner.renderer.camera.matrixWorldInverse.elements);
+					var camera = GooRunner.renderer.camera;
+					var uniform = uniformMapping['VIEW_MATRIX'];
+					var matrix = camera.matrixWorldInverse;
+
+					var curValue = uniform.currentRecord.get(uniform);
+					if (curValue !== null) {
+						var equals = compareMatrices(curValue.elements, matrix.elements);
+						if (equals) {
+							return;
+						} else {
+							curValue.copy(matrix);
+						}
+					} else {
+						uniform.currentRecord.put(uniform, matrix.clone());
+					}
+
+					uniform.uniformMatrix4fv(false, matrix.elements);
 				};
 				defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
-					uniformMapping['WORLD_MATRIX'].uniformMatrix4fv(false, shaderInfo.transform.matrix.elements);
+					var uniform = uniformMapping['WORLD_MATRIX'];
+					var matrix = shaderInfo.transform.matrix;
+
+					var curValue = uniform.currentRecord.get(uniform);
+					if (curValue !== null) {
+						var equals = compareMatrices(curValue.elements, matrix.elements);
+						if (equals) {
+							return;
+						} else {
+							curValue.copy(matrix);
+						}
+					} else {
+						uniform.currentRecord.put(uniform, matrix.clone());
+					}
+
+					uniform.uniformMatrix4fv(false, matrix.elements);
 				};
 				for ( var i = 0; i < 16; i++) {
 					defaultCallbacks['TEXTURE' + i] = (function(i) {
@@ -45,6 +90,17 @@ define(
 						};
 					})(i);
 				}
+			}
+
+			function compareMatrices(e1, e2) {
+				var equals = true;
+				for ( var i = 0; i < 16; i++) {
+					if (Math.abs(e1[i] - e2[i]) > 0.00000001) {
+						equals = false;
+						break;
+					}
+				}
+				return equals;
 			}
 
 			Shader.prototype.apply = function(shaderInfo, renderer) {
