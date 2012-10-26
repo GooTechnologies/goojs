@@ -75,27 +75,33 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'attribute vec3 vertexPosition; //!POSITION', //
 			'attribute vec3 vertexNormal; //!NORMAL', //
 			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+
 			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
 			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
 			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
 			'uniform vec3 cameraPosition; //!CAMERA', //
 			'uniform vec3 lightPosition; //!LIGHT0', //
+
 			'varying vec3 normal;',//
 			'varying vec3 lightDir;',//
 			'varying vec3 eyeVec;',//
 			'varying vec2 texCoord0;',//
 
 			'void main(void) {', //
-			'	texCoord0 = vertexUV0;',//
-			'	normal = vertexNormal;',//
-			'	lightDir = lightPosition;',//
-			'	eyeVec = cameraPosition;',//
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+
+			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+			'	texCoord0 = vertexUV0;', //
+			'	lightDir = lightPosition - worldPos.xyz;', //
+			'	eyeVec = cameraPosition - worldPos.xyz;', //
 			'}'//
 			].join('\n'),
 			fshader : [//
 			'precision mediump float;',//
+
 			'uniform sampler2D diffuseMap; //!TEXTURE0',//
+
 			'varying vec3 normal;',//
 			'varying vec3 lightDir;',//
 			'varying vec3 eyeVec;',//
@@ -105,7 +111,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'{',//
 			'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
 
-			'	vec4 final_color = vec4(0.0); //materialAmbient;',//
+			'	vec4 final_color = vec4(0.1); //materialAmbient;',//
 
 			'	vec3 N = normalize(normal);',//
 			'	vec3 L = normalize(lightDir);',//

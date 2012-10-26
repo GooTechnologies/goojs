@@ -101,6 +101,11 @@ define(
 					};
 				})(i);
 			}
+
+			defaultCallbacks['CAMERA'] = function(uniformMapping, shaderInfo) {
+				var cameraPosition = GooRunner.renderer.camera.position;
+				uniformMapping['CAMERA'].uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+			};
 		}
 
 		function compareMatrices(e1, e2) {
