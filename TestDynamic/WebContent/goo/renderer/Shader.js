@@ -93,7 +93,7 @@ define(
 			}
 
 			// TODO
-			var lightPos = new THREE.Vector3();
+			var lightPos = new THREE.Vector3(10, 10, 10);
 			for ( var i = 0; i < 4; i++) {
 				defaultCallbacks['LIGHT' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {
@@ -222,6 +222,7 @@ define(
 			for ( var key in this.uniformMapping) {
 				var uniform = context.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
 				this.uniformLocationMapping[key] = uniform;
+				// console.log(key, this.uniformMapping[key], uniform, this);
 
 				var shaderCall = new ShaderCall(context);
 

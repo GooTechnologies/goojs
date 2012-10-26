@@ -88,8 +88,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'void main(void) {', //
 			'	texCoord0 = vertexUV0;',//
 			'	normal = vertexNormal;',//
-			'	lightDir = vec3(1.0,1.0,1.0);',//
-			'	eyeVec = vec3(1.0,1.0,1.0);',//
+			'	lightDir = lightPosition;',//
+			'	eyeVec = cameraPosition;',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 			'}'//
 			].join('\n'),

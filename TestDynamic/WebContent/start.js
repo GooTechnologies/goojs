@@ -28,7 +28,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Add box
 		var boxEntity = createBoxEntity(goo);
-		// boxEntity.addToWorld();
+		boxEntity.addToWorld();
 	}
 
 	function loadModels(goo) {
@@ -175,8 +175,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function createBoxEntity(goo) {
-		var entity = ShapeCreator.createBoxEntity(goo.world, 1, 1, 1);
-		entity.name = "BOX";
+		var entity = ShapeCreator.createBoxEntity(goo.world, 5, 5, 5);
+		entity.name = "Box";
 
 		var material = new Material('TestMaterial');
 
