@@ -102,6 +102,11 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			'uniform sampler2D diffuseMap; //!TEXTURE0',//
 
+			'uniform vec4 materialAmbient; //!AMBIENT',//
+			'uniform vec4 materialDiffuse; //!DIFFUSE',//
+			'uniform vec4 materialSpecular; //!SPECULAR',//
+			'uniform float materialSpecularPower; //!SPECULAR_POWER',//
+
 			'varying vec3 normal;',//
 			'varying vec3 lightDir;',//
 			'varying vec3 eyeVec;',//
@@ -111,7 +116,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'{',//
 			'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
 
-			'	vec4 final_color = vec4(0.1); //materialAmbient;',//
+			'	vec4 final_color = materialAmbient;',//
 
 			'	vec3 N = normalize(normal);',//
 			'	vec3 L = normalize(lightDir);',//
@@ -120,13 +125,13 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			'	if(lambertTerm > 0.0)',//
 			'	{',//
-			'		final_color += vec4(1.0) * //materialDiffuse * // gl_LightSource[0].diffuse * ',//
+			'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
 			'					   lambertTerm;	',//
 			'		vec3 E = normalize(eyeVec);',//
 			'		vec3 R = reflect(-L, N);',//
 			'		float specular = pow( max(dot(R, E), 0.0),',// 
-			'						16.0); //materialSpecularPower);',//
-			'		final_color += vec4(1.0) * //materialSpecular * // gl_LightSource[0].specular * ',//
+			'						materialSpecularPower);',//
+			'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 			'					   specular;	',//
 			'	}',//
 			'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
@@ -135,11 +140,11 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		}
 	};
 
-	Material.createDefaultMaterial = function() {
+	Material.createDefaultMaterial = function(shader) {
 		var material = new Material('DefaultMaterial');
 
-		var vs = Material.shaders.textured.vshader;
-		var fs = Material.shaders.textured.fshader;
+		var vs = shader.vshader;
+		var fs = shader.fshader;
 		material.shader = new Shader('DefaultShader', vs, fs);
 
 		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
@@ -148,7 +153,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		return material;
 	};
 
-	Material.defaultMaterial = Material.createDefaultMaterial();
+	Material.defaultMaterial = Material.createDefaultMaterial(Material.shaders.textured);
+	Material.defaultLitMaterial = Material.createDefaultMaterial(Material.shaders.texturedLit);
 
 	return Material;
 });

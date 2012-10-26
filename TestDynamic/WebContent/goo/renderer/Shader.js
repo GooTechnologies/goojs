@@ -93,7 +93,7 @@ define(
 			}
 
 			// TODO
-			var lightPos = new THREE.Vector3(10, 10, 10);
+			var lightPos = new THREE.Vector3(20, 20, 50);
 			for ( var i = 0; i < 4; i++) {
 				defaultCallbacks['LIGHT' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {
@@ -106,6 +106,59 @@ define(
 				var cameraPosition = GooRunner.renderer.camera.position;
 				uniformMapping['CAMERA'].uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 			};
+
+			var DEFAULT_AMBIENT = {
+				r : 0.1,
+				g : 0.1,
+				b : 0.1,
+				a : 1.0
+			};
+			var DEFAULT_EMISSIVE = {
+				r : 0,
+				g : 0,
+				b : 0,
+				a : 0
+			};
+			var DEFAULT_DIFFUSE = {
+				r : 1,
+				g : 1,
+				b : 1,
+				a : 1
+			};
+			var DEFAULT_SPECULAR = {
+				r : 0.8,
+				g : 0.8,
+				b : 0.8,
+				a : 1.0
+			};
+			defaultCallbacks['AMBIENT'] = function(uniformMapping, shaderInfo) {
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient
+					: DEFAULT_AMBIENT;
+				uniformMapping['AMBIENT'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			};
+			defaultCallbacks['EMISSIVE'] = function(uniformMapping, shaderInfo) {
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive
+					: DEFAULT_EMISSIVE;
+				uniformMapping['EMISSIVE']
+					.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			};
+			defaultCallbacks['DIFFUSE'] = function(uniformMapping, shaderInfo) {
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse
+					: DEFAULT_DIFFUSE;
+				uniformMapping['DIFFUSE'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			};
+			defaultCallbacks['SPECULAR'] = function(uniformMapping, shaderInfo) {
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular
+					: DEFAULT_SPECULAR;
+				uniformMapping['SPECULAR']
+					.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			};
+			defaultCallbacks['SPECULAR_POWER'] = function(uniformMapping, shaderInfo) {
+				var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess
+					: 8.0;
+				uniformMapping['SPECULAR_POWER'].uniform1f(shininess);
+			};
+
 		}
 
 		function compareMatrices(e1, e2) {

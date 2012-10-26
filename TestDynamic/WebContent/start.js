@@ -46,14 +46,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				goo.callbacks.push(function(tpf) {
 					var transformComponent = entities[0].transformComponent;
 					transformComponent.transform.translation.x = Math.sin(t) * 30;
-					transformComponent.transform.translation.y = Math.sin(t) * 0;
 					transformComponent.transform.translation.z = Math.cos(t) * 30;
 					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
 					transformComponent.setUpdated();
 
-					goo.renderer.camera.position.x = Math.sin(t * 0.2) * 50;
-					// goo.renderer.camera.position.y = Math.sin(t * 0.5) * 150;
-					goo.renderer.camera.position.z = Math.cos(t * 0.8) * 50;
+					goo.renderer.camera.position.x = Math.sin(t * 0.1) * 100;
+					goo.renderer.camera.position.z = Math.cos(t * 0.1) * 100;
 					goo.renderer.camera.lookAt(zero);
 					goo.renderer.camera.updateWorld();
 
@@ -91,13 +89,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 
 		// Load asynchronous with callback
-		importer.load('resources/head.model', 'resources/', {
+		importer.load('resources/shoes/shoes_compressed.json', 'resources/shoes/textures/', {
 			onSuccess : function(entities) {
 				for ( var i in entities) {
 					entities[i].addToWorld();
 				}
-				entities[0].transformComponent.transform.scale.set(30, 30, 30);
-				entities[0].transformComponent.transform.translation.x = 50;
+				entities[0].transformComponent.transform.scale.set(1, 1, 1);
+				entities[0].transformComponent.transform.translation.x = 0;
 				entities[0].transformComponent.setUpdated();
 			},
 			onError : function(error) {
@@ -176,6 +174,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function createBoxEntity(goo) {
 		var entity = ShapeCreator.createBoxEntity(goo.world, 5, 5, 5);
+		entity.transformComponent.transform.translation.y = -10;
 		entity.name = "Box";
 
 		var material = new Material('TestMaterial');

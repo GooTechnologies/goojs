@@ -1,7 +1,7 @@
 define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils',
 		'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent',
-		'goo/renderer/Material', 'goo/renderer/TextureCreator'], function(TransformComponent, MeshData, JsonUtils,
-	MeshDataComponent, MeshRendererComponent, Material, TextureCreator) {
+		'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader'], function(TransformComponent,
+	MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader) {
 	"use strict";
 
 	function JSONImporter(world) {
@@ -96,7 +96,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			}
 		} else if (type === "Mesh") {
 			var meshRendererComponent = new MeshRendererComponent();
-			meshRendererComponent.materials.push(Material.defaultMaterial);
+
+			var material = Material.defaultLitMaterial; // Material.defaultMaterial;
+			meshRendererComponent.materials.push(material);
 			entity.setComponent(meshRendererComponent);
 
 			this.parseMaterial(object, entity);
@@ -321,11 +323,10 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 			// name is required
 			info.materialName = obj.MaterialName;
-			info.Profile = obj.Profile;
-			info.Technique = obj.Technique;
-			info.UsesTransparency = obj.UsesTransparency;
-			// TODO
-			// info.setMaterialState(parseMaterialState(obj));
+			info.profile = obj.Profile;
+			info.technique = obj.Technique;
+			info.usesTransparency = obj.UsesTransparency;
+			info.materialState = this.parseMaterialState(obj);
 
 			if (obj.TextureEntries) {
 				var entries = obj.TextureEntries;
@@ -369,9 +370,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				// info.connectedMeshes.push(mesh);
 
 				// apply material state
-				if (info.materialState !== null) {
-					// mesh.setRenderState(info.getMaterialState());
-				}
+				material.materialState = info.materialState;
 
 				if (info.useTransparency) {
 					// TODO
@@ -432,18 +431,40 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		}
 	};
 
+	JSONImporter.prototype.parseMaterialState = function(object) {
+		var ms = {};
+
+		ms.ambient = this.parseColor(object.AmbientColor);
+		ms.diffuse = this.parseColor(object.DiffuseColor);
+		ms.emissive = this.parseColor(object.EmissiveColor);
+		ms.specular = this.parseColor(object.SpecularColor);
+		ms.shininess = object.Shininess;
+
+		return ms;
+	};
+
+	JSONImporter.prototype.parseColor = function(hex) {
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})*$/i.exec(hex);
+		return result ? {
+			r : parseInt(result[1], 16) / 255.0,
+			g : parseInt(result[2], 16) / 255.0,
+			b : parseInt(result[3], 16) / 255.0,
+			a : result[4] !== undefined ? parseInt(result[4], 16) / 255.0 : 1.0
+		} : null;
+	};
+
 	// TODO
 	function MaterialInfo() {
 		// REVIEW: Unused expressions!?
-		this.materialName;
+		this.materialName = 'not set';
 		this.profile;
 		this.technique;
 		this.textureReferences = {};
 		this.textureFileNames = {};
 		this.textureMinificationFilters = {};
 		this.textureFlipSettings = {};
-		this.useTransparency;
-		this.materialState;
+		this.usesTransparency = false;
+		this.materialState = {};
 		this.connectedMeshes = [];
 	}
 

@@ -10,6 +10,7 @@ define(function() {
 
 		callback = callback !== undefined ? callback : {};
 		image.addEventListener('load', function() {
+			console.log('Loaded image: ' + url);
 			image.dataReady = true;
 			if (callback.onSuccess) {
 				callback.onSuccess(image);
