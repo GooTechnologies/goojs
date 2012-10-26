@@ -122,11 +122,6 @@ define(
 			} else {
 				this.setBoundBuffer(null, bufferData.target);
 			}
-
-			// TODO: when/where to check for errors
-			// if (Constants.extraGLErrorChecks) {
-			// checkCardError();
-			// }
 		};
 
 		Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
@@ -142,6 +137,9 @@ define(
 				var byteSize = this.getGLByteSize(indices);
 
 				this.context.drawElements(glIndexMode, count, type, offset * byteSize);
+
+				// TODO
+				// Util.checkGLError(this.context);
 
 				offset += count;
 

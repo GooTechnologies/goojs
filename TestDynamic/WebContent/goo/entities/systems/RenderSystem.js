@@ -18,10 +18,9 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		for ( var i in this.renderList) {
 			this.renderEntity(renderer, this.renderList[i]);
 		}
+		// Util.checkGLError(renderer.context);
 
 		renderer.flush();
-
-		// Util.checkGLError(renderer.context);
 	};
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {

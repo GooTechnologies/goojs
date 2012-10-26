@@ -83,6 +83,7 @@ define(
 
 				uniform.uniformMatrix4fv(false, matrix.elements);
 			};
+
 			for ( var i = 0; i < 16; i++) {
 				defaultCallbacks['TEXTURE' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {
@@ -90,24 +91,16 @@ define(
 					};
 				})(i);
 			}
-			defaultCallbacks['LIGHT0'] = function(uniformMapping, shaderInfo) {
-				var uniform = uniformMapping['LIGHT0'];
-				var matrix = shaderInfo.transform.matrix;
 
-				var curValue = uniform.currentRecord.get(uniform);
-				if (curValue !== null) {
-					var equals = compareMatrices(curValue.elements, matrix.elements);
-					if (equals) {
-						return;
-					} else {
-						curValue.copy(matrix);
-					}
-				} else {
-					uniform.currentRecord.put(uniform, matrix.clone());
-				}
-
-				uniform.uniformMatrix4fv(false, matrix.elements);
-			};
+			// TODO
+			var lightPos = new THREE.Vector3();
+			for ( var i = 0; i < 4; i++) {
+				defaultCallbacks['LIGHT' + i] = (function(i) {
+					return function(uniformMapping, shaderInfo) {
+						uniformMapping['LIGHT' + i].uniform3f(lightPos.x, lightPos.y, lightPos.z);
+					};
+				})(i);
+			}
 		}
 
 		function compareMatrices(e1, e2) {

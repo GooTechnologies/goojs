@@ -27,7 +27,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		quadEntity.addToWorld();
 
 		// Add box
-		// var boxEntity = createBoxEntity(goo);
+		var boxEntity = createBoxEntity(goo);
 		// boxEntity.addToWorld();
 	}
 
@@ -141,12 +141,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
-		var material = new Material('TestMaterial');
+		var material = new Material('QuadMaterial');
 
 		var vs = getShader('vshader');
 		var fs = getShader('fshader');
 
-		material.shader = new Shader('TestShader', vs, fs);
+		material.shader = new Shader('QuadShader', vs, fs);
 
 		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
 		material.textures.push(texture);
@@ -175,16 +175,15 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function createBoxEntity(goo) {
-		var meshData = ShapeCreator.createBox(1, 1, 1);
-
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		var entity = ShapeCreator.createBoxEntity(goo.world, 1, 1, 1);
+		entity.name = "BOX";
 
 		var material = new Material('TestMaterial');
 
-		var vs = Material.shaders.textured.vshader;
-		var fs = Material.shaders.textured.fshader;
+		var vs = Material.shaders.texturedLit.vshader;
+		var fs = Material.shaders.texturedLit.fshader;
 
-		material.shader = new Shader('TestShader', vs, fs);
+		material.shader = new Shader('BoxShader', vs, fs);
 
 		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
 		material.textures.push(texture);

@@ -109,6 +109,42 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		};
 	};
 
+	function clone(obj) {
+		// Handle the 3 simple types, and null or undefined
+		if (null == obj || "object" != typeof obj) {
+			return obj;
+		}
+
+		// Handle Date
+		if (obj instanceof Date) {
+			var copy = new Date();
+			copy.setTime(obj.getTime());
+			return copy;
+		}
+
+		// Handle Array
+		if (obj instanceof Array) {
+			var copy = [];
+			for ( var i = 0, len = obj.length; i < len; ++i) {
+				copy[i] = clone(obj[i]);
+			}
+			return copy;
+		}
+
+		// Handle Object
+		if (obj instanceof Object) {
+			var copy = {};
+			for ( var attr in obj) {
+				if (obj.hasOwnProperty(attr)) {
+					copy[attr] = clone(obj[attr]);
+				}
+			}
+			return copy;
+		}
+
+		throw new Error("Unable to copy obj! Its type isn't supported.");
+	}
+
 	var defaults = {
 		POSITION : MeshData.createAttribute(3, 'Float'),
 		NORMAL : MeshData.createAttribute(3, 'Float'),
@@ -121,7 +157,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		for ( var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = defaults[type];
+				map[type] = clone(defaults[type]);
 			} else {
 				throw "No default attribute named: " + type;
 			}
