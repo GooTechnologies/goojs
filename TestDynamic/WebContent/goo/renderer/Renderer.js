@@ -3,6 +3,13 @@ define(
 	function(ShaderRecord, RendererRecord, Camera, Util) {
 		"use strict";
 
+		/**
+		 * Creates a new renderer object
+		 * 
+		 * @name Renderer
+		 * @class The renderer handles displaying of graphics data to a render context
+		 * @param {Settings} parameters Renderer settings
+		 */
 		function Renderer(parameters) {
 			parameters = parameters || {};
 

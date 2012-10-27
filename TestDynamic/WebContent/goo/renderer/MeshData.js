@@ -2,10 +2,24 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	BufferUtils) {
 	"use strict";
 
+	/**
+	 * Creates a new meshdata object
+	 * 
+	 * @name MeshData
+	 * @class Stores all buffers for geometric data and similar attributes
+	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes
+	 * @param {Number} vertexCount Number of vertices in buffer
+	 * @param {Number} indexCount Number of indices in buffer
+	 */
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
+		this.vertexCount = vertexCount;
+		this.indexCount = indexCount || 0;
+
+		this.vertexData = null;
 		this.indexData = null;
+
 		this.indexLengths = null;
 		this.indexModes = ['Triangles'];
 

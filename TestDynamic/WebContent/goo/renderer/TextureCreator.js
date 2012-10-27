@@ -1,6 +1,13 @@
 define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture) {
 	"use strict";
 
+	/**
+	 * Creates a new texturecreator object
+	 * 
+	 * @name TextureCreator
+	 * @class TBD
+	 * @param {Settings} settings Texturing settings
+	 */
 	function TextureCreator(settings) {
 		settings = settings || {};
 

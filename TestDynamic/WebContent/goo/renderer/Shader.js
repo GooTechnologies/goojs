@@ -3,6 +3,15 @@ define(
 	function(ShaderCall, Util, GooRunner) {
 		"use strict";
 
+		/**
+		 * Creates a new shader object
+		 * 
+		 * @name Shader
+		 * @class Defines vertex and fragment shader and bindings to shader callbacks
+		 * @param {String} name Shader name (mostly for debug/tool use)
+		 * @param {String} vertexSource Vertex shader source
+		 * @param {String} fragmentSource Fragment shader source
+		 */
 		function Shader(name, vertexSource, fragmentSource) {
 			this.name = name;
 			this.vertexSource = vertexSource;
