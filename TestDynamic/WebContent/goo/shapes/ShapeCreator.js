@@ -13,19 +13,23 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 	};
 
 	ShapeCreator.createBoxMeshData = function(width, height, length) {
+		var xExtent = width * 0.5;
+		var yExtent = height * 0.5;
+		var zExtent = length * 0.5;
+
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
 		var meshData = new MeshData(attributeMap, 24, 36);
 
 		var verts = [//
-		-width, -height, -length, //
-		width, -height, -length, //
-		width, height, -length, //
-		-width, height, -length, //
-		width, -height, length, //
-		-width, -height, length, //
-		width, height, length, //
-		-width, height, length, //
+		-xExtent, -yExtent, -zExtent, //
+		xExtent, -yExtent, -zExtent, //
+		xExtent, yExtent, -zExtent, //
+		-xExtent, yExtent, -zExtent, //
+		xExtent, -yExtent, zExtent, //
+		-xExtent, -yExtent, zExtent, //
+		xExtent, yExtent, zExtent, //
+		-xExtent, yExtent, zExtent, //
 		];
 
 		var vertices = [];

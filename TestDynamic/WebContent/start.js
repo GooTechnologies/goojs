@@ -17,7 +17,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		var ui = new DebugUI(goo);
+		// var ui = new DebugUI(goo);
 
 		// Examples of model loading
 		loadModels(goo);
@@ -50,8 +50,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
 					transformComponent.setUpdated();
 
-					goo.renderer.camera.position.x = Math.sin(t * 0.1) * 100;
-					goo.renderer.camera.position.z = Math.cos(t * 0.1) * 100;
+					goo.renderer.camera.position.x = Math.sin(t * 1.0) * 50 + 60;
+					goo.renderer.camera.position.z = Math.sin(t * 1.0) * 50 + 60;
 					goo.renderer.camera.lookAt(zero);
 					goo.renderer.camera.updateWorld();
 
@@ -95,8 +95,20 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
-				entities[0].transformComponent.transform.translation.x = 0;
-				entities[0].transformComponent.setUpdated();
+				var script = {
+					t : 0,
+					init : function(entity) {
+
+					},
+					run : function(entity) {
+						var transformComponent = entities[0].transformComponent;
+						transformComponent.transform.rotation.y = this.t * 0.5;
+						transformComponent.setUpdated();
+
+						this.t += entity._world.tpf;
+					}
+				};
+				entities[0].setComponent(new ScriptComponent(script));
 			},
 			onError : function(error) {
 				console.error(error);
@@ -173,7 +185,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function createBoxEntity(goo) {
-		var entity = ShapeCreator.createBoxEntity(goo.world, 5, 5, 5);
+		var entity = ShapeCreator.createBoxEntity(goo.world, 15, 5, 15);
 		entity.transformComponent.transform.translation.y = -10;
 		entity.name = "Box";
 

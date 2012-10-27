@@ -7,10 +7,9 @@ define(['goo/math/Transform'], function(Transform) {
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
-		var big = Infinity;
 		var vec = new THREE.Vector3();
-		var min = new THREE.Vector3(big, big, big);
-		var max = new THREE.Vector3(-big, -big, -big);
+		var min = new THREE.Vector3(Infinity, Infinity, Infinity);
+		var max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
 		for ( var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -23,18 +22,18 @@ define(['goo/math/Transform'], function(Transform) {
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var center = max.addSelf(min).divideScalar(2.0);
+		var newCenter = max.addSelf(min).divideScalar(2.0);
 		var size = 0, test;
 		for ( var i = 0; i < verts.length; i += 3) {
 			vec.set(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.subSelf(center).length();
+			test = vec.subSelf(newCenter).length();
 			if (test > size) {
 				size = test;
 			}
 		}
 
-		this.radius = size / 4.0;
-		this.center.copy(center);
+		this.radius = size / 1.0;
+		this.center.copy(newCenter);
 	};
 
 	BoundingSphere.prototype.transform = function(transform, bound) {
@@ -68,6 +67,15 @@ define(['goo/math/Transform'], function(Transform) {
 
 	BoundingSphere.prototype._maxAxis = function(scale) {
 		return Math.max(Math.abs(scale.x), Math.max(Math.abs(scale.y), Math.abs(scale.z)));
+	};
+
+	BoundingSphere.prototype.toString = function() {
+		var x = Math.round(this.center.x * 10) / 10;
+		var y = Math.round(this.center.y * 10) / 10;
+		var z = Math.round(this.center.z * 10) / 10;
+		var radius = Math.round(this.radius * 10) / 10;
+
+		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + radius;
 	};
 
 	return BoundingSphere;

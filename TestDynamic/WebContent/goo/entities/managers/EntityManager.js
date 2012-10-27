@@ -31,8 +31,8 @@ define(function() {
 		var entities = [];
 		for ( var key in this._entities) {
 			var entity = this._entities[key];
-			if (entity.TransformComponent) {
-				if (!entity.TransformComponent.parent) {
+			if (entity.transformComponent) {
+				if (!entity.transformComponent.parent) {
 					entities.push(entity);
 				}
 			} else {

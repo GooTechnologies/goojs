@@ -4,6 +4,14 @@ define(function() {
 	function DebugUI(goo) {
 		var that = this;
 
+		goo.callbacks.push(function(tpf) {
+			var allEntities = goo.world.entityManager.getEntities();
+			for ( var i in allEntities) {
+				var entity = allEntities[i];
+				goo.world.changedEntity(entity);
+			}
+		});
+
 		// REVIEW: too long function
 		jQuery(function($) {
 			var root = $('<div/>', {
@@ -15,14 +23,14 @@ define(function() {
 			root.css({
 				'position' : 'absolute',
 				'z-index' : '2',
-				'padding' : '10px',
+				'padding' : '5px',
 				'background-color' : 'gray',
 				'left' : '10px',
 				'top' : '10px',
 				'border' : '1px solid black'
 			});
 			root.appendTo(document.body);
-			var list = root.append('<ul></ul>');
+			var list = $('<ul>').appendTo(root);
 			that.root = root;
 
 			function Manager() {
@@ -45,23 +53,34 @@ define(function() {
 				},
 				updateList : function(entities) {
 					list.empty();
+					// var childList = $('<ul>').appendTo(list);
 					for ( var i in entities) {
 						var entity = entities[i];
-						list.append('<li>' + entity.toString());
-						if (entity.TransformComponent) {
-							this.updateTransformList(entity.TransformComponent.children, 1);
+						$('<li>').appendTo(list).append(entity.toString()).append(
+							' - '
+								+ (entity.meshRendererComponent !== undefined ? entity.meshRendererComponent.worldBound
+									: 'none') + ', ' + entity.isVisible);
+						if (entity.transformComponent) {
+							this.updateTransformList(entity.transformComponent.children, 1, list);
 						}
 					}
 				},
-				updateTransformList : function(transformComponents, depth) {
+				updateTransformList : function(transformComponents, depth, list) {
+					if (transformComponents.length <= 0) {
+						return;
+					}
+
+					var childList = $('<ul>').appendTo(list);
 					for ( var i in transformComponents) {
 						var tc = transformComponents[i];
-						var str = '';
-						for ( var j = 0; j < depth; j++) {
-							str += '--';
-						}
-						list.append('<li>' + str + tc.entity.toString());
-						this.updateTransformList(tc.children, depth + 1);
+						$('<li>')
+							.appendTo(childList)
+							.append(tc.entity.toString())
+							.append(
+								' - '
+									+ (tc.entity.meshRendererComponent !== undefined ? tc.entity.meshRendererComponent.worldBound
+										: 'none') + ', ' + tc.entity.isVisible);
+						this.updateTransformList(tc.children, depth + 1, childList);
 					}
 				}
 			};

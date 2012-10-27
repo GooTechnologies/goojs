@@ -412,11 +412,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				}
 
 				// apply textures
-				var foundTextures = false;
 				for ( var key in this.slotUnitMap) {
 					if (info.textureFileNames[key] !== undefined) {
 						var baseTexFileName = info.textureFileNames[key];
-						foundTextures = true;
 						var minificationFilter = info.textureMinificationFilters[key];
 						var flipTexture = info.textureFlipSettings[key];
 
@@ -449,9 +447,6 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 						// tex.setWrap(WrapMode.Repeat);
 						material.textures[this.slotUnitMap[key]] = tex;
 					}
-				}
-				if (foundTextures) {
-					// mesh.setRenderState(ts);
 				}
 			}
 		}

@@ -22,6 +22,9 @@ define(function() {
 			var isVisible = this.contains(this.camera.frustum, bounds);
 			if (isVisible) {
 				renderList.push(entity);
+				entity.isVisible = true;
+			} else {
+				entity.isVisible = false;
 			}
 		}
 	};
