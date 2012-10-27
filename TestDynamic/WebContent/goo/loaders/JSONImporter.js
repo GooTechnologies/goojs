@@ -4,6 +4,13 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader) {
 	"use strict";
 
+	/**
+	 * Creates a new importer
+	 * 
+	 * @name JSONImporter
+	 * @class Importer for our compressed JSON format
+	 * @param {World} world {@link World} reference needed to create entities
+	 */
 	function JSONImporter(world) {
 		this.world = world;
 
@@ -23,6 +30,18 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		this.baseTextureDir = '';
 	}
 
+	/**
+	 * Loads a model from the supplied model url and texture path.
+	 * 
+	 * @param modelUrl
+	 * @param textureDir
+	 * @param callback Callback with
+	 *            <ul>
+	 *            <li>onSuccess(entities)
+	 *            <li>onError(error)
+	 *            </ul>
+	 * @returns Entities created during load
+	 */
 	JSONImporter.prototype.load = function(modelUrl, textureDir, callback) {
 		var request = new XMLHttpRequest();
 		request.open('GET', modelUrl, true);
@@ -40,6 +59,13 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		request.send();
 	};
 
+	/**
+	 * Parses a model from the supplied model source and texture path.
+	 * 
+	 * @param {String} modelSource JSON model source as a string
+	 * @param textureDir Texture path
+	 * @returns Entities created during load
+	 */
 	JSONImporter.prototype.parse = function(modelSource, textureDir) {
 		this.baseTextureDir = textureDir || '';
 		this.loadedEntities = [];
@@ -56,7 +82,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		}
 
 		// pull in materials
-		this.parseMaterials(root.Materials);
+		this._parseMaterials(root.Materials);
 
 		// pull in skeletons if we have any
 		// if (root.Skeletons")) {
@@ -70,12 +96,12 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		// }
 
 		// parse scene
-		this.parseSpatial(root.Scene);
+		this._parseSpatial(root.Scene);
 
 		return this.loadedEntities;
 	};
 
-	JSONImporter.prototype.parseSpatial = function(object) {
+	JSONImporter.prototype._parseSpatial = function(object) {
 		var type = object.Type;
 		var name = object.Name === null ? "null" : object.Name;
 
@@ -88,7 +114,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			if (object.Children) {
 				for ( var i in object.Children) {
 					var child = object.Children[i];
-					var childEntity = this.parseSpatial(child);
+					var childEntity = this._parseSpatial(child);
 					if (childEntity !== null) {
 						entity.transformComponent.attachChild(childEntity.transformComponent);
 					}
@@ -101,9 +127,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			meshRendererComponent.materials.push(material);
 			entity.setComponent(meshRendererComponent);
 
-			this.parseMaterial(object, entity);
+			this._parseMaterial(object, entity);
 
-			var meshData = this.parseMeshData(object.MeshData, 0, entity, type);
+			var meshData = this._parseMeshData(object.MeshData, 0, entity, type);
 			if (meshData === null) {
 				return null;
 			}
@@ -114,9 +140,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			meshRendererComponent.materials.push(Material.defaultMaterial);
 			entity.setComponent(meshRendererComponent);
 
-			this.parseMaterial(object, entity);
+			this._parseMaterial(object, entity);
 
-			var meshData = this.parseMeshData(object.MeshData, 4, entity, type);
+			var meshData = this._parseMeshData(object.MeshData, 4, entity, type);
 			if (meshData === null) {
 				return null;
 			}
@@ -138,7 +164,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		return entity;
 	};
 
-	JSONImporter.prototype.parseMeshData = function(object, weightsPerVert, entity, type) {
+	JSONImporter.prototype._parseMeshData = function(object, weightsPerVert, entity, type) {
 		var vertexCount = object.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
@@ -308,7 +334,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		return meshData;
 	};
 
-	JSONImporter.prototype.parseMaterials = function(array) {
+	JSONImporter.prototype._parseMaterials = function(array) {
 		if (array === null) {
 			return;
 		}
@@ -326,7 +352,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			info.profile = obj.Profile;
 			info.technique = obj.Technique;
 			info.usesTransparency = obj.UsesTransparency;
-			info.materialState = this.parseMaterialState(obj);
+			info.materialState = this._parseMaterialstate(obj);
 
 			if (obj.TextureEntries) {
 				var entries = obj.TextureEntries;
@@ -357,7 +383,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		}
 	};
 
-	JSONImporter.prototype.parseMaterial = function(object, entity) {
+	JSONImporter.prototype._parseMaterial = function(object, entity) {
 		// look for material
 		if (object.Material) {
 			var info = this.materials[object.Material];
@@ -431,19 +457,19 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		}
 	};
 
-	JSONImporter.prototype.parseMaterialState = function(object) {
+	JSONImporter.prototype._parseMaterialstate = function(object) {
 		var ms = {};
 
-		ms.ambient = this.parseColor(object.AmbientColor);
-		ms.diffuse = this.parseColor(object.DiffuseColor);
-		ms.emissive = this.parseColor(object.EmissiveColor);
-		ms.specular = this.parseColor(object.SpecularColor);
+		ms.ambient = this._parseColor(object.AmbientColor);
+		ms.diffuse = this._parseColor(object.DiffuseColor);
+		ms.emissive = this._parseColor(object.EmissiveColor);
+		ms.specular = this._parseColor(object.SpecularColor);
 		ms.shininess = object.Shininess;
 
 		return ms;
 	};
 
-	JSONImporter.prototype.parseColor = function(hex) {
+	JSONImporter.prototype._parseColor = function(hex) {
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})*$/i.exec(hex);
 		return result ? {
 			r : parseInt(result[1], 16) / 255.0,

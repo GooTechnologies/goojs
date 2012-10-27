@@ -94,7 +94,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				for ( var i in entities) {
 					entities[i].addToWorld();
 				}
-				entities[0].transformComponent.transform.scale.set(1, 1, 1);
+				entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
 				entities[0].transformComponent.transform.translation.x = 0;
 				entities[0].transformComponent.setUpdated();
 			},
