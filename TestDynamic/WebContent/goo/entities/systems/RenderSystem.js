@@ -27,7 +27,8 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		var shaderInfo = {
 			meshData : entity.meshDataComponent.meshData,
 			transform : entity.transformComponent.worldTransform,
-			materials : entity.meshRendererComponent.materials
+			materials : entity.meshRendererComponent.materials,
+			lights : entity._world.getManager('LightManager').lights
 		};
 
 		// bind our interleaved data

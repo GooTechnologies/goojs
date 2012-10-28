@@ -13,7 +13,7 @@ define(function() {
 		}
 
 		if (this.lights.indexOf(component.light) === -1) {
-			lights.push(component.light);
+			this.lights.push(component.light);
 		}
 	};
 

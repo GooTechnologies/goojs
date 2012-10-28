@@ -10,7 +10,7 @@ define(function() {
 	 * @property {Number} id Unique id
 	 * @property {String} name Entity name
 	 */
-	function Entity(world) {
+	function Entity(world, name) {
 		this._world = world;
 		this._components = [];
 
@@ -18,7 +18,7 @@ define(function() {
 			value : Entity.entityCount++,
 			writable : false
 		});
-		this.name = 'Entity_' + this.id;
+		this.name = name !== undefined ? name : 'Entity_' + this.id;
 	}
 
 	Entity.prototype.addToWorld = function() {
@@ -48,9 +48,9 @@ define(function() {
 			component.entity = this;
 		}
 
-		if (this._world.entityManager.contains(this)) {
-			this._world.changedEntity(this, component, 'addedComponent');
-		}
+		// if (this._world.entityManager.contains(this)) {
+		this._world.changedEntity(this, component, 'addedComponent');
+		// }
 	};
 
 	Entity.prototype.getComponent = function(type) {
@@ -69,9 +69,9 @@ define(function() {
 		}
 		delete this[getTypeAttributeName(type)];
 
-		if (this._world.entityManager.contains(this)) {
-			this._world.changedEntity(this, component, 'removedComponent');
-		}
+		// if (this._world.entityManager.contains(this)) {
+		this._world.changedEntity(this, component, 'removedComponent');
+		// }
 	};
 
 	Entity.prototype.toString = function() {

@@ -20,12 +20,28 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// var ui = new DebugUI(goo);
 
+		// Setup light
 		var light = {
 			translation : new THREE.Vector3()
 		};
-		var entity = goo.world.createEntity();
+		var entity = goo.world.createEntity('Light1');
 		entity.setComponent(new LightComponent(light));
 		entity.addToWorld();
+
+		// Move light
+		var script = {
+			t : 0,
+			run : function(entity) {
+				var transformComponent = entity.transformComponent;
+				transformComponent.transform.translation.x = Math.sin(this.t * 3) * 80;
+				transformComponent.transform.translation.y = 50;
+				transformComponent.transform.translation.z = Math.cos(this.t * 3) * 80;
+				transformComponent.setUpdated();
+
+				this.t += entity._world.tpf;
+			}
+		};
+		entity.setComponent(new ScriptComponent(script));
 
 		// Examples of model loading
 		loadModels(goo);

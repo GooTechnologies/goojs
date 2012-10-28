@@ -77,8 +77,8 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 		 * 
 		 * @returns {Entity}
 		 */
-		World.prototype.createEntity = function() {
-			var entity = new Entity(this);
+		World.prototype.createEntity = function(name) {
+			var entity = new Entity(this, name);
 			entity.setComponent(new TransformComponent());
 			return entity;
 		};
@@ -109,7 +109,8 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 		};
 
 		/**
-		 * Process all added/changed/removed entities and callback to active systems and managers. Usually called each frame
+		 * Process all added/changed/removed entities and callback to active systems and managers. Usually called each
+		 * frame
 		 */
 		World.prototype.process = function() {
 			this._check(this._addedEntities, function(observer, entity) {
@@ -119,7 +120,7 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 			});
 			this._check(this._changedEntities, function(observer, event) {
 				if (observer.changed) {
-					observer.changed(entityEvent[0]);
+					observer.changed(event.entity);
 				}
 				if (event.eventType !== undefined) {
 					if (observer[event.eventType]) {

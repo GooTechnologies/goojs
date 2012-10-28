@@ -106,7 +106,13 @@ define(
 			for ( var i = 0; i < 4; i++) {
 				defaultCallbacks['LIGHT' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {
-						uniformMapping['LIGHT' + i].uniform3f(lightPos.x, lightPos.y, lightPos.z);
+						var light = shaderInfo.lights[i];
+						if (light !== undefined) {
+							uniformMapping['LIGHT' + i].uniform3f(light.translation.x, light.translation.y,
+								light.translation.z);
+						} else {
+							uniformMapping['LIGHT' + i].uniform3f(lightPos.x, lightPos.y, lightPos.z);
+						}
 					};
 				})(i);
 			}
