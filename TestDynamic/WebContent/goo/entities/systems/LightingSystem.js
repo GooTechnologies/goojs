@@ -9,6 +9,13 @@ define(['goo/entities/systems/System'], function(System) {
 
 	LightingSystem.prototype.process = function(entities) {
 		for ( var i in entities) {
+			var entity = entities[i];
+			var transformComponent = entity.transformComponent;
+			var lightComponent = entity.lightComponent;
+
+			if (transformComponent._updated) {
+				lightComponent.light.translation.copy(transformComponent.transform.translation);
+			}
 		}
 	};
 

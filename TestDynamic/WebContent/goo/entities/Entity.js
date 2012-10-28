@@ -40,17 +40,6 @@ define(function() {
 		} else {
 			this._components[index] = component;
 		}
-		// REVIEW: The API would look more natural if the attribute name was lower case.
-		// e.g. transformComponent instead of TransformComponent. Like:
-		//
-		// getTypeAttributeName = function(type) {
-		// return component.type.charAt(0).toLowerCase() + component.type.substr(1)}
-		// }
-		// this[getTypeAttributeName[component.type] = component;
-		//
-		// Maybe even better to access component like entity.components.transform
-		// instead of entity.transformComponent?
-		// Perhaps just let the component.type be a short lower-case name?
 		this[getTypeAttributeName(component.type)] = component;
 
 		// TODO: Give access to the entity from TransformComponent. Other components can be shared between entities
@@ -60,7 +49,7 @@ define(function() {
 		}
 
 		if (this._world.entityManager.contains(this)) {
-			this._world.changedEntity(this);
+			this._world.changedEntity(this, component, 'addedComponent');
 		}
 	};
 
@@ -81,7 +70,7 @@ define(function() {
 		delete this[getTypeAttributeName(type)];
 
 		if (this._world.entityManager.contains(this)) {
-			this._world.changedEntity(this);
+			this._world.changedEntity(this, component, 'removedComponent');
 		}
 	};
 

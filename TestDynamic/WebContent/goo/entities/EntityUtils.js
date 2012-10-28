@@ -14,10 +14,6 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 		// Create entity
 		var entity = world.createEntity();
 
-		// Create transform component
-		var transformComponent = new TransformComponent();
-		entity.setComponent(transformComponent);
-
 		// Create meshdata component using above data
 		var meshDataComponent = new MeshDataComponent(meshData);
 		entity.setComponent(meshDataComponent);

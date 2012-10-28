@@ -51,7 +51,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					transformComponent.setUpdated();
 
 					goo.renderer.camera.position.x = Math.sin(t * 1.0) * 50 + 70;
-					// goo.renderer.camera.position.y = Math.sin(t * 1.0) * 0 + 1;
+					goo.renderer.camera.position.y = 20;
 					goo.renderer.camera.position.z = Math.sin(t * 1.0) * 50 + 70;
 					goo.renderer.camera.lookAt(zero);
 					goo.renderer.camera.updateWorld();
@@ -141,10 +141,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create entity
 		var entity = world.createEntity();
-
-		// Create transform component
-		var transformComponent = new TransformComponent();
-		entity.setComponent(transformComponent);
 
 		// Create meshdata component using above data
 		var meshDataComponent = new MeshDataComponent(meshData);

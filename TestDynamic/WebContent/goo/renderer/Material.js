@@ -121,7 +121,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'	vec3 N = normalize(normal);',//
 			'	vec3 L = normalize(lightDir);',//
 
-			'	float lambertTerm = dot(N,L);',//
+			'	float lambertTerm = dot(N,L)*0.75+0.25;',//
 
 			'	if(lambertTerm > 0.0)',//
 			'	{',//
@@ -129,10 +129,10 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'					   lambertTerm;	',//
 			'		vec3 E = normalize(eyeVec);',//
 			'		vec3 R = reflect(-L, N);',//
-			'		float specular = pow( max(dot(R, E), 0.0),',// 
-			'						materialSpecularPower);',//
+			'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
 			'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 			'					   specular;	',//
+			'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
 			'	}',//
 			'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
 			'}',//
@@ -212,7 +212,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			'	vec3 L = normalize(lightDir);',//
 
-			'	float lambertTerm = dot(N,L);',//
+			'	float lambertTerm = dot(N,L)*0.75+0.25;',//
 
 			'	if(lambertTerm > 0.0)',//
 			'	{',//
@@ -238,9 +238,6 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		var vs = shader.vshader;
 		var fs = shader.fshader;
 		material.shader = new Shader('DefaultShader', vs, fs);
-
-		// var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
-		// material.textures.push(texture);
 
 		return material;
 	};

@@ -106,7 +106,6 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		var name = object.Name === null ? "null" : object.Name;
 
 		var entity = this.world.createEntity();
-		entity.setComponent(new TransformComponent());
 		entity.name = name;
 		this.loadedEntities.push(entity);
 

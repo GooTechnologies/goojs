@@ -7,9 +7,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/MeshData', 'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader',
 		'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader', 'goo/loaders/JSONImporter',
 		'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils) {
+		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent'], function(World, Entity, System,
+	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem,
+	MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI,
+	ShapeCreator, EntityUtils, LightComponent) {
 
 	function init() {
 		// Create typical goo application
@@ -18,6 +19,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		document.body.appendChild(goo.renderer.domElement);
 
 		// var ui = new DebugUI(goo);
+
+		var light = {
+			translation : new THREE.Vector3()
+		};
+		var entity = goo.world.createEntity();
+		entity.setComponent(new LightComponent(light));
+		entity.addToWorld();
 
 		// Examples of model loading
 		loadModels(goo);
