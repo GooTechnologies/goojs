@@ -247,10 +247,6 @@ define(
 					this.uniformMapping[bindingName] = variableName;
 				}
 
-				if (this.defaultCallbacks[bindingName] !== undefined) {
-					this.currentCallbacks[bindingName] = this.defaultCallbacks[bindingName];
-				}
-
 				matcher = regExp.exec(source);
 			}
 		};
@@ -284,12 +280,25 @@ define(
 			for ( var key in this.attributeMapping) {
 				var attributeIndex = context.getAttribLocation(this.shaderProgram, this.attributeMapping[key]);
 				this.attributeIndexMapping[key] = attributeIndex;
+
+				if (attributeIndex === -1) {
+					console.warn('Attribute [' + this.attributeMapping[key] + '/' + key
+						+ '] variable not found in shader. Probably unused and optimized away.');
+				}
 			}
 
 			for ( var key in this.uniformMapping) {
 				var uniform = context.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
+
+				if (uniform !== null && this.defaultCallbacks[key] !== undefined) {
+					this.currentCallbacks[key] = this.defaultCallbacks[key];
+				} else {
+					console.warn('Uniform [' + this.uniformMapping[key]
+						+ '] variable not found in shader. Probably unused and optimized away. ' + key);
+					continue;
+				}
+
 				this.uniformLocationMapping[key] = uniform;
-				// console.log(key, this.uniformMapping[key], uniform, this);
 
 				var shaderCall = new ShaderCall(context);
 

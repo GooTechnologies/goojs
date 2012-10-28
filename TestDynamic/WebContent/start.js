@@ -50,8 +50,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
 					transformComponent.setUpdated();
 
-					goo.renderer.camera.position.x = Math.sin(t * 1.0) * 50 + 60;
-					goo.renderer.camera.position.z = Math.sin(t * 1.0) * 50 + 60;
+					goo.renderer.camera.position.x = Math.sin(t * 1.0) * 50 + 70;
+					// goo.renderer.camera.position.y = Math.sin(t * 1.0) * 0 + 1;
+					goo.renderer.camera.position.z = Math.sin(t * 1.0) * 50 + 70;
 					goo.renderer.camera.lookAt(zero);
 					goo.renderer.camera.updateWorld();
 

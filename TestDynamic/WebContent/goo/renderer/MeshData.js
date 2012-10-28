@@ -113,6 +113,8 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	MeshData.TANGENT = 'TANGENT';
 	MeshData.TEXCOORD0 = 'TEXCOORD0';
 	MeshData.TEXCOORD1 = 'TEXCOORD1';
+	MeshData.TEXCOORD2 = 'TEXCOORD2';
+	MeshData.TEXCOORD3 = 'TEXCOORD3';
 	MeshData.WEIGHTS = 'WEIGHTS';
 	MeshData.JOINTIDS = 'JOINTIDS';
 
@@ -163,7 +165,9 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		POSITION : MeshData.createAttribute(3, 'Float'),
 		NORMAL : MeshData.createAttribute(3, 'Float'),
 		COLOR : MeshData.createAttribute(4, 'Float'),
+		TANGENT : MeshData.createAttribute(4, 'Float'),
 		TEXCOORD0 : MeshData.createAttribute(2, 'Float'),
+		TEXCOORD1 : MeshData.createAttribute(2, 'Float'),
 	};
 
 	function buildMap(types) {

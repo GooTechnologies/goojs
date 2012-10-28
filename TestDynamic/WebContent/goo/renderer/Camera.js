@@ -4,7 +4,7 @@ define(function() {
 	function Camera(fov, aspect, near, far) {
 		THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 
-		this.position.set(50, 30, 50);
+		this.position.set(0, 0, 50);
 		this.lookAt(new THREE.Vector3(0, 0, 0));
 
 		this.frustum = new THREE.Frustum();

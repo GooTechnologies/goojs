@@ -121,33 +121,27 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				}
 			}
 		} else if (type === "Mesh") {
-			var meshRendererComponent = new MeshRendererComponent();
-
-			var material = Material.defaultLitMaterial; // Material.defaultMaterial;
-			meshRendererComponent.materials.push(material);
-			entity.setComponent(meshRendererComponent);
-
-			this._parseMaterial(object, entity);
-
 			var meshData = this._parseMeshData(object.MeshData, 0, entity, type);
 			if (meshData === null) {
 				return null;
 			}
 
 			entity.setComponent(new MeshDataComponent(meshData));
-		} else if (type === "SkinnedMesh") {
+
 			var meshRendererComponent = new MeshRendererComponent();
-			meshRendererComponent.materials.push(Material.defaultMaterial);
 			entity.setComponent(meshRendererComponent);
-
 			this._parseMaterial(object, entity);
-
+		} else if (type === "SkinnedMesh") {
 			var meshData = this._parseMeshData(object.MeshData, 4, entity, type);
 			if (meshData === null) {
 				return null;
 			}
 
 			entity.setComponent(new MeshDataComponent(meshData));
+
+			var meshRendererComponent = new MeshRendererComponent();
+			entity.setComponent(meshRendererComponent);
+			this._parseMaterial(object, entity);
 
 			// if (object.Pose")) {
 			// final String ref =
@@ -179,7 +173,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			attributeMap.NORMAL = MeshData.createAttribute(3, 'Float');
 		}
 		if (object.Tangents) {
-			attributeMap.TANGENT = MeshData.createAttribute(3, 'Float');
+			attributeMap.TANGENT = MeshData.createAttribute(4, 'Float');
 		}
 		if (object.Colors) {
 			attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
@@ -389,9 +383,29 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			var info = this.materials[object.Material];
 			if (info !== undefined) {
 				// TODO
+				var meshRendererComponent = entity.meshRendererComponent;
+
+				var attributes = entity.meshDataComponent.meshData.attributeMap;
+
+				var shader, type;
+				if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
+					&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
+					shader = Material.shaders.texturedNormalAOLit;
+					type = 'texturedNormalAOLit';
+				} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+					shader = Material.shaders.texturedLit;
+					type = 'texturedLit';
+				} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+					shader = Material.shaders.textured;
+					type = 'textured';
+				} else {
+					shader = Material.shaders.simple;
+					type = 'simple';
+				}
 				var material = new Material(info.materialName);
-				material.shader = entity.meshRendererComponent.materials[0].shader;
-				entity.meshRendererComponent.materials[0] = material;
+				material.shader = new Shader(info.materialName + '_Shader_' + type, shader.vshader, shader.fshader);
+
+				meshRendererComponent.materials[0] = material;
 
 				// info.connectedMeshes.push(mesh);
 
