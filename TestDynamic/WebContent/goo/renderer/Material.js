@@ -20,6 +20,15 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 	Material.shaders = {
 		simple : {
+			bindings : {
+				stuff : {
+					type : 'f',
+					value : 1.0
+				},
+				viewMatrix : function(uniformMapping, shaderInfo) {
+
+				}
+			},
 			vshader : [ //
 			'attribute vec3 vertexPosition; //!POSITION', //
 
@@ -145,6 +154,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'attribute vec4 vertexTangent; //!TANGENT', //
 			'attribute vec2 vertexUV0; //!TEXCOORD0', //
 			'attribute vec2 vertexUV1; //!TEXCOORD1', //
+			'attribute vec2 vertexUV2; //!TEXCOORD2', //
 
 			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
 			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
@@ -159,6 +169,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'varying vec3 eyeVec;',//
 			'varying vec2 texCoord0;',//
 			'varying vec2 texCoord1;',//
+			'varying vec2 texCoord2;',//
 
 			'void main(void) {', //
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
@@ -170,6 +181,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			'	texCoord0 = vertexUV0;', //
 			'	texCoord1 = vertexUV1;', //
+			'	texCoord2 = vertexUV2;', //
 
 			'	lightDir = lightPosition - worldPos.xyz;', //
 			'	eyeVec = cameraPosition - worldPos.xyz;', //
@@ -194,6 +206,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'varying vec3 eyeVec;',//
 			'varying vec2 texCoord0;',//
 			'varying vec2 texCoord1;',//
+			'varying vec2 texCoord2;',//
 
 			'void main(void)',//
 			'{',//
@@ -201,14 +214,14 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'								binormal,',//
 			'								normal);',//
 
-			'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
+			'	vec4 texCol = texture2D(diffuseMap, texCoord1);',//
 			'	vec4 final_color = materialAmbient;',//
 
 			'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz - vec3(0.5, 0.5, 0.5);',//
 			'	vec3 worldNormal = (tangentToWorld * tangentNormal);',//
 			'	vec3 N = normalize(worldNormal);',//
 
-			'	vec4 aoCol = texture2D(aoMap, vec2(1.0-texCoord0.x, 1.0-texCoord1.y));',//
+			'	vec4 aoCol = texture2D(aoMap, texCoord2);',//
 
 			'	vec3 L = normalize(lightDir);',//
 
@@ -225,8 +238,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 			'					   specular;	',//
 			'	}',//
-			// ' gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
-			'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
+			' gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
+			// ' gl_FragColor = vec4(texCol.rgb, texCol.a);',//
 			'}',//
 			].join('\n')
 		}

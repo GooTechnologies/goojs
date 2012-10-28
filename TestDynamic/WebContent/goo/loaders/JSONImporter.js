@@ -40,9 +40,11 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 *            <li>onSuccess(entities)
 	 *            <li>onError(error)
 	 *            </ul>
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback
+	 *            definition function(attributes, info)
 	 * @returns Entities created during load
 	 */
-	JSONImporter.prototype.load = function(modelUrl, textureDir, callback) {
+	JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
 		var request = new XMLHttpRequest();
 		request.open('GET', modelUrl, true);
 		var that = this;
@@ -64,11 +66,14 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 * 
 	 * @param {String} modelSource JSON model source as a string
 	 * @param textureDir Texture path
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback
+	 *            definition function(attributes, info)
 	 * @returns Entities created during load
 	 */
-	JSONImporter.prototype.parse = function(modelSource, textureDir) {
+	JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
 		this.baseTextureDir = textureDir || '';
 		this.loadedEntities = [];
+		this.shaderExtractor = shaderExtractor;
 
 		var root = JSON.parse(modelSource);
 
@@ -97,6 +102,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 		// parse scene
 		this._parseSpatial(root.Scene);
+
+		delete this.shaderExtractor;
 
 		return this.loadedEntities;
 	};
@@ -386,23 +393,32 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 				var attributes = entity.meshDataComponent.meshData.attributeMap;
 
-				var shader, type;
-				if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
-					&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
-					shader = Material.shaders.texturedNormalAOLit;
-					type = 'texturedNormalAOLit';
-				} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-					shader = Material.shaders.texturedLit;
-					type = 'texturedLit';
-				} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-					shader = Material.shaders.textured;
-					type = 'textured';
-				} else {
-					shader = Material.shaders.simple;
-					type = 'simple';
-				}
 				var material = new Material(info.materialName);
-				material.shader = new Shader(info.materialName + '_Shader_' + type, shader.vshader, shader.fshader);
+				var shader;
+
+				if (!this.shaderExtractor) {
+					var shaderSource, type;
+					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
+						&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
+						shaderSource = Material.shaders.texturedNormalAOLit;
+						type = 'texturedNormalAOLit';
+					} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+						shaderSource = Material.shaders.texturedLit;
+						type = 'texturedLit';
+					} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+						shaderSource = Material.shaders.textured;
+						type = 'textured';
+					} else {
+						shaderSource = Material.shaders.simple;
+						type = 'simple';
+					}
+					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource.vshader,
+						shaderSource.fshader);
+				} else {
+					shader = this.shaderExtractor(attributes, info);
+				}
+
+				material.shader = shader;
 
 				meshRendererComponent.materials[0] = material;
 

@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/entities/components/Component'], function(Component) {
 	"use strict";
 
 	function LightComponent(light) {
@@ -6,6 +6,8 @@ define(function() {
 
 		this.light = light;
 	}
+
+	LightComponent.prototype = Object.create(Component.prototype);
 
 	LightComponent.prototype.stuff = function() {
 	};

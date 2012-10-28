@@ -41,56 +41,19 @@ define(
 				var uniform = uniformMapping['PROJECTION_MATRIX'];
 				var matrix = camera.projectionMatrix;
 
-				var curValue = uniform.currentRecord.get(uniform);
-				if (curValue !== null) {
-					var equals = compareMatrices(curValue.elements, matrix.elements);
-					if (equals) {
-						return;
-					} else {
-						curValue.copy(matrix);
-					}
-				} else {
-					uniform.currentRecord.put(uniform, matrix.clone());
-				}
-
-				uniform.uniformMatrix4fv(false, matrix.elements);
+				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = GooRunner.renderer.camera;
 				var uniform = uniformMapping['VIEW_MATRIX'];
 				var matrix = camera.matrixWorldInverse;
 
-				var curValue = uniform.currentRecord.get(uniform);
-				if (curValue !== null) {
-					var equals = compareMatrices(curValue.elements, matrix.elements);
-					if (equals) {
-						return;
-					} else {
-						curValue.copy(matrix);
-					}
-				} else {
-					uniform.currentRecord.put(uniform, matrix.clone());
-				}
-
-				uniform.uniformMatrix4fv(false, matrix.elements);
+				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var uniform = uniformMapping['WORLD_MATRIX'];
 				var matrix = shaderInfo.transform.matrix;
-
-				var curValue = uniform.currentRecord.get(uniform);
-				if (curValue !== null) {
-					var equals = compareMatrices(curValue.elements, matrix.elements);
-					if (equals) {
-						return;
-					} else {
-						curValue.copy(matrix);
-					}
-				} else {
-					uniform.currentRecord.put(uniform, matrix.clone());
-				}
-
-				uniform.uniformMatrix4fv(false, matrix.elements);
+				uniform.uniformMatrix4fv(false, matrix);
 			};
 
 			for ( var i = 0; i < 16; i++) {
@@ -174,17 +137,6 @@ define(
 				uniformMapping['SPECULAR_POWER'].uniform1f(shininess);
 			};
 
-		}
-
-		function compareMatrices(e1, e2) {
-			var equals = true;
-			for ( var i = 0; i < 16; i++) {
-				if (Math.abs(e1[i] - e2[i]) > 0.00000001) {
-					equals = false;
-					break;
-				}
-			}
-			return equals;
 		}
 
 		Shader.prototype.apply = function(shaderInfo, renderer) {

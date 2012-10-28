@@ -1,4 +1,4 @@
-define(['goo/math/Transform'], function(Transform) {
+define(['goo/math/Transform', 'goo/entities/components/Component'], function(Transform, Component) {
 	"use strict";
 
 	function TransformComponent() {
@@ -12,6 +12,8 @@ define(['goo/math/Transform'], function(Transform) {
 		this._dirty = true;
 		this._updated = false;
 	}
+
+	TransformComponent.prototype = Object.create(Component.prototype);
 
 	TransformComponent.prototype.setUpdated = function() {
 		this._dirty = true;

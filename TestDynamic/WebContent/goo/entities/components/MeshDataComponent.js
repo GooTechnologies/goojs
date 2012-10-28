@@ -1,4 +1,4 @@
-define(['goo/renderer/BoundingSphere'], function(BoundingSphere) {
+define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], function(BoundingSphere, Component) {
 	"use strict";
 
 	function MeshDataComponent(meshData) {
@@ -9,6 +9,8 @@ define(['goo/renderer/BoundingSphere'], function(BoundingSphere) {
 		this.modelBound = new BoundingSphere();
 		this.autoCompute = true;
 	}
+
+	MeshDataComponent.prototype = Object.create(Component.prototype);
 
 	MeshDataComponent.prototype.setModelBound = function(modelBound, autoCompute) {
 		this.modelBound = modelBound;

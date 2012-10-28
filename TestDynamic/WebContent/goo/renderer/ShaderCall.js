@@ -182,19 +182,66 @@ define(function() {
 		this.currentRecord.put(this.location, values);
 	};
 
+	function compareMatrices(e1, e2, size) {
+		var equals = true;
+		for ( var i = 0; i < size; i++) {
+			if (Math.abs(e1[i] - e2[i]) > 0.00000001) {
+				equals = false;
+				break;
+			}
+		}
+		return equals;
+	}
+
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
-		this.context.uniformMatrix2fv(this.location, transpose, value);
+		var curValue = this.currentRecord.get(this.location);
+		if (curValue !== null) {
+			var equals = compareMatrices(curValue.elements, matrix.elements, 4);
+			if (equals) {
+				return;
+			} else {
+				curValue.copy(matrix);
+			}
+		} else {
+			this.currentRecord.put(this.location, matrix.clone());
+		}
+
+		this.context.uniformMatrix2fv(this.location, transpose, matrix.elements);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
-		this.context.uniformMatrix3fv(this.location, transpose, value);
+		var curValue = this.currentRecord.get(this.location);
+		if (curValue !== null) {
+			var equals = compareMatrices(curValue.elements, matrix.elements, 9);
+			if (equals) {
+				return;
+			} else {
+				curValue.copy(matrix);
+			}
+		} else {
+			this.currentRecord.put(this.location, matrix.clone());
+		}
+
+		this.context.uniformMatrix3fv(this.location, transpose, matrix.elements);
 	};
 
 	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix4fv = function(transpose, value) {
-		this.context.uniformMatrix4fv(this.location, transpose, value);
+	ShaderCall.prototype.uniformMatrix4fv = function(transpose, matrix) {
+		var curValue = this.currentRecord.get(this.location);
+		if (curValue !== null) {
+			var equals = compareMatrices(curValue.elements, matrix.elements, 16);
+			if (equals) {
+				return;
+			} else {
+				curValue.copy(matrix);
+			}
+		} else {
+			this.currentRecord.put(this.location, matrix.clone());
+		}
+
+		this.context.uniformMatrix4fv(this.location, transpose, matrix.elements);
 	};
 
 	return ShaderCall;
