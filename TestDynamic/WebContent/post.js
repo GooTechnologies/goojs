@@ -37,7 +37,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(40, 40, 40);
-				entities[0].transformComponent.transform.translation.x = 0;
 			},
 			onError : function(error) {
 				console.error(error);

@@ -27,6 +27,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 	Material.shaders = {
 		simple : {
+			// TODO: this is just a test on how binding could look when done outside of the shader+bindings
 			bindings : {
 				stuff : {
 					type : 'f',
