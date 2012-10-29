@@ -117,6 +117,11 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 				if (observer.added) {
 					observer.added(entity);
 				}
+				if (observer.addedComponent) {
+					for ( var i in entity._components) {
+						observer.addedComponent(entity, entity._components[i]);
+					}
+				}
 			});
 			this._check(this._changedEntities, function(observer, event) {
 				if (observer.changed) {
@@ -131,6 +136,11 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 			this._check(this._removedEntities, function(observer, entity) {
 				if (observer.removed) {
 					observer.removed(entity);
+				}
+				if (observer.removedComponent) {
+					for ( var i in entity._components) {
+						observer.removedComponent(entity, entity._components[i]);
+					}
 				}
 			});
 

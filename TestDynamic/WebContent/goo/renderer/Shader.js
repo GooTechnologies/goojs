@@ -65,7 +65,7 @@ define(
 			}
 
 			// TODO
-			var lightPos = new THREE.Vector3(20, 20, 50);
+			var lightPos = new THREE.Vector3(-20, 20, 20);
 			for ( var i = 0; i < 4; i++) {
 				defaultCallbacks['LIGHT' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {

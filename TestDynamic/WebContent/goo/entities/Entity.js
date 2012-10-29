@@ -48,9 +48,9 @@ define(function() {
 			component.entity = this;
 		}
 
-		// if (this._world.entityManager.contains(this)) {
-		this._world.changedEntity(this, component, 'addedComponent');
-		// }
+		if (this._world.entityManager.containsEntity(this)) {
+			this._world.changedEntity(this, component, 'addedComponent');
+		}
 	};
 
 	Entity.prototype.getComponent = function(type) {
@@ -69,9 +69,9 @@ define(function() {
 		}
 		delete this[getTypeAttributeName(type)];
 
-		// if (this._world.entityManager.contains(this)) {
-		this._world.changedEntity(this, component, 'removedComponent');
-		// }
+		if (this._world.entityManager.containsEntity(this)) {
+			this._world.changedEntity(this, component, 'removedComponent');
+		}
 	};
 
 	Entity.prototype.toString = function() {
