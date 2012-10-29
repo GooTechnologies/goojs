@@ -1,6 +1,6 @@
 define(
-	['goo/renderer/ShaderRecord', 'goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util'],
-	function(ShaderRecord, RendererRecord, Camera, Util) {
+	['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util'],
+	function(RendererRecord, Camera, Util) {
 		"use strict";
 
 		/**
@@ -103,18 +103,16 @@ define(
 		Renderer.prototype.bindData = function(bufferData) {
 			var glBuffer = null;
 			if (bufferData !== null) {
-				glBuffer = bufferData._dataRefs.get(this.context);
+				glBuffer = bufferData.glBuffer;
 				if (glBuffer !== null) {
-					// updateBuffer(bufferData, this.rendererRecord,
-					// this.context);
 					if (bufferData._dataNeedsRefresh) {
-						this.setBoundBuffer(bufferData._dataRefs.get(this.context), bufferData.target);
+						this.setBoundBuffer(bufferData.glBuffer, bufferData.target);
 						this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
 						bufferData._dataNeedsRefresh = false;
 					}
 				} else {
 					glBuffer = this.context.createBuffer();
-					bufferData._dataRefs.put(this.context, glBuffer);
+					bufferData.glBuffer = glBuffer;
 
 					this.rendererRecord.invalidateBuffer(bufferData.target);
 					this.setBoundBuffer(glBuffer, bufferData.target);

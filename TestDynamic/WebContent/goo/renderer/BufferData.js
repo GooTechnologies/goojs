@@ -16,7 +16,8 @@ define(function() {
 		this.data = data;
 		this.target = target;
 
-		this._dataRefs = new Hashtable();
+		this.glBuffer = null;
+
 		this._dataUsage = 'StaticDraw';
 		this._dataNeedsRefresh = false;
 	}

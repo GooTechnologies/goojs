@@ -94,10 +94,10 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 				bindTexture(context, texture, i, unitrecord);
 			}
 
-			var texrecord = renderer.rendererRecord.textureglRecord.get(texture.glTexture);
-			if (texrecord === null) {
+			var texrecord = texture.glTexture.textureRecord;
+			if (texrecord === undefined) {
 				texrecord = {};
-				renderer.rendererRecord.textureglRecord.put(texture.glTexture, texrecord);
+				texture.glTexture.textureRecord = texrecord;
 			}
 
 			// TODO: bind?

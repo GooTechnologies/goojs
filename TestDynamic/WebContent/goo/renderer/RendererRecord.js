@@ -20,7 +20,6 @@ define(function() {
 		this.currentTextureArraysUnit = 0;
 
 		this.textureRecord = [];
-		this.textureglRecord = new Hashtable();
 
 		this.usedProgram = null;
 		this.boundAttributes = [];
