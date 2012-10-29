@@ -57,9 +57,8 @@ define(function() {
 					for ( var i in entities) {
 						var entity = entities[i];
 						$('<li>').appendTo(list).append(entity.toString()).append(
-							' - '
-								+ (entity.meshRendererComponent !== undefined ? entity.meshRendererComponent.worldBound
-									: 'none') + ', ' + entity.isVisible);
+							' - ' + (entity.meshRendererComponent !== undefined ? entity.meshRendererComponent.worldBound : 'none') + ', '
+								+ entity.isVisible);
 						if (entity.transformComponent) {
 							this.updateTransformList(entity.transformComponent.children, 1, list);
 						}
@@ -73,13 +72,12 @@ define(function() {
 					var childList = $('<ul>').appendTo(list);
 					for ( var i in transformComponents) {
 						var tc = transformComponents[i];
-						$('<li>')
-							.appendTo(childList)
-							.append(tc.entity.toString())
-							.append(
-								' - '
-									+ (tc.entity.meshRendererComponent !== undefined ? tc.entity.meshRendererComponent.worldBound
-										: 'none') + ', ' + tc.entity.isVisible);
+						var mrc = tc.entity.meshRendererComponent;
+						var bounds = mrc !== undefined ? mrc.worldBound : 'none';
+						var material = mrc !== undefined ? mrc.materials[0] : undefined;
+						var shader = material !== undefined ? material.shader : 'nope';
+						$('<li>').appendTo(childList).append(tc.entity.toString()).append(' - ' + bounds + ', ' + tc.entity.isVisible).append(
+							' - ' + shader);
 						this.updateTransformList(tc.children, depth + 1, childList);
 					}
 				}

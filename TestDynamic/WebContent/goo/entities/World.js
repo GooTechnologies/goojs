@@ -21,6 +21,7 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 			this.entityManager = new EntityManager();
 			this.setManager(this.entityManager);
 
+			this.time = 0.0;
 			this.tpf = 1.0;
 		}
 

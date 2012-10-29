@@ -59,6 +59,7 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 			var start = Date.now();
 			function run(time) {
 				that.world.tpf = (time - start) / 1000.0;
+				that.world.time += that.world.tpf;
 				start = time;
 
 				that.world.process();

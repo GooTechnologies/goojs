@@ -5,14 +5,30 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 	}
 
 	ShapeCreator.createBoxEntity = function(world, width, height, length) {
-		var meshData = ShapeCreator.createBoxMeshData(width, height, length);
+		var meshData = ShapeCreator.createBoxData(width, height, length);
 
 		var entity = EntityUtils.createTypicalEntity(world, meshData);
 
 		return entity;
 	};
 
-	ShapeCreator.createBoxMeshData = function(width, height, length) {
+	ShapeCreator.createPlaneData = function(width, height) {
+		var xExtent = width * 0.5;
+		var yExtent = height * 0.5;
+
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
+
+		var meshData = new MeshData(attributeMap, 4, 6);
+
+		meshData.getAttributeBuffer(MeshData.POSITION).set(
+			[-xExtent, -yExtent, 0, -xExtent, yExtent, 0, xExtent, yExtent, 0, xExtent, -yExtent, 0]);
+		meshData.getAttributeBuffer(MeshData.NORMAL).set([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
+		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([0, 0, 0, 1, 1, 1, 1, 0]);
+
+		meshData.getIndexBuffer().set([0, 1, 3, 1, 2, 3]);
+	};
+
+	ShapeCreator.createBoxData = function(width, height, length) {
 		var xExtent = width * 0.5;
 		var yExtent = height * 0.5;
 		var zExtent = length * 0.5;

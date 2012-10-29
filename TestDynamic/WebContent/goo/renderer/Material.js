@@ -23,6 +23,11 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		// specular : {r : 0.7, g : 0.7, b : 0.7, a : 1.0},
 		// shininess: 16.0
 		// };
+		this.cullState = {
+			enabled : true,
+			cullFace : 'Back', // Front, FrontAndBack
+			frontFace : 'CCW' // CW
+		};
 	}
 
 	Material.shaders = {

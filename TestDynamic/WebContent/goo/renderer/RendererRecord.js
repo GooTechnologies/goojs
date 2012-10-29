@@ -23,6 +23,8 @@ define(function() {
 
 		this.usedProgram = null;
 		this.boundAttributes = [];
+
+		this.cullRecord = {};
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function(target) {

@@ -71,8 +71,7 @@ define(
 					return function(uniformMapping, shaderInfo) {
 						var light = shaderInfo.lights[i];
 						if (light !== undefined) {
-							uniformMapping['LIGHT' + i].uniform3f(light.translation.x, light.translation.y,
-								light.translation.z);
+							uniformMapping['LIGHT' + i].uniform3f(light.translation.x, light.translation.y, light.translation.z);
 						} else {
 							uniformMapping['LIGHT' + i].uniform3f(lightPos.x, lightPos.y, lightPos.z);
 						}
@@ -110,30 +109,23 @@ define(
 				a : 1.0
 			};
 			defaultCallbacks['AMBIENT'] = function(uniformMapping, shaderInfo) {
-				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient
-					: DEFAULT_AMBIENT;
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
 				uniformMapping['AMBIENT'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 			};
 			defaultCallbacks['EMISSIVE'] = function(uniformMapping, shaderInfo) {
-				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive
-					: DEFAULT_EMISSIVE;
-				uniformMapping['EMISSIVE']
-					.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive : DEFAULT_EMISSIVE;
+				uniformMapping['EMISSIVE'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 			};
 			defaultCallbacks['DIFFUSE'] = function(uniformMapping, shaderInfo) {
-				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse
-					: DEFAULT_DIFFUSE;
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse : DEFAULT_DIFFUSE;
 				uniformMapping['DIFFUSE'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 			};
 			defaultCallbacks['SPECULAR'] = function(uniformMapping, shaderInfo) {
-				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular
-					: DEFAULT_SPECULAR;
-				uniformMapping['SPECULAR']
-					.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+				var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : DEFAULT_SPECULAR;
+				uniformMapping['SPECULAR'].uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 			};
 			defaultCallbacks['SPECULAR_POWER'] = function(uniformMapping, shaderInfo) {
-				var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess
-					: 8.0;
+				var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
 				uniformMapping['SPECULAR_POWER'].uniform1f(shininess);
 			};
 
@@ -160,8 +152,8 @@ define(
 				var attribute = attributeMap[key];
 				var attributeIndex = this.attributeIndexMapping[key];
 				if (attributeIndex !== undefined) {
-					renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type,
-						attribute.normalized || true, 0, attribute.offset, record);
+					renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized || true, 0, attribute.offset,
+						record);
 				}
 			}
 
@@ -250,8 +242,8 @@ define(
 				if (uniform !== null && this.defaultCallbacks[key] !== undefined) {
 					this.currentCallbacks[key] = this.defaultCallbacks[key];
 				} else {
-					console.warn('Uniform [' + this.uniformMapping[key]
-						+ '] variable not found in shader. Probably unused and optimized away. ' + key);
+					console.warn('Uniform [' + this.uniformMapping[key] + '] variable not found in shader. Probably unused and optimized away. '
+						+ key);
 					continue;
 				}
 
@@ -277,6 +269,10 @@ define(
 
 			return shader;
 		};
+
+		Shader.prototype.toString = function() {
+			return this.name;
+		}
 
 		return Shader;
 	});
