@@ -21,8 +21,7 @@ define(
 			}
 			this.domElement = _canvas;
 
-			this.lineRecord = null;// new LineRecord();
-			this.shaderRecord = new ShaderRecord();
+			// this.lineRecord = null;// new LineRecord();
 			this.rendererRecord = new RendererRecord();
 
 			this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;

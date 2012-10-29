@@ -106,7 +106,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 					getGLMagFilter(texture.magFilter));
 				texrecord.magFilter = texture.magFilter;
 			}
-			if (texrecord.minFilter !== texture.magFilter) {
+			if (texrecord.minFilter !== texture.minFilter) {
 				context.texParameteri(getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER,
 					getGLMinFilter(texture.minFilter));
 				texrecord.minFilter = texture.minFilter;

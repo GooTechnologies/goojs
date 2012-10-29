@@ -15,8 +15,22 @@ define(function() {
 		delete this._entities[entity.id];
 	};
 
-	EntityManager.prototype.contains = function(entity) {
+	EntityManager.prototype.containsEntity = function(entity) {
 		return this._entities[entity.id] !== undefined;
+	};
+
+	EntityManager.prototype.getEntityById = function(id) {
+		return this._entities[id];
+	};
+
+	EntityManager.prototype.getEntityByName = function(name) {
+		for ( var key in this._entities) {
+			var entity = this._entities[key];
+			if (entity.name === name) {
+				return entity;
+			}
+		}
+		return undefined;
 	};
 
 	EntityManager.prototype.getEntities = function() {

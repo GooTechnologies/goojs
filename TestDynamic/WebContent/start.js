@@ -90,31 +90,54 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 
 		// Load asynchronous with callback
-		importer.load('resources/shoes/shoes_compressed.json', 'resources/shoes/textures/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
-				}
-				entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
-				var script = {
-					t : 0,
-					init : function(entity) {
-
-					},
-					run : function(entity) {
-						var transformComponent = entities[0].transformComponent;
-						transformComponent.transform.rotation.y = this.t * 0.5;
-						transformComponent.setUpdated();
-
-						this.t += entity._world.tpf;
+		importer.load('resources/shoes/shoes_compressed.json', 'resources/shoes/textures/',
+			{
+				onSuccess : function(entities) {
+					// Pull out the fabric entity of the shoe
+					var fabricEntity;
+					var name = 'polySurfaceShape10[lambert2SG]';
+					for ( var key in entities) {
+						var entity = entities[key];
+						if (entity.name === name) {
+							fabricEntity = entity;
+							break;
+						}
 					}
-				};
-				entities[0].setComponent(new ScriptComponent(script));
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
+					if (!fabricEntity) {
+						console.error('Could not find entity: ' + name);
+						return;
+					}
+
+					for ( var i in entities) {
+						entities[i].addToWorld();
+					}
+					entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
+					var script = {
+						t : 0,
+						init : function(entity) {
+
+						},
+						run : function(entity) {
+							var transformComponent = entities[0].transformComponent;
+							transformComponent.transform.rotation.y = this.t * 0.5;
+							transformComponent.setUpdated();
+
+							fabricEntity.meshRendererComponent.materials[0].materialState.diffuse.r = Math
+								.sin(this.t * 3) * 0.5 + 0.5;
+							fabricEntity.meshRendererComponent.materials[0].materialState.diffuse.g = Math
+								.sin(this.t * 2) * 0.5 + 0.5;
+							fabricEntity.meshRendererComponent.materials[0].materialState.diffuse.b = Math
+								.sin(this.t * 4) * 0.5 + 0.5;
+
+							this.t += entity._world.tpf;
+						}
+					};
+					entities[0].setComponent(new ScriptComponent(script));
+				},
+				onError : function(error) {
+					console.error(error);
+				}
+			});
 	}
 
 	// Create simple quad

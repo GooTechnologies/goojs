@@ -82,23 +82,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			onError : function(error) {
 				console.error(error);
 			}
-		}, function(attributes, info) {
-			var shaderSource, type;
-			if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
-				&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
-				shaderSource = Material.shaders.texturedNormalAOLit;
-				type = 'texturedNormalAOLit';
-			} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-				shaderSource = Material.shaders.texturedLit;
-				type = 'texturedLit';
-			} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-				shaderSource = Material.shaders.textured;
-				type = 'textured';
-			} else {
-				shaderSource = Material.shaders.simple;
-				type = 'simple';
-			}
-			return new Shader(info.materialName + '_Shader[' + type + ']', shaderSource.vshader, shaderSource.fshader);
 		});
 	}
 

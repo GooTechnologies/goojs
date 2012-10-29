@@ -21,6 +21,9 @@ define(function() {
 
 		this.textureRecord = [];
 		this.textureglRecord = new Hashtable();
+
+		this.usedProgram = null;
+		this.boundAttributes = [];
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function(target) {

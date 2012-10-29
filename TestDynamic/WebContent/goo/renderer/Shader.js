@@ -141,7 +141,7 @@ define(
 
 		Shader.prototype.apply = function(shaderInfo, renderer) {
 			var context = renderer.context;
-			var record = renderer.shaderRecord;
+			var record = renderer.rendererRecord;
 
 			if (this.shaderProgram === null) {
 				this._investigateShaders();
@@ -211,7 +211,6 @@ define(
 
 		Shader.prototype.compile = function(renderer) {
 			var context = renderer.context;
-			var record = renderer.shaderRecord;
 
 			var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
 			var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
@@ -258,17 +257,7 @@ define(
 
 				this.uniformLocationMapping[key] = uniform;
 
-				var shaderCall = new ShaderCall(context);
-
-				var uniformRecord = record.uniformRecords.get(this.shaderProgram);
-				if (uniformRecord === null) {
-					uniformRecord = new Hashtable();
-					record.uniformRecords.put(this.shaderProgram, uniformRecord);
-				}
-
-				shaderCall.currentRecord = uniformRecord;
-				shaderCall.location = uniform;
-				this.uniformCallMapping[key] = shaderCall;
+				this.uniformCallMapping[key] = new ShaderCall(context, uniform);
 			}
 
 			console.log("Shader [" + this.name + "] compiled");

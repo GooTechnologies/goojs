@@ -51,7 +51,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		request.onreadystatechange = function() {
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
-					var entities = that.parse(request.responseText, textureDir);
+					var entities = that.parse(request.responseText, textureDir, shaderExtractor);
 					callback.onSuccess(entities);
 				} else {
 					callback.onError(request.statusText);
@@ -399,7 +399,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				if (!this.shaderExtractor) {
 					var shaderSource, type;
 					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
-						&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
+						&& attributes.TEXCOORD2 && info.textureFileNames.diffuse && info.textureFileNames.normal
+						&& info.textureFileNames.ao) {
 						shaderSource = Material.shaders.texturedNormalAOLit;
 						type = 'texturedNormalAOLit';
 					} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
