@@ -3,18 +3,21 @@ define(["goo/math/Vector"], function(Vector) {
 
 	Vector4.prototype = Object.create(Vector.prototype);
 
-	Vector4.components = [["x"], ["y"], ["z"], ["w"]];
+	// Vector4.components = [["x"], ["y"], ["z"], ["w"]];
+	//
+	// (function() {
+	// for ( var i = 0; i < Vector4.components.length; i++) {
+	// for ( var j = 0; j < Vector4.components[i].length; j++) {
+	// Object.defineProperty(Vector4.prototype, Vector4.components[i][j], {
+	// get : new Function("return this.data[" + i + "];"),
+	// set : new Function("value", "this.data[" + i + "] = value;"),
+	// });
+	// }
+	// }
+	// })();
 
-	(function() {
-		for ( var i = 0; i < Vector4.components.length; i++) {
-			for ( var j = 0; j < Vector4.components[i].length; j++) {
-				Object.defineProperty(Vector4.prototype, Vector4.components[i][j], {
-					get : new Function("return this.data[" + i + "];"),
-					set : new Function("value", "this.data[" + i + "] = value;"),
-				});
-			}
-		}
-	})();
+	// REVIEW: Cleaner? See Vector.prototype.setupComponents
+	Vector4.prototype.setupComponents([['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
 	/**
 	 * @class Four-dimensional vector.
@@ -104,9 +107,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Divides two four-dimensional vectors and stores the result in a separate vector. For all components
-	 *              in the right-hand vector equal to zero, the corresponding component in the resulting vector will be
-	 *              equal to that of the left-hand vector.
+	 * @description Divides two four-dimensional vectors and stores the result in a separate vector. For all components in the right-hand vector equal
+	 *              to zero, the corresponding component in the resulting vector will be equal to that of the left-hand vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)

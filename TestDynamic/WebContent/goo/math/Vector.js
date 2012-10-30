@@ -16,10 +16,38 @@ define([], function() {
 		this.tos = 0;
 	}
 
+	// REVIEW: New stuff
+	Vector.prototype.setupComponents = function(components) {
+		var that = this;
+		for ( var i = 0; i < components.length; i++) {
+			(function(index) {
+				for ( var j = 0; j < components[index].length; j++) {
+					Object.defineProperty(that, components[index][j], {
+						get : function() {
+							return this.data[index];
+						},
+						set : function(value) {
+							this.data[index] = value;
+						}
+					});
+				}
+				Object.defineProperty(that, i, {
+					get : function() {
+						return this.data[index];
+					},
+					set : function(value) {
+						this.data[index] = value;
+					}
+				});
+			})(i);
+		}
+		return this;
+	};
+
 	/**
 	 * @static
-	 * @description Adds two N-dimensional vectors and stores the result in a separate vector. The resulting vector will
-	 *              have a size equal to that of the left-hand vector.
+	 * @description Adds two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to that of
+	 *              the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -46,8 +74,8 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Subtracts two N-dimensional vectors and stores the result in a separate vector. The resulting vector
-	 *              will have a size equal to that of the left-hand vector.
+	 * @description Subtracts two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to
+	 *              that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -74,8 +102,8 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Multiplies two N-dimensional vectors and stores the result in a separate vector. The resulting
-	 *              vector will have a size equal to that of the left-hand vector.
+	 * @description Multiplies two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to
+	 *              that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -102,10 +130,9 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Divides two N-dimensional vectors and stores the result in a separate vector. The resulting vector
-	 *              will have a size equal to that of the left-hand vector. For all components in the right-hand vector
-	 *              equal to zero, the corresponding component in the resulting vector will be equal to that of the
-	 *              left-hand vector.
+	 * @description Divides two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to that
+	 *              of the left-hand vector. For all components in the right-hand vector equal to zero, the corresponding component in the resulting
+	 *              vector will be equal to that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -206,17 +233,19 @@ define([], function() {
 	};
 
 	/**
-	 * @description Copies all components from another N-dimensional vector and resizes itself if the sizes do not
-	 *              match.
+	 * @description Copies all components from another N-dimensional vector and resizes itself if the sizes do not match.
 	 * @param {Vector} source Source vector.
 	 * @returns {Vector} Self for chaining.
 	 */
 
+	// REVIEW: Better might be to just copy as many values as fits in destination. Changing the size doesnt
+	// make sense if you are in a Vector4 object for example.
 	Vector.prototype.copy = function(source) {
 		if (this.data.length != source.data.length) {
 			this.data = new Float32Array(source.data.length);
 		}
 
+		// REVIEW: Faster to do this.data.set(source.data)?
 		for ( var i = 0; i < this.data.length; i++) {
 			this.data[i] = source.data[i];
 		}
@@ -289,6 +318,7 @@ define([], function() {
 	 * @returns {Float} Component value.
 	 */
 
+	// REVIEW: Needed when we have access through v.name, v[index], v['name']?
 	Vector.prototype.get = function(index) {
 		if (index >= 0 && index < this.data.length) {
 			return this.data[index];
@@ -307,17 +337,26 @@ define([], function() {
 	 * @returns {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.set = function(index, value) {
-		if (index >= 0 && index < this.data.length) {
-			this.data[index] = value;
-		} else {
-			throw {
-				name : "IndexExceedsDimensions",
-			};
+	// REVIEW: This might be more useful? See math.js tests.
+	Vector.prototype.set = function() {
+		for ( var i in arguments) {
+			this.data[i] = arguments[i];
 		}
 
 		return this;
 	};
+
+	// Vector.prototype.set = function(index, value) {
+	// if (index >= 0 && index < this.data.length) {
+	// this.data[index] = value;
+	// } else {
+	// throw {
+	// name : "IndexExceedsDimensions",
+	// };
+	// }
+	//
+	// return this;
+	// };
 
 	/**
 	 * @description Puts a component into the vector.
@@ -326,6 +365,7 @@ define([], function() {
 	 * @returns {Vector} Self for chaining.
 	 */
 
+	// REVIEW: Needed when we have set as above? Removes need to tos too.
 	Vector.prototype.put = function(value) {
 		if (this.tos < this.data.length) {
 			this.data[this.tos++] = value;
