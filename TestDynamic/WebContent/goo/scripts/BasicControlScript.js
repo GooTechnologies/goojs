@@ -236,6 +236,21 @@ define(function() {
 		this.updateRotationVector();
 	}
 
+	/**
+	 * Test on how to expose variables to a tool.
+	 * 
+	 * @returns {Array}
+	 */
+	BasicControlScript.prototype.externals = function() {
+		return [{
+			variable : 'movementSpeed',
+			type : 'number'
+		}, {
+			variable : 'rollSpeed',
+			type : 'number'
+		}];
+	};
+
 	BasicControlScript.prototype.run = function(entity) {
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;

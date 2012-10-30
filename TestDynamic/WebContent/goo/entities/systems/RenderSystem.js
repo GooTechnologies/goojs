@@ -1,5 +1,4 @@
-define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util'], function(System,
-	TextureCreator, Util) {
+define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util'], function(System, TextureCreator, Util) {
 	"use strict";
 
 	function RenderSystem(renderList) {
@@ -29,7 +28,8 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		var shaderInfo = {
 			meshData : meshData,
 			transform : entity.transformComponent.worldTransform,
-			lights : entity._world.getManager('LightManager').lights
+			lights : entity._world.getManager('LightManager').lights,
+			camera : entity._world.getSystem('CameraSystem').mainCamera
 		};
 
 		renderer.render(meshData, materials, shaderInfo);

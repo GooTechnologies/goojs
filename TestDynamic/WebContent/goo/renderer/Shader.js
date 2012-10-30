@@ -37,14 +37,14 @@ define(
 
 		function setupDefaultCallbacks(defaultCallbacks) {
 			defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
-				var camera = GooRunner.renderer.camera;
+				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['PROJECTION_MATRIX'];
 				var matrix = camera.projectionMatrix;
 
 				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
-				var camera = GooRunner.renderer.camera;
+				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['VIEW_MATRIX'];
 				var matrix = camera.matrixWorldInverse;
 
@@ -80,7 +80,7 @@ define(
 			}
 
 			defaultCallbacks['CAMERA'] = function(uniformMapping, shaderInfo) {
-				var cameraPosition = GooRunner.renderer.camera.position;
+				var cameraPosition = shaderInfo.camera.position;
 				uniformMapping['CAMERA'].uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 			};
 

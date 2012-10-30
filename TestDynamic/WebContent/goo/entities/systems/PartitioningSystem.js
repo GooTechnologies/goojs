@@ -1,10 +1,18 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(System, EventHandler) {
 	"use strict";
 
 	function PartitioningSystem() {
 		System.call(this, 'PartitioningSystem', ['MeshRendererComponent']);
 
 		this.renderList = [];
+		this.camera = null;
+
+		var that = this;
+		EventHandler.addListener({
+			setCurrentCamera : function(camera) {
+				that.camera = camera;
+			}
+		});
 	}
 
 	PartitioningSystem.prototype = Object.create(System.prototype);
@@ -23,13 +31,10 @@ define(['goo/entities/systems/System'], function(System) {
 
 	PartitioningSystem.prototype.process = function(entities) {
 		this.renderList.length = 0;
-		if (this.partitioner) {
-			this.partitioner.process(entities, this.renderList);
+		if (this.partitioner && this.camera) {
+			this.partitioner.process(this.camera, entities, this.renderList);
 		} else {
-			for ( var i in entities) {
-				var entity = entities[i];
-				this.renderList.push(entity);
-			}
+			// Nothing will render
 		}
 	};
 

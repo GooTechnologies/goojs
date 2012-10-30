@@ -62,9 +62,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// Renderer[key] = value;
 		// }
 
-		this.camera = new Camera(45, 1, 1, 1000);
-
-		this.setClearColor(0.8, 0.8, 0.8, 1.0)
+		this.setClearColor(0.8, 0.8, 0.8, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
 

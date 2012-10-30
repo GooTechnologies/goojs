@@ -1,8 +1,7 @@
 define(function() {
 	"use strict";
 
-	function SimplePartitioner(camera) {
-		this.camera = camera;
+	function SimplePartitioner() {
 	}
 
 	SimplePartitioner.prototype.added = function(entity) {
@@ -13,13 +12,13 @@ define(function() {
 		// needed for things like quadtrees etc
 	};
 
-	SimplePartitioner.prototype.process = function(entities, renderList) {
-		this.camera.updateFrustum();
+	SimplePartitioner.prototype.process = function(camera, entities, renderList) {
+		camera.updateFrustum();
 		for ( var i in entities) {
 			var entity = entities[i];
 
 			var bounds = entity.meshRendererComponent.worldBound;
-			var isVisible = this.contains(this.camera.frustum, bounds);
+			var isVisible = this.contains(camera.frustum, bounds);
 			if (isVisible) {
 				renderList.push(entity);
 				entity.isVisible = true;
