@@ -21,6 +21,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.camera.lookAt(new THREE.Vector3(0, 0, 0));
 		goo.renderer.camera.updateWorld();
 
+		var composer = new Composer();
+
 		// Examples of model loading
 		loadModels(goo);
 	}

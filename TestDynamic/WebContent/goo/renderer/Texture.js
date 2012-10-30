@@ -5,23 +5,38 @@ define(['goo/renderer/Loader'], function(Loader) {
 	 * Creates a new texture object
 	 * 
 	 * @name Texture
-	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The
-	 *        image to be displayed is defined by the <code>Image</code> class. All attributes required for texture
-	 *        mapping are contained within this class. This includes mipmapping if desired, magnificationFilter options,
-	 *        apply options and correction options. Default values are as follows: minificationFilter -
-	 *        NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply -
-	 *        Modulate, environment - None.
+	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
+	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes
+	 *        mipmapping if desired, magnificationFilter options, apply options and correction options. Default values are as follows:
+	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
+	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
 	 * @param {Settings} settings Texturing settings
 	 */
-	function Texture(image, settings) {
+	function Texture(image, settings, width, height) {
 		this.image = image;
 
 		this.glTexture = null;
 
 		settings = settings || {};
 
-		this.mapping = settings.mapping || new THREE.UVMapping();
+		if (image instanceof Uint8Array || image instanceof Uint16Array) {
+			if (width !== undefined && height !== undefined) {
+				this.image.width = width;
+				this.image.height = height;
+				this.image.isData = true;
+				this.image.dataReady = true;
+				if (image instanceof Uint8Array) {
+					settings.type = 'UnsignedByte';
+				} else if (image instanceof Uint16Array) {
+					settings.type = 'UnsignedShort4444';
+				}
+			} else {
+				throw "Data textures need width and height";
+			}
+		}
+
+		// this.mapping = settings.mapping || new THREE.UVMapping();
 
 		this.wrapS = settings.wrapS || 'EdgeClamp';
 		this.wrapT = settings.wrapT || 'EdgeClamp';

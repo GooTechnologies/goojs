@@ -354,8 +354,16 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			}
 		}
 
-		context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this.getGLInternalFormat(texture.format),
-			this.getGLPixelDataType(texture.type), texture.image);
+		if (texture.image.isData === true) {
+			var hasBorder = false; // TODO
+
+			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
+				texture.image.height, hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type),
+				texture.image);
+		} else {
+			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+				.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
+		}
 
 		if (texture.generateMipmaps) {
 			context.generateMipmap(context.TEXTURE_2D);
