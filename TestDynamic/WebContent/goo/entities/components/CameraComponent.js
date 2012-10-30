@@ -9,8 +9,5 @@ define(['goo/entities/components/Component'], function(Component) {
 
 	CameraComponent.prototype = Object.create(Component.prototype);
 
-	CameraComponent.prototype.stuff = function() {
-	};
-
 	return CameraComponent;
 });
