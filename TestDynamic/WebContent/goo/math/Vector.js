@@ -14,13 +14,18 @@ define([], function() {
 		this.data = new Float32Array(size || 0);
 	}
 
-	Vector.prototype.setupComponents = function(components) {
+	/**
+	 * @description Binds aliases to the different vector components.
+	 * @param {String[][]} aliases Array of component aliases for each component index.
+	 */
+
+	Vector.prototype.setupAliases = function(aliases) {
 		var that = this;
 
-		for ( var i = 0; i < components.length; i++) {
+		for ( var i = 0; i < aliases.length; i++) {
 			(function(index) {
-				for ( var j = 0; j < components[index].length; j++) {
-					Object.defineProperty(that, components[index][j], {
+				for ( var j = 0; j < aliases[index].length; j++) {
+					Object.defineProperty(that, aliases[index][j], {
 						get : function() {
 							return this.data[index];
 						},
@@ -40,8 +45,6 @@ define([], function() {
 				});
 			})(i);
 		}
-
-		return this;
 	};
 
 	/**
@@ -184,6 +187,23 @@ define([], function() {
 	};
 
 	/**
+	 * @description Computes the dot product of two N-dimensional vectors.
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @returns {Float} Dot product.
+	 */
+
+	Vector.dot = function(lhs, rhs) {
+		var result = 0.0;
+
+		for ( var i = 0; i < Math.min(lhs.data.length, rhs.data.length); i++) {
+			result += lhs.data[i] * rhs.data[i];
+		}
+
+		return result;
+	};
+
+	/**
 	 * @description Adds with an N-dimensional vector and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
@@ -259,18 +279,12 @@ define([], function() {
 	};
 
 	/**
-	 * @description Computes the dot product of the N-dimensional vector.
-	 * @returns {Float} Dot product.
+	 * @description Computes the square length of the N-dimensional vector.
+	 * @returns {Float} Square length.
 	 */
 
-	Vector.prototype.dot = function() {
-		var result = 0.0;
-
-		for ( var i = 0; i < this.data.length; i++) {
-			result += this.data[i] * this.data[i];
-		}
-
-		return result;
+	Vector.prototype.squareLength = function() {
+		return Vector.dot(this, this);
 	};
 
 	/**
@@ -279,7 +293,7 @@ define([], function() {
 	 */
 
 	Vector.prototype.length = function() {
-		return Math.sqrt(this.dot());
+		return Math.sqrt(Vector.dot(this, this));
 	};
 
 	/**
@@ -323,19 +337,15 @@ define([], function() {
 
 	Vector.prototype.toString = function() {
 		var string = "";
-		var i = 0;
 
-		string += "[";
+		string += "[ ";
 
-		for (; i < this.data.length - 1; i++) {
-			string += " " + this.data[i] + ",";
+		for ( var i = 0; i < this.data.length; i++) {
+			string += this.data[i];
+			string += i !== this.data.length - 1 ? ", " : "";
 		}
 
-		for (; i < this.data.length; i++) {
-			string += " " + this.data[i] + " ";
-		}
-
-		string += "]";
+		string += " ]";
 
 		return string;
 	};

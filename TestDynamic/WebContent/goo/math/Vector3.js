@@ -2,11 +2,12 @@ define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
 	Vector3.prototype = Object.create(Vector.prototype);
-	Vector3.prototype.setupComponents([['x', 'r'], ['y', 'g'], ['z', 'b']]);
+	Vector3.prototype.setupAliases([['x', 'r'], ['y', 'g'], ['z', 'b']]);
 
 	/**
-	 * @class Three-dimensional vector.
 	 * @name Vector3
+	 * @class Three-dimensional vector.
+	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new three-dimensional vector.
 	 * @param {Float} x First component of vector.
@@ -127,6 +128,37 @@ define(["goo/math/Vector"], function(Vector) {
 		target.z = lhs.z * rhs;
 
 		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Computes the cross product of two vectors and stores the result in a separate vector.
+	 * @param {Vector3} lhs Vector on the left-hand side.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @param {Vector3} target Target vector for storage. (optional)
+	 * @returns {Vector3} Resulting vector.
+	 */
+
+	Vector3.cross = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		target.x = rhs.z * lhs.y - rhs.y * lhs.z;
+		target.y = rhs.x * lhs.z - rhs.z * lhs.x;
+		target.z = rhs.y * lhs.x - rhs.x * lhs.y;
+
+		return target;
+	};
+
+	/**
+	 * @description Computes the cross product and stores the result locally.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Vector3} Self for chaining.
+	 */
+
+	Vector3.prototype.cross = function(vector) {
+		return Vector3.cross(this, vector, this);
 	};
 
 	return Vector3;

@@ -2,11 +2,12 @@ define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
 	Vector4.prototype = Object.create(Vector.prototype);
-	Vector4.prototype.setupComponents([['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
+	Vector4.prototype.setupAliases([['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
 	/**
-	 * @class Four-dimensional vector.
 	 * @name Vector4
+	 * @class Four-dimensional vector.
+	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new four-dimensional vector.
 	 * @param {Float} x First component of vector.

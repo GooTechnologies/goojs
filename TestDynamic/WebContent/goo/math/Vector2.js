@@ -2,11 +2,12 @@ define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
 	Vector2.prototype = Object.create(Vector.prototype);
-	Vector2.prototype.setupComponents([['x', 'u', 's'], ['y', 'v', 't']]);
+	Vector2.prototype.setupAliases([['x', 'u', 's'], ['y', 'v', 't']]);
 
 	/**
-	 * @class Two-dimensional vector.
 	 * @name Vector2
+	 * @class Two-dimensional vector.
+	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new two-dimensional vector.
 	 * @param {Float} x First component of vector.

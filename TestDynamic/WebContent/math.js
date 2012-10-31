@@ -1,12 +1,15 @@
 "use strict";
 
-require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4"], function(Vector, Vector2, Vector3, Vector4) {
+require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4", "goo/math/Matrix", "goo/math/Matrix3x3"], function(Vector,
+	Vector2, Vector3, Vector4, Matrix, Matrix3x3) {
 
 	function init() {
 		testVector();
 		testVector2();
 		testVector3();
 		testVector4();
+		testMatrix();
+		testMatrix3x3();
 	}
 
 	function testVector() {
@@ -35,7 +38,7 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 
 		var h = new Vector(2).set(3.0, 4.0);
 		console.log(h + " expected [ 3.0, 4.0 ]");
-		console.log(h.dot() + " expected 25.0");
+		console.log(Vector.dot(h, h) + " expected 25.0");
 		console.log(h.length() + " expected 5.0");
 		console.log(h.normalize() + " expected [ ~0.6, ~0.8 ]");
 	}
@@ -208,6 +211,19 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log(a['g'] + " expected 3.0");
 		console.log(a['b'] + " expected 4.0");
 		console.log(a['a'] + " expected 5.0");
+	}
+
+	function testMatrix() {
+		console.log("\nTesting Matrix\n");
+
+		var a = new Matrix(2, 2).set(1.0, 2.0, 3.0, 4.0);
+		console.log(a + " expected [ [ 1.0, 2.0 ], [ 3.0, 4.0 ] ]");
+		console.log(a.e00);
+	}
+
+	function testMatrix3x3() {
+		console.log("\nTesting Matrix3x3\n");
+
 	}
 
 	init();
