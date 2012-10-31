@@ -5,7 +5,6 @@ define([], function() {
 	 * @class N-dimensional vector.
 	 * @name Vector
 	 * @property {Float32Array} data Storage for the vector components.
-	 * @property {Integer} tos Top of stack for putting components.
 	 * @constructor
 	 * @description Creates a new N-dimensional vector.
 	 * @param {Integer} size Number of vector components.
@@ -13,12 +12,11 @@ define([], function() {
 
 	function Vector(size) {
 		this.data = new Float32Array(size || 0);
-		this.tos = 0;
 	}
 
-	// REVIEW: New stuff
 	Vector.prototype.setupComponents = function(components) {
 		var that = this;
+
 		for ( var i = 0; i < components.length; i++) {
 			(function(index) {
 				for ( var j = 0; j < components[index].length; j++) {
@@ -31,6 +29,7 @@ define([], function() {
 						}
 					});
 				}
+
 				Object.defineProperty(that, i, {
 					get : function() {
 						return this.data[index];
@@ -41,6 +40,7 @@ define([], function() {
 				});
 			})(i);
 		}
+
 		return this;
 	};
 
@@ -139,6 +139,7 @@ define([], function() {
 	 * @returns {Vector} Resulting vector.
 	 */
 
+	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector.div = function(lhs, rhs, target) {
 		if (!target || target.data.length != lhs.data.length) {
 			target = new Vector(lhs.data.length);
@@ -233,24 +234,13 @@ define([], function() {
 	};
 
 	/**
-	 * @description Copies all components from another N-dimensional vector and resizes itself if the sizes do not match.
+	 * @description Copies as many components as possible from another N-dimensional vector.
 	 * @param {Vector} source Source vector.
 	 * @returns {Vector} Self for chaining.
 	 */
 
-	// REVIEW: Better might be to just copy as many values as fits in destination. Changing the size doesnt
-	// make sense if you are in a Vector4 object for example.
 	Vector.prototype.copy = function(source) {
-		if (this.data.length != source.data.length) {
-			this.data = new Float32Array(source.data.length);
-		}
-
-		// REVIEW: Faster to do this.data.set(source.data)?
-		for ( var i = 0; i < this.data.length; i++) {
-			this.data[i] = source.data[i];
-		}
-
-		this.tos = this.data.length;
+		this.data.set(source.data);
 
 		return this;
 	};
@@ -297,6 +287,7 @@ define([], function() {
 	 * @returns {Vector} Self for chaining.
 	 */
 
+	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector.prototype.normalize = function() {
 		var l = this.length();
 
@@ -312,67 +303,14 @@ define([], function() {
 	};
 
 	/**
-	 * @description Gets a component from the vector.
-	 * @param {Integer} index Component index.
-	 * @throws {IndexExceedsDimensions} If an illegal index is accessed.
-	 * @returns {Float} Component value.
-	 */
-
-	// REVIEW: Needed when we have access through v.name, v[index], v['name']?
-	Vector.prototype.get = function(index) {
-		if (index >= 0 && index < this.data.length) {
-			return this.data[index];
-		} else {
-			throw {
-				name : "IndexExceedsDimensions",
-			};
-		}
-	};
-
-	/**
-	 * @description Sets a component in the vector.
-	 * @param {Integer} index Component index.
-	 * @param {Float} value Component value.
-	 * @throws {IndexExceedsDimensions} If an illegal index is accessed.
+	 * @description Sets the components of the N-dimensional vector.
+	 * @param {Float...} arguments Component values.
 	 * @returns {Vector} Self for chaining.
 	 */
 
-	// REVIEW: This might be more useful? See math.js tests.
 	Vector.prototype.set = function() {
 		for ( var i in arguments) {
 			this.data[i] = arguments[i];
-		}
-
-		return this;
-	};
-
-	// Vector.prototype.set = function(index, value) {
-	// if (index >= 0 && index < this.data.length) {
-	// this.data[index] = value;
-	// } else {
-	// throw {
-	// name : "IndexExceedsDimensions",
-	// };
-	// }
-	//
-	// return this;
-	// };
-
-	/**
-	 * @description Puts a component into the vector.
-	 * @param {Float} value Component value.
-	 * @throws {IndexExceedsDimensions} If an illegal index is accessed.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	// REVIEW: Needed when we have set as above? Removes need to tos too.
-	Vector.prototype.put = function(value) {
-		if (this.tos < this.data.length) {
-			this.data[this.tos++] = value;
-		} else {
-			throw {
-				name : "IndexExceedsDimensions",
-			};
 		}
 
 		return this;

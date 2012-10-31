@@ -2,21 +2,6 @@ define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
 	Vector4.prototype = Object.create(Vector.prototype);
-
-	// Vector4.components = [["x"], ["y"], ["z"], ["w"]];
-	//
-	// (function() {
-	// for ( var i = 0; i < Vector4.components.length; i++) {
-	// for ( var j = 0; j < Vector4.components[i].length; j++) {
-	// Object.defineProperty(Vector4.prototype, Vector4.components[i][j], {
-	// get : new Function("return this.data[" + i + "];"),
-	// set : new Function("value", "this.data[" + i + "] = value;"),
-	// });
-	// }
-	// }
-	// })();
-
-	// REVIEW: Cleaner? See Vector.prototype.setupComponents
 	Vector4.prototype.setupComponents([['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
 	/**
@@ -24,10 +9,10 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @name Vector4
 	 * @constructor
 	 * @description Creates a new four-dimensional vector.
-	 * @param {Float} x X-component of vector.
-	 * @param {Float} y Y-component of vector.
-	 * @param {Float} z Z-component of vector.
-	 * @param {Float} w W-component of vector.
+	 * @param {Float} x First component of vector.
+	 * @param {Float} y Second component of vector.
+	 * @param {Float} z Third component of vector.
+	 * @param {Float} w Fourth component of vector.
 	 */
 
 	function Vector4(x, y, z, w) {
@@ -115,6 +100,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @returns {Vector4} Resulting vector.
 	 */
 
+	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector4.div = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Vector4();
