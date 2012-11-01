@@ -1,7 +1,7 @@
 "use strict";
 
-require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4", "goo/math/Matrix", "goo/math/Matrix3x3"], function(Vector,
-	Vector2, Vector3, Vector4, Matrix, Matrix3x3) {
+require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4", "goo/math/Matrix", "goo/math/Matrix2x2",
+		"goo/math/Matrix3x3", "goo/math/Matrix4x4"], function(Vector, Vector2, Vector3, Vector4, Matrix, Matrix2x2, Matrix3x3, Matrix4x4) {
 
 	function init() {
 		testVector();
@@ -9,7 +9,9 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		testVector3();
 		testVector4();
 		testMatrix();
+		testMatrix2x2();
 		testMatrix3x3();
+		testMatrix4x4();
 	}
 
 	function testVector() {
@@ -239,12 +241,28 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2.0) + " expected [ 1, 2 ], [ 3, 4 ]");
 	}
 
+	function testMatrix2x2() {
+		console.log("\nTesting Matrix2x2\n");
+
+		var matrix = new Matrix2x2(1.0, 2.0, 3.0, 4.0);
+
+		console.log("Matrix2x2.combine: " + Matrix2x2.combine(matrix, matrix) + " expected  [ 30, 36, 42 ], [ 66, 81, 96 ], [ 102, 126, 150 ]");
+	}
+
 	function testMatrix3x3() {
 		console.log("\nTesting Matrix3x3\n");
 
 		var matrix = new Matrix3x3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
 
-		console.log("Matrix.combine: " + matrix.scalarDiv(0.0) + " expected  [ 1.0, 2.0, 3.0, ], [ 4.0, 5.0, 6.0 ], [ 7.0, 8.0, 9.0 ]");
+		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected  [ 30, 36, 42 ], [ 66, 81, 96 ], [ 102, 126, 150 ]");
+	}
+
+	function testMatrix4x4() {
+		console.log("\nTesting Matrix4x4\n");
+
+		var matrix = new Matrix4x4(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0);
+
+		console.log("Matrix4x4.combine: " + Matrix4x4.combine(matrix, matrix) + " expected  [ ], [  ], [  ], [  ]");
 	}
 
 	init();

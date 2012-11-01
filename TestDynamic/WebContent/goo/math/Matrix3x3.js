@@ -173,8 +173,44 @@ define(["goo/math/Matrix"], function(Matrix) {
 		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
 		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
 		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
-		console.log("mat3x3comb");
+
 		return target;
+	};
+
+	Matrix3x3.prototype.add = function(rhs) {
+		return Matrix3x3.add(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.sub = function(rhs) {
+		return Matrix3x3.sub(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.mul = function(rhs) {
+		return Matrix3x3.add(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.div = function(rhs) {
+		return Matrix3x3.div(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.scalarAdd = function(rhs) {
+		return Matrix3x3.scalarAdd(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.scalarSub = function(rhs) {
+		return Matrix3x3.scalarSub(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.scalarMul = function(rhs) {
+		return Matrix3x3.scalarMul(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.scalarDiv = function(rhs) {
+		return Matrix3x3.scalarDiv(this, rhs, this);
+	};
+
+	Matrix3x3.prototype.combine = function(rhs) {
+		return Matrix3x3.combine(this, rhs, this);
 	};
 
 	return Matrix3x3;

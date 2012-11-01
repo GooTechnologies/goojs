@@ -443,14 +443,14 @@ define([], function() {
 	Vector.prototype.toString = function() {
 		var string = "";
 
-		string += "[ ";
+		string += "[";
 
 		for ( var i = 0; i < this.data.length; i++) {
 			string += this.data[i];
-			string += i !== this.data.length - 1 ? ", " : "";
+			string += i !== this.data.length - 1 ? "," : "";
 		}
 
-		string += " ]";
+		string += "]";
 
 		return string;
 	};

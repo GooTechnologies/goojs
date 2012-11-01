@@ -182,7 +182,6 @@ define([], function() {
 	};
 
 	Matrix.combine = function(lhs, rhs, target) {
-		console.log("matcomb");
 		if (lhs.cols === rhs.rows) {
 			if (!target || target.rows !== lhs.rows || target.cols !== rhs.cols || target === lhs || target === rhs) {
 				target = new Matrix(lhs.rows, rhs.cols);
@@ -274,14 +273,14 @@ define([], function() {
 		for ( var c = 0; c < this.cols; c++) {
 			var o = c * this.rows;
 
-			string += "[ ";
+			string += "[";
 
 			for ( var r = 0; r < this.rows; r++) {
 				string += this.data[o + r];
-				string += r !== this.rows - 1 ? ", " : "";
+				string += r !== this.rows - 1 ? "," : "";
 			}
 
-			string += c !== this.cols - 1 ? " ], " : " ]";
+			string += c !== this.cols - 1 ? "]," : "]";
 		}
 
 		return string;
