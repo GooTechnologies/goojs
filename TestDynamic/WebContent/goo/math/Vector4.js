@@ -16,18 +16,14 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @param {Float} w Fourth component of vector.
 	 */
 
-	function Vector4(x, y, z, w) {
+	function Vector4() {
 		Vector.call(this, 4);
-
-		this.x = x || 0.0;
-		this.y = y || 0.0;
-		this.z = z || 0.0;
-		this.w = w || 0.0;
+		this.set(arguments);
 	}
 
 	/**
 	 * @static
-	 * @description Adds two four-dimensional vectors and stores the result in a separate vector.
+	 * @description Adds two four-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
@@ -49,7 +45,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Subtracts two four-dimensional vectors and stores the result in a separate vector.
+	 * @description Subtracts two four-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
@@ -71,7 +67,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Multiplies two four-dimensional vectors and stores the result in a separate vector.
+	 * @description Multiplies two four-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
@@ -93,15 +89,15 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Divides two four-dimensional vectors and stores the result in a separate vector. For all components in the right-hand vector equal
-	 *              to zero, the corresponding component in the resulting vector will be equal to that of the left-hand vector.
+	 * @description Divides two four-dimensional vectors component-wise and stores the result in a separate vector. For all components in the
+	 *              right-hand vector equal to zero, the corresponding component in the resulting vector will be equal to that of the left-hand
+	 *              vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
 	 * @returns {Vector4} Resulting vector.
 	 */
 
-	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector4.div = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Vector4();
@@ -117,14 +113,58 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Scales a four-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Adds a four-dimensional vector with a scalar and stores the result in a separate vector.
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
 	 * @returns {Vector4} Resulting vector.
 	 */
 
-	Vector4.scale = function(lhs, rhs, target) {
+	Vector4.scalarAdd = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector4();
+		}
+
+		target.x = lhs.x + rhs;
+		target.y = lhs.y + rhs;
+		target.z = lhs.z + rhs;
+		target.w = lhs.w + rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Subtracts a four-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector4} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector4} target Target vector for storage. (optional)
+	 * @returns {Vector4} Resulting vector.
+	 */
+
+	Vector4.scalarSub = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector4();
+		}
+
+		target.x = lhs.x - rhs;
+		target.y = lhs.y - rhs;
+		target.z = lhs.z - rhs;
+		target.w = lhs.w - rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Multiplies a four-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector4} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector4} target Target vector for storage. (optional)
+	 * @returns {Vector4} Resulting vector.
+	 */
+
+	Vector4.scalarMul = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Vector4();
 		}
@@ -133,6 +173,37 @@ define(["goo/math/Vector"], function(Vector) {
 		target.y = lhs.y * rhs;
 		target.z = lhs.z * rhs;
 		target.w = lhs.w * rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Divides a four-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector4} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector4} target Target vector for storage. (optional)
+	 * @returns {Vector4} Resulting vector.
+	 */
+
+	Vector4.scalarDiv = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector4();
+		}
+
+		if (rhs < 0.0 || rhs > 0.0) {
+			rhs = 1.0 / rhs;
+
+			target.x = lhs.x * rhs;
+			target.y = lhs.y * rhs;
+			target.z = lhs.z * rhs;
+			target.w = lhs.w * rhs;
+		} else {
+			target.x = lhs.x;
+			target.y = lhs.y;
+			target.z = lhs.z;
+			target.w = lhs.w;
+		}
 
 		return target;
 	};

@@ -28,19 +28,28 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log(Vector.div(d, d, d) + " expected [ 1.0, 1.0 ]");
 
 		var e = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.scale(e, 2.0, e) + " expected [ 6.0, 8.0 ]");
+		console.log(Vector.scalarAdd(e, 2.0, e) + " expected [ 5.0, 6.0 ]");
 
 		var f = new Vector(2).set(3.0, 4.0);
-		console.log(f.invert() + " expected [ -3.0, -4.0 ]");
+		console.log(Vector.scalarSub(f, 2.0, f) + " expected [ 1.0, 2.0 ]");
 
-		var g = new Vector(2).copy(f);
-		console.log(g + " expected [ -3.0, -4.0 ]");
+		var g = new Vector(2).set(3.0, 4.0);
+		console.log(Vector.scalarMul(g, 2.0, g) + " expected [ 6.0, 8.0 ]");
 
 		var h = new Vector(2).set(3.0, 4.0);
-		console.log(h + " expected [ 3.0, 4.0 ]");
-		console.log(Vector.dot(h, h) + " expected 25.0");
-		console.log(h.length() + " expected 5.0");
-		console.log(h.normalize() + " expected [ ~0.6, ~0.8 ]");
+		console.log(Vector.scalarDiv(h, 2.0, h) + " expected [ 1.5, 2.0 ]");
+
+		var i = new Vector(2).set(3.0, 4.0);
+		console.log(i.invert() + " expected [ -3.0, -4.0 ]");
+
+		var j = new Vector(2).copy(i);
+		console.log(j + " expected [ -3.0, -4.0 ]");
+
+		var k = new Vector(2).set(3.0, 4.0);
+		console.log(k + " expected [ 3.0, 4.0 ]");
+		console.log(Vector.dot(k, k) + " expected 25.0");
+		console.log(k.length() + " expected 5.0");
+		console.log(k.normalize() + " expected [ ~0.6, ~0.8 ]");
 	}
 
 	function testVector2() {
@@ -216,14 +225,26 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 	function testMatrix() {
 		console.log("\nTesting Matrix\n");
 
-		var a = new Matrix(2, 2).set(1.0, 2.0, 3.0, 4.0);
-		console.log(a + " expected [ [ 1.0, 2.0 ], [ 3.0, 4.0 ] ]");
-		console.log(a.e00);
+		var matrix = new Matrix(2, 2).set(2.0, 4.0, 6.0, 8.0);
+
+		console.log("Matrix.combine: " + Matrix.combine(matrix, matrix) + " expected [ 28, 40 ], [ 60, 88 ]");
+		console.log("Matrix.copy: " + Matrix.copy(matrix) + " expected [ 2, 4 ], [ 6, 8 ]");
+		console.log("Matrix.add: " + Matrix.add(matrix, matrix) + " expected [ 4, 8 ], [ 12, 16 ]");
+		console.log("Matrix.sub: " + Matrix.sub(matrix, matrix) + " expected [ 0, 0 ], [ 0, 0 ]");
+		console.log("Matrix.mul: " + Matrix.mul(matrix, matrix) + " expected [ 4, 16 ], [ 36, 64 ]");
+		console.log("Matrix.div: " + Matrix.div(matrix, matrix) + " expected [ 1, 1 ], [ 1, 1 ]");
+		console.log("Matrix.scalarAdd: " + Matrix.scalarAdd(matrix, 2.0) + " expected [ 4, 6 ], [ 8, 10 ]");
+		console.log("Matrix.scalarSub: " + Matrix.scalarSub(matrix, 2.0) + " expected [ 0, 2 ], [ 4, 6 ]");
+		console.log("Matrix.scalarMul: " + Matrix.scalarMul(matrix, 2.0) + " expected [ 4, 8 ], [ 12, 16 ]");
+		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2.0) + " expected [ 1, 2 ], [ 3, 4 ]");
 	}
 
 	function testMatrix3x3() {
 		console.log("\nTesting Matrix3x3\n");
 
+		var matrix = new Matrix3x3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+
+		console.log("Matrix.combine: " + matrix.scalarDiv(0.0) + " expected  [ 1.0, 2.0, 3.0, ], [ 4.0, 5.0, 6.0 ], [ 7.0, 8.0, 9.0 ]");
 	}
 
 	init();

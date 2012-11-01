@@ -15,17 +15,14 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @param {Float} z Third component of vector.
 	 */
 
-	function Vector3(x, y, z) {
+	function Vector3() {
 		Vector.call(this, 3);
-
-		this.x = x || 0.0;
-		this.y = y || 0.0;
-		this.z = z || 0.0;
+		this.set(arguments);
 	}
 
 	/**
 	 * @static
-	 * @description Adds two three-dimensional vectors and stores the result in a separate vector.
+	 * @description Adds two three-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector3} lhs Vector on the left-hand side.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @param {Vector3} target Target vector for storage. (optional)
@@ -46,7 +43,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Subtracts two three-dimensional vectors and stores the result in a separate vector.
+	 * @description Subtracts two three-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector3} lhs Vector on the left-hand side.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @param {Vector3} target Target vector for storage. (optional)
@@ -67,7 +64,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Multiplies two three-dimensional vectors and stores the result in a separate vector.
+	 * @description Multiplies two three-dimensional vectors component-wise and stores the result in a separate vector.
 	 * @param {Vector3} lhs Vector on the left-hand side.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @param {Vector3} target Target vector for storage. (optional)
@@ -88,15 +85,15 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Divides two three-dimensional vectors and stores the result in a separate vector. For all components in the right-hand vector
-	 *              equal to zero, the corresponding component in the resulting vector will be equal to that of the left-hand vector.
+	 * @description Divides two three-dimensional vectors component-wise and stores the result in a separate vector. For all components in the
+	 *              right-hand vector equal to zero, the corresponding component in the resulting vector will be equal to that of the left-hand
+	 *              vector.
 	 * @param {Vector3} lhs Vector on the left-hand side.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @param {Vector3} target Target vector for storage. (optional)
 	 * @returns {Vector3} Resulting vector.
 	 */
 
-	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector3.div = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
@@ -111,14 +108,56 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Scales a three-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Adds a three-dimensional vector with a scalar and stores the result in a separate vector.
 	 * @param {Vector3} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector3} target Target vector for storage. (optional)
 	 * @returns {Vector3} Resulting vector.
 	 */
 
-	Vector3.scale = function(lhs, rhs, target) {
+	Vector3.scalarAdd = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		target.x = lhs.x + rhs;
+		target.y = lhs.y + rhs;
+		target.z = lhs.z + rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Subtracts a three-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector3} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector3} target Target vector for storage. (optional)
+	 * @returns {Vector3} Resulting vector.
+	 */
+
+	Vector3.scalarSub = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		target.x = lhs.x - rhs;
+		target.y = lhs.y - rhs;
+		target.z = lhs.z - rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Multiplies a three-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector3} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector3} target Target vector for storage. (optional)
+	 * @returns {Vector3} Resulting vector.
+	 */
+
+	Vector3.scalarMul = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
 		}
@@ -126,6 +165,35 @@ define(["goo/math/Vector"], function(Vector) {
 		target.x = lhs.x * rhs;
 		target.y = lhs.y * rhs;
 		target.z = lhs.z * rhs;
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Divides a three-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector3} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector3} target Target vector for storage. (optional)
+	 * @returns {Vector3} Resulting vector.
+	 */
+
+	Vector3.scalarDiv = function(lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		if (rhs < 0.0 || rhs > 0.0) {
+			rhs = 1.0 / rhs;
+
+			target.x = lhs.x * rhs;
+			target.y = lhs.y * rhs;
+			target.z = lhs.z * rhs;
+		} else {
+			target.x = lhs.x;
+			target.y = lhs.y;
+			target.z = lhs.z;
+		}
 
 		return target;
 	};

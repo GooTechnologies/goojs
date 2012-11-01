@@ -49,8 +49,8 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Adds two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to that of
-	 *              the left-hand vector.
+	 * @description Adds two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a size
+	 *              equal to that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -77,8 +77,8 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Subtracts two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to
-	 *              that of the left-hand vector.
+	 * @description Subtracts two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a
+	 *              size equal to that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -105,8 +105,8 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Multiplies two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to
-	 *              that of the left-hand vector.
+	 * @description Multiplies two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a
+	 *              size equal to that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
@@ -133,16 +133,15 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Divides two N-dimensional vectors and stores the result in a separate vector. The resulting vector will have a size equal to that
-	 *              of the left-hand vector. For all components in the right-hand vector equal to zero, the corresponding component in the resulting
-	 *              vector will be equal to that of the left-hand vector.
+	 * @description Divides two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a size
+	 *              equal to that of the left-hand vector. For all components in the right-hand vector equal to zero, the corresponding component in
+	 *              the resulting vector will be equal to that of the left-hand vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
 	 * @returns {Vector} Resulting vector.
 	 */
 
-	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector.div = function(lhs, rhs, target) {
 		if (!target || target.data.length != lhs.data.length) {
 			target = new Vector(lhs.data.length);
@@ -167,20 +166,91 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Scales an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Adds an N-dimensional vector with a scalar and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
 	 * @returns {Vector} Resulting vector.
 	 */
 
-	Vector.scale = function(lhs, rhs, target) {
+	Vector.scalarAdd = function(lhs, rhs, target) {
+		if (!target || target.data.length != lhs.data.length) {
+			target = new Vector(lhs.data.length);
+		}
+
+		for ( var i = 0; i < lhs.data.length; i++) {
+			target.data[i] = lhs.data[i] + rhs;
+		}
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Subtracts an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector} target Target vector for storage. (optional)
+	 * @returns {Vector} Resulting vector.
+	 */
+
+	Vector.scalarSub = function(lhs, rhs, target) {
+		if (!target || target.data.length != lhs.data.length) {
+			target = new Vector(lhs.data.length);
+		}
+
+		for ( var i = 0; i < lhs.data.length; i++) {
+			target.data[i] = lhs.data[i] - rhs;
+		}
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Multiplies an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector} target Target vector for storage. (optional)
+	 * @returns {Vector} Resulting vector.
+	 */
+
+	Vector.scalarMul = function(lhs, rhs, target) {
 		if (!target || target.data.length != lhs.data.length) {
 			target = new Vector(lhs.data.length);
 		}
 
 		for ( var i = 0; i < lhs.data.length; i++) {
 			target.data[i] = lhs.data[i] * rhs;
+		}
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Divides an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @param {Vector} target Target vector for storage. (optional)
+	 * @returns {Vector} Resulting vector.
+	 */
+
+	Vector.scalarDiv = function(lhs, rhs, target) {
+		if (!target || target.data.length != lhs.data.length) {
+			target = new Vector(lhs.data.length);
+		}
+
+		if (rhs < 0.0 || rhs > 0.0) {
+			rhs = 1.0 / rhs;
+
+			for ( var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] * rhs;
+			}
+		} else {
+			for ( var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i];
+			}
 		}
 
 		return target;
@@ -204,7 +274,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Adds with an N-dimensional vector and stores the result locally.
+	 * @description Adds with an N-dimensional vector component-wise and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -214,7 +284,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Subtracts with an N-dimensional vector and stores the result locally.
+	 * @description Subtracts with an N-dimensional vector component-wise and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -224,7 +294,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Multiplies by an N-dimensional vector and stores the result locally.
+	 * @description Multiplies by an N-dimensional vector component-wise and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -234,7 +304,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Divides by an N-dimensional vector and stores the result locally.
+	 * @description Divides by an N-dimensional vector component-wise and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -244,13 +314,43 @@ define([], function() {
 	};
 
 	/**
-	 * @description Scales by a scalar and stores the result locally.
+	 * @description Adds with a scalar and stores the result locally.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.scale = function(rhs) {
-		return Vector.scale(this, rhs, this);
+	Vector.prototype.scalarAdd = function(rhs) {
+		return Vector.scalarAdd(this, rhs, this);
+	};
+
+	/**
+	 * @description Subtracts with a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.scalarSub = function(rhs) {
+		return Vector.scalarSub(this, rhs, this);
+	};
+
+	/**
+	 * @description Multiplies by a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.scalarMul = function(rhs) {
+		return Vector.scalarMul(this, rhs, this);
+	};
+
+	/**
+	 * @description Divides by a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.scalarDiv = function(rhs) {
+		return Vector.scalarDiv(this, rhs, this);
 	};
 
 	/**
@@ -301,7 +401,6 @@ define([], function() {
 	 * @returns {Vector} Self for chaining.
 	 */
 
-	// REVIEW: Throw an exception when trying to divide by zero?
 	Vector.prototype.normalize = function() {
 		var l = this.length();
 
@@ -323,8 +422,14 @@ define([], function() {
 	 */
 
 	Vector.prototype.set = function() {
-		for ( var i in arguments) {
-			this.data[i] = arguments[i];
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			for ( var i in arguments[0]) {
+				this.data[i] = arguments[0][i];
+			}
+		} else {
+			for ( var i in arguments) {
+				this.data[i] = arguments[i];
+			}
 		}
 
 		return this;
