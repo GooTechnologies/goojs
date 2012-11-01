@@ -227,42 +227,43 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 	function testMatrix() {
 		console.log("\nTesting Matrix\n");
 
-		var matrix = new Matrix(2, 2).set(2.0, 4.0, 6.0, 8.0);
+		var matrix = new Matrix(2, 2).set(2, 4, 6, 8);
 
-		console.log("Matrix.combine: " + Matrix.combine(matrix, matrix) + " expected [ 28, 40 ], [ 60, 88 ]");
-		console.log("Matrix.copy: " + Matrix.copy(matrix) + " expected [ 2, 4 ], [ 6, 8 ]");
-		console.log("Matrix.add: " + Matrix.add(matrix, matrix) + " expected [ 4, 8 ], [ 12, 16 ]");
-		console.log("Matrix.sub: " + Matrix.sub(matrix, matrix) + " expected [ 0, 0 ], [ 0, 0 ]");
-		console.log("Matrix.mul: " + Matrix.mul(matrix, matrix) + " expected [ 4, 16 ], [ 36, 64 ]");
-		console.log("Matrix.div: " + Matrix.div(matrix, matrix) + " expected [ 1, 1 ], [ 1, 1 ]");
-		console.log("Matrix.scalarAdd: " + Matrix.scalarAdd(matrix, 2.0) + " expected [ 4, 6 ], [ 8, 10 ]");
-		console.log("Matrix.scalarSub: " + Matrix.scalarSub(matrix, 2.0) + " expected [ 0, 2 ], [ 4, 6 ]");
-		console.log("Matrix.scalarMul: " + Matrix.scalarMul(matrix, 2.0) + " expected [ 4, 8 ], [ 12, 16 ]");
-		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2.0) + " expected [ 1, 2 ], [ 3, 4 ]");
+		console.log("Matrix.combine: " + Matrix.combine(matrix, matrix) + " expected " + new Matrix(2, 2).set(28, 40, 60, 88));
+		console.log("Matrix.copy: " + Matrix.copy(matrix) + " expected " + new Matrix(2, 2).set(2, 4, 6, 8));
+		console.log("Matrix.add: " + Matrix.add(matrix, matrix) + " expected " + new Matrix(2, 2).set(4, 8, 12, 16));
+		console.log("Matrix.sub: " + Matrix.sub(matrix, matrix) + " expected " + new Matrix(2, 2).set(0, 0, 0, 0));
+		console.log("Matrix.mul: " + Matrix.mul(matrix, matrix) + " expected " + new Matrix(2, 2).set(4, 16, 36, 64));
+		console.log("Matrix.div: " + Matrix.div(matrix, matrix) + " expected " + new Matrix(2, 2).set(1, 1, 1, 1));
+		console.log("Matrix.scalarAdd: " + Matrix.scalarAdd(matrix, 2) + " expected " + new Matrix(2, 2).set(4, 6, 8, 10));
+		console.log("Matrix.scalarSub: " + Matrix.scalarSub(matrix, 2) + " expected " + new Matrix(2, 2).set(0, 2, 4, 6));
+		console.log("Matrix.scalarMul: " + Matrix.scalarMul(matrix, 2) + " expected " + new Matrix(2, 2).set(4, 8, 12, 16));
+		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2) + " expected " + new Matrix(2, 2).set(1, 2, 3, 4));
 	}
 
 	function testMatrix2x2() {
 		console.log("\nTesting Matrix2x2\n");
 
-		var matrix = new Matrix2x2(1.0, 2.0, 3.0, 4.0);
+		var matrix = new Matrix2x2(1, 2, 3, 4);
 
-		console.log("Matrix2x2.combine: " + Matrix2x2.combine(matrix, matrix) + " expected  [ 30, 36, 42 ], [ 66, 81, 96 ], [ 102, 126, 150 ]");
+		console.log("Matrix2x2.combine: " + Matrix2x2.combine(matrix, matrix) + " expected " + new Matrix2x2(7, 10, 15, 22));
 	}
 
 	function testMatrix3x3() {
 		console.log("\nTesting Matrix3x3\n");
 
-		var matrix = new Matrix3x3(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0);
+		var matrix = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected  [ 30, 36, 42 ], [ 66, 81, 96 ], [ 102, 126, 150 ]");
+		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected " + new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 150));
 	}
 
 	function testMatrix4x4() {
 		console.log("\nTesting Matrix4x4\n");
 
-		var matrix = new Matrix4x4(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0);
+		var matrix = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
-		console.log("Matrix4x4.combine: " + Matrix4x4.combine(matrix, matrix) + " expected  [ ], [  ], [  ], [  ]");
+		console.log("Matrix4x4.combine: " + Matrix4x4.combine(matrix, matrix) + " expected "
+			+ new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
 	}
 
 	init();

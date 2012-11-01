@@ -2,11 +2,11 @@ define([], function() {
 	"use strict";
 
 	/**
-	 * @class N-dimensional vector.
 	 * @name Vector
+	 * @class Vector with N components.
 	 * @property {Float32Array} data Storage for the vector components.
 	 * @constructor
-	 * @description Creates a new N-dimensional vector.
+	 * @description Creates a new vector.
 	 * @param {Integer} size Number of vector components.
 	 */
 
@@ -49,12 +49,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Adds two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a size
-	 *              equal to that of the left-hand vector.
+	 * @description Performs a component-wise addition between two vectors and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.add = function(lhs, rhs, target) {
@@ -77,12 +76,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Subtracts two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a
-	 *              size equal to that of the left-hand vector.
+	 * @description Performs a component-wise subtraction between two vectors and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.sub = function(lhs, rhs, target) {
@@ -105,12 +103,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Multiplies two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a
-	 *              size equal to that of the left-hand vector.
+	 * @description Performs a component-wise multiplication between two vectors and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.mul = function(lhs, rhs, target) {
@@ -133,13 +130,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Divides two N-dimensional vectors component-wise and stores the result in a separate vector. The resulting vector will have a size
-	 *              equal to that of the left-hand vector. For all components in the right-hand vector equal to zero, the corresponding component in
-	 *              the resulting vector will be equal to that of the left-hand vector.
+	 * @description Performs a component-wise division between two vectors and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.div = function(lhs, rhs, target) {
@@ -166,11 +161,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Adds an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Performs a component-wise addition between a vector and a scalar and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.scalarAdd = function(lhs, rhs, target) {
@@ -187,11 +182,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Subtracts an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.scalarSub = function(lhs, rhs, target) {
@@ -208,11 +203,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Multiplies an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.scalarMul = function(lhs, rhs, target) {
@@ -229,11 +224,11 @@ define([], function() {
 
 	/**
 	 * @static
-	 * @description Divides an N-dimensional vector with a scalar and stores the result in a separate vector.
+	 * @description Performs a component-wise division between a vector and a scalar and stores the result in a separate vector.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} Resulting vector.
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
 	Vector.scalarDiv = function(lhs, rhs, target) {
@@ -248,9 +243,7 @@ define([], function() {
 				target.data[i] = lhs.data[i] * rhs;
 			}
 		} else {
-			for ( var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i];
-			}
+			console.warn("[Vector.scalarDiv] Attempted to divide by zero!");
 		}
 
 		return target;
@@ -416,7 +409,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Sets the components of the N-dimensional vector.
+	 * @description Sets the components of the vector.
 	 * @param {Float...} arguments Component values.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -436,8 +429,8 @@ define([], function() {
 	};
 
 	/**
-	 * @description Converts the N-dimensional vector to a string.
-	 * @returns {String} String of values.
+	 * @description Converts the vector to a string.
+	 * @returns {String} String of component values.
 	 */
 
 	Vector.prototype.toString = function() {
