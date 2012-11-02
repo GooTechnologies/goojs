@@ -472,5 +472,61 @@ define([], function() {
 		return string;
 	};
 
+	/**
+	 * @description Tests if the matrix is orthogonal.
+	 * @returns {Boolean} True if orthogonal.
+	 */
+
+	Matrix.prototype.isOrthogonal = function() {
+		for ( var ca = 0; ca < this.cols; ca++) {
+			for ( var cb = ca + 1; cb < this.cols; cb++) {
+				var oa = ca * this.rows;
+				var ob = cb * this.rows;
+				var sum = 0.0;
+
+				for ( var r = 0; r < this.rows; r++) {
+					sum += this.data[oa + r] * this.data[ob + r];
+				}
+
+				if (sum < 0.0 || sum > 0.0) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Tests if the matrix is normal.
+	 * @returns {Boolean} True if normal.
+	 */
+
+	Matrix.prototype.isNormal = function() {
+		for ( var c = 0; c < this.cols; c++) {
+			var o = c * this.rows;
+			var sum = 0.0;
+
+			for ( var r = 0; r < this.rows; r++) {
+				sum += this.data[o + r] * this.data[o + r];
+			}
+
+			if (sum < 1.0 || sum > 1.0) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Tests if the matrix is orthonormal.
+	 * @returns {Boolean} True if orthonormal.
+	 */
+
+	Matrix.prototype.isOrthonormal = function() {
+		return this.isOrthogonal() && this.isNormal();
+	};
+
 	return Matrix;
 });

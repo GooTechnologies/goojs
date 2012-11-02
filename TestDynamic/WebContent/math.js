@@ -219,6 +219,13 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log("Matrix.scalarSub: " + Matrix.scalarSub(matrix, 2) + " expected " + new Matrix(2, 2).set(0, 2, 4, 6));
 		console.log("Matrix.scalarMul: " + Matrix.scalarMul(matrix, 2) + " expected " + new Matrix(2, 2).set(4, 8, 12, 16));
 		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2) + " expected " + new Matrix(2, 2).set(1, 2, 3, 4));
+		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
+		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected false");
+
+		matrix.set(1, 0, 0, -1);
+
+		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
+		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected true");
 	}
 
 	function testMatrix2x2() {
@@ -227,6 +234,14 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		var matrix = new Matrix2x2(1, 2, 3, 4);
 
 		console.log("Matrix2x2.combine: " + Matrix2x2.combine(matrix, matrix) + " expected " + new Matrix2x2(7, 10, 15, 22));
+		console.log("Matrix2x2.invert: " + Matrix2x2.invert(matrix) + " expected " + new Matrix2x2(-2, 1, 1.5, -0.5));
+		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
+		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected false");
+
+		matrix.set(1, 0, 0, -1);
+
+		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
+		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected true");
 	}
 
 	function testMatrix3x3() {
@@ -235,6 +250,17 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		var matrix = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected " + new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
+
+		matrix.set(0, 0, 1, -1, 2, 0, 0, 1, -2);
+
+		console.log("Matrix3x3.invert: " + Matrix3x3.invert(matrix) + " expected " + new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
+		console.log("Matrix3x3.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
+		console.log("Matrix3x3.isNormal: " + matrix.isNormal() + " expected false");
+
+		matrix.set(0, -1, 0, 1, 0, 0, 0, 0, -1);
+
+		console.log("Matrix3x3.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
+		console.log("Matrix3x3.isNormal: " + matrix.isNormal() + " expected true");
 	}
 
 	function testMatrix4x4() {
@@ -244,6 +270,18 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 
 		console.log("Matrix4x4.combine: " + Matrix4x4.combine(matrix, matrix) + " expected "
 			+ new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
+
+		matrix.set(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
+
+		console.log("Matrix4x4.invert: " + Matrix4x4.invert(matrix) + " expected "
+			+ new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
+		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
+		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected false");
+
+		matrix.set(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
+
+		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
+		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected true");
 	}
 
 	init();

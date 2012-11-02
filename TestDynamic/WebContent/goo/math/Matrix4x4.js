@@ -342,6 +342,79 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * @param {Matrix4x4} source Source matrix.
+	 * @param {Matrix4x4} target Target matrix. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
+	 * @returns {Matrix4x4} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix4x4.invert = function(source, target) {
+		if (!target || target === source) {
+			target = new Matrix4x4();
+		}
+
+		var det = source.determinant();
+
+		if (det < 0.0 || det > 0.0) {
+			det = 1.0 / det;
+
+			target.e00 = (source.e11 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e12
+				* (source.e21 * source.e33 - source.e23 * source.e31) + source.e13 * (source.e21 * source.e32 - source.e22 * source.e31))
+				* det;
+			target.e10 = (source.e10 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e12
+				* (source.e23 * source.e30 - source.e20 * source.e33) + source.e13 * (source.e22 * source.e30 - source.e20 * source.e32))
+				* det;
+			target.e20 = (source.e10 * (source.e21 * source.e33 - source.e23 * source.e31) - source.e11
+				* (source.e20 * source.e33 - source.e23 * source.e30) + source.e13 * (source.e20 * source.e31 - source.e21 * source.e30))
+				* det;
+			target.e30 = (source.e10 * (source.e22 * source.e31 - source.e21 * source.e32) - source.e11
+				* (source.e22 * source.e30 - source.e20 * source.e32) + source.e12 * (source.e21 * source.e30 - source.e20 * source.e31))
+				* det;
+			target.e01 = (source.e01 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e02
+				* (source.e23 * source.e31 - source.e21 * source.e33) + source.e03 * (source.e22 * source.e31 - source.e21 * source.e32))
+				* det;
+			target.e11 = (source.e00 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e02
+				* (source.e20 * source.e33 - source.e23 * source.e30) + source.e03 * (source.e20 * source.e32 - source.e22 * source.e30))
+				* det;
+			target.e21 = (source.e00 * (source.e23 * source.e31 - source.e21 * source.e33) - source.e01
+				* (source.e23 * source.e30 - source.e20 * source.e33) + source.e03 * (source.e21 * source.e30 - source.e20 * source.e31))
+				* det;
+			target.e31 = (source.e00 * (source.e21 * source.e32 - source.e22 * source.e31) - source.e01
+				* (source.e20 * source.e32 - source.e22 * source.e30) + source.e02 * (source.e20 * source.e31 - source.e21 * source.e30))
+				* det;
+			target.e02 = (source.e01 * (source.e12 * source.e33 - source.e13 * source.e32) - source.e02
+				* (source.e11 * source.e33 - source.e13 * source.e31) + source.e03 * (source.e11 * source.e32 - source.e12 * source.e31))
+				* det;
+			target.e12 = (source.e00 * (source.e13 * source.e32 - source.e12 * source.e33) - source.e02
+				* (source.e13 * source.e30 - source.e10 * source.e33) + source.e03 * (source.e12 * source.e30 - source.e10 * source.e32))
+				* det;
+			target.e22 = (source.e00 * (source.e11 * source.e33 - source.e13 * source.e31) - source.e01
+				* (source.e10 * source.e33 - source.e13 * source.e30) + source.e03 * (source.e10 * source.e31 - source.e11 * source.e30))
+				* det;
+			target.e32 = (source.e00 * (source.e12 * source.e31 - source.e11 * source.e32) - source.e01
+				* (source.e12 * source.e30 - source.e10 * source.e32) + source.e02 * (source.e11 * source.e30 - source.e10 * source.e31))
+				* det;
+			target.e03 = (source.e01 * (source.e13 * source.e22 - source.e12 * source.e23) - source.e02
+				* (source.e13 * source.e21 - source.e11 * source.e23) + source.e03 * (source.e12 * source.e21 - source.e11 * source.e22))
+				* det;
+			target.e13 = (source.e00 * (source.e12 * source.e23 - source.e13 * source.e22) - source.e02
+				* (source.e10 * source.e23 - source.e13 * source.e20) + source.e03 * (source.e10 * source.e22 - source.e12 * source.e20))
+				* det;
+			target.e23 = (source.e00 * (source.e13 * source.e21 - source.e11 * source.e23) - source.e01
+				* (source.e13 * source.e20 - source.e10 * source.e23) + source.e03 * (source.e11 * source.e20 - source.e10 * source.e21))
+				* det;
+			target.e33 = (source.e00 * (source.e11 * source.e22 - source.e12 * source.e21) - source.e01
+				* (source.e10 * source.e22 - source.e12 * source.e20) + source.e02 * (source.e10 * source.e21 - source.e11 * source.e20))
+				* det;
+		} else {
+			console.warn("[Matrix4x4.invert] Attempted to divide by zero!");
+		}
+
+		return target;
+	};
+
+	/**
 	 * @description Performs a component-wise addition between two matrices and stores the result locally.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
 	 * @returns {Matrix4x4} Self for chaining.
@@ -429,6 +502,121 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix4x4.prototype.combine = function(rhs) {
 		return Matrix4x4.combine(this, rhs, this);
+	};
+
+	/**
+	 * @description Computes the determinant of the matrix.
+	 * @returns {Float} Determinant of matrix.
+	 */
+
+	Matrix4x4.prototype.determinant = function() {
+		var sum = 0.0;
+
+		sum += this.e00
+			* (this.e11 * (this.e22 * this.e33 - this.e23 * this.e32) - this.e12 * (this.e21 * this.e33 - this.e23 * this.e31) + this.e13
+				* (this.e21 * this.e32 - this.e22 * this.e31));
+		sum -= this.e01
+			* (this.e10 * (this.e22 * this.e33 - this.e23 * this.e32) - this.e12 * (this.e20 * this.e33 - this.e23 * this.e30) + this.e13
+				* (this.e20 * this.e32 - this.e22 * this.e30));
+		sum += this.e02
+			* (this.e10 * (this.e21 * this.e33 - this.e23 * this.e31) - this.e11 * (this.e20 * this.e33 - this.e23 * this.e30) + this.e13
+				* (this.e20 * this.e31 - this.e21 * this.e30));
+		sum -= this.e03
+			* (this.e10 * (this.e21 * this.e32 - this.e22 * this.e31) - this.e11 * (this.e20 * this.e32 - this.e22 * this.e30) + this.e12
+				* (this.e20 * this.e31 - this.e21 * this.e30));
+
+		return sum;
+	};
+
+	/**
+	 * @description Computes the analytical inverse and stores the result locally.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.invert = function() {
+		return Matrix4x4.invert(this, this);
+	};
+
+	/**
+	 * @description Tests if the matrix is orthogonal.
+	 * @returns {Boolean} True if orthogonal.
+	 */
+
+	Matrix4x4.prototype.isOrthogonal = function() {
+		var dot;
+
+		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21 + this.e30 * this.e31;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e00 * this.e02 + this.e10 * this.e12 + this.e20 * this.e22 + this.e30 * this.e32;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e00 * this.e03 + this.e10 * this.e13 + this.e20 * this.e23 + this.e30 * this.e33;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e01 * this.e02 + this.e11 * this.e12 + this.e21 * this.e22 + this.e31 * this.e32;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e01 * this.e03 + this.e11 * this.e13 + this.e21 * this.e23 + this.e31 * this.e33;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e02 * this.e03 + this.e12 * this.e13 + this.e22 * this.e23 + this.e32 * this.e33;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Tests if the matrix is normal.
+	 * @returns {Boolean} True if normal.
+	 */
+
+	Matrix4x4.prototype.isNormal = function() {
+		var l;
+
+		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20 + this.e30 * this.e30;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e01 * this.e01 + this.e11 * this.e11 + this.e21 * this.e21 + this.e31 * this.e31;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e02 * this.e02 + this.e12 * this.e12 + this.e22 * this.e22 + this.e32 * this.e32;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e03 * this.e03 + this.e13 * this.e13 + this.e23 * this.e23 + this.e33 * this.e33;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		return true;
 	};
 
 	return Matrix4x4;

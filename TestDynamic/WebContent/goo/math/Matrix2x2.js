@@ -233,6 +233,35 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * @param {Matrix2x2} source Source matrix.
+	 * @param {Matrix2x2} target Target matrix. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
+	 * @returns {Matrix2x2} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix2x2.invert = function(source, target) {
+		if (!target || target === source) {
+			target = new Matrix2x2();
+		}
+
+		var det = source.determinant();
+
+		if (det < 0.0 || det > 0.0) {
+			det = 1.0 / det;
+
+			target.e00 = source.e11 * det;
+			target.e10 = 0.0 - source.e10 * det;
+			target.e01 = 0.0 - source.e01 * det;
+			target.e11 = source.e00 * det;
+		} else {
+			console.warn("[Matrix2x2.invert] Attempted to divide by zero!");
+		}
+
+		return target;
+	};
+
+	/**
 	 * @description Performs a component-wise addition between two matrices and stores the result locally.
 	 * @param {Matrix2x2} rhs Matrix on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
@@ -320,6 +349,64 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix2x2.prototype.combine = function(rhs) {
 		return Matrix2x2.combine(this, rhs, this);
+	};
+
+	/**
+	 * @description Computes the determinant of the matrix.
+	 * @returns {Float} Determinant of matrix.
+	 */
+
+	Matrix2x2.prototype.determinant = function() {
+		return this.e00 * this.e11 - this.e01 * this.e10;
+	};
+
+	/**
+	 * @description Computes the analytical inverse and stores the result locally.
+	 * @returns {Matrix2x2} Self for chaining.
+	 */
+
+	Matrix2x2.prototype.invert = function() {
+		return Matrix2x2.invert(this, this);
+	};
+
+	/**
+	 * @description Tests if the matrix is orthogonal.
+	 * @returns {Boolean} True if orthogonal.
+	 */
+
+	Matrix2x2.prototype.isOrthogonal = function() {
+		var dot;
+
+		dot = this.e00 * this.e01 + this.e10 * this.e11;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Tests if the matrix is normal.
+	 * @returns {Boolean} True if normal.
+	 */
+
+	Matrix2x2.prototype.isNormal = function() {
+		var l;
+
+		l = this.e00 * this.e00 + this.e10 * this.e10;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e01 * this.e01 + this.e11 * this.e11;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		return true;
 	};
 
 	return Matrix2x2;

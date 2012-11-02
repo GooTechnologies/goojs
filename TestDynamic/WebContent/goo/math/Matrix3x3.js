@@ -278,6 +278,40 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * @param {Matrix3x3} source Source matrix.
+	 * @param {Matrix3x3} target Target matrix. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
+	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix3x3.invert = function(source, target) {
+		if (!target || target === source) {
+			target = new Matrix3x3();
+		}
+
+		var det = source.determinant();
+
+		if (det < 0.0 || det > 0.0) {
+			det = 1.0 / det;
+
+			target.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
+			target.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
+			target.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
+			target.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
+			target.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
+			target.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
+			target.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
+			target.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
+			target.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
+		} else {
+			console.warn("[Matrix3x3.invert] Attempted to divide by zero!");
+		}
+
+		return target;
+	};
+
+	/**
 	 * @description Performs a component-wise addition between two matrices and stores the result locally.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
@@ -365,6 +399,83 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix3x3.prototype.combine = function(rhs) {
 		return Matrix3x3.combine(this, rhs, this);
+	};
+
+	/**
+	 * @description Computes the determinant of the matrix.
+	 * @returns {Float} Determinant of matrix.
+	 */
+
+	Matrix3x3.prototype.determinant = function() {
+		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02
+			* (this.e10 * this.e21 - this.e11 * this.e20);
+	};
+
+	/**
+	 * @description Computes the analytical inverse and stores the result locally.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.invert = function() {
+		return Matrix3x3.invert(this, this);
+	};
+
+	/**
+	 * @description Tests if the matrix is orthogonal.
+	 * @returns {Boolean} True if orthogonal.
+	 */
+
+	Matrix3x3.prototype.isOrthogonal = function() {
+		var dot;
+
+		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e00 * this.e02 + this.e10 * this.e12 + this.e20 * this.e22;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		dot = this.e01 * this.e02 + this.e11 * this.e12 + this.e21 * this.e22;
+
+		if (dot < 0.0 || dot > 0.0) {
+			return false;
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Tests if the matrix is normal.
+	 * @returns {Boolean} True if normal.
+	 */
+
+	Matrix3x3.prototype.isNormal = function() {
+		var l;
+
+		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e01 * this.e01 + this.e11 * this.e11 + this.e21 * this.e21;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		l = this.e02 * this.e02 + this.e12 * this.e12 + this.e22 * this.e22;
+
+		if (l < 1.0 || l > 1.0) {
+			return false;
+		}
+
+		return true;
 	};
 
 	return Matrix3x3;

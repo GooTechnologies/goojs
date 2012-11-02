@@ -32,10 +32,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x + rhs.x;
-		target.y = lhs.y + rhs.y;
-		target.z = lhs.z + rhs.z;
-		target.w = lhs.w + rhs.w;
+		target.data[0] = lhs.data[0] + rhs.data[0];
+		target.data[1] = lhs.data[1] + rhs.data[1];
+		target.data[2] = lhs.data[2] + rhs.data[2];
+		target.data[3] = lhs.data[3] + rhs.data[3];
 
 		return target;
 	};
@@ -54,10 +54,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x - rhs.x;
-		target.y = lhs.y - rhs.y;
-		target.z = lhs.z - rhs.z;
-		target.w = lhs.w - rhs.w;
+		target.data[0] = lhs.data[0] - rhs.data[0];
+		target.data[1] = lhs.data[1] - rhs.data[1];
+		target.data[2] = lhs.data[2] - rhs.data[2];
+		target.data[3] = lhs.data[3] - rhs.data[3];
 
 		return target;
 	};
@@ -76,10 +76,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x * rhs.x;
-		target.y = lhs.y * rhs.y;
-		target.z = lhs.z * rhs.z;
-		target.w = lhs.w * rhs.w;
+		target.data[0] = lhs.data[0] * rhs.data[0];
+		target.data[1] = lhs.data[1] * rhs.data[1];
+		target.data[2] = lhs.data[2] * rhs.data[2];
+		target.data[3] = lhs.data[3] * rhs.data[3];
 
 		return target;
 	};
@@ -101,10 +101,10 @@ define(["goo/math/Vector"], function(Vector) {
 
 		var clean = true;
 
-		target.x = (clean &= (rhs.x < 0.0 || rhs.x > 0.0)) ? lhs.x / rhs.x : 0.0;
-		target.y = (clean &= (rhs.y < 0.0 || rhs.y > 0.0)) ? lhs.y / rhs.y : 0.0;
-		target.z = (clean &= (rhs.z < 0.0 || rhs.z > 0.0)) ? lhs.z / rhs.z : 0.0;
-		target.w = (clean &= (rhs.w < 0.0 || rhs.w > 0.0)) ? lhs.w / rhs.w : 0.0;
+		target.data[0] = (clean &= (rhs.data[0] < 0.0 || rhs.data[0] > 0.0)) ? lhs.data[0] / rhs.data[0] : 0.0;
+		target.data[1] = (clean &= (rhs.data[1] < 0.0 || rhs.data[1] > 0.0)) ? lhs.data[1] / rhs.data[1] : 0.0;
+		target.data[2] = (clean &= (rhs.data[2] < 0.0 || rhs.data[2] > 0.0)) ? lhs.data[2] / rhs.data[2] : 0.0;
+		target.data[3] = (clean &= (rhs.data[3] < 0.0 || rhs.data[3] > 0.0)) ? lhs.data[3] / rhs.data[3] : 0.0;
 
 		if (clean == false) {
 			console.warn("[Vector4.div] Attempted to divide by zero!");
@@ -127,10 +127,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x + rhs;
-		target.y = lhs.y + rhs;
-		target.z = lhs.z + rhs;
-		target.w = lhs.w + rhs;
+		target.data[0] = lhs.data[0] + rhs;
+		target.data[1] = lhs.data[1] + rhs;
+		target.data[2] = lhs.data[2] + rhs;
+		target.data[3] = lhs.data[3] + rhs;
 
 		return target;
 	};
@@ -149,10 +149,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x - rhs;
-		target.y = lhs.y - rhs;
-		target.z = lhs.z - rhs;
-		target.w = lhs.w - rhs;
+		target.data[0] = lhs.data[0] - rhs;
+		target.data[1] = lhs.data[1] - rhs;
+		target.data[2] = lhs.data[2] - rhs;
+		target.data[3] = lhs.data[3] - rhs;
 
 		return target;
 	};
@@ -171,10 +171,10 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		target.x = lhs.x * rhs;
-		target.y = lhs.y * rhs;
-		target.z = lhs.z * rhs;
-		target.w = lhs.w * rhs;
+		target.data[0] = lhs.data[0] * rhs;
+		target.data[1] = lhs.data[1] * rhs;
+		target.data[2] = lhs.data[2] * rhs;
+		target.data[3] = lhs.data[3] * rhs;
 
 		return target;
 	};
@@ -198,10 +198,10 @@ define(["goo/math/Vector"], function(Vector) {
 
 		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
 
-		target.x = lhs.x * rhs;
-		target.y = lhs.y * rhs;
-		target.z = lhs.z * rhs;
-		target.w = lhs.w * rhs;
+		target.data[0] = lhs.data[0] * rhs;
+		target.data[1] = lhs.data[1] * rhs;
+		target.data[2] = lhs.data[2] * rhs;
+		target.data[3] = lhs.data[3] * rhs;
 
 		if (clean == false) {
 			console.warn("[Vector4.scalarDiv] Attempted to divide by zero!");
