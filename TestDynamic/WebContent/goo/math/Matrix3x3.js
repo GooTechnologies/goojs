@@ -229,19 +229,21 @@ define(["goo/math/Matrix"], function(Matrix) {
 			target = new Matrix3x3();
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-		} else {
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+
+		target.e00 = lhs.e00 * rhs;
+		target.e10 = lhs.e10 * rhs;
+		target.e20 = lhs.e20 * rhs;
+		target.e01 = lhs.e01 * rhs;
+		target.e11 = lhs.e11 * rhs;
+		target.e21 = lhs.e21 * rhs;
+		target.e02 = lhs.e02 * rhs;
+		target.e12 = lhs.e12 * rhs;
+		target.e22 = lhs.e22 * rhs;
+
+		if (clean == false) {
 			console.warn("[Matrix3x3.scalarDiv] Attempted to divide by zero!");
 		}
 

@@ -17,211 +17,191 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 	function testVector() {
 		console.log("\nTesting Vector\n");
 
-		var a = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.add(a, a, a) + " expected [ 6.0, 8.0 ]");
+		var vector = new Vector(2).set(2, 4);
 
-		var b = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.sub(b, b, b) + " expected [ 0.0, 0.0 ]");
+		console.log("Vector.copy: " + Vector.copy(vector) + " expected " + new Vector(2).set(2, 4));
+		console.log("Vector.add: " + Vector.add(vector, vector) + " expected " + new Vector(2).set(4, 8));
+		console.log("Vector.sub: " + Vector.sub(vector, vector) + " expected " + new Vector(2).set(0, 0));
+		console.log("Vector.mul: " + Vector.mul(vector, vector) + " expected " + new Vector(2).set(4, 16));
+		console.log("Vector.div: " + Vector.div(vector, vector) + " expected " + new Vector(2).set(1, 1));
+		console.log("Vector.scalarAdd: " + Vector.scalarAdd(vector, 2) + " expected " + new Vector(2).set(4, 6));
+		console.log("Vector.scalarSub: " + Vector.scalarSub(vector, 2) + " expected " + new Vector(2).set(0, 2));
+		console.log("Vector.scalarMul: " + Vector.scalarMul(vector, 2) + " expected " + new Vector(2).set(4, 8));
+		console.log("Vector.scalarDiv: " + Vector.scalarDiv(vector, 2) + " expected " + new Vector(2).set(1, 2));
 
-		var c = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.mul(c, c, c) + " expected [ 9.0, 16.0 ]");
+		vector.set(-3, -4);
 
-		var d = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.div(d, d, d) + " expected [ 1.0, 1.0 ]");
-
-		var e = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.scalarAdd(e, 2.0, e) + " expected [ 5.0, 6.0 ]");
-
-		var f = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.scalarSub(f, 2.0, f) + " expected [ 1.0, 2.0 ]");
-
-		var g = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.scalarMul(g, 2.0, g) + " expected [ 6.0, 8.0 ]");
-
-		var h = new Vector(2).set(3.0, 4.0);
-		console.log(Vector.scalarDiv(h, 2.0, h) + " expected [ 1.5, 2.0 ]");
-
-		var i = new Vector(2).set(3.0, 4.0);
-		console.log(i.invert() + " expected [ -3.0, -4.0 ]");
-
-		var j = new Vector(2).copy(i);
-		console.log(j + " expected [ -3.0, -4.0 ]");
-
-		var k = new Vector(2).set(3.0, 4.0);
-		console.log(k + " expected [ 3.0, 4.0 ]");
-		console.log(Vector.dot(k, k) + " expected 25.0");
-		console.log(k.length() + " expected 5.0");
-		console.log(k.normalize() + " expected [ ~0.6, ~0.8 ]");
+		console.log("Vector.prototype.invert: " + vector.invert() + " expected " + new Vector(2).set(3, 4));
+		console.log("Vector.prototype.length: " + vector.length() + " expected 5");
+		console.log("Vector.prototype.squareLength: " + vector.squareLength() + " expected 25");
+		console.log("Vector.prototype.normalize: " + vector.normalize() + " expected " + new Vector(2).set(0.6, 0.8));
 	}
 
 	function testVector2() {
 		console.log("\nTesting Vector2\n");
 
-		var a = new Vector2(1.0, 2.0);
-		console.log(a + " expected [ 1.0, 2.0 ]");
+		var vector = new Vector2(1, 2);
 
-		a[0] = 2.0;
-		a[1] = 3.0;
+		vector[0] = 2;
+		vector[1] = 3;
 
-		console.log(a + " expected [ 2.0, 3.0 ]");
-		console.log(a[0] + " expected 2.0");
-		console.log(a[1] + " expected 3.0");
+		console.log(vector + " expected " + new Vector2(2, 3));
+		console.log(vector[0] + " expected 2");
+		console.log(vector[1] + " expected 3");
 
-		a.x = 1.0;
-		a.y = 2.0;
+		vector.x = 1;
+		vector.y = 2;
 
-		console.log(a + " expected [ 1.0, 2.0 ]");
-		console.log(a.x + " expected 1.0");
-		console.log(a.y + " expected 2.0");
+		console.log(vector + " expected " + new Vector2(1, 2));
+		console.log(vector.x + " expected 1");
+		console.log(vector.y + " expected 2");
 
-		a['x'] = 2.0;
-		a['y'] = 3.0;
+		vector['x'] = 2;
+		vector['y'] = 3;
 
-		console.log(a + " expected [ 2.0, 3.0 ]");
-		console.log(a['x'] + " expected 2.0");
-		console.log(a['y'] + " expected 3.0");
+		console.log(vector + " expected " + new Vector2(2, 3));
+		console.log(vector['x'] + " expected 2");
+		console.log(vector['y'] + " expected 3");
 
-		a.u = 1.0;
-		a.v = 2.0;
+		vector.u = 1;
+		vector.v = 2;
 
-		console.log(a + " expected [ 1.0, 2.0 ]");
-		console.log(a.u + " expected 1.0");
-		console.log(a.v + " expected 2.0");
+		console.log(vector + " expected " + new Vector2(1, 2));
+		console.log(vector.u + " expected 1");
+		console.log(vector.v + " expected 2");
 
-		a['u'] = 2.0;
-		a['v'] = 3.0;
+		vector['u'] = 2;
+		vector['v'] = 3;
 
-		console.log(a + " expected [ 2.0, 3.0 ]");
-		console.log(a['u'] + " expected 2.0");
-		console.log(a['v'] + " expected 3.0");
+		console.log(vector + " expected " + new Vector2(2, 3));
+		console.log(vector['u'] + " expected 2");
+		console.log(vector['v'] + " expected 3");
 
-		a.s = 1.0;
-		a.t = 2.0;
+		vector.s = 1;
+		vector.t = 2;
 
-		console.log(a + " expected [ 1.0, 2.0 ]");
-		console.log(a.s + " expected 1.0");
-		console.log(a.t + " expected 2.0");
+		console.log(vector + " expected " + new Vector2(1, 2));
+		console.log(vector.s + " expected 1");
+		console.log(vector.t + " expected 2");
 
-		a['s'] = 2.0;
-		a['t'] = 3.0;
+		vector['s'] = 2;
+		vector['t'] = 3;
 
-		console.log(a + " expected [ 2.0, 3.0 ]");
-		console.log(a['s'] + " expected 2.0");
-		console.log(a['t'] + " expected 3.0");
+		console.log(vector + " expected " + new Vector2(2, 3));
+		console.log(vector['s'] + " expected 2");
+		console.log(vector['t'] + " expected 3");
 	}
 
 	function testVector3() {
 		console.log("\nTesting Vector3\n");
 
-		var a = new Vector3(1.0, 2.0, 3.0);
-		console.log(a + " expected [ 1.0, 2.0, 3.0 ]");
+		var vector = new Vector3(1, 2, 3);
 
-		a[0] = 2.0;
-		a[1] = 3.0;
-		a[2] = 4.0;
+		vector[0] = 2;
+		vector[1] = 3;
+		vector[2] = 4;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0 ]");
-		console.log(a[0] + " expected 2.0");
-		console.log(a[1] + " expected 3.0");
-		console.log(a[2] + " expected 4.0");
+		console.log(vector + " expected " + new Vector3(2, 3, 4));
+		console.log(vector[0] + " expected 2");
+		console.log(vector[1] + " expected 3");
+		console.log(vector[2] + " expected 4");
 
-		a.x = 1.0;
-		a.y = 2.0;
-		a.z = 3.0;
+		vector.x = 1;
+		vector.y = 2;
+		vector.z = 3;
 
-		console.log(a + " expected [ 1.0, 2.0, 3.0 ]");
-		console.log(a.x + " expected 1.0");
-		console.log(a.y + " expected 2.0");
-		console.log(a.z + " expected 3.0");
+		console.log(vector + " expected " + new Vector3(1, 2, 3));
+		console.log(vector.x + " expected 1");
+		console.log(vector.y + " expected 2");
+		console.log(vector.z + " expected 3");
 
-		a['x'] = 2.0;
-		a['y'] = 3.0;
-		a['z'] = 4.0;
+		vector['x'] = 2;
+		vector['y'] = 3;
+		vector['z'] = 4;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0 ]");
-		console.log(a['x'] + " expected 2.0");
-		console.log(a['y'] + " expected 3.0");
-		console.log(a['z'] + " expected 4.0");
+		console.log(vector + " expected " + new Vector3(2, 3, 4));
+		console.log(vector['x'] + " expected 2");
+		console.log(vector['y'] + " expected 3");
+		console.log(vector['z'] + " expected 4");
 
-		a.r = 1.0;
-		a.g = 2.0;
-		a.b = 3.0;
+		vector.r = 1;
+		vector.g = 2;
+		vector.b = 3;
 
-		console.log(a + " expected [ 1.0, 2.0, 3.0 ]");
-		console.log(a.r + " expected 1.0");
-		console.log(a.g + " expected 2.0");
-		console.log(a.b + " expected 3.0");
+		console.log(vector + " expected " + new Vector3(1, 2, 3));
+		console.log(vector.r + " expected 1");
+		console.log(vector.g + " expected 2");
+		console.log(vector.b + " expected 3");
 
-		a['r'] = 2.0;
-		a['g'] = 3.0;
-		a['b'] = 4.0;
+		vector['r'] = 2;
+		vector['g'] = 3;
+		vector['b'] = 4;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0 ]");
-		console.log(a['r'] + " expected 2.0");
-		console.log(a['g'] + " expected 3.0");
-		console.log(a['b'] + " expected 4.0");
+		console.log(vector + " expected " + new Vector3(2, 3, 4));
+		console.log(vector['r'] + " expected 2");
+		console.log(vector['g'] + " expected 3");
+		console.log(vector['b'] + " expected 4");
 	}
 
 	function testVector4() {
 		console.log("\nTesting Vector4\n");
 
-		var a = new Vector4(1.0, 2.0, 3.0, 4.0);
-		console.log(a + " expected [ 1.0, 2.0, 3.0, 4.0 ]");
+		var vector = new Vector4(1, 2, 3, 4);
 
-		a[0] = 2.0;
-		a[1] = 3.0;
-		a[2] = 4.0;
-		a[3] = 5.0;
+		vector[0] = 2;
+		vector[1] = 3;
+		vector[2] = 4;
+		vector[3] = 5;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0, 5.0 ]");
-		console.log(a[0] + " expected 2.0");
-		console.log(a[1] + " expected 3.0");
-		console.log(a[2] + " expected 4.0");
-		console.log(a[3] + " expected 5.0");
+		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
+		console.log(vector[0] + " expected 2");
+		console.log(vector[1] + " expected 3");
+		console.log(vector[2] + " expected 4");
+		console.log(vector[3] + " expected 5");
 
-		a.x = 1.0;
-		a.y = 2.0;
-		a.z = 3.0;
-		a.w = 4.0;
+		vector.x = 1;
+		vector.y = 2;
+		vector.z = 3;
+		vector.w = 4;
 
-		console.log(a + " expected [ 1.0, 2.0, 3.0, 4.0 ]");
-		console.log(a.x + " expected 1.0");
-		console.log(a.y + " expected 2.0");
-		console.log(a.z + " expected 3.0");
-		console.log(a.w + " expected 4.0");
+		console.log(vector + " expected " + new Vector4(1, 2, 3, 4));
+		console.log(vector.x + " expected 1");
+		console.log(vector.y + " expected 2");
+		console.log(vector.z + " expected 3");
+		console.log(vector.w + " expected 4");
 
-		a['x'] = 2.0;
-		a['y'] = 3.0;
-		a['z'] = 4.0;
-		a['w'] = 5.0;
+		vector['x'] = 2;
+		vector['y'] = 3;
+		vector['z'] = 4;
+		vector['w'] = 5;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0, 5.0 ]");
-		console.log(a['x'] + " expected 2.0");
-		console.log(a['y'] + " expected 3.0");
-		console.log(a['z'] + " expected 4.0");
-		console.log(a['w'] + " expected 5.0");
+		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
+		console.log(vector['x'] + " expected 2");
+		console.log(vector['y'] + " expected 3");
+		console.log(vector['z'] + " expected 4");
+		console.log(vector['w'] + " expected 5");
 
-		a.r = 1.0;
-		a.g = 2.0;
-		a.b = 3.0;
-		a.a = 4.0;
+		vector.r = 1;
+		vector.g = 2;
+		vector.b = 3;
+		vector.a = 4;
 
-		console.log(a + " expected [ 1.0, 2.0, 3.0, 4.0 ]");
-		console.log(a.r + " expected 1.0");
-		console.log(a.g + " expected 2.0");
-		console.log(a.b + " expected 3.0");
-		console.log(a.a + " expected 4.0");
+		console.log(vector + " expected " + new Vector4(1, 2, 3, 4));
+		console.log(vector.r + " expected 1");
+		console.log(vector.g + " expected 2");
+		console.log(vector.b + " expected 3");
+		console.log(vector.a + " expected 4");
 
-		a['r'] = 2.0;
-		a['g'] = 3.0;
-		a['b'] = 4.0;
-		a['a'] = 5.0;
+		vector['r'] = 2;
+		vector['g'] = 3;
+		vector['b'] = 4;
+		vector['a'] = 5;
 
-		console.log(a + " expected [ 2.0, 3.0, 4.0, 5.0 ]");
-		console.log(a['r'] + " expected 2.0");
-		console.log(a['g'] + " expected 3.0");
-		console.log(a['b'] + " expected 4.0");
-		console.log(a['a'] + " expected 5.0");
+		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
+		console.log(vector['r'] + " expected 2");
+		console.log(vector['g'] + " expected 3");
+		console.log(vector['b'] + " expected 4");
+		console.log(vector['a'] + " expected 5");
 	}
 
 	function testMatrix() {
@@ -254,7 +234,7 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 
 		var matrix = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected " + new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 150));
+		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected " + new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
 	}
 
 	function testMatrix4x4() {

@@ -134,6 +134,7 @@ define([], function() {
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
@@ -143,13 +144,14 @@ define([], function() {
 		}
 
 		var i = 0;
+		var clean = true;
 
 		for (; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			if (rhs.data[i] < 0.0 || rhs.data[i] > 0.0) {
-				target.data[i] = lhs.data[i] / rhs.data[i];
-			} else {
-				target.data[i] = lhs.data[i];
-			}
+			target.data[i] = (clean &= (rhs.data[i] < 0.0 || rhs.data[i] > 0.0)) ? lhs.data[i] / rhs.data[i] : 0.0;
+		}
+
+		if (clean == false) {
+			console.warn("[Vector.div] Attempted to divide by zero!");
 		}
 
 		for (; i < lhs.data.length; i++) {
@@ -228,6 +230,7 @@ define([], function() {
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector} target Target vector for storage. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
@@ -236,15 +239,35 @@ define([], function() {
 			target = new Vector(lhs.data.length);
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			for ( var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] * rhs;
-			}
-		} else {
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+
+		for ( var i = 0; i < lhs.data.length; i++) {
+			target.data[i] = lhs.data[i] * rhs;
+		}
+
+		if (clean == false) {
 			console.warn("[Vector.scalarDiv] Attempted to divide by zero!");
 		}
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Copies component values from one vector to another.
+	 * @param {Vector} source Source vector.
+	 * @param {Vector} target Target vector. (optional)
+	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 */
+
+	Vector.copy = function(source, target) {
+		if (!target || target.data.length !== source.data.length) {
+			target = new Vector(source.data.length);
+		}
+
+		target.data.set(source.data);
 
 		return target;
 	};
@@ -267,7 +290,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Adds with an N-dimensional vector component-wise and stores the result locally.
+	 * @description Performs a component-wise addition between two vectors and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -277,7 +300,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Subtracts with an N-dimensional vector component-wise and stores the result locally.
+	 * @description Performs a component-wise subtraction between two vectors and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -287,7 +310,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Multiplies by an N-dimensional vector component-wise and stores the result locally.
+	 * @description Performs a component-wise multiplication between two vectors and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -297,7 +320,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Divides by an N-dimensional vector component-wise and stores the result locally.
+	 * @description Performs a component-wise division between two vectors and stores the result locally.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -307,7 +330,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Adds with a scalar and stores the result locally.
+	 * @description Performs a component-wise addition between a vector and a scalar and stores the result locally.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -317,7 +340,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Subtracts with a scalar and stores the result locally.
+	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result locally.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -327,7 +350,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Multiplies by a scalar and stores the result locally.
+	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result locally.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -337,7 +360,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Divides by a scalar and stores the result locally.
+	 * @description Performs a component-wise division between a vector and a scalar and stores the result locally.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -347,19 +370,17 @@ define([], function() {
 	};
 
 	/**
-	 * @description Copies as many components as possible from another N-dimensional vector.
+	 * @description Copies component values from another vector.
 	 * @param {Vector} source Source vector.
 	 * @returns {Vector} Self for chaining.
 	 */
 
 	Vector.prototype.copy = function(source) {
-		this.data.set(source.data);
-
-		return this;
+		return Vector.copy(source, this);
 	};
 
 	/**
-	 * @description Inverts all components of the N-dimensional vector.
+	 * @description Inverts all component values of the vector.
 	 * @returns {Vector} Self for chaining.
 	 */
 
@@ -372,7 +393,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Computes the square length of the N-dimensional vector.
+	 * @description Computes the square length of the vector.
 	 * @returns {Float} Square length.
 	 */
 
@@ -381,7 +402,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Computes the length (euclidian norm) of the N-dimensional vector.
+	 * @description Computes the length (euclidian norm) of the vector.
 	 * @returns {Float} Length.
 	 */
 
@@ -391,18 +412,22 @@ define([], function() {
 
 	/**
 	 * @description Normalizes the vector to unit length.
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Vector} Self for chaining.
 	 */
 
 	Vector.prototype.normalize = function() {
 		var l = this.length();
+		var clean = true;
 
-		if (l > 0.0) {
-			l = 1.0 / l;
+		l = (clean &= (l > 0.0)) ? 1.0 / l : 0.0;
 
-			for ( var i = 0; i < this.data.length; i++) {
-				this.data[i] *= l;
-			}
+		for ( var i = 0; i < this.data.length; i++) {
+			this.data[i] *= l;
+		}
+
+		if (clean == false) {
+			console.warn("[Vector.prototype.normalize] Attempted to divide by zero!");
 		}
 
 		return this;

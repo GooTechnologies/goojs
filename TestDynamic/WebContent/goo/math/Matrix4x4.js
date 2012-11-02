@@ -279,26 +279,28 @@ define(["goo/math/Matrix"], function(Matrix) {
 			target = new Matrix4x4();
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e30 = lhs.e30 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e31 = lhs.e31 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-			target.e32 = lhs.e32 * rhs;
-			target.e03 = lhs.e03 * rhs;
-			target.e13 = lhs.e13 * rhs;
-			target.e23 = lhs.e23 * rhs;
-			target.e33 = lhs.e33 * rhs;
-		} else {
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+
+		target.e00 = lhs.e00 * rhs;
+		target.e10 = lhs.e10 * rhs;
+		target.e20 = lhs.e20 * rhs;
+		target.e30 = lhs.e30 * rhs;
+		target.e01 = lhs.e01 * rhs;
+		target.e11 = lhs.e11 * rhs;
+		target.e21 = lhs.e21 * rhs;
+		target.e31 = lhs.e31 * rhs;
+		target.e02 = lhs.e02 * rhs;
+		target.e12 = lhs.e12 * rhs;
+		target.e22 = lhs.e22 * rhs;
+		target.e32 = lhs.e32 * rhs;
+		target.e03 = lhs.e03 * rhs;
+		target.e13 = lhs.e13 * rhs;
+		target.e23 = lhs.e23 * rhs;
+		target.e33 = lhs.e33 * rhs;
+
+		if (clean == false) {
 			console.warn("[Matrix4x4.scalarDiv] Attempted to divide by zero!");
 		}
 

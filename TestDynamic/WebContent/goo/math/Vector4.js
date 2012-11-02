@@ -90,6 +90,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Vector4} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
@@ -184,6 +185,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @param {Vector4} lhs Vector on the left-hand side.
 	 * @param {Float} rhs Scalar on the right-hand side.
 	 * @param {Vector4} target Target vector for storage. (optional)
+	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Vector4} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
@@ -192,18 +194,100 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector4();
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			target.x = lhs.x * rhs;
-			target.y = lhs.y * rhs;
-			target.z = lhs.z * rhs;
-			target.w = lhs.w * rhs;
-		} else {
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+
+		target.x = lhs.x * rhs;
+		target.y = lhs.y * rhs;
+		target.z = lhs.z * rhs;
+		target.w = lhs.w * rhs;
+
+		if (clean == false) {
 			console.warn("[Vector4.scalarDiv] Attempted to divide by zero!");
 		}
 
 		return target;
+	};
+
+	/**
+	 * @description Performs a component-wise addition between two vectors and stores the result locally.
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.add = function(rhs) {
+		return Vector4.add(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise subtraction between two vectors and stores the result locally.
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.sub = function(rhs) {
+		return Vector4.sub(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise multiplication between two vectors and stores the result locally.
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.mul = function(rhs) {
+		return Vector4.mul(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise division between two vectors and stores the result locally.
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.div = function(rhs) {
+		return Vector4.div(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise addition between a vector and a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.scalarAdd = function(rhs) {
+		return Vector4.scalarAdd(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.scalarSub = function(rhs) {
+		return Vector4.scalarSub(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.scalarMul = function(rhs) {
+		return Vector4.scalarMul(this, rhs, this);
+	};
+
+	/**
+	 * @description Performs a component-wise division between a vector and a scalar and stores the result locally.
+	 * @param {Float} rhs Scalar on the right-hand side.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.scalarDiv = function(rhs) {
+		return Vector4.scalarDiv(this, rhs, this);
 	};
 
 	return Vector4;

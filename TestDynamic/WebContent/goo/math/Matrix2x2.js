@@ -194,14 +194,16 @@ define(["goo/math/Matrix"], function(Matrix) {
 			target = new Matrix2x2();
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-		} else {
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+
+		target.e00 = lhs.e00 * rhs;
+		target.e10 = lhs.e10 * rhs;
+		target.e01 = lhs.e01 * rhs;
+		target.e11 = lhs.e11 * rhs;
+
+		if (clean == false) {
 			console.warn("[Matrix2x2.scalarDiv] Attempted to divide by zero!");
 		}
 

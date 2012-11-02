@@ -255,20 +255,20 @@ define([], function() {
 			target = new Matrix(lhs.rows, lhs.cols);
 		}
 
-		if (rhs < 0.0 || rhs > 0.0) {
-			rhs = 1.0 / rhs;
+		var clean = true;
 
-			for ( var c = 0; c < lhs.cols; c++) {
-				var o = c * lhs.rows;
+		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
 
-				for ( var r = 0; r < lhs.rows; r++) {
-					target.data[o + r] = lhs.data[o + r] * rhs;
-				}
+		for ( var c = 0; c < lhs.cols; c++) {
+			var o = c * lhs.rows;
+
+			for ( var r = 0; r < lhs.rows; r++) {
+				target.data[o + r] = lhs.data[o + r] * rhs;
 			}
-		} else {
-			console.warn("[Matrix.scalarDiv] Attempted to divide by zero!");
+		}
 
-			target.copy(lhs);
+		if (clean == false) {
+			console.warn("[Matrix.scalarDiv] Attempted to divide by zero!");
 		}
 
 		return target;
@@ -280,6 +280,7 @@ define([], function() {
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
 	 * @param {Matrix} target Target matrix for storage. (optional)
+	 * @throws Outputs a warning in the console if attempting combine non-matching matrices.
 	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
 	 */
 
@@ -418,7 +419,7 @@ define([], function() {
 	};
 
 	/**
-	 * @description Copies component values from one matrix to another.
+	 * @description Copies component values from another matrix.
 	 * @param {Matrix} source Source matrix.
 	 * @returns {Matrix} Self for chaining.
 	 */
