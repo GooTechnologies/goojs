@@ -5,9 +5,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/renderer/Texture'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
-	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture) {
+		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent'], function(World,
+	Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData,
+	Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture,
+	Camera, CameraComponent) {
 
 	function init() {
 		// Create typical goo application
@@ -29,11 +30,26 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		boxEntity.addToWorld();
 
 		// Add camera
-		goo.renderer.camera.position.x = Math.sin(t * 1.0) * 50 + 70;
-		goo.renderer.camera.position.y = 20;
-		goo.renderer.camera.position.z = Math.sin(t * 1.0) * 50 + 70;
-		goo.renderer.camera.lookAt(this.zero);
-		goo.renderer.camera.updateWorld();
+		var camera = new Camera(45, 1, 1, 1000);
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.addToWorld();
+
+		var script = {
+			zero : new THREE.Vector3(),
+			run : function(entity) {
+				var t = entity._world.time;
+
+				// TODO: use transformcomponent instead. just fix a lookat for it.
+				var camera = entity.cameraComponent.camera;
+				camera.position.x = Math.sin(t * 1.0) * 50 + 70;
+				camera.position.y = 20;
+				camera.position.z = Math.sin(t * 1.0) * 50 + 70;
+				camera.lookAt(this.zero);
+				camera.updateWorld();
+			}
+		};
+		cameraEntity.setComponent(new ScriptComponent(script));
 
 	}
 
@@ -48,7 +64,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 				entities[0].transformComponent.transform.scale.set(0.15, 0.15, 0.15);
 				var script = {
-					zero : new THREE.Vector3(),
 					run : function(entity) {
 						var t = entity._world.time;
 

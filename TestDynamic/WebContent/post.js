@@ -6,9 +6,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
-		'goo/entities/EventHandler'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
-	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript, EventHandler) {
+		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent'], function(World, Entity, System,
+	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
+	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
+	BasicControlScript, EventHandler, Camera, CameraComponent) {
 
 	function init() {
 		// Create typical goo application
@@ -18,9 +19,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// var ui = new DebugUI(goo);
 
-		// goo.renderer.camera.position.set(0, 5, 25);
-		// goo.renderer.camera.lookAt(new THREE.Vector3(0, 0, 0));
-		// goo.renderer.camera.updateWorld();
+		var camera = new Camera(45, 1, 1, 1000);
+		camera.position.set(0, 5, 25);
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.addToWorld();
 
 		// var composer = new Composer();
 

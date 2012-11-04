@@ -74,13 +74,17 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// this.context.enable(this.context.CULL_FACE);
 	}
 
-	Renderer.prototype.checkResize = function() {
+	Renderer.prototype.checkResize = function(camera) {
 		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
 			this.domElement.width = this.domElement.offsetWidth;
 			this.domElement.height = this.domElement.offsetHeight;
-			this.camera.aspect = this.domElement.width / this.domElement.height;
 			this.context.viewport(0, 0, this.domElement.width, this.domElement.height);
-			this.camera.updateProjection();
+		}
+
+		var aspect = this.domElement.width / this.domElement.height;
+		if (camera && camera.aspect !== aspect) {
+			camera.aspect = aspect;
+			camera.updateProjection();
 		}
 	};
 
@@ -121,14 +125,17 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.render = function(meshData, materials, shaderInfo) {
+	Renderer.prototype.render = function(renderInfo) {
+		var meshData = renderInfo.meshData;
+		var materials = renderInfo.materials;
+
 		this.bindData(meshData.vertexData);
 
 		for ( var i in materials) {
 			var material = materials[i];
-			shaderInfo.material = material;
 
-			material.shader.apply(shaderInfo, this);
+			renderInfo.material = material;
+			material.shader.apply(renderInfo, this);
 
 			this.updateCulling(material);
 			this.updateTextures(material);

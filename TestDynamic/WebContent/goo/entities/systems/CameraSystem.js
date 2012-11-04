@@ -3,6 +3,8 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(Sy
 
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
+
+		this.mainCamera = null;
 	}
 
 	CameraSystem.prototype = Object.create(System.prototype);

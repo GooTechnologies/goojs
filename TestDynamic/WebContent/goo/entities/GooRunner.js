@@ -48,11 +48,6 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
 
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = this.world.createEntity("Camera");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-
 		init();
 		window.requestAnimationFrame(run);
 
