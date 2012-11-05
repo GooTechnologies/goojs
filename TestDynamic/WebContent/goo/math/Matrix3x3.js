@@ -278,6 +278,32 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @static
+	 * @description Transposes a matrix (exchanges rows and columns).
+	 * @param {Matrix3x3} source Source matrix.
+	 * @param {Matrix3x3} target Target matrix. (optional)
+	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix3x3.transpose = function(source, target) {
+		if (!target || target === source) {
+			target = new Matrix3x3();
+		}
+
+		target.e00 = source.e00;
+		target.e10 = source.e01;
+		target.e20 = source.e02;
+		target.e01 = source.e10;
+		target.e11 = source.e11;
+		target.e21 = source.e12;
+		target.e02 = source.e20;
+		target.e12 = source.e21;
+		target.e22 = source.e22;
+
+		return target;
+	};
+
+	/**
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} target Target matrix. (optional)
@@ -399,6 +425,15 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix3x3.prototype.combine = function(rhs) {
 		return Matrix3x3.combine(this, rhs, this);
+	};
+
+	/**
+	 * @description Transposes the matrix (exchanges rows and columns).
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.transpose = function() {
+		return Matrix3x3.transpose(this, this);
 	};
 
 	/**

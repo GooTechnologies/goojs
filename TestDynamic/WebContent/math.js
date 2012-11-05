@@ -222,10 +222,11 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
 		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected false");
 
-		matrix.set(1, 0, 0, -1);
+		matrix.set(0, 1, -1, 0);
 
 		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
 		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected true");
+		console.log("Matrix.transpose: " + matrix.transpose() + " expected " + new Matrix(2, 2).set(0, -1, 1, 0));
 	}
 
 	function testMatrix2x2() {
@@ -238,10 +239,11 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
 		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected false");
 
-		matrix.set(1, 0, 0, -1);
+		matrix.set(0, 1, -1, 0);
 
 		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
 		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected true");
+		console.log("Matrix2x2.transpose: " + matrix.transpose() + " expected " + new Matrix2x2(0, -1, 1, 0));
 	}
 
 	function testMatrix3x3() {
@@ -261,6 +263,7 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 
 		console.log("Matrix3x3.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
 		console.log("Matrix3x3.isNormal: " + matrix.isNormal() + " expected true");
+		console.log("Matrix3x3.transpose: " + matrix.transpose() + " expected " + new Matrix3x3(0, 1, 0, -1, 0, 0, 0, 0, -1));
 	}
 
 	function testMatrix4x4() {
@@ -278,10 +281,11 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
 		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected false");
 
-		matrix.set(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
+		matrix.set(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
 
 		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
 		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected true");
+		console.log("Matrix4x4.transpose: " + matrix.transpose() + " expected " + new Matrix4x4(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1));
 	}
 
 	init();

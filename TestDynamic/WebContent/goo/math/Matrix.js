@@ -312,6 +312,30 @@ define([], function() {
 
 	/**
 	 * @static
+	 * @description Transposes a matrix (exchanges rows and columns).
+	 * @param {Matrix} source Source matrix.
+	 * @param {Matrix} target Target matrix. (optional)
+	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix.transpose = function(source, target) {
+		if (!target || target.rows != source.cols || target.cols != source.rows || target === source) {
+			target = new Matrix(source.cols, source.rows);
+		}
+
+		for ( var c = 0; c < target.cols; c++) {
+			var o = c * target.rows;
+
+			for ( var r = 0; r < target.rows; r++) {
+				target.data[o + r] = source.data[r * source.rows + c];
+			}
+		}
+
+		return target;
+	};
+
+	/**
+	 * @static
 	 * @description Copies component values from one matrix to another.
 	 * @param {Matrix} source Source matrix.
 	 * @param {Matrix} target Target matrix. (optional)
@@ -416,6 +440,15 @@ define([], function() {
 
 	Matrix.prototype.combine = function(rhs) {
 		return Matrix.combine(this, rhs, this);
+	};
+
+	/**
+	 * @description Transposes the matrix (exchanges rows and columns).
+	 * @returns {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.transpose = function() {
+		return Matrix.transpose(this, this);
 	};
 
 	/**

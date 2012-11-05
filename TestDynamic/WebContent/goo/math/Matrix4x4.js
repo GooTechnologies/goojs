@@ -342,6 +342,48 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @static
+	 * @description Transposes a matrix (exchanges rows and columns).
+	 * @param {Matrix4x4} source Source matrix.
+	 * @param {Matrix4x4} target Target matrix. (optional)
+	 * @returns {Matrix4x4} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 */
+
+	Matrix4x4.transpose = function(source, target) {
+		if (!target || target === source) {
+			target = new Matrix4x4();
+		}
+
+		target.e00 = source.e00;
+		target.e10 = source.e01;
+		target.e20 = source.e02;
+		target.e30 = source.e03;
+		target.e01 = source.e10;
+		target.e11 = source.e11;
+		target.e21 = source.e12;
+		target.e31 = source.e13;
+		target.e02 = source.e20;
+		target.e12 = source.e21;
+		target.e22 = source.e22;
+		target.e32 = source.e23;
+		target.e03 = source.e30;
+		target.e13 = source.e31;
+		target.e23 = source.e32;
+		target.e33 = source.e33;
+
+		return target;
+	};
+
+	/**
+	 * @description Transposes the matrix (exchanges rows and columns).
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.transpose = function() {
+		return Matrix4x4.transpose(this, this);
+	};
+
+	/**
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} target Target matrix. (optional)
