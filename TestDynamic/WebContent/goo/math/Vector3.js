@@ -313,5 +313,101 @@ define(["goo/math/Vector"], function(Vector) {
 		return Vector3.cross(this, vector, this);
 	};
 
+	Vector3.prototype.extractRotationFromMatrix = function(matrix, order) {
+		this.x = 0.0;
+		this.y = 0.0;
+		this.z = 0.0;
+
+		switch (order) {
+			default:
+			case "XYZ":
+			case "xyz": {
+				// this.e00 = c1 * c2;
+				// this.e10 = c2 * s1;
+				// this.e20 = 0.0 - s2;
+				// this.e01 = c1 * s2 * s3 - c3 * s1;
+				// this.e11 = c1 * c3 + s1 * s2 * s3;
+				// this.e21 = c2 * s3;
+				// this.e02 = s1 * s3 + c1 * c3 * s2;
+				// this.e12 = c3 * s1 * s2 - c1 * s3;
+				// this.e22 = c2 * c3;
+
+				break;
+			}
+			case "XZY":
+			case "xzy": {
+				// this.e00 = c1 * c2;
+				// this.e10 = s2;
+				// this.e20 = 0.0 - c2 * s1;
+				// this.e01 = s1 * s3 - c1 * c3 * s2;
+				// this.e11 = c2 * c3;
+				// this.e21 = c1 * s3 + c3 * s1 * s2;
+				// this.e02 = c3 * s1 + c1 * s2 * s3;
+				// this.e12 = 0.0 - c2 * s3;
+				// this.e22 = c1 * c3 - s1 * s2 * s3;
+
+				break;
+			}
+			case "YZX":
+			case "yzx": {
+				// this.e00 = c2 * c3;
+				// this.e10 = s1 * s3 + c1 * c3 * s2;
+				// this.e20 = c3 * s1 * s2 - c1 * s3;
+				// this.e01 = 0.0 - s2;
+				// this.e11 = c1 * c2;
+				// this.e21 = c2 * s1;
+				// this.e02 = c2 * s3;
+				// this.e12 = c1 * s2 * s3 - c3 * s1;
+				// this.e22 = c1 * c3 + s1 * s2 * s3;
+
+				break;
+			}
+			case "YXZ":
+			case "yxz": {
+				// this.e00 = c1 * c3 - s1 * s2 * s3;
+				// this.e10 = c3 * s1 + c1 * s2 * s3;
+				// this.e20 = 0.0 - c2 * s3;
+				// this.e01 = 0.0 - c2 * s1;
+				// this.e11 = c1 * c2;
+				// this.e21 = s2;
+				// this.e02 = c1 * s3 + c3 * s1 * s2;
+				// this.e12 = s1 * s3 - c1 * c3 * s2;
+				// this.e22 = c2 * c3;
+
+				break;
+			}
+			case "ZXY":
+			case "zxy": {
+				// this.e00 = c1 * c3 + s1 * s2 * s3;
+				// this.e10 = c2 * s3;
+				// this.e20 = c1 * s2 * s3 - c3 * s1;
+				// this.e01 = c3 * s1 * s2 - c1 * s3;
+				// this.e11 = c2 * c3;
+				// this.e21 = s1 * s3 + c1 * c3 * s2;
+				// this.e02 = c2 * s1;
+				// this.e12 = 0.0 - s2;
+				// this.e22 = c1 * c2;
+
+				break;
+			}
+			case "ZYX":
+			case "zyx": {
+				// this.e00 = c2 * c3;
+				// this.e10 = c1 * s3 + c3 * s1 * s2;
+				// this.e20 = s1 * s3 - c1 * c3 * s2;
+				// this.e01 = 0.0 - c2 * s3;
+				// this.e11 = c1 * c3 - s1 * s2 * s3;
+				// this.e21 = c3 * s1 + c1 * s2 * s3;
+				// this.e02 = s2;
+				// this.e12 = 0.0 - c2 * s1;
+				// this.e22 = c1 * c2;
+
+				break;
+			}
+		}
+
+		return this;
+	};
+
 	return Vector3;
 });

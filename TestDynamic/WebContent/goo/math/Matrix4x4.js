@@ -678,6 +678,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 		switch (order) {
 			default:
+			case "XYZ":
 			case "xyz": {
 				this.e00 = c1 * c2;
 				this.e10 = c2 * s1;
@@ -691,6 +692,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 				break;
 			}
+			case "XZY":
 			case "xzy": {
 				this.e00 = c1 * c2;
 				this.e10 = s2;
@@ -704,6 +706,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 				break;
 			}
+			case "YZX":
 			case "yzx": {
 				this.e00 = c2 * c3;
 				this.e10 = s1 * s3 + c1 * c3 * s2;
@@ -717,6 +720,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 				break;
 			}
+			case "YXZ":
 			case "yxz": {
 				this.e00 = c1 * c3 - s1 * s2 * s3;
 				this.e10 = c3 * s1 + c1 * s2 * s3;
@@ -730,6 +734,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 				break;
 			}
+			case "ZXY":
 			case "zxy": {
 				this.e00 = c1 * c3 + s1 * s2 * s3;
 				this.e10 = c2 * s3;
@@ -743,6 +748,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 				break;
 			}
+			case "ZYX":
 			case "zyx": {
 				this.e00 = c2 * c3;
 				this.e10 = c1 * s3 + c3 * s1 * s2;
@@ -823,14 +829,29 @@ define(["goo/math/Matrix"], function(Matrix) {
 		this.e00 *= scale.x;
 		this.e10 *= scale.x;
 		this.e20 *= scale.x;
+		this.e30 *= scale.x;
 		this.e01 *= scale.y;
 		this.e11 *= scale.y;
 		this.e21 *= scale.y;
+		this.e31 *= scale.y;
 		this.e02 *= scale.z;
 		this.e12 *= scale.z;
 		this.e22 *= scale.z;
+		this.e32 *= scale.z;
 
 		return this;
+	};
+
+	Matrix4x4.prototype.rotate = function(vector) {
+		var x = vector.x;
+		var y = vector.y;
+		var z = vector.z;
+
+		vector.x = this.e00 * x + this.e01 * y + this.e02 * z;
+		vector.y = this.e10 * y + this.e11 * y + this.e12 * y;
+		vector.z = this.e20 * z + this.e21 * z + this.e22 * z;
+
+		return vector;
 	};
 
 	return Matrix4x4;
