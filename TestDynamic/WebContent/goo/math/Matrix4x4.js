@@ -661,5 +661,177 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return true;
 	};
 
+	/**
+	 * @description Sets the rotational part of the matrix from rotational angles.
+	 * @param {Vector3} angles Rotational angles.
+	 * @param {String} order Order convention.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.setRotationFromAngles = function(angles, order) {
+		var s1 = Math.sin(angles.x);
+		var c1 = Math.cos(angles.x);
+		var s2 = Math.sin(angles.y);
+		var c2 = Math.cos(angles.y);
+		var s3 = Math.sin(angles.z);
+		var c3 = Math.cos(angles.z);
+
+		switch (order) {
+			default:
+			case "xyz": {
+				this.e00 = c1 * c2;
+				this.e10 = c2 * s1;
+				this.e20 = 0.0 - s2;
+				this.e01 = c1 * s2 * s3 - c3 * s1;
+				this.e11 = c1 * c3 + s1 * s2 * s3;
+				this.e21 = c2 * s3;
+				this.e02 = s1 * s3 + c1 * c3 * s2;
+				this.e12 = c3 * s1 * s2 - c1 * s3;
+				this.e22 = c2 * c3;
+
+				break;
+			}
+			case "xzy": {
+				this.e00 = c1 * c2;
+				this.e10 = s2;
+				this.e20 = 0.0 - c2 * s1;
+				this.e01 = s1 * s3 - c1 * c3 * s2;
+				this.e11 = c2 * c3;
+				this.e21 = c1 * s3 + c3 * s1 * s2;
+				this.e02 = c3 * s1 + c1 * s2 * s3;
+				this.e12 = 0.0 - c2 * s3;
+				this.e22 = c1 * c3 - s1 * s2 * s3;
+
+				break;
+			}
+			case "yzx": {
+				this.e00 = c2 * c3;
+				this.e10 = s1 * s3 + c1 * c3 * s2;
+				this.e20 = c3 * s1 * s2 - c1 * s3;
+				this.e01 = 0.0 - s2;
+				this.e11 = c1 * c2;
+				this.e21 = c2 * s1;
+				this.e02 = c2 * s3;
+				this.e12 = c1 * s2 * s3 - c3 * s1;
+				this.e22 = c1 * c3 + s1 * s2 * s3;
+
+				break;
+			}
+			case "yxz": {
+				this.e00 = c1 * c3 - s1 * s2 * s3;
+				this.e10 = c3 * s1 + c1 * s2 * s3;
+				this.e20 = 0.0 - c2 * s3;
+				this.e01 = 0.0 - c2 * s1;
+				this.e11 = c1 * c2;
+				this.e21 = s2;
+				this.e02 = c1 * s3 + c3 * s1 * s2;
+				this.e12 = s1 * s3 - c1 * c3 * s2;
+				this.e22 = c2 * c3;
+
+				break;
+			}
+			case "zxy": {
+				this.e00 = c1 * c3 + s1 * s2 * s3;
+				this.e10 = c2 * s3;
+				this.e20 = c1 * s2 * s3 - c3 * s1;
+				this.e01 = c3 * s1 * s2 - c1 * s3;
+				this.e11 = c2 * c3;
+				this.e21 = s1 * s3 + c1 * c3 * s2;
+				this.e02 = c2 * s1;
+				this.e12 = 0.0 - s2;
+				this.e22 = c1 * c2;
+
+				break;
+			}
+			case "zyx": {
+				this.e00 = c2 * c3;
+				this.e10 = c1 * s3 + c3 * s1 * s2;
+				this.e20 = s1 * s3 - c1 * c3 * s2;
+				this.e01 = 0.0 - c2 * s3;
+				this.e11 = c1 * c3 - s1 * s2 * s3;
+				this.e21 = c3 * s1 + c1 * s2 * s3;
+				this.e02 = s2;
+				this.e12 = 0.0 - c2 * s1;
+				this.e22 = c1 * c2;
+
+				break;
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * @description Sets the rotational part of the matrix from a quaternion.
+	 * @param {Vector4} quaternion Rotational quaternion.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.setRotationFromQuaternion = function(quaternion) {
+		var l = quaternion.lengthSquared();
+
+		l = (l > 0.0) ? 2.0 / l : 0.0;
+
+		var a = quaternion.x * l;
+		var b = quaternion.y * l;
+		var c = quaternion.z * l;
+
+		var wa = quaternion.w * a;
+		var wb = quaternion.w * b;
+		var wc = quaternion.w * c;
+		var xa = quaternion.x * a;
+		var xb = quaternion.x * b;
+		var xc = quaternion.x * c;
+		var yb = quaternion.y * b;
+		var yc = quaternion.y * c;
+		var zc = quaternion.z * c;
+
+		this.e00 = 1.0 - yb - zc;
+		this.e10 = xb + wc;
+		this.e20 = xc - wb;
+		this.e01 = xb - wc;
+		this.e11 = 1.0 - xa - zc;
+		this.e21 = yc + wa;
+		this.e02 = xc + wb;
+		this.e12 = yc - wa;
+		this.e22 = 1.0 - xa - yb;
+
+		return this;
+	};
+
+	/**
+	 * @description Sets the translational part of the matrix.
+	 * @param {Vector3} translation Translation vector.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.setTranslation = function(translation) {
+		this.e03 = translation.x;
+		this.e13 = translation.y;
+		this.e23 = translation.z;
+
+		return this;
+	};
+
+	/**
+	 * @description Sets the scale of the matrix.
+	 * @param {Vector3} scale Scale vector.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.setScale = function(scale) {
+		this.e00 *= scale.x;
+		this.e10 *= scale.x;
+		this.e20 *= scale.x;
+		this.e01 *= scale.y;
+		this.e11 *= scale.y;
+		this.e21 *= scale.y;
+		this.e02 *= scale.z;
+		this.e12 *= scale.z;
+		this.e22 *= scale.z;
+
+		return this;
+	};
+
 	return Matrix4x4;
 });
