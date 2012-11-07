@@ -54,6 +54,10 @@ define(function() {
 		}
 	};
 
+	Util.isPowerOfTwo = function(value) {
+		return (value & (value - 1)) === 0;
+	};
+
 	Util.nearestPowerOfTwo = function(number) {
 		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
 	};

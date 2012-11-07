@@ -72,13 +72,32 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// this.context.frontFace(this.context.CCW);
 		// this.context.cullFace(this.context.BACK);
 		// this.context.enable(this.context.CULL_FACE);
+
+		this.viewportX = 0;
+		this.viewportY = 0;
+		this.viewportWidth = 0;
+		this.viewportHeight = 0;
+		this.currentWidth = 0;
+		this.currentHeight = 0;
+
+		this.info = {
+			memory : {
+				programs : 0,
+				geometries : 0,
+				textures : 0
+			},
+			render : {
+				calls : 0,
+				vertices : 0,
+				faces : 0,
+				points : 0
+			}
+		};
 	}
 
 	Renderer.prototype.checkResize = function(camera) {
 		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
-			this.domElement.width = this.domElement.offsetWidth;
-			this.domElement.height = this.domElement.offsetHeight;
-			this.context.viewport(0, 0, this.domElement.width, this.domElement.height);
+			this.setSize(this.domElement.offsetWidth, this.domElement.offsetHeight);
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
@@ -86,6 +105,23 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			camera.aspect = aspect;
 			camera.updateProjection();
 		}
+	};
+
+	Renderer.prototype.setSize = function(width, height) {
+		this.domElement.width = width;
+		this.domElement.height = height;
+
+		this.setViewport(0, 0, width, height);
+	};
+
+	Renderer.prototype.setViewport = function(x, y, width, height) {
+		this.viewportX = x !== undefined ? x : 0;
+		this.viewportY = y !== undefined ? y : 0;
+
+		this.viewportWidth = width !== undefined ? width : this.domElement.width;
+		this.viewportHeight = height !== undefined ? height : this.domElement.height;
+
+		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
 
 	Renderer.prototype.setClearColor = function(red, green, blue, alpha) {
@@ -125,7 +161,24 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.render = function(renderInfo) {
+	Renderer.prototype.render = function(renderList, renderTarget) {
+		for ( var i in this.renderList) {
+			var renderInfo = {
+				meshData : entity.meshDataComponent.meshData,
+				materials : entity.meshRendererComponent.materials,
+				transform : entity.transformComponent.worldTransform,
+				camera : this.camera,
+				lights : entity._world.getManager('LightManager').lights
+			};
+			this.renderEntity(renderInfo, renderTarget);
+		}
+	};
+
+	Renderer.prototype.renderEntity = function(renderInfo, renderTarget) {
+		if (renderTarget) {
+			this.setRenderTarget(renderTarget);
+		}
+
 		var meshData = renderInfo.meshData;
 		var materials = renderInfo.materials;
 
@@ -278,14 +331,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				texrecord.minFilter = texture.minFilter;
 			}
 
-			// TODO: bind?
-			// GwtGLTextureStateUtil.applyWrap(gl, texture, texRecord,
-			// i,
-			// record, caps);
 			if (texture.variant === '2D') {
-				// GwtGLTextureStateUtil.applyWrap(gl, (Texture2D)
-				// texture,
-				// texRecord, unit, record, caps);
 				var wrapS = this.getGLWrap(texture.wrapS, context);
 				var wrapT = this.getGLWrap(texture.wrapT, context);
 				if (texrecord.wrapS !== wrapS) {
@@ -302,7 +348,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				// unit, record, caps);
 			}
 		}
-	}
+	};
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
@@ -310,7 +356,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
-	}
+	};
 
 	Renderer.prototype.getGLType = function(type) {
 		switch (type) {
@@ -320,7 +366,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
 		}
 		throw "invalid texture type: " + type;
-	}
+	};
 
 	// var fisk = 0;
 	Renderer.prototype.updateTexture = function(context, texture, unit, record) {
@@ -373,7 +419,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		if (texture.generateMipmaps) {
 			context.generateMipmap(context.TEXTURE_2D);
 		}
-	}
+	};
 
 	Renderer.prototype.getGLWrap = function(wrap) {
 		switch (wrap) {
@@ -385,7 +431,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				return WebGLRenderingContext.CLAMP_TO_EDGE;
 		}
 		throw "invalid WrapMode type: " + wrap;
-	}
+	};
 
 	Renderer.prototype.getGLInternalFormat = function(format) {
 		switch (format) {
@@ -402,7 +448,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			default:
 				throw "Unsupported format: " + format;
 		}
-	}
+	};
 
 	Renderer.prototype.getGLPixelDataType = function(type) {
 		switch (type) {
@@ -419,7 +465,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			default:
 				throw "Unsupported type: " + type;
 		}
-	}
+	};
 
 	Renderer.prototype.getGLMagFilter = function(magFilter, context) {
 		switch (magFilter) {
@@ -429,7 +475,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			default:
 				return WebGLRenderingContext.NEAREST;
 		}
-	}
+	};
 
 	Renderer.prototype.getGLMinFilter = function(filter) {
 		switch (filter) {
@@ -447,7 +493,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
 		}
 		throw "invalid MinificationFilter type: " + filter;
-	}
+	};
 
 	Renderer.prototype.getGLBufferTarget = function(target) {
 		if (target === 'ElementArrayBuffer') {
@@ -586,8 +632,114 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.context.clear(bits);
 	};
 
-	Renderer.prototype.flush = function(buffer, target) {
+	Renderer.prototype.flush = function() {
 		this.context.flush();
+	};
+
+	Renderer.prototype.finish = function() {
+		this.context.finish();
+	};
+
+	// ---------------------------------------------
+
+	Renderer.prototype.setupFrameBuffer = function(framebuffer, renderTarget, textureTarget) {
+		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
+		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, textureTarget,
+			renderTarget._glTexture, 0);
+	};
+
+	Renderer.prototype.setupRenderBuffer = function(renderbuffer, renderTarget) {
+		this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderbuffer);
+
+		if (renderTarget.depthBuffer && !renderTarget.stencilBuffer) {
+			this.context.renderbufferStorage(WebGLRenderingContext.RENDERBUFFER, WebGLRenderingContext.DEPTH_COMPONENT16, renderTarget.width,
+				renderTarget.height);
+			this.context.framebufferRenderbuffer(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.DEPTH_ATTACHMENT,
+				WebGLRenderingContext.RENDERBUFFER, renderbuffer);
+		} else if (renderTarget.depthBuffer && renderTarget.stencilBuffer) {
+			this.context.renderbufferStorage(WebGLRenderingContext.RENDERBUFFER, WebGLRenderingContext.DEPTH_STENCIL, renderTarget.width,
+				renderTarget.height);
+			this.context.framebufferRenderbuffer(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.DEPTH_STENCIL_ATTACHMENT,
+				WebGLRenderingContext.RENDERBUFFER, renderbuffer);
+		} else {
+			this.context
+				.renderbufferStorage(WebGLRenderingContext.RENDERBUFFER, WebGLRenderingContext.RGBA4, renderTarget.width, renderTarget.height);
+		}
+	};
+
+	Renderer.prototype.setRenderTarget = function(renderTarget) {
+		if (renderTarget && !renderTarget.__webglFramebuffer) {
+			if (renderTarget.depthBuffer === undefined) {
+				renderTarget.depthBuffer = true;
+			}
+			if (renderTarget.stencilBuffer === undefined) {
+				renderTarget.stencilBuffer = true;
+			}
+
+			renderTarget.__webglTexture = this.context.createTexture();
+
+			// Setup texture, create render and frame buffers
+			var isTargetPowerOfTwo = Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height);
+			var glFormat = this.getGLInternalFormat(renderTarget.format);
+			var glType = this.getGLDataType(renderTarget.type);
+
+			renderTarget.__webglFramebuffer = this.context.createFramebuffer();
+			renderTarget.__webglRenderbuffer = this.context.createRenderbuffer();
+
+			this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.__webglTexture);
+			setTextureParameters(WebGLRenderingContext.TEXTURE_2D, renderTarget, isTargetPowerOfTwo);
+
+			this.context
+				.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
+
+			setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
+			setupRenderBuffer(renderTarget._glRenderBuffer, renderTarget);
+
+			if (isTargetPowerOfTwo) {
+				this.context.generateMipmap(_gl.TEXTURE_2D);
+			}
+
+			// Release everything
+			this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+			this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, null);
+			this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
+		}
+
+		var framebuffer, width, height, vx, vy;
+
+		if (renderTarget) {
+			framebuffer = renderTarget.__webglFramebuffer;
+
+			width = renderTarget.width;
+			height = renderTarget.height;
+
+			vx = 0;
+			vy = 0;
+		} else {
+			framebuffer = null;
+
+			width = _viewportWidth;
+			height = _viewportHeight;
+
+			vx = _viewportX;
+			vy = _viewportY;
+		}
+
+		if (framebuffer !== _currentFramebuffer) {
+			this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
+			this.context.viewport(vx, vy, width, height);
+
+			_currentFramebuffer = framebuffer;
+		}
+
+		_currentWidth = width;
+		_currentHeight = height;
+	};
+
+	Renderer.prototype.updateRenderTargetMipmap = function(renderTarget) {
+		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.__webglTexture);
+		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
 	};
 
 	return Renderer;

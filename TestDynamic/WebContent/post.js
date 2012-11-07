@@ -6,10 +6,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
-		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent'], function(World, Entity, System,
-	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
-	BasicControlScript, EventHandler, Camera, CameraComponent) {
+		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
+		'goo/renderer/pass/RenderPass'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
+	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript, EventHandler, Camera, CameraComponent, Composer,
+	RenderPass) {
 
 	function init() {
 		// Create typical goo application
@@ -26,10 +27,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
-		// var composer = new Composer();
-
 		// Examples of model loading
 		loadModels(goo);
+
+		// var composer = new Composer(); // rendertarget input
+		// var renderPass = new RenderPass(goo.world.entityManager.getEntities());
+		// composer.addPass(renderPass);
+		// composer.render(goo.renderer, 0.1);
 	}
 
 	function loadModels(goo) {

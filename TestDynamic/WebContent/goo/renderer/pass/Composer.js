@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/renderer/pass/RenderTarget'], function(RenderTarget) {
 	"use strict";
 
 	/**
@@ -17,9 +17,9 @@ define(function() {
 			var height = window.innerHeight || 1;
 
 			var renderTargetParameters = {
-				minFilter : THREE.LinearFilter,
-				magFilter : THREE.LinearFilter,
-				format : THREE.RGBFormat,
+				minFilter : 'Trilinear',
+				magFilter : 'Bilinear',
+				format : 'RGB', // 'RGBA'
 				stencilBuffer : false
 			};
 			this.renderTarget1 = new RenderTarget(width, height, renderTargetParameters);
@@ -32,7 +32,7 @@ define(function() {
 
 		this.passes = [];
 
-		this.copyPass = new FullScreenPass(copyshader); // TODO
+		// this.copyPass = new FullScreenPass(copyshader); // TODO
 	}
 
 	Composer.prototype.swapBuffers = function() {
@@ -63,18 +63,19 @@ define(function() {
 			if (pass.needsSwap) {
 				if (maskActive) {
 					var context = this.renderer.context;
-					context.stencilFunc(context.NOTEQUAL, 1, 0xffffffff);
+					context.stencilFunc(WebGLRenderingContext.NOTEQUAL, 1, 0xffffffff);
 					this.copyPass.render(renderer, this.writeBuffer, this.readBuffer, delta);
-					context.stencilFunc(context.EQUAL, 1, 0xffffffff);
+					context.stencilFunc(WebGLRenderingContext.EQUAL, 1, 0xffffffff);
 				}
 				this.swapBuffers();
 			}
 
-			if (pass instanceof THREE.MaskPass) {
-				maskActive = true;
-			} else if (pass instanceof THREE.ClearMaskPass) {
-				maskActive = false;
-			}
+			// TODO
+			// if (pass instanceof MaskPass) {
+			// maskActive = true;
+			// } else if (pass instanceof ClearMaskPass) {
+			// maskActive = false;
+			// }
 		}
 	};
 

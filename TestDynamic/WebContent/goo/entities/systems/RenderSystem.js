@@ -26,7 +26,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 			this.renderEntity(renderer, this.renderList[i]);
 		}
 
-		renderer.flush();
+		// renderer.flush(); //TODO: needed?
 	};
 
 	RenderSystem.prototype.renderEntity = function(renderer, entity) {
@@ -38,7 +38,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 			lights : entity._world.getManager('LightManager').lights
 		};
 
-		renderer.render(renderInfo);
+		renderer.renderEntity(renderInfo);
 	};
 
 	return RenderSystem;
