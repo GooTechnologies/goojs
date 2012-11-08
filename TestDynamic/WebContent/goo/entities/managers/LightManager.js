@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/entities/EventHandler'], function(EventHandler) {
 	"use strict";
 
 	function LightManager() {
@@ -14,6 +14,7 @@ define(function() {
 
 		if (this.lights.indexOf(component.light) === -1) {
 			this.lights.push(component.light);
+			EventHandler.dispatch("setLights", this.lights);
 		}
 	};
 
@@ -25,6 +26,7 @@ define(function() {
 		var index = this.lights.indexOf(component.light);
 		if (index !== -1) {
 			this.lights.splice(index, 1);
+			EventHandler.dispatch("setLights", this.lights);
 		}
 	};
 

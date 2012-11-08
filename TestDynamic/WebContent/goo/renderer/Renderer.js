@@ -1,7 +1,7 @@
 define(
 	['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
-			'goo/math/Vector4'],
-	function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4) {
+			'goo/math/Vector4', 'goo/entities/Entity'],
+	function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity) {
 		"use strict";
 
 		/**
@@ -159,24 +159,37 @@ define(
 			}
 		};
 
-		Renderer.prototype.render = function(renderList, camera, renderTarget) {
+		Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear) {
 			if (!camera) {
 				return;
 			}
 
-			// if (renderTarget) {
-			this.setRenderTarget(renderTarget);
-			// }
+			if (clear === undefined) {
+				clear = true;
+			}
 
+			if (clear) {
+				this.clear();
+			}
+
+			this.setRenderTarget(renderTarget);
+
+			var renderInfo = {
+				camera : camera,
+				lights : lights
+			};
 			for ( var i in renderList) {
-				var entity = renderList[i];
-				var renderInfo = {
-					meshData : entity.meshDataComponent.meshData,
-					materials : entity.meshRendererComponent.materials,
-					transform : entity.transformComponent.worldTransform,
-					camera : camera,
-					lights : entity._world.getManager('LightManager').lights
-				};
+				var renderable = renderList[i];
+				if (renderable instanceof Entity) {
+					renderInfo.meshData = renderable.meshDataComponent.meshData;
+					renderInfo.materials = renderable.meshRendererComponent.materials;
+					renderInfo.transform = renderable.transformComponent.worldTransform;
+				} else {
+					renderInfo.meshData = renderable.meshData;
+					renderInfo.materials = renderable.materials;
+					renderInfo.transform = renderable.worldTransform;
+				}
+
 				this.renderMesh(renderInfo);
 			}
 		};
@@ -722,7 +735,7 @@ define(
 			var framebuffer, width, height, vx, vy;
 
 			if (renderTarget) {
-				framebuffer = renderTarget._glFramebuffer;
+				framebuffer = renderTarget._glFrameBuffer;
 
 				width = renderTarget.width;
 				height = renderTarget.height;

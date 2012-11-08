@@ -20,7 +20,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 			var renderTargetParameters = {
 				minFilter : 'Trilinear',
 				magFilter : 'Bilinear',
-				format : 'RGB', // 'RGBA'
+				format : 'RGBA', // 'RGBA'
 				stencilBuffer : false
 			};
 			this.renderTarget1 = new RenderTarget(width, height, renderTargetParameters);

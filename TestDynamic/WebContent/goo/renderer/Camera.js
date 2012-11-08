@@ -5,7 +5,7 @@ define(function() {
 		THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 
 		this.position.set(0, 0, 50);
-		this.lookAt(new THREE.Vector3(0, 0, 0));
+		this.lookAt(new THREE.Vector3(0, 0, 1));
 
 		this.frustum = new THREE.Frustum();
 		this._projScreenMatrix = new THREE.Matrix4();

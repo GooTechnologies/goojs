@@ -33,8 +33,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var composer = new Composer(); // rendertarget input
 
 		goo.world.getSystem('RenderSystem').doRender = false;
+
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
-		// renderPass.renderToScreen = true;
+		renderPass.renderToScreen = false;
 
 		var shader = {
 			vshader : [ //
@@ -62,7 +63,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'void main(void)',//
 			'{',//
 			'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
-			'	gl_FragColor = texCol;',//
+			'	gl_FragColor = texCol + vec4(0.4,0.2,0.3,1.0);',//
 			'}',//
 			].join('\n')
 		};
@@ -71,7 +72,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		outPass.renderToScreen = true;
 
 		composer.addPass(renderPass);
-		// composer.addPass(outPass);
+		composer.addPass(outPass);
 
 		goo.callbacks.push(function(tpf) {
 			composer.render(goo.renderer, tpf);

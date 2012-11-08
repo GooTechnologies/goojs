@@ -1,4 +1,5 @@
-define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera'], function(Renderer, ShapeCreator, Camera) {
+define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/renderer/TextureCreator'], function(Renderer, ShapeCreator,
+	Camera, TextureCreator) {
 	"use strict";
 
 	function FullscreenPass(material) {
@@ -17,21 +18,20 @@ define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera
 			this.material.textures[0] = readBuffer;
 		}
 
-		var renderInfo = {
+		var renderable = {
 			meshData : FullscreenPass.quad,
 			materials : [this.material],
-			camera : FullscreenPass.camera
 		};
 
 		if (this.renderToScreen) {
-			renderer.renderMesh(renderInfo);
+			renderer.render([renderable], FullscreenPass.camera, [], null, this.clear);
 		} else {
-			renderer.renderMesh(renderInfo, writeBuffer);
+			renderer.render([renderable], FullscreenPass.camera, [], writeBuffer, this.clear);
 		}
 	};
 
 	FullscreenPass.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-	FullscreenPass.quad = ShapeCreator.createPlaneData(2, 2);
+	FullscreenPass.quad = ShapeCreator.createPlaneData(0.5, 0.5);
 
 	return FullscreenPass;
 });

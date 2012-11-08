@@ -19,12 +19,11 @@ define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], functio
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 		}
 
-		renderer.clear();
-
+		// TODO: how to get lights?
 		if (this.renderToScreen) {
-			renderer.render(this.renderList, Renderer.mainCamera);
+			renderer.render(this.renderList, Renderer.mainCamera, []);
 		} else {
-			renderer.render(this.renderList, Renderer.mainCamera, readBuffer);
+			renderer.render(this.renderList, Renderer.mainCamera, [], readBuffer, this.clear);
 		}
 
 		if (this.clearColor) {

@@ -8,10 +8,16 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		this.renderList = renderList;
 		this.doRender = true;
 
+		this.camera = null;
+		this.lights = [];
+
 		var that = this;
 		EventHandler.addListener({
 			setCurrentCamera : function(camera) {
 				that.camera = camera;
+			},
+			setLights : function(lights) {
+				that.lights = lights;
 			}
 		});
 	}
@@ -25,27 +31,9 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 			return;
 		}
 
-		renderer.clear();
-
 		if (this.camera) {
-			for ( var i in this.renderList) {
-				this.renderEntity(renderer, this.renderList[i]);
-			}
+			renderer.render(this.renderList, this.camera, this.lights);
 		}
-
-		// renderer.flush(); //TODO: needed?
-	};
-
-	RenderSystem.prototype.renderEntity = function(renderer, entity) {
-		var renderInfo = {
-			meshData : entity.meshDataComponent.meshData,
-			materials : entity.meshRendererComponent.materials,
-			transform : entity.transformComponent.worldTransform,
-			camera : this.camera,
-			lights : entity._world.getManager('LightManager').lights
-		};
-
-		renderer.renderMesh(renderInfo);
 	};
 
 	return RenderSystem;
