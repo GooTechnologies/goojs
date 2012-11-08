@@ -1,4 +1,5 @@
-define(['goo/renderer/pass/RenderTarget'], function(RenderTarget) {
+define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material'], function(RenderTarget, FullscreenPass,
+	Material) {
 	"use strict";
 
 	/**
@@ -32,7 +33,7 @@ define(['goo/renderer/pass/RenderTarget'], function(RenderTarget) {
 
 		this.passes = [];
 
-		// this.copyPass = new FullScreenPass(copyshader); // TODO
+		this.copyPass = new FullscreenPass(Material.createDefaultMaterial(Material.shaders.simple)); // TODO
 	}
 
 	Composer.prototype.swapBuffers = function() {

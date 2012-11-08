@@ -2,6 +2,7 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="TestDynamic">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/goo"/>
         <property name="context-root" value="TestDynamic"/>
         <property name="java-output-path" value="/TestDynamic/build/classes"/>
     </wb-module>

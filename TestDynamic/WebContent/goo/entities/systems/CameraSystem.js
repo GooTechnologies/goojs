@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(System, EventHandler) {
+define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'], function(System, EventHandler, Renderer) {
 	"use strict";
 
 	function CameraSystem() {
@@ -18,6 +18,7 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(Sy
 			}
 		}
 		EventHandler.dispatch("setCurrentCamera", mainCamera);
+		Renderer.mainCamera = mainCamera;
 	};
 
 	CameraSystem.prototype.inserted = function(entity) {

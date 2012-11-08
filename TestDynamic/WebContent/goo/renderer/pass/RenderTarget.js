@@ -11,7 +11,7 @@ define(function() {
 	 * @param {Parameters} parameters Settings
 	 */
 	function RenderTarget(width, height, options) {
-		this._glTexture = null;
+		this.glTexture = null;
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
 
@@ -33,11 +33,12 @@ define(function() {
 
 		this.format = options.format !== undefined ? options.format : 'RGBA';
 		this.type = options.type !== undefined ? options.type : 'UnsignedByte';
+		this.variant = '2D'; // CUBE
 
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
 
-		this.generateMipmaps = true;
+		this.generateMipmaps = false; // TODO: fix mipmap case
 	}
 
 	RenderTarget.prototype.clone = function() {
@@ -56,6 +57,7 @@ define(function() {
 
 		tmp.format = this.format;
 		tmp.type = this.type;
+		tmp.variant = this.variant;
 
 		tmp.depthBuffer = this.depthBuffer;
 		tmp.stencilBuffer = this.stencilBuffer;

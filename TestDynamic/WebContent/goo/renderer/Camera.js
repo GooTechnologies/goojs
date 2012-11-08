@@ -28,7 +28,7 @@ define(function() {
 	Camera.prototype.updateFrustum = function() {
 		this._projScreenMatrix.multiply(this.projectionMatrix, this.matrixWorldInverse);
 		this.frustum.setFromMatrix(this._projScreenMatrix);
-	}
+	};
 
 	return Camera;
 });

@@ -3,9 +3,10 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 	"use strict";
 
 	function RenderSystem(renderList) {
-		System.call(this, 'RenderSystem', null, true);
+		System.call(this, 'RenderSystem', null);
 
 		this.renderList = renderList;
+		this.doRender = true;
 
 		var that = this;
 		EventHandler.addListener({
@@ -20,10 +21,16 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 	RenderSystem.prototype.render = function(renderer) {
 		renderer.checkResize(this.camera);
 
+		if (!this.doRender) {
+			return;
+		}
+
 		renderer.clear();
 
-		for ( var i in this.renderList) {
-			this.renderEntity(renderer, this.renderList[i]);
+		if (this.camera) {
+			for ( var i in this.renderList) {
+				this.renderEntity(renderer, this.renderList[i]);
+			}
 		}
 
 		// renderer.flush(); //TODO: needed?
@@ -38,7 +45,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 			lights : entity._world.getManager('LightManager').lights
 		};
 
-		renderer.renderEntity(renderInfo);
+		renderer.renderMesh(renderInfo);
 	};
 
 	return RenderSystem;

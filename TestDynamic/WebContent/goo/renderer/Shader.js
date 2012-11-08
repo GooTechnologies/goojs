@@ -36,6 +36,8 @@ define(
 		var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+);(?:\s*\/\/\s*!\s*(\w+))*/g;
 
 		function setupDefaultCallbacks(defaultCallbacks) {
+			var IDENTITY_MATRIX = new THREE.Matrix4();
+
 			defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['PROJECTION_MATRIX'];
@@ -52,7 +54,7 @@ define(
 			};
 			defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var uniform = uniformMapping['WORLD_MATRIX'];
-				var matrix = shaderInfo.transform.matrix;
+				var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 				uniform.uniformMatrix4fv(false, matrix);
 			};
 

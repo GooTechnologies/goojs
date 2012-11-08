@@ -9,20 +9,16 @@ define(function() {
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
 	 *        <li> interests = [] -> listen to entities with no components
-	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum
-	 *        'coolComponent' and 'testComponent'
+	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
 	 *        </ul>
 	 * @param {String} type System type name as a string
 	 * @param {String[]} interests Array of component types this system is interested in
-	 * @param {Boolean} isPassive If the system is active or not
 	 * @property {String} type System type
 	 * @property {String[]} interests Array of component types this system is interested in
-	 * @property {Boolean} isPassive If the system is active or not
 	 */
-	function System(type, interests, isPassive) {
+	function System(type, interests) {
 		this.type = type;
 		this.interests = interests;
-		this.isPassive = isPassive || false;
 
 		this._activeEntities = [];
 	}

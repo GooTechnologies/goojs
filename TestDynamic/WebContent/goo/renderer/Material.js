@@ -38,6 +38,12 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 					type : 'f',
 					value : 1.0
 				},
+				time : {
+					type : 'vec2',
+					value : function() {
+						return [1.0, Date.now()];
+					}
+				},
 				viewMatrix : function(uniformMapping, shaderInfo) {
 
 				}

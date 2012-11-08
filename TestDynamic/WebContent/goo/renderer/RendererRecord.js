@@ -12,6 +12,7 @@ define(function() {
 				valid : false
 			}
 		};
+		this.currentFrameBuffer = null;
 		this.clippingTestValid = false;
 		this.clippingTestEnabled = false;
 		this.clips = [];

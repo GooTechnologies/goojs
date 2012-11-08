@@ -22,6 +22,8 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		this.indexLengths = null;
 		this.indexModes = ['Triangles'];
 
+		this.wireframe = false;
+
 		this.rebuildData(vertexCount, indexCount);
 	}
 
