@@ -1,9 +1,9 @@
-define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/renderer/TextureCreator'], function(Renderer, ShapeCreator,
-	Camera, TextureCreator) {
+define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material'], function(
+	Renderer, ShapeCreator, Camera, TextureCreator, Material) {
 	"use strict";
 
-	function FullscreenPass(material) {
-		this.material = material;
+	function FullscreenPass(shader) {
+		this.material = Material.createDefaultMaterial(shader);
 		this.useReadBuffer = true;
 
 		this.renderToScreen = false;

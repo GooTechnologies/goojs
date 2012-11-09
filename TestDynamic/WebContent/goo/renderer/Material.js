@@ -28,10 +28,19 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			cullFace : 'Back', // Front, FrontAndBack
 			frontFace : 'CCW' // CW
 		};
+		this.blendState = {
+			blending : 'NoBlending'
+		};
 	}
 
 	Material.shaders = {
 		copy : {
+			bindings : {
+				opacity : {
+					type : 'float',
+					value : 1.0
+				}
+			},
 			vshader : [ //
 			'attribute vec3 vertexPosition; //!POSITION', //
 			'attribute vec2 vertexUV0; //!TEXCOORD0', //
@@ -43,7 +52,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'varying vec2 texCoord0;',//
 
 			'void main(void) {', //
-			'texCoord0 = vertexUV0;',//
+			'	texCoord0 = vertexUV0;',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 			'}'//
 			].join('\n'),
@@ -52,11 +61,13 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			'uniform sampler2D diffuseMap; //!TEXTURE0',//
 
+			'uniform float opacity;',//
+
 			'varying vec2 texCoord0;',//
 
 			'void main(void)',//
 			'{',//
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
+			'	gl_FragColor = vec4(texture2D(diffuseMap, texCoord0).rgb, opacity);',//
 			'}',//
 			].join('\n')
 		},

@@ -169,6 +169,9 @@ define(
 			if (this.bindings) {
 				for ( var name in this.bindings) {
 					var mapping = this.uniformCallMapping[name];
+					if (!mapping) {
+						continue;
+					}
 					var def = this.bindings[name];
 					if (def.type && def.value) {
 						var value = typeof (def.value) === 'function' ? def.value() : def.value;
@@ -177,6 +180,7 @@ define(
 								mapping.uniform1f(value);
 								break;
 							case 'int':
+							case 'integer':
 								mapping.uniform1i(value);
 								break;
 							case 'vec2':
@@ -272,7 +276,7 @@ define(
 			// Link the Shader Program
 			context.linkProgram(this.shaderProgram);
 			if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
-				console.error("Could not initialise shaders: " + context.getProgramInfoLog(shaderProgram));
+				console.error("Could not initialise shaders: " + context.getProgramInfoLog(this.shaderProgram));
 			}
 
 			for ( var key in this.attributeMapping) {

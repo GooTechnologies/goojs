@@ -26,6 +26,7 @@ define(function() {
 		this.boundAttributes = [];
 
 		this.cullRecord = {};
+		this.blendRecord = {};
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function(target) {

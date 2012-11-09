@@ -27,7 +27,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 
 		this.passes = [];
 
-		this.copyPass = new FullscreenPass(Material.createDefaultMaterial(Material.shaders.simple)); // TODO
+		this.copyPass = new FullscreenPass(Material.shaders.copy);
 	}
 
 	Composer.prototype.swapBuffers = function() {

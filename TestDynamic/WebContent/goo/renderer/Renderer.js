@@ -207,6 +207,7 @@ define(
 				material.shader.apply(renderInfo, this);
 
 				this.updateCulling(material);
+				this.updateBlending(material);
 				this.updateTextures(material);
 
 				if (meshData.getIndexBuffer() !== null) {
@@ -614,6 +615,63 @@ define(
 			return glMode;
 		};
 
+		Renderer.prototype.updateBlending = function(material) {
+			var blendRecord = this.rendererRecord.blendRecord;
+			var context = this.context;
+
+			var blending = material.blendState.blending;
+			if (blending !== blendRecord.blending) {
+				if (blending === 'NoBlending') {
+					context.disable(WebGLRenderingContext.BLEND);
+				} else if (blending === 'AdditiveBlending') {
+					context.enable(WebGLRenderingContext.BLEND);
+					context.blendEquation(WebGLRenderingContext.FUNC_ADD);
+					context.blendFunc(WebGLRenderingContext.SRC_ALPHA, _gl.ONE);
+				} else if (blending === 'SubtractiveBlending') {
+					// TODO: Find blendFuncSeparate() combination
+					context.enable(WebGLRenderingContext.BLEND);
+					context.blendEquation(WebGLRenderingContext.FUNC_ADD);
+					context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE_MINUS_SRC_COLOR);
+				} else if (blending === 'MultiplyBlending') {
+					// TODO: Find blendFuncSeparate() combination
+					context.enable(WebGLRenderingContext.BLEND);
+					context.blendEquation(WebGLRenderingContext.FUNC_ADD);
+					context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.SRC_COLOR);
+				} else if (blending === 'CustomBlending') {
+					context.enable(WebGLRenderingContext.BLEND);
+				} else {
+					context.enable(WebGLRenderingContext.BLEND);
+					context.blendEquationSeparate(WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD);
+					context.blendFuncSeparate(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA, WebGLRenderingContext.ONE,
+						WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
+				}
+
+				blendRecord.blending = blending;
+			}
+
+			if (blending === 'CustomBlending') {
+				var blendEquation = material.blendState.blendEquation;
+				var blendSrc = material.blendState.blendSrc;
+				var blendDst = material.blendState.blendDst;
+
+				if (blendEquation !== blendRecord.blendEquation) {
+					context.blendEquation(this.getGLBlendParam(blendEquation));
+					blendRecord.blendEquation = blendEquation;
+				}
+
+				if (blendSrc !== blendRecord.blendSrc || blendDst !== blendRecord.blendDst) {
+					context.blendFunc(this.getGLBlendParam(blendSrc), this.getGLBlendParam(blendDst));
+
+					blendRecord.blendSrc = blendSrc;
+					blendRecord.blendDst = blendDst;
+				}
+			} else {
+				blendRecord.blendEquation = null;
+				blendRecord.blendSrc = null;
+				blendRecord.blendDst = null;
+			}
+		};
+
 		Renderer.prototype.setBoundBuffer = function(buffer, target) {
 			if (!this.rendererRecord.currentBuffer[target].valid || this.rendererRecord.currentBuffer[target].buffer !== buffer) {
 				this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
@@ -654,6 +712,58 @@ define(
 					return WebGLRenderingContext.INT;
 				case 'UnsignedInt':
 					return WebGLRenderingContext.UNSIGNED_INT;
+			}
+		};
+
+		Renderer.prototype.getGLBlendParam = function(param) {
+			switch (param) {
+				case 'AddEquation':
+					return WebGLRenderingContext.FUNC_ADD;
+					break;
+				case 'SubtractEquation':
+					return WebGLRenderingContext.FUNC_SUBTRACT;
+					break;
+				case 'ReverseSubtractEquation':
+					return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+					break;
+
+				case 'ZeroFactor':
+					return WebGLRenderingContext.ZERO;
+					break;
+				case 'OneFactor':
+					return WebGLRenderingContext.ONE;
+					break;
+				case 'SrcColorFactor':
+					return WebGLRenderingContext.SRC_COLOR;
+					break;
+				case 'OneMinusSrcColorFactor':
+					return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+					break;
+				case 'SrcAlphaFactor':
+					return WebGLRenderingContext.SRC_ALPHA;
+					break;
+				case 'OneMinusSrcAlphaFactor':
+					return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+					break;
+				case 'DstAlphaFactor':
+					return WebGLRenderingContext.DST_ALPHA;
+					break;
+				case 'OneMinusDstAlphaFactor':
+					return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+					break;
+
+				case 'DstColorFactor':
+					return WebGLRenderingContext.DST_COLOR;
+					break;
+				case 'OneMinusDstColorFactor':
+					return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+					break;
+				case 'SrcAlphaSaturateFactor':
+					return WebGLRenderingContext.SRC_ALPHA_SATURATE;
+					break;
+
+				default:
+					throw 'Unknown blend param: ' + param;
 			}
 		};
 
