@@ -11,8 +11,9 @@ define(
 		 * @param {String} name Shader name (mostly for debug/tool use)
 		 * @param {String} vertexSource Vertex shader source
 		 * @param {String} fragmentSource Fragment shader source
+		 * @param {Bindings} [bindings] Optional uniform bindings/callbacks
 		 */
-		function Shader(name, vertexSource, fragmentSource) {
+		function Shader(name, vertexSource, fragmentSource, bindings) {
 			this.name = name;
 			this.vertexSource = vertexSource;
 			this.fragmentSource = fragmentSource;
@@ -31,7 +32,13 @@ define(
 			this.defaultCallbacks = {};
 			setupDefaultCallbacks(this.defaultCallbacks);
 			this.currentCallbacks = {};
+
+			this.bindings = bindings;
+
+			this._id = Shader.id++;
 		}
+
+		Shader.id = 0;
 
 		var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+);(?:\s*\/\/\s*!\s*(\w+))*/g;
 
@@ -159,6 +166,46 @@ define(
 				}
 			}
 
+			if (this.bindings) {
+				for ( var name in this.bindings) {
+					var mapping = this.uniformCallMapping[name];
+					var def = this.bindings[name];
+					if (def.type && def.value) {
+						var value = typeof (def.value) === 'function' ? def.value() : def.value;
+						switch (def.type) {
+							case 'float':
+								mapping.uniform1f(value);
+								break;
+							case 'int':
+								mapping.uniform1i(value);
+								break;
+							case 'vec2':
+								mapping.uniform2fv(value);
+								break;
+							case 'vec3':
+								mapping.uniform3fv(value);
+								break;
+							case 'vec4':
+								mapping.uniform4fv(value);
+								break;
+							case 'mat2':
+								mapping.uniformMatrix2fv(value);
+								break;
+							case 'mat3':
+								mapping.uniformMatrix3fv(value);
+								break;
+							case 'mat4':
+								mapping.uniformMatrix4fv(value);
+								break;
+							default:
+								throw 'Uniform type not handled: ' + def.type;
+						}
+					} else if (typeof (def) === 'function') {
+						def(this.uniformCallMapping, shaderInfo);
+					}
+				}
+			}
+
 			for ( var i in this.currentCallbacks) {
 				this.currentCallbacks[i](this.uniformCallMapping, shaderInfo);
 			}
@@ -241,12 +288,14 @@ define(
 			for ( var key in this.uniformMapping) {
 				var uniform = context.getUniformLocation(this.shaderProgram, this.uniformMapping[key]);
 
-				if (uniform !== null && this.defaultCallbacks[key] !== undefined) {
-					this.currentCallbacks[key] = this.defaultCallbacks[key];
-				} else {
+				if (uniform === null) {
 					console.warn('Uniform [' + this.uniformMapping[key] + '] variable not found in shader. Probably unused and optimized away. '
 						+ key);
 					continue;
+				}
+
+				if (this.defaultCallbacks[key] !== undefined) {
+					this.currentCallbacks[key] = this.defaultCallbacks[key];
 				}
 
 				this.uniformLocationMapping[key] = uniform;
@@ -254,7 +303,16 @@ define(
 				this.uniformCallMapping[key] = new ShaderCall(context, uniform);
 			}
 
-			console.log("Shader [" + this.name + "] compiled");
+			if (this.bindings) {
+				for ( var name in this.bindings) {
+					var mapping = this.uniformCallMapping[name];
+					if (!mapping) {
+						console.warn('No uniform found for binding: ' + name);
+					}
+				}
+			}
+
+			console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 		};
 
 		Shader.prototype._getShader = function(context, type, source) {

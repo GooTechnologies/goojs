@@ -31,7 +31,7 @@ define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera
 	};
 
 	FullscreenPass.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-	FullscreenPass.quad = ShapeCreator.createPlaneData(0.5, 0.5);
+	FullscreenPass.quad = ShapeCreator.createPlaneData(2, 2);
 
 	return FullscreenPass;
 });

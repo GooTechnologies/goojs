@@ -17,13 +17,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 			var width = window.innerWidth || 1;
 			var height = window.innerHeight || 1;
 
-			var renderTargetParameters = {
-				minFilter : 'Trilinear',
-				magFilter : 'Bilinear',
-				format : 'RGBA', // 'RGBA'
-				stencilBuffer : false
-			};
-			this.renderTarget1 = new RenderTarget(width, height, renderTargetParameters);
+			this.renderTarget1 = new RenderTarget(width, height);
 		}
 
 		this.renderTarget2 = this.renderTarget1.clone();

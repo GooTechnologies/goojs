@@ -31,23 +31,36 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 	}
 
 	Material.shaders = {
-		simple : {
-			// TODO: this is just a test on how binding could look when done outside of the shader+bindings
-			bindings : {
-				stuff : {
-					type : 'f',
-					value : 1.0
-				},
-				time : {
-					type : 'vec2',
-					value : function() {
-						return [1.0, Date.now()];
-					}
-				},
-				viewMatrix : function(uniformMapping, shaderInfo) {
+		copy : {
+			vshader : [ //
+			'attribute vec3 vertexPosition; //!POSITION', //
+			'attribute vec2 vertexUV0; //!TEXCOORD0', //
 
-				}
-			},
+			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
+			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
+			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+
+			'varying vec2 texCoord0;',//
+
+			'void main(void) {', //
+			'texCoord0 = vertexUV0;',//
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			'uniform sampler2D diffuseMap; //!TEXTURE0',//
+
+			'varying vec2 texCoord0;',//
+
+			'void main(void)',//
+			'{',//
+			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
+			'}',//
+			].join('\n')
+		},
+		simple : {
 			vshader : [ //
 			'attribute vec3 vertexPosition; //!POSITION', //
 
@@ -264,12 +277,14 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		}
 	};
 
-	Material.createDefaultMaterial = function(shader) {
+	Material.createShader = function(shaderDefinition, name) {
+		return new Shader(name || 'DefaultShader', shaderDefinition.vshader, shaderDefinition.fshader, shaderDefinition.bindings);
+	};
+
+	Material.createDefaultMaterial = function(shaderDefinition) {
 		var material = new Material('DefaultMaterial');
 
-		var vs = shader.vshader;
-		var fs = shader.fshader;
-		material.shader = new Shader('DefaultShader', vs, fs);
+		material.shader = Material.createShader(shaderDefinition);
 
 		return material;
 	};

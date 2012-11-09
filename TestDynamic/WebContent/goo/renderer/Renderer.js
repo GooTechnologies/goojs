@@ -168,11 +168,11 @@ define(
 				clear = true;
 			}
 
+			this.setRenderTarget(renderTarget);
+
 			if (clear) {
 				this.clear();
 			}
-
-			this.setRenderTarget(renderTarget);
 
 			var renderInfo = {
 				camera : camera,
@@ -331,7 +331,7 @@ define(
 			}
 		};
 
-		Renderer.prototype.updateTextureParameters = function(texture) {
+		Renderer.prototype.updateTextureParameters = function(texture, isImagePowerOfTwo) {
 			var context = this.context;
 
 			var texrecord = texture.textureRecord;
@@ -340,27 +340,28 @@ define(
 				texture.textureRecord = texrecord;
 			}
 
-			// TODO: bind?
 			if (texrecord.magFilter !== texture.magFilter) {
 				context.texParameteri(this.getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MAG_FILTER, this
 					.getGLMagFilter(texture.magFilter));
 				texrecord.magFilter = texture.magFilter;
 			}
-			if (texrecord.minFilter !== texture.minFilter) {
-				context.texParameteri(this.getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER, this
-					.getGLMinFilter(texture.minFilter));
-				texrecord.minFilter = texture.minFilter;
+			var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
+			if (texrecord.minFilter !== minFilter) {
+				context.texParameteri(this.getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
+				texrecord.minFilter = minFilter;
 			}
 
 			if (texture.variant === '2D') {
-				var wrapS = this.getGLWrap(texture.wrapS, context);
-				var wrapT = this.getGLWrap(texture.wrapT, context);
+				var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 				if (texrecord.wrapS !== wrapS) {
-					context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, wrapS);
+					var glwrapS = this.getGLWrap(wrapS, context);
+					context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 					texrecord.wrapS = wrapS;
 				}
+				var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 				if (texrecord.wrapT !== wrapT) {
-					context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, wrapT);
+					var glwrapT = this.getGLWrap(wrapT, context);
+					context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 					texrecord.wrapT = wrapT;
 				}
 			} else if (texture.variant === 'CUBE') {
@@ -492,8 +493,23 @@ define(
 			}
 		};
 
-		Renderer.prototype.getGLMagFilter = function(magFilter, context) {
-			switch (magFilter) {
+		Renderer.prototype.getFilterFallback = function(filter) {
+			switch (filter) {
+				case 'NearestNeighborNoMipMaps':
+				case 'NearestNeighborNearestMipMap':
+				case 'NearestNeighborLinearMipMap':
+					return 'NearestNeighborNoMipMaps';
+				case 'BilinearNoMipMaps':
+				case 'Trilinear':
+				case 'BilinearNearestMipMap':
+					return 'BilinearNoMipMaps';
+				default:
+					return 'NearestNeighborNoMipMaps';
+			}
+		};
+
+		Renderer.prototype.getGLMagFilter = function(filter) {
+			switch (filter) {
 				case 'Bilinear':
 					return WebGLRenderingContext.LINEAR;
 				case 'NearestNeighbor':
@@ -714,7 +730,7 @@ define(
 				this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 				// TODO
 				// setTextureParameters(WebGLRenderingContext.TEXTURE_2D, renderTarget, isTargetPowerOfTwo);
-				this.updateTextureParameters(renderTarget);
+				this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
 
 				this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType,
 					null);
@@ -752,11 +768,11 @@ define(
 				vy = this.viewportY;
 			}
 
-			if (framebuffer !== this.rendererRecord.currentFramebuffer) {
+			if (framebuffer !== this.rendererRecord.currentFrameBuffer) {
 				this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
 				this.context.viewport(vx, vy, width, height);
 
-				this.rendererRecord.currentFramebuffer = framebuffer;
+				this.rendererRecord.currentFrameBuffer = framebuffer;
 			}
 
 			this.currentWidth = width;

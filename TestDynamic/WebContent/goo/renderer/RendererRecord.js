@@ -29,8 +29,8 @@ define(function() {
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function(target) {
-		this.currentBuffer.buffer = null;
-		this.currentBuffer.valid = false;
+		this.currentBuffer[target].buffer = null;
+		this.currentBuffer[target].valid = false;
 	};
 
 	return RendererRecord;
