@@ -342,6 +342,12 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 			"sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];", "imageCoord += uImageIncrement;",
 
+			// "vec4 tex = texture2D( tDiffuse, imageCoord );",
+
+			// "tex = tex * tex * vec4(2.0);",
+
+			// "sum += tex * cKernel[ i ];", "imageCoord += uImageIncrement;",
+
 			"}",
 
 			"gl_FragColor = sum;",

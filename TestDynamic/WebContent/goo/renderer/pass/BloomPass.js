@@ -4,7 +4,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 	"use strict";
 
 	function BloomPass(strength, kernelSize, sigma, sizeX, sizeY) {
-		strength = (strength !== undefined) ? strength : 0.5;
+		strength = (strength !== undefined) ? strength : 1.0;
 		kernelSize = (kernelSize !== undefined) ? kernelSize : 25;
 		sigma = (sigma !== undefined) ? sigma : 4.0;
 		sizeX = (sizeX !== undefined) ? sizeX : 256;
@@ -55,6 +55,9 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], readBuffer, this.clear);
 	};
+
+	BloomPass.blurX = [0.001953125, 0.0];
+	BloomPass.blurY = [0.0, 0.001953125];
 
 	return BloomPass;
 });

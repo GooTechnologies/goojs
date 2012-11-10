@@ -4,7 +4,7 @@ define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], functio
 	function RenderPass(renderList) {
 		this.renderList = renderList;
 
-		this.clearColor = new Vector4(0.6, 0.6, 0.6, 0.0);
+		this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
 		this.oldClearColor = new Vector4();
 		this.renderToScreen = false;
 

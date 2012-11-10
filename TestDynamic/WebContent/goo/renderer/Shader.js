@@ -41,7 +41,7 @@ define(
 
 		Shader.id = 0;
 
-		var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+);(?:\s*\/\/\s*!\s*(\w+))*/g;
+		var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;(?:\s*\/\/\s*!\s*(\w+))*/g;
 
 		function setupDefaultCallbacks(defaultCallbacks) {
 			var IDENTITY_MATRIX = new THREE.Matrix4();
@@ -240,7 +240,8 @@ define(
 				var type = matcher[1];
 				var format = matcher[2];
 				var variableName = matcher[3];
-				var bindingName = matcher[4];
+				var arrayName = matcher[4];
+				var bindingName = matcher[5];
 
 				if (bindingName === undefined) {
 					bindingName = variableName;
