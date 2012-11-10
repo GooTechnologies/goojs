@@ -1,37 +1,34 @@
-define(['goo/renderer/Renderer', 'goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material'], function(
-	Renderer, ShapeCreator, Camera, TextureCreator, Material) {
-	"use strict";
+define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil'],
+	function(Renderer, Camera, TextureCreator, Material, FullscreenUtil) {
+		"use strict";
 
-	function FullscreenPass(shader) {
-		this.material = Material.createDefaultMaterial(shader);
-		this.useReadBuffer = true;
+		function FullscreenPass(shader) {
+			this.material = Material.createMaterial(shader);
+			this.useReadBuffer = true;
 
-		this.renderToScreen = false;
+			this.renderToScreen = false;
 
-		this.enabled = true;
-		this.clear = false;
-		this.needsSwap = true;
-	}
+			this.renderable = {
+				meshData : FullscreenUtil.quad,
+				materials : [this.material],
+			};
 
-	FullscreenPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
-		if (this.useReadBuffer) {
-			this.material.textures[0] = readBuffer;
+			this.enabled = true;
+			this.clear = false;
+			this.needsSwap = true;
 		}
 
-		var renderable = {
-			meshData : FullscreenPass.quad,
-			materials : [this.material],
+		FullscreenPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+			if (this.useReadBuffer) {
+				this.material.textures[0] = readBuffer;
+			}
+
+			if (this.renderToScreen) {
+				renderer.render(this.renderable, FullscreenUtil.camera, [], null, this.clear);
+			} else {
+				renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
+			}
 		};
 
-		if (this.renderToScreen) {
-			renderer.render([renderable], FullscreenPass.camera, [], null, this.clear);
-		} else {
-			renderer.render([renderable], FullscreenPass.camera, [], writeBuffer, this.clear);
-		}
-	};
-
-	FullscreenPass.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-	FullscreenPass.quad = ShapeCreator.createPlaneData(2, 2);
-
-	return FullscreenPass;
-});
+		return FullscreenPass;
+	});

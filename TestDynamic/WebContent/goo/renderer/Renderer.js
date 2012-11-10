@@ -178,19 +178,28 @@ define(
 				camera : camera,
 				lights : lights
 			};
-			for ( var i in renderList) {
-				var renderable = renderList[i];
-				if (renderable instanceof Entity) {
-					renderInfo.meshData = renderable.meshDataComponent.meshData;
-					renderInfo.materials = renderable.meshRendererComponent.materials;
-					renderInfo.transform = renderable.transformComponent.worldTransform;
-				} else {
-					renderInfo.meshData = renderable.meshData;
-					renderInfo.materials = renderable.materials;
-					renderInfo.transform = renderable.worldTransform;
-				}
 
+			if (Array.isArray(renderList)) {
+				for ( var i in renderList) {
+					var renderable = renderList[i];
+					this.fillRenderInfo(renderable, renderInfo);
+					this.renderMesh(renderInfo);
+				}
+			} else {
+				this.fillRenderInfo(renderList, renderInfo);
 				this.renderMesh(renderInfo);
+			}
+		};
+
+		Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
+			if (renderable instanceof Entity) {
+				renderInfo.meshData = renderable.meshDataComponent.meshData;
+				renderInfo.materials = renderable.meshRendererComponent.materials;
+				renderInfo.transform = renderable.transformComponent.worldTransform;
+			} else {
+				renderInfo.meshData = renderable.meshData;
+				renderInfo.materials = renderable.materials;
+				renderInfo.transform = renderable.worldTransform;
 			}
 		};
 
@@ -626,7 +635,7 @@ define(
 				} else if (blending === 'AdditiveBlending') {
 					context.enable(WebGLRenderingContext.BLEND);
 					context.blendEquation(WebGLRenderingContext.FUNC_ADD);
-					context.blendFunc(WebGLRenderingContext.SRC_ALPHA, _gl.ONE);
+					context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE);
 				} else if (blending === 'SubtractiveBlending') {
 					// TODO: Find blendFuncSeparate() combination
 					context.enable(WebGLRenderingContext.BLEND);

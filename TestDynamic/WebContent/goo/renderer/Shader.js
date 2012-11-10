@@ -13,7 +13,7 @@ define(
 		 * @param {String} fragmentSource Fragment shader source
 		 * @param {Bindings} [bindings] Optional uniform bindings/callbacks
 		 */
-		function Shader(name, vertexSource, fragmentSource, bindings) {
+		function Shader(name, vertexSource, fragmentSource, bindings, defines) {
 			this.name = name;
 			this.vertexSource = vertexSource;
 			this.fragmentSource = fragmentSource;
@@ -34,6 +34,7 @@ define(
 			this.currentCallbacks = {};
 
 			this.bindings = bindings;
+			this.defines = defines;
 
 			this._id = Shader.id++;
 		}
@@ -146,6 +147,7 @@ define(
 
 			if (this.shaderProgram === null) {
 				this._investigateShaders();
+				this.addDefines(this.defines);
 				this.compile(renderer);
 			}
 
@@ -182,6 +184,9 @@ define(
 							case 'int':
 							case 'integer':
 								mapping.uniform1i(value);
+								break;
+							case 'array':
+								mapping.uniform1fv(value);
 								break;
 							case 'vec2':
 								mapping.uniform2fv(value);
@@ -332,6 +337,32 @@ define(
 			}
 
 			return shader;
+		};
+
+		Shader.prototype.addDefines = function(defines) {
+			if (!defines) {
+				return;
+			}
+
+			var defineStr = this.generateDefines(defines);
+
+			this.vertexSource = defineStr + '\n' + this.vertexSource;
+			this.fragmentSource = defineStr + '\n' + this.fragmentSource;
+		};
+
+		Shader.prototype.generateDefines = function(defines) {
+			var chunks = [];
+			for ( var d in defines) {
+				var value = defines[d];
+				if (value === false) {
+					continue;
+				}
+
+				var chunk = "#define " + d + " " + value;
+				chunks.push(chunk);
+			}
+
+			return chunks.join("\n");
 		};
 
 		Shader.prototype.toString = function() {
