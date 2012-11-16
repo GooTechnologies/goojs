@@ -31,6 +31,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 		this.blendState = {
 			blending : 'NoBlending'
 		};
+
+		this.wireframe = false;
 	}
 
 	Material.shaders = {

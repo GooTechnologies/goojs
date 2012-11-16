@@ -33,10 +33,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.world.getSystem('RenderSystem').doRender = false;
 
 		// Create composer with same size as screen
-		var sizeX = window.innerWidth / 1;
-		var sizeY = window.innerHeight / 1;
-		var renderTarget = new RenderTarget(sizeX, sizeY);
-		var composer = new Composer(renderTarget);
+		var composer = new Composer(); // or new RenderTarget(sizeX, sizeY, options);
 
 		// Scene render
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
