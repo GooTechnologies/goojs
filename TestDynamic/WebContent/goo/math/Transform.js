@@ -50,5 +50,37 @@ define(function() {
 		this.scale.copy(transform.scale);
 	};
 
+	Transform.prototype.invert = function(store) {
+		var result = store;
+		if (!result) {
+			result = new Transform();
+		}
+
+		// if (_identity) {
+		// result.setIdentity();
+		// return result;
+		// }
+
+		var newMatrix = result._matrix.set(_matrix);
+		if (_rotationMatrix) {
+			if (_uniformScale) {
+				var sx = _scale.getX();
+				newMatrix.transposeLocal();
+				if (sx !== 1.0) {
+					newMatrix.multiplyLocal(1.0 / sx);
+				}
+			} else {
+				newMatrix.multiplyDiagonalPost(_scale, newMatrix).invertLocal();
+			}
+		} else {
+			newMatrix.invertLocal();
+		}
+
+		result._matrix.applyPost(_translation, result._translation).negateLocal();
+		result.updateFlags(_rotationMatrix);
+
+		return result;
+	};
+
 	return Transform;
 });

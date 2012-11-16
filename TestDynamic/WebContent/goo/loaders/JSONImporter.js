@@ -1,7 +1,7 @@
-define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils',
-		'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent',
-		'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader'], function(TransformComponent,
-	MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader) {
+define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
+		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
+		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose'], function(TransformComponent, MeshData, JsonUtils,
+	MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose) {
 	"use strict";
 
 	/**
@@ -15,8 +15,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		this.world = world;
 
 		this.materials = {};
-		// this.skeletonMap = Maps.newHashMap();
-		// this.poseMap = Maps.newHashMap();
+		this.skeletonMap = {};
+		this.poseMap = {};
+
 		this.slotUnitMap = {
 			diffuse : 0,
 			normal : 1,
@@ -40,8 +41,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 *            <li>onSuccess(entities)
 	 *            <li>onError(error)
 	 *            </ul>
-	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback
-	 *            definition function(attributes, info)
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
+	 *            info)
 	 * @returns Entities created during load
 	 */
 	JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
@@ -66,8 +67,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 * 
 	 * @param {String} modelSource JSON model source as a string
 	 * @param textureDir Texture path
-	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback
-	 *            definition function(attributes, info)
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
+	 *            info)
 	 * @returns Entities created during load
 	 */
 	JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
@@ -90,15 +91,14 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		this._parseMaterials(root.Materials);
 
 		// pull in skeletons if we have any
-		// if (root.Skeletons")) {
-		// parseSkeletons(root.get("Skeletons").isArray(), resource);
-		// }
+		if (root.Skeletons) {
+			this.parseSkeletons(root.Skeletons);
+		}
 
 		// pull in skeleton poses if we have any
-		// if (root.SkeletonPoses")) {
-		// parseSkeletonPoses(root.get("SkeletonPoses").isArray(),
-		// resource);
-		// }
+		if (root.SkeletonPoses) {
+			this.parseSkeletonPoses(root.SkeletonPoses);
+		}
 
 		// parse scene
 		this._parseSpatial(root.Scene);
@@ -164,6 +164,42 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		return entity;
 	};
 
+	JSONImporter.prototype.parseSkeletons = function(array) {
+		for ( var i = 0, maxI = array.length; i < maxI; i++) {
+			var obj = array[i];
+			var ref = obj.ref;
+			var skName = obj.Name;
+			var jointArray = obj.Joints;
+			var joints = [];
+
+			for ( var j = 0, maxJ = jointArray.length; j < maxJ; j++) {
+				var jointObj = jointArray[j];
+				var jName = jointObj.Name;
+				var joint = new Joint(jName);
+
+				joint.index = Math.round(jointObj.Index);
+				joint.parentIndex = Math.round(jointObj.ParentIndex);
+				joint.inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
+				joints[j] = joint;
+			}
+
+			var skeleton = new Skeleton(skName, joints);
+			this.skeletonMap[ref] = skeleton;
+		}
+	};
+
+	JSONImporter.prototype.parseSkeletonPoses = function(array) {
+		for ( var i = 0, max = array.length; i < max; i++) {
+			var obj = array[i];
+			var ref = obj.ref;
+			var sk = obj.Skeleton;
+			var skeleton = this.skeletonMap[sk];
+			var pose = new SkeletonPose(skeleton);
+			pose.setToBindPose();
+			this.poseMap[ref] = pose;
+		}
+	};
+
 	JSONImporter.prototype._parseMeshData = function(object, weightsPerVert, entity, type) {
 		var vertexCount = object.VertexCount; // int
 		if (vertexCount === 0) {
@@ -201,9 +237,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		if (object.Vertices) {
 			if (this.useCompression) {
 				var offsetObj = object.VertexOffsets;
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Vertices, meshData, MeshData.POSITION, [
-						object.VertexScale, object.VertexScale, object.VertexScale], [offsetObj.xOffset,
-						offsetObj.yOffset, offsetObj.zOffset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Vertices, meshData, MeshData.POSITION, [object.VertexScale,
+						object.VertexScale, object.VertexScale], [offsetObj.xOffset, offsetObj.yOffset, offsetObj.zOffset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Vertices, meshData, MeshData.POSITION);
 			}
@@ -213,8 +248,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				var offset = 0;
 				var scale = 1 / this.compressedVertsRange;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Weights, meshData, MeshData.WEIGHTS, [scale],
-					[offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Weights, meshData, MeshData.WEIGHTS, [scale], [offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Weights, meshData, MeshData.WEIGHTS);
 			}
@@ -224,8 +258,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Normals, meshData, MeshData.NORMAL, [scale,
-						scale, scale], [offset, offset, offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Normals, meshData, MeshData.NORMAL, [scale, scale, scale], [offset, offset,
+						offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Normals, meshData, MeshData.NORMAL);
 			}
@@ -235,8 +269,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents, meshData, MeshData.TANGENT, [scale,
-						scale, scale, scale], [offset, offset, offset, offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Tangents, meshData, MeshData.TANGENT, [scale, scale, scale, scale], [offset,
+						offset, offset, offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Tangents, meshData, MeshData.TANGENT);
 			}
@@ -245,8 +279,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 255 / (this.compressedColorsRange + 1);
-				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [scale,
-						scale, scale, scale], [offset, offset, offset, offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [scale, scale, scale, scale], [offset,
+						offset, offset, offset]);
 			} else {
 				JsonUtils.fillAttributeBuffer(object.Colors, meshData, MeshData.COLOR);
 			}
@@ -256,8 +290,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			if (this.useCompression) {
 				for ( var i = 0; i < textureUnits.length; i++) {
 					var texObj = textureUnits[i];
-					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i,
-						texObj.UVScales, texObj.UVOffsets);
+					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i, texObj.UVScales, texObj.UVOffsets);
 				}
 			} else {
 				for ( var i = 0; i < textureUnits.length; i++) {
@@ -398,9 +431,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 				if (!this.shaderExtractor) {
 					var shaderSource, type;
-					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1
-						&& attributes.TEXCOORD2 && info.textureFileNames.diffuse && info.textureFileNames.normal
-						&& info.textureFileNames.ao) {
+					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1 && attributes.TEXCOORD2
+						&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
 						shaderSource = Material.shaders.texturedNormalAOLit;
 						type = 'texturedNormalAOLit';
 					} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
@@ -413,8 +445,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 						shaderSource = Material.shaders.simple;
 						type = 'simple';
 					}
-					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource.vshader,
-						shaderSource.fshader);
+					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource.vshader, shaderSource.fshader);
 				} else {
 					shader = this.shaderExtractor(attributes, info);
 				}
@@ -450,9 +481,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 						var tex;
 						if (this.nameResolver !== undefined) {
-							tex = new TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(
-								flipTexture).withGooResourceCache(_useCache).makeTexture2D(
-								nameResolver.resolveName(baseTexFileName));
+							tex = new TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(flipTexture).withGooResourceCache(
+								_useCache).makeTexture2D(nameResolver.resolveName(baseTexFileName));
 						} else {
 							// look for pak contents
 							// var rsrc =
