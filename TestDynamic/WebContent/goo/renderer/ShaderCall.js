@@ -210,7 +210,7 @@ define(function() {
 	ShaderCall.prototype.uniformMatrix2fv = function(transpose, value) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.elements, matrix.elements, 4);
+			var equals = compareMatrices(curValue.data, matrix.data, 4);
 			if (equals) {
 				return;
 			} else {
@@ -220,14 +220,14 @@ define(function() {
 			this.location.value = matrix.clone();
 		}
 
-		this.context.uniformMatrix2fv(this.location, transpose, matrix.elements);
+		this.context.uniformMatrix2fv(this.location, transpose, matrix.data);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix3fv = function(transpose, value) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.elements, matrix.elements, 9);
+			var equals = compareMatrices(curValue.data, matrix.data, 9);
 			if (equals) {
 				return;
 			} else {
@@ -237,14 +237,14 @@ define(function() {
 			this.location.value = matrix.clone();
 		}
 
-		this.context.uniformMatrix3fv(this.location, transpose, matrix.elements);
+		this.context.uniformMatrix3fv(this.location, transpose, matrix.data);
 	};
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function(transpose, matrix) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.elements, matrix.elements, 16);
+			var equals = compareMatrices(curValue.data, matrix.data, 16);
 			if (equals) {
 				return;
 			} else {
@@ -254,7 +254,7 @@ define(function() {
 			this.location.value = matrix.clone();
 		}
 
-		this.context.uniformMatrix4fv(this.location, transpose, matrix.elements);
+		this.context.uniformMatrix4fv(this.location, transpose, matrix.data);
 	};
 
 	return ShaderCall;

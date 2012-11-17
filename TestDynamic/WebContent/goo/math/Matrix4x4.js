@@ -854,5 +854,24 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return vector;
 	};
 
+	// TODO: incorporate these better and possibly to the base class
+	Matrix4x4.prototype.applyPost = function(vec) {
+		var x = vec.x;
+		var y = vec.y;
+		var z = vec.z;
+		var w = vec.w;
+
+		vec.x = d.e00 * x + d.e10 * y + d.e20 * z + w * d.e30;
+		vec.y = d.e01 * x + d.e11 * y + d.e21 * z + w * d.e31;
+		vec.z = d.e02 * x + d.e12 * y + d.e22 * z + w * d.e32;
+		vec.w = d.e03 * x + d.e13 * y + d.e23 * z + w * d.e33;
+
+		return vec;
+	};
+
+	Matrix4x4.prototype.clone = function() {
+		return new Matrix4x4(this.data);
+	};
+
 	return Matrix4x4;
 });

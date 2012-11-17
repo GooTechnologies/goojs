@@ -75,16 +75,24 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 				this.globalTransforms[parentIndex].multiply(this.localTransforms[index], this.globalTransforms[index]);
 			} else {
 				// no parent so just set global to the local transform
-				this.globalTransforms[index].set(this.localTransforms[index]);
+				this.globalTransforms[index].copy(this.localTransforms[index]);
 			}
 
 			// at this point we have a local->model space transform for this joint, for skinning we multiply this by the
 			// joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
 			// vertex from bind pose (model space) to current pose (model space).
-			this.globalTransforms[index].multiply(this.skeleton.joints[index].inverseBindPose, temp);
-			temp.getHomogeneousMatrix(this.matrixPalette[index]);
+			temp.multiply(this.globalTransforms[index], this.skeleton.joints[index].inverseBindPose);
+			this.matrixPalette[index].copy(temp.matrix);
+			// this.globalTransforms[index].multiply(this.skeleton.joints[index].inverseBindPose, temp);
+			// temp.getHomogeneousMatrix(this.matrixPalette[index]);
 		}
-		firePoseUpdated();
+		this.firePoseUpdated();
+	};
+
+	SkeletonPose.prototype.firePoseUpdated = function() {
+		for ( var i = this.poseListeners.length; --i >= 0;) {
+			this.poseListeners[i].poseUpdated(this);
+		}
 	};
 
 	return SkeletonPose;

@@ -15,7 +15,7 @@ define(['goo/math/Transform'], function(Transform) {
 		this.inverseBindPose = new Transform();
 	}
 
-	Joint.NO_PARENT = Number.MIN_VALUE;
+	Joint.NO_PARENT = -32768;
 
 	return Joint;
 });

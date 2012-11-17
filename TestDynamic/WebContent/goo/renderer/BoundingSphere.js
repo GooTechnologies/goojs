@@ -1,15 +1,15 @@
-define(['goo/math/Transform'], function(Transform) {
+define(['goo/math/Transform', 'goo/math/Vector3'], function(Transform, Vector3) {
 	"use strict";
 
 	function BoundingSphere() {
-		this.center = new THREE.Vector3();
+		this.center = new Vector3();
 		this.radius = 1;
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
-		var vec = new THREE.Vector3();
-		var min = new THREE.Vector3(Infinity, Infinity, Infinity);
-		var max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+		var vec = new Vector3();
+		var min = new Vector3(Infinity, Infinity, Infinity);
+		var max = new Vector3(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
 		for ( var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -22,11 +22,11 @@ define(['goo/math/Transform'], function(Transform) {
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.addSelf(min).divideScalar(2.0);
+		var newCenter = max.add(min).scalarDiv(2.0);
 		var size = 0, test;
 		for ( var i = 0; i < verts.length; i += 3) {
 			vec.set(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.subSelf(newCenter).length();
+			test = vec.sub(newCenter).length();
 			if (test > size) {
 				size = test;
 			}

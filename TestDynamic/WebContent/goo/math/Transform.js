@@ -1,45 +1,50 @@
-define(function() {
+define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'], function(Vector3, Matrix3x3, Matrix4x4) {
 	"use strict";
 
 	function Transform() {
-		this.matrix = new THREE.Matrix4();
+		this.matrix = new Matrix4x4();
 
-		this.translation = new THREE.Vector3();
-		this.rotation = new THREE.Vector3();
-		this.rotationMatrix = new THREE.Matrix3();
-		this.scale = new THREE.Vector3(1, 1, 1);
+		this.translation = new Vector3();
+		this.rotation = new Matrix3x3();
+		this.scale = new Vector3(1, 1, 1);
 
-		this.useQuaternion = false;
-		this.eulerOrder = 'XYZ';
+		// this._identity = true;
+		// this._rotationMatrix = true;
+		// this._uniformScale = true;
 	}
 
 	Transform.prototype.multiply = function(a, b) {
-		this.matrix.multiply(a.matrix, b.matrix);
+		this.matrix.mul(a.matrix, b.matrix);
 	};
 
 	Transform.prototype.applyForward = function(point, store) {
 		store.copy(point);
-		this.matrix.rotate(store);
-		var me = this.matrix.elements;
-		store.addSelf(new THREE.Vector3(me[12], me[13], me[14]));
-		// this.rotationMatrix.setRotationFromEuler(this.rotation, 'XYZ');
-		// this.rotationMatrix.rotateAxis(store);
-		// store.addSelf(this.translation);
+
+		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		this.rotation.applyPost(store);
+		store.add(this.translation);
+
 		return store;
 	};
 
 	Transform.prototype.update = function() {
-		this.matrix.setPosition(this.translation);
+		var rd = this.matrix.data;
+		var d = this.rotation.data;
 
-		if (!this.useQuaternion) {
-			this.matrix.setRotationFromEuler(this.rotation, this.eulerOrder);
-		} else {
-			this.matrix.setRotationFromQuaternion(this.quaternion);
-		}
+		rd[0] = this.scale.x * d[0];
+		rd[1] = this.scale.x * d[1];
+		rd[2] = this.scale.x * d[2];
+		rd[4] = this.scale.y * d[3];
+		rd[5] = this.scale.y * d[4];
+		rd[6] = this.scale.y * d[5];
+		rd[8] = this.scale.z * d[6];
+		rd[9] = this.scale.z * d[7];
+		rd[10] = this.scale.z * d[8];
 
-		// if (this.scale.x !== 1 || this.scale.y !== 1 || this.scale.z !== 1) {
-		this.matrix.scale(this.scale);
-		// }
+		rd[3] = this.translation.x;
+		rd[7] = this.translation.y;
+		rd[11] = this.translation.z;
+		rd[15] = 1.0;
 	};
 
 	Transform.prototype.copy = function(transform) {
@@ -61,23 +66,20 @@ define(function() {
 		// return result;
 		// }
 
-		var newMatrix = result._matrix.set(_matrix);
-		if (_rotationMatrix) {
-			if (_uniformScale) {
-				var sx = _scale.getX();
-				newMatrix.transposeLocal();
-				if (sx !== 1.0) {
-					newMatrix.multiplyLocal(1.0 / sx);
-				}
-			} else {
-				newMatrix.multiplyDiagonalPost(_scale, newMatrix).invertLocal();
-			}
-		} else {
-			newMatrix.invertLocal();
-		}
+		var newRotation = result.rotation.copy(this.rotation);
+		// if (_uniformScale) {
+		// var sx = this.scale.x;
+		// newRotation.transposeLocal();
+		// if (sx !== 1.0) {
+		// newRotation.multiplyLocal(1.0 / sx);
+		// }
+		// } else {
+		newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
+		// }
 
-		result._matrix.applyPost(_translation, result._translation).negateLocal();
-		result.updateFlags(_rotationMatrix);
+		result.translation.copy(this.translation);
+		result.rotation.applyPost(result.translation).invert();
+		// result.updateFlags(_rotationMatrix);
 
 		return result;
 	};

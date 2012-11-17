@@ -1,6 +1,6 @@
 define(
-	['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'],
-	function(ShaderCall, Util, GooRunner) {
+	['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner', 'goo/math/Matrix4x4'],
+	function(ShaderCall, Util, GooRunner, Matrix4x4) {
 		"use strict";
 
 		/**
@@ -44,7 +44,7 @@ define(
 		var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;(?:\s*\/\/\s*!\s*(\w+))*/g;
 
 		function setupDefaultCallbacks(defaultCallbacks) {
-			var IDENTITY_MATRIX = new THREE.Matrix4();
+			var IDENTITY_MATRIX = new Matrix4x4();
 
 			defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = shaderInfo.camera;

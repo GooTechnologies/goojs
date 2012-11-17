@@ -513,5 +513,43 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return true;
 	};
 
+	// TODO: incorporate these better and possibly to the base class
+	Matrix3x3.prototype.applyPost = function(vec) {
+		var x = vec.x;
+		var y = vec.y;
+		var z = vec.z;
+
+		var d = this;
+		vec.x = d.e00 * x + d.e10 * y + d.e20 * z;
+		vec.y = d.e01 * x + d.e11 * y + d.e21 * z;
+		vec.z = d.e02 * x + d.e12 * y + d.e22 * z;
+
+		return vec;
+	};
+
+	Matrix3x3.prototype.multiplyDiagonalPost = function(vec, result) {
+		var x = vec.x;
+		var y = vec.y;
+		var z = vec.z;
+
+		var d = this.data;
+		var rd = result.data;
+		rd[0] = x * d[0];
+		rd[1] = y * d[1];
+		rd[2] = z * d[2];
+		rd[3] = x * d[3];
+		rd[4] = y * d[4];
+		rd[5] = z * d[5];
+		rd[6] = x * d[6];
+		rd[7] = y * d[7];
+		rd[8] = z * d[8];
+
+		return vec;
+	};
+
+	Matrix3x3.prototype.clone = function() {
+		return new Matrix3x3(this.data);
+	};
+
 	return Matrix3x3;
 });
