@@ -370,6 +370,17 @@ define([], function() {
 	};
 
 	/**
+	 * @description Computes the dot product of two N-dimensional vectors.
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @returns {Float} Dot product.
+	 */
+
+	Vector.prototype.dot = function(rhs) {
+		return Vector.dot(this, rhs);
+	};
+
+	/**
 	 * @description Copies component values from another vector.
 	 * @param {Vector} source Source vector.
 	 * @returns {Vector} Self for chaining.

@@ -1,6 +1,6 @@
 define(
-	['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner', 'goo/math/Matrix4x4'],
-	function(ShaderCall, Util, GooRunner, Matrix4x4) {
+	['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner', 'goo/math/Matrix4x4', 'goo/math/Vector3'],
+	function(ShaderCall, Util, GooRunner, Matrix4x4, Vector3) {
 		"use strict";
 
 		/**
@@ -75,7 +75,7 @@ define(
 			}
 
 			// TODO
-			var lightPos = new THREE.Vector3(-20, 20, 20);
+			var lightPos = new Vector3(-20, 20, 20);
 			for ( var i = 0; i < 4; i++) {
 				defaultCallbacks['LIGHT' + i] = (function(i) {
 					return function(uniformMapping, shaderInfo) {

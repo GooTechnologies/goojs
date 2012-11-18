@@ -1,4 +1,4 @@
-define(['goo/renderer/Loader'], function(Loader) {
+define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function(Loader, Vector3, Vector2) {
 	"use strict";
 
 	/**
@@ -50,8 +50,8 @@ define(['goo/renderer/Loader'], function(Loader) {
 		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = new THREE.Vector2(0, 0);
-		this.repeat = new THREE.Vector2(1, 1);
+		this.offset = new Vector2(0, 0);
+		this.repeat = new Vector2(1, 1);
 
 		this.generateMipmaps = settings.generateMipmaps || true;
 		this.premultiplyAlpha = settings.premultiplyAlpha || false;

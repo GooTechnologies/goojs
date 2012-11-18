@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/math/Vector2'], function(Vector2) {
 	"use strict";
 
 	/**
@@ -28,8 +28,8 @@ define(function() {
 
 		this.anisotropy = options.anisotropy !== undefined ? options.anisotropy : 1;
 
-		this.offset = new THREE.Vector2(0, 0);
-		this.repeat = new THREE.Vector2(1, 1);
+		this.offset = new Vector2(0, 0);
+		this.repeat = new Vector2(1, 1);
 
 		this.format = options.format !== undefined ? options.format : 'RGBA';
 		this.type = options.type !== undefined ? options.type : 'UnsignedByte';

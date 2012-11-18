@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/math/Vector3'], function(Vector3) {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(function() {
 	 * @property {Vector3} translation Where it is at
 	 */
 	function Light() {
-		this.translation = new THREE.Vector3();
+		this.translation = new Vector3();
 
 		// this.constant = 1;
 		// this.linear;
