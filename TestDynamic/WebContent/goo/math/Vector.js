@@ -57,6 +57,27 @@ define([], function() {
 	 */
 
 	Vector.add = function(lhs, rhs, target) {
+		var left = lhs.data || lhs;
+		var right = rhs.data || rhs;
+
+		if (!target || target.data.length != left.length) {
+			target = new Vector(left.length);
+		}
+
+		var i = 0;
+
+		for (; i < Math.min(left.length, right.length); i++) {
+			target.data[i] = left[i] + right[i];
+		}
+
+		for (; i < left.length; i++) {
+			target.data[i] = left[i];
+		}
+
+		return target;
+	};
+
+	Vector.addOld = function(lhs, rhs, target) {
 		if (!target || target.data.length != lhs.data.length) {
 			target = new Vector(lhs.data.length);
 		}

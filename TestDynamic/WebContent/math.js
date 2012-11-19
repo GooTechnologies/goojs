@@ -21,6 +21,7 @@ require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Ve
 
 		console.log("Vector.copy: " + Vector.copy(vector) + " expected " + new Vector(2).set(2, 4));
 		console.log("Vector.add: " + Vector.add(vector, vector) + " expected " + new Vector(2).set(4, 8));
+		console.log("Vector.add: " + Vector.add(vector, [1, 2]) + " expected " + new Vector(2).set(3, 6));
 		console.log("Vector.sub: " + Vector.sub(vector, vector) + " expected " + new Vector(2).set(0, 0));
 		console.log("Vector.mul: " + Vector.mul(vector, vector) + " expected " + new Vector(2).set(4, 16));
 		console.log("Vector.div: " + Vector.div(vector, vector) + " expected " + new Vector(2).set(1, 1));

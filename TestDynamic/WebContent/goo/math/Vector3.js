@@ -18,6 +18,11 @@ define(["goo/math/Vector"], function(Vector) {
 		this.set(arguments);
 	}
 
+	Vector3.ZERO = new Vector3(0, 0, 0);
+	Vector3.UNIT_X = new Vector3(1, 0, 0);
+	Vector3.UNIT_Y = new Vector3(0, 1, 0);
+	Vector3.UNIT_Z = new Vector3(0, 0, 1);
+
 	/**
 	 * @static
 	 * @description Performs a component-wise addition between two vectors and stores the result in a separate vector.
@@ -32,9 +37,12 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector3();
 		}
 
-		target.data[0] = lhs.data[0] + rhs.data[0];
-		target.data[1] = lhs.data[1] + rhs.data[1];
-		target.data[2] = lhs.data[2] + rhs.data[2];
+		var left = lhs.data || lhs;
+		var right = rhs.data || rhs;
+
+		target.data[0] = left[0] + right[0];
+		target.data[1] = left[1] + right[1];
+		target.data[2] = left[2] + right[2];
 
 		return target;
 	};
@@ -407,6 +415,19 @@ define(["goo/math/Vector"], function(Vector) {
 		}
 
 		return this;
+	};
+
+	Vector3.prototype.cross = function(rhs) {
+		var newX = this.y * rhs.z - this.z * rhs.y;
+		var newY = this.z * rhs.x - this.x * rhs.z;
+		var newZ = this.x * rhs.y - this.y * rhs.x;
+		this.set(newX, newY, newZ);
+
+		return this;
+	};
+
+	Vector3.prototype.equals = function(rhs) {
+		return Math.abs(this.x - rhs.x) < 0.000001 && Math.abs(this.y - rhs.y) < 0.000001 && Math.abs(this.z - rhs.z) < 0.000001;
 	};
 
 	return Vector3;

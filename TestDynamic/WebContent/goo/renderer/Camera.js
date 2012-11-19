@@ -34,7 +34,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 
 		function Camera(fov, aspect, near, far) {
 			// TODO: these needs onFrameChange() after change
-			this._location = new Vector3(0, 0, 0);
+			this.translation = new Vector3(0, 0, 0);
 			this._left = new Vector3(-1, 0, 0);
 			this._up = new Vector3(0, 1, 0);
 			this._direction = new Vector3(0, 0, -1);
@@ -94,7 +94,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 
 			this._newDirection = new Vector3();
 
-			this._projectionMode = Camera.Perspective;
+			this.projectionMode = Camera.Perspective;
 
 			this._updateMVMatrix = true;
 			this._updatePMatrix = true;
@@ -102,20 +102,20 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			this._updateInverseMVPMatrix = true;
 
 			// NB: These matrices are column-major.
-			this._modelView = new Matrix4x4();
-			Handy.addListener(this, 'this._modelView', function() {
+			this.modelView = new Matrix4x4();
+			Handy.addListener(this, 'this.modelView', function() {
 				checkModelView();
 			}, undefined);
-			this._projection = new Matrix4x4();
-			Handy.addListener(this, 'this._projection', function() {
+			this.projection = new Matrix4x4();
+			Handy.addListener(this, 'this.projection', function() {
 				checkProjection();
 			}, undefined);
-			this._modelViewProjection = new Matrix4x4();
-			Handy.addListener(this, 'this._modelViewProjection', function() {
+			this.modelViewProjection = new Matrix4x4();
+			Handy.addListener(this, 'this.modelViewProjection', function() {
 				checkModelViewProjection();
 			}, undefined);
-			this._modelViewProjectionInverse = new Matrix4x4();
-			Handy.addListener(this, 'this._modelViewProjectionInverse', function() {
+			this.modelViewProjectionInverse = new Matrix4x4();
+			Handy.addListener(this, 'this.modelViewProjectionInverse', function() {
 				checkInverseModelViewProjection();
 			}, undefined);
 
@@ -135,9 +135,9 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * Ensure our up, left and direction are unit-length vectors.
 		 */
 		Camera.prototype.normalize = function() {
-			this._left.normalizeLocal();
-			this._up.normalizeLocal();
-			this._direction.normalizeLocal();
+			this._left.normalize();
+			this._up.normalize();
+			this._direction.normalize();
 			onFrameChange();
 		};
 
@@ -179,24 +179,12 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * @param direction
 		 */
 		Camera.prototype.setFrame = function(location, left, up, direction) {
-			this._left.set(left);
-			this._up.set(up);
-			this._direction.set(direction);
-			this._location.set(location);
+			this._left.copy(left);
+			this._up.copy(up);
+			this._direction.copy(direction);
+			this.translation.copy(location);
 
 			this.onFrameChange();
-		};
-
-		/**
-		 * A convenience method for auto-setting the frame based on a world position the user desires the camera to look at. It points the camera
-		 * towards the given position using the difference between that position and the current camera location as a direction vector and the general
-		 * worldUpVector to compute up and left camera vectors.
-		 * 
-		 * @param pos where to look at in terms of world coordinates
-		 * @param worldUpVector a normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z})
-		 */
-		Camera.prototype.lookAt = function(pos, worldUpVector) {
-			lookAt(pos.x, pos.y, pos.z, worldUpVector);
 		};
 
 		/**
@@ -209,21 +197,21 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * @param z where to look at in terms of world coordinates (z)
 		 * @param worldUpVector a normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z})
 		 */
-		Camera.prototype.lookAt = function(x, y, z, worldUpVector) {
-			this._newDirection.set(x, y, z).subtractLocal(this._location).normalizeLocal();
+		Camera.prototype.lookAt = function(pos, worldUpVector) {
+			this._newDirection.copy(pos).sub(this.translation).normalize();
 
 			// check to see if we haven't really updated camera -- no need to call
 			// sets.
 			if (this._newDirection.equals(this._direction)) {
 				return;
 			}
-			this._direction.set(this._newDirection);
+			this._direction.copy(this._newDirection);
 
-			this._up.set(worldUpVector).normalizeLocal();
+			this._up.copy(worldUpVector).normalize();
 			if (this._up.equals(Vector3.ZERO)) {
-				this._up.set(Vector3.UNIT_Y);
+				this._up.copy(Vector3.UNIT_Y);
 			}
-			this._left.set(this._up).crossLocal(this._direction).normalizeLocal();
+			this._left.copy(this._up).cross(this._direction).normalize();
 			if (this._left.equals(Vector3.ZERO)) {
 				if (this._direction.x != 0.0) {
 					this._left.set(this._direction.y, -this._direction.x, 0);
@@ -231,7 +219,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 					this._left.set(0, this._direction.z, -this._direction.y);
 				}
 			}
-			this._up.set(this._direction).crossLocal(this._left).normalizeLocal();
+			this._up.copy(this._direction).cross(this._left).normalize();
 
 			this.onFrameChange();
 		};
@@ -314,7 +302,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * Updates internal frustum coefficient values to reflect the current frustum plane values.
 		 */
 		Camera.prototype.onFrustumChange = function() {
-			if (this._projectionMode == Camera.Perspective) {
+			if (this.projectionMode == Camera.Perspective) {
 				var nearSquared = this._frustumNear * this._frustumNear;
 				var leftSquared = this._frustumLeft * this._frustumLeft;
 				var rightSquared = this._frustumRight * this._frustumRight;
@@ -336,7 +324,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 				inverseLength = 1.0 / Math.sqrt(nearSquared + topSquared);
 				this._coeffTop[0] = -this._frustumNear * inverseLength;
 				this._coeffTop[1] = this._frustumTop * inverseLength;
-			} else if (this._projectionMode === Camera.Parallel) {
+			} else if (this.projectionMode === Camera.Parallel) {
 				if (this._frustumRight > this._frustumLeft) {
 					this._coeffLeft[0] = -1;
 					this._coeffLeft[1] = 0;
@@ -375,7 +363,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * Updates the values of the world planes associated with this camera.
 		 */
 		Camera.prototype.onFrameChange = function() {
-			var dirDotLocation = this._direction.dot(this._location);
+			var dirDotLocation = this._direction.dot(this.translation);
 
 			var planeNormal = new Vector3();
 
@@ -384,8 +372,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			planeNormal.y = (this._left.y * this._coeffLeft[0]);
 			planeNormal.z = (this._left.z * this._coeffLeft[0]);
 			planeNormal.add(this._direction.x * this._coeffLeft[1], this._direction.y * this._coeffLeft[1], this._direction.z * this._coeffLeft[1]);
-			this._worldPlane[Camera.LEFT_PLANE].setNormal(planeNormal);
-			this._worldPlane[Camera.LEFT_PLANE].setConstant(this._location.dot(planeNormal));
+			this._worldPlane[Camera.LEFT_PLANE].normal.copy(planeNormal);
+			this._worldPlane[Camera.LEFT_PLANE].constant = (this.translation.dot(planeNormal));
 
 			// right plane
 			planeNormal.x = (this._left.x * this._coeffRight[0]);
@@ -393,8 +381,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			planeNormal.z = (this._left.z * this._coeffRight[0]);
 			planeNormal
 				.add(this._direction.x * this._coeffRight[1], this._direction.y * this._coeffRight[1], this._direction.z * this._coeffRight[1]);
-			this._worldPlane[Camera.RIGHT_PLANE].setNormal(planeNormal);
-			this._worldPlane[Camera.RIGHT_PLANE].setConstant(this._location.dot(planeNormal));
+			this._worldPlane[Camera.RIGHT_PLANE].normal.copy(planeNormal);
+			this._worldPlane[Camera.RIGHT_PLANE].constant = (this.translation.dot(planeNormal));
 
 			// bottom plane
 			planeNormal.x = (this._up.x * this._coeffBottom[0]);
@@ -402,43 +390,43 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			planeNormal.z = (this._up.z * this._coeffBottom[0]);
 			planeNormal.add(this._direction.x * this._coeffBottom[1], this._direction.y * this._coeffBottom[1], this._direction.z
 				* this._coeffBottom[1]);
-			this._worldPlane[Camera.BOTTOM_PLANE].setNormal(planeNormal);
-			this._worldPlane[Camera.BOTTOM_PLANE].setConstant(this._location.dot(planeNormal));
+			this._worldPlane[Camera.BOTTOM_PLANE].normal.copy(planeNormal);
+			this._worldPlane[Camera.BOTTOM_PLANE].constant = (this.translation.dot(planeNormal));
 
 			// top plane
 			planeNormal.x = (this._up.x * this._coeffTop[0]);
 			planeNormal.y = (this._up.y * this._coeffTop[0]);
 			planeNormal.z = (this._up.z * this._coeffTop[0]);
 			planeNormal.add(this._direction.x * this._coeffTop[1], this._direction.y * this._coeffTop[1], this._direction.z * this._coeffTop[1]);
-			this._worldPlane[Camera.TOP_PLANE].setNormal(planeNormal);
-			this._worldPlane[Camera.TOP_PLANE].setConstant(this._location.dot(planeNormal));
+			this._worldPlane[Camera.TOP_PLANE].normal.copy(planeNormal);
+			this._worldPlane[Camera.TOP_PLANE].constant = (this.translation.dot(planeNormal));
 
-			if (getProjectionMode() == ProjectionMode.Parallel) {
+			if (this.projectionMode == Camera.Parallel) {
 				if (this._frustumRight > this._frustumLeft) {
-					this._worldPlane[Camera.LEFT_PLANE].setConstant(this._worldPlane[Camera.LEFT_PLANE].getConstant() + this._frustumLeft);
-					this._worldPlane[Camera.RIGHT_PLANE].setConstant(this._worldPlane[Camera.RIGHT_PLANE].getConstant() - this._frustumRight);
+					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].getConstant() + this._frustumLeft);
+					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].getConstant() - this._frustumRight);
 				} else {
-					this._worldPlane[Camera.LEFT_PLANE].setConstant(this._worldPlane[Camera.LEFT_PLANE].getConstant() - this._frustumLeft);
-					this._worldPlane[Camera.RIGHT_PLANE].setConstant(this._worldPlane[Camera.RIGHT_PLANE].getConstant() + this._frustumRight);
+					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].getConstant() - this._frustumLeft);
+					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].getConstant() + this._frustumRight);
 				}
 
 				if (this._frustumBottom > this._frustumTop) {
-					this._worldPlane[Camera.TOP_PLANE].setConstant(this._worldPlane[Camera.TOP_PLANE].getConstant() + this._frustumTop);
-					this._worldPlane[Camera.BOTTOM_PLANE].setConstant(this._worldPlane[Camera.BOTTOM_PLANE].getConstant() - this._frustumBottom);
+					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].getConstant() + this._frustumTop);
+					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].getConstant() - this._frustumBottom);
 				} else {
-					this._worldPlane[Camera.TOP_PLANE].setConstant(this._worldPlane[Camera.TOP_PLANE].getConstant() - this._frustumTop);
-					this._worldPlane[Camera.BOTTOM_PLANE].setConstant(this._worldPlane[Camera.BOTTOM_PLANE].getConstant() + this._frustumBottom);
+					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].getConstant() - this._frustumTop);
+					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].getConstant() + this._frustumBottom);
 				}
 			}
 
 			// far plane
-			planeNormal.set(this._direction).negateLocal();
-			this._worldPlane[Camera.FAR_PLANE].setNormal(planeNormal);
-			this._worldPlane[Camera.FAR_PLANE].setConstant(-(dirDotLocation + this._frustumFar));
+			planeNormal.copy(this._direction).invert();
+			this._worldPlane[Camera.FAR_PLANE].normal.copy(planeNormal);
+			this._worldPlane[Camera.FAR_PLANE].constant = (-(dirDotLocation + this._frustumFar));
 
 			// near plane
-			this._worldPlane[Camera.NEAR_PLANE].setNormal(this._direction);
-			this._worldPlane[Camera.NEAR_PLANE].setConstant(dirDotLocation + this._frustumNear);
+			this._worldPlane[Camera.NEAR_PLANE].normal.copy(this._direction);
+			this._worldPlane[Camera.NEAR_PLANE].constant = (dirDotLocation + this._frustumNear);
 
 			this._updateMVMatrix = true;
 			this._updateMVPMatrix = true;
@@ -449,85 +437,49 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * Updates the value of our projection matrix.
 		 */
 		Camera.prototype.updateProjectionMatrix = function() {
-			if (getProjectionMode() == ProjectionMode.Parallel) {
-				this._projection.setIdentity();
-				this._projection.setValue(0, 0, 2.0 / (this._frustumRight - this._frustumLeft));
-				this._projection.setValue(1, 1, 2.0 / (this._frustumTop - this._frustumBottom));
-				this._projection.setValue(2, 2, -2.0 / (this._frustumFar - this._frustumNear));
-				this._projection.setValue(3, 0, -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft));
-				this._projection.setValue(3, 1, -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom));
-				this._projection.setValue(3, 2, -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear));
-			} else if (getProjectionMode() == ProjectionMode.Perspective) {
-				this._projection.setIdentity();
-				this._projection.setValue(0, 0, 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft));
-				this._projection.setValue(1, 1, 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom));
-				this._projection.setValue(2, 0, (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft));
-				this._projection.setValue(2, 1, (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom));
-				this._projection.setValue(2, 2, -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear));
-				this._projection.setValue(2, 3, -1.0);
-				this._projection.setValue(3, 2, -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear));
-				this._projection.setValue(3, 3, -0.0);
+			if (this.projectionMode == Camera.Parallel) {
+				this.projection.setIdentity();
+				this.projection.e00 = 2.0 / (this._frustumRight - this._frustumLeft);
+				this.projection.e11 = 2.0 / (this._frustumTop - this._frustumBottom);
+				this.projection.e22 = -2.0 / (this._frustumFar - this._frustumNear);
+				this.projection.e30 = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+				this.projection.e31 = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+				this.projection.e32 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+			} else if (this.projectionMode == Camera.Perspective) {
+				this.projection.setIdentity();
+				this.projection.e00 = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
+				this.projection.e11 = 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom);
+				this.projection.e20 = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+				this.projection.e21 = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+				this.projection.e22 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+				this.projection.e23 = -1.0;
+				this.projection.e32 = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
+				this.projection.e33 = -0.0;
 			}
 
 			this._updatePMatrix = false;
 		};
 
 		/**
-		 * @return this camera's 4x4 projection matrix.
-		 */
-		Camera.prototype.getProjectionMatrix = function() {
-			this.checkProjection();
-
-			return this._projection;
-		};
-
-		/**
 		 * Updates the value of our model view matrix.
 		 */
 		Camera.prototype.updateModelViewMatrix = function() {
-			this._modelView.setIdentity();
-			this._modelView.setValue(0, 0, -this._left.x);
-			this._modelView.setValue(1, 0, -this._left.y);
-			this._modelView.setValue(2, 0, -this._left.z);
+			this.modelView.setIdentity();
+			this.modelView.e00 = -this._left.x;
+			this.modelView.e10 = -this._left.y;
+			this.modelView.e20 = -this._left.z;
 
-			this._modelView.setValue(0, 1, this._up.x);
-			this._modelView.setValue(1, 1, this._up.y);
-			this._modelView.setValue(2, 1, this._up.z);
+			this.modelView.e01 = this._up.x;
+			this.modelView.e11 = this._up.y;
+			this.modelView.e21 = this._up.z;
 
-			this._modelView.setValue(0, 2, -this._direction.x);
-			this._modelView.setValue(1, 2, -this._direction.y);
-			this._modelView.setValue(2, 2, -this._direction.z);
+			this.modelView.e02 = -this._direction.x;
+			this.modelView.e12 = -this._direction.y;
+			this.modelView.e22 = -this._direction.z;
 
-			this._modelView.setValue(3, 0, this._left.dot(this._location));
-			this._modelView.setValue(3, 1, -this._up.dot(this._location));
-			this._modelView.setValue(3, 2, this._direction.dot(this._location));
-		};
-
-		/**
-		 * @return this camera's 4x4 model view matrix.
-		 */
-		Camera.prototype.getModelViewMatrix = function() {
-			this.checkModelView();
-
-			return this._modelView;
-		};
-
-		/**
-		 * @return this camera's 4x4 model view X projection matrix.
-		 */
-		Camera.prototype.getModelViewProjectionMatrix = function() {
-			this.checkModelViewProjection();
-
-			return this._modelViewProjection;
-		};
-
-		/**
-		 * @return the inverse of this camera's 4x4 model view X projection matrix.
-		 */
-		Camera.prototype.getModelViewProjectionInverseMatrix = function() {
-			this.checkInverseModelViewProjection();
-
-			return this._modelViewProjectionInverse;
+			this.modelView.e30 = this._left.dot(this.translation);
+			this.modelView.e31 = -this._up.dot(this.translation);
+			this.modelView.e32 = this._direction.dot(this.translation);
 		};
 
 		/**
@@ -553,7 +505,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			var origin = new Vector3();
 			var direction = new Vector3();
 			getWorldCoordinates(pos, 0, origin);
-			getWorldCoordinates(pos, 0.3, direction).subtractLocal(origin).normalizeLocal();
+			getWorldCoordinates(pos, 0.3, direction).sub(origin).normalize();
 			result.setOrigin(origin);
 			result.setDirection(direction);
 			return result;
@@ -577,7 +529,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			position.set((screenPosition.x / getWidth() - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenPosition.y
 				/ getHeight() - this._viewPortBottom)
 				/ (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
-			this._modelViewProjectionInverse.applyPre(position, position);
+			this.modelViewProjectionInverse.applyPre(position, position);
 			position.multiplyLocal(1.0 / position.getW());
 			store.x = (position.x);
 			store.y = (position.y);
@@ -629,7 +581,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			this.checkModelViewProjection();
 			var position = new Vector4();
 			position.set(worldPosition.x, worldPosition.y, worldPosition.z, 1);
-			this._modelViewProjection.applyPre(position, position);
+			this.modelViewProjection.applyPre(position, position);
 			position.multiplyLocal(1.0 / position.getW());
 			store.x = (position.x);
 			store.y = (position.y);
@@ -665,7 +617,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			if (this._updateMVPMatrix) {
 				this.checkModelView();
 				this.checkProjection();
-				this._modelViewProjection.set(getModelViewMatrix()).multiplyLocal(getProjectionMatrix());
+				this.modelViewProjection.copy(getModelViewMatrix()).multiplyLocal(getProjectionMatrix());
 				this._updateMVPMatrix = false;
 			}
 		};
@@ -676,7 +628,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		Camera.prototype.checkInverseModelViewProjection = function() {
 			if (this._updateInverseMVPMatrix) {
 				checkModelViewProjection();
-				this._modelViewProjection.invert(this._modelViewProjectionInverse);
+				this.modelViewProjection.invert(this.modelViewProjectionInverse);
 				this._updateInverseMVPMatrix = false;
 			}
 		};

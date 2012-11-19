@@ -13,12 +13,12 @@ define(function() {
 	};
 
 	SimplePartitioner.prototype.process = function(camera, entities, renderList) {
-		camera.updateFrustum();
+		camera.onFrameChange(); // TODO: not needed anymore?
 		for ( var i in entities) {
 			var entity = entities[i];
 
 			var bounds = entity.meshRendererComponent.worldBound;
-			var isVisible = this.contains(camera.frustum, bounds);
+			var isVisible = camera.contains(bounds);
 			if (isVisible) {
 				renderList.push(entity);
 				entity.isVisible = true;
@@ -26,18 +26,6 @@ define(function() {
 				entity.isVisible = false;
 			}
 		}
-	};
-
-	SimplePartitioner.prototype.contains = function(frustum, bounds) {
-		var planes = frustum.planes;
-		for ( var i = 0; i < 6; i++) {
-			var side = bounds.whichSide(planes[i]);
-			if (side < 0) {
-				return false;
-			}
-		}
-
-		return true;
 	};
 
 	return SimplePartitioner;
