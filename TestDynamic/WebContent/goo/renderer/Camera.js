@@ -171,6 +171,27 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		};
 
 		/**
+		 * Sets the frustum plane values of this camera using the given values.
+		 * 
+		 * @param near
+		 * @param far
+		 * @param left
+		 * @param right
+		 * @param top
+		 * @param bottom
+		 */
+		Camera.prototype.setFrustum = function(near, far, left, right, top, bottom) {
+			this._frustumNear = near;
+			this._frustumFar = far;
+			this._frustumLeft = left;
+			this._frustumRight = right;
+			this._frustumTop = top;
+			this._frustumBottom = bottom;
+
+			this.onFrustumChange();
+		};
+
+		/**
 		 * Sets the axes and location of the camera. Similar to {@link #setAxes(ReadOnlyVector3, ReadOnlyVector3, ReadOnlyVector3)}, but sets camera
 		 * location as well.
 		 * 
@@ -404,19 +425,19 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 
 			if (this.projectionMode == Camera.Parallel) {
 				if (this._frustumRight > this._frustumLeft) {
-					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].getConstant() + this._frustumLeft);
-					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].getConstant() - this._frustumRight);
+					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].contant + this._frustumLeft);
+					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].contant - this._frustumRight);
 				} else {
-					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].getConstant() - this._frustumLeft);
-					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].getConstant() + this._frustumRight);
+					this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].contant - this._frustumLeft);
+					this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].contant + this._frustumRight);
 				}
 
 				if (this._frustumBottom > this._frustumTop) {
-					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].getConstant() + this._frustumTop);
-					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].getConstant() - this._frustumBottom);
+					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].contant + this._frustumTop);
+					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].contant - this._frustumBottom);
 				} else {
-					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].getConstant() - this._frustumTop);
-					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].getConstant() + this._frustumBottom);
+					this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].contant - this._frustumTop);
+					this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].contant + this._frustumBottom);
 				}
 			}
 

@@ -8,10 +8,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
 		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
 		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector4'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
-	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript, EventHandler, Camera,
-	CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector4) {
+		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4'], function(World, Entity, System, TransformSystem, RenderSystem,
+	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript,
+	EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4) {
 
 	function init() {
 		// Create typical goo application
@@ -20,8 +20,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		document.body.appendChild(goo.renderer.domElement);
 
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.position.set(0, 5, 25);
-		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		camera.translation.set(0, 5, 25);
+		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();

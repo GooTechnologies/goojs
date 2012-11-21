@@ -131,6 +131,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			if (meshData === null) {
 				return null;
 			}
+			meshData.type = MeshData.MESH;
 
 			entity.setComponent(new MeshDataComponent(meshData));
 
@@ -142,6 +143,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			if (meshData === null) {
 				return null;
 			}
+			meshData.type = MeshData.SKINMESH;
 
 			entity.setComponent(new MeshDataComponent(meshData));
 
@@ -149,11 +151,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			entity.setComponent(meshRendererComponent);
 			this._parseMaterial(object, entity);
 
-			// if (object.Pose")) {
-			// final String ref =
-			// object.get("Pose").isString().stringValue();
-			// mesh.setCurrentPose(resource.poseMap.get(ref));
-			// }
+			if (object.Pose) {
+				meshData.currentPose = this.poseMap[object.Pose];
+			}
 		} else {
 			return;
 		}
@@ -326,7 +326,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 					localIndex = localJointMap[jointIndex];
 					localMap[localIndex] = jointIndex;
 				}
-				// ((SkinnedMesh) mesh).setPaletteMap(localMap);
+
+				meshData.paletteMap = localMap;
 			} else {
 				for ( var i = 0, max = data.capacity(); i < max; i++) {
 					buffer.putCast(i, data.get(i));

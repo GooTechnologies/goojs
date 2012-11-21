@@ -22,8 +22,13 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		this.indexLengths = null;
 		this.indexModes = ['Triangles'];
 
+		this.type = MeshData.MESH;
+
 		this.rebuildData(vertexCount, indexCount);
 	}
+
+	MeshData.MESH = 0;
+	MeshData.SKINMESH = 1;
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
 		this.vertexCount = vertexCount;

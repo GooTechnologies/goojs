@@ -49,6 +49,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 				entities[0].transformComponent.transform.scale.set(1, 1, 1);
 				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
+
+				for ( var i = 0; i < entities.length; i++) {
+					var entity = entities[i];
+
+				}
 			},
 			onError : function(error) {
 				console.error(error);
