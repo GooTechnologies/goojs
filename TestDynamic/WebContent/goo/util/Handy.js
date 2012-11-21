@@ -23,12 +23,16 @@ define(function() {
 		var val = obj.variable;
 		Object.defineProperty(obj, variable, {
 			get : function() {
-				getCallback();
+				if (getCallback) {
+					getCallback();
+				}
 				return val;
 			},
 			set : function(newval) {
 				val = newval;
-				setCallback(val);
+				if (setCallback) {
+					setCallback(val);
+				}
 			},
 			configurable : true,
 			enumerable : true

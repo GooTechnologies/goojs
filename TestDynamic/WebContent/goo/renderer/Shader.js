@@ -49,14 +49,14 @@ define(
 			defaultCallbacks['PROJECTION_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['PROJECTION_MATRIX'];
-				var matrix = camera.projectionMatrix;
+				var matrix = camera.getProjectionMatrix();
 
 				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['VIEW_MATRIX'];
-				var matrix = camera.matrixWorldInverse;
+				var matrix = camera.getViewMatrix();
 
 				uniform.uniformMatrix4fv(false, matrix);
 			};
@@ -90,7 +90,7 @@ define(
 			}
 
 			defaultCallbacks['CAMERA'] = function(uniformMapping, shaderInfo) {
-				var cameraPosition = shaderInfo.camera.position;
+				var cameraPosition = shaderInfo.camera.translation;
 				uniformMapping['CAMERA'].uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 			};
 

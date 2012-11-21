@@ -469,11 +469,11 @@ define([], function() {
 
 	Matrix.prototype.set = function() {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for ( var i in arguments[0]) {
+			for ( var i = 0; i < arguments[0].length; i++) {
 				this.data[i] = arguments[0][i];
 			}
 		} else {
-			for ( var i in arguments) {
+			for ( var i = 0; i < arguments.length; i++) {
 				this.data[i] = arguments[i];
 			}
 		}

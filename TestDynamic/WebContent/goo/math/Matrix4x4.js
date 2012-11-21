@@ -5,6 +5,8 @@ define(["goo/math/Matrix"], function(Matrix) {
 	Matrix4x4.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'],
 			['e03'], ['e13'], ['e23'], ['e33']]);
 
+	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
 	/**
 	 * @name Matrix4x4
 	 * @class Matrix with 4x4 components.
@@ -16,7 +18,15 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	function Matrix4x4() {
 		Matrix.call(this, 4, 4);
-		this.set(arguments);
+		if (arguments.length === 0) {
+			this.setIdentity();
+		} else {
+			if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+				this.set(arguments[0]);
+			} else {
+				this.set(arguments);
+			}
+		}
 	}
 
 	/**
@@ -871,6 +881,10 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix4x4.prototype.clone = function() {
 		return new Matrix4x4(this.data);
+	};
+
+	Matrix4x4.prototype.setIdentity = function() {
+		this.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	};
 
 	return Matrix4x4;

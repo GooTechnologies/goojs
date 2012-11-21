@@ -4,6 +4,8 @@ define(["goo/math/Matrix"], function(Matrix) {
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
 	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
 
+	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
 	/**
 	 * @name Matrix3x3
 	 * @class Matrix with 3x3 components.
@@ -15,7 +17,15 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	function Matrix3x3() {
 		Matrix.call(this, 3, 3);
-		this.set(arguments);
+		if (arguments.length === 0) {
+			this.setIdentity();
+		} else {
+			if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+				this.set(arguments[0]);
+			} else {
+				this.set(arguments);
+			}
+		}
 	}
 
 	/**
@@ -549,6 +559,10 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix3x3.prototype.clone = function() {
 		return new Matrix3x3(this.data);
+	};
+
+	Matrix3x3.prototype.setIdentity = function() {
+		this.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	};
 
 	return Matrix3x3;

@@ -104,7 +104,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		var aspect = this.domElement.width / this.domElement.height;
 		if (camera && camera.aspect !== aspect) {
 			camera.aspect = aspect;
-			camera.updateProjection();
+			camera.setFrustumPerspective();
 		}
 	};
 
@@ -217,7 +217,6 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			this.updateBlending(material);
 			this.updateTextures(material);
 
-			var wireframe = material.wireframe;
 			if (meshData.getIndexBuffer() !== null) {
 				this.bindData(meshData.getIndexData());
 				if (meshData.getIndexLengths() !== null) {

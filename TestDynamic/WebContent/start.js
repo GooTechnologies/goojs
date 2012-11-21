@@ -47,6 +47,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					camera.translation.z = Math.sin(t * 1.0) * 50 + 70;
 					camera.lookAt(this.zero, Vector3.UNIT_Y);
 					camera.onFrameChange();
+					// camera.update();
 				}
 			};
 			cameraEntity.setComponent(new ScriptComponent(script));

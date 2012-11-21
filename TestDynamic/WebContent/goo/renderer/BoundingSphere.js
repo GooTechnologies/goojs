@@ -4,6 +4,8 @@ define(['goo/math/Transform', 'goo/math/Vector3'], function(Transform, Vector3) 
 	function BoundingSphere() {
 		this.center = new Vector3();
 		this.radius = 1;
+
+		this._checkPlane = 0;
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {

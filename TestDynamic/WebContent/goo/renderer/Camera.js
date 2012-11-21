@@ -1,5 +1,5 @@
-define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/renderer/Plane'],
-	function(Handy, Vector3, Matrix4x4, Plane) {
+define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'],
+	function(Handy, Vector3, Matrix4x4, Plane, MathUtils) {
 		"use strict";
 
 		/**
@@ -55,22 +55,22 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			this._frustumTop = 0.5;
 			this._frustumBottom = -0.5;
 
-			// Handy.defineProperty(this, 'this._frustumNear', 1.0, function() {
+			// Handy.defineProperty(this, '_frustumNear', 1.0, function() {
 			// onFrustumChange();
 			// });
-			// Handy.defineProperty(this, 'this._frustumFar', 2.0, function() {
+			// Handy.defineProperty(this, '_frustumFar', 2.0, function() {
 			// onFrustumChange();
 			// });
-			// Handy.defineProperty(this, 'this._frustumLeft', -0.5, function() {
+			// Handy.defineProperty(this, '_frustumLeft', -0.5, function() {
 			// onFrustumChange();
 			// });
-			// Handy.defineProperty(this, 'this._frustumRight', 0.5, function() {
+			// Handy.defineProperty(this, '_frustumRight', 0.5, function() {
 			// onFrustumChange();
 			// });
-			// Handy.defineProperty(this, 'this._frustumTop', 0.5, function() {
+			// Handy.defineProperty(this, '_frustumTop', 0.5, function() {
 			// onFrustumChange();
 			// });
-			// Handy.defineProperty(this, 'this._frustumBottom', -0.5, function() {
+			// Handy.defineProperty(this, '_frustumBottom', -0.5, function() {
 			// onFrustumChange();
 			// });
 
@@ -103,28 +103,17 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 
 			// NB: These matrices are column-major.
 			this.modelView = new Matrix4x4();
-			Handy.addListener(this, 'this.modelView', function() {
-				checkModelView();
-			}, undefined);
 			this.projection = new Matrix4x4();
-			Handy.addListener(this, 'this.projection', function() {
-				checkProjection();
-			}, undefined);
 			this.modelViewProjection = new Matrix4x4();
-			Handy.addListener(this, 'this.modelViewProjection', function() {
-				checkModelViewProjection();
-			}, undefined);
 			this.modelViewProjectionInverse = new Matrix4x4();
-			Handy.addListener(this, 'this.modelViewProjectionInverse', function() {
-				checkInverseModelViewProjection();
-			}, undefined);
 
 			this._depthRangeDirty = true;
 			this._viewPortDirty = true;
 
 			this._planeState = 0;
 
-			this.onFrustumChange();
+			this.setFrustumPerspective(fov, aspect, near, far);
+			// this.onFrustumChange();
 			// this.onViewPortChange();
 			this.onFrameChange();
 
@@ -149,22 +138,34 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * @param near our near plane value
 		 * @param far our far plane value
 		 */
-		Camera.prototype.setFrustumPerspective = function(fovY, aspect, near, far) {
-			if (Number.isNaN(aspect) || Number.isInfinite(aspect)) {
+		Camera.prototype.setFrustumPerspective = function(fov, aspect, near, far) {
+			if (aspect !== undefined && (Number.isNaN(aspect) || !Number.isFinite(aspect))) {
 				// ignore.
 				console.warn("Invalid aspect given to setFrustumPerspective: " + aspect);
 				return;
 			}
 
-			this._fovY = fovY;
-			var h = Math.tan(this._fovY * MathUtils.DEG_TO_RAD * 0.5) * near;
-			var w = h * aspect;
+			if (fov !== undefined) {
+				this.fov = fov;
+			}
+			if (aspect !== undefined) {
+				this.aspect = aspect;
+			}
+			if (near !== undefined) {
+				this.near = near;
+			}
+			if (far !== undefined) {
+				this.far = far;
+			}
+
+			var h = Math.tan(this.fov * MathUtils.DEG_TO_RAD * 0.5) * this.near;
+			var w = h * this.aspect;
 			this._frustumLeft = -w;
 			this._frustumRight = w;
 			this._frustumBottom = -h;
 			this._frustumTop = h;
-			this._frustumNear = near;
-			this._frustumFar = far;
+			this._frustumNear = this.near;
+			this._frustumFar = this.far;
 
 			this.onFrustumChange();
 		};
@@ -235,9 +236,9 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 */
 		Camera.prototype.update = function() {
 			this._depthRangeDirty = true;
-			onFrustumChange();
-			onViewPortChange();
-			onFrameChange();
+			this.onFrustumChange();
+			// this.onViewPortChange();
+			this.onFrameChange();
 		};
 
 		/**
@@ -271,17 +272,17 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			var rVal = Camera.Inside;
 
 			for ( var planeCounter = Camera.FRUSTUM_PLANES; planeCounter >= 0; planeCounter--) {
-				if (planeCounter == bound.getCheckPlane()) {
+				if (planeCounter == bound._checkPlane) {
 					continue; // we have already checked this plane at first iteration
 				}
-				var planeId = planeCounter == Camera.FRUSTUM_PLANES ? bound.getCheckPlane() : planeCounter;
+				var planeId = planeCounter == Camera.FRUSTUM_PLANES ? bound._checkPlane : planeCounter;
 
 				mask = 1 << planeId;
 				if ((this._planeState & mask) == 0) {
 					switch (bound.whichSide(this._worldPlane[planeId])) {
 						case Camera.Inside:
 							// object is outside of frustum
-							bound.setCheckPlane(planeId);
+							bound._checkPlane = planeId;
 							return FrustumIntersect.Outside;
 						case Camera.Outside:
 							// object is visible on *this* plane, so mark this plane
@@ -639,16 +640,36 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 * 
 		 * @param renderer the Renderer to use.
 		 */
-		Camera.prototype.apply = function(renderer) {
-			ContextManager.getCurrentContext().setCurrentCamera(this);
-			if (this._depthRangeDirty) {
-				renderer.setDepthRange(this._depthRangeNear, this._depthRangeFar);
-				this._depthRangeDirty = false;
-			}
-			if (this._viewPortDirty) {
-				this.applyViewport(renderer);
-				this._viewPortDirty = false;
-			}
+		// TODO
+		// Camera.prototype.apply = function(renderer) {
+		// ContextManager.getCurrentContext().setCurrentCamera(this);
+		// if (this._depthRangeDirty) {
+		// renderer.setDepthRange(this._depthRangeNear, this._depthRangeFar);
+		// this._depthRangeDirty = false;
+		// }
+		// if (this._viewPortDirty) {
+		// this.applyViewport(renderer);
+		// this._viewPortDirty = false;
+		// }
+		// };
+		Camera.prototype.getViewMatrix = function() {
+			this.checkModelView();
+			return this.modelView;
+		};
+
+		Camera.prototype.getProjectionMatrix = function() {
+			this.checkProjection();
+			return this.projection;
+		};
+
+		Camera.prototype.getViewProjectionMatrix = function() {
+			this.checkModelViewProjection();
+			return this.modelViewProjection;
+		};
+
+		Camera.prototype.getViewProjectionInverseMatrix = function() {
+			this.checkInverseModelViewProjection();
+			return this.modelViewProjectionInverse;
 		};
 
 		/**
