@@ -52,7 +52,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 				for ( var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
-
+					console.log(entity.name);
+					if (entity.meshDataComponent && entity.meshDataComponent.meshData.type === MeshData.SKINMESH) {
+						var meshData = entity.meshDataComponent.meshData;
+						console.log(meshData.paletteMap);
+						console.log(meshData.currentPose);
+					}
 				}
 			},
 			onError : function(error) {

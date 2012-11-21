@@ -309,7 +309,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 			if (type === 'SkinnedMesh') {
 				// map these joints to local.
-				var localJointMap = {};
+				var localJointMap = [];
 				var localIndex = 0;
 				for ( var i = 0, max = data.length; i < max; i++) {
 					var jointIndex = data[i];
@@ -322,9 +322,11 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 				// store local map
 				var localMap = [];
-				for ( var jointIndex in localJointMap) {
+				for ( var jointIndex = 0; jointIndex < localJointMap.length; jointIndex++) {
 					localIndex = localJointMap[jointIndex];
-					localMap[localIndex] = jointIndex;
+					if (localIndex !== undefined) {
+						localMap[localIndex] = jointIndex;
+					}
 				}
 
 				meshData.paletteMap = localMap;

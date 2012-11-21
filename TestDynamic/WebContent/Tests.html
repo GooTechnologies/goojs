@@ -8,44 +8,9 @@
 <link rel="stylesheet" href="lib/jasmine.css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-<script type="text/javascript" src="lib/jshashtable-2.1.js"></script>
-<script type="text/javascript" src="lib/three.js"></script>
 <script type="text/javascript" src="lib/jasmine.js"></script>
 <script type="text/javascript" src="lib/jasmine-html.js"></script>
 <script data-main="Tests" src="lib/require.js"></script>
-
-<script id="vshader" type="x-shader/x-vertex">
-			attribute vec3 vertexPosition; //!POSITION
-			attribute vec4 vertexColors; //!COLOR
-			attribute vec2 vertexUV0; //!TEXCOORD0
-			
-			uniform mat4 viewMatrix; //!VIEW_MATRIX
-			uniform mat4 projectionMatrix; //!PROJECTION_MATRIX
-			uniform mat4 worldMatrix; //!WORLD_MATRIX
-
-			varying vec4 color;
-			varying vec2 texCoord0;
-			
-			void main(void) {
-				color = vertexColors;
-				texCoord0 = vertexUV0;
-				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);
-			}
-</script>
-<script id="fshader" type="x-shader/x-fragment">
-			precision mediump float;
-		
-			uniform sampler2D diffuseMap; //!TEXTURE0
-	
-			varying vec4 color;
-			varying vec2 texCoord0;
-
-			void main(void)
-			{
-				vec4 texCol = texture2D(diffuseMap, texCoord0);
-				gl_FragColor = texCol * color;
-			}
-</script>
 <style>
 #goo {
 	position: absolute;

@@ -440,8 +440,8 @@ define(function() {
 			ctx.putImageData(cData, img.leftPos, img.topPos);
 			ctx.drawImage(canvas, 0, 0, img.width, img.height);
 
-			// Create THREE texture
-			var texture = new THREE.Texture(canvas);
+			// Create texture
+			var texture = new Texture(canvas);
 			texture.needsUpdate = true;
 			gif.tex.push(texture);
 		};
