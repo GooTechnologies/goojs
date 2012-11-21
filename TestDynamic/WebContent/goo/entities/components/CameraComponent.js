@@ -1,4 +1,4 @@
-define(['goo/entities/components/Component'], function(Component) {
+define(['goo/entities/components/Component', 'goo/math/Vector3'], function(Component, Vector3) {
 	"use strict";
 
 	function CameraComponent(camera) {
@@ -10,12 +10,16 @@ define(['goo/entities/components/Component'], function(Component) {
 	CameraComponent.prototype = Object.create(Component.prototype);
 
 	CameraComponent.prototype.updateCamera = function(transform) {
-		// this.camera.position.copy(transform.translation);
-
-		// this.matrix.lookAt(this.position, vector, this.up);
-		// this.rotation.setEulerFromRotationMatrix(this.matrix, this.eulerOrder);
-
-		// this.camera.updateWorld();
+		// var vec1 = new Vector3(0, 0, 0);
+		// transform.matrix.applyPost(vec1);
+		//
+		// var vec2 = new Vector3(0, 0, 1);
+		// transform.matrix.applyPost(vec2);
+		//
+		// this.camera.translation.copy(vec1);
+		// this.camera.lookAt(vec2, Vector3.UNIT_Y);
+		//
+		// this.camera.onFrameChange();
 	};
 
 	return CameraComponent;

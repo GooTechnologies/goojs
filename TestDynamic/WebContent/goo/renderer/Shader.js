@@ -50,14 +50,12 @@ define(
 				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['PROJECTION_MATRIX'];
 				var matrix = camera.getProjectionMatrix();
-
 				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['VIEW_MATRIX'] = function(uniformMapping, shaderInfo) {
 				var camera = shaderInfo.camera;
 				var uniform = uniformMapping['VIEW_MATRIX'];
 				var matrix = camera.getViewMatrix();
-
 				uniform.uniformMatrix4fv(false, matrix);
 			};
 			defaultCallbacks['WORLD_MATRIX'] = function(uniformMapping, shaderInfo) {

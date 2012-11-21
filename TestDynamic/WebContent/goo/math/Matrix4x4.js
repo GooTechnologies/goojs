@@ -5,8 +5,6 @@ define(["goo/math/Matrix"], function(Matrix) {
 	Matrix4x4.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'],
 			['e03'], ['e13'], ['e23'], ['e33']]);
 
-	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-
 	/**
 	 * @name Matrix4x4
 	 * @class Matrix with 4x4 components.
@@ -327,26 +325,28 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix4x4.combine = function(lhs, rhs, target) {
-		if (!target || target === lhs || target === rhs) {
+		if (!target) {
 			target = new Matrix4x4();
 		}
 
-		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20 + lhs.e03 * rhs.e30;
-		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20 + lhs.e13 * rhs.e30;
-		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20 + lhs.e23 * rhs.e30;
-		target.e30 = lhs.e30 * rhs.e00 + lhs.e31 * rhs.e10 + lhs.e32 * rhs.e20 + lhs.e33 * rhs.e30;
-		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21 + lhs.e03 * rhs.e31;
-		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21 + lhs.e13 * rhs.e31;
-		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21 + lhs.e23 * rhs.e31;
-		target.e31 = lhs.e30 * rhs.e01 + lhs.e31 * rhs.e11 + lhs.e32 * rhs.e21 + lhs.e33 * rhs.e31;
-		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22 + lhs.e03 * rhs.e32;
-		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22 + lhs.e13 * rhs.e32;
-		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22 + lhs.e23 * rhs.e32;
-		target.e32 = lhs.e30 * rhs.e02 + lhs.e31 * rhs.e12 + lhs.e32 * rhs.e22 + lhs.e33 * rhs.e32;
-		target.e03 = lhs.e00 * rhs.e03 + lhs.e01 * rhs.e13 + lhs.e02 * rhs.e23 + lhs.e03 * rhs.e33;
-		target.e13 = lhs.e10 * rhs.e03 + lhs.e11 * rhs.e13 + lhs.e12 * rhs.e23 + lhs.e13 * rhs.e33;
-		target.e23 = lhs.e20 * rhs.e03 + lhs.e21 * rhs.e13 + lhs.e22 * rhs.e23 + lhs.e23 * rhs.e33;
-		target.e33 = lhs.e30 * rhs.e03 + lhs.e31 * rhs.e13 + lhs.e32 * rhs.e23 + lhs.e33 * rhs.e33;
+		tempMatrix.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20 + lhs.e03 * rhs.e30;
+		tempMatrix.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20 + lhs.e13 * rhs.e30;
+		tempMatrix.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20 + lhs.e23 * rhs.e30;
+		tempMatrix.e30 = lhs.e30 * rhs.e00 + lhs.e31 * rhs.e10 + lhs.e32 * rhs.e20 + lhs.e33 * rhs.e30;
+		tempMatrix.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21 + lhs.e03 * rhs.e31;
+		tempMatrix.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21 + lhs.e13 * rhs.e31;
+		tempMatrix.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21 + lhs.e23 * rhs.e31;
+		tempMatrix.e31 = lhs.e30 * rhs.e01 + lhs.e31 * rhs.e11 + lhs.e32 * rhs.e21 + lhs.e33 * rhs.e31;
+		tempMatrix.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22 + lhs.e03 * rhs.e32;
+		tempMatrix.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22 + lhs.e13 * rhs.e32;
+		tempMatrix.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22 + lhs.e23 * rhs.e32;
+		tempMatrix.e32 = lhs.e30 * rhs.e02 + lhs.e31 * rhs.e12 + lhs.e32 * rhs.e22 + lhs.e33 * rhs.e32;
+		tempMatrix.e03 = lhs.e00 * rhs.e03 + lhs.e01 * rhs.e13 + lhs.e02 * rhs.e23 + lhs.e03 * rhs.e33;
+		tempMatrix.e13 = lhs.e10 * rhs.e03 + lhs.e11 * rhs.e13 + lhs.e12 * rhs.e23 + lhs.e13 * rhs.e33;
+		tempMatrix.e23 = lhs.e20 * rhs.e03 + lhs.e21 * rhs.e13 + lhs.e22 * rhs.e23 + lhs.e23 * rhs.e33;
+		tempMatrix.e33 = lhs.e30 * rhs.e03 + lhs.e31 * rhs.e13 + lhs.e32 * rhs.e23 + lhs.e33 * rhs.e33;
+
+		target.copy(tempMatrix);
 
 		return target;
 	};
@@ -360,26 +360,28 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix4x4.transpose = function(source, target) {
-		if (!target || target === source) {
+		if (!target) {
 			target = new Matrix4x4();
 		}
 
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e30 = source.e03;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e31 = source.e13;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
-		target.e32 = source.e23;
-		target.e03 = source.e30;
-		target.e13 = source.e31;
-		target.e23 = source.e32;
-		target.e33 = source.e33;
+		tempMatrix.e00 = source.e00;
+		tempMatrix.e10 = source.e01;
+		tempMatrix.e20 = source.e02;
+		tempMatrix.e30 = source.e03;
+		tempMatrix.e01 = source.e10;
+		tempMatrix.e11 = source.e11;
+		tempMatrix.e21 = source.e12;
+		tempMatrix.e31 = source.e13;
+		tempMatrix.e02 = source.e20;
+		tempMatrix.e12 = source.e21;
+		tempMatrix.e22 = source.e22;
+		tempMatrix.e32 = source.e23;
+		tempMatrix.e03 = source.e30;
+		tempMatrix.e13 = source.e31;
+		tempMatrix.e23 = source.e32;
+		tempMatrix.e33 = source.e33;
+
+		target.copy(tempMatrix);
 
 		return target;
 	};
@@ -402,7 +404,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix4x4.invert = function(source, target) {
-		if (!target || target === source) {
+		if (!target) {
 			target = new Matrix4x4();
 		}
 
@@ -411,54 +413,56 @@ define(["goo/math/Matrix"], function(Matrix) {
 		if (det < 0.0 || det > 0.0) {
 			det = 1.0 / det;
 
-			target.e00 = (source.e11 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e12
+			tempMatrix.e00 = (source.e11 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e12
 				* (source.e21 * source.e33 - source.e23 * source.e31) + source.e13 * (source.e21 * source.e32 - source.e22 * source.e31))
 				* det;
-			target.e10 = (source.e10 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e12
+			tempMatrix.e10 = (source.e10 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e12
 				* (source.e23 * source.e30 - source.e20 * source.e33) + source.e13 * (source.e22 * source.e30 - source.e20 * source.e32))
 				* det;
-			target.e20 = (source.e10 * (source.e21 * source.e33 - source.e23 * source.e31) - source.e11
+			tempMatrix.e20 = (source.e10 * (source.e21 * source.e33 - source.e23 * source.e31) - source.e11
 				* (source.e20 * source.e33 - source.e23 * source.e30) + source.e13 * (source.e20 * source.e31 - source.e21 * source.e30))
 				* det;
-			target.e30 = (source.e10 * (source.e22 * source.e31 - source.e21 * source.e32) - source.e11
+			tempMatrix.e30 = (source.e10 * (source.e22 * source.e31 - source.e21 * source.e32) - source.e11
 				* (source.e22 * source.e30 - source.e20 * source.e32) + source.e12 * (source.e21 * source.e30 - source.e20 * source.e31))
 				* det;
-			target.e01 = (source.e01 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e02
+			tempMatrix.e01 = (source.e01 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e02
 				* (source.e23 * source.e31 - source.e21 * source.e33) + source.e03 * (source.e22 * source.e31 - source.e21 * source.e32))
 				* det;
-			target.e11 = (source.e00 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e02
+			tempMatrix.e11 = (source.e00 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e02
 				* (source.e20 * source.e33 - source.e23 * source.e30) + source.e03 * (source.e20 * source.e32 - source.e22 * source.e30))
 				* det;
-			target.e21 = (source.e00 * (source.e23 * source.e31 - source.e21 * source.e33) - source.e01
+			tempMatrix.e21 = (source.e00 * (source.e23 * source.e31 - source.e21 * source.e33) - source.e01
 				* (source.e23 * source.e30 - source.e20 * source.e33) + source.e03 * (source.e21 * source.e30 - source.e20 * source.e31))
 				* det;
-			target.e31 = (source.e00 * (source.e21 * source.e32 - source.e22 * source.e31) - source.e01
+			tempMatrix.e31 = (source.e00 * (source.e21 * source.e32 - source.e22 * source.e31) - source.e01
 				* (source.e20 * source.e32 - source.e22 * source.e30) + source.e02 * (source.e20 * source.e31 - source.e21 * source.e30))
 				* det;
-			target.e02 = (source.e01 * (source.e12 * source.e33 - source.e13 * source.e32) - source.e02
+			tempMatrix.e02 = (source.e01 * (source.e12 * source.e33 - source.e13 * source.e32) - source.e02
 				* (source.e11 * source.e33 - source.e13 * source.e31) + source.e03 * (source.e11 * source.e32 - source.e12 * source.e31))
 				* det;
-			target.e12 = (source.e00 * (source.e13 * source.e32 - source.e12 * source.e33) - source.e02
+			tempMatrix.e12 = (source.e00 * (source.e13 * source.e32 - source.e12 * source.e33) - source.e02
 				* (source.e13 * source.e30 - source.e10 * source.e33) + source.e03 * (source.e12 * source.e30 - source.e10 * source.e32))
 				* det;
-			target.e22 = (source.e00 * (source.e11 * source.e33 - source.e13 * source.e31) - source.e01
+			tempMatrix.e22 = (source.e00 * (source.e11 * source.e33 - source.e13 * source.e31) - source.e01
 				* (source.e10 * source.e33 - source.e13 * source.e30) + source.e03 * (source.e10 * source.e31 - source.e11 * source.e30))
 				* det;
-			target.e32 = (source.e00 * (source.e12 * source.e31 - source.e11 * source.e32) - source.e01
+			tempMatrix.e32 = (source.e00 * (source.e12 * source.e31 - source.e11 * source.e32) - source.e01
 				* (source.e12 * source.e30 - source.e10 * source.e32) + source.e02 * (source.e11 * source.e30 - source.e10 * source.e31))
 				* det;
-			target.e03 = (source.e01 * (source.e13 * source.e22 - source.e12 * source.e23) - source.e02
+			tempMatrix.e03 = (source.e01 * (source.e13 * source.e22 - source.e12 * source.e23) - source.e02
 				* (source.e13 * source.e21 - source.e11 * source.e23) + source.e03 * (source.e12 * source.e21 - source.e11 * source.e22))
 				* det;
-			target.e13 = (source.e00 * (source.e12 * source.e23 - source.e13 * source.e22) - source.e02
+			tempMatrix.e13 = (source.e00 * (source.e12 * source.e23 - source.e13 * source.e22) - source.e02
 				* (source.e10 * source.e23 - source.e13 * source.e20) + source.e03 * (source.e10 * source.e22 - source.e12 * source.e20))
 				* det;
-			target.e23 = (source.e00 * (source.e13 * source.e21 - source.e11 * source.e23) - source.e01
+			tempMatrix.e23 = (source.e00 * (source.e13 * source.e21 - source.e11 * source.e23) - source.e01
 				* (source.e13 * source.e20 - source.e10 * source.e23) + source.e03 * (source.e11 * source.e20 - source.e10 * source.e21))
 				* det;
-			target.e33 = (source.e00 * (source.e11 * source.e22 - source.e12 * source.e21) - source.e01
+			tempMatrix.e33 = (source.e00 * (source.e11 * source.e22 - source.e12 * source.e21) - source.e01
 				* (source.e10 * source.e22 - source.e12 * source.e20) + source.e02 * (source.e10 * source.e21 - source.e11 * source.e20))
 				* det;
+
+			target.copy(tempMatrix);
 		} else {
 			console.warn("[Matrix4x4.invert] Attempted to divide by zero!");
 		}
@@ -869,12 +873,16 @@ define(["goo/math/Matrix"], function(Matrix) {
 		var x = vec.x;
 		var y = vec.y;
 		var z = vec.z;
-		var w = vec.w;
+		// var w = vec.w;
 
-		vec.x = d.e00 * x + d.e10 * y + d.e20 * z + w * d.e30;
-		vec.y = d.e01 * x + d.e11 * y + d.e21 * z + w * d.e31;
-		vec.z = d.e02 * x + d.e12 * y + d.e22 * z + w * d.e32;
-		vec.w = d.e03 * x + d.e13 * y + d.e23 * z + w * d.e33;
+		vec.x = this.e00 * x + this.e10 * y + this.e20 * z/* + w * d.e30 */;
+		vec.y = this.e01 * x + this.e11 * y + this.e21 * z/* + w * d.e31 */;
+		vec.z = this.e02 * x + this.e12 * y + this.e22 * z/* + w * d.e32 */;
+		// vec.w = d.e03 * x + d.e13 * y + d.e23 * z + w * d.e33;
+
+		vec.x += this.e03;
+		vec.y += this.e13;
+		vec.z += this.e23;
 
 		return vec;
 	};
@@ -884,8 +892,12 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	Matrix4x4.prototype.setIdentity = function() {
-		this.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+		return this.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	};
+
+	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+	var tempMatrix = new Matrix4x4();
 
 	return Matrix4x4;
 });

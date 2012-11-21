@@ -20,7 +20,7 @@ define(function() {
 	};
 
 	Handy.addListener = function(obj, variable, getCallback, setCallback) {
-		var val = obj.variable;
+		var val = obj[variable];
 		Object.defineProperty(obj, variable, {
 			get : function() {
 				if (getCallback) {

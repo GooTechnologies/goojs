@@ -41,13 +41,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					var t = entity._world.time;
 
 					// TODO: use transformcomponent instead. just fix a lookat for it.
+					// var transformComponent = entity.transformComponent;
+					// transformComponent.transform.translation.x = Math.sin(t * 1.0) * 30 + 50;
+					// transformComponent.transform.translation.y = 25;
+					// transformComponent.transform.translation.z = Math.sin(t * 1.0) * 30 + 50;
+					// transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+					// transformComponent.setUpdated();
+
 					var camera = entity.cameraComponent.camera;
-					camera.translation.x = Math.sin(t * 1.0) * 50 + 70;
+					camera.translation.x = Math.sin(t * 1.0) * 30 + 50;
 					camera.translation.y = 20;
-					camera.translation.z = Math.sin(t * 1.0) * 50 + 70;
+					camera.translation.z = Math.sin(t * 1.0) * 30 + 50;
 					camera.lookAt(this.zero, Vector3.UNIT_Y);
 					camera.onFrameChange();
-					// camera.update();
 				}
 			};
 			cameraEntity.setComponent(new ScriptComponent(script));
@@ -140,7 +146,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					for ( var i in entities) {
 						entities[i].addToWorld();
 					}
-					entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
+					// entities[0].transformComponent.transform.scale.set(1.5, 1.5, 1.5);
+					entities[0].transformComponent.transform.translation.y = -5;
 					var script = {
 						run : function(entity) {
 							var t = entity._world.time;
@@ -211,7 +218,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					var transformComponent = entity.transformComponent;
 					transformComponent.transform.translation.x = Math.sin(t + 4) * 30;
 					transformComponent.transform.translation.z = Math.cos(t + 4) * 30;
-					transformComponent.transform.rotation.y = Math.sin(t) * 3;
+					// transformComponent.transform.rotation.x = Math.sin(t) * 3;
+					// transformComponent.transform.rotation.y = Math.sin(t) * 3;
+					// transformComponent.transform.rotation.z = Math.sin(t) * 3;
 					transformComponent.setUpdated();
 				}
 			};
@@ -221,8 +230,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 
 		function createBoxEntity(goo) {
-			var entity = ShapeCreator.createBoxEntity(goo.world, 15, 5, 15);
-			entity.transformComponent.transform.translation.y = -10;
+			var entity = ShapeCreator.createBoxEntity(goo.world, 250, 5, 250);
+			entity.transformComponent.transform.translation.y = -15;
 			entity.name = "Box";
 
 			var material = new Material('TestMaterial');

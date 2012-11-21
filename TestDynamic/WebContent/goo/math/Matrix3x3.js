@@ -4,8 +4,6 @@ define(["goo/math/Matrix"], function(Matrix) {
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
 	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
 
-	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-
 	/**
 	 * @name Matrix3x3
 	 * @class Matrix with 3x3 components.
@@ -270,19 +268,21 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix3x3.combine = function(lhs, rhs, target) {
-		if (!target || target === lhs || target === rhs) {
+		if (!target) {
 			target = new Matrix3x3();
 		}
 
-		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
-		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
-		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
-		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
-		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
-		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
-		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
-		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
-		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
+		tempMatrix.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
+		tempMatrix.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
+		tempMatrix.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
+		tempMatrix.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
+		tempMatrix.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
+		tempMatrix.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
+		tempMatrix.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
+		tempMatrix.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
+		tempMatrix.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
+
+		target.copy(tempMatrix);
 
 		return target;
 	};
@@ -296,19 +296,21 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix3x3.transpose = function(source, target) {
-		if (!target || target === source) {
+		if (!target) {
 			target = new Matrix3x3();
 		}
 
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
+		tempMatrix.e00 = source.e00;
+		tempMatrix.e10 = source.e01;
+		tempMatrix.e20 = source.e02;
+		tempMatrix.e01 = source.e10;
+		tempMatrix.e11 = source.e11;
+		tempMatrix.e21 = source.e12;
+		tempMatrix.e02 = source.e20;
+		tempMatrix.e12 = source.e21;
+		tempMatrix.e22 = source.e22;
+
+		target.copy(tempMatrix);
 
 		return target;
 	};
@@ -322,7 +324,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 	 */
 
 	Matrix3x3.invert = function(source, target) {
-		if (!target || target === source) {
+		if (!target) {
 			target = new Matrix3x3();
 		}
 
@@ -331,15 +333,17 @@ define(["goo/math/Matrix"], function(Matrix) {
 		if (det < 0.0 || det > 0.0) {
 			det = 1.0 / det;
 
-			target.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
-			target.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
-			target.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
-			target.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
-			target.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
-			target.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
-			target.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
-			target.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
-			target.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
+			tempMatrix.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
+			tempMatrix.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
+			tempMatrix.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
+			tempMatrix.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
+			tempMatrix.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
+			tempMatrix.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
+			tempMatrix.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
+			tempMatrix.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
+			tempMatrix.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
+
+			target.copy(tempMatrix);
 		} else {
 			console.warn("[Matrix3x3.invert] Attempted to divide by zero!");
 		}
@@ -557,6 +561,28 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return vec;
 	};
 
+	Matrix3x3.prototype.fromAngles = function(yaw, roll, pitch) {
+		var ch = Math.cos(roll);
+		var sh = Math.sin(roll);
+		var cp = Math.cos(pitch);
+		var sp = Math.sin(pitch);
+		var cy = Math.cos(yaw);
+		var sy = Math.sin(yaw);
+
+		var d = this.data;
+		d[0] = ch * cp;
+		d[1] = sh * sy - ch * sp * cy;
+		d[2] = ch * sp * sy + sh * cy;
+		d[3] = sp;
+		d[4] = cp * cy;
+		d[5] = -cp * sy;
+		d[6] = -sh * cp;
+		d[7] = sh * sp * cy + ch * sy;
+		d[8] = -sh * sp * sy + ch * cy;
+
+		return this;
+	}
+
 	Matrix3x3.prototype.clone = function() {
 		return new Matrix3x3(this.data);
 	};
@@ -564,6 +590,10 @@ define(["goo/math/Matrix"], function(Matrix) {
 	Matrix3x3.prototype.setIdentity = function() {
 		this.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	};
+
+	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+	var tempMatrix = new Matrix3x3();
 
 	return Matrix3x3;
 });

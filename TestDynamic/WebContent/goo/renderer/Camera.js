@@ -440,25 +440,25 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		Camera.prototype.updateProjectionMatrix = function() {
 			if (this.projectionMode == Camera.Parallel) {
 				this.projection.setIdentity();
+
 				this.projection.e00 = 2.0 / (this._frustumRight - this._frustumLeft);
 				this.projection.e11 = 2.0 / (this._frustumTop - this._frustumBottom);
 				this.projection.e22 = -2.0 / (this._frustumFar - this._frustumNear);
-				this.projection.e30 = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-				this.projection.e31 = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
-				this.projection.e32 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+				this.projection.e03 = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+				this.projection.e13 = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+				this.projection.e23 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
 			} else if (this.projectionMode == Camera.Perspective) {
 				this.projection.setIdentity();
+
 				this.projection.e00 = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
 				this.projection.e11 = 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom);
-				this.projection.e20 = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-				this.projection.e21 = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+				this.projection.e02 = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+				this.projection.e12 = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
 				this.projection.e22 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
-				this.projection.e23 = -1.0;
-				this.projection.e32 = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
+				this.projection.e32 = -1.0;
+				this.projection.e23 = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
 				this.projection.e33 = -0.0;
 			}
-
-			this._updatePMatrix = false;
 		};
 
 		/**
@@ -466,21 +466,22 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 */
 		Camera.prototype.updateModelViewMatrix = function() {
 			this.modelView.setIdentity();
+
 			this.modelView.e00 = -this._left.x;
-			this.modelView.e10 = -this._left.y;
-			this.modelView.e20 = -this._left.z;
+			this.modelView.e01 = -this._left.y;
+			this.modelView.e02 = -this._left.z;
 
-			this.modelView.e01 = this._up.x;
+			this.modelView.e10 = this._up.x;
 			this.modelView.e11 = this._up.y;
-			this.modelView.e21 = this._up.z;
+			this.modelView.e12 = this._up.z;
 
-			this.modelView.e02 = -this._direction.x;
-			this.modelView.e12 = -this._direction.y;
+			this.modelView.e20 = -this._direction.x;
+			this.modelView.e21 = -this._direction.y;
 			this.modelView.e22 = -this._direction.z;
 
-			this.modelView.e30 = this._left.dot(this.translation);
-			this.modelView.e31 = -this._up.dot(this.translation);
-			this.modelView.e32 = this._direction.dot(this.translation);
+			this.modelView.e03 = this._left.dot(this.translation);
+			this.modelView.e13 = -this._up.dot(this.translation);
+			this.modelView.e23 = this._direction.dot(this.translation);
 		};
 
 		/**
@@ -618,7 +619,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			if (this._updateMVPMatrix) {
 				this.checkModelView();
 				this.checkProjection();
-				this.modelViewProjection.copy(getModelViewMatrix()).multiplyLocal(getProjectionMatrix());
+				this.modelViewProjection.copy(this.getViewMatrix()).multiply(this.getProjectionMatrix());
 				this._updateMVPMatrix = false;
 			}
 		};
@@ -628,7 +629,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		 */
 		Camera.prototype.checkInverseModelViewProjection = function() {
 			if (this._updateInverseMVPMatrix) {
-				checkModelViewProjection();
+				this.checkModelViewProjection();
 				this.modelViewProjection.invert(this.modelViewProjectionInverse);
 				this._updateInverseMVPMatrix = false;
 			}
