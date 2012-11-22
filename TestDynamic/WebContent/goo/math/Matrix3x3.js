@@ -1,4 +1,4 @@
-define(["goo/math/Matrix"], function(Matrix) {
+define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	"use strict";
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
@@ -581,7 +581,36 @@ define(["goo/math/Matrix"], function(Matrix) {
 		d[8] = -sh * sp * sy + ch * cy;
 
 		return this;
-	}
+	};
+
+	Matrix3x3.prototype.lookAt = function(direction, up) {
+		var xAxis = new Vector3();
+		var yAxis = new Vector3();
+		var zAxis = new Vector3();
+
+		zAxis.copy(direction).normalize();
+		xAxis.copy(up).normalize().cross(zAxis);
+		yAxis.copy(zAxis).cross(xAxis);
+
+		// direction.normalize(zAxis);
+		// up.normalize(xAxis).crossLocal(zAxis);
+		// zAxis.cross(xAxis, yAxis);
+
+		// fromAxes(xAxis, yAxis, zAxis);
+		this.data[0] = xAxis.x;
+		this.data[3] = xAxis.y;
+		this.data[6] = xAxis.z;
+
+		this.data[1] = yAxis.x;
+		this.data[4] = yAxis.y;
+		this.data[7] = yAxis.z;
+
+		this.data[2] = zAxis.x;
+		this.data[5] = zAxis.y;
+		this.data[8] = zAxis.z;
+
+		return this;
+	};
 
 	Matrix3x3.prototype.clone = function() {
 		return new Matrix3x3(this.data);

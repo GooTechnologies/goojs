@@ -58,7 +58,8 @@ define(function() {
 						var entity = entities[i];
 						$('<li>').appendTo(list).append(entity.toString()).append(
 							' - ' + (entity.meshRendererComponent !== undefined ? entity.meshRendererComponent.worldBound : 'none') + ', '
-								+ entity.isVisible);
+								+ entity.isVisible).append(
+							' - ' + (entity.transformComponent !== undefined ? entity.transformComponent.transform : ''));
 						if (entity.transformComponent) {
 							this.updateTransformList(entity.transformComponent.children, 1, list);
 						}
@@ -77,7 +78,7 @@ define(function() {
 						var material = mrc !== undefined ? mrc.materials[0] : undefined;
 						var shader = material !== undefined ? material.shader : 'nope';
 						$('<li>').appendTo(childList).append(tc.entity.toString()).append(' - ' + bounds + ', ' + tc.entity.isVisible).append(
-							' - ' + shader);
+							' - ' + shader).append(' - ' + tc.transform);
 						this.updateTransformList(tc.children, depth + 1, childList);
 					}
 				}

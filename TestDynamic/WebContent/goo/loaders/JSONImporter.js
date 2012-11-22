@@ -180,6 +180,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				joint.index = Math.round(jointObj.Index);
 				joint.parentIndex = Math.round(jointObj.ParentIndex);
 				joint.inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
+				joint.inverseBindPose.update();
 				joints[j] = joint;
 			}
 

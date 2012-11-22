@@ -50,7 +50,7 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We remove the parent's transform simply by multiplying by its inverse bind pose. Done! :)
 
-				temp.multiply(this.skeleton.joints[parentIndex].inverseBindPose, this.skeleton.joints[parentIndex].inverseBindPose);
+				temp.multiply(this.skeleton.joints[parentIndex].inverseBindPose, this.localTransforms[i]);
 				// this.skeleton.joints[parentIndex].inverseBindPose.multiply(this.localTransforms[i], temp);
 				this.localTransforms[i].copy(temp);
 			}
@@ -71,7 +71,7 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 
 			// find our parent
 			var parentIndex = this.skeleton.joints[index].parentIndex;
-			if (parentIndex != Joint.NO_PARENT) {
+			if (parentIndex !== Joint.NO_PARENT) {
 				// we have a parent, so take us from local->parent->model space by multiplying by parent's local->model
 				// space transform.
 				// this.globalTransforms[parentIndex].multiply(this.localTransforms[index], this.globalTransforms[index]);

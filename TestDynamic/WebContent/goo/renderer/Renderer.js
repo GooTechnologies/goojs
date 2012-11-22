@@ -162,13 +162,9 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			return;
 		}
 
-		if (clear === undefined) {
-			clear = true;
-		}
-
 		this.setRenderTarget(renderTarget);
 
-		if (clear) {
+		if (clear === undefined || clear === true) {
 			this.clear();
 		}
 
@@ -197,7 +193,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		} else {
 			renderInfo.meshData = renderable.meshData;
 			renderInfo.materials = renderable.materials;
-			renderInfo.transform = renderable.worldTransform;
+			renderInfo.transform = renderable.transform;
 		}
 	};
 

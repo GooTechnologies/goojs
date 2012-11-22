@@ -45,12 +45,22 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 	};
 
+	Transform.prototype.setIdentity = function() {
+		this.matrix.setIdentity();
+
+		this.translation.copy(Vector3.ZERO);
+		this.rotation.setIdentity();
+		this.scale.copy(Vector3.ONE);
+	};
+
 	Transform.prototype.applyForward = function(point, store) {
 		store.copy(point);
 
-		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
-		this.rotation.applyPost(store);
-		store.add(this.translation);
+		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		// this.rotation.applyPost(store);
+		// store.add(this.translation);
+
+		this.matrix.applyPostPoint(store);
 
 		return store;
 	};
@@ -84,12 +94,12 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	Transform.prototype.copy = function(transform) {
 		this.matrix.copy(transform.matrix);
 
-		// this.translation.copy(transform.translation);
-		// this.rotation.copy(transform.rotation);
+		this.translation.copy(transform.translation);
+		this.rotation.copy(transform.rotation);
 		// this.rotation.x = transform.rotation.x;
 		// this.rotation.y = transform.rotation.y;
 		// this.rotation.z = transform.rotation.z;
-		// this.scale.copy(transform.scale);
+		this.scale.copy(transform.scale);
 	};
 
 	Transform.prototype.invert = function(store) {
@@ -102,6 +112,9 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		// result.setIdentity();
 		// return result;
 		// }
+
+		result.matrix.copy(this.matrix);
+		result.matrix.invert();
 
 		var newRotation = result.rotation.copy(this.rotation);
 		// if (_uniformScale) {
@@ -119,6 +132,10 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		// result.updateFlags(_rotationMatrix);
 
 		return result;
+	};
+
+	Transform.prototype.toString = function() {
+		return '' + this.matrix;
 	};
 
 	return Transform;

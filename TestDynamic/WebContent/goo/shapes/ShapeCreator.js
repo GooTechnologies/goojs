@@ -30,9 +30,9 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 	};
 
 	ShapeCreator.createBoxData = function(width, height, length) {
-		var xExtent = width * 0.5;
-		var yExtent = height * 0.5;
-		var zExtent = length * 0.5;
+		var xExtent = width !== undefined ? width * 0.5 : 0.5;
+		var yExtent = height !== undefined ? height * 0.5 : 0.5;
+		var zExtent = length !== undefined ? length * 0.5 : 0.5;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
