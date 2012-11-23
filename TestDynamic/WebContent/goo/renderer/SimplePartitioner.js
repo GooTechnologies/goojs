@@ -17,6 +17,10 @@ define(['goo/renderer/Camera'], function(Camera) {
 		for ( var i in entities) {
 			var entity = entities[i];
 
+			if (entity.skip) {
+				continue;
+			}
+
 			var bounds = entity.meshRendererComponent.worldBound;
 			var result = camera.contains(bounds);
 			if (result !== Camera.Outside) {

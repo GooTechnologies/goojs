@@ -16,13 +16,14 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 		this.shader = null;
 		this.textures = [];
-		this.materialState = {
+		this.materialState = undefined;
+		// {
 		// ambient : {r : 0.1, g : 0.1, b : 0.1, a : 1.0},
 		// diffuse : {r : 1.0, g : 1.0, b : 1.0, a : 1.0},
 		// emissive : {r : 0.1, g : 0.0, b : 0.0, a : 1.0},
 		// specular : {r : 0.7, g : 0.7, b : 0.7, a : 1.0},
 		// shininess: 16.0
-		};
+		// };
 		this.cullState = {
 			enabled : true,
 			cullFace : 'Back', // Front, FrontAndBack
