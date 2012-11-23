@@ -56,6 +56,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var material = Material.createMaterial(Material.shaders.textured);
 		material.textures[0] = composer.readBuffer;
 
+		var materialLit = Material.createMaterial(Material.shaders.textured);
+		var base = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+		materialLit.textures[0] = base;
+
 		var comp = [];
 		var importer = new JSONImporter(goo.world);
 		importer.load('resources/computer.json', 'resources/', {
@@ -75,7 +79,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 						if (reg.test(entities[j].name)) {
 							entities[j].meshRendererComponent.materials[0] = material;
 						} else {
-							// entities[j].meshRendererComponent.materials[0] = material;
+							entities[j].meshRendererComponent.materials[0] = materialLit;
 						}
 					}
 				}
@@ -194,6 +198,67 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 
 	}
+
+	var litShader = {
+		vshader : [ //
+		'attribute vec3 vertexPosition; //!POSITION', //
+		'attribute vec3 vertexNormal; //!NORMAL', //
+
+		'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
+		'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
+		'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+		'uniform vec3 cameraPosition; //!CAMERA', //
+		'uniform vec3 lightPosition; //!LIGHT0', //
+
+		'varying vec3 normal;',//
+		'varying vec3 lightDir;',//
+		'varying vec3 eyeVec;',//
+
+		'void main(void) {', //
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+
+		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+		'	lightDir = lightPosition - worldPos.xyz;', //
+		'	eyeVec = cameraPosition - worldPos.xyz;', //
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'uniform vec4 materialAmbient; //!AMBIENT',//
+		'uniform vec4 materialDiffuse; //!DIFFUSE',//
+		'uniform vec4 materialSpecular; //!SPECULAR',//
+		'uniform float materialSpecularPower; //!SPECULAR_POWER',//
+
+		'varying vec3 normal;',//
+		'varying vec3 lightDir;',//
+		'varying vec3 eyeVec;',//
+
+		'void main(void)',//
+		'{',//
+		'	vec4 final_color = materialAmbient;',//
+
+		'	vec3 N = normalize(normal);',//
+		'	vec3 L = normalize(lightDir);',//
+
+		'	float lambertTerm = dot(N,L)*0.75+0.25;',//
+
+		'	if(lambertTerm > 0.0)',//
+		'	{',//
+		'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
+		'					   lambertTerm;	',//
+		'		vec3 E = normalize(eyeVec);',//
+		'		vec3 R = reflect(-L, N);',//
+		'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
+		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
+		'					   specular;	',//
+		'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
+		'	}',//
+		'	gl_FragColor = vec4(final_color.rgb, texCol.a);',//
+		'}',//
+		].join('\n')
+	};
 
 	init();
 });
