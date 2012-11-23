@@ -542,8 +542,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	function MaterialInfo() {
 		// REVIEW: Unused expressions!?
 		this.materialName = 'not set';
-		this.profile;
-		this.technique;
+		this.profile = null;
+		this.technique = null;
 		this.textureReferences = {};
 		this.textureFileNames = {};
 		this.textureMinificationFilters = {};

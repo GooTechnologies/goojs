@@ -369,11 +369,12 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 				texrecord.wrapT = wrapT;
 			}
-		} else if (texture.variant === 'CUBE') {
-			// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
-			// texture, texRecord,
-			// unit, record, caps);
 		}
+		// else if (texture.variant === 'CUBE') {
+		// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
+		// texture, texRecord,
+		// unit, record, caps);
+		// }
 	};
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
