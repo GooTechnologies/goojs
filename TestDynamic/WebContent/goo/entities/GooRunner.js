@@ -62,6 +62,8 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 
 			that.world.process();
 
+			that.renderer.info.reset();
+
 			renderSystem.render(that.renderer);
 
 			for ( var i in that.callbacks) {

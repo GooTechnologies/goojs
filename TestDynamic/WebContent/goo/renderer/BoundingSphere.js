@@ -1,4 +1,4 @@
-define(['goo/math/Transform', 'goo/math/Vector3'], function(Transform, Vector3) {
+define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], function(Transform, Vector3, Camera) {
 	"use strict";
 
 	function BoundingSphere() {
@@ -55,16 +55,16 @@ define(['goo/math/Transform', 'goo/math/Vector3'], function(Transform, Vector3) 
 		var distance = this._pseudoDistance(plane, this.center);
 
 		if (distance <= -this.radius) {
-			return -1; // Outside;
+			return Camera.Inside;
 		} else if (distance >= this.radius) {
-			return 1; // Inside;
+			return Camera.Outside;
 		} else {
-			return 0; // Intersects;
+			return Camera.Intersects;
 		}
 	};
 
 	BoundingSphere.prototype._pseudoDistance = function(plane, point) {
-		return plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w;
+		return plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z - plane.constant;
 	};
 
 	BoundingSphere.prototype._maxAxis = function(scale) {

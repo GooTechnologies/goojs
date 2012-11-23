@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/renderer/Camera'], function(Camera) {
 	"use strict";
 
 	function SimplePartitioner() {
@@ -13,13 +13,13 @@ define(function() {
 	};
 
 	SimplePartitioner.prototype.process = function(camera, entities, renderList) {
-		camera.onFrameChange(); // TODO: not needed anymore?
+		// camera.onFrameChange(); // TODO: not needed anymore?
 		for ( var i in entities) {
 			var entity = entities[i];
 
 			var bounds = entity.meshRendererComponent.worldBound;
-			var isVisible = camera.contains(bounds);
-			if (isVisible) {
+			var result = camera.contains(bounds);
+			if (result !== Camera.Outside) {
 				renderList.push(entity);
 				entity.isVisible = true;
 			} else {

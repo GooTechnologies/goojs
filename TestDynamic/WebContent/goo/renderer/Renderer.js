@@ -81,17 +81,16 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.currentWidth = 0;
 		this.currentHeight = 0;
 
+		this.overrideMaterial = null;
+
 		this.info = {
-			memory : {
-				programs : 0,
-				geometries : 0,
-				textures : 0
-			},
-			render : {
-				calls : 0,
-				vertices : 0,
-				faces : 0,
-				points : 0
+			calls : 0,
+			vertices : 0,
+			indices : 0,
+			reset : function() {
+				this.calls = 0;
+				this.vertices = 0;
+				this.indices = 0;
 			}
 		};
 	}
@@ -199,7 +198,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.renderMesh = function(renderInfo) {
 		var meshData = renderInfo.meshData;
-		var materials = renderInfo.materials;
+		var materials = this.overrideMaterial || renderInfo.materials;
 
 		this.bindData(meshData.vertexData);
 
@@ -227,6 +226,10 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 				}
 			}
+
+			this.info.calls++;
+			this.info.vertices += meshData.vertexCount;
+			this.info.indices += meshData.indexCount;
 		}
 	};
 

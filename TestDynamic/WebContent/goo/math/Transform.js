@@ -43,6 +43,8 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 
 	Transform.prototype.multiply = function(a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
+		this.translation.copy(a.scale).add(b.scale);
+		this.scale.copy(a.scale).mul(b.scale);
 	};
 
 	Transform.prototype.setIdentity = function() {
@@ -78,12 +80,15 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		rd[0] = this.scale.x * d[0];
 		rd[1] = this.scale.x * d[3];
 		rd[2] = this.scale.x * d[6];
+		rd[3] = 0.0;
 		rd[4] = this.scale.y * d[1];
 		rd[5] = this.scale.y * d[4];
 		rd[6] = this.scale.y * d[7];
+		rd[7] = 0.0;
 		rd[8] = this.scale.z * d[2];
 		rd[9] = this.scale.z * d[5];
 		rd[10] = this.scale.z * d[8];
+		rd[11] = 0.0;
 
 		rd[12] = this.translation.x;
 		rd[13] = this.translation.y;
@@ -129,7 +134,8 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 
 		result.translation.copy(this.translation);
 		result.rotation.applyPost(result.translation).invert();
-		// result.updateFlags(_rotationMatrix);
+
+		// result.update();
 
 		return result;
 	};

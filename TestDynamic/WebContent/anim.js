@@ -181,13 +181,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// }
 		renderableBone.transform.setIdentity();
 		renderableBone.transform.scale.set(size, size, scale);
-		// SkeletalDebugger.bone.setWorldScale(size, size, scale);
 
 		// determine center point of bone (translation).
 		var store = new Vector3();
 		store.copy(stPnt).add(endPnt).scalarDiv(2.0);
 		renderableBone.transform.translation.copy(store);
-		// SkeletalDebugger.bone.setWorldTranslation(stPnt.add(endPnt, store).divideLocal(2.0f));
 
 		// Orient bone to point along axis formed by start and end points.
 		var orient = new Matrix3x3();
@@ -195,6 +193,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// var q = new Quaternion().fromRotationMatrix(orient);
 		// q.normalizeLocal();
 		renderableBone.transform.rotation.copy(orient);
+
 		renderableBone.transform.update();
 
 		// Offset with skin transform
