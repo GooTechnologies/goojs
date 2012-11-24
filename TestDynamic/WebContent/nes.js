@@ -1,21 +1,40 @@
 "use strict";
 
-require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
-		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
-		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/NesPass', 'goo/math/Transform'], function(World,
-	Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData,
-	Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent,
-	Light, BasicControlScript, EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3,
-	Vector4, NesPass, Transform) {
+require([//
+'goo/entities/GooRunner',//
+'goo/math/Vector3',//
+'goo/math/Vector4',//
+'goo/renderer/pass/NesPass',//
+'goo/entities/components/CameraComponent',//
+'goo/entities/components/ScriptComponent',//
+'goo/renderer/pass/Composer',//
+'goo/loaders/JSONImporter',//
+'goo/scripts/BasicControlScript',//
+'goo/renderer/pass/RenderTarget',//
+'goo/renderer/pass/RenderPass',//
+'goo/renderer/pass/FullscreenPass',//
+'goo/renderer/Util',//
+'goo/renderer/Material',//
+'goo/renderer/Camera'//
+], function(//
+GooRunner,//
+Vector3,//
+Vector4,//
+NesPass,//
+CameraComponent,//
+ScriptComponent,//
+Composer,//
+JSONImporter,//
+BasicControlScript,//
+RenderTarget,//
+RenderPass,//
+FullscreenPass,//
+Util,//
+Material,//
+Camera//
+) {
 
 	function init() {
-		// Create typical goo application
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -47,60 +66,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Regular copy
 		var outPass = new FullscreenPass(Util.clone(Material.shaders.copy));
-		// outPass.renderToScreen = true;
+		outPass.renderToScreen = true;
 
 		composer.addPass(renderPass);
 		composer.addPass(nesPass);
 		composer.addPass(outPass);
 
-		var material = Material.createMaterial(Material.shaders.textured);
-		material.textures[0] = composer.readBuffer;
-
-		var materialLit = Material.createMaterial(Material.shaders.textured);
-		var base = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
-		materialLit.textures[0] = base;
-
-		var comp = [];
-		var importer = new JSONImporter(goo.world);
-		importer.load('resources/computer.json', 'resources/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
-				}
-				entities[0].transformComponent.transform.scale.set(50, 50, 50);
-				entities[0].transformComponent.transform.translation.y = 0;
-				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
-
-				var reg = new RegExp('Screen');
-				for ( var j = 0; j < entities.length; j++) {
-					entities[j].skip = true;
-					if (entities[j].meshDataComponent) {
-						comp.push(entities[j]);
-						if (reg.test(entities[j].name)) {
-							entities[j].meshRendererComponent.materials[0] = material;
-						} else {
-							entities[j].meshRendererComponent.materials[0] = materialLit;
-						}
-					}
-				}
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
-
-		// var renderableThing = {
-		// meshData : ShapeCreator.createBoxData(20, 20, 20),
-		// materials : [material],
-		// transform : new Transform()
-		// };
-
 		goo.callbacks.push(function(tpf) {
 			composer.render(goo.renderer, tpf);
-			// goo.renderer.render(renderableThing, Renderer.mainCamera, [], null, true);
-			if (comp !== null) {
-				goo.renderer.render(comp, Renderer.mainCamera, [], null, true);
-			}
 		});
 	}
 
