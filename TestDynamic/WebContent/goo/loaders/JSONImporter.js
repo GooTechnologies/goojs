@@ -538,7 +538,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 
 	JSONImporter.prototype.importAnimationTree = function(cache, manager, treeSource, completeCallback) {
 		var outputStore = new OutputStore();
-		var value = JSONParser.parseLenient(treeSource);
+		var value = JSON.parse(treeSource);
 		var root = value.isObject();
 		// read clip info
 		if (!root.containsKey("Clips") || !root.containsKey("Layers")) {

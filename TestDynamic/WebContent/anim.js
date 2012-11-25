@@ -5,211 +5,256 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
-		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util'], function(World, Entity, System, TransformSystem, RenderSystem,
-	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent,
-	BasicControlScript, Vector3, Handy, Transform, Joint, Matrix3x3, Util) {
-	"use strict";
+		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager', 'goo/animation/SimpleAnimationApplier'],
+	function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem,
+		MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils,
+		LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3, Handy, Transform, Joint, Matrix3x3, Util, AnimationManager,
+		SimpleAnimationApplier) {
+		"use strict";
 
-	function init() {
-		// Create typical goo application
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		function init() {
+			// Create typical goo application
+			var goo = new GooRunner();
+			goo.renderer.domElement.id = 'goo';
+			document.body.appendChild(goo.renderer.domElement);
 
-		// var ui = new DebugUI(goo);
+			// var ui = new DebugUI(goo);
 
-		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 20, 150);
-		camera.lookAt(new Vector3(0, 40, 0), Vector3.UNIT_Y);
-		camera.onFrameChange();
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
+			var camera = new Camera(45, 1, 1, 1000);
+			camera.translation.set(0, 20, 150);
+			camera.lookAt(new Vector3(0, 40, 0), Vector3.UNIT_Y);
+			camera.onFrameChange();
+			var cameraEntity = goo.world.createEntity("CameraEntity");
+			cameraEntity.setComponent(new CameraComponent(camera));
+			cameraEntity.addToWorld();
 
-		// Setup light
-		var light = new Light();
-		var entity = goo.world.createEntity('Light1');
-		entity.setComponent(new LightComponent(light));
-		var transformComponent = entity.transformComponent;
-		transformComponent.transform.translation.x = 80;
-		transformComponent.transform.translation.y = 50;
-		transformComponent.transform.translation.z = 80;
-		entity.addToWorld();
+			// Setup light
+			var light = new Light();
+			var entity = goo.world.createEntity('Light1');
+			entity.setComponent(new LightComponent(light));
+			var transformComponent = entity.transformComponent;
+			transformComponent.transform.translation.x = 80;
+			transformComponent.transform.translation.y = 50;
+			transformComponent.transform.translation.z = 80;
+			entity.addToWorld();
 
-		// Examples of model loading
-		loadModels(goo);
-	}
+			// Examples of model loading
+			loadModels(goo);
+		}
 
-	function loadModels(goo) {
-		var shader = {
-			bindings : {
-				opacity : {
-					type : 'float',
-					value : 1.0
+		function loadModels(goo) {
+			var shader = {
+				bindings : {
+					opacity : {
+						type : 'float',
+						value : 1.0
+					}
+				},
+				vshader : [ //
+				'attribute vec3 vertexPosition; //!POSITION', //
+				'attribute vec2 vertexUV0; //!TEXCOORD0', //
+
+				'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
+				'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
+				'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+
+				'varying vec2 texCoord0;',//
+
+				'void main(void) {', //
+				'	texCoord0 = vertexUV0;',//
+				'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+				'}'//
+				].join('\n'),
+				fshader : [//
+				'precision mediump float;',//
+
+				'uniform sampler2D diffuseMap; //!TEXTURE0',//
+
+				'uniform float opacity;',//
+
+				'varying vec2 texCoord0;',//
+
+				'void main(void)',//
+				'{',//
+				'	gl_FragColor = vec4(texture2D(diffuseMap, texCoord0).rgb, opacity);',//
+				'}',//
+				].join('\n')
+			};
+
+			var importer = new JSONImporter(goo.world);
+
+			var skinMeshes = [];
+
+			// Load asynchronous with callback
+			importer.load('resources/careerrun/running_man_1.model', 'resources/careerrun/', {
+				onSuccess : function(entities) {
+					for ( var i in entities) {
+						entities[i].addToWorld();
+					}
+					entities[0].transformComponent.transform.scale.set(1, 1, 1);
+					entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
+
+					for ( var i = 0; i < entities.length; i++) {
+						var entity = entities[i];
+						console.log(entity.name);
+						if (entity.meshDataComponent && entity.meshDataComponent.meshData.type === MeshData.SKINMESH) {
+							skinMeshes.push(entity);
+						}
+					}
+
+					if (skinMeshes.length > 0) {
+						setupAnimations(skinMeshes[0].currentPose, 'resources/careerrun/run.anim');
+					}
+				},
+				onError : function(error) {
+					console.error(error);
 				}
-			},
-			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+			});
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
-
-			'varying vec2 texCoord0;',//
-
-			'void main(void) {', //
-			'	texCoord0 = vertexUV0;',//
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
-			'}'//
-			].join('\n'),
-			fshader : [//
-			'precision mediump float;',//
-
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
-
-			'uniform float opacity;',//
-
-			'varying vec2 texCoord0;',//
-
-			'void main(void)',//
-			'{',//
-			'	gl_FragColor = vec4(texture2D(diffuseMap, texCoord0).rgb, opacity);',//
-			'}',//
-			].join('\n')
-		};
-
-		var importer = new JSONImporter(goo.world);
-
-		var skinMeshes = [];
-
-		// Load asynchronous with callback
-		importer.load('resources/skeleton.model', 'resources/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
+			goo.callbacks.push(function(tpf) {
+				for ( var i = 0; i < skinMeshes.length; i++) {
+					var entity = skinMeshes[i];
+					var meshData = entity.meshDataComponent.meshData;
+					drawSkeleton(entity, meshData, goo.renderer);
 				}
-				entities[0].transformComponent.transform.scale.set(1, 1, 1);
-				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
+			});
+		}
 
-				for ( var i = 0; i < entities.length; i++) {
-					var entity = entities[i];
-					console.log(entity.name);
-					if (entity.meshDataComponent && entity.meshDataComponent.meshData.type === MeshData.SKINMESH) {
-						skinMeshes.push(entity);
+		function loadAnimations() {
+			var request = new XMLHttpRequest();
+			request.open('GET', modelUrl, true);
+			var that = this;
+			request.onreadystatechange = function() {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status <= 299) {
+						setupAnimations(pose, request.responseText);
+						callback.onSuccess(entities);
+					} else {
+						callback.onError(request.statusText);
 					}
 				}
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
+			};
+			request.send();
+		}
 
-		goo.callbacks.push(function(tpf) {
-			for ( var i = 0; i < skinMeshes.length; i++) {
-				var entity = skinMeshes[i];
-				var meshData = entity.meshDataComponent.meshData;
-				drawSkeleton(entity, meshData, goo.renderer);
-			}
-		});
-	}
+		var animationManager = null;
+		function setupAnimations(pose, animationTree) {
+			// setup manager
+			var timer = {
 
-	var alreadyDrawn = {};
-	function drawSkeleton(entity, meshData, renderer) {
-		var pose = meshData.currentPose;
-		if (pose !== undefined /* && !alreadyDrawn[pose.skeleton.name] */) {
-			// If we're in view, go ahead and draw our associated skeleton pose
-			// SkeletalDebugger.drawSkeleton(pose, scene, renderer);
-			var joints = pose.skeleton.joints;
-			var globals = pose.globalTransforms;
+			}; // new Timer()
+			animationManager = new AnimationManager(timer, pose);
+			animationManager.setApplier(new SimpleAnimationApplier());
 
-			for ( var i = 0, max = joints.length; i < max; i++) {
-				drawJoint(globals[i], entity, renderer);
+			var importer = new JSONImporter();
 
-				var parentIndex = joints[i].parentIndex;
-				if (parentIndex !== Joint.NO_PARENT) {
-					drawBone(globals[parentIndex], globals[i], entity, renderer);
+			var clip = importer.importAnimation(animationTree, "run");
+			var state = new SteadyState("running");
+			var source = new ClipSource(clip, animationManager);
+			state.setSourceTree(source);
+
+			animationManager.getBaseAnimationLayer().addSteadyState(state);
+			animationManager.getClipInstance(clip).setLoopCount(-1);
+			// animationManager.getClipInstance(clip).setTimeScale(0.1); // uncomment to make him slow enough to check out
+			animationManager.getBaseAnimationLayer().setCurrentState("running", true);
+		}
+
+		var alreadyDrawn = {};
+		function drawSkeleton(entity, meshData, renderer) {
+			var pose = meshData.currentPose;
+			if (pose !== undefined /* && !alreadyDrawn[pose.skeleton.name] */) {
+				// If we're in view, go ahead and draw our associated skeleton pose
+				// SkeletalDebugger.drawSkeleton(pose, scene, renderer);
+				var joints = pose.skeleton.joints;
+				var globals = pose.globalTransforms;
+
+				for ( var i = 0, max = joints.length; i < max; i++) {
+					drawJoint(globals[i], entity, renderer);
+
+					var parentIndex = joints[i].parentIndex;
+					if (parentIndex !== Joint.NO_PARENT) {
+						drawBone(globals[parentIndex], globals[i], entity, renderer);
+					}
 				}
+
+				alreadyDrawn[pose.skeleton.name] = true;
 			}
-
-			alreadyDrawn[pose.skeleton.name] = true;
 		}
-	}
 
-	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	jointMaterial.shader.bindings.color.value = [1.0, 0.0, 0.0];
-	var renderableJoint = {
-		meshData : ShapeCreator.createBoxData(1, 1, 1),
-		materials : [jointMaterial],
-		transform : new Transform()
-	};
+		var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+		jointMaterial.shader.bindings.color.value = [1.0, 0.0, 0.0];
+		var renderableJoint = {
+			meshData : ShapeCreator.createBoxData(1, 1, 1),
+			materials : [jointMaterial],
+			transform : new Transform()
+		};
 
-	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	boneMaterial.shader.bindings.color.value = [0.0, 1.0, 0.0];
-	var renderableBone = {
-		meshData : ShapeCreator.createBoxData(1, 1, 5),
-		materials : [boneMaterial],
-		transform : new Transform()
-	};
+		var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+		boneMaterial.shader.bindings.color.value = [0.0, 1.0, 0.0];
+		var renderableBone = {
+			meshData : ShapeCreator.createBoxData(1, 1, 5),
+			materials : [boneMaterial],
+			transform : new Transform()
+		};
 
-	function drawJoint(jntTransform, entity, renderer) {
-		renderableJoint.transform.multiply(entity.transformComponent.worldTransform, jntTransform);
+		function drawJoint(jntTransform, entity, renderer) {
+			renderableJoint.transform.multiply(entity.transformComponent.worldTransform, jntTransform);
 
-		// renderableJoint.setWorldRotation(SkeletalDebugger.joint.getWorldRotation());
-		// renderableJoint.setWorldScale(size);
+			// renderableJoint.setWorldRotation(SkeletalDebugger.joint.getWorldRotation());
+			// renderableJoint.setWorldScale(size);
 
-		renderer.render(renderableJoint, Renderer.mainCamera, [], null, false);
-	}
-
-	function drawBone(start, end, entity, renderer) {
-		// Determine our start and end points
-		var stPnt = new Vector3();
-		var endPnt = new Vector3();
-		start.applyForward(Vector3.ZERO, stPnt);
-		end.applyForward(Vector3.ZERO, endPnt);
-
-		// determine distance and use as a scale to elongate the bone
-		var tmp = new Vector3().set(endPnt).sub(stPnt);
-		var scale = tmp.length();
-		if (scale === 0) {
-			scale = 0.000001;
+			renderer.render(renderableJoint, Renderer.mainCamera, [], null, false);
 		}
-		scale = 1;
 
-		// var vol = scene.getWorldBound();
-		var size = 1.0;
-		// if (vol != null) {
-		// SkeletalDebugger.measureSphere.setCenter(vol.getCenter());
-		// SkeletalDebugger.measureSphere.setRadius(0);
-		// SkeletalDebugger.measureSphere.mergeLocal(vol);
-		// size = SkeletalDebugger.BONE_RATIO * SkeletalDebugger.measureSphere.getRadius();
-		// }
-		renderableBone.transform.setIdentity();
-		renderableBone.transform.scale.set(size, size, scale);
+		function drawBone(start, end, entity, renderer) {
+			// Determine our start and end points
+			var stPnt = new Vector3();
+			var endPnt = new Vector3();
+			start.applyForward(Vector3.ZERO, stPnt);
+			end.applyForward(Vector3.ZERO, endPnt);
 
-		// determine center point of bone (translation).
-		var store = new Vector3();
-		store.copy(stPnt).add(endPnt).scalarDiv(2.0);
-		renderableBone.transform.translation.copy(store);
+			// determine distance and use as a scale to elongate the bone
+			var tmp = new Vector3().set(endPnt).sub(stPnt);
+			var scale = tmp.length();
+			if (scale === 0) {
+				scale = 0.000001;
+			}
+			// TODO: hack cause transforming doesnt work
+			scale = 1;
 
-		// Orient bone to point along axis formed by start and end points.
-		var orient = new Matrix3x3();
-		orient.lookAt(endPnt.sub(stPnt).normalize(), Vector3.UNIT_Y);
-		// var q = new Quaternion().fromRotationMatrix(orient);
-		// q.normalizeLocal();
-		renderableBone.transform.rotation.copy(orient);
+			// var vol = scene.getWorldBound();
+			var size = 1.0;
+			// if (vol != null) {
+			// SkeletalDebugger.measureSphere.setCenter(vol.getCenter());
+			// SkeletalDebugger.measureSphere.setRadius(0);
+			// SkeletalDebugger.measureSphere.mergeLocal(vol);
+			// size = SkeletalDebugger.BONE_RATIO * SkeletalDebugger.measureSphere.getRadius();
+			// }
+			renderableBone.transform.setIdentity();
+			renderableBone.transform.scale.set(size, size, scale);
 
-		renderableBone.transform.update();
+			// determine center point of bone (translation).
+			var store = new Vector3();
+			store.copy(stPnt).add(endPnt).scalarDiv(2.0);
+			renderableBone.transform.translation.copy(store);
 
-		// Offset with skin transform
-		renderableBone.transform.multiply(entity.transformComponent.worldTransform, renderableBone.transform);
+			// Orient bone to point along axis formed by start and end points.
+			var orient = new Matrix3x3();
+			orient.lookAt(endPnt.sub(stPnt).normalize(), Vector3.UNIT_Y);
+			// var q = new Quaternion().fromRotationMatrix(orient);
+			// q.normalizeLocal();
+			renderableBone.transform.rotation.copy(orient);
 
-		// renderableBone.transform.update();
+			renderableBone.transform.update();
 
-		// Draw our bone!
-		renderer.render(renderableBone, Renderer.mainCamera, [], null, false);
-	}
+			// Offset with skin transform
+			renderableBone.transform.multiply(entity.transformComponent.worldTransform, renderableBone.transform);
 
-	init();
-});
+			// renderableBone.transform.update();
+
+			// Draw our bone!
+			renderer.render(renderableBone, Renderer.mainCamera, [], null, false);
+		}
+
+		init();
+	});

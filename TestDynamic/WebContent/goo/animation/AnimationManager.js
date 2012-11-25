@@ -1,4 +1,4 @@
-define(['goo/math/Transform'], function(Transform) {
+define(['goo/animation/AnimationLayer'], function(AnimationLayer) {
 	"use strict";
 
 	/**
@@ -27,7 +27,7 @@ define(['goo/math/Transform'], function(Transform) {
 
 		// add our base layer
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
-		layer.setManager(this);
+		layer.manager = this;
 		this.layers.push(layer);
 
 		this.applyToPoses = [];
