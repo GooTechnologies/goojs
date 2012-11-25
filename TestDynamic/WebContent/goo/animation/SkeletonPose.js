@@ -36,6 +36,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		this.setToBindPose();
 	}
 
+	/**
+	 * Update our local joint transforms so that they reflect the skeleton in bind pose.
+	 */
 	SkeletonPose.prototype.setToBindPose = function() {
 		var temp = new Transform();
 		// go through our local transforms
@@ -59,6 +62,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		this.firePoseUpdated();
 	};
 
+	/**
+	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
+	 */
 	SkeletonPose.prototype.updateTransforms = function() {
 		var temp = new Transform();
 		// we go in update array order, which ensures parent global transforms are updated before child.
@@ -92,6 +98,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		this.firePoseUpdated();
 	};
 
+	/**
+	 * Notify any registered PoseListeners that this pose has been "updated".
+	 */
 	SkeletonPose.prototype.firePoseUpdated = function() {
 		for ( var i = this.poseListeners.length; --i >= 0;) {
 			this.poseListeners[i].poseUpdated(this);

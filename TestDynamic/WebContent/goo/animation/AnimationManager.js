@@ -39,6 +39,9 @@ define(['goo/math/Transform'], function(Transform) {
 		// this.valuesStore.setDefaultValue(0.0);
 	}
 
+	/**
+	 * Move associated layers forward to the current global time and then apply the associated animation data to any SkeletonPoses set on the manager.
+	 */
 	AnimationManager.prototype.update = function() {
 		// grab current global time
 		var globalTime = this.globalTimer.getTimeInSeconds();
