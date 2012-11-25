@@ -299,7 +299,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 		JsonUtils.parseLayerProperties = function(manager, layer, layerObj) {
 			if (layerObj.BlendType) {
 				var blender = null;
-				if ("lerp".equals(layerObj.BlendType)) {
+				if ("lerp" === layerObj.BlendType) {
 					blender = new LayerLERPBlender();
 					layer.setLayerBlender(blender);
 				}
@@ -312,7 +312,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseChannelTimes = function(chanObj, useCompression) {
 			var timesVal = chanObj.Times;
-			if (timesVal !== null) {
+			if (timesVal) {
 				if (useCompression) {
 					var scaleOffset = chanObj.TimeOffsetScale;
 					var offset = scaleOffset[0];
@@ -327,7 +327,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseFloatLERPValues = function(chanObj, useCompression) {
 			var valuesVal = chanObj.IFCValues;
-			if (valuesVal != null) {
+			if (valuesVal) {
 				if (useCompression) {
 					var scaleOffset = chanObj.IFCOffsetScale;
 					var offset = scaleOffset[0];
@@ -342,7 +342,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseRotationSamples = function(chanObj, range, useCompression) {
 			var transVal = chanObj.RotationSamples;
-			if (transVal != null) {
+			if (transVal) {
 				if (useCompression) {
 					var offset = 1 - (range + 1 >> 1);
 					var scale = 1 / -offset;
@@ -357,8 +357,11 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseTranslationSamples = function(chanObj, size, useCompression) {
 			var uniform = chanObj.UniformTranslation;
-			if (uniform !== null) {
+			if (uniform) {
 				var translation = uniform;
+				if (uniform === undefined) {
+					console.log('asdf');
+				}
 				var xScale = translation[0];
 				var yScale = translation[1];
 				var zScale = translation[2];
@@ -372,7 +375,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 
 			var transVal = chanObj.TranslationSamples;
-			if (transVal != null) {
+			if (transVal) {
 				if (useCompression) {
 					var scaleOffset = chanObj.TranslationOffsetScale;
 					var xOffset = scaleOffset[0];
@@ -389,7 +392,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseScaleSamples = function(chanObj, size, useCompression) {
 			var uniform = chanObj.UniformScale;
-			if (uniform != null) {
+			if (uniform) {
 				var scale = uniform;
 				var xScale = scale[0];
 				var yScale = scale[1];
@@ -421,7 +424,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseQuaternionSamples = function(quatsObj) {
 			var values = quatsObj;
-			if (values == null) {
+			if (!values) {
 				return null;
 			}
 
@@ -429,7 +432,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			var lastQuat = new Quaternion();
 			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
-				if (val.isString() !== null) {
+				if (val) {
 					if ("*" == val) {
 						quats[i * 4 + 0] = lastQuat.getX();
 						quats[i * 4 + 1] = lastQuat.getY();
@@ -438,7 +441,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 					}
 				} else {
 					var valsArray = val;
-					if (valsArray !== null && valsArray.length == 4) {
+					if (valsArray && valsArray.length == 4) {
 						var x = valsArray[0];
 						var y = valsArray[1];
 						var z = valsArray[2];
@@ -456,7 +459,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		JsonUtils.parseVector3Samples = function(vecsObj) {
 			var values = vecsObj;
-			if (values == null) {
+			if (!values) {
 				return null;
 			}
 
@@ -464,7 +467,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			var lastVec = new Vector3();
 			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
-				if (val.isString() !== null) {
+				if (val) {
 					if ("*" == val) {
 						rVal[i * 3 + 0] = lastVec.getX();
 						rVal[i * 3 + 1] = lastVec.getY();
@@ -472,7 +475,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 					}
 				} else {
 					var valsArray = val.isArray();
-					if (valsArray !== null && valsArray.length == 3) {
+					if (valsArray && valsArray.length == 3) {
 						var x = valsArray[0];
 						var y = valsArray[1];
 						var z = valsArray[2];

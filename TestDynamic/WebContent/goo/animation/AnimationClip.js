@@ -28,5 +28,26 @@ define(['goo/math/Transform'], function(Transform) {
 		}
 	};
 
+	AnimationClip.prototype.addChannel = function(channel) {
+		this.channels.push(channel);
+		this.updateMaxTimeIndex();
+	};
+
+	AnimationClip.prototype.updateMaxTimeIndex = function() {
+		this.maxTime = 0;
+		var max;
+		for ( var i = 0; i < this.channels.length; i++) {
+			var channel = this.channels[i];
+			max = channel.getMaxTime();
+			if (max > this.maxTime) {
+				this.maxTime = max;
+			}
+		}
+	};
+
+	AnimationClip.prototype.toString = function() {
+		return this.name + this.channels.length;
+	};
+
 	return AnimationClip;
 });

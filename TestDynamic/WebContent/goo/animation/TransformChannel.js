@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/animation/AbstractAnimationChannel'], function(AbstractAnimationChannel) {
 	"use strict";
 
 	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);

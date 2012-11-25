@@ -66,5 +66,41 @@ define(['goo/math/Transform'], function(Transform) {
 		return false;
 	};
 
+	/**
+	 * Sets the current finite state to the given state. Generally for transitional state use.
+	 * 
+	 * @param state our new state. If null, then no state is currently set on this layer.
+	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 */
+	AnimationLayer.prototype.setCurrentState = function(state, rewind) {
+		this.currentState = state;
+		if (state) {
+			state.setLastStateOwner(this);
+			if (rewind) {
+				state.resetClips(_manager);
+			}
+		}
+	};
+
+	/**
+	 * Force the current state of the machine to the steady state with the given name. Used to set the FSM's initial state.
+	 * 
+	 * @param stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
+	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @return true if succeeds
+	 */
+	AnimationLayer.prototype.setCurrentStateByName = function(stateName, rewind) {
+		if (stateName) {
+			var state = this.steadyStates[stateName];
+			if (state) {
+				this.setCurrentState(state, rewind);
+				return true;
+			} else {
+				console.warn("unable to find SteadyState named: " + stateName);
+			}
+		}
+		return false;
+	};
+
 	return AnimationLayer;
 });

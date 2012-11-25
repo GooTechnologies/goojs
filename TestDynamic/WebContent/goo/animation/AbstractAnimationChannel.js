@@ -13,5 +13,9 @@ define(function() {
 		this.times = times !== undefined ? times.slice(0) : null;
 	}
 
+	AbstractAnimationChannel.prototype.getMaxTime = function() {
+		return this.times[this.times.length - 1];
+	};
+
 	return AbstractAnimationChannel;
 });

@@ -1,4 +1,4 @@
-define(['goo/animation/AnimationLayer'], function(AnimationLayer) {
+define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
 	"use strict";
 
 	/**
@@ -21,6 +21,7 @@ define(['goo/animation/AnimationLayer'], function(AnimationLayer) {
 
 		this.layers = [];
 		this.applier = null; // animationapplier
+		this.clipInstances = {}; // Map<AnimationClip, AnimationClipInstance>
 
 		this.updateRate = 1.0 / 60.0;
 		this.lastUpdate = 0.0;
@@ -84,6 +85,23 @@ define(['goo/animation/AnimationLayer'], function(AnimationLayer) {
 				state.postUpdate(layer);
 			}
 		}
+	};
+
+	/**
+	 * Retrieve and track an instance of an animation clip to be used with this manager.
+	 * 
+	 * @param clip the clip to instance.
+	 * @return our new clip instance.
+	 */
+	AnimationManager.prototype.getClipInstance = function(clip) {
+		var instance = this.clipInstances[clip];
+		if (!instance) {
+			instance = new AnimationClipInstance();
+			instance._startTime = this.globalTimer.getTimeInSeconds();
+			this.clipInstances[clip] = instance;
+		}
+
+		return instance;
 	};
 
 	return AnimationManager;
