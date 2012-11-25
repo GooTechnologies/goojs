@@ -170,6 +170,7 @@ define(
 				for ( var name in this.bindings) {
 					var mapping = this.uniformCallMapping[name];
 					if (!mapping) {
+						console.warn('Binding [' + name + '] does not exist in the shader.');
 						continue;
 					}
 					var def = this.bindings[name];

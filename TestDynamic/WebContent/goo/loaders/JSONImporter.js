@@ -538,9 +538,95 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		} : null;
 	};
 
-	// TODO
+	JSONImporter.prototype.importAnimationTree = function(cache, manager, treeSource, completeCallback) {
+		var outputStore = new OutputStore();
+		var value = JSONParser.parseLenient(treeSource);
+		var root = value.isObject();
+		// read clip info
+		if (!root.containsKey("Clips") || !root.containsKey("Layers")) {
+			if (completeCallback != null) {
+				completeCallback.onSuccess(outputStore);
+			}
+			return;
+		}
+		var clips = root.get("Clips").isArray();
+		var names = new String[clips.size()];
+		var clipKeys = new ResourceKey[names.length];
+		for ( var i = 0, max = clips.size(); i < max; i++) {
+			var obj = clips.get(i).isObject();
+			names[i] = obj.get("Name").isString().stringValue();
+			var pakRef = obj.get("PakRef").isString().stringValue();
+			var url = GWT.getModuleBaseURL() + obj.get("URL").isString().stringValue();
+			clipKeys[i] = new ResourceKey(PakHeader.TYPE_ANIMATION_CLIP, pakRef, url);
+		}
+
+		// load all clips and report back when done
+		GooResourceManager.loadAssets(cache, {
+			onSuccess : function(clipSources) {
+				// done with clips, parse out the layers
+				var inputStore = new InputStore();
+				for ( var i = 0, max = names.length; i < max; i++) {
+					var clip = new JSONImporter().importAnimation(clipSources[i], names[i]);
+					inputStore.getClips().put(clip);
+				}
+
+				JsonUtils.parseAnimationLayers(manager, completeCallback, inputStore, outputStore, root);
+			},
+			onError : function(t) {
+				JSONImporter.logger.severe("failed loading tree clips: " + t);
+				if (completeCallback != null) {
+					completeCallback.onError(t);
+				}
+			}
+		}, clipKeys);
+	};
+
+	JSONImporter.prototype.importAnimation = function(clipSource, clipName) {
+		var clip = new AnimationClip(clipName);
+		var root = JSON.parse(clipSource);
+
+		// check if we're compressed or not.
+		this.useCompression = root.UseCompression || false;
+
+		if (this.useCompression) {
+			this.compressedAnimRange = root.CompressedRange || (1 << 15) - 1; // int
+		}
+
+		// parse channels
+		if (root.Channels) {
+			var array = root.Channels;
+			for ( var i = 0, max = array.size(); i < max; i++) {
+				var chanObj = array[i];
+				var type = chanObj['Type'];
+				var name = chanObj['Name'];
+				var times = JsonUtils.parseChannelTimes(chanObj, this.useCompression);
+				var channel;
+				if ("Joint".equals(type)) {
+					var jointName = chanObj['JointName'];
+					var jointIndex = chanObj['JointIndex'];
+					var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
+					var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
+					var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
+					channel = new JointChannel(jointName, jointIndex, times, rots, trans, scales);
+				} else if ("Transform".equals(type)) {
+					var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
+					var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
+					var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
+					channel = new TransformChannel(name, times, rots, trans, scales);
+				} else if ("FloatLERP".equals(type)) {
+					channel = new InterpolatedFloatChannel(name, times, JsonUtils.parseFloatLERPValues(chanObj, this.useCompression));
+				} else {
+					console.warn("Unhandled channel type: " + type);
+					continue;
+				}
+				clip.addChannel(channel);
+			}
+		}
+
+		return clip;
+	};
+
 	function MaterialInfo() {
-		// REVIEW: Unused expressions!?
 		this.materialName = 'not set';
 		this.profile = null;
 		this.technique = null;

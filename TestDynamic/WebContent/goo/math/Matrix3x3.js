@@ -558,7 +558,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		rd[7] = y * d[7];
 		rd[8] = z * d[8];
 
-		return vec;
+		return result;
 	};
 
 	Matrix3x3.prototype.fromAngles = function(yaw, roll, pitch) {

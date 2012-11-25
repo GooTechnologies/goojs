@@ -5,10 +5,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
-		'goo/animation/Joint', 'goo/math/Matrix3x3'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
-	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3,
-	Handy, Transform, Joint, Matrix3x3) {
+		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util'], function(World, Entity, System, TransformSystem, RenderSystem,
+	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent,
+	BasicControlScript, Vector3, Handy, Transform, Joint, Matrix3x3, Util) {
 	"use strict";
 
 	function init() {
@@ -137,15 +137,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 	}
 
+	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	jointMaterial.shader.bindings.color.value = [1.0, 0.0, 0.0];
 	var renderableJoint = {
 		meshData : ShapeCreator.createBoxData(1, 1, 1),
-		materials : [Material.createMaterial(Material.shaders.simple)],
+		materials : [jointMaterial],
 		transform : new Transform()
 	};
 
+	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	boneMaterial.shader.bindings.color.value = [0.0, 1.0, 0.0];
 	var renderableBone = {
-		meshData : ShapeCreator.createBoxData(1, 1, 1),
-		materials : [Material.createMaterial(Material.shaders.simple)],
+		meshData : ShapeCreator.createBoxData(1, 1, 5),
+		materials : [boneMaterial],
 		transform : new Transform()
 	};
 
@@ -171,6 +175,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		if (scale === 0) {
 			scale = 0.000001;
 		}
+		scale = 1;
+
 		// var vol = scene.getWorldBound();
 		var size = 1.0;
 		// if (vol != null) {
@@ -198,6 +204,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Offset with skin transform
 		renderableBone.transform.multiply(entity.transformComponent.worldTransform, renderableBone.transform);
+
+		// renderableBone.transform.update();
 
 		// Draw our bone!
 		renderer.render(renderableBone, Renderer.mainCamera, [], null, false);

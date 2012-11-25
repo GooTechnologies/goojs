@@ -63,7 +63,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// }
 
 		this.clearColor = new Vector4();
-		this.setClearColor(0.2, 0.2, 0.2, 1.0);
+		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
 

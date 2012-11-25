@@ -41,10 +41,25 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		});
 	}
 
+	// TODO: sort this crap out!
 	Transform.prototype.multiply = function(a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
-		this.translation.copy(a.scale).add(b.scale);
+
+		// this.translation.copy(a.translation).add(b.translation);
+
+		// Matrix3x3.combine(a.rotation, b.rotation, this.rotation);
+		var m1 = new Matrix3x3();
+		var m2 = new Matrix3x3();
+		m1.copy(a.rotation).multiplyDiagonalPost(a.scale, m1);
+		m2.copy(b.rotation).multiplyDiagonalPost(b.scale, m2);
+		Matrix3x3.combine(m1, m2, this.rotation);
+
+		// this.translation.copy(a.translation).add(b.translation);
+		var newTranslate = new Vector3().copy(b.translation);
+		m1.applyPost(newTranslate).add(a.translation);
+
 		this.scale.copy(a.scale).mul(b.scale);
+		// this.scale.copy(Vector3.ONE);
 	};
 
 	Transform.prototype.setIdentity = function() {

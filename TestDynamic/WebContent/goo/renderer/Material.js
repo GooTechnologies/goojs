@@ -95,6 +95,35 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			'}',//
 			].join('\n')
 		},
+		simpleColored : {
+			bindings : {
+				color : {
+					type : 'vec3',
+					value : [1.0, 1.0, 1.0]
+				}
+			},
+			vshader : [ //
+			'attribute vec3 vertexPosition; //!POSITION', //
+
+			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
+			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
+			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+
+			'void main(void) {', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			'uniform vec3 color;',//
+
+			'void main(void)',//
+			'{',//
+			'	gl_FragColor = vec4(color, 1.0);',//
+			'}',//
+			].join('\n')
+		},
 		textured : {
 			vshader : [ //
 			'attribute vec3 vertexPosition; //!POSITION', //
