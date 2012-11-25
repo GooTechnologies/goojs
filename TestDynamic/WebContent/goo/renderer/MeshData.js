@@ -2,8 +2,6 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	"use strict";
 
 	/**
-	 * Creates a new meshdata object
-	 * 
 	 * @name MeshData
 	 * @class Stores all buffers for geometric data and similar attributes
 	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes

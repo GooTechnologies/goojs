@@ -3,8 +3,6 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 	"use strict";
 
 	/**
-	 * Creates a new Composer object
-	 * 
 	 * @name Composer
 	 * @class Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap

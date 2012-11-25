@@ -3,9 +3,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 
 	/**
 	 * @name SkeletonPose
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @class Joins a Skeleton with an array of joint poses. This allows the skeleton to exist and be reused between multiple instances of poses.
+	 * @param {Skeleton} skeleton the skeleton to use.
+	 * @property {Skeleton} skeleton the skeleton to use.
 	 */
 	function SkeletonPose(skeleton) {
 		this.skeleton = skeleton;

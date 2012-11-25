@@ -1,6 +1,10 @@
 define(function() {
 	"use strict";
 
+	/**
+	 * @name ShaderCall
+	 * @class Makes sure shader calls are not done when already set
+	 */
 	function ShaderCall(context, uniform) {
 		this.context = context;
 		this.location = uniform;

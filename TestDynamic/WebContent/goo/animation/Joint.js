@@ -3,9 +3,9 @@ define(['goo/math/Transform'], function(Transform) {
 
 	/**
 	 * @name Joint
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @class Representation of a Joint in a Skeleton. Meant to be used within a specific Skeleton object.
+	 * @param {String} name Name of joint
+	 * @property {String} name Name of joint
 	 */
 	function Joint(name) {
 		this.name = name;

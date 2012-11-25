@@ -5,8 +5,6 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	"use strict";
 
 	/**
-	 * Creates a new importer
-	 * 
 	 * @name JSONImporter
 	 * @class Importer for our compressed JSON format
 	 * @param {World} world {@link World} reference needed to create entities

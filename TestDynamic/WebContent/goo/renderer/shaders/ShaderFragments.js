@@ -1,6 +1,10 @@
 define(function() {
 	"use strict";
 
+	/**
+	 * @name ShaderFragment
+	 * @class Collection of useful shader fragments
+	 */
 	function ShaderFragment() {
 	}
 

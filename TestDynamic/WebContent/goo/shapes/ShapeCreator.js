@@ -1,6 +1,10 @@
 define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData, EntityUtils) {
 	"use strict";
 
+	/**
+	 * @name ShapeCreator
+	 * @class Utils for creating standard shapes/primitives
+	 */
 	function ShapeCreator() {
 	}
 

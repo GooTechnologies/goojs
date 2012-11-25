@@ -27,6 +27,10 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 	Camera, CameraComponent) {
 	"use strict";
 
+	/**
+	 * @name GooRunner
+	 * @class Standard setup of entity system to use as base for small projects/demos
+	 */
 	function GooRunner() {
 		this.world = new World();
 		this.renderer = new Renderer();

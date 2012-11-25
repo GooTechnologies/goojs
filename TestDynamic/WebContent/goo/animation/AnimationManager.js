@@ -3,9 +3,18 @@ define(['goo/math/Transform'], function(Transform) {
 
 	/**
 	 * @name AnimationManager
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @class
+	 *       <p>
+	 *       AnimationManager describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and
+	 *       uses their combined result to update one or more poses (via a set AnimationApplier.) AnimationClips used in these layers are instanced
+	 *       and tracked specifically for this manager.
+	 *       </p>
+	 *       <p>
+	 *       By default, an animation manager has a single base animation layer. Other layers may be added to this. It is important that the base
+	 *       layer (the layer at index 0) always has a full set of data to put a skeleton pose into a valid state.
+	 *       </p>
+	 * @param {Timer} globalTimer the timer to use for global time keeping.
+	 * @param {SkeletonPose} pose a pose to update. Optional if we won't be animating a skinmesh.
 	 */
 	function AnimationManager(globalTimer, pose) {
 		this.globalTimer = globalTimer;

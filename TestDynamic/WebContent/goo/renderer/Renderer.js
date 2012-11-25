@@ -3,8 +3,6 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	"use strict";
 
 	/**
-	 * Creates a new renderer object
-	 * 
 	 * @name Renderer
 	 * @class The renderer handles displaying of graphics data to a render context
 	 * @param {Settings} parameters Renderer settings

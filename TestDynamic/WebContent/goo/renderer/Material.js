@@ -2,8 +2,6 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 	"use strict";
 
 	/**
-	 * Creates a new Material
-	 * 
 	 * @name Material
 	 * @class A Material defines the look of an object
 	 * @param {String} name Material name

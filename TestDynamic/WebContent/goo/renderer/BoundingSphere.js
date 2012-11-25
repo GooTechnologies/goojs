@@ -1,6 +1,14 @@
 define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], function(Transform, Vector3, Camera) {
 	"use strict";
 
+	/**
+	 * @name BoundingSphere
+	 * @class <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
+	 *        sphere defines a radius and a center. <br>
+	 *        <br>
+	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
+	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
+	 */
 	function BoundingSphere() {
 		this.center = new Vector3();
 		this.radius = 1;

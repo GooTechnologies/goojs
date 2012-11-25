@@ -27,6 +27,14 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	Camera.Inside = 1;
 	Camera.Intersects = 2;
 
+	/**
+	 * @name Camera
+	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
+	 * @param {Number} fov Field of view
+	 * @param {Number} aspect aspect ratio
+	 * @param {Number} near near plane distance
+	 * @param {Number} far far plane distance
+	 */
 	function Camera(fov, aspect, near, far) {
 		// TODO: these needs onFrameChange() after change
 		this.translation = new Vector3(0, 0, 0);
@@ -205,8 +213,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	};
 
 	/**
-	 * A convenience method for auto-setting the frame based on a world position the user desires the camera to look at. It points the camera
-	 * towards the given position using the difference between that position and the current camera location as a direction vector and the general
+	 * A convenience method for auto-setting the frame based on a world position the user desires the camera to look at. It points the camera towards
+	 * the given position using the difference between that position and the current camera location as a direction vector and the general
 	 * worldUpVector to compute up and left camera vectors.
 	 * 
 	 * @param x where to look at in terms of world coordinates (x)
@@ -247,8 +255,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	};
 
 	/**
-	 * Forces all aspect of the camera to be updated from internal values, and sets all dirty flags to true so that the next apply() call will
-	 * fully set this camera to the render context.
+	 * Forces all aspect of the camera to be updated from internal values, and sets all dirty flags to true so that the next apply() call will fully
+	 * set this camera to the render context.
 	 */
 	Camera.prototype.update = function() {
 		this._depthRangeDirty = true;
@@ -273,8 +281,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	};
 
 	/**
-	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or
-	 * intersecting.
+	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting.
 	 * 
 	 * @param bound the bound to check for culling
 	 * @return intersection type
@@ -652,8 +659,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	};
 
 	/**
-	 * Apply this camera's values to the given Renderer. Only values determined to be dirty (via updates, setters, etc.) will be applied. This
-	 * method must be run in the same thread as a valid OpenGL context.
+	 * Apply this camera's values to the given Renderer. Only values determined to be dirty (via updates, setters, etc.) will be applied. This method
+	 * must be run in the same thread as a valid OpenGL context.
 	 * 
 	 * @param renderer the Renderer to use.
 	 */

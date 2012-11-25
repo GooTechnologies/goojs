@@ -1,6 +1,10 @@
 define(['goo/renderer/Camera'], function(Camera) {
 	"use strict";
 
+	/**
+	 * @name SimplePartitioner
+	 * @class Culls entities based on camera frustum and boundings
+	 */
 	function SimplePartitioner() {
 	}
 

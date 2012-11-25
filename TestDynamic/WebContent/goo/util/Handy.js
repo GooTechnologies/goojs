@@ -1,6 +1,10 @@
 define(function() {
 	"use strict";
 
+	/**
+	 * @name Handy
+	 * @class Object listener utilities
+	 */
 	function Handy() {
 	}
 

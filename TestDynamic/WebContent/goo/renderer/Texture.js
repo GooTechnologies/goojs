@@ -2,8 +2,6 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 	"use strict";
 
 	/**
-	 * Creates a new texture object
-	 * 
 	 * @name Texture
 	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
 	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes

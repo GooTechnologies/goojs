@@ -3,8 +3,6 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 	"use strict";
 
 	/**
-	 * Creates a new world object
-	 * 
 	 * @name World
 	 * @class Main handler for an entity world
 	 * @property {Float} tpf Timer per frame in seconds

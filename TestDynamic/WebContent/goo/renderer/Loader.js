@@ -1,6 +1,10 @@
 define(function() {
 	"use strict";
 
+	/**
+	 * @name Loader
+	 * @class Image loader util
+	 */
 	function Loader() {
 		this.crossOrigin = 'anonymous';
 	}

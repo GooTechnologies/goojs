@@ -2,8 +2,6 @@ define(function() {
 	"use strict";
 
 	/**
-	 * Creates a new Entity
-	 * 
 	 * @name Entity
 	 * @class A gameworld object and container of components
 	 * @param {World} world A {@link World} reference

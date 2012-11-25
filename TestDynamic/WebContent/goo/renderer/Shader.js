@@ -4,8 +4,6 @@ define(
 		"use strict";
 
 		/**
-		 * Creates a new shader object
-		 * 
 		 * @name Shader
 		 * @class Defines vertex and fragment shader and bindings to shader callbacks
 		 * @param {String} name Shader name (mostly for debug/tool use)
