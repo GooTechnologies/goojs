@@ -1,7 +1,7 @@
 define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
-		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose'], function(TransformComponent, MeshData, JsonUtils,
-	MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose) {
+		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/AnimationClip'], function(TransformComponent,
+	MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip) {
 	"use strict";
 
 	/**
@@ -593,25 +593,25 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		// parse channels
 		if (root.Channels) {
 			var array = root.Channels;
-			for ( var i = 0, max = array.size(); i < max; i++) {
+			for ( var i = 0, max = array.length; i < max; i++) {
 				var chanObj = array[i];
 				var type = chanObj['Type'];
 				var name = chanObj['Name'];
 				var times = JsonUtils.parseChannelTimes(chanObj, this.useCompression);
 				var channel;
-				if ("Joint".equals(type)) {
+				if ("Joint" == type) {
 					var jointName = chanObj['JointName'];
 					var jointIndex = chanObj['JointIndex'];
 					var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
 					var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
 					var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
 					channel = new JointChannel(jointName, jointIndex, times, rots, trans, scales);
-				} else if ("Transform".equals(type)) {
+				} else if ("Transform" == type) {
 					var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
 					var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
 					var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
 					channel = new TransformChannel(name, times, rots, trans, scales);
-				} else if ("FloatLERP".equals(type)) {
+				} else if ("FloatLERP" == type) {
 					channel = new InterpolatedFloatChannel(name, times, JsonUtils.parseFloatLERPValues(chanObj, this.useCompression));
 				} else {
 					console.warn("Unhandled channel type: " + type);

@@ -103,7 +103,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					}
 
 					if (skinMeshes.length > 0) {
-						setupAnimations(skinMeshes[0].currentPose, 'resources/careerrun/run.anim');
+						loadAnimations(skinMeshes[0].currentPose, 'resources/careerrun/run.anim');
 					}
 				},
 				onError : function(error) {
@@ -120,7 +120,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			});
 		}
 
-		function loadAnimations() {
+		function loadAnimations(pose, modelUrl) {
 			var request = new XMLHttpRequest();
 			request.open('GET', modelUrl, true);
 			var that = this;
@@ -144,7 +144,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 			}; // new Timer()
 			animationManager = new AnimationManager(timer, pose);
-			animationManager.setApplier(new SimpleAnimationApplier());
+			animationManager.applier = new SimpleAnimationApplier();
 
 			var importer = new JSONImporter();
 
