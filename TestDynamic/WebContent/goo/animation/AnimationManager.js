@@ -11,6 +11,10 @@ define(['goo/math/Transform'], function(Transform) {
 		this.globalTimer = globalTimer;
 
 		this.layers = [];
+		this.applier = null; // animationapplier
+
+		this.updateRate = 1.0 / 60.0;
+		this.lastUpdate = 0.0;
 
 		// add our base layer
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
@@ -28,21 +32,21 @@ define(['goo/math/Transform'], function(Transform) {
 
 	AnimationManager.prototype.update = function() {
 		// grab current global time
-		var globalTime = _globalTimer.getTimeInSeconds();
+		var globalTime = this.globalTimer.getTimeInSeconds();
 
 		// check throttle
-		if (_updateRate != 0.0) {
-			if (globalTime - _lastUpdate < _updateRate) {
+		if (this.updateRate != 0.0) {
+			if (globalTime - this.lastUpdate < this.updateRate) {
 				return;
 			}
 
 			// we subtract a bit to maintain our desired rate, even if there are some gc pauses, etc.
-			_lastUpdate = globalTime - (globalTime - _lastUpdate) % _updateRate;
+			this.lastUpdate = globalTime - (globalTime - this.lastUpdate) % this.updateRate;
 		}
 
 		// move the time forward on the layers
-		for ( var i = 0; i < _layers.size(); ++i) {
-			var layer = _layers.get(i);
+		for ( var i = 0; i < this.layers.length; ++i) {
+			var layer = this.layers[i];
 			var state = layer.getCurrentState();
 			if (state != null) {
 				state.update(globalTime, layer);
@@ -50,19 +54,19 @@ define(['goo/math/Transform'], function(Transform) {
 		}
 
 		// call apply on blend module, passing in pose
-		if (!_applyToPoses.isEmpty()) {
-			for ( var i = 0; i < _applyToPoses.size(); ++i) {
-				var pose = _applyToPoses.get(i);
-				_applier.applyTo(pose, this);
+		if (this.applyToPoses.length > 0) {
+			for ( var i = 0; i < this.applyToPoses.length; ++i) {
+				var pose = this.applyToPoses[i];
+				this.applier.applyTo(pose, this);
 			}
 		}
 
 		// apply for non-pose related assets
-		_applier.apply(_sceneRoot, this);
+		// this.applier.apply(S_sceneRoot, this);
 
 		// post update to clear states
-		for ( var i = 0; i < _layers.size(); ++i) {
-			var layer = _layers.get(i);
+		for ( var i = 0; i < this.layers.length; ++i) {
+			var layer = this.layers[i];
 			var state = layer.getCurrentState();
 			if (state != null) {
 				state.postUpdate(layer);
