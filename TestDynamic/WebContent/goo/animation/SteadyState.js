@@ -23,10 +23,10 @@ define(['goo/animation/AbstractFiniteState'], function(AbstractFiniteState) {
 	SteadyState.prototype.update = function(globalTime, layer) {
 		if (!this._sourceTree.setTime(globalTime, layer.manager)) {
 			var lastOwner = this.getLastStateOwner();
-			if (this._endTransition != null) {
+			if (this._endTransition !== null) {
 				// time to move to end transition
 				var newState = this._endTransition.doTransition(this, layer);
-				if (newState != null) {
+				if (newState !== null) {
 					newState.resetClips(layer.getManager());
 					newState.update(globalTime, layer);
 				}

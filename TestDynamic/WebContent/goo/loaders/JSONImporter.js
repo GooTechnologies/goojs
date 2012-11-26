@@ -543,7 +543,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 			var root = value.isObject();
 			// read clip info
 			if (!root.containsKey("Clips") || !root.containsKey("Layers")) {
-				if (completeCallback != null) {
+				if (completeCallback !== null) {
 					completeCallback.onSuccess(outputStore);
 				}
 				return;
@@ -573,7 +573,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 				},
 				onError : function(t) {
 					JSONImporter.logger.severe("failed loading tree clips: " + t);
-					if (completeCallback != null) {
+					if (completeCallback !== null) {
 						completeCallback.onError(t);
 					}
 				}

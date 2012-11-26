@@ -51,7 +51,6 @@ define(['goo/animation/AbstractAnimationChannel', 'goo/math/Quaternion', 'goo/ma
 					this._rotations[index4A + 3]]);
 			var endR = new Quaternion().set([this._rotations[index4B + 0], this._rotations[index4B + 1], this._rotations[index4B + 2],
 					this._rotations[index4B + 3]]);
-			console.log(endR);
 			if (!startR.equals(endR)) {
 				startR.slerp(endR, progressPercent);
 			}

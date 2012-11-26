@@ -17,14 +17,14 @@ define(['goo/animation/JointData'], function(JointData) {
 		var data = manager.getCurrentSourceData();
 
 		// cycle through, pulling out and applying those we know about
-		if (data != null) {
+		if (data !== null) {
 			for ( var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) { // ignore
 				} else if (value instanceof TransformData) {
 					var transformData = value;
 					var applyTo = findChild(root, key);
-					if (applyTo != null) {
+					if (applyTo !== null) {
 						transformData.applyTo(applyTo);
 					}
 				}
@@ -41,7 +41,7 @@ define(['goo/animation/JointData'], function(JointData) {
 			return root;
 		} else if (root instanceof Node) {
 			var spat = root.getChild(key);
-			if (spat != null) {
+			if (spat !== null) {
 				this.spatialCache[key] = spat;
 				return spat;
 			}

@@ -238,7 +238,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		}
 		this._left.copy(this._up).cross(this._direction).normalize();
 		if (this._left.equals(Vector3.ZERO)) {
-			if (this._direction.x != 0.0) {
+			if (this._direction.x !== 0.0) {
 				this._left.set(this._direction.y, -this._direction.x, 0);
 			} else {
 				this._left.set(0, this._direction.z, -this._direction.y);

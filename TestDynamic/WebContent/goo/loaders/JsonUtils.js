@@ -170,12 +170,12 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 
 			// pull a start window, if set
-			if (args[0] != null) {
+			if (args[0] !== null) {
 				transition.setStartWindow(args[0]);
 			}
 
 			// pull an end window, if set
-			if (args[1] != null) {
+			if (args[1] !== null) {
 				transition.setEndWindow(args[1]);
 			}
 
@@ -407,7 +407,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 
 			var scalesVal = chanObj.ScaleSamples;
-			if (scalesVal != null) {
+			if (scalesVal) {
 				if (useCompression) {
 					var scaleOffset = chanObj.ScaleOffsetScale;
 					var xOffset = scaleOffset[0];
@@ -434,10 +434,10 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				var val = values[i];
 				if (val) {
 					if ("*" === val) {
-						quats[i * 4 + 0] = lastQuat.getX();
-						quats[i * 4 + 1] = lastQuat.getY();
-						quats[i * 4 + 2] = lastQuat.getZ();
-						quats[i * 4 + 3] = lastQuat.getW();
+						quats[i * 4 + 0] = lastQuat.x;
+						quats[i * 4 + 1] = lastQuat.y;
+						quats[i * 4 + 2] = lastQuat.z;
+						quats[i * 4 + 3] = lastQuat.w;
 					}
 				} else {
 					var valsArray = val;
@@ -447,10 +447,10 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 						var z = valsArray[2];
 						var w = valsArray[3];
 						lastQuat.set(x, y, z, w);
-						quats[i * 4 + 0] = lastQuat.getX();
-						quats[i * 4 + 1] = lastQuat.getY();
-						quats[i * 4 + 2] = lastQuat.getZ();
-						quats[i * 4 + 3] = lastQuat.getW();
+						quats[i * 4 + 0] = lastQuat.x;
+						quats[i * 4 + 1] = lastQuat.y;
+						quats[i * 4 + 2] = lastQuat.z;
+						quats[i * 4 + 3] = lastQuat.w;
 					}
 				}
 			}
@@ -469,9 +469,9 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				var val = values[i];
 				if (val) {
 					if ("*" === val) {
-						rVal[i * 3 + 0] = lastVec.getX();
-						rVal[i * 3 + 1] = lastVec.getY();
-						rVal[i * 3 + 2] = lastVec.getZ();
+						rVal[i * 3 + 0] = lastVec.x;
+						rVal[i * 3 + 1] = lastVec.y;
+						rVal[i * 3 + 2] = lastVec.z;
 					}
 				} else {
 					var valsArray = val.isArray();
@@ -480,9 +480,9 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 						var y = valsArray[1];
 						var z = valsArray[2];
 						lastVec.set(x, y, z);
-						rVal[i * 3 + 0] = lastVec.getX();
-						rVal[i * 3 + 1] = lastVec.getY();
-						rVal[i * 3 + 2] = lastVec.getZ();
+						rVal[i * 3 + 0] = lastVec.x;
+						rVal[i * 3 + 1] = lastVec.y;
+						rVal[i * 3 + 2] = lastVec.z;
 					}
 				}
 			}

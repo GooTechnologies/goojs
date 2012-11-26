@@ -48,7 +48,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], 
 		var globalTime = this.globalTimer.getTimeInSeconds();
 
 		// check throttle
-		if (this.updateRate != 0.0) {
+		if (this.updateRate !== 0.0) {
 			if (globalTime - this.lastUpdate < this.updateRate) {
 				return;
 			}

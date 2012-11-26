@@ -413,7 +413,7 @@ define(["goo/math/Vector"], function(Vector) {
 		}
 		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
 			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
-	}
+	};
 
 	return Quaternion;
 });

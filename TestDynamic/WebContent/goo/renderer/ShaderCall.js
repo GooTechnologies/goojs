@@ -197,12 +197,12 @@ define(function() {
 
 	function compareArrays(a1, a2) {
 		var l = a1.length;
-		if (l != a2.length) {
+		if (l !== a2.length) {
 			return false;
 		}
 
 		for ( var i = 0; i < l; i++) {
-			if (a1[i] != a2[i]) {
+			if (a1[i] !== a2[i]) {
 				return false;
 			}
 		}

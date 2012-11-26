@@ -377,7 +377,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-		if (record.boundTexture === undefined || (texture.glTexture !== undefined && record.boundTexture != texture.glTexture)) {
+		if (record.boundTexture === undefined || (texture.glTexture !== undefined && record.boundTexture !== texture.glTexture)) {
 			context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
