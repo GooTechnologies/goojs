@@ -1,4 +1,4 @@
-define(['goo/animation/TransformChannel'], function(TransformChannel) {
+define(['goo/animation/TransformChannel', 'goo/animation/JointData'], function(TransformChannel, JointData) {
 	"use strict";
 
 	JointChannel.prototype = Object.create(TransformChannel.prototype);
@@ -15,6 +15,10 @@ define(['goo/animation/TransformChannel'], function(TransformChannel) {
 	}
 
 	JointChannel.JOINT_CHANNEL_NAME = '_jnt';
+
+	JointChannel.prototype.createStateDataObject = function() {
+		return new JointData();
+	};
 
 	return JointChannel;
 });

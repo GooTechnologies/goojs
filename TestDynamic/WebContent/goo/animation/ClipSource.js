@@ -13,5 +13,41 @@ define(['goo/math/Transform'], function(Transform) {
 		manager.getClipInstance(clip);
 	}
 
+	ClipSource.prototype.setTime = function(globalTime, manager) {
+		var instance = manager.getClipInstance(this.clip);
+		if (instance._active) {
+			var clockTime = instance._timeScale * (globalTime - instance._startTime);
+
+			var maxTime = this.clip.maxTime;
+			if (maxTime <= 0) {
+				return false;
+			}
+
+			// Check for looping.
+			if (instance._loopCount == -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
+				if (clockTime < 0) {
+					clockTime = maxTime + clockTime % maxTime;
+				} else {
+					clockTime %= maxTime;
+				}
+			} else if (clockTime < 0) {
+				clockTime = maxTime + clockTime;
+			}
+
+			// Check for past max time
+			if (clockTime > maxTime || clockTime < 0) {
+				clockTime = MathUtils.clamp(clockTime, 0, maxTime);
+				// signal to any listeners that we have ended our animation.
+				instance.fireAnimationFinished();
+				// deactivate this instance of the clip
+				instance.setActive(false);
+			}
+
+			// update the clip with the correct clip local time.
+			this.clip.update(clockTime, instance);
+		}
+		return instance.isActive();
+	};
+
 	return ClipSource;
 });

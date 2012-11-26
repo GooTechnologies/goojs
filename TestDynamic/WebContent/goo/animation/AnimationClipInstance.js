@@ -15,5 +15,15 @@ define(function() {
 		this.animationListeners = [];
 	}
 
+	AnimationClipInstance.prototype.getApplyTo = function(channel) {
+		var channelName = channel.channelName;
+		var rVal = this._clipStateObjects[channelName];
+		if (!rVal) {
+			rVal = channel.createStateDataObject();
+			this._clipStateObjects[channelName] = rVal;
+		}
+		return rVal;
+	};
+
 	return AnimationClipInstance;
 });

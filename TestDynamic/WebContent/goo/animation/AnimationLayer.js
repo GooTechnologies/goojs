@@ -75,9 +75,9 @@ define(['goo/math/Transform'], function(Transform) {
 	AnimationLayer.prototype.setCurrentState = function(state, rewind) {
 		this.currentState = state;
 		if (state) {
-			state.setLastStateOwner(this);
+			state._lastOwner = this;
 			if (rewind) {
-				state.resetClips(_manager);
+				state._globalStartTime = this.manager.globalTimer.getTimeInSeconds();
 			}
 		}
 	};

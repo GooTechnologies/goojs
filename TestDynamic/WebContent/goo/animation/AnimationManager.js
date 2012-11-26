@@ -60,8 +60,8 @@ define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], 
 		// move the time forward on the layers
 		for ( var i = 0; i < this.layers.length; ++i) {
 			var layer = this.layers[i];
-			var state = layer.getCurrentState();
-			if (state != null) {
+			var state = layer.currentState;
+			if (state !== null) {
 				state.update(globalTime, layer);
 			}
 		}

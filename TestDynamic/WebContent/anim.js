@@ -12,6 +12,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	Handy, Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource) {
 	"use strict";
 
+	var animationManager = null;
+
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner();
@@ -112,6 +114,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 
 		goo.callbacks.push(function(tpf) {
+			if (animationManager) {
+				animationManager.update();
+			}
+
 			for ( var i = 0; i < skinMeshes.length; i++) {
 				var entity = skinMeshes[i];
 				var meshData = entity.meshDataComponent.meshData;
@@ -128,16 +134,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
 					setupAnimations(pose, request.responseText);
-					callback.onSuccess(entities);
+					// callback.onSuccess(entities);
 				} else {
-					callback.onError(request.statusText);
+					console.error(request.statusText);
+					// callback.onError(request.statusText);
 				}
 			}
 		};
 		request.send();
 	}
 
-	var animationManager = null;
 	function setupAnimations(pose, animationTree) {
 		// setup manager
 		var timer = {

@@ -46,6 +46,21 @@ Camera//
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
+		var script = {
+			zero : new Vector3(),
+			run : function(entity) {
+				var t = entity._world.time;
+
+				var camera = entity.cameraComponent.camera;
+				camera.translation.x = Math.sin(t * 1.0) * 10 + 50;
+				camera.translation.y = 20;
+				camera.translation.z = Math.sin(t * 1.0) * 10 + 50;
+				camera.lookAt(this.zero, Vector3.UNIT_Y);
+				camera.onFrameChange();
+			}
+		};
+		cameraEntity.setComponent(new ScriptComponent(script));
+
 		// Examples of model loading
 		loadModels(goo);
 
