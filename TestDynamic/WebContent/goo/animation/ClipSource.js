@@ -46,7 +46,12 @@ define(['goo/math/Transform'], function(Transform) {
 			// update the clip with the correct clip local time.
 			this.clip.update(clockTime, instance);
 		}
-		return instance.isActive();
+		return instance._active;
+	};
+
+	ClipSource.prototype.isActive = function(manager) {
+		var instance = manager.getClipInstance(this.clip);
+		return instance._active && this.clip.maxTime > 0;
 	};
 
 	return ClipSource;

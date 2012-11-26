@@ -35,7 +35,17 @@ define(['goo/animation/AbstractFiniteState'], function(AbstractFiniteState) {
 				}
 			}
 		}
-	}
+	};
+
+	SteadyState.prototype.postUpdate = function(layer) {
+		if (!this._sourceTree.isActive(layer.manager)) {
+			var lastOwner = this._lastOwner;
+			if (this._endTransition === null) {
+				// we're done. end.
+				lastOwner.replaceState(this, null);
+			}
+		}
+	};
 
 	return SteadyState;
 });

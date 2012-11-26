@@ -173,7 +173,7 @@ define(
 					}
 					var def = this.bindings[name];
 					if (def.type && def.value) {
-						var value = typeof (def.value) === 'function' ? def.value() : def.value;
+						var value = typeof (def.value) === 'function' ? def.value(shaderInfo) : def.value;
 						switch (def.type) {
 							case 'float':
 								mapping.uniform1f(value);
@@ -195,13 +195,13 @@ define(
 								mapping.uniform4fv(value);
 								break;
 							case 'mat2':
-								mapping.uniformMatrix2fv(value);
+								mapping.uniformMatrix2fv(false, value);
 								break;
 							case 'mat3':
-								mapping.uniformMatrix3fv(value);
+								mapping.uniformMatrix3fv(false, value);
 								break;
 							case 'mat4':
-								mapping.uniformMatrix4fv(value);
+								mapping.uniformMatrix4fv(false, value);
 								break;
 							default:
 								throw 'Uniform type not handled: ' + def.type;

@@ -20,6 +20,7 @@ define(["goo/math/Vector"], function(Vector) {
 	}
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
+	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
 	 * @static
@@ -213,6 +214,58 @@ define(["goo/math/Vector"], function(Vector) {
 		return target;
 	};
 
+	Quaternion.slerp = function(startQuat, endQuat, changeAmnt, workQuat) {
+		// check for weighting at either extreme
+		if (changeAmnt === 0.0) {
+			return this.set(startQuat);
+		} else if (changeAmnt === 1.0) {
+			return this.set(endQuat);
+		}
+
+		// Check for equality and skip operation.
+		if (startQuat.equals(endQuat)) {
+			return copy(startQuat);
+		}
+
+		var result = startQuat.dot(endQuat);
+		workQuat.copy(endQuat);
+
+		if (result < 0.0) {
+			// Negate the second quaternion and the result of the dot product
+			workQuat.mul(-1);
+			result = -result;
+		}
+
+		// Set the first and second scale for the interpolation
+		var scale0 = 1 - changeAmnt;
+		var scale1 = changeAmnt;
+
+		// Check if the angle between the 2 quaternions was big enough to
+		// warrant such calculations
+		if (1 - result > 0.1) {// Get the angle between the 2 quaternions,
+			// and then store the sin() of that angle
+			var theta = Math.acos(result);
+			var invSinTheta = 1 / Math.sin(theta);
+
+			// Calculate the scale for q1 and q2, according to the angle and
+			// it's sine value
+			scale0 = Math.sin((1 - changeAmnt) * theta) * invSinTheta;
+			scale1 = Math.sin(changeAmnt * theta) * invSinTheta;
+		}
+
+		// Calculate the x, y, z and w values for the quaternion by using a
+		// special form of linear interpolation for quaternions.
+		var x = scale0 * startQuat.x + scale1 * workQuat.x;
+		var y = scale0 * startQuat.y + scale1 * workQuat.y;
+		var z = scale0 * startQuat.z + scale1 * workQuat.z;
+		var w = scale0 * startQuat.w + scale1 * workQuat.w;
+
+		workQuat.set(x, y, z, w);
+
+		// Return the interpolated quaternion
+		return workQuat;
+	};
+
 	/**
 	 * @description Performs a component-wise addition between two vectors and stores the result locally.
 	 * @param {Quaternion} rhs Vector on the right-hand side.
@@ -292,6 +345,24 @@ define(["goo/math/Vector"], function(Vector) {
 	Quaternion.prototype.scalarDiv = function(rhs) {
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
+
+	Quaternion.prototype.slerp = function(endQuat, changeAmnt) {
+		var end = new Quaternion().copy(endQuat);
+		Quaternion.slerp(this, endQuat, changeAmnt, end);
+		this.copy(end);
+		return this;
+	};
+
+	Quaternion.prototype.equals = function(o) {
+		if (this === o) {
+			return true;
+		}
+		if (!(o instanceof Quaternion)) {
+			return false;
+		}
+		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
+			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
+	}
 
 	return Quaternion;
 });

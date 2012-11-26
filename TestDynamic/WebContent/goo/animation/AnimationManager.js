@@ -61,7 +61,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], 
 		for ( var i = 0; i < this.layers.length; ++i) {
 			var layer = this.layers[i];
 			var state = layer.currentState;
-			if (state !== null) {
+			if (state) {
 				state.update(globalTime, layer);
 			}
 		}
@@ -80,8 +80,8 @@ define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], 
 		// post update to clear states
 		for ( var i = 0; i < this.layers.length; ++i) {
 			var layer = this.layers[i];
-			var state = layer.getCurrentState();
-			if (state != null) {
+			var state = layer.currentState;
+			if (state) {
 				state.postUpdate(layer);
 			}
 		}

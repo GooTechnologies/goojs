@@ -427,6 +427,13 @@ define(["goo/math/Vector"], function(Vector) {
 		return this;
 	};
 
+	Vector3.prototype.lerp = function(endVec, scalar) {
+		this.x = (1.0 - scalar) * this.x + scalar * endVec.x;
+		this.y = (1.0 - scalar) * this.y + scalar * endVec.y;
+		this.z = (1.0 - scalar) * this.z + scalar * endVec.z;
+		return this;
+	};
+
 	Vector3.prototype.equals = function(rhs) {
 		return Math.abs(this.x - rhs.x) < 0.000001 && Math.abs(this.y - rhs.y) < 0.000001 && Math.abs(this.z - rhs.z) < 0.000001;
 	};
