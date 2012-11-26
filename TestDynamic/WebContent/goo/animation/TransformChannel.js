@@ -33,16 +33,16 @@ define(['goo/animation/AbstractAnimationChannel', 'goo/math/Quaternion', 'goo/ma
 			var index4A = sampleIndex * 4, index3A = sampleIndex * 3;
 			var index4B = (sampleIndex + 1) * 4, index3B = (sampleIndex + 1) * 3;
 			if (progressPercent === 0.0) {
-				transformData.setRotation(this._rotations[index4A + 0], this._rotations[index4A + 1], this._rotations[index4A + 2],
-					this._rotations[index4A + 3]);
-				transformData.setTranslation(this._translations[index3A + 0], this._translations[index3A + 1], this._translations[index3A + 2]);
-				transformData.setScale(this._scales[index3A + 0], this._scales[index3A + 1], this._scales[index3A + 2]);
+				transformData._rotation.set([this._rotations[index4A + 0], this._rotations[index4A + 1], this._rotations[index4A + 2],
+						this._rotations[index4A + 3]]);
+				transformData._translation.set([this._translations[index3A + 0], this._translations[index3A + 1], this._translations[index3A + 2]]);
+				transformData._scale.set([this._scales[index3A + 0], this._scales[index3A + 1], this._scales[index3A + 2]]);
 				return;
 			} else if (progressPercent === 1.0) {
-				transformData.setRotation(this._rotations[index4B + 0], this._rotations[index4B + 1], this._rotations[index4B + 2],
-					this._rotations[index4B + 3]);
-				transformData.setTranslation(this._translations[index3B + 0], this._translations[index3B + 1], this._translations[index3B + 2]);
-				transformData.setScale(this._scales[index3B + 0], this._scales[index3B + 1], this._scales[index3B + 2]);
+				transformData._rotation.set([this._rotations[index4B + 0], this._rotations[index4B + 1], this._rotations[index4B + 2],
+						this._rotations[index4B + 3]]);
+				transformData._translation.set([this._translations[index3B + 0], this._translations[index3B + 1], this._translations[index3B + 2]]);
+				transformData._scale.set([this._scales[index3B + 0], this._scales[index3B + 1], this._scales[index3B + 2]]);
 				return;
 			}
 
