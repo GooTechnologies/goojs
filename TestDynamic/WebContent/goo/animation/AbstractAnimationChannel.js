@@ -10,6 +10,9 @@ define(function() {
 	 */
 	function AbstractAnimationChannel(channelName, times) {
 		this.channelName = channelName;
+		if (!times.length) {
+			console.log('asdf');
+		}
 		this.times = times !== undefined ? times.slice(0) : []; // or null?
 	}
 

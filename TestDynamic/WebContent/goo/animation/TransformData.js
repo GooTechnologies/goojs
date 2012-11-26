@@ -11,5 +11,13 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 		this._translation = new Vector3().copy(Vector3.ZERO);
 	}
 
+	TransformData.prototype.applyTo = function(transform) {
+		transform.setIdentity();
+		// TODO: matrix vs quaternion?
+		transform.rotation.copy(this._rotation);
+		transform.scale.copy(this._scale);
+		transform.translation.copy(this._translation);
+	};
+
 	return TransformData;
 });

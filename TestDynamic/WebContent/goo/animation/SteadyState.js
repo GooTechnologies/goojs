@@ -47,5 +47,9 @@ define(['goo/animation/AbstractFiniteState'], function(AbstractFiniteState) {
 		}
 	};
 
+	SteadyState.prototype.getCurrentSourceData = function(manager) {
+		return this._sourceTree.getSourceData(manager);
+	};
+
 	return SteadyState;
 });

@@ -20,5 +20,12 @@ define(['goo/animation/TransformChannel', 'goo/animation/JointData'], function(T
 		return new JointData();
 	};
 
+	JointChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, applyTo) {
+		TransformChannel.prototype.setCurrentSample.call(this, sampleIndex, progressPercent, applyTo);
+
+		var jointData = applyTo;
+		jointData._jointIndex = this._jointIndex;
+	};
+
 	return JointChannel;
 });

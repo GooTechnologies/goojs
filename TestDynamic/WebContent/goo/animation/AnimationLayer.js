@@ -102,5 +102,17 @@ define(['goo/math/Transform'], function(Transform) {
 		return false;
 	};
 
+	AnimationLayer.prototype.getCurrentSourceData = function() {
+		if (this.layerBlender !== null) {
+			return this.layerBlender.getBlendedSourceData(this.manager);
+		}
+
+		if (this.currentState !== null) {
+			return this.currentState.getCurrentSourceData(this.manager);
+		} else {
+			return null;
+		}
+	};
+
 	return AnimationLayer;
 });

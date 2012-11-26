@@ -149,7 +149,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 
 				if (skinMeshes.length > 0) {
-					loadAnimations(skinMeshes[0].currentPose, 'resources/careerrun/run.anim');
+					loadAnimations(skinMeshes[0].meshDataComponent.meshData.currentPose, 'resources/careerrun/run.anim');
 				}
 			},
 			onError : function(error) {
@@ -191,8 +191,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function setupAnimations(pose, animationTree) {
 		// setup manager
 		var timer = {
+			start : Date.now(),
 			getTimeInSeconds : function() {
-				return Date.now();
+				return (Date.now() - this.start) / 1000.0;
 			}
 		}; // new Timer()
 		animationManager = new AnimationManager(timer, pose);

@@ -104,5 +104,16 @@ define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], 
 		return instance;
 	};
 
+	AnimationManager.prototype.getCurrentSourceData = function() {
+		// set up our layer blending.
+		for ( var i = 0; i < this.layers.length - 1; i++) {
+			var layerA = this.layers[i];
+			var layerB = this.layers[i + 1];
+			layerB.updateLayerBlending(layerA);
+		}
+
+		return this.layers[this.layers.length - 1].getCurrentSourceData();
+	};
+
 	return AnimationManager;
 });

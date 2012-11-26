@@ -24,7 +24,7 @@ define(['goo/math/Transform'], function(Transform) {
 			}
 
 			// Check for looping.
-			if (instance._loopCount == -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
+			if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
 				if (clockTime < 0) {
 					clockTime = maxTime + clockTime % maxTime;
 				} else {
@@ -52,6 +52,10 @@ define(['goo/math/Transform'], function(Transform) {
 	ClipSource.prototype.isActive = function(manager) {
 		var instance = manager.getClipInstance(this.clip);
 		return instance._active && this.clip.maxTime > 0;
+	};
+
+	ClipSource.prototype.getSourceData = function(manager) {
+		return manager.getClipInstance(this.clip)._clipStateObjects;
 	};
 
 	return ClipSource;

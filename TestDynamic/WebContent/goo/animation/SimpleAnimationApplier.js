@@ -1,4 +1,4 @@
-define([''], function() {
+define(['goo/animation/JointData'], function(JointData) {
 	"use strict";
 
 	/**
@@ -22,8 +22,7 @@ define([''], function() {
 				var value = data[key];
 				if (value instanceof JointData) { // ignore
 				} else if (value instanceof TransformData) {
-					var transformData = (TransformData)
-					value;
+					var transformData = value;
 					var applyTo = findChild(root, key);
 					if (applyTo != null) {
 						transformData.applyTo(applyTo);
@@ -58,8 +57,8 @@ define([''], function() {
 			for ( var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) {
-					if (value.getJointIndex() >= 0) {
-						value.applyTo(applyToPose.getLocalJointTransforms()[value.getJointIndex()]);
+					if (value._jointIndex >= 0) {
+						value.applyTo(applyToPose.localTransforms[value._jointIndex]);
 					}
 				} else if (value instanceof TriggerData) {
 					if (value.isArmed()) {
