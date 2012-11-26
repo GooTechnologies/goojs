@@ -171,7 +171,7 @@ define([], function() {
 			target.data[i] = (clean &= (rhs.data[i] < 0.0 || rhs.data[i] > 0.0)) ? lhs.data[i] / rhs.data[i] : 0.0;
 		}
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Vector.div] Attempted to divide by zero!");
 		}
 
@@ -268,7 +268,7 @@ define([], function() {
 			target.data[i] = lhs.data[i] * rhs;
 		}
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Vector.scalarDiv] Attempted to divide by zero!");
 		}
 
@@ -458,7 +458,7 @@ define([], function() {
 			this.data[i] *= l;
 		}
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Vector.prototype.normalize] Attempted to divide by zero!");
 		}
 

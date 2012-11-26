@@ -327,7 +327,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	 * Updates internal frustum coefficient values to reflect the current frustum plane values.
 	 */
 	Camera.prototype.onFrustumChange = function() {
-		if (this.projectionMode == Camera.Perspective) {
+		if (this.projectionMode === Camera.Perspective) {
 			var nearSquared = this._frustumNear * this._frustumNear;
 			var leftSquared = this._frustumLeft * this._frustumLeft;
 			var rightSquared = this._frustumRight * this._frustumRight;
@@ -425,7 +425,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		this._worldPlane[Camera.TOP_PLANE].normal.copy(planeNormal);
 		this._worldPlane[Camera.TOP_PLANE].constant = (this.translation.dot(planeNormal));
 
-		if (this.projectionMode == Camera.Parallel) {
+		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
 				this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].contant + this._frustumLeft);
 				this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].contant - this._frustumRight);
@@ -461,7 +461,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	 * Updates the value of our projection matrix.
 	 */
 	Camera.prototype.updateProjectionMatrix = function() {
-		if (this.projectionMode == Camera.Parallel) {
+		if (this.projectionMode === Camera.Parallel) {
 			this.projection.setIdentity();
 
 			this.projection.e00 = 2.0 / (this._frustumRight - this._frustumLeft);
@@ -470,7 +470,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 			this.projection.e03 = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
 			this.projection.e13 = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
 			this.projection.e23 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
-		} else if (this.projectionMode == Camera.Perspective) {
+		} else if (this.projectionMode === Camera.Perspective) {
 			this.projection.setIdentity();
 
 			this.projection.e00 = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
@@ -524,7 +524,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		}
 
 		var result = store;
-		if (result == null) {
+		if (result === null) {
 			result = new Ray3();
 		}
 		var origin = new Vector3();
@@ -546,7 +546,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	 * @return a vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldCoordinates = function(screenPosition, zDepth, store) {
-		if (store == null) {
+		if (store === null) {
 			store = new Vector3();
 		}
 		checkInverseModelViewProjection();
@@ -600,7 +600,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	};
 
 	Camera.prototype.getNormalizedDeviceCoordinates = function(worldPosition, store) {
-		if (store == null) {
+		if (store === null) {
 			store = new Vector3();
 		}
 		this.checkModelViewProjection();

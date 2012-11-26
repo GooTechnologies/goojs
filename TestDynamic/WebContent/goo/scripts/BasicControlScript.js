@@ -40,7 +40,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 		this.rotationVector = new Vector3(0, 0, 0);
 
 		this.handleEvent = function(event) {
-			if (typeof this[event.type] == 'function') {
+			if (typeof this[event.type] === 'function') {
 				this[event.type](event);
 			}
 		};

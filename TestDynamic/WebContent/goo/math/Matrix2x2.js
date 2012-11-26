@@ -106,7 +106,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 		target.e01 = (clean &= (rhs.e01 < 0.0 || rhs.e01 > 0.0)) ? lhs.e01 / rhs.e01 : 0.0;
 		target.e11 = (clean &= (rhs.e11 < 0.0 || rhs.e11 > 0.0)) ? lhs.e11 / rhs.e11 : 0.0;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix2x2.div] Attempted to divide by zero!");
 		}
 
@@ -203,7 +203,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 		target.e01 = lhs.e01 * rhs;
 		target.e11 = lhs.e11 * rhs;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix2x2.scalarDiv] Attempted to divide by zero!");
 		}
 

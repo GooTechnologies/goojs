@@ -134,7 +134,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		target.e12 = (clean &= (rhs.e12 < 0.0 || rhs.e12 > 0.0)) ? lhs.e12 / rhs.e12 : 0.0;
 		target.e22 = (clean &= (rhs.e22 < 0.0 || rhs.e22 > 0.0)) ? lhs.e22 / rhs.e22 : 0.0;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix3x3.div] Attempted to divide by zero!");
 		}
 
@@ -251,7 +251,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		target.e12 = lhs.e12 * rhs;
 		target.e22 = lhs.e22 * rhs;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix3x3.scalarDiv] Attempted to divide by zero!");
 		}
 
@@ -610,6 +610,10 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		this.data[8] = zAxis.z;
 
 		return this;
+	};
+
+	Matrix3x3.prototype.copyQuaternion = function(quaternion) {
+		return quaternion.toRotationMatrix(this);
 	};
 
 	Matrix3x3.prototype.clone = function() {

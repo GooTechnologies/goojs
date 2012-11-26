@@ -33,7 +33,7 @@ define(['goo/math/Transform'], function(Transform) {
 		// see if current state has a transition
 		if (state instanceof SteadyState) {
 			var nextState = state.doTransition(key, this);
-			if (nextState == null) {
+			if (nextState === null) {
 				// no transition found, check if there is a global transition
 				var transition = this.transitions[key];
 				if (transition === null) {
@@ -53,7 +53,7 @@ define(['goo/math/Transform'], function(Transform) {
 		} else if (state === null) {
 			// check if there is a global transition
 			var transition = this.transitions[key];
-			if (transition == null) {
+			if (transition === null) {
 				transition = this.transitions['*'];
 			}
 			if (transition !== null) {

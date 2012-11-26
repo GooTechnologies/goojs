@@ -11,7 +11,7 @@ define(['goo/animation/JointData'], function(JointData) {
 	}
 
 	SimpleAnimationApplier.prototype.apply = function(root, manager) {
-		if (root == null) {
+		if (root === null) {
 			return;
 		}
 		var data = manager.getCurrentSourceData();

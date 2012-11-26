@@ -37,7 +37,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 
 	Plane.prototype.reflectVector = function(unitVector, store) {
 		var result = store;
-		if (result == null) {
+		if (result === null) {
 			result = new Vector3();
 		}
 

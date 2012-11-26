@@ -40,8 +40,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		 *            <li>onSuccess(entities)
 		 *            <li>onError(error)
 		 *            </ul>
-		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-		 *            info)
+		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+		 *            function(attributes, info)
 		 * @returns Entities created during load
 		 */
 		JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
@@ -66,8 +66,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		 * 
 		 * @param {String} modelSource JSON model source as a string
 		 * @param textureDir Texture path
-		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-		 *            info)
+		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+		 *            function(attributes, info)
 		 * @returns Entities created during load
 		 */
 		JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
@@ -600,19 +600,19 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 					var name = chanObj['Name'];
 					var times = JsonUtils.parseChannelTimes(chanObj, this.useCompression);
 					var channel;
-					if ("Joint" == type) {
+					if ("Joint" === type) {
 						var jointName = chanObj['JointName'];
 						var jointIndex = chanObj['JointIndex'];
 						var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
 						var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
 						var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
 						channel = new JointChannel(jointName, jointIndex, times, rots, trans, scales);
-					} else if ("Transform" == type) {
+					} else if ("Transform" === type) {
 						var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
 						var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
 						var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);
 						channel = new TransformChannel(name, times, rots, trans, scales);
-					} else if ("FloatLERP" == type) {
+					} else if ("FloatLERP" === type) {
 						channel = new InterpolatedFloatChannel(name, times, JsonUtils.parseFloatLERPValues(chanObj, this.useCompression));
 					} else {
 						console.warn("Unhandled channel type: " + type);

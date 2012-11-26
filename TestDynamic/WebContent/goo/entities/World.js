@@ -41,7 +41,7 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 	World.prototype.getManager = function(type) {
 		for ( var i in this._managers) {
 			var manager = this._managers[i];
-			if (manager.type == type) {
+			if (manager.type === type) {
 				return manager;
 			}
 		}
@@ -65,7 +65,7 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 	World.prototype.getSystem = function(type) {
 		for ( var i in this._systems) {
 			var system = this._systems[i];
-			if (system.type == type) {
+			if (system.type === type) {
 				return system;
 			}
 		}

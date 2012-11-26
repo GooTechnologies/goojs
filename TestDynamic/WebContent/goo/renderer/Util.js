@@ -64,7 +64,7 @@ define(function() {
 
 	Util.clone = function(obj) {
 		// Handle the 3 simple types, and null or undefined
-		if (null == obj || "object" != typeof obj) {
+		if (null === obj || "object" != typeof obj) {
 			return obj;
 		}
 

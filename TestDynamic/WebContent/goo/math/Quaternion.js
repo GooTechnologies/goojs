@@ -110,7 +110,7 @@ define(["goo/math/Vector"], function(Vector) {
 		target.data[2] = (clean &= (rhs.data[2] < 0.0 || rhs.data[2] > 0.0)) ? lhs.data[2] / rhs.data[2] : 0.0;
 		target.data[3] = (clean &= (rhs.data[3] < 0.0 || rhs.data[3] > 0.0)) ? lhs.data[3] / rhs.data[3] : 0.0;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Quaternion.div] Attempted to divide by zero!");
 		}
 
@@ -207,7 +207,7 @@ define(["goo/math/Vector"], function(Vector) {
 		target.data[2] = lhs.data[2] * rhs;
 		target.data[3] = lhs.data[3] * rhs;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Quaternion.scalarDiv] Attempted to divide by zero!");
 		}
 
@@ -351,6 +351,57 @@ define(["goo/math/Vector"], function(Vector) {
 		Quaternion.slerp(this, endQuat, changeAmnt, end);
 		this.copy(end);
 		return this;
+	};
+
+	/**
+	 * @param store the matrix to store our result in. If null, a new matrix is created.
+	 * @return the rotation matrix representation of this quaternion (normalized) if store is not null and is read only.
+	 */
+	Quaternion.prototype.toRotationMatrix = function(store) {
+		var result = store;
+		if (!result) {
+			result = new Matrix3x3();
+		}
+
+		var norm = this.magnitudeSquared();
+		var s = norm > 0.0 ? 2.0 / norm : 0.0;
+
+		// compute xs/ys/zs first to save 6 multiplications, since xs/ys/zs
+		// will be used 2-4 times each.
+		var xs = this.x * s;
+		var ys = this.y * s;
+		var zs = this.z * s;
+		var xx = this.x * xs;
+		var xy = this.x * ys;
+		var xz = this.x * zs;
+		var xw = this.w * xs;
+		var yy = this.y * ys;
+		var yz = this.y * zs;
+		var yw = this.w * ys;
+		var zz = this.z * zs;
+		var zw = this.w * zs;
+
+		// using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
+		var d = store.data;
+
+		d[0] = 1.0 - (yy + zz);
+		d[1] = xy - zw;
+		d[2] = xz + yw;
+		d[3] = xy + zw;
+		d[4] = 1.0 - (xx + zz);
+		d[5] = yz - xw;
+		d[6] = xz - yw;
+		d[7] = yz + xw;
+		d[8] = 1.0 - (xx + yy);
+
+		return result;
+	};
+
+	/**
+	 * @return the squared magnitude of this quaternion.
+	 */
+	Quaternion.prototype.magnitudeSquared = function() {
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 	};
 
 	Quaternion.prototype.equals = function(o) {

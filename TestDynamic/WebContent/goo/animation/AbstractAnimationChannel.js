@@ -23,7 +23,7 @@ define(function() {
 	AbstractAnimationChannel.prototype.updateSample = function(clockTime, applyTo) {
 		// figure out what frames we are between and by how much
 		var lastFrame = this.times.length - 1;
-		if (clockTime < 0 || this.times.length == 1) {
+		if (clockTime < 0 || this.times.length === 1) {
 			setCurrentSample(0, 0.0, applyTo);
 		} else if (clockTime >= this.times[lastFrame]) {
 			setCurrentSample(lastFrame, 0.0, applyTo);

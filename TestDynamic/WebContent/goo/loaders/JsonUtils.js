@@ -78,7 +78,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			var layersObj = root.Layers;
 			for ( var key in layersObj) {
 				var layer;
-				if ("DEFAULT" == key) {
+				if ("DEFAULT" === key) {
 					layer = manager.getBaseAnimationLayer();
 				} else {
 					layer = new AnimationLayer(key);
@@ -152,18 +152,18 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			var transition;
 
 			// based on our "type", create our transition state...
-			if ("fade" == type) {
+			if ("fade" === type) {
 				transition = new FadeTransitionState(args.get(3).isString().stringValue(), args.get(4).isNumber().doubleValue(),
 					AbstractTwoStateLerpTransition.BlendType.valueOf(args.get(5).isString().stringValue()));
-			} else if ("syncfade" == type) {
+			} else if ("syncfade" === type) {
 				transition = new SyncFadeTransitionState(args.get(3).isString().stringValue(), args.get(4).isNumber().doubleValue(),
 					AbstractTwoStateLerpTransition.BlendType.valueOf(args.get(5).isString().stringValue()));
-			} else if ("frozen" == type) {
+			} else if ("frozen" === type) {
 				transition = new FrozenTransitionState(args.get(3).isString().stringValue(), args.get(4).isNumber().doubleValue(),
 					AbstractTwoStateLerpTransition.BlendType.valueOf(args.get(5).isString().stringValue()));
-			} else if ("immediate" == type) {
+			} else if ("immediate" === type) {
 				transition = new ImmediateTransitionState(args.get(3).isString().stringValue());
-			} else if ("ignore" == type) {
+			} else if ("ignore" === type) {
 				transition = new IgnoreTransitionState();
 			} else {
 				return null;
@@ -433,7 +433,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
 				if (val) {
-					if ("*" == val) {
+					if ("*" === val) {
 						quats[i * 4 + 0] = lastQuat.getX();
 						quats[i * 4 + 1] = lastQuat.getY();
 						quats[i * 4 + 2] = lastQuat.getZ();
@@ -441,7 +441,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 					}
 				} else {
 					var valsArray = val;
-					if (valsArray && valsArray.length == 4) {
+					if (valsArray && valsArray.length === 4) {
 						var x = valsArray[0];
 						var y = valsArray[1];
 						var z = valsArray[2];
@@ -468,14 +468,14 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
 				if (val) {
-					if ("*" == val) {
+					if ("*" === val) {
 						rVal[i * 3 + 0] = lastVec.getX();
 						rVal[i * 3 + 1] = lastVec.getY();
 						rVal[i * 3 + 2] = lastVec.getZ();
 					}
 				} else {
 					var valsArray = val.isArray();
-					if (valsArray && valsArray.length == 3) {
+					if (valsArray && valsArray.length === 3) {
 						var x = valsArray[0];
 						var y = valsArray[1];
 						var z = valsArray[2];

@@ -158,7 +158,7 @@ define([], function() {
 			}
 		}
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix.div] Attempted to divide by zero!");
 		}
 
@@ -267,7 +267,7 @@ define([], function() {
 			}
 		}
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Matrix.scalarDiv] Attempted to divide by zero!");
 		}
 

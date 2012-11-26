@@ -111,7 +111,7 @@ define(["goo/math/Vector"], function(Vector) {
 		target.data[1] = (clean &= (rhs.data[1] < 0.0 || rhs.data[1] > 0.0)) ? lhs.data[1] / rhs.data[1] : 0.0;
 		target.data[2] = (clean &= (rhs.data[2] < 0.0 || rhs.data[2] > 0.0)) ? lhs.data[2] / rhs.data[2] : 0.0;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Vector3.div] Attempted to divide by zero!");
 		}
 
@@ -204,7 +204,7 @@ define(["goo/math/Vector"], function(Vector) {
 		target.data[1] = lhs.data[1] * rhs;
 		target.data[2] = lhs.data[2] * rhs;
 
-		if (clean == false) {
+		if (clean === false) {
 			console.warn("[Vector3.scalarDiv] Attempted to divide by zero!");
 		}
 
