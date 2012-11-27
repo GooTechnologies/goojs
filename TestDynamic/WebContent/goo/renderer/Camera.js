@@ -142,22 +142,16 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	 * @param far our far plane value
 	 */
 	Camera.prototype.setFrustumPerspective = function(fov, aspect, near, far) {
-		if (aspect !== undefined && (Number.isNaN(aspect) || !Number.isFinite(aspect))) {
-			// ignore.
-			console.warn("Invalid aspect given to setFrustumPerspective: " + aspect);
-			return;
-		}
-
-		if (fov !== undefined) {
+		if (fov !== undefined && fov !== null) {
 			this.fov = fov;
 		}
-		if (aspect !== undefined) {
+		if (aspect !== undefined && aspect !== null) {
 			this.aspect = aspect;
 		}
-		if (near !== undefined) {
+		if (near !== undefined && near !== null) {
 			this.near = near;
 		}
-		if (far !== undefined) {
+		if (far !== undefined && far !== null) {
 			this.far = far;
 		}
 

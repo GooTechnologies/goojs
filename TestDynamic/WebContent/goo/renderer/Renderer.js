@@ -447,7 +447,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 
 		if (texture.generateMipmaps) {
-			context.generateMipmap(context.TEXTURE_2D);
+			context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		}
 	};
 
