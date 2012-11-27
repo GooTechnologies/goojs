@@ -1,8 +1,9 @@
 define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
-		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/AnimationClip', 'goo/animation/JointChannel'],
+		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/AnimationClip', 'goo/animation/JointChannel',
+		'goo/util/URLTools'],
 	function(TransformComponent, MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton,
-		SkeletonPose, AnimationClip, JointChannel) {
+		SkeletonPose, AnimationClip, JointChannel, URLTools) {
 		"use strict";
 
 		/**
@@ -34,7 +35,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		 * Loads a model from the supplied model url and texture path.
 		 * 
 		 * @param modelUrl
-		 * @param textureDir
+		 * @param textureDir Base URL for textures. Optional.
+		 *                   If not supplied, modelUrl up to the last '/' is used as base.
 		 * @param callback Callback with
 		 *            <ul>
 		 *            <li>onSuccess(entities)
@@ -46,6 +48,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		 */
 		JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
 			var request = new XMLHttpRequest();
+			if (textureDir == null) {
+				textureDir = URLTools.getDirectory(modelUrl);
+			}
 			request.open('GET', modelUrl, true);
 			var that = this;
 			request.onreadystatechange = function() {
