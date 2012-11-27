@@ -202,6 +202,10 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 		for ( var i = 0; i < materials.length; i++) {
 			var material = materials[i];
+			if (!material.shader) {
+				console.warn('No shader set on material: ' + material.name);
+				continue;
+			}
 
 			renderInfo.material = material;
 			material.shader.apply(renderInfo, this);
