@@ -1,4 +1,4 @@
-define(['goo/math/Transform'], function(Transform) {
+define(function() {
 	"use strict";
 
 	/**
@@ -8,17 +8,17 @@ define(['goo/math/Transform'], function(Transform) {
 	 * @param manager the manager to track clip state with.
 	 */
 	function ClipSource(clip, manager) {
-		this.clip = clip;
+		this._clip = clip;
 
 		manager.getClipInstance(clip);
 	}
 
 	ClipSource.prototype.setTime = function(globalTime, manager) {
-		var instance = manager.getClipInstance(this.clip);
+		var instance = manager.getClipInstance(this._clip);
 		if (instance._active) {
 			var clockTime = instance._timeScale * (globalTime - instance._startTime);
 
-			var maxTime = this.clip.maxTime;
+			var maxTime = this._clip.maxTime;
 			if (maxTime <= 0) {
 				return false;
 			}
@@ -44,18 +44,22 @@ define(['goo/math/Transform'], function(Transform) {
 			}
 
 			// update the clip with the correct clip local time.
-			this.clip.update(clockTime, instance);
+			this._clip.update(clockTime, instance);
 		}
 		return instance._active;
 	};
 
+	ClipSource.prototype.resetClips = function(manager, globalStartTime) {
+		manager.resetClipInstance(this._clip, globalStartTime);
+	};
+
 	ClipSource.prototype.isActive = function(manager) {
-		var instance = manager.getClipInstance(this.clip);
-		return instance._active && this.clip.maxTime > 0;
+		var instance = manager.getClipInstance(this._clip);
+		return instance._active && this._clip.maxTime > 0;
 	};
 
 	ClipSource.prototype.getSourceData = function(manager) {
-		return manager.getClipInstance(this.clip)._clipStateObjects;
+		return manager.getClipInstance(this._clip)._clipStateObjects;
 	};
 
 	return ClipSource;

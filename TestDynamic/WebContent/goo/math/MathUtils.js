@@ -7,7 +7,11 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'], functio
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
 
-	MathUtils.prototype.multiply = function(a, b) {
+	MathUtils.lerp = function(percent, startValue, endValue) {
+		if (startValue == endValue) {
+			return startValue;
+		}
+		return (1.0 - percent) * startValue + percent * endValue;
 	};
 
 	return MathUtils;

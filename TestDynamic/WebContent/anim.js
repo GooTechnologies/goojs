@@ -5,11 +5,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
-		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager', 'goo/animation/SimpleAnimationApplier',
-		'goo/animation/SteadyState', 'goo/animation/ClipSource'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
-	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3,
-	Handy, Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource) {
+		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager',
+		'goo/animation/blendtree/SimpleAnimationApplier', 'goo/animation/SteadyState', 'goo/animation/blendtree/ClipSource'], function(World, Entity,
+	System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer,
+	Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
+	Camera, CameraComponent, BasicControlScript, Vector3, Handy, Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier,
+	SteadyState, ClipSource) {
 	"use strict";
 
 	var animationManager = null;
@@ -58,7 +59,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 						var skMesh = shaderInfo.meshData;
 						var pose = skMesh.currentPose;
 						if (pose !== null) {
-							var palette = pose.matrixPalette;
+							var palette = pose._matrixPalette;
 							var buffLength = skMesh.paletteMap.length * 16;
 							var store = this.pool[buffLength];
 							if (!store) {
@@ -216,11 +217,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	var alreadyDrawn = {};
 	function drawSkeleton(entity, meshData, renderer) {
 		var pose = meshData.currentPose;
-		if (pose !== undefined /* && !alreadyDrawn[pose.skeleton.name] */) {
+		if (pose !== undefined /* && !alreadyDrawn[pose._skeleton.name] */) {
 			// If we're in view, go ahead and draw our associated skeleton pose
 			// SkeletalDebugger.drawSkeleton(pose, scene, renderer);
-			var joints = pose.skeleton.joints;
-			var globals = pose.globalTransforms;
+			var joints = pose._skeleton.joints;
+			var globals = pose._globalTransforms;
 
 			for ( var i = 0, max = joints.length; i < max; i++) {
 				drawJoint(globals[i], entity, renderer);
@@ -231,7 +232,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 			}
 
-			alreadyDrawn[pose.skeleton.name] = true;
+			alreadyDrawn[pose._skeleton.name] = true;
 		}
 	}
 

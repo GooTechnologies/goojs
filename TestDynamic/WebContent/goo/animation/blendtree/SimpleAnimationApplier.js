@@ -1,4 +1,4 @@
-define(['goo/animation/JointData'], function(JointData) {
+define(['goo/animation/JointData', 'goo/animation/TransformData'], function(JointData, TransformData) {
 	"use strict";
 
 	/**
@@ -6,66 +6,53 @@ define(['goo/animation/JointData'], function(JointData) {
 	 * @class Very simple applier. Just applies joint transform data, calls any callbacks and updates the pose's global transforms.
 	 */
 	function SimpleAnimationApplier() {
-		this.triggerCallbacks = [];
-		this.spatialCache = {};
+		this._triggerCallbacks = {};
 	}
 
-	SimpleAnimationApplier.prototype.apply = function(root, manager) {
-		if (root === null) {
+	/**
+	 * @description Apply the current status of the manager to non-skeletal assets.
+	 * @param entityManager the entityManager we will use to find entities to animate. if null or undefined, this method is NOOP.
+	 * @param manager the animation manager to pull state from.
+	 */
+	SimpleAnimationApplier.prototype.apply = function(entityManager, manager) {
+		if (!entityManager) {
 			return;
 		}
 		var data = manager.getCurrentSourceData();
 
 		// cycle through, pulling out and applying those we know about
-		if (data !== null) {
+		if (data) {
 			for ( var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) { // ignore
 				} else if (value instanceof TransformData) {
-					var transformData = value;
-					var applyTo = findChild(root, key);
-					if (applyTo !== null) {
-						transformData.applyTo(applyTo);
+					var applyTo = entityManager.getEntityByName(key);
+					if (applyTo && applyTo.transformComponent) {
+						value.applyTo(applyTo.transformComponent);
 					}
 				}
 			}
 		}
 	};
 
-	SimpleAnimationApplier.prototype.findChild = function(root, key) {
-		if (this.spatialCache[key]) {
-			return this.spatialCache[key];
-		}
-		if (key.equals(root.getName())) {
-			this.spatialCache[key] = root;
-			return root;
-		} else if (root instanceof Node) {
-			var spat = root.getChild(key);
-			if (spat !== null) {
-				this.spatialCache[key] = spat;
-				return spat;
-			}
-		}
-		return null;
-	};
-
 	SimpleAnimationApplier.prototype.applyTo = function(applyToPose, manager) {
 		var data = manager.getCurrentSourceData();
 
 		// cycle through, pulling out and applying those we know about
-		if (data !== null) {
+		if (data) {
 			for ( var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) {
 					if (value._jointIndex >= 0) {
-						value.applyTo(applyToPose.localTransforms[value._jointIndex]);
+						value.applyTo(applyToPose._localTransforms[value._jointIndex]);
 					}
 				} else if (value instanceof TriggerData) {
 					if (value.isArmed()) {
 						// pull callback(s) for the current trigger key, if exists, and call.
-						for ( var curTrig in value.getCurrentTriggers()) {
-							for ( var cb in this.triggerCallbacks[curTrig]) {
-								cb.doTrigger(applyToPose, manager);
+						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
+							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
+							for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+								callbacks[j].doTrigger(applyToPose, manager);
 							}
 						}
 						trigger.setArmed(false);
