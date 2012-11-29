@@ -159,8 +159,7 @@ define(
 				var attribute = attributeMap[key];
 				var attributeIndex = this.attributeIndexMapping[key];
 				if (attributeIndex !== undefined) {
-					renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized || true, 0, attribute.offset,
-						record);
+					renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized, 0, attribute.offset, record);
 				}
 			}
 
