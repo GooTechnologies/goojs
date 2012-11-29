@@ -117,7 +117,7 @@ define(function() {
 				fpsMax = Math.max(fpsMax, fps);
 
 				fpsText.textContent = fps + ' FPS (' + fpsMin + '-' + fpsMax + ')';
-				updateGraph(fpsGraph, Math.min(30, 30 - (fps / 100) * 30));
+				updateGraph(fpsGraph, Math.min(30, 30 - (fps / (fpsMax + 10)) * 30));
 
 				prevTime = time;
 				frames = 0;

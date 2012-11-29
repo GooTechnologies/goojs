@@ -17,14 +17,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function init() {
 		// Create typical goo application
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			showStats : true
+		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
 		// var ui = new DebugUI(goo);
 
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 20, 150);
+		camera.translation.set(0, 20, 350);
 		camera.lookAt(new Vector3(0, 40, 0), Vector3.UNIT_Y);
 		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -136,6 +138,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(1, 1, 1);
+				entities[0].transformComponent.transform.translation.y = -50;
 				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
 
 				for ( var i = 0; i < entities.length; i++) {
@@ -161,18 +164,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				animationManager.update();
 			}
 
-			for ( var i = 0; i < skinMeshes.length; i++) {
-				var entity = skinMeshes[i];
-				var meshData = entity.meshDataComponent.meshData;
-				drawSkeleton(entity, meshData, goo.renderer);
-			}
+			// Debug draw skeleton
+			// for ( var i = 0; i < skinMeshes.length; i++) {
+			// var entity = skinMeshes[i];
+			// var meshData = entity.meshDataComponent.meshData;
+			// drawSkeleton(entity, meshData, goo.renderer);
+			// }
 		});
 	}
 
 	function loadAnimations(pose, modelUrl) {
 		var request = new XMLHttpRequest();
 		request.open('GET', modelUrl, true);
-		var that = this;
 		request.onreadystatechange = function() {
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
@@ -208,7 +211,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		animationManager.layers[0].steadyStates[state.name] = state;
 		animationManager.getClipInstance(clip)._loopCount = -1;
-		animationManager.getClipInstance(clip)._timeScale = 0.05; // uncomment to make him slow enough to check out
+		// animationManager.getClipInstance(clip)._timeScale = 0.05; // uncomment to make him slow enough to check out
 		animationManager.layers[0].setCurrentStateByName("running", true);
 	}
 

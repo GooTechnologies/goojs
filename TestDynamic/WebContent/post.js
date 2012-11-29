@@ -15,7 +15,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function init() {
 		// Create typical goo application
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			showStats : true
+		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
