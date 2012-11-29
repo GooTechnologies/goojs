@@ -66,17 +66,15 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 								store = new Float32Array(buffLength);
 								this.pool[buffLength] = store;
 							}
-							var index = 0;
 							var refMat;
-							for ( var refIndex = 0; refIndex < skMesh.paletteMap.length; refIndex++) {
-								var ref = skMesh.paletteMap[refIndex];
+							for ( var index = 0; index < skMesh.paletteMap.length; index++) {
+								var ref = skMesh.paletteMap[index];
 								refMat = palette[ref];
 								for ( var i = 0; i < 4; i++) {
 									for ( var j = 0; j < 4; j++) {
 										store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
 									}
 								}
-								index++;
 							}
 							return store;
 							// shaderCall.uniformMatrix4fv(false, store);
@@ -93,7 +91,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
 			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
 			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
-			'uniform mat4 jointPalette[50];', //
+			'uniform mat4 jointPalette[56];', //
 
 			'varying vec2 texCoord0;',//
 
@@ -101,10 +99,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			// apply weights
 			'	mat4 mat = mat4(0.0);', //
 
-			'	mat += jointPalette[int(vertexJointIDs[0])] * vertexWeights[0];', //
-			'	mat += jointPalette[int(vertexJointIDs[1])] * vertexWeights[1];', //
-			'	mat += jointPalette[int(vertexJointIDs[2])] * vertexWeights[2];', //
-			'	mat += jointPalette[int(vertexJointIDs[3])] * vertexWeights[3];', //
+			'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
+			'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
+			'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
+			'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
 
 			'	texCoord0 = vertexUV0;',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
@@ -210,7 +208,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		animationManager.layers[0].steadyStates[state.name] = state;
 		animationManager.getClipInstance(clip)._loopCount = -1;
-		animationManager.getClipInstance(clip)._timeScale = 0.0; // uncomment to make him slow enough to check out
+		animationManager.getClipInstance(clip)._timeScale = 0.05; // uncomment to make him slow enough to check out
 		animationManager.layers[0].setCurrentStateByName("running", true);
 	}
 
