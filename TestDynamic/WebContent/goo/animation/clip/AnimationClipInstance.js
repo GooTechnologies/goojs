@@ -12,17 +12,26 @@ define(function() {
 		this._timeScale = 1.0;
 		this._startTime = 0.0;
 		this._clipStateObjects = {};
-		this.animationListeners = [];
+		this._animationListeners = [];
 	}
 
 	AnimationClipInstance.prototype.getApplyTo = function(channel) {
-		var channelName = channel.channelName;
+		var channelName = channel._channelName;
 		var rVal = this._clipStateObjects[channelName];
 		if (!rVal) {
 			rVal = channel.createStateDataObject();
 			this._clipStateObjects[channelName] = rVal;
 		}
 		return rVal;
+	};
+
+	/**
+	 * @description Tell any animation listeners on this instance that the associated clip has finished playing.
+	 */
+	AnimationClipInstance.prototype.fireAnimationFinished = function() {
+		for ( var i = 0, max = this._animationListeners.length; i < max; i++) {
+			_animationListeners[i].animationFinished();
+		}
 	};
 
 	return AnimationClipInstance;

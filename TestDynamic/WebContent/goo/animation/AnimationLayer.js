@@ -114,5 +114,11 @@ define(['goo/math/Transform'], function(Transform) {
 		}
 	};
 
+	AnimationLayer.prototype.replaceState = function(currentState, newState) {
+		if (this.currentState === currentState) {
+			this.setCurrentState(newState, false);
+		}
+	};
+
 	return AnimationLayer;
 });

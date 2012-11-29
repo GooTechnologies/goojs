@@ -14,7 +14,7 @@ define(['goo/math/MathUtils', 'goo/animation/TransformData', 'goo/animation/blen
 	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 */
 	function BinaryLERPSource(sourceA, sourceB, blendKey) {
-		AbstractTwoPartSource.call(sourceA, sourceB, blendKey);
+		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
 	}
 
 	BinaryLERPSource.prototype.getSourceData = function(manager) {

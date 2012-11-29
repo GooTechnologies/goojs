@@ -1,4 +1,4 @@
-define(['goo/animation/AnimationLayer', 'goo/animation/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
+define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
 	"use strict";
 
 	/**

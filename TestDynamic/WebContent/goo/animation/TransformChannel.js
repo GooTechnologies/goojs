@@ -1,4 +1,4 @@
-define(['goo/animation/AbstractAnimationChannel', 'goo/math/Quaternion', 'goo/math/Vector3'],
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/math/Quaternion', 'goo/math/Vector3'],
 	function(AbstractAnimationChannel, Quaternion, Vector3) {
 		"use strict";
 

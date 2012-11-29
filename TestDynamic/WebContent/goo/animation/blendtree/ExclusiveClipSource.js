@@ -11,7 +11,7 @@ define(['goo/animation/JointChannel', 'goo/animation/blendtree/ClipSource'], fun
 	 * @param manager the manager used to track clip state.
 	 */
 	function ExclusiveClipSource(clip, manager) {
-		ClipSource.call(clip, manager);
+		ClipSource.call(this, clip, manager);
 
 		this._disabledChannels = {};
 	}

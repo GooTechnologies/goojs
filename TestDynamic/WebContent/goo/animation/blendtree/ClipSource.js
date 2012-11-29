@@ -18,7 +18,7 @@ define(function() {
 		if (instance._active) {
 			var clockTime = instance._timeScale * (globalTime - instance._startTime);
 
-			var maxTime = this._clip.maxTime;
+			var maxTime = this._clip._maxTime;
 			if (maxTime <= 0) {
 				return false;
 			}
@@ -55,7 +55,7 @@ define(function() {
 
 	ClipSource.prototype.isActive = function(manager) {
 		var instance = manager.getClipInstance(this._clip);
-		return instance._active && this._clip.maxTime > 0;
+		return instance._active && this._clip._maxTime > 0;
 	};
 
 	ClipSource.prototype.getSourceData = function(manager) {
