@@ -534,9 +534,9 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		var z = vec.z;
 
 		var d = this;
-		vec.x = d.e00 * x + d.e10 * y + d.e20 * z;
-		vec.y = d.e01 * x + d.e11 * y + d.e21 * z;
-		vec.z = d.e02 * x + d.e12 * y + d.e22 * z;
+		vec.x = d.e00 * x + d.e01 * y + d.e02 * z;
+		vec.y = d.e10 * x + d.e11 * y + d.e12 * z;
+		vec.z = d.e20 * x + d.e21 * y + d.e22 * z;
 
 		return vec;
 	};
@@ -546,17 +546,17 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		var y = vec.y;
 		var z = vec.z;
 
-		var d = this.data;
-		var rd = result.data;
-		rd[0] = x * d[0];
-		rd[1] = y * d[1];
-		rd[2] = z * d[2];
-		rd[3] = x * d[3];
-		rd[4] = y * d[4];
-		rd[5] = z * d[5];
-		rd[6] = x * d[6];
-		rd[7] = y * d[7];
-		rd[8] = z * d[8];
+		var d = this;
+		var r = result;
+		r.e00 = x * d.e00;
+		r.e01 = y * d.e01;
+		r.e02 = z * d.e02;
+		r.e10 = x * d.e10;
+		r.e11 = y * d.e11;
+		r.e12 = z * d.e12;
+		r.e20 = x * d.e20;
+		r.e21 = y * d.e21;
+		r.e22 = z * d.e22;
 
 		return result;
 	};
@@ -569,16 +569,15 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		var cy = Math.cos(yaw);
 		var sy = Math.sin(yaw);
 
-		var d = this.data;
-		d[0] = ch * cp;
-		d[1] = sh * sy - ch * sp * cy;
-		d[2] = ch * sp * sy + sh * cy;
-		d[3] = sp;
-		d[4] = cp * cy;
-		d[5] = -cp * sy;
-		d[6] = -sh * cp;
-		d[7] = sh * sp * cy + ch * sy;
-		d[8] = -sh * sp * sy + ch * cy;
+		this.e00 = ch * cp;
+		this.e01 = sh * sy - ch * sp * cy;
+		this.e02 = ch * sp * sy + sh * cy;
+		this.e10 = sp;
+		this.e11 = cp * cy;
+		this.e12 = -cp * sy;
+		this.e20 = -sh * cp;
+		this.e21 = sh * sp * cy + ch * sy;
+		this.e22 = -sh * sp * sy + ch * cy;
 
 		return this;
 	};
@@ -592,22 +591,17 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		xAxis.copy(up).normalize().cross(zAxis);
 		yAxis.copy(zAxis).cross(xAxis);
 
-		// direction.normalize(zAxis);
-		// up.normalize(xAxis).crossLocal(zAxis);
-		// zAxis.cross(xAxis, yAxis);
+		this.e00 = xAxis.x;
+		this.e10 = xAxis.y;
+		this.e20 = xAxis.z;
 
-		// fromAxes(xAxis, yAxis, zAxis);
-		this.data[0] = xAxis.x;
-		this.data[3] = xAxis.y;
-		this.data[6] = xAxis.z;
+		this.e01 = yAxis.x;
+		this.e11 = yAxis.y;
+		this.e20 = yAxis.z;
 
-		this.data[1] = yAxis.x;
-		this.data[4] = yAxis.y;
-		this.data[7] = yAxis.z;
-
-		this.data[2] = zAxis.x;
-		this.data[5] = zAxis.y;
-		this.data[8] = zAxis.z;
+		this.e02 = zAxis.x;
+		this.e12 = zAxis.y;
+		this.e22 = zAxis.z;
 
 		return this;
 	};
@@ -621,7 +615,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	Matrix3x3.prototype.setIdentity = function() {
-		this.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+		this.set(Matrix3x3.IDENTITY);
 	};
 
 	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);

@@ -856,53 +856,43 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return this;
 	};
 
-	Matrix4x4.prototype.rotate = function(vector) {
-		var x = vector.x;
-		var y = vector.y;
-		var z = vector.z;
-
-		vector.x = this.e00 * x + this.e01 * y + this.e02 * z;
-		vector.y = this.e10 * y + this.e11 * y + this.e12 * y;
-		vector.z = this.e20 * z + this.e21 * z + this.e22 * z;
-
-		return vector;
-	};
-
 	// TODO: incorporate these better and possibly to the base class
-	Matrix4x4.prototype.applyPost = function(vec) {
-		var x = vec.x;
-		var y = vec.y;
-		var z = vec.z;
-		// var w = vec.w;
+	Matrix4x4.prototype.applyPost = function(vec4) {
+		var x = vec4.x;
+		var y = vec4.y;
+		var z = vec4.z;
+		var w = vec4.w;
 
-		vec.x = this.e00 * x + this.e10 * y + this.e20 * z/* + w * d.e30 */;
-		vec.y = this.e01 * x + this.e11 * y + this.e21 * z/* + w * d.e31 */;
-		vec.z = this.e02 * x + this.e12 * y + this.e22 * z/* + w * d.e32 */;
-		// vec.w = d.e03 * x + d.e13 * y + d.e23 * z + w * d.e33;
+		vec4.x = this.e00 * x + this.e01 * y + this.e02 * z + w * this.e03;
+		vec4.y = this.e10 * x + this.e11 * y + this.e12 * z + w * this.e13;
+		vec4.z = this.e20 * x + this.e21 * y + this.e22 * z + w * this.e23;
+		vec4.w = this.e30 * x + this.e31 * y + this.e32 * z + w * this.e33;
 
-		vec.x += this.e03;
-		vec.y += this.e13;
-		vec.z += this.e23;
-
-		return vec;
+		return vec4;
 	};
 
-	Matrix4x4.prototype.applyPostPoint = function(vec) {
-		var x = vec.x;
-		var y = vec.y;
-		var z = vec.z;
-		// var w = vec.w;
+	Matrix4x4.prototype.applyPostPoint = function(vec3) {
+		var x = vec3.x;
+		var y = vec3.y;
+		var z = vec3.z;
 
-		vec.x = this.e00 * x + this.e10 * y + this.e20 * z + this.e30;
-		vec.y = this.e01 * x + this.e11 * y + this.e21 * z + this.e31;
-		vec.z = this.e02 * x + this.e12 * y + this.e22 * z + this.e32;
-		// vec.w = d.e03 * x + d.e13 * y + d.e23 * z + w * d.e33;
+		vec3.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03;
+		vec3.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13;
+		vec3.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23;
 
-		vec.x += this.e03;
-		vec.y += this.e13;
-		vec.z += this.e23;
+		return vec3;
+	};
 
-		return vec;
+	Matrix4x4.prototype.applyPostVector = function(vec3) {
+		var x = vec3.x;
+		var y = vec3.y;
+		var z = vec3.z;
+
+		vec3.x = this.e00 * x + this.e01 * y + this.e02 * z;
+		vec3.y = this.e10 * x + this.e11 * y + this.e12 * z;
+		vec3.z = this.e20 * x + this.e21 * y + this.e22 * z;
+
+		return vec3;
 	};
 
 	Matrix4x4.prototype.clone = function() {
@@ -910,7 +900,16 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	Matrix4x4.prototype.setIdentity = function() {
-		return this.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+		return this.set(Matrix4x4.IDENTITY);
+	};
+
+	Matrix4x4.prototype.equals = function(rhs) {
+		for ( var i = 0; i < 16; i++) {
+			if (this.data[i] - rhs.data[i] >= 0.0001) {
+				return false;
+			}
+		}
+		return true;
 	};
 
 	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);

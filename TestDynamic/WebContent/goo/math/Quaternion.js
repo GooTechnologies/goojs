@@ -382,17 +382,17 @@ define(["goo/math/Vector"], function(Vector) {
 		var zw = this.w * zs;
 
 		// using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
-		var d = store.data;
+		var d = store;
 
-		d[0] = 1.0 - (yy + zz);
-		d[1] = xy - zw;
-		d[2] = xz + yw;
-		d[3] = xy + zw;
-		d[4] = 1.0 - (xx + zz);
-		d[5] = yz - xw;
-		d[6] = xz - yw;
-		d[7] = yz + xw;
-		d[8] = 1.0 - (xx + yy);
+		d.e00 = 1.0 - (yy + zz);
+		d.e01 = xy - zw;
+		d.e02 = xz + yw;
+		d.e10 = xy + zw;
+		d.e11 = 1.0 - (xx + zz);
+		d.e12 = yz - xw;
+		d.e20 = xz - yw;
+		d.e21 = yz + xw;
+		d.e22 = 1.0 - (xx + yy);
 
 		return result;
 	};

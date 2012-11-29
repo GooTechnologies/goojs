@@ -54,9 +54,8 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		m2.copy(b.rotation).multiplyDiagonalPost(b.scale, m2);
 		Matrix3x3.combine(m1, m2, this.rotation);
 
-		// this.translation.copy(a.translation).add(b.translation);
-		var newTranslate = new Vector3().copy(b.translation);
-		m1.applyPost(newTranslate).add(a.translation);
+		this.translation.copy(b.translation);
+		m1.applyPost(this.translation).add(a.translation);
 
 		this.scale.copy(a.scale).mul(b.scale);
 		// this.scale.copy(Vector3.ONE);
@@ -89,26 +88,27 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 			this.eulerUpdated = false;
 		}
 
-		var rd = this.matrix.data;
-		var d = this.rotation.data;
+		var rd = this.matrix;
+		var d = this.rotation;
 
-		rd[0] = this.scale.x * d[0];
-		rd[1] = this.scale.x * d[3];
-		rd[2] = this.scale.x * d[6];
-		rd[3] = 0.0;
-		rd[4] = this.scale.y * d[1];
-		rd[5] = this.scale.y * d[4];
-		rd[6] = this.scale.y * d[7];
-		rd[7] = 0.0;
-		rd[8] = this.scale.z * d[2];
-		rd[9] = this.scale.z * d[5];
-		rd[10] = this.scale.z * d[8];
-		rd[11] = 0.0;
+		rd.e00 = this.scale.x * d.e00;
+		rd.e01 = this.scale.x * d.e01;
+		rd.e02 = this.scale.x * d.e02;
+		rd.e10 = this.scale.y * d.e10;
+		rd.e11 = this.scale.y * d.e11;
+		rd.e12 = this.scale.y * d.e12;
+		rd.e20 = this.scale.z * d.e20;
+		rd.e21 = this.scale.z * d.e21;
+		rd.e22 = this.scale.z * d.e22;
 
-		rd[12] = this.translation.x;
-		rd[13] = this.translation.y;
-		rd[14] = this.translation.z;
-		rd[15] = 1.0;
+		rd.e30 = 0.0;
+		rd.e31 = 0.0;
+		rd.e32 = 0.0;
+
+		rd.e03 = this.translation.x;
+		rd.e13 = this.translation.y;
+		rd.e23 = this.translation.z;
+		rd.e33 = 1.0;
 	};
 
 	Transform.prototype.copy = function(transform) {
