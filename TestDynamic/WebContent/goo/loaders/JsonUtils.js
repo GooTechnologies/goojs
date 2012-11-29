@@ -66,7 +66,17 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 	};
 
 	JsonUtils.parseMatrix3 = function(array) {
-		var matrix = new Matrix3x3(array);
+		var matrix = new Matrix3x3();
+		// data files are currently row major!
+		matrix.e00 = array[0];
+		matrix.e01 = array[1];
+		matrix.e02 = array[2];
+		matrix.e10 = array[3];
+		matrix.e11 = array[4];
+		matrix.e12 = array[5];
+		matrix.e20 = array[6];
+		matrix.e21 = array[7];
+		matrix.e22 = array[8];
 		return matrix;
 	};
 
