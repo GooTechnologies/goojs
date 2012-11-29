@@ -15,7 +15,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function init() {
 		// Create typical goo application
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			showStats : true
+		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
@@ -56,14 +58,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		composer.addPass(coolPass);
 		// composer.addPass(outPass);
 
-		var f = 0;
 		goo.callbacks.push(function(tpf) {
 			composer.render(goo.renderer, tpf);
-
-			f = (f + 1) % 100;
-			if (f === 0) {
-				console.log(goo.renderer.info.toString());
-			}
 		});
 	}
 

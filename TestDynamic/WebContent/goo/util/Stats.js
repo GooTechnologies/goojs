@@ -17,7 +17,7 @@ define(function() {
 			event.preventDefault();
 			setModeP(++mode % 2);
 		}, false);
-		container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
+		container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer;z-index:1000';
 
 		var fpsDiv = document.createElement('div');
 		fpsDiv.id = 'fps';
@@ -26,7 +26,7 @@ define(function() {
 
 		var fpsText = document.createElement('div');
 		fpsText.id = 'fpsText';
-		fpsText.style.cssText = 'color:#0ff;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
+		fpsText.style.cssText = 'color:#0ff;font-family:Helvetica,Arial,sans-serif;font-size:8px;font-weight:bold;line-height:13px';
 		fpsText.innerHTML = 'FPS';
 		fpsDiv.appendChild(fpsText);
 
@@ -48,7 +48,7 @@ define(function() {
 
 		var msText = document.createElement('div');
 		msText.id = 'msText';
-		msText.style.cssText = 'color:#0f0;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
+		msText.style.cssText = 'color:#0f0;font-family:Helvetica,Arial,sans-serif;font-size:8px;font-weight:bold;line-height:13px';
 		msText.innerHTML = 'MS';
 		msDiv.appendChild(msText);
 
@@ -65,13 +65,13 @@ define(function() {
 
 		var infoDiv = document.createElement('div');
 		infoDiv.id = 'info';
-		infoDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#002';
+		infoDiv.style.cssText = 'padding:0 0 3px 3px;text-align:left;background-color:#200';
 		container.appendChild(infoDiv);
 
 		var infoText = document.createElement('div');
-		fpsinfoTextText.id = 'fpsText';
-		infoText.style.cssText = 'color:#0ff;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px';
-		infoText.innerHTML = 'FPS';
+		infoText.id = 'infoText';
+		infoText.style.cssText = 'color:#f66;font-family:Helvetica,Arial,sans-serif;font-size:8px;font-weight:bold;line-height:13px';
+		infoText.innerHTML = 'INFO';
 		infoDiv.appendChild(infoText);
 
 		var setModeP = function(value) {
@@ -86,18 +86,19 @@ define(function() {
 					msDiv.style.display = 'block';
 					break;
 			}
-		}
+		};
 
 		var updateGraph = function(dom, value) {
 			var child = dom.appendChild(dom.firstChild);
 			child.style.height = value + 'px';
-		}
+		};
 
 		this.domElement = container;
 		this.setMode = setModeP;
 		this.begin = function() {
 			startTime = Date.now();
 		};
+
 		this.end = function(info) {
 			var time = Date.now();
 
@@ -122,8 +123,13 @@ define(function() {
 				frames = 0;
 			}
 
+			if (info) {
+				infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
+			}
+
 			return time;
 		};
+
 		this.update = function(info) {
 			startTime = this.end(info);
 		};

@@ -22,9 +22,9 @@
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent'], function(World, TransformSystem,
-	RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner, LightManager, CameraSystem,
-	Camera, CameraComponent) {
+		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'], function(World,
+	TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner, LightManager,
+	CameraSystem, Camera, CameraComponent, Stats) {
 	"use strict";
 
 	/**
@@ -60,8 +60,8 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		if (parameters.showStats) {
 			this.stats = new Stats();
 			this.stats.domElement.style.position = 'absolute';
-			this.stats.domElement.style.left = '0px';
-			this.stats.domElement.style.top = '0px';
+			this.stats.domElement.style.left = '10px';
+			this.stats.domElement.style.top = '10px';
 			// document.getElementById( 'container' ).appendChild(stats.domElement);
 			document.body.appendChild(this.stats.domElement);
 		}
@@ -85,8 +85,8 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 				that.callbacks[i](that.world.tpf);
 			}
 
-			if (this.stats) {
-				this.stats.update();
+			if (that.stats) {
+				that.stats.update(that.renderer.info);
 			}
 
 			window.requestAnimationFrame(run);
