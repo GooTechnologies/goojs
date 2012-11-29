@@ -52,25 +52,19 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 			var parentIndex = this._skeleton.joints[i].parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We remove the parent's transform simply by multiplying by its inverse bind pose. Done! :)
-
 				temp.multiply(this._skeleton.joints[parentIndex].inverseBindPose, this._localTransforms[i]);
 				// this._skeleton.joints[parentIndex].inverseBindPose.multiply(this._localTransforms[i], temp);
 				this._localTransforms[i].copy(temp);
 			}
 		}
 		this.updateTransforms();
-		this.firePoseUpdated();
 	};
 
 	/**
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
 	SkeletonPose.prototype.updateTransforms = function() {
-		var temp = new Transform();
-		// we go in update array order, which ensures parent global transforms are updated before child.
-		// final int[] orders = _skeleton.getJointOrders();
 		var nrJoints = this._skeleton.joints.length;
-		// for (var i = 0; i < orders.length; i++) {
 		for ( var i = 0; i < nrJoints; i++) {
 			// the joint index
 			var index = i;
@@ -90,8 +84,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 			// at this point we have a local->model space transform for this joint, for skinning we multiply this by the
 			// joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
 			// vertex from bind pose (model space) to current pose (model space).
-			temp.multiply(this._globalTransforms[index], this._skeleton.joints[index].inverseBindPose);
-			this._matrixPalette[index].copy(temp.matrix);
+			Matrix4x4.combine(this._globalTransforms[index].matrix, this._skeleton.joints[index].inverseBindPose.matrix, this._matrixPalette[index]);
+			// since we can't call this in the shader callback anymore?
+			this._matrixPalette[index].transpose();
 			// this._globalTransforms[index].multiply(this._skeleton.joints[index].inverseBindPose, temp);
 			// temp.getHomogeneousMatrix(this._matrixPalette[index]);
 		}

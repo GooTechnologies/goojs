@@ -17,6 +17,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 		transform.rotation.copyQuaternion(this._rotation);
 		transform.scale.copy(this._scale);
 		transform.translation.copy(this._translation);
+		transform.update();
 	};
 
 	return TransformData;
