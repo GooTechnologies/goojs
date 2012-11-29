@@ -1,5 +1,3 @@
-"use strict";
-
 require([//
 'goo/entities/GooRunner',//
 'goo/math/Vector3',//
@@ -33,6 +31,7 @@ Util,//
 Material,//
 Camera//
 ) {
+	"use strict";
 
 	function init() {
 		var goo = new GooRunner();

@@ -1,7 +1,6 @@
-"use strict";
-
 require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4", "goo/math/Matrix", "goo/math/Matrix2x2",
 		"goo/math/Matrix3x3", "goo/math/Matrix4x4"], function(Vector, Vector2, Vector3, Vector4, Matrix, Matrix2x2, Matrix3x3, Matrix4x4) {
+	"use strict";
 
 	function init() {
 		testVector();
