@@ -62,7 +62,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 			f = (f + 1) % 100;
 			if (f === 0) {
-				console.log(goo.renderer.info);
+				console.log(goo.renderer.info.toString());
 			}
 		});
 	}

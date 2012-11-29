@@ -31,7 +31,9 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 	 * @name GooRunner
 	 * @class Standard setup of entity system to use as base for small projects/demos
 	 */
-	function GooRunner() {
+	function GooRunner(parameters) {
+		parameters = parameters || {};
+
 		this.world = new World();
 		this.renderer = new Renderer();
 
@@ -55,6 +57,15 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		init();
 		window.requestAnimationFrame(run);
 
+		if (parameters.showStats) {
+			this.stats = new Stats();
+			this.stats.domElement.style.position = 'absolute';
+			this.stats.domElement.style.left = '0px';
+			this.stats.domElement.style.top = '0px';
+			// document.getElementById( 'container' ).appendChild(stats.domElement);
+			document.body.appendChild(this.stats.domElement);
+		}
+
 		this.callbacks = [];
 
 		var that = this;
@@ -72,6 +83,10 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 
 			for ( var i in that.callbacks) {
 				that.callbacks[i](that.world.tpf);
+			}
+
+			if (this.stats) {
+				this.stats.update();
 			}
 
 			window.requestAnimationFrame(run);

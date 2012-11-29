@@ -89,6 +89,9 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				this.calls = 0;
 				this.vertices = 0;
 				this.indices = 0;
+			},
+			toString : function() {
+				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
 			}
 		};
 	}
