@@ -199,7 +199,10 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.renderMesh = function(renderInfo) {
 		var meshData = renderInfo.meshData;
-		var materials = this.overrideMaterial || renderInfo.materials;
+		var materials = renderInfo.materials;
+		if (this.overrideMaterial !== null) {
+			materials = [this.overrideMaterial];
+		}
 
 		this.bindData(meshData.vertexData);
 
