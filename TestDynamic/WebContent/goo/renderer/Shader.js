@@ -73,26 +73,18 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			record.usedProgram = this.shaderProgram;
 		}
 
-		// Fix links ($link)
-		if (this.uniforms.$link) {
-			var links = this.uniforms.$link instanceof Array ? this.uniforms.$link : [this.uniforms.$link];
-			for ( var i = 0; i < links.length; i++) {
-				var link = links[i];
-				for ( var key in link) {
-					this.uniforms[key] = link[key];
-				}
-			}
-		}
-
 		// Bind attributes
 		if (this.attributes) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			for ( var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];
 				var attributeIndex = this.attributeIndexMapping[key];
-				if (attributeIndex !== undefined) {
-					renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized, 0, attribute.offset, record);
+				if (attributeIndex === undefined) {
+					console.warn('Attribute binding [' + name + '] does not exist in the shader.');
+					continue;
 				}
+
+				renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized, 0, attribute.offset, record);
 			}
 		}
 
@@ -101,7 +93,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			for ( var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (!mapping) {
-					console.warn('Binding [' + name + '] does not exist in the shader.');
+					console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 					continue;
 				}
 				var defValue = this.uniforms[name];
@@ -208,22 +200,36 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			for ( var name in this.attributes) {
 				var mapping = this.attributeIndexMapping[name];
 				if (mapping === undefined) {
-					console.warn('No attribute found for binding: ' + name);
+					console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
+					delete this.attributes[name];
 				}
 			}
 			for ( var name in this.attributeIndexMapping) {
 				var mapping = this.attributes[name];
 				if (mapping === undefined) {
-					console.warn('No binding found for attribute: ' + name);
+					console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
 				}
 			}
 		}
 
 		if (this.uniforms) {
+			// Fix links ($link)
+			if (this.uniforms.$link) {
+				var links = this.uniforms.$link instanceof Array ? this.uniforms.$link : [this.uniforms.$link];
+				for ( var i = 0; i < links.length; i++) {
+					var link = links[i];
+					for ( var key in link) {
+						this.uniforms[key] = link[key];
+					}
+				}
+				delete this.uniforms.$link;
+			}
+
 			for ( var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (mapping === undefined) {
-					console.warn('No uniform found for binding: ' + name);
+					console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
+					delete this.uniforms[name];
 				}
 
 				var value = this.uniforms[name];
@@ -234,7 +240,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			for ( var name in this.uniformCallMapping) {
 				var mapping = this.uniforms[name];
 				if (mapping === undefined) {
-					console.warn('No binding found for uniform: ' + name);
+					console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
 				}
 			}
 		}
@@ -289,16 +295,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function(uniformCall, shaderInfo) {
 			var camera = shaderInfo.camera;
 			var matrix = camera.getProjectionMatrix();
-			uniformCall.uniformMatrix4fv(false, matrix);
+			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.VIEW_MATRIX] = function(uniformCall, shaderInfo) {
 			var camera = shaderInfo.camera;
 			var matrix = camera.getViewMatrix();
-			uniformCall.uniformMatrix4fv(false, matrix);
+			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function(uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
-			uniformCall.uniformMatrix4fv(false, matrix);
+			uniformCall.uniformMatrix4fv(matrix);
 		};
 
 		for ( var i = 0; i < 16; i++) {

@@ -255,9 +255,10 @@ define(function() {
 	}
 
 	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix2fv = function(transpose, matrix) {
+	ShaderCall.prototype.uniformMatrix2fv = function(matrix, transpose) {
+		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix4fv(this.location, transpose, matrix);
+			this.context.uniformMatrix2fv(this.location, transpose, matrix);
 			return;
 		}
 
@@ -277,9 +278,10 @@ define(function() {
 	};
 
 	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix3fv = function(transpose, matrix) {
+	ShaderCall.prototype.uniformMatrix3fv = function(matrix, transpose) {
+		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix4fv(this.location, transpose, matrix);
+			this.context.uniformMatrix3fv(this.location, transpose, matrix);
 			return;
 		}
 
@@ -299,7 +301,8 @@ define(function() {
 	};
 
 	// NOTE: optimize check before calling.
-	ShaderCall.prototype.uniformMatrix4fv = function(transpose, matrix) {
+	ShaderCall.prototype.uniformMatrix4fv = function(matrix, transpose) {
+		transpose = transpose === true;
 		if (!matrix.data) {
 			this.context.uniformMatrix4fv(this.location, transpose, matrix);
 			return;

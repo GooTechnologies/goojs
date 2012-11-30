@@ -48,51 +48,55 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function loadModels(goo) {
+		var pool = {};
+
 		var shader = {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexUV0 : MeshData.TEXCOORD0,
+				vertexWeights : MeshData.WEIGHTS,
+				vertexJointIDs : MeshData.JOINTIDS
+			},
 			uniforms : {
-				opacity : {
-					type : 'float',
-					value : 1.0
-				},
-				jointPalette : {
-					type : 'mat4',
-					pool : {},
-					value : function(shaderInfo) {
-						var skMesh = shaderInfo.meshData;
-						var pose = skMesh.currentPose;
-						if (pose !== null) {
-							var palette = pose._matrixPalette;
-							var buffLength = skMesh.paletteMap.length * 16;
-							var store = this.pool[buffLength];
-							if (!store) {
-								store = new Float32Array(buffLength);
-								this.pool[buffLength] = store;
-							}
-							var refMat;
-							for ( var index = 0; index < skMesh.paletteMap.length; index++) {
-								var ref = skMesh.paletteMap[index];
-								refMat = palette[ref];
-								for ( var i = 0; i < 4; i++) {
-									for ( var j = 0; j < 4; j++) {
-										store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
-									}
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				diffuseMap : Shader.TEXTURE0,
+				opacity : 1.0,
+				jointPalette : function(shaderInfo) {
+					var skMesh = shaderInfo.meshData;
+					var pose = skMesh.currentPose;
+					if (pose !== null) {
+						var palette = pose._matrixPalette;
+						var buffLength = skMesh.paletteMap.length * 16;
+						var store = pool[buffLength];
+						if (!store) {
+							store = new Float32Array(buffLength);
+							pool[buffLength] = store;
+						}
+						var refMat;
+						for ( var index = 0; index < skMesh.paletteMap.length; index++) {
+							var ref = skMesh.paletteMap[index];
+							refMat = palette[ref];
+							for ( var i = 0; i < 4; i++) {
+								for ( var j = 0; j < 4; j++) {
+									store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
 								}
 							}
-							return store;
-							// shaderCall.uniformMatrix4fv(false, store);
 						}
+						return store;
 					}
 				}
 			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
-			'attribute vec4 vertexWeights; //!WEIGHTS', //
-			'attribute vec4 vertexJointIDs; //!JOINTIDS', //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+			'attribute vec4 vertexWeights;', //
+			'attribute vec4 vertexJointIDs;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 			'uniform mat4 jointPalette[56];', //
 
 			'varying vec2 texCoord0;',//
@@ -113,8 +117,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			fshader : [//
 			'precision mediump float;',//
 
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
-
+			'uniform sampler2D diffuseMap;',//
 			'uniform float opacity;',//
 
 			'varying vec2 texCoord0;',//
