@@ -481,8 +481,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 		return new Shader(name || 'DefaultShader', shaderDefinition);
 	};
 
-	Material.createMaterial = function(shaderDefinition) {
-		var material = new Material('DefaultMaterial');
+	Material.createMaterial = function(shaderDefinition, name) {
+		var material = new Material(name || 'DefaultMaterial');
 
 		material.shader = Material.createShader(shaderDefinition);
 

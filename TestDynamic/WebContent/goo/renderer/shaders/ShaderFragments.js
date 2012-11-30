@@ -14,7 +14,7 @@ define(function() {
 
 			}
 		}
-	}
+	};
 
 	ShaderFragment.methods = {
 		packDepth : [ //

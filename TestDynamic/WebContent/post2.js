@@ -6,10 +6,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
 		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
 		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4'], function(World, Entity, System, TransformSystem, RenderSystem,
-	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript,
-	EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4) {
+		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/shaders/ShaderFragments'], function(World, Entity,
+	System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer,
+	Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
+	BasicControlScript, EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
+	ShaderFragments) {
 	"use strict";
 
 	function init() {
@@ -37,8 +38,46 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var composer = new Composer(); // or new RenderTarget(sizeX, sizeY, options);
 
 		// Scene render
+		var simple = {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+			},
+			vshader : [ //
+			'attribute vec3 vertexPosition;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'void main(void) {', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			ShaderFragments.methods.packDepth,//
+
+			'void main(void)',//
+			'{',//
+			'	float depth = gl_FragCoord.z / gl_FragCoord.w;',//
+			' vec4 d = packDepth(depth);',//
+			' gl_FragColor = d;',//
+			// ' float d = 1.0 - smoothstep( 10.0, 50.0, depth );',//
+			// ' gl_FragColor = vec4(d);',//
+			'}',//
+			].join('\n')
+		};
+		var material = Material.createMaterial(simple);
+
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
+		renderPass.overrideMaterial = material;
 
 		// Regular copy
 		var shader = Util.clone(Material.shaders.copy);

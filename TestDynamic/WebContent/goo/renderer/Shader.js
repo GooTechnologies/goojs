@@ -78,6 +78,11 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			for ( var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];
+				if (!attribute) {
+					// TODO: log or what?
+					continue;
+				}
+
 				var attributeIndex = this.attributeIndexMapping[key];
 				if (attributeIndex === undefined) {
 					console.warn('Attribute binding [' + name + '] does not exist in the shader.');
