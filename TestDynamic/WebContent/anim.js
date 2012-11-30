@@ -49,7 +49,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function loadModels(goo) {
 		var shader = {
-			bindings : {
+			uniforms : {
 				opacity : {
 					type : 'float',
 					value : 1.0
@@ -238,7 +238,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	jointMaterial.shader.bindings.color.value = [1.0, 0.0, 0.0];
+	jointMaterial.shader.uniforms.color = [1.0, 0.0, 0.0];
 	var renderableJoint = {
 		meshData : ShapeCreator.createBoxData(1, 1, 1),
 		materials : [jointMaterial],
@@ -246,7 +246,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	};
 
 	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	boneMaterial.shader.bindings.color.value = [0.0, 1.0, 0.0];
+	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0];
 	var renderableBone = {
 		meshData : ShapeCreator.createBoxData(1, 1, 5),
 		materials : [boneMaterial],

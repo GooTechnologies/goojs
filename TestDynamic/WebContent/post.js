@@ -82,33 +82,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function createFilmShader(goo) {
 		var shader = {
-			bindings : {
-				"tDiffuse" : {
-					type : "int",
-					value : 0
+			attributes : Material.shaders.copy.attributes,
+			uniforms : {
+				"tDiffuse" : 0,
+				"time" : function() {
+					return goo.world.time * 1.0;
 				},
-				"time" : {
-					type : "float",
-					value : function() {
-						return goo.world.time * 1.0;
-					}
-				},
-				"nIntensity" : {
-					type : "float",
-					value : 0.5
-				},
-				"sIntensity" : {
-					type : "float",
-					value : 0.05
-				},
-				"sCount" : {
-					type : "float",
-					value : 4096
-				},
-				"grayscale" : {
-					type : "int",
-					value : 0
-				}
+				"nIntensity" : 0.5,
+				"sIntensity" : 0.05,
+				"sCount" : 4096,
+				"grayscale" : 0,
+				$link : Material.shaders.copy.uniforms
 			},
 			vshader : Material.shaders.copy.vshader,
 			fshader : [//

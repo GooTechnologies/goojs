@@ -33,15 +33,11 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 	};
 
 	var nesShader = {
-		bindings : {
-			"diffuse" : {
-				type : "int",
-				value : 0
-			},
-			"mapping" : {
-				type : "int",
-				value : 1
-			},
+		attributes : Material.shaders.copy.attributes,
+		uniforms : {
+			"diffuse" : 0,
+			"mapping" : 1,
+			$link : Material.shaders.copy.uniforms
 		},
 		vshader : Material.shaders.copy.vshader,
 		fshader : [//

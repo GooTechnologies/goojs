@@ -200,8 +200,23 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 			var vs = getShader('vshader');
 			var fs = getShader('fshader');
+			material.shader = new Shader('QuadShader', {
+				vshader : vs,
+				fshader : fs,
+				attributes : {
+					vertexPosition : MeshData.POSITION,
+					vertexColors : MeshData.COLOR,
+					vertexUV0 : MeshData.TEXCOORD0,
+					fish : 'Stuff'
+				},
+				uniforms : {
+					viewMatrix : Shader.VIEW_MATRIX,
+					projectionMatrix : Shader.PROJECTION_MATRIX,
+					worldMatrix : Shader.WORLD_MATRIX,
+					diffuseMap : Shader.TEXTURE0,
+				}
+			});
 
-			material.shader = new Shader('QuadShader', vs, fs);
 			material.cullState.enabled = false;
 
 			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
@@ -236,11 +251,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			entity.name = "Box";
 
 			var material = new Material('TestMaterial');
-
-			var vs = Material.shaders.texturedLit.vshader;
-			var fs = Material.shaders.texturedLit.fshader;
-
-			material.shader = new Shader('BoxShader', vs, fs);
+			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
 
 			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
 			material.textures.push(texture);

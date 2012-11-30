@@ -8,14 +8,14 @@
 <script data-main="start" src="lib/require.js"></script>
 
 <script id="vshader" type="x-shader/x-vertex">
-			attribute vec3 vertexPosition; //!POSITION
-			attribute vec4 vertexColors; //!COLOR
-			attribute vec2 vertexUV0; //!TEXCOORD0
-			attribute float fish; //!Stuff
+			attribute vec3 vertexPosition;
+			attribute vec4 vertexColors;
+			attribute vec2 vertexUV0;
+			attribute float fish;
 			
-			uniform mat4 viewMatrix; //!VIEW_MATRIX
-			uniform mat4 projectionMatrix; //!PROJECTION_MATRIX
-			uniform mat4 worldMatrix; //!WORLD_MATRIX
+			uniform mat4 viewMatrix;
+			uniform mat4 projectionMatrix;
+			uniform mat4 worldMatrix;
 
 			varying vec4 color;
 			varying vec2 texCoord0;
@@ -29,7 +29,7 @@
 <script id="fshader" type="x-shader/x-fragment">
 			precision mediump float;
 		
-			uniform sampler2D diffuseMap; //!TEXTURE0
+			uniform sampler2D diffuseMap;
 	
 			varying vec4 color;
 			varying vec2 texCoord0;

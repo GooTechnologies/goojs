@@ -451,7 +451,7 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 						shaderSource = Material.shaders.simple;
 						type = 'simple';
 					}
-					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource.vshader, shaderSource.fshader);
+					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource);
 				} else {
 					shader = this.shaderExtractor(attributes, info);
 				}

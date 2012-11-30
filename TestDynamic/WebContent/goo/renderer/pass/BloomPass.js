@@ -19,7 +19,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		};
 
 		this.copyShader = Util.clone(Material.shaders.copy);
-		this.copyShader.bindings.opacity.value = strength;
+		this.copyShader.uniforms.opacity.value = strength;
 		this.copyMaterial = Material.createMaterial(this.copyShader);
 		this.copyMaterial.blendState.blending = 'AdditiveBlending';
 
@@ -28,8 +28,8 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
 			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
 		};
-		this.convolutionShader.bindings.uImageIncrement.value = BloomPass.blurX;
-		this.convolutionShader.bindings.cKernel.value = this.convolutionShader.buildKernel(sigma);
+		this.convolutionShader.uniforms.uImageIncrement = BloomPass.blurX;
+		this.convolutionShader.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
 		this.convolutionMaterial = Material.createMaterial(this.convolutionShader);
 
 		this.enabled = true;
@@ -41,12 +41,12 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.textures[0] = readBuffer;
-		this.convolutionShader.bindings.uImageIncrement.value = BloomPass.blurX;
+		this.convolutionShader.uniforms.uImageIncrement.value = BloomPass.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial.textures[0] = this.renderTargetX;
-		this.convolutionShader.bindings.uImageIncrement.value = BloomPass.blurY;
+		this.convolutionShader.uniforms.uImageIncrement.value = BloomPass.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
 

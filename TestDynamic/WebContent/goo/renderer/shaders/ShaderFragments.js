@@ -8,7 +8,15 @@ define(function() {
 	function ShaderFragment() {
 	}
 
-	ShaderFragment.fragments = {
+	ShaderFragment.features = {
+		fog : {
+			attributes : {
+
+			}
+		}
+	}
+
+	ShaderFragment.methods = {
 		packDepth : [ //
 		"vec4 packDepth( const in float depth ) {",//
 		"	const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );", //

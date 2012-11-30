@@ -82,7 +82,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function createFilmShader(goo) {
 		var shader = {
-			bindings : {
+			uniforms : {
 				"tDiffuse" : {
 					type : "int",
 					value : 0

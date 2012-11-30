@@ -1,4 +1,5 @@
-define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, TextureCreator) {
+define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/MeshData', 'goo/renderer/shaders/ShaderFragments'], function(Shader,
+	TextureCreator, MeshData, ShaderFragments) {
 	"use strict";
 
 	/**
@@ -36,19 +37,25 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 
 	Material.shaders = {
 		copy : {
-			bindings : {
-				opacity : {
-					type : 'float',
-					value : 1.0
-				}
+			includes : [ShaderFragments.features.fog],
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				opacity : 1.0,
+				diffuseMap : Shader.TEXTURE0
 			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 
 			'varying vec2 texCoord0;',//
 
@@ -60,8 +67,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			fshader : [//
 			'precision mediump float;',//
 
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
-
+			'uniform sampler2D diffuseMap;',//
 			'uniform float opacity;',//
 
 			'varying vec2 texCoord0;',//
@@ -73,12 +79,20 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			].join('\n')
 		},
 		simple : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
+			'attribute vec3 vertexPosition;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 
 			'void main(void) {', //
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
@@ -94,18 +108,21 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			].join('\n')
 		},
 		simpleColored : {
-			bindings : {
-				color : {
-					type : 'vec3',
-					value : [1.0, 1.0, 1.0]
-				}
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				color : [1.0, 1.0, 1.0]
 			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
+			'attribute vec3 vertexPosition;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 
 			'void main(void) {', //
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
@@ -123,13 +140,23 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			].join('\n')
 		},
 		textured : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				diffuseMap : Shader.TEXTURE0
+			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 
 			'varying vec2 texCoord0;',//
 
@@ -141,7 +168,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			fshader : [//
 			'precision mediump float;',//
 
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
+			'uniform sampler2D diffuseMap;',//
 
 			'varying vec2 texCoord0;',//
 
@@ -153,16 +180,33 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			].join('\n')
 		},
 		texturedLit : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexNormal : MeshData.NORMAL,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				cameraPosition : Shader.CAMERA,
+				lightPosition : Shader.LIGHT0,
+				diffuseMap : Shader.TEXTURE0,
+				materialAmbient : Shader.AMBIENT,
+				materialDiffuse : Shader.DIFFUSE,
+				materialSpecular : Shader.SPECULAR,
+				materialSpecularPower : Shader.SPECULAR_POWER
+			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec3 vertexNormal; //!NORMAL', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexNormal;', //
+			'attribute vec2 vertexUV0;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
-			'uniform vec3 cameraPosition; //!CAMERA', //
-			'uniform vec3 lightPosition; //!LIGHT0', //
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+			'uniform vec3 cameraPosition;', //
+			'uniform vec3 lightPosition;', //
 
 			'varying vec3 normal;',//
 			'varying vec3 lightDir;',//
@@ -182,12 +226,12 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			fshader : [//
 			'precision mediump float;',//
 
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
+			'uniform sampler2D diffuseMap;',//
 
-			'uniform vec4 materialAmbient; //!AMBIENT',//
-			'uniform vec4 materialDiffuse; //!DIFFUSE',//
-			'uniform vec4 materialSpecular; //!SPECULAR',//
-			'uniform float materialSpecularPower; //!SPECULAR_POWER',//
+			'uniform vec4 materialAmbient;',//
+			'uniform vec4 materialDiffuse;',//
+			'uniform vec4 materialSpecular;',//
+			'uniform float materialSpecularPower;',//
 
 			'varying vec3 normal;',//
 			'varying vec3 lightDir;',//
@@ -221,19 +265,41 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			].join('\n')
 		},
 		texturedNormalAOLit : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexNormal : MeshData.NORMAL,
+				vertexTangent : MeshData.TANGENT,
+				vertexUV0 : MeshData.TEXCOORD0,
+				vertexUV1 : MeshData.TEXCOORD1,
+				vertexUV2 : MeshData.TEXCOORD2,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				cameraPosition : Shader.CAMERA,
+				lightPosition : Shader.LIGHT0,
+				diffuseMap : Shader.TEXTURE0,
+				normalMap : Shader.TEXTURE1,
+				aoMap : Shader.TEXTURE2,
+				materialAmbient : Shader.AMBIENT,
+				materialDiffuse : Shader.DIFFUSE,
+				materialSpecular : Shader.SPECULAR,
+				materialSpecularPower : Shader.SPECULAR_POWER
+			},
 			vshader : [ //
-			'attribute vec3 vertexPosition; //!POSITION', //
-			'attribute vec3 vertexNormal; //!NORMAL', //
-			'attribute vec4 vertexTangent; //!TANGENT', //
-			'attribute vec2 vertexUV0; //!TEXCOORD0', //
-			'attribute vec2 vertexUV1; //!TEXCOORD1', //
-			'attribute vec2 vertexUV2; //!TEXCOORD2', //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexNormal;', //
+			'attribute vec4 vertexTangent;', //
+			'attribute vec2 vertexUV0;', //
+			'attribute vec2 vertexUV1;', //
+			'attribute vec2 vertexUV2;', //
 
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
-			'uniform vec3 cameraPosition; //!CAMERA', //
-			'uniform vec3 lightPosition; //!LIGHT0', //
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+			'uniform vec3 cameraPosition;', //
+			'uniform vec3 lightPosition;', //
 
 			'varying vec3 normal;',//
 			'varying vec3 binormal;',//
@@ -263,14 +329,14 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 			fshader : [//
 			'precision mediump float;',//
 
-			'uniform sampler2D diffuseMap; //!TEXTURE0',//
-			'uniform sampler2D normalMap; //!TEXTURE1',//
-			'uniform sampler2D aoMap; //!TEXTURE2',//
+			'uniform sampler2D diffuseMap;',//
+			'uniform sampler2D normalMap;',//
+			'uniform sampler2D aoMap;',//
 
-			'uniform vec4 materialAmbient; //!AMBIENT',//
-			'uniform vec4 materialDiffuse; //!DIFFUSE',//
-			'uniform vec4 materialSpecular; //!SPECULAR',//
-			'uniform float materialSpecularPower; //!SPECULAR_POWER',//
+			'uniform vec4 materialAmbient;',//
+			'uniform vec4 materialDiffuse;',//
+			'uniform vec4 materialSpecular;',//
+			'uniform float materialSpecularPower;',//
 
 			'varying vec3 normal;',//
 			'varying vec3 binormal;',//
@@ -321,27 +387,25 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 				"KERNEL_SIZE_FLOAT" : "25.0",
 				"KERNEL_SIZE_INT" : "25",
 			},
-			bindings : {
-				"tDiffuse" : {
-					type : "int",
-					value : 0
-				},
-				"uImageIncrement" : {
-					type : "vec2",
-					value : [0.001953125, 0.0]
-				},
-				"cKernel" : {
-					type : "array",
-					value : []
-				}
+			attributes : {
+				position : MeshData.POSITION,
+				uv : MeshData.TEXCOORD0
 			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				"tDiffuse" : 0,
+				"uImageIncrement" : [0.001953125, 0.0],
+				"cKernel" : []
+			},
+			vshader : [//
+			'attribute vec3 position;', //
+			'attribute vec2 uv;', //
 
-			vshader : ['attribute vec3 position; //!POSITION', //
-			'attribute vec2 uv; //!TEXCOORD0', //
-
-			'uniform mat4 viewMatrix; //!VIEW_MATRIX', //
-			'uniform mat4 projectionMatrix; //!PROJECTION_MATRIX',//
-			'uniform mat4 worldMatrix; //!WORLD_MATRIX',//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
 
 			"uniform vec2 uImageIncrement;",
 
@@ -414,8 +478,7 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator'], function(Shader, 
 	};
 
 	Material.createShader = function(shaderDefinition, name) {
-		return new Shader(name || 'DefaultShader', shaderDefinition.vshader, shaderDefinition.fshader, shaderDefinition.bindings,
-			shaderDefinition.defines);
+		return new Shader(name || 'DefaultShader', shaderDefinition);
 	};
 
 	Material.createMaterial = function(shaderDefinition) {
