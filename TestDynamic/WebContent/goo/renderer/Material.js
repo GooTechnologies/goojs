@@ -510,6 +510,44 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 			'	gl_FragColor = vec4(d);',//
 			'}',//
 			].join('\n')
+		},
+		showNormals : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexNormal : MeshData.NORMAL,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				opacity : 1.0
+			},
+			vshader : [ //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexNormal;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec3 vNormal;", //
+
+			"void main() {", //
+			"vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );", //
+			"vNormal = vec3(viewMatrix * worldMatrix * vec4(vertexNormal, 0.0)); //normalMatrix * vertexNormal;", //
+			"gl_Position = projectionMatrix * mvPosition;", //
+			"}" //
+			].join("\n"),
+			fshader : [ //
+			'precision mediump float;',//
+
+			"uniform float opacity;", //
+			"varying vec3 vNormal;", //
+
+			"void main() {", //
+			"gl_FragColor = vec4( 0.5 * normalize( vNormal ) + 0.5, opacity );", //
+			"}" //
+			].join("\n")
 		}
 	};
 

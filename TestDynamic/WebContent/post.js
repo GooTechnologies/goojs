@@ -39,6 +39,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Scene render
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
+		// renderPass.overrideMaterial = Material.createMaterial(Material.shaders.showNormals);
 
 		// Bloom
 		var bloomPass = new BloomPass();
@@ -48,9 +49,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		coolPass.renderToScreen = true;
 
 		// Regular copy
-		// var shader = Util.clone(Material.shaders.copy);
-		// var outPass = new FullscreenPass(shader);
-		// outPass.renderToScreen = true;
+		var shader = Util.clone(Material.shaders.copy);
+		var outPass = new FullscreenPass(shader);
+		outPass.renderToScreen = true;
 
 		composer.addPass(renderPass);
 		composer.addPass(bloomPass);
