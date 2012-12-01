@@ -22,8 +22,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 	 */
 	function Shader(name, shaderDefinition) {
 		if (!shaderDefinition.vshader || !shaderDefinition.fshader) {
-			console.trace();
-			throw new Error('Missing shader sources');
+			throw new Error('Missing shader sources for shader: ' + name);
 		}
 
 		this.name = name;
@@ -261,7 +260,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 
 		// check if the Shader is successfully compiled
 		if (!context.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
-			console.error(context.getShaderInfoLog(shader));
+			console.error('Shader [' + this.name + '][' + this._id + '] ' + context.getShaderInfoLog(shader));
 			return null;
 		}
 

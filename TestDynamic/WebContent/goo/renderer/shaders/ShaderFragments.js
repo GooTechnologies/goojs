@@ -32,7 +32,7 @@ define(function() {
 		"	float depth = dot( rgba_depth, bit_shift );", //
 		"	return depth;", //
 		"}", //
-		]
+		].join("\n")
 	};
 
 	return ShaderFragment;

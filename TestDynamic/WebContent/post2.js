@@ -38,7 +38,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var composer = new Composer(); // or new RenderTarget(sizeX, sizeY, options);
 
 		// Scene render
-		var simple = {
+		var packDepth = {
 			attributes : {
 				vertexPosition : MeshData.POSITION,
 			},
@@ -66,21 +66,65 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'void main(void)',//
 			'{',//
 			'	float depth = gl_FragCoord.z / gl_FragCoord.w;',//
-			' vec4 d = packDepth(depth);',//
-			' gl_FragColor = d;',//
-			// ' float d = 1.0 - smoothstep( 10.0, 50.0, depth );',//
-			// ' gl_FragColor = vec4(d);',//
+			'	vec4 d = packDepth(depth);',//
+			'	gl_FragColor = d;',//
 			'}',//
 			].join('\n')
 		};
-		var material = Material.createMaterial(simple);
+		var packDepthMaterial = Material.createMaterial(packDepth);
+
+		var unpackDepth = {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				depthMap : Shader.TEXTURE0
+			},
+			vshader : [ //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'varying vec2 texCoord0;',//
+
+			'void main(void) {', //
+			'	texCoord0 = vertexUV0;',//
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			'uniform sampler2D depthMap;',//
+
+			'varying vec2 texCoord0;',//
+
+			ShaderFragments.methods.unpackDepth,//
+
+			'void main(void)',//
+			'{',//
+			'	vec4 col = texture2D(depthMap, texCoord0);',//
+			'	float depth = unpackDepth(col);',//
+			'	gl_FragColor = vec4(depth);',//
+			'}',//
+			].join('\n')
+		};
+		var unpackDepthMaterial = Material.createMaterial(unpackDepth);
 
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
-		renderPass.overrideMaterial = material;
+		renderPass.overrideMaterial = packDepthMaterial;
 
 		// Regular copy
-		var shader = Util.clone(Material.shaders.copy);
+		// var shader = Util.clone(Material.shaders.copy);
+		var shader = Util.clone(unpackDepth);
 		var outPass = new FullscreenPass(shader);
 		outPass.renderToScreen = true;
 

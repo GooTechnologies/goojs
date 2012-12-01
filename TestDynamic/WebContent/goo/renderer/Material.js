@@ -474,6 +474,42 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				}
 				return values;
 			}
+		},
+		showDepth : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				near : 1.0,
+				far : 100.0
+			},
+			vshader : [ //
+			'attribute vec3 vertexPosition;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'void main(void) {', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'}'//
+			].join('\n'),
+			fshader : [//
+			'precision mediump float;',//
+
+			'uniform float near;',//
+			'uniform float far;',//
+
+			'void main(void)',//
+			'{',//
+			'	float depth = gl_FragCoord.z / gl_FragCoord.w;',//
+			'	float d = 1.0 - smoothstep( near, far, depth );',//
+			'	gl_FragColor = vec4(d);',//
+			'}',//
+			].join('\n')
 		}
 	};
 
