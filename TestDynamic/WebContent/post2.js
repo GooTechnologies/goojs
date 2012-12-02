@@ -47,7 +47,11 @@ require(
 					projectionMatrix : Shader.PROJECTION_MATRIX,
 					worldMatrix : Shader.WORLD_MATRIX,
 					depthMap : Shader.TEXTURE0,
-					diffuseMap : Shader.TEXTURE1
+					diffuseMap : Shader.TEXTURE1,
+					poisson : [0.007937789, 0.73124397, -0.10177308, -0.6509396, -0.9906806, -0.63400936, -0.5583586, -0.3614012, 0.7163085,
+							0.22836149, -0.65210974, 0.37117887, -0.12714535, 0.112056136, 0.48898065, -0.66669613, -0.9744036, 0.9155904, 0.9274436,
+							-0.9896486, 0.9782181, 0.90990245, 0.96427417, -0.25506377, -0.5021933, -0.9712455, 0.3091557, -0.17652994, 0.4665941,
+							0.96454906, -0.461774, 0.9360856]
 				},
 				vshader : [ //
 				'attribute vec3 vertexPosition;', //
@@ -70,6 +74,8 @@ require(
 				'uniform sampler2D depthMap;',//
 				'uniform sampler2D diffuseMap;',//
 
+				'uniform vec2 poisson[16];',//
+
 				'varying vec2 texCoord0;',//
 
 				ShaderFragments.methods.unpackDepth,//
@@ -77,9 +83,19 @@ require(
 				'void main(void)',//
 				'{',//
 				'	vec4 depthCol = texture2D(depthMap, texCoord0);',//
-				'	vec4 diffuseCol = texture2D(diffuseMap, texCoord0);',//
 				'	float depth = unpackDepth(depthCol);',//
-				'	gl_FragColor = diffuseCol * vec4(depth);',//
+
+				'	vec4 diffuseCol = texture2D(diffuseMap, texCoord0);',//
+
+				'	vec2 radius = vec2(0.01*depth);',//
+				'	vec4 color;',//
+				'	for(int i=0; i<16; i++) {',//
+				'		color += texture2D(diffuseMap, texCoord0 + radius * poisson[i]);',//
+				'	}',//
+				'	color /= vec4(16.0);',//
+
+				// ' gl_FragColor = diffuseCol * vec4(depth);',//
+				'	gl_FragColor = color;',//
 				'}',//
 				].join('\n')
 			};

@@ -58,8 +58,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 
 		'void main(void)',//
 		'{',//
-		'	float depth = gl_FragCoord.z / gl_FragCoord.w;',//
-		'	vec4 d = packDepth(depth);',//
+		'	vec4 d = packDepth(gl_FragCoord.z);',//
 		'	gl_FragColor = d;',//
 		'}',//
 		].join('\n')
