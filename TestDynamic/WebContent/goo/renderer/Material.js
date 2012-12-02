@@ -25,11 +25,16 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 		// };
 		this.cullState = {
 			enabled : true,
-			cullFace : 'Back', // Front, FrontAndBack
-			frontFace : 'CCW' // CW
+			cullFace : 'Back', // Front, Back, FrontAndBack
+			frontFace : 'CCW' // CW, CCW
 		};
 		this.blendState = {
-			blending : 'NoBlending'
+			blending : 'NoBlending', // NoBlending, AdditiveBlending, SubtractiveBlending,
+		// MultiplyBlending, CustomBlending
+		// blendEquation : 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
+		// blendSrc : 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor',
+		// 'SrcAlphaFactor', 'OneMinusSrcAlphaFactor', 'DstAlphaFactor', 'OneMinusDstAlphaFactor'
+		// blendDst : 'DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor'
 		};
 
 		this.wireframe = false;
@@ -384,8 +389,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 		},
 		convolution : {
 			defines : {
-				"KERNEL_SIZE_FLOAT" : "25.0",
-				"KERNEL_SIZE_INT" : "25",
+				KERNEL_SIZE_FLOAT : "25.0",
+				KERNEL_SIZE_INT : "25",
 			},
 			attributes : {
 				position : MeshData.POSITION,
@@ -395,9 +400,9 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
-				"tDiffuse" : 0,
-				"uImageIncrement" : [0.001953125, 0.0],
-				"cKernel" : []
+				tDiffuse : 0,
+				uImageIncrement : [0.001953125, 0.0],
+				cKernel : []
 			},
 			vshader : [//
 			'attribute vec3 position;', //
@@ -407,47 +412,35 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
 
-			"uniform vec2 uImageIncrement;",
+			"uniform vec2 uImageIncrement;",//
 
-			"varying vec2 vUv;",
+			"varying vec2 vUv;",//
 
-			"void main() {",
-
-			"vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;",
-					"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );",
-
-					"}"
-
+			"void main() {",//
+			"	vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;",//
+			"	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );",//
+			"}"//
 			].join("\n"),
 			fshader : [//
 			'precision mediump float;',//
 
-			"uniform float cKernel[ KERNEL_SIZE_INT ];",
+			"uniform float cKernel[ KERNEL_SIZE_INT ];",//
+			"uniform sampler2D tDiffuse;",//
+			"uniform vec2 uImageIncrement;",//
 
-			"uniform sampler2D tDiffuse;", "uniform vec2 uImageIncrement;",
+			"varying vec2 vUv;",//
 
-			"varying vec2 vUv;",
+			"void main() {",//
+			"	vec2 imageCoord = vUv;",//
+			"	vec4 sum = vec4( 0.0 );",//
 
-			"void main() {",
+			"	for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {",//
+			"		sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];",//
+			"		imageCoord += uImageIncrement;",//
+			"	}",//
 
-			"vec2 imageCoord = vUv;", "vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );",
-
-			"for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {",
-
-			"sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];", "imageCoord += uImageIncrement;",
-
-			// "vec4 tex = texture2D( tDiffuse, imageCoord );",
-
-			// "tex = tex * tex * vec4(2.0);",
-
-			// "sum += tex * cKernel[ i ];", "imageCoord += uImageIncrement;",
-
-			"}",
-
-			"gl_FragColor = sum;",
-
-			"}"
-
+			"	gl_FragColor = sum;",//
+			"}"//
 			].join("\n"),
 			buildKernel : function(sigma) {
 				// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
@@ -483,8 +476,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
-				near : 1.0,
-				far : 100.0
+				near : Shader.NEAR_PLANE,
+				far : Shader.FAR_PLANE
 			},
 			vshader : [ //
 			'attribute vec3 vertexPosition;', //
@@ -547,6 +540,106 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 			"void main() {", //
 			"gl_FragColor = vec4( 0.5 * normalize( vNormal ) + 0.5, opacity );", //
 			"}" //
+			].join("\n")
+		},
+		bokehShader : {
+			attributes : {
+				position : MeshData.POSITION,
+				uv : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				tColor : 0,
+				tDepth : 1,
+				focus : 1.0,
+				aspect : 1.0,
+				aperture : 0.025,
+				maxblur : 1.0,
+			},
+			vshader : [//
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+			"varying vec2 vUv;",//
+
+			"void main() {",//
+			"	vUv = uv;",//
+			"	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );",//
+			"}"//
+			].join("\n"),
+			fshader : [//
+			'precision mediump float;',//
+
+			"varying vec2 vUv;",//
+
+			"uniform sampler2D tColor;",//
+			"uniform sampler2D tDepth;",//
+			"uniform float maxblur;", // max blur amount
+			"uniform float aperture;", // aperture - bigger values for shallower depth of field
+			"uniform float focus;",//
+			"uniform float aspect;",//
+
+			"void main() {",//
+			"vec2 aspectcorrect = vec2( 1.0, aspect );",//
+			"vec4 depth1 = texture2D( tDepth, vUv );",//
+			"float factor = depth1.x - focus;",//
+			"vec2 dofblur = vec2 ( clamp( factor * aperture, -maxblur, maxblur ) );",//
+			"vec2 dofblur9 = dofblur * 0.9;",//
+			"vec2 dofblur7 = dofblur * 0.7;",//
+			"vec2 dofblur4 = dofblur * 0.4;",//
+
+			"vec4 col = vec4( 0.0 );",//
+
+			"col += texture2D( tColor, vUv.xy );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur );",//
+
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur9 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur9 );",//
+
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur7 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur7 );",//
+
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.4,   0.0  ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur4 );",//
+			"col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur4 );",//
+
+			"gl_FragColor = col / 41.0;",//
+			"gl_FragColor.a = 1.0;",//
+			"}"//
 			].join("\n")
 		}
 	};

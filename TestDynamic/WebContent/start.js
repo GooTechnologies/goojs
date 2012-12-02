@@ -234,7 +234,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					var transformComponent = entity.transformComponent;
 					transformComponent.transform.translation.x = Math.sin(t + 4) * 30;
 					transformComponent.transform.translation.z = Math.cos(t + 4) * 30;
-					// transformComponent.transform.rotation.x = Math.sin(t) * 3;
+					transformComponent.transform.rotation.x = Math.sin(t) * 3;
 					// transformComponent.transform.rotation.y = Math.sin(t) * 3;
 					// transformComponent.transform.rotation.z = Math.sin(t) * 3;
 					transformComponent.setUpdated();

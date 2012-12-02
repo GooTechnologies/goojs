@@ -260,6 +260,16 @@ define(['goo/math/Vector3'], function(Vector3) {
 		var moveMult = delta * this.movementSpeed * this.movementSpeedMultiplier;
 		var rotMult = delta * this.rollSpeed * this.movementSpeedMultiplier;
 
+		// TODO: HACK!
+		if (entity.cameraComponent) {
+			entity.cameraComponent.camera.translation.x += (this.moveVector.x * moveMult);
+			entity.cameraComponent.camera.translation.y += (this.moveVector.y * moveMult);
+			entity.cameraComponent.camera.translation.z += (this.moveVector.z * moveMult);
+			entity.cameraComponent.camera.onFrameChange();
+
+			return;
+		}
+
 		transform.translation.x += (this.moveVector.x * moveMult);
 		transform.translation.y += (this.moveVector.y * moveMult);
 		transform.translation.z += (this.moveVector.z * moveMult);

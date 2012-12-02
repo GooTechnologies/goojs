@@ -36,8 +36,8 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 
 		// this.mapping = settings.mapping || new THREE.UVMapping();
 
-		this.wrapS = settings.wrapS || 'EdgeClamp';
-		this.wrapT = settings.wrapT || 'EdgeClamp';
+		this.wrapS = settings.wrapS || 'Repeat';
+		this.wrapT = settings.wrapT || 'Repeat';
 
 		this.magFilter = settings.magFilter || 'Bilinear';
 		this.minFilter = settings.minFilter || 'Trilinear';

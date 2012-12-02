@@ -338,6 +338,12 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			var cameraPosition = shaderInfo.camera.translation;
 			uniformCall.uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		};
+		defaultCallbacks[Shader.NEAR_PLANE] = function(uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.camera._frustumNear);
+		};
+		defaultCallbacks[Shader.FAR_PLANE] = function(uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.camera._frustumFar);
+		};
 
 		var DEFAULT_AMBIENT = {
 			r : 0.1,
@@ -405,6 +411,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 	Shader.DIFFUSE = 'DIFFUSE';
 	Shader.SPECULAR = 'SPECULAR';
 	Shader.SPECULAR_POWER = 'SPECULAR_POWER';
+	Shader.NEAR_PLANE = 'NEAR_PLANE';
+	Shader.FAR_PLANE = 'FAR_PLANE';
 
 	return Shader;
 });

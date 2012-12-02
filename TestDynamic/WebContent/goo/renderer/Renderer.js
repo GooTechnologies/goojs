@@ -288,13 +288,13 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		var frontFace = material.cullState.frontFace;
 		var enabled = material.cullState.enabled;
 
-		if (record.enabled !== undefined && record.enabled !== enabled) {
+		if (record.enabled !== enabled) {
 			if (enabled) {
 				this.context.enable(WebGLRenderingContext.CULL_FACE);
 			} else {
 				this.context.disable(WebGLRenderingContext.CULL_FACE);
 			}
-			record.enabled = false;
+			record.enabled = enabled;
 		}
 
 		if (record.cullFace !== cullFace) {
@@ -341,7 +341,9 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				this.bindTexture(context, texture, i, unitrecord);
 			}
 
-			this.updateTextureParameters(texture);
+			var imageObject = texture.image !== undefined ? texture.image : texture;
+			var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
+			this.updateTextureParameters(texture, isTexturePowerOfTwo);
 		}
 	};
 

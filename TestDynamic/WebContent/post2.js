@@ -23,15 +23,19 @@ require(
 			goo.renderer.domElement.id = 'goo';
 			document.body.appendChild(goo.renderer.domElement);
 
-			var camera = new Camera(45, 1, 1, 1000);
+			var camera = new Camera(45, 1, 1, 100);
 			camera.translation.set(0, 5, 25);
 			camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			var cameraEntity = goo.world.createEntity("CameraEntity");
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
+			cameraEntity.setComponent(new ScriptComponent(new BasicControlScript()));
 
 			// Examples of model loading
 			loadModels(goo);
+
+			var boxEntity = createBoxEntity(goo);
+			boxEntity.addToWorld();
 
 			// Disable normal rendering
 			goo.world.getSystem('RenderSystem').doRender = false;
@@ -48,10 +52,10 @@ require(
 					worldMatrix : Shader.WORLD_MATRIX,
 					depthMap : Shader.TEXTURE0,
 					diffuseMap : Shader.TEXTURE1,
-					poisson : [0.007937789, 0.73124397, -0.10177308, -0.6509396, -0.9906806, -0.63400936, -0.5583586, -0.3614012, 0.7163085,
-							0.22836149, -0.65210974, 0.37117887, -0.12714535, 0.112056136, 0.48898065, -0.66669613, -0.9744036, 0.9155904, 0.9274436,
-							-0.9896486, 0.9782181, 0.90990245, 0.96427417, -0.25506377, -0.5021933, -0.9712455, 0.3091557, -0.17652994, 0.4665941,
-							0.96454906, -0.461774, 0.9360856]
+					blurMap : Shader.TEXTURE2,
+					nearPlane : Shader.NEAR_PLANE,
+					// farPlane : Shader.FAR_PLANE,
+					farPlane : 100,
 				},
 				vshader : [ //
 				'attribute vec3 vertexPosition;', //
@@ -73,8 +77,10 @@ require(
 
 				'uniform sampler2D depthMap;',//
 				'uniform sampler2D diffuseMap;',//
+				'uniform sampler2D blurMap;',//
 
-				'uniform vec2 poisson[16];',//
+				'uniform float nearPlane;',//
+				'uniform float farPlane;',//
 
 				'varying vec2 texCoord0;',//
 
@@ -82,20 +88,20 @@ require(
 
 				'void main(void)',//
 				'{',//
+				'	vec4 diffuseCol = texture2D(diffuseMap, texCoord0);',//
+				'	vec4 blurCol = texture2D(blurMap, texCoord0);',//
+
 				'	vec4 depthCol = texture2D(depthMap, texCoord0);',//
 				'	float depth = unpackDepth(depthCol);',//
 
-				'	vec4 diffuseCol = texture2D(diffuseMap, texCoord0);',//
-
-				'	vec2 radius = vec2(0.01*depth);',//
-				'	vec4 color;',//
-				'	for(int i=0; i<16; i++) {',//
-				'		color += texture2D(diffuseMap, texCoord0 + radius * poisson[i]);',//
-				'	}',//
-				'	color /= vec4(16.0);',//
-
-				// ' gl_FragColor = diffuseCol * vec4(depth);',//
-				'	gl_FragColor = color;',//
+				' if (depth == 0.0) depth = 1.0; //should be farplane',//
+				// ' depth = depth * (farPlane - nearPlane);',//
+				// ' depth = depth * farPlane;',//
+				' depth = abs(depth - 30.0/farPlane);',//
+				' depth = pow(depth, 1.5)*10.0;',//
+				' depth = clamp(depth, 0.0, 1.0);',//
+				// ' gl_FragColor = vec4(depth);',//
+				' gl_FragColor = mix(diffuseCol, blurCol, depth);',//
 				'}',//
 				].join('\n')
 			};
@@ -130,13 +136,28 @@ require(
 						entities[i].addToWorld();
 					}
 					entities[0].transformComponent.transform.scale.set(40, 40, 40);
-
-					entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
+					// entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
 				},
 				onError : function(error) {
 					console.error(error);
 				}
 			});
+		}
+
+		function createBoxEntity(goo) {
+			var entity = ShapeCreator.createBoxEntity(goo.world, 250, 5, 250, 20, 20);
+			entity.transformComponent.transform.translation.y = -5;
+			entity.name = "Box";
+
+			var material = new Material('TestMaterial');
+			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+
+			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+			material.textures.push(texture);
+
+			entity.meshRendererComponent.materials.push(material);
+
+			return entity;
 		}
 
 		init();

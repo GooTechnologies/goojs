@@ -8,8 +8,8 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 	function ShapeCreator() {
 	}
 
-	ShapeCreator.createBoxEntity = function(world, width, height, length) {
-		var meshData = ShapeCreator.createBoxData(width, height, length);
+	ShapeCreator.createBoxEntity = function(world, width, height, length, tileX, tileY) {
+		var meshData = ShapeCreator.createBoxData(width, height, length, tileX, tileY);
 
 		var entity = EntityUtils.createTypicalEntity(world, meshData);
 
@@ -28,12 +28,12 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 		meshData.getAttributeBuffer(MeshData.NORMAL).set([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
 		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([0, 0, 0, 1, 1, 1, 1, 0]);
 
-		meshData.getIndexBuffer().set([0, 1, 3, 1, 2, 3]);
+		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
 
 		return meshData;
 	};
 
-	ShapeCreator.createBoxData = function(width, height, length) {
+	ShapeCreator.createBoxData = function(width, height, length, tileX, tileY) {
 		var xExtent = width !== undefined ? width * 0.5 : 0.5;
 		var yExtent = height !== undefined ? height * 0.5 : 0.5;
 		var zExtent = length !== undefined ? length * 0.5 : 0.5;
@@ -102,18 +102,20 @@ define(['goo/renderer/MeshData', 'goo/entities/EntityUtils'], function(MeshData,
 
 		var tex = [];
 
+		tileX = tileX || 1;
+		tileY = tileY || 1;
 		for ( var i = 0; i < 6; i++) {
-			tex.push(1);
+			tex.push(tileX);
 			tex.push(0);
 
 			tex.push(0);
 			tex.push(0);
 
 			tex.push(0);
-			tex.push(1);
+			tex.push(tileY);
 
-			tex.push(1);
-			tex.push(1);
+			tex.push(tileX);
+			tex.push(tileY);
 		}
 
 		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
