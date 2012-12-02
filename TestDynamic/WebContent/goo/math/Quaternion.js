@@ -354,6 +354,55 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
+	 * Sets the value of this quaternion to the rotation described by the given matrix values.
+	 * 
+	 * @return this quaternion for chaining
+	 */
+	Quaternion.prototype.fromRotationMatrix = function(matrix) {
+		// Uses the Graphics Gems code, from
+		// ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z
+		// *NOT* the "Matrix and Quaternions FAQ", which has errors!
+
+		// the trace is the sum of the diagonal elements; see
+		// http://mathworld.wolfram.com/MatrixTrace.html
+		var t = matrix.e00 + matrix.e11 + matrix.e22;
+
+		// we protect the division by s by ensuring that s>=1
+		var x, y, z, w;
+		if (t >= 0) { // |w| >= .5
+			var s = Math.sqrt(t + 1); // |s|>=1 ...
+			w = 0.5 * s;
+			s = 0.5 / s; // so this division isn't bad
+			x = (matrix.e21 - matrix.e12) * s;
+			y = (matrix.e02 - matrix.e20) * s;
+			z = (matrix.e10 - matrix.e01) * s;
+		} else if (matrix.e00 > matrix.e11 && matrix.e00 > matrix.e22) {
+			var s = Math.sqrt(1.0 + matrix.e00 - matrix.e11 - matrix.e22); // |s|>=1
+			x = s * 0.5; // |x| >= .5
+			s = 0.5 / s;
+			y = (matrix.e10 + matrix.e01) * s;
+			z = (matrix.e02 + matrix.e20) * s;
+			w = (matrix.e21 - matrix.e12) * s;
+		} else if (matrix.e11 > matrix.e22) {
+			var s = Math.sqrt(1.0 + matrix.e11 - matrix.e00 - matrix.e22); // |s|>=1
+			y = s * 0.5; // |y| >= .5
+			s = 0.5 / s;
+			x = (matrix.e10 + matrix.e01) * s;
+			z = (matrix.e21 + matrix.e12) * s;
+			w = (matrix.e02 - matrix.e20) * s;
+		} else {
+			var s = Math.sqrt(1.0 + matrix.e22 - matrix.e00 - matrix.e11); // |s|>=1
+			z = s * 0.5; // |z| >= .5
+			s = 0.5 / s;
+			x = (matrix.e02 + matrix.e20) * s;
+			y = (matrix.e21 + matrix.e12) * s;
+			w = (matrix.e10 - matrix.e01) * s;
+		}
+
+		return this.set(x, y, z, w);
+	};
+
+	/**
 	 * @param store the matrix to store our result in. If null, a new matrix is created.
 	 * @return the rotation matrix representation of this quaternion (normalized) if store is not null and is read only.
 	 */
@@ -395,6 +444,30 @@ define(["goo/math/Vector"], function(Vector) {
 		d.e22 = 1.0 - (xx + yy);
 
 		return result;
+	};
+
+	/**
+	 * @return this quaternion, modified to be unit length, for chaining.
+	 */
+	Quaternion.prototype.normalize = function() {
+		var n = 1.0 / this.magnitude();
+		var xx = this.x * n;
+		var yy = this.y * n;
+		var zz = this.z * n;
+		var ww = this.w * n;
+		return this.set(xx, yy, zz, ww);
+	};
+
+	/**
+	 * @return the magnitude of this quaternion.
+	 */
+	Quaternion.prototype.magnitude = function() {
+		var magnitudeSQ = this.magnitudeSquared();
+		if (magnitudeSQ === 1.0) {
+			return 1.0;
+		}
+
+		return Math.sqrt(magnitudeSQ);
 	};
 
 	/**

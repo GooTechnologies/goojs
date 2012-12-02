@@ -216,6 +216,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			renderInfo.material = material;
 			material.shader.apply(renderInfo, this);
 
+			this.updateDepthTest(material);
 			this.updateCulling(material);
 			this.updateBlending(material);
 			this.updateTextures(material);
@@ -280,6 +281,21 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				indexModeCounter++;
 			}
 		}
+	};
+
+	Renderer.prototype.updateDepthTest = function(material) {
+		var record = this.rendererRecord.depthRecord;
+		var depthState = material.depthState;
+
+		if (record.enabled !== depthState.enabled) {
+			if (depthState.enabled) {
+				this.context.enable(WebGLRenderingContext.DEPTH_TEST);
+			} else {
+				this.context.disable(WebGLRenderingContext.DEPTH_TEST);
+			}
+			record.enabled = depthState.enabled;
+		}
+		// this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 
 	Renderer.prototype.updateCulling = function(material) {

@@ -36,6 +36,9 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 		// 'SrcAlphaFactor', 'OneMinusSrcAlphaFactor', 'DstAlphaFactor', 'OneMinusDstAlphaFactor'
 		// blendDst : 'DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor'
 		};
+		this.depthState = {
+			enabled : true
+		};
 
 		this.wireframe = false;
 	}

@@ -25,6 +25,7 @@ define(function() {
 		this.usedProgram = null;
 		this.boundAttributes = [];
 
+		this.depthRecord = {};
 		this.cullRecord = {};
 		this.blendRecord = {};
 	}
