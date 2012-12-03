@@ -1,5 +1,5 @@
-define(['goo/math/MathUtils', 'goo/animation/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'], function(MathUtils, TransformData,
-	AbstractTwoPartSource) {
+define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'], function(MathUtils,
+	TransformData, AbstractTwoPartSource) {
 	"use strict";
 
 	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);

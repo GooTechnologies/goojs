@@ -1,4 +1,4 @@
-define(['goo/animation/JointChannel', 'goo/animation/blendtree/ClipSource'], function(JointChannel, ClipSource) {
+define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'], function(JointChannel, ClipSource) {
 	"use strict";
 
 	InclusiveClipSource.prototype = Object.create(ClipSource.prototype);

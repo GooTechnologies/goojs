@@ -1,4 +1,4 @@
-define(['goo/animation/JointData', 'goo/animation/TransformData'], function(JointData, TransformData) {
+define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData'], function(JointData, TransformData) {
 	"use strict";
 
 	/**
@@ -6,6 +6,7 @@ define(['goo/animation/JointData', 'goo/animation/TransformData'], function(Join
 	 * @class Very simple applier. Just applies joint transform data, calls any callbacks and updates the pose's global transforms.
 	 */
 	function SimpleAnimationApplier() {
+		// map of key -> function(SkeletonPost, AnimationManager)
 		this._triggerCallbacks = {};
 	}
 
@@ -52,7 +53,7 @@ define(['goo/animation/JointData', 'goo/animation/TransformData'], function(Join
 						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
 							for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
-								callbacks[j].doTrigger(applyToPose, manager);
+								callbacks[j](applyToPose, manager);
 							}
 						}
 						trigger.setArmed(false);

@@ -1,5 +1,5 @@
-define(['goo/animation/JointChannel', 'goo/animation/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'], function(JointChannel, JointData,
-	Vector3, Quaternion) {
+define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'], function(JointChannel,
+	JointData, Vector3, Quaternion) {
 	"use strict";
 
 	/**
@@ -32,7 +32,7 @@ define(['goo/animation/JointChannel', 'goo/animation/JointData', 'goo/math/Vecto
 	 */
 	ManagedTransformSource.prototype.setJointTransformData = function(jointIndex, jointData) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
-		// reuse TransformData object
+		// reuse JointData object
 		if (!this._data[key]) {
 			this._data[key] = new JointData(jointData);
 		} else {
