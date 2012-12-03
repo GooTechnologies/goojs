@@ -39,7 +39,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 
-		this.textureCount = 0;
+		this.textureSlots = [];
 
 		this.defaultCallbacks = {};
 		setupDefaultCallbacks(this.defaultCallbacks);
@@ -115,7 +115,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 	};
 
 	Shader.prototype._investigateShaders = function() {
-		this.textureCount = 0;
+		this.textureSlots = [];
 		this._investigateShader(this.vertexSource);
 		this._investigateShader(this.fragmentSource);
 	};
@@ -144,7 +144,11 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 				this.attributeMapping[definition.variableName] = definition;
 			} else {
 				if (definition.format.indexOf("sampler") === 0) {
-					this.textureCount++;
+					var textureSlot = {
+						format : definition.format,
+						name : definition.variableName
+					};
+					this.textureSlots.push(textureSlot);
 				}
 				this.uniformMapping[definition.variableName] = definition;
 			}
