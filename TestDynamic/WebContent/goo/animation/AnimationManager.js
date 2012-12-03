@@ -1,4 +1,4 @@
-define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
+define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
 	"use strict";
 
 	/**
@@ -17,7 +17,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 	 * @param {SkeletonPose} pose a pose to update. Optional if we won't be animating a skinmesh.
 	 */
 	function AnimationManager(globalTimer, pose) {
-		this.globalTimer = globalTimer;
+		this._globalTimer = globalTimer;
 
 		this.layers = [];
 		this.applier = null; // animationapplier
@@ -28,7 +28,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 
 		// add our base layer
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
-		layer.manager = this;
+		layer._manager = this;
 		this.layers.push(layer);
 
 		this.applyToPoses = [];
@@ -36,8 +36,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 			this.applyToPoses.push(pose);
 		}
 
-		// this.valuesStore.setLogOnReplace(false);
-		// this.valuesStore.setDefaultValue(0.0);
+		this._valuesStore = {};
 	}
 
 	/**
@@ -45,7 +44,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 	 */
 	AnimationManager.prototype.update = function() {
 		// grab current global time
-		var globalTime = this.globalTimer.getTimeInSeconds();
+		var globalTime = this._globalTimer.getTimeInSeconds();
 
 		// check throttle
 		if (this.updateRate !== 0.0) {
@@ -60,7 +59,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 		// move the time forward on the layers
 		for ( var i = 0; i < this.layers.length; ++i) {
 			var layer = this.layers[i];
-			var state = layer.currentState;
+			var state = layer._currentState;
 			if (state) {
 				state.update(globalTime, layer);
 			}
@@ -80,7 +79,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 		// post update to clear states
 		for ( var i = 0; i < this.layers.length; ++i) {
 			var layer = this.layers[i];
-			var state = layer.currentState;
+			var state = layer._currentState;
 			if (state) {
 				state.postUpdate(layer);
 			}
@@ -97,7 +96,7 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 		var instance = this.clipInstances[clip];
 		if (!instance) {
 			instance = new AnimationClipInstance();
-			instance._startTime = this.globalTimer.getTimeInSeconds();
+			instance._startTime = this._globalTimer.getTimeInSeconds();
 			this.clipInstances[clip] = instance;
 		}
 
@@ -113,6 +112,13 @@ define(['goo/animation/AnimationLayer', 'goo/animation/clip/AnimationClipInstanc
 		}
 
 		return this.layers[this.layers.length - 1].getCurrentSourceData();
+	};
+
+	/**
+	 * @return the "local time", in seconds reported by our global timer.
+	 */
+	AnimationManager.prototype.getCurrentGlobalTime = function() {
+		return this._globalTimer.getTimeInSeconds();
 	};
 
 	return AnimationManager;

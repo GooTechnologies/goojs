@@ -1,4 +1,4 @@
-define(['goo/math/Transform'], function(Transform) {
+define(['goo/animation/SteadyState'], function(SteadyState) {
 	"use strict";
 
 	/**
@@ -10,53 +10,52 @@ define(['goo/math/Transform'], function(Transform) {
 	 * @property {String} name Name of layer
 	 */
 	function AnimationLayer(name) {
-		this.name = name;
+		this._name = name;
 
-		this.steadyStates = {};
-		this.currentState = null;
-		this.manager = null;
-		this.layerBlender = null;
-		this.transitions = {};
+		this._steadyStates = {};
+		this._currentState = null;
+		this._manager = null;
+		this._layerBlender = null;
+		this._transitions = {};
 	}
 
 	AnimationLayer.BASE_LAYER_NAME = '-BASE_LAYER-';
 
 	/**
-	 * Attempt to perform a transition. First, check the current state to see if it has a transition for the given key. If not, check this layer for a
-	 * general purpose transition. If no transition is found, this does nothing.
-	 * 
+	 * @description Attempt to perform a transition. First, check the current state to see if it has a transition for the given key. If not, check
+	 *              this layer for a general purpose transition. If no transition is found, this does nothing.
 	 * @param key the transition key, a string key used to look up a transition in the current animation state.
 	 * @return true if there is a current state and we were able to do the given transition.
 	 */
 	AnimationLayer.prototype.doTransition = function(key) {
-		var state = this.currentState;
+		var state = this._currentState;
 		// see if current state has a transition
 		if (state instanceof SteadyState) {
 			var nextState = state.doTransition(key, this);
-			if (nextState === null) {
+			if (!nextState) {
 				// no transition found, check if there is a global transition
-				var transition = this.transitions[key];
-				if (transition === null) {
-					transition = this.transitions['*'];
+				var transition = this._transitions[key];
+				if (!transition) {
+					transition = this._transitions['*'];
 				}
-				if (transition !== null) {
+				if (transition) {
 					nextState = transition.doTransition(state, this);
 				}
 			}
 
-			if (nextState !== null) {
+			if (nextState) {
 				if (nextState !== state) {
 					setCurrentState(nextState, false);
 					return true;
 				}
 			}
-		} else if (state === null) {
+		} else if (!state) {
 			// check if there is a global transition
-			var transition = this.transitions[key];
-			if (transition === null) {
-				transition = this.transitions['*'];
+			var transition = this._transitions[key];
+			if (!transition) {
+				transition = this._transitions['*'];
 			}
-			if (transition !== null) {
+			if (transition) {
 				setCurrentState(transition.doTransition(state, this), true);
 				return true;
 			}
@@ -67,31 +66,29 @@ define(['goo/math/Transform'], function(Transform) {
 	};
 
 	/**
-	 * Sets the current finite state to the given state. Generally for transitional state use.
-	 * 
+	 * @description Sets the current finite state to the given state. Generally for transitional state use.
 	 * @param state our new state. If null, then no state is currently set on this layer.
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 */
 	AnimationLayer.prototype.setCurrentState = function(state, rewind) {
-		this.currentState = state;
+		this._currentState = state;
 		if (state) {
 			state._lastOwner = this;
 			if (rewind) {
-				state._globalStartTime = this.manager.globalTimer.getTimeInSeconds();
+				state.resetClips(this._manager);
 			}
 		}
 	};
 
 	/**
-	 * Force the current state of the machine to the steady state with the given name. Used to set the FSM's initial state.
-	 * 
+	 * @description Force the current state of the machine to the steady state with the given name. Used to set the FSM's initial state.
 	 * @param stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @return true if succeeds
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function(stateName, rewind) {
 		if (stateName) {
-			var state = this.steadyStates[stateName];
+			var state = this._steadyStates[stateName];
 			if (state) {
 				this.setCurrentState(state, rewind);
 				return true;
@@ -102,20 +99,40 @@ define(['goo/math/Transform'], function(Transform) {
 		return false;
 	};
 
+	/**
+	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
+	 */
 	AnimationLayer.prototype.getCurrentSourceData = function() {
-		if (this.layerBlender !== null) {
-			return this.layerBlender.getBlendedSourceData(this.manager);
+		if (this._layerBlender !== null) {
+			return this._layerBlender.getBlendedSourceData(this._manager);
 		}
 
-		if (this.currentState !== null) {
-			return this.currentState.getCurrentSourceData(this.manager);
+		if (this._currentState !== null) {
+			return this._currentState.getCurrentSourceData(this._manager);
 		} else {
 			return null;
 		}
 	};
+	/**
+	 * @description Update the layer blender in this animation layer to properly point to the previous layer.
+	 * @param previousLayer the layer before this layer in the animation manager.
+	 */
+	AnimationLayer.prototype.updateLayerBlending = function(previousLayer) {
+		if (this._layerBlender) {
+			this._layerBlender._layerA = previousLayer;
+			this._layerBlender._layerB = this;
+		}
+	};
+
+	/**
+	 * @description Set the currently playing state on this layer to null.
+	 */
+	AnimationLayer.prototype.clearCurrentState = function() {
+		setCurrentState(null, false);
+	};
 
 	AnimationLayer.prototype.replaceState = function(currentState, newState) {
-		if (this.currentState === currentState) {
+		if (this._currentState === currentState) {
 			this.setCurrentState(newState, false);
 		}
 	};

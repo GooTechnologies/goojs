@@ -1,5 +1,6 @@
 define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3',
-		'goo/animation/blendtree/ClipSource'], function(Util, MeshData, BufferUtils, Transform, Matrix3x3, Vector3, ClipSource) {
+		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer'], function(Util, MeshData, BufferUtils, Transform, Matrix3x3,
+	Vector3, ClipSource, AnimationLayer) {
 	"use strict";
 
 	/**
@@ -109,7 +110,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				var transitions = layerObj.Transitions;
 				for ( var transKey in transitions) {
 					// parse and add transition layer
-					layer.addTransition(transKey, JsonUtils.parseTransitionState(transitions[transKey], inputStore, outputStore, manager));
+					layer._transitions[transKey] = JsonUtils.parseTransitionState(transitions[transKey], inputStore, outputStore, manager);
 				}
 			}
 		}
@@ -154,7 +155,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			layer.setCurrentState(state, true);
 		}
 
-		layer.addSteadyState(state);
+		layer._steadyStates[state._name] = state;
 	};
 
 	JsonUtils.parseTransitionState = function(args, inputStore, outputStore, manager) {

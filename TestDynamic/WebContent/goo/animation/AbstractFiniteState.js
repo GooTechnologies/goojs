@@ -10,5 +10,13 @@ define(function() {
 		this._lastOwner = null;
 	}
 
+	AbstractFiniteState.prototype.resetClips = function(manager, globalStartTime) {
+		if (globalStartTime === undefined) {
+			this._globalStartTime = manager.getCurrentGlobalTime();
+		} else {
+			this._globalStartTime = globalStartTime;
+		}
+	};
+
 	return AbstractFiniteState;
 });

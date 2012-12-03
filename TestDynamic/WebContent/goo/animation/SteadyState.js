@@ -21,7 +21,7 @@ define(['goo/animation/AbstractFiniteState'], function(AbstractFiniteState) {
 	}
 
 	SteadyState.prototype.update = function(globalTime, layer) {
-		if (!this._sourceTree.setTime(globalTime, layer.manager)) {
+		if (!this._sourceTree.setTime(globalTime, layer._manager)) {
 			var lastOwner = this.getLastStateOwner();
 			if (this._endTransition !== null) {
 				// time to move to end transition
@@ -38,7 +38,7 @@ define(['goo/animation/AbstractFiniteState'], function(AbstractFiniteState) {
 	};
 
 	SteadyState.prototype.postUpdate = function(layer) {
-		if (!this._sourceTree.isActive(layer.manager)) {
+		if (!this._sourceTree.isActive(layer._manager)) {
 			var lastOwner = this._lastOwner;
 			if (this._endTransition === null) {
 				// we're done. end.

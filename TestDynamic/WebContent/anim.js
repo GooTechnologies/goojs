@@ -212,7 +212,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var source = new ClipSource(clip, animationManager);
 			state._sourceTree = source;
 
-			animationManager.layers[0].steadyStates[state.name] = state;
+			animationManager.layers[0]._steadyStates[state.name] = state;
 			animationManager.getClipInstance(clip)._loopCount = -1;
 			animationManager.getClipInstance(clip)._timeScale = 0.1; // uncomment to make him slow enough to check out
 			animationManager.layers[0].setCurrentStateByName("running", true);
