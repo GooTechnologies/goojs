@@ -335,7 +335,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.updateTextures = function(material) {
 		var context = this.context;
-		for ( var i = 0; i < material.shader.textureCount; i++) {
+		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
 			if (texture === undefined || (texture.image && texture.image.dataReady === undefined)) {
