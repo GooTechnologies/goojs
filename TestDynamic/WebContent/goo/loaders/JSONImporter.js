@@ -42,8 +42,8 @@ define(
 		 *            <li>onSuccess(entities)
 		 *            <li>onError(error)
 		 *            </ul>
-		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-		 *            info)
+		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+		 *            function(attributes, info)
 		 * @returns Entities created during load
 		 */
 		JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
@@ -71,8 +71,8 @@ define(
 		 * 
 		 * @param {String} modelSource JSON model source as a string
 		 * @param textureDir Texture path
-		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-		 *            info)
+		 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+		 *            function(attributes, info)
 		 * @returns Entities created during load
 		 */
 		JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
@@ -181,10 +181,10 @@ define(
 					var jName = jointObj.Name;
 					var joint = new Joint(jName);
 
-					joint.index = Math.round(jointObj.Index);
-					joint.parentIndex = Math.round(jointObj.ParentIndex);
-					joint.inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
-					joint.inverseBindPose.update();
+					joint._index = Math.round(jointObj.Index);
+					joint._parentIndex = Math.round(jointObj.ParentIndex);
+					joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
 					joints[j] = joint;
 				}
 

@@ -8,11 +8,11 @@ define(['goo/math/Transform'], function(Transform) {
 	 * @property {String} name Name of joint
 	 */
 	function Joint(name) {
-		this.name = name;
+		this._name = name;
 
-		this.index = 0;
-		this.parentIndex = 0;
-		this.inverseBindPose = new Transform();
+		this._index = 0;
+		this._parentIndex = 0;
+		this._inverseBindPose = new Transform();
 	}
 
 	Joint.NO_PARENT = -32768;

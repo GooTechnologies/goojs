@@ -9,8 +9,8 @@ define(function() {
 	 * @property {String} name Name of skeleton
 	 */
 	function Skeleton(name, joints) {
-		this.name = name;
-		this.joints = joints;
+		this._name = name;
+		this._joints = joints;
 	}
 
 	return Skeleton;

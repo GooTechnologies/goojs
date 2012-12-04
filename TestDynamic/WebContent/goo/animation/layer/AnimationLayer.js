@@ -1,4 +1,4 @@
-define(['goo/animation/SteadyState'], function(SteadyState) {
+define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	"use strict";
 
 	/**

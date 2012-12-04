@@ -15,7 +15,7 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		this._matrixPalette = [];
 		this._poseListeners = [];
 
-		var jointCount = this._skeleton.joints.length;
+		var jointCount = this._skeleton._joints.length;
 
 		// init local transforms
 		for ( var i = 0; i < jointCount; i++) {
@@ -44,16 +44,16 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		// go through our local transforms
 		for ( var i = 0; i < this._localTransforms.length; i++) {
 			// Set us to the bind pose
-			this._localTransforms[i].copy(this._skeleton.joints[i].inverseBindPose);
+			this._localTransforms[i].copy(this._skeleton._joints[i]._inverseBindPose);
 			// then invert.
 			this._localTransforms[i].invert(this._localTransforms[i]);
 
 			// At this point we are in model space, so we need to remove our parent's transform (if we have one.)
-			var parentIndex = this._skeleton.joints[i].parentIndex;
+			var parentIndex = this._skeleton._joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We remove the parent's transform simply by multiplying by its inverse bind pose. Done! :)
-				temp.multiply(this._skeleton.joints[parentIndex].inverseBindPose, this._localTransforms[i]);
-				// this._skeleton.joints[parentIndex].inverseBindPose.multiply(this._localTransforms[i], temp);
+				temp.multiply(this._skeleton._joints[parentIndex]._inverseBindPose, this._localTransforms[i]);
+				// this._skeleton._joints[parentIndex]._inverseBindPose.multiply(this._localTransforms[i], temp);
 				this._localTransforms[i].copy(temp);
 			}
 		}
@@ -64,13 +64,13 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
 	SkeletonPose.prototype.updateTransforms = function() {
-		var nrJoints = this._skeleton.joints.length;
+		var nrJoints = this._skeleton._joints.length;
 		for ( var i = 0; i < nrJoints; i++) {
 			// the joint index
 			var index = i;
 
 			// find our parent
-			var parentIndex = this._skeleton.joints[index].parentIndex;
+			var parentIndex = this._skeleton._joints[index]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// we have a parent, so take us from local->parent->model space by multiplying by parent's local->model
 				// space transform.
@@ -84,10 +84,11 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 			// at this point we have a local->model space transform for this joint, for skinning we multiply this by the
 			// joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
 			// vertex from bind pose (model space) to current pose (model space).
-			Matrix4x4.combine(this._globalTransforms[index].matrix, this._skeleton.joints[index].inverseBindPose.matrix, this._matrixPalette[index]);
+			Matrix4x4
+				.combine(this._globalTransforms[index].matrix, this._skeleton._joints[index]._inverseBindPose.matrix, this._matrixPalette[index]);
 			// since we can't call this in the shader callback anymore?
 			this._matrixPalette[index].transpose();
-			// this._globalTransforms[index].multiply(this._skeleton.joints[index].inverseBindPose, temp);
+			// this._globalTransforms[index].multiply(this._skeleton._joints[index]._inverseBindPose, temp);
 			// temp.getHomogeneousMatrix(this._matrixPalette[index]);
 		}
 		this.firePoseUpdated();

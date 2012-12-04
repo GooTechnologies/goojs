@@ -1,6 +1,6 @@
 define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3',
-		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer'], function(Util, MeshData, BufferUtils, Transform, Matrix3x3,
-	Vector3, ClipSource, AnimationLayer) {
+		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState'], function(Util, MeshData,
+	BufferUtils, Transform, Matrix3x3, Vector3, ClipSource, AnimationLayer, SteadyState) {
 	"use strict";
 
 	/**
@@ -219,8 +219,8 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			if (root.JointNames) {
 				var sk = manager.getSkeletonPose(0).getSkeleton();
 				var names = JsonUtils.getStringArray(root.JointNames);
-				for ( var name in names) {
-					source.addEnabledJoints(sk.findJointByName(name));
+				for ( var jname in names) {
+					source.addEnabledJoints(sk.findJointByName(jname));
 				}
 			}
 			if (root.containsKey("Joints")) {
