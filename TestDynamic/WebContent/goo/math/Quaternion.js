@@ -232,7 +232,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
-			workQuat.mul(-1);
+			workQuat.negate();
 			result = -result;
 		}
 
@@ -264,6 +264,19 @@ define(["goo/math/Vector"], function(Vector) {
 
 		// Return the interpolated quaternion
 		return workQuat;
+	};
+
+	/**
+	 * @description multiplies this quaterion's values by -1.
+	 * @returns {Quaternion} Self for chaining.
+	 */
+
+	Quaternion.prototype.negate = function() {
+		this.x *= -1;
+		this.y *= -1;
+		this.z *= -1;
+		this.w *= -1;
+		return this;
 	};
 
 	/**

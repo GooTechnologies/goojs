@@ -13,11 +13,15 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 *       By default, an animation manager has a single base animation layer. Other layers may be added to this. It is important that the base
 	 *       layer (the layer at index 0) always has a full set of data to put a skeleton pose into a valid state.
 	 *       </p>
-	 * @param {Timer} globalTimer the timer to use for global time keeping.
 	 * @param {SkeletonPose} pose a pose to update. Optional if we won't be animating a skinmesh.
 	 */
-	function AnimationManager(globalTimer, pose) {
-		this._globalTimer = globalTimer;
+	function AnimationManager(pose) {
+		this._globalTimer = {
+			start : Date.now(),
+			getTimeInSeconds : function() {
+				return (Date.now() - this.start) / 1000.0;
+			}
+		};
 
 		this.layers = [];
 		this.applier = null; // animationapplier
@@ -119,6 +123,26 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 */
 	AnimationManager.prototype.getCurrentGlobalTime = function() {
 		return this._globalTimer.getTimeInSeconds();
+	};
+
+	/**
+	 * @description Rewind and reactivate the clip instance associated with the given clip.
+	 * @param clip the clip to pull the instance for.
+	 * @param globalStartTime the time to set the clip instance's start as.
+	 */
+	AnimationManager.prototype.resetClipInstance = function(clip, globalStartTime) {
+		var instance = this.getClipInstance(clip);
+		if (!instance) {
+			instance._startTime = globalStartTime;
+			instance._active = true;
+		}
+	};
+
+	/**
+	 * @return our bottom most layer. This layer should always consist of a full skeletal pose data.
+	 */
+	AnimationManager.prototype.getBaseAnimationLayer = function() {
+		return _layers[0];
 	};
 
 	return AnimationManager;
