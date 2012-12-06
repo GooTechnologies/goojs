@@ -22,15 +22,28 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 	};
 
 	ExclusiveClipSource.prototype.addDisabledChannels = function() {
-		for ( var i = 0, max = arguments.length; i < max; i++) {
-			this._disabledChannels[arguments[i]] = true;
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			for ( var i = 0; i < arguments[0].length; i++) {
+				this._disabledChannels[arguments[0][i]] = true;
+			}
+		} else {
+			for ( var i = 0; i < arguments.length; i++) {
+				this._disabledChannels[arguments[i]] = true;
+			}
 		}
 	};
 
 	ExclusiveClipSource.prototype.addDisabledJoints = function() {
-		for ( var i = 0, max = arguments.length; i < max; i++) {
-			var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
-			this._disabledChannels[channelName] = true;
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			for ( var i = 0; i < arguments[0].length; i++) {
+				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[0][i];
+				this._disabledChannels[channelName] = true;
+			}
+		} else {
+			for ( var i = 0; i < arguments.length; i++) {
+				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
+				this._disabledChannels[channelName] = true;
+			}
 		}
 	};
 

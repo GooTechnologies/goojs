@@ -23,21 +23,21 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 			}
 		};
 
-		this.layers = [];
-		this.applier = null; // animationapplier
-		this.clipInstances = {}; // Map<AnimationClip, AnimationClipInstance>
+		this._layers = [];
+		this._applier = null; // animationapplier
+		this._clipInstances = {}; // Map<AnimationClip, AnimationClipInstance>
 
-		this.updateRate = 1.0 / 60.0;
-		this.lastUpdate = 0.0;
+		this._updateRate = 1.0 / 60.0;
+		this._lastUpdate = 0.0;
 
 		// add our base layer
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
 		layer._manager = this;
-		this.layers.push(layer);
+		this._layers.push(layer);
 
-		this.applyToPoses = [];
+		this._applyToPoses = [];
 		if (pose) {
-			this.applyToPoses.push(pose);
+			this._applyToPoses.push(pose);
 		}
 
 		this._valuesStore = {};
@@ -51,18 +51,18 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		var globalTime = this._globalTimer.getTimeInSeconds();
 
 		// check throttle
-		if (this.updateRate !== 0.0) {
-			if (globalTime - this.lastUpdate < this.updateRate) {
+		if (this._updateRate !== 0.0) {
+			if (globalTime - this._lastUpdate < this._updateRate) {
 				return;
 			}
 
 			// we subtract a bit to maintain our desired rate, even if there are some gc pauses, etc.
-			this.lastUpdate = globalTime - (globalTime - this.lastUpdate) % this.updateRate;
+			this._lastUpdate = globalTime - (globalTime - this._lastUpdate) % this._updateRate;
 		}
 
 		// move the time forward on the layers
-		for ( var i = 0; i < this.layers.length; ++i) {
-			var layer = this.layers[i];
+		for ( var i = 0; i < this._layers.length; ++i) {
+			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
 				state.update(globalTime, layer);
@@ -70,19 +70,19 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// call apply on blend module, passing in pose
-		if (this.applyToPoses.length > 0) {
-			for ( var i = 0; i < this.applyToPoses.length; ++i) {
-				var pose = this.applyToPoses[i];
-				this.applier.applyTo(pose, this);
+		if (this._applyToPoses.length > 0) {
+			for ( var i = 0; i < this._applyToPoses.length; ++i) {
+				var pose = this._applyToPoses[i];
+				this._applier.applyTo(pose, this);
 			}
 		}
 
 		// apply for non-pose related assets
-		// this.applier.apply(S_sceneRoot, this);
+		// this._applier.apply(S_sceneRoot, this);
 
 		// post update to clear states
-		for ( var i = 0; i < this.layers.length; ++i) {
-			var layer = this.layers[i];
+		for ( var i = 0; i < this._layers.length; ++i) {
+			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
 				state.postUpdate(layer);
@@ -97,11 +97,11 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @return our new clip instance.
 	 */
 	AnimationManager.prototype.getClipInstance = function(clip) {
-		var instance = this.clipInstances[clip];
+		var instance = this._clipInstances[clip];
 		if (!instance) {
 			instance = new AnimationClipInstance();
 			instance._startTime = this._globalTimer.getTimeInSeconds();
-			this.clipInstances[clip] = instance;
+			this._clipInstances[clip] = instance;
 		}
 
 		return instance;
@@ -109,13 +109,13 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 
 	AnimationManager.prototype.getCurrentSourceData = function() {
 		// set up our layer blending.
-		for ( var i = 0; i < this.layers.length - 1; i++) {
-			var layerA = this.layers[i];
-			var layerB = this.layers[i + 1];
+		for ( var i = 0; i < this._layers.length - 1; i++) {
+			var layerA = this._layers[i];
+			var layerB = this._layers[i + 1];
 			layerB.updateLayerBlending(layerA);
 		}
 
-		return this.layers[this.layers.length - 1].getCurrentSourceData();
+		return this._layers[this._layers.length - 1].getCurrentSourceData();
 	};
 
 	/**
@@ -142,7 +142,18 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @return our bottom most layer. This layer should always consist of a full skeletal pose data.
 	 */
 	AnimationManager.prototype.getBaseAnimationLayer = function() {
-		return _layers[0];
+		return this._layers[0];
+	};
+
+	/**
+	 * @description Add a new layer to our list of animation layers.
+	 * @param layer the layer to add.
+	 * @return the index of our added layer in our list of animation layers.
+	 */
+	AnimationManager.prototype.addAnimationLayer = function(layer) {
+		this._layers.push(layer);
+		layer._manager = this;
+		return this._layers.length - 1;
 	};
 
 	return AnimationManager;

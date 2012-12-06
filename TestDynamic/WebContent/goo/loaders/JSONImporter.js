@@ -2,9 +2,9 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
 		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
 		'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
-		'goo/animation/state/loader/OutputStore', 'goo/util/URLTools'], function(TransformComponent, MeshData, JsonUtils, MeshDataComponent,
-	MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip, JointChannel, TransformChannel,
-	InterpolatedFloatChannel, OutputStore, URLTools) {
+		'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil'], function(TransformComponent, MeshData,
+	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip,
+	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil) {
 	"use strict";
 
 	/**
@@ -42,8 +42,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 *            <li>onSuccess(entities)
 	 *            <li>onError(error)
 	 *            </ul>
-	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-	 *            info)
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+	 *            function(attributes, info)
 	 * @returns Entities created during load
 	 */
 	JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
@@ -71,8 +71,8 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 	 * 
 	 * @param {String} modelSource JSON model source as a string
 	 * @param textureDir Texture path
-	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition function(attributes,
-	 *            info)
+	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
+	 *            function(attributes, info)
 	 * @returns Entities created during load
 	 */
 	JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
@@ -562,24 +562,24 @@ define(['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', '
 		}
 
 		// load all clips and report back when done
-		GooResourceManager.loadAssets(cache, {
+		SimpleResourceUtil.loadTextAssets(urls, names, {
 			onSuccess : function(clipSources) {
 				// done with clips, parse out the layers
-				var inputStore = new InputStore();
+				var inputStore = {};
 				for ( var i = 0, max = names.length; i < max; i++) {
-					var clip = new JSONImporter().importAnimation(clipSources[i], names[i]);
-					inputStore.getClips().put(clip);
+					var clip = new JSONImporter().importAnimation(clipSources[names[i]], names[i]);
+					inputStore[clip._name] = clip;
 				}
 
 				JsonUtils.parseAnimationLayers(manager, completeCallback, inputStore, outputStore, root);
 			},
-			onError : function(t) {
-				JSONImporter.logger.severe("failed loading tree clips: " + t);
-				if (completeCallback !== null) {
-					completeCallback.onError(t);
+			onError : function(error) {
+				console.warn("failed loading tree clips: " + error);
+				if (completeCallback) {
+					completeCallback.onError(error);
 				}
 			}
-		}, urls);
+		});
 	};
 
 	JSONImporter.prototype.importAnimation = function(clipSource, clipName) {

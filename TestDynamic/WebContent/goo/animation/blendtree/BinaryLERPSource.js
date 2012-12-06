@@ -22,7 +22,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		var sourceAData = this._sourceA ? this._sourceA.getSourceData(manager) : null;
 		var sourceBData = this._sourceB ? this._sourceB.getSourceData(manager) : null;
 
-		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, manager.getValuesStore().get(getBlendKey()));
+		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, manager._valuesStore[this._blendKey]);
 	};
 
 	BinaryLERPSource.prototype.setTime = function(globalTime, manager) {

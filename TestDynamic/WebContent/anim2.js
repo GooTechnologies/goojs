@@ -187,11 +187,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function setupAnimations(pose, animationTree) {
 		// setup manager
 		animationManager = new AnimationManager(pose);
-		animationManager.applier = new SimpleAnimationApplier();
+		animationManager._applier = new SimpleAnimationApplier();
 
 		new JSONImporter().importAnimationTree(animationManager, animationTree, {
 			onSuccess : function(outputStore) {
-				animationManager.getBaseAnimationLayer().setCurrentState("walk_anim", true);
+				animationManager.getBaseAnimationLayer().setCurrentStateByName("walk_anim", true);
 			},
 			onError : function(error) {
 				console.error(error);

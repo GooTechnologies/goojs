@@ -196,7 +196,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function setupAnimations(pose, animationTree) {
 		// setup manager
 		animationManager = new AnimationManager(pose);
-		animationManager.applier = new SimpleAnimationApplier();
+		animationManager._applier = new SimpleAnimationApplier();
 
 		var importer = new JSONImporter();
 
@@ -206,10 +206,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var source = new ClipSource(clip, animationManager);
 		state._sourceTree = source;
 
-		animationManager.layers[0]._steadyStates[state._name] = state;
+		animationManager._layers[0]._steadyStates[state._name] = state;
 		animationManager.getClipInstance(clip)._loopCount = -1;
 		animationManager.getClipInstance(clip)._timeScale = 1.0;
-		animationManager.layers[0].setCurrentStateByName("running", true);
+		animationManager._layers[0].setCurrentStateByName("running", true);
 	}
 
 	var alreadyDrawn = {};

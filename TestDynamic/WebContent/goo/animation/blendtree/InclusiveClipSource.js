@@ -21,16 +21,29 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 		this._enabledChannels = {};
 	};
 
-	InclusiveClipSource.prototype.addEnabledChannels = function() { // String array
-		for ( var i = 0, max = arguments.length; i < max; i++) {
-			this._enabledChannels[arguments[i]] = true;
+	InclusiveClipSource.prototype.addEnabledChannels = function() {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			for ( var i = 0; i < arguments[0].length; i++) {
+				this._enabledChannels[arguments[0][i]] = true;
+			}
+		} else {
+			for ( var i = 0; i < arguments.length; i++) {
+				this._enabledChannels[arguments[i]] = true;
+			}
 		}
 	};
 
-	InclusiveClipSource.prototype.addEnabledJoints = function() { // int array
-		for ( var i = 0, max = arguments.length; i < max; i++) {
-			var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
-			this._enabledChannels[channelName] = true;
+	InclusiveClipSource.prototype.addEnabledJoints = function() {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			for ( var i = 0; i < arguments[0].length; i++) {
+				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[0][i];
+				this._enabledChannels[channelName] = true;
+			}
+		} else {
+			for ( var i = 0; i < arguments.length; i++) {
+				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
+				this._enabledChannels[channelName] = true;
+			}
 		}
 	};
 

@@ -22,7 +22,7 @@ define(['goo/animation/blendtree/BinaryLERPSource'], function(BinaryLERPSource) 
 		// set A
 		var sourceAData = this._layerA.getCurrentSourceData();
 		// set B
-		var sourceBData = this._layerB.getCurrentState() ? this._layerB.getCurrentState().getCurrentSourceData(manager) : null;
+		var sourceBData = this._layerB._currentState ? this._layerB._currentState.getCurrentSourceData(manager) : null;
 
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, manager._valuesStore[this._blendKey]);
 	};
