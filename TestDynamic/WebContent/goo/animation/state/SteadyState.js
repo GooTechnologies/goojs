@@ -62,7 +62,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 
 	SteadyState.prototype.resetClips = function(manager, globalStartTime) {
 		AbstractFiniteState.prototype.resetClips.call(this, manager, globalStartTime);
-		this._sourceTree.resetClips(manager, globalStartTime);
+		this._sourceTree.resetClips(manager, this._globalStartTime);
 	};
 
 	return SteadyState;

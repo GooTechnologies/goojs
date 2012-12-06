@@ -1,4 +1,4 @@
-define(function() {
+define(['goo/math/MathUtils'], function(MathUtils) {
 	"use strict";
 
 	/**
@@ -40,7 +40,7 @@ define(function() {
 				// signal to any listeners that we have ended our animation.
 				instance.fireAnimationFinished();
 				// deactivate this instance of the clip
-				instance.setActive(false);
+				instance._active = false;
 			}
 
 			// update the clip with the correct clip local time.

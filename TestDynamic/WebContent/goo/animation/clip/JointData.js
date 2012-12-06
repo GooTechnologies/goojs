@@ -31,7 +31,7 @@ define(['goo/animation/clip/TransformData'], function(TransformData) {
 	 */
 	JointData.prototype.blend = function(blendTo, blendWeight, store) {
 		var rVal = store;
-		if (rVal) {
+		if (!rVal) {
 			rVal = new JointData();
 			rVal._jointIndex = this._jointIndex;
 		} else if (rVal instanceof JointData) {

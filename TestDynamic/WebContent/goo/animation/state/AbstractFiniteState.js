@@ -11,7 +11,7 @@ define(function() {
 	}
 
 	AbstractFiniteState.prototype.resetClips = function(manager, globalStartTime) {
-		if (globalStartTime === undefined) {
+		if (isNaN(globalStartTime)) {
 			this._globalStartTime = manager.getCurrentGlobalTime();
 		} else {
 			this._globalStartTime = globalStartTime;

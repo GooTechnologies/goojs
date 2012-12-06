@@ -130,7 +130,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 */
 	AnimationManager.prototype.resetClipInstance = function(clip, globalStartTime) {
 		var instance = this.getClipInstance(clip);
-		if (!instance) {
+		if (instance) {
 			instance._startTime = globalStartTime;
 			instance._active = true;
 		}
