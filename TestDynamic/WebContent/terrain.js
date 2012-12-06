@@ -35,7 +35,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var world = goo.world;
 
 		// var meshData = ShapeCreator.createTeapot();
-		var meshData = ShapeCreator.createSphere();
+		var meshData = ShapeCreator.createSphere(16, 16, 2);
 
 		// Create entity
 		var entity = world.createEntity();

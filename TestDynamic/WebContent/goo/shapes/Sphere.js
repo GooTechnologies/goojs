@@ -11,7 +11,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		this.zSamples = zSamples !== undefined ? zSamples : 8;
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
 		this.radius = radius !== undefined ? radius : 0.5;
-		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Linear;
+		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Polar;
 
 		this.viewInside = false;
 
@@ -148,9 +148,9 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		i++;
 
 		// north pole
-		vbuf[(i + 1) * 3 + 0] = 0;
-		vbuf[(i + 1) * 3 + 1] = 0;
-		vbuf[(i + 1) * 3 + 2] = this.radius;
+		vbuf[i * 3 + 0] = 0;
+		vbuf[i * 3 + 1] = 0;
+		vbuf[i * 3 + 2] = this.radius;
 
 		if (!this.viewInside) {
 			norms[i * 3 + 0] = 0;
@@ -171,59 +171,56 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		}
 
 		// generate connectivity
-		for ( var iZ = 0, iZStart = 0; iZ < _zSamples - 3; iZ++) {
+		var index = 0;
+		for ( var iZ = 0, iZStart = 0; iZ < this.zSamples - 3; iZ++) {
 			var i0 = iZStart;
 			var i1 = i0 + 1;
-			iZStart += _radialSamples + 1;
+			iZStart += this.radialSamples + 1;
 			var i2 = iZStart;
 			var i3 = i2 + 1;
-			for ( var i = 0; i < _radialSamples; i++) {
-				if (!_viewInside) {
-					_meshData.getIndices().put(i0++);
-					_meshData.getIndices().put(i1);
-					_meshData.getIndices().put(i2);
-					_meshData.getIndices().put(i1++);
-					_meshData.getIndices().put(i3++);
-					_meshData.getIndices().put(i2++);
-				} else // inside view
-				{
-					_meshData.getIndices().put(i0++);
-					_meshData.getIndices().put(i2);
-					_meshData.getIndices().put(i1);
-					_meshData.getIndices().put(i1++);
-					_meshData.getIndices().put(i2++);
-					_meshData.getIndices().put(i3++);
+			for ( var i = 0; i < this.radialSamples; i++) {
+				if (!this.viewInside) {
+					indices[index++] = i0++;
+					indices[index++] = i1;
+					indices[index++] = i2;
+					indices[index++] = i1++;
+					indices[index++] = i3++;
+					indices[index++] = i2++;
+				} else {
+					indices[index++] = i0++;
+					indices[index++] = i2;
+					indices[index++] = i1;
+					indices[index++] = i1++;
+					indices[index++] = i2++;
+					indices[index++] = i3++;
 				}
 			}
 		}
 
 		// south pole triangles
-		for ( var i = 0; i < _radialSamples; i++) {
-			if (!_viewInside) {
-				_meshData.getIndices().put(i);
-				_meshData.getIndices().put(_meshData.getVertexCount() - 2);
-				_meshData.getIndices().put(i + 1);
-			} else // inside view
-			{
-				_meshData.getIndices().put(i);
-				_meshData.getIndices().put(i + 1);
-				_meshData.getIndices().put(_meshData.getVertexCount() - 2);
+		for ( var i = 0; i < this.radialSamples; i++) {
+			if (!this.viewInside) {
+				indices[index++] = i;
+				indices[index++] = this.vertexCount - 2;
+				indices[index++] = i + 1;
+			} else {
+				indices[index++] = i;
+				indices[index++] = i + 1;
+				indices[index++] = this.vertexCount - 2;
 			}
 		}
 
 		// north pole triangles
-		final
-		var iOffset = (_zSamples - 3) * (_radialSamples + 1);
-		for ( var i = 0; i < _radialSamples; i++) {
-			if (!_viewInside) {
-				_meshData.getIndices().put(i + iOffset);
-				_meshData.getIndices().put(i + 1 + iOffset);
-				_meshData.getIndices().put(_meshData.getVertexCount() - 1);
-			} else // inside view
-			{
-				_meshData.getIndices().put(i + iOffset);
-				_meshData.getIndices().put(_meshData.getVertexCount() - 1);
-				_meshData.getIndices().put(i + 1 + iOffset);
+		var iOffset = (this.zSamples - 3) * (this.radialSamples + 1);
+		for ( var i = 0; i < this.radialSamples; i++) {
+			if (!this.viewInside) {
+				indices[index++] = i + iOffset;
+				indices[index++] = i + 1 + iOffset;
+				indices[index++] = this.vertexCount - 1;
+			} else {
+				indices[index++] = i + iOffset;
+				indices[index++] = this.vertexCount - 1;
+				indices[index++] = i + 1 + iOffset;
 			}
 		}
 
