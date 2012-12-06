@@ -45,7 +45,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 
 			if (nextState) {
 				if (nextState !== state) {
-					setCurrentState(nextState, false);
+					this.setCurrentState(nextState, false);
 					return true;
 				}
 			}
@@ -56,7 +56,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 				transition = this._transitions['*'];
 			}
 			if (transition) {
-				setCurrentState(transition.doTransition(state, this), true);
+				this.setCurrentState(transition.doTransition(state, this), true);
 				return true;
 			}
 		}
@@ -128,7 +128,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	 * @description Set the currently playing state on this layer to null.
 	 */
 	AnimationLayer.prototype.clearCurrentState = function() {
-		setCurrentState(null, false);
+		this.setCurrentState(null, false);
 	};
 
 	AnimationLayer.prototype.replaceState = function(currentState, newState) {

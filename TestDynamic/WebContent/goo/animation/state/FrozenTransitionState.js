@@ -39,9 +39,9 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 		// grab current time as our start
 		this._start = layer._manager.getCurrentGlobalTime();
 		// set "frozen" start state
-		setStateA(callingState);
+		this.setStateA(callingState);
 		// set "target" end state
-		setStateB(layer._steadyStates[this._targetState]);
+		this.setStateB(layer._steadyStates[this._targetState]);
 		if (!this._stateB) {
 			return null;
 		}

@@ -473,8 +473,14 @@ define([], function() {
 
 	Vector.prototype.set = function() {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for ( var i in arguments[0]) {
-				this.data[i] = arguments[0][i];
+			if (arguments[0] instanceof Vector) {
+				for ( var i = 0; i < arguments[0].data.length; i++) {
+					this.data[i] = arguments[0].data[i];
+				}
+			} else {
+				for ( var i = 0; i < arguments[0].length; i++) {
+					this.data[i] = arguments[0][i];
+				}
 			}
 		} else {
 			for ( var i in arguments) {

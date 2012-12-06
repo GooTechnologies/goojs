@@ -20,9 +20,9 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 	}
 
 	SteadyState.prototype.doTransition = function(key, layer) {
-		var state = _transitions[key];
+		var state = this._transitions[key];
 		if (!state) {
-			state = _transitions["*"];
+			state = this._transitions["*"];
 		} else {
 			return state.doTransition(this, layer);
 		}
@@ -31,7 +31,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 
 	SteadyState.prototype.update = function(globalTime, layer) {
 		if (!this._sourceTree.setTime(globalTime, layer._manager)) {
-			var lastOwner = this.getLastStateOwner();
+			var lastOwner = this._lastOwner;
 			if (this._endTransition !== null) {
 				// time to move to end transition
 				var newState = this._endTransition.doTransition(this, layer);
@@ -62,7 +62,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 
 	SteadyState.prototype.resetClips = function(manager, globalStartTime) {
 		AbstractFiniteState.prototype.resetClips.call(this, manager, globalStartTime);
-		this._sourceTree.resetClips(manager, globalStartTime);
+		this._sourceTree.resetClips(manager, this._globalStartTime);
 	};
 
 	return SteadyState;

@@ -48,12 +48,12 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 	};
 
 	InclusiveClipSource.prototype.getSourceData = function(manager) {
-		var orig = ClipSource.prototype.getSourceData.call(manager);
+		var orig = ClipSource.prototype.getSourceData.call(this, manager);
 
 		// make a copy, removing specific channels
 		var rVal = {};
-		for ( var key in _enabledChannels) {
-			if (_enabledChannels[key]) {
+		for ( var key in this._enabledChannels) {
+			if (this._enabledChannels[key]) {
 				rVal[key] = orig[key];
 			}
 		}

@@ -67,7 +67,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 
 		tData._scale.set(scaleX, scaleY, scaleZ);
 		tData._translation.set(transX, transY, transZ);
-		Quaternion.slerp(_rotation, blendTo.getRotation(), weight, tData._rotation);
+		Quaternion.slerp(this._rotation, blendTo._rotation, weight, tData._rotation);
 		return tData;
 	};
 
