@@ -6,7 +6,7 @@ define(function() {
 	 * @class Show render statistics
 	 */
 	function Stats() {
-		var startTime = Date.now(), prevTime = startTime;
+		var startTime = Date.now(), prevTime = startTime, prevTimeMs = startTime;
 		var ms = 0, msMin = Infinity, msMax = 0;
 		var fps = 0, fpsMin = Infinity, fpsMax = 0;
 		var frames = 0, mode = 0;
@@ -102,12 +102,16 @@ define(function() {
 		this.end = function(info) {
 			var time = Date.now();
 
-			ms = time - startTime;
-			msMin = Math.min(msMin, ms);
-			msMax = Math.max(msMax, ms);
+			if (time > prevTimeMs + 100) {
+				ms = time - startTime;
+				msMin = Math.min(msMin, ms);
+				msMax = Math.max(msMax, ms);
 
-			msText.textContent = ms + ' MS (' + msMin + '-' + msMax + ')';
-			updateGraph(msGraph, Math.min(30, 30 - (ms / 200) * 30));
+				msText.textContent = ms + ' MS (' + msMin + '-' + msMax + ')';
+				updateGraph(msGraph, Math.min(30, 30 - (ms / 200) * 30));
+
+				prevTimeMs = time;
+			}
 
 			frames++;
 

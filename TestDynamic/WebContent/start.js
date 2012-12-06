@@ -246,7 +246,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 
 		function createBoxEntity(goo) {
-			var entity = ShapeCreator.createBoxEntity(goo.world, 250, 5, 250);
+			var meshData = ShapeCreator.createBox(250, 5, 250);
+			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 			entity.transformComponent.transform.translation.y = -15;
 			entity.name = "Box";
 

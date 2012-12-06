@@ -238,7 +238,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	jointMaterial.depthState.enabled = false;
 	jointMaterial.shader.uniforms.color = [1.0, 0.0, 0.0];
 	var renderableJoint = {
-		meshData : ShapeCreator.createBoxData(2, 2, 2),
+		meshData : ShapeCreator.createBox(2, 2, 2),
 		materials : [jointMaterial],
 		transform : new Transform()
 	};
@@ -247,7 +247,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	boneMaterial.depthState.enabled = false;
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0];
 	var renderableBone = {
-		meshData : ShapeCreator.createBoxData(1, 1, 1),
+		meshData : ShapeCreator.createBox(1, 1, 1),
 		materials : [boneMaterial],
 		transform : new Transform()
 	};

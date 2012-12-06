@@ -13,7 +13,7 @@ define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'], f
 	camera.onFrameChange();
 	FullscreenUtil.camera = camera;
 
-	FullscreenUtil.quad = ShapeCreator.createPlaneData(2, 2);
+	FullscreenUtil.quad = ShapeCreator.createPlane(2, 2);
 
 	return FullscreenUtil;
 });
