@@ -61,7 +61,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// move the time forward on the layers
-		for ( var i = 0; i < this._layers.length; ++i) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -70,18 +70,16 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// call apply on blend module, passing in pose
-		if (this._applyToPoses.length > 0) {
-			for ( var i = 0; i < this._applyToPoses.length; ++i) {
-				var pose = this._applyToPoses[i];
-				this._applier.applyTo(pose, this);
-			}
+		for ( var i = 0, max = this._applyToPoses.length; i < max; i++) {
+			var pose = this._applyToPoses[i];
+			this._applier.applyTo(pose, this);
 		}
 
 		// apply for non-pose related assets
 		// this._applier.apply(S_sceneRoot, this);
 
 		// post update to clear states
-		for ( var i = 0; i < this._layers.length; ++i) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -109,7 +107,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 
 	AnimationManager.prototype.getCurrentSourceData = function() {
 		// set up our layer blending.
-		for ( var i = 0; i < this._layers.length - 1; i++) {
+		for ( var i = 0, max = this._layers.length - 1; i < max; i++) {
 			var layerA = this._layers[i];
 			var layerB = this._layers[i + 1];
 			layerB.updateLayerBlending(layerA);
@@ -143,6 +141,20 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 */
 	AnimationManager.prototype.getBaseAnimationLayer = function() {
 		return this._layers[0];
+	};
+
+	/**
+	 * @param layerName the name of the layer to find.
+	 * @return the first animation layer with a matching name, or null of none are found.
+	 */
+	AnimationManager.prototype.findAnimationLayer = function(layerName) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
+			var layer = this._layers[i];
+			if (layerName == layer._name) {
+				return layer;
+			}
+		}
+		return null;
 	};
 
 	/**

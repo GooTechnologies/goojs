@@ -46,7 +46,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		}
 		this._stateA = stateA;
 		if (this._stateA != null) {
-			this._stateA.setLastStateOwner(this);
+			this._stateA._lastOwner = this;
 		}
 
 		// clear the _sourceData, the new state probably has different transform data
@@ -66,7 +66,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		}
 		this._stateB = stateB;
 		if (this._stateB != null) {
-			this._stateB.setLastStateOwner(this);
+			this._stateB._lastOwner = this;
 		}
 
 		// clear the _sourceData, the new state probably has different transform data

@@ -1,4 +1,5 @@
-define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData'], function(JointData, TransformData) {
+define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'], function(JointData, TransformData,
+	TriggerData) {
 	"use strict";
 
 	/**

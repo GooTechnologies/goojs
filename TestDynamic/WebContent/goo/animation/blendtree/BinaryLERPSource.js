@@ -80,7 +80,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 			}
 
 			// Grab the transform data for each clip
-			if (transformB) {
+			if (dataB) {
 				rVal[key] = dataA.blend(dataB, blendWeight, rVal[key]);
 			} else {
 				rVal[key] = dataA;
@@ -96,7 +96,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return rVal;
 	};
 
-	BinaryLERPSource.combineSourceData = function(rVal, key, blendWeight, dataA, dataB) {
+	BinaryLERPSource.blendFloatValues = function(rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {
 			rVal[key] = dataA;
 		} else {

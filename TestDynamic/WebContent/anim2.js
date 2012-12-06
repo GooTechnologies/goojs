@@ -14,6 +14,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	"use strict";
 
 	var animationManager = null;
+	var walking = true;
 
 	function init() {
 		// Create typical goo application
@@ -197,6 +198,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				console.error(error);
 			}
 		});
+
+		document.addEventListener('keydown', function(e) {
+			e = window.event || e;
+			var code = e.charCode || e.keyCode;
+			console.log(code);
+			if (code == 32) { // space bar
+				animationManager.getBaseAnimationLayer().doTransition(walking ? "run" : "walk");
+				walking = !walking;
+			} else if (code == 13) { // enter
+				animationManager.findAnimationLayer("punchLayer").setCurrentStateByName("punch_right", true);
+			}
+		}, false);
 	}
 
 	init();

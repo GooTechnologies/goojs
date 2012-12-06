@@ -34,7 +34,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		if (!layer._currentState) {
 			return null;
 		}
-		var time = layer._manager.getCurrentGlobalTime() - layer._currentState.getGlobalStartTime();
+		var time = layer._manager.getCurrentGlobalTime() - layer._currentState._globalStartTime;
 		if (this.isInTimeWindow(time)) {
 			return this.getTransitionState(callingState, layer);
 		} else {

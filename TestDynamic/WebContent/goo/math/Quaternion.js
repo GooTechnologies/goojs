@@ -217,9 +217,9 @@ define(["goo/math/Vector"], function(Vector) {
 	Quaternion.slerp = function(startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return this.set(startQuat);
+			return workQuat.set(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return this.set(endQuat);
+			return workQuat.set(endQuat);
 		}
 
 		// Check for equality and skip operation.
