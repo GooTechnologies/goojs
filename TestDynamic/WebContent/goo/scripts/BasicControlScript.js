@@ -2,14 +2,9 @@ define(['goo/math/Vector3'], function(Vector3) {
 	"use strict";
 
 	/**
-	 * Creates a new BasicControlScript
-	 * 
 	 * @name BasicControlScript
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
-	 * @property {ArrayBuffer} data Data to wrap
-	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
+	 * @class Simple script to move/rotate an entity
+	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
 	function BasicControlScript(domElement) {
 		this.domElement = (domElement !== undefined) ? domElement : document;
