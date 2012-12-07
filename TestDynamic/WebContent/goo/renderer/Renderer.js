@@ -351,7 +351,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				unitrecord = this.rendererRecord.textureRecord[i] = {};
 			}
 
-			if (texture.glTexture === null) {
+			if (texture.glTexture === null && texture.image) {
 				texture.glTexture = context.createTexture();
 				this.updateTexture(context, texture, i, unitrecord);
 			} else if (texture.needsUpdate) {

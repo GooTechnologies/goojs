@@ -582,13 +582,49 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return this;
 	};
 
+	/**
+	 * @description Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
+	 * @param angle the angle to rotate (in radians).
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return this matrix for chaining
+	 * @throws NullPointerException if axis is null.
+	 */
+	Matrix3x3.prototype.fromAngleNormalAxis = function(angle, x, y, z) {
+		var fCos = Math.cos(angle);
+		var fSin = Math.sin(angle);
+		var fOneMinusCos = 1.0 - fCos;
+		var fX2 = x * x;
+		var fY2 = y * y;
+		var fZ2 = z * z;
+		var fXYM = x * y * fOneMinusCos;
+		var fXZM = x * z * fOneMinusCos;
+		var fYZM = y * z * fOneMinusCos;
+		var fXSin = x * fSin;
+		var fYSin = y * fSin;
+		var fZSin = z * fSin;
+
+		this.e00 = fX2 * fOneMinusCos + fCos;
+		this.e01 = fXYM - fZSin;
+		this.e02 = fXZM + fYSin;
+		this.e10 = fXYM + fZSin;
+		this.e11 = fY2 * fOneMinusCos + fCos;
+		this.e12 = fYZM - fXSin;
+		this.e20 = fXZM - fYSin;
+		this.e21 = fYZM + fXSin;
+		this.e22 = fZ2 * fOneMinusCos + fCos;
+
+		return this;
+	};
+
 	Matrix3x3.prototype.lookAt = function(direction, up) {
 		var xAxis = new Vector3();
 		var yAxis = new Vector3();
 		var zAxis = new Vector3();
 
 		zAxis.copy(direction).normalize();
-		xAxis.copy(up).normalize().cross(zAxis);
+		xAxis.copy(up).normalize().cross(zAxis).normalize();
 		yAxis.copy(zAxis).cross(xAxis);
 
 		this.e00 = xAxis.x;
