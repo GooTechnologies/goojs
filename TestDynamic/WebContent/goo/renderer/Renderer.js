@@ -183,6 +183,11 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
+
+		// var error = this.context.getError();
+		// if (error !== WebGLRenderingContext.NO_ERROR) {
+		// throw "Error: " + error;
+		// }
 	};
 
 	Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
@@ -338,7 +343,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || (texture.image && texture.image.dataReady === undefined)) {
+			if (texture === undefined || texture.image === undefined || (texture.image && texture.image.dataReady === undefined)) {
 				if (texture.variant === '2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
 				} else if (texture.variant === 'CUBE') {
@@ -351,7 +356,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				unitrecord = this.rendererRecord.textureRecord[i] = {};
 			}
 
-			if (texture.glTexture === null && texture.image) {
+			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();
 				this.updateTexture(context, texture, i, unitrecord);
 			} else if (texture.needsUpdate) {
@@ -376,17 +381,17 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			texture.textureRecord = texrecord;
 		}
 
+		var glType = this.getGLType(texture.variant);
+
 		if (texrecord.magFilter !== texture.magFilter) {
-			context.texParameteri(this.getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
 		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
-			context.texParameteri(this.getGLType(texture.variant), WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
-
-		var glType = this.getGLType(texture.variant);
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {

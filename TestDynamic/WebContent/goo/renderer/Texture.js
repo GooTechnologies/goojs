@@ -51,6 +51,8 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 
 		var data = image instanceof Array ? image[0] : image;
 		if (data instanceof Uint8Array || data instanceof Uint16Array) {
+			width = width || image.width;
+			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
 				this.image.width = width;
 				this.image.height = height;

@@ -49,7 +49,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
-				var rVal = new Texture(TextureCreator.DEFAULT_TEXTURE.image);
+				var rVal = new Texture(TextureCreator.DEFAULT_TEXTURE_2D.image);
 
 				// from URL
 				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
