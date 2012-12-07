@@ -12,27 +12,12 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 	 * @param {Settings} settings Texturing settings
 	 */
 	function Texture(image, settings, width, height) {
-		this.image = image;
-
 		this.glTexture = null;
 
 		settings = settings || {};
 
-		var data = image instanceof Array ? image[0] : image;
-		if (data instanceof Uint8Array || data instanceof Uint16Array) {
-			if (width !== undefined && height !== undefined) {
-				this.image.width = width;
-				this.image.height = height;
-				this.image.isData = true;
-				this.image.dataReady = true;
-				if (data instanceof Uint8Array) {
-					settings.type = 'UnsignedByte';
-				} else if (data instanceof Uint16Array) {
-					settings.type = 'UnsignedShort4444';
-				}
-			} else {
-				throw "Data textures need width and height";
-			}
+		if (image) {
+			this.setImage(image, settings, width, height);
 		}
 
 		// this.mapping = settings.mapping || new THREE.UVMapping();
@@ -60,6 +45,27 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 
 		this.needsUpdate = false;
 	}
+
+	Texture.prototype.setImage = function(image, settings, width, height) {
+		this.image = image;
+
+		var data = image instanceof Array ? image[0] : image;
+		if (data instanceof Uint8Array || data instanceof Uint16Array) {
+			if (width !== undefined && height !== undefined) {
+				this.image.width = width;
+				this.image.height = height;
+				this.image.isData = true;
+				this.image.dataReady = true;
+				if (data instanceof Uint8Array) {
+					settings.type = 'UnsignedByte';
+				} else if (data instanceof Uint16Array) {
+					settings.type = 'UnsignedShort4444';
+				}
+			} else {
+				throw "Data textures need width and height";
+			}
+		}
+	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
 

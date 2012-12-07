@@ -76,13 +76,34 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture
 		}
 
 		var img = new Loader().loadImage(imageURL);
-		// var key = TextureKey.getKey(null, this.verticalFlip,
-		// this.storeFormat, img.getUrl(), this.minFilter);
-		// var tex = findOrCreateTexture2D(key);
 		var texture = new Texture(img);
-		// queueImageLoad(img, texture);
 
 		TextureCreator.cache[imageURL] = texture;
+
+		return texture;
+	};
+
+	TextureCreator.prototype.loadTextureCube = function(imageURLs) {
+		var latch = 6;
+		var texture = new Texture();
+		var images = [];
+
+		for ( var i = 0; i < imageURLs.length; i++) {
+			(function(index) {
+				new Loader().loadImage(imageURLs[index], {
+					onSuccess : function(image) {
+						images[index] = image;
+						latch--;
+						if (latch <= 0) {
+							texture.setImage(images);
+						}
+					},
+					onError : function(message) {
+						console.error(message);
+					}
+				});
+			})(i);
+		}
 
 		return texture;
 	};
