@@ -421,7 +421,6 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		throw "invalid texture type: " + type;
 	};
 
-	// var fisk = 0;
 	Renderer.prototype.updateTexture = function(context, texture, unit, record) {
 		this.bindTexture(context, texture, unit, record);
 
