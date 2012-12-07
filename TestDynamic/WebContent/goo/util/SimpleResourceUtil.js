@@ -38,5 +38,23 @@ define(function() {
 		}
 	};
 
+	SimpleResourceUtil.loadBinaryAsArrayBuffer = function(url, callback) {
+		var req = new XMLHttpRequest();
+		req.open("GET", url);
+		req.responseType = "arraybuffer";
+		req.onload = function(e) {
+			if (req.status != 404) {
+				callback.onSuccess(req.response);
+				return;
+			}
+
+			req.onerror(null);
+		};
+		req.onerror = function(e) {
+			callback.onError(null);
+		};
+		req.send();
+	};
+
 	return SimpleResourceUtil;
 });

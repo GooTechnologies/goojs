@@ -1,4 +1,5 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader'], function(Loader, Texture, DdsLoader) {
+define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil'], function(Loader, Texture,
+	DdsLoader, SimpleResourceUtil) {
 	"use strict";
 
 	/**
@@ -41,31 +42,25 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 					break;
 				}
 
-				// create a key
-				var key = TextureKey.getKey(null, _verticalFlip, _storeFormat, imageURL, _minFilter);
 				// check for cache version
-				var cached = findTexture2D(key);
-				if (cached !== null) {
-					return cached;
+				if (TextureCreator.cache[imageURL] !== undefined) {
+					return TextureCreator.cache[imageURL];
 				}
 
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
-				var rVal = creatureNewTexture2D(key);
+				var rVal = new Texture(TextureCreator.DEFAULT_TEXTURE.image);
 
 				// from URL
-				var resourceLoader = new RequestBuilderResourceLoader();
-				var url = imageURL;
-				var finalLoader = loader;
-				resourceLoader.loadBinaryAsArrayBuffer(url, {
+				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
 					onSuccess : function(/* ArrayBuffer */response) {
 						// TextureCreator.logger.fine("Loading dds: " + url);
-						finalLoader.load(response, rVal, key.isFlipped(), 0, response.getByteLength());
+						loader.load(response, rVal, this.verticalFlip, 0, response.byteLength);
 
-						callLoadCallback(url);
+						// callLoadCallback(url);
 					},
 					onError : function(t) {
-						TextureCreator.logger.log(Level.SEVERE, "Error loading texture: " + url, t);
+						console.warn("Error loading texture: " + url + " | " + t);
 						TextureState.getDefaultTexture().createSimpleClone(rVal);
 					}
 				});

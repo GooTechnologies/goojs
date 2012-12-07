@@ -153,6 +153,33 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		return header;
 	};
 
+	function DdsImageInfo() {
+		this.flipVertically = false;
+		this.bpp = 0;
+		this.header = null;
+		this.headerDX10 = null;
+		this.mipmapByteSizes = [];
+	}
+
+	DdsImageInfo.prototype.calcMipmapSizes = function(compressed) {
+		var width = this.header.dwWidth;
+		var height = this.header.dwHeight;
+		var size = 0;
+
+		for ( var i = 0; i < this.header.dwMipMapCount; i++) {
+			if (this.compressed) {
+				size = Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * this.bpp * 2;
+			} else {
+				size = width * height * this.bpp / 8;
+			}
+
+			this.mipmapByteSizes.push(Math.floor((size + 3) / 4) * 4);
+
+			width = Math.max(width / 2, 1);
+			height = Math.max(height / 2, 1);
+		}
+	};
+
 	/**
 	 * @name DdsLoader
 	 * @class Loads dds format images into a format usable by Goo.
@@ -160,12 +187,226 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 	function DdsLoader() {
 	}
 
+	DdsLoader.updateDepth = function(image, info) {
+		if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP)) {
+			var depth = 0;
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_POSITIVEX)) {
+				depth++;
+			}
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_NEGATIVEX)) {
+				depth++;
+			}
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_POSITIVEY)) {
+				depth++;
+			}
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_NEGATIVEY)) {
+				depth++;
+			}
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_POSITIVEZ)) {
+				depth++;
+			}
+			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_NEGATIVEZ)) {
+				depth++;
+			}
+
+			if (depth != 6) {
+				throw new Error("Cubemaps without all faces defined are not currently supported.");
+			}
+
+			image.depth = depth;
+		} else {
+			// make sure we have at least depth of 1.
+			image.depth = (info.header.dwDepth > 0 ? info.header.dwDepth : 1);
+		}
+	};
+
+	DdsLoader.readDXT = function(imgData, totalSize, info, image) {
+
+		if (!info.flipVertically) {
+			return new Uint8Array(imgData.buffer, imgData.byteOffset + 0, totalSize);
+		}
+
+		var mipWidth = info.header.dwWidth;
+		var mipHeight = info.header.dwHeight;
+
+		var rVal = new Uint8Array(totalSize);
+		var offset = 0;
+		for ( var mip = 0; mip < info.header.dwMipMapCount; mip++) {
+			var data = [];
+			for ( var i = 0; i < data.length; i++) {
+				data.push(imgData.getByte(i + offset));
+			}
+			if (!info.flipVertically) {
+				rVal.set(data, offset);
+				offset += data.length;
+			} else {
+				var flipped = DdsUtils.flipDXT(data, mipWidth, mipHeight, image.getDataFormat());
+				rVal.set(flipped, offset);
+				offset += flipped.length;
+
+				mipWidth = Math.max(mipWidth / 2, 1);
+				mipHeight = Math.max(mipHeight / 2, 1);
+			}
+		}
+		return rVal;
+	};
+
+	DdsLoader.populate = function(texture, info, data) {
+		var flags = info.header.ddpf.dwFlags;
+
+		var compressedFormat = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_FOURCC);
+		var rgb = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_RGB);
+		var alphaPixels = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_ALPHAPIXELS);
+		var lum = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_LUMINANCE);
+		var alpha = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_ALPHA);
+		var storeFormat = 'RGBA';
+
+		if (compressedFormat) {
+			var fourCC = info.header.ddpf.dwFourCC;
+			// DXT1 format
+			if (fourCC == DdsUtils.getIntFromString("DXT1")) {
+				info.bpp = 4;
+				// if (isSet(flags, DdsPixelFormat.DDPF_ALPHAPIXELS)) {
+				// XXX: many authoring tools do not set alphapixels, so we'll error on the side of alpha
+				console.info("DDS format: DXT1A");
+				texture.format = "PrecompressedDXT1A";
+				// } else {
+				// logger.finest("DDS format: DXT1");
+				// texture.setDataFormat(ImageDataFormat.PrecompressedDXT1);
+				// }
+			}
+
+			// DXT3 format
+			else if (fourCC == DdsUtils.getIntFromString("DXT3")) {
+				console.info("DDS format: DXT3");
+				info.bpp = 8;
+				texture.format = "PrecompressedDXT3";
+			}
+
+			// DXT5 format
+			else if (fourCC == DdsUtils.getIntFromString("DXT5")) {
+				console.info("DDS format: DXT5");
+				info.bpp = 8;
+				texture.format = "PrecompressedDXT5";
+			}
+
+			// DXT10 info present...
+			else if (fourCC == DdsUtils.getIntFromString("DX10")) {
+				// switch (info.headerDX10.dxgiFormat) {
+				// case DXGI_FORMAT_BC4_UNORM:
+				// console.info("DXGI format: BC4_UNORM");
+				// info.bpp = 4;
+				// texture.setDataFormat(ImageDataFormat.PrecompressedLATC_L);
+				// break;
+				// case DXGI_FORMAT_BC5_UNORM:
+				// console.info("DXGI format: BC5_UNORM");
+				// info.bpp = 8;
+				// texture.setDataFormat(ImageDataFormat.PrecompressedLATC_LA);
+				// break;
+				// default:
+				// throw new Error("dxgiFormat not supported: " + info.headerDX10.dxgiFormat);
+				// }
+				throw new Error("dxt10 LATC formats not supported currently: " + info.headerDX10.dxgiFormat);
+			}
+
+			// DXT2 format - unsupported
+			else if (fourCC == DdsUtils.getIntFromString("DXT2")) {
+				throw "DXT2 is not supported.";
+			}
+
+			// DXT4 format - unsupported
+			else if (fourCC == DdsUtils.getIntFromString("DXT4")) {
+				throw "DXT4 is not supported.";
+			}
+
+			// Unsupported compressed type.
+			else {
+				throw "unsupported compressed dds format found (" + fourCC + ")";
+			}
+		}
+
+		// not a compressed format
+		else {
+			// TODO: more use of bit masks?
+			// TODO: Use bit size instead of hardcoded 8 bytes? (need to also implement in readUncompressed)
+			texture.setDataType(ImageDataType.UnsignedByte);
+
+			info.bpp = info.header.ddpf.dwRGBBitCount;
+
+			// One of the RGB formats?
+			if (rgb) {
+				if (alphaPixels) {
+					console.info("DDS format: uncompressed rgba");
+					texture.formet = "RGBA";
+				} else {
+					console.info("DDS format: uncompressed rgb ");
+					texture.format = "RGB";
+					storeFormat = TextureStoreFormat.RGB;
+				}
+			}
+
+			// A luminance or alpha format
+			else if (lum || alphaPixels) {
+				if (lum && alphaPixels) {
+					console.info("DDS format: uncompressed LumAlpha");
+					texture.format = "LuminanceAlpha";
+					storeFormat = TextureStoreFormat.LuminanceAlpha;
+				}
+
+				else if (lum) {
+					console.info("DDS format: uncompressed Lum");
+					texture.format = "Luminance";
+					storeFormat = TextureStoreFormat.Luminance;
+				}
+
+				else if (alpha) {
+					console.info("DDS format: uncompressed Alpha");
+					texture.format = "Alpha";
+					storeFormat = TextureStoreFormat.Alpha;
+				}
+			} // end luminance/alpha type
+
+			// Unsupported type.
+			else {
+				throw new Error("unsupported uncompressed dds format found.");
+			}
+		}
+
+		info.calcMipmapSizes(compressedFormat);
+		texture.mipmapSizes = (info.mipmapByteSizes);
+
+		// Add up total byte size of single depth layer
+		var totalSize = 0;
+		for ( var i = 0; i < info.mipmapByteSizes.length; i++) {
+			totalSize += info.mipmapByteSizes[i];
+		}
+
+		// Go through and load in image data
+		var imageData = [];
+		for ( var i = 0; i < texture.image.depth; i++) {
+			// read in compressed data
+			if (compressedFormat) {
+				imageData.push(DdsLoader.readDXT(data, totalSize, info, texture.image));
+			}
+
+			// read in uncompressed data
+			else if (rgb || lum || alpha) {
+				imageData.push(DdsLoader.readUncompressed(data, totalSize, rgb, lum, alpha, alphaPixels, info, texture.image));
+			}
+		}
+
+		// set on image
+		texture.image.data = imageData;
+		texture.image.useArrays = true;
+		return storeFormat;
+	};
+
 	DdsLoader.prototype.load = function(buffer, tex, flipped, arrayByteOffset, arrayByteLength) {
 		var header = new Int32Array(buffer, arrayByteOffset + 0, 32);
 
 		// Read and check magic word...
-		var dwMagic = header.get(0);
-		if (dwMagic != DdsUtils.getInt("DDS ")) {
+		var dwMagic = header[0];
+		if (dwMagic != DdsUtils.getIntFromString("DDS ")) {
 			throw "Not a dds file.";
 		}
 		console.info("Reading DDS file.");
@@ -179,28 +420,27 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		info.header = DdsHeader.read(header);
 
 		// if applicable, read DX10 header
-		info.headerDX10 = info.header.ddpf.dwFourCC == DdsUtils.getInt("DX10") ? DdsHeaderDX10.read(Int32Array.create(buffer, arrayByteOffset + 128,
-			5)) : null;
+		info.headerDX10 = info.header.ddpf.dwFourCC == DdsUtils.getIntFromString("DX10") ? DdsHeaderDX10.read(Int32Array.create(buffer,
+			arrayByteOffset + 128, 5)) : null;
 
 		// Create our new image
-		var image = tex.getImageData();
+		var image = tex.image;
 		if (image == null) {
-			image = new ImageData();
+			image = {};
+			tex.image = image;
 		}
-		image.setWidth(info.header.dwWidth);
-		image.setHeight(info.header.dwHeight);
+		image.width = info.header.dwWidth;
+		image.height = info.header.dwHeight;
 
 		// update depth based on flags / header
 		DdsLoader.updateDepth(image, info);
 
 		// add our format and image data.
-		var contentOffset = 128 + (info.headerDX10 != null ? 20 : 0);
-		var texFormat = DdsLoader.populateImage(image, info, Uint8Array.create(buffer, arrayByteOffset + contentOffset, arrayByteLength
-			- contentOffset));
+		var contentOffset = 128 + (info.headerDX10 ? 20 : 0);
+		var texFormat = DdsLoader.populate(tex, info, new Uint8Array(buffer, arrayByteOffset + contentOffset, arrayByteLength - contentOffset));
 
 		// convert to Texture
 		tex.setDataType(ImageDataType.UnsignedByte);
-		tex.setImageData(image);
 		tex.setTextureStoreFormat(texFormat);
 
 		image.setDataReady(true);
