@@ -1,4 +1,4 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture) {
+define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader'], function(Loader, Texture, DdsLoader) {
 	"use strict";
 
 	/**
@@ -16,8 +16,8 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture
 		this.minFilter = settings.verticalFlip || 'Trilinear';
 
 		this.textureLoaders = {
-		// '.png' : 'loader1',
-		// '.dds' : 'loader2'
+			// '.png' : 'loader1',
+			'.dds' : new DdsLoader()
 		};
 
 	}
@@ -25,14 +25,18 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture
 	TextureCreator.cache = {};
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
 
+	function endsWith(str, suffix) {
+		return str.indexOf(suffix, str.length - suffix.length) !== -1;
+	}
+
 	TextureCreator.prototype.loadTexture2D = function(imageURL) {
-		for (extension in this.textureLoaders) {
-			if (imageURL.toLowerCase().endsWith(extension)) {
+		for ( var extension in this.textureLoaders) {
+			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
 				console.log(extension + ' - ' + loader);
 
-				if (!loader || !loader.isSupported) {
-					imageURL = imageURL.substring(0, imageURL.length() - extension.length());
+				if (!loader || !loader.isSupported()) {
+					imageURL = imageURL.substring(0, imageURL.length - extension.length);
 					imageURL += TextureCreator.UNSUPPORTED_FALLBACK;
 					break;
 				}
