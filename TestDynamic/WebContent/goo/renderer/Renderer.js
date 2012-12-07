@@ -339,7 +339,11 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			var texture = material.textures[i];
 
 			if (texture === undefined || (texture.image && texture.image.dataReady === undefined)) {
-				texture = TextureCreator.DEFAULT_TEXTURE;
+				if (texture.variant === '2D') {
+					texture = TextureCreator.DEFAULT_TEXTURE_2D;
+				} else if (texture.variant === 'CUBE') {
+					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+				}
 			}
 
 			var unitrecord = this.rendererRecord.textureRecord[i];
@@ -382,25 +386,20 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			texrecord.minFilter = minFilter;
 		}
 
-		if (texture.variant === '2D') {
-			var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
-			if (texrecord.wrapS !== wrapS) {
-				var glwrapS = this.getGLWrap(wrapS, context);
-				context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
-				texrecord.wrapS = wrapS;
-			}
-			var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
-			if (texrecord.wrapT !== wrapT) {
-				var glwrapT = this.getGLWrap(wrapT, context);
-				context.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
-				texrecord.wrapT = wrapT;
-			}
+		var glType = this.getGLType(texture.variant);
+
+		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
+		if (texrecord.wrapS !== wrapS) {
+			var glwrapS = this.getGLWrap(wrapS, context);
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
+			texrecord.wrapS = wrapS;
 		}
-		// else if (texture.variant === 'CUBE') {
-		// GwtGLTextureStateUtil.applyWrap(gl, (TextureCubeMap)
-		// texture, texRecord,
-		// unit, record, caps);
-		// }
+		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
+		if (texrecord.wrapT !== wrapT) {
+			var glwrapT = this.getGLWrap(wrapT, context);
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
+			texrecord.wrapT = wrapT;
+		}
 	};
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
@@ -457,24 +456,50 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			}
 		}
 
-		if (!texture.image) {
-			// context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType,
-			// null);
-			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0, this
-				.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
-		} else if (texture.image.isData === true) {
-			var hasBorder = false; // TODO
+		if (texture.variant === '2D') {
+			if (!texture.image) {
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+			} else if (texture.image.isData === true) {
+				if (texture.image.isCompressed) {
+					// TODO: DDS support
+				} else {
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
+						texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+							.getGLPixelDataType(texture.type), texture.image);
+				}
+			} else {
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+					.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
+			}
 
-			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
-				texture.image.height, hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type),
-				texture.image);
-		} else {
-			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
-				.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
-		}
+			if (texture.generateMipmaps) {
+				context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+			}
+		} else if (texture.variant === 'CUBE') {
+			for ( var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
+				var face = Texture.CUBE_FACES[faceIndex];
 
-		if (texture.generateMipmaps) {
-			context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				if (!texture.image) {
+					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				} else if (texture.image.isData === true) {
+					if (texture.image.isCompressed) {
+						// TODO: DDS support
+					} else {
+						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.image.width,
+							texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+								.getGLPixelDataType(texture.type), texture.image[faceIndex]);
+					}
+				} else {
+					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
+						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image[faceIndex]);
+				}
+
+				if (texture.generateMipmaps) {
+					context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
+				}
+			}
 		}
 	};
 
@@ -599,6 +624,24 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 
 		return 1;
+	};
+
+	Renderer.prototype.getGLCubeMapFace = function(face) {
+		switch (face) {
+			case 'PositiveX':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+			case 'NegativeX':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+			case 'PositiveY':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+			case 'NegativeY':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+			case 'PositiveZ':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+			case 'NegativeZ':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+		}
+		throw 'Invalid cubemap face: ' + face;
 	};
 
 	Renderer.prototype.getGLBufferUsage = function(usage) {

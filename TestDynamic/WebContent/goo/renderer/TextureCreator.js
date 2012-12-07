@@ -87,7 +87,9 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture'], function(Loader, Texture
 		return texture;
 	};
 
-	TextureCreator.DEFAULT_TEXTURE = new Texture(new Loader().loadImage('resources/checkerboard.png'));
+	var colorInfo = new Uint8Array([255, 255, 255, 255]);
+	TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
+	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
 
 	return TextureCreator;
 });

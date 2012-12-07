@@ -18,15 +18,16 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 
 		settings = settings || {};
 
-		if (image instanceof Uint8Array || image instanceof Uint16Array) {
+		var data = image instanceof Array ? image[0] : image;
+		if (data instanceof Uint8Array || data instanceof Uint16Array) {
 			if (width !== undefined && height !== undefined) {
 				this.image.width = width;
 				this.image.height = height;
 				this.image.isData = true;
 				this.image.dataReady = true;
-				if (image instanceof Uint8Array) {
+				if (data instanceof Uint8Array) {
 					settings.type = 'UnsignedByte';
-				} else if (image instanceof Uint16Array) {
+				} else if (data instanceof Uint16Array) {
 					settings.type = 'UnsignedShort4444';
 				}
 			} else {
@@ -55,8 +56,12 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 		this.premultiplyAlpha = settings.premultiplyAlpha || false;
 		this.flipY = settings.flipY || true;
 
+		this.hasBorder = false;
+
 		this.needsUpdate = false;
 	}
+
+	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
 
 	return Texture;
 });
