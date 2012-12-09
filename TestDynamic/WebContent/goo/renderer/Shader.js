@@ -101,7 +101,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 					continue;
 				}
 				var defValue = this.uniforms[name];
-				if (toString.call(defValue) == '[object String]') {
+
+				if (typeof defValue === 'string') {
 					var callback = this.currentCallbacks[name];
 					if (callback) {
 						callback(mapping, shaderInfo);

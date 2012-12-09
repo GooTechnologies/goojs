@@ -472,7 +472,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				} else {
 					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
 						texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-							.getGLPixelDataType(texture.type), texture.image);
+							.getGLPixelDataType(texture.type), texture.image.data);
 				}
 			} else {
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
@@ -495,7 +495,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					} else {
 						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.image.width,
 							texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), texture.image[faceIndex]);
+								.getGLPixelDataType(texture.type), texture.image.data[faceIndex]);
 					}
 				} else {
 					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this

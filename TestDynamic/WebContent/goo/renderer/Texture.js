@@ -54,6 +54,9 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 			width = width || image.width;
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
+				this.image = {
+					data : image,
+				};
 				this.image.width = width;
 				this.image.height = height;
 				this.image.isData = true;
