@@ -13,6 +13,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		};
 
 		this.mapping = new TextureCreator().loadTexture2D('resources/nes-lookup.png');
+		this.mapping.minFilter = 'NearestNeighborNoMipMaps';
 		this.mapping.magFilter = 'NearestNeighbor';
 		this.mapping.generateMipmaps = false;
 
