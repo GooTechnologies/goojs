@@ -345,9 +345,9 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 			if (texture === undefined || (!(texture instanceof RenderTarget) && texture.image === undefined)
 				|| (texture.image && texture.image.dataReady === undefined)) {
-				if (texture.variant === '2D') {
+				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
-				} else if (texture.variant === 'CUBE') {
+				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
 					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
 				}
 			}
