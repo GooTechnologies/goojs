@@ -1,8 +1,8 @@
 require({
-    baseUrl: "./",
-    paths: {
-        goo: "../goo",
-    }
+	baseUrl : "./",
+	paths : {
+		goo : "../goo",
+	}
 });
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
@@ -63,27 +63,25 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			includes : [ShaderFragments.features.fog],
 			attributes : {
 				vertexPosition : MeshData.POSITION,
-				vertexUV0 : MeshData.TEXCOORD0
 			},
 			uniforms : {
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
-				opacity : 1.0,
 				diffuseMap : Shader.TEXTURE0
 			},
 			vshader : [ //
 			'attribute vec3 vertexPosition;', //
-			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
 
-			'varying vec2 texCoord0;',//
+			'varying vec3 texCoord0;',//
 
 			'void main(void) {', //
-			'	texCoord0 = vertexUV0;',//
+			'	vec4 t = worldMatrix * vec4(vertexPosition, 1.0);',//
+			'	texCoord0 = normalize(t.xyz);',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 			'}'//
 			].join('\n'),
@@ -91,13 +89,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'precision mediump float;',//
 
 			'uniform samplerCube diffuseMap;',//
-			'uniform float opacity;',//
 
-			'varying vec2 texCoord0;',//
+			'varying vec3 texCoord0;',//
 
 			'void main(void)',//
 			'{',//
-			'	gl_FragColor = vec4(textureCube(diffuseMap, vec3(texCoord0, 0.0)).rgb, opacity);',//
+			'	gl_FragColor = vec4(textureCube(diffuseMap, texCoord0).rgb, 1.0);',//
 			'}',//
 			].join('\n')
 		};

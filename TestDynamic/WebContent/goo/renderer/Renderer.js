@@ -414,7 +414,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		if (record.boundTexture === undefined || (texture.glTexture !== undefined && record.boundTexture !== texture.glTexture)) {
-			context.bindTexture(WebGLRenderingContext.TEXTURE_2D, texture.glTexture);
+			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
 	};
@@ -479,29 +479,17 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 		if (texture.generateMipmaps) {
 			var image = texture.image;
-			var newWidth = Util.nearestPowerOfTwo(image.width);
-			var newHeight = Util.nearestPowerOfTwo(image.height);
-			if (image.width !== newWidth || image.height !== newHeight) {
-				var canvas = document.createElement('canvas'); // !!!!!
-				canvas.width = newWidth;
-				canvas.height = newHeight;
-				var ctx = canvas.getContext('2d');
-				ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
-				document.body.appendChild(canvas);
-				canvas.dataReady = true;
-				texture.image = canvas;
 
-				// console.dir(canvas);
-				// canvas.style['position'] = 'absolute';
-				// canvas.style['top'] = (fisk * 105) + 'px';
-				// canvas.style['right'] = '10px';
-				// canvas.style['width'] = '100px';
-				// canvas.style['height'] = '100px';
-				// canvas.style['z-index'] = 5;
-				// fisk++;
-				canvas.parentNode.removeChild(canvas);
+			if (texture.variant === '2D') {
+				this.checkRescale(texture, image, image.width, image.height);
+			} else if (texture.variant === 'CUBE') {
+				for ( var i = 0; i < 6; i++) {
+					this.checkRescale(texture, image.data[i], image.width, image.height);
+				}
 			}
 		}
+
+		// TODO: Add "usesMipmaps" to check if minfilter has mipmap mode
 
 		if (texture.variant === '2D') {
 			if (!texture.image) {
@@ -520,7 +508,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
 			}
 
-			if (texture.generateMipmaps) {
+			if (texture.generateMipmaps && (texture.image && !texture.image.isCompressed)) {
 				context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 			}
 		} else if (texture.variant === 'CUBE') {
@@ -540,13 +528,29 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					}
 				} else {
 					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
-						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image[faceIndex]);
-				}
-
-				if (texture.generateMipmaps) {
-					context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
+						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image.data[faceIndex]);
 				}
 			}
+
+			if (texture.generateMipmaps && (texture.image && !texture.image.isCompressed)) {
+				context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
+			}
+		}
+	};
+
+	Renderer.prototype.checkRescale = function(texture, image, width, height) {
+		var newWidth = Util.nearestPowerOfTwo(width);
+		var newHeight = Util.nearestPowerOfTwo(height);
+		if (width !== newWidth || height !== newHeight) {
+			var canvas = document.createElement('canvas'); // !!!!!
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
+			document.body.appendChild(canvas);
+			canvas.dataReady = true;
+			texture.image = canvas;
+			canvas.parentNode.removeChild(canvas);
 		}
 	};
 

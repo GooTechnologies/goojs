@@ -91,6 +91,10 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 						latch--;
 						if (latch <= 0) {
 							texture.setImage(images);
+							texture.image.dataReady = true;
+							texture.image.isData = false;
+							texture.image.width = image.width;
+							texture.image.height = image.height;
 						}
 					},
 					onError : function(message) {

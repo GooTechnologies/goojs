@@ -69,6 +69,12 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 			} else {
 				throw "Data textures need width and height";
 			}
+		} else {
+			if (image instanceof Array) {
+				this.image = {
+					data : image,
+				};
+			}
 		}
 	};
 
