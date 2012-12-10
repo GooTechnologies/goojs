@@ -80,6 +80,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	TextureCreator.prototype.loadTextureCube = function(imageURLs) {
 		var latch = 6;
 		var texture = new Texture();
+		texture.variant = 'CUBE';
 		var images = [];
 
 		for ( var i = 0; i < imageURLs.length; i++) {
@@ -105,6 +106,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	var colorInfo = new Uint8Array([255, 255, 255, 255]);
 	TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);
+	TextureCreator.DEFAULT_TEXTURE_CUBE.variant = 'CUBE';
 
 	return TextureCreator;
 });

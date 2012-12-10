@@ -1,5 +1,6 @@
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4', 'goo/entities/Entity'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity) {
+		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
+	Vector4, Entity, Texture) {
 	"use strict";
 
 	/**
