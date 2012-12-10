@@ -2,7 +2,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		'goo/renderer/Texture'], function(Renderer, Camera, TextureCreator, Material, FullscreenUtil, Texture) {
 	"use strict";
 
-	function NesPass() {
+	function NesPass(textureUrl) {
 		this.material = Material.createMaterial(nesShader);
 
 		this.renderToScreen = false;
@@ -12,7 +12,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 			materials : [this.material],
 		};
 
-		this.mapping = new TextureCreator().loadTexture2D('resources/nes-lookup.png');
+		this.mapping = new TextureCreator().loadTexture2D(textureUrl);
 		this.mapping.minFilter = 'NearestNeighborNoMipMaps';
 		this.mapping.magFilter = 'NearestNeighbor';
 		this.mapping.generateMipmaps = false;

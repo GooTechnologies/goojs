@@ -84,7 +84,7 @@ Camera//
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
 		// NES
-		var nesPass = new NesPass();
+		var nesPass = new NesPass(resourcePath + '/nes-lookup.png');
 
 		// Regular copy
 		var outPass = new FullscreenPass(Util.clone(Material.shaders.copy));
