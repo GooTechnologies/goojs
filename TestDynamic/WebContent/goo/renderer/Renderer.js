@@ -1,6 +1,6 @@
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
-	Vector4, Entity, Texture) {
+		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils'], function(
+	RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils) {
 	"use strict";
 
 	/**
@@ -41,6 +41,8 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				console.error('Error creating WebGL context.');
 				throw 'Error creating WebGL context.';
 			}
+
+			DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
 		} catch (error) {
 			console.error(error);
 		}
@@ -427,6 +429,44 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		throw "invalid texture type: " + type;
 	};
 
+	Renderer.prototype.loadCompressedTexture = function(context, target, texture, imageData) {
+		var mipSizes = texture.image.mipmapSizes;
+		var dataOffset = 0, dataLength = 0;
+		var width = texture.image.width, height = texture.image.height;
+		var ddsExt = DdsUtils.getDdsExtension(context);
+		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+		if (texture.format === 'PrecompressedDXT1') {
+			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
+		} else if (texture.format === 'PrecompressedDXT1A') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT1_EXT;
+		} else if (texture.format === 'PrecompressedDXT3') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT3_EXT;
+		} else if (texture.format === 'PrecompressedDXT5') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+		} else {
+			throw new Error("Unhandled compression format: " + img.getDataFormat().name());
+		}
+
+		if (mipSizes == null) {
+			if (imageData instanceof Uint8Array) {
+				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, imageData);
+			} else {
+				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset,
+					imageData.byteLength));
+			}
+		} else {
+			texture.generateMipmaps = false;
+			for ( var i = 0; i < mipSizes.length; i++) {
+				dataLength = mipSizes[i];
+				context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
+					+ dataOffset, dataLength));
+				width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+				height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+				dataOffset += dataLength;
+			}
+		}
+	};
+
 	Renderer.prototype.updateTexture = function(context, texture, unit, record) {
 		this.bindTexture(context, texture, unit, record);
 
@@ -469,7 +509,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else if (texture.image.isData === true) {
 				if (texture.image.isCompressed) {
-					// TODO: DDS support
+					this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, texture.image.data[0]);
 				} else {
 					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
 						texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
@@ -492,7 +532,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 				} else if (texture.image.isData === true) {
 					if (texture.image.isCompressed) {
-						// TODO: DDS support
+						this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, texture.image.data[faceIndex]);
 					} else {
 						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.image.width,
 							texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this

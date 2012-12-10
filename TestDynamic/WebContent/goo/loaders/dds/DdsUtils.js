@@ -4,6 +4,21 @@ define(function() {
 	function DdsUtils() {
 	}
 
+	DdsUtils.getDdsExtension = function(context) {
+		var vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
+		for ( var i = 0; i < vendorPrefixes.length; i++) {
+			var ext = context.getExtension(vendorPrefixes[i] + "WEBGL_compressed_texture_s3tc");
+			if (ext != null) {
+				return ext;
+			}
+		}
+		return null;
+	};
+
+	DdsUtils.isSupported = function(context) {
+		return DdsUtils.getDdsExtension(context) !== null;
+	};
+
 	/**
 	 * @description Check a value against a bit mask to see if it is set.
 	 * @param value the value to check
@@ -16,12 +31,12 @@ define(function() {
 
 	/**
 	 * @description Get the string as a dword int value.
-	 * @param string our string... should only be 1-4 chars long.  Expected to be 1 byte chars.
+	 * @param string our string... should only be 1-4 chars long. Expected to be 1 byte chars.
 	 * @return the int value
 	 */
 	DdsUtils.getIntFromString = function(string) {
 		var bytes = [];
-		for (var i = 0; i < string.length; i++) {
+		for ( var i = 0; i < string.length; i++) {
 			bytes[i] = string.charCodeAt(i);
 		}
 		return DdsUtils.getIntFromBytes(bytes);
