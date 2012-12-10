@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
@@ -8,6 +14,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
 	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript) {
 	"use strict";
+
+	var resourcePath = "../resources";
+
 
 	function init() {
 		// Create typical goo application
@@ -47,7 +56,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var meshRendererComponent = new MeshRendererComponent();
 		var material = Material.createMaterial(Material.shaders.textured);
 
-		var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		// var colorInfo = new Uint8Array([255, 255, 255, 255, 255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255]);
 		// var texture = new Texture(colorInfo, null, 2, 2);
 		material.textures.push(texture);

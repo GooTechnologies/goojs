@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require([//
 'goo/entities/GooRunner',//
 'goo/math/Vector3',//
@@ -32,6 +38,8 @@ Material,//
 Camera//
 ) {
 	"use strict";
+
+	var resourcePath = "../resources";
 
 	function init() {
 		var goo = new GooRunner();
@@ -94,7 +102,7 @@ Camera//
 	function loadModels(goo) {
 		var importer = new JSONImporter(goo.world);
 
-		importer.load('resources/head.model', 'resources/', {
+		importer.load(resourcePath + '/head.model', resourcePath + '/', {
 			onSuccess : function(entities) {
 				for ( var i in entities) {
 					entities[i].addToWorld();
@@ -110,7 +118,7 @@ Camera//
 		});
 
 		// Load asynchronous with callback
-		importer.load('resources/girl.model', 'resources/', {
+		importer.load(resourcePath + '/girl.model', resourcePath + '/', {
 			onSuccess : function(entities) {
 				for ( var i in entities) {
 					entities[i].addToWorld();
@@ -135,7 +143,7 @@ Camera//
 		});
 
 		// Load asynchronous with callback
-		importer.load('resources/shoes/shoes_compressed.json', 'resources/shoes/textures/', {
+		importer.load(resourcePath + '/shoes/shoes_compressed.json', resourcePath + '/shoes/textures/', {
 			onSuccess : function(entities) {
 				// Pull out the fabric entity of the shoe
 				var fabricEntity;

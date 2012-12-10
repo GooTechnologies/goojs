@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require(
 	['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 			'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
@@ -14,6 +20,8 @@ require(
 		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
 		ShaderFragments, DepthPass) {
 		"use strict";
+
+		var resourcePath = "../resources";
 
 		function init() {
 			// Create typical goo application
@@ -130,7 +138,7 @@ require(
 		function loadModels(goo) {
 			var importer = new JSONImporter(goo.world);
 
-			importer.load('resources/head.model', 'resources/', {
+			importer.load(resourcePath + '/head.model', resourcePath + '/', {
 				onSuccess : function(entities) {
 					for ( var i in entities) {
 						entities[i].addToWorld();
@@ -153,7 +161,7 @@ require(
 			var material = new Material('TestMaterial');
 			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
 
-			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 			material.textures.push(texture);
 
 			entity.meshRendererComponent.materials.push(material);

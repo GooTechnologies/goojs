@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
@@ -8,6 +14,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils,
 		Texture, Camera, CameraComponent, Vector3) {
 		"use strict";
+
+		var resourcePath = "../resources";
 
 		function init() {
 			// Create typical goo application
@@ -65,7 +73,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var importer = new JSONImporter(goo.world);
 
 			// Load asynchronous with callback
-			importer.load('resources/girl.model', 'resources/', {
+			importer.load(resourcePath + '/girl.model', resourcePath + '/', {
 				onSuccess : function(entities) {
 					for ( var i in entities) {
 						entities[i].addToWorld();
@@ -90,7 +98,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			});
 
 			// Load asynchronous with callback
-			importer.load('resources/head.model', 'resources/', {
+			importer.load(resourcePath + '/head.model', resourcePath + '/', {
 				onSuccess : function(entities) {
 					for ( var i in entities) {
 						entities[i].addToWorld();
@@ -116,7 +124,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			});
 
 			// Load asynchronous with callback
-			importer.load('resources/shoes/shoes_compressed.json', 'resources/shoes/textures/', {
+			importer.load(resourcePath + '/shoes/shoes_compressed.json', resourcePath + '/shoes/textures/', {
 				onSuccess : function(entities) {
 					// Pull out the fabric entity of the shoe
 					var fabricEntity;
@@ -219,7 +227,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 			material.cullState.enabled = false;
 
-			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 			// var colorInfo = new Uint8Array([255, 255, 255, 255, 255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255]);
 			// var texture = new Texture(colorInfo, null, 2, 2);
 			material.textures.push(texture);
@@ -254,7 +262,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var material = new Material('TestMaterial');
 			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
 
-			var texture = new TextureCreator().loadTexture2D('resources/pitcher.jpg');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 			material.textures.push(texture);
 
 			entity.meshRendererComponent.materials.push(material);

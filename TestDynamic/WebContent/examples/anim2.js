@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
@@ -13,7 +19,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion) {
 	"use strict";
 
+    var resourcePath = "../resources";
+
 	var animationManager = null;
+	var walking = true;
 
 	function init() {
 		// Create typical goo application
@@ -43,7 +52,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		transformComponent.transform.translation.z = 80;
 		entity.addToWorld();
 
-		// Examples of model loading
+		// Load skeleton
 		loadModels(goo);
 	}
 
@@ -135,7 +144,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var skinMeshes = [];
 
 		// Load asynchronous with callback
-		importer.load('resources/careerrun/running_man_1.model', 'resources/careerrun/', {
+		importer.load(resourcePath + '/skeleton/skeleton.model', resourcePath + '/skeleton/', {
 			onSuccess : function(entities) {
 				for ( var i in entities) {
 					entities[i].addToWorld();
@@ -154,7 +163,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 
 				if (skinMeshes.length > 0) {
-					loadAnimations(skinMeshes[0].meshDataComponent.meshData.currentPose, 'resources/careerrun/run.anim');
+					loadAnimations(skinMeshes[0].meshDataComponent.meshData.currentPose);
 				}
 			},
 			onError : function(error) {
@@ -166,27 +175,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			if (animationManager) {
 				animationManager.update();
 			}
-
-			// Debug draw skeleton
-			// for ( var i = 0; i < skinMeshes.length; i++) {
-			// var entity = skinMeshes[i];
-			// var meshData = entity.meshDataComponent.meshData;
-			// drawSkeleton(entity, meshData, goo.renderer);
-			// }
 		});
 	}
 
-	function loadAnimations(pose, modelUrl) {
+	function loadAnimations(pose) {
 		var request = new XMLHttpRequest();
-		request.open('GET', modelUrl, true);
+		request.open('GET', resourcePath + '/skeleton/skeleton.anim', true);
 		request.onreadystatechange = function() {
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
 					setupAnimations(pose, request.responseText);
-					// callback.onSuccess(entities);
 				} else {
 					console.error(request.statusText);
-					// callback.onError(request.statusText);
 				}
 			}
 		};
@@ -198,117 +198,26 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		animationManager = new AnimationManager(pose);
 		animationManager._applier = new SimpleAnimationApplier();
 
-		var importer = new JSONImporter();
-
-		var clip = importer.importAnimation(animationTree, "run");
-
-		var state = new SteadyState("running");
-		var source = new ClipSource(clip, animationManager);
-		state._sourceTree = source;
-
-		animationManager._layers[0]._steadyStates[state._name] = state;
-		animationManager.getClipInstance(clip)._loopCount = -1;
-		animationManager.getClipInstance(clip)._timeScale = 1.0;
-		animationManager._layers[0].setCurrentStateByName("running", true);
-	}
-
-	var alreadyDrawn = {};
-	function drawSkeleton(entity, meshData, renderer) {
-		var pose = meshData.currentPose;
-		if (pose !== undefined /* && !alreadyDrawn[pose._skeleton._name] */) {
-			// If we're in view, go ahead and draw our associated skeleton pose
-			// SkeletalDebugger.drawSkeleton(pose, scene, renderer);
-			var joints = pose._skeleton._joints;
-			var globals = pose._globalTransforms;
-
-			for ( var i = 0, max = joints.length; i < max; i++) {
-				drawJoint(globals[i], entity, renderer);
-
-				var parentIndex = joints[i]._parentIndex;
-				if (parentIndex !== Joint.NO_PARENT) {
-					drawBone(globals[parentIndex], globals[i], entity, renderer);
-				}
+		new JSONImporter().importAnimationTree(animationManager, animationTree, {
+			onSuccess : function(outputStore) {
+				animationManager.getBaseAnimationLayer().setCurrentStateByName("walk_anim", true);
+			},
+			onError : function(error) {
+				console.error(error);
 			}
+		});
 
-			alreadyDrawn[pose._skeleton._name] = true;
-		}
-	}
-
-	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	jointMaterial.depthState.enabled = false;
-	jointMaterial.shader.uniforms.color = [1.0, 0.0, 0.0];
-	var renderableJoint = {
-		meshData : ShapeCreator.createBox(2, 2, 2),
-		materials : [jointMaterial],
-		transform : new Transform()
-	};
-
-	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
-	boneMaterial.depthState.enabled = false;
-	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0];
-	var renderableBone = {
-		meshData : ShapeCreator.createBox(1, 1, 1),
-		materials : [boneMaterial],
-		transform : new Transform()
-	};
-
-	function drawJoint(jntTransform, entity, renderer) {
-		renderableJoint.transform.multiply(entity.transformComponent.worldTransform, jntTransform);
-
-		// renderableJoint.setWorldRotation(SkeletalDebugger.joint.getWorldRotation());
-		// renderableJoint.setWorldScale(size);
-
-		renderer.render(renderableJoint, Renderer.mainCamera, [], null, false);
-	}
-
-	function drawBone(start, end, entity, renderer) {
-		// Determine our start and end points
-		var stPnt = new Vector3();
-		var endPnt = new Vector3();
-		start.applyForward(Vector3.ZERO, stPnt);
-		end.applyForward(Vector3.ZERO, endPnt);
-
-		// determine distance and use as a scale to elongate the bone
-		var tmp = new Vector3().copy(endPnt).sub(stPnt);
-		var scale = tmp.length() / 1.0;
-		if (scale === 0) {
-			scale = 0.000001;
-		}
-		// TODO: hack cause transforming doesnt work
-		// scale = 1;
-
-		// var vol = scene.getWorldBound();
-		var size = 1.0;
-		// if (vol != null) {
-		// SkeletalDebugger.measureSphere.setCenter(vol.getCenter());
-		// SkeletalDebugger.measureSphere.setRadius(0);
-		// SkeletalDebugger.measureSphere.mergeLocal(vol);
-		// size = SkeletalDebugger.BONE_RATIO * SkeletalDebugger.measureSphere.getRadius();
-		// }
-		renderableBone.transform.setIdentity();
-		renderableBone.transform.scale.set(size, size, scale);
-
-		// determine center point of bone (translation).
-		var store = new Vector3();
-		store.copy(stPnt).add(endPnt).scalarDiv(2.0);
-		renderableBone.transform.translation.copy(store);
-
-		// Orient bone to point along axis formed by start and end points.
-		var orient = new Matrix3x3();
-		orient.lookAt(endPnt.sub(stPnt).normalize(), Vector3.UNIT_Y);
-		// TODO: fix, probably matrix row/col issue
-		// var q = new Quaternion().fromRotationMatrix(orient);
-		// q.normalize();
-		// q.toRotationMatrix(orient);
-		renderableBone.transform.rotation.copy(orient);
-
-		// Offset with skin transform
-		renderableBone.transform.multiply(entity.transformComponent.worldTransform, renderableBone.transform);
-
-		renderableBone.transform.update();
-
-		// Draw our bone!
-		renderer.render(renderableBone, Renderer.mainCamera, [], null, false);
+		document.addEventListener('keydown', function(e) {
+			e = window.event || e;
+			var code = e.charCode || e.keyCode;
+			console.log(code);
+			if (code == 32) { // space bar
+				animationManager.getBaseAnimationLayer().doTransition(walking ? "run" : "walk");
+				walking = !walking;
+			} else if (code == 13) { // enter
+				animationManager.findAnimationLayer("punchLayer").setCurrentStateByName("punch_right", true);
+			}
+		}, false);
 	}
 
 	init();

@@ -1,3 +1,9 @@
+require({
+    baseUrl: "./",
+    paths: {
+        goo: "../goo",
+    }
+});
 require(['goo/math/Vector3', 'goo/util/Handy'], function(Vector3, Handy) {
 	"use strict";
 
