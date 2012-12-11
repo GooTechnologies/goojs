@@ -1,6 +1,11 @@
 define(['goo/entities/components/Component'], function(Component) {
 	"use strict";
 
+	/**
+	 * @name ScriptComponent
+	 * @class Contains scripts to be executed each frame when set on an active entity
+	 * @param {JS} script Script to contain in this script component
+	 */
 	function ScriptComponent(script) {
 		this.type = 'ScriptComponent';
 

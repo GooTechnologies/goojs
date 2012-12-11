@@ -1,6 +1,13 @@
 define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], function(BoundingSphere, Component) {
 	"use strict";
 
+	/**
+	 * @name MeshDataComponent
+	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
+	 * @param {MeshData} meshData Target mesh data for this component.
+	 * @property {Bounding} modelBound Bounding volume in local space
+	 * @property {Boolean} autoCompute Automatically compute bounding fit
+	 */
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
@@ -12,11 +19,20 @@ define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], fun
 
 	MeshDataComponent.prototype = Object.create(Component.prototype);
 
+	/**
+	 * Set the bounding volume type (sphere, box etc)
+	 * 
+	 * @param modelBound Bounding to apply to this meshdata component
+	 * @param autoCompute If true, automatically compute bounding fit
+	 */
 	MeshDataComponent.prototype.setModelBound = function(modelBound, autoCompute) {
 		this.modelBound = modelBound;
 		this.autoCompute = autoCompute;
 	};
 
+	/**
+	 * Compute bounding center and bounds for this mesh
+	 */
 	MeshDataComponent.prototype.computeBoundFromPoints = function() {
 		if (this.autoCompute && this.modelBound !== null) {
 			var verts = this.meshData.getAttributeBuffer('POSITION');

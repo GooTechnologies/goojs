@@ -1,6 +1,11 @@
 define(['goo/entities/components/Component', 'goo/math/Vector3'], function(Component, Vector3) {
 	"use strict";
 
+	/**
+	 * @name CameraComponent
+	 * @class TODO: this class is not finished
+	 * @param {Camera} camera Camera to contain in this component
+	 */
 	function CameraComponent(camera) {
 		this.type = 'CameraComponent';
 
