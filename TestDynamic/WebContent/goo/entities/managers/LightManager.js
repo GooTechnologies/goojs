@@ -1,6 +1,10 @@
 define(['goo/entities/EventHandler'], function(EventHandler) {
 	"use strict";
 
+	/**
+	 * @name LightManager
+	 * @class Keeps track of all current lights in the world.
+	 */
 	function LightManager() {
 		this.type = 'LightManager';
 
