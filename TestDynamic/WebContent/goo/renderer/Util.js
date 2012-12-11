@@ -100,6 +100,11 @@ define(function() {
 			return obj;
 		}
 
+		// Handle Uint8Array
+		if (obj instanceof Uint8Array) {
+			return obj;
+		}
+
 		// Handle Date
 		if (obj instanceof Date) {
 			var copy = new Date();

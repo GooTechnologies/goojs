@@ -1,5 +1,5 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil'], function(Loader, Texture,
-	DdsLoader, SimpleResourceUtil) {
+define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'], function(
+	Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	function TextureCreator(settings) {
 		settings = settings || {};
 
-		this.verticalFlip = settings.verticalFlip || true;
+		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
 
 		this.textureLoaders = {
 			// '.png' : 'loader1',
@@ -26,6 +26,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	}
 
 	TextureCreator.prototype.loadTexture2D = function(imageURL) {
+		var creator = this;
 		for ( var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
@@ -44,19 +45,19 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
-				var rVal = new Texture(TextureCreator.DEFAULT_TEXTURE_2D.image);
+				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image));
+				rVal.image.dataReady = false;
+				rVal.a = imageURL;
 
 				// from URL
 				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
 					onSuccess : function(/* ArrayBuffer */response) {
-						// TextureCreator.logger.fine("Loading dds: " + url);
-						loader.load(response, rVal, this.verticalFlip, 0, response.byteLength);
-
+						loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
+						console.info("Loaded image: " + imageURL);
 						// callLoadCallback(url);
 					},
 					onError : function(t) {
-						console.warn("Error loading texture: " + url + " | " + t);
-						TextureState.getDefaultTexture().createSimpleClone(rVal);
+						console.warn("Error loading texture: " + imageURL + " | " + t);
 					}
 				});
 
