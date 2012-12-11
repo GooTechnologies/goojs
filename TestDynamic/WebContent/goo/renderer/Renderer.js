@@ -464,6 +464,16 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
 				dataOffset += dataLength;
 			}
+			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
+			var size = mipSizes[mipSizes.length - 1];
+			if (mipSizes.length < expectedMipmaps) {
+				for ( var i = mipSizes.length; i < expectedMipmaps; i++) {
+					size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * texture.image.bpp * 2;
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(size));
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+				}
+			}
 		}
 	};
 
