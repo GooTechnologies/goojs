@@ -1,14 +1,14 @@
 define(['goo/renderer/MeshData'], function(MeshData) {
 	"use strict";
 
-	Plane.prototype = Object.create(MeshData.prototype);
+	Quad.prototype = Object.create(MeshData.prototype);
 
 	/**
-	 * @name Plane
+	 * @name Quad
 	 * @class <code>Quad</code> defines a four sided, two dimensional shape. The local height of the <code>Quad</code> defines it's size about the
 	 *        y-axis, while the width defines the x-axis. The z-axis will always be 0.
 	 */
-	function Plane(width, height, tileX, tileY) {
+	function Quad(width, height, tileX, tileY) {
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
 		this.tileX = tileX || 1;
@@ -20,7 +20,7 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 		this.rebuild();
 	}
 
-	Plane.prototype.rebuild = function() {
+	Quad.prototype.rebuild = function() {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var tileX = this.tileX;
@@ -35,5 +35,5 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 		return this;
 	};
 
-	return Plane;
+	return Quad;
 });

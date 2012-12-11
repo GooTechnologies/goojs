@@ -20,6 +20,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 	var temp = new Vector3();
 
+	// TODO: add Object.freeze?
 	Vector3.ZERO = new Vector3(0, 0, 0);
 	Vector3.ONE = new Vector3(1, 1, 1);
 	Vector3.UNIT_X = new Vector3(1, 0, 0);
