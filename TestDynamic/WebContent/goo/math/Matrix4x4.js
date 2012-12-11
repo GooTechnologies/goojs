@@ -676,9 +676,18 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
+	 * @description Tests if the matrix is orthonormal.
+	 * @returns {Boolean} True if orthonormal.
+	 */
+
+	Matrix4x4.prototype.isOrthonormal = function() {
+		return this.isOrthogonal() && this.isNormal();
+	};
+
+	/**
 	 * @description Sets the rotational part of the matrix from rotational angles.
 	 * @param {Vector3} angles Rotational angles.
-	 * @param {String} order Order convention.
+	 * @param {String} order Order convention. ("xyz" equals x followed by y followed by z)
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 

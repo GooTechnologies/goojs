@@ -439,5 +439,14 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return true;
 	};
 
+	/**
+	 * @description Tests if the matrix is orthonormal.
+	 * @returns {Boolean} True if orthonormal.
+	 */
+
+	Matrix2x2.prototype.isOrthonormal = function() {
+		return this.isOrthogonal() && this.isNormal();
+	};
+
 	return Matrix2x2;
 });

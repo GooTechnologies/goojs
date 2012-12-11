@@ -527,6 +527,15 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return true;
 	};
 
+	/**
+	 * @description Tests if the matrix is orthonormal.
+	 * @returns {Boolean} True if orthonormal.
+	 */
+
+	Matrix3x3.prototype.isOrthonormal = function() {
+		return this.isOrthogonal() && this.isNormal();
+	};
+
 	// TODO: incorporate these better and possibly to the base class
 	Matrix3x3.prototype.applyPost = function(vec) {
 		var x = vec.x;
