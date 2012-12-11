@@ -1,6 +1,10 @@
 define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'], function(System, EventHandler, Renderer) {
 	"use strict";
 
+	/**
+	 * @name CameraSystem
+	 * @class TODO: not finished
+	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
 

@@ -1,6 +1,10 @@
 define(['goo/entities/systems/System'], function(System) {
 	"use strict";
 
+	/**
+	 * @name ScriptSystem
+	 * @class Processes all entities with script components, running the scripts where applicable
+	 */
 	function ScriptSystem() {
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);
 	}

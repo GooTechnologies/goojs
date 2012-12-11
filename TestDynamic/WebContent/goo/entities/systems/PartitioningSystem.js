@@ -1,9 +1,14 @@
 define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(System, EventHandler) {
 	"use strict";
 
+	/**
+	 * @name PartitioningSystem
+	 * @class Processes all entities with meshrenderer components, and uses its partitioner to calculate which entities to render.
+	 */
 	function PartitioningSystem() {
 		System.call(this, 'PartitioningSystem', ['MeshRendererComponent']);
 
+		this.partitioner = null;
 		this.renderList = [];
 		this.camera = null;
 
