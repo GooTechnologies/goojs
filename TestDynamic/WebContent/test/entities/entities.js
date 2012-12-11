@@ -1,8 +1,8 @@
 require({
-    baseUrl: "./",
-    paths: {
-        goo: "../goo",
-    }
+	baseUrl : "./",
+	paths : {
+		goo : "../../goo",
+	}
 });
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
@@ -27,10 +27,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			expect(world.getEntities().length).toBe(0);
 		});
 
-		it("Entity is setup correctly", function() {
-			expect(entity._world).toBe(world);
-			expect(entity._components.length).toBe(0);
-			expect(entity.id).toBe(0);
+		describe("Entity is setup correctly", function() {
+			it("Entity world is global world", function() {
+				expect(entity._world).toBe(world);
+			});
+			it("Entity has 1 components (transformcomponent)", function() {
+				expect(entity._components.length).toBe(1);
+				expect(entity.getComponent('TransformComponent')).toBeDefined();
+			});
+			it("Entity id is 0", function() {
+				expect(entity.id).toBe(0);
+			});
 		});
 
 		it("Correct handling of addToWorld", function() {
@@ -50,40 +57,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	(function() {
 		var jasmineEnv = jasmine.getEnv();
 		jasmineEnv.updateInterval = 250;
-
-		/**
-		 * Create the `HTMLReporter`, which Jasmine calls to provide results of each spec and each suite. The Reporter is responsible for presenting
-		 * results to the user.
-		 */
 		var htmlReporter = new jasmine.HtmlReporter();
 		jasmineEnv.addReporter(htmlReporter);
-
-		/**
-		 * Delegate filtering of specs to the reporter. Allows for clicking on single suites or specs in the results to only run a subset of the
-		 * suite.
-		 */
 		jasmineEnv.specFilter = function(spec) {
 			return htmlReporter.specFilter(spec);
 		};
-
-		/**
-		 * Run all of the tests when the page finishes loading - and make sure to run any previous `onload` handler ### Test Results Scroll down to
-		 * see the results of all of these specs.
-		 */
-		var currentWindowOnload = window.onload;
-		window.onload = function() {
-			if (currentWindowOnload) {
-				currentWindowOnload();
-			}
-
-			// document.querySelector('.version').innerHTML =
-			// jasmineEnv.versionString();
-			execJasmine();
-		};
-
-		function execJasmine() {
-			jasmineEnv.execute();
-		}
+		jasmineEnv.execute();
 	})();
-
 });

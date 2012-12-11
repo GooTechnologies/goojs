@@ -82,18 +82,40 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 		return entity;
 	};
 
+	/**
+	 * Get all entities in world
+	 * 
+	 * @returns All entities existing in world
+	 */
 	World.prototype.getEntities = function() {
 		return this.entityManager.getEntities();
 	};
 
+	/**
+	 * Add an entity to the world
+	 * 
+	 * @param entity
+	 */
 	World.prototype.addEntity = function(entity) {
 		this._addedEntities.push(entity);
 	};
 
+	/**
+	 * Remove an entity from the world
+	 * 
+	 * @param entity
+	 */
 	World.prototype.removeEntity = function(entity) {
 		this._removedEntities.push(entity);
 	};
 
+	/**
+	 * Let the system know that an entity has been changed/updated
+	 * 
+	 * @param entity
+	 * @param component
+	 * @param eventType
+	 */
 	World.prototype.changedEntity = function(entity, component, eventType) {
 		var event = {
 			entity : entity

@@ -1,24 +1,3 @@
-// REVIEW: This is a better structure for version control + easier to spot mistakes:
-// define([
-// 'goo/entities/World',
-// 'goo/entities/systems/TransformSystem',
-// 'goo/entities/systems/RenderSystem',
-// 'goo/entities/systems/PartitioningSystem',
-// 'goo/renderer/Renderer',
-// 'goo/entities/systems/BoundingUpdateSystem',
-// 'goo/entities/systems/ScriptSystem',
-// 'goo/entities/systems/LightingSystem'
-// ], function(
-// World,
-// TransformSystem,
-// RenderSystem,
-// PartitioningSystem,
-// Renderer,
-// BoundingUpdateSystem,
-// ScriptSystem,
-// LightingSystem
-// ) {
-
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
