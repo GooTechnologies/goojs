@@ -1,8 +1,6 @@
 define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
-	var temp = new Vector3();
-
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector3.prototype.setupAliases([['x', 'r'], ['y', 'g'], ['z', 'b']]);
 
@@ -19,6 +17,8 @@ define(["goo/math/Vector"], function(Vector) {
 		Vector.call(this, 3);
 		this.set(arguments);
 	}
+
+	var temp = new Vector3();
 
 	Vector3.ZERO = new Vector3(0, 0, 0);
 	Vector3.ONE = new Vector3(1, 1, 1);
@@ -435,7 +435,7 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @description Linearly interpolates between two vectors and stores the result locally.
 	 * @param {Vector3} endVec End vector.
-	 * @param {Float} scalar 
+	 * @param {Float} scalar
 	 * @returns {Vector3} Self for chaining.
 	 */
 
