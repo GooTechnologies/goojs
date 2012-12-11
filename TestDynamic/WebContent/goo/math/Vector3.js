@@ -1,6 +1,8 @@
 define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
+	var temp = new Vector3();
+
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector3.prototype.setupAliases([['x', 'r'], ['y', 'g'], ['z', 'b']]);
 
@@ -225,9 +227,11 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector3();
 		}
 
-		target.data[0] = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
-		target.data[1] = rhs.data[0] * lhs.data[2] - rhs.data[2] * lhs.data[0];
-		target.data[2] = rhs.data[1] * lhs.data[0] - rhs.data[0] * lhs.data[1];
+		temp.data[0] = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
+		temp.data[1] = rhs.data[0] * lhs.data[2] - rhs.data[2] * lhs.data[0];
+		temp.data[2] = rhs.data[1] * lhs.data[0] - rhs.data[0] * lhs.data[1];
+
+		target.copy(temp);
 
 		return target;
 	};
@@ -418,21 +422,36 @@ define(["goo/math/Vector"], function(Vector) {
 		return this;
 	};
 
-	Vector3.prototype.cross = function(rhs) {
-		var newX = this.y * rhs.z - this.z * rhs.y;
-		var newY = this.z * rhs.x - this.x * rhs.z;
-		var newZ = this.x * rhs.y - this.y * rhs.x;
-		this.set(newX, newY, newZ);
+	/**
+	 * @description Computes the cross product of two vectors and stores the result locally.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Vector3} Self for chaining.
+	 */
 
-		return this;
+	Vector3.prototype.cross = function(rhs) {
+		return Vector3.cross(this, rhs, this);
 	};
 
+	/**
+	 * @description Linearly interpolates between two vectors and stores the result locally.
+	 * @param {Vector3} endVec End vector.
+	 * @param {Float} scalar 
+	 * @returns {Vector3} Self for chaining.
+	 */
+
+	// REVIEW: This creates a feedback loop when used multiple times which is probably not the intention?
 	Vector3.prototype.lerp = function(endVec, scalar) {
 		this.x = (1.0 - scalar) * this.x + scalar * endVec.x;
 		this.y = (1.0 - scalar) * this.y + scalar * endVec.y;
 		this.z = (1.0 - scalar) * this.z + scalar * endVec.z;
 		return this;
 	};
+
+	/**
+	 * @description Compares two vectors with a maximum tolerance of 0.000001 per component.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Boolean} True if equal.
+	 */
 
 	Vector3.prototype.equals = function(rhs) {
 		return Math.abs(this.x - rhs.x) < 0.000001 && Math.abs(this.y - rhs.y) < 0.000001 && Math.abs(this.z - rhs.z) < 0.000001;
