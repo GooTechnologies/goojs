@@ -6,15 +6,22 @@ define(['goo/renderer/MeshData'],
 
 		/**
 		 * @name Teapot
-		 * @class Teapot is the classical teapot model ready for you to use in ardor3d! If you plan to texture this shape, use wrapmode WM_WRAP_S_WRAP_T.
-		 * @see "http://www.sjbaker.org/teapot/"
+		 * @class Teapot is the classical Utah teapot model. If you plan to texture this shape, use wrapmode WM_WRAP_S_WRAP_T.
+		 * @constructor
+		 * @description Creates a new teapot.
 		 */
+
 		function Teapot() {
 			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 			MeshData.call(this, attributeMap, 2349, 2976);
 
 			this.rebuild();
 		}
+
+		/**
+		 * @description Builds or rebuilds the mesh data.
+		 * @returns {Teapot} Self for chaining.
+		 */
 
 		Teapot.prototype.rebuild = function() {
 			var verts = [1.4403734, 2.7980254, 0.6128418, 1.5613803, 2.7980254, 0.0, 1.5834712, 2.7145221, 0.0, 1.4607521, 2.7145221, 0.62151235,

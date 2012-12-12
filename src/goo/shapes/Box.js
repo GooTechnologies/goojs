@@ -5,9 +5,21 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 
 	/**
 	 * @name Box
-	 * @class <code>Box</code> is an axis-aligned rectangular prism defined by a center point and x, y, and z extents from that center (essentially
-	 *        radius)
+	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
+	 * @property {Float} xExtent Extent along the local x axis.
+	 * @property {Float} yExtent Extent along the local y axis.
+	 * @property {Float} zExtent Extent along the local z axis.
+	 * @property {Integer} tileX Number of texture repetitions in the texture's x direction.
+	 * @property {Integer} tileY Number of texture repetitions in the texture's y direction.
+	 * @constructor
+	 * @description Creates a new box.
+	 * @param {Float} width Total width of box.
+	 * @param {Float} height Total height of box.
+	 * @param {Float} length Total length of box.
+	 * @param {Integer} tileX Number of texture repetitions in the texture's x direction.
+	 * @param {Integer} tileY Number of texture repetitions in the texture's y direction.
 	 */
+
 	function Box(width, height, length, tileX, tileY) {
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
@@ -20,6 +32,11 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 
 		this.rebuild();
 	}
+
+	/**
+	 * @description Builds or rebuilds the mesh data.
+	 * @returns {Box} Self for chaining.
+	 */
 
 	Box.prototype.rebuild = function() {
 		var xExtent = this.xExtent;

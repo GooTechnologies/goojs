@@ -6,7 +6,19 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 	/**
 	 * @name Sphere
 	 * @class Sphere represents a 3D object with all points equi-distance from a center point.
+	 * @property {Integer} zSamples Number of segments.
+	 * @property {Integer} radialSamples Number of slices.
+	 * @property {Float} radius Radius.
+	 * @property {Enum} textureMode Texture wrapping mode.
+	 * @property {Boolean} viewInside Inward-facing normals, for skydomes.
+	 * @constructor
+	 * @description Creates a new sphere.
+	 * @param {Integer} zSamples Number of segments.
+	 * @param {Integer} radialSamples Number of slices.
+	 * @param {Float} radius Radius.
+	 * @param {Enum} textureMode Texture wrapping mode.
 	 */
+
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
 		this.zSamples = zSamples !== undefined ? zSamples : 8;
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
@@ -23,6 +35,11 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		this.rebuild();
 	}
+
+	/**
+	 * @description Builds or rebuilds the mesh data.
+	 * @returns {Sphere} Self for chaining.
+	 */
 
 	Sphere.prototype.rebuild = function() {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);

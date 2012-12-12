@@ -5,9 +5,20 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 
 	/**
 	 * @name Torus
-	 * @class <code>Torus</code> is an axis-aligned rectangular prism defined by a center point and x, y, and z extents from that center
-	 *        (essentially radius)
+	 * @class A torus is a donut-shaped model.
+	 * @property {Integer} _circleSamples Number of segments.
+	 * @property {Integer} _radialSamples Number of slices.
+	 * @property {Float} _tubeRadius Radius of tube.
+	 * @property {Float} _centerRadius Radius from center.
+	 * @property {Boolean} viewInside Inward-facing normals.
+	 * @constructor
+	 * @description Creates a new torus.
+	 * @param {Integer} circleSamples Number of segments.
+	 * @param {Integer} radialSamples Number of slices.
+	 * @param {Float} tubeRadius Radius of tube.
+	 * @param {Float} centerRadius Radius from center.
 	 */
+
 	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
 		this._circleSamples = circleSamples !== undefined ? circleSamples : 8;
 		this._radialSamples = radialSamples !== undefined ? radialSamples : 8;
@@ -23,6 +34,11 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 
 		this.rebuild();
 	}
+
+	/**
+	 * @description Builds or rebuilds the mesh data.
+	 * @returns {Torus} Self for chaining.
+	 */
 
 	Torus.prototype.rebuild = function() {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
