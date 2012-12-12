@@ -523,7 +523,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
-		return result;
+
+		return store;
 	};
 
 	/**

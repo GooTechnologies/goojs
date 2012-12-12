@@ -10,9 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/Vector2', 'goo/scripts/BasicControlScript'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
-	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
-	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2, BasicControlScript) {
+		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray'], function(World, Entity, System, TransformSystem, RenderSystem,
+	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2,
+	BasicControlScript, Ray) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -67,6 +68,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			console.log('z=1, world coords: ' + worldPos.x + ',' + worldPos.y + ',' + worldPos.z);
 			camera.getScreenCoordinates(worldPos, goo.renderer.viewportWidth, goo.renderer.viewportHeight, screenPos);
 			console.log('z=1, calculated screen coords: ' + screenPos.x + ',' + screenPos.y);
+
+			var ray = new Ray();
+			camera.getPickRay(mouseDownX, mouseDownY, goo.renderer.viewportWidth, goo.renderer.viewportHeight, ray);
+			console.log('Ray: origin = ' + ray.origin.x + ',' + ray.origin.y + ',' + ray.origin.z + ' direction = ' + ray.direction.x + ','
+				+ ray.direction.y + ',' + ray.direction.z);
 		}, false);
 	}
 
