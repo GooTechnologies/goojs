@@ -1,6 +1,6 @@
 require({
     paths: {
-        goo: "../goo",
+        goo: "../src/goo",
     }
 });
 require([
