@@ -1,6 +1,10 @@
 define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], function(Renderer, Vector, Vector4) {
 	"use strict";
 
+	/**
+	 * @name RenderPass
+	 * @class A pass that renders provided renderlist to the rendertarget or screen
+	 */
 	function RenderPass(renderList) {
 		this.renderList = renderList;
 

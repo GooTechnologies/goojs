@@ -5,22 +5,26 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	 * @name Ray
 	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
-	function Ray() {
-		this.origin = new Vector3();
-		this.direction = new Vector3().copy(Vector3.UNIT_Z);
+	function Ray(origin, direction) {
+		this.origin = origin || new Vector3();
+		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
 	}
 
 	/**
-	 * @param polygonVertices
-	 * @param locationStore
+	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
+	 * true)
+	 * 
+	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
+	 * @param [doPlanar]
+	 * @param [locationStore]
 	 * @return true if this ray intersects a polygon described by the given vertices.
 	 */
-	Ray.prototype.intersects = function(polygonVertices, locationStore, doPlanar) {
-		if (polygonVertices.length == 3) {
-			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], locationStore, doPlanar);
-		} else if (polygonVertices.length == 4) {
-			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], locationStore, doPlanar)
-				|| intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], locationStore, doPlanar);
+	Ray.prototype.intersects = function(polygonVertices, doPlanar, locationStore) {
+		if (polygonVertices.length === 3) {
+			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore);
+		} else if (polygonVertices.length === 4) {
+			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore)
+				|| intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], doPlanar, locationStore);
 		}
 		return false;
 	};
@@ -28,20 +32,20 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	/**
 	 * Ray vs triangle implementation.
 	 * 
-	 * @param pointA
+	 * @param pointA First
 	 * @param pointB
 	 * @param pointC
-	 * @param locationStore
-	 * @param doPlanar
+	 * @param [doPlanar]
+	 * @param [locationStore]
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
-	Ray.prototype.intersectsTriangle = function(pointA, pointB, pointC, locationStore, doPlanar) {
-		var diff = new Vector3().set(_origin).subtractLocal(pointA);
+	Ray.prototype.intersectsTriangle = function(pointA, pointB, pointC, doPlanar, locationStore) {
+		var diff = new Vector3().set(this.origin).subtractLocal(pointA);
 		var edge1 = new Vector3().set(pointB).subtractLocal(pointA);
 		var edge2 = new Vector3().set(pointC).subtractLocal(pointA);
 		var norm = new Vector3().set(edge1).crossLocal(edge2);
 
-		var dirDotNorm = _direction.dot(norm);
+		var dirDotNorm = this.direction.dot(norm);
 		var sign;
 		if (dirDotNorm > MathUtils.EPSILON) {
 			sign = 1.0;
@@ -53,24 +57,24 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 			return false;
 		}
 
-		var dirDotDiffxEdge2 = sign * _direction.dot(diff.cross(edge2, edge2));
+		var dirDotDiffxEdge2 = sign * this.direction.dot(diff.cross(edge2, edge2));
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
-			var dirDotEdge1xDiff = sign * _direction.dot(edge1.crossLocal(diff));
+			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.crossLocal(diff));
 			if (dirDotEdge1xDiff >= 0.0) {
 				if (dirDotDiffxEdge2 + dirDotEdge1xDiff <= dirDotNorm) {
 					var diffDotNorm = -sign * diff.dot(norm);
 					if (diffDotNorm >= 0.0) {
 						// ray intersects triangle
 						// if storage vector is null, just return true,
-						if (locationStore == null) {
+						if (!locationStore) {
 							return true;
 						}
 						// else fill in.
 						var inv = 1 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.set(_origin).addLocal(_direction.getX() * t, _direction.getY() * t, _direction.getZ() * t);
+							locationStore.set(this.origin).addLocal(this.direction.getX() * t, this.direction.getY() * t, this.direction.getZ() * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.

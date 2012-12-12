@@ -865,7 +865,38 @@ define(["goo/math/Matrix"], function(Matrix) {
 		return this;
 	};
 
-	// TODO: incorporate these better and possibly to the base class
+	/**
+	 * Multiplies the given vector by this matrix (v * M). If supplied, the result is stored into the supplied "store" vector.
+	 * 
+	 * @param vector the vector to multiply this matrix by.
+	 * @param store the vector to store the result in. If store is null, a new vector is created. Note that it IS safe for vector and store to be the
+	 *            same object.
+	 * @return the store vector, or a new vector if store is null.
+	 * @throws NullPointerException if vector is null
+	 */
+	Matrix4x4.prototype.applyPre = function(vec4) {
+		var x = vec4.x;
+		var y = vec4.y;
+		var z = vec4.z;
+		var w = vec4.w;
+
+		vec4.x = this.e00 * x + this.e10 * y + this.e20 * z + w * this.e30;
+		vec4.y = this.e01 * x + this.e11 * y + this.e21 * z + w * this.e31;
+		vec4.z = this.e02 * x + this.e12 * y + this.e22 * z + w * this.e32;
+		vec4.w = this.e03 * x + this.e13 * y + this.e23 * z + w * this.e33;
+
+		return vec4;
+	};
+
+	/**
+	 * Multiplies the given vector by this matrix (M * v). If supplied, the result is stored into the supplied "store" vector.
+	 * 
+	 * @param vector the vector to multiply this matrix by.
+	 * @param store the vector to store the result in. If store is null, a new vector is created. Note that it IS safe for vector and store to be the
+	 *            same object.
+	 * @return the store vector, or a new vector if store is null.
+	 * @throws NullPointerException if vector is null
+	 */
 	Matrix4x4.prototype.applyPost = function(vec4) {
 		var x = vec4.x;
 		var y = vec4.y;

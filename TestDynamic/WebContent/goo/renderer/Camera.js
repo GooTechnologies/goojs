@@ -1,5 +1,5 @@
-define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'], function(Handy, Vector3, Matrix4x4,
-	Plane, MathUtils) {
+define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'], function(Handy,
+	Vector3, Vector4, Matrix4x4, Plane, MathUtils) {
 	"use strict";
 
 	/**
@@ -504,55 +504,49 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 	/**
 	 * Calculate a Pick Ray using the given screen position at the near plane of this camera and the camera's position in space.
 	 * 
-	 * @param screenX the x position on the near space to pass the ray through.
-	 * @param screenY the y position on the near space to pass the ray through.
+	 * @param screenX the x position in normalized coordinates (0-1) [x / width]
+	 * @param screenY the y position in normalized coordinates (0-1) [y / height]
 	 * @param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
 	 *            systems.
 	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
 	 * @return the resulting Ray.
 	 */
-	Camera.prototype.getPickRay = function(screenX, screenY, flipVertical, store) {
-		var pos = new Vector2().set(screenX, screenY);
-		if (flipVertical) {
-			pos.y = (getHeight() - screenY);
-		}
-
-		var result = store;
-		if (result === null) {
-			result = new Ray3();
+	Camera.prototype.getPickRay = function(screenX, screenY, store) {
+		if (!store) {
+			store = new Ray();
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		getWorldCoordinates(pos, 0, origin);
-		getWorldCoordinates(pos, 0.3, direction).sub(origin).normalize();
-		result.setOrigin(origin);
-		result.setDirection(direction);
+		this.getWorldCoordinates(screenX, screenY, 0, origin);
+		this.getWorldCoordinates(screenX, screenY, 0.3, direction).sub(origin).normalize();
+		store.origin.copy(origin);
+		store.direction.copy(direction);
 		return result;
 	};
 
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 * 
-	 * @param screenPosition the x,y coordinates of the screen position
+	 * @param screenX the x position in normalized coordinates (0-1) [x / width]
+	 * @param screenY the y position in normalized coordinates (0-1) [y / height]
 	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @return a vector containing the world coordinates.
 	 */
-	Camera.prototype.getWorldCoordinates = function(screenPosition, zDepth, store) {
-		if (store === null) {
+	Camera.prototype.getWorldCoordinates = function(screenX, screenY, zDepth, store) {
+		if (!store) {
 			store = new Vector3();
 		}
-		checkInverseModelViewProjection();
+		this.checkInverseModelViewProjection();
 		var position = new Vector4();
-		position.set((screenPosition.x / getWidth() - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenPosition.y
-			/ getHeight() - this._viewPortBottom)
+		position.set((screenX - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenY - this._viewPortBottom)
 			/ (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
-		this.modelViewProjectionInverse.applyPre(position, position);
-		position.multiplyLocal(1.0 / position.getW());
-		store.x = (position.x);
-		store.y = (position.y);
-		store.z = (position.z);
+		this.modelViewProjectionInverse.applyPre(position);
+		position.scalarMul(1.0 / position.w);
+		store.x = position.x;
+		store.y = position.y;
+		store.z = position.z;
 
 		return store;
 	};
@@ -636,7 +630,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Matrix4x4', 'goo/rendere
 		if (this._updateMVPMatrix) {
 			this.checkModelView();
 			this.checkProjection();
-			this.modelViewProjection.copy(this.getViewMatrix()).multiply(this.getProjectionMatrix());
+			this.modelViewProjection.copy(this.getViewMatrix()).mul(this.getProjectionMatrix());
 			this._updateMVPMatrix = false;
 		}
 	};
