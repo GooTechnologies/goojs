@@ -5,6 +5,10 @@ require.config({
     },
     waitSeconds: 5
   });
-require(['test/mathTest'], function(mathTest) {
+require([
+    'test/mathTest',
+    'test/shapesTest'
+],
+function(mathTest) {
   window.__testacular__.start();
 });
