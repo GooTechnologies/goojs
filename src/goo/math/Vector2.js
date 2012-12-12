@@ -180,14 +180,23 @@ define(["goo/math/Vector"], function(Vector) {
 			target = new Vector2();
 		}
 
+		// REVIEW: Cleaner alternative:
+		//   var clean = (rhs < 0.0 || rhs > 0.0);
+		//   rhs = clean ? 1.0 / rhs : 0.0;
 		var clean = true;
 
+		// REVIEW: Why multiply with 0 in case of rhs=0?
+		// Isn't an assertion failure and result of +/-Infinity better?
+		//
+		// REVIEW: Create a new variable instead of reusing rhs like this.
 		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
 
 		target.data[0] = lhs.data[0] * rhs;
 		target.data[1] = lhs.data[1] * rhs;
 
+		// REVIEW: Use if (!clean) instead.
 		if (clean === false) {
+			// REVIEW: Throw an exception instead. Or assertion?
 			console.warn("[Vector2.scalarDiv] Attempted to divide by zero!");
 		}
 

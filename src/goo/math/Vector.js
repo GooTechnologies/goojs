@@ -14,6 +14,7 @@ define([], function() {
 		this.data = new Float32Array(size || 0);
 	}
 
+	// REVIEW: Do we really want aliases? Maybe it's slow.
 	/**
 	 * @description Binds aliases to the different vector components.
 	 * @param {String[][]} aliases Array of component aliases for each component index.

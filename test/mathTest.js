@@ -20,18 +20,60 @@ define(
 ) {
 	"use strict";
 
+	// REVIEW: Split this file into one module per class (Vector, Vector2, ...)
+
+	// REVIEW: Missing tests for Quaternion, MathUtils, Transform. Make sure everything is covered!
+
+	// REVIEW: Avoid repeated code by creating a function that takes vectors and tests.
+	// Something like:
+	// var testVectors = function(proto, factory, a, b, expected) {
+	// 	it('can be copied', function() {
+	// 		expect(proto.copy(a)).toEqual(expected.copyOfA);
+	// 	});
+	// 	it('can be added', function() {
+	// 		expect(proto.add(a, a)).toEqual(expected.aPlusA);
+	// 	});
+	// 	.....
+	// };
+	// describe('Vector', function() {
+	// 	var a = new Vector(2).set(2, 4);
+	// 	var b = new Vector(2).set(-3, -4);
+	// 	testVectors(Vector, a, b, {
+	// 		copyOfA: new Vector(2).set(2, 4),
+	// 		aPlusA: new Vector(2).set(4, 8),
+	// 		aPlusB: new Vector(2).set(-1, 0),
+	// 		...
+	// 	});
+	// });
+	// describe('Vector2', function() {
+	// 	var a = new Vector2(2, 4);
+	// 	var b = new Vector2(-3, -4);
+	// 	testVectors(Vector, a, b, {
+	// 		copyOfA: new Vector2(2, 4),
+	// 		aPlusA: new Vector2(4, 8),
+	// 		aPlusB: new Vector2(-1, 0),
+	// 		...
+	// 	});
+	// });
+
 	describe("Vector", function() {
 		var a = new Vector(2).set(2, 4);
 		var b = new Vector(2).set(-3, -4);
 
+		// REVIEW: unclear description.
+		// Keep in mind what "it" means. It should read like a sentence. Try:
+		// it('can copy a vector')
 		it("Vector.copy", function() {
 			expect(Vector.copy(a)).toEqual(new Vector(2).set(2, 4));
 		});
 
+		// REVIEW: it('can add two vectors') or
+		// it('can add a vector to itself') or whatever is the idea here.
 		it("Vector.add", function() {
 			expect(Vector.add(a, a)).toEqual(new Vector(2).set(4, 8));
 		});
 
+		// REVIEW: it('can add a vector and an array') etc...
 		it("Vector.add", function() {
 			expect(Vector.add(a, [1, 2])).toEqual(new Vector(2).set(3, 6));
 		});
@@ -79,11 +121,15 @@ define(
 		it("Vector.prototype.normalize", function() {
 			expect(b.normalize()).toEqual(new Vector(2).set(0.6, 0.8));
 		});
+		// REVIEW: Missing test about normalizing a zero vector
+
+		// REVIEW: Missing test of dot, set and toString
 	});
 
 	describe("Vector2", function() {
 		var a = new Vector2();
 
+		// REVIEW: it('can be accessed by index')
 		it("Array access", function() {
 			a[0] = 1;
 			a[1] = 2;
@@ -94,6 +140,8 @@ define(
 		});
 
 		it("Component access", function() {
+			// REVIEW: Break this down into several tests.
+			// E.g. x/y, u/v, s/t, writing to component, reading from component etc.
 			a.x = 1;
 			a.y = 2;
 
@@ -174,6 +222,7 @@ define(
 			expect(a[3]).toEqual(4);
 		});
 
+		// REVIEW: Split into more than one test
 		it("Component access", function() {
 			a.x = 1;
 			a.y = 2;
@@ -199,7 +248,10 @@ define(
 		});
 	});
 
+	// REVIEW: Avoid repeated code (same thing as suggested for Vector)
+
 	describe("Matrix", function() {
+		// REVIEW: Missing at least one test (determinant). Make sure everything is covered.
 		var a = new Matrix(2, 2).set(2, 4, 6, 8);
 		var b = new Matrix(2, 2).set(0, 1, -1, 0);
 
@@ -268,6 +320,7 @@ define(
 	});
 
 	describe("Matrix2x2", function() {
+		// REVIEW: Missing at least one test (determinant). Make sure everything is covered.
 		var a = new Matrix2x2(1, 2, 3, 4);
 		var b = new Matrix2x2(0, 1, -1, 0);
 
@@ -300,6 +353,7 @@ define(
 	});
 
 	describe("Matrix3x3", function() {
+		// REVIEW: Missing at least one test (determinant). Make sure everything is covered.
 		var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 		var b = new Matrix3x3(0, 0, 1, -1, 2, 0, 0, 1, -2);
 		var c = new Matrix3x3(0, -1, 0, 1, 0, 0, 0, 0, -1);
@@ -333,6 +387,7 @@ define(
 	});
 
 	describe("Matrix4x4", function() {
+		// REVIEW: Missing at least one test (determinant). Make sure everything is covered.
 		var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 		var b = new Matrix4x4(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
 		var c = new Matrix4x4(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
