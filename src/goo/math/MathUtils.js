@@ -18,6 +18,13 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'], functio
 		return (1.0 - percent) * startValue + percent * endValue;
 	};
 
+	/**
+	 * @description Clamps a value between a minimum and maximum.
+	 * @param val The value to clamp.
+	 * @param min The minimum value. Must be less or equal to max.
+	 * @param max The maximum value. Must be less or equal to max.
+	 * @return The value n so that min <= n <= max.
+	 */
 	MathUtils.clamp = function(val, min, max) {
 		return val < min ? min : val > max ? max : val;
 	};
