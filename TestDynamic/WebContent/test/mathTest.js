@@ -20,326 +20,352 @@ define(
 ) {
 	"use strict";
 
-	window.Vector = Vector;
-	window.Vector2 = Vector2;
-	window.Vector3 = Vector3;
-	window.Vector4 = Vector4;
-	window.Matrix = Matrix;
-	window.Matrix2x2 = Matrix2x2;
-	window.Matrix3x3 = Matrix3x3;
-	window.Matrix4x4 = Matrix4x4;
-
-	describe("Vector tests", function() {
-		var vector  = new Vector(2).set(2, 4);
+	describe("Vector", function() {
+		var a = new Vector(2).set(2, 4);
+		var b = new Vector(2).set(-3, -4);
 
 		it("Vector.copy", function() {
-			expect(Vector.copy(vector)).toEqual(new Vector(2).set(2, 4));
-		}); 
-		it("Vector.add", function() {
-			expect(Vector.add(vector, vector)).toEqual(new Vector(2).set(4, 8));
+			expect(Vector.copy(a)).toEqual(new Vector(2).set(2, 4));
 		});
+
 		it("Vector.add", function() {
-			expect(Vector.add(vector, [1, 2])).toEqual(new Vector(2).set(3, 6));
+			expect(Vector.add(a, a)).toEqual(new Vector(2).set(4, 8));
 		});
+
+		it("Vector.add", function() {
+			expect(Vector.add(a, [1, 2])).toEqual(new Vector(2).set(3, 6));
+		});
+
 		it("Vector.sub", function() {
-			expect(Vector.sub(vector, vector)).toEqual(new Vector(2).set(0, 0));
+			expect(Vector.sub(a, a)).toEqual(new Vector(2).set(0, 0));
 		});
+
 		it("Vector.mul", function() {
-			expect(Vector.mul(vector, vector)).toEqual(new Vector(2).set(4, 16));
+			expect(Vector.mul(a, a)).toEqual(new Vector(2).set(4, 16));
 		});
+
 		it("Vector.div", function() {
-			expect(Vector.div(vector, vector)).toEqual(new Vector(2).set(1, 1));
+			expect(Vector.div(a, a)).toEqual(new Vector(2).set(1, 1));
 		});
+
 		it("Vector.scalarAdd", function() {
-			expect(Vector.scalarAdd(vector, 2)).toEqual(new Vector(2).set(4, 6));
+			expect(Vector.scalarAdd(a, 2)).toEqual(new Vector(2).set(4, 6));
 		});
+
 		it("Vector.scalarSub", function() {
-			expect(Vector.scalarSub(vector, 2)).toEqual(new Vector(2).set(0, 2));
+			expect(Vector.scalarSub(a, 2)).toEqual(new Vector(2).set(0, 2));
 		});
+
 		it("Vector.scalarMul", function() {
-			expect(Vector.scalarMul(vector, 2)).toEqual(new Vector(2).set(4, 8));
+			expect(Vector.scalarMul(a, 2)).toEqual(new Vector(2).set(4, 8));
 		});
+
 		it("Vector.scalarDiv", function() {
-			expect(Vector.scalarDiv(vector, 2)).toEqual(new Vector(2).set(1, 2));
+			expect(Vector.scalarDiv(a, 2)).toEqual(new Vector(2).set(1, 2));
 		});
-		it("Vector.prototype.set", function() {
-			expect(vector.set(-3, -4)).toEqual(new Vector(2).set(-3, -4));
-		});
+
 		it("Vector.prototype.invert", function() {
-			expect(vector.invert()).toEqual(new Vector(2).set(3, 4));
+			expect(b.invert()).toEqual(new Vector(2).set(3, 4));
 		});
+
 		it("Vector.prototype.length", function() {
-			expect(vector.length()).toEqual(5);
+			expect(b.length()).toEqual(5);
 		});
+
 		it("Vector.prototype.squareLength", function() {
-			expect(vector.squareLength()).toEqual(25);
+			expect(b.squareLength()).toEqual(25);
 		});
+
 		it("Vector.prototype.normalize", function() {
-			expect(vector.normalize()).toEqual(new Vector(2).set(0.6, 0.8));
+			expect(b.normalize()).toEqual(new Vector(2).set(0.6, 0.8));
+		});
+	});
+
+	describe("Vector2", function() {
+		var a = new Vector2();
+
+		it("Array access", function() {
+			a[0] = 1;
+			a[1] = 2;
+
+			expect(a).toEqual(new Vector2(1, 2));
+			expect(a[0]).toEqual(1);
+			expect(a[1]).toEqual(2);
+		});
+
+		it("Component access", function() {
+			a.x = 1;
+			a.y = 2;
+
+			expect(a).toEqual(new Vector2(1, 2));
+			expect(a.x).toEqual(1);
+			expect(a.y).toEqual(2);
+
+			a.u = 2;
+			a.v = 3;
+
+			expect(a).toEqual(new Vector2(2, 3));
+			expect(a.u).toEqual(2);
+			expect(a.v).toEqual(3);
+
+			a.s = 3;
+			a.t = 4;
+
+			expect(a).toEqual(new Vector2(3, 4));
+			expect(a.s).toEqual(3);
+			expect(a.t).toEqual(4);
+		});
+	});
+
+	describe("Vector3", function() {
+		var a = new Vector3(3, 2, 1);
+		var b = new Vector3(1, 2, 3);
+
+		it("Vector3.cross", function() {
+			expect(Vector3.cross(a, b)).toEqual(new Vector3(4, -8, 4));
+		});
+
+		it("Array access", function() {
+			a[0] = 1;
+			a[1] = 2;
+			a[2] = 3;
+
+			expect(a).toEqual(new Vector3(1, 2, 3));
+			expect(a[0]).toEqual(1);
+			expect(a[1]).toEqual(2);
+			expect(a[2]).toEqual(3);
+		});
+
+		it("Component access", function() {
+			a.x = 1;
+			a.y = 2;
+			a.z = 3;
+
+			expect(a).toEqual(new Vector3(1, 2, 3));
+			expect(a.x).toEqual(1);
+			expect(a.y).toEqual(2);
+			expect(a.z).toEqual(3);
+
+			a.r = 2;
+			a.g = 3;
+			a.b = 4;
+
+			expect(a).toEqual(new Vector3(2, 3, 4));
+			expect(a.r).toEqual(2);
+			expect(a.g).toEqual(3);
+			expect(a.b).toEqual(4);
 		});
 
 	});
 
-	function testVector2() {
-		console.log("\nTesting Vector2\n");
+	describe("Vector4", function() {
+		var a = new Vector4();
 
-		var vector = new Vector2(1, 2);
+		it("Array access", function() {
+			a[0] = 1;
+			a[1] = 2;
+			a[2] = 3;
+			a[3] = 4;
 
-		vector[0] = 2;
-		vector[1] = 3;
+			expect(a).toEqual(new Vector4(1, 2, 3, 4));
+			expect(a[0]).toEqual(1);
+			expect(a[1]).toEqual(2);
+			expect(a[2]).toEqual(3);
+			expect(a[3]).toEqual(4);
+		});
 
-		console.log(vector + " expected " + new Vector2(2, 3));
-		console.log(vector[0] + " expected 2");
-		console.log(vector[1] + " expected 3");
+		it("Component access", function() {
+			a.x = 1;
+			a.y = 2;
+			a.z = 3;
+			a.w = 4;
 
-		vector.x = 1;
-		vector.y = 2;
+			expect(a).toEqual(new Vector4(1, 2, 3, 4));
+			expect(a.x).toEqual(1);
+			expect(a.y).toEqual(2);
+			expect(a.z).toEqual(3);
+			expect(a.w).toEqual(4);
 
-		console.log(vector + " expected " + new Vector2(1, 2));
-		console.log(vector.x + " expected 1");
-		console.log(vector.y + " expected 2");
+			a.r = 2;
+			a.g = 3;
+			a.b = 4;
+			a.a = 5;
 
-		vector['x'] = 2;
-		vector['y'] = 3;
+			expect(a).toEqual(new Vector4(2, 3, 4, 5));
+			expect(a.r).toEqual(2);
+			expect(a.g).toEqual(3);
+			expect(a.b).toEqual(4);
+			expect(a.a).toEqual(5);
+		});
+	});
 
-		console.log(vector + " expected " + new Vector2(2, 3));
-		console.log(vector['x'] + " expected 2");
-		console.log(vector['y'] + " expected 3");
+	describe("Matrix", function() {
+		var a = new Matrix(2, 2).set(2, 4, 6, 8);
+		var b = new Matrix(2, 2).set(0, 1, -1, 0);
 
-		vector.u = 1;
-		vector.v = 2;
+		it("Matrix.combine", function() {
+			expect(Matrix.combine(a, a)).toEqual(new Matrix(2, 2).set(28, 40, 60, 88));
+		});
 
-		console.log(vector + " expected " + new Vector2(1, 2));
-		console.log(vector.u + " expected 1");
-		console.log(vector.v + " expected 2");
+		it("Matrix.copy", function() {
+			expect(Matrix.copy(a)).toEqual(new Matrix(2, 2).set(2, 4, 6, 8));
+		});
 
-		vector['u'] = 2;
-		vector['v'] = 3;
+		it("Matrix.add", function() {
+			expect(Matrix.add(a, a)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
+		});
 
-		console.log(vector + " expected " + new Vector2(2, 3));
-		console.log(vector['u'] + " expected 2");
-		console.log(vector['v'] + " expected 3");
+		it("Matrix.sub", function() {
+			expect(Matrix.sub(a, a)).toEqual(new Matrix(2, 2).set(0, 0, 0, 0));
+		});
 
-		vector.s = 1;
-		vector.t = 2;
+		it("Matrix.mul", function() {
+			expect(Matrix.mul(a, a)).toEqual(new Matrix(2, 2).set(4, 16, 36, 64));
+		});
 
-		console.log(vector + " expected " + new Vector2(1, 2));
-		console.log(vector.s + " expected 1");
-		console.log(vector.t + " expected 2");
+		it("Matrix.div", function() {
+			expect(Matrix.div(a, a)).toEqual(new Matrix(2, 2).set(1, 1, 1, 1));
+		});
 
-		vector['s'] = 2;
-		vector['t'] = 3;
+		it("Matrix.scalarAdd", function() {
+			expect(Matrix.scalarAdd(a, 2)).toEqual(new Matrix(2, 2).set(4, 6, 8, 10));
+		});
 
-		console.log(vector + " expected " + new Vector2(2, 3));
-		console.log(vector['s'] + " expected 2");
-		console.log(vector['t'] + " expected 3");
-	}
+		it("Matrix.scalarSub", function() {
+			expect(Matrix.scalarSub(a, 2)).toEqual(new Matrix(2, 2).set(0, 2, 4, 6));
+		});
 
-	function testVector3() {
-		console.log("\nTesting Vector3\n");
+		it("Matrix.scalarMul", function() {
+			expect(Matrix.scalarMul(a, 2)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
+		});
 
-		var vector = new Vector3(1, 2, 3);
+		it("Matrix.scalarDiv", function() {
+			expect(Matrix.scalarDiv(a, 2)).toEqual(new Matrix(2, 2).set(1, 2, 3, 4));
+		});
 
-		vector[0] = 2;
-		vector[1] = 3;
-		vector[2] = 4;
+		it("Matrix.prototype.isOrthogonal", function() {
+			expect(a.isOrthogonal()).toEqual(false);
+			expect(b.isOrthogonal()).toEqual(true);
+		});
 
-		console.log(vector + " expected " + new Vector3(2, 3, 4));
-		console.log(vector[0] + " expected 2");
-		console.log(vector[1] + " expected 3");
-		console.log(vector[2] + " expected 4");
+		it("Matrix.prototype.isNormal", function() {
+			expect(a.isNormal()).toEqual(false);
+			expect(b.isNormal()).toEqual(true);
+		});
 
-		vector.x = 1;
-		vector.y = 2;
-		vector.z = 3;
+		it("Matrix.prototype.isOrthonormal", function() {
+			expect(a.isOrthonormal()).toEqual(false);
+			expect(b.isOrthonormal()).toEqual(true);
+		});
 
-		console.log(vector + " expected " + new Vector3(1, 2, 3));
-		console.log(vector.x + " expected 1");
-		console.log(vector.y + " expected 2");
-		console.log(vector.z + " expected 3");
+		it("Matrix.prototype.transpose", function() {
+			expect(b.transpose()).toEqual(new Matrix(2, 2).set(0, -1, 1, 0));
+		});
+	});
 
-		vector['x'] = 2;
-		vector['y'] = 3;
-		vector['z'] = 4;
+	describe("Matrix2x2", function() {
+		var a = new Matrix2x2(1, 2, 3, 4);
+		var b = new Matrix2x2(0, 1, -1, 0);
 
-		console.log(vector + " expected " + new Vector3(2, 3, 4));
-		console.log(vector['x'] + " expected 2");
-		console.log(vector['y'] + " expected 3");
-		console.log(vector['z'] + " expected 4");
+		it("Matrix2x2.combine", function() {
+			expect(Matrix2x2.combine(a, a)).toEqual(new Matrix2x2(7, 10, 15, 22));
+		});
 
-		vector.r = 1;
-		vector.g = 2;
-		vector.b = 3;
+		it("Matrix2x2.invert", function() {
+			expect(Matrix2x2.invert(a)).toEqual(new Matrix2x2(-2, 1, 1.5, -0.5));
+		});
 
-		console.log(vector + " expected " + new Vector3(1, 2, 3));
-		console.log(vector.r + " expected 1");
-		console.log(vector.g + " expected 2");
-		console.log(vector.b + " expected 3");
+		it("Matrix2x2.prototype.isOrthogonal", function() {
+			expect(a.isOrthogonal()).toEqual(false);
+			expect(b.isOrthogonal()).toEqual(true);
+		});
 
-		vector['r'] = 2;
-		vector['g'] = 3;
-		vector['b'] = 4;
+		it("Matrix2x2.prototype.isNormal", function() {
+			expect(a.isNormal()).toEqual(false);
+			expect(b.isNormal()).toEqual(true);
+		});
 
-		console.log(vector + " expected " + new Vector3(2, 3, 4));
-		console.log(vector['r'] + " expected 2");
-		console.log(vector['g'] + " expected 3");
-		console.log(vector['b'] + " expected 4");
-	}
+		it("Matrix2x2.prototype.isOrthonormal", function() {
+			expect(a.isOrthonormal()).toEqual(false);
+			expect(b.isOrthonormal()).toEqual(true);
+		});
 
-	function testVector4() {
-		console.log("\nTesting Vector4\n");
+		it("Matrix2x2.prototype.transpose", function() {
+			expect(b.transpose()).toEqual(new Matrix2x2(0, -1, 1, 0));
+		});
+	});
 
-		var vector = new Vector4(1, 2, 3, 4);
+	describe("Matrix3x3", function() {
+		var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		var b = new Matrix3x3(0, 0, 1, -1, 2, 0, 0, 1, -2);
+		var c = new Matrix3x3(0, -1, 0, 1, 0, 0, 0, 0, -1);
 
-		vector[0] = 2;
-		vector[1] = 3;
-		vector[2] = 4;
-		vector[3] = 5;
+		it("Matrix3x3.combine", function() {
+			expect(Matrix3x3.combine(a, a)).toEqual(new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
+		});
 
-		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
-		console.log(vector[0] + " expected 2");
-		console.log(vector[1] + " expected 3");
-		console.log(vector[2] + " expected 4");
-		console.log(vector[3] + " expected 5");
+		it("Matrix3x3.invert", function() {
+			expect(Matrix3x3.invert(b)).toEqual(new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
+		});
 
-		vector.x = 1;
-		vector.y = 2;
-		vector.z = 3;
-		vector.w = 4;
+		it("Matrix3x3.prototype.isOrthogonal", function() {
+			expect(b.isOrthogonal()).toEqual(false);
+			expect(c.isOrthogonal()).toEqual(true);
+		});
 
-		console.log(vector + " expected " + new Vector4(1, 2, 3, 4));
-		console.log(vector.x + " expected 1");
-		console.log(vector.y + " expected 2");
-		console.log(vector.z + " expected 3");
-		console.log(vector.w + " expected 4");
+		it("Matrix3x3.prototype.isNormal", function() {
+			expect(b.isNormal()).toEqual(false);
+			expect(c.isNormal()).toEqual(true);
+		});
 
-		vector['x'] = 2;
-		vector['y'] = 3;
-		vector['z'] = 4;
-		vector['w'] = 5;
+		it("Matrix3x3.prototype.isOrthonormal", function() {
+			expect(b.isOrthonormal()).toEqual(false);
+			expect(c.isOrthonormal()).toEqual(true);
+		});
 
-		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
-		console.log(vector['x'] + " expected 2");
-		console.log(vector['y'] + " expected 3");
-		console.log(vector['z'] + " expected 4");
-		console.log(vector['w'] + " expected 5");
+		it("Matrix3x3.prototype.transpose", function() {
+			expect(c.transpose()).toEqual(new Matrix3x3(0, 1, 0, -1, 0, 0, 0, 0, -1));
+		});
+	});
 
-		vector.r = 1;
-		vector.g = 2;
-		vector.b = 3;
-		vector.a = 4;
+	describe("Matrix4x4", function() {
+		var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+		var b = new Matrix4x4(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
+		var c = new Matrix4x4(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
 
-		console.log(vector + " expected " + new Vector4(1, 2, 3, 4));
-		console.log(vector.r + " expected 1");
-		console.log(vector.g + " expected 2");
-		console.log(vector.b + " expected 3");
-		console.log(vector.a + " expected 4");
+		it("Matrix4x4.combine", function() {
+			expect(Matrix4x4.combine(a, a)).toEqual(new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
+		});
 
-		vector['r'] = 2;
-		vector['g'] = 3;
-		vector['b'] = 4;
-		vector['a'] = 5;
+		it("Matrix4x4.invert", function() {
+			expect(Matrix4x4.invert(b)).toEqual(new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
+		});
 
-		console.log(vector + " expected " + new Vector4(2, 3, 4, 5));
-		console.log(vector['r'] + " expected 2");
-		console.log(vector['g'] + " expected 3");
-		console.log(vector['b'] + " expected 4");
-		console.log(vector['a'] + " expected 5");
-	}
+		it("Matrix4x4.prototype.isOrthogonal", function() {
+			expect(b.isOrthogonal()).toEqual(false);
+			expect(c.isOrthogonal()).toEqual(true);
+		});
 
-	function testMatrix() {
-		console.log("\nTesting Matrix\n");
+		it("Matrix4x4.prototype.isNormal", function() {
+			expect(b.isNormal()).toEqual(false);
+			expect(c.isNormal()).toEqual(true);
+		});
 
-		var matrix = new Matrix(2, 2).set(2, 4, 6, 8);
+		it("Matrix4x4.prototype.isOrthonormal", function() {
+			expect(b.isOrthonormal()).toEqual(false);
+			expect(c.isOrthonormal()).toEqual(true);
+		});
 
-		console.log("Matrix.combine: " + Matrix.combine(matrix, matrix) + " expected " + new Matrix(2, 2).set(28, 40, 60, 88));
-		console.log("Matrix.copy: " + Matrix.copy(matrix) + " expected " + new Matrix(2, 2).set(2, 4, 6, 8));
-		console.log("Matrix.add: " + Matrix.add(matrix, matrix) + " expected " + new Matrix(2, 2).set(4, 8, 12, 16));
-		console.log("Matrix.sub: " + Matrix.sub(matrix, matrix) + " expected " + new Matrix(2, 2).set(0, 0, 0, 0));
-		console.log("Matrix.mul: " + Matrix.mul(matrix, matrix) + " expected " + new Matrix(2, 2).set(4, 16, 36, 64));
-		console.log("Matrix.div: " + Matrix.div(matrix, matrix) + " expected " + new Matrix(2, 2).set(1, 1, 1, 1));
-		console.log("Matrix.scalarAdd: " + Matrix.scalarAdd(matrix, 2) + " expected " + new Matrix(2, 2).set(4, 6, 8, 10));
-		console.log("Matrix.scalarSub: " + Matrix.scalarSub(matrix, 2) + " expected " + new Matrix(2, 2).set(0, 2, 4, 6));
-		console.log("Matrix.scalarMul: " + Matrix.scalarMul(matrix, 2) + " expected " + new Matrix(2, 2).set(4, 8, 12, 16));
-		console.log("Matrix.scalarDiv: " + Matrix.scalarDiv(matrix, 2) + " expected " + new Matrix(2, 2).set(1, 2, 3, 4));
-		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
-		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected false");
-
-		matrix.set(0, 1, -1, 0);
-
-		console.log("Matrix.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
-		console.log("Matrix.isNormal: " + matrix.isNormal() + " expected true");
-		console.log("Matrix.transpose: " + matrix.transpose() + " expected " + new Matrix(2, 2).set(0, -1, 1, 0));
-	}
-
-	function testMatrix2x2() {
-		console.log("\nTesting Matrix2x2\n");
-
-		var matrix = new Matrix2x2(1, 2, 3, 4);
-
-		console.log("Matrix2x2.combine: " + Matrix2x2.combine(matrix, matrix) + " expected " + new Matrix2x2(7, 10, 15, 22));
-		console.log("Matrix2x2.invert: " + Matrix2x2.invert(matrix) + " expected " + new Matrix2x2(-2, 1, 1.5, -0.5));
-		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
-		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected false");
-
-		matrix.set(0, 1, -1, 0);
-
-		console.log("Matrix2x2.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
-		console.log("Matrix2x2.isNormal: " + matrix.isNormal() + " expected true");
-		console.log("Matrix2x2.transpose: " + matrix.transpose() + " expected " + new Matrix2x2(0, -1, 1, 0));
-	}
-
-	function testMatrix3x3() {
-		console.log("\nTesting Matrix3x3\n");
-
-		var matrix = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-		console.log("Matrix3x3.combine: " + Matrix3x3.combine(matrix, matrix) + " expected " + new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
-
-		matrix.set(0, 0, 1, -1, 2, 0, 0, 1, -2);
-
-		console.log("Matrix3x3.invert: " + Matrix3x3.invert(matrix) + " expected " + new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
-		console.log("Matrix3x3.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
-		console.log("Matrix3x3.isNormal: " + matrix.isNormal() + " expected false");
-
-		matrix.set(0, -1, 0, 1, 0, 0, 0, 0, -1);
-
-		console.log("Matrix3x3.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
-		console.log("Matrix3x3.isNormal: " + matrix.isNormal() + " expected true");
-		console.log("Matrix3x3.transpose: " + matrix.transpose() + " expected " + new Matrix3x3(0, 1, 0, -1, 0, 0, 0, 0, -1));
-	}
-
-	function testMatrix4x4() {
-		console.log("\nTesting Matrix4x4\n");
-
-		var matrix = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-
-		console.log("Matrix4x4.combine: " + Matrix4x4.combine(matrix, matrix) + " expected "
-			+ new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
-
-		matrix.set(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
-
-		console.log("Matrix4x4.invert: " + Matrix4x4.invert(matrix) + " expected "
-			+ new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
-		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected false");
-		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected false");
-
-		matrix.set(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
-
-		console.log("Matrix4x4.isOrthogonal: " + matrix.isOrthogonal() + " expected true");
-		console.log("Matrix4x4.isNormal: " + matrix.isNormal() + " expected true");
-		console.log("Matrix4x4.transpose: " + matrix.transpose() + " expected " + new Matrix4x4(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1));
-	}
+		it("Matrix4x4.prototype.transpose", function() {
+			expect(c.transpose()).toEqual(new Matrix4x4(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1));
+		});
+	});
 /*
 	(function() {
-		var jasmineEnv = jasmine.getEnv();
-		jasmineEnv.updateInterval = 250;
-		var htmlReporter = new jasmine.HtmlReporter();
-		jasmineEnv.addReporter(htmlReporter);
-		jasmineEnv.specFilter = function(spec) {
-			return htmlReporter.specFilter(spec);
-		};
-		jasmineEnv.execute();
+		var env = jasmine.getEnv();
+
+		env.addReporter(new jasmine.HtmlReporter());
+		env.execute();
 	})();
 */
 });
