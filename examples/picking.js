@@ -10,9 +10,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/scripts/BasicControlScript'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
-	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript) {
+		'goo/math/Vector2', 'goo/scripts/BasicControlScript'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent,
+	MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader,
+	JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2, BasicControlScript) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -53,11 +53,20 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var mouseDownX = event.pageX;
 			var mouseDownY = event.pageY;
 
-			var store = new Vector3();
-			camera.getWorldCoordinates(mouseDownX / goo.renderer.viewportWidth, mouseDownY / goo.renderer.viewportHeight, 0, store);
-			console.log(store.x + ',' + store.y + ',' + store.z);
-			camera.getWorldCoordinates(mouseDownX / goo.renderer.viewportWidth, mouseDownY / goo.renderer.viewportHeight, 1, store);
-			console.log(store.x + ',' + store.y + ',' + store.z);
+			var worldPos = new Vector3();
+			var screenPos = new Vector2();
+
+			camera.getWorldCoordinates(mouseDownX, mouseDownY, goo.renderer.viewportWidth, goo.renderer.viewportHeight, 0, worldPos);
+			console.log('z=0, screen coords: ' + mouseDownX + ',' + mouseDownY);
+			console.log('z=0, world coords: ' + worldPos.x + ',' + worldPos.y + ',' + worldPos.z);
+			camera.getScreenCoordinates(worldPos, goo.renderer.viewportWidth, goo.renderer.viewportHeight, screenPos);
+			console.log('z=0, calculated screen coords: ' + screenPos.x + ',' + screenPos.y);
+
+			camera.getWorldCoordinates(mouseDownX, mouseDownY, goo.renderer.viewportWidth, goo.renderer.viewportHeight, 1, worldPos);
+			console.log('z=1, screen coords: ' + mouseDownX + ',' + mouseDownY);
+			console.log('z=1, world coords: ' + worldPos.x + ',' + worldPos.y + ',' + worldPos.z);
+			camera.getScreenCoordinates(worldPos, goo.renderer.viewportWidth, goo.renderer.viewportHeight, screenPos);
+			console.log('z=1, calculated screen coords: ' + screenPos.x + ',' + screenPos.y);
 		}, false);
 	}
 

@@ -387,64 +387,64 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		var planeNormal = new Vector3();
 
 		// left plane
-		planeNormal.x = (this._left.x * this._coeffLeft[0]);
-		planeNormal.y = (this._left.y * this._coeffLeft[0]);
-		planeNormal.z = (this._left.z * this._coeffLeft[0]);
+		planeNormal.x = this._left.x * this._coeffLeft[0];
+		planeNormal.y = this._left.y * this._coeffLeft[0];
+		planeNormal.z = this._left.z * this._coeffLeft[0];
 		planeNormal.add([this._direction.x * this._coeffLeft[1], this._direction.y * this._coeffLeft[1], this._direction.z * this._coeffLeft[1]]);
 		this._worldPlane[Camera.LEFT_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.LEFT_PLANE].constant = (this.translation.dot(planeNormal));
+		this._worldPlane[Camera.LEFT_PLANE].constant = this.translation.dot(planeNormal);
 
 		// right plane
-		planeNormal.x = (this._left.x * this._coeffRight[0]);
-		planeNormal.y = (this._left.y * this._coeffRight[0]);
-		planeNormal.z = (this._left.z * this._coeffRight[0]);
+		planeNormal.x = this._left.x * this._coeffRight[0];
+		planeNormal.y = this._left.y * this._coeffRight[0];
+		planeNormal.z = this._left.z * this._coeffRight[0];
 		planeNormal.add([this._direction.x * this._coeffRight[1], this._direction.y * this._coeffRight[1], this._direction.z * this._coeffRight[1]]);
 		this._worldPlane[Camera.RIGHT_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.RIGHT_PLANE].constant = (this.translation.dot(planeNormal));
+		this._worldPlane[Camera.RIGHT_PLANE].constant = this.translation.dot(planeNormal);
 
 		// bottom plane
-		planeNormal.x = (this._up.x * this._coeffBottom[0]);
-		planeNormal.y = (this._up.y * this._coeffBottom[0]);
-		planeNormal.z = (this._up.z * this._coeffBottom[0]);
+		planeNormal.x = this._up.x * this._coeffBottom[0];
+		planeNormal.y = this._up.y * this._coeffBottom[0];
+		planeNormal.z = this._up.z * this._coeffBottom[0];
 		planeNormal
 			.add([this._direction.x * this._coeffBottom[1], this._direction.y * this._coeffBottom[1], this._direction.z * this._coeffBottom[1]]);
 		this._worldPlane[Camera.BOTTOM_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.BOTTOM_PLANE].constant = (this.translation.dot(planeNormal));
+		this._worldPlane[Camera.BOTTOM_PLANE].constant = this.translation.dot(planeNormal);
 
 		// top plane
-		planeNormal.x = (this._up.x * this._coeffTop[0]);
-		planeNormal.y = (this._up.y * this._coeffTop[0]);
-		planeNormal.z = (this._up.z * this._coeffTop[0]);
+		planeNormal.x = this._up.x * this._coeffTop[0];
+		planeNormal.y = this._up.y * this._coeffTop[0];
+		planeNormal.z = this._up.z * this._coeffTop[0];
 		planeNormal.add([this._direction.x * this._coeffTop[1], this._direction.y * this._coeffTop[1], this._direction.z * this._coeffTop[1]]);
 		this._worldPlane[Camera.TOP_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.TOP_PLANE].constant = (this.translation.dot(planeNormal));
+		this._worldPlane[Camera.TOP_PLANE].constant = this.translation.dot(planeNormal);
 
 		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
-				this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].contant + this._frustumLeft);
-				this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].contant - this._frustumRight);
+				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].contant + this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].contant - this._frustumRight;
 			} else {
-				this._worldPlane[Camera.LEFT_PLANE].constant = (this._worldPlane[Camera.LEFT_PLANE].contant - this._frustumLeft);
-				this._worldPlane[Camera.RIGHT_PLANE].constant = (this._worldPlane[Camera.RIGHT_PLANE].contant + this._frustumRight);
+				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].contant - this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].contant + this._frustumRight;
 			}
 
 			if (this._frustumBottom > this._frustumTop) {
-				this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].contant + this._frustumTop);
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].contant - this._frustumBottom);
+				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].contant + this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].contant - this._frustumBottom;
 			} else {
-				this._worldPlane[Camera.TOP_PLANE].constant = (this._worldPlane[Camera.TOP_PLANE].contant - this._frustumTop);
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = (this._worldPlane[Camera.BOTTOM_PLANE].contant + this._frustumBottom);
+				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].contant - this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].contant + this._frustumBottom;
 			}
 		}
 
 		// far plane
 		planeNormal.copy(this._direction).invert();
 		this._worldPlane[Camera.FAR_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.FAR_PLANE].constant = (-(dirDotLocation + this._frustumFar));
+		this._worldPlane[Camera.FAR_PLANE].constant = -(dirDotLocation + this._frustumFar);
 
 		// near plane
 		this._worldPlane[Camera.NEAR_PLANE].normal.copy(this._direction);
-		this._worldPlane[Camera.NEAR_PLANE].constant = (dirDotLocation + this._frustumNear);
+		this._worldPlane[Camera.NEAR_PLANE].constant = dirDotLocation + this._frustumNear;
 
 		this._updateMVMatrix = true;
 		this._updateMVPMatrix = true;
@@ -504,21 +504,23 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Calculate a Pick Ray using the given screen position at the near plane of this camera and the camera's position in space.
 	 * 
-	 * @param screenX the x position in normalized coordinates (0-1) [x / width]
-	 * @param screenY the y position in normalized coordinates (0-1) [y / height]
+	 * @param screenX the screen x position
+	 * @param screenY the screen y position
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
 	 * @param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
 	 *            systems.
 	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
 	 * @return the resulting Ray.
 	 */
-	Camera.prototype.getPickRay = function(screenX, screenY, store) {
+	Camera.prototype.getPickRay = function(screenX, screenY, screenWidth, screenHeight, store) {
 		if (!store) {
 			store = new Ray();
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenY, 0, origin);
-		this.getWorldCoordinates(screenX, screenY, 0.3, direction).sub(origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, origin);
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
 		return result;
@@ -527,21 +529,23 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 * 
-	 * @param screenX the x position in normalized coordinates (0-1) [x / width]
-	 * @param screenY the y position in normalized coordinates (0-1) [y / height]
+	 * @param screenX the screen x position
+	 * @param screenY the screen y position
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
 	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @return a vector containing the world coordinates.
 	 */
-	Camera.prototype.getWorldCoordinates = function(screenX, screenY, zDepth, store) {
+	Camera.prototype.getWorldCoordinates = function(screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
 			store = new Vector3();
 		}
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
-		position.set((screenX - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenY - this._viewPortBottom)
-			/ (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
+		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1,
+			(screenY / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPre(position);
 		position.scalarMul(1.0 / position.w);
 		store.x = position.x;
@@ -555,16 +559,18 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * Converts a position in world coordinate space to an x,y screen position and depth value using the current settings of this camera.
 	 * 
 	 * @param worldPos the position in space to retrieve screen coordinates for.
+	 * @param screenWidth the screen width
+	 * @param screenHeight the screen height
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @return a vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
 	 */
-	Camera.prototype.getScreenCoordinates = function(worldPosition, store) {
-		store = getNormalizedDeviceCoordinates(worldPosition, store);
+	Camera.prototype.getScreenCoordinates = function(worldPosition, screenWidth, screenHeight, store) {
+		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
-		store.x = ((store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * getWidth());
-		store.y = ((store.y + 1) * (this._viewPortTop - this._viewPortBottom) / 2 * getHeight());
-		store.z = ((store.z + 1) / 2);
+		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
+		store.y = (store.y + 1) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
+		store.z = (store.z + 1) / 2;
 
 		return store;
 	};
@@ -578,27 +584,27 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * @return a vector containing the x,y,z frustum position
 	 */
 	Camera.prototype.getFrustumCoordinates = function(worldPosition, store) {
-		store = getNormalizedDeviceCoordinates(worldPosition, store);
+		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
-		store.x = ((store.x + 1) * (this._frustumRight - this._frustumLeft) / 2 + this._frustumLeft);
-		store.y = ((store.y + 1) * (this._frustumTop - this._frustumBottom) / 2 + this._frustumBottom);
-		store.z = ((store.z + 1) * (this._frustumFar - this._frustumNear) / 2 + this._frustumNear);
+		store.x = (store.x + 1) * (this._frustumRight - this._frustumLeft) / 2 + this._frustumLeft;
+		store.y = (store.y + 1) * (this._frustumTop - this._frustumBottom) / 2 + this._frustumBottom;
+		store.z = (store.z + 1) * (this._frustumFar - this._frustumNear) / 2 + this._frustumNear;
 
 		return store;
 	};
 
 	Camera.prototype.getNormalizedDeviceCoordinates = function(worldPosition, store) {
-		if (store === null) {
+		if (!store) {
 			store = new Vector3();
 		}
 		this.checkModelViewProjection();
 		var position = new Vector4();
 		position.set(worldPosition.x, worldPosition.y, worldPosition.z, 1);
-		this.modelViewProjection.applyPre(position, position);
-		position.multiplyLocal(1.0 / position.getW());
-		store.x = (position.x);
-		store.y = (position.y);
-		store.z = (position.z);
+		this.modelViewProjection.applyPre(position);
+		position.scalarMul(1.0 / position.w);
+		store.x = position.x;
+		store.y = position.y;
+		store.z = position.z;
 
 		return store;
 	};
@@ -641,7 +647,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	Camera.prototype.checkInverseModelViewProjection = function() {
 		if (this._updateInverseMVPMatrix) {
 			this.checkModelViewProjection();
-			this.modelViewProjection.invert(this.modelViewProjectionInverse);
+			Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
 			this._updateInverseMVPMatrix = false;
 		}
 	};
