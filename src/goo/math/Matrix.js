@@ -1,4 +1,4 @@
-define([], function() {
+define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
 	/**
@@ -459,6 +459,31 @@ define([], function() {
 
 	Matrix.prototype.copy = function(source) {
 		return Matrix.copy(source, this);
+	};
+
+	/**
+	 * @description Applies the matrix to an N-dimensional vector.
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @param {Float} padding Padding value for missing vector components. (optional)
+	 * @returns {Vector} Transformed vector.
+	 */
+
+	Matrix.prototype.applyTo = function(rhs, padding) {
+		var target = new Vector(rhs.data.length);
+
+		for ( var r = 0; r < Math.min(this.rows, rhs.data.length); r++) {
+			for ( var c = 0; c < Math.min(this.cols, rhs.data.length); c++) {
+				target.data[r] += this.data[c*this.rows + r]*rhs.data[r];
+			}
+
+			if (padding) {
+				for ( var c = rhs.data.length; c < this.cols; c++) {
+					target.data[r] += this.data[c*this.rows + r]*padding;
+				}
+			}
+		}
+
+		return target;
 	};
 
 	/**

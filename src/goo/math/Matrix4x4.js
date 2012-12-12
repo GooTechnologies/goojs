@@ -685,12 +685,12 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
-	 * @description Sets the rotational part of the matrix from rotational angles. Order convention is x followed by y followed by z.
-	 * @param {Vector3} angles Rotational angles.
+	 * @description Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
+	 * @param {Vector3} angles Rotational angles in radians.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setRotationFromAngles = function(angles) {
+	Matrix4x4.prototype.setRotationFromVector = function(angles) {
 		var sx = Math.sin(angles.x);
 		var cx = Math.cos(angles.x);
 		var sy = Math.sin(angles.y);

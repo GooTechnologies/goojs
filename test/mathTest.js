@@ -261,6 +261,10 @@ define(
 		it("Matrix.prototype.transpose", function() {
 			expect(b.transpose()).toEqual(new Matrix(2, 2).set(0, -1, 1, 0));
 		});
+
+		it("Matrix.prototype.applyTo", function() {
+			expect(a.applyTo(new Vector(1).set(2), 1)).toEqual(new Vector(1).set(10));
+		});
 	});
 
 	describe("Matrix2x2", function() {

@@ -290,5 +290,45 @@ define(["goo/math/Vector"], function(Vector) {
 		return Vector4.scalarDiv(this, rhs, this);
 	};
 
+	/**
+	 * @description Extracts the rotation from a matrix. Order convention is x followed by y followed by z.
+	 * @param {Matrix4x4} matrix Rotational matrix.
+	 * @returns {Vector4} Self for chaining.
+	 */
+
+	Vector4.prototype.extractRotationFromMatrix = function(matrix) {
+		/*
+		var l = quaternion.lengthSquared();
+
+		l = (l > 0.0) ? 2.0 / l : 0.0;
+
+		var a = quaternion.x * l;
+		var b = quaternion.y * l;
+		var c = quaternion.z * l;
+
+		var wa = quaternion.w * a;
+		var wb = quaternion.w * b;
+		var wc = quaternion.w * c;
+		var xa = quaternion.x * a;
+		var xb = quaternion.x * b;
+		var xc = quaternion.x * c;
+		var yb = quaternion.y * b;
+		var yc = quaternion.y * c;
+		var zc = quaternion.z * c;
+
+		this.e00 = 1.0 - yb - zc;
+		this.e10 = xb + wc;
+		this.e20 = xc - wb;
+		this.e01 = xb - wc;
+		this.e11 = 1.0 - xa - zc;
+		this.e21 = yc + wa;
+		this.e02 = xc + wb;
+		this.e12 = yc - wa;
+		this.e22 = 1.0 - xa - yb;
+		*/
+
+		return this;
+	};
+
 	return Vector4;
 });

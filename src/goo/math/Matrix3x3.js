@@ -536,19 +536,31 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
+	/**
+	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Vector3} Transformed right-hand side vector.
+	 */
+
 	// TODO: incorporate these better and possibly to the base class
-	Matrix3x3.prototype.applyPost = function(vec) {
-		var x = vec.x;
-		var y = vec.y;
-		var z = vec.z;
+	Matrix3x3.prototype.applyPost = function(rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		var d = this;
-		vec.x = d.e00 * x + d.e01 * y + d.e02 * z;
-		vec.y = d.e10 * x + d.e11 * y + d.e12 * z;
-		vec.z = d.e20 * x + d.e21 * y + d.e22 * z;
+		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
+		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
+		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
 
-		return vec;
+		return rhs;
 	};
+
+	/**
+	 * @description Post-multiplies the matrix ("before") with a scaling vector.
+	 * @param {Vector3} vec Vector on the right-hand side.
+	 * @result {Matrix3x3} result Storage matrix.
+	 * @returns {Matrix3x3} Storage matrix.
+	 */
 
 	Matrix3x3.prototype.multiplyDiagonalPost = function(vec, result) {
 		var x = vec.x;
@@ -570,13 +582,21 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return result;
 	};
 
+	/**
+	 * @description Sets the matrix from rotational angles.
+	 * @param {Float} yaw Yaw angle in radians.
+	 * @param {Float} roll Roll angle in radians.
+	 * @param {Float} pitch Pitch angle in radians.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+
 	Matrix3x3.prototype.fromAngles = function(yaw, roll, pitch) {
+		var cy = Math.cos(yaw);
+		var sy = Math.sin(yaw);
 		var ch = Math.cos(roll);
 		var sh = Math.sin(roll);
 		var cp = Math.cos(pitch);
 		var sp = Math.sin(pitch);
-		var cy = Math.cos(yaw);
-		var sy = Math.sin(yaw);
 
 		this.e00 = ch * cp;
 		this.e01 = sh * sy - ch * sp * cy;
@@ -627,6 +647,13 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return this;
 	};
 
+	/**
+	 * @description Sets the matrix to look in a specific direction.
+	 * @param {Vector3} direction Direction vector.
+	 * @param {Vector3} up Up vector.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+
 	Matrix3x3.prototype.lookAt = function(direction, up) {
 		var xAxis = new Vector3();
 		var yAxis = new Vector3();
@@ -651,13 +678,29 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 		return this;
 	};
 
+	/**
+	 * @description Sets the matrix from a quaternion.
+	 * @param {Quaternion} quaternion Rotational quaternion.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+
 	Matrix3x3.prototype.copyQuaternion = function(quaternion) {
 		return quaternion.toRotationMatrix(this);
 	};
 
+	/**
+	 * @description Constructs a clone of the matrix.
+	 * @returns {Matrix3x3} Cloned matrix.
+	 */
+
 	Matrix3x3.prototype.clone = function() {
 		return new Matrix3x3(this.data);
 	};
+
+	/**
+	 * @description Sets the matrix to identity.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
 
 	Matrix3x3.prototype.setIdentity = function() {
 		this.set(Matrix3x3.IDENTITY);
