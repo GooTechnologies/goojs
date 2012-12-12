@@ -1,6 +1,10 @@
 define(["goo/math/Vector"], function(Vector) {
 	"use strict";
 
+	// REVIEW: In general, search for "cannot be used for storage".
+	// IMO, such cases should throw an exception, not be automatically fixed.
+	// The auto-fixing behaviour is too unexpected.
+
 	/**
 	 * @name Matrix
 	 * @class Matrix with RxC components.
@@ -268,6 +272,7 @@ define(["goo/math/Vector"], function(Vector) {
 		}
 
 		if (clean === false) {
+			// REVIEW: Why not an exception?
 			console.warn("[Matrix.scalarDiv] Attempted to divide by zero!");
 		}
 
@@ -306,6 +311,7 @@ define(["goo/math/Vector"], function(Vector) {
 
 			return target;
 		} else {
+			// REVIEW: Why not an exception?
 			console.warn("[Matrix.combine] Attempted to combine two non-matching matrices!");
 		}
 	};
@@ -442,6 +448,7 @@ define(["goo/math/Vector"], function(Vector) {
 		return Matrix.combine(this, rhs, this);
 	};
 
+	// REVIEW: Documentation incorrect: Does not return self if matrix isn't square.
 	/**
 	 * @description Transposes the matrix (exchanges rows and columns).
 	 * @returns {Matrix} Self for chaining.
@@ -451,6 +458,7 @@ define(["goo/math/Vector"], function(Vector) {
 		return Matrix.transpose(this, this);
 	};
 
+	// REVIEW: Documentation incorrect: Does not return self if matrices have different sizes.
 	/**
 	 * @description Copies component values from another matrix.
 	 * @param {Matrix} source Source matrix.
@@ -552,6 +560,7 @@ define(["goo/math/Vector"], function(Vector) {
 					sum += this.data[oa + r] * this.data[ob + r];
 				}
 
+				// REVIEW: Do we need range check with an epsilon here? BTW, isn't this the same as sum != 0.0?
 				if (sum < 0.0 || sum > 0.0) {
 					return false;
 				}
@@ -575,6 +584,7 @@ define(["goo/math/Vector"], function(Vector) {
 				sum += this.data[o + r] * this.data[o + r];
 			}
 
+			// REVIEW: Do we need range check with an epsilon here?
 			if (sum < 1.0 || sum > 1.0) {
 				return false;
 			}

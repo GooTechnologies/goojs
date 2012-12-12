@@ -310,6 +310,7 @@ define(
 			expect(b.isOrthonormal()).toEqual(true);
 		});
 
+		// REVIEW: Missing test for what happens when the matrix isn't square
 		it("Matrix.prototype.transpose", function() {
 			expect(b.transpose()).toEqual(new Matrix(2, 2).set(0, -1, 1, 0));
 		});

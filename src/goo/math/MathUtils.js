@@ -10,6 +10,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'], functio
 	MathUtils.HALF_PI = 0.5 * Math.PI;
 	MathUtils.TWO_PI = 2.0 * Math.PI;
 
+	// REVIEW: Confusing name, percent sounds like range is 0..100
 	MathUtils.lerp = function(percent, startValue, endValue) {
 		if (startValue == endValue) {
 			return startValue;
