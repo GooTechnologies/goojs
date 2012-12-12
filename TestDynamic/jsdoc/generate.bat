@@ -1,1 +1,0 @@
-java -jar jsrun.jar app/run.js -r -a -p "..\WebContent\goo" -t=templates/jsdoc
