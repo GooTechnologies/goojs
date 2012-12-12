@@ -685,107 +685,28 @@ define(["goo/math/Matrix"], function(Matrix) {
 	};
 
 	/**
-	 * @description Sets the rotational part of the matrix from rotational angles.
+	 * @description Sets the rotational part of the matrix from rotational angles. Order convention is x followed by y followed by z.
 	 * @param {Vector3} angles Rotational angles.
-	 * @param {String} order Order convention. ("xyz" equals x followed by y followed by z)
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setRotationFromAngles = function(angles, order) {
-		var s1 = Math.sin(angles.x);
-		var c1 = Math.cos(angles.x);
-		var s2 = Math.sin(angles.y);
-		var c2 = Math.cos(angles.y);
-		var s3 = Math.sin(angles.z);
-		var c3 = Math.cos(angles.z);
+	Matrix4x4.prototype.setRotationFromAngles = function(angles) {
+		var sx = Math.sin(angles.x);
+		var cx = Math.cos(angles.x);
+		var sy = Math.sin(angles.y);
+		var cy = Math.cos(angles.y);
+		var sz = Math.sin(angles.z);
+		var cz = Math.cos(angles.z);
 
-		switch (order) {
-			default:
-			case "XYZ":
-			case "xyz": {
-				this.e00 = c1 * c2;
-				this.e10 = c2 * s1;
-				this.e20 = 0.0 - s2;
-				this.e01 = c1 * s2 * s3 - c3 * s1;
-				this.e11 = c1 * c3 + s1 * s2 * s3;
-				this.e21 = c2 * s3;
-				this.e02 = s1 * s3 + c1 * c3 * s2;
-				this.e12 = c3 * s1 * s2 - c1 * s3;
-				this.e22 = c2 * c3;
-
-				break;
-			}
-			case "XZY":
-			case "xzy": {
-				this.e00 = c1 * c2;
-				this.e10 = s2;
-				this.e20 = 0.0 - c2 * s1;
-				this.e01 = s1 * s3 - c1 * c3 * s2;
-				this.e11 = c2 * c3;
-				this.e21 = c1 * s3 + c3 * s1 * s2;
-				this.e02 = c3 * s1 + c1 * s2 * s3;
-				this.e12 = 0.0 - c2 * s3;
-				this.e22 = c1 * c3 - s1 * s2 * s3;
-
-				break;
-			}
-			case "YZX":
-			case "yzx": {
-				this.e00 = c2 * c3;
-				this.e10 = s1 * s3 + c1 * c3 * s2;
-				this.e20 = c3 * s1 * s2 - c1 * s3;
-				this.e01 = 0.0 - s2;
-				this.e11 = c1 * c2;
-				this.e21 = c2 * s1;
-				this.e02 = c2 * s3;
-				this.e12 = c1 * s2 * s3 - c3 * s1;
-				this.e22 = c1 * c3 + s1 * s2 * s3;
-
-				break;
-			}
-			case "YXZ":
-			case "yxz": {
-				this.e00 = c1 * c3 - s1 * s2 * s3;
-				this.e10 = c3 * s1 + c1 * s2 * s3;
-				this.e20 = 0.0 - c2 * s3;
-				this.e01 = 0.0 - c2 * s1;
-				this.e11 = c1 * c2;
-				this.e21 = s2;
-				this.e02 = c1 * s3 + c3 * s1 * s2;
-				this.e12 = s1 * s3 - c1 * c3 * s2;
-				this.e22 = c2 * c3;
-
-				break;
-			}
-			case "ZXY":
-			case "zxy": {
-				this.e00 = c1 * c3 + s1 * s2 * s3;
-				this.e10 = c2 * s3;
-				this.e20 = c1 * s2 * s3 - c3 * s1;
-				this.e01 = c3 * s1 * s2 - c1 * s3;
-				this.e11 = c2 * c3;
-				this.e21 = s1 * s3 + c1 * c3 * s2;
-				this.e02 = c2 * s1;
-				this.e12 = 0.0 - s2;
-				this.e22 = c1 * c2;
-
-				break;
-			}
-			case "ZYX":
-			case "zyx": {
-				this.e00 = c2 * c3;
-				this.e10 = c1 * s3 + c3 * s1 * s2;
-				this.e20 = s1 * s3 - c1 * c3 * s2;
-				this.e01 = 0.0 - c2 * s3;
-				this.e11 = c1 * c3 - s1 * s2 * s3;
-				this.e21 = c3 * s1 + c1 * s2 * s3;
-				this.e02 = s2;
-				this.e12 = 0.0 - c2 * s1;
-				this.e22 = c1 * c2;
-
-				break;
-			}
-		}
+		this.e00 = cz * cy;
+		this.e10 = sz * cy;
+		this.e20 = 0.0 - sy;
+		this.e01 = cz * sy * sx - sz * cx;
+		this.e11 = sz * sy * sx + cz * cx;
+		this.e21 = cy * sx;
+		this.e02 = cz * sy * cx + sz * sx;
+		this.e12 = sz * sy * cx - cz * sx;
+		this.e22 = cy * cx;
 
 		return this;
 	};
@@ -850,102 +771,122 @@ define(["goo/math/Matrix"], function(Matrix) {
 
 	Matrix4x4.prototype.setScale = function(scale) {
 		this.e00 *= scale.x;
-		this.e10 *= scale.x;
-		this.e20 *= scale.x;
-		this.e30 *= scale.x;
-		this.e01 *= scale.y;
+		this.e10 *= scale.y;
+		this.e20 *= scale.z;
+		this.e01 *= scale.x;
 		this.e11 *= scale.y;
-		this.e21 *= scale.y;
-		this.e31 *= scale.y;
-		this.e02 *= scale.z;
-		this.e12 *= scale.z;
+		this.e21 *= scale.z;
+		this.e02 *= scale.x;
+		this.e12 *= scale.y;
 		this.e22 *= scale.z;
-		this.e32 *= scale.z;
 
 		return this;
 	};
 
 	/**
-	 * Multiplies the given vector by this matrix (v * M). If supplied, the result is stored into the supplied "store" vector.
-	 * 
-	 * @param vector the vector to multiply this matrix by.
-	 * @param store the vector to store the result in. If store is null, a new vector is created. Note that it IS safe for vector and store to be the
-	 *            same object.
-	 * @return the store vector, or a new vector if store is null.
-	 * @throws NullPointerException if vector is null
+	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = (x*M)^T)
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
-	Matrix4x4.prototype.applyPre = function(vec4) {
-		var x = vec4.x;
-		var y = vec4.y;
-		var z = vec4.z;
-		var w = vec4.w;
 
-		vec4.x = this.e00 * x + this.e10 * y + this.e20 * z + w * this.e30;
-		vec4.y = this.e01 * x + this.e11 * y + this.e21 * z + w * this.e31;
-		vec4.z = this.e02 * x + this.e12 * y + this.e22 * z + w * this.e32;
-		vec4.w = this.e03 * x + this.e13 * y + this.e23 * z + w * this.e33;
+	// REVIEW: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector) and the matrix is applied after the vector.
+	Matrix4x4.prototype.applyPre = function(rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
+		var w = rhs.w;
 
-		return vec4;
+		rhs.x = this.e00 * x + this.e10 * y + this.e20 * z + this.e30 * w;
+		rhs.y = this.e01 * x + this.e11 * y + this.e21 * z + this.e31 * w;
+		rhs.z = this.e02 * x + this.e12 * y + this.e22 * z + this.e32 * w;
+		rhs.w = this.e03 * x + this.e13 * y + this.e23 * z + this.e33 * w;
+
+		return rhs;
 	};
 
 	/**
-	 * Multiplies the given vector by this matrix (M * v). If supplied, the result is stored into the supplied "store" vector.
-	 * 
-	 * @param vector the vector to multiply this matrix by.
-	 * @param store the vector to store the result in. If store is null, a new vector is created. Note that it IS safe for vector and store to be the
-	 *            same object.
-	 * @return the store vector, or a new vector if store is null.
-	 * @throws NullPointerException if vector is null
+	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = M*x)
+	 * @param {Vector4} rhs Vector on the right-hand side.
+	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
-	Matrix4x4.prototype.applyPost = function(vec4) {
-		var x = vec4.x;
-		var y = vec4.y;
-		var z = vec4.z;
-		var w = vec4.w;
 
-		vec4.x = this.e00 * x + this.e01 * y + this.e02 * z + w * this.e03;
-		vec4.y = this.e10 * x + this.e11 * y + this.e12 * z + w * this.e13;
-		vec4.z = this.e20 * x + this.e21 * y + this.e22 * z + w * this.e23;
-		vec4.w = this.e30 * x + this.e31 * y + this.e32 * z + w * this.e33;
+	Matrix4x4.prototype.applyPost = function(rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
+		var w = rhs.w;
 
-		return vec4;
+		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03 * w;
+		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13 * w;
+		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23 * w;
+		rhs.w = this.e30 * x + this.e31 * y + this.e32 * z + this.e33 * w;
+
+		return rhs;
 	};
 
-	Matrix4x4.prototype.applyPostPoint = function(vec3) {
-		var x = vec3.x;
-		var y = vec3.y;
-		var z = vec3.z;
+	/**
+	 * @description Applies the matrix (rotation, scale, translation) to a three-dimensional vector.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Vector3} Transformed right-hand side vector.
+	 */
 
-		vec3.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03;
-		vec3.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13;
-		vec3.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23;
+	Matrix4x4.prototype.applyPostPoint = function(rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		return vec3;
+		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03;
+		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13;
+		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23;
+
+		return rhs;
 	};
 
-	Matrix4x4.prototype.applyPostVector = function(vec3) {
-		var x = vec3.x;
-		var y = vec3.y;
-		var z = vec3.z;
+	/**
+	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * @param {Vector3} rhs Vector on the right-hand side.
+	 * @returns {Vector3} Transformed right-hand side vector.
+	 */
 
-		vec3.x = this.e00 * x + this.e01 * y + this.e02 * z;
-		vec3.y = this.e10 * x + this.e11 * y + this.e12 * z;
-		vec3.z = this.e20 * x + this.e21 * y + this.e22 * z;
+	Matrix4x4.prototype.applyPostVector = function(rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		return vec3;
+		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
+		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
+		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
+
+		return rhs;
 	};
+
+	/**
+	 * @description Constructs a clone of the matrix.
+	 * @returns {Matrix4x4} Cloned matrix.
+	 */
 
 	Matrix4x4.prototype.clone = function() {
 		return new Matrix4x4(this.data);
 	};
 
+	/**
+	 * @description Sets the matrix to identity.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
 	Matrix4x4.prototype.setIdentity = function() {
 		return this.set(Matrix4x4.IDENTITY);
 	};
 
+	/**
+	 * @description Compares two matrices with an absolute tolerance of 0.0001.
+	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
+	 * @returns {Boolean} True if equal.
+	 */
+
 	Matrix4x4.prototype.equals = function(rhs) {
 		for ( var i = 0; i < 16; i++) {
-			if (this.data[i] - rhs.data[i] >= 0.0001) {
+			if (Math.abs(this.data[i] - rhs.data[i]) > 0.0001) {
 				return false;
 			}
 		}
