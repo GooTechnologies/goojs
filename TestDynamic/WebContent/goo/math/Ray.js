@@ -19,7 +19,8 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 		if (polygonVertices.length == 3) {
 			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], locationStore, doPlanar);
 		} else if (polygonVertices.length == 4) {
-			return intersectsQuad(polygonVertices[0], polygonVertices[1], polygonVertices[2], polygonVertices[3], locationStore, doPlanar);
+			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], locationStore, doPlanar)
+				|| intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], locationStore, doPlanar);
 		}
 		return false;
 	};
