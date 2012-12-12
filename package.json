@@ -1,13 +1,23 @@
 {
   "name": "goojs",
   "version": "0.1.0",
+  "author": "Goo Technologies AB <info@gootechnologies.com>", 
+  "description": "The Goo Javascript WebGL Engine.", 
+  "homepage": "http://www.gootechnologies.com/",
+  "licenses": [
+    {
+        "type": "Proprietary",
+        "url": "http://www.gootechnologies.com/"
+    }
+  ],
   "dependencies" : {
     "requirejs" : ">=2.1.2"
   },
   "devDependencies": {
     "coffee-script": "1.4.0",
     "testacular": ">= 0.5.2",
-    "jsdoc": "git://github.com/jsdoc3/jsdoc.git"
+    "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "grunt-testacular": "0.2.x"
   },
   "engines": {
     "node": ">=0.8.2"
