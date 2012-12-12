@@ -1,7 +1,7 @@
 require({
-    baseUrl: "./",
-    paths: {
-        goo: "../goo",
+    baseUrl : "./",
+    paths : {
+        goo : "../src/goo",
     }
 });
 require(["goo/math/Vector", "goo/math/Vector2", "goo/math/Vector3", "goo/math/Vector4", "goo/math/Matrix", "goo/math/Matrix2x2",

@@ -1,7 +1,7 @@
 require({
-    baseUrl: "./",
-    paths: {
-        goo: "../goo",
+    baseUrl : "./",
+    paths : {
+        goo : "../src/goo",
     }
 });
 require(
