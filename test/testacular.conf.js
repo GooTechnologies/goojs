@@ -14,7 +14,7 @@ files = [
   REQUIRE_ADAPTER,
   'test/main-test.js',
   {pattern: 'test/**/*.js', included: false},
-  {pattern: 'goo/**/*.js', included: false}
+  {pattern: 'src/goo/**/*.js', included: false}
 ];
 
 
