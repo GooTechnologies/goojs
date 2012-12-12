@@ -1,0 +1,11 @@
+{
+  "name": "goojs",
+  "version": "0.1.0",
+  "dependencies" : {
+    "requirejs" : ">=2.1.2"
+  },
+  "devDependencies": {
+    "coffee-script": "1.4.0",
+    "testacular": ">= 0.5.2"
+  }
+}
