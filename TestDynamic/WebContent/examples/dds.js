@@ -1,8 +1,8 @@
 require({
-    baseUrl: "./",
-    paths: {
-        goo: "../goo",
-    }
+	baseUrl : "./",
+	paths : {
+		goo : "../goo",
+	}
 });
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
@@ -17,6 +17,30 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	"use strict";
 
 	var resourcePath = "../resources";
+
+	function createBox(size, x, y, textureUrl, goo) {
+		var box = ShapeCreator.createBoxEntity(goo.world, size, size, size, 1, 1);
+		var texture = new TextureCreator({
+			verticalFlip : true
+		}).loadTexture2D(resourcePath + textureUrl);
+
+		var material = new Material('TestMaterial');
+		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		material.textures.push(texture);
+
+		box.meshRendererComponent.materials.push(material);
+		box.addToWorld();
+
+		box.transformComponent.transform.translation.set(x, y, 0);
+
+		var axis = new Vector3(1, 1, 0.5).normalize();
+		goo.callbacks.push(function(tpf) {
+			// rotate
+			var t = box._world.time;
+			box.transformComponent.transform.rotation.fromAngleNormalAxis(t, axis.x, axis.y, axis.z);
+			box.transformComponent.setUpdated();
+		});
+	}
 
 	function init() {
 		// Create typical goo application
@@ -44,73 +68,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		transformComponent.transform.translation.z = 80;
 		entity.addToWorld();
 
-		// Add box
-		var box = ShapeCreator.createBoxEntity(goo.world, 15, 15, 15, 1, 1);
+		createBox(10, -10, 15, '/lena/lena.jpg', goo);
+		createBox(10, 10, 15, '/lena/lena_uncompressed.dds', goo);
+		createBox(10, -20, 0, '/lena/lena_dxt1.dds', goo);
+		createBox(10, 0, 0, '/lena/lena_dxt3.dds', goo);
+		createBox(10, 20, 0, '/lena/lena_dxt5_BC3.dds', goo);
+		// createBox(10, -10, -15, '/lena/lena_dxt5_RXGB.dds', goo);
+		createBox(10, 10, -15, '/lena/lena_dxt5_YCoCg.dds', goo);
 
-		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		// NB: YCoCg -> RGB
+		// ' gl_FragColor.r = (texCol.r * 1.0) + (texCol.g * -1.0) + (texCol.b * (0.0 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
+		// ' gl_FragColor.g = (texCol.r * 0.0) + (texCol.g * 1.0) + (texCol.b * (-0.5 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
+		// ' gl_FragColor.b = (texCol.r * -1.0) + (texCol.g * -1.0) + (texCol.b * (1.0 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
 
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/lena_dxt5.dds');
-		material.textures.push(texture);
-
-		box.meshRendererComponent.materials.push(material);
-		box.addToWorld();
-
-		var axis = new Vector3(1, 1, 0.5).normalize();
-
-		goo.callbacks.push(function(tpf) {
-			// rotate
-			var t = box._world.time;
-			box.transformComponent.transform.rotation.fromAngleNormalAxis(t, axis.x, axis.y, axis.z);
-			box.transformComponent.setUpdated();
-		});
-	}
-
-	function loadModels(goo) {
-		var importer = new JSONImporter(goo.world);
-
-		// Load asynchronous with callback
-		importer.load(resourcePath + '/girl.model', resourcePath + '/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
-				}
-				entities[0].transformComponent.transform.scale.set(0.15, 0.15, 0.15);
-				entities[0].transformComponent.transform.translation.x = -20;
-				entities[0].transformComponent.transform.translation.y = -10;
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
-
-		// Load asynchronous with callback
-		importer.load(resourcePath + '/head.model', resourcePath + '/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
-				}
-				entities[0].transformComponent.transform.scale.set(40, 40, 40);
-				entities[0].transformComponent.transform.translation.x = 0;
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
-
-		// Load asynchronous with callback
-		importer.load(resourcePath + '/shoes/shoes_compressed.json', resourcePath + '/shoes/textures/', {
-			onSuccess : function(entities) {
-				for ( var i in entities) {
-					entities[i].addToWorld();
-				}
-				entities[0].transformComponent.transform.scale.set(1.0, 1.0, 1.0);
-				entities[0].transformComponent.transform.translation.x = 20;
-			},
-			onError : function(error) {
-				console.error(error);
-			}
-		});
 	}
 
 	init();

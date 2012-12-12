@@ -52,7 +52,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		createMesh(goo, ShapeCreator.createTeapot(), -10, -10, -30);
 		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), -10, 0, -30);
 		createMesh(goo, ShapeCreator.createBox(3, 3, 3), -10, 10, -30);
-		createMesh(goo, ShapeCreator.createPlane(3, 3), 0, -7, -20);
+		createMesh(goo, ShapeCreator.createQuad(3, 3), 0, -7, -20);
 		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), 0, 0, -30);
 	}
 

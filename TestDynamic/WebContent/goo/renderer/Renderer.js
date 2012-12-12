@@ -485,7 +485,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, 1);
 
 		// set if we want to flip on Y
-		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY ? 1 : 0);
+		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);
 
 		if (texture.generateMipmaps) {
 			var image = texture.image;
@@ -507,7 +507,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else if (texture.image.isData === true) {
 				if (texture.image.isCompressed) {
-					this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, texture.image.data[0]);
+					this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, texture.image.data);
 				} else {
 					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
 						texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this

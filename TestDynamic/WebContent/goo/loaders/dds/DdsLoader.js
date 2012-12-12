@@ -214,13 +214,14 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		}
 	};
 
-	DdsLoader.readDXT = function(imgData, totalSize, info, image) {
-		image.isCompressed = true;
+	DdsLoader.readDXT = function(imgData, totalSize, info, texture) {
+		texture.image.isCompressed = true;
 
 		if (!info.flipVertically) {
 			return new Uint8Array(imgData.buffer, imgData.byteOffset + 0, totalSize);
 		}
 
+		// NB: since UNPACK_FLIP_Y_WEBGL doesn't handle compressed textures, we have to do it manually.
 		var mipWidth = info.header.dwWidth;
 		var mipHeight = info.header.dwHeight;
 
@@ -229,16 +230,82 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		var offset = 0;
 		for ( var mip = 0; mip < info.header.dwMipMapCount; mip++) {
 			var data = [];
-			for ( var i = 0; i < data.length; i++) {
-				data.push(imgData.getByte(i + offset));
+			for ( var i = 0, max = info.mipmapByteSizes[mip]; i < max; i++) {
+				data.push(imgData[i + offset]);
 			}
-			var flipped = DdsUtils.flipDXT(data, mipWidth, mipHeight, image.type);
+			var flipped = DdsUtils.flipDXT(data, mipWidth, mipHeight, texture.format);
 			rVal.set(flipped, offset);
 			offset += flipped.length;
 
-			mipWidth = Math.max(mipWidth / 2, 1);
-			mipHeight = Math.max(mipHeight / 2, 1);
+			mipWidth = ~~(mipWidth / 2) > 1 ? ~~(mipWidth / 2) : 1;
+			mipHeight = ~~(mipHeight / 2) > 1 ? ~~(mipHeight / 2) : 1;
 		}
+		return rVal;
+	};
+
+	DdsLoader.readUncompressed = function(imgData, totalSize, useRgb, useLum, useAlpha, useAlphaPixels, info, texture) {
+		var redLumShift = DdsUtils.shiftCount(info.header.ddpf.dwRBitMask);
+		var greenShift = DdsUtils.shiftCount(info.header.ddpf.dwGBitMask);
+		var blueShift = DdsUtils.shiftCount(info.header.ddpf.dwBBitMask);
+		var alphaShift = DdsUtils.shiftCount(info.header.ddpf.dwABitMask);
+
+		var sourcebytesPP = ~~(info.header.ddpf.dwRGBBitCount / 8);
+		var targetBytesPP = DdsUtils.getComponents(texture.format) * 1; // 1 byte per unsignedbyte store
+
+		var rVal = new Uint8Array(totalSize);
+
+		var mipWidth = info.header.dwWidth;
+		var mipHeight = info.header.dwHeight;
+		var dstOffset = 0, srcOffset = 0;
+		var i = 0;
+		var b = [];
+		for (i = 0; i < sourcebytesPP; i++) {
+			b.push(0);
+		}
+
+		for ( var mip = 0; mip < info.header.dwMipMapCount; mip++) {
+			for ( var y = 0; y < mipHeight; y++) {
+				for ( var x = 0; x < mipWidth; x++) {
+					for (i = 0; i < sourcebytesPP; i++) {
+						b[i] = imgData[srcOffset++];
+					}
+
+					i = DdsUtils.getIntFromBytes(b);
+
+					var redLum = ((i & info.header.ddpf.dwRBitMask) >> redLumShift);
+					var green = ((i & info.header.ddpf.dwGBitMask) >> greenShift);
+					var blue = ((i & info.header.ddpf.dwBBitMask) >> blueShift);
+					var alpha = ((i & info.header.ddpf.dwABitMask) >> alphaShift);
+
+					// Uncompressed, so handled by UNPACK_FLIP_Y_WEBGL instead.
+					// if (info.flipVertically) {
+					// dstOffset = ((mipHeight - y - 1) * mipWidth + x) * targetBytesPP;
+					// }
+
+					if (useAlpha) {
+						rVal[dstOffset++] = alpha;
+					} else if (useLum) {
+						rVal[dstOffset++] = redLum;
+						if (useAlphaPixels) {
+							rVal[dstOffset++] = alpha;
+						}
+					} else if (useRgb) {
+						rVal[dstOffset++] = redLum;
+						rVal[dstOffset++] = green;
+						rVal[dstOffset++] = blue;
+						if (useAlphaPixels) {
+							rVal[dstOffset++] = alpha;
+						}
+					}
+				}
+			}
+
+			dstOffset += mipWidth * mipHeight * targetBytesPP;
+
+			mipWidth = ~~(mipWidth / 2) > 1 ? ~~(mipWidth / 2) : 1;
+			mipHeight = ~~(mipHeight / 2) > 1 ? ~~(mipHeight / 2) : 1;
+		}
+
 		return rVal;
 	};
 
@@ -372,17 +439,17 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		for ( var i = 0; i < texture.image.depth; i++) {
 			// read in compressed data
 			if (compressedFormat) {
-				imageData.push(DdsLoader.readDXT(data, totalSize, info, texture.image));
+				imageData.push(DdsLoader.readDXT(data, totalSize, info, texture));
 			}
 
 			// read in uncompressed data
 			else if (rgb || lum || alpha) {
-				imageData.push(DdsLoader.readUncompressed(data, totalSize, rgb, lum, alpha, alphaPixels, info, texture.image));
+				imageData.push(DdsLoader.readUncompressed(data, totalSize, rgb, lum, alpha, alphaPixels, info, texture));
 			}
 		}
 
 		// set on image
-		texture.image.data = imageData;
+		texture.image.data = texture.image.depth == 1 ? imageData[0] : imageData;
 		texture.image.useArrays = true;
 	};
 
