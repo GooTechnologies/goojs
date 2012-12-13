@@ -6,7 +6,15 @@
 <title>Edit</title>
 <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 <script data-main="edit" src="../lib/require.js"></script>
+<script src="../lib/ace/ace.js"></script>
 <style>
+body {
+	overflow: hidden;
+	margin: 0px;
+	background-color: gray;
+	color: white;
+}
+
 #goo {
 	position: absolute;
 	right: 0px;
@@ -15,56 +23,41 @@
 	z-index: 0;
 }
 
-.editor {
+#topEditor {
 	position: absolute;
-	top: 25px;
 	left: 0px;
+	top: 0px;
 	width: 40%;
 	height: 100%;
 	z-index: 10;
 }
 
-#buttons {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 40%;
-	height: 25px;
-	z-index: 10;
+.editor {
+	border: 2px solid black;
+}
+
+#uniformEditor {
+	position: relative;
+	height: 30%;
+}
+
+#vertexEditor {
+	position: relative;
+	height: 33%;
+}
+
+#fragmentEditor {
+	position: relative;
+	height: 33%;
 }
 </style>
 </head>
 <body>
-	<div id="buttons">
-		<button id="uniformButton">Uniforms</button>
-		<button id="vertexButton">Vertex shader</button>
-		<button id="fragmentButton">Fragment shader</button>
+	<div id="topEditor">
+		Shader: <select id="shaderSelect"></select>
+		<div id="uniformEditor" class="editor"></div>
+		<div id="vertexEditor" class="editor"></div>
+		<div id="fragmentEditor" class="editor"></div>
 	</div>
-	<div id="uniformEditor" class="editor">uniform</div>
-	<div id="vertexEditor" class="editor">vertex</div>
-	<div id="fragmentEditor" class="editor">fragment</div>
-
-	<script>
-		$(function() {
-			$('#vertexEditor').hide();
-			$('#fragmentEditor').hide();
-		});
-
-		$("#uniformButton").click(function() {
-			$('#uniformEditor').show();
-			$('#vertexEditor').hide();
-			$('#fragmentEditor').hide();
-		});
-		$("#vertexButton").click(function() {
-			$('#uniformEditor').hide();
-			$('#vertexEditor').show();
-			$('#fragmentEditor').hide();
-		});
-		$("#fragmentButton").click(function() {
-			$('#uniformEditor').hide();
-			$('#vertexEditor').hide();
-			$('#fragmentEditor').show();
-		});
-	</script>
 </body>
 </html>
