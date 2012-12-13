@@ -10,10 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray'], function(World, Entity, System, TransformSystem, RenderSystem,
-	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray', 'goo/renderer/Util'], function(World, Entity, System, TransformSystem,
+	RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2,
-	BasicControlScript, Ray) {
+	BasicControlScript, Ray, Util) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -94,14 +94,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var shaders = {};
 
 		for ( var name in Material.shaders) {
-			shaders[name] = Material.createShader(Material.shaders[name], name);
+			shaders[name] = Material.createShader(Util.clone(Material.shaders[name]), name);
 		}
 
 		function updatePresets() {
 			var presetElement = document.getElementById('presetsSelect');
 			presetElement.innerHTML = '';
 			for ( var name in shaders) {
-				var def = shaders[name];
 				var optionElement = document.createElement('option');
 				optionElement.setAttribute('value', name);
 				optionElement.appendChild(document.createTextNode(name));
@@ -160,6 +159,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				currentEntity.meshRendererComponent.materials[0].shader = selectedShader;
 				$('#entitySelect').change();
 			}
+		});
+
+		var newIndex = 0;
+		$('#newshader').click(function() {
+			var type = 'simple';
+			var name = 'New_' + type + newIndex++;
+			var newShader = Material.createShader(Util.clone(Material.shaders[type]), name);
+			shaders[name] = newShader;
+			updatePresets();
+			$('#shaderName').text(newShader.name);
+			setShader(newShader);
+			$('#presetsSelect').val(newShader.name);
+			$('#presetsSelect').change();
 		});
 	}
 
