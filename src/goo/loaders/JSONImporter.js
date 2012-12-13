@@ -52,7 +52,7 @@ define(
 	/**
 	 * Loads a model from the supplied model url and texture path.
 	 *
-	 * @param modelUrl
+	 * @param modelUrl URL of the model file to load.
 	 * @param textureDir Base URL for textures. Optional. If not supplied, modelUrl up to the last '/' is used as base.
 	 * @param callback Callback with
 	 *            <ul>
