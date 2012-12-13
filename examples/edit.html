@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>Edit</title>
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script data-main="edit" src="../lib/require.js"></script>
+<style>
+#goo {
+	position: absolute;
+	right: 0px;
+	width: 60%;
+	height: 100%;
+	z-index: 0;
+}
+
+.editor {
+	position: absolute;
+	top: 25px;
+	left: 0px;
+	width: 40%;
+	height: 100%;
+	z-index: 10;
+}
+
+#buttons {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 40%;
+	height: 25px;
+	z-index: 10;
+}
+</style>
+</head>
+<body>
+	<div id="buttons">
+		<button id="uniformButton">Uniforms</button>
+		<button id="vertexButton">Vertex shader</button>
+		<button id="fragmentButton">Fragment shader</button>
+	</div>
+	<div id="uniformEditor" class="editor">uniform</div>
+	<div id="vertexEditor" class="editor">vertex</div>
+	<div id="fragmentEditor" class="editor">fragment</div>
+
+	<script>
+		$(function() {
+			$('#vertexEditor').hide();
+			$('#fragmentEditor').hide();
+		});
+
+		$("#uniformButton").click(function() {
+			$('#uniformEditor').show();
+			$('#vertexEditor').hide();
+			$('#fragmentEditor').hide();
+		});
+		$("#vertexButton").click(function() {
+			$('#uniformEditor').hide();
+			$('#vertexEditor').show();
+			$('#fragmentEditor').hide();
+		});
+		$("#fragmentButton").click(function() {
+			$('#uniformEditor').hide();
+			$('#vertexEditor').hide();
+			$('#fragmentEditor').show();
+		});
+	</script>
+</body>
+</html>

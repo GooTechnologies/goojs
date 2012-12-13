@@ -52,6 +52,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			expect(world.getEntities().length).toBe(1);
 			expect(world._addedEntities.length).toBe(0);
 		});
+
+		it("Entity still exists after removeFromWorld before process", function() {
+			entity.removeFromWorld();
+			expect(world.getEntities().length).toBe(1);
+			expect(world._removedEntities.length).toBe(1);
+			expect(world._removedEntities).toContain(entity);
+		});
+
+		it("Correct state after world.process", function() {
+			world.process();
+			expect(world.getEntities().length).toBe(0);
+			expect(world._removedEntities.length).toBe(0);
+		});
 	});
 
 	(function() {
