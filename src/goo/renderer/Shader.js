@@ -102,17 +102,31 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 				}
 				var defValue = this.uniforms[name];
 
-				if (typeof defValue === 'string') {
-					var callback = this.currentCallbacks[name];
-					if (callback) {
-						callback(mapping, shaderInfo);
+				try {
+					if (typeof defValue === 'string') {
+						var callback = this.currentCallbacks[name];
+						if (callback) {
+							callback(mapping, shaderInfo);
+						}
+					} else {
+						var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
+						mapping.call(value);
 					}
-				} else {
-					var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
-					mapping.call(value);
+				} catch (err) {
+					// IGNORE
+					// console.error(err);
 				}
 			}
 		}
+	};
+
+	Shader.prototype.rebuild = function() {
+		this.shaderProgram = null;
+		this.attributeMapping = {};
+		this.attributeIndexMapping = {};
+		this.uniformMapping = {};
+		this.uniformCallMapping = {};
+		this.currentCallbacks = {};
 	};
 
 	Shader.prototype._investigateShaders = function() {
