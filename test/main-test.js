@@ -7,7 +7,8 @@ require.config({
   });
 require([
     'test/mathTest',
-    'test/shapesTest'
+    'test/shapesTest',
+    'test/entities/entitiesTest'
 ],
 function(mathTest) {
   window.__testacular__.start();
