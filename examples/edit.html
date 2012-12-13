@@ -50,11 +50,29 @@ body {
 	position: relative;
 	height: 33%;
 }
+
+.keeptogether {
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+
+.keeptogether * {
+	display: inline-block;
+	white-space: normal;
+}
+
+#shaderName {
+	color: black;
+}
 </style>
 </head>
 <body>
 	<div id="topEditor">
-		Shader: <select id="shaderSelect"></select>
+		<div class="keeptogether">
+			Entity: <select id="entitySelect"></select>
+			Shader: <div id="shaderName"></div>
+			Presets: <select id="presetsSelect"></select>
+		</div>
 		<div id="uniformEditor" class="editor"></div>
 		<div id="vertexEditor" class="editor"></div>
 		<div id="fragmentEditor" class="editor"></div>

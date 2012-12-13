@@ -20,7 +20,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	var material;
 	var uniformEditor, vertexEditor, fragmentEditor;
-	var currentShader;
+	var currentEntity, currentShader;
 	var uniformListener = function(e) {
 		if (currentShader) {
 			try {
@@ -90,13 +90,34 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		fragmentEditor.getSession().setMode("ace/mode/glsl");
 		fragmentEditor.getSession().on('change', fragmentListener);
 
-		var shaders = [];
+		var entities = [];
+		var shaders = {};
+
+		for ( var name in Material.shaders) {
+			shaders[name] = Material.createShader(Material.shaders[name], name);
+		}
+
+		function updatePresets() {
+			var presetElement = document.getElementById('presetsSelect');
+			presetElement.innerHTML = '';
+			for ( var name in shaders) {
+				var def = shaders[name];
+				var optionElement = document.createElement('option');
+				optionElement.setAttribute('value', name);
+				optionElement.appendChild(document.createTextNode(name));
+				presetElement.appendChild(optionElement);
+			}
+		}
+		updatePresets();
+
 		goo.world.setManager({
 			added : function(entity) {
-				shaders = [];
-				var selectElement = document.getElementById('shaderSelect');
+				if (entity.meshRendererComponent && entities.indexOf(entity) === -1) {
+					entities.push(entity);
+				}
+
+				var selectElement = document.getElementById('entitySelect');
 				selectElement.innerHTML = '';
-				var entities = goo.world.entityManager.getEntities();
 				var index = 0;
 				for ( var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
@@ -105,28 +126,41 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					}
 					var entityMaterial = entity.meshRendererComponent.materials[0];
 					var shader = entityMaterial.shader;
-					if (shaders.indexOf(shader) !== -1) {
-						continue;
+					if (!shaders[shader.name]) {
+						shaders[shader.name] = shader;
+						updatePresets();
 					}
-					shaders.push(shader);
 					var optionElement = document.createElement('option');
 					optionElement.setAttribute('value', index);
 					index++;
-					optionElement.appendChild(document.createTextNode(entityMaterial.name + '_' + shader.name + '_' + shader._id));
+					optionElement.appendChild(document.createTextNode(entity.name));
 					selectElement.appendChild(optionElement);
 				}
 
-				$('#shaderSelect').change();
+				$('#entitySelect').change();
 			}
 		});
 
-		$('#shaderSelect').change(function() {
+		$('#entitySelect').change(function() {
+			var selectedEntity = entities[$(this).val()];
+			if (selectedEntity) {
+				currentEntity = selectedEntity;
+				var selectedShader = selectedEntity.meshRendererComponent.materials[0].shader;
+				if (selectedShader) {
+					$('#shaderName').text(selectedShader.name);
+					setShader(selectedShader);
+					$('#presetsSelect').val(selectedShader.name);
+				}
+			}
+		});
+
+		$('#presetsSelect').change(function() {
 			var selectedShader = shaders[$(this).val()];
-			if (selectedShader) {
-				setShader(selectedShader);
+			if (selectedShader && currentEntity) {
+				currentEntity.meshRendererComponent.materials[0].shader = selectedShader;
+				$('#entitySelect').change();
 			}
 		});
-
 	}
 
 	function setShader(shader) {
