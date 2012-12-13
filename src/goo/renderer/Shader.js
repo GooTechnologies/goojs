@@ -84,7 +84,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 
 				var attributeIndex = this.attributeIndexMapping[key];
 				if (attributeIndex === undefined) {
-					console.warn('Attribute binding [' + name + '] does not exist in the shader.');
+					// console.warn('Attribute binding [' + name + '] does not exist in the shader.');
 					continue;
 				}
 
@@ -97,7 +97,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			for ( var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (!mapping) {
-					console.warn('Uniform binding [' + name + '] does not exist in the shader.');
+					// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 					continue;
 				}
 				var defValue = this.uniforms[name];
@@ -108,7 +108,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 						callback(mapping, shaderInfo);
 					}
 				} else {
-					var value = typeof (defValue) === 'function' ? defValue(shaderInfo) : defValue;
+					var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
 					mapping.call(value);
 				}
 			}
@@ -210,7 +210,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 				var mapping = this.attributeIndexMapping[name];
 				if (mapping === undefined) {
 					console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-					delete this.attributes[name];
+					// delete this.attributes[name];
 				}
 			}
 			for ( var name in this.attributeIndexMapping) {
@@ -238,7 +238,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 				var mapping = this.uniformCallMapping[name];
 				if (mapping === undefined) {
 					console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-					delete this.uniforms[name];
+					// delete this.uniforms[name];
 				}
 
 				var value = this.uniforms[name];
@@ -317,17 +317,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 		};
 
 		for ( var i = 0; i < 16; i++) {
-			defaultCallbacks[Shader['TEXTURE' + i]] = (function(i) {
+			defaultCallbacks[Shader['TEXTURE' + i]] = function(i) {
 				return function(uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
 				};
-			})(i);
+			}(i);
 		}
 
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
 		for ( var i = 0; i < 4; i++) {
-			defaultCallbacks[Shader['LIGHT' + i]] = (function(i) {
+			defaultCallbacks[Shader['LIGHT' + i]] = function(i) {
 				return function(uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
@@ -336,7 +336,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 						uniformCall.uniform3f(lightPos.x, lightPos.y, lightPos.z);
 					}
 				};
-			})(i);
+			}(i);
 		}
 
 		defaultCallbacks[Shader.CAMERA] = function(uniformCall, shaderInfo) {
@@ -395,6 +395,11 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 			uniformCall.uniform1f(shininess);
 		};
 
+		var startTime = Date.now();
+		defaultCallbacks[Shader.TIME] = function(uniformCall, shaderInfo) {
+			var shininess = Date.now() - startTime;
+			uniformCall.uniform1f(shininess);
+		};
 	}
 
 	Shader.prototype.toString = function() {
@@ -418,6 +423,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner'
 	Shader.SPECULAR_POWER = 'SPECULAR_POWER';
 	Shader.NEAR_PLANE = 'NEAR_PLANE';
 	Shader.FAR_PLANE = 'FAR_PLANE';
+	Shader.TIME = 'TIME';
 
 	return Shader;
 });

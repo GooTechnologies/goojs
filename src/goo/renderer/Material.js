@@ -562,6 +562,9 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				maxblur : 1.0,
 			},
 			vshader : [//
+			'attribute vec3 position;', //
+			'attribute vec2 uv;', //
+
 			'uniform mat4 viewMatrix;', //
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
