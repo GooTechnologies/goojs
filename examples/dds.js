@@ -19,7 +19,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	var resourcePath = "../resources";
 
 	function createBox(size, x, y, textureUrl, goo) {
-		var box = ShapeCreator.createBoxEntity(goo.world, size, size, size, 1, 1);
+		var meshData = ShapeCreator.createBox(size, size, size, 1, 1);
+		var box = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var texture = new TextureCreator({
 			verticalFlip : true
 		}).loadTexture2D(resourcePath + textureUrl);
