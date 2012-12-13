@@ -1,9 +1,5 @@
-define(["goo/math/Vector"], function(Vector) {
+define(["goo/math/MathUtils", "goo/math/Vector"], function(MathUtils, Vector) {
 	"use strict";
-
-	// REVIEW: In general, search for "cannot be used for storage".
-	// IMO, such cases should throw an exception, not be automatically fixed.
-	// The auto-fixing behaviour is too unexpected.
 
 	/**
 	 * @name Matrix
@@ -22,6 +18,7 @@ define(["goo/math/Vector"], function(Vector) {
 	}
 
 	/**
+	 * @private
 	 * @description Binds aliases to the different matrix components.
 	 * @param {String[][]} aliases Array of component aliases for each component index.
 	 */
@@ -29,9 +26,9 @@ define(["goo/math/Vector"], function(Vector) {
 	Matrix.prototype.setupAliases = function(aliases) {
 		var that = this;
 
-		for ( var i = 0; i < aliases.length; i++) {
+		for (var i = 0; i < aliases.length; i++) {
 			(function(index) {
-				for ( var j = 0; j < aliases[index].length; j++) {
+				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
 						get : function() {
 							return this.data[index];
@@ -56,25 +53,37 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Performs a component-wise addition between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise addition.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix} [target] Target matrix for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.add = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
+		var rows = lhs.rows;
+		var cols = lhs.cols;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
 		}
 
-		target.copy(lhs);
+		if (rhs instanceof Matrix) {
+			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-		for ( var c = 0; c < Math.min(lhs.cols, rhs.cols); c++) {
-			var o = c * lhs.rows;
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] + rhs.data[i];
+			}
+		} else {
+			if (target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-			for ( var r = 0; r < Math.min(lhs.rows, rhs.rows); r++) {
-				target.data[o + r] += rhs.data[o + r];
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] + rhs;
 			}
 		}
 
@@ -83,25 +92,37 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Performs a component-wise subtraction between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise subtraction.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix} [target] Target matrix for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.sub = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
+		var rows = lhs.rows;
+		var cols = lhs.cols;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
 		}
 
-		target.copy(lhs);
+		if (rhs instanceof Matrix) {
+			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-		for ( var c = 0; c < Math.min(lhs.cols, rhs.cols); c++) {
-			var o = c * lhs.rows;
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] - rhs.data[i];
+			}
+		} else {
+			if (target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-			for ( var r = 0; r < Math.min(lhs.rows, rhs.rows); r++) {
-				target.data[o + r] -= rhs.data[o + r];
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] - rhs;
 			}
 		}
 
@@ -110,25 +131,37 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Performs a component-wise multiplication between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise multiplication.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix} [target] Target matrix for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.mul = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
+		var rows = lhs.rows;
+		var cols = lhs.cols;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
 		}
 
-		target.copy(lhs);
+		if (rhs instanceof Matrix) {
+			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-		for ( var c = 0; c < Math.min(lhs.cols, rhs.cols); c++) {
-			var o = c * lhs.rows;
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] * rhs.data[i];
+			}
+		} else {
+			if (target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			}
 
-			for ( var r = 0; r < Math.min(lhs.rows, rhs.rows); r++) {
-				target.data[o + r] *= rhs.data[o + r];
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] * rhs;
 			}
 		}
 
@@ -137,143 +170,40 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Performs a component-wise division between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise division.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix} [target] Target matrix for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.div = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
+		var rows = lhs.rows;
+		var cols = lhs.cols;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
 		}
 
-		target.copy(lhs);
-
-		var clean = true;
-
-		for ( var c = 0; c < Math.min(lhs.cols, rhs.cols); c++) {
-			var o = c * lhs.rows;
-
-			for ( var r = 0; r < Math.min(lhs.rows, rhs.rows); r++) {
-				target.data[o + r] = (clean &= (rhs.data[o + r] < 0.0 || rhs.data[o + r] > 0.0)) ? lhs.data[o + r] / rhs.data[o + r] : 0.0;
+		if (rhs instanceof Matrix) {
+			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
-		}
 
-		if (clean === false) {
-			console.warn("[Matrix.div] Attempted to divide by zero!");
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise addition between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix.scalarAdd = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
-		}
-
-		for ( var c = 0; c < lhs.cols; c++) {
-			var o = c * lhs.rows;
-
-			for ( var r = 0; r < lhs.rows; r++) {
-				target.data[o + r] = lhs.data[o + r] + rhs;
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] / rhs.data[i];
 			}
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix.scalarSub = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
-		}
-
-		for ( var c = 0; c < lhs.cols; c++) {
-			var o = c * lhs.rows;
-
-			for ( var r = 0; r < lhs.rows; r++) {
-				target.data[o + r] = lhs.data[o + r] - rhs;
+		} else {
+			if (target.rows != rows || target.cols != cols) {
+				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
-		}
 
-		return target;
-	};
+			rhs = 1.0 / rhs;
 
-	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix.scalarMul = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
-		}
-
-		for ( var c = 0; c < lhs.cols; c++) {
-			var o = c * lhs.rows;
-
-			for ( var r = 0; r < lhs.rows; r++) {
-				target.data[o + r] = lhs.data[o + r] * rhs;
+			for (var i = 0; i < lhs.data.length; i++) {
+				target.data[i] = lhs.data[i] * rhs;
 			}
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise division between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix.scalarDiv = function(lhs, rhs, target) {
-		if (!target || target.rows != lhs.rows || target.cols != lhs.cols) {
-			target = new Matrix(lhs.rows, lhs.cols);
-		}
-
-		var clean = true;
-
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
-
-		for ( var c = 0; c < lhs.cols; c++) {
-			var o = c * lhs.rows;
-
-			for ( var r = 0; r < lhs.rows; r++) {
-				target.data[o + r] = lhs.data[o + r] * rhs;
-			}
-		}
-
-		if (clean === false) {
-			// REVIEW: Why not an exception?
-			console.warn("[Matrix.scalarDiv] Attempted to divide by zero!");
 		}
 
 		return target;
@@ -284,56 +214,39 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @param {Matrix} target Target matrix for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting combine non-matching matrices.
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix} [target] Target matrix for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.combine = function(lhs, rhs, target) {
-		if (lhs.cols === rhs.rows) {
-			if (!target || target.rows !== lhs.rows || target.cols !== rhs.cols || target === lhs || target === rhs) {
-				target = new Matrix(lhs.rows, rhs.cols);
-			}
+		var rows = lhs.rows;
+		var cols = rhs.cols;
+		var size = lhs.cols = rhs.rows;
 
-			for ( var c = 0; c < target.cols; c++) {
-				var o = c * target.rows;
+		if (!target) {
+			target = new Matrix(rows, cols);
+		}
 
-				for ( var r = 0; r < target.rows; r++) {
-					var sum = 0.0;
+		if (lhs.cols != size || rhs.rows != size || target.rows != rows || target.cols != cols) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
 
-					for ( var i = 0; i < lhs.cols; i++) {
-						sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
-					}
+		if (target === lhs || target === rhs) {
+			return Matrix.copy(Matrix.combine(lhs, rhs), target);
+		}
 
-					target.data[o + r] = sum;
+		for (var c = 0; c < cols; c++) {
+			var o = c * rows;
+
+			for (var r = 0; r < rows; r++) {
+				var sum = 0.0;
+
+				for (var i = 0; i < size; i++) {
+					sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
 				}
-			}
 
-			return target;
-		} else {
-			// REVIEW: Why not an exception?
-			console.warn("[Matrix.combine] Attempted to combine two non-matching matrices!");
-		}
-	};
-
-	/**
-	 * @static
-	 * @description Transposes a matrix (exchanges rows and columns).
-	 * @param {Matrix} source Source matrix.
-	 * @param {Matrix} target Target matrix. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix.transpose = function(source, target) {
-		if (!target || target.rows != source.cols || target.cols != source.rows || target === source) {
-			target = new Matrix(source.cols, source.rows);
-		}
-
-		for ( var c = 0; c < target.cols; c++) {
-			var o = c * target.rows;
-
-			for ( var r = 0; r < target.rows; r++) {
-				target.data[o + r] = source.data[r * source.rows + c];
+				target.data[o + r] = sum;
 			}
 		}
 
@@ -342,15 +255,59 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @static
-	 * @description Copies component values from one matrix to another.
+	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix} source Source matrix.
-	 * @param {Matrix} target Target matrix. (optional)
-	 * @returns {Matrix} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix} [target] Target matrix.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 */
+
+	Matrix.transpose = function(source, target) {
+		var rows = source.cols;
+		var cols = source.rows;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
+		}
+
+		if (target.rows != rows || target.cols != cols) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		if (target === source) {
+			return Matrix.copy(Matrix.transpose(source), target);
+		}
+
+		for (var c = 0; c < cols; c++) {
+			var o = c * rows;
+
+			for (var r = 0; r < rows; r++) {
+				target.data[o + r] = source.data[r * cols + c];
+			}
+		}
+
+		return target;
+	};
+
+	/**
+	 * @static
+	 * @description Copies component values and stores them in a separate matrix.
+	 * @param {Matrix} source Source matrix.
+	 * @param {Matrix} [target] Target matrix.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.copy = function(source, target) {
-		if (!target || target.rows != source.rows || target.cols != source.cols) {
-			target = new Matrix(source.rows, source.cols);
+		var rows = source.rows;
+		var cols = source.cols;
+
+		if (!target) {
+			target = new Matrix(rows, cols);
+		}
+
+		if (target.rows != rows || target.cols != cols) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
 		target.data.set(source.data);
@@ -359,9 +316,9 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition between two matrices and stores the result locally.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
+	 * @description Performs a component-wise addition.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.add = function(rhs) {
@@ -369,9 +326,9 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between two matrices and stores the result locally.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
+	 * @description Performs a component-wise subtraction.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.sub = function(rhs) {
@@ -379,9 +336,9 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between two matrices and stores the result locally.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
+	 * @description Performs a component-wise multiplication.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.mul = function(rhs) {
@@ -389,9 +346,9 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
-	 * @description Performs a component-wise division between two matrices and stores the result locally.
-	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
+	 * @description Performs a component-wise division.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.div = function(rhs) {
@@ -399,169 +356,41 @@ define(["goo/math/Vector"], function(Vector) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.scalarAdd = function(rhs) {
-		return Matrix.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise subtraction between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.scalarSub = function(rhs) {
-		return Matrix.scalarSub(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise multiplication between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.scalarMul = function(rhs) {
-		return Matrix.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.scalarDiv = function(rhs) {
-		return Matrix.scalarDiv(this, rhs, this);
-	};
-
-	/**
 	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @returns {Matrix} Self for chaining.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.combine = function(rhs) {
 		return Matrix.combine(this, rhs, this);
 	};
 
-	// REVIEW: Documentation incorrect: Does not return self if matrix isn't square.
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns).
-	 * @returns {Matrix} Self for chaining.
+	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.transpose = function() {
 		return Matrix.transpose(this, this);
 	};
 
-	// REVIEW: Documentation incorrect: Does not return self if matrices have different sizes.
-	/**
-	 * @description Copies component values from another matrix.
-	 * @param {Matrix} source Source matrix.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.copy = function(source) {
-		return Matrix.copy(source, this);
-	};
-
-	/**
-	 * @description Applies the matrix to an N-dimensional vector.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Float} padding Padding value for missing vector components. (optional)
-	 * @returns {Vector} Transformed vector.
-	 */
-
-	Matrix.prototype.applyTo = function(rhs, padding) {
-		var target = new Vector(rhs.data.length);
-
-		for ( var r = 0; r < Math.min(this.rows, rhs.data.length); r++) {
-			for ( var c = 0; c < Math.min(this.cols, rhs.data.length); c++) {
-				target.data[r] += this.data[c*this.rows + r]*rhs.data[r];
-			}
-
-			if (padding) {
-				for ( var c = rhs.data.length; c < this.cols; c++) {
-					target.data[r] += this.data[c*this.rows + r]*padding;
-				}
-			}
-		}
-
-		return target;
-	};
-
-	/**
-	 * @description Sets the components of the matrix.
-	 * @param {Float...} arguments Component values.
-	 * @returns {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.set = function() {
-		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			if (arguments[0] instanceof Matrix) {
-				for ( var i = 0; i < arguments[0].data.length; i++) {
-					this.data[i] = arguments[0].data[i];
-				}
-			} else {
-				for ( var i = 0; i < arguments[0].length; i++) {
-					this.data[i] = arguments[0][i];
-				}
-			}
-		} else {
-			for ( var i = 0; i < arguments.length; i++) {
-				this.data[i] = arguments[i];
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * @description Converts the matrix to a string.
-	 * @returns {String} String of component values.
-	 */
-
-	Matrix.prototype.toString = function() {
-		var string = "";
-
-		for ( var c = 0; c < this.cols; c++) {
-			var o = c * this.rows;
-
-			string += "[";
-
-			for ( var r = 0; r < this.rows; r++) {
-				string += this.data[o + r];
-				string += r !== this.rows - 1 ? "," : "";
-			}
-
-			string += c !== this.cols - 1 ? "], " : "]";
-		}
-
-		return string;
-	};
-
 	/**
 	 * @description Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @return {Boolean} True if orthogonal.
 	 */
 
 	Matrix.prototype.isOrthogonal = function() {
-		for ( var ca = 0; ca < this.cols; ca++) {
-			for ( var cb = ca + 1; cb < this.cols; cb++) {
+		for (var ca = 0; ca < this.cols; ca++) {
+			for (var cb = ca + 1; cb < this.cols; cb++) {
 				var oa = ca * this.rows;
 				var ob = cb * this.rows;
 				var sum = 0.0;
 
-				for ( var r = 0; r < this.rows; r++) {
+				for (var r = 0; r < this.rows; r++) {
 					sum += this.data[oa + r] * this.data[ob + r];
 				}
 
-				// REVIEW: Do we need range check with an epsilon here? BTW, isn't this the same as sum != 0.0?
-				if (sum < 0.0 || sum > 0.0) {
+				if (Math.abs(sum) > MathUtils.EPSILON) {
 					return false;
 				}
 			}
@@ -572,20 +401,19 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Tests if the matrix is normal.
-	 * @returns {Boolean} True if normal.
+	 * @return {Boolean} True if normal.
 	 */
 
 	Matrix.prototype.isNormal = function() {
-		for ( var c = 0; c < this.cols; c++) {
+		for (var c = 0; c < this.cols; c++) {
 			var o = c * this.rows;
 			var sum = 0.0;
 
-			for ( var r = 0; r < this.rows; r++) {
+			for (var r = 0; r < this.rows; r++) {
 				sum += this.data[o + r] * this.data[o + r];
 			}
 
-			// REVIEW: Do we need range check with an epsilon here?
-			if (sum < 1.0 || sum > 1.0) {
+			if (Math.abs(sum - 1.0) > MathUtils.EPSILON) {
 				return false;
 			}
 		}
@@ -595,11 +423,78 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Tests if the matrix is orthonormal.
-	 * @returns {Boolean} True if orthonormal.
+	 * @return {Boolean} True if orthonormal.
 	 */
 
 	Matrix.prototype.isOrthonormal = function() {
 		return this.isOrthogonal() && this.isNormal();
+	};
+
+	/**
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix} source Source matrix.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.copy = function(source) {
+		return Matrix.copy(source, this);
+	};
+
+	/**
+	 * @description Clones the matrix.
+	 * @return {Matrix} Clone of self.
+	 */
+
+	Matrix.prototype.clone = function() {
+		return Matrix.copy(this);
+	};
+
+	/**
+	 * @description Sets the components of the matrix.
+	 * @param {Float...|Float[]|Matrix} arguments Component values.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.set = function() {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			if (arguments[0] instanceof Matrix) {
+				this.copy(arguments[0]);
+			} else {
+				for (var i = 0; i < arguments[0].length; i++) {
+					this.data[i] = arguments[0][i];
+				}
+			}
+		} else {
+			for (var i = 0; i < arguments.length; i++) {
+				this.data[i] = arguments[i];
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * @description Converts the matrix into a string.
+	 * @return {String} String of component values.
+	 */
+
+	Matrix.prototype.toString = function() {
+		var string = "";
+
+		for (var c = 0; c < this.cols; c++) {
+			var offset = c * this.rows;
+
+			string += "[";
+
+			for (var r = 0; r < this.rows; r++) {
+				string += this.data[offset + r];
+				string += r !== this.rows - 1 ? ", " : "";
+			}
+
+			string += c !== this.cols - 1 ? "], " : "]";
+		}
+
+		return string;
 	};
 
 	return Matrix;
