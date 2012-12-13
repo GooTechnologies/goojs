@@ -33,13 +33,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	var vertexListener = function(e) {
 		if (currentShader) {
 			currentShader.vertexSource = vertexEditor.getValue();
-			currentShader.shaderProgram = null;
+			currentShader.rebuild();
 		}
 	};
 	var fragmentListener = function(e) {
 		if (currentShader) {
 			currentShader.fragmentSource = fragmentEditor.getValue();
-			currentShader.shaderProgram = null;
+			currentShader.rebuild();
 		}
 	};
 
