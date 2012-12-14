@@ -87,6 +87,66 @@ define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], functi
 
 		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + radius;
 	};
+	
+
+	BoundingSphere.prototype.intersectsRay = function(ray) {
+        if (!this.center) {
+            return false;
+        }
+
+        var diff = new Vector3().copy(ray.origin).sub(this.center);
+        var a = diff.dot(diff) - this.radius * this.radius;
+        if (a <= 0.0) {
+            // in sphere
+            return true;
+        }
+
+        // outside sphere
+        var b = ray.direction.dot(diff);
+        if (b >= 0.0) {
+            return false;
+        }
+        return b * b >= a;
+    };
+
+    BoundingSphere.prototype.intersectsRayWhere = function(ray) {
+        var diff = new Vector3().copy(ray.origin).sub(this.center);
+        var a = diff.dot(diff) - this.radius * this.radius;
+        var a1, discr, root;
+        if (a <= 0.0) {
+            // inside sphere
+            a1 = ray.direction.dot(diff);
+            discr = a1 * a1 - a;
+            root = Math.sqrt(discr);
+            var distances = [ root - a1 ];
+            var points = [ new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin) ];
+            return {"distances": distances, "points": points };
+        }
+
+        a1 = ray.direction.dot(diff);
+        if (a1 >= 0.0) {
+            // No intersection
+            return null;
+        }
+
+        discr = a1 * a1 - a;
+        if (discr < 0.0) {
+            return null;
+        } else if (discr >= 0.00001) {
+            root = Math.sqrt(discr);
+            var distances = [ -a1 - root, -a1 + root ];
+            var points = [
+                          new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin),
+                          new Vector3().copy(ray.direction).scalarMul(distances[1]).add(ray.origin)
+                          ];
+            return {"distances": distances, "points": points };
+        }
+
+        var distances = [ -a1 ];
+        var points = [ new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin) ];
+        return {"distances": distances, "points": points };
+    };
+
 
 	return BoundingSphere;
 });

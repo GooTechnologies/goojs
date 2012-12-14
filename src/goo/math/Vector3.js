@@ -370,6 +370,31 @@ define(["goo/math/Vector"], function(Vector) {
 		this.z = (1.0 - scalar) * this.z + scalar * endVec.z;
 		return this;
 	};
+	
+	/**
+     * @param x
+     * @param y
+     * @param z
+     * @return the squared distance between the point described by this vector and the given x, y, z point. When
+     *         comparing the relative distance between two points it is usually sufficient to compare the squared
+     *         distances, thus avoiding an expensive square root operation.
+     */
+	Vector3.prototype.distanceSquared = function(x,  y,  z) {
+        var dx = this.x - x;
+        var dy = this.y - y;
+        var dz = this.z - z;
+        return dx * dx + dy * dy + dz * dz;
+    };
+
+	/**
+     * @param x
+     * @param y
+     * @param z
+     * @return the distance between the point described by this vector and the given destination point.
+     */
+	Vector3.prototype.distance = function(x,  y,  z) {
+        return Math.sqrt(this.distanceSquared(x, y, z));
+    };
 
 	/**
 	 * @description Compares two vectors with a maximum tolerance of 0.000001 per component.

@@ -255,7 +255,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		}
 
 		if (target === lhs || target === rhs) {
-			return Matrix4x4.copy(Matrix4x4.combine(lhs, rhs), target);
+			return Matrix.copy(Matrix4x4.combine(lhs, rhs), target);
 		}
 
 		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20 + lhs.e03 * rhs.e30;
@@ -549,22 +549,25 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 */
 
 	Matrix4x4.prototype.determinant = function() {
-		var sum = 0.0;
+		var val1 = this.e11 * this.e22 * this.e33 + this.e12 * this.e23
+				* this.e31 + this.e13 * this.e21 * this.e32 - 
+				this.e13 * this.e22 * this.e31 - this.e12 * this.e21
+				* this.e33 - this.e11 * this.e23 * this.e32;
+		var val2 = this.e10 * this.e22 * this.e33 + this.e12 * this.e23
+				* this.e30 + this.e13 * this.e20 * this.e32 - 
+				this.e13 * this.e22 * this.e30 - this.e12 * this.e20
+				* this.e33 - this.e10 * this.e23 * this.e32;
+		var val3 = this.e10 * this.e21 * this.e33 + this.e11 * this.e23
+				* this.e30 + this.e13 * this.e20 * this.e31 - 
+				this.e13 * this.e21 * this.e30 - this.e11 * this.e20
+				* this.e33 - this.e10 * this.e23 * this.e31;
+		var val4 = this.e10 * this.e21 * this.e32 + this.e11 * this.e22
+				* this.e30 + this.e12 * this.e20 * this.e31 -
+				this.e12 * this.e21 * this.e30 - this.e11 * this.e20
+				* this.e32 - this.e10 * this.e22 * this.e31;
 
-		sum += this.e00
-			* (this.e11 * (this.e22 * this.e33 - this.e23 * this.e32) - this.e12 * (this.e21 * this.e33 - this.e23 * this.e31) + this.e13
-				* (this.e21 * this.e32 - this.e22 * this.e31));
-		sum -= this.e01
-			* (this.e10 * (this.e22 * this.e33 - this.e23 * this.e32) - this.e12 * (this.e20 * this.e33 - this.e23 * this.e30) + this.e13
-				* (this.e20 * this.e32 - this.e22 * this.e30));
-		sum += this.e02
-			* (this.e10 * (this.e21 * this.e33 - this.e23 * this.e31) - this.e11 * (this.e20 * this.e33 - this.e23 * this.e30) + this.e13
-				* (this.e20 * this.e31 - this.e21 * this.e30));
-		sum -= this.e03
-			* (this.e10 * (this.e21 * this.e32 - this.e22 * this.e31) - this.e11 * (this.e20 * this.e32 - this.e22 * this.e30) + this.e12
-				* (this.e20 * this.e31 - this.e21 * this.e30));
-
-		return sum;
+		return this.e00 * val1 - this.e01 * val2 + this.e02 * val3
+				- this.e03 * val4;
 	};
 
 	/**

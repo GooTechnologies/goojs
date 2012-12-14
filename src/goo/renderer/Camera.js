@@ -519,8 +519,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
+		this.getWorldCoordinates(screenX, screenHeight-screenY, screenWidth, screenHeight, 0, origin);
+		this.getWorldCoordinates(screenX, screenHeight-screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
 
@@ -547,7 +547,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		var position = new Vector4();
 		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1,
 			(screenY / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
-		this.modelViewProjectionInverse.applyPre(position);
+		this.modelViewProjectionInverse.applyPost(position);
 		position.scalarMul(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
@@ -601,7 +601,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this.checkModelViewProjection();
 		var position = new Vector4();
 		position.set(worldPosition.x, worldPosition.y, worldPosition.z, 1);
-		this.modelViewProjection.applyPre(position);
+		this.modelViewProjection.applyPost(position);
 		position.scalarMul(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
@@ -637,7 +637,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		if (this._updateMVPMatrix) {
 			this.checkModelView();
 			this.checkProjection();
-			this.modelViewProjection.copy(this.getViewMatrix()).mul(this.getProjectionMatrix());
+			// because these are transposed, we need to flip order
+			this.modelViewProjection.copy(this.getProjectionMatrix()).combine(this.getViewMatrix());
 			this._updateMVPMatrix = false;
 		}
 	};
