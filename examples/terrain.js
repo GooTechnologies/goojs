@@ -42,7 +42,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function createQuadEntity(goo) {
 		var world = goo.world;
 
-		var meshData = createGrid(128, 128);
+		var meshData = createGrid(-64, -64, 128, 128);
 
 		// Create entity
 		var entity = world.createEntity();
@@ -55,7 +55,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var meshRendererComponent = new MeshRendererComponent();
 		var material = Material.createMaterial(createShader());
 
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_specular.jpg');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_diffuse.jpg');
 		material.textures.push(texture);
 
 		meshRendererComponent.materials.push(material);
@@ -66,7 +66,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return entity;
 	}
 
-	function createGrid(w, h) {
+	function createGrid(offsetX, offsetY, w, h) {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 		var meshData = new MeshData(attributeMap, (w + 1) * (h + 1), w * h * 6);
 
@@ -77,8 +77,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		for ( var x = 0; x < w + 1; x++) {
 			for ( var y = 0; y < h + 1; y++) {
 				var index = y * (w + 1) + x;
-				vertices[index * 3 + 0] = x - w / 2;
-				vertices[index * 3 + 1] = y - h / 2;
+				vertices[index * 3 + 0] = x + offsetX;
+				vertices[index * 3 + 1] = y + offsetY;
 				vertices[index * 3 + 2] = 0;
 
 				uvs[index * 2 + 0] = x / (w + 1);
@@ -126,23 +126,23 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'uniform float time;',//
 			'uniform sampler2D diffuseMap;',//
 
-			'varying float height;',//
+			'varying vec4 texCol;',//
 
 			'void main(void) {', //
-			'	vec4 texCol = texture2D(diffuseMap, vertexUV0 + vec2(time*0.00002));',//
-			'	height = length(texCol.rgb);',//
+			'	texCol = texture2D(diffuseMap, vertexUV0 + vec2(time*0.00002));',//
+			'	float height = length(texCol.rgb);',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * ',//
-			'		vec4(vertexPosition+vec3(0.0,0.0,height*10.0), 1.0);', //
+			'		vec4(vertexPosition+vec3(0.0,0.0,height*20.0), 1.0);', //
 			'}'//
 			].join('\n'),
 			fshader : [//
 			'precision mediump float;',//
 
-			'varying float height;',//
+			'varying vec4 texCol;',//
 
 			'void main(void)',//
 			'{',//
-			'	gl_FragColor = vec4(height);',//
+			'	gl_FragColor = texCol;',//
 			'}',//
 			].join('\n')
 		};
