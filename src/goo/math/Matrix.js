@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Vector"], function(MathUtils, Vector) {
+define(["goo/math/MathUtils"], function(MathUtils) {
 	"use strict";
 
 	/**
@@ -451,12 +451,12 @@ define(["goo/math/MathUtils", "goo/math/Vector"], function(MathUtils, Vector) {
 
 	/**
 	 * @description Sets the components of the matrix.
-	 * @param {Float...|Float[]|Matrix} arguments Component values.
+	 * @param {Matrix|Float[]|Float} arguments Component values.
 	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.set = function() {
-		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
 			if (arguments[0] instanceof Matrix) {
 				this.copy(arguments[0]);
 			} else {

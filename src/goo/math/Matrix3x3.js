@@ -10,7 +10,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Float...|Float[]} arguments Initial values for the components.
+	 * @param {Matrix3x3|Float[]|Float...} arguments Initial values for the components.
 	 */
 
 	function Matrix3x3() {

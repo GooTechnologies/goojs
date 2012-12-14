@@ -1,4 +1,4 @@
-define([], function() {
+define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	"use strict";
 
 	/**
@@ -14,8 +14,8 @@ define([], function() {
 		this.data = new Float32Array(size || 0);
 	}
 
-	// REVIEW: Do we really want aliases? Maybe it's slow.
 	/**
+	 * @private
 	 * @description Binds aliases to the different vector components.
 	 * @param {String[][]} aliases Array of component aliases for each component index.
 	 */
@@ -23,9 +23,9 @@ define([], function() {
 	Vector.prototype.setupAliases = function(aliases) {
 		var that = this;
 
-		for ( var i = 0; i < aliases.length; i++) {
+		for (var i = 0; i < aliases.length; i++) {
 			(function(index) {
-				for ( var j = 0; j < aliases[index].length; j++) {
+				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
 						get : function() {
 							return this.data[index];
@@ -48,245 +48,194 @@ define([], function() {
 		}
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @static
-	 * @description Performs a component-wise addition between two vectors and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector.add = function(lhs, rhs, target) {
-		var left = lhs.data || lhs;
-		var right = rhs.data || rhs;
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+		var size = ldata.length;
 
-		if (!target || target.data.length != left.length) {
-			target = new Vector(left.length);
+		if (!target) {
+			target = new Vector(size);
 		}
 
-		var i = 0;
-
-		for (; i < Math.min(left.length, right.length); i++) {
-			target.data[i] = left[i] + right[i];
+		if (rdata.length !== size || target.data.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
-		for (; i < left.length; i++) {
-			target.data[i] = left[i];
-		}
-
-		return target;
-	};
-
-	Vector.addOld = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
-		}
-
-		var i = 0;
-
-		for (; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			target.data[i] = lhs.data[i] + rhs.data[i];
-		}
-
-		for (; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i];
+		for (var i = 0; i < size; i++) {
+			target.data[i] = ldata[i] + rdata[i];
 		}
 
 		return target;
 	};
 
 	/**
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.add = function(rhs) {
+		return Vector.add(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
-	 * @description Performs a component-wise subtraction between two vectors and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector.sub = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+		var size = ldata.length;
+
+		if (!target) {
+			target = new Vector(size);
 		}
 
-		var i = 0;
-
-		for (; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			target.data[i] = lhs.data[i] - rhs.data[i];
+		if (rdata.length !== size || target.data.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
-		for (; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i];
+		for (var i = 0; i < size; i++) {
+			target.data[i] = ldata[i] - rdata[i];
 		}
 
 		return target;
 	};
 
 	/**
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this - rhs);".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.sub = function(rhs) {
+		return Vector.sub(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
-	 * @description Performs a component-wise multiplication between two vectors and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector.mul = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+		var size = ldata.length;
+
+		if (!target) {
+			target = new Vector(size);
 		}
 
-		var i = 0;
-
-		for (; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			target.data[i] = lhs.data[i] * rhs.data[i];
+		if (rdata.length !== size || target.data.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
-		for (; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i];
+		for (var i = 0; i < size; i++) {
+			target.data[i] = ldata[i] * rdata[i];
 		}
 
 		return target;
 	};
 
 	/**
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this * rhs);".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.mul = function(rhs) {
+		return Vector.mul(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
-	 * @description Performs a component-wise division between two vectors and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector.div = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+		var size = ldata.length;
+
+		if (!target) {
+			target = new Vector(size);
 		}
 
-		var i = 0;
-		var clean = true;
-
-		for (; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			target.data[i] = (clean &= (rhs.data[i] < 0.0 || rhs.data[i] > 0.0)) ? lhs.data[i] / rhs.data[i] : 0.0;
+		if (rdata.length !== size || target.data.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
-		if (clean === false) {
-			console.warn("[Vector.div] Attempted to divide by zero!");
-		}
-
-		for (; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i];
+		for (var i = 0; i < size; i++) {
+			target.data[i] = ldata[i] / rdata[i];
 		}
 
 		return target;
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.scalarAdd = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
-		}
-
-		for ( var i = 0; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i] + rhs;
-		}
-
-		return target;
+	Vector.prototype.div = function(rhs) {
+		return Vector.div(this, rhs, this);
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
-	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector.scalarSub = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
-		}
-
-		for ( var i = 0; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i] - rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector.scalarMul = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
-		}
-
-		for ( var i = 0; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i] * rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise division between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector.scalarDiv = function(lhs, rhs, target) {
-		if (!target || target.data.length != lhs.data.length) {
-			target = new Vector(lhs.data.length);
-		}
-
-		var clean = true;
-
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
-
-		for ( var i = 0; i < lhs.data.length; i++) {
-			target.data[i] = lhs.data[i] * rhs;
-		}
-
-		if (clean === false) {
-			console.warn("[Vector.scalarDiv] Attempted to divide by zero!");
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Copies component values from one vector to another.
+	 * @description Copies component values and stores them in a separate vector. Equivalent of "return (target = source);".
 	 * @param {Vector} source Source vector.
-	 * @param {Vector} target Target vector. (optional)
-	 * @returns {Vector} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @param {Vector} [target] Target vector.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector.copy = function(source, target) {
-		if (!target || target.data.length !== source.data.length) {
-			target = new Vector(source.data.length);
+		var size = source.data.length;
+
+		if (!target) {
+			target = new Vector(size);
+		}
+
+		if (target.data.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
 		target.data.set(source.data);
@@ -294,235 +243,68 @@ define([], function() {
 		return target;
 	};
 
-	/**
-	 * @description Computes the dot product of two N-dimensional vectors.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Float} Dot product.
-	 */
-
-	Vector.dot = function(lhs, rhs) {
-		var result = 0.0;
-
-		for ( var i = 0; i < Math.min(lhs.data.length, rhs.data.length); i++) {
-			result += lhs.data[i] * rhs.data[i];
-		}
-
-		return result;
-	};
 
 	/**
-	 * @description Performs a component-wise addition between two vectors and stores the result locally.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.add = function(rhs) {
-		return Vector.add(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise subtraction between two vectors and stores the result locally.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.sub = function(rhs) {
-		return Vector.sub(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise multiplication between two vectors and stores the result locally.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.mul = function(rhs) {
-		return Vector.mul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division between two vectors and stores the result locally.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.div = function(rhs) {
-		return Vector.div(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise addition between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.scalarAdd = function(rhs) {
-		return Vector.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.scalarSub = function(rhs) {
-		return Vector.scalarSub(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.scalarMul = function(rhs) {
-		return Vector.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.scalarDiv = function(rhs) {
-		return Vector.scalarDiv(this, rhs, this);
-	};
-
-	/**
-	 * @description Computes the dot product of two N-dimensional vectors.
-	 * @param {Vector} lhs Vector on the left-hand side.
-	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @returns {Float} Dot product.
-	 */
-
-	Vector.prototype.dot = function(rhs) {
-		return Vector.dot(this, rhs);
-	};
-
-	/**
-	 * @description Copies component values from another vector.
+	 * @description Copies component values and stores them locally. Equivalent of "return (this = source);".
 	 * @param {Vector} source Source vector.
-	 * @returns {Vector} Self for chaining.
+	 * @return {Vector} Self for chaining.
 	 */
 
 	Vector.prototype.copy = function(source) {
 		return Vector.copy(source, this);
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description Inverts all component values of the vector.
-	 * @returns {Vector} Self for chaining.
+	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Float} Dot product.
 	 */
 
-	Vector.prototype.invert = function() {
-		for ( var i = 0; i < this.data.length; i++) {
-			this.data[i] = 0.0 - this.data[i];
+	Vector.dot = function(lhs, rhs) {
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+		var size = ldata.length;
+
+		if (rdata.length !== size) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
-		return this;
-	};
+		var sum = 0.0;
 
-	/**
-	 * @description Computes the square length of the vector.
-	 * @returns {Float} Square length.
-	 */
-
-	Vector.prototype.squareLength = function() {
-		return Vector.dot(this, this);
-	};
-
-	/**
-	 * @description Computes the length (euclidian norm) of the vector.
-	 * @returns {Float} Length.
-	 */
-
-	Vector.prototype.length = function() {
-		return Math.sqrt(Vector.dot(this, this));
-	};
-
-	/**
-	 * @description Normalizes the vector to unit length.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Vector} Self for chaining.
-	 */
-
-	Vector.prototype.normalize = function() {
-		var l = this.length();
-		var clean = true;
-
-		l = (clean &= (l > 0.0)) ? 1.0 / l : 0.0;
-
-		for ( var i = 0; i < this.data.length; i++) {
-			this.data[i] *= l;
+		for (var i = 0; i < size; i++) {
+			sum += ldata[i] * rdata[i];
 		}
 
-		if (clean === false) {
-			console.warn("[Vector.prototype.normalize] Attempted to divide by zero!");
-		}
-
-		return this;
+		return sum;
 	};
 
 	/**
-	 * @description Sets the components of the vector.
-	 * @param {Float...} arguments Component values.
-	 * @returns {Vector} Self for chaining.
+	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {Float} Dot product.
 	 */
 
-	Vector.prototype.set = function() {
-		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			if (arguments[0] instanceof Vector) {
-				for ( var i = 0; i < arguments[0].data.length; i++) {
-					this.data[i] = arguments[0].data[i];
-				}
-			} else {
-				for ( var i = 0; i < arguments[0].length; i++) {
-					this.data[i] = arguments[0][i];
-				}
-			}
-		} else {
-			for ( var i in arguments) {
-				this.data[i] = arguments[i];
-			}
-		}
-
-		return this;
+	Vector.prototype.dot = function(rhs) {
+		return Vector.dot(this, rhs);
 	};
 
-	/**
-	 * @description Converts the vector to a string.
-	 * @returns {String} String of component values.
-	 */
-
-	Vector.prototype.toString = function() {
-		var string = "";
-
-		string += "[";
-
-		for ( var i = 0; i < this.data.length; i++) {
-			string += this.data[i];
-			string += i !== this.data.length - 1 ? "," : "";
-		}
-
-		string += "]";
-
-		return string;
-	};
-
+	/* ====================================================================== */
 
 	/**
 	 * @static
-	 * @description Transforms a vector using a matrix and stores the result in a separate vector.
+	 * @description Applys a matrix to a vector and stores the result in a separate vector. Equivalent of "return (target = lhs•rhs);".
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
-	 * @param {Vector} target Target vector for storage. (optional)
+	 * @param {Vector} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.transform = function(lhs, rhs, target) {
+	Vector.apply = function(lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 		var size = rhs.data.length;
@@ -532,24 +314,24 @@ define([], function() {
 		}
 
 		if (target.data.length != rows || cols != size) {
-
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
 		if (target === rhs) {
-			return Vector.copy
+			return Vector.copy(Vector.apply(lhs, rhs), target);
 		}
 
 		for (var c = 0; c < cols; c++) {
-			var offset = c * rows;
+			var o = c * rows;
 
 			for (var r = 0; r < rows; r++) {
 				var sum = 0.0;
 
 				for (var i = 0; i < size; i++) {
-					sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
+					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
 				}
 
-				target.data[offset + r] = sum;
+				target.data[o + r] = sum;
 			}
 		}
 
@@ -557,15 +339,222 @@ define([], function() {
 	};
 
 	/**
-	 * @description Transforms a vector using a matrix and stores the result locally.
+	 * @description Applys a matrix to a vector and stores the result locally. Equivalent of "return (this = lhs•this);".
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.transform = function(lhs) {
-		return Vector.transform(lhs, this, this);
+	Vector.prototype.apply = function(lhs) {
+		return Vector.apply(lhs, this, this);
 	};
 
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Compares two vectors for approximate equality. Equivalent of "return (lhs ~ rhs);".
+	 * @param {Vector} lhs Vector on the left-hand side.
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @return {Boolean} True if equal.
+	 */
+
+	Vector.equals = function(lhs, rhs) {
+		if (lhs.data.length !== rhs.data.length) {
+			return false;
+		}
+
+		for (var i = 0; i < lhs.data.length; i++) {
+			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	/**
+	 * @description Compares two vectors for approximate equality. Equivalent of "return (this ~ rhs);"
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @return {Boolean} True if equal.
+	 */
+
+	Vector.prototype.equals = function(rhs) {
+		return Vector.equals(this, rhs);
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - lhs)•(rhs - lhs);". When comparing the relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {Float} Squared distance.
+	 */
+
+	Vector.distanceSquared = function(lhs, rhs) {
+		return Vector.sub(lhs, rhs).lengthSquared();
+	};
+
+	/**
+	 * @static
+	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {Float} Squared distance.
+	 */
+
+	Vector.prototype.distanceSquared = function(rhs) {
+		return Vector.sub(this, rhs).lengthSquared();
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - lhs)•(rhs - lhs));".
+	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {Float} Distance.
+	 */
+
+	Vector.distance = function(lhs, rhs) {
+		return Vector.sub(lhs, rhs).length();
+	};
+
+	/**
+	 * @static
+	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - this)•(rhs - this));".
+	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {Float} Distance.
+	 */
+
+	Vector.prototype.distance = function(rhs) {
+		return Vector.sub(this, rhs).length();
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Computes the squared length of the vector. Equivalent of "return this•this;".
+	 * @return {Float} Square length.
+	 */
+
+	Vector.prototype.lengthSquared = function() {
+		return Vector.dot(this, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Computes the length of the vector. Equivalent of "return sqrt(this•this);".
+	 * @return {Float} Length.
+	 */
+
+	Vector.prototype.length = function() {
+		return Math.sqrt(Vector.dot(this, this));
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Inverts all component values of the vector. Equivalent of "return (this = 0.0 - this);".
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.invert = function() {
+		for (var i = 0; i < this.data.length; i++) {
+			this.data[i] = 0.0 - this.data[i];
+		}
+
+		return this;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Normalizes the vector to unit length. Equivalent of "return (this = this/sqrt(this•this));".
+	 * @throws {Normalization Error} If the magnitude of the vector is incredibly small.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.normalize = function() {
+		var l = this.length();
+
+		if (l < MathUtils.EPSILON) {
+			throw { name : "Normalization Error", message : "The magnitude of the vector is incredibly small." };
+		}
+
+		l = 1.0 / l;
+
+		for (var i = 0; i < this.data.length; i++) {
+			this.data[i] *= l;
+		}
+
+		return this;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Clones the vector. Equivalent of "return (clone = this)".
+	 * @return {Vector} Clone of self.
+	 */
+
+	Vector.prototype.clone = function() {
+		return Vector.copy(this);
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Sets the components of the vector.
+	 * @param {Vector|Float[]|Float...} arguments Component values.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.set = function() {
+		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
+			if (arguments[0] instanceof Vector) {
+				this.copy(arguments[0]);
+			} else if (arguments[0].length > 1) {
+				for (var i = 0; i < arguments[0].length; i++) {
+					this.data[i] = arguments[0][i];
+				}
+			} else {
+				this.set(arguments[0][0]);
+			}
+		} else {
+			for (var i in arguments) {
+				this.data[i] = arguments[i];
+			}
+		}
+
+		return this;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Converts the vector to a string.
+	 * @return {String} String of component values.
+	 */
+
+	Vector.prototype.toString = function() {
+		var string = "";
+
+		string += "[";
+
+		for ( var i = 0; i < this.data.length; i++) {
+			string += this.data[i];
+			string += i !== this.data.length - 1 ? ", " : "";
+		}
+
+		string += "]";
+
+		return string;
+	};
+
+	/* ====================================================================== */
 
 	return Vector;
 });

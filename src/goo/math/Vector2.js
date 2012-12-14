@@ -10,7 +10,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Float...} arguments Initial values for the components.
+	 * @param {Vector2|Float[]|Float...} arguments Initial values for the components.
 	 */
 
 	function Vector2() {
@@ -18,270 +18,248 @@ define(["goo/math/Vector"], function(Vector) {
 		this.set(arguments);
 	}
 
+	Vector2.ZERO = new Vector2(0, 0);
+	Vector2.ONE = new Vector2(1, 1);
+	Vector2.UNIT_X = new Vector2(1, 0);
+	Vector2.UNIT_Y = new Vector2(0, 1);
+
+	/* ====================================================================== */
+
 	/**
 	 * @static
-	 * @description Performs a component-wise addition between two vectors and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
+	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector2.add = function(lhs, rhs, target) {
+		if (typeof(lhs) === "number") {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof(rhs) === "number") {
+			rhs = [rhs, rhs];
+		}
+
 		if (!target) {
 			target = new Vector2();
 		}
 
-		target.data[0] = lhs.data[0] + rhs.data[0];
-		target.data[1] = lhs.data[1] + rhs.data[1];
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		if (ldata.length !== 2 || rdata.length !== 2) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		target.data[0] = ldata[0] + rdata[0];
+		target.data[1] = ldata[1] + rdata[1];
 
 		return target;
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between two vectors and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.sub = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		target.data[0] = lhs.data[0] - rhs.data[0];
-		target.data[1] = lhs.data[1] - rhs.data[1];
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between two vectors and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.mul = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		target.data[0] = lhs.data[0] * rhs.data[0];
-		target.data[1] = lhs.data[1] * rhs.data[1];
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise division between two vectors and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.div = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		var clean = true;
-
-		target.data[0] = (clean &= (rhs.data[0] < 0.0 || rhs.data[0] > 0.0)) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= (rhs.data[1] < 0.0 || rhs.data[1] > 0.0)) ? lhs.data[1] / rhs.data[1] : 0.0;
-
-		if (clean === false) {
-			console.warn("[Vector2.div] Attempted to divide by zero!");
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise addition between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.scalarAdd = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		target.data[0] = lhs.data[0] + rhs;
-		target.data[1] = lhs.data[1] + rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.scalarSub = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		target.data[0] = lhs.data[0] - rhs;
-		target.data[1] = lhs.data[1] - rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.scalarMul = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise division between a vector and a scalar and stores the result in a separate vector.
-	 * @param {Vector2} lhs Vector on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Vector2} target Target vector for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Vector2} A new vector if the target vector cannot be used for storage, else the target vector.
-	 */
-
-	Vector2.scalarDiv = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Vector2();
-		}
-
-		// REVIEW: Cleaner alternative:
-		//   var clean = (rhs < 0.0 || rhs > 0.0);
-		//   rhs = clean ? 1.0 / rhs : 0.0;
-		var clean = true;
-
-		// REVIEW: Why multiply with 0 in case of rhs=0?
-		// Isn't an assertion failure and result of +/-Infinity better?
-		//
-		// REVIEW: Create a new variable instead of reusing rhs like this.
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
-
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-
-		// REVIEW: Use if (!clean) instead.
-		if (clean === false) {
-			// REVIEW: Throw an exception instead. Or assertion?
-			console.warn("[Vector2.scalarDiv] Attempted to divide by zero!");
-		}
-
-		return target;
-	};
-
-	/**
-	 * @description Performs a component-wise addition between two vectors and stores the result locally.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @return {Vector2} Self for chaining.
 	 */
 
 	Vector2.prototype.add = function(rhs) {
 		return Vector2.add(this, rhs, this);
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description Performs a component-wise subtraction between two vectors and stores the result locally.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @static
+	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Vector2.sub = function(lhs, rhs, target) {
+		if (typeof(lhs) === "number") {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof(rhs) === "number") {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		if (ldata.length !== 2 || rdata.length !== 2) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		target.data[0] = ldata[0] - rdata[0];
+		target.data[1] = ldata[1] - rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @return {Vector2} Self for chaining.
 	 */
 
 	Vector2.prototype.sub = function(rhs) {
 		return Vector2.sub(this, rhs, this);
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description Performs a component-wise multiplication between two vectors and stores the result locally.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @static
+	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Vector2.mul = function(lhs, rhs, target) {
+		if (typeof(lhs) === "number") {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof(rhs) === "number") {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		if (ldata.length !== 2 || rdata.length !== 2) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		target.data[0] = ldata[0] * rdata[0];
+		target.data[1] = ldata[1] * rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @return {Vector2} Self for chaining.
 	 */
 
 	Vector2.prototype.mul = function(rhs) {
 		return Vector2.mul(this, rhs, this);
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description Performs a component-wise division between two vectors and stores the result locally.
-	 * @param {Vector2} rhs Vector on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @static
+	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2} [target] Target vector for storage.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Vector2.div = function(lhs, rhs, target) {
+		if (typeof(lhs) === "number") {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof(rhs) === "number") {
+			rhs = [rhs, rhs];
+		}
+
+		if (!target) {
+			target = new Vector2();
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		if (ldata.length !== 2 || rdata.length !== 2) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		target.data[0] = ldata[0] / rdata[0];
+		target.data[1] = ldata[1] / rdata[1];
+
+		return target;
+	};
+
+	/**
+	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @return {Vector2} Self for chaining.
 	 */
 
 	Vector2.prototype.div = function(rhs) {
 		return Vector2.div(this, rhs, this);
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description Performs a component-wise addition between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @return {Float} Dot product.
 	 */
 
-	Vector2.prototype.scalarAdd = function(rhs) {
-		return Vector2.scalarAdd(this, rhs, this);
+	Vector2.dot = function(lhs, rhs) {
+		if (typeof(lhs) === "number") {
+			lhs = [lhs, lhs];
+		}
+
+		if (typeof(rhs) === "number") {
+			rhs = [rhs, rhs];
+		}
+
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		if (ldata.length !== 2 || rdata.length !== 2) {
+			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+		}
+
+		var sum = 0.0;
+
+		sum += ldata[0] * rdata[0];
+		sum += ldata[1] * rdata[1];
+
+		return sum;
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
+	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @return {Float} Dot product.
 	 */
 
-	Vector2.prototype.scalarSub = function(rhs) {
-		return Vector2.scalarSub(this, rhs, this);
+	Vector2.prototype.dot = function(rhs) {
+		return Vector2.dot(this, rhs);
 	};
 
-	/**
-	 * @description Performs a component-wise multiplication between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
-	 */
-
-	Vector2.prototype.scalarMul = function(rhs) {
-		return Vector2.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division between a vector and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Vector2} Self for chaining.
-	 */
-
-	Vector2.prototype.scalarDiv = function(rhs) {
-		return Vector2.scalarDiv(this, rhs, this);
-	};
+	/* ====================================================================== */
 
 	return Vector2;
 });
