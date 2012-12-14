@@ -59,7 +59,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 			var cosTheta = Math.cos(theta);
 			var sinTheta = Math.sin(theta);
 			radialAxis.set(cosTheta, sinTheta, 0);
-			Vector3.scalarMul(radialAxis, this._centerRadius, torusMiddle);
+			Vector3.mul(radialAxis, this._centerRadius, torusMiddle);
 
 			// compute slice vertices with duplication at end point
 			var iSave = i;
@@ -70,7 +70,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 				var cosPhi = Math.cos(phi);
 				var sinPhi = Math.sin(phi);
 
-				tempNormal.copy(radialAxis).scalarMul(cosPhi);
+				tempNormal.copy(radialAxis).mul(cosPhi);
 				tempNormal.z = tempNormal.z + sinPhi;
 				tempNormal.normalize();
 
@@ -84,7 +84,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 					norms[i * 3 + 2] = -tempNormal.z;
 				}
 
-				tempNormal.scalarMul(this._tubeRadius).add(torusMiddle);
+				tempNormal.mul(this._tubeRadius).add(torusMiddle);
 
 				vbuf[i * 3 + 0] = tempNormal.x;
 				vbuf[i * 3 + 1] = tempNormal.y;

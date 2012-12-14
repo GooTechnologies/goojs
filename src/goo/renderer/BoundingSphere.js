@@ -32,7 +32,7 @@ define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], functi
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.add(min).scalarDiv(2.0);
+		var newCenter = max.add(min).div(2.0);
 		var size = 0, test;
 		for ( var i = 0; i < verts.length; i += 3) {
 			vec.set(verts[i], verts[i + 1], verts[i + 2]);
@@ -119,7 +119,7 @@ define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], functi
             discr = a1 * a1 - a;
             root = Math.sqrt(discr);
             var distances = [ root - a1 ];
-            var points = [ new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin) ];
+            var points = [ new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin) ];
             return {"distances": distances, "points": points };
         }
 
@@ -136,14 +136,14 @@ define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'], functi
             root = Math.sqrt(discr);
             var distances = [ -a1 - root, -a1 + root ];
             var points = [
-                          new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin),
-                          new Vector3().copy(ray.direction).scalarMul(distances[1]).add(ray.origin)
+                          new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin),
+                          new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)
                           ];
             return {"distances": distances, "points": points };
         }
 
         var distances = [ -a1 ];
-        var points = [ new Vector3().copy(ray.direction).scalarMul(distances[0]).add(ray.origin) ];
+        var points = [ new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin) ];
         return {"distances": distances, "points": points };
     };
 

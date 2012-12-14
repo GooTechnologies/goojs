@@ -548,7 +548,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1,
 			(screenY / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
-		position.scalarMul(1.0 / position.w);
+		position.mul(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -602,7 +602,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		var position = new Vector4();
 		position.set(worldPosition.x, worldPosition.y, worldPosition.z, 1);
 		this.modelViewProjection.applyPost(position);
-		position.scalarMul(1.0 / position.w);
+		position.mul(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;

@@ -86,7 +86,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 			for ( var iR = 0; iR < this.radialSamples; iR++) {
 				var fRadialFraction = iR * fInvRS; // in [0,1)
 				var kRadial = tempVc.set(afCos[iR], afSin[iR], 0);
-				Vector3.scalarMul(kRadial, fSliceRadius, tempVa);
+				Vector3.mul(kRadial, fSliceRadius, tempVa);
 
 				vbuf[i * 3 + 0] = kSliceCenter.x + tempVa.x;
 				vbuf[i * 3 + 1] = kSliceCenter.y + tempVa.y;
