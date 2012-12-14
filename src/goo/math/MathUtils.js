@@ -1,14 +1,17 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'], function(Vector3, Matrix3x3, Matrix4x4) {
+define([], function() {
 	"use strict";
 
 	function MathUtils() {
 	}
 
+	// REVIEW: This notation is confusing. Are we supposed to multiply or divide by these constants? Functions MathUtils.radFromDeg() and MathUtils.degFromRad() would be more intuitive, albeit slower. Perhaps we should use both?
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
 
 	MathUtils.HALF_PI = 0.5 * Math.PI;
 	MathUtils.TWO_PI = 2.0 * Math.PI;
+
+	MathUtils.EPSILON = 0.0001;
 
 	// REVIEW: Confusing name, percent sounds like range is 0..100
 	MathUtils.lerp = function(percent, startValue, endValue) {

@@ -10,15 +10,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray'], function(World, Entity, System, TransformSystem, RenderSystem,
+		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray', 'goo/entities/systems/PickingSystem'], function(World, Entity, System, TransformSystem, RenderSystem,
 	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2,
-	BasicControlScript, Ray) {
+	BasicControlScript, Ray, PickingSystem) {
 	"use strict";
 
-	var resourcePath = "../resources";
-
 	var material;
+	var picked = null;
 
 	function init() {
 		// Create typical goo application
@@ -29,7 +28,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		document.body.appendChild(goo.renderer.domElement);
 
 		material = Material.createMaterial(Material.shaders.textured);
-		// var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		var colorInfo = new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
 		var texture = new Texture(colorInfo, null, 2, 2);
 		texture.minFilter = 'NearestNeighborNoMipMaps';
@@ -46,7 +44,25 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+		
+		// Add PickingSystem
+		var picking = new PickingSystem();
+		goo.world.setSystem(picking);
+		picking.onPick = function(pickedList) {
+			if (pickedList && pickedList.length) {
+				picked = pickedList[0].entity;
+			} else {
+				picked = null;
+			}
+		};
 
+		goo.callbacks.push(function(tpf) {
+			if (picked) {
+				var val = Math.abs(Math.sin(goo.world.time))+ 0.5;
+				picked.transformComponent.transform.scale.set(val,val,val);
+			}
+		});
+		
 		document.addEventListener('mousedown', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -73,6 +89,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			camera.getPickRay(mouseDownX, mouseDownY, goo.renderer.viewportWidth, goo.renderer.viewportHeight, ray);
 			console.log('Ray: origin = ' + ray.origin.x + ',' + ray.origin.y + ',' + ray.origin.z + ' direction = ' + ray.direction.x + ','
 				+ ray.direction.y + ',' + ray.direction.z);
+			
+			// Ask all appropriate world entities if they've been picked
+			picking.pickRay = ray;
+			picking._process();
 		}, false);
 	}
 

@@ -1,4 +1,4 @@
-define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
+define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	"use strict";
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
@@ -10,29 +10,28 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Float...} arguments Initial values for the components.
+	 * @param {Float...|Float[]} arguments Initial values for the components.
 	 */
 
 	function Matrix3x3() {
 		Matrix.call(this, 3, 3);
+
 		if (arguments.length === 0) {
 			this.setIdentity();
 		} else {
-			if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-				this.set(arguments[0]);
-			} else {
-				this.set(arguments);
-			}
+			this.set(arguments);
 		}
 	}
 
+	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
 	/**
 	 * @static
-	 * @description Performs a component-wise addition between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise addition.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3} [target] Target matrix for storage.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.add = function(lhs, rhs, target) {
@@ -40,26 +39,38 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		target.e00 = lhs.e00 + rhs.e00;
-		target.e10 = lhs.e10 + rhs.e10;
-		target.e20 = lhs.e20 + rhs.e20;
-		target.e01 = lhs.e01 + rhs.e01;
-		target.e11 = lhs.e11 + rhs.e11;
-		target.e21 = lhs.e21 + rhs.e21;
-		target.e02 = lhs.e02 + rhs.e02;
-		target.e12 = lhs.e12 + rhs.e12;
-		target.e22 = lhs.e22 + rhs.e22;
+		if (rhs instanceof Matrix3x3) {
+			target.e00 = lhs.e00 + rhs.e00;
+			target.e10 = lhs.e10 + rhs.e10;
+			target.e20 = lhs.e20 + rhs.e20;
+			target.e01 = lhs.e01 + rhs.e01;
+			target.e11 = lhs.e11 + rhs.e11;
+			target.e21 = lhs.e21 + rhs.e21;
+			target.e02 = lhs.e02 + rhs.e02;
+			target.e12 = lhs.e12 + rhs.e12;
+			target.e22 = lhs.e22 + rhs.e22;
+		} else {
+			target.e00 = lhs.e00 + rhs;
+			target.e10 = lhs.e10 + rhs;
+			target.e20 = lhs.e20 + rhs;
+			target.e01 = lhs.e01 + rhs;
+			target.e11 = lhs.e11 + rhs;
+			target.e21 = lhs.e21 + rhs;
+			target.e02 = lhs.e02 + rhs;
+			target.e12 = lhs.e12 + rhs;
+			target.e22 = lhs.e22 + rhs;
+		}
 
 		return target;
 	};
 
 	/**
 	 * @static
-	 * @description Performs a component-wise subtraction between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise subtraction.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3} [target] Target matrix for storage.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.sub = function(lhs, rhs, target) {
@@ -67,26 +78,38 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		target.e00 = lhs.e00 - rhs.e00;
-		target.e10 = lhs.e10 - rhs.e10;
-		target.e20 = lhs.e20 - rhs.e20;
-		target.e01 = lhs.e01 - rhs.e01;
-		target.e11 = lhs.e11 - rhs.e11;
-		target.e21 = lhs.e21 - rhs.e21;
-		target.e02 = lhs.e02 - rhs.e02;
-		target.e12 = lhs.e12 - rhs.e12;
-		target.e22 = lhs.e22 - rhs.e22;
+		if (rhs instanceof Matrix3x3) {
+			target.e00 = lhs.e00 - rhs.e00;
+			target.e10 = lhs.e10 - rhs.e10;
+			target.e20 = lhs.e20 - rhs.e20;
+			target.e01 = lhs.e01 - rhs.e01;
+			target.e11 = lhs.e11 - rhs.e11;
+			target.e21 = lhs.e21 - rhs.e21;
+			target.e02 = lhs.e02 - rhs.e02;
+			target.e12 = lhs.e12 - rhs.e12;
+			target.e22 = lhs.e22 - rhs.e22;
+		} else {
+			target.e00 = lhs.e00 - rhs;
+			target.e10 = lhs.e10 - rhs;
+			target.e20 = lhs.e20 - rhs;
+			target.e01 = lhs.e01 - rhs;
+			target.e11 = lhs.e11 - rhs;
+			target.e21 = lhs.e21 - rhs;
+			target.e02 = lhs.e02 - rhs;
+			target.e12 = lhs.e12 - rhs;
+			target.e22 = lhs.e22 - rhs;
+		}
 
 		return target;
 	};
 
 	/**
 	 * @static
-	 * @description Performs a component-wise multiplication between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise multiplication.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3} [target] Target matrix for storage.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.mul = function(lhs, rhs, target) {
@@ -94,27 +117,38 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		target.e00 = lhs.e00 * rhs.e00;
-		target.e10 = lhs.e10 * rhs.e10;
-		target.e20 = lhs.e20 * rhs.e20;
-		target.e01 = lhs.e01 * rhs.e01;
-		target.e11 = lhs.e11 * rhs.e11;
-		target.e21 = lhs.e21 * rhs.e21;
-		target.e02 = lhs.e02 * rhs.e02;
-		target.e12 = lhs.e12 * rhs.e12;
-		target.e22 = lhs.e22 * rhs.e22;
+		if (rhs instanceof Matrix3x3) {
+			target.e00 = lhs.e00 * rhs.e00;
+			target.e10 = lhs.e10 * rhs.e10;
+			target.e20 = lhs.e20 * rhs.e20;
+			target.e01 = lhs.e01 * rhs.e01;
+			target.e11 = lhs.e11 * rhs.e11;
+			target.e21 = lhs.e21 * rhs.e21;
+			target.e02 = lhs.e02 * rhs.e02;
+			target.e12 = lhs.e12 * rhs.e12;
+			target.e22 = lhs.e22 * rhs.e22;
+		} else {
+			target.e00 = lhs.e00 * rhs;
+			target.e10 = lhs.e10 * rhs;
+			target.e20 = lhs.e20 * rhs;
+			target.e01 = lhs.e01 * rhs;
+			target.e11 = lhs.e11 * rhs;
+			target.e21 = lhs.e21 * rhs;
+			target.e02 = lhs.e02 * rhs;
+			target.e12 = lhs.e12 * rhs;
+			target.e22 = lhs.e22 * rhs;
+		}
 
 		return target;
 	};
 
 	/**
 	 * @static
-	 * @description Performs a component-wise division between two matrices and stores the result in a separate matrix.
+	 * @description Performs a component-wise division.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3} [target] Target matrix for storage.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.div = function(lhs, rhs, target) {
@@ -122,137 +156,28 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		var clean = true;
+		if (rhs instanceof Matrix3x3) {
+			target.e00 = lhs.e00 / rhs.e00;
+			target.e10 = lhs.e10 / rhs.e10;
+			target.e20 = lhs.e20 / rhs.e20;
+			target.e01 = lhs.e01 / rhs.e01;
+			target.e11 = lhs.e11 / rhs.e11;
+			target.e21 = lhs.e21 / rhs.e21;
+			target.e02 = lhs.e02 / rhs.e02;
+			target.e12 = lhs.e12 / rhs.e12;
+			target.e22 = lhs.e22 / rhs.e22;
+		} else {
+			rhs = 1.0 / rhs;
 
-		target.e00 = (clean &= (rhs.e00 < 0.0 || rhs.e00 > 0.0)) ? lhs.e00 / rhs.e00 : 0.0;
-		target.e10 = (clean &= (rhs.e10 < 0.0 || rhs.e10 > 0.0)) ? lhs.e10 / rhs.e10 : 0.0;
-		target.e20 = (clean &= (rhs.e20 < 0.0 || rhs.e20 > 0.0)) ? lhs.e20 / rhs.e20 : 0.0;
-		target.e01 = (clean &= (rhs.e01 < 0.0 || rhs.e01 > 0.0)) ? lhs.e01 / rhs.e01 : 0.0;
-		target.e11 = (clean &= (rhs.e11 < 0.0 || rhs.e11 > 0.0)) ? lhs.e11 / rhs.e11 : 0.0;
-		target.e21 = (clean &= (rhs.e21 < 0.0 || rhs.e21 > 0.0)) ? lhs.e21 / rhs.e21 : 0.0;
-		target.e02 = (clean &= (rhs.e02 < 0.0 || rhs.e02 > 0.0)) ? lhs.e02 / rhs.e02 : 0.0;
-		target.e12 = (clean &= (rhs.e12 < 0.0 || rhs.e12 > 0.0)) ? lhs.e12 / rhs.e12 : 0.0;
-		target.e22 = (clean &= (rhs.e22 < 0.0 || rhs.e22 > 0.0)) ? lhs.e22 / rhs.e22 : 0.0;
-
-		if (clean === false) {
-			console.warn("[Matrix3x3.div] Attempted to divide by zero!");
-		}
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise addition between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix3x3.scalarAdd = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		target.e00 = lhs.e00 + rhs;
-		target.e10 = lhs.e10 + rhs;
-		target.e20 = lhs.e20 + rhs;
-		target.e01 = lhs.e01 + rhs;
-		target.e11 = lhs.e11 + rhs;
-		target.e21 = lhs.e21 + rhs;
-		target.e02 = lhs.e02 + rhs;
-		target.e12 = lhs.e12 + rhs;
-		target.e22 = lhs.e22 + rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix3x3.scalarSub = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		target.e00 = lhs.e00 - rhs;
-		target.e10 = lhs.e10 - rhs;
-		target.e20 = lhs.e20 - rhs;
-		target.e01 = lhs.e01 - rhs;
-		target.e11 = lhs.e11 - rhs;
-		target.e21 = lhs.e21 - rhs;
-		target.e02 = lhs.e02 - rhs;
-		target.e12 = lhs.e12 - rhs;
-		target.e22 = lhs.e22 - rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix3x3.scalarMul = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		target.e00 = lhs.e00 * rhs;
-		target.e10 = lhs.e10 * rhs;
-		target.e20 = lhs.e20 * rhs;
-		target.e01 = lhs.e01 * rhs;
-		target.e11 = lhs.e11 * rhs;
-		target.e21 = lhs.e21 * rhs;
-		target.e02 = lhs.e02 * rhs;
-		target.e12 = lhs.e12 * rhs;
-		target.e22 = lhs.e22 * rhs;
-
-		return target;
-	};
-
-	/**
-	 * @static
-	 * @description Performs a component-wise division between a matrix and a scalar and stores the result in a separate matrix.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
-	 */
-
-	Matrix3x3.scalarDiv = function(lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		var clean = true;
-
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
-
-		target.e00 = lhs.e00 * rhs;
-		target.e10 = lhs.e10 * rhs;
-		target.e20 = lhs.e20 * rhs;
-		target.e01 = lhs.e01 * rhs;
-		target.e11 = lhs.e11 * rhs;
-		target.e21 = lhs.e21 * rhs;
-		target.e02 = lhs.e02 * rhs;
-		target.e12 = lhs.e12 * rhs;
-		target.e22 = lhs.e22 * rhs;
-
-		if (clean === false) {
-			console.warn("[Matrix3x3.scalarDiv] Attempted to divide by zero!");
+			target.e00 = lhs.e00 * rhs;
+			target.e10 = lhs.e10 * rhs;
+			target.e20 = lhs.e20 * rhs;
+			target.e01 = lhs.e01 * rhs;
+			target.e11 = lhs.e11 * rhs;
+			target.e21 = lhs.e21 * rhs;
+			target.e02 = lhs.e02 * rhs;
+			target.e12 = lhs.e12 * rhs;
+			target.e22 = lhs.e22 * rhs;
 		}
 
 		return target;
@@ -263,8 +188,8 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} target Target matrix for storage. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3} [target] Target matrix for storage.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.combine = function(lhs, rhs, target) {
@@ -272,27 +197,29 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		tempMatrix.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
-		tempMatrix.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
-		tempMatrix.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
-		tempMatrix.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
-		tempMatrix.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
-		tempMatrix.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
-		tempMatrix.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
-		tempMatrix.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
-		tempMatrix.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
+		if (target === lhs || target === rhs) {
+			return Matrix3x3.copy(Matrix3x3.combine(lhs, rhs), target);
+		}
 
-		target.copy(tempMatrix);
+		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
+		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
+		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
+		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
+		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
+		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
+		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
+		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
+		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
 
 		return target;
 	};
 
 	/**
 	 * @static
-	 * @description Transposes a matrix (exchanges rows and columns).
+	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
-	 * @param {Matrix3x3} target Target matrix. (optional)
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3} [target] Target matrix.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.transpose = function(source, target) {
@@ -300,27 +227,30 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		tempMatrix.e00 = source.e00;
-		tempMatrix.e10 = source.e01;
-		tempMatrix.e20 = source.e02;
-		tempMatrix.e01 = source.e10;
-		tempMatrix.e11 = source.e11;
-		tempMatrix.e21 = source.e12;
-		tempMatrix.e02 = source.e20;
-		tempMatrix.e12 = source.e21;
-		tempMatrix.e22 = source.e22;
+		if (target === source) {
+			return Matrix.copy(Matrix3x3.transpose(source), target);
+		}
 
-		target.copy(tempMatrix);
+		target.e00 = source.e00;
+		target.e10 = source.e01;
+		target.e20 = source.e02;
+		target.e01 = source.e10;
+		target.e11 = source.e11;
+		target.e21 = source.e12;
+		target.e02 = source.e20;
+		target.e12 = source.e21;
+		target.e22 = source.e22;
 
 		return target;
 	};
 
 	/**
+	 * @static
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
-	 * @param {Matrix3x3} target Target matrix. (optional)
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
-	 * @returns {Matrix3x3} A new matrix if the target matrix cannot be used for storage, else the target matrix.
+	 * @param {Matrix3x3} [target] Target matrix.
+	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
+	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.invert = function(source, target) {
@@ -328,33 +258,35 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
+		if (target === source) {
+			return Matrix.copy(Matrix3x3.invert(source), target);
+		}
+
 		var det = source.determinant();
 
-		if (det < 0.0 || det > 0.0) {
-			det = 1.0 / det;
-
-			tempMatrix.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
-			tempMatrix.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
-			tempMatrix.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
-			tempMatrix.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
-			tempMatrix.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
-			tempMatrix.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
-			tempMatrix.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
-			tempMatrix.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
-			tempMatrix.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
-
-			target.copy(tempMatrix);
-		} else {
-			console.warn("[Matrix3x3.invert] Attempted to divide by zero!");
+		if (Math.abs(det) < MathUtils.EPSILON) {
+			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
 		}
+
+		det = 1.0 / det;
+
+		target.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
+		target.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
+		target.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
+		target.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
+		target.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
+		target.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
+		target.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
+		target.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
+		target.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
 
 		return target;
 	};
 
 	/**
-	 * @description Performs a component-wise addition between two matrices and stores the result locally.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @description Performs a component-wise addition.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.add = function(rhs) {
@@ -362,9 +294,9 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between two matrices and stores the result locally.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @description Performs a component-wise subtraction.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.sub = function(rhs) {
@@ -372,19 +304,19 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between two matrices and stores the result locally.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @description Performs a component-wise multiplication.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.mul = function(rhs) {
-		return Matrix3x3.add(this, rhs, this);
+		return Matrix3x3.mul(this, rhs, this);
 	};
 
 	/**
-	 * @description Performs a component-wise division between two matrices and stores the result locally.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @description Performs a component-wise division.
+	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.div = function(rhs) {
@@ -392,49 +324,9 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.scalarAdd = function(rhs) {
-		return Matrix3x3.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise subtraction between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.scalarSub = function(rhs) {
-		return Matrix3x3.scalarSub(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise multiplication between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.scalarMul = function(rhs) {
-		return Matrix3x3.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division between a matrix and a scalar and stores the result locally.
-	 * @param {Float} rhs Scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.scalarDiv = function(rhs) {
-		return Matrix3x3.scalarDiv(this, rhs, this);
-	};
-
-	/**
 	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.combine = function(rhs) {
@@ -442,8 +334,8 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns).
-	 * @returns {Matrix3x3} Self for chaining.
+	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.transpose = function() {
@@ -451,27 +343,8 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
-	 * @description Computes the determinant of the matrix.
-	 * @returns {Float} Determinant of matrix.
-	 */
-
-	Matrix3x3.prototype.determinant = function() {
-		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02
-			* (this.e10 * this.e21 - this.e11 * this.e20);
-	};
-
-	/**
-	 * @description Computes the analytical inverse and stores the result locally.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.invert = function() {
-		return Matrix3x3.invert(this, this);
-	};
-
-	/**
 	 * @description Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @return {Boolean} True if orthogonal.
 	 */
 
 	Matrix3x3.prototype.isOrthogonal = function() {
@@ -479,19 +352,19 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21;
 
-		if (dot < 0.0 || dot > 0.0) {
+		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
 		}
 
 		dot = this.e00 * this.e02 + this.e10 * this.e12 + this.e20 * this.e22;
 
-		if (dot < 0.0 || dot > 0.0) {
+		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
 		}
 
 		dot = this.e01 * this.e02 + this.e11 * this.e12 + this.e21 * this.e22;
 
-		if (dot < 0.0 || dot > 0.0) {
+		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
 		}
 
@@ -500,7 +373,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 
 	/**
 	 * @description Tests if the matrix is normal.
-	 * @returns {Boolean} True if normal.
+	 * @return {Boolean} True if normal.
 	 */
 
 	Matrix3x3.prototype.isNormal = function() {
@@ -508,19 +381,19 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 
 		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20;
 
-		if (l < 1.0 || l > 1.0) {
+		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
 
 		l = this.e01 * this.e01 + this.e11 * this.e11 + this.e21 * this.e21;
 
-		if (l < 1.0 || l > 1.0) {
+		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
 
 		l = this.e02 * this.e02 + this.e12 * this.e12 + this.e22 * this.e22;
 
-		if (l < 1.0 || l > 1.0) {
+		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
 
@@ -529,7 +402,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 
 	/**
 	 * @description Tests if the matrix is orthonormal.
-	 * @returns {Boolean} True if orthonormal.
+	 * @return {Boolean} True if orthonormal.
 	 */
 
 	Matrix3x3.prototype.isOrthonormal = function() {
@@ -537,12 +410,40 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	};
 
 	/**
+	 * @description Computes the determinant of the matrix.
+	 * @return {Float} Determinant of matrix.
+	 */
+
+	Matrix3x3.prototype.determinant = function() {
+		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
+	};
+
+	/**
+	 * @description Computes the analytical inverse and stores the result locally.
+	 * @return {Matrix3x3} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.invert = function() {
+		return Matrix3x3.invert(this, this);
+	};
+
+	/**
+	 * @description Sets the matrix to identity.
+	 * @return {Matrix3x3} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.setIdentity = function() {
+		this.set(Matrix3x3.IDENTITY);
+	};
+
+	// TODO: Refactor below this line.
+
+	/**
 	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 
-	// TODO: incorporate these better and possibly to the base class
 	Matrix3x3.prototype.applyPost = function(rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
@@ -620,6 +521,7 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	 * @return this matrix for chaining
 	 * @throws NullPointerException if axis is null.
 	 */
+
 	Matrix3x3.prototype.fromAngleNormalAxis = function(angle, x, y, z) {
 		var fCos = Math.cos(angle);
 		var fSin = Math.sin(angle);
@@ -687,28 +589,6 @@ define(['goo/math/Matrix', 'goo/math/Vector3'], function(Matrix, Vector3) {
 	Matrix3x3.prototype.copyQuaternion = function(quaternion) {
 		return quaternion.toRotationMatrix(this);
 	};
-
-	/**
-	 * @description Constructs a clone of the matrix.
-	 * @returns {Matrix3x3} Cloned matrix.
-	 */
-
-	Matrix3x3.prototype.clone = function() {
-		return new Matrix3x3(this.data);
-	};
-
-	/**
-	 * @description Sets the matrix to identity.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-
-	Matrix3x3.prototype.setIdentity = function() {
-		this.set(Matrix3x3.IDENTITY);
-	};
-
-	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-
-	var tempMatrix = new Matrix3x3();
 
 	return Matrix3x3;
 });

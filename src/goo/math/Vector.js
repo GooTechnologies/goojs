@@ -512,5 +512,60 @@ define([], function() {
 		return string;
 	};
 
+
+	/**
+	 * @static
+	 * @description Transforms a vector using a matrix and stores the result in a separate vector.
+	 * @param {Matrix} lhs Matrix on the left-hand side.
+	 * @param {Vector} rhs Vector on the right-hand side.
+	 * @param {Vector} target Target vector for storage. (optional)
+	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Vector.transform = function(lhs, rhs, target) {
+		var rows = lhs.rows;
+		var cols = lhs.cols;
+		var size = rhs.data.length;
+
+		if (!target) {
+			target = new Vector(rows);
+		}
+
+		if (target.data.length != rows || cols != size) {
+
+		}
+
+		if (target === rhs) {
+			return Vector.copy
+		}
+
+		for (var c = 0; c < cols; c++) {
+			var offset = c * rows;
+
+			for (var r = 0; r < rows; r++) {
+				var sum = 0.0;
+
+				for (var i = 0; i < size; i++) {
+					sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
+				}
+
+				target.data[offset + r] = sum;
+			}
+		}
+
+		return target;
+	};
+
+	/**
+	 * @description Transforms a vector using a matrix and stores the result locally.
+	 * @param {Matrix} lhs Matrix on the left-hand side.
+	 * @return {Vector} Self for chaining.
+	 */
+
+	Vector.prototype.transform = function(lhs) {
+		return Vector.transform(lhs, this, this);
+	};
+
+
 	return Vector;
 });

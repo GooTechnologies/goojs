@@ -16,7 +16,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	 * 
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
-	 * @param [locationStore]
+	 * @param locationStore Vector3 to store our intersection point in.
 	 * @return true if this ray intersects a polygon described by the given vertices.
 	 */
 	Ray.prototype.intersects = function(polygonVertices, doPlanar, locationStore) {
@@ -71,7 +71,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 							return true;
 						}
 						// else fill in.
-						var inv = 1 / dirDotNorm;
+						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
 							locationStore.set(this.origin).addLocal(this.direction.getX() * t, this.direction.getY() * t, this.direction.getZ() * t);
@@ -93,6 +93,79 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 		}
 		return result;
 	};
+
+	/**
+     * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
+     * @return the distance from our origin to the primitive or Infinity if we do not intersect.
+     */
+    Ray.prototype.getDistanceToPrimitive = function(worldVertices) {
+        // Intersection test
+        var intersect = new Vector3();
+        if (this.intersects(worldVertices, false, intersect)) {
+            return this.origin.distance(intersect.x, intersect.y, intersect.z);
+        }
+        return Infinity;
+    };
+	
+
+    /**
+     * @param plane
+     * @param locationStore
+     *            if not null, and this ray intersects the plane, the world location of the point of intersection is
+     *            stored in this vector.
+     * @return true if the ray collides with the given Plane
+     */
+    Ray.prototype.intersectsPlane = function(plane, locationStore) {
+		var normal = plane.normal;
+		var denominator = normal.dot(this.direction);
+
+		if (Math.abs(denominator) < 0.00001) {
+			return false; // coplanar
+		}
+
+		var numerator = -normal.dot(this.origin) + plane.constant;
+		var ratio = numerator / denominator;
+
+		if (ratio < 0.00001) {
+			return false; // intersects behind origin
+		}
+
+		if (locationStore != null) {
+			locationStore.set(this.direction).multiplyLocal(ratio).addLocal(
+					this.origin);
+		}
+
+		return true;
+    };
+
+    /**
+	 * @param point
+	 *            Vector3
+	 * @param store
+	 *            if not null, the closest point is stored in this param
+	 * @return the squared distance from this ray to the given point.
+	 */
+    Ray.prototype.distanceSquared = function(point, store) {
+		var vectorA = new Vector3();
+		vectorA.set(point).subtractLocal(this.origin);
+		var t0 = this.direction.dot(vectorA);
+		if (t0 > 0) {
+			// d = |P - (O + t*D)|
+			vectorA.set(this.direction).multiplyLocal(t0);
+			vectorA.addLocal(this.origin);
+		} else {
+			// ray is closest to origin point
+			vectorA.set(this.origin);
+		}
+
+		// Save away the closest point if requested.
+		if (store != null) {
+			store.set(vectorA);
+		}
+
+		point.subtract(vectorA, vectorA);
+		return vectorA.lengthSquared();
+    };
 
 	return Ray;
 });

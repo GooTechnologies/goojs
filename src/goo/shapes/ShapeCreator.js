@@ -14,26 +14,6 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 
 	/**
 	 * @static
-	 * @description Creates an entity with box mesh data.
-	 * @param {World} world The world in which to create the entity.
-	 * @param {Float} width Total width of box.
-	 * @param {Float} height Total height of box.
-	 * @param {Float} length Total length of box.
-	 * @param {Integer} tileX Number of texture repetitions in the texture's x direction.
-	 * @param {Integer} tileY Number of texture repetitions in the texture's y direction.
-	 * @returns {Entity} The created entity.
-	 */
-
-	// REVIEW: This factory class is for creating shapes. This method creates an entity.
-	ShapeCreator.createBoxEntity = function(world, width, height, length, tileX, tileY) {
-		var meshData = ShapeCreator.createBox(width, height, length, tileX, tileY);
-		var entity = EntityUtils.createTypicalEntity(world, meshData);
-
-		return entity;
-	};
-
-	/**
-	 * @static
 	 * @description Creates a quad shape.
 	 * @param {Float} width Total width of quad.
 	 * @param {Float} height Total height of quad.
