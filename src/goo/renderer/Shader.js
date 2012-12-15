@@ -1,4 +1,5 @@
-define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3'], function(ShaderCall, Util, Matrix4x4, Vector3) {
+define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World'], function(ShaderCall, Util,
+	Matrix4x4, Vector3, World) {
 	"use strict";
 
 	/**
@@ -408,10 +409,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(shininess);
 		};
 
-		var startTime = Date.now();
 		defaultCallbacks[Shader.TIME] = function(uniformCall, shaderInfo) {
-			var shininess = Date.now() - startTime;
-			uniformCall.uniform1f(shininess);
+			uniformCall.uniform1f(World.time);
 		};
 	}
 

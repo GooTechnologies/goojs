@@ -23,6 +23,8 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 		this.tpf = 1.0;
 	}
 
+	World.time = 0.0;
+
 	/**
 	 * Adds a Manager to the world
 	 * 

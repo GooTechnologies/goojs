@@ -20,52 +20,34 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	var material = Material.createMaterial(createShader());
 	var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_diffuse.jpg');
 	material.textures.push(texture);
-	// material.wireframe = true;
+	var material2 = Material.createMaterial(createShader());
+	material2.textures.push(texture);
+	material2.wireframe = true;
+
+	var goo;
 
 	function init() {
 		// Create typical goo application
-		var goo = new GooRunner({
+		goo = new GooRunner({
 			showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		// 0
-		createQuadEntity(goo, 0, 0, 3, 3);
-		createQuadEntity(goo, 3, 0, 3, 3);
-		createQuadEntity(goo, 6, 0, 2, 3);
-		createQuadEntity(goo, 8, 0, 3, 3);
-		createQuadEntity(goo, 11, 0, 3, 3);
-
-		// 1
-		createQuadEntity(goo, 0, 3, 3, 3);
-		createQuadEntity(goo, 11, 3, 3, 3);
-
-		// 2
-		createQuadEntity(goo, 0, 6, 3, 2);
-		createQuadEntity(goo, 11, 6, 3, 2);
-
-		// 3
-		createQuadEntity(goo, 0, 8, 3, 3);
-		createQuadEntity(goo, 11, 8, 3, 3);
-
-		// 4
-		createQuadEntity(goo, 0, 11, 3, 3);
-		createQuadEntity(goo, 3, 11, 3, 3);
-		createQuadEntity(goo, 6, 11, 2, 3);
-		createQuadEntity(goo, 8, 11, 3, 3);
-		createQuadEntity(goo, 11, 11, 3, 3);
-
-		// interior
-		createQuadEntity(goo, 3, 3, 8, 1);
-		createQuadEntity(goo, 10, 4, 1, 7);
-
-		// innermost level fill
-		createQuadEntity(goo, 3, 4, 7, 7);
+		var entity = goo.world.createEntity();
+		entity.addToWorld();
+		var l1 = createClipmapLevel(1, true);
+		entity.transformComponent.attachChild(l1.transformComponent);
+		var l2 = createClipmapLevel(2, false);
+		entity.transformComponent.attachChild(l2.transformComponent);
+		var l3 = createClipmapLevel(4, false);
+		entity.transformComponent.attachChild(l3.transformComponent);
+		var l4 = createClipmapLevel(8, false);
+		entity.transformComponent.attachChild(l4.transformComponent);
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 0, 30);
+		camera.translation.set(0, 0, 100);
 		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -73,16 +55,60 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.addToWorld();
 	}
 
+	function createClipmapLevel(scale, isInner) {
+		var entity = goo.world.createEntity();
+		entity.addToWorld();
+
+		// 0
+		createQuadEntity(entity, 0, 0, 3, 3, scale);
+		createQuadEntity(entity, 3, 0, 3, 3, scale);
+		createQuadEntity(entity, 6, 0, 2, 3, scale);
+		createQuadEntity(entity, 8, 0, 3, 3, scale);
+		createQuadEntity(entity, 11, 0, 3, 3, scale);
+
+		// 1
+		createQuadEntity(entity, 0, 3, 3, 3, scale);
+		createQuadEntity(entity, 11, 3, 3, 3, scale);
+
+		// 2
+		createQuadEntity(entity, 0, 6, 3, 2, scale);
+		createQuadEntity(entity, 11, 6, 3, 2, scale);
+
+		// 3
+		createQuadEntity(entity, 0, 8, 3, 3, scale);
+		createQuadEntity(entity, 11, 8, 3, 3, scale);
+
+		// 4
+		createQuadEntity(entity, 0, 11, 3, 3, scale);
+		createQuadEntity(entity, 3, 11, 3, 3, scale);
+		createQuadEntity(entity, 6, 11, 2, 3, scale);
+		createQuadEntity(entity, 8, 11, 3, 3, scale);
+		createQuadEntity(entity, 11, 11, 3, 3, scale);
+
+		// interior
+		createQuadEntity(entity, 3, 3, 8, 1, scale);
+		createQuadEntity(entity, 10, 4, 1, 7, scale);
+
+		// innermost level fill
+		if (isInner) {
+			createQuadEntity(entity, 3, 4, 7, 7, scale);
+		}
+
+		return entity;
+	}
+
 	// Create simple quad
-	function createQuadEntity(goo, x, y, w, h) {
+	function createQuadEntity(parentEntity, x, y, w, h, scale) {
 		var world = goo.world;
-		var meshData = createGrid(x, y, w, h);
+		var meshData = createGrid(x, y, w, h, scale);
 
 		var entity = world.createEntity();
+		parentEntity.transformComponent.attachChild(entity.transformComponent);
 		var meshDataComponent = new MeshDataComponent(meshData);
 		entity.setComponent(meshDataComponent);
 		var meshRendererComponent = new MeshRendererComponent();
 		meshRendererComponent.materials.push(material);
+		meshRendererComponent.materials.push(material2);
 		entity.setComponent(meshRendererComponent);
 
 		entity.setComponent(new ScriptComponent(new BasicControlScript()));
@@ -91,7 +117,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return entity;
 	}
 
-	function createGrid(offsetX, offsetY, w, h) {
+	function createGrid(offsetX, offsetY, w, h, scale) {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 		var meshData = new MeshData(attributeMap, (w + 1) * (h + 1), w * h * 6);
 
@@ -102,8 +128,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		for ( var x = 0; x < w + 1; x++) {
 			for ( var y = 0; y < h + 1; y++) {
 				var index = y * (w + 1) + x;
-				vertices[index * 3 + 0] = x + offsetX - 7;
-				vertices[index * 3 + 1] = y + offsetY - 7;
+				vertices[index * 3 + 0] = (x + offsetX - 7) * scale;
+				vertices[index * 3 + 1] = (y + offsetY - 7) * scale;
 				vertices[index * 3 + 2] = 0;
 
 				uvs[index * 2 + 0] = (x + offsetX) / 15;
@@ -154,10 +180,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'varying vec4 texCol;',//
 
 			'void main(void) {', //
-			'	texCol = texture2D(diffuseMap, vertexUV0 + vec2(time*0.00002));',//
+			'	texCol = texture2D(diffuseMap, vertexUV0 + vec2(time*0.0));',//
 			'	float height = length(texCol.rgb);',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * ',//
-			'		vec4(vertexPosition+vec3(0.0,0.0,height*1.0), 1.0);', //
+			'		vec4(vertexPosition.x,vertexPosition.y,height*5.0, 1.0);', //
 			'}'//
 			].join('\n'),
 			fshader : [//
