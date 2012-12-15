@@ -15,7 +15,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	function Vector3() {
 		Vector.call(this, 3);
-		this.set(arguments);
+		var init = arguments.length !== 0 ? arguments : [0, 0, 0];
+		this.set(init);
 	}
 
 	Vector3.ZERO = new Vector3(0, 0, 0);
@@ -29,19 +30,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector3.add = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -53,7 +56,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] + rdata[0];
@@ -65,7 +71,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector3} Self for chaining.
 	 */
 
@@ -78,19 +85,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector3.sub = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -102,7 +111,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] - rdata[0];
@@ -114,7 +126,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector3} Self for chaining.
 	 */
 
@@ -127,19 +140,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
-	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector3.mul = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -151,7 +166,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] * rdata[0];
@@ -163,7 +181,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector3} Self for chaining.
 	 */
 
@@ -176,19 +195,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
-	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector3.div = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -200,7 +221,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] / rdata[0];
@@ -212,7 +236,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector3} Self for chaining.
 	 */
 
@@ -224,18 +249,20 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
-	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Float} Dot product.
 	 */
 
 	Vector3.dot = function(lhs, rhs) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -243,7 +270,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		var sum = 0.0;
@@ -257,7 +287,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
-	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Float} Dot product.
 	 */
 
@@ -290,7 +321,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
@@ -321,7 +355,6 @@ define(["goo/math/Vector"], function(Vector) {
 	 */
 
 	// REVIEW: This creates a feedback loop when used multiple times which is probably not the intention?
-
 	Vector3.prototype.lerp = function(end, factor) {
 		this.x += (end.x - this.x) * factor;
 		this.y += (end.y - this.y) * factor;

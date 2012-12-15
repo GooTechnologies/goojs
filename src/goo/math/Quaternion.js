@@ -16,7 +16,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	function Quaternion() {
 		Vector.call(this, 4);
-		this.set(arguments);
+		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
+		this.set(init);
 	}
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);

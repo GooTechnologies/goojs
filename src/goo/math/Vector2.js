@@ -15,7 +15,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	function Vector2() {
 		Vector.call(this, 2);
-		this.set(arguments);
+		var init = arguments.length !== 0 ? arguments : [0, 0];
+		this.set(init);
 	}
 
 	Vector2.ZERO = new Vector2(0, 0);
@@ -28,19 +29,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector2.add = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs];
 		}
 
@@ -52,7 +55,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 2 || rdata.length !== 2) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] + rdata[0];
@@ -63,7 +69,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
 
@@ -76,19 +83,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector2.sub = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs];
 		}
 
@@ -100,7 +109,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 2 || rdata.length !== 2) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] - rdata[0];
@@ -111,7 +123,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
 
@@ -124,19 +137,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector2.mul = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs];
 		}
 
@@ -148,7 +163,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 2 || rdata.length !== 2) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] * rdata[0];
@@ -159,7 +177,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
 
@@ -172,19 +191,21 @@ define(["goo/math/Vector"], function(Vector) {
 	/**
 	 * @static
 	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
 	Vector2.div = function(lhs, rhs, target) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs];
 		}
 
@@ -196,7 +217,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 2 || rdata.length !== 2) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data[0] = ldata[0] / rdata[0];
@@ -207,7 +231,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
 
@@ -219,18 +244,20 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Float} Dot product.
 	 */
 
 	Vector2.dot = function(lhs, rhs) {
-		if (typeof(lhs) === "number") {
+		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof(rhs) === "number") {
+		if (typeof (rhs) === "number") {
 			rhs = [rhs, rhs];
 		}
 
@@ -238,7 +265,10 @@ define(["goo/math/Vector"], function(Vector) {
 		var rdata = rhs.data || rhs;
 
 		if (ldata.length !== 2 || rdata.length !== 2) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		var sum = 0.0;
@@ -251,7 +281,8 @@ define(["goo/math/Vector"], function(Vector) {
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for every component.
+	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 *            every component.
 	 * @return {Float} Dot product.
 	 */
 
