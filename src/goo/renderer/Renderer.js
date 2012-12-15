@@ -248,36 +248,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 			if (material.wireframe && !isWireframe) {
 				if (!meshData.wireframeData) {
-					var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
-					var wireframeData = new MeshData(attributeMap, meshData.vertexCount, meshData.indexCount * 2);
-					var origV = meshData.getAttributeBuffer(MeshData.POSITION);
-					var origI = meshData.getIndexBuffer();
-					var targetV = wireframeData.getAttributeBuffer(MeshData.POSITION);
-					var targetI = wireframeData.getIndexBuffer();
-
-					targetV.set(origV);
-					for ( var ii = 0; ii < meshData.indexCount; ii++) {
-						var i1 = origI[ii * 3 + 0];
-						var i2 = origI[ii * 3 + 1];
-						var i3 = origI[ii * 3 + 2];
-
-						targetI[ii * 6 + 0] = i1;
-						targetI[ii * 6 + 1] = i2;
-						targetI[ii * 6 + 2] = i2;
-						targetI[ii * 6 + 3] = i3;
-						targetI[ii * 6 + 4] = i3;
-						targetI[ii * 6 + 5] = i1;
-					}
-					wireframeData.indexModes[0] = 'Lines';
-					meshData.wireframeData = wireframeData;
+					meshData.wireframeData = this.buildWireframeData(meshData);
 				}
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
-				if (!this.wireframeMaterial) {
-					this.wireframeMaterial = Material.createMaterial(Material.shaders.simple, 'Wireframe');
-					// this.wireframeMaterial.blendState.blending = 'AdditiveBlending';
+				if (!material.wireframeMaterial) {
+					material.wireframeMaterial = this.buildWireframeMaterial(material);
 				}
-				material = this.wireframeMaterial;
+				material = material.wireframeMaterial;
 				isWireframe = true;
 			} else if (!material.wireframe && isWireframe) {
 				meshData = originalData;
@@ -353,6 +331,43 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				indexModeCounter++;
 			}
 		}
+	};
+
+	Renderer.prototype.buildWireframeData = function(meshData) {
+		var attributeMap = Util.clone(meshData.attributeMap);
+		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, meshData.indexCount * 2);
+		for ( var atr in attributeMap) {
+			wireframeData.getAttributeBuffer(atr).set(meshData.getAttributeBuffer(atr));
+		}
+		var origI = meshData.getIndexBuffer();
+		var targetI = wireframeData.getIndexBuffer();
+		// TODO: fix this to handle other indexmodes than 'triangles'
+		for ( var ii = 0; ii < meshData.indexCount; ii++) {
+			var i1 = origI[ii * 3 + 0];
+			var i2 = origI[ii * 3 + 1];
+			var i3 = origI[ii * 3 + 2];
+
+			targetI[ii * 6 + 0] = i1;
+			targetI[ii * 6 + 1] = i2;
+			targetI[ii * 6 + 2] = i2;
+			targetI[ii * 6 + 3] = i3;
+			targetI[ii * 6 + 4] = i3;
+			targetI[ii * 6 + 5] = i1;
+		}
+		wireframeData.indexModes[0] = 'Lines';
+		return wireframeData;
+	};
+
+	Renderer.prototype.buildWireframeMaterial = function(material) {
+		var wireDef = {};
+		wireDef.defines = material.shader.defines;
+		wireDef.attributes = material.shader.attributes;
+		wireDef.uniforms = material.shader.uniforms;
+		wireDef.vshader = material.shader.vertexSource;
+		wireDef.fshader = Material.shaders.simple.fshader;
+		var wireframeMaterial = Material.createMaterial(wireDef, 'Wireframe');
+		wireframeMaterial.textures = material.textures;
+		return wireframeMaterial;
 	};
 
 	Renderer.prototype.updateDepthTest = function(material) {

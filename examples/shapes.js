@@ -35,6 +35,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		texture.magFilter = 'NearestNeighbor';
 		texture.generateMipmaps = false;
 		material.textures.push(texture);
+		// material.wireframe = true;
 
 		createShapes(goo);
 
