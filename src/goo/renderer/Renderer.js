@@ -1,6 +1,7 @@
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils'], function(
-	RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils) {
+		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
+		'goo/renderer/MeshData', 'goo/renderer/Material'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity,
+	Texture, DdsLoader, DdsUtils, MeshData, Material) {
 	"use strict";
 
 	/**
@@ -42,7 +43,28 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				throw 'Error creating WebGL context.';
 			}
 
-			DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
+			this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
+			this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
+			this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
+			this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
+				|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
+				|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+			// this.glExtensionCompressedTextureS3TC = this.context.getExtension('WEBGL_compressed_texture_s3tc')
+			// || this.context.getExtension('MOZ_WEBGL_compressed_texture_s3tc')
+			// || this.context.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
+
+			if (!this.glExtensionTextureFloat) {
+				console.log('Float textures not supported.');
+			}
+			if (!this.glExtensionStandardDerivatives) {
+				console.log('Standard derivatives not supported.');
+			}
+			if (!this.glExtensionTextureFilterAnisotropic) {
+				console.log('Anisotropic texture filtering not supported.');
+			}
+			if (!this.glExtensionCompressedTextureS3TC) {
+				console.log('S3TC compressed textures not supported.');
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -214,11 +236,53 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 		this.bindData(meshData.vertexData);
 
+		var isWireframe = false;
+		var originalData = meshData;
+
 		for ( var i = 0; i < materials.length; i++) {
 			var material = materials[i];
 			if (!material.shader) {
 				// console.warn('No shader set on material: ' + material.name);
 				continue;
+			}
+
+			if (material.wireframe && !isWireframe) {
+				if (!meshData.wireframeData) {
+					var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
+					var wireframeData = new MeshData(attributeMap, meshData.vertexCount, meshData.indexCount * 2);
+					var origV = meshData.getAttributeBuffer(MeshData.POSITION);
+					var origI = meshData.getIndexBuffer();
+					var targetV = wireframeData.getAttributeBuffer(MeshData.POSITION);
+					var targetI = wireframeData.getIndexBuffer();
+
+					targetV.set(origV);
+					for ( var ii = 0; ii < meshData.indexCount; ii++) {
+						var i1 = origI[ii * 3 + 0];
+						var i2 = origI[ii * 3 + 1];
+						var i3 = origI[ii * 3 + 2];
+
+						targetI[ii * 6 + 0] = i1;
+						targetI[ii * 6 + 1] = i2;
+						targetI[ii * 6 + 2] = i2;
+						targetI[ii * 6 + 3] = i3;
+						targetI[ii * 6 + 4] = i3;
+						targetI[ii * 6 + 5] = i1;
+					}
+					wireframeData.indexModes[0] = 'Lines';
+					meshData.wireframeData = wireframeData;
+				}
+				meshData = meshData.wireframeData;
+				this.bindData(meshData.vertexData);
+				if (!this.wireframeMaterial) {
+					this.wireframeMaterial = Material.createMaterial(Material.shaders.simple, 'Wireframe');
+					// this.wireframeMaterial.blendState.blending = 'AdditiveBlending';
+				}
+				material = this.wireframeMaterial;
+				isWireframe = true;
+			} else if (!material.wireframe && isWireframe) {
+				meshData = originalData;
+				this.bindData(meshData.vertexData);
+				iswireframe = false;
 			}
 
 			renderInfo.material = material;
@@ -346,8 +410,8 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || (!(texture instanceof RenderTarget) && texture.image === undefined)
-				|| (texture.image && texture.image.dataReady === undefined)) {
+			if (texture === undefined || !texture instanceof RenderTarget && texture.image === undefined || texture.image
+				&& texture.image.dataReady === undefined) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
 				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
@@ -413,7 +477,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-		if (record.boundTexture === undefined || (texture.glTexture !== undefined && record.boundTexture !== texture.glTexture)) {
+		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
@@ -518,7 +582,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 					.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
 			}
 
-			if (texture.generateMipmaps && (texture.image && !texture.image.isCompressed)) {
+			if (texture.generateMipmaps && texture.image && !texture.image.isCompressed) {
 				context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 			}
 		} else if (texture.variant === 'CUBE') {
@@ -542,7 +606,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				}
 			}
 
-			if (texture.generateMipmaps && (texture.image && !texture.image.isCompressed)) {
+			if (texture.generateMipmaps && texture.image && !texture.image.isCompressed) {
 				context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
 			}
 		}

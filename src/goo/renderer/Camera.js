@@ -119,8 +119,6 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		// this.onFrustumChange();
 		// this.onViewPortChange();
 		this.onFrameChange();
-
-		console.log('Camera created');
 	}
 
 	/**
@@ -519,8 +517,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenHeight-screenY, screenWidth, screenHeight, 0, origin);
-		this.getWorldCoordinates(screenX, screenHeight-screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
+		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0, origin);
+		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
 

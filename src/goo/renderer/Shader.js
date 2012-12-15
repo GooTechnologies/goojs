@@ -1,5 +1,4 @@
-define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/entities/GooRunner', 'goo/math/Matrix4x4', 'goo/math/Vector3'], function(ShaderCall,
-	Util, GooRunner, Matrix4x4, Vector3) {
+define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3'], function(ShaderCall, Util, Matrix4x4, Vector3) {
 	"use strict";
 
 	/**

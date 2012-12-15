@@ -11,8 +11,8 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
-		this.vertexCount = vertexCount;
-		this.indexCount = indexCount || 0;
+		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
+		this.indexCount = indexCount !== undefined ? indexCount : 0;
 
 		this.vertexData = null;
 		this.indexData = null;
@@ -22,23 +22,40 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 
 		this.type = MeshData.MESH;
 
-		this.rebuildData(vertexCount, indexCount);
+		this.rebuildData(this.vertexCount, this.indexCount);
 	}
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
 
-	MeshData.prototype.rebuildData = function(vertexCount, indexCount) {
-		this.vertexCount = vertexCount;
-		this._vertexCountStore = this.vertexCount;
-		this.indexCount = indexCount || 0;
+	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
+		if (vertexCount !== undefined) {
+			this.vertexCount = vertexCount;
+			this._vertexCountStore = this.vertexCount;
+		}
+		if (indexCount !== undefined) {
+			this.indexCount = indexCount;
+		}
+
+		if (saveOldData) {
+			var savedAttributes = {};
+			var savedIndices = null;
+			for ( var i in this.attributeMap) {
+				var attribute = this.attributeMap[i];
+				if (attribute.array) {
+					savedAttributes[i] = attribute.array;
+				}
+			}
+			if (this.indexData) {
+				savedIndices = this.indexData.data;
+			}
+		}
 
 		var vertexByteSize = 0;
 		for ( var i in this.attributeMap) {
 			var attribute = this.attributeMap[i];
 			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 		}
-
 		this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
 
 		if (this.indexCount > 0) {
@@ -47,6 +64,20 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		}
 
 		this.generateAttributeData();
+
+		if (saveOldData) {
+			for ( var i in this.attributeMap) {
+				var saved = savedAttributes[i];
+				if (saved) {
+					var attribute = this.attributeMap[i];
+					attribute.array.set(saved);
+				}
+			}
+			savedAttributes = {};
+			if (savedIndices) {
+				this.indexData.data.set(savedIndices);
+			}
+		}
 	};
 
 	var arrayTypes = {

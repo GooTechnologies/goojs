@@ -17,6 +17,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	var resourcePath = "../resources";
 
+	var material = Material.createMaterial(createShader());
+	var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_diffuse.jpg');
+	material.textures.push(texture);
+	// material.wireframe = true;
+
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
@@ -25,12 +30,42 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		var quadEntity = createQuadEntity(goo);
-		quadEntity.addToWorld();
+		// 0
+		createQuadEntity(goo, 0, 0, 3, 3);
+		createQuadEntity(goo, 3, 0, 3, 3);
+		createQuadEntity(goo, 6, 0, 2, 3);
+		createQuadEntity(goo, 8, 0, 3, 3);
+		createQuadEntity(goo, 11, 0, 3, 3);
+
+		// 1
+		createQuadEntity(goo, 0, 3, 3, 3);
+		createQuadEntity(goo, 11, 3, 3, 3);
+
+		// 2
+		createQuadEntity(goo, 0, 6, 3, 2);
+		createQuadEntity(goo, 11, 6, 3, 2);
+
+		// 3
+		createQuadEntity(goo, 0, 8, 3, 3);
+		createQuadEntity(goo, 11, 8, 3, 3);
+
+		// 4
+		createQuadEntity(goo, 0, 11, 3, 3);
+		createQuadEntity(goo, 3, 11, 3, 3);
+		createQuadEntity(goo, 6, 11, 2, 3);
+		createQuadEntity(goo, 8, 11, 3, 3);
+		createQuadEntity(goo, 11, 11, 3, 3);
+
+		// interior
+		createQuadEntity(goo, 3, 3, 8, 1);
+		createQuadEntity(goo, 10, 4, 1, 7);
+
+		// innermost level fill
+		createQuadEntity(goo, 3, 4, 7, 7);
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 0, 100);
+		camera.translation.set(0, 0, 30);
 		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -39,29 +74,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	// Create simple quad
-	function createQuadEntity(goo) {
+	function createQuadEntity(goo, x, y, w, h) {
 		var world = goo.world;
+		var meshData = createGrid(x, y, w, h);
 
-		var meshData = createGrid(-64, -64, 128, 128);
-
-		// Create entity
 		var entity = world.createEntity();
-
-		// Create meshdata component using above data
 		var meshDataComponent = new MeshDataComponent(meshData);
 		entity.setComponent(meshDataComponent);
-
-		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
-		var material = Material.createMaterial(createShader());
-
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_diffuse.jpg');
-		material.textures.push(texture);
-
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 
 		entity.setComponent(new ScriptComponent(new BasicControlScript()));
+		entity.addToWorld();
 
 		return entity;
 	}
@@ -77,12 +102,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		for ( var x = 0; x < w + 1; x++) {
 			for ( var y = 0; y < h + 1; y++) {
 				var index = y * (w + 1) + x;
-				vertices[index * 3 + 0] = x + offsetX;
-				vertices[index * 3 + 1] = y + offsetY;
+				vertices[index * 3 + 0] = x + offsetX - 7;
+				vertices[index * 3 + 1] = y + offsetY - 7;
 				vertices[index * 3 + 2] = 0;
 
-				uvs[index * 2 + 0] = x / (w + 1);
-				uvs[index * 2 + 1] = y / (h + 1);
+				uvs[index * 2 + 0] = (x + offsetX) / 15;
+				uvs[index * 2 + 1] = (y + offsetY) / 15;
 			}
 		}
 
@@ -132,7 +157,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'	texCol = texture2D(diffuseMap, vertexUV0 + vec2(time*0.00002));',//
 			'	float height = length(texCol.rgb);',//
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * ',//
-			'		vec4(vertexPosition+vec3(0.0,0.0,height*20.0), 1.0);', //
+			'		vec4(vertexPosition+vec3(0.0,0.0,height*1.0), 1.0);', //
 			'}'//
 			].join('\n'),
 			fshader : [//
