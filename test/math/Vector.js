@@ -126,7 +126,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 		it("can be inverted", function() {
 			var a = new Vector(2).set(1, 2);
 
-			a.negate();
+			a.invert();
 
 			expect(a).toEqual(new Vector(2).set(-1, -2));
 		});
