@@ -1,59 +1,117 @@
 define([], function() {
 	"use strict";
 
+	/* ====================================================================== */
+
+	/**
+	 * @name MathUtils
+	 * @class A collection of useful math-related functions, constants and helpers.
+	 * @constructor
+	 * @description Only used to define the class. Should never be instantiated.
+	 */
+
 	function MathUtils() {
 	}
 
-	// REVIEW: This notation is confusing. Are we supposed to multiply or divide by these constants? Functions MathUtils.radFromDeg() and MathUtils.degFromRad() would be more intuitive, albeit slower. Perhaps we should use both?
+	/* ====================================================================== */
+
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
-
 	MathUtils.HALF_PI = 0.5 * Math.PI;
 	MathUtils.TWO_PI = 2.0 * Math.PI;
-
 	MathUtils.EPSILON = 0.0001;
 
-	// REVIEW: Confusing name, percent sounds like range is 0..100
-	MathUtils.lerp = function(percent, startValue, endValue) {
-		if (startValue == endValue) {
-			return startValue;
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Converts an angle from degrees to radians.
+	 * @param {Float} degrees Angle in degrees.
+	 * @return {Float} Angle in radians.
+	 */
+
+	MathUtils.radFromDeg = function(degrees) {
+		return degrees * MathUtils.DEG_TO_RAD;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Converts an angle from radians to degrees.
+	 * @param {Float} radians Angle in radians.
+	 * @return {Float} Angle in degrees.
+	 */
+
+	MathUtils.degFromRad = function(radians) {
+		return radians * MathUtils.RAD_TO_DEG;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Linearly interpolates between two values. Extrapolates if factor is smaller than zero or greater than one.
+	 * @param {Float} factor Factor of interpolation.
+	 * @param {Integer|Float} start Start value.
+	 * @param {Integer|Float} end End value.
+	 * @return {Integer|Float} Interpolated value.
+	 */
+
+	MathUtils.lerp = function(factor, start, end) {
+		if (start === end) {
+			return start;
+		} else {
+			return start + (end - start) * factor;
 		}
-		return (1.0 - percent) * startValue + percent * endValue;
 	};
 
-	/**
-	 * @description Clamps a value between a minimum and maximum.
-	 * @param val The value to clamp.
-	 * @param min The minimum value. Must be less or equal to max.
-	 * @param max The maximum value. Must be less or equal to max.
-	 * @return The value n so that min <= n <= max.
-	 */
-	MathUtils.clamp = function(val, min, max) {
-		return val < min ? min : val > max ? max : val;
-	};
+	/* ====================================================================== */
 
 	/**
-	 * @description plot a given value on the cubic S-curve: 3t^2 - 2t^3
-	 * @param t our input value
-	 * @return the plotted value
+	 * @static
+	 * @description Clamps a value to a given interval. The interval is defined by min and max where min should be smaller than max. If min is greater than max, the two parameters are reversed.
+	 * @param {Integer|Float} value Input value.
+	 * @param {Integer|Float} min Lower bound of interval (inclusive).
+	 * @param {Integer|Float} max Upper bound of interval (inclusive).
+	 * @return {Integer|Float} Clamped value.
 	 */
-	MathUtils.scurve3 = function(t) {
-		var t2 = t * t;
-		var t3 = t * t2;
-		return 3. * t2 - 2. * t3;
+
+	MathUtils.clamp = function(value, min, max) {
+		if (min < max) {
+			return value < min ? min : value > max ? max : value;
+		} else {
+			return value < max ? max : value > min ? min : value;
+		}
 	};
 
+	/* ====================================================================== */
+
 	/**
-	 * @description plot a given value on the quintic S-curve: 6t^5 - 15t^4 + 10t^3
-	 * @param t our input value
-	 * @return the plotted value
+	 * @static
+	 * @description Computes a value on the c1-continuous cubic s-curve "y = -2x^3 + 3x^2".
+	 * @param {Float} x Input value in the range between zero and one.
+	 * @return {Float} Value on curve.
 	 */
-	MathUtils.scurve5 = function(t) {
-		var t3 = t * t * t;
-		var t4 = t * t3;
-		var t5 = t * t4;
-		return 6. * t5 - 15. * t4 + 10. * t3;
+
+	MathUtils.scurve3 = function(x) {
+		return (-2.0 * x + 3.0) * x * x;
 	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @static
+	 * @description Computes a value on the c2-continuous quintic s-curve "y = 6x^5 - 15x^4 + 10x^3".
+	 * @param {Float} x Input value in the range between zero and one.
+	 * @return {Float} Value on curve.
+	 */
+
+	MathUtils.scurve5 = function(x) {
+		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
+	};
+
+	/* ====================================================================== */
 
 	return MathUtils;
 });

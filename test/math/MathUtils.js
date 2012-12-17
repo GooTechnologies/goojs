@@ -1,37 +1,45 @@
-define([], function() {
+define(["goo/math/MathUtils"], function(MathUtils) {
 	"use strict";
 
-	// REVIEW: Missing tests for Quaternion, MathUtils, Transform. Make sure everything is covered!
+	describe("MathUtils", function() {
+		it("can convert to radians from degrees", function() {
+			expect(MathUtils.radFromDeg(90)).toEqual(Math.PI*0.5);
+		});
 
-	// REVIEW: Avoid repeated code by creating a function that takes vectors and tests.
-	// Something like:
-	// var testVectors = function(proto, factory, a, b, expected) {
-	// 	it('can be copied', function() {
-	// 		expect(proto.copy(a)).toEqual(expected.copyOfA);
-	// 	});
-	// 	it('can be added', function() {
-	// 		expect(proto.add(a, a)).toEqual(expected.aPlusA);
-	// 	});
-	// 	.....
-	// };
-	// describe('Vector', function() {
-	// 	var a = new Vector(2).set(2, 4);
-	// 	var b = new Vector(2).set(-3, -4);
-	// 	testVectors(Vector, a, b, {
-	// 		copyOfA: new Vector(2).set(2, 4),
-	// 		aPlusA: new Vector(2).set(4, 8),
-	// 		aPlusB: new Vector(2).set(-1, 0),
-	// 		...
-	// 	});
-	// });
-	// describe('Vector2', function() {
-	// 	var a = new Vector2(2, 4);
-	// 	var b = new Vector2(-3, -4);
-	// 	testVectors(Vector, a, b, {
-	// 		copyOfA: new Vector2(2, 4),
-	// 		aPlusA: new Vector2(4, 8),
-	// 		aPlusB: new Vector2(-1, 0),
-	// 		...
-	// 	});
-	// });
+		it("can convert to degrees from radians", function() {
+			expect(MathUtils.degFromRad(Math.PI*0.5)).toEqual(90);
+		});
+
+		it("can perform linear interpolation", function() {
+			expect(MathUtils.lerp(-1.0, 10.0, 20.0)).toEqual( 0.0);
+			expect(MathUtils.lerp( 0.0, 10.0, 20.0)).toEqual(10.0);
+			expect(MathUtils.lerp( 0.5, 10.0, 20.0)).toEqual(15.0);
+			expect(MathUtils.lerp( 1.0, 10.0, 20.0)).toEqual(20.0);
+			expect(MathUtils.lerp( 2.0, 10.0, 20.0)).toEqual(30.0);
+		});
+
+		it("can clamp a value to a given interval", function() {
+			expect(MathUtils.clamp(1.0, 2.0, 3.0)).toEqual(2.0);
+			expect(MathUtils.clamp(1.0, 3.0, 2.0)).toEqual(2.0);
+			expect(MathUtils.clamp(4.0, 2.0, 3.0)).toEqual(3.0);
+			expect(MathUtils.clamp(4.0, 3.0, 2.0)).toEqual(3.0);
+			expect(MathUtils.clamp(2.5, 2.0, 3.0)).toEqual(2.5);
+		});
+
+		it("can compute values on cubic s-curves", function() {
+			expect(MathUtils.scurve3(0.00)).toEqual(0.0);
+			expect(MathUtils.scurve3(0.25)).toEqual((-2.0 * 0.25 + 3.0) * 0.25 * 0.25);
+			expect(MathUtils.scurve3(0.50)).toEqual(0.5);
+			expect(MathUtils.scurve3(0.75)).toEqual((-2.0 * 0.75 + 3.0) * 0.75 * 0.75);
+			expect(MathUtils.scurve3(1.00)).toEqual(1.0);
+		});
+
+		it("can compute values on quintic s-curves", function() {
+			expect(MathUtils.scurve5(0.00)).toEqual(0.0);
+			expect(MathUtils.scurve5(0.25)).toEqual(((6.0 * 0.25 - 15.0) * 0.25 + 10.0) * 0.25 * 0.25 * 0.25);
+			expect(MathUtils.scurve5(0.50)).toEqual(0.5);
+			expect(MathUtils.scurve5(0.75)).toEqual(((6.0 * 0.75 - 15.0) * 0.75 + 10.0) * 0.75 * 0.75 * 0.75);
+			expect(MathUtils.scurve5(1.00)).toEqual(1.0);
+		});
+	});
 });

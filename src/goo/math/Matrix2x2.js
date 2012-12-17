@@ -212,7 +212,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		}
 
 		if (target === lhs || target === rhs) {
-			return Matrix2x2.copy(Matrix2x2.combine(lhs, rhs), target);
+			return Matrix.copy(Matrix2x2.combine(lhs, rhs), target);
 		}
 
 		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10;

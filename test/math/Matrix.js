@@ -2,7 +2,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 	"use strict";
 
 	describe("Matrix", function() {
-		it("Can perform component-wise addition between two matrices.", function() {
+		it("can perform component-wise addition between two matrices", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -12,7 +12,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.add(b, b)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
 		});
 
-		it("Can perform component-wise subtraction between two matrices.", function() {
+		it("can perform component-wise subtraction between two matrices", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -22,7 +22,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.sub(b, b)).toEqual(new Matrix(2, 2).set(0, 0, 0, 0));
 		});
 
-		it("Can perform component-wise multiplication between two matrices.", function() {
+		it("can perform component-wise multiplication between two matrices", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -32,7 +32,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.mul(b, b)).toEqual(new Matrix(2, 2).set(4, 16, 36, 64));
 		});
 
-		it("Can perform component-wise division between two matrices.", function() {
+		it("can perform component-wise division between two matrices", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -42,7 +42,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.div(b, b)).toEqual(new Matrix(2, 2).set(1, 1, 1, 1));
 		});
 
-		it("Can perform component-wise addition between a matrix and a scalar.", function() {
+		it("Can perform component-wise addition between a matrix and a scalar", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -52,7 +52,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.add(b, 2)).toEqual(new Matrix(2, 2).set(4, 6, 8, 10));
 		});
 
-		it("Can perform component-wise subtraction between a matrix and a scalar.", function() {
+		it("can perform component-wise subtraction between a matrix and a scalar", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -62,7 +62,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.sub(b, 2)).toEqual(new Matrix(2, 2).set(0, 2, 4, 6));
 		});
 
-		it("Can perform component-wise multiplication between a matrix and a scalar.", function() {
+		it("can perform component-wise multiplication between a matrix and a scalar", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -72,7 +72,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.mul(b, 2)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
 		});
 
-		it("Can perform component-wise division between a matrix and a scalar.", function() {
+		it("can perform component-wise division between a matrix and a scalar", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -82,7 +82,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.div(b, 2)).toEqual(new Matrix(2, 2).set(1, 2, 3, 4));
 		});
 
-		it("Can combine multiple matrices into a single matrix.", function() {
+		it("can combine multiple matrices into a single matrix", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(2, 4, 6, 8);
 
@@ -92,7 +92,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.combine(b, b)).toEqual(new Matrix(2, 2).set(28, 40, 60, 88));
 		});
 
-		it("Can be transposed.", function() {
+		it("can be transposed", function() {
 			var a = new Matrix(2, 2).set(0, 1, 2, 3);
 			var b = new Matrix(2, 2).set(0, 1, 2, 3);
 			var c = new Matrix(3, 2).set(0, 1, 2, 3, 4, 5);
@@ -105,7 +105,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(function() { Matrix.transpose(c, c); }).toThrow();
 		});
 
-		it("Can be copied.", function() {
+		it("can be copied", function() {
 			var a = new Matrix(2, 2).set(0, 1, 2, 3);
 			var b = new Matrix(2, 2).set();
 
@@ -115,7 +115,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(Matrix.copy(b, a)).toEqual(a);
 		});
 
-		it("Can be set.", function() {
+		it("can be set", function() {
 			var a = new Matrix(2, 2);
 			var b = new Matrix(2, 2);
 			var c = new Matrix(2, 2);
@@ -125,13 +125,13 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(c.set([0, 1, 2, 3])).toEqual(new Matrix(2, 2).set(0, 1, 2, 3));
 		});
 
-		it("Can be converted to a string.", function() {
+		it("can be converted to a string", function() {
 			var a = new Matrix(2, 2).set(0, 1, 2, 3);
 
 			expect(a.toString()).toEqual("[0, 1], [2, 3]");
 		});
 
-		it("Can determine orthogonality.", function() {
+		it("can determine orthogonality", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(0, 1, -1, 0);
 
@@ -139,7 +139,7 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(b.isOrthogonal()).toEqual(true);
 		});
 
-		it("Can determine normality.", function() {
+		it("can determine normality", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(0, 1, -1, 0);
 
@@ -147,12 +147,23 @@ define(["goo/math/Matrix"], function(Matrix) {
 			expect(b.isNormal()).toEqual(true);
 		});
 
-		it("Can determine orthonormality.", function() {
+		it("can determine orthonormality", function() {
 			var a = new Matrix(2, 2).set(2, 4, 6, 8);
 			var b = new Matrix(2, 2).set(0, 1, -1, 0);
 
 			expect(a.isOrthonormal()).toEqual(false);
 			expect(b.isOrthonormal()).toEqual(true);
+		});
+
+		it("can be tested for approximate equaltiy", function() {
+			var a = new Matrix(2, 2).set(1, 2, 3, 4);
+			var b = new Matrix(2, 2).set(1, 2, 3, 4);
+			var c = new Matrix(2, 2).set(0, 1, 2, 3);
+
+			expect(a.equals(b)).toEqual(true);
+			expect(Matrix.equals(a, b)).toEqual(true);
+			expect(a.equals(c)).toEqual(false);
+			expect(Matrix.equals(a, c)).toEqual(false);
 		});
 	});
 });

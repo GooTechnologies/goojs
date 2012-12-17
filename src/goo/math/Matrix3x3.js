@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
+define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(MathUtils, Matrix, Vector3) {
 	"use strict";
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
