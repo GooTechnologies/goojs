@@ -12,4 +12,4 @@ ${JSDOC_BIN} -r -p "src/goo" -d ${DOC_DIR}
 
 # Package files into tar.gz
 rm -f goojs-jsdoc*.tar.gz
-tar zcf goojs-jsdoc_$(date +%d%h%y_%H%M).tar.gz ${DOC_DIR}
+tar zcf goojs-jsdoc_$(date +%d%h%Y_%H%M).tar.gz ${DOC_DIR}
