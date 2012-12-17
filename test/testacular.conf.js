@@ -24,7 +24,18 @@ exclude = [];
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots', 'junit', 'coverage'];
+
+junitReporter = {
+  // will be resolved to basePath (in the same way as files/exclude patterns)
+  outputFile: 'test-out/test-results.xml'
+};
+
+// Coverage reporter configuration
+coverageReporter = {
+  type : ['lcov'],
+  dir : 'test-out/coverage/'
+}
 
 
 // web server port
@@ -60,9 +71,17 @@ browsers = ['Chrome'];
 
 
 // If browser does not capture in given timeout [ms], kill it
-captureTimeout = 5000;
+captureTimeout = 10000;
 
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
 singleRun = false;
+
+
+// Run preprocessors such as code covarage instrumentation
+preprocessors = {
+  '**/src/goo/**/*.js': 'coverage'
+//  '**/*.coffee': 'coffee'
+};
+
