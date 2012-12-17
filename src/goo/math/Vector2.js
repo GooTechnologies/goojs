@@ -4,6 +4,8 @@ define(["goo/math/Vector"], function(Vector) {
 	Vector2.prototype = Object.create(Vector.prototype);
 	Vector2.prototype.setupAliases([['x', 'u', 's'], ['y', 'v', 't']]);
 
+	/* ====================================================================== */
+
 	/**
 	 * @name Vector2
 	 * @class Vector with 2 components.
@@ -18,6 +20,8 @@ define(["goo/math/Vector"], function(Vector) {
 		var init = arguments.length !== 0 ? arguments : [0, 0];
 		this.set(init);
 	}
+
+	/* ====================================================================== */
 
 	Vector2.ZERO = new Vector2(0, 0);
 	Vector2.ONE = new Vector2(1, 1);
