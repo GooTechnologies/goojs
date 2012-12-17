@@ -1,6 +1,8 @@
 define(["goo/math/MathUtils"], function(MathUtils) {
 	"use strict";
 
+	/* ====================================================================== */
+
 	/**
 	 * @name Matrix
 	 * @class Matrix with RxC components.
@@ -16,6 +18,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		this.cols = cols || 0;
 		this.data = new Float32Array(this.rows * this.cols);
 	}
+
+	/* ====================================================================== */
 
 	/**
 	 * @private
@@ -51,6 +55,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		}
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @static
 	 * @description Performs a component-wise addition.
@@ -70,7 +76,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -78,7 +84,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 				target.data[i] = lhs.data[i] + rhs.data[i];
 			}
 		} else {
-			if (target.rows != rows || target.cols != cols) {
+			if (target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -89,6 +95,18 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 
 		return target;
 	};
+
+	/**
+	 * @description Performs a component-wise addition.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.add = function(rhs) {
+		return Matrix.add(this, rhs, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -109,7 +127,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -117,7 +135,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 				target.data[i] = lhs.data[i] - rhs.data[i];
 			}
 		} else {
-			if (target.rows != rows || target.cols != cols) {
+			if (target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -128,6 +146,18 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 
 		return target;
 	};
+
+	/**
+	 * @description Performs a component-wise subtraction.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.sub = function(rhs) {
+		return Matrix.sub(this, rhs, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -148,7 +178,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -156,7 +186,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 				target.data[i] = lhs.data[i] * rhs.data[i];
 			}
 		} else {
-			if (target.rows != rows || target.cols != cols) {
+			if (target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -167,6 +197,18 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 
 		return target;
 	};
+
+	/**
+	 * @description Performs a component-wise multiplication.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.mul = function(rhs) {
+		return Matrix.mul(this, rhs, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -187,7 +229,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows != rows || rhs.cols != cols || target.rows != rows || target.cols != cols) {
+			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -195,7 +237,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 				target.data[i] = lhs.data[i] / rhs.data[i];
 			}
 		} else {
-			if (target.rows != rows || target.cols != cols) {
+			if (target.rows !== rows || target.cols !== cols) {
 				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 			}
 
@@ -208,6 +250,18 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 
 		return target;
 	};
+
+	/**
+	 * @description Performs a component-wise division.
+	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.div = function(rhs) {
+		return Matrix.div(this, rhs, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -228,7 +282,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 			target = new Matrix(rows, cols);
 		}
 
-		if (lhs.cols != size || rhs.rows != size || target.rows != rows || target.cols != cols) {
+		if (lhs.cols !== size || rhs.rows !== size || target.rows !== rows || target.cols !== cols) {
 			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
@@ -254,6 +308,18 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	};
 
 	/**
+	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * @param {Matrix} rhs Matrix on the right-hand side.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.combine = function(rhs) {
+		return Matrix.combine(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix} source Source matrix.
@@ -270,7 +336,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 			target = new Matrix(rows, cols);
 		}
 
-		if (target.rows != rows || target.cols != cols) {
+		if (target.rows !== rows || target.cols !== cols) {
 			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
@@ -290,6 +356,17 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	};
 
 	/**
+	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * @return {Matrix} Self for chaining.
+	 */
+
+	Matrix.prototype.transpose = function() {
+		return Matrix.transpose(this, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Copies component values and stores them in a separate matrix.
 	 * @param {Matrix} source Source matrix.
@@ -306,7 +383,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 			target = new Matrix(rows, cols);
 		}
 
-		if (target.rows != rows || target.cols != cols) {
+		if (target.rows !== rows || target.cols !== cols) {
 			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
@@ -316,63 +393,50 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix} source Source matrix.
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.add = function(rhs) {
-		return Matrix.add(this, rhs, this);
+	Matrix.prototype.copy = function(source) {
+		return Matrix.copy(source, this);
 	};
 
-	/**
-	 * @description Performs a component-wise subtraction.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.sub = function(rhs) {
-		return Matrix.sub(this, rhs, this);
-	};
+	/* ====================================================================== */
 
 	/**
-	 * @description Performs a component-wise multiplication.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.mul = function(rhs) {
-		return Matrix.mul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.div = function(rhs) {
-		return Matrix.div(this, rhs, this);
-	};
-
-	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * @static
+	 * @description Compares two matrices for approximate equality.
+	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @return {Boolean} True if equal.
 	 */
 
-	Matrix.prototype.combine = function(rhs) {
-		return Matrix.combine(this, rhs, this);
+	Matrix.equals = function(lhs, rhs) {
+		if (lhs.rows !== rhs.rows || lhs.cols !== rhs.cols) {
+			return false;
+		}
+
+		for (var i = 0; i < lhs.data.length; i++) {
+			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+				return false;
+			}
+		}
+
+		return true;
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix} Self for chaining.
+	 * @description Compares two matrices for approximate equality.
+	 * @param {Matrix} rhs Matrix on the right-hand side.
+	 * @return {Boolean} True if equal.
 	 */
 
-	Matrix.prototype.transpose = function() {
-		return Matrix.transpose(this, this);
+	Matrix.prototype.equals = function(rhs) {
+		return Matrix.equals(this, rhs);
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Tests if the matrix is orthogonal.
@@ -399,6 +463,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		return true;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Tests if the matrix is normal.
 	 * @return {Boolean} True if normal.
@@ -421,6 +487,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		return true;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Tests if the matrix is orthonormal.
 	 * @return {Boolean} True if orthonormal.
@@ -430,15 +498,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
-	/**
-	 * @description Copies component values and stores them locally.
-	 * @param {Matrix} source Source matrix.
-	 * @return {Matrix} Self for chaining.
-	 */
-
-	Matrix.prototype.copy = function(source) {
-		return Matrix.copy(source, this);
-	};
+	/* ====================================================================== */
 
 	/**
 	 * @description Clones the matrix.
@@ -448,6 +508,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	Matrix.prototype.clone = function() {
 		return Matrix.copy(this);
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Sets the components of the matrix.
@@ -473,6 +535,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 		return this;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Converts the matrix into a string.
 	 * @return {String} String of component values.
@@ -496,6 +560,8 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 
 		return string;
 	};
+
+	/* ====================================================================== */
 
 	return Matrix;
 });

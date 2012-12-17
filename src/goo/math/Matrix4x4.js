@@ -4,6 +4,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	Matrix4x4.prototype = Object.create(Matrix.prototype);
 	Matrix4x4.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
+	/* ====================================================================== */
+
 	/**
 	 * @name Matrix4x4
 	 * @class Matrix with 4x4 components.
@@ -23,7 +25,11 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		}
 	}
 
+	/* ====================================================================== */
+
 	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -79,6 +85,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	};
 
 	/**
+	 * @description Performs a component-wise addition.
+	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.add = function(rhs) {
+		return Matrix4x4.add(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Performs a component-wise subtraction.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
@@ -132,6 +150,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	};
 
 	/**
+	 * @description Performs a component-wise subtraction.
+	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.sub = function(rhs) {
+		return Matrix4x4.sub(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Performs a component-wise multiplication.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
@@ -183,6 +213,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return target;
 	};
+
+	/**
+	 * @description Performs a component-wise multiplication.
+	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.mul = function(rhs) {
+		return Matrix4x4.mul(this, rhs, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -241,6 +283,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	};
 
 	/**
+	 * @description Performs a component-wise division.
+	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.div = function(rhs) {
+		return Matrix4x4.div(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
@@ -279,6 +333,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	};
 
 	/**
+	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.combine = function(rhs) {
+		return Matrix4x4.combine(this, rhs, this);
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @static
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
@@ -314,6 +380,17 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return target;
 	};
+
+	/**
+	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.transpose = function() {
+		return Matrix4x4.transpose(this, this);
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @static
@@ -394,63 +471,15 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
+	 * @description Computes the analytical inverse and stores the result locally.
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.add = function(rhs) {
-		return Matrix4x4.add(this, rhs, this);
+	Matrix4x4.prototype.invert = function() {
+		return Matrix4x4.invert(this, this);
 	};
 
-	/**
-	 * @description Performs a component-wise subtraction.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.sub = function(rhs) {
-		return Matrix4x4.sub(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise multiplication.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.mul = function(rhs) {
-		return Matrix4x4.mul(this, rhs, this);
-	};
-
-	/**
-	 * @description Performs a component-wise division.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.div = function(rhs) {
-		return Matrix4x4.div(this, rhs, this);
-	};
-
-	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
-	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.combine = function(rhs) {
-		return Matrix4x4.combine(this, rhs, this);
-	};
-
-	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.transpose = function() {
-		return Matrix4x4.transpose(this, this);
-	};
+	/* ====================================================================== */
 
 	/**
 	 * @description Tests if the matrix is orthogonal.
@@ -499,6 +528,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return true;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Tests if the matrix is normal.
 	 * @return {Boolean} True if normal.
@@ -534,6 +565,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return true;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Tests if the matrix is orthonormal.
 	 * @return {Boolean} True if orthonormal.
@@ -542,6 +575,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	Matrix4x4.prototype.isOrthonormal = function() {
 		return this.isOrthogonal() && this.isNormal();
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Computes the determinant of the matrix.
@@ -570,14 +605,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 				- this.e03 * val4;
 	};
 
-	/**
-	 * @description Computes the analytical inverse and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
-	 */
-
-	Matrix4x4.prototype.invert = function() {
-		return Matrix4x4.invert(this, this);
-	};
+	/* ====================================================================== */
 
 	/**
 	 * @description Sets the matrix to identity.
@@ -588,7 +616,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return this.set(Matrix4x4.IDENTITY);
 	};
 
-	// Todo: Refactor below this line.
+	/* ====================================================================== */
 
 	/**
 	 * @description Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
@@ -616,6 +644,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return this;
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Sets the rotational part of the matrix from a quaternion.
@@ -655,6 +685,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return this;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Sets the translational part of the matrix.
 	 * @param {Vector3} translation Translation vector.
@@ -668,6 +700,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return this;
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Sets the scale of the matrix.
@@ -688,6 +722,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return this;
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = (x*M)^T)
@@ -710,6 +746,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return rhs;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = M*x)
 	 * @param {Vector4} rhs Vector on the right-hand side.
@@ -730,6 +768,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return rhs;
 	};
 
+	/* ====================================================================== */
+
 	/**
 	 * @description Applies the matrix (rotation, scale, translation) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
@@ -747,6 +787,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 
 		return rhs;
 	};
+
+	/* ====================================================================== */
 
 	/**
 	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
@@ -766,20 +808,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 		return rhs;
 	};
 
-	/**
-	 * @description Compares two matrices with an absolute tolerance of 0.0001.
-	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @returns {Boolean} True if equal.
-	 */
-
-	Matrix4x4.prototype.equals = function(rhs) {
-		for ( var i = 0; i < 16; i++) {
-			if (Math.abs(this.data[i] - rhs.data[i]) > 0.0001) {
-				return false;
-			}
-		}
-		return true;
-	};
+	/* ====================================================================== */
 
 	return Matrix4x4;
 });

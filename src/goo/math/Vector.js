@@ -1,6 +1,8 @@
 define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	"use strict";
 
+	/* ====================================================================== */
+
 	/**
 	 * @name Vector
 	 * @class Vector with N components.
@@ -13,6 +15,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	function Vector(size) {
 		this.data = new Float32Array(size || 0);
 	}
+
+	/* ====================================================================== */
 
 	/**
 	 * @private
