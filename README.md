@@ -32,8 +32,8 @@ JS Doc
 ------
 The jsdoc requires you install JSDoc 3, https://github.com/jsdoc3/jsdoc
 
-One way is to install jsdoc using the package.json file and npm install
+One way is to install jsdoc using the package.json file and running `npm install`. Generate the docs
 
-    ./node_modules/jsdoc/jsdoc -d jsdoc-out -r -p src/goo
+    tools/generate-jsdoc.sh
 
-The resulting documentation will be generated in the jsdoc-out directory.
+The resulting documentation will be generated in the goojs-jsdoc directory and also packaged in a tar.gz file.
