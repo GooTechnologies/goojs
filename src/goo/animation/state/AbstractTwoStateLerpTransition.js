@@ -94,17 +94,18 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		// figure out our weight using time, total time and fade type
 		var percent = currentTime / this._fadeTime;
 
-		switch (this._blendType) {
-			case StateBlendType.SCurve3:
-				this._percent = MathUtils.scurve3(percent);
-				break;
-			case StateBlendType.SCurve5:
-				this._percent = MathUtils.scurve5(percent);
-				break;
-			case StateBlendType.Linear:
-			default:
-				this._percent = percent;
-				break;
+		switch (this._blendType)
+		{
+		case StateBlendType.SCurve3:
+			this._percent = MathUtils.scurve3(percent);
+			break;
+		case StateBlendType.SCurve5:
+			this._percent = MathUtils.scurve5(percent);
+			break;
+		case StateBlendType.Linear:
+		default:
+			this._percent = percent;
+			break;
 		}
 	};
 

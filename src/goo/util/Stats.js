@@ -76,15 +76,16 @@ define(function () {
 
 		var setModeP = function (value) {
 			mode = value;
-			switch (mode) {
-				case 0:
-					fpsDiv.style.display = 'block';
-					msDiv.style.display = 'none';
-					break;
-				case 1:
-					fpsDiv.style.display = 'none';
-					msDiv.style.display = 'block';
-					break;
+			switch (mode)
+			{
+			case 0:
+				fpsDiv.style.display = 'block';
+				msDiv.style.display = 'none';
+				break;
+			case 1:
+				fpsDiv.style.display = 'none';
+				msDiv.style.display = 'block';
+				break;
 			}
 		};
 

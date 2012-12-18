@@ -236,13 +236,14 @@ define(function () {
 				var blockSize = st.readByte(); // Always 11
 				block.identifier = st.read(8);
 				block.authCode = st.read(3);
-				switch (block.identifier) {
-					case 'NETSCAPE':
-						parseNetscapeExt(block);
-						break;
-					default:
-						parseUnknownAppExt(block);
-						break;
+				switch (block.identifier)
+				{
+				case 'NETSCAPE':
+					parseNetscapeExt(block);
+					break;
+				default:
+					parseUnknownAppExt(block);
+					break;
 				}
 			};
 
@@ -252,27 +253,28 @@ define(function () {
 			};
 
 			block.label = st.readByte();
-			switch (block.label) {
-				case 0xF9:
-					block.extType = 'gce';
-					parseGCExt(block);
-					break;
-				case 0xFE:
-					block.extType = 'com';
-					parseComExt(block);
-					break;
-				case 0x01:
-					block.extType = 'pte';
-					parsePTExt(block);
-					break;
-				case 0xFF:
-					block.extType = 'app';
-					parseAppExt(block);
-					break;
-				default:
-					block.extType = 'unknown';
-					parseUnknownExt(block);
-					break;
+			switch (block.label)
+			{
+			case 0xF9:
+				block.extType = 'gce';
+				parseGCExt(block);
+				break;
+			case 0xFE:
+				block.extType = 'com';
+				parseComExt(block);
+				break;
+			case 0x01:
+				block.extType = 'pte';
+				parsePTExt(block);
+				break;
+			case 0xFF:
+				block.extType = 'app';
+				parseAppExt(block);
+				break;
+			default:
+				block.extType = 'unknown';
+				parseUnknownExt(block);
+				break;
 			}
 		};
 
@@ -336,21 +338,22 @@ define(function () {
 			var block = {};
 			block.sentinel = st.readByte();
 
-			switch (String.fromCharCode(block.sentinel)) { // For ease of matching
-				case '!':
-					block.type = 'ext';
-					parseExt(block);
-					break;
-				case ',':
-					block.type = 'img';
-					parseImg(block);
-					break;
-				case ';':
-					block.type = 'eof';
-					handler.eof && handler.eof(block);
-					break;
-				default:
-					throw new Error('Unknown block: 0x' + block.sentinel.toString(16)); // TODO: Pad this with a 0.
+			switch (String.fromCharCode(block.sentinel))
+			{ // For ease of matching
+			case '!':
+				block.type = 'ext';
+				parseExt(block);
+				break;
+			case ',':
+				block.type = 'img';
+				parseImg(block);
+				break;
+			case ';':
+				block.type = 'eof';
+				handler.eof && handler.eof(block);
+				break;
+			default:
+				throw new Error('Unknown block: 0x' + block.sentinel.toString(16)); // TODO: Pad this with a 0.
 			}
 
 			if (block.type !== 'eof') {

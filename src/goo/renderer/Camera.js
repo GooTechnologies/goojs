@@ -295,19 +295,20 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 			// mask = 1 << planeId;
 			// if ((this._planeState & mask) === 0) {
 			// switch (bound.whichSide(this._worldPlane[planeId])) {
-			switch (bound.whichSide(this._worldPlane[planeCounter])) {
-				case Camera.Inside:
-					// object is outside of frustum
-					// bound._checkPlane = planeId;
-					return Camera.Outside;
-				case Camera.Outside:
-					// object is visible on *this* plane, so mark this plane
-					// so that we don't check it for sub nodes.
-					// this._planeState |= mask;
-					break;
-				case Camera.Neither:
-					rVal = Camera.Intersects;
-					break;
+			switch (bound.whichSide(this._worldPlane[planeCounter]))
+			{
+			case Camera.Inside:
+				// object is outside of frustum
+				// bound._checkPlane = planeId;
+				return Camera.Outside;
+			case Camera.Outside:
+				// object is visible on *this* plane, so mark this plane
+				// so that we don't check it for sub nodes.
+				// this._planeState |= mask;
+				break;
+			case Camera.Neither:
+				rVal = Camera.Intersects;
+				break;
 			}
 			// }
 		}

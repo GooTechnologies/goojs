@@ -408,13 +408,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 
 		if (record.frontFace !== frontFace) {
-			switch (frontFace) {
-				case 'CCW':
-					this.context.frontFace(WebGLRenderingContext.CCW);
-					break;
-				case 'CW':
-					this.context.frontFace(WebGLRenderingContext.CW);
-					break;
+			switch (frontFace)
+			{
+			case 'CCW':
+				this.context.frontFace(WebGLRenderingContext.CCW);
+				break;
+			case 'CW':
+				this.context.frontFace(WebGLRenderingContext.CW);
+				break;
 			}
 			record.frontFace = frontFace;
 		}
@@ -499,11 +500,12 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	};
 
 	Renderer.prototype.getGLType = function (type) {
-		switch (type) {
-			case '2D':
-				return WebGLRenderingContext.TEXTURE_2D;
-			case 'CUBE':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
+		switch (type)
+		{
+		case '2D':
+			return WebGLRenderingContext.TEXTURE_2D;
+		case 'CUBE':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP;
 		}
 		throw "invalid texture type: " + type;
 	};
@@ -644,90 +646,96 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	};
 
 	Renderer.prototype.getGLWrap = function (wrap) {
-		switch (wrap) {
-			case 'Repeat':
-				return WebGLRenderingContext.REPEAT;
-			case 'MirroredRepeat':
-				return WebGLRenderingContext.MIRRORED_REPEAT;
-			case 'EdgeClamp':
-				return WebGLRenderingContext.CLAMP_TO_EDGE;
+		switch (wrap)
+		{
+		case 'Repeat':
+			return WebGLRenderingContext.REPEAT;
+		case 'MirroredRepeat':
+			return WebGLRenderingContext.MIRRORED_REPEAT;
+		case 'EdgeClamp':
+			return WebGLRenderingContext.CLAMP_TO_EDGE;
 		}
 		throw "invalid WrapMode type: " + wrap;
 	};
 
 	Renderer.prototype.getGLInternalFormat = function (format) {
-		switch (format) {
-			case 'RGBA':
-				return WebGLRenderingContext.RGBA;
-			case 'RGB':
-				return WebGLRenderingContext.RGB;
-			case 'Alpha':
-				return WebGLRenderingContext.ALPHA;
-			case 'Luminance':
-				return WebGLRenderingContext.LUMINANCE;
-			case 'LuminanceAlpha':
-				return WebGLRenderingContext.LUMINANCE_ALPHA;
-			default:
-				throw "Unsupported format: " + format;
+		switch (format)
+		{
+		case 'RGBA':
+			return WebGLRenderingContext.RGBA;
+		case 'RGB':
+			return WebGLRenderingContext.RGB;
+		case 'Alpha':
+			return WebGLRenderingContext.ALPHA;
+		case 'Luminance':
+			return WebGLRenderingContext.LUMINANCE;
+		case 'LuminanceAlpha':
+			return WebGLRenderingContext.LUMINANCE_ALPHA;
+		default:
+			throw "Unsupported format: " + format;
 		}
 	};
 
 	Renderer.prototype.getGLPixelDataType = function (type) {
-		switch (type) {
-			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
-			case 'UnsignedShort565':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
-			case 'UnsignedShort4444':
-				return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
-			case 'UnsignedShort5551':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
-			case 'Float':
-				return WebGLRenderingContext.FLOAT;
-			default:
-				throw "Unsupported type: " + type;
+		switch (type)
+		{
+		case 'UnsignedByte':
+			return WebGLRenderingContext.UNSIGNED_BYTE;
+		case 'UnsignedShort565':
+			return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
+		case 'UnsignedShort4444':
+			return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
+		case 'UnsignedShort5551':
+			return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
+		case 'Float':
+			return WebGLRenderingContext.FLOAT;
+		default:
+			throw "Unsupported type: " + type;
 		}
 	};
 
 	Renderer.prototype.getFilterFallback = function (filter) {
-		switch (filter) {
-			case 'NearestNeighborNoMipMaps':
-			case 'NearestNeighborNearestMipMap':
-			case 'NearestNeighborLinearMipMap':
-				return 'NearestNeighborNoMipMaps';
-			case 'BilinearNoMipMaps':
-			case 'Trilinear':
-			case 'BilinearNearestMipMap':
-				return 'BilinearNoMipMaps';
-			default:
-				return 'NearestNeighborNoMipMaps';
+		switch (filter)
+		{
+		case 'NearestNeighborNoMipMaps':
+		case 'NearestNeighborNearestMipMap':
+		case 'NearestNeighborLinearMipMap':
+			return 'NearestNeighborNoMipMaps';
+		case 'BilinearNoMipMaps':
+		case 'Trilinear':
+		case 'BilinearNearestMipMap':
+			return 'BilinearNoMipMaps';
+		default:
+			return 'NearestNeighborNoMipMaps';
 		}
 	};
 
 	Renderer.prototype.getGLMagFilter = function (filter) {
-		switch (filter) {
-			case 'Bilinear':
-				return WebGLRenderingContext.LINEAR;
-			case 'NearestNeighbor':
-			default:
-				return WebGLRenderingContext.NEAREST;
+		switch (filter)
+		{
+		case 'Bilinear':
+			return WebGLRenderingContext.LINEAR;
+		case 'NearestNeighbor':
+		default:
+			return WebGLRenderingContext.NEAREST;
 		}
 	};
 
 	Renderer.prototype.getGLMinFilter = function (filter) {
-		switch (filter) {
-			case 'BilinearNoMipMaps':
-				return WebGLRenderingContext.LINEAR;
-			case 'Trilinear':
-				return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
-			case 'BilinearNearestMipMap':
-				return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
-			case 'NearestNeighborNoMipMaps':
-				return WebGLRenderingContext.NEAREST;
-			case 'NearestNeighborNearestMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
-			case 'NearestNeighborLinearMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
+		switch (filter)
+		{
+		case 'BilinearNoMipMaps':
+			return WebGLRenderingContext.LINEAR;
+		case 'Trilinear':
+			return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
+		case 'BilinearNearestMipMap':
+			return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
+		case 'NearestNeighborNoMipMaps':
+			return WebGLRenderingContext.NEAREST;
+		case 'NearestNeighborNearestMipMap':
+			return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
+		case 'NearestNeighborLinearMipMap':
+			return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
 		}
 		throw "invalid MinificationFilter type: " + filter;
 	};
@@ -767,63 +775,66 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	};
 
 	Renderer.prototype.getGLCubeMapFace = function (face) {
-		switch (face) {
-			case 'PositiveX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
-			case 'NegativeX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
-			case 'PositiveY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
-			case 'NegativeY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
-			case 'PositiveZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
-			case 'NegativeZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+		switch (face)
+		{
+		case 'PositiveX':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+		case 'NegativeX':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+		case 'PositiveY':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+		case 'NegativeY':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+		case 'PositiveZ':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+		case 'NegativeZ':
+			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
 		}
 		throw 'Invalid cubemap face: ' + face;
 	};
 
 	Renderer.prototype.getGLBufferUsage = function (usage) {
 		var glMode = WebGLRenderingContext.STATIC_DRAW;
-		switch (usage) {
-			case 'StaticDraw':
-				glMode = WebGLRenderingContext.STATIC_DRAW;
-				break;
-			case 'DynamicDraw':
-				glMode = WebGLRenderingContext.DYNAMIC_DRAW;
-				break;
-			case 'StreamDraw':
-				glMode = WebGLRenderingContext.STREAM_DRAW;
-				break;
+		switch (usage)
+		{
+		case 'StaticDraw':
+			glMode = WebGLRenderingContext.STATIC_DRAW;
+			break;
+		case 'DynamicDraw':
+			glMode = WebGLRenderingContext.DYNAMIC_DRAW;
+			break;
+		case 'StreamDraw':
+			glMode = WebGLRenderingContext.STREAM_DRAW;
+			break;
 		}
 		return glMode;
 	};
 
 	Renderer.prototype.getGLIndexMode = function (indexMode) {
 		var glMode = WebGLRenderingContext.TRIANGLES;
-		switch (indexMode) {
-			case 'Triangles':
-				glMode = WebGLRenderingContext.TRIANGLES;
-				break;
-			case 'TriangleStrip':
-				glMode = WebGLRenderingContext.TRIANGLE_STRIP;
-				break;
-			case 'TriangleFan':
-				glMode = WebGLRenderingContext.TRIANGLE_FAN;
-				break;
-			case 'Lines':
-				glMode = WebGLRenderingContext.LINES;
-				break;
-			case 'LineStrip':
-				glMode = WebGLRenderingContext.LINE_STRIP;
-				break;
-			case 'LineLoop':
-				glMode = WebGLRenderingContext.LINE_LOOP;
-				break;
-			case 'Points':
-				glMode = WebGLRenderingContext.POINTS;
-				break;
+		switch (indexMode)
+		{
+		case 'Triangles':
+			glMode = WebGLRenderingContext.TRIANGLES;
+			break;
+		case 'TriangleStrip':
+			glMode = WebGLRenderingContext.TRIANGLE_STRIP;
+			break;
+		case 'TriangleFan':
+			glMode = WebGLRenderingContext.TRIANGLE_FAN;
+			break;
+		case 'Lines':
+			glMode = WebGLRenderingContext.LINES;
+			break;
+		case 'LineStrip':
+			glMode = WebGLRenderingContext.LINE_STRIP;
+			break;
+		case 'LineLoop':
+			glMode = WebGLRenderingContext.LINE_LOOP;
+			break;
+		case 'Points':
+			glMode = WebGLRenderingContext.POINTS;
+			break;
 		}
 		return glMode;
 	};
@@ -908,75 +919,77 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 	};
 
 	Renderer.prototype.getGLDataType = function (type) {
-		switch (type) {
-			case 'Float':
-			case 'HalfFloat':
-			case 'Double':
-				return WebGLRenderingContext.FLOAT;
-			case 'Byte':
-				return WebGLRenderingContext.BYTE;
-			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
-			case 'Short':
-				return WebGLRenderingContext.SHORT;
-			case 'UnsignedShort':
-				return WebGLRenderingContext.UNSIGNED_SHORT;
-			case 'Int':
-				return WebGLRenderingContext.INT;
-			case 'UnsignedInt':
-				return WebGLRenderingContext.UNSIGNED_INT;
+		switch (type)
+		{
+		case 'Float':
+		case 'HalfFloat':
+		case 'Double':
+			return WebGLRenderingContext.FLOAT;
+		case 'Byte':
+			return WebGLRenderingContext.BYTE;
+		case 'UnsignedByte':
+			return WebGLRenderingContext.UNSIGNED_BYTE;
+		case 'Short':
+			return WebGLRenderingContext.SHORT;
+		case 'UnsignedShort':
+			return WebGLRenderingContext.UNSIGNED_SHORT;
+		case 'Int':
+			return WebGLRenderingContext.INT;
+		case 'UnsignedInt':
+			return WebGLRenderingContext.UNSIGNED_INT;
 		}
 	};
 
 	Renderer.prototype.getGLBlendParam = function (param) {
-		switch (param) {
-			case 'AddEquation':
-				return WebGLRenderingContext.FUNC_ADD;
-				break;
-			case 'SubtractEquation':
-				return WebGLRenderingContext.FUNC_SUBTRACT;
-				break;
-			case 'ReverseSubtractEquation':
-				return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
-				break;
+		switch (param)
+		{
+		case 'AddEquation':
+			return WebGLRenderingContext.FUNC_ADD;
+			break;
+		case 'SubtractEquation':
+			return WebGLRenderingContext.FUNC_SUBTRACT;
+			break;
+		case 'ReverseSubtractEquation':
+			return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+			break;
 
-			case 'ZeroFactor':
-				return WebGLRenderingContext.ZERO;
-				break;
-			case 'OneFactor':
-				return WebGLRenderingContext.ONE;
-				break;
-			case 'SrcColorFactor':
-				return WebGLRenderingContext.SRC_COLOR;
-				break;
-			case 'OneMinusSrcColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
-				break;
-			case 'SrcAlphaFactor':
-				return WebGLRenderingContext.SRC_ALPHA;
-				break;
-			case 'OneMinusSrcAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
-				break;
-			case 'DstAlphaFactor':
-				return WebGLRenderingContext.DST_ALPHA;
-				break;
-			case 'OneMinusDstAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
-				break;
+		case 'ZeroFactor':
+			return WebGLRenderingContext.ZERO;
+			break;
+		case 'OneFactor':
+			return WebGLRenderingContext.ONE;
+			break;
+		case 'SrcColorFactor':
+			return WebGLRenderingContext.SRC_COLOR;
+			break;
+		case 'OneMinusSrcColorFactor':
+			return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+			break;
+		case 'SrcAlphaFactor':
+			return WebGLRenderingContext.SRC_ALPHA;
+			break;
+		case 'OneMinusSrcAlphaFactor':
+			return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+			break;
+		case 'DstAlphaFactor':
+			return WebGLRenderingContext.DST_ALPHA;
+			break;
+		case 'OneMinusDstAlphaFactor':
+			return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+			break;
 
-			case 'DstColorFactor':
-				return WebGLRenderingContext.DST_COLOR;
-				break;
-			case 'OneMinusDstColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
-				break;
-			case 'SrcAlphaSaturateFactor':
-				return WebGLRenderingContext.SRC_ALPHA_SATURATE;
-				break;
+		case 'DstColorFactor':
+			return WebGLRenderingContext.DST_COLOR;
+			break;
+		case 'OneMinusDstColorFactor':
+			return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+			break;
+		case 'SrcAlphaSaturateFactor':
+			return WebGLRenderingContext.SRC_ALPHA_SATURATE;
+			break;
 
-			default:
-				throw 'Unknown blend param: ' + param;
+		default:
+			throw 'Unknown blend param: ' + param;
 		}
 	};
 
