@@ -1,4 +1,4 @@
-define(["goo/noise/Noise"], function(Noise) {
+define(["goo/noise/Noise"], function (Noise) {
 	"use strict";
 
 	ValueNoise.prototype = Object.create(Noise.prototype);
@@ -18,7 +18,12 @@ define(["goo/noise/Noise"], function(Noise) {
 
 	/* ====================================================================== */
 
-	ValueNoise.sources = [ 0.0/15.0, 1.0/15.0, 2.0/15.0, 3.0/15.0, 4.0/15.0, 5.0/15.0, 6.0/15.0, 7.0/15.0, 8.0/15.0, 9.0/15.0, 10.0/15.0, 11.0/15.0, 12.0/15.0, 13.0/15.0, 14.0/15.0, 15.0/15.0 ];
+	ValueNoise.sources = [
+		0.0 / 15.0, 1.0 / 15.0, 2.0 / 15.0, 3.0 / 15.0, 4.0 / 15.0,
+		5.0 / 15.0, 6.0 / 15.0, 7.0 / 15.0, 8.0 / 15.0, 9.0 / 15.0,
+		10.0 / 15.0, 11.0 / 15.0, 12.0 / 15.0, 13.0 / 15.0, 14.0 / 15.0,
+		15.0 / 15.0
+	];
 
 	/* ====================================================================== */
 
@@ -30,8 +35,8 @@ define(["goo/noise/Noise"], function(Noise) {
 	 * @return {Float} Noise value.
 	 */
 
-	ValueNoise.evaluate1d = function(px, scale) {
-		var x = Noise.split(px/scale);
+	ValueNoise.evaluate1d = function (px, scale) {
+		var x = Noise.split(px / scale);
 
 		var i0000 = Noise.shifter[x.i0 & 0xFF] & 0x0F;
 		var i0001 = Noise.shifter[x.i1 & 0xFF] & 0x0F;
@@ -55,9 +60,9 @@ define(["goo/noise/Noise"], function(Noise) {
 	 * @return {Float} Noise value.
 	 */
 
-	ValueNoise.evaluate2d = function(px, py, scale) {
-		var x = Noise.split(px/scale);
-		var y = Noise.split(py/scale);
+	ValueNoise.evaluate2d = function (px, py, scale) {
+		var x = Noise.split(px / scale);
+		var y = Noise.split(py / scale);
 
 		var i0000 = Noise.shifter[Noise.shifter[y.i0 & 0xFF] + x.i0 & 0xFF] & 0x0F;
 		var i0001 = Noise.shifter[Noise.shifter[y.i0 & 0xFF] + x.i1 & 0xFF] & 0x0F;
@@ -86,10 +91,10 @@ define(["goo/noise/Noise"], function(Noise) {
 	 * @return {Float} Noise value.
 	 */
 
-	ValueNoise.evaluate3d = function(px, py, pz, scale) {
-		var x = Noise.split(px/scale);
-		var y = Noise.split(py/scale);
-		var z = Noise.split(pz/scale);
+	ValueNoise.evaluate3d = function (px, py, pz, scale) {
+		var x = Noise.split(px / scale);
+		var y = Noise.split(py / scale);
+		var z = Noise.split(pz / scale);
 
 		var i0000 = Noise.shifter[Noise.shifter[Noise.shifter[z.i0 & 0xFF] + y.i0 & 0xFF] + x.i0 & 0xFF] & 0x0F;
 		var i0001 = Noise.shifter[Noise.shifter[Noise.shifter[z.i0 & 0xFF] + y.i0 & 0xFF] + x.i1 & 0xFF] & 0x0F;
@@ -127,11 +132,11 @@ define(["goo/noise/Noise"], function(Noise) {
 	 * @return {Float} Noise value.
 	 */
 
-	ValueNoise.evaluate4d = function(px, py, pz, pw, scale) {
-		var x = Noise.split(px/scale);
-		var y = Noise.split(py/scale);
-		var z = Noise.split(pz/scale);
-		var w = Noise.split(pw/scale);
+	ValueNoise.evaluate4d = function (px, py, pz, pw, scale) {
+		var x = Noise.split(px / scale);
+		var y = Noise.split(py / scale);
+		var z = Noise.split(pz / scale);
+		var w = Noise.split(pw / scale);
 
 		var i0000 = Noise.shifter[Noise.shifter[Noise.shifter[Noise.shifter[w.i0 & 0xFF] + z.i0 & 0xFF] + y.i0 & 0xFF] + x.i0 & 0xFF] & 0x0F;
 		var i0001 = Noise.shifter[Noise.shifter[Noise.shifter[Noise.shifter[w.i0 & 0xFF] + z.i0 & 0xFF] + y.i0 & 0xFF] + x.i1 & 0xFF] & 0x0F;

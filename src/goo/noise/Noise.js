@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils"], function(MathUtils) {
+define(["goo/math/MathUtils"], function (MathUtils) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -45,7 +45,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Integer,Integer,Float,Float} Object containing "i0", "i1", "f0" and "f1" members.
 	 */
 
-	Noise.split = function(x) {
+	Noise.split = function (x) {
 		var i = Math.floor(x);
 		var f = MathUtils.scurve5(x - i);
 
@@ -66,7 +66,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Float} Noise value.
 	 */
 
-	Noise.fractal1d = function(x, scale, octaves, persistance, lacunarity, type) {
+	Noise.fractal1d = function (x, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
 		var normalizer = 0.0;
@@ -96,7 +96,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Float} Noise value.
 	 */
 
-	Noise.fractal2d = function(x, y, scale, octaves, persistance, lacunarity, type) {
+	Noise.fractal2d = function (x, y, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
 		var normalizer = 0.0;
@@ -128,7 +128,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Float} Noise value.
 	 */
 
-	Noise.fractal3d = function(x, y, z, scale, octaves, persistance, lacunarity, type) {
+	Noise.fractal3d = function (x, y, z, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
 		var normalizer = 0.0;
@@ -162,7 +162,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Float} Noise value.
 	 */
 
-	Noise.fractal4d = function(x, y, z, w, scale, octaves, persistance, lacunarity, type) {
+	Noise.fractal4d = function (x, y, z, w, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
 		var normalizer = 0.0;
