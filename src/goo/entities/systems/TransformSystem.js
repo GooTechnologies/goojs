@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -11,9 +11,10 @@ define(['goo/entities/systems/System'], function(System) {
 
 	TransformSystem.prototype = Object.create(System.prototype);
 
-	TransformSystem.prototype.process = function(entities) {
-		for ( var i in entities) {
-			var transformComponent = entities[i].transformComponent;
+	TransformSystem.prototype.process = function (entities) {
+		var i, transformComponent;
+		for (i in entities) {
+			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
@@ -27,10 +28,10 @@ define(['goo/entities/systems/System'], function(System) {
 		}
 	};
 
-	TransformSystem.prototype.updateWorldTransform = function(transformComponent) {
+	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
 		transformComponent.updateWorldTransform();
 
-		for ( var i in transformComponent.children) {
+		for (var i in transformComponent.children) {
 			this.updateWorldTransform(transformComponent.children[i]);
 		}
 	};

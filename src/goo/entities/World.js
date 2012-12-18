@@ -1,4 +1,4 @@
-define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'], function(Entity, EntityManager,
+define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'], function (Entity, EntityManager,
 	TransformComponent) {
 	"use strict";
 
@@ -27,21 +27,21 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 
 	/**
 	 * Adds a Manager to the world
-	 * 
+	 *
 	 * @param {Manager} manager
 	 */
-	World.prototype.setManager = function(manager) {
+	World.prototype.setManager = function (manager) {
 		this._managers.push(manager);
 	};
 
 	/**
 	 * Retrive a manager of type 'type'
-	 * 
+	 *
 	 * @param {String} type Type of manager to retrieve
 	 * @returns manager
 	 */
-	World.prototype.getManager = function(type) {
-		for ( var i in this._managers) {
+	World.prototype.getManager = function (type) {
+		for (var i in this._managers) {
 			var manager = this._managers[i];
 			if (manager.type === type) {
 				return manager;
@@ -51,21 +51,21 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 
 	/**
 	 * Adds a {@link System} to the world
-	 * 
+	 *
 	 * @param {System} system
 	 */
-	World.prototype.setSystem = function(system) {
+	World.prototype.setSystem = function (system) {
 		this._systems.push(system);
 	};
 
 	/**
 	 * Retrive a {@link System} of type 'type'
-	 * 
+	 *
 	 * @param {String} type Type of system to retrieve
 	 * @returns System
 	 */
-	World.prototype.getSystem = function(type) {
-		for ( var i in this._systems) {
+	World.prototype.getSystem = function (type) {
+		for (var i in this._systems) {
 			var system = this._systems[i];
 			if (system.type === type) {
 				return system;
@@ -75,10 +75,10 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 
 	/**
 	 * Creates a new {@link Entity}
-	 * 
+	 *
 	 * @returns {Entity}
 	 */
-	World.prototype.createEntity = function(name) {
+	World.prototype.createEntity = function (name) {
 		var entity = new Entity(this, name);
 		entity.setComponent(new TransformComponent());
 		return entity;
@@ -86,39 +86,39 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 
 	/**
 	 * Get all entities in world
-	 * 
+	 *
 	 * @returns All entities existing in world
 	 */
-	World.prototype.getEntities = function() {
+	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();
 	};
 
 	/**
 	 * Add an entity to the world
-	 * 
+	 *
 	 * @param entity
 	 */
-	World.prototype.addEntity = function(entity) {
+	World.prototype.addEntity = function (entity) {
 		this._addedEntities.push(entity);
 	};
 
 	/**
 	 * Remove an entity from the world
-	 * 
+	 *
 	 * @param entity
 	 */
-	World.prototype.removeEntity = function(entity) {
+	World.prototype.removeEntity = function (entity) {
 		this._removedEntities.push(entity);
 	};
 
 	/**
 	 * Let the system know that an entity has been changed/updated
-	 * 
+	 *
 	 * @param entity
 	 * @param component
 	 * @param eventType
 	 */
-	World.prototype.changedEntity = function(entity, component, eventType) {
+	World.prototype.changedEntity = function (entity, component, eventType) {
 		var event = {
 			entity : entity
 		};
@@ -134,18 +134,18 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 	/**
 	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called each frame
 	 */
-	World.prototype.process = function() {
-		this._check(this._addedEntities, function(observer, entity) {
+	World.prototype.process = function () {
+		this._check(this._addedEntities, function (observer, entity) {
 			if (observer.added) {
 				observer.added(entity);
 			}
 			if (observer.addedComponent) {
-				for ( var i in entity._components) {
+				for (var i in entity._components) {
 					observer.addedComponent(entity, entity._components[i]);
 				}
 			}
 		});
-		this._check(this._changedEntities, function(observer, event) {
+		this._check(this._changedEntities, function (observer, event) {
 			if (observer.changed) {
 				observer.changed(event.entity);
 			}
@@ -155,18 +155,18 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 				}
 			}
 		});
-		this._check(this._removedEntities, function(observer, entity) {
+		this._check(this._removedEntities, function (observer, entity) {
 			if (observer.removed) {
 				observer.removed(entity);
 			}
 			if (observer.removedComponent) {
-				for ( var i in entity._components) {
+				for (var i in entity._components) {
 					observer.removedComponent(entity, entity._components[i]);
 				}
 			}
 		});
 
-		for ( var systemIndex in this._systems) {
+		for (var systemIndex in this._systems) {
 			var system = this._systems[systemIndex];
 			if (!system.passive) {
 				system._process();
@@ -174,15 +174,15 @@ define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entit
 		}
 	};
 
-	World.prototype._check = function(entities, callback) {
+	World.prototype._check = function (entities, callback) {
 		// REVIEW: Code style? Spaces before and after "("?
-		for ( var index in entities) {
+		for (var index in entities) {
 			var entity = entities[index];
-			for ( var managerIndex in this._managers) {
+			for (var managerIndex in this._managers) {
 				var manager = this._managers[managerIndex];
 				callback(manager, entity);
 			}
-			for ( var systemIndex in this._systems) {
+			for (var systemIndex in this._systems) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}

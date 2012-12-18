@@ -1,4 +1,4 @@
-define(['goo/entities/components/Component'], function(Component) {
+define(['goo/entities/components/Component'], function (Component) {
 	"use strict";
 
 	/**
@@ -14,7 +14,7 @@ define(['goo/entities/components/Component'], function(Component) {
 
 	ScriptComponent.prototype = Object.create(Component.prototype);
 
-	ScriptComponent.prototype.run = function(entity) {
+	ScriptComponent.prototype.run = function (entity) {
 		if (this.script && this.script.run) {
 			this.script.run(entity);
 		}

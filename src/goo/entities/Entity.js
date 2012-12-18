@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -22,14 +22,14 @@ define(function() {
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
 	 */
-	Entity.prototype.addToWorld = function() {
+	Entity.prototype.addToWorld = function () {
 		this._world.addEntity(this);
 	};
 
 	/**
 	 * Remove entity from the world.
 	 */
-	Entity.prototype.removeFromWorld = function() {
+	Entity.prototype.removeFromWorld = function () {
 		this._world.removeEntity(this);
 	};
 
@@ -39,10 +39,10 @@ define(function() {
 
 	/**
 	 * Set component of a certain type on entity. Existing component of the same type will be overwritten.
-	 * 
+	 *
 	 * @param component Component to set on the entity
 	 */
-	Entity.prototype.setComponent = function(component) {
+	Entity.prototype.setComponent = function (component) {
 		var index = this._components.indexOf(component);
 		if (index === -1) {
 			this._components.push(component);
@@ -64,20 +64,20 @@ define(function() {
 
 	/**
 	 * Retrieve a component of a specific type
-	 * 
+	 *
 	 * @param type Type of component to retrieve
 	 * @returns component with requested type or undefined if not present
 	 */
-	Entity.prototype.getComponent = function(type) {
+	Entity.prototype.getComponent = function (type) {
 		return this[getTypeAttributeName(type)];
 	};
 
 	/**
 	 * Remove a component of a specific type from entity.
-	 * 
+	 *
 	 * @param type Type of component to remove
 	 */
-	Entity.prototype.clearComponent = function(type) {
+	Entity.prototype.clearComponent = function (type) {
 		var component = this[type];
 		var index = this._components.indexOf(component);
 		if (index !== -1) {
@@ -94,7 +94,7 @@ define(function() {
 		}
 	};
 
-	Entity.prototype.toString = function() {
+	Entity.prototype.toString = function () {
 		return this.name;
 	};
 

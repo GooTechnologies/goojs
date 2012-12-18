@@ -1,4 +1,4 @@
-define(['goo/math/Transform', 'goo/entities/components/Component'], function(Transform, Component) {
+define(['goo/math/Transform', 'goo/entities/components/Component'], function (Transform, Component) {
 	"use strict";
 
 	/**
@@ -25,16 +25,16 @@ define(['goo/math/Transform', 'goo/entities/components/Component'], function(Tra
 	/**
 	 * Mark the component for updates of world transform
 	 */
-	TransformComponent.prototype.setUpdated = function() {
+	TransformComponent.prototype.setUpdated = function () {
 		this._dirty = true;
 	};
 
 	/**
 	 * Attach a child transform to this component tree
-	 * 
+	 *
 	 * @param childComponent child transform component to attach
 	 */
-	TransformComponent.prototype.attachChild = function(childComponent) {
+	TransformComponent.prototype.attachChild = function (childComponent) {
 		if (childComponent === this) {
 			// REVIEW: Do we need to check this recursively? ANSWER: Yes
 			console.warn('attachChild: An object can\'t be added as a child of itself.');
@@ -50,10 +50,10 @@ define(['goo/math/Transform', 'goo/entities/components/Component'], function(Tra
 
 	/**
 	 * Detach a child transform from this component tree
-	 * 
+	 *
 	 * @param childComponent child transform component to detach
 	 */
-	TransformComponent.prototype.detachChild = function(childComponent) {
+	TransformComponent.prototype.detachChild = function (childComponent) {
 		if (childComponent === this) {
 			console.warn('attachChild: An object can\'t be removed from itself.');
 			return;
@@ -69,14 +69,14 @@ define(['goo/math/Transform', 'goo/entities/components/Component'], function(Tra
 	/**
 	 * Update target transform contained by this component
 	 */
-	TransformComponent.prototype.updateTransform = function() {
+	TransformComponent.prototype.updateTransform = function () {
 		this.transform.update();
 	};
 
 	/**
 	 * Update this transform components world transform (resulting transform considering parent transformations)
 	 */
-	TransformComponent.prototype.updateWorldTransform = function() {
+	TransformComponent.prototype.updateWorldTransform = function () {
 		if (this.parent) {
 			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
 		} else {

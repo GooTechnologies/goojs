@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -14,12 +14,12 @@ define(['goo/entities/systems/System'], function(System) {
 
 	PickingSystem.prototype = Object.create(System.prototype);
 
-	PickingSystem.prototype.process = function(entities) {
+	PickingSystem.prototype.process = function (entities) {
 		var pickList = [];
 		if (!this.pickRay || !this.onPick) {
 			return;
 		}
-		for ( var i in entities) {
+		for (var i in entities) {
 			var entity = entities[i];
 			var meshRendererComponent = entity.meshRendererComponent;
 

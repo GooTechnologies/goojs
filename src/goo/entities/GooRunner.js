@@ -1,7 +1,7 @@
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'], function(World,
+		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'], function (World,
 	TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner, LightManager,
 	CameraSystem, Camera, CameraComponent, Stats) {
 	"use strict";
@@ -61,7 +61,7 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 
 			renderSystem.render(that.renderer);
 
-			for ( var i in that.callbacks) {
+			for (var i in that.callbacks) {
 				that.callbacks[i](that.world.tpf);
 			}
 
@@ -77,15 +77,15 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
 
-		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
 			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
 			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
 		}
 
 		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function(callback, element) {
+			window.requestAnimationFrame = function (callback, element) {
 				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function() {
+				var id = window.setTimeout(function () {
 					callback(currTime + timeToCall);
 				}, timeToCall);
 				lastTime = currTime + timeToCall;
@@ -94,7 +94,7 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		}
 
 		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function(id) {
+			window.cancelAnimationFrame = function (id) {
 				clearTimeout(id);
 			};
 		}

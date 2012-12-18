@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -11,8 +11,8 @@ define(['goo/entities/systems/System'], function(System) {
 
 	LightingSystem.prototype = Object.create(System.prototype);
 
-	LightingSystem.prototype.process = function(entities) {
-		for ( var i in entities) {
+	LightingSystem.prototype.process = function (entities) {
+		for (var i in entities) {
 			var entity = entities[i];
 			var transformComponent = entity.transformComponent;
 			var lightComponent = entity.lightComponent;

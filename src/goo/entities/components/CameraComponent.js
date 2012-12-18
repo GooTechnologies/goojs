@@ -1,4 +1,4 @@
-define(['goo/entities/components/Component', 'goo/math/Vector3'], function(Component, Vector3) {
+define(['goo/entities/components/Component', 'goo/math/Vector3'], function (Component, Vector3) {
 	"use strict";
 
 	/**
@@ -14,7 +14,7 @@ define(['goo/entities/components/Component', 'goo/math/Vector3'], function(Compo
 
 	CameraComponent.prototype = Object.create(Component.prototype);
 
-	CameraComponent.prototype.updateCamera = function(transform) {
+	CameraComponent.prototype.updateCamera = function (transform) {
 		// var vec1 = new Vector3(0, 0, 0);
 		// transform.matrix.applyPost(vec1);
 		//

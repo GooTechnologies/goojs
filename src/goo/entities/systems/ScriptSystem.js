@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -11,8 +11,8 @@ define(['goo/entities/systems/System'], function(System) {
 
 	ScriptSystem.prototype = Object.create(System.prototype);
 
-	ScriptSystem.prototype.process = function(entities) {
-		for ( var i in entities) {
+	ScriptSystem.prototype.process = function (entities) {
+		for (var i in entities) {
 			var scriptComponent = entities[i].scriptComponent;
 			scriptComponent.run(entities[i]);
 		}

@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(System, EventHandler) {
+define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function (System, EventHandler) {
 	"use strict";
 
 	/**
@@ -14,7 +14,7 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(Sy
 
 		var that = this;
 		EventHandler.addListener({
-			setCurrentCamera : function(camera) {
+			setCurrentCamera : function (camera) {
 				that.camera = camera;
 			}
 		});
@@ -22,19 +22,19 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function(Sy
 
 	PartitioningSystem.prototype = Object.create(System.prototype);
 
-	PartitioningSystem.prototype.inserted = function(entity) {
+	PartitioningSystem.prototype.inserted = function (entity) {
 		if (this.partitioner) {
 			this.partitioner.added(entity);
 		}
 	};
 
-	PartitioningSystem.prototype.deleted = function(entity) {
+	PartitioningSystem.prototype.deleted = function (entity) {
 		if (this.partitioner) {
 			this.partitioner.removed(entity);
 		}
 	};
 
-	PartitioningSystem.prototype.process = function(entities) {
+	PartitioningSystem.prototype.process = function (entities) {
 		this.renderList.length = 0;
 		if (this.partitioner && this.camera) {
 			this.partitioner.process(this.camera, entities, this.renderList);

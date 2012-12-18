@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System'], function(System) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -11,8 +11,8 @@ define(['goo/entities/systems/System'], function(System) {
 
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
 
-	BoundingUpdateSystem.prototype.process = function(entities) {
-		for ( var i in entities) {
+	BoundingUpdateSystem.prototype.process = function (entities) {
+		for (var i in entities) {
 			var entity = entities[i];
 			var meshDataComponent = entity.meshDataComponent;
 			var transformComponent = entity.transformComponent;

@@ -1,4 +1,4 @@
-define(['goo/entities/components/Component'], function(Component) {
+define(['goo/entities/components/Component'], function (Component) {
 	"use strict";
 
 	/**
@@ -21,11 +21,11 @@ define(['goo/entities/components/Component'], function(Component) {
 
 	/**
 	 * Update world bounding
-	 * 
+	 *
 	 * @param bounding Bounding volumen in local space
 	 * @param transform Transform to apply to local bounding -> world bounding
 	 */
-	MeshRendererComponent.prototype.updateBounds = function(bounding, transform) {
+	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
 		this.worldBound = bounding.transform(transform, this.worldBound);
 	};
 

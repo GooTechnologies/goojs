@@ -1,4 +1,4 @@
-define(['goo/entities/EventHandler'], function(EventHandler) {
+define(['goo/entities/EventHandler'], function (EventHandler) {
 	"use strict";
 
 	/**
@@ -11,7 +11,7 @@ define(['goo/entities/EventHandler'], function(EventHandler) {
 		this.lights = [];
 	}
 
-	LightManager.prototype.addedComponent = function(entity, component) {
+	LightManager.prototype.addedComponent = function (entity, component) {
 		if (component.type !== 'LightComponent') {
 			return;
 		}
@@ -22,7 +22,7 @@ define(['goo/entities/EventHandler'], function(EventHandler) {
 		}
 	};
 
-	LightManager.prototype.removedComponent = function(entity, component) {
+	LightManager.prototype.removedComponent = function (entity, component) {
 		if (component.type !== 'LightComponent') {
 			return;
 		}

@@ -1,5 +1,5 @@
 define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent'],
-	function(TransformComponent, MeshDataComponent, MeshRendererComponent) {
+	function (TransformComponent, MeshDataComponent, MeshRendererComponent) {
 		"use strict";
 
 		/**
@@ -12,7 +12,7 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 		/**
 		 * Creates an entity with the common rendering components.
 		 */
-		EntityUtils.createTypicalEntity = function(world, meshData) {
+		EntityUtils.createTypicalEntity = function (world, meshData) {
 			// Create entity
 			var entity = world.createEntity();
 

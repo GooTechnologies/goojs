@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util', 'goo/entities/EventHandler'], function(System,
+define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util', 'goo/entities/EventHandler'], function (System,
 	TextureCreator, Util, EventHandler) {
 	"use strict";
 
@@ -19,10 +19,10 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 
 		var that = this;
 		EventHandler.addListener({
-			setCurrentCamera : function(camera) {
+			setCurrentCamera : function (camera) {
 				that.camera = camera;
 			},
-			setLights : function(lights) {
+			setLights : function (lights) {
 				that.lights = lights;
 			}
 		});
@@ -30,7 +30,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 
 	RenderSystem.prototype = Object.create(System.prototype);
 
-	RenderSystem.prototype.render = function(renderer) {
+	RenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
 
 		if (!this.doRender) {

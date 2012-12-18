@@ -1,9 +1,9 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
 	 * Creates a new System
-	 * 
+	 *
 	 * @name System
 	 * @class Base class for all entity systems
 	 *        <ul>
@@ -26,15 +26,15 @@ define(function() {
 	/**
 	 * @param entity
 	 */
-	System.prototype.added = function(entity) {
+	System.prototype.added = function (entity) {
 		this._check(entity);
 	};
 
-	System.prototype.changed = function(entity) {
+	System.prototype.changed = function (entity) {
 		this._check(entity);
 	};
 
-	System.prototype.removed = function(entity) {
+	System.prototype.removed = function (entity) {
 		var index = this._activeEntities.indexOf(entity);
 		if (index !== -1) {
 			this._activeEntities.splice(index, 1);
@@ -50,14 +50,14 @@ define(function() {
 
 	/**
 	 * Check if a system is interested in an entity based on its interests list.
-	 * 
+	 *
 	 * @param entity {@link Entity} to check if the system is interested in
 	 */
-	System.prototype._check = function(entity) {
+	System.prototype._check = function (entity) {
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
-			for ( var i in this.interests) {
+			for (var i in this.interests) {
 				var interest = getTypeAttributeName(this.interests[i]);
 
 				if (!entity[interest]) {
@@ -81,7 +81,7 @@ define(function() {
 		}
 	};
 
-	System.prototype._process = function() {
+	System.prototype._process = function () {
 		if (this.process) {
 			this.process(this._activeEntities);
 		}

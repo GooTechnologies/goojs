@@ -1,4 +1,4 @@
-define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], function(BoundingSphere, Component) {
+define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], function (BoundingSphere, Component) {
 	"use strict";
 
 	/**
@@ -21,11 +21,11 @@ define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], fun
 
 	/**
 	 * Set the bounding volume type (sphere, box etc)
-	 * 
+	 *
 	 * @param modelBound Bounding to apply to this meshdata component
 	 * @param autoCompute If true, automatically compute bounding fit
 	 */
-	MeshDataComponent.prototype.setModelBound = function(modelBound, autoCompute) {
+	MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
 		this.modelBound = modelBound;
 		this.autoCompute = autoCompute;
 	};
@@ -33,7 +33,7 @@ define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], fun
 	/**
 	 * Compute bounding center and bounds for this mesh
 	 */
-	MeshDataComponent.prototype.computeBoundFromPoints = function() {
+	MeshDataComponent.prototype.computeBoundFromPoints = function () {
 		if (this.autoCompute && this.modelBound !== null) {
 			var verts = this.meshData.getAttributeBuffer('POSITION');
 			if (verts !== undefined) {
