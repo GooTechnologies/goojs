@@ -1,4 +1,4 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/util/Handy'], function(Vector3, Matrix3x3, Matrix4x4, Handy) {
+define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/util/Handy'], function (Vector3, Matrix3x3, Matrix4x4, Handy) {
 	"use strict";
 
 	/**
@@ -18,17 +18,17 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		var that = this;
 
 		// TODO: find a better solution
-		Handy.addListener(this, 'rotation', undefined, function() {
+		Handy.addListener(this, 'rotation', undefined, function () {
 			that.rotation.x = 0;
 			that.rotation.y = 0;
 			that.rotation.z = 0;
-			Handy.addListener(that.rotation, 'x', undefined, function() {
+			Handy.addListener(that.rotation, 'x', undefined, function () {
 				that.eulerUpdated = true;
 			});
-			Handy.addListener(that.rotation, 'y', undefined, function() {
+			Handy.addListener(that.rotation, 'y', undefined, function () {
 				that.eulerUpdated = true;
 			});
-			Handy.addListener(that.rotation, 'z', undefined, function() {
+			Handy.addListener(that.rotation, 'z', undefined, function () {
 				that.eulerUpdated = true;
 			});
 		});
@@ -36,19 +36,19 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.rotation.x = 0;
 		this.rotation.y = 0;
 		this.rotation.z = 0;
-		Handy.addListener(this.rotation, 'x', undefined, function() {
+		Handy.addListener(this.rotation, 'x', undefined, function () {
 			that.eulerUpdated = true;
 		});
-		Handy.addListener(this.rotation, 'y', undefined, function() {
+		Handy.addListener(this.rotation, 'y', undefined, function () {
 			that.eulerUpdated = true;
 		});
-		Handy.addListener(this.rotation, 'z', undefined, function() {
+		Handy.addListener(this.rotation, 'z', undefined, function () {
 			that.eulerUpdated = true;
 		});
 	}
 
 	// TODO: sort this crap out!
-	Transform.prototype.multiply = function(a, b) {
+	Transform.prototype.multiply = function (a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
 		// this.translation.copy(a.translation).add(b.translation);
@@ -67,7 +67,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		// this.scale.copy(Vector3.ONE);
 	};
 
-	Transform.prototype.setIdentity = function() {
+	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
 		this.translation.copy(Vector3.ZERO);
@@ -75,7 +75,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.scale.copy(Vector3.ONE);
 	};
 
-	Transform.prototype.applyForward = function(point, store) {
+	Transform.prototype.applyForward = function (point, store) {
 		store.copy(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
@@ -87,7 +87,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		return store;
 	};
 
-	Transform.prototype.update = function() {
+	Transform.prototype.update = function () {
 		if (this.eulerUpdated) {
 			// console.log(this.rotation.x, this.rotation.y, this.rotation.z);
 			this.rotation.fromAngles(this.rotation.x, this.rotation.y, this.rotation.z);
@@ -117,7 +117,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		rd.e33 = 1.0;
 	};
 
-	Transform.prototype.copy = function(transform) {
+	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
 		this.translation.copy(transform.translation);
@@ -128,7 +128,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.scale.copy(transform.scale);
 	};
 
-	Transform.prototype.invert = function(store) {
+	Transform.prototype.invert = function (store) {
 		var result = store;
 		if (!result) {
 			result = new Transform();
@@ -161,7 +161,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		return result;
 	};
 
-	Transform.prototype.toString = function() {
+	Transform.prototype.toString = function () {
 		return '' + this.matrix;
 	};
 

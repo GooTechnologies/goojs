@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
+define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 	"use strict";
 
 	Matrix4x4.prototype = Object.create(Matrix.prototype);
@@ -40,7 +40,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.add = function(lhs, rhs, target) {
+	Matrix4x4.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -90,7 +90,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.add = function(rhs) {
+	Matrix4x4.prototype.add = function (rhs) {
 		return Matrix4x4.add(this, rhs, this);
 	};
 
@@ -105,7 +105,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.sub = function(lhs, rhs, target) {
+	Matrix4x4.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -155,7 +155,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.sub = function(rhs) {
+	Matrix4x4.prototype.sub = function (rhs) {
 		return Matrix4x4.sub(this, rhs, this);
 	};
 
@@ -170,7 +170,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.mul = function(lhs, rhs, target) {
+	Matrix4x4.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -220,7 +220,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.mul = function(rhs) {
+	Matrix4x4.prototype.mul = function (rhs) {
 		return Matrix4x4.mul(this, rhs, this);
 	};
 
@@ -235,7 +235,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.div = function(lhs, rhs, target) {
+	Matrix4x4.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -288,7 +288,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.div = function(rhs) {
+	Matrix4x4.prototype.div = function (rhs) {
 		return Matrix4x4.div(this, rhs, this);
 	};
 
@@ -303,7 +303,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.combine = function(lhs, rhs, target) {
+	Matrix4x4.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -338,7 +338,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.combine = function(rhs) {
+	Matrix4x4.prototype.combine = function (rhs) {
 		return Matrix4x4.combine(this, rhs, this);
 	};
 
@@ -352,7 +352,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.transpose = function(source, target) {
+	Matrix4x4.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -386,7 +386,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.transpose = function() {
+	Matrix4x4.prototype.transpose = function () {
 		return Matrix4x4.transpose(this, this);
 	};
 
@@ -401,7 +401,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix4x4.invert = function(source, target) {
+	Matrix4x4.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -475,7 +475,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.invert = function() {
+	Matrix4x4.prototype.invert = function () {
 		return Matrix4x4.invert(this, this);
 	};
 
@@ -486,7 +486,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if orthogonal.
 	 */
 
-	Matrix4x4.prototype.isOrthogonal = function() {
+	Matrix4x4.prototype.isOrthogonal = function () {
 		var dot;
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21 + this.e30 * this.e31;
@@ -535,7 +535,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if normal.
 	 */
 
-	Matrix4x4.prototype.isNormal = function() {
+	Matrix4x4.prototype.isNormal = function () {
 		var l;
 
 		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20 + this.e30 * this.e30;
@@ -572,7 +572,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if orthonormal.
 	 */
 
-	Matrix4x4.prototype.isOrthonormal = function() {
+	Matrix4x4.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -583,17 +583,17 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Determinant of matrix.
 	 */
 
-	Matrix4x4.prototype.determinant = function() {
+	Matrix4x4.prototype.determinant = function () {
 		var val1 = this.e11 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e31 + this.e13 * this.e21 * this.e32 - 
+				* this.e31 + this.e13 * this.e21 * this.e32 -
 				this.e13 * this.e22 * this.e31 - this.e12 * this.e21
 				* this.e33 - this.e11 * this.e23 * this.e32;
 		var val2 = this.e10 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e32 - 
+				* this.e30 + this.e13 * this.e20 * this.e32 -
 				this.e13 * this.e22 * this.e30 - this.e12 * this.e20
 				* this.e33 - this.e10 * this.e23 * this.e32;
 		var val3 = this.e10 * this.e21 * this.e33 + this.e11 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e31 - 
+				* this.e30 + this.e13 * this.e20 * this.e31 -
 				this.e13 * this.e21 * this.e30 - this.e11 * this.e20
 				* this.e33 - this.e10 * this.e23 * this.e31;
 		var val4 = this.e10 * this.e21 * this.e32 + this.e11 * this.e22
@@ -612,7 +612,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setIdentity = function() {
+	Matrix4x4.prototype.setIdentity = function () {
 		return this.set(Matrix4x4.IDENTITY);
 	};
 
@@ -624,7 +624,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setRotationFromVector = function(angles) {
+	Matrix4x4.prototype.setRotationFromVector = function (angles) {
 		var sx = Math.sin(angles.x);
 		var cx = Math.cos(angles.x);
 		var sy = Math.sin(angles.y);
@@ -653,7 +653,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setRotationFromQuaternion = function(quaternion) {
+	Matrix4x4.prototype.setRotationFromQuaternion = function (quaternion) {
 		var l = quaternion.lengthSquared();
 
 		l = (l > 0.0) ? 2.0 / l : 0.0;
@@ -693,7 +693,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setTranslation = function(translation) {
+	Matrix4x4.prototype.setTranslation = function (translation) {
 		this.e03 = translation.x;
 		this.e13 = translation.y;
 		this.e23 = translation.z;
@@ -709,7 +709,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
-	Matrix4x4.prototype.setScale = function(scale) {
+	Matrix4x4.prototype.setScale = function (scale) {
 		this.e00 *= scale.x;
 		this.e10 *= scale.y;
 		this.e20 *= scale.z;
@@ -732,7 +732,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 */
 
 	// REVIEW: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector) and the matrix is applied after the vector.
-	Matrix4x4.prototype.applyPre = function(rhs) {
+	Matrix4x4.prototype.applyPre = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;
@@ -754,7 +754,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 
-	Matrix4x4.prototype.applyPost = function(rhs) {
+	Matrix4x4.prototype.applyPost = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;
@@ -776,7 +776,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 
-	Matrix4x4.prototype.applyPostPoint = function(rhs) {
+	Matrix4x4.prototype.applyPostPoint = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;
@@ -796,7 +796,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 
-	Matrix4x4.prototype.applyPostVector = function(rhs) {
+	Matrix4x4.prototype.applyPostVector = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;

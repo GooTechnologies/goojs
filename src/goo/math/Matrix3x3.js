@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(MathUtils, Matrix, Vector3) {
+define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function (MathUtils, Matrix, Vector3) {
 	"use strict";
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
@@ -40,7 +40,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.add = function(lhs, rhs, target) {
+	Matrix3x3.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -76,7 +76,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.add = function(rhs) {
+	Matrix3x3.prototype.add = function (rhs) {
 		return Matrix3x3.add(this, rhs, this);
 	};
 
@@ -91,7 +91,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.sub = function(lhs, rhs, target) {
+	Matrix3x3.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -127,7 +127,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.sub = function(rhs) {
+	Matrix3x3.prototype.sub = function (rhs) {
 		return Matrix3x3.sub(this, rhs, this);
 	};
 
@@ -142,7 +142,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.mul = function(lhs, rhs, target) {
+	Matrix3x3.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -178,7 +178,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.mul = function(rhs) {
+	Matrix3x3.prototype.mul = function (rhs) {
 		return Matrix3x3.mul(this, rhs, this);
 	};
 
@@ -193,7 +193,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.div = function(lhs, rhs, target) {
+	Matrix3x3.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -231,7 +231,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.div = function(rhs) {
+	Matrix3x3.prototype.div = function (rhs) {
 		return Matrix3x3.div(this, rhs, this);
 	};
 
@@ -246,7 +246,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.combine = function(lhs, rhs, target) {
+	Matrix3x3.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -274,7 +274,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.combine = function(rhs) {
+	Matrix3x3.prototype.combine = function (rhs) {
 		return Matrix3x3.combine(this, rhs, this);
 	};
 
@@ -288,7 +288,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.transpose = function(source, target) {
+	Matrix3x3.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -315,7 +315,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.transpose = function() {
+	Matrix3x3.prototype.transpose = function () {
 		return Matrix3x3.transpose(this, this);
 	};
 
@@ -330,7 +330,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix3x3.invert = function(source, target) {
+	Matrix3x3.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -365,7 +365,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.invert = function() {
+	Matrix3x3.prototype.invert = function () {
 		return Matrix3x3.invert(this, this);
 	};
 
@@ -376,7 +376,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Boolean} True if orthogonal.
 	 */
 
-	Matrix3x3.prototype.isOrthogonal = function() {
+	Matrix3x3.prototype.isOrthogonal = function () {
 		var dot;
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21;
@@ -407,7 +407,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Boolean} True if normal.
 	 */
 
-	Matrix3x3.prototype.isNormal = function() {
+	Matrix3x3.prototype.isNormal = function () {
 		var l;
 
 		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20;
@@ -438,7 +438,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Boolean} True if orthonormal.
 	 */
 
-	Matrix3x3.prototype.isOrthonormal = function() {
+	Matrix3x3.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -449,7 +449,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Float} Determinant of matrix.
 	 */
 
-	Matrix3x3.prototype.determinant = function() {
+	Matrix3x3.prototype.determinant = function () {
 		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
 	};
 
@@ -460,7 +460,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.setIdentity = function() {
+	Matrix3x3.prototype.setIdentity = function () {
 		this.set(Matrix3x3.IDENTITY);
 	};
 
@@ -472,7 +472,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 
-	Matrix3x3.prototype.applyPost = function(rhs) {
+	Matrix3x3.prototype.applyPost = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
 		var z = rhs.z;
@@ -493,7 +493,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @returns {Matrix3x3} Storage matrix.
 	 */
 
-	Matrix3x3.prototype.multiplyDiagonalPost = function(vec, result) {
+	Matrix3x3.prototype.multiplyDiagonalPost = function (vec, result) {
 		var x = vec.x;
 		var y = vec.y;
 		var z = vec.z;
@@ -523,7 +523,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.fromAngles = function(yaw, roll, pitch) {
+	Matrix3x3.prototype.fromAngles = function (yaw, roll, pitch) {
 		var cy = Math.cos(yaw);
 		var sy = Math.sin(yaw);
 		var ch = Math.cos(roll);
@@ -556,7 +556,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @throws NullPointerException if axis is null.
 	 */
 
-	Matrix3x3.prototype.fromAngleNormalAxis = function(angle, x, y, z) {
+	Matrix3x3.prototype.fromAngleNormalAxis = function (angle, x, y, z) {
 		var fCos = Math.cos(angle);
 		var fSin = Math.sin(angle);
 		var fOneMinusCos = 1.0 - fCos;
@@ -592,7 +592,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.lookAt = function(direction, up) {
+	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var xAxis = new Vector3();
 		var yAxis = new Vector3();
 		var zAxis = new Vector3();
@@ -624,7 +624,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function(M
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
-	Matrix3x3.prototype.copyQuaternion = function(quaternion) {
+	Matrix3x3.prototype.copyQuaternion = function (quaternion) {
 		return quaternion.toRotationMatrix(this);
 	};
 

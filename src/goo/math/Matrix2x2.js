@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
+define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 	"use strict";
 
 	Matrix2x2.prototype = Object.create(Matrix.prototype);
@@ -40,7 +40,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.add = function(lhs, rhs, target) {
+	Matrix2x2.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -66,7 +66,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.add = function(rhs) {
+	Matrix2x2.prototype.add = function (rhs) {
 		return Matrix2x2.add(this, rhs, this);
 	};
 
@@ -81,7 +81,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.sub = function(lhs, rhs, target) {
+	Matrix2x2.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -107,7 +107,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.sub = function(rhs) {
+	Matrix2x2.prototype.sub = function (rhs) {
 		return Matrix2x2.sub(this, rhs, this);
 	};
 
@@ -122,7 +122,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.mul = function(lhs, rhs, target) {
+	Matrix2x2.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -148,7 +148,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.mul = function(rhs) {
+	Matrix2x2.prototype.mul = function (rhs) {
 		return Matrix2x2.mul(this, rhs, this);
 	};
 
@@ -163,7 +163,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.div = function(lhs, rhs, target) {
+	Matrix2x2.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -191,7 +191,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.div = function(rhs) {
+	Matrix2x2.prototype.div = function (rhs) {
 		return Matrix2x2.div(this, rhs, this);
 	};
 
@@ -206,7 +206,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.combine = function(lhs, rhs, target) {
+	Matrix2x2.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -229,7 +229,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.combine = function(rhs) {
+	Matrix2x2.prototype.combine = function (rhs) {
 		return Matrix2x2.combine(this, rhs, this);
 	};
 
@@ -243,7 +243,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.transpose = function(source, target) {
+	Matrix2x2.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -265,7 +265,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.transpose = function() {
+	Matrix2x2.prototype.transpose = function () {
 		return Matrix2x2.transpose(this, this);
 	};
 
@@ -280,7 +280,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix2x2.invert = function(source, target) {
+	Matrix2x2.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix2x2();
 		}
@@ -310,7 +310,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.invert = function() {
+	Matrix2x2.prototype.invert = function () {
 		return Matrix2x2.invert(this, this);
 	};
 
@@ -321,7 +321,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if orthogonal.
 	 */
 
-	Matrix2x2.prototype.isOrthogonal = function() {
+	Matrix2x2.prototype.isOrthogonal = function () {
 		var dot;
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11;
@@ -340,7 +340,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if normal.
 	 */
 
-	Matrix2x2.prototype.isNormal = function() {
+	Matrix2x2.prototype.isNormal = function () {
 		var l;
 
 		l = this.e00 * this.e00 + this.e10 * this.e10;
@@ -365,7 +365,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if orthonormal.
 	 */
 
-	Matrix2x2.prototype.isOrthonormal = function() {
+	Matrix2x2.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -376,7 +376,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Determinant of matrix.
 	 */
 
-	Matrix2x2.prototype.determinant = function() {
+	Matrix2x2.prototype.determinant = function () {
 		return this.e00 * this.e11 - this.e01 * this.e10;
 	};
 
@@ -387,7 +387,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Matrix2x2} Self for chaining.
 	 */
 
-	Matrix2x2.prototype.setIdentity = function() {
+	Matrix2x2.prototype.setIdentity = function () {
 		this.set(Matrix2x2.IDENTITY);
 	};
 

@@ -1,4 +1,4 @@
-define([], function() {
+define([], function () {
 	"use strict";
 
 	/* ====================================================================== */
@@ -30,7 +30,7 @@ define([], function() {
 	 * @return {Float} Angle in radians.
 	 */
 
-	MathUtils.radFromDeg = function(degrees) {
+	MathUtils.radFromDeg = function (degrees) {
 		return degrees * MathUtils.DEG_TO_RAD;
 	};
 
@@ -43,7 +43,7 @@ define([], function() {
 	 * @return {Float} Angle in degrees.
 	 */
 
-	MathUtils.degFromRad = function(radians) {
+	MathUtils.degFromRad = function (radians) {
 		return radians * MathUtils.RAD_TO_DEG;
 	};
 
@@ -58,7 +58,7 @@ define([], function() {
 	 * @return {Integer|Float} Interpolated value.
 	 */
 
-	MathUtils.lerp = function(factor, start, end) {
+	MathUtils.lerp = function (factor, start, end) {
 		if (start === end) {
 			return start;
 		} else {
@@ -77,7 +77,7 @@ define([], function() {
 	 * @return {Integer|Float} Clamped value.
 	 */
 
-	MathUtils.clamp = function(value, min, max) {
+	MathUtils.clamp = function (value, min, max) {
 		if (min < max) {
 			return value < min ? min : value > max ? max : value;
 		} else {
@@ -94,7 +94,7 @@ define([], function() {
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve3 = function(x) {
+	MathUtils.scurve3 = function (x) {
 		return (-2.0 * x + 3.0) * x * x;
 	};
 
@@ -107,7 +107,7 @@ define([], function() {
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve5 = function(x) {
+	MathUtils.scurve5 = function (x) {
 		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
 	};
 

@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
+define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -24,27 +24,27 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @param {String[][]} aliases Array of component aliases for each component index.
 	 */
 
-	Vector.prototype.setupAliases = function(aliases) {
+	Vector.prototype.setupAliases = function (aliases) {
 		var that = this;
 
 		for (var i = 0; i < aliases.length; i++) {
-			(function(index) {
+			(function (index) {
 				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
-						get : function() {
+						get : function () {
 							return this.data[index];
 						},
-						set : function(value) {
+						set : function (value) {
 							this.data[index] = value;
 						}
 					});
 				}
 
 				Object.defineProperty(that, i, {
-					get : function() {
+					get : function () {
 						return this.data[index];
 					},
-					set : function(value) {
+					set : function (value) {
 						this.data[index] = value;
 					}
 				});
@@ -64,7 +64,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.add = function(lhs, rhs, target) {
+	Vector.add = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
@@ -90,7 +90,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.add = function(rhs) {
+	Vector.prototype.add = function (rhs) {
 		return Vector.add(this, rhs, this);
 	};
 
@@ -106,7 +106,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.sub = function(lhs, rhs, target) {
+	Vector.sub = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
@@ -132,7 +132,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.sub = function(rhs) {
+	Vector.prototype.sub = function (rhs) {
 		return Vector.sub(this, rhs, this);
 	};
 
@@ -148,7 +148,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.mul = function(lhs, rhs, target) {
+	Vector.mul = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
@@ -174,7 +174,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.mul = function(rhs) {
+	Vector.prototype.mul = function (rhs) {
 		return Vector.mul(this, rhs, this);
 	};
 
@@ -190,7 +190,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.div = function(lhs, rhs, target) {
+	Vector.div = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
@@ -216,7 +216,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.div = function(rhs) {
+	Vector.prototype.div = function (rhs) {
 		return Vector.div(this, rhs, this);
 	};
 
@@ -231,7 +231,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.copy = function(source, target) {
+	Vector.copy = function (source, target) {
 		var size = source.data.length;
 
 		if (!target) {
@@ -254,7 +254,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.copy = function(source) {
+	Vector.prototype.copy = function (source) {
 		return Vector.copy(source, this);
 	};
 
@@ -268,7 +268,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Dot product.
 	 */
 
-	Vector.dot = function(lhs, rhs) {
+	Vector.dot = function (lhs, rhs) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
@@ -292,7 +292,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Dot product.
 	 */
 
-	Vector.prototype.dot = function(rhs) {
+	Vector.prototype.dot = function (rhs) {
 		return Vector.dot(this, rhs);
 	};
 
@@ -308,7 +308,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.apply = function(lhs, rhs, target) {
+	Vector.apply = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 		var size = rhs.data.length;
@@ -317,7 +317,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 			target = new Vector(rows);
 		}
 
-		if (target.data.length != rows || cols != size) {
+		if (target.data.length !== rows || cols !== size) {
 			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
 		}
 
@@ -348,7 +348,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.apply = function(lhs) {
+	Vector.prototype.apply = function (lhs) {
 		return Vector.apply(lhs, this, this);
 	};
 
@@ -362,7 +362,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if equal.
 	 */
 
-	Vector.equals = function(lhs, rhs) {
+	Vector.equals = function (lhs, rhs) {
 		if (lhs.data.length !== rhs.data.length) {
 			return false;
 		}
@@ -382,7 +382,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Boolean} True if equal.
 	 */
 
-	Vector.prototype.equals = function(rhs) {
+	Vector.prototype.equals = function (rhs) {
 		return Vector.equals(this, rhs);
 	};
 
@@ -396,7 +396,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Squared distance.
 	 */
 
-	Vector.distanceSquared = function(lhs, rhs) {
+	Vector.distanceSquared = function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).lengthSquared();
 	};
 
@@ -407,7 +407,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Squared distance.
 	 */
 
-	Vector.prototype.distanceSquared = function(rhs) {
+	Vector.prototype.distanceSquared = function (rhs) {
 		return Vector.sub(this, rhs).lengthSquared();
 	};
 
@@ -421,7 +421,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Distance.
 	 */
 
-	Vector.distance = function(lhs, rhs) {
+	Vector.distance = function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).length();
 	};
 
@@ -432,7 +432,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Distance.
 	 */
 
-	Vector.prototype.distance = function(rhs) {
+	Vector.prototype.distance = function (rhs) {
 		return Vector.sub(this, rhs).length();
 	};
 
@@ -443,7 +443,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Square length.
 	 */
 
-	Vector.prototype.lengthSquared = function() {
+	Vector.prototype.lengthSquared = function () {
 		return Vector.dot(this, this);
 	};
 
@@ -454,7 +454,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Float} Length.
 	 */
 
-	Vector.prototype.length = function() {
+	Vector.prototype.length = function () {
 		return Math.sqrt(Vector.dot(this, this));
 	};
 
@@ -465,7 +465,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.invert = function() {
+	Vector.prototype.invert = function () {
 		for (var i = 0; i < this.data.length; i++) {
 			this.data[i] = 0.0 - this.data[i];
 		}
@@ -481,7 +481,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.normalize = function() {
+	Vector.prototype.normalize = function () {
 		var l = this.length();
 
 		if (l < MathUtils.EPSILON) {
@@ -504,7 +504,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Clone of self.
 	 */
 
-	Vector.prototype.clone = function() {
+	Vector.prototype.clone = function () {
 		return Vector.copy(this);
 	};
 
@@ -516,7 +516,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.set = function() {
+	Vector.prototype.set = function () {
 		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
@@ -543,12 +543,12 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function(MathUtils, Matrix) {
 	 * @return {String} String of component values.
 	 */
 
-	Vector.prototype.toString = function() {
+	Vector.prototype.toString = function () {
 		var string = "";
 
 		string += "[";
 
-		for ( var i = 0; i < this.data.length; i++) {
+		for (var i = 0; i < this.data.length; i++) {
 			string += this.data[i];
 			string += i !== this.data.length - 1 ? ", " : "";
 		}

@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils"], function(MathUtils) {
+define(["goo/math/MathUtils"], function (MathUtils) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -27,27 +27,27 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @param {String[][]} aliases Array of component aliases for each component index.
 	 */
 
-	Matrix.prototype.setupAliases = function(aliases) {
+	Matrix.prototype.setupAliases = function (aliases) {
 		var that = this;
 
 		for (var i = 0; i < aliases.length; i++) {
-			(function(index) {
+			(function (index) {
 				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
-						get : function() {
+						get : function () {
 							return this.data[index];
 						},
-						set : function(value) {
+						set : function (value) {
 							this.data[index] = value;
 						}
 					});
 				}
 
 				Object.defineProperty(that, i, {
-					get : function() {
+					get : function () {
 						return this.data[index];
 					},
-					set : function(value) {
+					set : function (value) {
 						this.data[index] = value;
 					}
 				});
@@ -67,7 +67,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.add = function(lhs, rhs, target) {
+	Matrix.add = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 
@@ -102,7 +102,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.add = function(rhs) {
+	Matrix.prototype.add = function (rhs) {
 		return Matrix.add(this, rhs, this);
 	};
 
@@ -118,7 +118,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.sub = function(lhs, rhs, target) {
+	Matrix.sub = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 
@@ -153,7 +153,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.sub = function(rhs) {
+	Matrix.prototype.sub = function (rhs) {
 		return Matrix.sub(this, rhs, this);
 	};
 
@@ -169,7 +169,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.mul = function(lhs, rhs, target) {
+	Matrix.mul = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 
@@ -204,7 +204,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.mul = function(rhs) {
+	Matrix.prototype.mul = function (rhs) {
 		return Matrix.mul(this, rhs, this);
 	};
 
@@ -220,7 +220,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.div = function(lhs, rhs, target) {
+	Matrix.div = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
 
@@ -257,7 +257,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.div = function(rhs) {
+	Matrix.prototype.div = function (rhs) {
 		return Matrix.div(this, rhs, this);
 	};
 
@@ -273,7 +273,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.combine = function(lhs, rhs, target) {
+	Matrix.combine = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = rhs.cols;
 		var size = lhs.cols = rhs.rows;
@@ -313,7 +313,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.combine = function(rhs) {
+	Matrix.prototype.combine = function (rhs) {
 		return Matrix.combine(this, rhs, this);
 	};
 
@@ -328,7 +328,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.transpose = function(source, target) {
+	Matrix.transpose = function (source, target) {
 		var rows = source.cols;
 		var cols = source.rows;
 
@@ -360,7 +360,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.transpose = function() {
+	Matrix.prototype.transpose = function () {
 		return Matrix.transpose(this, this);
 	};
 
@@ -375,7 +375,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.copy = function(source, target) {
+	Matrix.copy = function (source, target) {
 		var rows = source.rows;
 		var cols = source.cols;
 
@@ -398,7 +398,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.copy = function(source) {
+	Matrix.prototype.copy = function (source) {
 		return Matrix.copy(source, this);
 	};
 
@@ -412,7 +412,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Boolean} True if equal.
 	 */
 
-	Matrix.equals = function(lhs, rhs) {
+	Matrix.equals = function (lhs, rhs) {
 		if (lhs.rows !== rhs.rows || lhs.cols !== rhs.cols) {
 			return false;
 		}
@@ -432,7 +432,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Boolean} True if equal.
 	 */
 
-	Matrix.prototype.equals = function(rhs) {
+	Matrix.prototype.equals = function (rhs) {
 		return Matrix.equals(this, rhs);
 	};
 
@@ -443,7 +443,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Boolean} True if orthogonal.
 	 */
 
-	Matrix.prototype.isOrthogonal = function() {
+	Matrix.prototype.isOrthogonal = function () {
 		for (var ca = 0; ca < this.cols; ca++) {
 			for (var cb = ca + 1; cb < this.cols; cb++) {
 				var oa = ca * this.rows;
@@ -470,7 +470,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Boolean} True if normal.
 	 */
 
-	Matrix.prototype.isNormal = function() {
+	Matrix.prototype.isNormal = function () {
 		for (var c = 0; c < this.cols; c++) {
 			var o = c * this.rows;
 			var sum = 0.0;
@@ -494,7 +494,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Boolean} True if orthonormal.
 	 */
 
-	Matrix.prototype.isOrthonormal = function() {
+	Matrix.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -505,7 +505,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Clone of self.
 	 */
 
-	Matrix.prototype.clone = function() {
+	Matrix.prototype.clone = function () {
 		return Matrix.copy(this);
 	};
 
@@ -517,7 +517,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.set = function() {
+	Matrix.prototype.set = function () {
 		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
 			if (arguments[0] instanceof Matrix) {
 				this.copy(arguments[0]);
@@ -542,7 +542,7 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 	 * @return {String} String of component values.
 	 */
 
-	Matrix.prototype.toString = function() {
+	Matrix.prototype.toString = function () {
 		var string = "";
 
 		for (var c = 0; c < this.cols; c++) {

@@ -1,4 +1,4 @@
-define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) {
+define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils) {
 	"use strict";
 
 	/**
@@ -13,13 +13,13 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
 	 * true)
-	 * 
+	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
 	 * @return true if this ray intersects a polygon described by the given vertices.
 	 */
-	Ray.prototype.intersects = function(polygonVertices, doPlanar, locationStore) {
+	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore) {
 		if (polygonVertices.length === 3) {
 			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore);
 		} else if (polygonVertices.length === 4) {
@@ -31,7 +31,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 
 	/**
 	 * Ray vs triangle implementation.
-	 * 
+	 *
 	 * @param pointA First
 	 * @param pointB
 	 * @param pointC
@@ -39,7 +39,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	 * @param [locationStore]
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
-	Ray.prototype.intersectsTriangle = function(pointA, pointB, pointC, doPlanar, locationStore) {
+	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
 		var diff = new Vector3().set(this.origin).subtractLocal(pointA);
 		var edge1 = new Vector3().set(pointB).subtractLocal(pointA);
 		var edge2 = new Vector3().set(pointC).subtractLocal(pointA);
@@ -98,7 +98,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
      * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
      * @return the distance from our origin to the primitive or Infinity if we do not intersect.
      */
-    Ray.prototype.getDistanceToPrimitive = function(worldVertices) {
+    Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
         // Intersection test
         var intersect = new Vector3();
         if (this.intersects(worldVertices, false, intersect)) {
@@ -115,7 +115,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
      *            stored in this vector.
      * @return true if the ray collides with the given Plane
      */
-    Ray.prototype.intersectsPlane = function(plane, locationStore) {
+    Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
 		var denominator = normal.dot(this.direction);
 
@@ -145,7 +145,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function(Vector3, MathUtils) 
 	 *            if not null, the closest point is stored in this param
 	 * @return the squared distance from this ray to the given point.
 	 */
-    Ray.prototype.distanceSquared = function(point, store) {
+    Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = new Vector3();
 		vectorA.set(point).subtractLocal(this.origin);
 		var t0 = this.direction.dot(vectorA);

@@ -1,5 +1,5 @@
 define([ 'goo/math/Vector3', 'goo/math/MathUtils' ],
-		function(Vector3, MathUtils) {
+		function (Vector3, MathUtils) {
 			"use strict";
 
 			/**
@@ -29,7 +29,7 @@ define([ 'goo/math/Vector3', 'goo/math/MathUtils' ],
 			 *         returned is negative, otherwise it is positive. If the
 			 *         point is on the plane, it is zero.
 			 */
-			Plane.prototype.pseudoDistance = function(point) {
+			Plane.prototype.pseudoDistance = function (point) {
 				return this.normal.dot(point) - this.constant;
 			};
 
@@ -41,7 +41,7 @@ define([ 'goo/math/Vector3', 'goo/math/MathUtils' ],
 			 * @param pointC
 			 * @return this plane for chaining
 			 */
-			Plane.prototype.setPlanePoints = function(pointA, pointB, pointC) {
+			Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
 				this.normal.set(pointB).subtractLocal(pointA);
 				this.normal.crossLocal(pointC.x - pointA.x,
 						pointC.y - pointA.y, pointC.z - pointA.z)
@@ -60,7 +60,7 @@ define([ 'goo/math/Vector3', 'goo/math/MathUtils' ],
 			 *            same as the unitVector.
 			 * @return the reflected vector.
 			 */
-			Plane.prototype.reflectVector = function(unitVector, store) {
+			Plane.prototype.reflectVector = function (unitVector, store) {
 				var result = store;
 				if (result == null) {
 					result = new Vector3();

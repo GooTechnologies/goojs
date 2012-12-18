@@ -1,4 +1,4 @@
-define(["goo/math/Vector"], function(Vector) {
+define(["goo/math/Vector"], function (Vector) {
 	"use strict";
 
 	Vector3.prototype = Object.create(Vector.prototype);
@@ -43,7 +43,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector3.add = function(lhs, rhs, target) {
+	Vector3.add = function (lhs, rhs, target) {
 		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -80,7 +80,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} Self for chaining.
 	 */
 
-	Vector3.prototype.add = function(rhs) {
+	Vector3.prototype.add = function (rhs) {
 		return Vector3.add(this, rhs, this);
 	};
 
@@ -98,7 +98,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector3.sub = function(lhs, rhs, target) {
+	Vector3.sub = function (lhs, rhs, target) {
 		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -135,7 +135,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} Self for chaining.
 	 */
 
-	Vector3.prototype.sub = function(rhs) {
+	Vector3.prototype.sub = function (rhs) {
 		return Vector3.sub(this, rhs, this);
 	};
 
@@ -153,7 +153,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector3.mul = function(lhs, rhs, target) {
+	Vector3.mul = function (lhs, rhs, target) {
 		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -190,7 +190,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} Self for chaining.
 	 */
 
-	Vector3.prototype.mul = function(rhs) {
+	Vector3.prototype.mul = function (rhs) {
 		return Vector3.mul(this, rhs, this);
 	};
 
@@ -208,7 +208,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector3.div = function(lhs, rhs, target) {
+	Vector3.div = function (lhs, rhs, target) {
 		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -245,7 +245,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} Self for chaining.
 	 */
 
-	Vector3.prototype.div = function(rhs) {
+	Vector3.prototype.div = function (rhs) {
 		return Vector3.div(this, rhs, this);
 	};
 
@@ -261,7 +261,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Float} Dot product.
 	 */
 
-	Vector3.dot = function(lhs, rhs) {
+	Vector3.dot = function (lhs, rhs) {
 		if (typeof (lhs) === "number") {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -296,7 +296,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Float} Dot product.
 	 */
 
-	Vector3.prototype.dot = function(rhs) {
+	Vector3.prototype.dot = function (rhs) {
 		return Vector3.dot(this, rhs);
 	};
 
@@ -312,7 +312,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector3.cross = function(lhs, rhs, target) {
+	Vector3.cross = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
 		}
@@ -345,7 +345,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 * @return {Vector3} Self for chaining.
 	 */
 
-	Vector3.prototype.cross = function(rhs) {
+	Vector3.prototype.cross = function (rhs) {
 		return Vector3.cross(this, rhs, this);
 	};
 
@@ -359,7 +359,7 @@ define(["goo/math/Vector"], function(Vector) {
 	 */
 
 	// REVIEW: This creates a feedback loop when used multiple times which is probably not the intention?
-	Vector3.prototype.lerp = function(end, factor) {
+	Vector3.prototype.lerp = function (end, factor) {
 		this.x += (end.x - this.x) * factor;
 		this.y += (end.y - this.y) * factor;
 		this.z += (end.z - this.z) * factor;
