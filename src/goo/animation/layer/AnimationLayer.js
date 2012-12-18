@@ -1,4 +1,4 @@
-define(['goo/animation/state/SteadyState'], function(SteadyState) {
+define(['goo/animation/state/SteadyState'], function (SteadyState) {
 	"use strict";
 
 	/**
@@ -27,7 +27,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	 * @param key the transition key, a string key used to look up a transition in the current animation state.
 	 * @return true if there is a current state and we were able to do the given transition.
 	 */
-	AnimationLayer.prototype.doTransition = function(key) {
+	AnimationLayer.prototype.doTransition = function (key) {
 		var state = this._currentState;
 		// see if current state has a transition
 		if (state instanceof SteadyState) {
@@ -70,7 +70,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	 * @param state our new state. If null, then no state is currently set on this layer.
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 */
-	AnimationLayer.prototype.setCurrentState = function(state, rewind) {
+	AnimationLayer.prototype.setCurrentState = function (state, rewind) {
 		this._currentState = state;
 		if (state) {
 			state._lastOwner = this;
@@ -86,7 +86,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @return true if succeeds
 	 */
-	AnimationLayer.prototype.setCurrentStateByName = function(stateName, rewind) {
+	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind) {
 		if (stateName) {
 			var state = this._steadyStates[stateName];
 			if (state) {
@@ -102,7 +102,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	/**
 	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
-	AnimationLayer.prototype.getCurrentSourceData = function() {
+	AnimationLayer.prototype.getCurrentSourceData = function () {
 		if (this._layerBlender !== null) {
 			return this._layerBlender.getBlendedSourceData(this._manager);
 		}
@@ -117,7 +117,7 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	 * @description Update the layer blender in this animation layer to properly point to the previous layer.
 	 * @param previousLayer the layer before this layer in the animation manager.
 	 */
-	AnimationLayer.prototype.updateLayerBlending = function(previousLayer) {
+	AnimationLayer.prototype.updateLayerBlending = function (previousLayer) {
 		if (this._layerBlender) {
 			this._layerBlender._layerA = previousLayer;
 			this._layerBlender._layerB = this;
@@ -127,11 +127,11 @@ define(['goo/animation/state/SteadyState'], function(SteadyState) {
 	/**
 	 * @description Set the currently playing state on this layer to null.
 	 */
-	AnimationLayer.prototype.clearCurrentState = function() {
+	AnimationLayer.prototype.clearCurrentState = function () {
 		this.setCurrentState(null, false);
 	};
 
-	AnimationLayer.prototype.replaceState = function(currentState, newState) {
+	AnimationLayer.prototype.replaceState = function (currentState, newState) {
 		if (this._currentState === currentState) {
 			this.setCurrentState(newState, false);
 		}

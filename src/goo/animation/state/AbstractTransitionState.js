@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState) {
+define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
 	"use strict";
 
 	AbstractTransitionState.prototype = Object.create(AbstractFiniteState.prototype);
@@ -30,7 +30,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 	 * @param layer the layer our state belongs to.
 	 * @return the new state to transition to. May be null if the transition was not possible or was ignored for some reason.
 	 */
-	AbstractTransitionState.prototype.doTransition = function(callingState, layer) {
+	AbstractTransitionState.prototype.doTransition = function (callingState, layer) {
 		if (!layer._currentState) {
 			return null;
 		}
@@ -42,7 +42,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		}
 	};
 
-	AbstractTransitionState.prototype.isInTimeWindow = function(localTime) {
+	AbstractTransitionState.prototype.isInTimeWindow = function (localTime) {
 		if (this._startWindow <= 0) {
 			if (this._endWindow <= 0) {
 				// no window, so true
@@ -71,7 +71,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	AbstractTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	AbstractTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		return null;
 	};
 

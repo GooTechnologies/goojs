@@ -1,4 +1,4 @@
-define(['goo/animation/clip/TransformData'], function(TransformData) {
+define(['goo/animation/clip/TransformData'], function (TransformData) {
 	"use strict";
 
 	JointData.prototype = Object.create(TransformData.prototype);
@@ -17,7 +17,7 @@ define(['goo/animation/clip/TransformData'], function(TransformData) {
 	 * @description Copy the source's values into this transform data object.
 	 * @param source our source to copy. Must not be null.
 	 */
-	JointData.prototype.set = function(jointData) {
+	JointData.prototype.set = function (jointData) {
 		TransformData.prototype.set.call(this, jointData);
 		this._jointIndex = source._jointIndex;
 	};
@@ -29,7 +29,7 @@ define(['goo/animation/clip/TransformData'], function(TransformData) {
 	 * @param store The transform store.
 	 * @return The blended transform.
 	 */
-	JointData.prototype.blend = function(blendTo, blendWeight, store) {
+	JointData.prototype.blend = function (blendTo, blendWeight, store) {
 		var rVal = store;
 		if (!rVal) {
 			rVal = new JointData();

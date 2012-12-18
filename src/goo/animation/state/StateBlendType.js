@@ -1,4 +1,4 @@
-define(['goo/util/Enum'], function(Enum) {
+define(['goo/util/Enum'], function (Enum) {
 	"use strict";
 
 	return new Enum(
@@ -10,5 +10,4 @@ define(['goo/util/Enum'], function(Enum) {
 
 	/** Blend using a quintic S-curve: 6t^5 - 15t^4 + 10t^3 */
 	'SCurve5');
-	;
 });

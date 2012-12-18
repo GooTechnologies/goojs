@@ -1,4 +1,4 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'], function(
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'], function (
 	AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	"use strict";
 
@@ -25,11 +25,11 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 		this._scales = scales.slice(0);
 	}
 
-	TransformChannel.prototype.createStateDataObject = function() {
+	TransformChannel.prototype.createStateDataObject = function () {
 		return new TransformData();
 	};
 
-	TransformChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, applyTo) {
+	TransformChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, applyTo) {
 		var transformData = applyTo;
 
 		// shortcut if we are fully on one sample or the next
@@ -78,7 +78,7 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 	 * @param store the TransformData to store in. If null, a new one is created.
 	 * @return our resulting TransformData.
 	 */
-	TransformChannel.prototype.getTransformData = function(index, store) {
+	TransformChannel.prototype.getTransformData = function (index, store) {
 		var rVal = store ? store : new TransformData();
 		rVal.setRotation(this._rotations[index]);
 		rVal.setScale(this._scales[index]);

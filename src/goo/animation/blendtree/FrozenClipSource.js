@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -13,21 +13,21 @@ define(function() {
 		this._time = frozenTime;
 	}
 
-	FrozenTreeSource.prototype.getSourceData = function(manager) {
+	FrozenTreeSource.prototype.getSourceData = function (manager) {
 		return this._source.getSourceData(manager);
 	};
 
-	FrozenTreeSource.prototype.resetClips = function(manager, globalStartTime) {
+	FrozenTreeSource.prototype.resetClips = function (manager, globalStartTime) {
 		// ignores the command to reset our subtree
 		this._source.resetClips(manager, 0);
 	};
 
-	FrozenTreeSource.prototype.setTime = function(globalTime, manager) {
+	FrozenTreeSource.prototype.setTime = function (globalTime, manager) {
 		this._source.setTime(this._time, manager);
 		return true;
 	};
 
-	FrozenTreeSource.prototype.isActive = function(manager) {
+	FrozenTreeSource.prototype.isActive = function (manager) {
 		return true;
 	};
 

@@ -1,4 +1,4 @@
-define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3) {
+define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector3) {
 	"use strict";
 
 	/**
@@ -12,7 +12,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
 	}
 
-	TransformData.prototype.applyTo = function(transform) {
+	TransformData.prototype.applyTo = function (transform) {
 		transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
@@ -25,7 +25,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 	 * @description Copy the source's values into this transform data object.
 	 * @param source our source to copy.
 	 */
-	TransformData.prototype.set = function(source) {
+	TransformData.prototype.set = function (source) {
 		this._rotation.copy(source._rotation);
 		this._scale.copy(source._scale);
 		this._translation.copy(source._translation);
@@ -38,7 +38,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function(Quaternion, Vector3
 	 * @param store The TransformData store.
 	 * @return The blended transform.
 	 */
-	TransformData.prototype.blend = function(blendTo, blendWeight, store) {
+	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
 		var scaleX = 0.0, scaleY = 0.0, scaleZ = 0.0, transX = 0.0, transY = 0.0, transZ = 0.0;
 		var vectorData, weight;

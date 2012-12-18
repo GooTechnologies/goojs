@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(function() {
 		this._lastOwner = null;
 	}
 
-	AbstractFiniteState.prototype.resetClips = function(manager, globalStartTime) {
+	AbstractFiniteState.prototype.resetClips = function (manager, globalStartTime) {
 		if (isNaN(globalStartTime)) {
 			this._globalStartTime = manager.getCurrentGlobalTime();
 		} else {

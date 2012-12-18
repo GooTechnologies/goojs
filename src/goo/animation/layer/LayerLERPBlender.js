@@ -1,4 +1,4 @@
-define(['goo/animation/blendtree/BinaryLERPSource'], function(BinaryLERPSource) {
+define(['goo/animation/blendtree/BinaryLERPSource'], function (BinaryLERPSource) {
 	"use strict";
 
 	/**
@@ -17,7 +17,7 @@ define(['goo/animation/blendtree/BinaryLERPSource'], function(BinaryLERPSource) 
 	 * @param manager the manager this is being called from
 	 * @return a key-value map representing the blended data from both animation layers.
 	 */
-	LayerLERPBlender.prototype.getBlendedSourceData = function(manager) {
+	LayerLERPBlender.prototype.getBlendedSourceData = function (manager) {
 		// grab our data maps from the two layers...
 		// set A
 		var sourceAData = this._layerA.getCurrentSourceData();

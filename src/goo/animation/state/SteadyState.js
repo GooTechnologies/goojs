@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState) {
+define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
 	"use strict";
 
 	SteadyState.prototype = Object.create(AbstractFiniteState.prototype);
@@ -19,7 +19,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		this._sourceTree = null;
 	}
 
-	SteadyState.prototype.doTransition = function(key, layer) {
+	SteadyState.prototype.doTransition = function (key, layer) {
 		var state = this._transitions[key];
 		if (!state) {
 			state = this._transitions["*"];
@@ -29,7 +29,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		return null;
 	};
 
-	SteadyState.prototype.update = function(globalTime, layer) {
+	SteadyState.prototype.update = function (globalTime, layer) {
 		if (!this._sourceTree.setTime(globalTime, layer._manager)) {
 			var lastOwner = this._lastOwner;
 			if (this._endTransition !== null) {
@@ -46,7 +46,7 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		}
 	};
 
-	SteadyState.prototype.postUpdate = function(layer) {
+	SteadyState.prototype.postUpdate = function (layer) {
 		if (!this._sourceTree.isActive(layer._manager)) {
 			var lastOwner = this._lastOwner;
 			if (this._endTransition === null) {
@@ -56,11 +56,11 @@ define(['goo/animation/state/AbstractFiniteState'], function(AbstractFiniteState
 		}
 	};
 
-	SteadyState.prototype.getCurrentSourceData = function(manager) {
+	SteadyState.prototype.getCurrentSourceData = function (manager) {
 		return this._sourceTree.getSourceData(manager);
 	};
 
-	SteadyState.prototype.resetClips = function(manager, globalStartTime) {
+	SteadyState.prototype.resetClips = function (manager, globalStartTime) {
 		AbstractFiniteState.prototype.resetClips.call(this, manager, globalStartTime);
 		this._sourceTree.resetClips(manager, this._globalStartTime);
 	};

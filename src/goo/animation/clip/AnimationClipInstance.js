@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -15,7 +15,7 @@ define(function() {
 		this._animationListeners = [];
 	}
 
-	AnimationClipInstance.prototype.getApplyTo = function(channel) {
+	AnimationClipInstance.prototype.getApplyTo = function (channel) {
 		var channelName = channel._channelName;
 		var rVal = this._clipStateObjects[channelName];
 		if (!rVal) {
@@ -28,8 +28,8 @@ define(function() {
 	/**
 	 * @description Tell any animation listeners on this instance that the associated clip has finished playing.
 	 */
-	AnimationClipInstance.prototype.fireAnimationFinished = function() {
-		for ( var i = 0, max = this._animationListeners.length; i < max; i++) {
+	AnimationClipInstance.prototype.fireAnimationFinished = function () {
+		for (var i = 0, max = this._animationListeners.length; i < max; i++) {
 			_animationListeners[i].animationFinished(this);
 		}
 	};

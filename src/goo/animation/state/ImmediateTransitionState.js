@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransitionState) {
+define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransitionState) {
 	"use strict";
 
 	ImmediateTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
@@ -18,7 +18,7 @@ define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransit
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	ImmediateTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	ImmediateTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		// Pull our state from the layer
 		var state = layer._steadyStates[this._targetState];
 		if (!state) {
@@ -30,14 +30,14 @@ define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransit
 		return state;
 	};
 
-	ImmediateTransitionState.prototype.update = function(globalTime, layer) {
+	ImmediateTransitionState.prototype.update = function (globalTime, layer) {
 	};
 
-	ImmediateTransitionState.prototype.getCurrentSourceData = function(manager) {
+	ImmediateTransitionState.prototype.getCurrentSourceData = function (manager) {
 		return {};
 	};
 
-	ImmediateTransitionState.prototype.postUpdate = function(layer) {
+	ImmediateTransitionState.prototype.postUpdate = function (layer) {
 	};
 
 	return ImmediateTransitionState;

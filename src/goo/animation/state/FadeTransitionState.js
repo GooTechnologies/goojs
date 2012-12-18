@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(AbstractTwoStateLerpTransition) {
+define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	FadeTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
@@ -20,7 +20,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	FadeTransitionState.prototype.update = function(globalTime, layer) {
+	FadeTransitionState.prototype.update = function (globalTime, layer) {
 		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime, layer);
 
 		// update both of our states
@@ -38,7 +38,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	FadeTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	FadeTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		// grab current time as our start
 		this._start = layer._manager.getCurrentGlobalTime();
 		// set "current" start state
@@ -57,7 +57,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
-	FadeTransitionState.prototype.postUpdate = function(layer) {
+	FadeTransitionState.prototype.postUpdate = function (layer) {
 		// post update both of our states
 		if (this._stateA != null) {
 			this._stateA.postUpdate(layer);

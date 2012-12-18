@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource'], function(
+define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource'], function (
 	AbstractTransitionState, StateBlendType, BinaryLERPSource) {
 	"use strict";
 
@@ -40,12 +40,12 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @description Sanity checking setter for stateA.
 	 * @param stateA sets the start state. Updates the state's owner to point to this transition.
 	 */
-	AbstractTwoStateLerpTransition.prototype.setStateA = function(stateA) {
+	AbstractTwoStateLerpTransition.prototype.setStateA = function (stateA) {
 		if (stateA === this) {
 			throw new IllegalArgumentException("Can not set state A to self.");
 		}
 		this._stateA = stateA;
-		if (this._stateA != null) {
+		if (this._stateA !== null) {
 			this._stateA._lastOwner = this;
 		}
 
@@ -60,12 +60,12 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @description Sanity checking setter for stateB.
 	 * @param stateA sets the start state. Updates the state's owner to point to this transition.
 	 */
-	AbstractTwoStateLerpTransition.prototype.setStateB = function(stateB) {
+	AbstractTwoStateLerpTransition.prototype.setStateB = function (stateB) {
 		if (stateB === this) {
 			throw new IllegalArgumentException("Can not set state B to self.");
 		}
 		this._stateB = stateB;
-		if (this._stateB != null) {
+		if (this._stateB !== null) {
 			this._stateB._lastOwner = this;
 		}
 
@@ -81,7 +81,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	AbstractTwoStateLerpTransition.prototype.update = function(globalTime, layer) {
+	AbstractTwoStateLerpTransition.prototype.update = function (globalTime, layer) {
 		var currentTime = globalTime - this._start;
 
 		// if we're outside the fade time...
@@ -111,7 +111,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	/**
 	 * @return the current map of source channel data for this layer.
 	 */
-	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function(manager) {
+	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function (manager) {
 		// grab our data maps from the two states
 		var sourceAData = this._stateA ? this._stateA.getCurrentSourceData(manager) : null;
 		var sourceBData = this._stateB ? this._stateB.getCurrentSourceData(manager) : null;
@@ -128,7 +128,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	/**
 	 * @return the current map of source channel data for this layer.
 	 */
-	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function(manager) {
+	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function (manager) {
 		// grab our data maps from the two states
 		var sourceAData = this._stateA ? this._stateA.getCurrentSourceData(manager) : null;
 		var sourceBData = this._stateB ? this._stateB.getCurrentSourceData(manager) : null;
@@ -147,7 +147,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @param currentState the state to replace
 	 * @param newState the state to replace it with.
 	 */
-	AbstractTwoStateLerpTransition.prototype.replaceState = function(currentState, newState) {
+	AbstractTwoStateLerpTransition.prototype.replaceState = function (currentState, newState) {
 		if (newState != null) {
 			if (this._stateA == currentState) {
 				this._stateA = newState;

@@ -1,4 +1,4 @@
-define(['goo/math/MathUtils'], function(MathUtils) {
+define(['goo/math/MathUtils'], function (MathUtils) {
 	"use strict";
 
 	/**
@@ -13,7 +13,7 @@ define(['goo/math/MathUtils'], function(MathUtils) {
 		manager.getClipInstance(clip);
 	}
 
-	ClipSource.prototype.setTime = function(globalTime, manager) {
+	ClipSource.prototype.setTime = function (globalTime, manager) {
 		var instance = manager.getClipInstance(this._clip);
 		if (instance._active) {
 			var clockTime = instance._timeScale * (globalTime - instance._startTime);
@@ -49,16 +49,16 @@ define(['goo/math/MathUtils'], function(MathUtils) {
 		return instance._active;
 	};
 
-	ClipSource.prototype.resetClips = function(manager, globalStartTime) {
+	ClipSource.prototype.resetClips = function (manager, globalStartTime) {
 		manager.resetClipInstance(this._clip, globalStartTime);
 	};
 
-	ClipSource.prototype.isActive = function(manager) {
+	ClipSource.prototype.isActive = function (manager) {
 		var instance = manager.getClipInstance(this._clip);
 		return instance._active && this._clip._maxTime > 0;
 	};
 
-	ClipSource.prototype.getSourceData = function(manager) {
+	ClipSource.prototype.getSourceData = function (manager) {
 		return manager.getClipInstance(this._clip)._clipStateObjects;
 	};
 

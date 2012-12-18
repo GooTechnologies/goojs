@@ -1,4 +1,4 @@
-define(['goo/animation/state/FadeTransitionState'], function(FadeTransitionState) {
+define(['goo/animation/state/FadeTransitionState'], function (FadeTransitionState) {
 	"use strict";
 
 	SyncFadeTransitionState.prototype = Object.create(FadeTransitionState.prototype);
@@ -21,7 +21,7 @@ define(['goo/animation/state/FadeTransitionState'], function(FadeTransitionState
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	SyncFadeTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	SyncFadeTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		// grab current time as our start
 		this._start = layer._manager.getCurrentGlobalTime();
 		// set "current" start state

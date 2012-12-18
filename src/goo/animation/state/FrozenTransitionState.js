@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(AbstractTwoStateLerpTransition) {
+define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	FrozenTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
@@ -20,7 +20,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	FrozenTransitionState.prototype.update = function(globalTime, layer) {
+	FrozenTransitionState.prototype.update = function (globalTime, layer) {
 		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime, layer);
 
 		// update only the B state - the first is frozen
@@ -35,7 +35,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	FrozenTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	FrozenTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		// grab current time as our start
 		this._start = layer._manager.getCurrentGlobalTime();
 		// set "frozen" start state
@@ -54,7 +54,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function(Abstract
 	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
-	FrozenTransitionState.prototype.postUpdate = function(layer) {
+	FrozenTransitionState.prototype.postUpdate = function (layer) {
 		// update only the B state - the first is frozen
 		if (this._stateB != null) {
 			this._stateB.postUpdate(layer);

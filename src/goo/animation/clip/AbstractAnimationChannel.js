@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -13,15 +13,15 @@ define(function() {
 		this._times = times instanceof Array && times.length ? times.slice(0) : [];
 	}
 
-	AbstractAnimationChannel.prototype.getSampleCount = function() {
+	AbstractAnimationChannel.prototype.getSampleCount = function () {
 		return this._times.length;
 	};
 
-	AbstractAnimationChannel.prototype.getMaxTime = function() {
+	AbstractAnimationChannel.prototype.getMaxTime = function () {
 		return this._times.length ? this._times[this._times.length - 1] : 0;
 	};
 
-	AbstractAnimationChannel.prototype.updateSample = function(clockTime, applyTo) {
+	AbstractAnimationChannel.prototype.updateSample = function (clockTime, applyTo) {
 		if (!(this._times.length)) {
 			return;
 		}
@@ -34,7 +34,7 @@ define(function() {
 		} else {
 			var startFrame = 0;
 
-			for ( var i = 0; i < this._times.length - 1; i++) {
+			for (var i = 0; i < this._times.length - 1; i++) {
 				if (this._times[i] < clockTime) {
 					startFrame = i;
 				}

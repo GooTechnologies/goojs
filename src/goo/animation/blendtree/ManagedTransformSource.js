@@ -1,4 +1,4 @@
-define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'], function(JointChannel,
+define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'], function (JointChannel,
 	JointData, Vector3, Quaternion) {
 	"use strict";
 
@@ -13,15 +13,15 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 		this._data = {};
 	}
 
-	ManagedTransformSource.prototype.resetClips = function(manager, globalStartTime) {
+	ManagedTransformSource.prototype.resetClips = function (manager, globalStartTime) {
 		; // ignore
 	};
 
-	ManagedTransformSource.prototype.setTime = function(globalTime, manager) {
+	ManagedTransformSource.prototype.setTime = function (globalTime, manager) {
 		return true;
 	};
 
-	ManagedTransformSource.prototype.isActive = function(manager) {
+	ManagedTransformSource.prototype.isActive = function (manager) {
 		return true;
 	};
 
@@ -30,7 +30,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointIndex our joint index value.
 	 * @param jointData the joint transform data. This object is copied into the local store.
 	 */
-	ManagedTransformSource.prototype.setJointTransformData = function(jointIndex, jointData) {
+	ManagedTransformSource.prototype.setJointTransformData = function (jointIndex, jointData) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
 		// reuse JointData object
 		if (!this._data[key]) {
@@ -45,7 +45,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointIndex our joint index value.
 	 * @param translation the translation to set
 	 */
-	ManagedTransformSource.prototype.setJointTranslation = function(jointIndex, translation) {
+	ManagedTransformSource.prototype.setJointTranslation = function (jointIndex, translation) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
 		if (!this._data[key]) {
 			var jdata = new JointData();
@@ -62,7 +62,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointIndex our joint index value.
 	 * @param scale the scale to set
 	 */
-	ManagedTransformSource.prototype.setJointScale = function(jointIndex, scale) {
+	ManagedTransformSource.prototype.setJointScale = function (jointIndex, scale) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
 		if (!this._data[key]) {
 			var jdata = new JointData();
@@ -79,7 +79,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointIndex our joint index value.
 	 * @param scale the rotation to set
 	 */
-	ManagedTransformSource.prototype.setJointRotation = function(jointIndex, rotation) {
+	ManagedTransformSource.prototype.setJointRotation = function (jointIndex, rotation) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
 		if (!this._data[key]) {
 			var jdata = new JointData();
@@ -97,8 +97,8 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param clip the animation clip to pull data from
 	 * @param jointNames the names of the joints to find indices of.
 	 */
-	ManagedTransformSource.prototype.initJointsByName = function(pose, clip, jointNames) {
-		for ( var i = 0, max = jointNames.length; i < max; i++) {
+	ManagedTransformSource.prototype.initJointsByName = function (pose, clip, jointNames) {
+		for (var i = 0, max = jointNames.length; i < max; i++) {
 			var jointName = jointNames[i];
 			var jointIndex = pose._skeleton.findJointByName(jointName);
 			var jdata = new JointData();
@@ -112,8 +112,8 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param clip the animation clip to pull data from
 	 * @param jointIndices the indices of the joints to initialize data for.
 	 */
-	ManagedTransformSource.prototype.initJointsById = function(clip, jointIndices) {
-		for ( var i = 0, max = jointIndices.length; i < max; i++) {
+	ManagedTransformSource.prototype.initJointsById = function (clip, jointIndices) {
+		for (var i = 0, max = jointIndices.length; i < max; i++) {
 			var jointIndex = jointIndices[i];
 			var jdata = new JointData();
 			jdata._jointIndex = jointIndex;

@@ -1,4 +1,4 @@
-define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'], function(MathUtils,
+define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'], function (MathUtils,
 	TransformData, AbstractTwoPartSource) {
 	"use strict";
 
@@ -17,7 +17,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
 	}
 
-	BinaryLERPSource.prototype.getSourceData = function(manager) {
+	BinaryLERPSource.prototype.getSourceData = function (manager) {
 		// grab our data maps from the two sources
 		var sourceAData = this._sourceA ? this._sourceA.getSourceData(manager) : null;
 		var sourceBData = this._sourceB ? this._sourceB.getSourceData(manager) : null;
@@ -25,7 +25,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, manager._valuesStore[this._blendKey]);
 	};
 
-	BinaryLERPSource.prototype.setTime = function(globalTime, manager) {
+	BinaryLERPSource.prototype.setTime = function (globalTime, manager) {
 		// set our time on the two sub sources
 		var foundActive = false;
 		if (this._sourceA) {
@@ -37,7 +37,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return foundActive;
 	};
 
-	BinaryLERPSource.prototype.resetClips = function(manager, globalStartTime) {
+	BinaryLERPSource.prototype.resetClips = function (manager, globalStartTime) {
 		// reset our two sub sources
 		if (this._sourceA) {
 			this._sourceA.resetClips(manager, globalStartTime);
@@ -47,7 +47,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		}
 	};
 
-	BinaryLERPSource.prototype.isActive = function(manager) {
+	BinaryLERPSource.prototype.isActive = function (manager) {
 		var foundActive = false;
 		if (this._sourceA) {
 			foundActive |= this._sourceA.isActive(manager);
@@ -58,7 +58,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return foundActive;
 	};
 
-	BinaryLERPSource.combineSourceData = function(sourceAData, sourceBData, blendWeight, store) {
+	BinaryLERPSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
 		if (!sourceBData) {
 			return sourceAData;
 		} else if (!sourceAData) {
@@ -67,7 +67,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 
 		var rVal = store ? store : {};
 
-		for ( var key in sourceAData) {
+		for (var key in sourceAData) {
 			var dataA = sourceAData[key];
 			var dataB = sourceBData[key];
 			if (!isNaN(dataA)) {
@@ -86,7 +86,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 				rVal[key] = dataA;
 			}
 		}
-		for ( var key in sourceBData) {
+		for (var key in sourceBData) {
 			if (rVal[key]) {
 				continue;
 			}

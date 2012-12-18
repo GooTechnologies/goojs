@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -19,9 +19,9 @@ define(function() {
 	 * @param {double} clockTime the current local clip time (where 0 == start of clip)
 	 * @param {AnimationClipInstance} instance the instance record to update.
 	 */
-	AnimationClip.prototype.update = function(clockTime, instance) {
+	AnimationClip.prototype.update = function (clockTime, instance) {
 		// Go through each channel and update clipState
-		for ( var i = 0, max = this._channels.length; i < max; ++i) {
+		for (var i = 0, max = this._channels.length; i < max; ++i) {
 			var channel = this._channels[i];
 			var applyTo = instance.getApplyTo(channel);
 			channel.updateSample(clockTime, applyTo);
@@ -32,7 +32,7 @@ define(function() {
 	 * @description Add a channel to this clip.
 	 * @param channel the channel to add.
 	 */
-	AnimationClip.prototype.addChannel = function(channel) {
+	AnimationClip.prototype.addChannel = function (channel) {
 		this._channels.push(channel);
 		this.updateMaxTimeIndex();
 	};
@@ -42,7 +42,7 @@ define(function() {
 	 * @param channel the channel to remove.
 	 * @return true if this clip had the given channel and it was removed.
 	 */
-	AnimationClip.prototype.removeChannel = function(channel) {
+	AnimationClip.prototype.removeChannel = function (channel) {
 		var idx = this._channels.indexOf(channel);
 		if (idx >= 0) {
 			this._channels.splice(idx, 1);
@@ -57,8 +57,8 @@ define(function() {
 	 * @param channelName the name to match against.
 	 * @return the first channel with a name matching the given channelName, or null if no matches are found.
 	 */
-	AnimationClip.prototype.findChannelByName = function(channelName) {
-		for ( var i = 0, max = this._channels.length; i < max; ++i) {
+	AnimationClip.prototype.findChannelByName = function (channelName) {
+		for (var i = 0, max = this._channels.length; i < max; ++i) {
 			var channel = this._channels[i];
 			if (channelName === channel._channelName) {
 				return channel;
@@ -70,10 +70,10 @@ define(function() {
 	/**
 	 * @description Update our max time value to match the max time in our managed animation channels.
 	 */
-	AnimationClip.prototype.updateMaxTimeIndex = function() {
+	AnimationClip.prototype.updateMaxTimeIndex = function () {
 		this._maxTime = 0;
 		var max;
-		for ( var i = 0; i < this._channels.length; i++) {
+		for (var i = 0; i < this._channels.length; i++) {
 			var channel = this._channels[i];
 			max = channel.getMaxTime();
 			if (max > this._maxTime) {
@@ -82,7 +82,7 @@ define(function() {
 		}
 	};
 
-	AnimationClip.prototype.toString = function() {
+	AnimationClip.prototype.toString = function () {
 		return this._name + this._channels.length;
 	};
 

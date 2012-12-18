@@ -1,4 +1,4 @@
-define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'], function(AnimationLayer, AnimationClipInstance) {
+define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'], function (AnimationLayer, AnimationClipInstance) {
 	"use strict";
 
 	/**
@@ -18,7 +18,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	function AnimationManager(pose) {
 		this._globalTimer = {
 			start : Date.now(),
-			getTimeInSeconds : function() {
+			getTimeInSeconds : function () {
 				return (Date.now() - this.start) / 1000.0;
 			}
 		};
@@ -46,7 +46,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	/**
 	 * Move associated layers forward to the current global time and then apply the associated animation data to any SkeletonPoses set on the manager.
 	 */
-	AnimationManager.prototype.update = function() {
+	AnimationManager.prototype.update = function () {
 		// grab current global time
 		var globalTime = this._globalTimer.getTimeInSeconds();
 
@@ -61,7 +61,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// move the time forward on the layers
-		for ( var i = 0, max = this._layers.length; i < max; i++) {
+		for (var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -70,7 +70,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// call apply on blend module, passing in pose
-		for ( var i = 0, max = this._applyToPoses.length; i < max; i++) {
+		for (var i = 0, max = this._applyToPoses.length; i < max; i++) {
 			var pose = this._applyToPoses[i];
 			this._applier.applyTo(pose, this);
 		}
@@ -79,7 +79,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		// this._applier.apply(S_sceneRoot, this);
 
 		// post update to clear states
-		for ( var i = 0, max = this._layers.length; i < max; i++) {
+		for (var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -90,11 +90,11 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 
 	/**
 	 * Retrieve and track an instance of an animation clip to be used with this manager.
-	 * 
+	 *
 	 * @param clip the clip to instance.
 	 * @return our new clip instance.
 	 */
-	AnimationManager.prototype.getClipInstance = function(clip) {
+	AnimationManager.prototype.getClipInstance = function (clip) {
 		var instance = this._clipInstances[clip];
 		if (!instance) {
 			instance = new AnimationClipInstance();
@@ -105,9 +105,9 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		return instance;
 	};
 
-	AnimationManager.prototype.getCurrentSourceData = function() {
+	AnimationManager.prototype.getCurrentSourceData = function () {
 		// set up our layer blending.
-		for ( var i = 0, max = this._layers.length - 1; i < max; i++) {
+		for (var i = 0, max = this._layers.length - 1; i < max; i++) {
 			var layerA = this._layers[i];
 			var layerB = this._layers[i + 1];
 			layerB.updateLayerBlending(layerA);
@@ -119,7 +119,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	/**
 	 * @return the "local time", in seconds reported by our global timer.
 	 */
-	AnimationManager.prototype.getCurrentGlobalTime = function() {
+	AnimationManager.prototype.getCurrentGlobalTime = function () {
 		return this._globalTimer.getTimeInSeconds();
 	};
 
@@ -128,7 +128,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @param clip the clip to pull the instance for.
 	 * @param globalStartTime the time to set the clip instance's start as.
 	 */
-	AnimationManager.prototype.resetClipInstance = function(clip, globalStartTime) {
+	AnimationManager.prototype.resetClipInstance = function (clip, globalStartTime) {
 		var instance = this.getClipInstance(clip);
 		if (instance) {
 			instance._startTime = globalStartTime;
@@ -139,7 +139,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	/**
 	 * @return our bottom most layer. This layer should always consist of a full skeletal pose data.
 	 */
-	AnimationManager.prototype.getBaseAnimationLayer = function() {
+	AnimationManager.prototype.getBaseAnimationLayer = function () {
 		return this._layers[0];
 	};
 
@@ -147,10 +147,10 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @param layerName the name of the layer to find.
 	 * @return the first animation layer with a matching name, or null of none are found.
 	 */
-	AnimationManager.prototype.findAnimationLayer = function(layerName) {
-		for ( var i = 0, max = this._layers.length; i < max; i++) {
+	AnimationManager.prototype.findAnimationLayer = function (layerName) {
+		for (var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
-			if (layerName == layer._name) {
+			if (layerName === layer._name) {
 				return layer;
 			}
 		}
@@ -162,7 +162,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @param layer the layer to add.
 	 * @return the index of our added layer in our list of animation layers.
 	 */
-	AnimationManager.prototype.addAnimationLayer = function(layer) {
+	AnimationManager.prototype.addAnimationLayer = function (layer) {
 		this._layers.push(layer);
 		layer._manager = this;
 		return this._layers.length - 1;

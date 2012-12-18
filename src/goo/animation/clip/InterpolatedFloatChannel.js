@@ -1,4 +1,4 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData', 'goo/math/MathUtils'], function(AbstractAnimationChannel,
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData', 'goo/math/MathUtils'], function (AbstractAnimationChannel,
 	TriggerData, MathUtils) {
 	"use strict";
 
@@ -17,11 +17,11 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 		this._values = values ? values.slice(0) : null;
 	}
 
-	InterpolatedFloatChannel.prototype.createStateDataObject = function(instance) {
+	InterpolatedFloatChannel.prototype.createStateDataObject = function (instance) {
 		return [0.0];
 	};
 
-	InterpolatedFloatChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, value) {
+	InterpolatedFloatChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, value) {
 		store[0] = MathUtils.lerp(progressPercent, this._values[sampleIndex], this._values[sampleIndex + 1]);
 	};
 

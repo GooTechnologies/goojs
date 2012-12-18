@@ -1,4 +1,4 @@
-define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'], function(JointData, TransformData,
+define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'], function (JointData, TransformData,
 	TriggerData) {
 	"use strict";
 
@@ -16,7 +16,7 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 	 * @param entityManager the entityManager we will use to find entities to animate. if null or undefined, this method is NOOP.
 	 * @param manager the animation manager to pull state from.
 	 */
-	SimpleAnimationApplier.prototype.apply = function(entityManager, manager) {
+	SimpleAnimationApplier.prototype.apply = function (entityManager, manager) {
 		if (!entityManager) {
 			return;
 		}
@@ -24,7 +24,7 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {
-			for ( var key in data) {
+			for (var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) { // ignore
 				} else if (value instanceof TransformData) {
@@ -37,12 +37,12 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 		}
 	};
 
-	SimpleAnimationApplier.prototype.applyTo = function(applyToPose, manager) {
+	SimpleAnimationApplier.prototype.applyTo = function (applyToPose, manager) {
 		var data = manager.getCurrentSourceData();
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {
-			for ( var key in data) {
+			for (var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) {
 					if (value._jointIndex >= 0) {
@@ -51,9 +51,9 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 				} else if (value instanceof TriggerData) {
 					if (value.isArmed()) {
 						// pull callback(s) for the current trigger key, if exists, and call.
-						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
+						for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
-							for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+							for (var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
 								callbacks[j](applyToPose, manager);
 							}
 						}

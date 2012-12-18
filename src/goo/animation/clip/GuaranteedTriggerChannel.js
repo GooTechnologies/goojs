@@ -1,4 +1,4 @@
-define(['goo/animation/clip/TriggerChannel'], function(TriggerChannel) {
+define(['goo/animation/clip/TriggerChannel'], function (TriggerChannel) {
 	"use strict";
 
 	GuaranteedTriggerChannel.prototype = Object.create(TriggerChannel.prototype);
@@ -16,16 +16,16 @@ define(['goo/animation/clip/TriggerChannel'], function(TriggerChannel) {
 		TriggerChannel.call(this, channelName, times, keys);
 	}
 
-	GuaranteedTriggerChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, triggerData) {
+	GuaranteedTriggerChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, triggerData) {
 		var oldIndex = triggerData.getCurrentIndex();
 
 		// arm trigger
-		var newIndex = progressPercent != 1.0 ? sampleIndex : sampleIndex + 1;
-		if (oldIndex == newIndex) {
+		var newIndex = progressPercent !== 1.0 ? sampleIndex : sampleIndex + 1;
+		if (oldIndex === newIndex) {
 			triggerData.arm(newIndex, this._keys[newIndex]);
 		} else {
 			var triggers = [];
-			for ( var i = oldIndex + 1; i <= newIndex; i++) {
+			for (var i = oldIndex + 1; i <= newIndex; i++) {
 				if (!this._keys[i]) {
 					triggers.push(this._keys[i]);
 				}

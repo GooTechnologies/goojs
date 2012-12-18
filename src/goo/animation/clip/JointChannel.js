@@ -1,4 +1,4 @@
-define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], function(TransformChannel, JointData) {
+define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], function (TransformChannel, JointData) {
 	"use strict";
 
 	JointChannel.prototype = Object.create(TransformChannel.prototype);
@@ -16,16 +16,16 @@ define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], 
 
 	JointChannel.JOINT_CHANNEL_NAME = '_jnt';
 
-	JointChannel.prototype.createStateDataObject = function() {
+	JointChannel.prototype.createStateDataObject = function () {
 		return new JointData();
 	};
 
-	JointChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, jointData) {
+	JointChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, jointData) {
 		TransformChannel.prototype.setCurrentSample.call(this, sampleIndex, progressPercent, jointData);
 		jointData._jointIndex = this._jointIndex;
 	};
 
-	JointChannel.prototype.getJointData = function(index, store) {
+	JointChannel.prototype.getJointData = function (index, store) {
 		var rVal = store ? store : new JointData();
 		TransformChannel.prototype.getTransformData.call(this, index, rVal);
 		rVal._jointIndex = this._jointIndex;

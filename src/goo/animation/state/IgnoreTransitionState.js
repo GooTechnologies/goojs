@@ -1,4 +1,4 @@
-define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransitionState) {
+define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransitionState) {
 	"use strict";
 
 	IgnoreTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
@@ -16,7 +16,7 @@ define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransit
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	IgnoreTransitionState.prototype.update = function(globalTime, layer) {
+	IgnoreTransitionState.prototype.update = function (globalTime, layer) {
 	};
 
 	/**
@@ -25,12 +25,12 @@ define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransit
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	IgnoreTransitionState.prototype.getTransitionState = function(callingState, layer) {
+	IgnoreTransitionState.prototype.getTransitionState = function (callingState, layer) {
 		// return calling state.
 		return callingState;
 	};
 
-	IgnoreTransitionState.prototype.getCurrentSourceData = function(manager) {
+	IgnoreTransitionState.prototype.getCurrentSourceData = function (manager) {
 		// ignored
 		return null;
 	};
@@ -39,7 +39,7 @@ define(['goo/animation/state/AbstractTransitionState'], function(AbstractTransit
 	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
-	IgnoreTransitionState.prototype.postUpdate = function(layer) {
+	IgnoreTransitionState.prototype.postUpdate = function (layer) {
 	};
 
 	return IgnoreTransitionState;

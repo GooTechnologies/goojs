@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -10,10 +10,10 @@ define(function() {
 		this._usedClipSources = {};
 	}
 
-	OutputStore.prototype.findAttachmentPoint = function(name) {
-		for ( var i = 0, max = this._attachments.length; i < max; i++) {
+	OutputStore.prototype.findAttachmentPoint = function (name) {
+		for (var i = 0, max = this._attachments.length; i < max; i++) {
 			var attach = this._attachments[i];
-			if (name == attach.getName()) {
+			if (name === attach.getName()) {
 				return attach;
 			}
 		}

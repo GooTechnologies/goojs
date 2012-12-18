@@ -1,4 +1,4 @@
-define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], function(Transform, Joint, Matrix4x4) {
+define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], function (Transform, Joint, Matrix4x4) {
 	"use strict";
 
 	/**
@@ -18,17 +18,17 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 		var jointCount = this._skeleton._joints.length;
 
 		// init local transforms
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._localTransforms[i] = new Transform();
 		}
 
 		// init global transforms
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._globalTransforms[i] = new Transform();
 		}
 
 		// init palette
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._matrixPalette[i] = new Matrix4x4();
 		}
 
@@ -39,10 +39,10 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 	/**
 	 * Update our local joint transforms so that they reflect the _skeleton in bind pose.
 	 */
-	SkeletonPose.prototype.setToBindPose = function() {
+	SkeletonPose.prototype.setToBindPose = function () {
 		var temp = new Transform();
 		// go through our local transforms
-		for ( var i = 0; i < this._localTransforms.length; i++) {
+		for (var i = 0; i < this._localTransforms.length; i++) {
 			// Set us to the bind pose
 			this._localTransforms[i].copy(this._skeleton._joints[i]._inverseBindPose);
 			// then invert.
@@ -63,9 +63,9 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 	/**
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
-	SkeletonPose.prototype.updateTransforms = function() {
+	SkeletonPose.prototype.updateTransforms = function () {
 		var nrJoints = this._skeleton._joints.length;
-		for ( var i = 0; i < nrJoints; i++) {
+		for (var i = 0; i < nrJoints; i++) {
 			// the joint index
 			var index = i;
 
@@ -97,8 +97,8 @@ define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], func
 	/**
 	 * Notify any registered PoseListeners that this pose has been "updated".
 	 */
-	SkeletonPose.prototype.firePoseUpdated = function() {
-		for ( var i = this._poseListeners.length; --i >= 0;) {
+	SkeletonPose.prototype.firePoseUpdated = function () {
+		for (var i = this._poseListeners.length; --i >= 0;) {
 			this._poseListeners[i].poseUpdated(this);
 		}
 	};

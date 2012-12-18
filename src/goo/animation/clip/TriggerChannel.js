@@ -1,4 +1,4 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'], function(AbstractAnimationChannel, TriggerData) {
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'], function (AbstractAnimationChannel, TriggerData) {
 	"use strict";
 
 	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
@@ -16,12 +16,12 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 		this._keys = keys ? keys.slice(0) : null;
 	}
 
-	TriggerChannel.prototype.createStateDataObject = function(instance) {
+	TriggerChannel.prototype.createStateDataObject = function (instance) {
 		return new TriggerData();
 	};
 
-	TriggerChannel.prototype.setCurrentSample = function(sampleIndex, progressPercent, triggerData) {
-		var index = progressPercent != 1.0 ? sampleIndex : sampleIndex + 1;
+	TriggerChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, triggerData) {
+		var index = progressPercent !== 1.0 ? sampleIndex : sampleIndex + 1;
 		triggerData.arm(index, [this._keys[index]]);
 	};
 
