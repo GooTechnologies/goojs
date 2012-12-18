@@ -1,12 +1,12 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	function DdsUtils() {
 	}
 
-	DdsUtils.getDdsExtension = function(context) {
+	DdsUtils.getDdsExtension = function (context) {
 		var vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
-		for ( var i = 0; i < vendorPrefixes.length; i++) {
+		for (var i = 0; i < vendorPrefixes.length; i++) {
 			var ext = context.getExtension(vendorPrefixes[i] + "WEBGL_compressed_texture_s3tc");
 			if (ext != null) {
 				return ext;
@@ -15,7 +15,7 @@ define(function() {
 		return null;
 	};
 
-	DdsUtils.isSupported = function(context) {
+	DdsUtils.isSupported = function (context) {
 		return DdsUtils.getDdsExtension(context) !== null;
 	};
 
@@ -24,7 +24,7 @@ define(function() {
 	 * @param mask the bit mask to test
 	 * @return number of bits to shift to the right to align mask with 0.
 	 */
-	DdsUtils.shiftCount = function(mask) {
+	DdsUtils.shiftCount = function (mask) {
 		if (mask === 0) {
 			return 0;
 		}
@@ -47,7 +47,7 @@ define(function() {
 	 * @param bitMask our mask
 	 * @return true if the mask passes
 	 */
-	DdsUtils.isSet = function(value, bitMask) {
+	DdsUtils.isSet = function (value, bitMask) {
 		return (value & bitMask) == bitMask;
 	};
 
@@ -56,9 +56,9 @@ define(function() {
 	 * @param string our string... should only be 1-4 chars long. Expected to be 1 byte chars.
 	 * @return the int value
 	 */
-	DdsUtils.getIntFromString = function(string) {
+	DdsUtils.getIntFromString = function (string) {
 		var bytes = [];
-		for ( var i = 0; i < string.length; i++) {
+		for (var i = 0; i < string.length; i++) {
 			bytes[i] = string.charCodeAt(i);
 		}
 		return DdsUtils.getIntFromBytes(bytes);
@@ -69,7 +69,7 @@ define(function() {
 	 * @param bytes our array... should only be 1-4 bytes long.
 	 * @return the int value
 	 */
-	DdsUtils.getIntFromBytes = function(bytes) {
+	DdsUtils.getIntFromBytes = function (bytes) {
 		var rVal = 0;
 		rVal |= (bytes[0] & 0xff) << 0;
 		if (bytes.length > 1) {
@@ -84,7 +84,7 @@ define(function() {
 		return rVal;
 	};
 
-	DdsUtils.getComponents = function(format) {
+	DdsUtils.getComponents = function (format) {
 		switch (format) {
 			case "Alpha":
 				return 1;
@@ -116,16 +116,16 @@ define(function() {
 	 * @param format our image's format
 	 * @return the flipped image as raw bytes.
 	 */
-	DdsUtils.flipDXT = function(rawData, width, height, format) {
+	DdsUtils.flipDXT = function (rawData, width, height, format) {
 		var returnData = new Uint8Array(rawData.length);
 
 		var blocksPerColumn = width + 3 >> 2;
 		var blocksPerRow = height + 3 >> 2;
 		var bytesPerBlock = DdsUtils.getComponents(format) * 8;
 
-		for ( var sourceRow = 0; sourceRow < blocksPerRow; sourceRow++) {
+		for (var sourceRow = 0; sourceRow < blocksPerRow; sourceRow++) {
 			var targetRow = blocksPerRow - sourceRow - 1;
-			for ( var column = 0; column < blocksPerColumn; column++) {
+			for (var column = 0; column < blocksPerColumn; column++) {
 				var target = (targetRow * blocksPerColumn + column) * bytesPerBlock;
 				var source = (sourceRow * blocksPerColumn + column) * bytesPerBlock;
 				switch (format) {
@@ -203,7 +203,7 @@ define(function() {
 	};
 
 	// DXT5 Alpha block flipping, inspired by code from Evan Hart (nVidia SDK)
-	DdsUtils.getUInt24 = function(input, offset) {
+	DdsUtils.getUInt24 = function (input, offset) {
 		var result = 0;
 		result |= (input[offset + 0] & 0xff) << 0;
 		result |= (input[offset + 1] & 0xff) << 8;
@@ -211,7 +211,7 @@ define(function() {
 		return result;
 	};
 
-	DdsUtils.getBytesFromUInt24 = function(input, offset, uint24) {
+	DdsUtils.getBytesFromUInt24 = function (input, offset, uint24) {
 		input[offset + 0] = (uint24 & 0x000000ff);
 		input[offset + 1] = ((uint24 & 0x0000ff00) >> 8);
 		input[offset + 2] = ((uint24 & 0x00ff0000) >> 16);
@@ -219,9 +219,9 @@ define(function() {
 
 	DdsUtils.ThreeBitMask = 0x7;
 
-	DdsUtils.flipUInt24 = function(uint24) {
+	DdsUtils.flipUInt24 = function (uint24) {
 		var threeBits = [];
-		for ( var i = 0; i < 2; i++) {
+		for (var i = 0; i < 2; i++) {
 			threeBits.push([0, 0, 0, 0]);
 		}
 

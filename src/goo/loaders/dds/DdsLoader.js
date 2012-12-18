@@ -1,4 +1,4 @@
-define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
+define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 	"use strict";
 
 	function DdsPixelFormat() {
@@ -34,10 +34,10 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 	DdsPixelFormat.DDPF_LUMINANCE = 0x20000;
 	// ---- /end VALUES USED IN dwFlags ----
 
-	DdsPixelFormat.read = function(data) { // Int32Array
+	DdsPixelFormat.read = function (data) { // Int32Array
 		var format = new DdsPixelFormat();
 		format.dwSize = data[DdsPixelFormat.HEADER_OFFSET + 0];
-		if (format.dwSize != 32) {
+		if (format.dwSize !== 32) {
 			throw ("invalid pixel format size: " + format.dwSize);
 		}
 		format.dwFlags = data[DdsPixelFormat.HEADER_OFFSET + 1];
@@ -115,10 +115,10 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 	DdsHeader.DDSCAPS2_VOLUME = 0x200000;
 	// ---- /end VALUES USED IN dwCaps2 ----
 
-	DdsHeader.read = function(data) { // Int32Array
+	DdsHeader.read = function (data) { // Int32Array
 		var header = new DdsHeader();
 		header.dwSize = data[1];
-		if (header.dwSize != 124) {
+		if (header.dwSize !== 124) {
 			throw ("invalid dds header size: " + header.dwSize);
 		}
 		header.dwFlags = data[2];
@@ -128,7 +128,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		header.dwDepth = data[6];
 		header.dwMipMapCount = data[7];
 		header.dwAlphaBitDepth = data[8];
-		for ( var i = 0; i < header.dwReserved1.length; i++) {
+		for (var i = 0; i < header.dwReserved1.length; i++) {
 			header.dwReserved1[i] = data[9 + i];
 		}
 		header.ddpf = DdsPixelFormat.read(data);
@@ -161,12 +161,12 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		this.mipmapByteSizes = [];
 	}
 
-	DdsImageInfo.prototype.calcMipmapSizes = function(compressed) {
+	DdsImageInfo.prototype.calcMipmapSizes = function (compressed) {
 		var width = this.header.dwWidth;
 		var height = this.header.dwHeight;
 		var size = 0;
 
-		for ( var i = 0; i < this.header.dwMipMapCount; i++) {
+		for (var i = 0; i < this.header.dwMipMapCount; i++) {
 			compressed ? (size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * this.bpp * 2) : (size = ~~(width * height * this.bpp / 8));
 			this.mipmapByteSizes.push(~~((size + 3) / 4) * 4);
 			width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
@@ -181,7 +181,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 	function DdsLoader() {
 	}
 
-	DdsLoader.updateDepth = function(image, info) {
+	DdsLoader.updateDepth = function (image, info) {
 		if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP)) {
 			var depth = 0;
 			if (DdsUtils.isSet(info.header.dwCaps2, DdsHeader.DDSCAPS2_CUBEMAP_POSITIVEX)) {
@@ -203,7 +203,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 				depth++;
 			}
 
-			if (depth != 6) {
+			if (depth !== 6) {
 				throw new Error("Cubemaps without all faces defined are not currently supported.");
 			}
 
@@ -214,7 +214,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		}
 	};
 
-	DdsLoader.readDXT = function(imgData, totalSize, info, texture) {
+	DdsLoader.readDXT = function (imgData, totalSize, info, texture) {
 		texture.image.isCompressed = true;
 
 		if (!info.flipVertically) {
@@ -228,9 +228,9 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		// flip!
 		var rVal = new Uint8Array(totalSize);
 		var offset = 0;
-		for ( var mip = 0; mip < info.header.dwMipMapCount; mip++) {
+		for (var mip = 0; mip < info.header.dwMipMapCount; mip++) {
 			var data = [];
-			for ( var i = 0, max = info.mipmapByteSizes[mip]; i < max; i++) {
+			for (var i = 0, max = info.mipmapByteSizes[mip]; i < max; i++) {
 				data.push(imgData[i + offset]);
 			}
 			var flipped = DdsUtils.flipDXT(data, mipWidth, mipHeight, texture.format);
@@ -243,7 +243,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		return rVal;
 	};
 
-	DdsLoader.readUncompressed = function(imgData, totalSize, useRgb, useLum, useAlpha, useAlphaPixels, info, texture) {
+	DdsLoader.readUncompressed = function (imgData, totalSize, useRgb, useLum, useAlpha, useAlphaPixels, info, texture) {
 		var redLumShift = DdsUtils.shiftCount(info.header.ddpf.dwRBitMask);
 		var greenShift = DdsUtils.shiftCount(info.header.ddpf.dwGBitMask);
 		var blueShift = DdsUtils.shiftCount(info.header.ddpf.dwBBitMask);
@@ -263,9 +263,9 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 			b.push(0);
 		}
 
-		for ( var mip = 0; mip < info.header.dwMipMapCount; mip++) {
-			for ( var y = 0; y < mipHeight; y++) {
-				for ( var x = 0; x < mipWidth; x++) {
+		for (var mip = 0; mip < info.header.dwMipMapCount; mip++) {
+			for (var y = 0; y < mipHeight; y++) {
+				for (var x = 0; x < mipWidth; x++) {
 					for (i = 0; i < sourcebytesPP; i++) {
 						b[i] = imgData[srcOffset++];
 					}
@@ -309,7 +309,7 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		return rVal;
 	};
 
-	DdsLoader.populate = function(texture, info, data) {
+	DdsLoader.populate = function (texture, info, data) {
 		var flags = info.header.ddpf.dwFlags;
 
 		var compressedFormat = DdsUtils.isSet(flags, DdsPixelFormat.DDPF_FOURCC);
@@ -430,13 +430,13 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 
 		// Add up total byte size of single depth layer
 		var totalSize = 0;
-		for ( var i = 0; i < info.mipmapByteSizes.length; i++) {
+		for (var i = 0; i < info.mipmapByteSizes.length; i++) {
 			totalSize += info.mipmapByteSizes[i];
 		}
 
 		// Go through and load in image data
 		var imageData = [];
-		for ( var i = 0; i < texture.image.depth; i++) {
+		for (var i = 0; i < texture.image.depth; i++) {
 			// read in compressed data
 			if (compressedFormat) {
 				imageData.push(DdsLoader.readDXT(data, totalSize, info, texture));
@@ -449,11 +449,11 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 		}
 
 		// set on image
-		texture.image.data = texture.image.depth == 1 ? imageData[0] : imageData;
+		texture.image.data = texture.image.depth === 1 ? imageData[0] : imageData;
 		texture.image.useArrays = true;
 	};
 
-	DdsLoader.prototype.load = function(buffer, tex, flipped, arrayByteOffset, arrayByteLength) {
+	DdsLoader.prototype.load = function (buffer, tex, flipped, arrayByteOffset, arrayByteLength) {
 		var header = new Int32Array(buffer, arrayByteOffset + 0, 32);
 
 		// Read and check magic word...
@@ -498,11 +498,11 @@ define(['goo/loaders/dds/DdsUtils'], function(DdsUtils) {
 
 	DdsLoader.SUPPORTS_DDS = false;
 
-	DdsLoader.prototype.isSupported = function() {
+	DdsLoader.prototype.isSupported = function () {
 		return DdsLoader.SUPPORTS_DDS;
 	};
 
-	DdsLoader.prototype.toString = function() {
+	DdsLoader.prototype.toString = function () {
 		return "DdsLoader";
 	};
 

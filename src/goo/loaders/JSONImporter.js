@@ -9,15 +9,16 @@
  *     ...
  * });
  */
-define(/**
-           @exports goo/loaders/JSONImporter
-         */
-	   ['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
-		'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
-		'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
-		'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil'], 
-	function(TransformComponent, MeshData,
+define(
+	/**
+	 * @exports goo/loaders/JSONImporter
+	 */
+	['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
+	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
+	'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
+	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil'],
+	function (TransformComponent, MeshData,
 	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip,
 	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil) {
 	"use strict";
@@ -49,7 +50,7 @@ define(/**
 
 	/**
 	 * Loads a model from the supplied model url and texture path.
-	 * 
+	 *
 	 * @param modelUrl
 	 * @param textureDir Base URL for textures. Optional. If not supplied, modelUrl up to the last '/' is used as base.
 	 * @param callback Callback with
@@ -61,14 +62,14 @@ define(/**
 	 *            function(attributes, info)
 	 * @returns Entities created during load
 	 */
-	JSONImporter.prototype.load = function(modelUrl, textureDir, callback, shaderExtractor) {
+	JSONImporter.prototype.load = function (modelUrl, textureDir, callback, shaderExtractor) {
 		var request = new XMLHttpRequest();
 		if (textureDir == null) {
 			textureDir = URLTools.getDirectory(modelUrl);
 		}
 		request.open('GET', modelUrl, true);
 		var that = this;
-		request.onreadystatechange = function() {
+		request.onreadystatechange = function () {
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
 					var entities = that.parse(request.responseText, textureDir, shaderExtractor);
@@ -83,14 +84,14 @@ define(/**
 
 	/**
 	 * Parses a model from the supplied model source and texture path.
-	 * 
+	 *
 	 * @param {String} modelSource JSON model source as a string
 	 * @param textureDir Texture path
 	 * @param [shaderExtractor] Callback function for deciding shaders based on mesh/material information. Callback definition
 	 *            function(attributes, info)
 	 * @returns Entities created during load
 	 */
-	JSONImporter.prototype.parse = function(modelSource, textureDir, shaderExtractor) {
+	JSONImporter.prototype.parse = function (modelSource, textureDir, shaderExtractor) {
 		this.baseTextureDir = textureDir || '';
 		this.loadedEntities = [];
 		this.shaderExtractor = shaderExtractor;
@@ -127,7 +128,7 @@ define(/**
 		return this.loadedEntities;
 	};
 
-	JSONImporter.prototype._parseSpatial = function(object) {
+	JSONImporter.prototype._parseSpatial = function (object) {
 		var type = object.Type;
 		var name = object.Name === null ? "null" : object.Name;
 
@@ -137,7 +138,7 @@ define(/**
 
 		if (type === "Node") {
 			if (object.Children) {
-				for ( var i in object.Children) {
+				for (var i in object.Children) {
 					var child = object.Children[i];
 					var childEntity = this._parseSpatial(child);
 					if (childEntity !== null) {
@@ -183,15 +184,15 @@ define(/**
 		return entity;
 	};
 
-	JSONImporter.prototype.parseSkeletons = function(array) {
-		for ( var i = 0, maxI = array.length; i < maxI; i++) {
+	JSONImporter.prototype.parseSkeletons = function (array) {
+		for (var i = 0, maxI = array.length; i < maxI; i++) {
 			var obj = array[i];
 			var ref = obj.ref;
 			var skName = obj.Name;
 			var jointArray = obj.Joints;
 			var joints = [];
 
-			for ( var j = 0, maxJ = jointArray.length; j < maxJ; j++) {
+			for (var j = 0, maxJ = jointArray.length; j < maxJ; j++) {
 				var jointObj = jointArray[j];
 				var jName = jointObj.Name;
 				var joint = new Joint(jName);
@@ -208,8 +209,8 @@ define(/**
 		}
 	};
 
-	JSONImporter.prototype.parseSkeletonPoses = function(array) {
-		for ( var i = 0, max = array.length; i < max; i++) {
+	JSONImporter.prototype.parseSkeletonPoses = function (array) {
+		for (var i = 0, max = array.length; i < max; i++) {
 			var obj = array[i];
 			var ref = obj.ref;
 			var sk = obj.Skeleton;
@@ -220,7 +221,7 @@ define(/**
 		}
 	};
 
-	JSONImporter.prototype._parseMeshData = function(object, weightsPerVert, entity, type) {
+	JSONImporter.prototype._parseMeshData = function (object, weightsPerVert, entity, type) {
 		var vertexCount = object.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
@@ -308,12 +309,12 @@ define(/**
 		if (object.TextureCoords) {
 			var textureUnits = object.TextureCoords;
 			if (this.useCompression) {
-				for ( var i = 0; i < textureUnits.length; i++) {
+				for (var i = 0; i < textureUnits.length; i++) {
 					var texObj = textureUnits[i];
 					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i, texObj.UVScales, texObj.UVOffsets);
 				}
 			} else {
-				for ( var i = 0; i < textureUnits.length; i++) {
+				for (var i = 0; i < textureUnits.length; i++) {
 					JsonUtils.fillAttributeBuffer(textureUnits[i], meshData, 'TEXCOORD' + i);
 				}
 			}
@@ -331,7 +332,7 @@ define(/**
 				// map these joints to local.
 				var localJointMap = [];
 				var localIndex = 0;
-				for ( var i = 0, max = data.length; i < max; i++) {
+				for (var i = 0, max = data.length; i < max; i++) {
 					var jointIndex = data[i];
 					if (localJointMap[jointIndex] === undefined) {
 						localJointMap[jointIndex] = localIndex++;
@@ -342,7 +343,7 @@ define(/**
 
 				// store local map
 				var localMap = [];
-				for ( var jointIndex = 0; jointIndex < localJointMap.length; jointIndex++) {
+				for (var jointIndex = 0; jointIndex < localJointMap.length; jointIndex++) {
 					localIndex = localJointMap[jointIndex];
 					if (localIndex !== undefined) {
 						localMap[localIndex] = jointIndex;
@@ -351,7 +352,7 @@ define(/**
 
 				meshData.paletteMap = localMap;
 			} else {
-				for ( var i = 0, max = data.capacity(); i < max; i++) {
+				for (var i = 0, max = data.capacity(); i < max; i++) {
 					buffer.putCast(i, data.get(i));
 				}
 			}
@@ -371,7 +372,7 @@ define(/**
 				meshData.indexModes[0] = modes[0];
 			} else {
 				var modeArray = [];
-				for ( var i = 0; i < modes.length; i++) {
+				for (var i = 0; i < modes.length; i++) {
 					modeArray[i] = modes[i];
 				}
 				meshData.indexModes = modeArray;
@@ -381,7 +382,7 @@ define(/**
 		if (object.IndexLengths) {
 			var lengths = object.IndexLengths;
 			var lengthArray = [];
-			for ( var i = 0; i < lengths.length; i++) {
+			for (var i = 0; i < lengths.length; i++) {
 				lengthArray[i] = lengths[i];
 			}
 			meshData.indexLengths = lengthArray;
@@ -390,12 +391,12 @@ define(/**
 		return meshData;
 	};
 
-	JSONImporter.prototype._parseMaterials = function(array) {
+	JSONImporter.prototype._parseMaterials = function (array) {
 		if (array === null) {
 			return;
 		}
 
-		for ( var i = 0, max = array.length; i < max; i++) {
+		for (var i = 0, max = array.length; i < max; i++) {
 			var obj = array[i];
 			if (obj === null) {
 				continue;
@@ -412,7 +413,7 @@ define(/**
 
 			if (obj.TextureEntries) {
 				var entries = obj.TextureEntries;
-				for ( var j = 0, maxEntry = entries.length; j < maxEntry; j++) {
+				for (var j = 0, maxEntry = entries.length; j < maxEntry; j++) {
 					var entry = entries[j];
 
 					var textureSlot = entry.Slot;
@@ -439,7 +440,7 @@ define(/**
 		}
 	};
 
-	JSONImporter.prototype._parseMaterial = function(object, entity) {
+	JSONImporter.prototype._parseMaterial = function (object, entity) {
 		// look for material
 		if (object.Material) {
 			var info = this.materials[object.Material];
@@ -496,7 +497,7 @@ define(/**
 				}
 
 				// apply textures
-				for ( var key in this.slotUnitMap) {
+				for (var key in this.slotUnitMap) {
 					if (info.textureFileNames[key] !== undefined) {
 						var baseTexFileName = info.textureFileNames[key];
 						var minificationFilter = info.textureMinificationFilters[key];
@@ -535,7 +536,7 @@ define(/**
 		}
 	};
 
-	JSONImporter.prototype._parseMaterialstate = function(object) {
+	JSONImporter.prototype._parseMaterialstate = function (object) {
 		var ms = {};
 
 		ms.ambient = this._parseColor(object.AmbientColor);
@@ -547,7 +548,7 @@ define(/**
 		return ms;
 	};
 
-	JSONImporter.prototype._parseColor = function(hex) {
+	JSONImporter.prototype._parseColor = function (hex) {
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})*$/i.exec(hex);
 		return result ? {
 			r : parseInt(result[1], 16) / 255.0,
@@ -557,7 +558,7 @@ define(/**
 		} : null;
 	};
 
-	JSONImporter.prototype.importAnimationTree = function(manager, treeSource, completeCallback) {
+	JSONImporter.prototype.importAnimationTree = function (manager, treeSource, completeCallback) {
 		var outputStore = new OutputStore();
 		var root = JSON.parse(treeSource);
 		// read clip info
@@ -570,7 +571,7 @@ define(/**
 		var clips = root.Clips;
 		var names = [];
 		var urls = [];
-		for ( var i = 0, max = clips.length; i < max; i++) {
+		for (var i = 0, max = clips.length; i < max; i++) {
 			var obj = clips[i];
 			names.push(obj.Name);
 			urls.push(obj.URL);
@@ -578,17 +579,17 @@ define(/**
 
 		// load all clips and report back when done
 		SimpleResourceUtil.loadTextAssets(urls, names, {
-			onSuccess : function(clipSources) {
+			onSuccess : function (clipSources) {
 				// done with clips, parse out the layers
 				var inputStore = {};
-				for ( var i = 0, max = names.length; i < max; i++) {
+				for (var i = 0, max = names.length; i < max; i++) {
 					var clip = new JSONImporter().importAnimation(clipSources[names[i]], names[i]);
 					inputStore[clip._name] = clip;
 				}
 
 				JsonUtils.parseAnimationLayers(manager, completeCallback, inputStore, outputStore, root);
 			},
-			onError : function(error) {
+			onError : function (error) {
 				console.warn("failed loading tree clips: " + error);
 				if (completeCallback) {
 					completeCallback.onError(error);
@@ -597,7 +598,7 @@ define(/**
 		});
 	};
 
-	JSONImporter.prototype.importAnimation = function(clipSource, clipName) {
+	JSONImporter.prototype.importAnimation = function (clipSource, clipName) {
 		var clip = new AnimationClip(clipName);
 		var root = JSON.parse(clipSource);
 
@@ -611,7 +612,7 @@ define(/**
 		// parse channels
 		if (root.Channels) {
 			var array = root.Channels;
-			for ( var i = 0, max = array.length; i < max; i++) {
+			for (var i = 0, max = array.length; i < max; i++) {
 				var chanObj = array[i];
 				var type = chanObj['Type'];
 				var name = chanObj['Name'];
