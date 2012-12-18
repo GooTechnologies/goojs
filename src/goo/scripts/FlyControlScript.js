@@ -1,9 +1,9 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
 	 * Creates a new FlyControlScript
-	 * 
+	 *
 	 * @name FlyControlScript
 	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
 	 * @param {ArrayBuffer} data Data to wrap
@@ -27,7 +27,7 @@ define(function() {
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
 	}
 
-	FlyControlScript.prototype.run = function(entity) {
+	FlyControlScript.prototype.run = function (entity) {
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 

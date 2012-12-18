@@ -1,4 +1,4 @@
-define(['goo/math/Vector3'], function(Vector3) {
+define(['goo/math/Vector3'], function (Vector3) {
 	"use strict";
 
 	/**
@@ -34,13 +34,13 @@ define(['goo/math/Vector3'], function(Vector3) {
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
 
-		this.handleEvent = function(event) {
+		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
 				this[event.type](event);
 			}
 		};
 
-		this.keydown = function(event) {
+		this.keydown = function (event) {
 			if (event.altKey) {
 				return;
 			}
@@ -48,7 +48,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			// event.preventDefault();
 			switch (event.keyCode) {
 				case 16: /* shift */
-					this.movementSpeedMultiplier = .1;
+					this.movementSpeedMultiplier = 0.1;
 					break;
 
 				case 87: /* W */
@@ -97,7 +97,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.keyup = function(event) {
+		this.keyup = function (event) {
 			switch (event.keyCode) {
 				case 16: /* shift */
 					this.movementSpeedMultiplier = 1;
@@ -151,7 +151,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.mousedown = function(event) {
+		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
 			}
@@ -164,7 +164,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			this.mouseStatus++;
 		};
 
-		this.mousemove = function(event) {
+		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;
@@ -176,7 +176,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			}
 		};
 
-		this.mouseup = function(event) {
+		this.mouseup = function (event) {
 			event.preventDefault();
 			event.stopPropagation();
 
@@ -186,7 +186,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.updateMovementVector = function() {
+		this.updateMovementVector = function () {
 			var forward = (this.moveState.forward || (this.autoForward && !this.moveState.back)) ? 1 : 0;
 
 			this.moveVector.x = (-this.moveState.left + this.moveState.right);
@@ -194,13 +194,13 @@ define(['goo/math/Vector3'], function(Vector3) {
 			this.moveVector.z = (-forward + this.moveState.back);
 		};
 
-		this.updateRotationVector = function() {
+		this.updateRotationVector = function () {
 			this.rotationVector.x = (-this.moveState.pitchDown + this.moveState.pitchUp);
 			this.rotationVector.y = (-this.moveState.yawRight + this.moveState.yawLeft);
 			this.rotationVector.z = (-this.moveState.rollRight + this.moveState.rollLeft);
 		};
 
-		this.getContainerDimensions = function() {
+		this.getContainerDimensions = function () {
 			if (this.domElement != document) {
 				return {
 					size : [this.domElement.offsetWidth, this.domElement.offsetHeight],
@@ -215,7 +215,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 		};
 
 		function bind(scope, fn) {
-			return function() {
+			return function () {
 				fn.apply(scope, arguments);
 			};
 		}
@@ -233,10 +233,10 @@ define(['goo/math/Vector3'], function(Vector3) {
 
 	/**
 	 * Test on how to expose variables to a tool.
-	 * 
+	 *
 	 * @returns {Array}
 	 */
-	BasicControlScript.prototype.externals = function() {
+	BasicControlScript.prototype.externals = function () {
 		return [{
 			variable : 'movementSpeed',
 			type : 'number'
@@ -246,7 +246,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 		}];
 	};
 
-	BasicControlScript.prototype.run = function(entity) {
+	BasicControlScript.prototype.run = function (entity) {
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 
