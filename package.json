@@ -17,6 +17,7 @@
     "coffee-script": "1.4.0",
     "testacular": ">= 0.5.2",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "jshint": ">=0.9.1",
     "grunt-testacular": "0.2.x"
   },
   "engines": {
