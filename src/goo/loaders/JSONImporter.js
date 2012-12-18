@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 /**
  * The JSONImporter module.
  * @module goo/loaders/JSONImporter

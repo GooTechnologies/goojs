@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 define(function () {
 	"use strict";
 

@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 define(["goo/noise/Noise"], function (Noise) {
 	"use strict";
 

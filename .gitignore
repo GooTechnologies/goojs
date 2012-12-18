@@ -1,4 +1,7 @@
 .DS_Store
 node_modules/
 dist/
+goojs-jsdoc/
+goojs-jsdoc_*.tar.gz
+test-out/
 .idea
