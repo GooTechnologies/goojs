@@ -1,5 +1,5 @@
 define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil'],
-	function(Renderer, Camera, TextureCreator, Material, FullscreenUtil) {
+	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil) {
 		"use strict";
 
 		function FullscreenPass(shader) {
@@ -10,7 +10,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 
 			this.renderable = {
 				meshData : FullscreenUtil.quad,
-				materials : [this.material],
+				materials : [this.material]
 			};
 
 			this.enabled = true;
@@ -18,7 +18,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 			this.needsSwap = true;
 		}
 
-		FullscreenPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+		FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 			if (this.useReadBuffer) {
 				this.material.textures[0] = readBuffer;
 			}

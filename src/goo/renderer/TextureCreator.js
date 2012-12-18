@@ -1,5 +1,5 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'], function(
-	Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
+define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'],
+	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
 	"use strict";
 
 	/**
@@ -25,9 +25,9 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	}
 
-	TextureCreator.prototype.loadTexture2D = function(imageURL) {
+	TextureCreator.prototype.loadTexture2D = function (imageURL) {
 		var creator = this;
-		for ( var extension in this.textureLoaders) {
+		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
 				console.log(extension + ' - ' + loader);
@@ -51,12 +51,12 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 				// from URL
 				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
-					onSuccess : function(/* ArrayBuffer */response) {
+					onSuccess : function (/* ArrayBuffer */response) {
 						loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
 						console.info("Loaded image: " + imageURL);
 						// callLoadCallback(url);
 					},
-					onError : function(t) {
+					onError : function (t) {
 						console.warn("Error loading texture: " + imageURL + " | " + t);
 					}
 				});
@@ -78,16 +78,16 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureCube = function(imageURLs) {
+	TextureCreator.prototype.loadTextureCube = function (imageURLs) {
 		var latch = 6;
 		var texture = new Texture();
 		texture.variant = 'CUBE';
 		var images = [];
 
-		for ( var i = 0; i < imageURLs.length; i++) {
-			(function(index) {
+		for (var i = 0; i < imageURLs.length; i++) {
+			(function (index) {
 				new Loader().loadImage(imageURLs[index], {
-					onSuccess : function(image) {
+					onSuccess : function (image) {
 						images[index] = image;
 						latch--;
 						if (latch <= 0) {
@@ -98,7 +98,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 							texture.image.height = image.height;
 						}
 					},
-					onError : function(message) {
+					onError : function (message) {
 						console.error(message);
 					}
 				});

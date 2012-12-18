@@ -1,10 +1,10 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	function BufferUtils() {
 	}
 
-	BufferUtils.createIntBuffer = function(indexCount, vertexCount) {
+	BufferUtils.createIntBuffer = function (indexCount, vertexCount) {
 		var indices;
 		if (vertexCount < 256) { // 2^8
 			indices = new Int8Array(indexCount);

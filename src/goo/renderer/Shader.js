@@ -1,5 +1,5 @@
-define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World'], function(ShaderCall, Util,
-	Matrix4x4, Vector3, World) {
+define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World'],
+	function (ShaderCall, Util, Matrix4x4, Vector3, World) {
 	"use strict";
 
 	/**
@@ -7,15 +7,15 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
 	 * @param {String} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
-	 * 
+	 *
 	 * <pre>
-	 * { 
-	 *    vshader : [required] vertex shader source 
+	 * {
+	 *    vshader : [required] vertex shader source
 	 *    fshader : [required] fragment shader source
-	 *    defines : shader definitions (becomes #define) 
-	 *    attributes : attribute bindings 
+	 *    defines : shader definitions (becomes #define)
+	 *    attributes : attribute bindings
 	 *       attribute bindings need to map to an attribute in the meshdata being rendered
-	 *    uniforms : uniform bindings 
+	 *    uniforms : uniform bindings
 	 *       uniform bindings can be a value (like 2.5 or [1, 2]) or a function
 	 * }
 	 * </pre>
@@ -56,7 +56,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
-	Shader.prototype.apply = function(shaderInfo, renderer) {
+	Shader.prototype.apply = function (shaderInfo, renderer) {
 		var context = renderer.context;
 		var record = renderer.rendererRecord;
 
@@ -75,7 +75,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		// Bind attributes
 		if (this.attributes) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
-			for ( var key in this.attributes) {
+			for (var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];
 				if (!attribute) {
 					// TODO: log or what?
@@ -94,7 +94,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		// Bind uniforms
 		if (this.uniforms) {
-			for ( var name in this.uniforms) {
+			for (var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (!mapping) {
 					// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
@@ -120,7 +120,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		}
 	};
 
-	Shader.prototype.rebuild = function() {
+	Shader.prototype.rebuild = function () {
 		this.shaderProgram = null;
 		this.attributeMapping = {};
 		this.attributeIndexMapping = {};
@@ -129,13 +129,13 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		this.currentCallbacks = {};
 	};
 
-	Shader.prototype._investigateShaders = function() {
+	Shader.prototype._investigateShaders = function () {
 		this.textureSlots = [];
 		this._investigateShader(this.vertexSource);
 		this._investigateShader(this.fragmentSource);
 	};
 
-	Shader.prototype._investigateShader = function(source) {
+	Shader.prototype._investigateShader = function (source) {
 		regExp.lastIndex = 0;
 		var matcher = regExp.exec(source);
 
@@ -172,7 +172,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		}
 	};
 
-	Shader.prototype.compile = function(renderer) {
+	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
 
 		var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
@@ -197,7 +197,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			console.error("Could not initialise shaders: " + context.getProgramInfoLog(this.shaderProgram));
 		}
 
-		for ( var key in this.attributeMapping) {
+		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
 				console.warn('Attribute [' + this.attributeMapping[key] + '/' + key
@@ -208,7 +208,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			this.attributeIndexMapping[key] = attributeIndex;
 		}
 
-		for ( var key in this.uniformMapping) {
+		for (var key in this.uniformMapping) {
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
@@ -220,14 +220,14 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		}
 
 		if (this.attributes) {
-			for ( var name in this.attributes) {
+			for (var name in this.attributes) {
 				var mapping = this.attributeIndexMapping[name];
 				if (mapping === undefined) {
 					console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
 					// delete this.attributes[name];
 				}
 			}
-			for ( var name in this.attributeIndexMapping) {
+			for (var name in this.attributeIndexMapping) {
 				var mapping = this.attributes[name];
 				if (mapping === undefined) {
 					console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
@@ -239,16 +239,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			// Fix links ($link)
 			if (this.uniforms.$link) {
 				var links = this.uniforms.$link instanceof Array ? this.uniforms.$link : [this.uniforms.$link];
-				for ( var i = 0; i < links.length; i++) {
+				for (var i = 0; i < links.length; i++) {
 					var link = links[i];
-					for ( var key in link) {
+					for (var key in link) {
 						this.uniforms[key] = link[key];
 					}
 				}
 				delete this.uniforms.$link;
 			}
 
-			for ( var name in this.uniforms) {
+			for (var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (mapping === undefined) {
 					console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
@@ -260,7 +260,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
-			for ( var name in this.uniformCallMapping) {
+			for (var name in this.uniformCallMapping) {
 				var mapping = this.uniforms[name];
 				if (mapping === undefined) {
 					console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
@@ -271,7 +271,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
-	Shader.prototype._getShader = function(context, type, source) {
+	Shader.prototype._getShader = function (context, type, source) {
 		var shader = context.createShader(type);
 
 		context.shaderSource(shader, source);
@@ -286,7 +286,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		return shader;
 	};
 
-	Shader.prototype.addDefines = function(defines) {
+	Shader.prototype.addDefines = function (defines) {
 		if (!defines) {
 			return;
 		}
@@ -297,9 +297,9 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		this.fragmentSource = defineStr + '\n' + this.fragmentSource;
 	};
 
-	Shader.prototype.generateDefines = function(defines) {
+	Shader.prototype.generateDefines = function (defines) {
 		var chunks = [];
-		for ( var d in defines) {
+		for (var d in defines) {
 			var value = defines[d];
 			if (value === false) {
 				continue;
@@ -315,24 +315,24 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	function setupDefaultCallbacks(defaultCallbacks) {
 		var IDENTITY_MATRIX = new Matrix4x4();
 
-		defaultCallbacks[Shader.PROJECTION_MATRIX] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var camera = shaderInfo.camera;
 			var matrix = camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
-		defaultCallbacks[Shader.VIEW_MATRIX] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.VIEW_MATRIX] = function (uniformCall, shaderInfo) {
 			var camera = shaderInfo.camera;
 			var matrix = camera.getViewMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
-		defaultCallbacks[Shader.WORLD_MATRIX] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 
-		for ( var i = 0; i < 16; i++) {
-			defaultCallbacks[Shader['TEXTURE' + i]] = function(i) {
-				return function(uniformCall, shaderInfo) {
+		for (var i = 0; i < 16; i++) {
+			defaultCallbacks[Shader['TEXTURE' + i]] = function (i) {
+				return function (uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
 				};
 			}(i);
@@ -340,9 +340,9 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
-		for ( var i = 0; i < 4; i++) {
-			defaultCallbacks[Shader['LIGHT' + i]] = function(i) {
-				return function(uniformCall, shaderInfo) {
+		for (var i = 0; i < 4; i++) {
+			defaultCallbacks[Shader['LIGHT' + i]] = function (i) {
+				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
 						uniformCall.uniform3f(light.translation.x, light.translation.y, light.translation.z);
@@ -353,14 +353,14 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			}(i);
 		}
 
-		defaultCallbacks[Shader.CAMERA] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
 			uniformCall.uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		};
-		defaultCallbacks[Shader.NEAR_PLANE] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera._frustumNear);
 		};
-		defaultCallbacks[Shader.FAR_PLANE] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.FAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera._frustumFar);
 		};
 
@@ -388,43 +388,43 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			b : 0.8,
 			a : 1.0
 		};
-		defaultCallbacks[Shader.AMBIENT] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
 			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 		};
-		defaultCallbacks[Shader.EMISSIVE] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.EMISSIVE] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive : DEFAULT_EMISSIVE;
 			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 		};
-		defaultCallbacks[Shader.DIFFUSE] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.DIFFUSE] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse : DEFAULT_DIFFUSE;
 			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 		};
-		defaultCallbacks[Shader.SPECULAR] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.SPECULAR] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : DEFAULT_SPECULAR;
 			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
 		};
-		defaultCallbacks[Shader.SPECULAR_POWER] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
 			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
 			uniformCall.uniform1f(shininess);
 		};
 
-		defaultCallbacks[Shader.TIME] = function(uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.TIME] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(World.time);
 		};
 	}
 
-	Shader.prototype.toString = function() {
+	Shader.prototype.toString = function () {
 		return this.name;
 	};
 
 	Shader.PROJECTION_MATRIX = 'PROJECTION_MATRIX';
 	Shader.VIEW_MATRIX = 'VIEW_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
-	for ( var i = 0; i < 16; i++) {
+	for (var i = 0; i < 16; i++) {
 		Shader['TEXTURE' + i] = 'TEXTURE' + i;
 	}
-	for ( var i = 0; i < 4; i++) {
+	for (var i = 0; i < 4; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
 	Shader.CAMERA = 'CAMERA';

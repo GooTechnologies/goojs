@@ -1,4 +1,4 @@
-define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'], function(Handy,
+define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'], function (Handy,
 	Vector3, Vector4, Matrix4x4, Plane, MathUtils) {
 	"use strict";
 
@@ -42,10 +42,10 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this._up = new Vector3(0, 1, 0);
 		this._direction = new Vector3(0, 0, -1);
 
-		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function() {
+		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function () {
 			this._depthRangeDirty = true;
 		});
-		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function() {
+		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function () {
 			this._depthRangeDirty = true;
 		});
 		this._depthRangeDirty = true;
@@ -91,7 +91,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this._planeQuantity = 6;
 
 		this._worldPlane = [];
-		for ( var i = 0; i < Camera.FRUSTUM_PLANES; i++) {
+		for (var i = 0; i < Camera.FRUSTUM_PLANES; i++) {
 			this._worldPlane[i] = new Plane();
 		}
 
@@ -124,7 +124,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Ensure our up, left and direction are unit-length vectors.
 	 */
-	Camera.prototype.normalize = function() {
+	Camera.prototype.normalize = function () {
 		this._left.normalize();
 		this._up.normalize();
 		this._direction.normalize();
@@ -133,13 +133,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Sets the frustum plane values of this camera using the given perspective values.
-	 * 
+	 *
 	 * @param fovY the full angle of view on the Y axis, in degrees.
 	 * @param aspect the aspect ratio of our view (generally in [0,1]). Often this is canvas width / canvas height.
 	 * @param near our near plane value
 	 * @param far our far plane value
 	 */
-	Camera.prototype.setFrustumPerspective = function(fov, aspect, near, far) {
+	Camera.prototype.setFrustumPerspective = function (fov, aspect, near, far) {
 		if (fov !== undefined && fov !== null) {
 			this.fov = fov;
 		}
@@ -167,7 +167,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Sets the frustum plane values of this camera using the given values.
-	 * 
+	 *
 	 * @param near
 	 * @param far
 	 * @param left
@@ -175,7 +175,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * @param top
 	 * @param bottom
 	 */
-	Camera.prototype.setFrustum = function(near, far, left, right, top, bottom) {
+	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom) {
 		this._frustumNear = near;
 		this._frustumFar = far;
 		this._frustumLeft = left;
@@ -189,13 +189,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Sets the axes and location of the camera. Similar to {@link #setAxes(ReadOnlyVector3, ReadOnlyVector3, ReadOnlyVector3)}, but sets camera
 	 * location as well.
-	 * 
+	 *
 	 * @param location
 	 * @param left
 	 * @param up
 	 * @param direction
 	 */
-	Camera.prototype.setFrame = function(location, left, up, direction) {
+	Camera.prototype.setFrame = function (location, left, up, direction) {
 		this._left.copy(left);
 		this._up.copy(up);
 		this._direction.copy(direction);
@@ -208,13 +208,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * A convenience method for auto-setting the frame based on a world position the user desires the camera to look at. It points the camera towards
 	 * the given position using the difference between that position and the current camera location as a direction vector and the general
 	 * worldUpVector to compute up and left camera vectors.
-	 * 
+	 *
 	 * @param x where to look at in terms of world coordinates (x)
 	 * @param y where to look at in terms of world coordinates (y)
 	 * @param z where to look at in terms of world coordinates (z)
 	 * @param worldUpVector a normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z})
 	 */
-	Camera.prototype.lookAt = function(pos, worldUpVector) {
+	Camera.prototype.lookAt = function (pos, worldUpVector) {
 		this._newDirection.copy(pos).sub(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
@@ -241,7 +241,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this.onFrameChange();
 	};
 
-	Camera.prototype.makeDirty = function() {
+	Camera.prototype.makeDirty = function () {
 		this._depthRangeDirty = true;
 		this._viewPortDirty = true;
 	};
@@ -250,7 +250,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * Forces all aspect of the camera to be updated from internal values, and sets all dirty flags to true so that the next apply() call will fully
 	 * set this camera to the render context.
 	 */
-	Camera.prototype.update = function() {
+	Camera.prototype.update = function () {
 		this._depthRangeDirty = true;
 		this.onFrustumChange();
 		// this.onViewPortChange();
@@ -259,13 +259,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Sets the boundaries of this camera's viewport to the given values
-	 * 
+	 *
 	 * @param left
 	 * @param right
 	 * @param bottom
 	 * @param top
 	 */
-	Camera.prototype.setViewPort = function(left, right, bottom, top) {
+	Camera.prototype.setViewPort = function (left, right, bottom, top) {
 		setViewPortLeft(left);
 		setViewPortRight(right);
 		setViewPortBottom(bottom);
@@ -274,11 +274,11 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting.
-	 * 
+	 *
 	 * @param bound the bound to check for culling
 	 * @return intersection type
 	 */
-	Camera.prototype.contains = function(bound) {
+	Camera.prototype.contains = function (bound) {
 		if (!bound) {
 			return Camera.Inside;
 		}
@@ -286,7 +286,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		// var mask;
 		var rVal = Camera.Inside;
 
-		for ( var planeCounter = Camera.FRUSTUM_PLANES - 1; planeCounter >= 0; planeCounter--) {
+		for (var planeCounter = Camera.FRUSTUM_PLANES - 1; planeCounter >= 0; planeCounter--) {
 			// if (planeCounter === bound._checkPlane) {
 			// continue; // we have already checked this plane at first iteration
 			// }
@@ -318,7 +318,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Updates internal frustum coefficient values to reflect the current frustum plane values.
 	 */
-	Camera.prototype.onFrustumChange = function() {
+	Camera.prototype.onFrustumChange = function () {
 		if (this.projectionMode === Camera.Perspective) {
 			var nearSquared = this._frustumNear * this._frustumNear;
 			var leftSquared = this._frustumLeft * this._frustumLeft;
@@ -379,7 +379,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Updates the values of the world planes associated with this camera.
 	 */
-	Camera.prototype.onFrameChange = function() {
+	Camera.prototype.onFrameChange = function () {
 		var dirDotLocation = this._direction.dot(this.translation);
 
 		var planeNormal = new Vector3();
@@ -452,7 +452,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Updates the value of our projection matrix.
 	 */
-	Camera.prototype.updateProjectionMatrix = function() {
+	Camera.prototype.updateProjectionMatrix = function () {
 		if (this.projectionMode === Camera.Parallel) {
 			this.projection.setIdentity();
 
@@ -479,7 +479,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Updates the value of our model view matrix.
 	 */
-	Camera.prototype.updateModelViewMatrix = function() {
+	Camera.prototype.updateModelViewMatrix = function () {
 		this.modelView.setIdentity();
 
 		this.modelView.e00 = -this._left.x;
@@ -501,7 +501,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Calculate a Pick Ray using the given screen position at the near plane of this camera and the camera's position in space.
-	 * 
+	 *
 	 * @param screenX the screen x position
 	 * @param screenY the screen y position
 	 * @param screenWidth the screen width
@@ -511,7 +511,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
 	 * @return the resulting Ray.
 	 */
-	Camera.prototype.getPickRay = function(screenX, screenY, screenWidth, screenHeight, store) {
+	Camera.prototype.getPickRay = function (screenX, screenY, screenWidth, screenHeight, store) {
 		if (!store) {
 			store = new Ray();
 		}
@@ -527,7 +527,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
-	 * 
+	 *
 	 * @param screenX the screen x position
 	 * @param screenY the screen y position
 	 * @param screenWidth the screen width
@@ -537,7 +537,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 *            created.
 	 * @return a vector containing the world coordinates.
 	 */
-	Camera.prototype.getWorldCoordinates = function(screenX, screenY, screenWidth, screenHeight, zDepth, store) {
+	Camera.prototype.getWorldCoordinates = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
 			store = new Vector3();
 		}
@@ -556,7 +556,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Converts a position in world coordinate space to an x,y screen position and depth value using the current settings of this camera.
-	 * 
+	 *
 	 * @param worldPos the position in space to retrieve screen coordinates for.
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
@@ -564,7 +564,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 *            created.
 	 * @return a vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
 	 */
-	Camera.prototype.getScreenCoordinates = function(worldPosition, screenWidth, screenHeight, store) {
+	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
 		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
@@ -576,13 +576,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * Converts a position in world coordinate space to a x,y,z frustum position using the current settings of this camera.
-	 * 
+	 *
 	 * @param worldPos the position in space to retrieve frustum coordinates for.
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @return a vector containing the x,y,z frustum position
 	 */
-	Camera.prototype.getFrustumCoordinates = function(worldPosition, store) {
+	Camera.prototype.getFrustumCoordinates = function (worldPosition, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
 		store.x = (store.x + 1) * (this._frustumRight - this._frustumLeft) / 2 + this._frustumLeft;
@@ -592,7 +592,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		return store;
 	};
 
-	Camera.prototype.getNormalizedDeviceCoordinates = function(worldPosition, store) {
+	Camera.prototype.getNormalizedDeviceCoordinates = function (worldPosition, store) {
 		if (!store) {
 			store = new Vector3();
 		}
@@ -611,7 +611,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * update modelView if necessary.
 	 */
-	Camera.prototype.checkModelView = function() {
+	Camera.prototype.checkModelView = function () {
 		if (this._updateMVMatrix) {
 			this.updateModelViewMatrix();
 			this._updateMVMatrix = false;
@@ -621,7 +621,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * update projection if necessary.
 	 */
-	Camera.prototype.checkProjection = function() {
+	Camera.prototype.checkProjection = function () {
 		if (this._updatePMatrix) {
 			this.updateProjectionMatrix();
 			this._updatePMatrix = false;
@@ -631,7 +631,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * update modelViewProjection if necessary.
 	 */
-	Camera.prototype.checkModelViewProjection = function() {
+	Camera.prototype.checkModelViewProjection = function () {
 		if (this._updateMVPMatrix) {
 			this.checkModelView();
 			this.checkProjection();
@@ -644,7 +644,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * update inverse modelViewProjection if necessary.
 	 */
-	Camera.prototype.checkInverseModelViewProjection = function() {
+	Camera.prototype.checkInverseModelViewProjection = function () {
 		if (this._updateInverseMVPMatrix) {
 			this.checkModelViewProjection();
 			Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
@@ -655,7 +655,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	/**
 	 * Apply this camera's values to the given Renderer. Only values determined to be dirty (via updates, setters, etc.) will be applied. This method
 	 * must be run in the same thread as a valid OpenGL context.
-	 * 
+	 *
 	 * @param renderer the Renderer to use.
 	 */
 	// TODO
@@ -670,29 +670,29 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	// this._viewPortDirty = false;
 	// }
 	// };
-	Camera.prototype.getViewMatrix = function() {
+	Camera.prototype.getViewMatrix = function () {
 		this.checkModelView();
 		return this.modelView;
 	};
 
-	Camera.prototype.getProjectionMatrix = function() {
+	Camera.prototype.getProjectionMatrix = function () {
 		this.checkProjection();
 		return this.projection;
 	};
 
-	Camera.prototype.getViewProjectionMatrix = function() {
+	Camera.prototype.getViewProjectionMatrix = function () {
 		this.checkModelViewProjection();
 		return this.modelViewProjection;
 	};
 
-	Camera.prototype.getViewProjectionInverseMatrix = function() {
+	Camera.prototype.getViewProjectionInverseMatrix = function () {
 		this.checkInverseModelViewProjection();
 		return this.modelViewProjectionInverse;
 	};
 
 	/**
 	 * Apply the camera's viewport using the given Renderer.
-	 * 
+	 *
 	 * @param renderer the Renderer to use.
 	 */
 	// protected void applyViewport(final Renderer renderer) {
@@ -702,7 +702,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	// final int h = (int) ((this._viewPortTop - this._viewPortBottom) * this._height);
 	// renderer.setViewport(x, y, w, h);
 	// }
-	Camera.prototype.toString = function() {
+	Camera.prototype.toString = function () {
 		return "com.ardor3d.renderer.Camera: loc - " + Arrays.toString(getLocation().toArray(null)) + " dir - "
 			+ Arrays.toString(getDirection().toArray(null)) + " up - " + Arrays.toString(getUp().toArray(null)) + " left - "
 			+ Arrays.toString(getLeft().toArray(null));

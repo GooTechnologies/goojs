@@ -1,4 +1,4 @@
-define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function(Loader, Vector3, Vector2) {
+define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function (Loader, Vector3, Vector2) {
 	"use strict";
 
 	/**
@@ -46,7 +46,7 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 		this.needsUpdate = false;
 	}
 
-	Texture.prototype.setImage = function(image, settings, width, height) {
+	Texture.prototype.setImage = function (image, settings, width, height) {
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
@@ -55,7 +55,7 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
 				this.image = {
-					data : image,
+					data : image
 				};
 				this.image.width = width;
 				this.image.height = height;
@@ -72,7 +72,7 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'], function
 		} else {
 			if (image instanceof Array) {
 				this.image = {
-					data : image,
+					data : image
 				};
 			}
 		}

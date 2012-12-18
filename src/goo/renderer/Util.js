@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -11,10 +11,10 @@ define(function() {
 
 	/**
 	 * Get size in bytes of a specific type.
-	 * 
+	 *
 	 * @param {String} type Type to retrieve bytesize for
 	 */
-	Util.getByteSize = function(type) {
+	Util.getByteSize = function (type) {
 		switch (type) {
 			case 'Byte':
 				return 1;
@@ -37,10 +37,10 @@ define(function() {
 
 	/**
 	 * Check if the webgl context contains any errors in the current state
-	 * 
+	 *
 	 * @param {WebGL context} gl A valid WebGL context
 	 */
-	Util.checkGLError = function(gl) {
+	Util.checkGLError = function (gl) {
 		var error = gl.getError();
 		var wasError = false;
 		while (error !== gl.NO_ERROR) {
@@ -70,31 +70,31 @@ define(function() {
 
 	/**
 	 * Checks if a value is power of two
-	 * 
+	 *
 	 * @param {Number} value Number to check for power of two
 	 * @returns true if value is power of two
 	 */
-	Util.isPowerOfTwo = function(value) {
+	Util.isPowerOfTwo = function (value) {
 		return (value & (value - 1)) === 0;
 	};
 
 	/**
 	 * Converts input number to closest power of two
-	 * 
+	 *
 	 * @param {Number} number Number to convert to power of two
 	 * @returns Nearest power of two of input
 	 */
-	Util.nearestPowerOfTwo = function(number) {
+	Util.nearestPowerOfTwo = function (number) {
 		return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
 	};
 
 	/**
 	 * Clones an object recursively
-	 * 
+	 *
 	 * @param {Object} obj Object to clone
 	 * @returns Cloned object
 	 */
-	Util.clone = function(obj) {
+	Util.clone = function (obj) {
 		// Handle the 3 simple types, and null or undefined
 		if (null === obj || "object" != typeof obj) {
 			return obj;
@@ -115,7 +115,7 @@ define(function() {
 		// Handle Array
 		if (obj instanceof Array) {
 			var copy = [];
-			for ( var i = 0, len = obj.length; i < len; ++i) {
+			for (var i = 0, len = obj.length; i < len; ++i) {
 				copy[i] = Util.clone(obj[i]);
 			}
 			return copy;
@@ -124,7 +124,7 @@ define(function() {
 		// Handle Object
 		if (obj instanceof Object) {
 			var copy = {};
-			for ( var attr in obj) {
+			for (var attr in obj) {
 				if (obj.hasOwnProperty(attr)) {
 					copy[attr] = Util.clone(obj[attr]);
 				}

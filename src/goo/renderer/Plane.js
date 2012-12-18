@@ -1,4 +1,4 @@
-define(['goo/math/Vector3'], function(Vector3) {
+define(['goo/math/Vector3'], function (Vector3) {
 	"use strict";
 
 	/**
@@ -14,7 +14,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 		this.constant = constant || 0;
 	}
 
-	Plane.prototype.pseudoDistance = function(point) {
+	Plane.prototype.pseudoDistance = function (point) {
 		return _normal.dot(point) - _constant;
 	};
 
@@ -24,7 +24,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 	 * @see Side
 	 * @throws NullPointerException if point is null.
 	 */
-	Plane.prototype.whichSide = function(point) {
+	Plane.prototype.whichSide = function (point) {
 		var dis = pseudoDistance(point);
 		if (dis < 0) {
 			return Side.Inside;
@@ -35,7 +35,7 @@ define(['goo/math/Vector3'], function(Vector3) {
 		}
 	};
 
-	Plane.prototype.reflectVector = function(unitVector, store) {
+	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;
 		if (result === null) {
 			result = new Vector3();

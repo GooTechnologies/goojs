@@ -1,4 +1,4 @@
-define(['goo/renderer/Camera'], function(Camera) {
+define(['goo/renderer/Camera'], function (Camera) {
 	"use strict";
 
 	/**
@@ -8,17 +8,17 @@ define(['goo/renderer/Camera'], function(Camera) {
 	function SimplePartitioner() {
 	}
 
-	SimplePartitioner.prototype.added = function(entity) {
+	SimplePartitioner.prototype.added = function (entity) {
 		// needed for things like quadtrees etc
 	};
 
-	SimplePartitioner.prototype.removed = function(entity) {
+	SimplePartitioner.prototype.removed = function (entity) {
 		// needed for things like quadtrees etc
 	};
 
-	SimplePartitioner.prototype.process = function(camera, entities, renderList) {
+	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
 		// camera.onFrameChange(); // TODO: not needed anymore?
-		for ( var i in entities) {
+		for (var i in entities) {
 			var entity = entities[i];
 
 			if (entity.skip) {

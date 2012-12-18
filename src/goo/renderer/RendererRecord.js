@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	function RendererRecord() {
@@ -30,7 +30,7 @@ define(function() {
 		this.blendRecord = {};
 	}
 
-	RendererRecord.prototype.invalidateBuffer = function(target) {
+	RendererRecord.prototype.invalidateBuffer = function (target) {
 		this.currentBuffer[target].buffer = null;
 		this.currentBuffer[target].valid = false;
 	};

@@ -1,4 +1,5 @@
-define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'], function(ShapeCreator, Camera, Vector3) {
+define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'],
+	function (ShapeCreator, Camera, Vector3) {
 	"use strict";
 
 	/**

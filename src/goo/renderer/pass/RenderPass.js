@@ -1,4 +1,4 @@
-define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], function(Renderer, Vector, Vector4) {
+define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], function (Renderer, Vector, Vector4) {
 	"use strict";
 
 	/**
@@ -19,7 +19,7 @@ define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'], functio
 		this.needsSwap = false;
 	}
 
-	RenderPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		if (this.clearColor) {
 			Vector.copy(renderer.clearColor, this.oldClearColor);
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);

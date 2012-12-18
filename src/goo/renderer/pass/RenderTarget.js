@@ -1,9 +1,9 @@
-define(['goo/math/Vector2'], function(Vector2) {
+define(['goo/math/Vector2'], function (Vector2) {
 	"use strict";
 
 	/**
 	 * Creates a new RenderTarget object
-	 * 
+	 *
 	 * @name RenderTarget
 	 * @class Post processing handler
 	 * @param {Number} width Width of rendertarget
@@ -41,7 +41,7 @@ define(['goo/math/Vector2'], function(Vector2) {
 		this.generateMipmaps = false; // TODO: fix mipmap case
 	}
 
-	RenderTarget.prototype.clone = function() {
+	RenderTarget.prototype.clone = function () {
 		var tmp = new RenderTarget(this.width, this.height);
 
 		tmp.wrapS = this.wrapS;

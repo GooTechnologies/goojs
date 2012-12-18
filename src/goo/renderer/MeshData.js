@@ -1,4 +1,5 @@
-define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'], function(BufferData, Util, BufferUtils) {
+define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'],
+	function (BufferData, Util, BufferUtils) {
 	"use strict";
 
 	/**
@@ -28,7 +29,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
 
-	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
+	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		if (vertexCount !== undefined) {
 			this.vertexCount = vertexCount;
 			this._vertexCountStore = this.vertexCount;
@@ -40,7 +41,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		if (saveOldData) {
 			var savedAttributes = {};
 			var savedIndices = null;
-			for ( var i in this.attributeMap) {
+			for (var i in this.attributeMap) {
 				var attribute = this.attributeMap[i];
 				if (attribute.array) {
 					savedAttributes[i] = attribute.array;
@@ -52,7 +53,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		}
 
 		var vertexByteSize = 0;
-		for ( var i in this.attributeMap) {
+		for (var i in this.attributeMap) {
 			var attribute = this.attributeMap[i];
 			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 		}
@@ -66,7 +67,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		this.generateAttributeData();
 
 		if (saveOldData) {
-			for ( var i in this.attributeMap) {
+			for (var i in this.attributeMap) {
 				var saved = savedAttributes[i];
 				if (saved) {
 					var attribute = this.attributeMap[i];
@@ -89,14 +90,14 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		Int : Int32Array,
 		UnsignedInt : Uint32Array,
 		Float : Float32Array,
-		Double : Float64Array,
+		Double : Float64Array
 	};
 
-	MeshData.prototype.generateAttributeData = function() {
+	MeshData.prototype.generateAttributeData = function () {
 		var data = this.vertexData.data;
 		var view;
 		var offset = 0;
-		for ( var key in this.attributeMap) {
+		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
@@ -113,30 +114,30 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		}
 	};
 
-	MeshData.prototype.getAttributeBuffer = function(attributeName) {
+	MeshData.prototype.getAttributeBuffer = function (attributeName) {
 		return this.attributeMap[attributeName].array;
 	};
 
-	MeshData.prototype.getIndexData = function() {
+	MeshData.prototype.getIndexData = function () {
 		return this.indexData;
 	};
 
-	MeshData.prototype.getIndexBuffer = function() {
+	MeshData.prototype.getIndexBuffer = function () {
 		if (this.indexData !== null) {
 			return this.indexData.data;
 		}
 		return null;
 	};
 
-	MeshData.prototype.getIndexLengths = function() {
+	MeshData.prototype.getIndexLengths = function () {
 		return this.indexLengths;
 	};
 
-	MeshData.prototype.getIndexModes = function() {
+	MeshData.prototype.getIndexModes = function () {
 		return this.indexModes;
 	};
 
-	MeshData.prototype.resetVertexCount = function() {
+	MeshData.prototype.resetVertexCount = function () {
 		this.vertexCount = this.vertexCountStore;
 	};
 
@@ -151,7 +152,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	MeshData.WEIGHTS = 'WEIGHTS';
 	MeshData.JOINTIDS = 'JOINTIDS';
 
-	MeshData.createAttribute = function(count, type) {
+	MeshData.createAttribute = function (count, type) {
 		return {
 			count : count,
 			type : type
@@ -164,12 +165,12 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		COLOR : MeshData.createAttribute(4, 'Float'),
 		TANGENT : MeshData.createAttribute(4, 'Float'),
 		TEXCOORD0 : MeshData.createAttribute(2, 'Float'),
-		TEXCOORD1 : MeshData.createAttribute(2, 'Float'),
+		TEXCOORD1 : MeshData.createAttribute(2, 'Float')
 	};
 
 	function buildMap(types) {
 		var map = {};
-		for ( var i = 0; i < types.length; i++) {
+		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
 				map[type] = Util.clone(defaults[type]);
@@ -180,7 +181,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		return map;
 	}
 
-	MeshData.defaultMap = function(types) {
+	MeshData.defaultMap = function (types) {
 		if (types === undefined) {
 			return buildMap(Object.keys(defaults));
 		} else {

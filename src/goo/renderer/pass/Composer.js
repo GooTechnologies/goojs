@@ -1,5 +1,5 @@
-define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material'], function(RenderTarget, FullscreenPass,
-	Material) {
+define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material'],
+	function (RenderTarget, FullscreenPass, Material) {
 	"use strict";
 
 	/**
@@ -28,17 +28,17 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 		this.copyPass = new FullscreenPass(Material.shaders.copy);
 	}
 
-	Composer.prototype.swapBuffers = function() {
+	Composer.prototype.swapBuffers = function () {
 		var tmp = this.readBuffer;
 		this.readBuffer = this.writeBuffer;
 		this.writeBuffer = tmp;
 	};
 
-	Composer.prototype.addPass = function(pass) {
+	Composer.prototype.addPass = function (pass) {
 		this.passes.push(pass);
 	};
 
-	Composer.prototype.render = function(renderer, delta) {
+	Composer.prototype.render = function (renderer, delta) {
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
 
