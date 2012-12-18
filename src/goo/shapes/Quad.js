@@ -1,4 +1,4 @@
-define(['goo/renderer/MeshData'], function(MeshData) {
+define(['goo/renderer/MeshData'], function (MeshData) {
 	"use strict";
 
 	Quad.prototype = Object.create(MeshData.prototype);
@@ -33,7 +33,7 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {Quad} Self for chaining.
 	 */
-	Quad.prototype.rebuild = function() {
+	Quad.prototype.rebuild = function () {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var tileX = this.tileX;

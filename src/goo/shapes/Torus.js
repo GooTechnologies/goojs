@@ -1,4 +1,4 @@
-define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], function(MeshData, Vector3, MathUtils) {
+define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Vector3, MathUtils) {
 	"use strict";
 
 	Torus.prototype = Object.create(MeshData.prototype);
@@ -40,7 +40,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 	 * @returns {Torus} Self for chaining.
 	 */
 
-	Torus.prototype.rebuild = function() {
+	Torus.prototype.rebuild = function () {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
 		var norms = this.getAttributeBuffer(MeshData.NORMAL);
 		var texs = this.getAttributeBuffer(MeshData.TEXCOORD0);
@@ -52,7 +52,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 		var i = 0;
 		// generate the cylinder itself
 		var radialAxis = new Vector3(), torusMiddle = new Vector3(), tempNormal = new Vector3();
-		for ( var circleCount = 0; circleCount < this._circleSamples; circleCount++) {
+		for (var circleCount = 0; circleCount < this._circleSamples; circleCount++) {
 			// compute center point on torus circle at specified angle
 			var circleFraction = circleCount * inverseCircleSamples;
 			var theta = MathUtils.TWO_PI * circleFraction;
@@ -63,7 +63,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 
 			// compute slice vertices with duplication at end point
 			var iSave = i;
-			for ( var radialCount = 0; radialCount < this._radialSamples; radialCount++) {
+			for (var radialCount = 0; radialCount < this._radialSamples; radialCount++) {
 				var radialFraction = radialCount * inverseRadialSamples;
 				// in [0,1)
 				var phi = MathUtils.TWO_PI * radialFraction;
@@ -106,7 +106,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 		}
 
 		// duplicate the cylinder ends to form a torus
-		for ( var iR = 0; iR <= this._radialSamples; iR++, i++) {
+		for (var iR = 0; iR <= this._radialSamples; iR++, i++) {
 			copyInternal(vbuf, iR, i);
 			copyInternal(norms, iR, i);
 			copyInternal2(texs, iR, i);
@@ -116,7 +116,7 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 		// generate connectivity
 		var index = 0;
 		var connectionStart = 0;
-		for ( var circleCount = 0; circleCount < this._circleSamples; circleCount++) {
+		for (var circleCount = 0; circleCount < this._circleSamples; circleCount++) {
 			var i0 = connectionStart;
 			var i1 = i0 + 1;
 			connectionStart += this._radialSamples + 1;

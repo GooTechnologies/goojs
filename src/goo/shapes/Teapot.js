@@ -1,5 +1,5 @@
 define(['goo/renderer/MeshData'],
-	function(MeshData) {
+	function (MeshData) {
 		"use strict";
 
 		Teapot.prototype = Object.create(MeshData.prototype);
@@ -23,7 +23,7 @@ define(['goo/renderer/MeshData'],
 		 * @returns {Teapot} Self for chaining.
 		 */
 
-		Teapot.prototype.rebuild = function() {
+		Teapot.prototype.rebuild = function () {
 			var verts = [1.4403734, 2.7980254, 0.6128418, 1.5613803, 2.7980254, 0.0, 1.5834712, 2.7145221, 0.0, 1.4607521, 2.7145221, 0.62151235,
 					1.4640129, 2.8258598, 0.6228997, 1.5870057, 2.8258598, 0.0, 1.5121067, 2.7980254, 0.6433625, 1.6391401, 2.7980254, 0.0,
 					1.5650915, 2.7145221, 0.6659062, 1.6965764, 2.7145221, 0.0, 1.10858, 2.7980254, 1.10858, 1.1242645, 2.7145221, 1.1242645,

@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -8,7 +8,7 @@ define(function() {
 	function Handy() {
 	}
 
-	Handy.deepFreeze = function(o) {
+	Handy.deepFreeze = function (o) {
 		var prop, propKey;
 		Object.freeze(o); // First freeze the object.
 		for (propKey in o) {
@@ -24,13 +24,13 @@ define(function() {
 		}
 	};
 
-	Handy.defineProperty = function(obj, variable, value, callback) {
+	Handy.defineProperty = function (obj, variable, value, callback) {
 		var val = value;
 		Object.defineProperty(obj, variable, {
-			get : function() {
+			get : function () {
 				return val;
 			},
-			set : function(newval) {
+			set : function (newval) {
 				val = newval;
 				callback(val);
 			},
@@ -39,16 +39,16 @@ define(function() {
 		});
 	};
 
-	Handy.addListener = function(obj, variable, getCallback, setCallback) {
+	Handy.addListener = function (obj, variable, getCallback, setCallback) {
 		var val = obj[variable];
 		Object.defineProperty(obj, variable, {
-			get : function() {
+			get : function () {
 				if (getCallback) {
 					getCallback();
 				}
 				return val;
 			},
-			set : function(newval) {
+			set : function (newval) {
 				val = newval;
 				if (setCallback) {
 					setCallback(val);

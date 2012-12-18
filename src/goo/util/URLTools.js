@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	'use strict';
 
 	/**
@@ -12,7 +12,7 @@ define(function() {
 	 * If the URL does not contain a slash, just returns the url with
 	 * a slash appended.
 	 */
-	URLTools.getDirectory = function(url) {
+	URLTools.getDirectory = function (url) {
 		var match = /.*\//.exec(url);
 		if (!match) {
 			return url + '/';

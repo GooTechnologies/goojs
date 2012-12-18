@@ -1,9 +1,9 @@
 // adapted from https://github.com/rauschma/enums
-define(function() {
+define(function () {
 	"use strict";
 
 	function copyOwnFrom(target, source) {
-		Object.getOwnPropertyNames(source).forEach(function(propName) {
+		Object.getOwnPropertyNames(source).forEach(function (propName) {
 			Object.defineProperty(target, propName, Object.getOwnPropertyDescriptor(source, propName));
 		});
 		return target;
@@ -16,37 +16,37 @@ define(function() {
 		}
 		Object.freeze(this);
 	}
-	/** We don’t want the mutable Object.prototype in the prototype chain */
+	/** We don't want the mutable Object.prototype in the prototype chain */
 	Symbol.prototype = Object.create(null);
 	Symbol.prototype.constructor = Symbol;
 	/**
 	 * Without Object.prototype in the prototype chain, we need toString() in order to display symbols.
 	 */
-	Symbol.prototype.toString = function() {
+	Symbol.prototype.toString = function () {
 		return "|" + this.name + "|";
 	};
 	Object.freeze(Symbol.prototype);
 
 	function Enum(obj) {
 		if (arguments.length === 1 && obj !== null && typeof obj === "object") {
-			Object.keys(obj).forEach(function(name) {
+			Object.keys(obj).forEach(function (name) {
 				this[name] = new Symbol(name, obj[name]);
 			}, this);
 		} else {
-			Array.prototype.forEach.call(arguments, function(name) {
+			Array.prototype.forEach.call(arguments, function (name) {
 				this[name] = new Symbol(name);
 			}, this);
 		}
 		Object.freeze(this);
 	}
 
-	Enum.prototype.symbols = function() {
-		return Object.keys(this).map(function(key) {
+	Enum.prototype.symbols = function () {
+		return Object.keys(this).map(function (key) {
 			return this[key];
 		}, this);
 	};
 
-	Enum.prototype.contains = function(sym) {
+	Enum.prototype.contains = function (sym) {
 		if (!sym instanceof Symbol) {
 			return false;
 		}

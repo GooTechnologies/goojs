@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	/**
@@ -13,7 +13,7 @@ define(function() {
 
 		var container = document.createElement('div');
 		container.id = 'stats';
-		container.addEventListener('mousedown', function(event) {
+		container.addEventListener('mousedown', function (event) {
 			event.preventDefault();
 			setModeP(++mode % 2);
 		}, false);
@@ -74,7 +74,7 @@ define(function() {
 		infoText.innerHTML = 'INFO';
 		infoDiv.appendChild(infoText);
 
-		var setModeP = function(value) {
+		var setModeP = function (value) {
 			mode = value;
 			switch (mode) {
 				case 0:
@@ -88,18 +88,18 @@ define(function() {
 			}
 		};
 
-		var updateGraph = function(dom, value) {
+		var updateGraph = function (dom, value) {
 			var child = dom.appendChild(dom.firstChild);
 			child.style.height = value + 'px';
 		};
 
 		this.domElement = container;
 		this.setMode = setModeP;
-		this.begin = function() {
+		this.begin = function () {
 			startTime = Date.now();
 		};
 
-		this.end = function(info) {
+		this.end = function (info) {
 			var time = Date.now();
 
 			if (time > prevTimeMs + 100) {
@@ -134,7 +134,7 @@ define(function() {
 			return time;
 		};
 
-		this.update = function(info) {
+		this.update = function (info) {
 			startTime = this.end(info);
 		};
 	}

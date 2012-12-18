@@ -1,4 +1,4 @@
-define(['goo/renderer/MeshData'], function(MeshData) {
+define(['goo/renderer/MeshData'], function (MeshData) {
 	"use strict";
 
 	Box.prototype = Object.create(MeshData.prototype);
@@ -38,7 +38,7 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 	 * @returns {Box} Self for chaining.
 	 */
 
-	Box.prototype.rebuild = function() {
+	Box.prototype.rebuild = function () {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var zExtent = this.zExtent;
@@ -46,19 +46,19 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 		var tileY = this.tileY;
 
 		var verts = [//
-		-xExtent, -yExtent, -zExtent, //
-		xExtent, -yExtent, -zExtent, //
-		xExtent, yExtent, -zExtent, //
-		-xExtent, yExtent, -zExtent, //
-		xExtent, -yExtent, zExtent, //
-		-xExtent, -yExtent, zExtent, //
-		xExtent, yExtent, zExtent, //
-		-xExtent, yExtent, zExtent, //
+			-xExtent, -yExtent, -zExtent, //
+			xExtent, -yExtent, -zExtent, //
+			xExtent, yExtent, -zExtent, //
+			-xExtent, yExtent, -zExtent, //
+			xExtent, -yExtent, zExtent, //
+			-xExtent, -yExtent, zExtent, //
+			xExtent, yExtent, zExtent, //
+			-xExtent, yExtent, zExtent //
 		];
 
 		var vertices = [];
 		function fillV(fillIndices) {
-			for ( var i = 0; i < fillIndices.length; i++) {
+			for (var i = 0; i < fillIndices.length; i++) {
 				var index = fillIndices[i] * 3;
 				vertices.push(verts[index]);
 				vertices.push(verts[index + 1]);
@@ -67,29 +67,29 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 		}
 
 		fillV([//
-		0, 1, 2, 3,//
-		1, 4, 6, 2,//
-		4, 5, 7, 6,//
-		5, 0, 3, 7,//
-		2, 6, 7, 3,//
-		0, 5, 4, 1,//
+			0, 1, 2, 3,//
+			1, 4, 6, 2,//
+			4, 5, 7, 6,//
+			5, 0, 3, 7,//
+			2, 6, 7, 3,//
+			0, 5, 4, 1//
 		]);
 
 		this.getAttributeBuffer(MeshData.POSITION).set(vertices);
 
 		var norms = [//
-		0, 0, -1,//
-		1, 0, 0,//
-		0, 0, 1,//
-		-1, 0, 0,//
-		0, 1, 0,//
-		0, -1, 0,//
+			0, 0, -1,//
+			1, 0, 0,//
+			0, 0, 1,//
+			-1, 0, 0,//
+			0, 1, 0,//
+			0, -1, 0//
 		];
 
 		var normals = [];
 		function fillN() {
-			for ( var i = 0; i < norms.length / 3; i++) {
-				for ( var j = 0; j < 4; j++) {
+			for (var i = 0; i < norms.length / 3; i++) {
+				for (var j = 0; j < 4; j++) {
 					var index = i * 3;
 					normals.push(norms[index]);
 					normals.push(norms[index + 1]);
@@ -102,7 +102,7 @@ define(['goo/renderer/MeshData'], function(MeshData) {
 		this.getAttributeBuffer(MeshData.NORMAL).set(normals);
 
 		var tex = [];
-		for ( var i = 0; i < 6; i++) {
+		for (var i = 0; i < 6; i++) {
 			tex.push(tileX);
 			tex.push(0);
 

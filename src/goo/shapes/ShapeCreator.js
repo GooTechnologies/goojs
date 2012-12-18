@@ -1,5 +1,5 @@
 define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Teapot', 'goo/shapes/Sphere', 'goo/shapes/Torus',
-		'goo/entities/EntityUtils'], function(MeshData, Box, Quad, Teapot, Sphere, Torus, EntityUtils) {
+		'goo/entities/EntityUtils'], function (MeshData, Box, Quad, Teapot, Sphere, Torus, EntityUtils) {
 	"use strict";
 
 	/**
@@ -22,7 +22,7 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 	 * @returns {Quad} The created quad.
 	 */
 
-	ShapeCreator.createQuad = function(width, height, tileX, tileY) {
+	ShapeCreator.createQuad = function (width, height, tileX, tileY) {
 		return new Quad(width, height, tileX, tileY);
 	};
 
@@ -37,7 +37,7 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 	 * @returns {Box} The created box.
 	 */
 
-	ShapeCreator.createBox = function(width, height, length, tileX, tileY) {
+	ShapeCreator.createBox = function (width, height, length, tileX, tileY) {
 		return new Box(width, height, length, tileX, tileY);
 	};
 
@@ -47,7 +47,7 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 	 * @returns {Teapot} The created teapot.
 	 */
 
-	ShapeCreator.createTeapot = function() {
+	ShapeCreator.createTeapot = function () {
 		return new Teapot();
 	};
 
@@ -61,7 +61,7 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 	 * @returns {Sphere} The created sphere.
 	 */
 
-	ShapeCreator.createSphere = function(zSamples, radialSamples, radius, textureMode) {
+	ShapeCreator.createSphere = function (zSamples, radialSamples, radius, textureMode) {
 		return new Sphere(zSamples, radialSamples, radius, textureMode);
 	};
 
@@ -75,7 +75,7 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 	 * @returns {Torus} The created torus.
 	 */
 
-	ShapeCreator.createTorus = function(circleSamples, radialSamples, tubeRadius, centerRadius) {
+	ShapeCreator.createTorus = function (circleSamples, radialSamples, tubeRadius, centerRadius) {
 		return new Torus(circleSamples, radialSamples, tubeRadius, centerRadius);
 	};
 

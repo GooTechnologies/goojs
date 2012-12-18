@@ -1,22 +1,22 @@
-define(function() {
+define(function () {
 	"use strict";
 
 	function DebugUI(goo) {
 		var that = this;
 
-		goo.callbacks.push(function(tpf) {
+		goo.callbacks.push(function (tpf) {
 			var allEntities = goo.world.entityManager.getEntities();
-			for ( var i in allEntities) {
+			for (var i in allEntities) {
 				var entity = allEntities[i];
 				goo.world.changedEntity(entity);
 			}
 		});
 
 		// REVIEW: too long function
-		jQuery(function($) {
+		jQuery(function ($) {
 			var root = $('<div/>', {
 				'id' : 'debug',
-				click : function() {
+				click : function () {
 					$(this).toggle();
 				}
 			});
@@ -39,22 +39,22 @@ define(function() {
 
 			Manager.prototype = {
 				constructor : Manager,
-				added : function(entity) {
+				added : function (entity) {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
-				removed : function(entity) {
+				removed : function (entity) {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
-				changed : function(entity) {
+				changed : function (entity) {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
-				updateList : function(entities) {
+				updateList : function (entities) {
 					list.empty();
 					// var childList = $('<ul>').appendTo(list);
-					for ( var i in entities) {
+					for (var i in entities) {
 						var entity = entities[i];
 						$('<li>').appendTo(list).append(entity.toString()).append(
 							' - ' + (entity.meshRendererComponent !== undefined ? entity.meshRendererComponent.worldBound : 'none') + ', '
@@ -65,13 +65,13 @@ define(function() {
 						}
 					}
 				},
-				updateTransformList : function(transformComponents, depth, list) {
+				updateTransformList : function (transformComponents, depth, list) {
 					if (transformComponents.length <= 0) {
 						return;
 					}
 
 					var childList = $('<ul>').appendTo(list);
-					for ( var i in transformComponents) {
+					for (var i in transformComponents) {
 						var tc = transformComponents[i];
 						var mrc = tc.entity.meshRendererComponent;
 						var bounds = mrc !== undefined ? mrc.worldBound : 'none';
@@ -88,7 +88,7 @@ define(function() {
 		});
 	}
 
-	DebugUI.prototype.init = function() {
+	DebugUI.prototype.init = function () {
 	};
 
 	return DebugUI;

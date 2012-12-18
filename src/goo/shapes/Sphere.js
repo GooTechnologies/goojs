@@ -1,4 +1,4 @@
-define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'], function(MeshData, Enum, Vector3, MathUtils) {
+define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Enum, Vector3, MathUtils) {
 	"use strict";
 
 	Sphere.prototype = Object.create(MeshData.prototype);
@@ -41,7 +41,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 	 * @returns {Sphere} Self for chaining.
 	 */
 
-	Sphere.prototype.rebuild = function() {
+	Sphere.prototype.rebuild = function () {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
 		var norms = this.getAttributeBuffer(MeshData.NORMAL);
 		var texs = this.getAttributeBuffer(MeshData.TEXCOORD0);
@@ -55,7 +55,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		// points on a sphere slice.
 		var afSin = [];
 		var afCos = [];
-		for ( var iR = 0; iR < this.radialSamples; iR++) {
+		for (var iR = 0; iR < this.radialSamples; iR++) {
 			var fAngle = MathUtils.TWO_PI * fInvRS * iR;
 			afCos[iR] = Math.cos(fAngle);
 			afSin[iR] = Math.sin(fAngle);
@@ -68,7 +68,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		var tempVa = new Vector3();
 		var tempVb = new Vector3();
 		var tempVc = new Vector3();
-		for ( var iZ = 1; iZ < this.zSamples - 1; iZ++) {
+		for (var iZ = 1; iZ < this.zSamples - 1; iZ++) {
 			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi/2, pi/2)
 			var fZFraction = Math.sin(fAFraction); // in (-1,1)
 			var fZ = this.radius * fZFraction;
@@ -83,7 +83,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 			// compute slice vertices with duplication at end point
 			var kNormal;
 			var iSave = i;
-			for ( var iR = 0; iR < this.radialSamples; iR++) {
+			for (var iR = 0; iR < this.radialSamples; iR++) {
 				var fRadialFraction = iR * fInvRS; // in [0,1)
 				var kRadial = tempVc.set(afCos[iR], afSin[iR], 0);
 				Vector3.mul(kRadial, fSliceRadius, tempVa);
@@ -189,13 +189,13 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		// generate connectivity
 		var index = 0;
-		for ( var iZ = 0, iZStart = 0; iZ < this.zSamples - 3; iZ++) {
+		for (var iZ = 0, iZStart = 0; iZ < this.zSamples - 3; iZ++) {
 			var i0 = iZStart;
 			var i1 = i0 + 1;
 			iZStart += this.radialSamples + 1;
 			var i2 = iZStart;
 			var i3 = i2 + 1;
-			for ( var i = 0; i < this.radialSamples; i++) {
+			for (var i = 0; i < this.radialSamples; i++) {
 				if (!this.viewInside) {
 					indices[index++] = i0++;
 					indices[index++] = i1;
@@ -215,7 +215,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		}
 
 		// south pole triangles
-		for ( var i = 0; i < this.radialSamples; i++) {
+		for (var i = 0; i < this.radialSamples; i++) {
 			if (!this.viewInside) {
 				indices[index++] = i;
 				indices[index++] = this.vertexCount - 2;
@@ -229,7 +229,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		// north pole triangles
 		var iOffset = (this.zSamples - 3) * (this.radialSamples + 1);
-		for ( var i = 0; i < this.radialSamples; i++) {
+		for (var i = 0; i < this.radialSamples; i++) {
 			if (!this.viewInside) {
 				indices[index++] = i + iOffset;
 				indices[index++] = i + 1 + iOffset;
