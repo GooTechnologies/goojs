@@ -4,6 +4,8 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		function (RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material) {
 	"use strict";
 
+	var WebGLRenderingContext = window.WebGLRenderingContext;
+
 	/**
 	 * @name Renderer
 	 * @class The renderer handles displaying of graphics data to a render context
