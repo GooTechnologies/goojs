@@ -10,7 +10,7 @@
 
     // Development.
     "debug"         : false,  // Allow debugger statements e.g. browser breakpoints.
-    "devel"         : false,  // Allow developments statements e.g. `console.log();`.
+    "devel"         : true,  // Allow developments statements e.g. `console.log();`.
 
     "globals": {  // Extra globals.
         "define": true,
