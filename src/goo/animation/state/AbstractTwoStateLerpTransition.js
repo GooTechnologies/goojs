@@ -42,7 +42,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 */
 	AbstractTwoStateLerpTransition.prototype.setStateA = function (stateA) {
 		if (stateA === this) {
-			throw new IllegalArgumentException("Can not set state A to self.");
+			throw new Error("Can not set state A to self.");
 		}
 		this._stateA = stateA;
 		if (this._stateA !== null) {
@@ -62,7 +62,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 */
 	AbstractTwoStateLerpTransition.prototype.setStateB = function (stateB) {
 		if (stateB === this) {
-			throw new IllegalArgumentException("Can not set state B to self.");
+			throw new Error("Can not set state B to self.");
 		}
 		this._stateB = stateB;
 		if (this._stateB !== null) {

@@ -14,7 +14,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	}
 
 	ManagedTransformSource.prototype.resetClips = function (manager, globalStartTime) {
-		; // ignore
+		// ignore
 	};
 
 	ManagedTransformSource.prototype.setTime = function (globalTime, manager) {

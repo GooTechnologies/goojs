@@ -17,7 +17,7 @@ define(function () {
 	 */
 	EventHandler.dispatch = function () {
 		if (arguments.length === 0) {
-			throw "Event needs to specify a callback as first argument";
+			throw new Error("Event needs to specify a callback as first argument");
 		}
 
 		var callback = arguments[0];

@@ -249,7 +249,7 @@ define(
 			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
 		}
 		if (object.TextureCoords) {
-			for (i in object.TextureCoords) {
+			for (var i in object.TextureCoords) {
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}

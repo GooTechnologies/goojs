@@ -15,7 +15,7 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 		AbstractAnimationChannel.call(this, channelName, times);
 
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
-			throw new IllegalArgumentException("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
+			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
 		}
 
 		this._rotations = rotations.slice(0);

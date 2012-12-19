@@ -1,8 +1,6 @@
-define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function(Matrix3x3, Matrix4x4, Vector, Vector3) {
+define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"],
+	function (Matrix3x3, Matrix4x4, Vector, Vector3) {
 	"use strict";
-
-	Versor.prototype = Object.create(Vector.prototype);
-	Versor.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
 
 	/* ====================================================================== */
 
@@ -21,6 +19,9 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 		this.set(init);
 	}
 
+	Versor.prototype = Object.create(Vector.prototype);
+	Versor.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
+
 	/* ====================================================================== */
 
 	Versor.IDENTITY = new Versor(0, 0, 0, 1);
@@ -36,7 +37,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.combine = function(lhs, rhs, target) {
+	Versor.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Versor();
 		}
@@ -59,7 +60,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.combine = function(rhs) {
+	Versor.prototype.combine = function (rhs) {
 		return Versor.combine(this, rhs, this);
 	};
 
@@ -73,7 +74,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.invert = function(source, target) {
+	Versor.invert = function (source, target) {
 		if (!target) {
 			target = new Versor();
 		}
@@ -91,7 +92,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.invert = function() {
+	Versor.prototype.invert = function () {
 		return Versor.invert(this, this);
 	};
 
@@ -106,7 +107,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.fromAxisAngle = function(axis, angle, target) {
+	Versor.fromAxisAngle = function (axis, angle, target) {
 		var sin = Math.sin(angle * 0.5);
 		var cos = Math.cos(angle * 0.5);
 
@@ -131,9 +132,9 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.fromAxisAngle = function(axis, angle) {
+	Versor.prototype.fromAxisAngle = function (axis, angle) {
 		return Versor.fromAxisAngle(axis, angle, this);
-	}
+	};
 
 	/* ====================================================================== */
 
@@ -146,7 +147,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.fromNormalizedAxisAngle = function(axis, angle, target) {
+	Versor.fromNormalizedAxisAngle = function (axis, angle, target) {
 		var sin = Math.sin(angle * 0.5);
 		var cos = Math.cos(angle * 0.5);
 
@@ -169,9 +170,9 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.fromNormalizedAxisAngle = function(axis, angle) {
+	Versor.prototype.fromNormalizedAxisAngle = function (axis, angle) {
 		return Versor.fromNormalizedAxisAngle(axis, angle, this);
-	}
+	};
 
 	/* ====================================================================== */
 
@@ -183,7 +184,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Versor.toMatrix3x3 = function(source, target) {
+	Versor.toMatrix3x3 = function (source, target) {
 		if (!target) {
 			target = new Matrix3x3();
 		}
@@ -219,7 +220,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Versor.prototype.toMatrix3x3 = function(target) {
+	Versor.prototype.toMatrix3x3 = function (target) {
 		return Versor.toMatrix3x3(this, target);
 	};
 
@@ -233,7 +234,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Versor.toMatrix4x4 = function(source, target) {
+	Versor.toMatrix4x4 = function (source, target) {
 		if (!target) {
 			target = new Matrix4x4();
 		}
@@ -277,7 +278,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Versor.prototype.toMatrix4x4 = function(target) {
+	Versor.prototype.toMatrix4x4 = function (target) {
 		return Versor.toMatrix4x4(this, target);
 	};
 
