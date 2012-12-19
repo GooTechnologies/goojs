@@ -1,9 +1,6 @@
 define(["goo/math/Vector"], function (Vector) {
 	"use strict";
 
-	Quaternion.prototype = Object.create(Vector.prototype);
-	Quaternion.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
-
 	/**
 	 * @name Quaternion
 	 * @class Quaternion represents a 4 value math object used in Ardor3D to describe rotations. It has the advantage of being able to avoid lock by
@@ -19,6 +16,9 @@ define(["goo/math/Vector"], function (Vector) {
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
 		this.set(init);
 	}
+
+	Quaternion.prototype = Object.create(Vector.prototype);
+	Quaternion.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;

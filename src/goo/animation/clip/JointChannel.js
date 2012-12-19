@@ -1,8 +1,6 @@
 define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], function (TransformChannel, JointData) {
 	"use strict";
 
-	JointChannel.prototype = Object.create(TransformChannel.prototype);
-
 	/**
 	 * @name JointChannel
 	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
@@ -13,6 +11,8 @@ define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], 
 		this._jointName = jointName;
 		this._jointIndex = jointIndex;
 	}
+
+	JointChannel.prototype = Object.create(TransformChannel.prototype);
 
 	JointChannel.JOINT_CHANNEL_NAME = '_jnt';
 

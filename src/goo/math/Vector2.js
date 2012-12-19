@@ -1,9 +1,6 @@
 define(["goo/math/Vector"], function (Vector) {
 	"use strict";
 
-	Vector2.prototype = Object.create(Vector.prototype);
-	Vector2.prototype.setupAliases([['x', 'u', 's'], ['y', 'v', 't']]);
-
 	/* ====================================================================== */
 
 	/**
@@ -20,6 +17,9 @@ define(["goo/math/Vector"], function (Vector) {
 		var init = arguments.length !== 0 ? arguments : [0, 0];
 		this.set(init);
 	}
+
+	Vector2.prototype = Object.create(Vector.prototype);
+	Vector2.prototype.setupAliases([['x', 'u', 's'], ['y', 'v', 't']]);
 
 	/* ====================================================================== */
 

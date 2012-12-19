@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
 	"use strict";
 
-	AbstractTransitionState.prototype = Object.create(AbstractFiniteState.prototype);
-
 	/**
 	 * @name AbstractTransitionState
 	 * @class Base class for transition states - states responsible for moving between other finite states.
@@ -23,6 +21,8 @@ define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteStat
 		// from states, so time scaling an animation will not affect transition windows directly and must be factored into the start/end values.
 		this._endWindow = -1;
 	}
+
+	AbstractTransitionState.prototype = Object.create(AbstractFiniteState.prototype);
 
 	/**
 	 * @description Request that this state perform a transition to another.

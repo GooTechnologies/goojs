@@ -2,8 +2,6 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 	AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	"use strict";
 
-	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
-
 	/**
 	 * @name TransformChannel
 	 * @class An animation channel consisting of a series of transforms interpolated over time.
@@ -24,6 +22,8 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 		this._translations = translations.slice(0);
 		this._scales = scales.slice(0);
 	}
+
+	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
 	TransformChannel.prototype.createStateDataObject = function () {
 		return new TransformData();

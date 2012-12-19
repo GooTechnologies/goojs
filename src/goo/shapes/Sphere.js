@@ -1,8 +1,6 @@
 define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Enum, Vector3, MathUtils) {
 	"use strict";
 
-	Sphere.prototype = Object.create(MeshData.prototype);
-
 	/**
 	 * @name Sphere
 	 * @class Sphere represents a 3D object with all points equi-distance from a center point.
@@ -35,6 +33,8 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		this.rebuild();
 	}
+
+	Sphere.prototype = Object.create(MeshData.prototype);
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

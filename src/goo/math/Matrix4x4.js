@@ -1,9 +1,6 @@
 define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 	"use strict";
 
-	Matrix4x4.prototype = Object.create(Matrix.prototype);
-	Matrix4x4.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
-
 	/* ====================================================================== */
 
 	/**
@@ -24,6 +21,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 			this.set(arguments);
 		}
 	}
+
+	Matrix4x4.prototype = Object.create(Matrix.prototype);
+	Matrix4x4.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
 	/* ====================================================================== */
 

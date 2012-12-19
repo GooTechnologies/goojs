@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
-	FadeTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
-
 	/**
 	 * @name FadeTransitionState
 	 * @class A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start
@@ -14,6 +12,8 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (Abstrac
 	function FadeTransitionState(targetState, fadeTime, blendType) {
 		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
 	}
+
+	FadeTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
 
 	/**
 	 * @description Update this state using the current global time.

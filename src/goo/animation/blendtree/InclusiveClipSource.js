@@ -1,8 +1,6 @@
 define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'], function (JointChannel, ClipSource) {
 	"use strict";
 
-	InclusiveClipSource.prototype = Object.create(ClipSource.prototype);
-
 	/**
 	 * @name InclusiveClipSource
 	 * @class Similar to a ClipSource, this class samples and returns values from the channels of an AnimationClip. InclusiveClipSource further
@@ -15,6 +13,8 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 		this._enabledChannels = {};
 	}
+
+	InclusiveClipSource.prototype = Object.create(ClipSource.prototype);
 
 	InclusiveClipSource.prototype.clearEnabled = function () {
 		// NB: doesn't handle is we have external ref to this property, but we really shouldn't.

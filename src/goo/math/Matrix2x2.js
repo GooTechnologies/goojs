@@ -1,9 +1,6 @@
 define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 	"use strict";
 
-	Matrix2x2.prototype = Object.create(Matrix.prototype);
-	Matrix2x2.prototype.setupAliases([['e00'], ['e10'], ['e01'], ['e11']]);
-
 	/* ====================================================================== */
 
 	/**
@@ -24,6 +21,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
 			this.set(arguments);
 		}
 	}
+
+	Matrix2x2.prototype = Object.create(Matrix.prototype);
+	Matrix2x2.prototype.setupAliases([['e00'], ['e10'], ['e01'], ['e11']]);
 
 	/* ====================================================================== */
 

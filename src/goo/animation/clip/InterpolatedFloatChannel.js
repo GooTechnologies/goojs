@@ -2,8 +2,6 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 	TriggerData, MathUtils) {
 	"use strict";
 
-	InterpolatedFloatChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
-
 	/**
 	 * @name InterpolatedFloatChannel
 	 * @class An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for
@@ -16,6 +14,8 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 		AbstractAnimationChannel.call(this, channelName, times);
 		this._values = values ? values.slice(0) : null;
 	}
+
+	InterpolatedFloatChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
 	InterpolatedFloatChannel.prototype.createStateDataObject = function (instance) {
 		return [0.0];

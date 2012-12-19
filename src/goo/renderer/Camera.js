@@ -3,31 +3,6 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	"use strict";
 
 	/**
-	 * Planes of the frustum
-	 */
-	Camera.LEFT_PLANE = 0;
-	Camera.RIGHT_PLANE = 1;
-	Camera.BOTTOM_PLANE = 2;
-	Camera.TOP_PLANE = 3;
-	Camera.FAR_PLANE = 4;
-	Camera.NEAR_PLANE = 5;
-	Camera.FRUSTUM_PLANES = 6;
-
-	/**
-	 * Intersection type
-	 */
-	Camera.Perspective = 0;
-	Camera.Parallel = 1;
-	Camera.Custom = 2;
-
-	/**
-	 * Projection mode used by the camera.
-	 */
-	Camera.Outside = 0;
-	Camera.Inside = 1;
-	Camera.Intersects = 2;
-
-	/**
 	 * @name Camera
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
 	 * @param {Number} fov Field of view
@@ -120,6 +95,31 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		// this.onViewPortChange();
 		this.onFrameChange();
 	}
+
+	/**
+	 * Planes of the frustum
+	 */
+	Camera.LEFT_PLANE = 0;
+	Camera.RIGHT_PLANE = 1;
+	Camera.BOTTOM_PLANE = 2;
+	Camera.TOP_PLANE = 3;
+	Camera.FAR_PLANE = 4;
+	Camera.NEAR_PLANE = 5;
+	Camera.FRUSTUM_PLANES = 6;
+
+	/**
+	 * Intersection type
+	 */
+	Camera.Perspective = 0;
+	Camera.Parallel = 1;
+	Camera.Custom = 2;
+
+	/**
+	 * Projection mode used by the camera.
+	 */
+	Camera.Outside = 0;
+	Camera.Inside = 1;
+	Camera.Intersects = 2;
 
 	/**
 	 * Ensure our up, left and direction are unit-length vectors.

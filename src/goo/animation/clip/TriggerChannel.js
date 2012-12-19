@@ -1,8 +1,6 @@
 define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'], function (AbstractAnimationChannel, TriggerData) {
 	"use strict";
 
-	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
-
 	/**
 	 * @name TriggerChannel
 	 * @class An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be
@@ -15,6 +13,8 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 		AbstractAnimationChannel.call(this, channelName, times);
 		this._keys = keys ? keys.slice(0) : null;
 	}
+
+	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
 	TriggerChannel.prototype.createStateDataObject = function (instance) {
 		return new TriggerData();

@@ -1,9 +1,6 @@
 define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function (MathUtils, Matrix, Vector3) {
 	"use strict";
 
-	Matrix3x3.prototype = Object.create(Matrix.prototype);
-	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
-
 	/* ====================================================================== */
 
 	/**
@@ -24,6 +21,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function (
 			this.set(arguments);
 		}
 	}
+
+	Matrix3x3.prototype = Object.create(Matrix.prototype);
+	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
 
 	/* ====================================================================== */
 

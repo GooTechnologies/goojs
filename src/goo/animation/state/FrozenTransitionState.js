@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
-	FrozenTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
-
 	/**
 	 * @name FrozenTransitionState
 	 * @class A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target
@@ -14,6 +12,8 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (Abstrac
 	function FrozenTransitionState(targetState, fadeTime, blendType) {
 		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
 	}
+
+	FrozenTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
 
 	/**
 	 * @description Update this state using the current global time.

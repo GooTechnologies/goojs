@@ -1,8 +1,6 @@
 define(['goo/animation/clip/TransformData'], function (TransformData) {
 	"use strict";
 
-	JointData.prototype = Object.create(TransformData.prototype);
-
 	/**
 	 * @name JointData
 	 * @class Describes transform of a joint.
@@ -12,6 +10,8 @@ define(['goo/animation/clip/TransformData'], function (TransformData) {
 		TransformData.call(this, source);
 		this._jointIndex = source ? source._jointIndex : 0;
 	}
+
+	JointData.prototype = Object.create(TransformData.prototype);
 
 	/**
 	 * @description Copy the source's values into this transform data object.

@@ -2,8 +2,6 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 	function (MathUtils, TransformData, AbstractTwoPartSource) {
 	"use strict";
 
-	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
-
 	/**
 	 * @name BinaryLERPSource
 	 * @class Takes two blend sources and uses linear interpolation to merge TransformData values. If one of the sources is null, or does not have a
@@ -16,6 +14,8 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 	function BinaryLERPSource(sourceA, sourceB, blendKey) {
 		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
 	}
+
+	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
 
 	BinaryLERPSource.prototype.getSourceData = function (manager) {
 		// grab our data maps from the two sources
@@ -96,7 +96,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return rVal;
 	};
 
-	BinaryLERPSource.blendFloatValues = function(rVal, key, blendWeight, dataA, dataB) {
+	BinaryLERPSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {
 			rVal[key] = dataA;
 		} else {

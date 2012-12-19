@@ -1,8 +1,6 @@
 define(['goo/animation/clip/TriggerChannel'], function (TriggerChannel) {
 	"use strict";
 
-	GuaranteedTriggerChannel.prototype = Object.create(TriggerChannel.prototype);
-
 	/**
 	 * @name GuaranteedTriggerChannel
 	 * @class An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be
@@ -15,6 +13,8 @@ define(['goo/animation/clip/TriggerChannel'], function (TriggerChannel) {
 	function GuaranteedTriggerChannel(channelName, times, keys) {
 		TriggerChannel.call(this, channelName, times, keys);
 	}
+
+	GuaranteedTriggerChannel.prototype = Object.create(TriggerChannel.prototype);
 
 	GuaranteedTriggerChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, triggerData) {
 		var oldIndex = triggerData.getCurrentIndex();

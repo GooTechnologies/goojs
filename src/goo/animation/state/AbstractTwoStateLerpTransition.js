@@ -2,8 +2,6 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	AbstractTransitionState, StateBlendType, BinaryLERPSource) {
 	"use strict";
 
-	AbstractTwoStateLerpTransition.prototype = Object.create(AbstractTransitionState.prototype);
-
 	/**
 	 * @name AbstractTwoStateLerpTransition
 	 * @class An abstract transition state that blends between two other states.
@@ -35,6 +33,8 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		// The blended source data.
 		this._sourceData = null;
 	}
+
+	AbstractTwoStateLerpTransition.prototype = Object.create(AbstractTransitionState.prototype);
 
 	/**
 	 * @description Sanity checking setter for stateA.
