@@ -484,8 +484,8 @@ define(
 				// apply material state
 				material.materialState = info.materialState;
 
-				if (info.useTransparency) {
-					// TODO
+				// TODO: useTransparency
+				//if (info.useTransparency) {
 					// var bs = new BlendState();
 					// bs.setBlendEnabled(true);
 					// bs.setSourceFunction(SourceFunction.SourceAlpha);
@@ -495,7 +495,7 @@ define(
 					// // 0.5f));
 					// mesh.setRenderState(bs);
 					// mesh.getSceneHints().setRenderBucketType(RenderBucketType.Transparent);
-				}
+				//}
 
 				// apply textures
 				for (var key in this.slotUnitMap) {

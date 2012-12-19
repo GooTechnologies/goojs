@@ -43,7 +43,7 @@ define(function () {
 		req.open("GET", url);
 		req.responseType = "arraybuffer";
 		req.onload = function (e) {
-			if (req.status != 404) {
+			if (req.status !== 404) {
 				callback.onSuccess(req.response);
 				return;
 			}

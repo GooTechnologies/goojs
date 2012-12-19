@@ -29,10 +29,10 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		// set our time on the two sub sources
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive |= this._sourceA.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceA.setTime(globalTime, manager);
 		}
 		if (this._sourceB) {
-			foundActive |= this._sourceB.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceB.setTime(globalTime, manager);
 		}
 		return foundActive;
 	};
@@ -50,10 +50,10 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 	BinaryLERPSource.prototype.isActive = function (manager) {
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive |= this._sourceA.isActive(manager);
+			foundActive = foundActive || this._sourceA.isActive(manager);
 		}
 		if (this._sourceB) {
-			foundActive |= this._sourceB.isActive(manager);
+			foundActive = foundActive || this._sourceB.isActive(manager);
 		}
 		return foundActive;
 	};

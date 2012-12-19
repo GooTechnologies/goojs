@@ -1,9 +1,9 @@
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'], function (World,
-	TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner, LightManager,
-	CameraSystem, Camera, CameraComponent, Stats) {
+		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'],
+	function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem,
+		LightingSystem, SimplePartitioner, LightManager, CameraSystem, Camera, CameraComponent, Stats) {
 	"use strict";
 
 	/**

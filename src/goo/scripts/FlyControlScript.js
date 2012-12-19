@@ -5,7 +5,7 @@ define(function () {
 	 * Creates a new FlyControlScript
 	 *
 	 * @name FlyControlScript
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
+	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 * @property {ArrayBuffer} data Data to wrap

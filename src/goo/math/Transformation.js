@@ -1,4 +1,5 @@
-define(["goo/math/Matrix4x4", "goo/math/Vector3", "goo/math/Vector4"], function (Matrix4x4, Vector3, Vector4) {
+define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Vector4"],
+	function (Matrix4x4, Vector, Vector3, Vector4) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -10,7 +11,7 @@ define(["goo/math/Matrix4x4", "goo/math/Vector3", "goo/math/Vector4"], function 
 		this.worldFromLocal = new Matrix4x4();
 		this.localFromWorld = new Matrix4x4();
 		this.doUpdate = true;
-	};
+	}
 
 	/* ====================================================================== */
 
