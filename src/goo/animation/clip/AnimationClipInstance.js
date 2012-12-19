@@ -30,7 +30,7 @@ define(function () {
 	 */
 	AnimationClipInstance.prototype.fireAnimationFinished = function () {
 		for (var i = 0, max = this._animationListeners.length; i < max; i++) {
-			_animationListeners[i].animationFinished(this);
+			this._animationListeners[i].animationFinished(this);
 		}
 	};
 

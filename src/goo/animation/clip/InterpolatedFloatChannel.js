@@ -1,5 +1,5 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData', 'goo/math/MathUtils'], function (AbstractAnimationChannel,
-	TriggerData, MathUtils) {
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData', 'goo/math/MathUtils'],
+	function (AbstractAnimationChannel, TriggerData, MathUtils) {
 	"use strict";
 
 	/**
@@ -21,6 +21,7 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trigg
 		return [0.0];
 	};
 
+    // REVIEW: What is store refering to?
 	InterpolatedFloatChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, value) {
 		store[0] = MathUtils.lerp(progressPercent, this._values[sampleIndex], this._values[sampleIndex + 1]);
 	};

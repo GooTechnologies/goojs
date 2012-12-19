@@ -719,6 +719,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		case 'Bilinear':
 			return WebGLRenderingContext.LINEAR;
 		case 'NearestNeighbor':
+			return WebGLRenderingContext.NEAREST;
 		default:
 			return WebGLRenderingContext.NEAREST;
 		}

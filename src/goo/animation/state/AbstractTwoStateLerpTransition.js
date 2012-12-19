@@ -103,9 +103,10 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 			this._percent = MathUtils.scurve5(percent);
 			break;
 		case StateBlendType.Linear:
-		default:
 			this._percent = percent;
 			break;
+		default:
+			this._percent = percent;
 		}
 	};
 
