@@ -21,10 +21,10 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils)
 	 */
 	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore) {
 		if (polygonVertices.length === 3) {
-			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore);
+			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore);
 		} else if (polygonVertices.length === 4) {
-			return intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore)
-				|| intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], doPlanar, locationStore);
+			return this.intersectsTriangle(polygonVertices[0], polygonVertices[1], polygonVertices[2], doPlanar, locationStore)
+				|| this.intersectsTriangle(polygonVertices[0], polygonVertices[2], polygonVertices[3], doPlanar, locationStore);
 		}
 		return false;
 	};

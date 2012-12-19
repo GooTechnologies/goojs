@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
 		'goo/renderer/MeshData', 'goo/renderer/Material'],
@@ -920,6 +921,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// }
 	};
 
+    // REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
 	Renderer.prototype.getGLDataType = function (type) {
 		switch (type)
 		{
@@ -942,53 +944,40 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
+	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
 	Renderer.prototype.getGLBlendParam = function (param) {
 		switch (param)
 		{
 		case 'AddEquation':
 			return WebGLRenderingContext.FUNC_ADD;
-			break;
 		case 'SubtractEquation':
 			return WebGLRenderingContext.FUNC_SUBTRACT;
-			break;
 		case 'ReverseSubtractEquation':
 			return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
-			break;
 
 		case 'ZeroFactor':
 			return WebGLRenderingContext.ZERO;
-			break;
 		case 'OneFactor':
 			return WebGLRenderingContext.ONE;
-			break;
 		case 'SrcColorFactor':
 			return WebGLRenderingContext.SRC_COLOR;
-			break;
 		case 'OneMinusSrcColorFactor':
 			return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
-			break;
 		case 'SrcAlphaFactor':
 			return WebGLRenderingContext.SRC_ALPHA;
-			break;
 		case 'OneMinusSrcAlphaFactor':
 			return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
-			break;
 		case 'DstAlphaFactor':
 			return WebGLRenderingContext.DST_ALPHA;
-			break;
 		case 'OneMinusDstAlphaFactor':
 			return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
-			break;
 
 		case 'DstColorFactor':
 			return WebGLRenderingContext.DST_COLOR;
-			break;
 		case 'OneMinusDstColorFactor':
 			return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
-			break;
 		case 'SrcAlphaSaturateFactor':
 			return WebGLRenderingContext.SRC_ALPHA_SATURATE;
-			break;
 
 		default:
 			throw 'Unknown blend param: ' + param;
@@ -1011,7 +1000,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.context.clear(bits);
 	};
 
-	Renderer.prototype.flush = function() {
+	Renderer.prototype.flush = function () {
 		this.context.flush();
 	};
 
