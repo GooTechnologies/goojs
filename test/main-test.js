@@ -21,6 +21,7 @@ require([
     'test/math/Vector3',
     'test/math/Vector4',
     'test/math/Versor',
+    'test/noise/Noise',
     'test/shapes/Box',
     'test/shapes/Quad',
     'test/shapes/Sphere',
