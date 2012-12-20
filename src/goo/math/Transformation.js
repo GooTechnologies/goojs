@@ -1,13 +1,38 @@
-define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Vector4"],
-	function (Matrix4x4, Vector, Vector3, Vector4) {
+define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (Matrix4x4, Vector, Vector3) {
 	"use strict";
 
 	/* ====================================================================== */
 
-	function Transformation() {
-		this.translation = new Vector3(0.0, 0.0, 0.0);
-		this.rotation = new Vector3(0.0, 0.0, 0.0);
-		this.scale = new Vector3(1.0, 1.0, 1.0);
+	/**
+	 * @name Transformation
+	 * @class Models a transformation node in a hierarchy using separate
+	 *        translation, rotation and scale components (vectors). The class
+     *        has two matrix members which needs to be updated when either
+     *        component changes. This is done through setting the doUpdate
+     *        member to true.
+	 * @property {Vector3} translation Translation vector.
+	 * @property {Vector3} rotation Rotation vector (Euler angles).
+	 * @property {Vector3} scale Scale vector.
+	 * @property {Matrix4x4} worldFromLocal A transformation matrix that
+     *           transforms to the world coordinate system from the local
+     *           coordinate system.
+	 * @property {Matrix4x4} localFromWorld A transformation matrix that
+     *           transforms to the local coordinate system from the world
+     *           coordinate system. 
+	 * @property {Boolean} doUpdate Indicates whether a matrix update is needed.
+	 * @constructor
+	 * @description Creates a new transformation.
+	 * @param {Vector3} translation Translation vector.
+	 * @param {Vector3} rotation Rotation vector (Euler angles).
+	 * @param {Vector3} scale Scale vector.
+	 */
+
+	// REVIEW: How should rotations be represented? Euler angles? Versors? Matrices?
+
+	function Transformation(translation, rotation, scale) {
+		this.translation = translation || new Vector3(0.0, 0.0, 0.0);
+		this.rotation = rotation || new Vector3(0.0, 0.0, 0.0);
+		this.scale = scale || new Vector3(1.0, 1.0, 1.0);
 		this.worldFromLocal = new Matrix4x4();
 		this.localFromWorld = new Matrix4x4();
 		this.doUpdate = true;
@@ -15,7 +40,18 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/V
 
 	/* ====================================================================== */
 
+	/**
+	 * @description Transforms a normal to the world coordinate system from the local coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
 	Transformation.prototype.worldFromLocalNormal = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
 		if (!target) {
 			target = new Vector3();
 		}
@@ -33,7 +69,18 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/V
 
 	/* ====================================================================== */
 
+	/**
+	 * @description Transforms a normal to the local coordinate system from the world coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
 	Transformation.prototype.localFromWorldNormal = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
 		if (!target) {
 			target = new Vector3();
 		}
@@ -51,43 +98,126 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/V
 
 	/* ====================================================================== */
 
-	Transformation.prototype.worldFromLocalVertex = function (source, target) {
+	/**
+	 * @description Transforms a vector to the world coordinate system from the local coordinate system. The transformation matrix is applied, excluding the translational part.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Transformation.prototype.worldFromLocalVector = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
 		if (!target) {
-			target = new Vector4();
+			target = new Vector3();
+		}
+
+		if (target === source) {
+			return Vector.copy(this.worldFromLocalVector(source), target);
+		}
+
+		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e01 * source.y + this.worldFromLocal.e02 * source.z;
+		target.y = this.worldFromLocal.e10 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e12 * source.z;
+		target.z = this.worldFromLocal.e20 * source.x + this.worldFromLocal.e21 * source.y + this.worldFromLocal.e22 * source.z;
+
+		return target;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Transforms a vector to the local coordinate system from the world coordinate system. The transformation matrix is applied, excluding the translational part.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Transformation.prototype.localFromWorldVector = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
+		if (!target) {
+			target = new Vector3();
+		}
+
+		if (target === source) {
+			return Vector.copy(this.localFromWorldVector(source), target);
+		}
+
+		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e01 * source.y + this.localFromWorld.e02 * source.z;
+		target.y = this.localFromWorld.e10 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e12 * source.z;
+		target.z = this.localFromWorld.e20 * source.x + this.localFromWorld.e21 * source.y + this.localFromWorld.e22 * source.z;
+
+		return target;
+	};
+
+	/* ====================================================================== */
+
+	/**
+	 * @description Transforms a vertex to the world coordinate system from the local coordinate system. The transformation matrix is applied, including the translational part.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
+	Transformation.prototype.worldFromLocalVertex = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
+		if (!target) {
+			target = new Vector3();
 		}
 
 		if (target === source) {
 			return Vector.copy(this.worldFromLocalVertex(source), target);
 		}
 
-		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e01 * source.y + this.worldFromLocal.e02 * source.z + this.worldFromLocal.e03 * source.w;
-		target.y = this.worldFromLocal.e10 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e12 * source.z + this.worldFromLocal.e13 * source.w;
-		target.z = this.worldFromLocal.e20 * source.x + this.worldFromLocal.e21 * source.y + this.worldFromLocal.e22 * source.z + this.worldFromLocal.e23 * source.w;
-		target.w = this.worldFromLocal.e30 * source.x + this.worldFromLocal.e31 * source.y + this.worldFromLocal.e32 * source.z + this.worldFromLocal.e33 * source.w;
+		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e01 * source.y + this.worldFromLocal.e02 * source.z + this.worldFromLocal.e03;
+		target.y = this.worldFromLocal.e10 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e12 * source.z + this.worldFromLocal.e13;
+		target.z = this.worldFromLocal.e20 * source.x + this.worldFromLocal.e21 * source.y + this.worldFromLocal.e22 * source.z + this.worldFromLocal.e23;
 
 		return target;
 	};
 
 	/* ====================================================================== */
 
+	/**
+	 * @description Transforms a vertex to the local coordinate system from the world coordinate system. The transformation matrix is applied, including the translational part.
+	 * @param {Vector3} source Source vector.
+	 * @param {Vector3} [target] Target vector.
+	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 */
+
 	Transformation.prototype.localFromWorldVertex = function (source, target) {
+		if (this.doUpdate) {
+			this.update();
+		}
+
 		if (!target) {
-			target = new Vector4();
+			target = new Vector3();
 		}
 
 		if (target === source) {
 			return Vector.copy(this.localFromWorldVertex(source), target);
 		}
 
-		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e01 * source.y + this.localFromWorld.e02 * source.z + this.localFromWorld.e03 * source.w;
-		target.y = this.localFromWorld.e10 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e12 * source.z + this.localFromWorld.e13 * source.w;
-		target.z = this.localFromWorld.e20 * source.x + this.localFromWorld.e21 * source.y + this.localFromWorld.e22 * source.z + this.localFromWorld.e23 * source.w;
-		target.w = this.localFromWorld.e30 * source.x + this.localFromWorld.e31 * source.y + this.localFromWorld.e32 * source.z + this.localFromWorld.e33 * source.w;
+		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e01 * source.y + this.localFromWorld.e02 * source.z + this.localFromWorld.e03;
+		target.y = this.localFromWorld.e10 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e12 * source.z + this.localFromWorld.e13;
+		target.z = this.localFromWorld.e20 * source.x + this.localFromWorld.e21 * source.y + this.localFromWorld.e22 * source.z + this.localFromWorld.e23;
 
 		return target;
 	};
 
 	/* ====================================================================== */
+
+	/**
+	 * @description Updates the two matrix members using the translation, rotation and scale components.
+	 * @return {Transformation} Self for chaining.
+	 */
 
 	Transformation.prototype.update = function () {
 		if (!this.doUpdate) {
@@ -146,6 +276,8 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/V
 		this.localFromWorld.e33 = 1.0;
 
 		this.doUpdate = false;
+
+		return this;
 	};
 
 	/* ====================================================================== */
