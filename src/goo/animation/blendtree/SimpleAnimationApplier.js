@@ -27,7 +27,7 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 			for (var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) {
-				    // ignore
+					/*jshint noempty:false*/
 				} else if (value instanceof TransformData) {
 					var applyTo = entityManager.getEntityByName(key);
 					if (applyTo && applyTo.transformComponent) {
