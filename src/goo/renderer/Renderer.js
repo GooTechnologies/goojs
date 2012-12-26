@@ -385,6 +385,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			}
 			record.enabled = depthState.enabled;
 		}
+		if (record.write !== depthState.write) {
+			if (depthState.write) {
+				this.context.depthMask(true);
+			} else {
+				this.context.depthMask(false);
+			}
+			record.write = depthState.write;
+		}
 		// this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 
@@ -865,6 +873,10 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
 				context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.SRC_COLOR);
+			} else if (blending === 'AlphaBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
+				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 			} else if (blending === 'CustomBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
 			} else {

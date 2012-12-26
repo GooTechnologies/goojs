@@ -37,7 +37,8 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 		// blendDst : 'DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor'
 		};
 		this.depthState = {
-			enabled : true
+			enabled : true,
+			write : true
 		};
 
 		this.wireframe = false;

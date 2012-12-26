@@ -487,6 +487,26 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
+	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * @param {Vector3} rhs Vector on the left-hand side.
+	 * @returns {Vector3} Transformed left-hand side vector.
+	 */
+
+	Matrix3x3.prototype.applyPre = function (rhs) {
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
+
+		rhs.x = this.e00 * x + this.e10 * y + this.e20 * z;
+		rhs.y = this.e01 * x + this.e11 * y + this.e21 * z;
+		rhs.z = this.e02 * x + this.e12 * y + this.e22 * z;
+
+		return rhs;
+	};
+
+	/* ====================================================================== */
+
+	/**
 	 * @description Post-multiplies the matrix ("before") with a scaling vector.
 	 * @param {Vector3} vec Vector on the right-hand side.
 	 * @result {Matrix3x3} result Storage matrix.
