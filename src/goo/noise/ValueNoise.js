@@ -1,7 +1,6 @@
+/*jshint bitwise: false */
 define(["goo/noise/Noise"], function (Noise) {
 	"use strict";
-
-	ValueNoise.prototype = Object.create(Noise.prototype);
 
 	/* ====================================================================== */
 
@@ -15,6 +14,8 @@ define(["goo/noise/Noise"], function (Noise) {
 	function ValueNoise() {
 		Noise.call(this);
 	}
+
+	ValueNoise.prototype = Object.create(Noise.prototype);
 
 	/* ====================================================================== */
 

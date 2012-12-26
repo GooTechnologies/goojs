@@ -259,11 +259,13 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 
 				'	if(lambertTerm > 0.0)',//
 				'	{',//
-				'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * lambertTerm;',//
+				'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
+				'			lambertTerm;',//
 				'		vec3 E = normalize(eyeVec);',//
 				'		vec3 R = reflect(-L, N);',//
 				'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
-				'		final_color += materialSpecular * // gl_LightSource[0].specular * specular;',//
+				'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
+				'			specular;',//
 				'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
 				'	}',//
 				'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
@@ -374,12 +376,14 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 
 				'	if(lambertTerm > 0.0)',//
 				'	{',//
-				'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * lambertTerm;',//
+				'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
+				'			lambertTerm;',//
 				'		vec3 E = normalize(eyeVec);',//
 				'		vec3 R = reflect(-L, N);',//
 				'		float specular = pow( max(dot(R, E), 0.0),',//
 				'						materialSpecularPower);',//
-				'		final_color += materialSpecular * // gl_LightSource[0].specular * specular;',//
+				'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
+				'			specular;',//
 				'	}',//
 				' gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
 				// ' gl_FragColor = vec4(texCol.rgb, texCol.a);',//

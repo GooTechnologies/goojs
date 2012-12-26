@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 define(function () {
 	"use strict";
 
@@ -30,7 +31,7 @@ define(function () {
 		}
 
 		var i = 0;
-		while ((mask & 0x1) == 0) {
+		while ((mask & 0x1) === 0) {
 			mask = mask >> 1;
 			i++;
 			if (i > 32) {
@@ -48,7 +49,7 @@ define(function () {
 	 * @return true if the mask passes
 	 */
 	DdsUtils.isSet = function (value, bitMask) {
-		return (value & bitMask) == bitMask;
+		return (value & bitMask) === bitMask;
 	};
 
 	/**

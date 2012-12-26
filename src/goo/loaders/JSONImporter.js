@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 /**
  * The JSONImporter module.
  * @module goo/loaders/JSONImporter
@@ -51,7 +52,7 @@ define(
 	/**
 	 * Loads a model from the supplied model url and texture path.
 	 *
-	 * @param modelUrl
+	 * @param modelUrl URL of the model file to load.
 	 * @param textureDir Base URL for textures. Optional. If not supplied, modelUrl up to the last '/' is used as base.
 	 * @param callback Callback with
 	 *            <ul>
@@ -248,7 +249,7 @@ define(
 			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
 		}
 		if (object.TextureCoords) {
-			for (i in object.TextureCoords) {
+			for (var i in object.TextureCoords) {
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}
@@ -483,8 +484,8 @@ define(
 				// apply material state
 				material.materialState = info.materialState;
 
-				if (info.useTransparency) {
-					// TODO
+				// TODO: useTransparency
+				//if (info.useTransparency) {
 					// var bs = new BlendState();
 					// bs.setBlendEnabled(true);
 					// bs.setSourceFunction(SourceFunction.SourceAlpha);
@@ -494,7 +495,7 @@ define(
 					// // 0.5f));
 					// mesh.setRenderState(bs);
 					// mesh.getSceneHints().setRenderBucketType(RenderBucketType.Transparent);
-				}
+				//}
 
 				// apply textures
 				for (var key in this.slotUnitMap) {

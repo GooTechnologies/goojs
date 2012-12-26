@@ -3,8 +3,6 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget, Util, BlurPass) {
 	"use strict";
 
-	BloomPass.prototype = Object.create(BlurPass.prototype);
-
 	/**
 	 * <pre>
 	 * settings: {
@@ -21,6 +19,8 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 
 		this.copyMaterial.blendState.blending = 'AdditiveBlending';
 	}
+
+	BloomPass.prototype = Object.create(BlurPass.prototype);
 
 	return BloomPass;
 });

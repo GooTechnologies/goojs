@@ -1,8 +1,6 @@
 define(['goo/renderer/MeshData'], function (MeshData) {
 	"use strict";
 
-	Quad.prototype = Object.create(MeshData.prototype);
-
 	/**
 	 * @name Quad
 	 * @class A four sided, two dimensional shape. The local height of the Quad defines it's size about the y-axis, while the width defines the x-axis. The z-axis will always be 0.
@@ -28,6 +26,8 @@ define(['goo/renderer/MeshData'], function (MeshData) {
 
 		this.rebuild();
 	}
+
+	Quad.prototype = Object.create(MeshData.prototype);
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

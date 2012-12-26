@@ -1,3 +1,4 @@
+/*jshint bitwise: false */
 define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 	"use strict";
 
@@ -143,7 +144,7 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 		if (DdsUtils.isSet(header.dwCaps, DdsHeader.DDSCAPS_MIPMAP)) {
 			if (!DdsUtils.isSet(header.dwFlags, DdsHeader.DDSD_MIPMAPCOUNT)) {
 				header.dwMipMapCount = expectedMipmaps;
-			} else if (header.dwMipMapCount != expectedMipmaps) {
+			} else if (header.dwMipMapCount !== expectedMipmaps) {
 				console.warn("Got " + header.dwMipMapCount + " mipmaps, expected " + expectedMipmaps);
 			}
 		} else {
@@ -167,7 +168,7 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 		var size = 0;
 
 		for (var i = 0; i < this.header.dwMipMapCount; i++) {
-			compressed ? (size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * this.bpp * 2) : (size = ~~(width * height * this.bpp / 8));
+			size = compressed ? ~~((width + 3) / 4) * ~~((height + 3) / 4) * this.bpp * 2 : ~~(width * height * this.bpp / 8);
 			this.mipmapByteSizes.push(~~((size + 3) / 4) * 4);
 			width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
 			height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
@@ -322,7 +323,7 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 		if (compressedFormat) {
 			var fourCC = info.header.ddpf.dwFourCC;
 			// DXT1 format
-			if (fourCC == DdsUtils.getIntFromString("DXT1")) {
+			if (fourCC === DdsUtils.getIntFromString("DXT1")) {
 				info.bpp = 4;
 				// if (isSet(flags, DdsPixelFormat.DDPF_ALPHAPIXELS)) {
 				// XXX: many authoring tools do not set alphapixels, so we'll error on the side of alpha
@@ -335,21 +336,21 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 			}
 
 			// DXT3 format
-			else if (fourCC == DdsUtils.getIntFromString("DXT3")) {
+			else if (fourCC === DdsUtils.getIntFromString("DXT3")) {
 				console.info("DDS format: DXT3");
 				info.bpp = 8;
 				texture.format = "PrecompressedDXT3";
 			}
 
 			// DXT5 format
-			else if (fourCC == DdsUtils.getIntFromString("DXT5")) {
+			else if (fourCC === DdsUtils.getIntFromString("DXT5")) {
 				console.info("DDS format: DXT5");
 				info.bpp = 8;
 				texture.format = "PrecompressedDXT5";
 			}
 
 			// DXT10 info present...
-			else if (fourCC == DdsUtils.getIntFromString("DX10")) {
+			else if (fourCC === DdsUtils.getIntFromString("DX10")) {
 				// switch (info.headerDX10.dxgiFormat) {
 				// case DXGI_FORMAT_BC4_UNORM:
 				// console.info("DXGI format: BC4_UNORM");
@@ -368,12 +369,12 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 			}
 
 			// DXT2 format - unsupported
-			else if (fourCC == DdsUtils.getIntFromString("DXT2")) {
+			else if (fourCC === DdsUtils.getIntFromString("DXT2")) {
 				throw "DXT2 is not supported.";
 			}
 
 			// DXT4 format - unsupported
-			else if (fourCC == DdsUtils.getIntFromString("DXT4")) {
+			else if (fourCC === DdsUtils.getIntFromString("DXT4")) {
 				throw "DXT4 is not supported.";
 			}
 
@@ -458,7 +459,7 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 
 		// Read and check magic word...
 		var dwMagic = header[0];
-		if (dwMagic != DdsUtils.getIntFromString("DDS ")) {
+		if (dwMagic !== DdsUtils.getIntFromString("DDS ")) {
 			throw "Not a dds file.";
 		}
 		console.info("Reading DDS file.");
@@ -472,7 +473,7 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 		info.header = DdsHeader.read(header);
 
 		// if applicable, read DX10 header
-		info.headerDX10 = info.header.ddpf.dwFourCC == DdsUtils.getIntFromString("DX10") ? DdsHeaderDX10.read(Int32Array.create(buffer,
+		info.headerDX10 = info.header.ddpf.dwFourCC === DdsUtils.getIntFromString("DX10") ? DdsHeaderDX10.read(Int32Array.create(buffer,
 			arrayByteOffset + 128, 5)) : null;
 
 		// Create our new image

@@ -38,8 +38,6 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function (S
 		this.renderList.length = 0;
 		if (this.partitioner && this.camera) {
 			this.partitioner.process(this.camera, entities, this.renderList);
-		} else {
-			// Nothing will render
 		}
 	};
 

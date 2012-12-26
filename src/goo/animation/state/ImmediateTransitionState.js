@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransitionState) {
 	"use strict";
 
-	ImmediateTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
-
 	/**
 	 * @name ImmediateTransitionState
 	 * @class Cuts directly to the set target state, without any intermediate transition action.
@@ -11,6 +9,8 @@ define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransi
 	function ImmediateTransitionState(targetState) {
 		AbstractTransitionState.call(this, targetState);
 	}
+
+	ImmediateTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
 	/**
 	 * @description Do the transition logic for this transition state.

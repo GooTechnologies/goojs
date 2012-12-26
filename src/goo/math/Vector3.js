@@ -1,9 +1,6 @@
 define(["goo/math/Vector"], function (Vector) {
 	"use strict";
 
-	Vector3.prototype = Object.create(Vector.prototype);
-	Vector3.prototype.setupAliases([['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
-
 	/* ====================================================================== */
 
 	/**
@@ -20,6 +17,9 @@ define(["goo/math/Vector"], function (Vector) {
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0];
 		this.set(init);
 	}
+
+	Vector3.prototype = Object.create(Vector.prototype);
+	Vector3.prototype.setupAliases([['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
 
 	/* ====================================================================== */
 

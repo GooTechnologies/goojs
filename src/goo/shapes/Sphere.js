@@ -1,8 +1,6 @@
 define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Enum, Vector3, MathUtils) {
 	"use strict";
 
-	Sphere.prototype = Object.create(MeshData.prototype);
-
 	/**
 	 * @name Sphere
 	 * @class Sphere represents a 3D object with all points equi-distance from a center point.
@@ -35,6 +33,8 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		this.rebuild();
 	}
+
+	Sphere.prototype = Object.create(MeshData.prototype);
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
@@ -104,13 +104,13 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 					norms[i * 3 + 2] = -kNormal.z;
 				}
 
-				if (this.textureMode == Sphere.TextureModes.Linear) {
+				if (this.textureMode === Sphere.TextureModes.Linear) {
 					texs[i * 2 + 0] = fRadialFraction;
 					texs[i * 2 + 1] = 0.5 * (fZFraction + 1.0);
-				} else if (this.textureMode == Sphere.TextureModes.Projected) {
+				} else if (this.textureMode === Sphere.TextureModes.Projected) {
 					texs[i * 2 + 0] = fRadialFraction;
 					texs[i * 2 + 1] = MathUtils.HALF_PI + Math.asin(fZFraction) / Math.PI;
-				} else if (this.textureMode == Sphere.TextureModes.Polar) {
+				} else if (this.textureMode === Sphere.TextureModes.Polar) {
 					var r = (MathUtils.HALF_PI - Math.abs(fAFraction)) / Math.PI;
 					var u = r * afCos[iR] + 0.5;
 					var v = r * afSin[iR] + 0.5;
@@ -124,13 +124,13 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 			copyInternal(vbuf, iSave, i);
 			copyInternal(norms, iSave, i);
 
-			if (this.textureMode == Sphere.TextureModes.Linear) {
+			if (this.textureMode === Sphere.TextureModes.Linear) {
 				texs[i * 2 + 0] = 1.0;
 				texs[i * 2 + 1] = 0.5 * (fZFraction + 1.0);
-			} else if (this.textureMode == Sphere.TextureModes.Projected) {
+			} else if (this.textureMode === Sphere.TextureModes.Projected) {
 				texs[i * 2 + 0] = 1.0;
 				texs[i * 2 + 1] = MathUtils.INV_PI * (MathUtils.HALF_PI + Math.asin(fZFraction));
-			} else if (this.textureMode == Sphere.TextureModes.Polar) {
+			} else if (this.textureMode === Sphere.TextureModes.Polar) {
 				var r = (MathUtils.HALF_PI - Math.abs(fAFraction)) / Math.PI;
 				texs[i * 2 + 0] = r + 0.5;
 				texs[i * 2 + 1] = 0.5;
@@ -154,7 +154,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 			norms[i * 3 + 2] = 1;
 		}
 
-		if (this.textureMode == Sphere.TextureModes.Polar) {
+		if (this.textureMode === Sphere.TextureModes.Polar) {
 			texs[i * 2 + 0] = 0.5;
 			texs[i * 2 + 1] = 0.5;
 		} else {
@@ -179,7 +179,7 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 			norms[i * 3 + 2] = -1;
 		}
 
-		if (this.textureMode == Sphere.TextureModes.Polar) {
+		if (this.textureMode === Sphere.TextureModes.Polar) {
 			texs[i * 2 + 0] = 0.5;
 			texs[i * 2 + 1] = 0.5;
 		} else {

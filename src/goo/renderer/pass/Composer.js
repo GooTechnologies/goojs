@@ -2,6 +2,8 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 	function (RenderTarget, FullscreenPass, Material) {
 	"use strict";
 
+	var WebGLRenderingContext = window.WebGLRenderingContext;
+
 	/**
 	 * @name Composer
 	 * @class Post processing handler

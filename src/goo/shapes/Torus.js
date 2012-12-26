@@ -1,8 +1,6 @@
 define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Vector3, MathUtils) {
 	"use strict";
 
-	Torus.prototype = Object.create(MeshData.prototype);
-
 	/**
 	 * @name Torus
 	 * @class A torus is a donut-shaped model.
@@ -18,7 +16,6 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 	 * @param {Float} tubeRadius Radius of tube.
 	 * @param {Float} centerRadius Radius from center.
 	 */
-
 	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
 		this._circleSamples = circleSamples !== undefined ? circleSamples : 8;
 		this._radialSamples = radialSamples !== undefined ? radialSamples : 8;
@@ -35,11 +32,12 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], func
 		this.rebuild();
 	}
 
+	Torus.prototype = Object.create(MeshData.prototype);
+
 	/**
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {Torus} Self for chaining.
 	 */
-
 	Torus.prototype.rebuild = function () {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
 		var norms = this.getAttributeBuffer(MeshData.NORMAL);

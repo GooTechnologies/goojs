@@ -1,8 +1,6 @@
-define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'], function (MathUtils,
-	TransformData, AbstractTwoPartSource) {
+define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'],
+	function (MathUtils, TransformData, AbstractTwoPartSource) {
 	"use strict";
-
-	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
 
 	/**
 	 * @name BinaryLERPSource
@@ -17,6 +15,8 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
 	}
 
+	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
+
 	BinaryLERPSource.prototype.getSourceData = function (manager) {
 		// grab our data maps from the two sources
 		var sourceAData = this._sourceA ? this._sourceA.getSourceData(manager) : null;
@@ -29,10 +29,10 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		// set our time on the two sub sources
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive |= this._sourceA.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceA.setTime(globalTime, manager);
 		}
 		if (this._sourceB) {
-			foundActive |= this._sourceB.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceB.setTime(globalTime, manager);
 		}
 		return foundActive;
 	};
@@ -50,10 +50,10 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 	BinaryLERPSource.prototype.isActive = function (manager) {
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive |= this._sourceA.isActive(manager);
+			foundActive = foundActive || this._sourceA.isActive(manager);
 		}
 		if (this._sourceB) {
-			foundActive |= this._sourceB.isActive(manager);
+			foundActive = foundActive || this._sourceB.isActive(manager);
 		}
 		return foundActive;
 	};
@@ -96,7 +96,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 		return rVal;
 	};
 
-	BinaryLERPSource.blendFloatValues = function(rVal, key, blendWeight, dataA, dataB) {
+	BinaryLERPSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {
 			rVal[key] = dataA;
 		} else {

@@ -1,8 +1,6 @@
 define(['goo/animation/state/FadeTransitionState'], function (FadeTransitionState) {
 	"use strict";
 
-	SyncFadeTransitionState.prototype = Object.create(FadeTransitionState.prototype);
-
 	/**
 	 * @name SyncFadeTransitionState
 	 * @class A transition that blends over a given time from one animation state to another, synchronizing the target state to the initial state's
@@ -14,6 +12,8 @@ define(['goo/animation/state/FadeTransitionState'], function (FadeTransitionStat
 	function SyncFadeTransitionState(targetState, fadeTime, blendType) {
 		FadeTransitionState.call(this, targetState, fadeTime, blendType);
 	}
+
+	SyncFadeTransitionState.prototype = Object.create(FadeTransitionState.prototype);
 
 	/**
 	 * @description Do the transition logic for this transition state.

@@ -2,8 +2,6 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	AbstractTransitionState, StateBlendType, BinaryLERPSource) {
 	"use strict";
 
-	AbstractTwoStateLerpTransition.prototype = Object.create(AbstractTransitionState.prototype);
-
 	/**
 	 * @name AbstractTwoStateLerpTransition
 	 * @class An abstract transition state that blends between two other states.
@@ -36,13 +34,15 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		this._sourceData = null;
 	}
 
+	AbstractTwoStateLerpTransition.prototype = Object.create(AbstractTransitionState.prototype);
+
 	/**
 	 * @description Sanity checking setter for stateA.
 	 * @param stateA sets the start state. Updates the state's owner to point to this transition.
 	 */
 	AbstractTwoStateLerpTransition.prototype.setStateA = function (stateA) {
 		if (stateA === this) {
-			throw new IllegalArgumentException("Can not set state A to self.");
+			throw new Error("Can not set state A to self.");
 		}
 		this._stateA = stateA;
 		if (this._stateA !== null) {
@@ -62,7 +62,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 */
 	AbstractTwoStateLerpTransition.prototype.setStateB = function (stateB) {
 		if (stateB === this) {
-			throw new IllegalArgumentException("Can not set state B to self.");
+			throw new Error("Can not set state B to self.");
 		}
 		this._stateB = stateB;
 		if (this._stateB !== null) {
@@ -103,9 +103,10 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 			this._percent = MathUtils.scurve5(percent);
 			break;
 		case StateBlendType.Linear:
-		default:
 			this._percent = percent;
 			break;
+		default:
+			this._percent = percent;
 		}
 	};
 

@@ -12,7 +12,8 @@ require([
 	'math/Vector',
 	'math/Vector2',
 	'math/Vector3',
-	'math/Vector4'
+	'math/Vector4',
+	'math/Versor'
 ], function() {
   'use strict';
 

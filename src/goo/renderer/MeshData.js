@@ -2,6 +2,8 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	function (BufferData, Util, BufferUtils) {
 	"use strict";
 
+	var Uint8ClampedArray = window.Uint8ClampedArray;
+
 	/**
 	 * @name MeshData
 	 * @class Stores all buffers for geometric data and similar attributes
@@ -81,7 +83,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		}
 	};
 
-	var arrayTypes = {
+	var ArrayTypes = {
 		Byte : Int8Array,
 		UnsignedByte : Uint8Array,
 		UnsignedByteClamped : Uint8ClampedArray,
@@ -103,9 +105,9 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 			var length = this.vertexCount * attribute.count;
 			offset += length * Util.getByteSize(attribute.type);
 
-			var arrayType = arrayTypes[attribute.type];
-			if (arrayType) {
-				view = new arrayType(data, attribute.offset, length);
+			var ArrayType = ArrayTypes[attribute.type];
+			if (ArrayType) {
+				view = new ArrayType(data, attribute.offset, length);
 			} else {
 				throw "Unsupported DataType: " + attribute.type;
 			}

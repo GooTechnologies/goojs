@@ -1,8 +1,6 @@
 define(['goo/renderer/MeshData'], function (MeshData) {
 	"use strict";
 
-	Box.prototype = Object.create(MeshData.prototype);
-
 	/**
 	 * @name Box
 	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
@@ -32,6 +30,8 @@ define(['goo/renderer/MeshData'], function (MeshData) {
 
 		this.rebuild();
 	}
+
+	Box.prototype = Object.create(MeshData.prototype);
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

@@ -1,8 +1,5 @@
-define(["goo/math/Vector"], function (Vector) {
+define(["goo/math/Vector", "goo/math/Matrix3x3"], function (Vector, Matrix3x3) {
 	"use strict";
-
-	Quaternion.prototype = Object.create(Vector.prototype);
-	Quaternion.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
 
 	/**
 	 * @name Quaternion
@@ -19,6 +16,9 @@ define(["goo/math/Vector"], function (Vector) {
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
 		this.set(init);
 	}
+
+	Quaternion.prototype = Object.create(Vector.prototype);
+	Quaternion.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
@@ -272,7 +272,7 @@ define(["goo/math/Vector"], function (Vector) {
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.negate = function() {
+	Quaternion.prototype.negate = function () {
 		this.x *= -1;
 		this.y *= -1;
 		this.z *= -1;

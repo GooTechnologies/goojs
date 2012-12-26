@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
 	"use strict";
 
-	SteadyState.prototype = Object.create(AbstractFiniteState.prototype);
-
 	/**
 	 * @name SteadyState
 	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for
@@ -18,6 +16,8 @@ define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteStat
 		this._endTransition = null;
 		this._sourceTree = null;
 	}
+
+	SteadyState.prototype = Object.create(AbstractFiniteState.prototype);
 
 	SteadyState.prototype.doTransition = function (key, layer) {
 		var state = this._transitions[key];

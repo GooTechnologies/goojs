@@ -1,8 +1,6 @@
 define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransitionState) {
 	"use strict";
 
-	IgnoreTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
-
 	/**
 	 * @name IgnoreTransitionState
 	 * @class Dummy transition - does not change current state.
@@ -10,6 +8,8 @@ define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransi
 	function IgnoreTransitionState() {
 		AbstractTransitionState.call(this, null);
 	}
+
+	IgnoreTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
 	/**
 	 * @description Update this state using the current global time.
