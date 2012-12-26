@@ -643,6 +643,52 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				'gl_FragColor.a = 1.0;',//
 				'}'//
 			].join("\n")
+		},
+		particles : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexColor : MeshData.COLOR,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				diffuseMap : Shader.TEXTURE0
+			},
+			vshader : [ //
+				'attribute vec3 vertexPosition;', //
+				'attribute vec4 vertexColor;', //
+				'attribute vec2 vertexUV0;', //
+
+				'uniform mat4 viewMatrix;', //
+				'uniform mat4 projectionMatrix;',//
+				'uniform mat4 worldMatrix;',//
+
+				'varying vec2 texCoord0;',//
+				'varying vec4 color;',//
+
+				'void main(void) {', //
+				'    texCoord0 = vertexUV0;',//
+				'    color = vertexColor;',//
+				'	 gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+				'}'//
+			].join('\n'),
+			fshader : [//
+				'precision mediump float;',//
+
+				'uniform sampler2D diffuseMap;',//
+
+				'varying vec2 texCoord0;',//
+				'varying vec4 color;',//
+
+				'void main(void)',//
+				'{',//
+				'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
+				'   if (color.a == 0.0 || texCol.a == 0.0) discard;',//
+				'	else gl_FragColor = texCol * color;',//
+				'}'//
+			].join('\n')
 		}
 	};
 

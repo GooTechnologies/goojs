@@ -357,12 +357,10 @@ define(["goo/math/Vector"], function (Vector) {
 	 * @param {Float} factor Interpolation factor between zero and one.
 	 * @return {Vector3} Self for chaining.
 	 */
-
-	// REVIEW: This creates a feedback loop when used multiple times which is probably not the intention?
 	Vector3.prototype.lerp = function (end, factor) {
-		this.x += (end.x - this.x) * factor;
-		this.y += (end.y - this.y) * factor;
-		this.z += (end.z - this.z) * factor;
+		this.x = (1.0 - factor) * this.x + factor * end.x;
+		this.y = (1.0 - factor) * this.y + factor * end.y;
+		this.z = (1.0 - factor) * this.z + factor * end.z;
 
 		return this;
 	};
