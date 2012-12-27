@@ -19,6 +19,29 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
         store.mul(scale);
         return store;
 	};
+	
+	ParticleUtils.createConstantForce = function(force, useWorldCoords) {
+		var applyForce = new Vector3(force);
+		return {
+			enabled: true,
+			prepare: function(particleEntity) {
+				if (useWorldCoords) {
+					// grab our rotation and reverse it, if found
+					var transformComponent = particleEntity.transformComponent;
+			        // if we have a transform, unwind the world rotation.
+			        if (transformComponent && transformComponent.worldTransform) {
+			        	applyForce.set(force);
+			        	transformComponent.worldTransform.rotation.applyPre(applyForce);
+			        }
+				}
+			},
+			apply: function(tpf, particle, particleIndex) {
+				particle.velocity.x += applyForce.x * tpf;
+				particle.velocity.y += applyForce.y * tpf;
+				particle.velocity.z += applyForce.z * tpf;
+			}
+		};
+	};
 
 	return ParticleUtils;
 });

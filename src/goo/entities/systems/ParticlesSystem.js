@@ -19,20 +19,21 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 		for (var i = 0, max = entities.length; i < max; i++) {
 			var entity = entities[i];
 			var particleComponent = entity.particleComponent;
-			var transformComponent = entity.transformComponent;
 
 			if (particleComponent && particleComponent.enabled) {
-				this.updateParticles(particleComponent, transformComponent, tpf);
+				this.updateParticles(entity, particleComponent, tpf);
 			}
 		}
 	};
 
-	ParticlesSystem.prototype.updateParticles = function (particleComponent, transformComponent, tpf) {
+	ParticlesSystem.prototype.updateParticles = function (particleEntity, particleComponent, tpf) {
+		var transformComponent = particleEntity.transformComponent;
+
 		// go through any influences and prepare them
 		if (particleComponent.influences.length) {
 			for (var j = 0, max = particleComponent.influences.length; j < max; j++) {
 				// called even is !enabled.  This allows prepare function to control enabled status.
-				particleComponent.influences[j].prepare(particleComponent);
+				particleComponent.influences[j].prepare(particleEntity);
 			}
 		}
 		
