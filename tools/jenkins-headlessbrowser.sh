@@ -10,8 +10,8 @@ if [ ! -f virtualenv.py ]; then
     wget https://raw.github.com/pypa/virtualenv/master/virtualenv.py
 fi
 
-# Check if browser-virtualenv directory exists
-if [ ! -d browser-virtualenv ]; then
+# Check if virtualenv .env directory exists
+if [ ! -d .env ]; then
     echo "Creating virtualenv"
     python virtualenv.py .env
 fi
