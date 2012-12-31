@@ -105,7 +105,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		document.addEventListener('keydown', function(e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
-			console.log(code);
 			if (code == 32) { // space bar
 				// reset particles to spawn on the emitters
 				for (var i = 0, max = particleComponent.emitters.length; i < max; i++) {
@@ -123,6 +122,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// move our ball around
 		goo.callbacks.push(function(tpf) {
+			if (tpf > 1) return;
     		if (Math.floor(currentPos.x) == Math.floor(newPos.x) && Math.floor(currentPos.y) == Math.floor(newPos.y)
  	               && Math.floor(currentPos.z) == Math.floor(newPos.z)) {
  	            newPos.x = Math.random() * 50 - 25;

@@ -71,15 +71,15 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					timeOffset: 0.0,
 					spin: 0,
 					mass: 1,
-					size: 20.0,
+					size: 2.0,
 					color: [1, 0, 0, 1]
 				}, {
 					timeOffset: 0.5,
-					size: 12.0,
+					size: 1.5,
 					color: [1, 1, 0, 0.5]
 				}, {
 					timeOffset: 0.5,
-					size: 2.0,
+					size: 0.5,
 					color: [0, 0, 0, 0]
 				}
 			],

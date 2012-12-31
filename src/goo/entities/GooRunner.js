@@ -54,6 +54,10 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 			that.world.time += that.world.tpf;
 			World.time = that.world.time;
 			start = time;
+			if (that.world.tpf < 0)  {// skip a loop - original start time probably bad.
+				window.requestAnimationFrame(run);
+				return;
+			}
 
 			that.world.process();
 

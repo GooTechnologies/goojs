@@ -54,6 +54,7 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 					if (emitter.totalParticlesToSpawn > 0) {
 						// find out how many particles to create.
 						emitter.particlesWaitingToRelease += emitter.releaseRatePerSecond * tpf;
+						emitter.particlesWaitingToRelease = Math.max(emitter.particlesWaitingToRelease, 0);
 						stillAlive = true;
 					}
 
