@@ -64,12 +64,6 @@ define([ 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], func
             bbY.set(camLeft).mul(-sA).add(camUp.x * cA, camUp.y * cA, camUp.z * cA);
         }
         
-        // if we have a transform, unwind the world rotation.
-        if (transformComponent && transformComponent.worldTransform) {
-        	transformComponent.worldTransform.rotation.applyPre(bbX);
-        	transformComponent.worldTransform.rotation.applyPre(bbY);
-        }
-
         // apply billboard vectors to mesh verts
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
         

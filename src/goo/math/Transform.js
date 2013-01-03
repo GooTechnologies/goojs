@@ -87,6 +87,15 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		return store;
 	};
 
+	Transform.prototype.applyForwardVector = function (vector, store) {
+		store.copy(vector);
+
+		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		this.rotation.applyPost(store);
+
+		return store;
+	};
+
 	Transform.prototype.update = function () {
 		if (this.eulerUpdated) {
 			// console.log(this.rotation.x, this.rotation.y, this.rotation.z);

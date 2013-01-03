@@ -10,9 +10,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils'], 
+		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript, ParticlesSystem, ParticleComponent) {
+	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript, ParticlesSystem, 
+	ParticleComponent, ParticleUtils) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -94,16 +96,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 3.0,
 			    	maxLifetime: 5.0,
-			    	getEmissionPoint: function(vec3) {
-						return vec3.set(5,0,0);
+			    	getEmissionPoint: function(vec3, particleEntity) {
+						return ParticleUtils.applyEntityTransformPoint(vec3.set(5,0,0), particleEntity);
 			    	}
 			    }, {
 			    	totalParticlesToSpawn: Infinity,
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 0.1,
 			    	maxLifetime: 2.5,
-			    	getEmissionPoint: function(vec3) {
-						return vec3.set(-5,0,0);
+			    	getEmissionPoint: function(vec3, particleEntity) {
+						return ParticleUtils.applyEntityTransformPoint(vec3.set(-5,0,0), particleEntity);
 			    	}
 			    }
 			],

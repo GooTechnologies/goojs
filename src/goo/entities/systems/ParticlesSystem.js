@@ -94,8 +94,8 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 				}
 				
 				particle.respawnParticle(emitter.nextParticleLifeSpan());
-				emitter.getEmissionPoint(particle.position);
-				emitter.getEmissionVelocity(particle.velocity);
+				emitter.getEmissionPoint(particle.position, particleEntity);
+				emitter.getEmissionVelocity(particle.velocity, particleEntity);
 				
 				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn <= 0) {
 					// setup to pull next emitter, if any

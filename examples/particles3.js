@@ -46,7 +46,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 0, 20);
+		camera.translation.set(0, 10, 20);
 		camera.lookAt(new Vector3(0, 2, 0), Vector3.UNIT_Y);
 		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -85,16 +85,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			    	releaseRatePerSecond: 100,
 			    	minLifetime: 1.300,
 			    	maxLifetime: 1.950,
-			    	getEmissionPoint: function(vec3) {
-			    		vec3.set(0, 0, 0);
-			    	},
-			    	getEmissionVelocity: function(vec3) {
-			    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, 0.2268928, 10);
+			    	getEmissionVelocity: function(vec3, particleEntity) {
+			    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, 0.2268928, 10, particleEntity);
 			    	}
 			    }
 			]
 		});
-		particleComponent.influences.push(ParticleUtils.createConstantForce(new Vector3(0, -20, 0), true));
+		particleComponent.influences.push(ParticleUtils.createConstantForce(new Vector3(0, -20, 0)));
 		
 		entity.setComponent(particleComponent);
 		

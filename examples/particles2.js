@@ -10,7 +10,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3','goo/math/MathUtils',
-		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent', 
+		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], 
+		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
 	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils, BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
 	"use strict";
@@ -46,7 +48,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 0, 20);
+		camera.translation.set(0, 0, 100);
 		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -127,7 +129,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
  	               && Math.floor(currentPos.z) == Math.floor(newPos.z)) {
  	            newPos.x = Math.random() * 50 - 25;
  	            newPos.y = Math.random() * 50 - 25;
- 	            newPos.z = Math.random() * 50 - 100;
+ 	            newPos.z = Math.random() * 50 - 25;
  	        }
  	        currentPos.x = currentPos.x - (currentPos.x - newPos.x) * tpf;
  	        currentPos.y = currentPos.y - (currentPos.y - newPos.y) * tpf;
@@ -140,10 +142,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	    	releaseRatePerSecond: 100,
 	    	minLifetime: 0.1,
 	    	maxLifetime: 1.5,
-	    	getEmissionPoint: function(vec3) {
-	    		vec3.set(currentPos);
+	    	getEmissionPoint: function(vec3, particleEntity) {
+	    		ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
 	    	},
-	    	getEmissionVelocity: function(vec3) {
+	    	getEmissionVelocity: function(vec3, particleEntity) {
 	    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, 6);
 	    	}
 	    });
