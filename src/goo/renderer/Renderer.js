@@ -1,8 +1,8 @@
-/*jshint bitwise: false */
+/* jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'],
-		function (RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
+		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
+	Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -113,18 +113,18 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			calls : 0,
 			vertices : 0,
 			indices : 0,
-			reset : function () {
+			reset : function() {
 				this.calls = 0;
 				this.vertices = 0;
 				this.indices = 0;
 			},
-			toString : function () {
+			toString : function() {
 				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
 			}
 		};
 	}
 
-	Renderer.prototype.checkResize = function (camera) {
+	Renderer.prototype.checkResize = function(camera) {
 		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
 			this.setSize(this.domElement.offsetWidth, this.domElement.offsetHeight);
 		}
@@ -136,14 +136,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.setSize = function (width, height) {
+	Renderer.prototype.setSize = function(width, height) {
 		this.domElement.width = width;
 		this.domElement.height = height;
 
 		this.setViewport(0, 0, width, height);
 	};
 
-	Renderer.prototype.setViewport = function (x, y, width, height) {
+	Renderer.prototype.setViewport = function(x, y, width, height) {
 		this.viewportX = x !== undefined ? x : 0;
 		this.viewportY = y !== undefined ? y : 0;
 
@@ -153,12 +153,12 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
 
-	Renderer.prototype.setClearColor = function (r, g, b, a) {
+	Renderer.prototype.setClearColor = function(r, g, b, a) {
 		this.clearColor.set(r, g, b, a);
 		this.context.clearColor(r, g, b, a);
 	};
 
-	Renderer.prototype.bindData = function (bufferData) {
+	Renderer.prototype.bindData = function(bufferData) {
 		var glBuffer = null;
 		if (bufferData !== null) {
 			glBuffer = bufferData.glBuffer;
@@ -185,7 +185,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear) {
+	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear) {
 		if (!camera) {
 			return;
 		}
@@ -202,7 +202,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		};
 
 		if (Array.isArray(renderList)) {
-			for (var i = 0; i < renderList.length; i++) {
+			for ( var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
@@ -218,7 +218,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// }
 	};
 
-	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
+	Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshDataComponent.meshData;
 			renderInfo.materials = renderable.meshRendererComponent.materials;
@@ -230,7 +230,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.renderMesh = function (renderInfo) {
+	Renderer.prototype.renderMesh = function(renderInfo) {
 		var meshData = renderInfo.meshData;
 		var materials = renderInfo.materials;
 		if (this.overrideMaterial !== null) {
@@ -242,7 +242,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		var isWireframe = false;
 		var originalData = meshData;
 
-		for (var i = 0; i < materials.length; i++) {
+		for ( var i = 0; i < materials.length; i++) {
 			var material = materials[i];
 			if (!material.shader) {
 				// console.warn('No shader set on material: ' + material.name);
@@ -295,11 +295,11 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
+	Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
-		for (var i = 0; i < indexLengths.length; i++) {
+		for ( var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
 
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
@@ -317,11 +317,11 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.drawArraysVBO = function (indexModes, indexLengths) {
+	Renderer.prototype.drawArraysVBO = function(indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
-		for (var i = 0; i < indexLengths.length; i++) {
+		for ( var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
 
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
@@ -336,16 +336,16 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.buildWireframeData = function (meshData) {
+	Renderer.prototype.buildWireframeData = function(meshData) {
 		var attributeMap = Util.clone(meshData.attributeMap);
 		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, meshData.indexCount * 2);
-		for (var atr in attributeMap) {
+		for ( var atr in attributeMap) {
 			wireframeData.getAttributeBuffer(atr).set(meshData.getAttributeBuffer(atr));
 		}
 		var origI = meshData.getIndexBuffer();
 		var targetI = wireframeData.getIndexBuffer();
 		// TODO: fix this to handle other indexmodes than 'triangles'
-		for (var ii = 0; ii < meshData.indexCount; ii++) {
+		for ( var ii = 0; ii < meshData.indexCount; ii++) {
 			var i1 = origI[ii * 3 + 0];
 			var i2 = origI[ii * 3 + 1];
 			var i3 = origI[ii * 3 + 2];
@@ -361,7 +361,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		return wireframeData;
 	};
 
-	Renderer.prototype.buildWireframeMaterial = function (material) {
+	Renderer.prototype.buildWireframeMaterial = function(material) {
 		var wireDef = {};
 		wireDef.defines = material.shader.defines;
 		wireDef.attributes = material.shader.attributes;
@@ -373,7 +373,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		return wireframeMaterial;
 	};
 
-	Renderer.prototype.updateDepthTest = function (material) {
+	Renderer.prototype.updateDepthTest = function(material) {
 		var record = this.rendererRecord.depthRecord;
 		var depthState = material.depthState;
 
@@ -396,7 +396,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 
-	Renderer.prototype.updateCulling = function (material) {
+	Renderer.prototype.updateCulling = function(material) {
 		var record = this.rendererRecord.cullRecord;
 		var cullFace = material.cullState.cullFace;
 		var frontFace = material.cullState.frontFace;
@@ -419,22 +419,21 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 
 		if (record.frontFace !== frontFace) {
-			switch (frontFace)
-			{
-			case 'CCW':
-				this.context.frontFace(WebGLRenderingContext.CCW);
-				break;
-			case 'CW':
-				this.context.frontFace(WebGLRenderingContext.CW);
-				break;
+			switch (frontFace) {
+				case 'CCW':
+					this.context.frontFace(WebGLRenderingContext.CCW);
+					break;
+				case 'CW':
+					this.context.frontFace(WebGLRenderingContext.CW);
+					break;
 			}
 			record.frontFace = frontFace;
 		}
 	};
 
-	Renderer.prototype.updateTextures = function (material) {
+	Renderer.prototype.updateTextures = function(material) {
 		var context = this.context;
-		for (var i = 0; i < material.shader.textureSlots.length; i++) {
+		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
 			if (texture === undefined || !texture instanceof RenderTarget && texture.image === undefined || texture.image
@@ -467,7 +466,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.updateTextureParameters = function (texture, isImagePowerOfTwo) {
+	Renderer.prototype.updateTextureParameters = function(texture, isImagePowerOfTwo) {
 		var context = this.context;
 
 		var texrecord = texture.textureRecord;
@@ -502,7 +501,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.bindTexture = function (context, texture, unit, record) {
+	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
@@ -510,18 +509,17 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.getGLType = function (type) {
-		switch (type)
-		{
-		case '2D':
-			return WebGLRenderingContext.TEXTURE_2D;
-		case 'CUBE':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP;
+	Renderer.prototype.getGLType = function(type) {
+		switch (type) {
+			case '2D':
+				return WebGLRenderingContext.TEXTURE_2D;
+			case 'CUBE':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
 		}
 		throw "invalid texture type: " + type;
 	};
 
-	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
+	Renderer.prototype.loadCompressedTexture = function(context, target, texture, imageData) {
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
@@ -548,7 +546,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			}
 		} else {
 			texture.generateMipmaps = false;
-			for (var i = 0; i < mipSizes.length; i++) {
+			for ( var i = 0; i < mipSizes.length; i++) {
 				dataLength = mipSizes[i];
 				context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
 					+ dataOffset, dataLength));
@@ -559,7 +557,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
 			var size = mipSizes[mipSizes.length - 1];
 			if (mipSizes.length < expectedMipmaps) {
-				for (var i = mipSizes.length; i < expectedMipmaps; i++) {
+				for ( var i = mipSizes.length; i < expectedMipmaps; i++) {
 					size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * texture.image.bpp * 2;
 					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(size));
 					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
@@ -569,7 +567,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
+	Renderer.prototype.updateTexture = function(context, texture, unit, record) {
 		this.bindTexture(context, texture, unit, record);
 
 		// set alignment to support images with width % 4 !== 0, as
@@ -585,7 +583,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 			if (texture.variant === '2D') {
 				this.checkRescale(texture, image, image.width, image.height);
 			} else if (texture.variant === 'CUBE') {
-				for (var i = 0; i < 6; i++) {
+				for ( var i = 0; i < 6; i++) {
 					this.checkRescale(texture, image.data[i], image.width, image.height);
 				}
 			}
@@ -614,7 +612,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 				context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 			}
 		} else if (texture.variant === 'CUBE') {
-			for (var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
+			for ( var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
 				var face = Texture.CUBE_FACES[faceIndex];
 
 				if (!texture.image) {
@@ -640,7 +638,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.checkRescale = function (texture, image, width, height) {
+	Renderer.prototype.checkRescale = function(texture, image, width, height) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
 		if (width !== newWidth || height !== newHeight) {
@@ -656,103 +654,97 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.getGLWrap = function (wrap) {
-		switch (wrap)
-		{
-		case 'Repeat':
-			return WebGLRenderingContext.REPEAT;
-		case 'MirroredRepeat':
-			return WebGLRenderingContext.MIRRORED_REPEAT;
-		case 'EdgeClamp':
-			return WebGLRenderingContext.CLAMP_TO_EDGE;
+	Renderer.prototype.getGLWrap = function(wrap) {
+		switch (wrap) {
+			case 'Repeat':
+				return WebGLRenderingContext.REPEAT;
+			case 'MirroredRepeat':
+				return WebGLRenderingContext.MIRRORED_REPEAT;
+			case 'EdgeClamp':
+				return WebGLRenderingContext.CLAMP_TO_EDGE;
 		}
 		throw "invalid WrapMode type: " + wrap;
 	};
 
-	Renderer.prototype.getGLInternalFormat = function (format) {
-		switch (format)
-		{
-		case 'RGBA':
-			return WebGLRenderingContext.RGBA;
-		case 'RGB':
-			return WebGLRenderingContext.RGB;
-		case 'Alpha':
-			return WebGLRenderingContext.ALPHA;
-		case 'Luminance':
-			return WebGLRenderingContext.LUMINANCE;
-		case 'LuminanceAlpha':
-			return WebGLRenderingContext.LUMINANCE_ALPHA;
-		default:
-			throw "Unsupported format: " + format;
+	Renderer.prototype.getGLInternalFormat = function(format) {
+		switch (format) {
+			case 'RGBA':
+				return WebGLRenderingContext.RGBA;
+			case 'RGB':
+				return WebGLRenderingContext.RGB;
+			case 'Alpha':
+				return WebGLRenderingContext.ALPHA;
+			case 'Luminance':
+				return WebGLRenderingContext.LUMINANCE;
+			case 'LuminanceAlpha':
+				return WebGLRenderingContext.LUMINANCE_ALPHA;
+			default:
+				throw "Unsupported format: " + format;
 		}
 	};
 
-	Renderer.prototype.getGLPixelDataType = function (type) {
-		switch (type)
-		{
-		case 'UnsignedByte':
-			return WebGLRenderingContext.UNSIGNED_BYTE;
-		case 'UnsignedShort565':
-			return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
-		case 'UnsignedShort4444':
-			return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
-		case 'UnsignedShort5551':
-			return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
-		case 'Float':
-			return WebGLRenderingContext.FLOAT;
-		default:
-			throw "Unsupported type: " + type;
+	Renderer.prototype.getGLPixelDataType = function(type) {
+		switch (type) {
+			case 'UnsignedByte':
+				return WebGLRenderingContext.UNSIGNED_BYTE;
+			case 'UnsignedShort565':
+				return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
+			case 'UnsignedShort4444':
+				return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
+			case 'UnsignedShort5551':
+				return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
+			case 'Float':
+				return WebGLRenderingContext.FLOAT;
+			default:
+				throw "Unsupported type: " + type;
 		}
 	};
 
-	Renderer.prototype.getFilterFallback = function (filter) {
-		switch (filter)
-		{
-		case 'NearestNeighborNoMipMaps':
-		case 'NearestNeighborNearestMipMap':
-		case 'NearestNeighborLinearMipMap':
-			return 'NearestNeighborNoMipMaps';
-		case 'BilinearNoMipMaps':
-		case 'Trilinear':
-		case 'BilinearNearestMipMap':
-			return 'BilinearNoMipMaps';
-		default:
-			return 'NearestNeighborNoMipMaps';
+	Renderer.prototype.getFilterFallback = function(filter) {
+		switch (filter) {
+			case 'NearestNeighborNoMipMaps':
+			case 'NearestNeighborNearestMipMap':
+			case 'NearestNeighborLinearMipMap':
+				return 'NearestNeighborNoMipMaps';
+			case 'BilinearNoMipMaps':
+			case 'Trilinear':
+			case 'BilinearNearestMipMap':
+				return 'BilinearNoMipMaps';
+			default:
+				return 'NearestNeighborNoMipMaps';
 		}
 	};
 
-	Renderer.prototype.getGLMagFilter = function (filter) {
-		switch (filter)
-		{
-		case 'Bilinear':
-			return WebGLRenderingContext.LINEAR;
-		case 'NearestNeighbor':
-			return WebGLRenderingContext.NEAREST;
-		default:
-			return WebGLRenderingContext.NEAREST;
+	Renderer.prototype.getGLMagFilter = function(filter) {
+		switch (filter) {
+			case 'Bilinear':
+				return WebGLRenderingContext.LINEAR;
+			case 'NearestNeighbor':
+				return WebGLRenderingContext.NEAREST;
+			default:
+				return WebGLRenderingContext.NEAREST;
 		}
 	};
 
-	Renderer.prototype.getGLMinFilter = function (filter) {
-		switch (filter)
-		{
-		case 'BilinearNoMipMaps':
-			return WebGLRenderingContext.LINEAR;
-		case 'Trilinear':
-			return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
-		case 'BilinearNearestMipMap':
-			return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
-		case 'NearestNeighborNoMipMaps':
-			return WebGLRenderingContext.NEAREST;
-		case 'NearestNeighborNearestMipMap':
-			return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
-		case 'NearestNeighborLinearMipMap':
-			return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
+	Renderer.prototype.getGLMinFilter = function(filter) {
+		switch (filter) {
+			case 'BilinearNoMipMaps':
+				return WebGLRenderingContext.LINEAR;
+			case 'Trilinear':
+				return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
+			case 'BilinearNearestMipMap':
+				return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
+			case 'NearestNeighborNoMipMaps':
+				return WebGLRenderingContext.NEAREST;
+			case 'NearestNeighborNearestMipMap':
+				return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
+			case 'NearestNeighborLinearMipMap':
+				return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
 		}
 		throw "invalid MinificationFilter type: " + filter;
 	};
 
-	Renderer.prototype.getGLBufferTarget = function (target) {
+	Renderer.prototype.getGLBufferTarget = function(target) {
 		if (target === 'ElementArrayBuffer') {
 			return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
 		}
@@ -760,8 +752,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		return WebGLRenderingContext.ARRAY_BUFFER;
 	};
 
-	Renderer.prototype.getGLArrayType = function (indices) {
-		if (indices instanceof Int8Array) {
+	Renderer.prototype.getGLArrayType = function(indices) {
+		if (indices instanceof Uint8Array) {
+			return WebGLRenderingContext.UNSIGNED_BYTE;
+		} else if (indices instanceof Uint16Array) {
+			return WebGLRenderingContext.UNSIGNED_SHORT;
+		} else if (indices instanceof Uint32Array) {
+			return WebGLRenderingContext.UNSIGNED_INT;
+		} else if (indices instanceof Int8Array) {
 			return WebGLRenderingContext.UNSIGNED_BYTE;
 		} else if (indices instanceof Int16Array) {
 			return WebGLRenderingContext.UNSIGNED_SHORT;
@@ -774,8 +772,14 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// indices);
 	};
 
-	Renderer.prototype.getGLByteSize = function (indices) {
-		if (indices instanceof Int8Array) {
+	Renderer.prototype.getGLByteSize = function(indices) {
+		if (indices instanceof Uint8Array) {
+			return 1;
+		} else if (indices instanceof Uint16Array) {
+			return 2;
+		} else if (indices instanceof Uint32Array) {
+			return 4;
+		} else if (indices instanceof Int8Array) {
 			return 1;
 		} else if (indices instanceof Int16Array) {
 			return 2;
@@ -786,72 +790,69 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		return 1;
 	};
 
-	Renderer.prototype.getGLCubeMapFace = function (face) {
-		switch (face)
-		{
-		case 'PositiveX':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
-		case 'NegativeX':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
-		case 'PositiveY':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
-		case 'NegativeY':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
-		case 'PositiveZ':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
-		case 'NegativeZ':
-			return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+	Renderer.prototype.getGLCubeMapFace = function(face) {
+		switch (face) {
+			case 'PositiveX':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+			case 'NegativeX':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+			case 'PositiveY':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+			case 'NegativeY':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+			case 'PositiveZ':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+			case 'NegativeZ':
+				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
 		}
 		throw 'Invalid cubemap face: ' + face;
 	};
 
-	Renderer.prototype.getGLBufferUsage = function (usage) {
+	Renderer.prototype.getGLBufferUsage = function(usage) {
 		var glMode = WebGLRenderingContext.STATIC_DRAW;
-		switch (usage)
-		{
-		case 'StaticDraw':
-			glMode = WebGLRenderingContext.STATIC_DRAW;
-			break;
-		case 'DynamicDraw':
-			glMode = WebGLRenderingContext.DYNAMIC_DRAW;
-			break;
-		case 'StreamDraw':
-			glMode = WebGLRenderingContext.STREAM_DRAW;
-			break;
+		switch (usage) {
+			case 'StaticDraw':
+				glMode = WebGLRenderingContext.STATIC_DRAW;
+				break;
+			case 'DynamicDraw':
+				glMode = WebGLRenderingContext.DYNAMIC_DRAW;
+				break;
+			case 'StreamDraw':
+				glMode = WebGLRenderingContext.STREAM_DRAW;
+				break;
 		}
 		return glMode;
 	};
 
-	Renderer.prototype.getGLIndexMode = function (indexMode) {
+	Renderer.prototype.getGLIndexMode = function(indexMode) {
 		var glMode = WebGLRenderingContext.TRIANGLES;
-		switch (indexMode)
-		{
-		case 'Triangles':
-			glMode = WebGLRenderingContext.TRIANGLES;
-			break;
-		case 'TriangleStrip':
-			glMode = WebGLRenderingContext.TRIANGLE_STRIP;
-			break;
-		case 'TriangleFan':
-			glMode = WebGLRenderingContext.TRIANGLE_FAN;
-			break;
-		case 'Lines':
-			glMode = WebGLRenderingContext.LINES;
-			break;
-		case 'LineStrip':
-			glMode = WebGLRenderingContext.LINE_STRIP;
-			break;
-		case 'LineLoop':
-			glMode = WebGLRenderingContext.LINE_LOOP;
-			break;
-		case 'Points':
-			glMode = WebGLRenderingContext.POINTS;
-			break;
+		switch (indexMode) {
+			case 'Triangles':
+				glMode = WebGLRenderingContext.TRIANGLES;
+				break;
+			case 'TriangleStrip':
+				glMode = WebGLRenderingContext.TRIANGLE_STRIP;
+				break;
+			case 'TriangleFan':
+				glMode = WebGLRenderingContext.TRIANGLE_FAN;
+				break;
+			case 'Lines':
+				glMode = WebGLRenderingContext.LINES;
+				break;
+			case 'LineStrip':
+				glMode = WebGLRenderingContext.LINE_STRIP;
+				break;
+			case 'LineLoop':
+				glMode = WebGLRenderingContext.LINE_LOOP;
+				break;
+			case 'Points':
+				glMode = WebGLRenderingContext.POINTS;
+				break;
 		}
 		return glMode;
 	};
 
-	Renderer.prototype.updateBlending = function (material) {
+	Renderer.prototype.updateBlending = function(material) {
 		var blendRecord = this.rendererRecord.blendRecord;
 		var context = this.context;
 
@@ -912,7 +913,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.setBoundBuffer = function (buffer, target) {
+	Renderer.prototype.setBoundBuffer = function(buffer, target) {
 		if (!this.rendererRecord.currentBuffer[target].valid || this.rendererRecord.currentBuffer[target].buffer !== buffer) {
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
 			this.rendererRecord.currentBuffer[target] = {
@@ -922,7 +923,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.bindVertexAttribute = function (attribIndex, tupleSize, type, normalized, stride, offset, record) {
+	Renderer.prototype.bindVertexAttribute = function(attribIndex, tupleSize, type, normalized, stride, offset, record) {
 		this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride, offset);
 
 		if (record.boundAttributes.indexOf(attribIndex) === -1) {
@@ -934,70 +935,68 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		// }
 	};
 
-    // REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
-	Renderer.prototype.getGLDataType = function (type) {
-		switch (type)
-		{
-		case 'Float':
-		case 'HalfFloat':
-		case 'Double':
-			return WebGLRenderingContext.FLOAT;
-		case 'Byte':
-			return WebGLRenderingContext.BYTE;
-		case 'UnsignedByte':
-			return WebGLRenderingContext.UNSIGNED_BYTE;
-		case 'Short':
-			return WebGLRenderingContext.SHORT;
-		case 'UnsignedShort':
-			return WebGLRenderingContext.UNSIGNED_SHORT;
-		case 'Int':
-			return WebGLRenderingContext.INT;
-		case 'UnsignedInt':
-			return WebGLRenderingContext.UNSIGNED_INT;
+	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
+	Renderer.prototype.getGLDataType = function(type) {
+		switch (type) {
+			case 'Float':
+			case 'HalfFloat':
+			case 'Double':
+				return WebGLRenderingContext.FLOAT;
+			case 'Byte':
+				return WebGLRenderingContext.BYTE;
+			case 'UnsignedByte':
+				return WebGLRenderingContext.UNSIGNED_BYTE;
+			case 'Short':
+				return WebGLRenderingContext.SHORT;
+			case 'UnsignedShort':
+				return WebGLRenderingContext.UNSIGNED_SHORT;
+			case 'Int':
+				return WebGLRenderingContext.INT;
+			case 'UnsignedInt':
+				return WebGLRenderingContext.UNSIGNED_INT;
 		}
 	};
 
 	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
-	Renderer.prototype.getGLBlendParam = function (param) {
-		switch (param)
-		{
-		case 'AddEquation':
-			return WebGLRenderingContext.FUNC_ADD;
-		case 'SubtractEquation':
-			return WebGLRenderingContext.FUNC_SUBTRACT;
-		case 'ReverseSubtractEquation':
-			return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+	Renderer.prototype.getGLBlendParam = function(param) {
+		switch (param) {
+			case 'AddEquation':
+				return WebGLRenderingContext.FUNC_ADD;
+			case 'SubtractEquation':
+				return WebGLRenderingContext.FUNC_SUBTRACT;
+			case 'ReverseSubtractEquation':
+				return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
 
-		case 'ZeroFactor':
-			return WebGLRenderingContext.ZERO;
-		case 'OneFactor':
-			return WebGLRenderingContext.ONE;
-		case 'SrcColorFactor':
-			return WebGLRenderingContext.SRC_COLOR;
-		case 'OneMinusSrcColorFactor':
-			return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
-		case 'SrcAlphaFactor':
-			return WebGLRenderingContext.SRC_ALPHA;
-		case 'OneMinusSrcAlphaFactor':
-			return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
-		case 'DstAlphaFactor':
-			return WebGLRenderingContext.DST_ALPHA;
-		case 'OneMinusDstAlphaFactor':
-			return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+			case 'ZeroFactor':
+				return WebGLRenderingContext.ZERO;
+			case 'OneFactor':
+				return WebGLRenderingContext.ONE;
+			case 'SrcColorFactor':
+				return WebGLRenderingContext.SRC_COLOR;
+			case 'OneMinusSrcColorFactor':
+				return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+			case 'SrcAlphaFactor':
+				return WebGLRenderingContext.SRC_ALPHA;
+			case 'OneMinusSrcAlphaFactor':
+				return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+			case 'DstAlphaFactor':
+				return WebGLRenderingContext.DST_ALPHA;
+			case 'OneMinusDstAlphaFactor':
+				return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
 
-		case 'DstColorFactor':
-			return WebGLRenderingContext.DST_COLOR;
-		case 'OneMinusDstColorFactor':
-			return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
-		case 'SrcAlphaSaturateFactor':
-			return WebGLRenderingContext.SRC_ALPHA_SATURATE;
+			case 'DstColorFactor':
+				return WebGLRenderingContext.DST_COLOR;
+			case 'OneMinusDstColorFactor':
+				return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+			case 'SrcAlphaSaturateFactor':
+				return WebGLRenderingContext.SRC_ALPHA_SATURATE;
 
-		default:
-			throw 'Unknown blend param: ' + param;
+			default:
+				throw 'Unknown blend param: ' + param;
 		}
 	};
 
-	Renderer.prototype.clear = function (color, depth, stencil) {
+	Renderer.prototype.clear = function(color, depth, stencil) {
 		var bits = 0;
 
 		if (color === undefined || color) {
@@ -1013,23 +1012,23 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.context.clear(bits);
 	};
 
-	Renderer.prototype.flush = function () {
+	Renderer.prototype.flush = function() {
 		this.context.flush();
 	};
 
-	Renderer.prototype.finish = function () {
+	Renderer.prototype.finish = function() {
 		this.context.finish();
 	};
 
 	// ---------------------------------------------
 
-	Renderer.prototype.setupFrameBuffer = function (framebuffer, renderTarget, textureTarget) {
+	Renderer.prototype.setupFrameBuffer = function(framebuffer, renderTarget, textureTarget) {
 		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
 		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, textureTarget,
 			renderTarget.glTexture, 0);
 	};
 
-	Renderer.prototype.setupRenderBuffer = function (renderbuffer, renderTarget) {
+	Renderer.prototype.setupRenderBuffer = function(renderbuffer, renderTarget) {
 		this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderbuffer);
 
 		if (renderTarget.depthBuffer && !renderTarget.stencilBuffer) {
@@ -1048,7 +1047,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		}
 	};
 
-	Renderer.prototype.setRenderTarget = function (renderTarget) {
+	Renderer.prototype.setRenderTarget = function(renderTarget) {
 		if (renderTarget && !renderTarget._glFrameBuffer) {
 			if (renderTarget.depthBuffer === undefined) {
 				renderTarget.depthBuffer = true;
@@ -1119,7 +1118,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.currentHeight = height;
 	};
 
-	Renderer.prototype.updateRenderTargetMipmap = function (renderTarget) {
+	Renderer.prototype.updateRenderTargetMipmap = function(renderTarget) {
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);

@@ -1,11 +1,11 @@
-/*jshint bitwise: false */
+/* jshint bitwise: false */
 define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3',
 		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState',
 		'goo/animation/state/FadeTransitionState', 'goo/animation/state/FrozenTransitionState', 'goo/animation/state/IgnoreTransitionState',
 		'goo/animation/state/ImmediateTransitionState', 'goo/animation/state/SyncFadeTransitionState', 'goo/animation/state/StateBlendType',
 		'goo/animation/blendtree/BinaryLERPSource', 'goo/animation/blendtree/ExclusiveClipSource', 'goo/animation/blendtree/FrozenClipSource',
 		'goo/animation/blendtree/InclusiveClipSource', 'goo/animation/blendtree/ManagedTransformSource', 'goo/animation/layer/LayerLERPBlender'],
-	function (Util, MeshData, BufferUtils, Transform, Matrix3x3, Vector3, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
+	function(Util, MeshData, BufferUtils, Transform, Matrix3x3, Vector3, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
 		FrozenTransitionState, IgnoreTransitionState, ImmediateTransitionState, SyncFadeTransitionState, StateBlendType, BinaryLERPSource,
 		ExclusiveClipSource, FrozenClipSource, InclusiveClipSource, ManagedTransformSource, LayerLERPBlender) {
 		"use strict";
@@ -18,7 +18,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 		}
 
-		JsonUtils.fillAttributeBufferFromCompressedString = function (attribs, meshData, attributeKey, scales, offsets) {
+		JsonUtils.fillAttributeBufferFromCompressedString = function(attribs, meshData, attributeKey, scales, offsets) {
 			var buffer = meshData.getAttributeBuffer(attributeKey);
 			var stride = scales.length;
 			var tuples = attribs.length / scales.length;
@@ -35,16 +35,16 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 		};
 
-		JsonUtils.getIntBuffer = function (indices, vertexCount) {
-			var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
+		JsonUtils.getIntBuffer = function(indices, vertexCount) {
+			var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
 			indexBuffer.set(indices);
 			return indexBuffer;
 		};
 
-		JsonUtils.getIntBufferFromCompressedString = function (indices, vertexCount) {
+		JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
 			var prev = 0;
-			var indexBuffer = BufferUtils.createIntBuffer(indices.length, vertexCount);
-			for (var i = 0; i < indices.length; ++i) {
+			var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
+			for ( var i = 0; i < indices.length; ++i) {
 				var word = indices.charCodeAt(i);
 				prev += JsonUtils.unzip(word);
 				indexBuffer[i] = prev;
@@ -52,7 +52,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return indexBuffer;
 		};
 
-		JsonUtils.unzip = function (word) {
+		JsonUtils.unzip = function(word) {
 			if (word >= 0xE000) {
 				word -= 0x0800;
 			}
@@ -63,7 +63,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return word;
 		};
 
-		JsonUtils.parseTransform = function (object) {
+		JsonUtils.parseTransform = function(object) {
 			var transform = new Transform();
 
 			transform.translation = JsonUtils.parseVector3(object.Translation);
@@ -73,7 +73,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return transform;
 		};
 
-		JsonUtils.parseMatrix3 = function (array) {
+		JsonUtils.parseMatrix3 = function(array) {
 			var matrix = new Matrix3x3();
 			// data files are currently row major!
 			matrix.e00 = array[0];
@@ -88,13 +88,13 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return matrix;
 		};
 
-		JsonUtils.parseVector3 = function (array) {
+		JsonUtils.parseVector3 = function(array) {
 			return new Vector3(array[0], array[1], array[2]);
 		};
 
-		JsonUtils.parseAnimationLayers = function (manager, completeCallback, inputStore, outputStore, root) {
+		JsonUtils.parseAnimationLayers = function(manager, completeCallback, inputStore, outputStore, root) {
 			var layersObj = root.Layers;
-			for (var key in layersObj) {
+			for ( var key in layersObj) {
 				var layer;
 				if ("DEFAULT" === key) {
 					layer = manager.getBaseAnimationLayer();
@@ -108,14 +108,14 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 				if (layerObj.States) {
 					var statesArray = layerObj.States;
-					for (var i = 0, max = statesArray.length; i < max; i++) {
+					for ( var i = 0, max = statesArray.length; i < max; i++) {
 						JsonUtils.parseSteadyState(statesArray[i], inputStore, outputStore, manager, layer);
 					}
 				}
 
 				if (layerObj.Transitions) {
 					var transitions = layerObj.Transitions;
-					for (var transKey in transitions) {
+					for ( var transKey in transitions) {
 						// parse and add transition layer
 						layer._transitions[transKey] = JsonUtils.parseTransitionState(transitions[transKey], inputStore, outputStore, manager);
 					}
@@ -127,7 +127,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 		};
 
-		JsonUtils.parseSteadyState = function (json, inputStore, outputStore, manager, layer) {
+		JsonUtils.parseSteadyState = function(json, inputStore, outputStore, manager, layer) {
 			var state = new SteadyState(json.Name ? json.Name : "unknown");
 
 			if (json.Clip) {
@@ -152,7 +152,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			// look for a set of transitions
 			if (json.Transitions) {
 				var transitions = json.Transitions;
-				for (var key in transitions) {
+				for ( var key in transitions) {
 					// parse and add transition
 					state._transitions[key] = JsonUtils.parseTransitionState(transitions[key], inputStore, outputStore, manager);
 				}
@@ -165,7 +165,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			layer._steadyStates[state._name] = state;
 		};
 
-		JsonUtils.parseTransitionState = function (args, inputStore, outputStore, manager) {
+		JsonUtils.parseTransitionState = function(args, inputStore, outputStore, manager) {
 			var type = args[2];
 			var transition;
 
@@ -197,7 +197,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return transition;
 		};
 
-		JsonUtils.parseTreeSource = function (json, inputStore, outputStore, manager) {
+		JsonUtils.parseTreeSource = function(json, inputStore, outputStore, manager) {
 			// look for the source type
 			if (json.Clip) {
 				// ClipSource
@@ -223,7 +223,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				if (root.JointNames) {
 					var sk = manager.getSkeletonPose(0).getSkeleton();
 					var names = root.JointNames;
-					for (var jname in names) {
+					for ( var jname in names) {
 						source.addEnabledJoints(sk.findJointByName(jname));
 					}
 				}
@@ -295,7 +295,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.populateClipSource = function (source, clip, root, manager) {
+		JsonUtils.populateClipSource = function(source, clip, root, manager) {
 			// clip instance params...
 			// add time scaling, if present
 			if (root.TimeScale !== undefined) {
@@ -311,7 +311,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 		};
 
-		JsonUtils.parseLayerProperties = function (manager, layer, layerObj) {
+		JsonUtils.parseLayerProperties = function(manager, layer, layerObj) {
 			if (layerObj.BlendType) {
 				var blender = null;
 				if ("lerp" === layerObj.BlendType) {
@@ -325,7 +325,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			}
 		};
 
-		JsonUtils.parseChannelTimes = function (chanObj, useCompression) {
+		JsonUtils.parseChannelTimes = function(chanObj, useCompression) {
 			var timesVal = chanObj.Times;
 			if (timesVal) {
 				if (useCompression) {
@@ -340,7 +340,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.parseFloatLERPValues = function (chanObj, useCompression) {
+		JsonUtils.parseFloatLERPValues = function(chanObj, useCompression) {
 			var valuesVal = chanObj.IFCValues;
 			if (valuesVal) {
 				if (useCompression) {
@@ -355,7 +355,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.parseRotationSamples = function (chanObj, range, useCompression) {
+		JsonUtils.parseRotationSamples = function(chanObj, range, useCompression) {
 			var transVal = chanObj.RotationSamples;
 			if (transVal) {
 				if (useCompression) {
@@ -370,7 +370,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.parseTranslationSamples = function (chanObj, size, useCompression) {
+		JsonUtils.parseTranslationSamples = function(chanObj, size, useCompression) {
 			var uniform = chanObj.UniformTranslation;
 			if (uniform) {
 				var translation = uniform;
@@ -381,7 +381,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				var yScale = translation[1];
 				var zScale = translation[2];
 				var rVal = [];
-				for (var i = 0; i < size; i++) {
+				for ( var i = 0; i < size; i++) {
 					rVal[i * 3 + 0] = xScale;
 					rVal[i * 3 + 1] = yScale;
 					rVal[i * 3 + 2] = zScale;
@@ -405,7 +405,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.parseScaleSamples = function (chanObj, size, useCompression) {
+		JsonUtils.parseScaleSamples = function(chanObj, size, useCompression) {
 			var uniform = chanObj.UniformScale;
 			if (uniform) {
 				var scale = uniform;
@@ -413,7 +413,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 				var yScale = scale[1];
 				var zScale = scale[2];
 				var rVal = [];
-				for (var i = 0; i < size; i++) {
+				for ( var i = 0; i < size; i++) {
 					rVal[i * 3 + 0] = xScale;
 					rVal[i * 3 + 1] = yScale;
 					rVal[i * 3 + 2] = zScale;
@@ -437,7 +437,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return null;
 		};
 
-		JsonUtils.parseQuaternionSamples = function (quatsObj) {
+		JsonUtils.parseQuaternionSamples = function(quatsObj) {
 			var values = quatsObj;
 			if (!values) {
 				return null;
@@ -445,7 +445,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 			var quats = [];
 			var lastQuat = new Quaternion();
-			for (var i = 0, max = values.length; i < max; i++) {
+			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
 				if (val) {
 					if ("*" === val) {
@@ -472,7 +472,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return quats;
 		};
 
-		JsonUtils.parseVector3Samples = function (vecsObj) {
+		JsonUtils.parseVector3Samples = function(vecsObj) {
 			var values = vecsObj;
 			if (!values) {
 				return null;
@@ -480,7 +480,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 
 			var rVal = [];
 			var lastVec = new Vector3();
-			for (var i = 0, max = values.length; i < max; i++) {
+			for ( var i = 0, max = values.length; i < max; i++) {
 				var val = values[i];
 				if (val) {
 					if ("*" === val) {
@@ -504,7 +504,7 @@ define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils'
 			return rVal;
 		};
 
-		JsonUtils.parseFloatArrayFromCompressedString = function (attribBufferString, scales, offsets) {
+		JsonUtils.parseFloatArrayFromCompressedString = function(attribBufferString, scales, offsets) {
 			var attribs = attribBufferString;
 			var rVal = [];
 			var stride = scales.length;
