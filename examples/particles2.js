@@ -83,7 +83,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			],
 		});
 		particleComponent.emitters.push(generateNewEmitter(goo));
-		particleComponent.emitters.push(generateNewEmitter(goo));
+		particleComponent.emitters.push(generateNewEmitter(goo, true));
 		particleComponent.emitters.push(generateNewEmitter(goo));
 		particleComponent.emitters.push(generateNewEmitter(goo));
 		
@@ -119,7 +119,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}, false);
 	}
 	
-	function generateNewEmitter(goo) {
+	function generateNewEmitter(goo, unique) {
 		var currentPos = new Vector3( Math.random() * 50 - 25,  Math.random() * 50 - 25,  Math.random() * 50 - 100), newPos = new Vector3(currentPos);
 
 		// move our ball around
@@ -146,8 +146,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	    		ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
 	    	},
 	    	getEmissionVelocity: function(vec3, particleEntity) {
-	    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, 6);
-	    	}
+	    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, unique ? 3 : 6);
+	    	},
+			timeline : !unique ? undefined : [ {
+					timeOffset : 0.0,
+					spin : 0,
+					mass : 1,
+					size : 1.5,
+					color : [ 0, 0, 1, 1 ]
+				}, {
+					timeOffset : 1.0,
+					size : .25,
+					color : [ 0, 1, 1, 0 ]
+				} ]
 	    });
 	}
 

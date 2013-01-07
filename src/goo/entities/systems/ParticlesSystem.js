@@ -93,7 +93,7 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 					emitter.totalParticlesToSpawn--;
 				}
 				
-				particle.respawnParticle(emitter.nextParticleLifeSpan());
+				particle.respawnParticle(emitter);
 				emitter.getEmissionPoint(particle.position, particleEntity);
 				emitter.getEmissionVelocity(particle.velocity, particleEntity);
 				

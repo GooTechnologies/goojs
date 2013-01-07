@@ -1,4 +1,5 @@
-define([ 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], function(Vector3, Vector4, MeshData) {
+define([ 'goo/particles/ParticleUtils', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], 
+		function(ParticleUtils, Vector3, Vector4, MeshData) {
 	"use strict";
 
 	var bbX = new Vector3();
@@ -21,10 +22,12 @@ define([ 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], func
 		this.size = 0.0;
 		this.spin = 0.0;
 		this.mass = 1.0;
+		this.emitter = null;
 	}
 
-	Particle.prototype.respawnParticle = function(lifeSpan) {
-		this.lifeSpan = lifeSpan;
+	Particle.prototype.respawnParticle = function(emitter) {
+		this.emitter = emitter;
+		this.lifeSpan = emitter.nextParticleLifeSpan();
 		this.alive = true;
 		this.age = 0;
 	};
@@ -42,7 +45,7 @@ define([ 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], func
 		this.position.add([this.velocity.x * tpf, this.velocity.y * tpf, this.velocity.z * tpf]);
 		
 		// set values from component timeline
-		this.parent.applyTimeline(this);
+		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
 		
 		// apply current color to mesh
 		var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);

@@ -18,6 +18,9 @@ define([ 'goo/particles/ParticleUtils' ], function(ParticleUtils) {
 		// Min lifetime of a particle emitted by this emitter (in seconds)
 		this.minLifetime = !isNaN(settings.minLifetime) ? settings.minLifetime : 2.0;
 
+		// optional timeline.  This overrides the timeline set on the particle component.
+		this.timeline = settings.timeline ? settings.timeline : undefined;
+		
 		// function returning an emission point for a particle.
 		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function(vec3, particleEntity) {
 			return ParticleUtils.applyEntityTransformPoint(vec3.set(0,0,0), particleEntity);
