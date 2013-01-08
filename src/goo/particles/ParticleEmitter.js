@@ -30,6 +30,12 @@ define([ 'goo/particles/ParticleUtils' ], function(ParticleUtils) {
 		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function(vec3, particleEntity) {
 			return ParticleUtils.applyEntityTransformVector(vec3.set(0,1,0), particleEntity);
 		};
+
+		// function returning an emission velocity for a particle.
+		this.getParticleBillboardVectors = settings.getParticleBillboardVectors ? settings.getParticleBillboardVectors : function(bbX, bbY, particleEntity, camera) {
+			bbX.set(camera._left);
+			bbY.set(camera._up);
+		};
 		
 		// target number of particles per second to spawn.
 		this.releaseRatePerSecond = !isNaN(settings.releaseRatePerSecond) ? settings.releaseRatePerSecond : 10;

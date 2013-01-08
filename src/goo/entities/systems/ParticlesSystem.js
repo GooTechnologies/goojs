@@ -81,7 +81,7 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 			
 			// if alive, update the particle along its lifetime - this may kill the particle
 			if (particle.alive) {
-				particle.update(tpf, transformComponent, Renderer.mainCamera);
+				particle.update(tpf, particleEntity, Renderer.mainCamera);
 				needsUpdate = true;
 				stillAlive = true;
 			}

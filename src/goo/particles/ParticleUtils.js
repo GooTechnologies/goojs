@@ -23,6 +23,13 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
         store.mul(scale);
         return store;
 	};
+
+	ParticleUtils.randomPointInCube = function(store, xRadius, yRadius, zRadius, center) {
+		store.x = (Math.random() * 2 * xRadius) - xRadius + (center ? center.x : 0);
+		store.y = (Math.random() * 2 * yRadius) - yRadius + (center ? center.y : 0);
+		store.z = (Math.random() * 2 * zRadius) - zRadius + (center ? center.z : 0);
+        return store;
+	};
 	
 	ParticleUtils.createConstantForce = function(force) {
 		var applyForce = new Vector3(force);
@@ -58,7 +65,7 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
 		var prevCAge = 0, prevMAge = 0, prevSiAge = 0, prevSpAge = 0;
 		var nextCAge = lifeSpan, nextMAge = lifeSpan, nextSiAge = lifeSpan, nextSpAge = lifeSpan;
 		var trAge = 0, ratio = 0;
-		var prevCEntry = null, prevMEntry = null, prevSiEntry = null, prevSpEntry = null;
+		var prevCEntry = null, prevMEntry = null, prevSiEntry = null, prevSpEntry = null, prevUVEntry = null;
 		var nextCEntry = null, nextMEntry = null, nextSiEntry = null, nextSpEntry = null;
         for (var i = 0, max = timeline.length; i < max; i++) {
             var entry = timeline[i];
@@ -91,6 +98,11 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
                         prevMEntry = entry;
                     }
                 }
+            }
+
+            // uvIndex
+            if (trAge <= age && entry.uvIndex !== undefined) {
+                prevUVEntry = entry;
             }
 
             // size
@@ -142,6 +154,11 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
         	var start = prevMEntry != null ? prevMEntry.mass : 1.0;
             var end = nextMEntry != null ? nextMEntry.mass : start;
             particle.mass = (1 - ratio) * start + ratio * end;
+        }
+
+        // uvIndex
+        {
+            particle.uvIndex = prevUVEntry != null ? prevUVEntry.uvIndex : 0;
         }
 
         // Size
