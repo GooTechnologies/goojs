@@ -163,7 +163,7 @@ define(['goo/math/Vector3'], function (Vector3) {
 
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
-			this.mouseStatus++;
+			this.mouseStatus = 1;
 		};
 
 		this.mousemove = function (event) {
@@ -179,10 +179,11 @@ define(['goo/math/Vector3'], function (Vector3) {
 		};
 
 		this.mouseup = function (event) {
+		  if(!this.mouseStatus) return;
 			event.preventDefault();
 			event.stopPropagation();
 
-			this.mouseStatus--;
+			this.mouseStatus = 0;
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;
 
 			this.updateRotationVector();

@@ -22,7 +22,6 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 				return (Date.now() - this.start) / 1000.0;
 			}
 		};
-
 		this._layers = [];
 		this._applier = null; // animationapplier
 		this._clipInstances = {}; // Map<AnimationClip, AnimationClipInstance>
