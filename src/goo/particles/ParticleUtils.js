@@ -141,7 +141,6 @@ define([ 'goo/math/Vector3' ], function(Vector3) {
             ratio = ((age - prevCAge) / (nextCAge - prevCAge));
             var start = prevCEntry != null ? prevCEntry.color : [1,1,1,1];
             var end = nextCEntry != null ? nextCEntry.color : start;
-            if (!particle.color) particle.color = [1,1,1,1];
             particle.color.x = (1.0 - ratio) * start[0] + ratio * end[0];
             particle.color.y = (1.0 - ratio) * start[1] + ratio * end[1];
             particle.color.z = (1.0 - ratio) * start[2] + ratio * end[2];

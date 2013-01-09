@@ -96,7 +96,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 3.0,
 			    	maxLifetime: 5.0,
-			    	getEmissionPoint: function(vec3, particleEntity) {
+			    	getEmissionPoint: function(particle, particleEntity) {
+			    		var vec3 = particle.position;
 						return ParticleUtils.applyEntityTransformPoint(vec3.set(5,0,0), particleEntity);
 			    	}
 			    }, {
@@ -104,7 +105,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 0.1,
 			    	maxLifetime: 2.5,
-			    	getEmissionPoint: function(vec3, particleEntity) {
+			    	getEmissionPoint: function(particle, particleEntity) {
+			    		var vec3 = particle.position;
 						return ParticleUtils.applyEntityTransformPoint(vec3.set(-5,0,0), particleEntity);
 			    	}
 			    }
