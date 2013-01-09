@@ -113,5 +113,22 @@ define([], function () {
 
 	/* ====================================================================== */
 
+	/**
+	 * @static
+	 * @description Converts a point from Spherical coordinates to Cartesian (using positive Y as up) and stores the results in the store var.
+	 * @param {Float} radius
+	 * @param {Float} azimuth
+	 * @param {Float} polar
+	 * @param {Vector3} store
+	 */
+	
+	MathUtils.sphericalToCartesian = function (radius, azimuth, polar, store) {
+		var a = radius * Math.cos(polar);
+
+		store.x = a * Math.cos(azimuth);
+		store.y = radius * Math.sin(polar);
+		store.z = a * Math.sin(azimuth);
+	};
+	
 	return MathUtils;
 });

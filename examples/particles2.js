@@ -142,10 +142,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	    	releaseRatePerSecond: 100,
 	    	minLifetime: 0.1,
 	    	maxLifetime: 1.5,
-	    	getEmissionPoint: function(vec3, particleEntity) {
+	    	getEmissionPoint: function(particle, particleEntity) {
+	    		var vec3 = particle.position;
 	    		ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
 	    	},
-	    	getEmissionVelocity: function(vec3, particleEntity) {
+	    	getEmissionVelocity: function(particle, particleEntity) {
+	    		var vec3 = particle.velocity;
 	    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, unique ? 3 : 6);
 	    	},
 			timeline : !unique ? undefined : [ {

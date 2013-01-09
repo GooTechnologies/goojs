@@ -38,25 +38,32 @@ define([ 'goo/entities/components/Component', 'goo/particles/Particle', 'goo/par
 		}
 
 		this.timeline = settings.timeline ? settings.timeline : [];
-		
+
+		this.uRange = isNaN(settings.uRange) ? 1 : settings.uRange;
+		this.vRange = isNaN(settings.vRange) ? 1 : settings.vRange;
+
 		this.influences = settings.influences ? settings.influences : [];
-		
-		var particleCount = settings.particleCount ? settings.particleCount : 100;
+
+		var particleCount = isNaN(settings.particleCount) ? 100 : settings.particleCount;
 		this.recreateParticles(particleCount);
-		
+
 		this.enabled = true;
 	}
 	
 	ParticleComponent.prototype.generateMeshData = function() {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0]);
-		this.meshData = new MeshData(attributeMap, this.particleCount * 3);
+		this.meshData = new MeshData(attributeMap, this.particleCount * 4, this.particleCount * 6);
 
 		// setup texture coords
 		var uvBuffer = this.meshData.getAttributeBuffer(MeshData.TEXCOORD0);
+		var indexBuffer = this.meshData.getIndexBuffer();
 		for (var i = 0, max = this.particleCount; i < max; i++) {
-			uvBuffer.set([2.0, 0.0], i * 6 + 0);
-			uvBuffer.set([0.0, 2.0], i * 6 + 2);
-			uvBuffer.set([0.0, 0.0], i * 6 + 4);
+			uvBuffer.set([1.0, 0.0], i * 8 + 0);
+			uvBuffer.set([1.0, 1.0], i * 8 + 2);
+			uvBuffer.set([0.0, 1.0], i * 8 + 4);
+			uvBuffer.set([0.0, 0.0], i * 8 + 6);
+			
+			indexBuffer.set([i*4+0, i*4+3, i*4+1, i*4+1, i*4+3, i*4+2], i * 6);
 		}
 	};
 

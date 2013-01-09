@@ -1,9 +1,7 @@
-define([ 'goo/particles/ParticleUtils', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], 
-		function(ParticleUtils, Vector3, Vector4, MeshData) {
+define([ 'goo/particles/ParticleUtils', 'goo/math/Vector', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], 
+		function(ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 	"use strict";
 
-	var bbX = new Vector3();
-	var bbY = new Vector3();
 	var calcVec = new Vector3();
 	
 	/**
@@ -23,6 +21,11 @@ define([ 'goo/particles/ParticleUtils', 'goo/math/Vector3', 'goo/math/Vector4', 
 		this.spin = 0.0;
 		this.mass = 1.0;
 		this.emitter = null;
+		this.uvIndex = 0;
+		this.lastUVIndex = -1;
+		this.bbX = new Vector3();
+		this.bbY = new Vector3();
+		this.lastColor = new Vector4();
 	}
 
 	Particle.prototype.respawnParticle = function(emitter) {
@@ -32,7 +35,7 @@ define([ 'goo/particles/ParticleUtils', 'goo/math/Vector3', 'goo/math/Vector4', 
 		this.age = 0;
 	};
 
-	Particle.prototype.update = function(tpf, transformComponent, camera) {
+	Particle.prototype.update = function(tpf, particleEntity) {
 		if (!this.alive) return;
 		
 		this.age += tpf;
@@ -48,48 +51,72 @@ define([ 'goo/particles/ParticleUtils', 'goo/math/Vector3', 'goo/math/Vector4', 
 		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
 		
 		// apply current color to mesh
-		var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);
-		colorBuffer.set(this.color.data, this.index * 12 + 0);
-		colorBuffer.set(this.color.data, this.index * 12 + 4);
-		colorBuffer.set(this.color.data, this.index * 12 + 8);
+		if (!Vector.equals(this.lastColor, this.color)) {
+			var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);
+			colorBuffer.set(this.color.data, this.index * 16 + 0);
+			colorBuffer.set(this.color.data, this.index * 16 + 4);
+			colorBuffer.set(this.color.data, this.index * 16 + 8);
+			colorBuffer.set(this.color.data, this.index * 16 + 12);
+			this.lastColor.set(this.color);
+		}
 		
-		// determine our billboard to camera using camera and spin 
-		// XXX: This could probably be done in the Shader instead?
-		var camUp = camera._up;
-		var camLeft = camera._left;
+		// determine our particle plane
+		if (this.emitter) {
+			this.emitter.getParticleBillboardVectors(this, particleEntity);
+		}
         if (this.spin == 0) {
-            bbX.set(camLeft).mul(this.size);
-            bbY.set(camUp).mul(this.size);
+            this.bbX.mul(this.size);
+            this.bbY.mul(this.size);
         } else {
             var cA = Math.cos(this.spin) * this.size;
             var sA = Math.sin(this.spin) * this.size;
-            bbX.set(camLeft).mul(cA).add(camUp.x * sA, camUp.y * sA, camUp.z * sA);
-            bbY.set(camLeft).mul(-sA).add(camUp.x * cA, camUp.y * cA, camUp.z * cA);
+            var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
+            this.bbY.set(this.bbX);
+            this.bbX.mul(cA).add([upX * sA, upY * sA, upZ * sA]);
+            this.bbY.mul(-sA).add([upX * cA, upY * cA, upZ * cA]);
         }
         
         // apply billboard vectors to mesh verts
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
         
-		// right point
-        Vector3.sub(this.position, [3 * bbX.x, 3 * bbX.y, 3 * bbX.z], calcVec).sub(bbY);
-		vertexBuffer.set(calcVec.data, this.index * 9 + 0);
+		// bottom right point
+        Vector3.sub(this.position, this.bbX, calcVec).sub(this.bbY);
+		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
 
-		// top point
-        Vector3.add(this.position, bbX, calcVec).add([3 * bbY.x, 3 * bbY.y, 3 * bbY.z]);
-		vertexBuffer.set(calcVec.data, this.index * 9 + 3);
+		// top right point
+        Vector3.sub(this.position, this.bbX, calcVec).add(this.bbY);
+		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
+
+		// top left point
+        Vector3.add(this.position, this.bbX, calcVec).add(this.bbY);
+		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
 
 		// bottom left corner
-        Vector3.add(this.position, bbX, calcVec).sub(bbY);
-		vertexBuffer.set(calcVec.data, this.index * 9 + 6);
+        Vector3.add(this.position, this.bbX, calcVec).sub(this.bbY);
+		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
+		
+		if (this.lastUVIndex != this.uvIndex) {
+			var uvBuffer = this.parent.meshData.getAttributeBuffer(MeshData.TEXCOORD0);
+			var uIndex = (this.uvIndex % this.parent.uRange) / this.parent.uRange;
+			var vIndex = 1.0 - (Math.floor(this.uvIndex / this.parent.vRange) / this.parent.vRange);
+			var uDelta = 1.0 / this.parent.uRange;
+			var vDelta = 1.0 / this.parent.vRange;
+			uvBuffer.set([uIndex + uDelta, vIndex - vDelta], this.index * 8 + 0);
+			uvBuffer.set([uIndex + uDelta, vIndex], this.index * 8 + 2);
+			uvBuffer.set([uIndex, vIndex], this.index * 8 + 4);
+			uvBuffer.set([uIndex, vIndex - vDelta], this.index * 8 + 6);
+			this.lastUVIndex = this.uvIndex;
+		}
 	};
 	
 	Particle.prototype.kill = function() {
 		this.alive = false;
 		// collapse particle to a single point, effectively hiding it from view.
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
-		var pointA = vertexBuffer.subarray(this.index * 9, this.index * 9 + 3);
-		vertexBuffer.set(pointA, this.index * 9 + 3);
-		vertexBuffer.set(pointA, this.index * 9 + 6);
+		var pointA = vertexBuffer.subarray(this.index * 12, this.index * 12 + 3);
+		vertexBuffer.set(pointA, this.index * 12 + 3);
+		vertexBuffer.set(pointA, this.index * 12 + 6);
+		vertexBuffer.set(pointA, this.index * 12 + 9);
 	};
 
 	return Particle;

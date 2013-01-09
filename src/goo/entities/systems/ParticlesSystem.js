@@ -1,4 +1,4 @@
-define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (System, Renderer) {
+define(['goo/entities/systems/System'], function (System) {
 	"use strict";
 
 	/**
@@ -81,7 +81,7 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 			
 			// if alive, update the particle along its lifetime - this may kill the particle
 			if (particle.alive) {
-				particle.update(tpf, transformComponent, Renderer.mainCamera);
+				particle.update(tpf, particleEntity);
 				needsUpdate = true;
 				stillAlive = true;
 			}
@@ -94,8 +94,8 @@ define(['goo/entities/systems/System', 'goo/renderer/Renderer'], function (Syste
 				}
 				
 				particle.respawnParticle(emitter);
-				emitter.getEmissionPoint(particle.position, particleEntity);
-				emitter.getEmissionVelocity(particle.velocity, particleEntity);
+				emitter.getEmissionPoint(particle, particleEntity);
+				emitter.getEmissionVelocity(particle, particleEntity);
 				
 				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn <= 0) {
 					// setup to pull next emitter, if any

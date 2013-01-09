@@ -85,7 +85,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			    	releaseRatePerSecond: 100,
 			    	minLifetime: 1.300,
 			    	maxLifetime: 1.950,
-			    	getEmissionVelocity: function(vec3, particleEntity) {
+			    	getEmissionVelocity: function(particle, particleEntity) {
+			    		var vec3 = particle.velocity;
 			    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, 0.2268928, 10, particleEntity);
 			    	}
 			    }
