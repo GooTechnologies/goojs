@@ -107,13 +107,13 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		var d = this.rotation;
 
 		rd.e00 = this.scale.x * d.e00;
-		rd.e01 = this.scale.x * d.e01;
-		rd.e02 = this.scale.x * d.e02;
-		rd.e10 = this.scale.y * d.e10;
+		rd.e01 = this.scale.y * d.e01;
+		rd.e02 = this.scale.z * d.e02;
+		rd.e10 = this.scale.x * d.e10;
 		rd.e11 = this.scale.y * d.e11;
-		rd.e12 = this.scale.y * d.e12;
-		rd.e20 = this.scale.z * d.e20;
-		rd.e21 = this.scale.z * d.e21;
+		rd.e12 = this.scale.z * d.e12;
+		rd.e20 = this.scale.x * d.e20;
+		rd.e21 = this.scale.y * d.e21;
 		rd.e22 = this.scale.z * d.e22;
 
 		rd.e30 = 0.0;
