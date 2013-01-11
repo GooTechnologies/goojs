@@ -1,10 +1,11 @@
-define([], function () {
+define([],
+	/** @lends MathUtils */
+	function () {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name MathUtils
 	 * @class A collection of useful math-related functions, constants and helpers.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.

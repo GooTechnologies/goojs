@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends Entity */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Entity
 	 * @class A gameworld object and container of components
 	 * @param {World} world A {@link World} reference
 	 * @property {Number} id Automatically generated unique id for this entity

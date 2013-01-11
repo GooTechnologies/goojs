@@ -1,9 +1,10 @@
-define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'], function (Entity, EntityManager,
+define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'],
+	/** @lends World */
+	function (Entity, EntityManager,
 	TransformComponent) {
 	"use strict";
 
 	/**
-	 * @name World
 	 * @class Main handler for an entity world
 	 * @property {Float} tpf Timer per frame in seconds
 	 * @property {Manager} entityManager Main keeper of entities

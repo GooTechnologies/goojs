@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends LightingSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name LightingSystem
 	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms
 	 */
 	function LightingSystem() {

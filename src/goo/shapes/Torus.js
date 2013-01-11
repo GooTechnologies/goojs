@@ -1,8 +1,9 @@
-define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Vector3, MathUtils) {
+define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'],
+	/** @lends Torus */
+	function (MeshData, Vector3, MathUtils) {
 	"use strict";
 
 	/**
-	 * @name Torus
 	 * @class A torus is a donut-shaped model.
 	 * @property {Integer} _circleSamples Number of segments.
 	 * @property {Integer} _radialSamples Number of slices.

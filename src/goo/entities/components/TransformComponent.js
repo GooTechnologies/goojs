@@ -1,8 +1,9 @@
-define(['goo/math/Transform', 'goo/entities/components/Component'], function (Transform, Component) {
+define(['goo/math/Transform', 'goo/entities/components/Component'],
+	/** @lends TransformComponent */
+	function (Transform, Component) {
 	"use strict";
 
 	/**
-	 * @name TransformComponent
 	 * @class The transform component holds the transform of an entity. It also allows for a scenegraph to be created, where transforms are inherited
 	 *        down the tree.
 	 * @property {TransformComponent} parent Parent transformcomponent in the "scenegraph"

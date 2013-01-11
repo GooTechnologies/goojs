@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'], function (System, EventHandler, Renderer) {
+define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'],
+	/** @lends CameraSystem */
+	function (System, EventHandler, Renderer) {
 	"use strict";
 
 	/**
-	 * @name CameraSystem
 	 * @class TODO: not finished
 	 */
 	function CameraSystem() {

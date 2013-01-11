@@ -1,4 +1,6 @@
-define(["goo/math/Vector"], /** @exports goo/math */ function (Vector) {
+define(["goo/math/Vector"],
+	/** @lends Vector3 */
+	function (Vector) {
 	"use strict";
 	
 

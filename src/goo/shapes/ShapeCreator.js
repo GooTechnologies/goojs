@@ -1,9 +1,10 @@
 define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Teapot', 'goo/shapes/Sphere', 'goo/shapes/Torus',
-		'goo/entities/EntityUtils'], function (MeshData, Box, Quad, Teapot, Sphere, Torus, EntityUtils) {
+		'goo/entities/EntityUtils'],
+	/** @lends ShapeCreator */
+	function (MeshData, Box, Quad, Teapot, Sphere, Torus, EntityUtils) {
 	"use strict";
 
 	/**
-	 * @name ShapeCreator
 	 * @class Factory for shape creation.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.

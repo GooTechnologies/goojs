@@ -1,8 +1,9 @@
-define(['goo/entities/components/Component'], function (Component) {
+define(['goo/entities/components/Component'],
+	/** @lends MeshRendererComponent */
+	function (Component) {
 	"use strict";
 
 	/**
-	 * @name MeshRendererComponent
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 * @property {Material[]} materials Materials to use when rendering
 	 * @property {Bounding} worldBound Worldspace bounding considering entity transformations

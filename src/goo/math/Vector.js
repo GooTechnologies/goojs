@@ -1,10 +1,11 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"], function (MathUtils, Matrix) {
+define(["goo/math/MathUtils", "goo/math/Matrix"],
+	/** @lends Vector */
+	function (MathUtils, Matrix) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Vector
 	 * @class Vector with N components.
 	 * @property {Float32Array} data Storage for the vector components.
 	 * @constructor

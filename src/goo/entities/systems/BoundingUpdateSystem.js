@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends BoundingUpdateSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name BoundingUpdateSystem
 	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
 	 */
 	function BoundingUpdateSystem() {

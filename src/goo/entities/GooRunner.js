@@ -2,12 +2,12 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
 		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'],
+	/** @lends GooRunner */
 	function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem,
 		LightingSystem, SimplePartitioner, LightManager, CameraSystem, Camera, CameraComponent, Stats) {
 	"use strict";
 
 	/**
-	 * @name GooRunner
 	 * @class Standard setup of entity system to use as base for small projects/demos
 	 */
 	function GooRunner(parameters) {

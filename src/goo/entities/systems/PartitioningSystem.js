@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System', 'goo/entities/EventHandler'], function (System, EventHandler) {
+define(['goo/entities/systems/System', 'goo/entities/EventHandler'],
+	/** @lends PartitioningSystem */
+	function (System, EventHandler) {
 	"use strict";
 
 	/**
-	 * @name PartitioningSystem
 	 * @class Processes all entities with meshrenderer components, and uses its partitioner to calculate which entities to render.
 	 */
 	function PartitioningSystem() {

@@ -1,8 +1,9 @@
-define(['goo/entities/components/Component'], function (Component) {
+define(['goo/entities/components/Component'],
+	/** @lends LightComponent */
+	function (Component) {
 	"use strict";
 
 	/**
-	 * @name LightComponent
 	 * @class Defines a light
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
 	 */

@@ -1,9 +1,10 @@
-define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util', 'goo/entities/EventHandler'], function (System,
+define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/renderer/Util', 'goo/entities/EventHandler'],
+	/** @lends RenderSystem */
+	function (System,
 	TextureCreator, Util, EventHandler) {
 	"use strict";
 
 	/**
-	 * @name RenderSystem
 	 * @class Renders entities/renderables supplied through the render list (coming from the current partitioner)
 	 * @param {Entity[]} renderList List of renderables to render
 	 * @property {Boolean} doRender Only render if set to true

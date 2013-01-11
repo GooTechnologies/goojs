@@ -1,10 +1,11 @@
-define(["goo/math/MathUtils"], function (MathUtils) {
+define(["goo/math/MathUtils"],
+	/** @lends Matrix */
+	function (MathUtils) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Matrix
 	 * @class Matrix with RxC components.
 	 * @property {Float32Array} data Column-major storage for the matrix components.
 	 * @constructor

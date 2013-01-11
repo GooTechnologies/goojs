@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends ScriptSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name ScriptSystem
 	 * @class Processes all entities with script components, running the scripts where applicable
 	 */
 	function ScriptSystem() {

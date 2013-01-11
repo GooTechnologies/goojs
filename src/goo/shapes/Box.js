@@ -1,8 +1,9 @@
-define(['goo/renderer/MeshData'], function (MeshData) {
+define(['goo/renderer/MeshData'],
+	/** @lends Box */
+	function (MeshData) {
 	"use strict";
 
 	/**
-	 * @name Box
 	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
 	 * @property {Float} xExtent Extent along the local x axis.
 	 * @property {Float} yExtent Extent along the local y axis.

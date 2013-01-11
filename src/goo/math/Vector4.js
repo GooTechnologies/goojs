@@ -1,10 +1,11 @@
-define(["goo/math/Vector"], function (Vector) {
+define(["goo/math/Vector"],
+	/** @lends Vector4 */
+	function (Vector) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Vector4
 	 * @class Vector with 4 components.
 	 * @extends Vector
 	 * @constructor

@@ -1,10 +1,11 @@
-define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"], function (MathUtils, Matrix, Vector3) {
+define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
+	/** @lends Matrix3x3 */
+	function (MathUtils, Matrix, Vector3) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Matrix3x3
 	 * @class Matrix with 3x3 components.
 	 * @extends Matrix
 	 * @constructor

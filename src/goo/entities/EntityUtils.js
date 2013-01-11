@@ -1,9 +1,9 @@
 define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent'],
+	/** @lends EntityUtils */
 	function (TransformComponent, MeshDataComponent, MeshRendererComponent) {
 		"use strict";
 
 		/**
-		 * @name EntityUtils
 		 * @class Utilities for entity creation etc
 		 */
 		function EntityUtils() {

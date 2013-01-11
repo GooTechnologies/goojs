@@ -1,8 +1,9 @@
-define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'], function (BoundingSphere, Component) {
+define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'],
+	/** @lends MeshDataComponent */
+	function (BoundingSphere, Component) {
 	"use strict";
 
 	/**
-	 * @name MeshDataComponent
 	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
 	 * @param {MeshData} meshData Target mesh data for this component.
 	 * @property {Bounding} modelBound Bounding volume in local space

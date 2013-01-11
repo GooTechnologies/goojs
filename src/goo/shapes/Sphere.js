@@ -1,8 +1,9 @@
-define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'], function (MeshData, Enum, Vector3, MathUtils) {
+define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'],
+	/** @lends Sphere */
+	function (MeshData, Enum, Vector3, MathUtils) {
 	"use strict";
 
 	/**
-	 * @name Sphere
 	 * @class Sphere represents a 3D object with all points equi-distance from a center point.
 	 * @property {Integer} zSamples Number of segments.
 	 * @property {Integer} radialSamples Number of slices.

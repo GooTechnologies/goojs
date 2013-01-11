@@ -1,9 +1,9 @@
 define(['goo/renderer/MeshData'],
+	/** @lends Teapot */
 	function (MeshData) {
 	"use strict";
 
 	/**
-	 * @name Teapot
 	 * @class Teapot is the classical Utah teapot model. If you plan to texture this shape, use wrapmode WM_WRAP_S_WRAP_T.
 	 * @constructor
 	 * @description Creates a new teapot.

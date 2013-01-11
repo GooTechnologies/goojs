@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends TransformSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name TransformSystem
 	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
 	 */
 	function TransformSystem() {

@@ -8,3 +8,5 @@ test-out/
 .env
 virtualenv.py
 virtualenv.pyc
+doc/
+out/

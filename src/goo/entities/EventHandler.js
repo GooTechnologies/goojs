@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends EventHandler */
+	function () {
 	"use strict";
 
 	/**
-	 * @name EventHandler
 	 * @class Singleton module for handling event dispatches/listening (TBD: don't do this as a singleton)
 	 */
 	function EventHandler() {

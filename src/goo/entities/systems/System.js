@@ -1,10 +1,11 @@
-define(function () {
+define(
+	/** @lends System */
+	function () {
 	"use strict";
 
 	/**
 	 * Creates a new System
 	 *
-	 * @name System
 	 * @class Base class for all entity systems
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
