@@ -1,4 +1,4 @@
-define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (Matrix4x4, Vector, Vector3) {
+define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Versor"], function (Matrix4x4, Vector, Vector3, Versor) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -6,48 +6,45 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/**
 	 * @name Transformation
 	 * @class Models a transformation node in a hierarchy using separate
-	 *        translation, rotation and scale components (vectors). The class
-     *        has two matrix members which needs to be updated when either
-     *        component changes. This is done through setting the doUpdate
-     *        member to true.
+	 *        translation, rotation and scale components. The class has two
+	 *        matrix members which needs to be updated when either component
+	 *        changes. This is done through setting the doUpdate member to true.
 	 * @property {Vector3} translation Translation vector.
-	 * @property {Vector3} rotation Rotation vector (Euler angles).
+	 * @property {Versor} rotation Rotation represented using a versor.
 	 * @property {Vector3} scale Scale vector.
-	 * @property {Matrix4x4} worldFromLocal A transformation matrix that
-     *           transforms to the world coordinate system from the local
+	 * @property {Matrix4x4} parentFromChild A transformation matrix that
+     *           transforms to the parent coordinate system from the child
      *           coordinate system.
-	 * @property {Matrix4x4} localFromWorld A transformation matrix that
-     *           transforms to the local coordinate system from the world
-     *           coordinate system. 
+	 * @property {Matrix4x4} childFromParent A transformation matrix that
+     *           transforms to the child coordinate system from the parent
+     *           coordinate system.
 	 * @property {Boolean} doUpdate Indicates whether a matrix update is needed.
 	 * @constructor
 	 * @description Creates a new transformation.
 	 * @param {Vector3} translation Translation vector.
-	 * @param {Vector3} rotation Rotation vector (Euler angles).
+	 * @param {Versor} rotation Rotation represented using a versor.
 	 * @param {Vector3} scale Scale vector.
 	 */
 
-	// REVIEW: How should rotations be represented? Euler angles? Versors? Matrices?
-
 	function Transformation(translation, rotation, scale) {
 		this.translation = translation || new Vector3(0.0, 0.0, 0.0);
-		this.rotation = rotation || new Vector3(0.0, 0.0, 0.0);
+		this.rotation = rotation || new Versor(1.0, 0.0, 0.0, 0.0);
 		this.scale = scale || new Vector3(1.0, 1.0, 1.0);
-		this.worldFromLocal = new Matrix4x4();
-		this.localFromWorld = new Matrix4x4();
+		this.parentFromChild = new Matrix4x4();
+		this.childFromParent = new Matrix4x4();
 		this.doUpdate = true;
 	}
 
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a normal to the world coordinate system from the local coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
+	 * @description Transforms a normal to the parent coordinate system from the child coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.worldFromLocalNormal = function (source, target) {
+	Transformation.prototype.parentFromChildNormal = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -57,12 +54,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.worldFromLocalNormal(source), target);
+			return Vector.copy(this.parentFromChildNormal(source), target);
 		}
 
-		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e10 * source.y + this.localFromWorld.e20 * source.z;
-		target.y = this.localFromWorld.e01 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e21 * source.z;
-		target.z = this.localFromWorld.e02 * source.x + this.localFromWorld.e12 * source.y + this.localFromWorld.e22 * source.z;
+		target.x = this.childFromParent.e00 * source.x + this.childFromParent.e10 * source.y + this.childFromParent.e20 * source.z;
+		target.y = this.childFromParent.e01 * source.x + this.childFromParent.e11 * source.y + this.childFromParent.e21 * source.z;
+		target.z = this.childFromParent.e02 * source.x + this.childFromParent.e12 * source.y + this.childFromParent.e22 * source.z;
 
 		return target;
 	};
@@ -70,13 +67,13 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a normal to the local coordinate system from the world coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
+	 * @description Transforms a normal to the child coordinate system from the parent coordinate system. The inverse transpose of the transformation matrix is applied to account for non-uniform scaling.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.localFromWorldNormal = function (source, target) {
+	Transformation.prototype.childFromParentNormal = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -86,12 +83,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.localFromWorldNormal(source), target);
+			return Vector.copy(this.childFromParentNormal(source), target);
 		}
 
-		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e10 * source.y + this.worldFromLocal.e20 * source.z;
-		target.y = this.worldFromLocal.e01 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e21 * source.z;
-		target.z = this.worldFromLocal.e02 * source.x + this.worldFromLocal.e12 * source.y + this.worldFromLocal.e22 * source.z;
+		target.x = this.parentFromChild.e00 * source.x + this.parentFromChild.e10 * source.y + this.parentFromChild.e20 * source.z;
+		target.y = this.parentFromChild.e01 * source.x + this.parentFromChild.e11 * source.y + this.parentFromChild.e21 * source.z;
+		target.z = this.parentFromChild.e02 * source.x + this.parentFromChild.e12 * source.y + this.parentFromChild.e22 * source.z;
 
 		return target;
 	};
@@ -99,13 +96,13 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a vector to the world coordinate system from the local coordinate system. The transformation matrix is applied, excluding the translational part.
+	 * @description Transforms a vector to the parent coordinate system from the child coordinate system. The transformation matrix is applied, excluding the translational part.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.worldFromLocalVector = function (source, target) {
+	Transformation.prototype.parentFromChildVector = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -115,12 +112,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.worldFromLocalVector(source), target);
+			return Vector.copy(this.parentFromChildVector(source), target);
 		}
 
-		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e01 * source.y + this.worldFromLocal.e02 * source.z;
-		target.y = this.worldFromLocal.e10 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e12 * source.z;
-		target.z = this.worldFromLocal.e20 * source.x + this.worldFromLocal.e21 * source.y + this.worldFromLocal.e22 * source.z;
+		target.x = this.parentFromChild.e00 * source.x + this.parentFromChild.e01 * source.y + this.parentFromChild.e02 * source.z;
+		target.y = this.parentFromChild.e10 * source.x + this.parentFromChild.e11 * source.y + this.parentFromChild.e12 * source.z;
+		target.z = this.parentFromChild.e20 * source.x + this.parentFromChild.e21 * source.y + this.parentFromChild.e22 * source.z;
 
 		return target;
 	};
@@ -128,13 +125,13 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a vector to the local coordinate system from the world coordinate system. The transformation matrix is applied, excluding the translational part.
+	 * @description Transforms a vector to the child coordinate system from the parent coordinate system. The transformation matrix is applied, excluding the translational part.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.localFromWorldVector = function (source, target) {
+	Transformation.prototype.childFromParentVector = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -144,12 +141,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.localFromWorldVector(source), target);
+			return Vector.copy(this.childFromParentVector(source), target);
 		}
 
-		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e01 * source.y + this.localFromWorld.e02 * source.z;
-		target.y = this.localFromWorld.e10 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e12 * source.z;
-		target.z = this.localFromWorld.e20 * source.x + this.localFromWorld.e21 * source.y + this.localFromWorld.e22 * source.z;
+		target.x = this.childFromParent.e00 * source.x + this.childFromParent.e01 * source.y + this.childFromParent.e02 * source.z;
+		target.y = this.childFromParent.e10 * source.x + this.childFromParent.e11 * source.y + this.childFromParent.e12 * source.z;
+		target.z = this.childFromParent.e20 * source.x + this.childFromParent.e21 * source.y + this.childFromParent.e22 * source.z;
 
 		return target;
 	};
@@ -157,13 +154,13 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a vertex to the world coordinate system from the local coordinate system. The transformation matrix is applied, including the translational part.
+	 * @description Transforms a vertex to the parent coordinate system from the child coordinate system. The transformation matrix is applied, including the translational part.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.worldFromLocalVertex = function (source, target) {
+	Transformation.prototype.parentFromChildVertex = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -173,12 +170,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.worldFromLocalVertex(source), target);
+			return Vector.copy(this.parentFromChildVertex(source), target);
 		}
 
-		target.x = this.worldFromLocal.e00 * source.x + this.worldFromLocal.e01 * source.y + this.worldFromLocal.e02 * source.z + this.worldFromLocal.e03;
-		target.y = this.worldFromLocal.e10 * source.x + this.worldFromLocal.e11 * source.y + this.worldFromLocal.e12 * source.z + this.worldFromLocal.e13;
-		target.z = this.worldFromLocal.e20 * source.x + this.worldFromLocal.e21 * source.y + this.worldFromLocal.e22 * source.z + this.worldFromLocal.e23;
+		target.x = this.parentFromChild.e00 * source.x + this.parentFromChild.e01 * source.y + this.parentFromChild.e02 * source.z + this.parentFromChild.e03;
+		target.y = this.parentFromChild.e10 * source.x + this.parentFromChild.e11 * source.y + this.parentFromChild.e12 * source.z + this.parentFromChild.e13;
+		target.z = this.parentFromChild.e20 * source.x + this.parentFromChild.e21 * source.y + this.parentFromChild.e22 * source.z + this.parentFromChild.e23;
 
 		return target;
 	};
@@ -186,13 +183,13 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Transforms a vertex to the local coordinate system from the world coordinate system. The transformation matrix is applied, including the translational part.
+	 * @description Transforms a vertex to the child coordinate system from the parent coordinate system. The transformation matrix is applied, including the translational part.
 	 * @param {Vector3} source Source vector.
 	 * @param {Vector3} [target] Target vector.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Transformation.prototype.localFromWorldVertex = function (source, target) {
+	Transformation.prototype.childFromParentVertex = function (source, target) {
 		if (this.doUpdate) {
 			this.update();
 		}
@@ -202,12 +199,12 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 		}
 
 		if (target === source) {
-			return Vector.copy(this.localFromWorldVertex(source), target);
+			return Vector.copy(this.childFromParentVertex(source), target);
 		}
 
-		target.x = this.localFromWorld.e00 * source.x + this.localFromWorld.e01 * source.y + this.localFromWorld.e02 * source.z + this.localFromWorld.e03;
-		target.y = this.localFromWorld.e10 * source.x + this.localFromWorld.e11 * source.y + this.localFromWorld.e12 * source.z + this.localFromWorld.e13;
-		target.z = this.localFromWorld.e20 * source.x + this.localFromWorld.e21 * source.y + this.localFromWorld.e22 * source.z + this.localFromWorld.e23;
+		target.x = this.childFromParent.e00 * source.x + this.childFromParent.e01 * source.y + this.childFromParent.e02 * source.z + this.childFromParent.e03;
+		target.y = this.childFromParent.e10 * source.x + this.childFromParent.e11 * source.y + this.childFromParent.e12 * source.z + this.childFromParent.e13;
+		target.z = this.childFromParent.e20 * source.x + this.childFromParent.e21 * source.y + this.childFromParent.e22 * source.z + this.childFromParent.e23;
 
 		return target;
 	};
@@ -224,56 +221,41 @@ define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"], function (
 			return;
 		}
 
-		var sx = Math.sin(this.rotation.x);
-		var cx = Math.cos(this.rotation.x);
-		var sy = Math.sin(this.rotation.y);
-		var cy = Math.cos(this.rotation.y);
-		var sz = Math.sin(this.rotation.z);
-		var cz = Math.cos(this.rotation.z);
+		var m = this.rotation.toMatrix3x3();
 
-		var a = cz * cy;
-		var b = sz * cy;
-		var c = 0.0 - sy;
-		var d = cz * sy * sx - sz * cx;
-		var e = sz * sy * sx + cz * cx;
-		var f = cy * sx;
-		var g = cz * sy * cx + sz * sx;
-		var h = sz * sy * cx - cz * sx;
-		var i = cy * cx;
+		this.parentFromChild.e00 = m.e00 * this.scale.x;
+		this.parentFromChild.e10 = m.e10 * this.scale.x;
+		this.parentFromChild.e20 = m.e20 * this.scale.x;
+		this.parentFromChild.e30 = 0.0;
+		this.parentFromChild.e01 = m.e01 * this.scale.y;
+		this.parentFromChild.e11 = m.e11 * this.scale.y;
+		this.parentFromChild.e21 = m.e21 * this.scale.y;
+		this.parentFromChild.e31 = 0.0;
+		this.parentFromChild.e02 = m.e02 * this.scale.z;
+		this.parentFromChild.e12 = m.e12 * this.scale.z;
+		this.parentFromChild.e22 = m.e22 * this.scale.z;
+		this.parentFromChild.e32 = 0.0;
+		this.parentFromChild.e03 = this.translation.x;
+		this.parentFromChild.e13 = this.translation.y;
+		this.parentFromChild.e23 = this.translation.z;
+		this.parentFromChild.e33 = 1.0;
 
-		this.worldFromLocal.e00 = a * this.scale.x;
-		this.worldFromLocal.e10 = b * this.scale.x;
-		this.worldFromLocal.e20 = c * this.scale.x;
-		this.worldFromLocal.e30 = 0.0;
-		this.worldFromLocal.e01 = d * this.scale.y;
-		this.worldFromLocal.e11 = e * this.scale.y;
-		this.worldFromLocal.e21 = f * this.scale.y;
-		this.worldFromLocal.e31 = 0.0;
-		this.worldFromLocal.e02 = g * this.scale.z;
-		this.worldFromLocal.e12 = h * this.scale.z;
-		this.worldFromLocal.e22 = i * this.scale.z;
-		this.worldFromLocal.e32 = 0.0;
-		this.worldFromLocal.e03 = this.translation.x;
-		this.worldFromLocal.e13 = this.translation.y;
-		this.worldFromLocal.e23 = this.translation.z;
-		this.worldFromLocal.e33 = 1.0;
-
-		this.localFromWorld.e00 = a / this.scale.x;
-		this.localFromWorld.e10 = d / this.scale.y;
-		this.localFromWorld.e20 = g / this.scale.z;
-		this.localFromWorld.e30 = 0.0;
-		this.localFromWorld.e01 = b / this.scale.x;
-		this.localFromWorld.e11 = e / this.scale.y;
-		this.localFromWorld.e21 = h / this.scale.z;
-		this.localFromWorld.e31 = 0.0;
-		this.localFromWorld.e02 = c / this.scale.x;
-		this.localFromWorld.e12 = f / this.scale.y;
-		this.localFromWorld.e22 = i / this.scale.z;
-		this.localFromWorld.e32 = 0.0;
-		this.localFromWorld.e03 = 0.0 - (a * this.translation.x + b * this.translation.y + c * this.translation.z) / this.scale.x;
-		this.localFromWorld.e13 = 0.0 - (d * this.translation.x + e * this.translation.y + f * this.translation.z) / this.scale.y;
-		this.localFromWorld.e23 = 0.0 - (g * this.translation.x + h * this.translation.y + i * this.translation.z) / this.scale.z;
-		this.localFromWorld.e33 = 1.0;
+		this.childFromParent.e00 = m.e00 / this.scale.x;
+		this.childFromParent.e10 = m.e01 / this.scale.y;
+		this.childFromParent.e20 = m.e02 / this.scale.z;
+		this.childFromParent.e30 = 0.0;
+		this.childFromParent.e01 = m.e10 / this.scale.x;
+		this.childFromParent.e11 = m.e11 / this.scale.y;
+		this.childFromParent.e21 = m.e12 / this.scale.z;
+		this.childFromParent.e31 = 0.0;
+		this.childFromParent.e02 = m.e20 / this.scale.x;
+		this.childFromParent.e12 = m.e21 / this.scale.y;
+		this.childFromParent.e22 = m.e22 / this.scale.z;
+		this.childFromParent.e32 = 0.0;
+		this.childFromParent.e03 = 0.0 - (m.e00 * this.translation.x + m.e10 * this.translation.y + m.e20 * this.translation.z) / this.scale.x;
+		this.childFromParent.e13 = 0.0 - (m.e01 * this.translation.x + m.e11 * this.translation.y + m.e21 * this.translation.z) / this.scale.y;
+		this.childFromParent.e23 = 0.0 - (m.e02 * this.translation.x + m.e12 * this.translation.y + m.e22 * this.translation.z) / this.scale.z;
+		this.childFromParent.e33 = 1.0;
 
 		this.doUpdate = false;
 

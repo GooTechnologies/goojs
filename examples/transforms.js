@@ -51,19 +51,24 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	// Create simple quad
 	function createShapes(goo) {
-		var sun = createMesh(goo, ShapeCreator.createSphere(16, 16, 2), null);
-		var earth = createMesh(goo, ShapeCreator.createSphere(16, 16, 2), sun);
+		var sun = createMesh(goo, ShapeCreator.createSphere(16, 16, 1));
+		var earth = createMesh(goo, ShapeCreator.createSphere(16, 16, 1));
+		var moon = createMesh(goo, ShapeCreator.createSphere(16, 16, 1));
+
+		sun.transformComponent.attachChild(earth.transformComponent);
+		earth.transformComponent.attachChild(moon.transformComponent);
 
 		sun.transformComponent.transform.translation.set(0.0, 0.0, -10.0);
-		earth.transformComponent.transform.translation.set(5.0, 0.0, 0.0);
+		earth.transformComponent.transform.translation.set(3.0, 0.0, 0.0);
 		earth.transformComponent.transform.scale.set(2.0, 1.0, 1.0);
 		earth.transformComponent.transform.rotation.z = Math.PI*0.5;
-		sun.transformComponent.attachChild(earth.transformComponent);
+		moon.transformComponent.transform.translation.set(3.0, 0.0, 0.0);
+		moon.transformComponent.transform.scale.set(0.5, 1.0, 1.0);
 
 		sun.setComponent(new ScriptComponent(new BasicControlScript()));
 	}
 
-	function createMesh(goo, meshData, parent) {
+	function createMesh(goo, meshData) {
 		var world = goo.world;
 
 		// Create entity

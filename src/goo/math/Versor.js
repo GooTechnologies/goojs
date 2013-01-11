@@ -15,7 +15,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 
 	function Versor() {
 		Vector.call(this, 4);
-		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
+		var init = arguments.length !== 0 ? arguments : [1, 0, 0, 0];
 		this.set(init);
 	}
 
@@ -24,7 +24,7 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 
 	/* ====================================================================== */
 
-	Versor.IDENTITY = new Versor(0, 0, 0, 1);
+	Versor.IDENTITY = new Versor(1, 0, 0, 0);
 
 	/* ====================================================================== */
 
@@ -100,14 +100,14 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 
 	/**
 	 * @static
-	 * @description Constructs a versor from a rotational axis and an angle.
-	 * @param {Vector3} axis The rotational axis.
+	 * @description Constructs a versor from an angle and a rotational axis.
 	 * @param {Float} angle The angle in radians.
+	 * @param {Vector3} axis The rotational axis.
 	 * @param {Versor} [target] Target versor for storage.
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.fromAxisAngle = function (axis, angle, target) {
+	Versor.fromAngleAxis = function (angle, axis, target) {
 		var sin = Math.sin(angle * 0.5);
 		var cos = Math.cos(angle * 0.5);
 
@@ -126,28 +126,28 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	};
 
 	/**
-	 * @description Constructs a versor from a rotational axis and an angle.
-	 * @param {Vector3} axis The rotational axis.
+	 * @description Constructs a versor from an angle and a rotational axis.
 	 * @param {Float} angle The angle in radians.
+	 * @param {Vector3} axis The rotational axis.
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.fromAxisAngle = function (axis, angle) {
-		return Versor.fromAxisAngle(axis, angle, this);
+	Versor.prototype.fromAngleAxis = function (angle, axis) {
+		return Versor.fromAngleAxis(angle, axis, this);
 	};
 
 	/* ====================================================================== */
 
 	/**
 	 * @static
-	 * @description Constructs a versor from a normalized rotational axis and an angle.
-	 * @param {Vector3} axis The normalized rotational axis.
+	 * @description Constructs a versor from an angle and a normalized rotational axis.
 	 * @param {Float} angle The angle in radians.
+	 * @param {Vector3} axis The normalized rotational axis.
 	 * @param {Versor} [target] Target versor for storage.
 	 * @return {Versor} A new versor if the target versor is omitted, else the target versor.
 	 */
 
-	Versor.fromNormalizedAxisAngle = function (axis, angle, target) {
+	Versor.fromAngleNormalAxis = function (angle, axis, target) {
 		var sin = Math.sin(angle * 0.5);
 		var cos = Math.cos(angle * 0.5);
 
@@ -164,14 +164,14 @@ define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math
 	};
 
 	/**
-	 * @description Constructs a versor from a normalized rotational axis and an angle.
-	 * @param {Vector3} axis The normalized rotational axis.
+	 * @description Constructs a versor from an angle and a normalized rotational axis
 	 * @param {Float} angle The angle in radians.
+	 * @param {Vector3} axis The normalized rotational axis.
 	 * @return {Versor} Self for chaining.
 	 */
 
-	Versor.prototype.fromNormalizedAxisAngle = function (axis, angle) {
-		return Versor.fromNormalizedAxisAngle(axis, angle, this);
+	Versor.prototype.fromAngleNormalAxis = function (angle, axis) {
+		return Versor.fromAngleNormalAxis(angle, axis, this);
 	};
 
 	/* ====================================================================== */
