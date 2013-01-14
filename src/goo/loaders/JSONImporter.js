@@ -11,9 +11,7 @@
  * });
  */
 define(
-	/**
-	 * @exports goo/loaders/JSONImporter
-	 */
+	/** @lends JSONImporter */
 	['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
 	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
