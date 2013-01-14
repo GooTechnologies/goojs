@@ -1,5 +1,7 @@
 /*jshint bitwise: false */
-define(function () {
+define(
+	/** @lends DdsUtils */
+	function () {
 	"use strict";
 
 	function DdsUtils() {

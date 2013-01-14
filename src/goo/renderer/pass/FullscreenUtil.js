@@ -1,9 +1,9 @@
 define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'],
+	/** @lends FullscreenUtil */
 	function (ShapeCreator, Camera, Vector3) {
 	"use strict";
 
 	/**
-	 * @name FullscreenUtil
 	 * @class Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
 	 */
 	function FullscreenUtil() {

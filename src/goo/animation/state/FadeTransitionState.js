@@ -1,8 +1,9 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
+define(['goo/animation/state/AbstractTwoStateLerpTransition'],
+	/** @lends FadeTransitionState */
+	function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	/**
-	 * @name FadeTransitionState
 	 * @class A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start
 	 *        of the transition. This is best used with two clips that have similar motions.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.

@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends Handy */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Handy
 	 * @class Object listener utilities
 	 */
 	function Handy() {

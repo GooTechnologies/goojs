@@ -1,8 +1,9 @@
-define([ 'goo/math/Vector3' ], function(Vector3) {
+define([ 'goo/math/Vector3' ],
+    /** @lends ParticleUtils */
+    function(Vector3) {
 	"use strict";
 
 	/**
-	 * @name ParticleUtils
 	 * @class Various helper utils for particle systems.
 	 */
 	function ParticleUtils() {

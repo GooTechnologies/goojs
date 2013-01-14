@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends Stats */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Stats
 	 * @class Show render statistics
 	 */
 	function Stats() {

@@ -14,13 +14,14 @@
 // 5. Particles billboard toward the screen using a provided Camera as reference.
 
 define([ 'goo/entities/components/Component', 'goo/particles/Particle', 'goo/particles/ParticleEmitter', 'goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/Vector4' ], 
-		function(Component, Particle, ParticleEmitter, MeshData, Vector3, Vector4) {
+	/** @lends ParticleComponent */	
+	function(Component, Particle, ParticleEmitter, MeshData, Vector3, Vector4) {
 	"use strict";
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
 
 	/**
-	 * @name ParticleComponent
+	 * TODO...
 	 * @class
 	 */
 	function ParticleComponent(settings) {

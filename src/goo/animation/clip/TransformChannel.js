@@ -1,9 +1,9 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'], function (
-	AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'],
+	/** @lends TransformChannel */
+	function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	"use strict";
 
 	/**
-	 * @name TransformChannel
 	 * @class An animation channel consisting of a series of transforms interpolated over time.
 	 * @param channelName our name.
 	 * @param times our time offset values.

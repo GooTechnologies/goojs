@@ -1,8 +1,9 @@
-define(['goo/math/Vector3'], function (Vector3) {
+define(['goo/math/Vector3'],
+	/** @lends Light */
+	function (Vector3) {
 	"use strict";
 
 	/**
-	 * @name Light
 	 * @class It's a damn light
 	 * @property {Vector3} translation Where it is at
 	 */

@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends PickingSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name PickingSystem
 	 * @class Helps gather pickable entities
 	 */
 	function PickingSystem() {

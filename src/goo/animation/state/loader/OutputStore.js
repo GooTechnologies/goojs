@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends OutputStore */
+	function () {
 	"use strict";
 
 	/**
-	 * @name OutputStore
 	 * @class Storage class for items created during Layer import.
 	 */
 	function OutputStore() {

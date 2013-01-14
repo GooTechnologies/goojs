@@ -1,8 +1,9 @@
-define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'], function (TransformChannel, JointData) {
+define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'],
+	/** @lends JointChannel */
+	function (TransformChannel, JointData) {
 	"use strict";
 
 	/**
-	 * @name JointChannel
 	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
 	 */
 	function JointChannel(jointName, jointIndex, times, rotations, translations, scales) {

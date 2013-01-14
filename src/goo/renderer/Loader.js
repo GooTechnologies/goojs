@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends Loader */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Loader
 	 * @class Image loader util
 	 */
 	function Loader() {

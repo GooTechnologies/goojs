@@ -1,8 +1,9 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'], function (AbstractTwoStateLerpTransition) {
+define(['goo/animation/state/AbstractTwoStateLerpTransition'],
+	/** @lends FrozenTransitionState */
+	function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	/**
-	 * @name FrozenTransitionState
 	 * @class A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target
 	 *        state moves forward in time during the blend as normal.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.

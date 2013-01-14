@@ -1,9 +1,10 @@
 /*jshint bitwise: false */
-define(function () {
+define(
+	/** @lends GifLoader */
+	function () {
 	"use strict";
 
 	/**
-	 * @name GifLoader
 	 * @class
 	 */
 	function GifLoader() {

@@ -1,8 +1,9 @@
-define(['goo/animation/state/FadeTransitionState'], function (FadeTransitionState) {
+define(['goo/animation/state/FadeTransitionState'],
+	/** @lends SyncFadeTransitionState */
+	function (FadeTransitionState) {
 	"use strict";
 
 	/**
-	 * @name SyncFadeTransitionState
 	 * @class A transition that blends over a given time from one animation state to another, synchronizing the target state to the initial state's
 	 *        start time. This is best used with two clips that have similar motions.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.

@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends DebugManager */
+	function () {
 	"use strict";
 
 	/**
-	 * @name DebugManager
 	 * @class Simple manager for keeping a list of all current entities
 	 */
 	function DebugManager() {

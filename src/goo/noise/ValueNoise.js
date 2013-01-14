@@ -1,11 +1,12 @@
 /*jshint bitwise: false */
-define(["goo/noise/Noise"], function (Noise) {
+define(["goo/noise/Noise"],
+	/** @lends ValueNoise */
+	function (Noise) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name ValueNoise
 	 * @class Value noise is simpler and computationally lighter than Perlin noise yet produce visually similar results when used in fractals.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.

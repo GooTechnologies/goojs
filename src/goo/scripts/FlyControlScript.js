@@ -1,10 +1,11 @@
-define(function () {
+define(
+	/** @lends FlyControlScript */
+	function () {
 	"use strict";
 
 	/**
 	 * Creates a new FlyControlScript
 	 *
-	 * @name FlyControlScript
 	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')

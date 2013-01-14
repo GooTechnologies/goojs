@@ -1,9 +1,9 @@
-define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource'], function (
-	AbstractTransitionState, StateBlendType, BinaryLERPSource) {
+define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource'],
+	/** @lends AbstractTwoStateLerpTransition */
+	function (AbstractTransitionState, StateBlendType, BinaryLERPSource) {
 	"use strict";
 
 	/**
-	 * @name AbstractTwoStateLerpTransition
 	 * @class An abstract transition state that blends between two other states.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
 	 * @param fadeTime the amount of time we should take to do the transition.

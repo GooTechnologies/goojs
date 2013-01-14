@@ -1,8 +1,9 @@
-define(['goo/math/Transform'], function (Transform) {
+define(['goo/math/Transform'],
+	/** @lends Joint */
+	function (Transform) {
 	"use strict";
 
 	/**
-	 * @name Joint
 	 * @class Representation of a Joint in a Skeleton. Meant to be used within a specific Skeleton object.
 	 * @param {String} name Name of joint
 	 * @property {String} name Name of joint

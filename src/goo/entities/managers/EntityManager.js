@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends EntityManager */
+	function () {
 	"use strict";
 
 	/**
-	 * @name EntityManager
 	 * @class Main handler of all entities in the world.
 	 */
 	function EntityManager() {

@@ -1,8 +1,9 @@
-define([ 'goo/math/Transform' ], function(Transform) {
+define([ 'goo/math/Transform' ],
+	/** @lends ParticleInfluence */
+	function(Transform) {
 	"use strict";
 
 	/**
-	 * @name ParticleInfluence
 	 * @class A Particle influence modifies particles in some way over time.
 	 */
 	function ParticleInfluence(settings) {

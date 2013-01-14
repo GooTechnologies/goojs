@@ -1,6 +1,11 @@
-define(function () {
+define(
+	/** @lends RendererRecord */
+	function () {
 	"use strict";
 
+	/**
+	 * @constructor
+	 */
 	function RendererRecord() {
 		this.currentBuffer = {
 			'ArrayBuffer' : {

@@ -1,5 +1,7 @@
 /*jshint bitwise: false */
-define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
+define(['goo/loaders/dds/DdsUtils'],
+	/** @lends DdsLoader */
+	function (DdsUtils) {
 	"use strict";
 
 	function DdsPixelFormat() {
@@ -176,7 +178,6 @@ define(['goo/loaders/dds/DdsUtils'], function (DdsUtils) {
 	};
 
 	/**
-	 * @name DdsLoader
 	 * @class Loads dds format images into a format usable by Goo.
 	 */
 	function DdsLoader() {

@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends ShaderFragment */
+	function () {
 	"use strict";
 
 	/**
-	 * @name ShaderFragment
 	 * @class Collection of useful shader fragments
 	 */
 	function ShaderFragment() {

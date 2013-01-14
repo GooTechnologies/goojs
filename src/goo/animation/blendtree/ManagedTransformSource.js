@@ -1,9 +1,10 @@
-define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'], function (JointChannel,
+define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'],
+	/** @lends ManagedTransformSource */
+	function (JointChannel,
 	JointData, Vector3, Quaternion) {
 	"use strict";
 
 	/**
-	 * @name ManagedTransformSource
 	 * @class This tree source maintains its own source data, which can be modified directly using setJointXXX. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically. Originally implemented BlendTreeSource.
 	 * @param sourceName optional: name of source we were initialized from, if given.

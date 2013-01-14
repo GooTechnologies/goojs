@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends TriggerData */
+	function () {
 	"use strict";
 
 	/**
-	 * @name TriggerData
 	 * @class Transient class that maintains the current triggers and armed status for a TriggerChannel.
 	 */
 	function TriggerData() {

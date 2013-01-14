@@ -1,10 +1,11 @@
-define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Versor"], function (Matrix4x4, Vector, Vector3, Versor) {
+define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Versor"],
+	/** @lends Transformation */
+	function (Matrix4x4, Vector, Vector3, Versor) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Transformation
 	 * @class Models a transformation node in a hierarchy using separate
 	 *        translation, rotation and scale components. The class has two
 	 *        matrix members which needs to be updated when either component

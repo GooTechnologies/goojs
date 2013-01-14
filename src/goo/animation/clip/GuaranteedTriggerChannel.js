@@ -1,8 +1,9 @@
-define(['goo/animation/clip/TriggerChannel'], function (TriggerChannel) {
+define(['goo/animation/clip/TriggerChannel'],
+	/** @lends GuaranteedTriggerChannel */
+	function (TriggerChannel) {
 	"use strict";
 
 	/**
-	 * @name GuaranteedTriggerChannel
 	 * @class An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be
 	 *        in one keyword "state" at a given moment in time. This channel guarantees that if we skip over a sample in this channel, we'll still arm
 	 *        it after that fact. This channel should only be used with non-looping, forward moving clips.

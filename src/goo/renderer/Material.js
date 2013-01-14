@@ -1,9 +1,9 @@
 define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/MeshData', 'goo/renderer/shaders/ShaderFragments'],
+	/** @lends Material */
 	function (Shader, TextureCreator, MeshData, ShaderFragments) {
 	"use strict";
 
 	/**
-	 * @name Material
 	 * @class A Material defines the look of an object
 	 * @param {String} name Material name
 	 * @property {String} name Material name

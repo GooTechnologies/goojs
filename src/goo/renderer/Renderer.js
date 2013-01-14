@@ -1,14 +1,15 @@
 /* jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'], function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
+		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'],
+	/** @lends Renderer */
+	function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
 	Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @name Renderer
 	 * @class The renderer handles displaying of graphics data to a render context
 	 * @param {Settings} parameters Renderer settings
 	 */

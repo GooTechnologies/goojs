@@ -1,8 +1,9 @@
-define(['goo/math/Vector3'], function (Vector3) {
+define(['goo/math/Vector3'],
+	/** @lends BasicControlScript */
+	function (Vector3) {
 	"use strict";
 
 	/**
-	 * @name BasicControlScript
 	 * @class Simple script to move/rotate an entity
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */

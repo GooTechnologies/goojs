@@ -1,8 +1,9 @@
-define(['goo/math/Vector3'], function (Vector3) {
+define(['goo/math/Vector3'],
+	/** @lends Plane */
+	function (Vector3) {
 	"use strict";
 
 	/**
-	 * @name Plane
 	 * @class A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
 	 *        normal vector. iow: d = N dot X

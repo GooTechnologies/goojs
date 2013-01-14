@@ -1,8 +1,9 @@
-define(['goo/animation/state/AbstractTransitionState'], function (AbstractTransitionState) {
+define(['goo/animation/state/AbstractTransitionState'],
+	/** @lends IgnoreTransitionState */
+	function (AbstractTransitionState) {
 	"use strict";
 
 	/**
-	 * @name IgnoreTransitionState
 	 * @class Dummy transition - does not change current state.
 	 */
 	function IgnoreTransitionState() {

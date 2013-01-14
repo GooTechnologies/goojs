@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends FrozenTreeSource */
+	function () {
 	"use strict";
 
 	/**
-	 * @name FrozenTreeSource
 	 * @class A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
 	 *        for purposes of transitioning between two unrelated animations. Originally implemented BlendTreeSource.
 	 * @param source Our sub source.

@@ -1,8 +1,9 @@
-define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'], function (JointChannel, ClipSource) {
+define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'],
+	/** @lends ExclusiveClipSource */
+	function (JointChannel, ClipSource) {
 	"use strict";
 
 	/**
-	 * @name ExclusiveClipSource
 	 * @class Similar to a ClipSource, this class samples and returns values from the channels of an AnimationClip. ExclusiveClipSource further
 	 *        filters this result set, excluding a given set of channels by name.
 	 * @param clip our source clip.

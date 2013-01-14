@@ -1,8 +1,9 @@
-define(['goo/animation/state/SteadyState'], function (SteadyState) {
+define(['goo/animation/state/SteadyState'],
+	/** @lends AnimationLayer */
+	function (SteadyState) {
 	"use strict";
 
 	/**
-	 * @name AnimationLayer
 	 * @class Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
 	 *        "steady states" - main states that the layer can be in. The layer can only be in one state at any given time. It may transition between
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *

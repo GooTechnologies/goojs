@@ -1,8 +1,9 @@
-define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'], function (Transform, Joint, Matrix4x4) {
+define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'],
+	/** @lends SkeletonPose */
+	function (Transform, Joint, Matrix4x4) {
 	"use strict";
 
 	/**
-	 * @name SkeletonPose
 	 * @class Joins a Skeleton with an array of joint poses. This allows the _skeleton to exist and be reused between multiple instances of poses.
 	 * @param {Skeleton} _skeleton the _skeleton to use.
 	 * @property {Skeleton} _skeleton the _skeleton to use.

@@ -1,11 +1,11 @@
 define([ 'goo/particles/ParticleUtils', 'goo/math/Vector', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData' ], 
-		function(ParticleUtils, Vector, Vector3, Vector4, MeshData) {
+	/** @lends Particle */
+	function(ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 	"use strict";
 
 	var calcVec = new Vector3();
 	
 	/**
-	 * @name Particle
 	 * @class Data object tracking a single particle in a particle component.
 	 */
 	function Particle(particleComponent, index) {

@@ -1,11 +1,11 @@
 define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3"],
+	/** @lends Versor */
 	function (Matrix3x3, Matrix4x4, Vector, Vector3) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Versor
 	 * @class Versors are used to represent rotations. They are equivalent of unit quaternions.
 	 * @extends Vector
 	 * @constructor

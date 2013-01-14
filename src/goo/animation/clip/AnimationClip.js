@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends AnimationClip */
+	function () {
 	"use strict";
 
 	/**
-	 * @name AnimationClip
 	 * @class AnimationClip manages a set of animation channels as a single clip entity.
 	 * @param {String} name Name of joint
 	 * @param {AbstractAnimationChannel[]} channels an array of channels to shallow copy locally.

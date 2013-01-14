@@ -1,9 +1,10 @@
 /*jshint bitwise: false */
-define(function () {
+define(
+	/** @lends Util */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Util
 	 * @class Common utilities
 	 */
 	function Util() {

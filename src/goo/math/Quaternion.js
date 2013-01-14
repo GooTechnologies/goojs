@@ -1,8 +1,9 @@
-define(["goo/math/Vector", "goo/math/Matrix3x3"], function (Vector, Matrix3x3) {
+define(["goo/math/Vector", "goo/math/Matrix3x3"],
+	/** @lends Quaternion */
+	function (Vector, Matrix3x3) {
 	"use strict";
 
 	/**
-	 * @name Quaternion
 	 * @class Quaternion represents a 4 value math object used in Ardor3D to describe rotations. It has the advantage of being able to avoid lock by
 	 *        adding a 4th dimension to rotation.
 	 * @extends Vector

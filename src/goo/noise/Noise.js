@@ -1,10 +1,11 @@
-define(["goo/math/MathUtils"], function (MathUtils) {
+define(["goo/math/MathUtils"],
+	/** @lends Noise */
+	function (MathUtils) {
 	"use strict";
 
 	/* ====================================================================== */
 
 	/**
-	 * @name Noise
 	 * @class A base class for procedural noise functions.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.

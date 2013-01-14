@@ -1,8 +1,9 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/util/Handy'], function (Vector3, Matrix3x3, Matrix4x4, Handy) {
+define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/util/Handy'],
+	/** @lends Transform */
+	function (Vector3, Matrix3x3, Matrix4x4, Handy) {
 	"use strict";
 
 	/**
-	 * @name Transform
 	 * @class Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation
 	 *        only matrix in which case it is represented by the matrix and scale fields as R*S, where S is a positive scale vector. For non-uniform
 	 *        scales and reflections, use setMatrix, which will consider M as being a general 3x3 matrix and disregard anything set in scale.

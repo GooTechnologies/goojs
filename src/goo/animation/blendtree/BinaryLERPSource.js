@@ -1,9 +1,9 @@
 define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'],
+	/** @lends BinaryLERPSource */
 	function (MathUtils, TransformData, AbstractTwoPartSource) {
 	"use strict";
 
 	/**
-	 * @name BinaryLERPSource
 	 * @class Takes two blend sources and uses linear interpolation to merge TransformData values. If one of the sources is null, or does not have a
 	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not TransformData is not
 	 *        combined, rather A's value will always be used unless it is null.

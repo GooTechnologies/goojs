@@ -1,10 +1,11 @@
-define(['goo/math/Vector2'], function (Vector2) {
+define(['goo/math/Vector2'],
+	/** @lends RenderTarget */
+	function (Vector2) {
 	"use strict";
 
 	/**
 	 * Creates a new RenderTarget object
 	 *
-	 * @name RenderTarget
 	 * @class Post processing handler
 	 * @param {Number} width Width of rendertarget
 	 * @param {Number} height Height of rendertarget

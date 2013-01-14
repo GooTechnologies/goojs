@@ -1,8 +1,9 @@
-define(['goo/entities/systems/System'], function (System) {
+define(['goo/entities/systems/System'],
+	/** @lends ParticlesSystem */
+	function (System) {
 	"use strict";
 
 	/**
-	 * @name ParticlesSystem
 	 * @class manages and reacts to particle components on entities.
 	 */
 	function ParticlesSystem() {

@@ -1,8 +1,9 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'], function (AbstractAnimationChannel, TriggerData) {
+define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'],
+	/** @lends TriggerChannel */
+	function (AbstractAnimationChannel, TriggerData) {
 	"use strict";
 
 	/**
-	 * @name TriggerChannel
 	 * @class An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be
 	 *        in one keyword "state" at a given moment in time.
 	 * @param channelName the name of this channel.

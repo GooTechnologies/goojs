@@ -1,8 +1,8 @@
 define(function () {
+	/** @lends AbstractTwoPartSource */
 	"use strict";
 
 	/**
-	 * @name AbstractTwoPartSource
 	 * @class Abstract blend tree source that takes two child sources and a blend weight [0.0, 1.0]. The subclass is responsible for implementing how
 	 *        these two sources are combined.
 	 * @param sourceA our first source.

@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends AbstractFiniteState */
+	function () {
 	"use strict";
 
 	/**
-	 * @name AbstractFiniteState
 	 * @class Base class for a finite state in our finite state machine.
 	 */
 	function AbstractFiniteState() {
@@ -10,6 +11,9 @@ define(function () {
 		this._lastOwner = null;
 	}
 
+	/**
+	 * TODO...
+	 */
 	AbstractFiniteState.prototype.resetClips = function (manager, globalStartTime) {
 		if (isNaN(globalStartTime)) {
 			this._globalStartTime = manager.getCurrentGlobalTime();

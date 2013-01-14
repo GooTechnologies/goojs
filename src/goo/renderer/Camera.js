@@ -1,9 +1,10 @@
-define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'], function (Handy,
+define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'],
+	/** @lends Camera */
+	function (Handy,
 	Vector3, Vector4, Matrix4x4, Plane, MathUtils) {
 	"use strict";
 
 	/**
-	 * @name Camera
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
 	 * @param {Number} fov Field of view
 	 * @param {Number} aspect aspect ratio

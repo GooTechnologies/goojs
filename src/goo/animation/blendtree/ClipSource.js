@@ -1,8 +1,9 @@
-define(['goo/math/MathUtils'], function (MathUtils) {
+define(['goo/math/MathUtils'],
+	/** @lends ClipSource */
+	function (MathUtils) {
 	"use strict";
 
 	/**
-	 * @name ClipSource
 	 * @class A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param clip the clip to use.
 	 * @param manager the manager to track clip state with.

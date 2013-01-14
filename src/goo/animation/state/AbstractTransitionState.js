@@ -1,8 +1,9 @@
-define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
+define(['goo/animation/state/AbstractFiniteState'],
+	/** @lends AbstractTransitionState */
+	function (AbstractFiniteState) {
 	"use strict";
 
 	/**
-	 * @name AbstractTransitionState
 	 * @class Base class for transition states - states responsible for moving between other finite states.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
 	 */

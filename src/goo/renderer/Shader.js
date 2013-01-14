@@ -1,11 +1,11 @@
 define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World'],
+	/** @lends Shader */
 	function (ShaderCall, Util, Matrix4x4, Vector3, World) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @name Shader
 	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
 	 * @param {String} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data

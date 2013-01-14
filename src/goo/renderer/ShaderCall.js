@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends ShaderCall */
+	function () {
 	"use strict";
 
 	/**
-	 * @name ShaderCall
 	 * @class Makes sure shader calls are not done when already set
 	 */
 	function ShaderCall(context, uniform, type) {

@@ -1,8 +1,9 @@
-define(['goo/renderer/MeshData'], function (MeshData) {
+define(['goo/renderer/MeshData'],
+	/** @lends Quad */
+	function (MeshData) {
 	"use strict";
 
 	/**
-	 * @name Quad
 	 * @class A four sided, two dimensional shape. The local height of the Quad defines it's size about the y-axis, while the width defines the x-axis. The z-axis will always be 0.
 	 * @property {Float} xExtent Extent along the local x axis.
 	 * @property {Float} yExtent Extent along the local y axis.

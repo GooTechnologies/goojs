@@ -1,8 +1,9 @@
-define(['goo/animation/state/AbstractFiniteState'], function (AbstractFiniteState) {
+define(['goo/animation/state/AbstractFiniteState'],
+	/** @lends SteadyState */
+	function (AbstractFiniteState) {
 	"use strict";
 
 	/**
-	 * @name SteadyState
 	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for
 	 *        example.)
 	 * @param {String} name Name of state

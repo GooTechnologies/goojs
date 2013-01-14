@@ -1,10 +1,11 @@
-define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'], function(BufferData, Util, BufferUtils) {
+define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'],
+	/** @lends MeshData */
+	function(BufferData, Util, BufferUtils) {
 	"use strict";
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
-	 * @name MeshData
 	 * @class Stores all buffers for geometric data and similar attributes
 	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {Number} vertexCount Number of vertices in buffer

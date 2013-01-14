@@ -1,9 +1,10 @@
-define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'], function (JointData, TransformData,
+define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'],
+	/** @lends SimpleAnimationApplier */
+	function (JointData, TransformData,
 	TriggerData) {
 	"use strict";
 
 	/**
-	 * @name SimpleAnimationApplier
 	 * @class Very simple applier. Just applies joint transform data, calls any callbacks and updates the pose's global transforms.
 	 */
 	function SimpleAnimationApplier() {

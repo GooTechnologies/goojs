@@ -1,11 +1,11 @@
 define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material'],
+	/** @lends Composer */
 	function (RenderTarget, FullscreenPass, Material) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @name Composer
 	 * @class Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap

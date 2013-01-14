@@ -1,8 +1,9 @@
-define(['goo/entities/EventHandler'], function (EventHandler) {
+define(['goo/entities/EventHandler'],
+	/** @lends LightManager */
+	function (EventHandler) {
 	"use strict";
 
 	/**
-	 * @name LightManager
 	 * @class Keeps track of all current lights in the world.
 	 */
 	function LightManager() {

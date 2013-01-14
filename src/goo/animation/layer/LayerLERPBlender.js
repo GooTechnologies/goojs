@@ -1,8 +1,9 @@
-define(['goo/animation/blendtree/BinaryLERPSource'], function (BinaryLERPSource) {
+define(['goo/animation/blendtree/BinaryLERPSource'],
+	/** @lends LayerLERPBlender */
+	function (BinaryLERPSource) {
 	"use strict";
 
 	/**
-	 * @name LayerLERPBlender
 	 * @class A layer blender that uses linear interpolation to merge the results of two layers.
 	 * @param {String} name Name of layer
 	 * @property {String} name Name of layer

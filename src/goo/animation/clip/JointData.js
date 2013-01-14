@@ -1,8 +1,9 @@
-define(['goo/animation/clip/TransformData'], function (TransformData) {
+define(['goo/animation/clip/TransformData'],
+	/** @lends JointData */
+	function (TransformData) {
 	"use strict";
 
 	/**
-	 * @name JointData
 	 * @class Describes transform of a joint.
 	 * @param our optional JointData source to copy.
 	 */

@@ -1,8 +1,9 @@
-define([ 'goo/particles/ParticleUtils', 'goo/renderer/Renderer' ], function(ParticleUtils, Renderer) {
+define([ 'goo/particles/ParticleUtils', 'goo/renderer/Renderer' ],
+	/** @lends ParticleEmitter */
+	function(ParticleUtils, Renderer) {
 	"use strict";
 
 	/**
-	 * @name ParticleEmitter
 	 * @class A Particle Emitter spawns particles - controlling spawn rate,
 	 *        lifetime, initial velocity vector and position of each particle.
 	 */

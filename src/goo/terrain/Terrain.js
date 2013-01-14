@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends Terrain */
+	function () {
 	"use strict";
 
 	/**
-	 * @name Terrain
 	 * @class A terrain
 	 */
 	function Terrain() {

@@ -1,8 +1,9 @@
-define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils) {
+define(['goo/math/Vector3', 'goo/math/MathUtils'],
+	/** @lends Ray */
+	function (Vector3, MathUtils) {
 	"use strict";
 
 	/**
-	 * @name Ray
 	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
 	function Ray(origin, direction) {

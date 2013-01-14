@@ -1,8 +1,9 @@
-define(function () {
+define(
+	/** @lends AnimationClipInstance */
+	function () {
 	"use strict";
 
 	/**
-	 * @name AnimationClipInstance
 	 * @class Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
 	 *        instance, etc.
 	 */
