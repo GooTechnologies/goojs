@@ -1,22 +1,11 @@
 /*jshint bitwise: false */
-/**
- * The JSONImporter module.
- * @module goo/loaders/JSONImporter
- * @example
- * require(['goo/loaders/JSONImporter'], function(JSONImporter) {
- *     var goo = new GooRunner();
- *     ...
- *     var importer = new JSONImporter(goo.world);
- *     ...
- * });
- */
 define(
-	/** @lends JSONImporter */
 	['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
 	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
 	'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
 	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil'],
+	/** @lends JSONImporter */
 	function (TransformComponent, MeshData,
 	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip,
 	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil) {
@@ -26,6 +15,14 @@ define(
 	 * @constructor
 	 * @class Importer for our compressed JSON format
 	 * @param {World} world {@link World} reference needed to create entities
+	 *
+	 * @example
+	 * require(['goo/loaders/JSONImporter'], function(JSONImporter) {
+	 *     var goo = new GooRunner();
+	 *     ...
+	 *     var importer = new JSONImporter(goo.world);
+	 *     ...
+	 * });
 	 */
 	function JSONImporter(world) {
 		this.world = world;
