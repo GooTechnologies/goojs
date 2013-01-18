@@ -56,6 +56,9 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 				World.time = that.world.time;
 				start = time;
 				if (that.world.tpf < 0) {// skip a loop - original start time probably bad.
+					that.world.time = 0;
+					that.world.tpf = 0;
+					World.time = 0;
 					window.requestAnimationFrame(run);
 					return;
 				}
