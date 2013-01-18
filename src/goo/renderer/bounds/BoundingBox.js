@@ -1,23 +1,27 @@
 define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'],
-/** @lends BoundingSphere */
+/** @lends BoundingBox */
 function(Transform, Vector3, Camera) {
 	"use strict";
 
 	/**
-	 * @class <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
+	 * @class <code>BoundingBox</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
 	 *        sphere defines a radius and a center. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingSphere() {
+	function BoundingBox() {
 		this.center = new Vector3();
-		this.radius = 1;
+		this.xExtent = 1;
+		this.yExtent = 1;
+		this.zExtent = 1;
 
 		this._checkPlane = 0;
+
+		this._compVect1 = new Vector3();
 	}
 
-	BoundingSphere.prototype.computeFromPoints = function(verts) {
+	BoundingBox.prototype.computeFromPoints = function(verts) {
 		var vec = new Vector3();
 		var min = new Vector3(Infinity, Infinity, Infinity);
 		var max = new Vector3(-Infinity, -Infinity, -Infinity);
@@ -33,83 +37,99 @@ function(Transform, Vector3, Camera) {
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.add(min).div(2.0);
-		var size = 0, test;
-		for ( var i = 0; i < verts.length; i += 3) {
-			vec.set(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.sub(newCenter).length();
-			if (test > size) {
-				size = test;
-			}
-		}
 
-		this.radius = size / 1.0;
-		this.center.copy(newCenter);
+		vec.copy(max).sub(min).div(2.0);
+		this.xExtent = vec.x;
+		this.yExtent = vec.y;
+		this.zExtent = vec.z;
+
+		this.center.copy(max).add(min).div(2.0);
 	};
 
-	BoundingSphere.prototype.transform = function(transform, bound) {
+	BoundingBox.prototype.transform = function(transform, bound) {
 		if (bound === null) {
-			bound = new BoundingSphere();
+			bound = new BoundingBox();
 		}
 
 		transform.applyForward(this.center, bound.center);
 
-		var scale = transform.scale;
-		bound.radius = Math.abs(this._maxAxis(scale) * this.radius);
+		// TODO: Port box transform code
+		bound.xExtent = this.xExtent;
+		bound.yExtent = this.yExtent;
+		bound.zExtent = this.zExtent;
 
 		return bound;
 	};
 
-	BoundingSphere.prototype.whichSide = function(plane) {
+	BoundingBox.prototype.whichSide = function(plane) {
+		var radius = Math.abs(this.xExtent * plane.normal.x) + Math.abs(this.yExtent * plane.normal.y) + Math.abs(this.zExtent * plane.normal.z);
+
 		var distance = this._pseudoDistance(plane, this.center);
 
-		if (distance < -this.radius) {
+		if (distance < -radius) {
 			return Camera.Inside;
-		} else if (distance > this.radius) {
+		} else if (distance > radius) {
 			return Camera.Outside;
 		} else {
 			return Camera.Intersects;
 		}
 	};
 
-	BoundingSphere.prototype._pseudoDistance = function(plane, point) {
+	BoundingBox.prototype._pseudoDistance = function(plane, point) {
 		return plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z - plane.constant;
 	};
 
-	BoundingSphere.prototype._maxAxis = function(scale) {
+	BoundingBox.prototype._maxAxis = function(scale) {
 		return Math.max(Math.abs(scale.x), Math.max(Math.abs(scale.y), Math.abs(scale.z)));
 	};
 
-	BoundingSphere.prototype.toString = function() {
+	BoundingBox.prototype.toString = function() {
 		var x = Math.round(this.center.x * 10) / 10;
 		var y = Math.round(this.center.y * 10) / 10;
 		var z = Math.round(this.center.z * 10) / 10;
-		var radius = Math.round(this.radius * 10) / 10;
 
-		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + radius;
+		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + '[' + this.xExtent + ',' + this.yExtent + ',' + this.zExtent + ']';
 	};
 
-	BoundingSphere.prototype.intersectsRay = function(ray) {
+	BoundingBox.prototype.intersectsRay = function(ray) {
 		if (!this.center) {
 			return false;
 		}
 
-		var diff = new Vector3().copy(ray.origin).sub(this.center);
-		var a = diff.dot(diff) - this.radius * this.radius;
-		if (a <= 0.0) {
-			// in sphere
-			return true;
-		}
+		var diff = this._compVect1.copy(ray.origin).sub(this.center);
 
-		// outside sphere
-		var b = ray.direction.dot(diff);
-		if (b >= 0.0) {
-			return false;
-		}
-		return b * b >= a;
+		var direction = ray.direction;
+
+		// final float[] t = { 0.0f, Float.POSITIVE_INFINITY };
+		//
+		// // Check for degenerate cases and pad using zero tolerance. Should give close enough result.
+		// float x = getXExtent();
+		// if (x < MathUtils.ZERO_TOLERANCE && x >= 0) {
+		// x = MathUtils.ZERO_TOLERANCE;
+		// }
+		// float y = getYExtent();
+		// if (y < MathUtils.ZERO_TOLERANCE && y >= 0) {
+		// y = MathUtils.ZERO_TOLERANCE;
+		// }
+		// float z = getZExtent();
+		// if (z < MathUtils.ZERO_TOLERANCE && z >= 0) {
+		// z = MathUtils.ZERO_TOLERANCE;
+		// }
+		//
+		// // Special case.
+		// if (Float.isInfinite(x) && Float.isInfinite(y) && Float.isInfinite(z)) {
+		// return true;
+		// }
+		//
+		// final boolean notEntirelyClipped = clip(direction.getX(), -diff.getX() - x, t)
+		// && clip(-direction.getX(), diff.getX() - x, t) && clip(direction.getY(), -diff.getY() - y, t)
+		// && clip(-direction.getY(), diff.getY() - y, t) && clip(direction.getZ(), -diff.getZ() - z, t)
+		// && clip(-direction.getZ(), diff.getZ() - z, t);
+		//
+		// return notEntirelyClipped && (t[0] != 0.0 || t[1] != Float.POSITIVE_INFINITY);
 	};
 
-	BoundingSphere.prototype.intersectsRayWhere = function(ray) {
+	BoundingBox.prototype.intersectsRayWhere = function(ray) {
 		var diff = new Vector3().copy(ray.origin).sub(this.center);
 		var a = diff.dot(diff) - this.radius * this.radius;
 		var a1, discr, root;
@@ -154,5 +174,5 @@ function(Transform, Vector3, Camera) {
 		};
 	};
 
-	return BoundingSphere;
+	return BoundingBox;
 });
