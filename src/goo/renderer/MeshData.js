@@ -21,6 +21,7 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 		this.indexData = null;
 
 		this.indexLengths = null;
+		// Triangles, TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop, Points
 		this.indexModes = ['Triangles'];
 
 		this.type = MeshData.MESH;

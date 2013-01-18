@@ -233,12 +233,16 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 
 	Renderer.prototype.renderMesh = function(renderInfo) {
 		var meshData = renderInfo.meshData;
+		if (meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+			&& meshData.indexData.data.byteLength === 0) {
+			return;
+		}
+		this.bindData(meshData.vertexData);
+
 		var materials = renderInfo.materials;
 		if (this.overrideMaterial !== null) {
 			materials = [this.overrideMaterial];
 		}
-
-		this.bindData(meshData.vertexData);
 
 		var isWireframe = false;
 		var originalData = meshData;

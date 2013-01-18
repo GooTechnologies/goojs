@@ -2,9 +2,9 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
 		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'],
-	/** @lends GooRunner */
-	function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem,
-		LightingSystem, SimplePartitioner, LightManager, CameraSystem, Camera, CameraComponent, Stats) {
+/** @lends GooRunner */
+function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
+	LightManager, CameraSystem, Camera, CameraComponent, Stats) {
 	"use strict";
 
 	/**
@@ -50,30 +50,38 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		var that = this;
 		var start = Date.now();
 		function run(time) {
-			that.world.tpf = (time - start) / 1000.0;
-			that.world.time += that.world.tpf;
-			World.time = that.world.time;
-			start = time;
-			if (that.world.tpf < 0)  {// skip a loop - original start time probably bad.
+			try {
+				that.world.tpf = (time - start) / 1000.0;
+				that.world.time += that.world.tpf;
+				World.time = that.world.time;
+				start = time;
+				if (that.world.tpf < 0) {// skip a loop - original start time probably bad.
+					window.requestAnimationFrame(run);
+					return;
+				}
+
+				that.world.process();
+
+				that.renderer.info.reset();
+
+				renderSystem.render(that.renderer);
+
+				for ( var i in that.callbacks) {
+					that.callbacks[i](that.world.tpf);
+				}
+
+				if (that.stats) {
+					that.stats.update(that.renderer.info);
+				}
+
 				window.requestAnimationFrame(run);
-				return;
+			} catch (e) {
+				if (e instanceof Error) {
+					console.error(e.stack);
+				} else {
+					console.error(e);
+				}
 			}
-
-			that.world.process();
-
-			that.renderer.info.reset();
-
-			renderSystem.render(that.renderer);
-
-			for (var i in that.callbacks) {
-				that.callbacks[i](that.world.tpf);
-			}
-
-			if (that.stats) {
-				that.stats.update(that.renderer.info);
-			}
-
-			window.requestAnimationFrame(run);
 		}
 	}
 
@@ -81,15 +89,15 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
 
-		for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
 			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
 			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
 		}
 
 		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function (callback, element) {
+			window.requestAnimationFrame = function(callback, element) {
 				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function () {
+				var id = window.setTimeout(function() {
 					callback(currTime + timeToCall);
 				}, timeToCall);
 				lastTime = currTime + timeToCall;
@@ -98,7 +106,7 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		}
 
 		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function (id) {
+			window.cancelAnimationFrame = function(id) {
 				clearTimeout(id);
 			};
 		}
