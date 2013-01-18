@@ -388,7 +388,7 @@ define(
 	};
 
 	JSONImporter.prototype._parseMaterials = function (array) {
-		if (array === null) {
+		if (!array) {
 			return;
 		}
 
