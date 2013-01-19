@@ -91,6 +91,18 @@ function(Transform, Vector3, Camera) {
 		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + '[' + this.xExtent + ',' + this.yExtent + ',' + this.zExtent + ']';
 	};
 
+	BoundingBox.prototype.intersectsBoundingBox = function(bb) {
+		if (this.center.x + this.xExtent < bb.center.x - bb.xExtent || this.center.x - this.xExtent > bb.center.x + bb.xExtent) {
+			return false;
+		} else if (this.center.y + this.yExtent < bb.center.y - bb.yExtent || this.center.y - this.yExtent > bb.center.y + bb.yExtent) {
+			return false;
+		} else if (this.center.z + this.zExtent < bb.center.z - bb.zExtent || this.center.z - this.zExtent > bb.center.z + bb.zExtent) {
+			return false;
+		} else {
+			return true;
+		}
+	};
+
 	BoundingBox.prototype.intersectsRay = function(ray) {
 		if (!this.center) {
 			return false;
@@ -103,15 +115,15 @@ function(Transform, Vector3, Camera) {
 		// final float[] t = { 0.0f, Float.POSITIVE_INFINITY };
 		//
 		// // Check for degenerate cases and pad using zero tolerance. Should give close enough result.
-		// float x = getXExtent();
+		// float x = xExtent;
 		// if (x < MathUtils.ZERO_TOLERANCE && x >= 0) {
 		// x = MathUtils.ZERO_TOLERANCE;
 		// }
-		// float y = getYExtent();
+		// float y = yExtent;
 		// if (y < MathUtils.ZERO_TOLERANCE && y >= 0) {
 		// y = MathUtils.ZERO_TOLERANCE;
 		// }
-		// float z = getZExtent();
+		// float z = zExtent;
 		// if (z < MathUtils.ZERO_TOLERANCE && z >= 0) {
 		// z = MathUtils.ZERO_TOLERANCE;
 		// }
