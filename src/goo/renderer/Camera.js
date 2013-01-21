@@ -210,10 +210,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * the given position using the difference between that position and the current camera location as a direction vector and the general
 	 * worldUpVector to compute up and left camera vectors.
 	 *
-	 * @param x where to look at in terms of world coordinates (x)
-	 * @param y where to look at in terms of world coordinates (y)
-	 * @param z where to look at in terms of world coordinates (z)
-	 * @param worldUpVector a normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z})
+	 * @param {Vector3} pos Where to look at in terms of world coordinates.
+	 * @param {Vector3} worldUpVector A normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z}).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
 		this._newDirection.copy(pos).sub(this.translation).normalize();
