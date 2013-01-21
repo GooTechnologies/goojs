@@ -1,6 +1,6 @@
 define([],
-	/** @lends MathUtils */
-	function () {
+/** @lends MathUtils */
+function() {
 	"use strict";
 
 	/* ====================================================================== */
@@ -20,7 +20,7 @@ define([],
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
 	MathUtils.HALF_PI = 0.5 * Math.PI;
 	MathUtils.TWO_PI = 2.0 * Math.PI;
-	MathUtils.EPSILON = 0.0001;
+	MathUtils.EPSILON = 0.0000001;
 
 	/* ====================================================================== */
 
@@ -31,7 +31,7 @@ define([],
 	 * @return {Float} Angle in radians.
 	 */
 
-	MathUtils.radFromDeg = function (degrees) {
+	MathUtils.radFromDeg = function(degrees) {
 		return degrees * MathUtils.DEG_TO_RAD;
 	};
 
@@ -44,7 +44,7 @@ define([],
 	 * @return {Float} Angle in degrees.
 	 */
 
-	MathUtils.degFromRad = function (radians) {
+	MathUtils.degFromRad = function(radians) {
 		return radians * MathUtils.RAD_TO_DEG;
 	};
 
@@ -59,7 +59,7 @@ define([],
 	 * @return {Integer|Float} Interpolated value.
 	 */
 
-	MathUtils.lerp = function (factor, start, end) {
+	MathUtils.lerp = function(factor, start, end) {
 		if (start === end) {
 			return start;
 		} else {
@@ -71,14 +71,15 @@ define([],
 
 	/**
 	 * @static
-	 * @description Clamps a value to a given interval. The interval is defined by min and max where min should be smaller than max. If min is greater than max, the two parameters are reversed.
+	 * @description Clamps a value to a given interval. The interval is defined by min and max where min should be smaller than max. If min is greater
+	 *              than max, the two parameters are reversed.
 	 * @param {Integer|Float} value Input value.
 	 * @param {Integer|Float} min Lower bound of interval (inclusive).
 	 * @param {Integer|Float} max Upper bound of interval (inclusive).
 	 * @return {Integer|Float} Clamped value.
 	 */
 
-	MathUtils.clamp = function (value, min, max) {
+	MathUtils.clamp = function(value, min, max) {
 		if (min < max) {
 			return value < min ? min : value > max ? max : value;
 		} else {
@@ -95,7 +96,7 @@ define([],
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve3 = function (x) {
+	MathUtils.scurve3 = function(x) {
 		return (-2.0 * x + 3.0) * x * x;
 	};
 
@@ -108,7 +109,7 @@ define([],
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve5 = function (x) {
+	MathUtils.scurve5 = function(x) {
 		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
 	};
 
@@ -122,14 +123,14 @@ define([],
 	 * @param {Float} polar
 	 * @param {Vector3} store
 	 */
-	
-	MathUtils.sphericalToCartesian = function (radius, azimuth, polar, store) {
+
+	MathUtils.sphericalToCartesian = function(radius, azimuth, polar, store) {
 		var a = radius * Math.cos(polar);
 
 		store.x = a * Math.cos(azimuth);
 		store.y = radius * Math.sin(polar);
 		store.z = a * Math.sin(azimuth);
 	};
-	
+
 	return MathUtils;
 });

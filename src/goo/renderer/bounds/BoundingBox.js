@@ -103,6 +103,102 @@ function(Transform, Vector3, Camera) {
 		}
 	};
 
+	BoundingBox.prototype.testStaticAABBAABB = function(bb, contact) {
+		var a = this;
+		var b = bb;
+
+		// [Minimum Translation Vector]
+		var mtvInfo = {
+			mtvDistance : 10000000000, // Set current minimum distance (max float value so next value is always less)
+			mtvAxis : new Vector3()
+		// Axis along which to travel with the minimum distance
+		};
+
+		// [Axes of potential separation]
+		// • Each shape must be projected on these axes to test for intersection:
+		//          
+		// (1, 0, 0) A0 (= B0) [X Axis]
+		// (0, 1, 0) A1 (= B1) [Y Axis]
+		// (0, 0, 1) A1 (= B2) [Z Axis]
+
+		// [X Axis]
+		if (!this.testAxisStatic(Vector3.UNIT_X, a.center.x - a.xExtent, a.center.x + a.xExtent, b.center.x - b.xExtent, b.center.x + b.xExtent,
+			mtvInfo)) {
+			return false;
+		}
+
+		// [Y Axis]
+		if (!this.testAxisStatic(Vector3.UNIT_Y, a.center.y - a.yExtent, a.center.y + a.yExtent, b.center.y - b.yExtent, b.center.y + b.yExtent,
+			mtvInfo)) {
+			return false;
+		}
+
+		// [Z Axis]
+		if (!this.testAxisStatic(Vector3.UNIT_Z, a.center.z - a.zExtent, a.center.z + a.zExtent, b.center.z - b.zExtent, b.center.z + b.zExtent,
+			mtvInfo)) {
+			return false;
+		}
+
+		if (contact) {
+			contact.isIntersecting = true;
+
+			// Calculate Minimum Translation Vector (MTV) [normal * penetration]
+			// contact.normal = mtvInfo.mtvAxis.normalize();
+			contact.normal = mtvInfo.mtvAxis;
+
+			// Multiply the penetration depth by itself plus a small increment
+			// When the penetration is resolved using the MTV, it will no longer intersect
+			contact.penetration = Math.sqrt(mtvInfo.mtvDistance) * 1.001;
+			// contact.penetration = mtvInfo.mtvDistance * 1.001;
+		}
+
+		return true;
+	};
+
+	BoundingBox.prototype.testAxisStatic = function(axis, minA, maxA, minB, maxB, mtvInfo) {
+		// [Separating Axis Theorem]
+		// • Two convex shapes only overlap if they overlap on all axes of separation
+		// • In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
+		// • Find if the two boxes intersect along a single axis
+		// • Compute the intersection interval for that axis
+		// • Keep the smallest intersection/penetration value
+		var axisLengthSquared = Vector3.dot(axis, axis);
+
+		// If the axis is degenerate then ignore
+		if (axisLengthSquared < 0.000001) {
+			return true;
+		}
+
+		// Calculate the two possible overlap ranges
+		// Either we overlap on the left or the right sides
+		var d0 = (maxB - minA); // 'Left' side
+		var d1 = (maxA - minB); // 'Right' side
+
+		// Intervals do not overlap, so no intersection
+		if (d0 <= 0.0 || d1 <= 0.0) {
+			return false;
+		}
+
+		// Find out if we overlap on the 'right' or 'left' of the object.
+		var overlap = (d0 < d1) ? d0 : -d1;
+
+		// The mtd vector for that axis
+		// var sep = axis * (overlap / axisLengthSquared);
+		var sep = new Vector3().copy(axis).mul(overlap / axisLengthSquared);
+
+		// The mtd vector length squared
+		var sepLengthSquared = Vector3.dot(sep, sep);
+
+		// If that vector is smaller than our computed Minimum Translation Distance use that vector as our current MTV distance
+		if (sepLengthSquared < mtvInfo.mtvDistance) {
+			mtvInfo.mtvDistance = sepLengthSquared;
+			// mtvInfo.mtvAxis = sep;
+			mtvInfo.mtvAxis = axis;
+		}
+
+		return true;
+	};
+
 	BoundingBox.prototype.intersectsRay = function(ray) {
 		if (!this.center) {
 			return false;
