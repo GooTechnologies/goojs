@@ -264,6 +264,91 @@ define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/Mesh
 				'}'//
 			].join('\n')
 		},
+		texturedLit : {
+			attributes : {
+				vertexPosition : MeshData.POSITION,
+				vertexNormal : MeshData.NORMAL,
+				vertexUV0 : MeshData.TEXCOORD0
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				cameraPosition : Shader.CAMERA,
+				lightPosition : Shader.LIGHT0,
+				diffuseMap : Shader.TEXTURE0,
+				materialAmbient : Shader.AMBIENT,
+				materialDiffuse : Shader.DIFFUSE,
+				materialSpecular : Shader.SPECULAR,
+				materialSpecularPower : Shader.SPECULAR_POWER
+			},
+			vshader : [ //
+				'attribute vec3 vertexPosition;', //
+				'attribute vec3 vertexNormal;', //
+				'attribute vec2 vertexUV0;', //
+
+				'uniform mat4 viewMatrix;', //
+				'uniform mat4 projectionMatrix;',//
+				'uniform mat4 worldMatrix;',//
+				'uniform vec3 cameraPosition;', //
+				'uniform vec3 lightPosition;', //
+
+				'varying vec3 normal;',//
+				'varying vec3 lightDir;',//
+				'varying vec3 eyeVec;',//
+				'varying vec2 texCoord0;',//
+
+				'void main(void) {', //
+				'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+				'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+
+				'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+				'	texCoord0 = vertexUV0;', //
+				'	lightDir = lightPosition - worldPos.xyz;', //
+				'	eyeVec = cameraPosition - worldPos.xyz;', //
+				'}'//
+			].join('\n'),
+			fshader : [//
+				'precision mediump float;',//
+
+				'uniform sampler2D diffuseMap;',//
+
+				'uniform vec4 materialAmbient;',//
+				'uniform vec4 materialDiffuse;',//
+				'uniform vec4 materialSpecular;',//
+				'uniform float materialSpecularPower;',//
+
+				'varying vec3 normal;',//
+				'varying vec3 lightDir;',//
+				'varying vec3 eyeVec;',//
+				'varying vec2 texCoord0;',//
+
+				'void main(void)',//
+				'{',//
+				'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
+
+				'	vec4 final_color = materialAmbient;',//
+
+				'	vec3 N = normalize(normal);',//
+				'	vec3 L = normalize(lightDir);',//
+
+				'	float lambertTerm = dot(N,L)*0.75+0.25;',//
+
+				'	if(lambertTerm > 0.0)',//
+				'	{',//
+				'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
+				'			lambertTerm;',//
+				'		vec3 E = normalize(eyeVec);',//
+				'		vec3 R = reflect(-L, N);',//
+				'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
+				'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
+				'			specular;',//
+				'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
+				'	}',//
+				'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
+				'}'//
+			].join('\n')
+		},
 		texturedNormalAOLit : {
 			attributes : {
 				vertexPosition : MeshData.POSITION,
