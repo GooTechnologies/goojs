@@ -309,5 +309,22 @@ define(["goo/math/Vector"],
 
 	/* ====================================================================== */
 
+	/**
+	 * @description Linearly interpolates between two vectors and stores the result locally.
+	 * @param {Vector3} end End vector.
+	 * @param {Float} factor Interpolation factor between zero and one.
+	 * @return {Vector3} Self for chaining.
+	 */
+	Vector4.prototype.lerp = function (end, factor) {
+		this.x = (1.0 - factor) * this.x + factor * end.x;
+		this.y = (1.0 - factor) * this.y + factor * end.y;
+		this.z = (1.0 - factor) * this.z + factor * end.z;
+		this.w = (1.0 - factor) * this.w + factor * end.w;
+
+		return this;
+	};
+
+	/* ====================================================================== */
+
 	return Vector4;
 });
