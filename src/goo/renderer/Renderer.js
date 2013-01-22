@@ -9,19 +9,19 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * The renderer handles displaying of graphics data to a render context.
-	 *
+	 * The renderer handles displaying of graphics data to a render context. 
+	 * 
 	 * It accepts a JSON object containing the settings for the renderer.
-	 *
-	 * default = {
-	 *   alpha : false,
-	 *   premultipliedAlpha : true,
-	 *   antialias : false,
-	 *   stencil : false,
-	 *   preserveDrawingBuffer : false
+	 * 
+	 * default = { 
+	 * 		alpha : false, 
+	 * 		premultipliedAlpha : true, 
+	 * 		antialias : false, 
+	 * 		stencil : false, 
+	 * 		preserveDrawingBuffer : false 
 	 * }
-	 *
-	 * @constructor 
+	 * 
+	 * @constructor
 	 * @param {Settings} parameters Renderer settings.
 	 */
 	function Renderer(parameters) {
@@ -205,8 +205,10 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		this.setRenderTarget(renderTarget);
 
-		if (clear === undefined || clear === true) {
+		if (clear === undefined || clear === null || clear === true) {
 			this.clear();
+		} else if (typeof clear === 'object') {
+			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
 		var renderInfo = {
