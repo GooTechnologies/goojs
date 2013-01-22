@@ -9,8 +9,20 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class The renderer handles displaying of graphics data to a render context
-	 * @param {Settings} parameters Renderer settings
+	 * The renderer handles displaying of graphics data to a render context.
+	 *
+	 * It accepts a JSON object containing the settings for the renderer.
+	 *
+	 * default = {
+	 *   alpha : false,
+	 *   premultipliedAlpha : true,
+	 *   antialias : false,
+	 *   stencil : false,
+	 *   preserveDrawingBuffer : false
+	 * }
+	 *
+	 * @constructor 
+	 * @param {Settings} parameters Renderer settings.
 	 */
 	function Renderer(parameters) {
 		parameters = parameters || {};

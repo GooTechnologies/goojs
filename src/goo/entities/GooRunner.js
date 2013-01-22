@@ -8,7 +8,21 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 	"use strict";
 
 	/**
-	 * @class Standard setup of entity system to use as base for small projects/demos
+	 * Standard setup of entity system to use as base for small projects/demos
+	 * 
+	 * It accepts a JSON object containing the settings for the Renderer class.
+	 *
+	 * default = {
+	 *   alpha : false,
+	 *   premultipliedAlpha : true,
+	 *   antialias : false,
+	 *   stencil : false,
+	 *   preserveDrawingBuffer : false,
+	 *   showStats : false
+	 * }
+	 *
+	 * @constructor 
+	 * @param {Object} GooRunner settings passed in a JSON object.
 	 */
 	function GooRunner(parameters) {
 		parameters = parameters || {};
