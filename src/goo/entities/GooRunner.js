@@ -14,7 +14,7 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 		parameters = parameters || {};
 
 		this.world = new World();
-		this.renderer = new Renderer();
+		this.renderer = new Renderer(parameters);
 
 		// this.world.setManager(new TagManager());
 		this.world.setManager(new LightManager());

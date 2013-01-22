@@ -2,9 +2,8 @@
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
 		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'],
-	/** @lends Renderer */
-	function(RendererRecord, Camera, Util, TextureCreator, RenderTarget,
-	Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
+/** @lends Renderer */
+function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -93,6 +92,7 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
+		this.context.stencilMask(0);
 
 		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
 		this.context.depthFunc(WebGLRenderingContext.LEQUAL);

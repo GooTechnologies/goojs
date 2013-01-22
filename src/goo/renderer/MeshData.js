@@ -1,6 +1,6 @@
 define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'],
-	/** @lends MeshData */
-	function(BufferData, Util, BufferUtils) {
+/** @lends MeshData */
+function(BufferData, Util, BufferUtils) {
 	"use strict";
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
@@ -33,14 +33,6 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 	MeshData.SKINMESH = 1;
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
-		if (vertexCount !== undefined) {
-			this.vertexCount = vertexCount;
-			this._vertexCountStore = this.vertexCount;
-		}
-		if (indexCount !== undefined) {
-			this.indexCount = indexCount;
-		}
-
 		if (saveOldData) {
 			var savedAttributes = {};
 			var savedIndices = null;
@@ -55,19 +47,9 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 			}
 		}
 
-		var vertexByteSize = 0;
-		for ( var i in this.attributeMap) {
-			var attribute = this.attributeMap[i];
-			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
-		}
-		this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
+		this.rebuildVertexData(vertexCount);
 
-		if (this.indexCount > 0) {
-			var indices = BufferUtils.createIndexBuffer(this.indexCount, this.vertexCount);
-			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
-		}
-
-		this.generateAttributeData();
+		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
 			for ( var i in this.attributeMap) {
@@ -81,6 +63,31 @@ define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtil
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
+		}
+	};
+
+	MeshData.prototype.rebuildVertexData = function(vertexCount) {
+		if (vertexCount !== undefined) {
+			this.vertexCount = vertexCount;
+			this._vertexCountStore = this.vertexCount;
+		}
+		var vertexByteSize = 0;
+		for ( var i in this.attributeMap) {
+			var attribute = this.attributeMap[i];
+			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
+		}
+		this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
+
+		this.generateAttributeData();
+	};
+
+	MeshData.prototype.rebuildIndexData = function(indexCount) {
+		if (indexCount !== undefined) {
+			this.indexCount = indexCount;
+		}
+		if (this.indexCount > 0) {
+			var indices = BufferUtils.createIndexBuffer(this.indexCount, this.vertexCount);
+			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		}
 	};
 
