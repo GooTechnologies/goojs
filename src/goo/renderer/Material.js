@@ -40,6 +40,11 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 			enabled : true,
 			write : true
 		};
+		this.offsetState = {
+			enabled : false,
+			factor : 1,
+			units : 1
+		};
 
 		this.wireframe = false;
 	}
@@ -97,6 +102,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
+				opacity : 1.0,
 				diffuseMap : Shader.TEXTURE0
 			},
 			vshader : [ //
@@ -118,12 +124,14 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 			'precision mediump float;',//
 
 			'uniform sampler2D diffuseMap;',//
+			'uniform float opacity;',//
 
 			'varying vec2 texCoord0;',//
 
 			'void main(void)',//
 			'{',//
-			'	gl_FragColor = vec4(texture2D(diffuseMap, texCoord0));',//
+			'	vec4 col = texture2D(diffuseMap, texCoord0);',//
+			'	gl_FragColor = vec4(col.rgb, col.a * opacity);',//
 			'}'//
 			].join('\n')
 		},

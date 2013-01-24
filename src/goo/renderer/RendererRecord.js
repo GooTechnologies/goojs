@@ -1,6 +1,6 @@
 define(
-	/** @lends RendererRecord */
-	function () {
+/** @lends RendererRecord */
+function() {
 	"use strict";
 
 	/**
@@ -33,9 +33,10 @@ define(
 		this.depthRecord = {};
 		this.cullRecord = {};
 		this.blendRecord = {};
+		this.offsetRecord = {};
 	}
 
-	RendererRecord.prototype.invalidateBuffer = function (target) {
+	RendererRecord.prototype.invalidateBuffer = function(target) {
 		this.currentBuffer[target].buffer = null;
 		this.currentBuffer[target].valid = false;
 	};

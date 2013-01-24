@@ -9,17 +9,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * The renderer handles displaying of graphics data to a render context. 
-	 * 
-	 * It accepts a JSON object containing the settings for the renderer.
-	 * 
-	 * default = { 
-	 * 		alpha : false, 
-	 * 		premultipliedAlpha : true, 
-	 * 		antialias : false, 
-	 * 		stencil : false, 
-	 * 		preserveDrawingBuffer : false 
-	 * }
+	 * The renderer handles displaying of graphics data to a render context. It accepts a JSON object containing the settings for the renderer.
+	 * default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false }
 	 * 
 	 * @constructor
 	 * @param {Settings} parameters Renderer settings.
@@ -291,6 +282,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			this.updateDepthTest(material);
 			this.updateCulling(material);
 			this.updateBlending(material);
+			this.updateOffset(material);
 			this.updateTextures(material);
 
 			if (meshData.getIndexBuffer() !== null) {
@@ -385,8 +377,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		wireDef.defines = material.shader.defines;
 		wireDef.attributes = material.shader.attributes;
 		wireDef.uniforms = material.shader.uniforms;
+		wireDef.uniforms.color = material.wireframeColor || [1, 1, 1];
 		wireDef.vshader = material.shader.vertexSource;
-		wireDef.fshader = Material.shaders.simple.fshader;
+		wireDef.fshader = Util.clone(Material.shaders.simpleColored.fshader);
 		var wireframeMaterial = Material.createMaterial(wireDef, 'Wireframe');
 		wireframeMaterial.textures = material.textures;
 		return wireframeMaterial;
@@ -929,6 +922,32 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			blendRecord.blendEquation = null;
 			blendRecord.blendSrc = null;
 			blendRecord.blendDst = null;
+		}
+	};
+
+	Renderer.prototype.updateOffset = function(material) {
+		var offsetRecord = this.rendererRecord.offsetRecord;
+		var context = this.context;
+
+		var enabled = material.offsetState.enabled;
+		var factor = material.offsetState.factor;
+		var units = material.offsetState.units;
+
+		if (offsetRecord.enabled !== enabled) {
+			if (enabled) {
+				context.enable(WebGLRenderingContext.POLYGON_OFFSET_FILL);
+			} else {
+				context.disable(WebGLRenderingContext.POLYGON_OFFSET_FILL);
+			}
+
+			offsetRecord.enabled = enabled;
+		}
+
+		if (enabled && (offsetRecord.factor !== factor || offsetRecord.units !== units)) {
+			context.polygonOffset(factor, units);
+
+			offsetRecord.factor = factor;
+			offsetRecord.units = units;
 		}
 	};
 
