@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Particle Editor</title>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/vader/jquery-ui.css" />
+    <link rel="stylesheet" href="particle_editor.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script src="../lib/jsrender.js"></script>
+    <script data-main="particle_editor" src="../lib/require.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        // default object setup
+        $('#particle_components').accordion();
+        $('#add_particle_component').button();
+    });
+    </script>
+</head>
+
+<body>
+    <div id="config">
+        <div id="particle_components"></div>
+        <button id="add_particle_component">Add Particle Component</button>
+    </div>
+
+    <!-- hidden file chooser used for editor -->
+    <input type="file" id="fileChooser" class="hidden_input">
+    <img id="imgRecycler" class="hidden_input">
+
+    <!-- template editor form for a particle component -->
+    <script id="component_accordion_template" type="text/x-jsrender">
+        <h3>{{>title}}</h3>
+        <div class="component_properties">
+            <label>Particles:</label>
+            <input type="number" class="particle_count" name="{{>name}}" min="0" step="10" max="16383" value="{{>count}}">
+
+            <label>Blending:</label>
+            <select class="particle_blending" name="{{>name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select>
+
+            <label>Texture:</label>
+            <img src='../resources/flare.png' class="particle_texture" name="{{>name}}">
+
+            <label>Atlas X/Y:</label>
+            <span class="atlas">
+            <input type="number" class="particle_atlasX" name="{{>name}}" min="0" step="1" max="64" value="{{>atlasX}}">
+            <input type="number" class="particle_atlasY" name="{{>name}}" min="0" step="1" max="64" value="{{>atlasY}}">
+            </span>
+
+            <label>Enabled:</label>
+            <input type="checkbox" class="particle_enabled" name="{{>name}}" min="0" step="1" max="64" checked="{{>enabled}}">
+        </div>
+    </script>
+</body>
+</html>

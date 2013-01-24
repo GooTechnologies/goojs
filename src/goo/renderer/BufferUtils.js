@@ -14,7 +14,7 @@ define(
 			indices = new Uint16Array(indexCount);
 		} else { // 2^32
 			// XXX: Currently not allowed in WebGL. Max is 16 bits.
-			throw new Error("Maximum number of vertices is 65536. Got: " + vertexCount);
+			throw new Error("Maximum number of vertices is 65535. Got: " + vertexCount);
 			// indices = new Uint32Array(indexCount);
 		}
 		return indices;
