@@ -421,7 +421,7 @@ define(
 						try {
 							minificationFilter = 'minificationFilterStr';
 						} catch (e) {
-							console.warning("Bad texture minification filter: " + minificationFilterStr);
+							console.warn("Bad texture minification filter: " + minificationFilterStr);
 						}
 					}
 					var flipTexture = entry.Flip !== undefined ? entry.Flip : true;
