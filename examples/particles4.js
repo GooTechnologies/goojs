@@ -106,7 +106,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addFlame(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 30,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 2.0,
@@ -142,7 +142,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addCH4Flame(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 40,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 2.0,
@@ -175,7 +175,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addSmoke(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 25,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 4.0,
@@ -205,7 +205,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addWhiteEnergy(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 30,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 4.0,
@@ -239,7 +239,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addRipples(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 10,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 4.0,
@@ -294,7 +294,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
  		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: positions.length * 4,
 		    	minLifetime: 0.5,
 		    	maxLifetime: 4.0,
@@ -332,7 +332,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addLetterRain(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 10,
 		    	minLifetime: 2.0,
 		    	maxLifetime: 2.0,
@@ -392,7 +392,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addSphere(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 100,
 		    	minLifetime: 2.0,
 		    	maxLifetime: 2.0,
@@ -436,7 +436,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function addBox(particleComponent) {
 		particleComponent.emitters.push(
 			new ParticleEmitter({
-		    	totalParticlesToSpawn: Infinity,
+		    	totalParticlesToSpawn: -1,
 		    	releaseRatePerSecond: 100,
 		    	minLifetime: 2.0,
 		    	maxLifetime: 2.0,

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Particle Editor</title>
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/vader/jquery-ui.css" />
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/dark-hive/jquery-ui.css" />
     <link rel="stylesheet" href="particle_editor.css" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
@@ -21,8 +21,8 @@
 
 <body>
     <div id="config">
+        <div style="text-align: center;"><button id="add_particle_component" class="add_button">+ Add Particle Component</button></div>
         <div id="particle_components"></div>
-        <button id="add_particle_component">Add Particle Component</button>
     </div>
 
     <!-- hidden file chooser used for editor -->
@@ -30,27 +30,67 @@
     <img id="imgRecycler" class="hidden_input">
 
     <!-- template editor form for a particle component -->
-    <script id="component_accordion_template" type="text/x-jsrender">
+     <script id="component_editor_template" type="text/x-jsrender"> 
         <h3>{{>title}}</h3>
-        <div class="component_properties">
-            <label>Particles:</label>
-            <input type="number" class="particle_count" name="{{>name}}" min="0" step="10" max="16383" value="{{>count}}">
+        <div>
+	        <ol class="component_properties editor">
+	            <li>
+                <label>Particles:</label>
+                <input type="number" class="particle_count" name="{{attr:name}}" min="0" step="10" max="16383" value="{{attr:count}}">
+                </li>
+	
+                <li>
+	            <label>Blending:</label>
+	            <select class="particle_blending" name="{{attr:name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select>
+	            </li>
 
-            <label>Blending:</label>
-            <select class="particle_blending" name="{{>name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select>
+                <li>
+                <label>Enabled:</label>
+                <input type="checkbox" class="particle_enabled" name="{{attr:name}}" min="0" step="1" max="64" checked="{{attr:enabled}}">
+                </li>
 
-            <label>Texture:</label>
-            <img src='../resources/flare.png' class="particle_texture" name="{{>name}}">
+                <li>
+	            <label>Texture:</label>
+	            <img src='../resources/flare.png' class="particle_texture" name="{{attr:name}}">
+	            </li>
 
-            <label>Atlas X/Y:</label>
-            <span class="atlas">
-            <input type="number" class="particle_atlasX" name="{{>name}}" min="0" step="1" max="64" value="{{>atlasX}}">
-            <input type="number" class="particle_atlasY" name="{{>name}}" min="0" step="1" max="64" value="{{>atlasY}}">
-            </span>
-
-            <label>Enabled:</label>
-            <input type="checkbox" class="particle_enabled" name="{{>name}}" min="0" step="1" max="64" checked="{{>enabled}}">
+                <li>
+	            <label>Atlas X/Y:</label>
+	            <span class="atlas">
+	            <input type="number" class="particle_atlasX" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasX}}">
+	            <input type="number" class="particle_atlasY" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasY}}">
+	            </span>
+	            </li>
+	        </ol>
+            <div style="text-align: center;"><button id="add_emitter" class="add_button">+ Add Emitter</button></div>
+            <div class="emitters"></div>
         </div>
+    </script>
+    
+    <!-- template editor form for a particle component -->
+    <script id="emitter_editor_template" type="text/x-jsrender">
+        <h3>Emitter {{:#index+1}}</h3>
+        <ol class="emitter_properties editor">
+            <li>
+            <label>Max Life (ms):</label>
+            <input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}">
+            </li>
+
+            <li>
+            <label>Min Life (ms):</label>
+            <input type="number" class="min_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}">
+            </li>
+
+            <li>
+            <label>Release Rate / sec:</label>
+            <input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}">
+            </li>
+
+            <li>
+            <label>Max Spawn:</label>
+            <input type="text" class="max_spawn" name="{{:#index}}" size="5" value="{{attr:totalParticlesToSpawn}}">
+            </li>
+        </ol>
     </script>
 </body>
 </html>

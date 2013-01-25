@@ -81,7 +81,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			],
 			emitters: [
 			    {
-			    	totalParticlesToSpawn: Infinity,
+			    	totalParticlesToSpawn: -1,
 			    	releaseRatePerSecond: 100,
 			    	minLifetime: 1.300,
 			    	maxLifetime: 1.950,

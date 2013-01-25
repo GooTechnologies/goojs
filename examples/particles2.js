@@ -138,7 +138,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		
 		// XXX: Try setting totalParticlesToSpawn to 500 to show limited particle emission.
 		return new ParticleEmitter({
-	    	totalParticlesToSpawn: Infinity,
+	    	totalParticlesToSpawn: -1,
 	    	releaseRatePerSecond: 100,
 	    	minLifetime: 0.1,
 	    	maxLifetime: 1.5,

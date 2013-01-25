@@ -87,12 +87,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			],
 			emitters : [
 			    {
-			    	totalParticlesToSpawn: Infinity,
+			    	totalParticlesToSpawn: -1,
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 2.0,
 			    	maxLifetime: 3.0
 			    }, {
-			    	totalParticlesToSpawn: Infinity,
+			    	totalParticlesToSpawn: -1,
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 3.0,
 			    	maxLifetime: 5.0,
@@ -101,7 +101,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 						return ParticleUtils.applyEntityTransformPoint(vec3.set(5,0,0), particleEntity);
 			    	}
 			    }, {
-			    	totalParticlesToSpawn: Infinity,
+			    	totalParticlesToSpawn: -1,
 			    	releaseRatePerSecond: 5,
 			    	minLifetime: 0.1,
 			    	maxLifetime: 2.5,

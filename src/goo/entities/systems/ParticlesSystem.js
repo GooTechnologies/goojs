@@ -28,8 +28,6 @@ function(System) {
 	};
 
 	ParticlesSystem.prototype.updateParticles = function(particleEntity, particleComponent, tpf) {
-		var transformComponent = particleEntity.transformComponent;
-
 		// go through any influences and prepare them
 		if (particleComponent.influences.length) {
 			for ( var j = 0, max = particleComponent.influences.length; j < max; j++) {
@@ -52,7 +50,7 @@ function(System) {
 				if (particleComponent.emitters.length > emitterIndex) {
 					emitter = particleComponent.emitters[emitterIndex];
 
-					if (emitter.totalParticlesToSpawn > 0) {
+					if (emitter.totalParticlesToSpawn != 0) {
 						// find out how many particles to create.
 						emitter.particlesWaitingToRelease += emitter.releaseRatePerSecond * tpf;
 						emitter.particlesWaitingToRelease = Math.max(emitter.particlesWaitingToRelease, 0);
@@ -90,7 +88,7 @@ function(System) {
 			// if not alive, see if we want to respawn it at the current emitter (if we have one)
 			if (!particle.alive && emitter) {
 				emitter.particlesWaitingToRelease--;
-				if (emitter.totalParticlesToSpawn !== Infinity) {
+				if (emitter.totalParticlesToSpawn >= 1) {
 					emitter.totalParticlesToSpawn--;
 				}
 

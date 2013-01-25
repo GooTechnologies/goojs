@@ -11,7 +11,7 @@ define([ 'goo/particles/ParticleUtils', 'goo/renderer/Renderer' ],
 		settings = settings || {};
 
 		// How many particles should we spawn before shutting down this emitter.  Negative means never shut down.
-		this.totalParticlesToSpawn = !isNaN(settings.totalParticlesToSpawn) ? settings.totalParticlesToSpawn : Infinity;
+		this.totalParticlesToSpawn = !isNaN(settings.totalParticlesToSpawn) ? settings.totalParticlesToSpawn : -1;
 
 		// Max lifetime of a particle emitted by this emitter (in seconds)
 		this.maxLifetime = !isNaN(settings.maxLifetime) ? settings.maxLifetime : 3.0;

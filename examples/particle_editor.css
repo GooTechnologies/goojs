@@ -13,26 +13,41 @@
 
 #config {
 	margin: 10px;
-	width: 400px;
+	width: 450px;
 	background-color: #333;
 	right: 0px;
 	top: 0px;
-	padding: 10px;
 	position: absolute;
 	border-radius: 8px;
 	z-index: 3;
 }
 
-.component_properties label {
-	display: block;
-	margin-bottom: -1em;
+.component_properties {
+	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	column-count: 2;
 }
 
-.component_properties input,select,img {
+.emitter_properties {
+	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	column-count: 2;
+}
+
+.editor label {
 	display: block;
-	position: relative;
-	left: 7em;
-	top: -0.5em;
+	vertical-align: bottom;
+}
+
+.editor ol {
+	margin: 0;
+	padding: 0;
+}
+
+.editor li {
+	list-style: none;
+	padding: .25em;
+	margin: 0;
 }
 
 .particle_texture {
@@ -43,24 +58,12 @@
 	background-color: #999;
 }
 
-.component_properties .atlas {
-    display: inline-block !important;
-    left: 7em !important;
-    position: relative;
+.add_button {
+	font-size: 75% !important;
 }
 
-.component_properties .particle_atlasX {
-    display: inline-block !important;
-    left: 0 !important;
-}
-
-.component_properties .particle_atlasY {
-    display: inline-block !important;
-    left: 0 !important;
-}
-
-.ui-button,.ui-button-text .ui-button {
-	font-size: 10px;
+.ui-widget {
+	font-size: 85%;
 }
 
 .hidden_input {
