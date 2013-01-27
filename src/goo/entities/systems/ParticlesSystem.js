@@ -1,6 +1,6 @@
-define(['goo/entities/systems/System'],
+define(['goo/entities/systems/System', 'goo/particles/ParticleUtils'],
 /** @lends ParticlesSystem */
-function(System) {
+function(System, ParticleUtils) {
 	"use strict";
 
 	/**
@@ -22,7 +22,9 @@ function(System) {
 			var particleComponent = entity.particleComponent;
 
 			if (particleComponent && particleComponent.enabled) {
-				this.updateParticles(entity, particleComponent, tpf);
+				try {
+					this.updateParticles(entity, particleComponent, tpf);
+				} catch (e) {console.log(e.stack);}
 			}
 		}
 	};

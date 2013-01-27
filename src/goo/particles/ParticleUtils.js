@@ -70,7 +70,7 @@ define([ 'goo/math/Vector3' ],
 		var nextCEntry = null, nextMEntry = null, nextSiEntry = null, nextSpEntry = null;
         for (var i = 0, max = timeline.length; i < max; i++) {
             var entry = timeline[i];
-            trAge += entry.timeOffset * lifeSpan;
+            trAge += (entry.timeOffset ? entry.timeOffset : 0.0) * lifeSpan;
             // Color
             if (nextCEntry == null) {
                 if (trAge > age) {

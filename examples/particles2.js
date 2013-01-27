@@ -19,7 +19,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	var resourcePath = "../resources";
 
-	var material;
+	var material = null;
 
 	function init() {
 		// Create typical goo application

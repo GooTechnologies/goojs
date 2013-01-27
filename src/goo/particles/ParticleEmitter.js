@@ -25,21 +25,19 @@ define([ 'goo/particles/ParticleUtils', 'goo/renderer/Renderer' ],
 		// function returning an emission point for a particle.
 		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function(particle, particleEntity) {
     		var vec3 = particle.position;
-			return ParticleUtils.applyEntityTransformPoint(vec3.set(0,0,0), particleEntity);
+    		vec3.set(0,0,0);
+			return ParticleUtils.applyEntityTransformPoint(vec3, particleEntity);
 		};
 
 		// function returning an emission velocity for a particle.
 		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function(particle, particleEntity) {
     		var vec3 = particle.velocity;
-			return ParticleUtils.applyEntityTransformVector(vec3.set(0,1,0), particleEntity);
+    		vec3.set(0,1,0);
+			return ParticleUtils.applyEntityTransformVector(vec3, particleEntity);
 		};
 
 		// function returning an emission velocity for a particle.
-		this.getParticleBillboardVectors = settings.getParticleBillboardVectors ? settings.getParticleBillboardVectors : function(particle, particleEntity) {
-			var camera = Renderer.mainCamera;
-			particle.bbX.set(camera._left);
-			particle.bbY.set(camera._up);
-		};
+		this.getParticleBillboardVectors = settings.getParticleBillboardVectors ? settings.getParticleBillboardVectors : ParticleEmitter.CAMERA_BILLBOARD_FUNC;
 		
 		// target number of particles per second to spawn.
 		this.releaseRatePerSecond = !isNaN(settings.releaseRatePerSecond) ? settings.releaseRatePerSecond : 10;
@@ -47,6 +45,12 @@ define([ 'goo/particles/ParticleUtils', 'goo/renderer/Renderer' ],
 		// used to track fractional parts of particles waiting to be released between frames.
 		this.particlesWaitingToRelease = 0.0;
 	}
+	
+	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function(particle, particleEntity) {
+		var camera = Renderer.mainCamera;
+		particle.bbX.set(camera._left);
+		particle.bbY.set(camera._up);
+	};
 
 	ParticleEmitter.prototype.nextParticleLifeSpan = function() {
 		return this.minLifetime + ((this.maxLifetime - this.minLifetime) * Math.random());

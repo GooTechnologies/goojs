@@ -25,6 +25,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo = new GooRunner({
 			showStats : true
 		});
+		goo.a = 1;
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
@@ -157,6 +158,34 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		emitters.on('change', '.max_spawn', function() {
 			entity.particleComponent.emitters[this.name].totalParticlesToSpawn = this.value;
 		});
+		emitters.on('change', '.billboard', function() {
+			if (this.value === 'camera') {
+				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
+			} else if (this.value === 'xy') {
+				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+		    		particle.bbX.set(1, 0, 0);
+		    		particle.bbY.set(0, 1, 0);
+		    	};
+			} else if (this.value === 'yz') {
+				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+		    		particle.bbX.set(0, 1, 0);
+		    		particle.bbY.set(0, 0, 1);
+		    	};
+			} else if (this.value === 'xz') {
+				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+		    		particle.bbX.set(1, 0, 0);
+		    		particle.bbY.set(0, 0, 1);
+		    	};
+			}
+		});
+		emitters.on('change', '.emission_point', function() {
+			var func = new Function('particle', 'particleEntity', this.value);
+			entity.particleComponent.emitters[this.id].getEmissionPoint = func;
+		});
+		emitters.on('change', '.emission_velocity', function() {
+			var func = new Function('particle', 'particleEntity', this.value);
+			entity.particleComponent.emitters[this.id].getEmissionVelocity = func;
+		});
 	}
 
 	function createParticleMaterial(blendType) {
@@ -198,15 +227,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		entity.setComponent(new ScriptComponent(script));
 
 		// add a default emitter
-		var loc = new Vector3(Math.random() * 20 - 10, 0.0, Math.random() * 20 - 10);
 		particleComponent.emitters.push(new ParticleEmitter({
-			getEmissionPoint: function(particle, particleEntity) {
-	    		ParticleUtils.applyEntityTransformPoint(particle.position.set(loc), particleEntity);
-	    	},
-			timeline: [ {
-					timeOffset: 0.0,
-					color: [Math.random(), Math.random(), Math.random(), 1.0]
-				} ]
+			timeline: [ { color: [Math.random(), Math.random(), Math.random(), 1.0] } ]
 		}));
 		
 		entity.addToWorld();
@@ -222,7 +244,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var particleComponent = entity.particleComponent;
     	// Create html for ui from template
     	var componentHTML = $("#component_editor_template").render({
-    		title: "Particle Component "+particleEntities.length,
+    		title: "Particle Entity "+particleEntities.length,
     		count: particleComponent.particleCount,
     		name: entity.id,
     		atlasX: particleComponent.uRange,
@@ -241,12 +263,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
     	var emitterData = [];
     	for (var i = 0, max = particleComponent.emitters.length; i < max; i++) {
     		var emitter = particleComponent.emitters[i];
+    		emitter.ent = entity.id; // hack for ui button groups
     		emitterData.push(emitter);
     	}
     	var emittersHTML = $("#emitter_editor_template").render(emitterData);
     	// add emitters to component editor
     	emitters.append($(emittersHTML.trim()));
     	setupEmittersListeners(emitters, entity);
+    	
+    	var tabs = emitters.children('.emitter_properties').first();
+    	tabs.tabs({
+    		heightStyle: "content",
+    		active: 1	
+    	});
     	
     	// add top level to main accordion
     	var accordion = $('#particle_components');
@@ -264,11 +293,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
     	
     	// convert emitters to accordion
     	emitters.accordion({
-    		heightStyle: "auto",
+    		heightStyle: "content",
+    		collapsible: true,
     		active: 0
     	});
     	
     	accordion.accordion("refresh");
+    	emitters.accordion("refresh");
 	}
 	
 	init();

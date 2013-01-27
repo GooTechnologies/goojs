@@ -30,38 +30,37 @@
     <img id="imgRecycler" class="hidden_input">
 
     <!-- template editor form for a particle component -->
-     <script id="component_editor_template" type="text/x-jsrender"> 
+    <script id="component_editor_template" type="text/x-jsrender">
         <h3>{{>title}}</h3>
         <div>
-	        <ol class="component_properties editor">
-	            <li>
-                <label>Particles:</label>
-                <input type="number" class="particle_count" name="{{attr:name}}" min="0" step="10" max="16383" value="{{attr:count}}">
-                </li>
+	        <table class="component_properties editor" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                <td class="label" colspan="2">Enabled: <input type="checkbox" class="particle_enabled" name="{{attr:name}}" min="0" step="1" max="64" checked="{{attr:enabled}}"></td>
+                </tr>
+
+	            <tr>
+                <td class="label" width="50%">Total Particles:</td>
+                <td class="label" width="50%">Texture:</td>
+                </tr>
+
+                <tr>
+                <td class="input"><input type="number" class="particle_count" name="{{attr:name}}" min="0" step="10" max="16383" value="{{attr:count}}"></td>
+                <td class="input"><img src='../resources/flare.png' class="particle_texture" name="{{attr:name}}"></td>
+                </tr>
 	
-                <li>
-	            <label>Blending:</label>
-	            <select class="particle_blending" name="{{attr:name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select>
-	            </li>
+                <tr>
+                <td class="label">Blending:</td>
+                <td class="label">Atlas X/Y:</td>
+                </tr>
 
-                <li>
-                <label>Enabled:</label>
-                <input type="checkbox" class="particle_enabled" name="{{attr:name}}" min="0" step="1" max="64" checked="{{attr:enabled}}">
-                </li>
-
-                <li>
-	            <label>Texture:</label>
-	            <img src='../resources/flare.png' class="particle_texture" name="{{attr:name}}">
-	            </li>
-
-                <li>
-	            <label>Atlas X/Y:</label>
-	            <span class="atlas">
-	            <input type="number" class="particle_atlasX" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasX}}">
-	            <input type="number" class="particle_atlasY" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasY}}">
-	            </span>
-	            </li>
-	        </ol>
+                <tr>
+                <td class="input"><select class="particle_blending" name="{{attr:name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select></td>
+                <td class="input"><span class="atlas">
+                <input type="number" class="particle_atlasX" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasX}}">
+                <input type="number" class="particle_atlasY" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasY}}">
+                </span></td>
+                </tr>
+	        </table>
             <div style="text-align: center;"><button id="add_emitter" class="add_button">+ Add Emitter</button></div>
             <div class="emitters"></div>
         </div>
@@ -70,27 +69,83 @@
     <!-- template editor form for a particle component -->
     <script id="emitter_editor_template" type="text/x-jsrender">
         <h3>Emitter {{:#index+1}}</h3>
-        <ol class="emitter_properties editor">
-            <li>
-            <label>Max Life (ms):</label>
-            <input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}">
-            </li>
+        <div class="emitter_properties">
+            <ul>
+                <li><a href="#emit-tab1-{{:#index}}_{{attr:ent}}">General</a></li>
+                <li><a href="#emit-tab2-{{:#index}}_{{attr:ent}}">Functions</a></li>
+                <li><a href="#emit-tab3-{{:#index}}_{{attr:ent}}">Timeline</a></li>
+            </ul>
+            <div id="emit-tab1-{{:#index}}_{{attr:ent}}">
+	            <table cellpadding="0" cellspacing="0" border="0" class="editor">
+		            <tr>
+		            <td class="label" width="50%">Max Life (ms):</td>
+		            <td class="label" width="50%">Release Rate / sec:</td>
+		            </tr>
+		
+		            <tr>
+		            <td class="input"><input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
+		            <td class="input"><input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
+		            </tr>
+		
+		            <tr>
+		            <td class="label">Min Life (ms):</td>
+		            <td class="label">Max Spawn:</td>
+		            </tr>
+		
+		            <tr>
+		            <td class="input"><input type="number" class="min_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}"></td>
+		            <td class="input"><input type="text" class="max_spawn" name="{{:#index}}" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
+		            </tr>
 
-            <li>
-            <label>Min Life (ms):</label>
-            <input type="number" class="min_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}">
-            </li>
+                    <tr>
+                    <td class="label">Billboard:</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input">
+                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="camera" checked="checked"> Camera</label><br/>
+                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="xz"> XZ Plane</label>
+                    </td>
+                    <td class="input">
+                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="xy"> XY Plane</label><br/>
+                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="yz"> YZ Plane</label>
+                    </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="emit-tab2-{{:#index}}_{{attr:ent}}">
+                <table cellpadding="0" cellspacing="0" border="0" class="editor">
+	                <tr>
+	                <td class="label">getEmissionPoint: <br/>function(particle, particleEntity) {</td>
+	                </tr>
+	    
+	                <tr>
+	                <td class="input"><textarea class="textarea emission_point" id="{{:#index}}">return particle.position.set(0,0,0);</textarea></td>
+	                </tr>
 
-            <li>
-            <label>Release Rate / sec:</label>
-            <input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}">
-            </li>
-
-            <li>
-            <label>Max Spawn:</label>
-            <input type="text" class="max_spawn" name="{{:#index}}" size="5" value="{{attr:totalParticlesToSpawn}}">
-            </li>
-        </ol>
+	                <tr>
+	                <td class="label">getEmissionVelocity: <br/>function(particle, particleEntity) {</td>
+	                </tr>
+        
+                    <tr>
+                    <td class="input"><textarea class="textarea emission_velocity" id="{{:#index}}">return particle.velocity.set(0,1,0);</textarea></td>
+                    </tr>
+	            </table>
+	        </div>
+            <div id="emit-tab3-{{:#index}}_{{attr:ent}}">
+                <!-- <table cellpadding="0" cellspacing="0" border="0" class="editor">
+                    <tr>
+                    <td class="label" width="50%">Max Life (ms):</td>
+                    <td class="label" width="50%">Release Rate / sec:</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input"><input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
+                    <td class="input"><input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
+                    </tr>
+                </table> -->
+            </div>
+        </div>
     </script>
 </body>
 </html>
