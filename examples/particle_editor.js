@@ -34,11 +34,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.world.setSystem(particles);
 		
 		// Add camera
-		var camera = new Camera(30, 1, 1, 1000);
-		camera.translation.set(0, 30, 50);
-		camera.lookAt(new Vector3(0, 2, 0), Vector3.UNIT_Y);
-		camera.onFrameChange();
+		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 30, 50);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 2, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 		

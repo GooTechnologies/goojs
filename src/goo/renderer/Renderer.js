@@ -448,7 +448,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || !texture instanceof RenderTarget && texture.image === undefined || texture.image
+			if (texture === undefined || !(texture instanceof RenderTarget) && texture.image === undefined || texture.image
 				&& texture.image.dataReady === undefined) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;

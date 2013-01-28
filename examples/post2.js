@@ -32,9 +32,9 @@ require(
 			document.body.appendChild(goo.renderer.domElement);
 
 			var camera = new Camera(45, 1, 1, 100);
-			camera.translation.set(0, 5, 25);
-			camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			var cameraEntity = goo.world.createEntity("CameraEntity");
+			cameraEntity.transformComponent.transform.translation.set(0, 5, 25);
+			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
 			cameraEntity.setComponent(new ScriptComponent(new BasicControlScript()));
