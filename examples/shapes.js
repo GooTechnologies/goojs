@@ -50,7 +50,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	// Create simple quad
 	function createShapes(goo) {
-		createMesh(goo, ShapeCreator.createTeapot(), -10, -10, -30);
 		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), -10, 0, -30);
 		createMesh(goo, ShapeCreator.createBox(3, 3, 3), -10, 10, -30);
 		createMesh(goo, ShapeCreator.createQuad(3, 3), 0, -7, -20);

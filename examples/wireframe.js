@@ -21,7 +21,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			showStats : true,
+			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -34,7 +35,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.addToWorld();
 
 		// loadModels(goo);
-		var meshData = ShapeCreator.createTeapot();
+		var meshData = ShapeCreator.createTorus(20, 20, 1, 3);
 		createMesh(goo, meshData, 0, 0, 0);
 	}
 

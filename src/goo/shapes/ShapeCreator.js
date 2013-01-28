@@ -1,7 +1,7 @@
-define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Teapot', 'goo/shapes/Sphere', 'goo/shapes/Torus',
+define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Sphere', 'goo/shapes/Torus',
 		'goo/entities/EntityUtils'],
 	/** @lends ShapeCreator */
-	function (MeshData, Box, Quad, Teapot, Sphere, Torus, EntityUtils) {
+	function (MeshData, Box, Quad, Sphere, Torus, EntityUtils) {
 	"use strict";
 
 	/**
@@ -40,16 +40,6 @@ define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shape
 
 	ShapeCreator.createBox = function (width, height, length, tileX, tileY) {
 		return new Box(width, height, length, tileX, tileY);
-	};
-
-	/**
-	 * @static
-	 * @description Creates a teapot shape.
-	 * @returns {Teapot} The created teapot.
-	 */
-
-	ShapeCreator.createTeapot = function () {
-		return new Teapot();
 	};
 
 	/**
