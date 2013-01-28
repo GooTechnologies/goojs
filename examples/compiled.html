@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>Compiled Start</title>
+<script src="compiled.js"></script>
+<!-- <script src="extracted.js"></script> -->
+<script id="vshader" type="x-shader/x-vertex">
+			attribute vec3 vertexPosition;
+			attribute vec4 vertexColors;
+			attribute vec2 vertexUV0;
+			attribute float fish;
+			
+			uniform mat4 viewMatrix;
+			uniform mat4 projectionMatrix;
+			uniform mat4 worldMatrix;
+
+			varying vec4 color;
+			varying vec2 texCoord0;
+			
+			void main(void) {
+				color = vertexColors;
+				texCoord0 = vertexUV0;
+				gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition+vec3(fish*2.0), 1.0);
+			}
+</script>
+<script id="fshader" type="x-shader/x-fragment">
+			precision mediump float;
+		
+			uniform sampler2D diffuseMap;
+	
+			varying vec4 color;
+			varying vec2 texCoord0;
+
+			void main(void)
+			{
+				vec4 texCol = texture2D(diffuseMap, texCoord0);
+				gl_FragColor = texCol * color;
+			}
+</script>
+<style>
+#goo {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+	<p>Test</p>
+</body>
+</html>

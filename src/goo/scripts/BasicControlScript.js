@@ -34,6 +34,7 @@ function(Vector3) {
 		};
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
+		this.multiplier = new Vector3(1, 1, 1);
 
 		this.handleEvent = function(event) {
 			if (typeof this[event.type] === 'function') {
@@ -264,9 +265,9 @@ function(Vector3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			transform.rotation.x += this.rotationVector.x * rotMult;
-			transform.rotation.y += this.rotationVector.y * rotMult;
-			transform.rotation.z += this.rotationVector.z * rotMult;
+			transform.rotation.x += this.rotationVector.x * rotMult * this.multiplier.x;
+			transform.rotation.y += this.rotationVector.y * rotMult * this.multiplier.y;
+			transform.rotation.z += this.rotationVector.z * rotMult * this.multiplier.z;
 
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = 0;

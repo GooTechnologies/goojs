@@ -1,9 +1,9 @@
 /* jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform'],
+		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue'],
 /** @lends Renderer */
-function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform) {
+function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform, RenderQueue) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -113,6 +113,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		this.overrideMaterial = null;
 
+		this.renderQueue = new RenderQueue();
+		
 		this.info = {
 			calls : 0,
 			vertices : 0,
@@ -208,6 +210,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		};
 
 		if (Array.isArray(renderList)) {
+			this.renderQueue.sort(renderList, camera);
+			
 			for ( var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
 				this.fillRenderInfo(renderable, renderInfo);

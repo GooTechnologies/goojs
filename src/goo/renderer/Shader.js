@@ -1,6 +1,6 @@
-define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World'],
+define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World', 'goo/renderer/RenderQueue'],
 	/** @lends Shader */
-	function (ShaderCall, Util, Matrix4x4, Vector3, World) {
+	function (ShaderCall, Util, Matrix4x4, Vector3, World, RenderQueue) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -51,6 +51,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		this.attributes = shaderDefinition.attributes;
 		this.uniforms = shaderDefinition.uniforms;
 
+		this.renderQueue = RenderQueue.OPAQUE;
+		
 		this._id = Shader.id++;
 	}
 

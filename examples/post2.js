@@ -1,4 +1,4 @@
-require({
+require.config({
     baseUrl : "./",
     paths : {
         goo : "../src/goo",
@@ -37,7 +37,10 @@ require(
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
-			cameraEntity.setComponent(new ScriptComponent(new BasicControlScript()));
+			var controlScript = new BasicControlScript();
+			controlScript.rollSpeed = 1;
+			controlScript.multiplier.set(1,-1,1);
+			cameraEntity.setComponent(new ScriptComponent(controlScript));
 
 			// Examples of model loading
 			loadModels(goo);

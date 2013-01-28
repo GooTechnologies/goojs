@@ -47,7 +47,16 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		};
 
 		this.wireframe = false;
+		
+		this.renderQueue = null;
 	}
+	
+	Material.prototype.getRenderQueue = function() {
+		if (this.renderQueue) {
+			return this.renderQueue;
+		}
+		return this.shader.renderQueue;
+	};
 
 	Material.shaders = {
 		copy : {

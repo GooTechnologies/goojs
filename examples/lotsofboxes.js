@@ -1,4 +1,4 @@
-require({
+require.config({
 	baseUrl : "./",
 	paths : {
 		goo : "../src/goo",
@@ -20,19 +20,20 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		// Add box
-		var boxEntity = createBoxEntity(goo);
+		var material = new Material('TestMaterial');
+		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
+		material.textures.push(texture);
 
-		// Add spin
-		boxEntity.setComponent(new ScriptComponent({
-			run : function(entity) {
-				var tpf = entity._world.tpf;
-				boxEntity.transformComponent.transform.rotation.y += tpf * 2.0;
-				boxEntity.transformComponent.transform.rotation.x += tpf * 1.2;
-				boxEntity.transformComponent.setUpdated();
-			}
-		}));
-		boxEntity.addToWorld();
+		// Add boxes
+		var rc4Rand = new Rc4Random("seed");
+		for ( var i = 0; i < 200; i++) {
+			var x = rc4Rand.getRandomNumber() * 100 - 50;
+			var y = rc4Rand.getRandomNumber() * 100 - 50;
+			var z = rc4Rand.getRandomNumber() * 100 - 110;
+//			console.log(i, x, y, z);
+			createBoxEntity(goo, material, x, y, z);
+		}
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -41,20 +42,56 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		cameraEntity.addToWorld();
 	}
 
-	function createBoxEntity(goo) {
-		var meshData = ShapeCreator.createBox(1, 1, 1);
+	function createBoxEntity(goo, material, x, y, z) {
+		var meshData = ShapeCreator.createBox(20, 20, 20);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		entity.transformComponent.transform.translation.z = -5;
+		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.name = "Box";
-
-		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
-		material.textures.push(texture);
-
 		entity.meshRendererComponent.materials.push(material);
-
+		entity.addToWorld();
 		return entity;
+	}
+
+	function Rc4Random(seed) {
+		var keySchedule = [];
+		var keySchedule_i = 0;
+		var keySchedule_j = 0;
+
+		function init(seed) {
+			for ( var i = 0; i < 256; i++)
+				keySchedule[i] = i;
+
+			var j = 0;
+			for ( var i = 0; i < 256; i++) {
+				j = (j + keySchedule[i] + seed.charCodeAt(i % seed.length)) % 256;
+
+				var t = keySchedule[i];
+				keySchedule[i] = keySchedule[j];
+				keySchedule[j] = t;
+			}
+		}
+		init(seed);
+
+		function getRandomByte() {
+			keySchedule_i = (keySchedule_i + 1) % 256;
+			keySchedule_j = (keySchedule_j + keySchedule[keySchedule_i]) % 256;
+
+			var t = keySchedule[keySchedule_i];
+			keySchedule[keySchedule_i] = keySchedule[keySchedule_j];
+			keySchedule[keySchedule_j] = t;
+
+			return keySchedule[(keySchedule[keySchedule_i] + keySchedule[keySchedule_j]) % 256];
+		}
+
+		this.getRandomNumber = function() {
+			var number = 0;
+			var multiplier = 1;
+			for ( var i = 0; i < 8; i++) {
+				number += getRandomByte() * multiplier;
+				multiplier *= 256;
+			}
+			return number / 18446744073709551616;
+		}
 	}
 
 	init();

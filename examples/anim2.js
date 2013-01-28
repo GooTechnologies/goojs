@@ -1,4 +1,4 @@
-require({
+require.config({
     baseUrl : "./",
     paths : {
         goo: "../src/goo",
