@@ -34,11 +34,13 @@ function(
 	) {
 	"use strict";
 
-	// Utility functions
+	/*
+	 * Utility functions
+	 */
 	var verbal = false;
 	var say = function(data) { if(verbal) console.log(data); }
-	
-	var createRefCounter = function(callback) {
+	var createWaitCounter = function(callback) {
+
 		if(callback)
 		{
 			return {
@@ -158,7 +160,8 @@ function(
 		var entities = [];
 
 		var that = this;
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 
 			for(var i in entities)
 			{
@@ -175,7 +178,8 @@ function(
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource.files && sceneSource.files.length)
 		{
-			ref.setCount(sceneSource.files.length);
+			waitCounter.setCount(sceneSource.files.length);
+
 
 			for(var i in sceneSource.files)
 			{
@@ -189,7 +193,9 @@ function(
 						onSuccess: function(data) {
 							that._parseEntity(data, function(entity) {
 								entities.push(entity);
-								ref.down();
+
+								waitCounter.down();
+
 							});
 						},
 						onError: function(error) {
@@ -207,7 +213,8 @@ function(
 		// Array to store loaded components
 		var loadedComponents = [];
 		var that = this;
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 			var entity = that.world.createEntity();
 
 			for(var i in loadedComponents) entity.setComponent(loadedComponents[i]);
@@ -221,7 +228,8 @@ function(
 		if(entitySource.components && Object.keys(entitySource.components).length)
 		{
 			var component;
-			ref.setCount(Object.keys(entitySource.components).length);
+			waitCounter.setCount(Object.keys(entitySource.components).length);
+
 
 			for(var type in entitySource.components)
 			{
@@ -243,7 +251,9 @@ function(
 					
 					
 					loadedComponents.push(tc);
-					ref.down();
+
+					waitCounter.down();
+
 				}
 				else if(type == 'camera')
 				{
@@ -257,20 +267,26 @@ function(
 					var cc = new CameraComponent(cam);
 
 					loadedComponents.push(cc);
-					ref.down();
+
+					waitCounter.down();
+
 				}
 				else if(type == 'meshRenderer')
 				{
 					this._parseMeshRenderer(component, function(meshRenderer) {
 						loadedComponents.push(meshRenderer);
-						ref.down();
+
+						waitCounter.down();
+
 					});
 				}
 				else if(type == 'meshData')
 				{
 					this._parseMeshDataComponent(component, function(meshData) {
 						loadedComponents.push(meshData);
-						ref.down();
+
+						waitCounter.down();
+
 					});
 				}
 			}
@@ -283,7 +299,8 @@ function(
 
 		// Array to store loaded stuff
 		var materials = [];
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 			var meshRenderer = new MeshRendererComponent();
 
 			for(var i in materials)	meshRenderer.materials.push(materials[i]);
@@ -296,7 +313,8 @@ function(
 		if(meshRendererSource && Object.keys(meshRendererSource).length)
 		{
 			var value;
-			ref.setCount(Object.keys(meshRendererSource).length);
+			waitCounter.setCount(Object.keys(meshRendererSource).length);
+
 
 			var that = this;
 
@@ -312,7 +330,9 @@ function(
 						onSuccess: function(data) {
 							that._parseMaterial(data, function(material) {
 								materials.push(material);
-								ref.down();
+
+								waitCounter.down();
+
 							});
 						},
 						onError: function(error) {
@@ -329,7 +349,8 @@ function(
 		
 		var meshData;
 
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 			var meshDataComponent = new MeshDataComponent(meshData);
 
 			say('MeshDataComponent loaded:');
@@ -340,7 +361,8 @@ function(
 		if(meshDataComponentSource && Object.keys(meshDataComponentSource).length)
 		{
 			var value;
-			ref.setCount(Object.keys(meshDataComponentSource).length);
+			waitCounter.setCount(Object.keys(meshDataComponentSource).length);
+
 
 			var that = this;
 			for(var attribute in meshDataComponentSource)
@@ -363,7 +385,9 @@ function(
 
 							meshData = that._parseMeshData(data, 0, 'Mesh');
 
-							ref.down();
+
+							waitCounter.down();
+
 						},
 						onError: function(error) {
 							console.warn('Failed to load mesh data: ' + error);
@@ -582,7 +606,8 @@ function(
 								shininess: 16.0
 							};
 
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 			var material = Material.createMaterial(shaderDefinition);
 			
 			material.textures = textures;
@@ -596,7 +621,8 @@ function(
 		if(materialDataSource && Object.keys(materialDataSource).length)
 		{
 			var value;
-			ref.setCount(Object.keys(materialDataSource).length);
+			waitCounter.setCount(Object.keys(materialDataSource).length);
+
 
 			var that = this;
 
@@ -607,7 +633,7 @@ function(
 
 				if(attribute == 'uniforms')
 				{
-					// There's more than one thing in this, so increase the reference count
+
 					for(var i in value)
 					{
 						if(i == 'diffuseTexture') textures.push(new TextureCreator().loadTexture2D(that.projectURL + value[i]));
@@ -641,7 +667,9 @@ function(
 							if(value[i][3] != null) materialState.specular.a = value[i][3];
 						}
 					}
-					ref.down();
+
+					waitCounter.down();
+
 				}
 				else if(attribute == 'shader')
 				{
@@ -650,7 +678,9 @@ function(
 							that._parseShaderDefinition(data, function(sd) {
 								shaderDefinition.vshader = sd.vshader;
 								shaderDefinition.fshader = sd.fshader;
-								ref.down();
+
+								waitCounter.down();
+
 							});
 						},
 						onError: function(error) {
@@ -667,7 +697,8 @@ function(
 
 		var shaderDefinition = {};
 
-		var ref = createRefCounter(function() {
+		var waitCounter = createWaitCounter(function() {
+
 			say('Shader definition loaded:');
 			say(shaderDefinition);
 			if(callback) callback(shaderDefinition);
@@ -682,7 +713,8 @@ function(
 			};
 
 			var value;
-			ref.setCount(Object.keys(shaderDataSource).length);
+			waitCounter.setCount(Object.keys(shaderDataSource).length);
+
 
 			for(var attribute in shaderDataSource)
 			{
@@ -693,7 +725,9 @@ function(
 					this.load(value, {
 						onSuccess: function(data) {
 							shaderDefinition['vshader'] = data;
-							ref.down();
+
+							waitCounter.down();
+
 						},
 						onError: function(error) {
 							console.warn('Failed to load vertex shader: ' + error);
@@ -705,7 +739,9 @@ function(
 					this.load(value, {
 						onSuccess: function(data) {
 							shaderDefinition['fshader'] = data;
-							ref.down();
+
+							waitCounter.down();
+
 						},
 						onError: function(error) {
 							console.warn('Failed to load fragment shader: ' + error);
