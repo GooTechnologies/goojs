@@ -27,7 +27,8 @@ require([
     'test/shapes/Sphere',
     'test/shapes/Teapot',
     'test/shapes/Torus',
-    'test/entities/entitiesTest'
+    'test/entities/entitiesTest',
+    'test/loaders/SceneLoader'
 ],
 function(mathTest) {
   window.__testacular__.start();
