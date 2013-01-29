@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Particle Editor</title>
     <!-- jQuery UI style -->
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/dark-hive/jquery-ui.css" />
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/dark-hive/jquery-ui.css" />
 
 	<!-- Our own overriding styles -->
     <link rel="stylesheet" href="particle_editor.css" />
 
     <!-- jQuery and jQuery UI from Google CDN -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
     
     <!-- JSRender lib for string templates -->
     <script src="../examples-lib/jsrender.js"></script>
@@ -27,7 +27,10 @@
     <script type="text/javascript">
     $(function() {
         // default object setup
-        $('#particle_components').accordion();
+        $('#particle_components').accordion({
+            heightStyle : "fill",
+            collapsible : true
+        });
         $('#add_particle_component').button();
     });
     </script>
@@ -82,7 +85,8 @@
 
     <!-- template editor form for a particle component -->
     <script id="emitter_editor_template" type="text/x-jsrender">
-        <h3>Emitter {{attr:index + 1}}</h3>
+        <div>
+        <h3>Emitter<span class="delete_button">delete</span></h3>
         <div class="emitter_properties">
             <ul>
                 <li><a href="#emit-tab1-{{attr:index}}_{{attr:ent}}">General</a></li>
@@ -151,10 +155,12 @@
                 <div style="text-align: right;"><button id="add_entry" class="add_button">+ Add Entry</button></div>
             </div>
         </div>
+        </div>
     </script>
     <!-- template editor form for a particle component -->
     <script id="timeline_editor_template" type="text/x-jsrender">
-        <h3>Entry {{attr:index}}</h3>
+        <div>
+        <h3>Entry<span class="delete_button">delete</span></h3>
         <div>
 	        <table cellpadding="0" cellspacing="0" border="0" class="editor">
 	            <tr>
@@ -193,6 +199,7 @@
                 <td class="input" colspan="2"><input type="text" class="color" name="{{attr:name}}" value="{{attr:color}}"></td>
                 </tr>
 	        </table>
+        </div>
         </div>
     </script>
 </body>

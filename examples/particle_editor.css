@@ -55,7 +55,12 @@
 }
 
 .add_button {
-	font-size: 75% !important;
+    font-size: 75% !important;
+}
+
+.delete_button {
+	float: right !important;
+    font-size: 75% !important;
 }
 
 .ui-widget {
