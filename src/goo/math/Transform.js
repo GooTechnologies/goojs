@@ -46,6 +46,10 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		Handy.addListener(this.rotation, 'z', undefined, function () {
 			that.eulerUpdated = true;
 		});
+		
+		this.tmpVec = new Vector3();
+		this.tmpMat1 = new Matrix3x3();
+		this.tmpMat2 = new Matrix3x3();
 	}
 
 	// TODO: sort this crap out!
@@ -55,14 +59,12 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		// this.translation.copy(a.translation).add(b.translation);
 
 		// Matrix3x3.combine(a.rotation, b.rotation, this.rotation);
-		var m1 = new Matrix3x3();
-		var m2 = new Matrix3x3();
-		m1.copy(a.rotation).multiplyDiagonalPost(a.scale, m1);
-		m2.copy(b.rotation).multiplyDiagonalPost(b.scale, m2);
-		Matrix3x3.combine(m1, m2, this.rotation);
+		this.tmpMat1.copy(a.rotation).multiplyDiagonalPost(a.scale, this.tmpMat1);
+		this.tmpMat2.copy(b.rotation).multiplyDiagonalPost(b.scale, this.tmpMat2);
+		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
 
 		this.translation.copy(b.translation);
-		m1.applyPost(this.translation).add(a.translation);
+		this.tmpMat1.applyPost(this.translation).add(a.translation);
 
 		this.scale.copy(a.scale).mul(b.scale);
 		// this.scale.copy(Vector3.ONE);
@@ -132,12 +134,20 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 
 		this.translation.copy(transform.translation);
 		this.rotation.copy(transform.rotation);
-		// this.rotation.x = transform.rotation.x;
-		// this.rotation.y = transform.rotation.y;
-		// this.rotation.z = transform.rotation.z;
 		this.scale.copy(transform.scale);
 	};
 
+	/**
+	 * @description Sets the transform to look in a specific direction.
+	 * @param {Vector3} position Target position.
+	 * @param {Vector3} up Up vector.
+	 * @returns {Matrix3x3} Self for chaining.
+	 */
+	Transform.prototype.lookAt = function (position, up) {
+		this.tmpVec.copy(this.translation).sub(position).normalize();
+		this.rotation.lookAt(this.tmpVec, up);
+	};
+	
 	Transform.prototype.invert = function (store) {
 		var result = store;
 		if (!result) {

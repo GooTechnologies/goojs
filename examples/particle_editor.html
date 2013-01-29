@@ -4,12 +4,26 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Particle Editor</title>
+    <!-- jQuery UI style -->
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/dark-hive/jquery-ui.css" />
+
+	<!-- Our own overriding styles -->
     <link rel="stylesheet" href="particle_editor.css" />
+
+    <!-- jQuery and jQuery UI from Google CDN -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-    <script src="../lib/jsrender.js"></script>
+    
+    <!-- JSRender lib for string templates -->
+    <script src="../examples-lib/jsrender.js"></script>
+    
+    <!-- Color Picker plugin -->
+    <link href="../examples-lib/colorpicker/jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
+    <script src="../examples-lib/colorpicker/jquery.colorpicker.js"></script>
+    
+    <!-- Actual example logic -->
     <script data-main="particle_editor" src="../lib/require.js"></script>
+    
     <script type="text/javascript">
     $(function() {
         // default object setup
@@ -61,41 +75,41 @@
                 </span></td>
                 </tr>
 	        </table>
-            <div style="text-align: center;"><button id="add_emitter" class="add_button">+ Add Emitter</button></div>
             <div class="emitters"></div>
+            <div style="text-align: right;"><button id="add_emitter" class="add_button">+ Add Emitter</button></div>
         </div>
     </script>
-    
+
     <!-- template editor form for a particle component -->
     <script id="emitter_editor_template" type="text/x-jsrender">
-        <h3>Emitter {{:#index+1}}</h3>
+        <h3>Emitter {{attr:index + 1}}</h3>
         <div class="emitter_properties">
             <ul>
-                <li><a href="#emit-tab1-{{:#index}}_{{attr:ent}}">General</a></li>
-                <li><a href="#emit-tab2-{{:#index}}_{{attr:ent}}">Functions</a></li>
-                <li><a href="#emit-tab3-{{:#index}}_{{attr:ent}}">Timeline</a></li>
+                <li><a href="#emit-tab1-{{attr:index}}_{{attr:ent}}">General</a></li>
+                <li><a href="#emit-tab2-{{attr:index}}_{{attr:ent}}">Functions</a></li>
+                <li><a href="#emit-tab3-{{attr:index}}_{{attr:ent}}">Timeline</a></li>
             </ul>
-            <div id="emit-tab1-{{:#index}}_{{attr:ent}}">
-	            <table cellpadding="0" cellspacing="0" border="0" class="editor">
-		            <tr>
-		            <td class="label" width="50%">Max Life (ms):</td>
-		            <td class="label" width="50%">Release Rate / sec:</td>
-		            </tr>
-		
-		            <tr>
-		            <td class="input"><input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
-		            <td class="input"><input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
-		            </tr>
-		
-		            <tr>
-		            <td class="label">Min Life (ms):</td>
-		            <td class="label">Max Spawn:</td>
-		            </tr>
-		
-		            <tr>
-		            <td class="input"><input type="number" class="min_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}"></td>
-		            <td class="input"><input type="text" class="max_spawn" name="{{:#index}}" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
-		            </tr>
+            <div id="emit-tab1-{{attr:index}}_{{attr:ent}}">
+                <table cellpadding="0" cellspacing="0" border="0" class="editor">
+                    <tr>
+                    <td class="label" width="50%">Max Life (ms):</td>
+                    <td class="label" width="50%">Release Rate / sec:</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input"><input type="number" class="max_life" name="{{attr:index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
+                    <td class="input"><input type="number" class="release_rate" name="{{attr:index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
+                    </tr>
+        
+                    <tr>
+                    <td class="label">Min Life (ms):</td>
+                    <td class="label">Max Spawn:</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input"><input type="number" class="min_life" name="{{attr:index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}"></td>
+                    <td class="input"><input type="text" class="max_spawn" name="{{attr:index}}" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
+                    </tr>
 
                     <tr>
                     <td class="label">Billboard:</td>
@@ -103,48 +117,82 @@
         
                     <tr>
                     <td class="input">
-                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="camera" checked="checked"> Camera</label><br/>
-                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="xz"> XZ Plane</label>
+                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="camera" checked="checked"> Camera</label><br/>
+                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="xz"> XZ Plane</label>
                     </td>
                     <td class="input">
-                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="xy"> XY Plane</label><br/>
-                    <label><input type="radio" class="billboard" id="{{:#index}}" name="bb {{:#index}} {{attr:ent}}" value="yz"> YZ Plane</label>
+                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="xy"> XY Plane</label><br/>
+                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="yz"> YZ Plane</label>
                     </td>
                     </tr>
                 </table>
             </div>
-            <div id="emit-tab2-{{:#index}}_{{attr:ent}}">
+            <div id="emit-tab2-{{attr:index}}_{{attr:ent}}">
                 <table cellpadding="0" cellspacing="0" border="0" class="editor">
-	                <tr>
-	                <td class="label">getEmissionPoint: <br/>function(particle, particleEntity) {</td>
-	                </tr>
-	    
-	                <tr>
-	                <td class="input"><textarea class="textarea emission_point" id="{{:#index}}">return particle.position.set(0,0,0);</textarea></td>
-	                </tr>
+                    <tr>
+                    <td class="label">getEmissionPoint: <br/>function(particle, particleEntity) {</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input"><textarea class="textarea emission_point" id="{{attr:index}}">return particle.position.set(0,0,0);</textarea></td>
+                    </tr>
 
-	                <tr>
-	                <td class="label">getEmissionVelocity: <br/>function(particle, particleEntity) {</td>
-	                </tr>
-        
                     <tr>
-                    <td class="input"><textarea class="textarea emission_velocity" id="{{:#index}}">return particle.velocity.set(0,1,0);</textarea></td>
-                    </tr>
-	            </table>
-	        </div>
-            <div id="emit-tab3-{{:#index}}_{{attr:ent}}">
-                <!-- <table cellpadding="0" cellspacing="0" border="0" class="editor">
-                    <tr>
-                    <td class="label" width="50%">Max Life (ms):</td>
-                    <td class="label" width="50%">Release Rate / sec:</td>
+                    <td class="label">getEmissionVelocity: <br/>function(particle, particleEntity) {</td>
                     </tr>
         
                     <tr>
-                    <td class="input"><input type="number" class="max_life" name="{{:#index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
-                    <td class="input"><input type="number" class="release_rate" name="{{:#index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
+                    <td class="input"><textarea class="textarea emission_velocity" id="{{attr:index}}">return particle.velocity.set(0,1,0);</textarea></td>
                     </tr>
-                </table> -->
+                </table>
             </div>
+            <div id="emit-tab3-{{attr:index}}_{{attr:ent}}">
+                <div class="timeline"></div>
+                <div style="text-align: right;"><button id="add_entry" class="add_button">+ Add Entry</button></div>
+            </div>
+        </div>
+    </script>
+    <!-- template editor form for a particle component -->
+    <script id="timeline_editor_template" type="text/x-jsrender">
+        <h3>Entry {{attr:index}}</h3>
+        <div>
+	        <table cellpadding="0" cellspacing="0" border="0" class="editor">
+	            <tr>
+	            <td class="label" width="50%">Life Offset (%):</td>
+	            <td class="label" width="50%">Size:</td>
+	            </tr>
+	
+	            <tr>
+	            <td class="input"><input type="number" class="timeOffset" name="{{attr:name}}" min="0.01" max="1.00" step="0.01" value="{{attr:timeOffset}}"></td>
+	            <td class="input"><input type="number" class="size" name="{{attr:name}}" min="0" max="500" step="0.1"  value="{{attr:size}}"></td>
+	            </tr>
+
+                <tr>
+                <td class="label">Mass:</td>
+                <td class="label">Spin:</td>
+                </tr>
+    
+                <tr>
+                <td class="input"><input type="number" class="mass" name="{{attr:name}}" min="0" max="100" step="1" value="{{attr:mass}}"></td>
+                <td class="input"><input type="number" class="spin" name="{{attr:name}}" min="0" max="360" step="1"  value="{{attr:spin}}"></td>
+                </tr>
+
+                <tr>
+                <td class="label" colspan="2">Atlas UV index:</td>
+                </tr>
+    
+                <tr>
+                <td class="input" colspan="2"><input type="number" class="uvIndex" name="{{attr:name}}" min="0" max="100" step="1" value="{{attr:uvIndex}}"></td>
+                </tr>
+
+                <tr>
+                <td class="label" colspan="2">Color:</td>
+                </tr>
+    
+                <tr>
+                <td class="input" colspan="2"><input type="text" class="color" name="{{attr:name}}" value="{{attr:color}}"></td>
+                </tr>
+	        </table>
         </div>
     </script>
 </body>

@@ -92,10 +92,10 @@ function(
 	SceneLoader.prototype.loadScene = function(projectURL, sceneURL, callback) {
 		say('SceneLoader.loadScene(\'' + projectURL + '\', \'' + sceneURL + '\')');
 
-		if(projectURL == null) { say('SceneLoader: Project URL not specified.'); return; }
+		if(projectURL == null) { console.warn('SceneLoader: Project URL not specified.'); return; }
 		this.projectURL = projectURL;
 
-		if(sceneURL == null) { say('SceneLoader: Scene URL not specified.'); return; }
+		if(sceneURL == null) { console.warn('SceneLoader: Scene URL not specified.'); return; }
 		this.sceneURL = sceneURL;
 
 		var that = this;
@@ -231,7 +231,7 @@ function(
 			waitCounter.setCount(Object.keys(entitySource.components).length);
 
 
-			for(var type in entitySource.components)
+			for(var type in entitySource.components || [])
 			{
 				component = entitySource.components[type];
 

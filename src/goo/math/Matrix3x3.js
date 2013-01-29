@@ -612,14 +612,13 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 	 * @param {Vector3} up Up vector.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var xAxis = new Vector3();
 		var yAxis = new Vector3();
 		var zAxis = new Vector3();
 
 		zAxis.copy(direction).normalize();
-		xAxis.copy(up).normalize().cross(zAxis).normalize();
+		xAxis.copy(up).normalize().cross(zAxis);
 		yAxis.copy(zAxis).cross(xAxis);
 
 		this.e00 = xAxis.x;
@@ -628,7 +627,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 
 		this.e01 = yAxis.x;
 		this.e11 = yAxis.y;
-		this.e20 = yAxis.z;
+		this.e21 = yAxis.z;
 
 		this.e02 = zAxis.x;
 		this.e12 = zAxis.y;

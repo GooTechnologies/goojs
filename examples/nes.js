@@ -1,4 +1,4 @@
-require({
+require.config({
     baseUrl : "./",
     paths : {
         goo : "../src/goo",
@@ -47,9 +47,9 @@ Camera//
 		document.body.appendChild(goo.renderer.domElement);
 
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 15, 75);
-		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 15, 75);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
@@ -58,12 +58,12 @@ Camera//
 			run : function(entity) {
 				var t = entity._world.time;
 
-				var camera = entity.cameraComponent.camera;
-				camera.translation.x = Math.sin(t * 1.0) * 10 + 50;
-				camera.translation.y = 20;
-				camera.translation.z = Math.sin(t * 1.0) * 10 + 50;
-				camera.lookAt(this.zero, Vector3.UNIT_Y);
-				camera.onFrameChange();
+				var transform = entity.transformComponent.transform;
+				transform.translation.x = Math.sin(t * 1.0) * 10 + 50;
+				transform.translation.y = 20;
+				transform.translation.z = Math.sin(t * 1.0) * 10 + 50;
+				transform.lookAt(this.zero, Vector3.UNIT_Y);
+				entity.transformComponent.setUpdated();
 			}
 		};
 		cameraEntity.setComponent(new ScriptComponent(script));

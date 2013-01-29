@@ -3,7 +3,6 @@ require([
     'shapes/Box.js',
     'shapes/Quad.js',
     'shapes/Sphere.js',
-    'shapes/Teapot.js',
     'shapes/Torus.js'
 ], function() {
   'use strict';

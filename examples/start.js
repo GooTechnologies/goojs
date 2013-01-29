@@ -1,4 +1,4 @@
-require({
+require.config({
     baseUrl : "./",
     paths : {
         goo : "../src/goo",
@@ -49,20 +49,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				run : function(entity) {
 					var t = entity._world.time;
 
-					// TODO: use transformcomponent instead. just fix a lookat for it.
-					// var transformComponent = entity.transformComponent;
-					// transformComponent.transform.translation.x = Math.sin(t * 1.0) * 30 + 50;
-					// transformComponent.transform.translation.y = 25;
-					// transformComponent.transform.translation.z = Math.sin(t * 1.0) * 30 + 50;
-					// transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
-					// transformComponent.setUpdated();
-
-					var camera = entity.cameraComponent.camera;
-					camera.translation.x = Math.sin(t * 1.0) * 30 + 50;
-					camera.translation.y = 20;
-					camera.translation.z = Math.sin(t * 1.0) * 30 + 50;
-					camera.lookAt(this.zero, Vector3.UNIT_Y);
-					camera.onFrameChange();
+					 var transformComponent = entity.transformComponent;
+					 transformComponent.transform.translation.x = Math.sin(t * 1.0) * 30 + 50;
+					 transformComponent.transform.translation.y = 20;
+					 transformComponent.transform.translation.z = Math.sin(t * 1.0) * 30 + 50;
+					 transformComponent.transform.lookAt(this.zero, Vector3.UNIT_Y);
+					 transformComponent.setUpdated();
 				}
 			};
 			cameraEntity.setComponent(new ScriptComponent(script));
