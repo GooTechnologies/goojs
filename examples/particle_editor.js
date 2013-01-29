@@ -151,46 +151,44 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
-	function setupEmittersListeners(emitters, entity) {
-		emitters.on('change', '.release_rate', function() {
-			entity.particleComponent.emitters[this.name].releaseRatePerSecond = this.value;
+	function setupEmittersListeners(emiterUI, emitter) {
+		emiterUI.on('change', '.release_rate', function() {
+			emitter.releaseRatePerSecond = this.value;
 		});
-		emitters.on('change', '.max_life', function() {
-			entity.particleComponent.emitters[this.name].maxLifetime = this.value / 1000;
+		emiterUI.on('change', '.max_life', function() {
+			emitter.maxLifetime = this.value / 1000;
 		});
-		emitters.on('change', '.min_life', function() {
-			entity.particleComponent.emitters[this.name].minLifetime = this.value / 1000;
+		emiterUI.on('change', '.min_life', function() {
+			emitter.minLifetime = this.value / 1000;
 		});
-		emitters.on('change', '.max_spawn', function() {
-			entity.particleComponent.emitters[this.name].totalParticlesToSpawn = this.value;
+		emiterUI.on('change', '.max_spawn', function() {
+			emitter.totalParticlesToSpawn = this.value;
 		});
-		emitters.on('change', '.billboard', function() {
+		emiterUI.on('change', '.billboard', function() {
 			if (this.value === 'camera') {
-				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
+				emitter.getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
 			} else if (this.value === 'xy') {
-				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
 					particle.bbX.set(-1, 0, 0);
 					particle.bbY.set(0, 1, 0);
 				};
 			} else if (this.value === 'yz') {
-				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
 					particle.bbX.set(0, 1, 0);
 					particle.bbY.set(0, 0, -1);
 				};
 			} else if (this.value === 'xz') {
-				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
 					particle.bbX.set(-1, 0, 0);
 					particle.bbY.set(0, 0, -1);
 				};
 			}
 		});
-		emitters.on('change', '.emission_point', function() {
-			var func = new Function('particle', 'particleEntity', this.value);
-			entity.particleComponent.emitters[this.id].getEmissionPoint = func;
+		emiterUI.on('change', '.emission_point', function() {
+			emitter.getEmissionPoint = new Function('particle', 'particleEntity', this.value);
 		});
-		emitters.on('change', '.emission_velocity', function() {
-			var func = new Function('particle', 'particleEntity', this.value);
-			entity.particleComponent.emitters[this.id].getEmissionVelocity = func;
+		emiterUI.on('change', '.emission_velocity', function() {
+			emitter.getEmissionVelocity = new Function('particle', 'particleEntity', this.value);
 		});
 	}
 
@@ -256,7 +254,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		particleComponent.emitters.push(new ParticleEmitter({
 			timeline : []
 		}));
-		particleComponent.emitters[0].uuid = simpleUUID();
 
 		entity.addToWorld();
 		particleEntities.push(entity);
@@ -323,17 +320,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		timeline.accordion("option", "active", emitter.timeline.length - 1);
 	}
 
-	function simpleUUID() {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-			var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
-			return v.toString(16);
-		});
-	}
-
 	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
 		var emitters = sectionUI.children('.emitters').first();
 		var emittersHTML = $("#emitter_editor_template").render({
-			index : emitterIndex,
+			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
+				return v.toString(16);
+			}),
 			ent : entity.id,
 			maxLifetime : emitter.maxLifetime,
 			releaseRatePerSecond : emitter.releaseRatePerSecond,
@@ -377,13 +370,34 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		});
 
+		setupEmittersListeners(editor, emitter);
+
+		var deleteButton = editor.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			editor.remove();
+
+			// remove actual emitter
+			var emitterArray = entity.particleComponent.emitters;
+			for ( var i = 0, max = emitterArray.length; i < max; i++) {
+				if (emitterArray[i] === emitter) {
+					emitterArray.splice(i, 1);
+					break;
+				}
+			}
+		});
+
 		// enable add timeline entry button
 		var addEntry = editor.find('#add_entry').button();
 		addEntry.on('click', function() {
 			var entry = {
 				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
-				color : [Math.random(), Math.random(), Math.random(), 1.0],
-				uuid : simpleUUID()
+				color : [Math.random(), Math.random(), Math.random(), 1.0]
 			};
 			emitter.timeline.push(entry);
 			addTimelineUI(emitter, entry, tabs);
@@ -414,8 +428,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var emitter = new ParticleEmitter({
 				timeline : []
 			});
-			emitter.uuid = simpleUUID();
 			particleComponent.emitters.push(emitter);
+			if (particleComponent.emitters.length == 1) {
+				// a bit of a hack... if length == 1, they probably deleted all emitters, which might have accidently disabled things
+				particleComponent.enabled = true;
+			}
 			addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
 		});
 
@@ -445,10 +462,31 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				particleComponent.emitters.splice(stop, 0, moved);
 			}
 		});
-		setupEmittersListeners(emitters, entity);
 
 		// add UI for default emitter
 		addParticleEmitterUI(entity, particleComponent.emitters[0], 0, section);
+
+		var deleteButton = section.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			section.remove();
+
+			// remove from our list
+			for ( var i = 0, max = particleEntities.length; i < max; i++) {
+				if (particleEntities[i] === entity) {
+					particleEntities.splice(i, 1);
+					break;
+				}
+			}
+
+			// remove actual entity from world
+			entity.removeFromWorld();
+		});
 
 		// add top level to main accordion
 		var accordion = $('#particle_components');

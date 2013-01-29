@@ -48,7 +48,7 @@
 
     <!-- template editor form for a particle component -->
     <script id="component_editor_template" type="text/x-jsrender">
-        <h3>{{>title}}</h3>
+        <h3>{{>title}}<span class="delete_button">delete</span></h3>
         <div>
 	        <table class="component_properties editor" cellpadding="0" cellspacing="0" border="0">
                 <tr>
@@ -121,12 +121,12 @@
         
                     <tr>
                     <td class="input">
-                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="camera" checked="checked"> Camera</label><br/>
-                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="xz"> XZ Plane</label>
+                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="camera" checked="checked"> Camera</label><br/>
+                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="xz"> XZ Plane</label>
                     </td>
                     <td class="input">
-                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="xy"> XY Plane</label><br/>
-                    <label><input type="radio" class="billboard" id="{{attr:index}}" name="bb {{attr:index}} {{attr:ent}}" value="yz"> YZ Plane</label>
+                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="xy"> XY Plane</label><br/>
+                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="yz"> YZ Plane</label>
                     </td>
                     </tr>
                 </table>
@@ -169,8 +169,8 @@
 	            </tr>
 	
 	            <tr>
-	            <td class="input"><input type="number" class="timeOffset" name="{{attr:name}}" min="0.01" max="1.00" step="0.01" value="{{attr:timeOffset}}"></td>
-	            <td class="input"><input type="number" class="size" name="{{attr:name}}" min="0" max="500" step="0.1"  value="{{attr:size}}"></td>
+	            <td class="input"><input type="number" class="timeOffset" min="0.01" max="1.00" step="0.01" value="{{attr:timeOffset}}"></td>
+	            <td class="input"><input type="number" class="size" min="0" max="500" step="0.1"  value="{{attr:size}}"></td>
 	            </tr>
 
                 <tr>
@@ -179,8 +179,8 @@
                 </tr>
     
                 <tr>
-                <td class="input"><input type="number" class="mass" name="{{attr:name}}" min="0" max="100" step="1" value="{{attr:mass}}"></td>
-                <td class="input"><input type="number" class="spin" name="{{attr:name}}" min="0" max="360" step="1"  value="{{attr:spin}}"></td>
+                <td class="input"><input type="number" class="mass" min="0" max="100" step="1" value="{{attr:mass}}"></td>
+                <td class="input"><input type="number" class="spin" min="0" max="360" step="1"  value="{{attr:spin}}"></td>
                 </tr>
 
                 <tr>
@@ -188,7 +188,7 @@
                 </tr>
     
                 <tr>
-                <td class="input" colspan="2"><input type="number" class="uvIndex" name="{{attr:name}}" min="0" max="100" step="1" value="{{attr:uvIndex}}"></td>
+                <td class="input" colspan="2"><input type="number" class="uvIndex" min="0" max="100" step="1" value="{{attr:uvIndex}}"></td>
                 </tr>
 
                 <tr>
@@ -196,7 +196,7 @@
                 </tr>
     
                 <tr>
-                <td class="input" colspan="2"><input type="text" class="color" name="{{attr:name}}" value="{{attr:color}}"></td>
+                <td class="input" colspan="2"><input type="text" class="color" value="{{attr:color}}"></td>
                 </tr>
 	        </table>
         </div>
