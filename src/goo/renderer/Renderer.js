@@ -317,7 +317,19 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		}
 	};
 
-	Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
+	/**
+	 * Read pixels to a typed array (ArrayBufferView)
+	 * @param x x offset of rectangle to read from
+	 * @param y y offset of rectangle to read from
+	 * @param width width of rectangle to read from
+	 * @param height height of rectangle to read from
+	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 */
+	Renderer.prototype.readPixels = function(x, y, width, height, store) {
+		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+	};
+
+    Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
