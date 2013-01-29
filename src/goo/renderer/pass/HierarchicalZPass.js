@@ -21,6 +21,10 @@ function ( Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTar
 
 		var depthMaterial = Material.createMaterial(depthShader);
 		this.depthPass.overrideMaterial = depthMaterial;
+
+		this.enabled = true;
+		// this.clear = true; // This does something where?
+		this.needsSwap = false;
 	}
 
 	HierarchicalZPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
@@ -49,8 +53,8 @@ function ( Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTar
 				'varying vec4 vPosition;',//
 
 				'void main(void) {', //
-				'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
-				'	gl_Position = projectionMatrix * vPosition;', //
+				'	vPosition = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+				'	gl_Position = vPosition;', //
 				'}'//
 			].join('\n'),
 			fshader : [//
@@ -63,7 +67,10 @@ function ( Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTar
 
 				'void main(void)',//
 				'{',//
-				'	gl_FragColor = vec4(vPosition.z,vPosition.z,vPosition.z,1.0);',//
+					'float z = vPosition.z/vPosition.w;',//
+					//http://www.codermind.com/articles/Depth-buffer-tutorial.html
+					'float linearizedDepth = (2.0*nearPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane) );',//
+				'	gl_FragColor = vec4(vec3(linearizedDepth), 1.0);',//
 				'}'//
 			].join('\n')
 		};
