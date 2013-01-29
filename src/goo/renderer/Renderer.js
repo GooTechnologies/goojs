@@ -700,6 +700,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				return WebGLRenderingContext.LUMINANCE;
 			case 'LuminanceAlpha':
 				return WebGLRenderingContext.LUMINANCE_ALPHA;
+			case 'Depth':
+				return WebGLRenderingContext.DEPTH_COMPONENT;
 			default:
 				throw "Unsupported format: " + format;
 		}
@@ -1072,8 +1074,12 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 	Renderer.prototype.setupFrameBuffer = function(framebuffer, renderTarget, textureTarget) {
 		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
-		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, textureTarget,
-			renderTarget.glTexture, 0);
+		if(renderTarget.format == 'Depth') {
+			this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.DEPTH_ATTACHMENT, textureTarget, renderTarget.glTexture, 0);
+		}
+		else {
+			this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, textureTarget, renderTarget.glTexture, 0);
+		}
 	};
 
 	Renderer.prototype.setupRenderBuffer = function(renderbuffer, renderTarget) {
@@ -1104,6 +1110,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				renderTarget.stencilBuffer = true;
 			}
 
+
+
 			renderTarget.glTexture = this.context.createTexture();
 
 			// Setup texture, create render and frame buffers
@@ -1111,22 +1119,42 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			var glFormat = this.getGLInternalFormat(renderTarget.format);
 			var glType = this.getGLDataType(renderTarget.type);
 
-			renderTarget._glFrameBuffer = this.context.createFramebuffer();
-			renderTarget._glRenderBuffer = this.context.createRenderbuffer();
+			if( renderTarget.format == 'Depth' ) {
 
-			this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
-			// TODO
-			// setTextureParameters(WebGLRenderingContext.TEXTURE_2D, renderTarget, isTargetPowerOfTwo);
-			this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
 
-			this.context
-				.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
+				console.log("Doing some depth texture rendering!!");
+				renderTarget._glFrameBuffer = this.context.createFramebuffer();
+				// No render buffer when using depth textures
 
-			this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
-			this.setupRenderBuffer(renderTarget._glRenderBuffer, renderTarget);
+				this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
+				this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
 
-			if (isTargetPowerOfTwo) {
-				this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.DEPTH_COMPONENT, renderTarget.width, renderTarget.height, 0, WebGLRenderingContext.DEPTH_COMPONENT, WebGLRenderingContext.UNSIGNED_SHORT, null);
+				//this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
+
+				this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
+
+			}
+			
+			else {
+				
+				renderTarget._glFrameBuffer = this.context.createFramebuffer();
+				renderTarget._glRenderBuffer = this.context.createRenderbuffer();
+
+				this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
+				// TODO
+				// setTextureParameters(WebGLRenderingContext.TEXTURE_2D, renderTarget, isTargetPowerOfTwo);
+				this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
+
+				this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
+
+				this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
+				this.setupRenderBuffer(renderTarget._glRenderBuffer, renderTarget);
+
+				if (isTargetPowerOfTwo) {
+					this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				}
+
 			}
 
 			// Release everything
