@@ -58,6 +58,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			// this.glExtensionCompressedTextureS3TC = this.context.getExtension('WEBGL_compressed_texture_s3tc')
 			// || this.context.getExtension('MOZ_WEBGL_compressed_texture_s3tc')
 			// || this.context.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
+			this.glExtensionDepthTexture = 
+				this.context.getExtension('WEBKIT_WEBGL_depth_texture') 
+				|| this.context.getExtension('MOZ_WEBGL_depth_texture');
 
 			if (!this.glExtensionTextureFloat) {
 				console.log('Float textures not supported.');
@@ -70,6 +73,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			}
 			if (!this.glExtensionCompressedTextureS3TC) {
 				console.log('S3TC compressed textures not supported.');
+			}
+			if (!this.glExtensionDepthTexture) {
+				console.log('Depth textures not supported.')
 			}
 		} catch (error) {
 			console.error(error);
