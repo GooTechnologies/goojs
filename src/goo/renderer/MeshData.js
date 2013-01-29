@@ -170,12 +170,16 @@ function(BufferData, Util, BufferUtils) {
 	};
 
 	var defaults = {
-		POSITION : MeshData.createAttribute(3, 'Float'),
-		NORMAL : MeshData.createAttribute(3, 'Float'),
-		COLOR : MeshData.createAttribute(4, 'Float'),
-		TANGENT : MeshData.createAttribute(4, 'Float'),
-		TEXCOORD0 : MeshData.createAttribute(2, 'Float'),
-		TEXCOORD1 : MeshData.createAttribute(2, 'Float')
+		'POSITION' : MeshData.createAttribute(3, 'Float'),
+		'NORMAL' : MeshData.createAttribute(3, 'Float'),
+		'COLOR' : MeshData.createAttribute(4, 'Float'),
+		'TANGENT' : MeshData.createAttribute(4, 'Float'),
+		'TEXCOORD0' : MeshData.createAttribute(2, 'Float'),
+		'TEXCOORD1' : MeshData.createAttribute(2, 'Float'),
+		'TEXCOORD2' : MeshData.createAttribute(2, 'Float'),
+		'TEXCOORD3' : MeshData.createAttribute(2, 'Float'),
+		'WEIGHTS' : MeshData.createAttribute(4, 'Float'),
+		'JOINTIDS' : MeshData.createAttribute(4, 'Short')
 	};
 
 	function buildMap(types) {
