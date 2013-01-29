@@ -194,27 +194,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
-	function setupTimelineListeners(timeline, entity) {
-		timeline.on('change', '.timeOffset', function() {
-			var indices = this.name.split(" ");
-			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].timeOffset = this.value.trim() !== '' ? this.value.trim() : undefined;
+	function setupTimelineListeners(entryUI, entry) {
+		entryUI.on('change', '.timeOffset', function() {
+			entry.timeOffset = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		timeline.on('change', '.spin', function() {
-			var indices = this.name.split(" ");
-			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].spin = (this.value.trim() !== '' ? this.value.trim() : undefined)
-				* Math.PI / 180.0;
+		entryUI.on('change', '.spin', function() {
+			entry.spin = (this.value.trim() !== '' ? this.value.trim() : undefined) * Math.PI / 180.0;
 		});
-		timeline.on('change', '.size', function() {
-			var indices = this.name.split(" ");
-			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].size = this.value.trim() !== '' ? this.value.trim() : undefined;
+		entryUI.on('change', '.size', function() {
+			entry.size = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		timeline.on('change', '.mass', function() {
-			var indices = this.name.split(" ");
-			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].mass = this.value.trim() !== '' ? this.value.trim() : undefined;
+		entryUI.on('change', '.mass', function() {
+			entry.mass = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		timeline.on('change', '.uvIndex', function() {
-			var indices = this.name.split(" ");
-			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].uvIndex = this.value.trim() !== '' ? this.value.trim() : undefined;
+		entryUI.on('change', '.uvIndex', function() {
+			entry.uvIndex = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
 	}
 
@@ -260,10 +254,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// add a default emitter
 		particleComponent.emitters.push(new ParticleEmitter({
-			timeline : [{
-				color : [Math.random(), Math.random(), Math.random(), 1.0]
-			}]
+			timeline : []
 		}));
+		particleComponent.emitters[0].uuid = simpleUUID();
 
 		entity.addToWorld();
 		particleEntities.push(entity);
@@ -274,12 +267,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return particleComponent;
 	}
 
-	function addTimelineUI(entry, emitterIndex, timelineIndex, tabsUI) {
+	function addTimelineUI(emitter, entry, tabsUI) {
 		// setup timeline
 		var timeline = tabsUI.find('.timeline').first();
 		var timelineHTML = $("#timeline_editor_template").render(
 			{
-				name : emitterIndex + " " + timelineIndex,
+				name : entry.uuid,
 				size : entry.size !== undefined ? entry.size : '',
 				mass : entry.mass !== undefined ? entry.mass : '',
 				spin : entry.spin !== undefined ? Math.floor(entry.spin * 180 / Math.PI) : '',
@@ -304,11 +297,36 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		});
 
-		// convert timeline to accordion
-		timeline.accordion("destroy").accordion({
-			heightStyle : "content",
-			collapsible : true,
-			active : timelineIndex
+		setupTimelineListeners(entryUI, entry);
+
+		var deleteButton = entryUI.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			entryUI.remove();
+
+			// remove actual timeline entry
+			for ( var i = 0, max = emitter.timeline.length; i < max; i++) {
+				if (emitter.timeline[i] === entry) {
+					emitter.timeline.splice(i, 1);
+					break;
+				}
+			}
+		});
+
+		// refresh accordion
+		timeline.accordion("refresh");
+		timeline.accordion("option", "active", emitter.timeline.length - 1);
+	}
+
+	function simpleUUID() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
+			return v.toString(16);
 		});
 	}
 
@@ -327,37 +345,51 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		emitters.append(editor);
 
 		// make tabs for emitter properties
-		var tabs = emitters.children('.emitter_properties').eq(emitterIndex);
+		var tabs = emitters.find('.emitter_properties').eq(emitterIndex);
 		tabs.tabs({
 			heightStyle : "content",
 			active : 0
 		});
 
 		var timeline = tabs.find('.timeline').first();
-		timeline.accordion();
-		setupTimelineListeners(timeline, entity);
+		timeline.accordion({
+			header : "> div > h3",
+			heightStyle : "content",
+			collapsible : true
+		}).sortable({
+			axis : "y",
+			handle : "h3",
+			delay : 250,
+			start : function(event, ui) {
+				timeline.start = ui.item.index();
+			},
+			stop : function(event, ui) {
+				// reorder timeline entries too
+				var stop = ui.item.index();
+				if (stop == timeline.start) {
+					return;
+				}
 
-		// add UI for default entry
-		addTimelineUI(emitter.timeline[0], emitterIndex, 0, tabs);
+				// yank the entry that moved
+				var moved = emitter.timeline.splice(timeline.start, 1)[0];
+				// replace it in the right location
+				emitter.timeline.splice(stop, 0, moved);
+			}
+		});
 
 		// enable add timeline entry button
 		var addEntry = editor.find('#add_entry').button();
 		addEntry.on('click', function() {
 			var entry = {
-				timeOffset : 0.25,
-				color : [Math.random(), Math.random(), Math.random(), 1.0]
+				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
+				color : [Math.random(), Math.random(), Math.random(), 1.0],
+				uuid : simpleUUID()
 			};
 			emitter.timeline.push(entry);
-			addTimelineUI(entry, emitterIndex, emitter.timeline.length - 1, tabs);
+			addTimelineUI(emitter, entry, tabs);
 		});
 
-		// convert emitters to accordion
-		emitters.accordion("destroy").accordion({
-			heightStyle : "content",
-			collapsible : true,
-			active : emitterIndex
-		});
-
+		// refresh accordion
 		emitters.accordion("refresh");
 	}
 
@@ -380,17 +412,39 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var addEmitter = section.find('#add_emitter').button();
 		addEmitter.on('click', function() {
 			var emitter = new ParticleEmitter({
-				timeline : [{
-					color : [Math.random(), Math.random(), Math.random(), 1.0]
-				}]
+				timeline : []
 			});
+			emitter.uuid = simpleUUID();
 			particleComponent.emitters.push(emitter);
 			addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
 		});
 
 		// add listeners for emitter changes
 		var emitters = section.children('.emitters').first();
-		emitters.accordion();
+		emitters.accordion({
+			header : "> div > h3",
+			heightStyle : "content",
+			collapsible : true
+		}).sortable({
+			axis : "y",
+			handle : "h3",
+			delay : 250,
+			start : function(event, ui) {
+				particleComponent.emitters.start = ui.item.index();
+			},
+			stop : function(event, ui) {
+				// reorder timeline entries too
+				var stop = ui.item.index();
+				if (stop == particleComponent.emitters.start) {
+					return;
+				}
+
+				// yank the entry that moved
+				var moved = particleComponent.emitters.splice(particleComponent.emitters.start, 1)[0];
+				// replace it in the right location
+				particleComponent.emitters.splice(stop, 0, moved);
+			}
+		});
 		setupEmittersListeners(emitters, entity);
 
 		// add UI for default emitter
@@ -400,16 +454,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var accordion = $('#particle_components');
 		accordion.append(section);
 
-		// old active
-		var active = accordion.accordion("option", "active");
-
-		// remake accordion
-		accordion.accordion("destroy").accordion({
-			heightStyle : "fill",
-			collapsible : true,
-			active : active
-		});
-
+		// refresh accordion
 		accordion.accordion("refresh");
 	}
 
