@@ -10,10 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils'], 
-		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
+		'goo/particles/ParticleUtils'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript, ParticlesSystem, 
+	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript, ParticlesSystem,
 	ParticleComponent, ParticleUtils) {
 	"use strict";
 
@@ -42,10 +42,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Add ParticlesSystem to world.
 		var particles = new ParticlesSystem();
 		goo.world.setSystem(particles);
-		
+
 		// create an entity with particles
 		createParticles(goo);
-		
+
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -66,53 +66,49 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create particle component
 		var particleComponent = new ParticleComponent({
-			particleCount: 100,
-			timeline: [
-				{
-					timeOffset: 0.0,
-					spin: 0,
-					mass: 1,
-					size: 2.0,
-					color: [1, 0, 0, 1]
-				}, {
-					timeOffset: 0.5,
-					size: 1.5,
-					color: [1, 1, 0, 0.5]
-				}, {
-					timeOffset: 0.5,
-					size: 0.5,
-					color: [0, 0, 0, 0]
+			particleCount : 100,
+			timeline : [{
+				timeOffset : 0.0,
+				spin : 0,
+				mass : 1,
+				size : 2.0,
+				color : [1, 0, 0, 1]
+			}, {
+				timeOffset : 0.5,
+				size : 1.5,
+				color : [1, 1, 0, 0.5]
+			}, {
+				timeOffset : 0.5,
+				size : 0.5,
+				color : [0, 0, 0, 0]
+			}],
+			emitters : [{
+				totalParticlesToSpawn : -1,
+				releaseRatePerSecond : 5,
+				minLifetime : 2.0,
+				maxLifetime : 3.0
+			}, {
+				totalParticlesToSpawn : -1,
+				releaseRatePerSecond : 5,
+				minLifetime : 3.0,
+				maxLifetime : 5.0,
+				getEmissionPoint : function(particle, particleEntity) {
+					var vec3 = particle.position;
+					return ParticleUtils.applyEntityTransformPoint(vec3.set(5, 0, 0), particleEntity);
 				}
-			],
-			emitters : [
-			    {
-			    	totalParticlesToSpawn: -1,
-			    	releaseRatePerSecond: 5,
-			    	minLifetime: 2.0,
-			    	maxLifetime: 3.0
-			    }, {
-			    	totalParticlesToSpawn: -1,
-			    	releaseRatePerSecond: 5,
-			    	minLifetime: 3.0,
-			    	maxLifetime: 5.0,
-			    	getEmissionPoint: function(particle, particleEntity) {
-			    		var vec3 = particle.position;
-						return ParticleUtils.applyEntityTransformPoint(vec3.set(5,0,0), particleEntity);
-			    	}
-			    }, {
-			    	totalParticlesToSpawn: -1,
-			    	releaseRatePerSecond: 5,
-			    	minLifetime: 0.1,
-			    	maxLifetime: 2.5,
-			    	getEmissionPoint: function(particle, particleEntity) {
-			    		var vec3 = particle.position;
-						return ParticleUtils.applyEntityTransformPoint(vec3.set(-5,0,0), particleEntity);
-			    	}
-			    }
-			],
+			}, {
+				totalParticlesToSpawn : -1,
+				releaseRatePerSecond : 5,
+				minLifetime : 0.1,
+				maxLifetime : 2.5,
+				getEmissionPoint : function(particle, particleEntity) {
+					var vec3 = particle.position;
+					return ParticleUtils.applyEntityTransformPoint(vec3.set(-5, 0, 0), particleEntity);
+				}
+			}],
 		});
 		entity.setComponent(particleComponent);
-		
+
 		// Create meshdata component using particle data
 		var meshDataComponent = new MeshDataComponent(particleComponent.meshData);
 		entity.setComponent(meshDataComponent);

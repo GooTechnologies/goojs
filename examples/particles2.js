@@ -9,12 +9,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3','goo/math/MathUtils',
-		'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent', 
-		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], 
-		function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
-	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils, BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
+		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
+		'goo/math/MathUtils', 'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
+		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function(World, Entity, System, TransformSystem, RenderSystem,
+	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils,
+	BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -42,10 +42,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Add ParticlesSystem to world.
 		var particles = new ParticlesSystem();
 		goo.world.setSystem(particles);
-		
+
 		// create an entity with particles
 		createParticles(goo);
-		
+
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -66,28 +66,26 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create particle component
 		var particleComponent = new ParticleComponent({
-			particleCount: 600,
-			timeline: [
-				{
-					timeOffset: 0.0,
-					spin: 0,
-					mass: 1,
-					size: 2.5,
-					color: [1, 0, 0, 1]
-				}, {
-					timeOffset: 1.0,
-					size: .5,
-					color: [1, 1, 0, 0]
-				}
-			],
+			particleCount : 600,
+			timeline : [{
+				timeOffset : 0.0,
+				spin : 0,
+				mass : 1,
+				size : 2.5,
+				color : [1, 0, 0, 1]
+			}, {
+				timeOffset : 1.0,
+				size : .5,
+				color : [1, 1, 0, 0]
+			}],
 		});
 		particleComponent.emitters.push(generateNewEmitter(goo));
 		particleComponent.emitters.push(generateNewEmitter(goo, true));
 		particleComponent.emitters.push(generateNewEmitter(goo));
 		particleComponent.emitters.push(generateNewEmitter(goo));
-		
+
 		entity.setComponent(particleComponent);
-		
+
 		// Create meshdata component using particle data
 		var meshDataComponent = new MeshDataComponent(particleComponent.meshData);
 		entity.setComponent(meshDataComponent);
@@ -108,7 +106,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var code = e.charCode || e.keyCode;
 			if (code == 32) { // space bar
 				// reset particles to spawn on the emitters
-				for (var i = 0, max = particleComponent.emitters.length; i < max; i++) {
+				for ( var i = 0, max = particleComponent.emitters.length; i < max; i++) {
 					if (particleComponent.emitters[i].totalParticlesToSpawn <= 0) {
 						particleComponent.emitters[i].totalParticlesToSpawn = 500;
 					}
@@ -117,50 +115,52 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		}, false);
 	}
-	
+
 	function generateNewEmitter(goo, unique) {
-		var currentPos = new Vector3( Math.random() * 50 - 25,  Math.random() * 50 - 25,  Math.random() * 50 - 100), newPos = new Vector3(currentPos);
+		var currentPos = new Vector3(Math.random() * 50 - 25, Math.random() * 50 - 25, Math.random() * 50 - 100), newPos = new Vector3(currentPos);
 
 		// move our ball around
 		goo.callbacks.push(function(tpf) {
-			if (tpf > 1) return;
-    		if (Math.floor(currentPos.x) == Math.floor(newPos.x) && Math.floor(currentPos.y) == Math.floor(newPos.y)
- 	               && Math.floor(currentPos.z) == Math.floor(newPos.z)) {
- 	            newPos.x = Math.random() * 50 - 25;
- 	            newPos.y = Math.random() * 50 - 25;
- 	            newPos.z = Math.random() * 50 - 25;
- 	        }
- 	        currentPos.x = currentPos.x - (currentPos.x - newPos.x) * tpf;
- 	        currentPos.y = currentPos.y - (currentPos.y - newPos.y) * tpf;
- 	        currentPos.z = currentPos.z - (currentPos.z - newPos.z) * tpf;
+			if (tpf > 1) {
+				return;
+			}
+			if (Math.floor(currentPos.x) == Math.floor(newPos.x) && Math.floor(currentPos.y) == Math.floor(newPos.y)
+				&& Math.floor(currentPos.z) == Math.floor(newPos.z)) {
+				newPos.x = Math.random() * 50 - 25;
+				newPos.y = Math.random() * 50 - 25;
+				newPos.z = Math.random() * 50 - 25;
+			}
+			currentPos.x = currentPos.x - (currentPos.x - newPos.x) * tpf;
+			currentPos.y = currentPos.y - (currentPos.y - newPos.y) * tpf;
+			currentPos.z = currentPos.z - (currentPos.z - newPos.z) * tpf;
 		});
-		
+
 		// XXX: Try setting totalParticlesToSpawn to 500 to show limited particle emission.
 		return new ParticleEmitter({
-	    	totalParticlesToSpawn: -1,
-	    	releaseRatePerSecond: 100,
-	    	minLifetime: 0.1,
-	    	maxLifetime: 1.5,
-	    	getEmissionPoint: function(particle, particleEntity) {
-	    		var vec3 = particle.position;
-	    		ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
-	    	},
-	    	getEmissionVelocity: function(particle, particleEntity) {
-	    		var vec3 = particle.velocity;
-	    		return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, unique ? 3 : 6);
-	    	},
-			timeline : !unique ? undefined : [ {
-					timeOffset : 0.0,
-					spin : 0,
-					mass : 1,
-					size : 1.5,
-					color : [ 0, 0, 1, 1 ]
-				}, {
-					timeOffset : 1.0,
-					size : .25,
-					color : [ 0, 1, 1, 0 ]
-				} ]
-	    });
+			totalParticlesToSpawn : -1,
+			releaseRatePerSecond : 100,
+			minLifetime : 0.1,
+			maxLifetime : 1.5,
+			getEmissionPoint : function(particle, particleEntity) {
+				var vec3 = particle.position;
+				ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
+			},
+			getEmissionVelocity : function(particle, particleEntity) {
+				var vec3 = particle.velocity;
+				return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, unique ? 3 : 6);
+			},
+			timeline : !unique ? undefined : [{
+				timeOffset : 0.0,
+				spin : 0,
+				mass : 1,
+				size : 1.5,
+				color : [0, 0, 1, 1]
+			}, {
+				timeOffset : 1.0,
+				size : .25,
+				color : [0, 1, 1, 0]
+			}]
+		});
 	}
 
 	init();
