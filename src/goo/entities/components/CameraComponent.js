@@ -1,10 +1,10 @@
 define(['goo/entities/components/Component', 'goo/math/Vector3'],
-	/** @lends CameraComponent */
-	function (Component, Vector3) {
+/** @lends CameraComponent */
+function(Component, Vector3) {
 	"use strict";
 
 	/**
-	 * @class TODO: this class is not finished
+	 * @class Updates the contained camera according to a transform (coming from the transformcomponent)
 	 * @param {Camera} camera Camera to contain in this component
 	 */
 	function CameraComponent(camera) {
@@ -15,17 +15,19 @@ define(['goo/entities/components/Component', 'goo/math/Vector3'],
 
 	CameraComponent.prototype = Object.create(Component.prototype);
 
-	CameraComponent.prototype.updateCamera = function (transform) {
-		// var vec1 = new Vector3(0, 0, 0);
-		// transform.matrix.applyPost(vec1);
-		//
-		// var vec2 = new Vector3(0, 0, 1);
-		// transform.matrix.applyPost(vec2);
-		//
-		// this.camera.translation.copy(vec1);
-		// this.camera.lookAt(vec2, Vector3.UNIT_Y);
-		//
-		// this.camera.onFrameChange();
+	CameraComponent.prototype.updateCamera = function(transform) {
+		this.camera._left.set(-1, 0, 0);
+		transform.matrix.applyPostVector(this.camera._left);
+
+		this.camera._up.set(0, 1, 0);
+		transform.matrix.applyPostVector(this.camera._up);
+		
+		this.camera._direction.set(0, 0, -1);
+		transform.matrix.applyPostVector(this.camera._direction);
+		
+		transform.matrix.getTranslation(this.camera.translation);
+		
+		this.camera.update();
 	};
 
 	return CameraComponent;

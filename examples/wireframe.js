@@ -1,4 +1,4 @@
-require({
+require.config({
 	baseUrl : "./",
 	paths : {
 		goo : "../src/goo",
@@ -21,21 +21,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			showStats : true,
+			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 5, 10);
-		camera.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 5, 10);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
 		// loadModels(goo);
-		var meshData = ShapeCreator.createTeapot();
+		var meshData = ShapeCreator.createTorus(20, 20, 1, 3);
 		createMesh(goo, meshData, 0, 0, 0);
 	}
 

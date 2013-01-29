@@ -702,6 +702,20 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		return this;
 	};
 
+	/**
+	 * @description Gets the translational part of the matrix.
+	 * @param {Vector3} store Translation vector to store result in.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.getTranslation = function (store) {
+		store.x = this.e03;
+		store.y = this.e13;
+		store.z = this.e23;
+
+		return this;
+	};
+
 	/* ====================================================================== */
 
 	/**

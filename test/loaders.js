@@ -1,9 +1,6 @@
 require({ paths: { goo: '../src/goo' } });
 require([
-    'shapes/Box.js',
-    'shapes/Quad.js',
-    'shapes/Sphere.js',
-    'shapes/Torus.js'
+    'loaders/SceneLoaderTest.js'
 ], function() {
   'use strict';
 

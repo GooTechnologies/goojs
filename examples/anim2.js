@@ -1,4 +1,4 @@
-require({
+require.config({
     baseUrl : "./",
     paths : {
         goo: "../src/goo",
@@ -35,10 +35,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// var ui = new DebugUI(goo);
 
 		var camera = new Camera(45, 1, 1, 1000);
-		camera.translation.set(0, 20, 350);
-		camera.lookAt(new Vector3(0, 40, 0), Vector3.UNIT_Y);
-		camera.onFrameChange();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 20, 150);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
