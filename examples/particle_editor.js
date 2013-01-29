@@ -163,18 +163,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
 			} else if (this.value === 'xy') {
 				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
-		    		particle.bbX.set(1, 0, 0);
+		    		particle.bbX.set(-1, 0, 0);
 		    		particle.bbY.set(0, 1, 0);
 		    	};
 			} else if (this.value === 'yz') {
 				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
 		    		particle.bbX.set(0, 1, 0);
-		    		particle.bbY.set(0, 0, 1);
+		    		particle.bbY.set(0, 0, -1);
 		    	};
 			} else if (this.value === 'xz') {
 				entity.particleComponent.emitters[this.id].getParticleBillboardVectors = function(particle, particleEntity) {
-		    		particle.bbX.set(1, 0, 0);
-		    		particle.bbY.set(0, 0, 1);
+		    		particle.bbX.set(-1, 0, 0);
+		    		particle.bbY.set(0, 0, -1);
 		    	};
 			}
 		});
@@ -188,6 +188,29 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
+	function setupTimelineListeners(timeline, entity) {
+		timeline.on('change', '.timeOffset', function() {
+			var indices = this.name.split(" ");
+			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].timeOffset = this.value.trim() !== '' ? this.value.trim() : undefined;
+		});
+		timeline.on('change', '.spin', function() {
+			var indices = this.name.split(" ");
+			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].spin = (this.value.trim() !== '' ? this.value.trim() : undefined) * Math.PI / 180.0;
+		});
+		timeline.on('change', '.size', function() {
+			var indices = this.name.split(" ");
+			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].size = this.value.trim() !== '' ? this.value.trim() : undefined;
+		});
+		timeline.on('change', '.mass', function() {
+			var indices = this.name.split(" ");
+			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].mass = this.value.trim() !== '' ? this.value.trim() : undefined;
+		});
+		timeline.on('change', '.uvIndex', function() {
+			var indices = this.name.split(" ");
+			entity.particleComponent.emitters[indices[0]].timeline[indices[1]].uvIndex = this.value.trim() !== '' ? this.value.trim() : undefined;
+		});
+	}
+	
 	function createParticleMaterial(blendType) {
 		var material = Material.createMaterial(Material.shaders.particles);
 		material.textures.push(defaultTexture);
@@ -240,8 +263,91 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return particleComponent;
 	}
 	
+	function addTimelineUI(entry, emitterIndex, timelineIndex, tabsUI) {
+    	// setup timeline
+    	var timeline = tabsUI.find('.timeline').first();
+    	var timelineHTML = $("#timeline_editor_template").render({
+    		name: emitterIndex+" "+timelineIndex,
+    		size: entry.size !== undefined ? entry.size : '',
+    		mass: entry.mass !== undefined ? entry.mass : '',
+    		spin: entry.spin !== undefined ? Math.floor(entry.spin * 180 / Math.PI) : '',
+    	    timeOffset: entry.timeOffset !== undefined ? entry.timeOffset : 0.0,
+    		color: entry.color !== undefined ? "rgba("+Math.floor(entry.color[0]*255)+","+Math.floor(entry.color[1]*255)+","+Math.floor(entry.color[2]*255)+","+entry.color[3]+")" : ''
+    	});
+    	// add emitters to component editor
+    	var entryUI = $(timelineHTML.trim());
+    	timeline.append(entryUI);
+    	entryUI.find('.color').first().colorpicker({
+			parts: 'full',
+			showOn: 'both',
+			buttonImage: '../examples-lib/colorpicker/images/ui-colorpicker.png',
+			buttonColorize: true,
+			alpha: true,
+			colorFormat: 'RGBA',
+    		select: function(event, color) {
+    			var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
+    			var vals = exp.exec(color.formatted);
+    			entry.color = [vals[1]/255, vals[2]/255, vals[3]/255, vals[4]]; // alpha is already [0,1]
+    		}
+		});
+
+    	// convert timeline to accordion
+    	timeline.accordion("destroy").accordion({
+    		heightStyle: "content",
+    		collapsible: true,
+    		active: timelineIndex
+    	});
+	}
+	
+	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
+    	var emitters = sectionUI.children('.emitters').first();
+    	var emittersHTML = $("#emitter_editor_template").render({
+    		index: emitterIndex,
+    		ent: entity.id,
+    		maxLifetime: emitter.maxLifetime,
+    		releaseRatePerSecond: emitter.releaseRatePerSecond,
+    		minLifetime: emitter.minLifetime,
+    		totalParticlesToSpawn: emitter.totalParticlesToSpawn
+    	});
+    	var editor = $(emittersHTML.trim());
+    	// add emitters to component editor
+    	emitters.append(editor);
+
+    	// make tabs for emitter properties
+    	var tabs = emitters.children('.emitter_properties').eq(emitterIndex);
+    	tabs.tabs({
+    		heightStyle: "content",
+    		active: 0	
+    	});
+
+    	var timeline = tabs.find('.timeline').first();
+    	timeline.accordion();
+    	setupTimelineListeners(timeline, entity);
+
+    	// add UI for default entry
+    	addTimelineUI(emitter.timeline[0], emitterIndex, 0, tabs);
+
+    	// enable add timeline entry button
+    	var addEntry = editor.find('#add_entry').button();
+    	addEntry.on('click', function() {
+    		var entry = {timeOffset: 0.25, color: [Math.random(), Math.random(), Math.random(), 1.0]};
+    		emitter.timeline.push(entry);
+        	addTimelineUI(entry, emitterIndex, emitter.timeline.length - 1, tabs);
+    	});
+    	
+    	// convert emitters to accordion
+    	emitters.accordion("destroy").accordion({
+    		heightStyle: "content",
+    		collapsible: true,
+    		active: 0
+    	});
+
+    	emitters.accordion("refresh");
+	}
+	
 	function addParticleComponentUI(entity) {
 		var particleComponent = entity.particleComponent;
+
     	// Create html for ui from template
     	var componentHTML = $("#component_editor_template").render({
     		title: "Particle Entity "+particleEntities.length,
@@ -254,29 +360,24 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
     	// make into jquery object
     	var section = $(componentHTML.trim());
 
+    	// enable add emitter button
     	var addEmitter = section.find('#add_emitter').button();
     	addEmitter.on('click', function() {
-    		addParticleEmitter(particleComponent);
+    		var emitter = new ParticleEmitter({
+    			timeline: [ { color: [Math.random(), Math.random(), Math.random(), 1.0] } ]
+    		});
+    		particleComponent.emitters.push(emitter);
+    		addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
     	});
 
+    	// add listeners for emitter changes
     	var emitters = section.children('.emitters').first();
-    	var emitterData = [];
-    	for (var i = 0, max = particleComponent.emitters.length; i < max; i++) {
-    		var emitter = particleComponent.emitters[i];
-    		emitter.ent = entity.id; // hack for ui button groups
-    		emitterData.push(emitter);
-    	}
-    	var emittersHTML = $("#emitter_editor_template").render(emitterData);
-    	// add emitters to component editor
-    	emitters.append($(emittersHTML.trim()));
+    	emitters.accordion();
     	setupEmittersListeners(emitters, entity);
-    	
-    	var tabs = emitters.children('.emitter_properties').first();
-    	tabs.tabs({
-    		heightStyle: "content",
-    		active: 1	
-    	});
-    	
+
+    	// add UI for default emitter
+    	addParticleEmitterUI(entity, particleComponent.emitters[0], 0, section);
+
     	// add top level to main accordion
     	var accordion = $('#particle_components');
     	accordion.append(section);
@@ -286,20 +387,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
     	
     	// remake accordion
     	accordion.accordion("destroy").accordion({
-    		heightStyle: "auto",
+    		heightStyle: "fill",
     		collapsible: true,
     		active: active
     	});
     	
-    	// convert emitters to accordion
-    	emitters.accordion({
-    		heightStyle: "content",
-    		collapsible: true,
-    		active: 0
-    	});
-    	
     	accordion.accordion("refresh");
-    	emitters.accordion("refresh");
 	}
 	
 	init();
