@@ -338,7 +338,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
     	emitters.accordion("destroy").accordion({
     		heightStyle: "content",
     		collapsible: true,
-    		active: 0
+    		active: emitterIndex
     	});
 
     	emitters.accordion("refresh");
