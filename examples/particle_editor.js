@@ -49,22 +49,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		defaultTexture.wrapT = 'EdgeClamp';
 		defaultTexture.generateMipmaps = true;
 
-		// setup jquery input handlers
+		// setup top level jQuery input handlers
 		setupInputHandlers();
 
 		// add default particles
 		addParticleComponent();
 	}
 
-	function getParticleComponentByEntityId(id) {
-		for ( var i = 0, max = particleEntities.length; i < max; i++) {
-			if (particleEntities[i].id == id) {
-				return particleEntities[i].particleComponent;
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * Helper function for locating a particle entity by its entity id.
+	 */
 	function getParticleEntityById(id) {
 		for ( var i = 0, max = particleEntities.length; i < max; i++) {
 			if (particleEntities[i].id == id) {
@@ -74,6 +68,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return null;
 	}
 
+	/**
+	 * Use the hidden file input field to ask a user for a file to open.
+	 */
 	function openUserFile(filter, callback) {
 		var chooser = $('#fileChooser');
 		if (callback) {
@@ -87,6 +84,337 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		chooser.trigger('click');
 	}
 
+	/**
+	 * Create a new ParticleComponent with default values.
+	 */
+	function addParticleComponent() {
+		if (!goo) {
+			return null;
+		}
+
+		// Create entity
+		var entity = goo.world.createEntity();
+
+		// Create particle component and assign to entity
+		var particleComponent = new ParticleComponent({
+			particleCount : 500,
+			uRange : 4,
+			vRange : 4
+		});
+		entity.setComponent(particleComponent);
+
+		// Create MeshDataComponent using ParticleComponent's pre-generated data
+		entity.setComponent(new MeshDataComponent(particleComponent.meshData));
+
+		// Create MeshRendererComponent with default material, texture and shader
+		var meshRendererComponent = new MeshRendererComponent();
+		var material = Material.createMaterial(Material.shaders.particles);
+		material.textures.push(defaultTexture);
+		material.cullState.enabled = false;
+		material.depthState.write = false;
+		material.blendState.blending = 'AlphaBlending';
+		meshRendererComponent.materials.push(material);
+		entity.setComponent(meshRendererComponent);
+
+		// Add a default ParticleEmitter
+		particleComponent.emitters.push(new ParticleEmitter({
+			timeline : [],
+			releaseRatePerSecond : 50
+		}));
+
+		// Add our entity to the world
+		entity.addToWorld();
+
+		// Store the entity for later use
+		particleEntities.push(entity);
+
+		// initialize the UI for editing this component.
+		addParticleComponentUI(entity);
+
+		return particleComponent;
+	}
+
+	/**
+	 * Generate UI for editing the properties of a ParticleComponent.
+	 */
+	function addParticleComponentUI(entity) {
+		var particleComponent = entity.particleComponent;
+		var accordion = $('#particle_components');
+
+		// generate new html for this particleComponent from jsrender template
+		var componentHTML = $("#component_editor_template").render({
+			title : "Particle Entity",
+			count : particleComponent.particleCount,
+			name : entity.id,
+			atlasX : particleComponent.uRange,
+			atlasY : particleComponent.vRange,
+			enabled : particleComponent.enabled ? 'checked' : ''
+		});
+
+		// convert generated html into jquery node and add to the emitters accordion
+		var section = $(componentHTML.trim());
+		accordion.append(section);
+
+		// Now find our emitters section and make that into a sortable jquery UI accordion
+		var emitters = section.children('.emitters').first();
+		emitters.accordion({
+			header : "> div > h3",
+			heightStyle : "content",
+			collapsible : true
+		}).sortable({
+			axis : "y",
+			handle : "h3",
+			delay : 250,
+			start : function(event, ui) {
+				particleComponent.emitters.start = ui.item.index();
+			},
+			stop : function(event, ui) {
+				// reorder timeline entries too
+				var stop = ui.item.index();
+				if (stop == particleComponent.emitters.start) {
+					return;
+				}
+
+				// yank the entry that moved
+				var moved = particleComponent.emitters.splice(particleComponent.emitters.start, 1)[0];
+				// replace it in the right location
+				particleComponent.emitters.splice(stop, 0, moved);
+			}
+		});
+
+		// By default we have 1 emitter, so setup UI on it.
+		addParticleEmitterUI(entity, particleComponent.emitters[0], 0, section);
+
+		// find and enable the "add particle emitter" button
+		var addEmitter = section.find('#add_emitter').button();
+		addEmitter.on('click', function() {
+			var emitter = new ParticleEmitter({
+				timeline : [],
+				releaseRatePerSecond : 50
+			});
+			particleComponent.emitters.push(emitter);
+			if (particleComponent.emitters.length == 1) {
+				// a bit of a hack... if length == 1, they probably deleted all emitters, which might have accidently disabled things
+				particleComponent.enabled = true;
+			}
+			addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
+		});
+
+		// find and enable the "delete particle entity" button
+		var deleteButton = section.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			section.remove();
+
+			// remove from our list
+			for ( var i = 0, max = particleEntities.length; i < max; i++) {
+				if (particleEntities[i] === entity) {
+					particleEntities.splice(i, 1);
+					break;
+				}
+			}
+
+			// remove actual entity from world
+			entity.removeFromWorld();
+		});
+
+		// refresh accordion
+		accordion.accordion("refresh");
+
+		// automatically select the newly added entry
+		accordion.accordion("option", "active", particleEntities.length - 1);
+	}
+
+	/**
+	 * Generate UI for editing the properties of a ParticleEmitter.
+	 */
+	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
+		// add our default gravity influence
+		emitter.gravity = 0;
+		emitter.influences.push({
+			enabled : true,
+			prepare : function(particleEntity, emitter) {
+			},
+			apply : function(tpf, particle, particleIndex) {
+				particle.velocity.y -= emitter.gravity * tpf;
+			}
+		});
+
+		// find emitters dom node in our section
+		var emitters = sectionUI.children('.emitters').first();
+		// generate new html for this emitter from jsrender template
+		var emittersHTML = $("#emitter_editor_template").render({
+			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
+				return v.toString(16); // uuid is used to uniquely id the radio button group in General.
+			}),
+			enabled : emitter.enabled ? 'checked' : '',
+			maxLifetime : emitter.maxLifetime,
+			releaseRatePerSecond : emitter.releaseRatePerSecond,
+			minLifetime : emitter.minLifetime,
+			totalParticlesToSpawn : emitter.totalParticlesToSpawn
+		});
+		// convert generated html into jquery node and add to the emitters accordion
+		var editor = $(emittersHTML.trim());
+		emitters.append(editor);
+
+		// Ok, now go into our generated jquery node and convert into tabs for emitter properties
+		var tabs = emitters.find('.emitter_properties').eq(emitterIndex);
+		tabs.tabs({
+			heightStyle : "content",
+			active : 0
+		});
+
+		// Now find our timeline and make that into a sortable jquery UI accordion
+		var timeline = tabs.find('.timeline').first();
+		timeline.accordion({
+			header : "> div > h3",
+			heightStyle : "content",
+			collapsible : true
+		}).sortable({
+			axis : "y",
+			handle : "h3",
+			delay : 250,
+			start : function(event, ui) {
+				timeline.start = ui.item.index();
+			},
+			stop : function(event, ui) {
+				// reorder timeline entries too
+				var stop = ui.item.index();
+				if (stop == timeline.start) {
+					return;
+				}
+
+				// yank the entry that moved
+				var moved = emitter.timeline.splice(timeline.start, 1)[0];
+				// replace it in the right location
+				emitter.timeline.splice(stop, 0, moved);
+			}
+		});
+
+		// While we're in the timeline, find the "add timeline entry" button and enable it
+		var addEntry = editor.find('#add_entry').button();
+		addEntry.on('click', function() {
+			var entry = {
+				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
+				color : [Math.random(), Math.random(), Math.random(), 1.0]
+			};
+			emitter.timeline.push(entry);
+			addTimelineUI(emitter, entry, tabs);
+		});
+
+		// Great, now setup the input listeners for this emitter
+		setupEmittersListeners(editor, emitter, entity.particleComponent);
+
+		// Find the "delete particle emitter" button and enable it
+		var deleteButton = editor.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			editor.remove();
+
+			// remove actual emitter
+			var emitterArray = entity.particleComponent.emitters;
+			for ( var i = 0, max = emitterArray.length; i < max; i++) {
+				if (emitterArray[i] === emitter) {
+					emitterArray.splice(i, 1);
+					break;
+				}
+			}
+		});
+
+		// refresh the emitter accordion we dropped all of this into.
+		emitters.accordion("refresh");
+
+		// automatically select the newly added entry
+		emitters.accordion("option", "active", entity.particleComponent.emitters.length - 1);
+	}
+
+	/**
+	 * Generate UI for editing the properties of a ParticleEmitter timeline entry.
+	 */
+	function addTimelineUI(emitter, entry, tabsUI) {
+		// find timeline accordion dom node under our tabs node.
+		var timeline = tabsUI.find('.timeline').first();
+		// generate new html for this timeline entry from jsrender template
+		// color needs to be converted to rgba(int, int, int, %) format for the jquery colorpicker plugin.
+		var timelineHTML = $("#timeline_editor_template").render(
+			{
+				size : entry.size !== undefined ? entry.size : '',
+				mass : entry.mass !== undefined ? entry.mass : '',
+				spin : entry.spin !== undefined ? Math.floor(entry.spin * 180 / Math.PI) : '',
+				timeOffset : entry.timeOffset !== undefined ? entry.timeOffset : 0.0,
+				color : entry.color !== undefined ? "rgba(" + Math.floor(entry.color[0] * 255) + "," + Math.floor(entry.color[1] * 255) + ","
+					+ Math.floor(entry.color[2] * 255) + "," + entry.color[3] + ")" : ''
+			});
+
+		// convert generated html into jquery node and add to the timeline accordion
+		var entryUI = $(timelineHTML.trim());
+		timeline.append(entryUI);
+
+		// find our color input box and enable it as a colorpicker
+		entryUI.find('.color').first().colorpicker({
+			parts : 'full',
+			showOn : 'both',
+			showNoneButton : 'true',
+			buttonImage : '../examples-lib/colorpicker/images/ui-colorpicker.png',
+			buttonColorize : true,
+			alpha : true,
+			colorFormat : 'RGBA',
+			select : function(event, color) {
+				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
+				var vals = exp.exec(color.formatted);
+				if (vals) {
+					entry.color = [vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]]; // alpha is already [0,1]
+				} else {
+					entry.color = undefined;
+				}
+			}
+		});
+
+		// setup the input listeners for this entry's UI
+		setupTimelineListeners(entryUI, entry);
+
+		// find and enable the "delete particle entry" button
+		var deleteButton = entryUI.find('.delete_button').first();
+		deleteButton.button();
+		deleteButton.on('click', function(ev) {
+			// prevent open/close of accordion on delete press
+			ev.stopPropagation();
+			ev.preventDefault();
+
+			// delete ui entry
+			entryUI.remove();
+
+			// remove actual timeline entry
+			for ( var i = 0, max = emitter.timeline.length; i < max; i++) {
+				if (emitter.timeline[i] === entry) {
+					emitter.timeline.splice(i, 1);
+					break;
+				}
+			}
+		});
+
+		// refresh accordion
+		timeline.accordion("refresh");
+
+		// automatically select the newly added entry
+		timeline.accordion("option", "active", emitter.timeline.length - 1);
+	}
+
+	/**
+	 * Setup our default particle component input handlers. These are just for direct properties of ParticleComponent. We set these up at a high level
+	 * once and use the name on the input field to get the particle component's entity id for lookup.
+	 */
 	function setupInputHandlers() {
 		// Hook up add button
 		$('#add_particle_component').on('click', function() {
@@ -165,10 +493,15 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
+	/**
+	 * Setup UI change listeners for emitter properties.
+	 */
 	function setupEmittersListeners(emitterUI, emitter, particleComponent) {
 		emitterUI.on('change', '.emitter_enabled', function() {
 			emitter.enabled = this.checked;
 			if (emitter.enabled) {
+				// if all emitters are disabled and all the particles die, the component may become disabled too.
+				// So here we re-enable it just in case. May cause some UI inconsistencies.
 				particleComponent.enabled = true;
 			}
 		});
@@ -231,6 +564,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
+	/**
+	 * Setup UI change listeners for timeline entry properties.
+	 */
 	function setupTimelineListeners(entryUI, entry) {
 		entryUI.on('change', '.timeOffset', function() {
 			entry.timeOffset = this.value.trim() !== '' ? this.value.trim() : undefined;
@@ -249,317 +585,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
-	function createParticleMaterial(blendType) {
-		var material = Material.createMaterial(Material.shaders.particles);
-		material.textures.push(defaultTexture);
-		material.cullState.enabled = false;
-		material.depthState.write = false;
-		material.blendState.blending = blendType;
-		return material;
-	}
-
-	// Create simple quad
-	function addParticleComponent() {
-		if (!goo) {
-			return null;
-		}
-
-		// Create entity
-		var entity = goo.world.createEntity();
-
-		// Create particle component
-		var particleComponent = new ParticleComponent({
-			particleCount : 500,
-			uRange : 4,
-			vRange : 4
-		});
-
-		entity.setComponent(particleComponent);
-
-		// Create meshdata component using particle data
-		var meshDataComponent = new MeshDataComponent(particleComponent.meshData);
-		entity.setComponent(meshDataComponent);
-
-		// Create meshrenderer component with material and shader
-		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.materials.push(createParticleMaterial('AlphaBlending'));
-		entity.setComponent(meshRendererComponent);
-
-		// add a default emitter
-		particleComponent.emitters.push(new ParticleEmitter({
-			timeline : [],
-			releaseRatePerSecond : 50
-		}));
-
-		entity.addToWorld();
-		particleEntities.push(entity);
-
-		// initialize the UI for editing this component.
-		addParticleComponentUI(entity);
-
-		return particleComponent;
-	}
-
 	/**
-	 * Generate UI for a timeline entry on a ParticleEmitter.
+	 * Generate sample javascript function content for emitter's getEmissionPoint.
 	 */
-	function addTimelineUI(emitter, entry, tabsUI) {
-		// setup timeline
-		var timeline = tabsUI.find('.timeline').first();
-		var timelineHTML = $("#timeline_editor_template").render(
-			{
-				name : entry.uuid,
-				size : entry.size !== undefined ? entry.size : '',
-				mass : entry.mass !== undefined ? entry.mass : '',
-				spin : entry.spin !== undefined ? Math.floor(entry.spin * 180 / Math.PI) : '',
-				timeOffset : entry.timeOffset !== undefined ? entry.timeOffset : 0.0,
-				color : entry.color !== undefined ? "rgba(" + Math.floor(entry.color[0] * 255) + "," + Math.floor(entry.color[1] * 255) + ","
-					+ Math.floor(entry.color[2] * 255) + "," + entry.color[3] + ")" : ''
-			});
-		// add emitters to component editor
-		var entryUI = $(timelineHTML.trim());
-		timeline.append(entryUI);
-		entryUI.find('.color').first().colorpicker({
-			parts : 'full',
-			showOn : 'both',
-			showNoneButton : 'true',
-			buttonImage : '../examples-lib/colorpicker/images/ui-colorpicker.png',
-			buttonColorize : true,
-			alpha : true,
-			colorFormat : 'RGBA',
-			select : function(event, color) {
-				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
-				var vals = exp.exec(color.formatted);
-				if (vals) {
-					entry.color = [vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]]; // alpha is already [0,1]
-				} else {
-					entry.color = undefined;
-				}
-			}
-		});
-
-		setupTimelineListeners(entryUI, entry);
-
-		var deleteButton = entryUI.find('.delete_button').first();
-		deleteButton.button();
-		deleteButton.on('click', function(ev) {
-			// prevent open/close of accordion on delete press
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			// delete ui entry
-			entryUI.remove();
-
-			// remove actual timeline entry
-			for ( var i = 0, max = emitter.timeline.length; i < max; i++) {
-				if (emitter.timeline[i] === entry) {
-					emitter.timeline.splice(i, 1);
-					break;
-				}
-			}
-		});
-
-		// refresh accordion
-		timeline.accordion("refresh");
-		timeline.accordion("option", "active", emitter.timeline.length - 1);
-	}
-
-	/**
-	 * Generate UI for a ParticleEmitter.
-	 */
-	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
-		// add our default gravity influence
-		emitter.gravity = 0;
-		emitter.influences.push({
-			enabled : true,
-			prepare : function(particleEntity, emitter) {
-			},
-			apply : function(tpf, particle, particleIndex) {
-				particle.velocity.y -= emitter.gravity * tpf;
-			}
-		});
-
-		// find emitters dom node in our section
-		var emitters = sectionUI.children('.emitters').first();
-		// generate new html for this emitter from jsrender template
-		var emittersHTML = $("#emitter_editor_template").render({
-			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
-				return v.toString(16); // uuid is used to uniquely id the radio button group in General.
-			}),
-			enabled : emitter.enabled ? 'checked' : '',
-			maxLifetime : emitter.maxLifetime,
-			releaseRatePerSecond : emitter.releaseRatePerSecond,
-			minLifetime : emitter.minLifetime,
-			totalParticlesToSpawn : emitter.totalParticlesToSpawn
-		});
-		// convert generated html into jquery node and add to the emitters accordion
-		var editor = $(emittersHTML.trim());
-		emitters.append(editor);
-
-		// Ok, now go into our generated jquery node and convert into tabs for emitter properties
-		var tabs = emitters.find('.emitter_properties').eq(emitterIndex);
-		tabs.tabs({
-			heightStyle : "content",
-			active : 0
-		});
-
-		// Now find our timeline and make that into a sortable jquery UI accordion
-		var timeline = tabs.find('.timeline').first();
-		timeline.accordion({
-			header : "> div > h3",
-			heightStyle : "content",
-			collapsible : true
-		}).sortable({
-			axis : "y",
-			handle : "h3",
-			delay : 250,
-			start : function(event, ui) {
-				timeline.start = ui.item.index();
-			},
-			stop : function(event, ui) {
-				// reorder timeline entries too
-				var stop = ui.item.index();
-				if (stop == timeline.start) {
-					return;
-				}
-
-				// yank the entry that moved
-				var moved = emitter.timeline.splice(timeline.start, 1)[0];
-				// replace it in the right location
-				emitter.timeline.splice(stop, 0, moved);
-			}
-		});
-
-		// While we're in the timeline, find the add timeline entry button and enable it
-		var addEntry = editor.find('#add_entry').button();
-		addEntry.on('click', function() {
-			var entry = {
-				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
-				color : [Math.random(), Math.random(), Math.random(), 1.0]
-			};
-			emitter.timeline.push(entry);
-			addTimelineUI(emitter, entry, tabs);
-		});
-
-		// Great, now setup the input listeners for this emitter
-		setupEmittersListeners(editor, emitter, entity.particleComponent);
-
-		// Grab the delete button on this emitter and enable it
-		var deleteButton = editor.find('.delete_button').first();
-		deleteButton.button();
-		deleteButton.on('click', function(ev) {
-			// prevent open/close of accordion on delete press
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			// delete ui entry
-			editor.remove();
-
-			// remove actual emitter
-			var emitterArray = entity.particleComponent.emitters;
-			for ( var i = 0, max = emitterArray.length; i < max; i++) {
-				if (emitterArray[i] === emitter) {
-					emitterArray.splice(i, 1);
-					break;
-				}
-			}
-		});
-
-		// refresh the emitter accordion we dropped all of this into.
-		emitters.accordion("refresh");
-	}
-
-	function addParticleComponentUI(entity) {
-		var particleComponent = entity.particleComponent;
-
-		// Create html for ui from template
-		var componentHTML = $("#component_editor_template").render({
-			title : "Particle Entity",
-			count : particleComponent.particleCount,
-			name : entity.id,
-			atlasX : particleComponent.uRange,
-			atlasY : particleComponent.vRange,
-			enabled : particleComponent.enabled ? 'checked' : ''
-		});
-		// make into jquery object
-		var section = $(componentHTML.trim());
-
-		// enable add emitter button
-		var addEmitter = section.find('#add_emitter').button();
-		addEmitter.on('click', function() {
-			var emitter = new ParticleEmitter({
-				timeline : [],
-				releaseRatePerSecond : 50
-			});
-			particleComponent.emitters.push(emitter);
-			if (particleComponent.emitters.length == 1) {
-				// a bit of a hack... if length == 1, they probably deleted all emitters, which might have accidently disabled things
-				particleComponent.enabled = true;
-			}
-			addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
-		});
-
-		// add listeners for emitter changes
-		var emitters = section.children('.emitters').first();
-		emitters.accordion({
-			header : "> div > h3",
-			heightStyle : "content",
-			collapsible : true
-		}).sortable({
-			axis : "y",
-			handle : "h3",
-			delay : 250,
-			start : function(event, ui) {
-				particleComponent.emitters.start = ui.item.index();
-			},
-			stop : function(event, ui) {
-				// reorder timeline entries too
-				var stop = ui.item.index();
-				if (stop == particleComponent.emitters.start) {
-					return;
-				}
-
-				// yank the entry that moved
-				var moved = particleComponent.emitters.splice(particleComponent.emitters.start, 1)[0];
-				// replace it in the right location
-				particleComponent.emitters.splice(stop, 0, moved);
-			}
-		});
-
-		// add UI for default emitter
-		addParticleEmitterUI(entity, particleComponent.emitters[0], 0, section);
-
-		var deleteButton = section.find('.delete_button').first();
-		deleteButton.button();
-		deleteButton.on('click', function(ev) {
-			// prevent open/close of accordion on delete press
-			ev.stopPropagation();
-			ev.preventDefault();
-
-			// delete ui entry
-			section.remove();
-
-			// remove from our list
-			for ( var i = 0, max = particleEntities.length; i < max; i++) {
-				if (particleEntities[i] === entity) {
-					particleEntities.splice(i, 1);
-					break;
-				}
-			}
-
-			// remove actual entity from world
-			entity.removeFromWorld();
-		});
-
-		// add top level to main accordion
-		var accordion = $('#particle_components');
-		accordion.append(section);
-
-		// refresh accordion
-		accordion.accordion("refresh");
-	}
-
 	function getPointFunction(type) {
 		switch (type) {
 			case 'Point':
@@ -637,7 +665,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				"dir.mul(Math.random() * radius);" + //
 				"center.add(dir)";
 			case 'HollowSphere':
-				// TODO: maybe set particle.emit_bbX and particle.emit_bbY here?
+				// TODO: maybe we can calc and set particle.emit_bbX and particle.emit_bbY here? In particles4 we do it with polar coords.
 				return "var radius = 5, center = particle.position.set(0, 0, 0);\n" + //
 				"var dir = particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).normalize();" + //
 				"dir.mul(radius);" + //
@@ -645,6 +673,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 	}
 
+	/**
+	 * Generate sample javascript function content for emitter's getEmissionVelocity.
+	 */
 	function getVelocityFunction(type) {
 		switch (type) {
 			case 'Simple':
