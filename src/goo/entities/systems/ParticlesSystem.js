@@ -14,8 +14,9 @@ function(System, ParticleUtils) {
 	ParticlesSystem.prototype = Object.create(System.prototype);
 
 	ParticlesSystem.prototype.process = function(entities, tpf) {
-		if (tpf > 1)
+		if (tpf > 1) {
 			return; // ignore, probably was out of focus
+		}
 		// go through each particle component and update
 		for ( var i = 0, max = entities.length; i < max; i++) {
 			var entity = entities[i];
@@ -24,20 +25,14 @@ function(System, ParticleUtils) {
 			if (particleComponent && particleComponent.enabled) {
 				try {
 					this.updateParticles(entity, particleComponent, tpf);
-				} catch (e) {console.log(e.stack);}
+				} catch (e) {
+					console.log(e.stack);
+				}
 			}
 		}
 	};
 
 	ParticlesSystem.prototype.updateParticles = function(particleEntity, particleComponent, tpf) {
-		// go through any influences and prepare them
-		if (particleComponent.influences.length) {
-			for ( var j = 0, max = particleComponent.influences.length; j < max; j++) {
-				// called even is !enabled. This allows prepare function to control enabled status.
-				particleComponent.influences[j].prepare(particleEntity);
-			}
-		}
-
 		var particleIndex = 0;
 		var emitterIndex = -1;
 		var emitter = undefined;
@@ -51,6 +46,13 @@ function(System, ParticleUtils) {
 				emitterIndex++;
 				if (particleComponent.emitters.length > emitterIndex) {
 					emitter = particleComponent.emitters[emitterIndex];
+
+					// go through any influences and prepare them
+					if (emitter.influences.length) {
+						for ( var j = 0, max = emitter.influences.length; j < max; j++) {
+							emitter.influences[j].prepare(particleEntity);
+						}
+					}
 
 					if (emitter.totalParticlesToSpawn != 0) {
 						// find out how many particles to create.
@@ -72,10 +74,10 @@ function(System, ParticleUtils) {
 			var particle = particleComponent.particles[particleIndex];
 
 			// if this particle is alive and we have influences, apply them
-			if (particle.alive && particleComponent.influences.length) {
-				for ( var j = 0, max = particleComponent.influences.length; j < max; j++) {
-					if (particleComponent.influences[j].enabled) {
-						particleComponent.influences[j].apply(tpf, particle, particleIndex);
+			if (particle.alive && particle.emitter && particle.emitter.influences.length) {
+				for ( var j = 0, max = particle.emitter.influences.length; j < max; j++) {
+					if (particle.emitter.influences[j].enabled) {
+						particle.emitter.influences[j].apply(tpf, particle, particleIndex);
 					}
 				}
 			}
@@ -98,7 +100,7 @@ function(System, ParticleUtils) {
 				emitter.getEmissionPoint(particle, particleEntity);
 				emitter.getEmissionVelocity(particle, particleEntity);
 
-				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn <= 0) {
+				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn == 0) {
 					// setup to pull next emitter, if any
 					emitter = undefined;
 				}

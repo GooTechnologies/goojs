@@ -151,20 +151,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
-	function setupEmittersListeners(emiterUI, emitter) {
-		emiterUI.on('change', '.release_rate', function() {
+	function setupEmittersListeners(emitterUI, emitter) {
+		emitterUI.on('change', '.release_rate', function() {
 			emitter.releaseRatePerSecond = this.value;
+			emitter.particlesWaitingToRelease = 0; // reset to prevent leakage
 		});
-		emiterUI.on('change', '.max_life', function() {
+		emitterUI.on('change', '.max_life', function() {
 			emitter.maxLifetime = this.value / 1000;
 		});
-		emiterUI.on('change', '.min_life', function() {
+		emitterUI.on('change', '.min_life', function() {
 			emitter.minLifetime = this.value / 1000;
 		});
-		emiterUI.on('change', '.max_spawn', function() {
+		emitterUI.on('change', '.max_spawn', function() {
 			emitter.totalParticlesToSpawn = this.value;
 		});
-		emiterUI.on('change', '.billboard', function() {
+		emitterUI.on('change', '.billboard', function() {
 			if (this.value === 'camera') {
 				emitter.getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
 			} else if (this.value === 'xy') {
@@ -182,13 +183,28 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					particle.bbX.set(-1, 0, 0);
 					particle.bbY.set(0, 0, -1);
 				};
+			} else if (this.value === 'particle') {
+				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
+					particle.bbX.set(particle.emit_bbX);
+					particle.bbY.set(particle.emit_bbY);
+				};
 			}
 		});
-		emiterUI.on('change', '.emission_point', function() {
+		emitterUI.on('change', '.emission_point', function() {
 			emitter.getEmissionPoint = new Function('particle', 'particleEntity', this.value);
 		});
-		emiterUI.on('change', '.emission_velocity', function() {
+		emitterUI.on('change', '.emission_point_examples', function() {
+			var textArea = emitterUI.find(".emission_point").first();
+			textArea.val(getPointFunction(this.value));
+			textArea.trigger("change");
+		});
+		emitterUI.on('change', '.emission_velocity', function() {
 			emitter.getEmissionVelocity = new Function('particle', 'particleEntity', this.value);
+		});
+		emitterUI.on('change', '.emission_velocity_examples', function() {
+			var textArea = emitterUI.find(".emission_velocity").first();
+			textArea.val(getVelocityFunction(this.value));
+			textArea.trigger("change");
 		});
 	}
 
@@ -220,20 +236,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	// Create simple quad
-	function addParticleComponent(properties) {
+	function addParticleComponent() {
 		if (!goo) {
 			return null;
-		}
-
-		if (!properties) {
-			properties = {};
 		}
 
 		// Create entity
 		var entity = goo.world.createEntity();
 
 		// Create particle component
-		var particleComponent = new ParticleComponent(properties);
+		var particleComponent = new ParticleComponent({
+			particleCount : 500
+		});
 
 		entity.setComponent(particleComponent);
 
@@ -243,16 +257,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.materials.push(createParticleMaterial(properties.blendType ? properties.blendType : 'AlphaBlending'));
+		meshRendererComponent.materials.push(createParticleMaterial('AlphaBlending'));
 		entity.setComponent(meshRendererComponent);
-
-		var script = new BasicControlScript(goo.renderer.domElement);
-		script.rollSpeed = 0.25;
-		entity.setComponent(new ScriptComponent(script));
 
 		// add a default emitter
 		particleComponent.emitters.push(new ParticleEmitter({
-			timeline : []
+			timeline : [],
+			releaseRatePerSecond : 50
 		}));
 
 		entity.addToWorld();
@@ -283,6 +294,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		entryUI.find('.color').first().colorpicker({
 			parts : 'full',
 			showOn : 'both',
+			showNoneButton : 'true',
 			buttonImage : '../examples-lib/colorpicker/images/ui-colorpicker.png',
 			buttonColorize : true,
 			alpha : true,
@@ -290,7 +302,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			select : function(event, color) {
 				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
 				var vals = exp.exec(color.formatted);
-				entry.color = [vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]]; // alpha is already [0,1]
+				if (vals) {
+					entry.color = [vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]]; // alpha is already [0,1]
+				} else {
+					entry.color = undefined;
+				}
 			}
 		});
 
@@ -412,7 +428,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create html for ui from template
 		var componentHTML = $("#component_editor_template").render({
-			title : "Particle Entity " + particleEntities.length,
+			title : "Particle Entity",
 			count : particleComponent.particleCount,
 			name : entity.id,
 			atlasX : particleComponent.uRange,
@@ -426,7 +442,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var addEmitter = section.find('#add_emitter').button();
 		addEmitter.on('click', function() {
 			var emitter = new ParticleEmitter({
-				timeline : []
+				timeline : [],
+				releaseRatePerSecond : 50
 			});
 			particleComponent.emitters.push(emitter);
 			if (particleComponent.emitters.length == 1) {
@@ -494,6 +511,116 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// refresh accordion
 		accordion.accordion("refresh");
+	}
+
+	function getPointFunction(type) {
+		switch (type) {
+			case 'Point':
+				return "particle.position.set(0,0,0);";
+			case 'Rectangle':
+				return "var center = particle.position.set(0, 0, 0);\n" + //
+				"var xExtent = 10,  zExtent = 10;\n" + //
+				"center.x += (Math.random() * 2 * xExtent) - xExtent;\n" + //
+				"center.y += 0;\n" + //
+				"center.z += (Math.random() * 2 * zExtent) - zExtent;";
+			case 'GOO!':
+				return "// XXX: ideally this first part would exist outside of the function...\n" + //
+				"if (!particleEntity.positions) {\n" + //
+				"	var image = [//\n" + //
+				"		'.XXXX....XXXX....XXXX...XX', //\n" + //
+				"		'X.......X....X..X....X..XX', //\n" + //
+				"		'X..XXX..X....X..X....X..XX', //\n" + //
+				"		'X....X..X....X..X....X....', //\n" + //
+				"		'.XXXX....XXXX....XXXX...XX'];\n" + //
+				"	var height = image.length;\n" + //
+				"	var width = image[0].length;\n" + //
+				"\n" + //
+				"	particleEntity.positions = [];\n" + //
+				"	for ( var yy = 0; yy < height; ++yy) {\n" + //
+				"		for ( var xx = 0; xx < width; ++xx) {\n" + //
+				"			if (image[yy].substring(xx, xx + 1) == 'X') {\n" + //
+				"				particleEntity.positions.push([(xx - width * 0.5) * 0.5, -(yy - height * 0.5) * 0.5]);\n" + //
+				"			}\n" + //
+				"		}\n" + //
+				"	}\n" + //
+				"}\n" + //
+				"\n" + //
+				"// This part is all that has to be in the function itself\n" + //
+				"var index = Math.floor(Math.random() * particleEntity.positions.length);\n" + //
+				"index = Math.min(index, particleEntity.positions.length - 1);\n" + //
+				"particle.position.set(particleEntity.positions[index][0], 10 + particleEntity.positions[index][1], 0);\n" + //
+				"particle.position.mul(2);";
+			case 'Cube':
+				return "var center = particle.position.set(0, 0, 0);\n" + //
+				"var extent = 5;\n" + //
+				"\n" + //
+				"center.x += (Math.random() * 2 * extent) - extent;\n" + //
+				"center.y += (Math.random() * 2 * extent) - extent;\n" + //
+				"center.z += (Math.random() * 2 * extent) - extent;";
+			case 'HollowCube':
+				return "var center = particle.position.set(0, 0, 0);\n" + //
+				"var side = Math.floor(Math.random() * 3);\n" + //
+				"var dir = Math.floor(Math.random() * 2);\n" + //
+				"var x = 2 * Math.random() - 1.0;\n" + //
+				"var y = 2 * Math.random() - 1.0;\n" + //
+				"var extent = 5;\n" + //
+				"\n" + //
+				"if (side == 0) {\n" + //
+				"	center.x += extent * (dir ? 1 : -1);\n" + //
+				"	center.y += y * extent;\n" + //
+				"	center.z += x * extent;\n" + //
+				"	particle.emit_bbX = [0, 0, 1];\n" + //
+				"	particle.emit_bbY = [0, 1, 0];\n" + //
+				"} else if (side == 1) {\n" + //
+				"	center.y += extent * (dir ? 1 : -1);\n" + //
+				"	center.z += y * extent;\n" + //
+				"	center.x += x * extent;\n" + //
+				"	particle.emit_bbX = [1, 0, 0];\n" + //
+				"	particle.emit_bbY = [0, 0, 1];\n" + //
+				"} else {\n" + //
+				"	center.z += extent * (dir ? 1 : -1);\n" + //
+				"	center.y += y * extent;\n" + //
+				"	center.x += x * extent;\n" + //
+				"	particle.emit_bbX = [1, 0, 0];\n" + //
+				"	particle.emit_bbY = [0, 1, 0];\n" + //
+				"}";
+			case 'Sphere':
+				return "var radius = 5, center = particle.position.set(0, 0, 0);\n" + //
+				"var dir = particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).normalize();" + //
+				"dir.mul(Math.random() * radius);" + //
+				"center.add(dir)";
+			case 'HollowSphere':
+				// TODO: maybe set particle.emit_bbX and particle.emit_bbY here?
+				return "var radius = 5, center = particle.position.set(0, 0, 0);\n" + //
+				"var dir = particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).normalize();" + //
+				"dir.mul(radius);" + //
+				"center.add(dir)";
+		}
+	}
+
+	function getVelocityFunction(type) {
+		switch (type) {
+			case 'Simple':
+				return "particle.velocity.set(0,1,0);";
+			case 'Fountain':
+				return "var scale = 5, minOffsetAngle = Math.PI * 15 / 180, maxOffsetAngle = Math.PI * 45 / 180;" + //
+				"var randomAngle = minOffsetAngle + Math.random() * (maxOffsetAngle - minOffsetAngle);\n" + //
+				"var randomDir = Math.PI * 2 * Math.random();\n" + //
+				"\n" + //
+				"particle.velocity.x = Math.cos(randomDir) * Math.sin(randomAngle);\n" + //
+				"particle.velocity.y = Math.cos(randomAngle);\n" + //
+				"particle.velocity.z = Math.sin(randomDir) * Math.sin(randomAngle);\n" + //
+				"\n" + //
+				"particle.velocity.mul(scale);";
+			case 'Random':
+				return "particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).mul(2.0);";
+			case 'GroundFog':
+				return "particle.velocity.set(Math.random()-0.5,0,Math.random()-0.5).mul(2.0);";
+			case 'Rain':
+				return "particle.velocity.set(0, -50, 0);";
+			case 'None':
+				return "particle.velocity.set(0,0,0);";
+		}
 	}
 
 	init();
