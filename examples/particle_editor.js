@@ -44,7 +44,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.addToWorld();
 
 		// load default texture
-		defaultTexture = new TextureCreator().loadTexture2D(resourcePath + '/flare.png');
+		defaultTexture = new TextureCreator().loadTexture2D(resourcePath + '/particle_atlas.png');
 		defaultTexture.wrapS = 'EdgeClamp';
 		defaultTexture.wrapT = 'EdgeClamp';
 		defaultTexture.generateMipmaps = true;
@@ -263,7 +263,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create particle component
 		var particleComponent = new ParticleComponent({
-			particleCount : 500
+			particleCount : 500,
+			uRange : 4,
+			vRange : 4
 		});
 
 		entity.setComponent(particleComponent);
@@ -631,7 +633,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			case 'Simple':
 				return "particle.velocity.set(0,1,0);";
 			case 'Fountain':
-				return "var scale = 5,\n minOffsetAngle = Math.PI * 15 / 180,\n maxOffsetAngle = Math.PI * 45 / 180;\n\n" + //
+				return "var scale = 5,\n minOffsetAngle = Math.PI * 0 / 180,\n maxOffsetAngle = Math.PI * 30 / 180;\n\n" + //
+				"var randomAngle = minOffsetAngle + Math.random() * (maxOffsetAngle - minOffsetAngle);\n" + //
+				"var randomDir = Math.PI * 2 * Math.random();\n" + //
+				"\n" + //
+				"particle.velocity.x = Math.cos(randomDir) * Math.sin(randomAngle);\n" + //
+				"particle.velocity.y = Math.cos(randomAngle);\n" + //
+				"particle.velocity.z = Math.sin(randomDir) * Math.sin(randomAngle);\n" + //
+				"\n" + //
+				"particle.velocity.mul(scale);";
+			case 'Flame':
+				return "var scale = 5,\n minOffsetAngle = Math.PI * 0 / 180,\n maxOffsetAngle = Math.PI * 15 / 180;\n\n" + //
 				"var randomAngle = minOffsetAngle + Math.random() * (maxOffsetAngle - minOffsetAngle);\n" + //
 				"var randomDir = Math.PI * 2 * Math.random();\n" + //
 				"\n" + //
@@ -641,7 +653,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				"\n" + //
 				"particle.velocity.mul(scale);";
 			case 'Random':
-				return "particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).mul(2.0);";
+				return "particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).mul(10.0);";
+			case 'Drift':
+				return "particle.velocity.set(Math.random()-0.5,Math.random()-0.5,Math.random()-0.5).mul(0.5);";
 			case 'GroundFog':
 				return "particle.velocity.set(Math.random()-0.5,0,Math.random()-0.5).mul(2.0);";
 			case 'Rain':

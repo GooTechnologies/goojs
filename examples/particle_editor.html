@@ -62,7 +62,7 @@
 
                 <tr>
                 <td class="input"><input type="number" class="particle_count" name="{{attr:name}}" min="0" step="10" max="16383" value="{{attr:count}}"></td>
-                <td class="input"><img src='../resources/flare.png' class="particle_texture" name="{{attr:name}}"></td>
+                <td class="input"><img src='../resources/particle_atlas.png' class="particle_texture" name="{{attr:name}}"></td>
                 </tr>
 	
                 <tr>
@@ -171,7 +171,9 @@
                         <select class="emission_velocity_examples" name="{{attr:name}}">
                             <option value="Simple" selected>Simple Velocity</option>
                             <option value="Fountain">Fountain</option>
+                            <option value="Flame">Flame</option>
                             <option value="Random">Random Velocity</option>
+                            <option value="Drift">Drift</option>
                             <option value="GroundFog">Ground Fog</option>
                             <option value="Rain">Rain</option>
                             <option value="None">Stationary</option>
