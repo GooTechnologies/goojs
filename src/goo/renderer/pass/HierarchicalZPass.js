@@ -70,8 +70,8 @@ function ( Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTar
 					'float z = vPosition.z/vPosition.w;',//
 					//http://www.codermind.com/articles/Depth-buffer-tutorial.html
 					'float linearizedDepth = (2.0*nearPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane) );',//
-					'gl_FragColor = vec4(0.0, 0.0, linearizedDepth, 1.0);',//
-					//'gl_FragColor = 1.0;',
+					//'gl_FragColor = vec4(0.0, 0.0, linearizedDepth, 1.0);',//
+					'gl_FragColor = vec4(linearizedDepth, 0.0, 0.0, 1.0);', // The float texture uses the red channel for writing.
 				'}'//
 			].join('\n')
 		};

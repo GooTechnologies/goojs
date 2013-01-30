@@ -1,3 +1,4 @@
+
 /* jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
@@ -1129,9 +1130,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 				this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
 
-				this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.DEPTH_COMPONENT, renderTarget.width, renderTarget.height, 0, WebGLRenderingContext.DEPTH_COMPONENT, WebGLRenderingContext.UNSIGNED_SHORT, null);
-				//this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
-
+				//this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.DEPTH_COMPONENT, renderTarget.width, renderTarget.height, 0, WebGLRenderingContext.DEPTH_COMPONENT, WebGLRenderingContext.UNSIGNED_SHORT, null);
+				this.context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, glFormat, renderTarget.width, renderTarget.height, 0, glFormat, glType, null);
 				this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
 
 			}
