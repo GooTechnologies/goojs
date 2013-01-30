@@ -465,7 +465,7 @@ define(
 						shaderSource = Material.shaders.simple;
 						type = 'simple';
 					}
-					shader = new Shader(info.materialName + '_Shader_' + type, shaderSource);
+					shader = Material.createShader(shaderSource, info.materialName + '_Shader');
 				} else {
 					shader = this.shaderExtractor(attributes, info);
 				}

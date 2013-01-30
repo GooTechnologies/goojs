@@ -52,10 +52,14 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 	}
 	
 	Material.prototype.getRenderQueue = function() {
-		if (this.renderQueue) {
+		if (this.renderQueue !== null) {
 			return this.renderQueue;
 		}
 		return this.shader.renderQueue;
+	};
+	
+	Material.prototype.setRenderQueue = function(queue) {
+		this.renderQueue = queue;
 	};
 
 	Material.shaders = {
@@ -830,8 +834,22 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		}
 	};
 
+	Material.store = [];
+	Material.hash = [];
 	Material.createShader = function(shaderDefinition, name) {
-		return new Shader(name || 'DefaultShader', shaderDefinition);
+		var index = Material.store.indexOf(shaderDefinition);
+		if (index !== -1) {
+			return Material.hash[index];
+		}
+		var shader = new Shader(name || 'DefaultShader', shaderDefinition);
+		Material.store.push(shaderDefinition);
+		Material.hash.push(shader);
+		return shader;
+	};
+
+	Material.clearShaderCache = function() {
+		Material.store.length = 0;
+		Material.hash.length = 0;
 	};
 
 	Material.createMaterial = function(shaderDefinition, name) {
