@@ -59,8 +59,11 @@
 }
 
 .delete_button {
-	float: right !important;
+    float: right !important;
     font-size: 75% !important;
+}
+.function_examples {
+    float: right !important;
 }
 
 .ui-widget {

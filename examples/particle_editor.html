@@ -32,13 +32,14 @@
             collapsible : true
         });
         $('#add_particle_component').button();
+        $('#change_bgcolor_button').button();
     });
     </script>
 </head>
 
 <body>
     <div id="config">
-        <div style="text-align: center;"><button id="add_particle_component" class="add_button">+ Add Particle Component</button></div>
+        <div style="text-align: center;"><button id="add_particle_component" class="add_button">+ Add Particle Entity</button>&nbsp;<button id="change_bgcolor_button" class="add_button">Set Background Color</button></div>
         <div id="particle_components"></div>
     </div>
 
@@ -71,7 +72,14 @@
                 </tr>
 
                 <tr>
-                <td class="input"><select class="particle_blending" name="{{attr:name}}"><option value="AdditiveBlending">Additive</option><option value="AlphaBlending" selected>Alpha</option></select></td>
+                <td class="input">
+                    <select class="particle_blending" name="{{attr:name}}">
+                        <option value="AlphaBlending" selected>Alpha</option>
+                        <option value="AdditiveBlending">Additive</option>
+                        <option value="SubtractiveBlending">Subtractive</option>
+                        <option value="MultiplyBlending">Multiply</option>
+                        <option value="NoBlending">None</option>
+                </select></td>
                 <td class="input"><span class="atlas">
                 <input type="number" class="particle_atlasX" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasX}}">
                 <input type="number" class="particle_atlasY" name="{{attr:name}}" min="0" step="1" max="64" value="{{attr:atlasY}}">
@@ -101,8 +109,8 @@
                     </tr>
         
                     <tr>
-                    <td class="input"><input type="number" class="max_life" name="{{attr:index}}" min="100" max="30000" step="25" value="{{attr:maxLifetime * 1000}}"></td>
-                    <td class="input"><input type="number" class="release_rate" name="{{attr:index}}" min="0.10" max="99" step="0.10"  value="{{attr:releaseRatePerSecond}}"></td>
+                    <td class="input"><input type="number" class="max_life" name="{{attr:index}}" min="50" max="99999" step="25" value="{{attr:maxLifetime * 1000}}"></td>
+                    <td class="input"><input type="number" class="release_rate" name="{{attr:index}}" min="0" max="999" step="1"  value="{{attr:releaseRatePerSecond}}"></td>
                     </tr>
         
                     <tr>
@@ -111,7 +119,7 @@
                     </tr>
         
                     <tr>
-                    <td class="input"><input type="number" class="min_life" name="{{attr:index}}" min="100" max="30000" step="25" value="{{attr:minLifetime * 1000}}"></td>
+                    <td class="input"><input type="number" class="min_life" name="{{attr:index}}" min="50" max="99999" step="25" value="{{attr:minLifetime * 1000}}"></td>
                     <td class="input"><input type="text" class="max_spawn" name="{{attr:index}}" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
                     </tr>
 
@@ -122,7 +130,8 @@
                     <tr>
                     <td class="input">
                     <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="camera" checked="checked"> Camera</label><br/>
-                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="xz"> XZ Plane</label>
+                    <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="xz"> XZ Plane</label><br/>
+                    <label title="Set emit_bbX and emit_bbY on Particle in functions tab."><input type="radio" class="billboard" name="{{attr:uuid}}" value="particle"> Particle Vars</label>
                     </td>
                     <td class="input">
                     <label><input type="radio" class="billboard" name="{{attr:uuid}}" value="xy"> XY Plane</label><br/>
@@ -134,19 +143,44 @@
             <div id="emit-tab2-{{attr:index}}_{{attr:ent}}">
                 <table cellpadding="0" cellspacing="0" border="0" class="editor">
                     <tr>
-                    <td class="label">getEmissionPoint: <br/>function(particle, particleEntity) {</td>
+                    <td class="label">
+                        <span>getEmissionPoint:</span>
+                        <span class="function_examples">Examples: 
+                        <select class="emission_point_examples" name="{{attr:name}}">
+                            <option value="Point" selected>Point</option>
+                            <option value="Rectangle">Rectangle</option>
+                            <option value="GOO!">GOO!</option>
+                            <option value="Cube">Cube</option>
+                            <option value="HollowCube">Hollow Cube</option>
+                            <option value="Sphere">Sphere</option>
+                            <option value="HollowSphere">Hollow Sphere</option>
+                        </select></span>
+                    </td>
                     </tr>
         
                     <tr>
-                    <td class="input"><textarea class="textarea emission_point" id="{{attr:index}}">return particle.position.set(0,0,0);</textarea></td>
+                    <td class="input"><textarea class="textarea emission_point" id="{{attr:index}}">particle.position.set(0,0,0);</textarea></td>
                     </tr>
 
+                    <tr><td>&nbsp</td></tr>
+
                     <tr>
-                    <td class="label">getEmissionVelocity: <br/>function(particle, particleEntity) {</td>
+                    <td class="label">
+                        <span>getEmissionVelocity:</span>
+                        <span class="function_examples">Examples: 
+                        <select class="emission_velocity_examples" name="{{attr:name}}">
+                            <option value="Simple" selected>Simple Velocity</option>
+                            <option value="Fountain">Fountain</option>
+                            <option value="Random">Random Velocity</option>
+                            <option value="GroundFog">Ground Fog</option>
+                            <option value="Rain">Rain</option>
+                            <option value="None">Stationary</option>
+                        </select></span>
+                    </td>
                     </tr>
         
                     <tr>
-                    <td class="input"><textarea class="textarea emission_velocity" id="{{attr:index}}">return particle.velocity.set(0,1,0);</textarea></td>
+                    <td class="input"><textarea class="textarea emission_velocity" id="{{attr:index}}">particle.velocity.set(0,1,0);</textarea></td>
                     </tr>
                 </table>
             </div>

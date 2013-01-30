@@ -264,8 +264,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function addGooText(particleComponent) {
-		var image = ['.XXXX....XXXX....XXXX...XX', 'X.......X....X..X....X..XX', 'X..XXX..X....X..X....X..XX', 'X....X..X....X..X....X....',
-				'.XXXX....XXXX....XXXX...XX'];
+		var image = [//
+		'.XXXX....XXXX....XXXX...XX', //
+		'X.......X....X..X....X..XX', //
+		'X..XXX..X....X..X....X..XX', //
+		'X....X..X....X..X....X....', //
+		'.XXXX....XXXX....XXXX...XX'];
 		var height = image.length;
 		var width = image[0].length;
 

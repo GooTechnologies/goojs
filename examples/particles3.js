@@ -89,7 +89,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 			}]
 		});
-		particleComponent.influences.push(ParticleUtils.createConstantForce(new Vector3(0, -20, 0)));
+		particleComponent.emitters[0].influences.push(ParticleUtils.createConstantForce(new Vector3(0, -20, 0)));
 
 		entity.setComponent(particleComponent);
 
@@ -111,7 +111,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		document.addEventListener('keydown', function(e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
-			console.log(code);
 			if (code == 32) { // space bar
 				// reset particles to spawn on the emitters
 				for ( var i = 0, max = particleComponent.emitters.length; i < max; i++) {
