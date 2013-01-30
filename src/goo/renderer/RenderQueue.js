@@ -14,11 +14,18 @@ function(Vector3) {
 		var that = this;
 		var tmpVec = new Vector3();
 		this.opaqueSorter = function(a, b) {
-			var bound1 = a.meshRendererComponent.worldBound;
-			var bound2 = b.meshRendererComponent.worldBound;
-			var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
-			var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
-			return dist1 - dist2;
+			//TODO: Add texture checks on material
+			
+			var shader1 = a.meshRendererComponent.materials[0].shader;
+			var shader2 = b.meshRendererComponent.materials[0].shader;
+			if (shader1._id === shader2._id) {
+				var bound1 = a.meshRendererComponent.worldBound;
+				var bound2 = b.meshRendererComponent.worldBound;
+				var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
+				var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
+				return dist1 - dist2;
+			}
+			return shader1._id - shader2._id;
 		};
 		this.transparentSorter = function(a, b) {
 			var bound1 = a.meshRendererComponent.worldBound;
@@ -51,7 +58,7 @@ function(Vector3) {
 
 		for ( var key in buckets) {
 			var bucket = buckets[key];
-			if (key <= RenderQueue.OPAQUE) {
+			if (key <= RenderQueue.TRANSPARENT) {
 				bucket.sort(this.opaqueSorter);
 			} else {
 				bucket.sort(this.transparentSorter);
@@ -63,10 +70,10 @@ function(Vector3) {
 		}
 	};
 
-	RenderQueue.BACKGROUND = 500;
+	RenderQueue.BACKGROUND = 0;
 	RenderQueue.OPAQUE = 1000;
-	RenderQueue.TRANSPARENT = 1500;
-	RenderQueue.OVERLAY = 2000;
+	RenderQueue.TRANSPARENT = 2000;
+	RenderQueue.OVERLAY = 3000;
 
 	return RenderQueue;
 });
