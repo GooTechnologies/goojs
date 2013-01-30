@@ -4,7 +4,8 @@ define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
 		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue'],
 /** @lends Renderer */
-function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform, RenderQueue) {
+function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform,
+	RenderQueue) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -59,8 +60,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			// this.glExtensionCompressedTextureS3TC = this.context.getExtension('WEBGL_compressed_texture_s3tc')
 			// || this.context.getExtension('MOZ_WEBGL_compressed_texture_s3tc')
 			// || this.context.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
-			this.glExtensionDepthTexture = 
-				this.context.getExtension('WEBKIT_WEBGL_depth_texture') 
+			this.glExtensionDepthTexture = this.context.getExtension('WEBKIT_WEBGL_depth_texture')
 				|| this.context.getExtension('MOZ_WEBGL_depth_texture');
 
 			if (!this.glExtensionTextureFloat) {
@@ -121,7 +121,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		this.overrideMaterial = null;
 
 		this.renderQueue = new RenderQueue();
-		
+
 		this.info = {
 			calls : 0,
 			vertices : 0,
@@ -218,7 +218,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
-			
+
 			for ( var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
 				this.fillRenderInfo(renderable, renderInfo);
@@ -319,6 +319,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 	/**
 	 * Read pixels to a typed array (ArrayBufferView)
+	 * 
 	 * @param x x offset of rectangle to read from
 	 * @param y y offset of rectangle to read from
 	 * @param width width of rectangle to read from
@@ -329,7 +330,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
 	};
 
-    Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
+	Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
@@ -471,7 +472,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || !(texture instanceof RenderTarget) && texture.image === undefined || texture.image
+			if (texture === undefined || !texture instanceof RenderTarget && texture.image === undefined || texture.image
 				&& texture.image.dataReady === undefined) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
@@ -910,7 +911,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
-				context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.SRC_COLOR);
+				context.blendFunc(WebGLRenderingContext.DST_COLOR, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 			} else if (blending === 'AlphaBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
