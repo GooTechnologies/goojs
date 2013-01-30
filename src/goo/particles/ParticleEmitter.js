@@ -47,6 +47,9 @@ function(ParticleUtils, Renderer) {
 
 		// used to track fractional parts of particles waiting to be released between frames.
 		this.particlesWaitingToRelease = 0.0;
+
+		// Enabled flag
+		this.enabled = settings.enabled !== undefined ? settings.enabled === true : true;
 	}
 
 	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function(particle, particleEntity) {

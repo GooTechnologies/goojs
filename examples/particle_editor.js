@@ -165,7 +165,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 	}
 
-	function setupEmittersListeners(emitterUI, emitter) {
+	function setupEmittersListeners(emitterUI, emitter, particleComponent) {
+		emitterUI.on('change', '.emitter_enabled', function() {
+			emitter.enabled = this.checked;
+			if (emitter.enabled) {
+				particleComponent.enabled = true;
+			}
+		});
 		emitterUI.on('change', '.release_rate', function() {
 			emitter.releaseRatePerSecond = this.value;
 			emitter.particlesWaitingToRelease = 0; // reset to prevent leakage
@@ -294,6 +300,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		return particleComponent;
 	}
 
+	/**
+	 * Generate UI for a timeline entry on a ParticleEmitter.
+	 */
 	function addTimelineUI(emitter, entry, tabsUI) {
 		// setup timeline
 		var timeline = tabsUI.find('.timeline').first();
@@ -355,41 +364,47 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		timeline.accordion("option", "active", emitter.timeline.length - 1);
 	}
 
+	/**
+	 * Generate UI for a ParticleEmitter.
+	 */
 	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
 		// add our default gravity influence
 		emitter.gravity = 0;
 		emitter.influences.push({
 			enabled : true,
-			prepare : function(particleEntity) {
+			prepare : function(particleEntity, emitter) {
 			},
 			apply : function(tpf, particle, particleIndex) {
 				particle.velocity.y -= emitter.gravity * tpf;
 			}
 		});
 
+		// find emitters dom node in our section
 		var emitters = sectionUI.children('.emitters').first();
+		// generate new html for this emitter from jsrender template
 		var emittersHTML = $("#emitter_editor_template").render({
 			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
-				return v.toString(16);
+				return v.toString(16); // uuid is used to uniquely id the radio button group in General.
 			}),
-			ent : entity.id,
+			enabled : emitter.enabled ? 'checked' : '',
 			maxLifetime : emitter.maxLifetime,
 			releaseRatePerSecond : emitter.releaseRatePerSecond,
 			minLifetime : emitter.minLifetime,
 			totalParticlesToSpawn : emitter.totalParticlesToSpawn
 		});
+		// convert generated html into jquery node and add to the emitters accordion
 		var editor = $(emittersHTML.trim());
-		// add emitters to component editor
 		emitters.append(editor);
 
-		// make tabs for emitter properties
+		// Ok, now go into our generated jquery node and convert into tabs for emitter properties
 		var tabs = emitters.find('.emitter_properties').eq(emitterIndex);
 		tabs.tabs({
 			heightStyle : "content",
 			active : 0
 		});
 
+		// Now find our timeline and make that into a sortable jquery UI accordion
 		var timeline = tabs.find('.timeline').first();
 		timeline.accordion({
 			header : "> div > h3",
@@ -416,8 +431,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		});
 
-		setupEmittersListeners(editor, emitter);
+		// While we're in the timeline, find the add timeline entry button and enable it
+		var addEntry = editor.find('#add_entry').button();
+		addEntry.on('click', function() {
+			var entry = {
+				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
+				color : [Math.random(), Math.random(), Math.random(), 1.0]
+			};
+			emitter.timeline.push(entry);
+			addTimelineUI(emitter, entry, tabs);
+		});
 
+		// Great, now setup the input listeners for this emitter
+		setupEmittersListeners(editor, emitter, entity.particleComponent);
+
+		// Grab the delete button on this emitter and enable it
 		var deleteButton = editor.find('.delete_button').first();
 		deleteButton.button();
 		deleteButton.on('click', function(ev) {
@@ -438,18 +466,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		});
 
-		// enable add timeline entry button
-		var addEntry = editor.find('#add_entry').button();
-		addEntry.on('click', function() {
-			var entry = {
-				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
-				color : [Math.random(), Math.random(), Math.random(), 1.0]
-			};
-			emitter.timeline.push(entry);
-			addTimelineUI(emitter, entry, tabs);
-		});
-
-		// refresh accordion
+		// refresh the emitter accordion we dropped all of this into.
 		emitters.accordion("refresh");
 	}
 
