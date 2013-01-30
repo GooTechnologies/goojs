@@ -66,6 +66,10 @@
     float: right !important;
 }
 
+#change_bgcolor_button {
+    font-size: 85%;
+}
+
 .ui-widget {
 	font-size: 85%;
 }

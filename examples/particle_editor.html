@@ -32,14 +32,13 @@
             collapsible : true
         });
         $('#add_particle_component').button();
-        $('#change_bgcolor_button').button();
     });
     </script>
 </head>
 
 <body>
     <div id="config">
-        <div style="text-align: center;"><button id="add_particle_component" class="add_button">+ Add Particle Entity</button>&nbsp;<button id="change_bgcolor_button" class="add_button">Set Background Color</button></div>
+        <div style="text-align: center;"><button id="add_particle_component" class="add_button">+ Add Particle Entity</button>&nbsp;<span id="change_bgcolor_button"></span></div>
         <div id="particle_components"></div>
     </div>
 
@@ -100,6 +99,7 @@
                 <li><a href="#emit-tab1-{{attr:index}}_{{attr:ent}}">General</a></li>
                 <li><a href="#emit-tab2-{{attr:index}}_{{attr:ent}}">Functions</a></li>
                 <li><a href="#emit-tab3-{{attr:index}}_{{attr:ent}}">Timeline</a></li>
+                <li><a href="#emit-tab4-{{attr:index}}_{{attr:ent}}">Influences</a></li>
             </ul>
             <div id="emit-tab1-{{attr:index}}_{{attr:ent}}">
                 <table cellpadding="0" cellspacing="0" border="0" class="editor">
@@ -112,7 +112,7 @@
                     <td class="input"><input type="number" class="max_life" name="{{attr:index}}" min="50" max="99999" step="25" value="{{attr:maxLifetime * 1000}}"></td>
                     <td class="input"><input type="number" class="release_rate" name="{{attr:index}}" min="0" max="999" step="1"  value="{{attr:releaseRatePerSecond}}"></td>
                     </tr>
-        
+
                     <tr>
                     <td class="label">Min Life (ms):</td>
                     <td class="label">Max Spawn:</td>
@@ -188,6 +188,18 @@
                 <div class="timeline"></div>
                 <div style="text-align: right;"><button id="add_entry" class="add_button">+ Add Entry</button></div>
             </div>
+            <div id="emit-tab4-{{attr:index}}_{{attr:ent}}">
+                <p>(Sample only.  Much more complex influences possible.)</p>
+                <table cellpadding="0" cellspacing="0" border="0" class="editor">
+                    <tr>
+                    <td class="label" width="50%">Gravity:</td>
+                    </tr>
+        
+                    <tr>
+                    <td class="input"><input type="number" class="gravity" name="{{attr:index}}" min="-500" max="500" step="0.1" value="0"></td>
+                    </tr>
+                    </div>
+                </table>
         </div>
         </div>
     </script>
