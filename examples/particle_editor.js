@@ -93,6 +93,20 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			addParticleComponent();
 		});
 
+		$('#change_bgcolor_button').colorpicker({
+			parts : 'full',
+			showOn : 'both',
+			buttonImage : '../examples-lib/colorpicker/images/ui-colorpicker.png',
+			buttonColorize : true,
+			alpha : false,
+			colorFormat : 'RGBA',
+			select : function(event, color) {
+				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
+				var vals = exp.exec(color.formatted);
+				goo.renderer.setClearColor(vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]); // alpha is already [0,1]
+			}
+		});
+
 		// add listeners for particle component edits
 		$('#particle_components').on('change', '.particle_count', function() {
 			var entity = getParticleEntityById(this.name);
@@ -164,6 +178,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 		emitterUI.on('change', '.max_spawn', function() {
 			emitter.totalParticlesToSpawn = this.value;
+		});
+		emitterUI.on('change', '.gravity', function() {
+			emitter.gravity = this.value;
 		});
 		emitterUI.on('change', '.billboard', function() {
 			if (this.value === 'camera') {
@@ -337,6 +354,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
+		// add our default gravity influence
+		emitter.gravity = 0;
+		emitter.influences.push({
+			enabled : true,
+			prepare : function(particleEntity) {
+			},
+			apply : function(tpf, particle, particleIndex) {
+				particle.velocity.y -= emitter.gravity * tpf;
+			}
+		});
+
 		var emitters = sectionUI.children('.emitters').first();
 		var emittersHTML = $("#emitter_editor_template").render({
 			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -603,7 +631,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			case 'Simple':
 				return "particle.velocity.set(0,1,0);";
 			case 'Fountain':
-				return "var scale = 5, minOffsetAngle = Math.PI * 15 / 180, maxOffsetAngle = Math.PI * 45 / 180;" + //
+				return "var scale = 5,\n minOffsetAngle = Math.PI * 15 / 180,\n maxOffsetAngle = Math.PI * 45 / 180;\n\n" + //
 				"var randomAngle = minOffsetAngle + Math.random() * (maxOffsetAngle - minOffsetAngle);\n" + //
 				"var randomDir = Math.PI * 2 * Math.random();\n" + //
 				"\n" + //
