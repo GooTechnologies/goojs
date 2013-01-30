@@ -104,13 +104,17 @@
             <div id="emit-tab1-{{attr:index}}_{{attr:ent}}">
                 <table cellpadding="0" cellspacing="0" border="0" class="editor">
                     <tr>
+                    <td class="label" colspan="2">Enabled: <input type="checkbox" class="emitter_enabled" min="0" step="1" max="64" checked="{{attr:enabled}}"></td>
+                    </tr>
+
+                    <tr>
                     <td class="label" width="50%">Max Life (ms):</td>
                     <td class="label" width="50%">Release Rate / sec:</td>
                     </tr>
         
                     <tr>
-                    <td class="input"><input type="number" class="max_life" name="{{attr:index}}" min="50" max="99999" step="25" value="{{attr:maxLifetime * 1000}}"></td>
-                    <td class="input"><input type="number" class="release_rate" name="{{attr:index}}" min="0" max="999" step="1"  value="{{attr:releaseRatePerSecond}}"></td>
+                    <td class="input"><input type="number" class="max_life" min="50" max="99999" step="25" value="{{attr:maxLifetime * 1000}}"></td>
+                    <td class="input"><input type="number" class="release_rate" min="0" max="999" step="1"  value="{{attr:releaseRatePerSecond}}"></td>
                     </tr>
 
                     <tr>
@@ -119,8 +123,8 @@
                     </tr>
         
                     <tr>
-                    <td class="input"><input type="number" class="min_life" name="{{attr:index}}" min="50" max="99999" step="25" value="{{attr:minLifetime * 1000}}"></td>
-                    <td class="input"><input type="text" class="max_spawn" name="{{attr:index}}" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
+                    <td class="input"><input type="number" class="min_life" min="50" max="99999" step="25" value="{{attr:minLifetime * 1000}}"></td>
+                    <td class="input"><input type="text" class="max_spawn" size="5" value="{{attr:totalParticlesToSpawn}}"></td>
                     </tr>
 
                     <tr>

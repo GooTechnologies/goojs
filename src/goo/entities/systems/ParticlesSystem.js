@@ -47,11 +47,17 @@ function(System, ParticleUtils) {
 				if (particleComponent.emitters.length > emitterIndex) {
 					emitter = particleComponent.emitters[emitterIndex];
 
-					// go through any influences and prepare them
+					// go through any influences and prepare them - we can use this to enable / disable the emitter
 					if (emitter.influences.length) {
 						for ( var j = 0, max = emitter.influences.length; j < max; j++) {
-							emitter.influences[j].prepare(particleEntity);
+							emitter.influences[j].prepare(particleEntity, emitter);
 						}
+					}
+
+					// check if this emitter is enabled and bail out if not
+					if (!emitter.enabled) {
+						emitter = undefined;
+						continue;
 					}
 
 					if (emitter.totalParticlesToSpawn != 0) {
@@ -64,6 +70,7 @@ function(System, ParticleUtils) {
 					// no particles to make this turn, so move on.
 					if (emitter.particlesWaitingToRelease < 1) {
 						emitter = undefined;
+						continue;
 					}
 				} else {
 					emitter = null;
