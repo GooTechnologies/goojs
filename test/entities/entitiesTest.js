@@ -26,7 +26,7 @@ define(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syste
 				expect(entity._world).toBe(world);
 			});
 			it("Entity has 1 components (transformcomponent)", function() {
-				expect(entity._components.length).toBe(2);
+				expect(entity._components.length).toBe(1);
 				expect(entity.getComponent('TransformComponent')).toBeDefined();
 			});
 			it("Entity id is 0", function() {
