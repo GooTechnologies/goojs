@@ -1,6 +1,6 @@
-define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent'],
+define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent', 'goo/entities/components/CSSTransformComponent'],
 	/** @lends EntityUtils */
-	function (TransformComponent, MeshDataComponent, MeshRendererComponent) {
+	function (TransformComponent, MeshDataComponent, MeshRendererComponent, CSSTransformComponent) {
 		"use strict";
 
 		/**
@@ -23,6 +23,14 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 			// Create meshrenderer component with material and shader
 			var meshRendererComponent = new MeshRendererComponent();
 			entity.setComponent(meshRendererComponent);
+
+			return entity;
+		};
+
+		EntityUtils.createDOMEntity = function (world, domElement) {
+			var entity = world.createEntity();
+
+			entity.setComponent(new CSSTransformComponent(domElement));
 
 			return entity;
 		};
