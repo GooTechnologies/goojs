@@ -72,6 +72,7 @@ function ( Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTar
 					'float linearizedDepth = (2.0*nearPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane) );',//
 					//'gl_FragColor = vec4(0.0, 0.0, linearizedDepth, 1.0);',//
 					'gl_FragColor = vec4(linearizedDepth, 0.0, 0.0, 1.0);', // The float texture uses the red channel for writing.
+					//'gl_FragColor = vec4(vPosition.x, vPosition.y, 0.0, 1.0);',
 				'}'//
 			].join('\n')
 		};
