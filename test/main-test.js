@@ -26,7 +26,8 @@ require([
     'test/shapes/Quad',
     'test/shapes/Sphere',
     'test/shapes/Torus',
-    'test/entities/entitiesTest'
+    'test/entities/entitiesTest',
+    'test/util/URLTools'
 ],
 function(mathTest) {
   window.__testacular__.start();
