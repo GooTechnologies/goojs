@@ -12,15 +12,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
 		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
 		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/BlurPass'], function(World, Entity, System,
+		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/BlurPass', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
 	BasicControlScript, EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
-	BlurPass) {
+	BlurPass, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
 
+	function removeChildrenFromNode(node) {
+		while (node.hasChildNodes()) {
+			node.removeChild(node.firstChild);
+		}
+	}
+	
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
@@ -47,17 +53,63 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Scene render
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
-		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
+		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 1.0);
+//		renderPass.clearColor = new Vector4(0.7,0.7,0.7,1);
 		// renderPass.overrideMaterial = Material.createMaterial(Material.shaders.showNormals);
+//		renderPass.renderToScreen = true;
 
 		// Bloom
 		var bloomPass = new BloomPass();
 		// var bloomPass = new BlurPass();
 
 		// Film grain
-		var coolPass = new FullscreenPass(createFilmShader(goo));
+		var coolPass = new FullscreenPass(ShaderLib.copy);
+//		var coolPass = new FullscreenPass(ShaderLib.film);
+//		var coolPass = new FullscreenPass(ShaderLib.sepia);
+//		var coolPass = new FullscreenPass(ShaderLib.dotscreen);
+//		var coolPass = new FullscreenPass(ShaderLib.vignette);
+//		var coolPass = new FullscreenPass(ShaderLib.bleachbypass);
+//		var coolPass = new FullscreenPass(ShaderLib.horizontalTiltShift);
+//		var coolPass = new FullscreenPass(ShaderLib.horizontalTiltShift);
 		coolPass.renderToScreen = true;
 
+		for ( var key in ShaderLib) {
+			console.log(key);
+
+			var inp = document.createElement('button');
+			inp.setAttribute('onclick', 'selectEffect("'+key+'");');
+			var t = document.createTextNode(key);
+			inp.appendChild(t);
+
+			document.getElementById('sel').appendChild(inp);
+		}
+		
+		var elem = document.getElementById('effectInfo');
+		window.selectEffect = function(effect) {
+			console.log(effect);
+			
+			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
+			coolPass.renderable.materials = [coolPass.material];
+			
+			removeChildrenFromNode(elem);
+			for (var key in coolPass.material.shader.uniforms) {
+				var div = document.createElement('div');
+				elem.appendChild(div);
+
+				var t = document.createTextNode(key);
+				div.appendChild(t);
+
+				var inp = document.createElement('input');
+				inp.setAttribute('type', 'text');
+				inp.setAttribute('value', JSON.stringify(coolPass.material.shader.uniforms[key]));
+				inp.addEventListener('change', function(val) {
+					console.log(val.srcElement.value);
+					coolPass.material.shader.uniforms[key] = eval(val.srcElement.value);
+				}, false);
+				div.appendChild(inp);
+			}
+		};
+		
 		// Regular copy
 		// var shader = Util.clone(Material.shaders.copy);
 		// var outPass = new FullscreenPass(shader);
@@ -74,6 +126,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function loadModels(goo) {
+		var parentEntity = goo.world.createEntity();
+		parentEntity.setComponent(new ScriptComponent(new BasicControlScript(goo.renderer.domElement)));
+		parentEntity.addToWorld();
+		
 		var importer = new JSONImporter(goo.world);
 
 		importer.load(resourcePath + '/head.model', resourcePath + '/', {
@@ -83,82 +139,28 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 				entities[0].transformComponent.transform.scale.set(40, 40, 40);
 
-				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
+				parentEntity.transformComponent.attachChild(entities[0].transformComponent);
 			},
 			onError : function(error) {
 				console.error(error);
 			}
 		});
+		
+		var meshData = ShapeCreator.createBox(250, 5, 250, 20, 20);
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		entity.transformComponent.transform.translation.y = -10;
+		entity.name = "Box";
+
+		var material = new Material('TestMaterial');
+		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
+		material.textures.push(texture);
+
+		entity.meshRendererComponent.materials.push(material);
+		parentEntity.transformComponent.attachChild(entity.transformComponent);
+		entity.addToWorld();
 	}
 
-	function createFilmShader(goo) {
-		var shader = {
-			attributes : Material.shaders.copy.attributes,
-			uniforms : {
-				"tDiffuse" : 0,
-				"time" : function() {
-					return goo.world.time * 1.0;
-				},
-				"nIntensity" : 0.5,
-				"sIntensity" : 0.05,
-				"sCount" : 4096,
-				"grayscale" : 0,
-				$link : Material.shaders.copy.uniforms
-			},
-			vshader : Material.shaders.copy.vshader,
-			fshader : [//
-			"precision mediump float;",//
-
-			// control parameter
-			"uniform float time;",
-
-			"uniform bool grayscale;",
-
-			// noise effect intensity value (0 = no effect, 1 = full effect)
-			"uniform float nIntensity;",
-
-			// scanlines effect intensity value (0 = no effect, 1 = full effect)
-			"uniform float sIntensity;",
-
-			// scanlines effect count value (0 = no effect, 4096 = full effect)
-			"uniform float sCount;",
-
-			"uniform sampler2D tDiffuse;",
-
-			"varying vec2 texCoord0;",
-
-			"void main() {",
-
-			// sample the source
-			"vec4 cTextureScreen = texture2D( tDiffuse, texCoord0 );",
-
-			// make some noise
-			"float x = texCoord0.x * texCoord0.y * time * 1000.0;", "x = mod( x, 13.0 ) * mod( x, 123.0 );", "float dx = mod( x, 0.01 );",
-
-			// add noise
-			"vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx * 100.0, 0.0, 1.0 );",
-
-			// get us a sine and cosine
-			"vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );",
-
-			// add scanlines
-			"cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;",
-
-			// interpolate between source and result by intensity
-			"cResult = cTextureScreen.rgb + clamp( nIntensity, 0.0,1.0 ) * ( cResult - cTextureScreen.rgb );",
-
-			// convert to grayscale if desired
-			"if( grayscale ) {",
-
-			"cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );",
-
-			"}",
-
-			"gl_FragColor = vec4( cResult, cTextureScreen.a );",
-
-			"}"].join('\n')
-		};
-		return shader;
-	}
 	init();
 });
