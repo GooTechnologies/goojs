@@ -100,7 +100,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 			if (this.mouseState.dX != 0) {
 				this.calcMat1.fromAngleNormalAxis(moveMultH * -this.mouseState.dX, this.worldUpVector.x, this.worldUpVector.y, this.worldUpVector.z);
 
-				Matrix3x3.combine(transform.rotation, this.calcMat1, this.calcMat2);
+				Matrix3x3.combine(this.calcMat1, transform.rotation, this.calcMat2);
 				transform.rotation.set(this.calcMat2);
 			}
 
