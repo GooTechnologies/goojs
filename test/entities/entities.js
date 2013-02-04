@@ -4,7 +4,7 @@ require({
     }
 });
 require([
-  'entitiesTest.js'
+  'entities-test.js'
 ],
 function() {
   'use strict';
