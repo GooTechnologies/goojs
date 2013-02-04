@@ -10,11 +10,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/MathUtils', 'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
+		'goo/math/MathUtils', 'goo/scripts/WASDControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
 		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function(World, Entity, System, TransformSystem, RenderSystem,
 	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils,
-	BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
+	WASDControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -42,6 +42,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 2, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new WASDControlScript({
+			domElement : goo.renderer.domElement,
+			walkSpeed : 25.0,
+			crawlSpeed : 10.0
+		}));
+		cameraEntity.setComponent(scripts);
 
 		// load default texture
 		defaultTexture = new TextureCreator().loadTexture2D(resourcePath + '/particle_atlas.png');
