@@ -21,12 +21,12 @@ function(Component, Vector3) {
 
 		this.camera._up.set(0, 1, 0);
 		transform.matrix.applyPostVector(this.camera._up);
-		
+
 		this.camera._direction.set(0, 0, -1);
 		transform.matrix.applyPostVector(this.camera._direction);
-		
+
 		transform.matrix.getTranslation(this.camera.translation);
-		
+
 		this.camera.update();
 	};
 

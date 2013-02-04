@@ -1,6 +1,6 @@
 define(["goo/math/Vector", "goo/math/Matrix3x3"],
-	/** @lends Quaternion */
-	function (Vector, Matrix3x3) {
+/** @lends Quaternion */
+function(Vector, Matrix3x3) {
 	"use strict";
 
 	/**
@@ -33,7 +33,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.add = function (lhs, rhs, target) {
+	Quaternion.add = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -55,7 +55,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.sub = function (lhs, rhs, target) {
+	Quaternion.sub = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -77,7 +77,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.mul = function (lhs, rhs, target) {
+	Quaternion.mul = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -100,17 +100,17 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.div = function (lhs, rhs, target) {
+	Quaternion.div = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
 
 		var clean = true;
 
-		target.data[0] = (clean &= (rhs.data[0] < 0.0 || rhs.data[0] > 0.0)) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= (rhs.data[1] < 0.0 || rhs.data[1] > 0.0)) ? lhs.data[1] / rhs.data[1] : 0.0;
-		target.data[2] = (clean &= (rhs.data[2] < 0.0 || rhs.data[2] > 0.0)) ? lhs.data[2] / rhs.data[2] : 0.0;
-		target.data[3] = (clean &= (rhs.data[3] < 0.0 || rhs.data[3] > 0.0)) ? lhs.data[3] / rhs.data[3] : 0.0;
+		target.data[0] = (clean &= rhs.data[0] < 0.0 || rhs.data[0] > 0.0) ? lhs.data[0] / rhs.data[0] : 0.0;
+		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
+		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
+		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
 
 		if (clean === false) {
 			console.warn("[Quaternion.div] Attempted to divide by zero!");
@@ -128,7 +128,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.scalarAdd = function (lhs, rhs, target) {
+	Quaternion.scalarAdd = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -150,7 +150,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.scalarSub = function (lhs, rhs, target) {
+	Quaternion.scalarSub = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -172,7 +172,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.scalarMul = function (lhs, rhs, target) {
+	Quaternion.scalarMul = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
@@ -195,14 +195,14 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} A new vector if the target vector cannot be used for storage, else the target vector.
 	 */
 
-	Quaternion.scalarDiv = function (lhs, rhs, target) {
+	Quaternion.scalarDiv = function(lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
 		}
 
 		var clean = true;
 
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
 
 		target.data[0] = lhs.data[0] * rhs;
 		target.data[1] = lhs.data[1] * rhs;
@@ -216,7 +216,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 		return target;
 	};
 
-	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
+	Quaternion.slerp = function(startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
 			return workQuat.set(startQuat);
@@ -273,7 +273,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.negate = function () {
+	Quaternion.prototype.negate = function() {
 		this.x *= -1;
 		this.y *= -1;
 		this.z *= -1;
@@ -287,7 +287,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.add = function (rhs) {
+	Quaternion.prototype.add = function(rhs) {
 		return Quaternion.add(this, rhs, this);
 	};
 
@@ -297,7 +297,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.sub = function (rhs) {
+	Quaternion.prototype.sub = function(rhs) {
 		return Quaternion.sub(this, rhs, this);
 	};
 
@@ -307,7 +307,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.mul = function (rhs) {
+	Quaternion.prototype.mul = function(rhs) {
 		return Quaternion.mul(this, rhs, this);
 	};
 
@@ -317,7 +317,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.div = function (rhs) {
+	Quaternion.prototype.div = function(rhs) {
 		return Quaternion.div(this, rhs, this);
 	};
 
@@ -327,7 +327,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.scalarAdd = function (rhs) {
+	Quaternion.prototype.scalarAdd = function(rhs) {
 		return Quaternion.scalarAdd(this, rhs, this);
 	};
 
@@ -337,7 +337,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.scalarSub = function (rhs) {
+	Quaternion.prototype.scalarSub = function(rhs) {
 		return Quaternion.scalarSub(this, rhs, this);
 	};
 
@@ -347,7 +347,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.scalarMul = function (rhs) {
+	Quaternion.prototype.scalarMul = function(rhs) {
 		return Quaternion.scalarMul(this, rhs, this);
 	};
 
@@ -357,11 +357,11 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @returns {Quaternion} Self for chaining.
 	 */
 
-	Quaternion.prototype.scalarDiv = function (rhs) {
+	Quaternion.prototype.scalarDiv = function(rhs) {
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
-	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
+	Quaternion.prototype.slerp = function(endQuat, changeAmnt) {
 		var end = new Quaternion().copy(endQuat);
 		Quaternion.slerp(this, endQuat, changeAmnt, end);
 		this.copy(end);
@@ -370,10 +370,10 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 *
+	 * 
 	 * @return this quaternion for chaining
 	 */
-	Quaternion.prototype.fromRotationMatrix = function (matrix) {
+	Quaternion.prototype.fromRotationMatrix = function(matrix) {
 		// Uses the Graphics Gems code, from
 		// ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z
 		// *NOT* the "Matrix and Quaternions FAQ", which has errors!
@@ -421,7 +421,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @param store the matrix to store our result in. If null, a new matrix is created.
 	 * @return the rotation matrix representation of this quaternion (normalized) if store is not null and is read only.
 	 */
-	Quaternion.prototype.toRotationMatrix = function (store) {
+	Quaternion.prototype.toRotationMatrix = function(store) {
 		var result = store;
 		if (!result) {
 			result = new Matrix3x3();
@@ -464,7 +464,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	/**
 	 * @return this quaternion, modified to be unit length, for chaining.
 	 */
-	Quaternion.prototype.normalize = function () {
+	Quaternion.prototype.normalize = function() {
 		var n = 1.0 / this.magnitude();
 		var xx = this.x * n;
 		var yy = this.y * n;
@@ -476,7 +476,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	/**
 	 * @return the magnitude of this quaternion.
 	 */
-	Quaternion.prototype.magnitude = function () {
+	Quaternion.prototype.magnitude = function() {
 		var magnitudeSQ = this.magnitudeSquared();
 		if (magnitudeSQ === 1.0) {
 			return 1.0;
@@ -488,15 +488,82 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	/**
 	 * @return the squared magnitude of this quaternion.
 	 */
-	Quaternion.prototype.magnitudeSquared = function () {
+	Quaternion.prototype.magnitudeSquared = function() {
 		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 	};
 
-	Quaternion.prototype.equals = function (o) {
+	/**
+	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates an object, so
+	 * use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
+	 * 
+	 * @param angle the angle to rotate (in radians).
+	 * @param axis the axis of rotation.
+	 * @return this quaternion for chaining
+	 * @throws NullPointerException if axis is null
+	 */
+	Quaternion.prototype.fromAngleAxis = function(angle, axis) {
+		var temp = new Vector3(axis).normalize();
+		var quat = fromAngleNormalAxis(angle, temp);
+		return quat;
+	};
+
+	/**
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0 the quaternion
+	 * is set to identity.
+	 * 
+	 * @param angle the angle to rotate (in radians).
+	 * @param axis the axis of rotation (already normalized - unit length).
+	 * @throws NullPointerException if axis is null
+	 */
+	Quaternion.prototype.fromAngleNormalAxis = function(angle, axis) {
+		if (axis.equals(Vector3.ZERO)) {
+			return setIdentity();
+		}
+
+		var halfAngle = 0.5 * angle;
+		var sin = MathUtils.sin(halfAngle);
+		var w = MathUtils.cos(halfAngle);
+		var x = sin * axis.getX();
+		var y = sin * axis.getY();
+		var z = sin * axis.getZ();
+		return this.set(x, y, z, w);
+	};
+
+	/**
+	 * Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in that vector as
+	 * well.
+	 * 
+	 * @param axisStore the object we'll store the computed axis in. If null, no computations are done to determine axis.
+	 * @return the angle of rotation in radians.
+	 */
+	Quaternion.prototype.toAngleAxis = function(axisStore) {
+		var sqrLength = this.x * this.x + this.y * this.y + this.z * this.z;
+		var angle;
+		if (Math.abs(sqrLength) <= Quaternion.ALLOWED_DEVIANCE) { // length is ~0
+			angle = 0.0;
+			if (axisStore != null) {
+				axisStore.x = 1.0;
+				axisStore.y = 0.0;
+				axisStore.z = 0.0;
+			}
+		} else {
+			angle = 2.0 * Math.acos(this.w);
+			if (axisStore != null) {
+				var invLength = 1.0 / Math.sqrt(sqrLength);
+				axisStore.x = this.x * invLength;
+				axisStore.y = this.y * invLength;
+				axisStore.z = this.z * invLength;
+			}
+		}
+
+		return angle;
+	};
+
+	Quaternion.prototype.equals = function(o) {
 		if (this === o) {
 			return true;
 		}
-		if (!(o instanceof Quaternion)) {
+		if (!o instanceof Quaternion) {
 			return false;
 		}
 		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE

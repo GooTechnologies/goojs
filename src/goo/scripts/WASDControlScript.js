@@ -48,7 +48,10 @@ function(Vector, Vector3) {
 	};
 
 	WASDControlScript.prototype.updateKeys = function(event, down) {
-		// event.preventDefault();
+		if (event.altKey) {
+			return;
+		}
+
 		var update = false;
 		switch (event.keyCode) {
 			case this.crawlKey:
