@@ -24,7 +24,7 @@ define([
 		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes);
 		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4); // RGBA
 		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // Change to float / uint16 / ...
-	}
+	};
 
 	SoftwareRenderer.prototype.renderDepth = function() {
 
