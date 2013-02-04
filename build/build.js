@@ -51,29 +51,39 @@ if (i > 0) {
 }
 
 var requirejs = require('requirejs');
+var workingDir = process.cwd();
 
 var config = {
 	baseUrl : appPath,
 	paths : {
-		goo : '../src/goo',
-		almond : '../build/almond'
+		goo : workingDir+'/../src/goo',
+		almond : workingDir+'/../build/almond'
 	},
 	name : 'almond',
 	include : [appName],
 	insertRequire : [appName],
 	out : doClosureStep ? 'extracted.js' : appOut,
 	useStrict : true,
+	uglify : {
+		toplevel : false,
+		ascii_only : false,
+		beautify: true,
+//		max_line_length: 120,
+//		no_mangle: true
+	},
 	optimize : optimizer,
-	wrap : true
+	wrap : true,
 };
 
-console.log(config);
+// console.log(config);
 
 requirejs.optimize(config, function(buildResponse) {
 	// buildResponse is just a text output of the modules
 	// included. Load the built file for the contents.
 	// Use config.out to get the optimized file contents.
 //	var contents = fs.readFileSync(config.out, 'utf8');
+	
+	console.log(buildResponse);
 	
 	if (doClosureStep) {
 		var command = 'java -jar compiler.jar --compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file '
@@ -83,10 +93,10 @@ requirejs.optimize(config, function(buildResponse) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
 			if (error !== null) {
-				console.log('exec error: ' + error);
+				console.log('closure error: ' + error);
 			}
 		});
 	}
 }, function(error) {
-	console.log('exec error: ' + error);
+	console.log('optimize error: ' + error);
 });
