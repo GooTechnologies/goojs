@@ -1,12 +1,4 @@
-require.config({
-    paths: {
-        "goo": "src/goo",
-        "test": "test"
-    },
-    waitSeconds: 5
-  });
-require([
-    // Require does not allow us to add dependencies with wildcards...
+define([
     'test/math/MathUtils-test',
     'test/math/Matrix-test',
     'test/math/Matrix2x2-test',
@@ -28,7 +20,4 @@ require([
     'test/shapes/Torus-test',
     'test/entities/entities-test',
     'test/util/URLTools-test'
-],
-function(mathTest) {
-  window.__testacular__.start();
-});
+], function() {});

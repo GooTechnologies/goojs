@@ -12,7 +12,7 @@ files = [
   JASMINE_ADAPTER,
   REQUIRE,
   REQUIRE_ADAPTER,
-  'test/main-test.js',
+  'test/testacular-main.js',
   {pattern: 'test/**/*.js', included: false},
   {pattern: 'src/goo/**/*.js', included: false}
 ];
