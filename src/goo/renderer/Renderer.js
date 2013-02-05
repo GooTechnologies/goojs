@@ -136,6 +136,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		};
 	}
 
+	Renderer.mainCamera = null;
+	
 	Renderer.prototype.checkResize = function(camera) {
 		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
 			this.setSize(this.domElement.offsetWidth, this.domElement.offsetHeight);
@@ -200,6 +202,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear) {
 		if (!camera) {
 			return;
+		} else if (Renderer.mainCamera === null) {
+			Renderer.mainCamera = camera;
 		}
 
 		this.setRenderTarget(renderTarget);
@@ -212,6 +216,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		var renderInfo = {
 			camera : camera,
+			mainCamera : Renderer.mainCamera,
 			lights : lights
 		};
 
