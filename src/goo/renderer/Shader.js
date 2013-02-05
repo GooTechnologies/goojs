@@ -362,10 +362,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		};
 		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
-			uniformCall.uniform1f(shaderInfo.camera._frustumNear);
+			uniformCall.uniform1f(shaderInfo.camera.near);
 		};
 		defaultCallbacks[Shader.FAR_PLANE] = function (uniformCall, shaderInfo) {
-			uniformCall.uniform1f(shaderInfo.camera._frustumFar);
+			uniformCall.uniform1f(shaderInfo.camera.far);
+		};
+		defaultCallbacks[Shader.MAIN_NEAR_PLANE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.mainCamera.near);
+		};
+		defaultCallbacks[Shader.MAIN_FAR_PLANE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
 		var DEFAULT_AMBIENT = {
@@ -417,6 +423,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(World.time);
 		};
 	}
+	
+	Shader.prototype.getShaderDefinition = function() {
+  	return {
+    	vshader: this.vertexSource,
+    	fshader: this.fragmentSource,
+    	defines: this.defines,
+    	attributes: this.attributes,
+    	uniforms: this.uniforms
+  	};
+	}
 
 	Shader.prototype.toString = function () {
 		return this.name;
@@ -439,6 +455,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	Shader.SPECULAR_POWER = 'SPECULAR_POWER';
 	Shader.NEAR_PLANE = 'NEAR_PLANE';
 	Shader.FAR_PLANE = 'FAR_PLANE';
+	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
+	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.TIME = 'TIME';
 
 	return Shader;

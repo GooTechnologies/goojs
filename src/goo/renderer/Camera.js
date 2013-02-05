@@ -76,12 +76,14 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this.projectionMode = Camera.Perspective;
 
 		this._updateMVMatrix = true;
+		this._updateInverseMVMatrix = true;
 		this._updatePMatrix = true;
 		this._updateMVPMatrix = true;
 		this._updateInverseMVPMatrix = true;
 
 		// NB: These matrices are column-major.
 		this.modelView = new Matrix4x4();
+		this.modelViewInverse = new Matrix4x4();
 		this.projection = new Matrix4x4();
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
@@ -373,6 +375,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 		this._updatePMatrix = true;
 		this._updateMVPMatrix = true;
+		this._updateInverseMVMatrix = true;
 		this._updateInverseMVPMatrix = true;
 	};
 
@@ -446,6 +449,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 		this._updateMVMatrix = true;
 		this._updateMVPMatrix = true;
+		this._updateInverseMVMatrix = true;
 		this._updateInverseMVPMatrix = true;
 	};
 
@@ -642,6 +646,17 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	};
 
 	/**
+	 * update inverse modelView if necessary.
+	 */
+	Camera.prototype.checkInverseModelView = function () {
+		if (this._updateInverseMVMatrix) {
+			this.checkModelView();
+			Matrix4x4.invert(this.modelView, this.modelViewInverse);
+			this._updateInverseMVMatrix = false;
+		}
+	};
+
+	/**
 	 * update inverse modelViewProjection if necessary.
 	 */
 	Camera.prototype.checkInverseModelViewProjection = function () {
@@ -683,6 +698,11 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	Camera.prototype.getViewProjectionMatrix = function () {
 		this.checkModelViewProjection();
 		return this.modelViewProjection;
+	};
+
+	Camera.prototype.getViewInverseMatrix = function () {
+		this.checkInverseModelView();
+		return this.modelViewInverse;
 	};
 
 	Camera.prototype.getViewProjectionInverseMatrix = function () {

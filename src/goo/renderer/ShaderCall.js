@@ -75,7 +75,7 @@ define(
 			}
 		}
 		this.context.uniform1fv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform1i = function (v0) {
@@ -95,7 +95,7 @@ define(
 			}
 		}
 		this.context.uniform1iv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform2f = function (v0, v1) {
@@ -117,7 +117,7 @@ define(
 			}
 		}
 		this.context.uniform2fv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform2i = function (v0, v1) {
@@ -139,7 +139,7 @@ define(
 			}
 		}
 		this.context.uniform2iv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform3f = function (v0, v1, v2) {
@@ -161,7 +161,7 @@ define(
 			}
 		}
 		this.context.uniform3fv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform3i = function (v0, v1, v2) {
@@ -183,7 +183,7 @@ define(
 			}
 		}
 		this.context.uniform3iv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform4f = function (v0, v1, v2, v3) {
@@ -205,7 +205,7 @@ define(
 			}
 		}
 		this.context.uniform4fv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
@@ -227,7 +227,7 @@ define(
 			}
 		}
 		this.context.uniform4iv(this.location, values);
-		this.location.value = values;
+		this.location.value = values.slice();
 	};
 
 	function compareMatrices(e1, e2, size) {

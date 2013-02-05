@@ -25,14 +25,22 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.textures.push(texture);
 
+		var material2 = new Material('TestMaterial');
+		material2.shader = Material.createShader(Material.shaders.textured, 'BoxShader');
+		var texture2 = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
+		material2.textures.push(texture2);
+
 		// Add boxes
 		var rc4Rand = new Rc4Random("seed");
 		for ( var i = 0; i < 200; i++) {
 			var x = rc4Rand.getRandomNumber() * 100 - 50;
 			var y = rc4Rand.getRandomNumber() * 100 - 50;
-			var z = rc4Rand.getRandomNumber() * 100 - 110;
-//			console.log(i, x, y, z);
-			createBoxEntity(goo, material, x, y, z);
+			var z = rc4Rand.getRandomNumber() * 100 - 250;
+			if (rc4Rand.getRandomNumber() > 0.5) {
+				createBoxEntity(goo, material, x, y, z);
+			} else {
+				createBoxEntity(goo, material2, x, y, z);
+			}
 		}
 
 		// Add camera

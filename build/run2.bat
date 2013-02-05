@@ -1,2 +1,0 @@
-java -jar compiler.jar --compilation_level=ADVANCED_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --formatting=pretty_print --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file ../examples/compiled.js
-rem java -jar compiler.jar --compilation_level=ADVANCED_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file compiled.js

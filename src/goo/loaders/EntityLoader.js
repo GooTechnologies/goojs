@@ -15,7 +15,7 @@ define([
 		'goo/math/Matrix3x3',
 		'goo/math/Vector3'
 	],
-/** @lends SceneLoader */
+/** @lends EntityLoader */
 function(
 		Entity,
 		TransformComponent,
@@ -72,47 +72,49 @@ function(
 		return null;
 	}
 
-	/**
-	 * @constructor
-	 * @class Loader for a Goo Scene.
-	 * @param {World} world {@link World} reference needed to create entities
-	 *
-	 * @example
-	 * require(['goo/entities/GooRunner', 'goo/loaders/SceneLoader'], function(GooRunner, SceneLoader) {
-	 *     var goo = new GooRunner();
-	 *     ...
-	 *     var loader = new SceneLoader(goo.world);
-	 *     ...
-	 * });
-	 */
-	function SceneLoader(world) {
+
+
+
+
+
+
+
+
+
+
+
+
+	function EntityLoader(world) {
 		this.world = world;
 	}
 
-	SceneLoader.prototype.loadScene = function(projectURL, sceneURL, callback) {
-		say('SceneLoader.loadScene(\'' + projectURL + '\', \'' + sceneURL + '\')');
+	EntityLoader.prototype.loadEntity = function(entityURL, resourceURL, callback) {
+		say('EntityLoader.loadEntity(\'' + entityURL + '\', \'' + resourceURL + '\')');
 
-		if(projectURL == null) { console.warn('SceneLoader: Project URL not specified.'); return; }
-		this.projectURL = projectURL;
+		if(resourceURL == null) { console.warn('EntityLoader: Project URL not specified.'); return; }
+		this.resourceURL = resourceURL;
 
-		if(sceneURL == null) { console.warn('SceneLoader: Scene URL not specified.'); return; }
-		this.sceneURL = sceneURL;
+		if(entityURL == null) { console.warn('EntityLoader: Scene URL not specified.'); return; }
+		this.entityURL = entityURL + '.json'; // It's gotta be a json object!
 
 		var that = this;
-		this.load(sceneURL,{
+		this._load(this.entityURL,{
 			onSuccess: function(data) {
-				that._parseScene(data, callback);
+				that._parseEntity(data, function(entity) {
+					entity.addToWorld();
+					callback(entity);
+				});
 			},
 			onError: function(error) {
-				console.warn('Failed to load scene: ' + error);
+				console.warn('Failed to load entity: ' + error);
 			}
 		});
 	};
 
-	SceneLoader.prototype.load = function(urlRelativeToProjectRoot, callback) {
+	EntityLoader.prototype._load = function(urlRelativeToProjectRoot, callback) {
 		if(urlRelativeToProjectRoot == null) return;
 
-		var url = this.projectURL + urlRelativeToProjectRoot;
+		var url = this.resourceURL + urlRelativeToProjectRoot;
 
 		var request = new XMLHttpRequest();
 		
@@ -123,7 +125,7 @@ function(
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299)
 				{
-					callback.onSuccess(that.handleSuccessfulRequest(request));
+					callback.onSuccess(that._handleSuccessfulRequest(request));
 				}
 				else
 				{
@@ -134,7 +136,7 @@ function(
 		request.send();
 	};
 
-	SceneLoader.prototype.handleSuccessfulRequest = function(request) {
+	EntityLoader.prototype._handleSuccessfulRequest = function(request) {
 		if(request == null) return;
 
 		var contentType = request.getResponseHeader('Content-Type');
@@ -155,60 +157,7 @@ function(
 		return request.responseText;
 	};
 
-	SceneLoader.prototype._parseScene = function(sceneSource, callback) {
-		
-		var entities = [];
-
-		var that = this;
-		var waitCounter = createWaitCounter(function() {
-
-
-			for(var i in entities)
-			{
-				entities[i].addToWorld();
-			}
-
-			that.world.process();
-
-			say('Scene loaded:');
-			say(that.world);
-			if(callback) callback(that.world);
-		});
-
-		// If we got files, then let's do stuff with the files!
-		if(sceneSource.files && sceneSource.files.length)
-		{
-			waitCounter.setCount(sceneSource.files.length);
-
-
-			for(var i in sceneSource.files)
-			{
-				// Check if they're entities
-				var fileName = sceneSource.files[i];
-				var match = fileName.match(/.ent.json$/);
-				
-				if(match != null)
-				{
-					this.load(this.sceneURL + '/' + fileName, {
-						onSuccess: function(data) {
-							that._parseEntity(data, function(entity) {
-								entities.push(entity);
-
-								waitCounter.down();
-
-							});
-						},
-						onError: function(error) {
-							console.warn('Failed to load entity: ' + error);
-						}
-					});
-				}
-				
-			}
-		}
-	}
-
-	SceneLoader.prototype._parseEntity = function(entitySource, callback) {
+	EntityLoader.prototype._parseEntity = function(entitySource, callback) {
 		
 		// Array to store loaded components
 		var loadedComponents = [];
@@ -294,7 +243,7 @@ function(
 	}
 
 
-	SceneLoader.prototype._parseMeshRenderer = function(meshRendererSource, callback) {
+	EntityLoader.prototype._parseMeshRenderer = function(meshRendererSource, callback) {
 		say('Parsing mesh renderer...');
 
 		// Array to store loaded stuff
@@ -326,7 +275,7 @@ function(
 				if(attribute == 'materials') for(var i in value)
 				{
 
-					this.load(value[i] + '.json', {
+					this._load(value[i] + '.json', {
 						onSuccess: function(data) {
 							that._parseMaterial(data, function(material) {
 								materials.push(material);
@@ -344,7 +293,7 @@ function(
 		}
 	};
 
-	SceneLoader.prototype._parseMeshDataComponent = function(meshDataComponentSource, callback) {
+	EntityLoader.prototype._parseMeshDataComponent = function(meshDataComponentSource, callback) {
 		say('Parsing mesh data component...');
 		
 		var meshData;
@@ -371,7 +320,7 @@ function(
 
 				if(attribute == 'mesh')
 				{
-					this.load(value + '.json', {
+					this._load(value + '.json', {
 						onSuccess: function(data) {
 							
 							that.useCompression = data.compressed || false;
@@ -398,7 +347,7 @@ function(
 		}
 	};
 
-	SceneLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
+	EntityLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
 		say('Parsing mesh data...');
 
 
@@ -575,7 +524,7 @@ function(
 		return meshData;
 	};
 
-	SceneLoader.prototype._parseMaterial = function(materialDataSource, callback) {
+	EntityLoader.prototype._parseMaterial = function(materialDataSource, callback) {
 		say('Parsing material...');
 
 		var shaderDefinition = {
@@ -636,7 +585,7 @@ function(
 
 					for(var i in value)
 					{
-						if(i == 'diffuseTexture') textures.push(new TextureCreator().loadTexture2D(that.projectURL + value[i]));
+						if(i == 'diffuseTexture') textures.push(new TextureCreator().loadTexture2D(that.resourceURL + value[i]));
 						else if(i == 'shininess') materialState.shininess = value[i];
 						else if(i == 'ambient')
 						{
@@ -673,7 +622,7 @@ function(
 				}
 				else if(attribute == 'shader')
 				{
-					this.load(value + '.json', {
+					this._load(value + '.json', {
 						onSuccess: function(data) {
 							that._parseShaderDefinition(data, function(sd) {
 								shaderDefinition.vshader = sd.vshader;
@@ -692,7 +641,7 @@ function(
 		}
 	};
 
-	SceneLoader.prototype._parseShaderDefinition = function(shaderDataSource, callback) {
+	EntityLoader.prototype._parseShaderDefinition = function(shaderDataSource, callback) {
 		say('Parsing shader...');
 
 		var shaderDefinition = {};
@@ -723,7 +672,7 @@ function(
 
 				if(attribute == 'vs')
 				{
-					this.load(value, {
+					this._load(value, {
 						onSuccess: function(data) {
 							shaderDefinition['vshader'] = data;
 
@@ -737,7 +686,7 @@ function(
 				}
 				else if(attribute == 'fs')
 				{
-					this.load(value, {
+					this._load(value, {
 						onSuccess: function(data) {
 							shaderDefinition['fshader'] = data;
 							waitCounter.down();
@@ -752,13 +701,13 @@ function(
 		}
 	};
 
-	SceneLoader.prototype.toggleVerbal = function(on) {
+	EntityLoader.prototype.toggleVerbal = function(on) {
 		if(on == null) {
 			verbal = !verbal;
-			console.log('SceneLoader is now ' + (verbal ? 'verbal' : 'quiet'));
+			console.log('EntityLoader is now ' + (verbal ? 'verbal' : 'quiet'));
 		}
 		else verbal = on;
 	};
 
-	return SceneLoader;
+	return EntityLoader;
 });

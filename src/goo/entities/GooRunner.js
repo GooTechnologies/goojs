@@ -1,10 +1,10 @@
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats'],
+		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats', "goo/entities/systems/CSSTransformSystem"],
 /** @lends GooRunner */
 function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
-	LightManager, CameraSystem, Camera, CameraComponent, Stats) {
+	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem) {
 	"use strict";
 
 	/**
@@ -36,6 +36,7 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 		// this.world.setSystem(new LoadingSystem());
 		this.world.setSystem(new ScriptSystem());
 		this.world.setSystem(new TransformSystem());
+		this.world.setSystem(new CSSTransformSystem(this.renderer));
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
