@@ -137,6 +137,7 @@ define([
         // REVIEW: "= 0" is unnecessary here
  		var startIndex = 0;
         var stopIndex = 0;
+
         // Draw every line for which the short edge is present.
         for (var y = shortEdge.y[0]; y <= shortEdge.y[1]; y++) {
 
@@ -157,7 +158,7 @@ define([
 	SoftwareRenderer.prototype.fillPixels = function(startIndex, stopIndex, y) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
-		// This shall be optimized to be checked at an earlier stage.
+		// This shall be optimized to be checked at an earlier stage. 
 		if ( startIndex > stopIndex ) {
 			var temp = startIndex;
 			startIndex = stopIndex;
