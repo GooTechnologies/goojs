@@ -1,15 +1,12 @@
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
-	'goo/renderer/scanline/EdgeRecord',
-	'goo/renderer/scanline/EdgeTable',
-	'goo/renderer/scanline/ActiveEdgeTable',
 	'goo/math/Vector3',
 	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, EdgeRecord, EdgeTable, ActiveEdgeTable, Vector3, Edge) {
+	function (Camera, Triangle, Vector3, Edge) {
 	"use strict";
 
 	function SoftwareRenderer(parameters) {
@@ -94,7 +91,7 @@ define([
 
 		// Early exit when any of the two edges lies in the horizontally.
 		// -Faster with == or <= 0? 
-		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion?
+		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion? http://www.html5rocks.com/en/tutorials/speed/v8/
 		var e1ydiff = (longEdge.y[1] - longEdge.y[0]);
         if(e1ydiff <= 0) {
         	return;
