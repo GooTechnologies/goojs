@@ -33,7 +33,7 @@ define([
 			new Triangle(new Vector3(0.5, 0.1, 1.0), new Vector3(0.4, 0.3, 1.0), new Vector3(0.6, 0.4, 1.0)),
 			new Triangle(new Vector3(0.8, 0.1, 1.0), new Vector3(0.7, 0.4, 1.0), new Vector3(0.9, 0.4, 1.0)),
 			new Triangle(new Vector3(0.1, 0.5, 1.0), new Vector3(0.1, 0.9, 1.0), new Vector3(0.3, 0.7, 1.0)),
-			new Triangle(new Vector3(0.4, 0.5, 1.0), new Vector3(0.5, 0.9, 1.0), new Vector3(0.6, 0.5, 1.0)),
+			new Triangle(new Vector3(0.15, 0.5, 1.0), new Vector3(0.5, 0.55, 1.0), new Vector3(0.86, 0.5, 1.0)),
 			new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
 		];
 
@@ -47,6 +47,9 @@ define([
 		}
 	};
 
+	/*
+	*	Takes a triangle with coordinates in pixel space, and draws it.
+	*/
 	SoftwareRenderer.prototype.renderTriangle = function(triangle) {
 
 		// http://joshbeam.com/articles/triangle_rasterization/
@@ -87,27 +90,28 @@ define([
         this.drawEdges(edges[longEdge], edges[shortEdge2]);
 	};
 
-	SoftwareRenderer.prototype.drawEdges = function(e1, e2) {
+	SoftwareRenderer.prototype.drawEdges = function(longEdge, e2) {
 
-		var e1ydiff = (e1.y[1] - e1.y[0]);
-        if(e1ydiff <= 0.0) {
-        	//console.error("e1ydiff");
+		// Early exit when any of the two edges lies in the horizontally.
+		// -Faster with == or <= 0? 
+		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion?
+		var e1ydiff = (longEdge.y[1] - longEdge.y[0]);
+        if(e1ydiff <= 0) {
         	return;
         }
 
         var e2ydiff = (e2.y[1] - e2.y[0]);
-        if(e2ydiff <= 0.0) {
-        	//console.error("e2ydiff");
+        if(e2ydiff <= 0) {
             return;
         }
 
-        var e1xdiff = e1.x[1] - e1.x[0];
+        var e1xdiff = longEdge.x[1] - longEdge.x[0];
         var e2xdiff = e2.x[1] - e2.x[0];
 
          // calculate factors to use for interpolation
         // with the edges and the step values to increase
         // them by after drawing each span
-        var factor1 = (e2.y[0] - e1.y[0]) / e1ydiff;
+        var factor1 = (e2.y[0] - longEdge.y[0]) / e1ydiff;
         var factorStep1 = 1.0 / e1ydiff;
         var factor2 = 0.0;
         var factorStep2 = 1.0 / e2ydiff;
@@ -123,9 +127,9 @@ define([
         var startIndex = 0;
         var stopIndex = 0;
 
-        for (var y = e2.y[0]; y < e2.y[1]; y++) {
+        for (var y = e2.y[0]; y <= e2.y[1]; y++) {
 
-        	startIndex = Math.round(e1.x[0] + e1xdiff*factor1);
+        	startIndex = Math.round(longEdge.x[0] + e1xdiff*factor1);
         	stopIndex = Math.round(e2.x[0] + e2xdiff*factor2);
 
     		this.fillPixels(startIndex, stopIndex, y);
