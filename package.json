@@ -18,7 +18,8 @@
     "testacular": ">= 0.5.2",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
     "jshint": ">=0.9.1",
-    "grunt-testacular": "0.2.x"
+    "grunt-testacular": "0.2.x",
+	"wrench": ">= 1.4.4"
   },
   "engines": {
     "node": ">=0.8.2"
