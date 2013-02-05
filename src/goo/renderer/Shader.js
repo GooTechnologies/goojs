@@ -417,6 +417,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(World.time);
 		};
 	}
+	
+	Shader.prototype.getShaderDefinition = function() {
+  	return {
+    	vshader: this.vertexSource,
+    	fshader: this.fragmentSource,
+    	defines: this.defines,
+    	attributes: this.attributes,
+    	uniforms: this.uniforms
+  	};
+	}
 
 	Shader.prototype.toString = function () {
 		return this.name;
