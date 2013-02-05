@@ -972,10 +972,6 @@ define([
 			sCount : 4096,
 			grayscale : 0,
 			$link : ShaderLib.copy.uniforms
-//			viewMatrix : Shader.VIEW_MATRIX,
-//			projectionMatrix : Shader.PROJECTION_MATRIX,
-//			worldMatrix : Shader.WORLD_MATRIX,
-//			opacity : 1.0,
 		},
 		vshader : ShaderLib.copy.vshader,
 		fshader : [//

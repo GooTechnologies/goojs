@@ -16,46 +16,82 @@
 	height: 100%;
 }
 
-html
-{
+body,html {
 	height: 100%;
+	margin: 0px;
+	overflow: hidden;
 }
 
-body
-{
-	min-height: 100%;
-}
-
-#container
-{
-	height: 100%;
-	width: 100%;
-
+.viewport {
 	position: relative;
+	float: left;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	background: none;
+	z-index: 5;
 }
 
-#tobecontrolled
-{
-	border-radius: 4px 4px 4px 4px;
-	box-shadow: 0px 0px 4px black;
-	background-color: rgba(31, 31, 31, 0.75);
-	padding: 8px;
-	position: absolute; top: 0px; left: 0px;
-	z-index: 10000;
--webkit-transform-style: preserve-3d
-//-webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1);
+.camera {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform-style: preserve-3d;
+	-webkit-transform-origin: 50% 50% 50%; //
+	-webkit-backface-visibility: hidden;
+	-moz-transform-style: preserve-3d;
+	-moz-transform-origin: 50% 50% 50%; //
+	-moz-backface-visibility: hidden;
+	transform-style: preserve-3d;
+	transform-origin: 50% 50% 50%; //
+	backface-visibility: hidden;
 }
 
-#tobecontrolled > p
-{
+.assembly {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform-style: preserve-3d;
+	-webkit-transform-origin: 50% 50% 50%; //
+	-webkit-backface-visibility: hidden;
+	-moz-transform-style: preserve-3d;
+	-moz-transform-origin: 50% 50% 50%; //
+	-moz-backface-visibility: hidden;
+	transform-style: preserve-3d;
+	transform-origin: 50% 50% 50%; //
+	backface-visibility: hidden;
+}
+
+.object {
+	width: 150px;
+	height: 120px;
+	box-shadow: 0px 0px 20px rgba(100, 140, 255, 0.5);
+	border: 1px solid rgba(100, 140, 255, 0.5);
+	background-color: rgba(100, 150, 255, 0.2);
+	font-size: 20px;
+	cursor: default;
 	color: white;
-	font-family: sans-serif;
-	font-size: 32px;
+	padding: 5px;
+	-webkit-transition-property: height, width, background-color, border;
+	-webkit-transition-duration: 1s;
 }
 
+.object:hover {
+	width: 250px;
+	height: 300px;
+	box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.8);
+	border: 1px solid rgba(127, 255, 255, 0.95);
+	background-color: rgba(0, 255, 255, 0.3);
+	-webkit-transition-property: height, width, background-color, border;
+	-webkit-transition-duration: 1s;
+}
 </style>
 </head>
 <body>
-	<div id="container"><div id="tobecontrolled"><p>Hello!</p></div></div>
+	<div id="view" class="viewport">
+		<div id="cam1" class="camera">
+			<div id="cam2" class="assembly"></div>
+		</div>
+	</div>
 </body>
 </html>
