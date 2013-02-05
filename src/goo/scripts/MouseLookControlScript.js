@@ -1,6 +1,6 @@
-define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
+define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Quaternion', 'goo/math/MathUtils'],
 	/** @lends MouseLookControlScript */
-	function(Vector, Vector3, Matrix3x3) {
+	function(Vector, Vector3, Matrix3x3, Quaternion, MathUtils) {
 		"use strict";
 
 		function MouseLookControlScript(properties) {
@@ -9,14 +9,22 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 
 			this.domElement = properties.domElement || document;
 
-			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.5;
-			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.5;
+			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
+			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
 
 			this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 			this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
 
 			this.worldUpVector = properties.worldUpVector || new Vector3(0, 1, 0);
 			this.localLeftVector = properties.localLeftVector || new Vector3(-1, 0, 0);
+
+			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
+			// this.localFwdVector = properties.localFwdVector || new Vector3(0, 0, -1);
+			// this.slerpFactor = !isNaN(properties.slerpFactor) ? properties.slerpFactor : 0.8;
+			// this.restAngle = !isNaN(properties.restAngle) ? properties.restAngle : 0.01;
+			// this.rest = true;
+			// this.calcQuat1 = new Quaternion();
+			// this.calcQuat2 = new Quaternion();
 
 			this.onRun = properties.onRun;
 
@@ -31,6 +39,8 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 			this.calcVector = new Vector3();
 			this.calcMat1 = new Matrix3x3();
 			this.calcMat2 = new Matrix3x3();
+
+			this.direction = new Vector3(this.localFwdVector);
 
 			this.setupMouseControls();
 		}
@@ -78,13 +88,6 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 		};
 
 		MouseLookControlScript.prototype.run = function(entity) {
-			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
-
-			// exit early if not dragging, or no movement
-			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX == 0 && this.mouseState.dY == 0) {
-				return;
-			}
-
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
 			if (!transformComponent) {
@@ -92,9 +95,39 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 			}
 			var transform = transformComponent.transform;
 
+			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
+			// if (!this.rest) {
+			// // apply transform to localFwdVector
+			// transform.rotation.applyPost(this.calcVector.set(this.localFwdVector));
+			//
+			// // see if we're pointing at/close to our desired look direction
+			// var angleDiff = Math.acos(this.calcVector.dot(this.direction));
+			// if (angleDiff < this.restAngle) {
+			// // pretty close, so stop
+			// this.rest = true;
+			// } else {
+			// // we are not pointed at our desired angle, slerp to it
+			// // generate a quat to rotate from current to desired
+			// // slerp along it
+			// this.calcQuat1.fromRotationMatrix(transform.rotation);
+			// this.calcQuat2.fromVectorToVector(this.localFwdVector, this.direction);
+			//
+			// this.calcQuat1.slerp(this.calcQuat2, this.slerpFactor * entity._world.tpf);
+			// this.calcQuat1.toRotationMatrix(transform.rotation);
+			//
+			// // set our component updated.
+			// transformComponent.setUpdated();
+			// }
+			// }
+
+			// exit early if not dragging, or no movement
+			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX == 0 && this.mouseState.dY == 0) {
+				return;
+			}
+
 			// speed for this movement...
-			var moveMultH = entity._world.tpf * this.turnSpeedHorizontal;
-			var moveMultV = entity._world.tpf * this.turnSpeedVertical;
+			var moveMultH = this.turnSpeedHorizontal;
+			var moveMultV = this.turnSpeedVertical;
 
 			// apply dx around upVector
 			if (this.mouseState.dX != 0) {
