@@ -7,8 +7,9 @@ require.config({
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
 		'goo/entities/components/ScriptComponent', "goo/entities/Entity", "goo/entities/components/TransformComponent", 
-		"goo/entities/components/CSSTransformComponent", 'goo/math/Vector3', 'goo/scripts/BasicControlScript', 'goo/math/MathUtils'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, Entity, TransformComponent, CSSTransformComponent, Vector3, BasicControlScript, MathUtils) {
+		"goo/entities/components/CSSTransformComponent", 'goo/math/Vector3', 'goo/scripts/BasicControlScript', 'goo/math/MathUtils',
+		'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
+	ScriptComponent, Entity, TransformComponent, CSSTransformComponent, Vector3, BasicControlScript, MathUtils, WASDControlScript, MouseLookControlScript) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -23,12 +24,18 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		cameraEntity.setComponent(new CameraComponent(new Camera(45, 1, 1, 10000)));
 		cameraEntity.transformComponent.transform.translation.set(0, 0, 1000);
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		var controlScript = new BasicControlScript();
-		controlScript.movementSpeed = 1000;
-		controlScript.rollSpeed = 1;
-		controlScript.multiplier.set(1,-1,1);
-		cameraEntity.setComponent(new ScriptComponent(controlScript));
 		cameraEntity.addToWorld();
+
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new WASDControlScript({
+			domElement : document.documentElement,
+			walkSpeed : 700.0,
+			crawlSpeed : 200.0
+		}));
+		scripts.scripts.push(new MouseLookControlScript({
+			domElement : document.documentElement
+		}));
+		cameraEntity.setComponent(scripts);
 
 		var parentEntity = goo.world.createEntity('parent');
 		parentEntity.addToWorld();
