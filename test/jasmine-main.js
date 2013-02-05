@@ -1,4 +1,5 @@
 // Main module for Jasmine HTML test runner
+/*global jasmine:true */
 require.config({
 	paths: {
 		"goo": "../src/goo",

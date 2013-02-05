@@ -15,7 +15,12 @@
     "globals": {  // Extra globals.
         "define": true,
         "require": true,
-        "jasmine": true
+
+        // Jasmine globals.
+        "describe": true,
+        "expect": true,
+        "it": true,
+        "beforeEach": true
     },
 
     // The Good Parts.
