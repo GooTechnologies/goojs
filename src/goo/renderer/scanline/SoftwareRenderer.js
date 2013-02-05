@@ -54,86 +54,93 @@ define([
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
 
+		// Faster to allocate the edge array first?
+		// var edges = new Array(3);
 		var edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3), 
 			new Edge(triangle.v3, triangle.v1)
-			];
+		];
 
-		var maxLength = 0;
+		var maxHeight = 0;
         var longEdge = 0;
 
-        // find edge with the greatest length in the y axis
+        // Find edge with the greatest height in the Y axis, this is the long edge.
         for(var i = 0; i < 3; i++) {
-            var length = edges[i].y[1] - edges[i].y[0];
-            if(length > maxLength) {
-                    maxLength = length;
+            var height = edges[i].y[1] - edges[i].y[0];
+            if(height > maxHeight) {
+                    maxHeight = height;
                     longEdge = i;
             }
         }
 		
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
-
         var shortEdge1 = (longEdge + 1) % 3;
         var shortEdge2 = (longEdge + 2) % 3;
-
-        /*
-        console.log("Long edge:", longEdge);
-        console.log("shortEdge1", shortEdge1);
-        console.log("shortEdge2", shortEdge2);
-		*/
 
         this.drawEdges(edges[longEdge], edges[shortEdge1]);
         this.drawEdges(edges[longEdge], edges[shortEdge2]);
 	};
 
-	SoftwareRenderer.prototype.drawEdges = function(longEdge, e2) {
+	/*
+	*	Render the pixels between the long and the short edge of the triangle.
+	*/
+	SoftwareRenderer.prototype.drawEdges = function(longEdge, shortEdge) {
 
-		// Early exit when any of the two edges lies in the horizontally.
+		// Early exit when the short edge doesnt have any height (y-axis).
 		// -Faster with == or <= 0? 
 		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion? http://www.html5rocks.com/en/tutorials/speed/v8/
-		var e1ydiff = (longEdge.y[1] - longEdge.y[0]);
-        if(e1ydiff <= 0) {
-        	return;
+
+        var shortEdge_dy = (shortEdge.y[1] - shortEdge.y[0]);
+        if(shortEdge_dy <= 0) {
+            return; // Nothing to draw here.
         }
 
-        var e2ydiff = (e2.y[1] - e2.y[0]);
-        if(e2ydiff <= 0) {
-            return;
+		var longEdge_dy = (longEdge.y[1] - longEdge.y[0]);
+		
+		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
+		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height. 
+		// Might be premature to remove this check completely though.
+        /*
+        if(longEdge_dy <= 0) {
+        	console.log("this shouldnt happn so often... or at all?");
+        	return; // Nothing to draw here.
         }
+        */
+        
+        var longEdge_dx = longEdge.x[1] - longEdge.x[0];
+        var shortEdge_dx = shortEdge.x[1] - shortEdge.x[0];
 
-        var e1xdiff = longEdge.x[1] - longEdge.x[0];
-        var e2xdiff = e2.x[1] - e2.x[0];
-
-         // calculate factors to use for interpolation
-        // with the edges and the step values to increase
-        // them by after drawing each span
-        var factor1 = (e2.y[0] - longEdge.y[0]) / e1ydiff;
-        var factorStep1 = 1.0 / e1ydiff;
-        var factor2 = 0.0;
-        var factorStep2 = 1.0 / e2ydiff;
-       
-        // When this function is called, the first edge given must be the long edge and the second edge given must be one of the short ones. 
-        // We're going to loop from the minimum y value of the second edge to the maximum y value of the second edge to calculate spans, 
-        // since every span within the boundaries of the short edge will also be within the boundaries of the long edge. 
-        // factor2 starts at 0 and is increased by factorStep2 until it reaches a value of 1 towards the end of the loop. factor1, however, 
-        // may start with a value greater than 0 (if the long edge's starting y value is lower than the short edge's) 
-        // or may end up at a value lower than 1 (if the long edge's ending y value is greater than the short edge's).
+        // Vertical coherence : 
+        // The x-coordinates' increment for each step in y is constant, 
+        // so the increments are pre-calculated and added to the coordinates
+        // each scanline.
 
 
-        var startIndex = 0;
+        // The scanline on which we start rendering on might be in the middle of the long edge,
+        // the starting x-coordinate is therefore calculated.
+        var longStartCoeff = (shortEdge.y[0] - longEdge.y[0]) / longEdge_dy;
+        var longX = longEdge.x[0] + longEdge_dx*longStartCoeff;
+        var longEdge_Xincrement = longEdge_dx/longEdge_dy;
+
+        var shortX = shortEdge.x[0];
+        var shortEdge_Xincrement = shortEdge_dx/shortEdge_dy;
+
+ 		var startIndex = 0;
         var stopIndex = 0;
+        // Draw every line for which the short edge is present.
+        for (var y = shortEdge.y[0]; y <= shortEdge.y[1]; y++) {
 
-        for (var y = e2.y[0]; y <= e2.y[1]; y++) {
+        	// Round to the nearest pixel.
+        	startIndex = Math.round(longX);
+        	stopIndex = Math.round(shortX);
 
-        	startIndex = Math.round(longEdge.x[0] + e1xdiff*factor1);
-        	stopIndex = Math.round(e2.x[0] + e2xdiff*factor2);
-
+        	// Draw the span of pixels.
     		this.fillPixels(startIndex, stopIndex, y);
         	
-        	// increase factors
-            factor1 += factorStep1;
-            factor2 += factorStep2;
+  			// Increase the edges' x-coordinate with the increments.
+        	longX += longEdge_Xincrement;
+        	shortX += shortEdge_Xincrement;
         }
 
 	};
@@ -141,15 +148,17 @@ define([
 	SoftwareRenderer.prototype.fillPixels = function(startIndex, stopIndex, y) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
+		// This shall be optimized to be checked at an earlier stage.
 		if ( startIndex > stopIndex ) {
 			var temp = startIndex;
 			startIndex = stopIndex;
 			stopIndex = temp;
 		}
+		
 
 		var row = y*this.width;
 
-		for (var i = startIndex; i < stopIndex; i++) {
+		for (var i = startIndex; i <= stopIndex; i++) {
 			this._depthData[row + i] = 255;
 		}
 	};
