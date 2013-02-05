@@ -6,7 +6,8 @@ if (process.argv.indexOf('--help') > 0 || process.argv.length < 8) {
 		"--path	Path to js entry-point.\n" + 
 		"--name	Name of entry-point.\n" + 
 		"--out Optimized file output name.\n" +
-		"[[--closure]] Optional argument to optimize with closure instead of uglify.\n"
+		"[[--closure]] Optional argument to optimize with closure instead of uglify.\n",
+		"[[--simple]] Optional argument to not mangle the code, needed for angularjs atm.\n"
 		);
 	process.exit();
 }
@@ -50,6 +51,13 @@ if (i > 0) {
 	console.log('Using uglify');
 }
 
+var doSimple = false;
+i = process.argv.indexOf('--simple');
+if (i > 0) {
+	doSimple = true;
+	console.log('Not mangling code');
+}
+
 var requirejs = require('requirejs');
 var workingDir = process.cwd();
 
@@ -64,13 +72,10 @@ var config = {
 	insertRequire : [appName],
 	out : doClosureStep ? 'extracted.js' : appOut,
 	useStrict : true,
-	uglify : {
-		toplevel : false,
-		ascii_only : false,
-		beautify: true,
-//		max_line_length: 120,
-//		no_mangle: true
-	},
+	uglify : doSimple ? {
+		no_mangle: true,
+		no_copyright: true
+	} : {},
 	optimize : optimizer,
 	wrap : true,
 };
