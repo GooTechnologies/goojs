@@ -2,12 +2,14 @@
 define([
     'goo/util/Promise',
     'goo/util/Ajax',
+		'goo/loaders/JsonUtils',
     'goo/renderer/MeshData',
   ],
 /** @lends MeshLoader */
 function(
   Promise,
   Ajax,
+  JsonUtils,
   MeshData
   ) {
   "use strict"
@@ -16,7 +18,7 @@ function(
    *
    */
   function MeshLoader(rootUrl) {
-    Promis.call(this);
+    Promise.call(this);
     
     this._rootUrl = rootUrl || '';
     
@@ -31,7 +33,6 @@ function(
   
   MeshLoader.prototype.load = function(sourcePath) {
     var that = this;
-
     if(!sourcePath) this._reject('URL not specified');
     
     var a = new Ajax({
@@ -68,57 +69,29 @@ function(
         
       }
     }
-    
     return json;
   };
   
   
-  MeshLoader.prototype._parseMesh = function(meshDataSource) {
+  MeshLoader.prototype._parseMesh = function(data) {
 		var that = this;
     var promise = new Promise();
     var promises = {};
   
 		var meshData;
 
-		/*var waitCounter = createWaitCounter(function() {
-
-			var meshDataComponent = new MeshDataComponent(meshData);
-
-			say('MeshDataComponent loaded:');
-			say(meshDataComponent);
-			if(callback) callback(meshDataComponent);
-		});*/
-
-		if(meshDataSource && Object.keys(meshDatatSource).length)
+		if(data && Object.keys(data).length)
 		{
-			var value;
-			//waitCounter.setCount(Object.keys(meshDataComponentSource).length);
-			for(var attribute in meshDataSource)
-			{
-				value = meshDataSource[attribute];
-
-				if(attribute == 'mesh')
-				{
-				  promises[attribute] = new Ajax( { url : this._rootUrl + value } );
-				}
-			}
-			
-			Promise.when(promises.mesh)
-  			.done(function(data) {
-          that.useCompression = data.compressed || false;
-        
-          if (that.useCompression) {
-            that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-            that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-            that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
-          }
-  				meshData = that._parseMeshData(data, 0, 'Mesh');
-  				promise._resolve(meshData)
-  		  })
-  			.fail(function(data) {
-    		  promise._reject(data);
-    		});
-		}
+      that.useCompression = data.compressed || false;
+    
+      if (that.useCompression) {
+        that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
+        that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
+        that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
+      }
+  		meshData = that._parseMeshData(data, 0, 'Mesh');
+  		promise._resolve(meshData)
+ 		}
 		return promise;
   };
   
