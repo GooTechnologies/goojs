@@ -1,13 +1,13 @@
 define(['goo/math/Vector3'],
 /** @lends BasicControlScript */
-function(Vector3) {
+function (Vector3) {
 	"use strict";
 
 	/**
 	 * @class Simple script to move/rotate an entity
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
-	function BasicControlScript(domElement) {
+	function BasicControlScript (domElement) {
 		this.domElement = domElement !== undefined ? domElement : document;
 		if (domElement) {
 			this.domElement.setAttribute('tabindex', -1);
@@ -36,13 +36,13 @@ function(Vector3) {
 		this.rotationVector = new Vector3(0, 0, 0);
 		this.multiplier = new Vector3(1, 1, 1);
 
-		this.handleEvent = function(event) {
+		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
 				this[event.type](event);
 			}
 		};
 
-		this.keydown = function(event) {
+		this.keydown = function (event) {
 			if (event.altKey) {
 				return;
 			}
@@ -99,7 +99,7 @@ function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.keyup = function(event) {
+		this.keyup = function (event) {
 			switch (event.keyCode) {
 				case 16: /* shift */
 					this.movementSpeedMultiplier = 1;
@@ -153,7 +153,7 @@ function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.mousedown = function(event) {
+		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
 			}
@@ -166,7 +166,7 @@ function(Vector3) {
 			this.mouseStatus = 1;
 		};
 
-		this.mousemove = function(event) {
+		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;
@@ -178,7 +178,7 @@ function(Vector3) {
 			}
 		};
 
-		this.mouseup = function(event) {
+		this.mouseup = function (event) {
 			if (!this.mouseStatus) {
 				return;
 			}
@@ -191,7 +191,7 @@ function(Vector3) {
 			this.updateRotationVector();
 		};
 
-		this.updateMovementVector = function() {
+		this.updateMovementVector = function () {
 			var forward = this.moveState.forward || this.autoForward && !this.moveState.back ? 1 : 0;
 
 			this.moveVector.x = -this.moveState.left + this.moveState.right;
@@ -199,13 +199,13 @@ function(Vector3) {
 			this.moveVector.z = -forward + this.moveState.back;
 		};
 
-		this.updateRotationVector = function() {
+		this.updateRotationVector = function () {
 			this.rotationVector.x = -this.moveState.pitchDown + this.moveState.pitchUp;
 			this.rotationVector.y = -this.moveState.yawRight + this.moveState.yawLeft;
 			this.rotationVector.z = -this.moveState.rollRight + this.moveState.rollLeft;
 		};
 
-		this.getContainerDimensions = function() {
+		this.getContainerDimensions = function () {
 			if (this.domElement != document) {
 				return {
 					size : [this.domElement.offsetWidth, this.domElement.offsetHeight],
@@ -219,8 +219,8 @@ function(Vector3) {
 			}
 		};
 
-		function bind(scope, fn) {
-			return function() {
+		function bind (scope, fn) {
+			return function () {
 				fn.apply(scope, arguments);
 			};
 		}
@@ -241,7 +241,7 @@ function(Vector3) {
 	 * 
 	 * @returns {Array}
 	 */
-	BasicControlScript.prototype.externals = function() {
+	BasicControlScript.prototype.externals = function () {
 		return [{
 			variable : 'movementSpeed',
 			type : 'number'
@@ -251,7 +251,7 @@ function(Vector3) {
 		}];
 	};
 
-	BasicControlScript.prototype.run = function(entity) {
+	BasicControlScript.prototype.run = function (entity) {
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 

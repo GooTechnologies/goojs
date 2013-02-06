@@ -1,9 +1,9 @@
 define(['goo/math/Vector', 'goo/math/Vector3'],
 /** @lends WASDControlScript */
-function(Vector, Vector3) {
+function (Vector, Vector3) {
 	"use strict";
 
-	function WASDControlScript(properties) {
+	function WASDControlScript (properties) {
 
 		properties = properties || {};
 
@@ -42,12 +42,12 @@ function(Vector, Vector3) {
 		this.setupKeyControls();
 	}
 
-	WASDControlScript.prototype.updateMovementVector = function() {
+	WASDControlScript.prototype.updateMovementVector = function () {
 		this.moveVector.x = this.moveState.strafeLeft - this.moveState.strafeRight;
 		this.moveVector.z = this.moveState.forward - this.moveState.back;
 	};
 
-	WASDControlScript.prototype.updateKeys = function(event, down) {
+	WASDControlScript.prototype.updateKeys = function (event, down) {
 		if (event.altKey) {
 			return;
 		}
@@ -82,18 +82,18 @@ function(Vector, Vector3) {
 		}
 	};
 
-	WASDControlScript.prototype.setupKeyControls = function() {
+	WASDControlScript.prototype.setupKeyControls = function () {
 		var that = this;
-		this.domElement.addEventListener('keydown', function(event) {
+		this.domElement.addEventListener('keydown', function (event) {
 			that.updateKeys(event, true);
 		}, false);
 
-		this.domElement.addEventListener('keyup', function(event) {
+		this.domElement.addEventListener('keyup', function (event) {
 			that.updateKeys(event, false);
 		}, false);
 	};
 
-	WASDControlScript.prototype.run = function(entity) {
+	WASDControlScript.prototype.run = function (entity) {
 		// grab our transformComponent
 		var transformComponent = entity.transformComponent;
 		if (!transformComponent) {
