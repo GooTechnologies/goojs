@@ -11,7 +11,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
 		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
-		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.005;
+		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.10;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
@@ -115,10 +115,9 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.dirty = true;
 	};
 
-	OrbitCamControlScript.prototype.applyWheel = function (event) {
-		if (Math.abs(event.wheelDelta) > 1) {
-			this.zoom(this.zoomSpeed * event.wheelDelta);
-		}
+	OrbitCamControlScript.prototype.applyWheel = function (e) {
+		var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		this.zoom(this.zoomSpeed * delta);
 	};
 
 	OrbitCamControlScript.prototype.zoom = function (percent) {
