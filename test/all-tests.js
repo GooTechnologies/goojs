@@ -19,5 +19,6 @@ define([
     'test/shapes/Sphere-test',
     'test/shapes/Torus-test',
     'test/entities/entities-test',
-    'test/util/URLTools-test'
+    'test/util/URLTools-test',
+    'test/loaders/MaterialLoader-test'
 ], function() {});

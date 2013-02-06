@@ -15,7 +15,12 @@
     "globals": {  // Extra globals.
         "define": true,
         "require": true,
-        "jasmine": true
+
+        // Jasmine globals.
+        "describe": true,
+        "expect": true,
+        "it": true,
+        "beforeEach": true
     },
 
     // The Good Parts.
@@ -49,7 +54,12 @@
     "plusplus"      : false,  // Prohibit use of `++` & `--`.
     "sub"           : false,  // Tolerate all forms of subscript notation besides dot notation e.g. `dict['key']` instead of `dict.key`.
     "trailing"      : true,   // Prohibit trailing whitespaces.
-    "white"         : true,   // Check against strict whitespace and indentation rules.
-    "indent"        : 4,      // Specify indentation spacing
+
+    // "white" and "indent" give lots of warnings.
+    // We may want to enable them again once we clean up the more pressing issues.
+    // The "white" and "indent" settings also don't work together in JSHint before 1.0
+    // See https://github.com/jshint/jshint/issues/451
+    //"white"         : true,   // Check against strict whitespace and indentation rules.
+    //"indent"        : 4,      // Specify indentation spacing
     "smarttabs"     : true    // Suppress warnings about mixed tabs and spaces
 }

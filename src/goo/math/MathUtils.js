@@ -1,6 +1,6 @@
 define([],
 /** @lends MathUtils */
-function() {
+function () {
 	"use strict";
 
 	/* ====================================================================== */
@@ -11,7 +11,7 @@ function() {
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
 
-	function MathUtils() {
+	function MathUtils () {
 	}
 
 	/* ====================================================================== */
@@ -31,7 +31,7 @@ function() {
 	 * @return {Float} Angle in radians.
 	 */
 
-	MathUtils.radFromDeg = function(degrees) {
+	MathUtils.radFromDeg = function (degrees) {
 		return degrees * MathUtils.DEG_TO_RAD;
 	};
 
@@ -44,7 +44,7 @@ function() {
 	 * @return {Float} Angle in degrees.
 	 */
 
-	MathUtils.degFromRad = function(radians) {
+	MathUtils.degFromRad = function (radians) {
 		return radians * MathUtils.RAD_TO_DEG;
 	};
 
@@ -59,7 +59,7 @@ function() {
 	 * @return {Integer|Float} Interpolated value.
 	 */
 
-	MathUtils.lerp = function(factor, start, end) {
+	MathUtils.lerp = function (factor, start, end) {
 		if (start === end) {
 			return start;
 		} else {
@@ -79,12 +79,20 @@ function() {
 	 * @return {Integer|Float} Clamped value.
 	 */
 
-	MathUtils.clamp = function(value, min, max) {
+	MathUtils.clamp = function (value, min, max) {
 		if (min < max) {
 			return value < min ? min : value > max ? max : value;
 		} else {
 			return value < max ? max : value > min ? min : value;
 		}
+	};
+
+	/* ====================================================================== */
+
+	MathUtils.moduloPositive = function (value, size) {
+		var wrappedValue = value % size;
+		wrappedValue += wrappedValue < 0 ? size : 0;
+		return wrappedValue;
 	};
 
 	/* ====================================================================== */
@@ -96,7 +104,7 @@ function() {
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve3 = function(x) {
+	MathUtils.scurve3 = function (x) {
 		return (-2.0 * x + 3.0) * x * x;
 	};
 
@@ -109,7 +117,7 @@ function() {
 	 * @return {Float} Value on curve.
 	 */
 
-	MathUtils.scurve5 = function(x) {
+	MathUtils.scurve5 = function (x) {
 		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
 	};
 
@@ -124,7 +132,7 @@ function() {
 	 * @param {Vector3} store
 	 */
 
-	MathUtils.sphericalToCartesian = function(radius, azimuth, polar, store) {
+	MathUtils.sphericalToCartesian = function (radius, azimuth, polar, store) {
 		var a = radius * Math.cos(polar);
 
 		store.x = a * Math.cos(azimuth);

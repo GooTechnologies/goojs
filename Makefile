@@ -4,4 +4,7 @@ test:
 docs:
 	./tools/generate_jsdoc.sh
 
-.PHONY: test docs
+checkstyle:
+	./node_modules/.bin/jshint src/ test/
+
+.PHONY: test docs checkstyle

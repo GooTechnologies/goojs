@@ -10,11 +10,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/MathUtils', 'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
-		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function(World, Entity, System, TransformSystem, RenderSystem,
-	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils,
-	BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
+		'goo/math/MathUtils', 'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript', 'goo/entities/systems/ParticlesSystem',
+		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter', 'goo/renderer/shaders/ShaderLib'], function (World, Entity,
+	System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer,
+	Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera,
+	CameraComponent, Vector3, MathUtils, WASDControlScript, MouseLookControlScript, ParticlesSystem, ParticleComponent, ParticleUtils,
+	ParticleEmitter, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -22,7 +23,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	var particleEntities = [];
 	var defaultTexture = null;
 
-	function init() {
+	function init () {
 		// Create typical goo application
 		goo = new GooRunner({
 			showStats : true
@@ -43,6 +44,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new WASDControlScript({
+			domElement : goo.renderer.domElement,
+			walkSpeed : 25.0,
+			crawlSpeed : 10.0
+		}));
+		scripts.scripts.push(new MouseLookControlScript({
+			domElement : goo.renderer.domElement
+		}));
+		cameraEntity.setComponent(scripts);
+
 		// load default texture
 		defaultTexture = new TextureCreator().loadTexture2D(resourcePath + '/particle_atlas.png');
 		defaultTexture.wrapS = 'EdgeClamp';
@@ -59,7 +71,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Helper function for locating a particle entity by its entity id.
 	 */
-	function getParticleEntityById(id) {
+	function getParticleEntityById (id) {
 		for ( var i = 0, max = particleEntities.length; i < max; i++) {
 			if (particleEntities[i].id == id) {
 				return particleEntities[i];
@@ -71,7 +83,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Use the hidden file input field to ask a user for a file to open.
 	 */
-	function openUserFile(filter, callback) {
+	function openUserFile (filter, callback) {
 		var chooser = $('#fileChooser');
 		if (callback) {
 			chooser.one('change', callback);
@@ -87,7 +99,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Create a new ParticleComponent with default values.
 	 */
-	function addParticleComponent() {
+	function addParticleComponent () {
 		if (!goo) {
 			return null;
 		}
@@ -108,7 +120,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// Create MeshRendererComponent with default material, texture and shader
 		var meshRendererComponent = new MeshRendererComponent();
-		var material = Material.createMaterial(Material.shaders.particles);
+		var material = Material.createMaterial(ShaderLib.particles);
 		material.textures.push(defaultTexture);
 		material.cullState.enabled = false;
 		material.depthState.write = false;
@@ -137,7 +149,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Generate UI for editing the properties of a ParticleComponent.
 	 */
-	function addParticleComponentUI(entity) {
+	function addParticleComponentUI (entity) {
 		var particleComponent = entity.particleComponent;
 		var accordion = $('#particle_components');
 
@@ -165,10 +177,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			axis : "y",
 			handle : "h3",
 			delay : 250,
-			start : function(event, ui) {
+			start : function (event, ui) {
 				particleComponent.emitters.start = ui.item.index();
 			},
-			stop : function(event, ui) {
+			stop : function (event, ui) {
 				// reorder timeline entries too
 				var stop = ui.item.index();
 				if (stop == particleComponent.emitters.start) {
@@ -187,7 +199,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// find and enable the "add particle emitter" button
 		var addEmitter = section.find('#add_emitter').button();
-		addEmitter.on('click', function() {
+		addEmitter.on('click', function () {
 			var emitter = new ParticleEmitter({
 				timeline : [],
 				releaseRatePerSecond : 50
@@ -203,7 +215,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// find and enable the "delete particle entity" button
 		var deleteButton = section.find('.delete_button').first();
 		deleteButton.button();
-		deleteButton.on('click', function(ev) {
+		deleteButton.on('click', function (ev) {
 			// prevent open/close of accordion on delete press
 			ev.stopPropagation();
 			ev.preventDefault();
@@ -233,14 +245,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Generate UI for editing the properties of a ParticleEmitter.
 	 */
-	function addParticleEmitterUI(entity, emitter, emitterIndex, sectionUI) {
+	function addParticleEmitterUI (entity, emitter, emitterIndex, sectionUI) {
 		// add our default gravity influence
 		emitter.gravity = 0;
 		emitter.influences.push({
 			enabled : true,
-			prepare : function(particleEntity, emitter) {
+			prepare : function (particleEntity, emitter) {
 			},
-			apply : function(tpf, particle, particleIndex) {
+			apply : function (tpf, particle, particleIndex) {
 				particle.velocity.y -= emitter.gravity * tpf;
 			}
 		});
@@ -249,7 +261,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var emitters = sectionUI.children('.emitters').first();
 		// generate new html for this emitter from jsrender template
 		var emittersHTML = $("#emitter_editor_template").render({
-			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
 				return v.toString(16); // uuid is used to uniquely id the radio button group in General.
 			}),
@@ -280,10 +292,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			axis : "y",
 			handle : "h3",
 			delay : 250,
-			start : function(event, ui) {
+			start : function (event, ui) {
 				timeline.start = ui.item.index();
 			},
-			stop : function(event, ui) {
+			stop : function (event, ui) {
 				// reorder timeline entries too
 				var stop = ui.item.index();
 				if (stop == timeline.start) {
@@ -299,7 +311,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// While we're in the timeline, find the "add timeline entry" button and enable it
 		var addEntry = editor.find('#add_entry').button();
-		addEntry.on('click', function() {
+		addEntry.on('click', function () {
 			var entry = {
 				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
 				color : [Math.random(), Math.random(), Math.random(), 1.0]
@@ -314,7 +326,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Find the "delete particle emitter" button and enable it
 		var deleteButton = editor.find('.delete_button').first();
 		deleteButton.button();
-		deleteButton.on('click', function(ev) {
+		deleteButton.on('click', function (ev) {
 			// prevent open/close of accordion on delete press
 			ev.stopPropagation();
 			ev.preventDefault();
@@ -342,7 +354,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Generate UI for editing the properties of a ParticleEmitter timeline entry.
 	 */
-	function addTimelineUI(emitter, entry, tabsUI) {
+	function addTimelineUI (emitter, entry, tabsUI) {
 		// find timeline accordion dom node under our tabs node.
 		var timeline = tabsUI.find('.timeline').first();
 		// generate new html for this timeline entry from jsrender template
@@ -370,7 +382,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			buttonColorize : true,
 			alpha : true,
 			colorFormat : 'RGBA',
-			select : function(event, color) {
+			select : function (event, color) {
 				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
 				var vals = exp.exec(color.formatted);
 				if (vals) {
@@ -387,7 +399,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// find and enable the "delete particle entry" button
 		var deleteButton = entryUI.find('.delete_button').first();
 		deleteButton.button();
-		deleteButton.on('click', function(ev) {
+		deleteButton.on('click', function (ev) {
 			// prevent open/close of accordion on delete press
 			ev.stopPropagation();
 			ev.preventDefault();
@@ -415,9 +427,9 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	 * Setup our default particle component input handlers. These are just for direct properties of ParticleComponent. We set these up at a high level
 	 * once and use the name on the input field to get the particle component's entity id for lookup.
 	 */
-	function setupInputHandlers() {
+	function setupInputHandlers () {
 		// Hook up add button
-		$('#add_particle_component').on('click', function() {
+		$('#add_particle_component').on('click', function () {
 			addParticleComponent();
 		});
 
@@ -428,7 +440,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			buttonColorize : true,
 			alpha : false,
 			colorFormat : 'RGBA',
-			select : function(event, color) {
+			select : function (event, color) {
 				var exp = /rgba\((\d*),(\d*),(\d*),([\d.]*)\)/g;
 				var vals = exp.exec(color.formatted);
 				goo.renderer.setClearColor(vals[1] / 255, vals[2] / 255, vals[3] / 255, vals[4]); // alpha is already [0,1]
@@ -436,17 +448,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 
 		// add listeners for particle component edits
-		$('#particle_components').on('change', '.particle_count', function() {
+		$('#particle_components').on('change', '.particle_count', function () {
 			var entity = getParticleEntityById(this.name);
 			this.value = Math.min(Math.max(1, this.value), 16383); // 16383 ~= 65535/4
 			entity.particleComponent.recreateParticles(this.value);
 			entity.meshDataComponent.meshData = entity.particleComponent.meshData;
 		});
-		$('#particle_components').on('change', '.particle_blending', function() {
+		$('#particle_components').on('change', '.particle_blending', function () {
 			var entity = getParticleEntityById(this.name);
 			entity.meshRendererComponent.materials[0].blendState.blending = this.value;
 		});
-		var uvChange = function() {
+		var uvChange = function () {
 			var entity = getParticleEntityById(this.name);
 			this.value = Math.min(Math.max(1, this.value), 64);
 			var isU = this.className === "particle_atlasX";
@@ -459,22 +471,22 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			entity.meshDataComponent.meshData = entity.particleComponent.meshData;
 		};
 		$('#particle_components').on('change', '.particle_atlasX , .particle_atlasY', uvChange);
-		$('#particle_components').on('change', '.particle_enabled', function() {
+		$('#particle_components').on('change', '.particle_enabled', function () {
 			var entity = getParticleEntityById(this.name);
 			if (entity) {
 				entity.particleComponent.enabled = this.checked;
 			}
 		});
-		$('#particle_components').on('click', '.particle_texture', function() {
+		$('#particle_components').on('click', '.particle_texture', function () {
 			var clickedImg = this;
 			var entity = getParticleEntityById(this.name);
-			openUserFile("image/*", function(ev) {
+			openUserFile("image/*", function (ev) {
 				if (this.files && this.files[0]) {
 					$("#imgRecycler").replaceWith('<img id="imgRecycler" class="hidden_input">');
 					var img = $("#imgRecycler").get(0); // grab actual dom object
 					var reader = new FileReader();
-					reader.onload = function(e) {
-						img.onload = function() {
+					reader.onload = function (e) {
+						img.onload = function () {
 							var texture = new Texture(img);
 							texture.wrapS = 'EdgeClamp';
 							texture.wrapT = 'EdgeClamp';
@@ -496,8 +508,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Setup UI change listeners for emitter properties.
 	 */
-	function setupEmittersListeners(emitterUI, emitter, particleComponent) {
-		emitterUI.on('change', '.emitter_enabled', function() {
+	function setupEmittersListeners (emitterUI, emitter, particleComponent) {
+		emitterUI.on('change', '.emitter_enabled', function () {
 			emitter.enabled = this.checked;
 			if (emitter.enabled) {
 				// if all emitters are disabled and all the particles die, the component may become disabled too.
@@ -505,59 +517,59 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				particleComponent.enabled = true;
 			}
 		});
-		emitterUI.on('change', '.release_rate', function() {
+		emitterUI.on('change', '.release_rate', function () {
 			emitter.releaseRatePerSecond = this.value;
 			emitter.particlesWaitingToRelease = 0; // reset to prevent leakage
 		});
-		emitterUI.on('change', '.max_life', function() {
+		emitterUI.on('change', '.max_life', function () {
 			emitter.maxLifetime = this.value / 1000;
 		});
-		emitterUI.on('change', '.min_life', function() {
+		emitterUI.on('change', '.min_life', function () {
 			emitter.minLifetime = this.value / 1000;
 		});
-		emitterUI.on('change', '.max_spawn', function() {
+		emitterUI.on('change', '.max_spawn', function () {
 			emitter.totalParticlesToSpawn = this.value;
 		});
-		emitterUI.on('change', '.gravity', function() {
+		emitterUI.on('change', '.gravity', function () {
 			emitter.gravity = this.value;
 		});
-		emitterUI.on('change', '.billboard', function() {
+		emitterUI.on('change', '.billboard', function () {
 			if (this.value === 'camera') {
 				emitter.getParticleBillboardVectors = ParticleEmitter.CAMERA_BILLBOARD_FUNC;
 			} else if (this.value === 'xy') {
-				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function (particle, particleEntity) {
 					particle.bbX.set(-1, 0, 0);
 					particle.bbY.set(0, 1, 0);
 				};
 			} else if (this.value === 'yz') {
-				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function (particle, particleEntity) {
 					particle.bbX.set(0, 1, 0);
 					particle.bbY.set(0, 0, -1);
 				};
 			} else if (this.value === 'xz') {
-				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function (particle, particleEntity) {
 					particle.bbX.set(-1, 0, 0);
 					particle.bbY.set(0, 0, -1);
 				};
 			} else if (this.value === 'particle') {
-				emitter.getParticleBillboardVectors = function(particle, particleEntity) {
+				emitter.getParticleBillboardVectors = function (particle, particleEntity) {
 					particle.bbX.set(particle.emit_bbX);
 					particle.bbY.set(particle.emit_bbY);
 				};
 			}
 		});
-		emitterUI.on('change', '.emission_point', function() {
+		emitterUI.on('change', '.emission_point', function () {
 			emitter.getEmissionPoint = new Function('particle', 'particleEntity', this.value);
 		});
-		emitterUI.on('change', '.emission_point_examples', function() {
+		emitterUI.on('change', '.emission_point_examples', function () {
 			var textArea = emitterUI.find(".emission_point").first();
 			textArea.val(getPointFunction(this.value));
 			textArea.trigger("change");
 		});
-		emitterUI.on('change', '.emission_velocity', function() {
+		emitterUI.on('change', '.emission_velocity', function () {
 			emitter.getEmissionVelocity = new Function('particle', 'particleEntity', this.value);
 		});
-		emitterUI.on('change', '.emission_velocity_examples', function() {
+		emitterUI.on('change', '.emission_velocity_examples', function () {
 			var textArea = emitterUI.find(".emission_velocity").first();
 			textArea.val(getVelocityFunction(this.value));
 			textArea.trigger("change");
@@ -567,20 +579,20 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Setup UI change listeners for timeline entry properties.
 	 */
-	function setupTimelineListeners(entryUI, entry) {
-		entryUI.on('change', '.timeOffset', function() {
+	function setupTimelineListeners (entryUI, entry) {
+		entryUI.on('change', '.timeOffset', function () {
 			entry.timeOffset = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		entryUI.on('change', '.spin', function() {
+		entryUI.on('change', '.spin', function () {
 			entry.spin = (this.value.trim() !== '' ? this.value.trim() : undefined) * Math.PI / 180.0;
 		});
-		entryUI.on('change', '.size', function() {
+		entryUI.on('change', '.size', function () {
 			entry.size = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		entryUI.on('change', '.mass', function() {
+		entryUI.on('change', '.mass', function () {
 			entry.mass = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
-		entryUI.on('change', '.uvIndex', function() {
+		entryUI.on('change', '.uvIndex', function () {
 			entry.uvIndex = this.value.trim() !== '' ? this.value.trim() : undefined;
 		});
 	}
@@ -588,7 +600,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Generate sample javascript function content for emitter's getEmissionPoint.
 	 */
-	function getPointFunction(type) {
+	function getPointFunction (type) {
 		switch (type) {
 			case 'Point':
 				return "particle.position.set(0,0,0);";
@@ -676,7 +688,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	/**
 	 * Generate sample javascript function content for emitter's getEmissionVelocity.
 	 */
-	function getVelocityFunction(type) {
+	function getVelocityFunction (type) {
 		switch (type) {
 			case 'Simple':
 				return "particle.velocity.set(0,1,0);";

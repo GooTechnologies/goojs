@@ -2,10 +2,10 @@
 /* jshint bitwise: false */
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue'],
+		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue', 'goo/renderer/shaders/ShaderLib'],
 /** @lends Renderer */
 function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform,
-	RenderQueue) {
+	RenderQueue, ShaderLib) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -13,7 +13,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	/**
 	 * The renderer handles displaying of graphics data to a render context. It accepts a JSON object containing the settings for the renderer.
 	 * default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false }
-	 * 
+	 *
 	 * @constructor
 	 * @param {Settings} parameters Renderer settings.
 	 */
@@ -137,6 +137,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		};
 	}
 
+	Renderer.mainCamera = null;
+
 	Renderer.prototype.checkResize = function(camera) {
 		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
 			this.setSize(this.domElement.offsetWidth, this.domElement.offsetHeight);
@@ -146,6 +148,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		if (camera && camera.aspect !== aspect) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
+			camera.onFrameChange();
 		}
 	};
 
@@ -201,6 +204,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear) {
 		if (!camera) {
 			return;
+		} else if (Renderer.mainCamera === null) {
+			Renderer.mainCamera = camera;
 		}
 
 		this.setRenderTarget(renderTarget);
@@ -213,6 +218,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		var renderInfo = {
 			camera : camera,
+			mainCamera : Renderer.mainCamera,
 			lights : lights
 		};
 
@@ -319,7 +325,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 	/**
 	 * Read pixels to a typed array (ArrayBufferView)
-	 * 
+	 *
 	 * @param x x offset of rectangle to read from
 	 * @param y y offset of rectangle to read from
 	 * @param width width of rectangle to read from
@@ -403,7 +409,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		wireDef.uniforms = material.shader.uniforms;
 		wireDef.uniforms.color = material.wireframeColor || [1, 1, 1];
 		wireDef.vshader = material.shader.vertexSource;
-		wireDef.fshader = Util.clone(Material.shaders.simpleColored.fshader);
+		wireDef.fshader = Util.clone(ShaderLib.simpleColored.fshader);
 		var wireframeMaterial = Material.createMaterial(wireDef, 'Wireframe');
 		wireframeMaterial.textures = material.textures;
 		return wireframeMaterial;
@@ -472,7 +478,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || !texture instanceof RenderTarget && texture.image === undefined || texture.image
+			if (texture === undefined || texture instanceof RenderTarget === false && texture.image === undefined || texture.image
 				&& texture.image.dataReady === undefined) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;

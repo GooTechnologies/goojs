@@ -1,6 +1,6 @@
-define(["goo/math/Vector", "goo/math/Matrix3x3"],
-	/** @lends Quaternion */
-	function (Vector, Matrix3x3) {
+define(["goo/math/Vector", "goo/math/Vector3", "goo/math/Matrix3x3", "goo/math/MathUtils"],
+/** @lends Quaternion */
+function (Vector, Vector3, Matrix3x3, MathUtils) {
 	"use strict";
 
 	/**
@@ -12,7 +12,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	 * @param {Float...} arguments Initial values for the components.
 	 */
 
-	function Quaternion() {
+	function Quaternion () {
 		Vector.call(this, 4);
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
 		this.set(init);
@@ -107,10 +107,10 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 
 		var clean = true;
 
-		target.data[0] = (clean &= (rhs.data[0] < 0.0 || rhs.data[0] > 0.0)) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= (rhs.data[1] < 0.0 || rhs.data[1] > 0.0)) ? lhs.data[1] / rhs.data[1] : 0.0;
-		target.data[2] = (clean &= (rhs.data[2] < 0.0 || rhs.data[2] > 0.0)) ? lhs.data[2] / rhs.data[2] : 0.0;
-		target.data[3] = (clean &= (rhs.data[3] < 0.0 || rhs.data[3] > 0.0)) ? lhs.data[3] / rhs.data[3] : 0.0;
+		target.data[0] = (clean &= rhs.data[0] < 0.0 || rhs.data[0] > 0.0) ? lhs.data[0] / rhs.data[0] : 0.0;
+		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
+		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
+		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
 
 		if (clean === false) {
 			console.warn("[Quaternion.div] Attempted to divide by zero!");
@@ -202,7 +202,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 
 		var clean = true;
 
-		rhs = (clean &= (rhs < 0.0 || rhs > 0.0)) ? 1.0 / rhs : 0.0;
+		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
 
 		target.data[0] = lhs.data[0] * rhs;
 		target.data[1] = lhs.data[1] * rhs;
@@ -226,7 +226,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return copy(startQuat);
+			return workQuat.set(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
@@ -369,8 +369,7 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	};
 
 	/**
-	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 *
+	 * @description Sets the value of this quaternion to the rotation described by the given matrix values.
 	 * @return this quaternion for chaining
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -462,6 +461,51 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 	};
 
 	/**
+	 * @description Sets this quaternion to that which will rotate vector3 "from" into vector3 "to". from and to do not have to be the same length.
+	 * @param from the source vector3 to rotate
+	 * @param to the destination vector3 into which to rotate the source vector
+	 * @return this quaternion for chaining
+	 */
+	Quaternion.prototype.fromVectorToVector = function (from, to) {
+		var a = from;
+		var b = to;
+		var factor = a.length() * b.length();
+		if (Math.abs(factor) > MathUtils.EPSILON) {
+			// Vectors have length > 0
+			var pivotVector = new Vector3();
+			var dot = a.dot(b) / factor;
+			var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
+			a.cross(b, pivotVector);
+			if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
+				// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
+				// perpendicular to this vector will rotate vector a onto vector b.
+
+				// The following guarantees the dot-product will be 0.0.
+				var dominantIndex;
+				if (Math.abs(a.x) > Math.abs(a.y)) {
+					if (Math.abs(a.x) > Math.abs(a.z)) {
+						dominantIndex = 0;
+					} else {
+						dominantIndex = 2;
+					}
+				} else {
+					if (Math.abs(a.y) > Math.abs(a.z)) {
+						dominantIndex = 1;
+					} else {
+						dominantIndex = 2;
+					}
+				}
+				pivotVector.setValue(dominantIndex, -a[((dominantIndex + 1) % 3)]);
+				pivotVector.setValue((dominantIndex + 1) % 3, a[dominantIndex]);
+				pivotVector.setValue((dominantIndex + 2) % 3, 0.0);
+			}
+			return this.fromAngleAxis(theta, pivotVector);
+		} else {
+			return this.set(Quaternion.IDENTITY);
+		}
+	};
+
+	/**
 	 * @return this quaternion, modified to be unit length, for chaining.
 	 */
 	Quaternion.prototype.normalize = function () {
@@ -492,11 +536,74 @@ define(["goo/math/Vector", "goo/math/Matrix3x3"],
 		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 	};
 
+	/**
+	 * @description Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
+	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
+	 * @param angle the angle to rotate (in radians).
+	 * @param axis the axis of rotation.
+	 * @return this quaternion for chaining
+	 * @throws NullPointerException if axis is null
+	 */
+	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
+		var temp = new Vector3(axis).normalize();
+		return this.fromAngleNormalAxis(angle, temp);
+	};
+
+	/**
+	 * @description Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
+	 *              the quaternion is set to identity.
+	 * @param angle the angle to rotate (in radians).
+	 * @param axis the axis of rotation (already normalized - unit length).
+	 * @throws NullPointerException if axis is null
+	 */
+	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
+		if (axis.equals(Vector3.ZERO)) {
+			return this.set(Quaternion.IDENTITY);
+		}
+
+		var halfAngle = 0.5 * angle;
+		var sin = MathUtils.sin(halfAngle);
+		var w = MathUtils.cos(halfAngle);
+		var x = sin * axis.getX();
+		var y = sin * axis.getY();
+		var z = sin * axis.getZ();
+		return this.set(x, y, z, w);
+	};
+
+	/**
+	 * @description Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
+	 *              that vector as well.
+	 * @param axisStore the object we'll store the computed axis in. If null, no computations are done to determine axis.
+	 * @return the angle of rotation in radians.
+	 */
+	Quaternion.prototype.toAngleAxis = function (axisStore) {
+		var sqrLength = this.x * this.x + this.y * this.y + this.z * this.z;
+		var angle;
+		if (Math.abs(sqrLength) <= Quaternion.ALLOWED_DEVIANCE) { // length is ~0
+			angle = 0.0;
+			if (axisStore !== null) {
+				axisStore.x = 1.0;
+				axisStore.y = 0.0;
+				axisStore.z = 0.0;
+			}
+		} else {
+			angle = 2.0 * Math.acos(this.w);
+			if (axisStore !== null) {
+				var invLength = 1.0 / Math.sqrt(sqrLength);
+				axisStore.x = this.x * invLength;
+				axisStore.y = this.y * invLength;
+				axisStore.z = this.z * invLength;
+			}
+		}
+
+		return angle;
+	};
+
 	Quaternion.prototype.equals = function (o) {
 		if (this === o) {
 			return true;
 		}
-		if (!(o instanceof Quaternion)) {
+		if (!o instanceof Quaternion) {
 			return false;
 		}
 		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE

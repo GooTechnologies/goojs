@@ -1,13 +1,12 @@
 define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'],
-	/** @lends SimpleAnimationApplier */
-	function (JointData, TransformData,
-	TriggerData) {
+/** @lends SimpleAnimationApplier */
+function (JointData, TransformData, TriggerData) {
 	"use strict";
 
 	/**
 	 * @class Very simple applier. Just applies joint transform data, calls any callbacks and updates the pose's global transforms.
 	 */
-	function SimpleAnimationApplier() {
+	function SimpleAnimationApplier () {
 		// map of key -> function(SkeletonPost, AnimationManager)
 		this._triggerCallbacks = {};
 	}
@@ -25,11 +24,9 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {
-			for (var key in data) {
+			for ( var key in data) {
 				var value = data[key];
-				if (value instanceof JointData) {
-					/*jshint noempty:false*/
-				} else if (value instanceof TransformData) {
+				if (value instanceof TransformData && !(value instanceof JointData)) {
 					var applyTo = entityManager.getEntityByName(key);
 					if (applyTo && applyTo.transformComponent) {
 						value.applyTo(applyTo.transformComponent);
@@ -44,7 +41,7 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {
-			for (var key in data) {
+			for ( var key in data) {
 				var value = data[key];
 				if (value instanceof JointData) {
 					if (value._jointIndex >= 0) {
@@ -53,13 +50,13 @@ define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo
 				} else if (value instanceof TriggerData) {
 					if (value.isArmed()) {
 						// pull callback(s) for the current trigger key, if exists, and call.
-						for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
+						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
-							for (var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+							for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
 								callbacks[j](applyToPose, manager);
 							}
 						}
-						trigger.setArmed(false);
+						value.setArmed(false);
 					}
 				}
 			}

@@ -127,7 +127,7 @@ function(
 				}
 				else
 				{
-					console.warn(request.statusText);
+					callback.onError(request.statusText);
 				}
 			}
 		};
@@ -698,6 +698,7 @@ function(
 		var shaderDefinition = {};
 
 		var waitCounter = createWaitCounter(function() {
+			if(!shaderDefinition.vshader || !shaderDefinition.fshader) shaderDefinition = null;
 
 			say('Shader definition loaded:');
 			say(shaderDefinition);
@@ -727,10 +728,10 @@ function(
 							shaderDefinition['vshader'] = data;
 
 							waitCounter.down();
-
 						},
 						onError: function(error) {
 							console.warn('Failed to load vertex shader: ' + error);
+							waitCounter.down();
 						}
 					});
 				}
@@ -739,12 +740,11 @@ function(
 					this.load(value, {
 						onSuccess: function(data) {
 							shaderDefinition['fshader'] = data;
-
 							waitCounter.down();
-
 						},
 						onError: function(error) {
 							console.warn('Failed to load fragment shader: ' + error);
+							waitCounter.down();
 						}
 					});
 				}

@@ -14,20 +14,15 @@
 //
 // 5. Particles billboard toward the screen using a provided Camera as reference.
 
-define(['goo/entities/components/Component', 'goo/particles/Particle', 'goo/particles/ParticleEmitter', 'goo/renderer/MeshData', 'goo/math/Vector3',
-		'goo/math/Vector4'],
+define(['goo/entities/components/Component', 'goo/particles/Particle', 'goo/particles/ParticleEmitter', 'goo/renderer/MeshData'],
 /** @lends ParticleComponent */
-function(Component, Particle, ParticleEmitter, MeshData, Vector3, Vector4) {
+function (Component, Particle, ParticleEmitter, MeshData) {
 	"use strict";
 
-	ParticleComponent.prototype = Object.create(Component.prototype);
-
 	/**
-	 * TODO...
-	 * 
 	 * @class
 	 */
-	function ParticleComponent(settings) {
+	function ParticleComponent (settings) {
 		this.type = 'ParticleComponent';
 
 		Component.call(this);
@@ -52,7 +47,9 @@ function(Component, Particle, ParticleEmitter, MeshData, Vector3, Vector4) {
 		this.enabled = true;
 	}
 
-	ParticleComponent.prototype.generateMeshData = function() {
+	ParticleComponent.prototype = Object.create(Component.prototype);
+
+	ParticleComponent.prototype.generateMeshData = function () {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0]);
 		this.meshData = new MeshData(attributeMap, this.particleCount * 4, this.particleCount * 6);
 
@@ -69,7 +66,7 @@ function(Component, Particle, ParticleEmitter, MeshData, Vector3, Vector4) {
 		}
 	};
 
-	ParticleComponent.prototype.recreateParticles = function(particleCount) {
+	ParticleComponent.prototype.recreateParticles = function (particleCount) {
 		this.particleCount = particleCount;
 		this.particles = [];
 		for ( var i = 0; i < this.particleCount; i++) {

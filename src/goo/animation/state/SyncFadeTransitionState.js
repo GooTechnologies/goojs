@@ -1,6 +1,6 @@
 define(['goo/animation/state/FadeTransitionState'],
-	/** @lends SyncFadeTransitionState */
-	function (FadeTransitionState) {
+/** @lends SyncFadeTransitionState */
+function (FadeTransitionState) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(['goo/animation/state/FadeTransitionState'],
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function SyncFadeTransitionState(targetState, fadeTime, blendType) {
+	function SyncFadeTransitionState (targetState, fadeTime, blendType) {
 		FadeTransitionState.call(this, targetState, fadeTime, blendType);
 	}
 

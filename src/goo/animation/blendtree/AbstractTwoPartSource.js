@@ -10,7 +10,7 @@ define(function () {
 	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting. What blend weighting is used for is up to
 	 *            the subclass.
 	 */
-	function AbstractTwoPartSource(sourceA, sourceB, blendKey) {
+	function AbstractTwoPartSource (sourceA, sourceB, blendKey) {
 		this._sourceA = sourceA ? sourceA : null;
 		this._sourceB = sourceB ? sourceB : null;
 		this._blendKey = blendKey ? blendKey : null;

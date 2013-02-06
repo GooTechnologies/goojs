@@ -1,6 +1,6 @@
 define(['goo/math/Transform'],
-	/** @lends Joint */
-	function (Transform) {
+/** @lends Joint */
+function (Transform) {
 	"use strict";
 
 	/**
@@ -8,7 +8,7 @@ define(['goo/math/Transform'],
 	 * @param {String} name Name of joint
 	 * @property {String} name Name of joint
 	 */
-	function Joint(name) {
+	function Joint (name) {
 		this._name = name;
 
 		this._index = 0;

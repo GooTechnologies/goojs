@@ -1,19 +1,19 @@
 define(['goo/entities/systems/System'],
-	/** @lends BoundingUpdateSystem */
-	function (System) {
+/** @lends BoundingUpdateSystem */
+function (System) {
 	"use strict";
 
 	/**
 	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
 	 */
-	function BoundingUpdateSystem() {
+	function BoundingUpdateSystem () {
 		System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
 	}
 
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
 
 	BoundingUpdateSystem.prototype.process = function (entities) {
-		for (var i in entities) {
+		for ( var i in entities) {
 			var entity = entities[i];
 			var meshDataComponent = entity.meshDataComponent;
 			var transformComponent = entity.transformComponent;
@@ -21,8 +21,8 @@ define(['goo/entities/systems/System'],
 
 			if (meshDataComponent.autoCompute) {
 				meshDataComponent.computeBoundFromPoints();
-			}
-			if (transformComponent._updated) {
+				meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
+			} else if (transformComponent._updated) {
 				meshRendererComponent.updateBounds(meshDataComponent.modelBound, transformComponent.worldTransform);
 				// meshDataComponent.setDirty(false);
 			}

@@ -1,6 +1,6 @@
 define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
-	/** @lends Matrix3x3 */
-	function (MathUtils, Matrix, Vector3) {
+/** @lends Matrix3x3 */
+function (MathUtils, Matrix, Vector3) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -13,7 +13,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 	 * @param {Matrix3x3|Float[]|Float...} arguments Initial values for the components.
 	 */
 
-	function Matrix3x3() {
+	function Matrix3x3 () {
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
@@ -343,7 +343,10 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 		var det = source.determinant();
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
-			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
+			throw {
+				name : "Singular Matrix",
+				message : "The matrix is singular and cannot be inverted."
+			};
 		}
 
 		det = 1.0 / det;
@@ -451,7 +454,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
-		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
+		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02
+			* (this.e10 * this.e21 - this.e11 * this.e20);
 	};
 
 	/* ====================================================================== */
@@ -618,8 +622,15 @@ define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
 		var zAxis = new Vector3();
 
 		zAxis.copy(direction).normalize();
-		xAxis.copy(up).normalize().cross(zAxis);
-		yAxis.copy(zAxis).cross(xAxis);
+		xAxis.copy(up).normalize().cross(zAxis).normalize();
+		if (xAxis.equals(Vector3.ZERO)) {
+			if (zAxis.x !== 0.0) {
+				xAxis.set(zAxis.y, -zAxis.x, 0);
+			} else {
+				xAxis.set(0, zAxis.z, -zAxis.y);
+			}
+		}
+		yAxis.copy(zAxis).cross(xAxis).normalize();
 
 		this.e00 = xAxis.x;
 		this.e10 = xAxis.y;

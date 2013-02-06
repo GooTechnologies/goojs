@@ -1,6 +1,6 @@
 define(['goo/animation/state/AbstractFiniteState'],
-	/** @lends SteadyState */
-	function (AbstractFiniteState) {
+/** @lends SteadyState */
+function (AbstractFiniteState) {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(['goo/animation/state/AbstractFiniteState'],
 	 * @param {String} name Name of state
 	 * @property {String} name Name of state
 	 */
-	function SteadyState(name) {
+	function SteadyState (name) {
 		AbstractFiniteState.call(this);
 
 		this._name = name;

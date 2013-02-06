@@ -1,12 +1,12 @@
 define(['goo/math/Vector3', 'goo/math/MathUtils'],
-	/** @lends Ray */
-	function (Vector3, MathUtils) {
+/** @lends Ray */
+function (Vector3, MathUtils) {
 	"use strict";
 
 	/**
 	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
-	function Ray(origin, direction) {
+	function Ray (origin, direction) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
 	}
@@ -14,7 +14,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'],
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
 	 * true)
-	 *
+	 * 
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
@@ -32,7 +32,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'],
 
 	/**
 	 * Ray vs triangle implementation.
-	 *
+	 * 
 	 * @param pointA First
 	 * @param pointB
 	 * @param pointC
@@ -96,27 +96,24 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'],
 	};
 
 	/**
-     * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
-     * @return the distance from our origin to the primitive or Infinity if we do not intersect.
-     */
-    Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
-        // Intersection test
-        var intersect = new Vector3();
-        if (this.intersects(worldVertices, false, intersect)) {
-            return this.origin.distance(intersect.x, intersect.y, intersect.z);
-        }
-        return Infinity;
-    };
-	
+	 * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
+	 * @return the distance from our origin to the primitive or Infinity if we do not intersect.
+	 */
+	Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
+		// Intersection test
+		var intersect = new Vector3();
+		if (this.intersects(worldVertices, false, intersect)) {
+			return this.origin.distance(intersect.x, intersect.y, intersect.z);
+		}
+		return Infinity;
+	};
 
-    /**
-     * @param plane
-     * @param locationStore
-     *            if not null, and this ray intersects the plane, the world location of the point of intersection is
-     *            stored in this vector.
-     * @return true if the ray collides with the given Plane
-     */
-    Ray.prototype.intersectsPlane = function (plane, locationStore) {
+	/**
+	 * @param plane
+	 * @param locationStore if not null, and this ray intersects the plane, the world location of the point of intersection is stored in this vector.
+	 * @return true if the ray collides with the given Plane
+	 */
+	Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
 		var denominator = normal.dot(this.direction);
 
@@ -131,22 +128,19 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'],
 			return false; // intersects behind origin
 		}
 
-		if (locationStore != null) {
-			locationStore.set(this.direction).multiplyLocal(ratio).addLocal(
-					this.origin);
+		if (locationStore !== null) {
+			locationStore.set(this.direction).multiplyLocal(ratio).addLocal(this.origin);
 		}
 
 		return true;
-    };
+	};
 
-    /**
-	 * @param point
-	 *            Vector3
-	 * @param store
-	 *            if not null, the closest point is stored in this param
+	/**
+	 * @param point Vector3
+	 * @param store if not null, the closest point is stored in this param
 	 * @return the squared distance from this ray to the given point.
 	 */
-    Ray.prototype.distanceSquared = function (point, store) {
+	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = new Vector3();
 		vectorA.set(point).subtractLocal(this.origin);
 		var t0 = this.direction.dot(vectorA);
@@ -160,13 +154,13 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'],
 		}
 
 		// Save away the closest point if requested.
-		if (store != null) {
+		if (store !== null) {
 			store.set(vectorA);
 		}
 
 		point.subtract(vectorA, vectorA);
 		return vectorA.lengthSquared();
-    };
+	};
 
 	return Ray;
 });

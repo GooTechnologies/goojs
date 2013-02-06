@@ -25,7 +25,7 @@ define(['goo/math/Vector2'],
 		this.wrapT = options.wrapT !== undefined ? options.wrapT : 'EdgeClamp';
 
 		this.magFilter = options.magFilter !== undefined ? options.magFilter : 'Bilinear';
-		this.minFilter = options.minFilter !== undefined ? options.minFilter : 'Trilinear';
+		this.minFilter = options.minFilter !== undefined ? options.minFilter : 'BilinearNoMipMaps';
 
 		this.anisotropy = options.anisotropy !== undefined ? options.anisotropy : 1;
 

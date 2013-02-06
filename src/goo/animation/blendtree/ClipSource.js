@@ -1,6 +1,6 @@
 define(['goo/math/MathUtils'],
-	/** @lends ClipSource */
-	function (MathUtils) {
+/** @lends ClipSource */
+function (MathUtils) {
 	"use strict";
 
 	/**
@@ -8,7 +8,7 @@ define(['goo/math/MathUtils'],
 	 * @param clip the clip to use.
 	 * @param manager the manager to track clip state with.
 	 */
-	function ClipSource(clip, manager) {
+	function ClipSource (clip, manager) {
 		this._clip = clip;
 
 		manager.getClipInstance(clip);

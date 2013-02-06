@@ -55,7 +55,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 1.0);
 //		renderPass.clearColor = new Vector4(0.7,0.7,0.7,1);
-		// renderPass.overrideMaterial = Material.createMaterial(Material.shaders.showNormals);
+		// renderPass.overrideMaterial = Material.createMaterial(ShaderLib.showNormals);
 //		renderPass.renderToScreen = true;
 
 		// Bloom
@@ -111,7 +111,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		};
 		
 		// Regular copy
-		// var shader = Util.clone(Material.shaders.copy);
+		// var shader = Util.clone(ShaderLib.copy);
 		// var outPass = new FullscreenPass(shader);
 		// outPass.renderToScreen = true;
 
@@ -152,7 +152,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		entity.name = "Box";
 
 		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		material.textures.push(texture);

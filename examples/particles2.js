@@ -10,18 +10,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/MathUtils', 'goo/scripts/BasicControlScript', 'goo/entities/systems/ParticlesSystem', 'goo/entities/components/ParticleComponent',
-		'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function(World, Entity, System, TransformSystem, RenderSystem,
-	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, MathUtils,
-	BasicControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
+		'goo/math/MathUtils', 'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript', 'goo/entities/systems/ParticlesSystem',
+		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter', 'goo/renderer/shaders/ShaderLib'], function (World, Entity,
+	System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer,
+	Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera,
+	CameraComponent, Vector3, MathUtils, WASDControlScript, MouseLookControlScript, ParticlesSystem, ParticleComponent, ParticleUtils,
+	ParticleEmitter, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
 
 	var material = null;
 
-	function init() {
+	function init () {
 		// Create typical goo application
 		var goo = new GooRunner({
 			showStats : true
@@ -29,7 +30,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		material = Material.createMaterial(Material.shaders.particles);
+		material = Material.createMaterial(ShaderLib.particles);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/flare.png');
 		texture.wrapS = 'EdgeClamp';
 		texture.wrapT = 'EdgeClamp';
@@ -53,10 +54,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new WASDControlScript({
+			domElement : goo.renderer.domElement,
+			walkSpeed : 25.0,
+			crawlSpeed : 10.0
+		}));
+		scripts.scripts.push(new MouseLookControlScript({
+			domElement : goo.renderer.domElement
+		}));
+		cameraEntity.setComponent(scripts);
 	}
 
 	// Create simple quad
-	function createParticles(goo) {
+	function createParticles (goo) {
 		var world = goo.world;
 
 		// Create entity
@@ -95,13 +107,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 
-		entity.setComponent(new ScriptComponent(new BasicControlScript()));
-
 		entity.addToWorld();
 
 		// add keyhandler for restarting particles if we run out.
 		// XXX: Only useful if totalParticlesToSpawn != Infinity down in generateNewEmitter
-		document.addEventListener('keydown', function(e) {
+		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
 			if (code == 32) { // space bar
@@ -116,11 +126,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}, false);
 	}
 
-	function generateNewEmitter(goo, unique) {
+	function generateNewEmitter (goo, unique) {
 		var currentPos = new Vector3(Math.random() * 50 - 25, Math.random() * 50 - 25, Math.random() * 50 - 100), newPos = new Vector3(currentPos);
 
 		// move our ball around
-		goo.callbacks.push(function(tpf) {
+		goo.callbacks.push(function (tpf) {
 			if (tpf > 1) {
 				return;
 			}
@@ -141,11 +151,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			releaseRatePerSecond : 100,
 			minLifetime : 0.1,
 			maxLifetime : 1.5,
-			getEmissionPoint : function(particle, particleEntity) {
+			getEmissionPoint : function (particle, particleEntity) {
 				var vec3 = particle.position;
 				ParticleUtils.applyEntityTransformPoint(vec3.set(currentPos), particleEntity);
 			},
-			getEmissionVelocity : function(particle, particleEntity) {
+			getEmissionVelocity : function (particle, particleEntity) {
 				var vec3 = particle.velocity;
 				return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI, unique ? 3 : 6);
 			},

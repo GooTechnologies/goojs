@@ -1,6 +1,6 @@
 define(['goo/math/Vector3'],
-	/** @lends FlyControlScript */
-	function (Vector3) {
+/** @lends FlyControlScript */
+function (Vector3) {
 	"use strict";
 
 	/**
@@ -12,7 +12,7 @@ define(['goo/math/Vector3'],
 	 * @property {ArrayBuffer} data Data to wrap
 	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 */
-	function FlyControlScript(domElement, direction) {
+	function FlyControlScript (domElement, direction) {
 		this.domElement = (domElement !== undefined) ? domElement : document;
 		if (domElement) {
 			this.domElement.setAttribute('tabindex', -1);
@@ -40,13 +40,13 @@ define(['goo/math/Vector3'],
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
 
-		this.handleEvent = function(event) {
+		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
 				this[event.type](event);
 			}
 		};
 
-		this.keydown = function(event) {
+		this.keydown = function (event) {
 			if (event.altKey) {
 				return;
 			}
@@ -103,7 +103,7 @@ define(['goo/math/Vector3'],
 			this.updateRotationVector();
 		};
 
-		this.keyup = function(event) {
+		this.keyup = function (event) {
 			switch (event.keyCode) {
 				case 16: /* shift */
 					this.movementSpeedMultiplier = 1;
@@ -157,7 +157,7 @@ define(['goo/math/Vector3'],
 			this.updateRotationVector();
 		};
 
-		this.mousedown = function(event) {
+		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
 			}
@@ -170,7 +170,7 @@ define(['goo/math/Vector3'],
 			this.mouseStatus++;
 		};
 
-		this.mousemove = function(event) {
+		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;
@@ -182,7 +182,7 @@ define(['goo/math/Vector3'],
 			}
 		};
 
-		this.mouseup = function(event) {
+		this.mouseup = function (event) {
 			event.preventDefault();
 			event.stopPropagation();
 
@@ -192,7 +192,7 @@ define(['goo/math/Vector3'],
 			this.updateRotationVector();
 		};
 
-		this.updateMovementVector = function() {
+		this.updateMovementVector = function () {
 			var forward = (this.moveState.forward || (this.autoForward && !this.moveState.back)) ? 1 : 0;
 
 			this.moveVector.x = (-this.moveState.left + this.moveState.right);
@@ -200,14 +200,14 @@ define(['goo/math/Vector3'],
 			this.moveVector.z = (-forward + this.moveState.back);
 		};
 
-		this.updateRotationVector = function() {
+		this.updateRotationVector = function () {
 			this.rotationVector.x = (-this.moveState.pitchDown + this.moveState.pitchUp);
 			this.rotationVector.y = (-this.moveState.yawRight + this.moveState.yawLeft);
 			this.rotationVector.z = (-this.moveState.rollRight + this.moveState.rollLeft);
 		};
 
-		this.getContainerDimensions = function() {
-			if (this.domElement != document) {
+		this.getContainerDimensions = function () {
+			if (this.domElement !== document) {
 				return {
 					size : [this.domElement.offsetWidth, this.domElement.offsetHeight],
 					offset : [this.domElement.offsetLeft, this.domElement.offsetTop]
@@ -220,8 +220,8 @@ define(['goo/math/Vector3'],
 			}
 		};
 
-		function bind(scope, fn) {
-			return function() {
+		function bind (scope, fn) {
+			return function () {
 				fn.apply(scope, arguments);
 			};
 		}
@@ -237,7 +237,7 @@ define(['goo/math/Vector3'],
 		this.updateRotationVector();
 	}
 
-	FlyControlScript.prototype.run = function(camera, tpf) {
+	FlyControlScript.prototype.run = function (camera, tpf) {
 		var moveMult = tpf * this.movementSpeed * this.movementSpeedMultiplier;
 		var rotMult = tpf * this.rollSpeed * this.movementSpeedMultiplier;
 

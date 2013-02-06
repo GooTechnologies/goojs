@@ -1,6 +1,6 @@
 define(
-	/** @lends AbstractAnimationChannel */
-	function () {
+/** @lends AbstractAnimationChannel */
+function () {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(
 	 * @param channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param times our time indices. Copied into the channel.
 	 */
-	function AbstractAnimationChannel(channelName, times) {
+	function AbstractAnimationChannel (channelName, times) {
 		this._channelName = channelName;
 		this._times = times instanceof Array && times.length ? times.slice(0) : [];
 	}
@@ -35,7 +35,7 @@ define(
 		} else {
 			var startFrame = 0;
 
-			for (var i = 0; i < this._times.length - 1; i++) {
+			for ( var i = 0; i < this._times.length - 1; i++) {
 				if (this._times[i] < clockTime) {
 					startFrame = i;
 				}

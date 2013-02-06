@@ -1,30 +1,22 @@
 define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats', "goo/entities/systems/CSSTransformSystem"],
+		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats',
+		"goo/entities/systems/CSSTransformSystem"],
 /** @lends GooRunner */
-function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
+function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
 	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem) {
 	"use strict";
 
 	/**
-	 * Standard setup of entity system to use as base for small projects/demos
+	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
+	 * class. default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false, showStats :
+	 * false }
 	 * 
-	 * It accepts a JSON object containing the settings for the Renderer class.
-	 *
-	 * default = {
-	 *   alpha : false,
-	 *   premultipliedAlpha : true,
-	 *   antialias : false,
-	 *   stencil : false,
-	 *   preserveDrawingBuffer : false,
-	 *   showStats : false
-	 * }
-	 *
-	 * @constructor 
+	 * @constructor
 	 * @param {Object} GooRunner settings passed in a JSON object.
 	 */
-	function GooRunner(parameters) {
+	function GooRunner (parameters) {
 		parameters = parameters || {};
 
 		this.world = new World();
@@ -64,7 +56,7 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 
 		var that = this;
 		var start = Date.now();
-		function run(time) {
+		function run (time) {
 			try {
 				that.world.tpf = (time - start) / 1000.0;
 				that.world.time += that.world.tpf;
@@ -103,7 +95,7 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 		}
 	}
 
-	function init() {
+	function init () {
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
 
@@ -113,9 +105,9 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 		}
 
 		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function(callback, element) {
+			window.requestAnimationFrame = function (callback, element) {
 				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function() {
+				var id = window.setTimeout(function () {
 					callback(currTime + timeToCall);
 				}, timeToCall);
 				lastTime = currTime + timeToCall;
@@ -124,7 +116,7 @@ function(World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bou
 		}
 
 		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function(id) {
+			window.cancelAnimationFrame = function (id) {
 				clearTimeout(id);
 			};
 		}

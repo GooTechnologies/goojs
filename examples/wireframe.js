@@ -10,10 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/renderer/Util'], function(World,
+		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(World,
 	Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData,
 	Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent,
-	Light, Camera, CameraComponent, BasicControlScript, Vector3, Util) {
+	Light, Camera, CameraComponent, BasicControlScript, Vector3, Util, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -54,11 +54,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Create meshrenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
 
-		var material = Material.createMaterial(Material.shaders.textured);
+		var material = Material.createMaterial(ShaderLib.textured);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		material.textures.push(texture);
 
-		var wireframeMaterial = Material.createMaterial(Material.shaders.textured);
+		var wireframeMaterial = Material.createMaterial(ShaderLib.textured);
 		wireframeMaterial.wireframe = true;
 
 		meshRendererComponent.materials.push(material);

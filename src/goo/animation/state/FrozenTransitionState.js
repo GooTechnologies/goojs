@@ -1,6 +1,6 @@
 define(['goo/animation/state/AbstractTwoStateLerpTransition'],
-	/** @lends FrozenTransitionState */
-	function (AbstractTwoStateLerpTransition) {
+/** @lends FrozenTransitionState */
+function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function FrozenTransitionState(targetState, fadeTime, blendType) {
+	function FrozenTransitionState (targetState, fadeTime, blendType) {
 		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
 	}
 
@@ -25,7 +25,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime, layer);
 
 		// update only the B state - the first is frozen
-		if (this._stateB != null) {
+		if (this._stateB !== null) {
 			this._stateB.update(globalTime, layer);
 		}
 	};
@@ -57,7 +57,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 	 */
 	FrozenTransitionState.prototype.postUpdate = function (layer) {
 		// update only the B state - the first is frozen
-		if (this._stateB != null) {
+		if (this._stateB !== null) {
 			this._stateB.postUpdate(layer);
 		}
 	};
