@@ -1,6 +1,6 @@
-define(["goo/math/Vector", "goo/math/Matrix3x3", "goo/math/MathUtils"],
+define(["goo/math/Vector", "goo/math/Vector3", "goo/math/Matrix3x3", "goo/math/MathUtils"],
 /** @lends Quaternion */
-function (Vector, Matrix3x3, MathUtils) {
+function (Vector, Vector3, Matrix3x3, MathUtils) {
 	"use strict";
 
 	/**
@@ -12,7 +12,7 @@ function (Vector, Matrix3x3, MathUtils) {
 	 * @param {Float...} arguments Initial values for the components.
 	 */
 
-	function Quaternion() {
+	function Quaternion () {
 		Vector.call(this, 4);
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
 		this.set(init);
@@ -369,8 +369,7 @@ function (Vector, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * 
+	 * @description Sets the value of this quaternion to the rotation described by the given matrix values.
 	 * @return this quaternion for chaining
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -462,8 +461,7 @@ function (Vector, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * Sets this quaternion to that which will rotate vector3 "from" into vector3 "to". from and to do not have to be the same length.
-	 * 
+	 * @description Sets this quaternion to that which will rotate vector3 "from" into vector3 "to". from and to do not have to be the same length.
 	 * @param from the source vector3 to rotate
 	 * @param to the destination vector3 into which to rotate the source vector
 	 * @return this quaternion for chaining
@@ -539,9 +537,8 @@ function (Vector, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates an object, so
-	 * use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
-	 * 
+	 * @description Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
+	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
 	 * @param angle the angle to rotate (in radians).
 	 * @param axis the axis of rotation.
 	 * @return this quaternion for chaining
@@ -549,20 +546,19 @@ function (Vector, Matrix3x3, MathUtils) {
 	 */
 	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
 		var temp = new Vector3(axis).normalize();
-		return fromAngleNormalAxis(angle, temp);
+		return this.fromAngleNormalAxis(angle, temp);
 	};
 
 	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0 the quaternion
-	 * is set to identity.
-	 * 
+	 * @description Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
+	 *              the quaternion is set to identity.
 	 * @param angle the angle to rotate (in radians).
 	 * @param axis the axis of rotation (already normalized - unit length).
 	 * @throws NullPointerException if axis is null
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {
-			return setIdentity();
+			return this.set(Quaternion.IDENTITY);
 		}
 
 		var halfAngle = 0.5 * angle;
@@ -575,9 +571,8 @@ function (Vector, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in that vector as
-	 * well.
-	 * 
+	 * @description Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
+	 *              that vector as well.
 	 * @param axisStore the object we'll store the computed axis in. If null, no computations are done to determine axis.
 	 * @return the angle of rotation in radians.
 	 */
@@ -586,14 +581,14 @@ function (Vector, Matrix3x3, MathUtils) {
 		var angle;
 		if (Math.abs(sqrLength) <= Quaternion.ALLOWED_DEVIANCE) { // length is ~0
 			angle = 0.0;
-			if (axisStore != null) {
+			if (axisStore !== null) {
 				axisStore.x = 1.0;
 				axisStore.y = 0.0;
 				axisStore.z = 0.0;
 			}
 		} else {
 			angle = 2.0 * Math.acos(this.w);
-			if (axisStore != null) {
+			if (axisStore !== null) {
 				var invLength = 1.0 / Math.sqrt(sqrLength);
 				axisStore.x = this.x * invLength;
 				axisStore.y = this.y * invLength;

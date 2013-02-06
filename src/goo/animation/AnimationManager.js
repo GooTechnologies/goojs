@@ -89,8 +89,7 @@ function (AnimationLayer, AnimationClipInstance) {
 	};
 
 	/**
-	 * Retrieve and track an instance of an animation clip to be used with this manager.
-	 * 
+	 * @description Retrieve and track an instance of an animation clip to be used with this manager.
 	 * @param clip the clip to instance.
 	 * @return our new clip instance.
 	 */

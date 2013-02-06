@@ -1,6 +1,6 @@
-define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Quaternion', 'goo/math/MathUtils'],
+define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 	/** @lends MouseLookControlScript */
-	function (Vector, Vector3, Matrix3x3, Quaternion, MathUtils) {
+	function (Vector, Vector3, Matrix3x3) {
 		"use strict";
 
 		function MouseLookControlScript (properties) {
@@ -49,7 +49,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 				this.domElement.focus();
 			}
 
-			if (this.dragOnly && (this.dragButton == -1 || this.dragButton == event.button)) {
+			if (this.dragOnly && (this.dragButton === -1 || this.dragButton == event.button)) {
 				this.mouseState.buttonDown = down;
 
 				event.preventDefault();
@@ -120,7 +120,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			// }
 
 			// exit early if not dragging, or no movement
-			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX == 0 && this.mouseState.dY == 0) {
+			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX === 0 && this.mouseState.dY === 0) {
 				this.mouseState.dX = 0;
 				this.mouseState.dY = 0;
 				return;
@@ -131,7 +131,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			var moveMultV = this.turnSpeedVertical;
 
 			// apply dx around upVector
-			if (this.mouseState.dX != 0) {
+			if (this.mouseState.dX !== 0) {
 				this.calcMat1.fromAngleNormalAxis(moveMultH * -this.mouseState.dX, this.worldUpVector.x, this.worldUpVector.y, this.worldUpVector.z);
 
 				Matrix3x3.combine(this.calcMat1, transform.rotation, this.calcMat2);
@@ -139,7 +139,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			}
 
 			// apply dy around left vector
-			if (this.mouseState.dY != 0) {
+			if (this.mouseState.dY !== 0) {
 				this.calcMat1.fromAngleNormalAxis(moveMultV * this.mouseState.dY, this.localLeftVector.x, this.localLeftVector.y,
 					this.localLeftVector.z);
 

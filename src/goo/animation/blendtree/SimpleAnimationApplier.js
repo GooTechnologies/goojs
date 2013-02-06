@@ -26,9 +26,7 @@ function (JointData, TransformData, TriggerData) {
 		if (data) {
 			for ( var key in data) {
 				var value = data[key];
-				if (value instanceof JointData) {
-					/* jshint noempty:false */
-				} else if (value instanceof TransformData) {
+				if (value instanceof TransformData && !(value instanceof JointData)) {
 					var applyTo = entityManager.getEntityByName(key);
 					if (applyTo && applyTo.transformComponent) {
 						value.applyTo(applyTo.transformComponent);

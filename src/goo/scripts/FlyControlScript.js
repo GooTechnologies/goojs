@@ -207,7 +207,7 @@ function (Vector3) {
 		};
 
 		this.getContainerDimensions = function () {
-			if (this.domElement != document) {
+			if (this.domElement !== document) {
 				return {
 					size : [this.domElement.offsetWidth, this.domElement.offsetHeight],
 					offset : [this.domElement.offsetLeft, this.domElement.offsetTop]

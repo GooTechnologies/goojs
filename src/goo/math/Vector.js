@@ -1,6 +1,6 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"],
-	/** @lends Vector */
-	function (MathUtils, Matrix) {
+define(["goo/math/MathUtils"],
+/** @lends Vector */
+function (MathUtils) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -13,7 +13,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Integer} size Number of vector components.
 	 */
 
-	function Vector(size) {
+	function Vector (size) {
 		this.data = new Float32Array(size || 0);
 	}
 
@@ -28,9 +28,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	Vector.prototype.setupAliases = function (aliases) {
 		var that = this;
 
-		for (var i = 0; i < aliases.length; i++) {
+		for ( var i = 0; i < aliases.length; i++) {
 			(function (index) {
-				for (var j = 0; j < aliases[index].length; j++) {
+				for ( var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
 						get : function () {
 							return this.data[index];
@@ -75,10 +75,13 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (rdata.length !== size || target.data.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
-		for (var i = 0; i < size; i++) {
+		for ( var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] + rdata[i];
 		}
 
@@ -117,10 +120,13 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (rdata.length !== size || target.data.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
-		for (var i = 0; i < size; i++) {
+		for ( var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] - rdata[i];
 		}
 
@@ -159,10 +165,13 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (rdata.length !== size || target.data.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
-		for (var i = 0; i < size; i++) {
+		for ( var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] * rdata[i];
 		}
 
@@ -201,10 +210,13 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (rdata.length !== size || target.data.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
-		for (var i = 0; i < size; i++) {
+		for ( var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] / rdata[i];
 		}
 
@@ -240,14 +252,16 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (target.data.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		target.data.set(source.data);
 
 		return target;
 	};
-
 
 	/**
 	 * @description Copies component values and stores them locally. Equivalent of "return (this = source);".
@@ -275,12 +289,15 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var size = ldata.length;
 
 		if (rdata.length !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		var sum = 0.0;
 
-		for (var i = 0; i < size; i++) {
+		for ( var i = 0; i < size; i++) {
 			sum += ldata[i] * rdata[i];
 		}
 
@@ -319,20 +336,23 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (target.data.length !== rows || cols !== size) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw {
+				name : "Illegal Arguments",
+				message : "The arguments are of incompatible sizes."
+			};
 		}
 
 		if (target === rhs) {
 			return Vector.copy(Vector.apply(lhs, rhs), target);
 		}
 
-		for (var c = 0; c < cols; c++) {
+		for ( var c = 0; c < cols; c++) {
 			var o = c * rows;
 
-			for (var r = 0; r < rows; r++) {
+			for ( var r = 0; r < rows; r++) {
 				var sum = 0.0;
 
-				for (var i = 0; i < size; i++) {
+				for ( var i = 0; i < size; i++) {
 					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
 				}
 
@@ -368,7 +388,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			return false;
 		}
 
-		for (var i = 0; i < lhs.data.length; i++) {
+		for ( var i = 0; i < lhs.data.length; i++) {
 			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
 				return false;
 			}
@@ -391,7 +411,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 	/**
 	 * @static
-	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - lhs)•(rhs - lhs);". When comparing the relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - lhs)•(rhs - lhs);". When comparing the relative
+	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
+	 *              operation.
 	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {Float} Squared distance.
@@ -403,7 +425,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 	/**
 	 * @static
-	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the
+	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
+	 *              root operation.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {Float} Squared distance.
 	 */
@@ -467,7 +491,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Vector.prototype.invert = function () {
-		for (var i = 0; i < this.data.length; i++) {
+		for ( var i = 0; i < this.data.length; i++) {
 			this.data[i] = 0.0 - this.data[i];
 		}
 
@@ -486,12 +510,15 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var l = this.length();
 
 		if (l < MathUtils.EPSILON) {
-			throw { name : "Normalization Error", message : "The magnitude of the vector is incredibly small." };
+			throw {
+				name : "Normalization Error",
+				message : "The magnitude of the vector is incredibly small."
+			};
 		}
 
 		l = 1.0 / l;
 
-		for (var i = 0; i < this.data.length; i++) {
+		for ( var i = 0; i < this.data.length; i++) {
 			this.data[i] *= l;
 		}
 
@@ -518,18 +545,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Vector.prototype.set = function () {
-		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
 			} else if (arguments[0].length > 1) {
-				for (var i = 0; i < arguments[0].length; i++) {
+				for ( var i = 0; i < arguments[0].length; i++) {
 					this.data[i] = arguments[0][i];
 				}
 			} else {
 				this.set(arguments[0][0]);
 			}
 		} else {
-			for (var i in arguments) {
+			for ( var i in arguments) {
 				this.data[i] = arguments[i];
 			}
 		}
@@ -549,7 +576,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 		string += "[";
 
-		for (var i = 0; i < this.data.length; i++) {
+		for ( var i = 0; i < this.data.length; i++) {
 			string += this.data[i];
 			string += i !== this.data.length - 1 ? ", " : "";
 		}
