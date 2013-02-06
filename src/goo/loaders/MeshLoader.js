@@ -19,10 +19,9 @@ function(
    */
   function MeshLoader(rootUrl) {
     Promise.call(this);
-    
     this._rootUrl = rootUrl || '';
-    
   };
+
   MeshLoader.prototype = new Promise();
   MeshLoader.prototype.constructor = MeshLoader;
   
@@ -66,7 +65,6 @@ function(
       catch (e)
       {
         this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
-        
       }
     }
     return json;
@@ -77,7 +75,6 @@ function(
 		var that = this;
     var promise = new Promise();
     var promises = {};
-  
 		var meshData;
 
 		if(data && Object.keys(data).length)
