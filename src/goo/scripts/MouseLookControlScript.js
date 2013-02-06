@@ -1,16 +1,16 @@
 define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Quaternion', 'goo/math/MathUtils'],
 	/** @lends MouseLookControlScript */
-	function(Vector, Vector3, Matrix3x3, Quaternion, MathUtils) {
+	function (Vector, Vector3, Matrix3x3, Quaternion, MathUtils) {
 		"use strict";
 
-		function MouseLookControlScript(properties) {
+		function MouseLookControlScript (properties) {
 
 			properties = properties || {};
 
 			this.domElement = properties.domElement || document;
 
-			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
-			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
+			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
+			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
 
 			this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 			this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
@@ -25,6 +25,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			// this.rest = true;
 			// this.calcQuat1 = new Quaternion();
 			// this.calcQuat2 = new Quaternion();
+			// this.direction = new Vector3(this.localFwdVector);
 
 			this.onRun = properties.onRun;
 
@@ -40,12 +41,10 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			this.calcMat1 = new Matrix3x3();
 			this.calcMat2 = new Matrix3x3();
 
-			this.direction = new Vector3(this.localFwdVector);
-
 			this.setupMouseControls();
 		}
 
-		MouseLookControlScript.prototype.updateButtonState = function(event, down) {
+		MouseLookControlScript.prototype.updateButtonState = function (event, down) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
 			}
@@ -58,7 +57,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			}
 		};
 
-		MouseLookControlScript.prototype.updateDeltas = function(event) {
+		MouseLookControlScript.prototype.updateDeltas = function (event) {
 			if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
 				this.mouseState.dX = 0;
 				this.mouseState.dY = 0;
@@ -72,22 +71,22 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 			}
 		};
 
-		MouseLookControlScript.prototype.setupMouseControls = function() {
+		MouseLookControlScript.prototype.setupMouseControls = function () {
 			var that = this;
-			this.domElement.addEventListener('mousedown', function(event) {
+			this.domElement.addEventListener('mousedown', function (event) {
 				that.updateButtonState(event, true);
 			}, false);
 
-			this.domElement.addEventListener('mouseup', function(event) {
+			this.domElement.addEventListener('mouseup', function (event) {
 				that.updateButtonState(event, false);
 			}, false);
 
-			this.domElement.addEventListener('mousemove', function(event) {
+			this.domElement.addEventListener('mousemove', function (event) {
 				that.updateDeltas(event);
 			}, false);
 		};
 
-		MouseLookControlScript.prototype.run = function(entity) {
+		MouseLookControlScript.prototype.run = function (entity) {
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
 			if (!transformComponent) {
@@ -122,6 +121,8 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Q
 
 			// exit early if not dragging, or no movement
 			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX == 0 && this.mouseState.dY == 0) {
+				this.mouseState.dX = 0;
+				this.mouseState.dY = 0;
 				return;
 			}
 
