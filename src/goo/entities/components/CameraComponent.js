@@ -1,13 +1,13 @@
-define(['goo/entities/components/Component', 'goo/math/Vector3'],
+define(['goo/entities/components/Component'],
 /** @lends CameraComponent */
-function(Component, Vector3) {
+function (Component) {
 	"use strict";
 
 	/**
 	 * @class Updates the contained camera according to a transform (coming from the transformcomponent)
 	 * @param {Camera} camera Camera to contain in this component
 	 */
-	function CameraComponent(camera) {
+	function CameraComponent (camera) {
 		this.type = 'CameraComponent';
 
 		this.camera = camera;
@@ -15,7 +15,7 @@ function(Component, Vector3) {
 
 	CameraComponent.prototype = Object.create(Component.prototype);
 
-	CameraComponent.prototype.updateCamera = function(transform) {
+	CameraComponent.prototype.updateCamera = function (transform) {
 		this.camera._left.set(-1, 0, 0);
 		transform.matrix.applyPostVector(this.camera._left);
 

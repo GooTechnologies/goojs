@@ -1,12 +1,12 @@
 define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'],
 /** @lends ParticleEmitter */
-function(ParticleUtils, Renderer) {
+function (ParticleUtils, Renderer) {
 	"use strict";
 
 	/**
 	 * @class A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.
 	 */
-	function ParticleEmitter(settings) {
+	function ParticleEmitter (settings) {
 		settings = settings || {};
 
 		// How many particles should we spawn before shutting down this emitter. Negative means never shut down.
@@ -25,14 +25,14 @@ function(ParticleUtils, Renderer) {
 		this.influences = settings.influences ? settings.influences : [];
 
 		// function returning an emission point for a particle.
-		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function(particle, particleEntity) {
+		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function (particle, particleEntity) {
 			var vec3 = particle.position;
 			vec3.set(0, 0, 0);
 			return ParticleUtils.applyEntityTransformPoint(vec3, particleEntity);
 		};
 
 		// function returning an emission velocity for a particle.
-		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function(particle, particleEntity) {
+		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function (particle, particleEntity) {
 			var vec3 = particle.velocity;
 			vec3.set(0, 1, 0);
 			return ParticleUtils.applyEntityTransformVector(vec3, particleEntity);
@@ -52,13 +52,13 @@ function(ParticleUtils, Renderer) {
 		this.enabled = settings.enabled !== undefined ? settings.enabled === true : true;
 	}
 
-	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function(particle, particleEntity) {
+	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle, particleEntity) {
 		var camera = Renderer.mainCamera;
 		particle.bbX.set(camera._left);
 		particle.bbY.set(camera._up);
 	};
 
-	ParticleEmitter.prototype.nextParticleLifeSpan = function() {
+	ParticleEmitter.prototype.nextParticleLifeSpan = function () {
 		return this.minLifetime + (this.maxLifetime - this.minLifetime) * Math.random();
 	};
 
