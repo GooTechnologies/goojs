@@ -8,6 +8,10 @@ function (Vector3) {
 	function Edge(vec1, vec2) {
 
 		// 16bits integers for the start and end positions
+
+		// REVIEW: Using typed arrays looks like a premature optimization.
+		// Is this faster than having members x0, y0, x1, y1?
+		// I'd guess it's slower (one additional level of indirection).
 		
 		this._buffer = new ArrayBuffer(8);  // 4 * Uint16Array.BYTES_PER_ELEMENT; 
 		this.x = new Uint16Array(this._buffer, 0, 2);

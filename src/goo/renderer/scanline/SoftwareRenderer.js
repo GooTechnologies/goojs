@@ -21,6 +21,9 @@ define([
 		var depthBytes = this.numOfPixels * Uint8Array.BYTES_PER_ELEMENT;
 
 		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes);
+		// REVIEW: I assume _colorData is temporary for visualization,
+		//         as we don't need color data for the occlusion culling.
+		//         Don't make a generic software renderer! :-)
 		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4); // RGBA
 		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // Change to float / uint16 / ...
 
@@ -56,6 +59,7 @@ define([
 
 		// Faster to allocate the edge array first?
 		// var edges = new Array(3);
+		// REVIEW: That is probably slower. What may be faster is to allocate the edges array at startup and not allocate it again for every triangle.
 		var edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3), 
@@ -88,16 +92,18 @@ define([
 	SoftwareRenderer.prototype.drawEdges = function(longEdge, shortEdge) {
 
 		// Early exit when the short edge doesnt have any height (y-axis).
-		// -Faster with == or <= 0? 
+		// -Faster with == or <= 0?   REVIEW: Doesn't matter
 		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion? http://www.html5rocks.com/en/tutorials/speed/v8/
+		// REVIEW: What is SMI?
 
+		// REVIEW: Unconventional naming with underscore. Use shortEdgeDeltaY etc. instead
         var shortEdge_dy = (shortEdge.y[1] - shortEdge.y[0]);
         if(shortEdge_dy <= 0) {
             return; // Nothing to draw here.
         }
 
 		var longEdge_dy = (longEdge.y[1] - longEdge.y[0]);
-		
+
 		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
 		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height. 
 		// Might be premature to remove this check completely though.
@@ -107,6 +113,7 @@ define([
         	return; // Nothing to draw here.
         }
         */
+		// REVIEW: Sounds reasonable to remove this, but keep the comment that checking is not needed
         
         var longEdge_dx = longEdge.x[1] - longEdge.x[0];
         var shortEdge_dx = shortEdge.x[1] - shortEdge.x[0];
@@ -120,12 +127,14 @@ define([
         // The scanline on which we start rendering on might be in the middle of the long edge,
         // the starting x-coordinate is therefore calculated.
         var longStartCoeff = (shortEdge.y[0] - longEdge.y[0]) / longEdge_dy;
+		// REVIEW: Spaces around operators! E.g. "a * b", not "a*b"!
         var longX = longEdge.x[0] + longEdge_dx*longStartCoeff;
         var longEdge_Xincrement = longEdge_dx/longEdge_dy;
 
         var shortX = shortEdge.x[0];
         var shortEdge_Xincrement = shortEdge_dx/shortEdge_dy;
 
+        // REVIEW: "= 0" is unnecessary here
  		var startIndex = 0;
         var stopIndex = 0;
         // Draw every line for which the short edge is present.
@@ -163,6 +172,7 @@ define([
 		}
 	};
 
+	// REVIEW: This looks unfinished
 	SoftwareRenderer.prototype.renderDepth = function() {
 
 		// For each scanline ( each row in the image ).
@@ -174,6 +184,7 @@ define([
 		{	
 			gradientValue = scanline / this.height * 255;
 			this.fillArrayWithValue(lineData, gradientValue);
+			// REVIEW: Write directly into _depthData instead of writing first to lineData and then copying
 			this._depthData.set(lineData, offset);
 			offset += offsetStep;
 		}
@@ -193,6 +204,9 @@ define([
 		}
 	};
 
+	// REVIEW: Seems unused
+	// REVIEW: If we want to do this stuff,
+	// let _colorData be a 32 bit array instead, so we can put data for a whole pixel with one assignment instead of four.
 	SoftwareRenderer.prototype.fillColor = function(value) {
 		
 		for (var i = 0; i < this.colorData.length; i++) {
