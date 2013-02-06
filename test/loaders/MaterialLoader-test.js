@@ -1,21 +1,35 @@
 define([
-		'goo/loaders/MaterialLoader'
+		'goo/loaders/MaterialLoader',
+		'goo/util/Promise',
+		'goo/util/Ajax',
+		'goo/renderer/Material'
 	],
 	function(
-		MaterialLoader
+		MaterialLoader,
+		Promise,
+		Ajax,
+		Material
 	) {
 	'use strict';
 
 	var TestResponses = {
-		'/project/scenes/scene' : {
+		'material' : {
 			readyState : 4,
 			status : 200,
-			responseText : '{"files":["camera.ent.json","cube.ent.json"],"directories":[]}',
+			responseText : '{"shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
 		},
-		'/project/goodVertexShaderSource' : {
+		'badMaterial' : {
+			readyState : 4,
+			status : 200,
+			responseText : '{shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
+			responseHeader : {
+				'Content-Type' : 'application/json'
+			}
+		},
+		'goodVertexShaderSource' : {
 			readyState : 4,
 			status : 200,
 			responseText : 'goodVertexShader',
@@ -23,7 +37,7 @@ define([
 				'Content-Type' : 'application/octet-stream'
 			}
 		},
-		'/project/goodFragmentShaderSource' : {
+		'goodFragmentShaderSource' : {
 			readyState : 4,
 			status : 200,
 			responseText : 'goodFragmentShader',
@@ -31,13 +45,27 @@ define([
 				'Content-Type' : 'application/octet-stream'
 			}
 		},
-		'/project/shaders/goodShaderSource.json' : {
+		'goodShaderSource.json' : {
 			readyState : 4,
 			status : 200,
 			responseText : '{ "vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
+		},
+		'badShaderSource.json' : {
+			readyState : 4,
+			status : 200,
+			responseText : '{ vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
+			responseHeader : {
+				'Content-Type' : 'application/json'
+			}
+		},
+		'404' : {
+			readyState : 4,
+			status : 404,
+			responseText : '404 - file not found',
+			responseHeader : undefined
 		}
 	};
 
@@ -92,25 +120,65 @@ define([
 			loader = null;
 		});
 
-		it("has an empty project URL when nothing is passed to the constructor", function() {
+		it("has an empty string as project URL when nothing is passed to the constructor", function() {
 			var aLoader = new MaterialLoader();
 
-			expect(aLoader._rootUrl).toBe(undefined);
+			expect(aLoader._rootUrl).toBe('');
 		});
 
 		it("sets the project URL when passed to the constructor", function() {
-			var 
+			var aLoader = new MaterialLoader('pancakes');
+
+			expect(aLoader._rootUrl).toBe('pancakes');
+		});
+
+		describe('.setRootUrl()', function() {
+
+			it("sets the root url", function() {
+				loader.setRootUrl('bacon');
+
+				expect(loader._rootUrl).toBe('bacon');
+			});
 		});
 
 		describe('.load()', function() {
 
-			it("puts the lotion on the skin", function() {
-				XMLHttpRequest = MockXHRBuilder(TestResponses);
+			it('resolves its promise and creates a new Material from a correct URL', function() {
+				spyOn(loader, '_resolve').andCallThrough();
 
+				loader.load('material');
 				
+				expect(loader._resolve).toHaveBeenCalled();
+				expect(loader._state).toBe('resolved');
+
+				loader
+					.done(function(data) {
+						expect(data.__proto__).toBe(Material.prototype);
+						expect(data.shader.fragmentSource).toBe('goodFragmentShader');
+						expect(data.shader.vertexSource).toBe('goodVertexShader');
+					})
+			});
+
+			it('rejects its promise from a bad URL', function() {
+				spyOn(loader, '_reject').andCallThrough();
+
+				loader.load('404');
+
+				expect(loader._reject).toHaveBeenCalled();
+				expect(loader._state).toBe('rejected');
+			});
+
+			it('rejects its promise when the URL response isn\'t valid JSON', function() {
+				spyOn(loader, '_reject').andCallThrough();
+
+				loader.load('badMaterial');
+
+				expect(loader._reject).toHaveBeenCalled();
+				expect(loader._state).toBe('rejected');
 			});
 		});
 
+/*
 		describe('._parseShaderDefinition()', function() {
 
 			it("will, as a callback argument, return a shaderDefinition based on two external shader files that exist", function() {
@@ -121,7 +189,7 @@ define([
 				
 			});
 
-			it("will, as a callback argument, return null if the vertex/fragment shader source file doesn't exist", function() {
+			it("will reject its promise if the vertex shader source file doesn't exist", function() {
 				// VS
 				var shaderSource = {
 					vs : 'nonexistent',
@@ -144,8 +212,7 @@ define([
 				expect(shaderDef).toBe(null);
 			});
 
-		});
-
+		});*/
 
 	});
 });

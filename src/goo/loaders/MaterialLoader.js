@@ -25,7 +25,7 @@ function(
 		Promise.call(this);
 
 		if(!rootUrl || rootUrl == null)
-			console.warn('Project root not specified');
+			this._rootUrl = '';
 		else
 			this._rootUrl = rootUrl;
 	};
@@ -40,12 +40,6 @@ function(
 	};
 
 	MaterialLoader.prototype.load = function(sourcePath) {
-		if(!this._rootUrl || this._rootUrl == null)
-		{
-			console.warn('Please set project root before loading');
-			return this;
-		}
-		console.log('MaterialLoader.load(\'' + sourcePath + '\')');
 
 		if(!sourcePath || sourcePath == null) this._reject('URL not specified');
 
@@ -56,7 +50,10 @@ function(
 		.done(function(request) {
 			that._parseMaterial(that._handleRequest(request))
 				.done(function(data) {
-					console.log(data);
+					that._resolve(data);
+				})
+				.fail(function(data) {
+					that._reject(data);
 				});
 		})
 		.fail(function(data) {
@@ -69,7 +66,7 @@ function(
 	MaterialLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
-		if(request.getResponseHeader('Content-Type') == 'application/json')
+		if(request && request.getResponseHeader('Content-Type') == 'application/json')
 		{
 			try
 			{
@@ -77,7 +74,7 @@ function(
 			}
 			catch (e)
 			{
-				that._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
 		}
 
@@ -173,6 +170,7 @@ function(
 			}
 		}
 
+		var that = this;
 		Promise.when(promises.shader)
 			.done(function(data) {
 
@@ -222,13 +220,20 @@ function(
 
 		Promise.when(promises.vs, promises.fs)
 			.done(function(data) {
-				// We know that we asked for the vertex shader first and fragment second
-				var shaderDefinition = {
-					vshader : data[0].responseText,
-					fshader : data[1].responseText
-				};
+				if(data.length === 2 && data[0].responseText && data[1].responseText)
+				{
+					// We know that we asked for the vertex shader first and fragment second
+					var shaderDefinition = {
+						vshader : data[0].responseText,
+						fshader : data[1].responseText
+					};
 
-				promise._resolve(shaderDefinition);
+					promise._resolve(shaderDefinition);
+				}
+				else
+				{
+					promise._reject(data);
+				}
 			})
 			.fail(function(data) {
 				promise._reject(data);
