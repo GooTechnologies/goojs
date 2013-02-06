@@ -66,7 +66,7 @@ function(
 	MaterialLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
-		if(request && request.getResponseHeader('Content-Type') == 'application/json')
+		if(request && request.getResponseHeader('Content-Type') === 'application/json')
 		{
 			try
 			{
@@ -121,49 +121,28 @@ function(
 			{
 				value = materialDataSource[attribute];
 
-				if(attribute == 'shader')
+				if(attribute === 'shader')
 				{
 					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' });
 				}
-				else if(attribute == 'uniforms')
+				else if(attribute === 'uniforms')
 				{
 
 					for(var i in value)
 					{
 						var that = this;
-						if(i == 'diffuseTexture')
+						if(i === 'diffuseTexture')
 							textures.push(new TextureCreator().loadTexture2D(that._rootUrl + value[i]));
 
-						else if(i == 'shininess')
+						else if(i === 'shininess')
 							materialState.shininess = value[i];
 
-						else if(i == 'ambient')
+						else if(i === 'ambient' || i === 'diffuse' || i === 'emissive' || i === 'specular')
 						{
-							if(value[i][0] != null) materialState.ambient.r = value[i][0];
-							if(value[i][1] != null) materialState.ambient.g = value[i][1];
-							if(value[i][2] != null) materialState.ambient.b = value[i][2];
-							if(value[i][3] != null) materialState.ambient.a = value[i][3];
-						}
-						else if(i == 'diffuse')
-						{
-							if(value[i][0] != null) materialState.diffuse.r = value[i][0];
-							if(value[i][1] != null) materialState.diffuse.g = value[i][1];
-							if(value[i][2] != null) materialState.diffuse.b = value[i][2];
-							if(value[i][3] != null) materialState.diffuse.a = value[i][3];
-						}
-						else if(i == 'emissive')
-						{
-							if(value[i][0] != null) materialState.emissive.r = value[i][0];
-							if(value[i][1] != null) materialState.emissive.g = value[i][1];
-							if(value[i][2] != null) materialState.emissive.b = value[i][2];
-							if(value[i][3] != null) materialState.emissive.a = value[i][3];
-						}
-						else if(i == 'specular')
-						{
-							if(value[i][0] != null) materialState.specular.r = value[i][0];
-							if(value[i][1] != null) materialState.specular.g = value[i][1];
-							if(value[i][2] != null) materialState.specular.b = value[i][2];
-							if(value[i][3] != null) materialState.specular.a = value[i][3];
+							if(value[i][0] != null) materialState[i].r = value[i][0];
+							if(value[i][1] != null) materialState[i].g = value[i][1];
+							if(value[i][2] != null) materialState[i].b = value[i][2];
+							if(value[i][3] != null) materialState[i].a = value[i][3];
 						}
 					}
 				}
