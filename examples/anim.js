@@ -13,10 +13,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
 		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager',
 		'goo/animation/blendtree/SimpleAnimationApplier', 'goo/animation/state/SteadyState', 'goo/animation/blendtree/ClipSource',
-		'goo/math/Quaternion'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/math/Quaternion', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
 	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3, Handy,
-	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion) {
+	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion, ShaderLib) {
 	"use strict";
 
     var resourcePath = "../resources";
@@ -241,7 +241,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 	}
 
-	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	var jointMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleColored));
 	jointMaterial.depthState.enabled = false;
 	jointMaterial.shader.uniforms.color = [1.0, 0.0, 0.0];
 	var renderableJoint = {
@@ -250,7 +250,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		transform : new Transform()
 	};
 
-	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	var boneMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleColored));
 	boneMaterial.depthState.enabled = false;
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0];
 	var renderableBone = {

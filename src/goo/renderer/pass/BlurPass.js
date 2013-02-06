@@ -1,6 +1,6 @@
 define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util'], function(Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget,
-	Util) {
+		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget,
+	Util, ShaderLib) {
 	"use strict";
 
 	/**
@@ -18,12 +18,12 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 	function BlurPass(settings) {
 		settings = settings || {};
 
-		this.target = (settings.target !== undefined) ? settings.target : null;
-		var strength = (settings.strength !== undefined) ? settings.strength : 1.0;
-		var kernelSize = (settings.kernelSize !== undefined) ? settings.kernelSize : 25;
-		var sigma = (settings.sigma !== undefined) ? settings.sigma : 4.0;
-		var sizeX = (settings.sizeX !== undefined) ? settings.sizeX : 256;
-		var sizeY = (settings.sizeY !== undefined) ? settings.sizeY : 256;
+		this.target = settings.target !== undefined ? settings.target : null;
+		var strength = settings.strength !== undefined ? settings.strength : 1.0;
+		var kernelSize = settings.kernelSize !== undefined ? settings.kernelSize : 25;
+		var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
+		var sizeX = settings.sizeX !== undefined ? settings.sizeX : 256;
+		var sizeY = settings.sizeY !== undefined ? settings.sizeY : 256;
 
 		this.renderTargetX = new RenderTarget(sizeX, sizeY);
 		this.renderTargetY = new RenderTarget(sizeX, sizeY);
@@ -33,11 +33,11 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 			materials : []
 		};
 
-		this.copyShader = Util.clone(Material.shaders.copyPure);
+		this.copyShader = Util.clone(ShaderLib.copyPure);
 		this.copyShader.uniforms.opacity = strength;
 		this.copyMaterial = Material.createMaterial(this.copyShader);
 
-		this.convolutionShader = Util.clone(Material.shaders.convolution);
+		this.convolutionShader = Util.clone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
 			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
 			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)

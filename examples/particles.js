@@ -11,10 +11,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
 		'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript', 'goo/entities/systems/ParticlesSystem',
-		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils'], function (World, Entity, System, TransformSystem, RenderSystem,
+		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/renderer/shaders/ShaderLib'], function (World, Entity, System, TransformSystem, RenderSystem,
 	TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3,
-	WASDControlScript, MouseLookControlScript, ParticlesSystem, ParticleComponent, ParticleUtils) {
+	WASDControlScript, MouseLookControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -29,7 +29,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		material = Material.createMaterial(Material.shaders.particles);
+		material = Material.createMaterial(ShaderLib.particles);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/flare.png');
 		texture.wrapS = 'EdgeClamp';
 		texture.wrapT = 'EdgeClamp';

@@ -11,10 +11,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
 		'goo/math/MathUtils', 'goo/scripts/OrbitCamControlScript', 'goo/entities/systems/ParticlesSystem',
-		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter'], function (World, Entity,
+		'goo/entities/components/ParticleComponent', 'goo/particles/ParticleUtils', 'goo/particles/ParticleEmitter', 'goo/renderer/shaders/ShaderLib'], function (World, Entity,
 	System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer,
 	Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera,
-	CameraComponent, Vector3, MathUtils, OrbitCamControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter) {
+	CameraComponent, Vector3, MathUtils, OrbitCamControlScript, ParticlesSystem, ParticleComponent, ParticleUtils, ParticleEmitter, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -32,13 +32,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		texture.wrapT = 'EdgeClamp';
 		texture.generateMipmaps = true;
 
-		var additiveMaterial = Material.createMaterial(Material.shaders.particles);
+		var additiveMaterial = Material.createMaterial(ShaderLib.particles);
 		additiveMaterial.textures.push(texture);
 		additiveMaterial.blendState.blending = 'AdditiveBlending';
 		additiveMaterial.cullState.enabled = false;
 		additiveMaterial.depthState.write = false;
 
-		var alphaMaterial = Material.createMaterial(Material.shaders.particles);
+		var alphaMaterial = Material.createMaterial(ShaderLib.particles);
 		alphaMaterial.textures.push(texture);
 		alphaMaterial.blendState.blending = 'AlphaBlending';
 		alphaMaterial.cullState.enabled = false;

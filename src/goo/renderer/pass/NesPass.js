@@ -1,6 +1,6 @@
 define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/Texture'],
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, Texture) {
+		'goo/renderer/Texture', 'goo/renderer/shaders/ShaderLib'],
+	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, Texture, ShaderLib) {
 	"use strict";
 
 	function NesPass(textureUrl) {
@@ -35,13 +35,13 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 	};
 
 	var nesShader = {
-		attributes : Material.shaders.copy.attributes,
+		attributes : ShaderLib.copy.attributes,
 		uniforms : {
 			"diffuse" : 0,
 			"mapping" : 1,
-			$link : Material.shaders.copy.uniforms
+			$link : ShaderLib.copy.uniforms
 		},
-		vshader : Material.shaders.copy.vshader,
+		vshader : ShaderLib.copy.vshader,
 		fshader : [//
 			'precision mediump float;',//
 

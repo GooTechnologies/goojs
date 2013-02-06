@@ -10,10 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray', 'goo/renderer/Util'], function(World, Entity, System, TransformSystem,
+		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem,
 	RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2,
-	BasicControlScript, Ray, Util) {
+	BasicControlScript, Ray, Util, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -51,7 +51,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		material = Material.createMaterial(Material.shaders.textured);
+		material = Material.createMaterial(ShaderLib.textured);
 		// var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		var colorInfo = new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
 		var texture = new Texture(colorInfo, null, 2, 2);
@@ -92,8 +92,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var entities = [];
 		var shaders = {};
 
-		for ( var name in Material.shaders) {
-			shaders[name] = Material.createShader(Util.clone(Material.shaders[name]), name);
+		for ( var name in ShaderLib) {
+			shaders[name] = Material.createShader(Util.clone(ShaderLib[name]), name);
 		}
 
 		function updatePresets() {
@@ -164,7 +164,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		$('#newshader').click(function() {
 			var type = 'simple';
 			var name = 'New_' + type + newIndex++;
-			var newShader = Material.createShader(Util.clone(Material.shaders[type]), name);
+			var newShader = Material.createShader(Util.clone(ShaderLib[type]), name);
 			shaders[name] = newShader;
 			updatePresets();
 			$('#shaderName').text(newShader.name);
