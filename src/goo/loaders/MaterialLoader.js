@@ -129,7 +129,7 @@ function(
 				{
 
 					for(var i in value)
-					{
+					{					
 						var that = this;
 						if(i === 'diffuseTexture')
 							textures.push(new TextureCreator().loadTexture2D(that._rootUrl + value[i]));
