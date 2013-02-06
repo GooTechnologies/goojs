@@ -19,15 +19,17 @@ define([
 
 		this.numOfPixels = this.width * this.height;
 
+		// Store the edges for a triangle 
+		this.edges = new Array(3);
+
 		var colorBytes = this.numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
 		var depthBytes = this.numOfPixels * Uint8Array.BYTES_PER_ELEMENT;
 
 		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes);
-		// REVIEW: I assume _colorData is temporary for visualization,
-		//         as we don't need color data for the occlusion culling.
-		//         Don't make a generic software renderer! :-)
-		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4); // RGBA
-		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // Change to float / uint16 / ...
+
+		// The color data is used for debugging purposes.
+		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4);
+		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
 
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
@@ -51,7 +53,6 @@ define([
 				console.log(renderable);
 				//this.fillRenderInfo(renderable, renderInfo);
 				//this.renderMesh(renderInfo);
-
 
 				var posArray = renderable.meshDataComponent.meshData.attributeMap.POSITION.array;
 
@@ -97,22 +98,18 @@ define([
 
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
-
-		// Faster to allocate the edge array first?
-		// var edges = new Array(3);
-		// REVIEW: That is probably slower. What may be faster is to allocate the edges array at startup and not allocate it again for every triangle.
-		var edges = [
+		this.edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3), 
 			new Edge(triangle.v3, triangle.v1)
 		];
 
-		var maxHeight = 0;
-        var longEdge = 0;
+		var maxHeight;
+        var longEdge;
 
         // Find edge with the greatest height in the Y axis, this is the long edge.
         for(var i = 0; i < 3; i++) {
-            var height = edges[i].y[1] - edges[i].y[0];
+            var height = edges[i].y1 - edges[i].y0;
             if(height > maxHeight) {
                     maxHeight = height;
                     longEdge = i;
@@ -133,31 +130,20 @@ define([
 	SoftwareRenderer.prototype.drawEdges = function(longEdge, shortEdge) {
 
 		// Early exit when the short edge doesnt have any height (y-axis).
-		// -Faster with == or <= 0?   REVIEW: Doesn't matter
-		// -The edges' coordinates are stored as uint8, so compare with a SMI to prevent conversion? http://www.html5rocks.com/en/tutorials/speed/v8/
-		// REVIEW: What is SMI?
+		// -The edges' coordinates are stored as uint8, so compare with a SMI (SMall Integer, 31-bit signed integer) and not Double.
 
-		// REVIEW: Unconventional naming with underscore. Use shortEdgeDeltaY etc. instead
-        var shortEdge_dy = (shortEdge.y[1] - shortEdge.y[0]);
-        if(shortEdge_dy <= 0) {
+        var shortEdgeDeltaY = (shortEdge.y1 - shortEdge.y0);
+        if(shortEdgeDeltaY <= 0) {
             return; // Nothing to draw here.
         }
 
-		var longEdge_dy = (longEdge.y[1] - longEdge.y[0]);
+		var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
 
 		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
 		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height. 
-		// Might be premature to remove this check completely though.
-        /*
-        if(longEdge_dy <= 0) {
-        	console.log("this shouldnt happn so often... or at all?");
-        	return; // Nothing to draw here.
-        }
-        */
-		// REVIEW: Sounds reasonable to remove this, but keep the comment that checking is not needed
-        
-        var longEdge_dx = longEdge.x[1] - longEdge.x[0];
-        var shortEdge_dx = shortEdge.x[1] - shortEdge.x[0];
+		
+        var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
+        var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
 
         // Vertical coherence : 
         // The x-coordinates' increment for each step in y is constant, 
@@ -167,17 +153,12 @@ define([
 
         // The scanline on which we start rendering on might be in the middle of the long edge,
         // the starting x-coordinate is therefore calculated.
-        var longStartCoeff = (shortEdge.y[0] - longEdge.y[0]) / longEdge_dy;
-		// REVIEW: Spaces around operators! E.g. "a * b", not "a*b"!
-        var longX = longEdge.x[0] + longEdge_dx*longStartCoeff;
-        var longEdge_Xincrement = longEdge_dx/longEdge_dy;
+        var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
+        var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
+        var longEdge_Xincrement = longEdgeDeltaX / longEdgeDeltaY;
 
-        var shortX = shortEdge.x[0];
-        var shortEdge_Xincrement = shortEdge_dx/shortEdge_dy;
-
-        // REVIEW: "= 0" is unnecessary here
- 		var startIndex = 0;
-        var stopIndex = 0;
+        var shortX = shortEdge.x0;
+        var shortEdge_Xincrement = shortEdgeDeltaX / shortEdgeDeltaY;
 
         // TODO:
         // Implement this idea of checking which edge is the leftmost.
@@ -186,7 +167,9 @@ define([
         //    Save the result and draw the rest of the scanlines.
 
         // Draw every line for which the short edge is present.
-        for (var y = shortEdge.y[0]; y <= shortEdge.y[1]; y++) {
+        var startIndex;
+        var stopIndex;
+        for (var y = shortEdge.y0; y <= shortEdge.y1; y++) {
 
         	// Round to the nearest pixel.
         	startIndex = Math.round(longX);
@@ -219,53 +202,6 @@ define([
 			this._depthData[row + i] = 255;
 		}
 	};
-
-	// REVIEW: This looks unfinished
-	SoftwareRenderer.prototype.renderDepth = function() {
-
-		// For each scanline ( each row in the image ).
-		var gradientValue;
-		var lineData = new Uint8Array(this.width);
-		var offset = 0;
-		var offsetStep = this.width;
-		for ( var scanline = 0; scanline < this.height; scanline++)
-		{	
-			gradientValue = scanline / this.height * 255;
-			this.fillArrayWithValue(lineData, gradientValue);
-			// REVIEW: Write directly into _depthData instead of writing first to lineData and then copying
-			this._depthData.set(lineData, offset);
-			offset += offsetStep;
-		}
-		/*
-
-		https://developer.mozilla.org/en-US/docs/HTML/Canvas/Pixel_manipulation_with_canvas
-
-		For example, to read the blue component's value from the pixel at column 200, row 50 in the image, you would do the following:
-		blueComponent = imageData.data[((50*(imageData.width*4)) + (200*4)) + 2];
-
-		*/
-	};
-
-	SoftwareRenderer.prototype.fillArrayWithValue = function(array, value) {
-		for ( var i = 0; i < array.length; i++ ) {
-			array[i] = value;
-		}
-	};
-
-	// REVIEW: Seems unused
-	// REVIEW: If we want to do this stuff,
-	// let _colorData be a 32 bit array instead, so we can put data for a whole pixel with one assignment instead of four.
-	SoftwareRenderer.prototype.fillColor = function(value) {
-		
-		for (var i = 0; i < this.colorData.length; i++) {
-
-			this._colorData[i] = 0;
-			this._colorData[++i] = 250;
-			this._colorData[++i] = 0;
-			this._colorData[++i] = 255;
-		}
-	};
-
 
 	SoftwareRenderer.prototype.copyDepthToColor = function() {
 
