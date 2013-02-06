@@ -1,11 +1,13 @@
 define([
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/Vector4'
 	],
 /** @lends Triangle */
 function (Vector3) {
 
 	/*
-		Send in vertices ( Vector3 )
+	* @class Triangle
+	* 
 	*/
 	function Triangle(v1, v2, v3) {
 
@@ -30,6 +32,10 @@ function (Vector3) {
 		v3.y *= height;
 
 		return new Triangle(v1, v2, v3);
+	};
+
+	Triangle.prototype.transform = function(matrix) {
+		
 	};
 
 	return Triangle;

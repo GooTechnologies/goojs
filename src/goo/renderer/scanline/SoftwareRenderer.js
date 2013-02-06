@@ -2,12 +2,14 @@ define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
 	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Edge) {
+	function (Camera, Triangle, Vector3, Vector4, Edge) {
 	"use strict";
+
 
 	function SoftwareRenderer(parameters) {
 		parameters = parameters || {};
@@ -27,7 +29,6 @@ define([
 		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4); // RGBA
 		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // Change to float / uint16 / ...
 
-
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
 			new Triangle(new Vector3(0.5, 0.1, 1.0), new Vector3(0.4, 0.3, 1.0), new Vector3(0.6, 0.4, 1.0)),
@@ -36,8 +37,47 @@ define([
 			new Triangle(new Vector3(0.15, 0.5, 1.0), new Vector3(0.5, 0.55, 1.0), new Vector3(0.86, 0.5, 1.0)),
 			new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
 		];
+	};
 
-		
+	SoftwareRenderer.prototype.render = function(renderList, camera) {
+
+		var MVPMatrix = camera.getViewProjectionMatrix();
+	
+		if (Array.isArray(renderList)) {
+			//this.renderQueue.sort(renderList, camera);
+
+			for ( var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				console.log(renderable);
+				//this.fillRenderInfo(renderable, renderInfo);
+				//this.renderMesh(renderInfo);
+
+
+				var posArray = renderable.meshDataComponent.meshData.attributeMap.POSITION.array;
+
+				var triangles = [];
+
+
+				for (var posIndex = 0; posIndex < posArray.length; posIndex++ ) {
+					// Create triangle , transform it , render it.
+					var v1 = new Vector3(posArray[posIndex], posArray[++posIndex], posArray[++posIndex]);
+					var v2 = new Vector3(posArray[++posIndex], posArray[++posIndex], posArray[++posIndex]);
+					var v3 = new Vector3(posArray[++posIndex], posArray[++posIndex], posArray[++posIndex]);
+					var triangle = new Triangle(v1, v2, v3);
+
+					triangle.transform(MVPMatrix);
+
+					triangles.push(triangle);
+				}
+
+				console.log(triangles);
+				
+			}
+		} else {
+			//this.fillRenderInfo(renderList, renderInfo);
+			//this.renderMesh(renderInfo);
+		}
+
 	};
 
 	SoftwareRenderer.prototype.renderTestTriangles = function() {
@@ -49,6 +89,7 @@ define([
 
 	/*
 	*	Takes a triangle with coordinates in pixel space, and draws it.
+	*	@param {Triangle} triangle the triangle to draw.
 	*/
 	SoftwareRenderer.prototype.renderTriangle = function(triangle) {
 
@@ -138,6 +179,12 @@ define([
  		var startIndex = 0;
         var stopIndex = 0;
 
+        // TODO:
+        // Implement this idea of checking which edge is the leftmost.
+        // 1. Check if they start off at different positions, save the result and draw as usual
+        // 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates. 
+        //    Save the result and draw the rest of the scanlines.
+
         // Draw every line for which the short edge is present.
         for (var y = shortEdge.y[0]; y <= shortEdge.y[1]; y++) {
 
@@ -148,7 +195,7 @@ define([
         	// Draw the span of pixels.
     		this.fillPixels(startIndex, stopIndex, y);
         	
-  			// Increase the edges' x-coordinate with the increments.
+  			// Increase the edges' x-coordinates with the increments.
         	longX += longEdge_Xincrement;
         	shortX += shortEdge_Xincrement;
         }
