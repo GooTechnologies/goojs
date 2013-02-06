@@ -1,19 +1,19 @@
 define(['goo/entities/systems/System', 'goo/particles/ParticleUtils'],
 /** @lends ParticlesSystem */
-function(System, ParticleUtils) {
+function (System, ParticleUtils) {
 	"use strict";
 
 	/**
 	 * @class manages and reacts to particle components on entities.
 	 */
-	function ParticlesSystem() {
+	function ParticlesSystem () {
 		System.call(this, 'ParticlesSystem', ['ParticleComponent']);
 		this.passive = false;
 	}
 
 	ParticlesSystem.prototype = Object.create(System.prototype);
 
-	ParticlesSystem.prototype.process = function(entities, tpf) {
+	ParticlesSystem.prototype.process = function (entities, tpf) {
 		if (tpf > 1) {
 			return; // ignore, probably was out of focus
 		}
@@ -32,7 +32,7 @@ function(System, ParticleUtils) {
 		}
 	};
 
-	ParticlesSystem.prototype.updateParticles = function(particleEntity, particleComponent, tpf) {
+	ParticlesSystem.prototype.updateParticles = function (particleEntity, particleComponent, tpf) {
 		var particleIndex = 0;
 		var emitterIndex = -1;
 		var emitter = undefined;
@@ -119,6 +119,7 @@ function(System, ParticleUtils) {
 		// tell particle meshdata we are updated.
 		if (needsUpdate) {
 			particleComponent.meshData.vertexData._dataNeedsRefresh = true;
+			particleEntity.meshDataComponent.autoCompute = true;
 		}
 		if (!stillAlive) {
 			particleComponent.enabled = false;
