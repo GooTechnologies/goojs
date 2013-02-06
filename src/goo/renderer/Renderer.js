@@ -147,6 +147,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		if (camera && camera.aspect !== aspect) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
+			camera.onFrameChange();
 		}
 	};
 
