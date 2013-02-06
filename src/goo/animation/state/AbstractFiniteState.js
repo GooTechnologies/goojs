@@ -1,12 +1,12 @@
 define(
-	/** @lends AbstractFiniteState */
-	function () {
+/** @lends AbstractFiniteState */
+function () {
 	"use strict";
 
 	/**
 	 * @class Base class for a finite state in our finite state machine.
 	 */
-	function AbstractFiniteState() {
+	function AbstractFiniteState () {
 		this._globalStartTime = 0;
 		this._lastOwner = null;
 	}

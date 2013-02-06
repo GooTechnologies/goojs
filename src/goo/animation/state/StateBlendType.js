@@ -1,6 +1,6 @@
 define(['goo/util/Enum'],
-	/** @lends StateBlendType */
-	function (Enum) {
+/** @lends StateBlendType */
+function (Enum) {
 	"use strict";
 
 	return new Enum(

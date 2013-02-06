@@ -1,6 +1,6 @@
-define(['goo/entities/systems/System', 'goo/particles/ParticleUtils'],
+define(['goo/entities/systems/System'],
 /** @lends ParticlesSystem */
-function (System, ParticleUtils) {
+function (System) {
 	"use strict";
 
 	/**
@@ -35,7 +35,7 @@ function (System, ParticleUtils) {
 	ParticlesSystem.prototype.updateParticles = function (particleEntity, particleComponent, tpf) {
 		var particleIndex = 0;
 		var emitterIndex = -1;
-		var emitter = undefined;
+		var emitter;
 		var needsUpdate = false;
 		var stillAlive = false;
 
@@ -60,7 +60,7 @@ function (System, ParticleUtils) {
 						continue;
 					}
 
-					if (emitter.totalParticlesToSpawn != 0) {
+					if (emitter.totalParticlesToSpawn !== 0) {
 						// find out how many particles to create.
 						emitter.particlesWaitingToRelease += emitter.releaseRatePerSecond * tpf;
 						emitter.particlesWaitingToRelease = Math.max(emitter.particlesWaitingToRelease, 0);
@@ -107,7 +107,7 @@ function (System, ParticleUtils) {
 				emitter.getEmissionPoint(particle, particleEntity);
 				emitter.getEmissionVelocity(particle, particleEntity);
 
-				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn == 0) {
+				if (emitter.particlesWaitingToRelease < 1 || emitter.totalParticlesToSpawn === 0) {
 					// setup to pull next emitter, if any
 					emitter = undefined;
 				}

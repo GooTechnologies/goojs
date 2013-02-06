@@ -1,6 +1,6 @@
 define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'],
-	/** @lends InclusiveClipSource */
-	function (JointChannel, ClipSource) {
+/** @lends InclusiveClipSource */
+function (JointChannel, ClipSource) {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 	 * @param clip our source clip.
 	 * @param manager the manager used to track clip state.
 	 */
-	function InclusiveClipSource(clip, manager) {
+	function InclusiveClipSource (clip, manager) {
 		ClipSource.call(this, clip, manager);
 
 		this._enabledChannels = {};
@@ -24,11 +24,11 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 	InclusiveClipSource.prototype.addEnabledChannels = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for (var i = 0; i < arguments[0].length; i++) {
+			for ( var i = 0; i < arguments[0].length; i++) {
 				this._enabledChannels[arguments[0][i]] = true;
 			}
 		} else {
-			for (var i = 0; i < arguments.length; i++) {
+			for ( var i = 0; i < arguments.length; i++) {
 				this._enabledChannels[arguments[i]] = true;
 			}
 		}
@@ -36,12 +36,12 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 	InclusiveClipSource.prototype.addEnabledJoints = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for (var i = 0; i < arguments[0].length; i++) {
+			for ( var i = 0; i < arguments[0].length; i++) {
 				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[0][i];
 				this._enabledChannels[channelName] = true;
 			}
 		} else {
-			for (var i = 0; i < arguments.length; i++) {
+			for ( var i = 0; i < arguments.length; i++) {
 				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
 				this._enabledChannels[channelName] = true;
 			}
@@ -53,7 +53,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 		// make a copy, removing specific channels
 		var rVal = {};
-		for (var key in this._enabledChannels) {
+		for ( var key in this._enabledChannels) {
 			if (this._enabledChannels[key]) {
 				rVal[key] = orig[key];
 			}

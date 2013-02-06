@@ -1,6 +1,6 @@
 define(
-	/** @lends FrozenTreeSource */
-	function () {
+/** @lends FrozenTreeSource */
+function () {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(
 	 * @param source Our sub source.
 	 * @param frozenTime The time we are frozen at.
 	 */
-	function FrozenTreeSource(source, frozenTime) {
+	function FrozenTreeSource (source, frozenTime) {
 		this._source = source;
 		this._time = frozenTime;
 	}

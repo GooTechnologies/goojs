@@ -1,6 +1,6 @@
 define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'],
-	/** @lends TransformChannel */
-	function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
+/** @lends TransformChannel */
+function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	"use strict";
 
 	/**
@@ -11,7 +11,7 @@ define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/Trans
 	 * @param translations the translations to set on this channel at each time offset.
 	 * @param scales the scales to set on this channel at each time offset.
 	 */
-	function TransformChannel(channelName, times, rotations, translations, scales) {
+	function TransformChannel (channelName, times, rotations, translations, scales) {
 		AbstractAnimationChannel.call(this, channelName, times);
 
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {

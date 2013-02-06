@@ -1,13 +1,13 @@
 define(['goo/animation/state/AbstractTransitionState'],
-	/** @lends ImmediateTransitionState */
-	function (AbstractTransitionState) {
+/** @lends ImmediateTransitionState */
+function (AbstractTransitionState) {
 	"use strict";
 
 	/**
 	 * @class Cuts directly to the set target state, without any intermediate transition action.
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
 	 */
-	function ImmediateTransitionState(targetState) {
+	function ImmediateTransitionState (targetState) {
 		AbstractTransitionState.call(this, targetState);
 	}
 

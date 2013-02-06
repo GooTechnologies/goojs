@@ -1,6 +1,6 @@
 define(['goo/animation/state/AbstractTwoStateLerpTransition'],
-	/** @lends FadeTransitionState */
-	function (AbstractTwoStateLerpTransition) {
+/** @lends FadeTransitionState */
+function (AbstractTwoStateLerpTransition) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function FadeTransitionState(targetState, fadeTime, blendType) {
+	function FadeTransitionState (targetState, fadeTime, blendType) {
 		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
 	}
 
@@ -25,10 +25,10 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime, layer);
 
 		// update both of our states
-		if (this._stateA != null) {
+		if (this._stateA !== null) {
 			this._stateA.update(globalTime, layer);
 		}
-		if (this._stateB != null) {
+		if (this._stateB !== null) {
 			this._stateB.update(globalTime, layer);
 		}
 	};
@@ -60,10 +60,10 @@ define(['goo/animation/state/AbstractTwoStateLerpTransition'],
 	 */
 	FadeTransitionState.prototype.postUpdate = function (layer) {
 		// post update both of our states
-		if (this._stateA != null) {
+		if (this._stateA !== null) {
 			this._stateA.postUpdate(layer);
 		}
-		if (this._stateB != null) {
+		if (this._stateB !== null) {
 			this._stateB.postUpdate(layer);
 		}
 	};

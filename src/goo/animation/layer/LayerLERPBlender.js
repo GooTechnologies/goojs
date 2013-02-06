@@ -1,6 +1,6 @@
 define(['goo/animation/blendtree/BinaryLERPSource'],
-	/** @lends LayerLERPBlender */
-	function (BinaryLERPSource) {
+/** @lends LayerLERPBlender */
+function (BinaryLERPSource) {
 	"use strict";
 
 	/**
@@ -8,7 +8,7 @@ define(['goo/animation/blendtree/BinaryLERPSource'],
 	 * @param {String} name Name of layer
 	 * @property {String} name Name of layer
 	 */
-	function LayerLERPBlender() {
+	function LayerLERPBlender () {
 		this._blendKey = null;
 		this._layerA = null;
 		this._layerB = null;

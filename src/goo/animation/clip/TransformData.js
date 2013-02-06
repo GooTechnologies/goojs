@@ -1,13 +1,13 @@
 define(['goo/math/Quaternion', 'goo/math/Vector3'],
-	/** @lends TransformData */
-	function (Quaternion, Vector3) {
+/** @lends TransformData */
+function (Quaternion, Vector3) {
 	"use strict";
 
 	/**
 	 * @class Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.
 	 * @param source our optional TransformData source to copy.
 	 */
-	function TransformData(source) {
+	function TransformData (source) {
 		this._rotation = new Quaternion().copy(source ? source._rotation : Quaternion.IDENTITY);
 		this._scale = new Vector3().copy(source ? source._scale : Vector3.ONE);
 		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);

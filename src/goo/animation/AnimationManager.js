@@ -1,22 +1,22 @@
 define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'],
-	/** @lends AnimationManager */
-	function (AnimationLayer, AnimationClipInstance) {
+/** @lends AnimationManager */
+function (AnimationLayer, AnimationClipInstance) {
 	"use strict";
 
 	/**
 	 * @class
-	 *       <p>
-	 *       AnimationManager describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and
-	 *       uses their combined result to update one or more poses (via a set AnimationApplier.) AnimationClips used in these layers are instanced
-	 *       and tracked specifically for this manager.
-	 *       </p>
-	 *       <p>
-	 *       By default, an animation manager has a single base animation layer. Other layers may be added to this. It is important that the base
-	 *       layer (the layer at index 0) always has a full set of data to put a skeleton pose into a valid state.
-	 *       </p>
+	 * <p>
+	 * AnimationManager describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and uses
+	 * their combined result to update one or more poses (via a set AnimationApplier.) AnimationClips used in these layers are instanced and tracked
+	 * specifically for this manager.
+	 * </p>
+	 * <p>
+	 * By default, an animation manager has a single base animation layer. Other layers may be added to this. It is important that the base layer (the
+	 * layer at index 0) always has a full set of data to put a skeleton pose into a valid state.
+	 * </p>
 	 * @param {SkeletonPose} pose a pose to update. Optional if we won't be animating a skinmesh.
 	 */
-	function AnimationManager(pose) {
+	function AnimationManager (pose) {
 		this._globalTimer = {
 			start : Date.now(),
 			getTimeInSeconds : function () {
@@ -61,7 +61,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// move the time forward on the layers
-		for (var i = 0, max = this._layers.length; i < max; i++) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -70,7 +70,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		}
 
 		// call apply on blend module, passing in pose
-		for (var i = 0, max = this._applyToPoses.length; i < max; i++) {
+		for ( var i = 0, max = this._applyToPoses.length; i < max; i++) {
 			var pose = this._applyToPoses[i];
 			this._applier.applyTo(pose, this);
 		}
@@ -79,7 +79,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 		// this._applier.apply(S_sceneRoot, this);
 
 		// post update to clear states
-		for (var i = 0, max = this._layers.length; i < max; i++) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			var state = layer._currentState;
 			if (state) {
@@ -90,7 +90,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 
 	/**
 	 * Retrieve and track an instance of an animation clip to be used with this manager.
-	 *
+	 * 
 	 * @param clip the clip to instance.
 	 * @return our new clip instance.
 	 */
@@ -107,7 +107,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 
 	AnimationManager.prototype.getCurrentSourceData = function () {
 		// set up our layer blending.
-		for (var i = 0, max = this._layers.length - 1; i < max; i++) {
+		for ( var i = 0, max = this._layers.length - 1; i < max; i++) {
 			var layerA = this._layers[i];
 			var layerB = this._layers[i + 1];
 			layerB.updateLayerBlending(layerA);
@@ -148,7 +148,7 @@ define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipI
 	 * @return the first animation layer with a matching name, or null of none are found.
 	 */
 	AnimationManager.prototype.findAnimationLayer = function (layerName) {
-		for (var i = 0, max = this._layers.length; i < max; i++) {
+		for ( var i = 0, max = this._layers.length; i < max; i++) {
 			var layer = this._layers[i];
 			if (layerName === layer._name) {
 				return layer;

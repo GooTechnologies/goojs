@@ -1,6 +1,6 @@
 define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'],
-	/** @lends BinaryLERPSource */
-	function (MathUtils, TransformData, AbstractTwoPartSource) {
+/** @lends BinaryLERPSource */
+function (MathUtils, TransformData, AbstractTwoPartSource) {
 	"use strict";
 
 	/**
@@ -11,7 +11,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 	 * @param sourceB our second source.
 	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 */
-	function BinaryLERPSource(sourceA, sourceB, blendKey) {
+	function BinaryLERPSource (sourceA, sourceB, blendKey) {
 		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
 	}
 
@@ -67,7 +67,7 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 
 		var rVal = store ? store : {};
 
-		for (var key in sourceAData) {
+		for ( var key in sourceAData) {
 			var dataA = sourceAData[key];
 			var dataB = sourceBData[key];
 			if (!isNaN(dataA)) {
@@ -86,11 +86,11 @@ define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation
 				rVal[key] = dataA;
 			}
 		}
-		for (var key in sourceBData) {
+		for ( var key in sourceBData) {
 			if (rVal[key]) {
 				continue;
 			}
-			rVal[key] = entryBData[key];
+			rVal[key] = sourceBData[key];
 		}
 
 		return rVal;

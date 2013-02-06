@@ -1,6 +1,6 @@
 define(['goo/animation/state/SteadyState'],
-	/** @lends AnimationLayer */
-	function (SteadyState) {
+/** @lends AnimationLayer */
+function (SteadyState) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ define(['goo/animation/state/SteadyState'],
 	 * @param {String} name Name of layer
 	 * @property {String} name Name of layer
 	 */
-	function AnimationLayer(name) {
+	function AnimationLayer (name) {
 		this._name = name;
 
 		this._steadyStates = {};

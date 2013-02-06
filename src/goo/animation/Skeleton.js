@@ -1,6 +1,6 @@
 define(
-	/** @lends Skeleton */
-	function () {
+/** @lends Skeleton */
+function () {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(
 	 * @param {String} name Name of skeleton
 	 * @property {String} name Name of skeleton
 	 */
-	function Skeleton(name, joints) {
+	function Skeleton (name, joints) {
 		this._name = name;
 		this._joints = joints;
 	}

@@ -1,6 +1,6 @@
 define(['goo/animation/clip/TriggerChannel'],
-	/** @lends GuaranteedTriggerChannel */
-	function (TriggerChannel) {
+/** @lends GuaranteedTriggerChannel */
+function (TriggerChannel) {
 	"use strict";
 
 	/**
@@ -11,7 +11,7 @@ define(['goo/animation/clip/TriggerChannel'],
 	 * @param times the time samples
 	 * @param keys our key samples. Entries may be null. Should have as many entries as the times array.
 	 */
-	function GuaranteedTriggerChannel(channelName, times, keys) {
+	function GuaranteedTriggerChannel (channelName, times, keys) {
 		TriggerChannel.call(this, channelName, times, keys);
 	}
 
@@ -26,7 +26,7 @@ define(['goo/animation/clip/TriggerChannel'],
 			triggerData.arm(newIndex, this._keys[newIndex]);
 		} else {
 			var triggers = [];
-			for (var i = oldIndex + 1; i <= newIndex; i++) {
+			for ( var i = oldIndex + 1; i <= newIndex; i++) {
 				if (!this._keys[i]) {
 					triggers.push(this._keys[i]);
 				}

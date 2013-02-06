@@ -1,6 +1,6 @@
 define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'],
-	/** @lends ExclusiveClipSource */
-	function (JointChannel, ClipSource) {
+/** @lends ExclusiveClipSource */
+function (JointChannel, ClipSource) {
 	"use strict";
 
 	/**
@@ -9,7 +9,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 	 * @param clip our source clip.
 	 * @param manager the manager used to track clip state.
 	 */
-	function ExclusiveClipSource(clip, manager) {
+	function ExclusiveClipSource (clip, manager) {
 		ClipSource.call(this, clip, manager);
 
 		this._disabledChannels = {};
@@ -24,11 +24,11 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 	ExclusiveClipSource.prototype.addDisabledChannels = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for (var i = 0; i < arguments[0].length; i++) {
+			for ( var i = 0; i < arguments[0].length; i++) {
 				this._disabledChannels[arguments[0][i]] = true;
 			}
 		} else {
-			for (var i = 0; i < arguments.length; i++) {
+			for ( var i = 0; i < arguments.length; i++) {
 				this._disabledChannels[arguments[i]] = true;
 			}
 		}
@@ -36,12 +36,12 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 	ExclusiveClipSource.prototype.addDisabledJoints = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
-			for (var i = 0; i < arguments[0].length; i++) {
+			for ( var i = 0; i < arguments[0].length; i++) {
 				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[0][i];
 				this._disabledChannels[channelName] = true;
 			}
 		} else {
-			for (var i = 0; i < arguments.length; i++) {
+			for ( var i = 0; i < arguments.length; i++) {
 				var channelName = JointChannel.JOINT_CHANNEL_NAME + arguments[i];
 				this._disabledChannels[channelName] = true;
 			}
@@ -53,7 +53,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource']
 
 		// make a copy, removing specific channels
 		var rVal = {};
-		for (var key in orig) {
+		for ( var key in orig) {
 			if (!this._disabledChannels[key]) {
 				rVal[key] = orig[key];
 			}

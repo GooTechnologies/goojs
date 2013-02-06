@@ -1,6 +1,7 @@
-define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource'],
-	/** @lends AbstractTwoStateLerpTransition */
-	function (AbstractTransitionState, StateBlendType, BinaryLERPSource) {
+define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource',
+		'goo/math/MathUtils'],
+/** @lends AbstractTwoStateLerpTransition */
+function (AbstractTransitionState, StateBlendType, BinaryLERPSource, MathUtils) {
 	"use strict";
 
 	/**
@@ -9,7 +10,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function AbstractTwoStateLerpTransition(targetState, fadeTime, blendType) {
+	function AbstractTwoStateLerpTransition (targetState, fadeTime, blendType) {
 		AbstractTransitionState.call(this, targetState);
 
 		// The length of time for the transition.
@@ -94,19 +95,18 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		// figure out our weight using time, total time and fade type
 		var percent = currentTime / this._fadeTime;
 
-		switch (this._blendType)
-		{
-		case StateBlendType.SCurve3:
-			this._percent = MathUtils.scurve3(percent);
-			break;
-		case StateBlendType.SCurve5:
-			this._percent = MathUtils.scurve5(percent);
-			break;
-		case StateBlendType.Linear:
-			this._percent = percent;
-			break;
-		default:
-			this._percent = percent;
+		switch (this._blendType) {
+			case StateBlendType.SCurve3:
+				this._percent = MathUtils.scurve3(percent);
+				break;
+			case StateBlendType.SCurve5:
+				this._percent = MathUtils.scurve5(percent);
+				break;
+			case StateBlendType.Linear:
+				this._percent = percent;
+				break;
+			default:
+				this._percent = percent;
 		}
 	};
 
@@ -122,7 +122,7 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 		// too many new transform data objects. This assumes that a
 		// same state always returns the same transform data objects.
 		if (!this._sourceData) {
-			_sourceData = {};
+			this._sourceData = {};
 		}
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
 	};
@@ -150,10 +150,10 @@ define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/Stat
 	 * @param newState the state to replace it with.
 	 */
 	AbstractTwoStateLerpTransition.prototype.replaceState = function (currentState, newState) {
-		if (newState != null) {
-			if (this._stateA == currentState) {
+		if (newState !== null) {
+			if (this._stateA === currentState) {
 				this._stateA = newState;
-			} else if (this._stateB == currentState) {
+			} else if (this._stateB === currentState) {
 				this._stateB = newState;
 			}
 		}

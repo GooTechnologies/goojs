@@ -1,13 +1,13 @@
 define(['goo/animation/clip/TransformData'],
-	/** @lends JointData */
-	function (TransformData) {
+/** @lends JointData */
+function (TransformData) {
 	"use strict";
 
 	/**
 	 * @class Describes transform of a joint.
 	 * @param our optional JointData source to copy.
 	 */
-	function JointData(source) {
+	function JointData (source) {
 		TransformData.call(this, source);
 		this._jointIndex = source ? source._jointIndex : 0;
 	}
@@ -16,11 +16,11 @@ define(['goo/animation/clip/TransformData'],
 
 	/**
 	 * @description Copy the source's values into this transform data object.
-	 * @param source our source to copy. Must not be null.
+	 * @param jointData our source to copy. Must not be null.
 	 */
 	JointData.prototype.set = function (jointData) {
 		TransformData.prototype.set.call(this, jointData);
-		this._jointIndex = source._jointIndex;
+		this._jointIndex = jointData._jointIndex;
 	};
 
 	/**

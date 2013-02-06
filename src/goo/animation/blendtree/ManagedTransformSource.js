@@ -1,7 +1,6 @@
-define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/math/Vector3', 'goo/math/Quaternion'],
-	/** @lends ManagedTransformSource */
-	function (JointChannel,
-	JointData, Vector3, Quaternion) {
+define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData'],
+/** @lends ManagedTransformSource */
+function (JointChannel, JointData) {
 	"use strict";
 
 	/**
@@ -9,7 +8,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 *        controlling a particular joint or set of joints programatically. Originally implemented BlendTreeSource.
 	 * @param sourceName optional: name of source we were initialized from, if given.
 	 */
-	function ManagedTransformSource(sourceName) {
+	function ManagedTransformSource (sourceName) {
 		this._sourceName = sourceName ? sourceName : null;
 		this._data = {};
 	}
@@ -99,7 +98,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointNames the names of the joints to find indices of.
 	 */
 	ManagedTransformSource.prototype.initJointsByName = function (pose, clip, jointNames) {
-		for (var i = 0, max = jointNames.length; i < max; i++) {
+		for ( var i = 0, max = jointNames.length; i < max; i++) {
 			var jointName = jointNames[i];
 			var jointIndex = pose._skeleton.findJointByName(jointName);
 			var jdata = new JointData();
@@ -114,7 +113,7 @@ define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData', 'goo/
 	 * @param jointIndices the indices of the joints to initialize data for.
 	 */
 	ManagedTransformSource.prototype.initJointsById = function (clip, jointIndices) {
-		for (var i = 0, max = jointIndices.length; i < max; i++) {
+		for ( var i = 0, max = jointIndices.length; i < max; i++) {
 			var jointIndex = jointIndices[i];
 			var jdata = new JointData();
 			jdata._jointIndex = jointIndex;
