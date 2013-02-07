@@ -115,7 +115,7 @@ function(Transform, Vector3, Camera) {
 		};
 
 		// [Axes of potential separation]
-		// • Each shape must be projected on these axes to test for intersection:
+		// * Each shape must be projected on these axes to test for intersection:
 		//
 		// (1, 0, 0) A0 (= B0) [X Axis]
 		// (0, 1, 0) A1 (= B1) [Y Axis]
@@ -157,11 +157,11 @@ function(Transform, Vector3, Camera) {
 
 	BoundingBox.prototype.testAxisStatic = function(axis, minA, maxA, minB, maxB, mtvInfo) {
 		// [Separating Axis Theorem]
-		// • Two convex shapes only overlap if they overlap on all axes of separation
-		// • In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
-		// • Find if the two boxes intersect along a single axis
-		// • Compute the intersection interval for that axis
-		// • Keep the smallest intersection/penetration value
+		// * Two convex shapes only overlap if they overlap on all axes of separation
+		// * In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
+		// * Find if the two boxes intersect along a single axis
+		// * Compute the intersection interval for that axis
+		// * Keep the smallest intersection/penetration value
 		var axisLengthSquared = Vector3.dot(axis, axis);
 
 		// If the axis is degenerate then ignore

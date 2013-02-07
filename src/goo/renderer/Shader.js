@@ -341,17 +341,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 
 		for (var i = 0; i < 16; i++) {
-			defaultCallbacks[Shader['TEXTURE' + i]] = function (i) {
+			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
 				};
-			}(i);
+			})(i);
 		}
 
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
 		for (var i = 0; i < 4; i++) {
-			defaultCallbacks[Shader['LIGHT' + i]] = function (i) {
+			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
@@ -360,7 +360,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 						uniformCall.uniform3f(lightPos.x, lightPos.y, lightPos.z);
 					}
 				};
-			}(i);
+			})(i);
 		}
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
@@ -431,14 +431,14 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	}
 
 	Shader.prototype.getShaderDefinition = function() {
-  	return {
-    	vshader: this.vertexSource,
-    	fshader: this.fragmentSource,
-    	defines: this.defines,
-    	attributes: this.attributes,
-    	uniforms: this.uniforms
-  	};
-	}
+		return {
+			vshader: this.vertexSource,
+			fshader: this.fragmentSource,
+			defines: this.defines,
+			attributes: this.attributes,
+			uniforms: this.uniforms
+		};
+	};
 
 	Shader.prototype.toString = function () {
 		return this.name;

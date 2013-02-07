@@ -75,7 +75,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				console.log('S3TC compressed textures not supported.');
 			}
 			if (!this.glExtensionDepthTexture) {
-				console.log('Depth textures not supported.')
+				console.log('Depth textures not supported.');
 			}
 		} catch (error) {
 			console.error(error);

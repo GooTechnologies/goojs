@@ -11,7 +11,7 @@ function () {
 
 	GameUtils.supported = {
 		fullscreen: true,
-		pointerLock: true,
+		pointerLock: true
 	};
 	
 	GameUtils.toggleFullScreen = function () {

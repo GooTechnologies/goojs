@@ -5,7 +5,7 @@ function (Vector3) {
 
 	/**
 	 * Creates a new FlyControlScript
-	 * 
+	 *
 	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')

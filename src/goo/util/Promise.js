@@ -9,7 +9,7 @@ define([
 		this._resolved = [];
 		this._rejected = [];
 		this._always = [];
-	};
+	}
 
 	Promise.prototype.then = function(fulfilledHandler, errorHandler) {
 		if(fulfilledHandler && fulfilledHandler != null) this._resolved.push(fulfilledHandler);
