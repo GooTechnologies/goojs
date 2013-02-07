@@ -12,13 +12,13 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
 	 * class.
 	 * default = {
-	 * 		alpha : false,
-	 * 		premultipliedAlpha : true,
-	 * 		antialias : false,
-	 * 		stencil : false,
-	 * 		preserveDrawingBuffer : false,
-	 * 		showStats : false,
-	 * 		manuallyStartGameLoop : false
+	 *     alpha : false,
+	 *     premultipliedAlpha : true,
+	 *     antialias : false,
+	 *     stencil : false,
+	 *     preserveDrawingBuffer : false,
+	 *     showStats : false,
+	 *      manuallyStartGameLoop : false
 	 * }
 	 *
 	 * @constructor
