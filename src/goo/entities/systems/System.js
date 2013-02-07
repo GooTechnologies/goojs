@@ -5,7 +5,7 @@ function() {
 
 	/**
 	 * Creates a new System
-	 * 
+	 *
 	 * @class Base class for all entity systems
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
@@ -51,7 +51,7 @@ function() {
 
 	/**
 	 * Check if a system is interested in an entity based on its interests list.
-	 * 
+	 *
 	 * @param entity {@link Entity} to check if the system is interested in
 	 */
 	System.prototype._check = function(entity) {
