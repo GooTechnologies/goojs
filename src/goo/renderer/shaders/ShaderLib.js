@@ -1,8 +1,8 @@
 define([
-        'goo/renderer/MeshData',
-        'goo/renderer/Shader',
-        'goo/renderer/shaders/ShaderFragments',
-        'goo/entities/World'
+	'goo/renderer/MeshData',
+	'goo/renderer/Shader',
+	'goo/renderer/shaders/ShaderFragments',
+	'goo/entities/World'
 ],
 	/** @lends ShaderLib */
 	function (
@@ -814,7 +814,7 @@ define([
 			amount : 1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -864,7 +864,7 @@ define([
 			scale:	  1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -919,7 +919,7 @@ define([
 			darkness: 1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1010,10 +1010,10 @@ define([
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.TEXTURE0,
-			opacity:   1.0,
+			opacity:   1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1071,7 +1071,7 @@ define([
 			r : 0.5
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1100,7 +1100,7 @@ define([
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * hh, vUv.y ) ) * 0.0918;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * hh, vUv.y ) ) * 0.12245;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * hh, vUv.y ) ) * 0.1531;",
-				"sum += texture2D( tDiffuse, vec2( vUv.x, 		  	 vUv.y ) ) * 0.1633;",
+				"sum += texture2D( tDiffuse, vec2( vUv.x,            vUv.y ) ) * 0.1633;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * hh, vUv.y ) ) * 0.1531;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * hh, vUv.y ) ) * 0.12245;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * hh, vUv.y ) ) * 0.0918;",
@@ -1125,7 +1125,7 @@ define([
 			color: [1.0, 1.0, 1.0]
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1170,7 +1170,7 @@ define([
 			height	: 0.05
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1198,7 +1198,7 @@ define([
 				"float valV = texture2D( heightMap, vUv + vec2( 0.0, 1.0 / resolution.y ) ).x;",
 
 				"gl_FragColor = vec4( ( 0.5 * normalize( vec3( val - valU, val - valV, height  ) ) + 0.5 ), 1.0 );",
-			"}",
+			"}"
 		].join("\n")
 	};
 
@@ -1208,23 +1208,23 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix : 		Shader.VIEW_MATRIX,
-			projectionMatrix : 	Shader.PROJECTION_MATRIX,
-			worldMatrix : 		Shader.WORLD_MATRIX,
-			tDiffuse:     		Shader.TEXTURE0,
-			tDepth:       		Shader.TEXTURE1,
-			size:         		[512, 512],
-			cameraNear: 		Shader.MAIN_NEAR_PLANE,
-			cameraFar: 			Shader.MAIN_FAR_PLANE,
-			fogNear: 			Shader.MAIN_NEAR_PLANE,
-			fogFar: 			Shader.MAIN_FAR_PLANE,
-			fogEnabled:    		0,
-			onlyAO:        		1,
-			aoClamp:      		0.3,
-			lumInfluence: 		0.0
+			viewMatrix :        Shader.VIEW_MATRIX,
+			projectionMatrix :  Shader.PROJECTION_MATRIX,
+			worldMatrix :       Shader.WORLD_MATRIX,
+			tDiffuse:           Shader.TEXTURE0,
+			tDepth:             Shader.TEXTURE1,
+			size:               [512, 512],
+			cameraNear:         Shader.MAIN_NEAR_PLANE,
+			cameraFar:          Shader.MAIN_FAR_PLANE,
+			fogNear:            Shader.MAIN_NEAR_PLANE,
+			fogFar:             Shader.MAIN_FAR_PLANE,
+			fogEnabled:         0,
+			onlyAO:             1,
+			aoClamp:            0.3,
+			lumInfluence:       0.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1486,7 +1486,7 @@ define([
 		'void main(void)',//
 		'{',//
 		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
-		'}',//
+		'}'//
 		].join('\n')
 	};
 
