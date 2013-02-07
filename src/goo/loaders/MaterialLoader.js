@@ -44,6 +44,7 @@ function(
 			url: this._rootUrl + sourcePath // It's gotta be a json object!
 		})
 		.done(function(request) {
+
 			that._parseMaterial(that._handleRequest(request))
 				.done(function(data) {
 					that._resolve(data);
@@ -62,7 +63,8 @@ function(
 	MaterialLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
-		if(request && request.getResponseHeader('Content-Type') === 'application/json')
+		var expected = 'application/json';
+		if(request && request.getResponseHeader('Content-Type') === expected)
 		{
 			try
 			{
@@ -72,6 +74,10 @@ function(
 			{
 				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
+		}
+		else
+		{
+			this._reject('Expected content type to be "' + expected + '", got:\n' + (request ? request.getResponseHeader('Content-Type') : null) );
 		}
 
 		return json;
@@ -119,7 +125,7 @@ function(
 
 				if(attribute === 'shader')
 				{
-					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' });
+					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' })
 				}
 				else if(attribute === 'uniforms')
 				{
@@ -198,6 +204,7 @@ function(
 
 		Promise.when(promises.vs, promises.fs)
 			.done(function(data) {
+				
 				if(data.length === 2 && data[0].responseText && data[1].responseText)
 				{
 					// We know that we asked for the vertex shader first and fragment second
@@ -210,7 +217,8 @@ function(
 				}
 				else
 				{
-					promise._reject(data);
+
+					promise._reject('Shader pair couldn\'t be loaded.');
 				}
 			})
 			.fail(function(data) {
