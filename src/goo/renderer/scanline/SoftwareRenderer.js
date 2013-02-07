@@ -102,8 +102,7 @@ define([
 
 			// TODO: Clip triangles to the view frustum.
 			
-			// TODO: Transform the vertices with their entity's current world transform, not sure if it's necessary just yet.
-			//    	 Might want to only use static occluder geometries?
+			// TODO: Transform the vertices with their entity's current world transform.
 
 			// Use the built-in method of the Camera to transform the vertices to screen space.
 			// Have to review this in case it does unnecessary calculations.
