@@ -15,38 +15,6 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.rotation = new Matrix3x3();
 		this.scale = new Vector3(1, 1, 1);
 
-		this.eulerUpdated = false;
-		var that = this;
-
-		// TODO: find a better solution
-		Handy.addListener(this, 'rotation', undefined, function () {
-			that.rotation.x = 0;
-			that.rotation.y = 0;
-			that.rotation.z = 0;
-			Handy.addListener(that.rotation, 'x', undefined, function () {
-				that.eulerUpdated = true;
-			});
-			Handy.addListener(that.rotation, 'y', undefined, function () {
-				that.eulerUpdated = true;
-			});
-			Handy.addListener(that.rotation, 'z', undefined, function () {
-				that.eulerUpdated = true;
-			});
-		});
-
-		this.rotation.x = 0;
-		this.rotation.y = 0;
-		this.rotation.z = 0;
-		Handy.addListener(this.rotation, 'x', undefined, function () {
-			that.eulerUpdated = true;
-		});
-		Handy.addListener(this.rotation, 'y', undefined, function () {
-			that.eulerUpdated = true;
-		});
-		Handy.addListener(this.rotation, 'z', undefined, function () {
-			that.eulerUpdated = true;
-		});
-		
 		this.tmpVec = new Vector3();
 		this.tmpMat1 = new Matrix3x3();
 		this.tmpMat2 = new Matrix3x3();
@@ -100,12 +68,6 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	};
 
 	Transform.prototype.update = function () {
-		if (this.eulerUpdated) {
-			// console.log(this.rotation.x, this.rotation.y, this.rotation.z);
-			this.rotation.fromAngles(this.rotation.x, this.rotation.y, this.rotation.z);
-			this.eulerUpdated = false;
-		}
-
 		var rd = this.matrix;
 		var d = this.rotation;
 
