@@ -27,7 +27,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Adds a Manager to the world
-	 * 
+	 *
 	 * @param {Manager} manager
 	 */
 	World.prototype.setManager = function (manager) {
@@ -36,7 +36,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Retrive a manager of type 'type'
-	 * 
+	 *
 	 * @param {String} type Type of manager to retrieve
 	 * @returns manager
 	 */
@@ -51,7 +51,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Adds a {@link System} to the world
-	 * 
+	 *
 	 * @param {System} system
 	 */
 	World.prototype.setSystem = function (system) {
@@ -60,7 +60,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Retrive a {@link System} of type 'type'
-	 * 
+	 *
 	 * @param {String} type Type of system to retrieve
 	 * @returns System
 	 */
@@ -75,7 +75,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Creates a new {@link Entity}
-	 * 
+	 *
 	 * @returns {Entity}
 	 */
 	World.prototype.createEntity = function (name) {
@@ -86,7 +86,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Get all entities in world
-	 * 
+	 *
 	 * @returns All entities existing in world
 	 */
 	World.prototype.getEntities = function () {
@@ -95,7 +95,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Add an entity to the world
-	 * 
+	 *
 	 * @param entity
 	 */
 	World.prototype.addEntity = function (entity) {
@@ -104,7 +104,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Remove an entity from the world
-	 * 
+	 *
 	 * @param entity
 	 */
 	World.prototype.removeEntity = function (entity) {
@@ -113,7 +113,7 @@ function (Entity, EntityManager, TransformComponent) {
 
 	/**
 	 * Let the system know that an entity has been changed/updated
-	 * 
+	 *
 	 * @param entity
 	 * @param component
 	 * @param eventType
