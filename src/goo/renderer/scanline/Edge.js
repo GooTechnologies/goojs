@@ -37,26 +37,32 @@ function (Vector3) {
 		*/
 
 		// Store the positions in growing y order
+		// Have to round the values to integers here... nearest pixel value in the screen space.
 		if (vec1.y < vec2.y ) {
 			
-			this.x0 = vec1.x;
-			this.x1 = vec2.x;
+			this.x0 = Math.round(vec1.x);
+			this.x1 = Math.round(vec2.x);
 
-			this.y0 = vec1.y;
-			this.y1 = vec2.y;
+			this.y0 = Math.round(vec1.y);
+			this.y1 = Math.round(vec2.y);
 		}
 		else {
 
-			this.x0 = vec2.x;
-			this.x1 = vec1.x;
+			this.x0 = Math.round(vec2.x);
+			this.x1 = Math.round(vec1.x);
 
-			this.y0 = vec2.y;
-			this.y1 = vec1.y;
+			this.y0 = Math.round(vec2.y);
+			this.y1 = Math.round(vec1.y);
 		}
 
 	};
 
-
+	Edge.prototype.roundValues = function() {
+		this.x0 = Math.round(this.x0);
+		this.x1 = Math.round(this.x1);
+		this.y0 = Math.round(this.y0);
+		this.y1 = Math.round(this.y1);
+	};
 
 	return Edge;
 });

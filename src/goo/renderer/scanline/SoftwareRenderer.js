@@ -19,6 +19,8 @@ define([
 
 		this.numOfPixels = this.width * this.height;
 
+		this.camera = parameters.camera;
+
 		// Store the edges for a triangle 
 		this.edges = new Array(3);
 
@@ -41,47 +43,86 @@ define([
 		];
 	};
 
-	SoftwareRenderer.prototype.render = function(renderList, camera) {
+	/*
+	* Clears the depth data
+	*/
+	SoftwareRenderer.prototype.clearDepthData = function () {
 
-		var MVPMatrix = camera.getViewProjectionMatrix();
+		// TODO: This method converts the typed array into a regular JavaScript array,
+		// 		 Fix this clear process by creating a new buffer and copy the values from it using .set()...
+		var lastpos = this._depthData.length-1;
+		this._depthData = [];
+		this._depthData[lastpos] = 0;
+	};
+
+	SoftwareRenderer.prototype.render = function (renderList) {
+
+		this.clearDepthData();
 	
 		if (Array.isArray(renderList)) {
 			//this.renderQueue.sort(renderList, camera);
 
+			// Iterate over the view frustum culled entities.
 			for ( var i = 0; i < renderList.length; i++) {
-				var renderable = renderList[i];
-				console.log(renderable);
-				//this.fillRenderInfo(renderable, renderInfo);
-				//this.renderMesh(renderInfo);
-
-				var posArray = renderable.meshDataComponent.meshData.attributeMap.POSITION.array;
-
-				var triangles = [];
-
-
-				for (var posIndex = 0; posIndex < posArray.length; posIndex++ ) {
-					// Create triangle , transform it , render it.
-					var v1 = new Vector3(posArray[posIndex], posArray[++posIndex], posArray[++posIndex]);
-					var v2 = new Vector3(posArray[++posIndex], posArray[++posIndex], posArray[++posIndex]);
-					var v3 = new Vector3(posArray[++posIndex], posArray[++posIndex], posArray[++posIndex]);
-					var triangle = new Triangle(v1, v2, v3);
-
-					triangle.transform(MVPMatrix);
-
-					triangles.push(triangle);
-				}
-
-				console.log(triangles);
 				
+				var triangles = this.createTrianglesForEntity(renderList[i]);
+
+				for (var t = 0; t < triangles.length; t++) {
+					this.renderTriangle(triangles[t]);
+				}
 			}
 		} else {
-			//this.fillRenderInfo(renderList, renderInfo);
-			//this.renderMesh(renderInfo);
+			console.log("Render list not an array?");
 		}
 
 	};
 
-	SoftwareRenderer.prototype.renderTestTriangles = function() {
+	/*
+	*	Returns an array of {Triangle}
+	*/
+	SoftwareRenderer.prototype.createTrianglesForEntity = function(entity) {
+		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
+		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
+		var triangles = [];
+
+		var timerStart = performance.now();
+		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
+			
+			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
+			var posIndex = vertIndexArray[vertIndex] * 3;
+			var v1 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+
+			posIndex = vertIndexArray[++vertIndex] * 3;
+			var v2 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+
+			posIndex = vertIndexArray[++vertIndex] * 3;
+			var v3 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+
+			// TODO: Cull the back-facing triangles.
+
+			// TODO: Clip triangles to the view frustum.
+			
+			// TODO: Transform the vertices with their entity's current world transform, not sure if it's necessary just yet.
+			//    	 Might want to only use static occluder geometries?
+
+			// Use the built-in method of the Camera to transform the vertices to screen space.
+			// Have to review this in case it does unnecessary calculations.
+			var triangle = new Triangle(
+				this.camera.getScreenCoordinates(v1, this.width, this.height),
+				this.camera.getScreenCoordinates(v2, this.width, this.height),
+				this.camera.getScreenCoordinates(v3, this.width, this.height)
+			);
+
+			triangles.push(triangle);
+		}
+
+		var timerStop = performance.now();
+		console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
+
+		return triangles;
+	};
+
+	SoftwareRenderer.prototype.renderTestTriangles = function () {
 
 		for ( var i = 0; i < this.testTriangles.length; i++) {
 			this.renderTriangle(this.testTriangles[i].toPixelSpace(this.width, this.height));
@@ -92,9 +133,12 @@ define([
 	*	Takes a triangle with coordinates in pixel space, and draws it.
 	*	@param {Triangle} triangle the triangle to draw.
 	*/
-	SoftwareRenderer.prototype.renderTriangle = function(triangle) {
+	SoftwareRenderer.prototype.renderTriangle = function (triangle) {
 
-		// http://joshbeam.com/articles/triangle_rasterization/
+		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
+		// The method is improved by using vertical coherence for each of the scanlines.
+
+		//triangle.printVertexData();
 
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
@@ -103,13 +147,13 @@ define([
 			new Edge(triangle.v2, triangle.v3), 
 			new Edge(triangle.v3, triangle.v1)
 		];
-
-		var maxHeight;
-        var longEdge;
+		
+		var maxHeight = 0;
+        var longEdge = 0;
 
         // Find edge with the greatest height in the Y axis, this is the long edge.
         for(var i = 0; i < 3; i++) {
-            var height = edges[i].y1 - edges[i].y0;
+            var height = this.edges[i].y1 - this.edges[i].y0;
             if(height > maxHeight) {
                     maxHeight = height;
                     longEdge = i;
@@ -120,14 +164,14 @@ define([
         var shortEdge1 = (longEdge + 1) % 3;
         var shortEdge2 = (longEdge + 2) % 3;
 
-        this.drawEdges(edges[longEdge], edges[shortEdge1]);
-        this.drawEdges(edges[longEdge], edges[shortEdge2]);
+        this.drawEdges(this.edges[longEdge], this.edges[shortEdge1]);
+        this.drawEdges(this.edges[longEdge], this.edges[shortEdge2]);
 	};
 
 	/*
 	*	Render the pixels between the long and the short edge of the triangle.
 	*/
-	SoftwareRenderer.prototype.drawEdges = function(longEdge, shortEdge) {
+	SoftwareRenderer.prototype.drawEdges = function (longEdge, shortEdge) {
 
 		// Early exit when the short edge doesnt have any height (y-axis).
 		// -The edges' coordinates are stored as uint8, so compare with a SMI (SMall Integer, 31-bit signed integer) and not Double.
@@ -185,7 +229,7 @@ define([
 
 	};
 
-	SoftwareRenderer.prototype.fillPixels = function(startIndex, stopIndex, y) {
+	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
 		// This shall be optimized to be checked at an earlier stage. 
@@ -203,7 +247,7 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype.copyDepthToColor = function() {
+	SoftwareRenderer.prototype.copyDepthToColor = function () {
 
 		var colorIndex = 0;
 		var depth;
@@ -246,11 +290,11 @@ define([
 	};
 
 	
-	SoftwareRenderer.prototype.getColorData = function() {
+	SoftwareRenderer.prototype.getColorData = function () {
 		return this._colorData;
 	};
 
-	SoftwareRenderer.prototype.getDepthData = function() {
+	SoftwareRenderer.prototype.getDepthData = function () {
 
 		return this._depthData;
 	};

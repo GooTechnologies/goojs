@@ -3,7 +3,7 @@ define([
 	'goo/math/Vector4'
 	],
 /** @lends Triangle */
-function (Vector3) {
+function (Vector3, Vector4) {
 
 	/*
 	* @class Triangle
@@ -34,8 +34,10 @@ function (Vector3) {
 		return new Triangle(v1, v2, v3);
 	};
 
-	Triangle.prototype.transform = function(matrix) {
-		
+	Triangle.prototype.printVertexData = function() {
+		console.log(this.v1.data);
+		console.log(this.v2.data);
+		console.log(this.v3.data);
 	};
 
 	return Triangle;
