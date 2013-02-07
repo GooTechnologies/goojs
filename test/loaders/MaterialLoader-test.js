@@ -60,12 +60,6 @@ define([
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
-		},
-		'404' : {
-			readyState : 4,
-			status : 404,
-			responseText : '404 - file not found',
-			responseHeader : undefined
 		}
 	};
 
@@ -177,42 +171,6 @@ define([
 				expect(loader._state).toBe('rejected');
 			});
 		});
-
-/*
-		describe('._parseShaderDefinition()', function() {
-
-			it("will, as a callback argument, return a shaderDefinition based on two external shader files that exist", function() {
-				var shaderSource = {
-					vs : 'goodVertexShaderSource',
-					fs : 'goodFragmentShaderSource'
-				};
-				
-			});
-
-			it("will reject its promise if the vertex shader source file doesn't exist", function() {
-				// VS
-				var shaderSource = {
-					vs : 'nonexistent',
-					fs : 'goodFragmentShaderSource'
-				};
-				var shaderDef;
-
-
-				// FS
-				var shaderSource = {
-					vs : 'goodVertexShader',
-					fs : 'nonexistent'
-				};
-				var shaderDef;
-
-				loader._parseShaderDefinition(shaderSource, function(sd) {
-					shaderDef = sd;
-				});
-
-				expect(shaderDef).toBe(null);
-			});
-
-		});*/
 
 	});
 });
