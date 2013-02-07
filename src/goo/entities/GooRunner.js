@@ -112,16 +112,16 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		//TODO: Temporary shift+space for fullscreen and shift+enter for mouselock
 		var isCtrl = false;
 		document.onkeyup = function (e) {
-			if (e.which == 17) {
+			if (e.which === 17) {
 				isCtrl = false;
 			}
 		};
 		document.onkeydown = function (e) {
-			if (e.which == 17) {
+			if (e.which === 17) {
 				isCtrl = true;
-			} else if (e.which == 32 && isCtrl == true) {
+			} else if (e.which === 32 && isCtrl) {
 				GameUtils.toggleFullScreen();
-			} else if (e.which == 13 && isCtrl == true) {
+			} else if (e.which === 13 && isCtrl) {
 				GameUtils.togglePointerLock();
 			}
 		};
