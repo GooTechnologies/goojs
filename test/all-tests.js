@@ -22,5 +22,6 @@ define([
     'test/util/URLTools-test',
     'test/loaders/MaterialLoader-test',
     'test/loaders/MeshLoader-test',
-    'test/loaders/EntityLoader-test'
+    'test/loaders/EntityLoader-test',
+    'test/loaders/SceneLoader-test'
 ], function() {});
