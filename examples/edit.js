@@ -203,7 +203,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 						var t = entity._world.time;
 
 						var transformComponent = entity.transformComponent;
-						transformComponent.transform.rotation.y = Math.sin(t * 0.5) * 1;
+						transformComponent.transform.setRotationXYZ(0, Math.sin(t * 0.5) * 1, 0);
 						transformComponent.setUpdated();
 					}
 				};
@@ -227,7 +227,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 						var t = entity._world.time;
 
 						var transformComponent = entity.transformComponent;
-						transformComponent.transform.rotation.y = Math.sin(t * 0.5) * 1;
+						transformComponent.transform.setRotationXYZ(0, Math.sin(t * 0.5) * 1, 0);
 						transformComponent.setUpdated();
 					}
 				};
