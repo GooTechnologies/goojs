@@ -100,6 +100,14 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	};
 
 	/**
+	 * Set this transform's rotation to rotation around X, Y and Z axis.
+	 * The rotation is applied in XYZ order.
+	 */
+	Transform.prototype.setRotationXYZ = function (x, y, z) {
+		this.rotation.fromAngles(x, y, z);
+	};
+
+	/**
 	 * @description Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} up Up vector.
