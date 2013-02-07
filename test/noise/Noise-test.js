@@ -6,7 +6,7 @@ define([
 
 	describe("Noise.fractal2d", function () {
 		it("Contains correctly generated values", function () {
-			var N = 2; 
+			var N = 2;
 			var noiseValues = [0x00, 0x10, 0x0B, 0x12];
 
 			for (var y = 0; y < N; y++) {
