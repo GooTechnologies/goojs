@@ -1,6 +1,6 @@
-define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material'],
+define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material', 'goo/renderer/shaders/ShaderLib'],
 	/** @lends Composer */
-	function (RenderTarget, FullscreenPass, Material) {
+	function (RenderTarget, FullscreenPass, Material, ShaderLib) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -27,7 +27,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'g
 
 		this.passes = [];
 
-		this.copyPass = new FullscreenPass(Material.shaders.copy);
+		this.copyPass = new FullscreenPass(ShaderLib.copy);
 	}
 
 	Composer.prototype.swapBuffers = function () {

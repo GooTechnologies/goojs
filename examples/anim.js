@@ -13,10 +13,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
 		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager',
 		'goo/animation/blendtree/SimpleAnimationApplier', 'goo/animation/state/SteadyState', 'goo/animation/blendtree/ClipSource',
-		'goo/math/Quaternion'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/math/Quaternion', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
 	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3, Handy,
-	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion) {
+	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion, ShaderLib) {
 	"use strict";
 
     var resourcePath = "../resources";
@@ -55,87 +55,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function loadModels(goo) {
-		var pool = {};
-
-		var shader = {
-			attributes : {
-				vertexPosition : MeshData.POSITION,
-				vertexUV0 : MeshData.TEXCOORD0,
-				vertexWeights : MeshData.WEIGHTS,
-				vertexJointIDs : MeshData.JOINTIDS
-			},
-			uniforms : {
-				viewMatrix : Shader.VIEW_MATRIX,
-				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
-				diffuseMap : Shader.TEXTURE0,
-				opacity : 1.0,
-				jointPalette : function(shaderInfo) {
-					var skMesh = shaderInfo.meshData;
-					var pose = skMesh.currentPose;
-					if (pose !== null) {
-						var palette = pose._matrixPalette;
-						var buffLength = skMesh.paletteMap.length * 16;
-						var store = pool[buffLength];
-						if (!store) {
-							store = new Float32Array(buffLength);
-							pool[buffLength] = store;
-						}
-						var refMat;
-						for ( var index = 0; index < skMesh.paletteMap.length; index++) {
-							var ref = skMesh.paletteMap[index];
-							refMat = palette[ref];
-							for ( var i = 0; i < 4; i++) {
-								for ( var j = 0; j < 4; j++) {
-									store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
-								}
-							}
-						}
-						return store;
-					}
-				}
-			},
-			vshader : [ //
-			'attribute vec3 vertexPosition;', //
-			'attribute vec2 vertexUV0;', //
-			'attribute vec4 vertexWeights;', //
-			'attribute vec4 vertexJointIDs;', //
-
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
-			'uniform mat4 jointPalette[56];', //
-
-			'varying vec2 texCoord0;',//
-
-			'void main(void) {', //
-			// apply weights
-			'	mat4 mat = mat4(0.0);', //
-
-			'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
-			'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
-			'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
-			'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
-
-			'	texCoord0 = vertexUV0;',//
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
-			'}'//
-			].join('\n'),
-			fshader : [//
-			'precision mediump float;',//
-
-			'uniform sampler2D diffuseMap;',//
-			'uniform float opacity;',//
-
-			'varying vec2 texCoord0;',//
-
-			'void main(void)',//
-			'{',//
-			'	gl_FragColor = vec4(texture2D(diffuseMap, texCoord0).rgb, opacity);',//
-			'}',//
-			].join('\n')
-		};
-		var skinShader = Material.createShader(shader);
+		var skinShader = Material.createShader(ShaderLib.skinning);
 
 		var importer = new JSONImporter(goo.world);
 
@@ -241,7 +161,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}
 	}
 
-	var jointMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	var jointMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleColored));
 	jointMaterial.depthState.enabled = false;
 	jointMaterial.shader.uniforms.color = [1.0, 0.0, 0.0];
 	var renderableJoint = {
@@ -250,7 +170,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		transform : new Transform()
 	};
 
-	var boneMaterial = Material.createMaterial(Util.clone(Material.shaders.simpleColored));
+	var boneMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleColored));
 	boneMaterial.depthState.enabled = false;
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0];
 	var renderableBone = {

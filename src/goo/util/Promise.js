@@ -19,17 +19,17 @@ define([
 	};
 
 	Promise.prototype.done = function(callback) {
-		if(this._state == 'pending')
+		if(this._state === 'pending')
 			this.then(callback);
-		else if(this._state == 'resolved')
+		else if(this._state === 'resolved')
 			callback(this._data);
 
 		return this;
 	};
 	Promise.prototype.fail = function(callback) {
-		if(this._state == 'pending')
+		if(this._state === 'pending')
 			this.then(null, callback);
-		else if(this._state == 'rejected')
+		else if(this._state === 'rejected')
 			callback(this._data);
 
 		return this;
@@ -37,7 +37,7 @@ define([
 	Promise.prototype.always = function(callback) {
 		if(callback && callback != null)
 		{
-			if(this._state == 'pending')
+			if(this._state === 'pending')
 				this._always.push(callback);
 			else
 				callback(this._data);
@@ -47,7 +47,7 @@ define([
 	};
 
 	Promise.prototype._resolve = function(data) {
-		if(this._state == 'pending')
+		if(this._state === 'pending')
 		{
 			this._state = 'resolved';
 			this._data = data;
@@ -59,7 +59,7 @@ define([
 	};
 
 	Promise.prototype._reject = function(data) {
-		if(this._state == 'pending')
+		if(this._state === 'pending')
 		{
 
 			this._state = 'rejected';
@@ -93,7 +93,7 @@ define([
 		{
 			for(var i in promises)
 			{
-				if(promises[i] && Object.prototype.toString.call(promises[i].constructor) == '[object Function]') // if exists and function
+				if(promises[i] && Object.prototype.toString.call(promises[i].constructor) === '[object Function]') // if exists and function
 				{
 					promises[i]
 						.done(updateFunction(i, values))

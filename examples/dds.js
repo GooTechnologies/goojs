@@ -10,10 +10,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3'], function(World, Entity, System,
+		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera,
-	CameraComponent, BasicControlScript, Vector3) {
+	CameraComponent, BasicControlScript, Vector3, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -26,7 +26,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		}).loadTexture2D(resourcePath + textureUrl);
 
 		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 		material.textures.push(texture);
 
 		box.meshRendererComponent.materials.push(material);

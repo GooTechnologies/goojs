@@ -4,11 +4,11 @@ define(
 	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
 	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
 	'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
-	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil'],
+	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil', 'goo/renderer/shaders/ShaderLib'],
 	/** @lends JSONImporter */
 	function (TransformComponent, MeshData,
 	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip,
-	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil) {
+	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil, ShaderLib) {
 	"use strict";
 
 	/**
@@ -453,16 +453,16 @@ define(
 					var shaderSource, type;
 					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1 && attributes.TEXCOORD2
 						&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
-						shaderSource = Material.shaders.texturedNormalAOLit;
+						shaderSource = ShaderLib.texturedNormalAOLit;
 						type = 'texturedNormalAOLit';
 					} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-						shaderSource = Material.shaders.texturedLit;
+						shaderSource = ShaderLib.texturedLit;
 						type = 'texturedLit';
 					} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-						shaderSource = Material.shaders.textured;
+						shaderSource = ShaderLib.textured;
 						type = 'textured';
 					} else {
-						shaderSource = Material.shaders.simple;
+						shaderSource = ShaderLib.simple;
 						type = 'simple';
 					}
 					shader = Material.createShader(shaderSource, info.materialName + '_Shader');

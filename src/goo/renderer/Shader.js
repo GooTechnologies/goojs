@@ -52,8 +52,10 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		this.uniforms = shaderDefinition.uniforms;
 
 		this.renderQueue = RenderQueue.OPAQUE;
-		
+
 		this._id = Shader.id++;
+
+		this.errorOnce = false;
 	}
 
 	Shader.id = 0;
@@ -98,15 +100,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		// Bind uniforms
 		if (this.uniforms) {
-			for (var name in this.uniforms) {
-				var mapping = this.uniformCallMapping[name];
-				if (!mapping) {
-					// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
-					continue;
-				}
-				var defValue = this.uniforms[name];
+			var materialUniforms = shaderInfo.material.uniforms;
+			try {
+				for (var name in this.uniforms) {
+					var mapping = this.uniformCallMapping[name];
+					if (!mapping) {
+						// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
+						continue;
+					}
+					var defValue = materialUniforms[name] || this.uniforms[name];
 
-				try {
 					if (typeof defValue === 'string') {
 						var callback = this.currentCallbacks[name];
 						if (callback) {
@@ -116,9 +119,12 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 						var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
 						mapping.call(value);
 					}
-				} catch (err) {
-					// IGNORE
-					// console.error(err);
+				}
+				this.errorOnce = false;
+			} catch (err) {
+				if (this.errorOnce === false) {
+					console.warning(err);
+					this.errorOnce = true;
 				}
 			}
 		}
@@ -423,7 +429,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(World.time);
 		};
 	}
-	
+
 	Shader.prototype.getShaderDefinition = function() {
   	return {
     	vshader: this.vertexSource,

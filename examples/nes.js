@@ -19,7 +19,8 @@ require([//
 'goo/renderer/pass/FullscreenPass',//
 'goo/renderer/Util',//
 'goo/renderer/Material',//
-'goo/renderer/Camera'//
+'goo/renderer/Camera',//
+'goo/renderer/shaders/ShaderLib'
 ], function(//
 GooRunner,//
 Vector3,//
@@ -35,7 +36,8 @@ RenderPass,//
 FullscreenPass,//
 Util,//
 Material,//
-Camera//
+Camera,//
+ShaderLib
 ) {
 	"use strict";
 
@@ -87,7 +89,7 @@ Camera//
 		var nesPass = new NesPass(resourcePath + '/nes-lookup.png');
 
 		// Regular copy
-		var outPass = new FullscreenPass(Util.clone(Material.shaders.copy));
+		var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
 		outPass.renderToScreen = true;
 
 		composer.addPass(renderPass);

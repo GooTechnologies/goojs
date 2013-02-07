@@ -6,8 +6,8 @@ require.config({
 });
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent) {
+		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
+	ScriptComponent, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -21,12 +21,12 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		document.body.appendChild(goo.renderer.domElement);
 
 		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.textures.push(texture);
 
 		var material2 = new Material('TestMaterial');
-		material2.shader = Material.createShader(Material.shaders.textured, 'BoxShader');
+		material2.shader = Material.createShader(ShaderLib.textured, 'BoxShader');
 		var texture2 = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
 		material2.textures.push(texture2);
 
@@ -66,8 +66,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		var keySchedule_j = 0;
 
 		function init(seed) {
-			for ( var i = 0; i < 256; i++)
-				keySchedule[i] = i;
+			for ( var i = 0; i < 256; i++) {keySchedule[i] = i;}
 
 			var j = 0;
 			for ( var i = 0; i < 256; i++) {

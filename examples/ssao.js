@@ -72,7 +72,7 @@ require(
 			var ssaoPass = new SSAOPass(goo.world.getSystem('PartitioningSystem').renderList);
 
 			// Regular copy
-			var shader = Util.clone(Material.shaders.copy);
+			var shader = Util.clone(ShaderLib.copy);
 			var outPass = new FullscreenPass(shader);
 			outPass.renderToScreen = true;
 
@@ -116,7 +116,7 @@ require(
 			var meshData = ShapeCreator.createBox(w, h, l, t1, t2);
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 			var material = new Material('TestMaterial');
-			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+			material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);

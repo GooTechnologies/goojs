@@ -6,10 +6,10 @@ require.config({
 });
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', "goo/entities/Entity", "goo/entities/components/TransformComponent", 
+		'goo/entities/components/ScriptComponent', "goo/entities/Entity", "goo/entities/components/TransformComponent",
 		"goo/entities/components/CSSTransformComponent", 'goo/math/Vector3', 'goo/scripts/BasicControlScript', 'goo/math/MathUtils',
-		'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, Entity, TransformComponent, CSSTransformComponent, Vector3, BasicControlScript, MathUtils, WASDControlScript, MouseLookControlScript) {
+		'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
+	ScriptComponent, Entity, TransformComponent, CSSTransformComponent, Vector3, BasicControlScript, MathUtils, WASDControlScript, MouseLookControlScript, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -43,14 +43,14 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 			var x = Math.random() * 1600 - 800;
 			var y = Math.random() * 1600 - 800;
 			var z = Math.random() * 1600 - 800;
-			
+
 			var boxEntity = createBoxEntity(goo);
 			boxEntity.transformComponent.transform.translation.x = x;
 			boxEntity.transformComponent.transform.translation.y = y;
 			boxEntity.transformComponent.transform.translation.z = z;
 
 //			var element = document.createElement("IFRAME");
-//			element.setAttribute("src", "http://www.xn--frken-ur-o4a.se/"); 
+//			element.setAttribute("src", "http://www.xn--frken-ur-o4a.se/");
 			var element = document.createElement('div');
 			element.className = 'object assembly';
 
@@ -58,7 +58,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 			number.className = 'number';
 			number.textContent = 'Goo Rocks!';
 			element.appendChild(number);
-			
+
 			boxEntity.setComponent(new CSSTransformComponent(element));
 
 			boxEntity.setComponent(new ScriptComponent({
@@ -73,9 +73,9 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 			}));
 
 			boxEntity.addToWorld();
-			
+
 			parentEntity.transformComponent.attachChild(boxEntity.transformComponent);
-		}		
+		}
 
 		parentEntity.setComponent(new ScriptComponent({
 			run : function(entity) {
@@ -119,7 +119,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 			},
 			shininess : 16.0
 		};
-		material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.textures.push(texture);
 

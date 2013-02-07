@@ -25,7 +25,7 @@ function(
 		Promise.call(this);
 
 		if(!rootUrl || rootUrl == null)
-			console.warn('Project root not specified');
+			this._rootUrl = '';
 		else
 			this._rootUrl = rootUrl;
 	};
@@ -40,12 +40,6 @@ function(
 	};
 
 	MaterialLoader.prototype.load = function(sourcePath) {
-		if(!this._rootUrl || this._rootUrl == null)
-		{
-			console.warn('Please set project root before loading');
-			return this;
-		}
-		console.log('MaterialLoader.load(\'' + sourcePath + '\')');
 
 		if(!sourcePath || sourcePath == null) this._reject('URL not specified');
 
@@ -56,7 +50,10 @@ function(
 		.done(function(request) {
 			that._parseMaterial(that._handleRequest(request))
 				.done(function(data) {
-					console.log(data);
+					that._resolve(data);
+				})
+				.fail(function(data) {
+					that._reject(data);
 				});
 		})
 		.fail(function(data) {
@@ -69,7 +66,7 @@ function(
 	MaterialLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
-		if(request.getResponseHeader('Content-Type') == 'application/json')
+		if(request && request.getResponseHeader('Content-Type') === 'application/json')
 		{
 			try
 			{
@@ -77,7 +74,7 @@ function(
 			}
 			catch (e)
 			{
-				that._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
 		}
 
@@ -124,55 +121,35 @@ function(
 			{
 				value = materialDataSource[attribute];
 
-				if(attribute == 'shader')
+				if(attribute === 'shader')
 				{
 					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' });
 				}
-				else if(attribute == 'uniforms')
+				else if(attribute === 'uniforms')
 				{
 
 					for(var i in value)
-					{
+					{					
 						var that = this;
-						if(i == 'diffuseTexture')
+						if(i === 'diffuseTexture')
 							textures.push(new TextureCreator().loadTexture2D(that._rootUrl + value[i]));
 
-						else if(i == 'shininess')
+						else if(i === 'shininess')
 							materialState.shininess = value[i];
 
-						else if(i == 'ambient')
+						else if(i === 'ambient' || i === 'diffuse' || i === 'emissive' || i === 'specular')
 						{
-							if(value[i][0] != null) materialState.ambient.r = value[i][0];
-							if(value[i][1] != null) materialState.ambient.g = value[i][1];
-							if(value[i][2] != null) materialState.ambient.b = value[i][2];
-							if(value[i][3] != null) materialState.ambient.a = value[i][3];
-						}
-						else if(i == 'diffuse')
-						{
-							if(value[i][0] != null) materialState.diffuse.r = value[i][0];
-							if(value[i][1] != null) materialState.diffuse.g = value[i][1];
-							if(value[i][2] != null) materialState.diffuse.b = value[i][2];
-							if(value[i][3] != null) materialState.diffuse.a = value[i][3];
-						}
-						else if(i == 'emissive')
-						{
-							if(value[i][0] != null) materialState.emissive.r = value[i][0];
-							if(value[i][1] != null) materialState.emissive.g = value[i][1];
-							if(value[i][2] != null) materialState.emissive.b = value[i][2];
-							if(value[i][3] != null) materialState.emissive.a = value[i][3];
-						}
-						else if(i == 'specular')
-						{
-							if(value[i][0] != null) materialState.specular.r = value[i][0];
-							if(value[i][1] != null) materialState.specular.g = value[i][1];
-							if(value[i][2] != null) materialState.specular.b = value[i][2];
-							if(value[i][3] != null) materialState.specular.a = value[i][3];
+							if(value[i][0] != null) materialState[i].r = value[i][0];
+							if(value[i][1] != null) materialState[i].g = value[i][1];
+							if(value[i][2] != null) materialState[i].b = value[i][2];
+							if(value[i][3] != null) materialState[i].a = value[i][3];
 						}
 					}
 				}
 			}
 		}
 
+		var that = this;
 		Promise.when(promises.shader)
 			.done(function(data) {
 
@@ -222,13 +199,20 @@ function(
 
 		Promise.when(promises.vs, promises.fs)
 			.done(function(data) {
-				// We know that we asked for the vertex shader first and fragment second
-				var shaderDefinition = {
-					vshader : data[0].responseText,
-					fshader : data[1].responseText
-				};
+				if(data.length === 2 && data[0].responseText && data[1].responseText)
+				{
+					// We know that we asked for the vertex shader first and fragment second
+					var shaderDefinition = {
+						vshader : data[0].responseText,
+						fshader : data[1].responseText
+					};
 
-				promise._resolve(shaderDefinition);
+					promise._resolve(shaderDefinition);
+				}
+				else
+				{
+					promise._reject(data);
+				}
 			})
 			.fail(function(data) {
 				promise._reject(data);

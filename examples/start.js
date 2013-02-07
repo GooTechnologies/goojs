@@ -9,10 +9,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3'],
+		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
+		'goo/renderer/shaders/ShaderLib'],
 	function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem,
 		MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils,
-		Texture, Camera, CameraComponent, Vector3) {
+		Texture, Camera, CameraComponent, Vector3, ShaderLib) {
 		"use strict";
 
 		var resourcePath = "../resources";
@@ -252,7 +253,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			entity.name = "Box";
 
 			var material = new Material('TestMaterial');
-			material.shader = Material.createShader(Material.shaders.texturedLit, 'BoxShader');
+			material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 			material.textures.push(texture);
