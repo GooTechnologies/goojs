@@ -22,11 +22,8 @@ function(
 	 *
 	 */
 	function MaterialLoader(rootUrl) {
-		Promise.call(this);
 		this._rootUrl = rootUrl || '';
 	};
-	MaterialLoader.prototype = new Promise();
-	MaterialLoader.prototype.constructor = MaterialLoader;
 
 	MaterialLoader.prototype.setRootUrl = function(rootUrl) {
 		if(!rootUrl || rootUrl == null) return this;
@@ -36,28 +33,28 @@ function(
 	};
 
 	MaterialLoader.prototype.load = function(sourcePath) {
-
-		if(!sourcePath || sourcePath == null) this._reject('URL not specified');
+		var promise = new Promise();
+		if(!sourcePath || sourcePath == null) promise._reject('URL not specified');
 
 		var that = this;
-		var a = new Ajax({
+		var ajax = new Ajax({
 			url: this._rootUrl + sourcePath // It's gotta be a json object!
 		})
 		.done(function(request) {
 
 			that._parseMaterial(that._handleRequest(request))
 				.done(function(data) {
-					that._resolve(data);
+					promise._resolve(data);
 				})
 				.fail(function(data) {
-					that._reject(data);
+					promise._reject(data);
 				});
 		})
 		.fail(function(data) {
-			that._reject(data.statusText);	
+			promise._reject(data.statusText);	
 		});
 
-		return this;
+		return promise;
 	};
 
 	MaterialLoader.prototype._handleRequest = function(request) {
@@ -72,12 +69,12 @@ function(
 			}
 			catch (e)
 			{
-				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
 		}
 		else
 		{
-			this._reject('Expected content type to be "' + expected + '", got:\n' + (request ? request.getResponseHeader('Content-Type') : null) );
+			console.warn('Expected content type to be "' + expected + '", got:\n' + (request ? request.getResponseHeader('Content-Type') : null) );
 		}
 
 		return json;
@@ -150,6 +147,10 @@ function(
 				}
 			}
 		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + materialDataSource);
+		}
 
 		var that = this;
 		Promise.when(promises.shader)
@@ -200,6 +201,10 @@ function(
 				
 				promises[attribute] = new Ajax( { url : this._rootUrl + value } );
 			}
+		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + shaderDataSource);
 		}
 
 		Promise.when(promises.vs, promises.fs)

@@ -126,22 +126,26 @@ define([
       goo = null;
 		});
 
-		it("rejects its promise when nothing is passed to the constructor", function() {
+    it("has null as world and an empty string as project URL when no arguments to constructor", function() {
       loader = new EntityLoader();
 
-      expect(loader._state).toBe('rejected');
-		});
+      expect(loader._rootUrl).toBe('');
+      expect(loader._world).toBe(null);
+    });
 
     it("has an empty string as project URL when the second argument to the constructor is undefined/null", function() {
       loader = new EntityLoader(goo.world);
 
       expect(loader._rootUrl).toBe('');
+      expect(loader._world).toBe(goo.world);
     });
 
 		it("sets the project URL when passed to the constructor", function() {
 			var loader = new EntityLoader(goo.world, 'Brick Tamland');
 
+
 			expect(loader._rootUrl).toBe('Brick Tamland');
+      expect(loader._world).toBe(goo.world);
 		});
 
 		describe('.setRootUrl()', function() {
@@ -153,42 +157,69 @@ define([
 			});
 		});
     
+    describe('.setWorld()', function() {
+
+      it("sets the world", function() {
+        loader.setWorld('Ron Burgundy');
+
+        expect(loader._world).toBe('Ron Burgundy');
+      });
+    });
+
 		describe('.load()', function() {
 
 			it('resolves its promise and creates a new entity from a correct URL', function() {
-				spyOn(loader, '_resolve').andCallThrough();
 
-				loader.load('goodEntity');
-				
-				expect(loader._resolve).toHaveBeenCalled();
-				expect(loader._state).toBe('resolved');
+				var promise = loader.load('goodEntity');
 
-				loader.done(function(data) {
-					// Do some checks
-          expect(data._world).toBe(goo.world);
-					expect(data.transformComponent.transform.translation.z).toBe(-5);
-          expect(data.meshDataComponent.meshData.vertexCount).toBe(8);
-					expect(data.meshRendererComponent.materials[0].materialState.ambient.r).toBe(0.2);
-				});
+				promise
+          .done(function(data) {
+  					// Do some checks
+            expect(data._world).toBe(goo.world);
+  					expect(data.transformComponent.transform.translation.z).toBe(-5);
+            expect(data.meshDataComponent.meshData.vertexCount).toBe(8);
+  					expect(data.meshRendererComponent.materials[0].materialState.ambient.r).toBe(0.2);
+  				})
+          .always(function() {
+            //expect(promise._resolve).toHaveBeenCalled();
+            expect(promise._state).toBe('resolved');
+          });
 			});
 
 			it('rejects its promise from a bad URL', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('404');
 
-				loader.load('404');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+        promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
+  				expect(promise._state).toBe('rejected');
+        });
 			});
 
 			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('badEntity');
 
-				loader.load('badEntity');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+        promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
+  				expect(promise._state).toBe('rejected');
+        });
 			});
+
+      it('loads are unique with every call', function() {
+
+        var promise1 = loader.load('goodEntity'),
+            promise2 = loader.load('goodEntity');
+
+        Promise.when(promise1, promise2)
+          .done(function(data) {
+            // Do some checks
+            expect(data[0]).not.toBe(data[1]);
+            expect(data[0].id).not.toBe(data[1].id);
+          })
+          .fail(function() {
+            // Fail test if we come here
+            expect('success').toBe('failure');
+          });
+      });
 		});
   })
 

@@ -18,12 +18,8 @@ function(
    *
    */
   function MeshLoader(rootUrl) {
-    Promise.call(this);
     this._rootUrl = rootUrl || '';
   };
-
-  MeshLoader.prototype = new Promise();
-  MeshLoader.prototype.constructor = MeshLoader;
   
   MeshLoader.prototype.setRootUrl = function(rootUrl) {
     if(rootUrl) this._rootUrl = rootUrl;
@@ -31,26 +27,28 @@ function(
   }
   
   MeshLoader.prototype.load = function(sourcePath) {
-    var that = this;
-    if(!sourcePath) this._reject('URL not specified');
+  	var promise = new Promise(),
+    	that = this;
+    if(!sourcePath) promise._reject('URL not specified');
     
-    var a = new Ajax({
-      url: this._rootUrl + sourcePath
-    })
-    .done(function(request) {
-      that._parseMesh(that._handleRequest(request))
-        .done(function(data) {
-          that._resolve(data);
-        })
-        .fail(function(data) {
-          that._reject(data);
-        });
-    })
-    .fail(function(data) {
-      that._reject(data.statusText);
-    })
+    if(promise._state === 'pending')
+	    var a = new Ajax({
+	      url: this._rootUrl + sourcePath
+	    })
+	    .done(function(request) {
+	      that._parseMesh(that._handleRequest(request))
+	        .done(function(data) {
+	          promise._resolve(data);
+	        })
+	        .fail(function(data) {
+	          promise._reject(data);
+	        });
+	    })
+	    .fail(function(data) {
+	      promise._reject(data.statusText);
+	    })
     
-    return this
+    return promise;
   };
   
   MeshLoader.prototype._handleRequest = function(request) {
@@ -64,7 +62,7 @@ function(
       }
       catch (e)
       {
-        this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+        console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
       }
     }
     return json;
@@ -89,6 +87,11 @@ function(
   		meshData = that._parseMeshData(data, 0, 'Mesh');
   		promise._resolve(meshData)
  		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + data);
+		}
+
 		return promise;
   };
   

@@ -1,6 +1,8 @@
 /* jshint bitwise: false */
 define([
 		'goo/entities/Entity',
+		'goo/renderer/Camera',
+		'goo/entities/components/CameraComponent',
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/MeshDataComponent',
@@ -15,6 +17,8 @@ define([
 /** @lends EntityLoader */
 function(
 		Entity,
+		Camera,
+		CameraComponent,
 		TransformComponent,
 		MeshRendererComponent,
 		MeshDataComponent,
@@ -32,12 +36,9 @@ function(
 	 * 
 	 */
 	function EntityLoader(world, rootUrl) {
-		Promise.call(this);
 		this._rootUrl = rootUrl || '';
-		this._world = (typeof world !== "undefined" && world !== null) ? world : this._reject('World was undefined/null');
+		this._world = (typeof world !== "undefined" && world !== null) ? world : null;
 	}
-	EntityLoader.prototype = new Promise();
-	EntityLoader.prototype.constructor = EntityLoader;
 
 	EntityLoader.prototype.setRootUrl = function(rootUrl) {
 		if(!rootUrl || rootUrl == null) return this;
@@ -46,27 +47,38 @@ function(
 		return this;
 	};
 
-	EntityLoader.prototype.load = function(sourcePath) {
-		if(!sourcePath || sourcePath === null) this._reject('URL not specified');
-
-		var that = this;
-		var a = new Ajax({
-			url: this._rootUrl + sourcePath // It's gotta be a json object!
-		})
-		.done(function(request) {
-			that._parseEntity(that._handleRequest(request))
-				.done(function(data) {
-					that._resolve(data);
-				})
-				.fail(function(data) {
-					that._reject(data);
-				});
-		})
-		.fail(function(data) {
-			that._reject(data.responseText);	
-		});
+	EntityLoader.prototype.setWorld = function(world) {
+		if(typeof world === "undefined" && world === null) return this;
+		this._world = world;
 
 		return this;
+	};
+
+	EntityLoader.prototype.load = function(sourcePath) {
+		var promise = new Promise();
+		if(typeof world !== "undefined" && world !== null) promise._reject('World was undefined/null');
+		if(!sourcePath || sourcePath === null) promise._reject('URL not specified');
+
+		var that = this;
+
+		if(promise._state === 'pending')
+			new Ajax({
+				url: this._rootUrl + sourcePath // It's gotta be a json object!
+			})
+			.done(function(request) {
+				that._parseEntity(that._handleRequest(request))
+					.done(function(data) {
+						promise._resolve(data);
+					})
+					.fail(function(data) {
+						promise._reject(data);
+					});
+			})
+			.fail(function(data) {
+				promise._reject(data.responseText);	
+			});
+
+		return promise;
 	};
 
 	EntityLoader.prototype._handleRequest = function(request) {
@@ -80,14 +92,14 @@ function(
 			}
 			catch (e)
 			{
-				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
 		}
 
 		return json;
 	};
 
-	EntityLoader.prototype._parseEntity = function(entitySource, callback) {
+	EntityLoader.prototype._parseEntity = function(entitySource) {
 		var promise = new Promise(),
 			promises = {}, // Keep track of promises
 			loadedComponents = [], // Array containing loaded components
@@ -178,13 +190,17 @@ function(
 				}
 			}
 		}
+		else
+		{
+			promise._reject('Couldn\'t load entity from source: ' + entitySource);
+		}
 
 		// When all promises are processed we want to
 		// either create an entity or return an error
 		Promise.when(promises.meshRenderer, promises.meshData)
 			.done(function(components) {
 
-				var entity = that._world.createEntity();
+				var entity = new Entity(that._world);
 				
 				for(var i in loadedComponents)
 				{	
@@ -193,7 +209,7 @@ function(
 					entity.setComponent(loadedComponents[i]);
 				}
 				
-				that._resolve(entity);
+				promise._resolve(entity);
 			})
 			.fail(function(data) {
 				promise._reject(data);
