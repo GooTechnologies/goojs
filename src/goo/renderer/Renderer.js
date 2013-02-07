@@ -1,4 +1,4 @@
-/* jshint bitwise: false */
+/*jshint bitwise: false*/
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
 		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue', 'goo/renderer/shaders/ShaderLib'],
