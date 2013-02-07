@@ -60,6 +60,15 @@ define([
 			t.applyForward(v1, v2);
 			expect(v2).toBeEqualToVector(new Vector3(10, -30, 20));
 		});
+		it('centers the lookAt point in the view', function() {
+			var lookAt = new Vector3(5, 0, -10);
+			var up = new Vector3(0, 1, 0);
+			var distance = lookAt.length();
+			t.lookAt(lookAt, up);
+			t.update();
+			t.invert().applyForwardVector(lookAt, v2);
+			expect(v2).toBeEqualToVector(new Vector3(0, 0, -distance));
+		});
 		it('can be inverted if identity', function() {
 			checkInversion(t);
 		});
