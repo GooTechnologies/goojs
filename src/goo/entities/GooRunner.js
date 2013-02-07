@@ -2,10 +2,10 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
 		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats',
-		"goo/entities/systems/CSSTransformSystem"],
+		"goo/entities/systems/CSSTransformSystem", 'goo/util/GameUtils'],
 /** @lends GooRunner */
 function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
-	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem) {
+	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem, GameUtils) {
 	"use strict";
 
 	/**
@@ -48,7 +48,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
 
-		init();
+		GameUtils.initAllShims();
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -108,6 +108,23 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		if (!parameters.manuallyStartGameLoop) {
 			this.startGameLoop(this.run);
 		}
+
+		//TODO: Temporary shift+space for fullscreen and shift+enter for mouselock
+		var isCtrl = false;
+		document.onkeyup = function (e) {
+			if (e.which == 17) {
+				isCtrl = false;
+			}
+		};
+		document.onkeydown = function (e) {
+			if (e.which == 17) {
+				isCtrl = true;
+			} else if (e.which == 32 && isCtrl == true) {
+				GameUtils.toggleFullScreen();
+			} else if (e.which == 13 && isCtrl == true) {
+				GameUtils.togglePointerLock();
+			}
+		};
 	}
 
 	GooRunner.prototype.startGameLoop = function () {
@@ -118,33 +135,6 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	GooRunner.prototype.stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
 	};
-
-	function init () {
-		var lastTime = 0;
-		var vendors = ['ms', 'moz', 'webkit', 'o'];
-
-		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-		}
-
-		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function (callback, element) {
-				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function () {
-					callback(currTime + timeToCall);
-				}, timeToCall);
-				lastTime = currTime + timeToCall;
-				return id;
-			};
-		}
-
-		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function (id) {
-				clearTimeout(id);
-			};
-		}
-	}
 
 	return GooRunner;
 });
