@@ -9,9 +9,9 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.domElement = properties.domElement || document;
 
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
-		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.10;
+		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
+		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
+		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.20;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
@@ -32,7 +32,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
-		this.drag = !isNaN(properties.drag) ? properties.drag : 0.95;
+		this.drag = !isNaN(properties.drag) ? properties.drag : 0.99;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];
@@ -44,6 +44,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.lookAtPoint = properties.lookAtPoint || new Vector3(0, 0, 0);
 		this.spherical = properties.spherical || new Vector3(15, 0, 0);
+		this.targetSpherical = new Vector3(this.spherical);
+		this.interpolationSpeed = !isNaN(properties.interpolationSpeed) ? properties.interpolationSpeed : 7;
 		this.cartesian = new Vector3();
 
 		this.dirty = true;
@@ -64,7 +66,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			this.domElement.focus();
 		}
 
-		if (this.dragOnly && (this.dragButton === -1 || this.dragButton == event.button)) {
+		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 			this.mouseState.buttonDown = down;
 
 			event.preventDefault();
@@ -78,7 +80,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			this.mouseState.lastX = event.clientX;
 			this.mouseState.lastY = event.clientY;
 		} else {
-			dx = event.clientX - this.mouseState.lastX;
+			dx = -(event.clientX - this.mouseState.lastX);
 			dy = event.clientY - this.mouseState.lastY;
 			this.mouseState.lastX = event.clientX;
 			this.mouseState.lastY = event.clientY;
@@ -109,9 +111,9 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		var thetaAccel = this.invertedY ? -y : y;
 
 		// update our master spherical coords, using x and y movement
-		this.spherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.spherical.y - azimuthAccel, MathUtils.TWO_PI), this.minAzimuth,
+		this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI), this.minAzimuth,
 			this.maxAzimuth));
-		this.spherical.z = (MathUtils.clamp(this.spherical.z + thetaAccel, this.minAscent, this.maxAscent));
+		this.targetSpherical.z = (MathUtils.clamp(this.targetSpherical.z + thetaAccel, this.minAscent, this.maxAscent));
 		this.dirty = true;
 	};
 
@@ -122,7 +124,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 	OrbitCamControlScript.prototype.zoom = function (percent) {
 		var amount = (this.invertedWheel ? -1 : 1) * percent * this.baseDistance;
-		this.spherical.x = MathUtils.clamp(this.spherical.x + amount, this.minZoomDistance, this.maxZoomDistance);
+		this.targetSpherical.x = MathUtils.clamp(this.targetSpherical.x + amount, this.minZoomDistance, this.maxZoomDistance);
 		this.dirty = true;
 	};
 
@@ -149,6 +151,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.domElement.addEventListener('mousedown', function (event) {
 			that.updateButtonState(event, true);
 			that.velocity.set(0, 0);
+			that.targetSpherical.copy(that.spherical);
 		}, false);
 
 		this.domElement.addEventListener('mouseup', function (event) {
@@ -194,13 +197,39 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			return;
 		}
 
+		var delta = this.interpolationSpeed * entity._world.tpf;
+
+		// y can wrap around 0/2pi, so find closest direction and go that way -- Perhaps could be cleaner?
+		if (this.spherical.y > this.targetSpherical.y + 0.00001) {
+			if (Math.abs(this.spherical.y - this.targetSpherical.y) > Math.abs(this.spherical.y - (this.targetSpherical.y + MathUtils.TWO_PI))) {
+				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y + MathUtils.TWO_PI);
+				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			} else {
+				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			}
+		} else if (this.spherical.y < this.targetSpherical.y - 0.00001) {
+			if (Math.abs(this.targetSpherical.y - this.spherical.y) > Math.abs(this.targetSpherical.y - (this.spherical.y + MathUtils.TWO_PI))) {
+				this.spherical.y = MathUtils.lerp(delta, this.spherical.y + MathUtils.TWO_PI, this.targetSpherical.y);
+				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			} else {
+				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			}
+		}
+
+		this.spherical.x = MathUtils.lerp(delta, this.spherical.x, this.targetSpherical.x);
+		this.spherical.z = MathUtils.lerp(delta, this.spherical.z, this.targetSpherical.z);
+
 		MathUtils.sphericalToCartesian(this.spherical.x, this.spherical.y, this.spherical.z, this.cartesian);
 
 		transform.translation.set(this.cartesian.add(this.lookAtPoint));
 		if (!transform.translation.equals(this.lookAtPoint)) {
 			transform.lookAt(this.lookAtPoint, this.worldUpVector);
 		}
-		this.dirty = false;
+
+		if (this.spherical.distanceSquared(this.targetSpherical) < 0.000001) {
+			this.dirty = false;
+			this.targetSpherical.copy(this.spherical);
+		}
 
 		// set our component updated.
 		transformComponent.setUpdated();
