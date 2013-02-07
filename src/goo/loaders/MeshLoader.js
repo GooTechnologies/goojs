@@ -47,7 +47,7 @@ function(
         });
     })
     .fail(function(data) {
-      that._reject(data.responseText);
+      that._reject(data.statusText);
     })
     
     return this

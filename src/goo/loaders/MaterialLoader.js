@@ -23,11 +23,7 @@ function(
 	 */
 	function MaterialLoader(rootUrl) {
 		Promise.call(this);
-
-		if(!rootUrl || rootUrl == null)
-			this._rootUrl = '';
-		else
-			this._rootUrl = rootUrl;
+		this._rootUrl = rootUrl || '';
 	};
 	MaterialLoader.prototype = new Promise();
 	MaterialLoader.prototype.constructor = MaterialLoader;
@@ -57,7 +53,7 @@ function(
 				});
 		})
 		.fail(function(data) {
-			that._reject(data.responseText);	
+			that._reject(data.statusText);	
 		});
 
 		return this;
@@ -83,35 +79,35 @@ function(
 
 	MaterialLoader.prototype._parseMaterial = function(materialDataSource) {
 		var promise = new Promise(),
-		promises = {},
+			promises = {}, // Keep track of promises
 
-		shaderDefinition = {
-			attributes : {
-				vertexPosition : MeshData.POSITION,
-				vertexNormal : MeshData.NORMAL,
-				vertexUV0 : MeshData.TEXCOORD0
+			shaderDefinition = {
+				attributes : {
+					vertexPosition : MeshData.POSITION,
+					vertexNormal : MeshData.NORMAL,
+					vertexUV0 : MeshData.TEXCOORD0
+				},
+				uniforms : {
+					viewMatrix : Shader.VIEW_MATRIX,
+					projectionMatrix : Shader.PROJECTION_MATRIX,
+					worldMatrix : Shader.WORLD_MATRIX,
+					cameraPosition : Shader.CAMERA,
+					lightPosition : Shader.LIGHT0,
+					diffuseMap : Shader.TEXTURE0,
+					materialAmbient : Shader.AMBIENT,
+					materialDiffuse : Shader.DIFFUSE,
+					materialSpecular : Shader.SPECULAR,
+					materialSpecularPower : Shader.SPECULAR_POWER
+				}
 			},
-			uniforms : {
-				viewMatrix : Shader.VIEW_MATRIX,
-				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
-				cameraPosition : Shader.CAMERA,
-				lightPosition : Shader.LIGHT0,
-				diffuseMap : Shader.TEXTURE0,
-				materialAmbient : Shader.AMBIENT,
-				materialDiffuse : Shader.DIFFUSE,
-				materialSpecular : Shader.SPECULAR,
-				materialSpecularPower : Shader.SPECULAR_POWER
-			}
-		},
-		textures = [],
-		materialState = {
-			ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
-			emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			shininess: 16.0
-		};
+			textures = [],
+			materialState = {
+				ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
+				emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				shininess: 16.0
+			};
 
 		if(materialDataSource && Object.keys(materialDataSource).length)
 		{
@@ -166,6 +162,9 @@ function(
 
 						promise._resolve(material);
 						
+					})
+					.fail(function(data) {
+						promise._reject(data);
 					});
 			
 			})
