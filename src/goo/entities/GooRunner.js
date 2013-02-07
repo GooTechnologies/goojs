@@ -10,9 +10,17 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 	/**
 	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
-	 * class. default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false, showStats :
-	 * false }
-	 * 
+	 * class.
+	 * default = {
+	 * 		alpha : false,
+	 * 		premultipliedAlpha : true,
+	 * 		antialias : false,
+	 * 		stencil : false,
+	 * 		preserveDrawingBuffer : false,
+	 * 		showStats : false,
+	 * 		manuallyStartGameLoop : false
+	 * }
+	 *
 	 * @constructor
 	 * @param {Object} GooRunner settings passed in a JSON object.
 	 */
@@ -41,7 +49,6 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		this.world.setSystem(renderSystem);
 
 		init();
-		window.requestAnimationFrame(run);
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -55,18 +62,21 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		this.callbacks = [];
 
 		var that = this;
-		var start = Date.now();
-		function run (time) {
+		this.start = -1;
+		this.run = function (time) {
 			try {
-				that.world.tpf = (time - start) / 1000.0;
+				if (that.start < 0) {
+					that.start = time;
+				}
+				that.world.tpf = (time - that.start) / 1000.0;
 				that.world.time += that.world.tpf;
 				World.time = that.world.time;
-				start = time;
+				that.start = time;
 				if (that.world.tpf < 0) {// skip a loop - original start time probably bad.
 					that.world.time = 0;
 					that.world.tpf = 0;
 					World.time = 0;
-					window.requestAnimationFrame(run);
+					that.animationId = window.requestAnimationFrame(that.run);
 					return;
 				}
 
@@ -84,7 +94,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					that.stats.update(that.renderer.info);
 				}
 
-				window.requestAnimationFrame(run);
+				that.animationId = window.requestAnimationFrame(that.run);
 			} catch (e) {
 				if (e instanceof Error) {
 					console.error(e.stack);
@@ -92,8 +102,22 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					console.error(e);
 				}
 			}
+		};
+
+		this.animationId = -1;
+		if (!parameters.manuallyStartGameLoop) {
+			this.startGameLoop(this.run);
 		}
 	}
+
+	GooRunner.prototype.startGameLoop = function () {
+		this.start = -1;
+		this.animationId = window.requestAnimationFrame(this.run);
+	};
+
+	GooRunner.prototype.stopGameLoop = function () {
+		window.cancelAnimationFrame(this.animationId);
+	};
 
 	function init () {
 		var lastTime = 0;
