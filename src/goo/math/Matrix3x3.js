@@ -569,6 +569,36 @@ function (MathUtils, Matrix, Vector3) {
 		return this;
 	};
 
+	/**
+	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
+	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
+	 * @returns {Vector3} Result
+	 */
+
+	Matrix3x3.prototype.toAngles = function (store) {
+		var result = store;
+		if (!result) {
+			result = new Vector3();
+		}
+
+		var d = this.data;
+		if (d[3] > 1 - MathUtils.EPSILON) { // singularity at north pole
+			result.y = Math.atan2(d[2], d[8]);
+			result.z = Math.PI / 2;
+			result.x = 0;
+		} else if (d[3] < -1 + MathUtils.EPSILON) { // singularity at south pole
+			result.y = Math.atan2(d[2], d[8]);
+			result.z = -Math.PI / 2;
+			result.x = 0;
+		} else {
+			result.y = Math.atan2(-d[2], d[0]);
+			result.x = Math.atan2(-d[7], d[4]);
+			result.z = Math.asin(d[1]);
+		}
+
+		return result;
+	};
+
 	/* ====================================================================== */
 
 	/**

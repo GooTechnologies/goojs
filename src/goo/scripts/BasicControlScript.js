@@ -1,6 +1,6 @@
-define(['goo/math/Vector3'],
+define(['goo/math/Vector3', 'goo/math/Matrix3x3'],
 /** @lends BasicControlScript */
-function (Vector3) {
+function (Vector3, Matrix3x3) {
 	"use strict";
 
 	/**
@@ -35,6 +35,7 @@ function (Vector3) {
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
 		this.multiplier = new Vector3(1, 1, 1);
+		this.rotationMatrix = new Matrix3x3();
 
 		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
@@ -264,9 +265,8 @@ function (Vector3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			transform.rotation.x += this.rotationVector.x * rotMult * this.multiplier.x;
-			transform.rotation.y += this.rotationVector.y * rotMult * this.multiplier.y;
-			transform.rotation.z += this.rotationVector.z * rotMult * this.multiplier.z;
+			this.rotationMatrix.fromAngles(-this.rotationVector.x * rotMult * this.multiplier.x, this.rotationVector.y * rotMult * this.multiplier.y, this.rotationVector.z * rotMult * this.multiplier.z);
+			transform.rotation.combine(this.rotationMatrix);
 
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = 0;
