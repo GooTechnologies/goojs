@@ -25,14 +25,14 @@ function(
 	}
 
 	SceneLoader.prototype.setRootUrl = function(rootUrl) {
-		if(!rootUrl || rootUrl == null) return this;
+		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
 		this._rootUrl = rootUrl;
 
 		return this;
 	};
 
 	SceneLoader.prototype.setWorld = function(world) {
-		if(typeof world === "undefined" && world === null) return this;
+		if(typeof world === "undefined" && world === null) { return this; }
 		this._world = world;
 
 		return this;
@@ -40,12 +40,13 @@ function(
 
 	SceneLoader.prototype.load = function(sourcePath) {
 		var promise = new Promise();
-		if(typeof world !== "undefined" && world !== null) promise._reject('World was undefined/null');
-		if(!sourcePath || sourcePath === null) promise._reject('URL not specified');
+		if(this._world === null) { promise._reject('World was undefined/null'); }
+		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
 
 		var that = this;
 
 		if(promise._state === 'pending')
+		{
 			new Ajax({
 				url: this._rootUrl + sourcePath // It's gotta be a json object!
 			})
@@ -59,8 +60,9 @@ function(
 					});
 			})
 			.fail(function(data) {
-				promise._reject(data.responseText);	
+				promise._reject(data.responseText);
 			});
+		}
 
 		return promise;
 	};
@@ -101,7 +103,7 @@ function(
 				var fileName = sceneSource.files[i];
 				var match = fileName.match(/.ent.json$/);
 				
-				if(match != null)
+				if(match !== null)
 				{
 					promises.push(entityLoader.load(sceneUrl + '/' + fileName));
 				}
@@ -116,7 +118,7 @@ function(
 
 		Promise.when.apply(this, promises)
 			.done(function(entities) {
-				for(var i in entities) entities[i].addToWorld();
+				for(var i in entities) { entities[i].addToWorld(); }
 				that._world.process();
 				promise._resolve(that._world);
 			})
@@ -125,7 +127,7 @@ function(
 			});
 		
 		return promise;
-	}
+	};
 
 
 	return SceneLoader;

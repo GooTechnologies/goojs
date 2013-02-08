@@ -33,7 +33,7 @@ function(
 	"use strict";
 
 	/*
-	 * 
+	 *
 	 */
 	function EntityLoader(world, rootUrl) {
 		this._rootUrl = rootUrl || '';
@@ -41,14 +41,14 @@ function(
 	}
 
 	EntityLoader.prototype.setRootUrl = function(rootUrl) {
-		if(!rootUrl || rootUrl == null) return this;
+		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
 		this._rootUrl = rootUrl;
 
 		return this;
 	};
 
 	EntityLoader.prototype.setWorld = function(world) {
-		if(typeof world === "undefined" && world === null) return this;
+		if(typeof world === "undefined" && world === null) { return this; }
 		this._world = world;
 
 		return this;
@@ -56,12 +56,13 @@ function(
 
 	EntityLoader.prototype.load = function(sourcePath) {
 		var promise = new Promise();
-		if(typeof world !== "undefined" && world !== null) promise._reject('World was undefined/null');
-		if(!sourcePath || sourcePath === null) promise._reject('URL not specified');
+		if(typeof this._world === "undefined" || this._world === null) { promise._reject('World was undefined/null'); }
+		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
 
 		var that = this;
 
 		if(promise._state === 'pending')
+		{
 			new Ajax({
 				url: this._rootUrl + sourcePath // It's gotta be a json object!
 			})
@@ -75,8 +76,9 @@ function(
 					});
 			})
 			.fail(function(data) {
-				promise._reject(data.responseText);	
+				promise._reject(data.responseText);
 			});
+		}
 
 		return promise;
 	};
@@ -132,10 +134,10 @@ function(
 				{
 					// Create a camera
 					var cam = new Camera(
-						component.fov 	 ? component.fov 	: 45,
-						component.aspect ? component.aspect : 1,
-						component.near 	 ? component.near 	: 1,
-						component.far 	 ? component.far 	: 100);
+						component.fov		? component.fov		: 45,
+						component.aspect	? component.aspect	: 1,
+						component.near		? component.near	: 1,
+						component.far		? component.far		: 100);
 
 					var cc = new CameraComponent(cam);
 
@@ -146,17 +148,20 @@ function(
 					for(var attribute in component)
 					{
 						var materialsPromises = [];
-						if(attribute === 'materials') for(var i in component[attribute])
+						if(attribute === 'materials')
 						{
-							materialsPromises.push(new MaterialLoader(this._rootUrl).load(component[attribute][i] + '.json'));
+							for(var i in component[attribute])
+							{
+								materialsPromises.push(new MaterialLoader(this._rootUrl).load(component[attribute][i] + '.json'));
+							}
 						}
 
 						// When all materials have been loaded
-						promises['meshRenderer'] = Promise.when.apply(this, materialsPromises)
+						promises.meshRenderer = Promise.when.apply(this, materialsPromises)
 							.done(function(materials) {
 								
 								var mrc = new MeshRendererComponent();
-								for(var i in materials) mrc.materials.push(materials[i]);
+								for(var i in materials) { mrc.materials.push(materials[i]); }
 								
 								loadedComponents.push(mrc);
 							})
@@ -176,7 +181,7 @@ function(
 						}
 
 						// When the mesh is loaded
-						promises['meshData'] = Promise.when(meshDataPromises.mesh)
+						promises.meshData = Promise.when(meshDataPromises.mesh)
 							.done(function(data) {
 
 								var mrc = new MeshDataComponent(data[0]);
@@ -203,8 +208,11 @@ function(
 				var entity = new Entity(that._world);
 				
 				for(var i in loadedComponents)
-				{	
-					if(loadedComponents[i].type === 'TransformComponent') entity.clearComponent('transformComponent');
+				{
+					if(loadedComponents[i].type === 'TransformComponent')
+					{
+						entity.clearComponent('transformComponent');
+					}
 
 					entity.setComponent(loadedComponents[i]);
 				}
@@ -216,7 +224,7 @@ function(
 			});
 
 		return promise;
-	}
+	};
 
 	return EntityLoader;
 });
