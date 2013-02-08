@@ -1,4 +1,5 @@
 /* jshint bitwise: false */
+
 define([
 		'goo/entities/Entity',
 		'goo/renderer/Camera',
@@ -109,12 +110,15 @@ function(
 		return json;
 	};
 
+	// REVIEW: This function is far too long.
+	// It can easily be broken down into one function per type of component.
 	EntityLoader.prototype._parseEntity = function(entitySource) {
 		var promise = new Promise(),
 			promises = {}, // Keep track of promises
 			loadedComponents = [], // Array containing loaded components
 			that = this;
 
+		// REVIEW: OK, we need to bring this up: Braces on the same line! Applies to this whole file (and others?)
 		if(entitySource && Object.keys(entitySource.components).length)
 		{
 			var component;
@@ -128,6 +132,10 @@ function(
 					// Create a transform
 					var tc = new TransformComponent();
 
+					// REVIEW: I'm not fond of aligning vertically like this (especially if it's done with tabs)
+					// What's wrong with:
+					// tc.transform.translation = new Vector3(component.translation);
+					// tc.transform.scale = new Vector3(component.scale);
 					tc.transform.translation = new Vector3(component.translation);
 					tc.transform.scale		 = new Vector3(component.scale);
 					
@@ -141,6 +149,11 @@ function(
 				else if(type === 'camera')
 				{
 					// Create a camera
+					// REVIEW: A more conventional syntax would be using || instead:
+					// var cam = new Camera(
+					//    component.fov || 45,
+					//    component.aspect || 1,
+					//    ...)
 					var cam = new Camera(
 						component.fov		? component.fov		: 45,
 						component.aspect	? component.aspect	: 1,

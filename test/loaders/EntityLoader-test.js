@@ -213,6 +213,11 @@ define([
 
 			it('loads are unique with every call', function() {
 
+				// REVIEW: This looks like promise2 is a global, but it's local.
+				// Declare one variable at a time, i.e.:
+				//
+				// var promise1 = loader.load('goodEntity');
+				// var promise2 = loader.load('goodEntity');
 				var promise1 = loader.load('goodEntity'),
 				promise2 = loader.load('goodEntity');
 
