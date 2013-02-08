@@ -145,7 +145,7 @@ define([
 
 				promise
 					.done(function(data) {
-						expect(data.__proto__).toBe(Material.prototype);
+						expect(data instanceof Material).toBeTruthy();
 						expect(data.shader.fragmentSource).toBe('goodFragmentShader');
 						expect(data.shader.vertexSource).toBe('goodVertexShader');
 					})

@@ -2,13 +2,15 @@ define([
 	'goo/loaders/EntityLoader',
 	'goo/util/Promise',
 	'goo/util/Ajax',
-	'goo/entities/GooRunner'
+	'goo/entities/GooRunner',
+	'goo/entities/Entity'
 	],
 	function(
 		EntityLoader,
 		Promise,
 		Ajax,
-		GooRunner
+		GooRunner,
+		Entity
 		) {
 		'use strict';
 
@@ -182,7 +184,7 @@ define([
 					promise
 					.done(function(data) {
 						// Do some checks
-						expect(data._world).toBe(goo.world);
+						expect(data instanceof Entity).toBeTruthy();
 						expect(data.transformComponent.transform.translation.z).toBe(-5);
 						expect(data.meshDataComponent.meshData.vertexCount).toBe(8);
 						expect(data.meshRendererComponent.materials[0].materialState.ambient.r).toBe(0.2);
