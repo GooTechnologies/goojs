@@ -20,7 +20,8 @@
         "describe": true,
         "expect": true,
         "it": true,
-        "beforeEach": true
+        "beforeEach": true,
+        "afterEach": true
     },
 
     // The Good Parts.
