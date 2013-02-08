@@ -265,7 +265,7 @@ define([
 
 		MockXHR.prototype.open = function(method, url) {
 			this.url = url;
-		}
+		};
 
 		MockXHR.prototype.send = function() {
 			if(!mockResponses[this.url])
@@ -279,18 +279,19 @@ define([
 
 			var response = mockResponses[this.url];
 
-			for(var key in response)
-				 this[key] = response[key];
+			for(var key in response) {
+				this[key] = response[key];
+			}
 
 			this.onreadystatechange();
-		}
+		};
 
 		MockXHR.prototype.getResponseHeader = function(header) {
 			return this.responseHeader[header] ? this.responseHeader[header] : null;
-		}
+		};
 
 		return MockXHR;
-	};
+	}
 
 	describe('MeshLoader', function() {
 		var loader;
@@ -300,7 +301,7 @@ define([
 		var XHR = XMLHttpRequest;
 
 		beforeEach(function() {
-			XMLHttpRequest = MockXHRBuilder(TestResponses);
+			XMLHttpRequest = new MockXHRBuilder(TestResponses);
 
 			loader = new MeshLoader();
 		});
@@ -339,7 +340,7 @@ define([
 
 				promise
 					.done(function(data) {
-					 	expect(data.__proto__).toBe(MeshData.prototype);
+						expect(data instanceof MeshData).toBeTruthy();
 						//Do some more checks
 						expect(data.indexCount).toBeGreaterThan(0);
 						expect(data.vertexCount).toBeGreaterThan(0);
@@ -384,7 +385,7 @@ define([
 					});
 			});
 		});
-	})
+	});
 
 
 
