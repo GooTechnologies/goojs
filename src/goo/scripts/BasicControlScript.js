@@ -162,6 +162,8 @@ function (Vector3, Matrix3x3) {
 			event.preventDefault();
 			event.stopPropagation();
 
+			event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
 			this.mouseStatus = 1;
@@ -169,6 +171,8 @@ function (Vector3, Matrix3x3) {
 
 		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
+				event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;
 
@@ -183,6 +187,7 @@ function (Vector3, Matrix3x3) {
 			if (!this.mouseStatus) {
 				return;
 			}
+
 			event.preventDefault();
 			event.stopPropagation();
 
@@ -227,8 +232,11 @@ function (Vector3, Matrix3x3) {
 		}
 
 		this.domElement.addEventListener('mousemove', bind(this, this.mousemove), false);
+		this.domElement.addEventListener('touchmove', bind(this, this.mousemove), false);
 		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
+		this.domElement.addEventListener('touchstart', bind(this, this.mousedown), false);
 		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
+		this.domElement.addEventListener('touchend', bind(this, this.mouseup), false);
 
 		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
