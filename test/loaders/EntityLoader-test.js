@@ -12,6 +12,7 @@ define([
 		) {
 		'use strict';
 
+		// REVIEW: Variable name should start with lower case; upper case is only for constructors (i.e. "classes")
 		var TestResponses = {
 			'goodEntity' : {
 				readyState : 4,
@@ -72,7 +73,8 @@ define([
 		};
 
 
-
+		// REVIEW: Hmm... I thought this was a constructor at first because of the name.
+		//         Rename to buildMockXhr
 		function MockXHRBuilder(mockResponses) {
 			function MockXHR() {
 
@@ -145,7 +147,6 @@ define([
 			it("sets the project URL when passed to the constructor", function() {
 				var loader = new EntityLoader(goo.world, 'Brick Tamland');
 
-
 				expect(loader._rootUrl).toBe('Brick Tamland');
 				expect(loader._world).toBe(goo.world);
 			});
@@ -153,6 +154,7 @@ define([
 			describe('.setRootUrl()', function() {
 
 				it("sets the root url", function() {
+					// REVIEW: Funny but not very good example as it's an invalid URL.
 					loader.setRootUrl('Veronica Corningstone');
 
 					expect(loader._rootUrl).toBe('Veronica Corningstone');
@@ -162,6 +164,9 @@ define([
 			describe('.setWorld()', function() {
 
 				it("sets the world", function() {
+					// REVIEW: Confusing test, as you're not supposed to use a string as a world.
+					//         BTW, testing setters and getters is often a bit pointless.
+					//         "Test everything that can go wrong" (for some definition of "can")
 					loader.setWorld('Ron Burgundy');
 
 					expect(loader._world).toBe('Ron Burgundy');

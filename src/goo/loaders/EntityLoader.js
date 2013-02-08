@@ -40,6 +40,9 @@ function(
 		this._world = (typeof world !== "undefined" && world !== null) ? world : null;
 	}
 
+	// REVIEW: Do we need the setRootUrl function?
+	// Isn't it more reasonable to create a new EntityLoader instance in that case?
+	// Trying to keep code simple and objects immutable.
 	EntityLoader.prototype.setRootUrl = function(rootUrl) {
 		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
 		this._rootUrl = rootUrl;
@@ -47,6 +50,7 @@ function(
 		return this;
 	};
 
+	// REVIEW: Do we need the setWorld function? What's the purpose?
 	EntityLoader.prototype.setWorld = function(world) {
 		if(typeof world === "undefined" && world === null) { return this; }
 		this._world = world;
@@ -54,8 +58,11 @@ function(
 		return this;
 	};
 
+	// REVIEW: Missing documentation. What is sourcePath? What is the return value?
 	EntityLoader.prototype.load = function(sourcePath) {
 		var promise = new Promise();
+		// REVIEW: Methods beginning with underscore are private. Don't call a private method. Make it public if you're supposed to call it.
+		//         (Applies to all calls to promise._*)
 		if(typeof this._world === "undefined" || this._world === null) { promise._reject('World was undefined/null'); }
 		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
 
@@ -72,6 +79,7 @@ function(
 						promise._resolve(data);
 					})
 					.fail(function(data) {
+						// REVIEW: Methods beginning with underscore are private. Don't call a private method.
 						promise._reject(data);
 					});
 			})
