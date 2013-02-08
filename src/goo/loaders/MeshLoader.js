@@ -1,100 +1,100 @@
 /* jshint bitwise: false */
 define([
-    'goo/util/Promise',
-    'goo/util/Ajax',
+		'goo/util/Promise',
+		'goo/util/Ajax',
 		'goo/loaders/JsonUtils',
-    'goo/renderer/MeshData',
-  ],
+		'goo/renderer/MeshData',
+	],
 /** @lends MeshLoader */
 function(
-  Promise,
-  Ajax,
-  JsonUtils,
-  MeshData
-  ) {
-  "use strict"
-  
-  /*
-   *
-   */
-  function MeshLoader(rootUrl) {
-    Promise.call(this);
-    this._rootUrl = rootUrl || '';
-  };
+		Promise,
+		Ajax,
+		JsonUtils,
+		MeshData
+	) {
+	"use strict"
+	
+	/*
+	 *
+	 */
+	function MeshLoader(rootUrl) {
+		Promise.call(this);
+		this._rootUrl = rootUrl || '';
+	};
 
-  MeshLoader.prototype = new Promise();
-  MeshLoader.prototype.constructor = MeshLoader;
-  
-  MeshLoader.prototype.setRootUrl = function(rootUrl) {
-    if(rootUrl) this._rootUrl = rootUrl;
-    return this;
-  }
-  
-  MeshLoader.prototype.load = function(sourcePath) {
-    var that = this;
-    if(!sourcePath) this._reject('URL not specified');
-    
-    var a = new Ajax({
-      url: this._rootUrl + sourcePath
-    })
-    .done(function(request) {
-      that._parseMesh(that._handleRequest(request))
-        .done(function(data) {
-          that._resolve(data);
-        })
-        .fail(function(data) {
-          that._reject(data);
-        });
-    })
-    .fail(function(data) {
-      that._reject(data.responseText);
-    })
-    
-    return this
-  };
-  
-  MeshLoader.prototype._handleRequest = function(request) {
-    var json = null;
-    
-    if(request && request.getResponseHeader('Content-Type') == 'application/json')
-    {
-      try
-      {
-        json = JSON.parse(request.responseText);
-      }
-      catch (e)
-      {
-        this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
-      }
-    }
-    return json;
-  };
-  
-  
-  MeshLoader.prototype._parseMesh = function(data) {
+	MeshLoader.prototype = new Promise();
+	MeshLoader.prototype.constructor = MeshLoader;
+	
+	MeshLoader.prototype.setRootUrl = function(rootUrl) {
+		if(rootUrl) this._rootUrl = rootUrl;
+		return this;
+	}
+	
+	MeshLoader.prototype.load = function(sourcePath) {
 		var that = this;
-    var promise = new Promise();
-    var promises = {};
+		if(!sourcePath) this._reject('URL not specified');
+		
+		var a = new Ajax({
+			url: this._rootUrl + sourcePath
+		})
+		.done(function(request) {
+			that._parseMesh(that._handleRequest(request))
+				.done(function(data) {
+					that._resolve(data);
+				})
+				.fail(function(data) {
+					that._reject(data);
+				});
+		})
+		.fail(function(data) {
+			that._reject(data.responseText);
+		})
+		
+		return this
+	};
+	
+	MeshLoader.prototype._handleRequest = function(request) {
+		var json = null;
+		
+		if(request && request.getResponseHeader('Content-Type') == 'application/json')
+		{
+			try
+			{
+				json = JSON.parse(request.responseText);
+			}
+			catch (e)
+			{
+				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+			}
+		}
+		return json;
+	};
+	
+	
+	MeshLoader.prototype._parseMesh = function(data) {
+		var that = this;
+		var promise = new Promise();
+		var promises = {};
 		var meshData;
 
 		if(data && Object.keys(data).length)
 		{
-      that.useCompression = data.compressed || false;
-    
-      if (that.useCompression) {
-        that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-        that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-        that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
-      }
-  		meshData = that._parseMeshData(data, 0, 'Mesh');
-  		promise._resolve(meshData)
+			that.useCompression = data.compressed || false;
+		
+			if (that.useCompression) {
+				that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
+				that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
+				that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
+			}
+			meshData = that._parseMeshData(data, 0, 'Mesh');
+			promise._resolve(meshData)
  		}
 		return promise;
-  };
-  
-  MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
-    
-    var vertexCount = object.data.VertexCount; // int
+	};
+	
+	MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
+		
+		var vertexCount = object.data.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
 		}
@@ -261,7 +261,7 @@ function(
 			meshData.indexLengths = lengthArray;
 		}
 		return meshData;
-  };
-  
-  return MeshLoader
+	};
+	
+	return MeshLoader
 });
