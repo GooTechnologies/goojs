@@ -115,8 +115,8 @@ function(Transform, Vector3, Camera) {
 		};
 
 		// [Axes of potential separation]
-		// • Each shape must be projected on these axes to test for intersection:
-		//          
+		// * Each shape must be projected on these axes to test for intersection:
+		//
 		// (1, 0, 0) A0 (= B0) [X Axis]
 		// (0, 1, 0) A1 (= B1) [Y Axis]
 		// (0, 0, 1) A1 (= B2) [Z Axis]
@@ -157,11 +157,11 @@ function(Transform, Vector3, Camera) {
 
 	BoundingBox.prototype.testAxisStatic = function(axis, minA, maxA, minB, maxB, mtvInfo) {
 		// [Separating Axis Theorem]
-		// • Two convex shapes only overlap if they overlap on all axes of separation
-		// • In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
-		// • Find if the two boxes intersect along a single axis
-		// • Compute the intersection interval for that axis
-		// • Keep the smallest intersection/penetration value
+		// * Two convex shapes only overlap if they overlap on all axes of separation
+		// * In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
+		// * Find if the two boxes intersect along a single axis
+		// * Compute the intersection interval for that axis
+		// * Keep the smallest intersection/penetration value
 		var axisLengthSquared = Vector3.dot(axis, axis);
 
 		// If the axis is degenerate then ignore
@@ -171,8 +171,8 @@ function(Transform, Vector3, Camera) {
 
 		// Calculate the two possible overlap ranges
 		// Either we overlap on the left or the right sides
-		var d0 = (maxB - minA); // 'Left' side
-		var d1 = (maxA - minB); // 'Right' side
+		var d0 = maxB - minA; // 'Left' side
+		var d1 = maxA - minB; // 'Right' side
 
 		// Intervals do not overlap, so no intersection
 		if (d0 <= 0.0 || d1 <= 0.0) {
@@ -180,7 +180,7 @@ function(Transform, Vector3, Camera) {
 		}
 
 		// Find out if we overlap on the 'right' or 'left' of the object.
-		var overlap = (d0 < d1) ? d0 : -d1;
+		var overlap = d0 < d1 ? d0 : -d1;
 
 		// The mtd vector for that axis
 		// var sep = axis * (overlap / axisLengthSquared);
@@ -199,6 +199,7 @@ function(Transform, Vector3, Camera) {
 		return true;
 	};
 
+	//TODO:!
 	BoundingBox.prototype.intersectsRay = function(ray) {
 		if (!this.center) {
 			return false;

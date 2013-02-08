@@ -22,15 +22,8 @@ function(
 	 *
 	 */
 	function MaterialLoader(rootUrl) {
-		Promise.call(this);
-
-		if(!rootUrl || rootUrl == null)
-			this._rootUrl = '';
-		else
-			this._rootUrl = rootUrl;
+		this._rootUrl = rootUrl || '';
 	};
-	MaterialLoader.prototype = new Promise();
-	MaterialLoader.prototype.constructor = MaterialLoader;
 
 	MaterialLoader.prototype.setRootUrl = function(rootUrl) {
 		if(!rootUrl || rootUrl == null) return this;
@@ -40,33 +33,35 @@ function(
 	};
 
 	MaterialLoader.prototype.load = function(sourcePath) {
-
-		if(!sourcePath || sourcePath == null) this._reject('URL not specified');
+		var promise = new Promise();
+		if(!sourcePath || sourcePath == null) promise._reject('URL not specified');
 
 		var that = this;
-		var a = new Ajax({
+		var ajax = new Ajax({
 			url: this._rootUrl + sourcePath // It's gotta be a json object!
 		})
 		.done(function(request) {
+
 			that._parseMaterial(that._handleRequest(request))
 				.done(function(data) {
-					that._resolve(data);
+					promise._resolve(data);
 				})
 				.fail(function(data) {
-					that._reject(data);
+					promise._reject(data);
 				});
 		})
 		.fail(function(data) {
-			that._reject(data.responseText);	
+			promise._reject(data.statusText);	
 		});
 
-		return this;
+		return promise;
 	};
 
 	MaterialLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
-		if(request && request.getResponseHeader('Content-Type') === 'application/json')
+		var expected = 'application/json';
+		if(request && request.getResponseHeader('Content-Type') === expected)
 		{
 			try
 			{
@@ -74,8 +69,12 @@ function(
 			}
 			catch (e)
 			{
-				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
+		}
+		else
+		{
+			console.warn('Expected content type to be "' + expected + '", got:\n' + (request ? request.getResponseHeader('Content-Type') : null) );
 		}
 
 		return json;
@@ -83,35 +82,35 @@ function(
 
 	MaterialLoader.prototype._parseMaterial = function(materialDataSource) {
 		var promise = new Promise(),
-		promises = {},
+			promises = {}, // Keep track of promises
 
-		shaderDefinition = {
-			attributes : {
-				vertexPosition : MeshData.POSITION,
-				vertexNormal : MeshData.NORMAL,
-				vertexUV0 : MeshData.TEXCOORD0
+			shaderDefinition = {
+				attributes : {
+					vertexPosition : MeshData.POSITION,
+					vertexNormal : MeshData.NORMAL,
+					vertexUV0 : MeshData.TEXCOORD0
+				},
+				uniforms : {
+					viewMatrix : Shader.VIEW_MATRIX,
+					projectionMatrix : Shader.PROJECTION_MATRIX,
+					worldMatrix : Shader.WORLD_MATRIX,
+					cameraPosition : Shader.CAMERA,
+					lightPosition : Shader.LIGHT0,
+					diffuseMap : Shader.TEXTURE0,
+					materialAmbient : Shader.AMBIENT,
+					materialDiffuse : Shader.DIFFUSE,
+					materialSpecular : Shader.SPECULAR,
+					materialSpecularPower : Shader.SPECULAR_POWER
+				}
 			},
-			uniforms : {
-				viewMatrix : Shader.VIEW_MATRIX,
-				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
-				cameraPosition : Shader.CAMERA,
-				lightPosition : Shader.LIGHT0,
-				diffuseMap : Shader.TEXTURE0,
-				materialAmbient : Shader.AMBIENT,
-				materialDiffuse : Shader.DIFFUSE,
-				materialSpecular : Shader.SPECULAR,
-				materialSpecularPower : Shader.SPECULAR_POWER
-			}
-		},
-		textures = [],
-		materialState = {
-			ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
-			emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			shininess: 16.0
-		};
+			textures = [],
+			materialState = {
+				ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
+				emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+				shininess: 16.0
+			};
 
 		if(materialDataSource && Object.keys(materialDataSource).length)
 		{
@@ -123,7 +122,7 @@ function(
 
 				if(attribute === 'shader')
 				{
-					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' });
+					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' })
 				}
 				else if(attribute === 'uniforms')
 				{
@@ -148,6 +147,10 @@ function(
 				}
 			}
 		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + materialDataSource);
+		}
 
 		var that = this;
 		Promise.when(promises.shader)
@@ -166,6 +169,9 @@ function(
 
 						promise._resolve(material);
 						
+					})
+					.fail(function(data) {
+						promise._reject(data);
 					});
 			
 			})
@@ -196,9 +202,14 @@ function(
 				promises[attribute] = new Ajax( { url : this._rootUrl + value } );
 			}
 		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + shaderDataSource);
+		}
 
 		Promise.when(promises.vs, promises.fs)
 			.done(function(data) {
+				
 				if(data.length === 2 && data[0].responseText && data[1].responseText)
 				{
 					// We know that we asked for the vertex shader first and fragment second
@@ -211,7 +222,8 @@ function(
 				}
 				else
 				{
-					promise._reject(data);
+
+					promise._reject('Shader pair couldn\'t be loaded.');
 				}
 			})
 			.fail(function(data) {

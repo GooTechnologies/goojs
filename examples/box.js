@@ -11,6 +11,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 	"use strict";
 
 	var resourcePath = "../resources";
+	var time = 0;
 
 	function init() {
 		// Create typical goo application
@@ -26,9 +27,12 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		// Add spin
 		boxEntity.setComponent(new ScriptComponent({
 			run : function(entity) {
-				var tpf = entity._world.tpf;
-				boxEntity.transformComponent.transform.rotation.y += tpf * 2.0;
-				boxEntity.transformComponent.transform.rotation.x += tpf * 1.2;
+				time += entity._world.tpf;
+				boxEntity.transformComponent.transform.setRotationXYZ(
+					time * 1.2,
+					time * 2.0,
+					0
+				);
 				boxEntity.transformComponent.setUpdated();
 			}
 		}));

@@ -65,9 +65,9 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 				offset : Math.random()*100,
 				run : function(entity) {
 					var time = goo.world.time + this.offset;
-					entity.transformComponent.transform.rotation.x = -time * 0.3;
-					entity.transformComponent.transform.rotation.y = -time * 0.4;
-					entity.transformComponent.transform.rotation.z = -time * 0.5;
+					entity.transformComponent.transform.setRotationXYZ(
+						-time * 0.3, -time * 0.4, -time * 0.5
+					);
 					entity.transformComponent.setUpdated();
 				}
 			}));
@@ -80,7 +80,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		parentEntity.setComponent(new ScriptComponent({
 			run : function(entity) {
 				var time = goo.world.time;
-				entity.transformComponent.transform.rotation.y = time * 0.3;
+				entity.transformComponent.transform.setRotationXYZ(0, time * 0.3, 0);
 				entity.transformComponent.setUpdated();
 			}
 		}));

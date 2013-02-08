@@ -1,4 +1,5 @@
 /*jshint bitwise: false */
+// REVIEW: What's the point of this class? Better let the browser load and decode images.
 define(
 	/** @lends GifLoader */
 	function () {

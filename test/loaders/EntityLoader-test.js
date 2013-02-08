@@ -1,36 +1,30 @@
 define([
-    'goo/loaders/SceneLoader',
+    'goo/loaders/EntityLoader',
     'goo/util/Promise',
+    'goo/util/Ajax',
     'goo/entities/GooRunner'
   ],
   function(
-    SceneLoader,
+    EntityLoader,
     Promise,
+    Ajax,
     GooRunner
   ) {
   'use strict';
 
   var TestResponses = {
-    'goodScene' : {
-      readyState : 4,
-      status : 200,
-      responseText : '{"files" : ["goodEntity.ent.json","goodEntity.ent.json"], "directories" : []}',
-      responseHeader : {
-        'Content-Type' : 'application/json'
-      }
-    },
-    'badScene' : {
-      readyState : 4,
-      status : 200,
-      responseText : 'Where did you get your clothes? At the... toilet store? {"components": {"transform": {"translation": [0, 0, -5],"rotation": [0, 0, 0],"scale": [1, 1, 1]},"meshRenderer": {"materials": ["goodMaterial"]},"meshData": {"mesh": "goodMesh"}}}',
-      responseHeader : {
-        'Content-Type' : 'application/json'
-      }
-    },
-    'goodScene/goodEntity.ent.json' : {
+    'goodEntity' : {
       readyState : 4,
       status : 200,
       responseText : '{"components": {"transform": {"translation": [0, 0, -5],"rotation": [0, 0, 0],"scale": [1, 1, 1]},"meshRenderer": {"materials": ["goodMaterial"]},"meshData": {"mesh": "goodMesh"}}}',
+      responseHeader : {
+        'Content-Type' : 'application/json'
+      }
+    },
+    'badEntity' : {
+      readyState : 4,
+      status : 200,
+      responseText : 'It puts the lotion on the skin, or it gets the hose. {"components": {"transform": {"translation": [0, 0, -5],"rotation": [0, 0, 0],"scale": [1, 1, 1]},"meshRenderer": {"materials": ["materials/plastic.mat"]},"meshData": {"mesh": "meshes/cube.mesh"}}}',
       responseHeader : {
         'Content-Type' : 'application/json'
       }
@@ -113,7 +107,7 @@ define([
 		return MockXHR;
 	};
   
-  describe('SceneLoader', function() {
+  describe('EntityLoader', function() {
     var loader;
     var goo;
     var projectURL;
@@ -123,7 +117,7 @@ define([
 		beforeEach(function() {
 			XMLHttpRequest = MockXHRBuilder(TestResponses);
       goo = new GooRunner();
-			loader = new SceneLoader(goo.world);
+			loader = new EntityLoader(goo.world);
 		});
 
 		afterEach(function() {
@@ -133,58 +127,61 @@ define([
 		});
 
     it("has null as world and an empty string as project URL when no arguments to constructor", function() {
-      loader = new SceneLoader();
+      loader = new EntityLoader();
 
       expect(loader._rootUrl).toBe('');
       expect(loader._world).toBe(null);
     });
 
     it("has an empty string as project URL when the second argument to the constructor is undefined/null", function() {
-      loader = new SceneLoader(goo.world);
+      loader = new EntityLoader(goo.world);
 
       expect(loader._rootUrl).toBe('');
       expect(loader._world).toBe(goo.world);
     });
 
 		it("sets the project URL when passed to the constructor", function() {
-			var loader = new SceneLoader(goo.world, 'The Octagon');
+			var loader = new EntityLoader(goo.world, 'Brick Tamland');
 
 
-			expect(loader._rootUrl).toBe('The Octagon');
+			expect(loader._rootUrl).toBe('Brick Tamland');
       expect(loader._world).toBe(goo.world);
 		});
 
 		describe('.setRootUrl()', function() {
 
 			it("sets the root url", function() {
-				loader.setRootUrl('Baxter');
+				loader.setRootUrl('Veronica Corningstone');
 
-				expect(loader._rootUrl).toBe('Baxter');
+				expect(loader._rootUrl).toBe('Veronica Corningstone');
 			});
 		});
     
     describe('.setWorld()', function() {
 
       it("sets the world", function() {
-        loader.setWorld('Sky rockets in flight');
+        loader.setWorld('Ron Burgundy');
 
-        expect(loader._world).toBe('Sky rockets in flight');
+        expect(loader._world).toBe('Ron Burgundy');
       });
     });
 
 		describe('.load()', function() {
 
-			it('resolves its promise and creates a new Scene from a correct URL', function() {
+			it('resolves its promise and creates a new entity from a correct URL', function() {
 
-				var promise = loader.load('goodScene');
+				var promise = loader.load('goodEntity');
 
 				promise
           .done(function(data) {
   					// Do some checks
-            expect(data).toBe(goo.world);
-            expect(data.entityManager.getEntities().length).toBe(2);
+            expect(data._world).toBe(goo.world);
+  					expect(data.transformComponent.transform.translation.z).toBe(-5);
+            expect(data.meshDataComponent.meshData.vertexCount).toBe(8);
+  					expect(data.meshRendererComponent.materials[0].materialState.ambient.r).toBe(0.2);
   				})
           .always(function() {
+            //expect(promise._resolve).toHaveBeenCalled();
             expect(promise._state).toBe('resolved');
           });
 			});
@@ -193,17 +190,36 @@ define([
 				var promise = loader.load('404');
 
         promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
   				expect(promise._state).toBe('rejected');
         });
 			});
 
 			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				var promise = loader.load('badScene');
+				var promise = loader.load('badEntity');
 
         promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
   				expect(promise._state).toBe('rejected');
         });
 			});
+
+      it('loads are unique with every call', function() {
+
+        var promise1 = loader.load('goodEntity'),
+            promise2 = loader.load('goodEntity');
+
+        Promise.when(promise1, promise2)
+          .done(function(data) {
+            // Do some checks
+            expect(data[0]).not.toBe(data[1]);
+            expect(data[0].id).not.toBe(data[1].id);
+          })
+          .fail(function() {
+            // Fail test if we come here
+            expect('success').toBe('failure');
+          });
+      });
 		});
   })
 

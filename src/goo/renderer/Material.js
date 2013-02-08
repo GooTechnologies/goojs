@@ -14,6 +14,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		this.name = name;
 
 		this.shader = null;
+		this.uniforms = {}; //possible overrides on shader uniforms
 		this.textures = [];
 		this.materialState = undefined;
 		// {

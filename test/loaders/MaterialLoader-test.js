@@ -60,12 +60,6 @@ define([
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
-		},
-		'404' : {
-			readyState : 4,
-			status : 404,
-			responseText : '404 - file not found',
-			responseHeader : undefined
 		}
 	};
 
@@ -144,75 +138,52 @@ define([
 		describe('.load()', function() {
 
 			it('resolves its promise and creates a new Material from a correct URL', function() {
-				spyOn(loader, '_resolve').andCallThrough();
+				var promise = loader.load('material');
 
-				loader.load('material');
-				
-				expect(loader._resolve).toHaveBeenCalled();
-				expect(loader._state).toBe('resolved');
-
-				loader
+				promise
 					.done(function(data) {
 						expect(data.__proto__).toBe(Material.prototype);
 						expect(data.shader.fragmentSource).toBe('goodFragmentShader');
 						expect(data.shader.vertexSource).toBe('goodVertexShader');
 					})
+					.always(function() {
+						//expect(promise._resolve).toHaveBeenCalled();
+						expect(promise._state).toBe('resolved');
+					});
 			});
 
 			it('rejects its promise from a bad URL', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('404');
 
-				loader.load('404');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+				promise.always(function() {
+					expect(promise._state).toBe('rejected');
+				});
 			});
 
 			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('badMaterial');
 
-				loader.load('badMaterial');
+				promise.always(function() {
+					expect(promise._state).toBe('rejected');
+				});
+			});
 
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+			it('loads are unique with every call', function() {
+
+				var promise1 = loader.load('material'),
+					promise2 = loader.load('material');
+
+				Promise.when(promise1, promise2)
+					.done(function(data) {
+						// Do some checks
+						expect(data[0]).not.toBe(data[1]);
+					})
+					.fail(function() {
+						// Fail test if we come here
+						expect('success').toBe('failure');
+					});
 			});
 		});
-
-/*
-		describe('._parseShaderDefinition()', function() {
-
-			it("will, as a callback argument, return a shaderDefinition based on two external shader files that exist", function() {
-				var shaderSource = {
-					vs : 'goodVertexShaderSource',
-					fs : 'goodFragmentShaderSource'
-				};
-				
-			});
-
-			it("will reject its promise if the vertex shader source file doesn't exist", function() {
-				// VS
-				var shaderSource = {
-					vs : 'nonexistent',
-					fs : 'goodFragmentShaderSource'
-				};
-				var shaderDef;
-
-
-				// FS
-				var shaderSource = {
-					vs : 'goodVertexShader',
-					fs : 'nonexistent'
-				};
-				var shaderDef;
-
-				loader._parseShaderDefinition(shaderSource, function(sd) {
-					shaderDef = sd;
-				});
-
-				expect(shaderDef).toBe(null);
-			});
-
-		});*/
 
 	});
 });

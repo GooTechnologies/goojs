@@ -23,7 +23,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 
 			this.blurPass = new BlurPass({
 				sizeX: width,
-				sizeY: height,
+				sizeY: height
 			});
 //			this.blurPass.needsSwap = true;
 			

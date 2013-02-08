@@ -334,38 +334,55 @@ define([
 		describe('.load()', function() {
 
 			it('resolves its promise and creates a new Mesh from a correct URL', function() {
-				spyOn(loader, '_resolve').andCallThrough();
-
-				loader.load('mesh');
+				var promise = loader.load('mesh');
 				
-				expect(loader._resolve).toHaveBeenCalled();
-				expect(loader._state).toBe('resolved');
-
-				loader.done(function(data) {
-				 	expect(data.__proto__).toBe(MeshData.prototype);
-					//Do some more checks
-					expect(data.indexCount).toBeGreaterThan(0);
-					expect(data.vertexCount).toBeGreaterThan(0);
-				});
+				
+				promise
+          .done(function(data) {
+  				 	expect(data.__proto__).toBe(MeshData.prototype);
+  					//Do some more checks
+  					expect(data.indexCount).toBeGreaterThan(0);
+  					expect(data.vertexCount).toBeGreaterThan(0);
+  				})
+          .always(function() {
+            //expect(promise._resolve).toHaveBeenCalled();
+            expect(promise._state).toBe('resolved');
+          });
 			});
 
 			it('rejects its promise from a bad URL', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('404');
 
-				loader.load('404');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+        promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
+  				expect(promise._state).toBe('rejected');
+        });
 			});
 
 			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var promise = loader.load('badMesh');
 
-				loader.load('badMesh');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
+        promise.always(function() {
+  				//expect(promise._reject).toHaveBeenCalled();
+  				expect(promise._state).toBe('rejected');
+        });
 			});
+
+      it('loads are unique with every call', function() {
+
+        var promise1 = loader.load('mesh'),
+            promise2 = loader.load('mesh');
+
+        Promise.when(promise1, promise2)
+          .done(function(data) {
+            // Do some checks
+            expect(data[0]).not.toBe(data[1]);
+          })
+          .fail(function() {
+            // Fail test if we come here
+            expect('success').toBe('failure');
+          });
+      });
 		});
   })
 

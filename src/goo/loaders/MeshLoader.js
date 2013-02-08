@@ -7,30 +7,69 @@ define([
 	],
 /** @lends MeshLoader */
 function(
-		Promise,
-		Ajax,
-		JsonUtils,
-		MeshData
-	) {
-	"use strict"
-	
-	/*
-	 *
-	 */
-	function MeshLoader(rootUrl) {
-		Promise.call(this);
-		this._rootUrl = rootUrl || '';
-	};
-
-	MeshLoader.prototype = new Promise();
-	MeshLoader.prototype.constructor = MeshLoader;
-	
-	MeshLoader.prototype.setRootUrl = function(rootUrl) {
-		if(rootUrl) this._rootUrl = rootUrl;
-		return this;
-	}
-	
-	MeshLoader.prototype.load = function(sourcePath) {
+  Promise,
+  Ajax,
+  JsonUtils,
+  MeshData
+  ) {
+  "use strict"
+  
+  /*
+   *
+   */
+  function MeshLoader(rootUrl) {
+    this._rootUrl = rootUrl || '';
+  };
+  
+  MeshLoader.prototype.setRootUrl = function(rootUrl) {
+    if(rootUrl) this._rootUrl = rootUrl;
+    return this;
+  }
+  
+  MeshLoader.prototype.load = function(sourcePath) {
+  	var promise = new Promise(),
+    	that = this;
+    if(!sourcePath) promise._reject('URL not specified');
+    
+    if(promise._state === 'pending')
+	    var a = new Ajax({
+	      url: this._rootUrl + sourcePath
+	    })
+	    .done(function(request) {
+	      that._parseMesh(that._handleRequest(request))
+	        .done(function(data) {
+	          promise._resolve(data);
+	        })
+	        .fail(function(data) {
+	          promise._reject(data);
+	        });
+	    })
+	    .fail(function(data) {
+	      promise._reject(data.statusText);
+	    })
+    
+    return promise;
+  };
+  
+  MeshLoader.prototype._handleRequest = function(request) {
+    var json = null;
+    
+    if(request && request.getResponseHeader('Content-Type') == 'application/json')
+    {
+      try
+      {
+        json = JSON.parse(request.responseText);
+      }
+      catch (e)
+      {
+        console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
+      }
+    }
+    return json;
+  };
+  
+  
+  MeshLoader.prototype._parseMesh = function(data) {
 		var that = this;
 		if(!sourcePath) this._reject('URL not specified');
 		
@@ -89,6 +128,11 @@ function(
 			meshData = that._parseMeshData(data, 0, 'Mesh');
 			promise._resolve(meshData)
  		}
+		else
+		{
+			promise._reject('Couldn\'t load from source: ' + data);
+		}
+
 		return promise;
 	};
 	

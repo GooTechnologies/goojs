@@ -1,4 +1,4 @@
-/* jshint bitwise: false */
+/*jshint bitwise: false */
 define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3',
 		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState',
 		'goo/animation/state/FadeTransitionState', 'goo/animation/state/FrozenTransitionState', 'goo/animation/state/IgnoreTransitionState',

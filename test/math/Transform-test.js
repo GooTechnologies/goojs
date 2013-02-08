@@ -20,6 +20,15 @@ define([
 		expect(vec3).toBeEqualToVector(vec1);
 	}
 
+	/**
+	 * Numerically checks whether a transform changes a vector.
+	 */
+	function expectNotIdentity (transform) {
+		var vec1 = new Vector3(100, 200, 300);
+		var vec2 = new Vector3();
+		transform.applyForward(vec1, vec2);
+		expect(vec1).not.toBeEqualToVector(vec2);
+	}
 
 	describe('Transform', function() {
 		var t, v1, v2, v3;
@@ -54,11 +63,25 @@ define([
 			t.applyForward(v1, v2);
 			expect(v2).toBeEqualToVector(new Vector3(10 * 2, 20 * 3, 30 * 4));
 		});
-		it('can be rotated around X axis', function() {
-			t.rotation.x = Math.PI / 2;
+		it('rotation changes a vector', function() {
+			t.setRotationXYZ(Math.PI / 2, 0, 0);
+			t.update();
+			expectNotIdentity(t);
+		});
+		it('rotates around X axis', function() {
+			t.setRotationXYZ(Math.PI / 2, 0, 0);
 			t.update();
 			t.applyForward(v1, v2);
 			expect(v2).toBeEqualToVector(new Vector3(10, -30, 20));
+		});
+		it('centers the lookAt point in the view', function() {
+			var lookAt = new Vector3(5, 0, -10);
+			var up = new Vector3(0, 1, 0);
+			var distance = lookAt.length();
+			t.lookAt(lookAt, up);
+			t.update();
+			t.invert().applyForwardVector(lookAt, v2);
+			expect(v2).toBeEqualToVector(new Vector3(0, 0, -distance));
 		});
 		it('can be inverted if identity', function() {
 			checkInversion(t);
@@ -72,7 +95,7 @@ define([
 		});
 		it('can be inverted if rotated', function() {
 			var inverted = new Transform();
-			t.rotation.x = .2;
+			t.setRotationXYZ(0.2, 0, 0);
 			t.update();
 			checkInversion(t);
 		});

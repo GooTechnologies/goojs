@@ -52,8 +52,10 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		this.uniforms = shaderDefinition.uniforms;
 
 		this.renderQueue = RenderQueue.OPAQUE;
-		
+
 		this._id = Shader.id++;
+
+		this.errorOnce = false;
 	}
 
 	Shader.id = 0;
@@ -98,15 +100,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		// Bind uniforms
 		if (this.uniforms) {
-			for (var name in this.uniforms) {
-				var mapping = this.uniformCallMapping[name];
-				if (!mapping) {
-					// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
-					continue;
-				}
-				var defValue = this.uniforms[name];
+			var materialUniforms = shaderInfo.material.uniforms;
+			try {
+				for (var name in this.uniforms) {
+					var mapping = this.uniformCallMapping[name];
+					if (!mapping) {
+						// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
+						continue;
+					}
+					var defValue = materialUniforms[name] || this.uniforms[name];
 
-				try {
 					if (typeof defValue === 'string') {
 						var callback = this.currentCallbacks[name];
 						if (callback) {
@@ -116,9 +119,12 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 						var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
 						mapping.call(value);
 					}
-				} catch (err) {
-					// IGNORE
-					// console.error(err);
+				}
+				this.errorOnce = false;
+			} catch (err) {
+				if (this.errorOnce === false) {
+					console.warning(err);
+					this.errorOnce = true;
 				}
 			}
 		}
@@ -335,17 +341,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 
 		for (var i = 0; i < 16; i++) {
-			defaultCallbacks[Shader['TEXTURE' + i]] = function (i) {
+			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
 				};
-			}(i);
+			})(i);
 		}
 
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
 		for (var i = 0; i < 4; i++) {
-			defaultCallbacks[Shader['LIGHT' + i]] = function (i) {
+			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
@@ -354,7 +360,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 						uniformCall.uniform3f(lightPos.x, lightPos.y, lightPos.z);
 					}
 				};
-			}(i);
+			})(i);
 		}
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
@@ -423,16 +429,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(World.time);
 		};
 	}
-	
+
 	Shader.prototype.getShaderDefinition = function() {
-  	return {
-    	vshader: this.vertexSource,
-    	fshader: this.fragmentSource,
-    	defines: this.defines,
-    	attributes: this.attributes,
-    	uniforms: this.uniforms
-  	};
-	}
+		return {
+			vshader: this.vertexSource,
+			fshader: this.fragmentSource,
+			defines: this.defines,
+			attributes: this.attributes,
+			uniforms: this.uniforms
+		};
+	};
 
 	Shader.prototype.toString = function () {
 		return this.name;

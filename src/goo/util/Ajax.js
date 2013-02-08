@@ -7,7 +7,8 @@ define([
 	function Ajax(options) {
 		Promise.call(this);
 
-		if(!options || options == null) options = {};
+		options = options || {};
+
 		var method = options.method || 'GET';
 		var url = options.url || '';
 

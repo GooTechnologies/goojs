@@ -79,7 +79,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 							var transformComponent = entity.transformComponent;
 							transformComponent.transform.translation.x = Math.sin(t) * 30;
 							transformComponent.transform.translation.z = Math.cos(t) * 30;
-							transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+							transformComponent.transform.setRotationXYZ(0, Math.sin(t * 1.5) * 3, 0);
 							transformComponent.setUpdated();
 						}
 					};
@@ -104,8 +104,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 							var transformComponent = entity.transformComponent;
 							transformComponent.transform.translation.x = Math.sin(t + 3) * 30;
 							transformComponent.transform.translation.z = Math.cos(t + 3) * 30;
-							transformComponent.transform.rotation.x = Math.sin(t) * 2;
-							transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+							transformComponent.transform.setRotationXYZ(Math.sin(t) * 2, Math.sin(t * 1.5) * 3, 0);
 							transformComponent.setUpdated();
 						}
 					};
