@@ -45,6 +45,7 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'],
 		this.hasBorder = false;
 
 		this.needsUpdate = false;
+		this.updateCallback = null;
 	}
 
 	Texture.prototype.setImage = function (image, settings, width, height) {
