@@ -1,3 +1,21 @@
+/*
+
+REVIEW:
+
+There is currently a bug with the rendering when a triangle extends beyond the
+borders of the canvas which produces an incorrect image. This is probably
+something that fixes itself with the introduction of proper triangle clipping.
+However, when two borders are intersected (top left, top right, bottom left,
+bottom right), the rendering times can skyrocket to above 1000 ms! A hint:
+Scanline-based rasterizers only needs to account for near (and possibly far)
+clipping in 3D. The remaining view frustum planes can be clipped in 2D by a
+smart rasterization algorithm.
+
+The image is flipped upside down but this is trivial to correct should it be
+neccessary for the algorithm.
+
+*/
+
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
@@ -151,6 +169,15 @@ define([
 
 			var triangle = new Triangle(v1, v2, v3);
 
+
+/*
+
+REVIEW:
+
+This will cause multiple memory allocations. It would be better to initalize the
+array to the desired size and populate a triangle in the array at each iteration.
+
+*/
 			triangles.push(triangle);
 		}
 
