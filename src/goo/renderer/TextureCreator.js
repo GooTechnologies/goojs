@@ -78,6 +78,115 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		return texture;
 	};
 
+	TextureCreator.prototype.loadTextureVideo = function (videoURL) {
+		if (TextureCreator.cache[videoURL] !== undefined) {
+			return TextureCreator.cache[videoURL];
+		}
+
+		var video = document.createElement('video');
+		video.loop = true;
+
+		video.addEventListener('error', function () {
+			console.warning('Couldn\'t load video URL [' + videoURL + ']');
+		}, false);
+
+		var texture = new Texture(video, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+		});
+
+		texture.readyCallback = function () {
+            if (video.readyState >= 3) {
+                console.log('video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+				video.width = video.videoWidth;
+				video.height = video.videoHeight;
+
+                // set minification filter based on pow2
+                if (Util.isPowerOfTwo(video.width) === false
+                        || Util.isPowerOfTwo(video.height) === false) {
+            		texture.generateMipmaps = false;
+            		texture.minFilter = 'BilinearNoMipMaps';
+                }
+
+                // if (autoPlay) {
+                    video.play();
+                // }
+
+                video.dataReady = true;
+                return true;
+            }
+            return false;
+		};
+		texture.updateCallback = function () {
+			return !video.paused;
+		};
+
+		video.crossOrigin = 'anonymous';
+
+		video.src = videoURL;
+
+		TextureCreator.cache[videoURL] = texture;
+
+		return texture;
+	};
+
+	TextureCreator.prototype.loadTextureWebCam = function () {
+		var video = document.createElement('video');
+		video.width = 320;
+		video.height = 240;
+		video.autoplay = true;
+		video.loop = true;
+
+		var texture = new Texture(video, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+		});
+
+		texture.readyCallback = function () {
+			if (video.readyState >= 3) {
+				console.log('video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+				video.width = video.videoWidth;
+				video.height = video.videoHeight;
+
+				// set minification filter based on pow2
+				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+				}
+
+				// if (autoPlay) {
+				video.play();
+				// }
+
+				video.dataReady = true;
+				return true;
+			}
+			return false;
+		};
+		texture.updateCallback = function () {
+			return !video.paused;
+		};
+
+		// Webcam video
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		// get webcam
+		navigator.getUserMedia({
+			video: true
+		}, function (stream) {
+			// on webcam enabled
+			video.src = window.URL.createObjectURL(stream);
+			// prompt.style.display = 'none';
+			// title.style.display = 'inline';
+			// container.style.display = 'inline';
+			// gui.domElement.style.display = 'inline';
+		}, function (error) {
+			console.warning('Unable to capture WebCam. Please reload the page.');
+		});
+
+		return texture;
+	};
+
 	TextureCreator.prototype.loadTextureCube = function (imageURLs) {
 		var latch = 6;
 		var texture = new Texture();
