@@ -3,14 +3,19 @@ define([
 	'goo/renderer/scanline/Triangle',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
+	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Edge) {
+	function (Camera, Triangle, Vector3, Vector4, Matrix4x4, Edge) {
 	"use strict";
 
-
+	/*
+	*	@class A software renderer which renders, triangles only(!), using a scanline algorithm.
+	*	@constructor
+	* 	@param parameters, A JSON object which has to contain width, height and the camera object to be used.
+	*/
 	function SoftwareRenderer(parameters) {
 		parameters = parameters || {};
 
@@ -60,6 +65,7 @@ define([
 		this.clearDepthData();
 	
 		if (Array.isArray(renderList)) {
+			// TODO: Sort the renderlist back to front.
 			//this.renderQueue.sort(renderList, camera);
 
 			// Iterate over the view frustum culled entities.
@@ -78,39 +84,72 @@ define([
 	};
 
 	/*
-	*	Returns an array of {Triangle}
+	*	Creates an array of the visible {Triangle} for the entity
+	*	@param {Entity} entity, the entity from which to create triangles.
+	*	@returns Triangle[]
 	*/
-	SoftwareRenderer.prototype.createTrianglesForEntity = function(entity) {
+	SoftwareRenderer.prototype.createTrianglesForEntity = function (entity) {
+
+
 		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
 		var triangles = [];
+
+		var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
+		var screenSpaceMatrix = new Matrix4x4();
 
 		var timerStart = performance.now();
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 			
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
 			var posIndex = vertIndexArray[vertIndex] * 3;
-			var v1 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+			var v1 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
 			posIndex = vertIndexArray[++vertIndex] * 3;
-			var v2 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+			var v2 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
 			posIndex = vertIndexArray[++vertIndex] * 3;
-			var v3 = new Vector3(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2]);
+			var v3 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
-			// TODO: Cull the back-facing triangles.
-
-			// TODO: Clip triangles to the view frustum.
+			// Transform the vertices to world space with the entity's world transformation.
 			
-			// TODO: Transform the vertices with their entity's current world transform.
+			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+			entitityWorldTransformMatrix.applyPost(v1);
+			entitityWorldTransformMatrix.applyPost(v2);
+			entitityWorldTransformMatrix.applyPost(v3);
+
+			// Back-face culling.
+			if ( this.isBackFacing(v1,v2,v3) ) {
+				continue;
+			}
+
+			// Transform the objects with the camera's model view projection matrix.			
+			cameraMVPMatrix.applyPost(v1);
+			cameraMVPMatrix.applyPost(v2);
+			cameraMVPMatrix.applyPost(v3);
+
+			// Homogeneous division.
+			v1.mul(1.0 / v1.w);
+			v2.mul(1.0 / v2.w);
+			v3.mul(1.0 / v3.w);
+						
+			// TODO: Clip triangles to the view frustum.
 
 			// Use the built-in method of the Camera to transform the vertices to screen space.
-			// Have to review this in case it does unnecessary calculations.
-			var triangle = new Triangle(
-				this.camera.getScreenCoordinates(v1, this.width, this.height),
-				this.camera.getScreenCoordinates(v2, this.width, this.height),
-				this.camera.getScreenCoordinates(v3, this.width, this.height)
-			);
+			// Might be faster to create a matrix in this function instead of calling to the Camera class.
+			// Saves one null check which is unnecessary at least.
+			/*
+			var temp1 = this.camera.getScreenCoordinates(v1, this.width, this.height);
+			var temp2 = this.camera.getScreenCoordinates(v2, this.width, this.height);
+			var temp3 = this.camera.getScreenCoordinates(v3, this.width, this.height);
+			*/
+
+			// Transform the vertices to screen space
+			this.transformToScreenSpace(v1);
+			this.transformToScreenSpace(v2);
+			this.transformToScreenSpace(v3);
+
+			var triangle = new Triangle(v1, v2, v3);
 
 			triangles.push(triangle);
 		}
@@ -119,6 +158,24 @@ define([
 		console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
 
 		return triangles;
+	};
+
+	SoftwareRenderer.prototype.transformToScreenSpace = function (vertex) {
+
+		vertex.x = (vertex.x + 1.0) * (this.width / 2);
+		vertex.y = (vertex.y + 1.0) * (this.height / 2);
+		// store.z = (store.z + 1) / 2;
+
+	};
+
+	/*
+	*	Returns true if the triangle created by the vertices v1, v2 and v3 CCW is facing backwards.
+	*	Otherwise returns false.
+	* 	@param {Vector3}{Vector4} v1, v2, v3
+	*/
+	SoftwareRenderer.prototype.isBackFacing = function (v1, v2, v3) {
+
+		return false;	
 	};
 
 	SoftwareRenderer.prototype.renderTestTriangles = function () {

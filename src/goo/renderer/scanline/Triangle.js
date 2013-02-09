@@ -3,11 +3,14 @@ define([
 	'goo/math/Vector4'
 	],
 /** @lends Triangle */
+
 function (Vector3, Vector4) {
 
 	/*
-	* @class Triangle
-	* 
+	* 	Class for holding three vertices {Vector3} or {Vector4} which make up a triangle.
+	*	Triangles are used in the SoftwareRenderer.
+	*	@class Triangle
+	* 	@param {Vector} v1, v2, v3 The vertices which form the triangle.
 	*/
 	function Triangle(v1, v2, v3) {
 
@@ -16,7 +19,9 @@ function (Vector3, Vector4) {
 		this.v3 = v3;
 	};
 
-	
+	/*
+	*	Only used for the test triangles in {SoftwareRenderer}
+	*/
 	Triangle.prototype.toPixelSpace = function(width, height) {
 
 		var v1 = new Vector3(this.v1);
