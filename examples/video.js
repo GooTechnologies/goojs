@@ -55,7 +55,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		var material = new Material('TestMaterial');
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 
-		var texture = new TextureCreator().loadTextureVideo(resourcePath + '/sintel.mp4');
+		var texture = new TextureCreator().loadTextureVideo(resourcePath + '/sintel.ogv');
 		
 		material.textures.push(texture);
 

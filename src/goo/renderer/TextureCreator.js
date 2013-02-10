@@ -4,7 +4,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	"use strict";
 
 	/**
-	 * @class TBD
+	 * @class Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator(settings) {
@@ -13,7 +13,6 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
 
 		this.textureLoaders = {
-			// '.png' : 'loader1',
 			'.dds' : new DdsLoader()
 		};
 	}
@@ -24,6 +23,10 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	function endsWith(str, suffix) {
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	}
+
+	TextureCreator.clearCache = function () {
+		TextureCreator.cache = {};
+	};
 
 	TextureCreator.prototype.loadTexture2D = function (imageURL) {
 		var creator = this;
@@ -87,7 +90,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		video.loop = true;
 
 		video.addEventListener('error', function () {
-			console.warning('Couldn\'t load video URL [' + videoURL + ']');
+			console.warn('Couldn\'t load video URL [' + videoURL + ']');
 		}, false);
 
 		var texture = new Texture(video, {
@@ -97,7 +100,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 		texture.readyCallback = function () {
             if (video.readyState >= 3) {
-                console.log('video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+                console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
 				video.width = video.videoWidth;
 				video.height = video.videoHeight;
 
@@ -108,9 +111,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
             		texture.minFilter = 'BilinearNoMipMaps';
                 }
 
-                // if (autoPlay) {
-                    video.play();
-                // }
+                video.play();
 
                 video.dataReady = true;
                 return true;
@@ -132,8 +133,6 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 	TextureCreator.prototype.loadTextureWebCam = function () {
 		var video = document.createElement('video');
-		video.width = 320;
-		video.height = 240;
 		video.autoplay = true;
 		video.loop = true;
 
@@ -144,7 +143,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 		texture.readyCallback = function () {
 			if (video.readyState >= 3) {
-				console.log('video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+				console.log('WebCam video ready: ' + video.videoWidth + ', ' + video.videoHeight);
 				video.width = video.videoWidth;
 				video.height = video.videoHeight;
 
@@ -153,10 +152,6 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 					texture.generateMipmaps = false;
 					texture.minFilter = 'BilinearNoMipMaps';
 				}
-
-				// if (autoPlay) {
-				video.play();
-				// }
 
 				video.dataReady = true;
 				return true;
@@ -170,18 +165,12 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		// Webcam video
 		window.URL = window.URL || window.webkitURL;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-		// get webcam
 		navigator.getUserMedia({
 			video: true
 		}, function (stream) {
-			// on webcam enabled
 			video.src = window.URL.createObjectURL(stream);
-			// prompt.style.display = 'none';
-			// title.style.display = 'inline';
-			// container.style.display = 'inline';
-			// gui.domElement.style.display = 'inline';
 		}, function (error) {
-			console.warning('Unable to capture WebCam. Please reload the page.');
+			console.warn('Unable to capture WebCam. Please reload the page.');
 		});
 
 		return texture;
