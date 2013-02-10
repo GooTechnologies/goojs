@@ -6,13 +6,15 @@ require.config({
 });
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib', 'goo/renderer/MeshData'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, ShaderLib, MeshData) {
+		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib', 'goo/renderer/MeshData',
+		'goo/renderer/Util'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
+	ScriptComponent, ShaderLib, MeshData, Util) {
 	"use strict";
 
 	function init() {
 		var goo = new GooRunner({
-			showStats : true
+			showStats : true,
+			antiAlias : false
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -31,6 +33,18 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 					0
 				);
 				entity.transformComponent.setUpdated();
+
+//				var verts = entity.meshDataComponent.meshData.getAttributeBuffer(MeshData.POSITION);
+//				for (var i = 0; i < 500000; i++) {
+//					var x = (Math.random()-0.5)*5.0;
+//					var y = (Math.random()-0.5)*5.0;
+//					var z = (Math.random()-0.5)*5.0;
+//
+//					verts[i * 3 + 0] += x;
+//					verts[i * 3 + 1] += y;
+//					verts[i * 3 + 2] += z;
+//				}
+//				entity.meshDataComponent.meshData.vertexData._dataNeedsRefresh = true;
 			}
 		}));
 		pointsEntity.addToWorld();
@@ -61,14 +75,15 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 			verts[i * 3 + 0] = x;
 			verts[i * 3 + 1] = y;
 			verts[i * 3 + 2] = z;
+			var l = (Math.max(x*x, y*y, z*z) / (n2*n2)) * 0.8 + 0.2;
 
 			var vx = (x / n) + 0.5;
 			var vy = (y / n) + 0.5;
 			var vz = (z / n) + 0.5;
 
-			colors[i * 4 + 0] = vx;
-			colors[i * 4 + 1] = vy;
-			colors[i * 4 + 2] = vz;
+			colors[i * 4 + 0] = vx * l;
+			colors[i * 4 + 1] = vy * l;
+			colors[i * 4 + 2] = vz * l;
 			colors[i * 4 + 3] = 1.0;
 		}
 		
@@ -76,7 +91,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		entity.transformComponent.transform.translation.z = -2750;
 
 		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(ShaderLib.point, 'PointShader');
+		material.shader = Material.createShader(Util.clone(ShaderLib.point), 'PointShader');
 		entity.meshRendererComponent.materials.push(material);
 
 		return entity;

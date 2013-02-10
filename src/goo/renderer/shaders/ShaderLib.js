@@ -1657,8 +1657,6 @@ define([
 		fshader : [//
 		'precision mediump float;',//
 
-		'uniform sampler2D diffuseMap;',//
-
 		'varying vec4 color;',//
 
 		'void main(void)',//
