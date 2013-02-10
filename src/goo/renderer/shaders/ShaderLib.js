@@ -1536,5 +1536,95 @@ define([
 		].join("\n")
 	};
 
+	ShaderLib.brightnesscontrast = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+			brightness: 0,
+			contrast: 0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"uniform float brightness;",
+			"uniform float contrast;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_FragColor = texture2D( tDiffuse, vUv );",
+				"gl_FragColor.rgb += brightness;",
+
+				"if (contrast > 0.0) {",
+					"gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) / (1.0 - contrast) + 0.5;",
+				"} else {",
+					"gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * (1.0 + contrast) + 0.5;",
+				"}",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.luminosity = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 texel = texture2D( tDiffuse, vUv );",
+				"vec3 luma = vec3( 0.299, 0.587, 0.114 );",
+				"float v = dot( texel.xyz, luma );",
+
+				"gl_FragColor = vec4( v, v, v, texel.w );",
+			"}"
+		].join("\n")
+	};
+
 	return ShaderLib;
 });
