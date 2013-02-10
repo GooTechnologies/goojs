@@ -967,9 +967,9 @@ define([
 			// noise effect intensity value (0 = no effect, 1 = full effect)
 			nIntensity : 0.5,
 			// scanlines effect intensity value (0 = no effect, 1 = full effect)
-			sIntensity : 0.1,
+			sIntensity : 0.5,
 			// scanlines effect count value (0 = no effect, 4096 = full effect)
-			sCount : 4096,
+			sCount : 1024,
 			grayscale : 0,
 			$link : ShaderLib.copy.uniforms
 		},
@@ -1490,6 +1490,51 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.rgbshift = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+			amount : 0.005,
+			angle : 0.0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"uniform float amount;",
+			"uniform float angle;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec2 offset = amount * vec2( cos(angle), sin(angle));",
+				"vec4 cr = texture2D(tDiffuse, vUv + offset);",
+				"vec4 cga = texture2D(tDiffuse, vUv);",
+				"vec4 cb = texture2D(tDiffuse, vUv - offset);",
+				"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+			"}"
+		].join("\n")
+	};
 
 	return ShaderLib;
 });

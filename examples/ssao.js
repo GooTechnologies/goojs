@@ -15,11 +15,11 @@ require(
 			'goo/renderer/pass/Composer', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util',
 			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4',
 			'goo/renderer	/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/SSAOPass', 'goo/renderer/shaders/ShaderLib',
-			'goo/util/Rc4Random'], function(World, Entity, System, TransformSystem, RenderSystem,
+			'goo/util/Rc4Random', 'goo/scripts/OrbitCamControlScript'], function(World, Entity, System, TransformSystem, RenderSystem,
 		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 		TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript,
 		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
-		ShaderFragments, DepthPass, SSAOPass, ShaderLib, Rc4Random) {
+		ShaderFragments, DepthPass, SSAOPass, ShaderLib, Rc4Random, OrbitCamControlScript) {
 		"use strict";
 
 		var resourcePath = "../resources";
@@ -38,10 +38,14 @@ require(
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
-			var controlScript = new BasicControlScript();
-			controlScript.rollSpeed = 1;
-			controlScript.multiplier.set(1,-1,1);
-			cameraEntity.setComponent(new ScriptComponent(controlScript));
+			
+			cameraEntity.setComponent(new ScriptComponent(new OrbitCamControlScript({
+				domElement : goo.renderer.domElement,
+				spherical : new Vector3(30, Math.PI / 2, 0),
+				minAscent : -0.1,
+				maxAscent : 1,
+				maxZoomDistance : 50	
+			})));
 
 			// Examples of model loading
 			loadModels(goo);
