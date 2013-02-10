@@ -1626,5 +1626,47 @@ define([
 		].join("\n")
 	};
 
+	ShaderLib.point = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexColor : MeshData.COLOR
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			pointSize : 2.0
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec4 vertexColor;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+		'uniform float pointSize;',
+
+		'varying vec4 color;',//
+
+		'void main(void) {', //
+		'	color = vertexColor;',//
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_PointSize = pointSize;',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'uniform sampler2D diffuseMap;',//
+
+		'varying vec4 color;',//
+
+		'void main(void)',//
+		'{',//
+		'	gl_FragColor = color;',//
+		'}'//
+		].join('\n')
+	};
+
 	return ShaderLib;
 });
