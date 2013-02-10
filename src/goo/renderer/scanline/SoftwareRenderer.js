@@ -1,21 +1,3 @@
-/*
-
-REVIEW:
-
-There is currently a bug with the rendering when a triangle extends beyond the
-borders of the canvas which produces an incorrect image. This is probably
-something that fixes itself with the introduction of proper triangle clipping.
-However, when two borders are intersected (top left, top right, bottom left,
-bottom right), the rendering times can skyrocket to above 1000 ms! A hint:
-Scanline-based rasterizers only needs to account for near (and possibly far)
-clipping in 3D. The remaining view frustum planes can be clipped in 2D by a
-smart rasterization algorithm.
-
-The image is flipped upside down but this is trivial to correct should it be
-neccessary for the algorithm.
-
-*/
-
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
@@ -92,7 +74,10 @@ define([
 				var triangles = this.createTrianglesForEntity(renderList[i]);
 
 				for (var t = 0; t < triangles.length; t++) {
-					this.renderTriangle(triangles[t]);
+					var triangle = triangles[t];
+					if ( triangle ) {
+						this.renderTriangle(triangle);
+					}
 				}
 			}
 		} else {
@@ -111,7 +96,14 @@ define([
 
 		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
-		var triangles = [];
+
+		// Allocate the trianle array for the maximum case,
+		// where all the triangles are visible.
+		// This will raise a need for checking for undefined during the rendering of the triangles.
+		var triangles = new Array(vertIndexArray.length / 3);
+
+		// TODO : Test the speed to draw the triangle directly without storing in an array of triangles.
+		
 
 		var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
 		var screenSpaceMatrix = new Matrix4x4();
@@ -152,14 +144,12 @@ define([
 			v3.mul(1.0 / v3.w);
 						
 			// TODO: Clip triangles to the view frustum.
-
-			// Use the built-in method of the Camera to transform the vertices to screen space.
-			// Might be faster to create a matrix in this function instead of calling to the Camera class.
-			// Saves one null check which is unnecessary at least.
-			/*
-			var temp1 = this.camera.getScreenCoordinates(v1, this.width, this.height);
-			var temp2 = this.camera.getScreenCoordinates(v2, this.width, this.height);
-			var temp3 = this.camera.getScreenCoordinates(v3, this.width, this.height);
+			/* Joel's Tip : 
+			However, when two borders are intersected (top left, top right, bottom left,
+			bottom right), the rendering times can skyrocket to above 1000 ms! A hint:
+			Scanline-based rasterizers only needs to account for near (and possibly far)
+			clipping in 3D. The remaining view frustum planes can be clipped in 2D by a
+			smart rasterization algorithm.
 			*/
 
 			// Transform the vertices to screen space
@@ -169,15 +159,6 @@ define([
 
 			var triangle = new Triangle(v1, v2, v3);
 
-
-/*
-
-REVIEW:
-
-This will cause multiple memory allocations. It would be better to initalize the
-array to the desired size and populate a triangle in the array at each iteration.
-
-*/
 			triangles.push(triangle);
 		}
 
@@ -187,10 +168,15 @@ array to the desired size and populate a triangle in the array at each iteration
 		return triangles;
 	};
 
+	/*
+	*	Transforms the vertex' x and y coordinates into pixel coordinates of the screen.
+	*	@param {Vector} vertex, the vertex to be transformed.
+	*/
 	SoftwareRenderer.prototype.transformToScreenSpace = function (vertex) {
 
 		vertex.x = (vertex.x + 1.0) * (this.width / 2);
 		vertex.y = (vertex.y + 1.0) * (this.height / 2);
+		// TODO: Revise how to transform the z value, if it at all should be transformed.
 		// store.z = (store.z + 1) / 2;
 
 	};
