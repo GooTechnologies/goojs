@@ -22,6 +22,9 @@ define([
 		this.width = parameters.width;
 		this.height = parameters.height;
 
+		this._clipX = this.width - 1;
+		this._clipY = this.height - 1;
+
 		this.numOfPixels = this.width * this.height;
 
 		this.camera = parameters.camera;
@@ -32,11 +35,18 @@ define([
 		var colorBytes = this.numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
 		var depthBytes = this.numOfPixels * Uint8Array.BYTES_PER_ELEMENT;
 
-		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes);
+		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes * 2);
 
 		// The color data is used for debugging purposes.
 		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4);
 		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
+		// Buffer for clearing.
+		this._depthClear = new Uint8Array(this._frameBuffer, colorBytes + depthBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
+
+		for (var i = 0; i < this.numOfPixels; i++) {
+			this._depthClear[i] = 0;
+		}
+
 
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
@@ -55,9 +65,12 @@ define([
 
 		// TODO: This method converts the typed array into a regular JavaScript array,
 		// 		 Fix this clear process by creating a new buffer and copy the values from it using .set()...
+		/*
 		var lastpos = this._depthData.length-1;
 		this._depthData = [];
 		this._depthData[lastpos] = 0;
+		*/
+		this._depthData.set(this._depthClear);
 	};
 
 	SoftwareRenderer.prototype.render = function (renderList) {
@@ -79,6 +92,7 @@ define([
 					var triangle = triangles[t];
 					if ( triangle ) {
 						this.renderTriangle(triangle);
+						//console.log(triangle.printVertexData());
 						triCount++;
 					}
 				}
@@ -189,6 +203,7 @@ define([
 		vertex.y = (vertex.y + 1.0) * (this.height / 2);
 		// TODO: Revise how to transform the z value, if it at all should be transformed.
 		// store.z = (store.z + 1) / 2;
+		vertex.z = (vertex.z + 1) / 2;
 
 	};
 
@@ -282,6 +297,11 @@ define([
                     longEdge = i;
             }
         }
+
+        if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.width ) {
+        	console.log("Triangle is outside the view, skipping rendering it");
+        	return;
+        }
 		
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
         var shortEdge1 = (longEdge + 1) % 3;
@@ -322,10 +342,10 @@ define([
         // the starting x-coordinate is therefore calculated.
         var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
         var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
-        var longEdge_Xincrement = longEdgeDeltaX / longEdgeDeltaY;
+        var longEdgeXincrement = longEdgeDeltaX / longEdgeDeltaY;
 
         var shortX = shortEdge.x0;
-        var shortEdge_Xincrement = shortEdgeDeltaX / shortEdgeDeltaY;
+        var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
 
         // TODO:
         // Implement this idea of checking which edge is the leftmost.
@@ -333,21 +353,44 @@ define([
         // 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates. 
         //    Save the result and draw the rest of the scanlines.
 
-        // Draw every line for which the short edge is present.
         var startIndex;
         var stopIndex;
-        for (var y = shortEdge.y0; y <= shortEdge.y1; y++) {
+
+        var startLine = shortEdge.y0;
+        var stopLine = shortEdge.y1;
+
+        // Vertical clipping
+        if ( startLine < 0 ) {
+
+        	// If the starting line is above the screen space,
+        	// the starting x-coordinates has to be advanced to 
+        	// the proper value.
+
+        	// And the starting line is then assigned to 0.
+
+        	longX += -startLine * longEdgeXincrement;
+        	shortX += -startLine * shortEdgeXincrement;
+        	startLine = 0;
+        }
+
+        if ( stopLine > this._clipY ) {
+        	stopLine = this._clipY;
+        }
+
+        // Iterate in the span between the starting and stop lines.
+        for (var y = startLine; y <= stopLine; y++) {
 
         	// Round to the nearest pixel.
         	startIndex = Math.round(longX);
         	stopIndex = Math.round(shortX);
 
         	// Draw the span of pixels.
+     
     		this.fillPixels(startIndex, stopIndex, y);
         	
   			// Increase the edges' x-coordinates with the increments.
-        	longX += longEdge_Xincrement;
-        	shortX += shortEdge_Xincrement;
+        	longX += longEdgeXincrement;
+        	shortX += shortEdgeXincrement;
         }
 
 	};
@@ -355,13 +398,21 @@ define([
 	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
-		// This shall be optimized to be checked at an earlier stage. 
+		// TODO: This shall be optimized to be checked at an earlier stage. 
 		if ( startIndex > stopIndex ) {
 			var temp = startIndex;
 			startIndex = stopIndex;
 			stopIndex = temp;
 		}
-		
+
+		// Horizontal clipping
+	   	if ( startIndex < 0 ) {
+    		startIndex = 0;
+    	}
+
+    	if ( stopIndex > this._clipX ) {
+    		stopIndex = this._clipX;
+    	}
 
 		var row = y*this.width;
 
