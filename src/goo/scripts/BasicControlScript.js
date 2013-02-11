@@ -13,6 +13,8 @@ function (Vector3, Matrix3x3) {
 			this.domElement.setAttribute('tabindex', -1);
 		}
 
+		this.name = 'BasicControlScript'
+
 		this.movementSpeed = 10.0;
 		this.rollSpeed = 2.0;
 		this.movementSpeedMultiplier = 1.0;

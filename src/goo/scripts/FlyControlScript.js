@@ -18,6 +18,8 @@ function (Vector3) {
 			this.domElement.setAttribute('tabindex', -1);
 		}
 
+		this.name = 'FlyControlScript';
+
 		this.movementSpeed = 10.0;
 		this.rollSpeed = 2.0;
 		this.movementSpeedMultiplier = 1.0;

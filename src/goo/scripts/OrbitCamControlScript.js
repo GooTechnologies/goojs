@@ -7,6 +7,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		properties = properties || {};
 
+		this.name = 'OrbitCamControlScript';
+
 		this.domElement = properties.domElement || document;
 
 		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
