@@ -182,7 +182,10 @@ define([
 
 					promise
 					.done(function(data) {
-						bitbuck
+						// Do some checks
+						expect(data).toBe(goo.world);
+						expect(data.entityManager.getEntities().length).toBe(2);
+					})
 					.always(function() {
 						expect(promise._state).toBe('resolved');
 					});
