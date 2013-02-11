@@ -22,7 +22,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	 * }
 	 *
 	 * @constructor
-	 * @param {Object} GooRunner settings passed in a JSON object.
+	 * @param {Object} parameters GooRunner settings passed in a JSON object.
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
