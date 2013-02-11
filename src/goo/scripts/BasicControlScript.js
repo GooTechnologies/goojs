@@ -8,7 +8,7 @@ function (Vector3, Matrix3x3) {
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
 	function BasicControlScript (domElement) {
-		this.domElement = domElement !== undefined ? domElement : document;
+		this.domElement = domElement.domElement !== undefined ? domElement.domElement : domElement !== undefined ? domElement : document;
 		if (domElement) {
 			this.domElement.setAttribute('tabindex', -1);
 		}
