@@ -728,5 +728,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 			+ Arrays.toString(getLeft().toArray(null));
 	};
 
+	/*
+	*	Returns this camera's eye direction in world space.
+	*	@returns {Vector3} the direction vector
+	*/
+	Camera.prototype.getDirection = function () {
+		return this._direction;
+	};
+
 	return Camera;
 });

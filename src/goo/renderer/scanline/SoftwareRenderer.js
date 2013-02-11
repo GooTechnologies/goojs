@@ -73,12 +73,17 @@ define([
 				
 				var triangles = this.createTrianglesForEntity(renderList[i]);
 
+				
+				var triCount = 0;
 				for (var t = 0; t < triangles.length; t++) {
 					var triangle = triangles[t];
 					if ( triangle ) {
 						this.renderTriangle(triangle);
+						triCount++;
 					}
 				}
+				console.log("Rendered triangles: ", triCount);
+				
 			}
 		} else {
 			console.log("Render list not an array?");
@@ -102,9 +107,8 @@ define([
 		// This will raise a need for checking for undefined during the rendering of the triangles.
 		var triangles = new Array(vertIndexArray.length / 3);
 
-		// TODO : Test the speed to draw the triangle directly without storing in an array of triangles.
+		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
 		
-
 		var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
 		var screenSpaceMatrix = new Matrix4x4();
 
@@ -128,11 +132,6 @@ define([
 			entitityWorldTransformMatrix.applyPost(v2);
 			entitityWorldTransformMatrix.applyPost(v3);
 
-			// Back-face culling.
-			if ( this.isBackFacing(v1,v2,v3) ) {
-				continue;
-			}
-
 			// Transform the objects with the camera's model view projection matrix.			
 			cameraMVPMatrix.applyPost(v1);
 			cameraMVPMatrix.applyPost(v2);
@@ -142,6 +141,16 @@ define([
 			v1.mul(1.0 / v1.w);
 			v2.mul(1.0 / v2.w);
 			v3.mul(1.0 / v3.w);
+
+			// TODO: Check if this is the optimal place in the pipeline to do backface culling
+			// 		 Assumed I had to do this here since the perspective transformed triangles'
+			//		 visibility might differ from the world trnasformed.
+			
+			// Back-face culling.
+			if ( this.isBackFacing(v1,v2,v3) ) {
+				continue;
+			}
+
 						
 			// TODO: Clip triangles to the view frustum.
 			/* Joel's Tip : 
@@ -174,6 +183,8 @@ define([
 	*/
 	SoftwareRenderer.prototype.transformToScreenSpace = function (vertex) {
 
+		// These calculations assume that the camera's viewPortRight and viewPortTop are 1, 
+		// while the viewPortLeft and viewPortBottom are 0.
 		vertex.x = (vertex.x + 1.0) * (this.width / 2);
 		vertex.y = (vertex.y + 1.0) * (this.height / 2);
 		// TODO: Revise how to transform the z value, if it at all should be transformed.
@@ -182,13 +193,55 @@ define([
 	};
 
 	/*
-	*	Returns true if the triangle created by the vertices v1, v2 and v3 CCW is facing backwards.
-	*	Otherwise returns false.
-	* 	@param {Vector3}{Vector4} v1, v2, v3
+	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
+	*	Otherwise false is returned.
+	* 	@param {Vector4} v1, v2, v3
+	*	@returns {Boolean} true / false
 	*/
 	SoftwareRenderer.prototype.isBackFacing = function (v1, v2, v3) {
 
-		return false;	
+		// Calculate the dot product between the triangle's face normal and the camera's eye direction
+		// to find out if the face is facing away or not.
+
+
+		// Create edges for calculating the normal.
+		//var e1 = new Vector3(v1.x - v2.x , v1.y - v2.y, v1.z - v2.z);
+		//var e2 = new Vector3(v1.x - v3.x, v1.y - v3.y, v1.z - v3.z);
+
+		// Doing the cross product since the built-in methods in Vector3 seems to do much error checking.
+		// Also able to optimize away 66% of the computations, due to being in perspective space.
+		//faceNormal.data[0] = e2.data[2] * e1.data[1] - e2.data[1] * e1.data[2];
+		//faceNormal.data[1] = e2.data[0] * e1.data[2] - e2.data[2] * e1.data[0];
+
+		//var faceNormalZ = e2.data[1] * e1.data[0] - e2.data[0] * e1.data[1];
+
+		// Optimized away edge allocation , only need x and y of the edges.
+		var e1X = v2.data[0] - v1.data[0];
+		var e1Y = v2.data[1] - v1.data[1];
+		
+		var e2X = v3.data[0] - v1.data[0];
+		var e2Y = v3.data[1] - v1.data[1];
+
+		var faceNormalZ = e2Y * e1X - e2X * e1Y;
+
+
+		// TODO: Revise math skills, is normalization of the facenormal really necessary
+		//		 I don't think it should matter though... since the dot product is simplified 
+		//		 To the point where only the z-component matters .
+		// faceNormal.normalize();
+
+		// The cameras eye direction will always be [0,0,-1] at this stage 
+		// (the vertices are transformed into the camera's view projection space,
+		// thus the dot product can be simplified to only do multiplications on the z component.
+		
+		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
+		
+		// Turn the comparison to remove the negation of the value of facenormalz.
+		if ( faceNormalZ < 0.0 ) {
+			return true;
+		}
+
+		return false;
 	};
 
 	SoftwareRenderer.prototype.renderTestTriangles = function () {
@@ -211,6 +264,7 @@ define([
 
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
+		// It also rounds the vectors' coordinate values to the nearest pixel value. (Math.round).
 		this.edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3), 
