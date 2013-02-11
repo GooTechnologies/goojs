@@ -477,8 +477,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || texture instanceof RenderTarget === false && texture.image === undefined || texture.image
-				&& texture.image.dataReady === undefined) {
+			if (texture === undefined ||
+				texture instanceof RenderTarget === false && (texture.image === undefined ||
+				texture.checkDataReady() === false)) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
 				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
@@ -494,7 +495,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();
 				this.updateTexture(context, texture, i, unitrecord);
-			} else if (texture.needsUpdate) {
+			} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
 				this.updateTexture(context, texture, i, unitrecord);
 				texture.needsUpdate = false;
 			} else {

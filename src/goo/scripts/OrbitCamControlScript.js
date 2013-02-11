@@ -24,15 +24,17 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.minAscent = !isNaN(properties.minAscent) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
 		this.maxAscent = !isNaN(properties.maxAscent) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 0;
-		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : MathUtils.TWO_PI;
+		this.clampAzimuth = properties.clampAzimuth !== undefined ? properties.clampAzimuth === true : false;
+		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 90 * MathUtils.DEG_TO_RAD;
+		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : 270 * MathUtils.DEG_TO_RAD;
 
 		this.releaseVelocity = properties.releaseVelocity !== undefined ? properties.releaseVelocity === true : true;
 		this.invertedX = properties.invertedX !== undefined ? properties.invertedX === true : false;
 		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
-		this.drag = !isNaN(properties.drag) ? properties.drag : 0.99;
+		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
+		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];
@@ -68,6 +70,10 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 			this.mouseState.buttonDown = down;
+			if (down) {
+				this.mouseState.lastX = NaN;
+				this.mouseState.lastY = NaN;
+			}
 
 			event.preventDefault();
 			event.stopPropagation();
@@ -75,6 +81,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 	};
 
 	OrbitCamControlScript.prototype.updateDeltas = function (event) {
+		event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
 		var dx = 0, dy = 0;
 		if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
 			this.mouseState.lastX = event.clientX;
@@ -98,12 +105,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			this.sample = 0;
 		}
 
-		if (!this.firstPing) {
-			this.velocity.set(0, 0);
-			this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
-		} else {
-			this.firstPing = false;
-		}
+		this.velocity.set(0, 0);
+		this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
 	};
 
 	OrbitCamControlScript.prototype.move = function (x, y) {
@@ -111,8 +114,12 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		var thetaAccel = this.invertedY ? -y : y;
 
 		// update our master spherical coords, using x and y movement
-		this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI), this.minAzimuth,
-			this.maxAzimuth));
+		if (this.clampAzimuth) {
+			this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI),
+				this.minAzimuth, this.maxAzimuth));
+		} else {
+			this.targetSpherical.y = this.targetSpherical.y - azimuthAccel;
+		}
 		this.targetSpherical.z = (MathUtils.clamp(this.targetSpherical.z + thetaAccel, this.minAscent, this.maxAscent));
 		this.dirty = true;
 	};
@@ -131,16 +138,16 @@ function (Vector, Vector2, Vector3, MathUtils) {
 	OrbitCamControlScript.prototype.applyReleaseDrift = function () {
 		var now = Date.now();
 		var dx = 0, dy = 0;
-		var samplesRead = 0;
+		var found = false;
 		for ( var i = 0, max = this.timeSamples.length; i < max; i++) {
 			if (now - this.timeSamples[i] < this.maxSampleTimeMS) {
 				dx += this.xSamples[i];
 				dy += this.ySamples[i];
-				samplesRead++;
+				found = true;
 			}
 		}
-		if (samplesRead > 0) {
-			this.velocity.set(dx * this.turnSpeedHorizontal / samplesRead, dy * this.turnSpeedVertical / samplesRead);
+		if (found) {
+			this.velocity.set(dx * this.turnSpeedHorizontal / this.timeSamples.length, dy * this.turnSpeedVertical / this.timeSamples.length);
 		} else {
 			this.velocity.set(0, 0);
 		}
@@ -148,18 +155,34 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 	OrbitCamControlScript.prototype.setupMouseControls = function () {
 		var that = this;
-		this.domElement.addEventListener('mousedown', function (event) {
+		var down = function (event) {
 			that.updateButtonState(event, true);
 			that.velocity.set(0, 0);
+			that.spherical.y = MathUtils.moduloPositive(that.spherical.y, MathUtils.TWO_PI);
 			that.targetSpherical.copy(that.spherical);
-		}, false);
+		};
+		this.domElement.addEventListener('mousedown', down, false);
+		this.domElement.addEventListener('touchstart', down, false);
 
-		this.domElement.addEventListener('mouseup', function (event) {
+		var up = function (event) {
 			that.updateButtonState(event, false);
 			that.applyReleaseDrift();
-		}, false);
+		};
+		this.domElement.addEventListener('mouseup', up, false);
+		this.domElement.addEventListener('touchend', up, false);
+
+		if (this.mouseUpOnOut) {
+			this.domElement.addEventListener('mouseout', function (event) {
+				that.updateButtonState(event, false);
+				that.applyReleaseDrift();
+			}, false);
+		}
 
 		this.domElement.addEventListener('mousemove', function (event) {
+			that.updateDeltas(event);
+		}, false);
+
+		this.domElement.addEventListener('touchmove', function (event) {
 			that.updateDeltas(event);
 		}, false);
 
@@ -199,21 +222,26 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		var delta = this.interpolationSpeed * entity._world.tpf;
 
-		// y can wrap around 0/2pi, so find closest direction and go that way -- Perhaps could be cleaner?
-		if (this.spherical.y > this.targetSpherical.y + 0.00001) {
-			if (Math.abs(this.spherical.y - this.targetSpherical.y) > Math.abs(this.spherical.y - (this.targetSpherical.y + MathUtils.TWO_PI))) {
-				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y + MathUtils.TWO_PI);
-				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
-			} else {
-				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
-			}
-		} else if (this.spherical.y < this.targetSpherical.y - 0.00001) {
-			if (Math.abs(this.targetSpherical.y - this.spherical.y) > Math.abs(this.targetSpherical.y - (this.spherical.y + MathUtils.TWO_PI))) {
-				this.spherical.y = MathUtils.lerp(delta, this.spherical.y + MathUtils.TWO_PI, this.targetSpherical.y);
-				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
-			} else {
-				this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
-			}
+		if (this.clampAzimuth) {
+			this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+		} else {
+			this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// y can wrap around 0/2pi, so find closest direction and go that way -- Perhaps could be cleaner?
+			// if (this.spherical.y > this.targetSpherical.y + 0.00001) {
+			// if (Math.abs(this.spherical.y - this.targetSpherical.y) > Math.abs(this.spherical.y - (this.targetSpherical.y + MathUtils.TWO_PI))) {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y + MathUtils.TWO_PI);
+			// this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			// } else {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// }
+			// } else if (this.spherical.y < this.targetSpherical.y - 0.00001) {
+			// if (Math.abs(this.targetSpherical.y - this.spherical.y) > Math.abs(this.targetSpherical.y - (this.spherical.y + MathUtils.TWO_PI))) {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y + MathUtils.TWO_PI, this.targetSpherical.y);
+			// this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			// } else {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// }
+			// }
 		}
 
 		this.spherical.x = MathUtils.lerp(delta, this.spherical.x, this.targetSpherical.x);
@@ -228,6 +256,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		if (this.spherical.distanceSquared(this.targetSpherical) < 0.000001) {
 			this.dirty = false;
+			this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
 			this.targetSpherical.copy(this.spherical);
 		}
 

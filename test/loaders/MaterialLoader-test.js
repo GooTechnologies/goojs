@@ -70,7 +70,7 @@ define([
 
 		MockXHR.prototype.open = function(method, url) {
 			this.url = url;
-		}
+		};
 		
 		MockXHR.prototype.send = function() {
 			if(!mockResponses[this.url])
@@ -84,17 +84,20 @@ define([
 			
 			var response = mockResponses[this.url];
 			
-			for(var key in response) this[key] = response[key];
+			for(var key in response)
+			{
+				this[key] = response[key];
+			}
 
 			this.onreadystatechange();
-		}
+		};
 		
 		MockXHR.prototype.getResponseHeader = function(header) {
 			return this.responseHeader[header] ? this.responseHeader[header] : null;
-		}
+		};
 
 		return MockXHR;
-	};
+	}
 
 	describe('MaterialLoader', function() {
 		var loader;

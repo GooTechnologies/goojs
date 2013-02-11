@@ -73,7 +73,7 @@ function () {
 
 	GameUtils.initFullscreenShims = function (global) {
 		global = global || window;
-		var elementPrototype = (global.HTMLElement || global.Element)["prototype"];
+		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 
 		if (!document.hasOwnProperty("fullscreenEnabled")) {
 			var getter = (function () {
@@ -171,7 +171,7 @@ function () {
 
 	GameUtils.initPointerLockShims = function (global) {
 		global = global || window;
-		var elementPrototype = (global.HTMLElement || global.Element)["prototype"];
+		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 		var mouseEventPrototype = global.MouseEvent.prototype;
 
 		if (!("movementX" in mouseEventPrototype)) {

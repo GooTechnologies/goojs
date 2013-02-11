@@ -13,7 +13,9 @@ define(
 
 		function init(seed) {
 			for ( var i = 0; i < 256; i++)
+			{
 				keySchedule[i] = i;
+			}
 
 			var j = 0;
 			for ( var i = 0; i < 256; i++) {

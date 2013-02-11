@@ -112,5 +112,13 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 
 			expect(new Matrix3x3().copyQuaternion(new Quaternion(0.0, Math.sin(Math.PI/8), 0.0, Math.cos(Math.PI/8)))).toEqual(new Matrix3x3(a, 0, -a, 0, 1, 0, a, 0, a));
 		});
+
+		it("can retrieve euler angles", function() {
+			var testVec = new Vector3(1.4, -1.4, 1.4);
+			var testMatrix = new Matrix3x3().fromAngles(testVec.x, testVec.y, testVec.z);
+			var store = new Vector3();
+			testMatrix.toAngles(store);
+			expect(testVec).toEqual(store);
+		});
 	});
 });

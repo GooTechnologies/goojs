@@ -23,10 +23,10 @@ function(
 	 */
 	function MaterialLoader(rootUrl) {
 		this._rootUrl = rootUrl || '';
-	};
+	}
 
 	MaterialLoader.prototype.setRootUrl = function(rootUrl) {
-		if(!rootUrl || rootUrl == null) return this;
+		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
 		this._rootUrl = rootUrl;
 
 		return this;
@@ -34,7 +34,7 @@ function(
 
 	MaterialLoader.prototype.load = function(sourcePath) {
 		var promise = new Promise();
-		if(!sourcePath || sourcePath == null) promise._reject('URL not specified');
+		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
 
 		var that = this;
 		var ajax = new Ajax({
@@ -51,7 +51,7 @@ function(
 				});
 		})
 		.fail(function(data) {
-			promise._reject(data.statusText);	
+			promise._reject(data.statusText);
 		});
 
 		return promise;
@@ -122,26 +122,28 @@ function(
 
 				if(attribute === 'shader')
 				{
-					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' })
+					promises[attribute] = new Ajax({ url: this._rootUrl + value + '.json' });
 				}
 				else if(attribute === 'uniforms')
 				{
 
 					for(var i in value)
-					{					
+					{
 						var that = this;
 						if(i === 'diffuseTexture')
+						{
 							textures.push(new TextureCreator().loadTexture2D(that._rootUrl + value[i]));
-
+						}
 						else if(i === 'shininess')
+						{
 							materialState.shininess = value[i];
-
+						}
 						else if(i === 'ambient' || i === 'diffuse' || i === 'emissive' || i === 'specular')
 						{
-							if(value[i][0] != null) materialState[i].r = value[i][0];
-							if(value[i][1] != null) materialState[i].g = value[i][1];
-							if(value[i][2] != null) materialState[i].b = value[i][2];
-							if(value[i][3] != null) materialState[i].a = value[i][3];
+							if(typeof value[i][0] !== 'undefined' || value[i][0] !== null) { materialState[i].r = value[i][0]; }
+							if(typeof value[i][1] !== 'undefined' || value[i][1] !== null) { materialState[i].g = value[i][1]; }
+							if(typeof value[i][2] !== 'undefined' || value[i][2] !== null) { materialState[i].b = value[i][2]; }
+							if(typeof value[i][3] !== 'undefined' || value[i][3] !== null) { materialState[i].a = value[i][3]; }
 						}
 					}
 				}
@@ -188,10 +190,10 @@ function(
 
 		if(shaderDataSource && Object.keys(shaderDataSource).length)
 		{
-			if(shaderDataSource.vs == null || shaderDataSource.fs == null)
+			if(shaderDataSource.vs === null || shaderDataSource.fs === null)
 			{
 				promise._reject('Could not load shader:\n' + shaderDataSource);
-			};
+			}
 
 			var value;
 
