@@ -16,6 +16,17 @@ function(
 
 
 
+	// REVIEW: There's far too much copy/paste between the Loader classes.
+	// Constructor, setRootUrl, setWorld, load...
+	// Only the parse functions differ.
+	//
+	// Potential solution #1: Create a Loader superclass. Too complex solution.
+	// Inheritance is for polymorphism, not code reuse.
+	//
+	// Potential solution #2: Put the common functionality into a Loader class
+	// that takes the parse function as a constructor parameter. Better decoupling!
+
+
 	/*
 	 *
 	 */
@@ -45,6 +56,7 @@ function(
 
 		var that = this;
 
+		// REVIEW: Unclear. Why do we check the promise's state?
 		if(promise._state === 'pending')
 		{
 			new Ajax({
@@ -67,9 +79,11 @@ function(
 		return promise;
 	};
 
+	// REVIEW: Can this method name be made clearer? Like `getContentFromRequest` or something?
 	SceneLoader.prototype._handleRequest = function(request) {
 		var json = null;
 
+		// REVIEW: Why ignore the wrong content-type? Shouldn't that be an error?
 		if(request && request.getResponseHeader('Content-Type') === 'application/json')
 		{
 			try
@@ -86,6 +100,7 @@ function(
 	};
 
 	SceneLoader.prototype._parseScene = function(sceneSource, sceneUrl) {
+		// REVIEW: One var statement per line. Yes, I know that's is against Crockford style, but this is ugly!
 		var promise = new Promise(),
 			promises = [],
 			that = this;
@@ -113,9 +128,12 @@ function(
 		else
 		{
 			promise._reject('Couldn\'t load from source: ' + sceneSource);
+			// REVIEW: This falls through to the "when" below. Is this right?
 		}
 
 
+		// REVIEW: Why call apply with `this`? Is `this` a promise!?
+		// Is it supposed to be `Promise.when.apply(promise, promises)`?
 		Promise.when.apply(this, promises)
 			.done(function(entities) {
 				for(var i in entities) { entities[i].addToWorld(); }

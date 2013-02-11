@@ -4,6 +4,8 @@ define([
 
 	) {
 
+	// REVIEW: Does this use some kind of "standard" API for promises? It looks like it's copied from somewhere. Where?
+
 	function Promise() {
 		this._state = 'pending';
 		this._resolved = [];
