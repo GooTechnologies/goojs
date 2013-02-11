@@ -123,7 +123,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 				this.errorOnce = false;
 			} catch (err) {
 				if (this.errorOnce === false) {
-					console.warning(err);
+					console.warn(err);
 					this.errorOnce = true;
 				}
 			}

@@ -7,6 +7,8 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 
 			properties = properties || {};
 
+			this.name = 'MouseLookControlScript'
+
 			this.domElement = properties.domElement || document;
 
 			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;

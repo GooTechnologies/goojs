@@ -7,6 +7,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		properties = properties || {};
 
+		this.name = 'OrbitCamControlScript';
+
 		this.domElement = properties.domElement || document;
 
 		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
@@ -34,7 +36,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
 		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
-		this.drag = !isNaN(properties.drag) ? properties.drag : 0.98;
+		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];

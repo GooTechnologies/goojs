@@ -19,6 +19,7 @@ define([
 		var that = this;
 		request.onreadystatechange = function () {
 			if (request.readyState === 4) {
+				// REVIEW: Put opening brace on same line!
 				if (request.status >= 200 && request.status <= 299)
 				{
 					that._resolve(request);
