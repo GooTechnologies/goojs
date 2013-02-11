@@ -298,14 +298,16 @@ define([
 		var goo;
 		var projectURL;
 		var sceneURL;
-		var XMLHttpRequest = new MockXHRBuilder(TestResponses);;
+		var XHR = XMLHttpRequest;
+		//var XMLHttpRequest = new MockXHRBuilder(TestResponses);
 
 		beforeEach(function() {
-
+			XMLHttpRequest = new MockXHRBuilder(TestResponses);
 			loader = new MeshLoader();
 		});
 
 		afterEach(function() {
+			XMLHttpRequest = XHR;
 			loader = null;
 		});
 

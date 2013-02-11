@@ -68,7 +68,7 @@ function(
 			}
 			catch (e)
 			{
-				this._reject('Couldn\'t load following data to JSON:\n' + request.responseText);
+				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
 			}
 		}
 		return json;
