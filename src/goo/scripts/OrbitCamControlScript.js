@@ -63,37 +63,38 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.setupMouseControls();
 	}
 
-	OrbitCamControlScript.prototype.updateButtonState = function (event, down) {
+	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
 			this.domElement.focus();
 		}
 
-		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
+		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === buttonIndex)) {
 			this.mouseState.buttonDown = down;
 			if (down) {
 				this.mouseState.lastX = NaN;
 				this.mouseState.lastY = NaN;
+				this.velocity.set(0, 0);
+				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+				this.targetSpherical.copy(this.spherical);
+			} else {
+				this.applyReleaseDrift();
 			}
-
-			event.preventDefault();
-			event.stopPropagation();
 		}
 	};
 
-	OrbitCamControlScript.prototype.updateDeltas = function (event) {
-		event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+	OrbitCamControlScript.prototype.updateDeltas = function (mouseX, mouseY) {
 		var dx = 0, dy = 0;
 		if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
-			this.mouseState.lastX = event.clientX;
-			this.mouseState.lastY = event.clientY;
+			this.mouseState.lastX = mouseX;
+			this.mouseState.lastY = mouseY;
 		} else {
-			dx = -(event.clientX - this.mouseState.lastX);
-			dy = event.clientY - this.mouseState.lastY;
-			this.mouseState.lastX = event.clientX;
-			this.mouseState.lastY = event.clientY;
+			dx = -(mouseX - this.mouseState.lastX);
+			dy = mouseY - this.mouseState.lastY;
+			this.mouseState.lastX = mouseX;
+			this.mouseState.lastY = mouseY;
 		}
 
-		if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX === 0 && this.mouseState.dY === 0) {
+		if (this.dragOnly && !this.mouseState.buttonDown || dx === 0 && dy === 0) {
 			return;
 		}
 
@@ -125,12 +126,12 @@ function (Vector, Vector2, Vector3, MathUtils) {
 	};
 
 	OrbitCamControlScript.prototype.applyWheel = function (e) {
-		var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		var delta = (this.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 		this.zoom(this.zoomSpeed * delta);
 	};
 
 	OrbitCamControlScript.prototype.zoom = function (percent) {
-		var amount = (this.invertedWheel ? -1 : 1) * percent * this.baseDistance;
+		var amount = percent * this.baseDistance;
 		this.targetSpherical.x = MathUtils.clamp(this.targetSpherical.x + amount, this.minZoomDistance, this.maxZoomDistance);
 		this.dirty = true;
 	};
@@ -155,43 +156,60 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 	OrbitCamControlScript.prototype.setupMouseControls = function () {
 		var that = this;
-		var down = function (event) {
-			that.updateButtonState(event, true);
-			that.velocity.set(0, 0);
-			that.spherical.y = MathUtils.moduloPositive(that.spherical.y, MathUtils.TWO_PI);
-			that.targetSpherical.copy(that.spherical);
-		};
-		this.domElement.addEventListener('mousedown', down, false);
-		this.domElement.addEventListener('touchstart', down, false);
+		this.domElement.addEventListener('mousedown', function (event) {
+			that.updateButtonState(event.button, true);
+		}, false);
 
-		var up = function (event) {
-			that.updateButtonState(event, false);
-			that.applyReleaseDrift();
-		};
-		this.domElement.addEventListener('mouseup', up, false);
-		this.domElement.addEventListener('touchend', up, false);
+		this.domElement.addEventListener('mouseup', function (event) {
+			that.updateButtonState(event.button, false);
+		}, false);
 
 		if (this.mouseUpOnOut) {
 			this.domElement.addEventListener('mouseout', function (event) {
-				that.updateButtonState(event, false);
-				that.applyReleaseDrift();
+				that.updateButtonState(event.button, false);
 			}, false);
 		}
 
 		this.domElement.addEventListener('mousemove', function (event) {
-			that.updateDeltas(event);
-		}, false);
-
-		this.domElement.addEventListener('touchmove', function (event) {
-			that.updateDeltas(event);
+			that.updateDeltas(event.clientX, event.clientY);
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.applyWheel(event);
-		});
+		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.applyWheel(event);
-		});
+		}, false);
+
+		// optional touch controls... requires Hammer.js v2
+		if (typeof (Hammer) !== "undefined") {
+			var hammertime = Hammer(this.domElement, {
+				transform_always_block : true,
+				transform_min_scale : 1
+			});
+
+			hammertime.on('touch drag transform release', function (ev) {
+				switch (ev.type) {
+					case 'transform':
+						var scale = ev.gesture.scale;
+						if (scale < 1) {
+							that.zoom(that.zoomSpeed * -1);
+						} else if (scale > 1) {
+							that.zoom(that.zoomSpeed * 1);
+						}
+						break;
+					case 'touch':
+						that.updateButtonState(0, true);
+						break;
+					case 'release':
+						that.updateButtonState(0, false);
+						break;
+					case 'drag':
+						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+						break;
+				}
+			});
+		}
 	};
 
 	OrbitCamControlScript.prototype.updateVelocity = function (time) {
