@@ -3,12 +3,14 @@ define([
 	'goo/renderer/scanline/Triangle',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
+	'goo/math/Ray',
+	'goo/math/Plane',
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Matrix4x4, Edge) {
+	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge) {
 	"use strict";
 
 	/*
@@ -63,13 +65,6 @@ define([
 	*/
 	SoftwareRenderer.prototype.clearDepthData = function () {
 
-		// TODO: This method converts the typed array into a regular JavaScript array,
-		// 		 Fix this clear process by creating a new buffer and copy the values from it using .set()...
-		/*
-		var lastpos = this._depthData.length-1;
-		this._depthData = [];
-		this._depthData[lastpos] = 0;
-		*/
 		this._depthData.set(this._depthClear);
 	};
 
@@ -86,18 +81,13 @@ define([
 				
 				var triangles = this.createTrianglesForEntity(renderList[i]);
 
-				
-				var triCount = 0;
 				for (var t = 0; t < triangles.length; t++) {
 					var triangle = triangles[t];
 					if ( triangle ) {
 						this.renderTriangle(triangle);
 						//console.log(triangle.printVertexData());
-						triCount++;
 					}
 				}
-				console.log("Rendered triangles: ", triCount);
-				
 			}
 		} else {
 			console.log("Render list not an array?");
@@ -108,7 +98,7 @@ define([
 	/*
 	*	Creates an array of the visible {Triangle} for the entity
 	*	@param {Entity} entity, the entity from which to create triangles.
-	*	@returns Triangle[]
+	*	@return Triangle[]
 	*/
 	SoftwareRenderer.prototype.createTrianglesForEntity = function (entity) {
 
@@ -124,7 +114,9 @@ define([
 		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
 		
 		var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
-		var screenSpaceMatrix = new Matrix4x4();
+
+		var cameraViewMatrix = this.camera.getViewMatrix();
+		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 
 		var timerStart = performance.now();
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
@@ -139,6 +131,8 @@ define([
 			posIndex = vertIndexArray[++vertIndex] * 3;
 			var v3 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
+			var vertices = [v1, v2, v3];
+
 			// Transform the vertices to world space with the entity's world transformation.
 			
 			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
@@ -146,49 +140,180 @@ define([
 			entitityWorldTransformMatrix.applyPost(v2);
 			entitityWorldTransformMatrix.applyPost(v3);
 
+
+			// Transform to camera view space.
+			cameraViewMatrix.applyPost(v1);
+			cameraViewMatrix.applyPost(v2);
+			cameraViewMatrix.applyPost(v3);
+
+
+			// Clip triangle to the near plane.
+
+			// Outside incides are the vertices which are outside the view frustrum,
+			// that is closer than the near plane in this case.
+			// The inside indices are the ones on the inside.
+			var outsideIndices = [];
+			var insideIndices = [];
+
+			var cameraNear = -this.camera.near;
+			for ( var i = 0; i < 3; i++ ) {
+				
+				if (vertices[i].z < cameraNear) {
+					insideIndices.push(i);
+				}
+				else {
+					outsideIndices.push(i);
+				}
+			}
+
+			switch (outsideIndices.length) {
+				case 0:
+					// All indices are on the inside. Continue as usual.
+					break;
+				case 3:
+					// All of the vertices are on the outside, skip to the next three vertices.
+					continue;
+					break;
+				case 1:
+					// Update the one vertex to its new position on the near plane and add a new vertex
+					// on the other intersection with the plane.
+
+					var origin = vertices[outsideIndices[0]];
+					var target = vertices[insideIndices[0]];
+
+					var ratio = this.calculateIntersectionRatio(origin, target);
+
+					var newV1 = [
+						origin.x + target.x * ratio,
+						origin.y + target.y * ratio,
+						origin.z + target.z * ratio,
+						1.0
+					];
+
+					target = vertices[insideIndices[1]];
+
+					ratio = this.calculateIntersectionRatio(origin, target);
+
+					var vxx = new Vector4(
+					origin.x + target.x * ratio,
+					origin.y + target.y * ratio,
+					origin.z + target.z * ratio,
+					1.0
+					);
+
+					vertices[outsideIndices[0]].set(newV1);
+					vertices.push(vxx);
+
+					break;
+				case 2:
+					// Update the two outside vertices to their new positions on the near plane.
+					var origin = vertices[outsideIndices[0]];
+					var target = vertices[insideIndices[0]];
+
+					var ratio = this.calculateIntersectionRatio(origin, target, cameraNear);
+
+					origin.x += ratio * target.x;
+					origin.y += ratio * target.y;
+					origin.z += ratio * target.z;
+
+					origin = vertices[outsideIndices[1]];
+
+					ratio = this.calculateIntersectionRatio(origin, target, cameraNear);
+
+					origin.x += ratio * target.x;
+					origin.y += ratio * target.y;
+					origin.z += ratio * target.z;
+
+					break;
+			}
+
 			// Transform the objects with the camera's model view projection matrix.			
+			/*
 			cameraMVPMatrix.applyPost(v1);
 			cameraMVPMatrix.applyPost(v2);
 			cameraMVPMatrix.applyPost(v3);
+			*/
 
+			for (var i = 0; i < vertices.length; i++) {
+				var v = vertices[i];
+				cameraProjectionMatrix.applyPost(v);
+				v.mul(1.0/ v.w);
+			}
+
+			/*
+			cameraProjectionMatrix.applyPost(v1);
+			cameraProjectionMatrix.applyPost(v2);
+			cameraProjectionMatrix.applyPost(v3);
+		
 			// Homogeneous division.
 			v1.mul(1.0 / v1.w);
 			v2.mul(1.0 / v2.w);
 			v3.mul(1.0 / v3.w);
 
+				*/
+
+
 			// TODO: Check if this is the optimal place in the pipeline to do backface culling
 			// 		 Assumed I had to do this here since the perspective transformed triangles'
-			//		 visibility might differ from the world trnasformed.
+			//		 visibility might differ from the world transformed.
 			
 			// Back-face culling.
-			if ( this.isBackFacing(v1,v2,v3) ) {
+			if ( this.isBackFacing( v1,v2,v3 ) ) {
 				continue;
 			}
 
-						
-			// TODO: Clip triangles to the view frustum.
-			/* Joel's Tip : 
-			However, when two borders are intersected (top left, top right, bottom left,
-			bottom right), the rendering times can skyrocket to above 1000 ms! A hint:
-			Scanline-based rasterizers only needs to account for near (and possibly far)
-			clipping in 3D. The remaining view frustum planes can be clipped in 2D by a
-			smart rasterization algorithm.
-			*/
 
+			/*
 			// Transform the vertices to screen space
 			this.transformToScreenSpace(v1);
 			this.transformToScreenSpace(v2);
 			this.transformToScreenSpace(v3);
+			*/
+			for (var i = 0; i < vertices.length; i++) {
+				this.transformToScreenSpace(vertices[i]);
+			}
 
-			var triangle = new Triangle(v1, v2, v3);
+			// Create the triangle(s)
+			if ( vertices.length ==  4 ) {
+				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
+				// The "extra vertex" is at position 3 in the array.
+				var index1 = insideIndices[0];
+				var index2 = insideIndices[1];
 
-			triangles.push(triangle);
+				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[index1], vertices[3]);
+				var triangle2 = new Triangle(vertices[3], vertices[index1], vertices[index2]);
+
+				triangles.push(triangle1);
+				triangles.push(triangle2);
+
+			} else {
+				var triangle = new Triangle(v1, v2, v3);
+				triangles.push(triangle);
+			}
+
+			
 		}
 
 		var timerStop = performance.now();
 		console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
 
 		return triangles;
+	};
+
+	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, target) {
+	
+		// Dot product only simplified due to plane normal being [0,0,-1];
+		var denominator = (target.z - origin.z);
+
+		// Plane constant == distance to the plane frmo the origin according to the Plane.js documentation.
+		var numerator = -origin.z -this.camera.near;
+		var ratio = numerator / denominator;
+
+		if ( ratio < 0 ) {
+			console.error("this is wrong");
+		}
+
+		return ratio;	
 	};
 
 	/*
@@ -211,7 +336,7 @@ define([
 	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
 	*	Otherwise false is returned.
 	* 	@param {Vector4} v1, v2, v3
-	*	@returns {Boolean} true / false
+	*	@return {Boolean} true / false
 	*/
 	SoftwareRenderer.prototype.isBackFacing = function (v1, v2, v3) {
 
@@ -239,19 +364,13 @@ define([
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
-
-		// TODO: Revise math skills, is normalization of the facenormal really necessary
-		//		 I don't think it should matter though... since the dot product is simplified 
-		//		 To the point where only the z-component matters .
-		// faceNormal.normalize();
-
 		// The cameras eye direction will always be [0,0,-1] at this stage 
 		// (the vertices are transformed into the camera's view projection space,
 		// thus the dot product can be simplified to only do multiplications on the z component.
 		
 		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
 		
-		// Turn the comparison to remove the negation of the value of facenormalz.
+		// Invert the comparison to remove the negation of facenormalZ.
 		if ( faceNormalZ < 0.0 ) {
 			return true;
 		}
