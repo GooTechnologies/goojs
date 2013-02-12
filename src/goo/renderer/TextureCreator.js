@@ -1,6 +1,7 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'],
+define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util',
+        'goo/util/Latch'],
 	/** @lends TextureCreator */
-	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
+	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util, Latch) {
 	"use strict";
 
 	/**
@@ -28,7 +29,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		TextureCreator.cache = {};
 	};
 
-	TextureCreator.prototype.loadTexture2D = function (imageURL) {
+	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
 		var creator = this;
 		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
@@ -48,7 +49,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
-				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image));
+				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings);
 				rVal.image.dataReady = false;
 				rVal.a = imageURL;
 
@@ -74,7 +75,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		}
 
 		var img = new Loader().loadImage(imageURL);
-		var texture = new Texture(img);
+		var texture = new Texture(img, settings);
 
 		TextureCreator.cache[imageURL] = texture;
 
@@ -176,30 +177,51 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureCube = function (imageURLs) {
-		var latch = 6;
-		var texture = new Texture();
+	/**
+	 * 
+	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @returns {Texture} cubemap
+	 */
+	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
+		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
 		var images = [];
 
-		for (var i = 0; i < imageURLs.length; i++) {
+		var latch = new Latch(6, function () {
+			var w = images[0].width;
+			var h = images[0].height;
+			for (var i=0;i<6;i++) {
+				var img = images[i];
+				if (w !== img.width || h !== img.height) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+					console.error('Images not all the same size!');
+				}
+			}
+			
+			texture.setImage(images);
+			texture.image.dataReady = true;
+			texture.image.width = w;
+			texture.image.height = h;
+		});
+
+		for ( var i = 0; i < imageDataArray.length; i++) {
 			(function (index) {
-				new Loader().loadImage(imageURLs[index], {
-					onSuccess : function (image) {
-						images[index] = image;
-						latch--;
-						if (latch <= 0) {
-							texture.setImage(images);
-							texture.image.dataReady = true;
-							texture.image.isData = false;
-							texture.image.width = image.width;
-							texture.image.height = image.height;
+				var queryImage = imageDataArray[index];
+				if (typeof queryImage === 'string') {
+					new Loader().loadImage(queryImage, {
+						onSuccess: function (image) {
+							images[index] = image;
+							latch.countDown();
+						},
+						onError: function (message) {
+							console.error(message);
 						}
-					},
-					onError : function (message) {
-						console.error(message);
-					}
-				});
+					});
+				} else {
+					images[index] = queryImage;
+					latch.countDown();
+				}
 			})(i);
 		}
 

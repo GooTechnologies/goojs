@@ -763,9 +763,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				return WebGLRenderingContext.LINEAR;
 			case 'NearestNeighbor':
 				return WebGLRenderingContext.NEAREST;
-			default:
-				return WebGLRenderingContext.NEAREST;
 		}
+		throw "invalid MagnificationFilter type: " + filter;
 	};
 
 	Renderer.prototype.getGLMinFilter = function(filter) {

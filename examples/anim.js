@@ -13,10 +13,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/util/Handy', 'goo/math/Transform',
 		'goo/animation/Joint', 'goo/math/Matrix3x3', 'goo/renderer/Util', 'goo/animation/AnimationManager',
 		'goo/animation/blendtree/SimpleAnimationApplier', 'goo/animation/state/SteadyState', 'goo/animation/blendtree/ClipSource',
-		'goo/math/Quaternion', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/math/Quaternion', 'goo/renderer/shaders/ShaderLib', 'goo/scripts/OrbitCamControlScript'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
 	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera, CameraComponent, BasicControlScript, Vector3, Handy,
-	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion, ShaderLib) {
+	Transform, Joint, Matrix3x3, Util, AnimationManager, SimpleAnimationApplier, SteadyState, ClipSource, Quaternion, ShaderLib, OrbitCamControlScript) {
 	"use strict";
 
     var resourcePath = "../resources";
@@ -39,6 +39,13 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 40, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(350, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
 
 		// Setup light
 		var light = new Light();
@@ -67,7 +74,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				}
 				entities[0].transformComponent.transform.scale.set(1, 1, 1);
 				entities[0].transformComponent.transform.translation.y = -50;
-				entities[0].setComponent(new ScriptComponent(new BasicControlScript()));
 
 				for ( var i = 0; i < entities.length; i++) {
 					var entity = entities[i];
