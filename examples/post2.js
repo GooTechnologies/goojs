@@ -39,7 +39,7 @@ require(
 			cameraEntity.addToWorld();
 			var controlScript = new BasicControlScript();
 			controlScript.rollSpeed = 1;
-			controlScript.multiplier.set(1,-1,1);
+			controlScript.multiplier.set(-1,-1,1);
 			cameraEntity.setComponent(new ScriptComponent(controlScript));
 
 			// Examples of model loading

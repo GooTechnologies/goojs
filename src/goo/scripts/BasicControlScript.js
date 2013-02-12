@@ -10,11 +10,7 @@ function (Vector3, Matrix3x3) {
 	function BasicControlScript (domElement) {
 		this.domElement = domElement === undefined ? document : domElement.domElement || domElement;
 
-//		if (domElement) {
-//			this.domElement.setAttribute('tabindex', -1);
-//		}
-
-		this.name = 'BasicControlScript'
+		this.name = 'BasicControlScript';
 
 		this.movementSpeed = 10.0;
 		this.rollSpeed = 2.0;
@@ -39,6 +35,7 @@ function (Vector3, Matrix3x3) {
 		this.rotationVector = new Vector3(0, 0, 0);
 		this.multiplier = new Vector3(1, 1, 1);
 		this.rotationMatrix = new Matrix3x3();
+		this.tmpVec = new Vector3();
 
 		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
@@ -276,8 +273,11 @@ function (Vector3, Matrix3x3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			this.rotationMatrix.fromAngles(-this.rotationVector.x * rotMult * this.multiplier.x, this.rotationVector.y * rotMult * this.multiplier.y, this.rotationVector.z * rotMult * this.multiplier.z);
-			transform.rotation.combine(this.rotationMatrix);
+			transform.rotation.toAngles(this.tmpVec);
+			this.tmpVec.x += -this.rotationVector.x * rotMult * this.multiplier.x;
+			this.tmpVec.y += this.rotationVector.y * rotMult * this.multiplier.y;
+			this.tmpVec.z += this.rotationVector.z * rotMult * this.multiplier.z;
+			transform.rotation.fromAngles(this.tmpVec.x, this.tmpVec.y, this.tmpVec.z);
 
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = 0;
