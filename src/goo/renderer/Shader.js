@@ -315,11 +315,11 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 				continue;
 			}
 
-			var chunk = "#define " + d + " " + value;
+			var chunk = '#define ' + d + ' ' + value;
 			chunks.push(chunk);
 		}
 
-		return chunks.join("\n");
+		return chunks.join('\n');
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {

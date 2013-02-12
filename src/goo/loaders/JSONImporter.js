@@ -217,7 +217,7 @@ define(
 		}
 	};
 
-	JSONImporter.prototype._parseMeshData = function (object, weightsPerVert, entity, type) {
+	JSONImporter.prototype._parseMeshData = function (object, weightsPerVertex, entity, type) {
 		var vertexCount = object.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
@@ -237,10 +237,10 @@ define(
 		if (object.Colors) {
 			attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
 		}
-		if (weightsPerVert > 0 && object.Weights) {
+		if (weightsPerVertex > 0 && object.Weights) {
 			attributeMap.WEIGHTS = MeshData.createAttribute(4, 'Float');
 		}
-		if (weightsPerVert > 0 && object.Joints) {
+		if (weightsPerVertex > 0 && object.Joints) {
 			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
 		}
 		if (object.TextureCoords) {
@@ -347,6 +347,7 @@ define(
 				}
 
 				meshData.paletteMap = localMap;
+				meshData.weightsPerVertex = weightsPerVertex;
 			} else {
 				for (var i = 0, max = data.capacity(); i < max; i++) {
 					buffer.putCast(i, data.get(i));

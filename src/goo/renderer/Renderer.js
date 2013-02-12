@@ -1192,5 +1192,43 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
 	};
 
+	//TODO!!!
+	Renderer.prototype._deallocateMeshData = function (meshData) {
+//		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
+	};
+
+	Renderer.prototype._deallocateTexture = function (texture) {
+//		if ( texture.image && texture.image.__webglTextureCube ) {
+//			// cube texture
+//			_gl.deleteTexture( texture.image.__webglTextureCube );
+//		} else {
+//			// 2D texture
+//			if ( ! texture.__webglInit ) return;
+//
+//			texture.__webglInit = false;
+//			_gl.deleteTexture( texture.__webglTexture );
+//		}
+	};
+
+	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+//		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
+//
+//		_gl.deleteTexture( renderTarget.__webglTexture );
+//
+//		if ( renderTarget instanceof THREE.WebGLRenderTargetCube ) {
+//			for ( var i = 0; i < 6; i ++ ) {
+//				_gl.deleteFramebuffer( renderTarget.__webglFramebuffer[ i ] );
+//				_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer[ i ] );
+//			}
+//		} else {
+//			_gl.deleteFramebuffer( renderTarget.__webglFramebuffer );
+//			_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer );
+//		}
+	};
+
+	Renderer.prototype._deallocateShader = function (shader) {
+//		_gl.deleteProgram( program );
+	};
+	
 	return Renderer;
 });

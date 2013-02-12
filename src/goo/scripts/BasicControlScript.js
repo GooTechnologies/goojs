@@ -8,10 +8,11 @@ function (Vector3, Matrix3x3) {
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
 	function BasicControlScript (domElement) {
-		this.domElement = domElement.domElement !== undefined ? domElement.domElement : domElement !== undefined ? domElement : document;
-		if (domElement) {
-			this.domElement.setAttribute('tabindex', -1);
-		}
+		this.domElement = domElement === undefined ? document : domElement.domElement || domElement;
+
+//		if (domElement) {
+//			this.domElement.setAttribute('tabindex', -1);
+//		}
 
 		this.name = 'BasicControlScript'
 

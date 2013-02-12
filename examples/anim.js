@@ -55,8 +55,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	function loadModels(goo) {
-		var skinShader = Material.createShader(ShaderLib.skinning);
-
 		var importer = new JSONImporter(goo.world);
 
 		var skinMeshes = [];
@@ -76,11 +74,18 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					console.log(entity.name);
 					if (entity.meshDataComponent && entity.meshDataComponent.meshData.type === MeshData.SKINMESH) {
 						skinMeshes.push(entity);
-						entity.meshRendererComponent.materials[0].shader = skinShader;
 					}
 				}
 
 				if (skinMeshes.length > 0) {
+					for (var i=0;i<skinMeshes.length;i++) {
+						var skinShader = Material.createShader(Util.clone(ShaderLib.skinning));
+						skinShader.defines.JOINT_COUNT = skinMeshes[i].meshDataComponent.meshData.paletteMap.length;
+						skinShader.defines.WEIGHTS = skinMeshes[i].meshDataComponent.meshData.weightsPerVertex;
+						console.log(skinMeshes[i].name + ' - joint count: ', skinShader.defines.JOINT_COUNT, ' weight count: ', skinShader.defines.WEIGHTS);
+
+						skinMeshes[i].meshRendererComponent.materials[0].shader = skinShader;
+					}
 					loadAnimations(skinMeshes[0].meshDataComponent.meshData.currentPose, resourcePath + '/careerrun/run.anim');
 				}
 			},

@@ -1414,6 +1414,10 @@ define([
 	};
 
 	ShaderLib.skinning = {
+		defines : {
+			JOINT_COUNT : 56,
+			WEIGHTS : 4
+		},
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexUV0: MeshData.TEXCOORD0,
@@ -1438,8 +1442,7 @@ define([
 					}
 					var refMat;
 					for (var index = 0; index < skMesh.paletteMap.length; index++) {
-						var ref = skMesh.paletteMap[index];
-						refMat = palette[ref];
+						refMat = palette[skMesh.paletteMap[index]];
 						for (var i = 0; i < 4; i++) {
 							for (var j = 0; j < 4; j++) {
 								store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
@@ -1459,18 +1462,21 @@ define([
 		'uniform mat4 viewMatrix;', //
 		'uniform mat4 projectionMatrix;',//
 		'uniform mat4 worldMatrix;',//
-		'uniform mat4 jointPalette[56];', //
+		'uniform mat4 jointPalette[JOINT_COUNT];', //
 
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
-		// apply weights
 		'	mat4 mat = mat4(0.0);', //
 
-		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
-		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
-		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
-		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
+		'	for (int i = 0; i < WEIGHTS; i++) {',
+		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
+		'	}',
+		
+//		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
+//		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
+//		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
+//		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
 
 		'	texCoord0 = vertexUV0;',//
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
