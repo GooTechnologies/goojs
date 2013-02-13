@@ -23,30 +23,30 @@ define([
 		uvUnit = uvUnit || 0;
 
 		var vertexBuffer = meshData.getAttributeBuffer(MeshData.POSITION);
-		if (vertexBuffer === null) {
+		if (!vertexBuffer) {
 			throw new Error("Vertex buffer is null!");
 		}
 
 		var normalBuffer = meshData.getAttributeBuffer(MeshData.NORMAL);
-		if (normalBuffer === null) {
+		if (!normalBuffer) {
 			throw new Error("Normal buffer is null!");
 		}
 
 		var textureBuffer = meshData.getAttributeBuffer('TEXCOORD' + uvUnit);
-		if (textureBuffer === null && uvUnit !== 0) {
+		if (!textureBuffer && uvUnit !== 0) {
 			textureBuffer = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
 		}
-		if (textureBuffer == null) {
+		if (!textureBuffer) {
 			throw new Error("Texture buffer is null!");
 		}
 
 		var indexBuffer = meshData.getIndexBuffer();
-		if (indexBuffer === null) {
+		if (!indexBuffer) {
 			throw new Error("Index buffer is null!");
 		}
 
 		var vertexCount = meshData.vertexCount;
-		var triangleCount = meshData.vertexCount / 3; // TODO!
+		var triangleCount = meshData.indexCount / 3; // TODO!
 
 		var tan1 = [];
 		var tan2 = [];
