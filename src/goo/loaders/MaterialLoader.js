@@ -7,8 +7,8 @@ define([
 		'goo/renderer/TextureCreator',
 		'goo/renderer/Material'
 	],
-/** @lends MaterialLoader */
-function(
+	/** @lends MaterialLoader */
+	function(
 		Promise,
 		Ajax,
 		MeshData,

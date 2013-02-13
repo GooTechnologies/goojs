@@ -1,15 +1,17 @@
 /* jshint bitwise: false */
 define([
+		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 
-		'goo/util/Promise',
+		'goo/util/Deferred',
 		'goo/util/Ajax'
 	],
 /** @lends SceneLoader */
 function(
+		Loader,
 		EntityLoader,
 
-		Promise,
+		Deferred,
 		Ajax
 	) {
 	"use strict";
@@ -30,80 +32,43 @@ function(
 	/*
 	 *
 	 */
-	function SceneLoader(world, rootUrl) {
-		this._rootUrl = rootUrl || '';
-		this._world = (typeof world !== "undefined" && world !== null) ? world : null;
+	function SceneLoader(parameters) {
+		this._loader = new Loader(parameters);
+		
+		if(typeof parameters.world !== "undefined" && parameters.world !== null) {
+			this._world;
+		} else {
+			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
+		}
 	}
 
-	SceneLoader.prototype.setRootUrl = function(rootUrl) {
-		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
-		this._rootUrl = rootUrl;
-
-		return this;
-	};
-
-	SceneLoader.prototype.setWorld = function(world) {
-		if(typeof world === "undefined" && world === null) { return this; }
-		this._world = world;
-
-		return this;
-	};
-
-	SceneLoader.prototype.load = function(sourcePath) {
-		var promise = new Promise();
-		if(this._world === null) { promise._reject('World was undefined/null'); }
-		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
-
+	SceneLoader.prototype.load = function(scenePath) {
+		var deferred = new Deferred();
 		var that = this;
+		
+		this._loader.load(scenePath)
+		.done(function(sceneSource) {
 
-		// REVIEW: Unclear. Why do we check the promise's state?
-		if(promise._state === 'pending')
-		{
-			new Ajax({
-				url: this._rootUrl + sourcePath // It's gotta be a json object!
+			that._parseScene(sceneSource, scenePath)
+			.done(function(world) {
+				deferred.resolve(world);
 			})
-			.done(function(request) {
-				that._parseScene(that._handleRequest(request), sourcePath)
-					.done(function(data) {
-						promise._resolve(data);
-					})
-					.fail(function(data) {
-						promise._reject(data);
-					});
-			})
-			.fail(function(data) {
-				promise._reject(data.responseText);
+			.fail(function(message) {
+				deferred.reject(message);
 			});
-		}
 
-		return promise;
+		})
+		.fail(function(message) {
+			deferred.reject(message);
+		});
+
+		return deferred.promise();
 	};
 
-	// REVIEW: Can this method name be made clearer? Like `getContentFromRequest` or something?
-	SceneLoader.prototype._handleRequest = function(request) {
-		var json = null;
-
-		// REVIEW: Why ignore the wrong content-type? Shouldn't that be an error?
-		if(request && request.getResponseHeader('Content-Type') === 'application/json')
-		{
-			try
-			{
-				json = JSON.parse(request.responseText);
-			}
-			catch (e)
-			{
-				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
-			}
-		}
-
-		return json;
-	};
-
-	SceneLoader.prototype._parseScene = function(sceneSource, sceneUrl) {
-		// REVIEW: One var statement per line. Yes, I know that's is against Crockford style, but this is ugly!
-		var promise = new Promise(),
-			promises = [],
-			that = this;
+	SceneLoader.prototype._parseScene = function(sceneSource, scenePath) {
+		var deferred = new Deferred();
+		var promises = [];
+		var that = this;
 
 
 		// If we got files, then let's do stuff with the files!
@@ -120,31 +85,31 @@ function(
 				
 				if(match !== null)
 				{
-					promises.push(entityLoader.load(sceneUrl + '/' + fileName));
+					promises.push(entityLoader.load(scenePath + '/' + fileName));
 				}
 				
 			}
 		}
 		else
 		{
-			promise._reject('Couldn\'t load from source: ' + sceneSource);
-			// REVIEW: This falls through to the "when" below. Is this right?
+			deferred.reject('Couldn\'t load from source: ' + sceneSource);
+			return deferred.promise();
 		}
 
 
-		// REVIEW: Why call apply with `this`? Is `this` a promise!?
-		// Is it supposed to be `Promise.when.apply(promise, promises)`?
-		Promise.when.apply(this, promises)
+		// Create an deferred object that resolves when all promise-objects
+		// in the `promise` array are resolved (or rejects when _any one_ is rejected) 
+		new Deferred().when.apply(null, promises)
 			.done(function(entities) {
 				for(var i in entities) { entities[i].addToWorld(); }
 				that._world.process();
-				promise._resolve(that._world);
+				deferred.resolve(that._world);
 			})
 			.fail(function(data) {
-				promise._reject(data);
+				deferred.reject(data);
 			});
 		
-		return promise;
+		return deferred.promise();
 	};
 
 
