@@ -135,6 +135,15 @@ define([
 
 			// Transform the vertices to world space with the entity's world transformation.
 			
+/*
+
+REVIEW:
+
+If you combine the two matrices before applying them to the vectors (outside of
+the loop), you will save alot of computational resources.
+
+*/
+
 			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 			entitityWorldTransformMatrix.applyPost(v1);
 			entitityWorldTransformMatrix.applyPost(v2);
@@ -269,6 +278,19 @@ define([
 
 		return triangles;
 	};
+
+/*
+
+REVIEW:
+
+Calculating intersections from normalized direction vectors is unnecessary.
+Consider using the following formula given an origin vertex infront of the near
+plane (invisible) and a target vertex behind the near plane (visible):
+
+t = (origin.z - near)/(origin.z - target.z);
+intersection = (target - origin)*t;
+
+*/
 
 	/*
 	*	Creates a normalized direction from the origin and target vectors
