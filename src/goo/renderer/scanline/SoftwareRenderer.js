@@ -113,10 +113,10 @@ define([
 
 		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
 		
-		var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
-
+	//	var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
+		var cameraNear = -this.camera.near;
 
 		var timerStart = performance.now();
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
@@ -154,8 +154,7 @@ define([
 			// The inside indices are the ones on the inside.
 			var outsideIndices = [];
 			var insideIndices = [];
-
-			var cameraNear = -this.camera.near;
+	
 			for ( var i = 0; i < 3; i++ ) {
 				
 				if (vertices[i].z < cameraNear) {
@@ -194,7 +193,7 @@ define([
 
 					ratio = this.calculateIntersectionRatio(origin, target);
 
-					var vxx = new Vector4(
+					var newV2 = new Vector4(
 					origin.x + target.x * ratio,
 					origin.y + target.y * ratio,
 					origin.z + target.z * ratio,
@@ -202,7 +201,7 @@ define([
 					);
 
 					vertices[outsideIndices[0]].set(newV1);
-					vertices.push(vxx);
+					vertices.push(newV2);
 
 					break;
 				case 2:
@@ -227,71 +226,42 @@ define([
 					break;
 			}
 
-			// Transform the objects with the camera's model view projection matrix.			
-			/*
-			cameraMVPMatrix.applyPost(v1);
-			cameraMVPMatrix.applyPost(v2);
-			cameraMVPMatrix.applyPost(v3);
-			*/
-
+			// Projection and homogeneous division transformation
 			for (var i = 0; i < vertices.length; i++) {
 				var v = vertices[i];
 				cameraProjectionMatrix.applyPost(v);
-				v.mul(1.0/ v.w);
+				v.mul(1.0 / v.w);
+				//console.log(v.z);
 			}
-
-			/*
-			cameraProjectionMatrix.applyPost(v1);
-			cameraProjectionMatrix.applyPost(v2);
-			cameraProjectionMatrix.applyPost(v3);
-		
-			// Homogeneous division.
-			v1.mul(1.0 / v1.w);
-			v2.mul(1.0 / v2.w);
-			v3.mul(1.0 / v3.w);
-
-				*/
-
 
 			// TODO: Check if this is the optimal place in the pipeline to do backface culling
 			// 		 Assumed I had to do this here since the perspective transformed triangles'
 			//		 visibility might differ from the world transformed.
 			
 			// Back-face culling.
-			if ( this.isBackFacing( v1,v2,v3 ) ) {
+			if (this.isBackFacing(v1,v2,v3)) {
 				continue;
 			}
-
-
-			/*
+			
 			// Transform the vertices to screen space
-			this.transformToScreenSpace(v1);
-			this.transformToScreenSpace(v2);
-			this.transformToScreenSpace(v3);
-			*/
 			for (var i = 0; i < vertices.length; i++) {
 				this.transformToScreenSpace(vertices[i]);
 			}
 
 			// Create the triangle(s)
-			if ( vertices.length ==  4 ) {
+			if (vertices.length ==  4) {
 				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
 				// The "extra vertex" is at position 3 in the array.
-				var index1 = insideIndices[0];
-				var index2 = insideIndices[1];
 
-				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[index1], vertices[3]);
-				var triangle2 = new Triangle(vertices[3], vertices[index1], vertices[index2]);
+				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]);
+				var triangle2 = new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]);
 
 				triangles.push(triangle1);
 				triangles.push(triangle2);
 
 			} else {
-				var triangle = new Triangle(v1, v2, v3);
-				triangles.push(triangle);
+				triangles.push(new Triangle(v1, v2, v3));
 			}
-
-			
 		}
 
 		var timerStop = performance.now();
@@ -301,19 +271,22 @@ define([
 	};
 
 	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, target) {
-	
-		// Dot product only simplified due to plane normal being [0,0,-1];
-		var denominator = (target.z - origin.z);
+			
+		var direction = new Vector3(
+				target.x - origin.x,
+				target.y - origin.y,
+				target.z - origin.z
+			);
 
-		// Plane constant == distance to the plane frmo the origin according to the Plane.js documentation.
-		var numerator = -origin.z -this.camera.near;
-		var ratio = numerator / denominator;
+		//direction.normalize();
 
-		if ( ratio < 0 ) {
-			console.error("this is wrong");
-		}
 
-		return ratio;	
+		// Dot product only simplified due to plane normal being [0,0,1];
+		// Only need to account for the z-coordinates.
+		
+		// Ratio = - (origin dot planeNormal + planeConstant / (direction dot planeNormal))
+		return -(origin.z + this.camera.near) / direction.z;
+
 	};
 
 	/*
