@@ -159,8 +159,7 @@ define([
 				
 				if (vertices[i].z < cameraNear) {
 					insideIndices.push(i);
-				}
-				else {
+				} else {
 					outsideIndices.push(i);
 				}
 			}
@@ -179,24 +178,23 @@ define([
 
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-
-					var ratio = this.calculateIntersectionRatio(origin, target);
+					var direction = this.createDirectionVector(origin, target);
+					var ratio = this.calculateIntersectionRatio(origin, direction);
 
 					var newV1 = [
-						origin.x + target.x * ratio,
-						origin.y + target.y * ratio,
-						origin.z + target.z * ratio,
-						1.0
+						origin.x + direction.x * ratio,
+						origin.y + direction.y * ratio,
+						origin.z + direction.z * ratio
 					];
 
 					target = vertices[insideIndices[1]];
-
-					ratio = this.calculateIntersectionRatio(origin, target);
+					direction = this.createDirectionVector(origin, target);
+					ratio = this.calculateIntersectionRatio(origin, direction);
 
 					var newV2 = new Vector4(
-					origin.x + target.x * ratio,
-					origin.y + target.y * ratio,
-					origin.z + target.z * ratio,
+					origin.x + direction.x * ratio,
+					origin.y + direction.y * ratio,
+					origin.z + direction.z * ratio,
 					1.0
 					);
 
@@ -206,22 +204,24 @@ define([
 					break;
 				case 2:
 					// Update the two outside vertices to their new positions on the near plane.
+					// First vertex update
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
+					var direction = this.createDirectionVector(origin, target);
+					var ratio = this.calculateIntersectionRatio(origin, direction);
 
-					var ratio = this.calculateIntersectionRatio(origin, target, cameraNear);
+					origin.x += ratio * direction.x;
+					origin.y += ratio * direction.y;
+					origin.z += ratio * direction.z;
 
-					origin.x += ratio * target.x;
-					origin.y += ratio * target.y;
-					origin.z += ratio * target.z;
-
+					// Second vertex update
 					origin = vertices[outsideIndices[1]];
+					direction = this.createDirectionVector(origin, target);
+					ratio = this.calculateIntersectionRatio(origin, direction);
 
-					ratio = this.calculateIntersectionRatio(origin, target, cameraNear);
-
-					origin.x += ratio * target.x;
-					origin.y += ratio * target.y;
-					origin.z += ratio * target.z;
+					origin.x += ratio * direction.x;
+					origin.y += ratio * direction.y;
+					origin.z += ratio * direction.z;
 
 					break;
 			}
@@ -270,17 +270,31 @@ define([
 		return triangles;
 	};
 
-	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, target) {
-			
+	/*
+	*	Creates a normalized direction from the origin and target vectors
+	*	@param {Vector3} origin
+	*	@param {Vector3} target
+	*/
+	SoftwareRenderer.prototype.createDirectionVector = function(origin, target) {
+
 		var direction = new Vector3(
-				target.x - origin.x,
-				target.y - origin.y,
-				target.z - origin.z
-			);
+			target.x - origin.x,
+			target.y - origin.y,
+			target.z - origin.z
+		);
 
-		//direction.normalize();
+		direction.normalize();
 
+		return direction;
+	};
 
+	/*
+	*	Calculates ray intersection ratio between the camera near plane and the ray created by the parameters.
+	*	@param {Vector3} origin
+	*	@param {Vector3} direction
+	*/
+	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, direction) {
+			
 		// Dot product only simplified due to plane normal being [0,0,1];
 		// Only need to account for the z-coordinates.
 		
