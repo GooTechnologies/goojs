@@ -11,8 +11,12 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 
 		function cloneEntity (world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
-			for (var i=0;i<entity.components.length;i++) {
-				var component = entity.components[i];
+			if (settings.callback) {
+				settings.callback(newEntity);
+			}
+			
+			for (var i=0;i<entity._components.length;i++) {
+				var component = entity._components[i];
 				if (component instanceof TransformComponent) {
 					newEntity.transformComponent.transform.copy(component.transform);
 				} else {
@@ -25,17 +29,36 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 					newEntity.transformComponent.attachChild(clonedChild.transformComponent);
 				}
 			}
+			
+			return newEntity;
 		}
 		
+		/**
+		 * Clone entity hierarcy with optional settings for sharing data and callbacks
+		 */
 		EntityUtils.clone = function (world, entity, settings) {
 			settings = settings || {};
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
 			
-			cloneEntity(world, entity, settings);
+			return cloneEntity(world, entity, settings);
 		};
-		
+
+		/**
+		 * Traverse entity hierarchy with callback
+		 */
+		EntityUtils.traverse = function (entity, callback) {
+			if (callback) {
+				callback(entity);
+			}
+			
+			for (var j=0;j<entity.transformComponent.children.length;j++) {
+				var child = entity.transformComponent.children[j];
+				EntityUtils.traverse(child, callback);
+			}
+		};
+
 		/**
 		 * Creates an entity with the common rendering components.
 		 */

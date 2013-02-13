@@ -44,6 +44,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
+			baseDistance : 150,
 			spherical : new Vector3(150, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
