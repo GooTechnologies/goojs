@@ -113,10 +113,13 @@ define([
 
 		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
 		
-	//	var cameraMVPMatrix = this.camera.getViewProjectionMatrix();
+		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		var cameraNear = -this.camera.near;
+
+		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
+		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		var timerStart = performance.now();
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
@@ -133,28 +136,10 @@ define([
 
 			var vertices = [v1, v2, v3];
 
-			// Transform the vertices to world space with the entity's world transformation.
-			
-/*
-
-REVIEW:
-
-If you combine the two matrices before applying them to the vectors (outside of
-the loop), you will save alot of computational resources.
-
-*/
-
-			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-			entitityWorldTransformMatrix.applyPost(v1);
-			entitityWorldTransformMatrix.applyPost(v2);
-			entitityWorldTransformMatrix.applyPost(v3);
-
-
 			// Transform to camera view space.
-			cameraViewMatrix.applyPost(v1);
-			cameraViewMatrix.applyPost(v2);
-			cameraViewMatrix.applyPost(v3);
-
+			combinedMatrix.applyPost(v1);
+			combinedMatrix.applyPost(v2);
+			combinedMatrix.applyPost(v3);
 
 			// Clip triangle to the near plane.
 
@@ -175,7 +160,7 @@ the loop), you will save alot of computational resources.
 
 			switch (outsideIndices.length) {
 				case 0:
-					// All indices are on the inside. Continue as usual.
+					// All vertices are on the inside. Continue as usual.
 					break;
 				case 3:
 					// All of the vertices are on the outside, skip to the next three vertices.
@@ -187,23 +172,21 @@ the loop), you will save alot of computational resources.
 
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-					var direction = this.createDirectionVector(origin, target);
-					var ratio = this.calculateIntersectionRatio(origin, direction);
+					var ratio = this.calculateIntersectionRatio(origin, target);
 
 					var newV1 = [
-						origin.x + direction.x * ratio,
-						origin.y + direction.y * ratio,
-						origin.z + direction.z * ratio
+						origin.x + ratio * (target.x - origin.x),
+						origin.y + ratio * (target.y - origin.y),
+						origin.z + ratio * (target.z - origin.z)
 					];
 
 					target = vertices[insideIndices[1]];
-					direction = this.createDirectionVector(origin, target);
-					ratio = this.calculateIntersectionRatio(origin, direction);
+					ratio = this.calculateIntersectionRatio(origin, target);
 
 					var newV2 = new Vector4(
-					origin.x + direction.x * ratio,
-					origin.y + direction.y * ratio,
-					origin.z + direction.z * ratio,
+					origin.x + ratio * (target.x - origin.x),
+					origin.y + ratio * (target.y - origin.y),
+					origin.z + ratio * (target.z - origin.z),
 					1.0
 					);
 
@@ -216,21 +199,20 @@ the loop), you will save alot of computational resources.
 					// First vertex update
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-					var direction = this.createDirectionVector(origin, target);
-					var ratio = this.calculateIntersectionRatio(origin, direction);
 
-					origin.x += ratio * direction.x;
-					origin.y += ratio * direction.y;
-					origin.z += ratio * direction.z;
+					var ratio = this.calculateIntersectionRatio(origin, target);
+
+					origin.x += ratio * (target.x - origin.x);
+					origin.y += ratio * (target.y - origin.y);
+					origin.z += ratio * (target.z - origin.z);
 
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
-					direction = this.createDirectionVector(origin, target);
-					ratio = this.calculateIntersectionRatio(origin, direction);
+					ratio = this.calculateIntersectionRatio(origin, target);
 
-					origin.x += ratio * direction.x;
-					origin.y += ratio * direction.y;
-					origin.z += ratio * direction.z;
+					origin.x += ratio * (target.x - origin.x);
+					origin.y += ratio * (target.y - origin.y);
+					origin.z += ratio * (target.z - origin.z);
 
 					break;
 			}
@@ -240,27 +222,29 @@ the loop), you will save alot of computational resources.
 				var v = vertices[i];
 				cameraProjectionMatrix.applyPost(v);
 				v.mul(1.0 / v.w);
-				//console.log(v.z);
 			}
-
-			// TODO: Check if this is the optimal place in the pipeline to do backface culling
-			// 		 Assumed I had to do this here since the perspective transformed triangles'
-			//		 visibility might differ from the world transformed.
 			
 			// Back-face culling.
 			if (this.isBackFacing(v1,v2,v3)) {
-				continue;
+				continue; // Skip loop to the next three vertices.
 			}
 			
 			// Transform the vertices to screen space
-			for (var i = 0; i < vertices.length; i++) {
-				this.transformToScreenSpace(vertices[i]);
-			}
+			this.transformToScreenSpace(vertices);
 
 			// Create the triangle(s)
 			if (vertices.length ==  4) {
 				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
 				// The "extra vertex" is at position 3 in the array.
+
+				// TODO: This triangle creation has to be evaluated more, I think the current
+				// implementation will switch the order of the triangle 
+				// when the outside vertex is the second in the vertexarray.
+				/*
+				if ( outsideIndices[0] == 1 ) {
+					console.log("Does stuff look funky now?");
+				}
+				*/
 
 				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]);
 				var triangle2 = new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]);
@@ -279,66 +263,47 @@ the loop), you will save alot of computational resources.
 		return triangles;
 	};
 
-/*
-
-REVIEW:
-
-Calculating intersections from normalized direction vectors is unnecessary.
-Consider using the following formula given an origin vertex infront of the near
-plane (invisible) and a target vertex behind the near plane (visible):
-
-t = (origin.z - near)/(origin.z - target.z);
-intersection = (target - origin)*t;
-
-*/
-
 	/*
-	*	Creates a normalized direction from the origin and target vectors
+	*	Calculates the intersection ratio between the parameters with the camera's near plane.
+	*	
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
 	*/
-	SoftwareRenderer.prototype.createDirectionVector = function(origin, target) {
-
-		var direction = new Vector3(
-			target.x - origin.x,
-			target.y - origin.y,
-			target.z - origin.z
-		);
-
-		direction.normalize();
-
-		return direction;
-	};
-
-	/*
-	*	Calculates ray intersection ratio between the camera near plane and the ray created by the parameters.
-	*	@param {Vector3} origin
-	*	@param {Vector3} direction
-	*/
-	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, direction) {
+	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, target) {
 			
-		// Dot product only simplified due to plane normal being [0,0,1];
-		// Only need to account for the z-coordinates.
-		
-		// Ratio = - (origin dot planeNormal + planeConstant / (direction dot planeNormal))
-		return -(origin.z + this.camera.near) / direction.z;
+		// Using a tip from Joel: 
+		// The intersection ratio can be calculated using the respective lenghts of the
+		// endpoints (origin and target) to the near plane.
+
+		// The camera's near plane component is the translation of the near plane,
+		// therefore 'a' is caluclated as origin.z + camera.near
+		// var a = origin.z + this.camera.near;
+		// var b = -this.camera.near - target.z;
+		// var ratio = a/(a+b);
+
+		// Simplified the ratio to :
+		return (origin.z + this.camera.near) / (origin.z - target.z);
 
 	};
 
 	/*
-	*	Transforms the vertex' x and y coordinates into pixel coordinates of the screen.
-	*	@param {Vector} vertex, the vertex to be transformed.
+	*	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
+	*	@param {Vector[]} vertexArray, the vertices to be transformed.
 	*/
-	SoftwareRenderer.prototype.transformToScreenSpace = function (vertex) {
+	SoftwareRenderer.prototype.transformToScreenSpace = function (vertices) {
 
-		// These calculations assume that the camera's viewPortRight and viewPortTop are 1, 
-		// while the viewPortLeft and viewPortBottom are 0.
-		vertex.x = (vertex.x + 1.0) * (this.width / 2);
-		vertex.y = (vertex.y + 1.0) * (this.height / 2);
-		// TODO: Revise how to transform the z value, if it at all should be transformed.
-		// store.z = (store.z + 1) / 2;
-		vertex.z = (vertex.z + 1) / 2;
+		for (var i = 0; i < vertices.length; i++) {
 
+			var vertex = vertices[i];
+
+			// These calculations assume that the camera's viewPortRight and viewPortTop are 1, 
+			// while the viewPortLeft and viewPortBottom are 0.
+			vertex.x = (vertex.x + 1.0) * (this.width / 2);
+			vertex.y = (vertex.y + 1.0) * (this.height / 2);
+			
+			// TODO: Revise how to transform the z value, if it at all should be transformed.
+			vertex.z = (vertex.z + 1) / 2;
+		}
 	};
 
 	/*
@@ -427,7 +392,7 @@ intersection = (target - origin)*t;
         }
 
         if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.width ) {
-        	console.log("Triangle is outside the view, skipping rendering it");
+        	//console.log("Triangle is outside the view, skipping rendering it");
         	return;
         }
 		
