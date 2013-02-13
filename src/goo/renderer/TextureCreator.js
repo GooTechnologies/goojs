@@ -1,4 +1,4 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'],
+define(['goo/loaders/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'],
 	/** @lends TextureCreator */
 	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
 	"use strict";
