@@ -3,16 +3,13 @@ define([
 		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 
-		'goo/util/Deferred',
-		'goo/util/Ajax'
+		'lib/rsvp.amd'
 	],
 /** @lends SceneLoader */
 function(
 		Loader,
 		EntityLoader,
-
-		Deferred,
-		Ajax
+		RSVP
 	) {
 	"use strict";
 
@@ -55,10 +52,11 @@ function(
 	};
 
 	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 		var promises = [];
 		var that = this;
 
+console.log(sceneSource);
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
@@ -83,25 +81,35 @@ function(
 		}
 		else
 		{
-			deferred.reject('Couldn\'t load from source: ' + sceneSource);
-			return deferred.promise();
+			promise.reject('Couldn\'t load from source: ' + sceneSource);
+			return promise;
 		}
 
-		// Create an deferred object that resolves when all promise-objects
-		// in the `promise` array are resolved (or rejects when _any one_ is rejected) 
-		Deferred.when.apply(null, promises)
-			.done(function(entities) {
-				for(var i in entities) { entities[i].addToWorld(); }
-				that._world.process();
-				deferred.resolve(that._world);
-			})
-			.fail(function(data) {
-				deferred.reject(data);
-			});
+		// Create a promise that resolves when all promise-objects
+		RSVP.all(promises)
+		.then(function(entities) {
+			try {
+				var w = that._buildWorld(entities);
+				promise.resolve(w);
+				return;
+			} catch(e) {
+				promise.reject(e);
+			}
+
+		}, function(reason) {
+			promise.reject(reason);
+		});
 		
-		return deferred.promise();
+		return promise;
 	};
 
+	SceneLoader.prototype._buildWorld = function(entities) {
+		for(var i in entities) {
+			entities[i].addToWorld();
+		}
+		this._world.process();
+		return this._world;
+	};
 
 	return SceneLoader;
 });

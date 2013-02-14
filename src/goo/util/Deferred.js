@@ -61,24 +61,24 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.resolve = function(data) {
-		if(this.promise()._state === 'pending') {
+		if(this._promise._state === 'pending') {
 
-			this.promise()._data = data;
+			this._promise._data = data;
 
-			this.promise()._resolved.every(function(fn) {
+			this._promise._resolved.every(function(fn) {
 				fn(data);
 				return true;
 			});
 
-			this.promise()._always.every(function(fn) {
+			this._promise._always.every(function(fn) {
 				fn(data);
 				return true;
 			});
 
-			this.promise()._state = 'resolved';
+			this._promise._state = 'resolved';
 		}
 
-		return this.promise();
+		return this._promise;
 	};
 
 	/**
@@ -87,10 +87,10 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.reject = function(data) {
-		if(this.promise()._state === 'pending') {
-			this.promise()._data = data;
+		if(this._promise._state === 'pending') {
+			this._promise._data = data;
 
-			this.promise()._rejected.every(function(fn) {
+			this._promise._rejected.every(function(fn) {
 				if(data instanceof Error) {
 					throw data;
 				}
@@ -98,15 +98,15 @@ define([
 				return true;
 			});
 
-			this.promise()._always.every(function(fn) {
+			this._promise._always.every(function(fn) {
 				fn(data);
 				return true;
 			});
 
-			this.promise()._state = 'rejected';
+			this._promise._state = 'rejected';
 		}
 
-		return this.promise();
+		return this._promise;
 	};
 
 	/**
@@ -117,7 +117,7 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.then = function(resolvedHandler, rejectedHandler) {
-		return this.promise().then(resolvedHandler, rejectedHandler);
+		return this._promise.then(resolvedHandler, rejectedHandler);
 	};
 
 	/**
@@ -127,7 +127,7 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.done = function(resolvedHandler) {
-		return this.promise().done(resolvedHandler);
+		return this._promise.done(resolvedHandler);
 	};
 	
 	/**
@@ -137,7 +137,7 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.fail = function(rejectedHandler) {
-		return this.promise().fail(rejectedHandler);
+		return this._promise.fail(rejectedHandler);
 	};
 
 	/**
@@ -147,7 +147,7 @@ define([
 	 * @return {Promise} Returns the Deferred's internal Promise.
 	 */
 	Deferred.prototype.always = function(alwaysHandler) {
-		return this.promise().always(alwaysHandler);
+		return this._promise.always(alwaysHandler);
 	};
 
 	/**

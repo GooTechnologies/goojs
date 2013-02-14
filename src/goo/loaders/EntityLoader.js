@@ -9,8 +9,7 @@ define([
 		'goo/entities/components/MeshDataComponent',
 		'goo/math/Vector3',
 
-		'goo/util/Deferred',
-		'goo/util/Ajax',
+		'lib/rsvp.amd',
 
 		'goo/loaders/MaterialLoader',
 		'goo/loaders/MeshLoader',
@@ -26,8 +25,7 @@ function(
 		MeshDataComponent,
 		Vector3,
 
-		Deferred,
-		Ajax,
+		RSVP,
 
 		MaterialLoader,
 		MeshLoader,
@@ -74,11 +72,11 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 		var promises = {}; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
-
+console.log(entitySource);
 		if(entitySource && Object.keys(entitySource.components).length) {
 			var component;
 
@@ -93,32 +91,34 @@ function(
 
 				} else if(type === 'meshRenderer') {
 					promises[type] = this._getMeshRendererComponent(component)
-					.done(function(meshRendererComponent) {
+					.then(function(meshRendererComponent) {
 						loadedComponents.push(meshRendererComponent);
-					})
-					.fail(function(message) {
-						deferred.reject(message);
+					},
+					function(message) {
+						promise.reject(message);
 					});
 
 				} else if(type === 'meshData') {
 					promises[type] = this._getMeshDataComponent(component)
-					.done(function(meshRendererComponent) {
+					.then(function(meshRendererComponent) {
 						loadedComponents.push(meshRendererComponent);
-					})
-					.fail(function(message) {
-						deferred.reject(message);
+					},
+					function(message) {
+						promise.reject(message);
 					});
 
 				}
 			}
 		} else {
-			deferred.reject('Couldn\'t load entity from source: ' + entitySource);
+			promise.reject('Couldn\'t load entity from source: ' + entitySource);
 		}
-
+promise.resolve('mogens');
 		// When all promises are processed we want to
 		// either create an entity or return an error
-		Deferred.when(promises.meshRenderer, promises.meshData)
-		.done(function(components) {
+/*
+		RSVP.all(promises)
+		.then(function(components) {
+			console.log(components);
 
 			var entity = new Entity(that._world);
 			
@@ -130,13 +130,13 @@ function(
 				entity.setComponent(loadedComponents[i]);
 			}
 			
-			deferred.resolve(entity);
-		})
-		.fail(function(data) {
-			deferred.reject(data);
+			promise.resolve(entity);
+		},
+		function(data) {
+			promise.reject(data);
 		});
-
-		return deferred.promise();
+*/
+		return promise;
 	};
 
 	EntityLoader.prototype._getTransformComponent = function(transformComponentSource) {
@@ -166,8 +166,7 @@ function(
 	};
 
 	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
-		var deferred = new Deferred();
-
+		
 		for(var attribute in meshRendererComponentSource) {
 			var materialsPromises = [];
 			if(attribute === 'materials') {
@@ -177,26 +176,27 @@ function(
 			}
 
 			// When all materials have been loaded
-			Deferred.when.apply(this, materialsPromises)
-			.done(function(materials) {
+			var promise = RSVP.all(materialsPromises)
+			.then(function(materials) {
 				
 				var mrc = new MeshRendererComponent();
 				for(var i in materials) {
 					mrc.materials.push(materials[i]);
 				}
 				
-				deferred.resolve(mrc);
-			})
-			.fail(function(data) {
-				deferred.reject(data);
+				promise.resolve(mrc);
+			},
+			function(data) {
+				promise.reject(data);
 			});
 		}
 
-		return deferred.promise();
+		return promise;
 	};
 
+
 	EntityLoader.prototype._getMeshDataComponent = function(meshDataComponentSource) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 
 		for(var attribute in meshDataComponentSource) {
 			var meshDataPromises = {};
@@ -205,20 +205,20 @@ function(
 			}
 
 			// When the mesh is loaded
-			Deferred.when(meshDataPromises.mesh)
-			.done(function(data) {
+			RSVP.all(meshDataPromises.mesh)
+			.then(function(data) {
 				
 				// We placed the meshDataPromise first so it's at index 0 
 				var mdc = new MeshDataComponent(data[0]);
 				
-				deferred.resolve(mdc);
-			})
-			.fail(function(message) {
-				deferred.reject(message);
+				promise.resolve(mdc);
+			},
+			function(message) {
+				promise.reject(message);
 			});
 		}
 
-		return deferred.promise();
+		return promise;
 	};
 
 

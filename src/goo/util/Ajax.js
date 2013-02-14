@@ -1,9 +1,7 @@
 define([
-		'goo/util/Deferred',
-		'goo/util/Promise'
+		'lib/rsvp.amd'
 	], function(
-		Deferred,
-		Promise
+		RSVP
 	) {
 
 	/**
@@ -13,9 +11,7 @@ define([
 	 * @param {Object} [options={ url: '', method: 'URL' }] The XHR options.
 	 */
 	function Ajax(options) {
-		Promise.call(this);
-
-		var deferred = new Deferred(this);
+		RSVP.Promise.call(this);
 		
 		options = options || {};
 
@@ -29,16 +25,16 @@ define([
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
 				if ( request.status >= 200 && request.status <= 299 ) {
-					deferred.resolve(request);
+					that.resolve(request);
 				} else {
-					deferred.reject(request);
+					that.reject(request);
 				}
 			}
 		};
 
 		request.send();
 	}
-	Ajax.prototype = new Promise();
+	Ajax.prototype = new RSVP.Promise();
 	Ajax.prototype.constructor = Ajax;
 
 	return Ajax;

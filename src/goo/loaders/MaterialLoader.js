@@ -1,6 +1,6 @@
 /* jshint bitwise: false */
 define([
-		'goo/util/Deferred',
+		'lib/rsvp.amd',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
@@ -9,7 +9,7 @@ define([
 	],
 	/** @lends MaterialLoader */
 	function(
-		Deferred,
+		RSVP,
 		MeshData,
 		Shader,
 		TextureCreator,
@@ -50,7 +50,7 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 		var promises = {}; // Keep track of promises
 		var shaderDefinition = this._getDefaultShaderDefinition();
 		var materialState = this._getDefaultMaterialState();
@@ -84,46 +84,45 @@ define([
 		}
 		else
 		{
-			deferred.reject('Couldn\'t load from source: ' + materialDataSource);
+			promise.reject('Couldn\'t load from source: ' + materialDataSource);
 		}
 
 		var that = this;
-		Deferred.when(promises.shader)
-		.done(function(data) {
+		RSVP.all([promises.shader])
+		.then(function(data) {
 
-			that._parseShaderDefinition(data[0])
-			.done(function(data) {
-
-				shaderDefinition.vshader = data.vshader;
-				shaderDefinition.fshader = data.fshader;
-
-				var material = Material.createMaterial(shaderDefinition);
-				
-				material.textures = textures;
-				material.materialState = materialState;
-
-				deferred.resolve(material);
-				
-			})
-			.fail(function(data) {
-				deferred.reject(data);
-			});
-		
+			return that._parseShaderDefinition(data[0]);
+		},
+		function(data) {
+			promise.reject(data);
 		})
-		.fail(function(data) {
-			deferred.reject(data);
+		.then(function(data) {
+
+			shaderDefinition.vshader = data.vshader;
+			shaderDefinition.fshader = data.fshader;
+
+			var material = Material.createMaterial(shaderDefinition);
+			
+			material.textures = textures;
+			material.materialState = materialState;
+
+			promise.resolve(material);
+			
+		},
+		function(data) {
+			promise.reject(data);
 		});
 
-		return deferred.promise();
+		return promise;
 	};
 
 	MaterialLoader.prototype._parseShaderDefinition = function(shaderDataSource) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 		var promises = {};
 
 		if(shaderDataSource && Object.keys(shaderDataSource).length) {
 			if(shaderDataSource.vs === null || shaderDataSource.fs === null) {
-				deferred.reject('Could not load shader:\n' + shaderDataSource);
+				promise.reject('Could not load shader:\n' + shaderDataSource);
 			}
 
 			var value;
@@ -135,11 +134,11 @@ define([
 		}
 		else
 		{
-			deferred.reject('Couldn\'t load from source: ' + shaderDataSource);
+			promise.reject('Couldn\'t load from source: ' + shaderDataSource);
 		}
 
-		Deferred.when(promises.vs, promises.fs)
-		.done(function(data) {
+		RSVP.all([promises.vs, promises.fs])
+		.then(function(data) {
 			
 			if(data.length === 2) {
 				// We know that we asked for the vertex shader first and fragment second
@@ -148,16 +147,16 @@ define([
 					fshader : data[1]
 				};
 
-				deferred.resolve(shaderDefinition);
+				promise.resolve(shaderDefinition);
 			} else {
-				deferred.reject('Shader pair couldn\'t be loaded.');
+				promise.reject('Shader pair couldn\'t be loaded.');
 			}
-		})
-		.fail(function(data) {
-			deferred.reject(data);
+		},
+		function(data) {
+			promise.reject(data);
 		});
 
-		return deferred.promise();
+		return promise;
 	};
 
 	MaterialLoader.prototype._getDefaultShaderDefinition = function() {

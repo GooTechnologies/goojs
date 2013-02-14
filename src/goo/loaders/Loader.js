@@ -1,12 +1,10 @@
 define([
-		'goo/util/Deferred',
-		'goo/util/Promise',
+		'lib/rsvp.amd',
 		'goo/util/Ajax'
 	],
 	/** @lends Loader */
 	function (
-		Deferred,
-		Promise,
+		RSVP,
 		Ajax
 	) {
 	"use strict";
@@ -37,47 +35,26 @@ define([
 			throw new Error('Loader(): `path` was undefined/null');
 		}
 
-		var deferred = new Deferred();
-
 		var ajaxProperties = {
 			url: this._buildURL(path)
 		};
+		
+		console.log(ajaxProperties.url);
 
 		var that = this;
-		new Ajax(ajaxProperties)
-		.done(function(request) {
-			try {
-				var data = that._getDataFromSuccessfulRequest(request, ajaxProperties);
-
-				// If we have a parser, let it parse the data
-				if(typeof parser === 'function') {
-					
-					var p = parser(data);
-					if(p instanceof Promise) {
-						p.done(function(data) {
-						deferred.resolve(data);
-						})
-						.fail(function(message) {
-							deferred.reject(message);
-						});
-					} else {
-						deferred.resolve(p);
-					}
-					// Make sure we don't fall through
-					return;
-				}
-
-				// If we don't have a parser, then just resolve with the data
-				deferred.resolve(data);
-			} catch(e) {
-				deferred.reject(e);
-			}
+		var promise = new Ajax(ajaxProperties)
+		.then(function(request) {
+			return that._getDataFromSuccessfulRequest(request, ajaxProperties);
 		})
-		.fail(function(reason) {
-			deferred.reject(reason);
+		.then(function(data) {
+			return (typeof parser === 'function') ? parser(data) : data;
+		})
+		.then(function(parsed) {
+			console.log(parsed);
+			promise.resolve(parsed);
 		});
 
-		return deferred.promise();
+		return promise;
 	};
 
 	Loader.prototype._getDataFromSuccessfulRequest = function(request, ajaxProperties) {
@@ -114,7 +91,7 @@ define([
 	 * @return {Promise} The promise is resolved with an Image object.
 	 */
 	Loader.prototype.loadImage = function (url) {
-		var deferred = new Deferred();
+		var promise = new RSVP.Promise();
 		var image = new Image();
 		var _url = this._buildURL(url);
 		
@@ -124,16 +101,16 @@ define([
 		image.addEventListener('load', function () {
 			console.log('Loaded image: ' + _url);
 			image.dataReady = true;
-			deferred.resolve(image);
+			promise.resolve(image);
 		}, false);
 
 		image.addEventListener('error', function () {
-			deferred.reject('Loader.loadImage(): Couldn\'t load from [' + _url + ']');
+			promise.reject('Loader.loadImage(): Couldn\'t load from [' + _url + ']');
 		}, false);
 
 		image.src = _url;
 
-		return deferred.promise();
+		return promise;
 	};
 
 	Loader.prototype._buildURL = function(URLString) {

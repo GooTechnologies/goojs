@@ -77,7 +77,7 @@ define(['goo/loaders/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader
 		var texture = new Texture();
 
 		// Load the actual image
-		new Loader().loadImage(imageURL).done(function(data) {
+		new Loader().loadImage(imageURL).then(function(data) {
 			texture.setImage(data);
 			TextureCreator.cache[imageURL] = texture;
 		});

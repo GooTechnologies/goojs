@@ -1,13 +1,13 @@
 /*jshint bitwise: false */
 define([
-		'goo/util/Deferred',
+		'lib/rsvp.amd',
 		'goo/loaders/JsonUtils',
 		'goo/loaders/Loader',
 		'goo/renderer/MeshData'
 	],
 /** @lends MeshLoader */
 function(
-	Deferred,
+	RSVP,
 	JsonUtils,
 	Loader,
 	MeshData
@@ -48,8 +48,7 @@ function(
 
 	MeshLoader.prototype._parse = function(data) {
 		var that = this;
-		var deferred = new Deferred();
-		var promise = {};
+		var promise = new RSVP.Promise();
 		var meshData;
 
 		if(data && Object.keys(data).length)
@@ -62,14 +61,14 @@ function(
 				that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
 			}
 			meshData = that._parseMeshData(data, 0, 'Mesh');
-			deferred.resolve(meshData);
+			promise.resolve(meshData);
 		}
 		else
 		{
-			deferred.reject('Couldn\'t load from source: ' + data);
+			promise.reject('Couldn\'t load from source: ' + data);
 		}
 
-		return deferred.promise();
+		return promise;
 	};
 
 	MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
