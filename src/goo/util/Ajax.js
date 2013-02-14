@@ -6,6 +6,12 @@ define([
 		Promise
 	) {
 
+	/**
+	 * Subclass of Promise. Wrapper class around an XHR call.
+	 *
+	 * @constructor
+	 * @param {Object} [options={ url: '', method: 'URL' }] The XHR options.
+	 */
 	function Ajax(options) {
 		Promise.call(this);
 
