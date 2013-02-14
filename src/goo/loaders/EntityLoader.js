@@ -13,7 +13,8 @@ define([
 		'goo/util/Ajax',
 
 		'goo/loaders/MaterialLoader',
-		'goo/loaders/MeshLoader'
+		'goo/loaders/MeshLoader',
+		'goo/loaders/Loader'
 	],
 /** @lends EntityLoader */
 function(
@@ -29,49 +30,50 @@ function(
 		Ajax,
 
 		MaterialLoader,
-		MeshLoader
+		MeshLoader,
+		Loader
 	) {
 	"use strict";
 
-	/*
+	/**
+	 * Utility class for loading an entities into a World.
 	 *
+	 * @constructor
+	 * @param {World} parameters.world The target World object.
+	 * @param {Loader} parameters.loader
 	 */
 	function EntityLoader(parameters) {
-		this._loader = new Loader(parameters);
-		
-		if(typeof parameters.world !== "undefined" && parameters.world !== null) {
-			this._world;
-		} else {
-			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
+		if(typeof parameters === "undefined" || parameters === null) {
+			throw new Error('EntityLoader(): Argument `parameters` was undefined/null');
 		}
+
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+			throw new Error('EntityLoader(): Argument `parameters.loader` was invalid/undefined/null');
+		}
+
+		if(typeof parameters.world === "undefined" || parameters.world === null) {	
+			throw new Error('EntityLoader(): Argument `parameters.world` was undefined/null');
+		}
+
+		this._loader = parameters.loader;
+		this._world = parameters.world; 
 	}
 
-	// REVIEW: Missing documentation. What is sourcePath? What is the return value?
+	/**
+	 * Loads the entity at <code>entityPath</code>.
+	 *
+	 * @param {string} entityPath Relative path to the entity.
+	 * @return {Promise} The promise is resolved with the loaded Entity object.
+	 */
 	EntityLoader.prototype.load = function(entityPath) {
-		var deferred = new Deferred();
 		var that = this;
-		
-		this._loader.load(entityPath)
-		.done(function(entitySource) {
-
-			that._parseScene(entitySource)
-			.done(function(entity) {
-				deferred.resolve(entity);
-			})
-			.fail(function(message) {
-				deferred.reject(message);
-			});
-
-		})
-		.fail(function(message) {
-			deferred.reject(message);
+		return this._loader.load(entityPath, function(data) {
+			return that._parse(data);
 		});
-
-		return deferred.promise();
 	};
 
 
-	EntityLoader.prototype._parseEntity = function(entitySource) {
+	EntityLoader.prototype._parse = function(entitySource) {
 		var deferred = new Deferred();
 		var promises = {}; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
@@ -90,9 +92,23 @@ function(
 					loadedComponents.push(this._getCameraComponent(component));
 
 				} else if(type === 'meshRenderer') {
-					
+					promises[type] = this._getMeshRendererComponent(component)
+					.done(function(meshRendererComponent) {
+						loadedComponents.push(meshRendererComponent);
+					})
+					.fail(function(message) {
+						deferred.reject(message);
+					});
+
 				} else if(type === 'meshData') {
-					
+					promises[type] = this._getMeshDataComponent(component)
+					.done(function(meshRendererComponent) {
+						loadedComponents.push(meshRendererComponent);
+					})
+					.fail(function(message) {
+						deferred.reject(message);
+					});
+
 				}
 			}
 		} else {
@@ -101,7 +117,7 @@ function(
 
 		// When all promises are processed we want to
 		// either create an entity or return an error
-		new Deferred.when(promises.meshRenderer, promises.meshData)
+		Deferred.when(promises.meshRenderer, promises.meshData)
 		.done(function(components) {
 
 			var entity = new Entity(that._world);
@@ -141,27 +157,27 @@ function(
 	EntityLoader.prototype._getCameraComponent = function(cameraComponentSource) {
 		// Create a camera
 		var cam = new Camera(
-			component.fov || 45,
-			component.aspect || 1,
-			component.near || 1,
-			component.far || 100);
+			cameraComponentSource.fov || 45,
+			cameraComponentSource.aspect || 1,
+			cameraComponentSource.near || 1,
+			cameraComponentSource.far || 100);
 
 		return new CameraComponent(cam);
 	};
 
-	EntityLoader.prototype._getMeshRendererComponent = function(first_argument) {
+	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
 		var deferred = new Deferred();
 
-		for(var attribute in component) {
+		for(var attribute in meshRendererComponentSource) {
 			var materialsPromises = [];
 			if(attribute === 'materials') {
-				for(var i in component[attribute]) {
-					materialsPromises.push(new MaterialLoader(this._rootUrl).load(component[attribute][i]));
+				for(var i in meshRendererComponentSource[attribute]) {
+					materialsPromises.push(new MaterialLoader({ loader: this._loader }).load(meshRendererComponentSource[attribute][i]));
 				}
 			}
 
 			// When all materials have been loaded
-			promises.meshRenderer = new Deferred.when.apply(this, materialsPromises)
+			Deferred.when.apply(this, materialsPromises)
 			.done(function(materials) {
 				
 				var mrc = new MeshRendererComponent();
@@ -179,17 +195,17 @@ function(
 		return deferred.promise();
 	};
 
-	EntityLoader.prototype._getMeshComponent = function(first_argument) {
+	EntityLoader.prototype._getMeshDataComponent = function(meshDataComponentSource) {
 		var deferred = new Deferred();
 
-		for(var attribute in component) {
+		for(var attribute in meshDataComponentSource) {
 			var meshDataPromises = {};
 			if(attribute === 'mesh') {
-				meshDataPromises.mesh = new MeshLoader(this._rootUrl).load(component[attribute]);
+				meshDataPromises.mesh = new MeshLoader({ loader: this._loader }).load(meshDataComponentSource[attribute]);
 			}
 
 			// When the mesh is loaded
-			promises.meshData = new Deferred.when(meshDataPromises.mesh)
+			Deferred.when(meshDataPromises.mesh)
 			.done(function(data) {
 				
 				// We placed the meshDataPromise first so it's at index 0 

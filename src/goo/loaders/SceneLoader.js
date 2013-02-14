@@ -17,65 +17,56 @@ function(
 	"use strict";
 
 
-
-	// REVIEW: There's far too much copy/paste between the Loader classes.
-	// Constructor, setRootUrl, setWorld, load...
-	// Only the parse functions differ.
-	//
-	// Potential solution #1: Create a Loader superclass. Too complex solution.
-	// Inheritance is for polymorphism, not code reuse.
-	//
-	// Potential solution #2: Put the common functionality into a Loader class
-	// that takes the parse function as a constructor parameter. Better decoupling!
-
-
-	/*
+	/**
+	 * Utility class for loading scenes into a World.
 	 *
+	 * @constructor
+	 * @param {World} parameters.world The target World object.
+	 * @param {Loader} parameters.loader
 	 */
 	function SceneLoader(parameters) {
-		this._loader = new Loader(parameters);
-		
-		if(typeof parameters.world !== "undefined" && parameters.world !== null) {
-			this._world;
-		} else {
+		if(typeof parameters === "undefined" || parameters === null) {
+			throw new Error('SceneLoader(): Argument `parameters` was undefined/null');
+		}
+
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+			throw new Error('SceneLoader(): Argument `parameters.loader` was invalid/undefined/null');
+		}
+
+		if(typeof parameters.world === "undefined" || parameters.world === null) {	
 			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
 		}
+
+		this._loader = parameters.loader;
+		this._world = parameters.world; 
 	}
 
+	/**
+	 * Loads the scene at <code>scenePath</code>.
+	 *
+	 * @param {string} scenePath Relative path to the scene.
+	 * @return {Promise} The promise is resolved with the target World object.
+	 */
 	SceneLoader.prototype.load = function(scenePath) {
-		var deferred = new Deferred();
 		var that = this;
-		
-		this._loader.load(scenePath)
-		.done(function(sceneSource) {
-
-			that._parseScene(sceneSource, scenePath)
-			.done(function(world) {
-				deferred.resolve(world);
-			})
-			.fail(function(message) {
-				deferred.reject(message);
-			});
-
-		})
-		.fail(function(message) {
-			deferred.reject(message);
+		return this._loader.load(scenePath, function(data) {
+			return that._parse(data, scenePath);
 		});
-
-		return deferred.promise();
 	};
 
-	SceneLoader.prototype._parseScene = function(sceneSource, scenePath) {
+	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
 		var deferred = new Deferred();
 		var promises = [];
 		var that = this;
-
 
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
 
-			var entityLoader = new EntityLoader(this._world, this._rootUrl);
+			var entityLoader = new EntityLoader({
+				world: this._world,
+				loader: this._loader
+			});
 
 			for(var i in sceneSource.files)
 			{
@@ -96,10 +87,9 @@ function(
 			return deferred.promise();
 		}
 
-
 		// Create an deferred object that resolves when all promise-objects
 		// in the `promise` array are resolved (or rejects when _any one_ is rejected) 
-		new Deferred().when.apply(null, promises)
+		Deferred.when.apply(null, promises)
 			.done(function(entities) {
 				for(var i in entities) { entities[i].addToWorld(); }
 				that._world.process();

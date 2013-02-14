@@ -1,35 +1,46 @@
 define([
 		'goo/util/Deferred',
+		'goo/util/Promise',
 		'goo/util/Ajax'
 	],
 	/** @lends Loader */
 	function (
 		Deferred,
+		Promise,
 		Ajax
 	) {
 	"use strict";
 
 	/**
-	 * @class Loader util
+	 * Handles loading of data.
+	 *
+	 * @constructor
+	 * @param {string} [parameters.projectRoot=''] parameters.projectRoot The absolute path of the project root. Ex. <code>/project/root/</code>.
+	 * @param {string} [parameters.crossOrigin='anonymous'] parameters.crossOrigin Sets the Image.crossOrigin of any loaded Image objects.
 	 */
 	function Loader(parameters) {
-		if(typeof parameters !== "undefined" && parameters !== null) {
-			this._crossOrigin = parameters.crossOrigin || 'anonymous';
-			this.projectRoot = parameters.projectRoot || '';
-		} else {
-			throw new Error('Loader(): Argument `parameters` is undefined/null');
-		}
+		parameters = (typeof parameters !== "undefined" && parameters !== null) ? parameters : {};
+		
+		this._crossOrigin = parameters.crossOrigin || 'anonymous';
+		this.projectRoot = parameters.projectRoot || '';
 	}
 
-	Loader.prototype.load = function(url) {
-		if(typeof url === "undefined" || url === null) {
-			throw new Error('Loader(): `url` was undefined/null');
+	/**
+	 * Loads data at specified path which is returned in a Promise object. If a parser function is specified the data will be parsed by it.
+	 *
+	 * @param {string} path Relative path to whatever shall be loaded.
+	 * @param {Function} parser A function that parses the loaded data. If the function returns a Promise then its resolved value will resolve the load()'s Promise .
+	 * @return {Promise} The promise is resolved with the data loaded. If a parser is specified the data will be of the type resolved by the parser promise.
+	 */
+	Loader.prototype.load = function(path, parser) {
+		if(typeof path === "undefined" || path === null) {
+			throw new Error('Loader(): `path` was undefined/null');
 		}
 
 		var deferred = new Deferred();
 
 		var ajaxProperties = {
-			url: this._projectRoot + url
+			url: this._buildURL(path)
 		};
 
 		var that = this;
@@ -37,6 +48,26 @@ define([
 		.done(function(request) {
 			try {
 				var data = that._getDataFromSuccessfulRequest(request, ajaxProperties);
+
+				// If we have a parser, let it parse the data
+				if(typeof parser === 'function') {
+					
+					var p = parser(data);
+					if(p instanceof Promise) {
+						p.done(function(data) {
+						deferred.resolve(data);
+						})
+						.fail(function(message) {
+							deferred.reject(message);
+						});
+					} else {
+						deferred.resolve(p);
+					}
+					// Make sure we don't fall through
+					return;
+				}
+
+				// If we don't have a parser, then just resolve with the data
 				deferred.resolve(data);
 			} catch(e) {
 				deferred.reject(e);
@@ -75,31 +106,40 @@ define([
 		throw new Error('Loader._getDataFromSuccessfulRequest(): Unexpected content type `' +  contentType);
 	};
 
-	Loader.prototype.loadImage = function (url, callback) {
+	/**
+	 * Loads image data at specified path which is returned in a Promise object. If a parser function is specified the data will be parsed by it.
+	 *
+	 * @param {string} path Relative path to whatever shall be loaded.
+	 * @param {Function} parser A function that parses the loaded data.
+	 * @return {Promise} The promise is resolved with an Image object.
+	 */
+	Loader.prototype.loadImage = function (url) {
+		var deferred = new Deferred();
 		var image = new Image();
+		var _url = this._buildURL(url);
+		
+		
+		image.crossOrigin = this._crossOrigin || '';
 
-		callback = callback !== undefined ? callback : {};
 		image.addEventListener('load', function () {
-			console.log('Loaded image: ' + url);
+			console.log('Loaded image: ' + _url);
 			image.dataReady = true;
-			if (callback.onSuccess) {
-				callback.onSuccess(image);
-			}
+			deferred.resolve(image);
 		}, false);
 
 		image.addEventListener('error', function () {
-			if (callback.onError) {
-				callback.onError('Couldn\'t load URL [' + url + ']');
-			}
+			deferred.reject('Loader.loadImage(): Couldn\'t load from [' + _url + ']');
 		}, false);
 
-		if (this._crossOrigin) {
-			image.crossOrigin = this._crossOrigin;
-		}
+		image.src = _url;
 
-		image.src = url;
+		return deferred.promise();
+	};
 
-		return image;
+	Loader.prototype._buildURL = function(URLString) {
+		var _match = URLString.match(/\.(ent|mat|mesh|shader)$/);
+		var _url = _match ? URLString + '.json' : URLString;
+		return this.projectRoot + _url;
 	};
 
 	return Loader;
