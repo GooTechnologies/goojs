@@ -1672,5 +1672,77 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.toon = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexNormal : MeshData.NORMAL
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraPosition : Shader.CAMERA,
+			lightPosition : Shader.LIGHT0,
+			HighlightColour : [0.9,0.8,0.7,1.0],
+			MidColour : [0.65,0.55,0.45,1.0],
+			ShadowColour : [0.4,0.3,0.2,1.0],
+			HighlightSize : 0.2,
+			ShadowSize : 0.01,
+			OutlineWidth : 0.15
+		},
+		vshader : [ //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexNormal;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+			'uniform vec3 cameraPosition;', //
+			'uniform vec3 lightPosition;', //
+
+			'varying vec3 N;',
+			'varying vec3 V;',
+			'varying vec3 L;',
+
+			'void main()',
+			'{',
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	N = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+			'	L = lightPosition - worldPos.xyz;', //
+			'	V = cameraPosition - worldPos.xyz;', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+			'}',
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',//
+
+			'uniform vec4 HighlightColour;',
+			'uniform vec4 MidColour;',
+			'uniform vec4 ShadowColour;',
+			'uniform float HighlightSize;',
+			'uniform float ShadowSize;',
+			'uniform float OutlineWidth;',
+
+			'varying vec3 N;',
+			'varying vec3 L;',
+			'varying vec3 V;',
+
+			'void main()',
+			'{',
+			'	vec3 n = normalize(N);',
+			'	vec3 l = normalize(L);',
+			'	vec3 v = normalize(V);',
+				
+			'    float lambert = dot(l,n);',
+			'    vec4 colour = MidColour;',
+			'    if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
+			'    if (lambert < ShadowSize) colour = ShadowColour;',
+			'    if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
+
+			'    gl_FragColor = colour;',
+			'}',
+		].join('\n')
+	};
+	
 	return ShaderLib;
 });
