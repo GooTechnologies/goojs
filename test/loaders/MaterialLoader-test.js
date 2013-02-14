@@ -1,11 +1,15 @@
 define([
+		'goo/loaders/Loader',
 		'goo/loaders/MaterialLoader',
+		'goo/util/Deferred',
 		'goo/util/Promise',
 		'goo/util/Ajax',
 		'goo/renderer/Material'
 	],
 	function(
+		Loader,
 		MaterialLoader,
+		Deferred,
 		Promise,
 		Ajax,
 		Material
@@ -13,23 +17,23 @@ define([
 	'use strict';
 
 	var TestResponses = {
-		'material' : {
+		'material.mat.json' : {
 			readyState : 4,
 			status : 200,
-			responseText : '{"shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
+			responseText : '{"shader": "goodShaderSource.shader","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
 		},
-		'badMaterial' : {
+		'badMaterial.mat.json' : {
 			readyState : 4,
 			status : 200,
-			responseText : '{shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
+			responseText : '{shader": "goodShaderSource.shader","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
 		},
-		'goodVertexShaderSource' : {
+		'goodVertexShaderSource.vs.glsl' : {
 			readyState : 4,
 			status : 200,
 			responseText : 'goodVertexShader',
@@ -37,7 +41,7 @@ define([
 				'Content-Type' : 'application/octet-stream'
 			}
 		},
-		'goodFragmentShaderSource' : {
+		'goodFragmentShaderSource.fs.glsl' : {
 			readyState : 4,
 			status : 200,
 			responseText : 'goodFragmentShader',
@@ -45,18 +49,18 @@ define([
 				'Content-Type' : 'application/octet-stream'
 			}
 		},
-		'goodShaderSource.json' : {
+		'goodShaderSource.shader.json' : {
 			readyState : 4,
 			status : 200,
-			responseText : '{ "vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
+			responseText : '{ "vs": "goodVertexShaderSource.vs.glsl", "fs": "goodFragmentShaderSource.fs.glsl" }',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
 		},
-		'badShaderSource.json' : {
+		'badShaderSource.shader.json' : {
 			readyState : 4,
 			status : 200,
-			responseText : '{ vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
+			responseText : '{ vs": "goodVertexShaderSource.vs.glsl", "fs": "goodFragmentShaderSource.fs.glsl" }',
 			responseHeader : {
 				'Content-Type' : 'application/json'
 			}
@@ -105,11 +109,14 @@ define([
 		var projectURL;
 		var sceneURL;
 		var XHR = XMLHttpRequest;
+		var loaderSettings = {
+			loader: new Loader()
+		};
 
 		beforeEach(function() {
 			XMLHttpRequest = MockXHRBuilder(TestResponses);
 
-			loader = new MaterialLoader();
+			loader = new MaterialLoader(loaderSettings);
 		});
 
 		afterEach(function() {
@@ -117,31 +124,11 @@ define([
 			loader = null;
 		});
 
-		it("has an empty string as project URL when nothing is passed to the constructor", function() {
-			var aLoader = new MaterialLoader();
-
-			expect(aLoader._rootUrl).toBe('');
-		});
-
-		it("sets the project URL when passed to the constructor", function() {
-			var aLoader = new MaterialLoader('pancakes');
-
-			expect(aLoader._rootUrl).toBe('pancakes');
-		});
-
-		describe('.setRootUrl()', function() {
-
-			it("sets the root url", function() {
-				loader.setRootUrl('bacon');
-
-				expect(loader._rootUrl).toBe('bacon');
-			});
-		});
 
 		describe('.load()', function() {
 
 			it('resolves its promise and creates a new Material from a correct URL', function() {
-				var promise = loader.load('material');
+				var promise = loader.load('material.mat');
 
 				promise
 					.done(function(data) {
@@ -150,7 +137,6 @@ define([
 						expect(data.shader.vertexSource).toBe('goodVertexShader');
 					})
 					.always(function() {
-						//expect(promise._resolve).toHaveBeenCalled();
 						expect(promise._state).toBe('resolved');
 					});
 			});
@@ -164,7 +150,7 @@ define([
 			});
 
 			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				var promise = loader.load('badMaterial');
+				var promise = loader.load('badMaterial.mat');
 
 				promise.always(function() {
 					expect(promise._state).toBe('rejected');
@@ -173,10 +159,10 @@ define([
 
 			it('loads are unique with every call', function() {
 
-				var promise1 = loader.load('material'),
-					promise2 = loader.load('material');
+				var promise1 = loader.load('material.mat'),
+					promise2 = loader.load('material.mat');
 
-				Promise.when(promise1, promise2)
+				Deferred.when(promise1, promise2)
 					.done(function(data) {
 						// Do some checks
 						expect(data[0]).not.toBe(data[1]);

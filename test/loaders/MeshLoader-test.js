@@ -1,11 +1,15 @@
 define([
+		'goo/loaders/Loader',
 		'goo/loaders/MeshLoader',
+		'goo/util/Deferred',
 		'goo/util/Promise',
 		'goo/util/Ajax',
 		'goo/renderer/MeshData'
 	],
 	function(
+		Loader,
 		MeshLoader,
+		Deferred,
 		Promise,
 		Ajax,
 		MeshData
@@ -300,36 +304,18 @@ define([
 		var sceneURL;
 		var XHR = XMLHttpRequest;
 		//var XMLHttpRequest = new MockXHRBuilder(TestResponses);
+		var loaderSettings = {
+			loader: new Loader()
+		};
 
 		beforeEach(function() {
 			XMLHttpRequest = new MockXHRBuilder(TestResponses);
-			loader = new MeshLoader();
+			loader = new MeshLoader(loaderSettings);
 		});
 
 		afterEach(function() {
 			XMLHttpRequest = XHR;
 			loader = null;
-		});
-
-		it("has an empty string as project URL when nothing is passed to the constructor", function() {
-			var aLoader = new MeshLoader();
-
-			expect(aLoader._rootUrl).toBe('');
-		});
-
-		it("sets the project URL when passed to the constructor", function() {
-			var aLoader = new MeshLoader('pancakes');
-
-			expect(aLoader._rootUrl).toBe('pancakes');
-		});
-
-		describe('.setRootUrl()', function() {
-
-			it("sets the root url", function() {
-				loader.setRootUrl('bacon');
-
-				expect(loader._rootUrl).toBe('bacon');
-			});
 		});
 
 		describe('.load()', function() {
@@ -371,10 +357,10 @@ define([
 
 			it('loads are unique with every call', function() {
 
-				var promise1 = loader.load('mesh'),
-						promise2 = loader.load('mesh');
+				var promise1 = loader.load('mesh');
+				var promise2 = loader.load('mesh');
 
-				Promise.when(promise1, promise2)
+				Deferred.when(promise1, promise2)
 					.done(function(data) {
 						// Do some checks
 						expect(data[0]).not.toBe(data[1]);
