@@ -10,8 +10,8 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 	/**
 	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
-	 * class.
-	 * default = {
+	 * class.<br/>
+	 * <code>default = {
 	 *     alpha : false,
 	 *     premultipliedAlpha : true,
 	 *     antialias : false,
@@ -19,7 +19,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	 *     preserveDrawingBuffer : false,
 	 *     showStats : false,
 	 *      manuallyStartGameLoop : false
-	 * }
+	 * }</code>
 	 *
 	 * @constructor
 	 * @param {Object} parameters GooRunner settings passed in a JSON object.
