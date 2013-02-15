@@ -1742,6 +1742,69 @@ define([
 			'}',
 		].join('\n')
 	};
+
+	/*
+	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
+	*/ 
+	ShaderLib.differenceOfGaussians = {
+		includes : [ShaderFragments.features.fog],
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			gaussBlurredImage1 : Shader.TEXTURE0,
+			gaussBlurredImage2 : Shader.TEXTURE1,
+			originalImage : Shader.TEXTURE2,
+			threshold : 0.01
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec2 vertexUV0;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void) {', //
+		'	texCoord0 = vertexUV0;',//
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'uniform sampler2D gaussBlurredImage1;',//
+		'uniform sampler2D gaussBlurredImage2;',//
+		'uniform sampler2D originalImage;',//
+		'uniform float threshold;',
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void)',//
+		'{',//
+		'	vec4 blur1 = texture2D(gaussBlurredImage1, texCoord0);',
+		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
+		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
+		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
+		//'	vec3 col = sample1.rgb - sample2.rgb;',//
+		'	float value = (col.r + col.g + col.b) / 3.0;',
+		//'	float value = length(col);',
+		'	if (value > threshold) {',
+		'		value = 1.0;',
+		'	} else {',
+		'		value = 0.0;',
+		'	}',
+		'	gl_FragColor = vec4((1.0 - value) * originalColor.rgb + vec3(value), 1.0);',//
+		'}'//
+		].join('\n')
+	};
+
 	
 	return ShaderLib;
 });

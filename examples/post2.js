@@ -14,11 +14,11 @@ require(
 			'goo/scripts/BasicControlScript', 'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent',
 			'goo/renderer/pass/Composer', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util',
 			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4',
-			'goo/renderer	/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem,
+			'goo/renderer	/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/DoGPass', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem,
 		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 		TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, BasicControlScript,
 		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
-		ShaderFragments, DepthPass, ShaderLib) {
+		ShaderFragments, DepthPass, DoGPass, ShaderLib) {
 		"use strict";
 
 		var resourcePath = "../resources";
@@ -122,6 +122,8 @@ require(
 
 			var depthPass = new DepthPass(goo.world.getSystem('PartitioningSystem').renderList, unpackDepth);
 
+			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.6});
+
 			// Regular copy
 			var shader = Util.clone(ShaderLib.copy);
 			var outPass = new FullscreenPass(shader);
@@ -130,6 +132,7 @@ require(
 			// Create composer with same size as screen
 			var composer = new Composer();
 			composer.addPass(renderPass);
+			composer.addPass(dogPass);
 			composer.addPass(depthPass);
 			composer.addPass(outPass);
 
