@@ -281,8 +281,7 @@ define([
 
 		'void main(void)',//
 		'{',//
-		'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
-		'	gl_FragColor = texCol;',//
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
 		'}'//
 		].join('\n')
 	};
