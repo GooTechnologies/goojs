@@ -45,6 +45,9 @@ function (Vector3) {
 
 			this.y0 = Math.round(vec1.y);
 			this.y1 = Math.round(vec2.y);
+
+			this.z0 = vec1.z;
+			this.z1 = vec2.z;
 		}
 		else {
 
@@ -53,15 +56,27 @@ function (Vector3) {
 
 			this.y0 = Math.round(vec2.y);
 			this.y1 = Math.round(vec1.y);
+
+			this.z0 = vec2.z;
+			this.z1 = vec1.z;
 		}
 
 	};
 
-	Edge.prototype.roundValues = function() {
-		this.x0 = Math.round(this.x0);
-		this.x1 = Math.round(this.x1);
-		this.y0 = Math.round(this.y0);
-		this.y1 = Math.round(this.y1);
+	Edge.prototype.invertZ = function() {
+
+		this.z0 =  1.0 / this.z0;
+		this.z1 =  1.0 / this.z1;
+		
+		/*
+		console.log("preZinvert");
+		console.log(this.z0);
+		console.log(this.z1);
+
+		console.log("postZinvert");
+		console.log(this.z0);
+		console.log(this.z1);
+		*/
 	};
 
 	return Edge;

@@ -46,7 +46,7 @@ define([
 		this._depthClear = new Uint8Array(this._frameBuffer, colorBytes + depthBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
 
 		for (var i = 0; i < this.numOfPixels; i++) {
-			this._depthClear[i] = 0;
+			this._depthClear[i] = 255;
 		}
 
 
@@ -85,7 +85,6 @@ define([
 					var triangle = triangles[t];
 					if ( triangle ) {
 						this.renderTriangle(triangle);
-						//console.log(triangle.printVertexData());
 					}
 				}
 			}
@@ -121,7 +120,9 @@ define([
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
-		var timerStart = performance.now();
+		//var timerStart = performance.now();
+		var minz = 99999;
+		var maxz = -9999;
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 			
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
@@ -206,6 +207,7 @@ define([
 					origin.y += ratio * (target.y - origin.y);
 					origin.z += ratio * (target.z - origin.z);
 
+
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
 					ratio = this.calculateIntersectionRatio(origin, target);
@@ -220,8 +222,21 @@ define([
 			// Projection and homogeneous division transformation
 			for (var i = 0; i < vertices.length; i++) {
 				var v = vertices[i];
+				
 				cameraProjectionMatrix.applyPost(v);
-				v.mul(1.0 / v.w);
+				
+				var div = 1.0 / v.w;
+				v.x *= div;
+				v.y *= div;
+				
+				// The projected z coordinates range from -1 to 100+
+				// console.log("proj z", v.z);
+				
+				v.z *= div;
+
+				// The z/w coordinate is in the range -1 to 1. Canonical view voulme? 
+				// console.log("after div", v.z);
+				
 			}
 			
 			// Back-face culling.
@@ -232,19 +247,24 @@ define([
 			// Transform the vertices to screen space
 			this.transformToScreenSpace(vertices);
 
+			for (var i = 0; i < vertices.length; i++) {
+				var v = vertices[i];
+
+				if (v.z < minz) {
+					minz= v.z;
+				}
+
+				if (v.z > maxz) {
+					maxz = v.z;
+				}
+			}
 			// Create the triangle(s)
 			if (vertices.length ==  4) {
 				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
 				// The "extra vertex" is at position 3 in the array.
 
-				// TODO: This triangle creation has to be evaluated more, I think the current
-				// implementation will switch the order of the triangle 
-				// when the outside vertex is the second in the vertexarray.
-				/*
-				if ( outsideIndices[0] == 1 ) {
-					console.log("Does stuff look funky now?");
-				}
-				*/
+				// The order of the triangle is not relevant here anymore since 
+				// the backface culling check is made already.
 
 				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]);
 				var triangle2 = new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]);
@@ -257,8 +277,11 @@ define([
 			}
 		}
 
-		var timerStop = performance.now();
-		console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
+		//var timerStop = performance.now();
+		//console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
+
+		console.log("minz" , minz);
+		console.log("maxz" , maxz);
 
 		return triangles;
 	};
@@ -300,9 +323,9 @@ define([
 			// while the viewPortLeft and viewPortBottom are 0.
 			vertex.x = (vertex.x + 1.0) * (this.width / 2);
 			vertex.y = (vertex.y + 1.0) * (this.height / 2);
-			
-			// TODO: Revise how to transform the z value, if it at all should be transformed.
+			// If the z coordinate is transformed to canonical volume, this will move the range from [-1, 1] to [0, 1]
 			vertex.z = (vertex.z + 1) / 2;
+			vertex.z = Math.round(65535 * vertex.z) + 1; // 16-Bit Integers.
 		}
 	};
 
@@ -400,6 +423,11 @@ define([
         var shortEdge1 = (longEdge + 1) % 3;
         var shortEdge2 = (longEdge + 2) % 3;
 
+        for (var i = 0; i < 3; i++) {
+        	// Do pre-calculations here which are now performed in drawEdges.
+        	this.edges[i].invertZ(); 
+        }
+
         this.drawEdges(this.edges[longEdge], this.edges[shortEdge1]);
         this.drawEdges(this.edges[longEdge], this.edges[shortEdge2]);
 	};
@@ -408,6 +436,11 @@ define([
 	*	Render the pixels between the long and the short edge of the triangle.
 	*/
 	SoftwareRenderer.prototype.drawEdges = function (longEdge, shortEdge) {
+
+
+		// TODO: Move a lot of these calculations and variables into the Edge class, 
+		// do the calculations once for the long edge instead of twices as it is done now.
+
 
 		// Early exit when the short edge doesnt have any height (y-axis).
 		// -The edges' coordinates are stored as uint8, so compare with a SMI (SMall Integer, 31-bit signed integer) and not Double.
@@ -425,6 +458,19 @@ define([
         var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
         var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
 
+        // Calculate perspective correct z values for interpolating during filling pixels.
+        /*
+        var longStartZ = 1.0 / longEdge.z0;
+        var shortStartZ = 1.0 / shortEdge.z0;
+        var longEdgeDeltaZ = (1.0 / longEdge.z1) - longStartZ;
+        var shortEdgeDeltaZ = (1.0 / shortEdge.z1) - shortStartZ;
+	*/
+
+		var longStartZ = longEdge.z0;
+		var shortStartZ = shortEdge.z0;
+		var longEdgeDeltaZ = longEdge.z1 - longStartZ;
+        var shortEdgeDeltaZ = shortEdge.z1 - shortStartZ;
+
         // Vertical coherence : 
         // The x-coordinates' increment for each step in y is constant, 
         // so the increments are pre-calculated and added to the coordinates
@@ -435,10 +481,15 @@ define([
         // the starting x-coordinate is therefore calculated.
         var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
         var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
+        var longZ = longStartZ + longEdgeDeltaZ * longStartCoeff;
         var longEdgeXincrement = longEdgeDeltaX / longEdgeDeltaY;
+        var longEdgeZincrement = longEdgeDeltaZ / longEdgeDeltaY;
+
 
         var shortX = shortEdge.x0;
+        var shortZ = shortStartZ;
         var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
+        var shortEdgeZincrement = shortEdgeDeltaZ / shortEdgeDeltaY;
 
         // TODO:
         // Implement this idea of checking which edge is the leftmost.
@@ -463,6 +514,8 @@ define([
 
         	longX += -startLine * longEdgeXincrement;
         	shortX += -startLine * shortEdgeXincrement;
+        	longZ += -startLine * longEdgeZincrement;
+        	shortZ += -startLine * shortEdgeZincrement;
         	startLine = 0;
         }
 
@@ -479,16 +532,19 @@ define([
 
         	// Draw the span of pixels.
      
-    		this.fillPixels(startIndex, stopIndex, y);
+    		this.fillPixels(startIndex, stopIndex, y, longZ, shortZ);
         	
   			// Increase the edges' x-coordinates with the increments.
         	longX += longEdgeXincrement;
         	shortX += shortEdgeXincrement;
+
+        	longZ += longEdgeZincrement;
+        	shortZ += shortEdgeZincrement;
         }
 
 	};
 
-	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y) {
+	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y, leftZ, rightZ) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
 		// TODO: This shall be optimized to be checked at an earlier stage. 
@@ -496,7 +552,14 @@ define([
 			var temp = startIndex;
 			startIndex = stopIndex;
 			stopIndex = temp;
+
+			temp = leftZ; 
+			leftZ = rightZ;
+			rightZ = temp;
 		}
+
+	//	console.log("zlef", 1.0 / leftZ);
+		//console.log("zright", 1.0 / rightZ);
 
 		// Horizontal clipping
 	   	if ( startIndex < 0 ) {
@@ -508,16 +571,25 @@ define([
     	}
 
 		var row = y*this.width;
+		var t = 0.0;
+		var tIncrement = 1.0 / (stopIndex - startIndex);
+
+		var min = 0.0;
 
 		for (var i = startIndex; i <= stopIndex; i++) {
-			this._depthData[row + i] = 255;
+			// Linearly interpolate the 1/z values
+			// and divide the result to get the correct z.
+			var depth = 1.0 / ((1.0 - t) * leftZ + t * rightZ);
+
+			this._depthData[row + i] = 255 * (depth / 65535);
+
+			t += tIncrement;
 		}
 	};
 
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
 
 		var colorIndex = 0;
-		var depth;
 		
 		for( var i = 0; i < this._depthData.length; i++) {
 
