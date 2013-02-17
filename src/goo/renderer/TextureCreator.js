@@ -30,11 +30,15 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 	};
 
 	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
+		if (TextureCreator.cache[imageURL] !== undefined) {
+			return TextureCreator.cache[imageURL];
+		}
+
 		var creator = this;
 		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
-				console.log(extension + ' - ' + loader);
+//				console.log(extension + ' - ' + loader);
 
 				if (!loader || !loader.isSupported()) {
 					imageURL = imageURL.substring(0, imageURL.length - extension.length);
@@ -42,16 +46,13 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 					break;
 				}
 
-				// check for cache version
-				if (TextureCreator.cache[imageURL] !== undefined) {
-					return TextureCreator.cache[imageURL];
-				}
-
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
 				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings);
 				rVal.image.dataReady = false;
 				rVal.a = imageURL;
+
+				TextureCreator.cache[imageURL] = rVal;
 
 				// from URL
 				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
@@ -70,14 +71,12 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 			}
 		}
 
-		if (TextureCreator.cache[imageURL] !== undefined) {
-			return TextureCreator.cache[imageURL];
-		}
-
 		var img = new Loader().loadImage(imageURL);
 		var texture = new Texture(img, settings);
 
 		TextureCreator.cache[imageURL] = texture;
+
+		console.info("Loaded image: " + imageURL);
 
 		return texture;
 	};

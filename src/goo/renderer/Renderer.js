@@ -402,15 +402,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	};
 
 	Renderer.prototype.buildWireframeMaterial = function(material) {
-		var wireDef = {};
-		wireDef.defines = material.shader.defines;
-		wireDef.attributes = material.shader.attributes;
-		wireDef.uniforms = material.shader.uniforms;
-		wireDef.uniforms.color = material.wireframeColor || [1, 1, 1];
-		wireDef.vshader = material.shader.vertexSource;
-		wireDef.fshader = Util.clone(ShaderLib.simpleColored.fshader);
-		var wireframeMaterial = Material.createMaterial(wireDef, 'Wireframe');
-		wireframeMaterial.textures = material.textures;
+		var wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
+		wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 		return wireframeMaterial;
 	};
 
