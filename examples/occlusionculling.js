@@ -71,8 +71,9 @@ require(
 			var camera = new Camera(90, 1, 1, 100);
 			//camera.translation.set(0,1.79,20);
 			var cameraEntity = goo.world.createEntity('CameraEntity');
+
 			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript()]));
+			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 5.0, 'walkSpeed' : 18.0})]));
 			cameraEntity.addToWorld();
 
 			buildScene(goo);
@@ -242,12 +243,17 @@ require(
 			boxEntity.addToWorld();
 
 			translation.x = 10;
-			for (var i = 0; i < 20; i++) {
+			for (var i = 0; i < 1; i++) {
 
-				var quad = createQuad(goo.world, translation);
+				var quad = createQuad(goo.world, translation, 2, 2);
 				quad.addToWorld();
 				translation.z -= 1.0;
 			}
+
+			translation.x = 100;
+			translation.z = -20;
+			var bigQuad = createQuad(goo.world, translation, 50, 10);
+			bigQuad.addToWorld();
 
 			//var floorEntity = createFloorEntity(goo.world);
 			//floorEntity.addToWorld();
@@ -272,8 +278,8 @@ require(
 			*/
 		}
 
-		function createQuad(world, translation) {
-			var meshData = ShapeCreator.createQuad(2, 2);
+		function createQuad(world, translation, width, height) {
+			var meshData = ShapeCreator.createQuad(width, height);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.x = translation.x;
 			entity.transformComponent.transform.translation.y = translation.y;

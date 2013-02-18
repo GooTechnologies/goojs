@@ -121,8 +121,6 @@ define([
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		//var timerStart = performance.now();
-		var minz = 99999;
-		var maxz = -9999;
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 			
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
@@ -231,7 +229,6 @@ define([
 				
 				// The projected z coordinates range from -1 to 100+
 				// console.log("proj z", v.z);
-				
 				v.z *= div;
 
 				// The z/w coordinate is in the range -1 to 1. (Canonical view voulme?)
@@ -246,17 +243,6 @@ define([
 			// Transform the vertices to screen space
 			this.transformToScreenSpace(vertices);
 
-			for (var i = 0; i < vertices.length; i++) {
-				var v = vertices[i];
-
-				if (v.z < minz) {
-					minz= v.z;
-				}
-
-				if (v.z > maxz) {
-					maxz = v.z;
-				}
-			}
 			// Create the triangle(s)
 			if (vertices.length ==  4) {
 				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
@@ -278,9 +264,6 @@ define([
 
 		//var timerStop = performance.now();
 		//console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
-
-		console.log("minz" , minz);
-		console.log("maxz" , maxz);
 
 		return triangles;
 	};
@@ -325,6 +308,8 @@ define([
 			// If the z coordinate is transformed to canonical volume, this will move the range from [-1, 1] to [0, 1]
 			vertex.z = (vertex.z + 1) / 2;
 			vertex.z = Math.round(65535 * vertex.z) + 1; // 16-Bit Integers.
+
+			console.log("Vertex[" + i +"].z", vertex.z);	
 		}
 	};
 
@@ -457,14 +442,6 @@ define([
         var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
         var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
 
-        // Calculate perspective correct z values for interpolating during filling pixels.
-        /*
-        var longStartZ = 1.0 / longEdge.z0;
-        var shortStartZ = 1.0 / shortEdge.z0;
-        var longEdgeDeltaZ = (1.0 / longEdge.z1) - longStartZ;
-        var shortEdgeDeltaZ = (1.0 / shortEdge.z1) - shortStartZ;
-	*/
-
 		var longStartZ = longEdge.z0;
 		var shortStartZ = shortEdge.z0;
 		var longEdgeDeltaZ = longEdge.z1 - longStartZ;
@@ -474,7 +451,6 @@ define([
         // The x-coordinates' increment for each step in y is constant, 
         // so the increments are pre-calculated and added to the coordinates
         // each scanline.
-
 
         // The scanline on which we start rendering on might be in the middle of the long edge,
         // the starting x-coordinate is therefore calculated.
@@ -511,10 +487,11 @@ define([
 
         	// And the starting line is then assigned to 0.
 
-        	longX += -startLine * longEdgeXincrement;
-        	shortX += -startLine * shortEdgeXincrement;
-        	longZ += -startLine * longEdgeZincrement;
-        	shortZ += -startLine * shortEdgeZincrement;
+        	startLine = -startLine;
+        	longX += startLine * longEdgeXincrement;
+        	shortX += startLine * shortEdgeXincrement;
+        	longZ += startLine * longEdgeZincrement;
+        	shortZ += startLine * shortEdgeZincrement;
         	startLine = 0;
         }
 
@@ -557,33 +534,86 @@ define([
 			rightZ = temp;
 		}
 
-	//	console.log("zlef", 1.0 / leftZ);
-		//console.log("zright", 1.0 / rightZ);
+		// Early exit check.
+		if (stopIndex < 0 || startIndex > this._clipX) {
+			return; // Nothing to draw here.
+		}
 
 		// Horizontal clipping
-	   	if ( startIndex < 0 ) {
+
+		//console.log("zleft", leftZ);
+		//console.log("zright",  rightZ);
+
+		// If the triangle is clipped, the bounding z-values has to be interpolated 
+		// to the new startpoints.
+		if ( startIndex < 0 ) {
+
+			var t = - startIndex / (stopIndex - startIndex);
+
+			if ( t > 1.0 || t < 0.0 ) {
+				console.error("wrong t calculation in LEFT");
+				console.log("left clip t", t);
+			}
+		
+			leftZ = (1.0 - t) * leftZ + t * rightZ;
     		startIndex = 0;
     	}
 
-    	if ( stopIndex > this._clipX ) {
+    	var diff = stopIndex - this._clipX;
+    	if (diff > 0) {
+    		var t = diff / (stopIndex - startIndex);
+			if ( t > 1.0 || t < 0.0 ) {
+				console.error("wrong t calculation in RIGHT");
+				console.log("right clip t", t);
+			}
+
+			console.log("Diff", diff);
+
+    		rightZ = (1.0 - t) * rightZ + t * leftZ;
+    		console.log("rightZ", rightZ);
     		stopIndex = this._clipX;
     	}
+		
 
-		var row = y*this.width;
+	
 		var t = 0.0;
 		var tIncrement = 1.0 / (stopIndex - startIndex);
+		var min = 999999999;
+		var row = y * this.width;
 
-		var min = 0.0;
+		leftZ = 1.0 / leftZ;
+		rightZ = 1.0 / rightZ;
+
+		var print = false;
+		if ( leftZ == 1 || rightZ == 1 ) {
+			
+			console.log("leftZ", leftZ);
+			console.log("rightZ", rightZ);
+			print = true;
+		}
 
 		for (var i = startIndex; i <= stopIndex; i++) {
 			// Linearly interpolate the 1/z values
-			// and divide the result to get the correct z.
-			var depth = 1.0 / ((1.0 - t) * leftZ + t * rightZ);
+			// and divide the result to get the correct z. (16-bit integer)
+			var depth = ((1.0 - t) * leftZ + t * rightZ);
 
-			this._depthData[row + i] = 255 * (depth / 65535);
+			// depth = 1.0 / depth;
+			// Linearize depth 
+			// depth = (2.0 * this.camera.near) / (this.camera.far + this.camera.near - depth * (this.camera.far - this.camera.near));
+			this._depthData[row + i] = depth / 256; // 16bit to 8bit
+
+			if ( depth < min ) {
+				min = depth;
+			}
+
+			if (print) {
+				console.log("depth on line ["+row+"]", depth, "t=",t);
+			}
 
 			t += tIncrement;
 		}
+
+		//console.log("mindepth during rendering:", min);
 	};
 
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
