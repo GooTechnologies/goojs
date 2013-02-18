@@ -1,3 +1,4 @@
+
 define([
 		'lib/rsvp.amd',
 		'goo/util/Ajax'
@@ -13,14 +14,19 @@ define([
 	 * Handles loading of data.
 	 *
 	 * @constructor
-	 * @param {string} [parameters.projectRoot=''] parameters.projectRoot The absolute path of the project root. Ex. <code>/project/root/</code>.
+	 * @param {string} [parameters.rootPath=''] parameters.rootPath The absolute path of the project root. Ex. <code>/project/root/</code>.
 	 * @param {string} [parameters.crossOrigin='anonymous'] parameters.crossOrigin Sets the Image.crossOrigin of any loaded Image objects.
 	 */
 	function Loader(parameters) {
-		parameters = (typeof parameters !== "undefined" && parameters !== null) ? parameters : {};
+		if(typeof parameters !== "undefined" && parameters !== null && typeof parameters !== "object") {
+			throw new Error('Loader(): Argument `parameters` must be of type `object`');
+		} else if(typeof parameters === "undefined" || parameters === null) {
+			parameters = {};
+		}
 		
 		this._crossOrigin = parameters.crossOrigin || 'anonymous';
-		this.projectRoot = parameters.projectRoot || '';
+		this.rootPath = parameters.rootPath || '';
+		this.xhr = parameters.xhr || new Ajax();
 	}
 
 	/**
@@ -39,10 +45,8 @@ define([
 			url: this._buildURL(path)
 		};
 		
-		console.log(ajaxProperties.url);
-
 		var that = this;
-		var promise = new Ajax(ajaxProperties)
+		var promise = this.xhr.get(ajaxProperties)
 		.then(function(request) {
 			return that._getDataFromSuccessfulRequest(request, ajaxProperties);
 		})
@@ -50,18 +54,19 @@ define([
 			return (typeof parser === 'function') ? parser(data) : data;
 		})
 		.then(function(parsed) {
-			console.log(parsed);
 			promise.resolve(parsed);
+			console.log('Loaded: ' + ajaxProperties.url);
+			return parsed;
+		})
+		// Bubble an error
+		.then(null, function(reason) {
+			throw new Error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`. Reason: ' + reason);
 		});
 
 		return promise;
 	};
 
 	Loader.prototype._getDataFromSuccessfulRequest = function(request, ajaxProperties) {
-
-		if(!(request instanceof XMLHttpRequest)) {
-			throw new Error('Loader._getDataFromSuccessfulRequest(): Argument `request` must be an XMLHttpRequest');
-		}
 
 		var contentType = request.getResponseHeader('Content-Type');
 
@@ -116,7 +121,7 @@ define([
 	Loader.prototype._buildURL = function(URLString) {
 		var _match = URLString.match(/\.(ent|mat|mesh|shader)$/);
 		var _url = _match ? URLString + '.json' : URLString;
-		return this.projectRoot + _url;
+		return this.rootPath + _url;
 	};
 
 	return Loader;

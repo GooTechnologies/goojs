@@ -72,12 +72,11 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource) {
-		var promise = new RSVP.Promise();
-		var promises = {}; // Keep track of promises
+		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
-console.log(entitySource);
-		if(entitySource && Object.keys(entitySource.components).length) {
+
+		if(entitySource) {
 			var component;
 
 			for(var type in entitySource.components || []) {
@@ -90,35 +89,35 @@ console.log(entitySource);
 					loadedComponents.push(this._getCameraComponent(component));
 
 				} else if(type === 'meshRenderer') {
-					promises[type] = this._getMeshRendererComponent(component)
+					var p = this._getMeshRendererComponent(component)
 					.then(function(meshRendererComponent) {
 						loadedComponents.push(meshRendererComponent);
-					},
-					function(message) {
-						promise.reject(message);
+						return meshRendererComponent;
 					});
-
+					
+					promises.push(p);
 				} else if(type === 'meshData') {
-					promises[type] = this._getMeshDataComponent(component)
-					.then(function(meshRendererComponent) {
-						loadedComponents.push(meshRendererComponent);
-					},
-					function(message) {
-						promise.reject(message);
+					var p = this._getMeshDataComponent(component)
+					.then(function(meshDataComponent) {
+						loadedComponents.push(meshDataComponent);
+						return meshDataComponent;
 					});
 
+					promises.push(p);
 				}
 			}
-		} else {
-			promise.reject('Couldn\'t load entity from source: ' + entitySource);
 		}
-promise.resolve('mogens');
+
+		if(loadedComponents.length === 0 && promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Entity definition `' + entitySource + '` does not seem to contain any components.');
+			return p;
+		}
+
 		// When all promises are processed we want to
 		// either create an entity or return an error
-/*
-		RSVP.all(promises)
+		return RSVP.all(promises)
 		.then(function(components) {
-			console.log(components);
 
 			var entity = new Entity(that._world);
 			
@@ -130,13 +129,8 @@ promise.resolve('mogens');
 				entity.setComponent(loadedComponents[i]);
 			}
 			
-			promise.resolve(entity);
-		},
-		function(data) {
-			promise.reject(data);
+			return entity;
 		});
-*/
-		return promise;
 	};
 
 	EntityLoader.prototype._getTransformComponent = function(transformComponentSource) {
@@ -149,7 +143,8 @@ promise.resolve('mogens');
 		tc.transform.rotation.fromAngles(
 			transformComponentSource.rotation[0],
 			transformComponentSource.rotation[1],
-			transformComponentSource.rotation[2]);
+			transformComponentSource.rotation[2]
+		);
 
 		return tc;
 	};
@@ -166,59 +161,55 @@ promise.resolve('mogens');
 	};
 
 	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
-		
+		var promises = [];
+		var ml = new MaterialLoader({
+			loader: this._loader
+		});
+
 		for(var attribute in meshRendererComponentSource) {
-			var materialsPromises = [];
 			if(attribute === 'materials') {
 				for(var i in meshRendererComponentSource[attribute]) {
-					materialsPromises.push(new MaterialLoader({ loader: this._loader }).load(meshRendererComponentSource[attribute][i]));
+					var p = ml.load(meshRendererComponentSource[attribute][i]);
+					promises.push(p);
 				}
 			}
-
-			// When all materials have been loaded
-			var promise = RSVP.all(materialsPromises)
-			.then(function(materials) {
-				
-				var mrc = new MeshRendererComponent();
-				for(var i in materials) {
-					mrc.materials.push(materials[i]);
-				}
-				
-				promise.resolve(mrc);
-			},
-			function(data) {
-				promise.reject(data);
-			});
 		}
 
-		return promise;
+		return RSVP.all(promises)
+		.then(function(materials) {
+			
+			var mrc = new MeshRendererComponent();
+			for(var i in materials) {
+				mrc.materials.push(materials[i]);
+			}
+			
+			return mrc;
+		});
 	};
 
 
 	EntityLoader.prototype._getMeshDataComponent = function(meshDataComponentSource) {
-		var promise = new RSVP.Promise();
+		var promises = [];
+		var mdl = new MeshLoader({
+			loader: this._loader
+		});
 
 		for(var attribute in meshDataComponentSource) {
-			var meshDataPromises = {};
+			var meshDataPromises = [];
 			if(attribute === 'mesh') {
-				meshDataPromises.mesh = new MeshLoader({ loader: this._loader }).load(meshDataComponentSource[attribute]);
+				var p = mdl.load(meshDataComponentSource[attribute]);
+				promises.push(p);
 			}
-
-			// When the mesh is loaded
-			RSVP.all(meshDataPromises.mesh)
-			.then(function(data) {
-				
-				// We placed the meshDataPromise first so it's at index 0 
-				var mdc = new MeshDataComponent(data[0]);
-				
-				promise.resolve(mdc);
-			},
-			function(message) {
-				promise.reject(message);
-			});
 		}
 
-		return promise;
+		// When the mesh is loaded
+		return RSVP.all(promises)
+		.then(function(data) {	
+			// We placed the meshDataPromise first so it's at index 0 
+			var mdc = new MeshDataComponent(data[0]);
+			
+			return mdc;
+		});
 	};
 
 

@@ -47,25 +47,20 @@ function(
 
 
 	MeshLoader.prototype._parse = function(data) {
-		var that = this;
 		var promise = new RSVP.Promise();
-		var meshData;
 
-		if(data && Object.keys(data).length)
-		{
-			that.useCompression = data.compressed || false;
+		try {
+			this.useCompression = data.compressed || false;
 
-			if (that.useCompression) {
-				that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-				that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-				that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
+			if (this.useCompression) {
+				this.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
+				this.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
+				this.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
 			}
-			meshData = that._parseMeshData(data, 0, 'Mesh');
-			promise.resolve(meshData);
-		}
-		else
-		{
-			promise.reject('Couldn\'t load from source: ' + data);
+			
+			promise.resolve(this._parseMeshData(data, 0, 'Mesh'));
+		} catch(e) {
+			promise.reject(Error('MeshLoader._parse(): Could not parse data.'));
 		}
 
 		return promise;

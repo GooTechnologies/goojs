@@ -1,41 +1,52 @@
 define([
 		'lib/rsvp.amd'
-	], function(
+	],
+	/** @lends Ajax */
+	function(
 		RSVP
 	) {
 
 	/**
 	 * Subclass of Promise. Wrapper class around an XHR call.
 	 *
-	 * @constructor
-	 * @param {Object} [options={ url: '', method: 'URL' }] The XHR options.
 	 */
-	function Ajax(options) {
-		RSVP.Promise.call(this);
-		
-		options = options || {};
+	function Ajax() {}
 
-		var method = options.method || 'GET';
+	/**
+	 * Uses GET to retrieve data at a remote location.
+	 *
+	 * @param {string} options.url
+	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
+	 */
+	Ajax.prototype.get = function(options) {
+		var promise = new RSVP.Promise();
+
+		options = options || {};
+		
 		var url = options.url || '';
+
+		var method = 'GET';
+		var async = true;
+
 		var request = new XMLHttpRequest();
 		
 		request.open(method, url, true);
 
-		var that = this;
+		
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
 				if ( request.status >= 200 && request.status <= 299 ) {
-					that.resolve(request);
+					promise.resolve(request);
 				} else {
-					that.reject(request);
+					promise.reject(request);
 				}
 			}
 		};
 
 		request.send();
+
+		return promise;
 	}
-	Ajax.prototype = new RSVP.Promise();
-	Ajax.prototype.constructor = Ajax;
 
 	return Ajax;
 });

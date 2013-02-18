@@ -52,55 +52,41 @@ function(
 	};
 
 	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
-		var promise = new RSVP.Promise();
 		var promises = [];
 		var that = this;
 
-console.log(sceneSource);
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
-
 			var entityLoader = new EntityLoader({
 				world: this._world,
 				loader: this._loader
 			});
 
-			for(var i in sceneSource.files)
-			{
+			for(var i in sceneSource.files) {
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
 				var match = fileName.match(/.ent.json$/);
 				
-				if(match !== null)
-				{
-					promises.push(entityLoader.load(scenePath + '/' + fileName));
-				}
-				
+				if(match !== null) {
+					var p = entityLoader.load(scenePath + '/' + fileName);
+					promises.push(p);
+				}		
 			}
-		}
-		else
-		{
-			promise.reject('Couldn\'t load from source: ' + sceneSource);
-			return promise;
+		} 
+
+		if(promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Can\'t find anything to load at ' + scenePath);
+			return p;
 		}
 
 		// Create a promise that resolves when all promise-objects
-		RSVP.all(promises)
+		return RSVP.all(promises)
 		.then(function(entities) {
-			try {
-				var w = that._buildWorld(entities);
-				promise.resolve(w);
-				return;
-			} catch(e) {
-				promise.reject(e);
-			}
-
-		}, function(reason) {
-			promise.reject(reason);
+			var w = that._buildWorld(entities);
+			return w;
 		});
-		
-		return promise;
 	};
 
 	SceneLoader.prototype._buildWorld = function(entities) {

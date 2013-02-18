@@ -11,6 +11,7 @@ define(['goo/loaders/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader
 		settings = settings || {};
 
 		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
+		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
 			'.dds' : new DdsLoader()
@@ -77,7 +78,7 @@ define(['goo/loaders/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader
 		var texture = new Texture();
 
 		// Load the actual image
-		new Loader().loadImage(imageURL).then(function(data) {
+		this._loader.loadImage(imageURL).then(function(data) {
 			texture.setImage(data);
 			TextureCreator.cache[imageURL] = texture;
 		});

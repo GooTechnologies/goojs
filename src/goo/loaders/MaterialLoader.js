@@ -50,8 +50,7 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
-		var promise = new RSVP.Promise();
-		var promises = {}; // Keep track of promises
+		var promises = []; // Keep track of promises
 		var shaderDefinition = this._getDefaultShaderDefinition();
 		var materialState = this._getDefaultMaterialState();
 		var textures = [];
@@ -63,13 +62,23 @@ define([
 				value = materialDataSource[attribute];
 
 				if(attribute === 'shader') {
-					promises[attribute] = this._loader.load(value);
+					var p = this._loader.load(value)
+					.then(function(data) {
+						return that._parseShaderDefinition(data);
+					})
+					.then(function(shaderDef) {
+						shaderDefinition.vshader = shaderDef.vshader;
+						shaderDefinition.fshader = shaderDef.fshader;
+						return shaderDefinition;
+					});
+
+					promises.push(p);
 				} else if(attribute === 'uniforms') {
 
 					for(var i in value) {
 						var that = this;
 						if(i === 'diffuseTexture') {
-							textures.push(new TextureCreator().loadTexture2D(this._loader.projectRoot + value[i]));
+							textures.push(new TextureCreator({loader:this._loader}).loadTexture2D(value[i]));
 						} else if(i === 'shininess') {
 							materialState.shininess = value[i];
 						} else if(i === 'ambient' || i === 'diffuse' || i === 'emissive' || i === 'specular') {
@@ -82,81 +91,60 @@ define([
 				}
 			}
 		}
-		else
-		{
-			promise.reject('Couldn\'t load from source: ' + materialDataSource);
+
+		if(promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Material definition `' + materialDataSource + '` does not seem to contain a shader definition.');
+			return p;
 		}
 
-		var that = this;
-		RSVP.all([promises.shader])
+		return RSVP.all(promises)
 		.then(function(data) {
-
-			return that._parseShaderDefinition(data[0]);
-		},
-		function(data) {
-			promise.reject(data);
-		})
-		.then(function(data) {
-
-			shaderDefinition.vshader = data.vshader;
-			shaderDefinition.fshader = data.fshader;
-
 			var material = Material.createMaterial(shaderDefinition);
 			
 			material.textures = textures;
 			material.materialState = materialState;
 
-			promise.resolve(material);
-			
-		},
-		function(data) {
-			promise.reject(data);
+			return material;
 		});
-
-		return promise;
 	};
 
 	MaterialLoader.prototype._parseShaderDefinition = function(shaderDataSource) {
-		var promise = new RSVP.Promise();
-		var promises = {};
+		var promises = [];
+		var shaderDefinition = {};
 
 		if(shaderDataSource && Object.keys(shaderDataSource).length) {
-			if(shaderDataSource.vs === null || shaderDataSource.fs === null) {
-				promise.reject('Could not load shader:\n' + shaderDataSource);
-			}
-
 			var value;
 
 			for(var attribute in shaderDataSource) {
 				value = shaderDataSource[attribute];
-				promises[attribute] = this._loader.load(value);
+				
+				var p = this._loader.load(value);
+
+				if(attribute === 'vs') {
+					p.then(function(vertexShader) {
+						return shaderDefinition.vshader = vertexShader;
+					});
+				} else if(attribute === 'fs') {
+					p.then(function(fragmentShader) {
+						return shaderDefinition.fshader = fragmentShader;
+					});
+				}
+
+				promises.push(p);
 			}
 		}
-		else
-		{
-			promise.reject('Couldn\'t load from source: ' + shaderDataSource);
+
+		if(promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Shader definition `' + shaderDataSource + '` does not seem to contain any shader data.');
+			return p;
 		}
 
-		RSVP.all([promises.vs, promises.fs])
+		return RSVP.all(promises)
 		.then(function(data) {
-			
-			if(data.length === 2) {
-				// We know that we asked for the vertex shader first and fragment second
-				var shaderDefinition = {
-					vshader : data[0],
-					fshader : data[1]
-				};
-
-				promise.resolve(shaderDefinition);
-			} else {
-				promise.reject('Shader pair couldn\'t be loaded.');
-			}
-		},
-		function(data) {
-			promise.reject(data);
+			return shaderDefinition;
 		});
-
-		return promise;
 	};
 
 	MaterialLoader.prototype._getDefaultShaderDefinition = function() {
