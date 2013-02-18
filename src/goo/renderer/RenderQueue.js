@@ -42,7 +42,7 @@ function(Vector3) {
 		var buckets = {};
 		for ( var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
-			if (!renderable.meshRendererComponent) {
+			if (!renderable.meshRendererComponent || renderable.meshRendererComponent.materials.length === 0) {
 				renderList[index] = renderable;
 				index++;
 				continue;
