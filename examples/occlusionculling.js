@@ -1,0 +1,329 @@
+
+require({
+    baseUrl : './',
+    paths : {
+        goo : '../src/goo',
+    }
+});
+require(
+	[
+		'goo/entities/GooRunner',
+		'goo/entities/EntityUtils',
+		'goo/renderer/Material',
+		'goo/renderer/Camera',
+		'goo/entities/components/CameraComponent',
+		'goo/entities/components/ScriptComponent',
+		'goo/shapes/ShapeCreator',
+		'goo/renderer/TextureCreator',
+		'goo/scripts/MouseLookControlScript',
+		'goo/scripts/WASDControlScript',
+		'goo/math/Vector3',
+		'goo/renderer/pass/Composer',
+		'goo/renderer/pass/DepthPass',
+		'goo/renderer/pass/BloomPass',
+		'goo/renderer/pass/RenderPass',
+		'goo/renderer/pass/HierarchicalZPass',
+		'goo/renderer/pass/FullscreenPass',
+		'goo/renderer/Util',
+		'goo/renderer/pass/RenderTarget',
+		'goo/renderer/scanline/SoftwareRenderer',
+		'goo/renderer/shaders/ShaderLib'
+	],
+	function (
+		GooRunner,
+		EntityUtils,
+		Material,
+		Camera,
+		CameraComponent,
+		ScriptComponent,
+		ShapeCreator,
+		TextureCreator,
+		MouseLookControlScript,
+		WASDControlScript,
+		Vector3,
+		Composer,
+		DepthPass,
+		BloomPass,
+		RenderPass,
+		HierarchicalZPass,
+		FullscreenPass,
+		Util,
+		RenderTarget,
+		SoftwareRenderer,
+		ShaderLib
+	) {
+		'use strict';
+
+		//-------- GLOBAL VARIABLES --------
+		
+			var resourcePath = '../resources';
+
+		//----------------------------------
+
+		function init() {
+
+			var goo = new GooRunner({
+				showStats : true,
+				canvas : document.getElementById('goo')
+			});
+
+			// Add camera
+			var camera = new Camera(90, 1, 1, 100);
+			//camera.translation.set(0,1.79,20);
+			var cameraEntity = goo.world.createEntity('CameraEntity');
+			cameraEntity.setComponent(new CameraComponent(camera));
+			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript()]));
+			cameraEntity.addToWorld();
+
+			buildScene(goo);
+
+			setupRenderer(goo, camera);
+
+		}
+
+
+		function setupRenderer(goo, cam) {
+
+			// Disable normal rendering
+			// goo.world.getSystem('RenderSystem').doRender = false;
+
+			var renderList = goo.world.getSystem('PartitioningSystem').renderList;
+
+			// Different options for rendering depth values, using color texture, float texture or depth texture.
+			// Data types link : http://opengl.czweb.org/ch03/031-034.html
+		
+			// The color and float texture formats still need to use a depthbuffer , Could be solved by rendering the occluders back-to-front?
+
+			// Float-textures could not always work, https://developer.mozilla.org/en-US/docs/WebGL/WebGL_best_practices
+			
+			// Color texture for depth values needs to use the pack- and unPack functions for writing and storing the values.
+			var colorTextureOptions = {
+				minFilter : 'NearestNeighborNoMipMaps',
+				magFilter : 'NearestNeighbor',
+				type : 'UnsignedByte',
+				format : 'RGBA',
+				depthBuffer : true, 
+				stencilBuffer : false
+			};
+
+			// The float luminance texture data is saved in the red color channel.
+			var floatTextureOptions = {
+				minFilter : 'NearestNeighborNoMipMaps',
+				magFilter : 'NearestNeighbor',
+				type : 'Float',
+				format : 'Luminance',
+				depthBuffer : true,
+				stencilBuffer : false
+			};
+
+			var depthTextureOptions = {
+				minFilter : 'NearestNeighborNoMipMaps',
+				magFilter : 'NearestNeighbor',
+				type : 'UnsignedShort',
+				format : 'Depth',
+				depthBuffer : false,
+				stencilBuffer : false
+			};
+
+			console.log('Actual Rendering dimensions: width = ' + goo.renderer.domElement.width + ", height = " + goo.renderer.domElement.height);
+
+			// Set up the scale of which the occluder data should be rendered in.
+			var firstLodScale = 1;
+			var depthWidth = goo.renderer.domElement.width * firstLodScale;
+			var depthHeight = goo.renderer.domElement.height * firstLodScale;
+
+			var depthTarget = new RenderTarget(depthWidth, depthHeight, colorTextureOptions);
+			var composer = new Composer(depthTarget);
+
+			var hiZ = new HierarchicalZPass(renderList);
+
+			// Regular copy
+			var shader = Util.clone(ShaderLib.copy);
+			var outPass = new FullscreenPass(shader);
+			outPass.renderToScreen = true;
+
+			composer.addPass(hiZ);
+			//composer.addPass(outPass);
+
+			var gl = goo.renderer.context;
+
+			var numOfPixels = depthWidth * depthHeight;
+
+			var storage = new Uint8Array(4*numOfPixels);
+			//var storage = new Uint16Array(numOfPixels);
+
+			var readTime = new Array();
+
+			goo.callbacks.push(function(tpf) {
+				var beforeRead = performance.now();
+				composer.render(goo.renderer, tpf);
+				// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html
+				// it reads from bottom up, width first.
+
+				//gl.readPixels(0, 0, depthWidth, depthHeight, gl.RGBA, gl.UNSIGNED_BYTE, storage);
+				var afterRead = performance.now();
+
+				readTime.push(afterRead - beforeRead);
+			});
+
+			var softRenderer = new SoftwareRenderer({"width" : 256, "height" : 114, "camera" : cam});
+
+			document.addEventListener('keydown', function(event) {
+					//console.log(event.keyCode);
+					switch (event.keyCode) {
+						case 80: // 'P' 
+
+							/*
+							var values = "{ \n";
+							for(var i = 0; i < storage.length; i++)
+							{
+								values += storage[i] + ', ';
+								
+								if ( (i+1) % 4 == 0)
+								{
+									values += '\n';
+								}
+							}
+
+							values += "}"
+							
+							document.getElementById('debugarea').value = values;
+							*/
+							var debugcanvas = document.getElementById('debugcanvas')
+							var debugContext = debugcanvas.getContext('2d');
+							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
+
+							imagedata.data.set(storage);
+
+							debugContext.putImageData(imagedata,0,0);
+
+							var averageTimeToRead = 0.0;
+							for(var i = 0; i < readTime.length; i++)
+							{
+								averageTimeToRead += readTime[i];
+							}
+
+							averageTimeToRead = averageTimeToRead/readTime.length;
+							
+							readTime = [];
+
+							console.log("Average time to read : " + averageTimeToRead + " ms");
+								
+							break;
+						
+						case 32: // Space
+							var beforeRead = performance.now();
+							softRenderer.render(renderList);
+							var afterRead = performance.now();
+
+							console.log("software render time :" ,  afterRead - beforeRead , "ms");
+
+							beforeRead = performance.now();
+							softRenderer.copyDepthToColor();
+							afterRead = performance.now();
+							
+							console.log("copying depth to color data time :" , afterRead - beforeRead , "ms");
+
+							var debugcanvas = document.getElementById('debugcanvas')
+							var debugContext = debugcanvas.getContext('2d');
+							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
+							imagedata.data.set(softRenderer.getColorData());
+							debugContext.putImageData(imagedata,0,0);
+						break;
+					}
+			});
+		}
+
+		function buildScene(goo) {
+			
+
+			var translation = new Vector3(0, 0, 0);
+			var boxEntity = createBoxEntity(goo.world, translation);
+			boxEntity.addToWorld();
+
+			translation.x = 10;
+			for (var i = 0; i < 20; i++) {
+
+				var quad = createQuad(goo.world, translation);
+				quad.addToWorld();
+				translation.z -= 1.0;
+			}
+
+			//var floorEntity = createFloorEntity(goo.world);
+			//floorEntity.addToWorld();
+
+			goo.callbacks.push(function(tpf) {
+				// Rotate the box. tpf is the number of seconds since last frame.
+				boxEntity.transformComponent.transform.rotation.y += .5 * tpf;
+				// boxEntity.transformComponent.transform.rotation.x += .12 * tpf;
+				boxEntity.transformComponent.setUpdated();
+
+				//quad.transformComponent.transform.rotation.y += .5 * tpf;
+				//quad.transformComponent.setUpdated();
+			});
+
+			/*
+			translation.x += 3;	
+			var anotherBox = createBoxEntity(goo.world, translation);
+			boxEntity.addToWorld();
+			anotherBox.addToWorld();
+
+			var translation = new Vector3(0,0,0);
+			*/
+		}
+
+		function createQuad(world, translation) {
+			var meshData = ShapeCreator.createQuad(2, 2);
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.x = translation.x;
+			entity.transformComponent.transform.translation.y = translation.y;
+			entity.transformComponent.transform.translation.z = translation.z;
+			entity.name = 'Quad';
+			var material = new Material.createMaterial(ShaderLib.simple, 'SimpleMaterial');
+			entity.meshRendererComponent.materials.push(material);
+			return entity;
+		}
+
+		function createFloorEntity(world)
+		{
+			var size = 100;
+			var height = 0.5;
+			var textureRepeats = Math.ceil(size * 0.7);
+			var meshData = ShapeCreator.createBox(size, height, size, textureRepeats, textureRepeats);
+			// var meshData = ShapeCreator.createQuad(size, size, textureRepeats, textureRepeats);
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.y = -height/2;
+			entity.name = 'Floor';
+			
+			var material = new Material.createMaterial(ShaderLib.texturedLit, 'FloorMaterial');
+			
+			// http://photoshoptextures.com/floor-textures/floor-textures.htm
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
+			material.textures.push(texture);
+
+			entity.meshRendererComponent.materials.push(material);
+
+			return entity;
+		}
+
+		function createBoxEntity(world, translation) {
+			var meshData = ShapeCreator.createBox(1, 1, 1);
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.x = translation.x;
+			entity.transformComponent.transform.translation.y = translation.y;
+			entity.transformComponent.transform.translation.z = translation.z;
+			entity.name = 'Box';
+			
+			var material = new Material.createMaterial(ShaderLib.texturedLit, 'GooBoxMaterial');
+
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
+			material.textures.push(texture);
+
+			entity.meshRendererComponent.materials.push(material);
+
+			return entity;
+		}
+
+		init();
+	}
+);

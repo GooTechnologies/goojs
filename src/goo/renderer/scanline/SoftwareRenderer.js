@@ -234,9 +234,8 @@ define([
 				
 				v.z *= div;
 
-				// The z/w coordinate is in the range -1 to 1. Canonical view voulme? 
+				// The z/w coordinate is in the range -1 to 1. (Canonical view voulme?)
 				// console.log("after div", v.z);
-				
 			}
 			
 			// Back-face culling.

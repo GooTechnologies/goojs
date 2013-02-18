@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>Occlusion Culling Developing Application</title>
+
+<script data-main="occlusionculling" src="../lib/require.js"></script>
+
+<style>
+
+	body
+	{
+		text-align: center;
+		background-color : #666;
+	}
+
+	canvas
+	{
+		display: inline;
+		background-color: pink;
+	}
+
+	#goo
+	{
+		width : 500px;
+		height : 501px;
+	}
+
+	#debugcanvas
+	{
+		width : 500px;
+		height : 500px;
+	}
+
+	.canvascontainer
+	{
+		display: inline-block;
+	}
+</style>
+</head>
+<body>
+	<div>
+		<div class="canvascontainer">
+			<canvas id="goo" width="500" height="500">
+			</canvas>
+		</div>
+		<div class="canvascontainer">
+			<canvas id="debugcanvas" width="256" height="114" >
+			</canvas>
+		</div>
+	</div>
+
+	<p>
+		<textarea id="debugarea" readonly="true"></textarea>
+	</p>
+</body>
+</html>
