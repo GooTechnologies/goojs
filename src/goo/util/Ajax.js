@@ -1,41 +1,52 @@
 define([
-		'goo/util/Promise'
-	], function(
-		Promise
+		'lib/rsvp.amd'
+	],
+	/** @lends Ajax */
+	function(
+		RSVP
 	) {
 
-	function Ajax(options) {
-		Promise.call(this);
+	/**
+	 * Subclass of Promise. Wrapper class around an XHR call.
+	 *
+	 */
+	function Ajax() {}
+
+	/**
+	 * Uses GET to retrieve data at a remote location.
+	 *
+	 * @param {string} options.url
+	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
+	 */
+	Ajax.prototype.get = function(options) {
+		var promise = new RSVP.Promise();
 
 		options = options || {};
-
-		var method = options.method || 'GET';
+		
 		var url = options.url || '';
+
+		var method = 'GET';
+		var async = true;
 
 		var request = new XMLHttpRequest();
 		
 		request.open(method, url, true);
 
-		var that = this;
+		
 		request.onreadystatechange = function () {
-			if (request.readyState === 4) {
-				// REVIEW: Put opening brace on same line!
-				if (request.status >= 200 && request.status <= 299)
-				{
-					that._resolve(request);
-				}
-				else
-				{
-
-					that._reject(request);
+			if ( request.readyState === 4 ) {
+				if ( request.status >= 200 && request.status <= 299 ) {
+					promise.resolve(request);
+				} else {
+					promise.reject(request);
 				}
 			}
 		};
 
 		request.send();
+
+		return promise;
 	}
-	Ajax.prototype = new Promise();
-	Ajax.prototype.constructor = Ajax;
 
 	return Ajax;
 });

@@ -1,5 +1,10 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util',
-        'goo/util/Latch'],
+define([
+	'goo/loaders/Loader',
+	'goo/renderer/Texture',
+	'goo/loaders/dds/DdsLoader',
+	'goo/util/SimpleResourceUtil',
+	'goo/renderer/Util',
+	'goo/util/Latch'],
 	/** @lends TextureCreator */
 	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util, Latch) {
 	"use strict";
@@ -12,6 +17,7 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		settings = settings || {};
 
 		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
+		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
 			'.dds' : new DdsLoader()
@@ -71,10 +77,18 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 			}
 		}
 
-		var img = new Loader().loadImage(imageURL);
-		var texture = new Texture(img, settings);
+		if (TextureCreator.cache[imageURL] !== undefined) {
+			return TextureCreator.cache[imageURL];
+		}
 
-		TextureCreator.cache[imageURL] = texture;
+		// Create a texture
+		var texture = new Texture();
+
+		// Load the actual image
+		this._loader.loadImage(imageURL).then(function(data) {
+			texture.setImage(data);
+			TextureCreator.cache[imageURL] = texture;
+		});
 
 		console.info("Loaded image: " + imageURL);
 

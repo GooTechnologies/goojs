@@ -1,152 +1,101 @@
 /* jshint bitwise: false */
 define([
+		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 
-		'goo/util/Promise',
-		'goo/util/Ajax'
+		'lib/rsvp.amd'
 	],
 /** @lends SceneLoader */
 function(
+		Loader,
 		EntityLoader,
-
-		Promise,
-		Ajax
+		RSVP
 	) {
 	"use strict";
 
 
-
-	// REVIEW: There's far too much copy/paste between the Loader classes.
-	// Constructor, setRootUrl, setWorld, load...
-	// Only the parse functions differ.
-	//
-	// Potential solution #1: Create a Loader superclass. Too complex solution.
-	// Inheritance is for polymorphism, not code reuse.
-	//
-	// Potential solution #2: Put the common functionality into a Loader class
-	// that takes the parse function as a constructor parameter. Better decoupling!
-
-
-	/*
+	/**
+	 * Utility class for loading scenes into a World.
 	 *
+	 * @constructor
+	 * @param {World} parameters.world The target World object.
+	 * @param {Loader} parameters.loader
 	 */
-	function SceneLoader(world, rootUrl) {
-		this._rootUrl = rootUrl || '';
-		this._world = (typeof world !== "undefined" && world !== null) ? world : null;
+	function SceneLoader(parameters) {
+		if(typeof parameters === "undefined" || parameters === null) {
+			throw new Error('SceneLoader(): Argument `parameters` was undefined/null');
+		}
+
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+			throw new Error('SceneLoader(): Argument `parameters.loader` was invalid/undefined/null');
+		}
+
+		if(typeof parameters.world === "undefined" || parameters.world === null) {	
+			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
+		}
+
+		this._loader = parameters.loader;
+		this._world = parameters.world; 
 	}
 
-	SceneLoader.prototype.setRootUrl = function(rootUrl) {
-		if(typeof rootUrl === 'undefined' || rootUrl === null) { return this; }
-		this._rootUrl = rootUrl;
-
-		return this;
-	};
-
-	SceneLoader.prototype.setWorld = function(world) {
-		if(typeof world === "undefined" && world === null) { return this; }
-		this._world = world;
-
-		return this;
-	};
-
-	SceneLoader.prototype.load = function(sourcePath) {
-		var promise = new Promise();
-		if(this._world === null) { promise._reject('World was undefined/null'); }
-		if(typeof sourcePath === 'undefined' || sourcePath === null) { promise._reject('URL not specified'); }
-
+	/**
+	 * Loads the scene at <code>scenePath</code>.
+	 *
+	 * @param {string} scenePath Relative path to the scene.
+	 * @return {Promise} The promise is resolved with the target World object.
+	 */
+	SceneLoader.prototype.load = function(scenePath) {
 		var that = this;
-
-		// REVIEW: Unclear. Why do we check the promise's state?
-		if(promise._state === 'pending')
-		{
-			new Ajax({
-				url: this._rootUrl + sourcePath // It's gotta be a json object!
-			})
-			.done(function(request) {
-				that._parseScene(that._handleRequest(request), sourcePath)
-					.done(function(data) {
-						promise._resolve(data);
-					})
-					.fail(function(data) {
-						promise._reject(data);
-					});
-			})
-			.fail(function(data) {
-				promise._reject(data.responseText);
-			});
-		}
-
-		return promise;
+		return this._loader.load(scenePath, function(data) {
+			return that._parse(data, scenePath);
+		});
 	};
 
-	// REVIEW: Can this method name be made clearer? Like `getContentFromRequest` or something?
-	SceneLoader.prototype._handleRequest = function(request) {
-		var json = null;
-
-		// REVIEW: Why ignore the wrong content-type? Shouldn't that be an error?
-		if(request && request.getResponseHeader('Content-Type') === 'application/json')
-		{
-			try
-			{
-				json = JSON.parse(request.responseText);
-			}
-			catch (e)
-			{
-				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
-			}
-		}
-
-		return json;
-	};
-
-	SceneLoader.prototype._parseScene = function(sceneSource, sceneUrl) {
-		// REVIEW: One var statement per line. Yes, I know that's is against Crockford style, but this is ugly!
-		var promise = new Promise(),
-			promises = [],
-			that = this;
-
+	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
+		var promises = [];
+		var that = this;
 
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
+			var entityLoader = new EntityLoader({
+				world: this._world,
+				loader: this._loader
+			});
 
-			var entityLoader = new EntityLoader(this._world, this._rootUrl);
-
-			for(var i in sceneSource.files)
-			{
+			for(var i in sceneSource.files) {
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
 				var match = fileName.match(/.ent.json$/);
 				
-				if(match !== null)
-				{
-					promises.push(entityLoader.load(sceneUrl + '/' + fileName));
-				}
-				
+				if(match !== null) {
+					var p = entityLoader.load(scenePath + '/' + fileName);
+					promises.push(p);
+				}		
 			}
-		}
-		else
-		{
-			promise._reject('Couldn\'t load from source: ' + sceneSource);
-			// REVIEW: This falls through to the "when" below. Is this right?
+		} 
+
+		if(promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Can\'t find anything to load at ' + scenePath);
+			return p;
 		}
 
-
-		// REVIEW: Why call apply with `this`? Is `this` a promise!?
-		// Is it supposed to be `Promise.when.apply(promise, promises)`?
-		Promise.when.apply(this, promises)
-			.done(function(entities) {
-				for(var i in entities) { entities[i].addToWorld(); }
-				that._world.process();
-				promise._resolve(that._world);
-			})
-			.fail(function(data) {
-				promise._reject(data);
-			});
-		
-		return promise;
+		// Create a promise that resolves when all promise-objects
+		return RSVP.all(promises)
+		.then(function(entities) {
+			var w = that._buildWorld(entities);
+			return w;
+		});
 	};
 
+	SceneLoader.prototype._buildWorld = function(entities) {
+		for(var i in entities) {
+			entities[i].addToWorld();
+		}
+		this._world.process();
+		return this._world;
+	};
 
 	return SceneLoader;
 });

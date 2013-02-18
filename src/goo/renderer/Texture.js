@@ -1,6 +1,12 @@
-define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'],
+define([
+		'goo/math/Vector3',
+		'goo/math/Vector2'
+	],
 	/** @lends Texture */
-	function (Loader, Vector3, Vector2) {
+	function (
+		Vector3,
+		Vector2
+	) {
 	"use strict";
 
 	/**
