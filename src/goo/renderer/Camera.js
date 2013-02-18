@@ -6,7 +6,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 
 	/**
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
-	 * @param {Number} fov Field of view
+	 * @param {Number} fov the full vertical angle of view, in degrees.
 	 * @param {Number} aspect aspect ratio
 	 * @param {Number} near near plane distance
 	 * @param {Number} far far plane distance
