@@ -11,7 +11,8 @@
     }
   ],
   "dependencies" : {
-    "requirejs" : ">=2.1.2"
+    "requirejs" : ">=2.1.2",
+    "rsvp": ">=1.2.0"
   },
   "devDependencies": {
     "coffee-script": "1.4.0",
