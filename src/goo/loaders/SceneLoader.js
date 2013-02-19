@@ -3,7 +3,7 @@ define([
 		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 
-		'lib/rsvp.amd'
+		'goo/lib/rsvp.amd'
 	],
 /** @lends SceneLoader */
 function(

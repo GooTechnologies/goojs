@@ -4,7 +4,8 @@ require.config({
 	paths: {
 		"goo": "../src/goo",
 		"test": "../test",
-		"lib": "../lib"
+		"lib": "../lib",
+		"goo/lib": "../lib"
 	},
 	waitSeconds: 5
 });

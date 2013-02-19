@@ -1,5 +1,5 @@
 define([
-		'lib/rsvp.amd'
+		'goo/lib/rsvp.amd'
 	],
 	/** @lends Ajax */
 	function(

@@ -9,7 +9,7 @@ define([
 		'goo/entities/components/MeshDataComponent',
 		'goo/math/Vector3',
 
-		'lib/rsvp.amd',
+		'goo/lib/rsvp.amd',
 
 		'goo/loaders/MaterialLoader',
 		'goo/loaders/MeshLoader',

@@ -2,7 +2,7 @@ define([
 	'goo/loaders/Loader',
 	'goo/loaders/SceneLoader',
 	'goo/entities/Entity',
-	'lib/rsvp.amd',
+	'goo/lib/rsvp.amd',
 	'goo/entities/GooRunner'
 	],
 function(

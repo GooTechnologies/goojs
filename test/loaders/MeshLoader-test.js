@@ -5,7 +5,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Texture',
 	'goo/shapes/ShapeCreator',
-	'lib/rsvp.amd',
+	'goo/lib/rsvp.amd',
 	'goo/entities/GooRunner'
 	],
 function(

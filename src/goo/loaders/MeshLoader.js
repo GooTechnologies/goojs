@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 define([
-		'lib/rsvp.amd',
+		'goo/lib/rsvp.amd',
 		'goo/loaders/JsonUtils',
 		'goo/loaders/Loader',
 		'goo/renderer/MeshData'

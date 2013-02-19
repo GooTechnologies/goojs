@@ -3,7 +3,7 @@ define([
 	'goo/loaders/EntityLoader',
 	'goo/renderer/Material',
 	'goo/shapes/ShapeCreator',
-	'lib/rsvp.amd',
+	'goo/lib/rsvp.amd',
 	'goo/entities/GooRunner'
 	],
 function(
