@@ -180,7 +180,7 @@ define([
 
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-					var ratio = this.calculateIntersectionRatio(origin, target);
+					var ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV1 = [
 						origin.x + ratio * (target.x - origin.x),
@@ -189,7 +189,7 @@ define([
 					];
 
 					target = vertices[insideIndices[1]];
-					ratio = this.calculateIntersectionRatio(origin, target);
+					ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV2 = new Vector4(
 						origin.x + ratio * (target.x - origin.x),
@@ -208,7 +208,7 @@ define([
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
 
-					var ratio = this.calculateIntersectionRatio(origin, target);
+					var ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -217,7 +217,7 @@ define([
 
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
-					ratio = this.calculateIntersectionRatio(origin, target);
+					ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -279,24 +279,28 @@ define([
 
 	/*
 	*	Calculates the intersection ratio between the parameters with the camera's near plane.
+	*   REVIEW: A short explanation of what "intersection ratio" is would help.
+	*   REVIEW: I created a unit test for this function (and made it static to be easily tested).
+	*           The result wasn't what I expected. See SoftwareRenderer-test.js!
 	*	
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
+	*   @param {number} near The near plane.
 	*/
-	SoftwareRenderer.prototype.calculateIntersectionRatio = function(origin, target) {
+	SoftwareRenderer.calculateIntersectionRatio = function(origin, target, near) {
 			
 		// Using a tip from Joel: 
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
 
 		// The camera's near plane component is the translation of the near plane,
-		// therefore 'a' is caluclated as origin.z + camera.near
-		// var a = origin.z + this.camera.near;
-		// var b = -this.camera.near - target.z;
+		// therefore 'a' is caluclated as origin.z + near
+		// var a = origin.z + near;
+		// var b = -near - target.z;
 		// var ratio = a/(a+b);
 
 		// Simplified the ratio to :
-		return (origin.z + this.camera.near) / (origin.z - target.z);
+		return (origin.z + near) / (origin.z - target.z);
 
 	};
 
