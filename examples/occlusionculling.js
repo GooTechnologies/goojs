@@ -151,7 +151,6 @@ require(
 			var numOfPixels = depthWidth * depthHeight;
 
 			var storage = new Uint8Array(4*numOfPixels);
-			//var storage = new Uint16Array(numOfPixels);
 
 			var readTime = new Array();
 
@@ -239,43 +238,33 @@ require(
 			
 
 			var translation = new Vector3(0, 0, 0);
+			translation.y = 0.5;
 			var boxEntity = createBoxEntity(goo.world, translation);
 			boxEntity.addToWorld();
 
 			translation.x = 10;
-			for (var i = 0; i < 1; i++) {
+			translation.y = 1;
+			for (var i = 0; i < 10; i++) {
 
 				var quad = createQuad(goo.world, translation, 2, 2);
 				quad.addToWorld();
 				translation.z -= 1.0;
 			}
 
-			translation.x = 100;
-			translation.z = -20;
+			translation.x = 20;
+			translation.z = -15;
+			translation.y = 5;
 			var bigQuad = createQuad(goo.world, translation, 50, 10);
 			bigQuad.addToWorld();
 
-			//var floorEntity = createFloorEntity(goo.world);
-			//floorEntity.addToWorld();
+			var floorEntity = createFloorEntity(goo.world);
+			floorEntity.addToWorld();
 
 			goo.callbacks.push(function(tpf) {
-				// Rotate the box. tpf is the number of seconds since last frame.
+				
 				boxEntity.transformComponent.transform.rotation.y += .5 * tpf;
-				// boxEntity.transformComponent.transform.rotation.x += .12 * tpf;
 				boxEntity.transformComponent.setUpdated();
-
-				//quad.transformComponent.transform.rotation.y += .5 * tpf;
-				//quad.transformComponent.setUpdated();
 			});
-
-			/*
-			translation.x += 3;	
-			var anotherBox = createBoxEntity(goo.world, translation);
-			boxEntity.addToWorld();
-			anotherBox.addToWorld();
-
-			var translation = new Vector3(0,0,0);
-			*/
 		}
 
 		function createQuad(world, translation, width, height) {

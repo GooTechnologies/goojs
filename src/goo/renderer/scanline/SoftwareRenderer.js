@@ -6,11 +6,12 @@ define([
 	'goo/math/Ray',
 	'goo/math/Plane',
 	'goo/math/Matrix4x4',
-	'goo/renderer/scanline/Edge'
+	'goo/renderer/scanline/Edge',
+	'goo/renderer/RenderQueue'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge) {
+	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge, RenderQueue) {
 	"use strict";
 
 	/*
@@ -31,22 +32,24 @@ define([
 
 		this.camera = parameters.camera;
 
+		this.renderQueue = new RenderQueue();
+
 		// Store the edges for a triangle 
 		this.edges = new Array(3);
 
 		var colorBytes = this.numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
-		var depthBytes = this.numOfPixels * Uint8Array.BYTES_PER_ELEMENT;
+		var depthBytes = this.numOfPixels * Float32Array.BYTES_PER_ELEMENT;
 
 		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes * 2);
 
 		// The color data is used for debugging purposes.
 		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4);
-		this._depthData = new Uint8Array(this._frameBuffer, colorBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
+		this._depthData = new Float32Array(this._frameBuffer, colorBytes, this.numOfPixels);
 		// Buffer for clearing.
-		this._depthClear = new Uint8Array(this._frameBuffer, colorBytes + depthBytes, this.numOfPixels); // TODO: Change to float / uint16 / ...
+		this._depthClear = new Float32Array(this._frameBuffer, colorBytes + depthBytes, this.numOfPixels);
 
 		for (var i = 0; i < this.numOfPixels; i++) {
-			this._depthClear[i] = 255;
+			this._depthClear[i] = 0.0;
 		}
 
 
@@ -73,8 +76,9 @@ define([
 		this.clearDepthData();
 	
 		if (Array.isArray(renderList)) {
-			// TODO: Sort the renderlist back to front.
-			//this.renderQueue.sort(renderList, camera);
+
+			// Sorts back to front? 
+			this.renderQueue.sort(renderList, this.camera);
 
 			// Iterate over the view frustum culled entities.
 			for ( var i = 0; i < renderList.length; i++) {
@@ -229,7 +233,7 @@ define([
 				
 				// The projected z coordinates range from -1 to 100+
 				// console.log("proj z", v.z);
-				v.z *= div;
+				//v.z *= div;
 
 				// The z/w coordinate is in the range -1 to 1. (Canonical view voulme?)
 				// console.log("after div", v.z);
@@ -306,10 +310,13 @@ define([
 			vertex.x = (vertex.x + 1.0) * (this.width / 2);
 			vertex.y = (vertex.y + 1.0) * (this.height / 2);
 			// If the z coordinate is transformed to canonical volume, this will move the range from [-1, 1] to [0, 1]
-			vertex.z = (vertex.z + 1) / 2;
-			vertex.z = Math.round(65535 * vertex.z) + 1; // 16-Bit Integers.
+			// vertex.z = (vertex.z + 1) / 2;
+			// vertex.z = Math.round(65535 * vertex.z) + 1; // 16-Bit Integers.
 
-			console.log("Vertex[" + i +"].z", vertex.z);	
+			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
+			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
+			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.
+			vertex.z = vertex.w;
 		}
 	};
 
@@ -375,8 +382,6 @@ define([
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
 
-		//triangle.printVertexData();
-
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
 		// It also rounds the vectors' coordinate values to the nearest pixel value. (Math.round).
@@ -399,7 +404,7 @@ define([
         }
 
         if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.width ) {
-        	//console.log("Triangle is outside the view, skipping rendering it");
+        	// Triangle is outside the view, skipping rendering it;
         	return;
         }
 		
@@ -541,20 +546,10 @@ define([
 
 		// Horizontal clipping
 
-		//console.log("zleft", leftZ);
-		//console.log("zright",  rightZ);
-
 		// If the triangle is clipped, the bounding z-values has to be interpolated 
 		// to the new startpoints.
 		if ( startIndex < 0 ) {
-
 			var t = - startIndex / (stopIndex - startIndex);
-
-			if ( t > 1.0 || t < 0.0 ) {
-				console.error("wrong t calculation in LEFT");
-				console.log("left clip t", t);
-			}
-		
 			leftZ = (1.0 - t) * leftZ + t * rightZ;
     		startIndex = 0;
     	}
@@ -562,58 +557,23 @@ define([
     	var diff = stopIndex - this._clipX;
     	if (diff > 0) {
     		var t = diff / (stopIndex - startIndex);
-			if ( t > 1.0 || t < 0.0 ) {
-				console.error("wrong t calculation in RIGHT");
-				console.log("right clip t", t);
-			}
-
-			console.log("Diff", diff);
-
     		rightZ = (1.0 - t) * rightZ + t * leftZ;
-    		console.log("rightZ", rightZ);
     		stopIndex = this._clipX;
     	}
-		
-
 	
 		var t = 0.0;
 		var tIncrement = 1.0 / (stopIndex - startIndex);
-		var min = 999999999;
 		var row = y * this.width;
-
-		leftZ = 1.0 / leftZ;
-		rightZ = 1.0 / rightZ;
-
-		var print = false;
-		if ( leftZ == 1 || rightZ == 1 ) {
-			
-			console.log("leftZ", leftZ);
-			console.log("rightZ", rightZ);
-			print = true;
-		}
-
 		for (var i = startIndex; i <= stopIndex; i++) {
-			// Linearly interpolate the 1/z values
-			// and divide the result to get the correct z. (16-bit integer)
+			
+			// Linearly interpolate the 1/z values			
 			var depth = ((1.0 - t) * leftZ + t * rightZ);
-
-			// depth = 1.0 / depth;
-			// Linearize depth 
-			// depth = (2.0 * this.camera.near) / (this.camera.far + this.camera.near - depth * (this.camera.far - this.camera.near));
-			this._depthData[row + i] = depth / 256; // 16bit to 8bit
-
-			if ( depth < min ) {
-				min = depth;
-			}
-
-			if (print) {
-				console.log("depth on line ["+row+"]", depth, "t=",t);
-			}
+			
+			this._depthData[row + i] = depth;  // Store 1/z values in range [1/far, 1/near]. 
 
 			t += tIncrement;
 		}
 
-		//console.log("mindepth during rendering:", min);
 	};
 
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
@@ -622,39 +582,14 @@ define([
 		
 		for( var i = 0; i < this._depthData.length; i++) {
 
-			var depth = this._depthData[i];
+			// Convert the float value of depth into 8bit.
+			var depth = this._depthData[i] * 255; 
 			this._colorData[colorIndex] = depth;
 			this._colorData[++colorIndex] = depth;
 			this._colorData[++colorIndex] = depth;
 			this._colorData[++colorIndex] = 255;
 			colorIndex++;
 		}
-		
-
-		/*
-		// This was slower.
-		
-		var depthLine = new Uint8Array(this.width);
-		var colorLine = new Uint8Array(this.width * 4);
-		var start;
-		var end;
-		var width = this.width;
-		for ( var scanline = 0; scanline < this.height; scanline++)
-		{
-			// fetch one line from the depthdata
-			start = scanline * width;
-			end = start+width;
-			depthLine = this._depthData.subarray(start, end);
-			
-			// Convert the line to RGBA
-			for (var i = 0; i < depthLine.length; i++) {
-				depth = depthLine[i];
-				colorLine.set([depth, depth, depth, 255], (i*4));
-			}
-
-			this._colorData.set(colorLine, start*4);
-		}
-		*/
 	};
 
 	
