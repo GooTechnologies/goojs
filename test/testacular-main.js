@@ -2,8 +2,7 @@
 require.config({
     paths: {
         "goo": "src/goo",
-        "test": "test",
-        "lib": "lib"
+        "test": "test"
     },
     waitSeconds: 5
   });
