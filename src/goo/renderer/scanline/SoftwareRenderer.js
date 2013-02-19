@@ -6,12 +6,11 @@ define([
 	'goo/math/Ray',
 	'goo/math/Plane',
 	'goo/math/Matrix4x4',
-	'goo/renderer/scanline/Edge',
-	'goo/renderer/RenderQueue'
+	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge, RenderQueue) {
+	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge) {
 	"use strict";
 
 	/*
@@ -31,8 +30,6 @@ define([
 		this.numOfPixels = this.width * this.height;
 
 		this.camera = parameters.camera;
-
-		this.renderQueue = new RenderQueue();
 
 		// Store the edges for a triangle 
 		this.edges = new Array(3);
@@ -76,9 +73,6 @@ define([
 		this.clearDepthData();
 	
 		if (Array.isArray(renderList)) {
-
-			// Sorts back to front? 
-			this.renderQueue.sort(renderList, this.camera);
 
 			// Iterate over the view frustum culled entities.
 			for ( var i = 0; i < renderList.length; i++) {
@@ -568,9 +562,12 @@ define([
 			
 			// Linearly interpolate the 1/z values			
 			var depth = ((1.0 - t) * leftZ + t * rightZ);
+				
+			// Check if the value is closer than the stored one. z-test.
+			if (depth > this._depthData[row + i]) {
+				this._depthData[row + i] = depth;  // Store 1/z values in range [1/far, 1/near]. 
+			}
 			
-			this._depthData[row + i] = depth;  // Store 1/z values in range [1/far, 1/near]. 
-
 			t += tIncrement;
 		}
 

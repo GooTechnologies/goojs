@@ -274,7 +274,7 @@ require(
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'Quad';
-			var material = new Material.createMaterial(ShaderLib.simple, 'SimpleMaterial');
+			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 			entity.meshRendererComponent.materials.push(material);
 			return entity;
 		}
