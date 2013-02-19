@@ -1,3 +1,4 @@
+// REVIEW: Lots of JSHint warnings. Try `make checkstyle`!
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
@@ -24,6 +25,11 @@ define([
 		this.width = parameters.width;
 		this.height = parameters.height;
 
+		// REVIEW: It's a bit unexpected that these values are one less than the width and height.
+		// It's such a common convention to use a left-closed, right-open interval, e.g.
+		// a <= i < b.
+		// Compare with how a for loop often looks: for(i = a; i < b; ++i), NOT for(i = a; i <= b, ++i)
+		// Is there a reason to use a closed interval?
 		this._clipX = this.width - 1;
 		this._clipY = this.height - 1;
 
@@ -72,6 +78,7 @@ define([
 
 		this.clearDepthData();
 	
+		// REVIEW: Why check whether renderList is an array? That should never happen.
 		if (Array.isArray(renderList)) {
 
 			// Iterate over the view frustum culled entities.
@@ -98,7 +105,7 @@ define([
 	*	@return Triangle[]
 	*/
 	SoftwareRenderer.prototype.createTrianglesForEntity = function (entity) {
-
+		// REVIEW: This function is very long! Can you split it into logical sections and extract new functions?
 
 		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
@@ -119,6 +126,9 @@ define([
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		//var timerStart = performance.now();
+		// REVIEW: Tip: For profiling, try
+		//   console.time('something');
+		//   console.timeEnd('something');
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 			
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
@@ -162,6 +172,7 @@ define([
 				case 3:
 					// All of the vertices are on the outside, skip to the next three vertices.
 					continue;
+					// REVIEW: Redundant break. I think JSHint gives a warning on this.
 					break;
 				case 1:
 					// Update the one vertex to its new position on the near plane and add a new vertex
@@ -181,10 +192,10 @@ define([
 					ratio = this.calculateIntersectionRatio(origin, target);
 
 					var newV2 = new Vector4(
-					origin.x + ratio * (target.x - origin.x),
-					origin.y + ratio * (target.y - origin.y),
-					origin.z + ratio * (target.z - origin.z),
-					1.0
+						origin.x + ratio * (target.x - origin.x),
+						origin.y + ratio * (target.y - origin.y),
+						origin.z + ratio * (target.z - origin.z),
+						1.0
 					);
 
 					vertices[outsideIndices[0]].set(newV1);
@@ -234,7 +245,7 @@ define([
 			}
 			
 			// Back-face culling.
-			if (this.isBackFacing(v1,v2,v3)) {
+			if (this.isBackFacing(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
 			}
 			
@@ -353,6 +364,7 @@ define([
 		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
 		
 		// Invert the comparison to remove the negation of facenormalZ.
+		// REVIEW: Just `return faceNormalZ < 0.0` instead!
 		if ( faceNormalZ < 0.0 ) {
 			return true;
 		}
@@ -519,6 +531,11 @@ define([
 
 	};
 
+	// REVIEW: Why are the variables called startIndex and stopIndex? They seem to be just x coordinates.
+	// REVIEW: Is stopIndex the last pixel to be filled or the pixel *after* the last pixel.
+	// As I mentioned before, it's more conventional to use a half-open interval,
+	// startIndex <= x < stopIndex, NOT startIndex <= x <= stopIndex.
+	// One nice property then is that the width = stopIndex - startIndex
 	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y, leftZ, rightZ) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
@@ -540,6 +557,11 @@ define([
 
 		// Horizontal clipping
 
+		// REVIEW: There are three "var t" statements in this function!
+		// JSHint give you a warning about this.
+		// Either give the three t different names,
+		// or put a single "var t" statement here somewhere.
+
 		// If the triangle is clipped, the bounding z-values has to be interpolated 
 		// to the new startpoints.
 		if ( startIndex < 0 ) {
@@ -556,6 +578,8 @@ define([
     	}
 	
 		var t = 0.0;
+		// REVIEW: Since startIndex..stopIndex is a closed interval,
+		// I think the width calculation here is one off.
 		var tIncrement = 1.0 / (stopIndex - startIndex);
 		var row = y * this.width;
 		for (var i = startIndex; i <= stopIndex; i++) {
