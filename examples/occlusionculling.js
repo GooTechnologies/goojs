@@ -2,7 +2,7 @@
 require({
     baseUrl : './',
     paths : {
-        goo : '../src/goo',
+        goo : '/js/goo'
     }
 });
 require(
