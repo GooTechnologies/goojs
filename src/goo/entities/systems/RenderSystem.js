@@ -37,7 +37,7 @@ define(['goo/entities/systems/System', 'goo/renderer/TextureCreator', 'goo/rende
 		if (!this.doRender) {
 			return;
 		}
-
+		
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights);
 		}

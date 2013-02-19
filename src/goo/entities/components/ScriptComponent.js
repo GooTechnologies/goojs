@@ -25,7 +25,7 @@ function(Component) {
 		var script;
 		for ( var i = 0, max = this.scripts.length; i < max; i++) {
 			script = this.scripts[i];
-			if (script && script.run) {
+			if (script && script.run && (script.enabled === undefined || script.enabled)) {
 				script.run(entity);
 			}
 		}

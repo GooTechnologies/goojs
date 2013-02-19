@@ -73,7 +73,7 @@ function(
 			return null;
 		}
 
-		var indexCount = object.data.IndexLengths ? object.data.IndexLengths[0] : 0;
+		var indexCount = object.IndexLengths ? object.IndexLengths[0] : object.Indices ? object.Indices.length : 0;
 
 		var attributeMap = {};
 		if (object.data.Vertices) {

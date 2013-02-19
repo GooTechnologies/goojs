@@ -1,10 +1,41 @@
 /*jshint bitwise: false*/
-define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue', 'goo/renderer/shaders/ShaderLib'],
+define([
+        'goo/renderer/RendererRecord', 
+        'goo/renderer/Camera', 
+        'goo/renderer/Util', 
+        'goo/renderer/TextureCreator', 
+        'goo/renderer/pass/RenderTarget',
+		'goo/math/Vector4', 
+		'goo/entities/Entity', 
+		'goo/renderer/Texture', 
+		'goo/loaders/dds/DdsLoader', 
+		'goo/loaders/dds/DdsUtils',
+		'goo/renderer/MeshData', 
+		'goo/renderer/Material', 
+		'goo/math/Transform', 
+		'goo/renderer/RenderQueue', 
+		'goo/renderer/shaders/ShaderLib',
+		'goo/renderer/shadow/ShadowHandler'
+		],
 /** @lends Renderer */
-function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, Entity, Texture, DdsLoader, DdsUtils, MeshData, Material, Transform,
-	RenderQueue, ShaderLib) {
+function(
+	RendererRecord, 
+	Camera, 
+	Util, 
+	TextureCreator, 
+	RenderTarget, 
+	Vector4, 
+	Entity, 
+	Texture, 
+	DdsLoader, 
+	DdsUtils, 
+	MeshData, 
+	Material, 
+	Transform,
+	RenderQueue, 
+	ShaderLib, 
+	ShadowHandler
+	) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -56,9 +87,6 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
 				|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
 				|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
-			// this.glExtensionCompressedTextureS3TC = this.context.getExtension('WEBGL_compressed_texture_s3tc')
-			// || this.context.getExtension('MOZ_WEBGL_compressed_texture_s3tc')
-			// || this.context.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
 			this.glExtensionDepthTexture = this.context.getExtension('WEBKIT_WEBGL_depth_texture')
 				|| this.context.getExtension('MOZ_WEBGL_depth_texture');
 
@@ -81,22 +109,6 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			console.error(error);
 		}
 
-		// function getAllVariables(object) {
-		// return Object.getOwnPropertyNames(object).filter(
-		// function(property) {
-		// return (typeof object[property] != 'function') && property
-		// !== 'caller'
-		// && property !== 'callee' && property !== 'arguments';
-		// });
-		// }
-		//
-		// var keys = getAllVariables(WebGLRenderingContext);
-		// for ( var prop in keys) {
-		// var key = keys[prop];
-		// var value = WebGLRenderingContext[key];
-		// Renderer[key] = value;
-		// }
-
 		this.clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
@@ -105,10 +117,6 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 
 		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
 		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
-
-		// this.context.frontFace(this.context.CCW);
-		// this.context.cullFace(this.context.BACK);
-		// this.context.enable(this.context.CULL_FACE);
 
 		this.viewportX = 0;
 		this.viewportY = 0;
@@ -134,6 +142,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
 			}
 		};
+		
+		this.shadowCount = 0;
+		this.shadowHandler = new ShadowHandler();
 	}
 
 	Renderer.mainCamera = null;
@@ -199,12 +210,16 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			this.setBoundBuffer(null, bufferData.target);
 		}
 	};
-
-	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear) {
+	
+	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear, shadowPass) {
 		if (!camera) {
 			return;
 		} else if (Renderer.mainCamera === null) {
 			Renderer.mainCamera = camera;
+		}
+		
+		if (!shadowPass) {
+			this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
 		}
 
 		this.setRenderTarget(renderTarget);
@@ -218,7 +233,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		var renderInfo = {
 			camera : camera,
 			mainCamera : Renderer.mainCamera,
-			lights : lights
+			lights : lights,
+			lightCamera : this.shadowHandler.lightCam
 		};
 
 		if (Array.isArray(renderList)) {
@@ -275,6 +291,14 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				continue;
 			}
 
+			if (material._originalTextureCount === -1) {
+				material._originalTextureCount = material.textures.length;
+			}
+			
+			if (this.shadowCount > 0) {
+				material.textures[material._originalTextureCount] = this.shadowHandler.shadowResult;
+			}
+			
 			if (material.wireframe && !isWireframe) {
 				if (!meshData.wireframeData) {
 					meshData.wireframeData = this.buildWireframeData(meshData);
@@ -1137,7 +1161,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
 			this.setupRenderBuffer(renderTarget._glRenderBuffer, renderTarget);
 
-			if (isTargetPowerOfTwo) {
+			if (renderTarget.generateMipmaps && isTargetPowerOfTwo) {
 				this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 			}
 

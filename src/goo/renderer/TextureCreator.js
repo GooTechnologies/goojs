@@ -49,6 +49,8 @@ define([
 				if (!loader || !loader.isSupported()) {
 					imageURL = imageURL.substring(0, imageURL.length - extension.length);
 					imageURL += TextureCreator.UNSUPPORTED_FALLBACK;
+					settings = settings || {};
+					settings.flipY = false;
 					break;
 				}
 

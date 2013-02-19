@@ -13,7 +13,11 @@ define(['goo/math/Vector3'],
 		// this.constant = 1;
 		// this.linear;
 		// this.quadratic;
+		
 		this.shadowCaster = false;
+		this.shadowSettings = {
+			type: 'Blur' //None
+		};
 	}
 
 	return Light;
