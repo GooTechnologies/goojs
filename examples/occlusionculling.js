@@ -283,7 +283,7 @@ require(
 		{
 			var size = 100;
 			var height = 0.5;
-			var textureRepeats = Math.ceil(size * 0.7);
+			var textureRepeats = Math.ceil(size * 0.2);
 			var meshData = ShapeCreator.createBox(size, height, size, textureRepeats, textureRepeats);
 			// var meshData = ShapeCreator.createQuad(size, size, textureRepeats, textureRepeats);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
@@ -310,7 +310,6 @@ require(
 			entity.name = 'Box';
 			
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'GooBoxMaterial');
-
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
 

@@ -19,7 +19,7 @@ define([
 	*	@constructor
 	* 	@param parameters, A JSON object which has to contain width, height and the camera object to be used.
 	*/
-	function SoftwareRenderer(parameters) {
+	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
 
 		this.width = parameters.width;
@@ -74,6 +74,9 @@ define([
 		this._depthData.set(this._depthClear);
 	};
 
+	/*
+	*	Renders z-buffer from the given renderList of entities.
+	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
 		this.clearDepthData();
@@ -92,6 +95,8 @@ define([
 						this.renderTriangle(triangle);
 					}
 				}
+
+				console.log(renderList[i].meshDataComponent.modelBound);
 			}
 		} else {
 			console.log("Render list not an array?");
@@ -287,11 +292,13 @@ define([
 	*	@param {Vector3} target
 	*   @param {number} near The near plane.
 	*/
-	SoftwareRenderer.calculateIntersectionRatio = function(origin, target, near) {
+
+	SoftwareRenderer.prototype.calculateIntersectionRatio = function (origin, target) {
 			
 		// Using a tip from Joel: 
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
+		// http://www.joelek.se/uploads/files/thesis.pdf, pages 28-31.	
 
 		// The camera's near plane component is the translation of the near plane,
 		// therefore 'a' is caluclated as origin.z + near
