@@ -7,6 +7,8 @@ function (Vector, Vector3) {
 
 		properties = properties || {};
 
+		this.name = 'WASDControlScript';
+
 		this.domElement = properties.domElement || document;
 		if (properties.domElement) {
 			this.domElement.setAttribute('tabindex', -1);

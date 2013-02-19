@@ -510,16 +510,14 @@ function (MathUtils) {
 		var l = this.length();
 
 		if (l < MathUtils.EPSILON) {
-			throw {
-				name : "Normalization Error",
-				message : "The magnitude of the vector is incredibly small."
-			};
-		}
-
-		l = 1.0 / l;
-
-		for ( var i = 0; i < this.data.length; i++) {
-			this.data[i] *= l;
+			for ( var i = 0; i < this.data.length; i++) {
+				this.data[i] = 0;
+			}
+		} else {
+			l = 1.0 / l;
+			for ( var i = 0; i < this.data.length; i++) {
+				this.data[i] *= l;
+			}
 		}
 
 		return this;

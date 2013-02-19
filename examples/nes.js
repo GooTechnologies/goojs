@@ -133,7 +133,7 @@ ShaderLib
 						var transformComponent = entity.transformComponent;
 						transformComponent.transform.translation.x = Math.sin(t) * 30;
 						transformComponent.transform.translation.z = Math.cos(t) * 30;
-						transformComponent.transform.rotation.y = Math.sin(t * 1.5) * 3;
+						transformComponent.transform.setRotationXYZ(0, Math.sin(t * 1.5) * 3, 0);
 						transformComponent.setUpdated();
 					}
 				};
@@ -183,7 +183,7 @@ ShaderLib
 						var t = entity._world.time;
 
 						var transformComponent = entity.transformComponent;
-						transformComponent.transform.rotation.y = t * 0.5;
+						transformComponent.transform.setRotationXYZ(0, t * 0.5, 0);
 						transformComponent.setUpdated();
 					}
 				};

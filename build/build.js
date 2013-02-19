@@ -69,6 +69,7 @@ var config = {
 	},
 	name : 'almond',
 	include : [appName],
+//	exclude : ['lib/angularjs/angular'],
 	insertRequire : [appName],
 	out : doClosureStep ? 'extracted.js' : appOut,
 	useStrict : true,

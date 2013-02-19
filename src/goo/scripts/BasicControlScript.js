@@ -1,6 +1,6 @@
-define(['goo/math/Vector3'],
+define(['goo/math/Vector3', 'goo/math/Matrix3x3'],
 /** @lends BasicControlScript */
-function (Vector3) {
+function (Vector3, Matrix3x3) {
 	"use strict";
 
 	/**
@@ -8,10 +8,9 @@ function (Vector3) {
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
 	function BasicControlScript (domElement) {
-		this.domElement = domElement !== undefined ? domElement : document;
-		if (domElement) {
-			this.domElement.setAttribute('tabindex', -1);
-		}
+		this.domElement = domElement === undefined ? document : domElement.domElement || domElement;
+
+		this.name = 'BasicControlScript';
 
 		this.movementSpeed = 10.0;
 		this.rollSpeed = 2.0;
@@ -35,6 +34,8 @@ function (Vector3) {
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
 		this.multiplier = new Vector3(1, 1, 1);
+		this.rotationMatrix = new Matrix3x3();
+		this.tmpVec = new Vector3();
 
 		this.handleEvent = function (event) {
 			if (typeof this[event.type] === 'function') {
@@ -161,6 +162,8 @@ function (Vector3) {
 			event.preventDefault();
 			event.stopPropagation();
 
+			event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
 			this.mouseStatus = 1;
@@ -168,6 +171,8 @@ function (Vector3) {
 
 		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
+				event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;
 
@@ -182,6 +187,7 @@ function (Vector3) {
 			if (!this.mouseStatus) {
 				return;
 			}
+
 			event.preventDefault();
 			event.stopPropagation();
 
@@ -226,8 +232,11 @@ function (Vector3) {
 		}
 
 		this.domElement.addEventListener('mousemove', bind(this, this.mousemove), false);
+		this.domElement.addEventListener('touchmove', bind(this, this.mousemove), false);
 		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
+		this.domElement.addEventListener('touchstart', bind(this, this.mousedown), false);
 		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
+		this.domElement.addEventListener('touchend', bind(this, this.mouseup), false);
 
 		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
@@ -264,9 +273,11 @@ function (Vector3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			transform.rotation.x += this.rotationVector.x * rotMult * this.multiplier.x;
-			transform.rotation.y += this.rotationVector.y * rotMult * this.multiplier.y;
-			transform.rotation.z += this.rotationVector.z * rotMult * this.multiplier.z;
+			transform.rotation.toAngles(this.tmpVec);
+			this.tmpVec.x += -this.rotationVector.x * rotMult * this.multiplier.x;
+			this.tmpVec.y += this.rotationVector.y * rotMult * this.multiplier.y;
+			this.tmpVec.z += this.rotationVector.z * rotMult * this.multiplier.z;
+			transform.rotation.fromAngles(this.tmpVec.x, this.tmpVec.y, this.tmpVec.z);
 
 			if (this.mouseStatus > 0) {
 				this.moveState.yawLeft = 0;

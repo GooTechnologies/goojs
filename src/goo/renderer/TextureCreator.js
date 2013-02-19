@@ -1,19 +1,25 @@
-define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/util/SimpleResourceUtil', 'goo/renderer/Util'],
+define([
+	'goo/loaders/Loader',
+	'goo/renderer/Texture',
+	'goo/loaders/dds/DdsLoader',
+	'goo/util/SimpleResourceUtil',
+	'goo/renderer/Util',
+	'goo/util/Latch'],
 	/** @lends TextureCreator */
-	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util) {
+	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util, Latch) {
 	"use strict";
 
 	/**
-	 * @class TBD
+	 * @class Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator(settings) {
 		settings = settings || {};
 
 		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
+		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
-			// '.png' : 'loader1',
 			'.dds' : new DdsLoader()
 		};
 	}
@@ -25,12 +31,20 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	}
 
-	TextureCreator.prototype.loadTexture2D = function (imageURL) {
+	TextureCreator.clearCache = function () {
+		TextureCreator.cache = {};
+	};
+
+	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
+		if (TextureCreator.cache[imageURL] !== undefined) {
+			return TextureCreator.cache[imageURL];
+		}
+
 		var creator = this;
 		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
-				console.log(extension + ' - ' + loader);
+//				console.log(extension + ' - ' + loader);
 
 				if (!loader || !loader.isSupported()) {
 					imageURL = imageURL.substring(0, imageURL.length - extension.length);
@@ -38,16 +52,13 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 					break;
 				}
 
-				// check for cache version
-				if (TextureCreator.cache[imageURL] !== undefined) {
-					return TextureCreator.cache[imageURL];
-				}
-
 				// make a dummy texture to fill on load = similar to normal
 				// path, but using arraybuffer instead
-				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image));
+				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings);
 				rVal.image.dataReady = false;
 				rVal.a = imageURL;
+
+				TextureCreator.cache[imageURL] = rVal;
 
 				// from URL
 				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
@@ -70,38 +81,160 @@ define(['goo/renderer/Loader', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoade
 			return TextureCreator.cache[imageURL];
 		}
 
-		var img = new Loader().loadImage(imageURL);
-		var texture = new Texture(img);
+		// Create a texture
+		var texture = new Texture();
 
-		TextureCreator.cache[imageURL] = texture;
+		// Load the actual image
+		this._loader.loadImage(imageURL).then(function(data) {
+			texture.setImage(data);
+			TextureCreator.cache[imageURL] = texture;
+		});
+
+		console.info("Loaded image: " + imageURL);
 
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureCube = function (imageURLs) {
-		var latch = 6;
-		var texture = new Texture();
+	TextureCreator.prototype.loadTextureVideo = function (videoURL) {
+		if (TextureCreator.cache[videoURL] !== undefined) {
+			return TextureCreator.cache[videoURL];
+		}
+
+		var video = document.createElement('video');
+		video.loop = true;
+
+		video.addEventListener('error', function () {
+			console.warn('Couldn\'t load video URL [' + videoURL + ']');
+		}, false);
+
+		var texture = new Texture(video, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+		});
+
+		texture.readyCallback = function () {
+            if (video.readyState >= 3) {
+                console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+				video.width = video.videoWidth;
+				video.height = video.videoHeight;
+
+                // set minification filter based on pow2
+                if (Util.isPowerOfTwo(video.width) === false
+                        || Util.isPowerOfTwo(video.height) === false) {
+            		texture.generateMipmaps = false;
+            		texture.minFilter = 'BilinearNoMipMaps';
+                }
+
+                video.play();
+
+                video.dataReady = true;
+                return true;
+            }
+            return false;
+		};
+		texture.updateCallback = function () {
+			return !video.paused;
+		};
+
+		video.crossOrigin = 'anonymous';
+
+		video.src = videoURL;
+
+		TextureCreator.cache[videoURL] = texture;
+
+		return texture;
+	};
+
+	TextureCreator.prototype.loadTextureWebCam = function () {
+		var video = document.createElement('video');
+		video.autoplay = true;
+		video.loop = true;
+
+		var texture = new Texture(video, {
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+		});
+
+		texture.readyCallback = function () {
+			if (video.readyState >= 3) {
+				console.log('WebCam video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+				video.width = video.videoWidth;
+				video.height = video.videoHeight;
+
+				// set minification filter based on pow2
+				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+				}
+
+				video.dataReady = true;
+				return true;
+			}
+			return false;
+		};
+		texture.updateCallback = function () {
+			return !video.paused;
+		};
+
+		// Webcam video
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		navigator.getUserMedia({
+			video: true
+		}, function (stream) {
+			video.src = window.URL.createObjectURL(stream);
+		}, function (error) {
+			console.warn('Unable to capture WebCam. Please reload the page.');
+		});
+
+		return texture;
+	};
+
+	/**
+	 * 
+	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @returns {Texture} cubemap
+	 */
+	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
+		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
 		var images = [];
 
-		for (var i = 0; i < imageURLs.length; i++) {
+		var latch = new Latch(6, function () {
+			var w = images[0].width;
+			var h = images[0].height;
+			for (var i=0;i<6;i++) {
+				var img = images[i];
+				if (w !== img.width || h !== img.height) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+					console.error('Images not all the same size!');
+				}
+			}
+			
+			texture.setImage(images);
+			texture.image.dataReady = true;
+			texture.image.width = w;
+			texture.image.height = h;
+		});
+
+		for ( var i = 0; i < imageDataArray.length; i++) {
 			(function (index) {
-				new Loader().loadImage(imageURLs[index], {
-					onSuccess : function (image) {
-						images[index] = image;
-						latch--;
-						if (latch <= 0) {
-							texture.setImage(images);
-							texture.image.dataReady = true;
-							texture.image.isData = false;
-							texture.image.width = image.width;
-							texture.image.height = image.height;
+				var queryImage = imageDataArray[index];
+				if (typeof queryImage === 'string') {
+					new Loader().loadImage(queryImage, {
+						onSuccess: function (image) {
+							images[index] = image;
+							latch.countDown();
+						},
+						onError: function (message) {
+							console.error(message);
 						}
-					},
-					onError : function (message) {
-						console.error(message);
-					}
-				});
+					});
+				} else {
+					images[index] = queryImage;
+					latch.countDown();
+				}
 			})(i);
 		}
 

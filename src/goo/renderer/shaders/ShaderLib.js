@@ -1,8 +1,8 @@
 define([
-        'goo/renderer/MeshData',
-        'goo/renderer/Shader',
-        'goo/renderer/shaders/ShaderFragments',
-        'goo/entities/World'
+	'goo/renderer/MeshData',
+	'goo/renderer/Shader',
+	'goo/renderer/shaders/ShaderFragments',
+	'goo/entities/World'
 ],
 	/** @lends ShaderLib */
 	function (
@@ -61,7 +61,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.copyPure = {
 		includes : [ShaderFragments.features.fog],
 		attributes : {
@@ -105,7 +105,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.simple = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -135,7 +135,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.simpleColored = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -168,7 +168,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.simpleLit = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -245,7 +245,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.textured = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -281,12 +281,11 @@ define([
 
 		'void main(void)',//
 		'{',//
-		'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
-		'	gl_FragColor = texCol;',//
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.texturedLit = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -372,7 +371,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.texturedNormalAOLit = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -491,7 +490,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.convolution = {
 		defines : {
 			KERNEL_SIZE_FLOAT : "25.0",
@@ -573,7 +572,7 @@ define([
 			return values;
 		}
 	};
-	
+
 	ShaderLib.showDepth = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -610,7 +609,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.showNormals = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -649,7 +648,7 @@ define([
 		'}' //
 		].join("\n")
 	};
-	
+
 	ShaderLib.bokehShader = {
 		attributes : {
 			position : MeshData.POSITION,
@@ -753,7 +752,7 @@ define([
 		'}'//
 		].join("\n")
 	};
-	
+
 	ShaderLib.particles = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -800,7 +799,7 @@ define([
 		'}'//
 		].join('\n')
 	};
-	
+
 	ShaderLib.sepia = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -814,7 +813,7 @@ define([
 			amount : 1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -847,7 +846,7 @@ define([
 			"}"
 		].join("\n")
 	};
-	
+
 	ShaderLib.dotscreen = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -864,7 +863,7 @@ define([
 			scale:	  1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -904,7 +903,7 @@ define([
 			"}"
 		].join("\n")
 	};
-	
+
 	ShaderLib.vignette = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -919,7 +918,7 @@ define([
 			darkness: 1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -956,7 +955,7 @@ define([
 			"}"
 		].join("\n")
 	};
-	
+
 	ShaderLib.film = {
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
@@ -967,9 +966,9 @@ define([
 			// noise effect intensity value (0 = no effect, 1 = full effect)
 			nIntensity : 0.5,
 			// scanlines effect intensity value (0 = no effect, 1 = full effect)
-			sIntensity : 0.1,
+			sIntensity : 0.5,
 			// scanlines effect count value (0 = no effect, 4096 = full effect)
-			sCount : 4096,
+			sCount : 1024,
 			grayscale : 0,
 			$link : ShaderLib.copy.uniforms
 		},
@@ -1010,10 +1009,10 @@ define([
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.TEXTURE0,
-			opacity:   1.0,
+			opacity:   1.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1071,7 +1070,7 @@ define([
 			r : 0.5
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1100,7 +1099,7 @@ define([
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * hh, vUv.y ) ) * 0.0918;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * hh, vUv.y ) ) * 0.12245;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * hh, vUv.y ) ) * 0.1531;",
-				"sum += texture2D( tDiffuse, vec2( vUv.x, 		  	 vUv.y ) ) * 0.1633;",
+				"sum += texture2D( tDiffuse, vec2( vUv.x,            vUv.y ) ) * 0.1633;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * hh, vUv.y ) ) * 0.1531;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * hh, vUv.y ) ) * 0.12245;",
 				"sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * hh, vUv.y ) ) * 0.0918;",
@@ -1125,7 +1124,7 @@ define([
 			color: [1.0, 1.0, 1.0]
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1170,7 +1169,7 @@ define([
 			height	: 0.05
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1198,7 +1197,7 @@ define([
 				"float valV = texture2D( heightMap, vUv + vec2( 0.0, 1.0 / resolution.y ) ).x;",
 
 				"gl_FragColor = vec4( ( 0.5 * normalize( vec3( val - valU, val - valV, height  ) ) + 0.5 ), 1.0 );",
-			"}",
+			"}"
 		].join("\n")
 	};
 
@@ -1208,23 +1207,23 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms: {
-			viewMatrix : 		Shader.VIEW_MATRIX,
-			projectionMatrix : 	Shader.PROJECTION_MATRIX,
-			worldMatrix : 		Shader.WORLD_MATRIX,
-			tDiffuse:     		Shader.TEXTURE0,
-			tDepth:       		Shader.TEXTURE1,
-			size:         		[512, 512],
-			cameraNear: 		Shader.MAIN_NEAR_PLANE,
-			cameraFar: 			Shader.MAIN_FAR_PLANE,
-			fogNear: 			Shader.MAIN_NEAR_PLANE,
-			fogFar: 			Shader.MAIN_FAR_PLANE,
-			fogEnabled:    		0,
-			onlyAO:        		1,
-			aoClamp:      		0.3,
-			lumInfluence: 		0.0
+			viewMatrix :        Shader.VIEW_MATRIX,
+			projectionMatrix :  Shader.PROJECTION_MATRIX,
+			worldMatrix :       Shader.WORLD_MATRIX,
+			tDiffuse:           Shader.TEXTURE0,
+			tDepth:             Shader.TEXTURE1,
+			size:               [512, 512],
+			cameraNear:         Shader.MAIN_NEAR_PLANE,
+			cameraFar:          Shader.MAIN_FAR_PLANE,
+			fogNear:            Shader.MAIN_NEAR_PLANE,
+			fogFar:             Shader.MAIN_FAR_PLANE,
+			fogEnabled:         0,
+			onlyAO:             1,
+			aoClamp:            0.3,
+			lumInfluence:       0.0
 		},
 		vshader: [
-   			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform mat4 viewMatrix;', //
@@ -1242,45 +1241,45 @@ define([
 
 			"uniform float cameraNear;",
 			"uniform float cameraFar;",
-	
+
 			"uniform float fogNear;",
 			"uniform float fogFar;",
-	
+
 			"uniform bool fogEnabled;",  // attenuate AO with linear fog
 			"uniform bool onlyAO;",      // use only ambient occlusion pass?
-	
+
 			"uniform vec2 size;",        // texture width, height
 			"uniform float aoClamp;",    // depth clamp - reduces haloing at screen edges
-	
+
 			"uniform float lumInfluence;",  // how much luminance affects occlusion
-	
+
 			"uniform sampler2D tDiffuse;",
 			"uniform sampler2D tDepth;",
-	
+
 			"varying vec2 vUv;",
-	
+
 			// "#define PI 3.14159265",
 			"#define DL 2.399963229728653",  // PI * ( 3.0 - sqrt( 5.0 ) )
 			"#define EULER 2.718281828459045",
-	
+
 			// helpers
 			"float width = size.x;",   // texture width
 			"float height = size.y;",  // texture height
-	
+
 			"float cameraFarPlusNear = cameraFar + cameraNear;",
 			"float cameraFarMinusNear = cameraFar - cameraNear;",
 			"float cameraCoef = 2.0 * cameraNear;",
-	
+
 			// user variables
 			"const int samples = 16;",     // ao sample count
 			"const float radius = 4.0;",  // ao radius
-	
+
 			"const bool useNoise = false;",      // use noise instead of pattern for sample dithering
 			"const float noiseAmount = 0.0003;", // dithering amount
-	
+
 			"const float diffArea = 0.4;",   // self-shadowing reduction
 			"const float gDisplace = 0.4;",  // gauss bell center
-	
+
 //			"const vec3 onlyAOColor = vec3( 1.0, 0.7, 0.5 );",
 			 "const vec3 onlyAOColor = vec3( 1.0, 1.0, 1.0 );",
 
@@ -1290,49 +1289,49 @@ define([
 				"float depth = dot( rgba_depth, bit_shift );",
 				"return depth;",
 			"}",
-	
+
 			// generating noise / pattern texture for dithering
 			"vec2 rand( const vec2 coord ) {",
 				"vec2 noise;",
-	
+
 				"if ( useNoise ) {",
 					"float nx = dot ( coord, vec2( 12.9898, 78.233 ) );",
 					"float ny = dot ( coord, vec2( 12.9898, 78.233 ) * 2.0 );",
-	
+
 					"noise = clamp( fract ( 43758.5453 * sin( vec2( nx, ny ) ) ), 0.0, 1.0 );",
 				"} else {",
 					"float ff = fract( 1.0 - coord.s * ( width / 2.0 ) );",
 					"float gg = fract( coord.t * ( height / 2.0 ) );",
-	
+
 					"noise = vec2( 0.25, 0.75 ) * vec2( ff ) + vec2( 0.75, 0.25 ) * gg;",
 				"}",
-	
+
 				"return ( noise * 2.0  - 1.0 ) * noiseAmount;",
 			"}",
-	
+
 			"float doFog() {",
 				"float zdepth = unpackDepth( texture2D( tDepth, vUv ) );",
 				"float depth = -cameraFar * cameraNear / ( zdepth * cameraFarMinusNear - cameraFar );",
-	
+
 				"return smoothstep( fogNear, fogFar, depth );",
 			"}",
-	
+
 			"float readDepth( const in vec2 coord ) {",
 //				 "return ( 2.0 * cameraNear ) / ( cameraFar + cameraNear - unpackDepth( texture2D( tDepth, coord ) ) * ( cameraFar - cameraNear ) );",
 				"return cameraCoef / ( cameraFarPlusNear - unpackDepth( texture2D( tDepth, coord ) ) * cameraFarMinusNear );",
 			"}",
-	
+
 			"float compareDepths( const in float depth1, const in float depth2, inout int far ) {",
 				"float garea = 2.0;",                         // gauss bell width
 				"float diff = ( depth1 - depth2 ) * 100.0;",  // depth difference (0-100)
-	
+
 				// reduce left bell width to avoid self-shadowing
 				"if ( diff < gDisplace ) {",
 					"garea = diffArea;",
 				"} else {",
 					"far = 1;",
 				"}",
-	
+
 				"float dd = diff - gDisplace;",
 				"float gauss = pow( EULER, -2.0 * dd * dd / ( garea * garea ) );",
 				"return gauss;",
@@ -1341,77 +1340,471 @@ define([
 			"float calcAO( float depth, float dw, float dh ) {",
 				"float dd = radius - depth * radius;",
 				"vec2 vv = vec2( dw, dh );",
-	
+
 				"vec2 coord1 = vUv + dd * vv;",
 				"vec2 coord2 = vUv - dd * vv;",
-	
+
 				"float temp1 = 0.0;",
 				"float temp2 = 0.0;",
-	
+
 				"int far = 0;",
 				"temp1 = compareDepths( depth, readDepth( coord1 ), far );",
-	
+
 				// DEPTH EXTRAPOLATION
 				"if ( far > 0 ) {",
 					"temp2 = compareDepths( readDepth( coord2 ), depth, far );",
 					"temp1 += ( 1.0 - temp1 ) * temp2;",
 				"}",
-	
+
 				"return temp1;",
 			"}",
-	
+
 			"void main() {",
 				"vec2 noise = rand( vUv );",
 				"float depth = readDepth( vUv );",
-	
+
 				"float tt = clamp( depth, aoClamp, 1.0 );",
-	
+
 				"float w = ( 1.0 / width )  / tt + ( noise.x * ( 1.0 - noise.x ) );",
 				"float h = ( 1.0 / height ) / tt + ( noise.y * ( 1.0 - noise.y ) );",
-	
+
 				"float pw;",
 				"float ph;",
-	
+
 				"float ao;",
-	
+
 				"float dz = 1.0 / float( samples );",
 				"float z = 1.0 - dz / 2.0;",
 				"float l = 0.0;",
-	
+
 				"for ( int i = 0; i <= samples; i ++ ) {",
 					"float r = sqrt( 1.0 - z );",
-	
+
 					"pw = cos( l ) * r;",
 					"ph = sin( l ) * r;",
 					"ao += calcAO( depth, pw * w, ph * h );",
 					"z = z - dz;",
 					"l = l + DL;",
 				"}",
-	
+
 				"ao /= float( samples );",
 				"ao = 1.0 - ao;",
-	
+
 				"if ( fogEnabled ) {",
 					"ao = mix( ao, 1.0, doFog() );",
 				"}",
-	
+
 				"vec3 color = texture2D( tDiffuse, vUv ).rgb;",
-	
+
 				"vec3 lumcoeff = vec3( 0.299, 0.587, 0.114 );",
 				"float lum = dot( color.rgb, lumcoeff );",
 				"vec3 luminance = vec3( lum );",
-	
+
 				"vec3 final = vec3( color * mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );",  // mix( color * ao, white, luminance )
-	
+
 				"if ( onlyAO ) {",
 					"final = onlyAOColor * vec3( mix( vec3( ao ), vec3( 1.0 ), luminance * lumInfluence ) );",  // ambient occlusion only
 				"}",
-	
+
 				"gl_FragColor = vec4( final, 1.0 );",
 //				"gl_FragColor = vec4( vec3(unpackDepth( texture2D( tDepth, vUv ))), 1.0);",
 			"}"
 		].join("\n")
 	};
 
+	ShaderLib.skinning = {
+		defines : {
+			JOINT_COUNT : 56,
+			WEIGHTS : 4
+		},
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0,
+			vertexWeights: MeshData.WEIGHTS,
+			vertexJointIDs: MeshData.JOINTIDS
+		},
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			diffuseMap: Shader.TEXTURE0,
+			jointPalette: function (shaderInfo) {
+				var skMesh = shaderInfo.meshData;
+				var pose = skMesh.currentPose;
+				if (pose !== null) {
+					var palette = pose._matrixPalette;
+					var buffLength = skMesh.paletteMap.length * 16;
+					var store = skMesh.store;
+					if (!store) {
+						store = new Float32Array(buffLength);
+						skMesh.store = store;
+					}
+					var refMat;
+					for (var index = 0; index < skMesh.paletteMap.length; index++) {
+						refMat = palette[skMesh.paletteMap[index]];
+						for (var i = 0; i < 4; i++) {
+							for (var j = 0; j < 4; j++) {
+								store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
+							}
+						}
+					}
+					return store;
+				}
+			}
+		},
+		vshader: [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec2 vertexUV0;', //
+		'attribute vec4 vertexWeights;', //
+		'attribute vec4 vertexJointIDs;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+		'uniform mat4 jointPalette[JOINT_COUNT];', //
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void) {', //
+		'	mat4 mat = mat4(0.0);', //
+
+		'	for (int i = 0; i < WEIGHTS; i++) {',
+		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
+		'	}',
+		
+//		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
+//		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
+//		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
+//		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
+
+		'	texCoord0 = vertexUV0;',//
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
+		'}'//
+		].join('\n'),
+		fshader: [//
+		'precision mediump float;',//
+
+		'uniform sampler2D diffuseMap;',//
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void)',//
+		'{',//
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
+		'}'//
+		].join('\n')
+	};
+
+	ShaderLib.rgbshift = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+			amount : 0.005,
+			angle : 0.0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"uniform float amount;",
+			"uniform float angle;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec2 offset = amount * vec2( cos(angle), sin(angle));",
+				"vec4 cr = texture2D(tDiffuse, vUv + offset);",
+				"vec4 cga = texture2D(tDiffuse, vUv);",
+				"vec4 cb = texture2D(tDiffuse, vUv - offset);",
+				"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.brightnesscontrast = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+			brightness: 0,
+			contrast: 0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"uniform float brightness;",
+			"uniform float contrast;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_FragColor = texture2D( tDiffuse, vUv );",
+				"gl_FragColor.rgb += brightness;",
+
+				"if (contrast > 0.0) {",
+					"gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) / (1.0 - contrast) + 0.5;",
+				"} else {",
+					"gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * (1.0 + contrast) + 0.5;",
+				"}",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.luminosity = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 texel = texture2D( tDiffuse, vUv );",
+				"vec3 luma = vec3( 0.299, 0.587, 0.114 );",
+				"float v = dot( texel.xyz, luma );",
+
+				"gl_FragColor = vec4( v, v, v, texel.w );",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.point = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexColor : MeshData.COLOR
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			pointSize : 2.0
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec4 vertexColor;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+		'uniform float pointSize;',
+
+		'varying vec4 color;',//
+
+		'void main(void) {', //
+		'	color = vertexColor;',//
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_PointSize = pointSize;',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'varying vec4 color;',//
+
+		'void main(void)',//
+		'{',//
+		'	gl_FragColor = color;',//
+		'}'//
+		].join('\n')
+	};
+
+	ShaderLib.toon = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexNormal : MeshData.NORMAL
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraPosition : Shader.CAMERA,
+			lightPosition : Shader.LIGHT0,
+			HighlightColour : [0.9,0.8,0.7,1.0],
+			MidColour : [0.65,0.55,0.45,1.0],
+			ShadowColour : [0.4,0.3,0.2,1.0],
+			HighlightSize : 0.2,
+			ShadowSize : 0.01,
+			OutlineWidth : 0.15
+		},
+		vshader : [ //
+			'attribute vec3 vertexPosition;', //
+			'attribute vec3 vertexNormal;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+			'uniform vec3 cameraPosition;', //
+			'uniform vec3 lightPosition;', //
+
+			'varying vec3 N;',
+			'varying vec3 V;',
+			'varying vec3 L;',
+
+			'void main()',
+			'{',
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	N = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+			'	L = lightPosition - worldPos.xyz;', //
+			'	V = cameraPosition - worldPos.xyz;', //
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+			'}',
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',//
+
+			'uniform vec4 HighlightColour;',
+			'uniform vec4 MidColour;',
+			'uniform vec4 ShadowColour;',
+			'uniform float HighlightSize;',
+			'uniform float ShadowSize;',
+			'uniform float OutlineWidth;',
+
+			'varying vec3 N;',
+			'varying vec3 L;',
+			'varying vec3 V;',
+
+			'void main()',
+			'{',
+			'	vec3 n = normalize(N);',
+			'	vec3 l = normalize(L);',
+			'	vec3 v = normalize(V);',
+				
+			'    float lambert = dot(l,n);',
+			'    vec4 colour = MidColour;',
+			'    if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
+			'    if (lambert < ShadowSize) colour = ShadowColour;',
+			'    if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
+
+			'    gl_FragColor = colour;',
+			'}',
+		].join('\n')
+	};
+
+	/*
+	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
+	*/ 
+	ShaderLib.differenceOfGaussians = {
+		includes : [ShaderFragments.features.fog],
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			gaussBlurredImage1 : Shader.TEXTURE0,
+			gaussBlurredImage2 : Shader.TEXTURE1,
+			originalImage : Shader.TEXTURE2,
+			threshold : 0.01
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec2 vertexUV0;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void) {', //
+		'	texCoord0 = vertexUV0;',//
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'uniform sampler2D gaussBlurredImage1;',//
+		'uniform sampler2D gaussBlurredImage2;',//
+		'uniform sampler2D originalImage;',//
+		'uniform float threshold;',
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void)',//
+		'{',//
+		'	vec4 blur1 = texture2D(gaussBlurredImage1, texCoord0);',
+		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
+		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
+		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
+		//'	vec3 col = sample1.rgb - sample2.rgb;',//
+		'	float value = (col.r + col.g + col.b) / 3.0;',
+		//'	float value = length(col);',
+		'	if (value > threshold) {',
+		'		value = 1.0;',
+		'	} else {',
+		'		value = 0.0;',
+		'	}',
+		'	gl_FragColor = vec4((1.0 - value) * originalColor.rgb + vec3(value), 1.0);',//
+		'}'//
+		].join('\n')
+	};
+
+	
 	return ShaderLib;
 });

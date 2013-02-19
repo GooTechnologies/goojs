@@ -328,7 +328,7 @@ define(['goo/loaders/dds/DdsUtils'],
 				info.bpp = 4;
 				// if (isSet(flags, DdsPixelFormat.DDPF_ALPHAPIXELS)) {
 				// XXX: many authoring tools do not set alphapixels, so we'll error on the side of alpha
-				console.info("DDS format: DXT1A");
+//				console.info("DDS format: DXT1A");
 				texture.format = "PrecompressedDXT1A";
 				// } else {
 				// logger.finest("DDS format: DXT1");
@@ -338,14 +338,14 @@ define(['goo/loaders/dds/DdsUtils'],
 
 			// DXT3 format
 			else if (fourCC === DdsUtils.getIntFromString("DXT3")) {
-				console.info("DDS format: DXT3");
+//				console.info("DDS format: DXT3");
 				info.bpp = 8;
 				texture.format = "PrecompressedDXT3";
 			}
 
 			// DXT5 format
 			else if (fourCC === DdsUtils.getIntFromString("DXT5")) {
-				console.info("DDS format: DXT5");
+//				console.info("DDS format: DXT5");
 				info.bpp = 8;
 				texture.format = "PrecompressedDXT5";
 			}
@@ -395,10 +395,10 @@ define(['goo/loaders/dds/DdsUtils'],
 			// One of the RGB formats?
 			if (rgb) {
 				if (alphaPixels) {
-					console.info("DDS format: uncompressed rgba");
+//					console.info("DDS format: uncompressed rgba");
 					texture.format = "RGBA";
 				} else {
-					console.info("DDS format: uncompressed rgb ");
+//					console.info("DDS format: uncompressed rgb ");
 					texture.format = "RGB";
 				}
 			}
@@ -406,17 +406,17 @@ define(['goo/loaders/dds/DdsUtils'],
 			// A luminance or alpha format
 			else if (lum || alphaPixels) {
 				if (lum && alphaPixels) {
-					console.info("DDS format: uncompressed LumAlpha");
+//					console.info("DDS format: uncompressed LumAlpha");
 					texture.format = "LuminanceAlpha";
 				}
 
 				else if (lum) {
-					console.info("DDS format: uncompressed Lum");
+//					console.info("DDS format: uncompressed Lum");
 					texture.format = "Luminance";
 				}
 
 				else if (alpha) {
-					console.info("DDS format: uncompressed Alpha");
+//					console.info("DDS format: uncompressed Alpha");
 					texture.format = "Alpha";
 				}
 			} // end luminance/alpha type
@@ -463,7 +463,7 @@ define(['goo/loaders/dds/DdsUtils'],
 		if (dwMagic !== DdsUtils.getIntFromString("DDS ")) {
 			throw "Not a dds file.";
 		}
-		console.info("Reading DDS file.");
+//		console.info("Reading DDS file.");
 
 		// Create our data store;
 		var info = new DdsImageInfo();

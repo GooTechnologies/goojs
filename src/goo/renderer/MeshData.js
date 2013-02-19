@@ -31,7 +31,7 @@ function(BufferData, Util, BufferUtils) {
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
-
+	
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
 		if (saveOldData) {
 			var savedAttributes = {};

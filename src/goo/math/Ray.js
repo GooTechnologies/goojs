@@ -14,7 +14,7 @@ function (Vector3, MathUtils) {
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
 	 * true)
-	 * 
+	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
@@ -32,7 +32,7 @@ function (Vector3, MathUtils) {
 
 	/**
 	 * Ray vs triangle implementation.
-	 * 
+	 *
 	 * @param pointA First
 	 * @param pointB
 	 * @param pointC

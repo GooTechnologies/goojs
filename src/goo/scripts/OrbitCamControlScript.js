@@ -7,11 +7,13 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		properties = properties || {};
 
+		this.name = 'OrbitCamControlScript';
+
 		this.domElement = properties.domElement || document;
 
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
-		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.10;
+		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
+		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
+		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.20;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
@@ -24,15 +26,17 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.minAscent = !isNaN(properties.minAscent) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
 		this.maxAscent = !isNaN(properties.maxAscent) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 0;
-		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : MathUtils.TWO_PI;
+		this.clampAzimuth = properties.clampAzimuth !== undefined ? properties.clampAzimuth === true : false;
+		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 90 * MathUtils.DEG_TO_RAD;
+		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : 270 * MathUtils.DEG_TO_RAD;
 
 		this.releaseVelocity = properties.releaseVelocity !== undefined ? properties.releaseVelocity === true : true;
 		this.invertedX = properties.invertedX !== undefined ? properties.invertedX === true : false;
 		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
-		this.drag = !isNaN(properties.drag) ? properties.drag : 0.95;
+		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
+		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];
@@ -44,6 +48,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		this.lookAtPoint = properties.lookAtPoint || new Vector3(0, 0, 0);
 		this.spherical = properties.spherical || new Vector3(15, 0, 0);
+		this.targetSpherical = new Vector3(this.spherical);
+		this.interpolationSpeed = !isNaN(properties.interpolationSpeed) ? properties.interpolationSpeed : 7;
 		this.cartesian = new Vector3();
 
 		this.dirty = true;
@@ -59,32 +65,38 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.setupMouseControls();
 	}
 
-	OrbitCamControlScript.prototype.updateButtonState = function (event, down) {
+	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
 			this.domElement.focus();
 		}
 
-		if (this.dragOnly && (this.dragButton === -1 || this.dragButton == event.button)) {
+		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === buttonIndex)) {
 			this.mouseState.buttonDown = down;
-
-			event.preventDefault();
-			event.stopPropagation();
+			if (down) {
+				this.mouseState.lastX = NaN;
+				this.mouseState.lastY = NaN;
+				this.velocity.set(0, 0);
+				this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+				this.targetSpherical.copy(this.spherical);
+			} else {
+				this.applyReleaseDrift();
+			}
 		}
 	};
 
-	OrbitCamControlScript.prototype.updateDeltas = function (event) {
+	OrbitCamControlScript.prototype.updateDeltas = function (mouseX, mouseY) {
 		var dx = 0, dy = 0;
 		if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
-			this.mouseState.lastX = event.clientX;
-			this.mouseState.lastY = event.clientY;
+			this.mouseState.lastX = mouseX;
+			this.mouseState.lastY = mouseY;
 		} else {
-			dx = event.clientX - this.mouseState.lastX;
-			dy = event.clientY - this.mouseState.lastY;
-			this.mouseState.lastX = event.clientX;
-			this.mouseState.lastY = event.clientY;
+			dx = -(mouseX - this.mouseState.lastX);
+			dy = mouseY - this.mouseState.lastY;
+			this.mouseState.lastX = mouseX;
+			this.mouseState.lastY = mouseY;
 		}
 
-		if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX === 0 && this.mouseState.dY === 0) {
+		if (this.dragOnly && !this.mouseState.buttonDown || dx === 0 && dy === 0) {
 			return;
 		}
 
@@ -96,12 +108,8 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			this.sample = 0;
 		}
 
-		if (!this.firstPing) {
-			this.velocity.set(0, 0);
-			this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
-		} else {
-			this.firstPing = false;
-		}
+		this.velocity.set(0, 0);
+		this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
 	};
 
 	OrbitCamControlScript.prototype.move = function (x, y) {
@@ -109,36 +117,40 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		var thetaAccel = this.invertedY ? -y : y;
 
 		// update our master spherical coords, using x and y movement
-		this.spherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.spherical.y - azimuthAccel, MathUtils.TWO_PI), this.minAzimuth,
-			this.maxAzimuth));
-		this.spherical.z = (MathUtils.clamp(this.spherical.z + thetaAccel, this.minAscent, this.maxAscent));
+		if (this.clampAzimuth) {
+			this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI),
+				this.minAzimuth, this.maxAzimuth));
+		} else {
+			this.targetSpherical.y = this.targetSpherical.y - azimuthAccel;
+		}
+		this.targetSpherical.z = (MathUtils.clamp(this.targetSpherical.z + thetaAccel, this.minAscent, this.maxAscent));
 		this.dirty = true;
 	};
 
 	OrbitCamControlScript.prototype.applyWheel = function (e) {
-		var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		var delta = (this.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 		this.zoom(this.zoomSpeed * delta);
 	};
 
 	OrbitCamControlScript.prototype.zoom = function (percent) {
-		var amount = (this.invertedWheel ? -1 : 1) * percent * this.baseDistance;
-		this.spherical.x = MathUtils.clamp(this.spherical.x + amount, this.minZoomDistance, this.maxZoomDistance);
+		var amount = percent * this.baseDistance;
+		this.targetSpherical.x = MathUtils.clamp(this.targetSpherical.x + amount, this.minZoomDistance, this.maxZoomDistance);
 		this.dirty = true;
 	};
 
 	OrbitCamControlScript.prototype.applyReleaseDrift = function () {
 		var now = Date.now();
 		var dx = 0, dy = 0;
-		var samplesRead = 0;
+		var found = false;
 		for ( var i = 0, max = this.timeSamples.length; i < max; i++) {
 			if (now - this.timeSamples[i] < this.maxSampleTimeMS) {
 				dx += this.xSamples[i];
 				dy += this.ySamples[i];
-				samplesRead++;
+				found = true;
 			}
 		}
-		if (samplesRead > 0) {
-			this.velocity.set(dx * this.turnSpeedHorizontal / samplesRead, dy * this.turnSpeedVertical / samplesRead);
+		if (found) {
+			this.velocity.set(dx * this.turnSpeedHorizontal / this.timeSamples.length, dy * this.turnSpeedVertical / this.timeSamples.length);
 		} else {
 			this.velocity.set(0, 0);
 		}
@@ -147,25 +159,59 @@ function (Vector, Vector2, Vector3, MathUtils) {
 	OrbitCamControlScript.prototype.setupMouseControls = function () {
 		var that = this;
 		this.domElement.addEventListener('mousedown', function (event) {
-			that.updateButtonState(event, true);
-			that.velocity.set(0, 0);
+			that.updateButtonState(event.button, true);
 		}, false);
 
 		this.domElement.addEventListener('mouseup', function (event) {
-			that.updateButtonState(event, false);
-			that.applyReleaseDrift();
+			that.updateButtonState(event.button, false);
 		}, false);
 
+		if (this.mouseUpOnOut) {
+			this.domElement.addEventListener('mouseout', function (event) {
+				that.updateButtonState(event.button, false);
+			}, false);
+		}
+
 		this.domElement.addEventListener('mousemove', function (event) {
-			that.updateDeltas(event);
+			that.updateDeltas(event.clientX, event.clientY);
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.applyWheel(event);
-		});
+		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.applyWheel(event);
-		});
+		}, false);
+
+		// optional touch controls... requires Hammer.js v2
+		if (typeof (Hammer) !== "undefined") {
+			var hammertime = Hammer(this.domElement, {
+				transform_always_block : true,
+				transform_min_scale : 1
+			});
+
+			hammertime.on('touch drag transform release', function (ev) {
+				switch (ev.type) {
+					case 'transform':
+						var scale = ev.gesture.scale;
+						if (scale < 1) {
+							that.zoom(that.zoomSpeed * 1);
+						} else if (scale > 1) {
+							that.zoom(that.zoomSpeed * -1);
+						}
+						break;
+					case 'touch':
+						that.updateButtonState(0, true);
+						break;
+					case 'release':
+						that.updateButtonState(0, false);
+						break;
+					case 'drag':
+						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+						break;
+				}
+			});
+		}
 	};
 
 	OrbitCamControlScript.prototype.updateVelocity = function (time) {
@@ -194,13 +240,45 @@ function (Vector, Vector2, Vector3, MathUtils) {
 			return;
 		}
 
+		var delta = this.interpolationSpeed * entity._world.tpf;
+
+		if (this.clampAzimuth) {
+			this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+		} else {
+			this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// y can wrap around 0/2pi, so find closest direction and go that way -- Perhaps could be cleaner?
+			// if (this.spherical.y > this.targetSpherical.y + 0.00001) {
+			// if (Math.abs(this.spherical.y - this.targetSpherical.y) > Math.abs(this.spherical.y - (this.targetSpherical.y + MathUtils.TWO_PI))) {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y + MathUtils.TWO_PI);
+			// this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			// } else {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// }
+			// } else if (this.spherical.y < this.targetSpherical.y - 0.00001) {
+			// if (Math.abs(this.targetSpherical.y - this.spherical.y) > Math.abs(this.targetSpherical.y - (this.spherical.y + MathUtils.TWO_PI))) {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y + MathUtils.TWO_PI, this.targetSpherical.y);
+			// this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			// } else {
+			// this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);
+			// }
+			// }
+		}
+
+		this.spherical.x = MathUtils.lerp(delta, this.spherical.x, this.targetSpherical.x);
+		this.spherical.z = MathUtils.lerp(delta, this.spherical.z, this.targetSpherical.z);
+
 		MathUtils.sphericalToCartesian(this.spherical.x, this.spherical.y, this.spherical.z, this.cartesian);
 
 		transform.translation.set(this.cartesian.add(this.lookAtPoint));
 		if (!transform.translation.equals(this.lookAtPoint)) {
 			transform.lookAt(this.lookAtPoint, this.worldUpVector);
 		}
-		this.dirty = false;
+
+		if (this.spherical.distanceSquared(this.targetSpherical) < 0.000001) {
+			this.dirty = false;
+			this.spherical.y = MathUtils.moduloPositive(this.spherical.y, MathUtils.TWO_PI);
+			this.targetSpherical.copy(this.spherical);
+		}
 
 		// set our component updated.
 		transformComponent.setUpdated();

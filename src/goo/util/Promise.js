@@ -4,114 +4,114 @@ define([
 
 	) {
 
+	/**
+	 * The Promise class creates an object that will fire different handlers depending on if it's resolved or rejected. When the Promise is resolved or rejected it will save the value it was resolved or rejected with, and then call the corresponding handlers.<br/>
+	 * Once a Promise has been resolved or rejected it will never change its internal value. In other words a resolved Promise can't be rejected, and a rejected Promise can't be resolved.<br/>
+	 * The Promise class' methods all return the instance of the promise, so it is possible to chain the setup of handlers.<br/>
+	 * <br/>
+	 * <em>Note: It's not practical to create a Promise by its constructor. A promise does not have any methods for resolving of rejecting itself. The creation and handling of Promises is done with a Deferred class.</em>
+	 *
+	 * @constructor
+	 * @example
+	 * // Create a new Promise
+	 * var promise = new Promise();
+	 * 
+	 * // Attach a callback for when the promise is resolved
+	 * promise.done(function(data) {
+	 *   console.log(data);
+	 * });
+	 *
+	 * // Attach a callback for when the promise is rejected
+	 * promise.fail(function(data) {
+	 *   console.log(data);
+	 * });
+	 *
+	 * // Create a Deferred object so we can change the Promise's state
+	 * var deferred = new Deferred(promise);
+	 *
+	 * // This will resolve the Promise and run the
+	 * // attached callbacks with the resolve argument
+	 * deferred.resolve('We are resolved!');
+	 *
+	 * // The reject() function won't do anything now since
+	 * // the promise has already been resolved on the previous line
+	 * deferred.reject('Bad stuff');
+	 *
+	 *
+	 */
 	function Promise() {
 		this._state = 'pending';
 		this._resolved = [];
 		this._rejected = [];
 		this._always = [];
-	};
+	}
 
-	Promise.prototype.then = function(fulfilledHandler, errorHandler) {
-		if(fulfilledHandler && fulfilledHandler != null) this._resolved.push(fulfilledHandler);
-		if(errorHandler && errorHandler != null) this._rejected.push(errorHandler);
-
-		return this;
-	};
-
-	Promise.prototype.done = function(callback) {
-		if(this._state === 'pending')
-			this.then(callback);
-		else if(this._state === 'resolved')
-			callback(this._data);
-
-		return this;
-	};
-	Promise.prototype.fail = function(callback) {
-		if(this._state === 'pending')
-			this.then(null, callback);
-		else if(this._state === 'rejected')
-			callback(this._data);
-
-		return this;
-	};
-	Promise.prototype.always = function(callback) {
-		if(callback && callback != null)
-		{
-			if(this._state === 'pending')
-				this._always.push(callback);
-			else
-				callback(this._data);
+	/**
+	 * Attaches event handlers to the Promise.
+	 *
+	 * @param {Function} resolvedHandler Runs when the Promise is resolved.
+	 * @param {Function} rejectedHandler Runs when the Promise is rejected.
+	 * @return {Promise} Returns the Promise.
+	 */
+	Promise.prototype.then = function(resolvedHandler, rejectedHandler) {
+		if(resolvedHandler && resolvedHandler !== null) {
+			this._resolved.push(resolvedHandler);
+		}
+		if(rejectedHandler && rejectedHandler !== null) {
+			this._rejected.push(rejectedHandler);
 		}
 
 		return this;
 	};
 
-	Promise.prototype._resolve = function(data) {
-		if(this._state === 'pending')
-		{
-			this._state = 'resolved';
-			this._data = data;
-			this._resolved.every(function(fn) { fn(data); return true; });
-			this._always.every(function(fn) { fn(data); return true; });
+	/**
+	 * Attaches an event handler to the Promise.
+	 *
+	 * @param {Function} resolvedHandler Runs when the Promise is resolved.
+	 * @return {Promise} Returns the Promise.
+	 */
+	Promise.prototype.done = function(resolvedHandler) {
+		if(this._state === 'pending') {
+			this.then(resolvedHandler);
+		} else if(this._state === 'resolved') {
+			resolvedHandler(this._data);
 		}
 
 		return this;
 	};
 
-	Promise.prototype._reject = function(data) {
-		if(this._state === 'pending')
-		{
-
-			this._state = 'rejected';
-			this._data = data;
-			this._rejected.every(function(fn) { fn(data); return true; });
-			this._always.every(function(fn) { fn(data); return true; });
+	/**
+	 * Attaches an event handler to the Promise.
+	 *
+	 * @param {Function} rejectedHandler Runs when the Promise is rejected.
+	 * @return {Promise} Returns the Promise.
+	 */
+	Promise.prototype.fail = function(rejectedHandler) {
+		if(this._state === 'pending') {
+			this.then(null, rejectedHandler);
+		} else if(this._state === 'rejected') {
+			rejectedHandler(this._data);
 		}
 
 		return this;
 	};
 
-	Promise.when = function(promise /*, ..., promiseN */) {
-		var	promises = Array.prototype.slice.call(arguments),
-			length = promises.length,
-			remaining = length,
-			when = new Promise(),
-			values = [];
-
-		var updateFunction = function(i, values) {
-			return function(value) {
-				values[i] = value;
-				if(--remaining <= 0)
-				{
-					when._resolve(values);
-				}
-			};
-		}
-
-		// add listeners to promises
-		if(length > 0)
-		{
-			for(var i in promises)
-			{
-				if(promises[i] && Object.prototype.toString.call(promises[i].constructor) === '[object Function]') // if exists and function
-				{
-					promises[i]
-						.done(updateFunction(i, values))
-						.fail(function(data) { when._reject(data) });
-				}
-				else // It's not a function, treat as if resolved
-				{
-					--remaining;
-				}
+	/**
+	 * Attaches an event handler to the Promise that fires when the Promise is rejected or resolved.
+	 *
+	 * @param {Function} alwaysHandler Runs when the Promise is resolved or rejected.
+	 * @return {Promise} Returns the Promise.
+	 */
+	Promise.prototype.always = function(alwaysHandler) {
+		if(typeof alwaysHandler !== 'undefined' && alwaysHandler !== null) {
+			if(this._state === 'pending') {
+				this._always.push(alwaysHandler);
+			} else {
+				alwaysHandler(this._data);
 			}
 		}
 
-		if(!remaining)
-		{
-			when._resolve(values);
-		}
-
-		return when;
+		return this;
 	};
 
 	return Promise;

@@ -31,15 +31,16 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		material2.textures.push(texture2);
 
 		// Add boxes
+		var meshData = ShapeCreator.createBox(20, 20, 20);
 		var rc4Rand = new Rc4Random("seed");
 		for ( var i = 0; i < 200; i++) {
 			var x = rc4Rand.getRandomNumber() * 100 - 50;
 			var y = rc4Rand.getRandomNumber() * 100 - 50;
 			var z = rc4Rand.getRandomNumber() * 100 - 250;
 			if (rc4Rand.getRandomNumber() > 0.5) {
-				createBoxEntity(goo, material, x, y, z);
+				createBoxEntity(goo, meshData, material, x, y, z);
 			} else {
-				createBoxEntity(goo, material2, x, y, z);
+				createBoxEntity(goo, meshData, material2, x, y, z);
 			}
 		}
 
@@ -50,8 +51,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		cameraEntity.addToWorld();
 	}
 
-	function createBoxEntity(goo, material, x, y, z) {
-		var meshData = ShapeCreator.createBox(20, 20, 20);
+	function createBoxEntity(goo, meshData, material, x, y, z) {
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.name = "Box";

@@ -1,218 +1,107 @@
 define([
-		'goo/loaders/MaterialLoader',
-		'goo/util/Promise',
-		'goo/util/Ajax',
-		'goo/renderer/Material'
+	'goo/loaders/Loader',
+	'goo/loaders/MaterialLoader',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Texture',
+	'goo/shapes/ShapeCreator',
+	'goo/lib/rsvp.amd',
+	'goo/entities/GooRunner'
 	],
-	function(
-		MaterialLoader,
-		Promise,
-		Ajax,
-		Material
+function(
+	Loader,
+	MaterialLoader,
+	Material,
+	ShaderLib,
+	ShapeCreator,
+	Texture,
+	RSVP,
+	GooRunner
 	) {
 	'use strict';
 
-	var TestResponses = {
-		'material' : {
-			readyState : 4,
-			status : 200,
-			responseText : '{"shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
-			responseHeader : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		'badMaterial' : {
-			readyState : 4,
-			status : 200,
-			responseText : '{shader": "goodShaderSource","uniforms": {"ambient": [0.2, 0.2, 0.2],"diffuseTexture": "textures/grid.png"}}',
-			responseHeader : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		'goodVertexShaderSource' : {
-			readyState : 4,
-			status : 200,
-			responseText : 'goodVertexShader',
-			responseHeader : {
-				'Content-Type' : 'application/octet-stream'
-			}
-		},
-		'goodFragmentShaderSource' : {
-			readyState : 4,
-			status : 200,
-			responseText : 'goodFragmentShader',
-			responseHeader : {
-				'Content-Type' : 'application/octet-stream'
-			}
-		},
-		'goodShaderSource.json' : {
-			readyState : 4,
-			status : 200,
-			responseText : '{ "vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
-			responseHeader : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		'badShaderSource.json' : {
-			readyState : 4,
-			status : 200,
-			responseText : '{ vs": "goodVertexShaderSource", "fs": "goodFragmentShaderSource" }',
-			responseHeader : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		'404' : {
-			readyState : 4,
-			status : 404,
-			responseText : '404 - file not found',
-			responseHeader : undefined
-		}
-	};
-
-	function MockXHRBuilder(mockResponses) {
-		function MockXHR() {
-					
-		}
-
-		MockXHR.prototype.open = function(method, url) {
-			this.url = url;
-		}
-		
-		MockXHR.prototype.send = function() {
-			if(!mockResponses[this.url])
-			{
-				this.readyState = 4;
-				this.status = 404;
-				this.statusText = 'Couldn\'t find a fake response: ' + this.url;
-				this.onreadystatechange();
-				return;
-			}
-			
-			var response = mockResponses[this.url];
-			
-			for(var key in response) this[key] = response[key];
-
-			this.onreadystatechange();
-		}
-		
-		MockXHR.prototype.getResponseHeader = function(header) {
-			return this.responseHeader[header] ? this.responseHeader[header] : null;
-		}
-
-		return MockXHR;
-	};
 
 	describe('MaterialLoader', function() {
-		var loader;
-		var goo;
-		var projectURL;
-		var sceneURL;
-		var XHR = XMLHttpRequest;
+		var loader = new Loader({rootPath: 'foo'});
+		var ml;
 
 		beforeEach(function() {
-			XMLHttpRequest = MockXHRBuilder(TestResponses);
+			
+			var loaderSettings = {
+				loader: loader
+			};
 
-			loader = new MaterialLoader();
-		});
-
-		afterEach(function() {
-			XMLHttpRequest = XHR; // Restore the XHR definition, just in case
-			loader = null;
-		});
-
-		it("has an empty string as project URL when nothing is passed to the constructor", function() {
-			var aLoader = new MaterialLoader();
-
-			expect(aLoader._rootUrl).toBe('');
-		});
-
-		it("sets the project URL when passed to the constructor", function() {
-			var aLoader = new MaterialLoader('pancakes');
-
-			expect(aLoader._rootUrl).toBe('pancakes');
-		});
-
-		describe('.setRootUrl()', function() {
-
-			it("sets the root url", function() {
-				loader.setRootUrl('bacon');
-
-				expect(loader._rootUrl).toBe('bacon');
-			});
+			ml = new MaterialLoader(loaderSettings);
 		});
 
 		describe('.load()', function() {
+			it('creates a material from material definition', function() {
+				loader.load = function(path, parser) {
+					var p = new RSVP.Promise();
+						
+					if(path === 'material.mat') {
+						return parser({
+							"shader": "shaders/texturedLit.shader",
+							"uniforms": {
+								"ambient": [0.2, 0.2, 0.2],
+								"diffuse": [1.0, 0.3, 0.5, 0.1],
+								"diffuseTexture": "textures/grid.png"
+							}
+						}, path);
+					} else if(path === 'shaders/texturedLit.shader') {
+						p.resolve({
+							vs: 'vs',
+							fs: 'fs'
+						});
+					} else if(path === 'vs') {
+						p.resolve(ShaderLib.texturedLit.vshader);
+					} else if(path === 'fs') {
+						p.resolve(ShaderLib.texturedLit.fshader);
+					} else {
+						console.log(path);
+						console.log(parser);
+						p.reject();
+					}
 
-			it('resolves its promise and creates a new Material from a correct URL', function() {
-				spyOn(loader, '_resolve').andCallThrough();
+					return p;
+				}
+				loader.loadImage = function(path) {
+					var p = new RSVP.Promise();
 
-				loader.load('material');
-				
-				expect(loader._resolve).toHaveBeenCalled();
-				expect(loader._state).toBe('resolved');
+					p.resolve(new Image());
 
-				loader
-					.done(function(data) {
-						expect(data.__proto__).toBe(Material.prototype);
-						expect(data.shader.fragmentSource).toBe('goodFragmentShader');
-						expect(data.shader.vertexSource).toBe('goodVertexShader');
-					})
-			});
+					return p;
+				}
 
-			it('rejects its promise from a bad URL', function() {
-				spyOn(loader, '_reject').andCallThrough();
+				var p = ml.load('material.mat');
 
-				loader.load('404');
+				waitsFor(function() {
+					return p.isResolved;
+				}, 'promise did not get resolved', 1);
 
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
-			});
-
-			it('rejects its promise when the URL response isn\'t valid JSON', function() {
-				spyOn(loader, '_reject').andCallThrough();
-
-				loader.load('badMaterial');
-
-				expect(loader._reject).toHaveBeenCalled();
-				expect(loader._state).toBe('rejected');
-			});
-		});
-
-/*
-		describe('._parseShaderDefinition()', function() {
-
-			it("will, as a callback argument, return a shaderDefinition based on two external shader files that exist", function() {
-				var shaderSource = {
-					vs : 'goodVertexShaderSource',
-					fs : 'goodFragmentShaderSource'
-				};
-				
-			});
-
-			it("will reject its promise if the vertex shader source file doesn't exist", function() {
-				// VS
-				var shaderSource = {
-					vs : 'nonexistent',
-					fs : 'goodFragmentShaderSource'
-				};
-				var shaderDef;
-
-
-				// FS
-				var shaderSource = {
-					vs : 'goodVertexShader',
-					fs : 'nonexistent'
-				};
-				var shaderDef;
-
-				loader._parseShaderDefinition(shaderSource, function(sd) {
-					shaderDef = sd;
+				p.then(function(data) {
+					expect(data instanceof Material).toBeTruthy();
 				});
 
-				expect(shaderDef).toBe(null);
 			});
 
-		});*/
+			it('rejects if the material definition was empty', function() {
+				loader.load = function(path, parser) {
+					if(path === 'material.mat') {
+						return parser({}, path);
+					} else {
+						console.log(path);
+						console.log(parser);
+					}
+				};
 
+				var p = ml.load('material.mat');
+
+				waitsFor(function() {
+					return p.isRejected;
+				}, 'promise did not get rejected', 1);
+
+			});
+		});
 	});
 });

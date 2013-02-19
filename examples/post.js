@@ -12,11 +12,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/scripts/BasicControlScript',
 		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
 		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/BlurPass', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
+		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/BlurPass', 
+		'goo/renderer/shaders/ShaderLib', 'goo/scripts/OrbitCamControlScript'], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light,
 	BasicControlScript, EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
-	BlurPass, ShaderLib) {
+	BlurPass, ShaderLib, OrbitCamControlScript) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -41,6 +42,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+
+		cameraEntity.setComponent(new ScriptComponent(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(30, Math.PI / 2, 0),
+			minAscent : -0.1,
+			maxAscent : 1,
+			maxZoomDistance : 50	
+		})));
 
 		// Examples of model loading
 		loadModels(goo);
@@ -127,7 +136,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 	function loadModels(goo) {
 		var parentEntity = goo.world.createEntity();
-		parentEntity.setComponent(new ScriptComponent(new BasicControlScript(goo.renderer.domElement)));
 		parentEntity.addToWorld();
 		
 		var importer = new JSONImporter(goo.world);

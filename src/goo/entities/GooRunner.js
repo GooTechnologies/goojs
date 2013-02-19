@@ -2,19 +2,27 @@ define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entit
 		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
 		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
 		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats',
-		"goo/entities/systems/CSSTransformSystem"],
+		"goo/entities/systems/CSSTransformSystem", 'goo/util/GameUtils'],
 /** @lends GooRunner */
 function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
-	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem) {
+	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem, GameUtils) {
 	"use strict";
 
 	/**
 	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
-	 * class. default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false, showStats :
-	 * false }
-	 * 
+	 * class.<br/>
+	 * <code>default = {
+	 *     alpha : false,
+	 *     premultipliedAlpha : true,
+	 *     antialias : false,
+	 *     stencil : false,
+	 *     preserveDrawingBuffer : false,
+	 *     showStats : false,
+	 *      manuallyStartGameLoop : false
+	 * }</code>
+	 *
 	 * @constructor
-	 * @param {Object} GooRunner settings passed in a JSON object.
+	 * @param {Object} parameters GooRunner settings passed in a JSON object.
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -40,8 +48,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
 
-		init();
-		window.requestAnimationFrame(run);
+		GameUtils.initAllShims();
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -55,18 +62,21 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		this.callbacks = [];
 
 		var that = this;
-		var start = Date.now();
-		function run (time) {
+		this.start = -1;
+		this.run = function (time) {
 			try {
-				that.world.tpf = (time - start) / 1000.0;
+				if (that.start < 0) {
+					that.start = time;
+				}
+				that.world.tpf = (time - that.start) / 1000.0;
 				that.world.time += that.world.tpf;
 				World.time = that.world.time;
-				start = time;
+				that.start = time;
 				if (that.world.tpf < 0) {// skip a loop - original start time probably bad.
 					that.world.time = 0;
 					that.world.tpf = 0;
 					World.time = 0;
-					window.requestAnimationFrame(run);
+					that.animationId = window.requestAnimationFrame(that.run);
 					return;
 				}
 
@@ -84,7 +94,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					that.stats.update(that.renderer.info);
 				}
 
-				window.requestAnimationFrame(run);
+				that.animationId = window.requestAnimationFrame(that.run);
 			} catch (e) {
 				if (e instanceof Error) {
 					console.error(e.stack);
@@ -92,35 +102,39 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					console.error(e);
 				}
 			}
+		};
+
+		this.animationId = -1;
+		if (!parameters.manuallyStartGameLoop) {
+			this.startGameLoop(this.run);
 		}
+
+		//TODO: Temporary shift+space for fullscreen and shift+enter for mouselock
+		var isCtrl = false;
+		document.onkeyup = function (e) {
+			if (e.which === 17) {
+				isCtrl = false;
+			}
+		};
+		document.onkeydown = function (e) {
+			if (e.which === 17) {
+				isCtrl = true;
+			} else if (e.which === 32 && isCtrl) {
+				GameUtils.toggleFullScreen();
+			} else if (e.which === 13 && isCtrl) {
+				GameUtils.togglePointerLock();
+			}
+		};
 	}
 
-	function init () {
-		var lastTime = 0;
-		var vendors = ['ms', 'moz', 'webkit', 'o'];
+	GooRunner.prototype.startGameLoop = function () {
+		this.start = -1;
+		this.animationId = window.requestAnimationFrame(this.run);
+	};
 
-		for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-		}
-
-		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function (callback, element) {
-				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function () {
-					callback(currTime + timeToCall);
-				}, timeToCall);
-				lastTime = currTime + timeToCall;
-				return id;
-			};
-		}
-
-		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function (id) {
-				clearTimeout(id);
-			};
-		}
-	}
+	GooRunner.prototype.stopGameLoop = function () {
+		window.cancelAnimationFrame(this.animationId);
+	};
 
 	return GooRunner;
 });

@@ -1,5 +1,4 @@
-
-/* jshint bitwise: false */
+/*jshint bitwise: false*/
 define(['goo/renderer/RendererRecord', 'goo/renderer/Camera', 'goo/renderer/Util', 'goo/renderer/TextureCreator', 'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4', 'goo/entities/Entity', 'goo/renderer/Texture', 'goo/loaders/dds/DdsLoader', 'goo/loaders/dds/DdsUtils',
 		'goo/renderer/MeshData', 'goo/renderer/Material', 'goo/math/Transform', 'goo/renderer/RenderQueue', 'goo/renderer/shaders/ShaderLib'],
@@ -76,7 +75,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				console.log('S3TC compressed textures not supported.');
 			}
 			if (!this.glExtensionDepthTexture) {
-				console.log('Depth textures not supported.')
+				console.log('Depth textures not supported.');
 			}
 		} catch (error) {
 			console.error(error);
@@ -403,15 +402,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 	};
 
 	Renderer.prototype.buildWireframeMaterial = function(material) {
-		var wireDef = {};
-		wireDef.defines = material.shader.defines;
-		wireDef.attributes = material.shader.attributes;
-		wireDef.uniforms = material.shader.uniforms;
-		wireDef.uniforms.color = material.wireframeColor || [1, 1, 1];
-		wireDef.vshader = material.shader.vertexSource;
-		wireDef.fshader = Util.clone(ShaderLib.simpleColored.fshader);
-		var wireframeMaterial = Material.createMaterial(wireDef, 'Wireframe');
-		wireframeMaterial.textures = material.textures;
+		var wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
+		wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 		return wireframeMaterial;
 	};
 
@@ -478,8 +470,9 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
-			if (texture === undefined || texture instanceof RenderTarget === false && texture.image === undefined || texture.image
-				&& texture.image.dataReady === undefined) {
+			if (texture === undefined ||
+				texture instanceof RenderTarget === false && (texture.image === undefined ||
+				texture.checkDataReady() === false)) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
 				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
@@ -495,7 +488,7 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();
 				this.updateTexture(context, texture, i, unitrecord);
-			} else if (texture.needsUpdate) {
+			} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
 				this.updateTexture(context, texture, i, unitrecord);
 				texture.needsUpdate = false;
 			} else {
@@ -765,9 +758,8 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 				return WebGLRenderingContext.LINEAR;
 			case 'NearestNeighbor':
 				return WebGLRenderingContext.NEAREST;
-			default:
-				return WebGLRenderingContext.NEAREST;
 		}
+		throw "invalid MagnificationFilter type: " + filter;
 	};
 
 	Renderer.prototype.getGLMinFilter = function(filter) {
@@ -1222,5 +1214,43 @@ function(RendererRecord, Camera, Util, TextureCreator, RenderTarget, Vector4, En
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
 	};
 
+	//TODO!!!
+	Renderer.prototype._deallocateMeshData = function (meshData) {
+//		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
+	};
+
+	Renderer.prototype._deallocateTexture = function (texture) {
+//		if ( texture.image && texture.image.__webglTextureCube ) {
+//			// cube texture
+//			_gl.deleteTexture( texture.image.__webglTextureCube );
+//		} else {
+//			// 2D texture
+//			if ( ! texture.__webglInit ) return;
+//
+//			texture.__webglInit = false;
+//			_gl.deleteTexture( texture.__webglTexture );
+//		}
+	};
+
+	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+//		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
+//
+//		_gl.deleteTexture( renderTarget.__webglTexture );
+//
+//		if ( renderTarget instanceof THREE.WebGLRenderTargetCube ) {
+//			for ( var i = 0; i < 6; i ++ ) {
+//				_gl.deleteFramebuffer( renderTarget.__webglFramebuffer[ i ] );
+//				_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer[ i ] );
+//			}
+//		} else {
+//			_gl.deleteFramebuffer( renderTarget.__webglFramebuffer );
+//			_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer );
+//		}
+	};
+
+	Renderer.prototype._deallocateShader = function (shader) {
+//		_gl.deleteProgram( program );
+	};
+	
 	return Renderer;
 });

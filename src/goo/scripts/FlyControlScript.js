@@ -5,7 +5,7 @@ function (Vector3) {
 
 	/**
 	 * Creates a new FlyControlScript
-	 * 
+	 *
 	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
@@ -17,6 +17,8 @@ function (Vector3) {
 		if (domElement) {
 			this.domElement.setAttribute('tabindex', -1);
 		}
+
+		this.name = 'FlyControlScript';
 
 		this.movementSpeed = 10.0;
 		this.rollSpeed = 2.0;

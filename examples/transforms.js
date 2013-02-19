@@ -60,7 +60,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		sun.transformComponent.transform.translation.set(0.0, 0.0, -10.0);
 		earth.transformComponent.transform.translation.set(3.0, 0.0, 0.0);
 		earth.transformComponent.transform.scale.set(2.0, 1.0, 1.0);
-		earth.transformComponent.transform.rotation.z = Math.PI*0.5;
+		earth.transformComponent.transform.setRotationXYZ(0, 0, Math.PI * 0.5);
 		moon.transformComponent.transform.translation.set(3.0, 0.0, 0.0);
 		moon.transformComponent.transform.scale.set(0.5, 1.0, 1.0);
 

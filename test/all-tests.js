@@ -20,5 +20,10 @@ define([
     'test/shapes/Torus-test',
     'test/entities/entities-test',
     'test/util/URLTools-test',
-    'test/loaders/MaterialLoader-test'
+    'test/util/Ajax-test',
+    'test/loaders/MaterialLoader-test',
+    'test/loaders/MeshLoader-test',
+    'test/loaders/EntityLoader-test',
+    'test/loaders/SceneLoader-test',
+    'test/loaders/Loader-test'
 ], function() {});

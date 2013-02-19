@@ -12,8 +12,10 @@ function(Component) {
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;
-		} else {
+		} else if (scripts) {
 			this.scripts = [scripts];
+		} else {
+			this.scripts = [];
 		}
 	}
 

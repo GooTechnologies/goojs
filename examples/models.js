@@ -10,40 +10,48 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3'], function(World, Entity, System,
+		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera,
-	CameraComponent, BasicControlScript, Vector3) {
+	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
 
 	function init() {
-		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			showStats : true,
+			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		// var ui = new DebugUI(goo);
-
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 5, 60);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.setComponent(new ScriptComponent(new BasicControlScript()));
 		cameraEntity.addToWorld();
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(80, Math.PI*0.6, Math.PI / 8),
+			maxZoomDistance : 200,
+		}));
+		cameraEntity.setComponent(scripts);
 
 		// Setup light
 		var light = new Light();
-		var entity = goo.world.createEntity('Light1');
+		var entity = createBox(goo);
 		entity.setComponent(new LightComponent(light));
-		var transformComponent = entity.transformComponent;
-		transformComponent.transform.translation.x = 80;
-		transformComponent.transform.translation.y = 50;
-		transformComponent.transform.translation.z = 80;
+		var script = {
+			run: function (entity) {
+				var transformComponent = entity.transformComponent;
+				transformComponent.transform.translation.x = Math.sin(World.time * 1.0) * 30;
+				transformComponent.transform.translation.y = 20;
+				transformComponent.transform.translation.z = Math.cos(World.time * 1.0) * 30;
+				transformComponent.setUpdated();
+			}
+		};
+		entity.setComponent(new ScriptComponent(script));
 		entity.addToWorld();
 
 		// Examples of model loading
@@ -60,8 +68,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(0.15, 0.15, 0.15);
-				entities[0].transformComponent.transform.translation.x = -20;
-				entities[0].transformComponent.transform.translation.y = -10;
+				entities[0].transformComponent.transform.translation.x = -16;
+				entities[0].transformComponent.transform.translation.y = -8;
 			},
 			onError : function(error) {
 				console.error(error);
@@ -75,11 +83,14 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(40, 40, 40);
-				entities[0].transformComponent.transform.translation.x = 0;
+				entities[0].transformComponent.transform.translation.x = 17;
+				entities[0].transformComponent.transform.translation.y = 0;
 			},
 			onError : function(error) {
 				console.error(error);
 			}
+		}, function () {
+			return Material.createShader(ShaderLib.toon);
 		});
 
 		// Load asynchronous with callback
@@ -89,12 +100,21 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 					entities[i].addToWorld();
 				}
 				entities[0].transformComponent.transform.scale.set(1.0, 1.0, 1.0);
-				entities[0].transformComponent.transform.translation.x = 20;
+				entities[0].transformComponent.transform.translation.x = 0;
+				entities[0].transformComponent.transform.translation.y = -5;
 			},
 			onError : function(error) {
 				console.error(error);
 			}
 		});
+	}
+
+	function createBox(goo) {
+		var meshData = ShapeCreator.createBox(1, 1, 1);
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		var material = Material.createMaterial(ShaderLib.simple, 'mat');
+		entity.meshRendererComponent.materials.push(material);
+		return entity;
 	}
 
 	init();

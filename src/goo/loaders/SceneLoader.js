@@ -1,763 +1,100 @@
 /* jshint bitwise: false */
 define([
-		'goo/entities/Entity',
-		'goo/entities/components/TransformComponent',
-		'goo/entities/components/CameraComponent',
-		'goo/entities/components/MeshRendererComponent',
-		'goo/entities/components/MeshDataComponent',
-		'goo/renderer/Camera',
-		'goo/renderer/Material',
-		'goo/renderer/MeshData',
-		'goo/renderer/Shader',
-		'goo/loaders/JsonUtils',
-		'goo/renderer/TextureCreator',
-		'goo/shapes/ShapeCreator',
-		'goo/math/Matrix3x3',
-		'goo/math/Vector3'
+		'goo/loaders/Loader',
+		'goo/loaders/EntityLoader',
+
+		'goo/lib/rsvp.amd'
 	],
 /** @lends SceneLoader */
 function(
-		Entity,
-		TransformComponent,
-		CameraComponent,
-		MeshRendererComponent,
-		MeshDataComponent,
-		Camera,
-		Material,
-		MeshData,
-		Shader,
-		JsonUtils,
-		TextureCreator,
-		ShapeCreator,
-		Matrix3x3,
-		Vector3
+		Loader,
+		EntityLoader,
+		RSVP
 	) {
 	"use strict";
 
-	/*
-	 * Utility functions
-	 */
-	var verbal = false;
-	var say = function(data) { if(verbal) console.log(data); }
-	var createWaitCounter = function(callback) {
 
-		if(callback)
-		{
-			return {
-				up : function() {
-					this._count++;
-					this.check();
-				},
-				down: function() {
-					this._count--;
-					this.check();
-				},
-				check: function() 
-				{
-					if(this._count<= 0)
-					{
-						this._callback();
-						this._count = 0;
-					}
-				},
-				setCount: function(count) {
-					this._count = count;
-				},
-				_count: 0,
-				_callback: callback
-			}
+	/**
+	 * Utility class for loading scenes into a World.
+	 *
+	 * @constructor
+	 * @param {World} parameters.world The target World object.
+	 * @param {Loader} parameters.loader
+	 */
+	function SceneLoader(parameters) {
+		if(typeof parameters === "undefined" || parameters === null) {
+			throw new Error('SceneLoader(): Argument `parameters` was undefined/null');
 		}
-		
-		console.warn('Callback undefined. Returning null.');
-		return null;
+
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+			throw new Error('SceneLoader(): Argument `parameters.loader` was invalid/undefined/null');
+		}
+
+		if(typeof parameters.world === "undefined" || parameters.world === null) {	
+			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
+		}
+
+		this._loader = parameters.loader;
+		this._world = parameters.world; 
 	}
 
 	/**
-	 * @constructor
-	 * @class Loader for a Goo Scene.
-	 * @param {World} world {@link World} reference needed to create entities
+	 * Loads the scene at <code>scenePath</code>.
 	 *
-	 * @example
-	 * require(['goo/entities/GooRunner', 'goo/loaders/SceneLoader'], function(GooRunner, SceneLoader) {
-	 *     var goo = new GooRunner();
-	 *     ...
-	 *     var loader = new SceneLoader(goo.world);
-	 *     ...
-	 * });
+	 * @param {string} scenePath Relative path to the scene.
+	 * @return {Promise} The promise is resolved with the target World object.
 	 */
-	function SceneLoader(world) {
-		this.world = world;
-	}
-
-	SceneLoader.prototype.loadScene = function(projectURL, sceneURL, callback) {
-		say('SceneLoader.loadScene(\'' + projectURL + '\', \'' + sceneURL + '\')');
-
-		if(projectURL == null) { console.warn('SceneLoader: Project URL not specified.'); return; }
-		this.projectURL = projectURL;
-
-		if(sceneURL == null) { console.warn('SceneLoader: Scene URL not specified.'); return; }
-		this.sceneURL = sceneURL;
-
+	SceneLoader.prototype.load = function(scenePath) {
 		var that = this;
-		this.load(sceneURL,{
-			onSuccess: function(data) {
-				that._parseScene(data, callback);
-			},
-			onError: function(error) {
-				console.warn('Failed to load scene: ' + error);
-			}
+		return this._loader.load(scenePath, function(data) {
+			return that._parse(data, scenePath);
 		});
 	};
 
-	SceneLoader.prototype.load = function(urlRelativeToProjectRoot, callback) {
-		if(urlRelativeToProjectRoot == null) return;
-
-		var url = this.projectURL + urlRelativeToProjectRoot;
-
-		var request = new XMLHttpRequest();
-		
-		request.open('GET', url, true);
-
+	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
+		var promises = [];
 		var that = this;
-		request.onreadystatechange = function () {
-			if (request.readyState === 4) {
-				if (request.status >= 200 && request.status <= 299)
-				{
-					callback.onSuccess(that.handleSuccessfulRequest(request));
-				}
-				else
-				{
-					callback.onError(request.statusText);
-				}
-			}
-		};
-		request.send();
-	};
-
-	SceneLoader.prototype.handleSuccessfulRequest = function(request) {
-		if(request == null) return;
-
-		var contentType = request.getResponseHeader('Content-Type');
-		if(contentType == 'application/json')
-		{
-			say('Received ' + contentType + ', trying to parse...');
-			try {
-				var json = JSON.parse(request.responseText);
-			} catch (e) {
-				console.warn('Couldn\'t load following data to JSON:\n' + request.responseText);
-			}
-			
-			return json;
-		}
-
-
-		say('Received ' + contentType + ', passing through...');
-		return request.responseText;
-	};
-
-	SceneLoader.prototype._parseScene = function(sceneSource, callback) {
-		
-		var entities = [];
-
-		var that = this;
-		var waitCounter = createWaitCounter(function() {
-
-
-			for(var i in entities)
-			{
-				entities[i].addToWorld();
-			}
-
-			that.world.process();
-
-			say('Scene loaded:');
-			say(that.world);
-			if(callback) callback(that.world);
-		});
 
 		// If we got files, then let's do stuff with the files!
-		if(sceneSource.files && sceneSource.files.length)
+		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
-			waitCounter.setCount(sceneSource.files.length);
+			var entityLoader = new EntityLoader({
+				world: this._world,
+				loader: this._loader
+			});
 
-
-			for(var i in sceneSource.files)
-			{
+			for(var i in sceneSource.files) {
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
 				var match = fileName.match(/.ent.json$/);
 				
-				if(match != null)
-				{
-					this.load(this.sceneURL + '/' + fileName, {
-						onSuccess: function(data) {
-							that._parseEntity(data, function(entity) {
-								entities.push(entity);
-
-								waitCounter.down();
-
-							});
-						},
-						onError: function(error) {
-							console.warn('Failed to load entity: ' + error);
-						}
-					});
-				}
-				
+				if(match !== null) {
+					var p = entityLoader.load(scenePath + '/' + fileName);
+					promises.push(p);
+				}		
 			}
+		} 
+
+		if(promises.length === 0) {
+			var p = new RSVP.Promise();
+			p.reject('Can\'t find anything to load at ' + scenePath);
+			return p;
 		}
-	}
 
-	SceneLoader.prototype._parseEntity = function(entitySource, callback) {
-		
-		// Array to store loaded components
-		var loadedComponents = [];
-		var that = this;
-		var waitCounter = createWaitCounter(function() {
-
-			var entity = that.world.createEntity();
-
-			for(var i in loadedComponents) entity.setComponent(loadedComponents[i]);
-			
-
-			say('Entity loaded:');
-			say(entity);
-			if(callback) callback(entity);
+		// Create a promise that resolves when all promise-objects
+		return RSVP.all(promises)
+		.then(function(entities) {
+			var w = that._buildWorld(entities);
+			return w;
 		});
-
-		if(entitySource.components && Object.keys(entitySource.components).length)
-		{
-			var component;
-			waitCounter.setCount(Object.keys(entitySource.components).length);
-
-
-			for(var type in entitySource.components || [])
-			{
-				component = entitySource.components[type];
-
-				if(type == 'transform')
-				{
-					// Create a transform
-					var tc = new TransformComponent();
-
-					tc.transform.translation = new Vector3(component.translation);
-					tc.transform.scale		 = new Vector3(component.scale);
-					tc.transform.rotation.fromAngles(
-														component.rotation[0],
-														component.rotation[1],
-														component.rotation[2]
-													);
-					
-					
-					
-					loadedComponents.push(tc);
-
-					waitCounter.down();
-
-				}
-				else if(type == 'camera')
-				{
-					// Create a camera
-					var cam = new Camera(
-											component.fov != null ? component.fov : 45,
-											component.aspect != null ? component.aspect : 1,
-											component.near != null ? component.near : 1,
-											component.far != null ? component.far : 100
-										);
-					var cc = new CameraComponent(cam);
-
-					loadedComponents.push(cc);
-
-					waitCounter.down();
-
-				}
-				else if(type == 'meshRenderer')
-				{
-					this._parseMeshRenderer(component, function(meshRenderer) {
-						loadedComponents.push(meshRenderer);
-
-						waitCounter.down();
-
-					});
-				}
-				else if(type == 'meshData')
-				{
-					this._parseMeshDataComponent(component, function(meshData) {
-						loadedComponents.push(meshData);
-
-						waitCounter.down();
-
-					});
-				}
-			}
-		}
-	}
-
-
-	SceneLoader.prototype._parseMeshRenderer = function(meshRendererSource, callback) {
-		say('Parsing mesh renderer...');
-
-		// Array to store loaded stuff
-		var materials = [];
-		var waitCounter = createWaitCounter(function() {
-
-			var meshRenderer = new MeshRendererComponent();
-
-			for(var i in materials)	meshRenderer.materials.push(materials[i]);
-
-			say('MeshRendererComponent loaded:');
-			say(meshRenderer);
-			if(callback) callback(meshRenderer);
-		});
-
-		if(meshRendererSource && Object.keys(meshRendererSource).length)
-		{
-			var value;
-			waitCounter.setCount(Object.keys(meshRendererSource).length);
-
-
-			var that = this;
-
-
-			for(var attribute in meshRendererSource)
-			{
-				value = meshRendererSource[attribute];
-
-				if(attribute == 'materials') for(var i in value)
-				{
-
-					this.load(value[i] + '.json', {
-						onSuccess: function(data) {
-							that._parseMaterial(data, function(material) {
-								materials.push(material);
-
-								waitCounter.down();
-
-							});
-						},
-						onError: function(error) {
-							console.warn('Failed to load material: ' + error);
-						}
-					});
-				}
-			}
-		}
 	};
 
-	SceneLoader.prototype._parseMeshDataComponent = function(meshDataComponentSource, callback) {
-		say('Parsing mesh data component...');
-		
-		var meshData;
-
-		var waitCounter = createWaitCounter(function() {
-
-			var meshDataComponent = new MeshDataComponent(meshData);
-
-			say('MeshDataComponent loaded:');
-			say(meshDataComponent);
-			if(callback) callback(meshDataComponent);
-		});
-
-		if(meshDataComponentSource && Object.keys(meshDataComponentSource).length)
-		{
-			var value;
-			waitCounter.setCount(Object.keys(meshDataComponentSource).length);
-
-
-			var that = this;
-			for(var attribute in meshDataComponentSource)
-			{
-				value = meshDataComponentSource[attribute];
-
-				if(attribute == 'mesh')
-				{
-					this.load(value + '.json', {
-						onSuccess: function(data) {
-							
-							that.useCompression = data.compressed || false;
-
-							if (that.useCompression) {
-								that.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-								that.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-								that.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
-							}
-							
-
-							meshData = that._parseMeshData(data, 0, 'Mesh');
-
-
-							waitCounter.down();
-
-						},
-						onError: function(error) {
-							console.warn('Failed to load mesh data: ' + error);
-						}
-					});
-				}
-			}
+	SceneLoader.prototype._buildWorld = function(entities) {
+		for(var i in entities) {
+			entities[i].addToWorld();
 		}
-	};
-
-	SceneLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
-		say('Parsing mesh data...');
-
-
-		var vertexCount = object.data.VertexCount; // int
-		if (vertexCount === 0) {
-			return null;
-		}
-		var indexCount = object.data.IndexLengths ? object.data.IndexLengths[0] : 0;
-
-		var attributeMap = {};
-		if (object.data.Vertices) {
-			attributeMap.POSITION = MeshData.createAttribute(3, 'Float');
-		}
-		if (object.data.Normals) {
-			attributeMap.NORMAL = MeshData.createAttribute(3, 'Float');
-		}
-		if (object.data.Tangents) {
-			attributeMap.TANGENT = MeshData.createAttribute(4, 'Float');
-		}
-		if (object.data.Colors) {
-			attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
-		}
-		if (weightsPerVert > 0 && object.data.Weights) {
-			attributeMap.WEIGHTS = MeshData.createAttribute(4, 'Float');
-		}
-		if (weightsPerVert > 0 && object.data.Joints) {
-			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
-		}
-		if (object.data.TextureCoords) {
-			for (var i in object.data.TextureCoords) {
-				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
-			}
-		}
-
-		var meshData = new MeshData(attributeMap, vertexCount, indexCount);
-
-		if (object.data.Vertices) {
-			if (this.useCompression) {
-				var offsetObj = object.data.VertexOffsets;
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Vertices, meshData, MeshData.POSITION, [object.data.VertexScale,
-						object.data.VertexScale, object.data.VertexScale], [offsetObj.xOffset, offsetObj.yOffset, offsetObj.zOffset]);
-			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Vertices, meshData, MeshData.POSITION);
-			}
-		}
-		if (object.data.Weights) {
-			if (this.useCompression) {
-				var offset = 0;
-				var scale = 1 / this.compressedVertsRange;
-
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Weights, meshData, MeshData.WEIGHTS, [scale], [offset]);
-			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Weights, meshData, MeshData.WEIGHTS);
-			}
-		}
-		if (object.data.Normals) {
-			if (this.useCompression) {
-				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
-				var scale = 1 / -offset;
-
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Normals, meshData, MeshData.NORMAL, [scale, scale, scale], [offset, offset,
-						offset]);
-			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Normals, meshData, MeshData.NORMAL);
-			}
-		}
-		if (object.data.Tangents) {
-			if (this.useCompression) {
-				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
-				var scale = 1 / -offset;
-
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Tangents, meshData, MeshData.TANGENT, [scale, scale, scale, scale], [offset,
-						offset, offset, offset]);
-			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Tangents, meshData, MeshData.TANGENT);
-			}
-		}
-		if (object.data.Colors) {
-			if (this.useCompression) {
-				var offset = 0;
-				var scale = 255 / (this.compressedColorsRange + 1);
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Colors, meshData, MeshData.COLOR, [scale, scale, scale, scale], [offset,
-						offset, offset, offset]);
-			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Colors, meshData, MeshData.COLOR);
-			}
-		}
-		if (object.data.TextureCoords) {
-			var textureUnits = object.data.TextureCoords;
-			if (this.useCompression) {
-				for (var i = 0; i < textureUnits.length; i++) {
-					var texObj = textureUnits[i];
-					JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + i, texObj.UVScales, texObj.UVOffsets);
-				}
-			} else {
-				for (var i = 0; i < textureUnits.length; i++) {
-					JsonUtils.fillAttributeBuffer(textureUnits[i], meshData, 'TEXCOORD' + i);
-				}
-			}
-		}
-		if (object.data.Joints) {
-			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
-			var data;
-			if (this.useCompression) {
-				data = JsonUtils.getIntBufferFromCompressedString(object.data.Joints, 32767);
-			} else {
-				data = JsonUtils.getIntBuffer(object.data.Joints, 32767);
-			}
-
-			if (type === 'SkinnedMesh') {
-				// map these joints to local.
-				var localJointMap = [];
-				var localIndex = 0;
-				for (var i = 0, max = data.length; i < max; i++) {
-					var jointIndex = data[i];
-					if (localJointMap[jointIndex] === undefined) {
-						localJointMap[jointIndex] = localIndex++;
-					}
-
-					buffer.set([localJointMap[jointIndex]], i);
-				}
-
-				// store local map
-				var localMap = [];
-				for (var jointIndex = 0; jointIndex < localJointMap.length; jointIndex++) {
-					localIndex = localJointMap[jointIndex];
-					if (localIndex !== undefined) {
-						localMap[localIndex] = jointIndex;
-					}
-				}
-
-				meshData.paletteMap = localMap;
-			} else {
-				for (var i = 0, max = data.capacity(); i < max; i++) {
-					buffer.putCast(i, data.get(i));
-				}
-			}
-		}
-
-		if (object.data.Indices) {
-			if (this.useCompression) {
-				meshData.getIndexBuffer().set(JsonUtils.getIntBufferFromCompressedString(object.data.Indices, vertexCount));
-			} else {
-				meshData.getIndexBuffer().set(JsonUtils.getIntBuffer(object.data.Indices, vertexCount));
-			}
-		}
-
-		if (object.data.IndexModes) {
-			var modes = object.data.IndexModes;
-			if (modes.length === 1) {
-				meshData.indexModes[0] = modes[0];
-			} else {
-				var modeArray = [];
-				for (var i = 0; i < modes.length; i++) {
-					modeArray[i] = modes[i];
-				}
-				meshData.indexModes = modeArray;
-			}
-		}
-
-		if (object.data.IndexLengths) {
-			var lengths = object.data.IndexLengths;
-			var lengthArray = [];
-			for (var i = 0; i < lengths.length; i++) {
-				lengthArray[i] = lengths[i];
-			}
-			meshData.indexLengths = lengthArray;
-		}
-
-
-		say('MeshData loaded:');
-		say(meshData);
-
-		return meshData;
-	};
-
-	SceneLoader.prototype._parseMaterial = function(materialDataSource, callback) {
-		say('Parsing material...');
-
-		var shaderDefinition = {
-			attributes : {
-				vertexPosition : MeshData.POSITION,
-				vertexNormal : MeshData.NORMAL,
-				vertexUV0 : MeshData.TEXCOORD0
-			},
-			uniforms : {
-				viewMatrix : Shader.VIEW_MATRIX,
-				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
-				cameraPosition : Shader.CAMERA,
-				lightPosition : Shader.LIGHT0,
-				diffuseMap : Shader.TEXTURE0,
-				materialAmbient : Shader.AMBIENT,
-				materialDiffuse : Shader.DIFFUSE,
-				materialSpecular : Shader.SPECULAR,
-				materialSpecularPower : Shader.SPECULAR_POWER
-			}
-		};
-		var textures = [];
-		var materialState = {
-								ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-								diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
-								emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-								specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-								shininess: 16.0
-							};
-
-		var waitCounter = createWaitCounter(function() {
-
-			var material = Material.createMaterial(shaderDefinition);
-			
-			material.textures = textures;
-			material.materialState = materialState;
-
-			say('Material loaded:');
-			say(material);
-			if(callback) callback(material);
-		});
-
-		if(materialDataSource && Object.keys(materialDataSource).length)
-		{
-			var value;
-			waitCounter.setCount(Object.keys(materialDataSource).length);
-
-
-			var that = this;
-
-
-			for(var attribute in materialDataSource)
-			{
-				value = materialDataSource[attribute];
-
-				if(attribute == 'uniforms')
-				{
-
-					for(var i in value)
-					{
-						if(i == 'diffuseTexture') textures.push(new TextureCreator().loadTexture2D(that.projectURL + value[i]));
-						else if(i == 'shininess') materialState.shininess = value[i];
-						else if(i == 'ambient')
-						{
-							if(value[i][0] != null) materialState.ambient.r = value[i][0];
-							if(value[i][1] != null) materialState.ambient.g = value[i][1];
-							if(value[i][2] != null) materialState.ambient.b = value[i][2];
-							if(value[i][3] != null) materialState.ambient.a = value[i][3];
-						}
-						else if(i == 'diffuse')
-						{
-							if(value[i][0] != null) materialState.diffuse.r = value[i][0];
-							if(value[i][1] != null) materialState.diffuse.g = value[i][1];
-							if(value[i][2] != null) materialState.diffuse.b = value[i][2];
-							if(value[i][3] != null) materialState.diffuse.a = value[i][3];
-						}
-						else if(i == 'emissive')
-						{
-							if(value[i][0] != null) materialState.emissive.r = value[i][0];
-							if(value[i][1] != null) materialState.emissive.g = value[i][1];
-							if(value[i][2] != null) materialState.emissive.b = value[i][2];
-							if(value[i][3] != null) materialState.emissive.a = value[i][3];
-						}
-						else if(i == 'specular')
-						{
-							if(value[i][0] != null) materialState.specular.r = value[i][0];
-							if(value[i][1] != null) materialState.specular.g = value[i][1];
-							if(value[i][2] != null) materialState.specular.b = value[i][2];
-							if(value[i][3] != null) materialState.specular.a = value[i][3];
-						}
-					}
-
-					waitCounter.down();
-
-				}
-				else if(attribute == 'shader')
-				{
-					this.load(value + '.json', {
-						onSuccess: function(data) {
-							that._parseShaderDefinition(data, function(sd) {
-								shaderDefinition.vshader = sd.vshader;
-								shaderDefinition.fshader = sd.fshader;
-
-								waitCounter.down();
-
-							});
-						},
-						onError: function(error) {
-							console.warn('Failed to load material: ' + error);
-						}
-					});
-				}
-			}
-		}
-	};
-
-	SceneLoader.prototype._parseShaderDefinition = function(shaderDataSource, callback) {
-		say('Parsing shader...');
-
-		var shaderDefinition = {};
-
-		var waitCounter = createWaitCounter(function() {
-			if(!shaderDefinition.vshader || !shaderDefinition.fshader) shaderDefinition = null;
-
-			say('Shader definition loaded:');
-			say(shaderDefinition);
-			if(callback) callback(shaderDefinition);
-		});
-
-		if(shaderDataSource && Object.keys(shaderDataSource).length)
-		{
-			if(shaderDataSource.vs == null || shaderDataSource.fs == null)
-			{
-				console.warn('Could not load shader: Vertex or fragment shader missing.');
-				return;
-			};
-
-			var value;
-			waitCounter.setCount(Object.keys(shaderDataSource).length);
-
-
-			for(var attribute in shaderDataSource)
-			{
-				value = shaderDataSource[attribute];
-
-				if(attribute == 'vs')
-				{
-					this.load(value, {
-						onSuccess: function(data) {
-							shaderDefinition['vshader'] = data;
-
-							waitCounter.down();
-						},
-						onError: function(error) {
-							console.warn('Failed to load vertex shader: ' + error);
-							waitCounter.down();
-						}
-					});
-				}
-				else if(attribute == 'fs')
-				{
-					this.load(value, {
-						onSuccess: function(data) {
-							shaderDefinition['fshader'] = data;
-							waitCounter.down();
-						},
-						onError: function(error) {
-							console.warn('Failed to load fragment shader: ' + error);
-							waitCounter.down();
-						}
-					});
-				}
-			}
-		}
-	};
-
-	SceneLoader.prototype.toggleVerbal = function(on) {
-		if(on == null) {
-			verbal = !verbal;
-			console.log('SceneLoader is now ' + (verbal ? 'verbal' : 'quiet'));
-		}
-		else verbal = on;
+		this._world.process();
+		return this._world;
 	};
 
 	return SceneLoader;

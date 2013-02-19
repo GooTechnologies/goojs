@@ -14,6 +14,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		this.name = name;
 
 		this.shader = null;
+		this.uniforms = {}; //possible overrides on shader uniforms
 		this.textures = [];
 		this.materialState = undefined;
 		// {
@@ -29,12 +30,16 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 			frontFace : 'CCW' // CW, CCW
 		};
 		this.blendState = {
-			blending : 'NoBlending' // , NoBlending, AdditiveBlending, SubtractiveBlending,
-		// MultiplyBlending, CustomBlending
-		// blendEquation : 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
-		// blendSrc : 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor',
-		// 'SrcAlphaFactor', 'OneMinusSrcAlphaFactor', 'DstAlphaFactor', 'OneMinusDstAlphaFactor'
-		// blendDst : 'DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor'
+			// 'NoBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
+			blending : 'NoBlending', 
+			
+			// 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
+			blendEquation : 'AddEquation', 
+
+			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 
+			 // 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
+			 blendSrc : 'SrcAlphaFactor', 
+			 blendDst : 'OneMinusSrcAlphaFactor'
 		};
 		this.depthState = {
 			enabled : true,

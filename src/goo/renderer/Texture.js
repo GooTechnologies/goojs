@@ -1,6 +1,12 @@
-define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'],
+define([
+		'goo/math/Vector3',
+		'goo/math/Vector2'
+	],
 	/** @lends Texture */
-	function (Loader, Vector3, Vector2) {
+	function (
+		Vector3,
+		Vector2
+	) {
 	"use strict";
 
 	/**
@@ -45,7 +51,17 @@ define(['goo/renderer/Loader', 'goo/math/Vector3', 'goo/math/Vector2'],
 		this.hasBorder = false;
 
 		this.needsUpdate = false;
+		this.updateCallback = null;
+		this.readyCallback = null;
 	}
+
+	Texture.prototype.checkDataReady = function () {
+		return this.image && this.image.dataReady || this.readyCallback !== null && this.readyCallback();
+	};
+
+	Texture.prototype.checkNeedsUpdate = function () {
+		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
+	};
 
 	Texture.prototype.setImage = function (image, settings, width, height) {
 		this.image = image;
