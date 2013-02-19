@@ -14,7 +14,8 @@ files = [
   REQUIRE_ADAPTER,
   'test/testacular-main.js',
   {pattern: 'test/**/*.js', included: false},
-  {pattern: 'src/goo/**/*.js', included: false}
+  {pattern: 'src/goo/**/*.js', included: false},
+  {pattern: 'lib/**/*.js', included: false}
 ];
 
 
