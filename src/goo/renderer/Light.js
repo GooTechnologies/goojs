@@ -16,7 +16,7 @@ define(['goo/math/Vector3'],
 		
 		this.shadowCaster = false;
 		this.shadowSettings = {
-			type: 'Blur' //None
+			type: 'Blur' // 'Blur', 'None'
 		};
 	}
 
