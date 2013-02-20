@@ -2,6 +2,7 @@ require.config({
     baseUrl : "./",
     paths : {
         goo : "../src/goo",
+        'goo/lib': '../lib'
     }
 });
 require(
