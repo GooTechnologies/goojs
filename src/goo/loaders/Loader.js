@@ -104,7 +104,6 @@ define([
 		image.crossOrigin = this._crossOrigin || '';
 
 		image.addEventListener('load', function () {
-			console.log('Loaded image: ' + _url);
 			image.dataReady = true;
 			promise.resolve(image);
 		}, false);
