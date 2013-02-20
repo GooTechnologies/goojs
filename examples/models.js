@@ -2,7 +2,7 @@ require.config({
     baseUrl : "./",
     paths : {
         goo : "../src/goo",
-        "goo/lib": "../lib"
+        'goo/lib': '../lib'
     }
 });
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
