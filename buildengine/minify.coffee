@@ -53,7 +53,6 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 			fs.unlink "#{absroot}/#{fileIn}.js"
 		doClosure tempClosure, fileOut, true
 		console.log buildResponse
-		console.log tempClosure
 	, (err) ->
 		console.log err
 
@@ -81,7 +80,6 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 	
 	
 					str = "require([#{files}]);\n"
-					console.log files
 					tempRequire = 'req_temp'
 					tempClosure = "#{absroot}/clos_temp.js"
 	
