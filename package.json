@@ -19,7 +19,9 @@
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
     "jshint": ">=0.9.1",
     "grunt-testacular": "0.2.x",
-	"wrench": ">= 1.4.4"
+    "glob": ">= 3.0.1",
+    "wrench": ">= 1.4.4",
+    "requirejs": ">= 2.1.4"
   },
   "engines": {
     "node": ">=0.8.2"

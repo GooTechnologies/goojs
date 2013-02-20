@@ -1,9 +1,11 @@
 require.config({
     baseUrl : "./",
     paths : {
-        goo : "../src/goo",
+        //goo : "../src/goo",
+        "goo/lib": "../lib"
     }
 });
+require(['../../Tool/minified/goo.js'], function() {
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
@@ -118,4 +120,5 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	}
 
 	init();
+});
 });

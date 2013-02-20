@@ -4,6 +4,7 @@ require.config({
 		goo : "../src/goo",
 	}
 });
+require(['../minified/goo'], function() {
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
 		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
@@ -62,4 +63,5 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 	}
 
 	init();
+});
 });
