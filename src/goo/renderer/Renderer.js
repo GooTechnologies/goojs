@@ -1192,11 +1192,12 @@ function(
 				if (renderTarget.generateMipmaps && isTargetPowerOfTwo) {
 					this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 				}
+			}
 
-				// Release everything
-				this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
-				this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, null);
-				this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
+			// Release everything
+			this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+			this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, null);
+			this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
 		}
 
 		var framebuffer, width, height, vx, vy;

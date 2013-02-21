@@ -270,6 +270,7 @@ define([
 
 	/*
 	*	Categorizes the vertices into outside and inside (of the view frustum).
+	*	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
 	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
 	*	@param {Array} outsideIndices
 	*	@param {Array} insideIndices
@@ -279,8 +280,8 @@ define([
 	SoftwareRenderer.prototype.categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
 			
 		for ( var i = 0; i < 3; i++ ) {
-			
-			if (vertices[i].z < cameraNear) {
+			// The vertex shall be categorized as an inside vertex if it is on the near plane.
+			if (vertices[i].z <= cameraNear) {
 				insideIndices.push(i);
 			} else {
 				outsideIndices.push(i);
