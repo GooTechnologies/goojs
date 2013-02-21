@@ -1,6 +1,7 @@
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
+	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
@@ -8,7 +9,7 @@ define([
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Matrix4x4, Edge) {
+	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge) {
 	"use strict";
 
 	/*
@@ -67,31 +68,126 @@ define([
 
 	/*
 	*	Renders z-buffer (w-buffer) from the given renderList of entities.
+	*
+	*	@param renderList, the array of entities which are possible occluders.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
-		console.time("clearTime");
+		//console.time("clearTime");
 		this.clearDepthData();
-		console.timeEnd("clearTime");
+		//console.timeEnd("clearTime");
 
-		// Iterate over the view frustum culled entities.
+		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
 			
-			console.time("triangleCreation");
+			//console.time("triangleCreation");
 			var triangles = this.createTrianglesForEntity(renderList[i]);
-			console.timeEnd("triangleCreation");
+			//console.timeEnd("triangleCreation");
 
-			console.time("triangleRendering");
+			//console.time("triangleRendering");
 			for (var t = 0; t < triangles.length; t++) {
 				var triangle = triangles[t];
 				if ( triangle ) {
 					this.renderTriangle(triangle);
 				}
 			}
-			console.timeEnd("triangleRendering");
-
-			console.log(renderList[i].meshDataComponent.modelBound);
+			//console.timeEnd("triangleRendering");
 		}
+	};
+
+	/*
+	*	For each entity in the render list , a screen space axis aligned bounding box is created
+	*	and the depthBuffer is queried at the bounds of this AABB for checking if the object is visible.
+	*
+	*	The entity is removed from the renderlist if it is not visible.
+	*
+	*	@param renderList, the array of entities which are possible occludees.
+	*/
+	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
+
+		var cameraViewMatrix = this.camera.getViewMatrix();
+		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
+		var cameraNearZInWorld = -this.camera.near;
+
+		for ( var i = 0; i < renderList.length; i++) {
+			var entity = renderList[i];
+
+			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+			var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+
+			
+			var boundingSphere = entity.meshDataComponent.modelBound;
+			var origin = new Vector4(0,0,0,1.0);
+			combinedMatrix.applyPost(origin);
+
+			// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
+			var nearCoord = new Vector4(origin.x, origin.y, origin.z + boundingSphere.radius, origin.w);
+		
+			if (nearCoord.z > cameraNearZInWorld) {
+				//console.error("clip?");
+				continue; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
+			}
+
+			var leftCoord = new Vector4(origin.x - boundingSphere.radius, origin.y, origin.z, 1.0);
+			var rightCoord = new Vector4(origin.x + boundingSphere.radius, origin.y, origin.z, 1.0);
+			var topCoord = new Vector4(origin.x, origin.y + boundingSphere.radius, origin.z, 1.0);
+			var bottomCoord = new Vector4(origin.x , origin.y - boundingSphere.radius, origin.z, 1.0);
+
+
+			var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
+
+			this.projectionTransform(vertices, cameraProjectionMatrix);
+
+			this.transformToScreenSpace(vertices);
+
+			// Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
+
+			if ( nearCoord.x > 0 && nearCoord.x <= this.width && nearCoord.y < this.height && nearCoord.y > 0) {
+
+				// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
+
+				nearCoord.x = Math.round(nearCoord.x);
+				nearCoord.y = Math.round(nearCoord.y);
+
+				//console.log(nearCoord.data);
+
+				var coordIndex = nearCoord.y * this.width + nearCoord.x;
+				//console.log("coordIndex", coordIndex);
+
+				var nearSample = this._depthData[coordIndex];
+				var nearestDepth = 1.0 / nearCoord.w;
+
+				//console.log("nearSample", nearSample);
+				//console.log("nearestDepth", nearestDepth);
+
+				// Show the nearpoint  as red (Debugging)
+				coordIndex = nearCoord.y * (this.width * 4) + (nearCoord.x * 4);
+				this._colorData[coordIndex] = 255;
+				this._colorData[coordIndex + 1] = 0;
+				this._colorData[coordIndex + 2] = 0;
+
+				// the sample contains 1/w depth. if the corresponding depth in the nearCoordinate is behind the sample, the entity is occluded.
+				if (nearestDepth < nearSample) {
+					renderList.splice(i, 1);
+					i--; // Have to compensate the index for the loop.
+				}
+			}
+			else {
+				//console.error("coord out of screen!");
+			}
+		}
+
+	};
+
+	/*
+	*	Returns the corner coordinates of the boundingBox in screen space for the entity's BoundingSphere.
+	*
+	*	@param {Entity} entity
+	*	@returns {Vector2[]} array of Vector2.
+	*/
+	SoftwareRenderer.prototype.findSampleCoordinatesForBoundingSphere = function (entity) {
+		
+		// Project to screenspace
 	};
 
 	/*

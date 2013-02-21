@@ -69,7 +69,7 @@ require(
 
 			// Add camera
 			var camera = new Camera(90, 1, 1, 100);
-			//camera.translation.set(0,1.79,20);
+			
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
 			cameraEntity.setComponent(new CameraComponent(camera));
@@ -77,6 +77,8 @@ require(
 			cameraEntity.addToWorld();
 
 			buildScene(goo);
+
+			camera.translation.set(0,1.79,20);
 
 			setupRenderer(goo, camera);
 
@@ -86,7 +88,7 @@ require(
 		function setupRenderer(goo, cam) {
 
 			// Disable normal rendering
-			// goo.world.getSystem('RenderSystem').doRender = false;
+			goo.world.getSystem('RenderSystem').doRender = false;
 
 			var renderList = goo.world.getSystem('PartitioningSystem').renderList;
 
@@ -143,8 +145,12 @@ require(
 			var outPass = new FullscreenPass(shader);
 			outPass.renderToScreen = true;
 
-			composer.addPass(hiZ);
-			//composer.addPass(outPass);
+			//composer.addPass(hiZ);
+
+			var renderPass = new RenderPass(renderList);
+			renderPass.renderToScreen = true;
+
+			composer.addPass(renderPass);
 
 			var gl = goo.renderer.context;
 
@@ -154,19 +160,36 @@ require(
 
 			var readTime = new Array();
 
+			var softRenderer = new SoftwareRenderer({"width" : 256, "height" : 114, "camera" : cam});
+
 			goo.callbacks.push(function(tpf) {
-				var beforeRead = performance.now();
-				composer.render(goo.renderer, tpf);
+				// composer.render(goo.renderer, tpf);
 				// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html
 				// it reads from bottom up, width first.
 
-				//gl.readPixels(0, 0, depthWidth, depthHeight, gl.RGBA, gl.UNSIGNED_BYTE, storage);
-				var afterRead = performance.now();
+				console.time("renderTime");
+				softRenderer.render(renderList);
+				console.timeEnd("renderTime");
 
-				readTime.push(afterRead - beforeRead);
+				softRenderer.copyDepthToColor();
+
+				console.time("occlusionTime");
+				softRenderer.performOcclusionCulling(renderList);
+				console.timeEnd("occlusionTime");
+
+				composer.render(goo.renderer, tpf);
+
+				var debugcanvas = document.getElementById('debugcanvas')
+				var debugContext = debugcanvas.getContext('2d');
+				var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
+				imagedata.data.set(softRenderer.getColorData());
+				debugContext.putImageData(imagedata,0,0);
+				
+
+				//gl.readPixels(0, 0, depthWidth, depthHeight, gl.RGBA, gl.UNSIGNED_BYTE, storage);
 			});
 
-			var softRenderer = new SoftwareRenderer({"width" : 256, "height" : 114, "camera" : cam});
+		
 
 			document.addEventListener('keydown', function(event) {
 					//console.log(event.keyCode);
@@ -218,6 +241,11 @@ require(
 							console.timeEnd("renderTime");
 
 							softRenderer.copyDepthToColor();
+
+							console.time("occlusionTime");
+							softRenderer.performOcclusionCulling(renderList);
+							console.timeEnd("occlusionTime");
+			
 							var debugcanvas = document.getElementById('debugcanvas')
 							var debugContext = debugcanvas.getContext('2d');
 							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
@@ -245,11 +273,25 @@ require(
 				translation.z -= 1.0;
 			}
 
-			translation.x = 20;
+			translation.x = 0;
 			translation.z = -15;
 			translation.y = 5;
-			var bigQuad = createQuad(goo.world, translation, 50, 10);
+			var wallW = 50;
+			var wallH = 10;
+			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
 			bigQuad.addToWorld();
+
+			translation.x = -wallW / 2 + 2;
+			translation.y = 3;
+			translation.z = -20;
+
+			var numberOfBoxes = wallW / 2;
+
+			for (var columns = 0; columns < numberOfBoxes; columns++) {
+				createBoxEntity(goo.world, translation).addToWorld();
+				translation.x += 2;
+				translation.z += 0.3;
+			}
 
 			var floorEntity = createFloorEntity(goo.world);
 			floorEntity.addToWorld();
@@ -270,6 +312,7 @@ require(
 			entity.name = 'Quad';
 			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 			entity.meshRendererComponent.materials.push(material);
+			material.wireframe = true;
 			return entity;
 		}
 
@@ -289,7 +332,6 @@ require(
 			// http://photoshoptextures.com/floor-textures/floor-textures.htm
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
 			material.textures.push(texture);
-
 			entity.meshRendererComponent.materials.push(material);
 
 			return entity;
@@ -306,7 +348,6 @@ require(
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'GooBoxMaterial');
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
-
 			entity.meshRendererComponent.materials.push(material);
 
 			return entity;
