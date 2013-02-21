@@ -212,18 +212,12 @@ require(
 							break;
 						
 						case 32: // Space
-							var beforeRead = performance.now();
+
+							console.time("renderTime");
 							softRenderer.render(renderList);
-							var afterRead = performance.now();
+							console.timeEnd("renderTime");
 
-							console.log("software render time :" ,  afterRead - beforeRead , "ms");
-
-							beforeRead = performance.now();
 							softRenderer.copyDepthToColor();
-							afterRead = performance.now();
-							
-							console.log("copying depth to color data time :" , afterRead - beforeRead , "ms");
-
 							var debugcanvas = document.getElementById('debugcanvas')
 							var debugContext = debugcanvas.getContext('2d');
 							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);

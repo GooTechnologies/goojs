@@ -1,23 +1,20 @@
-// REVIEW: Lots of JSHint warnings. Try `make checkstyle`!
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/math/Ray',
-	'goo/math/Plane',
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector3, Vector4, Ray, Plane, Matrix4x4, Edge) {
+	function (Camera, Triangle, Vector3, Vector4, Matrix4x4, Edge) {
 	"use strict";
 
 	/*
 	*	@class A software renderer which renders, triangles only(!), using a scanline algorithm.
 	*	@constructor
-	* 	@param parameters, A JSON object which has to contain width, height and the camera object to be used.
+	*	@param parameters, A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
@@ -25,19 +22,13 @@ define([
 		this.width = parameters.width;
 		this.height = parameters.height;
 
-		// REVIEW: It's a bit unexpected that these values are one less than the width and height.
-		// It's such a common convention to use a left-closed, right-open interval, e.g.
-		// a <= i < b.
-		// Compare with how a for loop often looks: for(i = a; i < b; ++i), NOT for(i = a; i <= b, ++i)
-		// Is there a reason to use a closed interval?
-		this._clipX = this.width - 1;
 		this._clipY = this.height - 1;
 
 		this.numOfPixels = this.width * this.height;
 
 		this.camera = parameters.camera;
 
-		// Store the edges for a triangle 
+		// Store the edges for a triangle
 		this.edges = new Array(3);
 
 		var colorBytes = this.numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
@@ -64,7 +55,7 @@ define([
 			new Triangle(new Vector3(0.15, 0.5, 1.0), new Vector3(0.5, 0.55, 1.0), new Vector3(0.86, 0.5, 1.0)),
 			new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
 		];
-	};
+	}
 
 	/*
 	* Clears the depth data
@@ -75,33 +66,32 @@ define([
 	};
 
 	/*
-	*	Renders z-buffer from the given renderList of entities.
+	*	Renders z-buffer (w-buffer) from the given renderList of entities.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
+		console.time("clearTime");
 		this.clearDepthData();
-	
-		// REVIEW: Why check whether renderList is an array? That should never happen.
-		if (Array.isArray(renderList)) {
+		console.timeEnd("clearTime");
 
-			// Iterate over the view frustum culled entities.
-			for ( var i = 0; i < renderList.length; i++) {
-				
-				var triangles = this.createTrianglesForEntity(renderList[i]);
+		// Iterate over the view frustum culled entities.
+		for ( var i = 0; i < renderList.length; i++) {
+			
+			console.time("triangleCreation");
+			var triangles = this.createTrianglesForEntity(renderList[i]);
+			console.timeEnd("triangleCreation");
 
-				for (var t = 0; t < triangles.length; t++) {
-					var triangle = triangles[t];
-					if ( triangle ) {
-						this.renderTriangle(triangle);
-					}
+			console.time("triangleRendering");
+			for (var t = 0; t < triangles.length; t++) {
+				var triangle = triangles[t];
+				if ( triangle ) {
+					this.renderTriangle(triangle);
 				}
-
-				console.log(renderList[i].meshDataComponent.modelBound);
 			}
-		} else {
-			console.log("Render list not an array?");
-		}
+			console.timeEnd("triangleRendering");
 
+			console.log(renderList[i].meshDataComponent.modelBound);
+		}
 	};
 
 	/*
@@ -110,7 +100,6 @@ define([
 	*	@return Triangle[]
 	*/
 	SoftwareRenderer.prototype.createTrianglesForEntity = function (entity) {
-		// REVIEW: This function is very long! Can you split it into logical sections and extract new functions?
 
 		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
@@ -125,15 +114,11 @@ define([
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-		var cameraNear = -this.camera.near;
+		var cameraNearZInWorld = -this.camera.near;
 
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
-		//var timerStart = performance.now();
-		// REVIEW: Tip: For profiling, try
-		//   console.time('something');
-		//   console.timeEnd('something');
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 			
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
@@ -160,15 +145,8 @@ define([
 			// The inside indices are the ones on the inside.
 			var outsideIndices = [];
 			var insideIndices = [];
-	
-			for ( var i = 0; i < 3; i++ ) {
-				
-				if (vertices[i].z < cameraNear) {
-					insideIndices.push(i);
-				} else {
-					outsideIndices.push(i);
-				}
-			}
+
+			this.categorizeVertices(outsideIndices, insideIndices, vertices, cameraNearZInWorld);
 
 			switch (outsideIndices.length) {
 				case 0:
@@ -177,15 +155,16 @@ define([
 				case 3:
 					// All of the vertices are on the outside, skip to the next three vertices.
 					continue;
-					// REVIEW: Redundant break. I think JSHint gives a warning on this.
-					break;
 				case 1:
 					// Update the one vertex to its new position on the near plane and add a new vertex
 					// on the other intersection with the plane.
 
+					// TODO: Small optimization, the origin.z + near calculation in intersectionratio()
+					// 		 can be performed once here instead of twice.
+
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-					var ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
+					var ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV1 = [
 						origin.x + ratio * (target.x - origin.x),
@@ -194,7 +173,7 @@ define([
 					];
 
 					target = vertices[insideIndices[1]];
-					ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
+					ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV2 = new Vector4(
 						origin.x + ratio * (target.x - origin.x),
@@ -213,7 +192,7 @@ define([
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
 
-					var ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
+					var ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -222,7 +201,7 @@ define([
 
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
-					ratio = SoftwareRenderer.calculateIntersectionRatio(origin, target, this.camera.near);
+					ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -231,74 +210,104 @@ define([
 					break;
 			}
 
-			// Projection and homogeneous division transformation
-			for (var i = 0; i < vertices.length; i++) {
-				var v = vertices[i];
-				
-				cameraProjectionMatrix.applyPost(v);
-				
-				var div = 1.0 / v.w;
-				v.x *= div;
-				v.y *= div;
-				
-				// The projected z coordinates range from -1 to 100+
-				// console.log("proj z", v.z);
-				//v.z *= div;
-
-				// The z/w coordinate is in the range -1 to 1. (Canonical view voulme?)
-				// console.log("after div", v.z);
-			}
+			this.projectionTransform(vertices, cameraProjectionMatrix);
 			
-			// Back-face culling.
 			if (this.isBackFacing(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
 			}
 			
-			// Transform the vertices to screen space
 			this.transformToScreenSpace(vertices);
 
-			// Create the triangle(s)
-			if (vertices.length ==  4) {
-				// The vertex array has a length 4 only if one of the vertices were outside the near plane.
-				// The "extra vertex" is at position 3 in the array.
-
-				// The order of the triangle is not relevant here anymore since 
-				// the backface culling check is made already.
-
-				var triangle1 = new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]);
-				var triangle2 = new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]);
-
-				triangles.push(triangle1);
-				triangles.push(triangle2);
-
-			} else {
-				triangles.push(new Triangle(v1, v2, v3));
-			}
+			this.createTriangles(vertices, outsideIndices, insideIndices, triangles);
 		}
-
-		//var timerStop = performance.now();
-		//console.log("TriangleArray creation time :" , timerStop - timerStart, "ms");
 
 		return triangles;
 	};
 
 	/*
-	*	Calculates the intersection ratio between the parameters with the camera's near plane.
-	*   REVIEW: A short explanation of what "intersection ratio" is would help.
-	*   REVIEW: I created a unit test for this function (and made it static to be easily tested).
-	*           The result wasn't what I expected. See SoftwareRenderer-test.js!
-	*	
+	*	Transforms the vertices with the given projection transform matrix and then performs the homogeneous division.
+	*
+	*	@param {Array} vertices, the vertex array
+	*	@param {Matrix4x4} matrix, the projection transformation matrix
+	*/
+	SoftwareRenderer.prototype.projectionTransform = function (vertices, matrix) {
+
+		for (var i = 0; i < vertices.length; i++) {
+			var v = vertices[i];
+			
+			matrix.applyPost(v);
+			
+			var div = 1.0 / v.w;
+			v.x *= div;
+			v.y *= div;
+		}
+	};
+
+	/*
+	*	Adds new triangle(s) to the triangle array. If the triangle has been clipped , the triangles are created from the vertex array in combination with the
+	*	outsideIndices and insideIndices.
+	*
+	*	@param {Array} vertices , vertex array
+	*	@param {Array} outsideIndices
+	*	@param {Array} insideIndices
+	*	@param {Array} triangles, the array to hold the created triangles.
+	*/
+	SoftwareRenderer.prototype.createTriangles = function (vertices, outsideIndices, insideIndices, triangles) {
+
+		if (vertices.length === 4) {
+			// The vertex array has a length 4 only if one of the vertices were outside the near plane.
+			// The "extra vertex" is at position 3 in the array.
+
+			// The order of the triangle is not relevant here anymore since
+			// the backface culling check is made already.
+			triangles.push(new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]));
+			triangles.push(new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]));
+
+		} else {
+			triangles.push(new Triangle(vertices[0], vertices[1], vertices[2]));
+		}
+	};
+
+	/*
+	*	Categorizes the vertices into outside and inside (of the view frustum).
+	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
+	*	@param {Array} outsideIndices
+	*	@param {Array} insideIndices
+	*	@param {Array} vertices
+	*	@param {Number} cameraNearPlane, the camera near plane in world coordinates.
+	*/
+	SoftwareRenderer.prototype.categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
+			
+		for ( var i = 0; i < 3; i++ ) {
+			
+			if (vertices[i].z < cameraNear) {
+				insideIndices.push(i);
+			} else {
+				outsideIndices.push(i);
+			}
+		}
+	};
+
+	/*
+	*	Calculates the intersection ratio between the vector, created from the parameters origin and target, with the camera's near plane.
+	*
+	*	The ratio is defined as the amount (%), of the vector from origin to target, where the vector's intersection
+	*	with the near plane happens.
+	*
+	*	Due to this intersection being performed in camera space, the ratio calculation can be simplified to
+	*	only account for the z-coordinates.
+	*
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
-	*   @param {number} near The near plane.
+	*	@param {number} near The near plane.
 	*/
 
-	SoftwareRenderer.prototype.calculateIntersectionRatio = function (origin, target) {
+	SoftwareRenderer.prototype.calculateIntersectionRatio = function (origin, target, near) {
 			
-		// Using a tip from Joel: 
+		// Using a tip from Joel:
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
-		// http://www.joelek.se/uploads/files/thesis.pdf, pages 28-31.	
+		// http://www.joelek.se/uploads/files/thesis.pdf, pages 28-31.
 
 		// The camera's near plane component is the translation of the near plane,
 		// therefore 'a' is caluclated as origin.z + near
@@ -318,16 +327,14 @@ define([
 	SoftwareRenderer.prototype.transformToScreenSpace = function (vertices) {
 
 		for (var i = 0; i < vertices.length; i++) {
-
+			
 			var vertex = vertices[i];
 
-			// These calculations assume that the camera's viewPortRight and viewPortTop are 1, 
+			// These calculations assume that the camera's viewPortRight and viewPortTop are 1,
 			// while the viewPortLeft and viewPortBottom are 0.
+			// The x and y coordinates can still be outside the screen space here, but those will be clipped during rasterizing.
 			vertex.x = (vertex.x + 1.0) * (this.width / 2);
 			vertex.y = (vertex.y + 1.0) * (this.height / 2);
-			// If the z coordinate is transformed to canonical volume, this will move the range from [-1, 1] to [0, 1]
-			// vertex.z = (vertex.z + 1) / 2;
-			// vertex.z = Math.round(65535 * vertex.z) + 1; // 16-Bit Integers.
 
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
@@ -339,7 +346,7 @@ define([
 	/*
 	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
 	*	Otherwise false is returned.
-	* 	@param {Vector4} v1, v2, v3
+	*	@param {Vector4} v1, v2, v3
 	*	@return {Boolean} true / false
 	*/
 	SoftwareRenderer.prototype.isBackFacing = function (v1, v2, v3) {
@@ -368,19 +375,14 @@ define([
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
-		// The cameras eye direction will always be [0,0,-1] at this stage 
+		// The cameras eye direction will always be [0,0,-1] at this stage
 		// (the vertices are transformed into the camera's view projection space,
 		// thus the dot product can be simplified to only do multiplications on the z component.
 		
 		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
 		
 		// Invert the comparison to remove the negation of facenormalZ.
-		// REVIEW: Just `return faceNormalZ < 0.0` instead!
-		if ( faceNormalZ < 0.0 ) {
-			return true;
-		}
-
-		return false;
+		return faceNormalZ < 0.0;
 	};
 
 	SoftwareRenderer.prototype.renderTestTriangles = function () {
@@ -404,7 +406,7 @@ define([
 		// It also rounds the vectors' coordinate values to the nearest pixel value. (Math.round).
 		this.edges = [
 			new Edge(triangle.v1, triangle.v2),
-			new Edge(triangle.v2, triangle.v3), 
+			new Edge(triangle.v2, triangle.v3),
 			new Edge(triangle.v3, triangle.v1)
 		];
 		
@@ -415,14 +417,14 @@ define([
         for(var i = 0; i < 3; i++) {
             var height = this.edges[i].y1 - this.edges[i].y0;
             if(height > maxHeight) {
-                    maxHeight = height;
-                    longEdge = i;
+                maxHeight = height;
+                longEdge = i;
             }
         }
 
-        if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.width ) {
-        	// Triangle is outside the view, skipping rendering it;
-        	return;
+        if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.height) {
+        // Triangle is outside the view, skipping rendering it;
+        return;
         }
 		
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
@@ -430,8 +432,8 @@ define([
         var shortEdge2 = (longEdge + 2) % 3;
 
         for (var i = 0; i < 3; i++) {
-        	// Do pre-calculations here which are now performed in drawEdges.
-        	this.edges[i].invertZ(); 
+			// Do pre-calculations here which are now performed in drawEdges.
+			this.edges[i].invertZ();
         }
 
         this.drawEdges(this.edges[longEdge], this.edges[shortEdge1]);
@@ -444,7 +446,7 @@ define([
 	SoftwareRenderer.prototype.drawEdges = function (longEdge, shortEdge) {
 
 
-		// TODO: Move a lot of these calculations and variables into the Edge class, 
+		// TODO: Move a lot of these calculations and variables into the Edge class,
 		// do the calculations once for the long edge instead of twices as it is done now.
 
 
@@ -459,7 +461,7 @@ define([
 		var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
 
 		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
-		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height. 
+		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
 		
         var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
         var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
@@ -469,8 +471,8 @@ define([
 		var longEdgeDeltaZ = longEdge.z1 - longStartZ;
         var shortEdgeDeltaZ = shortEdge.z1 - shortStartZ;
 
-        // Vertical coherence : 
-        // The x-coordinates' increment for each step in y is constant, 
+        // Vertical coherence :
+        // The x-coordinates' increment for each step in y is constant,
         // so the increments are pre-calculated and added to the coordinates
         // each scanline.
 
@@ -491,11 +493,8 @@ define([
         // TODO:
         // Implement this idea of checking which edge is the leftmost.
         // 1. Check if they start off at different positions, save the result and draw as usual
-        // 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates. 
+        // 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates.
         //    Save the result and draw the rest of the scanlines.
-
-        var startIndex;
-        var stopIndex;
 
         var startLine = shortEdge.y0;
         var stopLine = shortEdge.y1;
@@ -503,106 +502,117 @@ define([
         // Vertical clipping
         if ( startLine < 0 ) {
 
-        	// If the starting line is above the screen space,
-        	// the starting x-coordinates has to be advanced to 
-        	// the proper value.
+			// If the starting line is above the screen space,
+			// the starting x-coordinates has to be advanced to
+			// the proper value.
 
-        	// And the starting line is then assigned to 0.
+			// And the starting line is then assigned to 0.
 
-        	startLine = -startLine;
-        	longX += startLine * longEdgeXincrement;
-        	shortX += startLine * shortEdgeXincrement;
-        	longZ += startLine * longEdgeZincrement;
-        	shortZ += startLine * shortEdgeZincrement;
-        	startLine = 0;
-        }
+			startLine = -startLine;
+			longX += startLine * longEdgeXincrement;
+			shortX += startLine * shortEdgeXincrement;
+			longZ += startLine * longEdgeZincrement;
+			shortZ += startLine * shortEdgeZincrement;
+			startLine = 0;
+		}
 
         if ( stopLine > this._clipY ) {
-        	stopLine = this._clipY;
+			stopLine = this._clipY;
         }
 
-        // Iterate in the span between the starting and stop lines.
-        for (var y = startLine; y <= stopLine; y++) {
+		var leftX;
+		var rightX;
 
-        	// Round to the nearest pixel.
-        	startIndex = Math.round(longX);
-        	stopIndex = Math.round(shortX);
+		// Fill pixels on every y-coordinate the short edge touches.
+		for (var y = startLine; y <= stopLine; y++) {
+			// Round to the nearest pixel.
+			leftX = Math.round(longX);
+			rightX = Math.round(shortX);
 
-        	// Draw the span of pixels.
-     
-    		this.fillPixels(startIndex, stopIndex, y, longZ, shortZ);
-        	
-  			// Increase the edges' x-coordinates with the increments.
-        	longX += longEdgeXincrement;
-        	shortX += shortEdgeXincrement;
+			// Draw the span of pixels.
+			this.fillPixels(leftX, rightX, y, longZ, shortZ);
 
-        	longZ += longEdgeZincrement;
-        	shortZ += shortEdgeZincrement;
-        }
+			// Increase the edges'
+			// x-coordinates and z-values with the increments.
+			longX += longEdgeXincrement;
+			shortX += shortEdgeXincrement;
+
+			longZ += longEdgeZincrement;
+			shortZ += shortEdgeZincrement;
+		}
 
 	};
 
-	// REVIEW: Why are the variables called startIndex and stopIndex? They seem to be just x coordinates.
-	// REVIEW: Is stopIndex the last pixel to be filled or the pixel *after* the last pixel.
-	// As I mentioned before, it's more conventional to use a half-open interval,
-	// startIndex <= x < stopIndex, NOT startIndex <= x <= stopIndex.
-	// One nice property then is that the width = stopIndex - startIndex
-	SoftwareRenderer.prototype.fillPixels = function (startIndex, stopIndex, y, leftZ, rightZ) {
+	/*
+	*	Writes the span of pixels to the depthData. The pixels written are
+	*	the closed interval of [leftX, rightX] on the y-coordinte y.
+	*
+	*/
+	SoftwareRenderer.prototype.fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
-		// TODO: This shall be optimized to be checked at an earlier stage. 
-		if ( startIndex > stopIndex ) {
-			var temp = startIndex;
-			startIndex = stopIndex;
-			stopIndex = temp;
+		// TODO: This shall be optimized to be checked at an earlier stage.
+		if (leftX > rightX) {
+			var temp = leftX;
+			leftX = rightX;
+			rightX = temp;
 
-			temp = leftZ; 
+			temp = leftZ;
 			leftZ = rightZ;
 			rightZ = temp;
 		}
 
-		// Early exit check.
-		if (stopIndex < 0 || startIndex > this._clipX) {
+		if (rightX < 0 || leftX > this.width) {
 			return; // Nothing to draw here.
 		}
 
 		// Horizontal clipping
-
-		// REVIEW: There are three "var t" statements in this function!
-		// JSHint give you a warning about this.
-		// Either give the three t different names,
-		// or put a single "var t" statement here somewhere.
-
-		// If the triangle is clipped, the bounding z-values has to be interpolated 
+		var t;
+		// If the triangle's scanline is clipped, the bounding z-values have to be interpolated
 		// to the new startpoints.
-		if ( startIndex < 0 ) {
-			var t = - startIndex / (stopIndex - startIndex);
+		if (leftX < 0) {
+			t = -leftX / (rightX - leftX);
 			leftZ = (1.0 - t) * leftZ + t * rightZ;
-    		startIndex = 0;
-    	}
+			leftX = 0;
+		}
 
-    	var diff = stopIndex - this._clipX;
-    	if (diff > 0) {
-    		var t = diff / (stopIndex - startIndex);
-    		rightZ = (1.0 - t) * rightZ + t * leftZ;
-    		stopIndex = this._clipX;
-    	}
-	
-		var t = 0.0;
-		// REVIEW: Since startIndex..stopIndex is a closed interval,
-		// I think the width calculation here is one off.
-		var tIncrement = 1.0 / (stopIndex - startIndex);
+		var diff = rightX - this.width;
+		if (diff > 0) {
+			t = diff / (rightX - leftX);
+			rightZ = (1.0 - t) * rightZ + t * leftZ;
+			rightX = this.width;
+		}
+
+		t = 0.0;
+		var tIncrement = 1.0 / (rightX - leftX);
 		var row = y * this.width;
-		for (var i = startIndex; i <= stopIndex; i++) {
+		var index = row + leftX;
+		// Fill all pixels in the interval [leftX, rightX].
+		for (var i = leftX; i <= rightX; i++) {
 			
-			// Linearly interpolate the 1/z values			
+			// Linearly interpolate the 1/z values
 			var depth = ((1.0 - t) * leftZ + t * rightZ);
 				
 			// Check if the value is closer than the stored one. z-test.
-			if (depth > this._depthData[row + i]) {
-				this._depthData[row + i] = depth;  // Store 1/z values in range [1/far, 1/near]. 
+			if (depth > this._depthData[index]) {
+				this._depthData[index] = depth;  // Store 1/z values in range [1/far, 1/near].
 			}
-			
+
+			/*
+			if (index > this.numOfPixels || index < 0) {
+				console.error("Writing outisde the data array!!");
+				console.log("y:" , y);
+				console.log("i:", i);
+			}
+
+			if (index == this.numOfPixels) {
+				console.error("writing to the last pixel now....");
+				console.log("t=", t);
+				console.log("tIncrement", tIncrement);
+			}
+			*/
+
+			index++;
 			t += tIncrement;
 		}
 
@@ -612,10 +622,10 @@ define([
 
 		var colorIndex = 0;
 		
-		for( var i = 0; i < this._depthData.length; i++) {
+		for(var i = 0; i < this._depthData.length; i++) {
 
 			// Convert the float value of depth into 8bit.
-			var depth = this._depthData[i] * 255; 
+			var depth = this._depthData[i] * 255;
 			this._colorData[colorIndex] = depth;
 			this._colorData[++colorIndex] = depth;
 			this._colorData[++colorIndex] = depth;

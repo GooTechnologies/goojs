@@ -1,5 +1,5 @@
 define([
-	'goo/math/Vector3',
+	'goo/math/Vector3'
 	],
 /** @lends Edge */
 function (Vector3) {
@@ -12,7 +12,7 @@ function (Vector3) {
 
 		// 16bits integers for the start and end positions
 		
-		this._buffer = new ArrayBuffer(8);  // 4 * Uint16Array.BYTES_PER_ELEMENT; 
+		this._buffer = new ArrayBuffer(8);  // 4 * Uint16Array.BYTES_PER_ELEMENT;
 		this.x = new Uint16Array(this._buffer, 0, 2);
 		this.y = new Uint16Array(this._buffer, 4, 2);
 
@@ -60,8 +60,7 @@ function (Vector3) {
 			this.z0 = vec2.z;
 			this.z1 = vec1.z;
 		}
-
-	};
+	}
 
 	Edge.prototype.invertZ = function() {
 
