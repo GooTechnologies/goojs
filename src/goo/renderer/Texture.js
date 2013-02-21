@@ -27,15 +27,13 @@ define([
 			this.setImage(image, settings, width, height);
 		}
 
-		// this.mapping = settings.mapping || new THREE.UVMapping();
-
 		this.wrapS = settings.wrapS || 'Repeat';
 		this.wrapT = settings.wrapT || 'Repeat';
 
 		this.magFilter = settings.magFilter || 'Bilinear';
 		this.minFilter = settings.minFilter || 'Trilinear';
 
-		this.anisotropy = settings.anisotropy || 1;
+		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy :  1;
 
 		this.format = settings.format || 'RGBA';
 		this.type = settings.type || 'UnsignedByte';
@@ -44,9 +42,9 @@ define([
 		this.offset = new Vector2(0, 0);
 		this.repeat = new Vector2(1, 1);
 
-		this.generateMipmaps = settings.generateMipmaps || true;
-		this.premultiplyAlpha = settings.premultiplyAlpha || false;
-		this.flipY = settings.flipY || true;
+		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
+		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
+		this.flipY = settings.flipY !== undefined ? settings.flipY : true;
 
 		this.hasBorder = false;
 

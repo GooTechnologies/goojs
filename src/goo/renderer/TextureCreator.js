@@ -49,6 +49,8 @@ define([
 				if (!loader || !loader.isSupported()) {
 					imageURL = imageURL.substring(0, imageURL.length - extension.length);
 					imageURL += TextureCreator.UNSUPPORTED_FALLBACK;
+					settings = settings || {};
+					settings.flipY = false;
 					break;
 				}
 
@@ -83,11 +85,11 @@ define([
 
 		// Create a texture
 		var texture = new Texture();
+		TextureCreator.cache[imageURL] = texture;
 
 		// Load the actual image
 		this._loader.loadImage(imageURL).then(function(data) {
 			texture.setImage(data);
-			TextureCreator.cache[imageURL] = texture;
 		});
 
 		console.info("Loaded image: " + imageURL);
@@ -218,18 +220,14 @@ define([
 			texture.image.height = h;
 		});
 
+		var that = this;
 		for ( var i = 0; i < imageDataArray.length; i++) {
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					new Loader().loadImage(queryImage, {
-						onSuccess: function (image) {
-							images[index] = image;
-							latch.countDown();
-						},
-						onError: function (message) {
-							console.error(message);
-						}
+					that._loader.loadImage(queryImage).then(function(image) {
+						images[index] = image;
+						latch.countDown();
 					});
 				} else {
 					images[index] = queryImage;

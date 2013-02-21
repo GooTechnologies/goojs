@@ -2,17 +2,18 @@ require.config({
 	baseUrl : "./",
 	paths : {
 		goo : "../src/goo",
+		'goo/lib': '../lib'
 	}
 });
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/renderer/Loader',
+		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/Light', 'goo/renderer/Camera',
+		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight', 'goo/renderer/Camera',
 		'goo/entities/components/CameraComponent', 'goo/scripts/BasicControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, Light, Camera,
+	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, Camera,
 	CameraComponent, BasicControlScript, Vector3, ShaderLib) {
 	"use strict";
 
@@ -60,7 +61,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		cameraEntity.addToWorld();
 
 		// Setup light
-		var light = new Light();
+		var light = new PointLight();
 		var entity = goo.world.createEntity('Light1');
 		entity.setComponent(new LightComponent(light));
 		var transformComponent = entity.transformComponent;

@@ -1805,6 +1805,135 @@ define([
 		].join('\n')
 	};
 
-	
+	ShaderLib.downsample = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_FragColor = texture2D( tDiffuse, vUv );",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.boxfilter = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.TEXTURE0,
+			viewport : [128, 128]
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;', //
+			'attribute vec2 vertexUV0;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			'precision mediump float;',
+
+			"uniform sampler2D tDiffuse;",
+			"uniform vec2 viewport;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				'vec3 result = vec3(0.0);',
+		    	'for(int x=-1; x<=1; x++) {',
+		    	'	for(int y=-1; y<=1; y++) {',
+		    	'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
+		    	'	}',
+		    	'}',
+		    	'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.lightDepth = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraFar : Shader.LIGHT_FAR_PLANE
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+
+		'uniform mat4 viewMatrix;', //
+		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 worldMatrix;',//
+
+		'varying vec3 worldPosition;',
+		
+		'void main(void) {', //
+		'	vec4 viewpos = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'	worldPosition = viewpos.xyz;',
+		'	gl_Position = projectionMatrix * viewpos;', //
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'#extension GL_OES_standard_derivatives : enable',
+		'precision mediump float;',//
+
+		'uniform mat4 viewMatrix;', //
+		'uniform float cameraFar;',
+
+		'varying vec3 worldPosition;',
+
+		'void main(void)',//
+		'{',//
+		'	float depth = clamp(length(worldPosition) / cameraFar, 0.0, 1.0);',
+//		'	float depth = clamp(length(worldPosition) / 2000.0, 0.0, 1.0);',
+        '	float dx = dFdx(depth);',
+        '	float dy = dFdy(depth);',
+//        '	gl_FragColor = vec4(depth, pow(depth, 2.0) + 0.25*(dx*dx + dy*dy), 0.0, 1.0);',
+        '	gl_FragColor = vec4(depth, depth * depth, 0.0, 1.0);',
+		'}'//
+		].join('\n')
+	};
+
 	return ShaderLib;
 });

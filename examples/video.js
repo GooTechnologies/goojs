@@ -2,6 +2,7 @@ require.config({
 	baseUrl : "./",
 	paths : {
 		goo : "../src/goo",
+		'goo/lib': '../lib'
 	}
 });
 require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',

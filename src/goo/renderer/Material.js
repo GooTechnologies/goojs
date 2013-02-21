@@ -16,6 +16,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		this.shader = null;
 		this.uniforms = {}; //possible overrides on shader uniforms
 		this.textures = [];
+		this._originalTextureCount = -1;
 		this.materialState = undefined;
 		// {
 		// ambient : {r : 0.1, g : 0.1, b : 0.1, a : 1.0},

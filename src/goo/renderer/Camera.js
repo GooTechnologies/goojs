@@ -34,25 +34,6 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this._frustumTop = 0.5;
 		this._frustumBottom = -0.5;
 
-		// Handy.defineProperty(this, '_frustumNear', 1.0, function() {
-		// onFrustumChange();
-		// });
-		// Handy.defineProperty(this, '_frustumFar', 2.0, function() {
-		// onFrustumChange();
-		// });
-		// Handy.defineProperty(this, '_frustumLeft', -0.5, function() {
-		// onFrustumChange();
-		// });
-		// Handy.defineProperty(this, '_frustumRight', 0.5, function() {
-		// onFrustumChange();
-		// });
-		// Handy.defineProperty(this, '_frustumTop', 0.5, function() {
-		// onFrustumChange();
-		// });
-		// Handy.defineProperty(this, '_frustumBottom', -0.5, function() {
-		// onFrustumChange();
-		// });
-
 		this._coeffLeft = [];
 		this._coeffRight = [];
 		this._coeffBottom = [];
@@ -179,8 +160,8 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * @param bottom
 	 */
 	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom) {
-		this._frustumNear = near;
-		this._frustumFar = far;
+		this.near = this._frustumNear = near;
+		this.far = this._frustumFar = far;
 		this._frustumLeft = left;
 		this._frustumRight = right;
 		this._frustumTop = top;
@@ -284,34 +265,19 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 			return Camera.Inside;
 		}
 
-		// var mask;
 		var rVal = Camera.Inside;
 
 		for (var planeCounter = Camera.FRUSTUM_PLANES - 1; planeCounter >= 0; planeCounter--) {
-			// if (planeCounter === bound._checkPlane) {
-			// continue; // we have already checked this plane at first iteration
-			// }
-			// var planeId = planeCounter == Camera.FRUSTUM_PLANES ? bound._checkPlane : planeCounter;
-
-			// mask = 1 << planeId;
-			// if ((this._planeState & mask) === 0) {
-			// switch (bound.whichSide(this._worldPlane[planeId])) {
 			switch (bound.whichSide(this._worldPlane[planeCounter]))
 			{
-			case Camera.Inside:
-				// object is outside of frustum
-				// bound._checkPlane = planeId;
-				return Camera.Outside;
-			case Camera.Outside:
-				// object is visible on *this* plane, so mark this plane
-				// so that we don't check it for sub nodes.
-				// this._planeState |= mask;
-				break;
-			case Camera.Neither:
-				rVal = Camera.Intersects;
-				break;
+				case Camera.Inside:
+					return Camera.Outside;
+				case Camera.Outside:
+					break;
+				case Camera.Neither:
+					rVal = Camera.Intersects;
+					break;
 			}
-			// }
 		}
 
 		return rVal;

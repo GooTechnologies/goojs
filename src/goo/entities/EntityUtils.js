@@ -1,6 +1,7 @@
-define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent', 'goo/entities/components/CSSTransformComponent'],
+define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent', 
+        'goo/entities/components/CSSTransformComponent', 'goo/renderer/Util'],
 	/** @lends EntityUtils */
-	function (TransformComponent, MeshDataComponent, MeshRendererComponent, CSSTransformComponent) {
+	function (TransformComponent, MeshDataComponent, MeshRendererComponent, CSSTransformComponent, Util) {
 		"use strict";
 
 		/**
@@ -19,13 +20,23 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 				var component = entity._components[i];
 				if (component instanceof TransformComponent) {
 					newEntity.transformComponent.transform.copy(component.transform);
+				} else if (component instanceof MeshDataComponent) {
+					var meshDataComponent = new MeshDataComponent(component.meshData);
+					meshDataComponent.modelBound = new component.modelBound.constructor();
+					newEntity.setComponent(meshDataComponent);
+				} else if (component instanceof MeshRendererComponent) {
+					var meshRendererComponent = new MeshRendererComponent();
+					for (var j=0;j<component.materials.length;j++) {
+						meshRendererComponent.materials.push(component.materials[j]);
+					}
+					newEntity.setComponent(meshRendererComponent);
 				} else {
 					newEntity.setComponent(component);
 				}
 				
 				for (var j=0;j<entity.transformComponent.children.length;j++) {
 					var child = entity.transformComponent.children[j];
-					var clonedChild = cloneEntity(child);
+					var clonedChild = cloneEntity(world, child.entity, settings);
 					newEntity.transformComponent.attachChild(clonedChild.transformComponent);
 				}
 			}

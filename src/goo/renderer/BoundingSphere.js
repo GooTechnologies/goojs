@@ -13,8 +13,6 @@ function(Transform, Vector3, Camera) {
 	function BoundingSphere() {
 		this.center = new Vector3();
 		this.radius = 1;
-
-		this._checkPlane = 0;
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
@@ -43,7 +41,7 @@ function(Transform, Vector3, Camera) {
 			}
 		}
 
-		this.radius = size / 1.0;
+		this.radius = size;
 		this.center.copy(newCenter);
 	};
 

@@ -123,7 +123,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 				this.errorOnce = false;
 			} catch (err) {
 				if (this.errorOnce === false) {
-					console.warn(err);
+					console.error(err.stack);
 					this.errorOnce = true;
 				}
 			}
@@ -428,6 +428,23 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		defaultCallbacks[Shader.TIME] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(World.time);
 		};
+
+		defaultCallbacks[Shader.LIGHT_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
+			var camera = shaderInfo.lightCamera;
+			var matrix = camera.getProjectionMatrix();
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.LIGHT_VIEW_MATRIX] = function (uniformCall, shaderInfo) {
+			var camera = shaderInfo.lightCamera;
+			var matrix = camera.getViewMatrix();
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.LIGHT_NEAR_PLANE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.lightCamera.near);
+		};
+		defaultCallbacks[Shader.LIGHT_FAR_PLANE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.lightCamera.far);
+		};
 	}
 
 	Shader.prototype.getShaderDefinition = function() {
@@ -464,6 +481,11 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.TIME = 'TIME';
+	
+	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
+	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
+	Shader.LIGHT_NEAR_PLANE = 'NEAR_PLANE';
+	Shader.LIGHT_FAR_PLANE = 'FAR_PLANE';
 
 	return Shader;
 });

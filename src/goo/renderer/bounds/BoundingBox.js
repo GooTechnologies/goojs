@@ -16,8 +16,6 @@ function(Transform, Vector3, Camera) {
 		this.yExtent = 1;
 		this.zExtent = 1;
 
-		this._checkPlane = 0;
-
 		this._compVect1 = new Vector3();
 	}
 
