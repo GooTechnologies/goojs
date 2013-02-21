@@ -17,11 +17,19 @@
         "require": true,
 
         // Jasmine globals.
+        // It would be nice if JSHint could only assume that these globals
+        // exists when checking the code in test/, not in src/.
+        // I wonder if there's a way to do that.
+        "jasmine": true,
         "describe": true,
+        "xdescribe": true,
         "expect": true,
         "it": true,
+        "xit": true,
         "beforeEach": true,
-        "afterEach": true
+        "afterEach": true,
+        "waitsFor": true,
+        "spyOn": true
     },
 
     // The Good Parts.
