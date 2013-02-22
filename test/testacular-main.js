@@ -7,6 +7,8 @@ require.config({
     },
     waitSeconds: 5
   });
+require(['minified/goo'], function() {
 require(['test/all-tests'], function() {
   window.__testacular__.start();
+});
 });

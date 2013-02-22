@@ -15,8 +15,6 @@ doClosure = (fileIn, fileOut, deleteAfter) ->
 	exec command,
 		maxBuffer: 5*1024*1024
 	, (error, stdout, stderr) ->
-		#console.log('stdout: ' + stdout);
-		#console.log('stderr: ' + stderr);
 		if deleteAfter
 			fs.unlink fileIn
 		if error?
@@ -36,18 +34,13 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 	requirejs = require('requirejs')
 	config =
 		baseUrl: absroot
-		#useStrict : true
+		useStrict : true
 		out: tempClosure
 		name: filePathIn
 		optimize: 'none'
-		#should fix this in a better way
 		paths:
 			'goo/lib' : '../lib'
-		# Uncomment to exclude library from build
-		#excludeShallow: [
-		#	'goo/lib/rsvp.amd'
-		#]
-	
+
 	requirejs.optimize config, (buildResponse) ->
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
