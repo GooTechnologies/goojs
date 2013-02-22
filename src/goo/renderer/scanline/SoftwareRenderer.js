@@ -69,7 +69,7 @@ define([
 	/**
 	*	Renders z-buffer (w-buffer) from the given renderList of entities.
 	*
-	*	@param renderList, the array of entities which are possible occluders.
+	*	@param {Array.<Entity>} renderList, the array of entities which are possible occluders.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
@@ -101,7 +101,7 @@ define([
 	*
 	*	The entity is removed from the renderlist if it is not visible.
 	*
-	*	@param renderList, the array of entities which are possible occludees.
+	*	@param {Array.<Entity>} renderList, the array of entities which are possible occludees.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
 
@@ -140,39 +140,57 @@ define([
 
 			this._transformToScreenSpace(vertices);
 
-			// Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
+			var red = [255, 0, 0];
+			var green = [0, 255, 0];
+			var blue = [0, 0, 255];
+			var yellow = [255, 255, 0];
 
-			if ( nearCoord.x > 0 && nearCoord.x <= this.width && nearCoord.y < this.height && nearCoord.y > 0) {
-
-				// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
-
-				nearCoord.x = Math.round(nearCoord.x);
-				nearCoord.y = Math.round(nearCoord.y);
-
-				//console.log(nearCoord.data);
-
-				var coordIndex = nearCoord.y * this.width + nearCoord.x;
-				//console.log("coordIndex", coordIndex);
-
-				var nearSample = this._depthData[coordIndex];
-				var nearestDepth = 1.0 / nearCoord.w;
-
-				//console.log("nearSample", nearSample);
-				//console.log("nearestDepth", nearestDepth);
-
-				// Show the nearpoint  as red (Debugging)
-				coordIndex = nearCoord.y * (this.width * 4) + (nearCoord.x * 4);
-				this._colorData[coordIndex] = 255;
-				this._colorData[coordIndex + 1] = 0;
-				this._colorData[coordIndex + 2] = 0;
-
-				// the sample contains 1/w depth. if the corresponding depth in the nearCoordinate is behind the sample, the entity is occluded.
-				if (nearestDepth < nearSample) {
-					renderList.splice(i, 1);
-					i--; // Have to compensate the index for the loop.
-				}
+			if (this._isOccluded(nearCoord, red)
+				&& this._isOccluded(leftCoord, blue)
+				&& this._isOccluded(rightCoord, green)
+				&& this._isOccluded(topCoord, yellow)
+				&& this._isOccluded(bottomCoord, yellow)
+				) {
+				renderList.splice(i, 1);
+				i--; // Have to compensate the index for the loop.
+				continue;
 			}
 		}
+	};
+
+	SoftwareRenderer.prototype._isOccluded = function (coordinate, color) {
+	
+		// Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
+		if ( coordinate.x > 0 && coordinate.x <= this.width && coordinate.y < this.height-1 && coordinate.y > 0) {
+
+			// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
+
+			coordinate.x = Math.round(coordinate.x);
+			coordinate.y = Math.round(coordinate.y);
+
+			//console.log(coordinate.data);
+
+			var coordIndex = coordinate.y * this.width + coordinate.x;
+			//console.log("coordIndex", coordIndex);
+
+			var nearSample = this._depthData[coordIndex];
+			var nearestDepth = 1.0 / coordinate.w;
+
+			//console.log("nearSample", nearSample);
+			//console.log("nearestDepth", nearestDepth);
+
+			// Add color to the color daata (DEBUGGING PURPOSE).
+			coordIndex = coordinate.y * (this.width * 4) + (coordinate.x * 4);
+//			this._colorData.set(color, coordIndex);
+			this._colorData[coordIndex] = color[0];
+			this._colorData[coordIndex + 1] = color[1];
+			this._colorData[coordIndex + 2] = color[2];
+
+			// the sample contains 1/w depth. if the corresponding depth in the nearCoordinate is behind the sample, the entity is occluded.
+			return nearestDepth < nearSample;
+		}
+
+		return false;
 	};
 
 
