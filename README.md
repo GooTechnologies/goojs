@@ -7,7 +7,10 @@ Goo Engine in JavaScript
 Tests
 -----
 
-The tests use Jasmin (http://pivotal.github.com/jasmine/) and Testacular (http://vojtajina.github.com/testacular/).
+The tests use Jasmine (http://pivotal.github.com/jasmine/) and Testacular (http://vojtajina.github.com/testacular/).
+
+
+### Testacular
 
 For testacular, the latest version is need (0.5.X) unless version >=0.6.0 has been released, install the canary build
 
@@ -19,8 +22,35 @@ To run testacular
 
      ./node_modules/.bin/testacular start test/testacular.conf.js
 
-which will start the testacular server, execute one test run on Chrome and remain idle watching for code or test changes.
+or (if you have `make` installed):
 
+    make test
+
+which will start the testacular server and remain idle watching for code or test changes.
+You need to touch a file in src/ or test/ to trigger the tests.
+
+If you get the following error, Testacular didn't manage to start Chrome by itself.
+
+    error (launcher): Cannot start Chrome
+            CreateProcessW: The system cannot find the path specified.
+
+    info (launcher): Trying to start Chrome again.
+    Makefile:2: recipe for target `test' failed
+    make: *** [test] Error 127
+
+EITHER just open http://localhost:8080 manually in your browser.
+
+OR use the following command instead (adjusting the path if necessary):
+
+    testacular start --browsers="c:\Program Files (x86)\Google\Chrome\Application\chrome.exe" test/testacular.conf.js
+
+### Jasmine
+
+To run the tests using Jasmine's test runner in the browser, start a server, e.g. using:
+
+    coffee ../simple-node-server/app.coffee --goo-path .
+
+And then open http://localhost:8000/test/test.html
 
 ### Code Coverage
 
