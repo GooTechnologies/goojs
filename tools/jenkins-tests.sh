@@ -9,4 +9,4 @@ if [ ! -d node_modules ]; then
 fi
 
 # Run the tests using Testacular
-node_modules/.bin/testacular start --single-run --browsers './tools/jenkins-headlessbrowser.sh' --port 2900 test/testacular.conf.js
+node_modules/.bin/testacular start --single-run --browsers './tools/jenkins-headlessbrowser.sh' --no-colors --port 2900 test/testacular.conf.js
