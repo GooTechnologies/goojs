@@ -1792,14 +1792,17 @@ define([
 		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
 		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
 		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
+		// REVIEW: Remove commented, unused lines
 		//'	vec3 col = sample1.rgb - sample2.rgb;',//
 		'	float value = (col.r + col.g + col.b) / 3.0;',
 		//'	float value = length(col);',
+		// REVIEW: Instead of an if-else you can use the step() function like: value = step(threshold, value);
 		'	if (value > threshold) {',
 		'		value = 1.0;',
 		'	} else {',
 		'		value = 0.0;',
 		'	}',
+		// REVIEW: This line is a bit confusing. I'd prefer either a comment or that it's more understandable by (more) clear code.
 		'	gl_FragColor = vec4((1.0 - value) * originalColor.rgb + vec3(value), 1.0);',//
 		'}'//
 		].join('\n')

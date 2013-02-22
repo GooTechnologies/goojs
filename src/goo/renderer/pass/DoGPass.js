@@ -52,9 +52,8 @@ define(['goo/renderer/Renderer',
 		this.differenceMaterial = Material.createMaterial(this.differenceShader);
 		
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].
-		// The max kernelsize is 25 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
+		// The max kernelsize is 2.5 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
 		var kernel1 = this.convolutionShader1.buildKernel(sigma);
-		//var kernel2 = this.convolutionShader2.buildKernel(1.6 * sigma);
 		var kernel2 = this.convolutionShader2.buildKernel(1.6 * sigma);
 
 		var kernelSize = kernel1.length;
