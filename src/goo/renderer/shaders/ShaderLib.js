@@ -1599,7 +1599,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1709,8 +1709,8 @@ define([
 			'	N = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
 			'	L = lightPosition - worldPos.xyz;', //
 			'	V = cameraPosition - worldPos.xyz;', //
-			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'}',
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
+			'}'
 		].join('\n'),
 		fshader : [//
 			'precision mediump float;',//
@@ -1739,13 +1739,13 @@ define([
 			'    if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
 
 			'    gl_FragColor = colour;',
-			'}',
+			'}'
 		].join('\n')
 	};
 
 	/*
 	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
-	*/ 
+	*/
 	ShaderLib.differenceOfGaussians = {
 		includes : [ShaderFragments.features.fog],
 		attributes : {
@@ -1792,18 +1792,10 @@ define([
 		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
 		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
 		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
-		// REVIEW: Remove commented, unused lines
-		//'	vec3 col = sample1.rgb - sample2.rgb;',//
 		'	float value = (col.r + col.g + col.b) / 3.0;',
-		//'	float value = length(col);',
-		// REVIEW: Instead of an if-else you can use the step() function like: value = step(threshold, value);
-		'	if (value > threshold) {',
-		'		value = 1.0;',
-		'	} else {',
-		'		value = 0.0;',
-		'	}',
-		// REVIEW: This line is a bit confusing. I'd prefer either a comment or that it's more understandable by (more) clear code.
-		'	gl_FragColor = vec4((1.0 - value) * originalColor.rgb + vec3(value), 1.0);',//
+		'	value = step(threshold, value);',
+		'	vec3 outputColor = mix(originalColor.rgb, vec3(value), value);',
+		'	gl_FragColor = vec4(outputColor, 1.0);',//
 		'}'//
 		].join('\n')
 	};
@@ -1817,7 +1809,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1882,12 +1874,12 @@ define([
 
 			"void main() {",
 				'vec3 result = vec3(0.0);',
-		    	'for(int x=-1; x<=1; x++) {',
-		    	'	for(int y=-1; y<=1; y++) {',
-		    	'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
-		    	'	}',
-		    	'}',
-		    	'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
+				'for(int x=-1; x<=1; x++) {',
+				'	for(int y=-1; y<=1; y++) {',
+				'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
+				'	}',
+				'}',
+				'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
 			"}"
 		].join("\n")
 	};
