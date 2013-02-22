@@ -31,11 +31,13 @@ function(BufferData, Util, BufferUtils) {
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
-	
+
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
+
+		var savedAttributes = {};
+		var savedIndices = null;
+
 		if (saveOldData) {
-			var savedAttributes = {};
-			var savedIndices = null;
 			for ( var i in this.attributeMap) {
 				var attribute = this.attributeMap[i];
 				if (attribute.array) {

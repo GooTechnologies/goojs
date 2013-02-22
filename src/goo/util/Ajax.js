@@ -22,17 +22,17 @@ define([
 		var promise = new RSVP.Promise();
 
 		options = options || {};
-		
+
 		var url = options.url || '';
 
 		var method = 'GET';
 		var async = true;
 
 		var request = new XMLHttpRequest();
-		
+
 		request.open(method, url, true);
 
-		
+
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
 				if ( request.status >= 200 && request.status <= 299 ) {
@@ -46,7 +46,7 @@ define([
 		request.send();
 
 		return promise;
-	}
+	};
 
 	return Ajax;
 });

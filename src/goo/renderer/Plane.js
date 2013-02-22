@@ -11,12 +11,12 @@ define(['goo/math/Vector3'],
 	 * @property {Number} constant the plane offset along the normal
 	 */
 	function Plane(normal, constant) {
-		this.normal = normal || new Vector3(0, 1, 0);
-		this.constant = constant || 0;
+		this._normal = normal || new Vector3(0, 1, 0);
+		this._constant = constant || 0;
 	}
 
 	Plane.prototype.pseudoDistance = function (point) {
-		return _normal.dot(point) - _constant;
+		return this._normal.dot(point) - this._constant;
 	};
 
 	/**
@@ -26,13 +26,16 @@ define(['goo/math/Vector3'],
 	 * @throws NullPointerException if point is null.
 	 */
 	Plane.prototype.whichSide = function (point) {
-		var dis = pseudoDistance(point);
+		var dis = this.pseudoDistance(point);
 		if (dis < 0) {
-			return Side.Inside;
+			return 'inside';
+			//return Side.Inside;
 		} else if (dis > 0) {
-			return Side.Outside;
+			return 'outside';
+			//return Side.Outside;
 		} else {
-			return Side.Neither;
+			return 'neither';
+			//return Side.Neither;
 		}
 	};
 
@@ -42,8 +45,8 @@ define(['goo/math/Vector3'],
 			result = new Vector3();
 		}
 
-		var dotProd = _normal.dot(unitVector) * 2;
-		result.set(unitVector).subtractLocal(_normal.getX() * dotProd, _normal.getY() * dotProd, _normal.getZ() * dotProd);
+		var dotProd = this._normal.dot(unitVector) * 2;
+		result.set(unitVector).subtractLocal(this._normal.getX() * dotProd, this._normal.getY() * dotProd, this._normal.getZ() * dotProd);
 		return result;
 	};
 

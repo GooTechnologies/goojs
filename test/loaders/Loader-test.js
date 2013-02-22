@@ -16,7 +16,7 @@ function(
 		var loader;
 		var xhr;
 
-		
+
 
 		beforeEach(function() {
 			xhr = new Ajax();
@@ -38,7 +38,7 @@ function(
 				});
 
 				return p;
-			}
+			};
 
 			var p = loader.load('test.glsl');
 
@@ -63,7 +63,7 @@ function(
 				});
 
 				return p;
-			}
+			};
 
 			var p = loader.load('test.json');
 
@@ -88,7 +88,7 @@ function(
 				});
 
 				return p;
-			}
+			};
 
 			var p = loader.load('data');
 
@@ -109,7 +109,7 @@ function(
 				});
 
 				return p;
-			}
+			};
 
 			var p = loader.load('test.json', function(data) {
 				data.foo = 'Adventure';

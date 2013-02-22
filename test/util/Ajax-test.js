@@ -72,11 +72,11 @@ define([
 					method: 'GET',
 					async: true
 				};
-				
+
 				var a = new Ajax().get(ajaxSettings);
-				
+
 				spyOn(a, 'resolve').andCallThrough();
-				
+
 				a.then(function(request) {
 					expect(a.reject).not.toHaveBeenCalled();
 					expect(a.resolve).toHaveBeenCalled();
@@ -92,7 +92,7 @@ define([
 					method: 'GET',
 					async: true
 				};
-				
+
 				var a = new Ajax().get(ajaxSettings);
 
 				spyOn(a, 'reject').andCallThrough();

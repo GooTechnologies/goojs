@@ -162,7 +162,7 @@ function (Vector3, Matrix3x3) {
 			event.preventDefault();
 			event.stopPropagation();
 
-			event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+			event = event.touches && event.touches.length === 1 ? event.touches[0] : event;
 
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
@@ -171,7 +171,7 @@ function (Vector3, Matrix3x3) {
 
 		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
-				event = event.touches && event.touches.length == 1 ? event.touches[0] : event;
+				event = event.touches && event.touches.length === 1 ? event.touches[0] : event;
 
 				this.moveState.yawLeft = event.pageX - this.mouseDownX;
 				this.moveState.pitchDown = event.pageY - this.mouseDownY;

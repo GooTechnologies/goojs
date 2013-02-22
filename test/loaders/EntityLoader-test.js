@@ -24,7 +24,7 @@ function(
 
 		beforeEach(function() {
 			goo = new GooRunner();
-			
+
 			var loaderSettings = {
 				world: goo.world,
 				loader: loader

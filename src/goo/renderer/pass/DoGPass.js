@@ -1,19 +1,28 @@
-define(['goo/renderer/Renderer', 
-		'goo/renderer/Camera', 
-		'goo/renderer/TextureCreator', 
-		'goo/renderer/Material', 
+define([
+		'goo/renderer/Renderer',
+		'goo/renderer/Camera',
+		'goo/renderer/TextureCreator',
+		'goo/renderer/Material',
 		'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 
-		'goo/renderer/Util', 
+		'goo/renderer/pass/RenderTarget',
+		'goo/renderer/Util',
 		'goo/renderer/shaders/ShaderLib'
-		], 
-
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget,	Util, ShaderLib) {
+	],
+	function(
+		Renderer,
+		Camera,
+		TextureCreator,
+		Material,
+		FullscreenUtil,
+		RenderTarget,
+		Util,
+		ShaderLib
+	) {
 	"use strict";
 
 	/*
 	*	Difference of Gaussian Filter pass. 
-	* 	Usable for edge detection.
+	*	Usable for edge detection.
 	*	
 	*	A lower sigma will create thinner edgelines, tune to get the sweetspot.
 	*	Maximum sigma is 2.5.
@@ -46,11 +55,11 @@ define(['goo/renderer/Renderer',
 
 		this.convolutionShader1 = Util.clone(ShaderLib.convolution);
 		this.convolutionShader2 = Util.clone(ShaderLib.convolution);
-		
+
 		this.differenceShader = Util.clone(ShaderLib.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = Material.createMaterial(this.differenceShader);
-		
+
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].
 		// The max kernelsize is 2.5 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
 		var kernel1 = this.convolutionShader1.buildKernel(sigma);
@@ -85,7 +94,7 @@ define(['goo/renderer/Renderer',
 	}
 
 	DoGPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
-		
+
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;
 

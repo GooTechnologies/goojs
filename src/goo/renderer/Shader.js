@@ -341,6 +341,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 
 		for (var i = 0; i < 16; i++) {
+			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
@@ -351,6 +352,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
 		for (var i = 0; i < 4; i++) {
+			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
@@ -481,7 +483,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.TIME = 'TIME';
-	
+
 	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
 	Shader.LIGHT_NEAR_PLANE = 'NEAR_PLANE';

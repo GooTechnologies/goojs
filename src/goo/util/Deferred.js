@@ -53,7 +53,7 @@ define([
 	 */
 	Deferred.prototype.promise = function() {
 		return this._promise;
-	}
+	};
 
 	/**
 	 * Resolves the Deferred's internal Promise with the value in <code>data</code>.
@@ -129,7 +129,7 @@ define([
 	Deferred.prototype.done = function(resolvedHandler) {
 		return this._promise.done(resolvedHandler);
 	};
-	
+
 	/**
 	 * Attaches an event handler to the Deferred's internal Promise that fires when the Promise is rejected.
 	 *
@@ -204,7 +204,7 @@ define([
 			var rejectWhen = function(data) {
 				when.reject(data);
 			};
-			
+
 			for(var i in promises) {
 				// If `promises[i]` exists and is a function
 				if(promises[i] && Object.prototype.toString.call(promises[i].constructor) === '[object Function]') {

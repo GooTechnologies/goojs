@@ -117,7 +117,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.tmpVec.copy(this.translation).sub(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};
-	
+
 	Transform.prototype.invert = function (store) {
 		var result = store;
 		if (!result) {

@@ -1,14 +1,52 @@
 /*jshint bitwise: false */
-define(['goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3',
-		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState',
-		'goo/animation/state/FadeTransitionState', 'goo/animation/state/FrozenTransitionState', 'goo/animation/state/IgnoreTransitionState',
-		'goo/animation/state/ImmediateTransitionState', 'goo/animation/state/SyncFadeTransitionState', 'goo/animation/state/StateBlendType',
-		'goo/animation/blendtree/BinaryLERPSource', 'goo/animation/blendtree/ExclusiveClipSource', 'goo/animation/blendtree/FrozenClipSource',
-		'goo/animation/blendtree/InclusiveClipSource', 'goo/animation/blendtree/ManagedTransformSource', 'goo/animation/layer/LayerLERPBlender'],
-/** @lends JsonUtils */
-function(Util, MeshData, BufferUtils, Transform, Matrix3x3, Vector3, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
-	FrozenTransitionState, IgnoreTransitionState, ImmediateTransitionState, SyncFadeTransitionState, StateBlendType, BinaryLERPSource,
-	ExclusiveClipSource, FrozenClipSource, InclusiveClipSource, ManagedTransformSource, LayerLERPBlender) {
+define([
+	'goo/renderer/Util',
+	'goo/renderer/MeshData',
+	'goo/renderer/BufferUtils',
+	'goo/math/Transform',
+	'goo/math/Matrix3x3',
+	'goo/math/Vector3',
+	'goo/math/Quaternion',
+	'goo/animation/blendtree/ClipSource',
+	'goo/animation/layer/AnimationLayer',
+	'goo/animation/state/SteadyState',
+	'goo/animation/state/FadeTransitionState',
+	'goo/animation/state/FrozenTransitionState',
+	'goo/animation/state/IgnoreTransitionState',
+	'goo/animation/state/ImmediateTransitionState',
+	'goo/animation/state/SyncFadeTransitionState',
+	'goo/animation/state/StateBlendType',
+	'goo/animation/blendtree/BinaryLERPSource',
+	'goo/animation/blendtree/ExclusiveClipSource',
+	'goo/animation/blendtree/FrozenClipSource',
+	'goo/animation/blendtree/InclusiveClipSource',
+	'goo/animation/blendtree/ManagedTransformSource',
+	'goo/animation/layer/LayerLERPBlender'
+	],
+	/** @lends JsonUtils */
+	function(Util,
+		MeshData,
+		BufferUtils,
+		Transform,
+		Matrix3x3,
+		Vector3,
+		Quaternion,
+		ClipSource,
+		AnimationLayer,
+		SteadyState,
+		FadeTransitionState,
+		FrozenTransitionState,
+		IgnoreTransitionState,
+		ImmediateTransitionState,
+		SyncFadeTransitionState,
+		StateBlendType,
+		BinaryLERPSource,
+		ExclusiveClipSource,
+		FrozenClipSource,
+		InclusiveClipSource,
+		ManagedTransformSource,
+		LayerLERPBlender
+	) {
 	"use strict";
 
 	/**

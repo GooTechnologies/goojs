@@ -29,7 +29,7 @@ define([
 			throw new Error('MaterialLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
 			throw new Error('MaterialLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
@@ -55,40 +55,68 @@ define([
 		var materialState = this._getDefaultMaterialState();
 		var textures = [];
 
-		if(materialDataSource && Object.keys(materialDataSource).length) {
+		if(materialDataSource) {
 			var value;
 
-			for(var attribute in materialDataSource) {
-				value = materialDataSource[attribute];
+			value = materialDataSource.shader;
+			if(value) {
+				var p = this._loader.load(value)
+				.then(function(data) {
+					return that._parseShaderDefinition(data);
+				})
+				.then(function(shaderDef) {
+					shaderDefinition.vshader = shaderDef.vshader;
+					shaderDefinition.fshader = shaderDef.fshader;
+					return shaderDefinition;
+				});
 
-				if(attribute === 'shader') {
-					var p = this._loader.load(value)
-					.then(function(data) {
-						return that._parseShaderDefinition(data);
-					})
-					.then(function(shaderDef) {
-						shaderDefinition.vshader = shaderDef.vshader;
-						shaderDefinition.fshader = shaderDef.fshader;
-						return shaderDefinition;
-					});
+				promises.push(p);
+			}
 
-					promises.push(p);
-				} else if(attribute === 'uniforms') {
+			value = materialDataSource.uniforms;
+			if(value) {
+				var that = this;
+				var uniform;
 
-					for(var i in value) {
-						var that = this;
-						if(i === 'diffuseTexture') {
-							textures.push(new TextureCreator({loader:this._loader}).loadTexture2D(value[i]));
-						} else if(i === 'shininess') {
-							materialState.shininess = value[i];
-						} else if(i === 'ambient' || i === 'diffuse' || i === 'emissive' || i === 'specular') {
-							if(typeof value[i][0] !== 'undefined' || value[i][0] !== null) { materialState[i].r = value[i][0]; }
-							if(typeof value[i][1] !== 'undefined' || value[i][1] !== null) { materialState[i].g = value[i][1]; }
-							if(typeof value[i][2] !== 'undefined' || value[i][2] !== null) { materialState[i].b = value[i][2]; }
-							if(typeof value[i][3] !== 'undefined' || value[i][3] !== null) { materialState[i].a = value[i][3]; }
-						}
-					}
+				uniform = value.diffuseTexture;
+				if(uniform) {
+					textures.push(new TextureCreator({
+						loader:this._loader
+					}).loadTexture2D(uniform));
 				}
+
+				uniform = value.shininess;
+				if(uniform) {
+					materialState.shininess = uniform;
+				}
+
+				var setDestinationColor = function(destination, color) {
+					if(typeof color[0] !== 'undefined' || color[0] !== null) { destination.r = color[0]; }
+					if(typeof color[1] !== 'undefined' || color[1] !== null) { destination.g = color[1]; }
+					if(typeof color[2] !== 'undefined' || color[2] !== null) { destination.b = color[2]; }
+					if(typeof color[3] !== 'undefined' || color[3] !== null) { destination.a = color[3]; }
+				};
+
+				uniform = value.ambient;
+				if(uniform) {
+					setDestinationColor(materialState.ambient, uniform);
+				}
+
+				uniform = value.diffuse;
+				if(uniform) {
+					setDestinationColor(materialState.diffuse, uniform);
+				}
+
+				uniform = value.emissive;
+				if(uniform) {
+					setDestinationColor(materialState.emissive, uniform);
+				}
+
+				uniform = value.specular;
+				if(uniform) {
+					setDestinationColor(materialState.specular, uniform);
+				}
+
 			}
 		}
 
@@ -101,7 +129,7 @@ define([
 		return RSVP.all(promises)
 		.then(function(data) {
 			var material = Material.createMaterial(shaderDefinition);
-			
+
 			material.textures = textures;
 			material.materialState = materialState;
 
@@ -113,26 +141,20 @@ define([
 		var promises = [];
 		var shaderDefinition = {};
 
-		if(shaderDataSource && Object.keys(shaderDataSource).length) {
-			var value;
+		if(shaderDataSource.vs && shaderDataSource.fs) {
+			var p;
 
-			for(var attribute in shaderDataSource) {
-				value = shaderDataSource[attribute];
-				
-				var p = this._loader.load(value);
+			p = this._loader.load(shaderDataSource.vs)
+			.then(function(vertexShader) {
+				return shaderDefinition.vshader = vertexShader;
+			});
+			promises.push(p);
 
-				if(attribute === 'vs') {
-					p.then(function(vertexShader) {
-						return shaderDefinition.vshader = vertexShader;
-					});
-				} else if(attribute === 'fs') {
-					p.then(function(fragmentShader) {
-						return shaderDefinition.fshader = fragmentShader;
-					});
-				}
-
-				promises.push(p);
-			}
+			p = this._loader.load(shaderDataSource.fs)
+			.then(function(fragmentShader) {
+				return shaderDefinition.fshader = fragmentShader;
+			});
+			promises.push(p);
 		}
 
 		if(promises.length === 0) {

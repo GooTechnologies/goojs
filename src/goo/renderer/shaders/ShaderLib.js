@@ -1471,7 +1471,7 @@ define([
 		'	for (int i = 0; i < WEIGHTS; i++) {',
 		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
 		'	}',
-		
+
 //		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
 //		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
 //		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
@@ -1599,7 +1599,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1710,7 +1710,7 @@ define([
 			'	L = lightPosition - worldPos.xyz;', //
 			'	V = cameraPosition - worldPos.xyz;', //
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'}',
+			'}'
 		].join('\n'),
 		fshader : [//
 			'precision mediump float;',//
@@ -1731,7 +1731,7 @@ define([
 			'	vec3 n = normalize(N);',
 			'	vec3 l = normalize(L);',
 			'	vec3 v = normalize(V);',
-				
+
 			'    float lambert = dot(l,n);',
 			'    vec4 colour = MidColour;',
 			'    if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
@@ -1739,13 +1739,13 @@ define([
 			'    if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
 
 			'    gl_FragColor = colour;',
-			'}',
+			'}'
 		].join('\n')
 	};
 
 	/*
 	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
-	*/ 
+	*/
 	ShaderLib.differenceOfGaussians = {
 		includes : [ShaderFragments.features.fog],
 		attributes : {
@@ -1817,7 +1817,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1882,12 +1882,12 @@ define([
 
 			"void main() {",
 				'vec3 result = vec3(0.0);',
-		    	'for(int x=-1; x<=1; x++) {',
-		    	'	for(int y=-1; y<=1; y++) {',
-		    	'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
-		    	'	}',
-		    	'}',
-		    	'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
+				'for(int x=-1; x<=1; x++) {',
+				'	for(int y=-1; y<=1; y++) {',
+				'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
+				'	}',
+				'}',
+				'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
 			"}"
 		].join("\n")
 	};
@@ -1910,7 +1910,7 @@ define([
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec3 worldPosition;',
-		
+
 		'void main(void) {', //
 		'	vec4 viewpos = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'	worldPosition = viewpos.xyz;',
