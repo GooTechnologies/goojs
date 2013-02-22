@@ -32,6 +32,7 @@ define(["goo/math/MathUtils"],
 		var that = this;
 
 		for (var i = 0; i < aliases.length; i++) {
+			/*jshint loopfunc: true */
 			(function (index) {
 				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {

@@ -32,14 +32,14 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 		};
 		this.blendState = {
 			// 'NoBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
-			blending : 'NoBlending', 
-			
+			blending : 'NoBlending',
+
 			// 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
-			blendEquation : 'AddEquation', 
+			blendEquation : 'AddEquation',
 
 			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 
 			 // 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
-			 blendSrc : 'SrcAlphaFactor', 
+			 blendSrc : 'SrcAlphaFactor',
 			 blendDst : 'OneMinusSrcAlphaFactor'
 		};
 		this.depthState = {

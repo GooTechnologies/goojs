@@ -2,7 +2,7 @@ define(
 	/** @lends BufferUtils */
 	function() {
 	"use strict";
-	
+
 	function BufferUtils() {
 	}
 

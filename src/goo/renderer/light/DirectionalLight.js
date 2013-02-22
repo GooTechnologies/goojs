@@ -1,11 +1,13 @@
 define([
-        'goo/math/Vector3',
-        'goo/renderer/light/Light'
-        ],
+		'goo/math/Vector3',
+		'goo/renderer/light/Light',
+		'goo/entities/systems/System'
+		],
 /** @lends DirectionalLight */
 function (
 	Vector3,
-	Light
+	Light,
+	System
 	) {
 	"use strict";
 

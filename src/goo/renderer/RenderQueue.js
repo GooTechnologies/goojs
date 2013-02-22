@@ -15,7 +15,7 @@ function(Vector3) {
 		var tmpVec = new Vector3();
 		this.opaqueSorter = function(a, b) {
 			//TODO: Add texture checks on material
-			
+
 			var shader1 = a.meshRendererComponent.materials[0].shader;
 			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1._id === shader2._id) {

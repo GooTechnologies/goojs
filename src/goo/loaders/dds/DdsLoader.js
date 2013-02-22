@@ -479,7 +479,7 @@ define(['goo/loaders/dds/DdsUtils'],
 
 		// Create our new image
 		var image = tex.image;
-		if (image == null) {
+		if (typeof image === 'undefined' || image === null) {
 			image = {};
 			tex.image = image;
 		}

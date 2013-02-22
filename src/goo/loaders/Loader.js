@@ -23,7 +23,7 @@ define([
 		} else if(typeof parameters === "undefined" || parameters === null) {
 			parameters = {};
 		}
-		
+
 		this._crossOrigin = parameters.crossOrigin || 'anonymous';
 		this.rootPath = parameters.rootPath || '';
 		this.xhr = parameters.xhr || new Ajax();
@@ -44,7 +44,7 @@ define([
 		var ajaxProperties = {
 			url: this._buildURL(path)
 		};
-		
+
 		var that = this;
 		var promise = this.xhr.get(ajaxProperties)
 		.then(function(request) {
@@ -99,8 +99,8 @@ define([
 		var promise = new RSVP.Promise();
 		var image = new Image();
 		var _url = this._buildURL(url);
-		
-		
+
+
 		image.crossOrigin = this._crossOrigin || '';
 
 		image.addEventListener('load', function () {

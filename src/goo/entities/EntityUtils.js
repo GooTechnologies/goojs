@@ -1,7 +1,18 @@
-define(['goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent', 'goo/entities/components/MeshRendererComponent', 
-        'goo/entities/components/CSSTransformComponent', 'goo/renderer/Util'],
+define([
+		'goo/entities/components/TransformComponent',
+		'goo/entities/components/MeshDataComponent',
+		'goo/entities/components/MeshRendererComponent',
+		'goo/entities/components/CSSTransformComponent',
+		'goo/renderer/Util'
+	],
 	/** @lends EntityUtils */
-	function (TransformComponent, MeshDataComponent, MeshRendererComponent, CSSTransformComponent, Util) {
+	function (
+		TransformComponent,
+		MeshDataComponent,
+		MeshRendererComponent,
+		CSSTransformComponent,
+		Util
+	) {
 		"use strict";
 
 		/**
@@ -15,7 +26,7 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 			if (settings.callback) {
 				settings.callback(newEntity);
 			}
-			
+
 			for (var i=0;i<entity._components.length;i++) {
 				var component = entity._components[i];
 				if (component instanceof TransformComponent) {
@@ -33,17 +44,17 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 				} else {
 					newEntity.setComponent(component);
 				}
-				
+
 				for (var j=0;j<entity.transformComponent.children.length;j++) {
 					var child = entity.transformComponent.children[j];
 					var clonedChild = cloneEntity(world, child.entity, settings);
 					newEntity.transformComponent.attachChild(clonedChild.transformComponent);
 				}
 			}
-			
+
 			return newEntity;
 		}
-		
+
 		/**
 		 * Clone entity hierarcy with optional settings for sharing data and callbacks
 		 */
@@ -52,7 +63,7 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
-			
+
 			return cloneEntity(world, entity, settings);
 		};
 
@@ -63,7 +74,7 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 			if (callback) {
 				callback(entity);
 			}
-			
+
 			for (var j=0;j<entity.transformComponent.children.length;j++) {
 				var child = entity.transformComponent.children[j];
 				EntityUtils.traverse(child, callback);

@@ -2,7 +2,6 @@ define(["goo/math/Vector"],
 	/** @lends Vector3 */
 	function (Vector) {
 	"use strict";
-	
 
 	/* ====================================================================== */
 

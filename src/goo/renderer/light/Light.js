@@ -19,8 +19,8 @@ function (
 		this.color = new Vector4(1, 1, 1, 1);
 		this.attenuate = true;
 		this.constant = 1;
-		this.linear;
-		this.quadratic;
+		//this.linear;
+		//this.quadratic;
 
 		this.shadowCaster = false;
 		this.shadowSettings = {

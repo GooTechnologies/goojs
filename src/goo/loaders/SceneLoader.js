@@ -26,16 +26,16 @@ function(
 			throw new Error('SceneLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
 			throw new Error('SceneLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
-		if(typeof parameters.world === "undefined" || parameters.world === null) {	
+		if(typeof parameters.world === "undefined" || parameters.world === null) {
 			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
 		}
 
 		this._loader = parameters.loader;
-		this._world = parameters.world; 
+		this._world = parameters.world;
 	}
 
 	/**
@@ -67,13 +67,13 @@ function(
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
 				var match = fileName.match(/.ent.json$/);
-				
+
 				if(match !== null) {
 					var p = entityLoader.load(scenePath + '/' + fileName);
 					promises.push(p);
-				}		
+				}
 			}
-		} 
+		}
 
 		if(promises.length === 0) {
 			var p = new RSVP.Promise();

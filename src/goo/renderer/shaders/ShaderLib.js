@@ -1474,7 +1474,6 @@ define([
 		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
 		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
 		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
-
 		'	texCoord0 = vertexUV0;',//
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
 		'}'//
@@ -1707,7 +1706,7 @@ define([
 			'	N = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
 			'	L = lightPosition - worldPos.xyz;', //
 			'	V = cameraPosition - worldPos.xyz;', //
-			'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
 			'}'
 		].join('\n'),
 		fshader : [//
@@ -1729,7 +1728,7 @@ define([
 			'	vec3 n = normalize(N);',
 			'	vec3 l = normalize(L);',
 			'	vec3 v = normalize(V);',
-				
+
 			'    float lambert = dot(l,n);',
 			'    vec4 colour = MidColour;',
 			'    if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
@@ -1900,7 +1899,7 @@ define([
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec3 worldPosition;',
-		
+
 		'void main(void) {', //
 		'	vec4 viewpos = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'	worldPosition = viewpos.xyz;',

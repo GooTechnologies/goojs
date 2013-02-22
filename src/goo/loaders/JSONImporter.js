@@ -60,7 +60,7 @@ define(
 	 */
 	JSONImporter.prototype.load = function (modelUrl, textureDir, callback, shaderExtractor) {
 		var request = new XMLHttpRequest();
-		if (textureDir == null) {
+		if (typeof textureDir === 'undefined' || textureDir === null) {
 			textureDir = URLTools.getDirectory(modelUrl);
 		}
 		request.open('GET', modelUrl, true);
@@ -501,6 +501,14 @@ define(
 						var flipTexture = info.textureFlipSettings[key];
 
 						var tex;
+
+						// Copied from the else clause below
+						tex = new TextureCreator().loadTexture2D(this.baseTextureDir + baseTexFileName);
+
+						// REVIEW: Where does nameresolver come from?
+						// Commented this out for now since it seems to
+						// always go to the else clause.
+						/*
 						if (this.nameResolver !== undefined) {
 							tex = new TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(flipTexture).withGooResourceCache(
 								_useCache).makeTexture2D(nameResolver.resolveName(baseTexFileName));
@@ -523,6 +531,7 @@ define(
 							// _baseTextureDir + baseTexFileName);
 							// }
 						}
+						*/
 
 						// TODO: Get wrap from json instead
 						// tex.setWrap(WrapMode.Repeat);
@@ -611,13 +620,13 @@ define(
 			var array = root.Channels;
 			for (var i = 0, max = array.length; i < max; i++) {
 				var chanObj = array[i];
-				var type = chanObj['Type'];
-				var name = chanObj['Name'];
+				var type = chanObj.Type;
+				var name = chanObj.Name;
 				var times = JsonUtils.parseChannelTimes(chanObj, this.useCompression);
 				var channel;
 				if ("Joint" === type) {
-					var jointName = chanObj['JointName'];
-					var jointIndex = chanObj['JointIndex'];
+					var jointName = chanObj.JointName;
+					var jointIndex = chanObj.JointIndex;
 					var rots = JsonUtils.parseRotationSamples(chanObj, this.compressedAnimRange, this.useCompression);
 					var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, this.useCompression);
 					var scales = JsonUtils.parseScaleSamples(chanObj, times.length, this.useCompression);

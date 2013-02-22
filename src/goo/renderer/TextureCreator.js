@@ -40,6 +40,17 @@ define([
 			return TextureCreator.cache[imageURL];
 		}
 
+		var simpleResourceUtilCallback = {
+			onSuccess : function (/* ArrayBuffer */response) {
+				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
+				console.info("Loaded image: " + imageURL);
+				// callLoadCallback(url);
+			},
+			onError : function (t) {
+				console.warn("Error loading texture: " + imageURL + " | " + t);
+			}
+		};
+
 		var creator = this;
 		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
@@ -63,16 +74,7 @@ define([
 				TextureCreator.cache[imageURL] = rVal;
 
 				// from URL
-				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, {
-					onSuccess : function (/* ArrayBuffer */response) {
-						loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
-						console.info("Loaded image: " + imageURL);
-						// callLoadCallback(url);
-					},
-					onError : function (t) {
-						console.warn("Error loading texture: " + imageURL + " | " + t);
-					}
-				});
+				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, simpleResourceUtilCallback);
 
 				// return standin while we wait for texture to load.
 				return rVal;
@@ -112,28 +114,27 @@ define([
 
 		var texture = new Texture(video, {
 			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapT: 'EdgeClamp'
 		});
 
 		texture.readyCallback = function () {
-            if (video.readyState >= 3) {
-                console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
+			if (video.readyState >= 3) {
+				console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
 				video.width = video.videoWidth;
 				video.height = video.videoHeight;
 
-                // set minification filter based on pow2
-                if (Util.isPowerOfTwo(video.width) === false
-                        || Util.isPowerOfTwo(video.height) === false) {
-            		texture.generateMipmaps = false;
-            		texture.minFilter = 'BilinearNoMipMaps';
-                }
+				// set minification filter based on pow2
+				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+				}
 
-                video.play();
+				video.play();
 
-                video.dataReady = true;
-                return true;
-            }
-            return false;
+				video.dataReady = true;
+				return true;
+			}
+			return false;
 		};
 		texture.updateCallback = function () {
 			return !video.paused;
@@ -155,7 +156,7 @@ define([
 
 		var texture = new Texture(video, {
 			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapT: 'EdgeClamp'
 		});
 
 		texture.readyCallback = function () {
@@ -214,7 +215,7 @@ define([
 					console.error('Images not all the same size!');
 				}
 			}
-			
+
 			texture.setImage(images);
 			texture.image.dataReady = true;
 			texture.image.width = w;
@@ -222,7 +223,8 @@ define([
 		});
 
 		var that = this;
-		for ( var i = 0; i < imageDataArray.length; i++) {
+		for (var i = 0; i < imageDataArray.length; i++) {
+			/*jshint loopfunc: true */
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {

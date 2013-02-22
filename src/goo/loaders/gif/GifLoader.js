@@ -1,8 +1,12 @@
 /*jshint bitwise: false */
 // REVIEW: What's the point of this class? Better let the browser load and decode images.
-define(
+define([
+	'goo/renderer/Texture'
+	],
 	/** @lends GifLoader */
-	function () {
+	function (
+		Texture
+	) {
 	"use strict";
 
 	/**

@@ -26,7 +26,7 @@ function(
 		var ml;
 
 		beforeEach(function() {
-			
+
 			var loaderSettings = {
 				loader: loader
 			};
@@ -38,7 +38,7 @@ function(
 			it('creates a mesh from mesh definition', function() {
 				loader.load = function(path, parser) {
 					var p = new RSVP.Promise();
-						
+
 					if(path === 'mesh.mat') {
 						return parser({
 							"data": {
@@ -60,7 +60,7 @@ function(
 					}
 
 					return p;
-				}
+				};
 
 				var p = ml.load('mesh.mat');
 

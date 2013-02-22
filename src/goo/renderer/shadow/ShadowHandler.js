@@ -27,14 +27,14 @@ define([
 		this.shadowY = 512;
 		this.nearZ = 1;
 		this.farZ = 1000;
-		
+
 		this.lightCam = new Camera(55, 1, this.nearZ, this.farZ);
-		
+
 //		var radius = 100;
 //		this.lightCam.setFrustum(nearZ, farZ, -radius, radius, radius, -radius);
 //		this.lightCam.projectionMode = Camera.Parallel;
 //		this.lightCam.update();
-		
+
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
 //		this.depthMaterial.cullState.enabled = false;
 		this.depthMaterial.cullState.cullFace = 'Front';
@@ -53,12 +53,12 @@ define([
 			type: 'Float'
 		});
 		this.shadowResult = this.shadowBlurred;
-		
+
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
 		this.boxfilter.uniforms.viewport = [this.shadowX/4, this.shadowY/4];
-		
+
 		this.oldClearColor = new Vector4(0,0,0,0);
 		this.shadowClearColor = new Vector4(1,1,1,1);
 	}
@@ -69,19 +69,19 @@ define([
 			var light = lights[i];
 			if (light.shadowCaster) {
 				var lightCam = this.lightCam;
-				
+
 				lightCam.translation.copy(light.translation);
 				lightCam.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 				lightCam.onFrameChange();
 
 				this.oldClearColor.copy(renderer.clearColor);
-				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, 
+				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g,
 					this.shadowClearColor.b, this.shadowClearColor.a);
 
 				renderer.overrideMaterial = this.depthMaterial;
 				renderer.render(renderList, lightCam, [], this.shadowTarget, true, true);
 				renderer.overrideMaterial = null;
-			
+
 				switch (light.shadowSettings.type) {
 					case 'Blur':
 						this.fullscreenPass.material.shader = this.downsample;

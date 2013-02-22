@@ -21,7 +21,7 @@ define(
 				continue;
 			}
 
-			deepFreeze(prop); // Recursively call deepFreeze.
+			Handy.deepFreeze(prop); // Recursively call deepFreeze.
 		}
 	};
 

@@ -1,39 +1,39 @@
 /*jshint bitwise: false*/
 define([
-        'goo/renderer/RendererRecord', 
-        'goo/renderer/Camera', 
-        'goo/renderer/Util', 
-        'goo/renderer/TextureCreator', 
-        'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4', 
-		'goo/entities/Entity', 
-		'goo/renderer/Texture', 
-		'goo/loaders/dds/DdsLoader', 
+		'goo/renderer/RendererRecord',
+		'goo/renderer/Camera',
+		'goo/renderer/Util',
+		'goo/renderer/TextureCreator',
+		'goo/renderer/pass/RenderTarget',
+		'goo/math/Vector4',
+		'goo/entities/Entity',
+		'goo/renderer/Texture',
+		'goo/loaders/dds/DdsLoader',
 		'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData', 
-		'goo/renderer/Material', 
-		'goo/math/Transform', 
-		'goo/renderer/RenderQueue', 
+		'goo/renderer/MeshData',
+		'goo/renderer/Material',
+		'goo/math/Transform',
+		'goo/renderer/RenderQueue',
 		'goo/renderer/shaders/ShaderLib',
 		'goo/renderer/shadow/ShadowHandler'
 		],
 /** @lends Renderer */
 function(
-	RendererRecord, 
-	Camera, 
-	Util, 
-	TextureCreator, 
-	RenderTarget, 
-	Vector4, 
-	Entity, 
-	Texture, 
-	DdsLoader, 
-	DdsUtils, 
-	MeshData, 
-	Material, 
+	RendererRecord,
+	Camera,
+	Util,
+	TextureCreator,
+	RenderTarget,
+	Vector4,
+	Entity,
+	Texture,
+	DdsLoader,
+	DdsUtils,
+	MeshData,
+	Material,
 	Transform,
-	RenderQueue, 
-	ShaderLib, 
+	RenderQueue,
+	ShaderLib,
 	ShadowHandler
 	) {
 	"use strict";
@@ -183,7 +183,7 @@ function(
 				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
 			}
 		};
-		
+
 		this.shadowCount = 0;
 		this.shadowHandler = new ShadowHandler();
 	}
@@ -262,14 +262,14 @@ function(
 			this.setBoundBuffer(null, bufferData.target);
 		}
 	};
-	
+
 	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear, shadowPass) {
 		if (!camera) {
 			return;
 		} else if (Renderer.mainCamera === null) {
 			Renderer.mainCamera = camera;
 		}
-		
+
 		if (!shadowPass) {
 			this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
 		}
@@ -346,11 +346,11 @@ function(
 			if (material._originalTextureCount === -1) {
 				material._originalTextureCount = material.textures.length;
 			}
-			
+
 			if (this.shadowCount > 0) {
 				material.textures[material._originalTextureCount] = this.shadowHandler.shadowResult;
 			}
-			
+
 			if (material.wireframe && !isWireframe) {
 				if (!meshData.wireframeData) {
 					meshData.wireframeData = this.buildWireframeData(meshData);
@@ -365,7 +365,7 @@ function(
 			} else if (!material.wireframe && isWireframe) {
 				meshData = originalData;
 				this.bindData(meshData.vertexData);
-				iswireframe = false;
+				isWireframe = false;
 			}
 
 			renderInfo.material = material;
@@ -645,10 +645,10 @@ function(
 		} else if (texture.format === 'PrecompressedDXT5') {
 			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		} else {
-			throw new Error("Unhandled compression format: " + img.getDataFormat().name());
+			throw new Error("Unhandled compression format: " + imageData.getDataFormat().name());
 		}
 
-		if (mipSizes == null) {
+		if (typeof mipSizes === 'undefined' || mipSizes === null) {
 			if (imageData instanceof Uint8Array) {
 				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, imageData);
 			} else {
@@ -1304,6 +1304,6 @@ function(
 	Renderer.prototype._deallocateShader = function (shader) {
 //		_gl.deleteProgram( program );
 	};
-	
+
 	return Renderer;
 });
