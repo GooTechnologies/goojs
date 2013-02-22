@@ -145,46 +145,59 @@ define([
 			var blue = [0, 0, 255];
 			var yellow = [255, 255, 0];
 
-			if (this._isOccluded(nearCoord, red)
-				&& this._isOccluded(leftCoord, blue)
-				&& this._isOccluded(rightCoord, green)
-				&& this._isOccluded(topCoord, yellow)
-				&& this._isOccluded(bottomCoord, yellow)
-				) {
-				renderList.splice(i, 1);
-				i--; // Have to compensate the index for the loop.
-				continue;
+			// Executes the occluded test in the order they are put, exits the case upon any false value.
+			// TODO: Come up with the best ordering of the early exit tests.
+
+			// TODO: Something is up with the check of the near coordinate, fails when looking from below for some reason. (Clipping problem).
+
+			var nearestDepth = 1.0 / nearCoord.w;
+
+			if (this._isOccluded(topCoord, yellow, nearestDepth)
+				&& this._isOccluded(leftCoord, blue, nearestDepth)
+				&& this._isOccluded(rightCoord, green, nearestDepth)
+				&& this._isOccluded(bottomCoord, yellow, nearestDepth)
+				&& this._isOccluded(nearCoord, red, nearestDepth)
+				&& this._isScanlineOccluded(topCoord, bottomCoord, rightCoord, nearestDepth)) {
+					
+					// Removes the entity at the current index.	
+					renderList.splice(i, 1);
+					i--; // Have to compensate the index for the loop.
+					continue;
 			}
 		}
 	};
 
-	SoftwareRenderer.prototype._isOccluded = function (coordinate, color) {
+	/**
+	*	Check each scanline value of the bounding sphere, early exit upon finding a visible pixel.
+	*	Returns true if the object is occluded.
+	*
+	*	@return {Boolean} occluded or not occluded
+	*/
+	SoftwareRenderer.prototype._isScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoord, nearestDepth) {
+
+		return true;
+	};
+
+	/**
+	*	
+	*
+	*/
+	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
 	
-		// Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
-		if ( coordinate.x > 0 && coordinate.x <= this.width && coordinate.y < this.height-1 && coordinate.y > 0) {
+		// TODO: Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
+		// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
+		coordinate.x = Math.round(coordinate.x);
+		coordinate.y = Math.round(coordinate.y);
 
-			// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
-
-			coordinate.x = Math.round(coordinate.x);
-			coordinate.y = Math.round(coordinate.y);
-
-			//console.log(coordinate.data);
+		if ( coordinate.x > 0 && coordinate.x < this.width && coordinate.y < this.height-1 && coordinate.y > 0) {
 
 			var coordIndex = coordinate.y * this.width + coordinate.x;
-			//console.log("coordIndex", coordIndex);
 
 			var nearSample = this._depthData[coordIndex];
-			var nearestDepth = 1.0 / coordinate.w;
-
-			//console.log("nearSample", nearSample);
-			//console.log("nearestDepth", nearestDepth);
-
-			// Add color to the color daata (DEBUGGING PURPOSE).
+			
+			// Add color to the color daata (DEBUGGING PURPOSE)
 			coordIndex = coordinate.y * (this.width * 4) + (coordinate.x * 4);
-//			this._colorData.set(color, coordIndex);
-			this._colorData[coordIndex] = color[0];
-			this._colorData[coordIndex + 1] = color[1];
-			this._colorData[coordIndex + 2] = color[2];
+			this._colorData.set(color, coordIndex);
 
 			// the sample contains 1/w depth. if the corresponding depth in the nearCoordinate is behind the sample, the entity is occluded.
 			return nearestDepth < nearSample;

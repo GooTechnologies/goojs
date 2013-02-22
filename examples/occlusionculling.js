@@ -160,7 +160,10 @@ require(
 
 			var readTime = new Array();
 
-			var softRenderer = new SoftwareRenderer({"width" : 256, "height" : 114, "camera" : cam});
+			var debugcanvas = document.getElementById('debugcanvas')
+			var debugContext = debugcanvas.getContext('2d');
+			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
+			var softRenderer = new SoftwareRenderer({"width" : debugcanvas.width, "height" : debugcanvas.height, "camera" : cam});
 
 			goo.callbacks.push(function(tpf) {
 				// composer.render(goo.renderer, tpf);
@@ -179,9 +182,7 @@ require(
 
 				composer.render(goo.renderer, tpf);
 
-				var debugcanvas = document.getElementById('debugcanvas')
-				var debugContext = debugcanvas.getContext('2d');
-				var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
+
 				imagedata.data.set(softRenderer.getColorData());
 				debugContext.putImageData(imagedata,0,0);
 				
