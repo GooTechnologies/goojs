@@ -12,10 +12,10 @@ define([
 	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge) {
 	"use strict";
 
-	/*
+	/**
 	*	@class A software renderer which renders, triangles only(!), using a scanline algorithm.
 	*	@constructor
-	*	@param parameters, A JSON object which has to contain width, height and the camera object to be used.
+	*	@param {{width:Number, height:Number, camera:Camera}} parameters, A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
@@ -25,25 +25,25 @@ define([
 
 		this._clipY = this.height - 1;
 
-		this.numOfPixels = this.width * this.height;
-
 		this.camera = parameters.camera;
 
-		// Store the edges for a triangle
-		this.edges = new Array(3);
+		// Pre-allocate memory for the edges.
+		this._edges = new Array(3);
 
-		var colorBytes = this.numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
-		var depthBytes = this.numOfPixels * Float32Array.BYTES_PER_ELEMENT;
+		var numOfPixels = this.width * this.height;
+
+		var colorBytes = numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
+		var depthBytes = numOfPixels * Float32Array.BYTES_PER_ELEMENT;
 
 		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes * 2);
 
 		// The color data is used for debugging purposes.
-		this._colorData = new Uint8Array(this._frameBuffer, 0, this.numOfPixels * 4);
-		this._depthData = new Float32Array(this._frameBuffer, colorBytes, this.numOfPixels);
+		this._colorData = new Uint8Array(this._frameBuffer, 0, numOfPixels * 4);
+		this._depthData = new Float32Array(this._frameBuffer, colorBytes, numOfPixels);
 		// Buffer for clearing.
-		this._depthClear = new Float32Array(this._frameBuffer, colorBytes + depthBytes, this.numOfPixels);
+		this._depthClear = new Float32Array(this._frameBuffer, colorBytes + depthBytes, numOfPixels);
 
-		for (var i = 0; i < this.numOfPixels; i++) {
+		for (var i = 0; i < numOfPixels; i++) {
 			this._depthClear[i] = 0.0;
 		}
 
@@ -58,15 +58,15 @@ define([
 		];
 	}
 
-	/*
-	* Clears the depth data
+	/**
+	*	Clears the depth data.
 	*/
-	SoftwareRenderer.prototype.clearDepthData = function () {
+	SoftwareRenderer.prototype._clearDepthData = function () {
 
 		this._depthData.set(this._depthClear);
 	};
 
-	/*
+	/**
 	*	Renders z-buffer (w-buffer) from the given renderList of entities.
 	*
 	*	@param renderList, the array of entities which are possible occluders.
@@ -74,28 +74,28 @@ define([
 	SoftwareRenderer.prototype.render = function (renderList) {
 
 		//console.time("clearTime");
-		this.clearDepthData();
+		this._clearDepthData();
 		//console.timeEnd("clearTime");
 
 		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
 			
 			//console.time("triangleCreation");
-			var triangles = this.createTrianglesForEntity(renderList[i]);
+			var triangles = this._createTrianglesForEntity(renderList[i]);
 			//console.timeEnd("triangleCreation");
 
 			//console.time("triangleRendering");
 			for (var t = 0; t < triangles.length; t++) {
 				var triangle = triangles[t];
 				if ( triangle ) {
-					this.renderTriangle(triangle);
+					this._renderTriangle(triangle);
 				}
 			}
 			//console.timeEnd("triangleRendering");
 		}
 	};
 
-	/*
+	/**
 	*	For each entity in the render list , a screen space axis aligned bounding box is created
 	*	and the depthBuffer is queried at the bounds of this AABB for checking if the object is visible.
 	*
@@ -136,9 +136,9 @@ define([
 
 			var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 
-			this.projectionTransform(vertices, cameraProjectionMatrix);
+			this._projectionTransform(vertices, cameraProjectionMatrix);
 
-			this.transformToScreenSpace(vertices);
+			this._transformToScreenSpace(vertices);
 
 			// Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
 
@@ -172,30 +172,16 @@ define([
 					i--; // Have to compensate the index for the loop.
 				}
 			}
-			else {
-				//console.error("coord out of screen!");
-			}
 		}
-
 	};
 
-	/*
-	*	Returns the corner coordinates of the boundingBox in screen space for the entity's BoundingSphere.
-	*
-	*	@param {Entity} entity
-	*	@returns {Vector2[]} array of Vector2.
-	*/
-	SoftwareRenderer.prototype.findSampleCoordinatesForBoundingSphere = function (entity) {
-		
-		// Project to screenspace
-	};
 
-	/*
+	/**
 	*	Creates an array of the visible {Triangle} for the entity
 	*	@param {Entity} entity, the entity from which to create triangles.
-	*	@return Triangle[]
+	*	@return {Array.<Triangle>} triangle array
 	*/
-	SoftwareRenderer.prototype.createTrianglesForEntity = function (entity) {
+	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
 		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
@@ -242,7 +228,7 @@ define([
 			var outsideIndices = [];
 			var insideIndices = [];
 
-			this.categorizeVertices(outsideIndices, insideIndices, vertices, cameraNearZInWorld);
+			this._categorizeVertices(outsideIndices, insideIndices, vertices, cameraNearZInWorld);
 
 			switch (outsideIndices.length) {
 				case 0:
@@ -260,7 +246,7 @@ define([
 
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
-					var ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
+					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV1 = [
 						origin.x + ratio * (target.x - origin.x),
@@ -269,7 +255,7 @@ define([
 					];
 
 					target = vertices[insideIndices[1]];
-					ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
+					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV2 = new Vector4(
 						origin.x + ratio * (target.x - origin.x),
@@ -288,7 +274,7 @@ define([
 					var origin = vertices[outsideIndices[0]];
 					var target = vertices[insideIndices[0]];
 
-					var ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
+					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -297,7 +283,7 @@ define([
 
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
-					ratio = this.calculateIntersectionRatio(origin, target, this.camera.near);
+					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					origin.x += ratio * (target.x - origin.x);
 					origin.y += ratio * (target.y - origin.y);
@@ -306,27 +292,27 @@ define([
 					break;
 			}
 
-			this.projectionTransform(vertices, cameraProjectionMatrix);
+			this._projectionTransform(vertices, cameraProjectionMatrix);
 			
-			if (this.isBackFacing(v1, v2, v3)) {
+			if (this._isBackFacing(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
 			}
 			
-			this.transformToScreenSpace(vertices);
+			this._transformToScreenSpace(vertices);
 
-			this.createTriangles(vertices, outsideIndices, insideIndices, triangles);
+			this._createTriangles(vertices, outsideIndices, insideIndices, triangles);
 		}
 
 		return triangles;
 	};
 
-	/*
+	/**
 	*	Transforms the vertices with the given projection transform matrix and then performs the homogeneous division.
 	*
-	*	@param {Array} vertices, the vertex array
+	*	@param {Array.<Vector4>} vertices, the vertex array
 	*	@param {Matrix4x4} matrix, the projection transformation matrix
 	*/
-	SoftwareRenderer.prototype.projectionTransform = function (vertices, matrix) {
+	SoftwareRenderer.prototype._projectionTransform = function (vertices, matrix) {
 
 		for (var i = 0; i < vertices.length; i++) {
 			var v = vertices[i];
@@ -339,16 +325,16 @@ define([
 		}
 	};
 
-	/*
+	/**
 	*	Adds new triangle(s) to the triangle array. If the triangle has been clipped , the triangles are created from the vertex array in combination with the
 	*	outsideIndices and insideIndices.
 	*
-	*	@param {Array} vertices , vertex array
-	*	@param {Array} outsideIndices
-	*	@param {Array} insideIndices
-	*	@param {Array} triangles, the array to hold the created triangles.
+	*	@param {Array.<Vector4>} vertices , vertex array
+	*	@param {Array.<Number>} outsideIndices
+	*	@param {Array.<Number>} insideIndices
+	*	@param {Array.<Triangle>} triangles, the array to hold the created triangles.
 	*/
-	SoftwareRenderer.prototype.createTriangles = function (vertices, outsideIndices, insideIndices, triangles) {
+	SoftwareRenderer.prototype._createTriangles = function (vertices, outsideIndices, insideIndices, triangles) {
 
 		if (vertices.length === 4) {
 			// The vertex array has a length 4 only if one of the vertices were outside the near plane.
@@ -364,7 +350,7 @@ define([
 		}
 	};
 
-	/*
+	/**
 	*	Categorizes the vertices into outside and inside (of the view frustum).
 	*	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
 	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
@@ -373,7 +359,7 @@ define([
 	*	@param {Array} vertices
 	*	@param {Number} cameraNearPlane, the camera near plane in world coordinates.
 	*/
-	SoftwareRenderer.prototype.categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
+	SoftwareRenderer.prototype._categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
 			
 		for ( var i = 0; i < 3; i++ ) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
@@ -385,7 +371,7 @@ define([
 		}
 	};
 
-	/*
+	/**
 	*	Calculates the intersection ratio between the vector, created from the parameters origin and target, with the camera's near plane.
 	*
 	*	The ratio is defined as the amount (%), of the vector from origin to target, where the vector's intersection
@@ -396,10 +382,9 @@ define([
 	*
 	*	@param {Vector3} origin
 	*	@param {Vector3} target
-	*	@param {number} near The near plane.
+	*	@param {Number} near The near plane.
 	*/
-
-	SoftwareRenderer.prototype.calculateIntersectionRatio = function (origin, target, near) {
+	SoftwareRenderer.prototype._calculateIntersectionRatio = function (origin, target, near) {
 			
 		// Using a tip from Joel:
 		// The intersection ratio can be calculated using the respective lenghts of the
@@ -417,11 +402,11 @@ define([
 
 	};
 
-	/*
+	/**
 	*	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
-	*	@param {Vector[]} vertexArray, the vertices to be transformed.
+	*	@param {Array.<Vector4>} vertexArray, the vertices to be transformed.
 	*/
-	SoftwareRenderer.prototype.transformToScreenSpace = function (vertices) {
+	SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
 
 		for (var i = 0; i < vertices.length; i++) {
 			
@@ -440,13 +425,13 @@ define([
 		}
 	};
 
-	/*
+	/**
 	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
 	*	Otherwise false is returned.
 	*	@param {Vector4} v1, v2, v3
 	*	@return {Boolean} true / false
 	*/
-	SoftwareRenderer.prototype.isBackFacing = function (v1, v2, v3) {
+	SoftwareRenderer.prototype._isBackFacing = function (v1, v2, v3) {
 
 		// Calculate the dot product between the triangle's face normal and the camera's eye direction
 		// to find out if the face is facing away or not.
@@ -482,18 +467,18 @@ define([
 		return faceNormalZ < 0.0;
 	};
 
-	SoftwareRenderer.prototype.renderTestTriangles = function () {
+	SoftwareRenderer.prototype._renderTestTriangles = function () {
 
 		for ( var i = 0; i < this.testTriangles.length; i++) {
-			this.renderTriangle(this.testTriangles[i].toPixelSpace(this.width, this.height));
+			this._renderTriangle(this.testTriangles[i].toPixelSpace(this.width, this.height));
 		}
 	};
 
-	/*
+	/**
 	*	Takes a triangle with coordinates in pixel space, and draws it.
 	*	@param {Triangle} triangle the triangle to draw.
 	*/
-	SoftwareRenderer.prototype.renderTriangle = function (triangle) {
+	SoftwareRenderer.prototype._renderTriangle = function (triangle) {
 
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
@@ -501,7 +486,7 @@ define([
 		// Create edges
 		// The edge contsructor stores the greatest y value in the second position.
 		// It also rounds the vectors' coordinate values to the nearest pixel value. (Math.round).
-		this.edges = [
+		this._edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3),
 			new Edge(triangle.v3, triangle.v1)
@@ -512,14 +497,14 @@ define([
 
         // Find edge with the greatest height in the Y axis, this is the long edge.
         for(var i = 0; i < 3; i++) {
-            var height = this.edges[i].y1 - this.edges[i].y0;
+            var height = this._edges[i].y1 - this._edges[i].y0;
             if(height > maxHeight) {
                 maxHeight = height;
                 longEdge = i;
             }
         }
 
-        if (this.edges[longEdge].y1 < 0 || this.edges[longEdge].y0 > this.height) {
+        if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
         // Triangle is outside the view, skipping rendering it;
         return;
         }
@@ -530,17 +515,18 @@ define([
 
         for (var i = 0; i < 3; i++) {
 			// Do pre-calculations here which are now performed in drawEdges.
-			this.edges[i].invertZ();
+			this._edges[i].invertZ();
         }
 
-        this.drawEdges(this.edges[longEdge], this.edges[shortEdge1]);
-        this.drawEdges(this.edges[longEdge], this.edges[shortEdge2]);
+        this._drawEdges(this._edges[longEdge], this._edges[shortEdge1]);
+        this._drawEdges(this._edges[longEdge], this._edges[shortEdge2]);
 	};
 
-	/*
+	/**
 	*	Render the pixels between the long and the short edge of the triangle.
+	*	@param {Edge} longEdge, shortEdge
 	*/
-	SoftwareRenderer.prototype.drawEdges = function (longEdge, shortEdge) {
+	SoftwareRenderer.prototype._drawEdges = function (longEdge, shortEdge) {
 
 
 		// TODO: Move a lot of these calculations and variables into the Edge class,
@@ -627,7 +613,7 @@ define([
 			rightX = Math.round(shortX);
 
 			// Draw the span of pixels.
-			this.fillPixels(leftX, rightX, y, longZ, shortZ);
+			this._fillPixels(leftX, rightX, y, longZ, shortZ);
 
 			// Increase the edges'
 			// x-coordinates and z-values with the increments.
@@ -640,12 +626,12 @@ define([
 
 	};
 
-	/*
+	/**
 	*	Writes the span of pixels to the depthData. The pixels written are
 	*	the closed interval of [leftX, rightX] on the y-coordinte y.
 	*
 	*/
-	SoftwareRenderer.prototype.fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
+	SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
 
 		// If the startindex is higher than the stopindex, they should be swapped.
 		// TODO: This shall be optimized to be checked at an earlier stage.
@@ -715,6 +701,9 @@ define([
 
 	};
 
+	/**
+	*	Maps the data in the depth buffer to gray scale values in the color buffer.
+	*/
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
 
 		var colorIndex = 0;
@@ -732,10 +721,18 @@ define([
 	};
 
 	
+	/**
+	*	Returns the array of RGBA color data.
+	*	@return {Uint8Array} RGBA Color data.
+	*/
 	SoftwareRenderer.prototype.getColorData = function () {
 		return this._colorData;
 	};
 
+	/**
+	*	Returns the array of depth data.
+	*	@return {Float32Array} Depth data.
+	*/
 	SoftwareRenderer.prototype.getDepthData = function () {
 
 		return this._depthData;

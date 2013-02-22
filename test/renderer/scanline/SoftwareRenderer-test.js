@@ -19,7 +19,7 @@ define(
 				var origin = new Vector3(-2345.12345, 0.2848, -1.5);
 				var target = new Vector3(2935.2829, -3510.12958, -0.5);
 				var near = 1;
-				var ratio = renderer.calculateIntersectionRatio(origin, target, near);
+				var ratio = renderer._calculateIntersectionRatio(origin, target, near);
 				expect(ratio).toEqual(0.5);
 			});
 		});
@@ -41,22 +41,22 @@ define(
 			var v3 = new Vector3(0.7, 0.7, 73.5);
 			
 			it('This face inside the space should be back face culled', function () {
-				expect(renderer.isBackFacing(v1, v2, v3)).toEqual(true);
+				expect(renderer._isBackFacing(v1, v2, v3)).toEqual(true);
 			});
 			
 			it('This face inside the space should be visible', function() {
-				expect(renderer.isBackFacing(v1, v3, v2)).toEqual(false);
+				expect(renderer._isBackFacing(v1, v3, v2)).toEqual(false);
 			});
 
 			// Make the v1 and v2 vertex go outside the space to test this case.
 			v1.x = 1.3;
 			v3.z = 2.0;
 			it('This face outside the space should be visible', function () {
-				expect(renderer.isBackFacing(v1, v3, v2)).toEqual(false);
+				expect(renderer._isBackFacing(v1, v3, v2)).toEqual(false);
 			});
 
 			it('This face outside the space should be back face culled', function () {
-				expect(renderer.isBackFacing(v1, v2, v3)).toEqual(true);
+				expect(renderer._isBackFacing(v1, v2, v3)).toEqual(true);
 			});
 
 		});
@@ -79,7 +79,7 @@ define(
 
 				var vertices = [v1, v2, v3];
 
-				renderer.categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
+				renderer._categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
 				expect(outsideVerts.length).toEqual(1);
 				expect(insideVerts.length).toEqual(2);
 			});
@@ -96,7 +96,7 @@ define(
 
 				var vertices = [v1, v2, v3];
 
-				renderer.categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
+				renderer._categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
 				expect(outsideVerts.length).toEqual(2);
 				expect(insideVerts.length).toEqual(1);
 			});
@@ -113,7 +113,7 @@ define(
 
 				var vertices = [v1, v2, v3];
 
-				renderer.categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
+				renderer._categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
 				expect(outsideVerts.length).toEqual(3);
 				expect(insideVerts.length).toEqual(0);
 			});
@@ -129,7 +129,7 @@ define(
 
 				var vertices = [v1, v2, v3];
 
-				renderer.categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
+				renderer._categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
 				expect(outsideVerts.length).toEqual(0);
 				expect(insideVerts.length).toEqual(3);
 			});
@@ -145,7 +145,7 @@ define(
 
 				var vertices = [v1, v2, v3];
 
-				renderer.categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
+				renderer._categorizeVertices(outsideVerts, insideVerts, vertices, nearPlaneInWorldCoordinateZ);
 				expect(outsideVerts.length).toEqual(0);
 				expect(insideVerts.length).toEqual(3);
 			});

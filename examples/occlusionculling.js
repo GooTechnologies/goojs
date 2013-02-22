@@ -167,15 +167,15 @@ require(
 				// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html
 				// it reads from bottom up, width first.
 
-				console.time("renderTime");
+				//console.time("renderTime");
 				softRenderer.render(renderList);
-				console.timeEnd("renderTime");
+				//console.timeEnd("renderTime");
 
 				softRenderer.copyDepthToColor();
 
-				console.time("occlusionTime");
+				//console.time("occlusionTime");
 				softRenderer.performOcclusionCulling(renderList);
-				console.timeEnd("occlusionTime");
+				//console.timeEnd("occlusionTime");
 
 				composer.render(goo.renderer, tpf);
 
@@ -236,15 +236,15 @@ require(
 						
 						case 32: // Space
 
-							console.time("renderTime");
+							//console.time("renderTime");
 							softRenderer.render(renderList);
-							console.timeEnd("renderTime");
+							//console.timeEnd("renderTime");
 
 							softRenderer.copyDepthToColor();
 
-							console.time("occlusionTime");
+							//console.time("occlusionTime");
 							softRenderer.performOcclusionCulling(renderList);
-							console.timeEnd("occlusionTime");
+							//console.timeEnd("occlusionTime");
 			
 							var debugcanvas = document.getElementById('debugcanvas')
 							var debugContext = debugcanvas.getContext('2d');
