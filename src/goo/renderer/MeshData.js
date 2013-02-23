@@ -162,10 +162,18 @@ function(BufferData, Util, BufferUtils) {
 	MeshData.WEIGHTS = 'WEIGHTS';
 	MeshData.JOINTIDS = 'JOINTIDS';
 
-	MeshData.createAttribute = function(count, type) {
+	/**
+	 * Creates a definition for a vertex attribute
+	 * @param count Tuple size of attribute
+	 * @param type Data type
+	 * @param normalized If data should be normalized (true) or converted direction (false)
+	 * @returns {Object} Attribute definition
+	 */
+	MeshData.createAttribute = function(count, type, normalized) {
 		return {
 			count : count,
-			type : type
+			type : type,
+			normalized : normalized !== undefined ? normalized : false
 		};
 	};
 

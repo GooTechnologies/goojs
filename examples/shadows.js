@@ -11,10 +11,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
+		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib',
+		'goo/util/MeshBuilder',
+		'goo/math/Transform'
+		], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, Camera,
-	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib) {
+	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib,
+	MeshBuilder,
+	Transform
+		) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -202,7 +208,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'}'//
 			].join('\n')
 			}, 'Test');
-//		gui.add(shader.uniforms, 'depthControl', 0.0, 2000.0);
+		gui.add(shader.uniforms, 'depthControl', 0.0, 2000.0);
 		gui.add(shader.uniforms, 'attenuationPower', 0.0, 1000.0);
 
 		var material = new Material('shadowed');
@@ -211,6 +217,40 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		material.textures.push(texture);
 		
 		createBox(goo, material, 2000, 10, 100, 100, 0, -13, 0);
+		
+		var boxData = ShapeCreator.createBox(10,10,10);
+		
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+		for (var x=0;x<1000;x++) {
+			transform.translation.x = Math.random() * 1.0 - 0.5;
+			transform.translation.y = Math.random() * 0.2 - 0.0;
+			transform.translation.z = Math.random() * 1.0 - 0.5;
+			transform.translation.normalize();
+			transform.translation.mul(Math.random()*50.0+100.0);
+			transform.update();
+			meshBuilder.add(boxData, transform);
+		}
+		var meshData = meshBuilder.build();
+		console.log(meshData);
+		
+		// Create entity
+		var entity = goo.world.createEntity();
+
+		// Create meshdata component using above data
+		var meshDataComponent = new MeshDataComponent(meshData);
+		entity.setComponent(meshDataComponent);
+
+		// Create meshrenderer component with material and shader
+		var meshRendererComponent = new MeshRendererComponent();
+//		var material = Material.createMaterial(ShaderLib.simpleLit, 'Material');
+//		material.wireframe = true;
+		meshRendererComponent.materials.push(material);
+		entity.setComponent(meshRendererComponent);
+		
+		entity.addToWorld();
+
+//		entity.transformComponent.transform.scale.set(38.0,38.0,38.0);
 	}
 	
 	function createBox(goo, material, w, h, tx, ty, x, y, z) {

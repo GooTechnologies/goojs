@@ -70,6 +70,14 @@ define(['goo/entities/components/TransformComponent', 'goo/entities/components/M
 			}
 		};
 
+		EntityUtils.updateWorldTransform = function (transformComponent) {
+			transformComponent.updateWorldTransform();
+
+			for (var i in transformComponent.children) {
+				EntityUtils.updateWorldTransform(transformComponent.children[i]);
+			}
+		};
+
 		/**
 		 * Creates an entity with the common rendering components.
 		 */

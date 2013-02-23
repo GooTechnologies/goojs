@@ -14,8 +14,10 @@ define(['goo/entities/components/Component'],
 		this.materials = [];
 		this.worldBound = null;
 
-		this.castShadow = false;
-		this.receiveShadow = false;
+		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
+		
+		this.castShadows = false;
+		this.receiveShadows = false;
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);

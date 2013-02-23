@@ -60,6 +60,8 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		}
 
 		this.callbacks = [];
+		this.callbacksPreProcess = [];
+		this.callbacksPreRender = [];
 
 		var that = this;
 		this.start = -1;
@@ -80,7 +82,15 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					return;
 				}
 
+				for ( var i in that.callbacksPreProcess) {
+					that.callbacksPreProcess[i](that.world.tpf);
+				}
+
 				that.world.process();
+
+				for ( var i in that.callbacksPreRender) {
+					that.callbacksPreRender[i](that.world.tpf);
+				}
 
 				that.renderer.info.reset();
 

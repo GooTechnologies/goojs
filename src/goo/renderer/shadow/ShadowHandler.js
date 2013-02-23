@@ -38,6 +38,7 @@ define([
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
 //		this.depthMaterial.cullState.enabled = false;
 		this.depthMaterial.cullState.cullFace = 'Front';
+//		this.depthMaterial.cullState.cullFace = 'Back';
 
 		this.shadowTarget = new RenderTarget(this.shadowX, this.shadowY, {
 			type: 'Float'

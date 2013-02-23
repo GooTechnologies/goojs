@@ -422,6 +422,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
 			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
+			shininess = Math.max(shininess, 1.0);
 			uniformCall.uniform1f(shininess);
 		};
 

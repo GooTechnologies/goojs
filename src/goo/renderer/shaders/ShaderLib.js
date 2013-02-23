@@ -362,10 +362,9 @@ define([
 		'			lambertTerm;',//
 		'		vec3 E = normalize(eyeVec);',//
 		'		vec3 R = reflect(-L, N);',//
-		'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
+		'		float specular = pow( clamp(dot(R, E), 0.0, 1.0), materialSpecularPower);',//
 		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 		'			specular;',//
-		'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
 		'	}',//
 		'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
 		'}'//
@@ -424,7 +423,7 @@ define([
 
 		'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);', //
 		'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);', //
-		'	binormal = cross(normal, tangent)*vec3(vertexTangent.w);', //
+		'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);', //
 
 		'	texCoord0 = vertexUV0;', //
 		'	texCoord1 = vertexUV1;', //
@@ -464,7 +463,7 @@ define([
 		'	vec4 texCol = texture2D(diffuseMap, texCoord1);',//
 		'	vec4 final_color = materialAmbient;',//
 
-		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz - vec3(0.5, 0.5, 0.5);',//
+		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',//
 		'	vec3 worldNormal = (tangentToWorld * tangentNormal);',//
 		'	vec3 N = normalize(worldNormal);',//
 
@@ -485,8 +484,7 @@ define([
 		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 		'			specular;',//
 		'	}',//
-		' gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
-		// ' gl_FragColor = vec4(texCol.rgb, texCol.a);',//
+		'	gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
 		'}'//
 		].join('\n')
 	};
