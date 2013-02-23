@@ -97,7 +97,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 		}
 		var meshDatas = meshBuilder.build();
-		console.log(meshDatas);
 
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'test');
 		var texture = new TextureCreator().loadTexture2D('../resources/fieldstone-c.jpg');
