@@ -10,14 +10,23 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/scripts/BasicControlScript', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
+		'goo/scripts/BasicControlScript', 'goo/renderer/shaders/ShaderLib',
+		'goo/util/MeshBuilder',
+		'goo/math/Transform',
+		'goo/scripts/OrbitCamControlScript',
+		'goo/renderer/light/PointLight',
+		'goo/entities/components/LightComponent'
+		], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
 	MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, BasicControlScript, ShaderLib) {
+	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, 
+	BasicControlScript, ShaderLib,
+	MeshBuilder,
+	Transform,
+	OrbitCamControlScript,
+	PointLight,
+	LightComponent
+		) {
 	"use strict";
-
-	var resourcePath = "../resources";
-
-	var material;
 
 	function init() {
 		// Create typical goo application
@@ -26,14 +35,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-
-		material = Material.createMaterial(ShaderLib.textured);
-		var colorInfo = new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
-		var texture = new Texture(colorInfo, null, 2, 2);
-		texture.minFilter = 'NearestNeighborNoMipMaps';
-		texture.magFilter = 'NearestNeighbor';
-		texture.generateMipmaps = false;
-		material.textures.push(texture);
+		goo.renderer.setClearColor(0.0,0.0,0.0,1.0);
 
 		createShapes(goo);
 
@@ -50,35 +52,78 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			spherical : new Vector3(50, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
+
+		var entity = createBox(goo, 1, 1, ShaderLib.simple, 1);
+		var light = new PointLight();
+		entity.setComponent(new LightComponent(light));
+		entity.addToWorld();
+		var script = {
+			run: function (entity) {
+				var t = entity._world.time * 0.4;
+
+				var transformComponent = entity.transformComponent;
+				transformComponent.transform.translation.x = Math.sin(t * 1.0) * 200;
+				transformComponent.transform.translation.y = 200;
+				transformComponent.transform.translation.z = Math.cos(t * 1.0) * 200;
+				transformComponent.setUpdated();
+			}
+		};
+		entity.setComponent(new ScriptComponent(script));
 	}
 
 	// Create simple quad
 	function createShapes(goo) {
-		var sphereData = ShapeCreator.createSphere(16, 16, 2);
-		var boxData = ShapeCreator.createBox(3, 3, 3);
-		var torusData = ShapeCreator.createTorus(16, 16, 1, 3);
+		var sphereData = ShapeCreator.createSphere(10, 10, 1);
+		var boxData = ShapeCreator.createBox(1, 1, 1);
+		var torusData = ShapeCreator.createTorus(10, 6, 0.5, 1.0);
+
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+		var spread = 30.0;
+		var count = 5000;
+		for (var x=0;x<count;x++) {
+			transform.translation.x = (Math.random() * 2.0 - 1.0) * spread;
+			transform.translation.y = (Math.random() * 2.0 - 1.0) * spread;
+			transform.translation.z = (Math.random() * 2.0 - 1.0) * spread;
+			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
+			transform.update();
+			
+			if (x < count/3) {
+				meshBuilder.addMeshData(boxData, transform);
+			} else if (x < count*2/3) {
+				meshBuilder.addMeshData(sphereData, transform);
+			} else {
+				meshBuilder.addMeshData(torusData, transform);
+			}
+		}
+		var meshDatas = meshBuilder.build();
+		console.log(meshDatas);
+
+		var material = Material.createMaterial(ShaderLib.texturedLit, 'test');
+		var texture = new TextureCreator().loadTexture2D('../resources/fieldstone-c.jpg');
+		material.textures.push(texture);
+		for (var key in meshDatas) {
+			var entity = goo.world.createEntity();
+			var meshDataComponent = new MeshDataComponent(meshDatas[key]);
+			entity.setComponent(meshDataComponent);
+			var meshRendererComponent = new MeshRendererComponent();
+			meshRendererComponent.materials.push(material);
+			entity.setComponent(meshRendererComponent);
+			entity.addToWorld();
+		}
 	}
 
-	function createMesh(goo, meshData, x, y, z) {
-		var world = goo.world;
+	function createBox (goo, w, h, shader, tile) {
+		var meshData = ShapeCreator.createBox(w, h, w, tile, tile);
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		entity.name = "Floor";
 
-		// Create entity
-		var entity = world.createEntity();
+		var material = new Material('TestMaterial');
+		material.shader = Material.createShader(shader, 'Floorhader');
 
-		entity.transformComponent.transform.translation.set(x, y, z);
+		entity.meshRendererComponent.materials.push(material);
 
-		// Create meshdata component using above data
-		var meshDataComponent = new MeshDataComponent(meshData);
-		entity.setComponent(meshDataComponent);
-
-		// Create meshrenderer component with material and shader
-		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.materials.push(material);
-		entity.setComponent(meshRendererComponent);
-
-		entity.setComponent(new ScriptComponent(new BasicControlScript()));
-
-		entity.addToWorld();
+		return entity;
 	}
 
 	init();

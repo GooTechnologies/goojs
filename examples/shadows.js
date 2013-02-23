@@ -217,40 +217,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		material.textures.push(texture);
 		
 		createBox(goo, material, 2000, 10, 100, 100, 0, -13, 0);
-		
-		var boxData = ShapeCreator.createBox(10,10,10);
-		
-		var meshBuilder = new MeshBuilder();
-		var transform = new Transform();
-		for (var x=0;x<1000;x++) {
-			transform.translation.x = Math.random() * 1.0 - 0.5;
-			transform.translation.y = Math.random() * 0.2 - 0.0;
-			transform.translation.z = Math.random() * 1.0 - 0.5;
-			transform.translation.normalize();
-			transform.translation.mul(Math.random()*50.0+100.0);
-			transform.update();
-			meshBuilder.add(boxData, transform);
-		}
-		var meshData = meshBuilder.build();
-		console.log(meshData);
-		
-		// Create entity
-		var entity = goo.world.createEntity();
-
-		// Create meshdata component using above data
-		var meshDataComponent = new MeshDataComponent(meshData);
-		entity.setComponent(meshDataComponent);
-
-		// Create meshrenderer component with material and shader
-		var meshRendererComponent = new MeshRendererComponent();
-//		var material = Material.createMaterial(ShaderLib.simpleLit, 'Material');
-//		material.wireframe = true;
-		meshRendererComponent.materials.push(material);
-		entity.setComponent(meshRendererComponent);
-		
-		entity.addToWorld();
-
-//		entity.transformComponent.transform.scale.set(38.0,38.0,38.0);
 	}
 	
 	function createBox(goo, material, w, h, tx, ty, x, y, z) {

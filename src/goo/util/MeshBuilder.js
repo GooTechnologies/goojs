@@ -66,6 +66,22 @@ define([
 					attribute[this.vertexCounter * map.count + i + 1] = vert[1];
 					attribute[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
+			} else if (key === MeshData.NORMAL) {
+				for (var i = 0; i < view.length; i += 3) {
+					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					transform.applyForwardVector(vert, vert);
+					attribute[this.vertexCounter * map.count + i + 0] = vert[0];
+					attribute[this.vertexCounter * map.count + i + 1] = vert[1];
+					attribute[this.vertexCounter * map.count + i + 2] = vert[2];
+				}
+			} else if (key === MeshData.TANGENT) {
+				for (var i = 0; i < view.length; i += 3) {
+					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					transform.applyForwardVector(vert, vert);
+					attribute[this.vertexCounter * map.count + i + 0] = vert[0];
+					attribute[this.vertexCounter * map.count + i + 1] = vert[1];
+					attribute[this.vertexCounter * map.count + i + 2] = vert[2];
+				}
 			} else {
 				for (var i = 0; i < view.length; i++) {
 					attribute[this.vertexCounter * map.count + i] = view[i];
