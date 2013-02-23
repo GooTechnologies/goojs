@@ -58,57 +58,98 @@ function(
 		}
 		this.domElement = _canvas;
 
-		// this.lineRecord = null;// new LineRecord();
-		this.rendererRecord = new RendererRecord();
-
 		this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
 		this._premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true;
 		this._antialias = parameters.antialias !== undefined ? parameters.antialias : false;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
 
+		var settings = {
+			alpha : this._alpha,
+			premultipliedAlpha : this._premultipliedAlpha,
+			antialias : this._antialias,
+			stencil : this._stencil,
+			preserveDrawingBuffer : this._preserveDrawingBuffer
+		};
+
+		this.context = null;
 		try {
-			var settings = {
-				alpha : this._alpha,
-				premultipliedAlpha : this._premultipliedAlpha,
-				antialias : this._antialias,
-				stencil : this._stencil,
-				preserveDrawingBuffer : this._preserveDrawingBuffer
-			};
-
-			if (!(this.context = _canvas.getContext('experimental-webgl', settings))) {
-				console.error('Error creating WebGL context.');
-				throw 'Error creating WebGL context.';
-			}
-
-			this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
-			this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
-			this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
-			this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
-				|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
-				|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
-			this.glExtensionDepthTexture = this.context.getExtension('WEBKIT_WEBGL_depth_texture')
-				|| this.context.getExtension('MOZ_WEBGL_depth_texture');
-
-			if (!this.glExtensionTextureFloat) {
-				console.log('Float textures not supported.');
-			}
-			if (!this.glExtensionStandardDerivatives) {
-				console.log('Standard derivatives not supported.');
-			}
-			if (!this.glExtensionTextureFilterAnisotropic) {
-				console.log('Anisotropic texture filtering not supported.');
-			}
-			if (!this.glExtensionCompressedTextureS3TC) {
-				console.log('S3TC compressed textures not supported.');
-			}
-			if (!this.glExtensionDepthTexture) {
-				console.log('Depth textures not supported.');
+			this.context = _canvas.getContext('experimental-webgl', settings);
+			if (this.context == null) {
+				this.context = _canvas.getContext('webgl', settings);
 			}
 		} catch (error) {
-			console.error(error);
+			//Silent
 		}
 
+		if (this.context == null) {
+			throw 'WebGL is not supported! (Could not create WebGL context)';
+		}
+
+		if (parameters.debug) {
+			if (typeof (WebGLDebugUtils) === 'undefined') {
+				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
+			} else {
+				console.log('Running in webgl debug mode.');
+				if (parameters.validate) {
+					console.log('Running with "undefined arguments" validation.');
+					this.context = WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
+				} else {
+					this.context = WebGLDebugUtils.makeDebugContext(this.context);
+				}
+			}
+		}
+		
+		// this.lineRecord = null;// new LineRecord();
+		this.rendererRecord = new RendererRecord();
+
+		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
+		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
+//		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
+		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
+		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
+			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
+			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
+			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
+			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
+
+		if (!this.glExtensionTextureFloat) {
+			console.log('Float textures not supported.');
+		}
+//		if (!this.glExtensionTextureHalfFloat) {
+//			console.log('Half Float textures not supported.');
+//		}
+		if (!this.glExtensionStandardDerivatives) {
+			console.log('Standard derivatives not supported.');
+		}
+		if (!this.glExtensionTextureFilterAnisotropic) {
+			console.log('Anisotropic texture filtering not supported.');
+		}
+		if (!this.glExtensionCompressedTextureS3TC) {
+			console.log('S3TC compressed textures not supported.');
+		}
+		if (!this.glExtensionDepthTexture) {
+			console.log('Depth textures not supported.');
+		}
+
+		// Check capabilities (move out to separate module)
+		this.capabilities = {
+			maxTexSize : this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
+			maxCubeSize : this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
+			maxRenderbufferSize : this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
+			vertexUnits : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+			fragmentUnits : this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
+			combinedUnits : this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+			maxVertexAttributes : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
+			maxVertexShader : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
+			maxFragmentShader : this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
+			maxVaryingVectors : this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS)
+		};
+		
+		this.downScale = parameters.downScale || 1;
+		
+		// Default setup
 		this.clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
@@ -147,11 +188,22 @@ function(
 		this.shadowHandler = new ShadowHandler();
 	}
 
+	function validateNoneOfTheArgsAreUndefined (functionName, args) {
+		for ( var ii = 0; ii < args.length; ++ii) {
+			if (args[ii] === undefined) {
+				console.error("undefined passed to gl." + functionName + "("
+					+ WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
+			}
+		}
+	}
+
 	Renderer.mainCamera = null;
 
 	Renderer.prototype.checkResize = function(camera) {
-		if (this.domElement.offsetWidth !== this.domElement.width || this.domElement.offsetHeight !== this.domElement.height) {
-			this.setSize(this.domElement.offsetWidth, this.domElement.offsetHeight);
+		var adjustWidth = this.domElement.offsetWidth / this.downScale;
+		var adjustHeight = this.domElement.offsetHeight / this.downScale;
+		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
+			this.setSize(adjustWidth, adjustHeight);
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
@@ -636,70 +688,77 @@ function(
 		// set if we want to flip on Y
 		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);
 
-		if (texture.generateMipmaps) {
-			var image = texture.image;
-
-			if (texture.variant === '2D') {
-				this.checkRescale(texture, image, image.width, image.height);
-			} else if (texture.variant === 'CUBE') {
-				for ( var i = 0; i < 6; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height);
-				}
-			}
-		}
-
+		// TODO: Check for the restrictions of using npot textures
+		// see: http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
 		// TODO: Add "usesMipmaps" to check if minfilter has mipmap mode
 
+		var image = texture.image;
 		if (texture.variant === '2D') {
-			if (!texture.image) {
+			if (!image) {
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
-			} else if (texture.image.isData === true) {
-				if (texture.image.isCompressed) {
-					this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, texture.image.data);
-				} else {
-					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.image.width,
-						texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-							.getGLPixelDataType(texture.type), texture.image.data);
-				}
 			} else {
-				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
-					.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image);
-			}
+				if (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize) {
+					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexSize);
+				}
 
-			if (texture.generateMipmaps && texture.image && !texture.image.isCompressed) {
-				context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				if (image.isData === true) {
+					if (image.isCompressed) {
+						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
+					} else {
+						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
+							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+								.getGLPixelDataType(texture.type), image.data);
+					}
+				} else {
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+				}
+
+				if (texture.generateMipmaps && !image.isCompressed) {
+					context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				}
 			}
 		} else if (texture.variant === 'CUBE') {
+			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubeSize || image.height > this.capabilities.maxCubeSize)) {
+				for ( var i = 0; i < Texture.CUBE_FACES.length; i++) {
+					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubeSize);
+				}
+			}
+
 			for ( var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
 				var face = Texture.CUBE_FACES[faceIndex];
 
-				if (!texture.image) {
+				if (!image) {
 					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
-				} else if (texture.image.isData === true) {
-					if (texture.image.isCompressed) {
-						this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, texture.image.data[faceIndex]);
-					} else {
-						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.image.width,
-							texture.image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), texture.image.data[faceIndex]);
-					}
 				} else {
-					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
-						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), texture.image.data[faceIndex]);
+					if (image.isData === true) {
+						if (image.isCompressed) {
+							this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, image.data[faceIndex]);
+						} else {
+							context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), image.width,
+								image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+						}
+					} else {
+						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
+							.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image.data[faceIndex]);
+					}
 				}
 			}
 
-			if (texture.generateMipmaps && texture.image && !texture.image.isCompressed) {
+			if (image && texture.generateMipmaps && !image.isCompressed) {
 				context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
 			}
 		}
 	};
 
-	Renderer.prototype.checkRescale = function(texture, image, width, height) {
+	Renderer.prototype.checkRescale = function(texture, image, width, height, maxSize) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
+		newWidth = Math.min(newWidth, maxSize);
+		newHeight = Math.min(newHeight, maxSize);
 		if (width !== newWidth || height !== newHeight) {
 			var canvas = document.createElement('canvas'); // !!!!!
 			canvas.width = newWidth;
@@ -1000,10 +1059,8 @@ function(
 	Renderer.prototype.setBoundBuffer = function(buffer, target) {
 		if (!this.rendererRecord.currentBuffer[target].valid || this.rendererRecord.currentBuffer[target].buffer !== buffer) {
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
-			this.rendererRecord.currentBuffer[target] = {
-				buffer : buffer,
-				valid : true
-			};
+			this.rendererRecord.currentBuffer[target].buffer = buffer;
+			this.rendererRecord.currentBuffer[target].valid = true;
 		}
 	};
 
