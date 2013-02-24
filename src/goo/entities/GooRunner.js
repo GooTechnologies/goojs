@@ -80,6 +80,9 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					World.time = 0;
 					that.animationId = window.requestAnimationFrame(that.run);
 					return;
+				} else if (that.world.tpf > 0.5) {
+					that.animationId = window.requestAnimationFrame(that.run);
+					return;
 				}
 
 				for ( var i in that.callbacksPreProcess) {
