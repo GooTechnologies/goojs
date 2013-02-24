@@ -1466,14 +1466,14 @@ define([
 		'void main(void) {', //
 		'	mat4 mat = mat4(0.0);', //
 
-		'	for (int i = 0; i < WEIGHTS; i++) {',
-		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
-		'	}',
+//		'	for (int i = 0; i < WEIGHTS; i++) {',
+//		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
+//		'	}',
 		
-//		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
-//		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
-//		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
-//		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
+		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
+		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
+		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
+		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
 
 		'	texCoord0 = vertexUV0;',//
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
