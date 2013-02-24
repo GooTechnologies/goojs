@@ -700,6 +700,7 @@ function(
 			} else {
 				if (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize) {
 					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexSize);
+					image = texture.image;
 				}
 
 				if (image.isData === true) {
@@ -724,6 +725,7 @@ function(
 				for ( var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubeSize);
 				}
+				image = texture.image;
 			}
 
 			for ( var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
