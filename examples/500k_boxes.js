@@ -131,6 +131,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var movement = new Vector3();
 		var offsetvec = new Vector4();
 		var spread = 20.0;
+		var t = performance.now();
 		for (var x=0;x<count;x++) {
 			transform.translation.x = Math.sin(x*Math.PI*2/count);
 			transform.translation.y = (Math.random() * 2.0 - 1.0) * 2.0;
@@ -172,6 +173,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			
 			meshBuilder.addMeshData(meshData, transform);
 		}
+		console.log('total time: ', performance.now() - t);
 		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(superLit, 'test');

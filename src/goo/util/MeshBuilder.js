@@ -48,6 +48,7 @@ define([
 			this._generateMesh();
 		}
 		
+		var vert = new Vector3();
 		var attributeMap = meshData.attributeMap;
 		for (var key in attributeMap) {
 			var map = attributeMap[key];
@@ -67,7 +68,7 @@ define([
 			var array = attribute.array;
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForward(vert, vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
@@ -75,7 +76,7 @@ define([
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForwardVector(vert, vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
@@ -83,7 +84,7 @@ define([
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForwardVector(vert, vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];

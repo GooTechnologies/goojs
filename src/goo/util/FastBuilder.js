@@ -62,40 +62,42 @@ define([
 			this.indexCounter = 0;
 		}
 
+		var vert = new Vector3();
 		var currentMesh = this.meshDatas[this.dataCounter];
 		var attributeMap = meshData.attributeMap;
 		for (var key in attributeMap) {
 			var map = attributeMap[key];
 
+			var basePos = this.vertexCounter * map.count;
 			var view = meshData.getAttributeBuffer(key);
 			var array = currentMesh.getAttributeBuffer(key);
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForward(vert, vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[basePos + i + 0] = vert.data[0];
+					array[basePos + i + 1] = vert.data[1];
+					array[basePos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForwardVector(vert, vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[basePos + i + 0] = vert.data[0];
+					array[basePos + i + 1] = vert.data[1];
+					array[basePos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < view.length; i += 3) {
-					var vert = new Vector3(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.applyForwardVector(vert, vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[basePos + i + 0] = vert.data[0];
+					array[basePos + i + 1] = vert.data[1];
+					array[basePos + i + 2] = vert.data[2];
 				}
 			} else {
 				for (var i = 0; i < view.length; i++) {
-					array[this.vertexCounter * map.count + i] = view[i];
+					array[basePos + i] = view[i];
 				}
 			}
 		}
