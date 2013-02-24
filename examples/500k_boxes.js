@@ -33,7 +33,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			showStats : true,
+//			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -51,31 +52,19 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(200, Math.PI / 2, -2.1)
+			spherical : new Vector3(170, 0, 0.8)
 		}));
 		cameraEntity.setComponent(scripts);
 
-		var entity = createBox(goo, 1, 1, ShaderLib.simple, 1);
+		var entity = goo.world.createEntity('light');
 		var light = new PointLight();
 		entity.setComponent(new LightComponent(light));
 		entity.addToWorld();
-		var script = {
-			run: function (entity) {
-				var t = entity._world.time * 1.0;
-
-				var transformComponent = entity.transformComponent;
-//				transformComponent.transform.translation.x = Math.sin(t * 1.0) * 100;
-//				transformComponent.transform.translation.y = 200;
-//				transformComponent.transform.translation.z = Math.cos(t * 1.0) * 100;
-//				transformComponent.setUpdated();
-			}
-		};
-		entity.setComponent(new ScriptComponent(script));
 	}
 
 	// Create simple quad
 	function createShapes(goo) {
-		var gui = new dat.GUI();
+//		var gui = new dat.GUI();
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]);
 		attributeMap.movementNormal = {
@@ -131,13 +120,12 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var movement = new Vector3();
 		var offsetvec = new Vector4();
 		var spread = 20.0;
-		var t = performance.now();
 		for (var x=0;x<count;x++) {
 			transform.translation.x = Math.sin(x*Math.PI*2/count);
-			transform.translation.y = (Math.random() * 2.0 - 1.0) * 2.0;
+			transform.translation.y = (Math.random() * 2.0 - 1.0) * 1.0;
 			transform.translation.z = Math.cos(x*Math.PI*2/count);
 			transform.translation.normalize();
-			transform.translation.mul(Math.random()*15.0+spread);
+			transform.translation.mul(Math.random()*20.0+spread);
 			
 			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
 			transform.update();
@@ -156,7 +144,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 			
 			var spin = (x/count) * Math.PI * 1;
-			var spin2 = (x/count) * Math.PI * 2 * (Math.random()*0.8+0.6);
+			var spin2 = (x/count) * Math.PI * 2.2 * (Math.random()*0.8+0.6);
 //			var spin3 = (x/count) * Math.PI * 2 * (Math.random()*0.65+0.7);
 			offsetvec.set(
 				spin,
@@ -173,7 +161,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			
 			meshBuilder.addMeshData(meshData, transform);
 		}
-		console.log('total time: ', performance.now() - t);
 		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(superLit, 'test');
@@ -187,8 +174,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			entity.addToWorld();
 		}
 		
-		gui.add(material.shader.uniforms, 'move', 0.0, 100.0);
-		gui.add(material.shader.uniforms, 'move2', 0.0, 1.0);
+//		gui.add(material.shader.uniforms, 'move', 0.0, 100.0);
 	}
 
 	var superLit = {
@@ -204,9 +190,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			lightPosition : Shader.LIGHT0,
-			cameraFar : Shader.MAIN_FAR_PLANE,
-			move : 60.0,
-			move2 : 0.0,
+			move : 70.0,
 			time : Shader.TIME
 		},
 		vshader : [ //
@@ -222,7 +206,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'uniform vec3 lightPosition;', //
 		
 		'uniform float move;',
-		'uniform float move2;',
 		'uniform float time;',
 
 		'varying vec3 normal;',//
@@ -234,7 +217,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'	vec3 pos = vertexPosition + ',
 		'				movementNormal * sin(mix(offsets.x, offsets.y, sin(time*0.5)*0.5+0.5) + time) * sin(time*0.3) * move + ',
 		'				movementNormal2 * cos(mix(offsets.z, offsets.w, sin(time*0.5)*0.5+0.5) + time) * sin(time*0.3) * move;',
-		'	vertDist = 1.0 - min(length(pos)/120.0, 1.0);',
+		'	vertDist = 1.0 - min(length(pos)/110.0, 1.0);',
 		'	vec4 worldPos = worldMatrix * vec4(pos, 1.0);', //
 		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
 
@@ -248,8 +231,6 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		fshader : [//
 		'precision mediump float;',//
 
-		'uniform float cameraFar;', //
-
 		'varying vec3 normal;',//
 		'varying vec3 lightDir;',//
 		'varying float lightDist;',//
@@ -257,14 +238,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		'void main(void)',//
 		'{',//
-		'	float power = dot(normalize(normal),lightDir)*0.75+0.25;',
-		'	power *= lightDist;',
-		'	vec3 col = vec3(power);',
+		'	float power = dot(normalize(normal),lightDir)*0.5+0.5;',
+		'	vec3 col = vec3(1.0,0.9,0.9) * power * lightDist;',
 		'	vec3 col2 = vec3(1.0, 0.4,0.0) * vertDist;',
 		'	gl_FragColor = vec4(col2+col, 1.0);',//
-//		'	float depth = gl_FragCoord.z / gl_FragCoord.w;',//
-//		'	float d = 1.0 - smoothstep( 0.0, 200.0, depth );',//
-//		'	gl_FragColor = vec4(vec3(d), 1.0);',//
 		'}'//
 		].join('\n')
 	};
