@@ -34,7 +34,7 @@ define([
 	TextureCreator.clearCache = function () {
 		TextureCreator.cache = {};
 	};
-
+	
 	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
 		if (TextureCreator.cache[imageURL] !== undefined) {
 			return TextureCreator.cache[imageURL];
@@ -90,6 +90,7 @@ define([
 		// Load the actual image
 		this._loader.loadImage(imageURL).then(function(data) {
 			texture.setImage(data);
+			TextureCreator._finishedLoading(data);
 		});
 
 		console.info("Loaded image: " + imageURL);
@@ -237,6 +238,17 @@ define([
 		}
 
 		return texture;
+	};
+
+	TextureCreator._globalCallback = null;
+	TextureCreator._finishedLoading = function (image) {
+		if (TextureCreator._globalCallback) {
+			try {
+				TextureCreator._globalCallback(image);
+			} catch (e) {
+				console.error('Error in texture callback:', e);
+			}
+		}
 	};
 
 	// TODO: add Object.freeze?
