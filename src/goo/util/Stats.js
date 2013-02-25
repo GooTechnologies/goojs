@@ -113,6 +113,10 @@ define(
 				updateGraph(msGraph, Math.min(30, 30 - (ms / 200) * 30));
 
 				prevTimeMs = time;
+
+				if (info) {
+					infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
+				}
 			}
 
 			frames++;
@@ -127,10 +131,6 @@ define(
 
 				prevTime = time;
 				frames = 0;
-			}
-
-			if (info) {
-				infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
 			}
 
 			return time;
