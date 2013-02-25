@@ -1469,7 +1469,7 @@ define([
 //		'	for (int i = 0; i < WEIGHTS; i++) {',
 //		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
 //		'	}',
-		
+
 		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
 		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
 		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //

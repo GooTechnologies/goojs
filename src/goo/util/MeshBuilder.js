@@ -1,11 +1,13 @@
 define([
         'goo/renderer/MeshData',
-        'goo/math/Vector3'
+        'goo/math/Vector3',
+        'goo/entities/EntityUtils'
         ],
 	/** @lends MeshBuilder */
 	function (
 		MeshData,
-		Vector3
+		Vector3,
+		EntityUtils
 	) {
 	"use strict";
 
@@ -20,7 +22,7 @@ define([
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
 	}
-	
+
 	MeshBuilder.prototype.addEntity = function (entity) {
 		EntityUtils.traverse(entity, function (foundEntity) {
 			if (entity.transformComponent._dirty) {
@@ -47,7 +49,7 @@ define([
 
 			this._generateMesh();
 		}
-		
+
 		var vert = new Vector3();
 		var attributeMap = meshData.attributeMap;
 		for (var key in attributeMap) {
@@ -130,7 +132,7 @@ define([
 		if (this.vertexCounter > 0) {
 			this._generateMesh();
 		}
-		
+
 		return this.meshDatas;
 	};
 

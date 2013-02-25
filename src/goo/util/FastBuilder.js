@@ -15,7 +15,7 @@ define([
 	function FastBuilder(meshData, count) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
-		} 
+		}
 
 		this.meshDatas = [];
 		this.dataCounter = 0;
@@ -26,7 +26,7 @@ define([
 			amount = Math.min(amount, count);
 			var vertexCount = meshData.vertexCount * amount;
 			var indexCount = meshData.indexCount * amount;
-			
+
 			var attributeMap = {};
 			for (var key in meshData.attributeMap) {
 				var data = meshData.attributeMap[key];
@@ -48,7 +48,7 @@ define([
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
 	}
-	
+
 	FastBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);

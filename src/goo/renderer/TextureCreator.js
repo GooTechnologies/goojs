@@ -34,7 +34,7 @@ define([
 	TextureCreator.clearCache = function () {
 		TextureCreator.cache = {};
 	};
-	
+
 	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
 		if (TextureCreator.cache[imageURL] !== undefined) {
 			return TextureCreator.cache[imageURL];

@@ -15,7 +15,7 @@ define(['goo/entities/components/Component'],
 		this.worldBound = null;
 
 		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
-		
+
 		this.castShadows = false;
 		this.receiveShadows = false;
 	}

@@ -99,7 +99,7 @@ function(
 				}
 			}
 		}
-		
+
 		// this.lineRecord = null;// new LineRecord();
 		this.rendererRecord = new RendererRecord();
 
@@ -146,9 +146,9 @@ function(
 			maxFragmentShader : this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
 			maxVaryingVectors : this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS)
 		};
-		
+
 		this.downScale = parameters.downScale || 1;
-		
+
 		// Default setup
 		this.clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);

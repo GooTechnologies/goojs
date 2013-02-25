@@ -21,7 +21,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 		this._rotations = rotations.slice(0);
 		this._translations = translations.slice(0);
 		this._scales = scales.slice(0);
-		
+
 		this.tmpVec = new Vector3();
 		this.tmpQuat = new Quaternion();
 	}
@@ -45,7 +45,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 			transformData._rotation.data[1] = this._rotations[index4A + 1];
 			transformData._rotation.data[2] = this._rotations[index4A + 2];
 			transformData._rotation.data[3] = this._rotations[index4A + 3];
-			
+
 //			transformData._translation.set([this._translations[index3A + 0], this._translations[index3A + 1], this._translations[index3A + 2]]);
 			transformData._translation.data[0] = this._translations[index3A + 0];
 			transformData._translation.data[1] = this._translations[index3A + 1];
