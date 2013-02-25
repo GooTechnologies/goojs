@@ -388,6 +388,16 @@ define(["goo/math/Vector"],
 
 		return this;
 	};
+	Vector3.prototype.subv = function (vec3) {
+		this.data[0] -= vec3.data[0];
+		this.data[1] -= vec3.data[1];
+		this.data[2] -= vec3.data[2];
+
+		return this;
+	};
+	Vector3.prototype.lengthSquaredF = function () {
+		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
+	};
 
 	/* ====================================================================== */
 

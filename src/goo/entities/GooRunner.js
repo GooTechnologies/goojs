@@ -47,6 +47,8 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
+		
+		this.doRender = true;
 
 		GameUtils.initAllShims();
 
@@ -97,7 +99,9 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 				that.renderer.info.reset();
 
-				renderSystem.render(that.renderer);
+				if (that.doRender) {
+					renderSystem.render(that.renderer);
+				}
 
 				for ( var i in that.callbacks) {
 					that.callbacks[i](that.world.tpf);
