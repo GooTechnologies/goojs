@@ -33,14 +33,36 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		this.shaderProgram = null;
 
-		// Attributes detected in the shader
+		/**
+		 * Attributes detected in the shader source code.
+		 * Maps attribute variable's name to {type, format, variableName, arrayName}.
+		 * @type {Object.<string, {type:string, format:string, variableName:string, arrayName:string}>}
+		 */
 		this.attributeMapping = {};
+
+		/**
+		 * Maps attribute variable's name to attribute location (from getAttribLocation).
+		 * @type {Object.<{string, number}>}
+		 */
 		this.attributeIndexMapping = {};
 
-		// Uniforms detected in the shader
+		/**
+		 * Uniforms detected in the shader source code.
+		 * Maps variable name to {type, format, variableName, arrayName}.
+		 * @type {Object.<string, {type:string, format:string, variableName:string, arrayName:string}>}
+		 */
 		this.uniformMapping = {};
+
+		/**
+		 * Maps uniform variable name to ShaderCall object.
+		 * @type {Object.<{string, ShaderCall}>}
+		 */
 		this.uniformCallMapping = {};
 
+		/**
+		 * Texture slots detected in the shader source code.
+		 * @type {Array.<format:string, name:string>}
+		 */
 		this.textureSlots = [];
 
 		this.defaultCallbacks = {};
@@ -60,6 +82,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 	Shader.id = 0;
 
+
+	/**
+	 * Matches an attribute or uniform variable declaration.
+	 *
+	 * Match groups:
+	 *
+	 *   1: type (attribute|uniform)
+	 *   2: format (float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)
+	 *   3: variable name
+	 *   4: if exists, the variable is an array
+	 */
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
 	Shader.prototype.apply = function (shaderInfo, renderer) {
@@ -168,6 +201,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			if ("attribute" === definition.type) {
 				this.attributeMapping[definition.variableName] = definition;
 			} else {
+				// it is a uniform
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
 						format : definition.format,
