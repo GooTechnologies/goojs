@@ -34,13 +34,17 @@ function(Vector3) {
 			var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
 			return dist2 - dist1;
 		};
+		this.bucketSorter = function(a, b) {
+			return a - b;
+		};
 	}
 
 	RenderQueue.prototype.sort = function(renderList, camera) {
 		var index = 0;
 		this.camera = camera;
 		var buckets = {};
-		for ( var i = 0; i < renderList.length; i++) {
+		var bucketSortList = [];
+		for (var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
 			if (!renderable.meshRendererComponent || renderable.meshRendererComponent.materials.length === 0) {
 				renderList[index] = renderable;
@@ -52,11 +56,16 @@ function(Vector3) {
 			if (!bucket) {
 				bucket = [];
 				buckets[renderQueue] = bucket;
+				bucketSortList.push(renderQueue);
 			}
 			bucket.push(renderable);
 		}
 
-		for ( var key in buckets) {
+		if (bucketSortList.length > 1) {
+			bucketSortList.sort(this.bucketSorter);
+		}
+		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
+			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
 			if (key <= RenderQueue.TRANSPARENT) {
 				bucket.sort(this.opaqueSorter);
