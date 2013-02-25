@@ -47,7 +47,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	};
 
 	Transform.prototype.applyForward = function (point, store) {
-		store.copy(point);
+		store.setv(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);

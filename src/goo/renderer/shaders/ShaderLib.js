@@ -913,7 +913,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.TEXTURE0,
 			offset:   1.0,
-			darkness: 1.0
+			darkness: 1.5
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //

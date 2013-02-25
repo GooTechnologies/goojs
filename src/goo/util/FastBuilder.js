@@ -12,11 +12,15 @@ define([
 	/**
 	 * @class Combines mesh datas
 	 */
-	function FastBuilder(meshData, count) {
+	function FastBuilder(meshData, count, callback) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
 		}
 
+		this.callback = callback || {
+			progress: function (percent) {},
+			done: function () {}
+		};
 		this.meshDatas = [];
 		this.dataCounter = 0;
 
@@ -47,6 +51,8 @@ define([
 
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
+		
+		this.callback.progress(0);
 	}
 
 	FastBuilder.prototype.addMeshData = function (meshData, transform) {
@@ -60,6 +66,8 @@ define([
 			this.indexData = [];
 			this.vertexCounter = 0;
 			this.indexCounter = 0;
+
+			this.callback.progress(this.dataCounter / (this.meshDatas.length - 1));
 		}
 
 		var vert = new Vector3();
@@ -111,6 +119,7 @@ define([
 	};
 
 	FastBuilder.prototype.build = function () {
+		this.callback.done();
 		return this.meshDatas;
 	};
 

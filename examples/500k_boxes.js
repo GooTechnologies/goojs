@@ -34,10 +34,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true,
+//			showStats : true,
 //			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
+		goo.doRender = false;
 		document.body.appendChild(goo.renderer.domElement);
 		goo.renderer.setClearColor(0.0,0.0,0.0,1.0);
 
@@ -115,8 +116,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		             2,6,7, 7,3,2,
 		]);
 		
+		var loader = document.getElementById('load');
 		var count = 50000;
-		var meshBuilder = new FastBuilder(meshData, count);
+		var meshBuilder = new FastBuilder(meshData, count, {
+			progress: function (percent) {
+//				console.log(percent);
+			},
+			done: function () {
+				loader.setAttribute('style', 'display: none');
+			}
+		});
 		var transform = new Transform();
 		var movement = new Vector3();
 		var offsetvec = new Vector4();
@@ -168,14 +177,17 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		for (var key in meshDatas) {
 			var entity = goo.world.createEntity();
 			var meshDataComponent = new MeshDataComponent(meshDatas[key]);
+			meshDataComponent.autoCompute = false;
 			entity.setComponent(meshDataComponent);
 			var meshRendererComponent = new MeshRendererComponent();
+			meshRendererComponent.cullMode = 'Never';
 			meshRendererComponent.materials.push(material);
 			entity.setComponent(meshRendererComponent);
 			entity.addToWorld();
 		}
 		
 //		gui.add(material.shader.uniforms, 'move', 0.0, 100.0);
+		goo.doRender = true;
 	}
 
 	var superLit = {
