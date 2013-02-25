@@ -324,6 +324,32 @@ define(["goo/math/Vector"],
 		return this;
 	};
 
+	// TODO: Testing speed diffs
+	Vector4.prototype.setd = function (x, y, z, w) {
+		this.data[0] = x;
+		this.data[1] = y;
+		this.data[2] = z;
+		this.data[3] = w;
+
+		return this;
+	};
+	Vector4.prototype.seta = function (array) {
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+		this.data[2] = array[2];
+		this.data[3] = array[3];
+
+		return this;
+	};
+	Vector4.prototype.setv = function (vec4) {
+		this.data[0] = vec4.data[0];
+		this.data[1] = vec4.data[1];
+		this.data[2] = vec4.data[2];
+		this.data[3] = vec4.data[3];
+
+		return this;
+	};
+
 	/* ====================================================================== */
 
 	return Vector4;

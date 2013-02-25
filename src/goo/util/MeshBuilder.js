@@ -41,6 +41,7 @@ define([
 		});
 	};
 
+	var vert = new Vector3();
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
@@ -50,7 +51,6 @@ define([
 			this._generateMesh();
 		}
 
-		var vert = new Vector3();
 		var attributeMap = meshData.attributeMap;
 		for (var key in attributeMap) {
 			var map = attributeMap[key];
@@ -71,7 +71,7 @@ define([
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < view.length; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.applyForward(vert, vert);
+					transform.matrix.applyPostPoint(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
@@ -79,7 +79,7 @@ define([
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < view.length; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.applyForwardVector(vert, vert);
+					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
@@ -87,7 +87,7 @@ define([
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < view.length; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.applyForwardVector(vert, vert);
+					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];

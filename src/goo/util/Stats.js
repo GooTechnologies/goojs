@@ -18,7 +18,13 @@ define(
 			event.preventDefault();
 			setModeP(++mode % 2);
 		}, false);
-		container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer;z-index:1000';
+		container.style.cssText = 'width:80px;cursor:pointer;z-index:1000;'+
+		'-webkit-touch-callout: none;'+
+		'-webkit-user-select: none;'+
+		'-khtml-user-select: none;'+
+		'-moz-user-select: none;'+
+		'-ms-user-select: none;'+
+		'user-select: none;';
 
 		var fpsDiv = document.createElement('div');
 		fpsDiv.id = 'fps';
