@@ -10,3 +10,4 @@ virtualenv.py
 virtualenv.pyc
 doc/
 out/
+minified/
