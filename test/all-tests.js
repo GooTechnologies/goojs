@@ -25,5 +25,6 @@ define([
     'test/loaders/MeshLoader-test',
     'test/loaders/EntityLoader-test',
     'test/loaders/SceneLoader-test',
-    'test/loaders/Loader-test'
+    'test/loaders/Loader-test',
+    'test/renderer/Shader-test'
 ], function() {});

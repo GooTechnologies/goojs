@@ -174,11 +174,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 	Shader.prototype._investigateShaders = function () {
 		this.textureSlots = [];
-		this._investigateShader(this.vertexSource);
-		this._investigateShader(this.fragmentSource);
+		Shader.investigateShader(this.vertexSource, this);
+		Shader.investigateShader(this.fragmentSource, this);
 	};
 
-	Shader.prototype._investigateShader = function (source) {
+	/**
+	 * Extract shader variable definitions from shader source code.
+	 * @static
+	 * @param {string} source The source code.
+	 * @param {{attributeMapping:Object, uniformMapping:Object, textureSlots:Array}} target
+	 */
+	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;
 		var matcher = regExp.exec(source);
 
@@ -199,16 +205,16 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			}
 
 			if ("attribute" === type) {
-				this.attributeMapping[variableName] = definition;
+				target.attributeMapping[variableName] = definition;
 			} else {
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
 						format : definition.format,
 						name : variableName
 					};
-					this.textureSlots.push(textureSlot);
+					target.textureSlots.push(textureSlot);
 				}
-				this.uniformMapping[variableName] = definition;
+				target.uniformMapping[variableName] = definition;
 			}
 
 			matcher = regExp.exec(source);
