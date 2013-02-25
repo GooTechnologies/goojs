@@ -17,8 +17,8 @@ function (Quaternion, Vector3) {
 		transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
-		transform.scale.copy(this._scale);
-		transform.translation.copy(this._translation);
+		transform.scale.data.set(this._scale.data);
+		transform.translation.data.set(this._translation.data);
 		transform.update();
 	};
 

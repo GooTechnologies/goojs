@@ -359,7 +359,30 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		if (target === source) {
-			return Matrix.copy(Matrix4x4.transpose(source), target);
+//			return Matrix.copy(Matrix4x4.transpose(source), target);
+
+			var e01 = source.e01;
+			var e02 = source.e02;
+			var e03 = source.e03;
+			var e12 = source.e12;
+			var e13 = source.e13;
+			var e23 = source.e23;
+
+			target.e01 = source.e10;
+			target.e02 = source.e20;
+			target.e03 = source.e30;
+			target.e12 = source.e21;
+			target.e13 = source.e31;
+			target.e23 = source.e32;
+
+			target.e10 = e01;
+			target.e20 = e02;
+			target.e30 = e03;
+			target.e21 = e12;
+			target.e31 = e13;
+			target.e32 = e23;
+			
+			return target;
 		}
 
 		target.e00 = source.e00;
