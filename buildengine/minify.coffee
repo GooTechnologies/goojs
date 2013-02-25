@@ -58,19 +58,25 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 		if includefile
 			fs.readFile includefile, 'utf-8', (err, data) ->
 				if err then return console.log err
-				lines = data.split("\n")
+				
+				lines = data.split(/\s+/)
+
 				if lines.length > 1
 					pattern = '{'+lines.join(',')+'}'
 				else
 					pattern = lines[0]
+				
 				if /^(\{[\s,]*\}|\s*)$/.test pattern
 					return console.log 'No files to include'
-		
+
 				glob = require('glob')
 				glob pattern, {root: absroot}, (err, files) ->
+					if(files.length == 0)
+						console.log 'No files found'
+						process.exit
+
 					for f,idx in files
 						files[idx] = "\""+f.slice(absroot.length+1, f.lastIndexOf('.'))+"\""
-	
 	
 					str = "require([#{files}]);\n"
 					tempRequire = 'req_temp'
