@@ -76,21 +76,21 @@ function(
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
 
-		if(entitySource) {
+		if(entitySource.components) {
 			var component;
 
-			component = entitySource.transform;
+			component = entitySource.components.transform;
 			if(component) {
 				loadedComponents.push(this._getTransformComponent(component));
 			}
 
-			component = entitySource.camera;
+			component = entitySource.components.camera;
 			if(component) {
 				loadedComponents.push(this._getCameraComponent(component));
 
 			}
 
-			component = entitySource.meshRenderer;
+			component = entitySource.components.meshRenderer;
 			if(component) {
 				var p = this._getMeshRendererComponent(component)
 				.then(function(meshRendererComponent) {
@@ -101,7 +101,7 @@ function(
 				promises.push(p);
 			}
 
-			component = entitySource.meshData;
+			component = entitySource.components.meshData;
 			if(component) {
 				var p = this._getMeshDataComponent(component)
 				.then(function(meshDataComponent) {

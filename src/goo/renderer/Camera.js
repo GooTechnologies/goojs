@@ -3,7 +3,7 @@ define([
 		'goo/math/Vector3',
 		'goo/math/Vector4',
 		'goo/math/Matrix4x4',
-		'goo/renderer/Plane',
+		'goo/math/Plane',
 		'goo/math/MathUtils',
 		'goo/math/Ray'
 	],
