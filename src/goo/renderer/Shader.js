@@ -35,8 +35,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		/**
 		 * Attributes detected in the shader source code.
-		 * Maps attribute variable's name to {type, format, variableName, arrayName}.
-		 * @type {Object.<string, {type:string, format:string, variableName:string, arrayName:string}>}
+		 * Maps attribute variable's name to {format}.
+		 * @type {Object.<string, {format:string}>}
 		 */
 		this.attributeMapping = {};
 
@@ -48,8 +48,8 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		/**
 		 * Uniforms detected in the shader source code.
-		 * Maps variable name to {type, format, variableName, arrayName}.
-		 * @type {Object.<string, {type:string, format:string, variableName:string, arrayName:string}>}
+		 * Maps variable name to {format}.
+		 * @type {Object.<string, {format:string}>}
 		 */
 		this.uniformMapping = {};
 
@@ -184,13 +184,13 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		while (matcher !== null) {
 			var definition = {
-				type : matcher[1],
-				format : matcher[2],
-				variableName : matcher[3],
-				arrayName : matcher[4]
+				// data type: float, int, ...
+				format : matcher[2]
 			};
-
-			if (definition.arrayName) {
+			var type = matcher[1];  // "attribute" or "uniform"
+			var variableName = matcher[3];
+			var arrayDeclaration = matcher[4];
+			if (arrayDeclaration) {
 				if (definition.format === 'float') {
 					definition.format = 'floatarray';
 				} else if (definition.format === 'int') {
@@ -198,18 +198,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 				}
 			}
 
-			if ("attribute" === definition.type) {
-				this.attributeMapping[definition.variableName] = definition;
+			if ("attribute" === type) {
+				this.attributeMapping[variableName] = definition;
 			} else {
-				// it is a uniform
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
 						format : definition.format,
-						name : definition.variableName
+						name : variableName
 					};
 					this.textureSlots.push(textureSlot);
 				}
-				this.uniformMapping[definition.variableName] = definition;
+				this.uniformMapping[variableName] = definition;
 			}
 
 			matcher = regExp.exec(source);
