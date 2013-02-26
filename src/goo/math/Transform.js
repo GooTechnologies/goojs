@@ -34,9 +34,9 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
 
 		this.translation.setv(b.translation);
-		this.tmpMat1.applyPost(this.translation).add(a.translation);
+		this.tmpMat1.applyPost(this.translation).addv(a.translation);
 
-		this.scale.setv(a.scale).mul(b.scale);
+		this.scale.setv(a.scale).mulv(b.scale);
 		// this.scale.copy(Vector3.ONE);
 	};
 
