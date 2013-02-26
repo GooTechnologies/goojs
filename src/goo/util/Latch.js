@@ -21,7 +21,7 @@ define(
 	};
 
 	Latch.prototype.isDone = function () {
-		return this.count <= 0;
+		return this.count === 0;
 	};
 
 	return Latch;

@@ -23,9 +23,6 @@ define([
 
 		function cloneEntity (world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
-			if (settings.callback) {
-				settings.callback(newEntity);
-			}
 
 			for (var i=0;i<entity._components.length;i++) {
 				var component = entity._components[i];
@@ -50,6 +47,10 @@ define([
 					var clonedChild = cloneEntity(world, child.entity, settings);
 					newEntity.transformComponent.attachChild(clonedChild.transformComponent);
 				}
+			}
+
+			if (settings.callback) {
+				settings.callback(newEntity);
 			}
 
 			return newEntity;
