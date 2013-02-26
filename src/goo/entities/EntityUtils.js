@@ -77,7 +77,7 @@ define([
 
 			for (var j=0;j<entity.transformComponent.children.length;j++) {
 				var child = entity.transformComponent.children[j];
-				EntityUtils.traverse(child, callback);
+				EntityUtils.traverse(child.entity, callback);
 			}
 		};
 

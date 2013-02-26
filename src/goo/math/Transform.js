@@ -31,10 +31,10 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.tmpMat2.copy(b.rotation).multiplyDiagonalPost(b.scale, this.tmpMat2);
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
 
-		this.translation.copy(b.translation);
+		this.translation.setv(b.translation);
 		this.tmpMat1.applyPost(this.translation).add(a.translation);
 
-		this.scale.copy(a.scale).mul(b.scale);
+		this.scale.setv(a.scale).mul(b.scale);
 		// this.scale.copy(Vector3.ONE);
 	};
 
