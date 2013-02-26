@@ -13,9 +13,9 @@ define([
 	"use strict";
 
 	/**
-	*	@class A software renderer which renders, triangles only(!), using a scanline algorithm.
+	*	@class A software renderer which renders triangles to a depth buffer (w-buffer). The buffer is used for occlusion culling.
 	*	@constructor
-	*	@param {{width:Number, height:Number, camera:Camera}} parameters, A JSON object which has to contain width, height and the camera object to be used.
+	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
@@ -24,7 +24,7 @@ define([
 		this.height = parameters.height;
 
 		this._clipY = this.height - 1;
-		this._clipX = this.width -1;
+		this._clipX = this.width - 1;
 
 		this.camera = parameters.camera;
 
@@ -70,7 +70,7 @@ define([
 	/**
 	*	Renders z-buffer (w-buffer) from the given renderList of entities.
 	*
-	*	@param {Array.<Entity>} renderList, the array of entities which are possible occluders.
+	*	@param {Array.<Entity>} renderList The array of entities which are possible occluders.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
@@ -102,7 +102,7 @@ define([
 	*
 	*	The entity is removed from the renderlist if it is not visible.
 	*
-	*	@param {Array.<Entity>} renderList, the array of entities which are possible occludees.
+	*	@param {Array.<Entity>} renderList The array of entities which are possible occludees.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
 
@@ -547,8 +547,8 @@ define([
 	/**
 	*	Transforms the vertices with the given projection transform matrix and then performs the homogeneous division.
 	*
-	*	@param {Array.<Vector4>} vertices, the vertex array
-	*	@param {Matrix4x4} matrix, the projection transformation matrix
+	*	@param {Array.<Vector4>} vertices The vertex array
+	*	@param {Matrix4x4} matrix The projection transformation matrix
 	*/
 	SoftwareRenderer.prototype._projectionTransform = function (vertices, matrix) {
 
@@ -567,10 +567,10 @@ define([
 	*	Adds new triangle(s) to the triangle array. If the triangle has been clipped , the triangles are created from the vertex array in combination with the
 	*	outsideIndices and insideIndices.
 	*
-	*	@param {Array.<Vector4>} vertices , vertex array
+	*	@param {Array.<Vector4>} vertices vertex array
 	*	@param {Array.<Number>} outsideIndices
 	*	@param {Array.<Number>} insideIndices
-	*	@param {Array.<Triangle>} triangles, the array to hold the created triangles.
+	*	@param {Array.<Triangle>} triangles the array to hold the created triangles.
 	*/
 	SoftwareRenderer.prototype._createTriangles = function (vertices, outsideIndices, insideIndices, triangles) {
 
@@ -592,10 +592,10 @@ define([
 	*	Categorizes the vertices into outside and inside (of the view frustum).
 	*	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
 	*	The outside- and insideIndices arrays are populated with the index to the vertex in question.
-	*	@param {Array} outsideIndices
-	*	@param {Array} insideIndices
-	*	@param {Array} vertices
-	*	@param {Number} cameraNearPlane, the camera near plane in world coordinates.
+	*	@param {Array.<Number>} outsideIndices
+	*	@param {Array.<Number>} insideIndices
+	*	@param {Array.<Number>} vertices
+	*	@param {Number} cameraNearPlane the camera near plane in world coordinates.
 	*/
 	SoftwareRenderer.prototype._categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
 			

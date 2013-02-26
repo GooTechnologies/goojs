@@ -94,9 +94,7 @@ require(
 
 			// Different options for rendering depth values, using color texture, float texture or depth texture.
 			// Data types link : http://opengl.czweb.org/ch03/031-034.html
-		
-			// The color and float texture formats still need to use a depthbuffer , Could be solved by rendering the occluders back-to-front?
-
+			
 			// Float-textures could not always work, https://developer.mozilla.org/en-US/docs/WebGL/WebGL_best_practices
 			
 			// Color texture for depth values needs to use the pack- and unPack functions for writing and storing the values.
