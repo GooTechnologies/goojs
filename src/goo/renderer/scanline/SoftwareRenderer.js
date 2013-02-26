@@ -24,6 +24,7 @@ define([
 		this.height = parameters.height;
 
 		this._clipY = this.height - 1;
+		this._clipX = this.width -1;
 
 		this.camera = parameters.camera;
 
@@ -123,8 +124,9 @@ define([
 			// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 			var nearCoord = new Vector4(origin.x, origin.y, origin.z + boundingSphere.radius, origin.w);
 		
+			
 			if (nearCoord.z > cameraNearZInWorld) {
-				//console.error("clip?");
+				//console.error("Early Exited!");
 				continue; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 			}
 
@@ -132,7 +134,6 @@ define([
 			var rightCoord = new Vector4(origin.x + boundingSphere.radius, origin.y, origin.z, 1.0);
 			var topCoord = new Vector4(origin.x, origin.y + boundingSphere.radius, origin.z, 1.0);
 			var bottomCoord = new Vector4(origin.x , origin.y - boundingSphere.radius, origin.z, 1.0);
-
 
 			var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 
@@ -144,25 +145,25 @@ define([
 			var green = [0, 255, 0];
 			var blue = [0, 0, 255];
 			var yellow = [255, 255, 0];
-
-			// Executes the occluded test in the order they are put, exits the case upon any false value.
-			// TODO: Come up with the best ordering of the early exit tests.
-
-			// TODO: Something is up with the check of the near coordinate, fails when looking from below for some reason. (Clipping problem).
+			var pink = [255, 0, 255];
+			var cyan = [0, 190, 190];
 
 			var nearestDepth = 1.0 / nearCoord.w;
+
+			// Executes the occluded test in the order they are put, exits the case upon any false value.
+			// TODO: Test for best order of early tests.
+			// TODO: Something is up with the check of the near coordinate, fails when looking from below for some reason. (Clipping/Clamping problem ?).
 
 			if (this._isOccluded(topCoord, yellow, nearestDepth)
 				&& this._isOccluded(leftCoord, blue, nearestDepth)
 				&& this._isOccluded(rightCoord, green, nearestDepth)
 				&& this._isOccluded(bottomCoord, yellow, nearestDepth)
 				&& this._isOccluded(nearCoord, red, nearestDepth)
-				&& this._isScanlineOccluded(topCoord, bottomCoord, rightCoord, nearestDepth)) {
+				&& this._isScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink)) {
 					
-					// Removes the entity at the current index.	
+					// Removes the entity at the current index.
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
-					continue;
 			}
 		}
 	};
@@ -173,37 +174,243 @@ define([
 	*
 	*	@return {Boolean} occluded or not occluded
 	*/
-	SoftwareRenderer.prototype._isScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoord, nearestDepth) {
+	SoftwareRenderer.prototype._isScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
+
+		// The coordinates are rounded to the nearest integer at this point
+
+		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
+		var topRows = topCoordinate.y - rightCoordinate.y;
+		var botRows = rightCoordinate.y - bottomCoordinate.y;
+		
+		// skip the top , since that will be the top coordinate , which has already been checked. Start at the next one.
+		// y is the current scanline.
+		var y = topCoordinate.y - 1;
+
+		// TODO : The cases after the two first ones might not happen often enough to be of value. Tune these in the end.
+		if ((topRows <= 1 && botRows <= 1) || topCoordinate.y <= 0 || bottomCoordinate.y >= this._clipY) {
+			// Early exit when the number of rows are 1 or less than one, there is no height in the circle at this point.
+			// This misses the middle line, might be too non-conservative !
+
+			// DEBUGGGING Set the pixels to cyan so i know this is where it finished sampling.
+			var cyan = [0, 255, 255];
+			var sampleCoord;
+			if (this._isCoordinateInsideScreen(topCoordinate)) {
+				sampleCoord = topCoordinate.y * this.width + topCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+
+			if (this._isCoordinateInsideScreen(bottomCoordinate)) {
+				sampleCoord = bottomCoordinate.y * this.width + bottomCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			if (this._isCoordinateInsideScreen(leftCoordinate)) {
+				sampleCoord = leftCoordinate.y * this.width + leftCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			if (this._isCoordinateInsideScreen(rightCoordinate)) {
+				sampleCoord = rightCoordinate.y * this.width + rightCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			
+			return true;
+		}
+
+		var tIncrement = 1.0 / (topRows);
+		var t = tIncrement;
+
+		// Vertical clip.
+		if (rightCoordinate.y >= this._clipY) {
+
+			// The entire upper part of the circle is above the screen if this is true.
+			// Set y to clipY , the next step shall be the middle of the circle.
+			topRows = 0;
+			y = this._clipY;
+
+		} else {
+			
+			// If the top (start) coordinate is above the screen, step down to the right y coordinate (this._clipY),
+			// remove the number of rows to interpolate on, update the interpolation value t.
+			var topDiff = y - this._clipY;
+			if (topDiff > 0) {
+				topRows -= topDiff;
+				t += topDiff * tIncrement;
+				y = this._clipY;
+			}
+
+			// Remove one row for each row that the right y-coordinate is below or equals to -2.
+			// This because lines are checked up until rightcoordinate - 1.
+			var rightUnder = - (rightCoordinate.y + 1);
+			if (rightUnder > 0) {
+				topRows -= rightUnder;
+			}
+		}
+
+		// Interpolate x-coordinates with t in the range [tIncrement, 1.0 - tIncrement]
+		// Removes the last iteration.
+		topRows -= 1;
+		for (var i = 0; i < topRows; i++) {
+
+			var t1 = (1.0 - t);
+			// Bezier curve approximated bounds, simplified due to the corner x-coordinate is the same as the last one
+
+			// var x = t1 * t1 * topCoordinate.x + 2 * t1 * t * rightCoordinate.x + t * t * rightCoordinate.x;
+			// var x = t1 * t1 * topCoordinate.x + (2.0 * t - t * t) * rightCoordinate.x;
+			var rightX = t1 * t1 * topCoordinate.x + (2.0 - t) * t * rightCoordinate.x;
+			rightX = Math.round(rightX);
+			var leftX = topCoordinate.x - (rightX - topCoordinate.x);
+
+			// Horizontal clipping
+			if (leftX < 0) {
+				leftX = 0;
+			}
+
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+
+			var sampleCoord = y * this.width + leftX;
+			
+			for(var xindex = leftX; xindex <= rightX; xindex++) {
+
+				this._colorData.set(color, sampleCoord * 4);
+
+				// Debug, add pink where scanline samples are taken.
+				if(this._depthData[sampleCoord] < nearestDepth) {
+					// Early exit if the sample is visible.
+					return false;
+				}
+
+				sampleCoord++;
+			}
+
+			t += tIncrement;
+			y--;
+		}
+
+		if (y < 0) {
+			// Hurray! Outside screen, it's hidden.
+			// This will happen when the right y-coordinate is below 0 from the start.
+			return true;
+		}
+
+		if(topRows >= -1 && rightCoordinate.y <= this._clipY) {
+			// Check the middle scanline , the pixels in between the left and right coordinates.
+			var leftX = leftCoordinate.x + 1;
+			if (leftX < 0) {
+				leftX = 0;
+			}
+			var rightX = rightCoordinate.x - 1;
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+			var midCoord = y * this.width + leftX;
+			for (var i = leftX; i <= rightX; i++) {
+
+				this._colorData.set(color, midCoord * 4);
+
+				if (this._depthData[midCoord] < nearestDepth) {
+					return false;
+				}
+				midCoord++;
+			}
+			// Move down to the next scanline.
+			y--;
+		}
+
+		// The Bottom of the "circle"
+		tIncrement = 1.0 / (botRows);
+		t = tIncrement;
+		
+		var topDiff = rightCoordinate.y - y - 1;
+		if (topDiff > 0) {
+			botRows -= topDiff;
+			t += topDiff * tIncrement;
+		}
+		
+		// Remove one row for each row that the right y-coordinate is below or equals to -2.
+		var botDiff = - (bottomCoordinate.y + 1);
+		if (botDiff > 0) {
+			botRows -= botDiff;
+		}
+
+		// Interpolate x-coordinates with t in the range [tIncrement, 1.0 - tIncrement].
+		// Remove the last iteration.
+		botRows -= 1;
+		for (var i = 0; i < botRows; i++) {
+
+			var t1 = (1.0 - t);
+
+			// This time , the first two points of the bezier interpolation are the same, simplified the algebra.
+			var rightX = ((t1 + 2.0 * t) * t1) * rightCoordinate.x + t * t * bottomCoordinate.x;
+			rightX = Math.round(rightX);
+			var leftX = bottomCoordinate.x - (rightX - bottomCoordinate.x);
+
+			// Horizontal clipping
+			if (leftX < 0) {
+				leftX = 0;
+			}
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+
+			var sampleCoord = y * this.width + leftX;
+			
+			for(var xindex = leftX; xindex <= rightX; xindex++) {
+
+				// Debug, add color where scanline samples are taken.
+				this._colorData.set(color, sampleCoord * 4);
+
+				if(this._depthData[sampleCoord] < nearestDepth) {
+					// Early exit if the sample is visible.
+					return false;
+				}
+
+				sampleCoord++;
+			}
+
+			t += tIncrement;
+			y--;
+		}
 
 		return true;
 	};
 
 	/**
-	*	
+	*	Check occlusion on a given coordinate. The coordinate's x and y values are rounded to the nearest integer.
+	*	If the coordinate is inside the screen pixel space, the given depth value is compared,
+	*	otherwise the coordinate is assumed to be occluded.
 	*
+	*	@return {Boolean} true/false, occluded or not occluded.
 	*/
 	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
 	
-		// TODO: Clamp coordinates to screen coordinates in order to not look up data out of bounds of the depth buffer.
-		// TODO: move the coordinates on the bounding circles ring when they are outside of the screen coordinates, to better mach the shape. Create less false positives.
 		coordinate.x = Math.round(coordinate.x);
 		coordinate.y = Math.round(coordinate.y);
 
-		if ( coordinate.x > 0 && coordinate.x < this.width && coordinate.y < this.height-1 && coordinate.y > 0) {
+	
+		if (this._isCoordinateInsideScreen(coordinate)) {
 
 			var coordIndex = coordinate.y * this.width + coordinate.x;
 
-			var nearSample = this._depthData[coordIndex];
-			
 			// Add color to the color daata (DEBUGGING PURPOSE)
-			coordIndex = coordinate.y * (this.width * 4) + (coordinate.x * 4);
-			this._colorData.set(color, coordIndex);
+			this._colorData.set(color, coordIndex * 4);
 
 			// the sample contains 1/w depth. if the corresponding depth in the nearCoordinate is behind the sample, the entity is occluded.
-			return nearestDepth < nearSample;
+			return nearestDepth < this._depthData[coordIndex];
 		}
+		// Assume that the object is occluded when the coordinate is outside the screen.
+		// The scanline test will have to clip to the correct pixel for look-up.
+		return true;
+	};
 
-		return false;
+	/**
+	*	Returns true if the coordinate is inside the screen pixel space. Otherwise it returns false.
+	*
+	*	@param {Vector} coordinate
+	*	@return {Boolean} true/false
+	*/
+	SoftwareRenderer.prototype._isCoordinateInsideScreen = function (coordinate) {
+		return coordinate.x >= 0 && coordinate.x < this.width && coordinate.y < this.height && coordinate.y >= 0;
 	};
 
 
@@ -690,11 +897,11 @@ define([
 			leftX = 0;
 		}
 
-		var diff = rightX - this.width;
+		var diff = rightX - this._clipX;
 		if (diff > 0) {
 			t = diff / (rightX - leftX);
 			rightZ = (1.0 - t) * rightZ + t * leftZ;
-			rightX = this.width;
+			rightX = this._clipX;
 		}
 
 		t = 0.0;
