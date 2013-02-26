@@ -27,8 +27,10 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		// this.translation.copy(a.translation).add(b.translation);
 
 		// Matrix3x3.combine(a.rotation, b.rotation, this.rotation);
-		this.tmpMat1.copy(a.rotation).multiplyDiagonalPost(a.scale, this.tmpMat1);
-		this.tmpMat2.copy(b.rotation).multiplyDiagonalPost(b.scale, this.tmpMat2);
+		this.tmpMat1.data.set(a.rotation.data);
+		this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
+		this.tmpMat2.data.set(b.rotation.data);
+		this.tmpMat2.multiplyDiagonalPost(b.scale, this.tmpMat2);
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
 
 		this.translation.setv(b.translation);

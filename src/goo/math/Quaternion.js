@@ -220,18 +220,18 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return workQuat.set(startQuat);
+			return workQuat.setv(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return workQuat.set(endQuat);
+			return workQuat.setv(endQuat);
 		}
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return workQuat.set(startQuat);
+			return workQuat.setv(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
-		workQuat.copy(endQuat);
+		workQuat.setv(endQuat);
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
@@ -263,7 +263,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		var z = scale0 * startQuat.z + scale1 * workQuat.z;
 		var w = scale0 * startQuat.w + scale1 * workQuat.w;
 
-		workQuat.set(x, y, z, w);
+		workQuat.setd(x, y, z, w);
 
 		// Return the interpolated quaternion
 		return workQuat;
@@ -609,6 +609,32 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		}
 		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
 			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
+	};
+
+	// TODO: Testing speed diffs
+	Quaternion.prototype.setd = function (x, y, z, w) {
+		this.data[0] = x;
+		this.data[1] = y;
+		this.data[2] = z;
+		this.data[3] = w;
+
+		return this;
+	};
+	Quaternion.prototype.seta = function (array) {
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+		this.data[2] = array[2];
+		this.data[3] = array[3];
+
+		return this;
+	};
+	Quaternion.prototype.setv = function (quat) {
+		this.data[0] = quat.data[0];
+		this.data[1] = quat.data[1];
+		this.data[2] = quat.data[2];
+		this.data[3] = quat.data[3];
+
+		return this;
 	};
 
 	return Quaternion;
