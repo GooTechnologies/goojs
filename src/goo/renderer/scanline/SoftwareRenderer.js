@@ -883,7 +883,7 @@ define([
 			rightZ = temp;
 		}
 
-		if (rightX < 0 || leftX > this.width) {
+		if (rightX < 0 || leftX > this._clipX) {
 			return; // Nothing to draw here.
 		}
 

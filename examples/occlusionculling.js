@@ -320,7 +320,7 @@ require(
 		function createFloorEntity(world)
 		{
 			var size = 100;
-			var height = 0.5;
+			var height = 2;
 			var textureRepeats = Math.ceil(size * 0.2);
 			var meshData = ShapeCreator.createBox(size, height, size, textureRepeats, textureRepeats);
 			// var meshData = ShapeCreator.createQuad(size, size, textureRepeats, textureRepeats);
