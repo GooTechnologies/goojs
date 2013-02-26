@@ -1,23 +1,32 @@
-define(['goo/renderer/Renderer', 
-		'goo/renderer/Camera', 
-		'goo/renderer/TextureCreator', 
-		'goo/renderer/Material', 
+define([
+		'goo/renderer/Renderer',
+		'goo/renderer/Camera',
+		'goo/renderer/TextureCreator',
+		'goo/renderer/Material',
 		'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 
-		'goo/renderer/Util', 
+		'goo/renderer/pass/RenderTarget',
+		'goo/renderer/Util',
 		'goo/renderer/shaders/ShaderLib'
-		], 
-
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget,	Util, ShaderLib) {
+	],
+	function(
+		Renderer,
+		Camera,
+		TextureCreator,
+		Material,
+		FullscreenUtil,
+		RenderTarget,
+		Util,
+		ShaderLib
+	) {
 	"use strict";
 
 	/*
 	*	Difference of Gaussian Filter pass. 
-	* 	Usable for edge detection.
+	*	Usable for edge detection.
 	*	
 	*	A lower sigma will create thinner edgelines, tune to get the sweetspot.
 	*	Maximum sigma is 2.5.
-	*	
+	*
 	*	http://en.wikipedia.org/wiki/Difference_of_Gaussians
 	*	http://www.tara.tcd.ie/bitstream/2262/12840/1/eg07.pdf , Adaptive Abstraction of 3D Scenes in Real-Time by Redmond and Dingliana, 2007
 	*/
@@ -25,8 +34,8 @@ define(['goo/renderer/Renderer',
 		settings = settings || {};
 
 		this.target = settings.target !== undefined ? settings.target : null;
-		var sizeX = settings.sizeX !== undefined ? settings.sizeX : 512;
-		var sizeY = settings.sizeY !== undefined ? settings.sizeY : 512;
+		var width = settings.width !== undefined ? settings.width : 512;
+		var height = settings.height !== undefined ? settings.height : 512;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 0.6;
 		var threshold = settings.threshold !== undefined ? settings.threshold : 0.005;
 
@@ -34,10 +43,10 @@ define(['goo/renderer/Renderer',
 			sigma = 2.5;
 		}
 
-		this.renderTargetX = new RenderTarget(sizeX, sizeY);
+		this.renderTargetX = new RenderTarget(width, height);
 
-		this.gaussian1 = new RenderTarget(sizeX, sizeY);
-		this.gaussian2 = new RenderTarget(sizeX, sizeY);
+		this.gaussian1 = new RenderTarget(width, height);
+		this.gaussian2 = new RenderTarget(width, height);
 
 		this.renderable = {
 			meshData : FullscreenUtil.quad,
@@ -46,15 +55,14 @@ define(['goo/renderer/Renderer',
 
 		this.convolutionShader1 = Util.clone(ShaderLib.convolution);
 		this.convolutionShader2 = Util.clone(ShaderLib.convolution);
-		
+
 		this.differenceShader = Util.clone(ShaderLib.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = Material.createMaterial(this.differenceShader);
-		
+
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].
-		// The max kernelsize is 25 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
+		// The max kernelsize is 2.5 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
 		var kernel1 = this.convolutionShader1.buildKernel(sigma);
-		//var kernel2 = this.convolutionShader2.buildKernel(1.6 * sigma);
 		var kernel2 = this.convolutionShader2.buildKernel(1.6 * sigma);
 
 		var kernelSize = kernel1.length;
@@ -74,8 +82,8 @@ define(['goo/renderer/Renderer',
 		this.convolutionShader1.uniforms.cKernel = kernel1;
 		this.convolutionShader2.uniforms.cKernel = kernel2;
 
-		this.blurX = [0.5 / sizeX, 0.0];
-		this.blurY = [0.0, 0.5 / sizeY];
+		this.blurX = [0.5 / width, 0.0];
+		this.blurY = [0.0, 0.5 / height];
 
 		this.convolutionMaterial1 = Material.createMaterial(this.convolutionShader1);
 		this.convolutionMaterial2 = Material.createMaterial(this.convolutionShader2);
@@ -86,7 +94,7 @@ define(['goo/renderer/Renderer',
 	}
 
 	DoGPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
-		
+
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;
 
@@ -100,7 +108,7 @@ define(['goo/renderer/Renderer',
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.gaussian1, true);
 
-		// Gaussian sigma2 
+		// Gaussian sigma2
 		this.renderable.materials[0] = this.convolutionMaterial2;
 
 		this.convolutionMaterial2.textures[0] = readBuffer;

@@ -26,7 +26,7 @@ function(
 		var ml;
 
 		beforeEach(function() {
-			
+
 			var loaderSettings = {
 				loader: loader
 			};
@@ -38,7 +38,7 @@ function(
 			it('creates a material from material definition', function() {
 				loader.load = function(path, parser) {
 					var p = new RSVP.Promise();
-						
+
 					if(path === 'material.mat') {
 						return parser({
 							"shader": "shaders/texturedLit.shader",
@@ -64,14 +64,15 @@ function(
 					}
 
 					return p;
-				}
+				};
+
 				loader.loadImage = function(path) {
 					var p = new RSVP.Promise();
 
 					p.resolve(new Image());
 
 					return p;
-				}
+				};
 
 				var p = ml.load('material.mat');
 

@@ -26,13 +26,18 @@ define(['goo/renderer/Camera'],
 				continue;
 			}
 
-			var bounds = entity.meshRendererComponent.worldBound;
-			var result = camera.contains(bounds);
-			if (result !== Camera.Outside) {
+			if (entity.meshRendererComponent.cullMode === 'Never') {
 				renderList.push(entity);
 				entity.isVisible = true;
 			} else {
-				entity.isVisible = false;
+				var bounds = entity.meshRendererComponent.worldBound;
+				var result = camera.contains(bounds);
+				if (result !== Camera.Outside) {
+					renderList.push(entity);
+					entity.isVisible = true;
+				} else {
+					entity.isVisible = false;
+				}
 			}
 		}
 	};

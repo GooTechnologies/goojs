@@ -47,6 +47,8 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
+		
+		this.doRender = true;
 
 		GameUtils.initAllShims();
 
@@ -60,6 +62,8 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		}
 
 		this.callbacks = [];
+		this.callbacksPreProcess = [];
+		this.callbacksPreRender = [];
 
 		var that = this;
 		this.start = -1;
@@ -78,13 +82,26 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					World.time = 0;
 					that.animationId = window.requestAnimationFrame(that.run);
 					return;
+				} else if (that.world.tpf > 0.5) {
+					that.animationId = window.requestAnimationFrame(that.run);
+					return;
+				}
+
+				for ( var i in that.callbacksPreProcess) {
+					that.callbacksPreProcess[i](that.world.tpf);
 				}
 
 				that.world.process();
 
+				for ( var i in that.callbacksPreRender) {
+					that.callbacksPreRender[i](that.world.tpf);
+				}
+
 				that.renderer.info.reset();
 
-				renderSystem.render(that.renderer);
+				if (that.doRender) {
+					renderSystem.render(that.renderer);
+				}
 
 				for ( var i in that.callbacks) {
 					that.callbacks[i](that.world.tpf);

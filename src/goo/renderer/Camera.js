@@ -1,7 +1,22 @@
-define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matrix4x4', 'goo/renderer/Plane', 'goo/math/MathUtils'],
+define([
+		'goo/util/Handy',
+		'goo/math/Vector3',
+		'goo/math/Vector4',
+		'goo/math/Matrix4x4',
+		'goo/math/Plane',
+		'goo/math/MathUtils',
+		'goo/math/Ray'
+	],
 	/** @lends Camera */
-	function (Handy,
-	Vector3, Vector4, Matrix4x4, Plane, MathUtils) {
+	function (
+		Handy,
+		Vector3,
+		Vector4,
+		Matrix4x4,
+		Plane,
+		MathUtils,
+		Ray
+	) {
 	"use strict";
 
 	/**
@@ -112,7 +127,7 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 		this._left.normalize();
 		this._up.normalize();
 		this._direction.normalize();
-		onFrameChange();
+		this.onFrameChange();
 	};
 
 	/**
@@ -248,10 +263,11 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	 * @param top
 	 */
 	Camera.prototype.setViewPort = function (left, right, bottom, top) {
-		setViewPortLeft(left);
-		setViewPortRight(right);
-		setViewPortBottom(bottom);
-		setViewPortTop(top);
+		console.warn('Camera.setViewPort() not implemented.');
+		//setViewPortLeft(left);
+		//setViewPortRight(right);
+		//setViewPortBottom(bottom);
+		//setViewPortTop(top);
 	};
 
 	/**
@@ -689,9 +705,13 @@ define(['goo/util/Handy', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/math/Matr
 	// renderer.setViewport(x, y, w, h);
 	// }
 	Camera.prototype.toString = function () {
+		console.warn('Camera.toString() not implemented.');
+		/*
 		return "com.ardor3d.renderer.Camera: loc - " + Arrays.toString(getLocation().toArray(null)) + " dir - "
 			+ Arrays.toString(getDirection().toArray(null)) + " up - " + Arrays.toString(getUp().toArray(null)) + " left - "
 			+ Arrays.toString(getLeft().toArray(null));
+		*/
+		return null;
 	};
 
 	/*

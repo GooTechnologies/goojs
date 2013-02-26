@@ -25,7 +25,7 @@ function(
 			throw new Error('MeshLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+		if(typeof parameters.loader === "undefined" || parameters.loader === null) {
 			throw new Error('MeshLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
@@ -57,7 +57,7 @@ function(
 				this.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
 				this.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
 			}
-			
+
 			promise.resolve(this._parseMeshData(data, 0, 'Mesh'));
 		} catch(e) {
 			promise.reject(e);

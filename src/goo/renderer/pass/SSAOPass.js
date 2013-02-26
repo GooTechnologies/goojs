@@ -26,7 +26,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 				sizeY: height
 			});
 //			this.blurPass.needsSwap = true;
-			
+
 			this.depthTarget = new RenderTarget(width, height, {
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'

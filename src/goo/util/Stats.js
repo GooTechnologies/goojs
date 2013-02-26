@@ -18,7 +18,13 @@ define(
 			event.preventDefault();
 			setModeP(++mode % 2);
 		}, false);
-		container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer;z-index:1000';
+		container.style.cssText = 'width:80px;cursor:pointer;z-index:1000;'+
+		'-webkit-touch-callout: none;'+
+		'-webkit-user-select: none;'+
+		'-khtml-user-select: none;'+
+		'-moz-user-select: none;'+
+		'-ms-user-select: none;'+
+		'user-select: none;';
 
 		var fpsDiv = document.createElement('div');
 		fpsDiv.id = 'fps';
@@ -113,6 +119,10 @@ define(
 				updateGraph(msGraph, Math.min(30, 30 - (ms / 200) * 30));
 
 				prevTimeMs = time;
+
+				if (info) {
+					infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
+				}
 			}
 
 			frames++;
@@ -127,10 +137,6 @@ define(
 
 				prevTime = time;
 				frames = 0;
-			}
-
-			if (info) {
-				infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
 			}
 
 			return time;

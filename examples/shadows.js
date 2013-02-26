@@ -11,10 +11,16 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
 		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
 		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System,
+		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib',
+		'goo/util/MeshBuilder',
+		'goo/math/Transform'
+		], function(World, Entity, System,
 	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
 	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, Camera,
-	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib) {
+	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib,
+	MeshBuilder,
+	Transform
+		) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -202,7 +208,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			'}'//
 			].join('\n')
 			}, 'Test');
-//		gui.add(shader.uniforms, 'depthControl', 0.0, 2000.0);
+		gui.add(shader.uniforms, 'depthControl', 0.0, 2000.0);
 		gui.add(shader.uniforms, 'attenuationPower', 0.0, 1000.0);
 
 		var material = new Material('shadowed');

@@ -15,14 +15,18 @@ function(Vector3) {
 		var tmpVec = new Vector3();
 		this.opaqueSorter = function(a, b) {
 			//TODO: Add texture checks on material
-			
+
 			var shader1 = a.meshRendererComponent.materials[0].shader;
 			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1._id === shader2._id) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
-				var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
-				var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
+				
+//				var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
+//				var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
+				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquaredF();
+				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquaredF();
+				
 				return dist1 - dist2;
 			}
 			return shader1._id - shader2._id;
@@ -34,13 +38,17 @@ function(Vector3) {
 			var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
 			return dist2 - dist1;
 		};
+		this.bucketSorter = function(a, b) {
+			return a - b;
+		};
 	}
 
 	RenderQueue.prototype.sort = function(renderList, camera) {
 		var index = 0;
 		this.camera = camera;
 		var buckets = {};
-		for ( var i = 0; i < renderList.length; i++) {
+		var bucketSortList = [];
+		for (var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
 			if (!renderable.meshRendererComponent || renderable.meshRendererComponent.materials.length === 0) {
 				renderList[index] = renderable;
@@ -52,11 +60,16 @@ function(Vector3) {
 			if (!bucket) {
 				bucket = [];
 				buckets[renderQueue] = bucket;
+				bucketSortList.push(renderQueue);
 			}
 			bucket.push(renderable);
 		}
 
-		for ( var key in buckets) {
+		if (bucketSortList.length > 1) {
+			bucketSortList.sort(this.bucketSorter);
+		}
+		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
+			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
 			if (key <= RenderQueue.TRANSPARENT) {
 				bucket.sort(this.opaqueSorter);

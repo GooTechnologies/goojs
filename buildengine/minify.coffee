@@ -15,8 +15,6 @@ doClosure = (fileIn, fileOut, deleteAfter) ->
 	exec command,
 		maxBuffer: 5*1024*1024
 	, (error, stdout, stderr) ->
-		#console.log('stdout: ' + stdout);
-		#console.log('stderr: ' + stderr);
 		if deleteAfter
 			fs.unlink fileIn
 		if error?
@@ -36,18 +34,13 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 	requirejs = require('requirejs')
 	config =
 		baseUrl: absroot
-		#useStrict : true
+		useStrict : true
 		out: tempClosure
 		name: filePathIn
 		optimize: 'none'
-		#should fix this in a better way
 		paths:
 			'goo/lib' : '../lib'
-		# Uncomment to exclude library from build
-		#excludeShallow: [
-		#	'goo/lib/rsvp.amd'
-		#]
-	
+
 	requirejs.optimize config, (buildResponse) ->
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
@@ -65,19 +58,29 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 		if includefile
 			fs.readFile includefile, 'utf-8', (err, data) ->
 				if err then return console.log err
-				lines = data.split("\n")
+				
+				# REVIEW: Rather do split by whitespace in this case.
+				#lines = data.split("\n")
+				lines = data.split(/\s+/)
+
 				if lines.length > 1
 					pattern = '{'+lines.join(',')+'}'
 				else
 					pattern = lines[0]
+				
+				# REVIEW: It's not very clear what this line is supposed to do.
+				#         Partly since the `pattern` variable name is confusing.
 				if /^(\{[\s,]*\}|\s*)$/.test pattern
 					return console.log 'No files to include'
-		
+
 				glob = require('glob')
 				glob pattern, {root: absroot}, (err, files) ->
+					if(files.length == 0)
+						console.log 'No files found'
+						process.exit
+
 					for f,idx in files
 						files[idx] = "\""+f.slice(absroot.length+1, f.lastIndexOf('.'))+"\""
-	
 	
 					str = "require([#{files}]);\n"
 					tempRequire = 'req_temp'

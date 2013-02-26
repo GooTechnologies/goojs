@@ -11,7 +11,7 @@ define(
 		var vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
 		for (var i = 0; i < vendorPrefixes.length; i++) {
 			var ext = context.getExtension(vendorPrefixes[i] + "WEBGL_compressed_texture_s3tc");
-			if (ext != null) {
+			if (typeof ext !== 'undefined' && ext !== null) {
 				return ext;
 			}
 		}

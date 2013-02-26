@@ -22,7 +22,7 @@ define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'],
 
 	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		if (this.clearColor) {
-			Vector.copy(renderer.clearColor, this.oldClearColor);
+			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 		}
 

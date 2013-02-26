@@ -362,10 +362,9 @@ define([
 		'			lambertTerm;',//
 		'		vec3 E = normalize(eyeVec);',//
 		'		vec3 R = reflect(-L, N);',//
-		'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
+		'		float specular = pow( clamp(dot(R, E), 0.0, 1.0), materialSpecularPower);',//
 		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 		'			specular;',//
-		'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
 		'	}',//
 		'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
 		'}'//
@@ -424,7 +423,7 @@ define([
 
 		'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);', //
 		'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);', //
-		'	binormal = cross(normal, tangent)*vec3(vertexTangent.w);', //
+		'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);', //
 
 		'	texCoord0 = vertexUV0;', //
 		'	texCoord1 = vertexUV1;', //
@@ -464,7 +463,7 @@ define([
 		'	vec4 texCol = texture2D(diffuseMap, texCoord1);',//
 		'	vec4 final_color = materialAmbient;',//
 
-		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz - vec3(0.5, 0.5, 0.5);',//
+		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',//
 		'	vec3 worldNormal = (tangentToWorld * tangentNormal);',//
 		'	vec3 N = normalize(worldNormal);',//
 
@@ -485,8 +484,7 @@ define([
 		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
 		'			specular;',//
 		'	}',//
-		' gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
-		// ' gl_FragColor = vec4(texCol.rgb, texCol.a);',//
+		'	gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',//
 		'}'//
 		].join('\n')
 	};
@@ -915,7 +913,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.TEXTURE0,
 			offset:   1.0,
-			darkness: 1.0
+			darkness: 1.5
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1468,15 +1466,14 @@ define([
 		'void main(void) {', //
 		'	mat4 mat = mat4(0.0);', //
 
-		'	for (int i = 0; i < WEIGHTS; i++) {',
-		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
-		'	}',
-		
-//		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
-//		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
-//		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
-//		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
+//		'	for (int i = 0; i < WEIGHTS; i++) {',
+//		'		mat += jointPalette[int(vertexJointIDs[i])] * vertexWeights[i];',
+//		'	}',
 
+		'	mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;', //
+		'	mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;', //
+		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
+		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
 		'	texCoord0 = vertexUV0;',//
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
 		'}'//
@@ -1599,7 +1596,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1710,7 +1707,7 @@ define([
 			'	L = lightPosition - worldPos.xyz;', //
 			'	V = cameraPosition - worldPos.xyz;', //
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'}',
+			'}'
 		].join('\n'),
 		fshader : [//
 			'precision mediump float;',//
@@ -1731,7 +1728,7 @@ define([
 			'	vec3 n = normalize(N);',
 			'	vec3 l = normalize(L);',
 			'	vec3 v = normalize(V);',
-				
+
 			'    float lambert = dot(l,n);',
 			'    vec4 colour = MidColour;',
 			'    if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
@@ -1739,13 +1736,13 @@ define([
 			'    if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
 
 			'    gl_FragColor = colour;',
-			'}',
+			'}'
 		].join('\n')
 	};
 
 	/*
 	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
-	*/ 
+	*/
 	ShaderLib.differenceOfGaussians = {
 		includes : [ShaderFragments.features.fog],
 		attributes : {
@@ -1792,15 +1789,10 @@ define([
 		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
 		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
 		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
-		//'	vec3 col = sample1.rgb - sample2.rgb;',//
 		'	float value = (col.r + col.g + col.b) / 3.0;',
-		//'	float value = length(col);',
-		'	if (value > threshold) {',
-		'		value = 1.0;',
-		'	} else {',
-		'		value = 0.0;',
-		'	}',
-		'	gl_FragColor = vec4((1.0 - value) * originalColor.rgb + vec3(value), 1.0);',//
+		'	value = step(threshold, value);',
+		'	vec3 outputColor = mix(originalColor.rgb, vec3(value), value);',
+		'	gl_FragColor = vec4(outputColor, 1.0);',//
 		'}'//
 		].join('\n')
 	};
@@ -1814,7 +1806,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.TEXTURE0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1879,12 +1871,12 @@ define([
 
 			"void main() {",
 				'vec3 result = vec3(0.0);',
-		    	'for(int x=-1; x<=1; x++) {',
-		    	'	for(int y=-1; y<=1; y++) {',
-		    	'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
-		    	'	}',
-		    	'}',
-		    	'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
+				'for(int x=-1; x<=1; x++) {',
+				'	for(int y=-1; y<=1; y++) {',
+				'		result += texture2D(tDiffuse, vUv + vec2(x, y) / viewport).rgb;',
+				'	}',
+				'}',
+				'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
 			"}"
 		].join("\n")
 	};
@@ -1907,7 +1899,7 @@ define([
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec3 worldPosition;',
-		
+
 		'void main(void) {', //
 		'	vec4 viewpos = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'	worldPosition = viewpos.xyz;',

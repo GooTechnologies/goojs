@@ -33,14 +33,36 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 		this.shaderProgram = null;
 
-		// Attributes detected in the shader
+		/**
+		 * Attributes detected in the shader source code.
+		 * Maps attribute variable's name to {format}.
+		 * @type {Object.<string, {format:string}>}
+		 */
 		this.attributeMapping = {};
+
+		/**
+		 * Maps attribute variable's name to attribute location (from getAttribLocation).
+		 * @type {Object.<{string, number}>}
+		 */
 		this.attributeIndexMapping = {};
 
-		// Uniforms detected in the shader
+		/**
+		 * Uniforms detected in the shader source code.
+		 * Maps variable name to {format}.
+		 * @type {Object.<string, {format:string}>}
+		 */
 		this.uniformMapping = {};
+
+		/**
+		 * Maps uniform variable name to ShaderCall object.
+		 * @type {Object.<{string, ShaderCall}>}
+		 */
 		this.uniformCallMapping = {};
 
+		/**
+		 * Texture slots detected in the shader source code.
+		 * @type {Array.<format:string, name:string>}
+		 */
 		this.textureSlots = [];
 
 		this.defaultCallbacks = {};
@@ -60,6 +82,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 	Shader.id = 0;
 
+
+	/**
+	 * Matches an attribute or uniform variable declaration.
+	 *
+	 * Match groups:
+	 *
+	 *   1: type (attribute|uniform)
+	 *   2: format (float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)
+	 *   3: variable name
+	 *   4: if exists, the variable is an array
+	 */
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
 	Shader.prototype.apply = function (shaderInfo, renderer) {
@@ -141,23 +174,29 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 
 	Shader.prototype._investigateShaders = function () {
 		this.textureSlots = [];
-		this._investigateShader(this.vertexSource);
-		this._investigateShader(this.fragmentSource);
+		Shader.investigateShader(this.vertexSource, this);
+		Shader.investigateShader(this.fragmentSource, this);
 	};
 
-	Shader.prototype._investigateShader = function (source) {
+	/**
+	 * Extract shader variable definitions from shader source code.
+	 * @static
+	 * @param {string} source The source code.
+	 * @param {{attributeMapping:Object, uniformMapping:Object, textureSlots:Array}} target
+	 */
+	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;
 		var matcher = regExp.exec(source);
 
 		while (matcher !== null) {
 			var definition = {
-				type : matcher[1],
-				format : matcher[2],
-				variableName : matcher[3],
-				arrayName : matcher[4]
+				// data type: float, int, ...
+				format : matcher[2]
 			};
-
-			if (definition.arrayName) {
+			var type = matcher[1];  // "attribute" or "uniform"
+			var variableName = matcher[3];
+			var arrayDeclaration = matcher[4];
+			if (arrayDeclaration) {
 				if (definition.format === 'float') {
 					definition.format = 'floatarray';
 				} else if (definition.format === 'int') {
@@ -165,17 +204,17 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 				}
 			}
 
-			if ("attribute" === definition.type) {
-				this.attributeMapping[definition.variableName] = definition;
+			if ("attribute" === type) {
+				target.attributeMapping[variableName] = definition;
 			} else {
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
 						format : definition.format,
-						name : definition.variableName
+						name : variableName
 					};
-					this.textureSlots.push(textureSlot);
+					target.textureSlots.push(textureSlot);
 				}
-				this.uniformMapping[definition.variableName] = definition;
+				target.uniformMapping[variableName] = definition;
 			}
 
 			matcher = regExp.exec(source);
@@ -341,6 +380,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 
 		for (var i = 0; i < 16; i++) {
+			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					uniformCall.uniform1i(i);
@@ -351,6 +391,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		// TODO
 		var lightPos = new Vector3(-20, 20, 20);
 		for (var i = 0; i < 4; i++) {
+			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
@@ -422,6 +463,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
 			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
+			shininess = Math.max(shininess, 1.0);
 			uniformCall.uniform1f(shininess);
 		};
 
@@ -481,7 +523,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.TIME = 'TIME';
-	
+
 	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
 	Shader.LIGHT_NEAR_PLANE = 'NEAR_PLANE';

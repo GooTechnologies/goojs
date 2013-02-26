@@ -256,7 +256,9 @@ function (Vector3) {
 		}
 		loc.y = 0;
 		loc.normalize();
-		player.acceleration.set(loc).mul(moveMult);
+
+		// REVIEW: Player is not defined anywhere!?
+		//player.acceleration.set(loc).mul(moveMult);
 
 		// transform.rotation.x += this.rotationVector.x * rotMult;
 		// transform.rotation.y += this.rotationVector.y * rotMult;

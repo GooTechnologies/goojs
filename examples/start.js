@@ -176,7 +176,8 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			// Add custom attribute
 			attributeMap.Stuff = {
 				count : 1,
-				type : 'Byte'
+				type : 'Byte',
+				normalized : false
 			};
 
 			var meshData = new MeshData(attributeMap, 4, 6);

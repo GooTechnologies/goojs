@@ -2,7 +2,6 @@ define(["goo/math/Vector"],
 	/** @lends Vector3 */
 	function (Vector) {
 	"use strict";
-	
 
 	/* ====================================================================== */
 
@@ -365,6 +364,39 @@ define(["goo/math/Vector"],
 		this.z = (1.0 - factor) * this.z + factor * end.z;
 
 		return this;
+	};
+
+	// TODO: Testing speed diffs
+	Vector3.prototype.setd = function (x, y, z) {
+		this.data[0] = x;
+		this.data[1] = y;
+		this.data[2] = z;
+
+		return this;
+	};
+	Vector3.prototype.seta = function (array) {
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+		this.data[2] = array[2];
+
+		return this;
+	};
+	Vector3.prototype.setv = function (vec3) {
+		this.data[0] = vec3.data[0];
+		this.data[1] = vec3.data[1];
+		this.data[2] = vec3.data[2];
+
+		return this;
+	};
+	Vector3.prototype.subv = function (vec3) {
+		this.data[0] -= vec3.data[0];
+		this.data[1] -= vec3.data[1];
+		this.data[2] -= vec3.data[2];
+
+		return this;
+	};
+	Vector3.prototype.lengthSquaredF = function () {
+		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
 	};
 
 	/* ====================================================================== */

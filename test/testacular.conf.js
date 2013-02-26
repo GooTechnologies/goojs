@@ -15,7 +15,8 @@ files = [
   'test/testacular-main.js',
   {pattern: 'test/**/*.js', included: false},
   {pattern: 'src/goo/**/*.js', included: false},
-  {pattern: 'lib/**/*.js', included: false}
+  {pattern: 'lib/**/*.js', included: false},
+  {pattern: 'minified/goo.js', included: false}
 ];
 
 

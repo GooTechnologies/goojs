@@ -31,10 +31,10 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.tmpMat2.copy(b.rotation).multiplyDiagonalPost(b.scale, this.tmpMat2);
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
 
-		this.translation.copy(b.translation);
+		this.translation.setv(b.translation);
 		this.tmpMat1.applyPost(this.translation).add(a.translation);
 
-		this.scale.copy(a.scale).mul(b.scale);
+		this.scale.setv(a.scale).mul(b.scale);
 		// this.scale.copy(Vector3.ONE);
 	};
 
@@ -47,7 +47,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	};
 
 	Transform.prototype.applyForward = function (point, store) {
-		store.copy(point);
+		store.setv(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);
@@ -117,7 +117,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 		this.tmpVec.copy(this.translation).sub(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};
-	
+
 	Transform.prototype.invert = function (store) {
 		var result = store;
 		if (!result) {

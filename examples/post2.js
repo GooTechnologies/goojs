@@ -6,7 +6,7 @@ require.config({
     }
 });
 require(
-	['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
+		[	'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 			'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 			'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData',
 			'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator',
@@ -14,11 +14,13 @@ require(
 			'goo/shapes/ShapeCreator', 'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight',
 			'goo/scripts/BasicControlScript', 'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent',
 			'goo/renderer/pass/Composer', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util',
-			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4',
-			'goo/renderer	/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/DoGPass', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem, RenderSystem,
-		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4','goo/scripts/MouseLookControlScript', 
+			'goo/scripts/WASDControlScript', 'goo/renderer/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/DoGPass', 'goo/renderer/shaders/ShaderLib'
+		], 
+		
+		function(World, Entity, System, TransformSystem, RenderSystem,TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
 		TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, BasicControlScript,
-		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
+		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4, MouseLookControlScript, WASDControlScript,
 		ShaderFragments, DepthPass, DoGPass, ShaderLib) {
 		"use strict";
 
@@ -38,10 +40,7 @@ require(
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
-			var controlScript = new BasicControlScript();
-			controlScript.rollSpeed = 1;
-			controlScript.multiplier.set(-1,-1,1);
-			cameraEntity.setComponent(new ScriptComponent(controlScript));
+			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 5.0, 'walkSpeed' : 18.0})]));
 
 			// Examples of model loading
 			loadModels(goo);
@@ -123,7 +122,7 @@ require(
 
 			var depthPass = new DepthPass(goo.world.getSystem('PartitioningSystem').renderList, unpackDepth);
 
-			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.6});
+			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.8, 'width' : 1024, 'height' : 1024});
 
 			// Regular copy
 			var shader = Util.clone(ShaderLib.copy);
@@ -134,7 +133,7 @@ require(
 			var composer = new Composer();
 			composer.addPass(renderPass);
 			composer.addPass(dogPass);
-			composer.addPass(depthPass);
+			//composer.addPass(depthPass);
 			composer.addPass(outPass);
 
 			goo.callbacks.push(function(tpf) {

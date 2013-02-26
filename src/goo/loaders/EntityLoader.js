@@ -45,16 +45,16 @@ function(
 			throw new Error('EntityLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {	
+		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
 			throw new Error('EntityLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
-		if(typeof parameters.world === "undefined" || parameters.world === null) {	
+		if(typeof parameters.world === "undefined" || parameters.world === null) {
 			throw new Error('EntityLoader(): Argument `parameters.world` was undefined/null');
 		}
 
 		this._loader = parameters.loader;
-		this._world = parameters.world; 
+		this._world = parameters.world;
 	}
 
 	/**
@@ -76,35 +76,40 @@ function(
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
 
-		if(entitySource) {
+		if(entitySource.components) {
 			var component;
 
-			for(var type in entitySource.components || []) {
-				component = entitySource.components[type];
+			component = entitySource.components.transform;
+			if(component) {
+				loadedComponents.push(this._getTransformComponent(component));
+			}
 
-				if(type === 'transform') {
-					loadedComponents.push(this._getTransformComponent(component));
+			component = entitySource.components.camera;
+			if(component) {
+				loadedComponents.push(this._getCameraComponent(component));
 
-				} else if(type === 'camera') {
-					loadedComponents.push(this._getCameraComponent(component));
+			}
 
-				} else if(type === 'meshRenderer') {
-					var p = this._getMeshRendererComponent(component)
-					.then(function(meshRendererComponent) {
-						loadedComponents.push(meshRendererComponent);
-						return meshRendererComponent;
-					});
-					
-					promises.push(p);
-				} else if(type === 'meshData') {
-					var p = this._getMeshDataComponent(component)
-					.then(function(meshDataComponent) {
-						loadedComponents.push(meshDataComponent);
-						return meshDataComponent;
-					});
+			component = entitySource.components.meshRenderer;
+			if(component) {
+				var p = this._getMeshRendererComponent(component)
+				.then(function(meshRendererComponent) {
+					loadedComponents.push(meshRendererComponent);
+					return meshRendererComponent;
+				});
 
-					promises.push(p);
-				}
+				promises.push(p);
+			}
+
+			component = entitySource.components.meshData;
+			if(component) {
+				var p = this._getMeshDataComponent(component)
+				.then(function(meshDataComponent) {
+					loadedComponents.push(meshDataComponent);
+					return meshDataComponent;
+				});
+
+				promises.push(p);
 			}
 		}
 
@@ -120,7 +125,7 @@ function(
 		.then(function(components) {
 
 			var entity = new Entity(that._world);
-			
+
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
@@ -128,7 +133,7 @@ function(
 
 				entity.setComponent(loadedComponents[i]);
 			}
-			
+
 			return entity;
 		});
 	};
@@ -139,7 +144,7 @@ function(
 
 		tc.transform.translation = new Vector3(transformComponentSource.translation);
 		tc.transform.scale = new Vector3(transformComponentSource.scale);
-		
+
 		tc.transform.rotation.fromAngles(
 			transformComponentSource.rotation[0],
 			transformComponentSource.rotation[1],
@@ -177,12 +182,12 @@ function(
 
 		return RSVP.all(promises)
 		.then(function(materials) {
-			
+
 			var mrc = new MeshRendererComponent();
 			for(var i in materials) {
 				mrc.materials.push(materials[i]);
 			}
-			
+
 			return mrc;
 		});
 	};
@@ -204,10 +209,10 @@ function(
 
 		// When the mesh is loaded
 		return RSVP.all(promises)
-		.then(function(data) {	
+		.then(function(data) {
 			// We placed the meshDataPromise first so it's at index 0 
 			var mdc = new MeshDataComponent(data[0]);
-			
+
 			return mdc;
 		});
 	};

@@ -51,7 +51,8 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 				this.domElement.focus();
 			}
 
-			if (this.dragOnly && (this.dragButton === -1 || this.dragButton == event.button)) {
+
+			if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 				this.mouseState.buttonDown = down;
 
 				event.preventDefault();

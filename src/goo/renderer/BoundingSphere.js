@@ -34,8 +34,8 @@ function(Transform, Vector3, Camera) {
 		var newCenter = max.add(min).div(2.0);
 		var size = 0, test;
 		for ( var i = 0; i < verts.length; i += 3) {
-			vec.set(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.sub(newCenter).length();
+			vec.setd(verts[i], verts[i + 1], verts[i + 2]);
+			test = vec.subv(newCenter).length();
 			if (test > size) {
 				size = test;
 			}

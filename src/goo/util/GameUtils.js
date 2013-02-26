@@ -13,7 +13,7 @@ function () {
 		fullscreen: true,
 		pointerLock: true
 	};
-	
+
 	GameUtils.toggleFullScreen = function () {
 		if (!document.fullscreenElement) {
 			if (document.documentElement.requestFullScreen) {
@@ -37,7 +37,7 @@ function () {
 			}
 		}
 	};
-	
+
 	GameUtils.initAllShims = function (global) {
 		this.initAnimationShims();
 		this.initFullscreenShims(global);
@@ -89,7 +89,7 @@ function () {
 				}
 
 				GameUtils.supported.fullscreen = false;
-				
+
 				return function () {
 					return false;
 				};
@@ -106,11 +106,16 @@ function () {
 		if (!document.hasOwnProperty("fullscreenElement")) {
 			var getter = (function () {
 				var name = ["webkitCurrentFullScreenElement", "webkitFullscreenElement", "mozFullScreenElement"];
+
+				var getNameInDocument = function (i) {
+					return function() {
+						return document[name[i]];
+					};
+				};
+
 				for (var i = 0; i < name.length; i++) {
 					if (name[i] in document) {
-						return function () {
-							return document[name[i]];
-						};
+						return getNameInDocument(i);
 					}
 				}
 				return function () {
