@@ -65,12 +65,28 @@ function (Entity, EntityManager, TransformComponent) {
 	 * @returns System
 	 */
 	World.prototype.getSystem = function (type) {
-		for ( var i in this._systems) {
+		for (var i in this._systems) {
 			var system = this._systems[i];
 			if (system.type === type) {
 				return system;
 			}
 		}
+	};
+
+	/**
+	*	Removes the {System} of type 'type'. Returns true upon successful removal of the system. Otherwise false is returned.
+	*	@param {String} type Type of system to remove.
+	*	@return {Boolean} true or false
+	*/
+	World.prototype.removeSystem = function (type) {
+		for (var i in this._systems) {
+			var system = this._systems[i];
+			if (system.type === type) {
+				this._systems.splice(i, 1);
+				return true;
+			}
+		}
+		return false;
 	};
 
 	/**

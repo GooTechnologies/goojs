@@ -13,7 +13,7 @@ define([
 	"use strict";
 
 	/**
-	*	@class A software renderer which renders triangles to a depth buffer (w-buffer). The buffer is used for occlusion culling.
+	*	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
 	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
@@ -68,9 +68,9 @@ define([
 	};
 
 	/**
-	*	Renders z-buffer (w-buffer) from the given renderList of entities.
+	*	Renders z-buffer (w-buffer) from the given renderList of entities with OccuderComponents.
 	*
-	*	@param {Array.<Entity>} renderList The array of entities which are possible occluders.
+	*	@param {Array.<Entity>} renderList The array of entities with attached OccluderComponents.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
@@ -422,8 +422,9 @@ define([
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
-		var posArray = entity.meshDataComponent.meshData.attributeMap.POSITION.array;
-		var vertIndexArray = entity.meshDataComponent.meshData.indexData.data;
+		// TODO : use the getComponent() here, might slow things down though, as I know the entity has to have an occluderComponent.
+		var posArray = entity.occluderComponent.meshData.attributeMap.POSITION.array;
+		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
 		// Allocate the trianle array for the maximum case,
 		// where all the triangles are visible.

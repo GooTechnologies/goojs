@@ -18,16 +18,10 @@ require(
 		'goo/scripts/MouseLookControlScript',
 		'goo/scripts/WASDControlScript',
 		'goo/math/Vector3',
-		'goo/renderer/pass/Composer',
-		'goo/renderer/pass/DepthPass',
-		'goo/renderer/pass/BloomPass',
-		'goo/renderer/pass/RenderPass',
-		'goo/renderer/pass/HierarchicalZPass',
-		'goo/renderer/pass/FullscreenPass',
-		'goo/renderer/Util',
-		'goo/renderer/pass/RenderTarget',
-		'goo/renderer/scanline/SoftwareRenderer',
-		'goo/renderer/shaders/ShaderLib'
+		'goo/renderer/shaders/ShaderLib',
+		'goo/entities/systems/OcclusionCullingSystem',
+		'goo/entities/components/OccluderComponent',
+		'goo/loaders/JSONImporter'
 	],
 	function (
 		GooRunner,
@@ -41,16 +35,10 @@ require(
 		MouseLookControlScript,
 		WASDControlScript,
 		Vector3,
-		Composer,
-		DepthPass,
-		BloomPass,
-		RenderPass,
-		HierarchicalZPass,
-		FullscreenPass,
-		Util,
-		RenderTarget,
-		SoftwareRenderer,
-		ShaderLib
+		ShaderLib,
+		OcclusionCullingSystem,
+		OccluderComponent,
+		JSONImporter
 	) {
 		'use strict';
 
@@ -81,177 +69,25 @@ require(
 			camera.translation.set(0,1.79,20);
 
 			setupRenderer(goo, camera);
-
 		}
 
 
-		function setupRenderer(goo, cam) {
-
-			// Disable normal rendering
-			goo.world.getSystem('RenderSystem').doRender = false;
-
-			var renderList = goo.world.getSystem('PartitioningSystem').renderList;
-
-			// Different options for rendering depth values, using color texture, float texture or depth texture.
-			// Data types link : http://opengl.czweb.org/ch03/031-034.html
-			
-			// Float-textures could not always work, https://developer.mozilla.org/en-US/docs/WebGL/WebGL_best_practices
-			
-			// Color texture for depth values needs to use the pack- and unPack functions for writing and storing the values.
-			var colorTextureOptions = {
-				minFilter : 'NearestNeighborNoMipMaps',
-				magFilter : 'NearestNeighbor',
-				type : 'UnsignedByte',
-				format : 'RGBA',
-				depthBuffer : true, 
-				stencilBuffer : false
-			};
-
-			// The float luminance texture data is saved in the red color channel.
-			var floatTextureOptions = {
-				minFilter : 'NearestNeighborNoMipMaps',
-				magFilter : 'NearestNeighbor',
-				type : 'Float',
-				format : 'Luminance',
-				depthBuffer : true,
-				stencilBuffer : false
-			};
-
-			var depthTextureOptions = {
-				minFilter : 'NearestNeighborNoMipMaps',
-				magFilter : 'NearestNeighbor',
-				type : 'UnsignedShort',
-				format : 'Depth',
-				depthBuffer : false,
-				stencilBuffer : false
-			};
-
-			console.log('Actual Rendering dimensions: width = ' + goo.renderer.domElement.width + ", height = " + goo.renderer.domElement.height);
-
-			// Set up the scale of which the occluder data should be rendered in.
-			var firstLodScale = 1;
-			var depthWidth = goo.renderer.domElement.width * firstLodScale;
-			var depthHeight = goo.renderer.domElement.height * firstLodScale;
-
-			var depthTarget = new RenderTarget(depthWidth, depthHeight, colorTextureOptions);
-			var composer = new Composer(depthTarget);
-
-			var hiZ = new HierarchicalZPass(renderList);
-
-			// Regular copy
-			var shader = Util.clone(ShaderLib.copy);
-			var outPass = new FullscreenPass(shader);
-			outPass.renderToScreen = true;
-
-			//composer.addPass(hiZ);
-
-			var renderPass = new RenderPass(renderList);
-			renderPass.renderToScreen = true;
-
-			composer.addPass(renderPass);
-
-			var gl = goo.renderer.context;
-
-			var numOfPixels = depthWidth * depthHeight;
-
-			var storage = new Uint8Array(4*numOfPixels);
-
-			var readTime = new Array();
+		function setupRenderer(goo, camera) {
 
 			var debugcanvas = document.getElementById('debugcanvas')
 			var debugContext = debugcanvas.getContext('2d');
 			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
-			var softRenderer = new SoftwareRenderer({"width" : debugcanvas.width, "height" : debugcanvas.height, "camera" : cam});
 
+			// Override the current renderList for rendering in the GooRunner.
+			var occlusionCullingSystem = new OcclusionCullingSystem({"width" : debugcanvas.width, "height" : debugcanvas.height, "camera" : camera});
+			goo.world.setSystem(occlusionCullingSystem);
+			goo.world.getSystem('RenderSystem').renderList = occlusionCullingSystem.renderList;
+			goo.world.removeSystem('PartitioningSystem'); // remove the existing system performing view frustum culling.
+
+			// Add the color data to the debug canvas
 			goo.callbacks.push(function(tpf) {
-				// composer.render(goo.renderer, tpf);
-				// https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html
-				// it reads from bottom up, width first.
-
-				//console.time("renderTime");
-				softRenderer.render(renderList);
-				//console.timeEnd("renderTime");
-
-				softRenderer.copyDepthToColor();
-
-				//console.time("occlusionTime");
-				softRenderer.performOcclusionCulling(renderList);
-				//console.timeEnd("occlusionTime");
-
-				composer.render(goo.renderer, tpf);
-
-
-				imagedata.data.set(softRenderer.getColorData());
+				imagedata.data.set(occlusionCullingSystem.renderer.getColorData());
 				debugContext.putImageData(imagedata,0,0);
-				
-
-				//gl.readPixels(0, 0, depthWidth, depthHeight, gl.RGBA, gl.UNSIGNED_BYTE, storage);
-			});
-
-		
-
-			document.addEventListener('keydown', function(event) {
-					//console.log(event.keyCode);
-					switch (event.keyCode) {
-						case 80: // 'P' 
-
-							/*
-							var values = "{ \n";
-							for(var i = 0; i < storage.length; i++)
-							{
-								values += storage[i] + ', ';
-								
-								if ( (i+1) % 4 == 0)
-								{
-									values += '\n';
-								}
-							}
-
-							values += "}"
-							
-							document.getElementById('debugarea').value = values;
-							*/
-							var debugcanvas = document.getElementById('debugcanvas')
-							var debugContext = debugcanvas.getContext('2d');
-							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
-
-							imagedata.data.set(storage);
-
-							debugContext.putImageData(imagedata,0,0);
-
-							var averageTimeToRead = 0.0;
-							for(var i = 0; i < readTime.length; i++)
-							{
-								averageTimeToRead += readTime[i];
-							}
-
-							averageTimeToRead = averageTimeToRead/readTime.length;
-							
-							readTime = [];
-
-							console.log("Average time to read : " + averageTimeToRead + " ms");
-								
-							break;
-						
-						case 32: // Space
-
-							//console.time("renderTime");
-							softRenderer.render(renderList);
-							//console.timeEnd("renderTime");
-
-							softRenderer.copyDepthToColor();
-
-							//console.time("occlusionTime");
-							softRenderer.performOcclusionCulling(renderList);
-							//console.timeEnd("occlusionTime");
-			
-							var debugcanvas = document.getElementById('debugcanvas')
-							var debugContext = debugcanvas.getContext('2d');
-							var imagedata = debugContext.createImageData(debugcanvas.width,debugcanvas.height);
-							imagedata.data.set(softRenderer.getColorData());
-							debugContext.putImageData(imagedata,0,0);
-						break;
-					}
 			});
 		}
 
@@ -278,6 +114,8 @@ require(
 			var wallW = 50;
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
+			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
+			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH))); 
 			bigQuad.addToWorld();
 
 			translation.x = -wallW / 2 + 2;
@@ -292,8 +130,18 @@ require(
 				translation.z += 0.3;
 			}
 
-			var floorEntity = createFloorEntity(goo.world);
+			var size = 100;
+			var height = 2;
+			var floorEntity = createFloorEntity(goo.world, size, height);
+			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
+			floorEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(size, height, size)));
 			floorEntity.addToWorld();
+
+			translation.x = 0;
+			translation.y = 0;
+			translation.z = -5;
+			
+			addHead(goo, translation);
 
 			goo.callbacks.push(function(tpf) {
 				
@@ -315,10 +163,9 @@ require(
 			return entity;
 		}
 
-		function createFloorEntity(world)
+		function createFloorEntity(world, size, height)
 		{
-			var size = 100;
-			var height = 2;
+
 			var textureRepeats = Math.ceil(size * 0.2);
 			var meshData = ShapeCreator.createBox(size, height, size, textureRepeats, textureRepeats);
 			// var meshData = ShapeCreator.createQuad(size, size, textureRepeats, textureRepeats);
@@ -350,6 +197,27 @@ require(
 			entity.meshRendererComponent.materials.push(material);
 
 			return entity;
+		}
+
+		function addHead(goo, translation) {
+			var importer = new JSONImporter(goo.world);
+
+			importer.load(resourcePath + '/head.model', resourcePath + '/', {
+				onSuccess : function(entities) {
+					for ( var i in entities) {
+						entities[i].addToWorld();
+					}
+					var size = 0.2;
+					entities[1].setComponent(new OccluderComponent(ShapeCreator.createBox(size, size, size)));
+					entities[1].transformComponent.transform.translation.set(translation);
+					entities[1].transformComponent.transform.translation.y += 2; // Translate origin to the bottom of the model.
+					entities[1].transformComponent.transform.scale.set(10, 10, 10); // TODO: The bounding sphere wont get updated from the scale. Find the reason.
+					
+				},
+				onError : function(error) {
+					console.error(error);
+				}
+			});
 		}
 
 		init();
