@@ -47,7 +47,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 
 		var renderSystem = new RenderSystem(partitioningSystem.renderList);
 		this.world.setSystem(renderSystem);
-		
+
 		this.doRender = true;
 
 		GameUtils.initAllShims();

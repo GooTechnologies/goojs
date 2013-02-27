@@ -23,7 +23,7 @@ function(Transform, Vector3, Camera) {
 		var min = this.min;
 		var max = this.max;
 		var vec = this.vec;
-		
+
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;

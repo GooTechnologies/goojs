@@ -267,26 +267,26 @@ function (MathUtils, Matrix, Vector3) {
 //		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
 
 		var s1d = lhs.data;
-        var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
-        	m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
-        	m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
-        var s2d = rhs.data;
-        var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
-        	n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
-        	n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
+		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
+			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
+			m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
+		var s2d = rhs.data;
+		var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
+			n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
+			n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
 
-        var rd = target.data;
-        rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
-        rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
-        rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
+		var rd = target.data;
+		rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
+		rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
+		rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
 
-        rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
-        rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
-        rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
+		rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
+		rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
+		rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
 
-        rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
-        rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
-        rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
+		rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
+		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
+		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
 
 		return target;
 	};
@@ -502,12 +502,11 @@ function (MathUtils, Matrix, Vector3) {
 	Matrix3x3.prototype.applyPost = function (rhs) {
 		var target = rhs.data;
 		var source = this.data;
-		
+
 		var x = target[0];
 		var y = target[1];
 		var z = target[2];
 
-		
 		target[0] = source[0] * x + source[3] * y + source[6] * z;
 		target[1] = source[1] * x + source[4] * y + source[7] * z;
 		target[2] = source[2] * x + source[5] * y + source[8] * z;

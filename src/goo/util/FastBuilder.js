@@ -50,7 +50,7 @@ define([
 
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
-		
+
 		this.callback.progress(0);
 	}
 

@@ -16,7 +16,7 @@ define([
 				};
 			});
 			it('can parse a uniform declaration', function() {
-				var source = 'uniform vec3 foo;'
+				var source = 'uniform vec3 foo;';
 				Shader.investigateShader(source, target);
 				expect(target.uniformMapping).toEqual({
 					foo: {
@@ -25,7 +25,7 @@ define([
 				});
 			});
 			it('can parse an attribute declaration', function() {
-				var source = 'attribute float foo;'
+				var source = 'attribute float foo;';
 				Shader.investigateShader(source, target);
 				expect(target.attributeMapping).toEqual({
 					foo: {

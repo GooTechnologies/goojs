@@ -75,14 +75,14 @@ function(
 		this.context = null;
 		try {
 			this.context = _canvas.getContext('experimental-webgl', settings);
-			if (this.context == null) {
+			if (!this.context) {
 				this.context = _canvas.getContext('webgl', settings);
 			}
 		} catch (error) {
 			//Silent
 		}
 
-		if (this.context == null) {
+		if (!this.context) {
 			throw 'WebGL is not supported! (Could not create WebGL context)';
 		}
 

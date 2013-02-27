@@ -1,5 +1,19 @@
 /*jshint bitwise: false */
 // REVIEW: What's the point of this class? Better let the browser load and decode images.
+
+// It looks like this module is taken from somewhere, as the style is different.
+// I didn't want to edit it too much to get rid of style warnings,
+// as that may cause future merge conflicts if this code is someone else's.
+
+// This module tries a lot to avoid if statements
+// and does unconventional things like `handler || (handler = {});`
+// Disable JSHint's warning about that.
+/*jshint expr: true */
+
+// Remove warning about function hoisting
+// ("Inner functions should be listed at the top of the outer function.")
+/*jshint latedef: false */
+
 define([
 	'goo/renderer/Texture'
 	],
@@ -375,6 +389,7 @@ define([
 	};
 
 	// BEGIN_NON_BOOKMARKLET_CODE
+	/*global exports:true*/
 	if (typeof exports !== 'undefined') {
 		exports.Stream = Stream;
 		exports.parseGIF = parseGIF;
