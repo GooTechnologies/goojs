@@ -175,14 +175,13 @@ function (Entity, EntityManager, TransformComponent) {
 	};
 
 	World.prototype._check = function (entities, callback) {
-		// REVIEW: Code style? Spaces before and after "("?
-		for ( var index in entities) {
+		for (var index in entities) {
 			var entity = entities[index];
-			for ( var managerIndex in this._managers) {
+			for (var managerIndex in this._managers) {
 				var manager = this._managers[managerIndex];
 				callback(manager, entity);
 			}
-			for ( var systemIndex in this._systems) {
+			for (var systemIndex in this._systems) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}
