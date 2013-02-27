@@ -1,4 +1,4 @@
-define(["goo/math/Vector"],
+3define(["goo/math/Vector"],
 	/** @lends Vector2 */
 	function (Vector) {
 	"use strict";
@@ -310,8 +310,8 @@ define(["goo/math/Vector"],
 		return this;
 	};
 	Vector2.prototype.setv = function (vec2) {
-		this.data[0] = vec3.data[0];
-		this.data[1] = vec3.data[1];
+		this.data[0] = vec2.data[0];
+		this.data[1] = vec2.data[1];
 
 		return this;
 	};
