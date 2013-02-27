@@ -380,7 +380,8 @@ define([
 	*	If the coordinate is inside the screen pixel space, the given depth value is compared,
 	*	otherwise the coordinate is assumed to be occluded.
 	*
-	*	@return {Boolean} true/false, occluded or not occluded.
+	*	@param {Vector} coordinate The coordinate to look-up
+	*	@return {Boolean} true or false, occluded or not occluded.
 	*/
 	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
 	
@@ -642,7 +643,7 @@ define([
 
 	/**
 	*	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
-	*	@param {Array.<Vector4>} vertexArray, the vertices to be transformed.
+	*	@param {Array.<Vector4>} vertexArray the vertices to be transformed.
 	*/
 	SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
 
@@ -666,8 +667,10 @@ define([
 	/**
 	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
 	*	Otherwise false is returned.
-	*	@param {Vector4} v1, v2, v3
-	*	@return {Boolean} true / false
+	*	@param {Vector4} v1 Vertex #1
+	*	@param {Vector4} v3 Vertex #2
+	*	@param {Vector4} v3 Vertex #3
+	*	@return {Boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacing = function (v1, v2, v3) {
 

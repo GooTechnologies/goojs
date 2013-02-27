@@ -1,8 +1,9 @@
 define(
 [
 	'goo/renderer/scanline/SoftwareRenderer',
-	'goo/math/Vector3'
-], function(SoftwareRenderer, Vector3) {
+	'goo/math/Vector3',
+	'goo/math/Vector2'
+], function (SoftwareRenderer, Vector3, Vector2) {
 	'use strict';
 
 	describe('SoftwareRenderer', function () {
@@ -149,8 +150,46 @@ define(
 				expect(outsideVerts.length).toEqual(0);
 				expect(insideVerts.length).toEqual(3);
 			});
-
-
 		});
+
+		describe('isCoordinateInsideScreen', function () {
+
+			it('Totally outside screen', function () {
+				var coordinate = new Vector2(renderer.width - 100, renderer.height + 20);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(false);
+			});
+
+			it('Y outside screen, X inside', function () {
+				var coordinate = new Vector2(renderer.width - renderer.width / 2, renderer.height + 20);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(false);
+			});
+
+			it('Totally Inside screen', function () {
+				var coordinate = new Vector2(renderer.width - renderer.width / 5, renderer.height - renderer.height / 3);
+				console.log(coordinate.data);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(true);
+			});
+
+			it('Y Inside screen, X outside', function () {
+				var coordinate = new Vector2(renderer.width + 200, renderer.height - renderer.height / 3);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(false);
+			});
+
+			it('Totally Inside screen', function () {
+				var coordinate = new Vector2(renderer.width / 5, renderer.height - renderer.height / 3);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(true);
+			});
+
+			it('X On edge of screen, Y inside', function () {
+				var coordinate = new Vector2(renderer._clipX, renderer.height / 3);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(true);
+			});
+
+			it('Y On edge of screen, X inside', function () {
+				var coordinate = new Vector2(renderer.width / 2, renderer._clipY);
+				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(true);
+			});
+		});
+	
 	});
 });
