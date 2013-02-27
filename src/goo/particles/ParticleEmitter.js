@@ -27,14 +27,14 @@ function (ParticleUtils, Renderer) {
 		// function returning an emission point for a particle.
 		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function (particle, particleEntity) {
 			var vec3 = particle.position;
-			vec3.set(0, 0, 0);
+			vec3.setd(0, 0, 0);
 			return ParticleUtils.applyEntityTransformPoint(vec3, particleEntity);
 		};
 
 		// function returning an emission velocity for a particle.
 		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function (particle, particleEntity) {
 			var vec3 = particle.velocity;
-			vec3.set(0, 1, 0);
+			vec3.setd(0, 1, 0);
 			return ParticleUtils.applyEntityTransformVector(vec3, particleEntity);
 		};
 
@@ -54,8 +54,8 @@ function (ParticleUtils, Renderer) {
 
 	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle, particleEntity) {
 		var camera = Renderer.mainCamera;
-		particle.bbX.set(camera._left);
-		particle.bbY.set(camera._up);
+		particle.bbX.setv(camera._left);
+		particle.bbY.setv(camera._up);
 	};
 
 	ParticleEmitter.prototype.nextParticleLifeSpan = function () {

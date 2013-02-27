@@ -13,12 +13,19 @@ function(Transform, Vector3, Camera) {
 	function BoundingSphere() {
 		this.center = new Vector3();
 		this.radius = 1;
+
+		this.vec = new Vector3();
+		this.min = new Vector3(Infinity, Infinity, Infinity);
+		this.max = new Vector3(-Infinity, -Infinity, -Infinity);
 	}
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
-		var vec = new Vector3();
-		var min = new Vector3(Infinity, Infinity, Infinity);
-		var max = new Vector3(-Infinity, -Infinity, -Infinity);
+		var min = this.min;
+		var max = this.max;
+		var vec = this.vec;
+		
+		min.setd(Infinity, Infinity, Infinity);
+		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
 		for ( var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -31,18 +38,18 @@ function(Transform, Vector3, Camera) {
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.add(min).div(2.0);
+		var newCenter = max.addv(min).div(2.0);
 		var size = 0, test;
 		for ( var i = 0; i < verts.length; i += 3) {
 			vec.setd(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.subv(newCenter).length();
+			test = vec.subv(newCenter).lengthSquared();
 			if (test > size) {
 				size = test;
 			}
 		}
 
-		this.radius = size;
-		this.center.copy(newCenter);
+		this.radius = Math.sqrt(size);
+		this.center.setv(newCenter);
 	};
 
 	BoundingSphere.prototype.transform = function(transform, bound) {

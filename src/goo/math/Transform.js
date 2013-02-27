@@ -24,28 +24,22 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	Transform.prototype.multiply = function (a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
-		// this.translation.copy(a.translation).add(b.translation);
-
-		// Matrix3x3.combine(a.rotation, b.rotation, this.rotation);
 		this.tmpMat1.data.set(a.rotation.data);
 		this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
 		this.tmpMat2.data.set(b.rotation.data);
 		this.tmpMat2.multiplyDiagonalPost(b.scale, this.tmpMat2);
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
-
 		this.translation.setv(b.translation);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
-
 		this.scale.setv(a.scale).mulv(b.scale);
-		// this.scale.copy(Vector3.ONE);
 	};
 
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.copy(Vector3.ZERO);
+		this.translation.setv(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.copy(Vector3.ONE);
+		this.scale.setv(Vector3.ONE);
 	};
 
 	Transform.prototype.applyForward = function (point, store) {

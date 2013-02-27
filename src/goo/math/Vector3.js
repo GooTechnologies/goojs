@@ -15,8 +15,7 @@ define(["goo/math/Vector"],
 
 	function Vector3() {
 		Vector.call(this, 3);
-		var init = arguments.length !== 0 ? arguments : [0, 0, 0];
-		this.set(init);
+		arguments.length !== 0 ? this.set(arguments) : this.setd(0,0,0);
 	}
 
 	Vector3.prototype = Object.create(Vector.prototype);
@@ -318,10 +317,6 @@ define(["goo/math/Vector"],
 			target = new Vector3();
 		}
 
-		if (target === lhs || target === rhs) {
-			return Vector.copy(Vector3.cross(lhs, rhs), target);
-		}
-
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
@@ -332,9 +327,12 @@ define(["goo/math/Vector"],
 			};
 		}
 
-		target.data[0] = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
-		target.data[1] = rhs.data[0] * lhs.data[2] - rhs.data[2] * lhs.data[0];
-		target.data[2] = rhs.data[1] * lhs.data[0] - rhs.data[0] * lhs.data[1];
+		var x = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
+		var y = rhs.data[0] * lhs.data[2] - rhs.data[2] * lhs.data[0];
+		var z = rhs.data[1] * lhs.data[0] - rhs.data[0] * lhs.data[1];
+		target.data[0] = x;
+		target.data[1] = y;
+		target.data[2] = z;
 
 		return target;
 	};
@@ -388,6 +386,13 @@ define(["goo/math/Vector"],
 
 		return this;
 	};
+	Vector3.prototype.add_d = function (x, y, z) {
+		this.data[0] += x;
+		this.data[1] += y;
+		this.data[2] += z;
+
+		return this;
+	};
 	Vector3.prototype.addv = function (vec3) {
 		this.data[0] += vec3.data[0];
 		this.data[1] += vec3.data[1];
@@ -409,7 +414,14 @@ define(["goo/math/Vector"],
 
 		return this;
 	};
-	Vector3.prototype.lengthSquaredF = function () {
+	Vector3.prototype.sub_d = function (x, y, z) {
+		this.data[0] -= x;
+		this.data[1] -= y;
+		this.data[2] -= z;
+
+		return this;
+	};
+	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
 	};
 

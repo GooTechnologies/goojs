@@ -646,7 +646,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Matrix4x4.prototype.setIdentity = function () {
-		return this.set(Matrix4x4.IDENTITY);
+		return this.data.set(Matrix4x4.IDENTITY.data);
 	};
 
 	/* ====================================================================== */
