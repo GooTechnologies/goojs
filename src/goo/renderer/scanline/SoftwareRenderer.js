@@ -121,8 +121,12 @@ define([
 			var origin = new Vector4(0,0,0,1.0);
 			combinedMatrix.applyPost(origin);
 
+			
+			var scale = entity.transformComponent.transform.scale;
+			var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
+
 			// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
-			var nearCoord = new Vector4(origin.x, origin.y, origin.z + boundingSphere.radius, origin.w);
+			var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
 		
 			
 			if (nearCoord.z > cameraNearZInWorld) {
@@ -130,10 +134,10 @@ define([
 				continue; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 			}
 
-			var leftCoord = new Vector4(origin.x - boundingSphere.radius, origin.y, origin.z, 1.0);
-			var rightCoord = new Vector4(origin.x + boundingSphere.radius, origin.y, origin.z, 1.0);
-			var topCoord = new Vector4(origin.x, origin.y + boundingSphere.radius, origin.z, 1.0);
-			var bottomCoord = new Vector4(origin.x , origin.y - boundingSphere.radius, origin.z, 1.0);
+			var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
+			var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
+			var topCoord = new Vector4(origin.x, origin.y + radius, origin.z, 1.0);
+			var bottomCoord = new Vector4(origin.x , origin.y - radius, origin.z, 1.0);
 
 			var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 

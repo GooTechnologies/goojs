@@ -97,6 +97,8 @@ require(
 			var translation = new Vector3(0, 0, 0);
 			translation.y = 0.5;
 			var boxEntity = createBoxEntity(goo.world, translation);
+			boxEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+			boxEntity.transformComponent.transform.scale.set(2,2,2);
 			boxEntity.addToWorld();
 
 			translation.x = 10;
@@ -211,7 +213,7 @@ require(
 					entities[1].setComponent(new OccluderComponent(ShapeCreator.createBox(size, size, size)));
 					entities[1].transformComponent.transform.translation.set(translation);
 					entities[1].transformComponent.transform.translation.y += 2; // Translate origin to the bottom of the model.
-					entities[1].transformComponent.transform.scale.set(10, 10, 10); // TODO: The bounding sphere wont get updated from the scale. Find the reason.
+					entities[1].transformComponent.transform.scale.set(10, 10, 10);
 					
 				},
 				onError : function(error) {
