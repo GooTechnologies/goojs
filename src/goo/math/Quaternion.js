@@ -15,8 +15,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 
 	function Quaternion () {
 		Vector.call(this, 4);
-		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
-		this.set(init);
+		arguments.length !== 0 ? this.set(arguments) : this.setd(0,0,0,1);
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
