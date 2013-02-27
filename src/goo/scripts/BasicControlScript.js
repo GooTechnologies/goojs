@@ -160,7 +160,6 @@ function (Vector3, Matrix3x3) {
 			}
 
 			event.preventDefault();
-			event.stopPropagation();
 
 			event = event.touches && event.touches.length === 1 ? event.touches[0] : event;
 
@@ -189,7 +188,6 @@ function (Vector3, Matrix3x3) {
 			}
 
 			event.preventDefault();
-			event.stopPropagation();
 
 			this.mouseStatus = 0;
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;

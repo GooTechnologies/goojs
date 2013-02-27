@@ -165,7 +165,6 @@ function (Vector3) {
 			}
 
 			event.preventDefault();
-			event.stopPropagation();
 
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
@@ -186,7 +185,6 @@ function (Vector3) {
 
 		this.mouseup = function (event) {
 			event.preventDefault();
-			event.stopPropagation();
 
 			this.mouseStatus--;
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;
