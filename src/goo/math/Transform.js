@@ -24,26 +24,22 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	Transform.prototype.multiply = function (a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
-		// this.translation.copy(a.translation).add(b.translation);
-
-		// Matrix3x3.combine(a.rotation, b.rotation, this.rotation);
-		this.tmpMat1.copy(a.rotation).multiplyDiagonalPost(a.scale, this.tmpMat1);
-		this.tmpMat2.copy(b.rotation).multiplyDiagonalPost(b.scale, this.tmpMat2);
+		this.tmpMat1.data.set(a.rotation.data);
+		this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
+		this.tmpMat2.data.set(b.rotation.data);
+		this.tmpMat2.multiplyDiagonalPost(b.scale, this.tmpMat2);
 		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
-
 		this.translation.setv(b.translation);
-		this.tmpMat1.applyPost(this.translation).add(a.translation);
-
-		this.scale.setv(a.scale).mul(b.scale);
-		// this.scale.copy(Vector3.ONE);
+		this.tmpMat1.applyPost(this.translation).addv(a.translation);
+		this.scale.setv(a.scale).mulv(b.scale);
 	};
 
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.copy(Vector3.ZERO);
+		this.translation.setv(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.copy(Vector3.ONE);
+		this.scale.setv(Vector3.ONE);
 	};
 
 	Transform.prototype.applyForward = function (point, store) {
@@ -68,27 +64,27 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	};
 
 	Transform.prototype.update = function () {
-		var rd = this.matrix;
-		var d = this.rotation;
+		var target = this.matrix.data;
+		var rotation = this.rotation.data;
+		var scale = this.scale.data;
+		var translation = this.translation.data;
 
-		rd.e00 = this.scale.x * d.e00;
-		rd.e01 = this.scale.y * d.e01;
-		rd.e02 = this.scale.z * d.e02;
-		rd.e10 = this.scale.x * d.e10;
-		rd.e11 = this.scale.y * d.e11;
-		rd.e12 = this.scale.z * d.e12;
-		rd.e20 = this.scale.x * d.e20;
-		rd.e21 = this.scale.y * d.e21;
-		rd.e22 = this.scale.z * d.e22;
-
-		rd.e30 = 0.0;
-		rd.e31 = 0.0;
-		rd.e32 = 0.0;
-
-		rd.e03 = this.translation.x;
-		rd.e13 = this.translation.y;
-		rd.e23 = this.translation.z;
-		rd.e33 = 1.0;
+		target[0] = scale[0] * rotation[0];
+		target[1] = scale[0] * rotation[1];
+		target[2] = scale[0] * rotation[2];
+		target[3] = 0.0;
+		target[4] = scale[1] * rotation[3];
+		target[5] = scale[1] * rotation[4];
+		target[6] = scale[1] * rotation[5];
+		target[7] = 0.0;
+		target[8] = scale[2] * rotation[6];
+		target[9] = scale[2] * rotation[7];
+		target[10] = scale[2] * rotation[8];
+		target[11] = 0.0;
+		target[12] = translation[0];
+		target[13] = translation[1];
+		target[14] = translation[2];
+		target[15] = 1.0;
 	};
 
 	Transform.prototype.copy = function (transform) {

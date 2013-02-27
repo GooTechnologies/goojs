@@ -17,12 +17,18 @@ function(Transform, Vector3, Camera) {
 		this.zExtent = 1;
 
 		this._compVect1 = new Vector3();
+		this.vec = new Vector3();
+		this.min = new Vector3(Infinity, Infinity, Infinity);
+		this.max = new Vector3(-Infinity, -Infinity, -Infinity);
 	}
 
 	BoundingBox.prototype.computeFromPoints = function(verts) {
-		var vec = new Vector3();
-		var min = new Vector3(Infinity, Infinity, Infinity);
-		var max = new Vector3(-Infinity, -Infinity, -Infinity);
+		var min = this.min;
+		var max = this.max;
+		var vec = this.vec;
+
+		min.setd(Infinity, Infinity, Infinity);
+		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
 		for ( var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -36,12 +42,12 @@ function(Transform, Vector3, Camera) {
 			max.z = z > max.z ? z : max.z;
 		}
 
-		vec.copy(max).sub(min).div(2.0);
+		vec.setv(max).subv(min).div(2.0);
 		this.xExtent = vec.x;
 		this.yExtent = vec.y;
 		this.zExtent = vec.z;
 
-		this.center.copy(max).add(min).div(2.0);
+		this.center.setv(max).add_d(min).div(2.0);
 	};
 
 	BoundingBox.prototype.transform = function(transform, bound) {

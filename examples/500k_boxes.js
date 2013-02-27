@@ -136,11 +136,10 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			transform.translation.z = Math.cos(x*Math.PI*2/count);
 			transform.translation.normalize();
 			transform.translation.mul(Math.random()*20.0+spread);
-			
 			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
 			transform.update();
 			
-			movement.copy(transform.translation).normalize();
+			movement.setv(transform.translation).normalize();
 			for (var n=0;n<8;n++) {
 				movementNormal[n*3+0] = movement.x;
 				movementNormal[n*3+1] = movement.y;
@@ -156,7 +155,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			var spin = (x/count) * Math.PI * 1;
 			var spin2 = (x/count) * Math.PI * 2.2 * (Math.random()*0.8+0.6);
 //			var spin3 = (x/count) * Math.PI * 2 * (Math.random()*0.65+0.7);
-			offsetvec.set(
+			offsetvec.setd(
 				spin,
 				spin2,
 				spin,
@@ -170,6 +169,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			}
 			
 			meshBuilder.addMeshData(meshData, transform);
+//			meshBuilder.addMeshDataX(meshData, transform.translation.x, transform.translation.y, transform.translation.z);
 		}
 		var meshDatas = meshBuilder.build();
 

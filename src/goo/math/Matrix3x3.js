@@ -252,19 +252,41 @@ function (MathUtils, Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-		if (target === lhs || target === rhs) {
-			return Matrix.copy(Matrix3x3.combine(lhs, rhs), target);
-		}
+//		if (target === lhs || target === rhs) {
+//			return Matrix.copy(Matrix3x3.combine(lhs, rhs), target);
+//		}
+//
+//		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
+//		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
+//		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
+//		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
+//		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
+//		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
+//		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
+//		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
+//		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
 
-		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
-		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
-		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
-		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
-		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
-		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
-		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
-		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
-		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
+		var s1d = lhs.data;
+        var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
+        	m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
+        	m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
+        var s2d = rhs.data;
+        var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
+        	n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
+        	n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
+
+        var rd = target.data;
+        rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
+        rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
+        rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
+
+        rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
+        rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
+        rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
+
+        rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
+        rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
+        rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
 
 		return target;
 	};
@@ -466,7 +488,7 @@ function (MathUtils, Matrix, Vector3) {
 	 */
 
 	Matrix3x3.prototype.setIdentity = function () {
-		this.set(Matrix3x3.IDENTITY);
+		this.data.set(Matrix3x3.IDENTITY.data);
 	};
 
 	/* ====================================================================== */
@@ -478,13 +500,17 @@ function (MathUtils, Matrix, Vector3) {
 	 */
 
 	Matrix3x3.prototype.applyPost = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+		var target = rhs.data;
+		var source = this.data;
+		
+		var x = target[0];
+		var y = target[1];
+		var z = target[2];
 
-		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
-		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
-		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
+		
+		target[0] = source[0] * x + source[3] * y + source[6] * z;
+		target[1] = source[1] * x + source[4] * y + source[7] * z;
+		target[2] = source[2] * x + source[5] * y + source[8] * z;
 
 		return rhs;
 	};
@@ -519,21 +545,21 @@ function (MathUtils, Matrix, Vector3) {
 	 */
 
 	Matrix3x3.prototype.multiplyDiagonalPost = function (vec, result) {
-		var x = vec.x;
-		var y = vec.y;
-		var z = vec.z;
+		var x = vec.data[0];
+		var y = vec.data[1];
+		var z = vec.data[2];
 
-		var d = this;
-		var r = result;
-		r.e00 = x * d.e00;
-		r.e01 = y * d.e01;
-		r.e02 = z * d.e02;
-		r.e10 = x * d.e10;
-		r.e11 = y * d.e11;
-		r.e12 = z * d.e12;
-		r.e20 = x * d.e20;
-		r.e21 = y * d.e21;
-		r.e22 = z * d.e22;
+		var d = this.data;
+		var r = result.data;
+		r[0] = x * d[0];
+		r[1] = x * d[1];
+		r[2] = x * d[2];
+		r[3] = y * d[3];
+		r[4] = y * d[4];
+		r[5] = y * d[5];
+		r[6] = z * d[6];
+		r[7] = z * d[7];
+		r[8] = z * d[8];
 
 		return result;
 	};

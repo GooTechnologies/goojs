@@ -47,7 +47,7 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 			return;
 		}
 
-		this.position.add([this.velocity.x * tpf, this.velocity.y * tpf, this.velocity.z * tpf]);
+		this.position.add_d(this.velocity.x * tpf, this.velocity.y * tpf, this.velocity.z * tpf);
 
 		// set values from component timeline
 		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
@@ -59,7 +59,7 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 			colorBuffer.set(this.color.data, this.index * 16 + 4);
 			colorBuffer.set(this.color.data, this.index * 16 + 8);
 			colorBuffer.set(this.color.data, this.index * 16 + 12);
-			this.lastColor.set(this.color);
+			this.lastColor.setv(this.color);
 		}
 
 		// determine our particle plane
@@ -73,7 +73,7 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
-			this.bbY.set(this.bbX);
+			this.bbY.setv(this.bbX);
 			this.bbX.mul(cA).add([upX * sA, upY * sA, upZ * sA]);
 			this.bbY.mul(-sA).add([upX * cA, upY * cA, upZ * cA]);
 		}
@@ -82,19 +82,19 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
 		// bottom right point
-		Vector3.sub(this.position, this.bbX, calcVec).sub(this.bbY);
+		Vector3.sub(this.position, this.bbX, calcVec).subv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
 
 		// top right point
-		Vector3.sub(this.position, this.bbX, calcVec).add(this.bbY);
+		Vector3.sub(this.position, this.bbX, calcVec).addv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
 
 		// top left point
-		Vector3.add(this.position, this.bbX, calcVec).add(this.bbY);
+		Vector3.add(this.position, this.bbX, calcVec).addv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
 
 		// bottom left corner
-		Vector3.add(this.position, this.bbX, calcVec).sub(this.bbY);
+		Vector3.add(this.position, this.bbX, calcVec).subv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
 
 		if (this.lastUVIndex !== this.uvIndex) {

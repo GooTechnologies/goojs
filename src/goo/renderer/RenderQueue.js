@@ -24,8 +24,8 @@ function(Vector3) {
 				
 //				var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
 //				var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquaredF();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquaredF();
+				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
+				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
 				
 				return dist1 - dist2;
 			}
