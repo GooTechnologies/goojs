@@ -20,7 +20,7 @@ define([
 		};
 
 
-		function MockXHRBuilder(mockResponses) {
+		function createMockXhr(mockResponses) {
 			function MockXHR() {
 
 			}
@@ -60,7 +60,7 @@ define([
 
 			beforeEach(function() {
 				spyOn(window, 'XMLHttpRequest').andCallFake(function() {
-					var mockXHR = MockXHRBuilder(TestResponses);
+					var mockXHR = createMockXhr(TestResponses);
 					return mockXHR.prototype;
 				});
 			});
@@ -80,7 +80,12 @@ define([
 				a.then(function(request) {
 					expect(a.reject).not.toHaveBeenCalled();
 					expect(a.resolve).toHaveBeenCalled();
+					// REVIEW: MockXHR is not defined. How can this expect succeed?
 					expect(request.responseText instanceof MockXHR).toBeTruthy();
+					// REVIEW: If any of the expects above fails,
+					// it is reported as an error of another test!
+					// Wait for the promise to be resolved before considering the test done.
+					// E.g. with waitsFor
 				});
 			});
 
