@@ -1,4 +1,4 @@
-3define(["goo/math/Vector"],
+define(["goo/math/Vector"],
 	/** @lends Vector2 */
 	function (Vector) {
 	"use strict";
