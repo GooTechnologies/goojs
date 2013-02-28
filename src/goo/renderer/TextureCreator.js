@@ -44,6 +44,7 @@ define([
 			onSuccess : function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
 				console.info("Loaded image: " + imageURL);
+				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
 			},
 			onError : function (t) {
