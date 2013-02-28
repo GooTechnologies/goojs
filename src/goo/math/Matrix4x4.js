@@ -369,56 +369,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			target = new Matrix4x4();
 		}
 
-		if (target === source) {
-			var e01 = source.e01;
-			var e02 = source.e02;
-			var e03 = source.e03;
-			var e12 = source.e12;
-			var e13 = source.e13;
-			var e23 = source.e23;
-
-			target.e01 = source.e10;
-			target.e02 = source.e20;
-			target.e03 = source.e30;
-			target.e12 = source.e21;
-			target.e13 = source.e31;
-			target.e23 = source.e32;
-
-			target.e10 = e01;
-			target.e20 = e02;
-			target.e30 = e03;
-			target.e21 = e12;
-			target.e31 = e13;
-			target.e32 = e23;
-
-			return target;
-		}
-
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e30 = source.e03;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e31 = source.e13;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
-		target.e32 = source.e23;
-		target.e03 = source.e30;
-		target.e13 = source.e31;
-		target.e23 = source.e32;
-		target.e33 = source.e33;
-
-		return target;
-	};
-
-	Matrix4x4.transpose2 = function (source, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
-
 		var s = source.data;
 		var t = target.data;
 		
