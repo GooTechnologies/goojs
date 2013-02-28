@@ -154,6 +154,8 @@ function (Vector3, Matrix3x3) {
 			this.updateRotationVector();
 		};
 
+		var boundMouseDown, boundMouseMove, boundMouseUp;
+
 		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
@@ -166,6 +168,14 @@ function (Vector3, Matrix3x3) {
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
 			this.mouseStatus = 1;
+
+			boundMouseMove = this.mousemove.bind(this);
+			boundMouseUp = this.mouseup.bind(this);
+
+			document.addEventListener('mousemove', boundMouseMove, false);
+			document.addEventListener('mouseup', boundMouseUp, false);
+			document.addEventListener('touchmove', boundMouseMove, false);
+			document.addEventListener('touchend', boundMouseUp, false);
 		};
 
 		this.mousemove = function (event) {
@@ -193,6 +203,11 @@ function (Vector3, Matrix3x3) {
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;
 
 			this.updateRotationVector();
+
+			document.removeEventListener('mousemove', boundMouseMove);
+			document.removeEventListener('mouseup', boundMouseUp);
+			document.removeEventListener('touchmove', boundMouseMove);
+			document.removeEventListener('touchend', boundMouseUp);
 		};
 
 		this.updateMovementVector = function () {
@@ -223,34 +238,12 @@ function (Vector3, Matrix3x3) {
 			}
 		};
 
-		// REVIEW: Not needed AFAIK.
-		// I think the built-in Function.bind is supported by all browsers we care about.
-		// Can you check if that is the case? It's good to know.
-		function bind (scope, fn) {
-			return function () {
-				fn.apply(scope, arguments);
-			};
-		}
+		boundMouseDown = this.mousedown.bind(this);
 
-		// REVIEW: I changed mousemove, mouseup and touchend to be attached to the document.
-		// This way we never miss one of those events, and it's possible to leave the domElement
-		// and still rotate.
-		// I removed the mouseout and touchout listeners, as they are not needed.
-		// Please update the other control scripts.
-
-		// REVIEW: It's bad style and bad performance to listen to
-		// mousemove when the mouse button is not down.
-		// Start listening to mousemove events when mouse is down,
-		// and stop listening when mouse is up.
-		document.addEventListener('mousemove', bind(this, this.mousemove), false);
-		this.domElement.addEventListener('touchmove', bind(this, this.mousemove), false);
-		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
-		this.domElement.addEventListener('touchstart', bind(this, this.mousedown), false);
-		document.addEventListener('mouseup', bind(this, this.mouseup), false);
-		document.addEventListener('touchend', bind(this, this.mouseup), false);
-
-		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
-		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
+		this.domElement.addEventListener('mousedown', boundMouseDown, false);
+		this.domElement.addEventListener('touchstart', boundMouseDown, false);
+		this.domElement.addEventListener('keydown', this.keydown.bind(this), false);
+		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
 
 		this.updateMovementVector();
 		this.updateRotationVector();
