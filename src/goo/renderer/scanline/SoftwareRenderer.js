@@ -260,7 +260,7 @@ define([
 			// var x = t1 * t1 * topCoordinate.x + 2 * t1 * t * rightCoordinate.x + t * t * rightCoordinate.x;
 			// var x = t1 * t1 * topCoordinate.x + (2.0 * t - t * t) * rightCoordinate.x;
 			var rightX = t1 * t1 * topCoordinate.x + (2.0 - t) * t * rightCoordinate.x;
-			rightX = Math.round(rightX);
+			rightX = Math.ceil(rightX);
 			var leftX = topCoordinate.x - (rightX - topCoordinate.x);
 
 			// Horizontal clipping
@@ -346,7 +346,7 @@ define([
 
 			// This time , the first two points of the bezier interpolation are the same, simplified the algebra.
 			var rightX = ((t1 + 2.0 * t) * t1) * rightCoordinate.x + t * t * bottomCoordinate.x;
-			rightX = Math.round(rightX);
+			rightX = Math.ceil(rightX);
 			var leftX = bottomCoordinate.x - (rightX - bottomCoordinate.x);
 
 			// Horizontal clipping

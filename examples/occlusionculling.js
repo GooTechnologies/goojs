@@ -61,7 +61,7 @@ require(
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
 			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 5.0, 'walkSpeed' : 18.0})]));
+			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 2.0, 'walkSpeed' : 18.0})]));
 			cameraEntity.addToWorld();
 
 			buildScene(goo);
@@ -94,8 +94,8 @@ require(
 		function buildScene(goo) {
 			
 
-			var translation = new Vector3(0, 0, 0);
-			translation.y = 0.5;
+			var translation = new Vector3(-10, 0, 0);
+			translation.y = 1;
 			var boxEntity = createBoxEntity(goo.world, translation);
 			boxEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			boxEntity.transformComponent.transform.scale.set(2,2,2);
@@ -123,11 +123,11 @@ require(
 			translation.x = -wallW / 2 + 2;
 			translation.y = 3;
 			translation.z = -20;
-
 			var numberOfBoxes = wallW / 2;
-
 			for (var columns = 0; columns < numberOfBoxes; columns++) {
-				createBoxEntity(goo.world, translation).addToWorld();
+				var box = createBoxEntity(goo.world, translation);
+				box.addToWorld();
+				box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 				translation.x += 2;
 				translation.z += 0.3;
 			}
@@ -139,16 +139,42 @@ require(
 			floorEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(size, height, size)));
 			floorEntity.addToWorld();
 
+	
+
+			// Build the special case , where corner sampling has to be made to determine occlusion
+			translation.x = -30;
+			translation.y = 0;
+			translation.z = -5;
+
+			// Bottom occluder
+			translation.y = 0.5;
+			var box = createBoxEntity(goo.world, translation);
+			box.addToWorld();
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+
+			// Left 
+			translation.y += 1.5;
+			translation.z += 1.1;
+			box = createBoxEntity(goo.world, translation);
+			box.addToWorld();
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+
+
+
 			translation.x = 0;
 			translation.y = 0;
 			translation.z = -5;
 			
 			addHead(goo, translation);
 
+			var t = 0.0;
 			goo.callbacks.push(function(tpf) {
 				
-				boxEntity.transformComponent.transform.rotation.y += .5 * tpf;
-				boxEntity.transformComponent.setUpdated();
+				t += tpf;
+				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(t));
+				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(t));
+				boxEntity.transformComponent.setUpdated();	
+
 			});
 		}
 
@@ -161,7 +187,7 @@ require(
 			entity.name = 'Quad';
 			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 			entity.meshRendererComponent.materials.push(material);
-			material.wireframe = true;
+			//material.wireframe = true;
 			return entity;
 		}
 
