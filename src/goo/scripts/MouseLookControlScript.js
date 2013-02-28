@@ -31,6 +31,15 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 
 			this.onRun = properties.onRun;
 
+			this.calcVector = new Vector3();
+			this.calcMat1 = new Matrix3x3();
+			this.calcMat2 = new Matrix3x3();
+
+			this.resetMouseState();
+			this.setupMouseControls();
+		}
+
+		MouseLookControlScript.prototype.resetMouseState = function () {
 			this.mouseState = {
 				buttonDown : false,
 				lastX : NaN,
@@ -38,13 +47,7 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 				dX : 0,
 				dY : 0
 			};
-
-			this.calcVector = new Vector3();
-			this.calcMat1 = new Matrix3x3();
-			this.calcMat2 = new Matrix3x3();
-
-			this.setupMouseControls();
-		}
+		};
 
 		MouseLookControlScript.prototype.updateButtonState = function (event, down) {
 			if (this.domElement !== document) {
@@ -73,23 +76,34 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 			}
 		};
 
+		var boundMouseDown, boundMouseMove, boundMouseUp;
+
+		var mousedown = function (event) {
+			this.resetMouseState();
+			this.updateButtonState(event, true);
+
+			boundMouseMove = mousemove.bind(this);
+			boundMouseUp = mouseup.bind(this);
+
+			document.addEventListener('mousemove', boundMouseMove, false);
+			document.addEventListener('mouseup', boundMouseUp, false);
+		};
+
+		var mousemove = function (event) {
+			this.updateDeltas(event);
+		};
+
+		var mouseup = function (event) {
+			this.updateButtonState(event, false);
+
+			document.removeEventListener('mousemove', boundMouseMove);
+			document.removeEventListener('mouseup', boundMouseUp);
+		};
+
 		MouseLookControlScript.prototype.setupMouseControls = function () {
-			var that = this;
-			this.domElement.addEventListener('mousedown', function (event) {
-				that.updateButtonState(event, true);
-			}, false);
+			boundMouseDown = mousedown.bind(this);
 
-			this.domElement.addEventListener('mouseup', function (event) {
-				that.updateButtonState(event, false);
-			}, false);
-
-			this.domElement.addEventListener('mouseout', function (event) {
-				that.updateButtonState(event, false);
-			}, false);
-
-			this.domElement.addEventListener('mousemove', function (event) {
-				that.updateDeltas(event);
-			}, false);
+			this.domElement.addEventListener('mousedown', boundMouseDown, false);
 		};
 
 		MouseLookControlScript.prototype.run = function (entity) {

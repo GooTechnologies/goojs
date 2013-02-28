@@ -159,6 +159,8 @@ function (Vector3) {
 			this.updateRotationVector();
 		};
 
+		var boundMouseDown, boundMouseMove, boundMouseUp;
+
 		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
@@ -169,6 +171,14 @@ function (Vector3) {
 			this.mouseDownX = event.pageX;
 			this.mouseDownY = event.pageY;
 			this.mouseStatus++;
+
+			boundMouseMove = this.mousemove.bind(this);
+			boundMouseUp = this.mouseup.bind(this);
+
+			document.addEventListener('mousemove', boundMouseMove, false);
+			document.addEventListener('mouseup', boundMouseUp, false);
+			document.addEventListener('touchmove', boundMouseMove, false);
+			document.addEventListener('touchend', boundMouseUp, false);
 		};
 
 		this.mousemove = function (event) {
@@ -190,6 +200,11 @@ function (Vector3) {
 			this.moveState.yawLeft = this.moveState.pitchDown = 0;
 
 			this.updateRotationVector();
+
+			document.removeEventListener('mousemove', boundMouseMove);
+			document.removeEventListener('mouseup', boundMouseUp);
+			document.removeEventListener('touchmove', boundMouseMove);
+			document.removeEventListener('touchend', boundMouseUp);
 		};
 
 		this.updateMovementVector = function () {
@@ -220,19 +235,12 @@ function (Vector3) {
 			}
 		};
 
-		function bind (scope, fn) {
-			return function () {
-				fn.apply(scope, arguments);
-			};
-		}
+		boundMouseDown = this.mousedown.bind(this);
 
-		this.domElement.addEventListener('mousemove', bind(this, this.mousemove), false);
-		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
-		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
-		this.domElement.addEventListener('mouseout', bind(this, this.mouseup), false);
-
-		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
-		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
+		this.domElement.addEventListener('mousedown', boundMouseDown, false);
+		this.domElement.addEventListener('touchstart', boundMouseDown, false);
+		this.domElement.addEventListener('keydown', this.keydown.bind(this), false);
+		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
 
 		this.updateMovementVector();
 		this.updateRotationVector();
