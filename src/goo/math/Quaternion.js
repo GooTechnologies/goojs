@@ -431,31 +431,31 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 
 		// compute xs/ys/zs first to save 6 multiplications, since xs/ys/zs
 		// will be used 2-4 times each.
-		var xs = this.x * s;
-		var ys = this.y * s;
-		var zs = this.z * s;
-		var xx = this.x * xs;
-		var xy = this.x * ys;
-		var xz = this.x * zs;
-		var xw = this.w * xs;
-		var yy = this.y * ys;
-		var yz = this.y * zs;
-		var yw = this.w * ys;
-		var zz = this.z * zs;
-		var zw = this.w * zs;
+		var d = this.data;
+		var xs = d[0] * s;
+		var ys = d[1] * s;
+		var zs = d[2] * s;
+		var xx = d[0] * xs;
+		var xy = d[0] * ys;
+		var xz = d[0] * zs;
+		var xw = d[3] * xs;
+		var yy = d[1] * ys;
+		var yz = d[1] * zs;
+		var yw = d[3] * ys;
+		var zz = d[2] * zs;
+		var zw = d[3] * zs;
 
 		// using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
-		var d = store;
-
-		d.e00 = 1.0 - (yy + zz);
-		d.e01 = xy - zw;
-		d.e02 = xz + yw;
-		d.e10 = xy + zw;
-		d.e11 = 1.0 - (xx + zz);
-		d.e12 = yz - xw;
-		d.e20 = xz - yw;
-		d.e21 = yz + xw;
-		d.e22 = 1.0 - (xx + yy);
+		var t = result.data;
+		t[0] = 1.0 - (yy + zz);
+		t[1] = xy + zw;
+		t[2] = xz - yw;
+		t[3] = xy - zw;
+		t[4] = 1.0 - (xx + zz);
+		t[5] = yz + xw;
+		t[6] = xz + yw;
+		t[7] = yz - xw;
+		t[8] = 1.0 - (xx + yy);
 
 		return result;
 	};

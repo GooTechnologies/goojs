@@ -828,9 +828,10 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var y = rhs.y;
 		var z = rhs.z;
 
-		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03;
-		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13;
-		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23;
+		var d = this.data;
+		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
+		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
+		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
 
 		return rhs;
 	};
@@ -848,11 +849,56 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var y = rhs.y;
 		var z = rhs.z;
 
+		var d = this.data;
+		rhs.x = d[0] * x + d[4] * y + d[8] * z;
+		rhs.y = d[1] * x + d[5] * y + d[9] * z;
+		rhs.z = d[2] * x + d[6] * y + d[10] * z;
+
 		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
 		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
 		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
 
 		return rhs;
+	};
+
+	/**
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix4x4} source Source matrix.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.copy = function (source) {
+		var t = this.data;
+		var s = source.data;
+		
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[3];
+		t[4] = s[4];
+		t[5] = s[5];
+		t[6] = s[6];
+		t[7] = s[7];
+		t[8] = s[8];
+		t[9] = s[9];
+		t[10] = s[10];
+		t[11] = s[11];
+		t[12] = s[12];
+		t[13] = s[13];
+		t[14] = s[14];
+		t[15] = s[15];
+		
+		return this;
+	};
+	
+	Matrix4x4.prototype.clone = function () {
+		var d = this.data;
+		return new Matrix4x4(
+			d[0], d[1], d[2], d[3], 
+			d[4], d[5], d[6], d[7], 
+			d[8], d[9], d[10], d[11], 
+			d[12], d[13], d[14], d[15] 
+			);
 	};
 
 	/* ====================================================================== */

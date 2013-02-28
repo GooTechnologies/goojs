@@ -34,7 +34,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		// Add boxes
 		var meshData = ShapeCreator.createBox(20, 20, 20);
 		var rc4Rand = new Rc4Random("seed");
-		for ( var i = 0; i < 200; i++) {
+		for ( var i = 0; i < 400; i++) {
 			var x = rc4Rand.getRandomNumber() * 100 - 50;
 			var y = rc4Rand.getRandomNumber() * 100 - 50;
 			var z = rc4Rand.getRandomNumber() * 100 - 250;

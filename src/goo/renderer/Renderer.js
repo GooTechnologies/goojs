@@ -1069,13 +1069,10 @@ function(
 	Renderer.prototype.bindVertexAttribute = function(attribIndex, tupleSize, type, normalized, stride, offset, record) {
 		this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride, offset);
 
-		if (record.boundAttributes.indexOf(attribIndex) === -1) {
+//		if (record.boundAttributes.indexOf(attribIndex) === -1) {
 			this.context.enableVertexAttribArray(attribIndex);
-			record.boundAttributes.push(attribIndex);
-		}
-		// if (Constants.extraGLErrorChecks) {
-		// checkCardError();
-		// }
+//			record.boundAttributes.push(attribIndex);
+//		}
 	};
 
 	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)

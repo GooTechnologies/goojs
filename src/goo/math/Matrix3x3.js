@@ -714,6 +714,39 @@ function (MathUtils, Matrix, Vector3) {
 		return quaternion.toRotationMatrix(this);
 	};
 
+	/**
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix4x4} source Source matrix.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.copy = function (source) {
+		var t = this.data;
+		var s = source.data;
+		
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[3];
+		t[4] = s[4];
+		t[5] = s[5];
+		t[6] = s[6];
+		t[7] = s[7];
+		t[8] = s[8];
+		
+		return this;
+	};
+
+	
+	Matrix3x3.prototype.clone = function () {
+		var d = this.data;
+		return new Matrix4x4(
+			d[0], d[1], d[2],
+			d[3], d[4], d[5],
+			d[4], d[5], d[6]
+			);
+	};
+
 	/* ====================================================================== */
 
 	return Matrix3x3;

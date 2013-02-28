@@ -231,14 +231,12 @@ define(
 	};
 
 	function compareMatrices(e1, e2, size) {
-		var equals = true;
-		for (var i = 0; i < size; i++) {
-			if (Math.abs(e1[i] - e2[i]) > 0.00000001) {
-				equals = false;
-				break;
+		for (var i = size - 1; i >= 0; i--) {
+			if (e1[i] !== e2[i]) {
+				return false;
 			}
 		}
-		return equals;
+		return true;
 	}
 
 	function compareArrays(a1, a2) {

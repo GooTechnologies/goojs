@@ -1,6 +1,14 @@
-define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'],
+define([
+        'goo/renderer/BoundingSphere', 
+        'goo/renderer/bounds/BoundingBox', 
+        'goo/entities/components/Component'
+        ],
 	/** @lends MeshDataComponent */
-	function (BoundingSphere, Component) {
+	function (
+		BoundingSphere,
+		BoundingBox,
+		Component
+		) {
 	"use strict";
 
 	/**
@@ -15,6 +23,7 @@ define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'],
 		this.meshData = meshData;
 
 		this.modelBound = new BoundingSphere();
+//		this.modelBound = new BoundingBox();
 		this.autoCompute = true;
 	}
 
