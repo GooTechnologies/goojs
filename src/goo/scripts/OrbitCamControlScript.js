@@ -35,6 +35,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
+		// REVIEW: Why do we need a setting for this? Is there a reason for it to be configurable?
 		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
 		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 

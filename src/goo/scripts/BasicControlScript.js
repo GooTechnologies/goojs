@@ -223,21 +223,31 @@ function (Vector3, Matrix3x3) {
 			}
 		};
 
+		// REVIEW: Not needed AFAIK.
+		// I think the built-in Function.bind is supported by all browsers we care about.
+		// Can you check if that is the case? It's good to know.
 		function bind (scope, fn) {
 			return function () {
 				fn.apply(scope, arguments);
 			};
 		}
 
-		this.domElement.addEventListener('mousemove', bind(this, this.mousemove), false);
+		// REVIEW: I changed mousemove, mouseup and touchend to be attached to the document.
+		// This way we never miss one of those events, and it's possible to leave the domElement
+		// and still rotate.
+		// I removed the mouseout and touchout listeners, as they are not needed.
+		// Please update the other control scripts.
+
+		// REVIEW: It's bad style and bad performance to listen to
+		// mousemove when the mouse button is not down.
+		// Start listening to mousemove events when mouse is down,
+		// and stop listening when mouse is up.
+		document.addEventListener('mousemove', bind(this, this.mousemove), false);
 		this.domElement.addEventListener('touchmove', bind(this, this.mousemove), false);
 		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
 		this.domElement.addEventListener('touchstart', bind(this, this.mousedown), false);
-		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
-		this.domElement.addEventListener('touchend', bind(this, this.mouseup), false);
-
-		this.domElement.addEventListener('touchleave', bind(this, this.mouseup), false);
-		this.domElement.addEventListener('mouseout', bind(this, this.mouseup), false);
+		document.addEventListener('mouseup', bind(this, this.mouseup), false);
+		document.addEventListener('touchend', bind(this, this.mouseup), false);
 
 		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
