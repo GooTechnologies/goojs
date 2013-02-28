@@ -17,3 +17,7 @@ task 'minifysmall', 'one minify', (options) ->
 	fileOut = "minified/#{options.output}.js"
 	
 	minify(options.input, fileOut, true)
+
+task 'testserver', 'Start Testacular server', (options) ->
+	server = require('testacular').server
+	server.start(configFile: 'test/testacular.conf.js')

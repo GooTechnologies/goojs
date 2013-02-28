@@ -1,4 +1,5 @@
 test:
+	@echo "Makefile is deprecated: use 'cake testserver'"
 	./node_modules/.bin/testacular start test/testacular.conf.js
 
 docs:
