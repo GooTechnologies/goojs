@@ -87,13 +87,13 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					return;
 				}
 
-				for ( var i in that.callbacksPreProcess) {
+				for (var i = 0; i < that.callbacksPreProcess.length; i++) {
 					that.callbacksPreProcess[i](that.world.tpf);
 				}
 
 				that.world.process();
 
-				for ( var i in that.callbacksPreRender) {
+				for (var i = 0; i < that.callbacksPreRender.length; i++) {
 					that.callbacksPreRender[i](that.world.tpf);
 				}
 
@@ -103,7 +103,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					renderSystem.render(that.renderer);
 				}
 
-				for ( var i in that.callbacks) {
+				for (var i = 0; i < that.callbacks.length; i++) {
 					that.callbacks[i](that.world.tpf);
 				}
 

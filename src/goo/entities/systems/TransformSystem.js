@@ -32,7 +32,7 @@ define(['goo/entities/systems/System'],
 	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
 		transformComponent.updateWorldTransform();
 
-		for (var i in transformComponent.children) {
+		for (var i = 0; i < transformComponent.children.length; i++) {
 			this.updateWorldTransform(transformComponent.children[i]);
 		}
 	};

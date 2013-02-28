@@ -11,7 +11,7 @@ function (Vector3) {
 	 * @property {Number} constant the plane offset along the normal
 	 */
 	function Plane (normal, constant) {
-		this.normal = new Vector3(normal) || new Vector3().copy(Vector3.UNIT_Y);
+		this.normal = normal !== undefined ? new Vector3(normal) : new Vector3(Vector3.UNIT_Y);
 		this.constant = isNaN(constant) ? 0 : constant;
 	}
 

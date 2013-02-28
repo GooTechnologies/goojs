@@ -13,7 +13,7 @@ function (System) {
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
 
 	BoundingUpdateSystem.prototype.process = function (entities) {
-		for ( var i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var meshDataComponent = entity.meshDataComponent;
 			var transformComponent = entity.transformComponent;

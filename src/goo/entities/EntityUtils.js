@@ -85,7 +85,7 @@ define([
 		EntityUtils.updateWorldTransform = function (transformComponent) {
 			transformComponent.updateWorldTransform();
 
-			for (var i in transformComponent.children) {
+			for (var i = 0; i < transformComponent.children.length; i++) {
 				EntityUtils.updateWorldTransform(transformComponent.children[i]);
 			}
 		};

@@ -18,8 +18,7 @@ define(['goo/renderer/Camera'],
 	};
 
 	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
-		// camera.onFrameChange(); // TODO: not needed anymore?
-		for (var i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 
 			if (entity.skip) {
