@@ -68,7 +68,9 @@ function(Transform, Vector3, Camera) {
 	BoundingBox.prototype.whichSide = function(plane) {
 		var radius = Math.abs(this.xExtent * plane.normal.x) + Math.abs(this.yExtent * plane.normal.y) + Math.abs(this.zExtent * plane.normal.z);
 
-		var distance = this._pseudoDistance(plane, this.center);
+		var planeData = plane.normal.data;
+		var pointData = this.center.data;
+		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 
 		if (distance < -radius) {
 			return Camera.Inside;
