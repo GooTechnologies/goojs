@@ -132,6 +132,8 @@ require(
 				translation.z += 0.3;
 			}
 
+
+
 			var size = 100;
 			var height = 2;
 			var floorEntity = createFloorEntity(goo.world, size, height);
@@ -153,13 +155,38 @@ require(
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// Left 
-			translation.y += 1.5;
-			translation.z += 1.1;
+			translation.y += 1.05;
+			translation.z += 1.05;
 			box = createBoxEntity(goo.world, translation);
 			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
+			// MID
+			translation.z -= 1.05;
+			box = createBoxEntity(goo.world, translation);
+			box.addToWorld();
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
+			// RIGHT
+			translation.z -= 1.05;
+			box = createBoxEntity(goo.world, translation);
+			box.addToWorld();
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+
+			// TOP
+			translation.y += 1.05;
+			translation.z += 1.05;
+			box = createBoxEntity(goo.world, translation);
+			box.addToWorld();
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+
+			// Test object
+			translation.y -= 1.05;
+			translation.x -= 3;
+			var boxcolor = [1, 0, 0];
+			box = createColoredBox(goo.world, translation, boxcolor);
+			box.transformComponent.transform.scale.set(2,2,2);
+			box.addToWorld();
 
 			translation.x = 0;
 			translation.y = 0;
@@ -220,6 +247,23 @@ require(
 			entity.name = 'Box';
 			
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'GooBoxMaterial');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
+			material.textures.push(texture);
+			entity.meshRendererComponent.materials.push(material);
+
+			return entity;
+		}
+
+		function createColoredBox (world, translation, color) {
+			var meshData = ShapeCreator.createBox(1, 1, 1);
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.x = translation.x;
+			entity.transformComponent.transform.translation.y = translation.y;
+			entity.transformComponent.transform.translation.z = translation.z;
+			entity.name = 'Box';
+			
+			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
+			material.uniforms = {'color' : color}
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);

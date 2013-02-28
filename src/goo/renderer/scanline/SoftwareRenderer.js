@@ -5,11 +5,12 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
-	'goo/renderer/scanline/Edge'
+	'goo/renderer/scanline/Edge',
+	'goo/renderer/BoundingSphere'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge) {
+	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere) {
 	"use strict";
 
 	/**
@@ -110,75 +111,141 @@ define([
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		var cameraNearZInWorld = -this.camera.near;
 
-		for ( var i = 0; i < renderList.length; i++) {
+		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
-
-			var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-			var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
-
-			
-			var boundingSphere = entity.meshDataComponent.modelBound;
-			var origin = new Vector4(0,0,0,1.0);
-			combinedMatrix.applyPost(origin);
-
-			
-			var scale = entity.transformComponent.transform.scale;
-			var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
-
-			// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
-			var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
-		
-			
-			if (nearCoord.z > cameraNearZInWorld) {
-				//console.error("Early Exited!");
-				continue; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
-			}
-
-			var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
-			var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
-			var topCoord = new Vector4(origin.x, origin.y + radius, origin.z, 1.0);
-			var bottomCoord = new Vector4(origin.x , origin.y - radius, origin.z, 1.0);
-
-			var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
-
-			this._projectionTransform(vertices, cameraProjectionMatrix);
-
-			this._transformToScreenSpace(vertices);
-
-			var red = [255, 0, 0];
-			var green = [0, 255, 0];
-			var blue = [0, 0, 255];
-			var yellow = [255, 255, 0];
-			var pink = [255, 0, 255];
-			var cyan = [0, 190, 190];
-
-			var nearestDepth = 1.0 / nearCoord.w;
-
-			// Executes the occluded test in the order they are put, exits the case upon any false value.
-			// TODO: Test for best order of early tests.
-			// TODO: Something is up with the check of the near coordinate, fails when looking from below for some reason. (Clipping/Clamping problem ?).
-
-			if (this._isOccluded(topCoord, yellow, nearestDepth)
-				&& this._isOccluded(leftCoord, blue, nearestDepth)
-				&& this._isOccluded(rightCoord, green, nearestDepth)
-				&& this._isOccluded(bottomCoord, yellow, nearestDepth)
-				&& this._isOccluded(nearCoord, red, nearestDepth)
-				&& this._isScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink)) {
-					
+			if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
+				if (this._boundingSphereOcclusionCulling(entity,cameraViewMatrix,cameraProjectionMatrix,cameraNearZInWorld)) {
 					// Removes the entity at the current index.
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
+				}
 			}
 		}
 	};
 
 	/**
-	*	Check each scanline value of the bounding sphere, early exit upon finding a visible pixel.
+	*	Return true if the object is occluded.
+	*/
+	SoftwareRenderer.prototype._boundingSphereOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
+
+		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+
+		
+		var boundingSphere = entity.meshDataComponent.modelBound;
+		var origin = new Vector4(0,0,0,1.0);
+		combinedMatrix.applyPost(origin);
+
+		
+		var scale = entity.transformComponent.transform.scale;
+		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
+
+		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
+		var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
+	
+		
+		if (nearCoord.z > cameraNearZInWorld) {
+			//console.error("Early Exited!");
+			return false; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
+		}
+
+		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
+		var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
+		var topCoord = new Vector4(origin.x, origin.y + radius, origin.z, 1.0);
+		var bottomCoord = new Vector4(origin.x , origin.y - radius, origin.z, 1.0);
+
+		var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
+
+		this._projectionTransform(vertices, cameraProjectionMatrix);
+
+		this._transformToScreenSpace(vertices);
+
+		var red = [255, 0, 0];
+		var green = [0, 255, 0];
+		var blue = [0, 0, 255];
+		var yellow = [255, 255, 0];
+		var pink = [255, 0, 255];
+		var cyan = [0, 190, 190];
+
+		var nearestDepth = 1.0 / nearCoord.w;
+
+		// Executes the occluded test in the order they are put, exits the case upon any false value.
+		// TODO: Test for best order of early tests.
+
+		
+		return (this._isOccluded(topCoord, yellow, nearestDepth)
+			&& this._isOccluded(leftCoord, blue, nearestDepth)
+			&& this._isOccluded(rightCoord, green, nearestDepth)
+			&& this._isOccluded(bottomCoord, yellow, nearestDepth)
+			&& this._isOccluded(nearCoord, red, nearestDepth)
+			&& this._isBezierScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink))
+		
+		//return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
+	};
+
+	/**
+	*	Creates a screen space axis aligned bounding box from the coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
+	*
+	*	@return {Boolean} occluded or not occluded.
+	*/
+	SoftwareRenderer.prototype._isSSAABBScanlineOccluded = function (leftCoordinate, rightCoordinate, topCoordinate, bottomCoordinate, color, nearestDepth) {
+
+		var leftX = leftCoordinate.x;
+		var rightX = rightCoordinate.x;
+
+		var firstScanline = topCoordinate.y;
+		var lastScanline = bottomCoordinate.y;
+
+		// Round the values to create a conservative check.
+		leftX = Math.floor(leftX);
+		rightX = Math.ceil(rightX);
+		firstScanline = Math.ceil(firstScanline);
+		lastScanline = Math.floor(lastScanline);
+
+		// Clamp the coordinates to screen.
+		if (leftX < 0) {
+			leftX = 0;
+		}
+
+		if (rightX > this._clipX) {
+			rightX = this._clipX;
+		}
+
+		if (firstScanline > this._clipY) {
+			firstScanline = this._clipY;
+		}
+
+		if (lastScanline < 0) {
+			lastScanline = 0;
+		}
+
+		// Scanline check the interval [firstScanline, lastScanline].
+		// Iterating downwards!
+		for (var y = firstScanline; y >= lastScanline; y--) {
+			var sampleCoord = y * this.width + leftX;
+			// Check interval [leftX, rightX].
+			for (var x = leftX; x <= rightX; x++) {
+				// Debug, add color where scanline samples are taken.
+				this._colorData.set(color, sampleCoord * 4);
+
+				if(this._depthData[sampleCoord] < nearestDepth) {
+					// Early exit if the sample is visible.
+					return false;
+				}
+				sampleCoord++;
+			}
+		}
+
+		return true;
+	};
+
+	/**
+	*	Check each scanline value of the bounding sphere, early exit upon finding a visible pixel. Uses bezier curve approximation of the bounding sphere.
 	*	Returns true if the object is occluded.
 	*
 	*	@return {Boolean} occluded or not occluded
 	*/
-	SoftwareRenderer.prototype._isScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
+	SoftwareRenderer.prototype._isBezierScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
 
 		// The coordinates are rounded to the nearest integer at this point
 
@@ -257,7 +324,7 @@ define([
 			var t1 = (1.0 - t);
 			// Bezier curve approximated bounds, simplified due to the corner x-coordinate is the same as the last one
 
-			// var x = t1 * t1 * topCoordinate.x + 2 * t1 * t * rightCoordinate.x + t * t * rightCoordinate.x;
+			//var rightX = t1 * t1 * topCoordinate.x + 2 * t1 * t * rightCoordinate.x + t * t * rightCoordinate.x;
 			// var x = t1 * t1 * topCoordinate.x + (2.0 * t - t * t) * rightCoordinate.x;
 			var rightX = t1 * t1 * topCoordinate.x + (2.0 - t) * t * rightCoordinate.x;
 			rightX = Math.ceil(rightX);
@@ -278,7 +345,6 @@ define([
 
 				this._colorData.set(color, sampleCoord * 4);
 
-				// Debug, add pink where scanline samples are taken.
 				if(this._depthData[sampleCoord] < nearestDepth) {
 					// Early exit if the sample is visible.
 					return false;
