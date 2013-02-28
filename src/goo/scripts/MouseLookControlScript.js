@@ -83,6 +83,10 @@ define(['goo/math/Vector', 'goo/math/Vector3', 'goo/math/Matrix3x3'],
 				that.updateButtonState(event, false);
 			}, false);
 
+			this.domElement.addEventListener('mouseout', function (event) {
+				that.updateButtonState(event, false);
+			}, false);
+
 			this.domElement.addEventListener('mousemove', function (event) {
 				that.updateDeltas(event);
 			}, false);

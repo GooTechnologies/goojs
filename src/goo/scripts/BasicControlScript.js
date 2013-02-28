@@ -236,6 +236,9 @@ function (Vector3, Matrix3x3) {
 		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
 		this.domElement.addEventListener('touchend', bind(this, this.mouseup), false);
 
+		this.domElement.addEventListener('touchleave', bind(this, this.mouseup), false);
+		this.domElement.addEventListener('mouseout', bind(this, this.mouseup), false);
+
 		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
 

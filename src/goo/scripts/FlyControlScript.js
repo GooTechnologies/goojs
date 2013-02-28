@@ -229,6 +229,7 @@ function (Vector3) {
 		this.domElement.addEventListener('mousemove', bind(this, this.mousemove), false);
 		this.domElement.addEventListener('mousedown', bind(this, this.mousedown), false);
 		this.domElement.addEventListener('mouseup', bind(this, this.mouseup), false);
+		this.domElement.addEventListener('mouseout', bind(this, this.mouseup), false);
 
 		this.domElement.addEventListener('keydown', bind(this, this.keydown), false);
 		this.domElement.addEventListener('keyup', bind(this, this.keyup), false);
