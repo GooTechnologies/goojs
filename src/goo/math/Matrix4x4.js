@@ -414,6 +414,59 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		return target;
 	};
 
+	Matrix4x4.transpose2 = function (source, target) {
+		if (!target) {
+			target = new Matrix4x4();
+		}
+
+		var s = source.data;
+		var t = target.data;
+		
+		if (target === source) {
+			var e01 = s[4];
+			var e02 = s[8];
+			var e03 = s[12];
+			var e12 = s[9];
+			var e13 = s[13];
+			var e23 = s[14];
+
+			t[4] = s[1];
+			t[8] = s[2];
+			t[12] = s[3];
+			t[9] = s[6];
+			t[13] = s[7];
+			t[14] = s[11];
+
+			t[1] = e01;
+			t[2] = e02;
+			t[3] = e03;
+			t[6] = e12;
+			t[7] = e13;
+			t[11] = e23;
+
+			return target;
+		}
+
+		t[0] = s[0];
+		t[1] = s[4];
+		t[2] = s[8];
+		t[3] = s[12];
+		t[4] = s[1];
+		t[5] = s[5];
+		t[6] = s[9];
+		t[7] = s[13];
+		t[8] = s[2];
+		t[9] = s[6];
+		t[10] = s[10];
+		t[11] = s[14];
+		t[12] = s[3];
+		t[13] = s[7];
+		t[14] = s[11];
+		t[15] = s[15];
+
+		return target;
+	};
+
 	/**
 	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @return {Matrix4x4} Self for chaining.
