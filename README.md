@@ -22,9 +22,13 @@ To run testacular
 
      ./node_modules/.bin/testacular start test/testacular.conf.js
 
-or (if you have `make` installed):
+or (if you have `make` installed) (DEPRECATED):
 
     make test
+
+or (if you have 'cake' installed):
+
+    cake testserver
 
 which will start the testacular server and remain idle watching for code or test changes.
 You need to touch a file in src/ or test/ to trigger the tests.
