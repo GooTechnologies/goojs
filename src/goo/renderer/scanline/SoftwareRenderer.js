@@ -427,6 +427,7 @@ define([
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
 		// TODO : use the getComponent() here, might slow things down though, as I know the entity has to have an occluderComponent.
+		// REVIEW: IMO, this way is OK.
 		var posArray = entity.occluderComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
@@ -912,16 +913,24 @@ define([
 			rightX = this._clipX;
 		}
 
+		// REVIEW: It would be clearer (and maybe faster)
+		// to calculate the increment of `depth` per pixel instead of `t`.
+		// E.g.
+		//   var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
+		// and in the loop just do
+		//   depth += depthIncrement;
 		t = 0.0;
 		var tIncrement = 1.0 / (rightX - leftX);
 		var row = y * this.width;
 		var index = row + leftX;
 		// Fill all pixels in the interval [leftX, rightX].
+		// REVIEW: Are you sure this doesn't fill one additional pixel to the right?
+		// Compare with an OpenGL rendering of the same mesh data.
 		for (var i = leftX; i <= rightX; i++) {
-			
+
 			// Linearly interpolate the 1/z values
 			var depth = ((1.0 - t) * leftZ + t * rightZ);
-				
+
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
 				this._depthData[index] = depth;  // Store 1/z values in range [1/far, 1/near].

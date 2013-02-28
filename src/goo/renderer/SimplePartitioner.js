@@ -17,6 +17,10 @@ define(['goo/renderer/Camera'],
 		// needed for things like quadtrees etc
 	};
 
+	/**
+	 * Calculates which entities are inside the frustum.
+	 * @param renderList Visible entities will be added to this array.
+	 */
 	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
 		// camera.onFrameChange(); // TODO: not needed anymore?
 		for (var i in entities) {

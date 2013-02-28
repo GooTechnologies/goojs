@@ -26,9 +26,22 @@ define([
 		parameters = parameters || {};
 
 		this.partitioner = new SimplePartitioner();
+		// REVIEW: Instead of documenting using @property, add a comment here. e.g.
+		// /**
+		//  * Array of the Entities in the view frustum.
+		//  * @type {Array.<Entity>} 
+		//  */
+		// Note that the generated documentation is different, and more correct.
+		// The docs list the variable under members instead of properties.
 		this.renderList = [];
 		this.occluderList = [];
 		this.camera = parameters.camera;
+		// REVIEW: Too long line, no need to quote keys, no space before colon. Do:
+		// this.renderer = new SoftwareRenderer({
+		// 	width: parameters.width,
+		// 	height: parameters.height,
+		// 	camera: parameters.camera
+		// });
 		this.renderer = new SoftwareRenderer({'width' : parameters.width, 'height' : parameters.height, 'camera' : parameters.camera});
 	}
 
@@ -69,8 +82,7 @@ define([
 	OcclusionCullingSystem.prototype._addVisibleOccluders = function () {
 		// 'Removes' the elements, but keeps reference used by other classes.
 		this.occluderList.length = 0;
-		for (var i = 0; i < this.renderList.length; i++)
-		{
+		for (var i = 0; i < this.renderList.length; i++) {
 			var entity = this.renderList[i];
 			if (entity.getComponent('OccluderComponent')) {
 				this.occluderList.push(entity);

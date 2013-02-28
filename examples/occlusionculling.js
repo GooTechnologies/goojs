@@ -66,7 +66,7 @@ require(
 
 			buildScene(goo);
 
-			camera.translation.set(0,1.79,20);
+			camera.translation.set(0, 1.79, 20);
 
 			setupRenderer(goo, camera);
 		}
