@@ -15,9 +15,6 @@ define([
 	*	entities in the renderList are ultimately occlusion culled based on that depth-buffer.
 	*
 	*	@param {{camera:Camera, width:Number, height:Number}} parameters <ul> <li>camera, the camera used in the world.</li> <li>width, the width of the depth buffer.</li> <li>height, the height of the depth buffer.</li> </ul>
-	*	@property {Array.<Entity>} renderList Array of the Entities in the view frustum.
-	*	@property {Array.<Entity>} occluderList Array of the Entities in the view frustum.
-	*	@property {SoftwareRenderer} renderer The SoftwareRenderer.
 	*/
 	function OcclusionCullingSystem (parameters) {
 		System.call(this, 'OcclusionCullingSystem', ['MeshRendererComponent']);
@@ -26,23 +23,29 @@ define([
 		parameters = parameters || {};
 
 		this.partitioner = new SimplePartitioner();
-		// REVIEW: Instead of documenting using @property, add a comment here. e.g.
-		// /**
-		//  * Array of the Entities in the view frustum.
-		//  * @type {Array.<Entity>} 
-		//  */
-		// Note that the generated documentation is different, and more correct.
-		// The docs list the variable under members instead of properties.
+
+		/**
+		*	Array of the Entities in the view frustum.
+		*	@type {Array.<Entity>}
+		*/
 		this.renderList = [];
+		/**
+		*	Array of the Entities with an OccluderComponent in the view frustum.
+		*	@type {Array.<Entity>}
+		*/
 		this.occluderList = [];
+
 		this.camera = parameters.camera;
-		// REVIEW: Too long line, no need to quote keys, no space before colon. Do:
-		// this.renderer = new SoftwareRenderer({
-		// 	width: parameters.width,
-		// 	height: parameters.height,
-		// 	camera: parameters.camera
-		// });
-		this.renderer = new SoftwareRenderer({'width' : parameters.width, 'height' : parameters.height, 'camera' : parameters.camera});
+
+		/**
+		*	The SoftwareRenderer.
+		*	@type {SoftwareRenderer}
+		*/
+		this.renderer = new SoftwareRenderer({
+			width: parameters.width,
+			height: parameters.height,
+			camera: parameters.camera
+		});
 	}
 
 	OcclusionCullingSystem.prototype = Object.create(System.prototype);

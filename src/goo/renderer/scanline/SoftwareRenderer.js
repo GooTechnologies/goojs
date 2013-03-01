@@ -149,6 +149,13 @@ define([
 			return false; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 		}
 
+		// TODO: Find correct bounding points for the projected sphere.
+		// http://article.gmane.org/gmane.games.devel.algorithms/21697/
+		// http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
+		// http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
+		// Bounds.w == radius.
+		// float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
+
 		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
 		var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
 		var topCoord = new Vector4(origin.x, origin.y + radius, origin.z, 1.0);
@@ -171,15 +178,20 @@ define([
 
 		// Executes the occluded test in the order they are put, exits the case upon any false value.
 		// TODO: Test for best order of early tests.
+		/*
+		this._isOccluded(topCoord, yellow, nearestDepth);
+		this._isOccluded(leftCoord, blue, nearestDepth);
+		this._isOccluded(rightCoord, green, nearestDepth);
+		this._isOccluded(bottomCoord, yellow, nearestDepth);
+		this._isOccluded(nearCoord, red, nearestDepth);
+		*/
 
-		
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
 			&& this._isOccluded(rightCoord, green, nearestDepth)
 			&& this._isOccluded(bottomCoord, yellow, nearestDepth)
 			&& this._isOccluded(nearCoord, red, nearestDepth)
-			&& this._isBezierScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink))
-		
+			&& this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
 		//return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
 	};
 
@@ -239,6 +251,201 @@ define([
 		return true;
 	};
 
+	SoftwareRenderer.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
+		// The coordinates are rounded to the nearest integer at this point
+
+		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
+		var topRows = topCoordinate.y - rightCoordinate.y;
+		var botRows = rightCoordinate.y - bottomCoordinate.y;
+
+		var radius = rightCoordinate.x - topCoordinate.x;
+		var r2 = radius * radius;
+		var ratio = this.width / this.height;
+
+		
+		// skip the top , since that will be the top coordinate , which has already been checked. Start at the next one.
+		// y is the current scanline.
+		var y = topCoordinate.y - 1;
+
+		// TODO : The cases after the two first ones might not happen often enough to be of value. Tune these in the end.
+		if ((topRows <= 1 && botRows <= 1) || topCoordinate.y <= 0 || bottomCoordinate.y >= this._clipY) {
+			// Early exit when the number of rows are 1 or less than one, there is no height in the circle at this point.
+			// This misses the middle line, might be too non-conservative !
+
+			// DEBUGGGING Set the pixels to cyan so i know this is where it finished sampling.
+			var cyan = [0, 255, 255];
+			var sampleCoord;
+			if (this._isCoordinateInsideScreen(topCoordinate)) {
+				sampleCoord = topCoordinate.y * this.width + topCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+
+			if (this._isCoordinateInsideScreen(bottomCoordinate)) {
+				sampleCoord = bottomCoordinate.y * this.width + bottomCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			if (this._isCoordinateInsideScreen(leftCoordinate)) {
+				sampleCoord = leftCoordinate.y * this.width + leftCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			if (this._isCoordinateInsideScreen(rightCoordinate)) {
+				sampleCoord = rightCoordinate.y * this.width + rightCoordinate.x;
+				this._colorData.set(cyan, sampleCoord * 4);
+			}
+			
+			return true;
+		}
+
+		// Vertical clip.
+		var yH = 1;
+		if (rightCoordinate.y >= this._clipY) {
+
+			// The entire upper part of the circle is above the screen if this is true.
+			// Set y to clipY , the next step shall be the middle of the circle.
+			topRows = 0;
+			y = this._clipY;
+
+		} else {
+			
+			// If the top (start) coordinate is above the screen, step down to the right y coordinate (this._clipY),
+			// remove the number of rows to interpolate on, update the interpolation value t.
+			var topDiff = y - this._clipY;
+			if (topDiff > 0) {
+				topRows -= topDiff;
+				yH += topDiff;
+				y = this._clipY;
+			}
+
+			// Remove one row for each row that the right y-coordinate is below or equals to -2.
+			// This because lines are checked up until rightcoordinate - 1.
+			var rightUnder = - (rightCoordinate.y + 1);
+			if (rightUnder > 0) {
+				topRows -= rightUnder;
+			}
+		}
+
+		// Interpolate x-coordinates with t in the range [tIncrement, 1.0 - tIncrement]
+		// Removes the last iteration.
+		topRows -= 1;
+		for (var i = 0; i < topRows; i++) {
+
+			var b = radius - ratio * yH;
+			var x = Math.sqrt(r2 - b * b);
+			var rightX = Math.ceil(topCoordinate.x + x);
+			var leftX = Math.floor(topCoordinate.x - x);
+
+			// Horizontal clipping
+			if (leftX < 0) {
+				leftX = 0;
+			}
+
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+
+			var sampleCoord = y * this.width + leftX;
+			
+			for(var xindex = leftX; xindex <= rightX; xindex++) {
+
+				this._colorData.set(color, sampleCoord * 4);
+
+				if(this._depthData[sampleCoord] < nearestDepth) {
+					// Early exit if the sample is visible.
+					return false;
+				}
+
+				sampleCoord++;
+			}
+			
+			y--;
+			yH++;
+		}
+
+		if (y < 0) {
+			// Hurray! Outside screen, it's hidden.
+			// This will happen when the right y-coordinate is below 0 from the start.
+			return true;
+		}
+
+		if(topRows >= -1 && rightCoordinate.y <= this._clipY) {
+			// Check the middle scanline , the pixels in between the left and right coordinates.
+			var leftX = leftCoordinate.x + 1;
+			if (leftX < 0) {
+				leftX = 0;
+			}
+			var rightX = rightCoordinate.x - 1;
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+			var midCoord = y * this.width + leftX;
+			for (var i = leftX; i <= rightX; i++) {
+
+				this._colorData.set(color, midCoord * 4);
+
+				if (this._depthData[midCoord] < nearestDepth) {
+					return false;
+				}
+				midCoord++;
+			}
+			// Move down to the next scanline.
+			y--;
+		}
+
+		// The Bottom of the "circle"	
+		yH = botRows - 1;
+		var topDiff = rightCoordinate.y - y - 1;
+		if (topDiff > 0) {
+			botRows -= topDiff;
+			yH -= topDiff;
+		}
+		
+		// Remove one row for each row that the right y-coordinate is below or equals to -2.
+		var botDiff = - (bottomCoordinate.y + 1);
+		if (botDiff > 0) {
+			botRows -= botDiff;
+		}
+
+		// Interpolate x-coordinates with t in the range [tIncrement, 1.0 - tIncrement].
+		// Remove the last iteration.
+		botRows -= 1;
+		radius = rightCoordinate.x - bottomCoordinate.x;
+		for (var i = 0; i < botRows; i++) {
+
+			var b = radius - ratio * yH;
+			var x = Math.sqrt(r2 - b * b);
+			var rightX = Math.ceil(topCoordinate.x + x);
+			var leftX = Math.floor(topCoordinate.x - x);
+
+			// Horizontal clipping
+			if (leftX < 0) {
+				leftX = 0;
+			}
+			if (rightX > this._clipX) {
+				rightX = this._clipX;
+			}
+
+			var sampleCoord = y * this.width + leftX;
+			
+			for(var xindex = leftX; xindex <= rightX; xindex++) {
+
+				// Debug, add color where scanline samples are taken.
+				this._colorData.set(color, sampleCoord * 4);
+
+				if(this._depthData[sampleCoord] < nearestDepth) {
+					// Early exit if the sample is visible.
+					return false;
+				}
+
+				sampleCoord++;
+			}
+
+			y--;
+			yH--;
+		}
+
+		return true;
+	};
+
 	/**
 	*	Check each scanline value of the bounding sphere, early exit upon finding a visible pixel. Uses bezier curve approximation of the bounding sphere.
 	*	Returns true if the object is occluded.
@@ -252,7 +459,7 @@ define([
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
 		var botRows = rightCoordinate.y - bottomCoordinate.y;
-		
+
 		// skip the top , since that will be the top coordinate , which has already been checked. Start at the next one.
 		// y is the current scanline.
 		var y = topCoordinate.y - 1;
@@ -492,8 +699,6 @@ define([
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
-		// TODO : use the getComponent() here, might slow things down though, as I know the entity has to have an occluderComponent.
-		// REVIEW: IMO, this way is OK.
 		var posArray = entity.occluderComponent.meshData.attributeMap.POSITION.array;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
@@ -726,8 +931,9 @@ define([
 			// These calculations assume that the camera's viewPortRight and viewPortTop are 1,
 			// while the viewPortLeft and viewPortBottom are 0.
 			// The x and y coordinates can still be outside the screen space here, but those will be clipped during rasterizing.
-			vertex.x = (vertex.x + 1.0) * (this.width / 2);
-			vertex.y = (vertex.y + 1.0) * (this.height / 2);
+			// Transform to zerobasd interval of pixels instead of [0, width] which will be one pixel too much.
+			vertex.x = (vertex.x + 1.0) * (this._clipX / 2);
+			vertex.y = (vertex.y + 1.0) * (this._clipY / 2);
 
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
@@ -827,7 +1033,7 @@ define([
         var shortEdge2 = (longEdge + 2) % 3;
 
         for (var i = 0; i < 3; i++) {
-			// Do pre-calculations here which are now performed in drawEdges.
+			// TODO: Do pre-calculations here which are now performed in drawEdges.
 			this._edges[i].invertZ();
         }
 
@@ -896,7 +1102,7 @@ define([
         var stopLine = shortEdge.y1;
 
         // Vertical clipping
-        if ( startLine < 0 ) {
+        if (startLine < 0) {
 
 			// If the starting line is above the screen space,
 			// the starting x-coordinates has to be advanced to
@@ -912,7 +1118,7 @@ define([
 			startLine = 0;
 		}
 
-        if ( stopLine > this._clipY ) {
+        if (stopLine > this._clipY ) {
 			stopLine = this._clipY;
         }
 
@@ -979,47 +1185,30 @@ define([
 			rightX = this._clipX;
 		}
 
-		// REVIEW: It would be clearer (and maybe faster)
-		// to calculate the increment of `depth` per pixel instead of `t`.
-		// E.g.
-		//   var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
-		// and in the loop just do
-		//   depth += depthIncrement;
-		t = 0.0;
-		var tIncrement = 1.0 / (rightX - leftX);
-		var row = y * this.width;
-		var index = row + leftX;
+		var index = y * this.width + leftX;
+		var depth = leftZ;
+		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
-		// REVIEW: Are you sure this doesn't fill one additional pixel to the right?
-		// Compare with an OpenGL rendering of the same mesh data.
 		for (var i = leftX; i <= rightX; i++) {
-
-			// Linearly interpolate the 1/z values
-			var depth = ((1.0 - t) * leftZ + t * rightZ);
 
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
-				this._depthData[index] = depth;  // Store 1/z values in range [1/far, 1/near].
+				this._depthData[index] = depth;  // Store 1/w values in range [1/far, 1/near].
 			}
-
-			/*
-			if (index > this.numOfPixels || index < 0) {
-				console.error("Writing outisde the data array!!");
-				console.log("y:" , y);
-				console.log("i:", i);
-			}
-
-			if (index == this.numOfPixels) {
-				console.error("writing to the last pixel now....");
-				console.log("t=", t);
-				console.log("tIncrement", tIncrement);
-			}
-			*/
 
 			index++;
-			t += tIncrement;
+			depth += depthIncrement;
 		}
 
+		/*
+		var lastDepth = depth - depthIncrement;
+		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX > 0) {
+			console.error("Wrong depth interpolation!");
+			console.log("lastdepth", lastDepth);
+			console.log("rightZ", rightZ);
+			console.log("depthIncrement", depthIncrement);
+		}
+		*/
 	};
 
 	/**
@@ -1059,6 +1248,25 @@ define([
 		return this._depthData;
 	};
 
-	return SoftwareRenderer;
 
+	SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clearColor) {
+		for (var i in this._depthData) {
+			var depthvalue = this._depthData[i];
+
+			var colorIndex = 4 * i;
+			var R = webGLColorData[colorIndex];
+			var G = webGLColorData[colorIndex + 1];
+			var B = webGLColorData[colorIndex + 2];
+			var A = webGLColorData[colorIndex + 3];
+			// Make a red pixel if there is depth where there is no color in any channel except for the clear color value for that channel. (There is difference at this location)
+			if (depthvalue > 0.0 && !(R > clearColor[0] * 256 || G > clearColor[1] * 256 || B > clearColor[2] * 256 || A > clearColor[3] * 256)) {
+				this._colorData[colorIndex] = 255;
+				this._colorData[colorIndex + 1] = 0;
+				this._colorData[colorIndex + 2] = 0;
+				this._colorData[colorIndex + 3] = 255;
+			}
+		}
+	};
+
+	return SoftwareRenderer;
 });

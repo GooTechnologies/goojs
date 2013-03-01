@@ -84,10 +84,23 @@ require(
 			goo.world.getSystem('RenderSystem').renderList = occlusionCullingSystem.renderList;
 			goo.world.removeSystem('PartitioningSystem'); // remove the existing system performing view frustum culling.
 
+			
+			var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
+			var gl = goo.renderer.context;
+
+
+			var clearColor = [0, 0, 0, 1.0];
+			goo.renderer.setClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
+
 			// Add the color data to the debug canvas
 			goo.callbacks.push(function(tpf) {
+				
+				// console.time("readTime");
+				//gl.readPixels(0, 0, debugcanvas.width, debugcanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, storage);
+				// console.timeEnd("readTime");
+				//occlusionCullingSystem.renderer.calculateDifference(storage, clearColor);
 				imagedata.data.set(occlusionCullingSystem.renderer.getColorData());
-				debugContext.putImageData(imagedata,0,0);
+				debugContext.putImageData(imagedata, 0, 0);
 			});
 		}
 
@@ -99,14 +112,12 @@ require(
 			var boxEntity = createBoxEntity(goo.world, translation);
 			boxEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			boxEntity.transformComponent.transform.scale.set(2,2,2);
-			boxEntity.addToWorld();
 
 			translation.x = 10;
 			translation.y = 1;
 			for (var i = 0; i < 10; i++) {
 
 				var quad = createQuad(goo.world, translation, 2, 2);
-				quad.addToWorld();
 				translation.z -= 1.0;
 			}
 
@@ -116,9 +127,10 @@ require(
 			var wallW = 50;
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
+			createBoundingSphereForEntity(goo.world, translation, bigQuad);
 			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH))); 
-			bigQuad.addToWorld();
+
 
 			translation.x = -wallW / 2 + 2;
 			translation.y = 3;
@@ -126,10 +138,11 @@ require(
 			var numberOfBoxes = wallW / 2;
 			for (var columns = 0; columns < numberOfBoxes; columns++) {
 				var box = createBoxEntity(goo.world, translation);
-				box.addToWorld();
 				box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+				createBoundingSphereForEntity(goo.world, translation, box); 
 				translation.x += 2;
 				translation.z += 0.3;
+				
 			}
 
 
@@ -139,9 +152,7 @@ require(
 			var floorEntity = createFloorEntity(goo.world, size, height);
 			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
 			floorEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(size, height, size)));
-			floorEntity.addToWorld();
 
-	
 
 			// Build the special case , where corner sampling has to be made to determine occlusion
 			translation.x = -30;
@@ -151,42 +162,37 @@ require(
 			// Bottom occluder
 			translation.y = 0.5;
 			var box = createBoxEntity(goo.world, translation);
-			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// Left 
 			translation.y += 1.05;
 			translation.z += 1.05;
 			box = createBoxEntity(goo.world, translation);
-			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// MID
 			translation.z -= 1.05;
 			box = createBoxEntity(goo.world, translation);
-			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// RIGHT
 			translation.z -= 1.05;
 			box = createBoxEntity(goo.world, translation);
-			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// TOP
 			translation.y += 1.05;
 			translation.z += 1.05;
 			box = createBoxEntity(goo.world, translation);
-			box.addToWorld();
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
 			// Test object
 			translation.y -= 1.05;
 			translation.x -= 3;
 			var boxcolor = [1, 0, 0];
-			box = createColoredBox(goo.world, translation, boxcolor);
-			box.transformComponent.transform.scale.set(2,2,2);
-			box.addToWorld();
+			box = createColoredBox(goo.world, translation, boxcolor, 2);
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
+			createBoundingSphereForEntity(goo.world, translation, box);
 
 			translation.x = 0;
 			translation.y = 0;
@@ -215,6 +221,7 @@ require(
 			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 			entity.meshRendererComponent.materials.push(material);
 			//material.wireframe = true;
+			entity.addToWorld();
 			return entity;
 		}
 
@@ -234,7 +241,7 @@ require(
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
-
+			entity.addToWorld();
 			return entity;
 		}
 
@@ -250,12 +257,12 @@ require(
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
-
+			entity.addToWorld();
 			return entity;
 		}
 
-		function createColoredBox (world, translation, color) {
-			var meshData = ShapeCreator.createBox(1, 1, 1);
+		function createColoredBox (world, translation, color, scale) {
+			var meshData = ShapeCreator.createBox(scale, scale, scale);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.x = translation.x;
 			entity.transformComponent.transform.translation.y = translation.y;
@@ -267,7 +274,7 @@ require(
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
-
+			entity.addToWorld();
 			return entity;
 		}
 
@@ -290,6 +297,28 @@ require(
 					console.error(error);
 				}
 			});
+		}
+
+		function createBoundingSphereForEntity (world, translation, entity) {
+
+			// Override boundingSystem process to get correct bounding radius.
+			entity.meshDataComponent.autoCompute = false;
+			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
+
+			var radius = entity.meshDataComponent.modelBound.radius;
+			var meshData = ShapeCreator.createSphere(16, 16, radius, null);
+			var boundentity = EntityUtils.createTypicalEntity(world, meshData);
+			boundentity.transformComponent.transform.translation.x = translation.x;
+			boundentity.transformComponent.transform.translation.y = translation.y;
+			boundentity.transformComponent.transform.translation.z = translation.z;
+			boundentity.name = 'BoundingSphere';
+			
+			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
+			material.uniforms = {'color': [1, 0, 0]};
+			material.wireframe = true;
+			boundentity.meshRendererComponent.materials.push(material);
+			boundentity.addToWorld();
+			return boundentity;
 		}
 
 		init();
