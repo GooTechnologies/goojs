@@ -596,6 +596,122 @@ function (MathUtils, Matrix, Vector3) {
 	};
 
 	/**
+	 * Rotates a matrix by the given angle around the X axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateX = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+		
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a10 = a[3],
+	        a11 = a[4],
+	        a12 = a[5],
+	        a20 = a[6],
+	        a21 = a[7],
+	        a22 = a[8];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+	        out[0]  = a[0];
+	        out[1]  = a[1];
+	        out[2]  = a[2];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[3] = a10 * c + a20 * s;
+	    out[4] = a11 * c + a21 * s;
+	    out[5] = a12 * c + a22 * s;
+	    out[6] = a20 * c - a10 * s;
+	    out[7] = a21 * c - a11 * s;
+	    out[8] = a22 * c - a12 * s;
+	  
+	    return out;
+	};
+
+	/**
+	 * Rotates a matrix by the given angle around the Y axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateY = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+		
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a00 = a[0],
+	        a01 = a[1],
+	        a02 = a[2],
+	        a20 = a[6],
+	        a21 = a[7],
+	        a22 = a[8];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+	        out[3]  = a[3];
+	        out[4]  = a[4];
+	        out[5]  = a[5];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[0] = a00 * c - a20 * s;
+	    out[1] = a01 * c - a21 * s;
+	    out[2] = a02 * c - a22 * s;
+	    out[6] = a00 * s + a20 * c;
+	    out[7] = a01 * s + a21 * c;
+	    out[8] = a02 * s + a22 * c;
+	   
+	    return out;
+	};
+
+	/**
+	 * Rotates a matrix by the given angle around the Z axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateZ = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+		
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a00 = a[0],
+	        a01 = a[1],
+	        a02 = a[2],
+	        a10 = a[3],
+	        a11 = a[4],
+	        a12 = a[5];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+	        out[6]  = a[6];
+	        out[7]  = a[7];
+	        out[8] = a[8];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[0] = a00 * c + a10 * s;
+	    out[1] = a01 * c + a11 * s;
+	    out[2] = a02 * c + a12 * s;
+	    out[3] = a10 * c - a00 * s;
+	    out[4] = a11 * c - a01 * s;
+	    out[5] = a12 * c - a02 * s;
+	  
+	    return out;
+	};
+	/**
 	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
