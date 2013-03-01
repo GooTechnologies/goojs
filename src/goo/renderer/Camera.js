@@ -477,7 +477,7 @@ define([
 		d[8] = -this._left.z;
 
 		d[1] = this._up.x;
-		d[9] = this._up.y;
+		d[5] = this._up.y;
 		d[9] = this._up.z;
 
 		d[2] = -this._direction.x;
