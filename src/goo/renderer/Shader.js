@@ -127,7 +127,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 					continue;
 				}
 
-				renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized, 0, attribute.offset, record);
+				renderer.bindVertexAttribute(attributeIndex, attribute, record);
 			}
 		}
 

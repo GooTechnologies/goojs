@@ -109,7 +109,7 @@ function(BufferData, Util, BufferUtils) {
 		var data = this.vertexData.data;
 		var view;
 		var offset = 0;
-		for ( var key in this.attributeMap) {
+		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
@@ -175,6 +175,8 @@ function(BufferData, Util, BufferUtils) {
 		return {
 			count : count,
 			type : type,
+			stride : 0,
+			offset : 0,
 			normalized : normalized !== undefined ? normalized : false
 		};
 	};

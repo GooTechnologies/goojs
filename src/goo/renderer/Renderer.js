@@ -581,26 +581,28 @@ function(
 			texture.textureRecord = texrecord;
 		}
 
-		var glType = this.getGLType(texture.variant);
-
 		if (texrecord.magFilter !== texture.magFilter) {
+			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
 		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
+			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
+			var glType = this.getGLType(texture.variant);
 			var glwrapS = this.getGLWrap(wrapS, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 			texrecord.wrapS = wrapS;
 		}
 		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 		if (texrecord.wrapT !== wrapT) {
+			var glType = this.getGLType(texture.variant);
 			var glwrapT = this.getGLWrap(wrapT, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 			texrecord.wrapT = wrapT;
@@ -1061,8 +1063,8 @@ function(
 		}
 	};
 
-	Renderer.prototype.bindVertexAttribute = function(attribIndex, tupleSize, type, normalized, stride, offset, record) {
-		this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride, offset);
+	Renderer.prototype.bindVertexAttribute = function(attribIndex, attribute, record) {
+		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 
 //		if (record.boundAttributes.indexOf(attribIndex) === -1) {
 			this.context.enableVertexAttribArray(attribIndex);
