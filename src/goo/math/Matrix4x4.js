@@ -452,56 +452,27 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
 		}
 
+		var s = source.data;
+		var t = target.data;
+		
 		det = 1.0 / det;
 
-		target.e00 = (source.e11 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e12
-			* (source.e21 * source.e33 - source.e23 * source.e31) + source.e13 * (source.e21 * source.e32 - source.e22 * source.e31))
-			* det;
-		target.e10 = (source.e10 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e12
-			* (source.e23 * source.e30 - source.e20 * source.e33) + source.e13 * (source.e22 * source.e30 - source.e20 * source.e32))
-			* det;
-		target.e20 = (source.e10 * (source.e21 * source.e33 - source.e23 * source.e31) - source.e11
-			* (source.e20 * source.e33 - source.e23 * source.e30) + source.e13 * (source.e20 * source.e31 - source.e21 * source.e30))
-			* det;
-		target.e30 = (source.e10 * (source.e22 * source.e31 - source.e21 * source.e32) - source.e11
-			* (source.e22 * source.e30 - source.e20 * source.e32) + source.e12 * (source.e21 * source.e30 - source.e20 * source.e31))
-			* det;
-		target.e01 = (source.e01 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e02
-			* (source.e23 * source.e31 - source.e21 * source.e33) + source.e03 * (source.e22 * source.e31 - source.e21 * source.e32))
-			* det;
-		target.e11 = (source.e00 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e02
-			* (source.e20 * source.e33 - source.e23 * source.e30) + source.e03 * (source.e20 * source.e32 - source.e22 * source.e30))
-			* det;
-		target.e21 = (source.e00 * (source.e23 * source.e31 - source.e21 * source.e33) - source.e01
-			* (source.e23 * source.e30 - source.e20 * source.e33) + source.e03 * (source.e21 * source.e30 - source.e20 * source.e31))
-			* det;
-		target.e31 = (source.e00 * (source.e21 * source.e32 - source.e22 * source.e31) - source.e01
-			* (source.e20 * source.e32 - source.e22 * source.e30) + source.e02 * (source.e20 * source.e31 - source.e21 * source.e30))
-			* det;
-		target.e02 = (source.e01 * (source.e12 * source.e33 - source.e13 * source.e32) - source.e02
-			* (source.e11 * source.e33 - source.e13 * source.e31) + source.e03 * (source.e11 * source.e32 - source.e12 * source.e31))
-			* det;
-		target.e12 = (source.e00 * (source.e13 * source.e32 - source.e12 * source.e33) - source.e02
-			* (source.e13 * source.e30 - source.e10 * source.e33) + source.e03 * (source.e12 * source.e30 - source.e10 * source.e32))
-			* det;
-		target.e22 = (source.e00 * (source.e11 * source.e33 - source.e13 * source.e31) - source.e01
-			* (source.e10 * source.e33 - source.e13 * source.e30) + source.e03 * (source.e10 * source.e31 - source.e11 * source.e30))
-			* det;
-		target.e32 = (source.e00 * (source.e12 * source.e31 - source.e11 * source.e32) - source.e01
-			* (source.e12 * source.e30 - source.e10 * source.e32) + source.e02 * (source.e11 * source.e30 - source.e10 * source.e31))
-			* det;
-		target.e03 = (source.e01 * (source.e13 * source.e22 - source.e12 * source.e23) - source.e02
-			* (source.e13 * source.e21 - source.e11 * source.e23) + source.e03 * (source.e12 * source.e21 - source.e11 * source.e22))
-			* det;
-		target.e13 = (source.e00 * (source.e12 * source.e23 - source.e13 * source.e22) - source.e02
-			* (source.e10 * source.e23 - source.e13 * source.e20) + source.e03 * (source.e10 * source.e22 - source.e12 * source.e20))
-			* det;
-		target.e23 = (source.e00 * (source.e13 * source.e21 - source.e11 * source.e23) - source.e01
-			* (source.e13 * source.e20 - source.e10 * source.e23) + source.e03 * (source.e11 * source.e20 - source.e10 * source.e21))
-			* det;
-		target.e33 = (source.e00 * (source.e11 * source.e22 - source.e12 * source.e21) - source.e01
-			* (source.e10 * source.e22 - source.e12 * source.e20) + source.e02 * (source.e10 * source.e21 - source.e11 * source.e20))
-			* det;
+		t[0] = (s[5] * (s[10] * s[15] - s[14] * s[11]) - s[9] * (s[6] * s[15] - s[14] * s[7]) + s[13] * (s[6] * s[11] - s[10] * s[7])) * det;
+		t[1] = (s[1] * (s[14] * s[11] - s[10] * s[15]) - s[9] * (s[14] * s[3] - s[2] * s[15]) + s[13] * (s[10] * s[3] - s[2] * s[11])) * det;
+		t[2] = (s[1] * (s[6] * s[15] - s[14] * s[7]) - s[5] * (s[2] * s[15] - s[14] * s[3]) + s[13] * (s[2] * s[7] - s[6] * s[3])) * det;
+		t[3] = (s[1] * (s[10] * s[7] - s[6] * s[11]) - s[5] * (s[10] * s[3] - s[2] * s[11]) + s[9] * (s[6] * s[3] - s[2] * s[7])) * det;
+		t[4] = (s[4] * (s[14] * s[11] - s[10] * s[15]) - s[8] * (s[14] * s[7] - s[6] * s[15]) + s[12] * (s[10] * s[7] - s[6] * s[11])) * det;
+		t[5] = (s[0] * (s[10] * s[15] - s[14] * s[11]) - s[8] * (s[2] * s[15] - s[14] * s[3]) + s[12] * (s[2] * s[11] - s[10] * s[3])) * det;
+		t[6] = (s[0] * (s[14] * s[7] - s[6] * s[15]) - s[4] * (s[14] * s[3] - s[2] * s[15]) + s[12] * (s[6] * s[3] - s[2] * s[7])) * det;
+		t[7] = (s[0] * (s[6] * s[11] - s[10] * s[7]) - s[4] * (s[2] * s[11] - s[10] * s[3]) + s[8] * (s[2] * s[7] - s[6] * s[3])) * det;
+		t[8] = (s[4] * (s[9] * s[15] - s[13] * s[11]) - s[8] * (s[5] * s[15] - s[13] * s[7]) + s[12] * (s[5] * s[11] - s[9] * s[7])) * det;
+		t[9] = (s[0] * (s[13] * s[11] - s[9] * s[15]) - s[8] * (s[13] * s[3] - s[1] * s[15]) + s[12] * (s[9] * s[3] - s[1] * s[11])) * det;
+		t[10] = (s[0] * (s[5] * s[15] - s[13] * s[7]) - s[4] * (s[1] * s[15] - s[13] * s[3]) + s[12] * (s[1] * s[7] - s[5] * s[3])) * det;
+		t[11] = (s[0] * (s[9] * s[7] - s[5] * s[11]) - s[4] * (s[9] * s[3] - s[1] * s[11]) + s[8] * (s[5] * s[3] - s[1] * s[7])) * det;
+		t[12] = (s[4] * (s[13] * s[10] - s[9] * s[14]) - s[8] * (s[13] * s[6] - s[5] * s[14]) + s[12] * (s[9] * s[6] - s[5] * s[10])) * det;
+		t[13] = (s[0] * (s[9] * s[14] - s[13] * s[10]) - s[8] * (s[1] * s[14] - s[13] * s[2]) + s[12] * (s[1] * s[10] - s[9] * s[2])) * det;
+		t[14] = (s[0] * (s[13] * s[6] - s[5] * s[14]) - s[4] * (s[13] * s[2] - s[1] * s[14]) + s[12] * (s[5] * s[2] - s[1] * s[6])) * det;
+		t[15] = (s[0] * (s[5] * s[10] - s[9] * s[6]) - s[4] * (s[1] * s[10] - s[9] * s[2]) + s[8] * (s[1] * s[6] - s[5] * s[2])) * det;
 
 		return target;
 	};
@@ -620,25 +591,37 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Matrix4x4.prototype.determinant = function () {
-		var val1 = this.e11 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e31 + this.e13 * this.e21 * this.e32 -
-				this.e13 * this.e22 * this.e31 - this.e12 * this.e21
-				* this.e33 - this.e11 * this.e23 * this.e32;
-		var val2 = this.e10 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e32 -
-				this.e13 * this.e22 * this.e30 - this.e12 * this.e20
-				* this.e33 - this.e10 * this.e23 * this.e32;
-		var val3 = this.e10 * this.e21 * this.e33 + this.e11 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e31 -
-				this.e13 * this.e21 * this.e30 - this.e11 * this.e20
-				* this.e33 - this.e10 * this.e23 * this.e31;
-		var val4 = this.e10 * this.e21 * this.e32 + this.e11 * this.e22
-				* this.e30 + this.e12 * this.e20 * this.e31 -
-				this.e12 * this.e21 * this.e30 - this.e11 * this.e20
-				* this.e32 - this.e10 * this.e22 * this.e31;
-
-		return this.e00 * val1 - this.e01 * val2 + this.e02 * val3
-				- this.e03 * val4;
+		var d = this.data;
+		
+		var val1 = 	d[5] * d[10] * d[15] + 
+					d[9] * d[14] * d[7] + 
+					d[13] * d[6] * d[11] -
+					d[13] * d[10] * d[7] - 
+					d[9] * d[6] * d[15] - 
+					d[5] * d[14] * d[11];
+		var val2 = 	d[1] * d[10] * d[15] + 
+					d[9] * d[14] * d[3] + 
+					d[13] * d[2] * d[11] -
+					d[13] * d[10] * d[3] - 
+					d[9] * d[2] * d[15] - 
+					d[1] * d[14] * d[11];
+		var val3 = 	d[1] * d[6] * d[15] + 
+					d[5] * d[14] * d[3] + 
+					d[13] * d[2] * d[7] -
+					d[13] * d[6] * d[3] - 
+					d[5] * d[2] * d[15] - 
+					d[1] * d[14] * d[7];
+		var val4 = 	d[1] * d[6] * d[11] + 
+					d[5] * d[10] * d[3] + 
+					d[9] * d[2] * d[7] -
+					d[9] * d[6] * d[3] - 
+					d[5] * d[2] * d[11] - 
+					d[1] * d[10] * d[7];
+		
+		return 	d[0] * val1 - 
+				d[4] * val2 + 
+				d[8] * val3 - 
+				d[12] * val4;
 	};
 
 	/* ====================================================================== */

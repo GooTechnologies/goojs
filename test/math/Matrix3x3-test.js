@@ -13,13 +13,13 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 		});
 
 		it("can be transposed", function() {
-			var a = new Matrix3x3(0, -1, 0, 1, 0, 0, 0, 0, -1);
-			var b = new Matrix3x3(0, -1, 0, 1, 0, 0, 0, 0, -1);
+			var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+			var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 			a.transpose();
 
-			expect(a).toEqual(new Matrix3x3(0, 1, 0, -1, 0, 0, 0, 0, -1));
-			expect(Matrix3x3.transpose(b)).toEqual(new Matrix3x3(0, 1, 0, -1, 0, 0, 0, 0, -1));
+			expect(a).toEqual(new Matrix3x3(1, 4, 7, 2, 5, 8, 3, 6, 9));
+			expect(Matrix3x3.transpose(b)).toEqual(new Matrix3x3(1, 4, 7, 2, 5, 8, 3, 6, 9));
 		});
 
 		it("can be inverted", function() {

@@ -252,20 +252,6 @@ function (MathUtils, Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-//		if (target === lhs || target === rhs) {
-//			return Matrix.copy(Matrix3x3.combine(lhs, rhs), target);
-//		}
-//
-//		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
-//		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
-//		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
-//		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
-//		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
-//		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
-//		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
-//		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
-//		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
-
 		var s1d = lhs.data;
 		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
 			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
@@ -316,19 +302,34 @@ function (MathUtils, Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
+		var s = source.data;
+		var t = target.data;
+		
 		if (target === source) {
-			return Matrix.copy(Matrix3x3.transpose(source), target);
+			var e01 = s[3];
+			var e02 = s[6];
+			var e12 = s[7];
+
+			t[3] = s[1];
+			t[6] = s[2];
+			t[7] = s[5];
+
+			t[1] = e01;
+			t[2] = e02;
+			t[5] = e12;
+
+			return target;
 		}
 
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
+		t[0] = s[0];
+		t[1] = s[3];
+		t[2] = s[6];
+		t[3] = s[1];
+		t[4] = s[4];
+		t[5] = s[7];
+		t[6] = s[2];
+		t[7] = s[5];
+		t[8] = s[8];
 
 		return target;
 	};
