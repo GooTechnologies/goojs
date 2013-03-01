@@ -292,7 +292,7 @@ function(
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
 
-			for ( var i = 0; i < renderList.length; i++) {
+			for (var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
@@ -301,11 +301,6 @@ function(
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
-
-		// var error = this.context.getError();
-		// if (error !== WebGLRenderingContext.NO_ERROR) {
-		// throw "Error: " + error;
-		// }
 	};
 
 	Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
