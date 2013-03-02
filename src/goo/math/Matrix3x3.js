@@ -711,6 +711,7 @@ function (MathUtils, Matrix, Vector3) {
 	  
 	    return out;
 	};
+	
 	/**
 	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).

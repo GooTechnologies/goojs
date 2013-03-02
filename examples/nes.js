@@ -74,16 +74,13 @@ ShaderLib
 		// Examples of model loading
 		loadModels(goo);
 
-		// Disable normal rendering
-		goo.world.getSystem('RenderSystem').doRender = false;
-
 		// Create composer with same size as screen
 		var composer = new Composer(new RenderTarget(256, 224, {
 			magFilter : 'NearestNeighbor'
 		}));
 
 		// Scene render
-		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
+		var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
 		// NES
@@ -97,9 +94,7 @@ ShaderLib
 		composer.addPass(nesPass);
 		composer.addPass(outPass);
 
-		goo.callbacks.push(function(tpf) {
-			composer.render(goo.renderer, tpf);
-		});
+		goo.renderSystem.composers.push(composer);
 	}
 
 	function loadModels(goo) {

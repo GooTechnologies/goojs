@@ -8,7 +8,7 @@ require.config({
 require(
 	['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 			'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-			'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData',
+			'goo/entities/components/MeshRendererComponent', 'goo/renderer/MeshData',
 			'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator',
 			'goo/loaders/Loader', 'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI',
 			'goo/shapes/ShapeCreator', 'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight',
@@ -17,7 +17,7 @@ require(
 			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4',
 			'goo/renderer	/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/SSAOPass', 'goo/renderer/shaders/ShaderLib',
 			'goo/util/Rc4Random', 'goo/scripts/OrbitCamControlScript'], function(World, Entity, System, TransformSystem, RenderSystem,
-		TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
+		TransformComponent, MeshDataComponent, MeshRendererComponent, MeshData, Renderer, Material, Shader, GooRunner,
 		TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, BasicControlScript,
 		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
 		ShaderFragments, DepthPass, SSAOPass, ShaderLib, Rc4Random, OrbitCamControlScript) {
@@ -67,14 +67,11 @@ require(
 			var boxEntity = createBoxEntity(goo, 250, 5, 250, 20, 20);
 			boxEntity.transformComponent.transform.translation.y = -5;
 
-			// Disable normal rendering
-			goo.world.getSystem('RenderSystem').doRender = false;
-
 			// Scene render
-			var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
+			var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 			renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
-			var ssaoPass = new SSAOPass(goo.world.getSystem('PartitioningSystem').renderList);
+			var ssaoPass = new SSAOPass(goo.world.getSystem('RenderSystem').renderList);
 
 			// Regular copy
 			var shader = Util.clone(ShaderLib.copy);
@@ -94,10 +91,8 @@ require(
 			composer.addPass(renderPass);
 			composer.addPass(ssaoPass);
 			composer.addPass(outPass);
-
-			goo.callbacks.push(function(tpf) {
-				composer.render(goo.renderer, tpf);
-			});
+			
+			goo.renderSystem.composers.push(composer);
 		}
 
 		function loadModels(goo) {

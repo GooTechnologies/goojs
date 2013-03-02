@@ -1,11 +1,36 @@
-define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
-		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
-		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats',
-		"goo/entities/systems/CSSTransformSystem", 'goo/util/GameUtils'],
+define([
+    'goo/entities/World', 
+    'goo/entities/systems/TransformSystem', 
+    'goo/entities/systems/RenderSystem', 
+	'goo/renderer/Renderer', 
+	'goo/entities/systems/BoundingUpdateSystem', 
+	'goo/entities/systems/ScriptSystem',
+	'goo/entities/systems/LightingSystem', 
+	'goo/entities/managers/LightManager',
+	'goo/entities/systems/CameraSystem', 
+	'goo/renderer/Camera', 
+	'goo/entities/components/CameraComponent', 
+	'goo/util/Stats',
+	"goo/entities/systems/CSSTransformSystem", 
+	'goo/util/GameUtils'
+],
 /** @lends GooRunner */
-function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
-	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem, GameUtils) {
+function (
+	World, 
+	TransformSystem, 
+	RenderSystem, 
+	Renderer, 
+	BoundingUpdateSystem, 
+	ScriptSystem, 
+	LightingSystem, 
+	LightManager, 
+	CameraSystem, 
+	Camera, 
+	CameraComponent, 
+	Stats, 
+	CSSTransformSystem, 
+	GameUtils
+) {
 	"use strict";
 
 	/**
@@ -18,7 +43,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	 *     stencil : false,
 	 *     preserveDrawingBuffer : false,
 	 *     showStats : false,
-	 *      manuallyStartGameLoop : false
+	 *     manuallyStartGameLoop : false
 	 * }</code>
 	 *
 	 * @constructor
@@ -40,12 +65,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
-
-		var partitioningSystem = new PartitioningSystem();
-		partitioningSystem.partitioner = new SimplePartitioner();
-		this.world.setSystem(partitioningSystem);
-
-		var renderSystem = new RenderSystem(partitioningSystem.renderList);
+		var renderSystem = this.renderSystem = new RenderSystem();
 		this.world.setSystem(renderSystem);
 
 		this.doRender = true;
@@ -57,7 +77,6 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 			this.stats.domElement.style.position = 'absolute';
 			this.stats.domElement.style.left = '10px';
 			this.stats.domElement.style.top = '10px';
-			// document.getElementById( 'container' ).appendChild(stats.domElement);
 			document.body.appendChild(this.stats.domElement);
 		}
 

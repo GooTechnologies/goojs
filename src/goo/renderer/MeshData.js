@@ -125,6 +125,16 @@ function(BufferData, Util, BufferUtils) {
 			this.attributeMap[key].array = view;
 		}
 	};
+	
+	MeshData.prototype.makeInterleavedData = function() {
+		var stride = 0;
+		for (var key in this.attributeMap) {
+			var attribute = this.attributeMap[key];
+			stride += attribute.count * Util.getByteSize(attribute.type);
+		}		
+		
+		// TODO
+	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
 		return this.attributeMap[attributeName].array;
