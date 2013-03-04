@@ -20,8 +20,8 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'],
 	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
 		this._circleSamples = circleSamples !== undefined ? circleSamples : 8;
 		this._radialSamples = radialSamples !== undefined ? radialSamples : 8;
-		this._tubeRadius = tubeRadius !== undefined ? tubeRadius : 2;
-		this._centerRadius = centerRadius !== undefined ? centerRadius : 1;
+		this._tubeRadius = tubeRadius !== undefined ? tubeRadius : 1;
+		this._centerRadius = centerRadius !== undefined ? centerRadius : 2;
 
 		this.viewInside = false;
 
