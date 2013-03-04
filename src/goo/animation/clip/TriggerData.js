@@ -12,7 +12,8 @@ function () {
 		this._armed = false;
 	}
 
-	TriggerData.prototype.getCurrentTrigger = function (instance) {
+	// Was: function (instance)
+	TriggerData.prototype.getCurrentTrigger = function () {
 		return this._currentTriggers.length === 0 ? null : this._currentTriggers[this._currentTriggers.size() - 1];
 	};
 

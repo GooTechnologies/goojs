@@ -31,14 +31,17 @@ function (AbstractTransitionState) {
 		return state;
 	};
 
-	ImmediateTransitionState.prototype.update = function (globalTime, layer) {
+	// Was: function (globalTime, layer)
+	ImmediateTransitionState.prototype.update = function () {
 	};
 
-	ImmediateTransitionState.prototype.getCurrentSourceData = function (manager) {
+	// Was: function (manager)
+	ImmediateTransitionState.prototype.getCurrentSourceData = function () {
 		return {};
 	};
 
-	ImmediateTransitionState.prototype.postUpdate = function (layer) {
+	// Was: function (layer)
+	ImmediateTransitionState.prototype.postUpdate = function () {
 	};
 
 	return ImmediateTransitionState;

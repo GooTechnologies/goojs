@@ -36,9 +36,11 @@ function (Vector3) {
 		var applyForce = new Vector3(force);
 		return {
 			enabled : true,
-			prepare : function (particleEntity, emitter) {
+			/* Was: function (particleEntity, emitter) */
+			prepare : function () {
 			},
-			apply : function (tpf, particle, particleIndex) {
+			/* Was: function (tpf, particle, particleIndex) */
+			apply : function (tpf, particle) {
 				particle.velocity.x += applyForce.x * tpf;
 				particle.velocity.y += applyForce.y * tpf;
 				particle.velocity.z += applyForce.z * tpf;
