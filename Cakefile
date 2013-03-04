@@ -28,4 +28,4 @@ task 'checkstyle', 'Run JSHint', (options) ->
 	# with the same config files (.jshintrc and .jshintignore)
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
-	cmdopts = cli.interpret('jshint src/ test/')
+	cmdopts = cli.interpret('jshint --reporter=tools/jshint-reporter.js src/ test/')
