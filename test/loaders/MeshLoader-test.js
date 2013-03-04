@@ -5,8 +5,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Texture',
 	'goo/shapes/ShapeCreator',
-	'goo/lib/rsvp.amd',
-	'goo/entities/GooRunner'
+	'goo/lib/rsvp.amd'
 	],
 function(
 	Loader,
@@ -15,8 +14,7 @@ function(
 	ShaderLib,
 	ShapeCreator,
 	Texture,
-	RSVP,
-	GooRunner
+	RSVP
 	) {
 	'use strict';
 

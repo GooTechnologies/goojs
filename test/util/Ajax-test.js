@@ -1,10 +1,8 @@
 define([
-	'goo/util/Ajax',
-	'goo/lib/rsvp.amd'
+	'goo/util/Ajax'
 	],
 	function(
-		Ajax,
-		RSVP
+		Ajax
 		) {
 		'use strict';
 

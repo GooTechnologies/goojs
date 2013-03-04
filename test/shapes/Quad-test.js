@@ -3,8 +3,7 @@ define(
 	"goo/shapes/ShapeCreator",
 	"goo/shapes/Quad"
 ], function(
-	ShapeCreator,
-	Quad
+	ShapeCreator
 ) {
 	"use strict";
 

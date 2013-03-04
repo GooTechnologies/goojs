@@ -1,3 +1,3 @@
-define(["goo/math/Plane"], function(Plane) {
+define(["goo/math/Plane"], function(/*Plane*/) {
 	"use strict";
 });

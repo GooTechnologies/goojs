@@ -27,7 +27,7 @@ function(
 
 
 		it('loads application/octet-stream', function() {
-			xhr.get = function(arg) {
+			xhr.get = function() {
 				var p = new RSVP.Promise();
 
 				p.resolve({
@@ -52,7 +52,7 @@ function(
 		});
 
 		it('loads application/json to object', function() {
-			xhr.get = function(arg) {
+			xhr.get = function() {
 				var p = new RSVP.Promise();
 
 				p.resolve({
@@ -77,7 +77,7 @@ function(
 		});
 
 		it('gets rejected when it doesn\'t recognize a content type', function() {
-			xhr.get = function(arg) {
+			xhr.get = function() {
 				var p = new RSVP.Promise();
 
 				p.resolve({
@@ -98,7 +98,7 @@ function(
 		});
 
 		it('parses loaded data with parse function', function() {
-			xhr.get = function(arg) {
+			xhr.get = function() {
 				var p = new RSVP.Promise();
 
 				p.resolve({
