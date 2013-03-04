@@ -140,6 +140,17 @@ define([
 		var scale = entity.transformComponent.transform.scale;
 		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
 
+
+		// Compensate for perspective distortion of the sphere.
+		// http://article.gmane.org/gmane.games.devel.algorithms/21697/
+		// http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
+		// http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
+		// Bounds.w == radius.
+		// float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
+		var cameraToSphereDistance = Math.sqrt(origin.x * origin.x + origin.y * origin.y + origin.z * origin.z);
+		radius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
+
+
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 		var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
 	
@@ -149,12 +160,6 @@ define([
 			return false; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 		}
 
-		// TODO: Find correct bounding points for the projected sphere.
-		// http://article.gmane.org/gmane.games.devel.algorithms/21697/
-		// http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
-		// http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
-		// Bounds.w == radius.
-		// float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
 
 		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
 		var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
@@ -167,6 +172,22 @@ define([
 
 		this._transformToScreenSpace(vertices);
 
+		// Some conservative rounding of the coordinates to integer pixel coordinates.
+		leftCoord.x = Math.floor(leftCoord.x);
+		leftCoord.y = Math.round(leftCoord.y);
+
+		rightCoord.x = Math.ceil(rightCoord.x);
+		rightCoord.y = Math.round(rightCoord.y);
+
+		topCoord.x = Math.round(topCoord.x);
+		topCoord.y = Math.ceil(topCoord.y);
+
+		bottomCoord.x = Math.round(bottomCoord.x);
+		bottomCoord.y = Math.floor(bottomCoord.y);
+
+		nearCoord.x = Math.round(nearCoord.x);
+		nearCoord.y = Math.round(nearCoord.y);
+
 		var red = [255, 0, 0];
 		var green = [0, 255, 0];
 		var blue = [0, 0, 255];
@@ -178,13 +199,14 @@ define([
 
 		// Executes the occluded test in the order they are put, exits the case upon any false value.
 		// TODO: Test for best order of early tests.
+		
 		/*
 		this._isOccluded(topCoord, yellow, nearestDepth);
 		this._isOccluded(leftCoord, blue, nearestDepth);
 		this._isOccluded(rightCoord, green, nearestDepth);
 		this._isOccluded(bottomCoord, yellow, nearestDepth);
 		this._isOccluded(nearCoord, red, nearestDepth);
-		*/
+		*/		
 
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
@@ -252,8 +274,6 @@ define([
 	};
 
 	SoftwareRenderer.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
-		// The coordinates are rounded to the nearest integer at this point
-
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
 		var botRows = rightCoordinate.y - bottomCoordinate.y;
@@ -454,8 +474,6 @@ define([
 	*/
 	SoftwareRenderer.prototype._isBezierScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
 
-		// The coordinates are rounded to the nearest integer at this point
-
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
 		var botRows = rightCoordinate.y - bottomCoordinate.y;
@@ -653,7 +671,7 @@ define([
 	};
 
 	/**
-	*	Check occlusion on a given coordinate. The coordinate's x and y values are rounded to the nearest integer.
+	*	Check occlusion on a given coordinate.
 	*	If the coordinate is inside the screen pixel space, the given depth value is compared,
 	*	otherwise the coordinate is assumed to be occluded.
 	*
@@ -661,11 +679,7 @@ define([
 	*	@return {Boolean} true or false, occluded or not occluded.
 	*/
 	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
-	
-		coordinate.x = Math.round(coordinate.x);
-		coordinate.y = Math.round(coordinate.y);
 
-	
 		if (this._isCoordinateInsideScreen(coordinate)) {
 
 			var coordIndex = coordinate.y * this.width + coordinate.x;
