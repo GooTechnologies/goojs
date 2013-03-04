@@ -1,13 +1,20 @@
 define([
-		'goo/loaders/Loader',
-		'goo/renderer/Texture',
-		'goo/loaders/dds/DdsLoader',
-		'goo/util/SimpleResourceUtil',
-		'goo/renderer/Util',
-		'goo/util/Latch'
+	'goo/loaders/Loader',
+	'goo/renderer/Texture',
+	'goo/loaders/dds/DdsLoader',
+	'goo/util/SimpleResourceUtil',
+	'goo/renderer/Util',
+	'goo/util/Latch'
 ],
 /** @lends TextureCreator */
-function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util, Latch) {
+function (
+	Loader, 
+	Texture, 
+	DdsLoader, 
+	SimpleResourceUtil, 
+	Util, 
+	Latch
+) {
 	"use strict";
 
 	/**

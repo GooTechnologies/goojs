@@ -1,6 +1,14 @@
-define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'],
+define([
+	'goo/renderer/BufferData', 
+	'goo/renderer/Util', 
+	'goo/renderer/BufferUtils'
+],
 /** @lends MeshData */
-function(BufferData, Util, BufferUtils) {
+function(
+	BufferData, 
+	Util, 
+	BufferUtils
+) {
 	"use strict";
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
