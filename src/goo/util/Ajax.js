@@ -30,7 +30,7 @@ define([
 
 		var request = new XMLHttpRequest();
 
-		request.open(method, url, true);
+		request.open(method, url, async);
 
 
 		request.onreadystatechange = function () {

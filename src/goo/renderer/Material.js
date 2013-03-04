@@ -37,7 +37,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 			// 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
 			blendEquation : 'AddEquation',
 
-			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 
+			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor',
 			 // 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 			 blendSrc : 'SrcAlphaFactor',
 			 blendDst : 'OneMinusSrcAlphaFactor'

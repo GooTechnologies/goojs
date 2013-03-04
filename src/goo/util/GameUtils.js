@@ -54,7 +54,7 @@ function () {
 		}
 
 		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function (callback, element) {
+			window.requestAnimationFrame = function (callback) {
 				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
 				var id = window.setTimeout(function () {
 					callback(currTime + timeToCall);
@@ -131,7 +131,7 @@ function () {
 			});
 		}
 
-		function fullscreenchange (oldEvent) {
+		function fullscreenchange () {
 			var newEvent = document.createEvent("CustomEvent");
 			newEvent.initCustomEvent("fullscreenchange", true, false, null);
 			document.dispatchEvent(newEvent);
@@ -139,7 +139,7 @@ function () {
 		document.addEventListener("webkitfullscreenchange", fullscreenchange, false);
 		document.addEventListener("mozfullscreenchange", fullscreenchange, false);
 
-		function fullscreenerror (oldEvent) {
+		function fullscreenerror () {
 			var newEvent = document.createEvent("CustomEvent");
 			newEvent.initCustomEvent("fullscreenerror", true, false, null);
 			document.dispatchEvent(newEvent);
@@ -151,7 +151,7 @@ function () {
 			elementPrototype.requestFullScreen = (function () {
 				if (elementPrototype.webkitRequestFullScreen) {
 					return function () {
-						this.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+						this.webkitRequestFullScreen(global.Element.ALLOW_KEYBOARD_INPUT);
 					};
 				}
 
@@ -205,7 +205,7 @@ function () {
 			navigator.pointer = navigator.webkitPointer || navigator.mozPointer;
 		}
 
-		function pointerlockchange (oldEvent) {
+		function pointerlockchange () {
 			var newEvent = document.createEvent("CustomEvent");
 			newEvent.initCustomEvent("pointerlockchange", true, false, null);
 			document.dispatchEvent(newEvent);
@@ -215,7 +215,7 @@ function () {
 		document.addEventListener("mozpointerlockchange", pointerlockchange, false);
 		document.addEventListener("mozpointerlocklost", pointerlockchange, false);
 
-		function pointerlockerror (oldEvent) {
+		function pointerlockerror () {
 			var newEvent = document.createEvent("CustomEvent");
 			newEvent.initCustomEvent("pointerlockerror", true, false, null);
 			document.dispatchEvent(newEvent);

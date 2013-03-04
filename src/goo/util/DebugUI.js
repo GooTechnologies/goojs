@@ -4,7 +4,7 @@ define(function () {
 	function DebugUI(goo) {
 		var that = this;
 
-		goo.callbacks.push(function (tpf) {
+		goo.callbacks.push(function () {
 			var allEntities = goo.world.entityManager.getEntities();
 			for (var i in allEntities) {
 				var entity = allEntities[i];
@@ -39,15 +39,15 @@ define(function () {
 
 			Manager.prototype = {
 				constructor : Manager,
-				added : function (entity) {
+				added : function () {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
-				removed : function (entity) {
+				removed : function () {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
-				changed : function (entity) {
+				changed : function () {
 					var entities = goo.world.entityManager.getTopEntities();
 					this.updateList(entities);
 				},
