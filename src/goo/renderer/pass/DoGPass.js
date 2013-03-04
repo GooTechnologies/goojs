@@ -93,7 +93,7 @@ define([
 		this.needsSwap = false;
 	}
 
-	DoGPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+	DoGPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;

@@ -26,11 +26,11 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/rendere
 		Renderer.mainCamera = mainCamera;
 	};
 
-	CameraSystem.prototype.inserted = function (entity) {
+	CameraSystem.prototype.inserted = function () {
 		this.findMainCamera();
 	};
 
-	CameraSystem.prototype.deleted = function (entity) {
+	CameraSystem.prototype.deleted = function () {
 		this.findMainCamera();
 	};
 

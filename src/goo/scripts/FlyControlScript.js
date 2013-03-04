@@ -12,7 +12,7 @@ function (Vector3) {
 	 * @property {ArrayBuffer} data Data to wrap
 	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 */
-	function FlyControlScript (domElement, direction) {
+	function FlyControlScript (domElement) {
 		this.domElement = (domElement !== undefined) ? domElement : document;
 		if (domElement) {
 			this.domElement.setAttribute('tabindex', -1);
@@ -247,8 +247,8 @@ function (Vector3) {
 	}
 
 	FlyControlScript.prototype.run = function (camera, tpf) {
-		var moveMult = tpf * this.movementSpeed * this.movementSpeedMultiplier;
-		var rotMult = tpf * this.rollSpeed * this.movementSpeedMultiplier;
+		// var moveMult = tpf * this.movementSpeed * this.movementSpeedMultiplier;
+		// var rotMult = tpf * this.rollSpeed * this.movementSpeedMultiplier;
 
 		var loc = new Vector3();
 		if (this.moveVector.z === 1) {

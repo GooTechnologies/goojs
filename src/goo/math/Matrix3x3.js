@@ -858,7 +858,7 @@ function (MathUtils, Matrix, Vector3) {
 	
 	Matrix3x3.prototype.clone = function () {
 		var d = this.data;
-		return new Matrix4x4(
+		return new Matrix3x3(
 			d[0], d[1], d[2],
 			d[3], d[4], d[5],
 			d[4], d[5], d[6]

@@ -210,7 +210,8 @@ define([
 		layer._steadyStates[state._name] = state;
 	};
 
-	JsonUtils.parseTransitionState = function(args, inputStore, outputStore, manager) {
+	// Was: function (args, inputStore, outputStore, manager)
+	JsonUtils.parseTransitionState = function(args) {
 		var type = args[2];
 		var transition;
 

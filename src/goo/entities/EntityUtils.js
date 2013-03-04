@@ -2,16 +2,14 @@ define([
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent',
-		'goo/entities/components/CSSTransformComponent',
-		'goo/renderer/Util'
+		'goo/entities/components/CSSTransformComponent'
 	],
 	/** @lends EntityUtils */
 	function (
 		TransformComponent,
 		MeshDataComponent,
 		MeshRendererComponent,
-		CSSTransformComponent,
-		Util
+		CSSTransformComponent
 	) {
 		"use strict";
 

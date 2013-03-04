@@ -186,10 +186,10 @@ function (Vector, Vector2, Vector3, MathUtils) {
 
 		// optional touch controls... requires Hammer.js v2
 		//global Hammer:true
-		if (typeof (Hammer) !== "undefined") {
+		if (typeof (window.Hammer) !== "undefined") {
 			// Disable warning that we call `Hammer()`, not `new Hammer()`
 			//jshint newcap:false
-			var hammertime = Hammer(this.domElement, {
+			var hammertime = window.Hammer(this.domElement, {
 				transform_always_block : true,
 				transform_min_scale : 1
 			});

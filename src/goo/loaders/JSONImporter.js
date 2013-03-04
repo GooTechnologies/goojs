@@ -497,8 +497,8 @@ define(
 				for (var key in this.slotUnitMap) {
 					if (info.textureFileNames[key] !== undefined) {
 						var baseTexFileName = info.textureFileNames[key];
-						var minificationFilter = info.textureMinificationFilters[key];
-						var flipTexture = info.textureFlipSettings[key];
+						// var minificationFilter = info.textureMinificationFilters[key];
+						// var flipTexture = info.textureFlipSettings[key];
 
 						var tex;
 

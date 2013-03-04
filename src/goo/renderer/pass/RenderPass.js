@@ -20,7 +20,8 @@ define(['goo/renderer/Renderer', 'goo/math/Vector', 'goo/math/Vector4'],
 		this.needsSwap = false;
 	}
 
-	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+	// RenderPasses may have a fourth additional parameter called delta
+	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		if (this.clearColor) {
 			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);

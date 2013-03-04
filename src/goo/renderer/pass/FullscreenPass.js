@@ -32,7 +32,7 @@ define([
 			this.needsSwap = true;
 		}
 
-		FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+		FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 			if (this.useReadBuffer) {
 				this.material.textures[0] = readBuffer;
 			}

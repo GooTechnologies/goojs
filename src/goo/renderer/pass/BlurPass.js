@@ -51,7 +51,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		this.needsSwap = false;
 	}
 
-	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.textures[0] = readBuffer;

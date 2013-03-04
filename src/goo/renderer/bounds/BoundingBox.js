@@ -211,9 +211,9 @@ function(Transform, Vector3, Camera) {
 			return false;
 		}
 
-		var diff = this._compVect1.copy(ray.origin).sub(this.center);
+		// var diff = this._compVect1.copy(ray.origin).sub(this.center);
 
-		var direction = ray.direction;
+		// var direction = ray.direction;
 
 		// final float[] t = { 0.0f, Float.POSITIVE_INFINITY };
 		//

@@ -23,7 +23,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		this.needsSwap = true;
 	}
 
-	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		this.material.textures[0] = readBuffer;
 		this.material.textures[1] = this.mapping;
 
