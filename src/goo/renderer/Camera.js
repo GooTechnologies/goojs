@@ -473,7 +473,7 @@ define([
 		this.modelView.setIdentity();
 
 		var d = this.modelView.data;
-		
+
 		d[0] = -this._left.x;
 		d[4] = -this._left.y;
 		d[8] = -this._left.z;

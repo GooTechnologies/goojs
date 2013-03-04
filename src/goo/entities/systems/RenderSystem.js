@@ -1,15 +1,15 @@
 define([
-        'goo/entities/systems/System', 
-        'goo/renderer/TextureCreator', 
-        'goo/renderer/Util', 
+        'goo/entities/systems/System',
+        'goo/renderer/TextureCreator',
+        'goo/renderer/Util',
         'goo/entities/EventHandler',
         'goo/renderer/SimplePartitioner'
         ],
 	/** @lends RenderSystem */
 	function (
 		System,
-		TextureCreator, 
-		Util, 
+		TextureCreator,
+		Util,
 		EventHandler,
 		SimplePartitioner
 	) {
@@ -21,8 +21,8 @@ define([
 	 * @property {Boolean} doRender Only render if set to true
 	 */
 
-	// TODO: Should renderList argument be assigned to this.renderList?
-	function RenderSystem(renderList) {
+	// TODO: Should old renderList argument be assigned to this.renderList?
+	function RenderSystem() {
 		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
 
 		this.entities = [];

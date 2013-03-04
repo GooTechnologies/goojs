@@ -1,6 +1,6 @@
 define([
-        'goo/renderer/BoundingSphere', 
-        'goo/renderer/bounds/BoundingBox', 
+        'goo/renderer/BoundingSphere',
+        'goo/renderer/bounds/BoundingBox',
         'goo/entities/components/Component'
         ],
 	/** @lends MeshDataComponent */

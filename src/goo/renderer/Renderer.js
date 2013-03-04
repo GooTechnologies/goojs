@@ -87,15 +87,15 @@ function(
 		}
 
 		if (parameters.debug) {
-			if (typeof (WebGLDebugUtils) === 'undefined') {
+			if (typeof (window.WebGLDebugUtils) === 'undefined') {
 				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
 			} else {
 				console.log('Running in webgl debug mode.');
 				if (parameters.validate) {
 					console.log('Running with "undefined arguments" validation.');
-					this.context = WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
 				} else {
-					this.context = WebGLDebugUtils.makeDebugContext(this.context);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context);
 				}
 			}
 		}
@@ -192,7 +192,7 @@ function(
 		for ( var ii = 0; ii < args.length; ++ii) {
 			if (args[ii] === undefined) {
 				console.error("undefined passed to gl." + functionName + "("
-					+ WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
+					+ window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
 			}
 		}
 	}

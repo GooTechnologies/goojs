@@ -20,7 +20,7 @@ function (MathUtils) {
 			var clockTime = instance._timeScale * (globalTime - instance._startTime);
 
 			var maxTime = this._clip._maxTime;
-			if (maxTime == -1) {
+			if (maxTime === -1) {
 				return false;
 			}
 

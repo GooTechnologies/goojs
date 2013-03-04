@@ -304,7 +304,7 @@ function (MathUtils, Matrix, Vector3) {
 
 		var s = source.data;
 		var t = target.data;
-		
+
 		if (target === source) {
 			var e01 = s[3];
 			var e02 = s[6];
@@ -607,7 +607,7 @@ function (MathUtils, Matrix, Vector3) {
 		store = store || this;
 		var a = this.data;
 		var out = store.data;
-		
+
 	    var s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a10 = a[3],
@@ -630,7 +630,7 @@ function (MathUtils, Matrix, Vector3) {
 	    out[6] = a20 * c - a10 * s;
 	    out[7] = a21 * c - a11 * s;
 	    out[8] = a22 * c - a12 * s;
-	  
+
 	    return out;
 	};
 
@@ -646,7 +646,7 @@ function (MathUtils, Matrix, Vector3) {
 		store = store || this;
 		var a = this.data;
 		var out = store.data;
-		
+
 	    var s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a00 = a[0],
@@ -669,7 +669,7 @@ function (MathUtils, Matrix, Vector3) {
 	    out[6] = a00 * s + a20 * c;
 	    out[7] = a01 * s + a21 * c;
 	    out[8] = a02 * s + a22 * c;
-	   
+
 	    return out;
 	};
 
@@ -685,7 +685,7 @@ function (MathUtils, Matrix, Vector3) {
 		store = store || this;
 		var a = this.data;
 		var out = store.data;
-		
+
 	    var s = Math.sin(rad),
 	        c = Math.cos(rad),
 	        a00 = a[0],
@@ -708,10 +708,10 @@ function (MathUtils, Matrix, Vector3) {
 	    out[3] = a10 * c - a00 * s;
 	    out[4] = a11 * c - a01 * s;
 	    out[5] = a12 * c - a02 * s;
-	  
+
 	    return out;
 	};
-	
+
 	/**
 	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
@@ -841,7 +841,7 @@ function (MathUtils, Matrix, Vector3) {
 	Matrix3x3.prototype.copy = function (source) {
 		var t = this.data;
 		var s = source.data;
-		
+
 		t[0] = s[0];
 		t[1] = s[1];
 		t[2] = s[2];
@@ -851,11 +851,10 @@ function (MathUtils, Matrix, Vector3) {
 		t[6] = s[6];
 		t[7] = s[7];
 		t[8] = s[8];
-		
+
 		return this;
 	};
 
-	
 	Matrix3x3.prototype.clone = function () {
 		var d = this.data;
 		return new Matrix3x3(

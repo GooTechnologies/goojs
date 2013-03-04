@@ -371,7 +371,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 		var s = source.data;
 		var t = target.data;
-		
+
 		if (target === source) {
 			var e01 = s[4];
 			var e02 = s[8];
@@ -454,7 +454,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 		var s = source.data;
 		var t = target.data;
-		
+
 		det = 1.0 / det;
 
 		t[0] = (s[5] * (s[10] * s[15] - s[14] * s[11]) - s[9] * (s[6] * s[15] - s[14] * s[7]) + s[13] * (s[6] * s[11] - s[10] * s[7])) * det;
@@ -592,35 +592,35 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 	Matrix4x4.prototype.determinant = function () {
 		var d = this.data;
-		
-		var val1 = 	d[5] * d[10] * d[15] + 
-					d[9] * d[14] * d[7] + 
+
+		var val1 =	d[5] * d[10] * d[15] +
+					d[9] * d[14] * d[7] +
 					d[13] * d[6] * d[11] -
-					d[13] * d[10] * d[7] - 
-					d[9] * d[6] * d[15] - 
+					d[13] * d[10] * d[7] -
+					d[9] * d[6] * d[15] -
 					d[5] * d[14] * d[11];
-		var val2 = 	d[1] * d[10] * d[15] + 
-					d[9] * d[14] * d[3] + 
+		var val2 =	d[1] * d[10] * d[15] +
+					d[9] * d[14] * d[3] +
 					d[13] * d[2] * d[11] -
-					d[13] * d[10] * d[3] - 
-					d[9] * d[2] * d[15] - 
+					d[13] * d[10] * d[3] -
+					d[9] * d[2] * d[15] -
 					d[1] * d[14] * d[11];
-		var val3 = 	d[1] * d[6] * d[15] + 
-					d[5] * d[14] * d[3] + 
+		var val3 =	d[1] * d[6] * d[15] +
+					d[5] * d[14] * d[3] +
 					d[13] * d[2] * d[7] -
-					d[13] * d[6] * d[3] - 
-					d[5] * d[2] * d[15] - 
+					d[13] * d[6] * d[3] -
+					d[5] * d[2] * d[15] -
 					d[1] * d[14] * d[7];
-		var val4 = 	d[1] * d[6] * d[11] + 
-					d[5] * d[10] * d[3] + 
+		var val4 =	d[1] * d[6] * d[11] +
+					d[5] * d[10] * d[3] +
 					d[9] * d[2] * d[7] -
-					d[9] * d[6] * d[3] - 
-					d[5] * d[2] * d[11] - 
+					d[9] * d[6] * d[3] -
+					d[5] * d[2] * d[11] -
 					d[1] * d[10] * d[7];
-		
-		return 	d[0] * val1 - 
-				d[4] * val2 + 
-				d[8] * val3 - 
+
+		return	d[0] * val1 -
+				d[4] * val2 +
+				d[8] * val3 -
 				d[12] * val4;
 	};
 
@@ -856,7 +856,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	Matrix4x4.prototype.copy = function (source) {
 		var t = this.data;
 		var s = source.data;
-		
+
 		t[0] = s[0];
 		t[1] = s[1];
 		t[2] = s[2];
@@ -873,17 +873,17 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		t[13] = s[13];
 		t[14] = s[14];
 		t[15] = s[15];
-		
+
 		return this;
 	};
-	
+
 	Matrix4x4.prototype.clone = function () {
 		var d = this.data;
 		return new Matrix4x4(
-			d[0], d[1], d[2], d[3], 
-			d[4], d[5], d[6], d[7], 
-			d[8], d[9], d[10], d[11], 
-			d[12], d[13], d[14], d[15] 
+			d[0], d[1], d[2], d[3],
+			d[4], d[5], d[6], d[7],
+			d[8], d[9], d[10], d[11],
+			d[12], d[13], d[14], d[15]
 			);
 	};
 
