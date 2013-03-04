@@ -6,9 +6,12 @@ require.config({
 	}
 });
 require([
-	'goo/noise/Noise',
+ 	'goo/noise/Noise',
 	'goo/noise/ValueNoise'
-], function(Noise, ValueNoise) {
+], function (
+	Noise,
+	ValueNoise
+) {
 	'use strict';
 
 	var canvas = document.querySelector("canvas");

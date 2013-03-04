@@ -1,16 +1,10 @@
 define([
-		'goo/renderer/Renderer',
-		'goo/renderer/Camera',
-		'goo/renderer/TextureCreator',
-		'goo/renderer/Material',
+	'goo/renderer/Material',
 		'goo/renderer/pass/FullscreenUtil',
 		'goo/renderer/shaders/ShaderLib'
 		],
 	function (
-		Renderer,
-		Camera,
-		TextureCreator,
-		Material,
+	Material,
 		FullscreenUtil,
 		ShaderLib
 		) {

@@ -8,8 +8,6 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/managers/LightManager',
 	'goo/entities/systems/CameraSystem',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	'goo/util/GameUtils'
@@ -25,8 +23,6 @@ function (
 	LightingSystem,
 	LightManager,
 	CameraSystem,
-	Camera,
-	CameraComponent,
 	Stats,
 	CSSTransformSystem,
 	GameUtils

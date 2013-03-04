@@ -5,22 +5,43 @@ require.config({
         'goo/lib': '../lib'
     }
 });
-require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/scripts/OrbitCamControlScript', 'goo/math/Vector3', 'goo/renderer/shaders/ShaderLib',
-		'goo/util/MeshBuilder',
-		'goo/math/Transform'
-		], function(World, Entity, System,
-	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, MeshData, Renderer, Material,
-	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, Camera,
-	CameraComponent, OrbitCamControlScript, Vector3, ShaderLib,
-	MeshBuilder,
-	Transform
-		) {
+require([
+	'goo/entities/World',
+	'goo/renderer/MeshData',
+	'goo/renderer/Material',
+	'goo/renderer/Shader',
+	'goo/entities/GooRunner',
+	'goo/renderer/TextureCreator',
+	'goo/loaders/JSONImporter',
+	'goo/entities/components/ScriptComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/entities/EntityUtils',
+	'goo/entities/components/LightComponent',
+	'goo/renderer/light/PointLight',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/scripts/OrbitCamControlScript',
+	'goo/math/Vector3',
+	'goo/renderer/shaders/ShaderLib'
+], function (
+	World,
+	MeshData,
+	Material,
+	Shader,
+	GooRunner,
+	TextureCreator,
+	JSONImporter,
+	ScriptComponent,
+	ShapeCreator,
+	EntityUtils,
+	LightComponent,
+	PointLight,
+	Camera,
+	CameraComponent,
+	OrbitCamControlScript,
+	Vector3,
+	ShaderLib
+) {
 	"use strict";
 
 	var resourcePath = "../resources";

@@ -6,32 +6,31 @@ require.config({
 	}
 });
 require([
-         'goo/entities/GooRunner', 
-         'goo/entities/EntityUtils', 
-         'goo/renderer/Material', 
-         'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 
-		'goo/shapes/ShapeCreator', 
-		'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', 
-		'goo/renderer/shaders/ShaderLib',
-		'goo/entities/World',
-		'goo/scripts/OrbitCamControlScript',
-		'goo/math/Vector3'
-		], function(
-			GooRunner, 
-			EntityUtils, 
-			Material, 
-			Camera, 
-			CameraComponent, 
-			ShapeCreator, 
-			TextureCreator,
-			ScriptComponent, 
-			ShaderLib,
-			World,
-			OrbitCamControlScript,
-			Vector3
-			) {
+	'goo/entities/GooRunner',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Material',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/TextureCreator',
+	'goo/entities/components/ScriptComponent',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/entities/World',
+	'goo/scripts/OrbitCamControlScript',
+	'goo/math/Vector3'
+], function (
+	GooRunner,
+	EntityUtils,
+	Material,
+	Camera,
+	CameraComponent,
+	ShapeCreator,
+	TextureCreator,
+	ScriptComponent,
+	ShaderLib,
+	World,
+	OrbitCamControlScript,
+	Vector3) {
 	"use strict";
 
 	var resourcePath = "../resources";

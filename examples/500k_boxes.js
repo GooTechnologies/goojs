@@ -5,30 +5,45 @@ require.config({
 		'goo/lib': '../lib'
 	}
 });
-require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/scripts/BasicControlScript', 'goo/renderer/shaders/ShaderLib',
-		'goo/util/FastBuilder',
-		'goo/math/Transform',
-		'goo/scripts/OrbitCamControlScript',
-		'goo/renderer/light/PointLight',
-		'goo/entities/components/LightComponent',
-		'goo/math/Vector4'
-		], function(World, Entity, System, TransformSystem, RenderSystem, TransformComponent, MeshDataComponent,
-	MeshRendererComponent, MeshData, Renderer, Material, Shader, GooRunner, TextureCreator, Loader, JSONImporter,
-	ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, 
-	BasicControlScript, ShaderLib,
+require([
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/renderer/MeshData',
+	'goo/renderer/Material',
+	'goo/renderer/Shader',
+	'goo/entities/GooRunner',
+	'goo/entities/components/ScriptComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/math/Vector3',
+	'goo/util/FastBuilder',
+	'goo/math/Transform',
+	'goo/scripts/OrbitCamControlScript',
+	'goo/renderer/light/PointLight',
+	'goo/entities/components/LightComponent',
+	'goo/math/Vector4'
+], function (
+	MeshDataComponent,
+	MeshRendererComponent,
+	MeshData,
+	Material,
+	Shader,
+	GooRunner,
+	ScriptComponent,
+	ShapeCreator,
+	EntityUtils,
+	Camera,
+	CameraComponent,
+	Vector3,
 	FastBuilder,
 	Transform,
 	OrbitCamControlScript,
 	PointLight,
 	LightComponent,
 	Vector4
-		) {
+) {
 	"use strict";
 
 	function init() {

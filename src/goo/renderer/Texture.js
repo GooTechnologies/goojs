@@ -1,11 +1,9 @@
 define([
-		'goo/math/Vector3',
-		'goo/math/Vector2'
+	'goo/math/Vector2'
 	],
 	/** @lends Texture */
 	function (
-		Vector3,
-		Vector2
+	Vector2
 	) {
 	"use strict";
 

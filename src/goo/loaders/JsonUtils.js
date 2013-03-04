@@ -1,7 +1,5 @@
 /*jshint bitwise: false */
 define([
-	'goo/renderer/Util',
-	'goo/renderer/MeshData',
 	'goo/renderer/BufferUtils',
 	'goo/math/Transform',
 	'goo/math/Matrix3x3',
@@ -24,9 +22,8 @@ define([
 	'goo/animation/layer/LayerLERPBlender'
 	],
 	/** @lends JsonUtils */
-	function(Util,
-		MeshData,
-		BufferUtils,
+	function(
+	BufferUtils,
 		Transform,
 		Matrix3x3,
 		Vector3,

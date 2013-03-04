@@ -1,16 +1,12 @@
 define([
         'goo/entities/systems/System',
-        'goo/renderer/TextureCreator',
-        'goo/renderer/Util',
-        'goo/entities/EventHandler',
+	'goo/entities/EventHandler',
         'goo/renderer/SimplePartitioner'
         ],
 	/** @lends RenderSystem */
 	function (
 		System,
-		TextureCreator,
-		Util,
-		EventHandler,
+	EventHandler,
 		SimplePartitioner
 	) {
 	"use strict";

@@ -1,6 +1,8 @@
-define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'],
+define([
+	'goo/math/Vector3', 'goo/renderer/Camera'],
 /** @lends BoundingBox */
-function(Transform, Vector3, Camera) {
+function(
+	Vector3, Camera) {
 	"use strict";
 
 	/**

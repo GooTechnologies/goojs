@@ -5,10 +5,16 @@ require.config({
 		'goo/lib': '../lib'
 	}
 });
-require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, ShaderLib) {
+require([
+	'goo/entities/GooRunner',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Material',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/TextureCreator',
+	'goo/renderer/shaders/ShaderLib'
+], function (GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";

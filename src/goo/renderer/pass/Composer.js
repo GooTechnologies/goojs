@@ -1,6 +1,8 @@
-define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Material', 'goo/renderer/shaders/ShaderLib'],
+define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/shaders/ShaderLib'],
 	/** @lends Composer */
-	function (RenderTarget, FullscreenPass, Material, ShaderLib) {
+	function (RenderTarget, FullscreenPass,
+	ShaderLib) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;

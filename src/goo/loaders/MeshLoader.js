@@ -2,14 +2,12 @@
 define([
 		'goo/lib/rsvp.amd',
 		'goo/loaders/JsonUtils',
-		'goo/loaders/Loader',
-		'goo/renderer/MeshData'
+	'goo/renderer/MeshData'
 	],
 /** @lends MeshLoader */
 function(
 	RSVP,
 	JsonUtils,
-	Loader,
 	MeshData
 	) {
 	"use strict";

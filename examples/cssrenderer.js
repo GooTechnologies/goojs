@@ -5,12 +5,35 @@ require.config({
 		'goo/lib': '../lib'
 	}
 });
-require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', "goo/entities/Entity", "goo/entities/components/TransformComponent",
-		"goo/entities/components/CSSTransformComponent", 'goo/math/Vector3', 'goo/scripts/BasicControlScript', 'goo/math/MathUtils',
-		'goo/scripts/WASDControlScript', 'goo/scripts/MouseLookControlScript', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, Entity, TransformComponent, CSSTransformComponent, Vector3, BasicControlScript, MathUtils, WASDControlScript, MouseLookControlScript, ShaderLib) {
+require([
+	'goo/entities/GooRunner',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Material',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/TextureCreator',
+	'goo/entities/components/ScriptComponent',
+	"goo/entities/components/CSSTransformComponent",
+	'goo/math/Vector3',
+	'goo/scripts/WASDControlScript',
+	'goo/scripts/MouseLookControlScript',
+	'goo/renderer/shaders/ShaderLib'
+], function (
+	GooRunner,
+	EntityUtils,
+	Material,
+	Camera,
+	CameraComponent,
+	ShapeCreator,
+	TextureCreator,
+	ScriptComponent,
+	CSSTransformComponent,
+	Vector3,
+	WASDControlScript,
+	MouseLookControlScript,
+	ShaderLib
+) {
 	"use strict";
 
 	var resourcePath = "../resources";

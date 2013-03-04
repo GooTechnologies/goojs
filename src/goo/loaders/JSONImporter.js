@@ -1,13 +1,16 @@
 /*jshint bitwise: false */
 define(
-	['goo/entities/components/TransformComponent', 'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/renderer/Shader',
+	[
+	'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator',
 	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
 	'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
 	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil', 'goo/renderer/shaders/ShaderLib'],
 	/** @lends JSONImporter */
-	function (TransformComponent, MeshData,
-	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Shader, Joint, Skeleton, SkeletonPose, AnimationClip,
+	function (
+	MeshData,
+	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator,
+	Joint, Skeleton, SkeletonPose, AnimationClip,
 	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil, ShaderLib) {
 	"use strict";
 

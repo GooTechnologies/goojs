@@ -1,6 +1,8 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData', 'goo/math/MathUtils'],
+define(['goo/animation/clip/AbstractAnimationChannel',
+	'goo/math/MathUtils'],
 /** @lends InterpolatedFloatChannel */
-function (AbstractAnimationChannel, TriggerData, MathUtils) {
+function (AbstractAnimationChannel,
+	MathUtils) {
 	"use strict";
 
 	/**

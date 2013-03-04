@@ -1,6 +1,7 @@
-define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/pass/BlurPass'],
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget, Util, BlurPass) {
+define([
+	'goo/renderer/pass/BlurPass'],
+	function (
+	BlurPass) {
 	"use strict";
 
 	/**

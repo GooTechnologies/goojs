@@ -1,6 +1,8 @@
-define(['goo/math/Vector', 'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
+define([
+	'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
 /** @lends OrbitCamControlScript */
-function (Vector, Vector2, Vector3, MathUtils) {
+function (
+	Vector2, Vector3, MathUtils) {
 	"use strict";
 
 	function OrbitCamControlScript (properties) {
