@@ -59,8 +59,6 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 			fs.readFile includefile, 'utf-8', (err, data) ->
 				if err then return console.log err
 				
-				# REVIEW: Rather do split by whitespace in this case.
-				#lines = data.split("\n")
 				lines = data.split(/\s+/)
 
 				if lines.length > 1
