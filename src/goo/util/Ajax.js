@@ -38,7 +38,7 @@ define([
 				if ( request.status >= 200 && request.status <= 299 ) {
 					promise.resolve(request);
 				} else {
-					promise.reject(request);
+					promise.reject(request.statusText);
 				}
 			}
 		};
