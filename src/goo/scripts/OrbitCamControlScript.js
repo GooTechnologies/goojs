@@ -185,7 +185,6 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		}, false);
 
 		// optional touch controls... requires Hammer.js v2
-		//global Hammer:true
 		if (typeof (window.Hammer) !== "undefined") {
 			// Disable warning that we call `Hammer()`, not `new Hammer()`
 			//jshint newcap:false

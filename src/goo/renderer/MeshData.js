@@ -131,7 +131,7 @@ function(BufferData, Util, BufferUtils) {
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			stride += attribute.count * Util.getByteSize(attribute.type);
-		}	
+		}
 
 		// TODO
 	};

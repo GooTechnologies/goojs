@@ -78,7 +78,7 @@ define([
 				var preRenderer = this.preRenderers[i];
 				preRenderer.process(renderer, this.entities, this.partitioner);
 			}
-			
+
 			this.renderList.length = 0;
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
