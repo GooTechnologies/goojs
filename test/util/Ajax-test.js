@@ -12,7 +12,7 @@ define([
 			'good-url' : {
 				readyState : 4,
 				status : 200,
-				responseText : 'This was nice.',
+				responseText : 'Successful response.',
 				responseHeader : {
 					'Content-Type' : 'application/text'
 				}
@@ -77,15 +77,12 @@ define([
 
 				spyOn(a, 'resolve').andCallThrough();
 
-				a.then(function(request) {
-					expect(a.reject).not.toHaveBeenCalled();
-					expect(a.resolve).toHaveBeenCalled();
-					// REVIEW: MockXHR is not defined. How can this expect succeed?
-					expect(request.responseText instanceof MockXHR).toBeTruthy();
-					// REVIEW: If any of the expects above fails,
-					// it is reported as an error of another test!
-					// Wait for the promise to be resolved before considering the test done.
-					// E.g. with waitsFor
+				waitsFor(function() {
+					return a.isResolved;
+				}, 'promise does not get resolved', 1);
+
+				a.then(function(data) {
+					expect(data.responseText).toEqual('Successful response.');
 				});
 			});
 
@@ -102,10 +99,12 @@ define([
 
 				spyOn(a, 'reject').andCallThrough();
 
-				a.then(null, function(request) {
-					expect(a.resolve).not.toHaveBeenCalled();
-					expect(a.reject).toHaveBeenCalled();
-					expect(request.responseText instanceof MockXHR).toBeTruthy();
+				waitsFor(function() {
+					return a.isRejected;
+				}, 'promise does not get rejected', 1);
+
+				a.then(null, function(reason) {
+					expect(reason).toEqual('Couldn\'t find a fake response: ' + ajaxSettings.url);
 				});
 			});
 		});
