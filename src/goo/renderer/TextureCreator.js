@@ -188,7 +188,7 @@ define([
 			video: true
 		}, function (stream) {
 			video.src = window.URL.createObjectURL(stream);
-		}, function (error) {
+		}, function () {
 			console.warn('Unable to capture WebCam. Please reload the page.');
 		});
 

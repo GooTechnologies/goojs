@@ -1063,7 +1063,8 @@ function(
 		}
 	};
 
-	Renderer.prototype.bindVertexAttribute = function(attribIndex, attribute, record) {
+	// Was: function (attribIndex, attribute, record)
+	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 
 //		if (record.boundAttributes.indexOf(attribIndex) === -1) {
@@ -1262,11 +1263,13 @@ function(
 	};
 
 	//TODO!!!
-	Renderer.prototype._deallocateMeshData = function (meshData) {
+	// Was: function (meshData)
+	Renderer.prototype._deallocateMeshData = function () {
 //		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
 	};
 
-	Renderer.prototype._deallocateTexture = function (texture) {
+	// Was: function (texture)
+	Renderer.prototype._deallocateTexture = function () {
 //		if ( texture.image && texture.image.__webglTextureCube ) {
 //			// cube texture
 //			_gl.deleteTexture( texture.image.__webglTextureCube );
@@ -1279,7 +1282,8 @@ function(
 //		}
 	};
 
-	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+	// Was: function (renderTarget)
+	Renderer.prototype._deallocateRenderTarget = function () {
 //		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
 //
 //		_gl.deleteTexture( renderTarget.__webglTexture );
@@ -1295,7 +1299,8 @@ function(
 //		}
 	};
 
-	Renderer.prototype._deallocateShader = function (shader) {
+	// Was: function (shader)
+	Renderer.prototype._deallocateShader = function () {
 //		_gl.deleteProgram( program );
 	};
 

@@ -9,11 +9,11 @@ define(['goo/renderer/Camera'],
 	function SimplePartitioner() {
 	}
 
-	SimplePartitioner.prototype.added = function (entity) {
+	SimplePartitioner.prototype.added = function () {
 		// needed for things like quadtrees etc
 	};
 
-	SimplePartitioner.prototype.removed = function (entity) {
+	SimplePartitioner.prototype.removed = function () {
 		// needed for things like quadtrees etc
 	};
 

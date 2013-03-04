@@ -20,6 +20,8 @@ define([
 	 * @param {Entity[]} renderList List of renderables to render
 	 * @property {Boolean} doRender Only render if set to true
 	 */
+
+	// TODO: Should renderList argument be assigned to this.renderList?
 	function RenderSystem(renderList) {
 		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
 

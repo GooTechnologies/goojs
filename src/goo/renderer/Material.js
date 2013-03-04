@@ -1,6 +1,6 @@
-define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/MeshData', 'goo/renderer/shaders/ShaderFragments'],
+define(['goo/renderer/Shader'],
 /** @lends Material */
-function(Shader, TextureCreator, MeshData, ShaderFragments) {
+function(Shader) {
 	"use strict";
 
 	/**

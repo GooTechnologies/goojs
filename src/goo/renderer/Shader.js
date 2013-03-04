@@ -382,7 +382,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		for (var i = 0; i < 16; i++) {
 			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
-				return function (uniformCall, shaderInfo) {
+				return function (uniformCall) {
 					uniformCall.uniform1i(i);
 				};
 			})(i);
@@ -467,7 +467,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(shininess);
 		};
 
-		defaultCallbacks[Shader.TIME] = function (uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.TIME] = function (uniformCall) {
 			uniformCall.uniform1f(World.time);
 		};
 

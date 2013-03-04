@@ -206,7 +206,8 @@ function(Transform, Vector3, Camera) {
 	};
 
 	//TODO:!
-	BoundingBox.prototype.intersectsRay = function(ray) {
+	// Was: function (ray)
+	BoundingBox.prototype.intersectsRay = function () {
 		if (!this.center) {
 			return false;
 		}

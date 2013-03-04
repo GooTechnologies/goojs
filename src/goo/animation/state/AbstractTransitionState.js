@@ -74,7 +74,7 @@ function (AbstractFiniteState) {
 	 */
 
 	// Was: function (callingState, layer)
-	AbstractTransitionState.prototype.getTransitionState = function (callingState, layer) {
+	AbstractTransitionState.prototype.getTransitionState = function () {
 		return null;
 	};
 

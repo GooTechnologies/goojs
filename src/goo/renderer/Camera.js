@@ -262,7 +262,9 @@ define([
 	 * @param bottom
 	 * @param top
 	 */
-	Camera.prototype.setViewPort = function (left, right, bottom, top) {
+
+	// Was: function (left, right, bottom, top)
+	Camera.prototype.setViewPort = function () {
 		console.warn('Camera.setViewPort() not implemented.');
 		//setViewPortLeft(left);
 		//setViewPortRight(right);

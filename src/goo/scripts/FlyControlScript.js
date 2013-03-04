@@ -246,7 +246,8 @@ function (Vector3) {
 		this.updateRotationVector();
 	}
 
-	FlyControlScript.prototype.run = function (camera, tpf) {
+	// Was: function (camera, tpf)
+	FlyControlScript.prototype.run = function (camera) {
 		// var moveMult = tpf * this.movementSpeed * this.movementSpeedMultiplier;
 		// var rotMult = tpf * this.rollSpeed * this.movementSpeedMultiplier;
 
