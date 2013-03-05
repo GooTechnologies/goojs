@@ -22,7 +22,8 @@ require(
 		'goo/entities/systems/OcclusionCullingSystem',
 		'goo/entities/components/OccluderComponent',
 		'goo/loaders/JSONImporter',
-		'goo/renderer/bounds/BoundingBox'
+		'goo/renderer/bounds/BoundingBox',
+		'goo/renderer/OcclusionPartitioner'
 	],
 	function (
 		GooRunner,
@@ -40,7 +41,8 @@ require(
 		OcclusionCullingSystem,
 		OccluderComponent,
 		JSONImporter,
-		BoundingBox
+		BoundingBox,
+		OcclusionPartitioner
 	) {
 		'use strict';
 
@@ -81,16 +83,11 @@ require(
 			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
 
 			// Override the current renderList for rendering in the GooRunner.
-			var occlusionCullingSystem = new OcclusionCullingSystem({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
-			goo.world.setSystem(occlusionCullingSystem);
-			goo.renderSystem.renderList = occlusionCullingSystem.renderList;
-			//goo.world.getSystem('RenderSystem').renderList = occlusionCullingSystem.renderList;
-			//goo.world.removeSystem('PartitioningSystem'); // remove the existing system performing view frustum culling.
-
+			var occlusionCuller = new OcclusionPartitioner({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
+			goo.renderSystem.partitioner = occlusionCuller;
 			
 			var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
 			var gl = goo.renderer.context;
-
 
 			var clearColor = [0, 0, 0, 1.0];
 			goo.renderer.setClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
@@ -102,7 +99,7 @@ require(
 				//gl.readPixels(0, 0, debugcanvas.width, debugcanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, storage);
 				// console.timeEnd("readTime");
 				//occlusionCullingSystem.renderer.calculateDifference(storage, clearColor);
-				imagedata.data.set(occlusionCullingSystem.renderer.getColorData());
+				imagedata.data.set(occlusionCuller.renderer.getColorData());
 				debugContext.putImageData(imagedata, 0, 0);
 			});
 		}
@@ -283,6 +280,7 @@ require(
 			// http://photoshoptextures.com/floor-textures/floor-textures.htm
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
 			material.textures.push(texture);
+			material.wireframe = true;
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
 			return entity;
