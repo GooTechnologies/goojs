@@ -62,7 +62,9 @@ define([
 				attribute.map = {
 					count: map.count,
 					type: map.type,
-					normalize: map.normalize
+					stride : map.stride,
+					offset : map.offset,
+					normalized: map.normalized
 				};
 			}
 

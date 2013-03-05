@@ -1,7 +1,7 @@
 define([
-    'goo/entities/World',
-    'goo/entities/systems/TransformSystem',
-    'goo/entities/systems/RenderSystem',
+	'goo/entities/World',
+	'goo/entities/systems/TransformSystem',
+	'goo/entities/systems/RenderSystem',
 	'goo/renderer/Renderer',
 	'goo/entities/systems/BoundingUpdateSystem',
 	'goo/entities/systems/ScriptSystem',
@@ -47,7 +47,7 @@ function (
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
-
+		
 		this.world = new World();
 		this.renderer = new Renderer(parameters);
 

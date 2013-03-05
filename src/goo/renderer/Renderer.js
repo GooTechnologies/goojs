@@ -85,6 +85,17 @@ function (
 		}
 
 		if (parameters.debug) {
+			var request = new XMLHttpRequest();
+			request.open('GET', '../lib/webgl-debug.js', false);
+			request.onreadystatechange = function () {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status <= 299) {
+						window.eval.call(window, request.responseText)
+					}
+				}
+			};
+			request.send(null);
+
 			if (typeof (window.WebGLDebugUtils) === 'undefined') {
 				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
 			} else {

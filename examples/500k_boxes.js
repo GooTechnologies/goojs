@@ -84,21 +84,9 @@ require([
 //		var gui = new dat.GUI();
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]);
-		attributeMap.movementNormal = {
-			count : 3,
-			type : 'Float',
-			normalized : false
-		};
-		attributeMap.movementNormal2 = {
-			count : 3,
-			type : 'Float',
-			normalized : false
-		};
-		attributeMap.offsets = {
-			count : 4,
-			type : 'Float',
-			normalized : false
-		};
+		attributeMap.movementNormal = MeshData.createAttribute(3, 'Float');
+		attributeMap.movementNormal2 = MeshData.createAttribute(3, 'Float');
+		attributeMap.offsets = MeshData.createAttribute(4, 'Float');
 
 		var meshData = new MeshData(attributeMap, 8, 36);
 		

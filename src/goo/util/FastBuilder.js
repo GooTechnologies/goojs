@@ -37,7 +37,9 @@ define([
 				attributeMap[key] = {
 					count: data.count,
 					type: data.type,
-					normalize: data.normalize
+					stride : data.stride,
+					offset : data.offset,
+					normalized: data.normalized
 				};
 			}
 			var newMeshData = new MeshData(attributeMap, vertexCount, indexCount);
