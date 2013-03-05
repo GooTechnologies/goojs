@@ -8,11 +8,11 @@ define([
 ],
 /** @lends TextureCreator */
 function (
-	Loader, 
-	Texture, 
-	DdsLoader, 
-	SimpleResourceUtil, 
-	Util, 
+	Loader,
+	Texture,
+	DdsLoader,
+	SimpleResourceUtil,
+	Util,
 	Latch
 ) {
 	"use strict";

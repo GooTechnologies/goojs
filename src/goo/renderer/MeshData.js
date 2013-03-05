@@ -1,12 +1,12 @@
 define([
-	'goo/renderer/BufferData', 
-	'goo/renderer/Util', 
+	'goo/renderer/BufferData',
+	'goo/renderer/Util',
 	'goo/renderer/BufferUtils'
 ],
 /** @lends MeshData */
 function(
-	BufferData, 
-	Util, 
+	BufferData,
+	Util,
 	BufferUtils
 ) {
 	"use strict";
