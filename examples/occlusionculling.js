@@ -21,7 +21,8 @@ require(
 		'goo/renderer/shaders/ShaderLib',
 		'goo/entities/systems/OcclusionCullingSystem',
 		'goo/entities/components/OccluderComponent',
-		'goo/loaders/JSONImporter'
+		'goo/loaders/JSONImporter',
+		'goo/renderer/bounds/BoundingBox'
 	],
 	function (
 		GooRunner,
@@ -38,7 +39,8 @@ require(
 		ShaderLib,
 		OcclusionCullingSystem,
 		OccluderComponent,
-		JSONImporter
+		JSONImporter,
+		BoundingBox
 	) {
 		'use strict';
 
@@ -74,7 +76,7 @@ require(
 
 		function setupRenderer(goo, camera) {
 
-			var debugcanvas = document.getElementById('debugcanvas')
+			var debugcanvas = document.getElementById('debugcanvas');
 			var debugContext = debugcanvas.getContext('2d');
 			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
 
@@ -145,8 +147,6 @@ require(
 				
 			}
 
-
-
 			var size = 100;
 			var height = 2;
 			var floorEntity = createFloorEntity(goo.world, size, height);
@@ -194,6 +194,12 @@ require(
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			createBoundingSphereForEntity(goo.world, translation, box);
 
+			// Add entities with boundingbox as bound.
+			translation.x = -10;
+			translation.y = 5;
+			translation.z = -10;
+			addBoundingBoxToEntity(goo.world, translation, createTorus(goo.world, translation));
+
 			translation.x = 0;
 			translation.y = 0;
 			translation.z = -5;
@@ -209,6 +215,42 @@ require(
 				boxEntity.transformComponent.setUpdated();	
 
 			});
+		}
+
+		function createTorus (world, translation) {
+			var meshData = ShapeCreator.createTorus();
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.x = translation.x;
+			entity.transformComponent.transform.translation.y = translation.y;
+			entity.transformComponent.transform.translation.z = translation.z;
+			entity.name = 'The Torus!';
+			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
+			entity.meshRendererComponent.materials.push(material);
+			
+			entity.addToWorld();
+			return entity;
+		}
+
+		function addBoundingBoxToEntity (world, translation, entity) {
+			entity.meshDataComponent.modelBound = new BoundingBox();
+			entity.meshDataComponent.autoCompute = false;
+			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
+			createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent, entity.meshDataComponent.modelBound.yExtent, entity.meshDataComponent.modelBound.zExtent);
+		}
+
+		function createBoundingBoxRepresentation(world, translation, w, h, z) {
+			var meshData = ShapeCreator.createBox(w, h, z);
+			var entity = EntityUtils.createTypicalEntity(world, meshData);
+			entity.transformComponent.transform.translation.x = translation.x;
+			entity.transformComponent.transform.translation.y = translation.y;
+			entity.transformComponent.transform.translation.z = translation.z;
+			entity.name = 'BoundingBox';
+			
+			var material = new Material.createMaterial(ShaderLib.texturedLit, 'wirematOnBoundingBox');
+			material.wireframe = true;
+			entity.meshRendererComponent.materials.push(material);
+			entity.addToWorld();
+			return entity;
 		}
 
 		function createQuad(world, translation, width, height) {

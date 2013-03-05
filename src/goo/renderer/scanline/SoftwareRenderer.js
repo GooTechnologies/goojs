@@ -6,11 +6,12 @@ define([
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge',
-	'goo/renderer/BoundingSphere'
+	'goo/renderer/BoundingSphere',
+	'goo/renderer/bounds/BoundingBox'
 	],
 	/** @lends SoftwareRenderer */
 
-	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere) {
+	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox) {
 	"use strict";
 
 	/**
@@ -114,13 +115,24 @@ define([
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
 			if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
-				if (this._boundingSphereOcclusionCulling(entity,cameraViewMatrix,cameraProjectionMatrix,cameraNearZInWorld)) {
+				if (this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
+					// Removes the entity at the current index.
+					renderList.splice(i, 1);
+					i--; // Have to compensate the index for the loop.
+				}
+			}
+			if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
+				if (this._boundingBoxOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
 					// Removes the entity at the current index.
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
 				}
 			}
 		}
+	};
+
+	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
+		return false;
 	};
 
 	/**
