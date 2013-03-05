@@ -1,3 +1,4 @@
+// global ace:true
 require.config({
 	baseUrl : "./",
 	paths : {
@@ -24,7 +25,7 @@ require([
 	var material;
 	var uniformEditor, vertexEditor, fragmentEditor;
 	var currentEntity, currentShader;
-	var uniformListener = function(e) {
+	var uniformListener = function(/*e*/) {
 		if (currentShader) {
 			try {
 				currentShader.uniforms = JSON.parse(uniformEditor.getValue());
@@ -33,13 +34,13 @@ require([
 			}
 		}
 	};
-	var vertexListener = function(e) {
+	var vertexListener = function(/*e*/) {
 		if (currentShader) {
 			currentShader.vertexSource = vertexEditor.getValue();
 			currentShader.rebuild();
 		}
 	};
-	var fragmentListener = function(e) {
+	var fragmentListener = function(/*e*/) {
 		if (currentShader) {
 			currentShader.fragmentSource = fragmentEditor.getValue();
 			currentShader.rebuild();

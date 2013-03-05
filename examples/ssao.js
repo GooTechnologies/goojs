@@ -66,13 +66,13 @@ require([
 			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
-			
+
 			cameraEntity.setComponent(new ScriptComponent(new OrbitCamControlScript({
 				domElement : goo.renderer.domElement,
 				spherical : new Vector3(30, Math.PI / 2, 0),
 				minAscent : -0.1,
 				maxAscent : 1,
-				maxZoomDistance : 50	
+				maxZoomDistance : 50
 			})));
 
 			// Examples of model loading
@@ -118,7 +118,7 @@ require([
 			composer.addPass(renderPass);
 			composer.addPass(ssaoPass);
 			composer.addPass(outPass);
-			
+
 			goo.renderSystem.composers.push(composer);
 		}
 

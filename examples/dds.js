@@ -55,7 +55,7 @@ require([
 		box.transformComponent.transform.translation.set(x, y, 0);
 
 		var axis = new Vector3(1, 1, 0.5).normalize();
-		goo.callbacks.push(function(tpf) {
+		goo.callbacks.push(function(/*tpf*/) {
 			// rotate
 			var t = box._world.time;
 			box.transformComponent.transform.rotation.fromAngleNormalAxis(t, axis.x, axis.y, axis.z);

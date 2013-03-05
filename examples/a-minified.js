@@ -108,7 +108,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		var positions = [];
 		for ( var yy = 0; yy < height; ++yy) {
 			for ( var xx = 0; xx < width; ++xx) {
-				if (image[yy].substring(xx, xx + 1) == 'X') {
+				if (image[yy].substring(xx, xx + 1) === 'X') {
 					positions.push([(xx - width * 0.5) * 0.5, -(yy - height * 0.5) * 0.5]);
 				}
 			}
@@ -127,7 +127,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 			},
 			getEmissionVelocity : function (particle, particleEntity) {
 				var vec3 = particle.velocity;
-				return vec3.set(Math.random() * .2 - .1, 0, Math.random() * .2 - .1);
+				return vec3.set(Math.random() * 0.2 - 0.1, 0, Math.random() * 0.2 - 0.1);
 			},
 			timeline : [{
 				timeOffset : 0.0,

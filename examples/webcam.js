@@ -63,7 +63,7 @@ require([
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 
 		var texture = new TextureCreator().loadTextureWebCam();
-		
+
 		material.textures.push(texture);
 
 		entity.meshRendererComponent.materials.push(material);

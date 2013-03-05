@@ -44,7 +44,7 @@ require([
 	LightComponent,
 	Vector4
 ) {
-	"use strict";
+	'use strict';
 
 	function init() {
 		// Create typical goo application
@@ -89,14 +89,14 @@ require([
 		attributeMap.offsets = MeshData.createAttribute(4, 'Float');
 
 		var meshData = new MeshData(attributeMap, 8, 36);
-		
+
 		var vbuf = meshData.getAttributeBuffer(MeshData.POSITION);
 		var realvbuf = meshData.getAttributeBuffer(MeshData.NORMAL);
 		var movementNormal = meshData.getAttributeBuffer('movementNormal');
 		var movementNormal2 = meshData.getAttributeBuffer('movementNormal2');
 		var offsets = meshData.getAttributeBuffer('offsets');
 		var indices = meshData.getIndexBuffer();
-		
+
 		var size = 1;
 		vbuf.set([
 			-size, -size, -size,
@@ -109,16 +109,16 @@ require([
 			size, -size, size
 		]);
 		realvbuf.set(vbuf);
-		
+
 		indices.set([
 		             0,1,2, 2,3,0,
 		             6,5,4, 4,7,6,
 		             2,1,5, 5,6,2,
 		             7,4,0, 0,3,7,
 		             5,1,0, 0,4,5,
-		             2,6,7, 7,3,2,
+		             2,6,7, 7,3,2
 		]);
-		
+
 		var loader = document.getElementById('load');
 		var count = 50000;
 		var meshBuilder = new FastBuilder(meshData, count, {
@@ -141,7 +141,7 @@ require([
 			transform.translation.mul(Math.random()*20.0+spread);
 			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
 			transform.update();
-			
+
 			movement.setv(transform.translation).normalize();
 			for (var n=0;n<8;n++) {
 				movementNormal[n*3+0] = movement.x;
@@ -154,7 +154,7 @@ require([
 				movementNormal2[n*3+1] = movement.y;
 				movementNormal2[n*3+2] = movement.z;
 			}
-			
+
 			var spin = (x/count) * Math.PI * 1;
 			var spin2 = (x/count) * Math.PI * 2.2 * (Math.random()*0.8+0.6);
 //			var spin3 = (x/count) * Math.PI * 2 * (Math.random()*0.65+0.7);
@@ -170,7 +170,7 @@ require([
 				offsets[n*4+2] = offsetvec.z;
 				offsets[n*4+3] = offsetvec.w;
 			}
-			
+
 			meshBuilder.addMeshData(meshData, transform);
 //			meshBuilder.addMeshDataX(meshData, transform.translation.x, transform.translation.y, transform.translation.z);
 		}
@@ -188,7 +188,7 @@ require([
 			entity.setComponent(meshRendererComponent);
 			entity.addToWorld();
 		}
-		
+
 //		gui.add(material.shader.uniforms, 'move', 0.0, 100.0);
 		goo.doRender = true;
 	}
@@ -210,8 +210,8 @@ require([
 			time : Shader.TIME
 		},
 		vshader : [ //
-   		'attribute vec3 vertexPosition;', //
-   		'attribute vec3 realVertexPosition;', //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec3 realVertexPosition;', //
 		'attribute vec3 movementNormal;', //
 		'attribute vec3 movementNormal2;', //
 		'attribute vec4 offsets;', //
@@ -220,7 +220,7 @@ require([
 		'uniform mat4 projectionMatrix;',//
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 lightPosition;', //
-		
+
 		'uniform float move;',
 		'uniform float time;',
 
@@ -261,7 +261,7 @@ require([
 		'}'//
 		].join('\n')
 	};
-	
+
 	function createBox (goo, w, h, shader, tile) {
 		var meshData = ShapeCreator.createBox(w, h, w, tile, tile);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);

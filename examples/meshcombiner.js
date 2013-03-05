@@ -103,7 +103,7 @@ require([
 			transform.translation.z = (Math.random() * 2.0 - 1.0) * spread;
 			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
 			transform.update();
-			
+
 			if (x < count/3) {
 				meshBuilder.addMeshData(boxData, transform);
 			} else if (x < count*2/3) {

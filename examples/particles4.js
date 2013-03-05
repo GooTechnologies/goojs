@@ -304,7 +304,7 @@ require([
 		var positions = [];
 		for ( var yy = 0; yy < height; ++yy) {
 			for ( var xx = 0; xx < width; ++xx) {
-				if (image[yy].substring(xx, xx + 1) == 'X') {
+				if (image[yy].substring(xx, xx + 1) === 'X') {
 					positions.push([(xx - width * 0.5) * 0.5, -(yy - height * 0.5) * 0.5]);
 				}
 			}
@@ -323,7 +323,7 @@ require([
 			},
 			getEmissionVelocity : function (particle, particleEntity) {
 				var vec3 = particle.velocity;
-				return vec3.set(Math.random() * .2 - .1, 0, Math.random() * .2 - .1);
+				return vec3.set(Math.random() * 0.2 - 0.1, 0, Math.random() * 0.2 - 0.1);
 			},
 			timeline : [{
 				timeOffset : 0.0,
@@ -460,13 +460,13 @@ require([
 				var y = 2 * Math.random() - 1.0;
 				var extent = 5;
 
-				if (side == 0) {
+				if (side === 0) {
 					center.x += extent * (dir ? 1 : -1);
 					center.y += y * extent;
 					center.z += x * extent;
 					particle.emit_bbX = [0, 0, 1];
 					particle.emit_bbY = [0, 1, 0];
-				} else if (side == 1) {
+				} else if (side === 1) {
 					center.y += extent * (dir ? 1 : -1);
 					center.z += y * extent;
 					center.x += x * extent;

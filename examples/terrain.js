@@ -212,7 +212,7 @@ require([
 			'void main(void)',//
 			'{',//
 			'	gl_FragColor = texCol;',//
-			'}',//
+			'}'//
 			].join('\n')
 		};
 	}

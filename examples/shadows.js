@@ -54,7 +54,7 @@ require([
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-		
+
 		goo.renderer.setClearColor(0, 0, 0, 1);
 
 		gui = new dat.GUI();
@@ -90,7 +90,7 @@ require([
 		};
 		entity.setComponent(new ScriptComponent(script));
 		entity.addToWorld();
-		
+
 		gui.add(light.shadowSettings, 'type', {
 			'VSM': 'Blur',
 			'Hard': 'None'
@@ -166,7 +166,7 @@ require([
 
 			'varying vec2 texCoord0;',//
 			'varying vec4 vWorldPosition;',
-			
+
 			'const float PI = 3.1415926535897932384626;',
 
 	        'float linstep(float low, float high, float v){',
@@ -187,7 +187,7 @@ require([
 	        '    float radiance = 1.0/(1.0+pow(dist/10.0, 2.0));',
 	        '    return clamp(radiance*attenuationPower, 0.0, 1.0);',
 	        '}',
-	        
+
 	        'float influence(vec3 normal, float coneAngle){',
 	        '    float minConeAngle = ((360.0-coneAngle-10.0)/360.0) * PI;',
 	        '    float maxConeAngle = ((360.0-coneAngle)/360.0) * PI;',
@@ -197,7 +197,7 @@ require([
 	        'float lambert(vec3 surfaceNormal, vec3 lightDirNormal){',
 	        '    return max(0.0, dot(surfaceNormal, lightDirNormal));',
 	        '}',
-	        
+
 	        'vec3 skyLight(vec3 normal){',
 	        '    return vec3(smoothstep(0.0, PI, PI-acos(normal.y)))*0.4;',
 	        '}',
@@ -218,7 +218,7 @@ require([
 
 			'	float lightDepth2 = clamp(length(lightPos) / depthControl, 0.0, 1.0);',
 			'	float illuminated = VSM(depthMap, lightUV, lightDepth2) * 0.8 + 0.2;',
-			
+
 //			'	float lightDepth1 = texture2D(depthMap, lightUV).r;',
 //			'	float lightDepth2 = clamp(length(lightPos) / depthControl, 0.0, 1.0);',
 //			'	float bias = 0.001;',
@@ -236,10 +236,10 @@ require([
 		material.shader = shader;
 		var texture = new TextureCreator().loadTexture2D('../resources/fieldstone-c.jpg');
 		material.textures.push(texture);
-		
+
 		createBox(goo, material, 2000, 10, 100, 100, 0, -13, 0);
 	}
-	
+
 	function createBox(goo, material, w, h, tx, ty, x, y, z) {
 		var meshData = ShapeCreator.createBox(w, h, w, tx, ty);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);

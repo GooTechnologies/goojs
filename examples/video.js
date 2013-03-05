@@ -63,7 +63,7 @@ require([
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 
 		var texture = new TextureCreator().loadTextureVideo(resourcePath + '/sintel.ogv');
-		
+
 		material.textures.push(texture);
 
 		entity.meshRendererComponent.materials.push(material);

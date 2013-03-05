@@ -143,7 +143,7 @@ require([
 		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
-			if (code == 32) { // space bar
+			if (code === 32) { // space bar
 				// reset particles to spawn on the emitters
 				for ( var i = 0, max = particleComponent.emitters.length; i < max; i++) {
 					if (particleComponent.emitters[i].totalParticlesToSpawn <= 0) {

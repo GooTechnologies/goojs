@@ -139,7 +139,7 @@ require([
 					var vec3 = particle.position;
 					return ParticleUtils.applyEntityTransformPoint(vec3.set(-5, 0, 0), particleEntity);
 				}
-			}],
+			}]
 		});
 		entity.setComponent(particleComponent);
 

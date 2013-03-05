@@ -56,7 +56,7 @@ require([
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			spherical : new Vector3(80, Math.PI*0.6, Math.PI / 8),
-			maxZoomDistance : 200,
+			maxZoomDistance : 200
 		}));
 		cameraEntity.setComponent(scripts);
 

@@ -208,7 +208,7 @@ function (
 	};
 
 	/**
-	 * 
+	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
 	 * @returns {Texture} cubemap
 	 */

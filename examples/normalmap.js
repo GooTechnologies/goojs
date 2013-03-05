@@ -56,7 +56,7 @@ require([
 		// Add box
 		var boxEntity = createBoxEntity(goo);
 		boxEntity.addToWorld();
-		
+
 		var floorEntity = createBox(goo, 1000, 1, ShaderLib.texturedLit);
 		floorEntity.transformComponent.transform.translation.y = -50;
 		floorEntity.addToWorld();
@@ -68,14 +68,14 @@ require([
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
-		
+
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			spherical : new Vector3(50, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
-	
+
 		var entity = createBox(goo, 1, 1, ShaderLib.simple);
 		entity.setComponent(new LightComponent(new PointLight()));
 		entity.addToWorld();
@@ -108,12 +108,12 @@ require([
 
 		return entity;
 	}
-	
+
 	function createBoxEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10); //, Sphere.TextureModes.Projected
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Sphere";
-		
+
 		TangentGenerator.addTangentBuffer(meshData, 0);
 
 		var material = new Material('TestMaterial');
@@ -132,7 +132,7 @@ require([
 		                                                        environmentPath + 'envmap_bottom.jpg',
 		                                                        environmentPath + 'envmap_top.jpg',
 		                                                        environmentPath + 'envmap_back.jpg',
-		                                                        environmentPath + 'envmap_front.jpg',
+		                                                        environmentPath + 'envmap_front.jpg'
 		                                                        ]);
 		material.textures.push(textureCube);
 
@@ -182,7 +182,7 @@ require([
 			'	vec3 worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
 			'	mat3 normalMatrix = mat3(worldMatrix);',
-			
+
 			'	vec3 n = normalize(normalMatrix * vertexNormal);',
 			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
@@ -214,7 +214,7 @@ require([
 			'{',//
 			'	vec4 tex = texture2D(diffuseMap, texCoord0);',//
 			'	vec3 bump = texture2D(normalMap, texCoord0).rgb * 2.0 - 1.0;',//
-			
+
 			'	float diffuse = max( dot(normalize(lightVec), bump) * 0.8 + 0.2, 0.0 ) + 0.2;',
 			'	vec4 diffuseCol = vec4(1.0) * diffuse;',
 
@@ -223,9 +223,9 @@ require([
 			'	vec3 refl = -reflect(normalize(eyeVec), bump);', //
 			'	refl = rotInv * refl;',
 			'	vec4 cube = textureCube(cubeMap, refl);',//
-			
+
 			'	gl_FragColor = tex * diffuseCol + cube;',//
-			'}',//
+			'}'//
 			].join('\n')
 		};
 	}
