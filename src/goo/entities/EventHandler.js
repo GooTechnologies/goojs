@@ -16,7 +16,7 @@ define(
 	 *
 	 * @param arguments ([callback function name], arguments...)
 	 */
-	EventHandler.dispatch = function (unusedVariable) {
+	EventHandler.dispatch = function () {
 		if (arguments.length === 0) {
 			throw new Error("Event needs to specify a callback as first argument");
 		}
