@@ -6,7 +6,7 @@ define([
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge',
-	'goo/renderer/BoundingSphere',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox'
 	],
 	/** @lends SoftwareRenderer */
@@ -120,8 +120,7 @@ define([
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
 				}
-			}
-			if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
+			} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
 				if (this._boundingBoxOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
 					// Removes the entity at the current index.
 					renderList.splice(i, 1);
@@ -132,7 +131,121 @@ define([
 	};
 
 	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
-		return false;
+
+		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+
+		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+		combinedMatrix = Matrix4x4.combine(cameraProjectionMatrix, combinedMatrix);
+
+		var boundingBox = entity.meshDataComponent.modelBound;
+
+		// Create the 8 vertices which create the bounding box.
+		var x = boundingBox.xExtent;
+		var y = boundingBox.yExtent;
+		var z = boundingBox.zExtent;
+
+		var v1 = new Vector4(-x, y, z, 1.0);
+		var v2 = new Vector4(-x, y, -z, 1.0);
+		var v3 = new Vector4(x, y, -z, 1.0);
+		var v4 = new Vector4(x, y, z, 1.0);
+
+		var v5 = new Vector4(-x, -y, z, 1.0);
+		var v6 = new Vector4(-x, -y, -z, 1.0);
+		var v7 = new Vector4(x, -y, -z, 1.0);
+		var v8 = new Vector4(x, -y, z, 1.0);
+
+		var vertices = [v1, v2, v3, v4, v5, v6, v7, v8];
+		
+		// TODO: Combine pixelspace transform.
+		this._projectionTransform(vertices, combinedMatrix);
+		this._transformToScreenSpace(vertices);
+
+		
+
+		// Find the max and min values of x and y respectively.
+		// start with the first vertex' value as reference.
+		var minX, maxX, minY, maxY, minDepth;
+
+		minX = vertices[0].x;
+		maxX = vertices[0].x;
+		minY = vertices[0].y;
+		maxY = vertices[0].y;
+		if (vertices[0].w < this.camera.near) {
+			// If any vertex of the bounding box is clipping the nearplane, regard the entity as beeing visible.
+			return false;
+		} else {
+			minDepth = vertices[0].w;
+		}
+		for (var i = 1; i < 8; i++) {
+			var vert = vertices[i];
+			if (vert.x > maxX) {
+				maxX = vert.x;
+			} else if (vert.x < minX) {
+				minX = vert.x;
+			}
+			if (vert.y > maxY) {
+				maxY = vert.y;
+			} else if (vert.y < minY) {
+				minY = vert.y;
+			}
+			if (vert.w < this.camera.near) {
+				return false;
+			} else {
+				if (vert.w < minDepth) {
+					minDepth = vert.w;
+				}
+			}
+		}
+
+		// Round the vertices' pixel integer coordinates conservatively.
+		minX = Math.floor(minX);
+		maxX = Math.ceil(maxX);
+		minY = Math.floor(minY);
+		maxY = Math.ceil(maxY);
+
+		// The depth values saved in the buffer are 1.0 / w.
+		minDepth = 1.0 / minDepth;
+
+		return this._isBoundingBoxScanlineOccluded(minX, maxX, minY, maxY, minDepth);
+	};
+
+	/**
+	*	Creates a screen space axis aligned box from the min and max values.
+	*	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
+	*	@return {Boolean} occluded or not occluded.
+	*/
+	SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minX, maxX, minY, maxY, minDepth) {
+
+		// this._clampToScreen(minX, maxX, minY, maxY);
+		if (minX < 0) {
+			minX = 0;
+		}
+
+		if (maxX > this._clipX) {
+			maxX = this._clipX;
+		}
+
+		if (minY < 0) {
+			minY = 0;
+		}
+
+		if (maxY > this._clipY) {
+			maxY = this._clipY;
+		}
+
+		// Run the scanline test for each row [maxY, minY] , [minX, maxX] 
+		for (var scanline = maxY; scanline >= minY; scanline--) {
+			var sampleCoordinate = scanline * this.width + minX;
+			for (var x = minX; x <= maxX; x++) {
+				this._colorData.set([0,0,202], sampleCoordinate * 4); // create some blue ( DEBUGGING ).
+				if (this._depthData[sampleCoordinate] < minDepth) {
+					return false;
+				}
+				sampleCoordinate++;
+			}
+		}
+
+		return true;
 	};
 
 	/**
@@ -180,8 +293,8 @@ define([
 
 		var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 
+		// TODO : Create a combined matrix of the projection and screenspace 
 		this._projectionTransform(vertices, cameraProjectionMatrix);
-
 		this._transformToScreenSpace(vertices);
 
 		// Some conservative rounding of the coordinates to integer pixel coordinates.
@@ -220,17 +333,20 @@ define([
 		this._isOccluded(nearCoord, red, nearestDepth);
 		*/		
 
+		
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
 			&& this._isOccluded(rightCoord, green, nearestDepth)
 			&& this._isOccluded(bottomCoord, yellow, nearestDepth)
 			&& this._isOccluded(nearCoord, red, nearestDepth)
 			&& this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
+		
 		//return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
 	};
 
 	/**
-	*	Creates a screen space axis aligned bounding box from the coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
+	*	Creates a screen space axis aligned bounding box from the bounding sphere's
+	*	coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
 	*
 	*	@return {Boolean} occluded or not occluded.
 	*/
@@ -248,7 +364,8 @@ define([
 		firstScanline = Math.ceil(firstScanline);
 		lastScanline = Math.floor(lastScanline);
 
-		// Clamp the coordinates to screen.
+		//this._clampToScreen(leftX, rightX, lastScanline, firstScanline);
+		
 		if (leftX < 0) {
 			leftX = 0;
 		}
@@ -283,6 +400,33 @@ define([
 		}
 
 		return true;
+	};
+
+	/**
+	*	Clamps the parameter coordinates to the screen's readable coordinates.
+	*	// TODO : Have to use an object as parameter instead. The function is not usable cause the values aren't passed as reference.
+	*
+	*	@param {Number} minX
+	*	@param {Number} maxX
+	*	@param {Number} minY
+	*	@param {Number} maxY
+	*/
+	SoftwareRenderer.prototype._clampToScreen = function (minX, maxX, minY, maxY) {
+		if (minX < 0) {
+			minX = 0;			
+		}
+
+		if (maxX > this._clipX) {
+			maxX = this._clipX;
+		}
+
+		if (minY < 0) {
+			minY = 0;
+		}
+
+		if (maxY > this._clipY) {
+			maxY = this._clipY;
+		}
 	};
 
 	SoftwareRenderer.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
@@ -958,6 +1102,7 @@ define([
 			// while the viewPortLeft and viewPortBottom are 0.
 			// The x and y coordinates can still be outside the screen space here, but those will be clipped during rasterizing.
 			// Transform to zerobasd interval of pixels instead of [0, width] which will be one pixel too much.
+			// (Assuming the vertex values range from [-1, 1] when projected.)
 			vertex.x = (vertex.x + 1.0) * (this._clipX / 2);
 			vertex.y = (vertex.y + 1.0) * (this._clipY / 2);
 

@@ -81,10 +81,11 @@ require(
 			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
 
 			// Override the current renderList for rendering in the GooRunner.
-			var occlusionCullingSystem = new OcclusionCullingSystem({"width" : debugcanvas.width, "height" : debugcanvas.height, "camera" : camera});
+			var occlusionCullingSystem = new OcclusionCullingSystem({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
 			goo.world.setSystem(occlusionCullingSystem);
-			goo.world.getSystem('RenderSystem').renderList = occlusionCullingSystem.renderList;
-			goo.world.removeSystem('PartitioningSystem'); // remove the existing system performing view frustum culling.
+			goo.renderSystem.renderList = occlusionCullingSystem.renderList;
+			//goo.world.getSystem('RenderSystem').renderList = occlusionCullingSystem.renderList;
+			//goo.world.removeSystem('PartitioningSystem'); // remove the existing system performing view frustum culling.
 
 			
 			var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
@@ -197,7 +198,7 @@ require(
 			// Add entities with boundingbox as bound.
 			translation.x = -10;
 			translation.y = 5;
-			translation.z = -10;
+			translation.z = -20;
 			addBoundingBoxToEntity(goo.world, translation, createTorus(goo.world, translation));
 
 			translation.x = 0;
@@ -218,7 +219,7 @@ require(
 		}
 
 		function createTorus (world, translation) {
-			var meshData = ShapeCreator.createTorus();
+			var meshData = ShapeCreator.createTorus(16, 16);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.x = translation.x;
 			entity.transformComponent.transform.translation.y = translation.y;
@@ -235,7 +236,7 @@ require(
 			entity.meshDataComponent.modelBound = new BoundingBox();
 			entity.meshDataComponent.autoCompute = false;
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
-			createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent, entity.meshDataComponent.modelBound.yExtent, entity.meshDataComponent.modelBound.zExtent);
+			createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent * 2, entity.meshDataComponent.modelBound.yExtent * 2, entity.meshDataComponent.modelBound.zExtent * 2);
 		}
 
 		function createBoundingBoxRepresentation(world, translation, w, h, z) {
@@ -262,7 +263,7 @@ require(
 			entity.name = 'Quad';
 			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 			entity.meshRendererComponent.materials.push(material);
-			//material.wireframe = true;
+			material.wireframe = true;
 			entity.addToWorld();
 			return entity;
 		}
