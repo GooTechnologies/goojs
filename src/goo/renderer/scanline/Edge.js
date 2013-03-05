@@ -1,15 +1,13 @@
 define([
-	'goo/math/Vector3'
 	],
 /** @lends Edge */
-function (Vector3) {
+function () {
 
 	function Edge(vec1, vec2) {
 
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
 		if (vec1.y < vec2.y ) {
-			
 			this.x0 = Math.round(vec1.x);
 			this.x1 = Math.round(vec2.x);
 
@@ -20,7 +18,6 @@ function (Vector3) {
 			this.z1 = vec2.z;
 		}
 		else {
-
 			this.x0 = Math.round(vec2.x);
 			this.x1 = Math.round(vec1.x);
 
