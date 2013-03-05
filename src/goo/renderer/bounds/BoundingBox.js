@@ -48,7 +48,7 @@ function(
 			max.z = z > max.z ? z : max.z;
 		}
 
-		vec.setv(max).subv(min);
+		vec.setv(max).subv(min).div(2.0);
 		this.xExtent = vec.x;
 		this.yExtent = vec.y;
 		this.zExtent = vec.z;
