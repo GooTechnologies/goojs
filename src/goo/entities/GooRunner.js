@@ -47,7 +47,7 @@ function (
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
-		
+
 		this.world = new World();
 		this.renderer = new Renderer(parameters);
 

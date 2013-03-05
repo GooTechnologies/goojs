@@ -85,12 +85,14 @@ function (
 		}
 
 		if (parameters.debug) {
+			// XXX: This is a temporary solution to easily enable webgl debugging during development...
 			var request = new XMLHttpRequest();
 			request.open('GET', '../lib/webgl-debug.js', false);
 			request.onreadystatechange = function () {
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
-						window.eval.call(window, request.responseText)
+						// Yes, eval is intended, sorry checkstyle
+						window.eval.call(window, request.responseText);
 					}
 				}
 			};
