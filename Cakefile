@@ -50,3 +50,11 @@ task 'whitespace',
 					process.exit(1)
 				if dirs.length
 					next()
+
+task 'checkstyleforjenkins', 'Run JSHint to XML', (options) ->
+	# I'm not sure that the cli module is official,
+	# but it's a convenient way of running JSHint
+	# with the same config files (.jshintrc and .jshintignore)
+	# as when running from the command-line.
+	cli = require('jshint/src/cli/cli')
+	cmdopts = cli.interpret('jshint --reporter=checkstyle src/ test/')
