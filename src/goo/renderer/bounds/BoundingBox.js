@@ -1,8 +1,12 @@
 define([
-	'goo/math/Vector3', 'goo/renderer/Camera'],
+	'goo/math/Vector3',
+	'goo/renderer/Camera'
+],
 /** @lends BoundingBox */
 function(
-	Vector3, Camera) {
+	Vector3,
+	Camera
+) {
 	"use strict";
 
 	/**
