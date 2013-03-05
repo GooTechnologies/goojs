@@ -1,4 +1,5 @@
 minify = require('./buildengine/minify').minify
+exec = require('child_process').exec
 	
 task 'minify', 'minify try', (options) ->
 
@@ -29,3 +30,18 @@ task 'checkstyle', 'Run JSHint', (options) ->
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
 	cmdopts = cli.interpret('jshint --reporter=tools/jshint-reporter.js src/ test/')
+
+task 'whitespace',
+	'Removes trailing whitespace in source files. Requires find, xargs and sed commands.',
+	(options) ->
+		dirs = ['src', 'test', 'examples']
+		do next = ->
+			dir = dirs.shift()
+			cmd = "find #{dir} -type f -name '*.js' | xargs sed --in-place -r 's/\\s+$//'"
+			exec cmd, (error, stdout, stderr) ->
+				if error != null
+					console.log stderr
+					console.log 'Command failed: ' + cmd
+					process.exit(1)
+				if dirs.length
+					next()
