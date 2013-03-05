@@ -1,10 +1,8 @@
 define(
 [
-	"goo/shapes/ShapeCreator",
-	"goo/shapes/Torus"
+	"goo/shapes/ShapeCreator"
 ], function(
-	ShapeCreator,
-	Torus
+	ShapeCreator
 ) {
 	"use strict";
 

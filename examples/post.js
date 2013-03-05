@@ -5,20 +5,45 @@ require.config({
         'goo/lib': '../lib'
     }
 });
-require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight', 'goo/scripts/BasicControlScript',
-		'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/renderer/pass/Composer',
-		'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util', 'goo/renderer/pass/RenderTarget',
-		'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/pass/BlurPass', 
-		'goo/renderer/shaders/ShaderLib', 'goo/scripts/OrbitCamControlScript'], function(World, Entity, System,
-	TransformSystem, RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material,
-	Shader, GooRunner, TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight,
-	BasicControlScript, EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4,
-	BlurPass, ShaderLib, OrbitCamControlScript) {
+require([
+	'goo/renderer/Material',
+	'goo/entities/GooRunner',
+	'goo/renderer/TextureCreator',
+	'goo/loaders/JSONImporter',
+	'goo/entities/components/ScriptComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/renderer/pass/Composer',
+	'goo/renderer/pass/RenderPass',
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/Util',
+	'goo/renderer/pass/BloomPass',
+	'goo/math/Vector3',
+	'goo/math/Vector4',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/scripts/OrbitCamControlScript'
+], function (
+	Material,
+	GooRunner,
+	TextureCreator,
+	JSONImporter,
+	ScriptComponent,
+	ShapeCreator,
+	EntityUtils,
+	Camera,
+	CameraComponent,
+	Composer,
+	RenderPass,
+	FullscreenPass,
+	Util,
+	BloomPass,
+	Vector3,
+	Vector4,
+	ShaderLib,
+	OrbitCamControlScript
+) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -55,14 +80,11 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		// Examples of model loading
 		loadModels(goo);
 
-		// Disable normal rendering
-		goo.world.getSystem('RenderSystem').doRender = false;
-
 		// Create composer with same size as screen
 		var composer = new Composer(); // or new RenderTarget(sizeX, sizeY, options);
 
 		// Scene render
-		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
+		var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 1.0);
 //		renderPass.clearColor = new Vector4(0.7,0.7,0.7,1);
 		// renderPass.overrideMaterial = Material.createMaterial(ShaderLib.showNormals);
@@ -130,9 +152,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 		composer.addPass(coolPass);
 		// composer.addPass(outPass);
 
-		goo.callbacks.push(function(tpf) {
-			composer.render(goo.renderer, tpf);
-		});
+		goo.renderSystem.composers.push(composer);
 	}
 
 	function loadModels(goo) {

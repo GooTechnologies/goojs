@@ -17,7 +17,9 @@ function (AbstractTransitionState) {
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	IgnoreTransitionState.prototype.update = function (globalTime, layer) {
+
+	// Was: function (globalTime, layer)
+	IgnoreTransitionState.prototype.update = function () {
 	};
 
 	/**
@@ -26,12 +28,15 @@ function (AbstractTransitionState) {
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	IgnoreTransitionState.prototype.getTransitionState = function (callingState, layer) {
+
+	// Was: function (callingState, layer)
+	IgnoreTransitionState.prototype.getTransitionState = function (callingState) {
 		// return calling state.
 		return callingState;
 	};
 
-	IgnoreTransitionState.prototype.getCurrentSourceData = function (manager) {
+	// Was: function (manager)
+	IgnoreTransitionState.prototype.getCurrentSourceData = function () {
 		// ignored
 		return null;
 	};
@@ -40,7 +45,9 @@ function (AbstractTransitionState) {
 	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
-	IgnoreTransitionState.prototype.postUpdate = function (layer) {
+
+	// Was: function (layer)
+	IgnoreTransitionState.prototype.postUpdate = function () {
 	};
 
 	return IgnoreTransitionState;

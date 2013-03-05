@@ -474,7 +474,7 @@ define(['goo/loaders/dds/DdsUtils'],
 		info.header = DdsHeader.read(header);
 
 		// if applicable, read DX10 header
-		info.headerDX10 = info.header.ddpf.dwFourCC === DdsUtils.getIntFromString("DX10") ? DdsHeaderDX10.read(Int32Array.create(buffer,
+		info.headerDX10 = info.header.ddpf.dwFourCC === DdsUtils.getIntFromString("DX10") ? DdsHeader.read(Int32Array.create(buffer,
 			arrayByteOffset + 128, 5)) : null;
 
 		// Create our new image

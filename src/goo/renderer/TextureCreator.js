@@ -4,9 +4,17 @@ define([
 	'goo/loaders/dds/DdsLoader',
 	'goo/util/SimpleResourceUtil',
 	'goo/renderer/Util',
-	'goo/util/Latch'],
-	/** @lends TextureCreator */
-	function (Loader, Texture, DdsLoader, SimpleResourceUtil, Util, Latch) {
+	'goo/util/Latch'
+],
+/** @lends TextureCreator */
+function (
+	Loader,
+	Texture,
+	DdsLoader,
+	SimpleResourceUtil,
+	Util,
+	Latch
+) {
 	"use strict";
 
 	/**
@@ -44,6 +52,7 @@ define([
 			onSuccess : function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
 				console.info("Loaded image: " + imageURL);
+				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
 			},
 			onError : function (t) {
@@ -183,13 +192,17 @@ define([
 		// Webcam video
 		window.URL = window.URL || window.webkitURL;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-		navigator.getUserMedia({
-			video: true
-		}, function (stream) {
-			video.src = window.URL.createObjectURL(stream);
-		}, function (error) {
-			console.warn('Unable to capture WebCam. Please reload the page.');
-		});
+		if (navigator.getUserMedia) {
+			navigator.getUserMedia({
+				video: true
+			}, function (stream) {
+				video.src = window.URL.createObjectURL(stream);
+			}, function () {
+				console.warn('Unable to capture WebCam. Please reload the page.');
+			});
+		} else {
+			console.warn('No support for WebCam getUserMedia found!');
+		}
 
 		return texture;
 	};

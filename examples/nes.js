@@ -6,39 +6,37 @@ require.config({
     }
 });
 require([//
-'goo/entities/GooRunner',//
-'goo/math/Vector3',//
-'goo/math/Vector4',//
-'goo/renderer/pass/NesPass',//
-'goo/entities/components/CameraComponent',//
-'goo/entities/components/ScriptComponent',//
-'goo/renderer/pass/Composer',//
-'goo/loaders/JSONImporter',//
-'goo/scripts/BasicControlScript',//
-'goo/renderer/pass/RenderTarget',//
-'goo/renderer/pass/RenderPass',//
-'goo/renderer/pass/FullscreenPass',//
-'goo/renderer/Util',//
-'goo/renderer/Material',//
-'goo/renderer/Camera',//
-'goo/renderer/shaders/ShaderLib'
-], function(//
-GooRunner,//
-Vector3,//
-Vector4,//
-NesPass,//
-CameraComponent,//
-ScriptComponent,//
-Composer,//
-JSONImporter,//
-BasicControlScript,//
-RenderTarget,//
-RenderPass,//
-FullscreenPass,//
-Util,//
-Material,//
-Camera,//
-ShaderLib
+	'goo/entities/GooRunner',//
+	'goo/math/Vector3',//
+	'goo/math/Vector4',//
+	'goo/renderer/pass/NesPass',//
+	'goo/entities/components/CameraComponent',//
+	'goo/entities/components/ScriptComponent',//
+	'goo/renderer/pass/Composer',//
+	'goo/loaders/JSONImporter',//
+	'goo/scripts/BasicControlScript',//
+	'goo/renderer/pass/RenderTarget',//
+	'goo/renderer/pass/RenderPass',//
+	'goo/renderer/pass/FullscreenPass',//
+	'goo/renderer/Util',//
+	'goo/renderer/Camera',//
+	'goo/renderer/shaders/ShaderLib'
+], function (//
+	GooRunner,//
+	Vector3,//
+	Vector4,//
+	NesPass,//
+	CameraComponent,//
+	ScriptComponent,//
+	Composer,//
+	JSONImporter,//
+	BasicControlScript,//
+	RenderTarget,//
+	RenderPass,//
+	FullscreenPass,//
+	Util,//
+	Camera,//
+	ShaderLib
 ) {
 	"use strict";
 
@@ -74,16 +72,13 @@ ShaderLib
 		// Examples of model loading
 		loadModels(goo);
 
-		// Disable normal rendering
-		goo.world.getSystem('RenderSystem').doRender = false;
-
 		// Create composer with same size as screen
 		var composer = new Composer(new RenderTarget(256, 224, {
 			magFilter : 'NearestNeighbor'
 		}));
 
 		// Scene render
-		var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
+		var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 		renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
 		// NES
@@ -97,9 +92,7 @@ ShaderLib
 		composer.addPass(nesPass);
 		composer.addPass(outPass);
 
-		goo.callbacks.push(function(tpf) {
-			composer.render(goo.renderer, tpf);
-		});
+		goo.renderSystem.composers.push(composer);
 	}
 
 	function loadModels(goo) {

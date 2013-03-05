@@ -180,7 +180,7 @@ define([
 	 *   console.warn(reason);
 	 * })
 	 */
-	Deferred.when = function(promise /*, ..., promiseN */) {
+	Deferred.when = function() {
 		var	promises = Array.prototype.slice.call(arguments);
 		var length = promises.length;
 		var remaining = length;

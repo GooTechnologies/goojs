@@ -15,8 +15,12 @@ define(["goo/math/Vector"],
 
 	function Vector2() {
 		Vector.call(this, 2);
-		var init = arguments.length !== 0 ? arguments : [0, 0];
-		this.set(init);
+
+		if (arguments.length !== 0) {
+			this.set(arguments);
+		} else {
+			this.setd(0,0);
+		}
 	}
 
 	Vector2.prototype = Object.create(Vector.prototype);
@@ -296,6 +300,26 @@ define(["goo/math/Vector"],
 	};
 
 	/* ====================================================================== */
+
+	// TODO: Testing speed diffs
+	Vector2.prototype.setd = function (x, y) {
+		this.data[0] = x;
+		this.data[1] = y;
+
+		return this;
+	};
+	Vector2.prototype.seta = function (array) {
+		this.data[0] = array[0];
+		this.data[1] = array[1];
+
+		return this;
+	};
+	Vector2.prototype.setv = function (vec2) {
+		this.data[0] = vec2.data[0];
+		this.data[1] = vec2.data[1];
+
+		return this;
+	};
 
 	return Vector2;
 });

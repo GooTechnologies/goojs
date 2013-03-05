@@ -15,7 +15,7 @@ define([
 	 * @example
 	 * // Create a new Promise
 	 * var promise = new Promise();
-	 * 
+	 *
 	 * // Attach a callback for when the promise is resolved
 	 * promise.done(function(data) {
 	 *   console.log(data);

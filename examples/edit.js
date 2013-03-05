@@ -5,16 +5,18 @@ require.config({
 		'goo/lib': '../lib'
 	}
 });
-require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
-		'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator', 'goo/loaders/Loader',
-		'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI', 'goo/shapes/ShapeCreator',
-		'goo/entities/EntityUtils', 'goo/renderer/Texture', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/math/Vector3',
-		'goo/math/Vector2', 'goo/scripts/BasicControlScript', 'goo/math/Ray', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(World, Entity, System, TransformSystem,
-	RenderSystem, TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-	TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, Texture, Camera, CameraComponent, Vector3, Vector2,
-	BasicControlScript, Ray, Util, ShaderLib) {
+require([
+	'goo/renderer/Material',
+	'goo/entities/GooRunner',
+	'goo/loaders/JSONImporter',
+	'goo/entities/components/ScriptComponent',
+	'goo/renderer/Texture',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/math/Vector3',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib'
+], function (Material, GooRunner, JSONImporter, ScriptComponent, Texture, Camera, CameraComponent, Vector3, Util, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";

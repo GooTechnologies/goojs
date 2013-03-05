@@ -24,17 +24,17 @@ define([
 	}
 
 	MeshBuilder.prototype.addEntity = function (entity) {
-		EntityUtils.traverse(entity, function (foundEntity) {
+		EntityUtils.traverse(entity, function () {
 			if (entity.transformComponent._dirty) {
 				entity.transformComponent.updateTransform();
 			}
 		});
-		EntityUtils.traverse(entity, function (foundEntity) {
+		EntityUtils.traverse(entity, function () {
 			if (entity.transformComponent._dirty) {
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
-		EntityUtils.traverse(entity, function (foundEntity) {
+		EntityUtils.traverse(entity, function () {
 			if (entity.meshDataComponent) {
 				this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}

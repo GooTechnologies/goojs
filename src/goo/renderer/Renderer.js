@@ -1,26 +1,24 @@
 /*jshint bitwise: false*/
 define([
-		'goo/renderer/RendererRecord',
-		'goo/renderer/Camera',
-		'goo/renderer/Util',
-		'goo/renderer/TextureCreator',
-		'goo/renderer/pass/RenderTarget',
-		'goo/math/Vector4',
-		'goo/entities/Entity',
-		'goo/renderer/Texture',
-		'goo/loaders/dds/DdsLoader',
-		'goo/loaders/dds/DdsUtils',
-		'goo/renderer/MeshData',
-		'goo/renderer/Material',
-		'goo/math/Transform',
-		'goo/renderer/RenderQueue',
-		'goo/renderer/shaders/ShaderLib',
-		'goo/renderer/shadow/ShadowHandler'
-		],
+	'goo/renderer/RendererRecord',
+	'goo/renderer/Util',
+	'goo/renderer/TextureCreator',
+	'goo/renderer/pass/RenderTarget',
+	'goo/math/Vector4',
+	'goo/entities/Entity',
+	'goo/renderer/Texture',
+	'goo/loaders/dds/DdsLoader',
+	'goo/loaders/dds/DdsUtils',
+	'goo/renderer/MeshData',
+	'goo/renderer/Material',
+	'goo/math/Transform',
+	'goo/renderer/RenderQueue',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shadow/ShadowHandler'
+],
 /** @lends Renderer */
-function(
+function (
 	RendererRecord,
-	Camera,
 	Util,
 	TextureCreator,
 	RenderTarget,
@@ -35,7 +33,7 @@ function(
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler
-	) {
+) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -75,27 +73,27 @@ function(
 		this.context = null;
 		try {
 			this.context = _canvas.getContext('experimental-webgl', settings);
-			if (this.context == null) {
+			if (!this.context) {
 				this.context = _canvas.getContext('webgl', settings);
 			}
 		} catch (error) {
 			//Silent
 		}
 
-		if (this.context == null) {
+		if (!this.context) {
 			throw 'WebGL is not supported! (Could not create WebGL context)';
 		}
 
 		if (parameters.debug) {
-			if (typeof (WebGLDebugUtils) === 'undefined') {
+			if (typeof (window.WebGLDebugUtils) === 'undefined') {
 				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
 			} else {
 				console.log('Running in webgl debug mode.');
 				if (parameters.validate) {
 					console.log('Running with "undefined arguments" validation.');
-					this.context = WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
 				} else {
-					this.context = WebGLDebugUtils.makeDebugContext(this.context);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context);
 				}
 			}
 		}
@@ -192,7 +190,7 @@ function(
 		for ( var ii = 0; ii < args.length; ++ii) {
 			if (args[ii] === undefined) {
 				console.error("undefined passed to gl." + functionName + "("
-					+ WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
+					+ window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
 			}
 		}
 	}
@@ -292,7 +290,7 @@ function(
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
 
-			for ( var i = 0; i < renderList.length; i++) {
+			for (var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
@@ -301,11 +299,6 @@ function(
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
-
-		// var error = this.context.getError();
-		// if (error !== WebGLRenderingContext.NO_ERROR) {
-		// throw "Error: " + error;
-		// }
 	};
 
 	Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
@@ -586,26 +579,28 @@ function(
 			texture.textureRecord = texrecord;
 		}
 
-		var glType = this.getGLType(texture.variant);
-
 		if (texrecord.magFilter !== texture.magFilter) {
+			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
 		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
+			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
+			var glType = this.getGLType(texture.variant);
 			var glwrapS = this.getGLWrap(wrapS, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 			texrecord.wrapS = wrapS;
 		}
 		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 		if (texrecord.wrapT !== wrapT) {
+			var glType = this.getGLType(texture.variant);
 			var glwrapT = this.getGLWrap(wrapT, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 			texrecord.wrapT = wrapT;
@@ -1068,16 +1063,14 @@ function(
 		}
 	};
 
-	Renderer.prototype.bindVertexAttribute = function(attribIndex, tupleSize, type, normalized, stride, offset, record) {
-		this.context.vertexAttribPointer(attribIndex, tupleSize, this.getGLDataType(type), normalized, stride, offset);
+	// Was: function (attribIndex, attribute, record)
+	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
+		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 
-		if (record.boundAttributes.indexOf(attribIndex) === -1) {
+//		if (record.boundAttributes.indexOf(attribIndex) === -1) {
 			this.context.enableVertexAttribArray(attribIndex);
-			record.boundAttributes.push(attribIndex);
-		}
-		// if (Constants.extraGLErrorChecks) {
-		// checkCardError();
-		// }
+//			record.boundAttributes.push(attribIndex);
+//		}
 	};
 
 	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
@@ -1297,11 +1290,13 @@ function(
 	};
 
 	//TODO!!!
-	Renderer.prototype._deallocateMeshData = function (meshData) {
+	// Was: function (meshData)
+	Renderer.prototype._deallocateMeshData = function () {
 //		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
 	};
 
-	Renderer.prototype._deallocateTexture = function (texture) {
+	// Was: function (texture)
+	Renderer.prototype._deallocateTexture = function () {
 //		if ( texture.image && texture.image.__webglTextureCube ) {
 //			// cube texture
 //			_gl.deleteTexture( texture.image.__webglTextureCube );
@@ -1314,7 +1309,8 @@ function(
 //		}
 	};
 
-	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+	// Was: function (renderTarget)
+	Renderer.prototype._deallocateRenderTarget = function () {
 //		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
 //
 //		_gl.deleteTexture( renderTarget.__webglTexture );
@@ -1330,7 +1326,8 @@ function(
 //		}
 	};
 
-	Renderer.prototype._deallocateShader = function (shader) {
+	// Was: function (shader)
+	Renderer.prototype._deallocateShader = function () {
 //		_gl.deleteProgram( program );
 	};
 

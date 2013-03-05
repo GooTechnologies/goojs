@@ -1,6 +1,9 @@
-define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/Texture', 'goo/renderer/shaders/ShaderLib'],
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, Texture, ShaderLib) {
+define([
+	'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/shaders/ShaderLib'],
+	function (
+	TextureCreator, Material, FullscreenUtil,
+	ShaderLib) {
 	"use strict";
 
 	function NesPass(textureUrl) {
@@ -23,7 +26,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		this.needsSwap = true;
 	}
 
-	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
+	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		this.material.textures[0] = readBuffer;
 		this.material.textures[1] = this.mapping;
 

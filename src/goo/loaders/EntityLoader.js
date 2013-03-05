@@ -122,7 +122,7 @@ function(
 		// When all promises are processed we want to
 		// either create an entity or return an error
 		return RSVP.all(promises)
-		.then(function(components) {
+		.then(function() {
 
 			var entity = new Entity(that._world);
 
@@ -200,7 +200,7 @@ function(
 		});
 
 		for(var attribute in meshDataComponentSource) {
-			var meshDataPromises = [];
+			// var meshDataPromises = [];
 			if(attribute === 'mesh') {
 				var p = mdl.load(meshDataComponentSource[attribute]);
 				promises.push(p);

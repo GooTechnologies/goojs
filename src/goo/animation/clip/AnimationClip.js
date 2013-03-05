@@ -11,7 +11,7 @@ function () {
 	function AnimationClip (name, channels) {
 		this._name = name;
 		this._channels = channels || [];
-		this._maxTime = 0;
+		this._maxTime = -1;
 		this.updateMaxTimeIndex();
 	}
 
@@ -72,7 +72,7 @@ function () {
 	 * @description Update our max time value to match the max time in our managed animation channels.
 	 */
 	AnimationClip.prototype.updateMaxTimeIndex = function () {
-		this._maxTime = 0;
+		this._maxTime = -1;
 		var max;
 		for ( var i = 0; i < this._channels.length; i++) {
 			var channel = this._channels[i];

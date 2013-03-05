@@ -13,15 +13,18 @@ function (JointChannel, JointData) {
 		this._data = {};
 	}
 
-	ManagedTransformSource.prototype.resetClips = function (manager, globalStartTime) {
+	// Was: function (manager, globalStartTime)
+	ManagedTransformSource.prototype.resetClips = function () {
 		// ignore
 	};
 
-	ManagedTransformSource.prototype.setTime = function (globalTime, manager) {
+	// Was: function (globalTime, manager)
+	ManagedTransformSource.prototype.setTime = function () {
 		return true;
 	};
 
-	ManagedTransformSource.prototype.isActive = function (manager) {
+	// Was: function (manager)
+	ManagedTransformSource.prototype.isActive = function () {
 		return true;
 	};
 

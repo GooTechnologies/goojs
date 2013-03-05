@@ -21,12 +21,10 @@ function(Vector3) {
 			if (shader1._id === shader2._id) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
-				
-//				var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
-//				var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
+
 				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
 				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
-				
+
 				return dist1 - dist2;
 			}
 			return shader1._id - shader2._id;
@@ -34,8 +32,8 @@ function(Vector3) {
 		this.transparentSorter = function(a, b) {
 			var bound1 = a.meshRendererComponent.worldBound;
 			var bound2 = b.meshRendererComponent.worldBound;
-			var dist1 = tmpVec.copy(that.camera.translation).sub(bound1.center).lengthSquared();
-			var dist2 = tmpVec.copy(that.camera.translation).sub(bound2.center).lengthSquared();
+			var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
+			var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
 			return dist2 - dist1;
 		};
 		this.bucketSorter = function(a, b) {

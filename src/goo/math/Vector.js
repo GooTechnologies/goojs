@@ -548,14 +548,14 @@ function (MathUtils) {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
 			} else if (arguments[0].length > 1) {
-				for ( var i = 0; i < arguments[0].length; i++) {
+				for (var i = 0; i < arguments[0].length; i++) {
 					this.data[i] = arguments[0][i];
 				}
 			} else {
 				this.set(arguments[0][0]);
 			}
 		} else {
-			for ( var i in arguments) {
+			for (var i = 0; i < arguments.length; i++) {
 				this.data[i] = arguments[i];
 			}
 		}

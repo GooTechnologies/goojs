@@ -82,7 +82,9 @@ function (AbstractTransitionState, StateBlendType, BinaryLERPSource, MathUtils) 
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	AbstractTwoStateLerpTransition.prototype.update = function (globalTime, layer) {
+
+	// Was: function (globalTime, layer)
+	AbstractTwoStateLerpTransition.prototype.update = function (globalTime) {
 		var currentTime = globalTime - this._start;
 
 		// if we're outside the fade time...

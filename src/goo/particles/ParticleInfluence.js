@@ -10,11 +10,13 @@ function () {
 		settings = settings || {};
 
 		// function for preparing to apply this particle influence. Useful for expensive operations that should only need computing once per frame.
-		this.prepare = settings.prepare ? settings.prepare : function (particleEntity, emitter) {
+		// Was: function (particleEntity, emitter)
+		this.prepare = settings.prepare ? settings.prepare : function () {
 		};
 
 		// function for applying this particle influence.
-		this.apply = settings.apply ? settings.apply : function (tpf, particle, index) {
+		// Was: function (tpf, particle, index)
+		this.apply = settings.apply ? settings.apply : function () {
 		};
 
 		// true if this influence should be applied to particles. Prepare is called regardless.

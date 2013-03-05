@@ -18,7 +18,8 @@ function () {
 		return this._source.getSourceData(manager);
 	};
 
-	FrozenTreeSource.prototype.resetClips = function (manager, globalStartTime) {
+	// Was: function (manager, globalStartTime)
+	FrozenTreeSource.prototype.resetClips = function (manager) {
 		// ignores the command to reset our subtree
 		this._source.resetClips(manager, 0);
 	};
@@ -28,7 +29,8 @@ function () {
 		return true;
 	};
 
-	FrozenTreeSource.prototype.isActive = function (manager) {
+	// Was: function (manager)
+	FrozenTreeSource.prototype.isActive = function () {
 		return true;
 	};
 

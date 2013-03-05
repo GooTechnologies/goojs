@@ -72,7 +72,9 @@ function (AbstractFiniteState) {
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	AbstractTransitionState.prototype.getTransitionState = function (callingState, layer) {
+
+	// Was: function (callingState, layer)
+	AbstractTransitionState.prototype.getTransitionState = function () {
 		return null;
 	};
 

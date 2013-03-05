@@ -9,11 +9,11 @@ define(['goo/renderer/Camera'],
 	function SimplePartitioner() {
 	}
 
-	SimplePartitioner.prototype.added = function (entity) {
+	SimplePartitioner.prototype.added = function () {
 		// needed for things like quadtrees etc
 	};
 
-	SimplePartitioner.prototype.removed = function (entity) {
+	SimplePartitioner.prototype.removed = function () {
 		// needed for things like quadtrees etc
 	};
 
@@ -22,8 +22,7 @@ define(['goo/renderer/Camera'],
 	 * @param renderList Visible entities will be added to this array.
 	 */
 	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
-		// camera.onFrameChange(); // TODO: not needed anymore?
-		for (var i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 
 			if (entity.skip) {

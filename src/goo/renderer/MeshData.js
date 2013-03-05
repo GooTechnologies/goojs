@@ -1,6 +1,14 @@
-define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils'],
+define([
+	'goo/renderer/BufferData',
+	'goo/renderer/Util',
+	'goo/renderer/BufferUtils'
+],
 /** @lends MeshData */
-function(BufferData, Util, BufferUtils) {
+function(
+	BufferData,
+	Util,
+	BufferUtils
+) {
 	"use strict";
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
@@ -109,7 +117,7 @@ function(BufferData, Util, BufferUtils) {
 		var data = this.vertexData.data;
 		var view;
 		var offset = 0;
-		for ( var key in this.attributeMap) {
+		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
@@ -124,6 +132,16 @@ function(BufferData, Util, BufferUtils) {
 
 			this.attributeMap[key].array = view;
 		}
+	};
+
+	MeshData.prototype.makeInterleavedData = function() {
+		var stride = 0;
+		for (var key in this.attributeMap) {
+			var attribute = this.attributeMap[key];
+			stride += attribute.count * Util.getByteSize(attribute.type);
+		}
+
+		// TODO
 	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
@@ -175,6 +193,8 @@ function(BufferData, Util, BufferUtils) {
 		return {
 			count : count,
 			type : type,
+			stride : 0,
+			offset : 0,
 			normalized : normalized !== undefined ? normalized : false
 		};
 	};

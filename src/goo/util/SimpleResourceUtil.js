@@ -42,7 +42,7 @@ define(function () {
 		var req = new XMLHttpRequest();
 		req.open("GET", url);
 		req.responseType = "arraybuffer";
-		req.onload = function (e) {
+		req.onload = function () {
 			if (req.status !== 404) {
 				callback.onSuccess(req.response);
 				return;
@@ -50,7 +50,7 @@ define(function () {
 
 			req.onerror(null);
 		};
-		req.onerror = function (e) {
+		req.onerror = function () {
 			callback.onError(null);
 		};
 		req.send();

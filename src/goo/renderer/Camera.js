@@ -262,7 +262,9 @@ define([
 	 * @param bottom
 	 * @param top
 	 */
-	Camera.prototype.setViewPort = function (left, right, bottom, top) {
+
+	// Was: function (left, right, bottom, top)
+	Camera.prototype.setViewPort = function () {
 		console.warn('Camera.setViewPort() not implemented.');
 		//setViewPortLeft(left);
 		//setViewPortRight(right);
@@ -442,23 +444,25 @@ define([
 		if (this.projectionMode === Camera.Parallel) {
 			this.projection.setIdentity();
 
-			this.projection.e00 = 2.0 / (this._frustumRight - this._frustumLeft);
-			this.projection.e11 = 2.0 / (this._frustumTop - this._frustumBottom);
-			this.projection.e22 = -2.0 / (this._frustumFar - this._frustumNear);
-			this.projection.e03 = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-			this.projection.e13 = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
-			this.projection.e23 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+			var d = this.projection.data;
+			d[0] = 2.0 / (this._frustumRight - this._frustumLeft);
+			d[5] = 2.0 / (this._frustumTop - this._frustumBottom);
+			d[10] = -2.0 / (this._frustumFar - this._frustumNear);
+			d[12] = -(this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+			d[13] = -(this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+			d[14] = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
 		} else if (this.projectionMode === Camera.Perspective) {
 			this.projection.setIdentity();
 
-			this.projection.e00 = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
-			this.projection.e11 = 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom);
-			this.projection.e02 = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
-			this.projection.e12 = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
-			this.projection.e22 = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
-			this.projection.e32 = -1.0;
-			this.projection.e23 = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
-			this.projection.e33 = -0.0;
+			var d = this.projection.data;
+			d[0] = 2.0 * this._frustumNear / (this._frustumRight - this._frustumLeft);
+			d[5] = 2.0 * this._frustumNear / (this._frustumTop - this._frustumBottom);
+			d[8] = (this._frustumRight + this._frustumLeft) / (this._frustumRight - this._frustumLeft);
+			d[9] = (this._frustumTop + this._frustumBottom) / (this._frustumTop - this._frustumBottom);
+			d[10] = -(this._frustumFar + this._frustumNear) / (this._frustumFar - this._frustumNear);
+			d[11] = -1.0;
+			d[14] = -(2.0 * this._frustumFar * this._frustumNear) / (this._frustumFar - this._frustumNear);
+			d[15] = -0.0;
 		}
 	};
 
@@ -468,21 +472,23 @@ define([
 	Camera.prototype.updateModelViewMatrix = function () {
 		this.modelView.setIdentity();
 
-		this.modelView.e00 = -this._left.x;
-		this.modelView.e01 = -this._left.y;
-		this.modelView.e02 = -this._left.z;
+		var d = this.modelView.data;
 
-		this.modelView.e10 = this._up.x;
-		this.modelView.e11 = this._up.y;
-		this.modelView.e12 = this._up.z;
+		d[0] = -this._left.x;
+		d[4] = -this._left.y;
+		d[8] = -this._left.z;
 
-		this.modelView.e20 = -this._direction.x;
-		this.modelView.e21 = -this._direction.y;
-		this.modelView.e22 = -this._direction.z;
+		d[1] = this._up.x;
+		d[5] = this._up.y;
+		d[9] = this._up.z;
 
-		this.modelView.e03 = this._left.dot(this.translation);
-		this.modelView.e13 = -this._up.dot(this.translation);
-		this.modelView.e23 = this._direction.dot(this.translation);
+		d[2] = -this._direction.x;
+		d[6] = -this._direction.y;
+		d[10] = -this._direction.z;
+
+		d[12] = this._left.dot(this.translation);
+		d[13] = -this._up.dot(this.translation);
+		d[14] = this._direction.dot(this.translation);
 	};
 
 	/**

@@ -1,6 +1,12 @@
-define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'],
+define([
+	'goo/math/Vector3',
+	'goo/renderer/Camera'
+],
 /** @lends BoundingBox */
-function(Transform, Vector3, Camera) {
+function(
+	Vector3,
+	Camera
+) {
 	"use strict";
 
 	/**
@@ -68,7 +74,9 @@ function(Transform, Vector3, Camera) {
 	BoundingBox.prototype.whichSide = function(plane) {
 		var radius = Math.abs(this.xExtent * plane.normal.x) + Math.abs(this.yExtent * plane.normal.y) + Math.abs(this.zExtent * plane.normal.z);
 
-		var distance = this._pseudoDistance(plane, this.center);
+		var planeData = plane.normal.data;
+		var pointData = this.center.data;
+		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 
 		if (distance < -radius) {
 			return Camera.Inside;
@@ -204,14 +212,15 @@ function(Transform, Vector3, Camera) {
 	};
 
 	//TODO:!
-	BoundingBox.prototype.intersectsRay = function(ray) {
+	// Was: function (ray)
+	BoundingBox.prototype.intersectsRay = function () {
 		if (!this.center) {
 			return false;
 		}
 
-		var diff = this._compVect1.copy(ray.origin).sub(this.center);
+		// var diff = this._compVect1.copy(ray.origin).sub(this.center);
 
-		var direction = ray.direction;
+		// var direction = ray.direction;
 
 		// final float[] t = { 0.0f, Float.POSITIVE_INFINITY };
 		//

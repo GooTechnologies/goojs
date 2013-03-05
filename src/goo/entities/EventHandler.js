@@ -23,7 +23,7 @@ define(
 
 		var callback = arguments[0];
 		var args = Array.prototype.slice.call(arguments, 1);
-		for (var i in EventHandler.listeners) {
+		for (var i = 0; i < EventHandler.listeners.length; i++) {
 			var listener = EventHandler.listeners[i];
 			if (listener[callback]) {
 				listener[callback].apply(null, args);

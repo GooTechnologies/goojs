@@ -41,7 +41,7 @@ function (Entity, EntityManager, TransformComponent) {
 	 * @returns manager
 	 */
 	World.prototype.getManager = function (type) {
-		for ( var i in this._managers) {
+		for (var i = 0; i < this._managers.length; i++) {
 			var manager = this._managers[i];
 			if (manager.type === type) {
 				return manager;
@@ -65,7 +65,7 @@ function (Entity, EntityManager, TransformComponent) {
 	 * @returns System
 	 */
 	World.prototype.getSystem = function (type) {
-		for (var i in this._systems) {
+		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
 			if (system.type === type) {
 				return system;
@@ -79,7 +79,7 @@ function (Entity, EntityManager, TransformComponent) {
 	*	@return {Boolean} true or false
 	*/
 	World.prototype.removeSystem = function (type) {
-		for (var i in this._systems) {
+		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
 			if (system.type === type) {
 				this._systems.splice(i, 1);
@@ -156,7 +156,7 @@ function (Entity, EntityManager, TransformComponent) {
 				observer.added(entity);
 			}
 			if (observer.addedComponent) {
-				for ( var i in entity._components) {
+				for (var i = 0; i < entity._components.length; i++) {
 					observer.addedComponent(entity, entity._components[i]);
 				}
 			}
@@ -176,14 +176,14 @@ function (Entity, EntityManager, TransformComponent) {
 				observer.removed(entity);
 			}
 			if (observer.removedComponent) {
-				for ( var i in entity._components) {
+				for (var i = 0; i < entity._components.length; i++) {
 					observer.removedComponent(entity, entity._components[i]);
 				}
 			}
 		});
 
-		for ( var systemIndex in this._systems) {
-			var system = this._systems[systemIndex];
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
 			if (!system.passive) {
 				system._process(this.tpf);
 			}
@@ -191,13 +191,14 @@ function (Entity, EntityManager, TransformComponent) {
 	};
 
 	World.prototype._check = function (entities, callback) {
-		for (var index in entities) {
-			var entity = entities[index];
-			for (var managerIndex in this._managers) {
+		// REVIEW: Code style? Spaces before and after "("?
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			for (var managerIndex = 0; managerIndex < this._managers.length; managerIndex++) {
 				var manager = this._managers[managerIndex];
 				callback(manager, entity);
 			}
-			for (var systemIndex in this._systems) {
+			for (var systemIndex = 0; systemIndex < this._systems.length; systemIndex++) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}

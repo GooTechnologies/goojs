@@ -18,7 +18,7 @@ define([
 		}
 
 		this.callback = callback || {
-			progress: function (percent) {},
+			progress: function () {},
 			done: function () {}
 		};
 		this.meshDatas = [];
@@ -50,7 +50,7 @@ define([
 
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
-		
+
 		this.callback.progress(0);
 	}
 

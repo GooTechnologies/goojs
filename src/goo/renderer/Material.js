@@ -1,6 +1,6 @@
-define(['goo/renderer/Shader', 'goo/renderer/TextureCreator', 'goo/renderer/MeshData', 'goo/renderer/shaders/ShaderFragments'],
+define(['goo/renderer/Shader'],
 /** @lends Material */
-function(Shader, TextureCreator, MeshData, ShaderFragments) {
+function(Shader) {
 	"use strict";
 
 	/**
@@ -37,7 +37,7 @@ function(Shader, TextureCreator, MeshData, ShaderFragments) {
 			// 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
 			blendEquation : 'AddEquation',
 
-			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 
+			 // 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor',
 			 // 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 			 blendSrc : 'SrcAlphaFactor',
 			 blendDst : 'OneMinusSrcAlphaFactor'

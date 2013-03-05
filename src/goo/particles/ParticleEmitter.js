@@ -52,7 +52,8 @@ function (ParticleUtils, Renderer) {
 		this.enabled = settings.enabled !== undefined ? settings.enabled === true : true;
 	}
 
-	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle, particleEntity) {
+	// Was: function (particle, particleEntity)
+	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle) {
 		var camera = Renderer.mainCamera;
 		particle.bbX.setv(camera._left);
 		particle.bbY.setv(camera._up);

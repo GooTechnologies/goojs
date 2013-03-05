@@ -59,22 +59,19 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 			fs.readFile includefile, 'utf-8', (err, data) ->
 				if err then return console.log err
 				
-				# REVIEW: Rather do split by whitespace in this case.
-				#lines = data.split("\n")
 				lines = data.split(/\s+/)
 
 				if lines.length > 1
-					pattern = '{'+lines.join(',')+'}'
+					pathsToInclude = '{'+lines.join(',')+'}'
 				else
-					pattern = lines[0]
+					pathsToInclude = lines[0]
 				
-				# REVIEW: It's not very clear what this line is supposed to do.
-				#         Partly since the `pattern` variable name is confusing.
-				if /^(\{[\s,]*\}|\s*)$/.test pattern
+				# If there are no paths to include
+				if /^(\{[\s,]*\}|\s*)$/.test pathsToInclude
 					return console.log 'No files to include'
 
 				glob = require('glob')
-				glob pattern, {root: absroot}, (err, files) ->
+				glob pathsToInclude, {root: absroot}, (err, files) ->
 					if(files.length == 0)
 						console.log 'No files found'
 						process.exit

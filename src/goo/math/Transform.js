@@ -1,6 +1,6 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/util/Handy'],
+define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'],
 	/** @lends Transform */
-	function (Vector3, Matrix3x3, Matrix4x4, Handy) {
+	function (Vector3, Matrix3x3, Matrix4x4) {
 	"use strict";
 
 	/**
@@ -90,9 +90,9 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/uti
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
-		this.translation.copy(transform.translation);
+		this.translation.setv(transform.translation);
 		this.rotation.copy(transform.rotation);
-		this.scale.copy(transform.scale);
+		this.scale.setv(transform.scale);
 	};
 
 	/**

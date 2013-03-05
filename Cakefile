@@ -17,3 +17,15 @@ task 'minifysmall', 'one minify', (options) ->
 	fileOut = "minified/#{options.output}.js"
 	
 	minify(options.input, fileOut, true)
+
+task 'testserver', 'Start Testacular server', (options) ->
+	server = require('testacular').server
+	server.start(configFile: 'test/testacular.conf.js')
+
+task 'checkstyle', 'Run JSHint', (options) ->
+	# I'm not sure that the cli module is official,
+	# but it's a convenient way of running JSHint
+	# with the same config files (.jshintrc and .jshintignore)
+	# as when running from the command-line.
+	cli = require('jshint/src/cli/cli')
+	cmdopts = cli.interpret('jshint --reporter=tools/jshint-reporter.js src/ test/')

@@ -1,3 +1,3 @@
-define(["goo/math/Quaternion"], function(Quaternion) {
+define(["goo/math/Quaternion"], function(/*Quaternion*/) {
 	"use strict";
 });

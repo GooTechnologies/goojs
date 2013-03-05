@@ -310,15 +310,15 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		}
 
 		var s1d = lhs.data;
-        var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12], //
-        	m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13], //
-        	m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14], //
-        	m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
-        var s2d = rhs.data;
-        var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12], //
-        	n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13], //
-        	n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14], //
-        	n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
+		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12], //
+			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13], //
+			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14], //
+			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
+		var s2d = rhs.data;
+		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12], //
+			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13], //
+			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14], //
+			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
         var rd = target.data;
         rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
@@ -369,47 +369,50 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			target = new Matrix4x4();
 		}
 
+		var s = source.data;
+		var t = target.data;
+
 		if (target === source) {
-			var e01 = source.e01;
-			var e02 = source.e02;
-			var e03 = source.e03;
-			var e12 = source.e12;
-			var e13 = source.e13;
-			var e23 = source.e23;
+			var e01 = s[4];
+			var e02 = s[8];
+			var e03 = s[12];
+			var e12 = s[9];
+			var e13 = s[13];
+			var e23 = s[14];
 
-			target.e01 = source.e10;
-			target.e02 = source.e20;
-			target.e03 = source.e30;
-			target.e12 = source.e21;
-			target.e13 = source.e31;
-			target.e23 = source.e32;
+			t[4] = s[1];
+			t[8] = s[2];
+			t[12] = s[3];
+			t[9] = s[6];
+			t[13] = s[7];
+			t[14] = s[11];
 
-			target.e10 = e01;
-			target.e20 = e02;
-			target.e30 = e03;
-			target.e21 = e12;
-			target.e31 = e13;
-			target.e32 = e23;
-			
+			t[1] = e01;
+			t[2] = e02;
+			t[3] = e03;
+			t[6] = e12;
+			t[7] = e13;
+			t[11] = e23;
+
 			return target;
 		}
 
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e30 = source.e03;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e31 = source.e13;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
-		target.e32 = source.e23;
-		target.e03 = source.e30;
-		target.e13 = source.e31;
-		target.e23 = source.e32;
-		target.e33 = source.e33;
+		t[0] = s[0];
+		t[1] = s[4];
+		t[2] = s[8];
+		t[3] = s[12];
+		t[4] = s[1];
+		t[5] = s[5];
+		t[6] = s[9];
+		t[7] = s[13];
+		t[8] = s[2];
+		t[9] = s[6];
+		t[10] = s[10];
+		t[11] = s[14];
+		t[12] = s[3];
+		t[13] = s[7];
+		t[14] = s[11];
+		t[15] = s[15];
 
 		return target;
 	};
@@ -449,56 +452,27 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
 		}
 
+		var s = source.data;
+		var t = target.data;
+
 		det = 1.0 / det;
 
-		target.e00 = (source.e11 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e12
-			* (source.e21 * source.e33 - source.e23 * source.e31) + source.e13 * (source.e21 * source.e32 - source.e22 * source.e31))
-			* det;
-		target.e10 = (source.e10 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e12
-			* (source.e23 * source.e30 - source.e20 * source.e33) + source.e13 * (source.e22 * source.e30 - source.e20 * source.e32))
-			* det;
-		target.e20 = (source.e10 * (source.e21 * source.e33 - source.e23 * source.e31) - source.e11
-			* (source.e20 * source.e33 - source.e23 * source.e30) + source.e13 * (source.e20 * source.e31 - source.e21 * source.e30))
-			* det;
-		target.e30 = (source.e10 * (source.e22 * source.e31 - source.e21 * source.e32) - source.e11
-			* (source.e22 * source.e30 - source.e20 * source.e32) + source.e12 * (source.e21 * source.e30 - source.e20 * source.e31))
-			* det;
-		target.e01 = (source.e01 * (source.e23 * source.e32 - source.e22 * source.e33) - source.e02
-			* (source.e23 * source.e31 - source.e21 * source.e33) + source.e03 * (source.e22 * source.e31 - source.e21 * source.e32))
-			* det;
-		target.e11 = (source.e00 * (source.e22 * source.e33 - source.e23 * source.e32) - source.e02
-			* (source.e20 * source.e33 - source.e23 * source.e30) + source.e03 * (source.e20 * source.e32 - source.e22 * source.e30))
-			* det;
-		target.e21 = (source.e00 * (source.e23 * source.e31 - source.e21 * source.e33) - source.e01
-			* (source.e23 * source.e30 - source.e20 * source.e33) + source.e03 * (source.e21 * source.e30 - source.e20 * source.e31))
-			* det;
-		target.e31 = (source.e00 * (source.e21 * source.e32 - source.e22 * source.e31) - source.e01
-			* (source.e20 * source.e32 - source.e22 * source.e30) + source.e02 * (source.e20 * source.e31 - source.e21 * source.e30))
-			* det;
-		target.e02 = (source.e01 * (source.e12 * source.e33 - source.e13 * source.e32) - source.e02
-			* (source.e11 * source.e33 - source.e13 * source.e31) + source.e03 * (source.e11 * source.e32 - source.e12 * source.e31))
-			* det;
-		target.e12 = (source.e00 * (source.e13 * source.e32 - source.e12 * source.e33) - source.e02
-			* (source.e13 * source.e30 - source.e10 * source.e33) + source.e03 * (source.e12 * source.e30 - source.e10 * source.e32))
-			* det;
-		target.e22 = (source.e00 * (source.e11 * source.e33 - source.e13 * source.e31) - source.e01
-			* (source.e10 * source.e33 - source.e13 * source.e30) + source.e03 * (source.e10 * source.e31 - source.e11 * source.e30))
-			* det;
-		target.e32 = (source.e00 * (source.e12 * source.e31 - source.e11 * source.e32) - source.e01
-			* (source.e12 * source.e30 - source.e10 * source.e32) + source.e02 * (source.e11 * source.e30 - source.e10 * source.e31))
-			* det;
-		target.e03 = (source.e01 * (source.e13 * source.e22 - source.e12 * source.e23) - source.e02
-			* (source.e13 * source.e21 - source.e11 * source.e23) + source.e03 * (source.e12 * source.e21 - source.e11 * source.e22))
-			* det;
-		target.e13 = (source.e00 * (source.e12 * source.e23 - source.e13 * source.e22) - source.e02
-			* (source.e10 * source.e23 - source.e13 * source.e20) + source.e03 * (source.e10 * source.e22 - source.e12 * source.e20))
-			* det;
-		target.e23 = (source.e00 * (source.e13 * source.e21 - source.e11 * source.e23) - source.e01
-			* (source.e13 * source.e20 - source.e10 * source.e23) + source.e03 * (source.e11 * source.e20 - source.e10 * source.e21))
-			* det;
-		target.e33 = (source.e00 * (source.e11 * source.e22 - source.e12 * source.e21) - source.e01
-			* (source.e10 * source.e22 - source.e12 * source.e20) + source.e02 * (source.e10 * source.e21 - source.e11 * source.e20))
-			* det;
+		t[0] = (s[5] * (s[10] * s[15] - s[14] * s[11]) - s[9] * (s[6] * s[15] - s[14] * s[7]) + s[13] * (s[6] * s[11] - s[10] * s[7])) * det;
+		t[1] = (s[1] * (s[14] * s[11] - s[10] * s[15]) - s[9] * (s[14] * s[3] - s[2] * s[15]) + s[13] * (s[10] * s[3] - s[2] * s[11])) * det;
+		t[2] = (s[1] * (s[6] * s[15] - s[14] * s[7]) - s[5] * (s[2] * s[15] - s[14] * s[3]) + s[13] * (s[2] * s[7] - s[6] * s[3])) * det;
+		t[3] = (s[1] * (s[10] * s[7] - s[6] * s[11]) - s[5] * (s[10] * s[3] - s[2] * s[11]) + s[9] * (s[6] * s[3] - s[2] * s[7])) * det;
+		t[4] = (s[4] * (s[14] * s[11] - s[10] * s[15]) - s[8] * (s[14] * s[7] - s[6] * s[15]) + s[12] * (s[10] * s[7] - s[6] * s[11])) * det;
+		t[5] = (s[0] * (s[10] * s[15] - s[14] * s[11]) - s[8] * (s[2] * s[15] - s[14] * s[3]) + s[12] * (s[2] * s[11] - s[10] * s[3])) * det;
+		t[6] = (s[0] * (s[14] * s[7] - s[6] * s[15]) - s[4] * (s[14] * s[3] - s[2] * s[15]) + s[12] * (s[6] * s[3] - s[2] * s[7])) * det;
+		t[7] = (s[0] * (s[6] * s[11] - s[10] * s[7]) - s[4] * (s[2] * s[11] - s[10] * s[3]) + s[8] * (s[2] * s[7] - s[6] * s[3])) * det;
+		t[8] = (s[4] * (s[9] * s[15] - s[13] * s[11]) - s[8] * (s[5] * s[15] - s[13] * s[7]) + s[12] * (s[5] * s[11] - s[9] * s[7])) * det;
+		t[9] = (s[0] * (s[13] * s[11] - s[9] * s[15]) - s[8] * (s[13] * s[3] - s[1] * s[15]) + s[12] * (s[9] * s[3] - s[1] * s[11])) * det;
+		t[10] = (s[0] * (s[5] * s[15] - s[13] * s[7]) - s[4] * (s[1] * s[15] - s[13] * s[3]) + s[12] * (s[1] * s[7] - s[5] * s[3])) * det;
+		t[11] = (s[0] * (s[9] * s[7] - s[5] * s[11]) - s[4] * (s[9] * s[3] - s[1] * s[11]) + s[8] * (s[5] * s[3] - s[1] * s[7])) * det;
+		t[12] = (s[4] * (s[13] * s[10] - s[9] * s[14]) - s[8] * (s[13] * s[6] - s[5] * s[14]) + s[12] * (s[9] * s[6] - s[5] * s[10])) * det;
+		t[13] = (s[0] * (s[9] * s[14] - s[13] * s[10]) - s[8] * (s[1] * s[14] - s[13] * s[2]) + s[12] * (s[1] * s[10] - s[9] * s[2])) * det;
+		t[14] = (s[0] * (s[13] * s[6] - s[5] * s[14]) - s[4] * (s[13] * s[2] - s[1] * s[14]) + s[12] * (s[5] * s[2] - s[1] * s[6])) * det;
+		t[15] = (s[0] * (s[5] * s[10] - s[9] * s[6]) - s[4] * (s[1] * s[10] - s[9] * s[2]) + s[8] * (s[1] * s[6] - s[5] * s[2])) * det;
 
 		return target;
 	};
@@ -617,25 +591,37 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Matrix4x4.prototype.determinant = function () {
-		var val1 = this.e11 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e31 + this.e13 * this.e21 * this.e32 -
-				this.e13 * this.e22 * this.e31 - this.e12 * this.e21
-				* this.e33 - this.e11 * this.e23 * this.e32;
-		var val2 = this.e10 * this.e22 * this.e33 + this.e12 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e32 -
-				this.e13 * this.e22 * this.e30 - this.e12 * this.e20
-				* this.e33 - this.e10 * this.e23 * this.e32;
-		var val3 = this.e10 * this.e21 * this.e33 + this.e11 * this.e23
-				* this.e30 + this.e13 * this.e20 * this.e31 -
-				this.e13 * this.e21 * this.e30 - this.e11 * this.e20
-				* this.e33 - this.e10 * this.e23 * this.e31;
-		var val4 = this.e10 * this.e21 * this.e32 + this.e11 * this.e22
-				* this.e30 + this.e12 * this.e20 * this.e31 -
-				this.e12 * this.e21 * this.e30 - this.e11 * this.e20
-				* this.e32 - this.e10 * this.e22 * this.e31;
+		var d = this.data;
 
-		return this.e00 * val1 - this.e01 * val2 + this.e02 * val3
-				- this.e03 * val4;
+		var val1 =	d[5] * d[10] * d[15] +
+					d[9] * d[14] * d[7] +
+					d[13] * d[6] * d[11] -
+					d[13] * d[10] * d[7] -
+					d[9] * d[6] * d[15] -
+					d[5] * d[14] * d[11];
+		var val2 =	d[1] * d[10] * d[15] +
+					d[9] * d[14] * d[3] +
+					d[13] * d[2] * d[11] -
+					d[13] * d[10] * d[3] -
+					d[9] * d[2] * d[15] -
+					d[1] * d[14] * d[11];
+		var val3 =	d[1] * d[6] * d[15] +
+					d[5] * d[14] * d[3] +
+					d[13] * d[2] * d[7] -
+					d[13] * d[6] * d[3] -
+					d[5] * d[2] * d[15] -
+					d[1] * d[14] * d[7];
+		var val4 =	d[1] * d[6] * d[11] +
+					d[5] * d[10] * d[3] +
+					d[9] * d[2] * d[7] -
+					d[9] * d[6] * d[3] -
+					d[5] * d[2] * d[11] -
+					d[1] * d[10] * d[7];
+
+		return	d[0] * val1 -
+				d[4] * val2 +
+				d[8] * val3 -
+				d[12] * val4;
 	};
 
 	/* ====================================================================== */
@@ -828,9 +814,10 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var y = rhs.y;
 		var z = rhs.z;
 
-		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03;
-		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13;
-		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23;
+		var d = this.data;
+		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
+		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
+		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
 
 		return rhs;
 	};
@@ -848,11 +835,56 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var y = rhs.y;
 		var z = rhs.z;
 
+		var d = this.data;
+		rhs.x = d[0] * x + d[4] * y + d[8] * z;
+		rhs.y = d[1] * x + d[5] * y + d[9] * z;
+		rhs.z = d[2] * x + d[6] * y + d[10] * z;
+
 		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
 		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
 		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
 
 		return rhs;
+	};
+
+	/**
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix4x4} source Source matrix.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.copy = function (source) {
+		var t = this.data;
+		var s = source.data;
+
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[3];
+		t[4] = s[4];
+		t[5] = s[5];
+		t[6] = s[6];
+		t[7] = s[7];
+		t[8] = s[8];
+		t[9] = s[9];
+		t[10] = s[10];
+		t[11] = s[11];
+		t[12] = s[12];
+		t[13] = s[13];
+		t[14] = s[14];
+		t[15] = s[15];
+
+		return this;
+	};
+
+	Matrix4x4.prototype.clone = function () {
+		var d = this.data;
+		return new Matrix4x4(
+			d[0], d[1], d[2], d[3],
+			d[4], d[5], d[6], d[7],
+			d[8], d[9], d[10], d[11],
+			d[12], d[13], d[14], d[15]
+			);
 	};
 
 	/* ====================================================================== */

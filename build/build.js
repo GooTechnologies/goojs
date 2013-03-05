@@ -65,7 +65,8 @@ var config = {
 	baseUrl : appPath,
 	paths : {
 		goo : workingDir+'/../src/goo',
-		almond : workingDir+'/../build/almond'
+		almond : workingDir+'/../build/almond',
+		'goo/lib' : workingDir + '/../lib'
 	},
 	name : 'almond',
 	include : [appName],

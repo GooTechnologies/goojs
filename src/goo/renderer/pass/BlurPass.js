@@ -1,5 +1,7 @@
-define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget,
+define([
+	'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
+		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(
+	Material, FullscreenUtil, RenderTarget,
 	Util, ShaderLib) {
 	"use strict";
 
@@ -51,7 +53,7 @@ define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCre
 		this.needsSwap = false;
 	}
 
-	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer, delta) {
+	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.textures[0] = readBuffer;

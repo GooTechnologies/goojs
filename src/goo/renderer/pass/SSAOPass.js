@@ -1,8 +1,11 @@
-define(['goo/renderer/Renderer', 'goo/renderer/Camera', 'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/Shader',
+define([
+	'goo/renderer/Material',
+	'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/Shader',
 		'goo/renderer/shaders/ShaderFragments', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/pass/BlurPass',
 		'goo/renderer/shaders/ShaderLib'],
-	function (Renderer, Camera, TextureCreator, Material, FullscreenUtil, RenderTarget, Util, MeshData, Shader, ShaderFragments, RenderPass,
+	function (
+	Material,
+	RenderTarget, Util, MeshData, Shader, ShaderFragments, RenderPass,
 		FullscreenPass, BlurPass, ShaderLib) {
 		"use strict";
 

@@ -1,11 +1,32 @@
-define(['goo/entities/World', 'goo/entities/systems/TransformSystem', 'goo/entities/systems/RenderSystem', 'goo/entities/systems/PartitioningSystem',
-		'goo/renderer/Renderer', 'goo/entities/systems/BoundingUpdateSystem', 'goo/entities/systems/ScriptSystem',
-		'goo/entities/systems/LightingSystem', 'goo/renderer/SimplePartitioner', 'goo/entities/managers/LightManager',
-		'goo/entities/systems/CameraSystem', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent', 'goo/util/Stats',
-		"goo/entities/systems/CSSTransformSystem", 'goo/util/GameUtils'],
+define([
+    'goo/entities/World',
+    'goo/entities/systems/TransformSystem',
+    'goo/entities/systems/RenderSystem',
+	'goo/renderer/Renderer',
+	'goo/entities/systems/BoundingUpdateSystem',
+	'goo/entities/systems/ScriptSystem',
+	'goo/entities/systems/LightingSystem',
+	'goo/entities/managers/LightManager',
+	'goo/entities/systems/CameraSystem',
+	'goo/util/Stats',
+	"goo/entities/systems/CSSTransformSystem",
+	'goo/util/GameUtils'
+],
 /** @lends GooRunner */
-function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, BoundingUpdateSystem, ScriptSystem, LightingSystem, SimplePartitioner,
-	LightManager, CameraSystem, Camera, CameraComponent, Stats, CSSTransformSystem, GameUtils) {
+function (
+	World,
+	TransformSystem,
+	RenderSystem,
+	Renderer,
+	BoundingUpdateSystem,
+	ScriptSystem,
+	LightingSystem,
+	LightManager,
+	CameraSystem,
+	Stats,
+	CSSTransformSystem,
+	GameUtils
+) {
 	"use strict";
 
 	/**
@@ -18,7 +39,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 	 *     stencil : false,
 	 *     preserveDrawingBuffer : false,
 	 *     showStats : false,
-	 *      manuallyStartGameLoop : false
+	 *     manuallyStartGameLoop : false
 	 * }</code>
 	 *
 	 * @constructor
@@ -40,14 +61,9 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
-
-		var partitioningSystem = new PartitioningSystem();
-		partitioningSystem.partitioner = new SimplePartitioner();
-		this.world.setSystem(partitioningSystem);
-
-		var renderSystem = new RenderSystem(partitioningSystem.renderList);
+		var renderSystem = this.renderSystem = new RenderSystem();
 		this.world.setSystem(renderSystem);
-		
+
 		this.doRender = true;
 
 		GameUtils.initAllShims();
@@ -57,7 +73,6 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 			this.stats.domElement.style.position = 'absolute';
 			this.stats.domElement.style.left = '10px';
 			this.stats.domElement.style.top = '10px';
-			// document.getElementById( 'container' ).appendChild(stats.domElement);
 			document.body.appendChild(this.stats.domElement);
 		}
 
@@ -87,13 +102,13 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					return;
 				}
 
-				for ( var i in that.callbacksPreProcess) {
+				for (var i = 0; i < that.callbacksPreProcess.length; i++) {
 					that.callbacksPreProcess[i](that.world.tpf);
 				}
 
 				that.world.process();
 
-				for ( var i in that.callbacksPreRender) {
+				for (var i = 0; i < that.callbacksPreRender.length; i++) {
 					that.callbacksPreRender[i](that.world.tpf);
 				}
 
@@ -103,7 +118,7 @@ function (World, TransformSystem, RenderSystem, PartitioningSystem, Renderer, Bo
 					renderSystem.render(that.renderer);
 				}
 
-				for ( var i in that.callbacks) {
+				for (var i = 0; i < that.callbacks.length; i++) {
 					that.callbacks[i](that.world.tpf);
 				}
 

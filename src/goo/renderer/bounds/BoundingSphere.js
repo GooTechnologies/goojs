@@ -1,6 +1,12 @@
-define(['goo/math/Transform', 'goo/math/Vector3', 'goo/renderer/Camera'],
+define([
+	'goo/math/Vector3',
+	'goo/renderer/Camera'
+],
 /** @lends BoundingSphere */
-function(Transform, Vector3, Camera) {
+function(
+	Vector3,
+	Camera
+) {
 	"use strict";
 
 	/**
@@ -23,7 +29,7 @@ function(Transform, Vector3, Camera) {
 		var min = this.min;
 		var max = this.max;
 		var vec = this.vec;
-		
+
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
@@ -66,7 +72,9 @@ function(Transform, Vector3, Camera) {
 	};
 
 	BoundingSphere.prototype.whichSide = function(plane) {
-		var distance = this._pseudoDistance(plane, this.center);
+		var planeData = plane.normal.data;
+		var pointData = this.center.data;
+		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 
 		if (distance < -this.radius) {
 			return Camera.Inside;

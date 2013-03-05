@@ -1,10 +1,8 @@
 define([
-	'goo/util/Ajax',
-	'goo/lib/rsvp.amd'
+	'goo/util/Ajax'
 	],
 	function(
-		Ajax,
-		RSVP
+		Ajax
 		) {
 		'use strict';
 
@@ -12,7 +10,7 @@ define([
 			'good-url' : {
 				readyState : 4,
 				status : 200,
-				responseText : 'This was nice.',
+				responseText : 'Successful response.',
 				responseHeader : {
 					'Content-Type' : 'application/text'
 				}
@@ -20,7 +18,7 @@ define([
 		};
 
 
-		function MockXHRBuilder(mockResponses) {
+		function createMockXhr(mockResponses) {
 			function MockXHR() {
 
 			}
@@ -60,7 +58,7 @@ define([
 
 			beforeEach(function() {
 				spyOn(window, 'XMLHttpRequest').andCallFake(function() {
-					var mockXHR = MockXHRBuilder(TestResponses);
+					var mockXHR = createMockXhr(TestResponses);
 					return mockXHR.prototype;
 				});
 			});
@@ -77,10 +75,12 @@ define([
 
 				spyOn(a, 'resolve').andCallThrough();
 
-				a.then(function(request) {
-					expect(a.reject).not.toHaveBeenCalled();
-					expect(a.resolve).toHaveBeenCalled();
-					expect(request.responseText instanceof MockXHR).toBeTruthy();
+				waitsFor(function() {
+					return a.isResolved;
+				}, 'promise does not get resolved', 1);
+
+				a.then(function(data) {
+					expect(data.responseText).toEqual('Successful response.');
 				});
 			});
 
@@ -97,10 +97,12 @@ define([
 
 				spyOn(a, 'reject').andCallThrough();
 
-				a.then(null, function(request) {
-					expect(a.resolve).not.toHaveBeenCalled();
-					expect(a.reject).toHaveBeenCalled();
-					expect(request.responseText instanceof MockXHR).toBeTruthy();
+				waitsFor(function() {
+					return a.isRejected;
+				}, 'promise does not get rejected', 1);
+
+				a.then(null, function(reason) {
+					expect(reason).toEqual('Couldn\'t find a fake response: ' + ajaxSettings.url);
 				});
 			});
 		});

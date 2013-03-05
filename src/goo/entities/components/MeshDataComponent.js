@@ -1,6 +1,12 @@
-define(['goo/renderer/BoundingSphere', 'goo/entities/components/Component'],
-	/** @lends MeshDataComponent */
-	function (BoundingSphere, Component) {
+define([
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/entities/components/Component'
+],
+/** @lends MeshDataComponent */
+function (
+	BoundingSphere,
+	Component
+) {
 	"use strict";
 
 	/**

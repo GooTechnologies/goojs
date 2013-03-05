@@ -15,7 +15,12 @@ define(["goo/math/Vector"],
 
 	function Vector4() {
 		Vector.call(this, 4);
-		arguments.length !== 0 ? this.set(arguments) : this.setd(0,0,0,0);
+
+		if (arguments.length !== 0) {
+			this.set(arguments);
+		} else {
+			this.setd(0,0,0,0);
+		}
 	}
 
 	Vector4.prototype = Object.create(Vector.prototype);

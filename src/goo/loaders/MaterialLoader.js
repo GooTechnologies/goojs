@@ -127,7 +127,7 @@ define([
 		}
 
 		return RSVP.all(promises)
-		.then(function(data) {
+		.then(function() {
 			var material = Material.createMaterial(shaderDefinition);
 
 			material.textures = textures;
@@ -164,7 +164,7 @@ define([
 		}
 
 		return RSVP.all(promises)
-		.then(function(data) {
+		.then(function() {
 			return shaderDefinition;
 		});
 	};

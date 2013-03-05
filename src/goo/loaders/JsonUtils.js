@@ -1,7 +1,5 @@
 /*jshint bitwise: false */
 define([
-	'goo/renderer/Util',
-	'goo/renderer/MeshData',
 	'goo/renderer/BufferUtils',
 	'goo/math/Transform',
 	'goo/math/Matrix3x3',
@@ -24,9 +22,8 @@ define([
 	'goo/animation/layer/LayerLERPBlender'
 	],
 	/** @lends JsonUtils */
-	function(Util,
-		MeshData,
-		BufferUtils,
+	function(
+	BufferUtils,
 		Transform,
 		Matrix3x3,
 		Vector3,
@@ -210,7 +207,8 @@ define([
 		layer._steadyStates[state._name] = state;
 	};
 
-	JsonUtils.parseTransitionState = function(args, inputStore, outputStore, manager) {
+	// Was: function (args, inputStore, outputStore, manager)
+	JsonUtils.parseTransitionState = function(args) {
 		var type = args[2];
 		var transition;
 

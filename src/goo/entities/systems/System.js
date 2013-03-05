@@ -58,7 +58,7 @@ function() {
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
-			for ( var i in this.interests) {
+			for (var i = 0; i < this.interests.length; i++) {
 				var interest = getTypeAttributeName(this.interests[i]);
 
 				if (!entity[interest]) {

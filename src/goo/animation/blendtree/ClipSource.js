@@ -20,28 +20,30 @@ function (MathUtils) {
 			var clockTime = instance._timeScale * (globalTime - instance._startTime);
 
 			var maxTime = this._clip._maxTime;
-			if (maxTime <= 0) {
+			if (maxTime === -1) {
 				return false;
 			}
 
 			// Check for looping.
-			if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
-				if (clockTime < 0) {
-					clockTime = maxTime + clockTime % maxTime;
-				} else {
-					clockTime %= maxTime;
+			if (maxTime !== 0) {
+				if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
+					if (clockTime < 0) {
+						clockTime = maxTime + clockTime % maxTime;
+					} else {
+						clockTime %= maxTime;
+					}
+				} else if (clockTime < 0) {
+					clockTime = maxTime + clockTime;
 				}
-			} else if (clockTime < 0) {
-				clockTime = maxTime + clockTime;
-			}
 
-			// Check for past max time
-			if (clockTime > maxTime || clockTime < 0) {
-				clockTime = MathUtils.clamp(clockTime, 0, maxTime);
-				// signal to any listeners that we have ended our animation.
-				instance.fireAnimationFinished();
-				// deactivate this instance of the clip
-				instance._active = false;
+				// Check for past max time
+				if (clockTime > maxTime || clockTime < 0) {
+					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
+					// signal to any listeners that we have ended our animation.
+					instance.fireAnimationFinished();
+					// deactivate this instance of the clip
+					instance._active = false;
+				}
 			}
 
 			// update the clip with the correct clip local time.
@@ -56,7 +58,7 @@ function (MathUtils) {
 
 	ClipSource.prototype.isActive = function (manager) {
 		var instance = manager.getClipInstance(this._clip);
-		return instance._active && this._clip._maxTime > 0;
+		return instance._active && (this._clip._maxTime !== -1);
 	};
 
 	ClipSource.prototype.getSourceData = function (manager) {

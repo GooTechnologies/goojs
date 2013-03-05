@@ -13,7 +13,7 @@ define(['goo/entities/systems/System'],
 	LightingSystem.prototype = Object.create(System.prototype);
 
 	LightingSystem.prototype.process = function (entities) {
-		for (var i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var transformComponent = entity.transformComponent;
 			var lightComponent = entity.lightComponent;

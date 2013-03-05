@@ -252,41 +252,27 @@ function (MathUtils, Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
-//		if (target === lhs || target === rhs) {
-//			return Matrix.copy(Matrix3x3.combine(lhs, rhs), target);
-//		}
-//
-//		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10 + lhs.e02 * rhs.e20;
-//		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10 + lhs.e12 * rhs.e20;
-//		target.e20 = lhs.e20 * rhs.e00 + lhs.e21 * rhs.e10 + lhs.e22 * rhs.e20;
-//		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11 + lhs.e02 * rhs.e21;
-//		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11 + lhs.e12 * rhs.e21;
-//		target.e21 = lhs.e20 * rhs.e01 + lhs.e21 * rhs.e11 + lhs.e22 * rhs.e21;
-//		target.e02 = lhs.e00 * rhs.e02 + lhs.e01 * rhs.e12 + lhs.e02 * rhs.e22;
-//		target.e12 = lhs.e10 * rhs.e02 + lhs.e11 * rhs.e12 + lhs.e12 * rhs.e22;
-//		target.e22 = lhs.e20 * rhs.e02 + lhs.e21 * rhs.e12 + lhs.e22 * rhs.e22;
-
 		var s1d = lhs.data;
-        var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
-        	m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
-        	m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
-        var s2d = rhs.data;
-        var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
-        	n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
-        	n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
+		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
+			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
+			m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
+		var s2d = rhs.data;
+		var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
+			n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
+			n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
 
-        var rd = target.data;
-        rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
-        rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
-        rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
+		var rd = target.data;
+		rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
+		rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
+		rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
 
-        rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
-        rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
-        rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
+		rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
+		rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
+		rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
 
-        rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
-        rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
-        rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
+		rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
+		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
+		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
 
 		return target;
 	};
@@ -316,19 +302,34 @@ function (MathUtils, Matrix, Vector3) {
 			target = new Matrix3x3();
 		}
 
+		var s = source.data;
+		var t = target.data;
+
 		if (target === source) {
-			return Matrix.copy(Matrix3x3.transpose(source), target);
+			var e01 = s[3];
+			var e02 = s[6];
+			var e12 = s[7];
+
+			t[3] = s[1];
+			t[6] = s[2];
+			t[7] = s[5];
+
+			t[1] = e01;
+			t[2] = e02;
+			t[5] = e12;
+
+			return target;
 		}
 
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e20 = source.e02;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-		target.e21 = source.e12;
-		target.e02 = source.e20;
-		target.e12 = source.e21;
-		target.e22 = source.e22;
+		t[0] = s[0];
+		t[1] = s[3];
+		t[2] = s[6];
+		t[3] = s[1];
+		t[4] = s[4];
+		t[5] = s[7];
+		t[6] = s[2];
+		t[7] = s[5];
+		t[8] = s[8];
 
 		return target;
 	};
@@ -502,12 +503,11 @@ function (MathUtils, Matrix, Vector3) {
 	Matrix3x3.prototype.applyPost = function (rhs) {
 		var target = rhs.data;
 		var source = this.data;
-		
+
 		var x = target[0];
 		var y = target[1];
 		var z = target[2];
 
-		
 		target[0] = source[0] * x + source[3] * y + source[6] * z;
 		target[1] = source[1] * x + source[4] * y + source[7] * z;
 		target[2] = source[2] * x + source[5] * y + source[8] * z;
@@ -593,6 +593,123 @@ function (MathUtils, Matrix, Vector3) {
 		this.e22 = -sh * sp * sy + ch * cy;
 
 		return this;
+	};
+
+	/**
+	 * Rotates a matrix by the given angle around the X axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateX = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a10 = a[3],
+	        a11 = a[4],
+	        a12 = a[5],
+	        a20 = a[6],
+	        a21 = a[7],
+	        a22 = a[8];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+	        out[0]  = a[0];
+	        out[1]  = a[1];
+	        out[2]  = a[2];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[3] = a10 * c + a20 * s;
+	    out[4] = a11 * c + a21 * s;
+	    out[5] = a12 * c + a22 * s;
+	    out[6] = a20 * c - a10 * s;
+	    out[7] = a21 * c - a11 * s;
+	    out[8] = a22 * c - a12 * s;
+
+	    return out;
+	};
+
+	/**
+	 * Rotates a matrix by the given angle around the Y axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateY = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a00 = a[0],
+	        a01 = a[1],
+	        a02 = a[2],
+	        a20 = a[6],
+	        a21 = a[7],
+	        a22 = a[8];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+	        out[3]  = a[3];
+	        out[4]  = a[4];
+	        out[5]  = a[5];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[0] = a00 * c - a20 * s;
+	    out[1] = a01 * c - a21 * s;
+	    out[2] = a02 * c - a22 * s;
+	    out[6] = a00 * s + a20 * c;
+	    out[7] = a01 * s + a21 * c;
+	    out[8] = a02 * s + a22 * c;
+
+	    return out;
+	};
+
+	/**
+	 * Rotates a matrix by the given angle around the Z axis
+	 *
+	 * @param {mat4} out the receiving matrix
+	 * @param {mat4} a the matrix to rotate
+	 * @param {Number} rad the angle to rotate the matrix by
+	 * @returns {mat4} out
+	 */
+	Matrix3x3.prototype.rotateZ = function (rad, store) {
+		store = store || this;
+		var a = this.data;
+		var out = store.data;
+
+	    var s = Math.sin(rad),
+	        c = Math.cos(rad),
+	        a00 = a[0],
+	        a01 = a[1],
+	        a02 = a[2],
+	        a10 = a[3],
+	        a11 = a[4],
+	        a12 = a[5];
+
+	    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+	        out[6]  = a[6];
+	        out[7]  = a[7];
+	        out[8] = a[8];
+	    }
+
+	    // Perform axis-specific matrix multiplication
+	    out[0] = a00 * c + a10 * s;
+	    out[1] = a01 * c + a11 * s;
+	    out[2] = a02 * c + a12 * s;
+	    out[3] = a10 * c - a00 * s;
+	    out[4] = a11 * c - a01 * s;
+	    out[5] = a12 * c - a02 * s;
+
+	    return out;
 	};
 
 	/**
@@ -713,6 +830,38 @@ function (MathUtils, Matrix, Vector3) {
 
 	Matrix3x3.prototype.copyQuaternion = function (quaternion) {
 		return quaternion.toRotationMatrix(this);
+	};
+
+	/**
+	 * @description Copies component values and stores them locally.
+	 * @param {Matrix4x4} source Source matrix.
+	 * @return {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix3x3.prototype.copy = function (source) {
+		var t = this.data;
+		var s = source.data;
+
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[3];
+		t[4] = s[4];
+		t[5] = s[5];
+		t[6] = s[6];
+		t[7] = s[7];
+		t[8] = s[8];
+
+		return this;
+	};
+
+	Matrix3x3.prototype.clone = function () {
+		var d = this.data;
+		return new Matrix3x3(
+			d[0], d[1], d[2],
+			d[3], d[4], d[5],
+			d[4], d[5], d[6]
+			);
 	};
 
 	/* ====================================================================== */

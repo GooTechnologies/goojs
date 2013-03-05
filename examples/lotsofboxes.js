@@ -5,10 +5,16 @@ require.config({
 		'goo/lib': '../lib'
 	}
 });
-require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Material', 'goo/renderer/Camera',
-		'goo/entities/components/CameraComponent', 'goo/shapes/ShapeCreator', 'goo/renderer/TextureCreator',
-		'goo/entities/components/ScriptComponent', 'goo/renderer/shaders/ShaderLib'], function(GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator,
-	ScriptComponent, ShaderLib) {
+require([
+	'goo/entities/GooRunner',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Material',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/TextureCreator',
+	'goo/renderer/shaders/ShaderLib'
+], function (GooRunner, EntityUtils, Material, Camera, CameraComponent, ShapeCreator, TextureCreator, ShaderLib) {
 	"use strict";
 
 	var resourcePath = "../resources";
@@ -34,7 +40,7 @@ require(['goo/entities/GooRunner', 'goo/entities/EntityUtils', 'goo/renderer/Mat
 		// Add boxes
 		var meshData = ShapeCreator.createBox(20, 20, 20);
 		var rc4Rand = new Rc4Random("seed");
-		for ( var i = 0; i < 200; i++) {
+		for ( var i = 0; i < 400; i++) {
 			var x = rc4Rand.getRandomNumber() * 100 - 50;
 			var y = rc4Rand.getRandomNumber() * 100 - 50;
 			var z = rc4Rand.getRandomNumber() * 100 - 250;

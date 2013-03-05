@@ -20,7 +20,7 @@ define(['goo/entities/systems/System'],
 		if (!this.pickRay || !this.onPick) {
 			return;
 		}
-		for (var i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var meshRendererComponent = entity.meshRendererComponent;
 

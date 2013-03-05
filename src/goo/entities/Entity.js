@@ -1,6 +1,6 @@
 define(
-	/** @lends Entity */
-	function () {
+/** @lends Entity */
+function () {
 	"use strict";
 
 	/**

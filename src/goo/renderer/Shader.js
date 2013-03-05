@@ -1,6 +1,18 @@
-define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/entities/World', 'goo/renderer/RenderQueue'],
-	/** @lends Shader */
-	function (ShaderCall, Util, Matrix4x4, Vector3, World, RenderQueue) {
+define([
+	'goo/renderer/ShaderCall',
+	'goo/math/Matrix4x4',
+	'goo/math/Vector3',
+	'goo/entities/World',
+	'goo/renderer/RenderQueue'
+],
+/** @lends Shader */
+function (
+	ShaderCall,
+	Matrix4x4,
+	Vector3,
+	World,
+	RenderQueue
+) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -127,7 +139,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 					continue;
 				}
 
-				renderer.bindVertexAttribute(attributeIndex, attribute.count, attribute.type, attribute.normalized, 0, attribute.offset, record);
+				renderer.bindVertexAttribute(attributeIndex, attribute, record);
 			}
 		}
 
@@ -382,7 +394,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 		for (var i = 0; i < 16; i++) {
 			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['TEXTURE' + i]] = (function (i) {
-				return function (uniformCall, shaderInfo) {
+				return function (uniformCall) {
 					uniformCall.uniform1i(i);
 				};
 			})(i);
@@ -467,7 +479,7 @@ define(['goo/renderer/ShaderCall', 'goo/renderer/Util', 'goo/math/Matrix4x4', 'g
 			uniformCall.uniform1f(shininess);
 		};
 
-		defaultCallbacks[Shader.TIME] = function (uniformCall, shaderInfo) {
+		defaultCallbacks[Shader.TIME] = function (uniformCall) {
 			uniformCall.uniform1f(World.time);
 		};
 

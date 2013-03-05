@@ -17,7 +17,8 @@ function (AbstractAnimationChannel, TriggerData) {
 
 	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
-	TriggerChannel.prototype.createStateDataObject = function (instance) {
+	// Was: function (instance)
+	TriggerChannel.prototype.createStateDataObject = function () {
 		return new TriggerData();
 	};
 

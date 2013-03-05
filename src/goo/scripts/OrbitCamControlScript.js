@@ -1,6 +1,8 @@
-define(['goo/math/Vector', 'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
+define([
+	'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
 /** @lends OrbitCamControlScript */
-function (Vector, Vector2, Vector3, MathUtils) {
+function (
+	Vector2, Vector3, MathUtils) {
 	"use strict";
 
 	function OrbitCamControlScript (properties) {
@@ -35,6 +37,7 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
 		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
 
+		// REVIEW: Why do we need a setting for this? Is there a reason for it to be configurable?
 		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
 		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
@@ -184,8 +187,10 @@ function (Vector, Vector2, Vector3, MathUtils) {
 		}, false);
 
 		// optional touch controls... requires Hammer.js v2
-		if (typeof (Hammer) !== "undefined") {
-			var hammertime = Hammer(this.domElement, {
+		if (typeof (window.Hammer) !== "undefined") {
+			// Disable warning that we call `Hammer()`, not `new Hammer()`
+			//jshint newcap:false
+			var hammertime = window.Hammer(this.domElement, {
 				transform_always_block : true,
 				transform_min_scale : 1
 			});

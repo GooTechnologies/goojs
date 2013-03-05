@@ -94,7 +94,6 @@ define([
 			checkInversion(t);
 		});
 		it('can be inverted if rotated', function() {
-			var inverted = new Transform();
 			t.setRotationXYZ(0.2, 0, 0);
 			t.update();
 			checkInversion(t);

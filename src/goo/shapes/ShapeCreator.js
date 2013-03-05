@@ -1,7 +1,8 @@
-define(['goo/renderer/MeshData', 'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Sphere', 'goo/shapes/Torus',
-		'goo/entities/EntityUtils'],
+define([
+	'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Sphere', 'goo/shapes/Torus'],
 	/** @lends ShapeCreator */
-	function (MeshData, Box, Quad, Sphere, Torus, EntityUtils) {
+	function (
+	Box, Quad, Sphere, Torus) {
 	"use strict";
 
 	/**

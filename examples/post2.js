@@ -5,23 +5,57 @@ require.config({
 		'goo/lib': '../lib'
     }
 });
-require(
-		[	'goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
-			'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
-			'goo/entities/components/MeshRendererComponent', 'goo/entities/systems/PartitioningSystem', 'goo/renderer/MeshData',
-			'goo/renderer/Renderer', 'goo/renderer/Material', 'goo/renderer/Shader', 'goo/entities/GooRunner', 'goo/renderer/TextureCreator',
-			'goo/loaders/Loader', 'goo/loaders/JSONImporter', 'goo/entities/components/ScriptComponent', 'goo/util/DebugUI',
-			'goo/shapes/ShapeCreator', 'goo/entities/EntityUtils', 'goo/entities/components/LightComponent', 'goo/renderer/light/PointLight',
-			'goo/scripts/BasicControlScript', 'goo/entities/EventHandler', 'goo/renderer/Camera', 'goo/entities/components/CameraComponent',
-			'goo/renderer/pass/Composer', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/Util',
-			'goo/renderer/pass/RenderTarget', 'goo/renderer/pass/BloomPass', 'goo/math/Vector3', 'goo/math/Vector4','goo/scripts/MouseLookControlScript', 
-			'goo/scripts/WASDControlScript', 'goo/renderer/shaders/ShaderFragments', 'goo/renderer/pass/DepthPass', 'goo/renderer/pass/DoGPass', 'goo/renderer/shaders/ShaderLib'
-		], 
-		
-		function(World, Entity, System, TransformSystem, RenderSystem,TransformComponent, MeshDataComponent, MeshRendererComponent, PartitioningSystem, MeshData, Renderer, Material, Shader, GooRunner,
-		TextureCreator, Loader, JSONImporter, ScriptComponent, DebugUI, ShapeCreator, EntityUtils, LightComponent, PointLight, BasicControlScript,
-		EventHandler, Camera, CameraComponent, Composer, RenderPass, FullscreenPass, Util, RenderTarget, BloomPass, Vector3, Vector4, MouseLookControlScript, WASDControlScript,
-		ShaderFragments, DepthPass, DoGPass, ShaderLib) {
+require([
+	'goo/renderer/MeshData',
+	'goo/renderer/Material',
+	'goo/renderer/Shader',
+	'goo/entities/GooRunner',
+	'goo/renderer/TextureCreator',
+	'goo/loaders/JSONImporter',
+	'goo/entities/components/ScriptComponent',
+	'goo/shapes/ShapeCreator',
+	'goo/entities/EntityUtils',
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/renderer/pass/Composer',
+	'goo/renderer/pass/RenderPass',
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/Util',
+	'goo/math/Vector3',
+	'goo/math/Vector4',
+	'goo/scripts/MouseLookControlScript',
+	'goo/scripts/WASDControlScript',
+	'goo/renderer/shaders/ShaderFragments',
+	'goo/renderer/pass/DepthPass',
+	'goo/renderer/pass/DoGPass',
+	'goo/renderer/shaders/ShaderLib'
+],
+
+function (
+	MeshData,
+	Material,
+	Shader,
+	GooRunner,
+	TextureCreator,
+	JSONImporter,
+	ScriptComponent,
+	ShapeCreator,
+	EntityUtils,
+	Camera,
+	CameraComponent,
+	Composer,
+	RenderPass,
+	FullscreenPass,
+	Util,
+	Vector3,
+	Vector4,
+	MouseLookControlScript,
+	WASDControlScript,
+	ShaderFragments,
+	DepthPass,
+	DoGPass,
+	ShaderLib
+) {
 		"use strict";
 
 		var resourcePath = "../resources";
@@ -47,9 +81,6 @@ require(
 
 			var boxEntity = createBoxEntity(goo);
 			boxEntity.addToWorld();
-
-			// Disable normal rendering
-			goo.world.getSystem('RenderSystem').doRender = false;
 
 			// Scene render
 			var unpackDepth = {
@@ -117,10 +148,10 @@ require(
 				].join('\n')
 			};
 
-			var renderPass = new RenderPass(goo.world.getSystem('PartitioningSystem').renderList);
+			var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 			renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
-			var depthPass = new DepthPass(goo.world.getSystem('PartitioningSystem').renderList, unpackDepth);
+			var depthPass = new DepthPass(goo.world.getSystem('RenderSystem').renderList, unpackDepth);
 
 			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.8, 'width' : 1024, 'height' : 1024});
 
@@ -136,9 +167,7 @@ require(
 			//composer.addPass(depthPass);
 			composer.addPass(outPass);
 
-			goo.callbacks.push(function(tpf) {
-				composer.render(goo.renderer, tpf);
-			});
+			goo.renderSystem.composers.push(composer);
 		}
 
 		function loadModels(goo) {
