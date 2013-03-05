@@ -23,6 +23,11 @@ task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server
 	server.start(configFile: 'test/testacular.conf.js')
 
+task 'testmin', 'Start Testacular server for minified engine', ->
+	server = require('testacular').server
+	server.start(configFile: 'test/testacular-min.conf.js')
+	
+
 task 'checkstyle', 'Run JSHint', (options) ->
 	# I'm not sure that the cli module is official,
 	# but it's a convenient way of running JSHint
