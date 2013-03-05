@@ -280,7 +280,6 @@ require(
 			// http://photoshoptextures.com/floor-textures/floor-textures.htm
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
 			material.textures.push(texture);
-			material.wireframe = true;
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
 			return entity;
@@ -312,8 +311,6 @@ require(
 			
 			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
 			material.uniforms = {'color' : color}
-			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
-			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
 			return entity;

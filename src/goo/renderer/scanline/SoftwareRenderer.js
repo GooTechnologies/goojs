@@ -265,7 +265,6 @@ define([
 		var scale = entity.transformComponent.transform.scale;
 		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
 
-
 		// Compensate for perspective distortion of the sphere.
 		// http://article.gmane.org/gmane.games.devel.algorithms/21697/
 		// http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
@@ -273,18 +272,21 @@ define([
 		// Bounds.w == radius.
 		// float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
 		var cameraToSphereDistance = Math.sqrt(origin.x * origin.x + origin.y * origin.y + origin.z * origin.z);
-		radius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
 
+		// https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Math/asin
+		// The asin method returns a numeric value between -pi/2 and pi/2 radians for x between -1 and 1. If the value of number is outside this range, it returns NaN.
+		if (cameraToSphereDistance <= radius ) {
+			return false;
+		}
+		radius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
 
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 		var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
 	
 		
 		if (nearCoord.z > cameraNearZInWorld) {
-			//console.error("Early Exited!");
 			return false; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 		}
-
 
 		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
 		var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
@@ -333,14 +335,14 @@ define([
 		this._isOccluded(nearCoord, red, nearestDepth);
 		*/		
 
-		
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
 			&& this._isOccluded(rightCoord, green, nearestDepth)
 			&& this._isOccluded(bottomCoord, yellow, nearestDepth)
 			&& this._isOccluded(nearCoord, red, nearestDepth)
 			&& this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
-		
+
+		//return this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink);
 		//return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
 	};
 
