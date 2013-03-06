@@ -210,7 +210,7 @@ function(
 		// When the mesh is loaded
 		return RSVP.all(promises)
 		.then(function(data) {
-			// We placed the meshDataPromise first so it's at index 0 
+			// We placed the meshDataPromise first so it's at index 0
 			var mdc = new MeshDataComponent(data[0]);
 
 			return mdc;

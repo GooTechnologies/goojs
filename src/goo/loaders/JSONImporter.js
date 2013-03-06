@@ -1,17 +1,45 @@
 /*jshint bitwise: false */
-define(
-	[
-	'goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator',
-	'goo/animation/Joint', 'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip',
-	'goo/animation/clip/JointChannel', 'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel',
-	'goo/animation/state/loader/OutputStore', 'goo/util/URLTools', 'goo/util/SimpleResourceUtil', 'goo/renderer/shaders/ShaderLib'],
-	/** @lends JSONImporter */
-	function (
+define([
+	'goo/renderer/MeshData',
+	'goo/loaders/JsonUtils',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/renderer/Material',
+	'goo/renderer/TextureCreator',
+	'goo/animation/Joint',
+	'goo/animation/Skeleton',
+	'goo/animation/SkeletonPose',
+	'goo/animation/clip/AnimationClip',
+	'goo/animation/clip/JointChannel',
+	'goo/animation/clip/TransformChannel',
+	'goo/animation/clip/InterpolatedFloatChannel',
+	'goo/animation/state/loader/OutputStore',
+	'goo/util/URLTools',
+	'goo/util/SimpleResourceUtil',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Shader'
+],
+/** @lends JSONImporter */
+function (
 	MeshData,
-	JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator,
-	Joint, Skeleton, SkeletonPose, AnimationClip,
-	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil, ShaderLib) {
+	JsonUtils,
+	MeshDataComponent,
+	MeshRendererComponent,
+	Material,
+	TextureCreator,
+	Joint,
+	Skeleton,
+	SkeletonPose,
+	AnimationClip,
+	JointChannel,
+	TransformChannel,
+	InterpolatedFloatChannel,
+	OutputStore,
+	URLTools,
+	SimpleResourceUtil,
+	ShaderLib,
+	Shader
+) {
 	"use strict";
 
 	/**
@@ -445,14 +473,10 @@ define(
 		if (object.Material) {
 			var info = this.materials[object.Material];
 			if (info !== undefined) {
-				// TODO
 				var meshRendererComponent = entity.meshRendererComponent;
-
 				var attributes = entity.meshDataComponent.meshData.attributeMap;
 
-				var material = new Material(info.materialName);
-				var shader;
-
+				var material = null;
 				if (!this.shaderExtractor) {
 					var shaderSource, type;
 					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1 && attributes.TEXCOORD2
@@ -469,15 +493,20 @@ define(
 						shaderSource = ShaderLib.simple;
 						type = 'simple';
 					}
-					shader = Material.createShader(shaderSource, info.materialName + '_Shader');
+					material = Material.createMaterial(shaderSource, info.materialName);
 				} else {
-					shader = this.shaderExtractor(attributes, info);
+					var extractedData = this.shaderExtractor(attributes, info);
+					if (extractedData instanceof Material) {
+						material = extractedData;
+					} else if (extractedData instanceof Shader) {
+						material = new Material(info.materialName);
+						material.shader = extractedData;
+					} else {
+						throw new Error('The extractor should return a Material or a Shader');
+					}
 				}
 
-				material.shader = shader;
-
 				meshRendererComponent.materials[0] = material;
-
 				// info.connectedMeshes.push(mesh);
 
 				// apply material state

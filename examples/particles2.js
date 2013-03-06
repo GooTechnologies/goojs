@@ -111,9 +111,9 @@ require([
 				color : [1, 0, 0, 1]
 			}, {
 				timeOffset : 1.0,
-				size : .5,
+				size : 0.5,
 				color : [1, 1, 0, 0]
-			}],
+			}]
 		});
 		particleComponent.emitters.push(generateNewEmitter(goo));
 		particleComponent.emitters.push(generateNewEmitter(goo, true));
@@ -138,7 +138,7 @@ require([
 		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
-			if (code == 32) { // space bar
+			if (code === 32) { // space bar
 				// reset particles to spawn on the emitters
 				for ( var i = 0, max = particleComponent.emitters.length; i < max; i++) {
 					if (particleComponent.emitters[i].totalParticlesToSpawn <= 0) {
@@ -158,8 +158,8 @@ require([
 			if (tpf > 1) {
 				return;
 			}
-			if (Math.floor(currentPos.x) == Math.floor(newPos.x) && Math.floor(currentPos.y) == Math.floor(newPos.y)
-				&& Math.floor(currentPos.z) == Math.floor(newPos.z)) {
+			if (Math.floor(currentPos.x) === Math.floor(newPos.x) && Math.floor(currentPos.y) === Math.floor(newPos.y)
+				&& Math.floor(currentPos.z) === Math.floor(newPos.z)) {
 				newPos.x = Math.random() * 50 - 25;
 				newPos.y = Math.random() * 50 - 25;
 				newPos.z = Math.random() * 50 - 25;
@@ -191,7 +191,7 @@ require([
 				color : [0, 0, 1, 1]
 			}, {
 				timeOffset : 1.0,
-				size : .25,
+				size : 0.25,
 				color : [0, 1, 1, 0]
 			}]
 		});

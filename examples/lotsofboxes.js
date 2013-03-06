@@ -105,7 +105,7 @@ require([
 				multiplier *= 256;
 			}
 			return number / 18446744073709551616;
-		}
+		};
 	}
 
 	init();

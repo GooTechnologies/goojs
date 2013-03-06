@@ -53,7 +53,7 @@ require([
 			node.removeChild(node.firstChild);
 		}
 	}
-	
+
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
@@ -74,7 +74,7 @@ require([
 			spherical : new Vector3(30, Math.PI / 2, 0),
 			minAscent : -0.1,
 			maxAscent : 1,
-			maxZoomDistance : 50	
+			maxZoomDistance : 50
 		})));
 
 		// Examples of model loading
@@ -115,14 +115,14 @@ require([
 
 			document.getElementById('sel').appendChild(inp);
 		}
-		
+
 		var elem = document.getElementById('effectInfo');
 		window.selectEffect = function(effect) {
 			console.log(effect);
-			
+
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
-			
+
 			removeChildrenFromNode(elem);
 			for (var key in coolPass.material.shader.uniforms) {
 				var div = document.createElement('div');
@@ -141,7 +141,7 @@ require([
 				div.appendChild(inp);
 			}
 		};
-		
+
 		// Regular copy
 		// var shader = Util.clone(ShaderLib.copy);
 		// var outPass = new FullscreenPass(shader);
@@ -158,7 +158,7 @@ require([
 	function loadModels(goo) {
 		var parentEntity = goo.world.createEntity();
 		parentEntity.addToWorld();
-		
+
 		var importer = new JSONImporter(goo.world);
 
 		importer.load(resourcePath + '/head.model', resourcePath + '/', {
@@ -174,7 +174,7 @@ require([
 				console.error(error);
 			}
 		});
-		
+
 		var meshData = ShapeCreator.createBox(250, 5, 250, 20, 20);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.transformComponent.transform.translation.y = -10;

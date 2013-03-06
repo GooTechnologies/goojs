@@ -85,6 +85,19 @@ function (
 		}
 
 		if (parameters.debug) {
+			// XXX: This is a temporary solution to easily enable webgl debugging during development...
+			var request = new XMLHttpRequest();
+			request.open('GET', '../lib/webgl-debug.js', false);
+			request.onreadystatechange = function () {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status <= 299) {
+						// Yes, eval is intended, sorry checkstyle
+						window.eval.call(window, request.responseText);
+					}
+				}
+			};
+			request.send(null);
+
 			if (typeof (window.WebGLDebugUtils) === 'undefined') {
 				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
 			} else {
@@ -183,7 +196,7 @@ function (
 		};
 
 		this.shadowCount = 0;
-		this.shadowHandler = new ShadowHandler();
+		this.shadowHandler = null;
 	}
 
 	function validateNoneOfTheArgsAreUndefined (functionName, args) {
@@ -235,29 +248,20 @@ function (
 	};
 
 	Renderer.prototype.bindData = function(bufferData) {
-		var glBuffer = null;
-		if (bufferData !== null) {
-			glBuffer = bufferData.glBuffer;
-			if (glBuffer !== null) {
-				if (bufferData._dataNeedsRefresh) {
-					this.setBoundBuffer(bufferData.glBuffer, bufferData.target);
-					this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
-					bufferData._dataNeedsRefresh = false;
-				}
-			} else {
-				glBuffer = this.context.createBuffer();
-				bufferData.glBuffer = glBuffer;
-
-				this.rendererRecord.invalidateBuffer(bufferData.target);
-				this.setBoundBuffer(glBuffer, bufferData.target);
-				this.context.bufferData(this.getGLBufferTarget(bufferData.target), bufferData.data, this.getGLBufferUsage(bufferData._dataUsage));
-			}
-		}
-
+		var glBuffer = bufferData.glBuffer;
 		if (glBuffer !== null) {
 			this.setBoundBuffer(glBuffer, bufferData.target);
+			if (bufferData._dataNeedsRefresh) {
+				this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
+				bufferData._dataNeedsRefresh = false;
+			}
 		} else {
-			this.setBoundBuffer(null, bufferData.target);
+			glBuffer = this.context.createBuffer();
+			bufferData.glBuffer = glBuffer;
+
+			this.rendererRecord.invalidateBuffer(bufferData.target);
+			this.setBoundBuffer(glBuffer, bufferData.target);
+			this.context.bufferData(this.getGLBufferTarget(bufferData.target), bufferData.data, this.getGLBufferUsage(bufferData._dataUsage));
 		}
 	};
 
@@ -269,7 +273,16 @@ function (
 		}
 
 		if (!shadowPass) {
-			this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
+			if (this.shadowHandler) {
+				this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
+			} else {
+				for (var i=0; i<lights.length; i++) {
+					if (lights[i].shadowCaster) {
+						this.shadowHandler = new ShadowHandler();
+						break;
+					}
+				}
+			}
 		}
 
 		this.setRenderTarget(renderTarget);
@@ -284,7 +297,7 @@ function (
 			camera : camera,
 			mainCamera : Renderer.mainCamera,
 			lights : lights,
-			lightCamera : this.shadowHandler.lightCam
+			lightCamera : this.shadowHandler ? this.shadowHandler.lightCam : null
 		};
 
 		if (Array.isArray(renderList)) {
@@ -315,7 +328,7 @@ function (
 
 	Renderer.prototype.renderMesh = function(renderInfo) {
 		var meshData = renderInfo.meshData;
-		if (meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
 			&& meshData.indexData.data.byteLength === 0) {
 			return;
 		}
@@ -1056,21 +1069,18 @@ function (
 	};
 
 	Renderer.prototype.setBoundBuffer = function(buffer, target) {
-		if (!this.rendererRecord.currentBuffer[target].valid || this.rendererRecord.currentBuffer[target].buffer !== buffer) {
+		var targetBuffer = this.rendererRecord.currentBuffer[target];
+		if (!targetBuffer.valid || targetBuffer.buffer !== buffer) {
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
-			this.rendererRecord.currentBuffer[target].buffer = buffer;
-			this.rendererRecord.currentBuffer[target].valid = true;
+			targetBuffer.buffer = buffer;
+			targetBuffer.valid = true;
 		}
 	};
 
 	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
+		this.context.enableVertexAttribArray(attribIndex);
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
-
-//		if (record.boundAttributes.indexOf(attribIndex) === -1) {
-			this.context.enableVertexAttribArray(attribIndex);
-//			record.boundAttributes.push(attribIndex);
-//		}
 	};
 
 	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)

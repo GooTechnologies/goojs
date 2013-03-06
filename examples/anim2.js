@@ -162,10 +162,10 @@ require([
 		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
-			if (code == 32) { // space bar
+			if (code === 32) { // space bar
 				animationManager.getBaseAnimationLayer().doTransition(walking ? "run" : "walk");
 				walking = !walking;
-			} else if (code == 13) { // enter
+			} else if (code === 13) { // enter
 				animationManager.findAnimationLayer("punchLayer").setCurrentStateByName("punch_right", true);
 			}
 		}, false);

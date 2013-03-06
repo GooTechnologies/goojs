@@ -262,10 +262,10 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
-		var x = scale0 * startQuat.x + scale1 * workQuat.x;
-		var y = scale0 * startQuat.y + scale1 * workQuat.y;
-		var z = scale0 * startQuat.z + scale1 * workQuat.z;
-		var w = scale0 * startQuat.w + scale1 * workQuat.w;
+		var x = scale0 * startQuat.data[0] + scale1 * workQuat.data[0];
+		var y = scale0 * startQuat.data[1] + scale1 * workQuat.data[1];
+		var z = scale0 * startQuat.data[2] + scale1 * workQuat.data[2];
+		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
 
 		workQuat.setd(x, y, z, w);
 
@@ -526,7 +526,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @return the magnitude of this quaternion.
 	 */
 	Quaternion.prototype.magnitude = function () {
-		var magnitudeSQ = this.magnitudeSquared();
+		var magnitudeSQ = this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
 		if (magnitudeSQ === 1.0) {
 			return 1.0;
 		}
@@ -538,7 +538,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @return the squared magnitude of this quaternion.
 	 */
 	Quaternion.prototype.magnitudeSquared = function () {
-		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
 	};
 
 	/**
@@ -611,8 +611,8 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		if (!o instanceof Quaternion) {
 			return false;
 		}
-		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
-			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
+		return Math.abs(this.data[0] - o.data[0]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[1] - o.data[1]) < Quaternion.ALLOWED_DEVIANCE
+			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
 	// TODO: Testing speed diffs

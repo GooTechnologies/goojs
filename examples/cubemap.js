@@ -51,7 +51,7 @@ require([
 		// Add box
 		var boxEntity = createBoxEntity(goo);
 		boxEntity.addToWorld();
-		
+
 		var floorEntity = createFloor(goo);
 		floorEntity.addToWorld();
 
@@ -62,7 +62,7 @@ require([
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
-		
+
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
@@ -87,7 +87,7 @@ require([
 
 		return entity;
 	}
-	
+
 	function createBoxEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
@@ -98,7 +98,7 @@ require([
 
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
 		material.textures.push(texture);
-		
+
 		var environmentPath = resourcePath + '/environment/';
 		var textureCube = new TextureCreator().loadTextureCube([
 		                                                        environmentPath + 'envmap_left.jpg',
@@ -106,7 +106,7 @@ require([
 		                                                        environmentPath + 'envmap_bottom.jpg',
 		                                                        environmentPath + 'envmap_top.jpg',
 		                                                        environmentPath + 'envmap_back.jpg',
-		                                                        environmentPath + 'envmap_front.jpg',
+		                                                        environmentPath + 'envmap_front.jpg'
 		                                                        ]);
 		material.textures.push(textureCube);
 
@@ -166,7 +166,7 @@ require([
 			'	vec4 tex = texture2D(diffuseMap, texCoord0);',//
 			'	vec4 cube = textureCube(cubeMap, texCoord1);',//
 			'	gl_FragColor = tex + cube;',//
-			'}',//
+			'}'//
 			].join('\n')
 		};
 	}

@@ -197,11 +197,7 @@ require([
 			// Setup default attributes
 			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0]);
 			// Add custom attribute
-			attributeMap.Stuff = {
-				count : 1,
-				type : 'Byte',
-				normalized : false
-			};
+			attributeMap.Stuff = MeshData.createAttribute(1, 'Byte');
 
 			var meshData = new MeshData(attributeMap, 4, 6);
 

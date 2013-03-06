@@ -97,7 +97,7 @@ require([
 	 */
 	function getParticleEntityById (id) {
 		for ( var i = 0, max = particleEntities.length; i < max; i++) {
-			if (particleEntities[i].id == id) {
+			if (particleEntities[i].id === id) {
 				return particleEntities[i];
 			}
 		}
@@ -207,7 +207,7 @@ require([
 			stop : function (event, ui) {
 				// reorder timeline entries too
 				var stop = ui.item.index();
-				if (stop == particleComponent.emitters.start) {
+				if (stop === particleComponent.emitters.start) {
 					return;
 				}
 
@@ -229,8 +229,8 @@ require([
 				releaseRatePerSecond : 50
 			});
 			particleComponent.emitters.push(emitter);
-			if (particleComponent.emitters.length == 1) {
-				// a bit of a hack... if length == 1, they probably deleted all emitters, which might have accidently disabled things
+			if (particleComponent.emitters.length === 1) {
+				// a bit of a hack... if length === 1, they probably deleted all emitters, which might have accidently disabled things
 				particleComponent.enabled = true;
 			}
 			addParticleEmitterUI(entity, emitter, particleComponent.emitters.length - 1, section);
@@ -286,7 +286,8 @@ require([
 		// generate new html for this emitter from jsrender template
 		var emittersHTML = $("#emitter_editor_template").render({
 			uuid : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-				var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
+				// jshint bitwise:false
+				var r = Math.random() * 16 | 0, v = c === 'x' ? r : r & 0x3 | 0x8;
 				return v.toString(16); // uuid is used to uniquely id the radio button group in General.
 			}),
 			enabled : emitter.enabled ? 'checked' : '',
@@ -322,7 +323,7 @@ require([
 			stop : function (event, ui) {
 				// reorder timeline entries too
 				var stop = ui.item.index();
-				if (stop == timeline.start) {
+				if (stop === timeline.start) {
 					return;
 				}
 
@@ -337,7 +338,7 @@ require([
 		var addEntry = editor.find('#add_entry').button();
 		addEntry.on('click', function () {
 			var entry = {
-				timeOffset : emitter.timeline.length == 0 ? 0.0 : 0.25,
+				timeOffset : emitter.timeline.length === 0 ? 0.0 : 0.25,
 				color : [Math.random(), Math.random(), Math.random(), 1.0]
 			};
 			emitter.timeline.push(entry);
@@ -582,6 +583,7 @@ require([
 				};
 			}
 		});
+		// jshint eval:false
 		emitterUI.on('change', '.emission_point', function () {
 			emitter.getEmissionPoint = new Function('particle', 'particleEntity', this.value);
 		});
@@ -649,7 +651,7 @@ require([
 				"	particleEntity.positions = [];\n" + //
 				"	for ( var yy = 0; yy < height; ++yy) {\n" + //
 				"		for ( var xx = 0; xx < width; ++xx) {\n" + //
-				"			if (image[yy].substring(xx, xx + 1) == 'X') {\n" + //
+				"			if (image[yy].substring(xx, xx + 1) === 'X') {\n" + //
 				"				particleEntity.positions.push([(xx - width * 0.5) * 0.5, -(yy - height * 0.5) * 0.5]);\n" + //
 				"			}\n" + //
 				"		}\n" + //
@@ -676,13 +678,13 @@ require([
 				"var y = 2 * Math.random() - 1.0;\n" + //
 				"var extent = 5;\n" + //
 				"\n" + //
-				"if (side == 0) {\n" + //
+				"if (side === 0) {\n" + //
 				"	center.x += extent * (dir ? 1 : -1);\n" + //
 				"	center.y += y * extent;\n" + //
 				"	center.z += x * extent;\n" + //
 				"	particle.emit_bbX = [0, 0, 1];\n" + //
 				"	particle.emit_bbY = [0, 1, 0];\n" + //
-				"} else if (side == 1) {\n" + //
+				"} else if (side === 1) {\n" + //
 				"	center.y += extent * (dir ? 1 : -1);\n" + //
 				"	center.z += y * extent;\n" + //
 				"	center.x += x * extent;\n" + //

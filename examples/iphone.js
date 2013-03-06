@@ -47,7 +47,7 @@ require([
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-		
+
 		goo.renderer.setClearColor(0.7, 0.7, 0.65, 1);
 
 		var camera = new Camera(45, 1, 1, 1000);
@@ -58,7 +58,7 @@ require([
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			spherical : new Vector3(20, -Math.PI / 2, Math.PI / 4),
-			maxZoomDistance : 100,
+			maxZoomDistance : 100
 		}));
 		cameraEntity.setComponent(scripts);
 
@@ -90,7 +90,7 @@ require([
 
 		var topEntity = goo.world.createEntity('IPhone');
 		topEntity.addToWorld();
-		
+
 		var environmentPath = resourcePath + '/environment/';
 		var textureCube = new TextureCreator().loadTextureCube([
 		                                                        environmentPath + 'envmap_left.jpg',
@@ -98,7 +98,7 @@ require([
 		                                                        environmentPath + 'envmap_bottom.jpg',
 		                                                        environmentPath + 'envmap_top.jpg',
 		                                                        environmentPath + 'envmap_back.jpg',
-		                                                        environmentPath + 'envmap_front.jpg',
+		                                                        environmentPath + 'envmap_front.jpg'
 		                                                        ]);
 		var shader = Material.createShader(createShaderDef(), 'CubeShader');
 
@@ -107,12 +107,12 @@ require([
 				for (var i in entities) {
 					console.log(entities[i].name);
 					entities[i].addToWorld();
-					
+
 					var meshRendererComponent = entities[i].meshRendererComponent;
 					if (meshRendererComponent) {
 						meshRendererComponent.materials[0].textures[1] = textureCube;
 						meshRendererComponent.materials[0].shader = shader;
-						
+
 						if (entities[i].name === 'Screen_meshShape[phongE2SG]') {
 							var texture = new TextureCreator().loadTextureWebCam();
 							meshRendererComponent.materials[0].textures[0] = texture;
@@ -125,7 +125,7 @@ require([
 				console.error(error);
 			}
 		});
-		
+
 		return topEntity;
 	}
 
@@ -201,7 +201,7 @@ require([
 			'{',//
 			'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
 			'	vec4 cube = textureCube(cubeMap, texCoord1);',//
-			
+
 			'	vec4 final_color = max(materialAmbient, materialEmissive);',//
 
 			'	vec3 N = normalize(normal);',//
@@ -221,7 +221,7 @@ require([
 			'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
 			'	}',//
 			'	gl_FragColor = vec4(texCol.rgb * final_color.rgb + cube.rgb, 1.0);',//
-			'}',//
+			'}'//
 			].join('\n')
 		};
 	}

@@ -97,7 +97,7 @@ function (
 					blurMap : Shader.TEXTURE2,
 					nearPlane : Shader.NEAR_PLANE,
 					// farPlane : Shader.FAR_PLANE,
-					farPlane : 100,
+					farPlane : 100
 				},
 				vshader : [ //
 				'attribute vec3 vertexPosition;', //
@@ -144,7 +144,7 @@ function (
 				' depth = clamp(depth, 0.0, 1.0);',//
 				// ' gl_FragColor = vec4(depth);',//
 				' gl_FragColor = mix(diffuseCol, blurCol, depth);',//
-				'}',//
+				'}'
 				].join('\n')
 			};
 

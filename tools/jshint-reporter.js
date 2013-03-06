@@ -35,6 +35,8 @@ module.exports = {
 			if (globals && globals.length) {
 				globals.forEach(function (item) {
 					str += result.file + ':' + item.line + " Implied global: '" + item.name + "'\n";
+
+					len++;
 				});
 			}
 
@@ -42,13 +44,16 @@ module.exports = {
 			if (unuseds) {
 				unuseds.forEach(function (item) {
 					str += result.file + ':' + item.line + " Unused variable: '" + item.name + "'\n";
+
+					len++;
 				});
 			}
 		});
 
 		if (str) {
 			process.stdout.write(str + "\n" + len + ' error' + ((len === 1) ? '' : 's') + "\n");
-			process.exit(1);
+			//process.exit(1);
+			process.on('exit', function () { process.exit(1); });
 		}
 	}
 };

@@ -51,7 +51,7 @@ function (
 		var simpleResourceUtilCallback = {
 			onSuccess : function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
-				console.info("Loaded image: " + imageURL);
+//				console.info("Loaded image: " + imageURL);
 				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
 			},
@@ -104,7 +104,7 @@ function (
 			TextureCreator._finishedLoading(data);
 		});
 
-		console.info("Loaded image: " + imageURL);
+//		console.info("Loaded image: " + imageURL);
 
 		return texture;
 	};
@@ -208,7 +208,7 @@ function (
 	};
 
 	/**
-	 * 
+	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
 	 * @returns {Texture} cubemap
 	 */

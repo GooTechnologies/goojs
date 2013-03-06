@@ -27,7 +27,7 @@ require([
 		document.body.appendChild(goo.renderer.domElement);
 
 		goo.renderer.setClearColor(0,0,0,1);
-		
+
 		// Add points
 		var pointsEntity = createBoxEntity(goo);
 
@@ -65,14 +65,14 @@ require([
 
 	function createBoxEntity(goo) {
 		var count = 500000;
-		
+
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR]);
 		var meshData = new MeshData(attributeMap, count);
 		meshData.indexModes = ['Points'];
-		
+
 		var verts = meshData.getAttributeBuffer(MeshData.POSITION);
 		var colors = meshData.getAttributeBuffer(MeshData.COLOR);
-		
+
 		var n = 1000, n2 = n / 2;
 		for (var i = 0; i < count; i++) {
 			var x = Math.random() * n - n2;
@@ -93,7 +93,7 @@ require([
 			colors[i * 4 + 2] = vz * l;
 			colors[i * 4 + 3] = 1.0;
 		}
-		
+
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.transformComponent.transform.translation.z = -2750;
 

@@ -57,7 +57,7 @@ require([
 				boxEntity.transformComponent.setUpdated();
 			}
 		}));
-		
+
 		// Add entity to world
 		boxEntity.addToWorld();
 
@@ -79,13 +79,13 @@ require([
 	function createBoxEntity(goo) {
 		// Create box mesh
 		var meshData = ShapeCreator.createBox(1, 1, 1);
-		
+
 		// Create entity with meshdata and common components setup
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		
+
 		// Create material
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		
+
 		// Create texture and add to material
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.textures.push(texture);

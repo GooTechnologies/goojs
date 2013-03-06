@@ -53,7 +53,7 @@ define([
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
-				nearPlane : Shader.NEAR_PLANE,
+//				nearPlane : Shader.NEAR_PLANE,
 				farPlane : Shader.FAR_PLANE
 			},
 			vshader : [ //
@@ -73,7 +73,7 @@ define([
 			fshader : [//
 				'precision mediump float;',//
 
-				'uniform float nearPlane;',//
+//				'uniform float nearPlane;',//
 				'uniform float farPlane;',//
 
 				ShaderFragments.methods.packDepth,//
