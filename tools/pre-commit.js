@@ -1,6 +1,14 @@
 'use strict';
 
 var exec = require('child_process').exec;
+/* REVIEW: how about using git diff --staged --name-status instead? Then
+
+	rx = /^[MA]\s+([\w-\\\/]+\.js)$/gm;
+	files = [];
+	while(m = rx.exec(stdout)) {
+		files.push(m[1]);
+	}
+*/
 
 exec('git status', function (error, stdout, stderr) {
 	var lines = stdout.split('\n');
@@ -29,9 +37,9 @@ exec('git status', function (error, stdout, stderr) {
 
 				var stdin = process.stdin;
 
-				stdin.setRawMode(true);
+				//stdin.setRawMode(true);
 				stdin.resume();
-				stdin.setEncoding('utf8');
+				//stdin.setEncoding('utf8');
 
 				stdin.on('data', function (key) {
 					if (key === 'y' || key === 'Y') {
