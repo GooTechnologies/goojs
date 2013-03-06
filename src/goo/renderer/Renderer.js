@@ -621,8 +621,8 @@ function (
 	};
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
-		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
+			context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
@@ -1077,7 +1077,7 @@ function (
 
 	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		this.context.enableVertexAttribArray(attribIndex);
+//		this.context.enableVertexAttribArray(attribIndex);
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 	};
 

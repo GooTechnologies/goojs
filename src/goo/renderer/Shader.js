@@ -267,6 +267,7 @@ function (
 			}
 
 			this.attributeIndexMapping[key] = attributeIndex;
+			renderer.context.enableVertexAttribArray(attributeIndex);
 		}
 
 		for (var key in this.uniformMapping) {
