@@ -112,7 +112,7 @@ require(
 			var boxEntity = createBoxEntity(goo.world, translation);
 			boxEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			boxEntity.transformComponent.transform.scale.set(2,2,2);
-
+			createBoundingSphereForEntity(goo.world, boxEntity); 
 			translation.x = 10;
 			translation.y = 1;
 			for (var i = 0; i < 10; i++) {
@@ -127,22 +127,20 @@ require(
 			var wallW = 50;
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
-			//createBoundingSphereForEntity(goo.world, translation, bigQuad);
 			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH))); 
 
 
 			translation.x = -wallW / 2 + 2;
-			translation.y = 3;
+			translation.y = 2;
 			translation.z = -20;
 			var numberOfBoxes = wallW / 2;
 			for (var columns = 0; columns < numberOfBoxes; columns++) {
 				var box = createBoxEntity(goo.world, translation);
 				box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
-				//createBoundingSphereForEntity(goo.world, translation, box); 
+				createBoundingSphereForEntity(goo.world, box); 
 				translation.x += 2;
 				translation.z += 0.3;
-				
 			}
 
 			var size = 100;
@@ -190,11 +188,11 @@ require(
 			var boxcolor = [1, 0, 0];
 			box = createColoredBox(goo.world, translation, boxcolor, 2);
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
-			createBoundingSphereForEntity(goo.world, translation, box);
+			createBoundingSphereForEntity(goo.world, box);
 
 			// Add entities with boundingbox as bound.
 			translation.x = -10;
-			translation.y = 5;
+			translation.y = 7;
 			translation.z = -20;
 			var torus = createTorus(goo.world, translation);
 			addBoundingBoxToEntity(goo.world, translation, torus);
@@ -203,16 +201,14 @@ require(
 			translation.y = 0;
 			translation.z = -5;
 			
-			addHead(goo, translation);
+		//	addHead(goo, translation);
 
-			var t = 0.0;
 			var rotX = 0;
 			var rotY = 0;
 			goo.callbacks.push(function(tpf) {
 				
-				t += tpf;
-				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(t));
-				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(t));
+				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
+				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(goo.world.time));
 				boxEntity.transformComponent.setUpdated();
 
 				torus.transformComponent.transform.setRotationXYZ(rotX, rotY, 0);
@@ -224,13 +220,17 @@ require(
 		}
 
 		function createTorus (world, translation) {
-			var meshData = ShapeCreator.createTorus(16, 16);
+			var meshData = ShapeCreator.createTorus(32, 32);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.x = translation.x;
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'The Torus!';
-			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
+			var material = new Material.createMaterial(ShaderLib.texturedLit, 'TorusMaterial');
+
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/pitcher.jpg');
+			material.textures.push(texture);
+
 			entity.meshRendererComponent.materials.push(material);
 			
 			entity.addToWorld();
@@ -259,7 +259,7 @@ require(
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 			entity.name = 'BoundingBox';
 			
-			entity.meshRendererComponent.cullMode = 'Never';
+			entity.meshRendererComponent.cullMode = 'NeverOcclusionCull';
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'wirematOnBoundingBox');
 			material.wireframe = true;
 			entity.meshRendererComponent.materials.push(material);
@@ -293,8 +293,7 @@ require(
 			
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'FloorMaterial');
 			
-			// http://photoshoptextures.com/floor-textures/floor-textures.htm
-			var texture = new TextureCreator().loadTexture2D(resourcePath + '/checkerboard.png');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/fieldstone-c.jpg');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
@@ -343,6 +342,7 @@ require(
 					entities[1].transformComponent.transform.translation.set(translation);
 					entities[1].transformComponent.transform.translation.y += 2; // Translate origin to the bottom of the model.
 					entities[1].transformComponent.transform.scale.set(10, 10, 10);
+					createBoundingSphereForEntity(goo.world, entities[1]);
 					
 				},
 				onError : function(error) {
@@ -351,20 +351,21 @@ require(
 			});
 		}
 
-		function createBoundingSphereForEntity (world, translation, entity) {
+		function createBoundingSphereForEntity (world, entity) {
 
 			// Override boundingSystem process to get correct bounding radius.
 			entity.meshDataComponent.autoCompute = false;
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 
 			var radius = entity.meshDataComponent.modelBound.radius;
-			var meshData = ShapeCreator.createSphere(16, 16, radius, null);
+			var meshData = ShapeCreator.createSphere(12, 12, radius, null);
 			var boundentity = EntityUtils.createTypicalEntity(world, meshData);
-			boundentity.transformComponent.transform.translation.x = translation.x;
-			boundentity.transformComponent.transform.translation.y = translation.y;
-			boundentity.transformComponent.transform.translation.z = translation.z;
+
+			entity.transformComponent.attachChild(boundentity.transformComponent);
+			boundentity.meshRendererComponent.cullMode = 'NeverOcclusionCull';
+
 			boundentity.name = 'BoundingSphere';
-			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
+			var material = new Material.createMaterial(ShaderLib.simpleColored, 'Boundingsphere representation!');
 			material.uniforms = {'color': [1, 0, 0]};
 			material.wireframe = true;
 			boundentity.meshRendererComponent.materials.push(material);

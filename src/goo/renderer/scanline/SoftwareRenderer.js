@@ -114,6 +114,9 @@ define([
 
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
+			if (entity.meshRendererComponent.cullMode === 'NeverOcclusionCull') {
+				continue;
+			}
 			if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
 				if (this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
 					// Removes the entity at the current index.
@@ -165,35 +168,38 @@ define([
 		// Find the max and min values of x and y respectively.
 		// start with the first vertex' value as reference.
 		var minX, maxX, minY, maxY, minDepth;
-
-		minX = vertices[0].x;
-		maxX = vertices[0].x;
-		minY = vertices[0].y;
-		maxY = vertices[0].y;
 		if (vertices[0].w < this.camera.near) {
 			// If any vertex of the bounding box is clipping the nearplane, regard the entity as beeing visible.
 			return false;
 		} else {
 			minDepth = vertices[0].w;
 		}
+		minX = vertices[0].x;
+		maxX = vertices[0].x;
+		minY = vertices[0].y;
+		maxY = vertices[0].y;
+
 		for (var i = 1; i < 8; i++) {
 			var vert = vertices[i];
-			if (vert.x > maxX) {
-				maxX = vert.x;
-			} else if (vert.x < minX) {
-				minX = vert.x;
-			}
-			if (vert.y > maxY) {
-				maxY = vert.y;
-			} else if (vert.y < minY) {
-				minY = vert.y;
-			}
+			
 			if (vert.w < this.camera.near) {
 				return false;
 			} else {
 				if (vert.w < minDepth) {
 					minDepth = vert.w;
 				}
+			}
+
+			if (vert.x > maxX) {
+				maxX = vert.x;
+			} else if (vert.x < minX) {
+				minX = vert.x;
+			}
+
+			if (vert.y > maxY) {
+				maxY = vert.y;
+			} else if (vert.y < minY) {
+				minY = vert.y;
 			}
 		}
 
@@ -982,6 +988,7 @@ define([
 
 			this._projectionTransform(vertices, cameraProjectionMatrix);
 			
+			// TODO: (Optimization) Maybe do backface culling before clipping the triangles. The method has to be revised for this. 
 			if (this._isBackFacing(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
 			}
@@ -1110,7 +1117,7 @@ define([
 
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
-			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.
+			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.	
 			vertex.z = vertex.w;
 		}
 	};
