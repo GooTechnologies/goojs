@@ -87,17 +87,7 @@ require(['goo/entities/World',
 		// Add box
 		var boxEntity = createBoxEntity(goo);
 		boxEntity.addToWorld();
-/*		var rotateScript = {
-			run: function (entity) {
-				var t = entity._world.time;
 
-				var transformComponent = entity.transformComponent;
-				transformComponent.transform.setRotationXYZ(0, t/3, 0);
-				transformComponent.setUpdated();
-			}
-		};
-		boxEntity.setComponent(new ScriptComponent(rotateScript));
-*/
 
 		var floorEntity = createBox(goo, 1000, 1, ShaderLib.texturedLit);
 		floorEntity.transformComponent.transform.translation.y = -50;
@@ -126,9 +116,9 @@ require(['goo/entities/World',
 				var t = entity._world.time;
 
 				var transformComponent = entity.transformComponent;
-				transformComponent.transform.translation.x = Math.sin(t * 1.0) * 48;
+				transformComponent.transform.translation.x = Math.sin(t * 1.0) * 20;
 				transformComponent.transform.translation.y = 10;
-				transformComponent.transform.translation.z = Math.cos(t * 1.0) * 48;
+				transformComponent.transform.translation.z = Math.cos(t * 1.0) * 20;
 				transformComponent.setUpdated();
 			}
 		};
@@ -169,18 +159,7 @@ require(['goo/entities/World',
 
 		var normalmap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-normal.png');
 		material.textures.push(normalmap);
-/*
-		var environmentPath = resourcePath + '/environment/';
-		var textureCube = new TextureCreator().loadTextureCube([
-		                                                        environmentPath + 'envmap_left.jpg',
-		                                                        environmentPath + 'envmap_right.jpg',
-		                                                        environmentPath + 'envmap_bottom.jpg',
-		                                                        environmentPath + 'envmap_top.jpg',
-		                                                        environmentPath + 'envmap_back.jpg',
-		                                                        environmentPath + 'envmap_front.jpg',
-		                                                        ]);
-		material.textures.push(textureCube);
-*/
+
 		entity.meshRendererComponent.materials.push(material);
 
 		return entity;
@@ -202,8 +181,7 @@ require(['goo/entities/World',
 				lightPosition : Shader.LIGHT0,
 				diffuseMap : Shader.TEXTURE0,
 				displaceMap : Shader.TEXTURE1,
-				normalMap : Shader.TEXTURE2,
-				cubeMap : Shader.TEXTURE2
+				normalMap : Shader.TEXTURE2
 			},
 			vshader : [ //
 			'attribute vec3 vertexPosition;', //
@@ -232,7 +210,7 @@ require(['goo/entities/World',
 			
 			'	vec3 n = vertexNormal;',
 			'	vec3 t = vertexTangent.xyz;',
-			'	vec3 b = cross(n, t) * -vertexTangent.w;',
+			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	TBN = normalMatrix * mat3(t, b, n);',
 
 			'	TBNi = mat3(TBN[0][0], TBN[1][0], TBN[2][0],',
@@ -284,6 +262,7 @@ require(['goo/entities/World',
 			'	vec3 tangentSpaceToEye = TBNi * -eyeVec;',
 
 			'	vec2 newCoords = texCoord0 + calcNewTexCoords(displaceMap, texCoord0, tangentSpaceToEye);',
+			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
 			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
 			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
 			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
