@@ -5,11 +5,10 @@ var exec = require('child_process').exec;
 
 	rx = /^[MA]\s+([\w-\\\/]+\.js)$/gm;
 	files = [];
-	while(m = rx.exec(stdout)) {
-		files.push(m[1]);
+	while(match = rx.exec(stdout)) {
+		files.push(match[1]);
 	}
 */
-
 exec('git status', function (error, stdout, stderr) {
 	var lines = stdout.split('\n');
 
@@ -26,6 +25,7 @@ exec('git status', function (error, stdout, stderr) {
 		});
 
 		var child = exec('jshint --reporter=tools/jshint-reporter.js ' + files.join(' '));
+		
 
 		child.stdout.on('data', function (data) {
 			process.stdout.write(data);
@@ -37,9 +37,14 @@ exec('git status', function (error, stdout, stderr) {
 
 				var stdin = process.stdin;
 
-				//stdin.setRawMode(true);
+				/* REVIEW: setRawMode doesn't work for me (OSX 10.7.5, git 1.7.10.2, node 0.8.21)
+				   Generally, using /dev/tty sounds scary, and how can it possibly work for windows?
+				   I've also read that hooks should be non-interactive.
+				   My suggestion is to always exit(1), so to "break the law" you need to run git commit --no-verify (-n) which skips the pre-commit-hook
+				*/
+				stdin.setRawMode(true);
 				stdin.resume();
-				//stdin.setEncoding('utf8');
+				stdin.setEncoding('utf8');
 
 				stdin.on('data', function (key) {
 					if (key === 'y' || key === 'Y') {
