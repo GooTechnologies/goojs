@@ -127,7 +127,7 @@ require(
 			var wallW = 50;
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
-			createBoundingSphereForEntity(goo.world, translation, bigQuad);
+			//createBoundingSphereForEntity(goo.world, translation, bigQuad);
 			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH))); 
 
@@ -139,7 +139,7 @@ require(
 			for (var columns = 0; columns < numberOfBoxes; columns++) {
 				var box = createBoxEntity(goo.world, translation);
 				box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
-				createBoundingSphereForEntity(goo.world, translation, box); 
+				//createBoundingSphereForEntity(goo.world, translation, box); 
 				translation.x += 2;
 				translation.z += 0.3;
 				
@@ -196,7 +196,8 @@ require(
 			translation.x = -10;
 			translation.y = 5;
 			translation.z = -20;
-			addBoundingBoxToEntity(goo.world, translation, createTorus(goo.world, translation));
+			var torus = createTorus(goo.world, translation);
+			addBoundingBoxToEntity(goo.world, translation, torus);
 
 			translation.x = 0;
 			translation.y = 0;
@@ -205,12 +206,19 @@ require(
 			addHead(goo, translation);
 
 			var t = 0.0;
+			var rotX = 0;
+			var rotY = 0;
 			goo.callbacks.push(function(tpf) {
 				
 				t += tpf;
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(t));
 				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(t));
-				boxEntity.transformComponent.setUpdated();	
+				boxEntity.transformComponent.setUpdated();
+
+				torus.transformComponent.transform.setRotationXYZ(rotX, rotY, 0);
+				torus.transformComponent.setUpdated();
+				rotX += tpf;
+				rotY += 0.5 * tpf;
 
 			});
 		}
@@ -233,7 +241,7 @@ require(
 			entity.meshDataComponent.modelBound = new BoundingBox();
 			entity.meshDataComponent.autoCompute = false;
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
-			createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent * 2, entity.meshDataComponent.modelBound.yExtent * 2, entity.meshDataComponent.modelBound.zExtent * 2);
+			//createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent * 2, entity.meshDataComponent.modelBound.yExtent * 2, entity.meshDataComponent.modelBound.zExtent * 2);
 		}
 
 		function createBoundingBoxRepresentation(world, translation, w, h, z) {
@@ -321,9 +329,7 @@ require(
 
 			importer.load(resourcePath + '/head.model', resourcePath + '/', {
 				onSuccess : function(entities) {
-					for ( var i in entities) {
-						entities[i].addToWorld();
-					}
+					entities[1].addToWorld();
 					var size = 0.2;
 					entities[1].setComponent(new OccluderComponent(ShapeCreator.createBox(size, size, size)));
 					entities[1].transformComponent.transform.translation.set(translation);
@@ -350,7 +356,6 @@ require(
 			boundentity.transformComponent.transform.translation.y = translation.y;
 			boundentity.transformComponent.transform.translation.z = translation.z;
 			boundentity.name = 'BoundingSphere';
-			
 			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
 			material.uniforms = {'color': [1, 0, 0]};
 			material.wireframe = true;
