@@ -241,17 +241,25 @@ require(
 			entity.meshDataComponent.modelBound = new BoundingBox();
 			entity.meshDataComponent.autoCompute = false;
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
-			//createBoundingBoxRepresentation(world, translation, entity.meshDataComponent.modelBound.xExtent * 2, entity.meshDataComponent.modelBound.yExtent * 2, entity.meshDataComponent.modelBound.zExtent * 2);
+			createBoundingBoxRepresentation(world, entity);
 		}
 
-		function createBoundingBoxRepresentation(world, translation, w, h, z) {
-			var meshData = ShapeCreator.createBox(w, h, z);
+		function createBoundingBoxRepresentation(world, parentEntity) {
+			var meshData = ShapeCreator.createBox(
+				parentEntity.meshDataComponent.modelBound.xExtent * 2,
+				parentEntity.meshDataComponent.modelBound.yExtent * 2,
+				parentEntity.meshDataComponent.modelBound.zExtent * 2
+			);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
-			entity.transformComponent.transform.translation.x = translation.x;
-			entity.transformComponent.transform.translation.y = translation.y;
-			entity.transformComponent.transform.translation.z = translation.z;
+
+			parentEntity.transformComponent.attachChild(entity.transformComponent);
+
+			entity.meshDataComponent.modelBound = new BoundingBox();
+			entity.meshDataComponent.autoCompute = false;
+			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 			entity.name = 'BoundingBox';
 			
+			entity.meshRendererComponent.cullMode = 'Never';
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'wirematOnBoundingBox');
 			material.wireframe = true;
 			entity.meshRendererComponent.materials.push(material);
