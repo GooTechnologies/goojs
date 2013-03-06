@@ -185,6 +185,25 @@ define([
 		this.onFrustumChange();
 	};
 
+	Camera.prototype.copy = function (source) {
+		this.translation.setv(source.translation);
+		this._left.setv(source._left);
+		this._up.setv(source._up);
+		this._direction.setv(source._direction);
+
+		this.fov = source.fov;
+		this.aspect = source.aspect;
+		this.near = source.near;
+		this.far = source.far;
+
+		this.projectionMode = source.projectionMode;
+
+		this._depthRangeDirty = true;
+		this.onFrustumChange();
+		this.onFrameChange();
+		this.setFrustumPerspective();
+    };
+
 	/**
 	 * Sets the axes and location of the camera. Similar to {@link #setAxes(ReadOnlyVector3, ReadOnlyVector3, ReadOnlyVector3)}, but sets camera
 	 * location as well.

@@ -27,6 +27,7 @@ function(
 
 		this.vertexData = null;
 		this.indexData = null;
+		this.dataViews = {};
 
 		this.indexLengths = null;
 		// Triangles, TriangleStrip, TriangleFan, Lines, LineStrip, LineLoop, Points
@@ -46,10 +47,10 @@ function(
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for ( var i in this.attributeMap) {
-				var attribute = this.attributeMap[i];
-				if (attribute.array) {
-					savedAttributes[i] = attribute.array;
+			for (var i in this.attributeMap) {
+				var view = this.dataViews[i];
+				if (view) {
+					savedAttributes[i] = view;
 				}
 			}
 			if (this.indexData) {
@@ -62,11 +63,11 @@ function(
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for ( var i in this.attributeMap) {
+			for (var i in this.attributeMap) {
 				var saved = savedAttributes[i];
 				if (saved) {
-					var attribute = this.attributeMap[i];
-					attribute.array.set(saved);
+					var view = this.dataViews[i];
+					view.set(saved);
 				}
 			}
 			savedAttributes = {};
@@ -130,7 +131,7 @@ function(
 				throw "Unsupported DataType: " + attribute.type;
 			}
 
-			this.attributeMap[key].array = view;
+			this.dataViews[key] = view;
 		}
 	};
 
@@ -145,7 +146,7 @@ function(
 	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
-		return this.attributeMap[attributeName].array;
+		return this.dataViews[attributeName];
 	};
 
 	MeshData.prototype.getIndexData = function() {
