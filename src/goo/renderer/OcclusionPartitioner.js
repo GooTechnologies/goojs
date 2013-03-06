@@ -64,7 +64,8 @@ define([
 		this.occluderList.length = 0;
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
-			if (entity.getComponent('OccluderComponent')) {
+			//if (entity.getComponent('OccluderComponent')) {
+			if (entity.occluderComponent) {
 				this.occluderList.push(entity);
 			}
 		}

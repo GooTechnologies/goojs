@@ -877,7 +877,7 @@ define([
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
-		var posArray = entity.occluderComponent.meshData.attributeMap.POSITION.array;
+		var posArray = entity.occluderComponent.meshData.dataViews['POSITION'];
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
 		// Allocate the trianle array for the maximum case,
