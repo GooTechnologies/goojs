@@ -57,7 +57,7 @@ define([
 			uniforms : {
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX
 //				nearPlane : Shader.NEAR_PLANE,
 //				farPlane : Shader.FAR_PLANE
 			},

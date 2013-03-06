@@ -19,7 +19,7 @@ define(
 			this.callback.done();
 		} else if (this.callback.progress) {
 			this.callback.progress(this.count);
-		} 
+		}
 	};
 
 	Latch2.prototype.isDone = function () {
