@@ -1078,7 +1078,7 @@ function (
 
 	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-//		this.context.enableVertexAttribArray(attribIndex);
+		this.context.enableVertexAttribArray(attribIndex);
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 	};
 
