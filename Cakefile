@@ -1,3 +1,4 @@
+fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 	
@@ -65,3 +66,6 @@ task 'checkstyleforjenkins', 'Run JSHint to XML', (options) ->
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
 	cmdopts = cli.interpret('jshint --reporter=checkstyle src/ test/')
+
+task 'init-git', 'Install the precommit script', (options) ->
+	fs.writeFile '.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n'
