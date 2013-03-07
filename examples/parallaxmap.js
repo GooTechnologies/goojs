@@ -85,11 +85,11 @@ require(['goo/entities/World',
 		goo.renderer.setClearColor(0,0,0,1);
 
 		// Add box
-		var boxEntity = createBoxEntity(goo);
+		var boxEntity = createSphereEntity(goo);
 		boxEntity.addToWorld();
 
 
-		var floorEntity = createBox(goo, 1000, 1, ShaderLib.texturedLit);
+		var floorEntity = createFloor(goo, 1000, 1, ShaderLib.texturedLit);
 		floorEntity.transformComponent.transform.translation.y = -50;
 		floorEntity.addToWorld();
 
@@ -108,7 +108,7 @@ require(['goo/entities/World',
 		}));
 		cameraEntity.setComponent(scripts);
 
-		var entity = createBox(goo, 1, 1, ShaderLib.simple);
+		var entity = createLightFixture(goo, 1, 1, ShaderLib.simple);
 		entity.setComponent(new LightComponent(new PointLight()));
 		entity.addToWorld();
 		var script = {
@@ -125,9 +125,7 @@ require(['goo/entities/World',
 		entity.setComponent(new ScriptComponent(script));
 	}
 
-	// REVIEW: createBox and createBoxEntity function names don't seem to correspond to what they actually do.
-	// And this will result in the lightentity being named 'Floor' with a 'FloorShader' with a texture loaded on a texture-less shader, won't it?
-	function createBox(goo, w, h, shader) {
+	function createFloor(goo, w, h, shader) {
 		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Floor";
@@ -143,7 +141,20 @@ require(['goo/entities/World',
 		return entity;
 	}
 
-	function createBoxEntity(goo) {
+	function createLightFixture(goo, w, h, shader) {
+		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		entity.name = "LightFixture";
+
+		var material = new Material('TestMaterial');
+		material.shader = Material.createShader(shader, 'LightFixtureShader');
+
+		entity.meshRendererComponent.materials.push(material);
+
+		return entity;
+	}
+	
+	function createSphereEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10); //, Sphere.TextureModes.Projected
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Sphere";
@@ -151,7 +162,7 @@ require(['goo/entities/World',
 		TangentGenerator.addTangentBuffer(meshData, 0);
 
 		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(createShaderDef(), 'CubeShader');
+		material.shader = Material.createShader(createShaderDef(), 'SphereShader');
 
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-diffuse.png');
 		material.textures.push(texture);
@@ -248,12 +259,12 @@ require(['goo/entities/World',
 			'	float height = texture2D(displacementMap, tc).r; // .r because the displacement map is monochromatic',
 
 			'	// Calculate new height based on surface thickness and bias',
-			'	float surfaceThickness = 0.015; // Thickness relative to width and height',
+			'	float surfaceThickness = 0.025; // Thickness relative to width and height',
 			'	float bias = surfaceThickness * -0.5;',
 			'	float height_sb = height * surfaceThickness + bias;',
 
 			'	// Calculate new texture coordinate based on viewing angle',
-			'	vec2 parallaxTextureOffset = height_sb * tsVec2Camera.xy;',
+			'	vec2 parallaxTextureOffset = tc + height_sb * tsVec2Camera.xy / max(tsVec2Camera.z, 0.3);',
 
 			'	return parallaxTextureOffset;',
 			'}',
@@ -262,12 +273,7 @@ require(['goo/entities/World',
 			'{',//
 
 			'	vec3 tangentSpaceToEye = TBNi * -eyeVec;',
-			// REVIEW: Why is this called five times?
-			'	vec2 newCoords = texCoord0 + calcNewTexCoords(displaceMap, texCoord0, tangentSpaceToEye);',
-			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
-			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
-			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
-			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
+			'	vec2 newCoords = calcNewTexCoords(displaceMap, texCoord0, tangentSpaceToEye);',
 
 			'	vec4 texColor = texture2D(diffuseMap, newCoords);',//
 			'	vec3 bump = texture2D(normalMap, newCoords).rgb * 2.0 - 1.0;',//
