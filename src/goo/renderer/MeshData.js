@@ -154,10 +154,13 @@ function(
 			attribute.stride = stride;
 			var offset = attribute.offset;
 			var count = attribute.count;
+			var size = Util.getByteSize(attribute.type);
 
+			var method = this.getDataMethod(attribute.type);
+			var fun = targetView[method];
 			for (var i=0; i<this.vertexCount; i++) {
 				for (var j=0; j<count; j++) {
-					this.setDataValue(attribute.type, targetView, (offset + stride * i + j * Util.getByteSize(attribute.type)), view[i * count + j]);
+					fun.apply(targetView, [(offset + stride * i + j * size), view[i * count + j], true]);
 				}
 			}
 		}
@@ -165,28 +168,27 @@ function(
 		this.vertexData = newVertexData;
 	};
 
-	MeshData.prototype.setDataValue = function (type, targetView, targetIndex, value) {
+	MeshData.prototype.getDataMethod = function (type) {
 		switch (type)
 		{
 		case 'Byte':
-			return targetView.setInt8(targetIndex, value, true);
+			return 'setInt8';
 		case 'UnsignedByte':
-			return targetView.setUInt8(targetIndex, value, true);
+			return 'setUInt8';
 		case 'Short':
-			return targetView.setInt16(targetIndex, value, true);
+			return 'setInt16';
 		case 'UnsignedShort':
-			return targetView.setUInt16(targetIndex, value, true);
+			return 'setUInt16';
 		case 'Int':
-			return targetView.setInt32(targetIndex, value, true);
+			return 'setInt32';
 		case 'HalfFloat':
-			return targetView.setInt16(targetIndex, value, true);
+			return 'setInt16';
 		case 'Float':
-			return targetView.setFloat32(targetIndex, value, true);
+			return 'setFloat32';
 		case 'Double':
-			return targetView.setFloat64(targetIndex, value, true);
+			return 'setFloat64';
 		}
 	};
-
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
 		return this.dataViews[attributeName];

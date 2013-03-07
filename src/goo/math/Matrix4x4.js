@@ -788,10 +788,10 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Matrix4x4.prototype.applyPost = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
+		var x = rhs.data[0];
+		var y = rhs.data[1];
+		var z = rhs.data[2];
+		var w = rhs.data[3];
 
 		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03 * w;
 		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13 * w;
@@ -810,9 +810,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 */
 
 	Matrix4x4.prototype.applyPostPoint = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+		var x = rhs.data[0];
+		var y = rhs.data[1];
+		var z = rhs.data[2];
 
 		var d = this.data;
 		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
