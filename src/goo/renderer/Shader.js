@@ -139,7 +139,7 @@ function (
 					continue;
 				}
 
-				renderer.bindVertexAttribute(attributeIndex, attribute, record);
+				renderer.bindVertexAttribute(attributeIndex, attribute);
 			}
 		}
 

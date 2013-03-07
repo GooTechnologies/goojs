@@ -42,7 +42,6 @@ function(
 	MeshData.SKINMESH = 1;
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
-
 		var savedAttributes = {};
 		var savedIndices = null;
 
@@ -137,13 +136,57 @@ function(
 
 	MeshData.prototype.makeInterleavedData = function() {
 		var stride = 0;
+		var offset = 0;
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
+			attribute.offset = stride;
 			stride += attribute.count * Util.getByteSize(attribute.type);
 		}
 
-		// TODO
+		var newVertexData = new BufferData(new ArrayBuffer(stride * this.vertexCount), this.vertexData.target);
+		newVertexData._dataUsage = this.vertexData._dataUsage;
+		newVertexData._dataNeedsRefresh = true;
+
+		var targetView = new DataView(newVertexData.data);
+		for (var key in this.attributeMap) {
+			var view = this.dataViews[key];
+			var attribute = this.attributeMap[key];
+			attribute.stride = stride;
+			var offset = attribute.offset;
+			var count = attribute.count;
+	
+			for (var i=0; i<this.vertexCount; i++) {
+				for (var j=0; j<count; j++) {
+					this.setDataValue(attribute.type, targetView, (offset + stride * i + j * Util.getByteSize(attribute.type)), view[i * count + j]);
+				}
+			}
+		}
+
+		this.vertexData = newVertexData;
 	};
+
+	MeshData.prototype.setDataValue = function (type, targetView, targetIndex, value) {
+		switch (type)
+		{
+		case 'Byte':
+			return targetView.setInt8(targetIndex, value, true);
+		case 'UnsignedByte':
+			return targetView.setUInt8(targetIndex, value, true);
+		case 'Short':
+			return targetView.setInt16(targetIndex, value, true);
+		case 'UnsignedShort':
+			return targetView.setUInt16(targetIndex, value, true);
+		case 'Int':
+			return targetView.setInt32(targetIndex, value, true);
+		case 'HalfFloat':
+			return targetView.setInt16(targetIndex, value, true);
+		case 'Float':
+			return targetView.setFloat32(targetIndex, value, true);
+		case 'Double':
+			return targetView.setFloat64(targetIndex, value, true);
+		}
+	};
+
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
 		return this.dataViews[attributeName];

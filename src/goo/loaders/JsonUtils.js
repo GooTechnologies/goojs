@@ -59,6 +59,12 @@ define([
 		var tuples = attribs.length / scales.length;
 		var prev, word, outIndex, i, j;
 		for (j = 0; j < stride; j++) {
+			if (scales[j] === 0) {
+				return;
+			}
+		}
+
+		for (j = 0; j < stride; j++) {
 			prev = 0;
 			for (i = 0; i < tuples; i++) {
 				word = attribs.charCodeAt(i + j * tuples);
