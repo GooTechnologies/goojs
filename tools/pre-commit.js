@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var exec = require('child_process').exec;
