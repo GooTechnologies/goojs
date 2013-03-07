@@ -3,6 +3,26 @@ GooJS
 
 Goo Engine in JavaScript
 
+Style checks
+------------
+
+To run JSHint on the code, run:
+
+    cake checkstyle
+
+To make sure that no incorrectly styled content appears, install the pre-commit hook:
+
+    cake init-git
+
+This makes Git check whether all added and modified files pass the style check
+before allowing a commit.
+
+Note: The pre-commit hook checks the content of the files in the workspace,
+not the staged files. This means that if you are committing files that are
+correct in the staging area, but incorrect in the workspace,
+you'll get an error anyway.
+
+This also means that `git commit file.js` may not actually check file.js.
 
 Tests
 -----
