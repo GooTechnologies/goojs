@@ -1,6 +1,7 @@
 'use strict';
 
 var exec = require('child_process').exec;
+var path = require('path');
 
 function fail() {
 	process.stdout.write(
@@ -26,7 +27,8 @@ exec('git diff --staged --name-status', function (error, stdout, stderr) {
 		process.exit(0);
 	}
 
-	var child = exec('node_modules/.bin/jshint --reporter=tools/jshint-reporter.js ' + files.join(' '));
+	var command = path.resolve('./node_modules/.bin/jshint');
+	var child = exec(command + ' --reporter=tools/jshint-reporter.js ' + files.join(' '));
 
 	child.stdout.on('data', function (data) {
 		process.stdout.write(data);
