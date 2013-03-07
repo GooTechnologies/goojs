@@ -125,6 +125,8 @@ require(['goo/entities/World',
 		entity.setComponent(new ScriptComponent(script));
 	}
 
+	// REVIEW: createBox and createBoxEntity function names don't seem to correspond to what they actually do.
+	// And this will result in the lightentity being named 'Floor' with a 'FloorShader' with a texture loaded on a texture-less shader, won't it?
 	function createBox(goo, w, h, shader) {
 		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
@@ -260,7 +262,7 @@ require(['goo/entities/World',
 			'{',//
 
 			'	vec3 tangentSpaceToEye = TBNi * -eyeVec;',
-
+			// REVIEW: Why is this called five times?
 			'	vec2 newCoords = texCoord0 + calcNewTexCoords(displaceMap, texCoord0, tangentSpaceToEye);',
 			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
 			'	newCoords += calcNewTexCoords(displaceMap, newCoords, tangentSpaceToEye);',
