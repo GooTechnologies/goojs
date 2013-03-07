@@ -100,14 +100,14 @@ require(['goo/entities/World',
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
-		
+
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			spherical : new Vector3(50, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
-	
+
 		var entity = createBox(goo, 1, 1, ShaderLib.simple);
 		entity.setComponent(new LightComponent(new PointLight()));
 		entity.addToWorld();
@@ -142,12 +142,12 @@ require(['goo/entities/World',
 
 		return entity;
 	}
-	
+
 	function createBoxEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10); //, Sphere.TextureModes.Projected
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Sphere";
-		
+
 		TangentGenerator.addTangentBuffer(meshData, 0);
 
 		var material = new Material('TestMaterial');
@@ -209,7 +209,7 @@ require(['goo/entities/World',
 			'	vec3 worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
 			'	mat3 normalMatrix = mat3(viewMatrix * worldMatrix);',
-			
+
 			'	vec3 n = vertexNormal;',
 			'	vec3 t = vertexTangent.xyz;',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
@@ -280,7 +280,7 @@ require(['goo/entities/World',
 			'	vec4 intensity = vec4(1.0) * diffuse + ambient;',
 
 			'	gl_FragColor = texColor * intensity;',
-			'}',//
+			'}'//
 			].join('\n')
 		};
 	}
