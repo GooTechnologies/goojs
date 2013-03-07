@@ -1,7 +1,5 @@
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
-
-
 	
 task 'minify', 'minify try', (options) ->
 
