@@ -92,7 +92,8 @@ function (
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
 						// Yes, eval is intended, sorry checkstyle
-						window.eval.call(window, request.responseText);
+						// jshint evil:true
+						window['eval'].call(window, request.responseText);
 					}
 				}
 			};
