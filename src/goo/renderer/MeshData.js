@@ -154,7 +154,7 @@ function(
 			attribute.stride = stride;
 			var offset = attribute.offset;
 			var count = attribute.count;
-	
+
 			for (var i=0; i<this.vertexCount; i++) {
 				for (var j=0; j<count; j++) {
 					this.setDataValue(attribute.type, targetView, (offset + stride * i + j * Util.getByteSize(attribute.type)), view[i * count + j]);
