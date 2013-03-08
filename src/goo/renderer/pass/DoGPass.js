@@ -32,6 +32,7 @@ define([
 		var height = settings.height !== undefined ? settings.height : 512;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 0.6;
 		var threshold = settings.threshold !== undefined ? settings.threshold : 0.005;
+		var edgeColor = settings.edgeColor !== undefined ? settings.edgeColor : [1.0, 1.0, 1.0, 1.0];
 
 		if (sigma > 2.5) {
 			sigma = 2.5;
@@ -52,6 +53,7 @@ define([
 
 		this.differenceShader = Util.clone(ShaderLib.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
+		this.differenceShader.uniforms.edgeColor = edgeColor;
 		this.differenceMaterial = Material.createMaterial(this.differenceShader);
 
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].

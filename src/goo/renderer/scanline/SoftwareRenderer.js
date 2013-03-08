@@ -217,6 +217,7 @@ define([
 
 	/**
 	*	Clips the BoundingBox to screen coordinates to later produce a correct screen space bounding box of the bounding box.
+	*	The result will not be a correct bounding box which contains the geometry, but 
 	*/
 	SoftwareRenderer.prototype._clipBoundingBox = function(vertices) {
 		

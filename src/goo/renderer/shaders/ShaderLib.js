@@ -1756,7 +1756,8 @@ define([
 			gaussBlurredImage1 : Shader.TEXTURE0,
 			gaussBlurredImage2 : Shader.TEXTURE1,
 			originalImage : Shader.TEXTURE2,
-			threshold : 0.01
+			threshold : 0.01,
+			edgeColor : [1.0, 1.0, 1.0, 1.0]
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -1780,6 +1781,7 @@ define([
 		'uniform sampler2D gaussBlurredImage2;',//
 		'uniform sampler2D originalImage;',//
 		'uniform float threshold;',
+		'uniform vec4 edgeColor;',
 
 		'varying vec2 texCoord0;',//
 
@@ -1791,8 +1793,8 @@ define([
 		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',//
 		'	float value = (col.r + col.g + col.b) / 3.0;',
 		'	value = step(threshold, value);',
-		'	vec3 outputColor = mix(originalColor.rgb, vec3(value), value);',
-		'	gl_FragColor = vec4(outputColor, 1.0);',//
+		'	vec4 outputColor = mix(originalColor, edgeColor, value);',
+		'	gl_FragColor = outputColor;',//
 		'}'//
 		].join('\n')
 	};

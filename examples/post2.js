@@ -153,7 +153,7 @@ function (
 
 			var depthPass = new DepthPass(goo.world.getSystem('RenderSystem').renderList, unpackDepth);
 
-			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.8, 'width' : 1024, 'height' : 1024});
+			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.8, 'width' : 1024, 'height' : 1024, 'edgeColor': [1.0, 0.0, 0.0, 1.0]});
 
 			// Regular copy
 			var shader = Util.clone(ShaderLib.copy);
