@@ -14,8 +14,8 @@ function () {
 			this.y0 = vec1.y;
 			this.y1 = vec2.y;
 
-			this.z0 = vec1.z;
-			this.z1 = vec2.z;
+			this.z0 = vec1.w;
+			this.z1 = vec2.w;
 		}
 		else {
 			this.x0 = Math.round(vec2.x);
@@ -24,8 +24,8 @@ function () {
 			this.y0 = vec2.y;
 			this.y1 = vec1.y;
 
-			this.z0 = vec2.z;
-			this.z1 = vec1.z;
+			this.z0 = vec2.w;
+			this.z1 = vec1.w;
 		}
 
 		this._roundConservative();

@@ -159,11 +159,11 @@ define([
 
 		var vertices = [v1, v2, v3, v4, v5, v6, v7, v8];
 		
-		// TODO: Combine pixelspace transform.
+		// TODO: Combine the transforms to pixel space.
 		this._projectionTransform(vertices, combinedMatrix);
 		this._transformToScreenSpace(vertices);
 
-		
+		this._clipBoundingBox(vertices);
 
 		// Find the max and min values of x and y respectively.
 		// start with the first vertex' value as reference.
@@ -213,6 +213,13 @@ define([
 		minDepth = 1.0 / minDepth;
 
 		return this._isBoundingBoxScanlineOccluded(minX, maxX, minY, maxY, minDepth);
+	};
+
+	/**
+	*	Clips the BoundingBox to screen coordinates to later produce a correct screen space bounding box of the bounding box.
+	*/
+	SoftwareRenderer.prototype._clipBoundingBox = function(vertices) {
+		
 	};
 
 	/**
@@ -1118,7 +1125,7 @@ define([
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
 			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.	
-			vertex.z = vertex.w;
+			// vertex.z = vertex.w;
 		}
 	};
 
@@ -1211,6 +1218,13 @@ define([
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
         var shortEdge1 = (longEdge + 1) % 3;
         var shortEdge2 = (longEdge + 2) % 3;
+
+        // TODO : Find out which edge is the left and which is the right side of the short edges.
+
+        // TODO :
+        //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
+        //	When rounding the values of the triangles vertices , compensate the depth as well.
+        //	These good ideas are sponsored by Martin Vilcans.	
 
         for (var i = 0; i < 3; i++) {
 			// TODO: Do pre-calculations here which are now performed in drawEdges.
