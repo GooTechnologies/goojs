@@ -138,11 +138,18 @@ require([
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
 
-			var panel = document.getElementById('effectInfo');
+			var infoPanel = document.getElementById('effectInfo');
 
-			if(panel.childNodes.length > 0)
-			{
-				panel.removeChild(panel.lastChild);
+			var t = document.createTextNode(effect);
+			var effectName = document.getElementById('effectName');
+			if(effectName.childNodes.length > 0) {
+				effectName.replaceChild(t, effectName.firstChild);
+			} else {
+				effectName.appendChild(t);
+			}
+
+			if(infoPanel.childNodes.length > 1) {
+				infoPanel.removeChild(infoPanel.lastChild);
 			}
 			var gui = new dat.GUI({
 				name: effect,
@@ -155,8 +162,7 @@ require([
 			for (var key in uniforms) {
 				console.log(key, uniforms[key]);
 
-				if (uniforms[key] instanceof Array)
-				{
+				if (uniforms[key] instanceof Array) {
 					uniforms[key][key] = uniforms[key].toString();
 					var controller = gui.add(uniforms[key], key);
 
@@ -168,7 +174,7 @@ require([
 				}
 			}
 
-			panel.appendChild(gui.domElement);
+			infoPanel.appendChild(gui.domElement);
 		};
 
 		// Regular copy
