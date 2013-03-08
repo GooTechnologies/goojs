@@ -39,7 +39,7 @@ require([
 	"use strict";
 
 	var resourcePath = "../resources";
-
+	var iphone;
 	function init() {
 		var goo = new GooRunner({
 			showStats : true,
@@ -73,17 +73,19 @@ require([
 		entity.addToWorld();
 
 		// Examples of model loading
-		var iphone = loadIphone(goo);
-		$('#test').click(function () {
-			iphone.setComponent(new ScriptComponent({
-				run: function (entity) {
-					var transformComponent = entity.transformComponent;
-					transformComponent.transform.setRotationXYZ(World.time * 1.0, World.time * 0.5, 0);
-					transformComponent.setUpdated();
-				}
-			}));
-		});
+		iphone = loadIphone(goo);
 	}
+
+	window.spinPhone = function() {
+		iphone.setComponent(new ScriptComponent({
+			run: function (entity) {
+				var transformComponent = entity.transformComponent;
+				transformComponent.transform.setRotationXYZ(World.time * 1.0, World.time * 0.5, 0);
+				transformComponent.setUpdated();
+			}
+		}));
+	};
+
 
 	function loadIphone(goo) {
 		var importer = new JSONImporter(goo.world);
