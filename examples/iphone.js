@@ -76,6 +76,7 @@ require([
 		iphone = loadIphone(goo);
 	}
 
+	// REVIEW: This is never used now that the button is gone... so why keep it?
 	window.spinPhone = function() {
 		iphone.setComponent(new ScriptComponent({
 			run: function (entity) {
