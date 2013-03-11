@@ -66,12 +66,11 @@ require(
 
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 2.0, 'walkSpeed' : 18.0})]));
+			cameraEntity.transformComponent.transform.translation.set(0, 1.79, 10);	
 			cameraEntity.addToWorld();
 
 			buildScene(goo);
-
-			camera.translation.set(0, 1.79, 20);
-
+			
 			setupRenderer(goo, camera);
 		}
 
@@ -203,19 +202,14 @@ require(
 			
 		//	addHead(goo, translation);
 
-			var rotX = 0;
-			var rotY = 0;
 			goo.callbacks.push(function(tpf) {
 				
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
 				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(goo.world.time));
 				boxEntity.transformComponent.setUpdated();
 
-				torus.transformComponent.transform.setRotationXYZ(rotX, rotY, 0);
+				torus.transformComponent.transform.setRotationXYZ(goo.world.time, 0.5 * goo.world.time, 0);
 				torus.transformComponent.setUpdated();
-				rotX += tpf;
-				rotY += 0.5 * tpf;
-
 			});
 		}
 

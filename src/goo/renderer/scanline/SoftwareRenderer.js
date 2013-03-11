@@ -50,6 +50,8 @@ define([
 			this._depthClear[i] = 0.0;
 		}
 
+		this._boundingBoxNeighbourIndices = this._generateBoundingBoxNeighbourIndices();
+		console.log(this._boundingBoxNeighbourIndices);
 
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
@@ -60,6 +62,48 @@ define([
 			new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
 		];
 	}
+
+	/**
+	*	Returns the array of neighbours for a vertex index on a boundingbox
+	*/
+	SoftwareRenderer.prototype._generateBoundingBoxNeighbourIndices = function () {
+
+		var neighbourArray = new Array(8);
+		for (var i = 0; i < 8; i++) {
+			var n1, n2, n3;
+			switch (i) {
+			case 0:
+				n1 = 3;
+				n2 = 1;
+				n3 = 4;
+				break;
+			case 3:
+				n1 = 2;
+				n2 = 0;
+				n3 = 7;
+				break;
+			case 4:
+				n1 = 7;
+				n2 = 5;
+				n3 = 0;
+				break;
+			case 7:
+				n1 = 6;
+				n2 = 4;
+				n3 = 3;
+				break;
+			default :
+				n1 = (i + 7) % 8; // behind
+				n2 = (i + 1) % 8; // in front
+				n3 = (i + 4) % 8; // below or over
+				break;
+			}
+
+			neighbourArray[i] = [n1, n2, n3];
+		}
+
+		return neighbourArray;
+	};
 
 	/**
 	*	Clears the depth data.
@@ -168,7 +212,7 @@ define([
 		// Find the max and min values of x and y respectively.
 		// start with the first vertex' value as reference.
 		var minX, maxX, minY, maxY, minDepth;
-		if (vertices[0].w < this.camera.near) {
+		if (vertices[0].w > this.camera.near) {
 			// If any vertex of the bounding box is clipping the nearplane, regard the entity as beeing visible.
 			return false;
 		} else {
@@ -182,10 +226,10 @@ define([
 		for (var i = 1; i < 8; i++) {
 			var vert = vertices[i];
 			
-			if (vert.w < this.camera.near) {
+			if (vert.w > this.camera.near) {
 				return false;
 			} else {
-				if (vert.w < minDepth) {
+				if (vert.w > minDepth) {
 					minDepth = vert.w;
 				}
 			}
@@ -210,17 +254,93 @@ define([
 		maxY = Math.ceil(maxY);
 
 		// The depth values saved in the buffer are 1.0 / w.
-		minDepth = 1.0 / minDepth;
+		//minDepth = 1.0 / minDepth;
 
 		return this._isBoundingBoxScanlineOccluded(minX, maxX, minY, maxY, minDepth);
 	};
 
 	/**
 	*	Clips the BoundingBox to screen coordinates to later produce a correct screen space bounding box of the bounding box.
-	*	The result will not be a correct bounding box which contains the geometry, but 
+	*	// TODO : 	In case of clipping , the min / max values for either x or y could be known from here. This could be returned in
+	*				some way.
 	*/
 	SoftwareRenderer.prototype._clipBoundingBox = function(vertices) {
 		
+		var insideScreen = new Array(8);
+
+		for (var i = 0; i < 8; i++) {
+			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
+			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
+			vertices[i].w = 1.0 / vertices[i].w;
+		}
+
+		for (var i = 0; i < 8; i++) {
+			// Clip if not inside screen.
+			if(!insideScreen[i]) {
+				var currentVertex = vertices[i];
+				// Find out which neighbour has the min depth and is inside the screen.
+				var targetNeighbour;
+				var minDepth = -Infinity;
+				for (var j = 0; j < 3; j++) {
+					var neighbourIndex = this._boundingBoxNeighbourIndices[i][j];
+					if (insideScreen[neighbourIndex]) {
+						var vert = vertices[neighbourIndex];
+						if (vert.w > minDepth) {
+							targetNeighbour = vert;
+							minDepth = targetNeighbour.w;
+						}
+					}
+				}
+
+				// Interpolate vertex along the edge to the taergetNeighbour. The amount shall be the axis which is most outside.
+				// TODO : Somehow save the checks from the control if the vertex is inside or not to be able to know already which side
+				//		is outside. Maybe create a new function for this, and return different integers which says which area the vertex
+				//		is located in if it is outside the screen along with the amount.
+
+				if (!targetNeighbour) {
+					// No neighbours inside the screen.
+					continue;
+				}
+
+				var ratio;
+				var xDiff, yDiff;
+				var xLength, yLength;
+				if (currentVertex.x < 0) {
+					xDiff = -currentVertex.x;
+					xLength = targetNeighbour.x + xDiff;
+				} else {
+					xDiff = currentVertex.x - this.width;
+					xLength = currentVertex.x - targetNeighbour.x;
+				}
+
+				if (currentVertex.y < 0) {
+					yDiff = -currentVertex.y;
+					yLength = targetNeighbour.y + yDiff;
+				} else {
+					yDiff = currentVertex.y - this.height;
+					yLength = currentVertex.y - targetNeighbour.y;
+				}
+
+				// Calculate the ratio by using the largest diff.
+				if (xDiff > yDiff) {
+					ratio = xDiff / xLength;
+				} else {
+					ratio = yDiff / yLength;
+				}
+
+				/*
+				if ( ratio > 1.0 ) {
+					console.error("Something is worng... Ratio should be inside [0,1]");
+				}
+				*/
+
+				// Interpolate the x- and y-coordinates and depth on the edge to the target vertex.
+				var a = 1.0 - ratio;
+				currentVertex.x = a * currentVertex.x + ratio * targetNeighbour.x;
+				currentVertex.y = a * currentVertex.y + ratio * targetNeighbour.y;
+				currentVertex.w = a * currentVertex.w + ratio * targetNeighbour.w;
+			}
+		}
 	};
 
 	/**
