@@ -113,7 +113,7 @@ require([
 			'bleachbypass',
 			'horizontalTiltShift',
 			'colorify',
-			'normalMap',
+			'normalmap',
 			'rgbshift',
 			'brightnesscontrast',
 			'luminosity',
