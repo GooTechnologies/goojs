@@ -132,8 +132,12 @@ require([
 			document.getElementById('list').appendChild(inp);
 		}
 
+		// object to hold proxy properties for dat.gui use
+		var proxies;
 		window.selectEffect = function(effect) {
 			console.log(effect);
+
+			proxies = {};
 
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
@@ -157,20 +161,29 @@ require([
 			});
 			var uniforms = coolPass.material.shader.uniforms;
 			var arraySplit = function (value) {
-				uniforms[key] = value.split(',');
+				var valueArray = value.split(',');
+				for (var i = 0; i < valueArray.length; i++) {
+					valueArray[i] = parseFloat(valueArray[i]);
+				}
+				// WARNING Hack-ish, but meh, it's just a demo
+				uniforms[this.property] = valueArray;
 			};
 			for (var key in uniforms) {
 				console.log(key, uniforms[key]);
 
 				if (uniforms[key] instanceof Array) {
-					uniforms[key][key] = uniforms[key].toString();
-					var controller = gui.add(uniforms[key], key);
+					proxies[key] = uniforms[key].toString();
+					var controller = gui.add(proxies, key);
 
 					controller.onFinishChange(arraySplit);
 				} else if(uniforms[key] instanceof Object) {
 					console.log("Nested object, can't display ", uniforms[key]);
 				} else {
-					gui.add(uniforms, key);
+					if (typeof (uniforms[key]) === 'string') {
+						console.log('Skipping string option ', key);
+					} else {
+						gui.add(uniforms, key);
+					}
 				}
 			}
 
