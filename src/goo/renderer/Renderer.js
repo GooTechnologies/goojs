@@ -1269,9 +1269,9 @@ function (
 				this.setupFrameBuffer(renderTarget._glFrameBuffer, renderTarget, WebGLRenderingContext.TEXTURE_2D);
 
 			}
-			
+
 			else {
-				
+
 				renderTarget._glFrameBuffer = this.context.createFramebuffer();
 				renderTarget._glRenderBuffer = this.context.createRenderbuffer();
 

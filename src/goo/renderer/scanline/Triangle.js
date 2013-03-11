@@ -1,10 +1,9 @@
 define([
-	'goo/math/Vector3',
-	'goo/math/Vector4'
+	'goo/math/Vector3'
 	],
 /** @lends Triangle */
 
-function (Vector3, Vector4) {
+function (Vector3) {
 
 	/*
 	*	Class for holding three vertices {Vector3} or {Vector4} which make up a triangle.

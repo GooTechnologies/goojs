@@ -153,7 +153,7 @@ require(['goo/entities/World',
 
 		return entity;
 	}
-	
+
 	function createSphereEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10); //, Sphere.TextureModes.Projected
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);

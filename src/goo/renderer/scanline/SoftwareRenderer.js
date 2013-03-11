@@ -126,7 +126,6 @@ define([
 
 		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
-			
 			//console.time("triangleCreation");
 			var triangles = this._createTrianglesForEntity(renderList[i]);
 			//console.timeEnd("triangleCreation");
@@ -202,7 +201,6 @@ define([
 		var v8 = new Vector4(x, -y, z, 1.0);
 
 		var vertices = [v1, v2, v3, v4, v5, v6, v7, v8];
-		
 		// TODO: Combine the transforms to pixel space.
 		this._projectionTransform(vertices, combinedMatrix);
 		this._transformToScreenSpace(vertices);
@@ -225,7 +223,7 @@ define([
 
 		for (var i = 1; i < 8; i++) {
 			var vert = vertices[i];
-			
+
 			if (vert.w > this.camera.near) {
 				return false;
 			} else {
@@ -261,11 +259,11 @@ define([
 
 	/**
 	*	Clips the BoundingBox to screen coordinates to later produce a correct screen space bounding box of the bounding box.
-	*	// TODO : 	In case of clipping , the min / max values for either x or y could be known from here. This could be returned in
-	*				some way.
+	*	// TODO: In case of clipping , the min / max values for either x or y could be known from here. This could be returned in
+	*	some way.
 	*/
 	SoftwareRenderer.prototype._clipBoundingBox = function(vertices) {
-		
+
 		var insideScreen = new Array(8);
 
 		for (var i = 0; i < 8; i++) {
@@ -367,7 +365,7 @@ define([
 			maxY = this._clipY;
 		}
 
-		// Run the scanline test for each row [maxY, minY] , [minX, maxX] 
+		// Run the scanline test for each row [maxY, minY] , [minX, maxX]
 		for (var scanline = maxY; scanline >= minY; scanline--) {
 			var sampleCoordinate = scanline * this.width + minX;
 			for (var x = minX; x <= maxX; x++) {
@@ -390,12 +388,10 @@ define([
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
-		
 		var boundingSphere = entity.meshDataComponent.modelBound;
 		var origin = new Vector4(0,0,0,1.0);
 		combinedMatrix.applyPost(origin);
 
-		
 		var scale = entity.transformComponent.transform.scale;
 		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
 
@@ -416,10 +412,10 @@ define([
 
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 		var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
-	
-		
+
 		if (nearCoord.z > cameraNearZInWorld) {
-			return false; // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
+			// The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
+			return false;
 		}
 
 		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
@@ -429,7 +425,7 @@ define([
 
 		var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 
-		// TODO : Create a combined matrix of the projection and screenspace 
+		// TODO : Create a combined matrix of the projection and screenspace
 		this._projectionTransform(vertices, cameraProjectionMatrix);
 		this._transformToScreenSpace(vertices);
 
@@ -460,14 +456,13 @@ define([
 
 		// Executes the occluded test in the order they are put, exits the case upon any false value.
 		// TODO: Test for best order of early tests.
-		
 		/*
 		this._isOccluded(topCoord, yellow, nearestDepth);
 		this._isOccluded(leftCoord, blue, nearestDepth);
 		this._isOccluded(rightCoord, green, nearestDepth);
 		this._isOccluded(bottomCoord, yellow, nearestDepth);
 		this._isOccluded(nearCoord, red, nearestDepth);
-		*/		
+		*/
 
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
@@ -501,7 +496,7 @@ define([
 		lastScanline = Math.floor(lastScanline);
 
 		//this._clampToScreen(leftX, rightX, lastScanline, firstScanline);
-		
+
 		if (leftX < 0) {
 			leftX = 0;
 		}
@@ -549,7 +544,7 @@ define([
 	*/
 	SoftwareRenderer.prototype._clampToScreen = function (minX, maxX, minY, maxY) {
 		if (minX < 0) {
-			minX = 0;			
+			minX = 0;
 		}
 
 		if (maxX > this._clipX) {
@@ -574,7 +569,6 @@ define([
 		var r2 = radius * radius;
 		var ratio = this.width / this.height;
 
-		
 		// skip the top , since that will be the top coordinate , which has already been checked. Start at the next one.
 		// y is the current scanline.
 		var y = topCoordinate.y - 1;
@@ -604,7 +598,7 @@ define([
 				sampleCoord = rightCoordinate.y * this.width + rightCoordinate.x;
 				this._colorData.set(cyan, sampleCoord * 4);
 			}
-			
+
 			return true;
 		}
 
@@ -618,7 +612,7 @@ define([
 			y = this._clipY;
 
 		} else {
-			
+
 			// If the top (start) coordinate is above the screen, step down to the right y coordinate (this._clipY),
 			// remove the number of rows to interpolate on, update the interpolation value t.
 			var topDiff = y - this._clipY;
@@ -656,11 +650,10 @@ define([
 			}
 
 			var sampleCoord = y * this.width + leftX;
-			
+
 			for(var xindex = leftX; xindex <= rightX; xindex++) {
 
 				this._colorData.set(color, sampleCoord * 4);
-
 				if(this._depthData[sampleCoord] < nearestDepth) {
 					// Early exit if the sample is visible.
 					return false;
@@ -668,7 +661,6 @@ define([
 
 				sampleCoord++;
 			}
-			
 			y--;
 			yH++;
 		}
@@ -703,14 +695,13 @@ define([
 			y--;
 		}
 
-		// The Bottom of the "circle"	
+		// The Bottom of the "circle"
 		yH = botRows - 1;
 		var topDiff = rightCoordinate.y - y - 1;
 		if (topDiff > 0) {
 			botRows -= topDiff;
 			yH -= topDiff;
 		}
-		
 		// Remove one row for each row that the right y-coordinate is below or equals to -2.
 		var botDiff = - (bottomCoordinate.y + 1);
 		if (botDiff > 0) {
@@ -737,9 +728,7 @@ define([
 			}
 
 			var sampleCoord = y * this.width + leftX;
-			
 			for(var xindex = leftX; xindex <= rightX; xindex++) {
-
 				// Debug, add color where scanline samples are taken.
 				this._colorData.set(color, sampleCoord * 4);
 
@@ -747,10 +736,8 @@ define([
 					// Early exit if the sample is visible.
 					return false;
 				}
-
 				sampleCoord++;
 			}
-
 			y--;
 			yH--;
 		}
@@ -799,7 +786,6 @@ define([
 				sampleCoord = rightCoordinate.y * this.width + rightCoordinate.x;
 				this._colorData.set(cyan, sampleCoord * 4);
 			}
-			
 			return true;
 		}
 
@@ -815,7 +801,6 @@ define([
 			y = this._clipY;
 
 		} else {
-			
 			// If the top (start) coordinate is above the screen, step down to the right y coordinate (this._clipY),
 			// remove the number of rows to interpolate on, update the interpolation value t.
 			var topDiff = y - this._clipY;
@@ -857,16 +842,12 @@ define([
 			}
 
 			var sampleCoord = y * this.width + leftX;
-			
 			for(var xindex = leftX; xindex <= rightX; xindex++) {
-
 				this._colorData.set(color, sampleCoord * 4);
-
 				if(this._depthData[sampleCoord] < nearestDepth) {
 					// Early exit if the sample is visible.
 					return false;
 				}
-
 				sampleCoord++;
 			}
 
@@ -907,13 +888,12 @@ define([
 		// The Bottom of the "circle"
 		tIncrement = 1.0 / (botRows);
 		t = tIncrement;
-		
 		var topDiff = rightCoordinate.y - y - 1;
 		if (topDiff > 0) {
 			botRows -= topDiff;
 			t += topDiff * tIncrement;
 		}
-		
+
 		// Remove one row for each row that the right y-coordinate is below or equals to -2.
 		var botDiff = - (bottomCoordinate.y + 1);
 		if (botDiff > 0) {
@@ -941,7 +921,7 @@ define([
 			}
 
 			var sampleCoord = y * this.width + leftX;
-			
+
 			for(var xindex = leftX; xindex <= rightX; xindex++) {
 
 				// Debug, add color where scanline samples are taken.
@@ -1005,7 +985,7 @@ define([
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
 
-		var posArray = entity.occluderComponent.meshData.dataViews['POSITION'];
+		var posArray = entity.occluderComponent.meshData.dataViews.POSITION;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
 		// Allocate the trianle array for the maximum case,
@@ -1014,7 +994,7 @@ define([
 		var triangles = new Array(vertIndexArray.length / 3);
 
 		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
-		
+
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
@@ -1024,7 +1004,7 @@ define([
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
-			
+
 			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
 			var posIndex = vertIndexArray[vertIndex] * 3;
 			var v1 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
@@ -1115,12 +1095,12 @@ define([
 			}
 
 			this._projectionTransform(vertices, cameraProjectionMatrix);
-			
-			// TODO: (Optimization) Maybe do backface culling before clipping the triangles. The method has to be revised for this. 
+
+			// TODO: (Optimization) Maybe do backface culling before clipping the triangles. The method has to be revised for this.
 			if (this._isBackFacing(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
 			}
-			
+
 			this._transformToScreenSpace(vertices);
 
 			this._createTriangles(vertices, outsideIndices, insideIndices, triangles);
@@ -1139,9 +1119,9 @@ define([
 
 		for (var i = 0; i < vertices.length; i++) {
 			var v = vertices[i];
-			
+
 			matrix.applyPost(v);
-			
+
 			var div = 1.0 / v.w;
 			v.x *= div;
 			v.y *= div;
@@ -1183,7 +1163,7 @@ define([
 	*	@param {Number} cameraNearPlane the camera near plane in world coordinates.
 	*/
 	SoftwareRenderer.prototype._categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
-			
+
 		for ( var i = 0; i < 3; i++ ) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
 			if (vertices[i].z <= cameraNear) {
@@ -1208,7 +1188,7 @@ define([
 	*	@param {Number} near The near plane.
 	*/
 	SoftwareRenderer.prototype._calculateIntersectionRatio = function (origin, target, near) {
-			
+
 		// Using a tip from Joel:
 		// The intersection ratio can be calculated using the respective lenghts of the
 		// endpoints (origin and target) to the near plane.
@@ -1232,7 +1212,7 @@ define([
 	SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
 
 		for (var i = 0; i < vertices.length; i++) {
-			
+
 			var vertex = vertices[i];
 
 			// These calculations assume that the camera's viewPortRight and viewPortTop are 1,
@@ -1245,7 +1225,7 @@ define([
 
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
-			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.	
+			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.
 			// vertex.z = vertex.w;
 		}
 	};
@@ -1278,7 +1258,7 @@ define([
 		// Optimized away edge allocation , only need x and y of the edges.
 		var e1X = v2.data[0] - v1.data[0];
 		var e1Y = v2.data[1] - v1.data[1];
-		
+
 		var e2X = v3.data[0] - v1.data[0];
 		var e2Y = v3.data[1] - v1.data[1];
 
@@ -1287,9 +1267,9 @@ define([
 		// The cameras eye direction will always be [0,0,-1] at this stage
 		// (the vertices are transformed into the camera's view projection space,
 		// thus the dot product can be simplified to only do multiplications on the z component.
-		
+
 		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
-		
+
 		// Invert the comparison to remove the negation of facenormalZ.
 		return faceNormalZ < 0.0;
 	};
@@ -1318,7 +1298,7 @@ define([
 			new Edge(triangle.v2, triangle.v3),
 			new Edge(triangle.v3, triangle.v1)
 		];
-		
+
 		var maxHeight = 0;
         var longEdge = 0;
 
@@ -1335,7 +1315,7 @@ define([
         // Triangle is outside the view, skipping rendering it;
         return;
         }
-		
+
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
         var shortEdge1 = (longEdge + 1) % 3;
         var shortEdge2 = (longEdge + 2) % 3;
@@ -1345,7 +1325,7 @@ define([
         // TODO :
         //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
         //	When rounding the values of the triangles vertices , compensate the depth as well.
-        //	These good ideas are sponsored by Martin Vilcans.	
+        //	These good ideas are sponsored by Martin Vilcans.
 
         for (var i = 0; i < 3; i++) {
 			// TODO: Do pre-calculations here which are now performed in drawEdges.
@@ -1379,7 +1359,7 @@ define([
 
 		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
 		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
-		
+
         var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
         var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
 
@@ -1532,7 +1512,7 @@ define([
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
 
 		var colorIndex = 0;
-		
+
 		for(var i = 0; i < this._depthData.length; i++) {
 
 			// Convert the float value of depth into 8bit.
@@ -1545,7 +1525,7 @@ define([
 		}
 	};
 
-	
+
 	/**
 	*	Returns the array of RGBA color data.
 	*	@return {Uint8Array} RGBA Color data.

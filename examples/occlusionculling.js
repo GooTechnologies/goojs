@@ -47,7 +47,7 @@ require(
 		'use strict';
 
 		//-------- GLOBAL VARIABLES --------
-		
+
 			var resourcePath = '../resources';
 
 		//----------------------------------
@@ -61,16 +61,16 @@ require(
 
 			// Add camera
 			var camera = new Camera(90, 1, 1, 100);
-			
+
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.setComponent(new ScriptComponent([new MouseLookControlScript(), new WASDControlScript({'crawlSpeed' : 2.0, 'walkSpeed' : 18.0})]));
-			cameraEntity.transformComponent.transform.translation.set(0, 1.79, 10);	
+			cameraEntity.transformComponent.transform.translation.set(0, 1.79, 10);
 			cameraEntity.addToWorld();
 
 			buildScene(goo);
-			
+
 			setupRenderer(goo, camera);
 		}
 
@@ -84,7 +84,7 @@ require(
 			// Override the current renderList for rendering in the GooRunner.
 			var occlusionCuller = new OcclusionPartitioner({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
 			goo.renderSystem.partitioner = occlusionCuller;
-			
+
 			var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
 			var gl = goo.renderer.context;
 
@@ -93,7 +93,7 @@ require(
 
 			// Add the color data to the debug canvas
 			goo.callbacks.push(function(tpf) {
-				
+
 				// console.time("readTime");
 				//gl.readPixels(0, 0, debugcanvas.width, debugcanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, storage);
 				// console.timeEnd("readTime");
@@ -104,14 +104,14 @@ require(
 		}
 
 		function buildScene(goo) {
-			
+
 
 			var translation = new Vector3(-10, 0, 0);
 			translation.y = 1;
 			var boxEntity = createBoxEntity(goo.world, translation);
 			boxEntity.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			boxEntity.transformComponent.transform.scale.set(2,2,2);
-			createBoundingSphereForEntity(goo.world, boxEntity); 
+			createBoundingSphereForEntity(goo.world, boxEntity);
 			translation.x = 10;
 			translation.y = 1;
 			for (var i = 0; i < 10; i++) {
@@ -127,7 +127,7 @@ require(
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
 			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
-			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH))); 
+			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH)));
 
 
 			translation.x = -wallW / 2 + 2;
@@ -137,7 +137,7 @@ require(
 			for (var columns = 0; columns < numberOfBoxes; columns++) {
 				var box = createBoxEntity(goo.world, translation);
 				box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
-				createBoundingSphereForEntity(goo.world, box); 
+				createBoundingSphereForEntity(goo.world, box);
 				translation.x += 2;
 				translation.z += 0.3;
 			}
@@ -159,7 +159,7 @@ require(
 			var box = createBoxEntity(goo.world, translation);
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 
-			// Left 
+			// Left
 			translation.y += 1.05;
 			translation.z += 1.05;
 			box = createBoxEntity(goo.world, translation);
@@ -199,11 +199,11 @@ require(
 			translation.x = 0;
 			translation.y = 0;
 			translation.z = -5;
-			
+
 		//	addHead(goo, translation);
 
 			goo.callbacks.push(function(tpf) {
-				
+
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
 				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(goo.world.time));
 				boxEntity.transformComponent.setUpdated();
@@ -226,7 +226,7 @@ require(
 			material.textures.push(texture);
 
 			entity.meshRendererComponent.materials.push(material);
-			
+
 			entity.addToWorld();
 			return entity;
 		}
@@ -252,7 +252,7 @@ require(
 			entity.meshDataComponent.autoCompute = false;
 			entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 			entity.name = 'BoundingBox';
-			
+
 			entity.meshRendererComponent.cullMode = 'NeverOcclusionCull';
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'wirematOnBoundingBox');
 			material.wireframe = true;
@@ -284,9 +284,9 @@ require(
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.y = -height/2;
 			entity.name = 'Floor';
-			
+
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'FloorMaterial');
-			
+
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/fieldstone-c.jpg');
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
@@ -301,7 +301,7 @@ require(
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'Box';
-			
+
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'GooBoxMaterial');
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 			material.textures.push(texture);
@@ -317,7 +317,7 @@ require(
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'Box';
-			
+
 			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
 			material.uniforms = {'color' : color}
 			entity.meshRendererComponent.materials.push(material);
@@ -337,7 +337,7 @@ require(
 					entities[1].transformComponent.transform.translation.y += 2; // Translate origin to the bottom of the model.
 					entities[1].transformComponent.transform.scale.set(10, 10, 10);
 					createBoundingSphereForEntity(goo.world, entities[1]);
-					
+
 				},
 				onError : function(error) {
 					console.error(error);

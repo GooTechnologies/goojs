@@ -9,7 +9,7 @@ define(
 	describe('SoftwareRenderer', function () {
 
 		var renderer = new SoftwareRenderer({"width" : 256, "height" : 114});
-		
+
 		describe('calculateIntersectionRatio', function() {
 
 			it('calculates the intersection correctly at 50%', function() {
@@ -40,11 +40,11 @@ define(
 			var v1 = new Vector3(0.5, -0.2, 13.5);
 			var v2 = new Vector3(-0.5, 0.3, 23.5);
 			var v3 = new Vector3(0.7, 0.7, 73.5);
-			
+
 			it('This face inside the space should be back face culled', function () {
 				expect(renderer._isBackFacing(v1, v2, v3)).toEqual(true);
 			});
-			
+
 			it('This face inside the space should be visible', function() {
 				expect(renderer._isBackFacing(v1, v3, v2)).toEqual(false);
 			});
@@ -190,6 +190,6 @@ define(
 				expect(renderer._isCoordinateInsideScreen(coordinate)).toEqual(true);
 			});
 		});
-	
+
 	});
 });
