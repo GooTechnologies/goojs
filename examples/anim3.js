@@ -12,6 +12,8 @@ require([
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
+	'goo/scripts/OrbitCamControlScript',
 	'goo/loaders/Loader',
 	'goo/loaders/SceneLoader'
 
@@ -22,20 +24,24 @@ require([
 	CameraComponent,
 	PointLight,
 	LightComponent,
+	ScriptComponent,
+	OrbitCamControlScript,
 	Loader,
 	SceneLoader
 
 ) {
 	"use strict";
-	var resourcePath = "../converter/new/";
+	var resourcePath = "../converter/latest/";
 
 	function init() {
+		// GooRunner
 		var goo = new GooRunner({
 			showStats: true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
+		// Camera
 		var camera = new Camera(45, 1, 1, 1000);
 
 		var cameraEntity = goo.world.createEntity('CameraEntity');
@@ -46,12 +52,23 @@ require([
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
+		// Camera control
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			baseDistance : 150,
+			spherical : new Vector3(150, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
+
+		// Light
 		var light = new PointLight();
 		var entity = goo.world.createEntity('Light');
 		entity.setComponent(new LightComponent(light));
 		entity.transformComponent.transform.translation.set(80, 50, 80);
 		entity.addToWorld();
 
+		// Creating loader
 		var loader = new Loader({
 			rootPath: resourcePath
 		});
@@ -60,10 +77,12 @@ require([
 			world: goo.world
 		});
 
+		// Loading Megan
 		sceneLoader.load('megan.scene.json').then(function(payload) {
 			console.log(payload);
-		}, function(msg) {
-			console.log(msg);
+		},
+		function(err) {
+			console.log('error:',err);
 		});
 
 	}

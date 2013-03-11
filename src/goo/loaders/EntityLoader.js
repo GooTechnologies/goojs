@@ -182,12 +182,10 @@ function(
 
 		return RSVP.all(promises)
 		.then(function(materials) {
-
 			var mrc = new MeshRendererComponent();
 			for(var i in materials) {
 				mrc.materials.push(materials[i]);
 			}
-
 			return mrc;
 		});
 	};
@@ -198,7 +196,6 @@ function(
 		var mdl = new MeshLoader({
 			loader: this._loader
 		});
-
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
 			if(attribute === 'mesh') {

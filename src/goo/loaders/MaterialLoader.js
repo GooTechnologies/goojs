@@ -56,10 +56,18 @@ define([
 		var materialState = this._getDefaultMaterialState();
 		var textures = [];
 
+		function pushTexture(texture) {
+			textures.push(new TextureCreator({
+				loader:that._loader
+			}).loadTexture2D('../converter/latest/'+texture.url));
+		}
+
+		var name = materialDataSource.name || 'DefaultMaterial';
+
 		if(materialDataSource) {
 			var value;
 
-			value = materialDataSource.shader;
+			value = materialDataSource.shaderRef;
 			if(value) {
 				var p = this._loader.load(value)
 				.then(function(data) {
@@ -76,17 +84,18 @@ define([
 
 			value = materialDataSource.uniforms;
 			if(value) {
-				var that = this;
 				var uniform;
 
-				uniform = value.diffuseTexture;
-				if(uniform) {
-					textures.push(new TextureCreator({
-						loader:this._loader
-					}).loadTexture2D(uniform));
+
+				if(materialDataSource.textures && materialDataSource.textures.length) {
+					for(var i = 0; i < materialDataSource.textures.length; i++) {
+						var p = this._loader.load(materialDataSource.textures[i])
+						.then(pushTexture);
+						promises.push(p);
+					}
 				}
 
-				uniform = value.shininess;
+				uniform = value.materialSpecularPower;
 				if(uniform) {
 					materialState.shininess = uniform;
 				}
@@ -98,26 +107,25 @@ define([
 					if(typeof color[3] !== 'undefined' || color[3] !== null) { destination.a = color[3]; }
 				};
 
-				uniform = value.ambient;
+				uniform = value.materialAmbient;
 				if(uniform) {
 					setDestinationColor(materialState.ambient, uniform);
 				}
 
-				uniform = value.diffuse;
+				uniform = value.materialDiffuse;
 				if(uniform) {
 					setDestinationColor(materialState.diffuse, uniform);
 				}
 
-				uniform = value.emissive;
+				uniform = value.materialEmissive;
 				if(uniform) {
 					setDestinationColor(materialState.emissive, uniform);
 				}
 
-				uniform = value.specular;
+				uniform = value.materialSpecular;
 				if(uniform) {
 					setDestinationColor(materialState.specular, uniform);
 				}
-
 			}
 		}
 
@@ -129,11 +137,9 @@ define([
 
 		return RSVP.all(promises)
 		.then(function() {
-			var material = Material.createMaterial(shaderDefinition);
-
+			var material = Material.createMaterial(shaderDefinition, name);
 			material.textures = textures;
 			material.materialState = materialState;
-
 			return material;
 		});
 	};

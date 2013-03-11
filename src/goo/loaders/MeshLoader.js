@@ -48,12 +48,12 @@ function(
 		var promise = new RSVP.Promise();
 
 		try {
-			this.useCompression = data.compressed || false;
+			this.useCompression = data.compression.compressed || false;
 
 			if (this.useCompression) {
-				this.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-				this.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-				this.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
+				this.compressedVertsRange = data.compression.compressedVertsRange || (1 << 14) - 1; // int
+				this.compressedColorsRange = data.compression.compressedColorsRange || (1 << 8) - 1; // int
+				this.compressedUnitVectorRange = data.compression.compressedUnitVectorRange || (1 << 10) - 1; // int
 			}
 
 			promise.resolve(this._parseMeshData(data, 0, 'Mesh'));
@@ -65,7 +65,6 @@ function(
 	};
 
 	MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
-
 		var vertexCount = object.data.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
@@ -97,7 +96,6 @@ function(
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}
-
 		var meshData = new MeshData(attributeMap, vertexCount, indexCount);
 
 		if (object.data.Vertices) {

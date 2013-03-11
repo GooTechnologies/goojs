@@ -32,9 +32,10 @@ convertTextures = (material, textures) ->
 		outputFile "textures/#{match[0]}.tex.json", newtex
 		material.textures.push "textures/#{match[0]}.tex"
 
-convertMeshData = (data, entity) ->
+convertMeshData = (data, entity, compression) ->
 	newmesh = 
 		data: data.MeshData
+		compression: compression
 	outputFile "meshes/#{data.Name}.mesh.json", newmesh
 
 	_.extend entity.components,
@@ -42,7 +43,7 @@ convertMeshData = (data, entity) ->
 			mesh: "meshes/#{data.Name}.mesh"
 
 
-convertChildren = (children, parent, entities) ->
+convertChildren = (children, parent, entities, compression) ->
 	for child in children
 		entity =
 			name: child.Name
@@ -58,7 +59,7 @@ convertChildren = (children, parent, entities) ->
 					materials: ["materials/#{child.Material}.mat"]
 
 		if child.MeshData?
-			convertMeshData(child, entity)
+			convertMeshData(child, entity, compression)
 			
 		if parent
 			entity.components.transform.parentRef = "entities/#{parent.name}.ent"
@@ -73,26 +74,34 @@ convert = (inputFile, outputPath, objectName) ->
 	oldObject = require(file)
 	
 	for material in oldObject.Materials
-		newmat = {}
+		newmat =
+			uniforms: {}
 		newmat.name = material.MaterialName
 		
 		for key, value of material when /Color$/.test key
 			match = key.match(/^(.*)Color$/)
 			newkey = match[1]
-			newmat['material'+newkey] = convertColor(value)
+			newmat.uniforms['material'+newkey] = convertColor(value)
 		
 		if material.Shininess?
-			newmat.materialSpecularPower = material.Shininess
-			
-		convertTextures(newmat, material.TextureEntries)
+			newmat.uniforms.materialSpecularPower = material.Shininess
+		
+		if material.TextureEntries?	
+			convertTextures(newmat, material.TextureEntries)
 	
 		# TODO: Should be done in a better way
-		newmat.shader = 'shaders/dummy.shader'
+		newmat.shaderRef = 'shaders/simpleLit.shader'
 		
 		outputFile "materials/#{newmat.name}.mat.json", newmat
 	
 	transform = oldObject.Scene.Transform
 	entities = []
+	compression =
+		compressed: oldObject.UseCompression
+		compressedVertsRange: oldObject.CompressedVertsRange
+		compressedColorsRange: oldObject.CompressedColorsRange
+		compressedUnitVectorRange: oldObject.CompressedUnitVectorRange
+		
 	rootObject =
 		name: objectName
 		components:
@@ -103,7 +112,7 @@ convert = (inputFile, outputPath, objectName) ->
 				
 	entities.push rootObject
 	
-	convertChildren oldObject.Scene.Children, rootObject, entities
+	convertChildren oldObject.Scene.Children, rootObject, entities, compression
 	
 	
 	for entity in entities
