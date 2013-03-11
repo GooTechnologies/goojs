@@ -126,7 +126,7 @@ require([
 //				console.log(percent);
 			},
 			done: function () {
-				loader.setAttribute('style', 'display: none');
+				loader.classList.remove('visible');
 			}
 		});
 		var transform = new Transform();
