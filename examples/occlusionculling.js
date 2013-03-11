@@ -85,14 +85,14 @@ require(
 			var occlusionCuller = new OcclusionPartitioner({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
 			goo.renderSystem.partitioner = occlusionCuller;
 
-			var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
-			var gl = goo.renderer.context;
+			//var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
+			//var gl = goo.renderer.context;
 
 			var clearColor = [0, 0, 0, 1.0];
 			goo.renderer.setClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
 
 			// Add the color data to the debug canvas
-			goo.callbacks.push(function(tpf) {
+			goo.callbacks.push(function() {
 
 				// console.time("readTime");
 				//gl.readPixels(0, 0, debugcanvas.width, debugcanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, storage);
@@ -115,8 +115,7 @@ require(
 			translation.x = 10;
 			translation.y = 1;
 			for (var i = 0; i < 10; i++) {
-
-				var quad = createQuad(goo.world, translation, 2, 2);
+				createQuad(goo.world, translation, 2, 2);
 				translation.z -= 1.0;
 			}
 
@@ -200,9 +199,9 @@ require(
 			translation.y = 0;
 			translation.z = -5;
 
-		//	addHead(goo, translation);
+			addHead(goo, translation);
 
-			goo.callbacks.push(function(tpf) {
+			goo.callbacks.push(function() {
 
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
 				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(goo.world.time));
@@ -319,7 +318,7 @@ require(
 			entity.name = 'Box';
 
 			var material = new Material.createMaterial(ShaderLib.simpleColored, 'ColoredBoxMaterial!');
-			material.uniforms = {'color' : color}
+			material.uniforms = {'color' : color};
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
 			return entity;

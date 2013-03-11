@@ -33,8 +33,8 @@ function () {
 
 	// TODO: Remove the rounding of values out of here.. Add conservative check on the x-coordinates the point this is done as well.
 	Edge.prototype._roundConservative = function () {
-		this.y0 = Math.ceil(this.y0);
-		this.y1 = Math.ceil(this.y1);
+		this.y0 = Math.round(this.y0);
+		this.y1 = Math.round(this.y1);
 	};
 
 	Edge.prototype.invertZ = function() {
