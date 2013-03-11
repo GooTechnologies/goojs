@@ -50,6 +50,7 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
+		var that = this;
 		var promises = []; // Keep track of promises
 		var shaderDefinition = this._getDefaultShaderDefinition();
 		var materialState = this._getDefaultMaterialState();

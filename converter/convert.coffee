@@ -37,7 +37,7 @@ convertMeshData = (data, entity) ->
 		data: data.MeshData
 	outputFile "meshes/#{data.Name}.mesh.json", newmesh
 
-	_.extend entity,
+	_.extend entity.components,
 		meshData:
 			mesh: "meshes/#{data.Name}.mesh"
 
@@ -87,7 +87,7 @@ convert = (inputFile, outputPath, objectName) ->
 		convertTextures(newmat, material.TextureEntries)
 	
 		# TODO: Should be done in a better way
-		newmat.shaderRef = 'shaders/skinning.shader'
+		newmat.shader = 'shaders/dummy.shader'
 		
 		outputFile "materials/#{newmat.name}.mat.json", newmat
 	

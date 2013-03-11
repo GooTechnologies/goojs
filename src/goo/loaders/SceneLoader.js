@@ -66,10 +66,10 @@ function(
 			for(var i in sceneSource.files) {
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
-				var match = fileName.match(/.ent.json$/);
+				var match = fileName.match(/\.ent\.json$/);
 
 				if(match !== null) {
-					var p = entityLoader.load(scenePath + '/' + fileName);
+					var p = entityLoader.load(/*scenePath + '/' + */fileName);
 					promises.push(p);
 				}
 			}
