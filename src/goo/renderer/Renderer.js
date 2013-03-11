@@ -42,6 +42,22 @@ function (
 	 * The renderer handles displaying of graphics data to a render context. It accepts a JSON object containing the settings for the renderer.
 	 * default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false }
 	 *
+	 *   alpha:
+	 *   Enables the possibility to render non-opaque pixels.
+	 *
+	 *   premultipliedAlpha:
+	 *   Whether the colors are premultiplied with the alpha channel.
+	 *
+	 *   antialias:
+	 *   Enables antialiasing.
+	 *
+	 *   stencil:
+	 *   Enables the stencil buffer.
+	 *
+	 *   onError:
+	 *   Function that is called when an error occurs. Currently only is called in debug mode.
+	 *   Called with the error description as a parameter.
+	 *
 	 * @constructor
 	 * @param {Settings} parameters Renderer settings.
 	 */
@@ -61,6 +77,7 @@ function (
 		this._antialias = parameters.antialias !== undefined ? parameters.antialias : false;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
+		this._onError = parameters.onError;
 
 		var settings = {
 			alpha : this._alpha,
@@ -92,7 +109,8 @@ function (
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
 						// Yes, eval is intended, sorry checkstyle
-						window.eval.call(window, request.responseText);
+						// jshint evil:true
+						window['eval'].call(window, request.responseText);
 					}
 				}
 			};
@@ -104,9 +122,9 @@ function (
 				console.log('Running in webgl debug mode.');
 				if (parameters.validate) {
 					console.log('Running with "undefined arguments" validation.');
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, undefined, validateNoneOfTheArgsAreUndefined);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
 				} else {
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context);
+					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
 				}
 			}
 		}
@@ -207,6 +225,22 @@ function (
 			}
 		}
 	}
+
+	Renderer.prototype.onDebugError = function (err, functionName, args) {
+		// Based on the default error handler in WebGLDebugUtils
+		// apparently we can't do args.join(",");
+		// global WebGLDebugUtils
+		var message = 'WebGL error ' + WebGLDebugUtils.glEnumToString(err) + ' in '+ functionName + '(';
+		for (var ii = 0; ii < args.length; ++ii) {
+			message += ((ii === 0) ? '' : ', ') +
+			WebGLDebugUtils.glFunctionArgToString(functionName, ii, args[ii]);
+		}
+		message += ')';
+		console.error(message);
+		if (this._onError) {
+			this._onError(message);
+		}
+	};
 
 	Renderer.mainCamera = null;
 
@@ -621,8 +655,8 @@ function (
 	};
 
 	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
-		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
+			context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}

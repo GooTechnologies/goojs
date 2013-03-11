@@ -48,17 +48,12 @@ require([
 
 	var resourcePath = "../resources";
 
-	function removeChildrenFromNode(node) {
-		while (node.hasChildNodes()) {
-			node.removeChild(node.firstChild);
-		}
-	}
-
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			showStats : false
 		});
+
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
@@ -105,41 +100,81 @@ require([
 //		var coolPass = new FullscreenPass(ShaderLib.horizontalTiltShift);
 		coolPass.renderToScreen = true;
 
-		for ( var key in ShaderLib) {
+		var shaders = [
+			'copy',
+			'copyPure',
+			'textured',
+			'texturedLit',
+			'bokehShader',
+			'sepia',
+			'dotscreen',
+			'vignette',
+			'film',
+			'bleachbypass',
+			'horizontalTiltShift',
+			'colorify',
+			'normalMap',
+			'rgbshift',
+			'brightnesscontrast',
+			'luminosity',
+			'downsample',
+			'boxfilter'
+		];
+		for ( var i = 0; i < shaders.length; i++) {
+			var key = shaders[i];
 			console.log(key);
 
-			var inp = document.createElement('button');
+			var inp = document.createElement('li');
 			inp.setAttribute('onclick', 'selectEffect("'+key+'");');
 			var t = document.createTextNode(key);
 			inp.appendChild(t);
 
-			document.getElementById('sel').appendChild(inp);
+			document.getElementById('list').appendChild(inp);
 		}
 
-		var elem = document.getElementById('effectInfo');
 		window.selectEffect = function(effect) {
 			console.log(effect);
 
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
 
-			removeChildrenFromNode(elem);
-			for (var key in coolPass.material.shader.uniforms) {
-				var div = document.createElement('div');
-				elem.appendChild(div);
+			var infoPanel = document.getElementById('effectInfo');
 
-				var t = document.createTextNode(key);
-				div.appendChild(t);
-
-				var inp = document.createElement('input');
-				inp.setAttribute('type', 'text');
-				inp.setAttribute('value', JSON.stringify(coolPass.material.shader.uniforms[key]));
-				inp.addEventListener('change', function(val) {
-					console.log(val.srcElement.value);
-					coolPass.material.shader.uniforms[key] = eval(val.srcElement.value);
-				}, false);
-				div.appendChild(inp);
+			var t = document.createTextNode(effect);
+			var effectName = document.getElementById('effectName');
+			if(effectName.childNodes.length > 0) {
+				effectName.replaceChild(t, effectName.firstChild);
+			} else {
+				effectName.appendChild(t);
 			}
+
+			if(infoPanel.childNodes.length > 1) {
+				infoPanel.removeChild(infoPanel.lastChild);
+			}
+			var gui = new dat.GUI({
+				name: effect,
+				autoPlace: false
+			});
+			var uniforms = coolPass.material.shader.uniforms;
+			var arraySplit = function (value) {
+				uniforms[key] = value.split(',');
+			};
+			for (var key in uniforms) {
+				console.log(key, uniforms[key]);
+
+				if (uniforms[key] instanceof Array) {
+					uniforms[key][key] = uniforms[key].toString();
+					var controller = gui.add(uniforms[key], key);
+
+					controller.onFinishChange(arraySplit);
+				} else if(uniforms[key] instanceof Object) {
+					console.log("Nested object, can't display ", uniforms[key]);
+				} else {
+					gui.add(uniforms, key);
+				}
+			}
+
+			infoPanel.appendChild(gui.domElement);
 		};
 
 		// Regular copy

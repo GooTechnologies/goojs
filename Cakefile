@@ -1,3 +1,4 @@
+fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 	
@@ -27,6 +28,7 @@ task 'testmin', 'Start Testacular server for minified engine', ->
 	server = require('testacular').server
 	server.start(configFile: 'test/testacular-min.conf.js')
 	
+option '-o', '--output [FILE]', 'Outputfile'
 
 task 'checkstyle', 'Run JSHint', (options) ->
 	# I'm not sure that the cli module is official,
@@ -34,7 +36,13 @@ task 'checkstyle', 'Run JSHint', (options) ->
 	# with the same config files (.jshintrc and .jshintignore)
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
-	cmdopts = cli.interpret('jshint --reporter=tools/jshint-reporter.js src/ test/')
+	
+	if options.arguments[1]
+		files = options.arguments[1]
+	else
+		files = "src/ test/"
+		
+	cmdopts = cli.interpret("jshint --reporter=tools/jshint-reporter.js #{files}")
 
 task 'whitespace',
 	'Removes trailing whitespace in source files. Requires find, xargs and sed commands.',
@@ -58,3 +66,6 @@ task 'checkstyleforjenkins', 'Run JSHint to XML', (options) ->
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
 	cmdopts = cli.interpret('jshint --reporter=checkstyle src/ test/')
+
+task 'init-git', 'Install the precommit script', (options) ->
+	fs.writeFile '.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n'

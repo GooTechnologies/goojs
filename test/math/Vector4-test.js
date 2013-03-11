@@ -130,11 +130,21 @@ define(["goo/math/Vector4"], function(Vector4) {
 		});
 
 		it("can calculate dot products", function() {
-			var a = new Vector4(1, 2);
-			var b = new Vector4(1, 2);
+			var a = new Vector4(1, 2, 3, 4);
+			var b = new Vector4(2, 3, 4, 5);
 
-			expect(a.dot(b)).toEqual(5);
-			expect(Vector4.dot(a, b)).toEqual(5);
+			expect(a.dot(b)).toEqual(40);
+			expect(Vector4.dot(a, b)).toEqual(40);
+		});
+
+		it("can linearly interpolate", function() {
+			var a = new Vector4(0, 0, 0, 0);
+			var b = new Vector4(1, 1, 1, 1);
+
+			expect(a.lerp(b, 0.0)).toEqual(new Vector4(0, 0, 0, 0));
+			expect(a.lerp(b, 1.0)).toEqual(new Vector4(1, 1, 1, 1));
+			a.set(0,0,0,0);
+			expect(a.lerp(b, 0.5)).toEqual(new Vector4(0.5, 0.5, 0.5, 0.5));
 		});
 	});
 });

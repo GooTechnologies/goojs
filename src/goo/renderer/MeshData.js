@@ -42,7 +42,6 @@ function(
 	MeshData.SKINMESH = 1;
 
 	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
-
 		var savedAttributes = {};
 		var savedIndices = null;
 
@@ -137,12 +136,58 @@ function(
 
 	MeshData.prototype.makeInterleavedData = function() {
 		var stride = 0;
+		var offset = 0;
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
+			attribute.offset = stride;
 			stride += attribute.count * Util.getByteSize(attribute.type);
 		}
 
-		// TODO
+		var newVertexData = new BufferData(new ArrayBuffer(stride * this.vertexCount), this.vertexData.target);
+		newVertexData._dataUsage = this.vertexData._dataUsage;
+		newVertexData._dataNeedsRefresh = true;
+
+		var targetView = new DataView(newVertexData.data);
+		for (var key in this.attributeMap) {
+			var view = this.dataViews[key];
+			var attribute = this.attributeMap[key];
+			attribute.stride = stride;
+			var offset = attribute.offset;
+			var count = attribute.count;
+			var size = Util.getByteSize(attribute.type);
+
+			var method = this.getDataMethod(attribute.type);
+			var fun = targetView[method];
+			for (var i=0; i<this.vertexCount; i++) {
+				for (var j=0; j<count; j++) {
+					fun.apply(targetView, [(offset + stride * i + j * size), view[i * count + j], true]);
+				}
+			}
+		}
+
+		this.vertexData = newVertexData;
+	};
+
+	MeshData.prototype.getDataMethod = function (type) {
+		switch (type)
+		{
+		case 'Byte':
+			return 'setInt8';
+		case 'UnsignedByte':
+			return 'setUInt8';
+		case 'Short':
+			return 'setInt16';
+		case 'UnsignedShort':
+			return 'setUInt16';
+		case 'Int':
+			return 'setInt32';
+		case 'HalfFloat':
+			return 'setInt16';
+		case 'Float':
+			return 'setFloat32';
+		case 'Double':
+			return 'setFloat64';
+		}
 	};
 
 	MeshData.prototype.getAttributeBuffer = function(attributeName) {
