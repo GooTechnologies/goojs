@@ -55,8 +55,9 @@ function(
 				this.compressedColorsRange = data.compression.compressedColorsRange || (1 << 8) - 1; // int
 				this.compressedUnitVectorRange = data.compression.compressedUnitVectorRange || (1 << 10) - 1; // int
 			}
+			var type = (data.type === 'SkinnedMesh') ? 'SkinnedMesh' : 'Mesh';
 
-			promise.resolve(this._parseMeshData(data, 0, 'Mesh'));
+			promise.resolve(this._parseMeshData(data, 0, type));
 		} catch(e) {
 			promise.reject(e);
 		}
@@ -107,7 +108,7 @@ function(
 				JsonUtils.fillAttributeBuffer(object.data.Vertices, meshData, MeshData.POSITION);
 			}
 		}
-		if (object.data.Weights) {
+		if (weightsPerVert > 0 && object.data.Weights) {
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 1 / this.compressedVertsRange;
@@ -162,7 +163,7 @@ function(
 				}
 			}
 		}
-		if (object.data.Joints) {
+		if (weightsPerVert > 0 && object.data.Joints) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
 			var data;
 			if (this.useCompression) {
