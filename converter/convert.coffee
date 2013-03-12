@@ -11,15 +11,7 @@ copyShaderDir = ->
 	to = path.resolve basePath, 'shaders'
 	wrench.copyDirSyncRecursive from, to
 
-copyFile = (source, target, cb) ->
-  cbCalled = false
-
-  console.log source
-  console.log target
-  console.log '\n'
-  
-  
-  
+copyFile = (source, target) ->
   indata = fs.readFileSync source
   mkdirp.sync path.dirname(target)
   fs.writeFileSync target, indata
@@ -67,6 +59,26 @@ convertMeshData = (data, entity, compression) ->
 			mesh: "meshes/#{data.Name}.mesh"
 
 
+convertRotation = (matrix) ->
+	#Taken and rewritten from Matrix3x3.toAngles
+	EPSILON = 0.0000001
+	result = []
+	if (matrix[3] > 1 - EPSILON)  # singularity at north pole
+		result[1] = Math.atan2(matrix[2], matrix[8])
+		result[2] = Math.PI / 2
+		result[0] = 0
+	else if (matrix[3] < -1 + EPSILON) # singularity at south pole
+		result[1] = Math.atan2(matrix[2], matrix[8])
+		result[2] = -Math.PI / 2
+		result[0] = 0
+	else
+		result[1] = Math.atan2(-matrix[2], matrix[0])
+		result[0] = Math.atan2(-matrix[7], matrix[4])
+		result[2] = Math.asin(matrix[1])
+		
+	return result
+
+
 convertChildren = (children, parent, entities, compression) ->
 	for child in children
 		entity =
@@ -74,9 +86,9 @@ convertChildren = (children, parent, entities, compression) ->
 			components:
 				transform:
 					translation: child.Transform.Translation
-					rotation: child.Transform.Rotation
+					rotation: convertRotation(child.Transform.Rotation)
 					scale: child.Transform.Scale
-			
+
 		if child.Material?
 			_.extend entity.components,
 				meshRenderer:
@@ -135,7 +147,7 @@ convert = (inputFile, outputPath, objectName) ->
 			transform:
 				translation: transform.Translation
 				scale: transform.Scale
-				rotation: transform.Rotation
+				rotation: convertRotation transform.Rotation
 				
 	entities.push rootObject
 	
