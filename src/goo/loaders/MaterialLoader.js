@@ -56,8 +56,8 @@ define([
 		var materialState = this._getDefaultMaterialState();
 		var textures = [];
 
-		function pushTexture(texture) {
-			textures.push(new TextureCreator({
+		function addTexture(i, texture) {
+			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));
 		}
@@ -89,6 +89,7 @@ define([
 
 				if(materialDataSource.textures && materialDataSource.textures.length) {
 					for(var i = 0; i < materialDataSource.textures.length; i++) {
+						var pushTexture = addTexture.bind(null,i);
 						var p = this._loader.load(materialDataSource.textures[i])
 						.then(pushTexture);
 						promises.push(p);
