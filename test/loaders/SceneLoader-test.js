@@ -41,10 +41,10 @@ function(
 					if(path === 'scene') {
 						return parser({
 							files: [
-								'entity.ent.json'
+								'entities/entity.ent.json'
 							]
 						}, path);
-					} else if(path === 'scene/entity.ent.json') {
+					} else if(path === 'entities/entity.ent.json') {
 						var p = new RSVP.Promise();
 
 						p.resolve(new Entity(goo.world, 'Bruce'));

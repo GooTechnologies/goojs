@@ -39,17 +39,23 @@ function(
 
 					if(path === 'material.mat') {
 						return parser({
-							"shader": "shaders/texturedLit.shader",
+							"shaderRef": "shaders/texturedLit.shader",
 							"uniforms": {
-								"ambient": [0.2, 0.2, 0.2],
-								"diffuse": [1.0, 0.3, 0.5, 0.1],
-								"diffuseTexture": "textures/grid.png"
-							}
+								"materialAmbient": [0.2, 0.2, 0.2],
+								"materialDiffuse": [1.0, 0.3, 0.5, 0.1]
+							},
+							"textures": [
+								"textures/grid.tex"
+							]
 						}, path);
 					} else if(path === 'shaders/texturedLit.shader') {
 						p.resolve({
 							vs: 'vs',
 							fs: 'fs'
+						});
+					} else if(path === 'textures/grid.tex') {
+						p.resolve({
+							url: 'resources/grid.jpg'
 						});
 					} else if(path === 'vs') {
 						p.resolve(ShaderLib.texturedLit.vshader);

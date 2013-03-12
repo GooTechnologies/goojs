@@ -48,9 +48,9 @@ function(
 		var promise = new RSVP.Promise();
 
 		try {
-			this.useCompression = data.compression.compressed || false;
 
-			if (this.useCompression) {
+			if (data.compression) {
+				this.useCompression = data.compression.compressed || false;
 				this.compressedVertsRange = data.compression.compressedVertsRange || (1 << 14) - 1; // int
 				this.compressedColorsRange = data.compression.compressedColorsRange || (1 << 8) - 1; // int
 				this.compressedUnitVectorRange = data.compression.compressedUnitVectorRange || (1 << 10) - 1; // int
