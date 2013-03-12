@@ -171,6 +171,9 @@ require([
 			var colorHandle = function (value) {
 				uniforms.color = [proxies.red, proxies.green, proxies.blue];
 			};
+			var grayscaleHandle = function (value) {
+				uniforms.grayscale = value;
+			};
 			for (var key in uniforms) {
 				console.log(key, uniforms[key]);
 
@@ -194,7 +197,12 @@ require([
 					if (typeof (uniforms[key]) === 'string') {
 						console.log('Skipping string option ', key);
 					} else {
-						gui.add(uniforms, key);
+						if (effect === 'film' && key === 'grayscale') {
+							proxies.grayscale = false;
+							gui.add(proxies, 'grayscale').onChange(grayscaleHandle);
+						} else {
+							gui.add(uniforms, key);
+						}
 					}
 				}
 			}
