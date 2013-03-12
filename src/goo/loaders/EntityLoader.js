@@ -55,6 +55,8 @@ function(
 
 		this._loader = parameters.loader;
 		this._world = parameters.world;
+
+		this._entityMap = {};
 	}
 
 	/**
@@ -66,12 +68,13 @@ function(
 	EntityLoader.prototype.load = function(entityPath) {
 		var that = this;
 		return this._loader.load(entityPath, function(data) {
-			return that._parse(data);
+			var entityRef = entityPath.replace('.json','');
+			return that._parse(data, entityRef);
 		});
 	};
 
 
-	EntityLoader.prototype._parse = function(entitySource) {
+	EntityLoader.prototype._parse = function(entitySource, entityRef) {
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
@@ -123,9 +126,9 @@ function(
 		// either create an entity or return an error
 		return RSVP.all(promises)
 		.then(function() {
-
 			var entity = new Entity(that._world, entitySource.name);
 
+			that._entityMap[entityRef] = entity;
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
@@ -150,6 +153,11 @@ function(
 			transformComponentSource.rotation[1],
 			transformComponentSource.rotation[2]
 		);
+
+		var p = transformComponentSource.parentRef;
+		if(p && this._entityMap[p]) {
+			this._entityMap[p].transformComponent.attachChild(tc);
+		}
 
 		return tc;
 	};
