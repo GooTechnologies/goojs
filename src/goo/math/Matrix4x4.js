@@ -766,15 +766,16 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 	// REVIEW: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector) and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
+		var x = rhs.data[0];
+		var y = rhs.data[1];
+		var z = rhs.data[2];
+		var w = rhs.data[3];
 
-		rhs.x = this.e00 * x + this.e10 * y + this.e20 * z + this.e30 * w;
-		rhs.y = this.e01 * x + this.e11 * y + this.e21 * z + this.e31 * w;
-		rhs.z = this.e02 * x + this.e12 * y + this.e22 * z + this.e32 * w;
-		rhs.w = this.e03 * x + this.e13 * y + this.e23 * z + this.e33 * w;
+		var s = this.data;
+		rhs.data[0] = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
+		rhs.data[1] = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
+		rhs.data[2] = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
+		rhs.data[3] = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
 
 		return rhs;
 	};
@@ -793,10 +794,11 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var z = rhs.data[2];
 		var w = rhs.data[3];
 
-		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z + this.e03 * w;
-		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z + this.e13 * w;
-		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z + this.e23 * w;
-		rhs.w = this.e30 * x + this.e31 * y + this.e32 * z + this.e33 * w;
+		var s = this.data;
+		rhs.data[0] = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
+		rhs.data[1] = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
+		rhs.data[2] = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
+		rhs.data[3] = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
 
 		return rhs;
 	};
@@ -815,9 +817,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var z = rhs.data[2];
 
 		var d = this.data;
-		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
-		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
-		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
+		rhs.data[0] = d[0] * x + d[4] * y + d[8] * z + d[12];
+		rhs.data[1] = d[1] * x + d[5] * y + d[9] * z + d[13];
+		rhs.data[2] = d[2] * x + d[6] * y + d[10] * z + d[14];
 
 		return rhs;
 	};

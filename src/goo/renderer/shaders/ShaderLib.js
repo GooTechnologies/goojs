@@ -19,8 +19,40 @@ define([
 	function ShaderLib() {
 	}
 
+	ShaderLib.screenCopy = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			diffuseMap : Shader.TEXTURE0
+		},
+		vshader : [ //
+		'attribute vec3 vertexPosition;', //
+		'attribute vec2 vertexUV0;', //
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void) {', //
+		'	texCoord0 = vertexUV0;',//
+		'	gl_Position = vec4(vertexPosition, 1.0);', //
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'precision mediump float;',//
+
+		'uniform sampler2D diffuseMap;',//
+
+		'varying vec2 texCoord0;',//
+
+		'void main(void)',//
+		'{',//
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',//
+		'}'//
+		].join('\n')
+	};
+
 	ShaderLib.copy = {
-		includes : [ShaderFragments.features.fog],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -63,7 +95,6 @@ define([
 	};
 
 	ShaderLib.copyPure = {
-		includes : [ShaderFragments.features.fog],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -268,7 +299,7 @@ define([
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
-		'texCoord0 = vertexUV0;',//
+		'	texCoord0 = vertexUV0;',//
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
@@ -1163,7 +1194,6 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			heightMap : Shader.TEXTURE0,
 			resolution : [512, 512],
-			scale		: [1, 1],
 			height	: 0.05
 		},
 		vshader: [
@@ -1744,7 +1774,6 @@ define([
 	*	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
 	*/
 	ShaderLib.differenceOfGaussians = {
-		includes : [ShaderFragments.features.fog],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
