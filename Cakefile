@@ -2,6 +2,7 @@ fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
+exserver = require('./server/exampleserver')
 	
 task 'minify', 'minify try', (options) ->
 
@@ -80,3 +81,8 @@ task 'convert',
 			convert options.arguments[1], options.arguments[2], options.arguments[3]
 			console.log "#{options.arguments[1]} converted"
 		process.exit(0)
+
+task 'startex',
+	"Starts a server for the examples",
+	(options) ->
+		exserver.start()

@@ -1,8 +1,28 @@
 mkdirp = require('mkdirp')
 path = require('path')
 _ = require('underscore')
-basePath = ''
 fs = require('fs')
+wrench = require('wrench')
+basePath = ''
+inputDir = ''
+
+copyShaderDir = ->
+	from = path.resolve 'converter', 'shaders'
+	to = path.resolve basePath, 'shaders'
+	wrench.copyDirSyncRecursive from, to
+
+copyFile = (source, target, cb) ->
+  cbCalled = false
+
+  console.log source
+  console.log target
+  console.log '\n'
+  
+  
+  
+  indata = fs.readFileSync source
+  mkdirp.sync path.dirname(target)
+  fs.writeFileSync target, indata
 
 sceneFiles = []
 
@@ -26,11 +46,15 @@ convertTextures = (material, textures) ->
 	material.textures = []
 	for texture in textures
 		newtex =
-			url: texture.TextureSource
+			url: 'resources/'+texture.TextureSource
 			
 		match = texture.TextureSource.match(/^[^\.]*/)
 		outputFile "textures/#{match[0]}.tex.json", newtex
 		material.textures.push "textures/#{match[0]}.tex"
+		infile = path.resolve(inputDir, texture.TextureSource)
+		outfile = path.resolve(basePath, newtex.url)
+		copyFile infile, outfile
+		
 
 convertMeshData = (data, entity, compression) ->
 	newmesh = 
@@ -65,14 +89,16 @@ convertChildren = (children, parent, entities, compression) ->
 			entity.components.transform.parentRef = "entities/#{parent.name}.ent"
 
 		entities.push entity
-		if child.Children? then convertChildren(child.Children, entity, entities)
+		if child.Children? then convertChildren(child.Children, entity, entities, compression)
 
 convert = (inputFile, outputPath, objectName) ->	
 	file = path.resolve(inputFile)
 	basePath = path.resolve(outputPath)
-		
-	oldObject = require(file)
+	inputDir = path.resolve(path.dirname(inputFile))
 	
+	data = fs.readFileSync file
+	oldObject = JSON.parse(data)	
+
 	for material in oldObject.Materials
 		newmat =
 			uniforms: {}
@@ -88,9 +114,10 @@ convert = (inputFile, outputPath, objectName) ->
 		
 		if material.TextureEntries?	
 			convertTextures(newmat, material.TextureEntries)
-	
+			newmat.shaderRef = 'shaders/texturedLit.shader'
 		# TODO: Should be done in a better way
-		newmat.shaderRef = 'shaders/simpleLit.shader'
+		else 
+			newmat.shaderRef = 'shaders/simpleLit.shader'
 		
 		outputFile "materials/#{newmat.name}.mat.json", newmat
 	
@@ -123,5 +150,7 @@ convert = (inputFile, outputPath, objectName) ->
 		
 	outputFile "#{objectName}.scene.json", scene
 	
+	copyShaderDir()
+
 		
 exports.convert = convert
