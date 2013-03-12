@@ -83,7 +83,8 @@ function (
 				TextureCreator.cache[imageURL] = rVal;
 
 				// from URL
-				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, simpleResourceUtilCallback);
+				this._loader.load(imageURL, null, Loader.ARRAY_BUFFER)
+				.then(simpleResourceUtilCallback.onSuccess, simpleResourceUtilCallback.onError);
 
 				// return standin while we wait for texture to load.
 				return rVal;

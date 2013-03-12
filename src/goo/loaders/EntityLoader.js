@@ -124,7 +124,7 @@ function(
 		return RSVP.all(promises)
 		.then(function() {
 
-			var entity = new Entity(that._world);
+			var entity = new Entity(that._world, entitySource.name);
 
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {

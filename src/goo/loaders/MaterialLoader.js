@@ -59,7 +59,7 @@ define([
 		function pushTexture(texture) {
 			textures.push(new TextureCreator({
 				loader:that._loader
-			}).loadTexture2D('../converter/latest/'+texture.url));
+			}).loadTexture2D(texture.url));
 		}
 
 		var name = materialDataSource.name || 'DefaultMaterial';

@@ -36,7 +36,7 @@ define([
 	 * @param {Function} parser A function that parses the loaded data. If the function returns a Promise then its resolved value will resolve the load()'s Promise .
 	 * @return {Promise} The promise is resolved with the data loaded. If a parser is specified the data will be of the type resolved by the parser promise.
 	 */
-	Loader.prototype.load = function(path, parser) {
+	Loader.prototype.load = function(path, parser, mode) {
 		if(typeof path === "undefined" || path === null) {
 			throw new Error('Loader(): `path` was undefined/null');
 		}
@@ -44,6 +44,9 @@ define([
 		var ajaxProperties = {
 			url: this._buildURL(path)
 		};
+		if (mode === Loader.ARRAY_BUFFER) {
+			ajaxProperties.responseType = Loader.ARRAY_BUFFER;
+		}
 
 		var that = this;
 		var promise = this.xhr.get(ajaxProperties)
@@ -60,7 +63,7 @@ define([
 		})
 		// Bubble an error
 		.then(null, function(reason) {
-			throw new Error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`. Reason: ' + reason);
+			throw new Error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`.\n Reason: ' + reason);
 		});
 
 		return promise;
@@ -74,10 +77,13 @@ define([
 			var json = JSON.parse(request.responseText);
 			return json;
 		} else if(contentType === 'application/octet-stream') {
-			var match = ajaxProperties.url.match(/.glsl$/);
+			var match = ajaxProperties.url.match(/\.(glsl|dds)$/);
 
 			if(match !== null) {
 				// If the request url contains a known file extension
+				if (request.responseType === Loader.ARRAY_BUFFER) {
+					return request.response;
+				}
 				return request.responseText;
 			} else {
 				throw new Error('Loader._getDataFromSuccessfulRequest(): No known extension found in `' + ajaxProperties.url + '` for content type `' +  contentType);
@@ -122,6 +128,8 @@ define([
 		var _url = _match ? URLString + '.json' : URLString;
 		return this.rootPath + _url;
 	};
+
+	Loader.ARRAY_BUFFER = 'arraybuffer';
 
 	return Loader;
 });
