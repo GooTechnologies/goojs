@@ -7,6 +7,7 @@ define([
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/MeshDataComponent',
+		'goo/renderer/MeshData',
 		'goo/math/Vector3',
 
 		'goo/lib/rsvp.amd',
@@ -23,6 +24,7 @@ function(
 		TransformComponent,
 		MeshRendererComponent,
 		MeshDataComponent,
+		MeshData,
 		Vector3,
 
 		RSVP,
@@ -133,8 +135,22 @@ function(
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
 				}
-
 				entity.setComponent(loadedComponents[i]);
+			}
+
+			if (entity.meshDataComponent
+			&& entity.meshDataComponent.meshData.type === MeshData.SKINMESH
+			&& entity.meshRendererComponent
+			&& entity.meshRendererComponent.materials.length) {
+				var materials = entity.meshRendererComponent.materials;
+				for (var defines, i = 0, max = materials.length; i < max; i++) {
+					defines = materials[i].shader.defines;
+					if (defines && defines.JOINT_COUNT !== undefined
+					&& defines.WEIGHTS !== undefined) {
+						defines.JOINT_COUNT = entity.meshDataComponent.meshData.paletteMap.length;
+						defines.WEIGHTS = entity.meshDataComponent.meshData.weightsPerVertex;
+					}
+				}
 			}
 
 			return entity;
