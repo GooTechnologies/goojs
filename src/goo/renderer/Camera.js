@@ -102,9 +102,15 @@ function(
 		}
 		this._extents = new Vector3();
 
+		// Temp decl
+		this.vNearPlaneCenter = new Vector3();
+		this.vFarPlaneCenter = new Vector3();
+		this.direction = new Vector3();
+		this.left = new Vector3();
+		this.up = new Vector3();
+		this.planeNormal = new Vector3();
+
 		this.setFrustumPerspective(fov, aspect, near, far);
-		// this.onFrustumChange();
-		// this.onViewPortChange();
 		this.onFrameChange();
 	}
 
@@ -409,7 +415,7 @@ function(
 	Camera.prototype.onFrameChange = function() {
 		var dirDotLocation = this._direction.dot(this.translation);
 
-		var planeNormal = new Vector3();
+		var planeNormal = this.planeNormal;
 
 		// left plane
 		planeNormal.x = this._left.x * this._coeffLeft[0];
@@ -795,11 +801,11 @@ function(
 			fFarPlaneWidth = (this._frustumRight - this._frustumLeft) * 0.5;
 		}
 
-		var vNearPlaneCenter = new Vector3();
-		var vFarPlaneCenter = new Vector3();
-		var direction = new Vector3();
-		var left = new Vector3();
-		var up = new Vector3();
+		var vNearPlaneCenter = this.vNearPlaneCenter;
+		var vFarPlaneCenter = this.vFarPlaneCenter;
+		var direction = this.direction;
+		var left = this.left;
+		var up = this.up;
 
 		direction.setv(this._direction).mul(fNear);
 		vNearPlaneCenter.setv(this.translation).addv(direction);

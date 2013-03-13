@@ -39,7 +39,6 @@ function (
 
 		var waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
-		// waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/normalmap3.dds');
 		waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');
 		waterMaterial.textures[1] = this.renderTarget;
 		this.waterMaterial = waterMaterial;
@@ -134,6 +133,7 @@ function (
 	};
 
 	var waterShaderDef = {
+		timeMultiplier: 1.0,
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexNormal: MeshData.NORMAL
@@ -149,11 +149,9 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				// 0.1, 0.1, 0.3, 1.0
 				0.0, 0.05, 0.1, 1.0
 			],
 			waterColorEnd: [
-				// 0.2, 0.3, 0.3, 1.0
 				0.0, 0.1, 0.1, 1.0
 			],
 			abovewater: true,
@@ -163,9 +161,21 @@ function (
 			sunDirection: [
 				0.66, 0.66, 0.33
 			],
-			fogStart: 300.0,
-			fogScale: 1.0 / 1000.0,
-			time: Shader.TIME
+			sunColor: [
+				1.0, 0.96, 0.96
+			],
+			sunShininess: 100.0,
+			sunDiffusePower: 0.0,
+			sunSpecPower: 2.0,
+			fogStart: 500.0,
+			fogScale: 1700.0,
+			timeMultiplier: 1.0,
+			time: Shader.TIME,
+			distortionMultiplier: 0.04,
+			fresnelPow: 2.5,
+			normalMultiplier: 1.2,
+			fresnelMultiplier: 1.0,
+			waterScale: 1.0
 		},
 		vshader: [ //
 			'attribute vec3 vertexPosition;', //
@@ -176,7 +186,6 @@ function (
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
 			'uniform vec3 cameraPosition;', //
-			'uniform float time;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -216,24 +225,34 @@ function (
 			'uniform float fogScale;',
 			'uniform vec3 sunDirection;',
 			'uniform float time;',
+			'uniform float timeMultiplier;',
+			'uniform float distortionMultiplier;',
+			'uniform float fresnelPow;',
+			'uniform vec3 sunColor;',
+			'uniform float sunShininess;',
+			'uniform float sunDiffusePower;',
+			'uniform float sunSpecPower;',
+			'uniform float normalMultiplier;',
+			'uniform float fresnelMultiplier;',
+			'uniform float waterScale;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 
-			'const vec3 sunColor = vec3(1.0, 0.96, 0.96);',
-
 			'vec4 getNoise(vec2 uv) {',
-			'    vec2 uv0 = (uv/123.0)+vec2(time/17.0, time/29.0);',
-			'    vec2 uv1 = uv/167.0-vec2(time/-19.0, time/31.0);',
-			'    vec2 uv2 = uv/vec2(827.0, 983.0)+vec2(time/51.0, time/47.0);',
-			'    vec2 uv3 = uv/vec2(991.0, 877.0)-vec2(time/59.0, time/-63.0);',
+			'	float t = time * timeMultiplier;',
+			'	uv *= waterScale;',
+			'    vec2 uv0 = (uv/123.0) + vec2(t/17.0, t/29.0);',
+			'    vec2 uv1 = uv/167.0 - vec2(t/-19.0, t/31.0);',
+			'    vec2 uv2 = uv/vec2(827.0, 983.0) + vec2(t/51.0, t/47.0);',
+			'    vec2 uv3 = uv/vec2(991.0, 877.0) - vec2(t/59.0, t/-63.0);',
 			'    vec4 noise = (texture2D(normalMap, uv0)) +',
 			'                 (texture2D(normalMap, uv1)) +',
 			'                 (texture2D(normalMap, uv2)*3.0) +',
-			'                 (texture2D(normalMap, uv3)*3.0);',
-			'    return noise/4.0-1.0;',
+			'                 (texture2D(normalMap, uv3)*4.0);',
+			'    return noise/4.5-1.0;',
 			'}',
 
 			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse,',
@@ -246,21 +265,22 @@ function (
 
 			'void main(void)',//
 			'{',//
-			'	float fogDist = clamp((viewCoords.z-fogStart)*fogScale,0.0,1.0);',
+			'	float fogDist = clamp((viewCoords.z-fogStart)/fogScale,0.0,1.0);',
 
 			'	vec2 normCoords = texCoord0;',
 			'	vec4 noise = getNoise(normCoords);',
-			'	vec3 normalVector = normalize(noise.xyz*vec3(1.2, 1.2, 1.0));',
+			'	vec3 normalVector = normalize(noise.xyz * vec3(normalMultiplier, normalMultiplier, 1.0));',
 
 			'	vec3 localView = normalize(eyeVec);',
-			'	float fresnel = dot(normalize(normalVector*vec3(2.2, 2.2, 1.0)), localView);',
+			'	float fresnel = dot(normalize(normalVector * vec3(fresnelMultiplier, fresnelMultiplier, 1.0)), localView);',
 			'	if ( abovewater == false ) {',
 			'		fresnel = -fresnel;',
 			'	}',
 			'	fresnel *= 1.0 - fogDist;',
 			'	float fresnelTerm = 1.0 - fresnel;',
-			'	fresnelTerm *= fresnelTerm;',
-			'	fresnelTerm = fresnelTerm * 0.9 + 0.1;',
+			'	fresnelTerm = pow(fresnelTerm, fresnelPow);',
+			'	fresnelTerm = clamp(fresnelTerm, 0.0, 1.0);',
+			'	fresnelTerm = fresnelTerm * 0.95 + 0.05;',
 
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
@@ -268,8 +288,7 @@ function (
 			'		projCoord.x = 1.0 - projCoord.x;',
 			'	}',
 
-			// '	projCoord += (dudvColor.xy * 0.5 + normalVector.xy * 0.0);',
-			'	projCoord += (normalVector.xy * 0.04);',
+			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
 
 			'	vec4 reflectionColor = texture2D(reflection, projCoord);',
@@ -281,15 +300,12 @@ function (
 			'	else {',
 			'		vec3 diffuse = vec3(0.0);',
 			'		vec3 specular = vec3(0.0);',
-			'	    sunLight(normalVector, localView, 100.0, 2.0, 0.4, diffuse, specular);',
+			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
 
 			'		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);',
 			'		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);',
 
-			'		gl_FragColor = (vec4(diffuse*fresnelTerm + specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
-			// '		gl_FragColor = reflectionColor;',
-			// '		gl_FragColor = vec4(diffuse + specular, 1.0);',
-
+			'		gl_FragColor = (vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
 			'	}',
 			'}'
 		].join('\n')

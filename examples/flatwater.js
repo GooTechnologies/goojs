@@ -58,6 +58,7 @@ require([
 
 	var cameraEntity = null;
 	var skybox = null;
+	var gui = null;
 
 	function init () {
 		var goo = new GooRunner({
@@ -67,7 +68,9 @@ require([
 		goo.renderer.setClearColor(0.0, 0.0, 0.0, 1.0);
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-		
+
+		gui = new window.dat.GUI();
+
 		var camera = new Camera(45, 1, 0.1, 2000);
 		cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.transformComponent.transform.translation.setd(20,150,250);
@@ -130,6 +133,34 @@ require([
 
 		waterRenderer.setWaterEntity(waterEntity);
 		waterRenderer.setSkyBox(skybox);
+
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'timeMultiplier', 0.1, 5.0);
+		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'sunColor');
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunShininess', 0.0, 300.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunDiffusePower', 0.0, 2.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunSpecPower', 0.0, 4.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'distortionMultiplier', 0.0, 0.5);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelPow', 1.0, 8.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'normalMultiplier', 0.0, 3.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelMultiplier', 0.0, 3.0);
+		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColor');
+		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColorEnd');
+		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'fogColor');
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogStart', 0.0, 2000.0);
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogScale', 1.0, 2000.0);
+		var obj = {
+			message: ''
+		};
+		var controller = gui.add(obj, 'message', [ '1', '2' ] );
+		controller.onFinishChange(function(value) {
+			if (value === '1') {
+				waterRenderer.waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');
+			} else if (value === '2') {
+				waterRenderer.waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/normalmap3.dds');
+			}
+			console.log(value);
+		});
+		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'waterScale', 0.0001, 5.0);
 	}
 
 	function loadSkybox (goo) {
@@ -151,7 +182,7 @@ require([
 		skybox.meshRendererComponent.cullMode = 'Never';
 		skybox.addToWorld();
 
-		goo.callbacksPreRender.push(function (tpf) {
+		goo.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
 			target.translation.setv(source.translation);

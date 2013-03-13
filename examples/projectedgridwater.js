@@ -71,7 +71,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		gui = new dat.GUI();
+		gui = new window.dat.GUI();
 
 		var camera = new Camera(45, 1, 1, 2000);
 		cameraEntity = goo.world.createEntity("CameraEntity");
@@ -177,7 +177,7 @@ require([
 		skybox.meshRendererComponent.cullMode = 'Never';
 		skybox.addToWorld();
 
-		goo.callbacksPreRender.push(function (tpf) {
+		goo.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
 			target.translation.setv(source.translation);
