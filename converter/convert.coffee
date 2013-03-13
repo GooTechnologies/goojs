@@ -85,7 +85,7 @@ convertMeshData = (data, entity, type, compression, skeletonMap) ->
 		type: type
 		
 	if data.Pose
-		newmesh.pose = "skeletons/#{skeletonMap[data.Pose]}"
+		newmesh.pose = skeletonMap[data.Pose]
 		 
 	outputFile "meshes/#{data.Name}.mesh.json", newmesh
 
@@ -158,7 +158,7 @@ convert = (inputFile, outputPath, objectName) ->
 	if oldObject.Skeletons?.length
 		convertSkeletons(oldObject.Skeletons)
 		for pose in oldObject.SkeletonPoses
-			skeletonMap[pose.ref] = pose.Skeleton
+			skeletonMap[pose.ref] = "skeletons/#{pose.Skeleton}.skeleton"
 		
 	
 	convertChildren [oldObject.Scene], null, entities, compression, skeletonMap
