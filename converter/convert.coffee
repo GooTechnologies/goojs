@@ -73,12 +73,20 @@ convertTextures = (material, textures) ->
 		infile = path.resolve(inputDir, texture.TextureSource)
 		outfile = path.resolve(basePath, newtex.url)
 		copyFile infile, outfile
+
+convertSkeletons = (skeletons) ->
+	for skeleton in skeletons
+		outputFile "skeletons/#{skeleton.ref}.skeleton.json", skeleton
 		
-convertMeshData = (data, entity, type, compression) ->
+convertMeshData = (data, entity, type, compression, skeletonMap) ->
 	newmesh = 
 		data: data.MeshData
 		compression: compression
 		type: type
+		
+	if data.Pose
+		newmesh.pose = "skeletons/#{skeletonMap[data.Pose]}"
+		 
 	outputFile "meshes/#{data.Name}.mesh.json", newmesh
 
 	_.extend entity.components,
@@ -103,7 +111,7 @@ convertRotation = (matrix) ->
 		result[2] = Math.asin(matrix[1])
 	return result
 
-convertChildren = (children, parent, entities, compression) ->
+convertChildren = (children, parent, entities, compression, skeletonMap) ->
 	for child in children
 		entity =
 			name: child.Name
@@ -119,13 +127,13 @@ convertChildren = (children, parent, entities, compression) ->
 					materials: ["materials/#{child.Material}.mat"]
 
 		if child.MeshData?
-			convertMeshData(child, entity, child.Type, compression)
+			convertMeshData(child, entity, child.Type, compression, skeletonMap)
 			
 		if parent
 			entity.components.transform.parentRef = "entities/#{parent.name}.ent"
 			
 		entities.push entity
-		if child.Children? then convertChildren(child.Children, entity, entities, compression)
+		if child.Children? then convertChildren(child.Children, entity, entities, compression, skeletonMap)
 
 
 # Main function
@@ -146,9 +154,14 @@ convert = (inputFile, outputPath, objectName) ->
 		compressedColorsRange: oldObject.CompressedColorsRange
 		compressedUnitVectorRange: oldObject.CompressedUnitVectorRange
 	
-	oldObject.Scene.Name = objectName
+	skeletonMap = {}
+	if oldObject.Skeletons?.length
+		convertSkeletons(oldObject.Skeletons)
+		for pose in oldObject.SkeletonPoses
+			skeletonMap[pose.ref] = pose.Skeleton
+		
 	
-	convertChildren [oldObject.Scene], null, entities, compression
+	convertChildren [oldObject.Scene], null, entities, compression, skeletonMap
 	
 	for entity in entities
 		outputFile "entities/#{entity.name}.ent.json", entity
@@ -156,6 +169,7 @@ convert = (inputFile, outputPath, objectName) ->
 	scene =
 		files: sceneFiles
 		
+	oldObject.Scene.Name = objectName
 	outputFile "#{objectName}.scene.json", scene
 	
 	copyShaderDir()
