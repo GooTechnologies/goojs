@@ -211,12 +211,10 @@ define([
 			return false;
 		}
 
-		var minX, maxX, minY, maxY, minDepth;
-
 		/*
 		// Find the max and min values of x and y respectively.
 		// start with the first vertex' value as reference.
-		
+		var minX, maxX, minY, maxY, minDepth;
 		if (vertices[0].w > this.camera.near) {
 			// If any vertex of the bounding box is clipping the nearplane, regard the entity as beeing visible.
 			return false;
@@ -260,31 +258,32 @@ define([
 
 		*/
 
-		minX = minmaxArray[0];
-		maxX = minmaxArray[1];
-		minY = minmaxArray[2];
-		maxY = minmaxArray[3];
-		minDepth = minmaxArray[4];
+		// TODO : Revise clipping method, have to clamp values.
 
-		// TODO : Revise this rounding of values..
-
-		minX = Math.ceil(minX);
+		// For some reason , the minX value doesnt seem to 
+		minmaxArray[0] = Math.floor(minmaxArray[0]);
 		
-		if (maxX > this._clipX){
-			maxX = this._clipX;
+		// Clamp max
+		if (minmaxArray[1] > this._clipX){
+			minmaxArray[1] = this._clipX;
 		} else {
-			maxX = Math.ceil(maxX);
+			minmaxArray[1] = Math.ceil(minmaxArray[1]);
 		}
 
-		minY = Math.ceil(minY);
-
-		if (maxY > this._clipY){
-			maxY = this._clipY;
+		if (minmaxArray[2] < 0) {
+			minmaxArray[2] = 0;
 		} else {
-			maxY = Math.ceil(maxY);
+			minmaxArray[2] = Math.floor(minmaxArray[2]);
 		}
 
-		return this._isBoundingBoxScanlineOccluded(minX, maxX, minY, maxY, minDepth);
+		// Clamp.
+		if (minmaxArray[3] > this._clipY){
+			minmaxArray[3] = this._clipY;
+		} else {
+			minmaxArray[3] = Math.ceil(minmaxArray[3]);
+		}
+
+		return this._isBoundingBoxScanlineOccluded(minmaxArray);
 	};
 
 	/**
@@ -298,11 +297,12 @@ define([
 
 		for (var i = 0; i < 8; i++) {
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
-			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
+
 			if (vertices[i].w < this.camera.near) {
 				console.log("A vertex cut the near plane.")
 				return false;
 			}
+			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
 			vertices[i].w = 1.0 / vertices[i].w;
 		}
 
@@ -311,7 +311,7 @@ define([
 			if(!insideScreen[i]) {
 				var currentVertex = vertices[i];
 				// Find out which neighbour has the min depth and is inside the screen.
-				var targetNeighbour;
+				var targetNeighbours = [];
 				var minDepth = -Infinity;
 				for (var j = 0; j < 3; j++) {
 					var neighbourIndex = this._boundingBoxNeighbourIndices[i][j];
@@ -319,8 +319,8 @@ define([
 						var vert = vertices[neighbourIndex];
 						// The depth values are stored as 1/w , so larger values are closer to camera.
 						if (vert.w > minDepth) {
-							targetNeighbour = vert;
-							minDepth = targetNeighbour.w;
+							targetNeighbours.push(vert);
+							minDepth = vert.w;
 						}
 					}
 				}
@@ -330,105 +330,127 @@ define([
 				//		is outside. Maybe create a new function for this, and return different integers which says which area the vertex
 				//		is located in if it is outside the screen along with the amount.
 
-				if (!targetNeighbour) {
+				if (!targetNeighbours[0]) {
 					// No neighbours inside the screen.
 					continue;
 				}
 
+				var targetNeighbour = targetNeighbours[0];
+
 				var ratio;
 				var xDiff, yDiff;
 				var xLength, yLength;
+				var underX = false;
+				var underY = false;
 				if (currentVertex.x < 0) {
 					xDiff = -currentVertex.x;
 					xLength = targetNeighbour.x + xDiff + 1;
-					//vertices[i].x = 0;
-					minmaxArray[0] = 0;
+					underX = true;
 				} else {
 					xDiff = currentVertex.x - this._clipX;
 					xLength = currentVertex.x - targetNeighbour.x + 1;
-					if (xDiff > 0) {
-						//vertices[i].x = this._clipX;
-						//minmaxArray[1] = this._clipX;
-					}
 				}
 
 				if (currentVertex.y < 0) {
 					yDiff = -currentVertex.y;
 					yLength = targetNeighbour.y + yDiff + 1;
-					//vertices[i].y = 0;
-					minmaxArray[2] = 0;
+					underY = true;
 				} else {
 					yDiff = currentVertex.y - this._clipY;
 					yLength = currentVertex.y - targetNeighbour.y + 1;
-					if (yDiff > 0) {
-						//vertices[i].y = this._clipY;
-						//minmaxArray[3] = this._clipY;
-					}
 				}
 
 				// Calculate the ratio by using the largest diff.
+				// Decide which ratio to use if there are two targetNeighbours.
+				// The one to use is the one which create 
 				if (xDiff > yDiff) {
 					ratio = (xDiff) / (xLength);
+					vertices[i].y = currentVertex.y + ratio * (targetNeighbour.y - currentVertex.y);
+
+					if (underX) {
+						vertices[i].x = 0;
+						minmaxArray[0] = 0;
+					} else {
+						vertices[i].x = this._clipX;
+						minmaxArray[1] = this._clipX;
+					}
+
+					// Minmax Y
+					if (vertices[i].y > minmaxArray[3]) {
+						minmaxArray[3] = vertices[i].y;
+					} 
+					if (vertices[i].y < minmaxArray[2]) {
+						minmaxArray[2] = vertices[i].y;
+					}
+
+
+
 				} else {
 					ratio = (yDiff) / (yLength);
+					vertices[i].x = currentVertex.x + ratio * (targetNeighbour.x - currentVertex.x);
+
+					if (underY) {
+						vertices[i].y = 0;
+						minmaxArray[2] = 0;
+					} else {
+						vertices[i].y = this._clipY;
+						minmaxArray[3] = this._clipY;
+					}
+
+					// Minmax X
+					if (vertices[i].x > minmaxArray[1]) {
+						minmaxArray[1] = vertices[i].x;
+					}
+					if (vertices[i].x < minmaxArray[0]) {
+						minmaxArray[0] = vertices[i].x;
+					}
 				}
 
 
-				if ( ratio > 1.0 ) {
-					console.error("Something is worng... Ratio should be inside [0,1]", ratio);
+				if (ratio > 1.0 || ratio < 0.0) {
+					console.error("Something is wrong... Ratio should be inside [0,1]", ratio);
 				}
 				
 
 				// Interpolate the x- and y-coordinates and depth on the edge to the target vertex.
 				var a = 1.0 - ratio;
-				vertices[i].x = a * currentVertex.x + ratio * targetNeighbour.x;
-				vertices[i].y = a * currentVertex.y + ratio * targetNeighbour.y;
 				vertices[i].w = a * currentVertex.w + ratio * targetNeighbour.w;
 
 				if (vertices[i].w > minmaxArray[4]) {
 					minmaxArray[4] = vertices[i].w;
 				}
 
-				if (vertices[i].x > minmaxArray[1]) {
-					minmaxArray[1] = vertices[i].x;
-				} else if (vertices[i].x < minmaxArray[0]) {
-					minmaxArray[0] = vertices[i].x;
-				}
-
-				if (vertices[i].y > minmaxArray[3]) {
-					minmaxArray[3] = vertices[i].y;
-				} else if (vertices[i].y < minmaxArray[2]) {
-					minmaxArray[2] = vertices[i].y;
-				}
-
-				if (!this._isCoordinateInsideScreen(vertices[i])) {
-					console.error("Still outside!");
-				}
+				//if (!this._isCoordinateInsideScreen(vertices[i])) {
+				//}
 
 				// Set the current vertex to be inside, cause it should be that now.
 				// insideScreen[i] = true;
 
-			} else {
+			} else { // If the vertex is inside the screen.
 				// Check for min max values of the vertex.
+				// Min Depth
 				var vert = vertices[i];
 				if (vert.w > minmaxArray[4]) {
 					minmaxArray[4] = vert.w;
 				}
 
+				// Minmax X
 				if (vert.x > minmaxArray[1]) {
 					minmaxArray[1] = vert.x;
-				} else if (vert.x < minmaxArray[0]) {
+				}
+				if (vert.x < minmaxArray[0]) {
 					minmaxArray[0] = vert.x;
 				}
 
+				// Minmax Y
 				if (vert.y > minmaxArray[3]) {
 					minmaxArray[3] = vert.y;
-				} else if (vert.y < minmaxArray[2]) {
+				} 
+				if (vert.y < minmaxArray[2]) {
 					minmaxArray[2] = vert.y;
 				}
 			}
 		}
-
 		return true;
 	};
 
@@ -437,34 +459,34 @@ define([
 	*	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
 	*	@return {Boolean} occluded or not occluded.
 	*/
-	SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minX, maxX, minY, maxY, minDepth) {
+	SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
 
 		// this._clampToScreen(minX, maxX, minY, maxY);
 		// This should have been taken care of by the clipping of the bounding box.
 		/*
-		if (minX < 0) {
-			minX = 0;
+		if (minmaxArray[0] < 0) {
+			console.log("Stuff catched: ", minmaxArray);
 		}
 
-		if (maxX > this._clipX) {
-			maxX = this._clipX;
+		if (minmaxArray[1] > this._clipX) {
+			console.log("Stuff catched: ", minmaxArray);
 		}
 
-		if (minY < 0) {
-			minY = 0;
+		if (minmaxArray[2] < 0) {
+			console.log("Stuff catched: ", minmaxArray);
 		}
 
-		if (maxY > this._clipY) {
-			maxY = this._clipY;
+		if (minmaxArray[3] > this._clipY) {
+			console.log("Stuff catched: ", minmaxArray);
 		}
 		*/
 		
 		// Run the scanline test for each row [maxY, minY] , [minX, maxX]
-		for (var scanline = maxY; scanline >= minY; scanline--) {
-			var sampleCoordinate = scanline * this.width + minX;
-			for (var x = minX; x <= maxX; x++) {
+		for (var scanline = minmaxArray[3]; scanline >= minmaxArray[2]; scanline--) {
+			var sampleCoordinate = scanline * this.width + minmaxArray[0];
+			for (var x = minmaxArray[0]; x <= minmaxArray[1]; x++) {
 				this._colorData.set([0,0,255], sampleCoordinate * 4); // create some blue ( DEBUGGING ).
-				if (this._depthData[sampleCoordinate] < minDepth) {
+				if (this._depthData[sampleCoordinate] < minmaxArray[4]) {
 					return false;
 				}
 				sampleCoordinate++;
