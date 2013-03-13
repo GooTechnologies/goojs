@@ -43,27 +43,38 @@ define([
 			if(typeof parameters === "undefined" || parameters === null) {
 				throw new Error('AnimationTreeLoader(): Argument `parameters` was undefined/null');
 			}
-
-			console.log(typeof parameters.loader === "undefined");
-			console.log(!(parameters.loader instanceof Loader));
-			console.log(parameters.loader === null);
 			if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
 				throw new Error('AnimationTreeLoader(): Argument `parameters.loader` was invalid/undefined/null');
 			}
 
 			this._loader = parameters.loader;
 
+			this._cache = {};
+
 		}
 
 		AnimationTreeLoader.prototype.load = function (animTreePath, pose, name) {
+			/*if(this._cache[animTreePath] && this._cache[animTreePath][pose]) {
+				return this._cache[animTreePath][pose._skeleton.name];
+			}*/
+
 			var animationManager = new AnimationManager(pose);
 			animationManager._applier = new SimpleAnimationApplier();
+
+
+
+			var animTreeBase = animTreePath.match(/.*\//);
+			if (animTreeBase.length === 1) {
+				animTreeBase = animTreeBase[0];
+			} else {
+				animTreeBase = '';
+			}
 			var root;
 			var outputStore = new OutputStore();
 
 			var loadTree = AnimationTreeLoader.prototype._loadTree.bind(this);
 			var parseTree = AnimationTreeLoader.prototype._parseTree.bind(this);
-			var loadAndParseAnimations = AnimationTreeLoader.prototype._loadAndParseAnimations.bind(this);
+			var loadAndParseAnimations = AnimationTreeLoader.prototype._loadAndParseAnimations.bind(this, animTreeBase);
 			var parseAnimationLayers = AnimationTreeLoader.prototype._parseAnimationLayers.bind(this);
 			var setupDefaultAnimation = AnimationTreeLoader.prototype._setupDefaultAnimation.bind(this, name);
 
@@ -75,6 +86,10 @@ define([
 					return parseAnimationLayers(animationManager, inputStore, outputStore, root);
 				}).then(setupDefaultAnimation);
 
+			if(!this._cache[animTreePath]) {
+				this._cache[animTreePath] = {};
+			}
+			this._cache[animTreePath][pose._skeleton._name] = promise;
 			return promise;
 		};
 
@@ -90,8 +105,8 @@ define([
 			return animTree.Clips;
 		};
 
-		AnimationTreeLoader.prototype._loadAndParseAnimations = function (clips) {
-			var loadAnimation = AnimationTreeLoader.prototype._loadAnimation.bind(this);
+		AnimationTreeLoader.prototype._loadAndParseAnimations = function (basePath, clips) {
+			var loadAnimation = AnimationTreeLoader.prototype._loadAnimation.bind(this, basePath);
 			var parseAnimation;
 			var promises = [];
 			var inputStore = {};
@@ -106,8 +121,8 @@ define([
 			});
 		};
 
-		AnimationTreeLoader.prototype._loadAnimation = function (clipPath) {
-			return this._loader.load(clipPath.URL+'.json');
+		AnimationTreeLoader.prototype._loadAnimation = function (basePath, clipPath) {
+			return this._loader.load(basePath+clipPath.URL+'.json');
 		};
 
 		AnimationTreeLoader.prototype._parseAnimation = function (storeName, inputStore, clipSource) {

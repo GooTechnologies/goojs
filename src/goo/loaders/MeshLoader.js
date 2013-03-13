@@ -2,13 +2,15 @@
 define([
 		'goo/lib/rsvp.amd',
 		'goo/loaders/JsonUtils',
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'goo/loaders/SkeletonLoader'
 	],
 /** @lends MeshLoader */
 function(
 	RSVP,
 	JsonUtils,
-	MeshData
+	MeshData,
+	SkeletonLoader
 	) {
 	"use strict";
 
@@ -64,7 +66,19 @@ function(
 				meshData = this._parseMeshData(data, 0, type);
 				meshData.type = MeshData.MESH;
 			}
-			promise.resolve(meshData);
+			if (data.pose) {
+				var skeletonLoader = new SkeletonLoader({
+					loader: this._loader
+				});
+				promise = skeletonLoader.load(data.pose)
+				.then(function(skeletonPose) {
+					meshData.currentPose = skeletonPose;
+					return meshData;
+				});
+			}
+			else {
+				promise.resolve(meshData);
+			}
 		} catch(e) {
 			promise.reject(e);
 		}
