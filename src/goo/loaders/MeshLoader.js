@@ -56,8 +56,15 @@ function(
 				this.compressedUnitVectorRange = data.compression.compressedUnitVectorRange || (1 << 10) - 1; // int
 			}
 			var type = (data.type === 'SkinnedMesh') ? 'SkinnedMesh' : 'Mesh';
-
-			promise.resolve(this._parseMeshData(data, 0, type));
+			var meshData;
+			if (data.type === 'SkinnedMesh') {
+				meshData = this._parseMeshData(data, 4, type);
+				meshData.type = MeshData.SKINMESH;
+			} else {
+				meshData = this._parseMeshData(data, 0, type);
+				meshData.type = MeshData.MESH;
+			}
+			promise.resolve(meshData);
 		} catch(e) {
 			promise.reject(e);
 		}
@@ -171,7 +178,6 @@ function(
 			} else {
 				data = JsonUtils.getIntBuffer(object.data.Joints, 32767);
 			}
-
 			if (type === 'SkinnedMesh') {
 				// map these joints to local.
 				var localJointMap = [];
@@ -195,6 +201,7 @@ function(
 				}
 
 				meshData.paletteMap = localMap;
+				meshData.weightsPerVertex = weightsPerVert;
 			} else {
 				for (var i = 0, max = data.capacity(); i < max; i++) {
 					buffer.putCast(i, data.get(i));
