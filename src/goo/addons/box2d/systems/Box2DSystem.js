@@ -131,7 +131,7 @@ function(
 		entity.body.w = width;
 	};
 
-	Box2DSystem.prototype.deleted = function(entity) {
+	Box2DSystem.prototype.deleted = function(/*entity*/) {
 		// remove entity.body from physics
 	};
 
