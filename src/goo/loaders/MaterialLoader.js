@@ -52,7 +52,7 @@ define([
 	MaterialLoader.prototype._parse = function(materialDataSource) {
 		var that = this;
 		var promises = []; // Keep track of promises
-		var shaderDefinition = this._getDefaultShaderDefinition();
+		var shaderDefinition;
 		var materialState = this._getDefaultMaterialState();
 		var textures = [];
 
@@ -62,11 +62,17 @@ define([
 			}).loadTexture2D(texture.url));
 		}
 
+		function setDestinationColor(destination, color) {
+			if(typeof color[0] !== 'undefined' || color[0] !== null) { destination.r = color[0]; }
+			if(typeof color[1] !== 'undefined' || color[1] !== null) { destination.g = color[1]; }
+			if(typeof color[2] !== 'undefined' || color[2] !== null) { destination.b = color[2]; }
+			if(typeof color[3] !== 'undefined' || color[3] !== null) { destination.a = color[3]; }
+		}
+
 		var name = materialDataSource.name || 'DefaultMaterial';
 
 		if(materialDataSource) {
 			var value;
-
 			value = materialDataSource.shaderRef;
 			if(value) {
 				var p = this._loader.load(value)
@@ -74,62 +80,38 @@ define([
 					return that._parseShaderDefinition(data);
 				})
 				.then(function(shaderDef) {
-					shaderDefinition.vshader = shaderDef.vshader;
-					shaderDefinition.fshader = shaderDef.fshader;
+					if (shaderDef) {
+						shaderDefinition = shaderDef;
+					}
 					return shaderDefinition;
 				});
 
 				promises.push(p);
 			}
 
-			value = materialDataSource.uniforms;
-			if(value) {
-				var uniform;
+			if (materialDataSource.uniforms) {
+				for (var key in materialDataSource.uniforms) {
+					var value = materialDataSource.uniforms[key];
+					var match;
+					if (match = /^material(\w+)$/.exec(key)) {
+						var state = match[1].toLowerCase();
+						if(state === 'specularpower') {
+							state = 'shininess';
+						}
 
-
-				if(materialDataSource.textures && materialDataSource.textures.length) {
-					for(var i = 0; i < materialDataSource.textures.length; i++) {
-						var pushTexture = addTexture.bind(null,i);
-						var p = this._loader.load(materialDataSource.textures[i])
-						.then(pushTexture);
-						promises.push(p);
+						setDestinationColor(materialState[state], value);
 					}
 				}
-
-				uniform = value.materialSpecularPower;
-				if(uniform) {
-					materialState.shininess = uniform;
-				}
-
-				var setDestinationColor = function(destination, color) {
-					if(typeof color[0] !== 'undefined' || color[0] !== null) { destination.r = color[0]; }
-					if(typeof color[1] !== 'undefined' || color[1] !== null) { destination.g = color[1]; }
-					if(typeof color[2] !== 'undefined' || color[2] !== null) { destination.b = color[2]; }
-					if(typeof color[3] !== 'undefined' || color[3] !== null) { destination.a = color[3]; }
-				};
-
-				uniform = value.materialAmbient;
-				if(uniform) {
-					setDestinationColor(materialState.ambient, uniform);
-				}
-
-				uniform = value.materialDiffuse;
-				if(uniform) {
-					setDestinationColor(materialState.diffuse, uniform);
-				}
-
-				uniform = value.materialEmissive;
-				if(uniform) {
-					setDestinationColor(materialState.emissive, uniform);
-				}
-
-				uniform = value.materialSpecular;
-				if(uniform) {
-					setDestinationColor(materialState.specular, uniform);
+			}
+			if (materialDataSource.textures && materialDataSource.textures.length) {
+				for (var i = 0; i < materialDataSource.textures.length; i++) {
+					var pushTexture = addTexture.bind(null,i);
+					var p = this._loader.load(materialDataSource.textures[i])
+					.then(pushTexture);
+					promises.push(p);
 				}
 			}
 		}
-
 		if(promises.length === 0) {
 			var p = new RSVP.Promise();
 			p.reject('Material definition `' + materialDataSource + '` does not seem to contain a shader definition.');
@@ -147,9 +129,32 @@ define([
 
 	MaterialLoader.prototype._parseShaderDefinition = function(shaderDataSource) {
 		var promises = [];
-		var shaderDefinition = {};
+		if (shaderDataSource && shaderDataSource.attributes && shaderDataSource.uniforms) {
+			var shaderDefinition = {
+				attributes: shaderDataSource.attributes,
+				uniforms: shaderDataSource.uniforms
+			};
 
-		if(shaderDataSource.vs && shaderDataSource.fs) {
+			for (var key in shaderDefinition.uniforms) {
+				var uniform = shaderDefinition.uniforms[key];
+
+				var funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/;
+				var test = uniform.match(funcRegexp);
+				if (test && test.length === 3) {
+					var args = test[1].replace(' ','').split(',');
+					var body = test[2];
+					/*jshint -W054 */
+					shaderDefinition.uniforms[key] = new Function(args, body);
+				}
+			}
+
+			if (shaderDataSource.defines) {
+				shaderDefinition.defines = shaderDataSource.defines;
+			}
+		} else {
+			var shaderDefinition = this._getDefaultShaderDefinition();
+		}
+		if(shaderDataSource && shaderDataSource.vs && shaderDataSource.fs) {
 			var p;
 
 			p = this._loader.load(shaderDataSource.vs)
@@ -164,7 +169,6 @@ define([
 			});
 			promises.push(p);
 		}
-
 		if(promises.length === 0) {
 			var p = new RSVP.Promise();
 			p.reject('Shader definition `' + shaderDataSource + '` does not seem to contain any shader data.');
