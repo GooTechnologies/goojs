@@ -25,8 +25,6 @@ function(
 		this.friction = settings.friction ? settings.friction : 1;
 		this.offsetX = settings.offsetX ? settings.offsetX : 0;
 		this.offsetY = settings.offsetY ? settings.offsetY : 0;
-
-
 	}
 
 	Box2DComponent.prototype = Object.create(Component.prototype);
