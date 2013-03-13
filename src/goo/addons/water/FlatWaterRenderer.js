@@ -26,20 +26,23 @@ function (
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function FlatWaterRenderer (camera) {
+	function FlatWaterRenderer (camera, settings) {
 		this.camera = camera;
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);
 		this.renderList = [];
 
 		this.waterPlane = new Plane();
 
-		var width = window.innerWidth / 2 || 1;
-		var height = window.innerHeight / 2 || 1;
+		settings = settings || {};
+
+		var width = window.innerWidth / (settings.divider || 2);
+		var height = window.innerHeight / (settings.divider || 2);
 		this.renderTarget = new RenderTarget(width, height);
 
 		var waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
-		waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');
+		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
+		waterMaterial.textures[0] = new TextureCreator().loadTexture2D(normalsTextureUrl);
 		waterMaterial.textures[1] = this.renderTarget;
 		this.waterMaterial = waterMaterial;
 
@@ -49,6 +52,8 @@ function (
 		this.camReflectLeft = new Vector3();
 		this.camLocation = new Vector3();
 		this.camReflectPos = new Vector3();
+
+		this.offset = new Vector3();
 
 		this.waterEntity = null;
 	}
@@ -95,7 +100,7 @@ function (
 
 			if (this.skybox) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos);
+				target.translation.setv(camReflectPos).addv(this.offset);
 				target.update();
 			}
 		}
@@ -118,7 +123,7 @@ function (
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source);
+			target.translation.setv(source).addv(this.offset);
 			target.update();
 		}
 	};
@@ -168,14 +173,15 @@ function (
 			sunDiffusePower: 0.0,
 			sunSpecPower: 2.0,
 			fogStart: 500.0,
-			fogScale: 1700.0,
+			fogScale: 1500.0,
 			timeMultiplier: 1.0,
 			time: Shader.TIME,
 			distortionMultiplier: 0.04,
 			fresnelPow: 2.5,
 			normalMultiplier: 1.2,
 			fresnelMultiplier: 1.0,
-			waterScale: 1.0
+			waterScale: 1.0,
+			doFog: true
 		},
 		vshader: [ //
 			'attribute vec3 vertexPosition;', //
@@ -235,6 +241,7 @@ function (
 			'uniform float normalMultiplier;',
 			'uniform float fresnelMultiplier;',
 			'uniform float waterScale;',
+			'uniform bool doFog;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -305,7 +312,11 @@ function (
 			'		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);',
 			'		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);',
 
-			'		gl_FragColor = (vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
+			'		if (doFog) {',
+			'			gl_FragColor = (vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
+			'		} else {',
+			'			gl_FragColor = vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
+			'		}',
 			'	}',
 			'}'
 		].join('\n')
