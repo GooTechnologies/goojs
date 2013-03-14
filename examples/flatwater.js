@@ -125,7 +125,7 @@ require([
 		var material = Material.createMaterial(ShaderLib.simple, 'mat');
 		waterEntity.meshRendererComponent.materials.push(material);
 		waterEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
-		waterEntity.transformComponent.transform.translation.y = -10;
+		// waterEntity.transformComponent.transform.translation.y = -10;
 		waterEntity.addToWorld();
 
 		var waterRenderer = new FlatWaterRenderer(camera);

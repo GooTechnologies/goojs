@@ -724,13 +724,13 @@ function(
 		return this.modelViewProjectionInverse;
 	};
 
-    /**
-     * Compress this camera's near and far frustum planes to be smaller if possible, using the given bounds as a
-     * measure.
-     *
-     * @param sceneBounds
-     *            the scene bounds
-     */
+	/**
+	 * Compress this camera's near and far frustum planes to be smaller if possible, using the given bounds as a
+	 * measure.
+	 *
+	 * @param sceneBounds
+	 *            the scene bounds
+	 */
 	Camera.prototype.pack = function (sceneBounds) {
 		var center = sceneBounds.center;
 		var corners = this._corners;
@@ -755,7 +755,6 @@ function(
 		corners[6].add_d(-extents.x, extents.y, -extents.z);
 		corners[7].add_d(-extents.x, -extents.y, -extents.z);
 
-		// var mvMatrix = this.getModelViewMatrix();
 		var mvMatrix = this.getViewMatrix();
 		var optimalCameraNear = Number.MAX_VALUE;
 		var optimalCameraFar = -Number.MAX_VALUE;
@@ -781,9 +780,9 @@ function(
 
 		this._frustumNear = optimalCameraNear;
 		this._frustumFar = optimalCameraFar;
-     };
+	 };
 
-    Camera.prototype.calculateFrustumCorners = function(fNear, fFar) {
+	Camera.prototype.calculateFrustumCorners = function(fNear, fFar) {
 		fNear = fNear !== undefined ? fNear : this._frustumNear;
 		fFar = fFar !== undefined ? fFar : this._frustumFar;
 
@@ -827,6 +826,46 @@ function(
 		this._corners[7].setv(vFarPlaneCenter).subv(left).addv(up);
 
 		return this._corners;
+	};
+
+	var sgn = function (val) {
+		if (val > 0.0) {
+			return 1.0;
+		} else if (val < 0.0) {
+			return -1.0;
+		}
+		return 0.0;
+	};
+
+	/**
+	 * Clipping using oblique frustums
+	 * @param clipPlane clipping plane
+	 */
+	Camera.prototype.setToObliqueMatrix = function (clipPlane) {
+		clipPlane = new Vector4(clipPlane);
+
+		this.getViewMatrix().applyPost(clipPlane);
+		clipPlane.w = this.translation.y;
+
+		this._updatePMatrix = true;
+		var projection = this.getProjectionMatrix();
+
+		var q = new Vector4(
+			(sgn(clipPlane.x) + projection[8]) / projection[0],
+			(sgn(clipPlane.y) + projection[9]) / projection[5],
+			-1,
+			(1.0 + projection[10]) / projection[14]
+		);
+
+		clipPlane.mul(2.0 / Vector4.dot(clipPlane, q));
+
+		projection[2] = clipPlane.x;
+		projection[6] = clipPlane.y;
+		projection[10] = clipPlane.z + 1.0;
+		projection[14] = clipPlane.w;
+
+		this._updateMVPMatrix = true;
+		this._updateInverseMVPMatrix = true;
 	};
 
 	return Camera;

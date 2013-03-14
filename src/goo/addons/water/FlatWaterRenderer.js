@@ -5,6 +5,7 @@ define([
 	'goo/math/Plane',
 	'goo/renderer/pass/RenderTarget',
 	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'goo/renderer/Material',
 	'goo/renderer/TextureCreator'
 ],
@@ -16,6 +17,7 @@ function (
 	Plane,
 	RenderTarget,
 	Vector3,
+	Vector4,
 	Material,
 	TextureCreator
 ) {
@@ -46,6 +48,8 @@ function (
 		waterMaterial.textures[1] = this.renderTarget;
 		this.waterMaterial = waterMaterial;
 
+		this.followCam = true;
+
 		this.calcVect = new Vector3();
 		this.camReflectDir = new Vector3();
 		this.camReflectUp = new Vector3();
@@ -54,6 +58,7 @@ function (
 		this.camReflectPos = new Vector3();
 
 		this.offset = new Vector3();
+		this.clipPlane = new Vector4();
 
 		this.waterEntity = null;
 	}
@@ -98,9 +103,9 @@ function (
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 
-			if (this.skybox) {
+			if (this.skybox && this.followCam) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos).addv(this.offset);
+				target.translation.setv(camReflectPos);
 				target.update();
 			}
 		}
@@ -108,28 +113,40 @@ function (
 		this.waterMaterial.shader.uniforms.abovewater = aboveWater;
 
 		this.waterEntity.skip = true;
-		// textured1.uniforms.heightLimit = waterPlane.constant;
-		// textured2.uniforms.heightLimit = waterPlane.constant;
 
 		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
-		renderer.render(this.renderList, this.waterCamera, [], this.renderTarget, true);
+		if (this.skybox) {
+			renderer.render(this.skybox, this.waterCamera, [], this.renderTarget, true);
+			this.skybox.skip = true;
+		}
+
+		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+		this.waterCamera.setToObliqueMatrix(this.clipPlane);
+
+		renderer.render(this.renderList, this.waterCamera, [], this.renderTarget, this.skybox === undefined);
 
 		this.waterEntity.skip = false;
-		// textured1.uniforms.heightLimit = -10000.0;
-		// textured2.uniforms.heightLimit = -10000.0;
+		if (this.skybox) {
+			this.skybox.skip = false;
+		}
 
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
 			target.translation.setv(source).addv(this.offset);
 			target.update();
+
+			this.waterCamera._updatePMatrix = true;
 		}
 	};
 
 	FlatWaterRenderer.prototype.setSkyBox = function (skyboxEntity) {
 		this.skybox = skyboxEntity;
+		this.skybox.meshRendererComponent.materials[0].depthState.enabled = false;
+		this.skybox.meshRendererComponent.materials[0].renderQueue = 0;
+		this.skybox.meshRendererComponent.cullMode = 'Never';
 	};
 
 	FlatWaterRenderer.prototype.setWaterEntity = function (entity) {
