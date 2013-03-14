@@ -75,7 +75,7 @@ require([
 
 		// Load a bunch of skeletons
 		// skeletonCount needs to be a squared odd number
-		var skeletonCount = 3*3;
+		var skeletonCount = 9*9;
 		var param = Math.round((Math.sqrt(skeletonCount)/2)-1);
 		for (var i = -param; i <= param; i++) {
 			for (var j = -param; j <= param; j++) {
