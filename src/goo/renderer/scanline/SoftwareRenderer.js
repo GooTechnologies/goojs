@@ -261,8 +261,12 @@ define([
 		// TODO : Revise clipping method, have to clamp values.
 
 		// For some reason , the minX value doesnt seem to 
-		minmaxArray[0] = Math.floor(minmaxArray[0]);
-		
+		if(minmaxArray[0] < 0) {
+			minmaxArray[0] = 0;
+		} else {
+			minmaxArray[0] = Math.floor(minmaxArray[0]);
+		}
+
 		// Clamp max
 		if (minmaxArray[1] > this._clipX){
 			minmaxArray[1] = this._clipX;
@@ -299,7 +303,7 @@ define([
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
 
 			if (vertices[i].w < this.camera.near) {
-				console.log("A vertex cut the near plane.")
+				//console.log("A vertex cut the near plane.");
 				return false;
 			}
 			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
@@ -310,18 +314,11 @@ define([
 			// Clip if not inside screen.
 			if(!insideScreen[i]) {
 				var currentVertex = vertices[i];
-				// Find out which neighbour has the min depth and is inside the screen.
 				var targetNeighbours = [];
-				var minDepth = -Infinity;
 				for (var j = 0; j < 3; j++) {
 					var neighbourIndex = this._boundingBoxNeighbourIndices[i][j];
 					if (insideScreen[neighbourIndex]) {
-						var vert = vertices[neighbourIndex];
-						// The depth values are stored as 1/w , so larger values are closer to camera.
-						if (vert.w > minDepth) {
-							targetNeighbours.push(vert);
-							minDepth = vert.w;
-						}
+						targetNeighbours.push(vertices[neighbourIndex]);
 					}
 				}
 
@@ -335,98 +332,105 @@ define([
 					continue;
 				}
 
-				var targetNeighbour = targetNeighbours[0];
 
-				var ratio;
 				var xDiff, yDiff;
-				var xLength, yLength;
 				var underX = false;
 				var underY = false;
 				if (currentVertex.x < 0) {
 					xDiff = -currentVertex.x;
-					xLength = targetNeighbour.x + xDiff + 1;
 					underX = true;
 				} else {
 					xDiff = currentVertex.x - this._clipX;
-					xLength = currentVertex.x - targetNeighbour.x + 1;
 				}
 
 				if (currentVertex.y < 0) {
 					yDiff = -currentVertex.y;
-					yLength = targetNeighbour.y + yDiff + 1;
 					underY = true;
 				} else {
 					yDiff = currentVertex.y - this._clipY;
-					yLength = currentVertex.y - targetNeighbour.y + 1;
 				}
 
 				// Calculate the ratio by using the largest diff.
-				// Decide which ratio to use if there are two targetNeighbours.
-				// The one to use is the one which create 
+				var ratio;
+				var a;
+				var spanLength;
 				if (xDiff > yDiff) {
-					ratio = (xDiff) / (xLength);
-					vertices[i].y = currentVertex.y + ratio * (targetNeighbour.y - currentVertex.y);
+					// Find the ratio which gives the closest depth,
+					for (var n = 0; n < targetNeighbours.length; n++) {
+						var neighbour = targetNeighbours[n];
 
-					if (underX) {
-						vertices[i].x = 0;
-						minmaxArray[0] = 0;
-					} else {
-						vertices[i].x = this._clipX;
-						minmaxArray[1] = this._clipX;
+						if (underX) {
+							spanLength = neighbour.x + xDiff + 1;
+						} else {
+							spanLength = currentVertex.x - neighbour.x + 1;
+						}
+
+						ratio = xDiff / spanLength;
+						a = 1.0 - ratio;
+						var tempDepth = a * currentVertex.w + ratio * neighbour.w;
+
+						// Interpolate to new Y , since we are outside on the X-side.
+						var newY = currentVertex.y + ratio * (neighbour.y - currentVertex.y);
+
+						if (tempDepth > minmaxArray[4]) {
+							minmaxArray[4] = tempDepth;
+						}
+
+						if (underX) {
+							minmaxArray[0] = 0;
+						} else {
+							minmaxArray[1] = this._clipX;
+						}
+
+						// Minmax Y
+						if (newY > minmaxArray[3]) {
+							minmaxArray[3] = newY;
+						}
+						if (newY < minmaxArray[2]) {
+							minmaxArray[2] = newY;
+						}
 					}
-
-					// Minmax Y
-					if (vertices[i].y > minmaxArray[3]) {
-						minmaxArray[3] = vertices[i].y;
-					} 
-					if (vertices[i].y < minmaxArray[2]) {
-						minmaxArray[2] = vertices[i].y;
-					}
-
-
 
 				} else {
-					ratio = (yDiff) / (yLength);
-					vertices[i].x = currentVertex.x + ratio * (targetNeighbour.x - currentVertex.x);
+					// The current vertex is further outside on the Y axis.
+					// Find the ratio which gives the closest depth,
+					for (var n = 0; n < targetNeighbours.length; n++) {
+						var neighbour = targetNeighbours[n];
 
-					if (underY) {
-						vertices[i].y = 0;
-						minmaxArray[2] = 0;
-					} else {
-						vertices[i].y = this._clipY;
-						minmaxArray[3] = this._clipY;
-					}
+						if (underY) {
+							spanLength = neighbour.y + yDiff + 1;
+						} else {
+							spanLength = currentVertex.y - neighbour.y + 1;
+						}
 
-					// Minmax X
-					if (vertices[i].x > minmaxArray[1]) {
-						minmaxArray[1] = vertices[i].x;
-					}
-					if (vertices[i].x < minmaxArray[0]) {
-						minmaxArray[0] = vertices[i].x;
+						ratio = yDiff / spanLength;
+						a = 1.0 - ratio;
+						var tempDepth = a * currentVertex.w + ratio * neighbour.w;
+
+						// Interpolate to new X , since we are outside on the Yside.
+						var newX = currentVertex.x + ratio * (neighbour.x - currentVertex.x);
+
+						if (tempDepth > minmaxArray[4]) {
+							minmaxArray[4] = tempDepth;
+						}
+
+						if (underY) {
+							minmaxArray[2] = 0;
+						} else {
+							minmaxArray[3] = this._clipY;
+						}
+
+						// Minmax X
+						if (newX > minmaxArray[1]) {
+							minmaxArray[1] = newX;
+						}
+						if (newX < minmaxArray[0]) {
+							minmaxArray[0] = newX;
+						}
 					}
 				}
-
-
-				if (ratio > 1.0 || ratio < 0.0) {
-					console.error("Something is wrong... Ratio should be inside [0,1]", ratio);
-				}
-				
-
-				// Interpolate the x- and y-coordinates and depth on the edge to the target vertex.
-				var a = 1.0 - ratio;
-				vertices[i].w = a * currentVertex.w + ratio * targetNeighbour.w;
-
-				if (vertices[i].w > minmaxArray[4]) {
-					minmaxArray[4] = vertices[i].w;
-				}
-
-				//if (!this._isCoordinateInsideScreen(vertices[i])) {
-				//}
-
-				// Set the current vertex to be inside, cause it should be that now.
-				// insideScreen[i] = true;
-
-			} else { // If the vertex is inside the screen.
+			} else {
+				// If the vertex is inside the screen.
 				// Check for min max values of the vertex.
 				// Min Depth
 				var vert = vertices[i];
@@ -445,7 +449,7 @@ define([
 				// Minmax Y
 				if (vert.y > minmaxArray[3]) {
 					minmaxArray[3] = vert.y;
-				} 
+				}
 				if (vert.y < minmaxArray[2]) {
 					minmaxArray[2] = vert.y;
 				}
@@ -460,27 +464,6 @@ define([
 	*	@return {Boolean} occluded or not occluded.
 	*/
 	SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
-
-		// this._clampToScreen(minX, maxX, minY, maxY);
-		// This should have been taken care of by the clipping of the bounding box.
-		/*
-		if (minmaxArray[0] < 0) {
-			console.log("Stuff catched: ", minmaxArray);
-		}
-
-		if (minmaxArray[1] > this._clipX) {
-			console.log("Stuff catched: ", minmaxArray);
-		}
-
-		if (minmaxArray[2] < 0) {
-			console.log("Stuff catched: ", minmaxArray);
-		}
-
-		if (minmaxArray[3] > this._clipY) {
-			console.log("Stuff catched: ", minmaxArray);
-		}
-		*/
-		
 		// Run the scanline test for each row [maxY, minY] , [minX, maxX]
 		for (var scanline = minmaxArray[3]; scanline >= minmaxArray[2]; scanline--) {
 			var sampleCoordinate = scanline * this.width + minmaxArray[0];
@@ -1090,7 +1073,7 @@ define([
 	*	@return {Boolean} true/false
 	*/
 	SoftwareRenderer.prototype._isCoordinateInsideScreen = function (coordinate) {
-		return coordinate.x >= 0 && coordinate.x < this.width && coordinate.y < this.height && coordinate.y >= 0;
+		return coordinate.x >= 0 && coordinate.x <= this._clipX && coordinate.y <= this._clipY && coordinate.y >= 0;
 	};
 
 
