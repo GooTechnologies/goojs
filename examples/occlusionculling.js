@@ -125,8 +125,12 @@ require(
 			var wallW = 50;
 			var wallH = 10;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
-			// Adds occluder geometry , for this case it is exactly the same as the original geometry.
+			// Add occluder geometry component, in this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH)));
+			
+			translation.z -= 8;
+			var longQuad = createColoredBox(goo.world, translation, [0, 1, 0], wallW * 0.7, wallH * 0.45, 2);
+			addBoundingBoxToEntity(goo.world, translation, longQuad);
 
 
 			translation.x = -wallW / 2 + 2;
@@ -184,7 +188,7 @@ require(
 			translation.y -= 1.05;
 			translation.x -= 3;
 			var boxcolor = [1, 0, 0];
-			box = createColoredBox(goo.world, translation, boxcolor, 2);
+			box = createColoredBox(goo.world, translation, boxcolor, 2, 2, 2);
 			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
 			createBoundingSphereForEntity(goo.world, box);
 
@@ -309,8 +313,8 @@ require(
 			return entity;
 		}
 
-		function createColoredBox (world, translation, color, scale) {
-			var meshData = ShapeCreator.createBox(scale, scale, scale);
+		function createColoredBox (world, translation, color, x, y, z) {
+			var meshData = ShapeCreator.createBox(x, y, z);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
 			entity.transformComponent.transform.translation.x = translation.x;
 			entity.transformComponent.transform.translation.y = translation.y;

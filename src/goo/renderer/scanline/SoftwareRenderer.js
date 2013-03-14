@@ -301,13 +301,17 @@ define([
 
 		for (var i = 0; i < 8; i++) {
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
-
-			if (vertices[i].w < this.camera.near) {
-				//console.log("A vertex cut the near plane.");
+			var cut = vertices[i].w < this.camera.near;
+			if (cut && insideScreen[i]) {
+				console.log("A vertex cut the near plane.");
 				return false;
-			}
+			} else if (cut && !insideScreen[i]) {
+				console.log("cut near plane, but outside screen.");
+				vertices[i].w = this.camera.near;
+			} else {
 			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
 			vertices[i].w = 1.0 / vertices[i].w;
+			}
 		}
 
 		for (var i = 0; i < 8; i++) {
