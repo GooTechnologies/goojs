@@ -1,4 +1,3 @@
-/*jshint bitwise: false */
 define([
 		'goo/lib/rsvp.amd',
 		'goo/renderer/MeshData',
@@ -13,7 +12,8 @@ define([
 		'goo/animation/clip/AnimationClip',
 		'goo/animation/clip/JointChannel',
 		'goo/animation/clip/TransformChannel',
-		'goo/animation/clip/InterpolatedFloatChannel'
+		'goo/animation/clip/InterpolatedFloatChannel',
+		'goo/loaders/AnimationLoader'
 	],
 	/** @lends AnimationTreeLoader */
 	function(
@@ -30,7 +30,8 @@ define([
 		AnimationClip,
 		JointChannel,
 		TransformChannel,
-		InterpolatedFloatChannel
+		InterpolatedFloatChannel,
+		AnimationLoader
 	) {
 	"use strict";
 		/**
@@ -49,6 +50,7 @@ define([
 
 			this._loader = parameters.loader;
 			this._cache = {};
+			this._animationLoader = new AnimationLoader({ loader: this._loader });
 		}
 
 		AnimationTreeLoader.prototype.load = function (animTreePath, pose, name) {
@@ -72,13 +74,13 @@ define([
 			var parseAnimationLayers = AnimationTreeLoader.prototype._parseAnimationLayers.bind(this);
 			var setupDefaultAnimation = AnimationTreeLoader.prototype._setupDefaultAnimation.bind(this, name);
 			var root;
-			var outputStore = new OutputStore();
 
 			var promise = loadTree(animTreePath)
 				.then(function(data) { root = data; return data; })
 				.then(parseTree)
 				.then(loadAndParseAnimations)
 				.then(function(inputStore) {
+					var outputStore = new OutputStore();
 					return parseAnimationLayers(animationManager, inputStore, outputStore, root);
 				}).then(setupDefaultAnimation);
 
@@ -102,67 +104,25 @@ define([
 		};
 
 		AnimationTreeLoader.prototype._loadAndParseAnimations = function (basePath, clips) {
-			var loadAnimation = AnimationTreeLoader.prototype._loadAnimation.bind(this, basePath);
+			var loadAnimation = AnimationLoader.prototype._loadAnimation.bind(this);
 			var parseAnimation;
 			var promises = [];
 			var inputStore = {};
 
+			function storeInput(clip) {
+				inputStore[clip._name] = clip;
+			}
 			for (var i = 0, max = clips.length; i < max; i++) {
-				parseAnimation = AnimationTreeLoader.prototype._parseAnimation.bind(this, clips[i].Name, inputStore);
-				promises.push(loadAnimation(clips[i]).then(parseAnimation));
+				parseAnimation = AnimationLoader.prototype._parseAnimation.bind(this, clips[i].Name);
+				promises.push(
+					loadAnimation(basePath+clips[i].URL)
+					.then(parseAnimation)
+					.then(storeInput)
+				);
 			}
 			return RSVP.all(promises).then(function() {
 				return inputStore;
 			});
-		};
-
-		AnimationTreeLoader.prototype._loadAnimation = function (basePath, clipPath) {
-			return this._loader.load(basePath+clipPath.URL+'.json');
-		};
-
-		AnimationTreeLoader.prototype._parseAnimation = function (storeName, inputStore, clipSource) {
-			var useCompression, compressedAnimRange;
-			var clip = new AnimationClip(storeName);
-
-			// check if we're compressed or not.
-			useCompression = clipSource.UseCompression || false;
-
-			if (useCompression) {
-				compressedAnimRange = clipSource.CompressedRange || (1 << 15) - 1; // int
-			}
-
-			// parse channels
-			if (clipSource.Channels) {
-				var array = clipSource.Channels;
-				for (var i = 0, max = array.length; i < max; i++) {
-					var chanObj = array[i];
-					var type = chanObj.Type;
-					var name = chanObj.Name;
-					var times = JsonUtils.parseChannelTimes(chanObj, useCompression);
-					var channel;
-					if ("Joint" === type) {
-						var jointName = chanObj.JointName;
-						var jointIndex = chanObj.JointIndex;
-						var rots = JsonUtils.parseRotationSamples(chanObj, compressedAnimRange, useCompression);
-						var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, useCompression);
-						var scales = JsonUtils.parseScaleSamples(chanObj, times.length, useCompression);
-						channel = new JointChannel(jointName, jointIndex, times, rots, trans, scales);
-					} else if ("Transform" === type) {
-						var rots = JsonUtils.parseRotationSamples(chanObj, compressedAnimRange, useCompression);
-						var trans = JsonUtils.parseTranslationSamples(chanObj, times.length, useCompression);
-						var scales = JsonUtils.parseScaleSamples(chanObj, times.length, useCompression);
-						channel = new TransformChannel(name, times, rots, trans, scales);
-					} else if ("FloatLERP" === type) {
-						channel = new InterpolatedFloatChannel(name, times, JsonUtils.parseFloatLERPValues(chanObj, useCompression));
-					} else {
-						console.warn("Unhandled channel type: " + type);
-						continue;
-					}
-					clip.addChannel(channel);
-				}
-			}
-			inputStore[storeName] = clip;
-			return clip;
 		};
 
 		AnimationTreeLoader.prototype._parseAnimationLayers = function (manager, inputStore, outputStore, root) {
