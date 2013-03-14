@@ -64,7 +64,7 @@ define([
 			animationManager._applier = new SimpleAnimationApplier();
 
 			var loadAnimation = AnimationLoader.prototype._loadAnimation.bind(this);
-			var parseAnimation = AnimationLoader.prototype._parseAnimation.bind(this);
+			var parseAnimation = AnimationLoader.prototype._parseAnimation.bind(this, name);
 			var setupDefaultAnimation = AnimationLoader.prototype._setupDefaultAnimation.bind(this, animationManager, name);
 
 			var promise = loadAnimation(animPath)
