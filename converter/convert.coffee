@@ -18,10 +18,10 @@ copyFile = (source, target) ->
   mkdirp.sync path.dirname(target)
   fs.writeFileSync target, indata
 
-outputFile = (file, data, notinscene) ->
-	unless notinscene
+outputFile = (file, data) ->
+	if /\.ent$/.test file
 		sceneFiles.push file
-
+	file = file + '.json'
 	file = path.resolve(basePath, file)
 	dir = path.dirname(file)
 	mkdirp.sync dir
@@ -59,7 +59,7 @@ convertMaterials = (materials) ->
 		else 
 			newmat.shaderRef = 'shaders/simpleLit.shader'
 		
-		outputFile "materials/#{newmat.name}.mat.json", newmat
+		outputFile "materials/#{newmat.name}.mat", newmat
 
 convertTextures = (material, textures) ->
 	material.textures = []
@@ -68,7 +68,7 @@ convertTextures = (material, textures) ->
 			url: 'resources/'+texture.TextureSource
 			
 		match = texture.TextureSource.match(/^[^\.]*/)
-		outputFile "textures/#{match[0]}.tex.json", newtex
+		outputFile "textures/#{match[0]}.tex", newtex
 		material.textures.push "textures/#{match[0]}.tex"
 		infile = path.resolve(inputDir, texture.TextureSource)
 		outfile = path.resolve(basePath, newtex.url)
@@ -76,7 +76,7 @@ convertTextures = (material, textures) ->
 
 convertSkeletons = (skeletons) ->
 	for skeleton in skeletons
-		outputFile "skeletons/#{skeleton.ref}.skeleton.json", skeleton
+		outputFile "skeletons/#{skeleton.ref}.skeleton", skeleton
 		
 convertMeshData = (data, entity, type, compression, skeletonMap) ->
 	newmesh = 
@@ -87,7 +87,7 @@ convertMeshData = (data, entity, type, compression, skeletonMap) ->
 	if data.Pose
 		newmesh.pose = skeletonMap[data.Pose]
 		 
-	outputFile "meshes/#{data.Name}.mesh.json", newmesh
+	outputFile "meshes/#{data.Name}.mesh", newmesh
 
 	_.extend entity.components,
 		meshData:
@@ -159,18 +159,16 @@ convert = (inputFile, outputPath, objectName) ->
 		convertSkeletons(oldObject.Skeletons)
 		for pose in oldObject.SkeletonPoses
 			skeletonMap[pose.ref] = "skeletons/#{pose.Skeleton}.skeleton"
-		
-	
+			
 	convertChildren [oldObject.Scene], null, entities, compression, skeletonMap
 	
 	for entity in entities
-		outputFile "entities/#{entity.name}.ent.json", entity
+		outputFile "entities/#{entity.name}.ent", entity
 	
 	scene =
 		files: sceneFiles
 		
-	oldObject.Scene.Name = objectName
-	outputFile "#{objectName}.scene.json", scene
+	outputFile "#{objectName}.scene", scene
 	
 	copyShaderDir()
 

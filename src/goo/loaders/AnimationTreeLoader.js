@@ -48,20 +48,16 @@ define([
 			}
 
 			this._loader = parameters.loader;
-
 			this._cache = {};
-
 		}
 
 		AnimationTreeLoader.prototype.load = function (animTreePath, pose, name) {
-			/*if(this._cache[animTreePath] && this._cache[animTreePath][pose]) {
-				return this._cache[animTreePath][pose._skeleton.name];
-			}*/
+			if(this._cache[animTreePath] && this._cache[animTreePath][pose._skeleton._name]) {
+				return this._cache[animTreePath][pose._skeleton._name];
+			}
 
 			var animationManager = new AnimationManager(pose);
 			animationManager._applier = new SimpleAnimationApplier();
-
-
 
 			var animTreeBase = animTreePath.match(/.*\//);
 			if (animTreeBase.length === 1) {
@@ -69,14 +65,14 @@ define([
 			} else {
 				animTreeBase = '';
 			}
-			var root;
-			var outputStore = new OutputStore();
 
 			var loadTree = AnimationTreeLoader.prototype._loadTree.bind(this);
 			var parseTree = AnimationTreeLoader.prototype._parseTree.bind(this);
 			var loadAndParseAnimations = AnimationTreeLoader.prototype._loadAndParseAnimations.bind(this, animTreeBase);
 			var parseAnimationLayers = AnimationTreeLoader.prototype._parseAnimationLayers.bind(this);
 			var setupDefaultAnimation = AnimationTreeLoader.prototype._setupDefaultAnimation.bind(this, name);
+			var root;
+			var outputStore = new OutputStore();
 
 			var promise = loadTree(animTreePath)
 				.then(function(data) { root = data; return data; })
@@ -115,7 +111,6 @@ define([
 				parseAnimation = AnimationTreeLoader.prototype._parseAnimation.bind(this, clips[i].Name, inputStore);
 				promises.push(loadAnimation(clips[i]).then(parseAnimation));
 			}
-
 			return RSVP.all(promises).then(function() {
 				return inputStore;
 			});
@@ -185,7 +180,9 @@ define([
 		};
 
 		AnimationTreeLoader.prototype._setupDefaultAnimation = function (name, manager) {
-			manager.getBaseAnimationLayer().setCurrentStateByName(name, true);
+			if(name) {
+				manager.getBaseAnimationLayer().setCurrentStateByName(name, true);
+			}
 			return manager;
 		};
 

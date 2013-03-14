@@ -33,9 +33,10 @@ define([
 		}
 
 		SkeletonLoader.prototype.load = function (skeletonPath) {
-			/*if (this._cache[skeletonPath]) {
+			if (this._cache[skeletonPath]) {
 				return this._cache[skeletonPath];
-			}*/
+			}
+
 			var loadSkeleton = SkeletonLoader.prototype._loadSkeleton.bind(this);
 			var parseSkeleton = SkeletonLoader.prototype._parseSkeleton.bind(this);
 			var createSkeletonPose = SkeletonLoader.prototype._createSkeletonPose.bind(this);

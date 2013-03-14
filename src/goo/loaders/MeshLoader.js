@@ -30,6 +30,8 @@ function(
 		}
 
 		this._loader = parameters.loader;
+		this._skeletonLoader = new SkeletonLoader({ loader: this._loader });
+		this._cache = {};
 	}
 
 	/**
@@ -39,10 +41,17 @@ function(
 	 * @return {Promise} The promise is resolved with the loaded MeshData object.
 	 */
 	MeshLoader.prototype.load = function(meshPath) {
+		if (this._cache[meshPath]) {
+			return this._cache[meshPath];
+		}
+
 		var that = this;
-		return this._loader.load(meshPath, function(data) {
+		var promise = this._loader.load(meshPath, function(data) {
 			return that._parse(data);
 		});
+
+		this._cache[meshPath] = promise;
+		return promise;
 	};
 
 
@@ -67,9 +76,7 @@ function(
 				meshData.type = MeshData.MESH;
 			}
 			if (data.pose) {
-				var skeletonLoader = new SkeletonLoader({
-					loader: this._loader
-				});
+				var skeletonLoader = this._skeletonLoader;
 				promise = skeletonLoader.load(data.pose)
 				.then(function(skeletonPose) {
 					meshData.currentPose = skeletonPose;

@@ -58,7 +58,9 @@ function(
 		this._loader = parameters.loader;
 		this._world = parameters.world;
 
-		this._entityMap = {};
+		this._cache = {};
+		this._materialLoader = new MaterialLoader({ loader: this._loader });
+		this._meshLoader = new MeshLoader({ loader: this._loader });
 	}
 
 	/**
@@ -67,16 +69,17 @@ function(
 	 * @param {string} entityPath Relative path to the entity.
 	 * @return {Promise} The promise is resolved with the loaded Entity object.
 	 */
-	EntityLoader.prototype.load = function(entityPath) {
+	EntityLoader.prototype.load = function(entityRef) {
 		var that = this;
-		return this._loader.load(entityPath, function(data) {
-			var entityRef = entityPath.replace('.json','');
+		var promise = this._loader.load(entityRef+'.json', function(data) {
 			return that._parse(data, entityRef);
 		});
+		this._cache[entityRef] = promise;
+		return promise;
 	};
 
 
-	EntityLoader.prototype._parse = function(entitySource, entityRef) {
+	EntityLoader.prototype._parse = function(entitySource) {
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
@@ -129,8 +132,6 @@ function(
 		return RSVP.all(promises)
 		.then(function() {
 			var entity = new Entity(that._world, entitySource.name);
-
-			that._entityMap[entityRef] = entity;
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
@@ -152,7 +153,6 @@ function(
 					}
 				}
 			}
-
 			return entity;
 		});
 	};
@@ -171,8 +171,11 @@ function(
 		);
 
 		var p = transformComponentSource.parentRef;
-		if(p && this._entityMap[p]) {
-			this._entityMap[p].transformComponent.attachChild(tc);
+		if(p && this._cache[p]) {
+			this._cache[p].then(function(entity) {
+				entity.transformComponent.attachChild(tc);
+				return entity;
+			});
 		}
 
 		return tc;
@@ -191,9 +194,7 @@ function(
 
 	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
 		var promises = [];
-		var ml = new MaterialLoader({
-			loader: this._loader
-		});
+		var ml = this._materialLoader;
 
 		for(var attribute in meshRendererComponentSource) {
 			if(attribute === 'materials') {
@@ -217,9 +218,7 @@ function(
 
 	EntityLoader.prototype._getMeshDataComponent = function(meshDataComponentSource) {
 		var promises = [];
-		var mdl = new MeshLoader({
-			loader: this._loader
-		});
+		var mdl = this._meshLoader;
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
 			if(attribute === 'mesh') {

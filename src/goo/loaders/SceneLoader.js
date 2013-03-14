@@ -53,7 +53,6 @@ function(
 
 	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
 		var promises = [];
-		var that = this;
 
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
@@ -66,10 +65,9 @@ function(
 			for(var i in sceneSource.files) {
 				// Check if they're entities
 				var fileName = sceneSource.files[i];
-				var match = fileName.match(/\.ent\.json$/);
 
-				if(match !== null) {
-					var p = entityLoader.load(/*scenePath + '/' + */fileName);
+				if(/\.ent$/.test(fileName)) {
+					var p = entityLoader.load(fileName);
 					promises.push(p);
 				}
 			}
@@ -84,8 +82,7 @@ function(
 		// Create a promise that resolves when all promise-objects
 		return RSVP.all(promises)
 		.then(function(entities) {
-			var w = that._buildWorld(entities);
-			return w;
+			return entities;
 		});
 	};
 

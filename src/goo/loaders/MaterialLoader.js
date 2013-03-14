@@ -34,6 +34,7 @@ define([
 		}
 
 		this._loader = parameters.loader;
+		this._cache = {};
 	}
 
 	/**
@@ -43,10 +44,17 @@ define([
 	 * @return {Promise} The promise is resolved with the loaded Material object.
 	 */
 	MaterialLoader.prototype.load = function(materialPath) {
+		if (this._cache[materialPath]) {
+			return this._cache[materialPath];
+		}
+
 		var that = this;
-		return this._loader.load(materialPath, function(data) {
+		var promise = this._loader.load(materialPath, function(data) {
 			return that._parse(data);
 		});
+
+		this._cache[materialPath] = promise;
+		return promise;
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
