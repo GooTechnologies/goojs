@@ -53,7 +53,6 @@ function(
 
 	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
 		var promises = [];
-
 		// If we got files, then let's do stuff with the files!
 		if(sceneSource && sceneSource.files && sceneSource.files.length)
 		{
