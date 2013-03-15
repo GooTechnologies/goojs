@@ -1,0 +1,31 @@
+{
+	"name": "MeshMesh[Diffuse_Texture-diffuse-MaterialSG]",
+	"components": {
+		"transform": {
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"parentRef": "entities/MeshMesh.ent"
+		},
+		"meshRenderer": {
+			"materials": [
+				"materials/Diffuse_Texture-diffuse-Material.mat"
+			]
+		},
+		"meshData": {
+			"mesh": "meshes/MeshMesh[Diffuse_Texture-diffuse-MaterialSG].mesh"
+		}
+	}
+}

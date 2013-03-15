@@ -6,6 +6,9 @@ wrench = require('wrench')
 basePath = ''
 inputDir = ''
 
+doBundle = false
+bundle = {}
+sceneFiles = []
 
 # File functions
 copyShaderDir = ->
@@ -19,8 +22,12 @@ copyFile = (source, target) ->
   fs.writeFileSync target, indata
 
 outputFile = (file, data) ->
-	if /\.ent$/.test file
+	if /\.ent$/.test file		
 		sceneFiles.push file
+	if doBundle and not /\.bundle$/.test file
+		bundle[file] = data
+		return
+			
 	file = file + '.json'
 	file = path.resolve(basePath, file)
 	dir = path.dirname(file)
@@ -30,7 +37,6 @@ outputFile = (file, data) ->
 		data = JSON.stringify data, null, "\t"
 	fs.writeFileSync file, data
 
-sceneFiles = []
 
 
 # Converter functions
@@ -137,7 +143,9 @@ convertChildren = (children, parent, entities, compression, skeletonMap) ->
 
 
 # Main function
-convert = (inputFile, outputPath, objectName) ->	
+convert = (inputFile, outputPath, objectName, makeBundle) ->	
+	if bundle? 
+		doBundle = makeBundle
 	file = path.resolve(inputFile)
 	basePath = path.resolve(outputPath)
 	inputDir = path.resolve(path.dirname(inputFile))
@@ -169,6 +177,9 @@ convert = (inputFile, outputPath, objectName) ->
 		files: sceneFiles
 		
 	outputFile "#{objectName}.scene", scene
+	if doBundle
+		console.log 'bundling'
+		outputFile "#{objectName}.bundle", bundle
 	
 	copyShaderDir()
 

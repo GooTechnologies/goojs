@@ -9,6 +9,7 @@ require([
 	'DemoWorld',
 	'goo/math/Vector3',
 	'goo/loaders/Loader',
+	'goo/loaders/BundleLoader',
 	'goo/loaders/SceneLoader',
 	'goo/loaders/AnimationTreeLoader',
 	'goo/loaders/AnimationLoader',
@@ -17,6 +18,7 @@ require([
 	DemoWorld,
 	Vector3,
 	Loader,
+	BundleLoader,
 	SceneLoader,
 	AnimationTreeLoader,
 	AnimationLoader,
@@ -24,18 +26,19 @@ require([
 
 ) {
 	"use strict";
-	var resourcePath = "../converter/";
+	var resourcePath = "../resources/new_format/";
 
 	function init() {
 		var goo = DemoWorld.create(200);
 
 		var managers = [];
-		var loader = new Loader({ rootPath: resourcePath + 'skeleton/' });
+		var loader = new BundleLoader({ rootPath: resourcePath + 'skeleton/' });
 
 
 		var sceneLoader = new SceneLoader({ loader: loader, world: goo.world });
 
 		// Load the scene!
+		loader.loadBundle('skeleton.bundle.json').then(function() {
 		sceneLoader.load('skeleton.scene.json').then(function(entities) {
 			// Move the root entity and the rest will follow
 			var topEntity = getTopEntity(entities);
@@ -65,6 +68,7 @@ require([
 					entities[i].addToWorld();
 				}
 			});
+		});
 		});
 
 		var otherLoader = new Loader({ rootPath: resourcePath + 'runman/' });

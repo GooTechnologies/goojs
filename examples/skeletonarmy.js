@@ -6,83 +6,52 @@ require.config({
 	}
 });
 require([
-	'goo/entities/GooRunner',
 	'goo/math/Vector3',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/loaders/Loader',
+	'goo/loaders/BundleLoader',
 	'goo/loaders/SceneLoader',
 	'goo/loaders/AnimationTreeLoader',
-	'goo/lib/rsvp.amd'
+	'goo/lib/rsvp.amd',
+	'DemoWorld'
 ], function(
-	GooRunner,
 	Vector3,
-	Camera,
-	CameraComponent,
-	PointLight,
-	LightComponent,
-	ScriptComponent,
-	OrbitCamControlScript,
 	Loader,
+	BundleLoader,
 	SceneLoader,
 	AnimationTreeLoader,
-	RSVP
+	RSVP,
+	DemoWorld
 
 ) {
 	"use strict";
-	var resourcePath = "../converter/skeleton/";
+	var resourcePath = '../resources/new_format/skeleton/';
+	var loader = new BundleLoader({ rootPath: resourcePath });
+
 
 	function init() {
 		// GooRunner
-		var goo = new GooRunner({
-			showStats: true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		// Camera
-		var camera = new Camera(45, 1, 1, 10000);
-		var cameraEntity = goo.world.createEntity('CameraEntity');
-		cameraEntity.transformComponent.transform.translation.set(500, 0, 0);
-		cameraEntity.transformComponent.transform.lookAt(
-			new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.addToWorld();
-		cameraEntity.setComponent(new CameraComponent(camera));
-
-		// Camera control
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			baseDistance : 150,
-			spherical : new Vector3(500, -Math.PI/12, Math.PI/12)
-		}));
-		cameraEntity.setComponent(scripts);
-
-		// Light
-		var light = new PointLight();
-		var entity = goo.world.createEntity('Light');
-		entity.setComponent(new LightComponent(light));
-		entity.transformComponent.transform.translation.set(80, 50, 80);
-		entity.addToWorld();
+		var glass = createGlass();
+		var goo = DemoWorld.create(500);
 
 		var loaders = [];
 		var managers = [];
-		var loader = new Loader({ rootPath: resourcePath });
 
+		var rows = 8;
+		var cols = 10;
+		var total = rows*cols;
+		var count = 0;
 		// Load a bunch of skeletons
-		// skeletonCount needs to be a squared odd number
-		var skeletonCount = 9*9;
-		var param = Math.round((Math.sqrt(skeletonCount)/2)-1);
-		for (var i = -param; i <= param; i++) {
-			for (var j = -param; j <= param; j++) {
-				var posX = j*50 + 5*(Math.random()-1);
-				var posZ = i*50 + 10*(Math.random()-1);
+		for (var i = 0; i < rows; i++) {
+			for (var j = 0; j < cols; j++) {
+				var x = j-(cols-1)/2;
+				var y = i-(rows-1)/2;
+				var posX = x*50 + 5*(Math.random()-1);
+				var posZ = y*50 + 10*(Math.random()-1);
 				loaders.push(makeSkeleton(goo.world, loader, posZ, posX));
 			}
+		}
+		function progress() {
+			updateProgress(glass, Math.floor(++count/2), total);
 		}
 
 		// When skeletons are loaded, load animations
@@ -100,6 +69,7 @@ require([
 							entity.meshDataComponent.meshData.currentPose,
 							goo
 						);
+						p.then(progress);
 						timers.push(p);
 					}
 				}
@@ -143,7 +113,7 @@ require([
 		var p = new RSVP.Promise();
 		setTimeout(function() {
 			p.resolve(loadAnimation(animLoader, pose, goo));
-		},Math.round(3000*Math.random()));
+		},Math.round(1000*Math.random()));
 		return p;
 
 	}
@@ -200,5 +170,38 @@ require([
 	function hasSkeletonPose(entity) {
 		return entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose;
 	}
-	init();
+
+	function createGlass() {
+		var glass = document.createElement('div');
+		glass.innerHTML = 'Loading ...';
+		glass.style.zIndex = 1000;
+		glass.style.position = 'absolute';
+		glass.style.top = '50%';
+		glass.style.left = '50%';
+		glass.style.marginLeft = '-120px';
+		glass.style.marginTop = '-40px';
+		glass.style.lineHeight = '80px';
+		glass.style.width = '240px';
+		glass.style.textAlign = 'center';
+		glass.style.backgroundColor = 'rgba(230,230,230,0.4)';
+		glass.style.fontFamily = 'Helvetica';
+
+		document.body.appendChild(glass);
+		return glass;
+	}
+
+	function updateProgress(glass, count, total) {
+		if (count === total) {
+			glass.parentNode.removeChild(glass);
+		}
+		else {
+			glass.innerHTML = 'Loading '+count+'/'+total;
+		}
+	}
+
+
+
+	loader.loadBundle('skeleton.bundle.json').then(function() {
+		init();
+	});
 });
