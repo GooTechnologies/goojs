@@ -117,6 +117,10 @@ function (
 		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
+		// if (aboveWater) {
+			
+		// }
+
 		if (this.skybox) {
 			renderer.render(this.skybox, this.waterCamera, [], this.renderTarget, true);
 			this.skybox.skip = true;
@@ -186,8 +190,11 @@ function (
 			sunColor: [
 				1.0, 0.96, 0.96
 			],
+			reflectionMultiplier: [
+				1.0, 1.0, 1.0, 1.0
+			],
 			sunShininess: 100.0,
-			sunDiffusePower: 0.0,
+			// sunDiffusePower: 0.0,
 			sunSpecPower: 2.0,
 			fogStart: 500.0,
 			fogScale: 1500.0,
@@ -209,6 +216,7 @@ function (
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
 			'uniform vec3 cameraPosition;', //
+			'uniform float waterScale;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -218,7 +226,7 @@ function (
 			'void main(void) {', //
 			'	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
-			'	texCoord0 = worldPos.xz * 2.0;',//
+			'	texCoord0 = worldPos.xz * waterScale;',//
 
 			'	mat3 normalMatrix = mat3(worldMatrix);',
 
@@ -236,7 +244,8 @@ function (
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision mediump float;',//
+			'precision highp float;',//
+			// 'precision mediump float;',//
 
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
@@ -253,12 +262,12 @@ function (
 			'uniform float fresnelPow;',
 			'uniform vec3 sunColor;',
 			'uniform float sunShininess;',
-			'uniform float sunDiffusePower;',
+			// 'uniform float sunDiffusePower;',
 			'uniform float sunSpecPower;',
 			'uniform float normalMultiplier;',
 			'uniform float fresnelMultiplier;',
-			'uniform float waterScale;',
 			'uniform bool doFog;',
+			'uniform vec4 reflectionMultiplier;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -267,9 +276,8 @@ function (
 
 			'vec4 getNoise(vec2 uv) {',
 			'	float t = time * timeMultiplier;',
-			'	uv *= waterScale;',
-			'    vec2 uv0 = (uv/123.0) + vec2(t/17.0, t/29.0);',
-			'    vec2 uv1 = uv/167.0 - vec2(t/-19.0, t/31.0);',
+			'    vec2 uv0 = (uv/vec2(123.0)) + vec2(t/17.0, t/29.0);',
+			'    vec2 uv1 = (uv/vec2(167.0)) - vec2(t/-19.0, t/31.0);',
 			'    vec2 uv2 = uv/vec2(827.0, 983.0) + vec2(t/51.0, t/47.0);',
 			'    vec2 uv3 = uv/vec2(991.0, 877.0) - vec2(t/59.0, t/-63.0);',
 			'    vec4 noise = (texture2D(normalMap, uv0)) +',
@@ -279,12 +287,10 @@ function (
 			'    return noise/4.5-1.0;',
 			'}',
 
-			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse,',
-			'              inout vec3 diffuseColor, inout vec3 specularColor){',
+			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, const float shiny, const float spec, inout vec3 specularColor){',
 			'    vec3 reflection = normalize(reflect(-sunDirection, surfaceNormal));',
-			'    float direction = max(0.0, dot(eyeDirection, reflection));',
-			'    specularColor += pow(direction, shiny)*sunColor*spec;',
-			'    diffuseColor += max(dot(sunDirection, surfaceNormal),0.0)*sunColor*diffuse;',
+			'    float direction = max(0.0, dot(normalize(eyeDirection), reflection));',
+			'    specularColor += pow(direction, shiny) * spec * sunColor;',
 			'}',
 
 			'void main(void)',//
@@ -322,17 +328,20 @@ function (
 			'		gl_FragColor = mix(endColor,waterColor,fogDist);',
 			'	}',
 			'	else {',
-			'		vec3 diffuse = vec3(0.0);',
+			// '		vec3 diffuse = vec3(0.0);',
 			'		vec3 specular = vec3(0.0);',
-			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
+			// '	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
+			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
 
-			'		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);',
-			'		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);',
+			'		reflectionColor *= reflectionMultiplier;',
+			// '		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);',
+			// '		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);',
+			'		vec4 endColor = mix(waterColor,reflectionColor,fresnelTerm);',
 
 			'		if (doFog) {',
-			'			gl_FragColor = (vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
+			'			gl_FragColor = (vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
 			'		} else {',
-			'			gl_FragColor = vec4(diffuse + specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
+			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
 			'	}',
 			'}'
