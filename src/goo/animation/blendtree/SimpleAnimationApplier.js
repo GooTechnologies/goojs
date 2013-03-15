@@ -29,7 +29,7 @@ function (JointData, TransformData, TriggerData) {
 				if (value instanceof TransformData && !(value instanceof JointData)) {
 					var applyTo = entityManager.getEntityByName(key);
 					if (applyTo && applyTo.transformComponent) {
-						value.applyTo(applyTo.transformComponent);
+						value.applyTo(applyTo.transformComponent.transform);
 					}
 				}
 			}

@@ -67,8 +67,8 @@ define([
 
 	RotationControlScript.prototype.run = function (entity) {
 		if (this.states.dirty) {
-			var x = Math.PI*this.states.dy/this.element.clientHeight;
-			var y = Math.PI*this.states.dx/this.element.clientWidth;
+			var x = Math.PI * this.states.dy / this.element.clientHeight;
+			var y = Math.PI * this.states.dx / this.element.clientWidth;
 			var cosx = Math.cos(x);
 			var sinx = Math.sin(x);
 			var cosy = Math.cos(y);

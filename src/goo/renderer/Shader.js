@@ -377,17 +377,28 @@ function (
 		var IDENTITY_MATRIX = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var camera = shaderInfo.camera;
-			var matrix = camera.getProjectionMatrix();
+			var matrix = shaderInfo.camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var camera = shaderInfo.camera;
-			var matrix = camera.getViewMatrix();
+			var matrix = shaderInfo.camera.getViewMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+
+		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.camera.getViewInverseMatrix();
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.camera.getViewProjectionMatrix();
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.VIEW_PROJECTION_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.camera.getViewProjectionInverseMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 
@@ -517,6 +528,9 @@ function (
 
 	Shader.PROJECTION_MATRIX = 'PROJECTION_MATRIX';
 	Shader.VIEW_MATRIX = 'VIEW_MATRIX';
+	Shader.VIEW_INVERSE_MATRIX = 'VIEW_INVERSE_MATRIX';
+	Shader.VIEW_PROJECTION_MATRIX = 'VIEW_PROJECTION_MATRIX';
+	Shader.VIEW_PROJECTION_INVERSE_MATRIX = 'VIEW_PROJECTION_INVERSE_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
 	for (var i = 0; i < 16; i++) {
 		Shader['TEXTURE' + i] = 'TEXTURE' + i;

@@ -81,14 +81,16 @@ function(
 			this.vertexCount = vertexCount;
 			this._vertexCountStore = this.vertexCount;
 		}
-		var vertexByteSize = 0;
-		for ( var i in this.attributeMap) {
-			var attribute = this.attributeMap[i];
-			vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
-		}
-		this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
+		if (this.vertexCount > 0) {
+			var vertexByteSize = 0;
+			for ( var i in this.attributeMap) {
+				var attribute = this.attributeMap[i];
+				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
+			}
+			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
 
-		this.generateAttributeData();
+			this.generateAttributeData();
+		}
 	};
 
 	MeshData.prototype.rebuildIndexData = function(indexCount) {
@@ -99,6 +101,10 @@ function(
 			var indices = BufferUtils.createIndexBuffer(this.indexCount, this.vertexCount);
 			this.indexData = new BufferData(indices, 'ElementArrayBuffer');
 		}
+	};
+
+	MeshData.prototype.setVertexDataUpdated = function() {
+		this.vertexData._dataNeedsRefresh = true;
 	};
 
 	var ArrayTypes = {
