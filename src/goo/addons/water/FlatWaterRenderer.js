@@ -7,7 +7,10 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/renderer/Material',
-	'goo/renderer/TextureCreator'
+	'goo/renderer/TextureCreator',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/entities/EventHandler',
+	'goo/renderer/shaders/ShaderFragments'
 ],
 /** @lends FlatWaterRenderer */
 function (
@@ -19,7 +22,10 @@ function (
 	Vector3,
 	Vector4,
 	Material,
-	TextureCreator
+	TextureCreator,
+	ShaderLib,
+	EventHandler,
+	ShaderFragments
 ) {
 	"use strict";
 
@@ -39,13 +45,17 @@ function (
 
 		var width = window.innerWidth / (settings.divider || 2);
 		var height = window.innerHeight / (settings.divider || 2);
-		this.renderTarget = new RenderTarget(width, height);
+		this.reflectionTarget = new RenderTarget(width, height);
+		this.refractionTarget = new RenderTarget(width/2, height/2);
+		this.depthTarget = new RenderTarget(width/2, height/2);
 
 		var waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
 		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 		waterMaterial.textures[0] = new TextureCreator().loadTexture2D(normalsTextureUrl);
-		waterMaterial.textures[1] = this.renderTarget;
+		waterMaterial.textures[1] = this.reflectionTarget;
+		waterMaterial.textures[2] = this.refractionTarget;
+		waterMaterial.textures[3] = this.depthTarget;
 		this.waterMaterial = waterMaterial;
 
 		this.followCam = true;
@@ -61,6 +71,20 @@ function (
 		this.clipPlane = new Vector4();
 
 		this.waterEntity = null;
+
+		this.depthMaterial = Material.createMaterial(packDepthY, 'depth');
+
+		var that = this;
+		this.camera = null;
+		this.lights = [];
+		EventHandler.addListener({
+			setCurrentCamera : function (camera) {
+				that.camera = camera;
+			},
+			setLights : function (lights) {
+				that.lights = lights;
+			}
+		});
 	}
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner) {
@@ -69,8 +93,26 @@ function (
 
 		this.waterCamera.copy(camera);
 		waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
-
 		var aboveWater = camera.translation.y > waterPlane.constant;
+
+		this.waterEntity.skip = true;
+
+		if (aboveWater) {
+			//TODO: render refraction
+			this.renderList.length = 0;
+			partitioner.process(this.waterCamera, entities, this.renderList);
+
+			// this.waterCamera.update();
+			this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+			this.waterCamera.setToObliqueMatrix(this.clipPlane);
+
+			renderer.overrideMaterial = this.depthMaterial;
+			renderer.render(this.renderList, this.waterCamera, this.lights, this.depthTarget, true);
+			renderer.overrideMaterial = null;
+
+			renderer.render(this.renderList, this.waterCamera, this.lights, this.refractionTarget, true);
+		}
+
 		if (aboveWater) {
 			var calcVect = this.calcVect;
 			var camReflectDir = this.camReflectDir;
@@ -112,24 +154,19 @@ function (
 
 		this.waterMaterial.shader.uniforms.abovewater = aboveWater;
 
-		this.waterEntity.skip = true;
 
 		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
-		// if (aboveWater) {
-			
-		// }
-
 		if (this.skybox) {
-			renderer.render(this.skybox, this.waterCamera, [], this.renderTarget, true);
+			renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, true);
 			this.skybox.skip = true;
 		}
 
 		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-		renderer.render(this.renderList, this.waterCamera, [], this.renderTarget, this.skybox === undefined);
+		renderer.render(this.renderList, this.waterCamera, this.lights, this.reflectionTarget, this.skybox === undefined);
 
 		this.waterEntity.skip = false;
 		if (this.skybox) {
@@ -169,8 +206,12 @@ function (
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
+
 			normalMap: Shader.TEXTURE0,
 			reflection: Shader.TEXTURE1,
+			refraction: Shader.TEXTURE2,
+			depthmap: Shader.TEXTURE3,
+
 			vertexTangent: [
 				1, 0, 0, 1
 			],
@@ -222,6 +263,7 @@ function (
 			'varying vec3 eyeVec;',//
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
+			'varying float waterDepth;',
 
 			'void main(void) {', //
 			'	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
@@ -239,6 +281,8 @@ function (
 			'	vec3 eyeDir = worldPos - cameraPosition;',
 			'	eyeVec = eyeDir * rotMat;',
 
+			'	waterDepth = -(viewMatrix * worldMatrix * vec4(vertexPosition, 1.0)).z / 5000.0;',
+
 			'	viewCoords = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 			'	gl_Position = viewCoords;',
 			'}'//
@@ -249,6 +293,9 @@ function (
 
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
+			'uniform sampler2D refraction;',//
+			'uniform sampler2D depthmap;',//
+
 			'uniform vec4 waterColor;',
 			'uniform vec4 waterColorEnd;',
 			'uniform bool abovewater;',
@@ -273,6 +320,7 @@ function (
 			'varying vec3 eyeVec;',//
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
+			'varying float waterDepth;',
 
 			'vec4 getNoise(vec2 uv) {',
 			'	float t = time * timeMultiplier;',
@@ -292,6 +340,8 @@ function (
 			'    float direction = max(0.0, dot(normalize(eyeDirection), reflection));',
 			'    specularColor += pow(direction, shiny) * spec * sunColor;',
 			'}',
+
+			ShaderFragments.methods.unpackDepth,//
 
 			'void main(void)',//
 			'{',//
@@ -314,12 +364,14 @@ function (
 
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
-			'	if ( abovewater == true ) {',
-			'		projCoord.x = 1.0 - projCoord.x;',
-			'	}',
 
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
+
+			'	vec2 projCoordRefr = projCoord;',
+			'	if ( abovewater == true ) {',
+			'		projCoord.x = 1.0 - projCoord.x;',
+			'	}',
 
 			'	vec4 reflectionColor = texture2D(reflection, projCoord);',
 			'	if ( abovewater == false ) {',
@@ -333,18 +385,65 @@ function (
 			// '	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
 			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
 
+			'		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
+			'		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
+			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
+
 			'		reflectionColor *= reflectionMultiplier;',
-			// '		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);',
-			// '		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);',
-			'		vec4 endColor = mix(waterColor,reflectionColor,fresnelTerm);',
+
+			'		refractionColor = mix(refractionColor, waterColor, depth);',
+
+			'		vec4 endColor = mix(refractionColor, reflectionColor, fresnelTerm);',
 
 			'		if (doFog) {',
 			'			gl_FragColor = (vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
 			'		} else {',
 			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
+			// '		gl_FragColor = vec4(depth);',
 			'	}',
 			'}'
+		].join('\n')
+	};
+
+	var packDepthY = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			farPlane : Shader.FAR_PLANE
+		},
+		vshader : [ //
+			'attribute vec3 vertexPosition;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void) {', //
+			'	vPosition = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	gl_Position = projectionMatrix * viewMatrix * vPosition;', //
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',//
+
+			'uniform float farPlane;',//
+
+			ShaderFragments.methods.packDepth,//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void)',//
+			'{',//
+			'	float linearDepth = -vPosition.y / farPlane;',//
+			'	gl_FragColor = packDepth(linearDepth);',//
+			'}'//
 		].join('\n')
 	};
 

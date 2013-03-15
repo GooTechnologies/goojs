@@ -137,7 +137,6 @@ require([
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'timeMultiplier', 0.1, 5.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'sunColor');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunShininess', 0.0, 300.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunDiffusePower', 0.0, 2.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunSpecPower', 0.0, 4.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'distortionMultiplier', 0.0, 0.5);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelPow', 1.0, 8.0);
@@ -236,7 +235,7 @@ require([
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
-			diffuseMap: Shader.TEXTURE0
+			zMap: Shader.TEXTURE0
 		},
 		vshader: [ //
 			'attribute vec3 vertexPosition;', //

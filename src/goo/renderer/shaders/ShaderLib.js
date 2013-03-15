@@ -1956,5 +1956,46 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.packDepth = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			farPlane : Shader.FAR_PLANE
+		},
+		vshader : [ //
+			'attribute vec3 vertexPosition;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void) {', //
+			'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	gl_Position = projectionMatrix * viewMatrix * vPosition;', //
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',//
+
+			'uniform float farPlane;',//
+
+			ShaderFragments.methods.packDepth,//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void)',//
+			'{',//
+			'	float linearDepth = min(length(vPosition), farPlane) / farPlane;',//
+			'	gl_FragColor = packDepth(linearDepth);',//
+			'}'//
+		].join('\n')
+	};
+
 	return ShaderLib;
 });
