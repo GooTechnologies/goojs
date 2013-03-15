@@ -41,7 +41,7 @@ function(
 					if(path === 'scene') {
 						return parser({
 							files: [
-								'entities/entity.ent.json'
+								'entities/entity.ent'
 							]
 						}, path);
 					} else if(path === 'entities/entity.ent.json') {
@@ -63,7 +63,7 @@ function(
 				}, 'promise did not get resolved', 1);
 
 				p.then(function(data) {
-					expect(data).toBe(goo.world);
+					expect(data[0] instanceof Entity).toBeTruthy();
 					expect(data.entityManager.getEntityByName('Bruce')).toBeTruthy();
 				});
 
