@@ -57,8 +57,8 @@ function (
 		// this.world.setSystem(new LoadingSystem());
 		this.world.setSystem(new ScriptSystem());
 		this.world.setSystem(new TransformSystem());
-		this.world.setSystem(new CSSTransformSystem(this.renderer));
 		this.world.setSystem(new CameraSystem());
+		this.world.setSystem(new CSSTransformSystem(this.renderer));
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		var renderSystem = this.renderSystem = new RenderSystem();

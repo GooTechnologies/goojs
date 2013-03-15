@@ -95,6 +95,7 @@ function(
 		this._viewPortDirty = true;
 
 		this._planeState = 0;
+		this._clipPlane = new Vector4();
 
 		this._corners = [];
 		for (var i = 0; i < 8; i++) {
@@ -842,7 +843,7 @@ function(
 	 * @param clipPlane clipping plane
 	 */
 	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig) {
-		var clipPlane = new Vector4(clipPlaneOrig);
+		var clipPlane = this._clipPlane.setv(clipPlaneOrig);
 
 		this.getViewMatrix().applyPost(clipPlane);
 		clipPlane.w = this.translation.y * clipPlaneOrig.y;

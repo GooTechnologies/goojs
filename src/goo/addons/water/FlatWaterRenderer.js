@@ -176,7 +176,12 @@ function (
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source).addv(this.offset);
+			if (this.followCam) {
+				target.translation.setv(source).addv(this.offset);
+			} else {
+				target.translation.x = source.x;
+				target.translation.z = source.z;
+			}
 			target.update();
 
 			this.waterCamera._updatePMatrix = true;
