@@ -1,11 +1,9 @@
 define([
 	'goo/entities/World',
-	'goo/entities/managers/EntityManager',
-	'goo/entities/Entity'
+	'goo/entities/managers/EntityManager'
 ], function(
 	World,
-	EntityManager,
-	Entity
+	EntityManager
 ) {
 	'use strict';
 
