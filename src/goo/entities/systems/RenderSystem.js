@@ -1,14 +1,14 @@
 define([
-        'goo/entities/systems/System',
+	'goo/entities/systems/System',
 	'goo/entities/EventHandler',
-        'goo/renderer/SimplePartitioner'
-        ],
-	/** @lends RenderSystem */
-	function (
-		System,
+	'goo/renderer/SimplePartitioner'
+],
+/** @lends RenderSystem */
+function (
+	System,
 	EventHandler,
-		SimplePartitioner
-	) {
+	SimplePartitioner
+) {
 	"use strict";
 
 	/**
