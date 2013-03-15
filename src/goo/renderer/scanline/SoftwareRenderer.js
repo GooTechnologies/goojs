@@ -201,73 +201,37 @@ define([
 		var v8 = new Vector4(x, -y, z, 1.0);
 
 		var vertices = [v1, v2, v3, v4, v5, v6, v7, v8];
+
 		// TODO: Combine the transforms to pixel space.
-		this._projectionTransform(vertices, combinedMatrix);
+		// Projection transform + homogeneous divide
+		for (var i = 0; i < vertices.length; i++) {
+			var v = vertices[i];
+
+			combinedMatrix.applyPost(v);
+
+			if (v.w < this.camera.near) {
+				// Near plane clipped.
+				//console.log("Early exit on near plane clipped.");
+				return false;
+			}
+
+			var div = 1.0 / v.w;
+			v.x *= div;
+			v.y *= div;
+		}
 		this._transformToScreenSpace(vertices);
 
 		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
 
-		if (!this._clipBoundingBox(vertices, minmaxArray)) {
-			return false;
-		}
+		this._clipBoundingBox(vertices, minmaxArray);
 
-		/*
-		// Find the max and min values of x and y respectively.
-		// start with the first vertex' value as reference.
-		var minX, maxX, minY, maxY, minDepth;
-		if (vertices[0].w > this.camera.near) {
-			// If any vertex of the bounding box is clipping the nearplane, regard the entity as beeing visible.
-			return false;
-		} else {
-			minDepth = vertices[0].w;
-		}
-		minX = vertices[0].x;
-		maxX = vertices[0].x;
-		minY = vertices[0].y;
-		maxY = vertices[0].y;
-
-		for (var i = 1; i < 8; i++) {
-			var vert = vertices[i];
-
-			if (vert.w > this.camera.near) {
-				return false;
-			} else {
-				if (vert.w > minDepth) {
-					minDepth = vert.w;
-				}
-			}
-
-			if (vert.x > maxX) {
-				maxX = vert.x;
-			} else if (vert.x < minX) {
-				minX = vert.x;
-			}
-
-			if (vert.y > maxY) {
-				maxY = vert.y;
-			} else if (vert.y < minY) {
-				minY = vert.y;
-			}
-		}
-
-		// Round the vertices' pixel integer coordinates conservatively.
-		minX = Math.floor(minX);
-		maxX = Math.ceil(maxX);
-		minY = Math.floor(minY);
-		maxY = Math.ceil(maxY);
-
-		*/
-
-		// TODO : Revise clipping method, have to clamp values.
-
-		// For some reason , the minX value doesnt seem to 
+		// Clamp the bounding coordinate values to screen.
 		if(minmaxArray[0] < 0) {
 			minmaxArray[0] = 0;
 		} else {
 			minmaxArray[0] = Math.floor(minmaxArray[0]);
 		}
 
-		// Clamp max
 		if (minmaxArray[1] > this._clipX){
 			minmaxArray[1] = this._clipX;
 		} else {
@@ -280,7 +244,6 @@ define([
 			minmaxArray[2] = Math.floor(minmaxArray[2]);
 		}
 
-		// Clamp.
 		if (minmaxArray[3] > this._clipY){
 			minmaxArray[3] = this._clipY;
 		} else {
@@ -301,17 +264,8 @@ define([
 
 		for (var i = 0; i < 8; i++) {
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
-			var cut = vertices[i].w < this.camera.near;
-			if (cut && insideScreen[i]) {
-				console.log("A vertex cut the near plane.");
-				return false;
-			} else if (cut && !insideScreen[i]) {
-				console.log("cut near plane, but outside screen.");
-				vertices[i].w = this.camera.near;
-			} else {
 			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
 			vertices[i].w = 1.0 / vertices[i].w;
-			}
 		}
 
 		for (var i = 0; i < 8; i++) {
