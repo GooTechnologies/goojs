@@ -76,7 +76,9 @@ function (AnimationLayer, AnimationClipInstance) {
 		}
 
 		// apply for non-pose related assets
-		// this._applier.apply(S_sceneRoot, this);
+		if (this._entityManager) {
+			this._applier.apply(this._entityManager, this);
+		}
 
 		// post update to clear states
 		for ( var i = 0, max = this._layers.length; i < max; i++) {
