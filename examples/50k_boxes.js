@@ -122,7 +122,7 @@ require([
 		var loader = document.getElementById('load');
 		var count = 50000;
 		var meshBuilder = new FastBuilder(meshData, count, {
-			progress: function (percent) {
+			progress: function (/*percent*/) {
 //				console.log(percent);
 			},
 			done: function () {
@@ -202,8 +202,7 @@ require([
 			offsets : 'offsets'
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			lightPosition : Shader.LIGHT0,
 			move : 70.0,
@@ -216,8 +215,7 @@ require([
 		'attribute vec3 movementNormal2;', //
 		'attribute vec4 offsets;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 lightPosition;', //
 
@@ -235,7 +233,7 @@ require([
 		'				movementNormal2 * cos(mix(offsets.z, offsets.w, sin(time*0.5)*0.5+0.5) + time) * sin(time*0.3) * move;',
 		'	vertDist = 1.0 - min(length(pos)/110.0, 1.0);',
 		'	vec4 worldPos = worldMatrix * vec4(pos, 1.0);', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+		'	gl_Position = viewProjectionMatrix * worldPos;', //
 
 		'	normal = realVertexPosition.xyz;', //
 		'	lightDir = lightPosition - worldPos.xyz;', //
@@ -261,19 +259,6 @@ require([
 		'}'//
 		].join('\n')
 	};
-
-	function createBox (goo, w, h, shader, tile) {
-		var meshData = ShapeCreator.createBox(w, h, w, tile, tile);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		entity.name = "Floor";
-
-		var material = new Material('TestMaterial');
-		material.shader = Material.createShader(shader, 'Floorhader');
-
-		entity.meshRendererComponent.materials.push(material);
-
-		return entity;
-	}
 
 	init();
 });
