@@ -134,9 +134,9 @@ require([
 		var offsetvec = new Vector4();
 		var spread = 20.0;
 		for (var x=0;x<count;x++) {
-			transform.translation.x = Math.sin(x*Math.PI*2/count);
-			transform.translation.y = (Math.random() * 2.0 - 1.0) * 1.0;
-			transform.translation.z = Math.cos(x*Math.PI*2/count);
+			transform.translation.data[0] = Math.sin(x*Math.PI*2/count);
+			transform.translation.data[1] = (Math.random() * 2.0 - 1.0) * 1.0;
+			transform.translation.data[2] = Math.cos(x*Math.PI*2/count);
 			transform.translation.normalize();
 			transform.translation.mul(Math.random()*20.0+spread);
 			transform.setRotationXYZ(0, Math.random() * Math.PI * 2, 0);
@@ -144,20 +144,19 @@ require([
 
 			movement.setv(transform.translation).normalize();
 			for (var n=0;n<8;n++) {
-				movementNormal[n*3+0] = movement.x;
-				movementNormal[n*3+1] = movement.y;
-				movementNormal[n*3+2] = movement.z;
+				movementNormal[n*3+0] = movement.data[0];
+				movementNormal[n*3+1] = movement.data[1];
+				movementNormal[n*3+2] = movement.data[2];
 			}
 			movement.cross(Vector3.UNIT_Y);
 			for (var n=0;n<8;n++) {
-				movementNormal2[n*3+0] = movement.x;
-				movementNormal2[n*3+1] = movement.y;
-				movementNormal2[n*3+2] = movement.z;
+				movementNormal2[n*3+0] = movement.data[0];
+				movementNormal2[n*3+1] = movement.data[1];
+				movementNormal2[n*3+2] = movement.data[2];
 			}
 
 			var spin = (x/count) * Math.PI * 1;
 			var spin2 = (x/count) * Math.PI * 2.2 * (Math.random()*0.8+0.6);
-//			var spin3 = (x/count) * Math.PI * 2 * (Math.random()*0.65+0.7);
 			offsetvec.setd(
 				spin,
 				spin2,
@@ -165,14 +164,13 @@ require([
 				spin2
 				);
 			for (var n=0;n<8;n++) {
-				offsets[n*4+0] = offsetvec.x;
-				offsets[n*4+1] = offsetvec.y;
-				offsets[n*4+2] = offsetvec.z;
-				offsets[n*4+3] = offsetvec.w;
+				offsets[n*4+0] = offsetvec.data[0];
+				offsets[n*4+1] = offsetvec.data[1];
+				offsets[n*4+2] = offsetvec.data[2];
+				offsets[n*4+3] = offsetvec.data[3];
 			}
 
 			meshBuilder.addMeshData(meshData, transform);
-//			meshBuilder.addMeshDataX(meshData, transform.translation.x, transform.translation.y, transform.translation.z);
 		}
 		var meshDatas = meshBuilder.build();
 

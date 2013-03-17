@@ -510,14 +510,15 @@ function (MathUtils) {
 
 	Vector.prototype.normalize = function () {
 		var l = this.length();
+		var dataLength = this.data.length;
 
 		if (l < MathUtils.EPSILON) {
-			for ( var i = 0; i < this.data.length; i++) {
+			for ( var i = 0; i < dataLength; i++) {
 				this.data[i] = 0;
 			}
 		} else {
 			l = 1.0 / l;
-			for ( var i = 0; i < this.data.length; i++) {
+			for ( var i = 0; i < dataLength; i++) {
 				this.data[i] *= l;
 			}
 		}
