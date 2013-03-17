@@ -773,8 +773,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			diffuseMap : Shader.TEXTURE0
 		},
@@ -783,8 +782,7 @@ define([
 		'attribute vec4 vertexColor;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec2 texCoord0;',//
@@ -793,7 +791,7 @@ define([
 		'void main(void) {', //
 		'    texCoord0 = vertexUV0;',//
 		'    color = vertexColor;',//
-		'	 gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	 gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -1957,7 +1955,7 @@ define([
 
 			'void main(void) {', //
 			'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
-			'	gl_Position = projectionMatrix * viewMatrix * vPosition;', //
+			'	gl_Position = projectionMatrix * vPosition;', //
 			'}'//
 		].join('\n'),
 		fshader : [//
