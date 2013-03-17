@@ -42,7 +42,7 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityById = function (id) {
-		for (var i = 0; i < this._entities.length; i++) {
+		for (var i = 0, l = this._entities.length; i < l; i++) {
 			var entity = this._entities[i];
 			if (entity.id === id) {
 				return entity;
@@ -58,7 +58,7 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityByName = function (name) {
-		for (var i = 0; i < this._entities.length; i++) {
+		for (var i = 0, l = this._entities.length; i < l; i++) {
 			var entity = this._entities[i];
 			if (entity.name === name) {
 				return entity;

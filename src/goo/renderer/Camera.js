@@ -96,6 +96,7 @@ function(
 
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
+		this._qCalc = new Vector4();
 
 		this._corners = [];
 		for (var i = 0; i < 8; i++) {
@@ -851,14 +852,14 @@ function(
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();
 
-		var q = new Vector4(
+		this._qCalc.setd(
 			(sgn(clipPlane.x) + projection[8]) / projection[0],
 			(sgn(clipPlane.y) + projection[9]) / projection[5],
 			-1,
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		clipPlane.mul(2.0 / Vector4.dot(clipPlane, q));
+		clipPlane.mul(2.0 / Vector4.dot(clipPlane, this._qCalc));
 
 		projection[2] = clipPlane.x;
 		projection[6] = clipPlane.y;
