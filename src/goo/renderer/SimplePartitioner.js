@@ -18,6 +18,7 @@ define(['goo/renderer/Camera'],
 	};
 
 	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
+		var index = 0;
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 
@@ -26,19 +27,20 @@ define(['goo/renderer/Camera'],
 			}
 
 			if (entity.meshRendererComponent.cullMode === 'Never') {
-				renderList.push(entity);
+				renderList[index++] = entity;
 				entity.isVisible = true;
 			} else {
 				var bounds = entity.meshRendererComponent.worldBound;
 				var result = camera.contains(bounds);
 				if (result !== Camera.Outside) {
-					renderList.push(entity);
+					renderList[index++] = entity;
 					entity.isVisible = true;
 				} else {
 					entity.isVisible = false;
 				}
 			}
 		}
+		renderList.length = index;
 	};
 
 	return SimplePartitioner;

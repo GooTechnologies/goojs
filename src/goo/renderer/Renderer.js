@@ -230,10 +230,10 @@ function (
 		// Based on the default error handler in WebGLDebugUtils
 		// apparently we can't do args.join(",");
 		// global WebGLDebugUtils
-		var message = 'WebGL error ' + WebGLDebugUtils.glEnumToString(err) + ' in '+ functionName + '(';
+		var message = 'WebGL error ' + window.WebGLDebugUtils.glEnumToString(err) + ' in '+ functionName + '(';
 		for (var ii = 0; ii < args.length; ++ii) {
 			message += ((ii === 0) ? '' : ', ') +
-			WebGLDebugUtils.glFunctionArgToString(functionName, ii, args[ii]);
+			window.WebGLDebugUtils.glFunctionArgToString(functionName, ii, args[ii]);
 		}
 		message += ')';
 		console.error(message);
@@ -1115,7 +1115,7 @@ function (
 
 	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		this.context.enableVertexAttribArray(attribIndex);
+		// this.context.enableVertexAttribArray(attribIndex);
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 	};
 

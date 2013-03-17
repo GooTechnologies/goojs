@@ -106,7 +106,6 @@ function (
 
 		if (aboveWater) {
 			if (this.useRefraction) {
-				this.renderList.length = 0;
 				partitioner.process(this.waterCamera, entities, this.renderList);
 
 				this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
@@ -159,7 +158,6 @@ function (
 
 		this.waterMaterial.shader.uniforms.abovewater = aboveWater;
 
-		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
 		if (this.skybox) {

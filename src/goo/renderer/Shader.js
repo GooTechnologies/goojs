@@ -118,9 +118,11 @@ function (
 		}
 
 		// Set the ShaderProgram active
+		var switchedProgram = false;
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
+			switchedProgram = true;
 		}
 
 		// Bind attributes
@@ -139,6 +141,9 @@ function (
 					continue;
 				}
 
+				if (switchedProgram) {
+					renderer.context.enableVertexAttribArray(attributeIndex);
+				}
 				renderer.bindVertexAttribute(attributeIndex, attribute);
 			}
 		}
