@@ -69,10 +69,9 @@ convertMaterials = (materials) ->
 
 convertTextures = (material, textures) ->
 	material.textures = []
-	for texture in textures
+	for texture in textures when texture.TextureSource?
 		newtex =
 			url: 'resources/'+texture.TextureSource
-			
 		match = texture.TextureSource.match(/^[^\.]*/)
 		outputFile "textures/#{match[0]}.tex", newtex
 		material.textures.push "textures/#{match[0]}.tex"
