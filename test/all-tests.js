@@ -27,5 +27,6 @@ define([
     'test/loaders/SceneLoader-test',
     'test/loaders/Loader-test',
     'test/renderer/scanline/SoftwareRenderer-test',
-    'test/renderer/Shader-test'
+    'test/renderer/Shader-test',
+    'test/renderer/Camera-test'
 ], function() {});

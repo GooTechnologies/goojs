@@ -331,7 +331,8 @@ function (
 			camera : camera,
 			mainCamera : Renderer.mainCamera,
 			lights : lights,
-			lightCamera : this.shadowHandler ? this.shadowHandler.lightCam : null
+			lightCamera : this.shadowHandler ? this.shadowHandler.lightCam : null,
+			renderer : this
 		};
 
 		if (Array.isArray(renderList)) {
@@ -494,10 +495,13 @@ function (
 
 	Renderer.prototype.buildWireframeData = function(meshData) {
 		var attributeMap = Util.clone(meshData.attributeMap);
-		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, meshData.indexCount * 2);
-		for ( var atr in attributeMap) {
-			wireframeData.getAttributeBuffer(atr).set(meshData.getAttributeBuffer(atr));
-		}
+		var wireframeData = new MeshData(attributeMap, 0, 0);
+		wireframeData.vertexData = meshData.vertexData;
+		wireframeData.dataViews = meshData.dataViews;
+		wireframeData.attributeMap = meshData.attributeMap;
+		wireframeData.vertexCount = wireframeData._vertexCountStore = meshData.vertexCount;
+		wireframeData.rebuildIndexData(meshData.indexCount * 2);
+
 		var origI = meshData.getIndexBuffer();
 		var targetI = wireframeData.getIndexBuffer();
 		// TODO: fix this to handle other indexmodes than 'triangles'

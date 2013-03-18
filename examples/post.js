@@ -113,7 +113,7 @@ require([
 			'bleachbypass',
 			'horizontalTiltShift',
 			'colorify',
-			'normalMap',
+			'normalmap',
 			'rgbshift',
 			'brightnesscontrast',
 			'luminosity',
@@ -132,8 +132,12 @@ require([
 			document.getElementById('list').appendChild(inp);
 		}
 
+		// object to hold proxy properties for dat.gui use
+		var proxies;
 		window.selectEffect = function(effect) {
 			console.log(effect);
+
+			proxies = {};
 
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
@@ -156,21 +160,50 @@ require([
 				autoPlace: false
 			});
 			var uniforms = coolPass.material.shader.uniforms;
-			var arraySplit = function (value) {
-				uniforms[key] = value.split(',');
+			var arrayHandle = function (value) {
+				var valueArray = value.split(',');
+				for (var i = 0; i < valueArray.length; i++) {
+					valueArray[i] = parseFloat(valueArray[i]);
+				}
+				// WARNING Hack-ish, but meh, it's just a demo
+				uniforms[this.property] = valueArray;
+			};
+			var colorHandle = function (value) {
+				uniforms.color = [proxies.red, proxies.green, proxies.blue];
+			};
+			var grayscaleHandle = function (value) {
+				uniforms.grayscale = value;
 			};
 			for (var key in uniforms) {
 				console.log(key, uniforms[key]);
 
 				if (uniforms[key] instanceof Array) {
-					uniforms[key][key] = uniforms[key].toString();
-					var controller = gui.add(uniforms[key], key);
+					// WARNING Hack-ish, but meh, it's just a demo
+					if (effect === 'colorify' && key === 'color') {
+						proxies.red = uniforms[key][0];
+						proxies.green = uniforms[key][1];
+						proxies.blue = uniforms[key][2];
 
-					controller.onFinishChange(arraySplit);
+						gui.add(proxies, 'red', 0, 1).onChange(colorHandle).step(0.01);
+						gui.add(proxies, 'green', 0, 1).onChange(colorHandle).step(0.01);
+						gui.add(proxies, 'blue', 0, 1).onChange(colorHandle).step(0.01);
+					} else {
+						proxies[key] = uniforms[key].toString();
+						gui.add(proxies, key).onFinishChange(arrayHandle);
+					}
 				} else if(uniforms[key] instanceof Object) {
 					console.log("Nested object, can't display ", uniforms[key]);
 				} else {
-					gui.add(uniforms, key);
+					if (typeof (uniforms[key]) === 'string') {
+						console.log('Skipping string option ', key);
+					} else {
+						if (effect === 'film' && key === 'grayscale') {
+							proxies.grayscale = false;
+							gui.add(proxies, 'grayscale').onChange(grayscaleHandle);
+						} else {
+							gui.add(uniforms, key);
+						}
+					}
 				}
 			}
 

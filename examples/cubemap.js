@@ -117,7 +117,6 @@ require([
 
 	function createShaderDef() {
 		return {
-			includes : [ShaderFragments.features.fog],
 			attributes : {
 				vertexPosition : MeshData.POSITION,
 				vertexUV0 : MeshData.TEXCOORD0,

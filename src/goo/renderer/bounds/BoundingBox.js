@@ -1,11 +1,11 @@
 define([
 	'goo/math/Vector3',
-	'goo/renderer/Camera'
+	'goo/renderer/bounds/BoundingVolume'
 ],
 /** @lends BoundingBox */
 function(
 	Vector3,
-	Camera
+	BoundingVolume
 ) {
 	"use strict";
 
@@ -17,16 +17,17 @@ function(
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
 	function BoundingBox() {
-		this.center = new Vector3();
+		BoundingVolume.call(this);
+
 		this.xExtent = 1;
 		this.yExtent = 1;
 		this.zExtent = 1;
 
 		this._compVect1 = new Vector3();
 		this.vec = new Vector3();
-		this.min = new Vector3(Infinity, Infinity, Infinity);
-		this.max = new Vector3(-Infinity, -Infinity, -Infinity);
 	}
+
+	BoundingBox.prototype = Object.create(BoundingVolume.prototype);
 
 	BoundingBox.prototype.computeFromPoints = function(verts) {
 		var min = this.min;
@@ -79,11 +80,11 @@ function(
 		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 
 		if (distance < -radius) {
-			return Camera.Inside;
+			return BoundingVolume.Inside;
 		} else if (distance > radius) {
-			return Camera.Outside;
+			return BoundingVolume.Outside;
 		} else {
-			return Camera.Intersects;
+			return BoundingVolume.Intersects;
 		}
 	};
 
