@@ -57,11 +57,15 @@ define([
 
 		// Cohen-Sutherland area constants.
 		// (Clipping method for the bounding box)
-		this._INSIDE = 0x0; // 0000
-		this._LEFT = 0x1;	// 0001
-		this._RIGHT = 0x2;	// 0010
-		this._BELOW = 0x4;	// 0100
-		this._ABOVE = 0x8;	// 1000
+		// using |0 to enforce integer values , if they are not already forced by creating them with hex notation.
+		// http://www.2ality.com/2013/02/asm-js.html
+		/*jshint bitwise: false */
+		this._INSIDE = 0x0 |0; // 0000
+		this._LEFT = 0x1 |0;	// 0001
+		this._RIGHT = 0x2 |0;	// 0010
+		this._BELOW = 0x4 |0;	// 0100
+		this._ABOVE = 0x8 |0;	// 1000
+		/*jshint bitwise: true */
 
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
@@ -289,6 +293,7 @@ define([
 	*/
 	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
 
+		/*jshint bitwise: false */
 		var outCodes = new Array(8);
 		for (var i = 0; i < 8; i++) {
 			var vert = vertices[i];
@@ -426,6 +431,7 @@ define([
 			}
 			*/
 		}
+		/*jshint bitwise: true */
 	};
 
 	/**
@@ -435,7 +441,7 @@ define([
 
 		// Regard the coordinate as being inside the clip window initially.
 		var outcode = this._INSIDE;
-
+		/*jshint bitwise: false */
 		if (coordinate.x < 0) {
 			outcode |= this._LEFT;
 		} else if (coordinate.x > this._clipX) {
@@ -447,7 +453,7 @@ define([
 		} else if (coordinate.y > this._clipY) {
 			outcode |= this._ABOVE;
 		}
-
+		/* jshint bitwise: true */
 		return outcode;
 	};
 
