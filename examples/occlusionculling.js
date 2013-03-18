@@ -291,6 +291,7 @@ require(
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'FloorMaterial');
 
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/fieldstone-c.jpg');
+			material.wireframe = true;
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();

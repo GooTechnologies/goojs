@@ -53,6 +53,16 @@ define([
 		this._boundingBoxNeighbourIndices = this._generateBoundingBoxNeighbourIndices();
 		console.log(this._boundingBoxNeighbourIndices);
 
+		this._boundingBoxEdgeIndices = this._generateBoundingBoxEdgeIndices();
+
+		// Cohen-Sutherland area constants.
+		// (Clipping method for the bounding box)
+		this._INSIDE = 0x0; // 0000
+		this._LEFT = 0x1;	// 0001
+		this._RIGHT = 0x2;	// 0010
+		this._BELOW = 0x4;	// 0100
+		this._ABOVE = 0x8;	// 1000
+
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
 			new Triangle(new Vector3(0.5, 0.1, 1.0), new Vector3(0.4, 0.3, 1.0), new Vector3(0.6, 0.4, 1.0)),
@@ -62,6 +72,25 @@ define([
 			new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
 		];
 	}
+
+	SoftwareRenderer.prototype._generateBoundingBoxEdgeIndices = function () {
+		var edgeArray = new Array(12);
+
+		edgeArray[0] = [0, 1];
+		edgeArray[1] = [1, 2];
+		edgeArray[2] = [2, 3];
+		edgeArray[3] = [3, 0];
+		edgeArray[4] = [4, 5];
+		edgeArray[5] = [5, 6];
+		edgeArray[6] = [6, 7];
+		edgeArray[7] = [7, 0];
+		edgeArray[8] = [0, 4];
+		edgeArray[9] = [1, 5];
+		edgeArray[10] = [2, 6];
+		edgeArray[11] = [3, 7];
+
+		return edgeArray;
+	};
 
 	/**
 	*	Returns the array of neighbours for a vertex index on a boundingbox
@@ -120,24 +149,18 @@ define([
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
 
-		//console.time("clearTime");
 		this._clearDepthData();
-		//console.timeEnd("clearTime");
 
 		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
-			//console.time("triangleCreation");
 			var triangles = this._createTrianglesForEntity(renderList[i]);
-			//console.timeEnd("triangleCreation");
 
-			//console.time("triangleRendering");
 			for (var t = 0; t < triangles.length; t++) {
 				var triangle = triangles[t];
 				if ( triangle ) {
 					this._renderTriangle(triangle);
 				}
 			}
-			//console.timeEnd("triangleRendering");
 		}
 	};
 
@@ -158,6 +181,7 @@ define([
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
 			if (entity.meshRendererComponent.cullMode === 'NeverOcclusionCull') {
+				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 				continue;
 			}
 			if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
@@ -211,19 +235,23 @@ define([
 
 			if (v.w < this.camera.near) {
 				// Near plane clipped.
-				//console.log("Early exit on near plane clipped.");
+				console.log("Early exit on near plane clipped.");
 				return false;
 			}
 
 			var div = 1.0 / v.w;
 			v.x *= div;
 			v.y *= div;
+
+			// For interpolating in screen space, in the clipping method.
+			v.w = 1.0 / v.w;
 		}
 		this._transformToScreenSpace(vertices);
 
 		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
 
-		this._clipBoundingBox(vertices, minmaxArray);
+		this._cohenSutherlandClipBox(vertices, minmaxArray);
+		//this._clipBoundingBox(vertices, minmaxArray);
 
 		// Clamp the bounding coordinate values to screen.
 		if(minmaxArray[0] < 0) {
@@ -254,18 +282,186 @@ define([
 	};
 
 	/**
+	*	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
+	*	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
+	*	http://www.cse.buffalo.edu/faculty/walters/cs480/NewLect9.pdf
+	*	https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Operators/Bitwise_Operators
+	*/
+	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
+
+		var outCodes = new Array(8);
+		for (var i = 0; i < 8; i++) {
+			var vert = vertices[i];
+			outCodes[i] = this._calculateOutCode(vert);
+			if (outCodes[i] === this._INSIDE) {
+				// this vertex is inside the screen and shall be used to find minmax.
+				if (vert.w > minmaxArray[4]) {
+					minmaxArray[4] = vert.w;
+				}
+
+				// Minmax X
+				if (vert.x > minmaxArray[1]) {
+					minmaxArray[1] = vert.x;
+				}
+				if (vert.x < minmaxArray[0]) {
+					minmaxArray[0] = vert.x;
+				}
+
+				// Minmax Y
+				if (vert.y > minmaxArray[3]) {
+					minmaxArray[3] = vert.y;
+				}
+				if (vert.y < minmaxArray[2]) {
+					minmaxArray[2] = vert.y;
+				}
+			}
+		}
+
+		var tempVec = new Vector2(0,0);
+		// Go through the edges of the bounding box to clip them if needed.
+		for (var edgeIndex = 0; edgeIndex < 12; edgeIndex++) {
+
+			var edgePair = this._boundingBoxEdgeIndices[edgeIndex];
+			var vIndex1 = edgePair[0];
+			var vIndex2 = edgePair[1];
+
+			var v1 = vertices[vIndex1];
+			var outcode1 = outCodes[vIndex1];
+			var v2 = vertices[vIndex2];
+			var outcode2 = outCodes[vIndex2];
+
+		//	var outside = false;
+
+			while (true) {
+				// Initial check if the edge lies inside...
+				// Will only be true if both the codes are 0000. 
+				// 0000 | 0000 => 0000 , !0 => true
+				// 0011 | 0000 => 0011, !0011 => false
+				if (!(outcode1 | outcode2)) {
+					//console.log("Entirely inside");
+					break;
+				}
+				// ...or outside
+				// will only be non-zero when the two endcodes are in
+				// the aligned vertical or horizontal areas outside the clipping window.
+				if (outcode1 & outcode2) {
+					//console.log("Entirely outside");
+					//outside = true;
+					break;
+				}
+
+				// Pick the code which is outside. (not 0). This point is outside the clipping window.
+				var outsideCode = outcode1 ? outcode1 : outcode2;
+				var ratio;
+				if (outsideCode & this._ABOVE) {
+					ratio = ((this._clipY - v1.y) / (v2.y - v1.y));
+					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
+					tempVec.y = this._clipY;
+					minmaxArray[3] = this._clipY;
+					// Minmax X
+					if (tempVec.x > minmaxArray[1]) {
+						minmaxArray[1] = tempVec.x;
+					}
+					if (tempVec.x < minmaxArray[0]) {
+						minmaxArray[0] = tempVec.x;
+					}
+				} else if (outsideCode & this._BELOW) {
+					ratio = (-v1.y / (v2.y - v1.y));
+					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
+					tempVec.y = 0;
+					minmaxArray[2] = 0;
+					// Minmax X
+					if (tempVec.x > minmaxArray[1]) {
+						minmaxArray[1] = tempVec.x;
+					}
+					if (tempVec.x < minmaxArray[0]) {
+						minmaxArray[0] = tempVec.x;
+					}
+				} else if (outsideCode & this._RIGHT) {
+					ratio = ((this._clipX - v1.x) / (v2.x - v1.x));
+					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
+					tempVec.x = this._clipX;
+					minmaxArray[1] = this._clipX;
+					// Minmax Y
+					if (tempVec.y > minmaxArray[3]) {
+						minmaxArray[3] = tempVec.y;
+					}
+					if (tempVec.y < minmaxArray[2]) {
+						minmaxArray[2] = tempVec.y;
+					}
+				} else if (outsideCode & this._LEFT) {
+					ratio = (-v1.x / (v2.x - v1.x));
+					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
+					tempVec.x = 0;
+					minmaxArray[0] = 0;
+					// Minmax Y
+					if (tempVec.y > minmaxArray[3]) {
+						minmaxArray[3] = tempVec.y;
+					}
+					if (tempVec.y < minmaxArray[2]) {
+						minmaxArray[2] = tempVec.y;
+					}
+				}
+
+				// Calculate outcode for the new position, overwrite the code which was outside.
+				var depth;
+				if (outsideCode === outcode1) {
+					outcode1 = this._calculateOutCode(tempVec);
+					// Interpolate the depth.
+					depth = (1.0 - ratio) * v1.w + ratio * v2.w;
+				} else {
+					outcode2 = this._calculateOutCode(tempVec);
+					depth = (1.0 - ratio) * v2.w + ratio * v1.w;
+				}
+
+				// Check for minimum depth.
+				if (depth > minmaxArray[4]) {
+					minmaxArray[4] = depth;
+				}
+			}
+
+			/*
+			if (!outside) {
+				// Check minmax for both the vertices.
+			}
+			*/
+		}
+	};
+
+	/**
+	*	Calculates outcode for the Coher-Sutherland clipping algorithm.
+	*/
+	SoftwareRenderer.prototype._calculateOutCode = function (coordinate) {
+
+		// Regard the coordinate as being inside the clip window initially.
+		var outcode = this._INSIDE;
+
+		if (coordinate.x < 0) {
+			outcode |= this._LEFT;
+		} else if (coordinate.x > this._clipX) {
+			outcode |= this._RIGHT;
+		}
+
+		if (coordinate.y < 0) {
+			outcode |= this._BELOW;
+		} else if (coordinate.y > this._clipY) {
+			outcode |= this._ABOVE;
+		}
+
+		return outcode;
+	};
+
+	/**
 	*	Clips the BoundingBox to screen coordinates to later produce a correct screen space bounding box of the bounding box.
 	*	// TODO: In case of clipping , the min / max values for either x or y could be known from here. This could be returned in
 	*	some way.
 	*/
-	SoftwareRenderer.prototype._clipBoundingBox = function(vertices, minmaxArray) {
+	SoftwareRenderer.prototype._clipBoundingBox = function (vertices, minmaxArray) {
 
 		var insideScreen = new Array(8);
 
 		for (var i = 0; i < 8; i++) {
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
-			// invert the w value to be able to interpolate and compare depth at later stages of the clipping.
-			vertices[i].w = 1.0 / vertices[i].w;
 		}
 
 		for (var i = 0; i < 8; i++) {
@@ -284,9 +480,11 @@ define([
 				// TODO : Somehow save the checks from the control if the vertex is inside or not to be able to know already which side
 				//		is outside. Maybe create a new function for this, and return different integers which says which area the vertex
 				//		is located in if it is outside the screen along with the amount.
+				// Seems like the Cohen-Sutherland method involves doing something like this....
 
 				if (!targetNeighbours[0]) {
 					// No neighbours inside the screen.
+					// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 					continue;
 				}
 
@@ -1095,6 +1293,7 @@ define([
 					break;
 				case 3:
 					// All of the vertices are on the outside, skip to the next three vertices.
+					// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 					continue;
 				case 1:
 					// Update the one vertex to its new position on the near plane and add a new vertex
@@ -1155,6 +1354,7 @@ define([
 
 			// TODO: (Optimization) Maybe do backface culling before clipping the triangles. The method has to be revised for this.
 			if (this._isBackFacing(v1, v2, v3)) {
+				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 				continue; // Skip loop to the next three vertices.
 			}
 
