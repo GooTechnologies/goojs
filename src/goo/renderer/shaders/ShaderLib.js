@@ -348,7 +348,8 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',//
+		// 'precision mediump float;',//
+		'precision highp float;',//
 
 		'uniform sampler2D diffuseMap;',//
 

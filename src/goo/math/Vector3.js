@@ -386,9 +386,9 @@ define(["goo/math/Vector"],
 	 * @return {Vector3} Self for chaining.
 	 */
 	Vector3.prototype.lerp = function (end, factor) {
-		this.x = (1.0 - factor) * this.x + factor * end.x;
-		this.y = (1.0 - factor) * this.y + factor * end.y;
-		this.z = (1.0 - factor) * this.z + factor * end.z;
+		this.data[0] = (1.0 - factor) * this.data[0] + factor * end.data[0];
+		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
+		this.data[2] = (1.0 - factor) * this.data[2] + factor * end.data[2];
 
 		return this;
 	};

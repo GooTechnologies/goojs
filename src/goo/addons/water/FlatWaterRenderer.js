@@ -431,7 +431,7 @@ function (
 			'}'//
 		].join('\n'),
 		fshader : [//
-			'precision mediump float;',//
+			'precision highp float;',//
 
 			'uniform float farPlane;',//
 
