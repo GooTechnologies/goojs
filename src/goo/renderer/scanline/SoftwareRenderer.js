@@ -184,21 +184,19 @@ define([
 
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
-			if (entity.meshRendererComponent.cullMode === 'NeverOcclusionCull') {
-				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
-				continue;
-			}
-			if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
-				if (this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
-					// Removes the entity at the current index.
-					renderList.splice(i, 1);
-					i--; // Have to compensate the index for the loop.
-				}
-			} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-				if (this._boundingBoxOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix)) {
-					// Removes the entity at the current index.
-					renderList.splice(i, 1);
-					i--; // Have to compensate the index for the loop.
+			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
+				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
+					if (this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
+						// Removes the entity at the current index.
+						renderList.splice(i, 1);
+						i--; // Have to compensate the index for the loop.
+					}
+				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
+					if (this._boundingBoxOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix)) {
+						// Removes the entity at the current index.
+						renderList.splice(i, 1);
+						i--; // Have to compensate the index for the loop.
+					}
 				}
 			}
 		}
@@ -255,9 +253,19 @@ define([
 		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
 
 		this._cohenSutherlandClipBox(vertices, minmaxArray);
+
+		// Round values from the clipping conservatively to integer pixel coordinates.
+		/*jshint bitwise: false */
+		minmaxArray[0] = Math.floor(minmaxArray[0]) |0;
+		minmaxArray[1] = Math.ceil(minmaxArray[1]) |0;
+		minmaxArray[2] = Math.floor(minmaxArray[2]) |0;
+		minmaxArray[3] = Math.ceil(minmaxArray[3]) |0;
+		/*jshint bitwise: true */
+
 		//this._clipBoundingBox(vertices, minmaxArray);
 
-		// Clamp the bounding coordinate values to screen.
+		// Clamp the bounding coordinate values to screen. (needed for my own crappy clipping method...)
+		/*
 		if(minmaxArray[0] < 0) {
 			minmaxArray[0] = 0;
 		} else {
@@ -281,6 +289,7 @@ define([
 		} else {
 			minmaxArray[3] = Math.ceil(minmaxArray[3]);
 		}
+		*/
 
 		return this._isBoundingBoxScanlineOccluded(minmaxArray);
 	};
@@ -297,8 +306,9 @@ define([
 		var outCodes = new Array(8);
 		for (var i = 0; i < 8; i++) {
 			var vert = vertices[i];
-			outCodes[i] = this._calculateOutCode(vert);
-			if (outCodes[i] === this._INSIDE) {
+			var code = this._calculateOutCode(vert);
+			outCodes[i] = code;
+			if (code === this._INSIDE) {
 				// this vertex is inside the screen and shall be used to find minmax.
 				if (vert.w > minmaxArray[4]) {
 					minmaxArray[4] = vert.w;
@@ -358,64 +368,85 @@ define([
 				// Pick the code which is outside. (not 0). This point is outside the clipping window.
 				var outsideCode = outcode1 ? outcode1 : outcode2;
 				var ratio;
+				var nextCode;
+				// Checking for match in bitorder, starting with ABOVE == 1000, then BELOW == 0100,
+				// 0010 and 0001.
 				if (outsideCode & this._ABOVE) {
 					ratio = ((this._clipY - v1.y) / (v2.y - v1.y));
 					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
 					tempVec.y = this._clipY;
-					minmaxArray[3] = this._clipY;
-					// Minmax X
-					if (tempVec.x > minmaxArray[1]) {
-						minmaxArray[1] = tempVec.x;
-					}
-					if (tempVec.x < minmaxArray[0]) {
-						minmaxArray[0] = tempVec.x;
+
+					// Only check for minmax x and y if the new coordinate is inside.
+					nextCode = this._calculateOutCode(tempVec);
+					if (nextCode === this._INSIDE) {
+						minmaxArray[3] = this._clipY;
+						// Minmax X
+						if (tempVec.x > minmaxArray[1]) {
+							minmaxArray[1] = tempVec.x;
+						}
+						if (tempVec.x < minmaxArray[0]) {
+							minmaxArray[0] = tempVec.x;
+						}
 					}
 				} else if (outsideCode & this._BELOW) {
 					ratio = (-v1.y / (v2.y - v1.y));
 					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
 					tempVec.y = 0;
-					minmaxArray[2] = 0;
-					// Minmax X
-					if (tempVec.x > minmaxArray[1]) {
-						minmaxArray[1] = tempVec.x;
-					}
-					if (tempVec.x < minmaxArray[0]) {
-						minmaxArray[0] = tempVec.x;
+
+					// Only check for minmax x and y if the new coordinate is inside.
+					nextCode = this._calculateOutCode(tempVec);
+					if (nextCode === this._INSIDE) {
+						minmaxArray[2] = 0;
+						// Minmax X
+						if (tempVec.x > minmaxArray[1]) {
+							minmaxArray[1] = tempVec.x;
+						}
+						if (tempVec.x < minmaxArray[0]) {
+							minmaxArray[0] = tempVec.x;
+						}
 					}
 				} else if (outsideCode & this._RIGHT) {
 					ratio = ((this._clipX - v1.x) / (v2.x - v1.x));
 					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
 					tempVec.x = this._clipX;
-					minmaxArray[1] = this._clipX;
-					// Minmax Y
-					if (tempVec.y > minmaxArray[3]) {
-						minmaxArray[3] = tempVec.y;
-					}
-					if (tempVec.y < minmaxArray[2]) {
-						minmaxArray[2] = tempVec.y;
+
+					nextCode = this._calculateOutCode(tempVec);
+					if (nextCode === this._INSIDE) {
+						minmaxArray[1] = this._clipX;
+						// Minmax Y
+						if (tempVec.y > minmaxArray[3]) {
+							minmaxArray[3] = tempVec.y;
+						}
+						if (tempVec.y < minmaxArray[2]) {
+							minmaxArray[2] = tempVec.y;
+						}
 					}
 				} else if (outsideCode & this._LEFT) {
 					ratio = (-v1.x / (v2.x - v1.x));
 					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
 					tempVec.x = 0;
-					minmaxArray[0] = 0;
-					// Minmax Y
-					if (tempVec.y > minmaxArray[3]) {
-						minmaxArray[3] = tempVec.y;
-					}
-					if (tempVec.y < minmaxArray[2]) {
-						minmaxArray[2] = tempVec.y;
+
+					nextCode = this._calculateOutCode(tempVec);
+					if (nextCode === this._INSIDE) {
+						minmaxArray[0] = 0;
+						// Minmax Y
+						if (tempVec.y > minmaxArray[3]) {
+							minmaxArray[3] = tempVec.y;
+						}
+						if (tempVec.y < minmaxArray[2]) {
+							minmaxArray[2] = tempVec.y;
+						}
 					}
 				}
 
 				// Calculate outcode for the new position, overwrite the code which was outside.
 				var depth;
 				if (outsideCode === outcode1) {
-					outcode1 = this._calculateOutCode(tempVec);
+					outcode1 = nextCode;
 					// Interpolate the depth.
 					depth = (1.0 - ratio) * v1.w + ratio * v2.w;
 				} else {
-					outcode2 = this._calculateOutCode(tempVec);
+					outcode2 = nextCode;
 					depth = (1.0 - ratio) * v2.w + ratio * v1.w;
 				}
 

@@ -127,10 +127,10 @@ require(
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
 			// Add occluder geometry component, in this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH)));
-			
+
 			translation.z -= 8;
-			var longQuad = createColoredBox(goo.world, translation, [0, 1, 0], wallW * 0.7, wallH * 0.45, 2);
-			addBoundingBoxToEntity(goo.world, translation, longQuad);
+			//var longQuad = createColoredBox(goo.world, translation, [0, 1, 0], wallW * 0.7, wallH * 0.45, 2);
+			//addBoundingBoxToEntity(goo.world, translation, longQuad);
 
 
 			translation.x = -wallW / 2 + 2;
@@ -199,6 +199,15 @@ require(
 			var torus = createTorus(goo.world, translation);
 			addBoundingBoxToEntity(goo.world, translation, torus);
 
+			translation.x += 10;
+
+			var b1 = createColoredBox(goo.world, translation, [0, 1, 0], 4, 7, 2);
+			addBoundingBoxToEntity(goo.world, translation, b1);
+
+			translation.x += 10;
+			var b2 = createColoredBox(goo.world, translation, [1, 0, 0], 4, 3, 5);
+			addBoundingBoxToEntity(goo.world, translation, b2);
+
 			translation.x = 0;
 			translation.y = 0;
 			translation.z = -5;
@@ -213,6 +222,14 @@ require(
 
 				torus.transformComponent.transform.setRotationXYZ(goo.world.time, 0.5 * goo.world.time, 0);
 				torus.transformComponent.setUpdated();
+
+				b1.transformComponent.transform.setRotationXYZ(goo.world.time, 0.2 * goo.world.time, 0);
+				b1.transformComponent.setUpdated();
+
+				b2.transformComponent.transform.setRotationXYZ(goo.world.time, 0.7 * goo.world.time, 0);
+				b2.transformComponent.transform.scale.y = 0.2 + Math.abs(Math.sin(goo.world.time));
+				b2.transformComponent.transform.scale.x = 0.2 + Math.abs(Math.sin(2.0 * goo.world.time));
+				b2.transformComponent.setUpdated();
 			});
 		}
 
