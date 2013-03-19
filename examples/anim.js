@@ -133,9 +133,9 @@ require([
 			}
 		});
 
-		goo.callbacks.push(function(/*tpf*/) {
+		goo.callbacks.push(function(tpf) {
 			if (animationManager) {
-				animationManager.update();
+				animationManager.update(tpf);
 			}
 
 			// Debug draw skeleton

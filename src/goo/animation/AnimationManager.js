@@ -17,12 +17,7 @@ function (AnimationLayer, AnimationClipInstance) {
 	 * @param {SkeletonPose} pose a pose to update. Optional if we won't be animating a skinmesh.
 	 */
 	function AnimationManager (pose) {
-		this._globalTimer = {
-			start : Date.now(),
-			getTimeInSeconds : function () {
-				return (Date.now() - this.start) / 1000.0;
-			}
-		};
+		this.globalTime = 0.0;
 		this._layers = [];
 		this._applier = null; // animationapplier
 		this._clipInstances = {}; // Map<AnimationClip, AnimationClipInstance>
@@ -46,9 +41,10 @@ function (AnimationLayer, AnimationClipInstance) {
 	/**
 	 * Move associated layers forward to the current global time and then apply the associated animation data to any SkeletonPoses set on the manager.
 	 */
-	AnimationManager.prototype.update = function () {
+	AnimationManager.prototype.update = function (tpf) {
 		// grab current global time
-		var globalTime = this._globalTimer.getTimeInSeconds();
+		this.globalTime += tpf;
+		var globalTime = this.globalTime;
 
 		// check throttle
 		if (this._updateRate !== 0.0) {
@@ -99,7 +95,7 @@ function (AnimationLayer, AnimationClipInstance) {
 		var instance = this._clipInstances[clip];
 		if (!instance) {
 			instance = new AnimationClipInstance();
-			instance._startTime = this._globalTimer.getTimeInSeconds();
+			instance._startTime = this.globalTime;
 			this._clipInstances[clip] = instance;
 		}
 
@@ -121,7 +117,7 @@ function (AnimationLayer, AnimationClipInstance) {
 	 * @return the "local time", in seconds reported by our global timer.
 	 */
 	AnimationManager.prototype.getCurrentGlobalTime = function () {
-		return this._globalTimer.getTimeInSeconds();
+		return this.globalTime;
 	};
 
 	/**

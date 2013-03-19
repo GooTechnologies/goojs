@@ -12,10 +12,10 @@ define(['goo/entities/systems/System'],
 
 	ScriptSystem.prototype = Object.create(System.prototype);
 
-	ScriptSystem.prototype.process = function (entities) {
+	ScriptSystem.prototype.process = function (entities, tpf) {
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
-			scriptComponent.run(entities[i]);
+			scriptComponent.run(entities[i], tpf);
 		}
 	};
 

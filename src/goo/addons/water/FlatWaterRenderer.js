@@ -334,7 +334,7 @@ function (
 			'                 (texture2D(normalMap, uv1)) +',
 			'                 (texture2D(normalMap, uv2)*3.0) +',
 			'                 (texture2D(normalMap, uv3)*4.0);',
-			'    return noise/4.5-1.0;',
+			'    return noise/9.0-0.48;',
 			'}',
 
 			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, const float shiny, const float spec, inout vec3 specularColor){',
