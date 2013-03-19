@@ -25,6 +25,7 @@ function(
 	}
 
 	BoundingSphere.prototype = Object.create(BoundingVolume.prototype);
+	BoundingSphere.prototype.constructor = BoundingSphere;
 
 	BoundingSphere.prototype.computeFromPoints = function(verts) {
 		var min = this.min;

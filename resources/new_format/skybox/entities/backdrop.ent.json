@@ -1,0 +1,23 @@
+{
+	"name": "backdrop",
+	"components": {
+		"transform": {
+			"translation": [
+				10.24563,
+				8.70937,
+				-13.760078
+			],
+			"rotation": [
+				-1.5707965898596896,
+				1.1718896996911462e-8,
+				0
+			],
+			"scale": [
+				8000,
+				8000,
+				4000
+			],
+			"parentRef": "entities/root.ent"
+		}
+	}
+}

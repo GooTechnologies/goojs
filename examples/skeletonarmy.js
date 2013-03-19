@@ -10,81 +10,129 @@ require([
 	'goo/loaders/Loader',
 	'goo/loaders/BundleLoader',
 	'goo/loaders/SceneLoader',
+	'goo/loaders/MaterialLoader',
 	'goo/loaders/AnimationTreeLoader',
+	'goo/entities/EntityUtils',
 	'goo/lib/rsvp.amd',
-	'DemoWorld'
+	'DemoWorld',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/Material',
+	'goo/loaders/JSONImporter',
+	'goo/util/TangentGenerator'
 ], function(
 	Vector3,
 	Loader,
 	BundleLoader,
 	SceneLoader,
+	MaterialLoader,
 	AnimationTreeLoader,
+	EntityUtils,
 	RSVP,
-	DemoWorld
+	DemoWorld,
+	ShaderLib,
+	ShapeCreator,
+	Material,
+	JSONImporter,
+	TangentGenerator
 
 ) {
 	"use strict";
 	var resourcePath = '../resources/new_format/skeleton/';
 	var loader = new BundleLoader({ rootPath: resourcePath });
 
-
 	function init() {
-		// GooRunner
-		var glass = createGlass();
-		var goo = DemoWorld.create(500);
+		var goo = DemoWorld.create(800);
 
-		var loaders = [];
 		var managers = [];
 
-		var rows = 8;
-		var cols = 10;
-		var total = rows*cols;
-		var count = 0;
-		// Load a bunch of skeletons
+
+		//var count = 0;
+
+		var rows = 14;
+		var cols = 30;
+		var skeletonCount = 6;
+
+		//var total = rows*cols;
+		var positions = [];
+
+		// Load the skeleton templates
 		for (var i = 0; i < rows; i++) {
 			for (var j = 0; j < cols; j++) {
 				var x = j-(cols-1)/2;
 				var y = i-(rows-1)/2;
-				var posX = x*50 + 5*(Math.random()-1);
-				var posZ = y*50 + 10*(Math.random()-1);
-				loaders.push(makeSkeleton(goo.world, loader, posZ, posX));
+				var posX = x*50 + 10*(Math.random()-1) - cols/3*50;
+				var posZ = y*50 + 40*(Math.random()-1);
+				positions.push([posX, 0, posZ]);
 			}
-		}
-		function progress() {
-			updateProgress(glass, Math.floor(++count/2), total);
 		}
 
-		// When skeletons are loaded, load animations
-		RSVP.all(loaders).then(function(scenes) {
-			var timers = [];
-			var entities = [];
-			for (var i = 0; i < scenes.length; i++) {
-				var animLoader = new AnimationTreeLoader({ loader: loader });
-				for (var j = 0; j < scenes[i].length; j++) {
-					var entity = scenes[i][j];
-					entities.push(entity);
-					if (hasSkeletonPose(entity)) {
-						var p = delayAnimation(
-							animLoader,
-							entity.meshDataComponent.meshData.currentPose,
-							goo
-						);
-						p.then(progress);
-						timers.push(p);
-					}
-				}
-			}
-			RSVP.all(timers)
-			.then(function(animations) {
-				return RSVP.all(animations);
-			})
-			// When animations are loaded, add all entities to world to make them visible
-			.then(function(animManagers) {
-				managers = animManagers;
-				for(var i = 0; i < entities.length; i++) {
-					entities[i].addToWorld();
-				}
+		var skeletonTemplates = [];
+		// For loop
+		function innerLoop() {
+			var p = new RSVP.Promise();
+			makeSkeleton(goo.world, loader)
+			.then(function(entity) {
+				return setupAnimation(goo, loader, entity, managers);
+			}).then(function(entity) {
+				p.resolve(entity);
 			});
+
+			skeletonTemplates.push(p);
+		}
+		for(var i = 0; i < skeletonCount; i++) {
+			innerLoop();
+		}
+
+		// Create a bunch of skeleton clones
+		RSVP.all(skeletonTemplates)
+		.then(function(topEntities) {
+			function addEntity(entity) {
+				entity.addToWorld();
+			}
+
+			for(var i = 0, max = positions.length; i < max; i++) {
+				var newSkeleton = EntityUtils.clone(goo.world, topEntities[i%topEntities.length]);
+
+				var randPos = Math.floor(Math.random()*positions.length);
+				var newPos = positions.splice(randPos, 1)[0];
+
+				newSkeleton.transformComponent.transform.translation.seta(newPos);
+
+				EntityUtils.traverse(newSkeleton, addEntity);
+			}
+
+		});
+
+		// Load skybox
+		var sceneLoader = new SceneLoader({
+			loader: new Loader({
+				rootPath: '../resources/new_format/skybox/'
+			}),
+			world: goo.world
+		});
+
+		sceneLoader.load('skybox.scene.json').then(function(entities) {
+			for(var i in entities) {
+				entities[i].addToWorld();
+			}
+		});
+
+		// Load floor
+		var materialLoader = new MaterialLoader({
+				loader: new Loader({
+					rootPath: '../resources/new_format/floor/'
+				}),
+				world: goo.world
+		});
+		materialLoader.load('materials/floor.mat').then(function(material) {
+			console.log(material);
+			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
+			TangentGenerator.addTangentBuffer(meshData, 0);
+			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+			entity.meshRendererComponent.materials.push(material);
+			entity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
+			entity.addToWorld();
 		});
 
 		// Add user interaction
@@ -108,14 +156,28 @@ require([
 
 	}
 
-	// Delaying animation start so characters march out of sync
-	function delayAnimation(animLoader, pose, goo) {
+	function setupAnimation(goo, loader, topEntity, managers) {
+		var loaded = false;
+		var animLoader = new AnimationTreeLoader({ loader: loader });
 		var p = new RSVP.Promise();
-		setTimeout(function() {
-			p.resolve(loadAnimation(animLoader, pose, goo));
-		},Math.round(1000*Math.random()));
-		return p;
+		EntityUtils.traverse(topEntity, function(entity) {
+			var pose;
+			if(!loaded && (pose = getSkeletonPose(entity))) {
+				loaded = true;
 
+				setTimeout(function() {
+					loadAnimation(animLoader, pose, goo)
+					.then(function(animManager) {
+						managers.push(animManager);
+						p.resolve(topEntity);
+					});
+				}, Math.round(2000*Math.random()));
+			}
+		});
+		if(!loaded) {
+			p.resolve(topEntity);
+		}
+		return p;
 	}
 
 	// Loading animations
@@ -138,14 +200,14 @@ require([
 		}, Math.round(1000*Math.random()));
 	}
 
+
 	// Load the character
-	function makeSkeleton(world, loader, posZ, posX) {
+	function makeSkeleton(world, loader) {
 		var sceneLoader = new SceneLoader({ loader: loader, world: world });
 		var p = sceneLoader.load('skeleton.scene.json').then(function(entities) {
-
+			console.log(entities);
 			var topEntity = getTopEntity(entities);
-			topEntity.transformComponent.transform.translation.set(posX,0,posZ);
-			return entities;
+			return topEntity;
 		}).then(null,
 		function(err) {
 			console.log('Mainerror. \n'+err);
@@ -153,6 +215,7 @@ require([
 		return p;
 	}
 
+	// Helpers
 	function getTopEntity(entities) {
 		var topEntities = [];
 		for(var i = 0, max = entities.length; i < max; i++) {
@@ -167,10 +230,18 @@ require([
 			return null;
 		}
 	}
-	function hasSkeletonPose(entity) {
-		return entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose;
+	function getSkeletonPose(entity) {
+		if (entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose) {
+			return entity.meshDataComponent.meshData.currentPose;
+		}
+		else {
+			return false;
+		}
 	}
 
+
+
+	/*
 	function createGlass() {
 		var glass = document.createElement('div');
 		glass.innerHTML = 'Loading ...';
@@ -198,6 +269,7 @@ require([
 			glass.innerHTML = 'Loading '+count+'/'+total;
 		}
 	}
+	*/
 
 
 

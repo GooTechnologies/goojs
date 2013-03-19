@@ -146,13 +146,15 @@ define([
 			for (var key in shaderDefinition.uniforms) {
 				var uniform = shaderDefinition.uniforms[key];
 
-				var funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/;
-				var test = uniform.match(funcRegexp);
-				if (test && test.length === 3) {
-					var args = test[1].replace(' ','').split(',');
-					var body = test[2];
-					/*jshint -W054 */
-					shaderDefinition.uniforms[key] = new Function(args, body);
+				if (typeof uniform === 'string') {
+					var funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/;
+					var test = uniform.match(funcRegexp);
+					if (test && test.length === 3) {
+						var args = test[1].replace(' ','').split(',');
+						var body = test[2];
+						/*jshint -W054 */
+						shaderDefinition.uniforms[key] = new Function(args, body);
+					}
 				}
 			}
 
