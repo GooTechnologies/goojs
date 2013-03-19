@@ -102,7 +102,8 @@ require([
 		loadSkybox(goo);
 		loadModels(goo);
 
-		var entity = createBox(goo, ShaderLib.simpleLit, 10, 10, 10);
+		var entity = createBox(goo, ShaderLib.simpleLit, 50, 150, 150);
+		entity.transformComponent.transform.translation.x = -80;
 		entity.addToWorld();
 		var script = {
 			run: function (entity) {
@@ -110,11 +111,11 @@ require([
 
 				var transformComponent = entity.transformComponent;
 				entity.transformComponent.transform.setRotationXYZ(
-					World.time * 1.2,
-					World.time * 2.0,
+					0.2,
+					World.time * 0.2,
 					0
 				);
-				transformComponent.transform.translation.y = Math.sin(t) * 5 + 5;
+				transformComponent.transform.translation.y = Math.sin(t) * 5 - 70;
 				transformComponent.setUpdated();
 			}
 		};
@@ -143,7 +144,6 @@ require([
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'normalMultiplier', 0.0, 3.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelMultiplier', 0.0, 3.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColor');
-		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColorEnd');
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'fogColor');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogStart', 0.0, 2000.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogScale', 1.0, 2000.0);

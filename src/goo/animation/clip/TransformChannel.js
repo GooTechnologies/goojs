@@ -24,6 +24,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 
 		this.tmpVec = new Vector3();
 		this.tmpQuat = new Quaternion();
+		this.tmpQuat2 = new Quaternion();
 	}
 
 	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
@@ -90,7 +91,8 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 		this.tmpQuat.data[2] = this._rotations[index4B + 2];
 		this.tmpQuat.data[3] = this._rotations[index4B + 3];
 		if (!transformData._rotation.equals(this.tmpQuat)) {
-			transformData._rotation.slerp(this.tmpQuat, progressPercent);
+			Quaternion.slerp(transformData._rotation, this.tmpQuat, progressPercent, this.tmpQuat2);
+			transformData._rotation.setv(this.tmpQuat2);
 		}
 
 //		var startT = transformData._translation.set([this._translations[index3A + 0], this._translations[index3A + 1],

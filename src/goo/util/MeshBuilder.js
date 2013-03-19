@@ -69,9 +69,10 @@ define([
 			}
 
 			var view = meshData.getAttributeBuffer(key);
+			var viewLength = view.length;
 			var array = attribute.array;
 			if (key === MeshData.POSITION) {
-				for (var i = 0; i < view.length; i += 3) {
+				for (var i = 0; i < viewLength; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.matrix.applyPostPoint(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
@@ -79,7 +80,7 @@ define([
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.NORMAL) {
-				for (var i = 0; i < view.length; i += 3) {
+				for (var i = 0; i < viewLength; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
@@ -87,7 +88,7 @@ define([
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.TANGENT) {
-				for (var i = 0; i < view.length; i += 3) {
+				for (var i = 0; i < viewLength; i += 3) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
@@ -95,13 +96,13 @@ define([
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
 			} else {
-				for (var i = 0; i < view.length; i++) {
+				for (var i = 0; i < viewLength; i++) {
 					array[this.vertexCounter * map.count + i] = view[i];
 				}
 			}
 		}
 		var indices = meshData.getIndexBuffer();
-		for (var i = 0; i < meshData.indexCount; i++) {
+		for (var i = 0, l = meshData.indexCount; i < l; i++) {
 			this.indexData[this.indexCounter + i] = indices[i] + this.vertexCounter;
 		}
 		this.vertexCounter += meshData.vertexCount;

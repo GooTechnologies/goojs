@@ -46,15 +46,15 @@ require([
 		// Add box
 		var boxEntity = createBoxEntity(goo);
 
-		// Add spin
+		// Add spin script
 		boxEntity.setComponent(new ScriptComponent({
 			run : function(entity) {
-				boxEntity.transformComponent.transform.setRotationXYZ(
+				entity.transformComponent.transform.setRotationXYZ(
 					World.time * 1.2,
 					World.time * 2.0,
 					0
 				);
-				boxEntity.transformComponent.setUpdated();
+				entity.transformComponent.setUpdated();
 			}
 		}));
 
@@ -67,7 +67,7 @@ require([
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
-		// Add orbit camera
+		// Set camera entity to orbit camera
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,

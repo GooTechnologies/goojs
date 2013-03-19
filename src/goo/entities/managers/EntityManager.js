@@ -9,15 +9,20 @@ define(
 	function EntityManager() {
 		this.type = 'EntityManager';
 
-		this._entities = {};
+		this._entities = [];
 	}
 
 	EntityManager.prototype.added = function (entity) {
-		this._entities[entity.id] = entity;
+		if (this._entities.indexOf(entity) === -1) {
+			this._entities.push(entity);
+		}
 	};
 
 	EntityManager.prototype.removed = function (entity) {
-		delete this._entities[entity.id];
+		var index = this._entities.indexOf(entity);
+		if (index !== -1) {
+			this._entities.splice(index, 1);
+		}
 	};
 
 	/**
@@ -27,7 +32,7 @@ define(
 	 * @returns {Boolean} true if the entity exists
 	 */
 	EntityManager.prototype.containsEntity = function (entity) {
-		return this._entities[entity.id] !== undefined;
+		return this._entities.indexOf(entity) !== -1;
 	};
 
 	/**
@@ -37,7 +42,13 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityById = function (id) {
-		return this._entities[id];
+		for (var i = 0, l = this._entities.length; i < l; i++) {
+			var entity = this._entities[i];
+			if (entity.id === id) {
+				return entity;
+			}
+		}
+		return undefined;
 	};
 
 	/**
@@ -47,8 +58,8 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityByName = function (name) {
-		for (var key in this._entities) {
-			var entity = this._entities[key];
+		for (var i = 0, l = this._entities.length; i < l; i++) {
+			var entity = this._entities[i];
 			if (entity.name === name) {
 				return entity;
 			}
@@ -57,16 +68,12 @@ define(
 	};
 
 	/**
-	 * Get all entities in the world as an array
+	 * Get all entities in the world
 	 *
 	 * @returns {Array} Array containing all entities in the world
 	 */
 	EntityManager.prototype.getEntities = function () {
-		var entities = [];
-		for (var key in this._entities) {
-			entities.push(this._entities[key]);
-		}
-		return entities;
+		return this._entities;
 	};
 
 	/**
@@ -76,8 +83,8 @@ define(
 	 */
 	EntityManager.prototype.getTopEntities = function () {
 		var entities = [];
-		for (var key in this._entities) {
-			var entity = this._entities[key];
+		for (var i = 0; i < this._entities.length; i++) {
+			var entity = this._entities[i];
 			if (entity.transformComponent) {
 				if (!entity.transformComponent.parent) {
 					entities.push(entity);

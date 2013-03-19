@@ -67,34 +67,34 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 			this.emitter.getParticleBillboardVectors(this, particleEntity);
 		}
 		if (this.spin === 0) {
-			this.bbX.mul(this.size);
-			this.bbY.mul(this.size);
+			this.bbX.muld(this.size, this.size, this.size);
+			this.bbY.muld(this.size, this.size, this.size);
 		} else {
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
 			this.bbY.setv(this.bbX);
-			this.bbX.mul(cA).add([upX * sA, upY * sA, upZ * sA]);
-			this.bbY.mul(-sA).add([upX * cA, upY * cA, upZ * cA]);
+			this.bbX.muld(cA, cA, cA).add_d(upX * sA, upY * sA, upZ * sA);
+			this.bbY.muld(-sA, -sA, -sA).add_d(upX * cA, upY * cA, upZ * cA);
 		}
 
 		// apply billboard vectors to mesh verts
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
 		// bottom right point
-		Vector3.sub(this.position, this.bbX, calcVec).subv(this.bbY);
+		Vector3.subv(this.position, this.bbX, calcVec).subv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
 
 		// top right point
-		Vector3.sub(this.position, this.bbX, calcVec).addv(this.bbY);
+		Vector3.subv(this.position, this.bbX, calcVec).addv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
 
 		// top left point
-		Vector3.add(this.position, this.bbX, calcVec).addv(this.bbY);
+		Vector3.addv(this.position, this.bbX, calcVec).addv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
 
 		// bottom left corner
-		Vector3.add(this.position, this.bbX, calcVec).subv(this.bbY);
+		Vector3.addv(this.position, this.bbX, calcVec).subv(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
 
 		if (this.lastUVIndex !== this.uvIndex) {

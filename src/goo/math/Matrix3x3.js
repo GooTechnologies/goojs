@@ -489,7 +489,21 @@ function (MathUtils, Matrix, Vector3) {
 	 */
 
 	Matrix3x3.prototype.setIdentity = function () {
-		this.data.set(Matrix3x3.IDENTITY.data);
+		var d = this.data;
+
+		d[0] = 1;
+		d[1] = 0;
+		d[2] = 0;
+
+		d[3] = 0;
+		d[4] = 1;
+		d[5] = 0;
+
+		d[6] = 0;
+		d[7] = 0;
+		d[8] = 1;
+
+		return this;
 	};
 
 	/* ====================================================================== */

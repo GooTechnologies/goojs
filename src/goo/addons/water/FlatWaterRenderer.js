@@ -36,26 +36,33 @@ function (
 	 */
 	function FlatWaterRenderer (camera, settings) {
 		this.camera = camera;
+		settings = settings || {};
+
+		this.useRefraction = settings.useRefraction !== undefined ? settings.useRefraction : true;
+
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);
 		this.renderList = [];
 
 		this.waterPlane = new Plane();
 
-		settings = settings || {};
-
 		var width = window.innerWidth / (settings.divider || 2);
 		var height = window.innerHeight / (settings.divider || 2);
 		this.reflectionTarget = new RenderTarget(width, height);
-		this.refractionTarget = new RenderTarget(width/2, height/2);
-		this.depthTarget = new RenderTarget(width/2, height/2);
+		if (this.useRefraction) {
+			this.refractionTarget = new RenderTarget(width, height);
+			this.depthTarget = new RenderTarget(width, height);
+		}
 
 		var waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
+		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
 		waterMaterial.cullState.enabled = false;
 		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 		waterMaterial.textures[0] = new TextureCreator().loadTexture2D(normalsTextureUrl);
 		waterMaterial.textures[1] = this.reflectionTarget;
-		waterMaterial.textures[2] = this.refractionTarget;
-		waterMaterial.textures[3] = this.depthTarget;
+		if (this.useRefraction) {
+			waterMaterial.textures[2] = this.refractionTarget;
+			waterMaterial.textures[3] = this.depthTarget;
+		}
 		this.waterMaterial = waterMaterial;
 
 		this.followCam = true;
@@ -98,22 +105,19 @@ function (
 		this.waterEntity.skip = true;
 
 		if (aboveWater) {
-			//TODO: render refraction
-			this.renderList.length = 0;
-			partitioner.process(this.waterCamera, entities, this.renderList);
+			if (this.useRefraction) {
+				partitioner.process(this.waterCamera, entities, this.renderList);
 
-			// this.waterCamera.update();
-			this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
-			this.waterCamera.setToObliqueMatrix(this.clipPlane);
+				this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-			renderer.overrideMaterial = this.depthMaterial;
-			renderer.render(this.renderList, this.waterCamera, this.lights, this.depthTarget, true);
-			renderer.overrideMaterial = null;
+				renderer.overrideMaterial = this.depthMaterial;
+				renderer.render(this.renderList, this.waterCamera, this.lights, this.depthTarget, true);
+				renderer.overrideMaterial = null;
 
-			renderer.render(this.renderList, this.waterCamera, this.lights, this.refractionTarget, true);
-		}
+				renderer.render(this.renderList, this.waterCamera, this.lights, this.refractionTarget, true);
+			}
 
-		if (aboveWater) {
 			var calcVect = this.calcVect;
 			var camReflectDir = this.camReflectDir;
 			var camReflectUp = this.camReflectUp;
@@ -154,8 +158,6 @@ function (
 
 		this.waterMaterial.shader.uniforms.abovewater = aboveWater;
 
-
-		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
 		if (this.skybox) {
@@ -176,7 +178,12 @@ function (
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source).addv(this.offset);
+			if (this.followCam) {
+				target.translation.setv(source).addv(this.offset);
+			} else {
+				target.translation.x = source.x;
+				target.translation.z = source.z;
+			}
 			target.update();
 
 			this.waterCamera._updatePMatrix = true;
@@ -196,7 +203,10 @@ function (
 	};
 
 	var waterShaderDef = {
-		timeMultiplier: 1.0,
+		defines: {
+			REFRACTION: false
+		},
+		// timeMultiplier: 1.0,
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexNormal: MeshData.NORMAL
@@ -218,9 +228,6 @@ function (
 			waterColor: [
 				0.0, 0.05, 0.1, 1.0
 			],
-			waterColorEnd: [
-				0.0, 0.1, 0.1, 1.0
-			],
 			abovewater: true,
 			fogColor: [
 				237.0 / 255.0, 252.0 / 255.0, 255.0 / 255.0, 1
@@ -235,7 +242,6 @@ function (
 				1.0, 1.0, 1.0, 1.0
 			],
 			sunShininess: 100.0,
-			// sunDiffusePower: 0.0,
 			sunSpecPower: 2.0,
 			fogStart: 500.0,
 			fogScale: 1500.0,
@@ -263,7 +269,6 @@ function (
 			'varying vec3 eyeVec;',//
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
-			'varying float waterDepth;',
 
 			'void main(void) {', //
 			'	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
@@ -281,8 +286,6 @@ function (
 			'	vec3 eyeDir = worldPos - cameraPosition;',
 			'	eyeVec = eyeDir * rotMat;',
 
-			'	waterDepth = -(viewMatrix * worldMatrix * vec4(vertexPosition, 1.0)).z / 5000.0;',
-
 			'	viewCoords = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 			'	gl_Position = viewCoords;',
 			'}'//
@@ -293,11 +296,12 @@ function (
 
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
+			'#ifdef REFRACTION',
 			'uniform sampler2D refraction;',//
 			'uniform sampler2D depthmap;',//
+			'#endif',
 
 			'uniform vec4 waterColor;',
-			'uniform vec4 waterColorEnd;',
 			'uniform bool abovewater;',
 			'uniform vec4 fogColor;',
 			'uniform float fogStart;',
@@ -309,7 +313,6 @@ function (
 			'uniform float fresnelPow;',
 			'uniform vec3 sunColor;',
 			'uniform float sunShininess;',
-			// 'uniform float sunDiffusePower;',
 			'uniform float sunSpecPower;',
 			'uniform float normalMultiplier;',
 			'uniform float fresnelMultiplier;',
@@ -320,7 +323,6 @@ function (
 			'varying vec3 eyeVec;',//
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
-			'varying float waterDepth;',
 
 			'vec4 getNoise(vec2 uv) {',
 			'	float t = time * timeMultiplier;',
@@ -364,11 +366,10 @@ function (
 
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
-
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
-
 			'	vec2 projCoordRefr = projCoord;',
+
 			'	if ( abovewater == true ) {',
 			'		projCoord.x = 1.0 - projCoord.x;',
 			'	}',
@@ -384,16 +385,17 @@ function (
 			'		vec3 specular = vec3(0.0);',
 			// '	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
 			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
+			'		reflectionColor *= reflectionMultiplier;',
 
+			'		vec4 endColor = waterColor;',
+			'#ifdef REFRACTION',
 			'		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
 			'		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
 			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
+			'		endColor = mix(refractionColor, waterColor, depth);',
+			'#endif',
 
-			'		reflectionColor *= reflectionMultiplier;',
-
-			'		refractionColor = mix(refractionColor, waterColor, depth);',
-
-			'		vec4 endColor = mix(refractionColor, reflectionColor, fresnelTerm);',
+			'		endColor = mix(endColor, reflectionColor, fresnelTerm);',
 
 			'		if (doFog) {',
 			'			gl_FragColor = (vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
@@ -411,27 +413,25 @@ function (
 			vertexPosition : MeshData.POSITION
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			farPlane : Shader.FAR_PLANE
 		},
 		vshader : [ //
 			'attribute vec3 vertexPosition;', //
 
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',//
 
 			'varying vec4 vPosition;',//
 
 			'void main(void) {', //
 			'	vPosition = worldMatrix * vec4(vertexPosition, 1.0);', //
-			'	gl_Position = projectionMatrix * viewMatrix * vPosition;', //
+			'	gl_Position = viewProjectionMatrix * vPosition;', //
 			'}'//
 		].join('\n'),
 		fshader : [//
-			'precision mediump float;',//
+			'precision highp float;',//
 
 			'uniform float farPlane;',//
 

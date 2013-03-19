@@ -281,9 +281,9 @@ require(['goo/entities/World',
 			'	vec3 normal = TBN * bump;',
 			'	float NdotL = dot(normal, normalize(lightVec));',
 
-			'	vec4 ambient = vec4(0.0, 0.0, 0.0, 1.0);',
-			'	float diffuse = max(NdotL, 0.0 );',
-			'	vec4 intensity = vec4(1.0) * diffuse + ambient;',
+			'	float ambient = abs(min(NdotL, 0.0)) * 0.9 + 0.1;',
+			'	float diffuse = max(NdotL, 0.0);',
+			'	vec4 intensity = vec4(1.0, 1.0, 0.95, 1.0) * diffuse + vec4(0.18, 0.19, 0.2, 1.0) * ambient;',
 
 			'	gl_FragColor = texColor * intensity;',
 			'}'//
