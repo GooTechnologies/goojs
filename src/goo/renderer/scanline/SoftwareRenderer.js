@@ -60,7 +60,7 @@ define([
 		// using |0 to enforce integer values , if they are not already forced by creating them with hex notation.
 		// http://www.2ality.com/2013/02/asm-js.html
 		/*jshint bitwise: false */
-		this._INSIDE = 0x0 |0; // 0000
+		this._INSIDE = 0x0 |0;	// 0000
 		this._LEFT = 0x1 |0;	// 0001
 		this._RIGHT = 0x2 |0;	// 0010
 		this._BELOW = 0x4 |0;	// 0100
@@ -160,10 +160,7 @@ define([
 			var triangles = this._createTrianglesForEntity(renderList[i]);
 
 			for (var t = 0; t < triangles.length; t++) {
-				var triangle = triangles[t];
-				if ( triangle ) {
-					this._renderTriangle(triangle);
-				}
+					this._renderTriangle(triangles[t]);
 			}
 		}
 	};
@@ -180,6 +177,7 @@ define([
 
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
+		var cameraViewProjectionMatrix = Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
 
 		for (var i = 0; i < renderList.length; i++) {
@@ -192,7 +190,7 @@ define([
 						i--; // Have to compensate the index for the loop.
 					}
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					if (this._boundingBoxOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix)) {
+					if (this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix)) {
 						// Removes the entity at the current index.
 						renderList.splice(i, 1);
 						i--; // Have to compensate the index for the loop.
@@ -202,12 +200,11 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
+	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
 
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
-		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
-		combinedMatrix = Matrix4x4.combine(cameraProjectionMatrix, combinedMatrix);
+		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
 
 		var boundingBox = entity.meshDataComponent.modelBound;
 
@@ -248,6 +245,7 @@ define([
 			// For interpolating in screen space, in the clipping method.
 			v.w = 1.0 / v.w;
 		}
+
 		this._transformToScreenSpace(vertices);
 
 		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
@@ -295,12 +293,22 @@ define([
 	};
 
 	/**
+	*	Clips the buonding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
+	*	This is a implemenation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
+	*	if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
+	*	it will be non-conservative in some cases.
+	*
+	*	@param {Array.<Vector>} vertices Array of screen space transformed vertices.
+	*	@param {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
+	*/
+	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
+
+	/*
 	*	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
 	*	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
 	*	http://www.cse.buffalo.edu/faculty/walters/cs480/NewLect9.pdf
 	*	https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Operators/Bitwise_Operators
 	*/
-	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
 
 		/*jshint bitwise: false */
 		var outCodes = new Array(8);
@@ -345,7 +353,7 @@ define([
 			var v2 = vertices[vIndex2];
 			var outcode2 = outCodes[vIndex2];
 
-		//	var outside = false;
+			//	var outside = false;
 
 			while (true) {
 				// Initial check if the edge lies inside...
@@ -367,8 +375,11 @@ define([
 
 				// Pick the code which is outside. (not 0). This point is outside the clipping window.
 				var outsideCode = outcode1 ? outcode1 : outcode2;
+				// ratio for interpolating depth and translating to the intersection coordinate.
 				var ratio;
+				// nextCode is the intersection coordinate's outcode.
 				var nextCode;
+
 				// Checking for match in bitorder, starting with ABOVE == 1000, then BELOW == 0100,
 				// 0010 and 0001.
 				if (outsideCode & this._ABOVE) {
@@ -466,7 +477,9 @@ define([
 	};
 
 	/**
-	*	Calculates outcode for the Coher-Sutherland clipping algorithm.
+	*	Calculates outcode for a coordinate in screen pixel space used by the Coher-Sutherland clipping algorithm.
+	*	The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
+	*	@return {Number} outcode A possible combination of 0000, 0001, 0010, 0100 and 1000. 
 	*/
 	SoftwareRenderer.prototype._calculateOutCode = function (coordinate) {
 
@@ -786,8 +799,6 @@ define([
 		rightX = Math.ceil(rightX);
 		firstScanline = Math.ceil(firstScanline);
 		lastScanline = Math.floor(lastScanline);
-
-		//this._clampToScreen(leftX, rightX, lastScanline, firstScanline);
 
 		if (leftX < 0) {
 			leftX = 0;
@@ -1283,7 +1294,7 @@ define([
 		// Allocate the trianle array for the maximum case,
 		// where all the triangles are visible.
 		// This will raise a need for checking for undefined during the rendering of the triangles.
-		var triangles = new Array(vertIndexArray.length / 3);
+		var triangles = [];
 
 		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
 
@@ -1520,7 +1531,6 @@ define([
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
 			// During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.
-			// vertex.z = vertex.w;
 		}
 	};
 
