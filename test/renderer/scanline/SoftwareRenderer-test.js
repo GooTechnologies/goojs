@@ -25,7 +25,7 @@ define(
 			});
 		});
 
-		describe('isBackFacing', function () {
+		describe('isBackFacingProjected', function () {
 
 			// The vertices are transformed into perspective space and homogeneous divided at this point
 			// in the graphics pipeline in SoftwareRenderer.
@@ -42,22 +42,22 @@ define(
 			var v3 = new Vector3(0.7, 0.7, 73.5);
 
 			it('This face inside the space should be back face culled', function () {
-				expect(renderer._isBackFacing(v1, v2, v3)).toEqual(true);
+				expect(renderer._isBackFacingProjected(v1, v2, v3)).toEqual(true);
 			});
 
 			it('This face inside the space should be visible', function() {
-				expect(renderer._isBackFacing(v1, v3, v2)).toEqual(false);
+				expect(renderer._isBackFacingProjected(v1, v3, v2)).toEqual(false);
 			});
 
 			// Make the v1 and v2 vertex go outside the space to test this case.
 			v1.x = 1.3;
 			v3.z = 2.0;
 			it('This face outside the space should be visible', function () {
-				expect(renderer._isBackFacing(v1, v3, v2)).toEqual(false);
+				expect(renderer._isBackFacingProjected(v1, v3, v2)).toEqual(false);
 			});
 
 			it('This face outside the space should be back face culled', function () {
-				expect(renderer._isBackFacing(v1, v2, v3)).toEqual(true);
+				expect(renderer._isBackFacingProjected(v1, v2, v3)).toEqual(true);
 			});
 
 		});

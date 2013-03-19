@@ -139,7 +139,7 @@ define([
 	};
 
 	/**
-	*	Clears the depth data.
+	*	Clears the depth data (Overwrites the depth buffer with the clear buffer).
 	*/
 	SoftwareRenderer.prototype._clearDepthData = function () {
 
@@ -155,12 +155,15 @@ define([
 
 		this._clearDepthData();
 
+		var cameraViewMatrix = this.camera.getViewMatrix();
+		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
+
 		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
-			var triangles = this._createTrianglesForEntity(renderList[i]);
+			var triangles = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
 
 			for (var t = 0; t < triangles.length; t++) {
-					this._renderTriangle(triangles[t]);
+				this._renderTriangle(triangles[t]);
 			}
 		}
 	};
@@ -1286,7 +1289,7 @@ define([
 	*	@param {Entity} entity, the entity from which to create triangles.
 	*	@return {Array.<Triangle>} triangle array
 	*/
-	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity) {
+	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
 
 		var posArray = entity.occluderComponent.meshData.dataViews.POSITION;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
@@ -1296,11 +1299,7 @@ define([
 		// This will raise a need for checking for undefined during the rendering of the triangles.
 		var triangles = [];
 
-		// TODO : Test the speed to draw the triangle directly instead of creation step and render step.
-
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-		var cameraViewMatrix = this.camera.getViewMatrix();
-		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		var cameraNearZInWorld = -this.camera.near;
 
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
@@ -1324,6 +1323,10 @@ define([
 			combinedMatrix.applyPost(v1);
 			combinedMatrix.applyPost(v2);
 			combinedMatrix.applyPost(v3);
+
+			if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
+				continue; // Skip loop to the next three vertices.
+			}
 
 			// Clip triangle to the near plane.
 
@@ -1400,11 +1403,12 @@ define([
 
 			this._projectionTransform(vertices, cameraProjectionMatrix);
 
-			// TODO: (Optimization) Maybe do backface culling before clipping the triangles. The method has to be revised for this.
-			if (this._isBackFacing(v1, v2, v3)) {
+			/*
+			if (this._isBackFacingProjected(v1, v2, v3)) {
 				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 				continue; // Skip loop to the next three vertices.
 			}
+			*/
 
 			this._transformToScreenSpace(vertices);
 
@@ -1535,29 +1539,63 @@ define([
 	};
 
 	/**
-	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
-	*	Otherwise false is returned.
+	*	Determines if a triangle is backfacing in camera view space.
+	*
 	*	@param {Vector4} v1 Vertex #1
 	*	@param {Vector4} v3 Vertex #2
 	*	@param {Vector4} v3 Vertex #3
 	*	@return {Boolean} true or false
 	*/
-	SoftwareRenderer.prototype._isBackFacing = function (v1, v2, v3) {
+	SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (v1, v2, v3) {
 
 		// Calculate the dot product between the triangle's face normal and the camera's eye direction
 		// to find out if the face is facing away or not.
 
-
 		// Create edges for calculating the normal.
-		//var e1 = new Vector3(v1.x - v2.x , v1.y - v2.y, v1.z - v2.z);
-		//var e2 = new Vector3(v1.x - v3.x, v1.y - v3.y, v1.z - v3.z);
+		var e1 = [v2.x - v1.x , v2.y - v1.y, v2.z - v1.z];
+		var e2 = [v3.x - v1.x, v3.y - v1.y, v3.z - v1.z];
 
-		// Doing the cross product since the built-in methods in Vector3 seems to do much error checking.
-		// Also able to optimize away 66% of the computations, due to being in perspective space.
-		//faceNormal.data[0] = e2.data[2] * e1.data[1] - e2.data[1] * e1.data[2];
-		//faceNormal.data[1] = e2.data[0] * e1.data[2] - e2.data[2] * e1.data[0];
+		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
+		var faceNormal = new Array(3);
+		faceNormal[0] = e2[2] * e1[1] - e2[1] * e1[2];
+		faceNormal[1] = e2[0] * e1[2] - e2[2] * e1[0];
+		faceNormal[2] = e2[1] * e1[0] - e2[0] * e1[1];
 
-		//var faceNormalZ = e2.data[1] * e1.data[0] - e2.data[0] * e1.data[1];
+		// Picking the first vertex as the point on the triangle to evaulate the dot product on.
+		var viewVector = [v1.x, v1.y, v1.z];
+
+		// No need to normalize the vectors due to only being
+		// interested in the sign of the dot product.
+
+		/*
+		// Normalize faceNormal and view vector
+		var viewLength = Math.sqrt(viewVector[0] * viewVector[0] + viewVector[1] * viewVector[1] + viewVector[2] * viewVector[2]);
+		var faceLength = Math.sqrt(faceNormal[0] * faceNormal[0] + faceNormal[1] * faceNormal[1] + faceNormal[2] * faceNormal[2]);
+
+		for (var i = 0; i < 3; i++) {
+			viewVector[i] /= viewLength;
+			faceNormal[i] /= faceLength;
+		}
+		*/
+
+		var dot = 0.0;
+		dot += faceNormal[0] * viewVector[0];
+		dot += faceNormal[1] * viewVector[1];
+		dot += faceNormal[2] * viewVector[2];
+
+		return dot > 0.0;
+	};
+
+	/**
+	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
+	*	Otherwise false is returned. This method is for checking projected vertices.
+	*
+	*	@param {Vector4} v1 Vertex #1
+	*	@param {Vector4} v3 Vertex #2
+	*	@param {Vector4} v3 Vertex #3
+	*	@return {Boolean} true or false
+	*/
+	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
 		// Optimized away edge allocation , only need x and y of the edges.
 		var e1X = v2.data[0] - v1.data[0];
