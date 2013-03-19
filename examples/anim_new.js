@@ -45,11 +45,11 @@ require([
 			topEntity.transformComponent.transform.translation.set(0, -30, -30);
 
 			// Load animations for entities with skeletonposes
+			var animationTreeLoader = new AnimationTreeLoader({ loader: loader });
 			var promises = [];
 			for (var i = 0; i < entities.length; i++) {
 				var pose;
 				if (pose = getSkeletonPose(entities[i])) {
-					var animationTreeLoader = new AnimationTreeLoader({ loader: loader });
 					var p = animationTreeLoader.load('animations/skeleton.anim', pose, 'walk_anim');
 					promises.push(p);
 				}

@@ -77,7 +77,7 @@ define([
 			var json = JSON.parse(request.responseText);
 			return json;
 		} else if(contentType === 'application/octet-stream') {
-			var match = ajaxProperties.url.match(/\.(glsl|dds)$/);
+			var match = ajaxProperties.url.match(/\.(glsl|dds|vs|fs)$/);
 
 			if(match !== null) {
 				// If the request url contains a known file extension
@@ -124,7 +124,7 @@ define([
 	};
 
 	Loader.prototype._buildURL = function(URLString) {
-		var _match = URLString.match(/\.(ent|mat|mesh|shader|vs|fs|tex)$/);
+		var _match = URLString.match(/\.(ent|mat|mesh|shader|tex)$/);
 		var _url = _match ? URLString + '.json' : URLString;
 		return this.rootPath + _url;
 	};

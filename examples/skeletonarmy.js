@@ -57,8 +57,8 @@ require([
 		var goo = createWorld();
 		var managers = [];
 
-		var rows = 14;
-		var cols = 30;
+		var rows = 10;
+		var cols = 20;
 		var skeletonCount = 6;
 		var positions = [];
 
