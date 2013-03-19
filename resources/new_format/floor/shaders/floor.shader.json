@@ -24,6 +24,6 @@
 		"moveZ": 0,
 		"time": "TIME"
 	},
-	"vs": "shaders/floor.vs",
-	"fs": "shaders/floor_no_parallax.fs"
+	"vshaderRef": "shaders/floor.vs",
+	"fshaderRef": "shaders/floor_no_parallax.fs"
 }

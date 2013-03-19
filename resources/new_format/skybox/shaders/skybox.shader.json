@@ -9,6 +9,6 @@
 		"worldMatrix" : "WORLD_MATRIX",
 		"diffuseMap" : "TEXTURE0"
 	},
-	"vs" : "shaders/skybox.vs",
-	"fs" : "shaders/skybox.fs"
+	"vshaderRef" : "shaders/skybox.vs",
+	"fshaderRef" : "shaders/skybox.fs"
 }
