@@ -62,6 +62,7 @@ define([
 		var promises = []; // Keep track of promises
 		var shaderDefinition;
 		var materialState = this._getDefaultMaterialState();
+		var materialUniforms = {};
 		var textures = [];
 
 		function addTexture(i, texture) {
@@ -109,6 +110,9 @@ define([
 
 						setDestinationColor(materialState[state], value);
 					}
+					else {
+						materialUniforms[key] = value;
+					}
 				}
 			}
 			if (materialDataSource.textures && materialDataSource.textures.length) {
@@ -131,6 +135,7 @@ define([
 			var material = Material.createMaterial(shaderDefinition, name);
 			material.textures = textures;
 			material.materialState = materialState;
+			material.uniforms = materialUniforms;
 			return material;
 		});
 	};
