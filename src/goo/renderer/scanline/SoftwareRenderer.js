@@ -51,9 +51,27 @@ define([
 		}
 
 		this._boundingBoxNeighbourIndices = this._generateBoundingBoxNeighbourIndices();
-		console.log(this._boundingBoxNeighbourIndices);
-
 		this._boundingBoxEdgeIndices = this._generateBoundingBoxEdgeIndices();
+		this._boundingBoxTriangleIndices = new Uint8Array(12 * 3);
+
+		var triIndices = [
+							0,3,4,
+							3,7,4,
+							0,4,5,
+							0,5,1,
+							2,1,5,
+							2,5,6,
+							3,2,6,
+							3,6,7,
+							0,1,2,
+							0,2,3,
+							5,4,6,
+							7,6,4
+						];
+
+		this._boundingBoxTriangleIndices.set(triIndices, 0);
+
+		console.log(this._boundingBoxTriangleIndices);
 
 		// Cohen-Sutherland area constants.
 		// (Clipping method for the bounding box)
@@ -186,21 +204,26 @@ define([
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
 			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
+
+				var culled;
+
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
-					if (this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld)) {
-						// Removes the entity at the current index.
-						renderList.splice(i, 1);
-						i--; // Have to compensate the index for the loop.
-					}
+					culled = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					if (this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix)) {
-						// Removes the entity at the current index.
-						renderList.splice(i, 1);
-						i--; // Have to compensate the index for the loop.
-					}
+					culled = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+				}
+
+				if (culled) {
+					// Removes the entity at the current index.
+					renderList.splice(i, 1);
+					i--; // Have to compensate the index for the loop.
 				}
 			}
 		}
+	};
+
+	SoftwareRenderer.prototype._renderBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
+		
 	};
 
 	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
@@ -251,6 +274,8 @@ define([
 
 		this._transformToScreenSpace(vertices);
 
+		// The array contains the min and max x- and y-coordinates as well as the min depth.
+		// order : [minX, maxX, minY, maxY, minDepth]
 		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
 
 		this._cohenSutherlandClipBox(vertices, minmaxArray);
@@ -1291,7 +1316,7 @@ define([
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
 
-		var posArray = entity.occluderComponent.meshData.dataViews.POSITION;
+		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
 		// Allocate the trianle array for the maximum case,
@@ -1304,6 +1329,17 @@ define([
 
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+
+		var posArray = new Float32Array(originalPositions.length);
+		var tempVertex = Vector4.UNIT_W;
+		// Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
+		// The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
+		for (var i = 0; i < posArray.length; i++) {
+			tempVertex.set(originalPositions[i], originalPositions[i + 1], originalPositions[i + 2], 1.0);
+			combinedMatrix.applyPost(tempVertex);
+			posArray.set([tempVertex.x, tempVertex.y, tempVertex.z], i);
+			i += 2;
+		}
 
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 
@@ -1318,11 +1354,6 @@ define([
 			var v3 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
 			var vertices = [v1, v2, v3];
-
-			// Transform to camera view space.
-			combinedMatrix.applyPost(v1);
-			combinedMatrix.applyPost(v2);
-			combinedMatrix.applyPost(v3);
 
 			if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
