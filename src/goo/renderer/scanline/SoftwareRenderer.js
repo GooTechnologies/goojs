@@ -205,15 +205,15 @@ define([
 			var entity = renderList[i];
 			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
 
-				var culled;
+				var cull;
 
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
-					culled = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
+					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					culled = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
 				}
 
-				if (culled) {
+				if (cull) {
 					// Removes the entity at the current index.
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
@@ -222,16 +222,11 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._renderBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
-		
-	};
-
-	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
-
-		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-
-		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
-
+	/**
+	*	Generates a array of homogeneous vertices for a entity's bounding box.
+	*	@return {Array.<Vector4>} vertex array
+	*/
+	SoftwareRenderer.prototype._generateBoundingBoxVertices = function (entity) {
 		var boundingBox = entity.meshDataComponent.modelBound;
 
 		// Create the 8 vertices which create the bounding box.
@@ -249,7 +244,60 @@ define([
 		var v7 = new Vector4(x, -y, -z, 1.0);
 		var v8 = new Vector4(x, -y, z, 1.0);
 
-		var vertices = [v1, v2, v3, v4, v5, v6, v7, v8];
+		return [v1, v2, v3, v4, v5, v6, v7, v8];
+	};
+
+	SoftwareRenderer.prototype._createTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
+
+		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+
+		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
+		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
+
+		var vertices = this._generateBoundingBoxVertices(entity);
+		// Projection transform + homogeneous divide for every vertex.
+		// Early exit on near plane clip.
+		for (var i = 0; i < vertices.length; i++) {
+			var v = vertices[i];
+
+			combinedMatrix.applyPost(v);
+
+			if (v.w < this.camera.near) {
+				// Near plane clipped.
+				console.log("Early exit on near plane clipped.");
+				return false;
+			}
+
+			var div = 1.0 / v.w;
+			v.x *= div;
+			v.y *= div;
+		}
+
+		var triangles = [];
+		// Create triangles.
+		for (var vertIndex = 0; vertIndex < this._boundingBoxTriangleIndices.length; vertIndex++) {
+
+		}
+
+		return triangles;
+	};
+
+	SoftwareRenderer.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
+
+		var triangles = this._createTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
+
+		for (var t = 0; t < triangles.length; t++) {
+
+		}
+	};
+
+	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
+
+		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+
+		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
+
+		var vertices = this._generateBoundingBoxVertices(entity);
 
 		// TODO: Combine the transforms to pixel space.
 		// Projection transform + homogeneous divide
@@ -381,9 +429,8 @@ define([
 			var v2 = vertices[vIndex2];
 			var outcode2 = outCodes[vIndex2];
 
-			//	var outside = false;
-
 			while (true) {
+				/*
 				// Initial check if the edge lies inside...
 				// Will only be true if both the codes are 0000. 
 				// 0000 | 0000 => 0000 , !0 => true
@@ -397,7 +444,13 @@ define([
 				// the aligned vertical or horizontal areas outside the clipping window.
 				if (outcode1 & outcode2) {
 					//console.log("Entirely outside");
-					//outside = true;
+					break;
+				}
+				*/
+
+				// Combined the cases since nothing special is done depending if the lines are
+				// entirely inside or outside.
+				if (!(outcode1 | outcode2) || outcode1 & outcode2) {
 					break;
 				}
 
@@ -494,12 +547,6 @@ define([
 					minmaxArray[4] = depth;
 				}
 			}
-
-			/*
-			if (!outside) {
-				// Check minmax for both the vertices.
-			}
-			*/
 		}
 		/*jshint bitwise: true */
 	};
@@ -1343,7 +1390,6 @@ define([
 
 		for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
 
-			// Create triangle , transform it , add it to the array of triangles to be drawn for the current entity.
 			var posIndex = vertIndexArray[vertIndex] * 3;
 			var v1 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
 
@@ -1432,9 +1478,10 @@ define([
 					break;
 			}
 
+			// TODO : Combine projection + screen space transformations.
 			this._projectionTransform(vertices, cameraProjectionMatrix);
 
-			/*
+			/* 
 			if (this._isBackFacingProjected(v1, v2, v3)) {
 				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 				continue; // Skip loop to the next three vertices.
@@ -1609,11 +1656,7 @@ define([
 		}
 		*/
 
-		var dot = 0.0;
-		dot += faceNormal[0] * viewVector[0];
-		dot += faceNormal[1] * viewVector[1];
-		dot += faceNormal[2] * viewVector[2];
-
+		var dot = faceNormal[0] * viewVector[0] + faceNormal[1] * viewVector[1] + faceNormal[2] * viewVector[2];
 		return dot > 0.0;
 	};
 
