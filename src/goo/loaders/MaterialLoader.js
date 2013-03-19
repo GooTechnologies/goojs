@@ -5,7 +5,8 @@ define([
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
 		'goo/renderer/Material',
-		'goo/loaders/Loader'
+		'goo/loaders/Loader',
+		'goo/loaders/ShaderLoader'
 	],
 	/** @lends MaterialLoader */
 	function(
@@ -14,7 +15,8 @@ define([
 		Shader,
 		TextureCreator,
 		Material,
-		Loader
+		Loader,
+		ShaderLoader
 	) {
 	"use strict";
 
@@ -35,6 +37,7 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
+		this._shaderLoader = new ShaderLoader({ loader: this._loader });
 	}
 
 	/**
@@ -60,7 +63,7 @@ define([
 	MaterialLoader.prototype._parse = function(materialDataSource) {
 		var that = this;
 		var promises = []; // Keep track of promises
-		var shaderDefinition;
+		var shader;
 		var materialState = this._getDefaultMaterialState();
 		var materialUniforms = {};
 		var textures = [];
@@ -84,15 +87,10 @@ define([
 			var value;
 			value = materialDataSource.shaderRef;
 			if(value) {
-				var p = this._loader.load(value)
-				.then(function(data) {
-					return that._parseShaderDefinition(data);
-				})
-				.then(function(shaderDef) {
-					if (shaderDef) {
-						shaderDefinition = shaderDef;
-					}
-					return shaderDefinition;
+				var p = this._shaderLoader.load(value)
+				.then(function(iShader) {
+					shader = iShader;
+					return shader;
 				});
 
 				promises.push(p);
@@ -132,90 +130,13 @@ define([
 
 		return RSVP.all(promises)
 		.then(function() {
-			var material = Material.createMaterial(shaderDefinition, name);
+			var material = new Material(name);
+			material.shader = shader;
 			material.textures = textures;
 			material.materialState = materialState;
 			material.uniforms = materialUniforms;
 			return material;
 		});
-	};
-
-	MaterialLoader.prototype._parseShaderDefinition = function(shaderDataSource) {
-		var promises = [];
-		if (shaderDataSource && shaderDataSource.attributes && shaderDataSource.uniforms) {
-			var shaderDefinition = {
-				attributes: shaderDataSource.attributes,
-				uniforms: shaderDataSource.uniforms
-			};
-
-			for (var key in shaderDefinition.uniforms) {
-				var uniform = shaderDefinition.uniforms[key];
-
-				if (typeof uniform === 'string') {
-					var funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/;
-					var test = uniform.match(funcRegexp);
-					if (test && test.length === 3) {
-						var args = test[1].replace(' ','').split(',');
-						var body = test[2];
-						/*jshint -W054 */
-						shaderDefinition.uniforms[key] = new Function(args, body);
-					}
-				}
-			}
-
-			if (shaderDataSource.defines) {
-				shaderDefinition.defines = shaderDataSource.defines;
-			}
-		} else {
-			var shaderDefinition = this._getDefaultShaderDefinition();
-		}
-		if(shaderDataSource && shaderDataSource.vs && shaderDataSource.fs) {
-			var p;
-
-			p = this._loader.load(shaderDataSource.vs)
-			.then(function(vertexShader) {
-				return shaderDefinition.vshader = vertexShader;
-			});
-			promises.push(p);
-
-			p = this._loader.load(shaderDataSource.fs)
-			.then(function(fragmentShader) {
-				return shaderDefinition.fshader = fragmentShader;
-			});
-			promises.push(p);
-		}
-		if(promises.length === 0) {
-			var p = new RSVP.Promise();
-			p.reject('Shader definition `' + shaderDataSource + '` does not seem to contain any shader data.');
-			return p;
-		}
-
-		return RSVP.all(promises)
-		.then(function() {
-			return shaderDefinition;
-		});
-	};
-
-	MaterialLoader.prototype._getDefaultShaderDefinition = function() {
-		return {
-			attributes : {
-				vertexPosition : MeshData.POSITION,
-				vertexNormal : MeshData.NORMAL,
-				vertexUV0 : MeshData.TEXCOORD0
-			},
-			uniforms : {
-				viewMatrix : Shader.VIEW_MATRIX,
-				projectionMatrix : Shader.PROJECTION_MATRIX,
-				worldMatrix : Shader.WORLD_MATRIX,
-				cameraPosition : Shader.CAMERA,
-				lightPosition : Shader.LIGHT0,
-				diffuseMap : Shader.TEXTURE0,
-				materialAmbient : Shader.AMBIENT,
-				materialDiffuse : Shader.DIFFUSE,
-				materialSpecular : Shader.SPECULAR,
-				materialSpecularPower : Shader.SPECULAR_POWER
-			}
-		};
 	};
 
 	MaterialLoader.prototype._getDefaultMaterialState = function() {

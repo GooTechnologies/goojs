@@ -9,6 +9,7 @@ define([
 		'goo/entities/components/MeshDataComponent',
 		'goo/renderer/MeshData',
 		'goo/math/Vector3',
+		'goo/math/MathUtils',
 
 		'goo/lib/rsvp.amd',
 
@@ -26,6 +27,7 @@ function(
 		MeshDataComponent,
 		MeshData,
 		Vector3,
+		MathUtils,
 
 		RSVP,
 
@@ -165,9 +167,9 @@ function(
 		tc.transform.scale = new Vector3(transformComponentSource.scale);
 
 		tc.transform.rotation.fromAngles(
-			transformComponentSource.rotation[0],
-			transformComponentSource.rotation[1],
-			transformComponentSource.rotation[2]
+			MathUtils.radFromDeg(transformComponentSource.rotation[0]),
+			MathUtils.radFromDeg(transformComponentSource.rotation[1]),
+			MathUtils.radFromDeg(transformComponentSource.rotation[2])
 		);
 
 		var p = transformComponentSource.parentRef;
