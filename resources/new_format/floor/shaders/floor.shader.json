@@ -25,5 +25,5 @@
 		"time": "TIME"
 	},
 	"vs": "shaders/floor.vs",
-	"fs": "shaders/floor.fs"
+	"fs": "shaders/floor_no_parallax.fs"
 }

@@ -879,6 +879,7 @@
 	},
 	"attributes": {
 		"vertexPosition": "POSITION",
+		"vertexNormal": "NORMAL",
 		"vertexUV0": "TEXCOORD0",
 		"vertexWeights": "WEIGHTS",
 		"vertexJointIDs": "JOINTIDS"
@@ -887,14 +888,20 @@
 		"viewMatrix": "VIEW_MATRIX",
 		"projectionMatrix": "PROJECTION_MATRIX",
 		"worldMatrix": "WORLD_MATRIX",
+		"cameraPosition": "CAMERA",
+		"lightPosition": "LIGHT0",
+		"materialAmbient": "AMBIENT",
+		"materialDiffuse": "DIFFUSE",
+		"materialSpecular": "SPECULAR",
+		"materialSpecularPower": "SPECULAR_POWER",
 		"diffuseMap": "TEXTURE0",
 		"jointPalette": "function (shaderInfo) {   var skMesh = shaderInfo.meshData;   var pose = skMesh.currentPose;   if (pose !== null) {    var palette = pose._matrixPalette;    var buffLength = skMesh.paletteMap.length * 16;    var store = skMesh.store;    if (!store) {     store = new Float32Array(buffLength);     skMesh.store = store;    }    var refMat;    for (var index = 0; index < skMesh.paletteMap.length; index++) {     refMat = palette[skMesh.paletteMap[index]];     for (var i = 0; i < 4; i++) {      for (var j = 0; j < 4; j++) {       store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];      }     }    }    return store;   }  }"	
 	},
 	"vs": "shaders/skinning.vs",
 	"fs": "shaders/skinning.fs"
 },
-	"shaders/skinning.vs": "attribute vec3 vertexPosition; attribute vec2 vertexUV0; attribute vec4 vertexWeights;  attribute vec4 vertexJointIDs;  uniform mat4 viewMatrix;  uniform mat4 projectionMatrix; uniform mat4 worldMatrix;  uniform mat4 jointPalette[JOINT_COUNT];  varying vec2 texCoord0; void main(void) {   mat4 mat = mat4(0.0);  mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;   mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;   mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;   mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;   texCoord0 = vertexUV0;   gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);  }",
-	"shaders/skinning.fs": "precision mediump float;  uniform sampler2D diffuseMap;  varying vec2 texCoord0;  void main(void)  {   gl_FragColor = texture2D(diffuseMap, texCoord0);  }",
+	"shaders/skinning.vs": "attribute vec3 vertexPosition;\nattribute vec3 vertexNormal;\nattribute vec2 vertexUV0;\nattribute vec4 vertexWeights;\nattribute vec4 vertexJointIDs;\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 worldMatrix;\nuniform mat4 jointPalette[JOINT_COUNT];\nuniform vec3 cameraPosition;\nuniform vec3 lightPosition;\nvarying vec3 normal;\nvarying vec3 lightDir;\nvarying vec3 eyeVec;\nvarying vec2 texCoord0;\nvoid main(void) {\n mat4 mat = mat4(0.0);\n mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;\n mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;\n mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;\n mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;\n texCoord0 = vertexUV0;\n vec4 worldPos = worldMatrix * mat * vec4(vertexPosition, 1.0);\n gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);\n normal = (worldMatrix * mat * vec4(vertexNormal, 0.0)).xyz;\n texCoord0 = vertexUV0;\n lightDir = lightPosition - worldPos.xyz;\n eyeVec = cameraPosition - worldPos.xyz;\n}",
+	"shaders/skinning.fs": "precision mediump float;\nuniform sampler2D diffuseMap;\nuniform vec4 materialAmbient;\nuniform vec4 materialDiffuse;\nuniform vec4 materialSpecular;\nuniform float materialSpecularPower;\nvarying vec3 normal;\nvarying vec3 lightDir;\nvarying vec3 eyeVec;\nvarying vec2 texCoord0;\nvoid main(void)\n{\n vec4 texCol = texture2D(diffuseMap, texCoord0);\n vec4 final_color = materialAmbient;\n vec3 N = normalize(normal);\n vec3 L = normalize(lightDir);\n float lambertTerm = dot(N,L);\n if(lambertTerm > 0.0)\n {\n  final_color += materialDiffuse * lambertTerm;\n  vec3 E = normalize(eyeVec);\n  vec3 R = reflect(-L, N);\n  float specular = pow( clamp(dot(R, E), 0.0, 1.0), materialSpecularPower);\n  final_color += materialSpecular * specular;\n }\n gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);\n}",
 	
 	"textures/skeleton.tex": {
 		"url": "resources/skeleton.png"
@@ -902,15 +909,15 @@
 	"materials/skeleton.mat": {
 		"uniforms": {
 			"materialAmbient": [
-				0.41,
-				0.41,
-				0.41,
+				0.5,
+				0.53,
+				0.6,
 				1
 			],
 			"materialDiffuse": [
+				1.0,
 				0.8,
-				0.8,
-				0.8,
+				0.5,
 				1
 			],
 			"materialEmissive": [
@@ -936,15 +943,15 @@
 	"materials/tinted2Sided.mat": {
 		"uniforms": {
 			"materialAmbient": [
-				0.41,
-				0.41,
-				0.41,
+				0.5,
+				0.53,
+				0.6,
 				1
 			],
 			"materialDiffuse": [
+				1.0,
 				0.8,
-				0.8,
-				0.8,
+				0.5,
 				1
 			],
 			"materialEmissive": [

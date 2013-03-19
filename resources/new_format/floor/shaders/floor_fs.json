@@ -37,7 +37,7 @@ void main(void)
  float NdotL = dot(normal, normalize(lightVec));
 
  float diffuse = max(NdotL, 0.0 );
- vec4 intensity = vec4(1.0) * materialDiffuse + materialAmbient;
+ vec4 intensity = diffuse * materialDiffuse + materialAmbient;
 
  gl_FragColor = texColor * intensity;
 }"
