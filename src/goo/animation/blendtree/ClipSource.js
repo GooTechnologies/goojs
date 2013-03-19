@@ -16,8 +16,15 @@ function (MathUtils) {
 
 	ClipSource.prototype.setTime = function (globalTime, manager) {
 		var instance = manager.getClipInstance(this._clip);
+		var clockTime;
 		if (instance._active) {
-			var clockTime = instance._timeScale * (globalTime - instance._startTime);
+			if (instance._timeScale !== 0.0) {
+				instance._prevUnscaledClockTime = globalTime - instance._startTime;
+				clockTime = instance._timeScale * instance._prevUnscaledClockTime;
+				instance._prevClockTime = clockTime;
+			} else {
+				clockTime = instance._prevClockTime;
+			}
 
 			var maxTime = this._clip._maxTime;
 			if (maxTime === -1) {

@@ -12,9 +12,28 @@ function () {
 		this._loopCount = 0;
 		this._timeScale = 1.0;
 		this._startTime = 0.0;
+		this._prevClockTime = 0.0;
+		this._prevUnscaledClockTime = 0.0;
 		this._clipStateObjects = {};
 		this._animationListeners = [];
 	}
+
+	AnimationClipInstance.prototype.setTimeScale = function (scale, manager) {
+		if (this._active && this._timeScale !== scale) {
+			if (this._timeScale !== 0.0 && scale !== 0.0) {
+				// move startTime to account for change in scale
+				var now = manager._globalTimer.getTimeInSeconds();
+				var timePassed = now - this._startTime;
+				timePassed *= this._timeScale;
+				timePassed /= scale;
+				this._startTime = now - timePassed;
+			} else if (this._timeScale === 0.0) {
+				var now = manager._globalTimer.getTimeInSeconds();
+				this._startTime = now - this._prevUnscaledClockTime;
+			}
+		}
+		this._timeScale = scale;
+	};
 
 	AnimationClipInstance.prototype.getApplyTo = function (channel) {
 		var channelName = channel._channelName;
