@@ -121,9 +121,10 @@ require(
 
 			translation.x = 0;
 			translation.z = -15;
-			translation.y = 5;
+
 			var wallW = 50;
-			var wallH = 10;
+			var wallH = 15;
+			translation.y = wallH / 2;
 			var bigQuad = createQuad(goo.world, translation, wallW, wallH);
 			// Add occluder geometry component, in this case it is exactly the same as the original geometry.
 			bigQuad.setComponent(new OccluderComponent(ShapeCreator.createQuad(wallW, wallH)));

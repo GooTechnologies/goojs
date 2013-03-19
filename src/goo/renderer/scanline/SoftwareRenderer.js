@@ -211,6 +211,7 @@ define([
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
 					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
 				if (cull) {
@@ -224,6 +225,10 @@ define([
 
 	/**
 	*	Generates a array of homogeneous vertices for a entity's bounding box.
+	*	// TODO : These vertices should probably be saved as a typed array for each object which
+	*	need to have occludee possibilities.
+	*
+	*
 	*	@return {Array.<Vector4>} vertex array
 	*/
 	SoftwareRenderer.prototype._generateBoundingBoxVertices = function (entity) {
@@ -275,19 +280,38 @@ define([
 
 		var triangles = [];
 		// Create triangles.
-		for (var vertIndex = 0; vertIndex < this._boundingBoxTriangleIndices.length; vertIndex++) {
+		for (var i = 0; i < this._boundingBoxTriangleIndices.length; i++) {
+			var v1 = vertices[this._boundingBoxTriangleIndices[i]].clone();
+			var v2 = vertices[this._boundingBoxTriangleIndices[++i]].clone();
+			var v3 = vertices[this._boundingBoxTriangleIndices[++i]].clone();
+			var projectedVertices = [v1, v2, v3];
 
+			if (this._isBackFacingProjected(v1, v2, v3)) {
+				continue;
+			}
+
+			this._transformToScreenSpace(projectedVertices);
+
+			triangles.push(new Triangle(projectedVertices[0], projectedVertices[1], projectedVertices[2]));
 		}
 
 		return triangles;
 	};
 
+	/**
+	*	@return {Boolean} occluded or not occluded.
+	*/
 	SoftwareRenderer.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
 
 		var triangles = this._createTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
 
-		for (var t = 0; t < triangles.length; t++) {
+		// Triangles will be false on near plane clip.
+		// Considering this case to be visible.
+		if (triangles === false) {
+			return false;
+		}
 
+		for (var t = 0; t < triangles.length; t++) {
 		}
 	};
 
@@ -1748,79 +1772,110 @@ define([
 			this._edges[i].invertZ();
         }
 
-        this._drawEdges(this._edges[longEdge], this._edges[shortEdge1]);
-        this._drawEdges(this._edges[longEdge], this._edges[shortEdge2]);
+        var edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge1]);
+		if (edgeData) {
+			this._drawEdges(edgeData);
+		}
+
+		edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge2]);
+		if (edgeData) {
+			this._drawEdges(edgeData);
+		}
 	};
 
 	/**
 	*	Render the pixels between the long and the short edge of the triangle.
 	*	@param {Edge} longEdge, shortEdge
 	*/
-	SoftwareRenderer.prototype._drawEdges = function (longEdge, shortEdge) {
+	SoftwareRenderer.prototype._drawEdges = function (edgeData) {
 
+		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
+
+		var leftX;
+		var rightX;
+
+		// Fill pixels on every y-coordinate the short edge touches.
+		for (var y = edgeData[0]; y <= edgeData[1]; y++) {
+			// Round to the nearest pixel.
+			leftX = Math.round(edgeData[2]);
+			rightX = Math.round(edgeData[3]);
+
+			// Draw the span of pixels.
+			this._fillPixels(leftX, rightX, y, edgeData[4], edgeData[5]);
+
+			// Increase the edges'
+			// x-coordinates and z-values with the increments.
+			edgeData[2] += edgeData[6];
+			edgeData[3] += edgeData[7];
+
+			edgeData[4] += edgeData[8];
+			edgeData[5] += edgeData[9];
+		}
+	};
+
+	/**
+	*
+	*/
+	SoftwareRenderer.prototype._edgePreRenderProcess = function (longEdge, shortEdge) {
 
 		// TODO: Move a lot of these calculations and variables into the Edge class,
 		// do the calculations once for the long edge instead of twices as it is done now.
 
-
 		// Early exit when the short edge doesnt have any height (y-axis).
 		// -The edges' coordinates are stored as uint8, so compare with a SMI (SMall Integer, 31-bit signed integer) and not Double.
 
-        var shortEdgeDeltaY = (shortEdge.y1 - shortEdge.y0);
-        if(shortEdgeDeltaY <= 0) {
-            return; // Nothing to draw here.
-        }
+		var shortEdgeDeltaY = (shortEdge.y1 - shortEdge.y0);
+		if(shortEdgeDeltaY <= 0) {
+			return; // Nothing to draw here.
+		}
 
 		var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
 
 		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
 		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
 
-        var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
-        var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
+		var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
+		var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
 
 		var longStartZ = longEdge.z0;
 		var shortStartZ = shortEdge.z0;
 		var longEdgeDeltaZ = longEdge.z1 - longStartZ;
-        var shortEdgeDeltaZ = shortEdge.z1 - shortStartZ;
+		var shortEdgeDeltaZ = shortEdge.z1 - shortStartZ;
 
-        // Vertical coherence :
-        // The x-coordinates' increment for each step in y is constant,
-        // so the increments are pre-calculated and added to the coordinates
-        // each scanline.
+		// Vertical coherence :
+		// The x-coordinates' increment for each step in y is constant,
+		// so the increments are pre-calculated and added to the coordinates
+		// each scanline.
 
-        // The scanline on which we start rendering on might be in the middle of the long edge,
-        // the starting x-coordinate is therefore calculated.
-        var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
-        var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
-        var longZ = longStartZ + longEdgeDeltaZ * longStartCoeff;
-        var longEdgeXincrement = longEdgeDeltaX / longEdgeDeltaY;
-        var longEdgeZincrement = longEdgeDeltaZ / longEdgeDeltaY;
+		// The scanline on which we start rendering on might be in the middle of the long edge,
+		// the starting x-coordinate is therefore calculated.
+		var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
+		var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
+		var longZ = longStartZ + longEdgeDeltaZ * longStartCoeff;
+		var longEdgeXincrement = longEdgeDeltaX / longEdgeDeltaY;
+		var longEdgeZincrement = longEdgeDeltaZ / longEdgeDeltaY;
 
 
-        var shortX = shortEdge.x0;
-        var shortZ = shortStartZ;
-        var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
-        var shortEdgeZincrement = shortEdgeDeltaZ / shortEdgeDeltaY;
+		var shortX = shortEdge.x0;
+		var shortZ = shortStartZ;
+		var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
+		var shortEdgeZincrement = shortEdgeDeltaZ / shortEdgeDeltaY;
 
-        // TODO:
-        // Implement this idea of checking which edge is the leftmost.
-        // 1. Check if they start off at different positions, save the result and draw as usual
-        // 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates.
-        //    Save the result and draw the rest of the scanlines.
+		// TODO:
+		// Implement this idea of checking which edge is the leftmost.
+		// 1. Check if they start off at different positions, save the result and draw as usual
+		// 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates.
+		//    Save the result and draw the rest of the scanlines.
 
-        var startLine = shortEdge.y0;
-        var stopLine = shortEdge.y1;
+		var startLine = shortEdge.y0;
+		var stopLine = shortEdge.y1;
 
-        // Vertical clipping
-        if (startLine < 0) {
-
+		// Vertical clipping
+		if (startLine < 0) {
 			// If the starting line is above the screen space,
 			// the starting x-coordinates has to be advanced to
 			// the proper value.
-
 			// And the starting line is then assigned to 0.
-
 			startLine = -startLine;
 			longX += startLine * longEdgeXincrement;
 			shortX += startLine * shortEdgeXincrement;
@@ -1829,31 +1884,11 @@ define([
 			startLine = 0;
 		}
 
-        if (stopLine > this._clipY ) {
+		if (stopLine > this._clipY ) {
 			stopLine = this._clipY;
-        }
-
-		var leftX;
-		var rightX;
-
-		// Fill pixels on every y-coordinate the short edge touches.
-		for (var y = startLine; y <= stopLine; y++) {
-			// Round to the nearest pixel.
-			leftX = Math.round(longX);
-			rightX = Math.round(shortX);
-
-			// Draw the span of pixels.
-			this._fillPixels(leftX, rightX, y, longZ, shortZ);
-
-			// Increase the edges'
-			// x-coordinates and z-values with the increments.
-			longX += longEdgeXincrement;
-			shortX += shortEdgeXincrement;
-
-			longZ += longEdgeZincrement;
-			shortZ += shortEdgeZincrement;
 		}
 
+		return [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement];
 	};
 
 	/**
@@ -1876,7 +1911,7 @@ define([
 		}
 
 		if (rightX < 0 || leftX > this._clipX) {
-			return; // Nothing to draw here.
+			return false; // Nothing to draw here.
 		}
 
 		// Horizontal clipping
