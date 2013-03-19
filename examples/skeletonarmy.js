@@ -6,34 +6,46 @@ require.config({
 	}
 });
 require([
+	'goo/entities/GooRunner',
 	'goo/math/Vector3',
+
+	'goo/renderer/Camera',
+	'goo/entities/components/CameraComponent',
+	'goo/renderer/light/PointLight',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
+	'goo/scripts/OrbitCamControlScript',
+
 	'goo/loaders/Loader',
 	'goo/loaders/BundleLoader',
 	'goo/loaders/SceneLoader',
 	'goo/loaders/MaterialLoader',
 	'goo/loaders/AnimationTreeLoader',
+
 	'goo/entities/EntityUtils',
 	'goo/lib/rsvp.amd',
-	'DemoWorld',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/ShapeCreator',
-	'goo/renderer/Material',
-	'goo/loaders/JSONImporter',
 	'goo/util/TangentGenerator'
 ], function(
+	GooRunner,
 	Vector3,
+
+	Camera,
+	CameraComponent,
+	PointLight,
+	LightComponent,
+	ScriptComponent,
+	OrbitCamControlScript,
+
 	Loader,
 	BundleLoader,
 	SceneLoader,
 	MaterialLoader,
 	AnimationTreeLoader,
+
 	EntityUtils,
 	RSVP,
-	DemoWorld,
-	ShaderLib,
 	ShapeCreator,
-	Material,
-	JSONImporter,
 	TangentGenerator
 
 ) {
@@ -42,21 +54,15 @@ require([
 	var loader = new BundleLoader({ rootPath: resourcePath });
 
 	function init() {
-		var goo = DemoWorld.create(800);
-
+		var goo = createWorld();
 		var managers = [];
-
-
-		//var count = 0;
 
 		var rows = 14;
 		var cols = 30;
 		var skeletonCount = 6;
-
-		//var total = rows*cols;
 		var positions = [];
 
-		// Load the skeleton templates
+		// Skeletonpositions
 		for (var i = 0; i < rows; i++) {
 			for (var j = 0; j < cols; j++) {
 				var x = j-(cols-1)/2;
@@ -68,7 +74,7 @@ require([
 		}
 
 		var skeletonTemplates = [];
-		// For loop
+		// Load the skeleton templates and animations
 		function innerLoop() {
 			var p = new RSVP.Promise();
 			makeSkeleton(goo.world, loader)
@@ -111,7 +117,6 @@ require([
 			}),
 			world: goo.world
 		});
-
 		sceneLoader.load('skybox.scene.json').then(function(entities) {
 			for(var i in entities) {
 				entities[i].addToWorld();
@@ -126,9 +131,9 @@ require([
 				world: goo.world
 		});
 		materialLoader.load('materials/floor.mat').then(function(material) {
-			console.log(material);
 			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
 			TangentGenerator.addTangentBuffer(meshData, 0);
+
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 			entity.meshRendererComponent.materials.push(material);
 			entity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
@@ -239,38 +244,38 @@ require([
 		}
 	}
 
+	function createWorld() {
+		var goo = new GooRunner({
+			showStats: true
+		});
+		goo.renderer.domElement.id = 'goo';
+		document.body.appendChild(goo.renderer.domElement);
 
+		// Camera
+		var camera = new Camera(45, 1, 1, 10000);
+		var cameraEntity = goo.world.createEntity('CameraEntity');
+		cameraEntity.addToWorld();
+		cameraEntity.setComponent(new CameraComponent(camera));
 
-	/*
-	function createGlass() {
-		var glass = document.createElement('div');
-		glass.innerHTML = 'Loading ...';
-		glass.style.zIndex = 1000;
-		glass.style.position = 'absolute';
-		glass.style.top = '50%';
-		glass.style.left = '50%';
-		glass.style.marginLeft = '-120px';
-		glass.style.marginTop = '-40px';
-		glass.style.lineHeight = '80px';
-		glass.style.width = '240px';
-		glass.style.textAlign = 'center';
-		glass.style.backgroundColor = 'rgba(230,230,230,0.4)';
-		glass.style.fontFamily = 'Helvetica';
+		// Camera control
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			baseDistance : 800/4,
+			spherical : new Vector3(800, Math.PI/12 , Math.PI/12)
+		}));
+		cameraEntity.setComponent(scripts);
 
-		document.body.appendChild(glass);
-		return glass;
+		// Light
+		var light = new PointLight();
+		var entity = goo.world.createEntity('Light');
+		//light.translation.setd(-1000,10,0);
+		entity.setComponent(new LightComponent(light));
+		entity.transformComponent.transform.translation.set(0, 0, 100000);
+		entity.addToWorld();
+
+		return goo;
 	}
-
-	function updateProgress(glass, count, total) {
-		if (count === total) {
-			glass.parentNode.removeChild(glass);
-		}
-		else {
-			glass.innerHTML = 'Loading '+count+'/'+total;
-		}
-	}
-	*/
-
 
 
 	loader.loadBundle('skeleton.bundle.json').then(function() {
