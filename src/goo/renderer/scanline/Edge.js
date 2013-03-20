@@ -7,25 +7,25 @@ function () {
 
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
-		if (vec1.y < vec2.y ) {
-			this.x0 = Math.round(vec1.x);
-			this.x1 = Math.round(vec2.x);
+		if (vec1.data[1] < vec2.data[1] ) {
+			this.x0 = Math.round(vec1.data[0]);
+			this.x1 = Math.round(vec2.data[0]);
 
-			this.y0 = vec1.y;
-			this.y1 = vec2.y;
+			this.y0 = vec1.data[1];
+			this.y1 = vec2.data[1];
 
-			this.z0 = vec1.w;
-			this.z1 = vec2.w;
+			this.z0 = vec1.data[3];
+			this.z1 = vec2.data[3];
 		}
 		else {
-			this.x0 = Math.round(vec2.x);
-			this.x1 = Math.round(vec1.x);
+			this.x0 = Math.round(vec2.data[0]);
+			this.x1 = Math.round(vec1.data[0]);
 
-			this.y0 = vec2.y;
-			this.y1 = vec1.y;
+			this.y0 = vec2.data[1];
+			this.y1 = vec1.data[1];
 
-			this.z0 = vec2.w;
-			this.z1 = vec1.w;
+			this.z0 = vec2.data[3];
+			this.z1 = vec1.data[3];
 		}
 
 		this._roundConservative();

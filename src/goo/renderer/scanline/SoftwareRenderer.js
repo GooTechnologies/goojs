@@ -281,9 +281,15 @@ define([
 		var triangles = [];
 		// Create triangles.
 		for (var i = 0; i < this._boundingBoxTriangleIndices.length; i++) {
-			var v1 = vertices[this._boundingBoxTriangleIndices[i]].clone();
-			var v2 = vertices[this._boundingBoxTriangleIndices[++i]].clone();
-			var v3 = vertices[this._boundingBoxTriangleIndices[++i]].clone();
+
+			var v1 = Vector4.ZERO;
+			var v2 = Vector4.ZERO;
+			var v3 = Vector4.ZERO;
+
+			v1.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
+			v2.data.set(vertices[this._boundingBoxTriangleIndices[++i]].data);
+			v3.data.set(vertices[this._boundingBoxTriangleIndices[++i]].data);
+
 			var projectedVertices = [v1, v2, v3];
 
 			if (this._isBackFacingProjected(v1, v2, v3)) {
@@ -312,7 +318,12 @@ define([
 		}
 
 		for (var t = 0; t < triangles.length; t++) {
+			if (!this._isRenderedTriangleOccluded(triangles[t])){
+				return false;
+			}
 		}
+
+		return true;
 	};
 
 	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
@@ -1618,6 +1629,7 @@ define([
 
 	/**
 	*	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
+	*	// TODO : This function should not be used in prod, rather combine the projection transform and this one.
 	*	@param {Array.<Vector4>} vertexArray the vertices to be transformed.
 	*/
 	SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
@@ -1631,8 +1643,8 @@ define([
 			// The x and y coordinates can still be outside the screen space here, but those will be clipped during rasterizing.
 			// Transform to zerobasd interval of pixels instead of [0, width] which will be one pixel too much.
 			// (Assuming the vertex values range from [-1, 1] when projected.)
-			vertex.x = (vertex.x + 1.0) * (this._clipX / 2);
-			vertex.y = (vertex.y + 1.0) * (this._clipY / 2);
+			vertex.data[0] = (vertex.data[0] + 1.0) * (this._clipX / 2);
+			vertex.data[1] = (vertex.data[1] + 1.0) * (this._clipY / 2);
 
 			// http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
 			// The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
@@ -1721,6 +1733,66 @@ define([
 		}
 	};
 
+	SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
+		// copy paste from _renderTriangle().
+		// Exept for the drawing part in the end.
+
+		this._edges = [
+			new Edge(triangle.v1, triangle.v2),
+			new Edge(triangle.v2, triangle.v3),
+			new Edge(triangle.v3, triangle.v1)
+		];
+
+		var maxHeight = 0;
+        var longEdge = 0;
+
+        // Find edge with the greatest height in the Y axis, this is the long edge.
+        for(var i = 0; i < 3; i++) {
+            var height = this._edges[i].y1 - this._edges[i].y0;
+            if(height > maxHeight) {
+                maxHeight = height;
+                longEdge = i;
+            }
+        }
+
+        if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
+			// Triangle is outside the view, skipping rendering it;
+			return false;
+        }
+
+		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
+        var shortEdge1 = (longEdge + 1) % 3;
+        var shortEdge2 = (longEdge + 2) % 3;
+
+        // TODO : Find out which edge is the left and which is the right side of the short edges.
+
+        // TODO :
+        //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
+        //	When rounding the values of the triangles vertices , compensate the depth as well.
+        //	These good ideas are sponsored by Martin Vilcans.
+
+        for (var i = 0; i < 3; i++) {
+			// TODO: Do pre-calculations here which are now performed in drawEdges.
+			this._edges[i].invertZ();
+        }
+
+        var edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge1]);
+		if (edgeData) {
+			if (!this._isEdgeOccluded(edgeData)){
+				return false;
+			}
+		}
+
+		edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge2]);
+		if (edgeData) {
+			if (!this._isEdgeOccluded(edgeData)) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
 	/**
 	*	Takes a triangle with coordinates in pixel space, and draws it.
 	*	@param {Triangle} triangle the triangle to draw.
@@ -1751,10 +1823,10 @@ define([
             }
         }
 
-        if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
-        // Triangle is outside the view, skipping rendering it;
-        return;
-        }
+		if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
+			// Triangle is outside the view, skipping rendering it;
+			return;
+		}
 
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
         var shortEdge1 = (longEdge + 1) % 3;
@@ -1781,6 +1853,34 @@ define([
 		if (edgeData) {
 			this._drawEdges(edgeData);
 		}
+	};
+
+	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData) {
+
+		// Copypasted from _drawEdges.
+		var leftX;
+		var rightX;
+
+		for (var y = edgeData[0]; y <= edgeData[1]; y++) {
+			// Conservative rounding.
+			leftX = Math.floor(edgeData[2]);
+			rightX = Math.ceil(edgeData[3]);
+
+			// Draw the span of pixels.
+			if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
+				return false;
+			}
+
+			// Increase the edges'
+			// x-coordinates and z-values with the increments.
+			edgeData[2] += edgeData[6];
+			edgeData[3] += edgeData[7];
+
+			edgeData[4] += edgeData[8];
+			edgeData[5] += edgeData[9];
+		}
+
+		return true;
 	};
 
 	/**
@@ -1889,6 +1989,65 @@ define([
 		}
 
 		return [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement];
+	};
+
+	SoftwareRenderer.prototype._isScanlineOccluded = function (leftX, rightX, y, leftZ, rightZ) {
+
+		// 99% COPY PASTE FROM _fillPixels()! 
+
+		// If the startindex is higher than the stopindex, they should be swapped.
+		// TODO: This shall be optimized to be checked at an earlier stage.
+		if (leftX > rightX) {
+			var temp = leftX;
+			leftX = rightX;
+			rightX = temp;
+
+			temp = leftZ;
+			leftZ = rightZ;
+			rightZ = temp;
+		}
+
+		if (rightX < 0 || leftX > this._clipX) {
+			return true; // Nothing to draw here. it is occluded
+		}
+
+		// Horizontal clipping
+		var t;
+		// If the triangle's scanline is clipped, the bounding z-values have to be interpolated
+		// to the new startpoints.
+		if (leftX < 0) {
+			t = -leftX / (rightX - leftX);
+			leftZ = (1.0 - t) * leftZ + t * rightZ;
+			leftX = 0;
+		}
+
+		var diff = rightX - this._clipX;
+		if (diff > 0) {
+			t = diff / (rightX - leftX);
+			rightZ = (1.0 - t) * rightZ + t * leftZ;
+			rightX = this._clipX;
+		}
+
+		var index = y * this.width + leftX;
+		var depth = leftZ;
+		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
+		// Fill all pixels in the interval [leftX, rightX].
+		for (var i = leftX; i <= rightX; i++) {
+
+			// TODO : Remove this debugg add of color in prod....
+			this._colorData[index * 4] = (depth * 255);
+
+			// Check if the value is closer than the stored one. z-test.
+			if (depth > this._depthData[index]) {
+				// Not occluded
+				return false;
+			}
+
+			index++;
+			depth += depthIncrement;
+		}
+		// Occluded
+		return true;
 	};
 
 	/**
