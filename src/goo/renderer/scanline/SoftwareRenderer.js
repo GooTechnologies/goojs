@@ -1740,7 +1740,7 @@ define([
 	/**
 	*	Creates the new edges from the triangle. The returned value will be false if the triangle is outside view,
 	*	otherwise the returned value is an array with the indices.
-	*	@return {Array.<Number>} edgeIndexArray [longEdge, shortedge1, shortedge2]
+	*	@return {Array.<Number>} edgeIndexArray [longEdge, shortedge1, shortedge2, longEdgeIsOnTheRightSide]
 	*/
 	SoftwareRenderer.prototype._createEdgesForTriangle = function (triangle) {
 		this._edges = [
@@ -1761,22 +1761,37 @@ define([
 			}
 		}
 
+		// Vertical culling
 		if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
 			// Triangle is outside the view, skipping rendering it;
 			return false;
 		}
 
-		// TODO : Find out which edge is the left and which is the right side of the short edges.
-
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
 		var shortEdge1 = (longEdge + 1) % 3;
 		var shortEdge2 = (longEdge + 2) % 3;
 
-		return [longEdge, shortEdge1, shortEdge2];
+		// Find out which side the long edge is on.
+		// This will be useful for determining which edge is on the left or right during scanline rendering.
+		// The long edge is on the right side if the end x point is larger than that of one of the short edges.
+		var isLongEdgeRightSide = this._edges[longEdge].x1 > this._edges[shortEdge1].x1 || this._edges[longEdge].x1 > this._edges[shortEdge2].x1;
+
+		// Horizontal culling
+		if (isLongEdgeRightSide) {
+			if (this._edges[longEdge].x1 < 0 && this._edges[longEdge].x0 < 0) {
+				return false;
+			}
+		} else {
+			if (this._edges[longEdge].x1 > this._clipX && this._edges[longEdge].x0 > this._clipX) {
+				return false;
+			}
+		}
+
+		return [longEdge, shortEdge1, shortEdge2, isLongEdgeRightSide	];
 	};
 
 	SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
-		
+
 		// returns [longEdge, shortEdge1, shortEdge2], or false on invisible triangle.
 		var edgeIndexes = this._createEdgesForTriangle(triangle);
 
