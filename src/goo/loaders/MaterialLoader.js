@@ -149,6 +149,13 @@ define([
 				override(material.blendState, materialDataSource.blendState);
 				override(material.depthState, materialDataSource.depthState);
 				override(material.offsetState, materialDataSource.offsetState);
+
+				if (typeof materialDataSource.renderQueue === 'number') {
+					material.renderQueue = materialDataSource.renderQueue;
+				}
+				if (typeof materialDataSource.wireframe === 'boolean') {
+					material.wireframe = materialDataSource.wireframe;
+				}
 			}
 			return material;
 		});
