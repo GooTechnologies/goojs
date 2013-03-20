@@ -189,8 +189,8 @@ require([
 	function loadAnimation(animLoader, pose, goo) {
 		var p = animLoader.load('animations/skeleton.anim', pose, "walk_anim")
 		.then(function(manager) {
-			goo.callbacks.push(function () {
-				manager.update();
+			goo.callbacks.push(function (tpf) {
+				manager.update(tpf);
 			});
 			return manager;
 		});
