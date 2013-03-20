@@ -210,8 +210,8 @@ define([
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+					//cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
 				if (cull) {
@@ -282,17 +282,21 @@ define([
 		// Create triangles.
 		for (var i = 0; i < this._boundingBoxTriangleIndices.length; i++) {
 
-			var v1 = Vector4.ZERO;
-			var v2 = Vector4.ZERO;
-			var v3 = Vector4.ZERO;
+			var v1 = new Vector4();
+			var v2 = new Vector4();
+			var v3 = new Vector4();
 
 			v1.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
-			v2.data.set(vertices[this._boundingBoxTriangleIndices[++i]].data);
-			v3.data.set(vertices[this._boundingBoxTriangleIndices[++i]].data);
+			i++;
+			v2.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
+			i++;
+			v3.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
 
 			var projectedVertices = [v1, v2, v3];
 
-			if (this._isBackFacingProjected(v1, v2, v3)) {
+			// TODO : I think i made the winding clockwise instead of counter clockwise.
+			// hence the negation here...
+			if (!this._isBackFacingProjected(v1, v2, v3)) {
 				continue;
 			}
 
@@ -1733,10 +1737,12 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
-		// copy paste from _renderTriangle().
-		// Exept for the drawing part in the end.
-
+	/**
+	*	Creates the new edges from the triangle. The returned value will be false if the triangle is outside view,
+	*	otherwise the returned value is an array with the indices.
+	*	@return {Array.<Number>} edgeIndexArray [longEdge, shortedge1, shortedge2]
+	*/
+	SoftwareRenderer.prototype._createEdgesForTriangle = function (triangle) {
 		this._edges = [
 			new Edge(triangle.v1, triangle.v2),
 			new Edge(triangle.v2, triangle.v3),
@@ -1744,46 +1750,58 @@ define([
 		];
 
 		var maxHeight = 0;
-        var longEdge = 0;
+		var longEdge = 0;
 
-        // Find edge with the greatest height in the Y axis, this is the long edge.
-        for(var i = 0; i < 3; i++) {
-            var height = this._edges[i].y1 - this._edges[i].y0;
-            if(height > maxHeight) {
-                maxHeight = height;
-                longEdge = i;
-            }
-        }
+		// Find edge with the greatest height in the Y axis, this is the long edge.
+		for(var i = 0; i < 3; i++) {
+			var height = this._edges[i].y1 - this._edges[i].y0;
+			if(height > maxHeight) {
+				maxHeight = height;
+				longEdge = i;
+			}
+		}
 
-        if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
+		if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
 			// Triangle is outside the view, skipping rendering it;
 			return false;
-        }
+		}
+
+		// TODO : Find out which edge is the left and which is the right side of the short edges.
 
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
-        var shortEdge1 = (longEdge + 1) % 3;
-        var shortEdge2 = (longEdge + 2) % 3;
+		var shortEdge1 = (longEdge + 1) % 3;
+		var shortEdge2 = (longEdge + 2) % 3;
 
-        // TODO : Find out which edge is the left and which is the right side of the short edges.
+		return [longEdge, shortEdge1, shortEdge2];
+	};
 
-        // TODO :
+	SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
+		
+		// returns [longEdge, shortEdge1, shortEdge2], or false on invisible triangle.
+		var edgeIndexes = this._createEdgesForTriangle(triangle);
+
+		if (!edgeIndexes) {
+			return true;
+		}
+
+		// TODO :
         //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
         //	When rounding the values of the triangles vertices , compensate the depth as well.
         //	These good ideas are sponsored by Martin Vilcans.
-
         for (var i = 0; i < 3; i++) {
 			// TODO: Do pre-calculations here which are now performed in drawEdges.
+			this._edges[i].roundOccludeeCoordinates();
 			this._edges[i].invertZ();
         }
 
-        var edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge1]);
+        var edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[1]]);
 		if (edgeData) {
 			if (!this._isEdgeOccluded(edgeData)){
 				return false;
 			}
 		}
 
-		edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge2]);
+		edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[2]]);
 		if (edgeData) {
 			if (!this._isEdgeOccluded(edgeData)) {
 				return false;
@@ -1802,35 +1820,12 @@ define([
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
 
-		// Create edges
-		// The edge contsructor stores the greatest y value in the second position.
-		// It also rounds the vectors' coordinate values to the nearest pixel value. (Math.round).
-		this._edges = [
-			new Edge(triangle.v1, triangle.v2),
-			new Edge(triangle.v2, triangle.v3),
-			new Edge(triangle.v3, triangle.v1)
-		];
+		// returns [longEdge, shortEdge1, shortEdge2];
+		var edgeIndexes = this._createEdgesForTriangle(triangle);
 
-		var maxHeight = 0;
-        var longEdge = 0;
-
-        // Find edge with the greatest height in the Y axis, this is the long edge.
-        for(var i = 0; i < 3; i++) {
-            var height = this._edges[i].y1 - this._edges[i].y0;
-            if(height > maxHeight) {
-                maxHeight = height;
-                longEdge = i;
-            }
-        }
-
-		if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
-			// Triangle is outside the view, skipping rendering it;
+		if (!edgeIndexes) {
 			return;
 		}
-
-		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
-        var shortEdge1 = (longEdge + 1) % 3;
-        var shortEdge2 = (longEdge + 2) % 3;
 
         // TODO : Find out which edge is the left and which is the right side of the short edges.
 
@@ -1841,15 +1836,16 @@ define([
 
         for (var i = 0; i < 3; i++) {
 			// TODO: Do pre-calculations here which are now performed in drawEdges.
+			this._edges[i].roundOccluderCoordinates();
 			this._edges[i].invertZ();
         }
 
-        var edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge1]);
+        var edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[1]]);
 		if (edgeData) {
 			this._drawEdges(edgeData);
 		}
 
-		edgeData = this._edgePreRenderProcess(this._edges[longEdge], this._edges[shortEdge2]);
+		edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[2]]);
 		if (edgeData) {
 			this._drawEdges(edgeData);
 		}
@@ -2035,7 +2031,7 @@ define([
 		for (var i = leftX; i <= rightX; i++) {
 
 			// TODO : Remove this debugg add of color in prod....
-			this._colorData[index * 4] = (depth * 255);
+			this._colorData.set([Math.min(depth * 255 + 50, 255), 0, 0], index * 4);
 
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {

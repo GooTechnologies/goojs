@@ -8,8 +8,8 @@ function () {
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
 		if (vec1.data[1] < vec2.data[1] ) {
-			this.x0 = Math.round(vec1.data[0]);
-			this.x1 = Math.round(vec2.data[0]);
+			this.x0 = vec1.data[0];
+			this.x1 = vec2.data[0];
 
 			this.y0 = vec1.data[1];
 			this.y1 = vec2.data[1];
@@ -18,8 +18,8 @@ function () {
 			this.z1 = vec2.data[3];
 		}
 		else {
-			this.x0 = Math.round(vec2.data[0]);
-			this.x1 = Math.round(vec1.data[0]);
+			this.x0 = vec2.data[0];
+			this.x1 = vec1.data[0];
 
 			this.y0 = vec2.data[1];
 			this.y1 = vec1.data[1];
@@ -27,18 +27,26 @@ function () {
 			this.z0 = vec2.data[3];
 			this.z1 = vec1.data[3];
 		}
-
-		this._roundConservative();
 	}
 
 	// TODO: Remove the rounding of values out of here.. Add conservative check on the x-coordinates the point this is done as well.
-	Edge.prototype._roundConservative = function () {
+	Edge.prototype.roundOccluderCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);
+
+		this.x0 = Math.round(this.x0);
+		this.x1 = Math.round(this.x1);
+	};
+
+	Edge.prototype.roundOccludeeCoordinates = function () {
+		this.y0 = Math.floor(this.y0);
+		this.y1 = Math.ceil(this.y1);
+
+		this.x0 = Math.round(this.x0);
+		this.x1 = Math.round(this.x1);
 	};
 
 	Edge.prototype.invertZ = function() {
-
 		this.z0 =  1.0 / this.z0;
 		this.z1 =  1.0 / this.z1;
 	};
