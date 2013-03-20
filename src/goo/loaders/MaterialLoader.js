@@ -135,6 +135,21 @@ define([
 			material.textures = textures;
 			material.materialState = materialState;
 			material.uniforms = materialUniforms;
+			if (materialDataSource) {
+				var override = function(target, source) {
+					if (!source) {
+						return;
+					}
+					for (var key in source) {
+						target[key] = source[key];
+					}
+				};
+				// Note: The *State settings are not read by Tool yet
+				override(material.cullState, materialDataSource.cullState);
+				override(material.blendState, materialDataSource.blendState);
+				override(material.depthState, materialDataSource.depthState);
+				override(material.offsetState, materialDataSource.offsetState);
+			}
 			return material;
 		});
 	};
