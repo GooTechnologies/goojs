@@ -22,7 +22,7 @@ define([
 				throw new Error('SkeletonLoader(): Argument `parameters` was undefined/null');
 			}
 
-			if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
+			if(typeof parameters.loader === "undefined" || parameters.loader === null) {
 				throw new Error('SkeletonLoader(): Argument `parameters.loader` was invalid/undefined/null');
 			}
 
