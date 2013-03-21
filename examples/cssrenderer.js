@@ -42,7 +42,7 @@ require([
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = "goo";
 		document.body.appendChild(goo.renderer.domElement);
-		goo.renderer.setClearColor(0.1,0.1,0.1,1.0);
+		goo.renderer.setClearColor(0, 0, 0, 1);
 
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.setComponent(new CameraComponent(new Camera(45, 1, 1, 10000)));
@@ -63,27 +63,19 @@ require([
 
 		var parentEntity = goo.world.createEntity('parent');
 		parentEntity.addToWorld();
-		for ( var i = 0; i < 40; i++) {
+		for ( var i = 0; i < 60; i++) {
 			var x = Math.random() * 1600 - 800;
 			var y = Math.random() * 1600 - 800;
 			var z = Math.random() * 1600 - 800;
 
-			var boxEntity = createBoxEntity(goo);
+			var element = document.createElement('div');
+			element.className = 'object assembly';
+			element.innerHTML = '<div><p>Goo!</p></div>';
+
+			var boxEntity = EntityUtils.createDOMEntity(goo.world, element);
 			boxEntity.transformComponent.transform.translation.x = x;
 			boxEntity.transformComponent.transform.translation.y = y;
 			boxEntity.transformComponent.transform.translation.z = z;
-
-//			var element = document.createElement("IFRAME");
-//			element.setAttribute("src", "http://www.xn--frken-ur-o4a.se/");
-			var element = document.createElement('div');
-			element.className = 'object assembly';
-
-			var number = document.createElement('div');
-			number.className = 'number';
-			number.textContent = 'Goo Rocks!';
-			element.appendChild(number);
-
-			boxEntity.setComponent(new CSSTransformComponent(element));
 
 			boxEntity.setComponent(new ScriptComponent({
 				offset : Math.random()*100,

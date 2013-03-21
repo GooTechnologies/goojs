@@ -22,6 +22,10 @@ body,html {
 	overflow: hidden;
 }
 
+html {
+	font-size: 16px;
+}
+
 .viewport {
 	position: relative;
 	float: left;
@@ -63,40 +67,91 @@ body,html {
 }
 
 .object {
-	width: 150px;
-	height: 120px;
-	box-shadow: 0px 0px 20px rgba(100, 140, 255, 0.5);
-	border: 1px solid rgba(100, 140, 255, 0.5);
-	background-color: rgba(100, 150, 255, 0.2);
-	font-size: 20px;
-	cursor: default;
-	color: white;
-	padding: 5px;
-	-webkit-transition-property: height, width, background-color, border;
-	-webkit-transition-duration: 1s;
-	-moz-transition-property: height, width, background-color, border;
-	-moz-transition-duration: 1s;
-	-o-transition-property: height, width, background-color, border;
-	-o-transition-duration: 1s;
-	transition-property: height, width, background-color, border;
-	transition-duration: 1s;
+  border-radius: 0.5rem;
+  -webkit-border-radius: 0.5rem;
+  -moz-border-radius: 0.5rem;
+  -ms-border-radius: 0.5rem;
+  -o-border-radius: 0.5rem;
+  transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+  -webkit-transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+  -moz-transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+  -ms-transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+  -o-transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+  cursor: pointer;
+  display: table;
+  height: 8rem;
+  overflow: hidden;
+  padding: 0.5rem;
+  width: 8rem;
+}
+.object:hover {
+  transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+  -webkit-transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+  -moz-transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+  -ms-transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+  -o-transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+}
+.object:nth-of-type(3n+0) {
+  box-shadow: 0rem 0rem 2rem rgba(0, 255, 255, 0.5);
+  -webkit-box-shadow: 0rem 0rem 2rem rgba(0, 255, 255, 0.5);
+  -moz-box-shadow: 0rem 0rem 2rem rgba(0, 255, 255, 0.5);
+  -ms-box-shadow: 0rem 0rem 2rem rgba(0, 255, 255, 0.5);
+  -o-box-shadow: 0rem 0rem 2rem rgba(0, 255, 255, 0.5);
+  background-color: rgba(0, 255, 255, 0.5);
+}
+.object:nth-of-type(3n+0):hover {
+  box-shadow: 0rem 0rem 8rem #00ffff;
+  -webkit-box-shadow: 0rem 0rem 8rem #00ffff;
+  -moz-box-shadow: 0rem 0rem 8rem #00ffff;
+  -ms-box-shadow: 0rem 0rem 8rem #00ffff;
+  -o-box-shadow: 0rem 0rem 8rem #00ffff;
+  background-color: rgba(0, 255, 255, 0.75);
+}
+.object:nth-of-type(3n+1) {
+  box-shadow: 0rem 0rem 2rem rgba(255, 0, 255, 0.5);
+  -webkit-box-shadow: 0rem 0rem 2rem rgba(255, 0, 255, 0.5);
+  -moz-box-shadow: 0rem 0rem 2rem rgba(255, 0, 255, 0.5);
+  -ms-box-shadow: 0rem 0rem 2rem rgba(255, 0, 255, 0.5);
+  -o-box-shadow: 0rem 0rem 2rem rgba(255, 0, 255, 0.5);
+  background-color: rgba(255, 0, 255, 0.5);
+}
+.object:nth-of-type(3n+1):hover {
+  box-shadow: 0rem 0rem 8rem #ff00ff;
+  -webkit-box-shadow: 0rem 0rem 8rem #ff00ff;
+  -moz-box-shadow: 0rem 0rem 8rem #ff00ff;
+  -ms-box-shadow: 0rem 0rem 8rem #ff00ff;
+  -o-box-shadow: 0rem 0rem 8rem #ff00ff;
+  background-color: rgba(255, 0, 255, 0.75);
+}
+.object:nth-of-type(3n+2) {
+  box-shadow: 0rem 0rem 2rem rgba(255, 255, 0, 0.5);
+  -webkit-box-shadow: 0rem 0rem 2rem rgba(255, 255, 0, 0.5);
+  -moz-box-shadow: 0rem 0rem 2rem rgba(255, 255, 0, 0.5);
+  -ms-box-shadow: 0rem 0rem 2rem rgba(255, 255, 0, 0.5);
+  -o-box-shadow: 0rem 0rem 2rem rgba(255, 255, 0, 0.5);
+  background-color: rgba(255, 255, 0, 0.5);
+}
+.object:nth-of-type(3n+2):hover {
+  box-shadow: 0rem 0rem 8rem #ffff00;
+  -webkit-box-shadow: 0rem 0rem 8rem #ffff00;
+  -moz-box-shadow: 0rem 0rem 8rem #ffff00;
+  -ms-box-shadow: 0rem 0rem 8rem #ffff00;
+  -o-box-shadow: 0rem 0rem 8rem #ffff00;
+  background-color: rgba(255, 255, 0, 0.75);
+}
+.object > div {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.object > div > p {
+  color: #ffffff;
+  font-family: "Roboto", sans-serif;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: normal;
 }
 
-.object:hover {
-	width: 250px;
-	height: 300px;
-	box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.8);
-	border: 1px solid rgba(127, 255, 255, 0.95);
-	background-color: rgba(0, 255, 255, 0.3);
-	-webkit-transition-property: height, width, background-color, border;
-	-webkit-transition-duration: 1s;
-	-moz-transition-property: height, width, background-color, border;
-	-moz-transition-duration: 1s;
-	-o-transition-property: height, width, background-color, border;
-	-o-transition-duration: 1s;
-	transition-property: height, width, background-color, border;
-	transition-duration: 1s;
-}
 </style>
 </head>
 <body>
