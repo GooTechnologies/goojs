@@ -20,8 +20,8 @@ require([
 
 	function init() {
 		var goo = new GooRunner({
-			showStats : true,
-			antiAlias : false
+			//showStats : true,
+			//antiAlias : false
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
