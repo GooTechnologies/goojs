@@ -49,8 +49,8 @@ require([
 
 	function init() {
 		var goo = new GooRunner({
-			showStats : true,
-			antialias : true
+			//showStats : true,
+			//antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -77,7 +77,7 @@ require([
 		var light = new PointLight();
 		light.shadowCaster = true;
 		var materialBox = Material.createMaterial(ShaderLib.simple, 'mat');
-		var entity = createBox(goo, materialBox, 1, 1, 1, 1, 0, 0, 0);
+		var entity = createSphere(goo, materialBox, 4, 8, 0.5);
 		entity.setComponent(new LightComponent(light));
 		var script = {
 			run: function (entity) {
@@ -242,6 +242,15 @@ require([
 
 	function createBox(goo, material, w, h, tx, ty, x, y, z) {
 		var meshData = ShapeCreator.createBox(w, h, w, tx, ty);
+		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		entity.meshRendererComponent.materials.push(material);
+		entity.transformComponent.transform.translation.set(0, -13, 0);
+		entity.addToWorld();
+		return entity;
+	}
+
+	function createSphere(goo, material, a, b, radius) {
+		var meshData = ShapeCreator.createSphere(a, b, radius);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.meshRendererComponent.materials.push(material);
 		entity.transformComponent.transform.translation.set(0, -13, 0);
