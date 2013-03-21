@@ -17,7 +17,7 @@
     "TextureEntries" : [ {
       "Slot" : "diffuse",
       "TextureReference" : "body_diffuse_bmp-image",
-      "TextureSource" : "skeleton.png"
+      "TextureSource" : "skeleton_diffuse.jpg"
     } ]
   }, {
     "Profile" : "COMMON",
@@ -32,7 +32,7 @@
     "TextureEntries" : [ {
       "Slot" : "diffuse",
       "TextureReference" : "body_diffuse_bmp_ncl1_1-image",
-      "TextureSource" : "skeleton.png"
+      "TextureSource" : "skeleton_diffuse.jpg"
     } ]
   } ],
   "Skeletons" : [ {

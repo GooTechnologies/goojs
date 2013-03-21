@@ -57,7 +57,7 @@ require([
 		pointsEntity.addToWorld();
 
 		// Add camera
-		var camera = new Camera(27, 1, 5, 3500);
+		var camera = new Camera(45, 1, 5, 3500);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();

@@ -69,7 +69,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(170, 0, 0.8)
+			spherical : new Vector3(250, 0, 0.8)
 		}));
 		cameraEntity.setComponent(scripts);
 

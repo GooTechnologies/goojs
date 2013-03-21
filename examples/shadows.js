@@ -77,7 +77,7 @@ require([
 		var light = new PointLight();
 		light.shadowCaster = true;
 		var materialBox = Material.createMaterial(ShaderLib.simple, 'mat');
-		var entity = createSphere(goo, materialBox, 4, 8, 0.5);
+		var entity = createSphere(goo, materialBox, 8, 8, 0.5);
 		entity.setComponent(new LightComponent(light));
 		var script = {
 			run: function (entity) {

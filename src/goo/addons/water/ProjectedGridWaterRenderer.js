@@ -232,7 +232,7 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				31, 31, 31
+				15, 15, 15
 			],
 			abovewater: true,
 			fogColor: [

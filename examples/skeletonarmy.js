@@ -262,7 +262,7 @@ require([
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			baseDistance : 800/4,
-			spherical : new Vector3(400, Math.PI/12 , Math.PI/12)
+			spherical : new Vector3(600, -Math.PI/3 , Math.PI/12)
 		}));
 		cameraEntity.setComponent(scripts);
 

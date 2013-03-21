@@ -234,7 +234,7 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				0.125, 0.125, 0.125
+				0.0625, 0.0625, 0.0625
 			],
 			abovewater: true,
 			fogColor: [
@@ -244,7 +244,7 @@ function (
 				0.66, 0.66, 0.33
 			],
 			sunColor: [
-				1.0, 1.0, 0.75
+				1.0, 1.0, 0.5
 			],
 			reflectionMultiplier: [
 				1.0, 1.0, 1.0, 1.0

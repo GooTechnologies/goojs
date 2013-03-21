@@ -142,7 +142,7 @@ require(['goo/entities/World',
 	}
 
 	function createLightFixture(goo, w, h, shader) {
-		var meshData = ShapeCreator.createSphere(8, 16, 0.5);
+		var meshData = ShapeCreator.createSphere(8, 8, 0.5);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "LightFixture";
 
@@ -164,13 +164,13 @@ require(['goo/entities/World',
 		var material = new Material('TestMaterial');
 		material.shader = Material.createShader(createShaderDef(), 'SphereShader');
 
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-diffuse.png');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-diffuse.jpg');
 		material.textures.push(texture);
 
-		var displacemap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-displace.png');
+		var displacemap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-displace.jpg');
 		material.textures.push(displacemap);
 
-		var normalmap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-normal.png');
+		var normalmap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-normal.jpg');
 		material.textures.push(normalmap);
 
 		entity.meshRendererComponent.materials.push(material);

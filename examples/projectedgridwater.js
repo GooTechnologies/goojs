@@ -141,9 +141,6 @@ require([
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'heightMultiplier', 0.0, 200.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'coarseStrength', 0.0, 2.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'detailStrength', 0.0, 2.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '0', -1.0, 1.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '1', -1.0, 1.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '2', -1.0, 1.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColor');
 
 		// entity = createBox(goo, ShaderLib.textured, 70, 2, 50);
