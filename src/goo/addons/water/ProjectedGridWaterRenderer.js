@@ -64,7 +64,7 @@ function (
 		// waterMaterial.textures[2] = new TextureCreator().loadTexture2D('../resources/water/waterbump1.jpg');
 		waterMaterial.textures[2] = this.heightTarget;
 		waterMaterial.textures[3] = this.normalTarget;
-		waterMaterial.shader.uniforms.screenSize = [this.heightTarget.width, this.heightTarget.height];
+		//waterMaterial.shader.uniforms.screenSize = [this.heightTarget.width, this.heightTarget.height];
 
 		var materialWire = this.materialWire = Material.createMaterial(ShaderLib.simple, 'mat');
 		materialWire.wireframe = true;
@@ -213,7 +213,7 @@ function (
 
 	var waterShaderDef = {
 		attributes: {
-			vertexPosition: MeshData.POSITION,
+			//vertexPosition: MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms: {
@@ -232,18 +232,18 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				0.0, 40.0, 50.0, 1.0
+				31, 31, 31
 			],
 			abovewater: true,
 			fogColor: [
-				237.0 / 255.0, 252.0 / 255.0, 255.0 / 255.0, 1
+				1.0, 1.0, 1.0, 1.0
 			],
 			sunDirection: [
 				0.66, -0.1, 0.66
 			],
-			coarseStrength: 0.1,
-			detailStrength: 1.0,
-			fogStart: 0.5,
+			coarseStrength: 0.25,
+			detailStrength: 2.0,
+			fogStart: 0.0,
 			camNear: Shader.NEAR_PLANE,
 			camFar: Shader.FAR_PLANE,
 			time: Shader.TIME,
@@ -252,12 +252,12 @@ function (
 			intersectTopRight: [0,0,0,0],
 			intersectBottomRight: [0,0,0,0],
 			grid: false,
-			heightMultiplier: 20.0,
+			heightMultiplier: 50.0,
 			density: [1,1],
-			screenSize: [1,1]
+			//screenSize: [1,1]
 		},
 		vshader: [ //
-			'attribute vec3 vertexPosition;', //
+			//'attribute vec3 vertexPosition;', //
 			'attribute vec2 vertexUV0;', //
 
 			'uniform vec3 vertexNormal;', //
@@ -270,7 +270,7 @@ function (
 			'uniform vec3 sunDirection;',
 			'uniform float coarseStrength;',
 			'uniform float heightMultiplier;',
-			'uniform vec2 screenSize;',
+			//'uniform vec2 screenSize;',
 
 			'uniform sampler2D bump;',//
 
@@ -345,7 +345,7 @@ function (
 			'uniform sampler2D reflection;',//
 			'uniform sampler2D normalMapCoarse;',//
 
-			'uniform vec4 waterColor;',
+			'uniform vec3 waterColor;',
 			'uniform bool abovewater;',
 			'uniform vec4 fogColor;',
 			'uniform float time;',
@@ -425,7 +425,7 @@ function (
 			// '	projCoord += (normalVector.xy * 0.04 + normal.xy);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
 
-			'	vec4 waterColorX = waterColor / 255.0;',
+			' vec4 waterColorX = vec4(waterColor / 255.0, 1.0);',
 
 			'	vec4 reflectionColor = texture2D(reflection, projCoord);',
 			'	if ( abovewater == false ) {',
@@ -463,9 +463,9 @@ function (
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.TEXTURE0,
-			camNear: Shader.NEAR_PLANE,
-			camFar: Shader.FAR_PLANE,
+			//diffuseMap : Shader.TEXTURE0,
+			//camNear: Shader.NEAR_PLANE,
+			//camFar: Shader.FAR_PLANE,
 			time: Shader.TIME
 		},
 		vshader : [ //
@@ -485,16 +485,16 @@ function (
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',//
+		'precision mediump float;',
 
-		'uniform sampler2D diffuseMap;',//
-		'uniform float opacity;',//
-		'uniform float camNear;',
-		'uniform float camFar;',
+		//'uniform sampler2D diffuseMap;',
+		//'uniform float opacity;',
+		//'uniform float camNear;',
+		//'uniform float camFar;',
 		'uniform float time;',
 
-		'varying vec4 worldPos;',//
-		'varying vec4 viewCoords;',//
+		'varying vec4 worldPos;',
+		'varying vec4 viewCoords;',
 
 		ShaderFragments.noise3d,
 
@@ -512,7 +512,7 @@ function (
 
 		'void main(void)',//
 		'{',//
-		'	float fs = camFar * 0.5;',
+		//'	float fs = camFar * 0.5;',
 		// '	float fogDist = clamp(max(viewCoords.z - fs, 0.0)/(camFar - camNear - fs), 0.0, 1.0);',
 		'	float fogDist = clamp(-viewCoords.z / 1000.0, 0.0, 1.0);',
 

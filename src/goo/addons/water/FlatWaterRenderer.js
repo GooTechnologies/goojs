@@ -234,11 +234,11 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				0.125, 0.125, 0.125, 1.0
+				0.125, 0.125, 0.125
 			],
 			abovewater: true,
 			fogColor: [
-				1.0, 1.0, 1.0, 1.0
+				1.0, 1.0, 1.0
 			],
 			sunDirection: [
 				0.66, 0.66, 0.33
@@ -309,9 +309,9 @@ function (
 			'uniform sampler2D depthmap;',//
 			'#endif',
 
-			'uniform vec4 waterColor;',
+			'uniform vec3 waterColor;',
 			'uniform bool abovewater;',
-			'uniform vec4 fogColor;',
+			'uniform vec3 fogColor;',
 			'uniform float fogStart;',
 			'uniform float fogScale;',
 			'uniform vec3 sunDirection;',
@@ -397,11 +397,13 @@ function (
 			'		projCoord.x = 1.0 - projCoord.x;',
 			'	}',
 
+			' vec4 waterColorX = vec4(waterColor, 1.0);',
+
 			'	vec4 reflectionColor = texture2D(reflection, projCoord);',
 			'	if ( abovewater == false ) {',
 			'		reflectionColor *= vec4(0.8,0.9,1.0,1.0);',
-			'		vec4 endColor = mix(reflectionColor,waterColor,fresnelTerm);',
-			'		gl_FragColor = mix(endColor,waterColor,fogDist);',
+			'		vec4 endColor = mix(reflectionColor,waterColorX,fresnelTerm);',
+			'		gl_FragColor = mix(endColor,waterColorX,fogDist);',
 			'	}',
 			'	else {',
 			// '		vec3 diffuse = vec3(0.0);',
@@ -410,18 +412,18 @@ function (
 			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
 			'		reflectionColor *= reflectionMultiplier;',
 
-			'		vec4 endColor = waterColor;',
+			'		vec4 endColor = waterColorX;',
 			'#ifdef REFRACTION',
 			// '		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
 			// '		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
 			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
-			'		endColor = mix(refractionColor, waterColor, depth);',
+			'		endColor = mix(refractionColor, waterColorX, depth);',
 			'#endif',
 
 			'		endColor = mix(endColor, reflectionColor, fresnelTerm);',
 
 			'		if (doFog) {',
-			'			gl_FragColor = (vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + fogColor * fogDist;',
+			'			gl_FragColor = (vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist)) * (1.0-fogDist) + vec4(fogColor, 1.0) * fogDist;',
 			'		} else {',
 			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
