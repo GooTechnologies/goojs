@@ -226,32 +226,32 @@ function (
 				1, 0, 0, 1
 			],
 			waterColor: [
-				0.0, 0.05, 0.1, 1.0
+				0.125, 0.125, 0.125, 1.0
 			],
 			abovewater: true,
 			fogColor: [
-				237.0 / 255.0, 252.0 / 255.0, 255.0 / 255.0, 1
+				1.0, 1.0, 1.0, 1.0
 			],
 			sunDirection: [
 				0.66, 0.66, 0.33
 			],
 			sunColor: [
-				1.0, 0.96, 0.96
+				1.0, 1.0, 0.75
 			],
 			reflectionMultiplier: [
 				1.0, 1.0, 1.0, 1.0
 			],
 			sunShininess: 100.0,
-			sunSpecPower: 2.0,
-			fogStart: 500.0,
-			fogScale: 1500.0,
+			sunSpecPower: 4.0,
+			fogStart: 0.0,
+			fogScale: 2000.0,
 			timeMultiplier: 1.0,
 			time: Shader.TIME,
-			distortionMultiplier: 0.04,
-			fresnelPow: 2.5,
-			normalMultiplier: 1.2,
+			distortionMultiplier: 0.025,
+			fresnelPow: 2.0,
+			normalMultiplier: 3.0,
 			fresnelMultiplier: 1.0,
-			waterScale: 1.0,
+			waterScale: 5.0,
 			doFog: true
 		},
 		vshader: [ //

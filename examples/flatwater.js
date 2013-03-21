@@ -62,8 +62,8 @@ require([
 
 	function init () {
 		var goo = new GooRunner({
-			showStats: true,
-			antialias: true
+			//showStats: true,
+			//antialias: true
 		});
 		goo.renderer.setClearColor(0.0, 0.0, 0.0, 1.0);
 		goo.renderer.domElement.id = 'goo';
@@ -100,7 +100,7 @@ require([
 
 		// Examples of model loading
 		loadSkybox(goo);
-		loadModels(goo);
+		//loadModels(goo);
 
 		var entity = createBox(goo, ShaderLib.simpleLit, 50, 150, 150);
 		entity.transformComponent.transform.translation.x = -80;
@@ -148,9 +148,9 @@ require([
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogStart', 0.0, 2000.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogScale', 1.0, 2000.0);
 		var obj = {
-			message: ''
+			waterType: ''
 		};
-		var controller = gui.add(obj, 'message', [ '1', '2' ] );
+		var controller = gui.add(obj, 'waterType', [ '1', '2' ] );
 		controller.onFinishChange(function(value) {
 			if (value === '1') {
 				waterRenderer.waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');
@@ -235,7 +235,7 @@ require([
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
-			zMap: Shader.TEXTURE0
+			diffuseMap: Shader.TEXTURE0
 		},
 		vshader: [ //
 			'attribute vec3 vertexPosition;', //
