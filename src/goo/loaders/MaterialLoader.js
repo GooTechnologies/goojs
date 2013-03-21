@@ -75,10 +75,10 @@ define([
 		}
 
 		function setDestinationColor(destination, color) {
-			if(typeof color[0] !== 'undefined' || color[0] !== null) { destination.r = color[0]; }
-			if(typeof color[1] !== 'undefined' || color[1] !== null) { destination.g = color[1]; }
-			if(typeof color[2] !== 'undefined' || color[2] !== null) { destination.b = color[2]; }
-			if(typeof color[3] !== 'undefined' || color[3] !== null) { destination.a = color[3]; }
+			if(typeof color[0] !== 'undefined' || color[0] !== null) { destination[0] = color[0]; }
+			if(typeof color[1] !== 'undefined' || color[1] !== null) { destination[1] = color[1]; }
+			if(typeof color[2] !== 'undefined' || color[2] !== null) { destination[2] = color[2]; }
+			if(typeof color[3] !== 'undefined' || color[3] !== null) { destination[3] = color[3]; }
 		}
 
 		var name = materialDataSource.name || 'DefaultMaterial';
@@ -163,10 +163,10 @@ define([
 
 	MaterialLoader.prototype._getDefaultMaterialState = function() {
 		return {
-			ambient  : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			diffuse  : { r : 1.0, g : 1.0, b : 1.0, a : 1.0 },
-			emissive : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
-			specular : { r : 0.0, g : 0.0, b : 0.0, a : 1.0 },
+			ambient  : [0.1, 0.1, 0.1, 1.0],
+			emissive : [0, 0, 0, 0],
+			diffuse : [1, 1, 1, 1],
+			specular : [0.8, 0.8, 0.8, 1.0],
 			shininess: 16.0
 		};
 	};

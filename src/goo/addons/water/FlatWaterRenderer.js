@@ -161,7 +161,13 @@ function (
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
 		if (this.skybox) {
-			renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, true);
+			// if (!this.skybox.meshDataComponent) {
+			// 	for (var i=0;i<this.skybox.transformComponent.children.length;i++) {
+			// 		renderer.render(this.skybox.transformComponent.children[i].entity, this.waterCamera, this.lights, this.reflectionTarget, true);
+			// 	}
+			// } else {
+				renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, true);
+			// }
 			this.skybox.skip = true;
 		}
 
@@ -192,9 +198,11 @@ function (
 
 	FlatWaterRenderer.prototype.setSkyBox = function (skyboxEntity) {
 		this.skybox = skyboxEntity;
-		this.skybox.meshRendererComponent.materials[0].depthState.enabled = false;
-		this.skybox.meshRendererComponent.materials[0].renderQueue = 0;
-		this.skybox.meshRendererComponent.cullMode = 'Never';
+		if (skyboxEntity.meshRendererComponent) {
+			this.skybox.meshRendererComponent.materials[0].depthState.enabled = false;
+			this.skybox.meshRendererComponent.materials[0].renderQueue = 0;
+			this.skybox.meshRendererComponent.cullMode = 'Never';
+		}
 	};
 
 	FlatWaterRenderer.prototype.setWaterEntity = function (entity) {
@@ -366,9 +374,24 @@ function (
 
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
+
+			'#ifdef REFRACTION',
+			'	float depthUnpack = unpackDepth(texture2D(depthmap, projCoord));',
+			'	if (depthUnpack > 0.5) {depthUnpack = 0.0;}',
+			'	float depth2 = clamp(depthUnpack * 400.0, 0.0, 1.0);',
+			'	vec2 projCoordRefr = vec2(projCoord);',
+			'	projCoordRefr += (normalVector.xy * distortionMultiplier) * (depth2);',
+			'	projCoordRefr = clamp(projCoordRefr, 0.001, 0.999);',
+			'	depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
+			'	float depth = clamp(depthUnpack * 80.0, 0.5, 1.0);',
+			'#else',
+			// '	projCoord += (normalVector.xy * distortionMultiplier);',
+			'#endif',
+
+
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
-			'	vec2 projCoordRefr = projCoord;',
+			// '	vec2 projCoordRefr = projCoord;',
 
 			'	if ( abovewater == true ) {',
 			'		projCoord.x = 1.0 - projCoord.x;',
@@ -389,8 +412,8 @@ function (
 
 			'		vec4 endColor = waterColor;',
 			'#ifdef REFRACTION',
-			'		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
-			'		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
+			// '		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
+			// '		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
 			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
 			'		endColor = mix(refractionColor, waterColor, depth);',
 			'#endif',
@@ -402,7 +425,7 @@ function (
 			'		} else {',
 			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
-			// '		gl_FragColor = vec4(depth);',
+			// '		gl_FragColor = vec4(endColor);',
 			'	}',
 			'}'
 		].join('\n')
@@ -441,7 +464,8 @@ function (
 
 			'void main(void)',//
 			'{',//
-			'	float linearDepth = -vPosition.y / farPlane;',//
+			// '	float linearDepth = -vPosition.y / farPlane;',//
+			'	float linearDepth = abs(vPosition.y) / farPlane;',//
 			'	gl_FragColor = packDepth(linearDepth);',//
 			'}'//
 		].join('\n')
