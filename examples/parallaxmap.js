@@ -245,7 +245,6 @@ require(['goo/entities/World',
 			'uniform sampler2D diffuseMap;',//
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D displaceMap;',//
-			'uniform samplerCube cubeMap;',//
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
