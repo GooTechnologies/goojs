@@ -119,14 +119,14 @@ require([
 		             2,6,7, 7,3,2
 		]);
 
-		var loader = document.getElementById('load');
+		//var loader = document.getElementById('load');
 		var count = 50000;
 		var meshBuilder = new FastBuilder(meshData, count, {
 			progress: function (/*percent*/) {
 //				console.log(percent);
 			},
 			done: function () {
-				loader.classList.remove('visible');
+				//loader.classList.remove('visible');
 			}
 		});
 		var transform = new Transform();
