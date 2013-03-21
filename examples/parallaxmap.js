@@ -78,7 +78,7 @@ require(['goo/entities/World',
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			//showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -89,9 +89,9 @@ require(['goo/entities/World',
 		boxEntity.addToWorld();
 
 
-		var floorEntity = createFloor(goo, 1000, 1, ShaderLib.texturedLit);
-		floorEntity.transformComponent.transform.translation.y = -50;
-		floorEntity.addToWorld();
+		//var floorEntity = createFloor(goo, 1000, 1, ShaderLib.texturedLit);
+		//floorEntity.transformComponent.transform.translation.y = -50;
+		//floorEntity.addToWorld();
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -142,7 +142,7 @@ require(['goo/entities/World',
 	}
 
 	function createLightFixture(goo, w, h, shader) {
-		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
+		var meshData = ShapeCreator.createSphere(4, 8, 0.5);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "LightFixture";
 
