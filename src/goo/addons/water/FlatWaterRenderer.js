@@ -403,7 +403,7 @@ function (
 			'		projCoord.x = 1.0 - projCoord.x;',
 			'	}',
 
-			' vec4 waterColorX = vec4(waterColor, 1.0);',
+			'	vec4 waterColorX = vec4(waterColor, 1.0);',
 
 			'	vec4 reflectionColor = texture2D(reflection, projCoord);',
 			'	if ( abovewater == false ) {',
@@ -433,7 +433,7 @@ function (
 			'		} else {',
 			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
-			// '		gl_FragColor = vec4(endColor);',
+			// '		gl_FragColor = vec4(waterColor, 1.0);',
 			'	}',
 			'}'
 		].join('\n')
