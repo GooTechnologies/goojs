@@ -48,9 +48,10 @@ require([
 	function init () {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats: true
+			//showStats: true
 		});
 		goo.renderer.domElement.id = 'goo';
+		goo.renderer.setClearColor(0, 0, 0, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		// var ui = new DebugUI(goo);
@@ -66,7 +67,7 @@ require([
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			baseDistance : 150,
-			spherical : new Vector3(150, Math.PI / 2, 0)
+			spherical : new Vector3(150, Math.PI / 4, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 
