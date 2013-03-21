@@ -43,17 +43,18 @@ require([
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			//showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
+		goo.renderer.setClearColor(0, 0, 0, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		// Add box
 		var boxEntity = createBoxEntity(goo);
 		boxEntity.addToWorld();
 
-		var floorEntity = createFloor(goo);
-		floorEntity.addToWorld();
+		//var floorEntity = createFloor(goo);
+		//floorEntity.addToWorld();
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
