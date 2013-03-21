@@ -1,0 +1,11 @@
+{
+	"uniforms": {
+		"moveX": 0.65,
+		"moveZ": 0.00
+	},
+	"name": "Desert Material",
+	"textures": [
+		"textures/desert_diffuse.tex"
+	],
+	"shaderRef": "shaders/desert.shader"
+}

@@ -126,13 +126,12 @@ require([
 		// Load floor
 		var materialLoader = new MaterialLoader({
 				loader: new Loader({
-					rootPath: '../resources/new_format/floor/'
+					rootPath: '../resources/new_format/desert/'
 				}),
 				world: goo.world
 		});
-		materialLoader.load('materials/floor.mat').then(function(material) {
+		materialLoader.load('materials/desert.mat').then(function(material) {
 			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
-			TangentGenerator.addTangentBuffer(meshData, 0);
 
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 			entity.meshRendererComponent.materials.push(material);
@@ -246,13 +245,14 @@ require([
 
 	function createWorld() {
 		var goo = new GooRunner({
-			showStats: true
+			//showStats: true
 		});
 		goo.renderer.domElement.id = 'goo';
+		goo.renderer.setClearColor(0, 0, 0, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		// Camera
-		var camera = new Camera(45, 1, 1, 10000);
+		var camera = new Camera(45, 1, 1, 5000);
 		var cameraEntity = goo.world.createEntity('CameraEntity');
 		cameraEntity.addToWorld();
 		cameraEntity.setComponent(new CameraComponent(camera));
@@ -262,7 +262,7 @@ require([
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
 			baseDistance : 800/4,
-			spherical : new Vector3(800, Math.PI/12 , Math.PI/12)
+			spherical : new Vector3(400, Math.PI/12 , Math.PI/12)
 		}));
 		cameraEntity.setComponent(scripts);
 
