@@ -843,11 +843,12 @@ function(
 	 * Clipping using oblique frustums
 	 * @param clipPlane clipping plane
 	 */
-	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig) {
+	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig, offset) {
+		offset = offset || 0;
 		var clipPlane = this._clipPlane.setv(clipPlaneOrig);
 
 		this.getViewMatrix().applyPost(clipPlane);
-		clipPlane.w = this.translation.y * clipPlaneOrig.y;
+		clipPlane.w = this.translation.y * clipPlaneOrig.y + offset;
 
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();

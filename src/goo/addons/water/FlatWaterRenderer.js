@@ -160,38 +160,44 @@ function (
 
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
+		renderer.setRenderTarget(this.reflectionTarget);
+		renderer.clear();
+
 		if (this.skybox) {
-			// if (!this.skybox.meshDataComponent) {
-			// 	for (var i=0;i<this.skybox.transformComponent.children.length;i++) {
-			// 		renderer.render(this.skybox.transformComponent.children[i].entity, this.waterCamera, this.lights, this.reflectionTarget, true);
-			// 	}
-			// } else {
-				renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, true);
-			// }
-			this.skybox.skip = true;
+			if (this.skybox instanceof Array) {
+				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
+				for (var i=0;i<this.skybox.length;i++) {
+					renderer.render(this.skybox[i], this.waterCamera, this.lights, this.reflectionTarget, false);
+					this.skybox[i].skip = true;
+				}
+			} else {
+				renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, false);
+				this.skybox.skip = true;
+			}
 		}
 
 		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-		renderer.render(this.renderList, this.waterCamera, this.lights, this.reflectionTarget, this.skybox === undefined);
+		renderer.render(this.renderList, this.waterCamera, this.lights, this.reflectionTarget, false);
 
 		this.waterEntity.skip = false;
 		if (this.skybox) {
-			this.skybox.skip = false;
+			if (this.skybox instanceof Array) {
+				for (var i=0;i<this.skybox.length;i++) {
+					this.skybox[i].skip = false;
+				}
+			} else {
+				this.skybox.skip = false;
+			}
 		}
 
-		if (aboveWater && this.skybox) {
+		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			if (this.followCam) {
-				target.translation.setv(source).addv(this.offset);
-			} else {
-				target.translation.x = source.x;
-				target.translation.z = source.z;
-			}
+			target.translation.setv(source).addv(this.offset);
 			target.update();
-
 			this.waterCamera._updatePMatrix = true;
 		}
 	};

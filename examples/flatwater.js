@@ -135,6 +135,8 @@ require([
 		waterRenderer.setWaterEntity(waterEntity);
 		waterRenderer.setSkyBox(skybox);
 
+		waterRenderer.waterMaterial.shader.uniforms.fogColor = [0.95,0.98,1.0,1.0];
+		waterRenderer.waterMaterial.shader.uniforms.fogStart = 250;
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'timeMultiplier', 0.1, 5.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'sunColor');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunShininess', 0.0, 300.0);
