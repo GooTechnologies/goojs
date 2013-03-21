@@ -42,13 +42,14 @@ require([
 	var iphone;
 	function init() {
 		var goo = new GooRunner({
-			showStats : true,
+			//showStats : true,
 			antialias : true
 		});
 		goo.renderer.domElement.id = 'goo';
+
 		document.body.appendChild(goo.renderer.domElement);
 
-		goo.renderer.setClearColor(0.7, 0.7, 0.65, 1);
+		goo.renderer.setClearColor(0, 0, 0, 1);
 
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");

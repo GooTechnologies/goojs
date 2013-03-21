@@ -142,7 +142,7 @@ require(['goo/entities/World',
 	}
 
 	function createLightFixture(goo, w, h, shader) {
-		var meshData = ShapeCreator.createSphere(4, 8, 0.5);
+		var meshData = ShapeCreator.createSphere(8, 16, 0.5);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "LightFixture";
 
