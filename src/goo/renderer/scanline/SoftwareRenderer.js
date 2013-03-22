@@ -1954,8 +1954,8 @@ define([
 		if (edgeData[10]) {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding 
-				leftX = Math.round(edgeData[3]);
-				rightX = Math.round(edgeData[2]);
+				leftX = Math.floor(edgeData[3]);
+				rightX = Math.ceil(edgeData[2]);
 
 				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
 					return false;
@@ -1966,8 +1966,8 @@ define([
 		} else {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding
-				leftX = Math.round(edgeData[2]);
-				rightX = Math.round(edgeData[3]);
+				leftX = Math.floor(edgeData[2]);
+				rightX = Math.ceil(edgeData[3]);
 
 				// Draw the span of pixels.
 				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
@@ -1990,6 +1990,10 @@ define([
 		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement, longEdgeIsRightX]
 		var leftX;
 		var rightX;
+		// Cannot round to one or another for the y-coordinates, since it will create cracks in-between edges.
+//		var startLine = Math.round(edgeData[0]);
+//		var stopLine = Math.round(edgeData[1]);
+
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
@@ -1997,8 +2001,8 @@ define([
 		if (edgeData[10]) {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding , when drawing occluders, make stuff smaller.
-				leftX = Math.round(edgeData[3]);
-				rightX = Math.round(edgeData[2]);
+				leftX = Math.ceil(edgeData[3]);
+				rightX = Math.floor(edgeData[2]);
 
 				// Draw the span of pixels.
 				this._fillPixels(leftX, rightX, y, edgeData[5], edgeData[4]);
@@ -2008,8 +2012,8 @@ define([
 		} else {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding , when drawing occluders, make stuff smaller.
-				leftX = Math.round(edgeData[2]);
-				rightX = Math.round(edgeData[3]);
+				leftX = Math.ceil(edgeData[2]);
+				rightX = Math.floor(edgeData[3]);
 
 				// Draw the span of pixels.
 				this._fillPixels(leftX, rightX, y, edgeData[4], edgeData[5]);
@@ -2047,7 +2051,7 @@ define([
 
 		var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
 
-		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge must defenetly hasnt either?
+		// Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge most defenetly hasnt either?
 		// Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
 
 		var longEdgeDeltaX = longEdge.x1 - longEdge.x0;

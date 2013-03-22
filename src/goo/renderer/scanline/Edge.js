@@ -33,17 +33,11 @@ function () {
 	Edge.prototype.roundOccluderCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);
-
-		this.x0 = Math.round(this.x0);
-		this.x1 = Math.round(this.x1);
 	};
 
 	Edge.prototype.roundOccludeeCoordinates = function () {
 		this.y0 = Math.floor(this.y0);
 		this.y1 = Math.ceil(this.y1);
-
-		this.x0 = Math.round(this.x0);
-		this.x1 = Math.round(this.x1);
 	};
 
 	Edge.prototype.invertZ = function() {

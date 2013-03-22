@@ -190,8 +190,8 @@ require(
 			translation.x -= 3;
 			var boxcolor = [1, 0, 0];
 			box = createColoredBox(goo.world, translation, boxcolor, 2, 2, 2);
-			box.setComponent(new OccluderComponent(ShapeCreator.createBox(1,1,1)));
-			createBoundingSphereForEntity(goo.world, box);
+			box.setComponent(new OccluderComponent(ShapeCreator.createBox(2,2,2)));
+			//createBoundingSphereForEntity(goo.world, box);
 
 			// Add entities with boundingbox as bound.
 			translation.x = -10;
