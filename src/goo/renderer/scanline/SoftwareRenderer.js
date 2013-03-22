@@ -269,7 +269,7 @@ define([
 
 			if (v.w < this.camera.near) {
 				// Near plane clipped.
-				console.log("Early exit on near plane clipped.");
+				//console.log("Early exit on near plane clipped.");
 				return false;
 			}
 
@@ -1761,64 +1761,93 @@ define([
 			}
 		}
 
-		// Vertical culling
-		if (this._edges[longEdge].y1 < 0 || this._edges[longEdge].y0 > this.height) {
-			// Triangle is outside the view, skipping rendering it;
-			return false;
-		}
-
 		// "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
 		var shortEdge1 = (longEdge + 1) % 3;
 		var shortEdge2 = (longEdge + 2) % 3;
 
-		// Find out which side the long edge is on.
-		// This will be useful for determining which edge is on the left or right during scanline rendering.
-		// The long edge is on the right side if the end x point is larger than that of one of the short edges.
-		var isLongEdgeRightSide = this._edges[longEdge].x1 > this._edges[shortEdge1].x1 || this._edges[longEdge].x1 > this._edges[shortEdge2].x1;
-
-		// Horizontal culling
-		if (isLongEdgeRightSide) {
-			if (this._edges[longEdge].x1 < 0 && this._edges[longEdge].x0 < 0) {
-				return false;
-			}
-		} else {
-			if (this._edges[longEdge].x1 > this._clipX && this._edges[longEdge].x0 > this._clipX) {
-				return false;
-			}
-		}
-
-		return [longEdge, shortEdge1, shortEdge2, isLongEdgeRightSide	];
+		return [longEdge, shortEdge1, shortEdge2];
 	};
 
+	/**
+	*	@returns {Boolean} True means the long edge is on the right side of the triangle. False means left.
+	*/
+	SoftwareRenderer.prototype._determineLongEdgeSide = function (edgeData) {
+		var longEdgeXincrement = edgeData[6];
+		var shortEdgeXincrement = edgeData[7];
+
+		var leftX = edgeData[3];
+		var rightX = edgeData[2];
+
+		// If the edges start at the same position,
+		// the long edge can be deterimned by examining the slope sign.
+		// Otherwise, just check which one is larger.
+		if (leftX === rightX) {
+			return longEdgeXincrement > shortEdgeXincrement;
+		} else {
+			return rightX > leftX;
+		}
+	};
+
+	/**
+	*	Returns true if the triangle is occluded.
+	*/
 	SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
 
 		// returns [longEdge, shortEdge1, shortEdge2], or false on invisible triangle.
-		var edgeIndexes = this._createEdgesForTriangle(triangle);
+		var edgeIndices = this._createEdgesForTriangle(triangle);
 
-		if (!edgeIndexes) {
+		var longEdge = this._edges[edgeIndices[0]];
+		var s1 = edgeIndices[1];
+		var s2 = edgeIndices[2];
+
+		// Vertical culling
+		if (this._verticalLongEdgeCull(longEdge)) {
+			// Triangle is outside the view, skipping rendering it;
 			return true;
 		}
 
-		// TODO :
-        //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
-        //	When rounding the values of the triangles vertices , compensate the depth as well.
-        //	These good ideas are sponsored by Martin Vilcans.
         for (var i = 0; i < 3; i++) {
-			// TODO: Do pre-calculations here which are now performed in drawEdges.
+			// TODO : Move all rounding of values to the scanline loop to be performed per line.
 			this._edges[i].roundOccludeeCoordinates();
+			// TODO : Move the inversion of z.... to the best place. Has to be done before the creation of the edge data.
 			this._edges[i].invertZ();
         }
 
-        var edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[1]]);
+
+		var edgeData = this._edgePreRenderProcess(longEdge, this._edges[s1]);
+
+		// Find out the orientation of the triangle. 
+		// That is, if the long edge is on the right or the left side.
+		var triangleRightOriented = null;
 		if (edgeData) {
-			if (!this._isEdgeOccluded(edgeData)){
+			triangleRightOriented = this._determineLongEdgeSide(edgeData);
+
+			// Horizontal culling
+			if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+				return true;
+			}
+
+			// Add orientation to the last position in the data.
+			edgeData.push(triangleRightOriented);
+			// Draw first portion of the triangle
+			if(!this._isEdgeOccluded(edgeData)){
 				return false;
 			}
 		}
 
-		edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[2]]);
+		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
 		if (edgeData) {
-			if (!this._isEdgeOccluded(edgeData)) {
+			// Add orientation to the last position in the data. If the orientation hasn't been created, do so.
+			if (triangleRightOriented === null) {
+				triangleRightOriented = this._determineLongEdgeSide(edgeData);
+				// Horizontal culling
+				if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+					return true;
+				}
+			}
+			edgeData.push(triangleRightOriented);
+			// Draw second portion of the triangle.
+			if(!this._isEdgeOccluded(edgeData)){
 				return false;
 			}
 		}
@@ -1835,14 +1864,17 @@ define([
 		// Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
 		// The method is improved by using vertical coherence for each of the scanlines.
 
-		// returns [longEdge, shortEdge1, shortEdge2];
-		var edgeIndexes = this._createEdgesForTriangle(triangle);
+		var edgeIndices = this._createEdgesForTriangle(triangle);
 
-		if (!edgeIndexes) {
+		var longEdge = this._edges[edgeIndices[0]];
+		var s1 = edgeIndices[1];
+		var s2 = edgeIndices[2];
+
+		// Vertical culling
+		if (this._verticalLongEdgeCull(longEdge)) {
+			// Triangle is outside the view, skipping rendering it;
 			return;
 		}
-
-        // TODO : Find out which edge is the left and which is the right side of the short edges.
 
         // TODO :
         //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
@@ -1850,19 +1882,63 @@ define([
         //	These good ideas are sponsored by Martin Vilcans.
 
         for (var i = 0; i < 3; i++) {
-			// TODO: Do pre-calculations here which are now performed in drawEdges.
+			// TODO : Move all rounding of values to the scanline loop to be performed per line.
 			this._edges[i].roundOccluderCoordinates();
+			// TODO : Move the inversion of z.... to the best place. Has to be done before the creation of the edge data.
 			this._edges[i].invertZ();
         }
 
-        var edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[1]]);
+
+		var edgeData = this._edgePreRenderProcess(longEdge, this._edges[s1]);
+
+		// Find out the orientation of the triangle. 
+		// That is, if the long edge is on the right or the left side.
+		var triangleRightOriented = null;
 		if (edgeData) {
+			triangleRightOriented = this._determineLongEdgeSide(edgeData);
+
+			// Horizontal culling
+			if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+				return;
+			}
+
+			// Add orientation to the last position in the data.
+			edgeData.push(triangleRightOriented);
+			// Draw first portion of the triangle
 			this._drawEdges(edgeData);
 		}
 
-		edgeData = this._edgePreRenderProcess(this._edges[edgeIndexes[0]], this._edges[edgeIndexes[2]]);
+		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
 		if (edgeData) {
+			// Add orientation to the last position in the data. If the orientation hasn't been created, do so.
+			if (triangleRightOriented === null) {
+				triangleRightOriented = this._determineLongEdgeSide(edgeData);
+				// Horizontal culling
+				if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+					return;
+				}
+			}
+			edgeData.push(triangleRightOriented);
+			// Draw second portion of the triangle.
 			this._drawEdges(edgeData);
+		}
+	};
+
+	/**
+	*	Returns true if the triangle should be culled, if not, it returns false.
+	*/
+	SoftwareRenderer.prototype._verticalLongEdgeCull = function (longEdge) {
+		return longEdge.y1 < 0 || longEdge.y0 > this._clipY;
+	};
+
+	/**
+	*	Returns true if the triangle should be culled, if not, it returns false.
+	*/
+	SoftwareRenderer.prototype._horizontalLongEdgeCull = function (longEdge, rightOriented) {
+		if (rightOriented) {
+			return longEdge.x1 < 0 && longEdge.x0 < 0;
+		} else {
+			return longEdge.x1 > this._clipX && longEdge.x0 > this._clipX;
 		}
 	};
 
@@ -1871,24 +1947,35 @@ define([
 		// Copypasted from _drawEdges.
 		var leftX;
 		var rightX;
+		var startLine = edgeData[0];
+		var stopLine = edgeData[1];
 
-		for (var y = edgeData[0]; y <= edgeData[1]; y++) {
-			// Conservative rounding.
-			leftX = Math.floor(edgeData[2]);
-			rightX = Math.ceil(edgeData[3]);
+		// Checking if the triangle's long edge is on the right or the left side.
+		if (edgeData[10]) {
+			for (var y = startLine; y <= stopLine; y++) {
+				// Conservative rounding 
+				leftX = Math.round(edgeData[3]);
+				rightX = Math.round(edgeData[2]);
 
-			// Draw the span of pixels.
-			if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
-				return false;
+				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
+					return false;
+				}
+
+				this._updateEdgeDataToNextLine(edgeData);
 			}
+		} else {
+			for (var y = startLine; y <= stopLine; y++) {
+				// Conservative rounding
+				leftX = Math.round(edgeData[2]);
+				rightX = Math.round(edgeData[3]);
 
-			// Increase the edges'
-			// x-coordinates and z-values with the increments.
-			edgeData[2] += edgeData[6];
-			edgeData[3] += edgeData[7];
+				// Draw the span of pixels.
+				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
+					return false;
+				}
 
-			edgeData[4] += edgeData[8];
-			edgeData[5] += edgeData[9];
+				this._updateEdgeDataToNextLine(edgeData);
+			}
 		}
 
 		return true;
@@ -1900,32 +1987,50 @@ define([
 	*/
 	SoftwareRenderer.prototype._drawEdges = function (edgeData) {
 
-		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
-
+		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement, longEdgeIsRightX]
 		var leftX;
 		var rightX;
+		var startLine = edgeData[0];
+		var stopLine = edgeData[1];
 
-		// Fill pixels on every y-coordinate the short edge touches.
-		for (var y = edgeData[0]; y <= edgeData[1]; y++) {
-			// Round to the nearest pixel.
-			leftX = Math.round(edgeData[2]);
-			rightX = Math.round(edgeData[3]);
+		// Checking if the triangle's long edge is on the right or the left side.
+		if (edgeData[10]) {
+			for (var y = startLine; y <= stopLine; y++) {
+				// Conservative rounding , when drawing occluders, make stuff smaller.
+				leftX = Math.round(edgeData[3]);
+				rightX = Math.round(edgeData[2]);
 
-			// Draw the span of pixels.
-			this._fillPixels(leftX, rightX, y, edgeData[4], edgeData[5]);
+				// Draw the span of pixels.
+				this._fillPixels(leftX, rightX, y, edgeData[5], edgeData[4]);
 
-			// Increase the edges'
-			// x-coordinates and z-values with the increments.
-			edgeData[2] += edgeData[6];
-			edgeData[3] += edgeData[7];
+				this._updateEdgeDataToNextLine(edgeData);
+			}
+		} else {
+			for (var y = startLine; y <= stopLine; y++) {
+				// Conservative rounding , when drawing occluders, make stuff smaller.
+				leftX = Math.round(edgeData[2]);
+				rightX = Math.round(edgeData[3]);
 
-			edgeData[4] += edgeData[8];
-			edgeData[5] += edgeData[9];
+				// Draw the span of pixels.
+				this._fillPixels(leftX, rightX, y, edgeData[4], edgeData[5]);
+
+				this._updateEdgeDataToNextLine(edgeData);
+			}
 		}
 	};
 
 	/**
 	*
+	*/
+	SoftwareRenderer.prototype._updateEdgeDataToNextLine = function(edgeData) {
+		edgeData[2] += edgeData[6];
+		edgeData[3] += edgeData[7];
+		edgeData[4] += edgeData[8];
+		edgeData[5] += edgeData[9];
+	};
+
+	/**
+	*	@return {Array.<Number>} [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
 	*/
 	SoftwareRenderer.prototype._edgePreRenderProcess = function (longEdge, shortEdge) {
 
@@ -1972,12 +2077,6 @@ define([
 		var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
 		var shortEdgeZincrement = shortEdgeDeltaZ / shortEdgeDeltaY;
 
-		// TODO:
-		// Implement this idea of checking which edge is the leftmost.
-		// 1. Check if they start off at different positions, save the result and draw as usual
-		// 2. If not, draw the first line and check again after this , the edges should now differ in x-coordinates.
-		//    Save the result and draw the rest of the scanlines.
-
 		var startLine = shortEdge.y0;
 		var stopLine = shortEdge.y1;
 
@@ -1987,11 +2086,10 @@ define([
 			// the starting x-coordinates has to be advanced to
 			// the proper value.
 			// And the starting line is then assigned to 0.
-			startLine = -startLine;
-			longX += startLine * longEdgeXincrement;
-			shortX += startLine * shortEdgeXincrement;
-			longZ += startLine * longEdgeZincrement;
-			shortZ += startLine * shortEdgeZincrement;
+			longX += -startLine * longEdgeXincrement;
+			shortX += -startLine * shortEdgeXincrement;
+			longZ += -startLine * longEdgeZincrement;
+			shortZ += -startLine * shortEdgeZincrement;
 			startLine = 0;
 		}
 
@@ -2005,18 +2103,6 @@ define([
 	SoftwareRenderer.prototype._isScanlineOccluded = function (leftX, rightX, y, leftZ, rightZ) {
 
 		// 99% COPY PASTE FROM _fillPixels()! 
-
-		// If the startindex is higher than the stopindex, they should be swapped.
-		// TODO: This shall be optimized to be checked at an earlier stage.
-		if (leftX > rightX) {
-			var temp = leftX;
-			leftX = rightX;
-			rightX = temp;
-
-			temp = leftZ;
-			leftZ = rightZ;
-			rightZ = temp;
-		}
 
 		if (rightX < 0 || leftX > this._clipX) {
 			return true; // Nothing to draw here. it is occluded
@@ -2067,18 +2153,6 @@ define([
 	*
 	*/
 	SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
-
-		// If the startindex is higher than the stopindex, they should be swapped.
-		// TODO: This shall be optimized to be checked at an earlier stage.
-		if (leftX > rightX) {
-			var temp = leftX;
-			leftX = rightX;
-			rightX = temp;
-
-			temp = leftZ;
-			leftZ = rightZ;
-			rightZ = temp;
-		}
 
 		if (rightX < 0 || leftX > this._clipX) {
 			return false; // Nothing to draw here.

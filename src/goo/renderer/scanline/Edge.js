@@ -7,6 +7,7 @@ function () {
 
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
+
 		if (vec1.data[1] < vec2.data[1] ) {
 			this.x0 = vec1.data[0];
 			this.x1 = vec2.data[0];
@@ -29,7 +30,6 @@ function () {
 		}
 	}
 
-	// TODO: Remove the rounding of values out of here.. Add conservative check on the x-coordinates the point this is done as well.
 	Edge.prototype.roundOccluderCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);
