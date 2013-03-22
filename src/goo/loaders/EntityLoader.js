@@ -210,6 +210,11 @@ function(
 		return RSVP.all(promises)
 		.then(function(materials) {
 			var mrc = new MeshRendererComponent();
+			for(var attribute in meshRendererComponentSource) {
+				if (mrc.hasOwnProperty(attribute) && attribute !== 'materials') {
+					mrc[attribute] = meshRendererComponentSource[attribute];
+				}
+			}
 			for(var i in materials) {
 				mrc.materials.push(materials[i]);
 			}

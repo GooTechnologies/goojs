@@ -33,6 +33,7 @@ define([
 	}
 
 	ShaderLoader.prototype.load = function(shaderPath) {
+		// Materials can't share shaders yet, cause jointcount is defined on the shader
 		/*if (this._cache[shaderPath]) {
 			return this._cache[shaderPath];
 		}*/
