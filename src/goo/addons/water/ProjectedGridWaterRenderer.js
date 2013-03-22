@@ -253,7 +253,7 @@ function (
 			intersectBottomRight: [0,0,0,0],
 			grid: false,
 			heightMultiplier: 50.0,
-			density: [1,1],
+			density: [1,1]
 			//screenSize: [1,1]
 		},
 		vshader: [ //
@@ -339,7 +339,7 @@ function (
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision mediump float;',//
+			'precision highp float;',//
 
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
