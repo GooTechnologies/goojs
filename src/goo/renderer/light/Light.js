@@ -17,10 +17,7 @@ function (
 		this.translation = new Vector3();
 
 		this.color = new Vector4(1, 1, 1, 1);
-		this.attenuate = true;
-		this.constant = 1;
-		//this.linear;
-		//this.quadratic;
+		this.intensity = 1;
 
 		this.shadowCaster = false;
 		this.shadowSettings = {

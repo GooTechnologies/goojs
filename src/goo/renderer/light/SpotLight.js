@@ -2,7 +2,7 @@ define([
 		'goo/math/Vector3',
 		'goo/renderer/light/Light'
 		],
-/** @lends PointLight */
+/** @lends SpotLight */
 function (
 	Vector3,
 	Light
@@ -13,14 +13,14 @@ function (
 	 * @class It's a damn directional light
 	 * @property {Vector3} direction Where it is looking
 	 */
-	function PointLight () {
+	function SpotLight () {
 		Light.call(this);
 
 		this.direction = new Vector3();
-		this.range = 100;
+		this.spotAngle = 45;
 	}
 
-	PointLight.prototype = Object.create(Light.prototype);
+	SpotLight.prototype = Object.create(Light.prototype);
 
-	return PointLight;
+	return SpotLight;
 });
