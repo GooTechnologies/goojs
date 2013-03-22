@@ -883,15 +883,17 @@ define([
 		this._isOccluded(nearCoord, red, nearestDepth);
 		*/
 
+		/*
 		return (this._isOccluded(topCoord, yellow, nearestDepth)
 			&& this._isOccluded(leftCoord, blue, nearestDepth)
 			&& this._isOccluded(rightCoord, green, nearestDepth)
 			&& this._isOccluded(bottomCoord, yellow, nearestDepth)
 			&& this._isOccluded(nearCoord, red, nearestDepth)
 			&& this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
+		*/
 
 		//return this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink);
-		//return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
+		return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
 	};
 
 	/**
@@ -1827,17 +1829,15 @@ define([
 				return true;
 			}
 
-			// Add orientation to the last position in the data.
-			edgeData.push(triangleRightOriented);
 			// Draw first portion of the triangle
-			if(!this._isEdgeOccluded(edgeData)){
+			if(!this._isEdgeOccluded(edgeData, triangleRightOriented)){
 				return false;
 			}
 		}
 
 		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
 		if (edgeData) {
-			// Add orientation to the last position in the data. If the orientation hasn't been created, do so.
+			// If the orientation hasn't been created, do so.
 			if (triangleRightOriented === null) {
 				triangleRightOriented = this._determineLongEdgeSide(edgeData);
 				// Horizontal culling
@@ -1845,9 +1845,8 @@ define([
 					return true;
 				}
 			}
-			edgeData.push(triangleRightOriented);
 			// Draw second portion of the triangle.
-			if(!this._isEdgeOccluded(edgeData)){
+			if(!this._isEdgeOccluded(edgeData, triangleRightOriented)){
 				return false;
 			}
 		}
@@ -1902,15 +1901,13 @@ define([
 				return;
 			}
 
-			// Add orientation to the last position in the data.
-			edgeData.push(triangleRightOriented);
 			// Draw first portion of the triangle
-			this._drawEdges(edgeData);
+			this._drawEdges(edgeData, triangleRightOriented);
 		}
 
 		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
 		if (edgeData) {
-			// Add orientation to the last position in the data. If the orientation hasn't been created, do so.
+			// If the orientation hasn't been created, do so.
 			if (triangleRightOriented === null) {
 				triangleRightOriented = this._determineLongEdgeSide(edgeData);
 				// Horizontal culling
@@ -1918,9 +1915,8 @@ define([
 					return;
 				}
 			}
-			edgeData.push(triangleRightOriented);
 			// Draw second portion of the triangle.
-			this._drawEdges(edgeData);
+			this._drawEdges(edgeData, triangleRightOriented);
 		}
 	};
 
@@ -1942,7 +1938,7 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData) {
+	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, rightOriented) {
 
 		// Copypasted from _drawEdges.
 		var leftX;
@@ -1951,7 +1947,7 @@ define([
 		var stopLine = edgeData[1];
 
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (edgeData[10]) {
+		if (rightOriented) {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding 
 				leftX = Math.floor(edgeData[3]);
@@ -1985,20 +1981,17 @@ define([
 	*	Render the pixels between the long and the short edge of the triangle.
 	*	@param {Edge} longEdge, shortEdge
 	*/
-	SoftwareRenderer.prototype._drawEdges = function (edgeData) {
+	SoftwareRenderer.prototype._drawEdges = function (edgeData, rightOriented) {
 
-		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement, longEdgeIsRightX]
+		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
 		var leftX;
 		var rightX;
 		// Cannot round to one or another for the y-coordinates, since it will create cracks in-between edges.
-//		var startLine = Math.round(edgeData[0]);
-//		var stopLine = Math.round(edgeData[1]);
-
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (edgeData[10]) {
+		if (rightOriented) {
 			for (var y = startLine; y <= stopLine; y++) {
 				// Conservative rounding , when drawing occluders, make stuff smaller.
 				leftX = Math.ceil(edgeData[3]);
