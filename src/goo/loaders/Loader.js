@@ -77,7 +77,7 @@ define([
 			var json = JSON.parse(request.responseText);
 			return json;
 		} else if(contentType === 'application/octet-stream') {
-			var match = ajaxProperties.url.match(/\.(glsl|dds|vs|fs)$/);
+			var match = ajaxProperties.url.match(/\.(glsl|dds|vs|fs|vert|frag)$/);
 
 			if(match !== null) {
 				// If the request url contains a known file extension
