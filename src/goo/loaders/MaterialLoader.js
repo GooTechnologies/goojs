@@ -151,7 +151,9 @@ define([
 				override(material.offsetState, materialDataSource.offsetState);
 
 				if (typeof materialDataSource.renderQueue === 'number') {
-					material.renderQueue = materialDataSource.renderQueue;
+					if (materialDataSource.renderQueue > -1) {
+						material.renderQueue = materialDataSource.renderQueue;
+					}
 				}
 				if (typeof materialDataSource.wireframe === 'boolean') {
 					material.wireframe = materialDataSource.wireframe;
