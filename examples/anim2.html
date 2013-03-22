@@ -16,8 +16,31 @@
 	width: 100%;
 	height: 100%;
 }
+
+.content {
+	padding: 8px;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	z-index: 10;
+}
+
+.content > * {
+	display: inline-block;
+	margin: 8px;
+}
+
+.button {
+	cursor: pointer;
+	padding: 8px;
+	background-color: white;
+}
 </style>
 </head>
 <body>
+	<div class="content">
+		<h2 class="button">Run</h2>
+		<h2 class="button">Slap</h2>
+	</div>
 </body>
 </html>

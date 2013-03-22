@@ -160,6 +160,27 @@ require([
 			}
 		});
 
+		var buttons = document.querySelectorAll('.button');
+
+		var actions = [
+			function (event) {
+				animationManager.getBaseAnimationLayer().doTransition(walking ? 'run' : 'walk');
+				walking = !walking;
+
+				event.stopPropagation();
+			},
+			function (event) {
+				animationManager.findAnimationLayer('punchLayer').setCurrentStateByName('punch_right', true);
+
+				event.stopPropagation();
+			}
+		];
+
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].addEventListener('mousedown', actions[i]);
+			buttons[i].addEventListener('touchstart', actions[i]);
+		}
+
 		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
