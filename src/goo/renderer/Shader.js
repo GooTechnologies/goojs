@@ -267,7 +267,7 @@ function (
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
 				console.warn('Attribute [' + this.attributeMapping[key] + '/' + key
-					+ '] variable not found in shader. Probably unused and optimized away.');
+					+ '] variable not found in shader ' + this.name + '. Probably unused and optimized away.');
 				continue;
 			}
 

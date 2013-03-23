@@ -119,7 +119,9 @@ function (System) {
 		// tell particle meshdata we are updated.
 		if (needsUpdate) {
 			particleComponent.meshData.vertexData._dataNeedsRefresh = true;
-			particleEntity.meshDataComponent.autoCompute = true;
+			if (particleEntity.meshDataComponent) {
+				particleEntity.meshDataComponent.autoCompute = true;
+			}
 		}
 		if (!stillAlive) {
 			particleComponent.enabled = false;

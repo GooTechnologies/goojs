@@ -7,6 +7,7 @@ define([
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/MeshDataComponent',
+		'goo/entities/components/ParticleComponent',
 		'goo/renderer/MeshData',
 		'goo/math/Vector3',
 		'goo/math/MathUtils',
@@ -25,6 +26,7 @@ function(
 		TransformComponent,
 		MeshRendererComponent,
 		MeshDataComponent,
+		ParticleComponent,
 		MeshData,
 		Vector3,
 		MathUtils,
@@ -121,6 +123,17 @@ function(
 
 				promises.push(p);
 			}
+
+			component = entitySource.components.particle;
+			if (component) {
+				var p = this._getParticleComponent(component)
+				.then(function(particleComponent) {
+					loadedComponents.push(particleComponent);
+					return particleComponent;
+				});
+
+				promises.push(p);
+			}
 		}
 
 		if(loadedComponents.length === 0 && promises.length === 0) {
@@ -139,6 +152,10 @@ function(
 					entity.clearComponent('transformComponent');
 				}
 				entity.setComponent(loadedComponents[i]);
+			}
+
+			if (entity.particleComponent && !entity.meshDataComponent) {
+				entity.setComponent(new MeshDataComponent(entity.particleComponent.meshData));
 			}
 
 			if (entity.meshDataComponent
@@ -244,6 +261,14 @@ function(
 		});
 	};
 
+	EntityLoader.prototype._getParticleComponent = function(config) {
+		var promises = [];
+		return RSVP.all(promises)
+		.then(function() {
+			var component = new ParticleComponent(config);
+			return component;
+		});
+	};
 
 	return EntityLoader;
 });
