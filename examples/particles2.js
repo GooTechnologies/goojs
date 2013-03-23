@@ -64,10 +64,6 @@ require([
 		material.cullState.enabled = false;
 		material.depthState.write = false;
 
-		// Add ParticlesSystem to world.
-		var particles = new ParticlesSystem();
-		goo.world.setSystem(particles);
-
 		// create an entity with particles
 		createParticles(goo);
 

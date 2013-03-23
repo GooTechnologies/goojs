@@ -70,10 +70,6 @@ require([
 		alphaMaterial.cullState.enabled = false;
 		alphaMaterial.depthState.write = false;
 
-		// Add ParticlesSystem to world.
-		var particles = new ParticlesSystem();
-		goo.world.setSystem(particles);
-
 		// create our shared particles
 		var additiveParticleComponent = createParticles(goo.world, additiveMaterial);
 		var alphaParticleComponent = createParticles(goo.world, alphaMaterial);

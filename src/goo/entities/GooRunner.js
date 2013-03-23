@@ -8,6 +8,7 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/managers/LightManager',
 	'goo/entities/systems/CameraSystem',
+	'goo/entities/systems/ParticlesSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	'goo/util/GameUtils'
@@ -23,6 +24,7 @@ function (
 	LightingSystem,
 	LightManager,
 	CameraSystem,
+	ParticlesSystem,
 	Stats,
 	CSSTransformSystem,
 	GameUtils
@@ -59,6 +61,7 @@ function (
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer));
+		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		var renderSystem = this.renderSystem = new RenderSystem();
