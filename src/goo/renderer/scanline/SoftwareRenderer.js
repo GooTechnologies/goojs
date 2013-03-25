@@ -1780,7 +1780,7 @@ define([
 		var leftX = edgeData[3];
 		var rightX = edgeData[2];
 
-		// If the edges start at the same position,
+		// If the edges start at the same position (floating point comparison),
 		// the long edge can be deterimned by examining the slope sign.
 		// Otherwise, just check which one is larger.
 		if (leftX === rightX) {
@@ -1941,36 +1941,54 @@ define([
 	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, rightOriented) {
 
 		// Copypasted from _drawEdges.
-		var leftX;
-		var rightX;
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
+		var leaningInwards = true;
+
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (rightOriented) {
-			for (var y = startLine; y <= stopLine; y++) {
-				// Conservative rounding 
-				leftX = Math.floor(edgeData[3]);
-				rightX = Math.ceil(edgeData[2]);
+			if (leaningInwards) {
+				for (var y = startLine; y <= stopLine; y++) {
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(edgeData[3]);
+					var rightX = Math.ceil(edgeData[2]);
 
-				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
-					return false;
+					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
+						return false;
+					}
+
+					this._updateEdgeDataToNextLine(edgeData);
 				}
+			} else { // OUTWARDS TRIANGLE
+				for (var y = startLine; y <= stopLine; y++) {
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(edgeData[3]);
+					var rightX = Math.ceil(edgeData[2]);
 
-				this._updateEdgeDataToNextLine(edgeData);
+					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
+						return false;
+					}
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
 			}
-		} else {
-			for (var y = startLine; y <= stopLine; y++) {
-				// Conservative rounding
-				leftX = Math.floor(edgeData[2]);
-				rightX = Math.ceil(edgeData[3]);
+		} else { // LEFT ORIENTED
+			if (leaningInwards) {
+				for (var y = startLine; y <= stopLine; y++) {
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(edgeData[2]);
+					var rightX = Math.ceil(edgeData[3]);
 
-				// Draw the span of pixels.
-				if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
-					return false;
+					// Draw the span of pixels.
+					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
+						return false;
+					}
+
+					this._updateEdgeDataToNextLine(edgeData);
 				}
+			} else { // OUTWARDS TRIANGLE
 
-				this._updateEdgeDataToNextLine(edgeData);
 			}
 		}
 
@@ -1984,42 +2002,144 @@ define([
 	SoftwareRenderer.prototype._drawEdges = function (edgeData, rightOriented) {
 
 		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
-		var leftX;
-		var rightX;
-		// Cannot round to one or another for the y-coordinates, since it will create cracks in-between edges.
+
+		// The start and stop lines are already rounded y-coordinates.
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
+		// Leaning inwards means that the triangle is going inwards from left to right.
+		var leaningInwards = false;
+		// Compensate for fractional offset + conservative depth.
+		// When drawing occluders , as is beeing done here.
+		// the minimum value that the pixel can have is the one which should be rendered.
+		// this minimum value ís on the left or the right side of the pixel, depending on which
+		// way the triangle is leaning.
+
+		// In the case of leaning inwards, the leftmost pixel has the minimum depth on it's right edge.
+		// for the rightmost pixel, it is consequently on it's left side.
+
+		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
+
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (rightOriented) {
-			for (var y = startLine; y <= stopLine; y++) {
-				// Conservative rounding , when drawing occluders, make stuff smaller.
-				leftX = Math.ceil(edgeData[3]);
-				rightX = Math.floor(edgeData[2]);
+			if (leaningInwards) {
+				for (var y = startLine; y <= stopLine; y++) {
 
-				// Draw the span of pixels.
-				this._fillPixels(leftX, rightX, y, edgeData[5], edgeData[4]);
+					var realLeftX = edgeData[3];
+					var realRightX = edgeData[2];
 
-				this._updateEdgeDataToNextLine(edgeData);
+					var leftZ = edgeData[5];
+					var rightZ = edgeData[4];
+					// Conservative rounding , when drawing occluders, make area smaller.
+					var leftX = Math.ceil(realLeftX);
+					var rightX = Math.floor(realRightX);
+
+					var offset = leftX - realLeftX;
+					var spanLength = realRightX - realLeftX;
+
+					var a = (offset + 0.5) / spanLength;
+					var b = 1.0 - a;
+
+					// Linearly interpolate new leftZ
+					leftZ = b * leftZ + a * rightZ;
+
+					// Draw the span of pixels.
+					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
+			} else { // OUTWARDS TRIANGLE
+				for (var y = startLine; y <= stopLine; y++) {
+
+					var realLeftX = edgeData[3];
+					var realRightX = edgeData[2];
+
+					var leftZ = edgeData[5];
+					var rightZ = edgeData[4];
+					// Conservative rounding , when drawing occluders, make area smaller.
+					var leftX = Math.ceil(realLeftX);
+					var rightX = Math.floor(realRightX);
+
+					var offset = realRightX - rightX;
+					var spanLength = realRightX - realLeftX;
+
+					var a = (offset + 0.5) / spanLength;
+					var b = 1.0 - a;
+
+					// Linearly interpolate new rightZ
+					rightZ = b * rightZ + a * leftZ;
+
+					// Draw the span of pixels.
+					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
 			}
-		} else {
-			for (var y = startLine; y <= stopLine; y++) {
-				// Conservative rounding , when drawing occluders, make stuff smaller.
-				leftX = Math.ceil(edgeData[2]);
-				rightX = Math.floor(edgeData[3]);
+		} else { // LEFT ORIENTED
+			if (leaningInwards) {
+				for (var y = startLine; y <= stopLine; y++) {
 
-				// Draw the span of pixels.
-				this._fillPixels(leftX, rightX, y, edgeData[4], edgeData[5]);
+					var realLeftX = edgeData[2];
+					var realRightX = edgeData[3];
 
-				this._updateEdgeDataToNextLine(edgeData);
+					var leftZ = edgeData[4];
+					var rightZ = edgeData[5];
+
+					// Conservative rounding , when drawing occluders, make area smaller.
+					var leftX = Math.ceil(realLeftX);
+					var rightX = Math.floor(realRightX);
+
+					var offset = leftX - realLeftX;
+					var spanLength = realRightX - realLeftX;
+
+					var a = (offset + 0.5) / spanLength;
+					var b = 1.0 - a;
+
+					// Linearly interpolate new leftZ
+					leftZ = b * leftZ + a * rightZ;
+
+					// Draw the span of pixels.
+					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
+			} else { // OUTWARDS TRIANGLE
+				for (var y = startLine; y <= stopLine; y++) {
+
+					var realLeftX = edgeData[2];
+					var realRightX = edgeData[3];
+
+					var leftZ = edgeData[4];
+					var rightZ = edgeData[5];
+
+					// Conservative rounding , when drawing occluders, make area smaller.
+					var leftX = Math.ceil(realLeftX);
+					var rightX = Math.floor(realRightX);
+
+					var offset = realRightX - rightX;
+					var spanLength = realRightX - realLeftX;
+
+					var a = (offset + 0.5) / spanLength;
+					var b = 1.0 - a;
+
+					// Linearly interpolate new rightZ
+					rightZ = b * rightZ + a * leftZ;
+
+					// Draw the span of pixels.
+					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
 			}
 		}
 	};
 
 	/**
-	*
+	* // TODO : Look up if it would be faster to store the increments as local variables in the 
+	*			scanline rendering loop. This to not have to access the array if that would cause 
+	*			unneccessary reads and maybe cashe misses?
 	*/
-	SoftwareRenderer.prototype._updateEdgeDataToNextLine = function(edgeData) {
+	SoftwareRenderer.prototype._updateEdgeDataToNextLine = function (edgeData) {
 		edgeData[2] += edgeData[6];
 		edgeData[3] += edgeData[7];
 		edgeData[4] += edgeData[8];
@@ -2173,6 +2293,8 @@ define([
 		}
 
 		var index = y * this.width + leftX;
+		// Starting depth is leftZ , the depth is then incremented for each pixel.
+		// The last depth to be drawn should be equal to rightZ.
 		var depth = leftZ;
 		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
