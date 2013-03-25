@@ -1944,17 +1944,28 @@ define([
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
-		var leaningInwards = true;
+		var leaningInwards = false;
 
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (rightOriented) {
 			if (leaningInwards) {
 				for (var y = startLine; y <= stopLine; y++) {
-					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(edgeData[3]);
-					var rightX = Math.ceil(edgeData[2]);
 
-					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
+					var realLeftX = edgeData[3];
+					var realRightX = edgeData[2];
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(realLeftX);
+					var rightX = Math.ceil(realRightX);
+
+					var leftZ = edgeData[5];
+					var rightZ = edgeData[4];
+
+					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
+					// The leftZ is the absolute min depth
+					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
+
+					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
 						return false;
 					}
 
@@ -1962,11 +1973,20 @@ define([
 				}
 			} else { // OUTWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
-					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(edgeData[3]);
-					var rightX = Math.ceil(edgeData[2]);
 
-					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[5], edgeData[4])) {
+					var realLeftX = edgeData[3];
+					var realRightX = edgeData[2];
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(realLeftX);
+					var rightX = Math.ceil(realRightX);
+
+					var leftZ = edgeData[5];
+					var rightZ = edgeData[4];
+
+					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
+
+					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
 						return false;
 					}
 
@@ -1976,19 +1996,50 @@ define([
 		} else { // LEFT ORIENTED
 			if (leaningInwards) {
 				for (var y = startLine; y <= stopLine; y++) {
-					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(edgeData[2]);
-					var rightX = Math.ceil(edgeData[3]);
 
-					// Draw the span of pixels.
-					if (!this._isScanlineOccluded(leftX, rightX, y, edgeData[4], edgeData[5])) {
+					var realLeftX = edgeData[2];
+					var realRightX = edgeData[3];
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(realLeftX);
+					var rightX = Math.ceil(realRightX);
+
+					var leftZ = edgeData[4];
+					var rightZ = edgeData[5];
+
+					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
+					// The leftZ is the absolute min depth
+					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
+
+					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
 						return false;
 					}
 
 					this._updateEdgeDataToNextLine(edgeData);
 				}
 			} else { // OUTWARDS TRIANGLE
+				for (var y = startLine; y <= stopLine; y++) {
 
+					var realLeftX = edgeData[2];
+					var realRightX = edgeData[3];
+					// Conservative rounding (will cause overdraw on connecting triangles)
+					var leftX = Math.floor(realLeftX);
+					var rightX = Math.ceil(realRightX);
+
+					var leftZ = edgeData[4];
+					var rightZ = edgeData[5];
+
+					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
+					// The leftZ is the absolute min depth
+					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
+
+					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
+						return false;
+					}
+
+					this._updateEdgeDataToNextLine(edgeData);
+				}
 			}
 		}
 
@@ -2037,11 +2088,11 @@ define([
 					var offset = leftX - realLeftX;
 					var spanLength = realRightX - realLeftX;
 
-					var a = (offset + 0.5) / spanLength;
-					var b = 1.0 - a;
+					// Add 0.5 to go to the edge of the pixel.
+					var t = (offset + 0.5) / spanLength;
 
 					// Linearly interpolate new leftZ
-					leftZ = b * leftZ + a * rightZ;
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
 					// Draw the span of pixels.
 					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
@@ -2063,11 +2114,11 @@ define([
 					var offset = realRightX - rightX;
 					var spanLength = realRightX - realLeftX;
 
-					var a = (offset + 0.5) / spanLength;
-					var b = 1.0 - a;
+					// Add 0.5 to go to the edge of the pixel.
+					var t = (offset + 0.5) / spanLength;
 
 					// Linearly interpolate new rightZ
-					rightZ = b * rightZ + a * leftZ;
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					// Draw the span of pixels.
 					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
@@ -2091,12 +2142,11 @@ define([
 
 					var offset = leftX - realLeftX;
 					var spanLength = realRightX - realLeftX;
-
-					var a = (offset + 0.5) / spanLength;
-					var b = 1.0 - a;
+					// Add 0.5 to go to the edge of the pixel.
+					var t = (offset + 0.5) / spanLength;
 
 					// Linearly interpolate new leftZ
-					leftZ = b * leftZ + a * rightZ;
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
 					// Draw the span of pixels.
 					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
@@ -2118,12 +2168,11 @@ define([
 
 					var offset = realRightX - rightX;
 					var spanLength = realRightX - realLeftX;
-
-					var a = (offset + 0.5) / spanLength;
-					var b = 1.0 - a;
+					// Add 0.5 to go to the edge of the pixel.
+					var t = (offset + 0.5) / spanLength;
 
 					// Linearly interpolate new rightZ
-					rightZ = b * rightZ + a * leftZ;
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					// Draw the span of pixels.
 					this._fillPixels(leftX, rightX, y, leftZ, rightZ);
@@ -2230,14 +2279,14 @@ define([
 		// If the triangle's scanline is clipped, the bounding z-values have to be interpolated
 		// to the new startpoints.
 		if (leftX < 0) {
-			t = -leftX / (rightX - leftX);
+			t = -leftX / (rightX - leftX + 1);
 			leftZ = (1.0 - t) * leftZ + t * rightZ;
 			leftX = 0;
 		}
 
-		var diff = rightX - this._clipX;
+		var diff = rightX - this._clipX + 1;
 		if (diff > 0) {
-			t = diff / (rightX - leftX);
+			t = diff / (rightX - leftX + 1);
 			rightZ = (1.0 - t) * rightZ + t * leftZ;
 			rightX = this._clipX;
 		}
@@ -2280,14 +2329,17 @@ define([
 		// If the triangle's scanline is clipped, the bounding z-values have to be interpolated
 		// to the new startpoints.
 		if (leftX < 0) {
-			t = -leftX / (rightX - leftX);
+			t = -leftX / (rightX - leftX + 1);
 			leftZ = (1.0 - t) * leftZ + t * rightZ;
 			leftX = 0;
 		}
 
-		var diff = rightX - this._clipX;
+		// TODO : Revise the span of pixels here... if the +1 is needed for the correct width..
+		// as it is a closed interval from left to right it is probably needed. Maybe do the addition to the parameter before
+		// and then render the open interval [leftx, rightx[.
+		var diff = rightX - this._clipX + 1;
 		if (diff > 0) {
-			t = diff / (rightX - leftX);
+			t = diff / (rightX - leftX + 1);
 			rightZ = (1.0 - t) * rightZ + t * leftZ;
 			rightX = this._clipX;
 		}
