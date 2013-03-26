@@ -1771,9 +1771,13 @@ define([
 	};
 
 	/**
-	*	@returns {Boolean} True means the long edge is on the right side of the triangle. False means left.
+	*	Returns an array containing if the trianlges long edge is on the right or left and if the triangle is leaning inwards or outwards,
+	*	seen from left to right.
+	*	@returns {Array.<Boolean>} [right/left, inwards/outwards] (true/false)
 	*/
-	SoftwareRenderer.prototype._determineLongEdgeSide = function (edgeData) {
+	SoftwareRenderer.prototype._calculateOrientationData = function (edgeData, shortEdge, longEdge) {
+
+		// TODO : remove temporary variables , to minimize garbage collection?
 		var longEdgeXincrement = edgeData[6];
 		var shortEdgeXincrement = edgeData[7];
 
@@ -1781,12 +1785,18 @@ define([
 		var rightX = edgeData[2];
 
 		// If the edges start at the same position (floating point comparison),
+		// The edges will most proabably contain an integer index to the vertex array in future optimizations.
 		// the long edge can be deterimned by examining the slope sign.
 		// Otherwise, just check which one is larger.
+
+		// A triangle is leaning inwards, if the long edge's stop vertex is further away than the vertex to compare with of the short edge.
+		// The depth values have been inverted, so the comparison has to be inverted as well.
 		if (leftX === rightX) {
-			return longEdgeXincrement > shortEdgeXincrement;
+			// The short edge is the upper one. The long and short edges originate from the same vertex.
+			return [longEdgeXincrement > shortEdgeXincrement, longEdge.z1 < shortEdge.z1];
 		} else {
-			return rightX > leftX;
+			// The short edge is the bottom one.
+			return [rightX > leftX, longEdge.z1 < shortEdge.z0];
 		}
 	};
 
@@ -1815,38 +1825,38 @@ define([
 			this._edges[i].invertZ();
         }
 
-
-		var edgeData = this._edgePreRenderProcess(longEdge, this._edges[s1]);
+        var shortEdge = this._edges[s1];
+		var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
 
 		// Find out the orientation of the triangle. 
 		// That is, if the long edge is on the right or the left side.
-		var triangleRightOriented = null;
+		var orientationData = null;
 		if (edgeData) {
-			triangleRightOriented = this._determineLongEdgeSide(edgeData);
+			orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 
 			// Horizontal culling
-			if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+			if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
 				return true;
 			}
 
 			// Draw first portion of the triangle
-			if(!this._isEdgeOccluded(edgeData, triangleRightOriented)){
+			if(!this._isEdgeOccluded(edgeData, orientationData)){
 				return false;
 			}
 		}
-
-		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
+		shortEdge = this._edges[s2];
+		edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
 		if (edgeData) {
 			// If the orientation hasn't been created, do so.
-			if (triangleRightOriented === null) {
-				triangleRightOriented = this._determineLongEdgeSide(edgeData);
+			if (orientationData === null) {
+				orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 				// Horizontal culling
-				if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+				if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
 					return true;
 				}
 			}
 			// Draw second portion of the triangle.
-			if(!this._isEdgeOccluded(edgeData, triangleRightOriented)){
+			if(!this._isEdgeOccluded(edgeData, orientationData)){
 				return false;
 			}
 		}
@@ -1887,36 +1897,37 @@ define([
 			this._edges[i].invertZ();
         }
 
-
-		var edgeData = this._edgePreRenderProcess(longEdge, this._edges[s1]);
+        var shortEdge = this._edges[s1];
+		var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
 
 		// Find out the orientation of the triangle. 
 		// That is, if the long edge is on the right or the left side.
-		var triangleRightOriented = null;
+		var orientationData = null;
 		if (edgeData) {
-			triangleRightOriented = this._determineLongEdgeSide(edgeData);
+			orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 
 			// Horizontal culling
-			if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+			if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
 				return;
 			}
 
 			// Draw first portion of the triangle
-			this._drawEdges(edgeData, triangleRightOriented);
+			this._drawEdges(edgeData, orientationData);
 		}
 
-		edgeData = this._edgePreRenderProcess(longEdge, this._edges[s2]);
+		shortEdge = this._edges[s2];
+		edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
 		if (edgeData) {
 			// If the orientation hasn't been created, do so.
-			if (triangleRightOriented === null) {
-				triangleRightOriented = this._determineLongEdgeSide(edgeData);
+			if (orientationData === null) {
+				orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 				// Horizontal culling
-				if (this._horizontalLongEdgeCull(longEdge, triangleRightOriented)) {
+				if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
 					return;
 				}
 			}
 			// Draw second portion of the triangle.
-			this._drawEdges(edgeData, triangleRightOriented);
+			this._drawEdges(edgeData, orientationData);
 		}
 	};
 
@@ -1929,26 +1940,26 @@ define([
 
 	/**
 	*	Returns true if the triangle should be culled, if not, it returns false.
+	*	@param {Edge} long edge
+	*	@param {Array.<Boolean>} the first value of thee array is orientation
 	*/
-	SoftwareRenderer.prototype._horizontalLongEdgeCull = function (longEdge, rightOriented) {
-		if (rightOriented) {
+	SoftwareRenderer.prototype._horizontalLongEdgeCull = function (longEdge, orientationData) {
+		if (orientationData[0]) {
 			return longEdge.x1 < 0 && longEdge.x0 < 0;
 		} else {
 			return longEdge.x1 > this._clipX && longEdge.x0 > this._clipX;
 		}
 	};
 
-	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, rightOriented) {
+	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
 
 		// Copypasted from _drawEdges.
 		var startLine = edgeData[0];
 		var stopLine = edgeData[1];
 
-		var leaningInwards = false;
-
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (rightOriented) {
-			if (leaningInwards) {
+		if (orientationData[0]) {
+			if (orientationData[1]) {
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[3];
@@ -1994,7 +2005,7 @@ define([
 				}
 			}
 		} else { // LEFT ORIENTED
-			if (leaningInwards) {
+			if (orientationData[1]) {
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[2];
@@ -2048,9 +2059,10 @@ define([
 
 	/**
 	*	Render the pixels between the long and the short edge of the triangle.
-	*	@param {Edge} longEdge, shortEdge
+	*	@param {Array.<Number>} edge data array
+	*	@param {Array.<Boolean>} [rightOriented, inwardsTriangle]
 	*/
-	SoftwareRenderer.prototype._drawEdges = function (edgeData, rightOriented) {
+	SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData) {
 
 		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
 
@@ -2059,7 +2071,7 @@ define([
 		var stopLine = edgeData[1];
 
 		// Leaning inwards means that the triangle is going inwards from left to right.
-		var leaningInwards = false;
+
 		// Compensate for fractional offset + conservative depth.
 		// When drawing occluders , as is beeing done here.
 		// the minimum value that the pixel can have is the one which should be rendered.
@@ -2072,8 +2084,8 @@ define([
 		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (rightOriented) {
-			if (leaningInwards) {
+		if (orientationData[0]) {
+			if (orientationData[1]) {
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[3];
@@ -2127,7 +2139,7 @@ define([
 				}
 			}
 		} else { // LEFT ORIENTED
-			if (leaningInwards) {
+			if (orientationData[1]) {
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[2];
@@ -2247,6 +2259,7 @@ define([
 		var stopLine = shortEdge.y1;
 
 		// Vertical clipping
+		// TODO : Implement a cohen sutherland image space clipper for the horizontal and vertical clipping.
 		if (startLine < 0) {
 			// If the starting line is above the screen space,
 			// the starting x-coordinates has to be advanced to
@@ -2361,15 +2374,15 @@ define([
 			depth += depthIncrement;
 		}
 
-		/*
+		
 		var lastDepth = depth - depthIncrement;
-		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX > 0) {
+		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX >= 0) {
 			console.error("Wrong depth interpolation!");
 			console.log("lastdepth", lastDepth);
 			console.log("rightZ", rightZ);
 			console.log("depthIncrement", depthIncrement);
 		}
-		*/
+		
 	};
 
 	/**
