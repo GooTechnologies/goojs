@@ -1,12 +1,6 @@
-define([
-	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingVolume'
-],
+define(['goo/math/Vector3', 'goo/renderer/bounds/BoundingVolume', 'goo/math/MathUtils'],
 /** @lends BoundingBox */
-function(
-	Vector3,
-	BoundingVolume
-) {
+function (Vector3, BoundingVolume, MathUtils) {
 	"use strict";
 
 	/**
@@ -16,7 +10,7 @@ function(
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingBox() {
+	function BoundingBox () {
 		BoundingVolume.call(this);
 
 		this.xExtent = 1;
@@ -24,12 +18,13 @@ function(
 		this.zExtent = 1;
 
 		this._compVect1 = new Vector3();
+		this._compVect2 = new Vector3();
 		this.vec = new Vector3();
 	}
 
 	BoundingBox.prototype = Object.create(BoundingVolume.prototype);
 
-	BoundingBox.prototype.computeFromPoints = function(verts) {
+	BoundingBox.prototype.computeFromPoints = function (verts) {
 		var min = this.min;
 		var max = this.max;
 		var vec = this.vec;
@@ -57,22 +52,119 @@ function(
 		this.center.setv(max).add_d(min).div(2.0);
 	};
 
-	BoundingBox.prototype.transform = function(transform, bound) {
-		if (bound === null) {
-			bound = new BoundingBox();
+	BoundingBox.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
+		if (end - start <= 0) {
+			return;
 		}
 
-		transform.applyForward(this.center, bound.center);
+		var min = this._compVect1.set(Infinity, Infinity, Infinity);
+		var max = this._compVect2.set(-Infinity, -Infinity, -Infinity);
 
-		// TODO: Port box transform code
-		bound.xExtent = this.xExtent;
-		bound.yExtent = this.yExtent;
-		bound.zExtent = this.zExtent;
+		var store = [];
 
-		return bound;
+		for ( var i = start; i < end; i++) {
+			store = data.getPrimitiveVertices(indices[i], section, store);
+			for ( var j = 0; j < store.length; j++) {
+				BoundingBox.checkMinMax(min, max, store[j]);
+			}
+		}
+
+		this.center.copy(min.add(max));
+		this.center.mul(0.5);
+
+		this.xExtent = max.x - this.center.x;
+		this.yExtent = max.y - this.center.y;
+		this.zExtent = max.z - this.center.z;
 	};
 
-	BoundingBox.prototype.whichSide = function(plane) {
+	BoundingBox.checkMinMax = function (min, max, point) {
+		if (point.x < min.x) {
+			min.x = point.x;
+		}
+		if (point.x > max.x) {
+			max.x = point.x;
+		}
+
+		if (point.y < min.y) {
+			min.y = point.y;
+		}
+		if (point.y > max.y) {
+			max.y = point.y;
+		}
+
+		if (point.z < min.z) {
+			min.z = point.z;
+		}
+		if (point.z > max.z) {
+			max.z = point.z;
+		}
+	};
+
+	BoundingBox.prototype.transform = function (transform, box) {
+		if (box === null) {
+			box = new BoundingBox();
+		}
+
+		var corners = [];
+		for ( var i = 0; i < 8; i++) {
+			corners.push(new Vector3());
+		}
+		this.getCorners(corners);
+
+		// Transform all of these points by the transform
+		for ( var i = 0; i < corners.length; i++) {
+			transform.matrix.applyPostPoint(corners[i]);
+		}
+		// Now compute based on these transformed points
+		var minX = corners[0].x;
+		var minY = corners[0].y;
+		var minZ = corners[0].z;
+		var maxX = minX;
+		var maxY = minY;
+		var maxZ = minZ;
+		for ( var i = 1; i < corners.length; i++) {
+			var curX = corners[i].x;
+			var curY = corners[i].y;
+			var curZ = corners[i].z;
+			minX = Math.min(minX, curX);
+			minY = Math.min(minY, curY);
+			minZ = Math.min(minZ, curZ);
+			maxX = Math.max(maxX, curX);
+			maxY = Math.max(maxY, curY);
+			maxZ = Math.max(maxZ, curZ);
+		}
+
+		var ctrX = (maxX + minX) * 0.5;
+		var ctrY = (maxY + minY) * 0.5;
+		var ctrZ = (maxZ + minZ) * 0.5;
+
+		box.center.set(ctrX, ctrY, ctrZ);
+		box.xExtent = maxX - ctrX;
+		box.yExtent = maxY - ctrY;
+		box.zExtent = maxZ - ctrZ;
+
+		return box;
+	};
+
+	BoundingBox.prototype.getCorners = function (store) {
+		if (!store || store.length !== 8) {
+			store = [];
+			for ( var i = 0; i < store.length; i++) {
+				store.push(new Vector3());
+			}
+		}
+		store[0].set(this.center.x + this.xExtent, this.center.y + this.yExtent, this.center.z + this.zExtent);
+		store[1].set(this.center.x + this.xExtent, this.center.y + this.yExtent, this.center.z - this.zExtent);
+		store[2].set(this.center.x + this.xExtent, this.center.y - this.yExtent, this.center.z + this.zExtent);
+		store[3].set(this.center.x + this.xExtent, this.center.y - this.yExtent, this.center.z - this.zExtent);
+		store[4].set(this.center.x - this.xExtent, this.center.y + this.yExtent, this.center.z + this.zExtent);
+		store[5].set(this.center.x - this.xExtent, this.center.y + this.yExtent, this.center.z - this.zExtent);
+		store[6].set(this.center.x - this.xExtent, this.center.y - this.yExtent, this.center.z + this.zExtent);
+		store[7].set(this.center.x - this.xExtent, this.center.y - this.yExtent, this.center.z - this.zExtent);
+		return store;
+	};
+
+	BoundingBox.prototype.whichSide = function (plane) {
 		var radius = Math.abs(this.xExtent * plane.normal.x) + Math.abs(this.yExtent * plane.normal.y) + Math.abs(this.zExtent * plane.normal.z);
 
 		var planeData = plane.normal.data;
@@ -88,15 +180,15 @@ function(
 		}
 	};
 
-	BoundingBox.prototype._pseudoDistance = function(plane, point) {
+	BoundingBox.prototype._pseudoDistance = function (plane, point) {
 		return plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z - plane.constant;
 	};
 
-	BoundingBox.prototype._maxAxis = function(scale) {
+	BoundingBox.prototype._maxAxis = function (scale) {
 		return Math.max(Math.abs(scale.x), Math.max(Math.abs(scale.y), Math.abs(scale.z)));
 	};
 
-	BoundingBox.prototype.toString = function() {
+	BoundingBox.prototype.toString = function () {
 		var x = Math.round(this.center.x * 10) / 10;
 		var y = Math.round(this.center.y * 10) / 10;
 		var z = Math.round(this.center.z * 10) / 10;
@@ -104,7 +196,7 @@ function(
 		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + '[' + this.xExtent + ',' + this.yExtent + ',' + this.zExtent + ']';
 	};
 
-	BoundingBox.prototype.intersectsBoundingBox = function(bb) {
+	BoundingBox.prototype.intersectsBoundingBox = function (bb) {
 		if (this.center.x + this.xExtent < bb.center.x - bb.xExtent || this.center.x - this.xExtent > bb.center.x + bb.xExtent) {
 			return false;
 		} else if (this.center.y + this.yExtent < bb.center.y - bb.yExtent || this.center.y - this.yExtent > bb.center.y + bb.yExtent) {
@@ -116,7 +208,7 @@ function(
 		}
 	};
 
-	BoundingBox.prototype.testStaticAABBAABB = function(bb, contact) {
+	BoundingBox.prototype.testStaticAABBAABB = function (bb, contact) {
 		var a = this;
 		var b = bb;
 
@@ -168,7 +260,7 @@ function(
 		return true;
 	};
 
-	BoundingBox.prototype.testAxisStatic = function(axis, minA, maxA, minB, maxB, mtvInfo) {
+	BoundingBox.prototype.testAxisStatic = function (axis, minA, maxA, minB, maxB, mtvInfo) {
 		// [Separating Axis Theorem]
 		// * Two convex shapes only overlap if they overlap on all axes of separation
 		// * In order to create accurate responses we need to find the collision vector (Minimum Translation Vector)
@@ -212,89 +304,122 @@ function(
 		return true;
 	};
 
-	//TODO:!
-	// Was: function (ray)
-	BoundingBox.prototype.intersectsRay = function () {
-		if (!this.center) {
+	BoundingBox.prototype.intersectsRay = function (ray) {
+		if (isNaN(this.center.x) || isNaN(this.center.y) || isNaN(this.center.z)) {
 			return false;
 		}
 
-		// var diff = this._compVect1.copy(ray.origin).sub(this.center);
+		var diff = Vector3.sub(ray.origin, this.center, this._compVect1);
+		var direction = ray.direction;
 
-		// var direction = ray.direction;
+		var t = [0.0, Infinity];
 
-		// final float[] t = { 0.0f, Float.POSITIVE_INFINITY };
-		//
-		// // Check for degenerate cases and pad using zero tolerance. Should give close enough result.
-		// float x = xExtent;
-		// if (x < MathUtils.ZERO_TOLERANCE && x >= 0) {
-		// x = MathUtils.ZERO_TOLERANCE;
-		// }
-		// float y = yExtent;
-		// if (y < MathUtils.ZERO_TOLERANCE && y >= 0) {
-		// y = MathUtils.ZERO_TOLERANCE;
-		// }
-		// float z = zExtent;
-		// if (z < MathUtils.ZERO_TOLERANCE && z >= 0) {
-		// z = MathUtils.ZERO_TOLERANCE;
-		// }
-		//
-		// // Special case.
-		// if (Float.isInfinite(x) && Float.isInfinite(y) && Float.isInfinite(z)) {
-		// return true;
-		// }
-		//
-		// final boolean notEntirelyClipped = clip(direction.getX(), -diff.getX() - x, t)
-		// && clip(-direction.getX(), diff.getX() - x, t) && clip(direction.getY(), -diff.getY() - y, t)
-		// && clip(-direction.getY(), diff.getY() - y, t) && clip(direction.getZ(), -diff.getZ() - z, t)
-		// && clip(-direction.getZ(), diff.getZ() - z, t);
-		//
-		// return notEntirelyClipped && (t[0] != 0.0 || t[1] != Float.POSITIVE_INFINITY);
+		// Check for degenerate cases and pad using zero tolerance. Should give close enough result.
+		var x = this.xExtent;
+		if (x < MathUtils.ZERO_TOLERANCE && x >= 0) {
+			x = MathUtils.ZERO_TOLERANCE;
+		}
+		var y = this.yExtent;
+		if (y < MathUtils.ZERO_TOLERANCE && y >= 0) {
+			y = MathUtils.ZERO_TOLERANCE;
+		}
+		var z = this.zExtent;
+		if (z < MathUtils.ZERO_TOLERANCE && z >= 0) {
+			z = MathUtils.ZERO_TOLERANCE;
+		}
+
+		var notEntirelyClipped = //
+		BoundingBox.clip(direction.x, -diff.x - x, t) && //
+		BoundingBox.clip(-direction.x, diff.x - x, t) && //
+		BoundingBox.clip(direction.y, -diff.y - y, t) && //
+		BoundingBox.clip(-direction.y, diff.y - y, t) && //
+		BoundingBox.clip(direction.z, -diff.z - z, t) && //
+		BoundingBox.clip(-direction.z, diff.z - z, t);
+
+		if (notEntirelyClipped && (t[0] != 0.0 || t[1] != Infinity)) {
+			return true;
+		}
+
+		return false;
 	};
 
-	BoundingBox.prototype.intersectsRayWhere = function(ray) {
-		var diff = new Vector3().copy(ray.origin).sub(this.center);
-		var a = diff.dot(diff) - this.radius * this.radius;
-		var a1, discr, root;
-		if (a <= 0.0) {
-			// inside sphere
-			a1 = ray.direction.dot(diff);
-			discr = a1 * a1 - a;
-			root = Math.sqrt(discr);
-			var distances = [root - a1];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
+	BoundingBox.prototype.intersectsRayWhere = function (ray) {
+		if (isNaN(this.center.x) || isNaN(this.center.y) || isNaN(this.center.z)) {
+			return null;
+		}
+
+		var diff = Vector3.sub(ray.origin, this.center, this._compVect1);
+		var direction = ray.direction;
+
+		var t = [0.0, Infinity];
+
+		// Check for degenerate cases and pad using zero tolerance. Should give close enough result.
+		var x = this.xExtent;
+		if (x < MathUtils.ZERO_TOLERANCE && x >= 0) {
+			x = MathUtils.ZERO_TOLERANCE;
+		}
+		var y = this.yExtent;
+		if (y < MathUtils.ZERO_TOLERANCE && y >= 0) {
+			y = MathUtils.ZERO_TOLERANCE;
+		}
+		var z = this.zExtent;
+		if (z < MathUtils.ZERO_TOLERANCE && z >= 0) {
+			z = MathUtils.ZERO_TOLERANCE;
+		}
+
+		var notEntirelyClipped = //
+		BoundingBox.clip(direction.x, -diff.x - x, t) && //
+		BoundingBox.clip(-direction.x, diff.x - x, t) && //
+		BoundingBox.clip(direction.y, -diff.y - y, t) && //
+		BoundingBox.clip(-direction.y, diff.y - y, t) && //
+		BoundingBox.clip(direction.z, -diff.z - z, t) && //
+		BoundingBox.clip(-direction.z, diff.z - z, t);
+
+		if (notEntirelyClipped && (t[0] != 0.0 || t[1] != Infinity)) {
+			if (t[1] > t[0]) {
+				var distances = t;
+				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
+						new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
+				return {
+					"distances" : distances,
+					"points" : points
+				};
+			}
+
+			var distances = [t[0]];
+			var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin)];
 			return {
 				"distances" : distances,
 				"points" : points
 			};
 		}
 
-		a1 = ray.direction.dot(diff);
-		if (a1 >= 0.0) {
-			// No intersection
-			return null;
-		}
+		return null;
+	};
 
-		discr = a1 * a1 - a;
-		if (discr < 0.0) {
-			return null;
-		} else if (discr >= 0.00001) {
-			root = Math.sqrt(discr);
-			var distances = [-a1 - root, -a1 + root];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin),
-					new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)];
-			return {
-				"distances" : distances,
-				"points" : points
-			};
+	BoundingBox.clip = function (denom, numer, t) {
+		// Return value is 'true' if line segment intersects the current test
+		// plane. Otherwise 'false' is returned in which case the line segment
+		// is entirely clipped.
+		if (denom > 0.0) {
+			if (numer > denom * t[1]) {
+				return false;
+			}
+			if (numer > denom * t[0]) {
+				t[0] = numer / denom;
+			}
+			return true;
+		} else if (denom < 0.0) {
+			if (numer > denom * t[0]) {
+				return false;
+			}
+			if (numer > denom * t[1]) {
+				t[1] = numer / denom;
+			}
+			return true;
+		} else {
+			return numer <= 0.0;
 		}
-
-		var distances = [-a1];
-		var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
-		return {
-			"distances" : distances,
-			"points" : points
-		};
 	};
 
 	return BoundingBox;

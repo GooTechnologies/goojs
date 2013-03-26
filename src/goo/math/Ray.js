@@ -14,7 +14,7 @@ function (Vector3, MathUtils) {
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
 	 * true)
-	 *
+	 * 
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
@@ -32,7 +32,7 @@ function (Vector3, MathUtils) {
 
 	/**
 	 * Ray vs triangle implementation.
-	 *
+	 * 
 	 * @param pointA First
 	 * @param pointB
 	 * @param pointC
@@ -41,10 +41,10 @@ function (Vector3, MathUtils) {
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = new Vector3().set(this.origin).subtractLocal(pointA);
-		var edge1 = new Vector3().set(pointB).subtractLocal(pointA);
-		var edge2 = new Vector3().set(pointC).subtractLocal(pointA);
-		var norm = new Vector3().set(edge1).crossLocal(edge2);
+		var diff = new Vector3().set(this.origin).sub(pointA);
+		var edge1 = new Vector3().set(pointB).sub(pointA);
+		var edge2 = new Vector3().set(pointC).sub(pointA);
+		var norm = new Vector3().set(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;
@@ -58,10 +58,10 @@ function (Vector3, MathUtils) {
 			return false;
 		}
 
-		var dirDotDiffxEdge2 = sign * this.direction.dot(diff.cross(edge2, edge2));
+		var dirDotDiffxEdge2 = sign * this.direction.dot(Vector3.cross(diff, edge2, edge2));
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
-			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.crossLocal(diff));
+			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.cross(diff));
 			if (dirDotEdge1xDiff >= 0.0) {
 				if (dirDotDiffxEdge2 + dirDotEdge1xDiff <= dirDotNorm) {
 					var diffDotNorm = -sign * diff.dot(norm);
@@ -75,7 +75,7 @@ function (Vector3, MathUtils) {
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.set(this.origin).addLocal(this.direction.getX() * t, this.direction.getY() * t, this.direction.getZ() * t);
+							locationStore.copy(this.origin).add(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.

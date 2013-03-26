@@ -1,14 +1,6 @@
-define([
-	'goo/renderer/BufferData',
-	'goo/renderer/Util',
-	'goo/renderer/BufferUtils'
-],
+define(['goo/renderer/BufferData', 'goo/renderer/Util', 'goo/renderer/BufferUtils', 'goo/math/Vector3'],
 /** @lends MeshData */
-function(
-	BufferData,
-	Util,
-	BufferUtils
-) {
+function (BufferData, Util, BufferUtils, Vector3) {
 	"use strict";
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
@@ -19,11 +11,12 @@ function(
 	 * @param {Number} vertexCount Number of vertices in buffer
 	 * @param {Number} indexCount Number of indices in buffer
 	 */
-	function MeshData(attributeMap, vertexCount, indexCount) {
+	function MeshData (attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
 		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
+		this.primitiveCounts = [0];
 
 		this.vertexData = null;
 		this.indexData = null;
@@ -41,12 +34,12 @@ function(
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
 
-	MeshData.prototype.rebuildData = function(vertexCount, indexCount, saveOldData) {
+	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
+			for ( var i in this.attributeMap) {
 				var view = this.dataViews[i];
 				if (view) {
 					savedAttributes[i] = view;
@@ -62,7 +55,7 @@ function(
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
+			for ( var i in this.attributeMap) {
 				var saved = savedAttributes[i];
 				if (saved) {
 					var view = this.dataViews[i];
@@ -76,8 +69,8 @@ function(
 		}
 	};
 
-	MeshData.prototype.rebuildVertexData = function(vertexCount) {
-		if (vertexCount !== undefined) {
+	MeshData.prototype.rebuildVertexData = function (vertexCount) {
+		if (!isNaN(vertexCount)) {
 			this.vertexCount = vertexCount;
 			this._vertexCountStore = this.vertexCount;
 		}
@@ -93,7 +86,7 @@ function(
 		}
 	};
 
-	MeshData.prototype.rebuildIndexData = function(indexCount) {
+	MeshData.prototype.rebuildIndexData = function (indexCount) {
 		if (indexCount !== undefined) {
 			this.indexCount = indexCount;
 		}
@@ -103,8 +96,157 @@ function(
 		}
 	};
 
-	MeshData.prototype.setVertexDataUpdated = function() {
+	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
+	};
+
+	MeshData.prototype.getSectionCount = function () {
+		return this.indexLengths ? this.indexLengths.length : 1;
+	};
+
+	MeshData.prototype.getPrimitiveCount = function (section) {
+		if (section >= 0 && section < this.primitiveCounts.length) {
+			return this.primitiveCounts[section];
+		}
+		return 0;
+	};
+
+	MeshData.prototype.getPrimitiveVertices = function (primitiveIndex, section, store) {
+		var count = this.getPrimitiveCount(section);
+		if (primitiveIndex >= count || primitiveIndex < 0) {
+			throw new Error("Invalid primitiveIndex '" + primitiveIndex + "'.  Count is " + count);
+		}
+
+		var mode = this.indexModes[section];
+		var rSize = MeshData.getVertexCount(mode);
+		var result = store;
+		if (!result || result.length < rSize) {
+			result = new Array();
+		}
+
+		var verts = this.getAttributeBuffer(MeshData.POSITION);
+		for ( var i = 0; i < rSize; i++) {
+			if (!result[i]) {
+				result[i] = new Vector3();
+			}
+			if (this.getIndexBuffer()) {
+				// indexed geometry
+				var vert = this.getIndexBuffer()[this.getVertexIndex(primitiveIndex, i, section)];
+				result[i].x = verts[vert * 3 + 0];
+				result[i].y = verts[vert * 3 + 1];
+				result[i].z = verts[vert * 3 + 2];
+			} else {
+				// non-indexed geometry
+				var vert = this.getVertexIndex(primitiveIndex, i, section);
+				result[i].x = verts[vert * 3 + 0];
+				result[i].y = verts[vert * 3 + 1];
+				result[i].z = verts[vert * 3 + 2];
+			}
+		}
+
+		return result;
+	};
+
+	MeshData.prototype.getVertexIndex = function (primitiveIndex, point, section) {
+		var index = 0;
+		// move our offset up to the beginning of our section
+		for ( var i = 0; i < section; i++) {
+			index += this.indexLengths[i];
+		}
+
+		// Ok, now pull primitive index based on indexmode.
+		switch (this.indexModes[section]) {
+			case "Triangles":
+				index += primitiveIndex * 3 + point;
+				break;
+			case "TriangleStrip":
+				// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
+				// if (point < 2 && primitiveIndex % 2 == 1) {
+				// index += primitiveIndex + (point == 0 ? 1 : 0);
+				// } else {
+				index += primitiveIndex + point;
+				// }
+				break;
+			case "TriangleFan":
+				if (point == 0) {
+					index += 0;
+				} else {
+					index += primitiveIndex + point;
+				}
+				break;
+			case "Points":
+				index += primitiveIndex;
+				break;
+			case "Lines":
+				index += primitiveIndex * 2 + point;
+				break;
+			case "LineStrip":
+			case "LineLoop":
+				index += primitiveIndex + point;
+				break;
+			default:
+				MeshData.logger.warning("unimplemented index mode: " + getIndexMode(0));
+				return -1;
+		}
+		return index;
+	};
+
+	MeshData.prototype.getTotalPrimitiveCount = function () {
+		var count = 0;
+		for ( var i = 0, max = this.primitiveCounts.length; i < max; i++) {
+			count += this.primitiveCounts[i];
+		}
+		return count;
+	};
+
+	MeshData.prototype.updatePrimitiveCounts = function () {
+		var maxIndex = this.indexData ? this.indexData.data.length : this.vertexCount;
+		var maxSection = this.getSectionCount();
+		if (this.primitiveCounts.length !== maxSection) {
+			this.primitiveCounts = new Array();
+		}
+		for ( var i = 0; i < maxSection; i++) {
+			var size = this.indexLengths ? this.indexLengths[i] : maxIndex;
+			var count = MeshData.getPrimitiveCount(this.indexModes[i], size);
+			this.primitiveCounts[i] = count;
+		}
+	};
+
+	MeshData.getPrimitiveCount = function (indexMode, size) {
+		switch (indexMode) {
+			case "Triangles":
+				return size / 3;
+			case "TriangleFan":
+			case "TriangleStrip":
+				return size - 2;
+			case "Lines":
+				return size / 2;
+			case "LineStrip":
+				return size - 1;
+			case "LineLoop":
+				return size;
+			case "Points":
+				return size;
+		}
+
+		throw new Error("unimplemented index mode: " + indexMode);
+	};
+
+	MeshData.getVertexCount = function (indexMode) {
+		switch (indexMode) {
+			case "Triangles":
+			case "TriangleFan":
+			case "TriangleStrip":
+				return 3;
+			case "Lines":
+			case "LineStrip":
+			case "LineLoop":
+				return 2;
+			case "Points":
+				return 1;
+		}
+
+		throw new Error("unimplemented index mode: " + indexMode);
 	};
 
 	var ArrayTypes = {
@@ -119,11 +261,11 @@ function(
 		Double : Float64Array
 	};
 
-	MeshData.prototype.generateAttributeData = function() {
+	MeshData.prototype.generateAttributeData = function () {
 		var data = this.vertexData.data;
 		var view;
 		var offset = 0;
-		for (var key in this.attributeMap) {
+		for ( var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = offset;
 			var length = this.vertexCount * attribute.count;
@@ -140,10 +282,10 @@ function(
 		}
 	};
 
-	MeshData.prototype.makeInterleavedData = function() {
+	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
 		var offset = 0;
-		for (var key in this.attributeMap) {
+		for ( var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
 			stride += attribute.count * Util.getByteSize(attribute.type);
@@ -154,7 +296,7 @@ function(
 		newVertexData._dataNeedsRefresh = true;
 
 		var targetView = new DataView(newVertexData.data);
-		for (var key in this.attributeMap) {
+		for ( var key in this.attributeMap) {
 			var view = this.dataViews[key];
 			var attribute = this.attributeMap[key];
 			attribute.stride = stride;
@@ -164,8 +306,8 @@ function(
 
 			var method = this.getDataMethod(attribute.type);
 			var fun = targetView[method];
-			for (var i=0; i<this.vertexCount; i++) {
-				for (var j=0; j<count; j++) {
+			for ( var i = 0; i < this.vertexCount; i++) {
+				for ( var j = 0; j < count; j++) {
 					fun.apply(targetView, [(offset + stride * i + j * size), view[i * count + j], true]);
 				}
 			}
@@ -175,51 +317,50 @@ function(
 	};
 
 	MeshData.prototype.getDataMethod = function (type) {
-		switch (type)
-		{
-		case 'Byte':
-			return 'setInt8';
-		case 'UnsignedByte':
-			return 'setUInt8';
-		case 'Short':
-			return 'setInt16';
-		case 'UnsignedShort':
-			return 'setUInt16';
-		case 'Int':
-			return 'setInt32';
-		case 'HalfFloat':
-			return 'setInt16';
-		case 'Float':
-			return 'setFloat32';
-		case 'Double':
-			return 'setFloat64';
+		switch (type) {
+			case 'Byte':
+				return 'setInt8';
+			case 'UnsignedByte':
+				return 'setUInt8';
+			case 'Short':
+				return 'setInt16';
+			case 'UnsignedShort':
+				return 'setUInt16';
+			case 'Int':
+				return 'setInt32';
+			case 'HalfFloat':
+				return 'setInt16';
+			case 'Float':
+				return 'setFloat32';
+			case 'Double':
+				return 'setFloat64';
 		}
 	};
 
-	MeshData.prototype.getAttributeBuffer = function(attributeName) {
+	MeshData.prototype.getAttributeBuffer = function (attributeName) {
 		return this.dataViews[attributeName];
 	};
 
-	MeshData.prototype.getIndexData = function() {
+	MeshData.prototype.getIndexData = function () {
 		return this.indexData;
 	};
 
-	MeshData.prototype.getIndexBuffer = function() {
+	MeshData.prototype.getIndexBuffer = function () {
 		if (this.indexData !== null) {
 			return this.indexData.data;
 		}
 		return null;
 	};
 
-	MeshData.prototype.getIndexLengths = function() {
+	MeshData.prototype.getIndexLengths = function () {
 		return this.indexLengths;
 	};
 
-	MeshData.prototype.getIndexModes = function() {
+	MeshData.prototype.getIndexModes = function () {
 		return this.indexModes;
 	};
 
-	MeshData.prototype.resetVertexCount = function() {
+	MeshData.prototype.resetVertexCount = function () {
 		this.vertexCount = this.vertexCountStore;
 	};
 
@@ -236,12 +377,13 @@ function(
 
 	/**
 	 * Creates a definition for a vertex attribute
+	 * 
 	 * @param count Tuple size of attribute
 	 * @param type Data type
 	 * @param normalized If data should be normalized (true) or converted direction (false)
 	 * @returns {Object} Attribute definition
 	 */
-	MeshData.createAttribute = function(count, type, normalized) {
+	MeshData.createAttribute = function (count, type, normalized) {
 		return {
 			count : count,
 			type : type,
@@ -264,7 +406,7 @@ function(
 		'JOINTIDS' : MeshData.createAttribute(4, 'Short')
 	};
 
-	function buildMap(types) {
+	function buildMap (types) {
 		var map = {};
 		for ( var i = 0; i < types.length; i++) {
 			var type = types[i];
@@ -277,7 +419,7 @@ function(
 		return map;
 	}
 
-	MeshData.defaultMap = function(types) {
+	MeshData.defaultMap = function (types) {
 		if (types === undefined) {
 			return buildMap(Object.keys(defaults));
 		} else {
