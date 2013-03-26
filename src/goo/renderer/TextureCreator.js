@@ -109,13 +109,13 @@ function (
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL) {
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop) {
 		if (TextureCreator.cache[videoURL] !== undefined) {
 			return TextureCreator.cache[videoURL];
 		}
 
 		var video = document.createElement('video');
-		video.loop = true;
+		video.loop = (typeof (loop) === 'boolean') ? loop : true;
 
 		video.addEventListener('error', function () {
 			console.warn('Couldn\'t load video URL [' + videoURL + ']');

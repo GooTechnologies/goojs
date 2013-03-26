@@ -26,16 +26,21 @@ define([
 		this.elapsedTime = 0.0;
 		this.enabled = properties.enabled || true;
 		this.firstIteration = true;
-		this.initialFunction = properties.initialFunction || function (entity) {
+		this.tolerance = properties.tolerance || 0.01;
+		this.beforeFunction = properties.beforeFunction || function (entity) {
 			return entity.transformComponent.transform.translation.data;
 		};
 		this.updateFunction = properties.updateFunction || function (entity, array) {
 			entity.transformComponent.transform.translation.set(array);
 			entity.transformComponent.setUpdated();
 		};
+		this.afterFunction = properties.afterFunction || function (entity) {
+			console.log(entity);
+		};
 	}
 
 	SplineInterpolator.CATMULL_ROM = new Matrix4x4(-0.5, 1.0, -0.5, 0.0, 1.5, -2.5, 0.0, 1.0, -1.5, 2.0, 0.5, 0.0, 0.5, -0.5, 0.0, 0.0);
+	SplineInterpolator.UNIFORM_CUBIC = new Matrix4x4(-0.16667, 0.5, -0.5, 0.16667, 0.5, -1.0, 0.0, 0.66667, -0.5, 0.5, 0.5, 0.16667, 0.16667, 0.0, 0.0, 0.0);
 
 	/**
 	 * @description Performs one iteration of the script.
@@ -48,18 +53,12 @@ define([
 			this.firstIteration = false;
 
 			try {
-				this.controlPoints.unshift({ 'time' : 0.0, 'value' : this.initialFunction(entity) });
+				this.controlPoints.unshift({ 'time' : 0.0, 'value' : this.beforeFunction(entity) });
 			} catch (e) {
 				this.enabled = false;
 
 				return;
 			}
-		}
-
-		if (this.controlPoint >= this.controlPoints.length) {
-			this.enabled = false;
-
-			return;
 		}
 
 		var ia = clamp(this.controlPoint - 1, 0, this.controlPoints.length - 1);
@@ -71,14 +70,17 @@ define([
 		var t = SplineInterpolator.CATMULL_ROM.applyPre(new Vector4(factor * factor * factor, factor * factor, factor, 1.0));
 
 		var array = new Array(this.controlPoints[0].value.length);
+		var difference = 0.0;
 
-		for (var i = 0; i < this.controlPoints[0].value.length; i++) {
+		for (var i = 0; i < array.length; i++) {
 			array[i] = 0.0;
 			array[i] += this.controlPoints[ia].value[i] * t[0];
 			array[i] += this.controlPoints[ib].value[i] * t[1];
 			array[i] += this.controlPoints[ic].value[i] * t[2];
 			array[i] += this.controlPoints[id].value[i] * t[3];
-		};
+
+			difference += Math.abs(this.controlPoints[this.controlPoints.length - 1].value[i] - array[i]);
+		}
 
 		try {
 			this.updateFunction(entity, array);
@@ -92,6 +94,16 @@ define([
 
 		if (this.elapsedTime >= this.controlPoints[ic].time) {
 			this.controlPoint++;
+		}
+
+		if (this.controlPoint >= this.controlPoints.length - 1 || difference < this.tolerance) {
+			try {
+				this.afterFunction(entity);
+			} catch(e) {}
+
+			this.enabled = false;
+
+			return;
 		}
 	};
 
