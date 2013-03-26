@@ -70,28 +70,17 @@ define([
 	};
 
 	Loader.prototype._getDataFromSuccessfulRequest = function(request, ajaxProperties) {
-
-		var contentType = request.getResponseHeader('Content-Type');
-
-		if(contentType === 'application/json') {
-			var json = JSON.parse(request.responseText);
-			return json;
-		} else if(contentType === 'application/octet-stream') {
-			var match = ajaxProperties.url.match(/\.(glsl|dds|vs|fs|vert|frag)$/);
-
-			if(match !== null) {
-				// If the request url contains a known file extension
-				if (request.responseType === Loader.ARRAY_BUFFER) {
-					return request.response;
-				}
-				return request.responseText;
-			} else {
-				throw new Error('Loader._getDataFromSuccessfulRequest(): No known extension found in `' + ajaxProperties.url + '` for content type `' +  contentType);
+		if (/\.json$/.test(ajaxProperties.url)) {
+			return JSON.parse(request.responseText);
+		} else if (/\.(glsl|dds|vs|fs|vert|frag)$/.test(ajaxProperties.url)) {
+			// If the request url contains a known file extension
+			if (request.responseType === Loader.ARRAY_BUFFER) {
+				return request.response;
 			}
+			return request.responseText;
+		} else {
+			throw new Error('Loader._getDataFromSuccessfulRequest(): No known extension found in `' + ajaxProperties.url + '`');
 		}
-
-		// We couldn't figure out what to do with the data
-		throw new Error('Loader._getDataFromSuccessfulRequest(): Unexpected content type `' +  contentType);
 	};
 
 	/**
