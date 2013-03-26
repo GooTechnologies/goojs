@@ -34,9 +34,7 @@ define([
 			entity.transformComponent.transform.translation.set(array);
 			entity.transformComponent.setUpdated();
 		};
-		this.afterFunction = properties.afterFunction || function (entity) {
-			console.log(entity);
-		};
+		this.afterFunction = properties.afterFunction || function () {};
 	}
 
 	SplineInterpolator.CATMULL_ROM = new Matrix4x4(-0.5, 1.0, -0.5, 0.0, 1.5, -2.5, 0.0, 1.0, -1.5, 2.0, 0.5, 0.0, 0.5, -0.5, 0.0, 0.0);
@@ -68,7 +66,6 @@ define([
 
 		var factor = (this.controlPoints[ic].time > this.controlPoints[ib].time) ? (this.elapsedTime - this.controlPoints[ib].time) / (this.controlPoints[ic].time - this.controlPoints[ib].time) : 0.0;
 		var t = SplineInterpolator.CATMULL_ROM.applyPre(new Vector4(factor * factor * factor, factor * factor, factor, 1.0));
-
 		var array = new Array(this.controlPoints[0].value.length);
 		var difference = 0.0;
 
