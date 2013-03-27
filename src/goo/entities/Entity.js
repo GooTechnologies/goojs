@@ -79,7 +79,7 @@ function () {
 	 * @param type Type of component to remove
 	 */
 	Entity.prototype.clearComponent = function (type) {
-		var component = this[type];
+		var component = this[getTypeAttributeName(type)];
 		var index = this._components.indexOf(component);
 		if (index !== -1) {
 			var component = this._components[index];
