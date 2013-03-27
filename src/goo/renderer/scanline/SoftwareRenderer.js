@@ -2078,14 +2078,16 @@ define([
 		// this minimum value ís on the left or the right side of the pixel, depending on which
 		// way the triangle is leaning.
 
-		// In the case of leaning inwards, the leftmost pixel has the minimum depth on it's right edge.
+		// In the case of leaning inwards, the leftmost pixel has the max depth on it's right edge.
 		// for the rightmost pixel, it is consequently on it's left side.
 
 		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
+		// when rendering the occluders, the maxim
+
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (orientationData[0]) {
-			if (orientationData[1]) {
+		if (orientationData[0]) { // RIGHT SIDE
+			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[3];
@@ -2097,12 +2099,18 @@ define([
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
 
+					// Compensate for the fractional offset on the leftmost pixel.
+					// Regarding the rightZ to be the actual maximum depth.
 					var offset = leftX - realLeftX;
 					var spanLength = realRightX - realLeftX;
+					var t = offset / spanLength;
+					// Linearly interpolate new leftZ
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
+					// Conservative depth, max depth on the edge of the pixel.
 					// Add 0.5 to go to the edge of the pixel.
-					var t = (offset + 0.5) / spanLength;
-
+					spanLength = (rightX - leftX + 1);
+					var t = (0.5) / spanLength;
 					// Linearly interpolate new leftZ
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
@@ -2123,13 +2131,15 @@ define([
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
 
+					// Compensate fractional offset.
 					var offset = realRightX - rightX;
 					var spanLength = realRightX - realLeftX;
+					var t = offset / spanLength;
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					// Add 0.5 to go to the edge of the pixel.
-					var t = (offset + 0.5) / spanLength;
-
-					// Linearly interpolate new rightZ
+					spanLength = rightX - leftX + 1;
+					var t = 0.5 / spanLength;
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					// Draw the span of pixels.
@@ -2139,7 +2149,7 @@ define([
 				}
 			}
 		} else { // LEFT ORIENTED
-			if (orientationData[1]) {
+			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[2];
@@ -2152,11 +2162,18 @@ define([
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
 
+					// Compensate for the fractional offset on the leftmost pixel.
+					// Regarding the rightZ to be the actual maximum depth.
 					var offset = leftX - realLeftX;
 					var spanLength = realRightX - realLeftX;
-					// Add 0.5 to go to the edge of the pixel.
-					var t = (offset + 0.5) / spanLength;
+					var t = offset / spanLength;
+					// Linearly interpolate new leftZ
+					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
+					// Conservative depth, max depth on the edge of the pixel.
+					// Add 0.5 to go to the edge of the pixel.
+					spanLength = (rightX - leftX + 1);
+					var t = (0.5) / spanLength;
 					// Linearly interpolate new leftZ
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
@@ -2178,12 +2195,15 @@ define([
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
 
+					// Compensate fractional offset.
 					var offset = realRightX - rightX;
 					var spanLength = realRightX - realLeftX;
-					// Add 0.5 to go to the edge of the pixel.
-					var t = (offset + 0.5) / spanLength;
+					var t = offset / spanLength;
+					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
-					// Linearly interpolate new rightZ
+					// Add 0.5 to go to the edge of the pixel.
+					spanLength = rightX - leftX + 1;
+					var t = 0.5 / spanLength;
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					// Draw the span of pixels.
@@ -2283,7 +2303,7 @@ define([
 
 		// 99% COPY PASTE FROM _fillPixels()! 
 
-		if (rightX < 0 || leftX > this._clipX) {
+		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return true; // Nothing to draw here. it is occluded
 		}
 
@@ -2333,11 +2353,20 @@ define([
 	*/
 	SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
 
-		if (rightX < 0 || leftX > this._clipX) {
+		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return false; // Nothing to draw here.
 		}
 
+		if (leftZ < 0 || leftZ > 1.0000001) {
+			console.error("leftz : ", leftZ);
+		}
+
+		if (rightZ < 0 || rightZ > 1.0000001) {
+			console.error("rightZ : ", rightZ);
+		}
+
 		// Horizontal clipping
+		// TODO : Implement a clippping method to clip hoorizontally earlier in the pipeline.
 		var t;
 		// If the triangle's scanline is clipped, the bounding z-values have to be interpolated
 		// to the new startpoints.
@@ -2350,6 +2379,7 @@ define([
 		// TODO : Revise the span of pixels here... if the +1 is needed for the correct width..
 		// as it is a closed interval from left to right it is probably needed. Maybe do the addition to the parameter before
 		// and then render the open interval [leftx, rightx[.
+		// But then the depthIncrement would have to use a - 1 in that interval.
 		var diff = rightX - this._clipX + 1;
 		if (diff > 0) {
 			t = diff / (rightX - leftX + 1);
@@ -2374,7 +2404,7 @@ define([
 			depth += depthIncrement;
 		}
 
-		
+		/*
 		var lastDepth = depth - depthIncrement;
 		if ( Math.abs(lastDepth - rightZ) >= 0.0000000001 && rightX - leftX >= 0) {
 			console.error("Wrong depth interpolation!");
@@ -2382,7 +2412,7 @@ define([
 			console.log("rightZ", rightZ);
 			console.log("depthIncrement", depthIncrement);
 		}
-		
+		*/
 	};
 
 	/**
