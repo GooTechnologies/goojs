@@ -53,6 +53,8 @@ require([
 	var resourcePath = '../resources/new_format/skeleton/';
 	var loader = new BundleLoader({ rootPath: resourcePath });
 
+	var floorMaterial;
+
 	function init() {
 		var goo = createWorld();
 		var managers = [];
@@ -132,15 +134,47 @@ require([
 		});
 		materialLoader.load('materials/desert.mat').then(function(material) {
 			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
-
+			floorMaterial = material;
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 			entity.meshRendererComponent.materials.push(material);
 			entity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
 			entity.addToWorld();
 		});
 
+
+
 		// Add user interaction
 		var walking = true;
+
+
+		var buttons = document.querySelectorAll('.button');
+
+		var actions = [
+			function (event) {
+				for (var i = 0; i < managers.length; i++) {
+					var animationManager = managers[i];
+					delayTransition(animationManager, walking ? "run" : "walk");
+				}
+				walking = !walking;
+
+				event.stopPropagation();
+			},
+			function (event) {
+				for (var i = 0; i < managers.length; i++) {
+					var animationManager = managers[i];
+					animationManager.findAnimationLayer("punchLayer").setCurrentStateByName("punch_right", true);
+				}
+
+				event.stopPropagation();
+			}
+		];
+
+		for (var i = 0; i < buttons.length; i++) {
+			buttons[i].addEventListener('mousedown', actions[i]);
+			buttons[i].addEventListener('touchstart', actions[i]);
+		}
+
+
 		document.addEventListener('keydown', function (e) {
 			e = window.event || e;
 			var code = e.charCode || e.keyCode;
@@ -201,6 +235,11 @@ require([
 	function delayTransition(manager, anim) {
 		setTimeout(function() {
 			manager.getBaseAnimationLayer().doTransition(anim);
+
+			setTimeout(function () {
+				floorMaterial.uniforms.moveX = (anim === "run") ? 2.0 : 0.65;
+			}, 600);
+
 		}, Math.round(1000*Math.random()));
 	}
 

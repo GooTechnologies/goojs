@@ -93,7 +93,7 @@ define([
 			this.controlPoint++;
 		}
 
-		if (this.controlPoint >= this.controlPoints.length - 1 || difference < this.tolerance) {
+		if (this.controlPoint >= this.controlPoints.length || difference < this.tolerance) {
 			try {
 				this.afterFunction(entity);
 			} catch(e) {}
