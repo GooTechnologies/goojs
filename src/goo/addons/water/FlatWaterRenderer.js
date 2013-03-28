@@ -252,9 +252,9 @@ function (
 			sunColor: [
 				1.0, 1.0, 0.5
 			],
-			reflectionMultiplier: [
-				1.0, 1.0, 1.0, 1.0
-			],
+			// reflectionMultiplier: [
+				// 1.0, 1.0, 1.0, 1.0
+			// ],
 			sunShininess: 100.0,
 			sunSpecPower: 4.0,
 			fogStart: 0.0,
@@ -266,7 +266,8 @@ function (
 			normalMultiplier: 3.0,
 			fresnelMultiplier: 1.0,
 			waterScale: 5.0,
-			doFog: true
+			doFog: true,
+			resolution: Shader.RESOLUTION
 		},
 		vshader: [ //
 			'attribute vec3 vertexPosition;', //
@@ -291,7 +292,6 @@ function (
 
 			'	mat3 normalMatrix = mat3(worldMatrix);',
 
-			// ' vec3 n = normalize(normalMatrix * vertexNormal);',
 			'	vec3 n = normalize(normalMatrix * vec3(vertexNormal.x, vertexNormal.y, -vertexNormal.z));',
 			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
@@ -331,7 +331,8 @@ function (
 			'uniform float normalMultiplier;',
 			'uniform float fresnelMultiplier;',
 			'uniform bool doFog;',
-			'uniform vec4 reflectionMultiplier;',
+			// 'uniform vec4 reflectionMultiplier;',
+			'uniform vec2 resolution;',
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -380,6 +381,7 @@ function (
 
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
+			'	projCoord.y -= 1.0 / resolution.y;',
 
 			'#ifdef REFRACTION',
 			'	float depthUnpack = unpackDepth(texture2D(depthmap, projCoord));',
@@ -416,7 +418,7 @@ function (
 			'		vec3 specular = vec3(0.0);',
 			// '	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
 			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
-			'		reflectionColor *= reflectionMultiplier;',
+			// '		reflectionColor *= reflectionMultiplier;',
 
 			'		vec4 endColor = waterColorX;',
 			'#ifdef REFRACTION',
