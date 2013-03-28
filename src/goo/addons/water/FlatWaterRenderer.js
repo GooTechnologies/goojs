@@ -389,7 +389,7 @@ function (
 			'	projCoordRefr += (normalVector.xy * distortionMultiplier) * (depth2);',
 			'	projCoordRefr = clamp(projCoordRefr, 0.001, 0.999);',
 			'	depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
-			'	float depth = clamp(depthUnpack * 80.0, 0.5, 1.0);',
+			'	float depth = clamp(depthUnpack * 40.0, 0.8, 1.0);',
 			'#else',
 			// '	projCoord += (normalVector.xy * distortionMultiplier);',
 			'#endif',
