@@ -21,7 +21,7 @@ require([
 	'goo/math/Ray',
 	'goo/entities/systems/PickingSystem',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/picking/PrimtivePickLogic'
+	'goo/picking/PrimitivePickLogic'
 ], function (
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -38,7 +38,7 @@ require([
 	Ray,
 	PickingSystem,
 	ShaderLib,
-	PrimtivePickLogic
+	PrimitivePickLogic
 ) {
 	"use strict";
 
@@ -72,9 +72,9 @@ require([
 		cameraEntity.addToWorld();
 
 		// Add PickingSystem
-		var picking = new PickingSystem();
-		// comment out to do just bounding picks
-		picking.pickLogic = new PrimtivePickLogic();
+		var picking = new PickingSystem({
+			pickLogic: new PrimitivePickLogic()
+		});
 		goo.world.setSystem(picking);
 		picking.onPick = function(pickedList) {
 			if (pickedList && pickedList.length) {

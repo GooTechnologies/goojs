@@ -121,7 +121,7 @@ function (BufferData, Util, BufferUtils, Vector3) {
 		var rSize = MeshData.getVertexCount(mode);
 		var result = store;
 		if (!result || result.length < rSize) {
-			result = new Array();
+			result = [];
 		}
 
 		var verts = this.getAttributeBuffer(MeshData.POSITION);
@@ -168,7 +168,7 @@ function (BufferData, Util, BufferUtils, Vector3) {
 				// }
 				break;
 			case "TriangleFan":
-				if (point == 0) {
+				if (point === 0) {
 					index += 0;
 				} else {
 					index += primitiveIndex + point;
@@ -185,7 +185,7 @@ function (BufferData, Util, BufferUtils, Vector3) {
 				index += primitiveIndex + point;
 				break;
 			default:
-				MeshData.logger.warning("unimplemented index mode: " + getIndexMode(0));
+				MeshData.logger.warning("unimplemented index mode: " + this.getIndexMode(0));
 				return -1;
 		}
 		return index;
@@ -203,7 +203,7 @@ function (BufferData, Util, BufferUtils, Vector3) {
 		var maxIndex = this.indexData ? this.indexData.data.length : this.vertexCount;
 		var maxSection = this.getSectionCount();
 		if (this.primitiveCounts.length !== maxSection) {
-			this.primitiveCounts = new Array();
+			this.primitiveCounts = [];
 		}
 		for ( var i = 0; i < maxSection; i++) {
 			var size = this.indexLengths ? this.indexLengths[i] : maxIndex;
@@ -377,7 +377,7 @@ function (BufferData, Util, BufferUtils, Vector3) {
 
 	/**
 	 * Creates a definition for a vertex attribute
-	 * 
+	 *
 	 * @param count Tuple size of attribute
 	 * @param type Data type
 	 * @param normalized If data should be normalized (true) or converted direction (false)

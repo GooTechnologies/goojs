@@ -6,19 +6,32 @@ function (System) {
 	/**
 	 * @class Helps gather pickable entities
 	 */
-	function PickingSystem () {
+	function PickingSystem (settings) {
 		System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);
 		this.passive = true;
 		this.pickRay = null;
 		this.onPick = null;
-		this.pickLogic = null;
+
+		settings = settings || {};
+
+		this.setPickLogic(settings.pickLogic || null);
 	}
 
 	PickingSystem.prototype = Object.create(System.prototype);
 
+	PickingSystem.prototype.setPickLogic = function (pickLogic) {
+		this.pickLogic = pickLogic;
+		if (pickLogic) {
+			if (this.interests.indexOf('MeshDataComponent') === -1) {
+				this.interests.push('MeshDataComponent');
+			}
+		}
+	};
+
 	PickingSystem.prototype.inserted = function (entity) {
 		if (this.pickLogic) {
 			this.pickLogic.added(entity);
+			// console.log('----------- added: ', entity);
 		}
 	};
 

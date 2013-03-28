@@ -20,6 +20,7 @@ function (BoundingBox, BoundingSphere, Vector3) {
 	BoundingTree.prototype.construct = function (entity) {
 		// check entity has required components
 		if (!entity.meshRendererComponent || !entity.meshDataComponent || !entity.transformComponent) {
+			console.warn("Entity missing required components for boundingtree construction: ", entity);
 			return;
 		}
 
@@ -90,6 +91,8 @@ function (BoundingBox, BoundingSphere, Vector3) {
 	};
 
 	BoundingTree.prototype.findPick = function (ray, entity, store) {
+		// console.log('-------- testing: ', entity);
+
 		var result = store;
 		if (!result) {
 			result = {};
