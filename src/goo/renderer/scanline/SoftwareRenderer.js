@@ -1959,7 +1959,7 @@ define([
 
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) {
-			if (orientationData[1]) {
+			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[3];
@@ -1971,10 +1971,26 @@ define([
 					var leftZ = edgeData[5];
 					var rightZ = edgeData[4];
 
+					// Extrapolate the new depth for the new conservative x-coordinates.
+					// this is needed to not create a non-conservative depth over the new larger span.
+					// TODO : Would be good to get the if case removed. This is needed at the moment because
+					// division by zero occurs in the creation of the slope variable.
+					var dif = rightX - leftX;
+					if (dif > 1) {
+						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
+						rightZ = leftZ + (rightX - realLeftX) * slope;
+						leftZ = leftZ + (leftX - realLeftX) * slope;
+						// The z value being interpolated after this can become negative from the extrapolation.
+						// Using math.max to set the value to zero if it is negative.
+						rightZ = Math.max(0.0, rightZ);
+						leftZ = Math.max(0.0, leftZ);
+					}
+
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
-					// The leftZ is the absolute min depth
+					// The leftZ is the absolute min depthx
 					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
+
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
 						return false;
@@ -1993,6 +2009,19 @@ define([
 
 					var leftZ = edgeData[5];
 					var rightZ = edgeData[4];
+
+					// Extrapolate the new depth for the new conservative x-coordinates.
+					// this is needed to not create a non-conservative depth over the new larger span.
+					// TODO : Would be good to get the if case removed. This is needed at the moment because
+					// division by zero occurs in the creation of the slope variable.
+					var dif = rightX - leftX;
+					if (dif > 1) {
+						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
+						rightZ = leftZ + (rightX - realLeftX) * slope;
+						leftZ = leftZ + (leftX - realLeftX) * slope;
+						leftZ = Math.max(0.0, leftZ);
+						rightZ = Math.max(0.0, rightZ);
+					}
 
 					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
@@ -2005,7 +2034,7 @@ define([
 				}
 			}
 		} else { // LEFT ORIENTED
-			if (orientationData[1]) {
+			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
 					var realLeftX = edgeData[2];
@@ -2016,6 +2045,19 @@ define([
 
 					var leftZ = edgeData[4];
 					var rightZ = edgeData[5];
+
+					// Extrapolate the new depth for the new conservative x-coordinates.
+					// this is needed to not create a non-conservative depth over the new larger span.
+					// TODO : Would be good to get the if case removed. This is needed at the moment because
+					// division by zero occurs in the creation of the slope variable.
+					var dif = rightX - leftX;
+					if (dif > 1) {
+						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
+						rightZ = leftZ + (rightX - realLeftX) * slope;
+						leftZ = leftZ + (leftX - realLeftX) * slope;
+						rightZ = Math.max(0.0, rightZ);
+						leftZ = Math.max(0.0, leftZ);
+					}
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
@@ -2039,6 +2081,19 @@ define([
 
 					var leftZ = edgeData[4];
 					var rightZ = edgeData[5];
+
+					// Extrapolate the new depth for the new conservative x-coordinates.
+					// this is needed to not create a non-conservative depth over the new larger span.
+					// TODO : Would be good to get the if case removed. This is needed at the moment because
+					// division by zero occurs in the creation of the slope variable.
+					var dif = rightX - leftX;
+					if (dif > 1) {
+						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
+						rightZ = leftZ + (rightX - realLeftX) * slope;
+						leftZ = leftZ + (leftX - realLeftX) * slope;
+						rightZ = Math.max(0.0, rightZ);
+						leftZ = Math.max(0.0, leftZ);
+					}
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
@@ -2086,7 +2141,7 @@ define([
 		// when rendering the occluders, the maxim
 
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (orientationData[0]) { // RIGHT SIDE
+		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
@@ -2148,7 +2203,7 @@ define([
 					this._updateEdgeDataToNextLine(edgeData);
 				}
 			}
-		} else { // LEFT ORIENTED
+		} else { // LONG EDGE IS ON THE LEFT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
@@ -2305,6 +2360,14 @@ define([
 
 		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return true; // Nothing to draw here. it is occluded
+		}
+
+		if (leftZ < 0 || leftZ > 1.0000001) {
+			console.error("leftZ : ", leftZ);
+		}
+
+		if (rightZ < 0 || rightZ > 1.0000001) {
+			console.error("rightZ : ", rightZ);
 		}
 
 		// Horizontal clipping

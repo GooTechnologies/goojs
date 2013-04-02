@@ -1,4 +1,3 @@
-
 require({
     baseUrl : './',
     paths : {
@@ -201,11 +200,12 @@ require(
 			addBoundingBoxToEntity(goo.world, translation, torus);
 
 			translation.x += 10;
-
+			translation.z -= 5;
 			var b1 = createColoredBox(goo.world, translation, [0, 1, 0], 4, 7, 2);
 			addBoundingBoxToEntity(goo.world, translation, b1);
 
 			translation.x += 10;
+			translation.z -= 5;
 			var b2 = createColoredBox(goo.world, translation, [1, 0, 0], 4, 3, 5);
 			addBoundingBoxToEntity(goo.world, translation, b2);
 
