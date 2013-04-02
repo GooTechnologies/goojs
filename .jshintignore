@@ -1,2 +1,3 @@
 test/testacular.conf.js
 test/testacular-min.conf.js
+tools/jsdoc-template/**/*.*
