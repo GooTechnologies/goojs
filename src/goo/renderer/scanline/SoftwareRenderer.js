@@ -1988,7 +1988,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depthx
-					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					var t = 0.5 / (dif + 1); // Using the larger span.
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 
@@ -2023,7 +2023,7 @@ define([
 						rightZ = Math.max(0.0, rightZ);
 					}
 
-					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					var t = 0.5 / (dif + 1); // Using the larger span.
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
@@ -2061,7 +2061,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
-					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					var t = 0.5 / (dif + 1); // Using the larger span.
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
@@ -2097,7 +2097,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
-					var t = 0.5 / (rightX - leftX + 1); // Using the larger span.
+					var t = 0.5 / (dif + 1); // Using the larger span.
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
