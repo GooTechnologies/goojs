@@ -77,7 +77,10 @@ convertTextures = (material, textures) ->
 		material.textures.push "textures/#{match[0]}.tex"
 		infile = path.resolve(inputDir, texture.TextureSource)
 		outfile = path.resolve(basePath, newtex.url)
-		copyFile infile, outfile
+		try
+			copyFile infile, outfile
+		catch e
+			console.log e
 
 convertSkeletons = (skeletons) ->
 	for skeleton in skeletons
