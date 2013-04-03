@@ -17,9 +17,9 @@ require([
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
 	'goo/math/Vector3',
-	'goo/renderer/shaders/ShaderFragments',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderFragment',
+	'goo/scripts/OrbitCamControlScript'
+	//'goo/renderer/shaders/ShaderLib'
 ], function (
 	MeshData,
 	Material,
@@ -32,9 +32,9 @@ require([
 	Camera,
 	CameraComponent,
 	Vector3,
-	ShaderFragments,
-	OrbitCamControlScript,
-	ShaderLib
+	ShaderFragment,
+	OrbitCamControlScript
+	//ShaderLib
 ) {
 	"use strict";
 
@@ -72,7 +72,7 @@ require([
 		cameraEntity.setComponent(scripts);
 	}
 
-	function createFloor(goo) {
+	/*function createFloor(goo) {
 		var meshData = ShapeCreator.createBox(1000, 1, 1000, 10, 10);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.transformComponent.transform.translation.y = -50;
@@ -87,7 +87,7 @@ require([
 		entity.meshRendererComponent.materials.push(material);
 
 		return entity;
-	}
+	}*/
 
 	function createBoxEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10);

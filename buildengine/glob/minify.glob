@@ -13,4 +13,5 @@
 #/goo/entities/World.js
 #/goo/entities/systems/System.js
 #/goo/entities/components/CameraComponent.js
-/goo/!(lib)/**/*.js
+/goo/util/**/*.js
+/goo/animation/**/*.js

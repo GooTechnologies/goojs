@@ -25,7 +25,7 @@ require([
 	'goo/math/Vector4',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/WASDControlScript',
-	'goo/renderer/shaders/ShaderFragments',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/pass/DepthPass',
 	'goo/renderer/pass/DoGPass',
 	'goo/renderer/shaders/ShaderLib'
@@ -51,7 +51,7 @@ function (
 	Vector4,
 	MouseLookControlScript,
 	WASDControlScript,
-	ShaderFragments,
+	ShaderFragment,
 	DepthPass,
 	DoGPass,
 	ShaderLib
@@ -83,7 +83,7 @@ function (
 			boxEntity.addToWorld();
 
 			// Scene render
-			var unpackDepth = {
+			/*var unpackDepth = {
 				attributes : {
 					vertexPosition : MeshData.POSITION,
 					vertexUV0 : MeshData.TEXCOORD0
@@ -126,7 +126,7 @@ function (
 
 				'varying vec2 texCoord0;',//
 
-				ShaderFragments.methods.unpackDepth,//
+				ShaderFragment.methods.unpackDepth,//
 
 				'void main(void)',//
 				'{',//
@@ -146,12 +146,12 @@ function (
 				' gl_FragColor = mix(diffuseCol, blurCol, depth);',//
 				'}'
 				].join('\n')
-			};
+			};*/
 
 			var renderPass = new RenderPass(goo.world.getSystem('RenderSystem').renderList);
 			renderPass.clearColor = new Vector4(0.1, 0.1, 0.1, 0.0);
 
-			var depthPass = new DepthPass(goo.world.getSystem('RenderSystem').renderList, unpackDepth);
+			//var depthPass = new DepthPass(goo.world.getSystem('RenderSystem').renderList, unpackDepth);
 
 			var dogPass = new DoGPass({'threshold' : 0.005, 'sigma' : 0.8, 'width' : 1024, 'height' : 1024});
 

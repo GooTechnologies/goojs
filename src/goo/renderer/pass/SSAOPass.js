@@ -1,11 +1,11 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/MeshData', 'goo/renderer/Shader',
-		'goo/renderer/shaders/ShaderFragments', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/pass/BlurPass',
+		'goo/renderer/shaders/ShaderFragment', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/pass/BlurPass',
 		'goo/renderer/shaders/ShaderLib'],
 	function (
 	Material,
-	RenderTarget, Util, MeshData, Shader, ShaderFragments, RenderPass,
+	RenderTarget, Util, MeshData, Shader, ShaderFragment, RenderPass,
 		FullscreenPass, BlurPass, ShaderLib) {
 		"use strict";
 
@@ -78,7 +78,7 @@ define([
 //				'uniform float nearPlane;',//
 //				'uniform float farPlane;',//
 
-				ShaderFragments.methods.packDepth,//
+				ShaderFragment.methods.packDepth,//
 
 				'void main(void) {',//
 				'	gl_FragColor = packDepth(gl_FragCoord.z);',//

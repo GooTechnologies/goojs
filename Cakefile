@@ -5,15 +5,19 @@ convert = require('./converter/convert').convert
 	
 task 'minify', 'minify try', (options) ->
 
-	console.log 'minifying'
-	fileIn = 'src'
-	fileOut = 'minified/goo.js'
-	includefile = 'buildengine/glob/minify.glob'
+	if options.arguments.length == 2
+		fileIn = options.arguments[0]
+		fileOut = options.arguments[1]
 
-	minify(fileIn, fileOut, true, includefile)	
-
-option '-i', '--input [FILE]', 'Entrypoint file'
-option '-o', '--output [FILE]', 'Output file'
+		console.log "minifying #{fileIn}"
+		minify(fileIn, fileOut, true);
+	else 	
+		console.log 'minifying'
+		fileIn = 'src'
+		fileOut = 'minified/goo.js'
+		includefile = 'buildengine/glob/minify.glob'
+	
+		minify(fileIn, fileOut, true, includefile)	
 
 task 'minifysmall', 'one minify', (options) ->
 	console.log "minifying #{options.input}"

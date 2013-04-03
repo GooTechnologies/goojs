@@ -30,7 +30,7 @@ require(['goo/entities/World',
 		'goo/entities/components/CameraComponent',
 		'goo/math/Vector3',
 		'goo/scripts/BasicControlScript',
-		'goo/renderer/shaders/ShaderFragments',
+		'goo/renderer/shaders/ShaderFragment',
 		'goo/scripts/OrbitCamControlScript',
 		'goo/renderer/shaders/ShaderLib',
 		'goo/util/TangentGenerator',
@@ -63,7 +63,7 @@ require(['goo/entities/World',
 		CameraComponent,
 		Vector3,
 		BasicControlScript,
-		ShaderFragments,
+		ShaderFragment,
 		OrbitCamControlScript,
 		ShaderLib,
 		TangentGenerator,
@@ -125,7 +125,7 @@ require(['goo/entities/World',
 		entity.setComponent(new ScriptComponent(script));
 	}
 
-	function createFloor(goo, w, h, shader) {
+	/*function createFloor(goo, w, h, shader) {
 		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Floor";
@@ -139,7 +139,7 @@ require(['goo/entities/World',
 		entity.meshRendererComponent.materials.push(material);
 
 		return entity;
-	}
+	}*/
 
 	function createLightFixture(goo, w, h, shader) {
 		var meshData = ShapeCreator.createSphere(8, 8, 0.5);
@@ -153,7 +153,7 @@ require(['goo/entities/World',
 
 		return entity;
 	}
-	
+
 	function createSphereEntity(goo) {
 		var meshData = ShapeCreator.createSphere(32, 32, 10); //, Sphere.TextureModes.Projected
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);

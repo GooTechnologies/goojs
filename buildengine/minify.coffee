@@ -1,9 +1,13 @@
 fs = require('fs')
 path = require('path')
+mkdirp = require('mkdirp')
 
 # Minifying files
 
 doClosure = (fileIn, fileOut, deleteAfter) ->
+	dir = path.dirname(path.resolve(fileOut))
+	mkdirp.sync dir
+	
 	command = 'java -jar buildengine/compiler.jar ' + 
 		'--compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT ' +
 		#'--jscomp_warning=checkTypes ' +
@@ -13,7 +17,7 @@ doClosure = (fileIn, fileOut, deleteAfter) ->
 		
 	exec = require('child_process').exec;
 	exec command,
-		maxBuffer: 5*1024*1024
+		maxBuffer: 100*1024*1024
 	, (error, stdout, stderr) ->
 		if deleteAfter
 			fs.unlink fileIn

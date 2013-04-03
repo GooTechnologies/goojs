@@ -1,14 +1,14 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragments',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/entities/World'
 ],
 	/** @lends ShaderLib */
 	function (
 		MeshData,
 		Shader,
-		ShaderFragments,
+		ShaderFragment,
 		World
 		) {
 	"use strict";
@@ -1964,7 +1964,7 @@ define([
 
 			'uniform float farPlane;',//
 
-			ShaderFragments.methods.packDepth,//
+			ShaderFragment.methods.packDepth,//
 
 			'varying vec4 vPosition;',//
 

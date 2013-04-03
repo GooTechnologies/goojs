@@ -9,7 +9,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderFragments'
+	'goo/renderer/shaders/ShaderFragment'
 ],
 /** @lends ProjectedGridWaterRenderer */
 function (
@@ -23,7 +23,7 @@ function (
 	Material,
 	TextureCreator,
 	ShaderLib,
-	ShaderFragments
+	ShaderFragment
 ) {
 	"use strict";
 
@@ -287,7 +287,7 @@ function (
 			'varying vec3 worldPos;',
 			'varying vec3 normal;',
 
-			// ShaderFragments.features.noise3d,
+			// ShaderFragment.features.noise3d,
 
 			'void main(void) {', //
 			'	vec4 pointTop = mix(intersectTopLeft, intersectTopRight, vertexUV0.x);',
@@ -496,7 +496,7 @@ function (
 		'varying vec4 worldPos;',
 		'varying vec4 viewCoords;',
 
-		ShaderFragments.noise3d,
+		ShaderFragment.noise3d,
 
 		'vec4 getNoise(sampler2D map, vec2 uv) {',
 		'    vec2 uv0 = (uv/223.0)+vec2(time/17.0, time/29.0);',

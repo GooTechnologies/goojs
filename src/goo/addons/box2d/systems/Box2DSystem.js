@@ -1,5 +1,5 @@
 define([
-	'goo/lib/box2d/box2d.js',
+	'goo/lib/box2d/box2d',
 	'goo/entities/systems/System'
 ],
 /** @lends Box2DSystem */

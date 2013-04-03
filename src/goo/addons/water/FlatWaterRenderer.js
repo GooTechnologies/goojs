@@ -10,7 +10,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/EventHandler',
-	'goo/renderer/shaders/ShaderFragments'
+	'goo/renderer/shaders/ShaderFragment'
 ],
 /** @lends FlatWaterRenderer */
 function (
@@ -25,7 +25,7 @@ function (
 	TextureCreator,
 	ShaderLib,
 	EventHandler,
-	ShaderFragments
+	ShaderFragment
 ) {
 	"use strict";
 
@@ -358,7 +358,7 @@ function (
 			'    specularColor += pow(direction, shiny) * spec * sunColor;',
 			'}',
 
-			ShaderFragments.methods.unpackDepth,//
+			ShaderFragment.methods.unpackDepth,//
 
 			'void main(void)',//
 			'{',//
@@ -468,7 +468,7 @@ function (
 
 			'uniform float farPlane;',//
 
-			ShaderFragments.methods.packDepth,//
+			ShaderFragment.methods.packDepth,//
 
 			'varying vec4 vPosition;',//
 
