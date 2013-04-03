@@ -14,17 +14,17 @@ function(
 
 		// this.mass = settings.mass !== undefined ? settings.mass : 0;
 
-		this.sounds = [];
+		this.sounds = {};
 	}
 
 	SoundManager2Component.prototype = Object.create(Component.prototype);
 
-	SoundManager2Component.prototype.playSound = function(sound) {
-		this.sounds[sound].play();
+	SoundManager2Component.prototype.addSound = function(soundName, settings) {
+		this.sounds[soundName] = settings;
 	};
 
-	SoundManager2Component.prototype.playSound = function(sound) {
-		this.sounds[sound].play();
+	SoundManager2Component.prototype.playSound = function(soundName) {
+		this.sounds[soundName].soundObject.play();
 	};
 
 	return SoundManager2Component;

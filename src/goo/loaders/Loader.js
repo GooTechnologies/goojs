@@ -63,6 +63,7 @@ define([
 		})
 		// Bubble an error
 		.then(null, function(reason) {
+			console.error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`.\n Reason: ' + reason);
 			throw new Error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`.\n Reason: ' + reason);
 		});
 

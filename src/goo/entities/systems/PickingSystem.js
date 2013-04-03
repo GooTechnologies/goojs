@@ -42,10 +42,10 @@ function (System) {
 	};
 
 	PickingSystem.prototype.process = function (entities) {
-		var pickList = [];
 		if (!this.pickRay || !this.onPick) {
 			return;
 		}
+		var pickList = [];
 		for ( var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var meshRendererComponent = entity.meshRendererComponent;
@@ -73,6 +73,10 @@ function (System) {
 				}
 			}
 		}
+
+		pickList.sort(function (a, b) {
+			return a.intersection.distances[0] - b.intersection.distances[0];
+		});
 
 		this.onPick(pickList);
 	};

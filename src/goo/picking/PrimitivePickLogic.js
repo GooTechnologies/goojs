@@ -8,7 +8,7 @@ function (BoundingTree) {
 
 	PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 		// look in pick tree for intersection
-		var tree = entity.__boundingTree;
+		var tree = entity.meshDataComponent.meshData.__boundingTree;
 		if (!tree) {
 			return null;
 		}
@@ -18,15 +18,15 @@ function (BoundingTree) {
 
 	PrimitivePickLogic.prototype.added = function (entity) {
 		// build bounding tree
-		entity.__boundingTree = new BoundingTree();
+		entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
 
 		// calculate bounding tree.
-		entity.__boundingTree.construct(entity);
+		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
 	};
 
 	PrimitivePickLogic.prototype.removed = function (entity) {
 		// clear bounding tree
-		entity.__boundingTree = null;
+		entity.meshDataComponent.meshData.__boundingTree = null;
 	};
 
 	return PrimitivePickLogic;

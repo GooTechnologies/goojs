@@ -95,7 +95,7 @@ function (
 		}
 
 		// Create a texture
-		var texture = new Texture();
+		var texture = new Texture(null, settings);
 		TextureCreator.cache[imageURL] = texture;
 
 		// Load the actual image

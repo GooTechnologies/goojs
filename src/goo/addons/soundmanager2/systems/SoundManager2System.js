@@ -24,7 +24,7 @@ function(
 		soundManager.bind(this).setup({
 			url: 'swf',
 			onready: function() {
-				this.isRead = true;
+				this.isReady = true;
 			},
 			ontimeout: function() {
 				console.warn('Failed to load soundmanager');
@@ -36,8 +36,12 @@ function(
 
 	SoundManager2System.prototype.inserted = function(entity) {
 		var soundManagerComponent = entity.soundManager2Component;
-		var transformComponent = entity.transformComponent;
 
+		for (var i = 0; i < soundManagerComponent.sounds.length; i++) {
+			var sound = soundManagerComponent.sounds[i];
+			var soundObject = soundManager.createSound(sound);
+			sound.soundObject = soundObject;
+		}
 	};
 
 	SoundManager2System.prototype.deleted = function(entity) {
