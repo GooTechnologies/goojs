@@ -226,6 +226,7 @@ function(
 			if (materials.length === 0) {
 				// Add default material.
 				mrc.materials.push(new Material.createMaterial(ShaderLib.simpleLit, 'DefaultEntityLoaderMaterial'));
+				console.log("No material detected, using ShaderLib.simpleLit as default.");
 			}
 			return mrc;
 		});
