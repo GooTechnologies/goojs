@@ -22,7 +22,9 @@ require(
 		'goo/entities/components/OccluderComponent',
 		'goo/loaders/JSONImporter',
 		'goo/renderer/bounds/BoundingBox',
-		'goo/renderer/OcclusionPartitioner'
+		'goo/renderer/OcclusionPartitioner',
+		'goo/loaders/SceneLoader',
+		'goo/loaders/Loader'
 	],
 	function (
 		GooRunner,
@@ -41,7 +43,9 @@ require(
 		OccluderComponent,
 		JSONImporter,
 		BoundingBox,
-		OcclusionPartitioner
+		OcclusionPartitioner,
+		SceneLoader,
+		Loader
 	) {
 		'use strict';
 
@@ -215,6 +219,8 @@ require(
 
 			addHead(goo, translation);
 
+			loadTestScene(goo, translation);
+
 			goo.callbacks.push(function() {
 
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
@@ -309,7 +315,7 @@ require(
 			var material = new Material.createMaterial(ShaderLib.texturedLit, 'FloorMaterial');
 
 			var texture = new TextureCreator().loadTexture2D(resourcePath + '/fieldstone-c.jpg');
-			material.wireframe = true;
+			//material.wireframe = true;
 			material.textures.push(texture);
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();
@@ -365,6 +371,12 @@ require(
 					console.error(error);
 				}
 			});
+		}
+
+		function loadTestScene(goo) {
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+			var sceneLoader = new SceneLoader({'world': goo.world, 'loader': loader});
+			sceneLoader.load('untitled.scene.json');
 		}
 
 		function createBoundingSphereForEntity (world, entity) {
