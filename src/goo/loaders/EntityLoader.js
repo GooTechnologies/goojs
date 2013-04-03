@@ -8,6 +8,8 @@ define([
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/MeshDataComponent',
 		'goo/math/Vector3',
+		'goo/renderer/Material',
+		'goo/renderer/shaders/ShaderLib',
 
 		'goo/lib/rsvp.amd',
 
@@ -24,6 +26,8 @@ function(
 		MeshRendererComponent,
 		MeshDataComponent,
 		Vector3,
+		Material,
+		ShaderLib,
 
 		RSVP,
 
@@ -186,6 +190,11 @@ function(
 			var mrc = new MeshRendererComponent();
 			for(var i in materials) {
 				mrc.materials.push(materials[i]);
+			}
+
+			if (materials.length === 0) {
+				// Add default material.
+				mrc.materials.push(new Material.createMaterial(ShaderLib.simpleLit, 'DefaultEntityLoaderMaterial'));
 			}
 
 			return mrc;
