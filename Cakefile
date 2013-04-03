@@ -1,6 +1,7 @@
 fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
+convert = require('./converter/convert').convert
 	
 task 'minify', 'minify try', (options) ->
 
@@ -69,3 +70,13 @@ task 'checkstyleforjenkins', 'Run JSHint to XML', (options) ->
 
 task 'init-git', 'Install the precommit script', (options) ->
 	fs.writeFile '.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n'
+	
+task 'convert',
+	"Converts a file from old json structure to new directory-json structure.\nUse cake convert [inputFile] [outputDirectory].",
+	(options) ->		
+		if options.arguments.length != 4
+			console.log 'Wrong paramaters, use cake convert [inputFile] [outputDirectory] [objectname]'
+		else
+			convert options.arguments[1], options.arguments[2], options.arguments[3]
+			console.log "#{options.arguments[1]} converted"
+		process.exit(0)

@@ -1,0 +1,34 @@
+{
+	"uniforms": {
+		"materialAmbient": [
+			0,
+			0,
+			0,
+			1
+		],
+		"materialDiffuse": [
+			0.8,
+			0.8,
+			0.8,
+			1
+		],
+		"materialEmissive": [
+			0,
+			0,
+			0,
+			1
+		],
+		"materialSpecular": [
+			0,
+			0,
+			0,
+			1
+		],
+		"materialSpecularPower": 0
+	},
+	"name": "Diffuse_Texture-diffuse-Material",
+	"textures": [
+		"textures/cmodel_tmp_texture_1158357536.tex"
+	],
+	"shaderRef": "shaders/skinning.shader"
+}

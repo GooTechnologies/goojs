@@ -47,7 +47,7 @@ require([
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			//showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -57,9 +57,9 @@ require([
 		var boxEntity = createBoxEntity(goo);
 		boxEntity.addToWorld();
 
-		var floorEntity = createBox(goo, 1000, 1, ShaderLib.texturedLit);
-		floorEntity.transformComponent.transform.translation.y = -50;
-		floorEntity.addToWorld();
+		//var floorEntity = createBox(goo, 1000, 1, ShaderLib.texturedLit);
+		//floorEntity.transformComponent.transform.translation.y = -50;
+		//floorEntity.addToWorld();
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -76,7 +76,7 @@ require([
 		}));
 		cameraEntity.setComponent(scripts);
 
-		var entity = createBox(goo, 1, 1, ShaderLib.simple);
+		var entity = createSphere(goo, ShaderLib.simple);
 		entity.setComponent(new LightComponent(new PointLight()));
 		entity.addToWorld();
 		var script = {
@@ -93,8 +93,8 @@ require([
 		entity.setComponent(new ScriptComponent(script));
 	}
 
-	function createBox(goo, w, h, shader) {
-		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
+	function createSphere(goo, shader) {
+		var meshData = ShapeCreator.createSphere(8, 8, 0.5);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "Floor";
 

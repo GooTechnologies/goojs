@@ -385,11 +385,12 @@ function (MathUtils) {
 	 */
 
 	Vector.equals = function (lhs, rhs) {
-		if (lhs.data.length !== rhs.data.length) {
+		var lhsLength = lhs.data.length;
+		if (lhsLength !== rhs.data.length) {
 			return false;
 		}
 
-		for ( var i = 0; i < lhs.data.length; i++) {
+		for ( var i = 0; i < lhsLength; i++) {
 			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
 				return false;
 			}
@@ -509,14 +510,15 @@ function (MathUtils) {
 
 	Vector.prototype.normalize = function () {
 		var l = this.length();
+		var dataLength = this.data.length;
 
 		if (l < MathUtils.EPSILON) {
-			for ( var i = 0; i < this.data.length; i++) {
+			for ( var i = 0; i < dataLength; i++) {
 				this.data[i] = 0;
 			}
 		} else {
 			l = 1.0 / l;
-			for ( var i = 0; i < this.data.length; i++) {
+			for ( var i = 0; i < dataLength; i++) {
 				this.data[i] *= l;
 			}
 		}

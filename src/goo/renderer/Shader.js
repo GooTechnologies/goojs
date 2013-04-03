@@ -118,9 +118,11 @@ function (
 		}
 
 		// Set the ShaderProgram active
+		var switchedProgram = false;
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
+			switchedProgram = true;
 		}
 
 		// Bind attributes
@@ -139,6 +141,9 @@ function (
 					continue;
 				}
 
+				if (switchedProgram) {
+					renderer.context.enableVertexAttribArray(attributeIndex);
+				}
 				renderer.bindVertexAttribute(attributeIndex, attribute);
 			}
 		}
@@ -444,45 +449,25 @@ function (
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
-		var DEFAULT_AMBIENT = {
-			r : 0.1,
-			g : 0.1,
-			b : 0.1,
-			a : 1.0
-		};
-		var DEFAULT_EMISSIVE = {
-			r : 0,
-			g : 0,
-			b : 0,
-			a : 0
-		};
-		var DEFAULT_DIFFUSE = {
-			r : 1,
-			g : 1,
-			b : 1,
-			a : 1
-		};
-		var DEFAULT_SPECULAR = {
-			r : 0.8,
-			g : 0.8,
-			b : 0.8,
-			a : 1.0
-		};
+		var DEFAULT_AMBIENT = [0.1,0.1,0.1,1.0];
+		var DEFAULT_EMISSIVE = [0,0,0,0];
+		var DEFAULT_DIFFUSE = [1,1,1,1];
+		var DEFAULT_SPECULAR = [0.8,0.8,0.8,1.0];
 		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
-			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.EMISSIVE] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive : DEFAULT_EMISSIVE;
-			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.DIFFUSE] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse : DEFAULT_DIFFUSE;
-			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : DEFAULT_SPECULAR;
-			uniformCall.uniform4f(materialState.r, materialState.g, materialState.b, materialState.a);
+			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
 			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
@@ -509,6 +494,9 @@ function (
 		};
 		defaultCallbacks[Shader.LIGHT_FAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.lightCamera.far);
+		};
+		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
 		};
 	}
 
@@ -549,6 +537,7 @@ function (
 	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.TIME = 'TIME';
+	Shader.RESOLUTION = 'RESOLUTION';
 
 	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';

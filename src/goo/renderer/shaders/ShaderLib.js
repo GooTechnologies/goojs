@@ -58,8 +58,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			diffuseMap : Shader.TEXTURE0
@@ -68,15 +67,14 @@ define([
 		'attribute vec3 vertexPosition;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
 		'	texCoord0 = vertexUV0;',//
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -100,8 +98,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			diffuseMap : Shader.TEXTURE0
@@ -110,15 +107,14 @@ define([
 		'attribute vec3 vertexPosition;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
 		'	texCoord0 = vertexUV0;',//
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -142,19 +138,17 @@ define([
 			vertexPosition : MeshData.POSITION
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'void main(void) {', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -172,20 +166,18 @@ define([
 			vertexPosition : MeshData.POSITION
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			color : [1.0, 1.0, 1.0]
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'void main(void) {', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -206,8 +198,7 @@ define([
 			vertexNormal : MeshData.NORMAL
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
@@ -220,8 +211,7 @@ define([
 		'attribute vec3 vertexPosition;', //
 		'attribute vec3 vertexNormal;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 cameraPosition;', //
 		'uniform vec3 lightPosition;', //
@@ -232,7 +222,7 @@ define([
 
 		'void main(void) {', //
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+		'	gl_Position = viewProjectionMatrix * worldPos;', //
 
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
 		'	lightDir = lightPosition - worldPos.xyz;', //
@@ -283,8 +273,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			diffuseMap : Shader.TEXTURE0
 		},
@@ -292,15 +281,14 @@ define([
 		'attribute vec3 vertexPosition;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
 		'	texCoord0 = vertexUV0;',//
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -324,8 +312,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
@@ -340,8 +327,7 @@ define([
 		'attribute vec3 vertexNormal;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 cameraPosition;', //
 		'uniform vec3 lightPosition;', //
@@ -353,7 +339,7 @@ define([
 
 		'void main(void) {', //
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+		'	gl_Position = viewProjectionMatrix * worldPos;', //
 
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
 		'	texCoord0 = vertexUV0;', //
@@ -362,7 +348,8 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',//
+		// 'precision mediump float;',//
+		'precision highp float;',//
 
 		'uniform sampler2D diffuseMap;',//
 
@@ -412,8 +399,7 @@ define([
 			vertexUV2 : MeshData.TEXCOORD2
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
@@ -433,8 +419,7 @@ define([
 		'attribute vec2 vertexUV1;', //
 		'attribute vec2 vertexUV2;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 cameraPosition;', //
 		'uniform vec3 lightPosition;', //
@@ -450,7 +435,7 @@ define([
 
 		'void main(void) {', //
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
-		'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
+		'	gl_Position = viewProjectionMatrix * worldPos;', //
 
 		'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);', //
 		'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);', //
@@ -789,8 +774,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			diffuseMap : Shader.TEXTURE0
 		},
@@ -799,8 +783,7 @@ define([
 		'attribute vec4 vertexColor;', //
 		'attribute vec2 vertexUV0;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 
 		'varying vec2 texCoord0;',//
@@ -809,7 +792,7 @@ define([
 		'void main(void) {', //
 		'    texCoord0 = vertexUV0;',//
 		'    color = vertexColor;',//
-		'	 gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	 gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader : [//
@@ -1452,8 +1435,7 @@ define([
 			vertexJointIDs: MeshData.JOINTIDS
 		},
 		uniforms: {
-			viewMatrix: Shader.VIEW_MATRIX,
-			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			diffuseMap: Shader.TEXTURE0,
 			jointPalette: function (shaderInfo) {
@@ -1486,8 +1468,7 @@ define([
 		'attribute vec4 vertexWeights;', //
 		'attribute vec4 vertexJointIDs;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform mat4 jointPalette[JOINT_COUNT];', //
 
@@ -1505,7 +1486,7 @@ define([
 		'	mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;', //
 		'	mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;', //
 		'	texCoord0 = vertexUV0;',//
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * mat * vec4(vertexPosition, 1.0);', //
 		'}'//
 		].join('\n'),
 		fshader: [//
@@ -1664,8 +1645,7 @@ define([
 			vertexColor : MeshData.COLOR
 		},
 		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			pointSize : 2.0
 		},
@@ -1673,8 +1653,7 @@ define([
 		'attribute vec3 vertexPosition;', //
 		'attribute vec4 vertexColor;', //
 
-		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform float pointSize;',
 
@@ -1682,7 +1661,7 @@ define([
 
 		'void main(void) {', //
 		'	color = vertexColor;',//
-		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
 		'	gl_PointSize = pointSize;',
 		'}'//
 		].join('\n'),
@@ -1955,6 +1934,47 @@ define([
 //        '	gl_FragColor = vec4(depth, pow(depth, 2.0) + 0.25*(dx*dx + dy*dy), 0.0, 1.0);',
         '	gl_FragColor = vec4(depth, depth * depth, 0.0, 1.0);',
 		'}'//
+		].join('\n')
+	};
+
+	ShaderLib.packDepth = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			farPlane : Shader.FAR_PLANE
+		},
+		vshader : [ //
+			'attribute vec3 vertexPosition;', //
+
+			'uniform mat4 viewMatrix;', //
+			'uniform mat4 projectionMatrix;',//
+			'uniform mat4 worldMatrix;',//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void) {', //
+			'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	gl_Position = projectionMatrix * vPosition;', //
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',//
+
+			'uniform float farPlane;',//
+
+			ShaderFragments.methods.packDepth,//
+
+			'varying vec4 vPosition;',//
+
+			'void main(void)',//
+			'{',//
+			'	float linearDepth = min(length(vPosition), farPlane) / farPlane;',//
+			'	gl_FragColor = packDepth(linearDepth);',//
+			'}'//
 		].join('\n')
 	};
 

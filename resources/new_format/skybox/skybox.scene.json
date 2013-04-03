@@ -1,0 +1,8 @@
+{
+	"files": [
+		"entities/root.ent",
+		"entities/backdrop.ent",
+		"entities/backdropMesh.ent",
+		"entities/backdropMesh[SurfaceView_Skydrop].ent"
+	]
+}

@@ -78,6 +78,18 @@ define(["goo/math/Vector"],
 		return target;
 	};
 
+	Vector3.addv = function (lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		target.data[0] = lhs.data[0] + rhs.data[0];
+		target.data[1] = lhs.data[1] + rhs.data[1];
+		target.data[2] = lhs.data[2] + rhs.data[2];
+
+		return target;
+	};
+
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
 	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -129,6 +141,18 @@ define(["goo/math/Vector"],
 		target.data[0] = ldata[0] - rdata[0];
 		target.data[1] = ldata[1] - rdata[1];
 		target.data[2] = ldata[2] - rdata[2];
+
+		return target;
+	};
+
+	Vector3.subv = function (lhs, rhs, target) {
+		if (!target) {
+			target = new Vector3();
+		}
+
+		target.data[0] = lhs.data[0] - rhs.data[0];
+		target.data[1] = lhs.data[1] - rhs.data[1];
+		target.data[2] = lhs.data[2] - rhs.data[2];
 
 		return target;
 	};
@@ -362,9 +386,9 @@ define(["goo/math/Vector"],
 	 * @return {Vector3} Self for chaining.
 	 */
 	Vector3.prototype.lerp = function (end, factor) {
-		this.x = (1.0 - factor) * this.x + factor * end.x;
-		this.y = (1.0 - factor) * this.y + factor * end.y;
-		this.z = (1.0 - factor) * this.z + factor * end.z;
+		this.data[0] = (1.0 - factor) * this.data[0] + factor * end.data[0];
+		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
+		this.data[2] = (1.0 - factor) * this.data[2] + factor * end.data[2];
 
 		return this;
 	};
@@ -409,6 +433,13 @@ define(["goo/math/Vector"],
 		this.data[0] *= vec3.data[0];
 		this.data[1] *= vec3.data[1];
 		this.data[2] *= vec3.data[2];
+
+		return this;
+	};
+	Vector3.prototype.muld = function (x, y, z) {
+		this.data[0] *= x;
+		this.data[1] *= y;
+		this.data[2] *= z;
 
 		return this;
 	};

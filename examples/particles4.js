@@ -47,9 +47,10 @@ require([
 	function init () {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			//showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
+		goo.renderer.setClearColor(0, 0, 0, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/particle_atlas.png');
@@ -68,10 +69,6 @@ require([
 		alphaMaterial.blendState.blending = 'AlphaBlending';
 		alphaMaterial.cullState.enabled = false;
 		alphaMaterial.depthState.write = false;
-
-		// Add ParticlesSystem to world.
-		var particles = new ParticlesSystem();
-		goo.world.setSystem(particles);
 
 		// create our shared particles
 		var additiveParticleComponent = createParticles(goo.world, additiveMaterial);
@@ -216,11 +213,11 @@ require([
 				spin : 0,
 				mass : 1,
 				size : 3.0,
-				color : [0, 0, 0, 1]
+				color : [0.25, 0.25, 0.25, 0.75]
 			}, {
 				timeOffset : 1.0,
 				size : 6.0,
-				color : [0, 0, 0, 0]
+				color : [0.25, 0.25, 0.25, 0.00]
 			}]
 		}));
 	}

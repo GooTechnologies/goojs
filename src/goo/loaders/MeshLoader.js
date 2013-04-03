@@ -1,14 +1,16 @@
 /*jshint bitwise: false */
 define([
-		'goo/lib/rsvp.amd',
-		'goo/loaders/JsonUtils',
-	'goo/renderer/MeshData'
+	'goo/lib/rsvp.amd',
+	'goo/loaders/JsonUtils',
+	'goo/renderer/MeshData',
+	'goo/loaders/SkeletonLoader'
 	],
 /** @lends MeshLoader */
 function(
 	RSVP,
 	JsonUtils,
-	MeshData
+	MeshData,
+	SkeletonLoader
 	) {
 	"use strict";
 
@@ -28,6 +30,8 @@ function(
 		}
 
 		this._loader = parameters.loader;
+		this._skeletonLoader = new SkeletonLoader({ loader: this._loader });
+		this._cache = {};
 	}
 
 	/**
@@ -37,10 +41,17 @@ function(
 	 * @return {Promise} The promise is resolved with the loaded MeshData object.
 	 */
 	MeshLoader.prototype.load = function(meshPath) {
+		if (this._cache[meshPath]) {
+			return this._cache[meshPath];
+		}
+
 		var that = this;
-		return this._loader.load(meshPath, function(data) {
+		var promise = this._loader.load(meshPath, function(data) {
 			return that._parse(data);
 		});
+
+		this._cache[meshPath] = promise;
+		return promise;
 	};
 
 
@@ -48,15 +59,33 @@ function(
 		var promise = new RSVP.Promise();
 
 		try {
-			this.useCompression = data.compressed || false;
 
-			if (this.useCompression) {
-				this.compressedVertsRange = data.CompressedVertsRange || (1 << 14) - 1; // int
-				this.compressedColorsRange = data.CompressedColorsRange || (1 << 8) - 1; // int
-				this.compressedUnitVectorRange = data.CompressedUnitVectorRange || (1 << 10) - 1; // int
+			if (data.compression) {
+				this.useCompression = data.compression.compressed || false;
+				this.compressedVertsRange = data.compression.compressedVertsRange || (1 << 14) - 1; // int
+				this.compressedColorsRange = data.compression.compressedColorsRange || (1 << 8) - 1; // int
+				this.compressedUnitVectorRange = data.compression.compressedUnitVectorRange || (1 << 10) - 1; // int
 			}
-
-			promise.resolve(this._parseMeshData(data, 0, 'Mesh'));
+			var type = (data.type === 'SkinnedMesh') ? 'SkinnedMesh' : 'Mesh';
+			var meshData;
+			if (data.type === 'SkinnedMesh') {
+				meshData = this._parseMeshData(data, 4, type);
+				meshData.type = MeshData.SKINMESH;
+			} else {
+				meshData = this._parseMeshData(data, 0, type);
+				meshData.type = MeshData.MESH;
+			}
+			if (data.pose) {
+				var skeletonLoader = this._skeletonLoader;
+				promise = skeletonLoader.load(data.pose)
+				.then(function(skeletonPose) {
+					meshData.currentPose = skeletonPose;
+					return meshData;
+				});
+			}
+			else {
+				promise.resolve(meshData);
+			}
 		} catch(e) {
 			promise.reject(e);
 		}
@@ -65,7 +94,6 @@ function(
 	};
 
 	MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
-
 		var vertexCount = object.data.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
@@ -97,7 +125,6 @@ function(
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}
-
 		var meshData = new MeshData(attributeMap, vertexCount, indexCount);
 
 		if (object.data.Vertices) {
@@ -109,7 +136,7 @@ function(
 				JsonUtils.fillAttributeBuffer(object.data.Vertices, meshData, MeshData.POSITION);
 			}
 		}
-		if (object.data.Weights) {
+		if (weightsPerVert > 0 && object.data.Weights) {
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 1 / this.compressedVertsRange;
@@ -164,7 +191,7 @@ function(
 				}
 			}
 		}
-		if (object.data.Joints) {
+		if (weightsPerVert > 0 && object.data.Joints) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
 			var data;
 			if (this.useCompression) {
@@ -172,7 +199,6 @@ function(
 			} else {
 				data = JsonUtils.getIntBuffer(object.data.Joints, 32767);
 			}
-
 			if (type === 'SkinnedMesh') {
 				// map these joints to local.
 				var localJointMap = [];
@@ -196,6 +222,7 @@ function(
 				}
 
 				meshData.paletteMap = localMap;
+				meshData.weightsPerVertex = weightsPerVert;
 			} else {
 				for (var i = 0, max = data.capacity(); i < max; i++) {
 					buffer.putCast(i, data.get(i));

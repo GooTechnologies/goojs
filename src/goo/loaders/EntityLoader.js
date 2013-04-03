@@ -7,9 +7,11 @@ define([
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/MeshDataComponent',
+		'goo/renderer/MeshData',
 		'goo/math/Vector3',
 		'goo/renderer/Material',
 		'goo/renderer/shaders/ShaderLib',
+		'goo/math/MathUtils',
 
 		'goo/lib/rsvp.amd',
 
@@ -25,9 +27,11 @@ function(
 		TransformComponent,
 		MeshRendererComponent,
 		MeshDataComponent,
+		MeshData,
 		Vector3,
 		Material,
 		ShaderLib,
+		MathUtils,
 
 		RSVP,
 
@@ -59,6 +63,10 @@ function(
 
 		this._loader = parameters.loader;
 		this._world = parameters.world;
+
+		this._cache = {};
+		this._materialLoader = new MaterialLoader({ loader: this._loader });
+		this._meshLoader = new MeshLoader({ loader: this._loader });
 	}
 
 	/**
@@ -67,11 +75,13 @@ function(
 	 * @param {string} entityPath Relative path to the entity.
 	 * @return {Promise} The promise is resolved with the loaded Entity object.
 	 */
-	EntityLoader.prototype.load = function(entityPath) {
+	EntityLoader.prototype.load = function(entityRef) {
 		var that = this;
-		return this._loader.load(entityPath, function(data) {
-			return that._parse(data);
+		var promise = this._loader.load(entityRef+'.json', function(data) {
+			return that._parse(data, entityRef);
 		});
+		this._cache[entityRef] = promise;
+		return promise;
 	};
 
 
@@ -127,17 +137,28 @@ function(
 		// either create an entity or return an error
 		return RSVP.all(promises)
 		.then(function() {
-
-			var entity = new Entity(that._world);
-
+			var entity = new Entity(that._world, entitySource.name);
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
 				}
-
 				entity.setComponent(loadedComponents[i]);
 			}
 
+			if (entity.meshDataComponent
+			&& entity.meshDataComponent.meshData.type === MeshData.SKINMESH
+			&& entity.meshRendererComponent
+			&& entity.meshRendererComponent.materials.length) {
+				var materials = entity.meshRendererComponent.materials;
+				for (var defines, i = 0, max = materials.length; i < max; i++) {
+					defines = materials[i].shader.defines;
+					if (defines && defines.JOINT_COUNT !== undefined
+					&& defines.WEIGHTS !== undefined) {
+						defines.JOINT_COUNT = entity.meshDataComponent.meshData.paletteMap.length;
+						defines.WEIGHTS = entity.meshDataComponent.meshData.weightsPerVertex;
+					}
+				}
+			}
 			return entity;
 		});
 	};
@@ -150,10 +171,18 @@ function(
 		tc.transform.scale = new Vector3(transformComponentSource.scale);
 
 		tc.transform.rotation.fromAngles(
-			transformComponentSource.rotation[0],
-			transformComponentSource.rotation[1],
-			transformComponentSource.rotation[2]
+			MathUtils.radFromDeg(transformComponentSource.rotation[0]),
+			MathUtils.radFromDeg(transformComponentSource.rotation[1]),
+			MathUtils.radFromDeg(transformComponentSource.rotation[2])
 		);
+
+		var p = transformComponentSource.parentRef;
+		if(p && this._cache[p]) {
+			this._cache[p].then(function(entity) {
+				entity.transformComponent.attachChild(tc);
+				return entity;
+			});
+		}
 
 		return tc;
 	};
@@ -171,9 +200,7 @@ function(
 
 	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
 		var promises = [];
-		var ml = new MaterialLoader({
-			loader: this._loader
-		});
+		var ml = this._materialLoader;
 
 		for(var attribute in meshRendererComponentSource) {
 			if(attribute === 'materials') {
@@ -186,8 +213,12 @@ function(
 
 		return RSVP.all(promises)
 		.then(function(materials) {
-
 			var mrc = new MeshRendererComponent();
+			for(var attribute in meshRendererComponentSource) {
+				if (mrc.hasOwnProperty(attribute) && attribute !== 'materials') {
+					mrc[attribute] = meshRendererComponentSource[attribute];
+				}
+			}
 			for(var i in materials) {
 				mrc.materials.push(materials[i]);
 			}
@@ -196,7 +227,6 @@ function(
 				// Add default material.
 				mrc.materials.push(new Material.createMaterial(ShaderLib.simpleLit, 'DefaultEntityLoaderMaterial'));
 			}
-
 			return mrc;
 		});
 	};
@@ -204,10 +234,7 @@ function(
 
 	EntityLoader.prototype._getMeshDataComponent = function(meshDataComponentSource) {
 		var promises = [];
-		var mdl = new MeshLoader({
-			loader: this._loader
-		});
-
+		var mdl = this._meshLoader;
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
 			if(attribute === 'mesh') {

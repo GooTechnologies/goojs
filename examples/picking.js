@@ -2,7 +2,7 @@ require.config({
 	baseUrl : "./",
 	paths : {
 		goo : "../src/goo",
-		'goo/lib': '../lib'
+		'goo/lib' : '../lib'
 	}
 });
 require([
@@ -20,7 +20,8 @@ require([
 	'goo/scripts/BasicControlScript',
 	'goo/math/Ray',
 	'goo/entities/systems/PickingSystem',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/picking/PrimitivePickLogic'
 ], function (
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -36,7 +37,8 @@ require([
 	BasicControlScript,
 	Ray,
 	PickingSystem,
-	ShaderLib
+	ShaderLib,
+	PrimitivePickLogic
 ) {
 	"use strict";
 
@@ -70,7 +72,9 @@ require([
 		cameraEntity.addToWorld();
 
 		// Add PickingSystem
-		var picking = new PickingSystem();
+		var picking = new PickingSystem({
+			pickLogic: new PrimitivePickLogic()
+		});
 		goo.world.setSystem(picking);
 		picking.onPick = function(pickedList) {
 			if (pickedList && pickedList.length) {
@@ -82,8 +86,9 @@ require([
 
 		goo.callbacks.push(function(tpf) {
 			if (picked) {
-				var val = Math.abs(Math.sin(goo.world.time))+ 0.5;
-				picked.transformComponent.transform.scale.set(val,val,val);
+				var val = Math.abs(Math.sin(goo.world.time)) + 0.5;
+				picked.transformComponent.transform.scale.set(val, val, val);
+				picked.transformComponent.setUpdated(true);
 			}
 		});
 
@@ -145,7 +150,7 @@ require([
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 
-		entity.setComponent(new ScriptComponent(new BasicControlScript()));
+		// entity.setComponent(new ScriptComponent(new BasicControlScript()));
 
 		entity.addToWorld();
 	}

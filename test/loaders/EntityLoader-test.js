@@ -40,7 +40,7 @@ function(
 		describe('.load()', function() {
 			it('creates an entity from loaded components', function() {
 				loader.load = function(path, parser) {
-					if(path === 'entity.ent') {
+					if(path === 'entity.ent.json') {
 						return parser({
 							"components": {
 								"transform": {
@@ -97,7 +97,7 @@ function(
 
 			it('rejects if there were no components', function() {
 				loader.load = function(path, parser) {
-					if(path === 'entity.ent') {
+					if(path === 'entity.ent.json') {
 						return parser({}, path);
 					} else {
 						console.log(path);

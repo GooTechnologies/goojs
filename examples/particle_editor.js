@@ -56,10 +56,6 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		// Add ParticlesSystem to world.
-		var particles = new ParticlesSystem();
-		goo.world.setSystem(particles);
-
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");

@@ -64,8 +64,8 @@ require([
 
 	function init () {
 		var goo = new GooRunner({
-			showStats: true,
-			antialias: true
+			//showStats: true,
+			//antialias: true
 		});
 		goo.renderer.setClearColor(0.55, 0.55, 0.5, 1.0);
 		goo.renderer.domElement.id = 'goo';
@@ -75,9 +75,9 @@ require([
 
 		var camera = new Camera(45, 1, 1, 2000);
 		cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.setd(100,50,100);
+		cameraEntity.transformComponent.transform.translation.setd(100,100,100);
 		// cameraEntity.transformComponent.transform.translation.setd(20,150,250);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 50, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 
@@ -103,7 +103,7 @@ require([
 
 		// Examples of model loading
 		loadSkybox(goo);
-		loadModels(goo);
+		//loadModels(goo);
 
 		var entity = createBox(goo, ShaderLib.simpleLit, 10, 10, 10);
 		entity.addToWorld();
@@ -136,14 +136,11 @@ require([
 
 		gui.add(projectedGrid, 'freezeProjector');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'grid');
-		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'time');
+		//gui.add(waterRenderer.waterMaterial.shader.uniforms, 'time');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogStart', 0.0, 1.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'heightMultiplier', 0.0, 200.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'coarseStrength', 0.0, 2.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'detailStrength', 0.0, 2.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '0', -1.0, 1.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '1', -1.0, 1.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms.sunDirection, '2', -1.0, 1.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColor');
 
 		// entity = createBox(goo, ShaderLib.textured, 70, 2, 50);

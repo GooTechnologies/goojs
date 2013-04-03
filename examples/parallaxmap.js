@@ -78,7 +78,7 @@ require(['goo/entities/World',
 	function init() {
 		// Create typical goo application
 		var goo = new GooRunner({
-			showStats : true
+			//showStats : true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -89,9 +89,9 @@ require(['goo/entities/World',
 		boxEntity.addToWorld();
 
 
-		var floorEntity = createFloor(goo, 1000, 1, ShaderLib.texturedLit);
-		floorEntity.transformComponent.transform.translation.y = -50;
-		floorEntity.addToWorld();
+		//var floorEntity = createFloor(goo, 1000, 1, ShaderLib.texturedLit);
+		//floorEntity.transformComponent.transform.translation.y = -50;
+		//floorEntity.addToWorld();
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -142,7 +142,7 @@ require(['goo/entities/World',
 	}
 
 	function createLightFixture(goo, w, h, shader) {
-		var meshData = ShapeCreator.createBox(w, h, w, 10, 10);
+		var meshData = ShapeCreator.createSphere(8, 8, 0.5);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		entity.name = "LightFixture";
 
@@ -164,13 +164,13 @@ require(['goo/entities/World',
 		var material = new Material('TestMaterial');
 		material.shader = Material.createShader(createShaderDef(), 'SphereShader');
 
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-diffuse.png');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-diffuse.jpg');
 		material.textures.push(texture);
 
-		var displacemap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-displace.png');
+		var displacemap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-displace.jpg');
 		material.textures.push(displacemap);
 
-		var normalmap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-normal.png');
+		var normalmap = new TextureCreator().loadTexture2D(resourcePath + '/photosculpt-graystonewall-normal.jpg');
 		material.textures.push(normalmap);
 
 		entity.meshRendererComponent.materials.push(material);
@@ -245,7 +245,6 @@ require(['goo/entities/World',
 			'uniform sampler2D diffuseMap;',//
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D displaceMap;',//
-			'uniform samplerCube cubeMap;',//
 
 			'varying vec2 texCoord0;',//
 			'varying vec3 eyeVec;',//
@@ -281,9 +280,9 @@ require(['goo/entities/World',
 			'	vec3 normal = TBN * bump;',
 			'	float NdotL = dot(normal, normalize(lightVec));',
 
-			'	vec4 ambient = vec4(0.0, 0.0, 0.0, 1.0);',
-			'	float diffuse = max(NdotL, 0.0 );',
-			'	vec4 intensity = vec4(1.0) * diffuse + ambient;',
+			'	float ambient = abs(min(NdotL, 0.0)) * 0.9 + 0.1;',
+			'	float diffuse = max(NdotL, 0.0);',
+			'	vec4 intensity = vec4(1.0, 1.0, 0.95, 1.0) * diffuse + vec4(0.18, 0.19, 0.2, 1.0) * ambient;',
 
 			'	gl_FragColor = texColor * intensity;',
 			'}'//

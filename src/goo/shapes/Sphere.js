@@ -50,7 +50,8 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 
 		// generate geometry
 		var fInvRS = 1.0 / this.radialSamples;
-		var fZFactor = 2.0 / (this.zSamples - 1);
+		//var fZFactor = 2.0 / (this.zSamples - 1);
+		var fZFactor = 2.0 / (this.zSamples); // Dirty fix for messed up texture coordinates.
 
 		// Generate points on the unit circle to be used in computing the mesh
 		// points on a sphere slice.

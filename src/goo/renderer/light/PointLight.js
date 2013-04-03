@@ -1,13 +1,11 @@
 define([
 		'goo/math/Vector3',
-		'goo/renderer/light/Light',
-		'goo/entities/systems/System'
+		'goo/renderer/light/Light'
 		],
 /** @lends PointLight */
 function (
 	Vector3,
-	Light,
-	System
+	Light
 	) {
 	"use strict";
 
@@ -16,12 +14,13 @@ function (
 	 * @property {Vector3} direction Where it is looking
 	 */
 	function PointLight () {
-		System.call(this);
+		Light.call(this);
 
 		this.direction = new Vector3();
+		this.range = 100;
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);
 
-	return Light;
+	return PointLight;
 });

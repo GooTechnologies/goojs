@@ -1,0 +1,43 @@
+"precision mediump float;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
+uniform sampler2D displaceMap;
+uniform samplerCube cubeMap;
+uniform vec4 materialAmbient;
+uniform vec4 materialDiffuse;
+
+varying vec2 texCoord0;
+varying vec3 eyeVec;
+varying vec3 lightVec;
+varying mat3 TBN;
+varying mat3 TBNi;
+
+vec2 calcNewTexCoords(sampler2D displacementMap, vec2 tc, vec3 tsVec2Camera)
+{
+ // Get height from height map
+ float height = texture2D(displacementMap, tc).r;
+ // Calculate new height based on surface thickness and bias
+ float surfaceThickness = 0.5; // Thickness relative to width and height
+ float bias = surfaceThickness * -0.5;
+ float height_sb = height * surfaceThickness + bias;
+
+ // Calculate new texture coordinate based on viewing angle
+ vec2 parallaxTextureOffset = tc + height_sb * tsVec2Camera.xy / max(tsVec2Camera.z, 0.3);
+ return parallaxTextureOffset;
+}
+void main(void)
+{
+ vec3 tangentSpaceToEye = TBNi * -eyeVec;
+ vec2 newCoords = calcNewTexCoords(displaceMap, texCoord0, tangentSpaceToEye);
+
+ vec4 texColor = texture2D(diffuseMap, newCoords);
+ vec3 bump = texture2D(normalMap, newCoords).rgb * 2.0 - 1.0;
+
+ vec3 normal = TBN * bump;
+ float NdotL = dot(normal, normalize(lightVec));
+
+ float diffuse = max(NdotL, 0.0 );
+ vec4 intensity = diffuse * materialDiffuse + materialAmbient;
+
+ gl_FragColor = texColor * intensity;
+}"

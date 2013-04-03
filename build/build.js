@@ -51,6 +51,11 @@ if (i > 0) {
 	console.log('Using uglify');
 }
 
+i = process.argv.indexOf('--pretty');
+if (i > 0) {
+	optimizer = 'none';
+}
+
 var doSimple = false;
 i = process.argv.indexOf('--simple');
 if (i > 0) {

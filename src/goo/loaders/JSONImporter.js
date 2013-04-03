@@ -536,12 +536,12 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 
 	JSONImporter.prototype._parseColor = function (hex) {
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})*$/i.exec(hex);
-		return result ? {
-			r : parseInt(result[1], 16) / 255.0,
-			g : parseInt(result[2], 16) / 255.0,
-			b : parseInt(result[3], 16) / 255.0,
-			a : result[4] !== undefined ? parseInt(result[4], 16) / 255.0 : 1.0
-		} : null;
+		return result ? [
+			parseInt(result[1], 16) / 255.0,
+			parseInt(result[2], 16) / 255.0,
+			parseInt(result[3], 16) / 255.0,
+			result[4] !== undefined ? parseInt(result[4], 16) / 255.0 : 1.0
+		] : null;
 	};
 
 	JSONImporter.prototype.importAnimationTree = function (manager, treeSource, completeCallback) {

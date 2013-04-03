@@ -42,7 +42,7 @@ require([
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = "goo";
 		document.body.appendChild(goo.renderer.domElement);
-		goo.renderer.setClearColor(0.1,0.1,0.1,1.0);
+		goo.renderer.setClearColor(0, 0, 0, 1);
 
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.setComponent(new CameraComponent(new Camera(45, 1, 1, 10000)));
@@ -63,27 +63,19 @@ require([
 
 		var parentEntity = goo.world.createEntity('parent');
 		parentEntity.addToWorld();
-		for ( var i = 0; i < 40; i++) {
+		for ( var i = 0; i < 60; i++) {
 			var x = Math.random() * 1600 - 800;
 			var y = Math.random() * 1600 - 800;
 			var z = Math.random() * 1600 - 800;
 
-			var boxEntity = createBoxEntity(goo);
+			var element = document.createElement('div');
+			element.className = 'object assembly';
+			element.innerHTML = '<div><p>Goo!</p></div>';
+
+			var boxEntity = EntityUtils.createDOMEntity(goo.world, element);
 			boxEntity.transformComponent.transform.translation.x = x;
 			boxEntity.transformComponent.transform.translation.y = y;
 			boxEntity.transformComponent.transform.translation.z = z;
-
-//			var element = document.createElement("IFRAME");
-//			element.setAttribute("src", "http://www.xn--frken-ur-o4a.se/");
-			var element = document.createElement('div');
-			element.className = 'object assembly';
-
-			var number = document.createElement('div');
-			number.className = 'number';
-			number.textContent = 'Goo Rocks!';
-			element.appendChild(number);
-
-			boxEntity.setComponent(new CSSTransformComponent(element));
 
 			boxEntity.setComponent(new ScriptComponent({
 				offset : Math.random()*100,
@@ -117,30 +109,10 @@ require([
 
 		var material = new Material('TestMaterial');
 		material.materialState = {
-			ambient : {
-				r : 0.4,
-				g : 0.4,
-				b : 0.4,
-				a : 1.0
-			},
-			diffuse : {
-				r : 1.0,
-				g : 1.0,
-				b : 1.0,
-				a : 1.0
-			},
-			emissive : {
-				r : 0.0,
-				g : 0.0,
-				b : 0.0,
-				a : 1.0
-			},
-			specular : {
-				r : 0.7,
-				g : 0.7,
-				b : 0.7,
-				a : 1.0
-			},
+			ambient : [0.4, 0.4, 0.4, 1.0],
+			diffuse : [1.0, 1.0, 1.0, 1.0],
+			emissive : [0.0, 0.0, 0.0, 1.0],
+			specular : [0.7, 0.7, 0.7, 1.0],
 			shininess : 16.0
 		};
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');

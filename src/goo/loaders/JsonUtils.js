@@ -1,59 +1,24 @@
-/*jshint bitwise: false */
-define([
-	'goo/renderer/BufferUtils',
-	'goo/math/Transform',
-	'goo/math/Matrix3x3',
-	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/animation/blendtree/ClipSource',
-	'goo/animation/layer/AnimationLayer',
-	'goo/animation/state/SteadyState',
-	'goo/animation/state/FadeTransitionState',
-	'goo/animation/state/FrozenTransitionState',
-	'goo/animation/state/IgnoreTransitionState',
-	'goo/animation/state/ImmediateTransitionState',
-	'goo/animation/state/SyncFadeTransitionState',
-	'goo/animation/state/StateBlendType',
-	'goo/animation/blendtree/BinaryLERPSource',
-	'goo/animation/blendtree/ExclusiveClipSource',
-	'goo/animation/blendtree/FrozenClipSource',
-	'goo/animation/blendtree/InclusiveClipSource',
-	'goo/animation/blendtree/ManagedTransformSource',
-	'goo/animation/layer/LayerLERPBlender'
-	],
-	/** @lends JsonUtils */
-	function(
-	BufferUtils,
-		Transform,
-		Matrix3x3,
-		Vector3,
-		Quaternion,
-		ClipSource,
-		AnimationLayer,
-		SteadyState,
-		FadeTransitionState,
-		FrozenTransitionState,
-		IgnoreTransitionState,
-		ImmediateTransitionState,
-		SyncFadeTransitionState,
-		StateBlendType,
-		BinaryLERPSource,
-		ExclusiveClipSource,
-		FrozenClipSource,
-		InclusiveClipSource,
-		ManagedTransformSource,
-		LayerLERPBlender
-	) {
+/* jshint bitwise: false */
+define(['goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3', 'goo/math/Quaternion',
+		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState',
+		'goo/animation/state/FadeTransitionState', 'goo/animation/state/FrozenTransitionState', 'goo/animation/state/IgnoreTransitionState',
+		'goo/animation/state/ImmediateTransitionState', 'goo/animation/state/SyncFadeTransitionState', 'goo/animation/state/StateBlendType',
+		'goo/animation/blendtree/BinaryLERPSource', 'goo/animation/blendtree/ExclusiveClipSource', 'goo/animation/blendtree/FrozenClipSource',
+		'goo/animation/blendtree/InclusiveClipSource', 'goo/animation/blendtree/ManagedTransformSource', 'goo/animation/layer/LayerLERPBlender'],
+/** @lends JsonUtils */
+function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
+	FrozenTransitionState, IgnoreTransitionState, ImmediateTransitionState, SyncFadeTransitionState, StateBlendType, BinaryLERPSource,
+	ExclusiveClipSource, FrozenClipSource, InclusiveClipSource, ManagedTransformSource, LayerLERPBlender) {
 	"use strict";
 
 	/**
 	 * @class Utilities for parsing json data
 	 */
-	function JsonUtils() {
+	function JsonUtils () {
 
 	}
 
-	JsonUtils.fillAttributeBufferFromCompressedString = function(attribs, meshData, attributeKey, scales, offsets) {
+	JsonUtils.fillAttributeBufferFromCompressedString = function (attribs, meshData, attributeKey, scales, offsets) {
 		var buffer = meshData.getAttributeBuffer(attributeKey);
 		var stride = scales.length;
 		var tuples = attribs.length / scales.length;
@@ -76,20 +41,20 @@ define([
 		}
 	};
 
-	JsonUtils.fillAttributeBuffer = function(bufferArray, meshData, attributeKey) {
+	JsonUtils.fillAttributeBuffer = function (bufferArray, meshData, attributeKey) {
 		var buffer = meshData.getAttributeBuffer(attributeKey);
 		for ( var i = 0; i < bufferArray.length; i++) {
 			buffer[i] = bufferArray[i];
 		}
 	};
 
-	JsonUtils.getIntBuffer = function(indices, vertexCount) {
+	JsonUtils.getIntBuffer = function (indices, vertexCount) {
 		var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
 		indexBuffer.set(indices);
 		return indexBuffer;
 	};
 
-	JsonUtils.getIntBufferFromCompressedString = function(indices, vertexCount) {
+	JsonUtils.getIntBufferFromCompressedString = function (indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
 		for ( var i = 0; i < indices.length; ++i) {
@@ -100,7 +65,7 @@ define([
 		return indexBuffer;
 	};
 
-	JsonUtils.unzip = function(word) {
+	JsonUtils.unzip = function (word) {
 		if (word >= 0xE000) {
 			word -= 0x0800;
 		}
@@ -111,7 +76,7 @@ define([
 		return word;
 	};
 
-	JsonUtils.parseTransform = function(object) {
+	JsonUtils.parseTransform = function (object) {
 		var transform = new Transform();
 
 		transform.translation = JsonUtils.parseVector3(object.Translation);
@@ -121,7 +86,7 @@ define([
 		return transform;
 	};
 
-	JsonUtils.parseMatrix3 = function(array) {
+	JsonUtils.parseMatrix3 = function (array) {
 		var matrix = new Matrix3x3();
 		// data files are currently row major!
 		matrix.e00 = array[0];
@@ -136,11 +101,11 @@ define([
 		return matrix;
 	};
 
-	JsonUtils.parseVector3 = function(array) {
+	JsonUtils.parseVector3 = function (array) {
 		return new Vector3(array[0], array[1], array[2]);
 	};
 
-	JsonUtils.parseAnimationLayers = function(manager, completeCallback, inputStore, outputStore, root) {
+	JsonUtils.parseAnimationLayers = function (manager, completeCallback, inputStore, outputStore, root) {
 		var layersObj = root.Layers;
 		for ( var key in layersObj) {
 			var layer;
@@ -175,7 +140,7 @@ define([
 		}
 	};
 
-	JsonUtils.parseSteadyState = function(json, inputStore, outputStore, manager, layer) {
+	JsonUtils.parseSteadyState = function (json, inputStore, outputStore, manager, layer) {
 		var state = new SteadyState(json.Name ? json.Name : "unknown");
 
 		if (json.Clip) {
@@ -214,7 +179,7 @@ define([
 	};
 
 	// Was: function (args, inputStore, outputStore, manager)
-	JsonUtils.parseTransitionState = function(args) {
+	JsonUtils.parseTransitionState = function (args) {
 		var type = args[2];
 		var transition;
 
@@ -246,7 +211,7 @@ define([
 		return transition;
 	};
 
-	JsonUtils.parseTreeSource = function(json, inputStore, outputStore, manager) {
+	JsonUtils.parseTreeSource = function (json, inputStore, outputStore, manager) {
 		// look for the source type
 		if (json.Clip) {
 			// ClipSource
@@ -344,7 +309,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.populateClipSource = function(source, clip, root, manager) {
+	JsonUtils.populateClipSource = function (source, clip, root, manager) {
 		// clip instance params...
 		// add time scaling, if present
 		if (root.TimeScale !== undefined) {
@@ -360,7 +325,7 @@ define([
 		}
 	};
 
-	JsonUtils.parseLayerProperties = function(manager, layer, layerObj) {
+	JsonUtils.parseLayerProperties = function (manager, layer, layerObj) {
 		if (layerObj.BlendType) {
 			var blender = null;
 			if ("lerp" === layerObj.BlendType) {
@@ -374,7 +339,7 @@ define([
 		}
 	};
 
-	JsonUtils.parseChannelTimes = function(chanObj, useCompression) {
+	JsonUtils.parseChannelTimes = function (chanObj, useCompression) {
 		var timesVal = chanObj.Times;
 		if (timesVal) {
 			if (useCompression) {
@@ -389,7 +354,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.parseFloatLERPValues = function(chanObj, useCompression) {
+	JsonUtils.parseFloatLERPValues = function (chanObj, useCompression) {
 		var valuesVal = chanObj.IFCValues;
 		if (valuesVal) {
 			if (useCompression) {
@@ -404,7 +369,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.parseRotationSamples = function(chanObj, range, useCompression) {
+	JsonUtils.parseRotationSamples = function (chanObj, range, useCompression) {
 		var transVal = chanObj.RotationSamples;
 		if (transVal) {
 			if (useCompression) {
@@ -419,7 +384,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.parseTranslationSamples = function(chanObj, size, useCompression) {
+	JsonUtils.parseTranslationSamples = function (chanObj, size, useCompression) {
 		var uniform = chanObj.UniformTranslation;
 		if (uniform) {
 			var translation = uniform;
@@ -454,7 +419,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.parseScaleSamples = function(chanObj, size, useCompression) {
+	JsonUtils.parseScaleSamples = function (chanObj, size, useCompression) {
 		var uniform = chanObj.UniformScale;
 		if (uniform) {
 			var scale = uniform;
@@ -486,7 +451,7 @@ define([
 		return null;
 	};
 
-	JsonUtils.parseQuaternionSamples = function(quatsObj) {
+	JsonUtils.parseQuaternionSamples = function (quatsObj) {
 		var values = quatsObj;
 		if (!values) {
 			return null;
@@ -496,32 +461,27 @@ define([
 		var lastQuat = new Quaternion();
 		for ( var i = 0, max = values.length; i < max; i++) {
 			var val = values[i];
-			if (val) {
-				if ("*" === val) {
-					quats[i * 4 + 0] = lastQuat.x;
-					quats[i * 4 + 1] = lastQuat.y;
-					quats[i * 4 + 2] = lastQuat.z;
-					quats[i * 4 + 3] = lastQuat.w;
-				}
-			} else {
-				var valsArray = val;
-				if (valsArray && valsArray.length === 4) {
-					var x = valsArray[0];
-					var y = valsArray[1];
-					var z = valsArray[2];
-					var w = valsArray[3];
-					lastQuat.set(x, y, z, w);
-					quats[i * 4 + 0] = lastQuat.x;
-					quats[i * 4 + 1] = lastQuat.y;
-					quats[i * 4 + 2] = lastQuat.z;
-					quats[i * 4 + 3] = lastQuat.w;
-				}
+			if (val === "*") {
+				quats[i * 4 + 0] = lastQuat.x;
+				quats[i * 4 + 1] = lastQuat.y;
+				quats[i * 4 + 2] = lastQuat.z;
+				quats[i * 4 + 3] = lastQuat.w;
+			} else if (val instanceof Array && val.length === 4) {
+				var x = val[0];
+				var y = val[1];
+				var z = val[2];
+				var w = val[3];
+				lastQuat.set(x, y, z, w);
+				quats[i * 4 + 0] = lastQuat.x;
+				quats[i * 4 + 1] = lastQuat.y;
+				quats[i * 4 + 2] = lastQuat.z;
+				quats[i * 4 + 3] = lastQuat.w;
 			}
 		}
 		return quats;
 	};
 
-	JsonUtils.parseVector3Samples = function(vecsObj) {
+	JsonUtils.parseVector3Samples = function (vecsObj) {
 		var values = vecsObj;
 		if (!values) {
 			return null;
@@ -531,29 +491,24 @@ define([
 		var lastVec = new Vector3();
 		for ( var i = 0, max = values.length; i < max; i++) {
 			var val = values[i];
-			if (val) {
-				if ("*" === val) {
-					rVal[i * 3 + 0] = lastVec.x;
-					rVal[i * 3 + 1] = lastVec.y;
-					rVal[i * 3 + 2] = lastVec.z;
-				}
-			} else {
-				var valsArray = val.isArray();
-				if (valsArray && valsArray.length === 3) {
-					var x = valsArray[0];
-					var y = valsArray[1];
-					var z = valsArray[2];
-					lastVec.set(x, y, z);
-					rVal[i * 3 + 0] = lastVec.x;
-					rVal[i * 3 + 1] = lastVec.y;
-					rVal[i * 3 + 2] = lastVec.z;
-				}
+			if (val === "*") {
+				rVal[i * 3 + 0] = lastVec.x;
+				rVal[i * 3 + 1] = lastVec.y;
+				rVal[i * 3 + 2] = lastVec.z;
+			} else if (val instanceof Array && val.length === 3) {
+				var x = val[0];
+				var y = val[1];
+				var z = val[2];
+				lastVec.set(x, y, z);
+				rVal[i * 3 + 0] = lastVec.x;
+				rVal[i * 3 + 1] = lastVec.y;
+				rVal[i * 3 + 2] = lastVec.z;
 			}
 		}
 		return rVal;
 	};
 
-	JsonUtils.parseFloatArrayFromCompressedString = function(attribBufferString, scales, offsets) {
+	JsonUtils.parseFloatArrayFromCompressedString = function (attribBufferString, scales, offsets) {
 		var attribs = attribBufferString;
 		var rVal = [];
 		var stride = scales.length;

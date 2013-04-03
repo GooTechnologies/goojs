@@ -1,14 +1,14 @@
 define([
-        'goo/entities/systems/System',
+	'goo/entities/systems/System',
 	'goo/entities/EventHandler',
-        'goo/renderer/SimplePartitioner'
-        ],
-	/** @lends RenderSystem */
-	function (
-		System,
+	'goo/renderer/SimplePartitioner'
+],
+/** @lends RenderSystem */
+function (
+	System,
 	EventHandler,
-		SimplePartitioner
-	) {
+	SimplePartitioner
+) {
 	"use strict";
 
 	/**
@@ -75,7 +75,6 @@ define([
 				preRenderer.process(renderer, this.entities, this.partitioner);
 			}
 
-			this.renderList.length = 0;
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
 			if (this.composers.length > 0) {

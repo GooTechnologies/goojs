@@ -30,6 +30,10 @@ define([
 
 		var request = new XMLHttpRequest();
 
+		if (options.responseType) {
+			request.responseType = options.responseType;
+		}
+
 		request.open(method, url, async);
 
 

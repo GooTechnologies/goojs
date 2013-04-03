@@ -62,8 +62,8 @@ require([
 
 	function init () {
 		var goo = new GooRunner({
-			showStats: true,
-			antialias: true
+			//showStats: true,
+			//antialias: true
 		});
 		goo.renderer.setClearColor(0.0, 0.0, 0.0, 1.0);
 		goo.renderer.domElement.id = 'goo';
@@ -100,9 +100,10 @@ require([
 
 		// Examples of model loading
 		loadSkybox(goo);
-		loadModels(goo);
+		//loadModels(goo);
 
-		var entity = createBox(goo, ShaderLib.simpleLit, 10, 10, 10);
+		var entity = createBox(goo, ShaderLib.simpleLit, 50, 150, 150);
+		entity.transformComponent.transform.translation.x = -80;
 		entity.addToWorld();
 		var script = {
 			run: function (entity) {
@@ -110,11 +111,11 @@ require([
 
 				var transformComponent = entity.transformComponent;
 				entity.transformComponent.transform.setRotationXYZ(
-					World.time * 1.2,
-					World.time * 2.0,
+					0.2,
+					World.time * 0.2,
 					0
 				);
-				transformComponent.transform.translation.y = Math.sin(t) * 5 + 5;
+				transformComponent.transform.translation.y = Math.sin(t) * 5 - 70;
 				transformComponent.setUpdated();
 			}
 		};
@@ -134,24 +135,24 @@ require([
 		waterRenderer.setWaterEntity(waterEntity);
 		waterRenderer.setSkyBox(skybox);
 
+		waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
+		waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'timeMultiplier', 0.1, 5.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'sunColor');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunShininess', 0.0, 300.0);
-		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunDiffusePower', 0.0, 2.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'sunSpecPower', 0.0, 4.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'distortionMultiplier', 0.0, 0.5);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelPow', 1.0, 8.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'normalMultiplier', 0.0, 3.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fresnelMultiplier', 0.0, 3.0);
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColor');
-		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'waterColorEnd');
 		gui.addColor(waterRenderer.waterMaterial.shader.uniforms, 'fogColor');
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogStart', 0.0, 2000.0);
 		gui.add(waterRenderer.waterMaterial.shader.uniforms, 'fogScale', 1.0, 2000.0);
 		var obj = {
-			message: ''
+			waterType: ''
 		};
-		var controller = gui.add(obj, 'message', [ '1', '2' ] );
+		var controller = gui.add(obj, 'waterType', [ '1', '2' ] );
 		controller.onFinishChange(function(value) {
 			if (value === '1') {
 				waterRenderer.waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');

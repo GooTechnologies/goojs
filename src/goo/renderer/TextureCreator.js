@@ -83,7 +83,7 @@ function (
 				TextureCreator.cache[imageURL] = rVal;
 
 				// from URL
-				SimpleResourceUtil.loadBinaryAsArrayBuffer(imageURL, simpleResourceUtilCallback);
+				this._loader.load(imageURL, null, Loader.ARRAY_BUFFER).then(simpleResourceUtilCallback.onSuccess, simpleResourceUtilCallback.onError);
 
 				// return standin while we wait for texture to load.
 				return rVal;
@@ -95,7 +95,7 @@ function (
 		}
 
 		// Create a texture
-		var texture = new Texture();
+		var texture = new Texture(null, settings);
 		TextureCreator.cache[imageURL] = texture;
 
 		// Load the actual image
@@ -109,13 +109,13 @@ function (
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL) {
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop) {
 		if (TextureCreator.cache[videoURL] !== undefined) {
 			return TextureCreator.cache[videoURL];
 		}
 
 		var video = document.createElement('video');
-		video.loop = true;
+		video.loop = (typeof (loop) === 'boolean') ? loop : true;
 
 		video.addEventListener('error', function () {
 			console.warn('Couldn\'t load video URL [' + videoURL + ']');
