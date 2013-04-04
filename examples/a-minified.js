@@ -1,4 +1,8 @@
-require(['../minified/goo'], function() {
+require.config({
+	baseUrl: '../minified'
+});
+
+require(['goo/goo'], function() {
 require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/System', 'goo/entities/systems/TransformSystem',
 		'goo/entities/systems/RenderSystem', 'goo/entities/components/TransformComponent', 'goo/entities/components/MeshDataComponent',
 		'goo/entities/components/MeshRendererComponent', 'goo/renderer/MeshData', 'goo/renderer/Renderer',
@@ -46,7 +50,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 
 		// create our shared particles
 		var additiveParticleComponent = createParticles(goo.world, additiveMaterial);
-		var alphaParticleComponent = createParticles(goo.world, alphaMaterial);
+		//var alphaParticleComponent = createParticles(goo.world, alphaMaterial);
 
 		// add various emitters
 		addGooText(additiveParticleComponent);
@@ -125,7 +129,7 @@ require(['goo/entities/World', 'goo/entities/Entity', 'goo/entities/systems/Syst
 				index = Math.min(index, positions.length - 1);
 				ParticleUtils.applyEntityTransformPoint(vec3.set(positions[index][0], positions[index][1], 0), particleEntity);
 			},
-			getEmissionVelocity : function (particle, particleEntity) {
+			getEmissionVelocity : function (particle/*, particleEntity*/) {
 				var vec3 = particle.velocity;
 				return vec3.set(Math.random() * 0.2 - 0.1, 0, Math.random() * 0.2 - 0.1);
 			},
