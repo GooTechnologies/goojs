@@ -87,6 +87,7 @@ require([
 
 		// Bloom
 		var bloomPass = new BloomPass();
+		bloomPass.enabled = false;
 		// var bloomPass = new BlurPass();
 
 		// Film grain
@@ -101,10 +102,10 @@ require([
 		coolPass.renderToScreen = true;
 
 		var shaders = [
-			'copy',
-			'copyPure',
-			'textured',
-			'texturedLit',
+			//'copy',
+			//'copyPure',
+			//'textured',
+			//'texturedLit',
 			'bokehShader',
 			'sepia',
 			'dotscreen',
@@ -116,7 +117,7 @@ require([
 			'normalmap',
 			'rgbshift',
 			'brightnesscontrast',
-			'luminosity',
+			//'luminosity',
 			'downsample',
 			'boxfilter'
 		];
@@ -133,11 +134,66 @@ require([
 		}
 
 		// object to hold proxy properties for dat.gui use
+		var one = {
+			min: 0,
+			max: 1,
+			step: 1/20
+		};
+		var disabled = {
+			disabled: true
+		};
+		var angle = {
+			min: 0,
+			max: Math.PI/2,
+			step: Math.PI/48
+		};
+
 		var proxies;
+		var limits = {
+			opacity: one,
+			tColor: disabled,
+			tDepth: disabled,
+			focus: {
+				min: 1,
+				max: 50,
+				step: 0.5
+			},
+			aperture: {
+				min: 0,
+				max: 3,
+				step: 0.1
+			},
+			maxblur: {
+				min: 0,
+				max: 3,
+				step: 0.1
+			},
+			sepia: one,
+			angle: angle,
+			tDiffuse: disabled,
+			nIntensity: one,
+			sIntensity: one,
+			sCount: {
+				min: 30,
+				max: 2000,
+				step: 10
+			},
+			brightness: {
+				min: -1,
+				max: 1,
+				step: 0.1
+			},
+			contrast: {
+				min: -1,
+				max: 1,
+				step: 0.1
+			}
+		};
 		window.selectEffect = function(effect) {
 			console.log(effect);
 
 			proxies = {};
+
 
 			coolPass.material = Material.createMaterial(Util.clone(ShaderLib[effect]));
 			coolPass.renderable.materials = [coolPass.material];
@@ -155,11 +211,13 @@ require([
 			if(infoPanel.childNodes.length > 1) {
 				infoPanel.removeChild(infoPanel.lastChild);
 			}
+			/* global dat */
 			var gui = new dat.GUI({
 				name: effect,
 				autoPlace: false
 			});
 			var uniforms = coolPass.material.shader.uniforms;
+			console.log(uniforms);
 			var arrayHandle = function (value) {
 				var valueArray = value.split(',');
 				for (var i = 0; i < valueArray.length; i++) {
@@ -168,15 +226,16 @@ require([
 				// WARNING Hack-ish, but meh, it's just a demo
 				uniforms[this.property] = valueArray;
 			};
-			var colorHandle = function (value) {
+			var colorHandle = function () {
 				uniforms.color = [proxies.red, proxies.green, proxies.blue];
 			};
 			var grayscaleHandle = function (value) {
 				uniforms.grayscale = value;
 			};
+			var logger = function (value) {
+				console.log('changed to', value);
+			};
 			for (var key in uniforms) {
-				console.log(key, uniforms[key]);
-
 				if (uniforms[key] instanceof Array) {
 					// WARNING Hack-ish, but meh, it's just a demo
 					if (effect === 'colorify' && key === 'color') {
@@ -200,12 +259,32 @@ require([
 						if (effect === 'film' && key === 'grayscale') {
 							proxies.grayscale = false;
 							gui.add(proxies, 'grayscale').onChange(grayscaleHandle);
+						} else if(limits[key]){
+							var limit;
+							var name = coolPass.material.shader.name;
+							if (limits[name] && limits[name][key]) {
+								limit = limits[name][key];
+							} else {
+								limit = limits[key];
+							}
+
+							if(limit.disabled) {
+								continue;
+							}
+							else if (limit.min !== undefined && limit.max && limit.step) {
+								gui.add(uniforms, key, limit.min, limit.max).step(limit.step).onChange(logger);
+							}
 						} else {
 							gui.add(uniforms, key);
 						}
 					}
 				}
 			}
+			proxies.bloomEnabled = false;
+			var bloomHandler = function(value) {
+				bloomPass.enabled = value;
+			};
+			gui.add(proxies, 'bloomEnabled').onChange(bloomHandler);
 
 			infoPanel.appendChild(gui.domElement);
 		};
