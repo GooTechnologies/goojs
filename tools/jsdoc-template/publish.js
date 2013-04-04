@@ -283,6 +283,7 @@ exports.publish = function(taffyData, opts, tutorials) {
 
     var conf = env.conf.templates || {};
     conf['default'] = conf['default'] || {};
+    conf['default'].outputSourceFiles = false;
 
     var templatePath = opts.template;
     view = new template.Template(templatePath + '/tmpl');
