@@ -115,14 +115,31 @@ function (
 		this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
 	};
 
+	// Should be moved to mathUtils?
+	function _radialClamp(value, min, max) {
+		// Rotating coordinates to be mirrored
+		var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+		var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
+		var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
+		var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
+
+		// Putting min, max and value on the same circle
+		if (value < 0 && min > 0) { min -= MathUtils.TWO_PI; }
+		else if (value > 0 && min < 0) { min += MathUtils.TWO_PI; }
+		if (value > MathUtils.TWO_PI && max < MathUtils.TWO_PI) { max += MathUtils.TWO_PI; }
+
+		return _value < _min ? min : _value > _max ? max : value;
+	}
+
+
 	OrbitCamControlScript.prototype.move = function (x, y) {
 		var azimuthAccel = this.invertedX ? -x : x;
 		var thetaAccel = this.invertedY ? -y : y;
 
 		// update our master spherical coords, using x and y movement
 		if (this.clampAzimuth) {
-			this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI),
-				this.minAzimuth, this.maxAzimuth));
+			this.targetSpherical.y = _radialClamp(this.targetSpherical.y - azimuthAccel,
+				this.minAzimuth, this.maxAzimuth);
 		} else {
 			this.targetSpherical.y = this.targetSpherical.y - azimuthAccel;
 		}
