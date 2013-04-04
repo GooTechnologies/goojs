@@ -4,14 +4,14 @@ define([
 	'goo/loaders/JsonUtils',
 	'goo/renderer/MeshData',
 	'goo/loaders/SkeletonLoader'
-	],
+],
 /** @lends MeshLoader */
 function(
 	RSVP,
 	JsonUtils,
 	MeshData,
 	SkeletonLoader
-	) {
+) {
 	"use strict";
 
 	/**
@@ -20,17 +20,20 @@ function(
 	 * @constructor
 	 * @param {Loader} parameters.loader
 	 */
+
 	function MeshLoader(parameters) {
-		if(typeof parameters === "undefined" || parameters === null) {
+		if (typeof parameters === "undefined" || parameters === null) {
 			throw new Error('MeshLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || parameters.loader === null) {
+		if (typeof parameters.loader === "undefined" || parameters.loader === null) {
 			throw new Error('MeshLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
 		this._loader = parameters.loader;
-		this._skeletonLoader = new SkeletonLoader({ loader: this._loader });
+		this._skeletonLoader = new SkeletonLoader({
+			loader: this._loader
+		});
 		this._cache = {};
 	}
 
@@ -59,7 +62,6 @@ function(
 		var promise = new RSVP.Promise();
 
 		try {
-
 			if (data.compression) {
 				this.useCompression = data.compression.compressed || false;
 				this.compressedVertsRange = data.compression.compressedVertsRange || (1 << 14) - 1; // int
@@ -69,117 +71,116 @@ function(
 			var type = (data.type === 'SkinnedMesh') ? 'SkinnedMesh' : 'Mesh';
 			var meshData;
 			if (data.type === 'SkinnedMesh') {
-				meshData = this._parseMeshData(data, 4, type);
+				meshData = this._parseMeshData(data.data, 4, type);
 				meshData.type = MeshData.SKINMESH;
 			} else {
-				meshData = this._parseMeshData(data, 0, type);
+				meshData = this._parseMeshData(data.data, 0, type);
 				meshData.type = MeshData.MESH;
 			}
 			if (data.pose) {
 				var skeletonLoader = this._skeletonLoader;
 				promise = skeletonLoader.load(data.pose)
-				.then(function(skeletonPose) {
+					.then(function(skeletonPose) {
 					meshData.currentPose = skeletonPose;
 					return meshData;
 				});
-			}
-			else {
+			} else {
 				promise.resolve(meshData);
 			}
-		} catch(e) {
+		} catch (e) {
 			promise.reject(e);
 		}
 
 		return promise;
 	};
 
-	MeshLoader.prototype._parseMeshData = function (object, weightsPerVert, type) {
-		var vertexCount = object.data.VertexCount; // int
+	MeshLoader.prototype._parseMeshData = function(data, weightsPerVert, type) {
+		var vertexCount = data.VertexCount; // int
 		if (vertexCount === 0) {
 			return null;
 		}
 
-		var indexCount = object.data.IndexLengths ? object.data.IndexLengths[0] : object.data.Indices ? object.data.Indices.length : 0;
+		var indexCount = data.IndexLengths ? data.IndexLengths[0] : data.Indices ? data.Indices.length : 0;
 
 		var attributeMap = {};
-		if (object.data.Vertices) {
+		if (data.Vertices) {
 			attributeMap.POSITION = MeshData.createAttribute(3, 'Float');
 		}
-		if (object.data.Normals) {
+		if (data.Normals) {
 			attributeMap.NORMAL = MeshData.createAttribute(3, 'Float');
 		}
-		if (object.data.Tangents) {
+		if (data.Tangents) {
 			attributeMap.TANGENT = MeshData.createAttribute(4, 'Float');
 		}
-		if (object.data.Colors) {
+		if (data.Colors) {
 			attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
 		}
-		if (weightsPerVert > 0 && object.data.Weights) {
+		if (weightsPerVert > 0 && data.Weights) {
 			attributeMap.WEIGHTS = MeshData.createAttribute(4, 'Float');
 		}
-		if (weightsPerVert > 0 && object.data.Joints) {
+		if (weightsPerVert > 0 && data.Joints) {
 			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
 		}
-		if (object.data.TextureCoords) {
-			for (var i in object.data.TextureCoords) {
+		if (data.TextureCoords) {
+			for (var i in data.TextureCoords) {
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}
 		var meshData = new MeshData(attributeMap, vertexCount, indexCount);
 
-		if (object.data.Vertices) {
+		if (data.Vertices) {
 			if (this.useCompression) {
-				var offsetObj = object.data.VertexOffsets;
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Vertices, meshData, MeshData.POSITION, [object.data.VertexScale,
-						object.data.VertexScale, object.data.VertexScale], [offsetObj.xOffset, offsetObj.yOffset, offsetObj.zOffset]);
+				var offsetObj = data.VertexOffsets;
+				JsonUtils.fillAttributeBufferFromCompressedString(data.Vertices, meshData, MeshData.POSITION, [data.VertexScale,
+				data.VertexScale, data.VertexScale], [offsetObj.xOffset, offsetObj.yOffset, offsetObj.zOffset]);
 			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Vertices, meshData, MeshData.POSITION);
+				JsonUtils.fillAttributeBuffer(data.Vertices, meshData, MeshData.POSITION);
 			}
 		}
-		if (weightsPerVert > 0 && object.data.Weights) {
+		if (weightsPerVert > 0 && data.Weights) {
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 1 / this.compressedVertsRange;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Weights, meshData, MeshData.WEIGHTS, [scale], [offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(data.Weights, meshData, MeshData.WEIGHTS, [scale], [offset]);
 			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Weights, meshData, MeshData.WEIGHTS);
+				JsonUtils.fillAttributeBuffer(data.Weights, meshData, MeshData.WEIGHTS);
 			}
 		}
-		if (object.data.Normals) {
+		if (data.Normals) {
 			if (this.useCompression) {
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Normals, meshData, MeshData.NORMAL, [scale, scale, scale], [offset, offset,
-						offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(data.Normals, meshData, MeshData.NORMAL, [scale, scale, scale], [offset, offset,
+				offset]);
 			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Normals, meshData, MeshData.NORMAL);
+				JsonUtils.fillAttributeBuffer(data.Normals, meshData, MeshData.NORMAL);
 			}
 		}
-		if (object.data.Tangents) {
+		if (data.Tangents) {
 			if (this.useCompression) {
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
 
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Tangents, meshData, MeshData.TANGENT, [scale, scale, scale, scale], [offset,
-						offset, offset, offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(data.Tangents, meshData, MeshData.TANGENT, [scale, scale, scale, scale], [offset,
+				offset, offset, offset]);
 			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Tangents, meshData, MeshData.TANGENT);
+				JsonUtils.fillAttributeBuffer(data.Tangents, meshData, MeshData.TANGENT);
 			}
 		}
-		if (object.data.Colors) {
+		if (data.Colors) {
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 255 / (this.compressedColorsRange + 1);
-				JsonUtils.fillAttributeBufferFromCompressedString(object.data.Colors, meshData, MeshData.COLOR, [scale, scale, scale, scale], [offset,
-						offset, offset, offset]);
+				JsonUtils.fillAttributeBufferFromCompressedString(data.Colors, meshData, MeshData.COLOR, [scale, scale, scale, scale], [offset,
+				offset, offset, offset]);
 			} else {
-				JsonUtils.fillAttributeBuffer(object.data.Colors, meshData, MeshData.COLOR);
+				JsonUtils.fillAttributeBuffer(data.Colors, meshData, MeshData.COLOR);
 			}
 		}
-		if (object.data.TextureCoords) {
-			var textureUnits = object.data.TextureCoords;
+		if (data.TextureCoords) {
+			var textureUnits = data.TextureCoords;
 			if (this.useCompression) {
 				for (var i = 0; i < textureUnits.length; i++) {
 					var texObj = textureUnits[i];
@@ -191,13 +192,13 @@ function(
 				}
 			}
 		}
-		if (weightsPerVert > 0 && object.data.Joints) {
+		if (weightsPerVert > 0 && data.Joints) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
 			var data;
 			if (this.useCompression) {
-				data = JsonUtils.getIntBufferFromCompressedString(object.data.Joints, 32767);
+				data = JsonUtils.getIntBufferFromCompressedString(data.Joints, 32767);
 			} else {
-				data = JsonUtils.getIntBuffer(object.data.Joints, 32767);
+				data = JsonUtils.getIntBuffer(data.Joints, 32767);
 			}
 			if (type === 'SkinnedMesh') {
 				// map these joints to local.
@@ -230,16 +231,16 @@ function(
 			}
 		}
 
-		if (object.data.Indices) {
+		if (data.Indices) {
 			if (this.useCompression) {
-				meshData.getIndexBuffer().set(JsonUtils.getIntBufferFromCompressedString(object.data.Indices, vertexCount));
+				meshData.getIndexBuffer().set(JsonUtils.getIntBufferFromCompressedString(data.Indices, vertexCount));
 			} else {
-				meshData.getIndexBuffer().set(JsonUtils.getIntBuffer(object.data.Indices, vertexCount));
+				meshData.getIndexBuffer().set(JsonUtils.getIntBuffer(data.Indices, vertexCount));
 			}
 		}
 
-		if (object.data.IndexModes) {
-			var modes = object.data.IndexModes;
+		if (data.IndexModes) {
+			var modes = data.IndexModes;
 			if (modes.length === 1) {
 				meshData.indexModes[0] = modes[0];
 			} else {
@@ -251,8 +252,8 @@ function(
 			}
 		}
 
-		if (object.data.IndexLengths) {
-			var lengths = object.data.IndexLengths;
+		if (data.IndexLengths) {
+			var lengths = data.IndexLengths;
 			var lengthArray = [];
 			for (var i = 0; i < lengths.length; i++) {
 				lengthArray[i] = lengths[i];

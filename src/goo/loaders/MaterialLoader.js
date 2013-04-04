@@ -6,7 +6,8 @@ define([
 		'goo/renderer/TextureCreator',
 		'goo/renderer/Material',
 		'goo/loaders/Loader',
-		'goo/loaders/ShaderLoader'
+		'goo/loaders/ShaderLoader',
+		'goo/renderer/shaders/ShaderLib'
 	],
 	/** @lends MaterialLoader */
 	function(
@@ -16,7 +17,8 @@ define([
 		TextureCreator,
 		Material,
 		Loader,
-		ShaderLoader
+		ShaderLoader,
+		ShaderLib
 	) {
 	"use strict";
 
@@ -54,6 +56,8 @@ define([
 		var that = this;
 		var promise = this._loader.load(materialPath, function(data) {
 			return that._parse(data);
+		}).then(null, function() {
+			return Material.createMaterial(ShaderLib.texturedLit, 'DefaultShader');
 		});
 
 		this._cache[materialPath] = promise;
@@ -93,6 +97,14 @@ define([
 					return shader;
 				});
 
+				promises.push(p);
+			} else {
+				var p = new RSVP.Promise();
+				p.then(function(iShader) {
+					shader = iShader;
+					return shader;
+				});
+				p.resolve(Material.createShader(ShaderLib.texturedLit), 'DefaultShader');
 				promises.push(p);
 			}
 

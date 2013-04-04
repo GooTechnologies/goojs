@@ -163,9 +163,8 @@ function(
 		// Create a transform
 		var tc = new TransformComponent();
 
-		tc.transform.translation = new Vector3(transformComponentSource.translation);
-		tc.transform.scale = new Vector3(transformComponentSource.scale);
-
+		tc.transform.translation.set(transformComponentSource.translation);
+		tc.transform.scale.set(transformComponentSource.scale);
 		tc.transform.rotation.fromAngles(
 			MathUtils.radFromDeg(transformComponentSource.rotation[0]),
 			MathUtils.radFromDeg(transformComponentSource.rotation[1]),
