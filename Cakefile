@@ -2,6 +2,7 @@ fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
+copyLibs = require('./buildengine/copyLibs').copyLibs
 	
 task 'minify', 'minify try', (options) ->
 
@@ -14,16 +15,16 @@ task 'minify', 'minify try', (options) ->
 	else 	
 		console.log 'minifying'
 		fileIn = 'src'
-		fileOut = 'minified/goo.js'
+		fileOut = 'minified/goo/goo.js'
 		includefile = 'buildengine/glob/minify.glob'
 	
 		minify(fileIn, fileOut, true, includefile)	
+		
+		source = 'lib'
+		target = 'minified/goo/lib'
+		includeFile = 'buildengine/glob/copy.glob'
+		copyLibs(source, target, includeFile)
 
-task 'minifysmall', 'one minify', (options) ->
-	console.log "minifying #{options.input}"
-	fileOut = "minified/#{options.output}.js"
-	
-	minify(options.input, fileOut, true)
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server

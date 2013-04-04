@@ -2,6 +2,7 @@ fs = require('fs')
 path = require('path')
 mkdirp = require('mkdirp')
 
+
 # Minifying files
 
 doClosure = (fileIn, fileOut, deleteAfter) ->
@@ -43,9 +44,11 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 		name: filePathIn
 		optimize: 'none'
 		paths:
-			'goo/lib' : '../lib'
+			'goo/lib' : 'empty:'
 
 	requirejs.optimize config, (buildResponse) ->
+		files = buildResponse.split("\n")
+		console.log 'here'
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
 		doClosure tempClosure, fileOut, true
