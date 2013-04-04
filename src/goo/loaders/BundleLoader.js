@@ -1,7 +1,7 @@
 define([
 		'goo/loaders/Loader',
 		'goo/lib/rsvp.amd',
-		'goo/renderer/util'
+		'goo/renderer/Util'
 	],
 	/** @lends BundleLoader */
 	function (
