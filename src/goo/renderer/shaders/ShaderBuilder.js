@@ -1,11 +1,11 @@
 define([
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/MeshData'
+	// 'goo/renderer/shaders/ShaderFragment',
+	// 'goo/renderer/MeshData'
 ],
 /** @lends ShaderBuilder */
 function (
-	ShaderFragment,
-	MeshData
+	// ShaderFragment,
+	// MeshData
 ) {
 	"use strict";
 

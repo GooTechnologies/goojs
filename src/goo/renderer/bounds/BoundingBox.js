@@ -336,7 +336,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 		BoundingBox.clip(direction.z, -diff.z - z, t) && //
 		BoundingBox.clip(-direction.z, diff.z - z, t);
 
-		if (notEntirelyClipped && (t[0] != 0.0 || t[1] != Infinity)) {
+		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			return true;
 		}
 
@@ -375,7 +375,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 		BoundingBox.clip(direction.z, -diff.z - z, t) && //
 		BoundingBox.clip(-direction.z, diff.z - z, t);
 
-		if (notEntirelyClipped && (t[0] != 0.0 || t[1] != Infinity)) {
+		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
 				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
