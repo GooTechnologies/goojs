@@ -5,41 +5,62 @@ function (
 	Vector2, Vector3, MathUtils) {
 	"use strict";
 
-	function OrbitCamControlScript (properties) {
+	var _defaults = {
+		domElement: document,
 
+		turnSpeedHorizontal: 0.005,
+		turnSpeedVertical: 0.005,
+		zoomSpeed: 0.20,
+
+		dragOnly: true,
+		dragButton: -1,
+
+		worldUpVector: new Vector3(0,1,0),
+
+		baseDistance: 15,
+		minZoomDistance: 1,
+		maxZoomDistance: 1000,
+
+		minAscent: -89.95 * MathUtils.DEG_TO_RAD,
+		maxAscent: 89.95 * MathUtils.DEG_TO_RAD,
+		clampAzimuth: false,
+		minAzimuth: 90 * MathUtils.DEG_TO_RAD,
+		maxAzimuth: 270 * MathUtils.DEG_TO_RAD,
+
+		releaseVelocity: true,
+		invertedX: false,
+		invertedY: false,
+		invertedWheel: true,
+
+		mouseUpOnOut: false,
+		drag: 5.0,
+
+		maxSampleTimeMS: 200,
+
+		lookAtPoint: new Vector3(0,0,0),
+		spherical: new Vector3(15,0,0),
+		interpolationSpeed: 7,
+		onRun: null
+	};
+
+	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+		for(var key in _defaults) {
+			if(typeof(_defaults[key]) === 'boolean') {
+				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
+			}
+			else if (!isNaN(_defaults[key])) {
+				this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
+			}
+			else if(_defaults[key] instanceof Vector3) {
+				this[key] = properties[key] || new Vector3().copy(_defaults[key]);
+			}
+			else {
+				this[key] = properties[key] || _defaults[key];
+			}
+		}
 
 		this.name = 'OrbitCamControlScript';
-
-		this.domElement = properties.domElement || document;
-
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
-		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.20;
-
-		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
-		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
-
-		this.worldUpVector = properties.worldUpVector || new Vector3(0, 1, 0);
-
-		this.baseDistance = !isNaN(properties.baseDistance) ? properties.baseDistance : 15;
-		this.minZoomDistance = !isNaN(properties.minZoomDistance) ? properties.minZoomDistance : 1;
-		this.maxZoomDistance = !isNaN(properties.maxZoomDistance) ? properties.maxZoomDistance : 1000;
-
-		this.minAscent = !isNaN(properties.minAscent) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
-		this.maxAscent = !isNaN(properties.maxAscent) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-		this.clampAzimuth = properties.clampAzimuth !== undefined ? properties.clampAzimuth === true : false;
-		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 90 * MathUtils.DEG_TO_RAD;
-		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : 270 * MathUtils.DEG_TO_RAD;
-
-		this.releaseVelocity = properties.releaseVelocity !== undefined ? properties.releaseVelocity === true : true;
-		this.invertedX = properties.invertedX !== undefined ? properties.invertedX === true : false;
-		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
-		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
-
-		// REVIEW: Why do we need a setting for this? Is there a reason for it to be configurable?
-		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
-		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];
@@ -47,17 +68,11 @@ function (
 		this.sample = 0;
 		this.velocity = new Vector2();
 
-		this.maxSampleTimeMS = !isNaN(properties.maxSampleTimeMS) ? properties.maxSampleTimeMS : 200;
-
-		this.lookAtPoint = properties.lookAtPoint || new Vector3(0, 0, 0);
-		this.spherical = properties.spherical || new Vector3(15, 0, 0);
 		this.targetSpherical = new Vector3(this.spherical);
-		this.interpolationSpeed = !isNaN(properties.interpolationSpeed) ? properties.interpolationSpeed : 7;
 		this.cartesian = new Vector3();
 
 		this.dirty = true;
 
-		this.onRun = properties.onRun;
 
 		this.mouseState = {
 			buttonDown : false,
@@ -182,7 +197,7 @@ function (
 			that.updateButtonState(event.button, true);
 		}, false);
 
-		this.domElement.addEventListener('mouseup', function (event) {
+		document.addEventListener('mouseup', function (event) {
 			that.updateButtonState(event.button, false);
 		}, false);
 
@@ -192,7 +207,7 @@ function (
 			}, false);
 		}
 
-		this.domElement.addEventListener('mousemove', function (event) {
+		document.addEventListener('mousemove', function (event) {
 			that.updateDeltas(event.clientX, event.clientY);
 		}, false);
 
