@@ -267,15 +267,15 @@ define([
 
 			combinedMatrix.applyPost(v);
 
-			if (v.w < this.camera.near) {
+			if (v.data[3] < this.camera.near) {
 				// Near plane clipped.
 				//console.log("Early exit on near plane clipped.");
 				return false;
 			}
 
-			var div = 1.0 / v.w;
-			v.x *= div;
-			v.y *= div;
+			var div = 1.0 / v.data[3];
+			v.data[0] *= div;
+			v.data[1] *= div;
 		}
 
 		var triangles = [];
@@ -332,9 +332,9 @@ define([
 
 	SoftwareRenderer.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
 
-		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
-		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
+		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
 		var vertices = this._generateBoundingBoxVertices(entity);
 
@@ -1393,7 +1393,7 @@ define([
 	*	@return {Boolean} true/false
 	*/
 	SoftwareRenderer.prototype._isCoordinateInsideScreen = function (coordinate) {
-		return coordinate.x >= 0 && coordinate.x <= this._clipX && coordinate.y <= this._clipY && coordinate.y >= 0;
+		return coordinate.data[0] >= 0 && coordinate.data[0] <= this._clipX && coordinate.data[1] <= this._clipY && coordinate.data[1] >= 0;
 	};
 
 
@@ -1407,7 +1407,7 @@ define([
 		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
 		var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
-		// Allocate the trianle array for the maximum case,
+		// Allocate the triangle array for the maximum case,
 		// where all the triangles are visible.
 		// This will raise a need for checking for undefined during the rendering of the triangles.
 		var triangles = [];
@@ -1425,7 +1425,7 @@ define([
 		for (var i = 0; i < posArray.length; i++) {
 			tempVertex.set(originalPositions[i], originalPositions[i + 1], originalPositions[i + 2], 1.0);
 			combinedMatrix.applyPost(tempVertex);
-			posArray.set([tempVertex.x, tempVertex.y, tempVertex.z], i);
+			posArray.set([tempVertex.data[0], tempVertex.data[1], tempVertex.data[2]], i);
 			i += 2;
 		}
 
@@ -1476,18 +1476,18 @@ define([
 					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV1 = [
-						origin.x + ratio * (target.x - origin.x),
-						origin.y + ratio * (target.y - origin.y),
-						origin.z + ratio * (target.z - origin.z)
+						origin.data[0] + ratio * (target.data[0] - origin.data[0]),
+						origin.data[1] + ratio * (target.data[1] - origin.data[1]),
+						origin.data[2] + ratio * (target.data[2] - origin.data[2])
 					];
 
 					target = vertices[insideIndices[1]];
 					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					var newV2 = new Vector4(
-						origin.x + ratio * (target.x - origin.x),
-						origin.y + ratio * (target.y - origin.y),
-						origin.z + ratio * (target.z - origin.z),
+						origin.data[0] + ratio * (target.data[0] - origin.data[0]),
+						origin.data[1] + ratio * (target.data[1] - origin.data[1]),
+						origin.data[2] + ratio * (target.data[2] - origin.data[2]),
 						1.0
 					);
 
@@ -1503,18 +1503,18 @@ define([
 
 					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
-					origin.x += ratio * (target.x - origin.x);
-					origin.y += ratio * (target.y - origin.y);
-					origin.z += ratio * (target.z - origin.z);
+					origin.data[0] += ratio * (target.data[0] - origin.data[0]);
+					origin.data[1] += ratio * (target.data[1] - origin.data[1]);
+					origin.data[2] += ratio * (target.data[2] - origin.data[2]);
 
 
 					// Second vertex update
 					origin = vertices[outsideIndices[1]];
 					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
-					origin.x += ratio * (target.x - origin.x);
-					origin.y += ratio * (target.y - origin.y);
-					origin.z += ratio * (target.z - origin.z);
+					origin.data[0] += ratio * (target.data[0] - origin.data[0]);
+					origin.data[1] += ratio * (target.data[1] - origin.data[1]);
+					origin.data[2] += ratio * (target.data[2] - origin.data[2]);
 
 					break;
 			}
@@ -1629,7 +1629,7 @@ define([
 		// var ratio = a/(a+b);
 
 		// Simplified the ratio to :
-		return (origin.z + near) / (origin.z - target.z);
+		return (origin.data[2] + near) / (origin.data[2] - target.data[2]);
 
 	};
 
@@ -1672,8 +1672,8 @@ define([
 		// to find out if the face is facing away or not.
 
 		// Create edges for calculating the normal.
-		var e1 = [v2.x - v1.x , v2.y - v1.y, v2.z - v1.z];
-		var e2 = [v3.x - v1.x, v3.y - v1.y, v3.z - v1.z];
+		var e1 = [v2.data[0] - v1.data[0] , v2.data[1] - v1.data[1], v2.data[2] - v1.data[2]];
+		var e2 = [v3.data[0] - v1.data[0], v3.data[1] - v1.data[1], v3.data[2] - v1.data[2]];
 
 		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
 		var faceNormal = new Array(3);
@@ -1682,7 +1682,7 @@ define([
 		faceNormal[2] = e2[1] * e1[0] - e2[0] * e1[1];
 
 		// Picking the first vertex as the point on the triangle to evaulate the dot product on.
-		var viewVector = [v1.x, v1.y, v1.z];
+		//var viewVector = [v1.x, v1.y, v1.z];
 
 		// No need to normalize the vectors due to only being
 		// interested in the sign of the dot product.
@@ -1698,7 +1698,7 @@ define([
 		}
 		*/
 
-		var dot = faceNormal[0] * viewVector[0] + faceNormal[1] * viewVector[1] + faceNormal[2] * viewVector[2];
+		var dot = faceNormal[0] * v1.data[0] + faceNormal[1] * v1.data[1] + faceNormal[2] * v1.data[2];
 		return dot > 0.0;
 	};
 
