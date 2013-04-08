@@ -24,7 +24,10 @@ require(
 		'goo/renderer/bounds/BoundingBox',
 		'goo/renderer/OcclusionPartitioner',
 		'goo/loaders/SceneLoader',
-		'goo/loaders/Loader'
+		'goo/loaders/Loader',
+		'goo/loaders/EntityLoader',
+		'goo/loaders/MeshLoader',
+		'goo/lib/rsvp.amd'
 	],
 	function (
 		GooRunner,
@@ -45,7 +48,10 @@ require(
 		BoundingBox,
 		OcclusionPartitioner,
 		SceneLoader,
-		Loader
+		Loader,
+		EntityLoader,
+		MeshLoader,
+		RSVP
 	) {
 		'use strict';
 
@@ -63,7 +69,7 @@ require(
 			});
 
 			// Add camera
-			var camera = new Camera(90, 1, 1, 100);
+			var camera = new Camera(90, 1, 1, 1000);
 
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
@@ -74,11 +80,11 @@ require(
 
 			buildScene(goo);
 
-			setupRenderer(goo, camera);
+			setupOcclusionCulling(goo, camera);
 		}
 
 
-		function setupRenderer(goo, camera) {
+		function setupOcclusionCulling (goo, camera) {
 
 			var debugcanvas = document.getElementById('debugcanvas');
 			var debugContext = debugcanvas.getContext('2d');
@@ -219,7 +225,9 @@ require(
 
 			addHead(goo, translation);
 
-			loadTestScene(goo, translation);
+			//loadTestScene(goo, translation);
+
+			createRoomArray(goo);
 
 			goo.callbacks.push(function() {
 
@@ -239,6 +247,8 @@ require(
 				b2.transformComponent.setUpdated();
 			});
 		}
+
+		
 
 		function createTorus (world, translation) {
 			var meshData = ShapeCreator.createTorus(32, 32);
@@ -373,10 +383,52 @@ require(
 			});
 		}
 
+		function createRoomArray (goo) {
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+			var mLoader = new MeshLoader({'loader': loader});
+			
+			var occPromise = mLoader.load('room_occluder.mesh');
+			var roomPromise = mLoader.load('room.mesh');
+
+			var material = new Material.createMaterial(ShaderLib.simpleLit,'RoomMaterial');
+			material.uniforms = {'materialDiffuse': [0.6, 0, 0.8,1], 'materialSpecular': [1,0,0,1], 'materialAmbient': [0,0,0.15,1]};
+			material.wireframe = true;
+
+			var NUM_OF_ROOMS = 30;
+			var translation = new Vector3(20, 35, 0);
+			var roomDistance = 30;
+
+
+			RSVP.all([occPromise, roomPromise]).then(function (meshes) {
+				var occluderMesh = meshes[0];
+				var roomMesh = meshes[1];
+
+				for (var i = 0; i < NUM_OF_ROOMS; i++) {
+					var entity = EntityUtils.createTypicalEntity(goo.world, roomMesh);
+					entity.setComponent(new OccluderComponent(occluderMesh));
+					entity.meshRendererComponent.materials.push(material);
+					entity.transformComponent.transform.translation.set(translation);
+
+
+					entity.meshDataComponent.modelBound = new BoundingBox();
+					entity.meshDataComponent.autoCompute = false;
+					entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
+
+					entity.addToWorld();
+
+					translation.x += roomDistance;
+				}
+
+				
+			});
+
+
+		}
+
 		function loadTestScene(goo) {
 			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
 			var sceneLoader = new SceneLoader({'world': goo.world, 'loader': loader});
-			sceneLoader.load('untitled.scene.json');
+			sceneLoader.load('untitled.scene');
 		}
 
 		function createBoundingSphereForEntity (world, entity) {

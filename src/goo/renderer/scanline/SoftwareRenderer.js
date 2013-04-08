@@ -210,8 +210,8 @@ define([
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					//cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-					cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
 				if (cull) {
