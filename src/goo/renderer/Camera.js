@@ -34,7 +34,7 @@ function(
 	 */
 
 	function Camera(fov, aspect, near, far) {
-		// TODO: these needs onFrameChange() after change
+		// These need an onFrameChange() after being modified
 		this.translation = new Vector3(0, 0, 0);
 		this._left = new Vector3(-1, 0, 0);
 		this._up = new Vector3(0, 1, 0);
@@ -61,7 +61,7 @@ function(
 		this._coeffBottom = [];
 		this._coeffTop = [];
 
-		// TODO: need onViewPortChange()
+		// These need an onViewPortChange() after being modified
 		this._viewPortLeft = 0.0;
 		this._viewPortRight = 1.0;
 		this._viewPortTop = 1.0;

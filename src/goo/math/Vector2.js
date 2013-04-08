@@ -301,7 +301,7 @@ define(["goo/math/Vector"],
 
 	/* ====================================================================== */
 
-	// TODO: Testing speed diffs
+	// Performance methods
 	Vector2.prototype.setd = function (x, y) {
 		this.data[0] = x;
 		this.data[1] = y;

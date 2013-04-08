@@ -15,7 +15,7 @@ function (Vector3) {
 		this.constant = isNaN(constant) ? 0 : constant;
 	}
 
-	// TODO: add Object.freeze?
+	// TODO: add Object.freeze? - Object.freeze is still too slow unfortunately
 	Plane.XZ = new Plane(Vector3.UNIT_Y, 0);
 	Plane.XY = new Plane(Vector3.UNIT_Z, 0);
 	Plane.YZ = new Plane(Vector3.UNIT_X, 0);

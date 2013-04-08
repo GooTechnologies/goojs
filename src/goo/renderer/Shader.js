@@ -415,8 +415,6 @@ function (
 			})(i);
 		}
 
-		// TODO
-		var lightPos = new Vector3(-20, 20, 20);
 		for (var i = 0; i < 4; i++) {
 			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
@@ -425,7 +423,7 @@ function (
 					if (light !== undefined) {
 						uniformCall.uniform3f(light.translation.x, light.translation.y, light.translation.z);
 					} else {
-						uniformCall.uniform3f(lightPos.x, lightPos.y, lightPos.z);
+						uniformCall.uniform3f(-20, 20, 20);
 					}
 				};
 			})(i);

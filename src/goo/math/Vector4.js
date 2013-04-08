@@ -332,7 +332,7 @@ function (
 		return this;
 	};
 
-	// TODO: Testing speed diffs
+	// Performance methods
 	Vector4.prototype.setd = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;

@@ -615,7 +615,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
-	// TODO: Testing speed diffs
+	// Performance methods
 	Quaternion.prototype.setd = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;

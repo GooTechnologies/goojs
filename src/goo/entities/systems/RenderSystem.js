@@ -12,12 +12,9 @@ function (
 	"use strict";
 
 	/**
-	 * @class Renders entities/renderables supplied through the render list (coming from the current partitioner)
-	 * @param {Entity[]} renderList List of renderables to render
+	 * @class Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
 	 */
-
-	// TODO: Should old renderList argument be assigned to this.renderList?
 	function RenderSystem() {
 		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
 
