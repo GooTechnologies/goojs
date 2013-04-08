@@ -1,6 +1,14 @@
-define(["goo/math/MathUtils", "goo/math/Matrix", "goo/math/Vector3"],
+define([
+	'goo/math/MathUtils',
+	'goo/math/Matrix',
+	'goo/math/Vector3'
+],
 /** @lends Matrix3x3 */
-function (MathUtils, Matrix, Vector3) {
+function (
+	MathUtils,
+	Matrix,
+	Vector3
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -13,7 +21,7 @@ function (MathUtils, Matrix, Vector3) {
 	 * @param {Matrix3x3|Float[]|Float...} arguments Initial values for the components.
 	 */
 
-	function Matrix3x3 () {
+	function Matrix3x3() {
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
@@ -367,8 +375,8 @@ function (MathUtils, Matrix, Vector3) {
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
 			throw {
-				name : "Singular Matrix",
-				message : "The matrix is singular and cannot be inverted."
+				name: "Singular Matrix",
+				message: "The matrix is singular and cannot be inverted."
 			};
 		}
 
@@ -477,8 +485,9 @@ function (MathUtils, Matrix, Vector3) {
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
-		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) - this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) + this.e02
-			* (this.e10 * this.e21 - this.e11 * this.e20);
+		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) -
+			this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) +
+			this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
 	};
 
 	/* ====================================================================== */
@@ -622,30 +631,30 @@ function (MathUtils, Matrix, Vector3) {
 		var a = this.data;
 		var out = store.data;
 
-	    var s = Math.sin(rad),
-	        c = Math.cos(rad),
-	        a10 = a[3],
-	        a11 = a[4],
-	        a12 = a[5],
-	        a20 = a[6],
-	        a21 = a[7],
-	        a22 = a[8];
+		var s = Math.sin(rad),
+			c = Math.cos(rad),
+			a10 = a[3],
+			a11 = a[4],
+			a12 = a[5],
+			a20 = a[6],
+			a21 = a[7],
+			a22 = a[8];
 
-	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
-	        out[0]  = a[0];
-	        out[1]  = a[1];
-	        out[2]  = a[2];
-	    }
+		if (a !== out) { // If the source and destination differ, copy the unchanged rows
+			out[0] = a[0];
+			out[1] = a[1];
+			out[2] = a[2];
+		}
 
-	    // Perform axis-specific matrix multiplication
-	    out[3] = a10 * c + a20 * s;
-	    out[4] = a11 * c + a21 * s;
-	    out[5] = a12 * c + a22 * s;
-	    out[6] = a20 * c - a10 * s;
-	    out[7] = a21 * c - a11 * s;
-	    out[8] = a22 * c - a12 * s;
+		// Perform axis-specific matrix multiplication
+		out[3] = a10 * c + a20 * s;
+		out[4] = a11 * c + a21 * s;
+		out[5] = a12 * c + a22 * s;
+		out[6] = a20 * c - a10 * s;
+		out[7] = a21 * c - a11 * s;
+		out[8] = a22 * c - a12 * s;
 
-	    return out;
+		return out;
 	};
 
 	/**
@@ -661,30 +670,30 @@ function (MathUtils, Matrix, Vector3) {
 		var a = this.data;
 		var out = store.data;
 
-	    var s = Math.sin(rad),
-	        c = Math.cos(rad),
-	        a00 = a[0],
-	        a01 = a[1],
-	        a02 = a[2],
-	        a20 = a[6],
-	        a21 = a[7],
-	        a22 = a[8];
+		var s = Math.sin(rad),
+			c = Math.cos(rad),
+			a00 = a[0],
+			a01 = a[1],
+			a02 = a[2],
+			a20 = a[6],
+			a21 = a[7],
+			a22 = a[8];
 
-	    if (a !== out) { // If the source and destination differ, copy the unchanged rows
-	        out[3]  = a[3];
-	        out[4]  = a[4];
-	        out[5]  = a[5];
-	    }
+		if (a !== out) { // If the source and destination differ, copy the unchanged rows
+			out[3] = a[3];
+			out[4] = a[4];
+			out[5] = a[5];
+		}
 
-	    // Perform axis-specific matrix multiplication
-	    out[0] = a00 * c - a20 * s;
-	    out[1] = a01 * c - a21 * s;
-	    out[2] = a02 * c - a22 * s;
-	    out[6] = a00 * s + a20 * c;
-	    out[7] = a01 * s + a21 * c;
-	    out[8] = a02 * s + a22 * c;
+		// Perform axis-specific matrix multiplication
+		out[0] = a00 * c - a20 * s;
+		out[1] = a01 * c - a21 * s;
+		out[2] = a02 * c - a22 * s;
+		out[6] = a00 * s + a20 * c;
+		out[7] = a01 * s + a21 * c;
+		out[8] = a02 * s + a22 * c;
 
-	    return out;
+		return out;
 	};
 
 	/**
@@ -700,30 +709,30 @@ function (MathUtils, Matrix, Vector3) {
 		var a = this.data;
 		var out = store.data;
 
-	    var s = Math.sin(rad),
-	        c = Math.cos(rad),
-	        a00 = a[0],
-	        a01 = a[1],
-	        a02 = a[2],
-	        a10 = a[3],
-	        a11 = a[4],
-	        a12 = a[5];
+		var s = Math.sin(rad),
+			c = Math.cos(rad),
+			a00 = a[0],
+			a01 = a[1],
+			a02 = a[2],
+			a10 = a[3],
+			a11 = a[4],
+			a12 = a[5];
 
-	    if (a !== out) { // If the source and destination differ, copy the unchanged last row
-	        out[6]  = a[6];
-	        out[7]  = a[7];
-	        out[8] = a[8];
-	    }
+		if (a !== out) { // If the source and destination differ, copy the unchanged last row
+			out[6] = a[6];
+			out[7] = a[7];
+			out[8] = a[8];
+		}
 
-	    // Perform axis-specific matrix multiplication
-	    out[0] = a00 * c + a10 * s;
-	    out[1] = a01 * c + a11 * s;
-	    out[2] = a02 * c + a12 * s;
-	    out[3] = a10 * c - a00 * s;
-	    out[4] = a11 * c - a01 * s;
-	    out[5] = a12 * c - a02 * s;
+		// Perform axis-specific matrix multiplication
+		out[0] = a00 * c + a10 * s;
+		out[1] = a01 * c + a11 * s;
+		out[2] = a02 * c + a12 * s;
+		out[3] = a10 * c - a00 * s;
+		out[4] = a11 * c - a01 * s;
+		out[5] = a12 * c - a02 * s;
 
-	    return out;
+		return out;
 	};
 
 	/**
@@ -875,7 +884,7 @@ function (MathUtils, Matrix, Vector3) {
 			d[0], d[1], d[2],
 			d[3], d[4], d[5],
 			d[4], d[5], d[6]
-			);
+		);
 	};
 
 	/* ====================================================================== */

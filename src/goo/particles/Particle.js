@@ -1,6 +1,18 @@
-define(['goo/particles/ParticleUtils', 'goo/math/Vector', 'goo/math/Vector3', 'goo/math/Vector4', 'goo/renderer/MeshData'],
+define([
+	'goo/particles/ParticleUtils',
+	'goo/math/Vector',
+	'goo/math/Vector3',
+	'goo/math/Vector4',
+	'goo/renderer/MeshData'
+],
 /** @lends Particle */
-function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
+function (
+	ParticleUtils,
+	Vector,
+	Vector3,
+	Vector4,
+	MeshData
+) {
 	"use strict";
 
 	var calcVec = new Vector3();
@@ -8,7 +20,7 @@ function (ParticleUtils, Vector, Vector3, Vector4, MeshData) {
 	/**
 	 * @class Data object tracking a single particle in a particle component.
 	 */
-	function Particle (particleComponent, index) {
+	function Particle(particleComponent, index) {
 		this.alive = false;
 		this.position = new Vector3();
 		this.velocity = new Vector3();

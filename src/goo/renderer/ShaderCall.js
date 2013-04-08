@@ -1,6 +1,6 @@
 define(
-	/** @lends ShaderCall */
-	function () {
+/** @lends ShaderCall */
+function () {
 	"use strict";
 
 	/**
@@ -11,45 +11,44 @@ define(
 		this.location = uniform;
 
 		if (type) {
-			switch (type)
-			{
-			case 'float':
-				this.typeCall = this.uniform1f;
-				break;
-			case 'bool':
-			case 'int':
-			case 'integer':
-			case 'sampler2D':
-			case 'sampler3D':
-			case 'samplerCube':
-				this.typeCall = this.uniform1i;
-				break;
-			case 'floatarray':
-				this.typeCall = this.uniform1fv;
-				break;
-			case 'intarray':
-				this.typeCall = this.uniform1iv;
-				break;
-			case 'vec2':
-				this.typeCall = this.uniform2fv;
-				break;
-			case 'vec3':
-				this.typeCall = this.uniform3fv;
-				break;
-			case 'vec4':
-				this.typeCall = this.uniform4fv;
-				break;
-			case 'mat2':
-				this.typeCall = this.uniformMatrix2fv;
-				break;
-			case 'mat3':
-				this.typeCall = this.uniformMatrix3fv;
-				break;
-			case 'mat4':
-				this.typeCall = this.uniformMatrix4fv;
-				break;
-			default:
-				throw 'Uniform type not handled: ' + type;
+			switch (type) {
+				case 'float':
+					this.typeCall = this.uniform1f;
+					break;
+				case 'bool':
+				case 'int':
+				case 'integer':
+				case 'sampler2D':
+				case 'sampler3D':
+				case 'samplerCube':
+					this.typeCall = this.uniform1i;
+					break;
+				case 'floatarray':
+					this.typeCall = this.uniform1fv;
+					break;
+				case 'intarray':
+					this.typeCall = this.uniform1iv;
+					break;
+				case 'vec2':
+					this.typeCall = this.uniform2fv;
+					break;
+				case 'vec3':
+					this.typeCall = this.uniform3fv;
+					break;
+				case 'vec4':
+					this.typeCall = this.uniform4fv;
+					break;
+				case 'mat2':
+					this.typeCall = this.uniformMatrix2fv;
+					break;
+				case 'mat3':
+					this.typeCall = this.uniformMatrix3fv;
+					break;
+				case 'mat4':
+					this.typeCall = this.uniformMatrix4fv;
+					break;
+				default:
+					throw 'Uniform type not handled: ' + type;
 			}
 		}
 	}

@@ -28,7 +28,7 @@ function (
 		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
-			'.dds' : new DdsLoader()
+			'.dds': new DdsLoader()
 		};
 	}
 
@@ -49,13 +49,13 @@ function (
 		}
 
 		var simpleResourceUtilCallback = {
-			onSuccess : function (/* ArrayBuffer */response) {
+			onSuccess: function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
 //				console.info("Loaded image: " + imageURL);
 				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
 			},
-			onError : function (t) {
+			onError: function (t) {
 				console.warn("Error loading texture: " + imageURL + " | " + t);
 			}
 		};
@@ -99,7 +99,7 @@ function (
 		TextureCreator.cache[imageURL] = texture;
 
 		// Load the actual image
-		this._loader.loadImage(imageURL).then(function(data) {
+		this._loader.loadImage(imageURL).then(function (data) {
 			texture.setImage(data);
 			TextureCreator._finishedLoading(data);
 		});
@@ -220,7 +220,7 @@ function (
 		var latch = new Latch(6, function () {
 			var w = images[0].width;
 			var h = images[0].height;
-			for (var i=0;i<6;i++) {
+			for (var i = 0; i < 6; i++) {
 				var img = images[i];
 				if (w !== img.width || h !== img.height) {
 					texture.generateMipmaps = false;
@@ -241,7 +241,7 @@ function (
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function(image) {
+					that._loader.loadImage(queryImage).then(function (image) {
 						images[index] = image;
 						latch.countDown();
 					});

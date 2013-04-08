@@ -1,6 +1,14 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4'],
-	/** @lends Transform */
-	function (Vector3, Matrix3x3, Matrix4x4) {
+define([
+	'goo/math/Vector3',
+	'goo/math/Matrix3x3',
+	'goo/math/Matrix4x4'
+],
+/** @lends Transform */
+function (
+	Vector3,
+	Matrix3x3,
+	Matrix4x4
+) {
 	"use strict";
 
 	/**

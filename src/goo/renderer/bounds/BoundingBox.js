@@ -1,6 +1,14 @@
-define(['goo/math/Vector3', 'goo/renderer/bounds/BoundingVolume', 'goo/math/MathUtils'],
+define([
+	'goo/math/Vector3',
+	'goo/renderer/bounds/BoundingVolume',
+	'goo/math/MathUtils'
+],
 /** @lends BoundingBox */
-function (Vector3, BoundingVolume, MathUtils) {
+function (
+	Vector3,
+	BoundingVolume,
+	MathUtils
+) {
 	"use strict";
 
 	/**
@@ -10,7 +18,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingBox () {
+	function BoundingBox() {
 		BoundingVolume.call(this);
 
 		this.xExtent = 1;
@@ -32,7 +40,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
-		for ( var i = 0; i < verts.length; i += 3) {
+		for (var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
@@ -62,9 +70,9 @@ function (Vector3, BoundingVolume, MathUtils) {
 
 		var store = [];
 
-		for ( var i = start; i < end; i++) {
+		for (var i = start; i < end; i++) {
 			store = data.getPrimitiveVertices(indices[i], section, store);
-			for ( var j = 0; j < store.length; j++) {
+			for (var j = 0; j < store.length; j++) {
 				BoundingBox.checkMinMax(min, max, store[j]);
 			}
 		}
@@ -106,13 +114,13 @@ function (Vector3, BoundingVolume, MathUtils) {
 		}
 
 		var corners = [];
-		for ( var i = 0; i < 8; i++) {
+		for (var i = 0; i < 8; i++) {
 			corners.push(new Vector3());
 		}
 		this.getCorners(corners);
 
 		// Transform all of these points by the transform
-		for ( var i = 0; i < corners.length; i++) {
+		for (var i = 0; i < corners.length; i++) {
 			transform.matrix.applyPostPoint(corners[i]);
 		}
 		// Now compute based on these transformed points
@@ -122,7 +130,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 		var maxX = minX;
 		var maxY = minY;
 		var maxZ = minZ;
-		for ( var i = 1; i < corners.length; i++) {
+		for (var i = 1; i < corners.length; i++) {
 			var curX = corners[i].x;
 			var curY = corners[i].y;
 			var curZ = corners[i].z;
@@ -149,7 +157,7 @@ function (Vector3, BoundingVolume, MathUtils) {
 	BoundingBox.prototype.getCorners = function (store) {
 		if (!store || store.length !== 8) {
 			store = [];
-			for ( var i = 0; i < store.length; i++) {
+			for (var i = 0; i < store.length; i++) {
 				store.push(new Vector3());
 			}
 		}
@@ -214,9 +222,9 @@ function (Vector3, BoundingVolume, MathUtils) {
 
 		// [Minimum Translation Vector]
 		var mtvInfo = {
-			mtvDistance : 10000000000, // Set current minimum distance (max float value so next value is always less)
-			mtvAxis : new Vector3()
-		// Axis along which to travel with the minimum distance
+			mtvDistance: 10000000000, // Set current minimum distance (max float value so next value is always less)
+			mtvAxis: new Vector3()
+			// Axis along which to travel with the minimum distance
 		};
 
 		// [Axes of potential separation]
@@ -329,12 +337,12 @@ function (Vector3, BoundingVolume, MathUtils) {
 		}
 
 		var notEntirelyClipped = //
-		BoundingBox.clip(direction.x, -diff.x - x, t) && //
-		BoundingBox.clip(-direction.x, diff.x - x, t) && //
-		BoundingBox.clip(direction.y, -diff.y - y, t) && //
-		BoundingBox.clip(-direction.y, diff.y - y, t) && //
-		BoundingBox.clip(direction.z, -diff.z - z, t) && //
-		BoundingBox.clip(-direction.z, diff.z - z, t);
+			BoundingBox.clip(direction.x, -diff.x - x, t) && //
+				BoundingBox.clip(-direction.x, diff.x - x, t) && //
+				BoundingBox.clip(direction.y, -diff.y - y, t) && //
+				BoundingBox.clip(-direction.y, diff.y - y, t) && //
+				BoundingBox.clip(direction.z, -diff.z - z, t) && //
+				BoundingBox.clip(-direction.z, diff.z - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			return true;
@@ -368,29 +376,29 @@ function (Vector3, BoundingVolume, MathUtils) {
 		}
 
 		var notEntirelyClipped = //
-		BoundingBox.clip(direction.x, -diff.x - x, t) && //
-		BoundingBox.clip(-direction.x, diff.x - x, t) && //
-		BoundingBox.clip(direction.y, -diff.y - y, t) && //
-		BoundingBox.clip(-direction.y, diff.y - y, t) && //
-		BoundingBox.clip(direction.z, -diff.z - z, t) && //
-		BoundingBox.clip(-direction.z, diff.z - z, t);
+			BoundingBox.clip(direction.x, -diff.x - x, t) && //
+				BoundingBox.clip(-direction.x, diff.x - x, t) && //
+				BoundingBox.clip(direction.y, -diff.y - y, t) && //
+				BoundingBox.clip(-direction.y, diff.y - y, t) && //
+				BoundingBox.clip(direction.z, -diff.z - z, t) && //
+				BoundingBox.clip(-direction.z, diff.z - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
 				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
-						new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
+					new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
 				return {
-					"distances" : distances,
-					"points" : points
+					"distances": distances,
+					"points": points
 				};
 			}
 
 			var distances = [t[0]];
 			var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin)];
 			return {
-				"distances" : distances,
-				"points" : points
+				"distances": distances,
+				"points": points
 			};
 		}
 

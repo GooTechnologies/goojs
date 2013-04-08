@@ -34,7 +34,7 @@ function (
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function FlatWaterRenderer (camera, settings) {
+	function FlatWaterRenderer(camera, settings) {
 		this.camera = camera;
 		settings = settings || {};
 
@@ -85,10 +85,10 @@ function (
 		this.camera = null;
 		this.lights = [];
 		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
+			setCurrentCamera: function (camera) {
 				that.camera = camera;
 			},
-			setLights : function (lights) {
+			setLights: function (lights) {
 				that.lights = lights;
 			}
 		});
@@ -167,7 +167,7 @@ function (
 			if (this.skybox instanceof Array) {
 				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
-				for (var i=0;i<this.skybox.length;i++) {
+				for (var i = 0; i < this.skybox.length; i++) {
 					renderer.render(this.skybox[i], this.waterCamera, this.lights, this.reflectionTarget, false);
 					this.skybox[i].skip = true;
 				}
@@ -185,7 +185,7 @@ function (
 		this.waterEntity.skip = false;
 		if (this.skybox) {
 			if (this.skybox instanceof Array) {
-				for (var i=0;i<this.skybox.length;i++) {
+				for (var i = 0; i < this.skybox.length; i++) {
 					this.skybox[i].skip = false;
 				}
 			} else {
@@ -253,7 +253,7 @@ function (
 				1.0, 1.0, 0.5
 			],
 			// reflectionMultiplier: [
-				// 1.0, 1.0, 1.0, 1.0
+			// 1.0, 1.0, 1.0, 1.0
 			// ],
 			sunShininess: 100.0,
 			sunSpecPower: 4.0,
@@ -396,7 +396,6 @@ function (
 			// '	projCoord += (normalVector.xy * distortionMultiplier);',
 			'#endif',
 
-
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
 			// '	vec2 projCoordRefr = projCoord;',
@@ -442,15 +441,15 @@ function (
 	};
 
 	var packDepthY = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			farPlane: Shader.FAR_PLANE
 		},
-		vshader : [ //
+		vshader: [ //
 			'attribute vec3 vertexPosition;', //
 
 			'uniform mat4 viewProjectionMatrix;',
@@ -463,7 +462,7 @@ function (
 			'	gl_Position = viewProjectionMatrix * vPosition;', //
 			'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [//
 			'precision highp float;',//
 
 			'uniform float farPlane;',//

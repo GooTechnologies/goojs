@@ -8,13 +8,13 @@ function() {
 	 */
 	function RendererRecord() {
 		this.currentBuffer = {
-			'ArrayBuffer' : {
-				buffer : null,
-				valid : false
+			'ArrayBuffer': {
+				buffer: null,
+				valid: false
 			},
-			'ElementArrayBuffer' : {
-				buffer : null,
-				valid : false
+			'ElementArrayBuffer': {
+				buffer: null,
+				valid: false
 			}
 		};
 		this.currentFrameBuffer = null;
@@ -36,7 +36,7 @@ function() {
 		this.offsetRecord = {};
 	}
 
-	RendererRecord.prototype.invalidateBuffer = function(target) {
+	RendererRecord.prototype.invalidateBuffer = function (target) {
 		this.currentBuffer[target].buffer = null;
 		this.currentBuffer[target].valid = false;
 	};

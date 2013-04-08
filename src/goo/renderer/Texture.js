@@ -1,10 +1,10 @@
 define([
 	'goo/math/Vector2'
-	],
-	/** @lends Texture */
-	function (
+],
+/** @lends Texture */
+function (
 	Vector2
-	) {
+) {
 	"use strict";
 
 	/**
@@ -31,7 +31,7 @@ define([
 		this.magFilter = settings.magFilter || 'Bilinear';
 		this.minFilter = settings.minFilter || 'Trilinear';
 
-		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy :  1;
+		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
 
 		this.format = settings.format || 'RGBA';
 		this.type = settings.type || 'UnsignedByte';
@@ -68,7 +68,7 @@ define([
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
 				this.image = {
-					data : image
+					data: image
 				};
 				this.image.width = width;
 				this.image.height = height;
@@ -85,7 +85,7 @@ define([
 		} else {
 			if (image instanceof Array) {
 				this.image = {
-					data : image
+					data: image
 				};
 			}
 		}

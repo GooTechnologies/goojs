@@ -1,12 +1,16 @@
-define(['goo/math/Vector3'],
+define([
+	'goo/math/Vector3'
+],
 /** @lends ParticleUtils */
-function (Vector3) {
+function (
+	Vector3
+) {
 	"use strict";
 
 	/**
 	 * @class Various helper utils for particle systems.
 	 */
-	function ParticleUtils () {
+	function ParticleUtils() {
 	}
 
 	ParticleUtils.getRandomVelocityOffY = function (store, minOffsetAngle, maxOffsetAngle, scale, particleEntity) {
@@ -35,12 +39,12 @@ function (Vector3) {
 	ParticleUtils.createConstantForce = function (force) {
 		var applyForce = new Vector3(force);
 		return {
-			enabled : true,
+			enabled: true,
 			/* Was: function (particleEntity, emitter) */
-			prepare : function () {
+			prepare: function () {
 			},
 			/* Was: function (tpf, particle, particleIndex) */
-			apply : function (tpf, particle) {
+			apply: function (tpf, particle) {
 				particle.velocity.x += applyForce.x * tpf;
 				particle.velocity.y += applyForce.y * tpf;
 				particle.velocity.z += applyForce.z * tpf;
@@ -71,7 +75,7 @@ function (Vector3) {
 		var trAge = 0, ratio = 0;
 		var prevCEntry = null, prevMEntry = null, prevSiEntry = null, prevSpEntry = null, prevUVEntry = null;
 		var nextCEntry = null, nextMEntry = null, nextSiEntry = null, nextSpEntry = null;
-		for ( var i = 0, max = timeline.length; i < max; i++) {
+		for (var i = 0, max = timeline.length; i < max; i++) {
 			var entry = timeline[i];
 			trAge += (entry.timeOffset ? entry.timeOffset : 0.0) * lifeSpan;
 			// Color
