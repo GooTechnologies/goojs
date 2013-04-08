@@ -30,11 +30,13 @@ function () {
 		}
 	}
 
+	// REVIEW: Shouldn't this round conservatively?
 	Edge.prototype.roundOccluderCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);
 	};
 
+	// REVIEW: Shouldn't this round conservatively?
 	Edge.prototype.roundOccludeeCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);

@@ -1,3 +1,11 @@
+// REVIEW: This file has become very big (>2500 lines). Hard to get an overview. Extract functionality into  modules!
+// Suggestion: Move bounding box related functions to its own module
+// (maybe two modules: bounding sphere and bounding box).
+
+// REVIEW: Run JSHint on this file. It has several warnings.
+
+// REVIEW: Remove unused code, and request re-review. It's too much to review now!
+
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
@@ -78,6 +86,11 @@ define([
 		// using |0 to enforce integer values , if they are not already forced by creating them with hex notation.
 		// http://www.2ality.com/2013/02/asm-js.html
 		/*jshint bitwise: false */
+		// REVIEW: Make these constants local variables
+		// (inside the module function, outside `function SoftwareRenderer`)
+		// More likely to be optimized well, and you can write `INSIDE` instead of `this._INSIDE`: neat!
+		// REVIEW: The |0 probably has no effect, as these numbers are integers anyway
+		// (it's not the hex notation, it's that they have no decimal point!)
 		this._INSIDE = 0x0 |0;	// 0000
 		this._LEFT = 0x1 |0;	// 0001
 		this._RIGHT = 0x2 |0;	// 0010
@@ -115,8 +128,11 @@ define([
 	};
 
 	/**
-	*	Returns the array of neighbours for a vertex index on a boundingbox
+	*	Returns the array of neighbours for a vertex index on a bounding box
 	*/
+	// REVIEW: I think I understand what this is, but I'm not sure.
+	// Can you write something about what it is?
+	// E.g. "@return {Array.<Array<Number>>} For every vertex index, gives the indices of its three neighbours."
 	SoftwareRenderer.prototype._generateBoundingBoxNeighbourIndices = function () {
 
 		var neighbourArray = new Array(8);
@@ -156,6 +172,8 @@ define([
 		return neighbourArray;
 	};
 
+	// REVIEW: The "(Overwrites the depth buffer with the clear buffer)" part is an implementation detail,
+	// not useful for public documentation.
 	/**
 	*	Clears the depth data (Overwrites the depth buffer with the clear buffer).
 	*/
@@ -165,7 +183,7 @@ define([
 	};
 
 	/**
-	*	Renders z-buffer (w-buffer) from the given renderList of entities with OccuderComponents.
+	*	Renders z-buffer (w-buffer) from the given renderList of entities with OccluderComponents.
 	*
 	*	@param {Array.<Entity>} renderList The array of entities with attached OccluderComponents.
 	*/
@@ -208,6 +226,7 @@ define([
 				var cull;
 
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
+					// REVIEW: Should this be called _boundingSphereOcclusionTest to be consistent with the bounding box test?
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
 					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
@@ -216,6 +235,10 @@ define([
 
 				if (cull) {
 					// Removes the entity at the current index.
+					// REVIEW: splice is an O(n) operation because the array's elements after i need to be moved.
+					// This makes the whole performOcclusionCulling function have complexity O(n^2).
+					// I'd recommend building a new array and returning it instead
+					// (push to that array if entity is not occluded).
 					renderList.splice(i, 1);
 					i--; // Have to compensate the index for the loop.
 				}
@@ -252,16 +275,18 @@ define([
 		return [v1, v2, v3, v4, v5, v6, v7, v8];
 	};
 
+	// REVIEW: Document the return value, which is not always what you'd expect.
 	SoftwareRenderer.prototype._createTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
 
-		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entitityWorldTransformMatrix);
+		var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
 		var vertices = this._generateBoundingBoxVertices(entity);
 		// Projection transform + homogeneous divide for every vertex.
 		// Early exit on near plane clip.
+		// REVIEW: i is declared twice in this function. Didn't JSHint catch that?
 		for (var i = 0; i < vertices.length; i++) {
 			var v = vertices[i];
 
@@ -296,6 +321,7 @@ define([
 
 			// TODO : I think i made the winding clockwise instead of counter clockwise.
 			// hence the negation here...
+			// REVIEW: Then fix that! :-)
 			if (!this._isBackFacingProjected(v1, v2, v3)) {
 				continue;
 			}
@@ -317,6 +343,8 @@ define([
 
 		// Triangles will be false on near plane clip.
 		// Considering this case to be visible.
+		// REVIEW: It is a bit unconventional that the function can return two unrelated data types like this.
+		// Return null instead of false!
 		if (triangles === false) {
 			return false;
 		}
@@ -408,8 +436,8 @@ define([
 	};
 
 	/**
-	*	Clips the buonding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
-	*	This is a implemenation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
+	*	Clips the bounding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
+	*	This is a implementation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
 	*	if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
 	*	it will be non-conservative in some cases.
 	*
@@ -417,13 +445,17 @@ define([
 	*	@param {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
 	*/
 	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
+		/*
+		*	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
+		*	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
+		*	http://www.cse.buffalo.edu/faculty/walters/cs480/NewLect9.pdf
+		*	https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Operators/Bitwise_Operators
+		*/
 
-	/*
-	*	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
-	*	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
-	*	http://www.cse.buffalo.edu/faculty/walters/cs480/NewLect9.pdf
-	*	https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Operators/Bitwise_Operators
-	*/
+		// REVIEW: The use of minmaxArray is not easy to read.
+		// Create local variables minX, maxX, minY, maxY, minDepth instead,
+		// so you can use e.g. maxX instead of minmaxArray[1].
+		// And return the array instead of getting it as an argument.
 
 		/*jshint bitwise: false */
 		var outCodes = new Array(8);
@@ -433,6 +465,9 @@ define([
 			outCodes[i] = code;
 			if (code === this._INSIDE) {
 				// this vertex is inside the screen and shall be used to find minmax.
+				// REVIEW: A one-line, simpler and probably faster, alternative:
+				// minmaxArray[4] = Math.max(minmaxArray[4], vert.w);
+				// Use this (and Math.min) instead of if statements, and get rid of lots of lines in this function!
 				if (vert.w > minmaxArray[4]) {
 					minmaxArray[4] = vert.w;
 				}
@@ -621,14 +656,16 @@ define([
 	*	some way.
 	*/
 	SoftwareRenderer.prototype._clipBoundingBox = function (vertices, minmaxArray) {
+		// REVIEW:  I skipped reviewing this function. It is not used - should it be removed?
 
 		var insideScreen = new Array(8);
+		var i;
 
-		for (var i = 0; i < 8; i++) {
+		for (i = 0; i < 8; i++) {
 			insideScreen[i] = this._isCoordinateInsideScreen(vertices[i]);
 		}
 
-		for (var i = 0; i < 8; i++) {
+		for (i = 0; i < 8; i++) {
 			// Clip if not inside screen.
 			if(!insideScreen[i]) {
 				var currentVertex = vertices[i];
@@ -640,7 +677,7 @@ define([
 					}
 				}
 
-				// Interpolate vertex along the edge to the taergetNeighbour. The amount shall be the axis which is most outside.
+				// Interpolate vertex along the edge to the targetNeighbour. The amount shall be the axis which is most outside.
 				// TODO : Somehow save the checks from the control if the vertex is inside or not to be able to know already which side
 				//		is outside. Maybe create a new function for this, and return different integers which says which area the vertex
 				//		is located in if it is outside the screen along with the amount.
@@ -804,14 +841,17 @@ define([
 	*/
 	SoftwareRenderer.prototype._boundingSphereOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
 
-		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+		var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entityWorldTransformMatrix);
 
 		var boundingSphere = entity.meshDataComponent.modelBound;
-		var origin = new Vector4(0,0,0,1.0);
+		var origin = new Vector4(0, 0, 0, 1);
 		combinedMatrix.applyPost(origin);
 
 		var scale = entity.transformComponent.transform.scale;
+		// REVIEW: Don't call private method (_maxAxis).
+		// Create a maxAxis function in Vector and call it from here instead.
+		// Also remove BoundingSphere._maxAxis and use Vector.maxAxis instead.
 		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
 
 		// Compensate for perspective distortion of the sphere.
@@ -827,6 +867,8 @@ define([
 		if (cameraToSphereDistance <= radius ) {
 			return false;
 		}
+		// REVIEW: Reusing the radius variable here, but with another value (what is it?).
+		// Use a separate variable for this new value, giving it a name that explains what it is.
 		radius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
 
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
@@ -962,6 +1004,7 @@ define([
 	*	@param {Number} maxY
 	*/
 	SoftwareRenderer.prototype._clampToScreen = function (minX, maxX, minY, maxY) {
+		// REVIEW: Function not used. Remove!
 		if (minX < 0) {
 			minX = 0;
 		}
@@ -979,6 +1022,7 @@ define([
 		}
 	};
 
+	// REVIEW: Function not used. Remove!
 	SoftwareRenderer.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
@@ -1171,6 +1215,7 @@ define([
 	*	@return {Boolean} occluded or not occluded
 	*/
 	SoftwareRenderer.prototype._isBezierScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
+		// REVIEW: Function not used - remove!
 
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
@@ -1370,6 +1415,7 @@ define([
 	*	@return {Boolean} true or false, occluded or not occluded.
 	*/
 	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
+		// REVIEW: Function not used - remove!
 
 		if (this._isCoordinateInsideScreen(coordinate)) {
 
@@ -1448,7 +1494,7 @@ define([
 
 			// Clip triangle to the near plane.
 
-			// Outside incides are the vertices which are outside the view frustrum,
+			// Outside indices are the vertices which are outside the view frustum,
 			// that is closer than the near plane in this case.
 			// The inside indices are the ones on the inside.
 			var outsideIndices = [];
@@ -1626,7 +1672,7 @@ define([
 		// http://www.joelek.se/uploads/files/thesis.pdf, pages 28-31.
 
 		// The camera's near plane component is the translation of the near plane,
-		// therefore 'a' is caluclated as origin.z + near
+		// therefore 'a' is calculated as origin.z + near
 		// var a = origin.z + near;
 		// var b = -near - target.z;
 		// var ratio = a/(a+b);
@@ -1639,7 +1685,7 @@ define([
 	/**
 	*	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
 	*	// TODO : This function should not be used in prod, rather combine the projection transform and this one.
-	*	@param {Array.<Vector4>} vertexArray the vertices to be transformed.
+	*	@param {Array.<Vector4>} vertices the vertices to be transformed.
 	*/
 	SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
 
@@ -1780,7 +1826,16 @@ define([
 	*/
 	SoftwareRenderer.prototype._calculateOrientationData = function (edgeData, shortEdge, longEdge) {
 
+		// REVIEW: The edgeData objects are difficult to understand. Create a normal object
+		// with named members instead of an array with magic indices.
+		// This applies to all functions that use edgeData.
+
 		// TODO : remove temporary variables , to minimize garbage collection?
+		// REVIEW: Au contraire, creating a local variable for data from an array may give better performance,
+		// as the compiler is likely to be better at optimizing local variables as it can assume no aliasing.
+		// And temporary *variables* are not a problem. Variables are not garbage collected.
+		// It is *values* (e.g. objects, numbers, arrays) that are garbage collected.
+		// But if you follow my advice above, you could use edgeData.longEdgeXincrement etc. which is pretty readable.
 		var longEdgeXincrement = edgeData[6];
 		var shortEdgeXincrement = edgeData[7];
 
@@ -1788,8 +1843,8 @@ define([
 		var rightX = edgeData[2];
 
 		// If the edges start at the same position (floating point comparison),
-		// The edges will most proabably contain an integer index to the vertex array in future optimizations.
-		// the long edge can be deterimned by examining the slope sign.
+		// The edges will most probably contain an integer index to the vertex array in future optimizations.
+		// the long edge can be determined by examining the slope sign.
 		// Otherwise, just check which one is larger.
 
 		// A triangle is leaning inwards, if the long edge's stop vertex is further away than the vertex to compare with of the short edge.
@@ -2520,6 +2575,11 @@ define([
 
 
 	SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clearColor) {
+		// REVIEW: Don't use for..in to iterate over an array.
+		// Use "var i = 0; i < ..length" style instead.
+		// See for example the section "for..in should not be used to iterate over an Array where index order is important"
+		// at https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Statements/for...in
+		// Douglas Crockford probably has something about this too.
 		for (var i in this._depthData) {
 			var depthvalue = this._depthData[i];
 
