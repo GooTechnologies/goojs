@@ -94,7 +94,6 @@ function (
 
 	Shader.id = 0;
 
-
 	/**
 	 * Matches an attribute or uniform variable declaration.
 	 *
@@ -208,7 +207,7 @@ function (
 		while (matcher !== null) {
 			var definition = {
 				// data type: float, int, ...
-				format : matcher[2]
+				format: matcher[2]
 			};
 			var type = matcher[1];  // "attribute" or "uniform"
 			var variableName = matcher[3];
@@ -226,8 +225,8 @@ function (
 			} else {
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
-						format : definition.format,
-						name : variableName
+						format: definition.format,
+						name: variableName
 					};
 					target.textureSlots.push(textureSlot);
 				}
@@ -449,10 +448,10 @@ function (
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
-		var DEFAULT_AMBIENT = [0.1,0.1,0.1,1.0];
-		var DEFAULT_EMISSIVE = [0,0,0,0];
-		var DEFAULT_DIFFUSE = [1,1,1,1];
-		var DEFAULT_SPECULAR = [0.8,0.8,0.8,1.0];
+		var DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
+		var DEFAULT_EMISSIVE = [0, 0, 0, 0];
+		var DEFAULT_DIFFUSE = [1, 1, 1, 1];
+		var DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
 		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
 			uniformCall.uniform4fv(materialState);
@@ -500,7 +499,7 @@ function (
 		};
 	}
 
-	Shader.prototype.getShaderDefinition = function() {
+	Shader.prototype.getShaderDefinition = function () {
 		return {
 			vshader: this.vertexSource,
 			fshader: this.fragmentSource,
