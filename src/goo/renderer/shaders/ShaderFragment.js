@@ -119,7 +119,7 @@ define(
 		'	m = m * m;',
 		'	return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );',
 		'}'
-	].join("\n"),
+	].join("\n");
 
 	ShaderFragment.methods = {
 		packDepth : [ //
