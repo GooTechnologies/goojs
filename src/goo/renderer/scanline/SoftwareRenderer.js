@@ -1423,7 +1423,7 @@ define([
 		// Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
 		// The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
 		for (var i = 0; i < posArray.length; i++) {
-			tempVertex.set(originalPositions[i], originalPositions[i + 1], originalPositions[i + 2], 1.0);
+			tempVertex.seta([originalPositions[i], originalPositions[i + 1], originalPositions[i + 2], 1.0]);
 			combinedMatrix.applyPost(tempVertex);
 			posArray.set([tempVertex.data[0], tempVertex.data[1], tempVertex.data[2]], i);
 			i += 2;
@@ -1464,7 +1464,7 @@ define([
 					// All of the vertices are on the outside, skip to the next three vertices.
 					// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
 					continue;
-				case 1:
+                case 1:
 					// Update the one vertex to its new position on the near plane and add a new vertex
 					// on the other intersection with the plane.
 
@@ -1490,8 +1490,11 @@ define([
 						origin.data[2] + ratio * (target.data[2] - origin.data[2]),
 						1.0
 					);
+                    // Set the new data for the origin vertex.
+					vertices[outsideIndices[0]].data[0] = newV1[0];
+					vertices[outsideIndices[0]].data[1] = newV1[1];
+					vertices[outsideIndices[0]].data[2] = newV1[2];
 
-					vertices[outsideIndices[0]].set(newV1);
 					vertices.push(newV2);
 
 					break;
@@ -1524,7 +1527,7 @@ define([
 
 			/* 
 			if (this._isBackFacingProjected(v1, v2, v3)) {
-				// TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
+				// TODO : Refactor to remove continue statement. according to Javascript : The Good Parts.
 				continue; // Skip loop to the next three vertices.
 			}
 			*/
