@@ -248,8 +248,6 @@ require(
 			});
 		}
 
-		
-
 		function createTorus (world, translation) {
 			var meshData = ShapeCreator.createTorus(32, 32);
 			var entity = EntityUtils.createTypicalEntity(world, meshData);
@@ -386,13 +384,13 @@ require(
 		function createRoomArray (goo) {
 			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
 			var mLoader = new MeshLoader({'loader': loader});
-			
+
 			var occPromise = mLoader.load('room_occluder.mesh');
-			var roomPromise = mLoader.load('room.mesh');
+            var roomPromise = mLoader.load('room.mesh');
 
 			var material = new Material.createMaterial(ShaderLib.simpleLit,'RoomMaterial');
 			material.uniforms = {'materialDiffuse': [0.6, 0, 0.8,1], 'materialSpecular': [1,0,0,1], 'materialAmbient': [0,0,0.15,1]};
-			material.wireframe = true;
+			material.wireframe = false;
 
 			var NUM_OF_ROOMS = 30;
 			var translation = new Vector3(20, 35, 0);
@@ -416,13 +414,11 @@ require(
 
 					entity.addToWorld();
 
+                    addBoundingBoxToEntity(goo.world, translation, entity);
+
 					translation.x += roomDistance;
 				}
-
-				
 			});
-
-
 		}
 
 		function loadTestScene(goo) {
