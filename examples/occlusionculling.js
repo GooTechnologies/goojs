@@ -289,7 +289,7 @@ require(
 			entity.name = 'BoundingBox';
 
 			entity.meshRendererComponent.cullMode = 'NeverOcclusionCull';
-			var material = new Material.createMaterial(ShaderLib.texturedLit, 'wirematOnBoundingBox');
+			var material = new Material.createMaterial(ShaderLib.simpleLit, 'wirematOnBoundingBox');
 			material.wireframe = true;
 			entity.meshRendererComponent.materials.push(material);
 			entity.addToWorld();

@@ -167,11 +167,12 @@ define([
 				var cull;
 
 				if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
-					// REVIEW: Should this be called _boundingSphereOcclusionTest to be consistent with the bounding box test?
+					// The bounding sphere occlusion culling have some different methods to test occlusion.
+                    // Those are determined in the below method.
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+					//cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
 				if (!cull) {
@@ -201,20 +202,26 @@ define([
 		var y = boundingBox.yExtent;
 		var z = boundingBox.zExtent;
 
-		var v1 = new Vector4(-x, y, z, 1.0);
-		var v2 = new Vector4(-x, y, -z, 1.0);
-		var v3 = new Vector4(x, y, -z, 1.0);
-		var v4 = new Vector4(x, y, z, 1.0);
+		var v1 = new Vector4(-x, y, -z, 1.0);
+		var v2 = new Vector4(-x, y, z, 1.0);
+		var v3 = new Vector4(x, y, z, 1.0);
+		var v4 = new Vector4(x, y, -z, 1.0);
 
-		var v5 = new Vector4(-x, -y, z, 1.0);
-		var v6 = new Vector4(-x, -y, -z, 1.0);
-		var v7 = new Vector4(x, -y, -z, 1.0);
-		var v8 = new Vector4(x, -y, z, 1.0);
+		var v5 = new Vector4(-x, -y, -z, 1.0);
+		var v6 = new Vector4(-x, -y, z, 1.0);
+		var v7 = new Vector4(x, -y, z, 1.0);
+		var v8 = new Vector4(x, -y, -z, 1.0);
 
 		return [v1, v2, v3, v4, v5, v6, v7, v8];
 	};
 
-	// REVIEW: Document the return value, which is not always what you'd expect.
+        /**
+         * Creates an array of triangles and performs the
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Array.<Triangle>, Boolean} triangles or false if early exit is found.
+         * @private
+         */
 	SoftwareRenderer.prototype._createTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
 
 		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
@@ -258,10 +265,7 @@ define([
 
 			var projectedVertices = [v1, v2, v3];
 
-			// TODO : I think i made the winding clockwise instead of counter clockwise.
-			// hence the negation here...
-			// REVIEW: Then fix that! :-)
-			if (!this._isBackFacingProjected(v1, v2, v3)) {
+			if (this._isBackFacingProjected(v1, v2, v3)) {
 				continue;
 			}
 
@@ -1502,7 +1506,7 @@ define([
 	*	Otherwise false is returned. This method is for checking projected vertices.
 	*
 	*	@param {Vector4} v1 Vertex #1
-	*	@param {Vector4} v3 Vertex #2
+	*	@param {Vector4} v2 Vertex #2
 	*	@param {Vector4} v3 Vertex #3
 	*	@return {Boolean} true or false
 	*/
@@ -1523,6 +1527,7 @@ define([
 
 		// var dotProduct = -faceNormal.z; // -1.0 * faceNormal.z;
 
+        // The face is facing backwards if the dotproduct is positive.
 		// Invert the comparison to remove the negation of facenormalZ.
 		return faceNormalZ < 0.0;
 	};
