@@ -171,8 +171,8 @@ define([
                     // Those are determined in the below method.
 					cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-					//cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-					cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+					cull = this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
 				if (!cull) {
@@ -331,11 +331,9 @@ define([
 
 		this._transformToScreenSpace(vertices);
 
-		// The array contains the min and max x- and y-coordinates as well as the min depth.
-		// order : [minX, maxX, minY, maxY, minDepth]
-		var minmaxArray = [Infinity, -Infinity, Infinity, -Infinity, -Infinity];
-
-		this._cohenSutherlandClipBox(vertices, minmaxArray);
+        // The array contains the min and max x- and y-coordinates as well as the min depth.
+        // order : [minX, maxX, minY, maxY, minDepth]
+        var minmaxArray = this._cohenSutherlandClipBox(vertices, minmaxArray);
 
 		// Round values from the clipping conservatively to integer pixel coordinates.
 		/*jshint bitwise: false */
@@ -355,9 +353,9 @@ define([
 	*	it will be non-conservative in some cases.
 	*
 	*	@param {Array.<Vector>} vertices Array of screen space transformed vertices.
-	*	@param {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
+	*	@returns {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
 	*/
-	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices, minmaxArray) {
+	SoftwareRenderer.prototype._cohenSutherlandClipBox = function (vertices) {
 		/*
 		*	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
 		*	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
@@ -369,6 +367,14 @@ define([
 		// Create local variables minX, maxX, minY, maxY, minDepth instead,
 		// so you can use e.g. maxX instead of minmaxArray[1].
 		// And return the array instead of getting it as an argument.
+        var minX, maxX, minY, maxY, minDepth;
+        minX = Infinity;
+        maxX = -Infinity;
+        minY = Infinity;
+        maxY = -Infinity;
+        // NOTE: The depth is inversed at this point, (1 / w), the minimum depth is the largest.
+        minDepth = -Infinity;
+
 
 		/*jshint bitwise: false */
 		var outCodes = new Array(8);
@@ -377,29 +383,20 @@ define([
 			var code = this._calculateOutCode(vert);
 			outCodes[i] = code;
 			if (code === INSIDE) {
-				// this vertex is inside the screen and shall be used to find minmax.
-				// REVIEW: A one-line, simpler and probably faster, alternative:
-				// minmaxArray[4] = Math.max(minmaxArray[4], vert.w);
-				// Use this (and Math.min) instead of if statements, and get rid of lots of lines in this function!
-				if (vert.w > minmaxArray[4]) {
-					minmaxArray[4] = vert.w;
-				}
+				// this vertex is inside the screen and shall be used to find minimum and maximum values.
 
-				// Minmax X
-				if (vert.x > minmaxArray[1]) {
-					minmaxArray[1] = vert.x;
-				}
-				if (vert.x < minmaxArray[0]) {
-					minmaxArray[0] = vert.x;
-				}
+                // Check min depth (Inverted)
+                minDepth = Math.max(minDepth, vert.data[3]);
 
-				// Minmax Y
-				if (vert.y > minmaxArray[3]) {
-					minmaxArray[3] = vert.y;
-				}
-				if (vert.y < minmaxArray[2]) {
-					minmaxArray[2] = vert.y;
-				}
+				// Minimum and maximum X
+                var xValue = vert.data[0];
+                minX = Math.min(minX, xValue);
+                maxX = Math.max(maxX, xValue);
+
+                // Minimum and maximum Y
+                var yValue = vert.data[1];
+                minY = Math.min(minY, yValue);
+                maxY = Math.max(maxY, yValue);
 			}
 		}
 
@@ -456,16 +453,14 @@ define([
 					tempVec.data[1] = this._clipY;
 
 					// Only check for minmax x and y if the new coordinate is inside.
+                    // [minX, maxX, minY, maxY, minDepth];
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
-						minmaxArray[3] = this._clipY;
-						// Minmax X
-						if (tempVec.data[0] > minmaxArray[1]) {
-							minmaxArray[1] = tempVec.data[0];
-						}
-						if (tempVec.data[0] < minmaxArray[0]) {
-							minmaxArray[0] = tempVec.data[0];
-						}
+						maxY = this._clipY;
+                        // Minmax X
+                        var xValue = tempVec.data[0];
+                        minX = Math.min(minX, xValue);
+                        maxX = Math.max(maxX, xValue);
 					}
 				} else if (outsideCode & BELOW) {
 					ratio = (-v1.data[1] / (v2.data[1] - v1.data[1]));
@@ -475,14 +470,11 @@ define([
 					// Only check for minmax x and y if the new coordinate is inside.
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
-						minmaxArray[2] = 0;
+						minY = 0;
 						// Minmax X
-						if (tempVec.data[0] > minmaxArray[1]) {
-							minmaxArray[1] = tempVec.data[0];
-						}
-						if (tempVec.data[0] < minmaxArray[0]) {
-							minmaxArray[0] = tempVec.data[0];
-						}
+                        var xValue = tempVec.data[0];
+                        minX = Math.min(minX, xValue);
+                        maxX = Math.max(maxX, xValue);
 					}
 				} else if (outsideCode & RIGHT) {
 					ratio = ((this._clipX - v1.data[0]) / (v2.data[0] - v1.data[0]));
@@ -491,14 +483,11 @@ define([
 
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
-						minmaxArray[1] = this._clipX;
-						// Minmax Y
-						if (tempVec.data[1] > minmaxArray[3]) {
-							minmaxArray[3] = tempVec.data[1];
-						}
-						if (tempVec.data[1] < minmaxArray[2]) {
-							minmaxArray[2] = tempVec.data[1];
-						}
+						maxX = this._clipX;
+                        // Minimum and maximum Y
+                        var yValue = tempVec.data[1];
+                        minY = Math.min(minY, yValue);
+                        maxY = Math.max(maxY, yValue);
 					}
 				} else if (outsideCode & LEFT) {
 					ratio = (-v1.data[0] / (v2.data[0] - v1.data[0]));
@@ -507,14 +496,11 @@ define([
 
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
-						minmaxArray[0] = 0;
-						// Minmax Y
-						if (tempVec.data[1] > minmaxArray[3]) {
-							minmaxArray[3] = tempVec.data[1];
-						}
-						if (tempVec.data[1] < minmaxArray[2]) {
-							minmaxArray[2] = tempVec.data[1];
-						}
+						minX = 0;
+                        // Minimum and maximum Y
+                        var yValue = tempVec.data[1];
+                        minY = Math.min(minY, yValue);
+                        maxY = Math.max(maxY, yValue);
 					}
 				}
 
@@ -529,13 +515,13 @@ define([
 					depth = (1.0 - ratio) * v2.data[3] + ratio * v1.data[3];
 				}
 
-				// Check for minimum depth.
-				if (depth > minmaxArray[4]) {
-					minmaxArray[4] = depth;
-				}
+                // Check min depth (Inverted)
+                minDepth = Math.max(minDepth, depth);
 			}
 		}
 		/*jshint bitwise: true */
+
+        return  [minX, maxX, minY, maxY, minDepth];
 	};
 
 	/**
