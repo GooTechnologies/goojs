@@ -363,10 +363,6 @@ define([
 		*	https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Operators/Bitwise_Operators
 		*/
 
-		// REVIEW: The use of minmaxArray is not easy to read.
-		// Create local variables minX, maxX, minY, maxY, minDepth instead,
-		// so you can use e.g. maxX instead of minmaxArray[1].
-		// And return the array instead of getting it as an argument.
         var minX, maxX, minY, maxY, minDepth;
         minX = Infinity;
         maxX = -Infinity;
@@ -590,9 +586,7 @@ define([
 		combinedMatrix.applyPost(origin);
 
 		var scale = entity.transformComponent.transform.scale;
-		// REVIEW: Don't call private method (_maxAxis).
-		// Create a maxAxis function in Vector and call it from here instead.
-		// Also remove BoundingSphere._maxAxis and use Vector.maxAxis instead.
+
 		var radius = scale.maxAxis() * boundingSphere.radius;
 
 		/*
@@ -610,9 +604,7 @@ define([
 		if (cameraToSphereDistance <= radius ) {
 			return false;
 		}
-		// REVIEW: Reusing the radius variable here, but with another value (what is it?).
-		// Use a separate variable for this new value, giving it a name that explains what it is.
-		radius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
+		var compensatedRadius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
 
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 		var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
@@ -622,10 +614,10 @@ define([
 			return false;
 		}
 
-		var leftCoord = new Vector4(origin.x - radius, origin.y, origin.z, 1.0);
-		var rightCoord = new Vector4(origin.x + radius, origin.y, origin.z, 1.0);
-		var topCoord = new Vector4(origin.x, origin.y + radius, origin.z, 1.0);
-		var bottomCoord = new Vector4(origin.x , origin.y - radius, origin.z, 1.0);
+		var leftCoord = new Vector4(origin.x - compensatedRadius, origin.y, origin.z, 1.0);
+		var rightCoord = new Vector4(origin.x + compensatedRadius, origin.y, origin.z, 1.0);
+		var topCoord = new Vector4(origin.x, origin.y + compensatedRadius, origin.z, 1.0);
+		var bottomCoord = new Vector4(origin.x , origin.y - compensatedRadius, origin.z, 1.0);
 
 		var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
 
