@@ -52,8 +52,13 @@ define([
 		// TODO: Remove later , used for debugging.
 		this.renderer.copyDepthToColor();
 
-		// Perform the occlusion culling, entities are removed from the renderlist if they are occluded.
-		this.renderer.performOcclusionCulling(renderList);
+		// Perform the occlusion culling, an array
+		var visibleList = this.renderer.performOcclusionCulling(renderList);
+        renderList.length = 0;
+        // Copy the visible entities to the renderlist.
+        for (var i = 0; i < visibleList.length; i++) {
+            renderList[i] = visibleList[i];
+        }
 	};
 
 	/**

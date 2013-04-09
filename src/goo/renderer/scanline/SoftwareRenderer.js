@@ -148,12 +148,9 @@ define([
 	};
 
 	/**
-	*	For each entity in the render list , a screen space axis aligned bounding box is created
-	*	and the depthBuffer is queried at the bounds of this AABB for checking if the object is visible.
-	*
-	*	The entity is removed from the renderlist if it is not visible.
-	*
+     * Performs occlusion culling for the given array of Entities. A new array is returned with the visibile Entities.
 	*	@param {Array.<Entity>} renderList The array of entities which are possible occludees.
+     *  @returns {Array.<Entity>} visibleEntities The array of entities which are visible after occlusion culling has been applied.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
 
@@ -161,6 +158,7 @@ define([
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		var cameraViewProjectionMatrix = Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
+        var visibleEntities = new Array();
 
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
@@ -176,17 +174,15 @@ define([
 					//cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
 				}
 
-				if (cull) {
-					// Removes the entity at the current index.
-					// REVIEW: splice is an O(n) operation because the array's elements after i need to be moved.
-					// This makes the whole performOcclusionCulling function have complexity O(n^2).
-					// I'd recommend building a new array and returning it instead
-					// (push to that array if entity is not occluded).
-					renderList.splice(i, 1);
-					i--; // Have to compensate the index for the loop.
+				if (!cull) {
+                    visibleEntities.push(entity);
 				}
-			}
+			} else {
+                visibleEntities.push(entity);
+            }
 		}
+
+        return visibleEntities;
 	};
 
 	/**
