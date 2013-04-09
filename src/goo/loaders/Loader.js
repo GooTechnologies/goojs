@@ -114,7 +114,7 @@ define([
 	};
 
 	Loader.prototype._buildURL = function(URLString) {
-		var _match = URLString.match(/\.(scene|ent|mat|mesh|shader|tex)$/);
+		var _match = URLString.match(/\.(bundle|scene|ent|mat|mesh|shader|tex)$/);
 		var _url = _match ? URLString + '.json' : URLString;
 		return this.rootPath + _url;
 	};
