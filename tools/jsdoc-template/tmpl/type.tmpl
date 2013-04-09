@@ -1,7 +1,31 @@
 <?js
-	var data = obj;
+  var data = obj;
     var self = this;
-    data.forEach(function(name, i) { ?>
-<span class="param-type"><?js= self.linkto(name, self.htmlsafe(name)) ?></span>
+    var postName = ''
+    function linkName(name) {
+      var matchArray = name.match(/\[\]$/);
+      var matchFunc = name.match(/^function\((.*)\)$/);
+      if(matchArray) {
+        name = name.replace('[]','');
+        return linkName(name)+'[]';
+      }
+      else if(matchFunc && matchFunc.length) {
+        var m = matchFunc[1].replace(/\s+/g,'');
+        var names = m.split(',');
+        var links = [];
+        names.forEach(function(name, i) {
+          links.push(linkName(name));
+        });
+        return 'function('+links.join(', ')+')';
+      }
+      else {
+        return self.linkto(name, self.htmlsafe(name));
+      }
+    }
+
+    data.forEach(function(name, i) {
+
+    ?>
+<span class="param-type"><?js= linkName(name) ?></span>
 <?js if (i < data.length-1) { ?>|<?js } ?>
 <?js }); ?>
