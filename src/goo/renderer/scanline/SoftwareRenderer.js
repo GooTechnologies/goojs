@@ -216,13 +216,14 @@ define([
 	};
 
         /**
-         * Creates an array of triangles and performs the
+         * Creates an array of triangles and transforms them to projection space. Null is returned if any of the vertices
+         * cut the near plane.
          * @param entity
          * @param cameraViewProjectionMatrix
-         * @returns {Array.<Triangle>, Boolean} triangles or false if early exit is found.
+         * @returns {Array.<Triangle>} triangles or null if early exit is found.
          * @private
          */
-	SoftwareRenderer.prototype._createTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
+	SoftwareRenderer.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
 
 		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
@@ -232,16 +233,15 @@ define([
 		var vertices = this._generateBoundingBoxVertices(entity);
 		// Projection transform + homogeneous divide for every vertex.
 		// Early exit on near plane clip.
-		// REVIEW: i is declared twice in this function. Didn't JSHint catch that?
-		for (var i = 0; i < vertices.length; i++) {
-			var v = vertices[i];
+		for (var j = 0; j < vertices.length; j++) {
+			var v = vertices[j];
 
 			combinedMatrix.applyPost(v);
 
 			if (v.data[3] < this.camera.near) {
 				// Near plane clipped.
 				//console.log("Early exit on near plane clipped.");
-				return false;
+				return null;
 			}
 
 			var div = 1.0 / v.data[3];
@@ -282,17 +282,16 @@ define([
 	*/
 	SoftwareRenderer.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
 
-		var triangles = this._createTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
+		var triangles = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
 
 		// Triangles will be false on near plane clip.
 		// Considering this case to be visible.
-		// REVIEW: It is a bit unconventional that the function can return two unrelated data types like this.
-		// Return null instead of false!
-		if (triangles === false) {
+		if (triangles === null) {
 			return false;
 		}
 
-		for (var t = 0; t < triangles.length; t++) {
+        var triCount = triangles.length;
+		for (var t = 0; t < triCount; t++) {
 			if (!this._isRenderedTriangleOccluded(triangles[t])){
 				return false;
 			}
