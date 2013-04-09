@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 define(["goo/noise/Noise"],
-	/** @lends ValueNoise */
+	/** @lends */
 	function (Noise) {
 	"use strict";
 

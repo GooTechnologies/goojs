@@ -5,7 +5,7 @@ define([
 	'goo/entities/World',
 	'goo/renderer/RenderQueue'
 ],
-/** @lends Shader */
+/** @lends */
 function (
 	ShaderCall,
 	Matrix4x4,

@@ -1,5 +1,5 @@
 define(["goo/math/Matrix4x4", "goo/math/Vector", "goo/math/Vector3", "goo/math/Versor"],
-	/** @lends Transformation */
+	/** @lends */
 	function (Matrix4x4, Vector, Vector3, Versor) {
 	"use strict";
 

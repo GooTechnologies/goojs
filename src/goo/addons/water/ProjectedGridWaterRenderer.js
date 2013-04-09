@@ -11,7 +11,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment'
 ],
-/** @lends ProjectedGridWaterRenderer */
+/** @lends */
 function (
 	MeshData,
 	Shader,

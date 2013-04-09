@@ -1,5 +1,5 @@
 define(['goo/math/Transform', 'goo/entities/components/Component'],
-	/** @lends TransformComponent */
+	/** @lends */
 	function (Transform, Component) {
 	"use strict";
 

@@ -1,7 +1,7 @@
 define([
 	'goo/math/Vector3'
 ],
-/** @lends ParticleUtils */
+/** @lends */
 function (
 	Vector3
 ) {

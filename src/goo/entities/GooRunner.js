@@ -13,7 +13,7 @@ define([
 	"goo/entities/systems/CSSTransformSystem",
 	'goo/util/GameUtils'
 ],
-/** @lends GooRunner */
+/** @lends */
 function (
 	World,
 	TransformSystem,

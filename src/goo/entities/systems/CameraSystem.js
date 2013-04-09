@@ -1,5 +1,5 @@
 define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'],
-	/** @lends CameraSystem */
+	/** @lends */
 	function (System, EventHandler, Renderer) {
 	"use strict";
 

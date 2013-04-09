@@ -1,5 +1,5 @@
 define(
-/** @lends Entity */
+/** @lends */
 function () {
 	"use strict";
 

@@ -1,5 +1,5 @@
 define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'],
-/** @lends TriggerChannel */
+/** @lends */
 function (AbstractAnimationChannel, TriggerData) {
 	"use strict";
 

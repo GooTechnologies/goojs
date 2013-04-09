@@ -1,7 +1,7 @@
 define([
 	'goo/animation/Joint'
 ],
-/** @lends Skeleton */
+/** @lends */
 function (
 	Joint
 ) {

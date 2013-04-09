@@ -1,5 +1,5 @@
 define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'],
-/** @lends World */
+/** @lends */
 function (Entity, EntityManager, TransformComponent) {
 	"use strict";
 

@@ -1,5 +1,5 @@
 define(['goo/renderer/MeshData'],
-	/** @lends Box */
+	/** @lends */
 	function (MeshData) {
 	"use strict";
 

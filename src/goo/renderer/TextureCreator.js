@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Util',
 	'goo/util/Latch'
 ],
-/** @lends TextureCreator */
+/** @lends */
 function (
 	Loader,
 	Texture,

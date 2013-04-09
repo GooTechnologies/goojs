@@ -1,5 +1,5 @@
 define(['goo/entities/systems/System'],
-	/** @lends TransformSystem */
+	/** @lends */
 	function (System) {
 	"use strict";
 

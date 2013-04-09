@@ -1,5 +1,5 @@
 define(['goo/math/Quaternion', 'goo/math/Vector3'],
-/** @lends TransformData */
+/** @lends */
 function (Quaternion, Vector3) {
 	"use strict";
 

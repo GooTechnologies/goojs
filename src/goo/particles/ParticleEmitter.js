@@ -1,5 +1,5 @@
 define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'],
-/** @lends ParticleEmitter */
+/** @lends */
 function (ParticleUtils, Renderer) {
 	"use strict";
 

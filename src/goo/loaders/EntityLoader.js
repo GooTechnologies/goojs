@@ -18,7 +18,7 @@ define([
 		'goo/loaders/MeshLoader',
 		'goo/loaders/Loader'
 	],
-/** @lends EntityLoader */
+/** @lends */
 function(
 		Entity,
 		Camera,

@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/TextureCreator'
 ],
-/** @lends Terrain */
+/** @lends */
 function(
 	MeshDataComponent,
 	MeshRendererComponent,

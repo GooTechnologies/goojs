@@ -3,7 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/math/MathUtils'
 ],
-/** @lends BoundingBox */
+/** @lends */
 function (
 	Vector3,
 	BoundingVolume,

@@ -1,5 +1,5 @@
 define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'],
-/** @lends AnimationManager */
+/** @lends */
 function (AnimationLayer, AnimationClipInstance) {
 	"use strict";
 

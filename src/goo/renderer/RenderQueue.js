@@ -1,5 +1,5 @@
 define(['goo/math/Vector3'],
-/** @lends RenderQueue */
+/** @lends */
 function(Vector3) {
 	"use strict";
 

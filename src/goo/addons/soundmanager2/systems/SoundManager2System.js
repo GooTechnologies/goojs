@@ -2,7 +2,7 @@ define([
 	'goo/lib/soundmanager2/soundmanager2',
 	'goo/entities/systems/System'
 ],
-/** @lends SoundManager2System */
+/** @lends */
 function(
 	undefined,
 	System
@@ -44,20 +44,20 @@ function(
 		}
 	};
 
-	SoundManager2System.prototype.deleted = function(entity) {
-		var soundManagerComponent = entity.soundManager2Component;
+	SoundManager2System.prototype.deleted = function(/*entity*/) {
+		//var soundManagerComponent = entity.soundManager2Component;
 
 		// if (soundManagerComponent) {
 			// this.world.remove(cannonComponent.body);
 		// }
 	};
 
-	SoundManager2System.prototype.process = function(entities /*, tpf */) {
-		for (var i = 0; i < entities.length; i++) {
+	SoundManager2System.prototype.process = function(/*entities , tpf */) {
+		/*for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var soundManagerComponent = entity.soundManager2Component;
 
-		}
+		}*/
 	};
 
 	return SoundManager2System;

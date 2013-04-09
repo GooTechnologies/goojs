@@ -1,5 +1,5 @@
 define(
-	/** @lends Latch */
+	/** @lends */
 	function () {
 	"use strict";
 

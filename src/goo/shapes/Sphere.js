@@ -1,5 +1,5 @@
 define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'],
-	/** @lends Sphere */
+	/** @lends */
 	function (MeshData, Enum, Vector3, MathUtils) {
 	"use strict";
 

@@ -1,5 +1,5 @@
 define(['goo/entities/components/Component'],
-	/** @lends MeshRendererComponent */
+	/** @lends */
 	function (Component) {
 	"use strict";
 

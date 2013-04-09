@@ -3,7 +3,7 @@ define([
 	'goo/entities/EventHandler',
 	'goo/renderer/SimplePartitioner'
 ],
-/** @lends RenderSystem */
+/** @lends */
 function (
 	System,
 	EventHandler,

@@ -1,5 +1,5 @@
 define(
-	/** @lends Stats */
+	/** @lends */
 	function () {
 	"use strict";
 

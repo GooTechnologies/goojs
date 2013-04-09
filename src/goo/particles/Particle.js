@@ -5,7 +5,7 @@ define([
 	'goo/math/Vector4',
 	'goo/renderer/MeshData'
 ],
-/** @lends Particle */
+/** @lends */
 function (
 	ParticleUtils,
 	Vector,

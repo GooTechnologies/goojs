@@ -1,6 +1,6 @@
 define(['goo/renderer/Renderer',
 	'goo/math/Vector4'],
-	/** @lends RenderPass */
+	/** @lends */
 	function (Renderer,
 	Vector4) {
 	"use strict";

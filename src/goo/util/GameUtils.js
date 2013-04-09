@@ -1,5 +1,5 @@
 define(
-/** @lends GameUtils */
+/** @lends */
 function () {
 	"use strict";
 

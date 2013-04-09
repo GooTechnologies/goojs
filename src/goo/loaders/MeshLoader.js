@@ -5,7 +5,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/loaders/SkeletonLoader'
 ],
-/** @lends MeshLoader */
+/** @lends */
 function(
 	RSVP,
 	JsonUtils,

@@ -3,7 +3,7 @@ define([
         'goo/math/Vector3',
         'goo/entities/EntityUtils'
         ],
-	/** @lends MeshBuilder */
+	/** @lends */
 	function (
 		MeshData,
 		Vector3,

@@ -12,7 +12,7 @@ define([
 	'goo/entities/EventHandler',
 	'goo/renderer/shaders/ShaderFragment'
 ],
-/** @lends FlatWaterRenderer */
+/** @lends */
 function (
 	MeshData,
 	Shader,

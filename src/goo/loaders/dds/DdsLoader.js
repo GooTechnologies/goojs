@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 define(['goo/loaders/dds/DdsUtils'],
-	/** @lends DdsLoader */
+	/** @lends */
 	function (DdsUtils) {
 	"use strict";
 

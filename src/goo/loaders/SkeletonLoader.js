@@ -5,7 +5,7 @@ define([
 		'goo/loaders/Loader',
 		'goo/loaders/JsonUtils'
 	],
-	/** @lends SkeletonLoader */
+	/** @lends */
 	function(
 		Skeleton,
 		SkeletonPose,

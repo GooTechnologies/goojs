@@ -1,5 +1,5 @@
 define([],
-/** @lends MathUtils */
+/** @lends */
 function () {
 	"use strict";
 

@@ -1,5 +1,5 @@
 define(['goo/entities/components/Component'],
-	/** @lends LightComponent */
+	/** @lends */
 	function (Component) {
 	"use strict";
 

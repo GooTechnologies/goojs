@@ -4,7 +4,7 @@ define(['goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/componen
 		'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip', 'goo/animation/clip/JointChannel',
 		'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel', 'goo/animation/state/loader/OutputStore',
 		'goo/util/URLTools', 'goo/util/SimpleResourceUtil', 'goo/renderer/shaders/ShaderLib', 'goo/renderer/Shader'],
-/** @lends JSONImporter */
+/** @lends */
 function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Joint, Skeleton, SkeletonPose, AnimationClip,
 	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil, ShaderLib, Shader) {
 	"use strict";

@@ -16,7 +16,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler'
 ],
-/** @lends Renderer */
+/** @lends */
 function (
 	RendererRecord,
 	Util,

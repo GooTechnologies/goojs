@@ -1,5 +1,5 @@
 define(
-	/** @lends Rc4Random */
+	/** @lends */
 	function () {
 	"use strict";
 

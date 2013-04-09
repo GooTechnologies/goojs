@@ -15,7 +15,7 @@ define([
 		'goo/animation/clip/InterpolatedFloatChannel',
 		'goo/loaders/AnimationLoader'
 	],
-	/** @lends AnimationTreeLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,

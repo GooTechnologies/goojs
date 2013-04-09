@@ -1,5 +1,5 @@
 define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'],
-/** @lends SkeletonPose */
+/** @lends */
 function (Transform, Joint, Matrix4x4) {
 	"use strict";
 

@@ -17,7 +17,7 @@ define([
 		'goo/animation/state/SteadyState',
 		'goo/animation/blendtree/ClipSource'
 	],
-	/** @lends AnimationLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,

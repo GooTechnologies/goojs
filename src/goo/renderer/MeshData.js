@@ -4,7 +4,7 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector3'
 ],
-/** @lends MeshData */
+/** @lends */
 function (
 	BufferData,
 	Util,

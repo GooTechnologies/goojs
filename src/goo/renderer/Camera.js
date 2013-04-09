@@ -10,7 +10,7 @@ define([
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingVolume'
 ],
-/** @lends Camera */
+/** @lends */
 function(
 	Handy,
 	Vector3,

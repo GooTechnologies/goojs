@@ -1,7 +1,7 @@
 define([
 	'goo/math/Vector2'
 ],
-/** @lends Texture */
+/** @lends */
 function (
 	Vector2
 ) {

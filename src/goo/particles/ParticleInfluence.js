@@ -1,5 +1,5 @@
 define(
-/** @lends ParticleInfluence */
+/** @lends */
 function () {
 	"use strict";
 

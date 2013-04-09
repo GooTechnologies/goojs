@@ -1,5 +1,5 @@
 define(['goo/animation/clip/JointChannel', 'goo/animation/clip/JointData'],
-/** @lends ManagedTransformSource */
+/** @lends */
 function (JointChannel, JointData) {
 	"use strict";
 

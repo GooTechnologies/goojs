@@ -1,6 +1,6 @@
 define([
 	'goo/shapes/Box', 'goo/shapes/Quad', 'goo/shapes/Sphere', 'goo/shapes/Torus'],
-	/** @lends ShapeCreator */
+	/** @lends */
 	function (
 	Box, Quad, Sphere, Torus) {
 	"use strict";

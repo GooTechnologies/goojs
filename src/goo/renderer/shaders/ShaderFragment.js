@@ -1,5 +1,5 @@
 define(
-	/** @lends ShaderFragment */
+	/** @lends */
 	function () {
 	"use strict";
 

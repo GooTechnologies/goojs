@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/Component'
 ],
-/** @lends Box2DComponent */
+/** @lends */
 function(
 	Component
 ) {

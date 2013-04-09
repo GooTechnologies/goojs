@@ -1,5 +1,5 @@
 define(
-	/** @lends EntityManager */
+	/** @lends */
 	function () {
 	"use strict";
 

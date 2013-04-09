@@ -2,7 +2,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/math/Matrix'
 ],
-/** @lends Matrix4x4 */
+/** @lends */
 function (
 	MathUtils,
 	Matrix

@@ -7,7 +7,7 @@ define([
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
 ],
-/** @lends ProjectedGrid */
+/** @lends */
 function (
 	MeshData,
 	Vector2,

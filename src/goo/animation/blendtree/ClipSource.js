@@ -1,5 +1,5 @@
 define(['goo/math/MathUtils'],
-/** @lends ClipSource */
+/** @lends */
 function (MathUtils) {
 	"use strict";
 

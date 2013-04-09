@@ -1,5 +1,5 @@
 define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'],
-	/** @lends Torus */
+	/** @lends */
 	function (MeshData, Vector3, MathUtils) {
 	"use strict";
 

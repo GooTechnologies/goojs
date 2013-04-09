@@ -1,6 +1,6 @@
 /*jshint bitwise: false*/
 define(["goo/math/Vector", "goo/math/Vector3", "goo/math/Matrix3x3", "goo/math/MathUtils"],
-/** @lends Quaternion */
+/** @lends */
 function (Vector, Vector3, Matrix3x3, MathUtils) {
 	"use strict";
 

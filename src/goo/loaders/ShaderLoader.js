@@ -4,7 +4,7 @@ define([
 		'goo/renderer/Shader',
 		'goo/loaders/Loader'
 	],
-	/** @lends ShaderLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,

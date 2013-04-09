@@ -1,5 +1,5 @@
 define(['goo/animation/state/AbstractTwoStateLerpTransition'],
-/** @lends FadeTransitionState */
+/** @lends */
 function (AbstractTwoStateLerpTransition) {
 	"use strict";
 

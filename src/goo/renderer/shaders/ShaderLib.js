@@ -4,7 +4,7 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/entities/World'
 ],
-	/** @lends ShaderLib */
+	/** @lends */
 	function (
 		MeshData,
 		Shader,

@@ -2,7 +2,7 @@ define([
         'goo/renderer/MeshData',
         'goo/math/Vector3'
         ],
-	/** @lends FastBuilder */
+	/** @lends */
 	function (
 		MeshData,
 		Vector3

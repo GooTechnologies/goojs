@@ -2,7 +2,7 @@ define([
 	// 'goo/renderer/shaders/ShaderFragment',
 	// 'goo/renderer/MeshData'
 ],
-/** @lends ShaderBuilder */
+/** @lends */
 function (
 	// ShaderFragment,
 	// MeshData

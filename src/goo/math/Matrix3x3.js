@@ -3,7 +3,7 @@ define([
 	'goo/math/Matrix',
 	'goo/math/Vector3'
 ],
-/** @lends Matrix3x3 */
+/** @lends */
 function (
 	MathUtils,
 	Matrix,

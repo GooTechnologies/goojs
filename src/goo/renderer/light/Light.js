@@ -2,7 +2,7 @@ define([
         'goo/math/Vector3',
         'goo/math/Vector4'
         ],
-/** @lends Light */
+/** @lends */
 function (
 	Vector3,
 	Vector4

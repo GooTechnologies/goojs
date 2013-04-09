@@ -3,7 +3,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector'
 ],
-/** @lends Versor */
+/** @lends */
 function (
 	Matrix3x3,
 	Matrix4x4,

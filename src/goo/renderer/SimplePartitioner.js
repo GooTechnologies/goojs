@@ -1,5 +1,5 @@
 define(['goo/renderer/Camera'],
-	/** @lends SimplePartitioner */
+	/** @lends */
 	function (Camera) {
 	"use strict";
 

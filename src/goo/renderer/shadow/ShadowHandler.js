@@ -7,7 +7,7 @@ define([
 		'goo/renderer/pass/RenderTarget',
 		'goo/math/Vector4'
         ],
-	/** @lends ShadowHandler */
+	/** @lends */
 	function (
 		Vector3,
 		FullscreenPass,

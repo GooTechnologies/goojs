@@ -1,7 +1,7 @@
 define([
 		'goo/lib/rsvp.amd'
 	],
-	/** @lends Ajax */
+	/** @lends */
 	function(
 		RSVP
 	) {

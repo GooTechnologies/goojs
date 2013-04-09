@@ -3,7 +3,7 @@ define([
         'goo/math/Vector3',
         'goo/renderer/MeshData'
         ],
-	/** @lends TangentGenerator */
+	/** @lends */
 	function (
 		Vector2,
 		Vector3,

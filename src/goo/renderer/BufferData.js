@@ -1,5 +1,5 @@
 define(
-	/** @lends BufferData */
+	/** @lends */
 	function () {
 	"use strict";
 

@@ -1,6 +1,6 @@
 define([
 	'goo/math/Matrix3x3'
-], /** @lends RotationControlScript */ function (
+], /** @lends */ function (
 	Matrix3x3
 ) {
 	'use strict';

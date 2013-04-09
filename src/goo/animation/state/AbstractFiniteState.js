@@ -1,5 +1,5 @@
 define(
-/** @lends AbstractFiniteState */
+/** @lends */
 function () {
 	"use strict";
 

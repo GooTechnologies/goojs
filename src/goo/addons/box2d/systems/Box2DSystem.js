@@ -2,7 +2,7 @@ define([
 	'goo/lib/box2d/box2d',
 	'goo/entities/systems/System'
 ],
-/** @lends Box2DSystem */
+/** @lends */
 function(
 	Box2D,
 	System

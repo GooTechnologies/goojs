@@ -9,7 +9,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/renderer/MeshData'
 ],
-/** @lends CannonjsSystem */
+/** @lends */
 function(
 	undefined,
 	System,

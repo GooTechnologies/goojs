@@ -1,5 +1,5 @@
 define(["goo/math/MathUtils"],
-	/** @lends Noise */
+	/** @lends */
 	function (MathUtils) {
 	"use strict";
 

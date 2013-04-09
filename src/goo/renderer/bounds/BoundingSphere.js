@@ -3,7 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/MeshData'
 ],
-/** @lends BoundingSphere */
+/** @lends */
 function (
 	Vector3,
 	BoundingVolume,

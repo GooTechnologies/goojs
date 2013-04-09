@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/Component'
 ],
-/** @lends CannonjsComponent */
+/** @lends */
 function(
 	Component
 ) {

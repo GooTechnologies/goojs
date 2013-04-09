@@ -4,7 +4,7 @@ define([
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/CSSTransformComponent'
 	],
-	/** @lends EntityUtils */
+	/** @lends */
 	function (
 		TransformComponent,
 		MeshDataComponent,

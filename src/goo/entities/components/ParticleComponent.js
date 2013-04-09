@@ -15,7 +15,7 @@
 // 5. Particles billboard toward the screen using a provided Camera as reference.
 
 define(['goo/entities/components/Component', 'goo/particles/Particle', 'goo/particles/ParticleEmitter', 'goo/renderer/MeshData'],
-/** @lends ParticleComponent */
+/** @lends */
 function (Component, Particle, ParticleEmitter, MeshData) {
 	"use strict";
 

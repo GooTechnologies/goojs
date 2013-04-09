@@ -1,5 +1,5 @@
 define(['goo/math/Transform'],
-/** @lends Joint */
+/** @lends */
 function (Transform) {
 	"use strict";
 

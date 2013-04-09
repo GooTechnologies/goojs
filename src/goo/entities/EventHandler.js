@@ -1,5 +1,5 @@
 define(
-	/** @lends EventHandler */
+	/** @lends */
 	function () {
 	"use strict";
 

@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/Shader'
 ],
-/** @lends Material */
+/** @lends */
 function(
 	Shader
 ) {

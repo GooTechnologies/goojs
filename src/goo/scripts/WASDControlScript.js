@@ -1,5 +1,5 @@
 define(['goo/math/Vector', 'goo/math/Vector3'],
-/** @lends WASDControlScript */
+/** @lends */
 function (Vector, Vector3) {
 	"use strict";
 

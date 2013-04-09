@@ -9,7 +9,7 @@ define([
 		'goo/loaders/ShaderLoader',
 		'goo/renderer/shaders/ShaderLib'
 	],
-	/** @lends MaterialLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,

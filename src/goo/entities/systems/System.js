@@ -1,5 +1,5 @@
 define(
-/** @lends System */
+/** @lends */
 function() {
 	"use strict";
 

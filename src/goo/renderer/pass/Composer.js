@@ -1,6 +1,6 @@
 define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib'],
-	/** @lends Composer */
+	/** @lends */
 	function (RenderTarget, FullscreenPass,
 	ShaderLib) {
 	"use strict";

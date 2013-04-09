@@ -3,7 +3,7 @@ define([
 		'goo/lib/rsvp.amd',
 		'goo/util/Ajax'
 	],
-	/** @lends Loader */
+	/** @lends */
 	function (
 		RSVP,
 		Ajax

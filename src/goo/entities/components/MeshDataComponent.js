@@ -2,7 +2,7 @@ define([
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/entities/components/Component'
 ],
-/** @lends MeshDataComponent */
+/** @lends */
 function (
 	BoundingSphere,
 	Component

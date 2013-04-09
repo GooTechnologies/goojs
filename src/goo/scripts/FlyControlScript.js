@@ -1,5 +1,5 @@
 define(['goo/math/Vector3'],
-/** @lends FlyControlScript */
+/** @lends */
 function (Vector3) {
 	"use strict";
 

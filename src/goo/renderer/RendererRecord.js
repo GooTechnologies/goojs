@@ -1,5 +1,5 @@
 define(
-/** @lends RendererRecord */
+/** @lends */
 function() {
 	"use strict";
 

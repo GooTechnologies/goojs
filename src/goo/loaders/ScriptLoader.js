@@ -2,7 +2,7 @@ define([
 		'goo/lib/rsvp.amd',
 		'goo/loaders/Loader'
 	],
-	/** @lends ScriptLoader */
+	/** @lends */
 	function(
 		RSVP,
 		Loader

@@ -1,5 +1,5 @@
 define(
-/** @lends ShaderCall */
+/** @lends */
 function () {
 	"use strict";
 

@@ -3,7 +3,7 @@ define([
 		'goo/lib/rsvp.amd',
 		'goo/renderer/Util'
 	],
-	/** @lends BundleLoader */
+	/** @lends */
 	function (
 		Loader,
 		RSVP,

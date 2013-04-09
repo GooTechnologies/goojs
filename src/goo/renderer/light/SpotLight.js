@@ -2,7 +2,7 @@ define([
 		'goo/math/Vector3',
 		'goo/renderer/light/Light'
 		],
-/** @lends SpotLight */
+/** @lends */
 function (
 	Vector3,
 	Light

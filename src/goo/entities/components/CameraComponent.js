@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/math/Vector3'
 ],
-/** @lends CameraComponent */
+/** @lends */
 function (
 	Component,
 	Vector3
