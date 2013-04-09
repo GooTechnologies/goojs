@@ -68,7 +68,6 @@ define([
 			this._depthClear[i] = 0.0;
 		}
 
-		this._boundingBoxNeighbourIndices = this._generateBoundingBoxNeighbourIndices();
 		this._boundingBoxEdgeIndices = this._generateBoundingBoxEdgeIndices();
 		this._boundingBoxTriangleIndices = new Uint8Array(12 * 3);
 
@@ -119,54 +118,7 @@ define([
 	};
 
 	/**
-	*	Returns the array of neighbours for a vertex index on a bounding box
-	*/
-	// REVIEW: I think I understand what this is, but I'm not sure.
-	// Can you write something about what it is?
-	// E.g. "@return {Array.<Array<Number>>} For every vertex index, gives the indices of its three neighbours."
-	SoftwareRenderer.prototype._generateBoundingBoxNeighbourIndices = function () {
-
-		var neighbourArray = new Array(8);
-		for (var i = 0; i < 8; i++) {
-			var n1, n2, n3;
-			switch (i) {
-			case 0:
-				n1 = 3;
-				n2 = 1;
-				n3 = 4;
-				break;
-			case 3:
-				n1 = 2;
-				n2 = 0;
-				n3 = 7;
-				break;
-			case 4:
-				n1 = 7;
-				n2 = 5;
-				n3 = 0;
-				break;
-			case 7:
-				n1 = 6;
-				n2 = 4;
-				n3 = 3;
-				break;
-			default :
-				n1 = (i + 7) % 8; // behind
-				n2 = (i + 1) % 8; // in front
-				n3 = (i + 4) % 8; // below or over
-				break;
-			}
-
-			neighbourArray[i] = [n1, n2, n3];
-		}
-
-		return neighbourArray;
-	};
-
-	// REVIEW: The "(Overwrites the depth buffer with the clear buffer)" part is an implementation detail,
-	// not useful for public documentation.
-	/**
-	*	Clears the depth data (Overwrites the depth buffer with the clear buffer).
+	*	Clears the depth data.
 	*/
 	SoftwareRenderer.prototype._clearDepthData = function () {
 
