@@ -10,6 +10,7 @@ define([
 		'goo/renderer/MeshData',
 		'goo/math/Vector3',
 		'goo/math/MathUtils',
+		'goo/renderer/bounds/BoundingBox',
 
 		'goo/lib/rsvp.amd',
 
@@ -28,6 +29,7 @@ function(
 		MeshData,
 		Vector3,
 		MathUtils,
+		BoundingBox,
 
 		RSVP,
 
@@ -238,6 +240,22 @@ function(
 		.then(function(data) {
 			// We placed the meshDataPromise first so it's at index 0
 			var mdc = new MeshDataComponent(data[0]);
+
+			// If boundingbox provided by data, don't calculate automatically
+			if (data[0].boundingBox) {
+				var min = data[0].boundingBox.min;
+				var max = data[0].boundingBox.max;
+				var size = [max[0]-min[0], max[1]-min[1], max[2]-min[2]];
+				var center = [(max[0]+min[0])*0.5, (max[1]+min[1])*0.5, (max[2]+min[2])*0.5];
+
+				var bounding = new BoundingBox();
+				bounding.xExtent = size[0];
+				bounding.yExtent = size[1];
+				bounding.zExtent = size[2];
+				bounding.center.seta(center);
+				mdc.modelBound = bounding;
+				mdc.autoCompute = false;
+			}
 
 			return mdc;
 		});

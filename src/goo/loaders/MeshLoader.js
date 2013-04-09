@@ -260,6 +260,11 @@ function(
 			}
 			meshData.indexLengths = lengthArray;
 		}
+
+		if (data.BoundingBox) {
+			meshData.boundingBox = data.BoundingBox;
+		}
+
 		return meshData;
 	};
 
