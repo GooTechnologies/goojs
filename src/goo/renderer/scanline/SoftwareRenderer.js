@@ -15,11 +15,12 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
-	'goo/renderer/bounds/BoundingBox'
+	'goo/renderer/bounds/BoundingBox',
+    'goo/renderer/scanline/EdgeData'
 	],
-	/** @lends SoftwareRenderer */
+	/** @lends */
 
-	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox) {
+	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData) {
 	    "use strict";
 
         // Cohen-Sutherland area constants.
@@ -54,13 +55,13 @@ define([
 		var numOfPixels = this.width * this.height;
 
 		var colorBytes = numOfPixels * 4 * Uint8Array.BYTES_PER_ELEMENT;
-		var depthBytes = numOfPixels * Float32Array.BYTES_PER_ELEMENT;
+        var depthBytes = numOfPixels * Float32Array.BYTES_PER_ELEMENT;
 
-		this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes * 2);
+        this._frameBuffer = new ArrayBuffer(colorBytes + depthBytes * 2);
 
-		// The color data is used for debugging purposes.
-		this._colorData = new Uint8Array(this._frameBuffer, 0, numOfPixels * 4);
-		this._depthData = new Float32Array(this._frameBuffer, colorBytes, numOfPixels);
+        // The color data is used for debugging purposes.
+        this._colorData = new Uint8Array(this._frameBuffer, 0, numOfPixels * 4);
+        this._depthData = new Float32Array(this._frameBuffer, colorBytes, numOfPixels);
 		// Buffer for clearing.
 		this._depthClear = new Float32Array(this._frameBuffer, colorBytes + depthBytes, numOfPixels);
 
@@ -1543,28 +1544,18 @@ define([
 		return [longEdge, shortEdge1, shortEdge2];
 	};
 
-	/**
-	*	Returns an array containing if the trianlges long edge is on the right or left and if the triangle is leaning inwards or outwards,
-	*	seen from left to right.
-	*	@returns {Array.<Boolean>} [right/left, inwards/outwards] (true/false)
-	*/
+        /**
+         * Returns an array containing if the triangle's long edge is on the right or left and if the triangle is leaning inwards or outwards
+         * @param {EdgeData} edgeData
+         * @param shortEdge
+         * @param longEdge
+         * @returns {Array}
+         * @private
+         */
 	SoftwareRenderer.prototype._calculateOrientationData = function (edgeData, shortEdge, longEdge) {
 
-		// REVIEW: The edgeData objects are difficult to understand. Create a normal object
-		// with named members instead of an array with magic indices.
-		// This applies to all functions that use edgeData.
-
-		// TODO : remove temporary variables , to minimize garbage collection?
-		// REVIEW: Au contraire, creating a local variable for data from an array may give better performance,
-		// as the compiler is likely to be better at optimizing local variables as it can assume no aliasing.
-		// And temporary *variables* are not a problem. Variables are not garbage collected.
-		// It is *values* (e.g. objects, numbers, arrays) that are garbage collected.
-		// But if you follow my advice above, you could use edgeData.longEdgeXincrement etc. which is pretty readable.
-		var longEdgeXincrement = edgeData[6];
-		var shortEdgeXincrement = edgeData[7];
-
-		var leftX = edgeData[3];
-		var rightX = edgeData[2];
+		var shortX = edgeData.getShortX();
+		var longX = edgeData.getLongX();
 
 		// If the edges start at the same position (floating point comparison),
 		// The edges will most probably contain an integer index to the vertex array in future optimizations.
@@ -1573,12 +1564,12 @@ define([
 
 		// A triangle is leaning inwards, if the long edge's stop vertex is further away than the vertex to compare with of the short edge.
 		// The depth values have been inverted, so the comparison has to be inverted as well.
-		if (leftX === rightX) {
+		if (shortX === longX) {
 			// The short edge is the upper one. The long and short edges originate from the same vertex.
-			return [longEdgeXincrement > shortEdgeXincrement, longEdge.z1 < shortEdge.z1];
+			return [edgeData.getLongXIncrement() > edgeData.getShortXIncrement(), longEdge.z1 < shortEdge.z1];
 		} else {
 			// The short edge is the bottom one.
-			return [rightX > leftX, longEdge.z1 < shortEdge.z0];
+			return [longX > shortX, longEdge.z1 < shortEdge.z0];
 		}
 	};
 
@@ -1675,6 +1666,10 @@ define([
         }
 
         var shortEdge = this._edges[s1];
+        /*
+        TODO : The long edge's data is calculated twice at the momnent. The only difference is if the values are to be
+        interpolated to the proper y.
+         */
 		var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
 
 		// Find out the orientation of the triangle. 
@@ -1721,7 +1716,7 @@ define([
 	*	@param {Array.<Boolean>} the first value of thee array is orientation
 	*/
 	SoftwareRenderer.prototype._horizontalLongEdgeCull = function (longEdge, orientationData) {
-		if (orientationData[0]) {
+		if (orientationData[0]) {// long edge on right side
 			return longEdge.x1 < 0 && longEdge.x0 < 0;
 		} else {
 			return longEdge.x1 > this._clipX && longEdge.x0 > this._clipX;
@@ -1731,22 +1726,22 @@ define([
 	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
 
 		// Copypasted from _drawEdges.
-		var startLine = edgeData[0];
-		var stopLine = edgeData[1];
+		var startLine = edgeData.getStartLine();
+        var stopLine = edgeData.getStopLine();
 
 		// Checking if the triangle's long edge is on the right or the left side.
-		if (orientationData[0]) {
+		if (orientationData[0]) { //RIGHT ORIENTED (long edge on right side)
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[3];
-					var realRightX = edgeData[2];
+					var realLeftX = edgeData.getShortX();
+					var realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
 					var leftX = Math.floor(realLeftX);
 					var rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData[5];
-					var rightZ = edgeData[4];
+					var leftZ = edgeData.getShortZ();
+					var rightZ = edgeData.getLongZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
@@ -1778,14 +1773,14 @@ define([
 			} else { // OUTWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[3];
-					var realRightX = edgeData[2];
-					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+                    var realLeftX = edgeData.getShortX();
+                    var realRightX = edgeData.getLongX();
+                    // Conservative rounding (will cause overdraw on connecting triangles)
+                    var leftX = Math.floor(realLeftX);
+                    var rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData[5];
-					var rightZ = edgeData[4];
+                    var leftZ = edgeData.getShortZ();
+                    var rightZ = edgeData.getLongZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
@@ -1814,14 +1809,14 @@ define([
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[2];
-					var realRightX = edgeData[3];
+					var realLeftX = edgeData.getLongX();
+					var realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
 					var leftX = Math.floor(realLeftX);
 					var rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData[4];
-					var rightZ = edgeData[5];
+					var leftZ = edgeData.getLongZ();
+					var rightZ = edgeData.getShortZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
@@ -1850,14 +1845,14 @@ define([
 			} else { // OUTWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[2];
-					var realRightX = edgeData[3];
-					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+                    var realLeftX = edgeData.getLongX();
+                    var realRightX = edgeData.getShortX();
+                    // Conservative rounding (will cause overdraw on connecting triangles)
+                    var leftX = Math.floor(realLeftX);
+                    var rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData[4];
-					var rightZ = edgeData[5];
+                    var leftZ = edgeData.getLongZ();
+                    var rightZ = edgeData.getShortZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
@@ -1889,18 +1884,17 @@ define([
 		return true;
 	};
 
-	/**
-	*	Render the pixels between the long and the short edge of the triangle.
-	*	@param {Array.<Number>} edge data array
-	*	@param {Array.<Boolean>} [rightOriented, inwardsTriangle]
-	*/
+        /**
+         * Render the pixels between the long and the short edge of the triangle.
+         * @param {EdgeData} edgeData
+         * @param orientationData
+         * @private
+         */
 	SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData) {
 
-		// [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
-
 		// The start and stop lines are already rounded y-coordinates.
-		var startLine = edgeData[0];
-		var stopLine = edgeData[1];
+        var startLine = edgeData.getStartLine();
+        var stopLine = edgeData.getStopLine();
 
 		// Leaning inwards means that the triangle is going inwards from left to right.
 
@@ -1922,11 +1916,11 @@ define([
 			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[3];
-					var realRightX = edgeData[2];
+					var realLeftX = edgeData.getShortX();
+					var realRightX = edgeData.getLongX();
 
-					var leftZ = edgeData[5];
-					var rightZ = edgeData[4];
+					var leftZ = edgeData.getShortZ();
+					var rightZ = edgeData.getLongZ();
 					// Conservative rounding , when drawing occluders, make area smaller.
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
@@ -1954,11 +1948,11 @@ define([
 			} else { // OUTWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[3];
-					var realRightX = edgeData[2];
+                    var realLeftX = edgeData.getShortX();
+                    var realRightX = edgeData.getLongX();
 
-					var leftZ = edgeData[5];
-					var rightZ = edgeData[4];
+                    var leftZ = edgeData.getShortZ();
+                    var rightZ = edgeData.getLongZ();
 					// Conservative rounding , when drawing occluders, make area smaller.
 					var leftX = Math.ceil(realLeftX);
 					var rightX = Math.floor(realRightX);
@@ -1984,11 +1978,11 @@ define([
 			if (orientationData[1]) { // INWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[2];
-					var realRightX = edgeData[3];
+					var realLeftX = edgeData.getLongX();
+					var realRightX = edgeData.getShortX();
 
-					var leftZ = edgeData[4];
-					var rightZ = edgeData[5];
+					var leftZ = edgeData.getLongZ();
+					var rightZ = edgeData.getShortZ();
 
 					// Conservative rounding , when drawing occluders, make area smaller.
 					var leftX = Math.ceil(realLeftX);
@@ -2017,11 +2011,11 @@ define([
 			} else { // OUTWARDS TRIANGLE
 				for (var y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData[2];
-					var realRightX = edgeData[3];
+                    var realLeftX = edgeData.getLongX();
+                    var realRightX = edgeData.getShortX();
 
-					var leftZ = edgeData[4];
-					var rightZ = edgeData[5];
+                    var leftZ = edgeData.getLongZ();
+                    var rightZ = edgeData.getShortZ();
 
 					// Conservative rounding , when drawing occluders, make area smaller.
 					var leftX = Math.ceil(realLeftX);
@@ -2053,14 +2047,11 @@ define([
 	*			unneccessary reads and maybe cashe misses?
 	*/
 	SoftwareRenderer.prototype._updateEdgeDataToNextLine = function (edgeData) {
-		edgeData[2] += edgeData[6];
-		edgeData[3] += edgeData[7];
-		edgeData[4] += edgeData[8];
-		edgeData[5] += edgeData[9];
+        edgeData.updateXValues();
 	};
 
 	/**
-	*	@return {Array.<Number>} [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
+	*	@return {EdgeData} edgeData
 	*/
 	SoftwareRenderer.prototype._edgePreRenderProcess = function (longEdge, shortEdge) {
 
@@ -2128,7 +2119,7 @@ define([
 			stopLine = this._clipY;
 		}
 
-		return [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement];
+		return new EdgeData([startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]);
 	};
 
 	SoftwareRenderer.prototype._isScanlineOccluded = function (leftX, rightX, y, leftZ, rightZ) {
@@ -2294,12 +2285,7 @@ define([
 
 
 	SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clearColor) {
-		// REVIEW: Don't use for..in to iterate over an array.
-		// Use "var i = 0; i < ..length" style instead.
-		// See for example the section "for..in should not be used to iterate over an Array where index order is important"
-		// at https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Statements/for...in
-		// Douglas Crockford probably has something about this too.
-		for (var i in this._depthData) {
+		for (var i = 0; i < this._depthData.length; i++) {
 			var depthvalue = this._depthData[i];
 
 			var colorIndex = 4 * i;
