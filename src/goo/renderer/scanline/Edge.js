@@ -2,6 +2,7 @@ define([
 	],
 /** @lends Edge */
 function () {
+    "use strict";
 
 	function Edge(vec1, vec2) {
 
@@ -30,16 +31,16 @@ function () {
 		}
 	}
 
-	// REVIEW: Shouldn't this round conservatively?
+	// Cant round in other ways due to holes being created here.
 	Edge.prototype.roundOccluderCoordinates = function () {
 		this.y0 = Math.round(this.y0);
 		this.y1 = Math.round(this.y1);
 	};
 
-	// REVIEW: Shouldn't this round conservatively?
+	// Rounds conservatively , increasing the coverage.
 	Edge.prototype.roundOccludeeCoordinates = function () {
-		this.y0 = Math.round(this.y0);
-		this.y1 = Math.round(this.y1);
+		this.y0 = Math.floor(this.y0);
+		this.y1 = Math.ceil(this.y1);
 	};
 
 	Edge.prototype.invertZ = function() {

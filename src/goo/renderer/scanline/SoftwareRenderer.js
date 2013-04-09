@@ -20,7 +20,17 @@ define([
 	/** @lends SoftwareRenderer */
 
 	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox) {
-	"use strict";
+	    "use strict";
+
+        // Cohen-Sutherland area constants.
+        // (Clipping method for the bounding box)
+        /*jshint bitwise: false */
+        var INSIDE = 0x0;	// 0000
+        var LEFT = 0x1;	// 0001
+        var RIGHT = 0x2;	// 0010
+        var BELOW = 0x4;	// 0100
+        var ABOVE = 0x8;	// 1000
+        /*jshint bitwise: true */
 
 	/**
 	*	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
@@ -78,25 +88,6 @@ define([
 						];
 
 		this._boundingBoxTriangleIndices.set(triIndices, 0);
-
-		console.log(this._boundingBoxTriangleIndices);
-
-		// Cohen-Sutherland area constants.
-		// (Clipping method for the bounding box)
-		// using |0 to enforce integer values , if they are not already forced by creating them with hex notation.
-		// http://www.2ality.com/2013/02/asm-js.html
-		/*jshint bitwise: false */
-		// REVIEW: Make these constants local variables
-		// (inside the module function, outside `function SoftwareRenderer`)
-		// More likely to be optimized well, and you can write `INSIDE` instead of `this._INSIDE`: neat!
-		// REVIEW: The |0 probably has no effect, as these numbers are integers anyway
-		// (it's not the hex notation, it's that they have no decimal point!)
-		this._INSIDE = 0x0 |0;	// 0000
-		this._LEFT = 0x1 |0;	// 0001
-		this._RIGHT = 0x2 |0;	// 0010
-		this._BELOW = 0x4 |0;	// 0100
-		this._ABOVE = 0x8 |0;	// 1000
-		/*jshint bitwise: true */
 
 		this.testTriangles = [
 			new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
@@ -463,7 +454,7 @@ define([
 			var vert = vertices[i];
 			var code = this._calculateOutCode(vert);
 			outCodes[i] = code;
-			if (code === this._INSIDE) {
+			if (code === INSIDE) {
 				// this vertex is inside the screen and shall be used to find minmax.
 				// REVIEW: A one-line, simpler and probably faster, alternative:
 				// minmaxArray[4] = Math.max(minmaxArray[4], vert.w);
@@ -537,70 +528,70 @@ define([
 
 				// Checking for match in bitorder, starting with ABOVE == 1000, then BELOW == 0100,
 				// 0010 and 0001.
-				if (outsideCode & this._ABOVE) {
-					ratio = ((this._clipY - v1.y) / (v2.y - v1.y));
-					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
+				if (outsideCode & ABOVE) {
+					ratio = ((this._clipY - v1.data[1]) / (v2.data[1] - v1.data[1]));
+					tempVec.x = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
 					tempVec.y = this._clipY;
 
 					// Only check for minmax x and y if the new coordinate is inside.
 					nextCode = this._calculateOutCode(tempVec);
-					if (nextCode === this._INSIDE) {
+					if (nextCode === INSIDE) {
 						minmaxArray[3] = this._clipY;
 						// Minmax X
-						if (tempVec.x > minmaxArray[1]) {
-							minmaxArray[1] = tempVec.x;
+						if (tempVec.data[0] > minmaxArray[1]) {
+							minmaxArray[1] = tempVec.data[0];
 						}
-						if (tempVec.x < minmaxArray[0]) {
-							minmaxArray[0] = tempVec.x;
+						if (tempVec.data[0] < minmaxArray[0]) {
+							minmaxArray[0] = tempVec.data[0];
 						}
 					}
-				} else if (outsideCode & this._BELOW) {
-					ratio = (-v1.y / (v2.y - v1.y));
-					tempVec.x = v1.x + (v2.x - v1.x) * ratio;
+				} else if (outsideCode & BELOW) {
+					ratio = (-v1.data[1] / (v2.data[1] - v1.data[1]));
+					tempVec.x = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
 					tempVec.y = 0;
 
 					// Only check for minmax x and y if the new coordinate is inside.
 					nextCode = this._calculateOutCode(tempVec);
-					if (nextCode === this._INSIDE) {
+					if (nextCode === INSIDE) {
 						minmaxArray[2] = 0;
 						// Minmax X
-						if (tempVec.x > minmaxArray[1]) {
-							minmaxArray[1] = tempVec.x;
+						if (tempVec.data[0] > minmaxArray[1]) {
+							minmaxArray[1] = tempVec.data[0];
 						}
-						if (tempVec.x < minmaxArray[0]) {
-							minmaxArray[0] = tempVec.x;
+						if (tempVec.data[0] < minmaxArray[0]) {
+							minmaxArray[0] = tempVec.data[0];
 						}
 					}
-				} else if (outsideCode & this._RIGHT) {
-					ratio = ((this._clipX - v1.x) / (v2.x - v1.x));
-					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
+				} else if (outsideCode & RIGHT) {
+					ratio = ((this._clipX - v1.data[0]) / (v2.data[0] - v1.data[0]));
+					tempVec.y = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
 					tempVec.x = this._clipX;
 
 					nextCode = this._calculateOutCode(tempVec);
-					if (nextCode === this._INSIDE) {
+					if (nextCode === INSIDE) {
 						minmaxArray[1] = this._clipX;
 						// Minmax Y
-						if (tempVec.y > minmaxArray[3]) {
-							minmaxArray[3] = tempVec.y;
+						if (tempVec.data[1] > minmaxArray[3]) {
+							minmaxArray[3] = tempVec.data[1];
 						}
-						if (tempVec.y < minmaxArray[2]) {
-							minmaxArray[2] = tempVec.y;
+						if (tempVec.data[1] < minmaxArray[2]) {
+							minmaxArray[2] = tempVec.data[1];
 						}
 					}
-				} else if (outsideCode & this._LEFT) {
-					ratio = (-v1.x / (v2.x - v1.x));
-					tempVec.y = v1.y + (v2.y - v1.y) * ratio;
+				} else if (outsideCode & LEFT) {
+					ratio = (-v1.data[0] / (v2.data[0] - v1.data[0]));
+					tempVec.y = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
 					tempVec.x = 0;
 
 					nextCode = this._calculateOutCode(tempVec);
-					if (nextCode === this._INSIDE) {
+					if (nextCode === INSIDE) {
 						minmaxArray[0] = 0;
 						// Minmax Y
-						if (tempVec.y > minmaxArray[3]) {
-							minmaxArray[3] = tempVec.y;
+						if (tempVec.data[1] > minmaxArray[3]) {
+							minmaxArray[3] = tempVec.data[1];
 						}
-						if (tempVec.y < minmaxArray[2]) {
-							minmaxArray[2] = tempVec.y;
+						if (tempVec.data[1] < minmaxArray[2]) {
+							minmaxArray[2] = tempVec.data[1];
 						}
 					}
 				}
@@ -610,10 +601,10 @@ define([
 				if (outsideCode === outcode1) {
 					outcode1 = nextCode;
 					// Interpolate the depth.
-					depth = (1.0 - ratio) * v1.w + ratio * v2.w;
+					depth = (1.0 - ratio) * v1.data[3] + ratio * v2.data[3];
 				} else {
 					outcode2 = nextCode;
-					depth = (1.0 - ratio) * v2.w + ratio * v1.w;
+					depth = (1.0 - ratio) * v2.data[3] + ratio * v1.data[3];
 				}
 
 				// Check for minimum depth.
@@ -628,23 +619,24 @@ define([
 	/**
 	*	Calculates outcode for a coordinate in screen pixel space used by the Coher-Sutherland clipping algorithm.
 	*	The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
+    *   @param {Vector} coordinate
 	*	@return {Number} outcode A possible combination of 0000, 0001, 0010, 0100 and 1000. 
 	*/
 	SoftwareRenderer.prototype._calculateOutCode = function (coordinate) {
 
 		// Regard the coordinate as being inside the clip window initially.
-		var outcode = this._INSIDE;
+		var outcode = INSIDE;
 		/*jshint bitwise: false */
-		if (coordinate.x < 0) {
-			outcode |= this._LEFT;
-		} else if (coordinate.x > this._clipX) {
-			outcode |= this._RIGHT;
+		if (coordinate.data[0] < 0) {
+			outcode |= LEFT;
+		} else if (coordinate.data[0] > this._clipX) {
+			outcode |= RIGHT;
 		}
 
-		if (coordinate.y < 0) {
-			outcode |= this._BELOW;
-		} else if (coordinate.y > this._clipY) {
-			outcode |= this._ABOVE;
+		if (coordinate.data[1] < 0) {
+			outcode |= BELOW;
+		} else if (coordinate.data[1] > this._clipY) {
+			outcode |= ABOVE;
 		}
 		/* jshint bitwise: true */
 		return outcode;

@@ -407,12 +407,11 @@ require(
 					entity.meshRendererComponent.materials.push(material);
 					entity.transformComponent.transform.translation.set(translation);
 
+                    entity.meshDataComponent.modelBound = new BoundingBox();
+                    entity.meshDataComponent.autoCompute = false;
+                    entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 
-					entity.meshDataComponent.modelBound = new BoundingBox();
-					entity.meshDataComponent.autoCompute = false;
-					entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
-
-					entity.addToWorld();
+                    entity.addToWorld();
 
                     addBoundingBoxToEntity(goo.world, translation, entity);
 
