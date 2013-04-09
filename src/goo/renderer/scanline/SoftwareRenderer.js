@@ -158,7 +158,7 @@ define([
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		var cameraViewProjectionMatrix = Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
-        var visibleEntities = new Array();
+        var visibleEntities = [];
 
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
@@ -656,12 +656,15 @@ define([
 		nearCoord.x = Math.round(nearCoord.x);
 		nearCoord.y = Math.round(nearCoord.y);
 
-		var red = [255, 0, 0];
+
 		var green = [0, 255, 0];
+        /*
+        var red = [255, 0, 0];
 		var blue = [0, 0, 255];
 		var yellow = [255, 255, 0];
 		var pink = [255, 0, 255];
-		//var cyan = [0, 190, 190];
+		var cyan = [0, 190, 190];
+		*/
 
 		var nearestDepth = 1.0 / nearCoord.w;
 
