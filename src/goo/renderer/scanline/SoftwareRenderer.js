@@ -453,8 +453,8 @@ define([
 				// 0010 and 0001.
 				if (outsideCode & ABOVE) {
 					ratio = ((this._clipY - v1.data[1]) / (v2.data[1] - v1.data[1]));
-					tempVec.x = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-					tempVec.y = this._clipY;
+					tempVec.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
+					tempVec.data[1] = this._clipY;
 
 					// Only check for minmax x and y if the new coordinate is inside.
 					nextCode = this._calculateOutCode(tempVec);
@@ -470,8 +470,8 @@ define([
 					}
 				} else if (outsideCode & BELOW) {
 					ratio = (-v1.data[1] / (v2.data[1] - v1.data[1]));
-					tempVec.x = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-					tempVec.y = 0;
+					tempVec.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
+					tempVec.data[1] = 0;
 
 					// Only check for minmax x and y if the new coordinate is inside.
 					nextCode = this._calculateOutCode(tempVec);
@@ -487,8 +487,8 @@ define([
 					}
 				} else if (outsideCode & RIGHT) {
 					ratio = ((this._clipX - v1.data[0]) / (v2.data[0] - v1.data[0]));
-					tempVec.y = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-					tempVec.x = this._clipX;
+					tempVec.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
+					tempVec.data[0] = this._clipX;
 
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
@@ -503,8 +503,8 @@ define([
 					}
 				} else if (outsideCode & LEFT) {
 					ratio = (-v1.data[0] / (v2.data[0] - v1.data[0]));
-					tempVec.y = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-					tempVec.x = 0;
+					tempVec.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
+					tempVec.data[0] = 0;
 
 					nextCode = this._calculateOutCode(tempVec);
 					if (nextCode === INSIDE) {
@@ -747,35 +747,17 @@ define([
 		return true;
 	};
 
-	/**
-	*	Clamps the parameter coordinates to the screen's readable coordinates.
-	*	// TODO : Have to use an object as parameter instead. The function is not usable cause the values aren't passed as reference.
-	*
-	*	@param {Number} minX
-	*	@param {Number} maxX
-	*	@param {Number} minY
-	*	@param {Number} maxY
-	*/
-	SoftwareRenderer.prototype._clampToScreen = function (minX, maxX, minY, maxY) {
-		// REVIEW: Function not used. Remove!
-		if (minX < 0) {
-			minX = 0;
-		}
-
-		if (maxX > this._clipX) {
-			maxX = this._clipX;
-		}
-
-		if (minY < 0) {
-			minY = 0;
-		}
-
-		if (maxY > this._clipY) {
-			maxY = this._clipY;
-		}
-	};
-
-	// REVIEW: Function not used. Remove!
+        /**
+         * Apprixmates the sphere to a circle using pythagoras.
+         * @param topCoordinate
+         * @param bottomCoordinate
+         * @param rightCoordinate
+         * @param leftCoordinate
+         * @param nearestDepth
+         * @param color
+         * @returns {boolean} occluded or not occluded
+         * @private
+         */
 	SoftwareRenderer.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
 		// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 		var topRows = topCoordinate.y - rightCoordinate.y;
@@ -1166,9 +1148,10 @@ define([
 	*
 	*	@param {Vector} coordinate The coordinate to look-up
 	*	@return {Boolean} true or false, occluded or not occluded.
+    * @param nearestDepth
+    * @param color
 	*/
 	SoftwareRenderer.prototype._isOccluded = function (coordinate, color, nearestDepth) {
-		// REVIEW: Function not used - remove!
 
 		if (this._isCoordinateInsideScreen(coordinate)) {
 
@@ -1200,6 +1183,8 @@ define([
 	*	Creates an array of the visible {Triangle} for the entity
 	*	@param {Entity} entity, the entity from which to create triangles.
 	*	@return {Array.<Triangle>} triangle array
+     * @param cameraProjectionMatrix
+    * @param cameraViewMatrix
 	*/
 	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
 
@@ -1696,11 +1681,6 @@ define([
 			// Triangle is outside the view, skipping rendering it;
 			return;
 		}
-
-        // TODO :
-        //	Conservative edge rounding , which takes into repsect if a triangle is facing inwards our outwards , seen from the left edge.
-        //	When rounding the values of the triangles vertices , compensate the depth as well.
-        //	These good ideas are sponsored by Martin Vilcans.
 
         for (var i = 0; i < 3; i++) {
 			// TODO : Move all rounding of values to the scanline loop to be performed per line.
