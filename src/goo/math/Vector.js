@@ -565,6 +565,21 @@ function (MathUtils) {
 		return this;
 	};
 
+    /**
+     * Returns the absolute max value of this vector's components.
+     * @returns {Number} maxaxis
+     */
+    Vector.prototype.maxAxis = function () {
+        switch (this.data.length) {
+            case 2:
+                return Math.max(Math.abs(this.data[0]), Math.abs(this.data[1]));
+            case 3:
+                return Math.max(Math.abs(this.data[0]), Math.max(Math.abs(this.data[1]), Math.abs(this.data[2])));
+            case 4:
+                return Math.max(Math.abs(this.data[0]), Math.max(Math.abs(this.data[1]), Math.max(Math.abs(this.data[2]), Math.abs(this.data[3]))));
+        }
+    };
+
 	/* ====================================================================== */
 
 	/**

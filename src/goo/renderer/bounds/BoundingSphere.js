@@ -104,7 +104,7 @@ function (Vector3, BoundingVolume, MeshData) {
 		transform.applyForward(this.center, bound.center);
 
 		var scale = transform.scale;
-		bound.radius = Math.abs(this._maxAxis(scale) * this.radius);
+		bound.radius = scale.maxAxis() * this.radius;
 
 		return bound;
 	};
@@ -125,10 +125,6 @@ function (Vector3, BoundingVolume, MeshData) {
 
 	BoundingSphere.prototype._pseudoDistance = function (plane, point) {
 		return plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z - plane.constant;
-	};
-
-	BoundingSphere.prototype._maxAxis = function (scale) {
-		return Math.max(Math.abs(scale.x), Math.max(Math.abs(scale.y), Math.abs(scale.z)));
 	};
 
 	BoundingSphere.prototype.toString = function () {

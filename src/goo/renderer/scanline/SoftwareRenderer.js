@@ -571,9 +571,15 @@ define([
 		return true;
 	};
 
-	/**
-	*	Return true if the object is occluded.
-	*/
+        /**
+         * Return true if the object is occluded.
+         * @param entity
+         * @param cameraViewMatrix
+         * @param cameraProjectionMatrix
+         * @param cameraNearZInWorld
+         * @returns {Boolean} occluded or not occluded
+         * @private
+         */
 	SoftwareRenderer.prototype._boundingSphereOcclusionCulling = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
 
 		var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
@@ -587,14 +593,16 @@ define([
 		// REVIEW: Don't call private method (_maxAxis).
 		// Create a maxAxis function in Vector and call it from here instead.
 		// Also remove BoundingSphere._maxAxis and use Vector.maxAxis instead.
-		var radius = Math.abs(boundingSphere._maxAxis(scale) * boundingSphere.radius);
+		var radius = scale.maxAxis() * boundingSphere.radius;
 
-		// Compensate for perspective distortion of the sphere.
-		// http://article.gmane.org/gmane.games.devel.algorithms/21697/
-		// http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
-		// http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
-		// Bounds.w == radius.
-		// float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
+		/*
+		Compensate for perspective distortion of the sphere.
+		http://article.gmane.org/gmane.games.devel.algorithms/21697/
+		http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
+		http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
+		Bounds.w == radius.
+		float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
+		*/
 		var cameraToSphereDistance = Math.sqrt(origin.x * origin.x + origin.y * origin.y + origin.z * origin.z);
 
 		// https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Math/asin
