@@ -53,25 +53,6 @@ define([
                 this._depthClear[i] = 0.0;
             }
 
-            this._boundingBoxTriangleIndices = new Uint8Array(12 * 3);
-
-            var triIndices = [
-                                0,3,4,
-                                3,7,4,
-                                0,4,5,
-                                0,5,1,
-                                2,1,5,
-                                2,5,6,
-                                3,2,6,
-                                3,6,7,
-                                0,1,2,
-                                0,2,3,
-                                5,4,6,
-                                7,6,4
-                            ];
-
-            this._boundingBoxTriangleIndices.set(triIndices, 0);
-
             this.testTriangles = [
                 new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
                 new Triangle(new Vector3(0.5, 0.1, 1.0), new Vector3(0.4, 0.3, 1.0), new Vector3(0.6, 0.4, 1.0)),
@@ -140,8 +121,7 @@ define([
                         // Those are determined in the below method.
                         cull = this._boundingSphereOcclusionCulling(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
                     } else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
-                        cull = this.boundingBoxModule.boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-                        //cull = this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+                        cull = this.boundingBoxModule.occlusionCull(entity, cameraViewProjectionMatrix);
                     }
 
                     if (!cull) {
@@ -153,93 +133,6 @@ define([
             }
 
             return visibleEntities;
-        };
-
-
-
-            /**
-             * Creates an array of triangles and transforms them to projection space. Null is returned if any of the vertices
-             * cut the near plane.
-             * @param entity
-             * @param cameraViewProjectionMatrix
-             * @returns {Array.<Triangle>} triangles or null if early exit is found.
-             * @private
-             */
-        SoftwareRenderer.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
-
-            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-
-            // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-            var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
-
-            var vertices = this._generateBoundingBoxVertices(entity);
-            // Projection transform + homogeneous divide for every vertex.
-            // Early exit on near plane clip.
-            for (var j = 0; j < vertices.length; j++) {
-                var v = vertices[j];
-
-                combinedMatrix.applyPost(v);
-
-                if (v.data[3] < this.camera.near) {
-                    // Near plane clipped.
-                    //console.log("Early exit on near plane clipped.");
-                    return null;
-                }
-
-                var div = 1.0 / v.data[3];
-                v.data[0] *= div;
-                v.data[1] *= div;
-            }
-
-            var triangles = [];
-            // Create triangles.
-            for (var i = 0; i < this._boundingBoxTriangleIndices.length; i++) {
-
-                var v1 = new Vector4();
-                var v2 = new Vector4();
-                var v3 = new Vector4();
-
-                v1.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
-                i++;
-                v2.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
-                i++;
-                v3.data.set(vertices[this._boundingBoxTriangleIndices[i]].data);
-
-                var projectedVertices = [v1, v2, v3];
-
-                if (this._isBackFacingProjected(v1, v2, v3)) {
-                    continue;
-                }
-
-                this._transformToScreenSpace(projectedVertices);
-
-                triangles.push(new Triangle(projectedVertices[0], projectedVertices[1], projectedVertices[2]));
-            }
-
-            return triangles;
-        };
-
-        /**
-        *	@return {Boolean} occluded or not occluded.
-        */
-        SoftwareRenderer.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
-
-            var triangles = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
-
-            // Triangles will be null on near plane clip.
-            // Considering this case to be visible.
-            if (triangles === null) {
-                return false;
-            }
-
-            var triCount = triangles.length;
-            for (var t = 0; t < triCount; t++) {
-                if (!this._isRenderedTriangleOccluded(triangles[t])){
-                    return false;
-                }
-            }
-
-            return true;
         };
 
         /**
@@ -1052,7 +945,7 @@ define([
         /**
         *	Returns true if the triangle is occluded.
         */
-        SoftwareRenderer.prototype._isRenderedTriangleOccluded = function (triangle) {
+        SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (triangle) {
 
             // returns [longEdge, shortEdge1, shortEdge2], or false on invisible triangle.
             var edgeIndices = this._createEdgesForTriangle(triangle);

@@ -1,10 +1,11 @@
 define([
     'goo/math/Matrix4x4',
     'goo/math/Vector4',
-    'goo/math/Vector2'
+    'goo/math/Vector2',
+    'goo/renderer/scanline/Triangle'
     ],
     /** @lends */
-        function (Matrix4x4, Vector4, Vector2) {
+        function (Matrix4x4, Vector4, Vector2, Triangle) {
         "use strict";
 
         // Cohen-Sutherland area constants.
@@ -28,10 +29,75 @@ define([
             this._clipY = renderer.height - 1;
             this._clipX = renderer.width - 1;
 
-            this._boundingBoxEdgeIndices = this._generateBoundingBoxEdgeIndices();
+            this._edgeIndices = this._generateEdgeIndices();
+
+            this._triangleIndices = new Uint8Array(12 * 3);
+
+            var triIndices = [
+                0,3,4,
+                3,7,4,
+                0,4,5,
+                0,5,1,
+                2,1,5,
+                2,5,6,
+                3,2,6,
+                3,6,7,
+                0,1,2,
+                0,2,3,
+                5,4,6,
+                7,6,4
+            ];
+
+            this._triangleIndices.set(triIndices, 0);
         }
 
-        BoundingBoxOcclusionModule.prototype.boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
+        /**
+         * Occlusion culls the entity based on the entity's BoundingBox.
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Boolean} occluder or not occluded.
+         */
+        BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
+            return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+            // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+        };
+
+        /**
+         * Performs a interpolated depth test for the triangles of the bounding box.
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Boolean} occluded or not
+         * @private
+         */
+        BoundingBoxOcclusionModule.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
+
+            var triangles = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
+
+            // Triangles will be null on near plane clip.
+            // Considering this case to be visible.
+            if (triangles === null) {
+                return false;
+            }
+
+            var triCount = triangles.length;
+            for (var t = 0; t < triCount; t++) {
+                if (!this.renderer.isRenderedTriangleOccluded(triangles[t])){
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        /**
+         *  Performs a minimum depth for a screen space axis aligned bounding box created from the boudning box of the
+         *  entity.
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Boolean} occluded or not
+         * @private
+         */
+        BoundingBoxOcclusionModule.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
 
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
@@ -77,7 +143,13 @@ define([
             return this._isBoundingBoxScanlineOccluded(minmaxArray);
         };
 
-        BoundingBoxOcclusionModule.prototype._generateBoundingBoxEdgeIndices = function () {
+        /**
+         * Creates an array containing the 12 edges which a box is made up of. The edges are used in the Cohen-Sutherland
+         * clipping algorithm.
+         * @returns {Array}
+         * @private
+         */
+        BoundingBoxOcclusionModule.prototype._generateEdgeIndices = function () {
             var edgeArray = new Array(12);
 
             edgeArray[0] = [0, 1];
@@ -179,7 +251,7 @@ define([
             // Go through the edges of the bounding box to clip them if needed.
             for (var edgeIndex = 0; edgeIndex < 12; edgeIndex++) {
 
-                var edgePair = this._boundingBoxEdgeIndices[edgeIndex];
+                var edgePair = this._edgeIndices[edgeIndex];
                 var vIndex1 = edgePair[0];
                 var vIndex2 = edgePair[1];
 
@@ -356,6 +428,68 @@ define([
             }
 
             return true;
+        };
+
+        /**
+         * Creates an array of triangles and transforms them to projection space. Null is returned if any of the vertices
+         * cut the near plane.
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Array.<Triangle>} triangles or null if early exit is found.
+         * @private
+         */
+        BoundingBoxOcclusionModule.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
+
+            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+
+            // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
+            var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
+
+            var vertices = this._generateBoundingBoxVertices(entity);
+            // Projection transform + homogeneous divide for every vertex.
+            // Early exit on near plane clip.
+            for (var j = 0; j < vertices.length; j++) {
+                var v = vertices[j];
+
+                combinedMatrix.applyPost(v);
+
+                if (v.data[3] < this.renderer.camera.near) {
+                    // Near plane clipped.
+                    //console.log("Early exit on near plane clipped.");
+                    return null;
+                }
+
+                var div = 1.0 / v.data[3];
+                v.data[0] *= div;
+                v.data[1] *= div;
+            }
+
+            var triangles = [];
+            // Create triangles.
+            for (var i = 0; i < this._triangleIndices.length; i++) {
+
+                var v1 = new Vector4();
+                var v2 = new Vector4();
+                var v3 = new Vector4();
+
+                v1.data.set(vertices[this._triangleIndices[i]].data);
+                i++;
+                v2.data.set(vertices[this._triangleIndices[i]].data);
+                i++;
+                v3.data.set(vertices[this._triangleIndices[i]].data);
+
+                var projectedVertices = [v1, v2, v3];
+
+                if (this.renderer._isBackFacingProjected(v1, v2, v3)) {
+                    continue;
+                }
+
+                this.renderer._transformToScreenSpace(projectedVertices);
+
+                triangles.push(new Triangle(projectedVertices[0], projectedVertices[1], projectedVertices[2]));
+            }
+
+            return triangles;
         };
 
         return BoundingBoxOcclusionModule;
