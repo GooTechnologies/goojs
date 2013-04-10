@@ -12,7 +12,7 @@ define([
         // (Clipping method for the bounding box)
         /*jshint bitwise: false */
         var INSIDE = 0x0;	// 0000
-        var LEFT = 0x1; 	// 0001
+        var LEFT = 0x1;     // 0001
         var RIGHT = 0x2;	// 0010
         var BELOW = 0x4;	// 0100
         var ABOVE = 0x8;	// 1000
