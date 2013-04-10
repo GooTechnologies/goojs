@@ -15,7 +15,8 @@ define([
 	) {
 	"use strict";
 		/**
-		 * Utility class for loading Animation Trees
+		 * @class Utility class for loading Animation Trees
+		 * @constructor
 		 */
 		function SkeletonLoader(parameters) {
 			if(typeof parameters === "undefined" || parameters === null) {

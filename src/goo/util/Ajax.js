@@ -7,8 +7,9 @@ define([
 	) {
 
 	/**
-	 * Subclass of Promise. Wrapper class around an XHR call.
-	 *
+	 * @class Subclass of Promise. Wrapper class around an XHR call.
+	 * @constructor
+	 * @description Creates a new Ajax instance.
 	 */
 	function Ajax() {}
 

@@ -94,7 +94,7 @@ function (
 
 	Shader.id = 0;
 
-	/**
+	/*
 	 * Matches an attribute or uniform variable declaration.
 	 *
 	 * Match groups:
