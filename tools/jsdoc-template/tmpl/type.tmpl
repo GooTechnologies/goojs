@@ -3,11 +3,10 @@
     var self = this;
     var postName = ''
     function linkName(name) {
-      var matchArray = name.match(/\[\]$/);
+      var matchArray = name.match(/^(.*)(\[\]+)$/);
       var matchFunc = name.match(/^function\((.*)\)$/);
       if(matchArray) {
-        name = name.replace('[]','');
-        return linkName(name)+'[]';
+        return linkName(matchArray[1])+matchArray[2];
       }
       else if(matchFunc && matchFunc.length) {
         var m = matchFunc[1].replace(/\s+/g,'');

@@ -40,8 +40,8 @@ header
 }
 
 #main {
-    float: left;
-    width: 100%;
+	display: inline-block;
+	width: 75%;
 }
 
 section
@@ -50,8 +50,6 @@ section
 	
 	background-color: #fff;
 	padding: 12px 24px;
-    border-bottom: 1px solid #ccc;
-    margin-right: 240px;
 }
 
 .variation {
@@ -68,13 +66,11 @@ section
 
 nav
 {
-	display: block;
-	float: left;
-    margin-left: -230px;
+	display: inline-block;
     margin-top: 28px;
-    width: 220px;
-    border-left: 1px solid #ccc;
     padding-left: 9px;
+    width: 20%;
+    vertical-align: top;
 }
 
 nav ul {
@@ -84,6 +80,7 @@ nav ul {
     padding:0;
     margin:0;
     list-style-type:none;
+    margin-left: 10px;
 }
 
 nav h2 a, nav h2 a:visited {
@@ -109,6 +106,9 @@ nav a:visited {
 
 nav a:active {
     color: #5C5954;
+}
+nav li > label {
+	font-weight: bold;
 }
 
 footer {
@@ -280,4 +280,7 @@ h6
 
 .disabled {
     color: #454545;
+}
+code {
+	white-space: pre;
 }
