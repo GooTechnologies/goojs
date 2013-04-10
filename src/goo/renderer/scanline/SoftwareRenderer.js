@@ -552,14 +552,25 @@ define([
         *	Creates a screen space axis aligned box from the min and max values.
         *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
         *	@return {Boolean} occluded or not occluded.
+        *   @param {Array.<Number>} minmaxArray  [minX, maxX, minY, maxY, minDepth]
         */
         SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
+
             // Run the scanline test for each row [maxY, minY] , [minX, maxX]
-            for (var scanline = minmaxArray[3]; scanline >= minmaxArray[2]; scanline--) {
-                var sampleCoordinate = scanline * this.width + minmaxArray[0];
-                for (var x = minmaxArray[0]; x <= minmaxArray[1]; x++) {
-                    this._colorData.set([0,0,255], sampleCoordinate * 4); // create some blue ( DEBUGGING ).
-                    if (this._depthData[sampleCoordinate] < minmaxArray[4]) {
+            var minX = minmaxArray[0];
+            var maxX = minmaxArray[1];
+            var minY = minmaxArray[2];
+            var maxY = minmaxArray[3];
+            var minDepth = minmaxArray[4];
+            var debugColor = [0, 0, 255];
+            var width = this.width;
+
+            for (var y = maxY; y >= minY; y--) {
+                var sampleCoordinate = y * width + minX;
+                for (var x = minX; x <= maxX; x++) {
+                    // TODO : Remove setting color when not in development.
+                    this._colorData.set(debugColor, sampleCoordinate * 4);
+                    if (this._depthData[sampleCoordinate] < minDepth) {
                         return false;
                     }
                     sampleCoordinate++;
