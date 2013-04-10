@@ -53,15 +53,6 @@ define([
                 this._depthClear[i] = 0.0;
             }
 
-            this.testTriangles = [
-                new Triangle(new Vector3(0.2, 0.1, 1.0), new Vector3(0.1, 0.4, 1.0), new Vector3(0.3, 0.3, 1.0)),
-                new Triangle(new Vector3(0.5, 0.1, 1.0), new Vector3(0.4, 0.3, 1.0), new Vector3(0.6, 0.4, 1.0)),
-                new Triangle(new Vector3(0.8, 0.1, 1.0), new Vector3(0.7, 0.4, 1.0), new Vector3(0.9, 0.4, 1.0)),
-                new Triangle(new Vector3(0.1, 0.5, 1.0), new Vector3(0.1, 0.9, 1.0), new Vector3(0.3, 0.7, 1.0)),
-                new Triangle(new Vector3(0.15, 0.5, 1.0), new Vector3(0.5, 0.55, 1.0), new Vector3(0.86, 0.5, 1.0)),
-                new Triangle(new Vector3(0.7, 0.7, 1.0), new Vector3(0.9, 0.5, 1.0), new Vector3(0.9, 0.9, 1.0))
-            ];
-
             this.boundingBoxModule = new BoundingBoxOcclusionModule(this);
         }
 
@@ -873,13 +864,6 @@ define([
             // The face is facing backwards if the dotproduct is positive.
             // Invert the comparison to remove the negation of facenormalZ.
             return faceNormalZ < 0.0;
-        };
-
-        SoftwareRenderer.prototype._renderTestTriangles = function () {
-
-            for ( var i = 0; i < this.testTriangles.length; i++) {
-                this._renderTriangle(this.testTriangles[i].toPixelSpace(this.width, this.height));
-            }
         };
 
         /**
