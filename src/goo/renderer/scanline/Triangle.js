@@ -1,7 +1,7 @@
 define([
 	'goo/math/Vector3'
 	],
-/** @lends Triangle */
+/** @lends */
 
 function (Vector3) {
 
@@ -27,13 +27,13 @@ function (Vector3) {
 		var v2 = new Vector3(this.v2);
 		var v3 = new Vector3(this.v3);
 
-		v1.x *= width;
-		v2.x *= width;
-		v3.x *= width;
+		v1.data[0] *= width;
+		v2.data[0] *= width;
+		v3.data[0] *= width;
 
-		v1.y *= height;
-		v2.y *= height;
-		v3.y *= height;
+		v1.data[1] *= height;
+		v2.data[1] *= height;
+		v3.data[1] *= height;
 
 		return new Triangle(v1, v2, v3);
 	};
