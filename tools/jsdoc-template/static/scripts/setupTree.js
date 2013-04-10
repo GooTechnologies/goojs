@@ -2,14 +2,20 @@ $(function() {
 	var $list = $("nav > ul").first();
 	$list.wrap('<div class="tree"></div>');
 	$tree = $list.parent();
-	$tree.find('a').each(function() {
-		var path = document.location.href;
-		path = path.slice(path.lastIndexOf('/')+1);
-		if ($(this).attr('href') == path) {
-			$(this).addClass('jstree-selected');
-			$(this).parent().parent().siblings('a').attr('id', 'chosenNode');
-		}
-	});
+	var path = document.location.href;
+	path = path.slice(path.lastIndexOf('/')+1);
+	if(path && path != 'index.html') {
+		$tree.find('a').each(function() {
+			if ($(this).attr('href') == path) {
+				$(this).addClass('jstree-selected');
+				$(this).parent().parent().siblings('a').attr('id', 'chosenNode');
+			}
+		});
+	} else {
+		var $chosen = $tree.children('ul').children('li').children('a');
+		$chosen.attr('id', 'chosenNode');
+		$tree.children('ul').children('li').children('a').attr('id', 'chosenNode');
+	}
 
 	$tree.jstree({
 		core: {

@@ -374,7 +374,6 @@ exports.publish = function(taffyData, opts, tutorials) {
 
     data().each(function(doclet) {
       if(doclet.meta && doclet.meta.filename) {
-          console.log(doclet.meta);
           doclet.gooName = getPathFromDoclet(doclet).slice(4,-3);
       }
     });
