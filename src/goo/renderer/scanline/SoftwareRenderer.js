@@ -1,11 +1,3 @@
-// REVIEW: This file has become very big (>2500 lines). Hard to get an overview. Extract functionality into  modules!
-// Suggestion: Move bounding box related functions to its own module
-// (maybe two modules: bounding sphere and bounding box).
-
-// REVIEW: Run JSHint on this file. It has several warnings.
-
-// REVIEW: Remove unused code, and request re-review. It's too much to review now!
-
 define([
 	'goo/renderer/Camera',
 	'goo/renderer/scanline/Triangle',
@@ -244,38 +236,6 @@ define([
             for (var t = 0; t < triCount; t++) {
                 if (!this._isRenderedTriangleOccluded(triangles[t])){
                     return false;
-                }
-            }
-
-            return true;
-        };
-
-        /**
-        *	Creates a screen space axis aligned box from the min and max values.
-        *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
-        *	@return {Boolean} occluded or not occluded.
-        *   @param {Array.<Number>} minmaxArray  [minX, maxX, minY, maxY, minDepth]
-        */
-        SoftwareRenderer.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
-
-            // Run the scanline test for each row [maxY, minY] , [minX, maxX]
-            var minX = minmaxArray[0];
-            var maxX = minmaxArray[1];
-            var minY = minmaxArray[2];
-            var maxY = minmaxArray[3];
-            var minDepth = minmaxArray[4];
-            var debugColor = [0, 0, 255];
-            var width = this.width;
-
-            for (var y = maxY; y >= minY; y--) {
-                var sampleCoordinate = y * width + minX;
-                for (var x = minX; x <= maxX; x++) {
-                    // TODO : Remove setting color when not in development.
-                    this._colorData.set(debugColor, sampleCoordinate * 4);
-                    if (this._depthData[sampleCoordinate] < minDepth) {
-                        return false;
-                    }
-                    sampleCoordinate++;
                 }
             }
 

@@ -74,7 +74,7 @@ define([
             minmaxArray[3] = Math.ceil(minmaxArray[3]) |0;
             /*jshint bitwise: true */
 
-            return this.renderer._isBoundingBoxScanlineOccluded(minmaxArray);
+            return this._isBoundingBoxScanlineOccluded(minmaxArray);
         };
 
         BoundingBoxOcclusionModule.prototype._generateBoundingBoxEdgeIndices = function () {
@@ -324,6 +324,38 @@ define([
             }
             /* jshint bitwise: true */
             return outcode;
+        };
+
+        /**
+         *	Creates a screen space axis aligned box from the min and max values.
+         *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
+         *	@return {Boolean} occluded or not occluded.
+         *   @param {Array.<Number>} minmaxArray  [minX, maxX, minY, maxY, minDepth]
+         */
+        BoundingBoxOcclusionModule.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
+
+            // Run the scanline test for each row [maxY, minY] , [minX, maxX]
+            var minX = minmaxArray[0];
+            var maxX = minmaxArray[1];
+            var minY = minmaxArray[2];
+            var maxY = minmaxArray[3];
+            var minDepth = minmaxArray[4];
+            var debugColor = [0, 0, 255];
+            var width = this.renderer.width;
+
+            for (var y = maxY; y >= minY; y--) {
+                var sampleCoordinate = y * width + minX;
+                for (var x = minX; x <= maxX; x++) {
+                    // TODO : Remove setting color when not in development.
+                    this.renderer._colorData.set(debugColor, sampleCoordinate * 4);
+                    if (this.renderer._depthData[sampleCoordinate] < minDepth) {
+                        return false;
+                    }
+                    sampleCoordinate++;
+                }
+            }
+
+            return true;
         };
 
         return BoundingBoxOcclusionModule;
