@@ -415,7 +415,7 @@ function (
 			})(i);
 		}
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 8; i++) {
 			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
@@ -428,6 +428,9 @@ function (
 				};
 			})(i);
 		}
+		defaultCallbacks[Shader.LIGHTCOUNT] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1i(shaderInfo.lights.length);
+		};
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
