@@ -316,18 +316,18 @@ define([
 
                 combinedMatrix.applyPost(v);
 
-                if (v.w < this.camera.near) {
+                if (v.data[3] < this.camera.near) {
                     // Near plane clipped.
                     console.log("Early exit on near plane clipped.");
                     return false;
                 }
 
-                var div = 1.0 / v.w;
-                v.x *= div;
-                v.y *= div;
+                var div = 1.0 / v.data[3];
+                v.data[0] *= div;
+                v.data[1] *= div;
 
                 // For interpolating in screen space, in the clipping method.
-                v.w = 1.0 / v.w;
+                v.data[3] = 1.0 / v.data[3];
             }
 
             this._transformToScreenSpace(vertices);
@@ -522,11 +522,12 @@ define([
         };
 
         /**
-        *	Calculates outcode for a coordinate in screen pixel space used by the Coher-Sutherland clipping algorithm.
-        *	The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
-        *   @param {Vector} coordinate
-        *	@return {Number} outcode A possible combination of 0000, 0001, 0010, 0100 and 1000.
-        */
+         * Calculates outcode for a coordinate in screen pixel space used by the Coher-Sutherland clipping algorithm.
+         *	The number returned is possibly a combination of the five different bit-coded areas used in the clipping algorithm.
+         * @param coordinate
+         * @returns {number}
+         * @private
+         */
         SoftwareRenderer.prototype._calculateOutCode = function (coordinate) {
 
             // Regard the coordinate as being inside the clip window initially.
