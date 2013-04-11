@@ -103,34 +103,52 @@ define([
 
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
-            var vertices = this._generateBoundingBoxVertices(entity);
+            var positionArray = this._generateBoundingBoxPositionArray(entity);
 
             // TODO: Combine the transforms to pixel space.
             // Projection transform + homogeneous divide
-            for (var i = 0; i < vertices.length; i++) {
-                var v = vertices[i];
+            var v = new Vector4(0, 0, 0, 1);
+            var halfClipX = this._clipX / 2;
+            var halfClipY = this._clipY / 2;
+            var p1, p2, p3, p4, wComponent;
+            for (var p = 0; p < positionArray.length; p++) {
+
+                p1 = p;
+                p2 = p + 1;
+                p3 = p + 2;
+                p4 = p + 3;
+                v.data[0] = positionArray[p1];
+                v.data[1] = positionArray[p2];
+                v.data[2] = positionArray[p3];
+                v.data[3] = positionArray[p4];
 
                 combinedMatrix.applyPost(v);
 
-                if (v.data[3] < this.renderer.camera.near) {
+                wComponent = v.data[3];
+                if (wComponent < this.renderer.camera.near) {
                     // Near plane clipped.
-                    console.log("Early exit on near plane clipped.");
+                    console.log("Occlusion test : early exit on near plane clipped.");
                     return false;
                 }
 
-                var div = 1.0 / v.data[3];
+                var div = 1.0 / wComponent;
                 v.data[0] *= div;
                 v.data[1] *= div;
 
-                // For interpolating in screen space, in the clipping method.
-                v.data[3] = 1.0 / v.data[3];
-            }
+                // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
+                positionArray[p1] = (v.data[0] + 1.0) * halfClipX;
+                // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
+                positionArray[p2] = Math.round((v.data[1] + 1.0) * halfClipY);
+                // positionArray[p3] = v.data[2];
+                // Invert w component here, this to be able to interpolate the depth over the triangles.
+                positionArray[p4] = div;
 
-            this.renderer._transformToScreenSpace(vertices);
+                p = p4;
+            }
 
             // The array contains the min and max x- and y-coordinates as well as the min depth.
             // order : [minX, maxX, minY, maxY, minDepth]
-            var minmaxArray = this._cohenSutherlandClipBox(vertices, minmaxArray);
+            var minmaxArray = this._cohenSutherlandClipBox(positionArray);
 
             // Round values from the clipping conservatively to integer pixel coordinates.
             /*jshint bitwise: false */
@@ -170,13 +188,13 @@ define([
 
         /**
          *	Generates a array of homogeneous vertices for a entity's bounding box.
-         *	// TODO : These vertices should probably be saved as a typed array for each object which
+         *	// TODO : These vertices should probably be saved beforehand as a typed array for each object which
          *	need to have occludee possibilities.
          *
          *
-         *	@return {Array.<Vector4>} vertex array
+         *	@return {Float32Array} vertex array
          */
-        BoundingBoxOcclusionModule.prototype._generateBoundingBoxVertices = function (entity) {
+        BoundingBoxOcclusionModule.prototype._generateBoundingBoxPositionArray = function (entity) {
             var boundingBox = entity.meshDataComponent.modelBound;
 
             // Create the 8 vertices which create the bounding box.
@@ -184,17 +202,19 @@ define([
             var y = boundingBox.yExtent;
             var z = boundingBox.zExtent;
 
-            var v1 = new Vector4(-x, y, -z, 1.0);
-            var v2 = new Vector4(-x, y, z, 1.0);
-            var v3 = new Vector4(x, y, z, 1.0);
-            var v4 = new Vector4(x, y, -z, 1.0);
+            // Create the array in one call.
+            var positionArray = new Float32Array([
+                -x, y, -z, 1.0,
+                -x, y, z, 1.0,
+                x, y, z, 1.0,
+                x, y, -z, 1.0,
+                -x, -y, -z, 1.0,
+                -x, -y, z, 1.0,
+                x, -y, z, 1.0,
+                x, -y, -z, 1.0
+            ]);
 
-            var v5 = new Vector4(-x, -y, -z, 1.0);
-            var v6 = new Vector4(-x, -y, z, 1.0);
-            var v7 = new Vector4(x, -y, z, 1.0);
-            var v8 = new Vector4(x, -y, -z, 1.0);
-
-            return [v1, v2, v3, v4, v5, v6, v7, v8];
+            return positionArray;
         };
 
         /**
@@ -203,10 +223,10 @@ define([
          *	if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
          *	it will be non-conservative in some cases.
          *
-         *	@param {Array.<Vector>} vertices Array of screen space transformed vertices.
+         *	@param {Float32Array} positions Array of screen space transformed vertices.
          *	@returns {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
          */
-        BoundingBoxOcclusionModule.prototype._cohenSutherlandClipBox = function (vertices) {
+        BoundingBoxOcclusionModule.prototype._cohenSutherlandClipBox = function (positions) {
             /*
              *	http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland
              *	https://www.cs.drexel.edu/~david/Classes/CS430/Lectures/L-03_XPM_2DTransformations.6.pdf
@@ -224,41 +244,56 @@ define([
 
 
             /*jshint bitwise: false */
-            var outCodes = new Array(8);
+            var outCodes = new Uint8Array(8);
+            var v1 = new Vector4(0, 0, 0, 1);
+            var vPos;
             for (var i = 0; i < 8; i++) {
-                var vert = vertices[i];
-                var code = this._calculateOutCode(vert);
+                vPos = i * 4;
+                v1.data[0] = positions[vPos];
+                v1.data[1] = positions[vPos + 1];
+                v1.data[3] = positions[vPos + 3];
+                var code = this._calculateOutCode(v1);
                 outCodes[i] = code;
                 if (code === INSIDE) {
                     // this vertex is inside the screen and shall be used to find minimum and maximum values.
 
                     // Check min depth (Inverted)
-                    minDepth = Math.max(minDepth, vert.data[3]);
+                    minDepth = Math.max(minDepth, v1.data[3]);
 
                     // Minimum and maximum X
-                    var xValue = vert.data[0];
+                    var xValue = v1.data[0];
                     minX = Math.min(minX, xValue);
                     maxX = Math.max(maxX, xValue);
 
                     // Minimum and maximum Y
-                    var yValue = vert.data[1];
+                    var yValue = v1.data[1];
                     minY = Math.min(minY, yValue);
                     maxY = Math.max(maxY, yValue);
                 }
             }
 
             var tempVec = new Vector2(0,0);
+            var v2 = new Vector4(0, 0, 0, 1);
+            var outcode1, outcode2;
+            var vertIndex;
             // Go through the edges of the bounding box to clip them if needed.
             for (var edgeIndex = 0; edgeIndex < 12; edgeIndex++) {
 
                 var edgePair = this._edgeIndices[edgeIndex];
-                var vIndex1 = edgePair[0];
-                var vIndex2 = edgePair[1];
 
-                var v1 = vertices[vIndex1];
-                var outcode1 = outCodes[vIndex1];
-                var v2 = vertices[vIndex2];
-                var outcode2 = outCodes[vIndex2];
+                vertIndex = edgePair[0];
+                vPos = edgePair[0] * 4;
+                v1.data[0] = positions[vPos];
+                v1.data[1] = positions[vPos + 1];
+                v1.data[3] = positions[vPos + 3];
+                outcode1 = outCodes[vertIndex];
+
+                vertIndex = edgePair[1];
+                vPos = vertIndex * 4;
+                v2.data[0] = positions[vPos];
+                v2.data[1] = positions[vPos + 1];
+                v2.data[3] = positions[vPos + 3];
+                outcode2 = outCodes[vertIndex];
 
                 while (true) {
                     /*
@@ -445,7 +480,7 @@ define([
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
-            var vertices = this._generateBoundingBoxVertices(entity);
+            var positionArray = this._generateBoundingBoxPositionArray(entity);
             // Projection transform + homogeneous divide for every vertex.
             // Early exit on near plane clip.
             for (var j = 0; j < vertices.length; j++) {

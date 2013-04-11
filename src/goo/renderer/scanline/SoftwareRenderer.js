@@ -242,12 +242,11 @@ define([
                             origin_z + ratio * (target.data[2] - origin_z),
                             1.0
                         ];
-
-                        target = vertices[insideIndices[1]];
-                        ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
                         // Overwrite the vertex index with the new vertex.
                         indices[outIndex] = triangleData.addVertex(newV);
 
+                        target = vertices[insideIndices[1]];
+                        ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
                         // Calculate the new vertex's position
                         newV[0] = origin_x + ratio * (target.data[0] - origin_x);
                         newV[1] = origin_y + ratio * (target.data[1] - origin_y);
@@ -361,7 +360,7 @@ define([
                 positionArray[p1] = (v1.data[0] + 1.0) * halfClipX;
                 // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
                 positionArray[p2] = Math.round((v1.data[1] + 1.0) * halfClipY);
-                positionArray[p3] = v1.data[2];
+                // positionArray[p3] = v1.data[2]; z-componenet is not used any more.
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
                 positionArray[p4] = homogeneousDivide;
 
