@@ -13,9 +13,10 @@ define([
 	) {
 	"use strict";
 	/**
-	 * Utility class for lading Shaders
+	 * @class Utility class for loading Shaders
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
 	 */
 	function ShaderLoader(parameters) {
@@ -32,6 +33,15 @@ define([
 
 	}
 
+	/**
+	 * Loads the shader at <code>shaderPath</code>.
+	 * @example
+	 * shaderLoader.load('shaders/textured.shader').then(function(shader) {
+	 *   // handle {@link Shader} shader
+	 * });
+	 * @param {string} shaderPath Relative path to the material.
+	 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Shader} object.
+	 */
 	ShaderLoader.prototype.load = function(shaderPath) {
 		// Materials can't share shaders yet, cause jointcount is defined on the shader
 		/*if (this._cache[shaderPath]) {

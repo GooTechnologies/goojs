@@ -23,9 +23,10 @@ define([
 	"use strict";
 
 	/**
-	 * Utility class for loading Material objects.
+	 * @class Utility class for loading {@link Material} objects.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
 	 */
 	function MaterialLoader(parameters) {
@@ -44,9 +45,12 @@ define([
 
 	/**
 	 * Loads the material at <code>materialPath</code>.
-	 *
+	 * @example
+	 * materialLoader.load('materials/shiny.mat').then(function(material) {
+	 *   // handle {@link Material} material
+	 * });
 	 * @param {string} materialPath Relative path to the material.
-	 * @return {Promise} The promise is resolved with the loaded Material object.
+	 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Material} object.
 	 */
 	MaterialLoader.prototype.load = function(materialPath) {
 		if (this._cache[materialPath]) {

@@ -15,9 +15,10 @@ function(
 	"use strict";
 
 	/**
-	 * Utility class for loading MeshData objects.
+	 * @class Utility class for loading {@link MeshData} objects.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
 	 */
 
@@ -39,9 +40,12 @@ function(
 
 	/**
 	 * Loads the mesh at <code>meshPath</code>.
-	 *
+	 * @example
+	 * meshLoader.load('meshes/sphere.mesh').then(function(mesh) {
+	 *   // handle {@link MeshData} mesh
+	 * });
 	 * @param {string} meshPath Relative path to the mesh.
-	 * @return {Promise} The promise is resolved with the loaded MeshData object.
+	 * @return {RSVP.Promise} The promise is resolved with the loaded {@link MeshData} object.
 	 */
 	MeshLoader.prototype.load = function(meshPath) {
 		if (this._cache[meshPath]) {

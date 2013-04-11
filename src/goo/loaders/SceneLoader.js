@@ -13,9 +13,10 @@ function (
 	"use strict";
 
 	/**
-	 * Utility class for loading scenes into a World.
+	 * @class Utility class for loading scenes into a World.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {Loader} parameters.loader
 	 */
@@ -38,9 +39,12 @@ function (
 
 	/**
 	 * Loads the scene at <code>scenePath</code>.
-	 *
+	 * @example
+	 * sceneLoader.load('room.scene').then(function(entities) {
+	 *   // handle the {@link Entity|Entity[]} entities
+	 * });
 	 * @param {string} scenePath Relative path to the scene.
-	 * @return {Promise} The promise is resolved with the target World object.
+	 * @returns {RSVP.Promise} The promise is resolved with an array of {@link Entity|entities}.
 	 */
 	SceneLoader.prototype.load = function (scenePath) {
 		var that = this;
