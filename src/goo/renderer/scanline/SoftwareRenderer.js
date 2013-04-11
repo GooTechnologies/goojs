@@ -143,10 +143,10 @@ define([
         SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
 
             var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
-            var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
+            var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
 
             var vertCount = originalPositions.length / 3;
-            var indexCount = vertIndexArray.length;
+            var indexCount = originalIndexArray.length;
             var triangleData = new TriangleData({'vertCount': vertCount, 'indexCount': indexCount});
 
             var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
@@ -181,7 +181,7 @@ define([
             var vertices = [v1, v2, v3];
             for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
-                var indices = [vertIndexArray[vertIndex], vertIndexArray[++vertIndex], vertIndexArray[++vertIndex]];
+                var indices = [originalIndexArray[vertIndex], originalIndexArray[++vertIndex], originalIndexArray[++vertIndex]];
                 // The vertexpositions holds the index to the x-component in the triangleData's position array.
                 var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
 
@@ -220,13 +220,15 @@ define([
                         // All of the vertices are on the outside, skip to the next three vertices.
                         continue;
                     case 1:
-                        // Update the one vertex to its new position on the near plane and add a new vertex
-                        // on the other intersection with the plane.
+                        /*
+                            Update the one vertex to its new position on the near plane and add a new vertex
+                            on the other intersection with the plane.
+                        */
 
                         // TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
                         // perhaps the entire function, in order to make use of them.
-
-                        var origin = vertices[outsideIndices[0]];
+                        var outIndex = outsideIndices[0];
+                        var origin = vertices[outIndex];
                         var origin_x = origin.data[0];
                         var origin_y = origin.data[1];
                         var origin_z = origin.data[2];
@@ -234,31 +236,25 @@ define([
                         var target = vertices[insideIndices[0]];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
-                        var newV1 = [
-                            origin_x + ratio * (target.data[0] - origin_x),
-                            origin_y + ratio * (target.data[1] - origin_y),
-                            origin_z + ratio * (target.data[2] - origin_z)
-                        ];
-
-                        target = vertices[insideIndices[1]];
-                        ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-                        // Update the data for the origin vertex.
-                        vPos = vertexPositions[outsideIndices[0]];
-                        positionArray[vPos] = newV1[0];
-                        positionArray[vPos + 1] = newV1[1];
-                        positionArray[vPos + 2] = newV1[2];
-
-                        // Calculate the new vertex's position
-                        var newV2 = [
+                        var newV = [
                             origin_x + ratio * (target.data[0] - origin_x),
                             origin_y + ratio * (target.data[1] - origin_y),
                             origin_z + ratio * (target.data[2] - origin_z),
                             1.0
                         ];
 
+                        target = vertices[insideIndices[1]];
+                        ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
+                        // Overwrite the vertex index with the new vertex.
+                        indices[outIndex] = triangleData.addVertex(newV);
+
+                        // Calculate the new vertex's position
+                        newV[0] = origin_x + ratio * (target.data[0] - origin_x);
+                        newV[1] = origin_y + ratio * (target.data[1] - origin_y);
+                        newV[2] = origin_z + ratio * (target.data[2] - origin_z);
+
                         // Add the new vertex and store the new vertex's index to be added at the last stage.
-                        indices.push(triangleData.addVertex(newV2));
+                        indices.push(triangleData.addVertex(newV));
 
                         break;
                     case 2:
@@ -268,23 +264,35 @@ define([
                         var target_y = target.data[1];
                         var target_z = target.data[2];
 
-                        // First vertex update
+                        // First new vertex.
                         var outIndex = outsideIndices[0];
                         var origin = vertices[outIndex];
+                        var origin_x = origin.data[0];
+                        var origin_y = origin.data[1];
+                        var origin_z = origin.data[2];
                         vPos = vertexPositions[outIndex];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-                        positionArray[vPos] += ratio * (target_x - origin.data[0]);
-                        positionArray[vPos + 1] += ratio * (target_y - origin.data[1]);
-                        positionArray[vPos + 2] += ratio * (target_z - origin.data[2]);
+                        var newV = [
+                            origin_x + ratio * (target_x - origin_x),
+                            origin_y + ratio * (target_y - origin_y),
+                            origin_z + ratio * (target_z - origin_z),
+                            1.0
+                        ];
+                        indices[outIndex] = triangleData.addVertex(newV);
 
-                        // Second vertex update
+                        // Second new vertex.
                         outIndex = outsideIndices[1];
                         origin = vertices[outIndex];
-                        vPos = vertexPositions[outIndex];
+                        var origin_x = origin.data[0];
+                        var origin_y = origin.data[1];
+                        var origin_z = origin.data[2];
+
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-                        positionArray[vPos] += ratio * (target_x - origin.data[0]);
-                        positionArray[vPos + 1] += ratio * (target_y - origin.data[1]);
-                        positionArray[vPos + 2] += ratio * (target_z - origin.data[2]);
+                        newV[0] = origin_x + ratio * (target_x - origin_x);
+                        newV[1] = origin_y + ratio * (target_y - origin_y);
+                        newV[2] = origin_z + ratio * (target_z - origin_z);
+
+                        indices[outIndex] = triangleData.addVertex(newV);
 
                         break;
                 }
@@ -292,15 +300,22 @@ define([
                 // Add the indices to the triangleData.
                 if (indices.length === 4) {
                     /*
-                        If the index array has length 4 , a new vertex has been added,
+                        If the index array has length 4 , a new vertex has been added (case 1),
                         and it's index is at position 3 in the array.
 
-                        The order of the indices are not relevant at this point, since
+                        The variable outIndex has the value of outsideIndices[0] at this point as well.
+
+                        The order of the indices ( CCW / CW ) are not relevant at this point, since
                         back face culling has been performed.
+
+                        But to construct the right triangles, making use of the outside and inside indices is needed.
                     */
 
-                    triangleData.addIndices([indices[0],indices[1], indices[3]]);
-                    triangleData.addIndices([indices[3],indices[1], indices[2]]);
+                    var insideIndex = insideIndices[0];
+                    var extraIndex = indices[3];
+
+                    triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
+                    triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
                 } else {
                     triangleData.addIndices(indices);
                 }
@@ -348,7 +363,7 @@ define([
                 positionArray[p2] = Math.round((v1.data[1] + 1.0) * halfClipY);
                 positionArray[p3] = v1.data[2];
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
-                positionArray[p4] = 1.0 / wComponent;
+                positionArray[p4] = homogeneousDivide;
 
                 // Step p forwards to the last position read.
                 p = p4;

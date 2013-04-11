@@ -11,14 +11,14 @@ define([
             /*
                 The position array will contain 4 values per vertex. (x,y,z,w).
 
-                The maximum amount of extra vertices are 1 per triangle, thus 4 extra positions per triangle
+                The maximum amount of extra vertices are 2 per triangle, thus 2*4 extra positions per triangle
 
                 The maximum amount of extra indices are 3 per triangle. (The triangle can be split up in two triangles)
                 This assuming that all triangles are front facing, which probably isn't the case.
             */
             var triangleCount = indexCount / 3;
             var originalCount = vertCount * 4;
-            var compensatedPositionCount = originalCount + triangleCount * 4;
+            var compensatedPositionCount = originalCount + triangleCount * 8;
             var compensatedIndexCount = indexCount * 2; // + triangleCount * 3;
 
             /*
