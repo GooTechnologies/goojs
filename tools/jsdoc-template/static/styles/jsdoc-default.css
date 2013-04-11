@@ -216,12 +216,12 @@ h6
 	margin: 0;
 }
 
-.prettyprint
+/*.prettyprint
 {
 	border: 1px solid #ddd;
 	width: 80%;
     overflow: auto;
-}
+}*/
 
 .prettyprint.source {
     width: inherit;
@@ -237,7 +237,7 @@ h6
 	margin: 0;
 	background-color: #fff;
 	color: #000;
-	border-left: 3px #ddd solid;
+/*	border-left: 3px #ddd solid;*/
 }
 
 .params, .props
