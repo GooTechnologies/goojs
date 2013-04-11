@@ -3,7 +3,7 @@ $(function() {
 	$list.wrap('<div class="tree"></div>');
 	$tree = $list.parent();
 	var path = document.location.href;
-	path = path.slice(path.lastIndexOf('/')+1);
+	path = path.slice(path.lastIndexOf('/')+1, Math.max(path.lastIndexOf('#'),0));
 	if(path && path != 'index.html') {
 		$tree.find('a').each(function() {
 			if ($(this).attr('href') == path) {

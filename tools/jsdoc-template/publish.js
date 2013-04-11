@@ -64,6 +64,7 @@ function addSignatureParams(f) {
     if (f.params) {
       var sigs = [];
       f.params.forEach(function(p) {
+      	if (p.name.match(/\./)) return true;
         var str = '';
         if (p.optional) {
           str += '<span class="optional">';
