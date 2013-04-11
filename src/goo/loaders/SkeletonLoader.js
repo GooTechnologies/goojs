@@ -15,8 +15,11 @@ define([
 	) {
 	"use strict";
 		/**
-		 * @class Utility class for loading Animation Trees
+		 * @class Utility class for loading {@link SkeletonPose|skeletons}
+		 *
 		 * @constructor
+		 * @param {object} parameters
+		 * @param {Loader} parameters.loader
 		 */
 		function SkeletonLoader(parameters) {
 			if(typeof parameters === "undefined" || parameters === null) {
@@ -33,6 +36,15 @@ define([
 
 		}
 
+		/**
+		 * Loads the skeleton at <code>skeletonPath</code>.
+		 * @example
+		 * skeletonLoader.load('skeletons/robot.skeleton').then(function(skeleton) {
+		 *   // handle {@link SkeletonPose} skeleton
+		 * });
+		 * @param {string} skeletonPath Relative path to the skeleton.
+		 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Material} object.
+		 */
 		SkeletonLoader.prototype.load = function (skeletonPath) {
 			if (this._cache[skeletonPath]) {
 				return this._cache[skeletonPath];

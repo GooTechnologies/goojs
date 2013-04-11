@@ -11,11 +11,14 @@ define([
 	"use strict";
 
 	/**
-	 * Handles loading of data.
+	 * @class Handles loading of data.
 	 *
 	 * @constructor
-	 * @param {string} [parameters.rootPath=''] parameters.rootPath The absolute path of the project root. Ex. <code>/project/root/</code>.
-	 * @param {string} [parameters.crossOrigin='anonymous'] parameters.crossOrigin Sets the Image.crossOrigin of any loaded Image objects.
+	 * @param {string} [parameters.rootPath=''] The path of the project root.
+	 * Ex. <code>/project/root/</code>.
+	 * @param {string} [parameters.crossOrigin='anonymous'] Sets the Image.crossOrigin 
+	 * of any loaded Image objects.
+	 * @param {Ajax} [parameters.xhr]
 	 */
 	function Loader(parameters) {
 		if(typeof parameters !== "undefined" && parameters !== null && typeof parameters !== "object") {
@@ -30,11 +33,16 @@ define([
 	}
 
 	/**
-	 * Loads data at specified path which is returned in a Promise object. If a parser function is specified the data will be parsed by it.
+	 * Loads data at specified path which is returned in a Promise object.
+	 * If a parser function is specified the data will be parsed by it.
 	 *
 	 * @param {string} path Relative path to whatever shall be loaded.
-	 * @param {Function} parser A function that parses the loaded data. If the function returns a Promise then its resolved value will resolve the load()'s Promise .
-	 * @return {Promise} The promise is resolved with the data loaded. If a parser is specified the data will be of the type resolved by the parser promise.
+	 * @param {function(object)} parser A function that parses the loaded data.
+	 * If the function returns a Promise then its resolved value will resolve the load()'s Promise .
+	 * @param {string} [mode] Currently only supports {@link Loader.ARRAY_BUFFER}, otherwise skip.
+	 *
+	 * @returns {RSVP.Promise} The promise is resolved with the data loaded. If a parser is specified
+	 * the data will be of the type resolved by the parser promise.
 	 */
 	Loader.prototype.load = function(path, parser, mode) {
 		if(typeof path === "undefined" || path === null) {
@@ -85,11 +93,15 @@ define([
 	};
 
 	/**
-	 * Loads image data at specified path which is returned in a Promise object. If a parser function is specified the data will be parsed by it.
+	 * Loads image data at specified path which is returned in a Promise object. If a parser
+	 * function is specified the data will be parsed by it.
 	 *
-	 * @param {string} path Relative path to whatever shall be loaded.
-	 * @param {Function} parser A function that parses the loaded data.
-	 * @return {Promise} The promise is resolved with an Image object.
+	 * @example
+	 * loader.loadImage('resources/image.png').then(function(image) {
+	 *   // handle {@link Image} image
+	 * });
+	 * @param {string} url Relative path to whatever shall be loaded.
+	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
 	Loader.prototype.loadImage = function (url) {
 		var promise = new RSVP.Promise();
@@ -119,6 +131,9 @@ define([
 		return this.rootPath + _url;
 	};
 
+	/** @type {string}
+	 * @default
+	 */
 	Loader.ARRAY_BUFFER = 'arraybuffer';
 
 	return Loader;

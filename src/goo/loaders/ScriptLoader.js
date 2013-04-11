@@ -9,6 +9,13 @@ define([
 	) {
 	"use strict";
 
+	/**
+	 * @class Utility class for loading Scripts.
+	 *
+	 * @constructor
+	 * @param {object} parameters
+	 * @param {Loader} parameters.loader
+	 */
 	function ScriptLoader(parameters) {
 		if(typeof parameters === "undefined" || parameters === null) {
 			throw new Error('ScriptLoader(): Argument `parameters` was undefined/null');
@@ -21,8 +28,11 @@ define([
 		this._loader = parameters.loader;
 		this._cache = {};
 	}
-
-	ScriptLoader.prototype.load = function (scriptPath, params) {
+	/**
+	 * Loads the script at <code>scriptPath</code>
+	 * @param {string} scriptPath
+	 */
+	ScriptLoader.prototype.load = function (scriptPath) {
 		if (this._cache[scriptPath]) {
 			return this._cache[scriptPath];
 		}
@@ -30,8 +40,7 @@ define([
 		var promise = new RSVP.Promise();
 		require([this._loader.rootPath + scriptPath],
 			function(ScriptTemplate) {
-				var scriptInstance = new ScriptTemplate(params);
-				promise.resolve(scriptInstance);
+				promise.resolve(ScriptTemplate);
 			}
 		);
 		this._cache[scriptPath] = promise;
