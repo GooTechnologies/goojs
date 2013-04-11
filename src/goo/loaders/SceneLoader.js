@@ -54,7 +54,9 @@ function (
 	};
 
 	SceneLoader.prototype._parse = function (sceneSource, scenePath) {
-		sceneSource = JSON.parse(sceneSource);
+		if (typeof sceneSource === 'string') {
+			sceneSource = JSON.parse(sceneSource);
+		}
 		var promises = [];
 		// If we got files, then let's do stuff with the files!
 		if (sceneSource && sceneSource.files && sceneSource.files.length) {

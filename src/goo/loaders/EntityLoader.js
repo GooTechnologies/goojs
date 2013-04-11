@@ -88,7 +88,9 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource) {
-		entitySource = JSON.parse(entitySource);
+		if (typeof entitySource === 'string') {
+			entitySource = JSON.parse(entitySource);
+		}
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;

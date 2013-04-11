@@ -59,7 +59,9 @@ define([
 	};
 
 	ScriptLoader.prototype._parse = function (data) {
-		data = JSON.parse(data);
+		if (typeof data === 'string') {
+			data = JSON.parse(data);
+		}
 		return this._loadScript(data.sourceRef);
 	};
 

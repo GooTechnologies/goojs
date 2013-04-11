@@ -1,0 +1,34 @@
+{
+	"uniforms": {
+		"materialAmbient": [
+			0.33,
+			0.33,
+			0.4,
+			1
+		],
+		"materialDiffuse": [
+			1,
+			1,
+			1,
+			1
+		],
+		"materialEmissive": [
+			0,
+			0,
+			0,
+			1
+		],
+		"materialSpecular": [
+			0,
+			0,
+			0,
+			1
+		],
+		"materialSpecularPower": 8
+	},
+	"name": "Skin-material",
+	"textures": [
+		"textures/images/hair.tex"
+	],
+	"shaderRef": "shaders/texturedLit.shader"
+}

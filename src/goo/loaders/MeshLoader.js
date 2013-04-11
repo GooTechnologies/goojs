@@ -63,7 +63,9 @@ function(
 
 
 	MeshLoader.prototype._parse = function(data) {
-		data = JSON.parse(data);
+		if (typeof data === 'string') {
+			data = JSON.parse(data);
+		}
 		var promise = new RSVP.Promise();
 
 		try {

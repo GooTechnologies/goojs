@@ -1,0 +1,31 @@
+{
+	"name": "Plane001[_5_-_Default_1]",
+	"components": {
+		"transform": {
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"parentRef": "entities/Plane001.ent"
+		},
+		"meshRenderer": {
+			"materials": [
+				"materials/_5_-_Default-material.mat"
+			]
+		},
+		"meshData": {
+			"mesh": "meshes/Plane001[_5_-_Default_1].mesh"
+		}
+	}
+}

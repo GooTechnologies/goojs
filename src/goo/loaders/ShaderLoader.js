@@ -57,7 +57,9 @@ define([
 	};
 
 	ShaderLoader.prototype._parse = function(data) {
-		data = JSON.parse(data);
+		if (typeof data === 'string') {
+			data = JSON.parse(data);
+		}
 		var promises = [];
 		if (data && data.attributes && data.uniforms) {
 			var shaderDefinition = {

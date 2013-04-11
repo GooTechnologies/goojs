@@ -98,7 +98,9 @@ define([
 		};
 
 		AnimationLoader.prototype._parseAnimation = function(name, clipSource) {
-			clipSource = JSON.parse(clipSource);
+			if (typeof clipSource === 'string') {
+				clipSource = JSON.parse(clipSource);
+			}
 			var useCompression, compressedAnimRange;
 			var clip = new AnimationClip(name);
 

@@ -69,7 +69,9 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
-		materialDataSource = JSON.parse(materialDataSource);
+		if (typeof materialDataSource === 'string') {
+			materialDataSource = JSON.parse(materialDataSource);
+		}
 		var that = this;
 		var promises = []; // Keep track of promises
 		var shader;
@@ -78,7 +80,9 @@ define([
 		var textures = [];
 
 		function addTexture(i, texture) {
-			texture = JSON.parse(texture);
+			if (typeof texture === 'string') {
+				texture = JSON.parse(texture);
+			}
 			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));

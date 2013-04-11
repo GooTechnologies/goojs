@@ -1,0 +1,31 @@
+{
+	"name": "Boat[ColorMaterial]",
+	"components": {
+		"transform": {
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"parentRef": "entities/Boat.ent"
+		},
+		"meshRenderer": {
+			"materials": [
+				"materials/ColorEffectR177G88B27-material.mat"
+			]
+		},
+		"meshData": {
+			"mesh": "meshes/Boat[ColorMaterial].mesh"
+		}
+	}
+}

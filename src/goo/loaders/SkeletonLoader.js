@@ -68,7 +68,9 @@ define([
 
 
 		SkeletonLoader.prototype._parseSkeleton = function (skeleton) {
-			skeleton = JSON.parse(skeleton);
+			if(typeof skeleton === 'string') {
+				skeleton = JSON.parse(skeleton);
+			}
 			var skName = skeleton.Name;
 			var jointArray = skeleton.Joints;
 			var joints = [];

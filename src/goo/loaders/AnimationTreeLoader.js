@@ -108,7 +108,9 @@ define([
 		};
 
 		AnimationTreeLoader.prototype._parseTree = function (animTree) {
-			animTree = JSON.parse(animTree);
+			if (typeof animTree === 'string') {
+				animTree = JSON.parse(animTree);
+			}
 			// read clip info
 			if (!animTree.Clips || !animTree.Layers) {
 				return false;
