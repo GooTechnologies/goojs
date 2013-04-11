@@ -45,8 +45,6 @@ function (
 
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
-		// REVIEW: Don't use for..in for iterating over an array; may get unexpected values. (see Crockford etc)
-		// Use old fashioned for(i = 0; i < ..length, ....)
 		for(var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];

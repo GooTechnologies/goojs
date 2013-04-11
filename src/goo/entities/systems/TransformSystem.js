@@ -14,14 +14,14 @@ define(['goo/entities/systems/System'],
 
 	TransformSystem.prototype.process = function (entities) {
 		var i, transformComponent;
-		for (i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
 			}
 		}
-		for (i in entities) {
+		for (var i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
 			if (transformComponent._dirty) {
 				this.updateWorldTransform(transformComponent);
