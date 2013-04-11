@@ -44,7 +44,7 @@ define([
 		 * the data will be of the type resolved by the parser promise.
 		 */
 		BundleLoader.prototype.load = function (path, parser, mode) {
-			var ref = path.replace('.json','');
+			var ref = path;
 			if (this._bundle[ref]) {
 				var promise = new RSVP.Promise();
 				var data = Util.clone(this._bundle[ref]);
@@ -77,7 +77,7 @@ define([
 
 
 		BundleLoader.prototype._parse = function (bundle) {
-			this._bundle = bundle;
+			this._bundle = JSON.parse(bundle);
 		};
 
 		return BundleLoader;

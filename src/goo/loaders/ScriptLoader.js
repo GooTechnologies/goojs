@@ -30,21 +30,47 @@ define([
 	}
 	/**
 	 * Loads the script at <code>scriptPath</code>
+	 * @example
+	 * scriptLoader.load('scripts/OrbitCamControlScript.script').then(function(ScriptTemplate) {
+	 *   var scriptComponent = new {@link ScriptComponent}();
+	 *   var script = new ScriptTemplate();
+	 *   scriptComponent.scripts.push(script);
+	 * });
 	 * @param {string} scriptPath
+	 * @param {object} params To pass in to the script
+	 * @returns {RSVP.Promise} The promise is resolved with the loaded Script instance.
 	 */
-	ScriptLoader.prototype.load = function (scriptPath) {
+	ScriptLoader.prototype.load = function (scriptPath, params) {
 		if (this._cache[scriptPath]) {
-			return this._cache[scriptPath];
+			return this._cache[scriptPath].then(function(Script) {
+				return new Script(params);
+			});
 		}
 
-		var promise = new RSVP.Promise();
-		require([this._loader.rootPath + scriptPath],
-			function(ScriptTemplate) {
-				promise.resolve(ScriptTemplate);
+		var parse = this._parse.bind(this);
+		var promise = this._loader.load(scriptPath, function(data) {
+			return parse(data);
+		});
+
+		this._cache[scriptPath] = promise;
+		return promise.then(function(Script) {
+			return new Script(params);
+		});
+	};
+
+	ScriptLoader.prototype._parse = function (data) {
+		data = JSON.parse(data);
+		return this._loadScript(data.sourceRef);
+	};
+
+	ScriptLoader.prototype._loadScript = function (sourcePath) {
+		var p = new RSVP.Promise();
+		require([this._loader.rootPath + sourcePath],
+			function(Script) {
+				p.resolve(Script);
 			}
 		);
-		this._cache[scriptPath] = promise;
-		return promise;
+		return p;
 	};
 
 

@@ -69,6 +69,7 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
+		materialDataSource = JSON.parse(materialDataSource);
 		var that = this;
 		var promises = []; // Keep track of promises
 		var shader;
@@ -77,6 +78,7 @@ define([
 		var textures = [];
 
 		function addTexture(i, texture) {
+			texture = JSON.parse(texture);
 			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));
@@ -133,7 +135,7 @@ define([
 				for (var i = 0; i < materialDataSource.textures.length; i++) {
 					var pushTexture = addTexture.bind(null,i);
 					var p = this._loader.load(materialDataSource.textures[i])
-					.then(pushTexture);
+						.then(pushTexture);
 					promises.push(p);
 				}
 			}

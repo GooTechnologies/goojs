@@ -94,10 +94,11 @@ define([
 		};
 
 		AnimationLoader.prototype._loadAnimation = function(animPath) {
-			return this._loader.load(animPath+'.json');
+			return this._loader.load(animPath);
 		};
 
 		AnimationLoader.prototype._parseAnimation = function(name, clipSource) {
+			clipSource = JSON.parse(clipSource);
 			var useCompression, compressedAnimRange;
 			var clip = new AnimationClip(name);
 

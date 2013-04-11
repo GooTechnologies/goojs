@@ -59,7 +59,7 @@ define([
 		var that = this;
 		var promise = this.xhr.get(ajaxProperties)
 		.then(function(request) {
-			return that._getDataFromSuccessfulRequest(request, ajaxProperties);
+			return that._getDataFromSuccessfulRequest(request);
 		})
 		.then(function(data) {
 			return (typeof parser === 'function') ? parser(data) : data;
@@ -78,18 +78,8 @@ define([
 		return promise;
 	};
 
-	Loader.prototype._getDataFromSuccessfulRequest = function(request, ajaxProperties) {
-		if (/\.json$/.test(ajaxProperties.url)) {
-			return JSON.parse(request.responseText);
-		} else if (/\.(glsl|dds|vs|fs|vert|frag)$/.test(ajaxProperties.url)) {
-			// If the request url contains a known file extension
-			if (request.responseType === Loader.ARRAY_BUFFER) {
-				return request.response;
-			}
-			return request.responseText;
-		} else {
-			throw new Error('Loader._getDataFromSuccessfulRequest(): No known extension found in `' + ajaxProperties.url + '`');
-		}
+	Loader.prototype._getDataFromSuccessfulRequest = function(request) {
+		return request.response;
 	};
 
 	/**
@@ -125,10 +115,10 @@ define([
 		return promise;
 	};
 
-	Loader.prototype._buildURL = function(URLString) {
-		var _match = URLString.match(/\.(bundle|scene|ent|mat|mesh|shader|tex)$/);
-		var _url = _match ? URLString + '.json' : URLString;
-		return this.rootPath + _url;
+	Loader.prototype._buildURL = function(url) {
+		//var _match = url.match(/\.(bundle|scene|ent|mat|mesh|shader|tex|script)$/);
+		//var _url = _match ? URLString + '.json' : URLString;
+		return this.rootPath + url;
 	};
 
 	/** @type {string}

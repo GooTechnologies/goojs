@@ -79,7 +79,7 @@ function(
 	 */
 	EntityLoader.prototype.load = function(entityRef) {
 		var that = this;
-		var promise = this._loader.load(entityRef+'.json', function(data) {
+		var promise = this._loader.load(entityRef, function(data) {
 			return that._parse(data, entityRef);
 		});
 		this._cache[entityRef] = promise;
@@ -88,6 +88,7 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource) {
+		entitySource = JSON.parse(entitySource);
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
