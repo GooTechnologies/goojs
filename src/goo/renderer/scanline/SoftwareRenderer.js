@@ -83,7 +83,16 @@ define([
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
                 var triangleData = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
-                this._renderTriangleData(triangleData);
+
+                var indices = [];
+                for (var tIndex = 0; tIndex < triangleData.indexCount; tIndex++) {
+                    // Take 3 indices and render the triangle
+                    indices[0] = triangleData.indices[tIndex];
+                    indices[1] = triangleData.indices[++tIndex];
+                    indices[2] = triangleData.indices[++tIndex];
+                    this._renderTriangle(indices, triangleData.positions);
+                }
+
             }
         };
 
@@ -214,8 +223,8 @@ define([
                         // Update the one vertex to its new position on the near plane and add a new vertex
                         // on the other intersection with the plane.
 
-                        // TODO: Small optimization, the origin.z + near calculation in intersectionratio()
-                        // 		 can be performed once here instead of twice.
+                        // TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
+                        // perhaps the entire function, in order to make use of them.
 
                         var origin = vertices[outsideIndices[0]];
                         var origin_x = origin.data[0];
@@ -335,9 +344,11 @@ define([
 
                 // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
                 positionArray[p1] = (v1.data[0] + 1.0) * halfClipX;
-                positionArray[p2] = (v1.data[1] + 1.0) * halfClipY;
+                // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
+                positionArray[p2] = Math.round((v1.data[1] + 1.0) * halfClipY);
                 positionArray[p3] = v1.data[2];
-                positionArray[p4] = wComponent;
+                // Invert w component here, this to be able to interpolate the depth over the triangles.
+                positionArray[p4] = 1.0 / wComponent;
 
                 // Step p forwards to the last position read.
                 p = p4;
@@ -438,7 +449,8 @@ define([
             // var ratio = a/(a+b);
 
             // Simplified the ratio to :
-            return (origin.data[2] + near) / (origin.data[2] - target.data[2]);
+            var origin_z = origin.data[2];
+            return (origin_z + near) / (origin_z - target.data[2]);
 
         };
 
@@ -542,16 +554,23 @@ define([
             return faceNormalZ < 0.0;
         };
 
-        /**
-        *	Creates the new edges from the triangle. The returned value will be false if the triangle is outside view,
-        *	otherwise the returned value is an array with the indices.
-        *	@return {Array.<Number>} edgeIndexArray [longEdge, shortedge1, shortedge2, longEdgeIsOnTheRightSide]
-        */
-        SoftwareRenderer.prototype._createEdgesForTriangle = function (triangle) {
+        SoftwareRenderer.prototype._createEdgesForTriangle = function (indices, positions) {
+
+            //var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
+
+            // Use (x,y,1/w);
+            var vPos = indices[0] * 4;
+            var v1 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            vPos = indices[1] * 4;
+            var v2 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            vPos = indices[2] * 4;
+            var v3 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+
+            // The edges are created sorted in growing y-order.
             this._edges = [
-                new Edge(triangle.v1, triangle.v2),
-                new Edge(triangle.v2, triangle.v3),
-                new Edge(triangle.v3, triangle.v1)
+                new Edge(v1, v2),
+                new Edge(v2, v3),
+                new Edge(v3, v1)
             ];
 
             var maxHeight = 0;
@@ -667,15 +686,17 @@ define([
         };
 
         /**
-        *	Takes a triangle with coordinates in pixel space, and draws it.
-        *	@param {TriangleData} triangleData the triangle to draw.
-        */
-        SoftwareRenderer.prototype._renderTriangleData = function (triangleData) {
+         *
+         * @param indices
+         * @param positions
+         * @private
+         */
+        SoftwareRenderer.prototype._renderTriangle = function (indices, positions) {
 
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
 
-            var edgeIndices = this._createEdgesForTriangle(triangle);
+            var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
             var longEdge = this._edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
@@ -685,13 +706,6 @@ define([
             if (this._verticalLongEdgeCull(longEdge)) {
                 // Triangle is outside the view, skipping rendering it;
                 return;
-            }
-
-            for (var i = 0; i < 3; i++) {
-                // TODO : Move all rounding of values to the scanline loop to be performed per line.
-                this._edges[i].roundOccluderCoordinates();
-                // TODO : Move the inversion of z.... to the best place. Has to be done before the creation of the edge data.
-                this._edges[i].invertZ();
             }
 
             var shortEdge = this._edges[s1];
