@@ -6,7 +6,11 @@ define([
         function (Matrix4x4, Vector4) {
         "use strict";
 
-
+        /**
+         *
+         * @param renderer
+         * @constructor
+         */
         function BoundingSphereOcclusionModule (renderer) {
             this.renderer = renderer;
             this._clipY = renderer.height - 1;

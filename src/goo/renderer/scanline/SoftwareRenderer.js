@@ -10,11 +10,13 @@ define([
 	'goo/renderer/bounds/BoundingBox',
     'goo/renderer/scanline/EdgeData',
     'goo/renderer/scanline/BoundingBoxOcclusionModule',
-    'goo/renderer/scanline/BoundingSphereOcclusionModule'
+    'goo/renderer/scanline/BoundingSphereOcclusionModule',
+    'goo/renderer/scanline/TriangleData'
 	],
 	/** @lends */
 
-	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionModule, BoundingSphereOcclusionModule) {
+	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData,
+              BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, TriangleData) {
 	    "use strict";
 
         /**
@@ -80,11 +82,8 @@ define([
 
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
-                var triangles = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
-
-                for (var t = 0; t < triangles.length; t++) {
-                    this._renderTriangle(triangles[t]);
-                }
+                var triangleData = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
+                this._renderTriangleData(triangleData);
             }
         };
 
@@ -126,9 +125,9 @@ define([
 
 
         /**
-        *	Creates an array of the visible {Triangle} for the entity
+        *	Creates an array of the visible
         *	@param {Entity} entity, the entity from which to create triangles.
-        *	@return {Array.<Triangle>} triangle array
+        *	@return {TriangleData} triangleData
         *   @param cameraProjectionMatrix
         *   @param cameraViewMatrix
         */
@@ -137,40 +136,58 @@ define([
             var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
             var vertIndexArray = entity.occluderComponent.meshData.indexData.data;
 
-            // Allocate the triangle array for the maximum case,
-            // where all the triangles are visible.
-            // This will raise a need for checking for undefined during the rendering of the triangles.
-            var triangles = [];
+            var vertCount = originalPositions.length / 3;
+            var indexCount = vertIndexArray.length;
+            var triangleData = new TriangleData({'vertCount': vertCount, 'indexCount': indexCount});
 
             var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-            var cameraNearZInWorld = -this.camera.near;
-
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
             var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
-            var posArray = new Float32Array(originalPositions.length);
-            var tempVertex = Vector4.UNIT_W;
+            // The temporary vector v1, is used to be able to use the Matrix4x4.applyPost() function.
+            var v1 = new Vector4(0,0,0,1);
             // Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
             // The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
-            for (var i = 0; i < posArray.length; i++) {
-                tempVertex.seta([originalPositions[i], originalPositions[i + 1], originalPositions[i + 2], 1.0]);
-                combinedMatrix.applyPost(tempVertex);
-                posArray.set([tempVertex.data[0], tempVertex.data[1], tempVertex.data[2]], i);
-                i += 2;
+            var maxPos = originalPositions.length;
+            var offset = 0;
+            for (var i = 0; i < maxPos; i++) {
+                v1.data[0] = originalPositions[i];
+                i++;
+                v1.data[1] = originalPositions[i];
+                i++;
+                v1.data[2] = originalPositions[i];
+
+                combinedMatrix.applyPost(v1);
+
+                // Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
+                triangleData.positions.set(v1.data, offset);
+                offset += 4; // Increase offset by four to insert next vertex in the right position.
             }
 
-            for (var vertIndex = 0; vertIndex < vertIndexArray.length; vertIndex++ ) {
+            var cameraNearZInWorld = -this.camera.near;
+            var positionArray = triangleData.positions;
 
-                var posIndex = vertIndexArray[vertIndex] * 3;
-                var v1 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
+            var v2 = new Vector4(0,0,0,1);
+            var v3 = new Vector4(0,0,0,1);
+            var vertices = [v1, v2, v3];
+            for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
-                posIndex = vertIndexArray[++vertIndex] * 3;
-                var v2 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
+                var indices = [vertIndexArray[vertIndex], vertIndexArray[++vertIndex], vertIndexArray[++vertIndex]];
+                // The vertexpositions holds the index to the x-component in the triangleData's position array.
+                var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
 
-                posIndex = vertIndexArray[++vertIndex] * 3;
-                var v3 = new Vector4(posArray[posIndex], posArray[posIndex + 1], posArray[posIndex + 2], 1.0);
-
-                var vertices = [v1, v2, v3];
+                var vPos = vertexPositions[0];
+                v1.data[0] = positionArray[vPos];
+                v1.data[1] = positionArray[vPos + 1];
+                v1.data[2] = positionArray[vPos + 2];
+                vPos = vertexPositions[1];
+                v2.data[0] = positionArray[vPos];
+                v2.data[1] = positionArray[vPos + 1];
+                v2.data[2] = positionArray[vPos + 2];
+                vPos = vertexPositions[2];
+                v3.data[0] = positionArray[vPos];
+                v3.data[1] = positionArray[vPos + 1];
+                v3.data[2] = positionArray[vPos + 2];
 
                 if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
                     continue; // Skip loop to the next three vertices.
@@ -192,7 +209,6 @@ define([
                         break;
                     case 3:
                         // All of the vertices are on the outside, skip to the next three vertices.
-                        // TODO : Refactor to remove continue statement. acoording to Javascript : The Good Parts.
                         continue;
                     case 1:
                         // Update the one vertex to its new position on the near plane and add a new vertex
@@ -202,72 +218,132 @@ define([
                         // 		 can be performed once here instead of twice.
 
                         var origin = vertices[outsideIndices[0]];
+                        var origin_x = origin.data[0];
+                        var origin_y = origin.data[1];
+                        var origin_z = origin.data[2];
+
                         var target = vertices[insideIndices[0]];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
                         var newV1 = [
-                            origin.data[0] + ratio * (target.data[0] - origin.data[0]),
-                            origin.data[1] + ratio * (target.data[1] - origin.data[1]),
-                            origin.data[2] + ratio * (target.data[2] - origin.data[2])
+                            origin_x + ratio * (target.data[0] - origin_x),
+                            origin_y + ratio * (target.data[1] - origin_y),
+                            origin_z + ratio * (target.data[2] - origin_z)
                         ];
 
                         target = vertices[insideIndices[1]];
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
-                        var newV2 = new Vector4(
-                            origin.data[0] + ratio * (target.data[0] - origin.data[0]),
-                            origin.data[1] + ratio * (target.data[1] - origin.data[1]),
-                            origin.data[2] + ratio * (target.data[2] - origin.data[2]),
-                            1.0
-                        );
-                        // Set the new data for the origin vertex.
-                        vertices[outsideIndices[0]].data[0] = newV1[0];
-                        vertices[outsideIndices[0]].data[1] = newV1[1];
-                        vertices[outsideIndices[0]].data[2] = newV1[2];
+                        // Update the data for the origin vertex.
+                        vPos = vertexPositions[outsideIndices[0]];
+                        positionArray[vPos] = newV1[0];
+                        positionArray[vPos + 1] = newV1[1];
+                        positionArray[vPos + 2] = newV1[2];
 
-                        vertices.push(newV2);
+                        // Calculate the new vertex's position
+                        var newV2 = [
+                            origin_x + ratio * (target.data[0] - origin_x),
+                            origin_y + ratio * (target.data[1] - origin_y),
+                            origin_z + ratio * (target.data[2] - origin_z),
+                            1.0
+                        ];
+
+                        // Add the new vertex and store the new vertex's index to be added at the last stage.
+                        indices.push(triangleData.addVertex(newV2));
 
                         break;
                     case 2:
                         // Update the two outside vertices to their new positions on the near plane.
-                        // First vertex update
-                        var origin = vertices[outsideIndices[0]];
                         var target = vertices[insideIndices[0]];
+                        var target_x = target.data[0];
+                        var target_y = target.data[1];
+                        var target_z = target.data[2];
 
+                        // First vertex update
+                        var outIndex = outsideIndices[0];
+                        var origin = vertices[outIndex];
+                        vPos = vertexPositions[outIndex];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-                        origin.data[0] += ratio * (target.data[0] - origin.data[0]);
-                        origin.data[1] += ratio * (target.data[1] - origin.data[1]);
-                        origin.data[2] += ratio * (target.data[2] - origin.data[2]);
-
+                        positionArray[vPos] += ratio * (target_x - origin.data[0]);
+                        positionArray[vPos + 1] += ratio * (target_y - origin.data[1]);
+                        positionArray[vPos + 2] += ratio * (target_z - origin.data[2]);
 
                         // Second vertex update
-                        origin = vertices[outsideIndices[1]];
+                        outIndex = outsideIndices[1];
+                        origin = vertices[outIndex];
+                        vPos = vertexPositions[outIndex];
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-                        origin.data[0] += ratio * (target.data[0] - origin.data[0]);
-                        origin.data[1] += ratio * (target.data[1] - origin.data[1]);
-                        origin.data[2] += ratio * (target.data[2] - origin.data[2]);
+                        positionArray[vPos] += ratio * (target_x - origin.data[0]);
+                        positionArray[vPos + 1] += ratio * (target_y - origin.data[1]);
+                        positionArray[vPos + 2] += ratio * (target_z - origin.data[2]);
 
                         break;
                 }
 
-                // TODO : Combine projection + screen space transformations.
-                this._projectionTransform(vertices, cameraProjectionMatrix);
+                // Add the indices to the triangleData.
+                if (indices.length === 4) {
+                    /*
+                        If the index array has length 4 , a new vertex has been added,
+                        and it's index is at position 3 in the array.
 
-                /*
-                if (this._isBackFacingProjected(v1, v2, v3)) {
-                    // TODO : Refactor to remove continue statement. according to Javascript : The Good Parts.
-                    continue; // Skip loop to the next three vertices.
+                        The order of the indices are not relevant at this point, since
+                        back face culling has been performed.
+                    */
+
+                    triangleData.addIndices([indices[0],indices[1], indices[3]]);
+                    triangleData.addIndices([indices[3],indices[1], indices[2]]);
+                } else {
+                    triangleData.addIndices(indices);
                 }
-                */
-
-                this._transformToScreenSpace(vertices);
-
-                this._createTriangles(vertices, outsideIndices, insideIndices, triangles);
             }
 
-            return triangles;
+            /*
+                Transform the triangleData's vertices to screen space.
+
+                The vector v1 will be used for this , since it is already allocated here.
+                Re-using some other earlier allocated variables as well...
+
+                // TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
+                //          Recreate position array from those and then transform?
+
+            */
+            maxPos = triangleData.posCount;
+            var homogeneousDivide = 0;
+            var p1, p2, p3, p4, wComponent;
+            var halfClipX = this._clipX / 2;
+            var halfClipY = this._clipY / 2;
+            for (var p = 0; p < maxPos; p++) {
+                // Copy the vertex data into the v1 vector from the triangleData's position array.
+                p1 = p;
+                p2 = p + 1;
+                p3 = p + 2;
+                p4 = p + 3;
+                v1.data[0] = positionArray[p1];
+                v1.data[1] = positionArray[p2];
+                v1.data[2] = positionArray[p3];
+                v1.data[3] = positionArray[p4];
+
+                // TODO : Combine projection + screen space transformations into one matrix.
+                // Projection transform
+                cameraProjectionMatrix.applyPost(v1);
+
+                // Homogeneous divide.
+                wComponent = v1.data[3];
+                homogeneousDivide =  1.0 / wComponent;
+                v1.data[0] *= homogeneousDivide;
+                v1.data[1] *= homogeneousDivide;
+
+                // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
+                positionArray[p1] = (v1.data[0] + 1.0) * halfClipX;
+                positionArray[p2] = (v1.data[1] + 1.0) * halfClipY;
+                positionArray[p3] = v1.data[2];
+                positionArray[p4] = wComponent;
+
+                // Step p forwards to the last position read.
+                p = p4;
+            }
+
+            return triangleData;
         };
 
         /**
@@ -283,9 +359,9 @@ define([
 
                 matrix.applyPost(v);
 
-                var div = 1.0 / v.w;
-                v.x *= div;
-                v.y *= div;
+                var div = 1.0 / v.data[3];
+                v.data[0] *= div;
+                v.data[1] *= div;
             }
         };
 
@@ -327,7 +403,7 @@ define([
 
             for ( var i = 0; i < 3; i++ ) {
                 // The vertex shall be categorized as an inside vertex if it is on the near plane.
-                if (vertices[i].z <= cameraNear) {
+                if (vertices[i].data[2] <= cameraNear) {
                     insideIndices.push(i);
                 } else {
                     outsideIndices.push(i);
@@ -391,35 +467,35 @@ define([
             }
         };
 
-        /**
-        *	Determines if a triangle is backfacing in camera view space.
-        *
-        *	@param {Vector4} v1 Vertex #1
-        *	@param {Vector4} v3 Vertex #2
-        *	@param {Vector4} v3 Vertex #3
-        *	@return {Boolean} true or false
-        */
+
         SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (v1, v2, v3) {
 
             // Calculate the dot product between the triangle's face normal and the camera's eye direction
             // to find out if the face is facing away or not.
 
             // Create edges for calculating the normal.
-            var e1 = [v2.data[0] - v1.data[0] , v2.data[1] - v1.data[1], v2.data[2] - v1.data[2]];
-            var e2 = [v3.data[0] - v1.data[0], v3.data[1] - v1.data[1], v3.data[2] - v1.data[2]];
+            var v1_x = v1.data[0];
+            var v1_y = v1.data[1];
+            var v1_z = v1.data[2];
+
+            var e1_x = v2.data[0] - v1_x;
+            var e1_y = v2.data[1] - v1_y;
+            var e1_z = v2.data[2] - v1_z;
+
+            var e2_x = v3.data[0] - v1_x;
+            var e2_y = v3.data[1] - v1_y;
+            var e2_z = v3.data[2] - v1_z;
 
             // Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
-            var faceNormal = new Array(3);
-            faceNormal[0] = e2[2] * e1[1] - e2[1] * e1[2];
-            faceNormal[1] = e2[0] * e1[2] - e2[2] * e1[0];
-            faceNormal[2] = e2[1] * e1[0] - e2[0] * e1[1];
+            var faceNormal_x = e2_z * e1_y - e2_y * e1_z;
+            var faceNormal_y = e2_x * e1_z - e2_z * e1_x;
+            var faceNormal_z = e2_y * e1_x - e2_x * e1_y;
 
             // Picking the first vertex as the point on the triangle to evaulate the dot product on.
             //var viewVector = [v1.x, v1.y, v1.z];
 
             // No need to normalize the vectors due to only being
             // interested in the sign of the dot product.
-
             /*
             // Normalize faceNormal and view vector
             var viewLength = Math.sqrt(viewVector[0] * viewVector[0] + viewVector[1] * viewVector[1] + viewVector[2] * viewVector[2]);
@@ -431,7 +507,7 @@ define([
             }
             */
 
-            var dot = faceNormal[0] * v1.data[0] + faceNormal[1] * v1.data[1] + faceNormal[2] * v1.data[2];
+            var dot = faceNormal_x * v1_x + faceNormal_y * v1_y + faceNormal_z * v1_z;
             return dot > 0.0;
         };
 
@@ -497,14 +573,14 @@ define([
             return [longEdge, shortEdge1, shortEdge2];
         };
 
-            /**
-             * Returns an array containing if the triangle's long edge is on the right or left and if the triangle is leaning inwards or outwards
-             * @param {EdgeData} edgeData
-             * @param shortEdge
-             * @param longEdge
-             * @returns {Array}
-             * @private
-             */
+        /**
+         * Returns an array containing if the triangle's long edge is on the right or left and if the triangle is leaning inwards or outwards
+         * @param {EdgeData} edgeData
+         * @param shortEdge
+         * @param longEdge
+         * @returns {Array}
+         * @private
+         */
         SoftwareRenderer.prototype._calculateOrientationData = function (edgeData, shortEdge, longEdge) {
 
             var shortX = edgeData.getShortX();
@@ -592,9 +668,9 @@ define([
 
         /**
         *	Takes a triangle with coordinates in pixel space, and draws it.
-        *	@param {Triangle} triangle the triangle to draw.
+        *	@param {TriangleData} triangleData the triangle to draw.
         */
-        SoftwareRenderer.prototype._renderTriangle = function (triangle) {
+        SoftwareRenderer.prototype._renderTriangleData = function (triangleData) {
 
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
