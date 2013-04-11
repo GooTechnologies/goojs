@@ -198,18 +198,18 @@ function(
 		}
 		if (weightsPerVert > 0 && data.Joints) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
-			var data;
+			var jointData;
 			if (this.useCompression) {
-				data = JsonUtils.getIntBufferFromCompressedString(data.Joints, 32767);
+				jointData = JsonUtils.getIntBufferFromCompressedString(data.Joints, 32767);
 			} else {
-				data = JsonUtils.getIntBuffer(data.Joints, 32767);
+				jointData = JsonUtils.getIntBuffer(data.Joints, 32767);
 			}
 			if (type === 'SkinnedMesh') {
 				// map these joints to local.
 				var localJointMap = [];
 				var localIndex = 0;
-				for (var i = 0, max = data.length; i < max; i++) {
-					var jointIndex = data[i];
+				for (var i = 0, max = jointData.length; i < max; i++) {
+					var jointIndex = jointData[i];
 					if (localJointMap[jointIndex] === undefined) {
 						localJointMap[jointIndex] = localIndex++;
 					}
@@ -229,8 +229,8 @@ function(
 				meshData.paletteMap = localMap;
 				meshData.weightsPerVertex = weightsPerVert;
 			} else {
-				for (var i = 0, max = data.capacity(); i < max; i++) {
-					buffer.putCast(i, data.get(i));
+				for (var i = 0, max = jointData.capacity(); i < max; i++) {
+					buffer.putCast(i, jointData.get(i));
 				}
 			}
 		}
