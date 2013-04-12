@@ -1,8 +1,4 @@
 define([
-	'goo/renderer/Camera',
-	'goo/renderer/scanline/Triangle',
-	'goo/math/Vector2',
-	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
 	'goo/renderer/scanline/Edge',
@@ -15,7 +11,7 @@ define([
 	],
 	/** @lends */
 
-	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData,
+	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData,
               BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, OccluderTriangleData) {
 	    "use strict";
 
@@ -395,31 +391,6 @@ define([
                 var div = 1.0 / v.data[3];
                 v.data[0] *= div;
                 v.data[1] *= div;
-            }
-        };
-
-        /**
-        *	Adds new triangle(s) to the triangle array. If the triangle has been clipped , the triangles are created from the vertex array in combination with the
-        *	outsideIndices and insideIndices.
-        *
-        *	@param {Array.<Vector4>} vertices vertex array
-        *	@param {Array.<Number>} outsideIndices
-        *	@param {Array.<Number>} insideIndices
-        *	@param {Array.<Triangle>} triangles the array to hold the created triangles.
-        */
-        SoftwareRenderer.prototype._createTriangles = function (vertices, outsideIndices, insideIndices, triangles) {
-
-            if (vertices.length === 4) {
-                // The vertex array has a length 4 only if one of the vertices were outside the near plane.
-                // The "extra vertex" is at position 3 in the array.
-
-                // The order of the triangle is not relevant here anymore since
-                // the backface culling check is made already.
-                triangles.push(new Triangle(vertices[outsideIndices[0]], vertices[insideIndices[0]], vertices[3]));
-                triangles.push(new Triangle(vertices[3], vertices[insideIndices[0]], vertices[insideIndices[1]]));
-
-            } else {
-                triangles.push(new Triangle(vertices[0], vertices[1], vertices[2]));
             }
         };
 
