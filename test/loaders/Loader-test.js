@@ -26,15 +26,15 @@ function(
 		});
 
 
-		it('loads application/octet-stream', function() {
+		it('return xhr.response from Ajax call', function() {
 			xhr.get = function() {
 				var p = new RSVP.Promise();
 
 				p.resolve({
-					getResponseHeader: function() {
+					/*getResponseHeader: function() {
 						return 'application/octet-stream';
-					},
-					responseText: 'Beemo'
+					},*/
+					response: 'Beemo'
 				});
 
 				return p;
@@ -51,6 +51,7 @@ function(
 			});
 		});
 
+		/* Doesn't do these checks anymore
 		it('loads application/json to object', function() {
 			xhr.get = function() {
 				var p = new RSVP.Promise();
@@ -96,6 +97,7 @@ function(
 				return p.isRejected;
 			}, 'promise does not get rejected', 1);
 		});
+		*/
 
 		it('parses loaded data with parse function', function() {
 			xhr.get = function() {
@@ -105,13 +107,14 @@ function(
 					getResponseHeader: function() {
 						return 'application/json';
 					},
-					responseText: '{"foo":"bar"}'
+					response: '{"foo":"bar"}'
 				});
 
 				return p;
 			};
 
 			var p = loader.load('test.json', function(data) {
+				data = JSON.parse(data);
 				data.foo = 'Adventure';
 				return data;
 			});

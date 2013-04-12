@@ -40,11 +40,11 @@ function(
 				loader.load = function(path, parser) {
 					if(path === 'scene') {
 						return parser({
-							files: [
+							entityRefs: [
 								'entities/entity.ent'
 							]
 						}, path);
-					} else if(path === 'entities/entity.ent.json') {
+					} else if(path === 'entities/entity.ent') {
 						var p = new RSVP.Promise();
 
 						p.resolve(new Entity(goo.world, 'Bruce'));

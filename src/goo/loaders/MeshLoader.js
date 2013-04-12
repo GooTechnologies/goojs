@@ -69,6 +69,10 @@ function(
 		var promise = new RSVP.Promise();
 
 		try {
+			if (Object.keys(data).length === 0) {
+				promise.reject('Empty meshdata');
+				return promise;
+			}
 			if (data.compression) {
 				this.useCompression = data.compression.compressed || false;
 				this.compressedVertsRange = data.compression.compressedVertsRange || (1 << 14) - 1; // int
