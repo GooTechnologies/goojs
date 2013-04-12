@@ -17,7 +17,7 @@
 				8000,
 				4000
 			],
-			"parentRef": "entities/root.ent"
+			"parentRef": "entities/root.entity"
 		}
 	}
 }

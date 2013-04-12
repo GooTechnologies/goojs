@@ -59,20 +59,18 @@ function (
 		}
 		var promises = [];
 		// If we got files, then let's do stuff with the files!
-		if (sceneSource && sceneSource.files && sceneSource.files.length) {
+		if (sceneSource && sceneSource.entityRefs && sceneSource.entityRefs.length) {
 			var entityLoader = new EntityLoader({
 				world: this._world,
 				loader: this._loader
 			});
 
-			for (var i in sceneSource.files) {
+			for (var i in sceneSource.entityRefs) {
 				// Check if they're entities
-				var fileName = sceneSource.files[i];
+				var fileName = sceneSource.entityRefs[i];
 
-				if (/\.ent$/.test(fileName)) {
-					var p = entityLoader.load(fileName);
-					promises.push(p);
-				}
+				var p = entityLoader.load(fileName);
+				promises.push(p);
 			}
 		}
 

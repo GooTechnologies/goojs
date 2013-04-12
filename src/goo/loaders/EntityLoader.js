@@ -207,7 +207,7 @@ function(
 		var ml = this._materialLoader;
 
 		for(var attribute in meshRendererComponentSource) {
-			if(attribute === 'materials') {
+			if(attribute === 'materialRefs') {
 				for(var i in meshRendererComponentSource[attribute]) {
 					var p = ml.load(meshRendererComponentSource[attribute][i]);
 					promises.push(p);
@@ -236,7 +236,7 @@ function(
 		var mdl = this._meshLoader;
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
-			if(attribute === 'mesh') {
+			if(attribute === 'meshRef') {
 				var p = mdl.load(meshDataComponentSource[attribute]);
 				promises.push(p);
 			}

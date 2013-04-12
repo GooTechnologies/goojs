@@ -27,8 +27,8 @@
 		"materialSpecularPower": 19.999998
 	},
 	"name": "SurfaceView_Skydrop",
-	"textures": [
-		"textures/Skybox.tex"
+	"textureRefs": [
+		"textures/Skybox.texture"
 	],
 	"shaderRef": "shaders/skybox.shader"
 }

@@ -135,10 +135,10 @@ define([
 					}
 				}
 			}
-			if (materialDataSource.textures && materialDataSource.textures.length) {
-				for (var i = 0; i < materialDataSource.textures.length; i++) {
+			if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
+				for (var i = 0; i < materialDataSource.textureRefs.length; i++) {
 					var pushTexture = addTexture.bind(null,i);
-					var p = this._loader.load(materialDataSource.textures[i])
+					var p = this._loader.load(materialDataSource.textureRefs[i])
 						.then(pushTexture);
 					promises.push(p);
 				}

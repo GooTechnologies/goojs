@@ -17,11 +17,11 @@
 				1,
 				1
 			],
-			"parentRef": "entities/backdropMesh.ent"
+			"parentRef": "entities/backdropMesh.entity"
 		},
 		"meshRenderer": {
-			"materials": [
-				"materials/SurfaceView_Skydrop.mat"
+			"materialRefs": [
+				"materials/SurfaceView_Skydrop.material"
 			]
 		},
 		"meshData": {

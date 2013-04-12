@@ -24,8 +24,7 @@ require([
 
 	'goo/entities/EntityUtils',
 	'goo/lib/rsvp.amd',
-	'goo/shapes/ShapeCreator',
-	'goo/util/TangentGenerator'
+	'goo/shapes/ShapeCreator'
 ], function(
 	GooRunner,
 	Vector3,
@@ -45,9 +44,7 @@ require([
 
 	EntityUtils,
 	RSVP,
-	ShapeCreator,
-	TangentGenerator
-
+	ShapeCreator
 ) {
 	"use strict";
 	var resourcePath = '../resources/new_format/skeleton/';
@@ -132,7 +129,7 @@ require([
 				}),
 				world: goo.world
 		});
-		materialLoader.load('materials/desert.mat').then(function(material) {
+		materialLoader.load('materials/desert.material').then(function(material) {
 			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
 			floorMaterial = material;
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
