@@ -4,7 +4,7 @@ define([
 
     function () {
 
-        function TriangleData (parameters) {
+        function OccluderTriangleData (parameters) {
             var vertCount = parameters.vertCount;
             var indexCount = parameters.indexCount;
 
@@ -30,7 +30,7 @@ define([
             this.posCount = originalCount;
 
             /*
-                Storing the highest possible index.
+                Storing the highest possible vertex index to acess.
                 This is initialized to vertCount - 1 , since the indices are zero-based.
             */
             this._largestIndex = vertCount - 1;
@@ -57,7 +57,7 @@ define([
           * @param {Array.<Number>} array [x,y,z,w]
          * @returns {Number} the added position's vertex index
          */
-        TriangleData.prototype.addVertex = function (array) {
+        OccluderTriangleData.prototype.addVertex = function (array) {
             this.positions.set(array, this.posCount);
             this.posCount += 4;
             this._largestIndex++;
@@ -68,10 +68,10 @@ define([
          * Adds 3 indices to the index array.
          * @param {Array.<Number>} triangleIndices
          */
-        TriangleData.prototype.addIndices = function (triangleIndices) {
+        OccluderTriangleData.prototype.addIndices = function (triangleIndices) {
             this.indices.set(triangleIndices, this.indexCount);
             this.indexCount += 3;
         };
 
-        return TriangleData;
+        return OccluderTriangleData;
     });

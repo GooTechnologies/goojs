@@ -11,12 +11,12 @@ define([
     'goo/renderer/scanline/EdgeData',
     'goo/renderer/scanline/BoundingBoxOcclusionModule',
     'goo/renderer/scanline/BoundingSphereOcclusionModule',
-    'goo/renderer/scanline/TriangleData'
+    'goo/renderer/scanline/OccluderTriangleData'
 	],
 	/** @lends */
 
 	function (Camera, Triangle, Vector2, Vector3, Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData,
-              BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, TriangleData) {
+              BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, OccluderTriangleData) {
 	    "use strict";
 
         /**
@@ -79,12 +79,12 @@ define([
 
             var cameraViewMatrix = this.camera.getViewMatrix();
             var cameraProjectionMatrix = this.camera.getProjectionMatrix();
+            var indices = [];
 
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
                 var triangleData = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
 
-                var indices = [];
                 for (var tIndex = 0; tIndex < triangleData.indexCount; tIndex++) {
                     // Take 3 indices and render the triangle
                     indices[0] = triangleData.indices[tIndex];
@@ -136,7 +136,7 @@ define([
         /**
         *	Creates an array of the visible
         *	@param {Entity} entity, the entity from which to create triangles.
-        *	@return {TriangleData} triangleData
+        *	@return {OccluderTriangleData} triangleData
         *   @param cameraProjectionMatrix
         *   @param cameraViewMatrix
         */
@@ -147,7 +147,7 @@ define([
 
             var vertCount = originalPositions.length / 3;
             var indexCount = originalIndexArray.length;
-            var triangleData = new TriangleData({'vertCount': vertCount, 'indexCount': indexCount});
+            var triangleData = new OccluderTriangleData({'vertCount': vertCount, 'indexCount': indexCount});
 
             var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
@@ -282,9 +282,9 @@ define([
                         // Second new vertex.
                         outIndex = outsideIndices[1];
                         origin = vertices[outIndex];
-                        var origin_x = origin.data[0];
-                        var origin_y = origin.data[1];
-                        var origin_z = origin.data[2];
+                        origin_x = origin.data[0];
+                        origin_y = origin.data[1];
+                        origin_z = origin.data[2];
 
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
                         newV[0] = origin_x + ratio * (target_x - origin_x);
@@ -332,16 +332,15 @@ define([
             */
             maxPos = triangleData.posCount;
             var homogeneousDivide = 0;
-            var p1, p2, p3, p4, wComponent;
+            var p2, p3, p4, wComponent;
             var halfClipX = this._clipX / 2;
             var halfClipY = this._clipY / 2;
             for (var p = 0; p < maxPos; p++) {
                 // Copy the vertex data into the v1 vector from the triangleData's position array.
-                p1 = p;
                 p2 = p + 1;
                 p3 = p + 2;
                 p4 = p + 3;
-                v1.data[0] = positionArray[p1];
+                v1.data[0] = positionArray[p];
                 v1.data[1] = positionArray[p2];
                 v1.data[2] = positionArray[p3];
                 v1.data[3] = positionArray[p4];
@@ -357,7 +356,7 @@ define([
                 v1.data[1] *= homogeneousDivide;
 
                 // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
-                positionArray[p1] = (v1.data[0] + 1.0) * halfClipX;
+                positionArray[p] = (v1.data[0] + 1.0) * halfClipX;
                 // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
                 positionArray[p2] = Math.round((v1.data[1] + 1.0) * halfClipY);
                 // positionArray[p3] = v1.data[2]; z-componenet is not used any more.
@@ -541,19 +540,22 @@ define([
         *	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
         *	Otherwise false is returned. This method is for checking projected vertices.
         *
-        *	@param {Vector4} v1 Vertex #1
-        *	@param {Vector4} v2 Vertex #2
-        *	@param {Vector4} v3 Vertex #3
+        *	@param {Vector} v1 Vertex #1
+        *	@param {Vector} v2 Vertex #2
+        *	@param {Vector} v3 Vertex #3
         *	@return {Boolean} true or false
         */
         SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
-            // Optimized away edge allocation , only need x and y of the edges.
-            var e1X = v2.data[0] - v1.data[0];
-            var e1Y = v2.data[1] - v1.data[1];
+            // Create edges, only need x and y , since only the z component of the dot product is needed.
+            var v1_x = v1.data[0];
+            var v1_y = v1.data[1];
 
-            var e2X = v3.data[0] - v1.data[0];
-            var e2Y = v3.data[1] - v1.data[1];
+            var e1X = v2.data[0] - v1_x;
+            var e1Y = v2.data[1] - v1_y;
+
+            var e2X = v3.data[0] - v1_x;
+            var e2Y = v3.data[1] - v1_y;
 
             var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
@@ -568,11 +570,16 @@ define([
             return faceNormalZ < 0.0;
         };
 
+        /**
+         *
+         * @param indices
+         * @param positions
+         * @returns {Array}
+         * @private
+         */
         SoftwareRenderer.prototype._createEdgesForTriangle = function (indices, positions) {
 
-            //var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
-
-            // Use (x,y,1/w);
+            // Use (x,y,1/w), the w component is already inverted.
             var vPos = indices[0] * 4;
             var v1 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
             vPos = indices[1] * 4;
@@ -638,10 +645,9 @@ define([
         /**
         *	Returns true if the triangle is occluded.
         */
-        SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (triangle) {
+        SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (indices, positions) {
 
-            // returns [longEdge, shortEdge1, shortEdge2], or false on invisible triangle.
-            var edgeIndices = this._createEdgesForTriangle(triangle);
+            var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
             var longEdge = this._edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
@@ -653,12 +659,10 @@ define([
                 return true;
             }
 
-            for (var i = 0; i < 3; i++) {
-                // TODO : Move all rounding of values to the scanline loop to be performed per line.
-                this._edges[i].roundOccludeeCoordinates();
-                // TODO : Move the inversion of z.... to the best place. Has to be done before the creation of the edge data.
-                this._edges[i].invertZ();
-            }
+            // Round y-coordinates to expand the area.
+            this._edges[0].roundOccludeeCoordinates();
+            this._edges[1].roundOccludeeCoordinates();
+            this._edges[2].roundOccludeeCoordinates();
 
             var shortEdge = this._edges[s1];
             var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
@@ -701,8 +705,8 @@ define([
 
         /**
          *
-         * @param indices
-         * @param positions
+         * @param {Uint8Array} indices
+         * @param {Float32Array} positions
          * @private
          */
         SoftwareRenderer.prototype._renderTriangle = function (indices, positions) {

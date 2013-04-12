@@ -1,0 +1,43 @@
+define([
+],
+    /** @lends */
+
+    function () {
+
+        /**
+         *
+         * @param parameters
+         * @constructor
+         */
+        function OccludeeTriangleData (parameters) {
+            var numberOfPositions = parameters.numberOfPositions;
+            var numberOfIndices = parameters.numberOfIndices;
+            /*
+             Initialize the index count to zero. This will be filled up after hand. The only indices wanted are the
+             ones which create front facing triangles.
+             */
+            this.indexCount = 0;
+
+            var vertBytes = numberOfPositions * Float32Array.BYTES_PER_ELEMENT;
+            /*
+             Using 8bit unsigned integers implies a maximum of 256 vertices. This will most likely be the case for
+             the low detailed geometries.
+             */
+            var indexBytes = numberOfIndices * Uint8Array.BYTES_PER_ELEMENT;
+
+            this._dataBuffer = new ArrayBuffer(vertBytes + indexBytes);
+            this.positions = new Float32Array(this._dataBuffer, 0, numberOfPositions);
+            this.indices = new Uint8Array(this._dataBuffer, vertBytes, numberOfIndices);
+        }
+
+        /**
+         * Adds 3 indices to the index array.
+         * @param {Array.<Number>} triangleIndices
+         */
+        OccludeeTriangleData.prototype.addIndices = function (triangleIndices) {
+            this.indices.set(triangleIndices, this.indexCount);
+            this.indexCount += 3;
+        };
+
+        return OccludeeTriangleData;
+    });

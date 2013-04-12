@@ -2,10 +2,11 @@ define([
     'goo/math/Matrix4x4',
     'goo/math/Vector4',
     'goo/math/Vector2',
-    'goo/renderer/scanline/Triangle'
+    'goo/renderer/scanline/Triangle',
+    'goo/renderer/scanline/OccludeeTriangleData'
     ],
     /** @lends */
-        function (Matrix4x4, Vector4, Vector2, Triangle) {
+        function (Matrix4x4, Vector4, Vector2, Triangle, OccludeeTriangleData) {
         "use strict";
 
         // Cohen-Sutherland area constants.
@@ -59,11 +60,11 @@ define([
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
             return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-            // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+            //return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
         /**
-         * Performs a interpolated depth test for the triangles of the bounding box.
+         * Performs a rendered interpolated depth test for the triangles of the bounding box.
          * @param entity
          * @param cameraViewProjectionMatrix
          * @returns {Boolean} occluded or not
@@ -71,21 +72,26 @@ define([
          */
         BoundingBoxOcclusionModule.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
 
-            var triangles = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
+            var triangleData = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
 
             // Triangles will be null on near plane clip.
             // Considering this case to be visible.
-            if (triangles === null) {
+            if (triangleData === null) {
                 return false;
             }
 
-            var triCount = triangles.length;
-            for (var t = 0; t < triCount; t++) {
-                if (!this.renderer.isRenderedTriangleOccluded(triangles[t])){
+            // TODO : Make global indices Uint8Array
+            var indices = [0,0,0];
+            var maxIndices = triangleData.indexCount;
+            for (var tIndex = 0; tIndex < maxIndices; tIndex++) {
+                // Take 3 indices and render the triangle
+                indices[0] = triangleData.indices[tIndex];
+                indices[1] = triangleData.indices[++tIndex];
+                indices[2] = triangleData.indices[++tIndex];
+                if (!this.renderer.isRenderedTriangleOccluded(indices, triangleData.positions)){
                     return false;
                 }
             }
-
             return true;
         };
 
@@ -135,10 +141,9 @@ define([
                 v.data[0] *= div;
                 v.data[1] *= div;
 
-                // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
+                // Screen space transform x and y coordinates, and write the transformed position data into the positionArray.
                 positionArray[p1] = (v.data[0] + 1.0) * halfClipX;
-                // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
-                positionArray[p2] = Math.round((v.data[1] + 1.0) * halfClipY);
+                positionArray[p2] = (v.data[1] + 1.0) * halfClipY;
                 // positionArray[p3] = v.data[2];
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
                 positionArray[p4] = div;
@@ -465,15 +470,8 @@ define([
             return true;
         };
 
-        /**
-         * Creates an array of triangles and transforms them to projection space. Null is returned if any of the vertices
-         * cut the near plane.
-         * @param entity
-         * @param cameraViewProjectionMatrix
-         * @returns {Array.<Triangle>} triangles or null if early exit is found.
-         * @private
-         */
-        BoundingBoxOcclusionModule.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix) {
+
+        BoundingBoxOcclusionModule.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix, positionArray) {
 
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
@@ -481,50 +479,80 @@ define([
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
             var positionArray = this._generateBoundingBoxPositionArray(entity);
+
+            // For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
+            // homogeneous vertices gives 32 position values.
+            var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18});
+            var maxPos = positionArray.length;
             // Projection transform + homogeneous divide for every vertex.
             // Early exit on near plane clip.
-            for (var j = 0; j < vertices.length; j++) {
-                var v = vertices[j];
+            var v1 = new Vector4(0, 0, 0, 1);
+            var p2, p3, p4, wComponent;
+            for (var p = 0; p < maxPos; p++) {
 
-                combinedMatrix.applyPost(v);
+                p2 = p + 1;
+                p3 = p + 2;
+                p4 = p + 3;
+                v1.data[0] = positionArray[p];
+                v1.data[1] = positionArray[p2];
+                v1.data[2] = positionArray[p3];
+                v1.data[3] = positionArray[p4];
 
-                if (v.data[3] < this.renderer.camera.near) {
+                combinedMatrix.applyPost(v1);
+                wComponent = v1.data[3];
+                if (wComponent < this.renderer.camera.near) {
                     // Near plane clipped.
-                    //console.log("Early exit on near plane clipped.");
+                    console.log("Rendered Occlusion Test : Early exit on near plane clipped.");
                     return null;
                 }
 
-                var div = 1.0 / v.data[3];
-                v.data[0] *= div;
-                v.data[1] *= div;
+                var div = 1.0 / wComponent;
+                v1.data[0] *= div;
+                v1.data[1] *= div;
+                // store (1/w)
+                v1.data[3] = div;
+
+                // Copy the projected position data to the triangleData object.
+                triangleData.positions.set(v1.data, p);
+                p = p4;
             }
 
-            var triangles = [];
-            // Create triangles.
+            var indices = [0, 0, 0];
+            var v2 = new Vector2(0,0);
+            var v3 = new Vector2(0,0);
+            var vPos;
             for (var i = 0; i < this._triangleIndices.length; i++) {
 
-                var v1 = new Vector4();
-                var v2 = new Vector4();
-                var v3 = new Vector4();
+                indices = [this._triangleIndices[i], this._triangleIndices[++i], this._triangleIndices[++i]];
 
-                v1.data.set(vertices[this._triangleIndices[i]].data);
-                i++;
-                v2.data.set(vertices[this._triangleIndices[i]].data);
-                i++;
-                v3.data.set(vertices[this._triangleIndices[i]].data);
+                vPos = indices[0] * 4;
+                v1.data[0] = triangleData.positions[vPos];
+                v1.data[1] = triangleData.positions[vPos + 1];
+                vPos = indices[1] * 4;
+                v2.data[0] = triangleData.positions[vPos];
+                v2.data[1] = triangleData.positions[vPos + 1];
+                vPos = indices[2] * 4;
+                v3.data[0] = triangleData.positions[vPos];
+                v3.data[1] = triangleData.positions[vPos + 1];
 
-                var projectedVertices = [v1, v2, v3];
-
-                if (this.renderer._isBackFacingProjected(v1, v2, v3)) {
-                    continue;
+                if (!this.renderer._isBackFacingProjected(v1, v2, v3)) {
+                    triangleData.addIndices(indices);
                 }
-
-                this.renderer._transformToScreenSpace(projectedVertices);
-
-                triangles.push(new Triangle(projectedVertices[0], projectedVertices[1], projectedVertices[2]));
             }
 
-            return triangles;
+            // TODO : Move to class scope.
+            var halfClipX = this._clipX / 2;
+            var halfClipY = this._clipY / 2;
+            // Screen space transform positions.
+            // TODO : Transform only the positions going to be rendered.
+            for (var j = 0; j < maxPos; j++) {
+                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * halfClipX;
+                j++;
+                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * halfClipY;
+                j += 2; // Have to step four positions per loop (x, y, z, w).
+            }
+
+            return triangleData;
         };
 
         return BoundingBoxOcclusionModule;
