@@ -39,5 +39,12 @@ define([
             this.indexCount += 3;
         };
 
+        /**
+         * Empties the data.
+         */
+        OccludeeTriangleData.prototype.clear = function () {
+            this.indexCount = 0;
+        };
+
         return OccludeeTriangleData;
     });

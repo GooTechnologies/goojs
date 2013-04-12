@@ -52,6 +52,9 @@ define([
             2,6,
             3,7
         ]);
+        // For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
+        // homogeneous vertices gives 32 position values.
+        var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18});
 
         // Global vars for transforming data.
         var v1 = new Vector4(0, 0, 0, 1);
@@ -80,8 +83,8 @@ define([
          * @returns {Boolean} occluder or not occluded.
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
-            return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-            //return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+            //return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+            return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
         /**
@@ -93,11 +96,9 @@ define([
          */
         BoundingBoxOcclusionModule.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
 
-            var triangleData = this._createProjectedTrianglesForBoundingBox(entity, cameraViewProjectionMatrix);
-
             // Triangles will be null on near plane clip.
             // Considering this case to be visible.
-            if (triangleData === null) {
+            if (!this._updateTriangleData(entity, cameraViewProjectionMatrix)) {
                 return false;
             }
 
@@ -128,6 +129,7 @@ define([
 
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
+            // writes data to the global variable positionArray.
             this._copyEntityVerticesToPositionArray(entity);
 
             // TODO: Combine the transforms to pixel space.
@@ -452,19 +454,26 @@ define([
             return true;
         };
 
+        /**
+         *  Returns false if the entity has clipped the near plane.
+         * @param entity
+         * @param cameraViewProjectionMatrix
+         * @returns {Boolean}
+         * @private
+         */
+        BoundingBoxOcclusionModule.prototype._updateTriangleData = function (entity, cameraViewProjectionMatrix) {
 
-        BoundingBoxOcclusionModule.prototype._createProjectedTrianglesForBoundingBox = function (entity, cameraViewProjectionMatrix, positionArray) {
+            // first empty the triangleData.
+            triangleData.clear();
 
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
+            // writes data to the global variable positionArray.
             this._copyEntityVerticesToPositionArray(entity);
 
-            // For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
-            // homogeneous vertices gives 32 position values.
-            var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18});
             var maxPos = positionArray.length;
             // Projection transform + homogeneous divide for every vertex.
             // Early exit on near plane clip.
@@ -483,8 +492,8 @@ define([
                 wComponent = v1.data[3];
                 if (wComponent < this.renderer.camera.near) {
                     // Near plane clipped.
-                    console.log("Rendered Occlusion Test : Early exit on near plane clipped.");
-                    return null;
+                    //console.log("Rendered Occlusion Test : Early exit on near plane clipped.");
+                    return false;
                 }
 
                 var div = 1.0 / wComponent;
@@ -527,7 +536,7 @@ define([
                 j += 2; // Have to step four positions per loop (x, y, z, w).
             }
 
-            return triangleData;
+            return true;
         };
 
         return BoundingBoxOcclusionModule;

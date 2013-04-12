@@ -33,7 +33,7 @@ define([
                 Storing the highest possible vertex index to acess.
                 This is initialized to vertCount - 1 , since the indices are zero-based.
             */
-            this._largestIndex = vertCount - 1;
+            this.largestIndex = vertCount - 1;
             /*
                 Initialize the index count to zero. This will be filled up after hand. The only indices wanted are the
                 ones which create front facing triangles.
@@ -60,8 +60,17 @@ define([
         OccluderTriangleData.prototype.addVertex = function (array) {
             this.positions.set(array, this.posCount);
             this.posCount += 4;
-            this._largestIndex++;
-            return this._largestIndex;
+            this.largestIndex++;
+            return this.largestIndex;
+        };
+
+        /**
+         * Empties the data.
+         */
+        OccluderTriangleData.prototype.clear = function () {
+            this.posCount = 0;
+            this.indexCount = 0;
+            this.largestIndex = 0;
         };
 
         /**

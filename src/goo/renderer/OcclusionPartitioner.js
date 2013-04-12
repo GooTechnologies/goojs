@@ -2,7 +2,7 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/scanline/SoftwareRenderer'
 	],
-	/** @lends OcclusionPartitioner */
+	/** @lends */
 	function (SimplePartitioner, SoftwareRenderer) {
 	"use strict";
 
@@ -21,11 +21,7 @@ define([
 		*	@type {Array.<Entity>}
 		*/
 		this.occluderList = [];
-		this.renderer = new SoftwareRenderer({
-			width: parameters.width,
-			height: parameters.height,
-			camera: parameters.camera
-		});
+		this.renderer = new SoftwareRenderer(parameters);
 	}
 
 	OcclusionPartitioner.prototype.added = function (entity) {

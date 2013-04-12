@@ -70,6 +70,10 @@ define([
                 this._depthClear[i] = 0.0;
             }
 
+            this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount});
+            // TODO : Rewrite so that the data is empty from the beginning.
+            this._triangleData.clear();
+
             this.boundingBoxModule = new BoundingBoxOcclusionModule(this);
             this.boundingSphereModule = new BoundingSphereOcclusionModule(this);
         }
@@ -94,16 +98,18 @@ define([
             var cameraViewMatrix = this.camera.getViewMatrix();
             var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 
+            var triCount;
+
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
-                var triangleData = this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
-
-                for (var tIndex = 0; tIndex < triangleData.indexCount; tIndex++) {
+                this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
+                triCount = this._triangleData.indexCount;
+                for (var tIndex = 0; tIndex < triCount; tIndex++) {
                     // Take 3 indices and render the triangle
-                    indices[0] = triangleData.indices[tIndex];
-                    indices[1] = triangleData.indices[++tIndex];
-                    indices[2] = triangleData.indices[++tIndex];
-                    this._renderTriangle(indices, triangleData.positions);
+                    indices[0] = this._triangleData.indices[tIndex];
+                    indices[1] = this._triangleData.indices[++tIndex];
+                    indices[2] = this._triangleData.indices[++tIndex];
+                    this._renderTriangle(indices, this._triangleData.positions);
                 }
 
             }
@@ -163,9 +169,11 @@ define([
             var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
             var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
 
+            // Initialize the triangleData to the current amount of vertices and indices.
             var vertCount = originalPositions.length / 3;
-            var indexCount = originalIndexArray.length;
-            var triangleData = new OccluderTriangleData({'vertCount': vertCount, 'indexCount': indexCount});
+            this._triangleData.clear();
+            this._triangleData.posCount = vertCount * 4;
+            this._triangleData.largestIndex = vertCount - 1;
 
             var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
@@ -185,13 +193,12 @@ define([
                 combinedMatrix.applyPost(v1);
 
                 // Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
-                triangleData.positions.set(v1.data, offset);
+                this._triangleData.positions.set(v1.data, offset);
                 offset += 4; // Increase offset by four to insert next vertex in the right position.
             }
 
             var cameraNearZInWorld = -this.camera.near;
-            var positionArray = triangleData.positions;
-
+            var indexCount = originalIndexArray.length;
             for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
                 indices = [originalIndexArray[vertIndex], originalIndexArray[++vertIndex], originalIndexArray[++vertIndex]];
@@ -199,17 +206,17 @@ define([
                 var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
 
                 var vPos = vertexPositions[0];
-                v1.data[0] = positionArray[vPos];
-                v1.data[1] = positionArray[vPos + 1];
-                v1.data[2] = positionArray[vPos + 2];
+                v1.data[0] = this._triangleData.positions[vPos];
+                v1.data[1] = this._triangleData.positions[vPos + 1];
+                v1.data[2] = this._triangleData.positions[vPos + 2];
                 vPos = vertexPositions[1];
-                v2.data[0] = positionArray[vPos];
-                v2.data[1] = positionArray[vPos + 1];
-                v2.data[2] = positionArray[vPos + 2];
+                v2.data[0] = this._triangleData.positions[vPos];
+                v2.data[1] = this._triangleData.positions[vPos + 1];
+                v2.data[2] = this._triangleData.positions[vPos + 2];
                 vPos = vertexPositions[2];
-                v3.data[0] = positionArray[vPos];
-                v3.data[1] = positionArray[vPos + 1];
-                v3.data[2] = positionArray[vPos + 2];
+                v3.data[0] = this._triangleData.positions[vPos];
+                v3.data[1] = this._triangleData.positions[vPos + 1];
+                v3.data[2] = this._triangleData.positions[vPos + 2];
 
                 if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
                     continue; // Skip loop to the next three vertices.
@@ -253,7 +260,7 @@ define([
                         clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
 
                         // Overwrite the vertex index with the new vertex.
-                        indices[outIndex] = triangleData.addVertex(clipVec.data);
+                        indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
                         target = g_vertices[insideIndices[1]];
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
@@ -263,7 +270,7 @@ define([
                         clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
 
                         // Add the new vertex and store the new vertex's index to be added at the last stage.
-                        indices[3] = triangleData.addVertex(clipVec.data);
+                        indices[3] = this._triangleData.addVertex(clipVec.data);
 
                         break;
                     case 2:
@@ -284,7 +291,7 @@ define([
                         clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
                         clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
 
-                        indices[outIndex] = triangleData.addVertex(clipVec.data);
+                        indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
                         // Second new vertex.
                         outIndex = outsideIndices[1];
@@ -297,7 +304,7 @@ define([
                         clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
                         clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
 
-                        indices[outIndex] = triangleData.addVertex(clipVec.data);
+                        indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
                         break;
                 }
@@ -319,10 +326,10 @@ define([
                     var insideIndex = insideIndices[0];
                     var extraIndex = indices[3];
 
-                    triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
-                    triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
+                    this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
+                    this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
                 } else {
-                    triangleData.addIndices(indices);
+                    this._triangleData.addIndices(indices);
                 }
             }
 
@@ -336,7 +343,7 @@ define([
                 //          Recreate position array from those and then transform?
 
             */
-            maxPos = triangleData.posCount;
+            maxPos = this._triangleData.posCount;
             var homogeneousDivide = 0;
             var p2, p3, p4, wComponent;
             for (var p = 0; p < maxPos; p++) {
@@ -344,10 +351,10 @@ define([
                 p2 = p + 1;
                 p3 = p + 2;
                 p4 = p + 3;
-                v1.data[0] = positionArray[p];
-                v1.data[1] = positionArray[p2];
-                v1.data[2] = positionArray[p3];
-                v1.data[3] = positionArray[p4];
+                v1.data[0] = this._triangleData.positions[p];
+                v1.data[1] = this._triangleData.positions[p2];
+                v1.data[2] = this._triangleData.positions[p3];
+                v1.data[3] = this._triangleData.positions[p4];
 
                 // TODO : Combine projection + screen space transformations into one matrix.
                 // Projection transform
@@ -360,18 +367,16 @@ define([
                 v1.data[1] *= homogeneousDivide;
 
                 // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
-                positionArray[p] = (v1.data[0] + 1.0) * this._halfClipX;
+                this._triangleData.positions[p] = (v1.data[0] + 1.0) * this._halfClipX;
                 // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
-                positionArray[p2] = Math.round((v1.data[1] + 1.0) * this._halfClipY);
+                this._triangleData.positions[p2] = Math.round((v1.data[1] + 1.0) * this._halfClipY);
                 // positionArray[p3] = v1.data[2]; z-componenet is not used any more.
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
-                positionArray[p4] = homogeneousDivide;
+                this._triangleData.positions[p4] = homogeneousDivide;
 
                 // Step p forwards to the last position read.
                 p = p4;
             }
-
-            return triangleData;
         };
 
         /**

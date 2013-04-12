@@ -91,7 +91,18 @@ require(
 			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
 
 			// Override the current renderList for rendering in the GooRunner.
-			var occlusionCuller = new OcclusionPartitioner({"width": debugcanvas.width, "height": debugcanvas.height, "camera": camera});
+
+            // These values could maybe be read from the meshes loaded. Or just take enough...
+            var maxNumberOfOccluderVertices = 104;
+            var maxTrianglesPerOccluder = 32;
+            var maxNumberOfOccluderIndices = 3 * maxTrianglesPerOccluder;
+			var occlusionCuller = new OcclusionPartitioner({
+                "width": debugcanvas.width,
+                "height": debugcanvas.height,
+                "camera": camera,
+                "maxVertCount": maxNumberOfOccluderVertices,
+                "maxIndexCount": maxNumberOfOccluderIndices
+            });
 			goo.renderSystem.partitioner = occlusionCuller;
 
 			//var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
@@ -224,8 +235,6 @@ require(
 			translation.z = -5;
 
 			addHead(goo, translation);
-
-			//loadTestScene(goo, translation);
 
 			createRoomArray(goo);
 
@@ -418,12 +427,6 @@ require(
 					translation.x += roomDistance;
 				}
 			});
-		}
-
-		function loadTestScene(goo) {
-			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
-			var sceneLoader = new SceneLoader({'world': goo.world, 'loader': loader});
-			sceneLoader.load('untitled.scene');
 		}
 
 		function createBoundingSphereForEntity (world, entity) {
