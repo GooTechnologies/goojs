@@ -195,9 +195,12 @@ define([
 
             var cameraNearZInWorld = -this.camera.near;
             var indexCount = originalIndexArray.length;
+
             for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
-                indices = [originalIndexArray[vertIndex], originalIndexArray[++vertIndex], originalIndexArray[++vertIndex]];
+                indices[0] = originalIndexArray[vertIndex];
+                indices[1] = originalIndexArray[++vertIndex];
+                indices[2] = originalIndexArray[++vertIndex];
                 // The vertexpositions holds the index to the x-component in the triangleData's position array.
                 var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
 
@@ -306,7 +309,7 @@ define([
                 }
 
                 // Add the indices to the triangleData.
-                if (indices.length === 4) {
+                if (outsideIndices.length === 1) {
                     /*
                         If the index array has length 4 , a new vertex has been added (case 1),
                         and it's index is at position 3 in the array.
