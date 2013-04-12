@@ -93,6 +93,7 @@ require(
 			// Override the current renderList for rendering in the GooRunner.
 
             // These values could maybe be read from the meshes loaded. Or just take enough...
+            // TODO : I need 104 vertices at the moment, something might be wrong with the blender exporter.
             var maxNumberOfOccluderVertices = 104;
             var maxTrianglesPerOccluder = 32;
             var maxNumberOfOccluderIndices = 3 * maxTrianglesPerOccluder;
