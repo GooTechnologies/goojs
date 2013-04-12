@@ -29,16 +29,10 @@ define([
 		this.farZ = 1000;
 
 		this.lightCam = new Camera(55, 1, this.nearZ, this.farZ);
-
-//		var radius = 100;
-//		this.lightCam.setFrustum(nearZ, farZ, -radius, radius, radius, -radius);
-//		this.lightCam.projectionMode = Camera.Parallel;
-//		this.lightCam.update();
+		this.currentState = 'Perspective';
 
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
-//		this.depthMaterial.cullState.enabled = false;
 		this.depthMaterial.cullState.cullFace = 'Front';
-//		this.depthMaterial.cullState.cullFace = 'Back';
 
 		this.shadowTarget = new RenderTarget(this.shadowX, this.shadowY, {
 			type: 'Float'
@@ -71,7 +65,22 @@ define([
 				var lightCam = this.lightCam;
 
 				lightCam.translation.copy(light.translation);
-				lightCam.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+				if (light.shadowSettings.projection === 'Perspective') {
+					lightCam.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+				}
+
+				if (this.currentState !== light.shadowSettings.projection) {
+					this.currentState = light.shadowSettings.projection;
+					if (light.shadowSettings.projection === 'Perspective') {
+						lightCam.setFrustumPerspective(light.shadowSettings.fov, 1, light.shadowSettings.near, light.shadowSettings.far);
+					} else if (light.shadowSettings.projection === 'Parallel') {
+						var radius = light.shadowSettings.size;
+						lightCam.setFrustum(light.shadowSettings.near, light.shadowSettings.far, -radius, radius, radius, -radius);
+						lightCam.projectionMode = Camera.Parallel;
+						lightCam.update();
+					}
+				}
+
 				lightCam.onFrameChange();
 
 				this.oldClearColor.copy(renderer.clearColor);

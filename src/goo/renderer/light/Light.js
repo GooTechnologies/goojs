@@ -21,8 +21,12 @@ function (
 
 		this.shadowCaster = false;
 		this.shadowSettings = {
-			type: 'Blur' // 'Blur', 'None'
-			//TODO: add camera frustum settings and sizes
+			type: 'Blur', // 'Blur', 'None'
+			projection: 'Perspective', // 'Perspective', 'Parallel'
+			fov: 55,
+			size: 100,
+			near: 1,
+			far: 1000
 		};
 	}
 
