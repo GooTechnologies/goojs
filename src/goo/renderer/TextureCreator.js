@@ -197,8 +197,8 @@ function (
 				video: true
 			}, function (stream) {
 				video.src = window.URL.createObjectURL(stream);
-			}, function () {
-				console.warn('Unable to capture WebCam. Please reload the page.');
+			}, function (e) {
+				console.warn('Unable to capture WebCam. Please reload the page.', e);
 			});
 		} else {
 			console.warn('No support for WebCam getUserMedia found!');
