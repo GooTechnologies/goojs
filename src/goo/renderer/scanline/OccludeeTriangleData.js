@@ -32,7 +32,7 @@ define([
 
         /**
          * Adds 3 indices to the index array.
-         * @param {Array.<Number>} triangleIndices
+         * @param {Uint8Array} triangleIndices
          */
         OccludeeTriangleData.prototype.addIndices = function (triangleIndices) {
             this.indices.set(triangleIndices, this.indexCount);

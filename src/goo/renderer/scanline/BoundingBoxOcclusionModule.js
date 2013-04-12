@@ -19,6 +19,46 @@ define([
         var ABOVE = 0x8;	// 1000
         /*jshint bitwise: true */
 
+        var outCodes = new Uint8Array(8);
+
+        var positionArray = new Float32Array(8 * 4);
+
+        var triangleIndices = new Uint8Array([
+            0,3,4,
+            3,7,4,
+            0,4,5,
+            0,5,1,
+            2,1,5,
+            2,5,6,
+            3,2,6,
+            3,6,7,
+            0,1,2,
+            0,2,3,
+            5,4,6,
+            7,6,4
+        ]);
+
+        var edgeIndices = new Uint8Array([
+            0,1,
+            1,2,
+            2,3,
+            3,0,
+            4,5,
+            5,6,
+            6,7,
+            7,0,
+            0,4,
+            1,5,
+            2,6,
+            3,7
+        ]);
+
+        // Global vars for transforming data.
+        var v1 = new Vector4(0, 0, 0, 1);
+        var v2 = new Vector4(0, 0, 0, 1);
+        var v3 = new Vector4(0, 0, 0, 1);
+        var indices = new Uint8Array(3);
+
         /**
          *  @param {SoftwareRenderer} renderer
          *  @constructor
@@ -29,27 +69,8 @@ define([
 
             this._clipY = renderer.height - 1;
             this._clipX = renderer.width - 1;
-
-            this._edgeIndices = this._generateEdgeIndices();
-
-            this._triangleIndices = new Uint8Array(12 * 3);
-
-            var triIndices = [
-                0,3,4,
-                3,7,4,
-                0,4,5,
-                0,5,1,
-                2,1,5,
-                2,5,6,
-                3,2,6,
-                3,6,7,
-                0,1,2,
-                0,2,3,
-                5,4,6,
-                7,6,4
-            ];
-
-            this._triangleIndices.set(triIndices, 0);
+            this._halfClipX = this._clipX / 2;
+            this._halfClipY = this._clipY / 2;
         }
 
         /**
@@ -80,8 +101,6 @@ define([
                 return false;
             }
 
-            // TODO : Make global indices Uint8Array
-            var indices = [0,0,0];
             var maxIndices = triangleData.indexCount;
             for (var tIndex = 0; tIndex < maxIndices; tIndex++) {
                 // Take 3 indices and render the triangle
@@ -109,13 +128,10 @@ define([
 
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
-            var positionArray = this._generateBoundingBoxPositionArray(entity);
+            this._copyEntityVerticesToPositionArray(entity);
 
             // TODO: Combine the transforms to pixel space.
             // Projection transform + homogeneous divide
-            var v = new Vector4(0, 0, 0, 1);
-            var halfClipX = this._clipX / 2;
-            var halfClipY = this._clipY / 2;
             var p1, p2, p3, p4, wComponent;
             for (var p = 0; p < positionArray.length; p++) {
 
@@ -123,14 +139,14 @@ define([
                 p2 = p + 1;
                 p3 = p + 2;
                 p4 = p + 3;
-                v.data[0] = positionArray[p1];
-                v.data[1] = positionArray[p2];
-                v.data[2] = positionArray[p3];
-                v.data[3] = positionArray[p4];
+                v1.data[0] = positionArray[p1];
+                v1.data[1] = positionArray[p2];
+                v1.data[2] = positionArray[p3];
+                v1.data[3] = positionArray[p4];
 
-                combinedMatrix.applyPost(v);
+                combinedMatrix.applyPost(v1);
 
-                wComponent = v.data[3];
+                wComponent = v1.data[3];
                 if (wComponent < this.renderer.camera.near) {
                     // Near plane clipped.
                     console.log("Occlusion test : early exit on near plane clipped.");
@@ -138,12 +154,12 @@ define([
                 }
 
                 var div = 1.0 / wComponent;
-                v.data[0] *= div;
-                v.data[1] *= div;
+                v1.data[0] *= div;
+                v1.data[1] *= div;
 
                 // Screen space transform x and y coordinates, and write the transformed position data into the positionArray.
-                positionArray[p1] = (v.data[0] + 1.0) * halfClipX;
-                positionArray[p2] = (v.data[1] + 1.0) * halfClipY;
+                positionArray[p1] = (v1.data[0] + 1.0) * this._halfClipX;
+                positionArray[p2] = (v1.data[1] + 1.0) * this._halfClipY;
                 // positionArray[p3] = v.data[2];
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
                 positionArray[p4] = div;
@@ -167,31 +183,6 @@ define([
         };
 
         /**
-         * Creates an array containing the 12 edges which a box is made up of. The edges are used in the Cohen-Sutherland
-         * clipping algorithm.
-         * @returns {Array}
-         * @private
-         */
-        BoundingBoxOcclusionModule.prototype._generateEdgeIndices = function () {
-            var edgeArray = new Array(12);
-
-            edgeArray[0] = [0, 1];
-            edgeArray[1] = [1, 2];
-            edgeArray[2] = [2, 3];
-            edgeArray[3] = [3, 0];
-            edgeArray[4] = [4, 5];
-            edgeArray[5] = [5, 6];
-            edgeArray[6] = [6, 7];
-            edgeArray[7] = [7, 0];
-            edgeArray[8] = [0, 4];
-            edgeArray[9] = [1, 5];
-            edgeArray[10] = [2, 6];
-            edgeArray[11] = [3, 7];
-
-            return edgeArray;
-        };
-
-        /**
          *	Generates a array of homogeneous vertices for a entity's bounding box.
          *	// TODO : These vertices should probably be saved beforehand as a typed array for each object which
          *	need to have occludee possibilities.
@@ -199,7 +190,7 @@ define([
          *
          *	@return {Float32Array} vertex array
          */
-        BoundingBoxOcclusionModule.prototype._generateBoundingBoxPositionArray = function (entity) {
+        BoundingBoxOcclusionModule.prototype._copyEntityVerticesToPositionArray = function (entity) {
             var boundingBox = entity.meshDataComponent.modelBound;
 
             // Create the 8 vertices which create the bounding box.
@@ -208,7 +199,7 @@ define([
             var z = boundingBox.zExtent;
 
             // Create the array in one call.
-            var positionArray = new Float32Array([
+            positionArray.set([
                 -x, y, -z, 1.0,
                 -x, y, z, 1.0,
                 x, y, z, 1.0,
@@ -218,8 +209,6 @@ define([
                 x, -y, z, 1.0,
                 x, -y, -z, 1.0
             ]);
-
-            return positionArray;
         };
 
         /**
@@ -246,11 +235,8 @@ define([
             maxY = -Infinity;
             // NOTE: The depth is inversed at this point, (1 / w), the minimum depth is the largest.
             minDepth = -Infinity;
-
-
             /*jshint bitwise: false */
-            var outCodes = new Uint8Array(8);
-            var v1 = new Vector4(0, 0, 0, 1);
+
             var vPos;
             for (var i = 0; i < 8; i++) {
                 vPos = i * 4;
@@ -277,23 +263,19 @@ define([
                 }
             }
 
-            var tempVec = new Vector2(0,0);
-            var v2 = new Vector4(0, 0, 0, 1);
             var outcode1, outcode2;
             var vertIndex;
             // Go through the edges of the bounding box to clip them if needed.
-            for (var edgeIndex = 0; edgeIndex < 12; edgeIndex++) {
-
-                var edgePair = this._edgeIndices[edgeIndex];
-
-                vertIndex = edgePair[0];
-                vPos = edgePair[0] * 4;
+            for (var edgeIndex = 0; edgeIndex < 24; edgeIndex++) {
+                vertIndex = edgeIndices[edgeIndex];
+                vPos = vertIndex * 4;
                 v1.data[0] = positions[vPos];
                 v1.data[1] = positions[vPos + 1];
                 v1.data[3] = positions[vPos + 3];
                 outcode1 = outCodes[vertIndex];
 
-                vertIndex = edgePair[1];
+                edgeIndex++;
+                vertIndex = edgeIndices[edgeIndex];
                 vPos = vertIndex * 4;
                 v2.data[0] = positions[vPos];
                 v2.data[1] = positions[vPos + 1];
@@ -336,56 +318,56 @@ define([
                     // 0010 and 0001.
                     if (outsideCode & ABOVE) {
                         ratio = ((this._clipY - v1.data[1]) / (v2.data[1] - v1.data[1]));
-                        tempVec.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-                        tempVec.data[1] = this._clipY;
+                        v3.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
+                        v3.data[1] = this._clipY;
 
                         // Only check for minmax x and y if the new coordinate is inside.
                         // [minX, maxX, minY, maxY, minDepth];
-                        nextCode = this._calculateOutCode(tempVec);
+                        nextCode = this._calculateOutCode(v3);
                         if (nextCode === INSIDE) {
                             maxY = this._clipY;
                             // Minmax X
-                            var xValue = tempVec.data[0];
+                            var xValue = v3.data[0];
                             minX = Math.min(minX, xValue);
                             maxX = Math.max(maxX, xValue);
                         }
                     } else if (outsideCode & BELOW) {
                         ratio = (-v1.data[1] / (v2.data[1] - v1.data[1]));
-                        tempVec.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-                        tempVec.data[1] = 0;
+                        v3.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
+                        v3.data[1] = 0;
 
                         // Only check for minmax x and y if the new coordinate is inside.
-                        nextCode = this._calculateOutCode(tempVec);
+                        nextCode = this._calculateOutCode(v3);
                         if (nextCode === INSIDE) {
                             minY = 0;
                             // Minmax X
-                            var xValue = tempVec.data[0];
+                            var xValue = v3.data[0];
                             minX = Math.min(minX, xValue);
                             maxX = Math.max(maxX, xValue);
                         }
                     } else if (outsideCode & RIGHT) {
                         ratio = ((this._clipX - v1.data[0]) / (v2.data[0] - v1.data[0]));
-                        tempVec.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-                        tempVec.data[0] = this._clipX;
+                        v3.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
+                        v3.data[0] = this._clipX;
 
-                        nextCode = this._calculateOutCode(tempVec);
+                        nextCode = this._calculateOutCode(v3);
                         if (nextCode === INSIDE) {
                             maxX = this._clipX;
                             // Minimum and maximum Y
-                            var yValue = tempVec.data[1];
+                            var yValue = v3.data[1];
                             minY = Math.min(minY, yValue);
                             maxY = Math.max(maxY, yValue);
                         }
                     } else if (outsideCode & LEFT) {
                         ratio = (-v1.data[0] / (v2.data[0] - v1.data[0]));
-                        tempVec.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-                        tempVec.data[0] = 0;
+                        v3.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
+                        v3.data[0] = 0;
 
-                        nextCode = this._calculateOutCode(tempVec);
+                        nextCode = this._calculateOutCode(v3);
                         if (nextCode === INSIDE) {
                             minX = 0;
                             // Minimum and maximum Y
-                            var yValue = tempVec.data[1];
+                            var yValue = v3.data[1];
                             minY = Math.min(minY, yValue);
                             maxY = Math.max(maxY, yValue);
                         }
@@ -478,7 +460,7 @@ define([
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
             var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
-            var positionArray = this._generateBoundingBoxPositionArray(entity);
+            this._copyEntityVerticesToPositionArray(entity);
 
             // For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
             // homogeneous vertices gives 32 position values.
@@ -486,7 +468,6 @@ define([
             var maxPos = positionArray.length;
             // Projection transform + homogeneous divide for every vertex.
             // Early exit on near plane clip.
-            var v1 = new Vector4(0, 0, 0, 1);
             var p2, p3, p4, wComponent;
             for (var p = 0; p < maxPos; p++) {
 
@@ -517,13 +498,10 @@ define([
                 p = p4;
             }
 
-            var indices = [0, 0, 0];
-            var v2 = new Vector2(0,0);
-            var v3 = new Vector2(0,0);
             var vPos;
-            for (var i = 0; i < this._triangleIndices.length; i++) {
+            for (var i = 0; i < triangleIndices.length; i++) {
 
-                indices = [this._triangleIndices[i], this._triangleIndices[++i], this._triangleIndices[++i]];
+                indices = [triangleIndices[i], triangleIndices[++i], triangleIndices[++i]];
 
                 vPos = indices[0] * 4;
                 v1.data[0] = triangleData.positions[vPos];
@@ -540,15 +518,12 @@ define([
                 }
             }
 
-            // TODO : Move to class scope.
-            var halfClipX = this._clipX / 2;
-            var halfClipY = this._clipY / 2;
             // Screen space transform positions.
             // TODO : Transform only the positions going to be rendered.
             for (var j = 0; j < maxPos; j++) {
-                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * halfClipX;
+                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * this._halfClipX;
                 j++;
-                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * halfClipY;
+                triangleData.positions[j] = (triangleData.positions[j] + 1.0) * this._halfClipY;
                 j += 2; // Have to step four positions per loop (x, y, z, w).
             }
 

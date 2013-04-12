@@ -6,24 +6,28 @@ define([
 
         /**
          *
-         * @param dataArray [startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]
          * @constructor
          */
-        function EdgeData (dataArray) {
+        function EdgeData () {
 
             var integerElements = 2;
             var floatElements = 8;
             var integerBytes = integerElements * Int16Array.BYTES_PER_ELEMENT;
-            var floatBytes = floatElements * Float64Array.BYTES_PER_ELEMENT;
+            var floatBytes = floatElements * Float32Array.BYTES_PER_ELEMENT;
 
             this._dataBuffer = new ArrayBuffer(integerBytes + floatBytes);
-            this._floatData = new Float64Array(this._dataBuffer, 0, floatElements);
+            this._floatData = new Float32Array(this._dataBuffer, 0, floatElements);
             this._integerData = new Int16Array(this._dataBuffer, floatBytes, integerElements);
+        }
 
-
+        /**
+         * Sets the values in the edgeData.
+         * @param dataArray
+         */
+        EdgeData.prototype.setData = function (dataArray) {
             this._integerData.set([dataArray[0], dataArray[1]]);
             this._floatData.set([dataArray[2], dataArray[3], dataArray[4], dataArray[5], dataArray[6], dataArray[7],  dataArray[8],  dataArray[9]]);
-        }
+        };
 
         EdgeData.prototype.getStartLine = function () {
             return this._integerData[0];

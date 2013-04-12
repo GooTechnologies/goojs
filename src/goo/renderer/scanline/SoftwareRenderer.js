@@ -19,6 +19,18 @@ define([
               BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, OccluderTriangleData) {
 	    "use strict";
 
+        // Variables used during creation of triangle data and rendering
+        var indices = new Uint8Array(4);
+        var v1 = new Vector4(0, 0, 0, 1);
+        var v2 = new Vector4(0, 0, 0, 1);
+        var v3 = new Vector4(0, 0, 0, 1);
+        // Clipping vector is used for near clipping, thus the z component is -1.0.
+        var clipVec = new Vector4(0, 0, -1.0, 1);
+        var g_vertices = [v1, v2, v3];
+
+        // EdgeData used during rendering.
+        var edgeData = new EdgeData();
+
         /**
         *	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
         *	@constructor
@@ -32,6 +44,8 @@ define([
 
             this._clipY = this.height - 1;
             this._clipX = this.width - 1;
+            this._halfClipX = this._clipX / 2;
+            this._halfClipY = this._clipY / 2;
 
             this.camera = parameters.camera;
 
@@ -79,7 +93,6 @@ define([
 
             var cameraViewMatrix = this.camera.getViewMatrix();
             var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-            var indices = [];
 
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
@@ -142,6 +155,11 @@ define([
         */
         SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
 
+            // Reset the global vectors' w-components to 1
+            v1.data[3] = 1.0;
+            v2.data[3] = 1.0;
+            v3.data[3] = 1.0;
+
             var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
             var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
 
@@ -153,8 +171,6 @@ define([
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
             var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
 
-            // The temporary vector v1, is used to be able to use the Matrix4x4.applyPost() function.
-            var v1 = new Vector4(0,0,0,1);
             // Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
             // The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
             var maxPos = originalPositions.length;
@@ -176,12 +192,9 @@ define([
             var cameraNearZInWorld = -this.camera.near;
             var positionArray = triangleData.positions;
 
-            var v2 = new Vector4(0,0,0,1);
-            var v3 = new Vector4(0,0,0,1);
-            var vertices = [v1, v2, v3];
             for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
-                var indices = [originalIndexArray[vertIndex], originalIndexArray[++vertIndex], originalIndexArray[++vertIndex]];
+                indices = [originalIndexArray[vertIndex], originalIndexArray[++vertIndex], originalIndexArray[++vertIndex]];
                 // The vertexpositions holds the index to the x-component in the triangleData's position array.
                 var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
 
@@ -210,7 +223,7 @@ define([
                 var outsideIndices = [];
                 var insideIndices = [];
 
-                this._categorizeVertices(outsideIndices, insideIndices, vertices, cameraNearZInWorld);
+                this._categorizeVertices(outsideIndices, insideIndices, g_vertices, cameraNearZInWorld);
 
                 switch (outsideIndices.length) {
                     case 0:
@@ -228,70 +241,63 @@ define([
                         // TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
                         // perhaps the entire function, in order to make use of them.
                         var outIndex = outsideIndices[0];
-                        var origin = vertices[outIndex];
+                        var origin = g_vertices[outIndex];
                         var origin_x = origin.data[0];
                         var origin_y = origin.data[1];
-                        var origin_z = origin.data[2];
 
-                        var target = vertices[insideIndices[0]];
+                        var target = g_vertices[insideIndices[0]];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
-                        var newV = [
-                            origin_x + ratio * (target.data[0] - origin_x),
-                            origin_y + ratio * (target.data[1] - origin_y),
-                            origin_z + ratio * (target.data[2] - origin_z),
-                            1.0
-                        ];
-                        // Overwrite the vertex index with the new vertex.
-                        indices[outIndex] = triangleData.addVertex(newV);
+                        // use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
+                        clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
+                        clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
 
-                        target = vertices[insideIndices[1]];
+                        // Overwrite the vertex index with the new vertex.
+                        indices[outIndex] = triangleData.addVertex(clipVec.data);
+
+                        target = g_vertices[insideIndices[1]];
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
+
                         // Calculate the new vertex's position
-                        newV[0] = origin_x + ratio * (target.data[0] - origin_x);
-                        newV[1] = origin_y + ratio * (target.data[1] - origin_y);
-                        newV[2] = origin_z + ratio * (target.data[2] - origin_z);
+                        clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
+                        clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
 
                         // Add the new vertex and store the new vertex's index to be added at the last stage.
-                        indices.push(triangleData.addVertex(newV));
+                        indices[3] = triangleData.addVertex(clipVec.data);
 
                         break;
                     case 2:
                         // Update the two outside vertices to their new positions on the near plane.
-                        var target = vertices[insideIndices[0]];
+                        var target = g_vertices[insideIndices[0]];
                         var target_x = target.data[0];
                         var target_y = target.data[1];
-                        var target_z = target.data[2];
 
                         // First new vertex.
                         var outIndex = outsideIndices[0];
-                        var origin = vertices[outIndex];
+                        var origin = g_vertices[outIndex];
                         var origin_x = origin.data[0];
                         var origin_y = origin.data[1];
-                        var origin_z = origin.data[2];
+
                         vPos = vertexPositions[outIndex];
                         var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-                        var newV = [
-                            origin_x + ratio * (target_x - origin_x),
-                            origin_y + ratio * (target_y - origin_y),
-                            origin_z + ratio * (target_z - origin_z),
-                            1.0
-                        ];
-                        indices[outIndex] = triangleData.addVertex(newV);
+
+                        clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
+                        clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+
+                        indices[outIndex] = triangleData.addVertex(clipVec.data);
 
                         // Second new vertex.
                         outIndex = outsideIndices[1];
-                        origin = vertices[outIndex];
+                        origin = g_vertices[outIndex];
                         origin_x = origin.data[0];
                         origin_y = origin.data[1];
-                        origin_z = origin.data[2];
 
                         ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-                        newV[0] = origin_x + ratio * (target_x - origin_x);
-                        newV[1] = origin_y + ratio * (target_y - origin_y);
-                        newV[2] = origin_z + ratio * (target_z - origin_z);
 
-                        indices[outIndex] = triangleData.addVertex(newV);
+                        clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
+                        clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+
+                        indices[outIndex] = triangleData.addVertex(clipVec.data);
 
                         break;
                 }
@@ -333,8 +339,6 @@ define([
             maxPos = triangleData.posCount;
             var homogeneousDivide = 0;
             var p2, p3, p4, wComponent;
-            var halfClipX = this._clipX / 2;
-            var halfClipY = this._clipY / 2;
             for (var p = 0; p < maxPos; p++) {
                 // Copy the vertex data into the v1 vector from the triangleData's position array.
                 p2 = p + 1;
@@ -356,9 +360,9 @@ define([
                 v1.data[1] *= homogeneousDivide;
 
                 // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
-                positionArray[p] = (v1.data[0] + 1.0) * halfClipX;
+                positionArray[p] = (v1.data[0] + 1.0) * this._halfClipX;
                 // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
-                positionArray[p2] = Math.round((v1.data[1] + 1.0) * halfClipY);
+                positionArray[p2] = Math.round((v1.data[1] + 1.0) * this._halfClipY);
                 // positionArray[p3] = v1.data[2]; z-componenet is not used any more.
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
                 positionArray[p4] = homogeneousDivide;
@@ -493,23 +497,23 @@ define([
         };
 
 
-        SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (v1, v2, v3) {
+        SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (vert1, vert2, vert3) {
 
             // Calculate the dot product between the triangle's face normal and the camera's eye direction
             // to find out if the face is facing away or not.
 
             // Create edges for calculating the normal.
-            var v1_x = v1.data[0];
-            var v1_y = v1.data[1];
-            var v1_z = v1.data[2];
+            var v1_x = vert1.data[0];
+            var v1_y = vert1.data[1];
+            var v1_z = vert1.data[2];
 
-            var e1_x = v2.data[0] - v1_x;
-            var e1_y = v2.data[1] - v1_y;
-            var e1_z = v2.data[2] - v1_z;
+            var e1_x = vert2.data[0] - v1_x;
+            var e1_y = vert2.data[1] - v1_y;
+            var e1_z = vert2.data[2] - v1_z;
 
-            var e2_x = v3.data[0] - v1_x;
-            var e2_y = v3.data[1] - v1_y;
-            var e2_z = v3.data[2] - v1_z;
+            var e2_x = vert3.data[0] - v1_x;
+            var e2_y = vert3.data[1] - v1_y;
+            var e2_z = vert3.data[2] - v1_z;
 
             // Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
             var faceNormal_x = e2_z * e1_y - e2_y * e1_z;
@@ -581,17 +585,17 @@ define([
 
             // Use (x,y,1/w), the w component is already inverted.
             var vPos = indices[0] * 4;
-            var v1 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            var vert1 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
             vPos = indices[1] * 4;
-            var v2 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            var vert2 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
             vPos = indices[2] * 4;
-            var v3 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            var vert3 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
 
             // The edges are created sorted in growing y-order.
             this._edges = [
-                new Edge(v1, v2),
-                new Edge(v2, v3),
-                new Edge(v3, v1)
+                new Edge(vert1, vert2),
+                new Edge(vert2, vert3),
+                new Edge(vert3, vert1)
             ];
 
             var maxHeight = 0;
@@ -665,12 +669,10 @@ define([
             this._edges[2].roundOccludeeCoordinates();
 
             var shortEdge = this._edges[s1];
-            var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
-
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
-            if (edgeData) {
+            if (this._createEdgeData(longEdge, shortEdge)) {
                 orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 
                 // Horizontal culling
@@ -684,8 +686,7 @@ define([
                 }
             }
             shortEdge = this._edges[s2];
-            edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
-            if (edgeData) {
+            if (this._createEdgeData(longEdge, shortEdge)) {
                 // If the orientation hasn't been created, do so.
                 if (orientationData === null) {
                     orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
@@ -731,12 +732,10 @@ define([
             TODO : The long edge's data is calculated twice at the momnent. The only difference is if the values are to be
             interpolated to the proper y.
              */
-            var edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
-
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
-            if (edgeData) {
+            if (this._createEdgeData(longEdge, shortEdge)) {
                 orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
 
                 // Horizontal culling
@@ -749,8 +748,7 @@ define([
             }
 
             shortEdge = this._edges[s2];
-            edgeData = this._edgePreRenderProcess(longEdge, shortEdge);
-            if (edgeData) {
+            if (this._createEdgeData(longEdge, shortEdge)) {
                 // If the orientation hasn't been created, do so.
                 if (orientationData === null) {
                     orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
@@ -1115,7 +1113,7 @@ define([
          * Creates the EdgeData , used for rendering.
         *	@return {EdgeData} edgeData
         */
-        SoftwareRenderer.prototype._edgePreRenderProcess = function (longEdge, shortEdge) {
+        SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
             // TODO: Move a lot of these calculations and variables into the Edge class,
             // do the calculations once for the long edge instead of twices as it is done now.
@@ -1125,7 +1123,7 @@ define([
 
             var shortEdgeDeltaY = (shortEdge.y1 - shortEdge.y0);
             if(shortEdgeDeltaY <= 0) {
-                return; // Nothing to draw here.
+                return false; // Nothing to draw here.
             }
 
             var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
@@ -1181,7 +1179,8 @@ define([
                 stopLine = this._clipY;
             }
 
-            return new EdgeData([startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]);
+            edgeData.setData([startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]);
+            return true;
         };
 
         /**

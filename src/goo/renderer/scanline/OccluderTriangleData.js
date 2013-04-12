@@ -54,7 +54,7 @@ define([
 
         /**
          * Adds the array of vertex data to the position array and returns the new vertex's index to the position.
-          * @param {Array.<Number>} array [x,y,z,w]
+          * @param {Float32Array} array [x,y,z,w]
          * @returns {Number} the added position's vertex index
          */
         OccluderTriangleData.prototype.addVertex = function (array) {
@@ -66,7 +66,7 @@ define([
 
         /**
          * Adds 3 indices to the index array.
-         * @param {Array.<Number>} triangleIndices
+         * @param {Uint8Array} triangleIndices
          */
         OccluderTriangleData.prototype.addIndices = function (triangleIndices) {
             this.indices.set(triangleIndices, this.indexCount);
