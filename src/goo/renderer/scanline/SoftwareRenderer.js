@@ -233,11 +233,12 @@ define([
 
                 switch (outsideIndices.length) {
                     case 0:
-                        // All vertices are on the inside. Continue as usual.
+                        // All vertices are on the inside. Add them directly.
+                        this._triangleData.addIndices(indices);
                         break;
                     case 3:
-                        // All of the vertices are on the outside, skip to the next three vertices.
-                        continue;
+                        // All of the vertices are on the outside, dont add them.
+                        break;
                     case 1:
                         /*
                             Update the one vertex to its new position on the near plane and add a new vertex
@@ -270,6 +271,19 @@ define([
 
                         // Add the new vertex and store the new vertex's index to be added at the last stage.
                         indices[3] = this._triangleData.addVertex(clipVec.data);
+
+                        /*
+                         The order of the indices ( CCW / CW ) are not relevant at this point, since
+                         back face culling has been performed.
+
+                         But to construct the right triangles, making use of the outside and inside indices is needed.
+                         */
+
+                        var insideIndex = insideIndices[0];
+                        var extraIndex = indices[3];
+
+                        this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
+                        this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
 
                         break;
                     case 2:
@@ -305,30 +319,9 @@ define([
 
                         indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
+                        this._triangleData.addIndices(indices);
+
                         break;
-                }
-
-                // Add the indices to the triangleData.
-                if (outsideIndices.length === 1) {
-                    /*
-                        If the index array has length 4 , a new vertex has been added (case 1),
-                        and it's index is at position 3 in the array.
-
-                        The variable outIndex has the value of outsideIndices[0] at this point as well.
-
-                        The order of the indices ( CCW / CW ) are not relevant at this point, since
-                        back face culling has been performed.
-
-                        But to construct the right triangles, making use of the outside and inside indices is needed.
-                    */
-
-                    var insideIndex = insideIndices[0];
-                    var extraIndex = indices[3];
-
-                    this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
-                    this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
-                } else {
-                    this._triangleData.addIndices(indices);
                 }
             }
 
