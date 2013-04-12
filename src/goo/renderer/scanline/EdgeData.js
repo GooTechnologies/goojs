@@ -25,8 +25,17 @@ define([
          * @param dataArray
          */
         EdgeData.prototype.setData = function (dataArray) {
-            this._integerData.set([dataArray[0], dataArray[1]]);
-            this._floatData.set([dataArray[2], dataArray[3], dataArray[4], dataArray[5], dataArray[6], dataArray[7],  dataArray[8],  dataArray[9]]);
+            this._integerData[0] = dataArray[0];
+            this._integerData[1] = dataArray[1];
+
+            this._floatData[0] = dataArray[2];
+            this._floatData[1] = dataArray[3];
+            this._floatData[2] = dataArray[4];
+            this._floatData[3] = dataArray[5];
+            this._floatData[4] = dataArray[6];
+            this._floatData[5] = dataArray[7];
+            this._floatData[6] = dataArray[8];
+            this._floatData[7] = dataArray[9];
         };
 
         EdgeData.prototype.getStartLine = function () {

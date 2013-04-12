@@ -58,8 +58,16 @@ define([
          * @returns {Number} the added position's vertex index
          */
         OccluderTriangleData.prototype.addVertex = function (array) {
-            this.positions.set(array, this.posCount);
-            this.posCount += 4;
+            var index = this.posCount;
+            this.positions[index] = array[0];
+            index++;
+            this.positions[index] = array[1];
+            index++;
+            this.positions[index] = array[2];
+            index++;
+            this.positions[index] = array[3];
+            index++;
+            this.posCount = index;
             this.largestIndex++;
             return this.largestIndex;
         };
@@ -78,8 +86,14 @@ define([
          * @param {Uint8Array} triangleIndices
          */
         OccluderTriangleData.prototype.addIndices = function (triangleIndices) {
-            this.indices.set(triangleIndices, this.indexCount);
-            this.indexCount += 3;
+            var index = this.indexCount;
+            this.indices[index] = triangleIndices[0];
+            index++;
+            this.indices[index] = triangleIndices[1];
+            index++;
+            this.indices[index] = triangleIndices[2];
+            index++;
+            this.indexCount = index;
         };
 
         return OccluderTriangleData;

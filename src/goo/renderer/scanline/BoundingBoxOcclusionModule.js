@@ -486,7 +486,8 @@ define([
                 v1.data[0] = positionArray[p];
                 v1.data[1] = positionArray[p2];
                 v1.data[2] = positionArray[p3];
-                v1.data[3] = positionArray[p4];
+                // w-component will always be 1.0 here.
+                v1.data[3] = 1.0;
 
                 combinedMatrix.applyPost(v1);
                 wComponent = v1.data[3];
@@ -499,11 +500,15 @@ define([
                 var div = 1.0 / wComponent;
                 v1.data[0] *= div;
                 v1.data[1] *= div;
-                // store (1/w)
-                v1.data[3] = div;
 
                 // Copy the projected position data to the triangleData object.
-                triangleData.positions.set(v1.data, p);
+                triangleData.positions[p] =  v1.data[0];
+                triangleData.positions[p2] =  v1.data[1];
+                // z-component not used.
+                //triangleData.positions[p3] =  v1.data[2];
+                // store (1/w)
+                triangleData.positions[p4] = div;
+
                 p = p4;
             }
 

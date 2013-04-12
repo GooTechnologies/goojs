@@ -35,8 +35,14 @@ define([
          * @param {Uint8Array} triangleIndices
          */
         OccludeeTriangleData.prototype.addIndices = function (triangleIndices) {
-            this.indices.set(triangleIndices, this.indexCount);
-            this.indexCount += 3;
+            var index = this.indexCount;
+            this.indices[index] = triangleIndices[0];
+            index++;
+            this.indices[index] = triangleIndices[1];
+            index++;
+            this.indices[index] = triangleIndices[2];
+            index++;
+            this.indexCount = index;
         };
 
         /**

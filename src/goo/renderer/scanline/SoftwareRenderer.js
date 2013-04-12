@@ -17,12 +17,14 @@ define([
 
         // Variables used during creation of triangle data and rendering
         var indices = new Uint8Array(4);
+        var vertexPositions = new Uint16Array(3);
         var v1 = new Vector4(0, 0, 0, 1);
         var v2 = new Vector4(0, 0, 0, 1);
         var v3 = new Vector4(0, 0, 0, 1);
         // Clipping vector is used for near clipping, thus the z component is -1.0.
         var clipVec = new Vector4(0, 0, -1.0, 1);
         var g_vertices = [v1, v2, v3];
+
 
         // EdgeData used during rendering.
         var edgeData = new EdgeData();
@@ -189,8 +191,15 @@ define([
                 combinedMatrix.applyPost(v1);
 
                 // Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
-                this._triangleData.positions.set(v1.data, offset);
-                offset += 4; // Increase offset by four to insert next vertex in the right position.
+                this._triangleData.positions[offset] = v1.data[0];
+                offset++;
+                this._triangleData.positions[offset] = v1.data[1];
+                offset++;
+                this._triangleData.positions[offset] = v1.data[2];
+                offset++;
+                // w component is 1.0
+                this._triangleData.positions[offset] = 1.0;
+                offset++;
             }
 
             var cameraNearZInWorld = -this.camera.near;
@@ -202,7 +211,9 @@ define([
                 indices[1] = originalIndexArray[++vertIndex];
                 indices[2] = originalIndexArray[++vertIndex];
                 // The vertexpositions holds the index to the x-component in the triangleData's position array.
-                var vertexPositions = [indices[0] * 4, indices[1] * 4, indices[2] * 4];
+                vertexPositions[0] = indices[0] * 4;
+                vertexPositions[1] = indices[1] * 4;
+                vertexPositions[2] = indices[2] * 4;
 
                 var vPos = vertexPositions[0];
                 v1.data[0] = this._triangleData.positions[vPos];
