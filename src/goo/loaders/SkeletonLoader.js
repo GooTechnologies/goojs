@@ -63,11 +63,14 @@ define([
 		};
 
 		SkeletonLoader.prototype._loadSkeleton = function (skeletonPath) {
-			return this._loader.load(skeletonPath+'.json');
+			return this._loader.load(skeletonPath);
 		};
 
 
 		SkeletonLoader.prototype._parseSkeleton = function (skeleton) {
+			if(typeof skeleton === 'string') {
+				skeleton = JSON.parse(skeleton);
+			}
 			var skName = skeleton.Name;
 			var jointArray = skeleton.Joints;
 			var joints = [];

@@ -24,8 +24,7 @@ require([
 
 	'goo/entities/EntityUtils',
 	'goo/lib/rsvp.amd',
-	'goo/shapes/ShapeCreator',
-	'goo/util/TangentGenerator'
+	'goo/shapes/ShapeCreator'
 ], function(
 	GooRunner,
 	Vector3,
@@ -45,9 +44,7 @@ require([
 
 	EntityUtils,
 	RSVP,
-	ShapeCreator,
-	TangentGenerator
-
+	ShapeCreator
 ) {
 	"use strict";
 	var resourcePath = '../resources/new_format/skeleton/';
@@ -119,7 +116,7 @@ require([
 			}),
 			world: goo.world
 		});
-		sceneLoader.load('skybox.scene.json').then(function(entities) {
+		sceneLoader.load('skybox.scene').then(function(entities) {
 			for(var i in entities) {
 				entities[i].addToWorld();
 			}
@@ -132,7 +129,7 @@ require([
 				}),
 				world: goo.world
 		});
-		materialLoader.load('materials/desert.mat').then(function(material) {
+		materialLoader.load('materials/desert.material').then(function(material) {
 			var meshData = ShapeCreator.createQuad(10000, 10000, 100, 100);
 			floorMaterial = material;
 			var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
@@ -247,7 +244,7 @@ require([
 	// Load the character
 	function makeSkeleton(world, loader) {
 		var sceneLoader = new SceneLoader({ loader: loader, world: world });
-		var p = sceneLoader.load('skeleton.scene.json').then(function(entities) {
+		var p = sceneLoader.load('skeleton.scene').then(function(entities) {
 			console.log(entities);
 			var topEntity = getTopEntity(entities);
 			return topEntity;
@@ -317,7 +314,7 @@ require([
 	}
 
 
-	loader.loadBundle('skeleton.bundle.json').then(function() {
+	loader.loadBundle('skeleton.bundle').then(function() {
 		init();
 	});
 });

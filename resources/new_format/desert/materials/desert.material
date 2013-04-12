@@ -4,8 +4,8 @@
 		"moveZ": 0.00
 	},
 	"name": "Desert Material",
-	"textures": [
-		"textures/desert_diffuse.tex"
+	"textureRefs": [
+		"textures/desert_diffuse.texture"
 	],
 	"shaderRef": "shaders/desert.shader"
 }

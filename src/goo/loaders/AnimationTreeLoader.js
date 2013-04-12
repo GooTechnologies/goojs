@@ -104,10 +104,13 @@ define([
 		};
 
 		AnimationTreeLoader.prototype._loadTree = function (animTreePath) {
-			return this._loader.load(animTreePath+'.json');
+			return this._loader.load(animTreePath);
 		};
 
 		AnimationTreeLoader.prototype._parseTree = function (animTree) {
+			if (typeof animTree === 'string') {
+				animTree = JSON.parse(animTree);
+			}
 			// read clip info
 			if (!animTree.Clips || !animTree.Layers) {
 				return false;

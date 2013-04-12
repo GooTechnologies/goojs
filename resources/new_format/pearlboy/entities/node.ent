@@ -1,0 +1,23 @@
+{
+	"name": "node",
+	"components": {
+		"transform": {
+			"translation": [
+				16.65681,
+				-26.13003,
+				-153.92
+			],
+			"rotation": [
+				0,
+				0.9754767247714486,
+				-1.5707963267948966
+			],
+			"scale": [
+				1,
+				1,
+				1
+			],
+			"parentRef": "entities/Paddle002.ent"
+		}
+	}
+}

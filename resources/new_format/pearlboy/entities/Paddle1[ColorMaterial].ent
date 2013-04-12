@@ -1,5 +1,5 @@
 {
-	"name": "backdropMesh[SurfaceView_Skydrop]",
+	"name": "Paddle1[ColorMaterial]",
 	"components": {
 		"transform": {
 			"translation": [
@@ -17,15 +17,15 @@
 				1,
 				1
 			],
-			"parentRef": "entities/backdropMesh.ent"
+			"parentRef": "entities/Paddle1.ent"
 		},
 		"meshRenderer": {
 			"materials": [
-				"materials/SurfaceView_Skydrop.mat"
+				"materials/ColorEffectR135G59B8-material.mat"
 			]
 		},
 		"meshData": {
-			"mesh": "meshes/backdropMesh[SurfaceView_Skydrop].mesh"
+			"mesh": "meshes/Paddle1[ColorMaterial].mesh"
 		}
 	}
 }

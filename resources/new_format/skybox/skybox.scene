@@ -1,0 +1,8 @@
+{
+	"entityRefs": [
+		"entities/root.entity",
+		"entities/backdrop.entity",
+		"entities/backdropMesh.entity",
+		"entities/backdropMesh[SurfaceView_Skydrop].entity"
+	]
+}

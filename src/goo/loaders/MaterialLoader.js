@@ -69,6 +69,9 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
+		if (typeof materialDataSource === 'string') {
+			materialDataSource = JSON.parse(materialDataSource);
+		}
 		var that = this;
 		var promises = []; // Keep track of promises
 		var shader;
@@ -77,6 +80,9 @@ define([
 		var textures = [];
 
 		function addTexture(i, texture) {
+			if (typeof texture === 'string') {
+				texture = JSON.parse(texture);
+			}
 			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));
@@ -129,11 +135,11 @@ define([
 					}
 				}
 			}
-			if (materialDataSource.textures && materialDataSource.textures.length) {
-				for (var i = 0; i < materialDataSource.textures.length; i++) {
+			if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
+				for (var i = 0; i < materialDataSource.textureRefs.length; i++) {
 					var pushTexture = addTexture.bind(null,i);
-					var p = this._loader.load(materialDataSource.textures[i])
-					.then(pushTexture);
+					var p = this._loader.load(materialDataSource.textureRefs[i])
+						.then(pushTexture);
 					promises.push(p);
 				}
 			}

@@ -79,7 +79,7 @@ function(
 	 */
 	EntityLoader.prototype.load = function(entityRef) {
 		var that = this;
-		var promise = this._loader.load(entityRef+'.json', function(data) {
+		var promise = this._loader.load(entityRef, function(data) {
 			return that._parse(data, entityRef);
 		});
 		this._cache[entityRef] = promise;
@@ -88,6 +88,9 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource) {
+		if (typeof entitySource === 'string') {
+			entitySource = JSON.parse(entitySource);
+		}
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
@@ -204,7 +207,7 @@ function(
 		var ml = this._materialLoader;
 
 		for(var attribute in meshRendererComponentSource) {
-			if(attribute === 'materials') {
+			if(attribute === 'materialRefs') {
 				for(var i in meshRendererComponentSource[attribute]) {
 					var p = ml.load(meshRendererComponentSource[attribute][i]);
 					promises.push(p);
@@ -233,7 +236,7 @@ function(
 		var mdl = this._meshLoader;
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
-			if(attribute === 'mesh') {
+			if(attribute === 'meshRef') {
 				var p = mdl.load(meshDataComponentSource[attribute]);
 				promises.push(p);
 			}
