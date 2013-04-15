@@ -173,16 +173,15 @@ define([
 
             var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
             var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
+            var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+            // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
+            Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
 
             // Initialize the triangleData to the current amount of vertices and indices.
             var vertCount = originalPositions.length / 3;
             this._triangleData.clear();
             this._triangleData.posCount = vertCount * 4;
             this._triangleData.largestIndex = vertCount - 1;
-
-            var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-            // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-            Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
 
             // Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
             // The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
@@ -203,10 +202,7 @@ define([
                 this._triangleData.positions[offset] = v1.data[1];
                 offset++;
                 this._triangleData.positions[offset] = v1.data[2];
-                offset++;
-                // w component is 1.0
-                this._triangleData.positions[offset] = 1.0;
-                offset++;
+                offset += 2;
             }
 
             var cameraNearZInWorld = -this.camera.near;
@@ -353,25 +349,25 @@ define([
 
             */
             maxPos = this._triangleData.posCount;
-            var homogeneousDivide = 0;
-            var p2, p3, p4, wComponent;
             for (var p = 0; p < maxPos; p++) {
                 // Copy the vertex data into the v1 vector from the triangleData's position array.
-                p2 = p + 1;
-                p3 = p + 2;
-                p4 = p + 3;
+                var p2 = p + 1;
+                var p3 = p + 2;
+                var p4 = p + 3;
                 v1.data[0] = this._triangleData.positions[p];
                 v1.data[1] = this._triangleData.positions[p2];
                 v1.data[2] = this._triangleData.positions[p3];
-                v1.data[3] = this._triangleData.positions[p4];
+                // The w-component is still 1.0 here.
+                v1.data[3] = 1.0;
+
 
                 // TODO : Combine projection + screen space transformations into one matrix.
                 // Projection transform
                 cameraProjectionMatrix.applyPost(v1);
 
                 // Homogeneous divide.
-                wComponent = v1.data[3];
-                homogeneousDivide =  1.0 / wComponent;
+                var wComponent = v1.data[3];
+                var homogeneousDivide =  1.0 / wComponent;
                 v1.data[0] *= homogeneousDivide;
                 v1.data[1] *= homogeneousDivide;
 
@@ -385,25 +381,6 @@ define([
 
                 // Step p forwards to the last position read.
                 p = p4;
-            }
-        };
-
-        /**
-        *	Transforms the vertices with the given projection transform matrix and then performs the homogeneous division.
-        *
-        *	@param {Array.<Vector4>} vertices The vertex array
-        *	@param {Matrix4x4} matrix The projection transformation matrix
-        */
-        SoftwareRenderer.prototype._projectionTransform = function (vertices, matrix) {
-
-            for (var i = 0; i < vertices.length; i++) {
-                var v = vertices[i];
-
-                matrix.applyPost(v);
-
-                var div = 1.0 / v.data[3];
-                v.data[0] *= div;
-                v.data[1] *= div;
             }
         };
 
