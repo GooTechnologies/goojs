@@ -7,6 +7,7 @@ define([
         "use strict";
 
         var tempVec = new Vector4(0, 0, 0, 1);
+        var combinedMatrix = new Matrix4x4();
 
         /*
             Need to transform five homogeneous positions for a bounding sphere.
@@ -52,7 +53,7 @@ define([
         BoundingSphereOcclusionModule.prototype.occlusionCull = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
 
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-            var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entityWorldTransformMatrix);
+            Matrix4x4.combine(cameraViewMatrix, entityWorldTransformMatrix, combinedMatrix);
 
             var boundingSphere = entity.meshDataComponent.modelBound;
 

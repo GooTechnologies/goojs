@@ -28,6 +28,10 @@ define([
         var outsideIndices = new Uint8Array(3);
         var insideIndices = new Uint8Array(3);
 
+        // Store matrix4x4 to be re-used
+        var cameraViewProjectionMatrix = new Matrix4x4();
+        var combinedMatrix = new Matrix4x4();
+
 
         // EdgeData used during rendering.
         var edgeData = new EdgeData();
@@ -125,7 +129,7 @@ define([
 
             var cameraViewMatrix = this.camera.getViewMatrix();
             var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-            var cameraViewProjectionMatrix = Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix);
+            Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix, cameraViewProjectionMatrix);
             var cameraNearZInWorld = -this.camera.near;
             var visibleEntities = [];
 
@@ -178,7 +182,7 @@ define([
 
             var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-            var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix);
+            Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
 
             // Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
             // The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.

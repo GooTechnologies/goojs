@@ -62,6 +62,8 @@ define([
         var v3 = new Vector4(0, 0, 0, 1);
         var indices = new Uint8Array(3);
 
+        var combinedMatrix = new Matrix4x4();
+
         /**
          *  @param {SoftwareRenderer} renderer
          *  @constructor
@@ -127,7 +129,7 @@ define([
 
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
-            var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
+            Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
 
             // writes data to the global variable positionArray.
             this._copyEntityVerticesToPositionArray(entity);
@@ -469,7 +471,7 @@ define([
             var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-            var combinedMatrix = Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix);
+            Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
 
             // writes data to the global variable positionArray.
             this._copyEntityVerticesToPositionArray(entity);
