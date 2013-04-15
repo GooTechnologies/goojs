@@ -477,7 +477,7 @@ define([
             var maxPos = positionArray.length;
             // Projection transform + homogeneous divide for every vertex.
             // Early exit on near plane clip.
-            var p2, p3, p4, wComponent;
+            var p2, p3, p4, wComponent, div;
             for (var p = 0; p < maxPos; p++) {
 
                 p2 = p + 1;
@@ -497,7 +497,7 @@ define([
                     return false;
                 }
 
-                var div = 1.0 / wComponent;
+                div = 1.0 / wComponent;
                 v1.data[0] *= div;
                 v1.data[1] *= div;
 

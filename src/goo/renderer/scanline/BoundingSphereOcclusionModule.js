@@ -6,6 +6,27 @@ define([
         function (Matrix4x4, Vector4) {
         "use strict";
 
+        var tempVec = new Vector4(0, 0, 0, 1);
+
+        /*
+            Need to transform five homogeneous positions for a bounding sphere.
+
+            will save the positions in the order :
+            [near, left, right, top, bottom]
+        */
+        var positionArray = new Float32Array(20);
+
+        // DEBUG COLORS
+        var green = [0, 255, 0];
+        var cyan = [0, 190, 190];
+        /*
+         var red = [255, 0, 0];
+         var blue = [0, 0, 255];
+         var yellow = [255, 255, 0];
+         var pink = [255, 0, 255];
+
+         */
+
         /**
          *
          * @param renderer
@@ -15,6 +36,8 @@ define([
             this.renderer = renderer;
             this._clipY = renderer.height - 1;
             this._clipX = renderer.width - 1;
+            this._halfClipX = this._clipX / 2;
+            this._halfClipY = this._clipY / 2;
         }
 
         /**
@@ -32,8 +55,14 @@ define([
             var combinedMatrix = Matrix4x4.combine(cameraViewMatrix, entityWorldTransformMatrix);
 
             var boundingSphere = entity.meshDataComponent.modelBound;
-            var origin = new Vector4(0, 0, 0, 1);
-            combinedMatrix.applyPost(origin);
+
+            // Set the tempVec to origin.
+            tempVec.data[0] = 0;
+            tempVec.data[1] = 0;
+            tempVec.data[2] = 0;
+            tempVec.data[3] = 1.0;
+
+            combinedMatrix.applyPost(tempVec);
 
             var scale = entity.transformComponent.transform.scale;
 
@@ -47,7 +76,10 @@ define([
              Bounds.w == radius.
              float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
              */
-            var cameraToSphereDistance = Math.sqrt(origin.x * origin.x + origin.y * origin.y + origin.z * origin.z);
+            var origin_x = tempVec.data[0];
+            var origin_y = tempVec.data[1];
+            var origin_z = tempVec.data[2];
+            var cameraToSphereDistance = Math.sqrt(origin_x * origin_x + origin_y * origin_y + origin_z * origin_z);
 
             // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Math/asin
             // The asin method returns a numeric value between -pi/2 and pi/2 radians for x between -1 and 1. If the value of number is outside this range, it returns NaN.
@@ -57,25 +89,83 @@ define([
             var compensatedRadius = cameraToSphereDistance * Math.tan(Math.asin(radius / cameraToSphereDistance));
 
             // The coordinate which is closest to the near plane should be at one radius step closer to the camera.
-            var nearCoord = new Vector4(origin.x, origin.y, origin.z + radius, origin.w);
+            // w-component is always 1.0 at this point.
 
-            if (nearCoord.z > cameraNearZInWorld) {
+            var nearCut = origin_z + compensatedRadius;
+            if (nearCut > cameraNearZInWorld) {
                 // The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
                 return false;
             }
 
-            var leftCoord = new Vector4(origin.x - compensatedRadius, origin.y, origin.z, 1.0);
-            var rightCoord = new Vector4(origin.x + compensatedRadius, origin.y, origin.z, 1.0);
-            var topCoord = new Vector4(origin.x, origin.y + compensatedRadius, origin.z, 1.0);
-            var bottomCoord = new Vector4(origin.x , origin.y - compensatedRadius, origin.z, 1.0);
+            // Populate the positionarray.
+            // [near, left, right, top, bottom]
 
-            var vertices = [nearCoord, leftCoord, rightCoord, topCoord, bottomCoord];
+            // NEAR
+            positionArray[0] = origin_x;
+            positionArray[1] = origin_y;
+            positionArray[2] = nearCut;
+            //positionArray[3] = 1.0;
 
-            // TODO : Create a combined matrix of the projection and screenspace
-            this.renderer._projectionTransform(vertices, cameraProjectionMatrix);
-            this.renderer._transformToScreenSpace(vertices);
+            // LEFT
+            positionArray[4] = origin_x - compensatedRadius;
+            positionArray[5] = origin_y;
+            positionArray[6] = origin_z;
+            //positionArray[7] = 1.0;
+
+            // RIGHT
+            positionArray[8] = origin_x + compensatedRadius;
+            positionArray[9] = origin_y;
+            positionArray[10] = origin_z;
+            //positionArray[11] = 1.0;
+
+            // TOP
+            positionArray[12] = origin_x;
+            positionArray[13] = origin_y + compensatedRadius;
+            positionArray[14] = origin_z;
+            //positionArray[15] = 1.0;
+
+            // BOTTOM
+            positionArray[16] = origin_x;
+            positionArray[17] = origin_y - compensatedRadius;
+            positionArray[18] = origin_z;
+            //positionArray[19] = 1.0;
+
+            /*
+            var nearCoord = new Vector4(origin_x, origin_y, nearCut, 1.0);
+            var leftCoord = new Vector4(origin_x - compensatedRadius, origin_y, origin_z, 1.0);
+            var rightCoord = new Vector4(origin_x + compensatedRadius, origin_y, origin_z, 1.0);
+            var topCoord = new Vector4(origin_x, origin_y + compensatedRadius, origin_z, 1.0);
+            var bottomCoord = new Vector4(origin_x , origin_y - compensatedRadius, origin_z, 1.0);
+            */
+
+            // Projection transform the positions.
+            var div;
+            var i2, i3, i4;
+            for (var i = 0; i < 20; i++) {
+                i2 = i + 1;
+                i3 = i + 2;
+                i4 = i + 3;
+                tempVec.data[0] = positionArray[i];
+                tempVec.data[1] = positionArray[i2];
+                tempVec.data[2] = positionArray[i3];
+                tempVec.data[3] = 1.0;
+
+                cameraProjectionMatrix.applyPost(tempVec);
+
+                div = 1.0 / tempVec.data[3];
+
+                tempVec.data[0] *= div;
+                tempVec.data[1] *= div;
+
+                positionArray[i] = (tempVec.data[0] + 1.0) * (this._halfClipX);
+                positionArray[i2] = (tempVec.data[1] + 1.0) * (this._halfClipY);
+                positionArray[i4] = div;
+
+                i = i4;
+            }
 
             // Some conservative rounding of the coordinates to integer pixel coordinates.
+            /*
             leftCoord.x = Math.floor(leftCoord.x);
             leftCoord.y = Math.round(leftCoord.y);
 
@@ -90,18 +180,7 @@ define([
 
             nearCoord.x = Math.round(nearCoord.x);
             nearCoord.y = Math.round(nearCoord.y);
-
-
-            var green = [0, 255, 0];
-            /*
-             var red = [255, 0, 0];
-             var blue = [0, 0, 255];
-             var yellow = [255, 255, 0];
-             var pink = [255, 0, 255];
-             var cyan = [0, 190, 190];
-             */
-
-            var nearestDepth = 1.0 / nearCoord.w;
+            */
 
             // Executes the occluded test in the order they are put, exits the case upon any false value.
             // TODO: Test for best order of early tests.
@@ -123,7 +202,7 @@ define([
              */
 
             //return this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink);
-            return this._isSSAABBScanlineOccluded(leftCoord, rightCoord, topCoord, bottomCoord, green, nearestDepth);
+            return this._isSSAABBScanlineOccluded();
         };
 
         /**
@@ -132,13 +211,17 @@ define([
          *
          *	@return {Boolean} occluded or not occluded.
          */
-        BoundingSphereOcclusionModule.prototype._isSSAABBScanlineOccluded = function (leftCoordinate, rightCoordinate, topCoordinate, bottomCoordinate, color, nearestDepth) {
+        BoundingSphereOcclusionModule.prototype._isSSAABBScanlineOccluded = function () {
 
-            var leftX = leftCoordinate.x;
-            var rightX = rightCoordinate.x;
+            // [near, left, right, top, bottom]
+            var nearestDepth = positionArray[3];
 
-            var firstScanline = topCoordinate.y;
-            var lastScanline = bottomCoordinate.y;
+            var leftX = positionArray[4];
+            var rightX = positionArray[8];
+
+            // Fetch top and bottoms y-coordinates.
+            var firstScanline = positionArray[13];
+            var lastScanline = positionArray[17];
 
             // Round the values to create a conservative check.
             leftX = Math.floor(leftX);
@@ -146,6 +229,7 @@ define([
             firstScanline = Math.ceil(firstScanline);
             lastScanline = Math.floor(lastScanline);
 
+            // Clip horizontally and vertically.
             if (leftX < 0) {
                 leftX = 0;
             }
@@ -162,16 +246,16 @@ define([
                 lastScanline = 0;
             }
 
-            var width = this.renderer.width;
-
             // Scanline check the interval [firstScanline, lastScanline].
             // Iterating downwards!
+            var width = this.renderer.width;
+            var sampleCoord;
             for (var y = firstScanline; y >= lastScanline; y--) {
-                var sampleCoord = y * width + leftX;
+                sampleCoord = y * width + leftX;
                 // Check interval [leftX, rightX].
                 for (var x = leftX; x <= rightX; x++) {
                     // Debug, add color where scanline samples are taken.
-                    this.renderer._colorData.set(color, sampleCoord * 4);
+                    this.renderer._colorData.set(green, sampleCoord * 4);
 
                     if(this.renderer._depthData[sampleCoord] < nearestDepth) {
                         // Early exit if the sample is visible.
@@ -215,7 +299,6 @@ define([
                 // This misses the middle line, might be too non-conservative !
 
                 // DEBUGGGING Set the pixels to cyan so i know this is where it finished sampling.
-                var cyan = [0, 255, 255];
                 var sampleCoord;
                 if (this._isCoordinateInsideScreen(topCoordinate)) {
                     sampleCoord = topCoordinate.y * width + topCoordinate.x;
