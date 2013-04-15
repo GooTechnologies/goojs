@@ -783,6 +783,11 @@ define([
             var startLine = edgeData.getStartLine();
             var stopLine = edgeData.getStopLine();
 
+            var longXInc = edgeData.getLongXIncrement();
+            var shortXInc = edgeData.getShortXIncrement();
+            var longZInc = edgeData.getLongZIncrement();
+            var shortZInc = edgeData.getShortZIncrement();
+
             // Checking if the triangle's long edge is on the right or the left side.
             if (orientationData[0]) { //RIGHT ORIENTED (long edge on right side)
                 if (orientationData[1]) { //INWARDS TRIANGLE
@@ -822,7 +827,11 @@ define([
                             return false;
                         }
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
                     for (var y = startLine; y <= stopLine; y++) {
@@ -856,7 +865,11 @@ define([
                             return false;
                         }
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 }
             } else { // LEFT ORIENTED
@@ -894,7 +907,11 @@ define([
                             return false;
                         }
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
                     for (var y = startLine; y <= stopLine; y++) {
@@ -930,7 +947,11 @@ define([
                             return false;
                         }
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 }
             }
@@ -949,6 +970,11 @@ define([
             // The start and stop lines are already rounded y-coordinates.
             var startLine = edgeData.getStartLine();
             var stopLine = edgeData.getStopLine();
+
+            var longXInc = edgeData.getLongXIncrement();
+            var shortXInc = edgeData.getShortXIncrement();
+            var longZInc = edgeData.getLongZIncrement();
+            var shortZInc = edgeData.getShortZIncrement();
 
             // Leaning inwards means that the triangle is going inwards from left to right.
 
@@ -997,7 +1023,11 @@ define([
                         // Draw the span of pixels.
                         this._fillPixels(leftX, rightX, y, leftZ, rightZ);
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
                     for (var y = startLine; y <= stopLine; y++) {
@@ -1025,7 +1055,11 @@ define([
                         // Draw the span of pixels.
                         this._fillPixels(leftX, rightX, y, leftZ, rightZ);
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 }
             } else { // LONG EDGE IS ON THE LEFT SIDE
@@ -1060,7 +1094,11 @@ define([
                         // Draw the span of pixels.
                         this._fillPixels(leftX, rightX, y, leftZ, rightZ);
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
                     for (var y = startLine; y <= stopLine; y++) {
@@ -1089,24 +1127,19 @@ define([
                         // Draw the span of pixels.
                         this._fillPixels(leftX, rightX, y, leftZ, rightZ);
 
-                        this._updateEdgeDataToNextLine(edgeData);
+                        // Update the edge data
+                        edgeData.floatData[0] += longXInc;
+                        edgeData.floatData[1] += shortXInc;
+                        edgeData.floatData[2] += longZInc;
+                        edgeData.floatData[3] += shortZInc;
                     }
                 }
             }
         };
 
         /**
-        * // TODO : Look up if it would be faster to store the increments as local variables in the
-        *			scanline rendering loop. This to not have to access the array if that would cause
-        *			unneccessary reads and maybe cashe misses?
-        */
-        SoftwareRenderer.prototype._updateEdgeDataToNextLine = function (edgeData) {
-            edgeData.updateXValues();
-        };
-
-        /**
-         * Creates the EdgeData , used for rendering.
-        *	@return {EdgeData} edgeData
+         * Creates the EdgeData , used for rendering. False is returned if there is not anything to draw.
+        *	@return {Boolean} drawable
         */
         SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
