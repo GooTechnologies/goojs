@@ -574,19 +574,24 @@ define([
         SoftwareRenderer.prototype._createEdgesForTriangle = function (indices, positions) {
 
             // Use (x,y,1/w), the w component is already inverted.
+            // Reuse the global vectors for storing data to send as parameter to create Edges.
             var vPos = indices[0] * 4;
-            var vert1 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            v1.data[0] = positions[vPos];
+            v1.data[1] = positions[vPos + 1];
+            v1.data[2] = positions[vPos + 3];
             vPos = indices[1] * 4;
-            var vert2 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            v2.data[0] = positions[vPos];
+            v2.data[1] = positions[vPos + 1];
+            v2.data[2] = positions[vPos + 3];
             vPos = indices[2] * 4;
-            var vert3 = [positions[vPos], positions[vPos + 1], positions[vPos + 3]];
+            v3.data[0] = positions[vPos];
+            v3.data[1] = positions[vPos + 1];
+            v3.data[2] = positions[vPos + 3];
 
             // The edges are created sorted in growing y-order.
-            this._edges = [
-                new Edge(vert1, vert2),
-                new Edge(vert2, vert3),
-                new Edge(vert3, vert1)
-            ];
+            this._edges[0] = new Edge(v1, v2);
+            this._edges[1] = new Edge(v2, v3);
+            this._edges[2] = new Edge(v3, v1);
 
             var maxHeight = 0;
             var longEdge = 0;
