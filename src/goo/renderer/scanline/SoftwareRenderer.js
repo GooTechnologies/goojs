@@ -35,6 +35,7 @@ define([
 
         // EdgeData used during rendering.
         var edgeData = new EdgeData();
+        var edges = [new Edge(), new Edge(), new Edge()];
 
         /**
         *	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
@@ -53,9 +54,6 @@ define([
             this._halfClipY = this._clipY / 2;
 
             this.camera = parameters.camera;
-
-            // Pre-allocate memory for the edges.
-            this._edges = new Array(3);
 
             var numOfPixels = this.width * this.height;
 
@@ -570,16 +568,16 @@ define([
             v3.data[2] = positions[vPos + 3];
 
             // The edges are created sorted in growing y-order.
-            this._edges[0] = new Edge(v1, v2);
-            this._edges[1] = new Edge(v2, v3);
-            this._edges[2] = new Edge(v3, v1);
+            edges[0].setData(v1, v2);
+            edges[1].setData(v2, v3);
+            edges[2].setData(v3, v1);
 
             var maxHeight = 0;
             var longEdge = 0;
 
             // Find edge with the greatest height in the Y axis, this is the long edge.
             for(var i = 0; i < 3; i++) {
-                var height = this._edges[i].y1 - this._edges[i].y0;
+                var height = edges[i].y1 - edges[i].y0;
                 if(height > maxHeight) {
                     maxHeight = height;
                     longEdge = i;
@@ -629,7 +627,7 @@ define([
 
             var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
-            var longEdge = this._edges[edgeIndices[0]];
+            var longEdge = edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
             var s2 = edgeIndices[2];
 
@@ -640,11 +638,11 @@ define([
             }
 
             // Round y-coordinates to expand the area.
-            this._edges[0].roundOccludeeCoordinates();
-            this._edges[1].roundOccludeeCoordinates();
-            this._edges[2].roundOccludeeCoordinates();
+            edges[0].roundOccludeeCoordinates();
+            edges[1].roundOccludeeCoordinates();
+            edges[2].roundOccludeeCoordinates();
 
-            var shortEdge = this._edges[s1];
+            var shortEdge = edges[s1];
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
@@ -661,7 +659,7 @@ define([
                     return false;
                 }
             }
-            shortEdge = this._edges[s2];
+            shortEdge = edges[s2];
             if (this._createEdgeData(longEdge, shortEdge)) {
                 // If the orientation hasn't been created, do so.
                 if (orientationData === null) {
@@ -693,7 +691,7 @@ define([
 
             var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
-            var longEdge = this._edges[edgeIndices[0]];
+            var longEdge = edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
             var s2 = edgeIndices[2];
 
@@ -703,7 +701,7 @@ define([
                 return;
             }
 
-            var shortEdge = this._edges[s1];
+            var shortEdge = edges[s1];
             /*
             TODO : The long edge's data is calculated twice at the momnent. The only difference is if the values are to be
             interpolated to the proper y.
@@ -723,7 +721,7 @@ define([
                 this._drawEdges(edgeData, orientationData);
             }
 
-            shortEdge = this._edges[s2];
+            shortEdge = edges[s2];
             if (this._createEdgeData(longEdge, shortEdge)) {
                 // If the orientation hasn't been created, do so.
                 if (orientationData === null) {
