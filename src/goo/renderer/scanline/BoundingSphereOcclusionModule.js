@@ -97,38 +97,33 @@ define([
                 return false;
             }
 
-            // Populate the positionarray.
+            // Populate the positionarray. No need to write 1.0 to the w-component, it's not used at this point.
             // [near, left, right, top, bottom]
 
             // NEAR
             positionArray[0] = origin_x;
             positionArray[1] = origin_y;
             positionArray[2] = nearCut;
-            //positionArray[3] = 1.0;
 
             // LEFT
             positionArray[4] = origin_x - compensatedRadius;
             positionArray[5] = origin_y;
             positionArray[6] = origin_z;
-            //positionArray[7] = 1.0;
 
             // RIGHT
             positionArray[8] = origin_x + compensatedRadius;
             positionArray[9] = origin_y;
             positionArray[10] = origin_z;
-            //positionArray[11] = 1.0;
 
             // TOP
             positionArray[12] = origin_x;
             positionArray[13] = origin_y + compensatedRadius;
             positionArray[14] = origin_z;
-            //positionArray[15] = 1.0;
 
             // BOTTOM
             positionArray[16] = origin_x;
             positionArray[17] = origin_y - compensatedRadius;
             positionArray[18] = origin_z;
-            //positionArray[19] = 1.0;
 
             /*
             var nearCoord = new Vector4(origin_x, origin_y, nearCut, 1.0);

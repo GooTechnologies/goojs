@@ -25,6 +25,9 @@ define([
         var clipVec = new Vector4(0, 0, -1.0, 1);
         var g_vertices = [v1, v2, v3];
 
+        var outsideIndices = new Uint8Array(3);
+        var insideIndices = new Uint8Array(3);
+
 
         // EdgeData used during rendering.
         var edgeData = new EdgeData();
@@ -237,12 +240,11 @@ define([
                 // Outside indices are the vertices which are outside the view frustum,
                 // that is closer than the near plane in this case.
                 // The inside indices are the ones on the inside.
-                var outsideIndices = [];
-                var insideIndices = [];
 
-                this._categorizeVertices(outsideIndices, insideIndices, g_vertices, cameraNearZInWorld);
 
-                switch (outsideIndices.length) {
+                var outCount = this._categorizeVertices(cameraNearZInWorld);
+
+                switch (outCount) {
                     case 0:
                         // All vertices are on the inside. Add them directly.
                         this._triangleData.addIndices(indices);
@@ -405,21 +407,26 @@ define([
         *	Categorizes the vertices into outside and inside (of the view frustum).
         *	A vertex is categorized as being on the inside of the view frustum if it is located on the near plane.
         *	The outside- and insideIndices arrays are populated with the index to the vertex in question.
-        *	@param {Array.<Number>} outsideIndices
-        *	@param {Array.<Number>} insideIndices
-        *	@param {Array.<Number>} vertices
         *   @param cameraNear
+         *   @returns {Number} outCount
         */
-        SoftwareRenderer.prototype._categorizeVertices = function (outsideIndices, insideIndices, vertices, cameraNear) {
+        SoftwareRenderer.prototype._categorizeVertices = function (cameraNear) {
+
+            var outCount = 0;
+            var inCount= 0;
 
             for ( var i = 0; i < 3; i++ ) {
                 // The vertex shall be categorized as an inside vertex if it is on the near plane.
-                if (vertices[i].data[2] <= cameraNear) {
-                    insideIndices.push(i);
+                if (g_vertices[i].data[2] <= cameraNear) {
+                    insideIndices[inCount] = i;
+                    inCount++;
                 } else {
-                    outsideIndices.push(i);
+                    outsideIndices[outCount] = i;
+                    outCount++;
                 }
             }
+
+            return outCount;
         };
 
         /**
