@@ -14,7 +14,7 @@ runCommand = (cmd, callback) ->
 		if callback
 			callback()
 
-task 'minify', 'minify try', (options) ->
+task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 
 	if options.arguments.length == 2
 		fileIn = options.arguments[0]
