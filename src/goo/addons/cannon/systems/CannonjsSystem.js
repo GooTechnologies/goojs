@@ -1,5 +1,4 @@
 define([
-	'goo/lib/cannon/cannon',
 	'goo/entities/systems/System',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
@@ -11,7 +10,6 @@ define([
 ],
 /** @lends */
 function(
-	undefined,
 	System,
 	BoundingBox,
 	BoundingSphere,
@@ -27,6 +25,8 @@ function(
 
 	/**
 	 * @class Handles integration with Cannon.js
+	 * @desc Depends on the global CANNON object.
+	 * Load cannon.js using a <script> tag before using this system.
 	 */
 	function CannonjsSystem(settings) {
 		System.call(this, 'CannonjsSystem', ['CannonjsComponent', 'TransformComponent']);

@@ -1,16 +1,17 @@
 define([
-	'goo/lib/box2d/box2d',
 	'goo/entities/systems/System'
 ],
 /** @lends */
 function(
-	Box2D,
 	System
 ) {
 	"use strict";
+	// global Box2D
 
 	/**
-	 * @class
+	 * @class Physics simulation using Box2D.
+	 * @desc Depends on the global Box2D object.
+	 * Load box2d.js using a <script> tag before using this system.
 	 */
 	function Box2DSystem() {
 		System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);
