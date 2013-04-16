@@ -277,7 +277,6 @@ function (Vector3, Matrix3x3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			transform.rotation.toAngles(this.tmpVec);
 			this.tmpVec.x += -this.rotationVector.x * rotMult * this.multiplier.x;
 			this.tmpVec.y += this.rotationVector.y * rotMult * this.multiplier.y;
 			this.tmpVec.z += this.rotationVector.z * rotMult * this.multiplier.z;
