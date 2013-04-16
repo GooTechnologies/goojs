@@ -14,9 +14,10 @@ define([
 	 * @class Handles loading of data.
 	 *
 	 * @constructor
+	 * @param {object} [parameters]
 	 * @param {string} [parameters.rootPath=''] The path of the project root.
 	 * Ex. <code>/project/root/</code>.
-	 * @param {string} [parameters.crossOrigin='anonymous'] Sets the Image.crossOrigin 
+	 * @param {string} [parameters.crossOrigin='anonymous'] Sets the Image.crossOrigin
 	 * of any loaded Image objects.
 	 * @param {Ajax} [parameters.xhr]
 	 */
@@ -29,7 +30,9 @@ define([
 
 		this._crossOrigin = parameters.crossOrigin || 'anonymous';
 		this.rootPath = parameters.rootPath || '';
-		this.xhr = parameters.xhr || new Ajax();
+		this.xhr = parameters.xhr || new Ajax(this._progressCallback.bind(this));
+		this._progressCallbacks = [];
+		this.total = 0;
 	}
 
 	/**
@@ -78,6 +81,42 @@ define([
 		return promise;
 	};
 
+	/**
+	 * Add a callback to get loader progress. The object passed to the callback will be
+	 * on the form:<br />
+	 * <code>{
+	 *   loaded: number,
+	 *   total: number,
+	 *   count: number
+	 * }</code>
+	 * @param {function(object)} callback
+	 */
+	Loader.prototype.addProgressCallback = function (callback) {
+		this._progressCallbacks.push(callback);
+	};
+
+	/**
+	 * Remove a progress callback. It has to be the same function you added to callback earlier.
+	 * @param {function(object)} callback
+	 */
+	Loader.prototype.removeProgressCallback = function (callback) {
+		for (var i = 0; i < this._progressCallbacks.length; i++) {
+			if (this._progressCallbacks[i] === callback) {
+				this._progressCallbacks.splice(i, 1);
+				break;
+			}
+		}
+	};
+
+	Loader.prototype._progressCallback = function(progress) {
+		if (this.total) {
+			progress.total = this.total;
+		}
+		for (var i = 0; i < this._progressCallbacks.length; i++) {
+			this._progressCallbacks[i](progress);
+		}
+	};
+
 	Loader.prototype._getDataFromSuccessfulRequest = function(request) {
 		return request.response;
 	};
@@ -96,10 +135,6 @@ define([
 	Loader.prototype.loadImage = function (url) {
 		var promise = new RSVP.Promise();
 		var image = new Image();
-		var _url = this._buildURL(url);
-
-
-		image.crossOrigin = this._crossOrigin || '';
 
 		image.addEventListener('load', function () {
 			image.dataReady = true;
@@ -107,17 +142,28 @@ define([
 		}, false);
 
 		image.addEventListener('error', function () {
-			promise.reject('Loader.loadImage(): Couldn\'t load from [' + _url + ']');
+			promise.reject('Loader.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 
-		image.src = _url;
+		// Loading image as binary, then base64 encoding them. Needed to listen to progress
+		this.load(url, function(data) {
+			var bytes = new Uint8Array(data,0,data.byteLength);
+			var ascii = '';
+			for (var i=0; i<bytes.length; i++) {
+				ascii += String.fromCharCode(bytes[i]);
+			}
+			var base64 = btoa(ascii);
 
+			if (/^\x89PNG/.test(ascii)) {
+				image.src = 'data:image/png;base64,'+base64;
+			} else {
+				image.src = 'data:image/jpeg;base64,'+base64;
+			}
+		}, Loader.ARRAY_BUFFER);
 		return promise;
 	};
 
 	Loader.prototype._buildURL = function(url) {
-		//var _match = url.match(/\.(bundle|scene|ent|mat|mesh|shader|tex|script)$/);
-		//var _url = _match ? URLString + '.json' : URLString;
 		return this.rootPath + url;
 	};
 
