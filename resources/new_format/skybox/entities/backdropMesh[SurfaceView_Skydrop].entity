@@ -25,7 +25,7 @@
 			]
 		},
 		"meshData": {
-			"mesh": "meshes/backdropMesh[SurfaceView_Skydrop].mesh"
+			"meshRef": "meshes/backdropMesh[SurfaceView_Skydrop].mesh"
 		}
 	}
 }
