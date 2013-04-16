@@ -23,6 +23,10 @@ define([
 
         var positionArray = new Float32Array(8 * 4);
 
+        // The array contains the min and max x- and y-coordinates as well as the min depth.
+        // order : [minX, maxX, minY, maxY, minDepth]
+        var minMaxArray = new Float32Array(5);
+
         var triangleIndices = new Uint8Array([
             0,3,4,
             3,7,4,
@@ -85,8 +89,8 @@ define([
          * @returns {Boolean} occluder or not occluded.
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
-            //return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-            return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+           return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+           // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
         /**
@@ -171,19 +175,17 @@ define([
                 p = p4;
             }
 
-            // The array contains the min and max x- and y-coordinates as well as the min depth.
-            // order : [minX, maxX, minY, maxY, minDepth]
-            var minmaxArray = this._cohenSutherlandClipBox(positionArray);
+            this._cohenSutherlandClipBox(positionArray);
 
             // Round values from the clipping conservatively to integer pixel coordinates.
             /*jshint bitwise: false */
-            minmaxArray[0] = Math.floor(minmaxArray[0]) |0;
-            minmaxArray[1] = Math.ceil(minmaxArray[1]) |0;
-            minmaxArray[2] = Math.floor(minmaxArray[2]) |0;
-            minmaxArray[3] = Math.ceil(minmaxArray[3]) |0;
+            minMaxArray[0] = Math.floor(minMaxArray[0]) |0;
+            minMaxArray[1] = Math.ceil(minMaxArray[1]) |0;
+            minMaxArray[2] = Math.floor(minMaxArray[2]) |0;
+            minMaxArray[3] = Math.ceil(minMaxArray[3]) |0;
             /*jshint bitwise: true */
 
-            return this._isBoundingBoxScanlineOccluded(minmaxArray);
+            return this._isBoundingBoxScanlineOccluded(minMaxArray);
         };
 
         /**
@@ -221,8 +223,9 @@ define([
          *	if the coordinate is inside the clipping window. The depth is always taken into consideration, which will be overly conservative at some cases, but without doing this,
          *	it will be non-conservative in some cases.
          *
+         *  The new values are stored in the global minMaxArray.
+         *
          *	@param {Float32Array} positions Array of screen space transformed vertices.
-         *	@returns {Array.<Number>} minmaxArray Array to which the minimum and maximum values are written.
          */
         BoundingBoxOcclusionModule.prototype._cohenSutherlandClipBox = function (positions) {
             /*
@@ -393,8 +396,11 @@ define([
                 }
             }
             /*jshint bitwise: true */
-
-            return  [minX, maxX, minY, maxY, minDepth];
+            minMaxArray[0] = minX;
+            minMaxArray[1] = maxX;
+            minMaxArray[2] = minY;
+            minMaxArray[3] = maxY;
+            minMaxArray[4] = minDepth;
         };
 
         /**
