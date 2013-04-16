@@ -1,7 +1,8 @@
-require({
+require.config({
     baseUrl : './',
     paths : {
-        goo : '/js/goo'
+        goo: "../src/goo",
+        'goo/lib': '../lib'
     }
 });
 require(
@@ -58,6 +59,9 @@ require(
 		//-------- GLOBAL VARIABLES --------
 
 			var resourcePath = '../resources';
+            var gui = null;
+            var quadMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
+
 
 		//----------------------------------
 
@@ -67,6 +71,9 @@ require(
 				showStats : true,
 				canvas : document.getElementById('goo')
 			});
+
+            gui = new window.dat.GUI();
+            gui.add(quadMaterial, 'wireframe');
 
 			// Add camera
 			var camera = new Camera(90, 1, 1, 1000);
@@ -141,7 +148,7 @@ require(
 			}
 
 			translation.x = 0;
-			translation.z = -15;
+			translation.z = -15.5;
 
 			var wallW = 50;
 			var wallH = 15;
@@ -315,9 +322,7 @@ require(
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'Quad';
-			var material = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
-			entity.meshRendererComponent.materials.push(material);
-			material.wireframe = true;
+            entity.meshRendererComponent.materials.push(quadMaterial);
 			entity.addToWorld();
 			return entity;
 		}

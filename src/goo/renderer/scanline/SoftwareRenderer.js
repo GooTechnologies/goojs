@@ -749,6 +749,7 @@ define([
                         // TODO : Would be good to get the if case removed. This is needed at the moment because
                         // division by zero occurs in the creation of the slope variable.
                         var dif = rightX - leftX;
+                        /*
                         if (dif > 1) {
                             var slope = (rightZ - leftZ) / (realRightX - realLeftX);
                             rightZ = leftZ + (rightX - realLeftX) * slope;
@@ -758,6 +759,7 @@ define([
                             rightZ = Math.max(0.0, rightZ);
                             leftZ = Math.max(0.0, leftZ);
                         }
+                        */
 
                         // To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
                         // The leftZ is the absolute min depthx
@@ -792,6 +794,7 @@ define([
                         // TODO : Would be good to get the if case removed. This is needed at the moment because
                         // division by zero occurs in the creation of the slope variable.
                         var dif = rightX - leftX;
+                        /*
                         if (dif > 1) {
                             var slope = (rightZ - leftZ) / (realRightX - realLeftX);
                             rightZ = leftZ + (rightX - realLeftX) * slope;
@@ -799,6 +802,7 @@ define([
                             leftZ = Math.max(0.0, leftZ);
                             rightZ = Math.max(0.0, rightZ);
                         }
+                        */
 
                         var t = 0.5 / (dif + 1); // Using the larger span.
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
@@ -832,6 +836,7 @@ define([
                         // TODO : Would be good to get the if case removed. This is needed at the moment because
                         // division by zero occurs in the creation of the slope variable.
                         var dif = rightX - leftX;
+                        /*
                         if (dif > 1) {
                             var slope = (rightZ - leftZ) / (realRightX - realLeftX);
                             rightZ = leftZ + (rightX - realLeftX) * slope;
@@ -839,6 +844,7 @@ define([
                             rightZ = Math.max(0.0, rightZ);
                             leftZ = Math.max(0.0, leftZ);
                         }
+                        */
 
                         // To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
                         // The leftZ is the absolute min depth
@@ -872,6 +878,7 @@ define([
                         // TODO : Would be good to get the if case removed. This is needed at the moment because
                         // division by zero occurs in the creation of the slope variable.
                         var dif = rightX - leftX;
+                        /*
                         if (dif > 1) {
                             var slope = (rightZ - leftZ) / (realRightX - realLeftX);
                             rightZ = leftZ + (rightX - realLeftX) * slope;
@@ -879,6 +886,7 @@ define([
                             rightZ = Math.max(0.0, rightZ);
                             leftZ = Math.max(0.0, leftZ);
                         }
+                        */
 
                         // To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
                         // The leftZ is the absolute min depth
