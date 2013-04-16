@@ -95,7 +95,6 @@ require(
 
 			var debugcanvas = document.getElementById('debugcanvas');
 			var debugContext = debugcanvas.getContext('2d');
-			var imagedata = debugContext.createImageData(debugcanvas.width, debugcanvas.height);
 
 			// Override the current renderList for rendering in the GooRunner.
 
@@ -109,26 +108,13 @@ require(
                 "height": debugcanvas.height,
                 "camera": camera,
                 "maxVertCount": maxNumberOfOccluderVertices,
-                "maxIndexCount": maxNumberOfOccluderIndices
+                "maxIndexCount": maxNumberOfOccluderIndices,
+                "debugContext": debugContext
             });
 			goo.renderSystem.partitioner = occlusionCuller;
 
-			//var storage = new Uint8Array(4 * debugcanvas.width * debugcanvas.height);
-			//var gl = goo.renderer.context;
-
 			var clearColor = [0, 0, 0, 1.0];
 			goo.renderer.setClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
-
-			// Add the color data to the debug canvas
-			goo.callbacks.push(function() {
-
-				// console.time("readTime");
-				//gl.readPixels(0, 0, debugcanvas.width, debugcanvas.height, gl.RGBA, gl.UNSIGNED_BYTE, storage);
-				// console.timeEnd("readTime");
-				//occlusionCullingSystem.renderer.calculateDifference(storage, clearColor);
-				imagedata.data.set(occlusionCuller.renderer.getColorData());
-				debugContext.putImageData(imagedata, 0, 0);
-			});
 		}
 
 		function buildScene(goo) {

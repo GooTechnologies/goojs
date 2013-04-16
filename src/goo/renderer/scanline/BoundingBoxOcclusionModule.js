@@ -89,8 +89,8 @@ define([
          * @returns {Boolean} occluder or not occluded.
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
-           return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-           // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+           // return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+           return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
         /**
