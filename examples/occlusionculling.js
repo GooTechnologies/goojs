@@ -239,6 +239,8 @@ require(
 
 			createRoomArray(goo);
 
+            loadTestTriangle(goo);
+
 			goo.callbacks.push(function() {
 
 				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
@@ -390,6 +392,30 @@ require(
 				}
 			});
 		}
+
+        function loadTestTriangle(goo) {
+            var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+            var mLoader = new MeshLoader({'loader': loader});
+
+            var triPromise = mLoader.load('Triangle.mesh');
+
+            var material = new Material.createMaterial(ShaderLib.simpleLit,'RoomMaterial');
+            material.uniforms = {'materialDiffuse': [1.0, 0, 0, 1.0]};
+            var translation = new Vector3(60, 10, 0);
+
+            RSVP.all([triPromise]).then(function (mesh) {
+                var entity = EntityUtils.createTypicalEntity(goo.world, mesh[0]);
+                entity.setComponent(new OccluderComponent(mesh[0]));
+                entity.meshRendererComponent.materials.push(material);
+                entity.transformComponent.transform.translation.set(translation);
+
+                entity.meshDataComponent.modelBound = new BoundingBox();
+                entity.meshDataComponent.autoCompute = false;
+                entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
+
+                entity.addToWorld();
+            });
+        }
 
 		function createRoomArray (goo) {
 			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});

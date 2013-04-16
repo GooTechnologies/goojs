@@ -440,32 +440,6 @@ define([
 
         };
 
-        /**
-        *	Transforms the vertices' x and y coordinates into pixel coordinates of the screen.
-        *	// TODO : This function should not be used in prod, rather combine the projection transform and this one.
-        *	@param {Array.<Vector4>} vertices the vertices to be transformed.
-        */
-        SoftwareRenderer.prototype._transformToScreenSpace = function (vertices) {
-
-            for (var i = 0; i < vertices.length; i++) {
-
-                var vertex = vertices[i];
-
-                // These calculations assume that the camera's viewPortRight and viewPortTop are 1,
-                // while the viewPortLeft and viewPortBottom are 0.
-                // The x and y coordinates can still be outside the screen space here, but those will be clipped during rasterizing.
-                // Transform to zerobasd interval of pixels instead of [0, width] which will be one pixel too much.
-                // (Assuming the vertex values range from [-1, 1] when projected.)
-                vertex.data[0] = (vertex.data[0] + 1.0) * (this._clipX / 2);
-                vertex.data[1] = (vertex.data[1] + 1.0) * (this._clipY / 2);
-
-                // http://www.altdevblogaday.com/2012/04/29/software-rasterizer-part-2/
-                // The w-coordinate is the z-view at this point. Ranging from [0, cameraFar<].
-                // During rendering, 1/w is used and saved as depth (float32). Values further than the far plane will render correctly.
-            }
-        };
-
-
         SoftwareRenderer.prototype._isBackFacingCameraViewSpace = function (vert1, vert2, vert3) {
 
             // Calculate the dot product between the triangle's face normal and the camera's eye direction
@@ -490,20 +464,9 @@ define([
             var faceNormal_z = e2_y * e1_x - e2_x * e1_y;
 
             // Picking the first vertex as the point on the triangle to evaulate the dot product on.
-            //var viewVector = [v1.x, v1.y, v1.z];
 
             // No need to normalize the vectors due to only being
             // interested in the sign of the dot product.
-            /*
-            // Normalize faceNormal and view vector
-            var viewLength = Math.sqrt(viewVector[0] * viewVector[0] + viewVector[1] * viewVector[1] + viewVector[2] * viewVector[2]);
-            var faceLength = Math.sqrt(faceNormal[0] * faceNormal[0] + faceNormal[1] * faceNormal[1] + faceNormal[2] * faceNormal[2]);
-
-            for (var i = 0; i < 3; i++) {
-                viewVector[i] /= viewLength;
-                faceNormal[i] /= faceLength;
-            }
-            */
 
             var dot = faceNormal_x * v1_x + faceNormal_y * v1_y + faceNormal_z * v1_z;
             return dot > 0.0;
@@ -705,7 +668,7 @@ define([
             /*
             TODO : The long edge's data is calculated twice at the momnent. The only difference is if the values are to be
             interpolated to the proper y.
-             */
+            */
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
@@ -968,8 +931,6 @@ define([
 
             // For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
-            // when rendering the occluders, the maxim
-
             // Checking if the triangle's long edge is on the right or the left side.
             if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
                 if (orientationData[1]) { // INWARDS TRIANGLE
@@ -1135,7 +1096,7 @@ define([
 
             var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
 
-            // Checking the long edge will probably be unneccessary, since if the short edge has no height, then the long edge most defenetly hasnt either?
+            // Checking the long edge will probably be unnecessary, since if the short edge has no height, then the long edge most definitely hasn't either?
             // Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
 
             var longEdgeDeltaX = longEdge.x1 - longEdge.x0;

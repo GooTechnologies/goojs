@@ -1,0 +1,40 @@
+{
+  "data": {
+    "VertexCount": 3, 
+    "Vertices": [
+      -1.0, 
+      1.0, 
+      0.0, 
+      -1.0, 
+      -1.0, 
+      0.0, 
+      1.0, 
+      1.0, 
+      0.0
+    ], 
+    "IndexModes": [
+      "Triangles"
+    ], 
+    "IndexLengths": [
+      3
+    ], 
+    "Indices": [
+      0, 
+      1, 
+      2
+    ], 
+    "Normals": [
+      0.0, 
+      -0.0, 
+      1.0, 
+      0.0, 
+      -0.0, 
+      1.0, 
+      0.0, 
+      -0.0, 
+      1.0
+    ]
+  }, 
+  "compressed": false, 
+  "name": "Triangle"
+}
