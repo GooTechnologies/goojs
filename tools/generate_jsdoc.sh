@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -e
 
 DOC_DIR=goojs-jsdoc
 JSDOC_BIN=node_modules/jsdoc/jsdoc
