@@ -3,7 +3,17 @@ minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
-	
+
+# Run a command and exit with an error message if it fails.
+runCommand = (cmd, callback) ->
+	exec cmd, (error, stdout, stderr) ->
+		if error != null
+			console.log stderr
+			console.log 'Command failed: ' + cmd
+			process.exit(1)
+		if callback
+			callback()
+
 task 'minify', 'minify try', (options) ->
 
 	if options.arguments.length == 2
@@ -56,12 +66,7 @@ task 'whitespace',
 		dirs = ['src', 'test', 'examples']
 		do next = ->
 			dir = dirs.shift()
-			cmd = "find #{dir} -type f -name '*.js' | xargs sed --in-place -r 's/\\s+$//'"
-			exec cmd, (error, stdout, stderr) ->
-				if error != null
-					console.log stderr
-					console.log 'Command failed: ' + cmd
-					process.exit(1)
+			runCommand "find #{dir} -type f -name '*.js' | xargs sed --in-place -r 's/\\s+$//'", ->
 				if dirs.length
 					next()
 
@@ -85,3 +90,11 @@ task 'convert',
 			convert options.arguments[1], options.arguments[2], options.arguments[3]
 			console.log "#{options.arguments[1]} converted"
 		process.exit(0)
+
+task 'jsdoc',
+	'Creates the API documentation',
+	->
+		# This requires a shell.
+		# To make this work in Windows too,
+		# we could run JSdoc as a Node module.
+		runCommand 'tools/generate_jsdoc.sh'
