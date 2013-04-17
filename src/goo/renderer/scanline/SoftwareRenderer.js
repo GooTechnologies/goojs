@@ -701,10 +701,9 @@ define([
         /**
          *
          * @param {Uint8Array} indices
-         * @param {Float32Array} positions
          * @private
          */
-        SoftwareRenderer.prototype._renderTriangle = function (indices, positions) {
+        SoftwareRenderer.prototype._renderTriangle = function (indices) {
 
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
@@ -733,6 +732,9 @@ define([
 
             var shortEdge = edges[s1];
 
+            // Store both edges' boolean if they are between a face.
+            var betweenFaces = [longEdge.betweenFaces, shortEdge.betweenFaces];
+
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
@@ -745,10 +747,11 @@ define([
                 }
 
                 // Draw first portion of the triangle
-                this._drawEdges(edgeData, orientationData);
+                this._drawEdges(edgeData, orientationData, betweenFaces);
             }
 
             shortEdge = edges[s2];
+            betweenFaces = [longEdge.betweenFaces, shortEdge.betweenFaces];
             if (this._createEdgeData(longEdge, shortEdge)) {
                 // If the orientation hasn't been created, do so.
                 if (orientationData === null) {
@@ -759,7 +762,7 @@ define([
                     }
                 }
                 // Draw second portion of the triangle.
-                this._drawEdges(edgeData, orientationData);
+                this._drawEdges(edgeData, orientationData, betweenFaces);
             }
         };
 
@@ -974,9 +977,10 @@ define([
          * Render the pixels between the long and the short edge of the triangle.
          * @param {EdgeData} edgeData
          * @param orientationData
+         * @param {Array.<Boolean>} betweenFaces
          * @private
          */
-        SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData) {
+        SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData, betweenFaces) {
 
             // The start and stop lines are already rounded y-coordinates.
             var startLine = edgeData.getStartLine();
@@ -986,6 +990,9 @@ define([
             var shortXInc = edgeData.getShortXIncrement();
             var longZInc = edgeData.getLongZIncrement();
             var shortZInc = edgeData.getShortZIncrement();
+
+            var longEdgeBetween = betweenFaces[0];
+            var shortEdgeBetween = betweenFaces[1];
 
             // Leaning inwards means that the triangle is going inwards from left to right.
 
@@ -1011,8 +1018,17 @@ define([
                         var leftZ = edgeData.getShortZ();
                         var rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX = Math.ceil(realLeftX);
-                        var rightX = Math.floor(realRightX);
+                        var leftX, rightX;
+                        if(!shortEdgeBetween) {
+                            leftX = Math.ceil(realLeftX + 0.5);
+                        } else {
+                            leftX = Math.round(realLeftX);
+                        }
+                        if (!longEdgeBetween) {
+                            rightX = Math.floor(realRightX - 0.5);
+                        } else {
+                            rightX = Math.round(realRightX);
+                        }
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
@@ -1047,8 +1063,17 @@ define([
                         var leftZ = edgeData.getShortZ();
                         var rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX = Math.ceil(realLeftX);
-                        var rightX = Math.floor(realRightX);
+                        var leftX, rightX;
+                        if(!shortEdgeBetween) {
+                            leftX = Math.ceil(realLeftX + 0.5);
+                        } else {
+                            leftX = Math.round(realLeftX);
+                        }
+                        if (!longEdgeBetween) {
+                            rightX = Math.floor(realRightX - 0.5);
+                        } else {
+                            rightX = Math.round(realRightX);
+                        }
 
                         // Compensate fractional offset.
                         var offset = realRightX - rightX;
@@ -1082,8 +1107,17 @@ define([
                         var rightZ = edgeData.getShortZ();
 
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX = Math.ceil(realLeftX);
-                        var rightX = Math.floor(realRightX);
+                        var leftX, rightX;
+                        if(!longEdgeBetween) {
+                            leftX = Math.ceil(realLeftX + 0.5);
+                        } else {
+                            leftX = Math.round(realLeftX);
+                        }
+                        if (!shortEdgeBetween) {
+                            rightX = Math.floor(realRightX - 0.5);
+                        } else {
+                            rightX = Math.round(realRightX);
+                        }
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
@@ -1119,8 +1153,17 @@ define([
                         var rightZ = edgeData.getShortZ();
 
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX = Math.ceil(realLeftX);
-                        var rightX = Math.floor(realRightX);
+                        var leftX, rightX;
+                        if(!longEdgeBetween) {
+                            leftX = Math.ceil(realLeftX + 0.5);
+                        } else {
+                            leftX = Math.round(realLeftX);
+                        }
+                        if (!shortEdgeBetween) {
+                            rightX = Math.floor(realRightX - 0.5);
+                        } else {
+                            rightX = Math.round(realRightX);
+                        }
 
                         // Compensate fractional offset.
                         var offset = realRightX - rightX;
@@ -1150,6 +1193,9 @@ define([
          * Creates the EdgeData , used for rendering. False is returned if there is not anything to draw.
         *	@return {Boolean} drawable
         */
+
+        // TODO: The increment values are not necessary to write for each of the two sub-triangles. Separate this function
+        // into another.
         SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
             // Early exit when the short edge is outside the screen.

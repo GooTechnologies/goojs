@@ -6,13 +6,14 @@ define([
         "use strict";
 
         /**
-         *
+         * Stores the edges to render.
+         * @param {Number} edgeCount The number of edges needed during runtime
          * @constructor
          */
-        function EdgeMap (maxCount) {
-            this._edges = new Array(maxCount);
+        function EdgeMap (edgeCount) {
+            this._edges = new Array(edgeCount);
             this._edgeCount = 0;
-            for (var e = 0; e < maxCount; e++) {
+            for (var e = 0; e < edgeCount; e++) {
                 this._edges[e] = new Edge();
             }
 
@@ -55,9 +56,11 @@ define([
             this._edgeCount = 0;
         };
 
+        /*jshint bitwise: false */
         EdgeMap.prototype._indicesToKey = function (i1, i2) {
             return (i1 << 8) + i2;
         };
+        /*jshint bitwise: true*/
 
         return EdgeMap;
     });
