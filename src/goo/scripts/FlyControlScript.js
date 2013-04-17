@@ -1,10 +1,9 @@
 define(['goo/math/Vector3'],
-/** @lends */
+/* @lends */
 function (Vector3) {
 	"use strict";
 
 	/**
-	 * Creates a new FlyControlScript
 	 *
 	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
