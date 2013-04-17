@@ -7,12 +7,13 @@ define([
     'goo/renderer/scanline/EdgeData',
     'goo/renderer/scanline/BoundingBoxOcclusionModule',
     'goo/renderer/scanline/BoundingSphereOcclusionModule',
-    'goo/renderer/scanline/OccluderTriangleData'
+    'goo/renderer/scanline/OccluderTriangleData',
+    'goo/renderer/scanline/EdgeMap'
 	],
 	/** @lends */
 
 	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData,
-              BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, OccluderTriangleData) {
+              BoundingBoxOcclusionModule, BoundingSphereOcclusionModule, OccluderTriangleData, EdgeMap) {
 	    "use strict";
 
         // Variables used during creation of triangle data and rendering
@@ -77,6 +78,8 @@ define([
             // TODO : Rewrite so that the data is empty from the beginning.
             this._triangleData.clear();
 
+            this.edgeMap = new EdgeMap(parameters.maxVertCount);
+
             this.boundingBoxModule = new BoundingBoxOcclusionModule(this);
             this.boundingSphereModule = new BoundingSphereOcclusionModule(this);
         }
@@ -105,7 +108,11 @@ define([
 
             // Iterates over the view frustum culled entities and draws them one entity at a time.
             for ( var i = 0; i < renderList.length; i++) {
+
                 this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
+
+                this._fillEdgeMap();
+
                 triCount = this._triangleData.indexCount;
                 for (var tIndex = 0; tIndex < triCount; tIndex++) {
                     // Take 3 indices and render the triangle
@@ -114,7 +121,34 @@ define([
                     indices[2] = this._triangleData.indices[++tIndex];
                     this._renderTriangle(indices, this._triangleData.positions);
                 }
+            }
+        };
 
+        SoftwareRenderer.prototype._fillEdgeMap = function () {
+            this.edgeMap.clear();
+            var indexCount = this._triangleData.indexCount;
+            for (var i = 0; i < indexCount; i++) {
+
+                var index1 = this._triangleData.indices[i];
+                var index2 = this._triangleData.indices[++i];
+                var index3 = this._triangleData.indices[++i];
+
+                var vPos = index1 * 4;
+                v1.data[0] = this._triangleData.positions[vPos];
+                v1.data[1] = this._triangleData.positions[vPos + 1];
+                v1.data[2] = this._triangleData.positions[vPos + 3];
+                vPos = index2 * 4;
+                v2.data[0] = this._triangleData.positions[vPos];
+                v2.data[1] = this._triangleData.positions[vPos + 1];
+                v2.data[2] = this._triangleData.positions[vPos + 3];
+                vPos = index3 * 4;
+                v3.data[0] = this._triangleData.positions[vPos];
+                v3.data[1] = this._triangleData.positions[vPos + 1];
+                v3.data[2] = this._triangleData.positions[vPos + 3];
+
+                this.edgeMap.addEdge(index1, index2, v1, v2);
+                this.edgeMap.addEdge(index2, index3, v2, v3);
+                this.edgeMap.addEdge(index3, index1, v3, v1);
             }
         };
 
@@ -535,12 +569,12 @@ define([
             edges[1].setData(v2, v3);
             edges[2].setData(v3, v1);
 
-            var maxHeight = 0;
+            var maxHeight = edges[0].dy;
             var longEdge = 0;
 
             // Find edge with the greatest height in the Y axis, this is the long edge.
-            for(var i = 0; i < 3; i++) {
-                var height = edges[i].y1 - edges[i].y0;
+            for(var i = 1; i < 3; i++) {
+                var height = edges[i].dy;
                 if(height > maxHeight) {
                     maxHeight = height;
                     longEdge = i;
@@ -553,6 +587,29 @@ define([
 
             return [longEdge, shortEdge1, shortEdge2];
         };
+
+
+        SoftwareRenderer.prototype._getLongEdgeAndShortEdgeIndices = function () {
+
+            var maxHeight = edges[0].dy;
+            var longEdge = 0;
+
+            // Find edge with the greatest height in the Y axis, this is the long edge.
+            for(var i = 1; i < 3; i++) {
+                var height = edges[i].dy;
+                if(height > maxHeight) {
+                    maxHeight = height;
+                    longEdge = i;
+                }
+            }
+
+            // "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
+            var shortEdge1 = (longEdge + 1) % 3;
+            var shortEdge2 = (longEdge + 2) % 3;
+
+            return [longEdge, shortEdge1, shortEdge2];
+        };
+
 
         /**
          * Returns an array containing if the triangle's long edge is on the right or left and if the triangle is leaning inwards or outwards
@@ -652,9 +709,17 @@ define([
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
 
+            // var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
+            var i1 = indices[0];
+            var i2 = indices[1];
+            var i3 = indices[2];
 
-            var edgeIndices = this._createEdgesForTriangle(indices, positions);
+            edges[0] = this.edgeMap.getEdge(i1,i2);
+            edges[1] = this.edgeMap.getEdge(i2,i3);
+            edges[2] = this.edgeMap.getEdge(i3,i1);
+
+            var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
 
             var longEdge = edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
@@ -667,10 +732,7 @@ define([
             }
 
             var shortEdge = edges[s1];
-            /*
-            TODO : The long edge's data is calculated twice at the momnent. The only difference is if the values are to be
-            interpolated to the proper y.
-            */
+
             // Find out the orientation of the triangle.
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;

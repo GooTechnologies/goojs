@@ -66,6 +66,7 @@ function () {
         this.dy = dy;
         this.dx = dx;
         this.dz = dz;
+
         this.insideScreen = dy > 0;
         this.xIncrement = dx / dy;
         this.zIncrement = dz / dy;
