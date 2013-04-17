@@ -652,6 +652,8 @@ define([
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
 
+
+
             var edgeIndices = this._createEdgesForTriangle(indices, positions);
 
             var longEdge = edges[edgeIndices[0]];
@@ -766,7 +768,6 @@ define([
                         var t = 0.5 / (dif + 1); // Using the larger span.
                         rightZ = (1.0 - t) * rightZ + t * leftZ;
 
-
                         if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
                             return false;
                         }
@@ -803,10 +804,8 @@ define([
                             rightZ = Math.max(0.0, rightZ);
                         }
                         */
-
                         var t = 0.5 / (dif + 1); // Using the larger span.
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
-
                         if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
                             return false;
                         }
@@ -1091,51 +1090,31 @@ define([
         */
         SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
-            // TODO: Move a lot of these calculations and variables into the Edge class,
-            // do the calculations once for the long edge instead of twices as it is done now.
-
-            // Early exit when the short edge doesnt have any height (y-axis).
-            // -The edges' coordinates are stored as uint8, so compare with a SMI (SMall Integer, 31-bit signed integer) and not Double.
-
-            var shortEdgeDeltaY = (shortEdge.y1 - shortEdge.y0);
-            if(shortEdgeDeltaY <= 0) {
-                return false; // Nothing to draw here.
+            // Early exit when the short edge is outside the screen.
+            if (!shortEdge.insideScreen) {
+                return false;
             }
 
-            var longEdgeDeltaY = (longEdge.y1 - longEdge.y0);
+            // The scanline on which we start rendering on might be in the middle of the long edge,
+            // the starting x-coordinate is therefore calculated.
+            var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdge.dy;
+            var longX = longEdge.x0 + longEdge.dx * longStartCoeff;
+            var longZ = longEdge.z0 + longEdge.dz * longStartCoeff;
 
-            // Checking the long edge will probably be unnecessary, since if the short edge has no height, then the long edge most definitely hasn't either?
-            // Shouldn't be possible for the long edge to be of height 0 if any of the short edges has height.
+            var shortX = shortEdge.x0;
+            var shortZ = shortEdge.z0;
 
-            var longEdgeDeltaX = longEdge.x1 - longEdge.x0;
-            var shortEdgeDeltaX = shortEdge.x1 - shortEdge.x0;
-
-            var longStartZ = longEdge.z0;
-            var shortStartZ = shortEdge.z0;
-            var longEdgeDeltaZ = longEdge.z1 - longStartZ;
-            var shortEdgeDeltaZ = shortEdge.z1 - shortStartZ;
+            var startLine = shortEdge.y0;
+            var stopLine = shortEdge.y1;
 
             // Vertical coherence :
             // The x-coordinates' increment for each step in y is constant,
             // so the increments are pre-calculated and added to the coordinates
             // each scanline.
-
-            // The scanline on which we start rendering on might be in the middle of the long edge,
-            // the starting x-coordinate is therefore calculated.
-            var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdgeDeltaY;
-            var longX = longEdge.x0 + longEdgeDeltaX * longStartCoeff;
-            var longZ = longStartZ + longEdgeDeltaZ * longStartCoeff;
-            var longEdgeXincrement = longEdgeDeltaX / longEdgeDeltaY;
-            var longEdgeZincrement = longEdgeDeltaZ / longEdgeDeltaY;
-
-
-            var shortX = shortEdge.x0;
-            var shortZ = shortStartZ;
-            var shortEdgeXincrement = shortEdgeDeltaX / shortEdgeDeltaY;
-            var shortEdgeZincrement = shortEdgeDeltaZ / shortEdgeDeltaY;
-
-            var startLine = shortEdge.y0;
-            var stopLine = shortEdge.y1;
+            var longEdgeXincrement = longEdge.xIncrement;
+            var shortEdgeXincrement = shortEdge.xIncrement;
+            var longEdgeZincrement = longEdge.zIncrement;
+            var shortEdgeZincrement = shortEdge.zIncrement;
 
             // Vertical clipping
             // TODO : Implement a cohen sutherland image space clipper for the horizontal and vertical clipping.
@@ -1214,7 +1193,7 @@ define([
                 // Check if the value is closer than the stored one. z-test.
                 if (depth > this._depthData[index]) {
                     // Not occluded
-                    return false;
+                   return false;
                 }
 
                 index++;

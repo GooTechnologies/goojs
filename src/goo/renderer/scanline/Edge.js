@@ -1,6 +1,6 @@
 define([
 	],
-/** @lends Edge */
+/** @lends */
 function () {
     "use strict";
 
@@ -18,6 +18,14 @@ function () {
 
         this.z0 = 0.0;
         this.z1 = 0.0;
+
+        this.dx = 0.0;
+        this.dy = 0.0;
+        this.dz = 0.0;
+        this.xIncrement = 0.0;
+        this.zIncrement = 0.0;
+        this.insideScreen = true;
+        this.betweenFaces = false;
 	}
 
     Edge.prototype.setData = function (vec1, vec2) {
@@ -45,6 +53,22 @@ function () {
             this.z0 = vec2.data[2];
             this.z1 = vec1.data[2];
         }
+
+        this._computeDerivedData();
+    };
+
+    Edge.prototype._computeDerivedData = function () {
+
+        var dx = this.x1 - this.x0;
+        var dy = this.y1 - this.y0;
+        var dz = this.z1 - this.z0;
+
+        this.dy = dy;
+        this.dx = dx;
+        this.dz = dz;
+        this.insideScreen = dy > 0;
+        this.xIncrement = dx / dy;
+        this.zIncrement = dz / dy;
     };
 
 	// Rounds conservatively , increasing the coverage.
