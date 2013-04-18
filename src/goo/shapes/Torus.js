@@ -1,21 +1,22 @@
-define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'],
-	/** @lends */
-	function (MeshData, Vector3, MathUtils) {
+define([
+	'goo/renderer/MeshData',
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+],
+/** @lends */
+function (
+	MeshData,
+	Vector3,
+	MathUtils
+) {
 	"use strict";
 
 	/**
-	 * @class A torus is a donut-shaped model.
-	 * @property {Integer} _circleSamples Number of segments.
-	 * @property {Integer} _radialSamples Number of slices.
-	 * @property {Float} _tubeRadius Radius of tube.
-	 * @property {Float} _centerRadius Radius from center.
-	 * @property {Boolean} viewInside Inward-facing normals.
-	 * @constructor
-	 * @description Creates a new torus.
-	 * @param {Integer} circleSamples Number of segments.
-	 * @param {Integer} radialSamples Number of slices.
-	 * @param {Float} tubeRadius Radius of tube.
-	 * @param {Float} centerRadius Radius from center.
+	 * @class A donut-shaped model.
+	 * @param {number} [circleSamples=8] Number of segments.
+	 * @param {number} [radialSamples=8] Number of slices.
+	 * @param {number} [tubeRadius=1] Radius of tube.
+	 * @param {number} [centerRadius=2] Radius from center.
 	 */
 	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
 		this._circleSamples = circleSamples !== undefined ? circleSamples : 8;
@@ -23,6 +24,10 @@ define(['goo/renderer/MeshData', 'goo/math/Vector3', 'goo/math/MathUtils'],
 		this._tubeRadius = tubeRadius !== undefined ? tubeRadius : 1;
 		this._centerRadius = centerRadius !== undefined ? centerRadius : 2;
 
+		/** Inward-facing normals.
+		 * @type {boolean}
+		 * @default
+		 */
 		this.viewInside = false;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);

@@ -21,12 +21,9 @@ function (
 
 	/**
 	 * @class Projected grid mesh
-	 * @constructor
-	 * @description Creates a new projected grid.
-	 * @param {Integer} densityX Density in X of grid
-	 * @param {Integer} densityY Density in Y of grid
+	 * @param {number} [densityX=20] Density in X of grid
+	 * @param {number} [densityY=20] Density in Y of grid
 	 */
-
 	function ProjectedGrid(densityX, densityY) {
 		this.densityX = densityX !== undefined ? densityX : 20;
 		this.densityY = densityY !== undefined ? densityY : 20;
@@ -288,7 +285,6 @@ function (
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {ProjectedGrid} Self for chaining.
 	 */
-
 	ProjectedGrid.prototype.rebuild = function () {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
 		var texs = this.getAttributeBuffer(MeshData.TEXCOORD0);
