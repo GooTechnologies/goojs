@@ -6,8 +6,7 @@ function () {
 	/**
 	 * @class A gameworld object and container of components
 	 * @param {World} world A {@link World} reference
-	 * @property {Number} id Automatically generated unique id for this entity
-	 * @property {String} name Entity name
+	 * @param {String} [name] Entity name
 	 */
 	function Entity(world, name) {
 		this._world = world;
@@ -66,7 +65,7 @@ function () {
 	/**
 	 * Retrieve a component of a specific type
 	 *
-	 * @param type Type of component to retrieve
+	 * @param type Type of component to retrieve (eg. 'transformComponent')
 	 * @returns component with requested type or undefined if not present
 	 */
 	Entity.prototype.getComponent = function (type) {
@@ -76,7 +75,7 @@ function () {
 	/**
 	 * Remove a component of a specific type from entity.
 	 *
-	 * @param type Type of component to remove
+	 * @param type Type of component to remove (eg. 'transformComponent')
 	 */
 	Entity.prototype.clearComponent = function (type) {
 		var component = this[getTypeAttributeName(type)];

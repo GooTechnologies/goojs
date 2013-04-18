@@ -12,15 +12,20 @@ function (
 	/**
 	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
 	 * @param {MeshData} meshData Target mesh data for this component.
-	 * @property {Bounding} modelBound Bounding volume in local space
-	 * @property {Boolean} autoCompute Automatically compute bounding fit
 	 */
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
 		this.meshData = meshData;
 
+		/** Bounding volume in local space
+		 * @type {BoundingSphere}
+		 */
 		this.modelBound = new BoundingSphere();
+		/** Automatically compute bounding fit
+		 * @type {boolean}
+		 * @default
+		 */
 		this.autoCompute = true;
 	}
 

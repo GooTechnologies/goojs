@@ -5,15 +5,23 @@ define(['goo/entities/components/Component'],
 
 	/**
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
-	 * @property {Material[]} materials Materials to use when rendering
-	 * @property {Bounding} worldBound Worldspace bounding considering entity transformations
 	 */
 	function MeshRendererComponent() {
 		this.type = 'MeshRendererComponent';
 
+		/** Materials to use when rendering
+		 * @type {Material[]}
+		 */
 		this.materials = [];
+		/** Worldspace bounding considering entity transformations
+		 * @type {Bounding}
+		 */
 		this.worldBound = null;
 
+		/** Culling mode. Other alid values: 'Never'
+		 * @type {string}
+		 * @default
+		 */
 		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
 
 		this.castShadows = false;

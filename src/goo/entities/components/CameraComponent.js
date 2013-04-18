@@ -10,7 +10,7 @@ function (
 	"use strict";
 
 	/**
-	 * @class Updates the contained camera according to a transform (coming from the transformcomponent)
+	 * @class Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component
 	 */
 	function CameraComponent (camera) {
@@ -44,6 +44,10 @@ function (
 		}
 	};
 
+	/**
+	 * Updates the contained camera according to a transform (coming from the transformcomponent)
+	 * @param transform
+	 */
 	CameraComponent.prototype.updateCamera = function (transform) {
 		this.camera._left.setv(this.leftVec);
 		transform.matrix.applyPostVector(this.camera._left);

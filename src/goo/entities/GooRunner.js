@@ -45,7 +45,7 @@ function (
 	 * }</code>
 	 *
 	 * @constructor
-	 * @param {Object} parameters GooRunner settings passed in a JSON object.
+	 * @param {Object} [parameters] GooRunner settings passed in a JSON object.
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};

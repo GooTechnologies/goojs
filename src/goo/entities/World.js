@@ -1,12 +1,18 @@
-define(['goo/entities/Entity', 'goo/entities/managers/EntityManager', 'goo/entities/components/TransformComponent'],
+define([
+	'goo/entities/Entity',
+	'goo/entities/managers/EntityManager',
+	'goo/entities/components/TransformComponent'
+],
 /** @lends */
-function (Entity, EntityManager, TransformComponent) {
+function (
+	Entity,
+	EntityManager,
+	TransformComponent
+) {
 	"use strict";
 
 	/**
 	 * @class Main handler for an entity world
-	 * @property {Float} tpf Timer per frame in seconds
-	 * @property {Manager} entityManager Main keeper of entities
 	 */
 	function World () {
 		this._managers = [];
@@ -16,10 +22,17 @@ function (Entity, EntityManager, TransformComponent) {
 		this._changedEntities = [];
 		this._removedEntities = [];
 
+		/** Main keeper of entities
+		 * @type {EntityManager}
+		 */
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
 
 		this.time = 0.0;
+		/** Timer per frame in seconds
+		 * @type {number}
+		 * @default
+		 */
 		this.tpf = 1.0;
 	}
 
@@ -35,9 +48,9 @@ function (Entity, EntityManager, TransformComponent) {
 	};
 
 	/**
-	 * Retrive a manager of type 'type'
+	 * Retrieve a manager of type 'type'
 	 *
-	 * @param {String} type Type of manager to retrieve
+	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'
 	 * @returns manager
 	 */
 	World.prototype.getManager = function (type) {

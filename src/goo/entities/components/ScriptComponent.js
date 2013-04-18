@@ -5,7 +5,7 @@ function(Component) {
 
 	/**
 	 * @class Contains scripts to be executed each frame when set on an active entity
-	 * @param {JS} script Script to contain in this script component
+	 * @param {Array|JS} [scripts] A script or an array of scripts to attach to the entity.
 	 */
 	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
