@@ -1,8 +1,0 @@
-{
-	"files": [
-		"entities/RootNode.ent",
-		"entities/Mesh.ent",
-		"entities/MeshMesh.ent",
-		"entities/MeshMesh[Diffuse_Texture-diffuse-MaterialSG].ent"
-	]
-}
