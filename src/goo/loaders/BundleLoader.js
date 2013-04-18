@@ -1,6 +1,6 @@
 define([
 		'goo/loaders/Loader',
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/Util'
 	],
 	/** @lends */

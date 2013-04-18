@@ -2,7 +2,7 @@
 define([
 	'goo/loaders/Loader',
 	'goo/loaders/EntityLoader',
-	'goo/lib/rsvp.amd'
+	'goo/util/rsvp'
 ],
 /** @lends */
 function (

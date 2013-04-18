@@ -1,6 +1,6 @@
 
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/util/Ajax'
 	],
 	/** @lends */

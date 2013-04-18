@@ -23,7 +23,7 @@ require([
 	'goo/loaders/AnimationTreeLoader',
 
 	'goo/entities/EntityUtils',
-	'goo/lib/rsvp.amd',
+	'goo/util/rsvp',
 	'goo/shapes/ShapeCreator'
 ], function(
 	GooRunner,

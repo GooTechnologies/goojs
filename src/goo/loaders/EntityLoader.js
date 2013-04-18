@@ -12,7 +12,7 @@ define([
 		'goo/math/MathUtils',
 		'goo/renderer/bounds/BoundingBox',
 
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 
 		'goo/loaders/MaterialLoader',
 		'goo/loaders/MeshLoader',

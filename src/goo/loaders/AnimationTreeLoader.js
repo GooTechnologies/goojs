@@ -1,5 +1,5 @@
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',

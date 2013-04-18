@@ -1,7 +1,7 @@
 define([
 	'goo/util/Ajax',
 	'goo/loaders/Loader',
-	'goo/lib/rsvp.amd'
+	'goo/util/rsvp'
 	],
 function(
 	Ajax,
