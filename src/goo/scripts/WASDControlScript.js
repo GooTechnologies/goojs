@@ -4,7 +4,7 @@ function (Vector, Vector3) {
 	"use strict";
 
 	/**
-	 * @class Make an entity controllable via the WASD keys. Shift causes the entity to crawl.
+	 * @class Makes an entity controllable via the WASD keys. Shift causes the entity to crawl.
 	 *
 	 * @param {Object} [properties] Script configuration
 	 * @param {Element} [properties.domElement] Element to add key listeners to
