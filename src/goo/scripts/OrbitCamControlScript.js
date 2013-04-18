@@ -43,6 +43,27 @@ function (
 		onRun: null
 	};
 
+	/**
+	 * @class Enables camera to orbit around a point in 3D space using the mouse.
+	 * @param {Object} [properties]
+	 * @param {Element} [properties.domElement=document] Element to add mouse listeners to
+	 * @param {number} [properties.turnSpeedHorizontal=0.005]
+	 * @param {number} [properties.turnSpeedVertical=0.005]
+	 * @param {number} [properties.zoomSpeed=0.2]
+	 * @param {boolean} [properties.dragOnly=true] Only move the camera when dragging
+	 * @param {number} [properties.dragButton=-1] Only drag with button with this code (-1 to enable all)
+	 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
+	 * @param {number} [properties.minZoomDistance=1]
+	 * @param {number} [properties.maxZoomDistance=1000]
+	 * @param {number} [properties.minAscent=-89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach below the target point
+	 * @param {number} [properties.maxAscent=89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach above the target point
+	 * @param {boolean} [properties.invertedX=false]
+	 * @param {boolean} [properties.invertedY=false]
+	 * @param {boolean} [properties.invertedWheel=true]
+	 * @param {boolean} [properties.mouseUpOnOut=false] If mouse leaves the domElement, stop moving.
+	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera.
+	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
 		for(var key in _defaults) {
