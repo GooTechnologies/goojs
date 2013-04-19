@@ -27,15 +27,13 @@ copyLibs = (base, target, includeFile) ->
 		if /^(\{[\s,]*\}|\s*)$/.test pathsToInclude
 			return console.log 'No files to include'
 
-		glob pathsToInclude, {root: base}, (err, files) ->
+		glob pathsToInclude, {cwd: base}, (err, files) ->
 			if(files.length == 0)
 				console.log 'No files found'
 				process.exit
 
-				
 			for file in files
-				targetFile = file.slice(base.length+1)
-				console.log "Copying",path.resolve(file), path.resolve(target, targetFile)
-				copyFile path.resolve(file), path.resolve(target, targetFile)
+				console.log "Copying",path.resolve(base, file), path.resolve(target, file)
+				copyFile path.resolve(base, file), path.resolve(target, file)
 				
 exports.copyLibs = copyLibs

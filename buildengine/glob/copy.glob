@@ -1,4 +1,4 @@
-/box2d/*.*
-/cannon/*.*
-/soundmanager2/*.*
-/rsvp.amd.js
+box2d/*.*
+cannon/*.*
+soundmanager2/*.*
+rsvp.amd.js

@@ -78,13 +78,13 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 					return console.log 'No files to include'
 
 				glob = require('glob')
-				glob pathsToInclude, {root: absroot}, (err, files) ->
+				glob pathsToInclude, {cwd: absroot}, (err, files) ->
 					if(files.length == 0)
 						console.log 'No files found'
 						process.exit
 
 					for f,idx in files
-						files[idx] = "\""+f.slice(absroot.length+1, f.lastIndexOf('.'))+"\""
+						files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
 	
 					str = "require([#{files}]);\n"
 					tempRequire = 'req_temp'
