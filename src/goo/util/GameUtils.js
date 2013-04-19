@@ -5,15 +5,26 @@ function () {
 
 	/**
 	 * @class Shims for standard gaming features
+	 * @constructor
+	 * @description Only used to define the class. Should never be instantiated.
 	 */
 	function GameUtils () {
 	}
 
+	/** Supported features. All true by default.
+	 * @type {Object}
+	 * @property {boolean} fullscreen
+	 * @property {boolean} pointerLock
+	 * @static
+	 */
 	GameUtils.supported = {
 		fullscreen: true,
 		pointerLock: true
 	};
 
+	/**
+	 * Attempts to toggle fullscreen.
+	 */
 	GameUtils.toggleFullScreen = function () {
 		if (!document.fullscreenElement) {
 			if (document.documentElement.requestFullScreen) {
@@ -26,6 +37,9 @@ function () {
 		}
 	};
 
+	/**
+	 * Attempts to lock the mouse pointer in the window.
+	 */
 	GameUtils.togglePointerLock = function () {
 		if (!document.pointerLockElement) {
 			if (document.documentElement.requestPointerLock) {
@@ -38,12 +52,19 @@ function () {
 		}
 	};
 
+	/**
+	 * Attempts to initialize all shims (animation, fullscreen, pointer lock).
+	 * @param {Element} [global=window] The global element (for compatibility checks and patching)
+	 */
 	GameUtils.initAllShims = function (global) {
 		this.initAnimationShims();
 		this.initFullscreenShims(global);
 		this.initPointerLockShims(global);
 	};
 
+	/**
+	 * Attempts to initialize the animation shim, ie. defines requestAnimationFrame and cancelAnimationFrame
+	 */
 	GameUtils.initAnimationShims = function () {
 		var lastTime = 0;
 		var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -71,6 +92,10 @@ function () {
 		}
 	};
 
+	/**
+	 * Attempts to initialize the fullscreen shim, ie. defines requestFullscreen and cancelFullscreen
+	 * @param {Element} [global=window] The global element (for compatibility checks and patching)
+	 */
 	GameUtils.initFullscreenShims = function (global) {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
@@ -174,6 +199,10 @@ function () {
 		}
 	};
 
+	/**
+	 * Attempts to initialize the pointer lock shim, ie. define requestPointerLock and exitPointerLock
+	 * @param {Element} [global=window] The global element (for compatibility checks and patching)
+	 */
 	GameUtils.initPointerLockShims = function (global) {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;

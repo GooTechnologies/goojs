@@ -10,7 +10,41 @@ define([
 	"use strict";
 
 	/**
-	 * @class Combines mesh datas
+	 * @class Builds numerous copies of a given mesh. Groups them into larger meshes.
+	 * @example
+	 * var count = 50;
+	 * // prepare the builder
+	 * var meshBuilder = new FastBuilder(meshData, count, {
+	 *   progress: function (percent) {
+	 *       console.log(percent);
+	 *     },
+	 *     done: function () {
+	 *       console.log('Done!');
+	 *     }
+	 *   });
+	 * // add each mesh with a different translation
+	 * var transform = new Transform();
+	 * for (var x = 0; x < count; x++) {
+	 *   // make a circle
+	 *   transform.translation.data[0] = Math.sin(x*Math.PI*2/count);
+	 *   transform.translation.data[1] = 0;
+	 *   transform.translation.data[2] = Math.cos(x*Math.PI*2/count);
+	 *   transform.translation.mul(20.0);
+	 *   transform.update();
+	 *
+	 *   meshBuilder.addMeshData(meshData, transform);
+	 * }
+	 * // notify that we're done and return the grouped meshes for further configuration
+	 * var meshDatas = meshBuilder.build();
+	 * @param {MeshData} meshData The mesh to copy
+	 * @param {number} count The number of copies
+	 * @param {Object} [callback] A set of progress monitoring callbacks. Accepts an object of the form:<pre>
+	 * {
+	 *   progress: function () {...},
+	 *   done: function () {...}
+	 * }
+	 * </pre>
+	 * The progress function is called in certain intervals during the loading of the meshes. done is called after loading is done.
 	 */
 	function FastBuilder(meshData, count, callback) {
 		if (meshData.vertexCount >= 65536) {
@@ -57,6 +91,11 @@ define([
 	}
 
 	var vert = new Vector3();
+	/**
+	 * Adds a new copy of the mesh with its own transform element. Creates a new group if needed.
+	 * @param {MeshData} meshData
+	 * @param {Transform} transform
+	 */
 	FastBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
@@ -120,6 +159,10 @@ define([
 		this.indexCounter += meshData.indexCount;
 	};
 
+	/**
+	 * Calls callback.done and returns an array containing the group meshes.
+	 * @returns {MeshData[]}
+	 */
 	FastBuilder.prototype.build = function () {
 		this.callback.done();
 		return this.meshDatas;

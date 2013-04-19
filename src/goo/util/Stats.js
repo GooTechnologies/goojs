@@ -4,7 +4,10 @@ define(
 	"use strict";
 
 	/**
-	 * @class Show render statistics
+	 * @class Shows render statistics
+	 * @example
+	 * this.stats = new Stats();
+	 * document.body.appendChild(this.stats.domElement);
 	 */
 	function Stats() {
 		var startTime = Date.now(), prevTime = startTime, prevTimeMs = startTime;
