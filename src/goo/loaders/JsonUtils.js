@@ -54,13 +54,24 @@ function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, An
 		return indexBuffer;
 	};
 
+	var maxVertexCount = 63488 - 2048 - 36;
+
+	JsonUtils.rewrap = function (n) {
+		var val = n % maxVertexCount;
+		if (val < 0) {
+			val += maxVertexCount;
+		}
+		return val;
+	};
+
 	JsonUtils.getIntBufferFromCompressedString = function (indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
 		for ( var i = 0; i < indices.length; ++i) {
 			var word = indices.charCodeAt(i);
-			prev += JsonUtils.unzip(word);
-			indexBuffer[i] = prev;
+			var delta = prev + JsonUtils.unzip(word);
+			prev = delta;
+			indexBuffer[i] = this.rewrap(delta);
 		}
 		return indexBuffer;
 	};
