@@ -15,8 +15,5 @@ define(['goo/entities/components/Component'],
 
 	LightComponent.prototype = Object.create(Component.prototype);
 
-	LightComponent.prototype.stuff = function () {
-	};
-
 	return LightComponent;
 });
