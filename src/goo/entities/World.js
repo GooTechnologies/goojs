@@ -188,7 +188,6 @@ function (
 	};
 
 	World.prototype._check = function (entities, callback) {
-		// REVIEW: Code style? Spaces before and after "("?
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			for (var managerIndex = 0; managerIndex < this._managers.length; managerIndex++) {

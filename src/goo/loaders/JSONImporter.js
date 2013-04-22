@@ -498,22 +498,6 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 						// Copied from the else clause below
 						tex = new TextureCreator().loadTexture2D(this.baseTextureDir + baseTexFileName);
 
-						// REVIEW: Where does nameresolver come from?
-						// Commented this out for now since it seems to
-						// always go to the else clause.
-						/*
-						 * if (this.nameResolver !== undefined) { tex = new
-						 * TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip(flipTexture).withGooResourceCache(
-						 * _useCache).makeTexture2D(nameResolver.resolveName(baseTexFileName)); } else { // look for pak contents // var rsrc = //
-						 * GooResourceManager.getImageResource(_useCache, // baseTexFileName); // if (rsrc !== null) { // tex = new //
-						 * TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip( //
-						 * flipTexture).withGooResourceCache(_useCache).makeTexture2D(baseTexFileName); // } else { tex = new
-						 * TextureCreator().loadTexture2D(this.baseTextureDir + baseTexFileName); // tex = new //
-						 * TextureCreator().withMinificationFilter(minificationFilter).withVerticalFlip( //
-						 * flipTexture).withGooResourceCache(_useCache).makeTexture2D( // _baseTextureDir + baseTexFileName); // } }
-						 */
-
-						// TODO: Get wrap from json instead
 						// tex.setWrap(WrapMode.Repeat);
 						material.textures[this.slotUnitMap[key]] = tex;
 					}
