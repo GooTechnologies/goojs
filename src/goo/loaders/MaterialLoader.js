@@ -126,9 +126,10 @@ define([
 						var state = match[1].toLowerCase();
 						if(state === 'specularpower') {
 							state = 'shininess';
+							materialState[state] = value;
+						} else {
+							setDestinationColor(materialState[state], value);
 						}
-
-						setDestinationColor(materialState[state], value);
 					}
 					else {
 						materialUniforms[key] = value;
