@@ -50,12 +50,14 @@ function (
 	 * @param childComponent child transform component to attach
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent) {
-		if (childComponent === this) {
-			// REVIEW rickard: Do we need to check this recursively? ANSWER: Yes
-			console.warn('attachChild: An object can\'t be added as a child of itself.');
-			return;
+		var component = this;
+		while(component) {
+			if (component === childComponent) {
+				console.warn('attachChild: An object can\'t be added as a descendant of itself.');
+				return;
+			}
+			component = component.parent;
 		}
-
 		if (childComponent.parent) {
 			childComponent.parent.detachChild(childComponent);
 		}
