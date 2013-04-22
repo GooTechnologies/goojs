@@ -82,8 +82,17 @@ define([
 
 				joint._index = Math.round(jointObj.Index);
 				joint._parentIndex = Math.round(jointObj.ParentIndex);
-				joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
-				joint._inverseBindPose.update();
+
+				if (jointObj.InverseBindPose.Matrix) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformMatrix(jointObj.InverseBindPose));
+				} else if (jointObj.InverseBindPose.Rotation.length === 4) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformQuat(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
+				} else {
+					joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
+				}
+
 				joints[j] = joint;
 			}
 
