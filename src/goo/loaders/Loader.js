@@ -85,9 +85,9 @@ define([
 	 * Add a callback to get loader progress. The object passed to the callback will be
 	 * on the form:<br />
 	 * <code>{
-	 *   loaded: number,
-	 *   total: number,
-	 *   count: number
+	 *   loaded: number Bytes loaded
+	 *   total: number Bytes to load
+	 *   count: number Number of resources loaded/loading
 	 * }</code>
 	 * @param {function(object)} callback
 	 */
