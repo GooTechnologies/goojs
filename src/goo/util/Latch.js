@@ -15,8 +15,10 @@ define(
 
 	Latch.prototype.countDown = function () {
 		this.count--;
-		if (this.isDone() && this.callback) {
-			this.callback();
+		if (this.isDone() && this.callback.done) {
+			this.callback.done();
+		} else if (this.callback.progress) {
+			this.callback.progress(this.count);
 		}
 	};
 
