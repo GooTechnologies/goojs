@@ -240,11 +240,21 @@ function buildNav(members) {
     }
     function formatClassTree(node) {
       var ret = '<ul>';
-      for (var key in node) {
+      var keys = [];
+      for(var key in node) {
+        if(node.hasOwnProperty(key)) {
+          keys.push(key);
+        }
+      }
+      keys.sort();
+      for (var i = 0; i < keys.length; i++) {
+		key = keys[i];
         var c = node[key];
         if(c.meta && c.meta.filename) {
+          //ret += '<li id="'+key+'">' + linkto(c.longname, c.name) + '</li>'
           ret += '<li>' + linkto(c.longname, c.name) + '</li>'
         } else {
+          //ret += '<li id="'+key+'"><a href>'+key+'</a>';
           ret += '<li><a href>'+key+'</a>';
           ret += formatClassTree(c) + '</li>';
         }

@@ -1,9 +1,9 @@
 $(function() {
 	var $list = $("nav > ul").first();
 	$list.wrap('<div class="tree"></div>');
-	$tree = $list.parent();
+	var $tree = $list.parent();
 	var path = document.location.href;
-	path = path.slice(path.lastIndexOf('/')+1, Math.max(path.lastIndexOf('#'),0));
+	path = path.slice(path.lastIndexOf('/')+1, Math.max(path.lastIndexOf('.html')+5));
 	if(path && path != 'index.html') {
 		$tree.find('a').each(function() {
 			if ($(this).attr('href') == path) {
@@ -25,7 +25,6 @@ $(function() {
 	});
 	$tree.bind('loaded.jstree', function() {
 		$tree.children('ul').addClass('jstree-no-icons jstree-no-dots');
-		
 	})
 		.bind('select_node.jstree', function(e, data) {
 			var $node = data.rslt.obj;
