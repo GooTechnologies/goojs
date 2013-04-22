@@ -789,7 +789,8 @@ function (
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 
-	// REVIEW: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector) and the matrix is applied after the vector.
+	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
+	// and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
 		var x = rhs.data[0];
 		var y = rhs.data[1];

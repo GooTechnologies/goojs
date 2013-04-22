@@ -51,7 +51,7 @@ function (
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent) {
 		if (childComponent === this) {
-			// REVIEW: Do we need to check this recursively? ANSWER: Yes
+			// REVIEW rickard: Do we need to check this recursively? ANSWER: Yes
 			console.warn('attachChild: An object can\'t be added as a child of itself.');
 			return;
 		}

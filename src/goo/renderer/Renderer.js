@@ -1118,7 +1118,6 @@ function (
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 	};
 
-	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
 	Renderer.prototype.getGLDataType = function (type) {
 		switch (type) {
 			case 'Float':
@@ -1143,7 +1142,6 @@ function (
 		}
 	};
 
-	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
 	Renderer.prototype.getGLBlendParam = function (param) {
 		switch (param) {
 			case 'AddEquation':

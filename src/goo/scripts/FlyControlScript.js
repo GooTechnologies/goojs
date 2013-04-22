@@ -264,7 +264,7 @@ function (Vector3) {
 		loc.y = 0;
 		loc.normalize();
 
-		// REVIEW: Player is not defined anywhere!?
+		// REVIEW vilcans: Player is not defined anywhere!? Remove this file?
 		//player.acceleration.set(loc).mul(moveMult);
 
 		// transform.rotation.x += this.rotationVector.x * rotMult;
