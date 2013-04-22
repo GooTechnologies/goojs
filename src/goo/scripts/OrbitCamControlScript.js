@@ -32,7 +32,6 @@ function (
 		invertedY: false,
 		invertedWheel: true,
 
-		mouseUpOnOut: false,
 		drag: 5.0,
 
 		maxSampleTimeMS: 200,
@@ -60,7 +59,6 @@ function (
 	 * @param {boolean} [properties.invertedX=false]
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
-	 * @param {boolean} [properties.mouseUpOnOut=false] If mouse leaves the domElement, stop moving.
 	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
 	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera.
 	 */
@@ -221,12 +219,6 @@ function (
 		document.addEventListener('mouseup', function (event) {
 			that.updateButtonState(event.button, false);
 		}, false);
-
-		if (this.mouseUpOnOut) {
-			this.domElement.addEventListener('mouseout', function (event) {
-				that.updateButtonState(event.button, false);
-			}, false);
-		}
 
 		document.addEventListener('mousemove', function (event) {
 			that.updateDeltas(event.clientX, event.clientY);
