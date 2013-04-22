@@ -1,15 +1,22 @@
-define(['goo/math/Transform', 'goo/animation/Joint', 'goo/math/Matrix4x4'],
+define([
+	'goo/math/Transform',
+	'goo/animation/Joint',
+	'goo/math/Matrix4x4'
+],
 /** @lends */
-function (Transform, Joint, Matrix4x4) {
+function (
+	Transform,
+	Joint,
+	Matrix4x4
+) {
 	"use strict";
 
 	/**
 	 * @class Joins a Skeleton with an array of joint poses. This allows the _skeleton to exist and be reused between multiple instances of poses.
-	 * @param {Skeleton} _skeleton the _skeleton to use.
-	 * @property {Skeleton} _skeleton the _skeleton to use.
+	 * @param {Skeleton} skeleton
 	 */
-	function SkeletonPose (_skeleton) {
-		this._skeleton = _skeleton;
+	function SkeletonPose (skeleton) {
+		this._skeleton = skeleton;
 
 		this._localTransforms = [];
 		this._globalTransforms = [];
@@ -38,7 +45,7 @@ function (Transform, Joint, Matrix4x4) {
 	}
 
 	/**
-	 * Update our local joint transforms so that they reflect the _skeleton in bind pose.
+	 * Update our local joint transforms so that they reflect the skeleton in bind pose.
 	 */
 	SkeletonPose.prototype.setToBindPose = function () {
 		var temp = new Transform();

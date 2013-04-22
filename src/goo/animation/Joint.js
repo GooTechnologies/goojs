@@ -6,7 +6,6 @@ function (Transform) {
 	/**
 	 * @class Representation of a Joint in a Skeleton. Meant to be used within a specific Skeleton object.
 	 * @param {String} name Name of joint
-	 * @property {String} name Name of joint
 	 */
 	function Joint (name) {
 		this._name = name;

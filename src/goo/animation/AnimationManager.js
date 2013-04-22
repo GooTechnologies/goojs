@@ -1,12 +1,18 @@
-define(['goo/animation/layer/AnimationLayer', 'goo/animation/clip/AnimationClipInstance'],
+define([
+	'goo/animation/layer/AnimationLayer',
+	'goo/animation/clip/AnimationClipInstance'
+],
 /** @lends */
-function (AnimationLayer, AnimationClipInstance) {
+function (
+	AnimationLayer,
+	AnimationClipInstance
+) {
 	"use strict";
 
 	/**
 	 * @class
 	 * <p>
-	 * AnimationManager describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and uses
+	 * Describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and uses
 	 * their combined result to update one or more poses (via a set AnimationApplier.) AnimationClips used in these layers are instanced and tracked
 	 * specifically for this manager.
 	 * </p>
