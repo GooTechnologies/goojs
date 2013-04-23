@@ -60,7 +60,7 @@ define([
             }
 
             // TODO: Remove later , used for debugging.
-            this._writeDebugData();
+            //  this._writeDebugData();
         };
 
         /**

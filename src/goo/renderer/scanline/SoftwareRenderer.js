@@ -170,10 +170,11 @@ define([
                 if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
 
                     var cull;
+                    var bound = entity.occludeeComponent.modelBound;
 
-                    if (entity.meshDataComponent.modelBound instanceof BoundingSphere) {
+                    if (bound instanceof BoundingSphere) {
                         cull = this.boundingSphereModule.occlusionCull(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
-                    } else if (entity.meshDataComponent.modelBound instanceof BoundingBox) {
+                    } else if (bound instanceof BoundingBox) {
                         cull = this.boundingBoxModule.occlusionCull(entity, cameraViewProjectionMatrix);
                     }
 
@@ -406,7 +407,7 @@ define([
                 // Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
                 this._triangleData.positions[p] = (v1.data[0] + 1.0) * this._halfClipX;
                 // Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
-                this._triangleData.positions[p2] = Math.round((v1.data[1] + 1.0) * this._halfClipY);
+                this._triangleData.positions[p2] = (v1.data[1] + 1.0) * this._halfClipY;
                 // positionArray[p3] = v1.data[2]; z-componenet is not used any more.
                 // Invert w component here, this to be able to interpolate the depth over the triangles.
                 this._triangleData.positions[p4] = homogeneousDivide;
@@ -547,7 +548,7 @@ define([
          * @returns {Array}
          * @private
          */
-        SoftwareRenderer.prototype._createEdgesForTriangle = function (indices, positions) {
+        SoftwareRenderer.prototype._createOccludeeEdges = function (indices, positions) {
 
             // Use (x,y,1/w), the w component is already inverted.
             // Reuse the global vectors for storing data to send as parameter to create Edges.
@@ -564,28 +565,18 @@ define([
             v3.data[1] = positions[vPos + 1];
             v3.data[2] = positions[vPos + 3];
 
-            // The edges are created sorted in growing y-order.
             edges[0].setData(v1, v2);
             edges[1].setData(v2, v3);
             edges[2].setData(v3, v1);
 
-            var maxHeight = edges[0].dy;
-            var longEdge = 0;
+            // Round y-coordinates to expand the area.
+            edges[0].roundOccludeeCoordinates();
+            edges[1].roundOccludeeCoordinates();
+            edges[2].roundOccludeeCoordinates();
 
-            // Find edge with the greatest height in the Y axis, this is the long edge.
-            for(var i = 1; i < 3; i++) {
-                var height = edges[i].dy;
-                if(height > maxHeight) {
-                    maxHeight = height;
-                    longEdge = i;
-                }
-            }
-
-            // "Next, we get the indices of the shorter edges, using the modulo operator to make sure that we stay within the bounds of the array:"
-            var shortEdge1 = (longEdge + 1) % 3;
-            var shortEdge2 = (longEdge + 2) % 3;
-
-            return [longEdge, shortEdge1, shortEdge2];
+            edges[0].computeDerivedData();
+            edges[1].computeDerivedData();
+            edges[2].computeDerivedData();
         };
 
 
@@ -613,14 +604,14 @@ define([
 
         /**
          * Returns an array containing if the triangle's long edge is on the right or left and if the triangle is leaning inwards or outwards
-         * @param {EdgeData} edgeData
          * @param shortEdge
          * @param longEdge
          * @returns {Array}
          * @private
          */
-        SoftwareRenderer.prototype._calculateOrientationData = function (edgeData, shortEdge, longEdge) {
+        SoftwareRenderer.prototype._calculateOrientationData = function (shortEdge, longEdge) {
 
+            // TODO: Merge orientation data into edgeData.
             var shortX = edgeData.getShortX();
             var longX = edgeData.getLongX();
 
@@ -631,13 +622,16 @@ define([
 
             // A triangle is leaning inwards, if the long edge's stop vertex is further away than the vertex to compare with of the short edge.
             // The depth values have been inverted, so the comparison has to be inverted as well.
-            if (shortX === longX) {
+            /*if (shortX === longX) {
+            // if (shortEdge.startIndex == longEdge.startIndex) {
                 // The short edge is the upper one. The long and short edges originate from the same vertex.
                 return [edgeData.getLongXIncrement() > edgeData.getShortXIncrement(), longEdge.z1 < shortEdge.z1];
             } else {
                 // The short edge is the bottom one.
                 return [longX > shortX, longEdge.z1 < shortEdge.z0];
             }
+            */
+            return [longX > shortX, longEdge.z1 < shortEdge.z0];
         };
 
         /**
@@ -645,8 +639,9 @@ define([
         */
         SoftwareRenderer.prototype.isRenderedTriangleOccluded = function (indices, positions) {
 
-            var edgeIndices = this._createEdgesForTriangle(indices, positions);
+            this._createOccludeeEdges(indices, positions);
 
+            var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
             var longEdge = edges[edgeIndices[0]];
             var s1 = edgeIndices[1];
             var s2 = edgeIndices[2];
@@ -654,13 +649,9 @@ define([
             // Vertical culling
             if (this._verticalLongEdgeCull(longEdge)) {
                 // Triangle is outside the view, skipping rendering it;
+                console.log("renderingocclusion : vertical cull");
                 return true;
             }
-
-            // Round y-coordinates to expand the area.
-            edges[0].roundOccludeeCoordinates();
-            edges[1].roundOccludeeCoordinates();
-            edges[2].roundOccludeeCoordinates();
 
             var shortEdge = edges[s1];
             // Find out the orientation of the triangle.
@@ -671,6 +662,7 @@ define([
 
                 // Horizontal culling
                 if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
+                    console.log("renderingocclusion : horizontal cull");
                     return true;
                 }
 
@@ -686,6 +678,7 @@ define([
                     orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
                     // Horizontal culling
                     if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
+                        console.log("renderingocclusion : horizontal cull");
                         return true;
                     }
                 }
@@ -708,7 +701,7 @@ define([
             // Original idea of triangle rasterization is taken from here : http://joshbeam.com/articles/triangle_rasterization/
             // The method is improved by using vertical coherence for each of the scanlines.
 
-            // var edgeIndices = this._createEdgesForTriangle(indices, positions);
+            // var edgeIndices = this._createOccludeeEdges(indices, positions);
 
             var i1 = indices[0];
             var i2 = indices[1];
@@ -739,7 +732,7 @@ define([
             // That is, if the long edge is on the right or the left side.
             var orientationData = null;
             if (this._createEdgeData(longEdge, shortEdge)) {
-                orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
+                orientationData = this._calculateOrientationData(shortEdge, longEdge);
 
                 // Horizontal culling
                 if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
@@ -752,14 +745,13 @@ define([
 
             shortEdge = edges[s2];
             betweenFaces = [longEdge.betweenFaces, shortEdge.betweenFaces];
+            // TODO : For some reason the orientation can become switched and therefore need to be
+            // recalculated ... shouldnt be possible.
             if (this._createEdgeData(longEdge, shortEdge)) {
-                // If the orientation hasn't been created, do so.
-                if (orientationData === null) {
-                    orientationData = this._calculateOrientationData(edgeData, shortEdge, longEdge);
-                    // Horizontal culling
-                    if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
-                        return;
-                    }
+                orientationData = this._calculateOrientationData(shortEdge, longEdge);
+                // Horizontal culling
+                if (this._horizontalLongEdgeCull(longEdge, orientationData)) {
+                    return;
                 }
                 // Draw second portion of the triangle.
                 this._drawEdges(edgeData, orientationData, betweenFaces);
@@ -1007,9 +999,13 @@ define([
 
             // For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
+
+            var shrinkage = 0.0;
+
             // Checking if the triangle's long edge is on the right or the left side.
             if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
                 if (orientationData[1]) { // INWARDS TRIANGLE
+
                     for (var y = startLine; y <= stopLine; y++) {
 
                         var realLeftX = edgeData.getShortX();
@@ -1019,16 +1015,21 @@ define([
                         var rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
                         var leftX, rightX;
+                        /*
                         if(!shortEdgeBetween) {
-                            leftX = Math.ceil(realLeftX + 0.5);
+                            leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
                             leftX = Math.round(realLeftX);
                         }
                         if (!longEdgeBetween) {
-                            rightX = Math.floor(realRightX - 0.5);
+                            rightX = Math.floor(realRightX - shrinkage);
                         } else {
                             rightX = Math.round(realRightX);
                         }
+                        */
+
+                        leftX = Math.ceil(realLeftX + shrinkage);
+                        rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
@@ -1064,16 +1065,21 @@ define([
                         var rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
                         var leftX, rightX;
+                        /*
                         if(!shortEdgeBetween) {
-                            leftX = Math.ceil(realLeftX + 0.5);
+                            leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
                             leftX = Math.round(realLeftX);
                         }
                         if (!longEdgeBetween) {
-                            rightX = Math.floor(realRightX - 0.5);
+                            rightX = Math.floor(realRightX - shrinkage);
                         } else {
                             rightX = Math.round(realRightX);
                         }
+                        */
+
+                        leftX = Math.ceil(realLeftX + shrinkage);
+                        rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate fractional offset.
                         var offset = realRightX - rightX;
@@ -1108,16 +1114,21 @@ define([
 
                         // Conservative rounding , when drawing occluders, make area smaller.
                         var leftX, rightX;
+                        /*
                         if(!longEdgeBetween) {
-                            leftX = Math.ceil(realLeftX + 0.5);
+                            leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
                             leftX = Math.round(realLeftX);
                         }
                         if (!shortEdgeBetween) {
-                            rightX = Math.floor(realRightX - 0.5);
+                            rightX = Math.floor(realRightX - shrinkage);
                         } else {
                             rightX = Math.round(realRightX);
                         }
+                        */
+
+                        leftX = Math.ceil(realLeftX + shrinkage);
+                        rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
@@ -1154,16 +1165,21 @@ define([
 
                         // Conservative rounding , when drawing occluders, make area smaller.
                         var leftX, rightX;
+                        /*
                         if(!longEdgeBetween) {
-                            leftX = Math.ceil(realLeftX + 0.5);
+                            leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
                             leftX = Math.round(realLeftX);
                         }
                         if (!shortEdgeBetween) {
-                            rightX = Math.floor(realRightX - 0.5);
+                            rightX = Math.floor(realRightX - shrinkage);
                         } else {
                             rightX = Math.round(realRightX);
                         }
+                        */
+
+                        leftX = Math.ceil(realLeftX + shrinkage);
+                        rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate fractional offset.
                         var offset = realRightX - rightX;
@@ -1203,6 +1219,12 @@ define([
                 return false;
             }
 
+            var startLine = Math.ceil(shortEdge.y0);
+            var stopLine = Math.floor(shortEdge.y1);
+//            var startLine = shortEdge.y0;
+//            var stopLine = shortEdge.y1;
+
+
             // The scanline on which we start rendering on might be in the middle of the long edge,
             // the starting x-coordinate is therefore calculated.
             var longStartCoeff = (shortEdge.y0 - longEdge.y0) / longEdge.dy;
@@ -1212,9 +1234,6 @@ define([
             var shortX = shortEdge.x0;
             var shortZ = shortEdge.z0;
 
-            var startLine = shortEdge.y0;
-            var stopLine = shortEdge.y1;
-
             // Vertical coherence :
             // The x-coordinates' increment for each step in y is constant,
             // so the increments are pre-calculated and added to the coordinates
@@ -1223,6 +1242,13 @@ define([
             var shortEdgeXincrement = shortEdge.xIncrement;
             var longEdgeZincrement = longEdge.zIncrement;
             var shortEdgeZincrement = shortEdge.zIncrement;
+
+            // Compensate for offset when rounding to the startLine.
+            var offset = startLine - shortEdge.y0;
+            longX += offset * longEdgeXincrement;
+            shortX += offset * shortEdgeXincrement;
+            longZ += offset * longEdgeZincrement;
+            shortZ += offset * shortEdgeZincrement;
 
             // Vertical clipping
             // TODO : Implement a cohen sutherland image space clipper for the horizontal and vertical clipping.
@@ -1238,9 +1264,9 @@ define([
                 startLine = 0;
             }
 
-            if (stopLine > this._clipY ) {
-                stopLine = this._clipY;
-            }
+            stopLine = Math.min(this._clipY, stopLine);
+
+
 
             edgeData.setData([startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]);
             return true;
@@ -1260,7 +1286,7 @@ define([
 
             // 99% COPY PASTE FROM _fillPixels()!
 
-            if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
+            if (rightX < leftX || rightX < 0 || leftX > this._clipX) {
                 return true; // Nothing to draw here. it is occluded
             }
 
@@ -1323,11 +1349,11 @@ define([
             }
 
             if (leftZ < 0 || leftZ > 1.0000001) {
-                console.error("leftz : ", leftZ);
+                console.error("Rendering depth buffer : leftZ =", leftZ);
             }
 
             if (rightZ < 0 || rightZ > 1.0000001) {
-                console.error("rightZ : ", rightZ);
+                console.error("Rendering depth buffer : rightZ =", rightZ);
             }
 
             // Horizontal clipping
@@ -1390,11 +1416,22 @@ define([
             for(var i = 0; i < this._depthData.length; i++) {
 
                 // Convert the float value of depth into 8bit.
-                var depth = this._depthData[i] * 255;
-                this._colorData[colorIndex] = depth;
-                this._colorData[++colorIndex] = depth;
-                this._colorData[++colorIndex] = depth;
-                this._colorData[++colorIndex] = 255;
+                // var depth = this._depthData[i] * 255;
+                var depth = this._depthData[i];
+                if (depth > 0.0 ) {
+                     depth = 255;
+                    // depth *= 255;
+                    this._colorData[colorIndex] = depth;
+                    this._colorData[++colorIndex] = depth;
+                    this._colorData[++colorIndex] = depth;
+                    this._colorData[++colorIndex] = 255;
+                } else {
+                    this._colorData[colorIndex] = 0;
+                    this._colorData[++colorIndex] = 0;
+                    this._colorData[++colorIndex] = 0;
+                    this._colorData[++colorIndex] = 0;
+                }
+
                 colorIndex++;
             }
         };

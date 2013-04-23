@@ -27,8 +27,9 @@ define([
 
                 var edgeIndex = this._edgeCount;
 
-                this._edges[edgeIndex].setData(vec1, vec2);
+                this._edges[edgeIndex].setData(vec1, vec2, i1, i2);
 
+                this._edges[edgeIndex].computeDerivedData();
                 this._map[key1.toString()] = edgeIndex;
                 this._map[key2.toString()] = edgeIndex;
 

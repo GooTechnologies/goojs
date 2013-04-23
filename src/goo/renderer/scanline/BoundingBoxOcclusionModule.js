@@ -89,8 +89,8 @@ define([
          * @returns {Boolean} occluder or not occluded.
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
-           // return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
-           return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
+           return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
+           // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
         /**
@@ -102,11 +102,16 @@ define([
          */
         BoundingBoxOcclusionModule.prototype._renderedBoundingBoxOcclusionTest = function (entity, cameraViewProjectionMatrix) {
 
+            // writes data to the global variable positionArray.
+            this._copyEntityVerticesToPositionArray(entity);
+
             // Triangles will be null on near plane clip.
             // Considering this case to be visible.
-            if (!this._updateTriangleData(entity, cameraViewProjectionMatrix)) {
+            if (!this._projectionTransformTriangleData(entity, cameraViewProjectionMatrix)) {
                 return false;
             }
+            this._addVisibleTrianglesToTriangleData();
+            this._screenSpaceTransformTriangleData();
 
             var maxIndices = triangleData.indexCount;
             for (var tIndex = 0; tIndex < maxIndices; tIndex++) {
@@ -131,13 +136,11 @@ define([
          */
         BoundingBoxOcclusionModule.prototype._boundingBoxOcclusionCulling = function (entity, cameraViewProjectionMatrix) {
 
-            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-
-            Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
-
             // writes data to the global variable positionArray.
             this._copyEntityVerticesToPositionArray(entity);
 
+            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
+            Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
             // TODO: Combine the transforms to pixel space.
             // Projection transform + homogeneous divide
             var p1, p2, p3, p4, wComponent;
@@ -197,7 +200,7 @@ define([
          *	@return {Float32Array} vertex array
          */
         BoundingBoxOcclusionModule.prototype._copyEntityVerticesToPositionArray = function (entity) {
-            var boundingBox = entity.meshDataComponent.modelBound;
+            var boundingBox = entity.occludeeComponent.modelBound;
 
             // Create the 8 vertices which create the bounding box.
             var x = boundingBox.xExtent;
@@ -434,7 +437,7 @@ define([
          *	Creates a screen space axis aligned box from the min and max values.
          *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
          *	@return {Boolean} occluded or not occluded.
-         *   @param {Array.<Number>} minmaxArray  [minX, maxX, minY, maxY, minDepth]
+         *   @param {Float32Array} minmaxArray  [minX, maxX, minY, maxY, minDepth]
          */
         BoundingBoxOcclusionModule.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {
 
@@ -451,7 +454,7 @@ define([
                 var sampleCoordinate = y * width + minX;
                 for (var x = minX; x <= maxX; x++) {
                     // TODO : Remove setting color when not in development.
-                    this.renderer._colorData.set(debugColor, sampleCoordinate * 4);
+                    // this.renderer._colorData.set(debugColor, sampleCoordinate * 4);
                     if (this.renderer._depthData[sampleCoordinate] < minDepth) {
                         return false;
                     }
@@ -469,18 +472,14 @@ define([
          * @returns {Boolean}
          * @private
          */
-        BoundingBoxOcclusionModule.prototype._updateTriangleData = function (entity, cameraViewProjectionMatrix) {
+        BoundingBoxOcclusionModule.prototype._projectionTransformTriangleData = function (entity, cameraViewProjectionMatrix) {
 
             // first empty the triangleData.
             triangleData.clear();
 
-            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-
             // Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
+            var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
             Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
-
-            // writes data to the global variable positionArray.
-            this._copyEntityVerticesToPositionArray(entity);
 
             var maxPos = positionArray.length;
             // Projection transform + homogeneous divide for every vertex.
@@ -520,6 +519,10 @@ define([
                 p = p4;
             }
 
+            return true;
+        };
+
+        BoundingBoxOcclusionModule.prototype._addVisibleTrianglesToTriangleData = function () {
             var vPos;
             for (var i = 0; i < triangleIndices.length; i++) {
 
@@ -539,17 +542,17 @@ define([
                     triangleData.addIndices(indices);
                 }
             }
+        };
 
-            // Screen space transform positions.
+        BoundingBoxOcclusionModule.prototype._screenSpaceTransformTriangleData = function() {
             // TODO : Transform only the positions going to be rendered.
+            var maxPos = triangleData.positions.length;
             for (var j = 0; j < maxPos; j++) {
                 triangleData.positions[j] = (triangleData.positions[j] + 1.0) * this._halfClipX;
                 j++;
                 triangleData.positions[j] = (triangleData.positions[j] + 1.0) * this._halfClipY;
                 j += 2; // Have to step four positions per loop (x, y, z, w).
             }
-
-            return true;
         };
 
         return BoundingBoxOcclusionModule;

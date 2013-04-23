@@ -18,23 +18,39 @@
 
 	canvas
 	{
+        position: relative;
 		display: inline;
-		background-color: pink;
-		border : 2px solid gold;
-		border-radius: 3px;
 	}
 
 	#goo
 	{
-		width : 500px;
-		height : 500px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
 	}
 
 	#debugcanvas
     {
+        position : absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
 		transform : scaley(-1);
 		-moz-transform: scaley(-1);
 		-webkit-transform: scaley(-1);
+        padding : 0;
+        border : 1px solid white;
+        opacity: 0.3;
 	}
 
 	#guide
@@ -56,23 +72,12 @@
 
 	<div>
 		<div class="canvascontainer">
-			<canvas id="goo" width="500" height="500">
+			<canvas id="goo">
 			</canvas>
 		</div>
 		<div class="canvascontainer">
-			<canvas id="debugcanvas" width="64" height="64">
+			<canvas id="debugcanvas" width="32" height="16">
 			</canvas>
-		</div>
-		<div id="guide">
-			<p>
-			To your left, you see the GooEngine rendered world. Entities completely occluded by other entities are occlusion culled. The wireframe objects are actually solid, but are rendered transparent to exemplify the culling.
-			</p>
-			<p>
-			To you right, you see the software rendered depth-pass. This pass is used to occlusion cull the entities by taking samples on the entities' bounding spheres. Each colorful pixel represent a sample taken to deterimine if an entity is occluded or not.
-			</p>
-			<p>
-				Enable mouselook mode by holding down the left mouse button. Use WASD to move around in the world.
-			</p>
 		</div>
 	</div>
 </body>

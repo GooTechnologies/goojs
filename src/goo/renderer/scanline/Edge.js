@@ -31,6 +31,9 @@ function () {
     Edge.prototype.setData = function (vec1, vec2) {
         // Store the positions in growing y order , y1 > y0.
         // The scanline renderer moves in positive y , origin at top left corner.
+
+
+
         var v1_y = vec1.data[1];
         var v2_y = vec2.data[1];
         if (v1_y < v2_y ) {
@@ -53,11 +56,9 @@ function () {
             this.z0 = vec2.data[2];
             this.z1 = vec1.data[2];
         }
-
-        this._computeDerivedData();
     };
 
-    Edge.prototype._computeDerivedData = function () {
+    Edge.prototype.computeDerivedData = function () {
 
         var dx = this.x1 - this.x0;
         var dy = this.y1 - this.y0;
@@ -72,10 +73,17 @@ function () {
         this.zIncrement = dz / dy;
     };
 
-	// Rounds conservatively , increasing the coverage.
 	Edge.prototype.roundOccludeeCoordinates = function () {
+
+        // TODO : This conservative rounding wont work.... something messes it up now after moving the edgedata computations
+        // into the class....
+        /*
 		this.y0 = Math.floor(this.y0);
 		this.y1 = Math.ceil(this.y1);
+        */
+
+        this.y0 = Math.round(this.y0);
+		this.y1 = Math.round(this.y1);
 	};
 
 	return Edge;
