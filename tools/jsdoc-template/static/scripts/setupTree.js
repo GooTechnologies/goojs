@@ -3,6 +3,7 @@ $(function() {
 	$list.wrap('<div class="tree"></div>');
 	var $tree = $list.parent();
 	var path = document.location.href;
+	/* REVIEW: No reason to use Math.max anymore, is there? */
 	path = path.slice(path.lastIndexOf('/')+1, Math.max(path.lastIndexOf('.html')+5));
 	if(path && path != 'index.html') {
 		$tree.find('a').each(function() {

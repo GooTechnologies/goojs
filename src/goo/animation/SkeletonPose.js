@@ -12,7 +12,7 @@ function (
 	"use strict";
 
 	/**
-	 * @class Joins a Skeleton with an array of joint poses. This allows the _skeleton to exist and be reused between multiple instances of poses.
+	 * @class Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
 	 * @param {Skeleton} skeleton
 	 */
 	function SkeletonPose (skeleton) {
@@ -102,7 +102,7 @@ function (
 		this.firePoseUpdated();
 	};
 
-	/**
+	/*
 	 * Notify any registered PoseListeners that this pose has been "updated".
 	 */
 	SkeletonPose.prototype.firePoseUpdated = function () {

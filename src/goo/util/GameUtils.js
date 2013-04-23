@@ -5,7 +5,6 @@ function () {
 
 	/**
 	 * @class Shims for standard gaming features
-	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
 	function GameUtils () {
@@ -15,7 +14,6 @@ function () {
 	 * @type {Object}
 	 * @property {boolean} fullscreen
 	 * @property {boolean} pointerLock
-	 * @static
 	 */
 	GameUtils.supported = {
 		fullscreen: true,

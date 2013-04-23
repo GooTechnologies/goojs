@@ -38,13 +38,10 @@ define([
 	 * var meshDatas = meshBuilder.build();
 	 * @param {MeshData} meshData The mesh to copy
 	 * @param {number} count The number of copies
-	 * @param {Object} [callback] A set of progress monitoring callbacks. Accepts an object of the form:<pre>
-	 * {
-	 *   progress: function () {...},
-	 *   done: function () {...}
-	 * }
-	 * </pre>
+	 * @param {Object} [callback] A set of progress monitoring callbacks.
 	 * The progress function is called in certain intervals during the loading of the meshes. done is called after loading is done.
+	 * @param {function(percent)} callback.progress
+	 * @param {function()} callback.done
 	 */
 	function FastBuilder(meshData, count, callback) {
 		if (meshData.vertexCount >= 65536) {

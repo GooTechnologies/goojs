@@ -274,7 +274,6 @@ function (
 
 	/** Possible texture wrapping modes: Linear, Projected, Polar
 	 * @type {Enum}
-	 * @static
 	 */
 	Sphere.TextureModes = new Enum('Linear', 'Projected', 'Polar');
 

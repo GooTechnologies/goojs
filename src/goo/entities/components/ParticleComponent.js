@@ -14,19 +14,21 @@ function (
 	"use strict";
 
 	/**
-	 * @class Creates and modifies MeshData to simulate particle effects.<br /><br />ParticleComponents may have one or
+	 * @class Creates and modifies @link{MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
 	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
 	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
 	 * perform over its lifetime, including:
-	 * <ul><li>Size of particle</li>
+	 * <ul>
+	 * <li>Size of particle</li>
 	 * <li>Color of particle</li>
 	 * <li>Orientation of particle (rotation on screen plane)</li>
 	 * <li>Texture coords used.</li>
-	 * <li>Other user defined params.</li></ul><br />
+	 * <li>Other user defined params.</li>
+	 * </ul><br />
 	 * External influences can exert on particles via a defined callback function system.<br /><br />
 	 * Particles billboard toward the screen using a provided Camera as reference.
 	 * @param {Object} [settings]
-	 * @param {Array} [settings.emmiters] Array of emitter settings
+	 * @param {Array} [settings.emitters] Array of emitter settings
 	 * @param {Array} [settings.timeline]
 	 * @param {number} [settings.uRange=1]
 	 * @param {number} [settings.vRange=1]

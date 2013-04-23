@@ -29,6 +29,7 @@ function (
 		this.setManager(this.entityManager);
 
 		this.time = 0.0;
+		/* REVIEW: As I understand, tpf is set each frame, so shouldn't have a default value */
 		/** Timer per frame in seconds
 		 * @type {number}
 		 * @default

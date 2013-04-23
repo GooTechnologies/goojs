@@ -6,18 +6,22 @@ define(
 	/**
 	 * @class Simple latch with callback
 	 * @param {Number} count Latch counter start
-	 * @param {Callback} callback Callback function to fire when latch is finished
+	 * @param {object} callback Callback functions to fire during progress and when done
+	 * @param {function()} callback.progress
+	 * @param {function(latchesLeft)} callback.done
 	 */
 	function Latch(count, callback) {
 		this.count = count;
 		this.callback = callback;
 	}
 
+	/** Counts down the latch. Calls done callback if latch is finished, otherwise progress callback with number of latches left.
+	*/
 	Latch.prototype.countDown = function () {
 		this.count--;
-		if (this.isDone() && this.callback.done) {
+		if (this.isDone() && this.callback && this.callback.done) {
 			this.callback.done();
-		} else if (this.callback.progress) {
+		} else if (this.callback && this.callback.progress) {
 			this.callback.progress(this.count);
 		}
 	};

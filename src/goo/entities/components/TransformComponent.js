@@ -16,7 +16,7 @@ function (
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
-		/** Parent transformcomponent in the scene graph
+		/** Parent transformcomponent in the "scene graph"
 		 * @type {TransformComponent}
 		 * @default
 		 */
@@ -28,6 +28,7 @@ function (
 		this.children = [];
 		/** @type {Transform} */
 		this.transform = new Transform();
+		/* REVIEW: Is this supposed to be public? */
 		/** @type {Transform} */
 		this.worldTransform = new Transform();
 

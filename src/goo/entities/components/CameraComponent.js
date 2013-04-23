@@ -26,7 +26,7 @@ function (
 	CameraComponent.prototype = Object.create(Component.prototype);
 
 	/**
-	 * @param {Number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z
+	 * @param {number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z
 	 */
 	CameraComponent.prototype.setUpVector = function (axisId) {
 		if (axisId === 0) {
@@ -46,7 +46,7 @@ function (
 
 	/**
 	 * Updates the contained camera according to a transform (coming from the transformcomponent)
-	 * @param transform
+	 * @param {Transform} transform
 	 */
 	CameraComponent.prototype.updateCamera = function (transform) {
 		this.camera._left.setv(this.leftVec);

@@ -15,14 +15,12 @@ function (Vector3, Matrix3x3) {
 
 		this.name = 'BasicControlScript';
 
-		/**
-		 * @desc The regular speed of the entity.
-		 * @type {number} movementSpeed
+		/** The regular speed of the entity.
+		 * @type {number}
 		 * @default
 		 */
 		this.movementSpeed = 10.0;
-		/**
-		 * @desc The regular speed of the entity when rolling.
+		/** The regular speed of the entity when rolling.
 		 * @type {number}
 		 * @default
 		 */
@@ -262,7 +260,7 @@ function (Vector3, Matrix3x3) {
 		this.updateRotationVector();
 	}
 
-	/**
+	/*
 	 * @description Test on how to expose variables to a tool.
 	 * @returns {Array}
 	 */

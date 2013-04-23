@@ -6,9 +6,9 @@ define(['goo/renderer/MeshData'],
 	/**
 	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
 	 * from that center (a box).
-	 * @param {number} [width=0.5] Total width of box.
-	 * @param {number} [height=0.5] Total height of box.
-	 * @param {number} [length=0.5] Total length of box.
+	 * @param {number} [width=1] Total width of box.
+	 * @param {number} [height=1] Total height of box.
+	 * @param {number} [length=1] Total length of box.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */

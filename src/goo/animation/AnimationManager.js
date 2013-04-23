@@ -12,8 +12,8 @@ function (
 	/**
 	 * @class
 	 * <p>
-	 * Describes and maintains an animation system. It tracks one or more layered animation state machines (AnimationLayer) and uses
-	 * their combined result to update one or more poses (via a set AnimationApplier.) AnimationClips used in these layers are instanced and tracked
+	 * Describes and maintains an animation system. It tracks one or more layered animation state machines ({@link AnimationLayer}) and uses
+	 * their combined result to update one or more poses (via a set {@link SimpleAnimationApplier|AnimationApplier}.) {@link AnimationClip|AnimationClips} used in these layers are instanced and tracked
 	 * specifically for this manager.
 	 * </p>
 	 * <p>
@@ -94,8 +94,8 @@ function (
 
 	/**
 	 * @description Retrieve and track an instance of an animation clip to be used with this manager.
-	 * @param clip the clip to instance.
-	 * @return our new clip instance.
+	 * @param {AnimationClip} clip the clip to instance.
+	 * @return {AnimationClipInstance} our new clip instance.
 	 */
 	AnimationManager.prototype.getClipInstance = function (clip) {
 		var instance = this._clipInstances[clip];
@@ -120,7 +120,7 @@ function (
 	};
 
 	/**
-	 * @return the "local time", in seconds reported by our global timer.
+	 * @return {number} the "local time", in seconds reported by our global timer.
 	 */
 	AnimationManager.prototype.getCurrentGlobalTime = function () {
 		return this.globalTime;
@@ -128,8 +128,8 @@ function (
 
 	/**
 	 * @description Rewind and reactivate the clip instance associated with the given clip.
-	 * @param clip the clip to pull the instance for.
-	 * @param globalStartTime the time to set the clip instance's start as.
+	 * @param {AnimationClip} clip the clip to pull the instance for.
+	 * @param {number} globalStartTime the time to set the clip instance's start as.
 	 */
 	AnimationManager.prototype.resetClipInstance = function (clip, globalStartTime) {
 		var instance = this.getClipInstance(clip);
@@ -140,15 +140,15 @@ function (
 	};
 
 	/**
-	 * @return our bottom most layer. This layer should always consist of a full skeletal pose data.
+	 * @return {AnimationLayer} our bottom most layer. This layer should always consist of a full skeletal pose data.
 	 */
 	AnimationManager.prototype.getBaseAnimationLayer = function () {
 		return this._layers[0];
 	};
 
 	/**
-	 * @param layerName the name of the layer to find.
-	 * @return the first animation layer with a matching name, or null of none are found.
+	 * @param {string} layerName the name of the layer to find.
+	 * @return {AnimationLayer} the first animation layer with a matching name, or null of none are found.
 	 */
 	AnimationManager.prototype.findAnimationLayer = function (layerName) {
 		for ( var i = 0, max = this._layers.length; i < max; i++) {
@@ -162,8 +162,8 @@ function (
 
 	/**
 	 * @description Add a new layer to our list of animation layers.
-	 * @param layer the layer to add.
-	 * @return the index of our added layer in our list of animation layers.
+	 * @param {AnimationLayer} layer the layer to add.
+	 * @return {number} the index of our added layer in our list of animation layers.
 	 */
 	AnimationManager.prototype.addAnimationLayer = function (layer) {
 		this._layers.push(layer);

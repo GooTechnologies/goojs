@@ -8,14 +8,10 @@ MeshData) {
 
 	/**
 	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
-	 * @property {Float} xExtent Extent along the local x axis.
-	 * @property {Float} yExtent Extent along the local y axis.
-	 * @property {Float} zExtent Extent along the local z axis.
-	 * @constructor
 	 * @description Creates a new box.
-	 * @param {Float} width Total width of box.
-	 * @param {Float} height Total height of box.
-	 * @param {Float} length Total length of box.
+	 * @param {number} [width=0.5] Total width of box.
+	 * @param {number} [height=0.5] Total height of box.
+	 * @param {number} [length=0.5] Total length of box.
 	 */
 
 	function SimpleBox(width, height, length) {
@@ -33,7 +29,7 @@ MeshData) {
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
-	 * @returns {Box} Self for chaining.
+	 * @returns {SimpleBox} Self for chaining.
 	 */
 
 	SimpleBox.prototype.rebuild = function() {

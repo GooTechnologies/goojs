@@ -5,7 +5,8 @@ function(Component) {
 
 	/**
 	 * @class Contains scripts to be executed each frame when set on an active entity
-	 * @param {Array|JS} [scripts] A script or an array of scripts to attach to the entity.
+	 * @param {Array|object} [scripts] A script-object or an array of script-objects to attach to the entity.
+	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
 	 */
 	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
@@ -15,6 +16,9 @@ function(Component) {
 		} else if (scripts) {
 			this.scripts = [scripts];
 		} else {
+			/**
+			 * @type {Array}
+			 */
 			this.scripts = [];
 		}
 	}

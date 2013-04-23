@@ -14,7 +14,7 @@ define(['goo/entities/components/Component'],
 		 */
 		this.materials = [];
 		/** Worldspace bounding considering entity transformations
-		 * @type {Bounding}
+		 * @type {BoundingVolume}
 		 */
 		this.worldBound = null;
 
@@ -24,7 +24,15 @@ define(['goo/entities/components/Component'],
 		 */
 		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
 
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.castShadows = false;
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.receiveShadows = false;
 	}
 
@@ -33,8 +41,8 @@ define(['goo/entities/components/Component'],
 	/**
 	 * Update world bounding
 	 *
-	 * @param bounding Bounding volumen in local space
-	 * @param transform Transform to apply to local bounding -> world bounding
+	 * @param {BoundingVolume} bounding Bounding volumen in local space
+	 * @param {Transform} transform Transform to apply to local bounding -> world bounding
 	 */
 	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
 		this.worldBound = bounding.transform(transform, this.worldBound);

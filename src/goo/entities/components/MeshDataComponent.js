@@ -19,7 +19,8 @@ function (
 		this.meshData = meshData;
 
 		/** Bounding volume in local space
-		 * @type {BoundingSphere}
+		 * @type {BoundingVolume}
+		 * @default
 		 */
 		this.modelBound = new BoundingSphere();
 		/** Automatically compute bounding fit
@@ -34,8 +35,8 @@ function (
 	/**
 	 * Set the bounding volume type (sphere, box etc)
 	 *
-	 * @param modelBound Bounding to apply to this meshdata component
-	 * @param autoCompute If true, automatically compute bounding fit
+	 * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component
+	 * @param {boolean} autoCompute If true, automatically compute bounding fit
 	 */
 	MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
 		this.modelBound = modelBound;

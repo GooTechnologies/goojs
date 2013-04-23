@@ -4,10 +4,10 @@ define(['goo/renderer/MeshData'],
 	"use strict";
 
 	/**
-	 * @class A four sided, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
+	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
 	 * while the width defines the x-axis. The z-axis will always be 0.
-	 * @param {number} [width=0.5] Total width of quad..
-	 * @param {number} [height=0.5] Total height of quad.
+	 * @param {number} [width=1] Total width of quad..
+	 * @param {number} [height=1] Total height of quad.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */
