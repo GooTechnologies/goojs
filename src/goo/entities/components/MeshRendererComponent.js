@@ -24,15 +24,7 @@ define(['goo/entities/components/Component'],
 		 */
 		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
 
-		/**
-		 * @type {boolean}
-		 * @default
-		 */
 		this.castShadows = false;
-		/**
-		 * @type {boolean}
-		 * @default
-		 */
 		this.receiveShadows = false;
 	}
 

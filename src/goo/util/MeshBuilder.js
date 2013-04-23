@@ -3,7 +3,9 @@ define([
         'goo/math/Vector3',
         'goo/entities/EntityUtils'
         ],
-  /* REVIEW: Shouldn't this be included? And it would be nice to know the difference between this one and fastbuilder */
+  /* REVIEW: Shouldn't this be included? And it would be nice to know the difference between this one and fastbuilder
+   * ANSWER: I think it shouldn't. There is no difference except for FastBuilder's callback support.
+   */
 	/* @lends */
 	function (
 		MeshData,
