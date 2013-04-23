@@ -244,8 +244,8 @@ function buildNav(members) {
       var folders = [];
       for(var key in node) {
         if(node.hasOwnProperty(key)) {
-          c = node[key];
-          if(c.meta && c.meta.filename) {
+          var child = node[key];
+          if(child.meta && child.meta.filename) {
             leaves.push(key);
           } else {
             folders.push(key);
