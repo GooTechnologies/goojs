@@ -78,6 +78,9 @@ function(
 	 * @return {RSVP.Promise} The promise is resolved with the loaded Entity object.
 	 */
 	EntityLoader.prototype.load = function(entityRef) {
+		if (this._cache[entityRef]) {
+			return this._cache[entityRef];
+		}
 		var that = this;
 		var promise = this._loader.load(entityRef, (function(data) {
 			return this._parse(data, entityRef);
@@ -170,8 +173,15 @@ function(
 		});
 	};
 
+	/**
+	 * Creates a TransformComponent from the given config.
+	 * Also loads the entity's parent if any, and sets its child.
+	 * @param transformComponentSource Config for the transform component.
+	 * @returns {TransformComponent}
+	 * @private
+	 */
 	EntityLoader.prototype._getTransformComponent = function(transformComponentSource) {
-		// Create a transform
+
 		var tc = new TransformComponent();
 
 		tc.transform.translation.set(transformComponentSource.translation);
@@ -182,9 +192,9 @@ function(
 			MathUtils.radFromDeg(transformComponentSource.rotation[2])
 		);
 
-		var p = transformComponentSource.parentRef;
-		if(p && this._cache[p]) {
-			this._cache[p].then(function(entity) {
+		var parentRef = transformComponentSource.parentRef;
+		if (parentRef) {
+			this.load(parentRef).then(function (entity) {
 				entity.transformComponent.attachChild(tc);
 				return entity;
 			});
