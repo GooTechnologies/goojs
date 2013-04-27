@@ -120,20 +120,7 @@ define([
 
 			if (materialDataSource.uniforms) {
 				for (var key in materialDataSource.uniforms) {
-					var value = materialDataSource.uniforms[key];
-					var match;
-					if (match = /^material(\w+)$/.exec(key)) {
-						var state = match[1].toLowerCase();
-						if(state === 'specularpower') {
-							state = 'shininess';
-							materialState[state] = value;
-						} else {
-							setDestinationColor(materialState[state], value);
-						}
-					}
-					else {
-						materialUniforms[key] = value;
-					}
+					materialUniforms[key] = materialDataSource.uniforms[key];
 				}
 			}
 			if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
