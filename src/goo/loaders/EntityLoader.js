@@ -79,15 +79,16 @@ function(
 	 */
 	EntityLoader.prototype.load = function(entityRef) {
 		var that = this;
-		var promise = this._loader.load(entityRef, function(data) {
-			return that._parse(data, entityRef);
-		});
+		var promise = this._loader.load(entityRef, (function(data) {
+			return this._parse(data, entityRef);
+		}).bind(this));
 		this._cache[entityRef] = promise;
 		return promise;
 	};
 
 
-	EntityLoader.prototype._parse = function(entitySource) {
+	EntityLoader.prototype._parse = function(entitySource, entityRef) {
+		// REVIEW: Why this check? Instead make sure config is always an object, not a string
 		if (typeof entitySource === 'string') {
 			entitySource = JSON.parse(entitySource);
 		}
@@ -143,6 +144,7 @@ function(
 		return RSVP.all(promises)
 		.then(function() {
 			var entity = new Entity(that._world, entitySource.name);
+			entity.ref = entityRef;
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
