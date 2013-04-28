@@ -81,7 +81,6 @@ function(
 		if (this._cache[entityRef]) {
 			return this._cache[entityRef];
 		}
-		var that = this;
 		var promise = this._loader.load(entityRef, (function(data) {
 			return this._parse(data, entityRef);
 		}).bind(this));
