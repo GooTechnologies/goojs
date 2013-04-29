@@ -1,9 +1,9 @@
 require.config({
-    baseUrl : './',
-    paths : {
-        goo: "../src/goo",
-        'goo/lib': '../lib'
-    }
+	baseUrl : './',
+	paths : {
+		goo: "../src/goo",
+		'goo/lib': '../lib'
+	}
 });
 require(
 	[
@@ -21,7 +21,7 @@ require(
 		'goo/renderer/shaders/ShaderLib',
 		'goo/entities/systems/OcclusionCullingSystem',
 		'goo/entities/components/OccluderComponent',
-        'goo/entities/components/OccludeeComponent',
+		'goo/entities/components/OccludeeComponent',
 		'goo/loaders/JSONImporter',
 		'goo/renderer/bounds/BoundingBox',
 		'goo/renderer/OcclusionPartitioner',
@@ -46,7 +46,7 @@ require(
 		ShaderLib,
 		OcclusionCullingSystem,
 		OccluderComponent,
-        OccludeeComponent,
+		OccludeeComponent,
 		JSONImporter,
 		BoundingBox,
 		OcclusionPartitioner,
@@ -61,14 +61,14 @@ require(
 		//-------- GLOBAL VARIABLES --------
 
 			var resourcePath = '../resources';
-            var gui = null;
-            var quadMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
+			var gui = null;
+			var quadMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
 
-            var bbMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'wirematOnBoundingBox');
-            bbMaterial.wireframe = true;
-            bbMaterial.wireframeColor = [0, 0.25, 0];
+			var bbMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'wirematOnBoundingBox');
+			bbMaterial.wireframe = true;
+			bbMaterial.wireframeColor = [0, 0.25, 0];
 
-            var occlusionPartitioner, defaultPartitioner;
+			var occlusionPartitioner, defaultPartitioner;
 
 
 
@@ -81,9 +81,9 @@ require(
 				canvas : document.getElementById('goo')
 			});
 
-            gui = new window.dat.GUI();
-            gui.add(quadMaterial, 'wireframe');
-            gui.addColor(bbMaterial, 'wireframeColor');
+			gui = new window.dat.GUI();
+			gui.add(quadMaterial, 'wireframe');
+			gui.addColor(bbMaterial, 'wireframeColor');
 
 			// Add camera
 			var camera = new Camera(90, 1, 1, 400);
@@ -96,8 +96,8 @@ require(
 			cameraEntity.addToWorld();
 
 			//buildScene(goo);
-            loadTestTriangle(goo);
-            //createHouses(goo);
+			//loadTestTriangle(goo);
+			createHouses(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -110,21 +110,21 @@ require(
 
 			// Override the current renderList for rendering in the GooRunner.
 
-            // These values could maybe be read from the meshes loaded. Or just take enough...
-            // TODO : I need 104 vertices at the moment, something might be wrong with the blender exporter.
-            var maxNumberOfOccluderVertices = 104;
-            var maxTrianglesPerOccluder = 32;
-            var maxNumberOfOccluderIndices = 3 * maxTrianglesPerOccluder;
+			// These values could maybe be read from the meshes loaded. Or just take enough...
+			// TODO : I need 104 vertices at the moment, something might be wrong with the blender exporter.
+			var maxNumberOfOccluderVertices = 104;
+			var maxTrianglesPerOccluder = 32;
+			var maxNumberOfOccluderIndices = 3 * maxTrianglesPerOccluder;
 			occlusionPartitioner = new OcclusionPartitioner({
-                "width": debugcanvas.width,
-                "height": debugcanvas.height,
-                "camera": camera,
-                "maxVertCount": maxNumberOfOccluderVertices,
-                "maxIndexCount": maxNumberOfOccluderIndices,
-                "debugContext": debugContext
-            });
+				"width": debugcanvas.width,
+				"height": debugcanvas.height,
+				"camera": camera,
+				"maxVertCount": maxNumberOfOccluderVertices,
+				"maxIndexCount": maxNumberOfOccluderIndices,
+				"debugContext": debugContext
+			});
 
-            defaultPartitioner = goo.renderSystem.partitioner;
+			defaultPartitioner = goo.renderSystem.partitioner;
 			goo.renderSystem.partitioner = occlusionPartitioner;
 
 			var clearColor = [0, 0, 0, 1.0];
@@ -246,9 +246,9 @@ require(
 
 			//createRoomArray(goo);
 
-            createHouses(goo);
+			createHouses(goo);
 
-            loadTestTriangle(goo);
+			loadTestTriangle(goo);
 
 			goo.callbacks.push(function() {
 
@@ -323,7 +323,7 @@ require(
 			entity.transformComponent.transform.translation.y = translation.y;
 			entity.transformComponent.transform.translation.z = translation.z;
 			entity.name = 'Quad';
-            entity.meshRendererComponent.materials.push(quadMaterial);
+			entity.meshRendererComponent.materials.push(quadMaterial);
 			entity.addToWorld();
 			return entity;
 		}
@@ -399,55 +399,55 @@ require(
 			});
 		}
 
-        function loadTestTriangle(goo) {
-            var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
-            var mLoader = new MeshLoader({'loader': loader});
+		function loadTestTriangle(goo) {
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+			var mLoader = new MeshLoader({'loader': loader});
 
-            var triPromise = mLoader.load('Triangle.mesh');
-            var boxPromise = mLoader.load('box.mesh');
+			var triPromise = mLoader.load('Triangle.mesh');
+			var boxPromise = mLoader.load('box.mesh');
 
-            var material = new Material.createMaterial(ShaderLib.simpleColored,'RoomMaterial');
-            material.uniforms = {'color': [1.0, 0, 0]};
-            var translation = new Vector3(-1, 1.8, 7);
+			var material = new Material.createMaterial(ShaderLib.simpleColored,'RoomMaterial');
+			material.uniforms = {'color': [1.0, 0, 0]};
+			var translation = new Vector3(-1, 1.8, 7);
 
-            var script = {
-                run: function (entity) {
-                    var transformComponent = entity.transformComponent;
-                    entity.transformComponent.transform.setRotationXYZ(
-                        0,
-                        0,
-                        goo.world.time * 0.2
-                    );
-                    transformComponent.setUpdated();
-                }
-            };
+			var script = {
+				run: function (entity) {
+					var transformComponent = entity.transformComponent;
+					entity.transformComponent.transform.setRotationXYZ(
+						0,
+						0,
+						goo.world.time * 0.2
+					);
+					transformComponent.setUpdated();
+				}
+			};
 
-            RSVP.all([triPromise, boxPromise]).then(function (mesh) {
-                var entity = EntityUtils.createTypicalEntity(goo.world, mesh[0]);
-                entity.setComponent(new OccluderComponent(mesh[0]));
-                entity.setComponent(new OccludeeComponent(mesh[0]), true);
-                entity.meshRendererComponent.materials.push(material);
-                entity.transformComponent.transform.translation.set(translation);
-                entity.name = "TestTriangle!";
-                entity.setComponent(new ScriptComponent(script));
-                entity.addToWorld();
+			RSVP.all([triPromise, boxPromise]).then(function (mesh) {
+				var entity = EntityUtils.createTypicalEntity(goo.world, mesh[0]);
+				entity.setComponent(new OccluderComponent(mesh[0]));
+				entity.setComponent(new OccludeeComponent(mesh[0]), true);
+				entity.meshRendererComponent.materials.push(material);
+				entity.transformComponent.transform.translation.set(translation);
+				entity.name = "TestTriangle!";
+				entity.setComponent(new ScriptComponent(script));
+				entity.addToWorld();
 
-                translation.x += 5;
-                entity = EntityUtils.createTypicalEntity(goo.world, mesh[1]);
-                entity.setComponent(new OccluderComponent(mesh[1]));
-                entity.setComponent(new OccludeeComponent(mesh[1]), true);
-                entity.meshRendererComponent.materials.push(material);
-                entity.transformComponent.transform.translation.set(translation);
-                entity.addToWorld();
-            });
-        }
+				translation.x += 5;
+				entity = EntityUtils.createTypicalEntity(goo.world, mesh[1]);
+				entity.setComponent(new OccluderComponent(mesh[1]));
+				entity.setComponent(new OccludeeComponent(mesh[1]), true);
+				entity.meshRendererComponent.materials.push(material);
+				entity.transformComponent.transform.translation.set(translation);
+				entity.addToWorld();
+			});
+		}
 
 		function createRoomArray (goo) {
 			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
 			var mLoader = new MeshLoader({'loader': loader});
 
 			var occPromise = mLoader.load('room_occluder.mesh');
-            var roomPromise = mLoader.load('room.mesh');
+			var roomPromise = mLoader.load('room.mesh');
 
 			var material = new Material.createMaterial(ShaderLib.simpleLit,'RoomMaterial');
 			material.uniforms = {'materialDiffuse': [0.6, 0, 0.8,1], 'materialSpecular': [1,0,0,1], 'materialAmbient': [0,0,0.15,1]};
@@ -468,59 +468,59 @@ require(
 					entity.meshRendererComponent.materials.push(material);
 					entity.transformComponent.transform.translation.set(translation);
 
-                    entity.meshDataComponent.modelBound = new BoundingBox();
-                    entity.meshDataComponent.autoCompute = false;
-                    entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
+					entity.meshDataComponent.modelBound = new BoundingBox();
+					entity.meshDataComponent.autoCompute = false;
+					entity.meshDataComponent.modelBound.computeFromPoints(entity.meshDataComponent.meshData.getAttributeBuffer('POSITION'));
 
-                    entity.addToWorld();
+					entity.addToWorld();
 
-                    addBoundingBoxToEntity(goo.world, translation, entity);
+					addBoundingBoxToEntity(goo.world, translation, entity);
 
 					translation.x += roomDistance;
 				}
 			});
 		}
 
-        function createHouses(goo) {
-            var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
-            var mLoader = new MeshLoader({'loader': loader});
+		function createHouses(goo) {
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+			var mLoader = new MeshLoader({'loader': loader});
 
-            var occPromise = mLoader.load('box.mesh');
-            var roomPromise = mLoader.load('house.mesh');
+			var occPromise = mLoader.load('box.mesh');
+			var roomPromise = mLoader.load('house.mesh');
 
-            var width = 50;
-            var rows = 20;
-            var cols = 20;
-            var scale = 2;
-            var distance = 5;
-            distance *= scale;
-            var translation = new Vector3(-width, 0, -25);
-            var useBoundingBox = true;
+			var width = 50;
+			var rows = 20;
+			var cols = 20;
+			var scale = 2;
+			var distance = 5;
+			distance *= scale;
+			var translation = new Vector3(-width, 0, -25);
+			var useBoundingBox = true;
 
-            RSVP.all([occPromise, roomPromise]).then(function (meshes) {
-                var occluderMesh = meshes[0];
-                var roomMesh = meshes[1];
+			RSVP.all([occPromise, roomPromise]).then(function (meshes) {
+				var occluderMesh = meshes[0];
+				var roomMesh = meshes[1];
 
-                for (var i = 0; i < rows; i++) {
-                    for (var j = 0; j < cols; j++) {
+				for (var i = 0; i < rows; i++) {
+					for (var j = 0; j < cols; j++) {
 
-                        var entity = EntityUtils.createTypicalEntity(goo.world, roomMesh);
-                        entity.setComponent(new OccluderComponent(occluderMesh));
-                        entity.setComponent(new OccludeeComponent(roomMesh, useBoundingBox));
-                        entity.meshRendererComponent.materials.push(quadMaterial);
-                        entity.transformComponent.transform.translation.set(translation);
-                        entity.transformComponent.transform.scale.setd(scale, scale, scale);
-                        entity.addToWorld();
+						var entity = EntityUtils.createTypicalEntity(goo.world, roomMesh);
+						entity.setComponent(new OccluderComponent(occluderMesh));
+						entity.setComponent(new OccludeeComponent(roomMesh, useBoundingBox));
+						entity.meshRendererComponent.materials.push(quadMaterial);
+						entity.transformComponent.transform.translation.set(translation);
+						entity.transformComponent.transform.scale.setd(scale, scale, scale);
+						entity.addToWorld();
 
-                        translation.x += distance;
-                    }
-                    translation.x = -width;
-                    translation.z += distance;
-                }
-            });
+						translation.x += distance;
+					}
+					translation.x = -width;
+					translation.z += distance;
+				}
+			});
 
 
-        }
+		}
 
 		function createBoundingSphereForEntity (world, entity) {
 
