@@ -24,7 +24,7 @@ define([
 	var v3 = new Vector4(0, 0, 0, 1);
 	// Clipping vector is used for near clipping, thus the z component is -1.0.
 	var clipVec = new Vector4(0, 0, -1.0, 1);
-	var g_vertices = [v1, v2, v3];  // REVIEW: Underscore is not part of our naming convention
+	var globalVertices = [v1, v2, v3];
 
 	var outsideIndices = new Uint8Array(3);
 	var insideIndices = new Uint8Array(3);
@@ -199,14 +199,9 @@ define([
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
 
-		// Initialize the triangleData to the current amount of vertices and indices.
-		var vertCount = originalPositions.length / 3;
-		this._triangleData.clear();
-		this._triangleData.posCount = vertCount * 4;
-		this._triangleData.largestIndex = vertCount - 1;
 
-		// Transform vertices to camera view space beforehand to not transform several times on a vertex. ( up to three times ).
-		// The homogeneous coordinate,w , will not be altered during this transformation. And remains 1.0.
+
+		// Transform vertices to camera view space
 		var maxPos = originalPositions.length;
 		var offset = 0;
 		for (var i = 0; i < maxPos; i++) {
@@ -226,6 +221,14 @@ define([
 			this._triangleData.positions[offset] = v1.data[2];
 			offset += 2;
 		}
+
+		// Initialize the triangleData to the newly allocated amount of positions and indices.
+		var vertCount = maxPos / 3;
+		this._triangleData.clear();
+		// Set the position counter to point at the next empty position to write to.
+		this._triangleData.posCount = vertCount * 4;
+		// Set the largest index , zero based list.
+		this._triangleData.largestIndex = vertCount - 1;
 
 		var cameraNearZInWorld = -this.camera.near;
 		var indexCount = originalIndexArray.length;
@@ -283,11 +286,11 @@ define([
 					// TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
 					// perhaps the entire function, in order to make use of them.
 					var outIndex = outsideIndices[0];
-					var origin = g_vertices[outIndex];
+					var origin = globalVertices[outIndex];
 					var origin_x = origin.data[0];
 					var origin_y = origin.data[1];
 
-					var target = g_vertices[insideIndices[0]];
+					var target = globalVertices[insideIndices[0]];
 					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
@@ -297,7 +300,7 @@ define([
 					// Overwrite the vertex index with the new vertex.
 					indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
-					target = g_vertices[insideIndices[1]];
+					target = globalVertices[insideIndices[1]];
 					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
 
 					// Calculate the new vertex's position
@@ -317,19 +320,20 @@ define([
 					var insideIndex = insideIndices[0];
 					var extraIndex = indices[3];
 
+					// TODO : Here js arrays are allocated each time... optimize to use pre-allocated uint8array.
 					this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
 					this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
 
 					break;
 				case 2:
 					// Update the two outside vertices to their new positions on the near plane.
-					var target = g_vertices[insideIndices[0]];
+					var target = globalVertices[insideIndices[0]];
 					var target_x = target.data[0];
 					var target_y = target.data[1];
 
 					// First new vertex.
 					var outIndex = outsideIndices[0];
-					var origin = g_vertices[outIndex];
+					var origin = globalVertices[outIndex];
 					var origin_x = origin.data[0];
 					var origin_y = origin.data[1];
 
@@ -343,7 +347,7 @@ define([
 
 					// Second new vertex.
 					outIndex = outsideIndices[1];
-					origin = g_vertices[outIndex];
+					origin = globalVertices[outIndex];
 					origin_x = origin.data[0];
 					origin_y = origin.data[1];
 
@@ -371,13 +375,14 @@ define([
 
 		*/
 		maxPos = this._triangleData.posCount;
-		  // REVIEW: Another confusing for loop.
-		for (var p = 0; p < maxPos; p++) {
+		var p = 0;
+		while (p < maxPos) {
 			// Copy the vertex data into the v1 vector from the triangleData's position array.
-			var p2 = p + 1;
-			var p3 = p + 2;
-			var p4 = p + 3;
-			v1.data[0] = this._triangleData.positions[p];
+			var p1 = p++;
+			var p2 = p++;
+			var p3 = p++;
+			var p4 = p++;
+			v1.data[0] = this._triangleData.positions[p1];
 			v1.data[1] = this._triangleData.positions[p2];
 			v1.data[2] = this._triangleData.positions[p3];
 			// The w-component is still 1.0 here.
@@ -395,15 +400,12 @@ define([
 			v1.data[1] *= homogeneousDivide;
 
 			// Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
-			this._triangleData.positions[p] = (v1.data[0] + 1.0) * this._halfClipX;
+			this._triangleData.positions[p1] = (v1.data[0] + 1.0) * this._halfClipX;
 			// Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
 			this._triangleData.positions[p2] = (v1.data[1] + 1.0) * this._halfClipY;
 			// positionArray[p3] = v1.data[2]; z-componenet is not used any more.
 			// Invert w component here, this to be able to interpolate the depth over the triangles.
 			this._triangleData.positions[p4] = homogeneousDivide;
-
-			// Step p forwards to the last position read.
-			p = p4;
 		}
 	};
 
@@ -421,7 +423,7 @@ define([
 
 		for ( var i = 0; i < 3; i++ ) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
-			if (g_vertices[i].data[2] <= cameraNear) {
+			if (globalVertices[i].data[2] <= cameraNear) {
 				insideIndices[inCount] = i;
 				inCount++;
 			} else {
@@ -769,7 +771,6 @@ define([
 	};
 
 	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
-		  // REVIEW: Many variables have multiple declarations in this function. Open it in Webstorm and see.
 
 		// Copypasted from _drawEdges.
 		var startLine = edgeData.getStartLine();
@@ -780,25 +781,27 @@ define([
 		var longZInc = edgeData.getLongZIncrement();
 		var shortZInc = edgeData.getShortZIncrement();
 
+		var realLeftX, realRightX, leftZ, rightZ, leftX, rightX, dif, y, t;
+
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { //RIGHT ORIENTED (long edge on right side)
 			if (orientationData[1]) { //INWARDS TRIANGLE
-				for (var y = startLine; y <= stopLine; y++) {
+				for (y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData.getShortX();
-					var realRightX = edgeData.getLongX();
+					realLeftX = edgeData.getShortX();
+					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+					leftX = Math.floor(realLeftX);
+					rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData.getShortZ();
-					var rightZ = edgeData.getLongZ();
+					leftZ = edgeData.getShortZ();
+					rightZ = edgeData.getLongZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
 					// TODO : Would be good to get the if case removed. This is needed at the moment because
 					// division by zero occurs in the creation of the slope variable.
-					var dif = rightX - leftX;
+					dif = rightX - leftX;
 					/*
 					if (dif > 1) {
 						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
@@ -813,7 +816,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depthx
-					var t = 0.5 / (dif + 1); // Using the larger span.
+					t = 0.5 / (dif + 1); // Using the larger span.
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
@@ -827,22 +830,22 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
-				for (var y = startLine; y <= stopLine; y++) {
+				for (y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData.getShortX();
-					var realRightX = edgeData.getLongX();
+					realLeftX = edgeData.getShortX();
+					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+					leftX = Math.floor(realLeftX);
+					rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData.getShortZ();
-					var rightZ = edgeData.getLongZ();
+					leftZ = edgeData.getShortZ();
+					rightZ = edgeData.getLongZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
 					// TODO : Would be good to get the if case removed. This is needed at the moment because
 					// division by zero occurs in the creation of the slope variable.
-					var dif = rightX - leftX;
+					dif = rightX - leftX;
 					/*
 					if (dif > 1) {
 						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
@@ -852,7 +855,7 @@ define([
 						rightZ = Math.max(0.0, rightZ);
 					}
 					*/
-					var t = 0.5 / (dif + 1); // Using the larger span.
+					t = 0.5 / (dif + 1); // Using the larger span.
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
 						return false;
@@ -867,22 +870,22 @@ define([
 			}
 		} else { // LEFT ORIENTED
 			if (orientationData[1]) { //INWARDS TRIANGLE
-				for (var y = startLine; y <= stopLine; y++) {
+				for (y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData.getLongX();
-					var realRightX = edgeData.getShortX();
+					realLeftX = edgeData.getLongX();
+					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+					leftX = Math.floor(realLeftX);
+					rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData.getLongZ();
-					var rightZ = edgeData.getShortZ();
+					leftZ = edgeData.getLongZ();
+					rightZ = edgeData.getShortZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
 					// TODO : Would be good to get the if case removed. This is needed at the moment because
 					// division by zero occurs in the creation of the slope variable.
-					var dif = rightX - leftX;
+					dif = rightX - leftX;
 					/*
 					if (dif > 1) {
 						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
@@ -895,7 +898,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
-					var t = 0.5 / (dif + 1); // Using the larger span.
+					t = 0.5 / (dif + 1); // Using the larger span.
 					rightZ = (1.0 - t) * rightZ + t * leftZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
@@ -909,22 +912,22 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
-				for (var y = startLine; y <= stopLine; y++) {
+				for (y = startLine; y <= stopLine; y++) {
 
-					var realLeftX = edgeData.getLongX();
-					var realRightX = edgeData.getShortX();
+					realLeftX = edgeData.getLongX();
+					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
-					var leftX = Math.floor(realLeftX);
-					var rightX = Math.ceil(realRightX);
+					leftX = Math.floor(realLeftX);
+					rightX = Math.ceil(realRightX);
 
-					var leftZ = edgeData.getLongZ();
-					var rightZ = edgeData.getShortZ();
+					leftZ = edgeData.getLongZ();
+					rightZ = edgeData.getShortZ();
 
 					// Extrapolate the new depth for the new conservative x-coordinates.
 					// this is needed to not create a non-conservative depth over the new larger span.
 					// TODO : Would be good to get the if case removed. This is needed at the moment because
 					// division by zero occurs in the creation of the slope variable.
-					var dif = rightX - leftX;
+					dif = rightX - leftX;
 					/*
 					if (dif > 1) {
 						var slope = (rightZ - leftZ) / (realRightX - realLeftX);
@@ -937,7 +940,7 @@ define([
 
 					// To find the minimum depth of an occludee , the left edge of the rightmost pixel is the min depth.
 					// The leftZ is the absolute min depth
-					var t = 0.5 / (dif + 1); // Using the larger span.
+					t = 0.5 / (dif + 1); // Using the larger span.
 					leftZ = (1.0 - t) * leftZ + t * rightZ;
 
 					if (!this._isScanlineOccluded(leftX, rightX, y, leftZ, rightZ)) {
@@ -964,8 +967,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData, betweenFaces) {
-		// REVIEW: Many variables have multiple declarations in this function.
-
 		// The start and stop lines are already rounded y-coordinates.
 		var startLine = edgeData.getStartLine();
 		var stopLine = edgeData.getStopLine();
