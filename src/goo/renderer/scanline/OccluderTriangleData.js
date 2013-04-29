@@ -2,6 +2,10 @@ define([
 ],
     /** @lends */
 
+    // REVIEW: This class is a bit confusing because of the word "index" used for so many things.
+    // I suspect there's a bug hidden in here.
+    // As this class has no dependencies and is a bit tricky to understand,
+    // it's a perfect candidate for a unit test. So write tests to help me understand it!
     function () {
 
         function OccluderTriangleData (parameters) {
@@ -26,6 +30,7 @@ define([
                 transformed values anyway.
 
                 This number gives the next index in the array to write to.
+                REVIEW: ^ YES! That's the way to do it! :-)
             */
             this.posCount = originalCount;
 
@@ -33,6 +38,9 @@ define([
                 Storing the highest possible vertex index to acess.
                 This is initialized to vertCount - 1 , since the indices are zero-based.
             */
+	          // REVIEW: Convention is to keep the index of the *next* element to be written to.
+	          // Such an index is often called "length", because it is the number of elements in the array.
+	          // What is largestIndex if the data is empty? 0 seems wrong, see clear().
             this.largestIndex = vertCount - 1;
             /*
                 Initialize the index count to zero. This will be filled up after hand. The only indices wanted are the
@@ -78,6 +86,10 @@ define([
         OccluderTriangleData.prototype.clear = function () {
             this.posCount = 0;
             this.indexCount = 0;
+	          // REVIEW: This looks like an off by one error.
+	          // If there is no data, largestIndex isn't 0 as there is no data at index 0.
+	          // It could be -1 but that would be confusing too.
+	          // This is one reason to store the *next* index instead of the *last* index.
             this.largestIndex = 0;
         };
 

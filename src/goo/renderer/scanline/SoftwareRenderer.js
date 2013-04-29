@@ -1,3 +1,5 @@
+// REVIEW: This file has inconsistent indentation, and uses mostly spaces instead of tabs.
+// Make sure your editor settings are correct!
 define([
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
@@ -24,7 +26,7 @@ define([
         var v3 = new Vector4(0, 0, 0, 1);
         // Clipping vector is used for near clipping, thus the z component is -1.0.
         var clipVec = new Vector4(0, 0, -1.0, 1);
-        var g_vertices = [v1, v2, v3];
+        var g_vertices = [v1, v2, v3];  // REVIEW: Underscore is not part of our naming convention
 
         var outsideIndices = new Uint8Array(3);
         var insideIndices = new Uint8Array(3);
@@ -382,6 +384,7 @@ define([
 
             */
             maxPos = this._triangleData.posCount;
+	          // REVIEW: Another confusing for loop.
             for (var p = 0; p < maxPos; p++) {
                 // Copy the vertex data into the v1 vector from the triangleData's position array.
                 var p2 = p + 1;
@@ -779,6 +782,7 @@ define([
         };
 
         SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
+	          // REVIEW: Many variables have multiple declarations in this function. Open it in Webstorm and see.
 
             // Copypasted from _drawEdges.
             var startLine = edgeData.getStartLine();
@@ -973,6 +977,7 @@ define([
          * @private
          */
         SoftwareRenderer.prototype._drawEdges = function (edgeData, orientationData, betweenFaces) {
+            // REVIEW: Many variables have multiple declarations in this function.
 
             // The start and stop lines are already rounded y-coordinates.
             var startLine = edgeData.getStartLine();
@@ -1445,6 +1450,8 @@ define([
         SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
 
             if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
+	              // REVIEW: Returning false here, but undefined at the end of the function. Doesn't make sense.
+	              // Anyway, the return value doesn't seem to be used.
                 return false; // Nothing to draw here.
             }
 

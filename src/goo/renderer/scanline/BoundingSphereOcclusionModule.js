@@ -15,6 +15,8 @@ define([
             will save the positions in the order :
             [near, left, right, top, bottom]
         */
+	      // REVIEW: Do you have proof that using this array is faster than just having
+	      // five vector variables?
         var positionArray = new Float32Array(20);
 
         // DEBUG COLORS
@@ -28,6 +30,10 @@ define([
 
          */
 
+		    // REVIEW: A class name should reflect what the objects of that class are for and what they do.
+		    // The word "Module" in a class name is odd, even though it technically is a module.
+		    // It's like ending a function name with "Function".
+		    // Maybe call this "BoundingSphereOcclusionChecker"?
         /**
          *
          * @param renderer
@@ -41,6 +47,7 @@ define([
             this._halfClipY = this._clipY / 2;
         }
 
+	      // REVIEW: Declared as private, but is called from SoftwareRenderer, hence not private.
         /**
          * Return true if the object is occluded.
          * @param entity
@@ -137,6 +144,7 @@ define([
             // Projection transform the positions.
             var div;
             var i2, i3, i4;
+	          // REVIEW: Confusing update of i in both the for statement and inside the loop
             for (var i = 0; i < 20; i++) {
                 i2 = i + 1;
                 i3 = i + 2;

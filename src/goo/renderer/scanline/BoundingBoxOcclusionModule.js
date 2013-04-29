@@ -68,6 +68,10 @@ define([
 
         var combinedMatrix = new Matrix4x4();
 
+        // REVIEW: A class name should reflect what the objects of that class are for and what they do.
+        // The word "Module" in a class name is odd, even though it technically is a module.
+        // It's like ending a function name with "Function".
+	      // Maybe call this "BoundingBoxOcclusionChecker"?
         /**
          *  @param {SoftwareRenderer} renderer
          *  @constructor
@@ -86,13 +90,14 @@ define([
          * Occlusion culls the entity based on the entity's BoundingBox.
          * @param entity
          * @param cameraViewProjectionMatrix
-         * @returns {Boolean} occluder or not occluded.
+         * @returns {Boolean} occluded or not occluded.
          */
         BoundingBoxOcclusionModule.prototype.occlusionCull = function (entity, cameraViewProjectionMatrix) {
            return this._boundingBoxOcclusionCulling(entity, cameraViewProjectionMatrix);
            // return this._renderedBoundingBoxOcclusionTest(entity, cameraViewProjectionMatrix);
         };
 
+        // REVIEW: Function name is not a verb construct.
         /**
          * Performs a rendered interpolated depth test for the triangles of the bounding box.
          * @param entity
@@ -114,6 +119,24 @@ define([
             this._screenSpaceTransformTriangleData();
 
             var maxIndices = triangleData.indexCount;
+            // REVIEW: Very strange to update tIndex in both the for statement and inside the loop body.
+            // Also, related to the idea of always using half-open intervals, you normally post-increment indices,
+            // i.e. i++ instead of ++i.
+            // Conventionally, you want a variable to hold the index of the *next* item to be processed,
+            // not the last one you processed.
+            // I.e. the following is more conventional and easier to follow:
+            /*
+            var tIndex = 0;
+            while (tIndex < maxIndices) {
+              indices[0] = triangleData.indices[tIndex++];
+              indices[1] = triangleData.indices[tIndex++];
+              indices[2] = triangleData.indices[tIndex++];
+              if (!this.renderer.isRenderedTriangleOccluded(indices, triangleData.positions)){
+                return false;
+              }
+            }
+            */
+
             for (var tIndex = 0; tIndex < maxIndices; tIndex++) {
                 // Take 3 indices and render the triangle
                 indices[0] = triangleData.indices[tIndex];
@@ -126,8 +149,9 @@ define([
             return true;
         };
 
+        // REVIEW: Function name is not a verb construct.
         /**
-         *  Performs a minimum depth for a screen space axis aligned bounding box created from the boudning box of the
+         *  Performs a minimum depth for a screen space axis aligned bounding box created from the bounding box of the
          *  entity.
          * @param entity
          * @param cameraViewProjectionMatrix
@@ -144,6 +168,22 @@ define([
             // TODO: Combine the transforms to pixel space.
             // Projection transform + homogeneous divide
             var p1, p2, p3, p4, wComponent;
+            // REVIEW: It's very confusing to update p both in the for statement and the loop body.
+            // Either use a while loop:
+            // var p = 0;
+            // while (p < positionArray.length) {
+            //   p1 = p++;
+            //   p2 = p++;
+            //   p3 = p++;
+            //   p4 = p++;
+            //   ....
+            // }
+            //
+            // or *only* change p in the for statement proper:
+            // for (var p = 0; p < positionArray.length; p += 4) {
+            //   ...
+            // }
+
             for (var p = 0; p < positionArray.length; p++) {
 
                 p1 = p;
@@ -182,6 +222,8 @@ define([
 
             // Round values from the clipping conservatively to integer pixel coordinates.
             /*jshint bitwise: false */
+	          // REVIEW: Since minMaxArray is a Float32Array the |0 is pointless.
+	          // The values will be stored as floats anyway.
             minMaxArray[0] = Math.floor(minMaxArray[0]) |0;
             minMaxArray[1] = Math.ceil(minMaxArray[1]) |0;
             minMaxArray[2] = Math.floor(minMaxArray[2]) |0;
@@ -199,6 +241,7 @@ define([
          *
          *	@return {Float32Array} vertex array
          */
+        // REVIEW: There's a @return tag, but this function doesn't return anything
         BoundingBoxOcclusionModule.prototype._copyEntityVerticesToPositionArray = function (entity) {
             var boundingBox = entity.occludeeComponent.modelBound;
 
@@ -220,6 +263,7 @@ define([
             ]);
         };
 
+        // REVIEW: Function name is not a verb construct.
         /**
          *	Clips the bounding box's screen space transformed vertices and outputs the minimum and maximum x- and y-coordinates as well as the minimum depth.
          *	This is a implementation of the Cohen-Sutherland clipping algorithm. The x- and y-coordinates are only valid for comparing as min or max coordinate
@@ -547,6 +591,8 @@ define([
         BoundingBoxOcclusionModule.prototype._screenSpaceTransformTriangleData = function() {
             // TODO : Transform only the positions going to be rendered.
             var maxPos = triangleData.positions.length;
+	          // REVIEW: Another confusing for loop, where j is increased
+	          // both in the for statement and at the end of the loop.
             for (var j = 0; j < maxPos; j++) {
                 triangleData.positions[j] = (triangleData.positions[j] + 1.0) * this._halfClipX;
                 j++;
