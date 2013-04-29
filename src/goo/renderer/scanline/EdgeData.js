@@ -50,8 +50,16 @@ define([
             return this.floatData[0];
         };
 
+        EdgeData.prototype.setLongX = function (value) {
+                this.floatData[0] = value;
+        };
+
         EdgeData.prototype.getShortX = function () {
             return this.floatData[1];
+        };
+
+        EdgeData.prototype.setShortX = function (value) {
+            this.floatData[1] = value;
         };
 
         EdgeData.prototype.getLongZ = function () {

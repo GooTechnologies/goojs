@@ -999,6 +999,10 @@ define([
 
             // For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
+            var realLeftX, realRightX, leftZ, rightZ, leftX, rightX, conservativeLeft, conservativeRight, leftIncrement,
+                rightIncrement;
+
+            var y, offset, spanLength, t;
 
             var shrinkage = 0.0;
 
@@ -1006,15 +1010,44 @@ define([
             if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
                 if (orientationData[1]) { // INWARDS TRIANGLE
 
-                    for (var y = startLine; y <= stopLine; y++) {
+                    // Setup where the samples of the x-values should be taken from, upper or lower part of the edge in
+                    // the current pixel.
 
-                        var realLeftX = edgeData.getShortX();
-                        var realRightX = edgeData.getLongX();
+                    // Render the first line, then depending on the x-increments, the sample positions are offset to the
+                    // upper or lower.
+                    realLeftX = edgeData.getShortX();
+                    realRightX = edgeData.getLongX();
 
-                        var leftZ = edgeData.getShortZ();
-                        var rightZ = edgeData.getLongZ();
+                    leftZ = edgeData.getShortZ();
+                    rightZ = edgeData.getLongZ();
+
+                    leftIncrement = shortXInc;
+                    rightIncrement = longXInc;
+
+                    conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
+                    conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+
+                    leftX = Math.ceil(conservativeLeft + shrinkage);
+                    rightX = Math.floor(conservativeRight - shrinkage);
+
+                    edgeData.setShortX(conservativeLeft + leftIncrement);
+                    edgeData.setLongX(conservativeRight + rightIncrement);
+
+                    edgeData.floatData[3] += shortZInc;
+                    edgeData.floatData[2] += longZInc;
+
+                    // Draw the span of pixels.
+                    this._fillPixels(leftX, rightX, startLine, leftZ, rightZ);
+                    startLine++;
+
+                    for (y = startLine; y <= stopLine; y++) {
+
+                        realLeftX = edgeData.getShortX();
+                        realRightX = edgeData.getLongX();
+
+                        leftZ = edgeData.getShortZ();
+                        rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX, rightX;
                         /*
                         if(!shortEdgeBetween) {
                             leftX = Math.ceil(realLeftX + shrinkage);
@@ -1033,16 +1066,16 @@ define([
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
-                        var offset = leftX - realLeftX;
-                        var spanLength = realRightX - realLeftX;
-                        var t = offset / spanLength;
+                        offset = leftX - realLeftX;
+                        spanLength = realRightX - realLeftX;
+                        t = offset / spanLength;
                         // Linearly interpolate new leftZ
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
 
                         // Conservative depth, max depth on the edge of the pixel.
                         // Add 0.5 to go to the edge of the pixel.
                         spanLength = (rightX - leftX + 1);
-                        var t = (0.5) / spanLength;
+                        t = (0.5) / spanLength;
                         // Linearly interpolate new leftZ
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
 
@@ -1056,25 +1089,50 @@ define([
                         edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
-                    for (var y = startLine; y <= stopLine; y++) {
 
-                        var realLeftX = edgeData.getShortX();
-                        var realRightX = edgeData.getLongX();
 
-                        var leftZ = edgeData.getShortZ();
-                        var rightZ = edgeData.getLongZ();
+                    realLeftX = edgeData.getShortX();
+                    realRightX = edgeData.getLongX();
+
+                    leftZ = edgeData.getShortZ();
+                    rightZ = edgeData.getLongZ();
+
+                    leftIncrement = shortXInc;
+                    rightIncrement = longXInc;
+
+                    conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
+                    conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+
+                    leftX = Math.ceil(conservativeLeft + shrinkage);
+                    rightX = Math.floor(conservativeRight  - shrinkage);
+
+                    edgeData.setShortX(conservativeLeft + leftIncrement);
+                    edgeData.setLongX(conservativeRight + rightIncrement);
+
+                    edgeData.floatData[3] += shortZInc;
+                    edgeData.floatData[2] += longZInc;
+
+                    this._fillPixels(leftX, rightX, startLine, leftZ, rightZ);
+                    startLine++;
+
+                    for (y = startLine; y <= stopLine; y++) {
+
+                        realLeftX = edgeData.getShortX();
+                        realRightX = edgeData.getLongX();
+
+                        leftZ = edgeData.getShortZ();
+                        rightZ = edgeData.getLongZ();
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX, rightX;
                         /*
                         if(!shortEdgeBetween) {
                             leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
-                            leftX = Math.round(realLeftX);
+                            leftX = Math.floor(realLeftX);
                         }
                         if (!longEdgeBetween) {
                             rightX = Math.floor(realRightX - shrinkage);
                         } else {
-                            rightX = Math.round(realRightX);
+                            rightX = Math.ceil(realRightX);
                         }
                         */
 
@@ -1082,14 +1140,14 @@ define([
                         rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate fractional offset.
-                        var offset = realRightX - rightX;
-                        var spanLength = realRightX - realLeftX;
-                        var t = offset / spanLength;
+                        offset = realRightX - rightX;
+                        spanLength = realRightX - realLeftX;
+                        t = offset / spanLength;
                         rightZ = (1.0 - t) * rightZ + t * leftZ;
 
                         // Add 0.5 to go to the edge of the pixel.
                         spanLength = rightX - leftX + 1;
-                        var t = 0.5 / spanLength;
+                        t = 0.5 / spanLength;
                         rightZ = (1.0 - t) * rightZ + t * leftZ;
 
                         // Draw the span of pixels.
@@ -1104,26 +1162,50 @@ define([
                 }
             } else { // LONG EDGE IS ON THE LEFT SIDE
                 if (orientationData[1]) { // INWARDS TRIANGLE
-                    for (var y = startLine; y <= stopLine; y++) {
 
-                        var realLeftX = edgeData.getLongX();
-                        var realRightX = edgeData.getShortX();
+                    realLeftX = edgeData.getLongX();
+                    realRightX = edgeData.getShortX();
 
-                        var leftZ = edgeData.getLongZ();
-                        var rightZ = edgeData.getShortZ();
+                    leftZ = edgeData.getLongZ();
+                    rightZ = edgeData.getShortZ();
+
+                    leftIncrement = longXInc;
+                    rightIncrement = shortXInc;
+
+                    conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
+                    conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+
+                    leftX = Math.ceil(conservativeLeft + shrinkage);
+                    rightX = Math.floor(conservativeRight  - shrinkage);
+
+                    edgeData.setShortX(conservativeRight + rightIncrement);
+                    edgeData.setLongX(conservativeLeft + leftIncrement);
+
+                    edgeData.floatData[2] += shortZInc;
+                    edgeData.floatData[3] += longZInc;
+
+                    this._fillPixels(leftX, rightX, startLine, leftZ, rightZ);
+                    startLine++;
+
+                    for (y = startLine; y <= stopLine; y++) {
+
+                        realLeftX = edgeData.getLongX();
+                        realRightX = edgeData.getShortX();
+
+                        leftZ = edgeData.getLongZ();
+                        rightZ = edgeData.getShortZ();
 
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX, rightX;
                         /*
                         if(!longEdgeBetween) {
                             leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
-                            leftX = Math.round(realLeftX);
+                            leftX = Math.floor(realLeftX);
                         }
                         if (!shortEdgeBetween) {
                             rightX = Math.floor(realRightX - shrinkage);
                         } else {
-                            rightX = Math.round(realRightX);
+                            rightX = Math.ceil(realRightX);
                         }
                         */
 
@@ -1132,16 +1214,16 @@ define([
 
                         // Compensate for the fractional offset on the leftmost pixel.
                         // Regarding the rightZ to be the actual maximum depth.
-                        var offset = leftX - realLeftX;
-                        var spanLength = realRightX - realLeftX;
-                        var t = offset / spanLength;
+                        offset = leftX - realLeftX;
+                        spanLength = realRightX - realLeftX;
+                        t = offset / spanLength;
                         // Linearly interpolate new leftZ
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
 
                         // Conservative depth, max depth on the edge of the pixel.
                         // Add 0.5 to go to the edge of the pixel.
                         spanLength = (rightX - leftX + 1);
-                        var t = (0.5) / spanLength;
+                        t = (0.5) / spanLength;
                         // Linearly interpolate new leftZ
                         leftZ = (1.0 - t) * leftZ + t * rightZ;
 
@@ -1155,26 +1237,49 @@ define([
                         edgeData.floatData[3] += shortZInc;
                     }
                 } else { // OUTWARDS TRIANGLE
-                    for (var y = startLine; y <= stopLine; y++) {
+                    realLeftX = edgeData.getLongX();
+                    realRightX = edgeData.getShortX();
 
-                        var realLeftX = edgeData.getLongX();
-                        var realRightX = edgeData.getShortX();
+                    leftZ = edgeData.getLongZ();
+                    rightZ = edgeData.getShortZ();
 
-                        var leftZ = edgeData.getLongZ();
-                        var rightZ = edgeData.getShortZ();
+                    leftIncrement = longXInc;
+                    rightIncrement = shortXInc;
+
+                    conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
+                    conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+
+                    leftX = Math.ceil(conservativeLeft + shrinkage);
+                    rightX = Math.floor(conservativeRight  - shrinkage);
+
+                    edgeData.setShortX(conservativeRight + rightIncrement);
+                    edgeData.setLongX(conservativeLeft + leftIncrement);
+
+                    edgeData.floatData[2] += shortZInc;
+                    edgeData.floatData[3] += longZInc;
+
+                    this._fillPixels(leftX, rightX, startLine, leftZ, rightZ);
+                    startLine++;
+
+                    for (y = startLine; y <= stopLine; y++) {
+
+                        realLeftX = edgeData.getLongX();
+                        realRightX = edgeData.getShortX();
+
+                        leftZ = edgeData.getLongZ();
+                        rightZ = edgeData.getShortZ();
 
                         // Conservative rounding , when drawing occluders, make area smaller.
-                        var leftX, rightX;
                         /*
                         if(!longEdgeBetween) {
                             leftX = Math.ceil(realLeftX + shrinkage);
                         } else {
-                            leftX = Math.round(realLeftX);
+                            leftX = Math.floor(realLeftX);
                         }
                         if (!shortEdgeBetween) {
                             rightX = Math.floor(realRightX - shrinkage);
                         } else {
-                            rightX = Math.round(realRightX);
+                            rightX = Math.ceil(realRightX);
                         }
                         */
 
@@ -1182,14 +1287,14 @@ define([
                         rightX = Math.floor(realRightX - shrinkage);
 
                         // Compensate fractional offset.
-                        var offset = realRightX - rightX;
-                        var spanLength = realRightX - realLeftX;
-                        var t = offset / spanLength;
+                        offset = realRightX - rightX;
+                        spanLength = realRightX - realLeftX;
+                        t = offset / spanLength;
                         rightZ = (1.0 - t) * rightZ + t * leftZ;
 
                         // Add 0.5 to go to the edge of the pixel.
                         spanLength = rightX - leftX + 1;
-                        var t = 0.5 / spanLength;
+                        t = 0.5 / spanLength;
                         rightZ = (1.0 - t) * rightZ + t * leftZ;
 
                         // Draw the span of pixels.
@@ -1214,16 +1319,13 @@ define([
         // into another.
         SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
-            // Early exit when the short edge is outside the screen.
-            if (!shortEdge.insideScreen) {
-                return false;
-            }
-
             var startLine = Math.ceil(shortEdge.y0);
             var stopLine = Math.floor(shortEdge.y1);
-//            var startLine = shortEdge.y0;
-//            var stopLine = shortEdge.y1;
 
+            // Early exit , no area to draw in.
+            if (startLine >= stopLine) {
+                return false;
+            }
 
             // The scanline on which we start rendering on might be in the middle of the long edge,
             // the starting x-coordinate is therefore calculated.
@@ -1265,8 +1367,6 @@ define([
             }
 
             stopLine = Math.min(this._clipY, stopLine);
-
-
 
             edgeData.setData([startLine, stopLine, longX, shortX, longZ, shortZ, longEdgeXincrement, shortEdgeXincrement, longEdgeZincrement, shortEdgeZincrement]);
             return true;
@@ -1354,6 +1454,10 @@ define([
 
             if (rightZ < 0 || rightZ > 1.0000001) {
                 console.error("Rendering depth buffer : rightZ =", rightZ);
+            }
+
+            if (rightX >= this._clipX) {
+                console.log("capping that shit");
             }
 
             // Horizontal clipping

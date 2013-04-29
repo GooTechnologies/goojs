@@ -29,7 +29,7 @@ require(
 		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 		'goo/loaders/MeshLoader',
-		'goo/lib/rsvp.amd',
+		'goo/lib/rsvp.amd'
 	],
 	function (
 		GooRunner,
@@ -96,8 +96,8 @@ require(
 			cameraEntity.addToWorld();
 
 			//buildScene(goo);
-            // loadTestTriangle(goo);
-            createHouses(goo);
+            loadTestTriangle(goo);
+            //createHouses(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -428,9 +428,7 @@ require(
                 entity.setComponent(new OccludeeComponent(mesh[0]), true);
                 entity.meshRendererComponent.materials.push(material);
                 entity.transformComponent.transform.translation.set(translation);
-
-
-
+                entity.name = "TestTriangle!";
                 entity.setComponent(new ScriptComponent(script));
                 entity.addToWorld();
 
@@ -494,7 +492,7 @@ require(
             var rows = 20;
             var cols = 20;
             var scale = 2;
-            var distance = 8;
+            var distance = 5;
             distance *= scale;
             var translation = new Vector3(-width, 0, -25);
             var useBoundingBox = true;
