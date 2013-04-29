@@ -107,6 +107,17 @@ function (BufferUtils, Transform, Matrix3x3, Matrix4x4, Vector3, Quaternion, Cli
 		return transform;
 	};
 
+	JsonUtils.parseTransformEuler = function (object) {
+		var transform = new Transform();
+
+		transform.translation = JsonUtils.parseVector3(object.Translation);
+		transform.scale = JsonUtils.parseVector3(object.Scale);
+		var euler = JsonUtils.parseVector3(object.Rotation);
+		transform.setRotationXYZ(euler.x, euler.y, euler.z);
+
+		return transform;
+	};
+
 	JsonUtils.parseTransformMatrix = function (object) {
 		var transform = new Transform();
 

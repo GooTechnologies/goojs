@@ -88,6 +88,9 @@ define([
 				} else if (jointObj.InverseBindPose.Rotation.length === 4) {
 					joint._inverseBindPose.copy(JsonUtils.parseTransformQuat(jointObj.InverseBindPose));
 					joint._inverseBindPose.update();
+				} else if (jointObj.InverseBindPose.Rotation.length === 3) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformEuler(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
 				} else {
 					joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
 					joint._inverseBindPose.update();
