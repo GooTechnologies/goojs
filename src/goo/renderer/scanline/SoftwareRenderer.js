@@ -74,8 +74,6 @@ define([
 		}
 
 		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount});
-		// TODO : Rewrite so that the data is empty from the beginning.
-		this._triangleData.clear();
 
 		this.edgeMap = new EdgeMap(parameters.maxVertCount);
 
@@ -106,7 +104,7 @@ define([
 
 		// Iterates over the view frustum culled entities and draws them one entity at a time.
 		for ( var i = 0; i < renderList.length; i++) {
-			this._createTrianglesForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
+			this._setupTriangleDataForEntity(renderList[i], cameraViewMatrix, cameraProjectionMatrix);
 			this._fillEdgeMap();
 			triCount = this._triangleData.indexCount;
 			for (var tIndex = 0; tIndex < triCount; tIndex++) {
@@ -178,28 +176,18 @@ define([
 		return visibleEntities;
 	};
 
-
-	/**
-	*	Creates an array of the visible
-	*	@param {Entity} entity, the entity from which to create triangles.
-	*	@return {OccluderTriangleData} triangleData
-	*   @param cameraProjectionMatrix
-	*   @param cameraViewMatrix
-	*/
-	SoftwareRenderer.prototype._createTrianglesForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
-
-		// Reset the global vectors' w-components to 1
-		v1.data[3] = 1.0;
-		v2.data[3] = 1.0;
-		v3.data[3] = 1.0;
-
+		/**
+		 *
+		 * @param entity
+		 * @param cameraViewMatrix
+		 * @returns {Number}
+		 * @private
+		 */
+	SoftwareRenderer.prototype._viewSpaceTransformAndCopyVertices = function (entity, cameraViewMatrix) {
 		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
-		var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
-
-
 
 		// Transform vertices to camera view space
 		var maxPos = originalPositions.length;
@@ -222,16 +210,180 @@ define([
 			offset += 2;
 		}
 
-		// Initialize the triangleData to the newly allocated amount of positions and indices.
-		var vertCount = maxPos / 3;
-		this._triangleData.clear();
-		// Set the position counter to point at the next empty position to write to.
-		this._triangleData.posCount = vertCount * 4;
-		// Set the largest index , zero based list.
-		this._triangleData.largestIndex = vertCount - 1;
+		// Set the triangleData's counters to the newly allocated amount of positions and indices.
+		this._triangleData.setCountersToNewEntity(maxPos);
+	};
 
-		var cameraNearZInWorld = -this.camera.near;
+
+	/**
+	 * Clips the triangle to the near plane. The indices which makes up the finished triangle are added to the triangleData.
+	 * @param cameraNear
+	 * @private
+	 */
+	SoftwareRenderer.prototype._nearPlaneClipAndAddTriangle = function (cameraNear) {
+		// Clip triangle to the near plane.
+
+		// Outside indices are the vertices which are outside the view frustum,
+		// that is closer than the near plane in this case.
+		// The inside indices are the ones on the inside.
+
+		var outCount = this._categorizeVertices(-cameraNear);
+		var outIndex, origin, origin_x, origin_y, target, target_x, target_y, ratio;
+
+		switch (outCount) {
+			case 0:
+				// All vertices are on the inside. Add them directly.
+				this._triangleData.addIndices(indices);
+				break;
+			case 3:
+				// All of the vertices are on the outside, dont add them.
+				break;
+			case 1:
+				/*
+				 Update the one vertex to its new position on the near plane and add a new vertex
+				 on the other intersection with the plane.
+				 */
+
+				// TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
+				// perhaps the entire function, in order to make use of them.
+				outIndex = outsideIndices[0];
+				origin = globalVertices[outIndex];
+				origin_x = origin.data[0];
+				origin_y = origin.data[1];
+
+				target = globalVertices[insideIndices[0]];
+				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
+
+				// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
+				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
+				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+
+				// Overwrite the vertex index with the new vertex.
+				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
+
+				target = globalVertices[insideIndices[1]];
+				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
+
+				// Calculate the new vertex's position
+				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
+				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+
+				// Add the new vertex and store the new vertex's index to be added at the last stage.
+				indices[3] = this._triangleData.addVertex(clipVec.data);
+
+				/*
+				 The order of the indices ( CCW / CW ) are not relevant at this point, since
+				 back face culling has been performed.
+
+				 But to construct the right triangles, making use of the outside and inside indices is needed.
+				 */
+
+				var insideIndex = insideIndices[0];
+				var extraIndex = indices[3];
+
+				// TODO : Here js arrays are allocated each time... optimize to use pre-allocated uint8array.
+				this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
+				this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
+
+				break;
+			case 2:
+				// Update the two outside vertices to their new positions on the near plane.
+				target = globalVertices[insideIndices[0]];
+				target_x = target.data[0];
+				target_y = target.data[1];
+
+				// First new vertex.
+				outIndex = outsideIndices[0];
+				origin = globalVertices[outIndex];
+				origin_x = origin.data[0];
+				origin_y = origin.data[1];
+
+				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
+
+				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
+				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+
+				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
+
+				// Second new vertex.
+				outIndex = outsideIndices[1];
+				origin = globalVertices[outIndex];
+				origin_x = origin.data[0];
+				origin_y = origin.data[1];
+
+				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
+
+				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
+				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+
+				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
+
+				this._triangleData.addIndices(indices);
+
+				break;
+		}
+	};
+
+	/**
+	 * Transforms the vertices in the triangle data to screen space.
+	 * @param cameraProjectionMatrix
+	 * @private
+	 */
+	SoftwareRenderer.prototype._screenSpaceTransformTriangleData = function (cameraProjectionMatrix) {
+
+		 // TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
+		 //          Recreate position array from those and then transform?
+		var maxPos = this._triangleData.posCount;
+		var p = 0;
+		while (p < maxPos) {
+			// Copy the vertex data into the v1 vector from the triangleData's position array.
+			var p1 = p++;
+			var p2 = p++;
+			var p3 = p++;
+			var p4 = p++;
+			v1.data[0] = this._triangleData.positions[p1];
+			v1.data[1] = this._triangleData.positions[p2];
+			v1.data[2] = this._triangleData.positions[p3];
+			// The w-component is still 1.0 here.
+			v1.data[3] = 1.0;
+
+			// TODO : Combine projection + screen space transformations into one matrix?
+			// Projection transform
+			cameraProjectionMatrix.applyPost(v1);
+
+			// Homogeneous divide.
+			var homogeneousDivide =  1.0 / v1.data[3];
+			var divX = v1.data[0] * homogeneousDivide;
+			var divY = v1.data[1] * homogeneousDivide;
+
+			// Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
+			this._triangleData.positions[p1] = (divX + 1.0) * this._halfClipX;
+			this._triangleData.positions[p2] = (divY + 1.0) * this._halfClipY;
+			// positionArray[p3] = v1.data[2]; z-componenet is not used any more.
+			// Invert w component here, this to be able to interpolate the depth over the triangles.
+			this._triangleData.positions[p4] = homogeneousDivide;
+		}
+	};
+
+	/**
+	*	Creates an array of the visible
+	*	@param {Entity} entity, the entity from which to create triangles.
+	*	@return {OccluderTriangleData} triangleData
+	*   @param cameraProjectionMatrix
+	*   @param cameraViewMatrix
+	*/
+	SoftwareRenderer.prototype._setupTriangleDataForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
+
+		// Reset the global vectors' w-components to 1
+		v1.data[3] = 1.0;
+		v2.data[3] = 1.0;
+		v3.data[3] = 1.0;
+
+		this._viewSpaceTransformAndCopyVertices(entity, cameraViewMatrix);
+
+		var originalIndexArray = entity.occluderComponent.meshData.indexData.data;
 		var indexCount = originalIndexArray.length;
+		var cameraNear = this.camera.near;
 
 		for (var vertIndex = 0; vertIndex < indexCount; vertIndex++ ) {
 
@@ -260,153 +412,10 @@ define([
 				continue; // Skip loop to the next three vertices.
 			}
 
-			// Clip triangle to the near plane.
-
-			// Outside indices are the vertices which are outside the view frustum,
-			// that is closer than the near plane in this case.
-			// The inside indices are the ones on the inside.
-
-
-			var outCount = this._categorizeVertices(cameraNearZInWorld);
-
-			switch (outCount) {
-				case 0:
-					// All vertices are on the inside. Add them directly.
-					this._triangleData.addIndices(indices);
-					break;
-				case 3:
-					// All of the vertices are on the outside, dont add them.
-					break;
-				case 1:
-					/*
-						Update the one vertex to its new position on the near plane and add a new vertex
-						on the other intersection with the plane.
-					*/
-
-					// TODO: optimization, calculations in the calculateIntersectionRatio could be moved out here,
-					// perhaps the entire function, in order to make use of them.
-					var outIndex = outsideIndices[0];
-					var origin = globalVertices[outIndex];
-					var origin_x = origin.data[0];
-					var origin_y = origin.data[1];
-
-					var target = globalVertices[insideIndices[0]];
-					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-					// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
-					clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-					clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
-
-					// Overwrite the vertex index with the new vertex.
-					indices[outIndex] = this._triangleData.addVertex(clipVec.data);
-
-					target = globalVertices[insideIndices[1]];
-					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-					// Calculate the new vertex's position
-					clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-					clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
-
-					// Add the new vertex and store the new vertex's index to be added at the last stage.
-					indices[3] = this._triangleData.addVertex(clipVec.data);
-
-					/*
-					 The order of the indices ( CCW / CW ) are not relevant at this point, since
-					 back face culling has been performed.
-
-					 But to construct the right triangles, making use of the outside and inside indices is needed.
-					 */
-
-					var insideIndex = insideIndices[0];
-					var extraIndex = indices[3];
-
-					// TODO : Here js arrays are allocated each time... optimize to use pre-allocated uint8array.
-					this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
-					this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
-
-					break;
-				case 2:
-					// Update the two outside vertices to their new positions on the near plane.
-					var target = globalVertices[insideIndices[0]];
-					var target_x = target.data[0];
-					var target_y = target.data[1];
-
-					// First new vertex.
-					var outIndex = outsideIndices[0];
-					var origin = globalVertices[outIndex];
-					var origin_x = origin.data[0];
-					var origin_y = origin.data[1];
-
-					vPos = vertexPositions[outIndex];
-					var ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-					clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-					clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
-
-					indices[outIndex] = this._triangleData.addVertex(clipVec.data);
-
-					// Second new vertex.
-					outIndex = outsideIndices[1];
-					origin = globalVertices[outIndex];
-					origin_x = origin.data[0];
-					origin_y = origin.data[1];
-
-					ratio = this._calculateIntersectionRatio(origin, target, this.camera.near);
-
-					clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-					clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
-
-					indices[outIndex] = this._triangleData.addVertex(clipVec.data);
-
-					this._triangleData.addIndices(indices);
-
-					break;
-			}
+			this._nearPlaneClipAndAddTriangle(cameraNear);
 		}
 
-		/*
-			Transform the triangleData's vertices to screen space.
-
-			The vector v1 will be used for this , since it is already allocated here.
-			Re-using some other earlier allocated variables as well...
-
-			// TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
-			//          Recreate position array from those and then transform?
-
-		*/
-		maxPos = this._triangleData.posCount;
-		var p = 0;
-		while (p < maxPos) {
-			// Copy the vertex data into the v1 vector from the triangleData's position array.
-			var p1 = p++;
-			var p2 = p++;
-			var p3 = p++;
-			var p4 = p++;
-			v1.data[0] = this._triangleData.positions[p1];
-			v1.data[1] = this._triangleData.positions[p2];
-			v1.data[2] = this._triangleData.positions[p3];
-			// The w-component is still 1.0 here.
-			v1.data[3] = 1.0;
-
-
-			// TODO : Combine projection + screen space transformations into one matrix.
-			// Projection transform
-			cameraProjectionMatrix.applyPost(v1);
-
-			// Homogeneous divide.
-			var wComponent = v1.data[3];
-			var homogeneousDivide =  1.0 / wComponent;
-			v1.data[0] *= homogeneousDivide;
-			v1.data[1] *= homogeneousDivide;
-
-			// Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
-			this._triangleData.positions[p1] = (v1.data[0] + 1.0) * this._halfClipX;
-			// Have to round the y-coordinate , // TODO : look up the reason in the function for creating EdgeData.
-			this._triangleData.positions[p2] = (v1.data[1] + 1.0) * this._halfClipY;
-			// positionArray[p3] = v1.data[2]; z-componenet is not used any more.
-			// Invert w component here, this to be able to interpolate the depth over the triangles.
-			this._triangleData.positions[p4] = homogeneousDivide;
-		}
+		this._screenSpaceTransformTriangleData(cameraProjectionMatrix);
 	};
 
 	/**

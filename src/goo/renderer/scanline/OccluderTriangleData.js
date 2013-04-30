@@ -2,10 +2,6 @@ define([
 ],
 	/** @lends */
 
-	// REVIEW: This class is a bit confusing because of the word "index" used for so many things.
-	// I suspect there's a bug hidden in here.
-	// As this class has no dependencies and is a bit tricky to understand,
-	// it's a perfect candidate for a unit test. So write tests to help me understand it!
 	function () {
 
 	/**
@@ -85,16 +81,16 @@ define([
 	};
 
 	/**
-	* Empties the data.
+	* Sets the counters to the correct values to correspond to the positions written into the array.
+	 * @param {Number} positionCount The number of position values which have been written to the position array.
 	*/
-	OccluderTriangleData.prototype.clear = function () {
-
+	OccluderTriangleData.prototype.setCountersToNewEntity = function (positionCount) {
 		this.indexCount = 0;
-		/*
-		No need to reset these members, since they are to be written to externally for each entity to render.
-		this.posCount = 0;
-		this.largestIndex = -1;
-		*/
+		var vertCount = positionCount / 3;
+		// Set the position counter to point at the next empty position to write to.
+		this.posCount = vertCount * 4;
+		// Set the largest index , zero based list.
+		this.largestIndex = vertCount - 1;
 	};
 
 	/**
