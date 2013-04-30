@@ -1002,17 +1002,16 @@ define([
 		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
 		var realLeftX, realRightX, leftZ, rightZ, leftX, rightX, conservativeLeft, conservativeRight, leftIncrement,
-			rightIncrement, leftEdgeShared, rightEdgeShared;
+			rightIncrement, rightEdgeShared;
 
 		var y, offset, spanLength, t;
 
-		var shrinkage = 0.0;
+		var shrinkage = 0.5;
 
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
 
-				leftEdgeShared = shortEdgeBetween;
 				rightEdgeShared = longEdgeBetween;
 
 				// Setup where the samples of the x-values should be taken from, upper or lower part of the edge in
@@ -1057,22 +1056,14 @@ define([
 
 					leftZ = edgeData.getShortZ();
 					rightZ = edgeData.getLongZ();
-					// Conservative rounding , when drawing occluders, make area smaller.
-					/*
-					if(!leftEdgeShared) {
-						leftX = Math.ceil(realLeftX + shrinkage);
-					} else {
-						leftX = Math.ceil(realLeftX);
-					}
-					if (!rightEdgeShared) {
-						rightX = Math.floor(realRightX - shrinkage);
-					} else {
-						rightX = Math.floor(realRightX);
-					}
-					*/
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - shrinkage);
+					if (rightEdgeShared){
+						rightX = Math.floor(realRightX + shrinkage);
+					} else {
+						rightX = Math.floor(realRightX - shrinkage);
+					}
+
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1099,7 +1090,6 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
-				leftEdgeShared = shortEdgeBetween;
 				rightEdgeShared = longEdgeBetween;
 
 				realLeftX = edgeData.getShortX();
@@ -1137,22 +1127,13 @@ define([
 
 					leftZ = edgeData.getShortZ();
 					rightZ = edgeData.getLongZ();
-					// Conservative rounding , when drawing occluders, make area smaller.
-					/*
-					if(!leftEdgeShared) {
-						leftX = Math.ceil(realLeftX + shrinkage);
-					} else {
-						leftX = Math.ceil(realLeftX);
-					}
-					if (!rightEdgeShared) {
-						rightX = Math.floor(realRightX - shrinkage);
-					} else {
-						rightX = Math.floor(realRightX);
-					}
-					*/
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - shrinkage);
+					if (rightEdgeShared){
+						rightX = Math.floor(realRightX + shrinkage);
+					} else {
+						rightX = Math.floor(realRightX - shrinkage);
+					}
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
@@ -1178,7 +1159,6 @@ define([
 		} else { // LONG EDGE IS ON THE LEFT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
 
-				leftEdgeShared = longEdgeBetween;
 				rightEdgeShared = shortEdgeBetween;
 
 				realLeftX = edgeData.getLongX();
@@ -1216,22 +1196,13 @@ define([
 
 					leftZ = edgeData.getLongZ();
 					rightZ = edgeData.getShortZ();
-					/*
-					// Conservative rounding , when drawing occluders, make area smaller.
-					if(!leftEdgeShared) {
-						leftX = Math.ceil(realLeftX + shrinkage);
-					} else {
-						leftX = Math.ceil(realLeftX);
-					}
-					if (!rightEdgeShared) {
-						rightX = Math.floor(realRightX - shrinkage);
-					} else {
-						rightX = Math.floor(realRightX);
-					}
-					*/
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - shrinkage);
+					if (rightEdgeShared){
+						rightX = Math.floor(realRightX + shrinkage);
+					} else {
+						rightX = Math.floor(realRightX - shrinkage);
+					}
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1258,7 +1229,6 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
-				leftEdgeShared = longEdgeBetween;
 				rightEdgeShared = shortEdgeBetween;
 
 				realLeftX = edgeData.getLongX();
@@ -1297,22 +1267,12 @@ define([
 					leftZ = edgeData.getLongZ();
 					rightZ = edgeData.getShortZ();
 
-					// Conservative rounding , when drawing occluders, make area smaller.
-					/*
-					if(!leftEdgeShared) {
-						leftX = Math.ceil(realLeftX + shrinkage);
-					} else {
-						leftX = Math.ceil(realLeftX);
-					}
-					if (!rightEdgeShared) {
-						rightX = Math.floor(realRightX - shrinkage);
-					} else {
-						rightX = Math.floor(realRightX);
-					}
-					*/
-
 					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - shrinkage);
+					if (rightEdgeShared){
+						rightX = Math.floor(realRightX + shrinkage);
+					} else {
+						rightX = Math.floor(realRightX - shrinkage);
+					}
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
@@ -1551,8 +1511,8 @@ define([
 			// var depth = this._depthData[i] * 255;
 			var depth = this._depthData[i];
 			if (depth > 0.0 ) {
-				depth = 255;
-			    //depth *= 255;
+				//depth = 255;
+			    depth *= 255;
 				this._colorData[colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;

@@ -63,6 +63,7 @@ require(
 			var resourcePath = '../resources';
 			var gui = null;
 			var quadMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'SimpleMaterial');
+			quadMaterial.wireframeColor = [0, 0.25, 0];
 
 			var bbMaterial = new Material.createMaterial(ShaderLib.simpleLit, 'wirematOnBoundingBox');
 			bbMaterial.wireframe = true;
@@ -83,7 +84,6 @@ require(
 
 			gui = new window.dat.GUI();
 			gui.add(quadMaterial, 'wireframe');
-			gui.addColor(bbMaterial, 'wireframeColor');
 
 			// Add camera
 			var camera = new Camera(90, 1, 1, 400);
