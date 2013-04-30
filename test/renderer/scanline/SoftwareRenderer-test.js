@@ -2,13 +2,14 @@ define(
 [
 	'goo/renderer/scanline/SoftwareRenderer',
 	'goo/math/Vector3',
-	'goo/math/Vector2'
-], function (SoftwareRenderer, Vector3, Vector2) {
+	'goo/math/Vector2',
+	'goo/renderer/Camera'
+], function (SoftwareRenderer, Vector3, Vector2, Camera) {
 	'use strict';
 
 	describe('SoftwareRenderer', function () {
-
-		var renderer = new SoftwareRenderer({"width" : 256, "height" : 114});
+		var camera = new Camera(90, 1, 1, 100);
+		var renderer = new SoftwareRenderer({"width": 256, "height": 114, "maxVertCount": 50, "maxIndexCount": 20, "camera": camera});
 
 		describe('calculateIntersectionRatio', function() {
 

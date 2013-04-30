@@ -22,7 +22,6 @@ define([
 	var v1 = new Vector4(0, 0, 0, 1);
 	var v2 = new Vector4(0, 0, 0, 1);
 	var v3 = new Vector4(0, 0, 0, 1);
-
 	var clipVec = new Vector4(0, 0, 0, 1);
 	var globalVertices = [v1, v2, v3];
 
