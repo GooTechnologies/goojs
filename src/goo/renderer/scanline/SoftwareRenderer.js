@@ -1002,7 +1002,7 @@ define([
 		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
 
 		var realLeftX, realRightX, leftZ, rightZ, leftX, rightX, conservativeLeft, conservativeRight, leftIncrement,
-			rightIncrement;
+			rightIncrement, leftEdgeShared, rightEdgeShared;
 
 		var y, offset, spanLength, t;
 
@@ -1011,6 +1011,9 @@ define([
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
+
+				leftEdgeShared = shortEdgeBetween;
+				rightEdgeShared = longEdgeBetween;
 
 				// Setup where the samples of the x-values should be taken from, upper or lower part of the edge in
 				// the current pixel.
@@ -1027,7 +1030,12 @@ define([
 				rightIncrement = longXInc;
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
-				conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				if (rightEdgeShared) {
+					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+				} else {
+					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				}
+
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight - shrinkage);
@@ -1051,15 +1059,15 @@ define([
 					rightZ = edgeData.getLongZ();
 					// Conservative rounding , when drawing occluders, make area smaller.
 					/*
-					if(!shortEdgeBetween) {
+					if(!leftEdgeShared) {
 						leftX = Math.ceil(realLeftX + shrinkage);
 					} else {
-						leftX = Math.round(realLeftX);
+						leftX = Math.ceil(realLeftX);
 					}
-					if (!longEdgeBetween) {
+					if (!rightEdgeShared) {
 						rightX = Math.floor(realRightX - shrinkage);
 					} else {
-						rightX = Math.round(realRightX);
+						rightX = Math.floor(realRightX);
 					}
 					*/
 
@@ -1091,7 +1099,8 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
-
+				leftEdgeShared = shortEdgeBetween;
+				rightEdgeShared = longEdgeBetween;
 
 				realLeftX = edgeData.getShortX();
 				realRightX = edgeData.getLongX();
@@ -1103,7 +1112,11 @@ define([
 				rightIncrement = longXInc;
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
-				conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				if (rightEdgeShared) {
+					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+				} else {
+					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight  - shrinkage);
@@ -1126,15 +1139,15 @@ define([
 					rightZ = edgeData.getLongZ();
 					// Conservative rounding , when drawing occluders, make area smaller.
 					/*
-					if(!shortEdgeBetween) {
+					if(!leftEdgeShared) {
 						leftX = Math.ceil(realLeftX + shrinkage);
 					} else {
-						leftX = Math.floor(realLeftX);
+						leftX = Math.ceil(realLeftX);
 					}
-					if (!longEdgeBetween) {
+					if (!rightEdgeShared) {
 						rightX = Math.floor(realRightX - shrinkage);
 					} else {
-						rightX = Math.ceil(realRightX);
+						rightX = Math.floor(realRightX);
 					}
 					*/
 
@@ -1165,6 +1178,9 @@ define([
 		} else { // LONG EDGE IS ON THE LEFT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
 
+				leftEdgeShared = longEdgeBetween;
+				rightEdgeShared = shortEdgeBetween;
+
 				realLeftX = edgeData.getLongX();
 				realRightX = edgeData.getShortX();
 
@@ -1175,7 +1191,11 @@ define([
 				rightIncrement = shortXInc;
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
-				conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				if (rightEdgeShared) {
+					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+				} else {
+					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight  - shrinkage);
@@ -1196,18 +1216,17 @@ define([
 
 					leftZ = edgeData.getLongZ();
 					rightZ = edgeData.getShortZ();
-
-					// Conservative rounding , when drawing occluders, make area smaller.
 					/*
-					if(!longEdgeBetween) {
+					// Conservative rounding , when drawing occluders, make area smaller.
+					if(!leftEdgeShared) {
 						leftX = Math.ceil(realLeftX + shrinkage);
 					} else {
-						leftX = Math.floor(realLeftX);
+						leftX = Math.ceil(realLeftX);
 					}
-					if (!shortEdgeBetween) {
+					if (!rightEdgeShared) {
 						rightX = Math.floor(realRightX - shrinkage);
 					} else {
-						rightX = Math.ceil(realRightX);
+						rightX = Math.floor(realRightX);
 					}
 					*/
 
@@ -1239,6 +1258,9 @@ define([
 					edgeData.floatData[3] += shortZInc;
 				}
 			} else { // OUTWARDS TRIANGLE
+				leftEdgeShared = longEdgeBetween;
+				rightEdgeShared = shortEdgeBetween;
+
 				realLeftX = edgeData.getLongX();
 				realRightX = edgeData.getShortX();
 
@@ -1249,7 +1271,11 @@ define([
 				rightIncrement = shortXInc;
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
-				conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				if (rightEdgeShared) {
+					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+				} else {
+					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight  - shrinkage);
@@ -1273,15 +1299,15 @@ define([
 
 					// Conservative rounding , when drawing occluders, make area smaller.
 					/*
-					if(!longEdgeBetween) {
+					if(!leftEdgeShared) {
 						leftX = Math.ceil(realLeftX + shrinkage);
 					} else {
-						leftX = Math.floor(realLeftX);
+						leftX = Math.ceil(realLeftX);
 					}
-					if (!shortEdgeBetween) {
+					if (!rightEdgeShared) {
 						rightX = Math.floor(realRightX - shrinkage);
 					} else {
-						rightX = Math.ceil(realRightX);
+						rightX = Math.floor(realRightX);
 					}
 					*/
 
@@ -1525,8 +1551,8 @@ define([
 			// var depth = this._depthData[i] * 255;
 			var depth = this._depthData[i];
 			if (depth > 0.0 ) {
-				// depth = 255;
-			    depth *= 255;
+				depth = 255;
+			    //depth *= 255;
 				this._colorData[colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;

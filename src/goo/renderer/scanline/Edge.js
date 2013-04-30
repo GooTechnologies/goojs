@@ -24,16 +24,12 @@ function () {
 		this.dz = 0.0;
 		this.xIncrement = 0.0;
 		this.zIncrement = 0.0;
-		this.insideScreen = true;
 		this.betweenFaces = false;
 	}
 
 	Edge.prototype.setData = function (vec1, vec2) {
 		// Store the positions in growing y order , y1 > y0.
 		// The scanline renderer moves in positive y , origin at top left corner.
-
-
-
 		var v1_y = vec1.data[1];
 		var v2_y = vec2.data[1];
 		if (v1_y < v2_y ) {
@@ -56,6 +52,9 @@ function () {
 			this.z0 = vec2.data[2];
 			this.z1 = vec1.data[2];
 		}
+
+		// Reset the between faces to false.
+		this.betweenFaces = false;
 	};
 
 	Edge.prototype.computeDerivedData = function () {

@@ -18,6 +18,9 @@ define([
             }
 
             this._map = {};
+
+	        // TODO : Remove this member variable. ( DEBUG)
+	        this.numberOfSharedEdges = 0;
         }
 
         EdgeMap.prototype.addEdge = function (i1, i2, vec1, vec2) {
@@ -26,10 +29,11 @@ define([
                 var key2 = this._indicesToKey(i2,i1);
 
                 var edgeIndex = this._edgeCount;
+	            var edge = this._edges[edgeIndex];
 
-                this._edges[edgeIndex].setData(vec1, vec2, i1, i2);
+                edge.setData(vec1, vec2, i1, i2);
+                edge.computeDerivedData();
 
-                this._edges[edgeIndex].computeDerivedData();
                 this._map[key1.toString()] = edgeIndex;
                 this._map[key2.toString()] = edgeIndex;
 
@@ -38,6 +42,7 @@ define([
                 // The edge already exists, set the edge to be between faces.
                 var edgeIndex = this._map[key1];
                 this._edges[edgeIndex].betweenFaces = true;
+	            this.numberOfSharedEdges++;
             }
 
         };
@@ -55,6 +60,7 @@ define([
         EdgeMap.prototype.clear = function () {
             this._map = {};
             this._edgeCount = 0;
+	        this.numberOfSharedEdges = 0;
         };
 
         /*jshint bitwise: false */

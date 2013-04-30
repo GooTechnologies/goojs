@@ -96,7 +96,7 @@ require(
 			cameraEntity.addToWorld();
 
 			//buildScene(goo);
-			//loadTestTriangle(goo);
+			// loadTestTriangle(goo);
 			createHouses(goo);
 
 			setupOcclusionCulling(goo, camera);
@@ -429,7 +429,7 @@ require(
 				entity.meshRendererComponent.materials.push(material);
 				entity.transformComponent.transform.translation.set(translation);
 				entity.name = "TestTriangle!";
-				entity.setComponent(new ScriptComponent(script));
+				//entity.setComponent(new ScriptComponent(script));
 				entity.addToWorld();
 
 				translation.x += 5;

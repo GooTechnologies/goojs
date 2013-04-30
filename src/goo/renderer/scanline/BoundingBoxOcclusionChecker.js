@@ -428,7 +428,7 @@ define([
 				var sampleCoordinate = y * width + minX;
 				for (var x = minX; x <= maxX; x++) {
 					// TODO : Remove setting color when not in development.
-					this.renderer._colorData.set(debugColor, sampleCoordinate * 4);
+					// this.renderer._colorData.set(debugColor, sampleCoordinate * 4);
 					if (this.renderer._depthData[sampleCoordinate] < minDepth) {
 						return false;
 					}
