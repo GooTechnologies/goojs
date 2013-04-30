@@ -22,8 +22,8 @@ define([
 	var v1 = new Vector4(0, 0, 0, 1);
 	var v2 = new Vector4(0, 0, 0, 1);
 	var v3 = new Vector4(0, 0, 0, 1);
-	// Clipping vector is used for near clipping, thus the z component is -1.0.
-	var clipVec = new Vector4(0, 0, -1.0, 1);
+
+	var clipVec = new Vector4(0, 0, 0, 1);
 	var globalVertices = [v1, v2, v3];
 
 	var outsideIndices = new Uint8Array(3);
@@ -79,6 +79,9 @@ define([
 
 		this.boundingBoxModule = new BoundingBoxOcclusionChecker(this);
 		this.boundingSphereModule = new BoundingSphereOcclusionChecker(this);
+
+		// Clipping vector is used for near clipping, thus the z component is set to negative camera near.
+		clipVec.data[2] = -this.camera.near;
 	}
 
 	/**
