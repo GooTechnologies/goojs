@@ -366,9 +366,8 @@ define([
 	};
 
 	/**
-	*	Creates an array of the visible
-	*	@param {Entity} entity, the entity from which to create triangles.
-	*	@return {OccluderTriangleData} triangleData
+	*	Constructs the triangle data which makes up the visible triangles for the given entity.
+	*	@param {Entity} entity the entity from which to create triangles.
 	*   @param cameraProjectionMatrix
 	*   @param cameraViewMatrix
 	*/
@@ -512,9 +511,9 @@ define([
 	*	Returns true if the (CCW) triangle created by the vertices v1, v2 and v3 is facing backwards.
 	*	Otherwise false is returned. This method is for checking projected vertices.
 	*
-	*	@param {Vector} v1 Vertex #1
-	*	@param {Vector} v2 Vertex #2
-	*	@param {Vector} v3 Vertex #3
+	*	@param {Vector3} v1 Vertex #1
+	*	@param {Vector3} v2 Vertex #2
+	*	@param {Vector3} v3 Vertex #3
 	*	@return {Boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
@@ -546,7 +545,6 @@ define([
 	 *
 	 * @param indices
 	 * @param positions
-	 * @returns {Array}
 	 * @private
 	 */
 	SoftwareRenderer.prototype._createOccludeeEdges = function (indices, positions) {
@@ -1525,8 +1523,8 @@ define([
 			// var depth = this._depthData[i] * 255;
 			var depth = this._depthData[i];
 			if (depth > 0.0 ) {
-				 depth = 255;
-				// depth *= 255;
+				// depth = 255;
+			    depth *= 255;
 				this._colorData[colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
 				this._colorData[++colorIndex] = depth;
