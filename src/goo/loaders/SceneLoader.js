@@ -38,51 +38,48 @@ function (
 	}
 
 	/**
-	 * Loads the scene at <code>scenePath</code>.
+	 * Loads the scene with a given ref.
 	 * @example
 	 * sceneLoader.load('room.scene').then(function(entities) {
 	 *   // handle the {@link Entity|Entity[]} entities
 	 * });
-	 * @param {string} scenePath Relative path to the scene.
+	 * @param {string} sceneRef Ref of scene to load.
 	 * @returns {RSVP.Promise} The promise is resolved with an array of {@link Entity|entities}.
 	 */
-	SceneLoader.prototype.load = function (scenePath) {
+	SceneLoader.prototype.load = function (sceneRef) {
 		var that = this;
-		return this._loader.load(scenePath, function (data) {
-			return that._parse(data, scenePath);
+		return this._loader.load(sceneRef, function (data) {
+			return that._parse(data, sceneRef);
 		});
 	};
 
-	SceneLoader.prototype._parse = function (sceneSource, scenePath) {
-		if (typeof sceneSource === 'string') {
-			sceneSource = JSON.parse(sceneSource);
+	SceneLoader.prototype._parse = function (sceneConfig, sceneRef) {
+		if (typeof sceneConfig === 'string') {
+			sceneConfig = JSON.parse(sceneConfig);
 		}
 		var promises = [];
-		// If we got files, then let's do stuff with the files!
-		if (sceneSource && sceneSource.entityRefs && sceneSource.entityRefs.length) {
+
+		if (sceneConfig && sceneConfig.entityRefs && sceneConfig.entityRefs.length) {
 			var entityLoader = new EntityLoader({
 				world: this._world,
 				loader: this._loader
 			});
 
-			for (var i in sceneSource.entityRefs) {
-				// Check if they're entities
-				var fileName = sceneSource.entityRefs[i];
-
-				var p = entityLoader.load(fileName);
-				promises.push(p);
+			for (var i = 0; i < sceneConfig.entityRefs.length; ++i) {
+				var entityRef = sceneConfig.entityRefs[i];
+				promises.push(entityLoader.load(entityRef));
 			}
 		}
 
 		if (promises.length === 0) {
 			var p = new RSVP.Promise();
-			p.reject('Can\'t find anything to load at ' + scenePath);
+			p.reject('Can\'t find anything to load at ' + sceneRef);
 			return p;
 		}
 
-		this.globals = sceneSource.globals;
+		// TODO: Create a Scene instance or something instead of changing the SceneLoader
+		this.globals = sceneConfig.globals;
 
-		// Create a promise that resolves when all promise-objects
 		return RSVP.all(promises)
 			.then(function (entities) {
 				return entities;
@@ -90,7 +87,7 @@ function (
 	};
 
 	SceneLoader.prototype._buildWorld = function (entities) {
-		for (var i in entities) {
+		for (var i = 0; i < entities.length; ++i) {
 			entities[i].addToWorld();
 		}
 		this._world.process();
