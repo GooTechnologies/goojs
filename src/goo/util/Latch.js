@@ -7,8 +7,8 @@ define(
 	 * @class Simple latch with callback
 	 * @param {Number} count Latch counter start
 	 * @param {object} callback Callback functions to fire during progress and when done
-	 * @param {function()} callback.progress
-	 * @param {function(latchesLeft)} callback.done
+	 * @param {function()} callback.done
+	 * @param {function(latchesLeft)} callback.progress
 	 */
 	function Latch(count, callback) {
 		this.count = count;
