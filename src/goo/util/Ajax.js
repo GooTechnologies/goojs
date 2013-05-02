@@ -50,11 +50,11 @@ define([
 
 		var request = new XMLHttpRequest();
 
+
+		request.open(method, url, async);
 		if (options.responseType) {
 			request.responseType = options.responseType;
 		}
-
-		request.open(method, url, async);
 
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
