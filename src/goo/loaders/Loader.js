@@ -59,18 +59,20 @@ define([
 		var that = this;
 		var promise = this.xhr.get(ajaxProperties)
 		.then(function(request) {
-			return that._getDataFromSuccessfulRequest(request);
+			return request.response;
 		})
-		.then(function(data) {
-			return (typeof parser === 'function') ? parser(data) : data;
-		})
-		.then(function(parsed) {
-			promise.resolve(parsed);
+
+		if (parser) {
+			promise = promise.then(function(data) {
+				return (typeof parser === 'function') ? parser(data) : data;
+			});
+		}
+
+		promise.then(function(parsed) {
 			console.log('Loaded: ' + ajaxProperties.url);
-			return parsed;
-		})
+		});
 		// Bubble an error
-		.then(null, function(reason) {
+		promise.then(null, function(reason) {
 			console.error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`.\n Reason: ' + reason);
 			throw new Error('Loader.load(): Could not retrieve data from `' + ajaxProperties.url + '`.\n Reason: ' + reason);
 		});
@@ -112,10 +114,6 @@ define([
 		for (var i = 0; i < this._progressCallbacks.length; i++) {
 			this._progressCallbacks[i](progress);
 		}
-	};
-
-	Loader.prototype._getDataFromSuccessfulRequest = function(request) {
-		return request.response;
 	};
 
 	/**
