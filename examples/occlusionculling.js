@@ -96,8 +96,8 @@ require(
 			cameraEntity.addToWorld();
 
 			//buildScene(goo);
-			// loadTestTriangle(goo);
-			createHouses(goo);
+			loadTestTriangle(goo);
+			// createHouses(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -127,7 +127,7 @@ require(
 			defaultPartitioner = goo.renderSystem.partitioner;
 			goo.renderSystem.partitioner = occlusionPartitioner;
 
-			var clearColor = [0, 0, 0, 1.0];
+			var clearColor = [0.09, 0.09, 0.09, 1.0];
 			goo.renderer.setClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
 		}
 
@@ -425,7 +425,7 @@ require(
 			RSVP.all([triPromise, boxPromise]).then(function (mesh) {
 				var entity = EntityUtils.createTypicalEntity(goo.world, mesh[0]);
 				entity.setComponent(new OccluderComponent(mesh[0]));
-				entity.setComponent(new OccludeeComponent(mesh[0]), true);
+				entity.setComponent(new OccludeeComponent(mesh[0], true));
 				entity.meshRendererComponent.materials.push(material);
 				entity.transformComponent.transform.translation.set(translation);
 				entity.name = "TestTriangle!";
@@ -435,7 +435,7 @@ require(
 				translation.x += 5;
 				entity = EntityUtils.createTypicalEntity(goo.world, mesh[1]);
 				entity.setComponent(new OccluderComponent(mesh[1]));
-				entity.setComponent(new OccludeeComponent(mesh[1]), true);
+				entity.setComponent(new OccludeeComponent(mesh[1], true));
 				entity.meshRendererComponent.materials.push(material);
 				entity.transformComponent.transform.translation.set(translation);
 				entity.addToWorld();

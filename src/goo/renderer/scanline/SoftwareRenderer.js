@@ -1007,6 +1007,7 @@ define([
 		var y, offset, spanLength, t;
 
 		var shrinkage = 0.5;
+		var rightShrink = shrinkage;
 
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
@@ -1031,13 +1032,14 @@ define([
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					rightShrink = -shrinkage;
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
 				}
 
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight - shrinkage);
+				rightX = Math.floor(conservativeRight - rightShrink);
 
 				edgeData.setShortX(conservativeLeft + leftIncrement);
 				edgeData.setLongX(conservativeRight + rightIncrement);
@@ -1058,12 +1060,7 @@ define([
 					rightZ = edgeData.getLongZ();
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					if (rightEdgeShared){
-						rightX = Math.floor(realRightX + shrinkage);
-					} else {
-						rightX = Math.floor(realRightX - shrinkage);
-					}
-
+					rightX = Math.floor(realRightX - rightShrink);
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1104,12 +1101,13 @@ define([
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					rightShrink = -shrinkage;
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight  - shrinkage);
+				rightX = Math.floor(conservativeRight - rightShrink);
 
 				edgeData.setShortX(conservativeLeft + leftIncrement);
 				edgeData.setLongX(conservativeRight + rightIncrement);
@@ -1129,11 +1127,7 @@ define([
 					rightZ = edgeData.getLongZ();
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					if (rightEdgeShared){
-						rightX = Math.floor(realRightX + shrinkage);
-					} else {
-						rightX = Math.floor(realRightX - shrinkage);
-					}
+					rightX = Math.floor(realRightX - rightShrink);
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
@@ -1173,12 +1167,13 @@ define([
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					rightShrink = -shrinkage;
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight  - shrinkage);
+				rightX = Math.floor(conservativeRight - rightShrink);
 
 				edgeData.setShortX(conservativeRight + rightIncrement);
 				edgeData.setLongX(conservativeLeft + leftIncrement);
@@ -1198,11 +1193,7 @@ define([
 					rightZ = edgeData.getShortZ();
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					if (rightEdgeShared){
-						rightX = Math.floor(realRightX + shrinkage);
-					} else {
-						rightX = Math.floor(realRightX - shrinkage);
-					}
+					rightX = Math.floor(realRightX - rightShrink);
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1243,12 +1234,13 @@ define([
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					rightShrink = -shrinkage;
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight  - shrinkage);
+				rightX = Math.floor(conservativeRight - rightShrink);
 
 				edgeData.setShortX(conservativeRight + rightIncrement);
 				edgeData.setLongX(conservativeLeft + leftIncrement);
@@ -1268,11 +1260,7 @@ define([
 					rightZ = edgeData.getShortZ();
 
 					leftX = Math.ceil(realLeftX + shrinkage);
-					if (rightEdgeShared){
-						rightX = Math.floor(realRightX + shrinkage);
-					} else {
-						rightX = Math.floor(realRightX - shrinkage);
-					}
+					rightX = Math.floor(realRightX - rightShrink);
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
@@ -1442,10 +1430,6 @@ define([
 
 		if (rightZ < 0 || rightZ > 1.0000001) {
 			console.error("Rendering depth buffer : rightZ =", rightZ);
-		}
-
-		if (rightX >= this._clipX) {
-			console.log("capping that shit");
 		}
 
 		// Horizontal clipping

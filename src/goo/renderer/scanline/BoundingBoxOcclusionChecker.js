@@ -160,7 +160,7 @@ define([
 				var wComponent = v1.data[3];
 				if (wComponent < this.renderer.camera.near) {
 					// Near plane clipped.
-					console.log("Occlusion test : early exit on near plane clipped.");
+					// console.log("Occlusion test : early exit on near plane clipped.");
 					return false;
 				}
 
