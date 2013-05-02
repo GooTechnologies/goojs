@@ -32,20 +32,16 @@ function (
 	"use strict";
 
 	/**
-	 * Standard setup of entity system to use as base for small projects/demos It accepts a JSON object containing the settings for the Renderer
-	 * class.<br/>
-	 * <code>default = {
-	 *     alpha : false,
-	 *     premultipliedAlpha : true,
-	 *     antialias : false,
-	 *     stencil : false,
-	 *     preserveDrawingBuffer : false,
-	 *     showStats : false,
-	 *     manuallyStartGameLoop : false
-	 * }</code>
+	 * @class Standard setup of entity system to use as base for small projects/demos
 	 *
-	 * @constructor
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object.
+	 * @param {boolean} [parameters.alpha=false]
+	 * @param {boolean} [parameters.premultipliedAlpha=true]
+	 * @param {boolean} [parameters.antialias=false]
+	 * @param {boolean} [parameters.stencil=false]
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.showStats=false]
+	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};

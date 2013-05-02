@@ -64,7 +64,7 @@ function () {
 	 * Retrieve a component of a specific type
 	 *
 	 * @param {string} type Type of component to retrieve (eg. 'transformComponent')
-	 * @returns component with requested type or undefined if not present
+	 * @returns {Component} component with requested type or undefined if not present
 	 */
 	Entity.prototype.getComponent = function (type) {
 		return this[getTypeAttributeName(type)];
@@ -92,6 +92,9 @@ function () {
 		}
 	};
 
+	/**
+	 * @returns {string} Name of entity
+	 */
 	Entity.prototype.toString = function () {
 		return this.name;
 	};

@@ -15,7 +15,7 @@ define([
 
 		/**
 		 * @class Utilities for entity creation etc
-	 	 * @description Only used to define the class. Should never be instantiated.
+		 * @description Only used to define the class. Should never be instantiated.
 		 */
 		function EntityUtils() {
 		}
@@ -60,7 +60,7 @@ define([
 		 * @param {World} world
 		 * @param {Entity} entity The entity to clone
 		 * @param {Object} [settings]
-		 * @param {function} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+		 * @param {function(Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
 			console.log('Cloning', settings);
@@ -76,7 +76,7 @@ define([
 		/**
 		 * Traverse entity hierarchy with callback
 		 * @param {Entity} entity The entity to begin traversing from
-		 * @param {function} callback Callback to run. Runs top to bottom in the hierarchy
+		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy
 		 */
 		EntityUtils.traverse = function (entity, callback) {
 			if (callback) {
