@@ -17,8 +17,6 @@ define([
 	 * @param {object} [parameters]
 	 * @param {string} [parameters.rootPath=''] The path of the project root.
 	 * Ex. <code>/project/root/</code>.
-	 * @param {string} [parameters.crossOrigin='anonymous'] Sets the Image.crossOrigin
-	 * of any loaded Image objects.
 	 * @param {Ajax} [parameters.xhr]
 	 */
 	function Loader(parameters) {
@@ -28,7 +26,6 @@ define([
 			parameters = {};
 		}
 
-		this._crossOrigin = parameters.crossOrigin || 'anonymous';
 		this.rootPath = parameters.rootPath || '';
 		this.xhr = parameters.xhr || new Ajax(this._progressCallback.bind(this));
 		this._progressCallbacks = [];
