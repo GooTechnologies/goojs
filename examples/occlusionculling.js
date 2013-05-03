@@ -71,22 +71,37 @@ require(
 
 			var occlusionPartitioner, defaultPartitioner;
 
+			var occlusionCullingOnline = true;
+			var partitionPicker = {
+				'occlusionCullingOnline' : occlusionCullingOnline,
+				'toggleOcclusionCulling' : function () {
+					if (occlusionCullingOnline) {
+						goo.renderSystem.partitioner = defaultPartitioner;
+						occlusionCullingOnline = false;
+					} else {
+						goo.renderSystem.partitioner = occlusionPartitioner;
+						occlusionCullingOnline = true;
+					}
+				}
+			};
 
+			var goo;
 
 		//----------------------------------
 
 		function init() {
 
-			var goo = new GooRunner({
+			goo = new GooRunner({
 				showStats : true,
 				canvas : document.getElementById('goo')
 			});
 
 			gui = new window.dat.GUI();
 			gui.add(quadMaterial, 'wireframe');
+			gui.add(partitionPicker, 'toggleOcclusionCulling');
 
 			// Add camera
-			var camera = new Camera(90, 1, 1, 400);
+			var camera = new Camera(45, 1, 1, 400);
 
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
@@ -96,8 +111,8 @@ require(
 			cameraEntity.addToWorld();
 
 			//buildScene(goo);
-			loadTestTriangle(goo);
-			// createHouses(goo);
+			//loadTestTriangle(goo);
+			createHouses(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -436,6 +451,7 @@ require(
 				entity = EntityUtils.createTypicalEntity(goo.world, mesh[1]);
 				entity.setComponent(new OccluderComponent(mesh[1]));
 				entity.setComponent(new OccludeeComponent(mesh[1], true));
+//				entity.setComponent(new ScriptComponent(script));
 				entity.meshRendererComponent.materials.push(material);
 				entity.transformComponent.transform.translation.set(translation);
 				entity.addToWorld();
