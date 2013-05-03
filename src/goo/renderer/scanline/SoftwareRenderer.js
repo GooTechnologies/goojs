@@ -144,6 +144,9 @@ define([
 			this.edgeMap.addEdge(index2, index3, v2, v3);
 			this.edgeMap.addEdge(index3, index1, v3, v1);
 		}
+
+		// TODO : REMOVE THIS! DEBUGGING!
+//			this.edgeMap._edges[2].betweenFaces = true;
 	};
 
 	/**
@@ -1008,6 +1011,7 @@ define([
 
 		var shrinkage = 0.5;
 		var rightShrink = shrinkage;
+		var fillconstant = 0.5;
 
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
@@ -1031,18 +1035,18 @@ define([
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
-					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
+					edgeData.setLongX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+					edgeData.setLongX(conservativeRight + rightIncrement);
 				}
 
+				edgeData.setShortX(conservativeLeft + leftIncrement);
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight - rightShrink);
-
-				edgeData.setShortX(conservativeLeft + leftIncrement);
-				edgeData.setLongX(conservativeRight + rightIncrement);
 
 				edgeData.floatData[3] += shortZInc;
 				edgeData.floatData[2] += longZInc;
@@ -1100,17 +1104,18 @@ define([
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
-					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
+					edgeData.setLongX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+					edgeData.setLongX(conservativeRight + rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight - rightShrink);
 
 				edgeData.setShortX(conservativeLeft + leftIncrement);
-				edgeData.setLongX(conservativeRight + rightIncrement);
 
 				edgeData.floatData[3] += shortZInc;
 				edgeData.floatData[2] += longZInc;
@@ -1166,16 +1171,17 @@ define([
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
-					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
+					edgeData.setShortX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+					edgeData.setShortX(conservativeRight + rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight - rightShrink);
 
-				edgeData.setShortX(conservativeRight + rightIncrement);
 				edgeData.setLongX(conservativeLeft + leftIncrement);
 
 				edgeData.floatData[2] += shortZInc;
@@ -1233,16 +1239,17 @@ define([
 
 				conservativeLeft = realLeftX + Math.abs(0.5 * leftIncrement);
 				if (rightEdgeShared) {
-					conservativeRight = realRightX + Math.abs(0.5 * rightIncrement);
+					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
+					edgeData.setShortX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
+					edgeData.setShortX(conservativeRight + rightIncrement);
 				}
 
 				leftX = Math.ceil(conservativeLeft + shrinkage);
 				rightX = Math.floor(conservativeRight - rightShrink);
 
-				edgeData.setShortX(conservativeRight + rightIncrement);
 				edgeData.setLongX(conservativeLeft + leftIncrement);
 
 				edgeData.floatData[2] += shortZInc;
@@ -1291,16 +1298,33 @@ define([
 	*	@return {Boolean} drawable
 	*/
 
-	// TODO: The increment values are not necessary to write for each of the two sub-triangles. Separate this function
+	// TODO: The long edge's increment values are not necessary to write for each of the two sub-triangles. Separate this function
 	// into another.
 	SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
 
 		var startLine = Math.ceil(shortEdge.y0);
 		var stopLine = Math.floor(shortEdge.y1);
 
+		// Vertical coherence :
+		// The x-coordinates' increment for each step in y is constant,
+		// so the increments are pre-calculated and added to the coordinates
+		// each scanline.
+
+		var longEdgeZincrement = longEdge.zIncrement;
+		var shortEdgeZincrement = shortEdge.zIncrement;
+		var shortEdgeXincrement = shortEdge.xIncrement;
+		var longEdgeXincrement = longEdge.xIncrement;
+
 		// Early exit , no area to draw in.
-		if (startLine >= stopLine) {
+		if (startLine > stopLine) {
 			return false;
+		} else if (startLine === stopLine) {
+			if (shortEdge.betweenFaces) {
+				shortEdgeXincrement = 0;
+				longEdgeXincrement = 0;
+			} else {
+				return false;
+			}
 		}
 
 		// The scanline on which we start rendering on might be in the middle of the long edge,
@@ -1312,14 +1336,7 @@ define([
 		var shortX = shortEdge.x0;
 		var shortZ = shortEdge.z0;
 
-		// Vertical coherence :
-		// The x-coordinates' increment for each step in y is constant,
-		// so the increments are pre-calculated and added to the coordinates
-		// each scanline.
-		var longEdgeXincrement = longEdge.xIncrement;
-		var shortEdgeXincrement = shortEdge.xIncrement;
-		var longEdgeZincrement = longEdge.zIncrement;
-		var shortEdgeZincrement = shortEdge.zIncrement;
+
 
 		// Compensate for offset when rounding to the startLine.
 		var offset = startLine - shortEdge.y0;
