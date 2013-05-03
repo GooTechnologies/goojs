@@ -28,8 +28,10 @@ function (
 		this.children = [];
 		/** @type {Transform} */
 		this.transform = new Transform();
-		/* REVIEW: Is this supposed to be public? */
-		/** @type {Transform} */
+
+		/** The entity's transform in world space.
+		 * Read only. Automatically updated.
+		 * @type {Transform} */
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
