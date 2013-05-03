@@ -69,24 +69,20 @@ function(
 
 			});
 
-			it('rejects if there were no entities', function() {
+			it('resolves as an empty array if there is no `entityRefs`', function() {
 				loader.load = function(path, parser) {
-					if(path === 'scene') {
-						return parser({
-							files: []
-						}, path);
-					} else {
-						console.log(path);
-						console.log(parser);
-					}
+					return parser({}, path);
 				};
 
 				var p = sl.load('scene');
 
-				waitsFor(function() {
-					return p.isRejected;
-				}, 'promise did not get rejected', 1);
+				p.then(function(data) {
+					expect(data.length).toEqual(0);
+				});
 
+				waitsFor(function() {
+					return p.isResolved;
+				}, 'promise did not get resolved', 1);
 			});
 		});
 	});

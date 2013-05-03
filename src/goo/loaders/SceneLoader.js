@@ -71,12 +71,6 @@ function (
 			}
 		}
 
-		if (promises.length === 0) {
-			var p = new RSVP.Promise();
-			p.reject('Can\'t find anything to load at ' + sceneRef);
-			return p;
-		}
-
 		// TODO: Create a Scene instance or something instead of changing the SceneLoader
 		this.globals = sceneConfig.globals;
 
