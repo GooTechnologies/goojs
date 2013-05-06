@@ -27,8 +27,6 @@
 
 .jstree-default .jstree-no-icons a .jstree-icon { display:none; }
 
-.jstree-default .jstree-search { font-style:italic; }
-
 .jstree-default .jstree-no-icons .jstree-checkbox { display:inline-block; }
 .jstree-default .jstree-no-checkboxes .jstree-checkbox { display:none !important; }
 .jstree-default .jstree-checked > a > .jstree-checkbox { background-position:-38px -19px; }
@@ -43,7 +41,7 @@
 #vakata-dragged.jstree-default .jstree-invalid { background:url("d.png") -18px -53px no-repeat !important; }
 #jstree-marker.jstree-default { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }
 
-.jstree-default a.jstree-search { color:aqua; }
+.jstree-default a.jstree-search { color: darkblue; font-weight: bold; }
 .jstree-default .jstree-locked a { color:silver; cursor:default; }
 
 #vakata-contextmenu.jstree-default-context, 

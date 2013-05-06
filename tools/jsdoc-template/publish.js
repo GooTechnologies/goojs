@@ -293,6 +293,8 @@ function buildNav(members) {
         //nav += '</ul>';
         nav += formatClassTree(classTree);
 
+        nav += '<input type="text" id="classSearch" value="Search classes" />';
+
     }
 
     if (members.events.length) {

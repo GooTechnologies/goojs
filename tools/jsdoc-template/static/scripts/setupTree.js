@@ -21,18 +21,43 @@ $(function() {
 		core: {
 			initially_open: ['chosenNode'],
 			open_parents: true
+		},
+		themes: {
+			icons: false,
+			dots: false
+		},
+		search: {
+			show_only_matches: true
+		},
+		plugins: ["html_data", "themes", "search"]
+	});
+	$tree.bind('select_node.jstree', function(e, data) {
+		var $node = data.rslt.obj;
+		if($node.hasClass('jstree-leaf')) {
+			document.location.href = $node.children('a').attr('href');
+		}
+		else {
+			$tree.jstree('toggle_node', $node.attr('id'));
 		}
 	});
-	$tree.bind('loaded.jstree', function() {
-		$tree.children('ul').addClass('jstree-no-icons jstree-no-dots');
-	})
-		.bind('select_node.jstree', function(e, data) {
-			var $node = data.rslt.obj;
-			if($node.hasClass('jstree-leaf')) {
-				document.location.href = $node.children('a').attr('href');
-			}
-			else {
-				$tree.jstree('toggle_node', $node.attr('id'));
-			}
-		});
+
+	// setup search field
+	var searchText = "Search classes";
+	var searchField = $("input#classSearch").first();
+	var timer;
+	searchField.focus(function(event) {
+		if($(this).val() == searchText) {
+			$(this).val("");
+		}
+	}).blur(function(event){
+		if($(this).val() == "") {
+			$(this).val(searchText);
+		}
+	}).keyup(function(event) {
+		clearTimeout(timer); // Clear the timer so we don't end up with dupes.
+		var text = $(this).val();
+		timer = setTimeout(function() {
+			$tree.jstree("search", text);
+		}, 500);
+	});
 });
