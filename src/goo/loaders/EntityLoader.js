@@ -90,7 +90,7 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource, entityRef) {
-		// REVIEW: Why this check? Instead make sure config is always an object, not a string
+		// REVIEW martin: Why this check? Instead make sure config is always an object, not a string
 		if (typeof entitySource === 'string') {
 			entitySource = JSON.parse(entitySource);
 		}
