@@ -45,8 +45,9 @@ function (
 
 		this.waterPlane = new Plane();
 
-		var width = window.innerWidth / (settings.divider || 2);
-		var height = window.innerHeight / (settings.divider || 2);
+		var width = Math.floor(window.innerWidth / (settings.divider || 2));
+		var height = Math.floor(window.innerHeight / (settings.divider || 2));
+
 		this.reflectionTarget = new RenderTarget(width, height);
 		if (this.useRefraction) {
 			this.refractionTarget = new RenderTarget(width, height);
@@ -392,7 +393,7 @@ function (
 			'	projCoordRefr = clamp(projCoordRefr, 0.001, 0.999);',
 			'	depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
 			'	float depth = clamp(depthUnpack * 40.0, 0.8, 1.0);',
-			'#else',
+			// '#else',
 			// '	projCoord += (normalVector.xy * distortionMultiplier);',
 			'#endif',
 
