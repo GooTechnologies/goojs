@@ -2,11 +2,10 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector4',
 	'goo/math/Vector2',
-	'goo/renderer/scanline/Triangle',
 	'goo/renderer/scanline/OccludeeTriangleData'
 	],
 	/** @lends */
-		function (Matrix4x4, Vector4, Vector2, Triangle, OccludeeTriangleData) {
+		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {
 		"use strict";
 
 		// Cohen-Sutherland area constants.
