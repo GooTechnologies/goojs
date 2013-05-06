@@ -194,6 +194,9 @@ define([
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
 
+		// Reset the global vectors' w-components to 1
+		v1.data[3] = 1.0;
+
 		// Transform vertices to camera view space
 		var maxPos = originalPositions.length;
 		var offset = 0;
@@ -377,11 +380,6 @@ define([
 	*   @param cameraViewMatrix
 	*/
 	SoftwareRenderer.prototype._setupTriangleDataForEntity = function (entity, cameraViewMatrix, cameraProjectionMatrix) {
-
-		// Reset the global vectors' w-components to 1
-		v1.data[3] = 1.0;
-		v2.data[3] = 1.0;
-		v3.data[3] = 1.0;
 
 		this._viewSpaceTransformAndCopyVertices(entity, cameraViewMatrix);
 
@@ -1003,7 +1001,6 @@ define([
 		// for the rightmost pixel, it is consequently on it's left side.
 
 		// For for the outwards triangle case, the calculations on the leftmost pixel are made for the right and vice versa.
-
 		var realLeftX, realRightX, leftZ, rightZ, leftX, rightX, conservativeLeft, conservativeRight, leftIncrement,
 			rightIncrement, rightEdgeShared;
 
