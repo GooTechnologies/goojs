@@ -27,6 +27,7 @@ define([
 
 	var outsideIndices = new Uint8Array(3);
 	var insideIndices = new Uint8Array(3);
+	var clippedIndices = new Uint8Array(3);
 
 	// Store matrix4x4 to be re-used
 	var cameraViewProjectionMatrix = new Matrix4x4();
@@ -235,6 +236,8 @@ define([
 		// that is closer than the near plane in this case.
 		// The inside indices are the ones on the inside.
 
+		// TODO : The clipping method will have to be revised to be able to maintain edge connectivity information.
+
 		var outCount = this._categorizeVertices(-cameraNear);
 		var outIndex, origin, origin_x, origin_y, target, target_x, target_y, ratio;
 
@@ -286,12 +289,18 @@ define([
 				 But to construct the right triangles, making use of the outside and inside indices is needed.
 				 */
 
-				var insideIndex = insideIndices[0];
+				var insideIndex1 = insideIndices[0];
 				var extraIndex = indices[3];
 
-				// TODO : Here js arrays are allocated each time... optimize to use pre-allocated uint8array.
-				this._triangleData.addIndices([indices[outIndex], indices[insideIndex], extraIndex]);
-				this._triangleData.addIndices([extraIndex, indices[insideIndex], indices[insideIndices[1]]]);
+				clippedIndices[0] = indices[outIndex];
+				clippedIndices[1] = indices[insideIndex1];
+				clippedIndices[2] = extraIndex;
+				this._triangleData.addIndices(clippedIndices);
+
+				clippedIndices[0] = extraIndex;
+				//clippedIndices[1] = indices[insideIndex1]; This index is already set.
+				clippedIndices[2] = indices[insideIndices[1]];
+				this._triangleData.addIndices(clippedIndices);
 
 				break;
 			case 2:
