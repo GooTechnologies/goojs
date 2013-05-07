@@ -29,7 +29,7 @@ $(function() {
 		search: {
 			show_only_matches: true
 		},
-		plugins: ["html_data", "themes", "search"]
+		plugins: ["html_data", "themes", "search", "ui"]
 	});
 	$tree.bind('select_node.jstree', function(e, data) {
 		var $node = data.rslt.obj;
@@ -45,6 +45,7 @@ $(function() {
 	var searchText = "Search classes";
 	var searchField = $("input#classSearch").first();
 	var timer;
+	/* REVIEW: Use html attribute placeholder instead maybe? See also publish.js */
 	searchField.focus(function(event) {
 		if($(this).val() == searchText) {
 			$(this).val("");
@@ -56,8 +57,10 @@ $(function() {
 	}).keyup(function(event) {
 		clearTimeout(timer); // Clear the timer so we don't end up with dupes.
 		var text = $(this).val();
+		/* REVIEW: Why the timeout, why not filter directly? */
 		timer = setTimeout(function() {
 			$tree.jstree("search", text);
 		}, 500);
 	});
+	/* REVIEW: When search is empty, everything is expanded. Is there any nice way to solve this? */
 });
