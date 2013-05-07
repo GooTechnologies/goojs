@@ -291,11 +291,8 @@ function buildNav(members) {
 
         });
         //nav += '</ul>';
+        nav += '<input type="text" id="classSearch" placeholder="Search classes" />';
         nav += formatClassTree(classTree);
-        /* REVIEW: I would prefer to have this above class tree. Then it won't jump around as you filter
-         * Also, maybe use attribute placeholder instead of javascript solution
-         */
-        nav += '<input type="text" id="classSearch" value="Search classes" />';
 
     }
 

@@ -41,10 +41,7 @@
 #vakata-dragged.jstree-default .jstree-invalid { background:url("d.png") -18px -53px no-repeat !important; }
 #jstree-marker.jstree-default { background:url("d.png") -41px -57px no-repeat !important; text-indent:-100px; }
 
-/* REVIEW: Goo color is #2a3276, but perhaps match look and feel of jsdoc to gooengine.com should be its own story
- * Also, maybe only highligt leaves?
- */
-.jstree-default a.jstree-search { color: darkblue; font-weight: bold; }
+.jstree-default li.jstree-leaf a.jstree-search { color: darkblue; font-weight: bold; }
 .jstree-default .jstree-locked a { color:silver; cursor:default; }
 
 #vakata-contextmenu.jstree-default-context,

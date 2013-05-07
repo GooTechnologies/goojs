@@ -30,8 +30,7 @@ $(function() {
 			show_only_matches: true
 		},
 		plugins: ["html_data", "themes", "search", "ui"]
-	});
-	$tree.bind('select_node.jstree', function(e, data) {
+	}).bind('select_node.jstree', function(e, data) {
 		var $node = data.rslt.obj;
 		if($node.hasClass('jstree-leaf')) {
 			document.location.href = $node.children('a').attr('href');
@@ -39,28 +38,29 @@ $(function() {
 		else {
 			$tree.jstree('toggle_node', $node.attr('id'));
 		}
+	}).bind('clear_search.jstree', function(e, data) {
+		if(!$("input#classSearch").val()) {
+			$tree.jstree("close_all");
+			$tree.jstree("open_node", "#chosenNode");
+		}
 	});
 
 	// setup search field
-	var searchText = "Search classes";
 	var searchField = $("input#classSearch").first();
+	var searchValue = "";
 	var timer;
-	/* REVIEW: Use html attribute placeholder instead maybe? See also publish.js */
-	searchField.focus(function(event) {
-		if($(this).val() == searchText) {
-			$(this).val("");
-		}
-	}).blur(function(event){
-		if($(this).val() == "") {
-			$(this).val(searchText);
-		}
-	}).keyup(function(event) {
-		clearTimeout(timer); // Clear the timer so we don't end up with dupes.
+	searchField.bind("keyup change", function(event) {
 		var text = $(this).val();
-		/* REVIEW: Why the timeout, why not filter directly? */
-		timer = setTimeout(function() {
-			$tree.jstree("search", text);
-		}, 500);
+		if(text != searchValue) {
+			clearTimeout(timer); // Clear the timer so we don't end up with dupes.
+			if(text == "") {
+				$tree.jstree("clear_search");
+			} else {
+				timer = setTimeout($.proxy(function() {
+					$tree.jstree("search", this.text);
+				}, { text: text }), 200);
+			}
+			searchValue = text;
+		}
 	});
-	/* REVIEW: When search is empty, everything is expanded. Is there any nice way to solve this? */
 });
