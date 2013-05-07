@@ -102,6 +102,13 @@ function (
 			div.style.right = '10px';
 			div.style.zIndex = '2000';
 			div.id = 'goologo';
+			div.style.webkitTouchCallout = 'none';
+			div.style.webkitUserSelect = 'none';
+			div.style.khtmlUserSelect = 'none';
+			div.style.mozUserSelect = 'none';
+			div.style.msUserSelect = 'none';
+			div.style.userSelect = 'none';
+			div.ondragstart = function() { return false; };
 
 			document.body.appendChild(div);
 		}
