@@ -1043,16 +1043,18 @@ define([
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
-					edgeData.setLongX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
-					edgeData.setLongX(conservativeRight + rightIncrement);
 				}
 
-				edgeData.setShortX(conservativeLeft + leftIncrement);
+				leftX = conservativeLeft + shrinkage;
+				rightX = conservativeRight - rightShrink;
 
-				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight - rightShrink);
+				edgeData.setLongX(rightX + rightIncrement);
+				edgeData.setShortX(leftX + leftIncrement);
+
+				leftX = Math.ceil(leftX);
+				rightX = Math.floor(rightX);
 
 				edgeData.floatData[3] += shortZInc;
 				edgeData.floatData[2] += longZInc;
@@ -1069,8 +1071,8 @@ define([
 					leftZ = edgeData.getShortZ();
 					rightZ = edgeData.getLongZ();
 
-					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - rightShrink);
+					leftX = Math.ceil(realLeftX);
+					rightX = Math.floor(realRightX);
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1112,16 +1114,18 @@ define([
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
-					edgeData.setLongX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
-					edgeData.setLongX(conservativeRight + rightIncrement);
 				}
 
-				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight - rightShrink);
+				leftX = conservativeLeft + shrinkage;
+				rightX = conservativeRight - rightShrink;
 
-				edgeData.setShortX(conservativeLeft + leftIncrement);
+				edgeData.setLongX(rightX + rightIncrement);
+				edgeData.setShortX(leftX + leftIncrement);
+
+				leftX = Math.ceil(leftX);
+				rightX = Math.floor(rightX);
 
 				edgeData.floatData[3] += shortZInc;
 				edgeData.floatData[2] += longZInc;
@@ -1137,8 +1141,8 @@ define([
 					leftZ = edgeData.getShortZ();
 					rightZ = edgeData.getLongZ();
 
-					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - rightShrink);
+					leftX = Math.ceil(realLeftX);
+					rightX = Math.floor(realRightX);
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
@@ -1179,16 +1183,18 @@ define([
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
-					edgeData.setShortX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
-					edgeData.setShortX(conservativeRight + rightIncrement);
 				}
 
-				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight - rightShrink);
+				leftX = conservativeLeft + shrinkage;
+				rightX = conservativeRight - rightShrink;
 
-				edgeData.setLongX(conservativeLeft + leftIncrement);
+				edgeData.setShortX(rightX + rightIncrement);
+				edgeData.setLongX(leftX + leftIncrement);
+
+				leftX = Math.ceil(leftX);
+				rightX = Math.floor(rightX);
 
 				edgeData.floatData[2] += shortZInc;
 				edgeData.floatData[3] += longZInc;
@@ -1204,8 +1210,8 @@ define([
 					leftZ = edgeData.getLongZ();
 					rightZ = edgeData.getShortZ();
 
-					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - rightShrink);
+					leftX = Math.ceil(realLeftX);
+					rightX = Math.floor(realRightX);
 
 					// Compensate for the fractional offset on the leftmost pixel.
 					// Regarding the rightZ to be the actual maximum depth.
@@ -1247,16 +1253,18 @@ define([
 				if (rightEdgeShared) {
 					conservativeRight = realRightX + Math.abs(fillconstant * rightIncrement);
 					rightShrink = -shrinkage;
-					edgeData.setShortX(conservativeRight + rightIncrement);
 				} else {
 					conservativeRight = realRightX - Math.abs(0.5 * rightIncrement);
-					edgeData.setShortX(conservativeRight + rightIncrement);
 				}
 
-				leftX = Math.ceil(conservativeLeft + shrinkage);
-				rightX = Math.floor(conservativeRight - rightShrink);
+				leftX = conservativeLeft + shrinkage;
+				rightX = conservativeRight - rightShrink;
 
-				edgeData.setLongX(conservativeLeft + leftIncrement);
+				edgeData.setShortX(rightX + rightIncrement);
+				edgeData.setLongX(leftX + leftIncrement);
+
+				leftX = Math.ceil(leftX);
+				rightX = Math.floor(rightX);
 
 				edgeData.floatData[2] += shortZInc;
 				edgeData.floatData[3] += longZInc;
@@ -1272,8 +1280,8 @@ define([
 					leftZ = edgeData.getLongZ();
 					rightZ = edgeData.getShortZ();
 
-					leftX = Math.ceil(realLeftX + shrinkage);
-					rightX = Math.floor(realRightX - rightShrink);
+					leftX = Math.ceil(realLeftX);
+					rightX = Math.floor(realRightX);
 
 					// Compensate fractional offset.
 					offset = realRightX - rightX;
