@@ -28,6 +28,7 @@ define([
 	 * @constructor
 	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function MaterialLoader(parameters) {
 		if(typeof parameters === "undefined" || parameters === null) {
@@ -40,7 +41,7 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
-		this._shaderLoader = new ShaderLoader({ loader: this._loader });
+		this._shaderLoader = new ShaderLoader({ loader: this._loader, doCache: parameters.cacheShader });
 	}
 
 	/**
@@ -86,13 +87,6 @@ define([
 			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));
-		}
-
-		function setDestinationColor(destination, color) {
-			if(typeof color[0] !== 'undefined' || color[0] !== null) { destination[0] = color[0]; }
-			if(typeof color[1] !== 'undefined' || color[1] !== null) { destination[1] = color[1]; }
-			if(typeof color[2] !== 'undefined' || color[2] !== null) { destination[2] = color[2]; }
-			if(typeof color[3] !== 'undefined' || color[3] !== null) { destination[3] = color[3]; }
 		}
 
 		var name = materialDataSource.name || 'DefaultMaterial';

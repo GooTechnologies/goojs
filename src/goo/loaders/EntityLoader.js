@@ -46,6 +46,7 @@ function(
 	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function EntityLoader(parameters) {
 		if(typeof parameters === "undefined" || parameters === null) {
@@ -64,7 +65,7 @@ function(
 		this._world = parameters.world;
 
 		this._cache = {};
-		this._materialLoader = new MaterialLoader({ loader: this._loader });
+		this._materialLoader = new MaterialLoader({ loader: this._loader, cacheShader: parameters.cacheShader });
 		this._meshLoader = new MeshLoader({ loader: this._loader });
 	}
 

@@ -30,6 +30,7 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
+		this._doCache = parameters.doCache;
 
 	}
 
@@ -44,9 +45,9 @@ define([
 	 */
 	ShaderLoader.prototype.load = function(shaderPath) {
 		// Materials can't share shaders yet, cause jointcount is defined on the shader
-		/*if (this._cache[shaderPath]) {
+		if (this._cache[shaderPath] && this._doCache) {
 			return this._cache[shaderPath];
-		}*/
+		}
 		var parse = this._parse.bind(this);
 		var promise = this._loader.load(shaderPath, function(data) {
 			return parse(data);

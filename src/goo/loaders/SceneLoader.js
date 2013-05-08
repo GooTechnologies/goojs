@@ -19,6 +19,7 @@ function (
 	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function SceneLoader(parameters) {
 		if (typeof parameters === "undefined" || parameters === null) {
@@ -35,6 +36,7 @@ function (
 
 		this._loader = parameters.loader;
 		this._world = parameters.world;
+		this._cacheShader = parameters.cacheShader;
 	}
 
 	/**
@@ -53,7 +55,7 @@ function (
 		});
 	};
 
-	SceneLoader.prototype._parse = function (sceneConfig, sceneRef) {
+	SceneLoader.prototype._parse = function (sceneConfig) {
 		if (typeof sceneConfig === 'string') {
 			sceneConfig = JSON.parse(sceneConfig);
 		}
@@ -62,7 +64,8 @@ function (
 		if (sceneConfig && sceneConfig.entityRefs && sceneConfig.entityRefs.length) {
 			var entityLoader = new EntityLoader({
 				world: this._world,
-				loader: this._loader
+				loader: this._loader,
+				cacheShader: this._cacheShader
 			});
 
 			for (var i = 0; i < sceneConfig.entityRefs.length; ++i) {
