@@ -30,7 +30,7 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
-		this._doCache = parameters.doCache;
+		this._doCache = (parameters.doCache !== undefined) ? parameters.doCache : true;
 
 	}
 
