@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
@@ -17,7 +17,7 @@ define([
 		'goo/animation/state/SteadyState',
 		'goo/animation/blendtree/ClipSource'
 	],
-	/** @lends AnimationLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,
@@ -38,10 +38,12 @@ define([
 	) {
 	"use strict";
 		/**
-		 * Utility class for loading Animations
+		 * @class Utility class for loading Animations
 		 *
 		 * @constructor
-		 * @param {{ loader: Loader }} parameters
+		 * @desc Creates an instance of an {@link AnimationLoader}
+		 * @param {object} parameters
+		 * @param {Loader} parameters.loader
 		 */
 		function AnimationLoader(parameters) {
 			if(typeof parameters === "undefined" || parameters === null) {
@@ -55,6 +57,18 @@ define([
 			this._cache = {};
 		}
 
+		/**
+		 * Loads an {@link AnimationClip}, sets up an {@link AnimationManager} and returns it in an RSVP promise.
+		 * It also starts a default animation.
+		 * @example
+		 * animLoader.load('resources/animations/anim.clip', pose, 'idle').then(function(animManager) {
+		 *   //handle {@link AnimationManager} animManager
+		 * });
+		 * @param {string} animPath The path, relative to loaders root path, where the animation clip file is stored
+		 * @param {SkeletonPose} pose The pose to apply the animation clip to
+		 * @param {string} name The name of the default animation to start
+		 * @returns {RSVP.Promise}
+		 */
 		AnimationLoader.prototype.load = function (animPath, pose, name) {
 			if(this._cache[animPath] && this._cache[animPath][pose._skeleton._name]) {
 				return this._cache[animPath][pose._skeleton.name];
@@ -80,10 +94,13 @@ define([
 		};
 
 		AnimationLoader.prototype._loadAnimation = function(animPath) {
-			return this._loader.load(animPath+'.json');
+			return this._loader.load(animPath);
 		};
 
 		AnimationLoader.prototype._parseAnimation = function(name, clipSource) {
+			if (typeof clipSource === 'string') {
+				clipSource = JSON.parse(clipSource);
+			}
 			var useCompression, compressedAnimRange;
 			var clip = new AnimationClip(name);
 

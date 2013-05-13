@@ -5,7 +5,7 @@ define([
 	'goo/entities/World',
 	'goo/renderer/RenderQueue'
 ],
-/** @lends Shader */
+/** @lends */
 function (
 	ShaderCall,
 	Matrix4x4,
@@ -94,8 +94,7 @@ function (
 
 	Shader.id = 0;
 
-
-	/**
+	/*
 	 * Matches an attribute or uniform variable declaration.
 	 *
 	 * Match groups:
@@ -208,7 +207,7 @@ function (
 		while (matcher !== null) {
 			var definition = {
 				// data type: float, int, ...
-				format : matcher[2]
+				format: matcher[2]
 			};
 			var type = matcher[1];  // "attribute" or "uniform"
 			var variableName = matcher[3];
@@ -226,8 +225,8 @@ function (
 			} else {
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
-						format : definition.format,
-						name : variableName
+						format: definition.format,
+						name: variableName
 					};
 					target.textureSlots.push(textureSlot);
 				}
@@ -416,9 +415,7 @@ function (
 			})(i);
 		}
 
-		// TODO
-		var lightPos = new Vector3(-20, 20, 20);
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < 8; i++) {
 			/*jshint loopfunc: true */
 			defaultCallbacks[Shader['LIGHT' + i]] = (function (i) {
 				return function (uniformCall, shaderInfo) {
@@ -426,11 +423,14 @@ function (
 					if (light !== undefined) {
 						uniformCall.uniform3f(light.translation.x, light.translation.y, light.translation.z);
 					} else {
-						uniformCall.uniform3f(lightPos.x, lightPos.y, lightPos.z);
+						uniformCall.uniform3f(-20, 20, 20);
 					}
 				};
 			})(i);
 		}
+		defaultCallbacks[Shader.LIGHTCOUNT] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1i(shaderInfo.lights.length);
+		};
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
@@ -449,10 +449,10 @@ function (
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
-		var DEFAULT_AMBIENT = [0.1,0.1,0.1,1.0];
-		var DEFAULT_EMISSIVE = [0,0,0,0];
-		var DEFAULT_DIFFUSE = [1,1,1,1];
-		var DEFAULT_SPECULAR = [0.8,0.8,0.8,1.0];
+		var DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
+		var DEFAULT_EMISSIVE = [0, 0, 0, 0];
+		var DEFAULT_DIFFUSE = [1, 1, 1, 1];
+		var DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
 		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
 			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
 			uniformCall.uniform4fv(materialState);
@@ -500,7 +500,7 @@ function (
 		};
 	}
 
-	Shader.prototype.getShaderDefinition = function() {
+	Shader.prototype.getShaderDefinition = function () {
 		return {
 			vshader: this.vertexSource,
 			fshader: this.fragmentSource,

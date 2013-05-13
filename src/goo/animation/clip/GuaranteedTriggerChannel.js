@@ -1,5 +1,5 @@
 define(['goo/animation/clip/TriggerChannel'],
-/** @lends GuaranteedTriggerChannel */
+/** @lends */
 function (TriggerChannel) {
 	"use strict";
 

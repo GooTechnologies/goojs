@@ -3,7 +3,7 @@ define([
 	'goo/loaders/EntityLoader',
 	'goo/renderer/Material',
 	'goo/shapes/ShapeCreator',
-	'goo/lib/rsvp.amd',
+	'goo/util/rsvp',
 	'goo/entities/GooRunner'
 	],
 function(
@@ -40,7 +40,7 @@ function(
 		describe('.load()', function() {
 			it('creates an entity from loaded components', function() {
 				loader.load = function(path, parser) {
-					if(path === 'entity.ent.json') {
+					if(path === 'entity.ent') {
 						return parser({
 							"components": {
 								"transform": {
@@ -49,12 +49,12 @@ function(
 									"scale": [1, 1, 1]
 								},
 								"meshRenderer": {
-									"materials": [
+									"materialRefs": [
 										"materials/plastic.mat"
 									]
 								},
 								"meshData": {
-									"mesh": "meshes/cube.mesh"
+									"meshRef": "meshes/cube.mesh"
 								},
 								"camera": {
 									"fov": 45,
@@ -97,7 +97,7 @@ function(
 
 			it('rejects if there were no components', function() {
 				loader.load = function(path, parser) {
-					if(path === 'entity.ent.json') {
+					if(path === 'entity.ent') {
 						return parser({}, path);
 					} else {
 						console.log(path);

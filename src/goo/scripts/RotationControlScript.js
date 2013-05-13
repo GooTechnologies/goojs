@@ -1,6 +1,6 @@
 define([
 	'goo/math/Matrix3x3'
-], /** @lends RotationControlScript */ function (
+], /* @lends */ function (
 	Matrix3x3
 ) {
 	'use strict';
@@ -41,16 +41,14 @@ define([
 
 	/**
 	 * @class Script for controlling the rotation of an entity.
-	 * @property {Object} bindings Bound event handlers.
-	 * @property {Element} element Document element on which to attach the event handlers.
-	 * @property {String} name Name of script.
-	 * @property {Object} states Internal states of the script.
-	 * @constructor
-	 * @description Creates a new RotationControlScript.
 	 * @param {Element} element Document element on which to attach the event handlers.
 	 */
-
 	function RotationControlScript(element) {
+		/**
+		 * @desc Bound event handlers.
+		 * @type {Object}
+		 * @default
+		 */
 		this.bindings = { 'attach' : attach.bind(this), 'update' : null, 'remove' : null };
 		this.element = element;
 		this.name = 'RotationControlScript';
@@ -59,11 +57,6 @@ define([
 		this.element.addEventListener('mousedown', this.bindings.attach, false);
 		this.element.addEventListener('touchstart', this.bindings.attach, false);
 	}
-
-	/**
-	 * @description Runs the script and updates the rotation of the entity controlled by the script.
-	 * @param {Entity} entity The entity controlled by the script.
-	 */
 
 	RotationControlScript.prototype.run = function (entity) {
 		if (this.states.dirty) {

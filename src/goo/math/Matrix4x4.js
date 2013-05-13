@@ -1,6 +1,12 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"],
-	/** @lends Matrix4x4 */
-	function (MathUtils, Matrix) {
+define([
+	'goo/math/MathUtils',
+	'goo/math/Matrix'
+],
+/** @lends */
+function (
+	MathUtils,
+	Matrix
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -320,26 +326,26 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14], //
 			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
-        var rd = target.data;
-        rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
-        rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
-        rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
-        rd[12] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
+		var rd = target.data;
+		rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
+		rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
+		rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
+		rd[12] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
 
-        rd[1] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
-        rd[5] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
-        rd[9] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
-        rd[13] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
+		rd[1] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
+		rd[5] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
+		rd[9] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
+		rd[13] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
 
-        rd[2] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
-        rd[6] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
-        rd[10] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
-        rd[14] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
+		rd[2] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
+		rd[6] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
+		rd[10] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
+		rd[14] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
 
-        rd[3] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
-        rd[7] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
-        rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
-        rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
+		rd[3] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
+		rd[7] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
+		rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
+		rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
 
 		return target;
 	};
@@ -449,7 +455,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var det = source.determinant();
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
-			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
+			throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		var s = source.data;
@@ -593,35 +599,35 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	Matrix4x4.prototype.determinant = function () {
 		var d = this.data;
 
-		var val1 =	d[5] * d[10] * d[15] +
-					d[9] * d[14] * d[7] +
-					d[13] * d[6] * d[11] -
-					d[13] * d[10] * d[7] -
-					d[9] * d[6] * d[15] -
-					d[5] * d[14] * d[11];
-		var val2 =	d[1] * d[10] * d[15] +
-					d[9] * d[14] * d[3] +
-					d[13] * d[2] * d[11] -
-					d[13] * d[10] * d[3] -
-					d[9] * d[2] * d[15] -
-					d[1] * d[14] * d[11];
-		var val3 =	d[1] * d[6] * d[15] +
-					d[5] * d[14] * d[3] +
-					d[13] * d[2] * d[7] -
-					d[13] * d[6] * d[3] -
-					d[5] * d[2] * d[15] -
-					d[1] * d[14] * d[7];
-		var val4 =	d[1] * d[6] * d[11] +
-					d[5] * d[10] * d[3] +
-					d[9] * d[2] * d[7] -
-					d[9] * d[6] * d[3] -
-					d[5] * d[2] * d[11] -
-					d[1] * d[10] * d[7];
+		var val1 = d[5] * d[10] * d[15] +
+			d[9] * d[14] * d[7] +
+			d[13] * d[6] * d[11] -
+			d[13] * d[10] * d[7] -
+			d[9] * d[6] * d[15] -
+			d[5] * d[14] * d[11];
+		var val2 = d[1] * d[10] * d[15] +
+			d[9] * d[14] * d[3] +
+			d[13] * d[2] * d[11] -
+			d[13] * d[10] * d[3] -
+			d[9] * d[2] * d[15] -
+			d[1] * d[14] * d[11];
+		var val3 = d[1] * d[6] * d[15] +
+			d[5] * d[14] * d[3] +
+			d[13] * d[2] * d[7] -
+			d[13] * d[6] * d[3] -
+			d[5] * d[2] * d[15] -
+			d[1] * d[14] * d[7];
+		var val4 = d[1] * d[6] * d[11] +
+			d[5] * d[10] * d[3] +
+			d[9] * d[2] * d[7] -
+			d[9] * d[6] * d[3] -
+			d[5] * d[2] * d[11] -
+			d[1] * d[10] * d[7];
 
-		return	d[0] * val1 -
-				d[4] * val2 +
-				d[8] * val3 -
-				d[12] * val4;
+		return    d[0] * val1 -
+			d[4] * val2 +
+			d[8] * val3 -
+			d[12] * val4;
 	};
 
 	/* ====================================================================== */
@@ -783,7 +789,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 
-	// REVIEW: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector) and the matrix is applied after the vector.
+	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
+	// and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
 		var x = rhs.data[0];
 		var y = rhs.data[1];
@@ -905,7 +912,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			d[4], d[5], d[6], d[7],
 			d[8], d[9], d[10], d[11],
 			d[12], d[13], d[14], d[15]
-			);
+		);
 	};
 
 	/* ====================================================================== */

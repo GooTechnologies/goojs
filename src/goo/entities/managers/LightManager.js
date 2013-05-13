@@ -1,5 +1,5 @@
 define(['goo/entities/EventHandler'],
-	/** @lends LightManager */
+	/** @lends */
 	function (EventHandler) {
 	"use strict";
 

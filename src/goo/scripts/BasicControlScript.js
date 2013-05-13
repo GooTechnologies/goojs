@@ -1,10 +1,13 @@
 define(['goo/math/Vector3', 'goo/math/Matrix3x3'],
-/** @lends BasicControlScript */
+/** @lends */
 function (Vector3, Matrix3x3) {
 	"use strict";
 
 	/**
-	 * @class Simple script to move/rotate an entity
+	 * @class Make an entity controllable via mouse and keyboard. WASD keys move the entity towards the back, left,
+	 * front and right respectively. Shift causes speed to drop to a tenth. R and F move it up or down. Q and E roll it
+	 * towards the left or right. The arrow keys cause the entity to rotate, as does dragging with the mouse.
+	 *
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
 	function BasicControlScript (domElement) {
@@ -12,7 +15,15 @@ function (Vector3, Matrix3x3) {
 
 		this.name = 'BasicControlScript';
 
+		/** The regular speed of the entity.
+		 * @type {number}
+		 * @default
+		 */
 		this.movementSpeed = 10.0;
+		/** The regular speed of the entity when rolling.
+		 * @type {number}
+		 * @default
+		 */
 		this.rollSpeed = 2.0;
 		this.movementSpeedMultiplier = 1.0;
 
@@ -249,7 +260,7 @@ function (Vector3, Matrix3x3) {
 		this.updateRotationVector();
 	}
 
-	/**
+	/*
 	 * @description Test on how to expose variables to a tool.
 	 * @returns {Array}
 	 */
@@ -277,7 +288,6 @@ function (Vector3, Matrix3x3) {
 			transform.translation.y += this.moveVector.y * moveMult;
 			transform.translation.z += this.moveVector.z * moveMult;
 
-			transform.rotation.toAngles(this.tmpVec);
 			this.tmpVec.x += -this.rotationVector.x * rotMult * this.multiplier.x;
 			this.tmpVec.y += this.rotationVector.y * rotMult * this.multiplier.y;
 			this.tmpVec.z += this.rotationVector.z * rotMult * this.multiplier.z;

@@ -2,11 +2,11 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/MeshData', 'goo/renderer/Shader',
-		'goo/renderer/shaders/ShaderFragments', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/pass/BlurPass'],
+		'goo/renderer/shaders/ShaderFragment', 'goo/renderer/pass/RenderPass', 'goo/renderer/pass/FullscreenPass', 'goo/renderer/pass/BlurPass'],
 	function (
 	Material,
 	RenderTarget,
-	MeshData, Shader, ShaderFragments, RenderPass,
+	MeshData, Shader, ShaderFragment, RenderPass,
 		FullscreenPass, BlurPass) {
 		"use strict";
 
@@ -76,7 +76,7 @@ define([
 //				'uniform float nearPlane;',//
 				'uniform float farPlane;',//
 
-				ShaderFragments.methods.packDepth,//
+				ShaderFragment.methods.packDepth,//
 
 				'varying vec4 vPosition;',//
 
@@ -124,7 +124,7 @@ define([
 
 				'varying vec2 texCoord0;',//
 
-				ShaderFragments.methods.unpackDepth,//
+				ShaderFragment.methods.unpackDepth,//
 
 				'void main(void)',//
 				'{',//

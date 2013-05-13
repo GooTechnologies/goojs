@@ -1,5 +1,5 @@
 define(['goo/animation/blendtree/BinaryLERPSource'],
-/** @lends LayerLERPBlender */
+/** @lends */
 function (BinaryLERPSource) {
 	"use strict";
 

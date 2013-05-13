@@ -1,7 +1,7 @@
 define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector4'
-], /** @lends SplineInterpolator */ function (
+], /* @lends */ function (
 	Matrix4x4,
 	Vector4
 ) {

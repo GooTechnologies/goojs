@@ -1,6 +1,10 @@
-define(["goo/math/Vector"],
-	/** @lends Vector3 */
-	function (Vector) {
+define([
+	'goo/math/Vector'
+],
+/** @lends */
+function (
+	Vector
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -19,7 +23,7 @@ define(["goo/math/Vector"],
 		if (arguments.length !== 0) {
 			this.set(arguments);
 		} else {
-			this.setd(0,0,0);
+			this.setd(0, 0, 0);
 		}
 	}
 
@@ -66,8 +70,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -133,8 +137,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -200,8 +204,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -255,8 +259,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -304,8 +308,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -351,8 +355,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 3 || rdata.length !== 3) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -393,7 +397,7 @@ define(["goo/math/Vector"],
 		return this;
 	};
 
-	// TODO: Testing speed diffs
+	// Performance methods
 	Vector3.prototype.setd = function (x, y, z) {
 		this.data[0] = x;
 		this.data[1] = y;

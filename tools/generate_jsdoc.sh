@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -e
 
 DOC_DIR=goojs-jsdoc
 JSDOC_BIN=node_modules/jsdoc/jsdoc
@@ -8,9 +8,8 @@ JSDOC_BIN=node_modules/jsdoc/jsdoc
 
 # Run JSDoc to generate documentation
 rm -rf ${DOC_DIR}
-${JSDOC_BIN} -r -p "src/goo" -d ${DOC_DIR}
-# Custom template doesn't work yet...
-#${JSDOC_BIN} -r -p "src/goo" -d ${DOC_DIR} -t tools/jsdoc-template
+# Custom template
+${JSDOC_BIN} -r -p "src" -d ${DOC_DIR} -t tools/jsdoc-template
 
 # Package files into tar.gz
 rm -f goojs-jsdoc*.tar.gz

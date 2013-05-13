@@ -1,5 +1,5 @@
 define(['goo/animation/clip/TransformData'],
-/** @lends JointData */
+/** @lends */
 function (TransformData) {
 	"use strict";
 

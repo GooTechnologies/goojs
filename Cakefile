@@ -2,24 +2,39 @@ fs = require('fs')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
+copyLibs = require('./buildengine/copyLibs').copyLibs
+
+# Run a command and exit with an error message if it fails.
+runCommand = (cmd, callback) ->
+	exec cmd, (error, stdout, stderr) ->
+		if error != null
+			console.log stderr
+			console.log 'Command failed: ' + cmd
+			process.exit(1)
+		if callback
+			callback()
+
+task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
+
+	if options.arguments.length == 2
+		fileIn = options.arguments[0]
+		fileOut = options.arguments[1]
+
+		console.log "minifying #{fileIn}"
+		minify(fileIn, fileOut, true);
+	else 	
+		console.log 'minifying'
+		fileIn = 'src'
+		fileOut = 'minified/goo/goo.js'
+		includefile = 'buildengine/glob/minify.glob'
 	
-task 'minify', 'minify try', (options) ->
+		minify(fileIn, fileOut, true, includefile)	
+		
+		source = 'lib'
+		target = 'minified/goo/lib'
+		includeFile = 'buildengine/glob/copy.glob'
+		copyLibs(source, target, includeFile)
 
-	console.log 'minifying'
-	fileIn = 'src'
-	fileOut = 'minified/goo.js'
-	includefile = 'buildengine/glob/minify.glob'
-
-	minify(fileIn, fileOut, true, includefile)	
-
-option '-i', '--input [FILE]', 'Entrypoint file'
-option '-o', '--output [FILE]', 'Output file'
-
-task 'minifysmall', 'one minify', (options) ->
-	console.log "minifying #{options.input}"
-	fileOut = "minified/#{options.output}.js"
-	
-	minify(options.input, fileOut, true)
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server
@@ -51,12 +66,7 @@ task 'whitespace',
 		dirs = ['src', 'test', 'examples']
 		do next = ->
 			dir = dirs.shift()
-			cmd = "find #{dir} -type f -name '*.js' | xargs sed --in-place -r 's/\\s+$//'"
-			exec cmd, (error, stdout, stderr) ->
-				if error != null
-					console.log stderr
-					console.log 'Command failed: ' + cmd
-					process.exit(1)
+			runCommand "find #{dir} -type f -name '*.js' | xargs sed --in-place -r 's/\\s+$//'", ->
 				if dirs.length
 					next()
 
@@ -80,3 +90,11 @@ task 'convert',
 			convert options.arguments[1], options.arguments[2], options.arguments[3]
 			console.log "#{options.arguments[1]} converted"
 		process.exit(0)
+
+task 'jsdoc',
+	'Creates the API documentation',
+	->
+		# This requires a shell.
+		# To make this work in Windows too,
+		# we could run JSdoc as a Node module.
+		runCommand 'tools/generate_jsdoc.sh'

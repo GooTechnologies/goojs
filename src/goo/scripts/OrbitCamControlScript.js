@@ -1,45 +1,85 @@
 define([
 	'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
-/** @lends OrbitCamControlScript */
+/** @lends */
 function (
 	Vector2, Vector3, MathUtils) {
 	"use strict";
 
-	function OrbitCamControlScript (properties) {
+	var _defaults = {
+		domElement: document,
 
+		turnSpeedHorizontal: 0.005,
+		turnSpeedVertical: 0.005,
+		zoomSpeed: 0.20,
+
+		dragOnly: true,
+		dragButton: -1,
+
+		worldUpVector: new Vector3(0,1,0),
+
+		baseDistance: 15,
+		minZoomDistance: 1,
+		maxZoomDistance: 1000,
+
+		minAscent: -89.95 * MathUtils.DEG_TO_RAD,
+		maxAscent: 89.95 * MathUtils.DEG_TO_RAD,
+		clampAzimuth: false,
+		minAzimuth: 90 * MathUtils.DEG_TO_RAD,
+		maxAzimuth: 270 * MathUtils.DEG_TO_RAD,
+
+		releaseVelocity: true,
+		invertedX: false,
+		invertedY: false,
+		invertedWheel: true,
+
+		drag: 5.0,
+
+		maxSampleTimeMS: 200,
+
+		lookAtPoint: new Vector3(0,0,0),
+		spherical: new Vector3(15,0,0),
+		interpolationSpeed: 7,
+		onRun: null
+	};
+
+	/**
+	 * @class Enables camera to orbit around a point in 3D space using the mouse.
+	 * @param {Object} [properties]
+	 * @param {Element} [properties.domElement=document] Element to add mouse listeners to
+	 * @param {number} [properties.turnSpeedHorizontal=0.005]
+	 * @param {number} [properties.turnSpeedVertical=0.005]
+	 * @param {number} [properties.zoomSpeed=0.2]
+	 * @param {boolean} [properties.dragOnly=true] Only move the camera when dragging
+	 * @param {number} [properties.dragButton=-1] Only drag with button with this code (-1 to enable all)
+	 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
+	 * @param {number} [properties.minZoomDistance=1]
+	 * @param {number} [properties.maxZoomDistance=1000]
+	 * @param {number} [properties.minAscent=-89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach below the target point
+	 * @param {number} [properties.maxAscent=89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach above the target point
+	 * @param {boolean} [properties.invertedX=false]
+	 * @param {boolean} [properties.invertedY=false]
+	 * @param {boolean} [properties.invertedWheel=true]
+	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera.
+	 */
+	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+		for(var key in _defaults) {
+			if(typeof(_defaults[key]) === 'boolean') {
+				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
+			}
+			else if (!isNaN(_defaults[key])) {
+				this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
+			}
+			else if(_defaults[key] instanceof Vector3) {
+				this[key] = properties[key] || new Vector3().copy(_defaults[key]);
+			}
+			else {
+				this[key] = properties[key] || _defaults[key];
+			}
+		}
 
 		this.name = 'OrbitCamControlScript';
-
-		this.domElement = properties.domElement || document;
-
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
-		this.zoomSpeed = !isNaN(properties.zoomSpeed) ? properties.zoomSpeed : 0.20;
-
-		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
-		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
-
-		this.worldUpVector = properties.worldUpVector || new Vector3(0, 1, 0);
-
-		this.baseDistance = !isNaN(properties.baseDistance) ? properties.baseDistance : 15;
-		this.minZoomDistance = !isNaN(properties.minZoomDistance) ? properties.minZoomDistance : 1;
-		this.maxZoomDistance = !isNaN(properties.maxZoomDistance) ? properties.maxZoomDistance : 1000;
-
-		this.minAscent = !isNaN(properties.minAscent) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
-		this.maxAscent = !isNaN(properties.maxAscent) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-		this.clampAzimuth = properties.clampAzimuth !== undefined ? properties.clampAzimuth === true : false;
-		this.minAzimuth = !isNaN(properties.minAzimuth) ? properties.minAzimuth : 90 * MathUtils.DEG_TO_RAD;
-		this.maxAzimuth = !isNaN(properties.maxAzimuth) ? properties.maxAzimuth : 270 * MathUtils.DEG_TO_RAD;
-
-		this.releaseVelocity = properties.releaseVelocity !== undefined ? properties.releaseVelocity === true : true;
-		this.invertedX = properties.invertedX !== undefined ? properties.invertedX === true : false;
-		this.invertedY = properties.invertedY !== undefined ? properties.invertedY === true : false;
-		this.invertedWheel = properties.invertedWheel !== undefined ? properties.invertedWheel === true : true;
-
-		// REVIEW: Why do we need a setting for this? Is there a reason for it to be configurable?
-		this.mouseUpOnOut = properties.mouseUpOnOut !== undefined ? properties.mouseUpOnOut === true : true;
-		this.drag = !isNaN(properties.drag) ? properties.drag : 5.0;
 
 		this.timeSamples = [0, 0, 0, 0, 0];
 		this.xSamples = [0, 0, 0, 0, 0];
@@ -47,17 +87,11 @@ function (
 		this.sample = 0;
 		this.velocity = new Vector2();
 
-		this.maxSampleTimeMS = !isNaN(properties.maxSampleTimeMS) ? properties.maxSampleTimeMS : 200;
-
-		this.lookAtPoint = properties.lookAtPoint || new Vector3(0, 0, 0);
-		this.spherical = properties.spherical || new Vector3(15, 0, 0);
 		this.targetSpherical = new Vector3(this.spherical);
-		this.interpolationSpeed = !isNaN(properties.interpolationSpeed) ? properties.interpolationSpeed : 7;
 		this.cartesian = new Vector3();
 
 		this.dirty = true;
 
-		this.onRun = properties.onRun;
 
 		this.mouseState = {
 			buttonDown : false,
@@ -115,14 +149,31 @@ function (
 		this.move(this.turnSpeedHorizontal * dx, this.turnSpeedVertical * dy);
 	};
 
+	// Should be moved to mathUtils?
+	function _radialClamp(value, min, max) {
+		// Rotating coordinates to be mirrored
+		var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+		var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
+		var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
+		var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
+
+		// Putting min, max and value on the same circle
+		if (value < 0 && min > 0) { min -= MathUtils.TWO_PI; }
+		else if (value > 0 && min < 0) { min += MathUtils.TWO_PI; }
+		if (value > MathUtils.TWO_PI && max < MathUtils.TWO_PI) { max += MathUtils.TWO_PI; }
+
+		return _value < _min ? min : _value > _max ? max : value;
+	}
+
+
 	OrbitCamControlScript.prototype.move = function (x, y) {
 		var azimuthAccel = this.invertedX ? -x : x;
 		var thetaAccel = this.invertedY ? -y : y;
 
 		// update our master spherical coords, using x and y movement
 		if (this.clampAzimuth) {
-			this.targetSpherical.y = (MathUtils.clamp(MathUtils.moduloPositive(this.targetSpherical.y - azimuthAccel, MathUtils.TWO_PI),
-				this.minAzimuth, this.maxAzimuth));
+			this.targetSpherical.y = _radialClamp(this.targetSpherical.y - azimuthAccel,
+				this.minAzimuth, this.maxAzimuth);
 		} else {
 			this.targetSpherical.y = this.targetSpherical.y - azimuthAccel;
 		}
@@ -165,17 +216,11 @@ function (
 			that.updateButtonState(event.button, true);
 		}, false);
 
-		this.domElement.addEventListener('mouseup', function (event) {
+		document.addEventListener('mouseup', function (event) {
 			that.updateButtonState(event.button, false);
 		}, false);
 
-		if (this.mouseUpOnOut) {
-			this.domElement.addEventListener('mouseout', function (event) {
-				that.updateButtonState(event.button, false);
-			}, false);
-		}
-
-		this.domElement.addEventListener('mousemove', function (event) {
+		document.addEventListener('mousemove', function (event) {
 			that.updateDeltas(event.clientX, event.clientY);
 		}, false);
 

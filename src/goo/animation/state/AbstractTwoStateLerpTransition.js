@@ -1,6 +1,6 @@
 define(['goo/animation/state/AbstractTransitionState', 'goo/animation/state/StateBlendType', 'goo/animation/blendtree/BinaryLERPSource',
 		'goo/math/MathUtils'],
-/** @lends AbstractTwoStateLerpTransition */
+/** @lends */
 function (AbstractTransitionState, StateBlendType, BinaryLERPSource, MathUtils) {
 	"use strict";
 

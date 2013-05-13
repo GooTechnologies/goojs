@@ -10,9 +10,9 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/EventHandler',
-	'goo/renderer/shaders/ShaderFragments'
+	'goo/renderer/shaders/ShaderFragment'
 ],
-/** @lends FlatWaterRenderer */
+/** @lends */
 function (
 	MeshData,
 	Shader,
@@ -25,7 +25,7 @@ function (
 	TextureCreator,
 	ShaderLib,
 	EventHandler,
-	ShaderFragments
+	ShaderFragment
 ) {
 	"use strict";
 
@@ -34,7 +34,7 @@ function (
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function FlatWaterRenderer (camera, settings) {
+	function FlatWaterRenderer(camera, settings) {
 		this.camera = camera;
 		settings = settings || {};
 
@@ -45,8 +45,9 @@ function (
 
 		this.waterPlane = new Plane();
 
-		var width = window.innerWidth / (settings.divider || 2);
-		var height = window.innerHeight / (settings.divider || 2);
+		var width = Math.floor(window.innerWidth / (settings.divider || 2));
+		var height = Math.floor(window.innerHeight / (settings.divider || 2));
+
 		this.reflectionTarget = new RenderTarget(width, height);
 		if (this.useRefraction) {
 			this.refractionTarget = new RenderTarget(width, height);
@@ -85,10 +86,10 @@ function (
 		this.camera = null;
 		this.lights = [];
 		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
+			setCurrentCamera: function (camera) {
 				that.camera = camera;
 			},
-			setLights : function (lights) {
+			setLights: function (lights) {
 				that.lights = lights;
 			}
 		});
@@ -167,7 +168,7 @@ function (
 			if (this.skybox instanceof Array) {
 				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
-				for (var i=0;i<this.skybox.length;i++) {
+				for (var i = 0; i < this.skybox.length; i++) {
 					renderer.render(this.skybox[i], this.waterCamera, this.lights, this.reflectionTarget, false);
 					this.skybox[i].skip = true;
 				}
@@ -185,7 +186,7 @@ function (
 		this.waterEntity.skip = false;
 		if (this.skybox) {
 			if (this.skybox instanceof Array) {
-				for (var i=0;i<this.skybox.length;i++) {
+				for (var i = 0; i < this.skybox.length; i++) {
 					this.skybox[i].skip = false;
 				}
 			} else {
@@ -253,7 +254,7 @@ function (
 				1.0, 1.0, 0.5
 			],
 			// reflectionMultiplier: [
-				// 1.0, 1.0, 1.0, 1.0
+			// 1.0, 1.0, 1.0, 1.0
 			// ],
 			sunShininess: 100.0,
 			sunSpecPower: 4.0,
@@ -345,11 +346,11 @@ function (
 			'    vec2 uv1 = (uv/vec2(167.0)) - vec2(t/-19.0, t/31.0);',
 			'    vec2 uv2 = uv/vec2(827.0, 983.0) + vec2(t/51.0, t/47.0);',
 			'    vec2 uv3 = uv/vec2(991.0, 877.0) - vec2(t/59.0, t/-63.0);',
-			'    vec4 noise = (texture2D(normalMap, uv0)) +',
-			'                 (texture2D(normalMap, uv1)) +',
-			'                 (texture2D(normalMap, uv2)*3.0) +',
-			'                 (texture2D(normalMap, uv3)*4.0);',
-			'    return noise/9.0-0.48;',
+			'    vec4 noise = (texture2D(normalMap, uv0)*0.25) +',
+			'                 (texture2D(normalMap, uv1)*0.25) +',
+			'                 (texture2D(normalMap, uv2)*0.75) +',
+			'                 (texture2D(normalMap, uv3)*1.0);',
+			'    return noise/2.25-0.48;',
 			'}',
 
 			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, const float shiny, const float spec, inout vec3 specularColor){',
@@ -358,7 +359,7 @@ function (
 			'    specularColor += pow(direction, shiny) * spec * sunColor;',
 			'}',
 
-			ShaderFragments.methods.unpackDepth,//
+			ShaderFragment.methods.unpackDepth,//
 
 			'void main(void)',//
 			'{',//
@@ -392,10 +393,9 @@ function (
 			'	projCoordRefr = clamp(projCoordRefr, 0.001, 0.999);',
 			'	depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
 			'	float depth = clamp(depthUnpack * 40.0, 0.8, 1.0);',
-			'#else',
+			// '#else',
 			// '	projCoord += (normalVector.xy * distortionMultiplier);',
 			'#endif',
-
 
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
 			'	projCoord = clamp(projCoord, 0.001, 0.999);',
@@ -442,15 +442,15 @@ function (
 	};
 
 	var packDepthY = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			farPlane: Shader.FAR_PLANE
 		},
-		vshader : [ //
+		vshader: [ //
 			'attribute vec3 vertexPosition;', //
 
 			'uniform mat4 viewProjectionMatrix;',
@@ -463,12 +463,12 @@ function (
 			'	gl_Position = viewProjectionMatrix * vPosition;', //
 			'}'//
 		].join('\n'),
-		fshader : [//
+		fshader: [//
 			'precision highp float;',//
 
 			'uniform float farPlane;',//
 
-			ShaderFragments.methods.packDepth,//
+			ShaderFragment.methods.packDepth,//
 
 			'varying vec4 vPosition;',//
 

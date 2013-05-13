@@ -5,7 +5,7 @@ define([
 		'goo/loaders/Loader',
 		'goo/loaders/JsonUtils'
 	],
-	/** @lends SkeletonLoader */
+	/** @lends */
 	function(
 		Skeleton,
 		SkeletonPose,
@@ -15,7 +15,11 @@ define([
 	) {
 	"use strict";
 		/**
-		 * Utility class for loading Animation Trees
+		 * @class Utility class for loading {@link SkeletonPose|skeletons}
+		 *
+		 * @constructor
+		 * @param {object} parameters
+		 * @param {Loader} parameters.loader
 		 */
 		function SkeletonLoader(parameters) {
 			if(typeof parameters === "undefined" || parameters === null) {
@@ -32,6 +36,15 @@ define([
 
 		}
 
+		/**
+		 * Loads the skeleton at <code>skeletonPath</code>.
+		 * @example
+		 * skeletonLoader.load('skeletons/robot.skeleton').then(function(skeleton) {
+		 *   // handle {@link SkeletonPose} skeleton
+		 * });
+		 * @param {string} skeletonPath Relative path to the skeleton.
+		 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Material} object.
+		 */
 		SkeletonLoader.prototype.load = function (skeletonPath) {
 			if (this._cache[skeletonPath]) {
 				return this._cache[skeletonPath];
@@ -50,11 +63,14 @@ define([
 		};
 
 		SkeletonLoader.prototype._loadSkeleton = function (skeletonPath) {
-			return this._loader.load(skeletonPath+'.json');
+			return this._loader.load(skeletonPath);
 		};
 
 
 		SkeletonLoader.prototype._parseSkeleton = function (skeleton) {
+			if(typeof skeleton === 'string') {
+				skeleton = JSON.parse(skeleton);
+			}
 			var skName = skeleton.Name;
 			var jointArray = skeleton.Joints;
 			var joints = [];
@@ -66,8 +82,20 @@ define([
 
 				joint._index = Math.round(jointObj.Index);
 				joint._parentIndex = Math.round(jointObj.ParentIndex);
-				joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
-				joint._inverseBindPose.update();
+
+				if (jointObj.InverseBindPose.Matrix) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformMatrix(jointObj.InverseBindPose));
+				} else if (jointObj.InverseBindPose.Rotation.length === 4) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformQuat(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
+				} else if (jointObj.InverseBindPose.Rotation.length === 3) {
+					joint._inverseBindPose.copy(JsonUtils.parseTransformEuler(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
+				} else {
+					joint._inverseBindPose.copy(JsonUtils.parseTransform(jointObj.InverseBindPose));
+					joint._inverseBindPose.update();
+				}
+
 				joints[j] = joint;
 			}
 

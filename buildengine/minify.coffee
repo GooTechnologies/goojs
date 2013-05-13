@@ -1,9 +1,14 @@
 fs = require('fs')
 path = require('path')
+mkdirp = require('mkdirp')
+
 
 # Minifying files
 
 doClosure = (fileIn, fileOut, deleteAfter) ->
+	dir = path.dirname(path.resolve(fileOut))
+	mkdirp.sync dir
+	
 	command = 'java -jar buildengine/compiler.jar ' + 
 		'--compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT ' +
 		#'--jscomp_warning=checkTypes ' +
@@ -13,7 +18,7 @@ doClosure = (fileIn, fileOut, deleteAfter) ->
 		
 	exec = require('child_process').exec;
 	exec command,
-		maxBuffer: 5*1024*1024
+		maxBuffer: 100*1024*1024
 	, (error, stdout, stderr) ->
 		if deleteAfter
 			fs.unlink fileIn
@@ -39,9 +44,11 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 		name: filePathIn
 		optimize: 'none'
 		paths:
-			'goo/lib' : '../lib'
+			'goo/lib' : 'empty:'
 
 	requirejs.optimize config, (buildResponse) ->
+		files = buildResponse.split("\n")
+		console.log 'here'
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
 		doClosure tempClosure, fileOut, true
@@ -71,13 +78,13 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 					return console.log 'No files to include'
 
 				glob = require('glob')
-				glob pathsToInclude, {root: absroot}, (err, files) ->
+				glob pathsToInclude, {cwd: absroot}, (err, files) ->
 					if(files.length == 0)
 						console.log 'No files found'
 						process.exit
 
 					for f,idx in files
-						files[idx] = "\""+f.slice(absroot.length+1, f.lastIndexOf('.'))+"\""
+						files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
 	
 					str = "require([#{files}]);\n"
 					tempRequire = 'req_temp'

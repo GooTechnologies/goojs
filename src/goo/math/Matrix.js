@@ -1,6 +1,10 @@
-define(["goo/math/MathUtils"],
-	/** @lends Matrix */
-	function (MathUtils) {
+define([
+	'goo/math/MathUtils'
+],
+/** @lends */
+function (
+	MathUtils
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -36,20 +40,20 @@ define(["goo/math/MathUtils"],
 			(function (index) {
 				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
-						get : function () {
+						get: function () {
 							return this.data[index];
 						},
-						set : function (value) {
+						set: function (value) {
 							this.data[index] = value;
 						}
 					});
 				}
 
 				Object.defineProperty(that, i, {
-					get : function () {
+					get: function () {
 						return this.data[index];
 					},
-					set : function (value) {
+					set: function (value) {
 						this.data[index] = value;
 					}
 				});
@@ -79,7 +83,7 @@ define(["goo/math/MathUtils"],
 
 		if (rhs instanceof Matrix) {
 			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -87,7 +91,7 @@ define(["goo/math/MathUtils"],
 			}
 		} else {
 			if (target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -130,7 +134,7 @@ define(["goo/math/MathUtils"],
 
 		if (rhs instanceof Matrix) {
 			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -138,7 +142,7 @@ define(["goo/math/MathUtils"],
 			}
 		} else {
 			if (target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -181,7 +185,7 @@ define(["goo/math/MathUtils"],
 
 		if (rhs instanceof Matrix) {
 			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -189,7 +193,7 @@ define(["goo/math/MathUtils"],
 			}
 		} else {
 			if (target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -232,7 +236,7 @@ define(["goo/math/MathUtils"],
 
 		if (rhs instanceof Matrix) {
 			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -240,7 +244,7 @@ define(["goo/math/MathUtils"],
 			}
 		} else {
 			if (target.rows !== rows || target.cols !== cols) {
-				throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 			}
 
 			rhs = 1.0 / rhs;
@@ -285,7 +289,7 @@ define(["goo/math/MathUtils"],
 		}
 
 		if (lhs.cols !== size || rhs.rows !== size || target.rows !== rows || target.cols !== cols) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 		}
 
 		if (target === lhs || target === rhs) {
@@ -339,7 +343,7 @@ define(["goo/math/MathUtils"],
 		}
 
 		if (target.rows !== rows || target.cols !== cols) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 		}
 
 		if (target === source) {
@@ -386,7 +390,7 @@ define(["goo/math/MathUtils"],
 		}
 
 		if (target.rows !== rows || target.cols !== cols) {
-			throw { name : "Illegal Arguments", message : "The arguments are of incompatible sizes." };
+			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 		}
 
 		target.data.set(source.data);

@@ -1,5 +1,5 @@
 define(
-/** @lends TriggerData */
+/** @lends */
 function () {
 	"use strict";
 

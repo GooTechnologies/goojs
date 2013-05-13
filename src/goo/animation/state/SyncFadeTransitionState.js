@@ -1,5 +1,5 @@
 define(['goo/animation/state/FadeTransitionState'],
-/** @lends SyncFadeTransitionState */
+/** @lends */
 function (FadeTransitionState) {
 	"use strict";
 

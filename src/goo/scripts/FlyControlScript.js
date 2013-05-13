@@ -1,10 +1,9 @@
 define(['goo/math/Vector3'],
-/** @lends FlyControlScript */
+/* @lends */
 function (Vector3) {
 	"use strict";
 
 	/**
-	 * Creates a new FlyControlScript
 	 *
 	 * @class
 	 * @param {ArrayBuffer} data Data to wrap
@@ -265,7 +264,7 @@ function (Vector3) {
 		loc.y = 0;
 		loc.normalize();
 
-		// REVIEW: Player is not defined anywhere!?
+		// REVIEW vilcans: Player is not defined anywhere!? Remove this file?
 		//player.acceleration.set(loc).mul(moveMult);
 
 		// transform.rotation.x += this.rotationVector.x * rotMult;

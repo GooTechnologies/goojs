@@ -1,10 +1,20 @@
 define([
 	'goo/math/Vector3', 'goo/math/Matrix3x3'],
-	/** @lends MouseLookControlScript */
+	/** @lends */
 	function (
 	Vector3, Matrix3x3) {
 		"use strict";
 
+		/**
+		 * @class Enables mouse rotation of an entity.
+		 * @param {Object} [properties]
+		 * @param {Element} [properties.domElement] Element to add mouse listeners to
+		 * @param {number} [properties.turnSpeedHorizontal=0.01]
+		 * @param {number} [properties.turnSpeedVertical=0.01]
+		 * @param {number} [properties.dragButton=-1] Only drag with button with this code (-1 to enable all)
+		 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
+		 * @param {Vector3} [properties.localLeftVector=Vector3(-1,0,0)]
+		 */
 		function MouseLookControlScript (properties) {
 
 			properties = properties || {};

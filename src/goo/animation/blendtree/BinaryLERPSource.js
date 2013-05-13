@@ -1,5 +1,5 @@
 define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'],
-/** @lends BinaryLERPSource */
+/** @lends */
 function (MathUtils, TransformData, AbstractTwoPartSource) {
 	"use strict";
 

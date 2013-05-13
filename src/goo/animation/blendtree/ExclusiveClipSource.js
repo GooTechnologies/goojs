@@ -1,5 +1,5 @@
 define(['goo/animation/clip/JointChannel', 'goo/animation/blendtree/ClipSource'],
-/** @lends ExclusiveClipSource */
+/** @lends */
 function (JointChannel, ClipSource) {
 	"use strict";
 

@@ -1,5 +1,5 @@
 define(['goo/animation/state/AbstractFiniteState'],
-/** @lends AbstractTransitionState */
+/** @lends */
 function (AbstractFiniteState) {
 	"use strict";
 

@@ -51,6 +51,9 @@ define([
 				return this.responseHeader[header] ? this.responseHeader[header] : null;
 			};
 
+			MockXHR.prototype.addEventListener = function() {
+			};
+
 			return MockXHR;
 		}
 

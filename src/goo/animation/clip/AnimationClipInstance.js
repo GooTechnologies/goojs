@@ -1,5 +1,5 @@
 define(
-/** @lends AnimationClipInstance */
+/** @lends */
 function () {
 	"use strict";
 

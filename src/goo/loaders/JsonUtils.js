@@ -1,12 +1,12 @@
 /* jshint bitwise: false */
-define(['goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Vector3', 'goo/math/Quaternion',
+define(['goo/renderer/BufferUtils', 'goo/math/Transform', 'goo/math/Matrix3x3', 'goo/math/Matrix4x4', 'goo/math/Vector3', 'goo/math/Quaternion',
 		'goo/animation/blendtree/ClipSource', 'goo/animation/layer/AnimationLayer', 'goo/animation/state/SteadyState',
 		'goo/animation/state/FadeTransitionState', 'goo/animation/state/FrozenTransitionState', 'goo/animation/state/IgnoreTransitionState',
 		'goo/animation/state/ImmediateTransitionState', 'goo/animation/state/SyncFadeTransitionState', 'goo/animation/state/StateBlendType',
 		'goo/animation/blendtree/BinaryLERPSource', 'goo/animation/blendtree/ExclusiveClipSource', 'goo/animation/blendtree/FrozenClipSource',
 		'goo/animation/blendtree/InclusiveClipSource', 'goo/animation/blendtree/ManagedTransformSource', 'goo/animation/layer/LayerLERPBlender'],
-/** @lends JsonUtils */
-function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
+/** @lends */
+function (BufferUtils, Transform, Matrix3x3, Matrix4x4, Vector3, Quaternion, ClipSource, AnimationLayer, SteadyState, FadeTransitionState,
 	FrozenTransitionState, IgnoreTransitionState, ImmediateTransitionState, SyncFadeTransitionState, StateBlendType, BinaryLERPSource,
 	ExclusiveClipSource, FrozenClipSource, InclusiveClipSource, ManagedTransformSource, LayerLERPBlender) {
 	"use strict";
@@ -54,13 +54,24 @@ function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, An
 		return indexBuffer;
 	};
 
+	var maxVertexCount = 63488 - 2048 - 36;
+
+	JsonUtils.rewrap = function (n) {
+		var val = n % maxVertexCount;
+		if (val < 0) {
+			val += maxVertexCount;
+		}
+		return val;
+	};
+
 	JsonUtils.getIntBufferFromCompressedString = function (indices, vertexCount) {
 		var prev = 0;
 		var indexBuffer = BufferUtils.createIndexBuffer(indices.length, vertexCount);
 		for ( var i = 0; i < indices.length; ++i) {
 			var word = indices.charCodeAt(i);
-			prev += JsonUtils.unzip(word);
-			indexBuffer[i] = prev;
+			var delta = prev + JsonUtils.unzip(word);
+			prev = delta;
+			indexBuffer[i] = this.rewrap(delta);
 		}
 		return indexBuffer;
 	};
@@ -86,6 +97,35 @@ function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, An
 		return transform;
 	};
 
+	JsonUtils.parseTransformQuat = function (object) {
+		var transform = new Transform();
+
+		transform.translation = JsonUtils.parseVector3(object.Translation);
+		transform.scale = JsonUtils.parseVector3(object.Scale);
+		transform.rotation = JsonUtils.parseQuaternion(object.Rotation).toRotationMatrix();
+
+		return transform;
+	};
+
+	JsonUtils.parseTransformEuler = function (object) {
+		var transform = new Transform();
+
+		transform.translation = JsonUtils.parseVector3(object.Translation);
+		transform.scale = JsonUtils.parseVector3(object.Scale);
+		var euler = JsonUtils.parseVector3(object.Rotation);
+		transform.setRotationXYZ(euler.x, euler.y, euler.z);
+
+		return transform;
+	};
+
+	JsonUtils.parseTransformMatrix = function (object) {
+		var transform = new Transform();
+
+		transform.matrix = JsonUtils.parseMatrix4(object.Matrix);
+
+		return transform;
+	};
+
 	JsonUtils.parseMatrix3 = function (array) {
 		var matrix = new Matrix3x3();
 		// data files are currently row major!
@@ -99,6 +139,37 @@ function (BufferUtils, Transform, Matrix3x3, Vector3, Quaternion, ClipSource, An
 		matrix.e21 = array[7];
 		matrix.e22 = array[8];
 		return matrix;
+	};
+
+	JsonUtils.parseMatrix4 = function (array) {
+		var matrix = new Matrix4x4();
+		// data files are currently row major!
+		matrix.e00 = array[0];
+		matrix.e01 = array[1];
+		matrix.e02 = array[2];
+		matrix.e03 = array[3];
+		matrix.e10 = array[4];
+		matrix.e11 = array[5];
+		matrix.e12 = array[6];
+		matrix.e13 = array[7];
+		matrix.e20 = array[8];
+		matrix.e21 = array[9];
+		matrix.e22 = array[10];
+		matrix.e23 = array[11];
+		matrix.e30 = array[12];
+		matrix.e31 = array[13];
+		matrix.e32 = array[14];
+		matrix.e33 = array[15];
+		return matrix;
+	};
+
+	JsonUtils.parseQuaternion = function (array) {
+		var quaternion = new Quaternion();
+		quaternion.x = array[0];
+		quaternion.y = array[1];
+		quaternion.z = array[2];
+		quaternion.w = array[3];
+		return quaternion;
 	};
 
 	JsonUtils.parseVector3 = function (array) {

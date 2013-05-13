@@ -1,5 +1,5 @@
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
@@ -15,7 +15,7 @@ define([
 		'goo/animation/clip/InterpolatedFloatChannel',
 		'goo/loaders/AnimationLoader'
 	],
-	/** @lends AnimationTreeLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,
@@ -35,7 +35,7 @@ define([
 	) {
 	"use strict";
 		/**
-		 * Utility class for loading Animation Trees
+		 * @class Utility class for loading Animation Trees
 		 *
 		 * @constructor
 		 * @param {{ loader: Loader }} parameters
@@ -53,6 +53,18 @@ define([
 			this._animationLoader = new AnimationLoader({ loader: this._loader });
 		}
 
+		/**
+		 * Loads a tree of {@link AnimationClip}s, sets up an {@link AnimationManager} and returns it in an RSVP promise.
+		 * It also start a default animation
+		 * @example
+		 * animTreeLoader.load('resources/animations/anims.tree', pose, 'idle').then(function(animManager) {
+		 *   //handle {@link AnimationManager} animManager
+		 * });
+		 * @param {string} animTreePath The path, relative to loaders root path, where the animation tree file is stored
+		 * @param {SkeletonPose} pose The pose to apply the animation clip to
+		 * @param {string} name The name of the default animation to start
+		 * @returns {RSVP.Promise}
+		 */
 		AnimationTreeLoader.prototype.load = function (animTreePath, pose, name) {
 			if(this._cache[animTreePath] && this._cache[animTreePath][pose._skeleton._name]) {
 				return this._cache[animTreePath][pose._skeleton._name];
@@ -92,10 +104,13 @@ define([
 		};
 
 		AnimationTreeLoader.prototype._loadTree = function (animTreePath) {
-			return this._loader.load(animTreePath+'.json');
+			return this._loader.load(animTreePath);
 		};
 
 		AnimationTreeLoader.prototype._parseTree = function (animTree) {
+			if (typeof animTree === 'string') {
+				animTree = JSON.parse(animTree);
+			}
 			// read clip info
 			if (!animTree.Clips || !animTree.Layers) {
 				return false;

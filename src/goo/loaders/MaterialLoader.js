@@ -1,14 +1,15 @@
 /* jshint bitwise: false */
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
 		'goo/renderer/Material',
 		'goo/loaders/Loader',
-		'goo/loaders/ShaderLoader'
+		'goo/loaders/ShaderLoader',
+		'goo/renderer/shaders/ShaderLib'
 	],
-	/** @lends MaterialLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,
@@ -16,15 +17,18 @@ define([
 		TextureCreator,
 		Material,
 		Loader,
-		ShaderLoader
+		ShaderLoader,
+		ShaderLib
 	) {
 	"use strict";
 
 	/**
-	 * Utility class for loading Material objects.
+	 * @class Utility class for loading {@link Material} objects.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function MaterialLoader(parameters) {
 		if(typeof parameters === "undefined" || parameters === null) {
@@ -37,14 +41,17 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
-		this._shaderLoader = new ShaderLoader({ loader: this._loader });
+		this._shaderLoader = new ShaderLoader({ loader: this._loader, doCache: parameters.cacheShader });
 	}
 
 	/**
 	 * Loads the material at <code>materialPath</code>.
-	 *
+	 * @example
+	 * materialLoader.load('materials/shiny.mat').then(function(material) {
+	 *   // handle {@link Material} material
+	 * });
 	 * @param {string} materialPath Relative path to the material.
-	 * @return {Promise} The promise is resolved with the loaded Material object.
+	 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Material} object.
 	 */
 	MaterialLoader.prototype.load = function(materialPath) {
 		if (this._cache[materialPath]) {
@@ -54,6 +61,8 @@ define([
 		var that = this;
 		var promise = this._loader.load(materialPath, function(data) {
 			return that._parse(data);
+		}).then(null, function() {
+			return Material.createMaterial(ShaderLib.texturedLit, 'DefaultShader');
 		});
 
 		this._cache[materialPath] = promise;
@@ -61,6 +70,9 @@ define([
 	};
 
 	MaterialLoader.prototype._parse = function(materialDataSource) {
+		if (typeof materialDataSource === 'string') {
+			materialDataSource = JSON.parse(materialDataSource);
+		}
 		var that = this;
 		var promises = []; // Keep track of promises
 		var shader;
@@ -69,16 +81,12 @@ define([
 		var textures = [];
 
 		function addTexture(i, texture) {
+			if (typeof texture === 'string') {
+				texture = JSON.parse(texture);
+			}
 			textures[i] = (new TextureCreator({
 				loader:that._loader
 			}).loadTexture2D(texture.url));
-		}
-
-		function setDestinationColor(destination, color) {
-			if(typeof color[0] !== 'undefined' || color[0] !== null) { destination[0] = color[0]; }
-			if(typeof color[1] !== 'undefined' || color[1] !== null) { destination[1] = color[1]; }
-			if(typeof color[2] !== 'undefined' || color[2] !== null) { destination[2] = color[2]; }
-			if(typeof color[3] !== 'undefined' || color[3] !== null) { destination[3] = color[3]; }
 		}
 
 		var name = materialDataSource.name || 'DefaultMaterial';
@@ -94,30 +102,26 @@ define([
 				});
 
 				promises.push(p);
+			} else {
+				var p = new RSVP.Promise();
+				p.then(function(iShader) {
+					shader = iShader;
+					return shader;
+				});
+				p.resolve(Material.createShader(ShaderLib.texturedLit), 'DefaultShader');
+				promises.push(p);
 			}
 
 			if (materialDataSource.uniforms) {
 				for (var key in materialDataSource.uniforms) {
-					var value = materialDataSource.uniforms[key];
-					var match;
-					if (match = /^material(\w+)$/.exec(key)) {
-						var state = match[1].toLowerCase();
-						if(state === 'specularpower') {
-							state = 'shininess';
-						}
-
-						setDestinationColor(materialState[state], value);
-					}
-					else {
-						materialUniforms[key] = value;
-					}
+					materialUniforms[key] = materialDataSource.uniforms[key];
 				}
 			}
-			if (materialDataSource.textures && materialDataSource.textures.length) {
-				for (var i = 0; i < materialDataSource.textures.length; i++) {
+			if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
+				for (var i = 0; i < materialDataSource.textureRefs.length; i++) {
 					var pushTexture = addTexture.bind(null,i);
-					var p = this._loader.load(materialDataSource.textures[i])
-					.then(pushTexture);
+					var p = this._loader.load(materialDataSource.textureRefs[i])
+						.then(pushTexture);
 					promises.push(p);
 				}
 			}

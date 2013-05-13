@@ -1,29 +1,50 @@
-define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/MathUtils'],
-	/** @lends Sphere */
-	function (MeshData, Enum, Vector3, MathUtils) {
+define([
+	'goo/renderer/MeshData',
+	'goo/util/Enum',
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+],
+/** @lends */
+function (
+	MeshData,
+	Enum,
+	Vector3,
+	MathUtils
+) {
 	"use strict";
 
 	/**
-	 * @class Sphere represents a 3D object with all points equi-distance from a center point.
-	 * @property {Integer} zSamples Number of segments.
-	 * @property {Integer} radialSamples Number of slices.
-	 * @property {Float} radius Radius.
-	 * @property {Enum} textureMode Texture wrapping mode.
-	 * @property {Boolean} viewInside Inward-facing normals, for skydomes.
-	 * @constructor
-	 * @description Creates a new sphere.
-	 * @param {Integer} zSamples Number of segments.
-	 * @param {Integer} radialSamples Number of slices.
-	 * @param {Float} radius Radius.
-	 * @param {Enum} textureMode Texture wrapping mode.
+	 * @class A 3D object with all points equi-distance from a center point.
+	 * @param {number} [zSamples=8] Number of segments.
+	 * @param {number} [radialSamples=8] Number of slices.
+	 * @param {number} [radius=0.5] Radius.
+	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
-
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
+		/** Number of segments.
+		 * @type {number}
+		 * @default 8
+		 */
 		this.zSamples = zSamples !== undefined ? zSamples : 8;
+		/** Number of slices.
+		 * @type {number}
+		 * @default 8
+		 */
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
+		/** @type {number}
+		 * @default 0.5
+		 */
 		this.radius = radius !== undefined ? radius : 0.5;
+		/** Texture wrapping mode.
+		 * @type {Enum}
+		 * @default Sphere.TextureModes.Polar
+		 */
 		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Polar;
 
+		/** Inward-facing normals, for skydomes.
+		 * @type {boolean}
+		 * @default
+		 */
 		this.viewInside = false;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
@@ -41,7 +62,6 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {Sphere} Self for chaining.
 	 */
-
 	Sphere.prototype.rebuild = function () {
 		var vbuf = this.getAttributeBuffer(MeshData.POSITION);
 		var norms = this.getAttributeBuffer(MeshData.NORMAL);
@@ -252,6 +272,9 @@ define(['goo/renderer/MeshData', 'goo/util/Enum', 'goo/math/Vector3', 'goo/math/
 		buf[to * 3 + 2] = buf[from * 3 + 2];
 	}
 
+	/** Possible texture wrapping modes: Linear, Projected, Polar
+	 * @type {Enum}
+	 */
 	Sphere.TextureModes = new Enum('Linear', 'Projected', 'Polar');
 
 	return Sphere;

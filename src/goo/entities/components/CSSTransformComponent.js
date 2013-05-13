@@ -1,6 +1,6 @@
 define([
 	"goo/entities/components/Component"
-], /** @lends CSSTransformComponent */ function (
+], /** @lends */ function (
 	Component
 ) {
 	"use strict";

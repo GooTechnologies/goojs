@@ -1,13 +1,12 @@
 define(
-/** @lends Entity */
+/** @lends */
 function () {
 	"use strict";
 
 	/**
 	 * @class A gameworld object and container of components
 	 * @param {World} world A {@link World} reference
-	 * @property {Number} id Automatically generated unique id for this entity
-	 * @property {String} name Entity name
+	 * @param {String} [name] Entity name
 	 */
 	function Entity(world, name) {
 		this._world = world;
@@ -41,7 +40,7 @@ function () {
 	/**
 	 * Set component of a certain type on entity. Existing component of the same type will be overwritten.
 	 *
-	 * @param component Component to set on the entity
+	 * @param {Component} component Component to set on the entity
 	 */
 	Entity.prototype.setComponent = function (component) {
 		var index = this._components.indexOf(component);
@@ -52,8 +51,6 @@ function () {
 		}
 		this[getTypeAttributeName(component.type)] = component;
 
-		// TODO: Give access to the entity from TransformComponent. Other components can be shared between entities
-		// and can thus not be handled in this way (they should go through the entitymanager). TBD
 		if (component.type === 'TransformComponent') {
 			component.entity = this;
 		}
@@ -66,8 +63,8 @@ function () {
 	/**
 	 * Retrieve a component of a specific type
 	 *
-	 * @param type Type of component to retrieve
-	 * @returns component with requested type or undefined if not present
+	 * @param {string} type Type of component to retrieve (eg. 'transformComponent')
+	 * @returns {Component} component with requested type or undefined if not present
 	 */
 	Entity.prototype.getComponent = function (type) {
 		return this[getTypeAttributeName(type)];
@@ -76,7 +73,7 @@ function () {
 	/**
 	 * Remove a component of a specific type from entity.
 	 *
-	 * @param type Type of component to remove
+	 * @param {string} type Type of component to remove (eg. 'transformComponent')
 	 */
 	Entity.prototype.clearComponent = function (type) {
 		var component = this[getTypeAttributeName(type)];
@@ -95,6 +92,9 @@ function () {
 		}
 	};
 
+	/**
+	 * @returns {string} Name of entity
+	 */
 	Entity.prototype.toString = function () {
 		return this.name;
 	};

@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Util',
 	'goo/util/Latch'
 ],
-/** @lends TextureCreator */
+/** @lends */
 function (
 	Loader,
 	Texture,
@@ -28,7 +28,7 @@ function (
 		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
-			'.dds' : new DdsLoader()
+			'.dds': new DdsLoader()
 		};
 	}
 
@@ -49,13 +49,13 @@ function (
 		}
 
 		var simpleResourceUtilCallback = {
-			onSuccess : function (/* ArrayBuffer */response) {
+			onSuccess: function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
 //				console.info("Loaded image: " + imageURL);
 				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
 			},
-			onError : function (t) {
+			onError: function (t) {
 				console.warn("Error loading texture: " + imageURL + " | " + t);
 			}
 		};
@@ -99,7 +99,7 @@ function (
 		TextureCreator.cache[imageURL] = texture;
 
 		// Load the actual image
-		this._loader.loadImage(imageURL).then(function(data) {
+		this._loader.loadImage(imageURL).then(function (data) {
 			texture.setImage(data);
 			TextureCreator._finishedLoading(data);
 		});
@@ -197,8 +197,8 @@ function (
 				video: true
 			}, function (stream) {
 				video.src = window.URL.createObjectURL(stream);
-			}, function () {
-				console.warn('Unable to capture WebCam. Please reload the page.');
+			}, function (e) {
+				console.warn('Unable to capture WebCam. Please reload the page.', e);
 			});
 		} else {
 			console.warn('No support for WebCam getUserMedia found!');
@@ -217,22 +217,24 @@ function (
 		texture.variant = 'CUBE';
 		var images = [];
 
-		var latch = new Latch(6, function () {
-			var w = images[0].width;
-			var h = images[0].height;
-			for (var i=0;i<6;i++) {
-				var img = images[i];
-				if (w !== img.width || h !== img.height) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
-					console.error('Images not all the same size!');
+		var latch = new Latch(6, {
+			done: function () {
+				var w = images[0].width;
+				var h = images[0].height;
+				for (var i = 0; i < 6; i++) {
+					var img = images[i];
+					if (w !== img.width || h !== img.height) {
+						texture.generateMipmaps = false;
+						texture.minFilter = 'BilinearNoMipMaps';
+						console.error('Images not all the same size!');
+					}
 				}
-			}
 
-			texture.setImage(images);
-			texture.image.dataReady = true;
-			texture.image.width = w;
-			texture.image.height = h;
+				texture.setImage(images);
+				texture.image.dataReady = true;
+				texture.image.width = w;
+				texture.image.height = h;
+			}
 		});
 
 		var that = this;
@@ -241,7 +243,7 @@ function (
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function(image) {
+					that._loader.loadImage(queryImage).then(function (image) {
 						images[index] = image;
 						latch.countDown();
 					});
@@ -266,7 +268,7 @@ function (
 		}
 	};
 
-	// TODO: add Object.freeze?
+	// Add Object.freeze when fast enough in browsers
 	var colorInfo = new Uint8Array([255, 255, 255, 255]);
 	TextureCreator.DEFAULT_TEXTURE_2D = new Texture(colorInfo, null, 1, 1);
 	TextureCreator.DEFAULT_TEXTURE_CUBE = new Texture([colorInfo, colorInfo, colorInfo, colorInfo, colorInfo, colorInfo], null, 1, 1);

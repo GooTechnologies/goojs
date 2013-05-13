@@ -1,5 +1,5 @@
 define(
-	/** @lends Handy */
+	/** @lends */
 	function () {
 	"use strict";
 

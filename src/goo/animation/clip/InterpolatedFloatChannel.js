@@ -1,6 +1,6 @@
 define(['goo/animation/clip/AbstractAnimationChannel',
 	'goo/math/MathUtils'],
-/** @lends InterpolatedFloatChannel */
+/** @lends */
 function (AbstractAnimationChannel,
 	MathUtils) {
 	"use strict";

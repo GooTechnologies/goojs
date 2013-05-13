@@ -1,6 +1,10 @@
-define(["goo/math/Vector"],
-	/** @lends Vector4 */
-	function (Vector) {
+define([
+	'goo/math/Vector'
+],
+/** @lends */
+function (
+	Vector
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -19,7 +23,7 @@ define(["goo/math/Vector"],
 		if (arguments.length !== 0) {
 			this.set(arguments);
 		} else {
-			this.setd(0,0,0,0);
+			this.setd(0, 0, 0, 0);
 		}
 	}
 
@@ -67,8 +71,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 4 || rdata.length !== 4) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -123,8 +127,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 4 || rdata.length !== 4) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -179,8 +183,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 4 || rdata.length !== 4) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -235,8 +239,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 4 || rdata.length !== 4) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -285,8 +289,8 @@ define(["goo/math/Vector"],
 
 		if (ldata.length !== 4 || rdata.length !== 4) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -328,7 +332,7 @@ define(["goo/math/Vector"],
 		return this;
 	};
 
-	// TODO: Testing speed diffs
+	// Performance methods
 	Vector4.prototype.setd = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;

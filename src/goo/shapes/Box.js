@@ -1,29 +1,42 @@
 define(['goo/renderer/MeshData'],
-	/** @lends Box */
+	/** @lends */
 	function (MeshData) {
 	"use strict";
 
 	/**
-	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
-	 * @property {Float} xExtent Extent along the local x axis.
-	 * @property {Float} yExtent Extent along the local y axis.
-	 * @property {Float} zExtent Extent along the local z axis.
-	 * @property {Integer} tileX Number of texture repetitions in the texture's x direction.
-	 * @property {Integer} tileY Number of texture repetitions in the texture's y direction.
-	 * @constructor
-	 * @description Creates a new box.
-	 * @param {Float} width Total width of box.
-	 * @param {Float} height Total height of box.
-	 * @param {Float} length Total length of box.
-	 * @param {Integer} tileX Number of texture repetitions in the texture's x direction.
-	 * @param {Integer} tileY Number of texture repetitions in the texture's y direction.
+	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
+	 * from that center (a box).
+	 * @param {number} [width=1] Total width of box.
+	 * @param {number} [height=1] Total height of box.
+	 * @param {number} [length=1] Total length of box.
+	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
+	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */
-
 	function Box(width, height, length, tileX, tileY) {
+		/** Extent along the local x axis.
+		 * @type {number}
+		 * @default 0.5
+		 */
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
+		/** Extent along the local y axis.
+		 * @type {number}
+		 * @default 0.5
+		 */
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
+		/** Extent along the local z axis.
+		 * @type {number}
+		 * @default 0.5
+		 */
 		this.zExtent = length !== undefined ? length * 0.5 : 0.5;
+		/** Number of texture repetitions in the texture's x direction.
+		 * @type {number}
+		 * @default 1
+		 */
 		this.tileX = tileX || 1;
+		/** Number of texture repetitions in the texture's y direction.
+		 * @type {number}
+		 * @default 1
+		 */
 		this.tileY = tileY || 1;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
@@ -38,7 +51,6 @@ define(['goo/renderer/MeshData'],
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {Box} Self for chaining.
 	 */
-
 	Box.prototype.rebuild = function () {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;

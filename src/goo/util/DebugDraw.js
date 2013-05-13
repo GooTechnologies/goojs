@@ -1,5 +1,5 @@
 define(
-	/** @lends DebugDraw */
+	/* @lends */
 	function () {
 	"use strict";
 

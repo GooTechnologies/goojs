@@ -1,6 +1,14 @@
-define(['goo/math/Vector3', 'goo/renderer/bounds/BoundingVolume', 'goo/renderer/MeshData'],
-/** @lends BoundingSphere */
-function (Vector3, BoundingVolume, MeshData) {
+define([
+	'goo/math/Vector3',
+	'goo/renderer/bounds/BoundingVolume',
+	'goo/renderer/MeshData'
+],
+/** @lends */
+function (
+	Vector3,
+	BoundingVolume,
+	MeshData
+) {
 	"use strict";
 
 	/**
@@ -10,7 +18,7 @@ function (Vector3, BoundingVolume, MeshData) {
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingSphere () {
+	function BoundingSphere() {
 		BoundingVolume.call(this);
 
 		this.radius = 1;
@@ -29,7 +37,7 @@ function (Vector3, BoundingVolume, MeshData) {
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
-		for ( var i = 0; i < verts.length; i += 3) {
+		for (var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
@@ -42,7 +50,7 @@ function (Vector3, BoundingVolume, MeshData) {
 		}
 		var newCenter = max.addv(min).div(2.0);
 		var size = 0, test;
-		for ( var i = 0; i < verts.length; i += 3) {
+		for (var i = 0; i < verts.length; i += 3) {
 			vec.setd(verts[i], verts[i + 1], verts[i + 2]);
 			test = vec.subv(newCenter).lengthSquared();
 			if (test > size) {
@@ -64,9 +72,9 @@ function (Vector3, BoundingVolume, MeshData) {
 		var vertsPerPrimitive = MeshData.getVertexCount(data.indexModes[section]);
 
 		var count = 0;
-		for ( var i = start; i < end; i++) {
+		for (var i = start; i < end; i++) {
 			store = data.getPrimitiveVertices(indices[i], section, store);
-			for ( var j = 0; j < vertsPerPrimitive; j++) {
+			for (var j = 0; j < vertsPerPrimitive; j++) {
 				vertList[count++] = new Vector3().set(store[j]);
 			}
 		}
@@ -77,7 +85,7 @@ function (Vector3, BoundingVolume, MeshData) {
 	BoundingSphere.prototype.averagePoints = function (points) {
 		this.center.set(points[0]);
 
-		for ( var i = 1; i < points.length; i++) {
+		for (var i = 1; i < points.length; i++) {
 			this.center.add(points[i]);
 		}
 
@@ -85,7 +93,7 @@ function (Vector3, BoundingVolume, MeshData) {
 		this.center.mul(quantity);
 
 		var maxRadiusSqr = 0.0;
-		for ( var i = 0; i < points.length; i++) {
+		for (var i = 0; i < points.length; i++) {
 			var diff = Vector3.sub(points[i], this.center, this.vec);
 			var radiusSqr = diff.lengthSquared();
 			if (radiusSqr > maxRadiusSqr) {
@@ -168,8 +176,8 @@ function (Vector3, BoundingVolume, MeshData) {
 			var distances = [root - a1];
 			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
 			return {
-				"distances" : distances,
-				"points" : points
+				"distances": distances,
+				"points": points
 			};
 		}
 
@@ -186,18 +194,18 @@ function (Vector3, BoundingVolume, MeshData) {
 			root = Math.sqrt(discr);
 			var distances = [-a1 - root, -a1 + root];
 			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin),
-					new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)];
+				new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)];
 			return {
-				"distances" : distances,
-				"points" : points
+				"distances": distances,
+				"points": points
 			};
 		}
 
 		var distances = [-a1];
 		var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
 		return {
-			"distances" : distances,
-			"points" : points
+			"distances": distances,
+			"points": points
 		};
 	};
 

@@ -1,17 +1,17 @@
 define([
 	'goo/animation/Joint'
 ],
-/** @lends Skeleton */
+/** @lends */
 function (
 	Joint
 ) {
 	"use strict";
 
 	/**
-	 * @class Describes a collection of Joints. This class represents the hierarchy of a Skeleton and its original aspect (via the Joint class). This
+	 * @class Describes a collection of Joints. This class represents the hierarchy of a Skeleton and its original aspect (via the {@link Joint} class). This
 	 *        does not support posing the joints in any way... Use with a SkeletonPose to describe a skeleton in a specific pose.
-	 * @param {String} name Name of skeleton
-	 * @property {String} name Name of skeleton
+	 * @param {String} name
+	 * @param {Joint[]} joints
 	 */
 	function Skeleton (name, joints) {
 		this._name = name;

@@ -1,10 +1,10 @@
 define([
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/loaders/Loader'
 	],
-	/** @lends ShaderLoader */
+	/** @lends */
 	function(
 		RSVP,
 		MeshData,
@@ -13,9 +13,10 @@ define([
 	) {
 	"use strict";
 	/**
-	 * Utility class for lading Shaders
+	 * @class Utility class for loading Shaders
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {Loader} parameters.loader
 	 */
 	function ShaderLoader(parameters) {
@@ -29,14 +30,24 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
+		this._doCache = (parameters.doCache !== undefined) ? parameters.doCache : true;
 
 	}
 
+	/**
+	 * Loads the shader at <code>shaderPath</code>.
+	 * @example
+	 * shaderLoader.load('shaders/textured.shader').then(function(shader) {
+	 *   // handle {@link Shader} shader
+	 * });
+	 * @param {string} shaderPath Relative path to the material.
+	 * @returns {RSVP.Promise} The promise is resolved with the loaded {@link Shader} object.
+	 */
 	ShaderLoader.prototype.load = function(shaderPath) {
 		// Materials can't share shaders yet, cause jointcount is defined on the shader
-		/*if (this._cache[shaderPath]) {
+		if (this._cache[shaderPath] && this._doCache) {
 			return this._cache[shaderPath];
-		}*/
+		}
 		var parse = this._parse.bind(this);
 		var promise = this._loader.load(shaderPath, function(data) {
 			return parse(data);
@@ -47,6 +58,9 @@ define([
 	};
 
 	ShaderLoader.prototype._parse = function(data) {
+		if (typeof data === 'string') {
+			data = JSON.parse(data);
+		}
 		var promises = [];
 		if (data && data.attributes && data.uniforms) {
 			var shaderDefinition = {

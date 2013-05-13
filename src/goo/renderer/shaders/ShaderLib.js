@@ -1,14 +1,14 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragments',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/entities/World'
 ],
-	/** @lends ShaderLib */
+	/** @lends */
 	function (
 		MeshData,
 		Shader,
-		ShaderFragments,
+		ShaderFragment,
 		World
 		) {
 	"use strict";
@@ -1917,7 +1917,7 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'#extension GL_OES_standard_derivatives : enable',
+		// '#extension GL_OES_standard_derivatives : enable',
 		'precision mediump float;',//
 
 		'uniform mat4 viewMatrix;', //
@@ -1929,8 +1929,8 @@ define([
 		'{',//
 		'	float depth = clamp(length(worldPosition) / cameraFar, 0.0, 1.0);',
 //		'	float depth = clamp(length(worldPosition) / 2000.0, 0.0, 1.0);',
-        '	float dx = dFdx(depth);',
-        '	float dy = dFdy(depth);',
+        // '	float dx = dFdx(depth);',
+        // '	float dy = dFdy(depth);',
 //        '	gl_FragColor = vec4(depth, pow(depth, 2.0) + 0.25*(dx*dx + dy*dy), 0.0, 1.0);',
         '	gl_FragColor = vec4(depth, depth * depth, 0.0, 1.0);',
 		'}'//
@@ -1966,7 +1966,7 @@ define([
 
 			'uniform float farPlane;',//
 
-			ShaderFragments.methods.packDepth,//
+			ShaderFragment.methods.packDepth,//
 
 			'varying vec4 vPosition;',//
 

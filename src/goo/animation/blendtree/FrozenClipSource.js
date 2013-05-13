@@ -1,5 +1,5 @@
 define(
-/** @lends FrozenTreeSource */
+/** @lends */
 function () {
 	"use strict";
 

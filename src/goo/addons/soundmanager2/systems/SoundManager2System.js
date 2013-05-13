@@ -1,18 +1,16 @@
 define([
-	'goo/lib/soundmanager2/soundmanager2',
 	'goo/entities/systems/System'
 ],
-/** @lends SoundManager2System */
+/** @lends */
 function(
-	undefined,
 	System
 ) {
 	"use strict";
 
-	var soundManager = window.soundManager;
-
 	/**
 	 * @class Handles integration with Sound Manager 2
+	 * @desc Depends on the global soundManager object.
+	 * Load soundmanager2 with a script tag before using this system.
 	 */
 	function SoundManager2System(settings) {
 		System.call(this, 'SoundManager2System', ['SoundManager2Component', 'TransformComponent']);
@@ -20,16 +18,19 @@ function(
 		settings = settings || {};
 
 		this.isReady = false;
-
-		soundManager.bind(this).setup({
-			url: 'swf',
-			onready: function() {
-				this.isReady = true;
-			},
-			ontimeout: function() {
-				console.warn('Failed to load soundmanager');
-			}
-		});
+		if (!window.soundManager) {
+			console.warn('SoundManager2System: soundManager global not found');
+		} else {
+			window.soundManager.bind(this).setup({
+				url: 'swf',
+				onready: function() {
+					this.isReady = true;
+				},
+				ontimeout: function() {
+					console.warn('Failed to load soundmanager');
+				}
+			});
+		}
 	}
 
 	SoundManager2System.prototype = Object.create(System.prototype);
@@ -39,25 +40,25 @@ function(
 
 		for (var i = 0; i < soundManagerComponent.sounds.length; i++) {
 			var sound = soundManagerComponent.sounds[i];
-			var soundObject = soundManager.createSound(sound);
+			var soundObject = window.soundManager.createSound(sound);
 			sound.soundObject = soundObject;
 		}
 	};
 
-	SoundManager2System.prototype.deleted = function(entity) {
-		var soundManagerComponent = entity.soundManager2Component;
+	SoundManager2System.prototype.deleted = function(/*entity*/) {
+		//var soundManagerComponent = entity.soundManager2Component;
 
 		// if (soundManagerComponent) {
 			// this.world.remove(cannonComponent.body);
 		// }
 	};
 
-	SoundManager2System.prototype.process = function(entities /*, tpf */) {
-		for (var i = 0; i < entities.length; i++) {
+	SoundManager2System.prototype.process = function(/*entities , tpf */) {
+		/*for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var soundManagerComponent = entity.soundManager2Component;
 
-		}
+		}*/
 	};
 
 	return SoundManager2System;

@@ -1,5 +1,5 @@
 define(['goo/entities/components/Component'],
-	/** @lends LightComponent */
+	/** @lends */
 	function (Component) {
 	"use strict";
 
@@ -14,9 +14,6 @@ define(['goo/entities/components/Component'],
 	}
 
 	LightComponent.prototype = Object.create(Component.prototype);
-
-	LightComponent.prototype.stuff = function () {
-	};
 
 	return LightComponent;
 });

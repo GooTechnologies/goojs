@@ -1,5 +1,5 @@
 define(["goo/math/MathUtils", "goo/math/Matrix"],
-	/** @lends Matrix 2x2 */
+	/** @lends */
 	function (MathUtils, Matrix) {
 	"use strict";
 

@@ -1,26 +1,38 @@
-// 1. A ParticleComponent is an entity component that creates and modifies MeshData to simulate particle effects.
-//
-// 2. ParticleComponents may have 1 or more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
-// position of each particle.
-//
-// 3. Each Particle System also contains a timeline describing changes each particle should perform over its lifetime, including:
-// - Size of particle
-// - Color of particle
-// - Orientation of particle (rotation on screen plane)
-// - Texture coords used.
-// - Other user defined params.
-//
-// 4. External influences can exert on particles via a defined callback function system.
-//
-// 5. Particles billboard toward the screen using a provided Camera as reference.
-
-define(['goo/entities/components/Component', 'goo/particles/Particle', 'goo/particles/ParticleEmitter', 'goo/renderer/MeshData'],
-/** @lends ParticleComponent */
-function (Component, Particle, ParticleEmitter, MeshData) {
+define([
+	'goo/entities/components/Component',
+	'goo/particles/Particle',
+	'goo/particles/ParticleEmitter',
+	'goo/renderer/MeshData'
+],
+/** @lends */
+function (
+	Component,
+	Particle,
+	ParticleEmitter,
+	MeshData
+) {
 	"use strict";
 
 	/**
-	 * @class
+	 * @class Creates and modifies @link{MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
+	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
+	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
+	 * perform over its lifetime, including:
+	 * <ul>
+	 * <li>Size of particle</li>
+	 * <li>Color of particle</li>
+	 * <li>Orientation of particle (rotation on screen plane)</li>
+	 * <li>Texture coords used.</li>
+	 * <li>Other user defined params.</li>
+	 * </ul><br />
+	 * External influences can exert on particles via a defined callback function system.<br /><br />
+	 * Particles billboard toward the screen using a provided Camera as reference.
+	 * @param {Object} [settings]
+	 * @param {Array} [settings.emitters] Array of emitter settings
+	 * @param {Array} [settings.timeline]
+	 * @param {number} [settings.uRange=1]
+	 * @param {number} [settings.vRange=1]
+	 * @param {number} [settings.particleCount=100]
 	 */
 	function ParticleComponent (settings) {
 		this.type = 'ParticleComponent';

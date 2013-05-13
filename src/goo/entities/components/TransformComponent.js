@@ -1,20 +1,37 @@
-define(['goo/math/Transform', 'goo/entities/components/Component'],
-	/** @lends TransformComponent */
-	function (Transform, Component) {
+define([
+	'goo/math/Transform',
+	'goo/entities/components/Component'
+],
+/** @lends */
+function (
+	Transform,
+	Component
+) {
 	"use strict";
 
 	/**
-	 * @class The transform component holds the transform of an entity. It also allows for a scenegraph to be created, where transforms are inherited
-	 *        down the tree.
-	 * @property {TransformComponent} parent Parent transformcomponent in the "scenegraph"
-	 * @property {TransformComponent[]} children Child transformcomponents in the "scenegraph"
+	 * @class Holds the transform of an entity. It also allows for a scene graph to be created, where transforms are inherited
+	 * down the tree.
 	 */
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
+		/** Parent transformcomponent in the "scene graph"
+		 * @type {TransformComponent}
+		 * @default
+		 */
 		this.parent = null;
+		/**
+		 * Child transformcomponents in the "scenegraph"
+		 * @type {TransformComponent[]}
+		 */
 		this.children = [];
+		/** @type {Transform} */
 		this.transform = new Transform();
+
+		/** The entity's transform in world space.
+		 * Read only. Automatically updated.
+		 * @type {Transform} */
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
@@ -36,12 +53,14 @@ define(['goo/math/Transform', 'goo/entities/components/Component'],
 	 * @param childComponent child transform component to attach
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent) {
-		if (childComponent === this) {
-			// REVIEW: Do we need to check this recursively? ANSWER: Yes
-			console.warn('attachChild: An object can\'t be added as a child of itself.');
-			return;
+		var component = this;
+		while(component) {
+			if (component === childComponent) {
+				console.warn('attachChild: An object can\'t be added as a descendant of itself.');
+				return;
+			}
+			component = component.parent;
 		}
-
 		if (childComponent.parent) {
 			childComponent.parent.detachChild(childComponent);
 		}

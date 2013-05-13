@@ -1,5 +1,5 @@
 define(
-/** @lends AbstractAnimationChannel */
+/** @lends */
 function () {
 	"use strict";
 

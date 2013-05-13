@@ -1,10 +1,11 @@
 define(
-	/** @lends EventHandler */
+	/** @lends */
 	function () {
 	"use strict";
 
 	/**
 	 * @class Singleton module for handling event dispatches/listening (TBD: don't do this as a singleton)
+	 * @description Only used to define the class. Should never be instantiated.
 	 */
 	function EventHandler() {
 	}
@@ -14,7 +15,7 @@ define(
 	/**
 	 * Sends messages to all listeners with provided callback function.
 	 *
-	 * @param arguments ([callback function name], arguments...)
+	 * @param {function()} callback
 	 */
 	EventHandler.dispatch = function () {
 		if (arguments.length === 0) {
@@ -33,7 +34,6 @@ define(
 
 	/**
 	 * Register listener of event dispatches
-	 *
 	 * @param listener Listener to register
 	 */
 	EventHandler.addListener = function (listener) {
@@ -44,7 +44,6 @@ define(
 
 	/**
 	 * Remove listener of event dispatches
-	 *
 	 * @param listener Listener to unregister
 	 */
 	EventHandler.removeListener = function (listener) {

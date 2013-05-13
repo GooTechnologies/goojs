@@ -1,5 +1,5 @@
 define(['goo/animation/clip/JointData', 'goo/animation/clip/TransformData', 'goo/animation/clip/TriggerData'],
-/** @lends SimpleAnimationApplier */
+/** @lends */
 function (JointData, TransformData, TriggerData) {
 	"use strict";
 

@@ -1,6 +1,10 @@
-define(["goo/math/MathUtils"],
-/** @lends Vector */
-function (MathUtils) {
+define([
+	'goo/math/MathUtils'
+],
+/** @lends */
+function (
+	MathUtils
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -13,7 +17,7 @@ function (MathUtils) {
 	 * @param {Integer} size Number of vector components.
 	 */
 
-	function Vector (size) {
+	function Vector(size) {
 		this.data = new Float32Array(size || 0);
 	}
 
@@ -28,25 +32,25 @@ function (MathUtils) {
 	Vector.prototype.setupAliases = function (aliases) {
 		var that = this;
 
-		for ( var i = 0; i < aliases.length; i++) {
+		for (var i = 0; i < aliases.length; i++) {
 			/*jshint loopfunc: true */
 			(function (index) {
-				for ( var j = 0; j < aliases[index].length; j++) {
+				for (var j = 0; j < aliases[index].length; j++) {
 					Object.defineProperty(that, aliases[index][j], {
-						get : function () {
+						get: function () {
 							return this.data[index];
 						},
-						set : function (value) {
+						set: function (value) {
 							this.data[index] = value;
 						}
 					});
 				}
 
 				Object.defineProperty(that, i, {
-					get : function () {
+					get: function () {
 						return this.data[index];
 					},
-					set : function (value) {
+					set: function (value) {
 						this.data[index] = value;
 					}
 				});
@@ -77,12 +81,12 @@ function (MathUtils) {
 
 		if (rdata.length !== size || target.data.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
-		for ( var i = 0; i < size; i++) {
+		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] + rdata[i];
 		}
 
@@ -122,12 +126,12 @@ function (MathUtils) {
 
 		if (rdata.length !== size || target.data.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
-		for ( var i = 0; i < size; i++) {
+		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] - rdata[i];
 		}
 
@@ -167,12 +171,12 @@ function (MathUtils) {
 
 		if (rdata.length !== size || target.data.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
-		for ( var i = 0; i < size; i++) {
+		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] * rdata[i];
 		}
 
@@ -212,12 +216,12 @@ function (MathUtils) {
 
 		if (rdata.length !== size || target.data.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
-		for ( var i = 0; i < size; i++) {
+		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] / rdata[i];
 		}
 
@@ -254,8 +258,8 @@ function (MathUtils) {
 
 		if (target.data.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -291,14 +295,14 @@ function (MathUtils) {
 
 		if (rdata.length !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
 		var sum = 0.0;
 
-		for ( var i = 0; i < size; i++) {
+		for (var i = 0; i < size; i++) {
 			sum += ldata[i] * rdata[i];
 		}
 
@@ -338,8 +342,8 @@ function (MathUtils) {
 
 		if (target.data.length !== rows || cols !== size) {
 			throw {
-				name : "Illegal Arguments",
-				message : "The arguments are of incompatible sizes."
+				name: "Illegal Arguments",
+				message: "The arguments are of incompatible sizes."
 			};
 		}
 
@@ -347,13 +351,13 @@ function (MathUtils) {
 			return Vector.copy(Vector.apply(lhs, rhs), target);
 		}
 
-		for ( var c = 0; c < cols; c++) {
+		for (var c = 0; c < cols; c++) {
 			var o = c * rows;
 
-			for ( var r = 0; r < rows; r++) {
+			for (var r = 0; r < rows; r++) {
 				var sum = 0.0;
 
-				for ( var i = 0; i < size; i++) {
+				for (var i = 0; i < size; i++) {
 					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
 				}
 
@@ -390,7 +394,7 @@ function (MathUtils) {
 			return false;
 		}
 
-		for ( var i = 0; i < lhsLength; i++) {
+		for (var i = 0; i < lhsLength; i++) {
 			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
 				return false;
 			}
@@ -493,7 +497,7 @@ function (MathUtils) {
 	 */
 
 	Vector.prototype.invert = function () {
-		for ( var i = 0; i < this.data.length; i++) {
+		for (var i = 0; i < this.data.length; i++) {
 			this.data[i] = 0.0 - this.data[i];
 		}
 
@@ -513,12 +517,12 @@ function (MathUtils) {
 		var dataLength = this.data.length;
 
 		if (l < MathUtils.EPSILON) {
-			for ( var i = 0; i < dataLength; i++) {
+			for (var i = 0; i < dataLength; i++) {
 				this.data[i] = 0;
 			}
 		} else {
 			l = 1.0 / l;
-			for ( var i = 0; i < dataLength; i++) {
+			for (var i = 0; i < dataLength; i++) {
 				this.data[i] *= l;
 			}
 		}
@@ -592,7 +596,7 @@ function (MathUtils) {
 
 		string += "[";
 
-		for ( var i = 0; i < this.data.length; i++) {
+		for (var i = 0; i < this.data.length; i++) {
 			string += this.data[i];
 			string += i !== this.data.length - 1 ? ", " : "";
 		}

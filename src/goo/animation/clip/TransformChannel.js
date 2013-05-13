@@ -1,5 +1,5 @@
 define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'],
-/** @lends TransformChannel */
+/** @lends */
 function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	"use strict";
 

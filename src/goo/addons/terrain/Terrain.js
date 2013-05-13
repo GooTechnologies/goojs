@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/TextureCreator'
 ],
-/** @lends Terrain */
+/** @lends */
 function(
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -42,7 +42,7 @@ function(
 	Terrain.prototype.createClipmapLevel = function(world, scale, isInner) {
 		var entity = world.createEntity();
 
-		var size = 1 << scale;
+		var size = Math.pow(2, scale);
 		entity.transformComponent.transform.scale.set(size, size, 1);
 		var move = (2 * Math.pow(-1, scale+1) + Math.pow(2, scale+1))/6;
 		var diff = scale % 2 === 0 ? move : -move;

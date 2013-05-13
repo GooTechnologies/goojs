@@ -4,7 +4,7 @@ define([
 		'goo/entities/components/MeshRendererComponent',
 		'goo/entities/components/CSSTransformComponent'
 	],
-	/** @lends EntityUtils */
+	/** @lends */
 	function (
 		TransformComponent,
 		MeshDataComponent,
@@ -15,6 +15,7 @@ define([
 
 		/**
 		 * @class Utilities for entity creation etc
+		 * @description Only used to define the class. Should never be instantiated.
 		 */
 		function EntityUtils() {
 		}
@@ -56,18 +57,26 @@ define([
 
 		/**
 		 * Clone entity hierarcy with optional settings for sharing data and callbacks
+		 * @param {World} world
+		 * @param {Entity} entity The entity to clone
+		 * @param {Object} [settings]
+		 * @param {function(Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
+			console.log('Cloning', settings);
 			settings = settings || {};
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
+			console.log('Share material?', settings.shareMaterial);
 
 			return cloneEntity(world, entity, settings);
 		};
 
 		/**
 		 * Traverse entity hierarchy with callback
+		 * @param {Entity} entity The entity to begin traversing from
+		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy
 		 */
 		EntityUtils.traverse = function (entity, callback) {
 			if (callback) {
@@ -89,7 +98,9 @@ define([
 		};
 
 		/**
-		 * Creates an entity with the common rendering components.
+		 * Creates an entity with the common rendering components and a mesh.
+		 * @param {World} world
+		 * @param {MeshData} meshData
 		 */
 		EntityUtils.createTypicalEntity = function (world, meshData) {
 			// Create entity

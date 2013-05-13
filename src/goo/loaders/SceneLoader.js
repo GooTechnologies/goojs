@@ -1,92 +1,90 @@
 /* jshint bitwise: false */
 define([
-		'goo/loaders/Loader',
-		'goo/loaders/EntityLoader',
-
-		'goo/lib/rsvp.amd'
-	],
-/** @lends SceneLoader */
-function(
-		Loader,
-		EntityLoader,
-		RSVP
-	) {
+	'goo/loaders/Loader',
+	'goo/loaders/EntityLoader',
+	'goo/util/rsvp'
+],
+/** @lends */
+function (
+	Loader,
+	EntityLoader,
+	RSVP
+) {
 	"use strict";
 
-
 	/**
-	 * Utility class for loading scenes into a World.
+	 * @class Utility class for loading scenes into a World.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function SceneLoader(parameters) {
-		if(typeof parameters === "undefined" || parameters === null) {
+		if (typeof parameters === "undefined" || parameters === null) {
 			throw new Error('SceneLoader(): Argument `parameters` was undefined/null');
 		}
 
-		if(typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
+		if (typeof parameters.loader === "undefined" || !(parameters.loader instanceof Loader) || parameters.loader === null) {
 			throw new Error('SceneLoader(): Argument `parameters.loader` was invalid/undefined/null');
 		}
 
-		if(typeof parameters.world === "undefined" || parameters.world === null) {
+		if (typeof parameters.world === "undefined" || parameters.world === null) {
 			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
 		}
 
 		this._loader = parameters.loader;
 		this._world = parameters.world;
+		this._cacheShader = parameters.cacheShader;
 	}
 
 	/**
-	 * Loads the scene at <code>scenePath</code>.
-	 *
-	 * @param {string} scenePath Relative path to the scene.
-	 * @return {Promise} The promise is resolved with the target World object.
+	 * Loads the scene with a given ref.
+	 * @example
+	 * sceneLoader.load('room.scene').then(function(entities) {
+	 *   // handle the {@link Entity|Entity[]} entities
+	 * });
+	 * @param {string} sceneRef Ref of scene to load.
+	 * @returns {RSVP.Promise} The promise is resolved with an array of {@link Entity|entities}.
 	 */
-	SceneLoader.prototype.load = function(scenePath) {
+	SceneLoader.prototype.load = function (sceneRef) {
 		var that = this;
-		return this._loader.load(scenePath, function(data) {
-			return that._parse(data, scenePath);
+		return this._loader.load(sceneRef, function (data) {
+			return that._parse(data, sceneRef);
 		});
 	};
 
-	SceneLoader.prototype._parse = function(sceneSource, scenePath) {
+	SceneLoader.prototype._parse = function (sceneConfig) {
+		if (typeof sceneConfig === 'string') {
+			sceneConfig = JSON.parse(sceneConfig);
+		}
 		var promises = [];
-		// If we got files, then let's do stuff with the files!
-		if(sceneSource && sceneSource.files && sceneSource.files.length)
-		{
+
+		if (sceneConfig && sceneConfig.entityRefs && sceneConfig.entityRefs.length) {
 			var entityLoader = new EntityLoader({
 				world: this._world,
-				loader: this._loader
+				loader: this._loader,
+				cacheShader: this._cacheShader
 			});
 
-			for(var i in sceneSource.files) {
-				// Check if they're entities
-				var fileName = sceneSource.files[i];
-
-				if(/\.ent$/.test(fileName)) {
-					var p = entityLoader.load(fileName);
-					promises.push(p);
-				}
+			for (var i = 0; i < sceneConfig.entityRefs.length; ++i) {
+				var entityRef = sceneConfig.entityRefs[i];
+				promises.push(entityLoader.load(entityRef));
 			}
 		}
 
-		if(promises.length === 0) {
-			var p = new RSVP.Promise();
-			p.reject('Can\'t find anything to load at ' + scenePath);
-			return p;
-		}
+		// TODO: Create a Scene instance or something instead of changing the SceneLoader
+		this.globals = sceneConfig.globals;
 
-		// Create a promise that resolves when all promise-objects
 		return RSVP.all(promises)
-		.then(function(entities) {
-			return entities;
-		});
+			.then(function (entities) {
+				return entities;
+			});
 	};
 
-	SceneLoader.prototype._buildWorld = function(entities) {
-		for(var i in entities) {
+	SceneLoader.prototype._buildWorld = function (entities) {
+		for (var i = 0; i < entities.length; ++i) {
 			entities[i].addToWorld();
 		}
 		this._world.process();

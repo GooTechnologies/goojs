@@ -1,5 +1,5 @@
 define(
-/** @lends OutputStore */
+/** @lends */
 function () {
 	"use strict";
 

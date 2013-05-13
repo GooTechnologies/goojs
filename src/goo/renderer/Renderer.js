@@ -16,7 +16,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler'
 ],
-/** @lends Renderer */
+/** @lends */
 function (
 	RendererRecord,
 	Util,
@@ -80,11 +80,11 @@ function (
 		this._onError = parameters.onError;
 
 		var settings = {
-			alpha : this._alpha,
-			premultipliedAlpha : this._premultipliedAlpha,
-			antialias : this._antialias,
-			stencil : this._stencil,
-			preserveDrawingBuffer : this._preserveDrawingBuffer
+			alpha: this._alpha,
+			premultipliedAlpha: this._premultipliedAlpha,
+			antialias: this._antialias,
+			stencil: this._stencil,
+			preserveDrawingBuffer: this._preserveDrawingBuffer
 		};
 
 		this.context = null;
@@ -164,16 +164,16 @@ function (
 
 		// Check capabilities (move out to separate module)
 		this.capabilities = {
-			maxTexSize : this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
-			maxCubeSize : this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
-			maxRenderbufferSize : this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
-			vertexUnits : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
-			fragmentUnits : this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
-			combinedUnits : this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
-			maxVertexAttributes : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
-			maxVertexShader : this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
-			maxFragmentShader : this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
-			maxVaryingVectors : this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS)
+			maxTexSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
+			maxCubeSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
+			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
+			vertexUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+			fragmentUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
+			combinedUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
+			maxVertexShader: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
+			maxFragmentShader: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
+			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS)
 		};
 
 		this.downScale = parameters.downScale || 1;
@@ -200,15 +200,15 @@ function (
 		this.renderQueue = new RenderQueue();
 
 		this.info = {
-			calls : 0,
-			vertices : 0,
-			indices : 0,
-			reset : function() {
+			calls: 0,
+			vertices: 0,
+			indices: 0,
+			reset: function () {
 				this.calls = 0;
 				this.vertices = 0;
 				this.indices = 0;
 			},
-			toString : function() {
+			toString: function () {
 				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
 			}
 		};
@@ -217,8 +217,8 @@ function (
 		this.shadowHandler = null;
 	}
 
-	function validateNoneOfTheArgsAreUndefined (functionName, args) {
-		for ( var ii = 0; ii < args.length; ++ii) {
+	function validateNoneOfTheArgsAreUndefined(functionName, args) {
+		for (var ii = 0; ii < args.length; ++ii) {
 			if (args[ii] === undefined) {
 				console.error("undefined passed to gl." + functionName + "("
 					+ window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
@@ -229,10 +229,10 @@ function (
 	Renderer.prototype.onDebugError = function (err, functionName, args) {
 		// Based on the default error handler in WebGLDebugUtils
 		// apparently we can't do args.join(",");
-		var message = 'WebGL error ' + window.WebGLDebugUtils.glEnumToString(err) + ' in '+ functionName + '(';
+		var message = 'WebGL error ' + window.WebGLDebugUtils.glEnumToString(err) + ' in ' + functionName + '(';
 		for (var ii = 0; ii < args.length; ++ii) {
 			message += ((ii === 0) ? '' : ', ') +
-			window.WebGLDebugUtils.glFunctionArgToString(functionName, ii, args[ii]);
+				window.WebGLDebugUtils.glFunctionArgToString(functionName, ii, args[ii]);
 		}
 		message += ')';
 		console.error(message);
@@ -243,7 +243,7 @@ function (
 
 	Renderer.mainCamera = null;
 
-	Renderer.prototype.checkResize = function(camera) {
+	Renderer.prototype.checkResize = function (camera) {
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
 		var adjustHeight = this.domElement.offsetHeight / this.downScale;
 		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
@@ -258,14 +258,14 @@ function (
 		}
 	};
 
-	Renderer.prototype.setSize = function(width, height) {
+	Renderer.prototype.setSize = function (width, height) {
 		this.domElement.width = width;
 		this.domElement.height = height;
 
 		this.setViewport(0, 0, width, height);
 	};
 
-	Renderer.prototype.setViewport = function(x, y, width, height) {
+	Renderer.prototype.setViewport = function (x, y, width, height) {
 		this.viewportX = x !== undefined ? x : 0;
 		this.viewportY = y !== undefined ? y : 0;
 
@@ -275,12 +275,12 @@ function (
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
 
-	Renderer.prototype.setClearColor = function(r, g, b, a) {
+	Renderer.prototype.setClearColor = function (r, g, b, a) {
 		this.clearColor.set(r, g, b, a);
 		this.context.clearColor(r, g, b, a);
 	};
 
-	Renderer.prototype.bindData = function(bufferData) {
+	Renderer.prototype.bindData = function (bufferData) {
 		var glBuffer = bufferData.glBuffer;
 		if (glBuffer !== null) {
 			this.setBoundBuffer(glBuffer, bufferData.target);
@@ -298,7 +298,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.render = function(renderList, camera, lights, renderTarget, clear, shadowPass) {
+	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, shadowPass) {
 		if (!camera) {
 			return;
 		} else if (Renderer.mainCamera === null) {
@@ -309,7 +309,7 @@ function (
 			if (this.shadowHandler) {
 				this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
 			} else {
-				for (var i=0; i<lights.length; i++) {
+				for (var i = 0; i < lights.length; i++) {
 					if (lights[i].shadowCaster) {
 						this.shadowHandler = new ShadowHandler();
 						break;
@@ -327,11 +327,11 @@ function (
 		}
 
 		var renderInfo = {
-			camera : camera,
-			mainCamera : Renderer.mainCamera,
-			lights : lights,
-			lightCamera : this.shadowHandler ? this.shadowHandler.lightCam : null,
-			renderer : this
+			camera: camera,
+			mainCamera: Renderer.mainCamera,
+			lights: lights,
+			lightCamera: this.shadowHandler ? this.shadowHandler.lightCam : null,
+			renderer: this
 		};
 
 		if (Array.isArray(renderList)) {
@@ -348,7 +348,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.fillRenderInfo = function(renderable, renderInfo) {
+	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshDataComponent.meshData;
 			renderInfo.materials = renderable.meshRendererComponent.materials;
@@ -360,7 +360,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.renderMesh = function(renderInfo) {
+	Renderer.prototype.renderMesh = function (renderInfo) {
 		var meshData = renderInfo.meshData;
 		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
 			&& meshData.indexData.data.byteLength === 0) {
@@ -376,7 +376,7 @@ function (
 		var isWireframe = false;
 		var originalData = meshData;
 
-		for ( var i = 0; i < materials.length; i++) {
+		for (var i = 0; i < materials.length; i++) {
 			var material = materials[i];
 			if (!material.shader) {
 				// console.warn('No shader set on material: ' + material.name);
@@ -447,15 +447,15 @@ function (
 	 * @param height height of rectangle to read from
 	 * @param store ArrayBufferView to store data in (Uint8Array)
 	 */
-	Renderer.prototype.readPixels = function(x, y, width, height, store) {
+	Renderer.prototype.readPixels = function (x, y, width, height, store) {
 		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
 	};
 
-	Renderer.prototype.drawElementsVBO = function(indices, indexModes, indexLengths) {
+	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
-		for ( var i = 0; i < indexLengths.length; i++) {
+		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
 
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
@@ -473,11 +473,11 @@ function (
 		}
 	};
 
-	Renderer.prototype.drawArraysVBO = function(indexModes, indexLengths) {
+	Renderer.prototype.drawArraysVBO = function (indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
 
-		for ( var i = 0; i < indexLengths.length; i++) {
+		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
 
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
@@ -492,7 +492,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.buildWireframeData = function(meshData) {
+	Renderer.prototype.buildWireframeData = function (meshData) {
 		var attributeMap = Util.clone(meshData.attributeMap);
 		var wireframeData = new MeshData(attributeMap, 0, 0);
 		wireframeData.vertexData = meshData.vertexData;
@@ -504,7 +504,7 @@ function (
 		var origI = meshData.getIndexBuffer();
 		var targetI = wireframeData.getIndexBuffer();
 		// TODO: fix this to handle other indexmodes than 'triangles'
-		for ( var ii = 0; ii < meshData.indexCount; ii++) {
+		for (var ii = 0; ii < meshData.indexCount; ii++) {
 			var i1 = origI[ii * 3 + 0];
 			var i2 = origI[ii * 3 + 1];
 			var i3 = origI[ii * 3 + 2];
@@ -520,13 +520,13 @@ function (
 		return wireframeData;
 	};
 
-	Renderer.prototype.buildWireframeMaterial = function(material) {
+	Renderer.prototype.buildWireframeMaterial = function (material) {
 		var wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
 		wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 		return wireframeMaterial;
 	};
 
-	Renderer.prototype.updateDepthTest = function(material) {
+	Renderer.prototype.updateDepthTest = function (material) {
 		var record = this.rendererRecord.depthRecord;
 		var depthState = material.depthState;
 
@@ -549,7 +549,7 @@ function (
 		// this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 
-	Renderer.prototype.updateCulling = function(material) {
+	Renderer.prototype.updateCulling = function (material) {
 		var record = this.rendererRecord.cullRecord;
 		var cullFace = material.cullState.cullFace;
 		var frontFace = material.cullState.frontFace;
@@ -584,14 +584,14 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateTextures = function(material) {
+	Renderer.prototype.updateTextures = function (material) {
 		var context = this.context;
-		for ( var i = 0; i < material.shader.textureSlots.length; i++) {
+		for (var i = 0; i < material.shader.textureSlots.length; i++) {
 			var texture = material.textures[i];
 
 			if (texture === undefined ||
 				texture instanceof RenderTarget === false && (texture.image === undefined ||
-				texture.checkDataReady() === false)) {
+					texture.checkDataReady() === false)) {
 				if (material.shader.textureSlots[i].format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
 				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
@@ -620,7 +620,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateTextureParameters = function(texture, isImagePowerOfTwo) {
+	Renderer.prototype.updateTextureParameters = function (texture, isImagePowerOfTwo) {
 		var context = this.context;
 
 		var texrecord = texture.textureRecord;
@@ -657,7 +657,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.bindTexture = function(context, texture, unit, record) {
+	Renderer.prototype.bindTexture = function (context, texture, unit, record) {
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
 			context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
@@ -665,7 +665,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.getGLType = function(type) {
+	Renderer.prototype.getGLType = function (type) {
 		switch (type) {
 			case '2D':
 				return WebGLRenderingContext.TEXTURE_2D;
@@ -675,7 +675,7 @@ function (
 		throw "invalid texture type: " + type;
 	};
 
-	Renderer.prototype.loadCompressedTexture = function(context, target, texture, imageData) {
+	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
@@ -702,7 +702,7 @@ function (
 			}
 		} else {
 			texture.generateMipmaps = false;
-			for ( var i = 0; i < mipSizes.length; i++) {
+			for (var i = 0; i < mipSizes.length; i++) {
 				dataLength = mipSizes[i];
 				context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
 					+ dataOffset, dataLength));
@@ -713,7 +713,7 @@ function (
 			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
 			var size = mipSizes[mipSizes.length - 1];
 			if (mipSizes.length < expectedMipmaps) {
-				for ( var i = mipSizes.length; i < expectedMipmaps; i++) {
+				for (var i = mipSizes.length; i < expectedMipmaps; i++) {
 					size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * texture.image.bpp * 2;
 					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(size));
 					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
@@ -723,7 +723,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateTexture = function(context, texture, unit, record) {
+	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
 		this.bindTexture(context, texture, unit, record);
 
 		// set alignment to support images with width % 4 !== 0, as
@@ -767,13 +767,13 @@ function (
 			}
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubeSize || image.height > this.capabilities.maxCubeSize)) {
-				for ( var i = 0; i < Texture.CUBE_FACES.length; i++) {
+				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubeSize);
 				}
 				image = texture.image;
 			}
 
-			for ( var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
+			for (var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
 				var face = Texture.CUBE_FACES[faceIndex];
 
 				if (!image) {
@@ -801,7 +801,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.checkRescale = function(texture, image, width, height, maxSize) {
+	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
@@ -819,7 +819,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.getGLWrap = function(wrap) {
+	Renderer.prototype.getGLWrap = function (wrap) {
 		switch (wrap) {
 			case 'Repeat':
 				return WebGLRenderingContext.REPEAT;
@@ -831,7 +831,7 @@ function (
 		throw "invalid WrapMode type: " + wrap;
 	};
 
-	Renderer.prototype.getGLInternalFormat = function(format) {
+	Renderer.prototype.getGLInternalFormat = function (format) {
 		switch (format) {
 			case 'RGBA':
 				return WebGLRenderingContext.RGBA;
@@ -850,7 +850,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.getGLPixelDataType = function(type) {
+	Renderer.prototype.getGLPixelDataType = function (type) {
 		switch (type) {
 			case 'UnsignedByte':
 				return WebGLRenderingContext.UNSIGNED_BYTE;
@@ -867,7 +867,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.getFilterFallback = function(filter) {
+	Renderer.prototype.getFilterFallback = function (filter) {
 		switch (filter) {
 			case 'NearestNeighborNoMipMaps':
 			case 'NearestNeighborNearestMipMap':
@@ -882,7 +882,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.getGLMagFilter = function(filter) {
+	Renderer.prototype.getGLMagFilter = function (filter) {
 		switch (filter) {
 			case 'Bilinear':
 				return WebGLRenderingContext.LINEAR;
@@ -892,7 +892,7 @@ function (
 		throw "invalid MagnificationFilter type: " + filter;
 	};
 
-	Renderer.prototype.getGLMinFilter = function(filter) {
+	Renderer.prototype.getGLMinFilter = function (filter) {
 		switch (filter) {
 			case 'BilinearNoMipMaps':
 				return WebGLRenderingContext.LINEAR;
@@ -910,7 +910,7 @@ function (
 		throw "invalid MinificationFilter type: " + filter;
 	};
 
-	Renderer.prototype.getGLBufferTarget = function(target) {
+	Renderer.prototype.getGLBufferTarget = function (target) {
 		if (target === 'ElementArrayBuffer') {
 			return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
 		}
@@ -918,7 +918,7 @@ function (
 		return WebGLRenderingContext.ARRAY_BUFFER;
 	};
 
-	Renderer.prototype.getGLArrayType = function(indices) {
+	Renderer.prototype.getGLArrayType = function (indices) {
 		if (indices instanceof Uint8Array) {
 			return WebGLRenderingContext.UNSIGNED_BYTE;
 		} else if (indices instanceof Uint16Array) {
@@ -938,7 +938,7 @@ function (
 		// indices);
 	};
 
-	Renderer.prototype.getGLByteSize = function(indices) {
+	Renderer.prototype.getGLByteSize = function (indices) {
 		if (indices instanceof Uint8Array) {
 			return 1;
 		} else if (indices instanceof Uint16Array) {
@@ -956,7 +956,7 @@ function (
 		return 1;
 	};
 
-	Renderer.prototype.getGLCubeMapFace = function(face) {
+	Renderer.prototype.getGLCubeMapFace = function (face) {
 		switch (face) {
 			case 'PositiveX':
 				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
@@ -974,7 +974,7 @@ function (
 		throw 'Invalid cubemap face: ' + face;
 	};
 
-	Renderer.prototype.getGLBufferUsage = function(usage) {
+	Renderer.prototype.getGLBufferUsage = function (usage) {
 		var glMode = WebGLRenderingContext.STATIC_DRAW;
 		switch (usage) {
 			case 'StaticDraw':
@@ -990,7 +990,7 @@ function (
 		return glMode;
 	};
 
-	Renderer.prototype.getGLIndexMode = function(indexMode) {
+	Renderer.prototype.getGLIndexMode = function (indexMode) {
 		var glMode = WebGLRenderingContext.TRIANGLES;
 		switch (indexMode) {
 			case 'Triangles':
@@ -1018,7 +1018,7 @@ function (
 		return glMode;
 	};
 
-	Renderer.prototype.updateBlending = function(material) {
+	Renderer.prototype.updateBlending = function (material) {
 		var blendRecord = this.rendererRecord.blendRecord;
 		var context = this.context;
 
@@ -1079,7 +1079,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateOffset = function(material) {
+	Renderer.prototype.updateOffset = function (material) {
 		var offsetRecord = this.rendererRecord.offsetRecord;
 		var context = this.context;
 
@@ -1105,7 +1105,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.setBoundBuffer = function(buffer, target) {
+	Renderer.prototype.setBoundBuffer = function (buffer, target) {
 		var targetBuffer = this.rendererRecord.currentBuffer[target];
 		if (!targetBuffer.valid || targetBuffer.buffer !== buffer) {
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
@@ -1120,8 +1120,7 @@ function (
 		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 	};
 
-	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
-	Renderer.prototype.getGLDataType = function(type) {
+	Renderer.prototype.getGLDataType = function (type) {
 		switch (type) {
 			case 'Float':
 			case 'HalfFloat':
@@ -1139,11 +1138,13 @@ function (
 				return WebGLRenderingContext.INT;
 			case 'UnsignedInt':
 				return WebGLRenderingContext.UNSIGNED_INT;
+
+			default:
+				throw 'Unknown datatype: ' + type;
 		}
 	};
 
-	// REVIEW: Rewrite as a map object? (http://jsperf.com/performance-of-assigning-variables-in-javascript)
-	Renderer.prototype.getGLBlendParam = function(param) {
+	Renderer.prototype.getGLBlendParam = function (param) {
 		switch (param) {
 			case 'AddEquation':
 				return WebGLRenderingContext.FUNC_ADD;
@@ -1181,7 +1182,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.clear = function(color, depth, stencil) {
+	Renderer.prototype.clear = function (color, depth, stencil) {
 		var bits = 0;
 
 		if (color === undefined || color) {
@@ -1197,17 +1198,17 @@ function (
 		this.context.clear(bits);
 	};
 
-	Renderer.prototype.flush = function() {
+	Renderer.prototype.flush = function () {
 		this.context.flush();
 	};
 
-	Renderer.prototype.finish = function() {
+	Renderer.prototype.finish = function () {
 		this.context.finish();
 	};
 
 	// ---------------------------------------------
 
-	Renderer.prototype.setupFrameBuffer = function(framebuffer, renderTarget, textureTarget) {
+	Renderer.prototype.setupFrameBuffer = function (framebuffer, renderTarget, textureTarget) {
 		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, framebuffer);
 		if(renderTarget.format == 'Depth') {
 			this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.DEPTH_ATTACHMENT, textureTarget, renderTarget.glTexture, 0);
@@ -1217,7 +1218,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.setupRenderBuffer = function(renderbuffer, renderTarget) {
+	Renderer.prototype.setupRenderBuffer = function (renderbuffer, renderTarget) {
 		this.context.bindRenderbuffer(WebGLRenderingContext.RENDERBUFFER, renderbuffer);
 
 		if (renderTarget.depthBuffer && !renderTarget.stencilBuffer) {
@@ -1236,7 +1237,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.setRenderTarget = function(renderTarget) {
+	Renderer.prototype.setRenderTarget = function (renderTarget) {
 		if (renderTarget && !renderTarget._glFrameBuffer) {
 			if (renderTarget.depthBuffer === undefined) {
 				renderTarget.depthBuffer = true;
@@ -1330,7 +1331,7 @@ function (
 		this.currentHeight = height;
 	};
 
-	Renderer.prototype.updateRenderTargetMipmap = function(renderTarget) {
+	Renderer.prototype.updateRenderTargetMipmap = function (renderTarget) {
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);

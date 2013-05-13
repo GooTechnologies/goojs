@@ -1,5 +1,5 @@
 define([],
-/** @lends MathUtils */
+/** @lends */
 function () {
 	"use strict";
 
@@ -11,7 +11,7 @@ function () {
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
 
-	function MathUtils () {
+	function MathUtils() {
 	}
 
 	/* ====================================================================== */

@@ -1,7 +1,7 @@
 define([
 	'goo/math/Vector3'
 ],
-/** @lends BoundingVolume */
+/** @lends */
 function(
 	Vector3
 ) {

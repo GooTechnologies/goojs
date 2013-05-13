@@ -1,5 +1,5 @@
 define(['goo/animation/state/SteadyState'],
-/** @lends AnimationLayer */
+/** @lends */
 function (SteadyState) {
 	"use strict";
 

@@ -12,14 +12,15 @@ define([
 		'goo/renderer/Material',
 		'goo/renderer/shaders/ShaderLib',
 		'goo/math/MathUtils',
+		'goo/renderer/bounds/BoundingBox',
 
-		'goo/lib/rsvp.amd',
+		'goo/util/rsvp',
 
 		'goo/loaders/MaterialLoader',
 		'goo/loaders/MeshLoader',
 		'goo/loaders/Loader'
 	],
-/** @lends EntityLoader */
+/** @lends */
 function(
 		Entity,
 		Camera,
@@ -32,6 +33,7 @@ function(
 		Material,
 		ShaderLib,
 		MathUtils,
+		BoundingBox,
 
 		RSVP,
 
@@ -42,11 +44,13 @@ function(
 	"use strict";
 
 	/**
-	 * Utility class for loading an entities into a World.
+	 * @class Utility class for loading an entities into a World.
 	 *
 	 * @constructor
+	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {Loader} parameters.loader
+	 * @param {boolean} parameters.cacheShader Uses same instance of shader for equal shaderRefs. Doesn't work for animated meshes
 	 */
 	function EntityLoader(parameters) {
 		if(typeof parameters === "undefined" || parameters === null) {
@@ -65,27 +69,36 @@ function(
 		this._world = parameters.world;
 
 		this._cache = {};
-		this._materialLoader = new MaterialLoader({ loader: this._loader });
+		this._materialLoader = new MaterialLoader({ loader: this._loader, cacheShader: parameters.cacheShader });
 		this._meshLoader = new MeshLoader({ loader: this._loader });
 	}
 
 	/**
-	 * Loads the entity at <code>entityPath</code>.
-	 *
-	 * @param {string} entityPath Relative path to the entity.
-	 * @return {Promise} The promise is resolved with the loaded Entity object.
+	 * Loads the entity at <code>entityRef</code>.
+	 * @example
+	 * entityLoader.load('entities/entity.ent').then(function(entity) {
+	 *   // handle {@link Entity} entity, maybe {@link Entity#addToWorld|entity.addToWorld()}
+	 * });
+	 * @param {string} entityRef Relative path to the entity.
+	 * @return {RSVP.Promise} The promise is resolved with the loaded Entity object.
 	 */
 	EntityLoader.prototype.load = function(entityRef) {
-		var that = this;
-		var promise = this._loader.load(entityRef+'.json', function(data) {
-			return that._parse(data, entityRef);
-		});
+		if (this._cache[entityRef]) {
+			return this._cache[entityRef];
+		}
+		var promise = this._loader.load(entityRef, (function(data) {
+			return this._parse(data, entityRef);
+		}).bind(this));
 		this._cache[entityRef] = promise;
 		return promise;
 	};
 
 
-	EntityLoader.prototype._parse = function(entitySource) {
+	EntityLoader.prototype._parse = function(entitySource, entityRef) {
+		// REVIEW martin: Why this check? Instead make sure config is always an object, not a string
+		if (typeof entitySource === 'string') {
+			entitySource = JSON.parse(entitySource);
+		}
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
@@ -138,6 +151,7 @@ function(
 		return RSVP.all(promises)
 		.then(function() {
 			var entity = new Entity(that._world, entitySource.name);
+			entity.ref = entityRef;
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
 					entity.clearComponent('transformComponent');
@@ -163,22 +177,28 @@ function(
 		});
 	};
 
+	/**
+	 * Creates a TransformComponent from the given config.
+	 * Also loads the entity's parent if any, and sets its child.
+	 * @param transformComponentSource Config for the transform component.
+	 * @returns {TransformComponent}
+	 * @private
+	 */
 	EntityLoader.prototype._getTransformComponent = function(transformComponentSource) {
-		// Create a transform
+
 		var tc = new TransformComponent();
 
-		tc.transform.translation = new Vector3(transformComponentSource.translation);
-		tc.transform.scale = new Vector3(transformComponentSource.scale);
-
+		tc.transform.translation.set(transformComponentSource.translation);
+		tc.transform.scale.set(transformComponentSource.scale);
 		tc.transform.rotation.fromAngles(
 			MathUtils.radFromDeg(transformComponentSource.rotation[0]),
 			MathUtils.radFromDeg(transformComponentSource.rotation[1]),
 			MathUtils.radFromDeg(transformComponentSource.rotation[2])
 		);
 
-		var p = transformComponentSource.parentRef;
-		if(p && this._cache[p]) {
-			this._cache[p].then(function(entity) {
+		var parentRef = transformComponentSource.parentRef;
+		if (parentRef) {
+			this.load(parentRef).then(function (entity) {
 				entity.transformComponent.attachChild(tc);
 				return entity;
 			});
@@ -203,7 +223,7 @@ function(
 		var ml = this._materialLoader;
 
 		for(var attribute in meshRendererComponentSource) {
-			if(attribute === 'materials') {
+			if(attribute === 'materialRefs') {
 				for(var i in meshRendererComponentSource[attribute]) {
 					var p = ml.load(meshRendererComponentSource[attribute][i]);
 					promises.push(p);
@@ -238,7 +258,7 @@ function(
 		var mdl = this._meshLoader;
 		for(var attribute in meshDataComponentSource) {
 			// var meshDataPromises = [];
-			if(attribute === 'mesh') {
+			if(attribute === 'meshRef') {
 				var p = mdl.load(meshDataComponentSource[attribute]);
 				promises.push(p);
 			}
@@ -249,6 +269,22 @@ function(
 		.then(function(data) {
 			// We placed the meshDataPromise first so it's at index 0
 			var mdc = new MeshDataComponent(data[0]);
+
+			// If boundingbox provided by data, don't calculate automatically
+			if (data[0].boundingBox) {
+				var min = data[0].boundingBox.min;
+				var max = data[0].boundingBox.max;
+				var size = [max[0]-min[0], max[1]-min[1], max[2]-min[2]];
+				var center = [(max[0]+min[0])*0.5, (max[1]+min[1])*0.5, (max[2]+min[2])*0.5];
+
+				var bounding = new BoundingBox();
+				bounding.xExtent = size[0];
+				bounding.yExtent = size[1];
+				bounding.zExtent = size[2];
+				bounding.center.seta(center);
+				mdc.modelBound = bounding;
+				mdc.autoCompute = false;
+			}
 
 			return mdc;
 		});

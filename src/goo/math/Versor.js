@@ -1,6 +1,14 @@
-define(["goo/math/Matrix3x3", "goo/math/Matrix4x4", "goo/math/Vector"],
-/** @lends Versor */
-function (Matrix3x3, Matrix4x4, Vector) {
+define([
+	'goo/math/Matrix3x3',
+	'goo/math/Matrix4x4',
+	'goo/math/Vector'
+],
+/** @lends */
+function (
+	Matrix3x3,
+	Matrix4x4,
+	Vector
+) {
 	"use strict";
 
 	/* ====================================================================== */
@@ -13,7 +21,7 @@ function (Matrix3x3, Matrix4x4, Vector) {
 	 * @param {Versor|Float[]|Float...} arguments Initial values for the components.
 	 */
 
-	function Versor () {
+	function Versor() {
 		Vector.call(this, 4);
 		var init = arguments.length !== 0 ? arguments : [0, 0, 0, 1];
 		this.set(init);

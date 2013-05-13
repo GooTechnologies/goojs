@@ -1,5 +1,5 @@
 define(function () {
-	/** @lends AbstractTwoPartSource */
+	/** @lends */
 	"use strict";
 
 	/**

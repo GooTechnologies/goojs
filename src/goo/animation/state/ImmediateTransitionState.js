@@ -1,5 +1,5 @@
 define(['goo/animation/state/AbstractTransitionState'],
-/** @lends ImmediateTransitionState */
+/** @lends */
 function (AbstractTransitionState) {
 	"use strict";
 

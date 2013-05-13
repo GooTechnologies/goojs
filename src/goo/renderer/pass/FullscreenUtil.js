@@ -1,5 +1,5 @@
 define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'],
-	/** @lends FullscreenUtil */
+	/** @lends */
 	function (ShapeCreator, Camera, Vector3) {
 	"use strict";
 

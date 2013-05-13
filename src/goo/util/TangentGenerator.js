@@ -3,7 +3,7 @@ define([
         'goo/math/Vector3',
         'goo/renderer/MeshData'
         ],
-	/** @lends TangentGenerator */
+	/** @lends */
 	function (
 		Vector2,
 		Vector3,
@@ -46,7 +46,7 @@ define([
 		}
 
 		var vertexCount = meshData.vertexCount;
-		var triangleCount = meshData.indexCount / 3; // TODO!
+		var triangleCount = meshData.indexCount / 3; // TODO: Handle other primitives than triangles
 
 		var tan1 = [];
 		var tan2 = [];

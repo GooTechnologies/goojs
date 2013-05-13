@@ -1,4 +1,4 @@
-define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix4x4", 'goo/math/MathUtils', 'goo/math/Vector3'], /** @lends CSSTransformSystem */
+define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix4x4", 'goo/math/MathUtils', 'goo/math/Vector3'], /** @lends */
 function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 	"use strict";
 

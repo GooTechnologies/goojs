@@ -1,8 +1,22 @@
 define(['goo/math/Vector', 'goo/math/Vector3'],
-/** @lends WASDControlScript */
+/** @lends */
 function (Vector, Vector3) {
 	"use strict";
 
+	/**
+	 * @class Makes an entity controllable via the WASD keys. Shift causes the entity to crawl.
+	 *
+	 * @param {Object} [properties] Script configuration
+	 * @param {Element} [properties.domElement] Element to add key listeners to
+	 * @param {number} [properties.walkSpeed=100.0] Regular moving speed.
+	 * @param {number} [properties.crawlSpeed=10.0] Crawling moving speed.
+	 * @param {Vector3} [properties.fwdVector=Vector3(0,0,-1)] A vector indicating the forward direction.
+	 * @param {Vector3} [properties.leftVector=Vector3(-1,0,0)] A vector indicating the left direction.
+	 * @param {number} [properties.crawlKey=16] Key code for crawl. (default: Shift)
+	 * @param {number} [properties.forwardKey=87] Key code to move forward. (default: W)
+	 * @param {number} [properties.backKey=83] Key code to move back. (default: S)
+	 * @param {number} [properties.strafeLeftKey=65] Key code to strafe left. (default: A)
+	 */
 	function WASDControlScript (properties) {
 
 		properties = properties || {};

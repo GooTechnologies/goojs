@@ -1,5 +1,5 @@
 define(['goo/math/Vector3', 'goo/math/MathUtils'],
-/** @lends Ray */
+/** @lends */
 function (Vector3, MathUtils) {
 	"use strict";
 

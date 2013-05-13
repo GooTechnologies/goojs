@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/Component'
 ],
-/** @lends SoundManager2Component */
+/** @lends */
 function(
 	Component
 ) {

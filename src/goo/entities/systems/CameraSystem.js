@@ -1,10 +1,10 @@
 define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'],
-	/** @lends CameraSystem */
+	/** @lends */
 	function (System, EventHandler, Renderer) {
 	"use strict";
 
 	/**
-	 * @class TODO: not finished
+	 * @class Updates cameras/cameracomponents with ther transform component transforms
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
