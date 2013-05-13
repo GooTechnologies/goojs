@@ -113,6 +113,7 @@ require(
 			//buildScene(goo);
 			//loadTestTriangle(goo);
 			createHouses(goo);
+//			createForest(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -267,7 +268,7 @@ require(
 
 			goo.callbacks.push(function() {
 
-				boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
+		boxEntity.transformComponent.transform.translation.x += (0.2 * Math.sin(goo.world.time));
 				boxEntity.transformComponent.transform.translation.z += (0.4 * Math.cos(goo.world.time));
 				boxEntity.transformComponent.setUpdated();
 
@@ -534,8 +535,49 @@ require(
 					translation.z += distance;
 				}
 			});
+		}
 
+		function createForest(goo) {
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+			var mLoader = new MeshLoader({'loader': loader});
 
+			var occPromise = mLoader.load('treeoccluder.mesh');
+			var roomPromise = mLoader.load('tree.mesh');
+
+			var width = 50;
+			var rows = 20;
+			var cols = 20;
+			var scale = 2;
+			var distance = 10;
+			distance *= scale;
+			var translation = new Vector3(-width, 0, -25);
+			var useBoundingBox = true;
+
+			var treeMaterial = new Material.createMaterial(ShaderLib.texturedLit, 'TreeMaterial');
+			var texture = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/tree_texture.jpg');
+			treeMaterial.textures.push(texture);
+
+			RSVP.all([occPromise, roomPromise]).then(function (meshes) {
+				var occluderMesh = meshes[0];
+				var treeMesh = meshes[1];
+
+				for (var i = 0; i < rows; i++) {
+					for (var j = 0; j < cols; j++) {
+
+						var entity = EntityUtils.createTypicalEntity(goo.world, treeMesh);
+						entity.setComponent(new OccluderComponent(occluderMesh));
+						entity.setComponent(new OccludeeComponent(treeMesh, useBoundingBox));
+						entity.meshRendererComponent.materials.push(treeMaterial);
+						entity.transformComponent.transform.translation.set(translation);
+						entity.transformComponent.transform.scale.setd(scale, scale, scale);
+						entity.addToWorld();
+
+						translation.x += distance;
+					}
+					translation.x = -width;
+					translation.z += distance;
+				}
+			});
 		}
 
 		function createBoundingSphereForEntity (world, entity) {
