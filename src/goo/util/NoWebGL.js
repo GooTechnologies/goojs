@@ -124,6 +124,8 @@ function() {
 							'<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->' +
 						'</feMerge>' +
 					'</filter>' +
+					// REVIEW: This also exists in GooRunner.js (with a few differences).
+					// Perhaps make a goo/util/logo.js that creates and styles the logo for our various needs?
 					'<path style="filter:url(#insetShadow)" fill="#FFFFFF" d="M303.337,46.286c-13.578,0-25.784,5.744-34.396,14.998c-9.86,10.59-26.319,10.59-36.172,0' +
 						'c-8.605-9.254-20.818-14.998-34.402-14.998c-25.936,0-46.971,21.034-46.971,46.978c0,25.936,21.035,46.972,46.971,46.972' +
 						'c13.584,0,25.797-5.744,34.402-14.998c9.853-10.598,26.325-10.598,36.172,0c8.612,9.254,20.818,14.998,34.396,14.998' +
