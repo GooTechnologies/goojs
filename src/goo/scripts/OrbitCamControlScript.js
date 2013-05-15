@@ -243,7 +243,6 @@ function (
 			});
 
 			hammertime.on('touch drag transform release', function (ev) {
-				console.log('Here');
 				switch (ev.type) {
 					case 'transform':
 						var scale = ev.gesture.scale;
