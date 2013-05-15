@@ -100,6 +100,8 @@ function (
 		};
 
 		this.setupMouseControls();
+
+		this.domElement.oncontextmenu = function() { return false; };
 	}
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
@@ -241,6 +243,7 @@ function (
 			});
 
 			hammertime.on('touch drag transform release', function (ev) {
+				console.log('Here');
 				switch (ev.type) {
 					case 'transform':
 						var scale = ev.gesture.scale;
