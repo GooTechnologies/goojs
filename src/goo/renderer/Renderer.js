@@ -98,7 +98,10 @@ function (
 		}
 
 		if (!this.context) {
-			throw 'WebGL is not supported! (Could not create WebGL context)';
+			throw {
+				name: 'GooWebGLError',
+				message: 'WebGL is not supported! (Could not create WebGL context)'
+			};
 		}
 
 		if (parameters.debug) {
