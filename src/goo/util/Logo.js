@@ -4,7 +4,7 @@ function() {
 	'use strict';
 	/**
 	 * @class Get logo svg in different formats
-	 * @description
+	 * @description Only used to define the class. Should never be instantiated.
 	 */
 	function Logo() {
 	}
