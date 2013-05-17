@@ -29,7 +29,12 @@ require(
 		'goo/loaders/Loader',
 		'goo/loaders/EntityLoader',
 		'goo/loaders/MeshLoader',
-		'goo/lib/rsvp.amd'
+		'goo/util/rsvp',
+		'goo/util/TangentGenerator',
+		'goo/renderer/MeshData',
+		'goo/renderer/Shader',
+		'goo/renderer/light/PointLight',
+		'goo/entities/components/LightComponent'
 	],
 	function (
 		GooRunner,
@@ -54,7 +59,12 @@ require(
 		Loader,
 		EntityLoader,
 		MeshLoader,
-		RSVP
+		RSVP,
+		TangentGenerator,
+		MeshData,
+		Shader,
+		PointLight,
+		LightComponent
 	) {
 		'use strict';
 
@@ -97,11 +107,10 @@ require(
 			});
 
 			gui = new window.dat.GUI();
-			gui.add(quadMaterial, 'wireframe');
 			gui.add(partitionPicker, 'toggleOcclusionCulling');
 
 			// Add camera
-			var camera = new Camera(45, 1, 1, 400);
+			var camera = new Camera(90, 1, 1, 1000);
 
 			var cameraEntity = goo.world.createEntity('CameraEntity');
 
@@ -110,10 +119,17 @@ require(
 			cameraEntity.transformComponent.transform.translation.set(0, 1.79, 10);
 			cameraEntity.addToWorld();
 
+			// Add a torch to the camera.
+			var pointLight = new PointLight();
+			pointLight.color.setd(0.89453125, 0.47265625, 0.05859375, 1.0);
+			pointLight.range = 100;
+			cameraEntity.setComponent(new LightComponent(pointLight));
+
+
 			//buildScene(goo);
 			//loadTestTriangle(goo);
-			createHouses(goo);
-//			createForest(goo);
+//			createHouses(goo);
+			createForest(goo);
 
 			setupOcclusionCulling(goo, camera);
 		}
@@ -505,13 +521,14 @@ require(
 			var occPromise = mLoader.load('box.mesh');
 			var roomPromise = mLoader.load('house.mesh');
 
-			var width = 50;
+
 			var rows = 20;
 			var cols = 20;
-			var scale = 2;
-			var distance = 5;
+			var startX = -65;
+			var scale = 2.0;
+			var distance = 7;
 			distance *= scale;
-			var translation = new Vector3(-width, 0, -25);
+			var translation = new Vector3(startX, 0, -25);
 			var useBoundingBox = true;
 
 			RSVP.all([occPromise, roomPromise]).then(function (meshes) {
@@ -531,52 +548,155 @@ require(
 
 						translation.x += distance;
 					}
-					translation.x = -width;
+					translation.x = startX;
 					translation.z += distance;
 				}
 			});
 		}
 
 		function createForest(goo) {
-			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/'});
+
+			var rotScript = {
+				run: function (entity) {
+					var transformComponent = entity.transformComponent;
+					entity.transformComponent.transform.setRotationXYZ(
+						0,
+						goo.world.time * 0.2,
+						0
+					);
+					transformComponent.setUpdated();
+				}
+			};
+
+			var groundSize = 10000;
+			var textureRepeats = Math.ceil(groundSize);
+			var groundMesh = ShapeCreator.createQuad(groundSize, groundSize, textureRepeats, textureRepeats);
+			var groundEntity = EntityUtils.createTypicalEntity(goo.world, groundMesh);
+			var groundMaterial = new Material('GroundMaterial');
+			groundMaterial.shader = Material.createShader(treeAndGroundShader(), 'GroundShader');
+			var groundTexture = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/groundmoss.jpg');
+			groundMaterial.textures.push(groundTexture);
+			groundEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2,0,0);
+			groundEntity.meshRendererComponent.materials.push(groundMaterial);
+			groundEntity.addToWorld();
+//			groundEntity.setComponent(new ScriptComponent(rotScript));
+
+			var loader = new Loader({'rootPath': resourcePath + '/blenderexport/meshes/'});
 			var mLoader = new MeshLoader({'loader': loader});
 
-			var occPromise = mLoader.load('treeoccluder.mesh');
-			var roomPromise = mLoader.load('tree.mesh');
+			var treeOccluderPromise = mLoader.load('treeoccluder.mesh.json');
+			var treePromise = mLoader.load('tree.mesh.json');
+			var housePromise = mLoader.load('lowres.mesh');
+			var houseOccluderPromise = mLoader.load('occluder.mesh');
+			var duckPromise = mLoader.load('duck.mesh');
 
-			var width = 50;
+			var treeMaterial = new Material('TreeMaterial');
+			treeMaterial.wireframeColor = [0.1, 0.85, 0.1];
+			treeMaterial.shader = Material.createShader(treeAndGroundShader(), 'TreeShader');
+			var treeTexture = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/tree_texture.jpg');
+			treeMaterial.textures.push(treeTexture);
+
+			var duckMaterial = new Material('DuckMat');
+			duckMaterial.wireframeColor = [0.8, 0.8, 0.05];
+			duckMaterial.shader = Material.createShader(treeAndGroundShader(), 'TreeShader');
+			var duckTexture = new TextureCreator().loadTexture2D(resourcePath + "/blenderexport/ducktexture.jpg");
+			duckMaterial.textures.push(duckTexture);
+
+			var duckScript = {
+				run: function (entity) {
+					var t = entity._world.time;
+
+					var transformComponent = entity.transformComponent;
+					transformComponent.transform.translation.x = Math.sin(t * 1.0) * 10;
+					transformComponent.transform.translation.y = 0;
+					transformComponent.transform.translation.z = Math.cos(t * 1.0) * 10;
+					transformComponent.setUpdated();
+				}
+			};
+
+			var houseMaterial = new Material('HouseMaterial');
+			houseMaterial.wireframeColor = [0.85, 0.1, 0.1];
+			houseMaterial.shader = Material.createShader(createHouseShader(), 'HouseShader');
+			var houseDiffuse = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/stonehouse_texture.jpg');
+			var houseNormal = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/normalbake.png');
+			var houseSpecular = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/specularmap.png');
+			houseMaterial.textures.push(houseDiffuse);
+			houseMaterial.textures.push(houseNormal);
+			houseMaterial.textures.push(houseSpecular);
+
+			gui.add(treeMaterial, 'wireframe');
+			gui.add(houseMaterial, 'wireframe');
+			gui.add(duckMaterial, 'wireframe');
+
+			var width = 85;
 			var rows = 20;
 			var cols = 20;
-			var scale = 2;
-			var distance = 10;
-			distance *= scale;
-			var translation = new Vector3(-width, 0, -25);
+			var treeScale = 1.8;
+			var distance = 13.5;
+			distance *= treeScale;
+			var treeHalfHeight = 5.2;
+			var treeTranslation = new Vector3(-width, treeHalfHeight, 0);
 			var useBoundingBox = true;
 
-			var treeMaterial = new Material.createMaterial(ShaderLib.texturedLit, 'TreeMaterial');
-			var texture = new TextureCreator().loadTexture2D(resourcePath + '/blenderexport/tree_texture.jpg');
-			treeMaterial.textures.push(texture);
-
-			RSVP.all([occPromise, roomPromise]).then(function (meshes) {
-				var occluderMesh = meshes[0];
+			RSVP.all([treeOccluderPromise, treePromise, housePromise, houseOccluderPromise, duckPromise]).then(function (meshes) {
+				var treeOccluder = meshes[0];
 				var treeMesh = meshes[1];
+				var houseMesh = meshes[2];
+				var houseOccluder = meshes[3];
+				var duckMesh = meshes[4];
+
+				TangentGenerator.addTangentBuffer(houseMesh, 0);
+
+
 
 				for (var i = 0; i < rows; i++) {
 					for (var j = 0; j < cols; j++) {
+						var treeEntity = EntityUtils.createTypicalEntity(goo.world, treeMesh);
+//						treeEntity.setComponent(new OccluderComponent(treeOccluder));
+						treeEntity.setComponent(new OccludeeComponent(treeMesh, useBoundingBox));
+						treeEntity.meshRendererComponent.materials.push(treeMaterial);
 
-						var entity = EntityUtils.createTypicalEntity(goo.world, treeMesh);
-						entity.setComponent(new OccluderComponent(occluderMesh));
-						entity.setComponent(new OccludeeComponent(treeMesh, useBoundingBox));
-						entity.meshRendererComponent.materials.push(treeMaterial);
-						entity.transformComponent.transform.translation.set(translation);
-						entity.transformComponent.transform.scale.setd(scale, scale, scale);
-						entity.addToWorld();
+						var randomScale = Math.random() * 0.3 + 0.7;
+						randomScale *= treeScale;
 
-						translation.x += distance;
+						var randomRadian = Math.random() * Math.PI * 2.0;
+						var randomRadius = Math.random() * distance * 0.4;
+						var offsetX = randomRadius * Math.cos(randomRadian);
+						var offsetZ = randomRadius * Math.sin(randomRadian);
+
+						treeEntity.transformComponent.transform.translation.setd(treeTranslation.x + offsetX, treeHalfHeight * randomScale, treeTranslation.z + offsetZ);
+						treeEntity.transformComponent.transform.scale.setd(randomScale, randomScale, randomScale);
+						treeEntity.transformComponent.transform.setRotationXYZ(0, Math.random() * 180, 0);
+						treeEntity.addToWorld();
+
+						// Add a flying rubber duck to each tree.
+						var duckEntity = EntityUtils.createTypicalEntity(goo.world, duckMesh);
+						duckEntity.setComponent(new OccludeeComponent(duckMesh, useBoundingBox));
+						duckEntity.transformComponent.parent = treeEntity.transformComponent;
+						var duckscale = 0.2;
+						duckEntity.transformComponent.transform.scale.setd(duckscale, duckscale, duckscale);
+						duckEntity.transformComponent.transform.translation.setd(treeTranslation.x + offsetX, 0, treeTranslation.z + offsetZ);
+						duckEntity.meshRendererComponent.materials.push(duckMaterial);
+						duckEntity.setComponent(new ScriptComponent(duckScript));
+						duckEntity.addToWorld();
+
+						if (j % 2) {
+							var houseEntity = EntityUtils.createTypicalEntity(goo.world, houseMesh);
+							houseEntity.setComponent(new OccluderComponent(houseOccluder));
+							houseEntity.setComponent(new OccludeeComponent(houseMesh, useBoundingBox));
+							houseEntity.meshRendererComponent.materials.push(houseMaterial);
+							houseEntity.transformComponent.transform.translation.setd(treeTranslation.x - offsetX, 4.5, treeTranslation.z - offsetZ);
+							houseEntity.transformComponent.transform.setRotationXYZ(0, Math.random() * 180, 0);
+							houseEntity.addToWorld();
+						}
+
+						treeTranslation.x += distance;
 					}
-					translation.x = -width;
-					translation.z += distance;
+					treeTranslation.x = -width;
+					treeTranslation.z += distance;
 				}
+
+
 			});
 		}
 
@@ -600,6 +720,207 @@ require(
 			boundentity.meshRendererComponent.materials.push(material);
 			boundentity.addToWorld();
 			return boundentity;
+		}
+
+		function createHouseShader() {
+			return {
+				attributes : {
+					vertexPosition : MeshData.POSITION,
+					vertexUV0 : MeshData.TEXCOORD0,
+					vertexNormal : MeshData.NORMAL,
+					vertexTangent : MeshData.TANGENT
+				},
+				uniforms : {
+					viewMatrix : Shader.VIEW_MATRIX,
+					projectionMatrix : Shader.PROJECTION_MATRIX,
+					worldMatrix : Shader.WORLD_MATRIX,
+					cameraPosition : Shader.CAMERA,
+					lightPosition : Shader.LIGHT0,
+					diffuseMap : Shader.TEXTURE0,
+					normalMap : Shader.TEXTURE1,
+					specularMap : Shader.TEXTURE2
+				},
+				vshader : [ //
+					'attribute vec3 vertexPosition;', //
+					'attribute vec2 vertexUV0;', //
+					'attribute vec3 vertexNormal;', //
+					'attribute vec4 vertexTangent;', //
+
+					'uniform mat4 viewMatrix;', //
+					'uniform mat4 projectionMatrix;',//
+					'uniform mat4 worldMatrix;',//
+					'uniform vec3 cameraPosition;', //
+					'uniform vec3 lightPosition;', //
+
+					'varying vec2 texCoord0;',//
+					'varying vec3 eyeVec;',//
+					'varying vec3 lightVec;',//
+					'varying mat3 rotInv;',
+
+					'void main(void) {', //
+					'	texCoord0 = vertexUV0;',//
+
+					'	vec3 worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
+
+					'	mat3 normalMatrix = mat3(worldMatrix);',
+
+					'	vec3 n = normalize(normalMatrix * vertexNormal);',
+					'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
+					'	vec3 b = cross(n, t) * vertexTangent.w;',
+					'	mat3 rotMat = mat3(t, b, n);',
+					'	rotInv = rotMat;',
+
+					'	vec3 eyeDir = worldPos - cameraPosition;',
+					'	eyeVec = eyeDir * rotMat;',
+
+					'	vec3 lightDir = lightPosition - worldPos;',
+					'	lightVec = lightDir * rotMat;',
+
+
+					'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+					'}'//
+				].join('\n'),
+				fshader : [//
+					'precision mediump float;',//
+
+					'uniform sampler2D diffuseMap;',//
+					'uniform sampler2D normalMap;',//
+					'uniform sampler2D specularMap;',//
+
+					'varying vec2 texCoord0;',//
+					'varying vec3 eyeVec;',//
+					'varying vec3 lightVec;',//
+					'varying mat3 rotInv;',
+
+					'void main(void)',//
+					'{',//
+					'	vec4 diffuseColor = texture2D(diffuseMap, texCoord0);',//
+					'	vec3 N = texture2D(normalMap, texCoord0).rgb * 2.0 - 1.0;',//
+					'   vec3 L = normalize(lightVec);',
+					'   float Ak = 0.1;',// Add constant ambient illumination.
+					'	float Dk = max(dot(L, N), 0.0) * 0.9;',// 1 - Ak = 0.85
+					'   vec4 Ia = Ak * diffuseColor;',
+					'   vec4 Id;',
+					'   vec4 Is;',
+					'   vec4 finalColor = Ia;',
+					'   vec4 lightColor = vec4(0.8, 0.45, 0.1, 1.0);',
+
+					'if (Dk > 0.0) {',
+					'       float lightDistance = length(lightVec);',
+
+					'       Id = Dk * mix(diffuseColor, lightColor, 0.25);',
+
+					'       float specularIntensity = texture2D(specularMap, texCoord0).r;',//
+					'       vec4 specularColor = vec4(0.8);',
+					'		vec3 E = normalize(eyeVec);',//
+					'		vec3 R = -reflect(-L, N);',//
+					'       float EdotR = clamp(dot(E, R), 0.0, 1.0);',//
+					'       float specPow = pow(EdotR, 32.0);',//'
+					'       Is = specularColor * specPow * specularIntensity;',
+
+					'       float linearAtt = 0.20;',
+					'       float quadraticAtt = 0.03;',
+					'       float attenuation = 1.0 / (linearAtt * lightDistance + quadraticAtt * lightDistance * lightDistance );',
+					'		finalColor += (Id + Is) * attenuation;',
+					'}',
+					'	gl_FragColor = finalColor;',//
+					'}'//
+				].join('\n')
+			};
+		}
+
+		/**
+		 * Copypasted and modified ShaderLib.texturedLit with light attenuation.
+		 */
+		function treeAndGroundShader () {
+			return {
+				attributes : {
+					vertexPosition : MeshData.POSITION,
+					vertexNormal : MeshData.NORMAL,
+					vertexUV0 : MeshData.TEXCOORD0
+				},
+				uniforms : {
+					viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+					worldMatrix : Shader.WORLD_MATRIX,
+					cameraPosition : Shader.CAMERA,
+					lightPosition : Shader.LIGHT0,
+					diffuseMap : Shader.TEXTURE0,
+					materialAmbient : Shader.AMBIENT,
+					materialDiffuse : Shader.DIFFUSE,
+					materialSpecular : Shader.SPECULAR,
+					materialSpecularPower : Shader.SPECULAR_POWER
+				},
+				vshader : [ //
+					'attribute vec3 vertexPosition;', //
+					'attribute vec3 vertexNormal;', //
+					'attribute vec2 vertexUV0;', //
+
+					'uniform mat4 viewProjectionMatrix;',
+					'uniform mat4 worldMatrix;',//
+					'uniform vec3 cameraPosition;', //
+					'uniform vec3 lightPosition;', //
+
+					'varying vec3 normal;',//
+					'varying vec3 lightDir;',//
+					'varying vec3 eyeVec;',//
+					'varying vec2 texCoord0;',//
+
+					'void main(void) {', //
+					'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+					'	gl_Position = viewProjectionMatrix * worldPos;', //
+
+					'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
+					'	texCoord0 = vertexUV0;', //
+					'	lightDir = lightPosition - worldPos.xyz;', //
+					'	eyeVec = cameraPosition - worldPos.xyz;', //
+					'}'//
+				].join('\n'),
+				fshader : [//
+					// 'precision mediump float;',//
+					'precision highp float;',//
+
+					'uniform sampler2D diffuseMap;',//
+
+					'uniform vec4 materialAmbient;',//
+					'uniform vec4 materialDiffuse;',//
+					'uniform vec4 materialSpecular;',//
+					'uniform float materialSpecularPower;',//
+
+					'varying vec3 normal;',//
+					'varying vec3 lightDir;',//
+					'varying vec3 eyeVec;',//
+					'varying vec2 texCoord0;',//
+
+					'void main(void)',//
+					'{',//
+					'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
+					'	vec3 N = normalize(normal);',//
+					'	vec3 L = normalize(lightDir);',//
+
+					'   vec4 final_color = 0.15 * texCol;', // Ambient
+					'	float lambertTerm = dot(N,L) * 0.85;',//
+					'   vec4 lightColor = vec4(0.8, 0.45, 0.1, 1.0);',
+
+					'	if(lambertTerm > 0.0)',//
+					'	{',//
+					'       vec4 diffuseComponent = mix(texCol, lightColor, 0.25) * lambertTerm;',
+
+					'		vec3 E = normalize(eyeVec);',//
+					'		vec3 R = reflect(-L, N);',//
+					'		float specular = pow( clamp(dot(R, E), 0.0, 1.0), 20.0);',//
+					'		vec4 specularComponent = materialSpecular * // gl_LightSource[0].specular * ',//
+					'			specular;',//
+
+					'       float lightDistance = length(lightDir);',
+					'       float linearAtt = 0.07;',
+					'       float quadraticAtt = 0.03;',
+					'       float attenuation = 1.0 / (linearAtt * lightDistance + quadraticAtt * lightDistance * lightDistance );',
+					'       final_color += (diffuseComponent + specularComponent * 0.1) * attenuation;',
+					'	}',//
+						'	gl_FragColor = vec4(final_color.rgb, texCol.a);',//
+					'}'//
+				].join('\n')
+			};
 		}
 
 		init();

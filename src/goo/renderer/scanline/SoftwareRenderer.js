@@ -166,7 +166,14 @@ define([
 			var entity = renderList[i];
 			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
 				var cull;
-				var bound = entity.occludeeComponent.modelBound;
+				var bound;
+				var ocludeeComponent = entity.occludeeComponent;
+				if (ocludeeComponent) {
+					bound = entity.occludeeComponent.modelBound;
+				} else {
+					bound = entity.modelBound;
+				}
+
 				if (bound instanceof BoundingSphere) {
 					cull = this.boundingSphereModule.occlusionCull(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (bound instanceof BoundingBox) {
@@ -1398,11 +1405,11 @@ define([
 		}
 
 		if (leftZ < 0 || leftZ > 1.0000001) {
-			console.error("leftZ : ", leftZ);
+//			console.error("leftZ : ", leftZ);
 		}
 
 		if (rightZ < 0 || rightZ > 1.0000001) {
-			console.error("rightZ : ", rightZ);
+//			console.error("rightZ : ", rightZ);
 		}
 
 		// Horizontal clipping
