@@ -149,25 +149,9 @@ function (
 
 		// Bind uniforms
 		if (this.uniforms) {
-			var materialUniforms = shaderInfo.material.uniforms;
 			try {
 				for (var name in this.uniforms) {
-					var mapping = this.uniformCallMapping[name];
-					if (!mapping) {
-						// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
-						continue;
-					}
-					var defValue = materialUniforms[name] || this.uniforms[name];
-
-					if (typeof defValue === 'string') {
-						var callback = this.currentCallbacks[name];
-						if (callback) {
-							callback(mapping, shaderInfo);
-						}
-					} else {
-						var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
-						mapping.call(value);
-					}
+					this._bindUniform(name, shaderInfo);
 				}
 				this.errorOnce = false;
 			} catch (err) {
@@ -176,6 +160,25 @@ function (
 					this.errorOnce = true;
 				}
 			}
+		}
+	};
+
+	Shader.prototype._bindUniform = function (name, shaderInfo) {
+		var mapping = this.uniformCallMapping[name];
+		if (!mapping) {
+			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
+			return;
+		}
+		var defValue = shaderInfo.material.uniforms[name] || this.uniforms[name];
+
+		if (typeof defValue === 'string') {
+			var callback = this.currentCallbacks[name];
+			if (callback) {
+				callback(mapping, shaderInfo);
+			}
+		} else {
+			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
+			mapping.call(value);
 		}
 	};
 

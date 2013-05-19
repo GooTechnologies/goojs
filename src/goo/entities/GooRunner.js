@@ -52,10 +52,8 @@ function (
 		this.world = new World();
 		this.renderer = new Renderer(parameters);
 
-		// this.world.setManager(new TagManager());
 		this.world.setManager(new LightManager());
 
-		// this.world.setSystem(new LoadingSystem());
 		this.world.setSystem(new ScriptSystem());
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
@@ -63,8 +61,8 @@ function (
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
-		var renderSystem = this.renderSystem = new RenderSystem();
-		this.world.setSystem(renderSystem);
+		this.renderSystem = new RenderSystem();
+		this.world.setSystem(this.renderSystem);
 
 		this.doRender = true;
 
@@ -112,49 +110,7 @@ function (
 		this.start = -1;
 		this.run = function (time) {
 			try {
-				if (that.start < 0) {
-					that.start = time;
-				}
-				that.world.tpf = (time - that.start) / 1000.0;
-				that.world.time += that.world.tpf;
-				World.time = that.world.time;
-				that.start = time;
-				if (that.world.tpf < 0) {// skip a loop - original start time probably bad.
-					that.world.time = 0;
-					that.world.tpf = 0;
-					World.time = 0;
-					that.animationId = window.requestAnimationFrame(that.run);
-					return;
-				} else if (that.world.tpf > 0.5) {
-					that.animationId = window.requestAnimationFrame(that.run);
-					return;
-				}
-
-				for (var i = 0; i < that.callbacksPreProcess.length; i++) {
-					that.callbacksPreProcess[i](that.world.tpf);
-				}
-
-				that.world.process();
-
-				for (var i = 0; i < that.callbacksPreRender.length; i++) {
-					that.callbacksPreRender[i](that.world.tpf);
-				}
-
-				that.renderer.info.reset();
-
-				if (that.doRender) {
-					renderSystem.render(that.renderer);
-				}
-
-				for (var i = 0; i < that.callbacks.length; i++) {
-					that.callbacks[i](that.world.tpf);
-				}
-
-				if (that.stats) {
-					that.stats.update(that.renderer.info);
-				}
-
-				that.animationId = window.requestAnimationFrame(that.run);
+				that._updateFrame(time);
 			} catch (e) {
 				if (e instanceof Error) {
 					console.error(e.stack);
@@ -187,11 +143,63 @@ function (
 		};
 	}
 
+	GooRunner.prototype._updateFrame = function (time) {
+		if (this.start < 0) {
+			this.start = time;
+		}
+		this.world.tpf = (time - this.start) / 1000.0;
+		this.world.time += this.world.tpf;
+		World.time = this.world.time;
+		this.start = time;
+		if (this.world.tpf < 0) {// skip a loop - original start time probably bad.
+			this.world.time = 0;
+			this.world.tpf = 0;
+			World.time = 0;
+			this.animationId = window.requestAnimationFrame(this.run);
+			return;
+		} else if (this.world.tpf > 0.5) {
+			this.animationId = window.requestAnimationFrame(this.run);
+			return;
+		}
+
+		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+			this.callbacksPreProcess[i](this.world.tpf);
+		}
+
+		this.world.process();
+
+		for (var i = 0; i < this.callbacksPreRender.length; i++) {
+			this.callbacksPreRender[i](this.world.tpf);
+		}
+
+		this.renderer.info.reset();
+
+		if (this.doRender) {
+			this.renderSystem.render(this.renderer);
+		}
+
+		for (var i = 0; i < this.callbacks.length; i++) {
+			this.callbacks[i](this.world.tpf);
+		}
+
+		if (this.stats) {
+			this.stats.update(this.renderer.info);
+		}
+
+		this.animationId = window.requestAnimationFrame(this.run);
+	};
+
+	/**
+	 * Starts the game loop. (done through requestAnimationFrame)
+	 */
 	GooRunner.prototype.startGameLoop = function () {
 		this.start = -1;
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
 
+	/**
+	 * Stops the game loop.
+	 */
 	GooRunner.prototype.stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
 	};
