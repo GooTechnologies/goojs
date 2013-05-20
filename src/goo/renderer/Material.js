@@ -74,6 +74,14 @@ function(
 
 	Material.store = [];
 	Material.hash = [];
+
+	/**
+	 * Creates a new or finds an existing, cached Shader object
+	 *
+	 * @param shaderDefinition - an object with at least the fields: attributes, uniforms, vshader, fshader ( see ShaderLib.js )
+	 * @param name - optional: the name of the new Shader, defaults to 'DefaultShader'
+	 * @return Shader.
+	 */
 	Material.createShader = function (shaderDefinition, name) {
 		var index = Material.store.indexOf(shaderDefinition);
 		if (index !== -1) {
@@ -90,6 +98,13 @@ function(
 		Material.hash.length = 0;
 	};
 
+	/**
+	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
+	 *
+	 * @param shaderDefinition - see createShader
+	 * @param name - optional: the name of the new Material, defaults to 'DefaultMaterial'
+	 * @return the new Material.
+	 */
 	Material.createMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'DefaultMaterial');
 
