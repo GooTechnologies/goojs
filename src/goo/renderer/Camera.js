@@ -540,13 +540,13 @@ function(
 
 	/**
 	 * Calculate a Pick Ray using the given screen position at the near plane of this camera and the camera's position in space.
+	 * removed: param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
+	 *            systems.
 	 *
 	 * @param screenX the screen x position
 	 * @param screenY the screen y position
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
-	 * @param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
-	 *            systems.
 	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
 	 * @return the resulting Ray.
 	 */
