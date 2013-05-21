@@ -39,6 +39,9 @@ function (BoundingBox, BoundingSphere, Vector3) {
 	};
 
 	BoundingTree.prototype.createTree = function (entity, section, start, end) {
+		start = Math.floor(start);
+		end = Math.floor(end);
+
 		var meshData = entity.meshDataComponent.meshData;
 
 		this.section = section;
@@ -91,8 +94,6 @@ function (BoundingBox, BoundingSphere, Vector3) {
 	};
 
 	BoundingTree.prototype.findPick = function (ray, entity, store) {
-		// console.log('-------- testing: ', entity);
-
 		var result = store;
 		if (!result) {
 			result = {};
@@ -129,9 +130,22 @@ function (BoundingBox, BoundingSphere, Vector3) {
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
 					result.points.push(vecStore);
+
+					// result.hits = result.hits || [];
+					// result.hits.push({
+					// 	distance: ray.origin.distance(vecStore),
+					// 	point: vecStore
+					// });
 				}
 			}
 		}
+
+		// if (result.hits) {
+		// 	result.hits.sort(function (a, b) {
+		// 		return a.distance - b.distance;
+		// 	});
+		// }
+
 		return result;
 	};
 
