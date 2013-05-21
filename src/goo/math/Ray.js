@@ -75,7 +75,7 @@ function (Vector3, MathUtils) {
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.copy(this.origin).add(this.direction.x * t, this.direction.y * t, this.direction.z * t);
+							locationStore.setv(this.origin).add_d(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
@@ -85,7 +85,7 @@ function (Vector3, MathUtils) {
 							var w1 = dirDotDiffxEdge2 * inv;
 							var w2 = dirDotEdge1xDiff * inv;
 							// float w0 = 1.0 - w1 - w2;
-							locationStore.set(t, w1, w2);
+							locationStore.setd(t, w1, w2);
 						}
 						result = true;
 					}

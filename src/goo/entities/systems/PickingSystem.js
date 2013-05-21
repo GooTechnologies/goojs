@@ -50,6 +50,10 @@ function (System) {
 			var entity = entities[i];
 			var meshRendererComponent = entity.meshRendererComponent;
 
+			if (!meshRendererComponent.isPickable) {
+				continue;
+			}
+
 			// If we have custom pickLogic, use that.
 			if (this.pickLogic) {
 				var result = this.pickLogic.getPickResult(this.pickRay, entity);
