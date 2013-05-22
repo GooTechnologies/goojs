@@ -23,10 +23,21 @@ define(['goo/entities/components/Component'],
 		 * @default
 		 */
 		this.cullMode = 'Dynamic'; //'Dynamic', 'Never'
-
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.castShadows = false;
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.receiveShadows = false;
 
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.isPickable = true;
 	}
 
