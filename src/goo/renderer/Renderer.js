@@ -420,6 +420,12 @@ function (
 			this.updateOffset(material);
 			this.updateTextures(material);
 
+			var lineWidth;
+			if(meshData.indexModes[0] === 'Lines') {
+				lineWidth = this.context.getParameter(WebGLRenderingContext.LINE_WIDTH);
+				this.context.lineWidth(material.uniforms.lineWidth);
+			}
+
 			if (meshData.getIndexBuffer() !== null) {
 				this.bindData(meshData.getIndexData());
 				if (meshData.getIndexLengths() !== null) {
@@ -433,6 +439,9 @@ function (
 				} else {
 					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 				}
+			}
+			if(lineWidth) {
+				this.context.lineWidth(lineWidth);
 			}
 
 			this.info.calls++;
