@@ -36,7 +36,7 @@ function(Logo) {
 		'width: 100%;' +
 		'background: #1c1c1c;' +
 		'border-top: 1px solid #2a3276;' +
-		'font-family: Helvetica Neue;' +
+		'font-family: Helvetica Neue, Helvetica, sans-serif;' +
 		'font-size: 90%;' +
 		'line-height: 145%;' +
 	'}' +
@@ -146,13 +146,15 @@ function(Logo) {
 
 
 		var closeElement = element.querySelector('[data-close]');
-		closeElement.addEventListener('click', function(e) {
+		var close = function(e) {
 				e.preventDefault();
 				e.stopPropagation();
+				document.location.href = this.gooLocation;
 
 				document.body.removeChild(document.querySelector('div#unsupportedBrowser'));
 				document.head.removeChild(document.querySelector('#unsupportedBrowserStyles'));
-		});
+		}.bind(this);
+		closeElement.addEventListener('click', close);
 		var upgradeElement = element.querySelector('[data-upgrade]');
 
 		var upgrade = function(e) {
