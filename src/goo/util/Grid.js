@@ -7,7 +7,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/shapes/ShapeCreator',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Util'
 ],
 /** @lends */
 function(
@@ -19,82 +20,87 @@ function(
 	Material,
 	Shader,
 	ShapeCreator,
-	ShaderLib
+	ShaderLib,
+	Util
 ) {
-	var _defaults = {
-		width: 1,
-		height: 1,
-		gridX: 1,
-		gridY: 1,
-		name: 'Grid',
-		color: [0, 0, 0, 0.2],
-		floor: true,
-		fineGrid: true
-	};
 
+	var _defaultGrid = {
+		stepX: 1,
+		stepY: 1,
+		color: [0,0,0,1],
+		width: 1
+	};
 	/**
 	 * @class Creates an entity with all components needed to display a grid
 	 * @param {World} world
 	 * @param {object} properties
+	 * @param {object[]} properties.grids
+	 * @param {boolean} [properties.surface=false]
+	 * @param {boolean} [properties.surfaceColor=[1,1,1,1]
+	 * @param {boolean} [properties.floor=false]
+	 * @param {number} [properties.width=1]
+	 * @param {number} [properties.height=1]
+	 * @param {boolean} [properties.fogOn=false]
+	 * @param {number[]} [properties.fogColor=[0,0,0,1]
 	 */
 	function Grid(world, properties) {
 		properties = properties || {};
-		for (var key in _defaults) {
-			this[key] = (properties[key] !== undefined) ? properties[key] : _defaults[key];
-		}
+
 
 		this.topEntity = world.createEntity(this.name);
-		if(this.floor) {
+		if(properties.floor) {
 			this.topEntity.transformComponent.transform.rotation.rotateX(-Math.PI/2);
 		}
 
-		// Coarse grid
-		var coarseGridEntity = world.createEntity(this.name + '_coarse');
-		coarseGridEntity.setComponent(
-			new MeshDataComponent(
-				this._buildGrid()
-			)
-		);
+		// If you want a base surface, add base surface
+		if(properties.surface) {
+			// Surface
+			var quad = ShapeCreator.createQuad(properties.width, properties.height);
+			var quadEntity = EntityUtils.createTypicalEntity(world, quad);
 
-		var coarseMaterial = this._buildGridMaterial(Grid.COARSE);
-		coarseGridEntity.setComponent(new MeshRendererComponent());
-		coarseGridEntity.meshRendererComponent.materials.push(coarseMaterial);
+			var floorMaterial = Material.createMaterial(ShaderLib.simpleLit);
 
-		// TODO: Needs to be solved in a better way
-		coarseGridEntity.transformComponent.transform.translation.z = 0.001;
-
-		this.topEntity.transformComponent.attachChild(coarseGridEntity.transformComponent);
-
-
-		// Fine grid
-		if(this.fineGrid) {
-			var fineGridEntity = world.createEntity(this.name + '_fine');
-			fineGridEntity.setComponent(
-				new MeshDataComponent(
-					this._buildGrid(Grid.FINE)
-				)
-			);
-
-			var fineMaterial = this._buildGridMaterial(Grid.FINE);
-			fineGridEntity.setComponent(new MeshRendererComponent());
-			fineGridEntity.meshRendererComponent.materials.push(fineMaterial);
-
-			// TODO: Needs to be solved in a better way
-			fineGridEntity.transformComponent.transform.translation.z = 0.001;
-
-			this.topEntity.transformComponent.attachChild(fineGridEntity.transformComponent);
+			floorMaterial.uniforms.materialDiffuse = properties.surfaceColor || [1,1,1,1];
+			quadEntity.meshRendererComponent.materials.push(floorMaterial);
+			this.topEntity.transformComponent.attachChild(quadEntity.transformComponent);
 		}
 
-		// Surface
-		var quad = ShapeCreator.createQuad(this.width, this.height);
-		var quadEntity = EntityUtils.createTypicalEntity(world, quad);
+		this.gridShader = this._buildGridShader(properties);
 
-		var floorMaterial = Material.createMaterial(ShaderLib.simpleLit);
+		// Make sure there's at least one grid
+		if(!properties.grids) { properties.grids = []; }
+		if(properties.grids.length === 0) {
+			properties.grids.push(Util.clone(_defaultGrid));
+		}
+		this.grids = properties.grids;
 
-		floorMaterial.uniforms.materialAmbient = [1, 1, 1, 1];
-		quadEntity.meshRendererComponent.materials.push(floorMaterial);
-		this.topEntity.transformComponent.attachChild(quadEntity.transformComponent);
+		// Entity for all the grids
 
+		// Add the grids
+		var entity, grid, meshRendererComponent;
+		for(var i = 0; i < properties.grids.length; i++) {
+			grid = properties.grids[i];
+
+			this._fillDefaults(grid, _defaultGrid);
+			grid._width = properties.width || 1;
+			grid._height = properties.height || 1;
+
+			entity = world.createEntity('grid_'+i);
+			entity.setComponent(
+				new MeshDataComponent(
+					this._buildGrid(grid)
+				)
+			);
+			meshRendererComponent = new MeshRendererComponent();
+			meshRendererComponent.materials.push(
+				this._buildGridMaterial(grid, i)
+			);
+			entity.setComponent(meshRendererComponent);
+
+			entity.transformComponent.transform.translation.z = 0.001 * (properties.grids.length - i);
+
+			this.topEntity.transformComponent.attachChild(entity.transformComponent);
+		}
 	}
 
 	Grid.prototype.addToWorld = function() {
@@ -103,63 +109,74 @@ function(
 		});
 	};
 
+	/*
+	 * Checks if the position collides with any other grid line
+	 */
+	Grid.prototype._collides = function(grid, pos, direction) {
+		var key = 'step' + direction;
 
-	Grid.prototype._buildGrid = function(type) {
-		var xTiles = Math.ceil(this.width/this.gridX);
-		var yTiles = Math.ceil(this.height/this.gridY);
-		var xVerts = 2*(xTiles-1);
-		var yVerts = 2*(yTiles-1);
-		var offsetX = 0, offsetY = 0;
-		var xExtent = this.width / 2;
-		var yExtent = this.height / 2;
+		for (var i = 0; i < this.grids.length; i++) {
+			if (grid === this.grids[i]) { return false; }
+			if (pos % this.grids[i][key] === 0) { return true; }
+		}
+		return false;
+	};
 
-		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
-		var verts, meshData;
+	Grid.prototype._buildGrid = function(grid) {
+		var xTiles = Math.ceil(grid._width/grid.stepX);
+		var yTiles = Math.ceil(grid._height/grid.stepY);
 
-		if(type === Grid.FINE) {
-			meshData = new MeshData(attributeMap, xVerts + yVerts + 4, xVerts + yVerts + 4);
-			verts = [];
-			offsetX = this.gridX / 2;
-			offsetY = this.gridY / 2;
-		} else {
-			var corners = 4;
-			meshData = new MeshData(attributeMap, xVerts + yVerts + corners, xVerts + yVerts + corners * 2);
+		var xExtent = grid._width / 2;
+		var yExtent = grid._height / 2;
 
+		var verts = [];
+		var indices = [];
 
-			// Corners
-			verts = [
+		// Adding outer lines
+		if (grid === this.grids[0]) {
+			verts.push(
 				-xExtent, -yExtent, 0,
 				-xExtent, yExtent, 0,
 				xExtent, yExtent, 0,
 				xExtent, -yExtent, 0
-			];
-		}
-		// Vertical line vertices
-		for (var i = 1; i < xTiles; i++) {
-			verts.push(
-				-xExtent + this.gridX * i + offsetX, -yExtent, 0,
-				-xExtent + this.gridY * i + offsetX, yExtent, 0
+			);
+
+			// Connecting the corners
+			indices.push(
+				0, 1,
+				1, 2,
+				2, 3,
+				3, 0
 			);
 		}
-		// Horizontal line vertices
-		for (var i = 1; i < yTiles; i++) {
+		// Y grid lines
+		var xPos;
+		for (var i = 1; i < xTiles; i++) {
+			xPos = grid.stepX * i;
+			if (this._collides(grid, xPos, 'X')) { continue; }
+			xPos -= xExtent;
 			verts.push(
-				-xExtent, -yExtent + this.gridY * i + offsetY, 0,
-				+xExtent, -yExtent + this.gridY * i + offsetY, 0
+				xPos, -yExtent, 0,
+				xPos, yExtent, 0
 			);
 		}
 
-		// Connecting the dots
-		var indices = [
-			0, 1,
-			1, 2,
-			2, 3,
-			3, 0
-		];
-		for (var i = 4; i < verts.length / 3; i += 2) {
+		// X grid lines
+		var yPos;
+		for (var i = 1; i < yTiles; i++) {
+			yPos = grid.stepY * i;
+			if (this._collides(grid, yPos, 'Y')) { continue; }
+			yPos -= yExtent;
+			verts.push(
+				-xExtent, yPos, 0,
+				xExtent, yPos, 0
+			);
+		}
+		for (var i = indices.length / 2; i < verts.length / 3; i += 2) {
 			indices.push(i, i + 1);
 		}
 
+		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length, indices.length);
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
 		meshData.getIndexBuffer().set(indices);
@@ -169,72 +186,101 @@ function(
 		return meshData;
 	};
 
-	Grid.prototype._buildGridMaterial = function(type) {
-		var material = new Material('Coarse grid material');
-		material.shader = this.gridShader;
-		material.uniforms.color = this.color;
-		material.uniforms.lineWidth = (type === Grid.FINE) ? 1 : 2;
-		material.uniforms.fogFar = 20;
+	Grid.prototype._buildGridMaterial = function(grid, i) {
+		var material = new Material('GridMaterial_' + i);
+		if(this.gridShader) {	material.shader = this.gridShader; }
+		material.uniforms.color = grid.color;
+		material.lineWidth = grid.width;
+
+		/*
+		material.blendState = {
+			blending: 'MultiplyBlending',
+			blendEquation: 'SubtractEquation',
+			blendSrc: 'SrcAlphaFactor',
+			blendDst: 'OneMinusSrcAlphaFactor'
+		};
+		*/
+
+
 
 		return material;
 	};
 
-	var shaderDef = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
-		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			color: Shader.AMBIENT,
-			fogColor: [0.9, 0.9, 0.9, 1],
-			fogNear: Shader.MAIN_NEAR_PLANE,
-			fogFar: Shader.MAIN_FAR_PLANE
-		},
-		vshader : [ //
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 worldMatrix;',
-			'uniform mat4 viewMatrix;',
-			'uniform mat4 projectionMatrix;',
-
-			'varying float depth;',
-
-			'void main(void)',
-			'{',
-				'vec4 viewPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-
-				'depth = viewPosition.z;',
-
-				'gl_Position = projectionMatrix * viewPosition;',
-			'}'
-		].join('\n'),
-		fshader : [//
-			'precision mediump float;',
-
-			'uniform vec4 fogColor;',
-			'uniform vec4 color;',
-			'uniform float fogNear;',
-			'uniform float fogFar;',
-
-			'varying float depth;',
-
-			'void main(void)',
-			'{',
-				'gl_FragColor = mix(color, fogColor, clamp((depth + fogNear) / (fogNear - fogFar), 0.0, 1.0));',
-			'}'
-		].join('\n')
+	Grid.prototype._fillDefaults = function(values, defaults) {
+		for (var key in defaults) {
+			if (values[key] === undefined) {
+				if (typeof defaults[key] === 'array' || defaults[key] instanceof Object) {
+					values[key] = Util.clone(defaults[key]);
+				} else {
+					values[key] = defaults[key];
+				}
+			}
+		}
 	};
-	Grid.prototype.gridShader = Material.createShader(shaderDef, 'Grid Shader');
 
+	Grid.prototype._buildGridShader = function(properties) {
 
+		var shaderDef = {
+			attributes : {
+				vertexPosition : MeshData.POSITION
+			},
+			uniforms : {
+				viewMatrix : Shader.VIEW_MATRIX,
+				projectionMatrix : Shader.PROJECTION_MATRIX,
+				worldMatrix : Shader.WORLD_MATRIX,
+				color: [0,0,0,1],
+				fogOn: properties.fogOn || false,
+				fogColor: properties.fogColor || [0,0,0,1],
+				fogNear: Shader.MAIN_NEAR_PLANE,
+				fogFar: properties.fogFar || Shader.MAIN_FAR_PLANE
+			},
+			vshader : [ //
+				'attribute vec3 vertexPosition;',
 
+				'uniform mat4 worldMatrix;',
+				'uniform mat4 viewMatrix;',
+				'uniform mat4 projectionMatrix;',
 
-	Grid.COARSE = 'coarse';
-	Grid.FINE = 'fine';
+				'varying float depth;',
 
+				'void main(void)',
+				'{',
+					'vec4 viewPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+
+					'depth = viewPosition.z;',
+
+					'gl_Position = projectionMatrix * viewPosition;',
+				'}'
+			].join('\n'),
+			fshader : [//
+				'precision mediump float;',
+
+				'uniform vec4 fogColor;',
+				'uniform vec4 color;',
+				'uniform float fogNear;',
+				'uniform float fogFar;',
+				'uniform bool fogOn;',
+
+				'varying float depth;',
+
+				'void main(void)',
+				'{',
+					'if (fogOn) {',
+						'float lerpVal = clamp(depth / (-fogFar - fogNear), 0.0, 1.0);',
+						'lerpVal = pow(lerpVal, 0.4);',
+						/*'float alpha = mix(color.a, fogColor.a, lerpVal);',
+						'vec3 baseColor = mix(color.rgb*color.a, fogColor.rgb*fogColor.a, pow(lerpVal,2));',
+						'baseColor /= alpha;',
+						'gl_FragColor = vec4(baseColor, alpha);',*/
+						'gl_FragColor = mix(color, fogColor, lerpVal);',
+					'} else {',
+						'gl_FragColor = color;',
+					'}',
+				'}'
+			].join('\n')
+		};
+		return Material.createShader(shaderDef, 'Grid Shader');
+	};
 
 	return Grid;
 });

@@ -423,7 +423,7 @@ function (
 			var lineWidth;
 			if(meshData.indexModes[0] === 'Lines') {
 				lineWidth = this.context.getParameter(WebGLRenderingContext.LINE_WIDTH);
-				this.context.lineWidth(material.uniforms.lineWidth);
+				this.context.lineWidth(material.lineWidth);
 			}
 
 			if (meshData.getIndexBuffer() !== null) {
