@@ -30,11 +30,11 @@ function(
 		color: [0,0,0,1],
 		width: 1
 	};
-	/**
+	/** REVIEW: Explain these! I got around by tinkering/reading the code, but in the API ref, this needs an example, in the least.
 	 * @class Creates an entity with all components needed to display a grid
 	 * @param {World} world
-	 * @param {object} properties
-	 * @param {object[]} properties.grids
+	 * @param {object} [properties]
+	 * @param {object[]} [properties.grids]
 	 * @param {boolean} [properties.surface=false]
 	 * @param {boolean} [properties.surfaceColor=[1,1,1,1]
 	 * @param {boolean} [properties.floor=false]
@@ -47,6 +47,7 @@ function(
 		properties = properties || {};
 
 
+		// Entity for all the grids
 		this.topEntity = world.createEntity(this.name);
 		if(properties.floor) {
 			this.topEntity.transformComponent.transform.rotation.rotateX(-Math.PI/2);
@@ -73,8 +74,6 @@ function(
 			properties.grids.push(Util.clone(_defaultGrid));
 		}
 		this.grids = properties.grids;
-
-		// Entity for all the grids
 
 		// Add the grids
 		var entity, grid, meshRendererComponent;
