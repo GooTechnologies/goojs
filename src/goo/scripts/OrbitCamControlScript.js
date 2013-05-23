@@ -60,7 +60,14 @@ function (
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
 	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera.
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, phi, theta). 
+	 * Phi is the angle from the x-axis towards the z-axis, and theta is the angle from the xz-plane towards the y-axis. Some examples: 
+	 * <ul>
+	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
+	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
+	 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
+	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
+	 * </ul>
 	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
