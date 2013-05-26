@@ -253,9 +253,6 @@ function (
 			sunColor: [
 				1.0, 1.0, 0.5
 			],
-			// reflectionMultiplier: [
-			// 1.0, 1.0, 1.0, 1.0
-			// ],
 			sunShininess: 100.0,
 			sunSpecPower: 4.0,
 			fogStart: 0.0,
@@ -321,18 +318,17 @@ function (
 			'uniform vec3 fogColor;',
 			'uniform float fogStart;',
 			'uniform float fogScale;',
-			'uniform vec3 sunDirection;',
 			'uniform float time;',
 			'uniform float timeMultiplier;',
 			'uniform float distortionMultiplier;',
 			'uniform float fresnelPow;',
+			'uniform vec3 sunDirection;',
 			'uniform vec3 sunColor;',
 			'uniform float sunShininess;',
 			'uniform float sunSpecPower;',
 			'uniform float normalMultiplier;',
 			'uniform float fresnelMultiplier;',
 			'uniform bool doFog;',
-			// 'uniform vec4 reflectionMultiplier;',
 			'uniform vec2 resolution;',
 
 			'varying vec2 texCoord0;',//
@@ -340,33 +336,25 @@ function (
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 
-			'vec4 getNoise(vec2 uv) {',
+			'vec4 combineTurbulence(in vec2 coords) {',
 			'	float t = time * timeMultiplier;',
-			'    vec2 uv0 = (uv/vec2(123.0)) + vec2(t/17.0, t/29.0);',
-			'    vec2 uv1 = (uv/vec2(167.0)) - vec2(t/-19.0, t/31.0);',
-			'    vec2 uv2 = uv/vec2(827.0, 983.0) + vec2(t/51.0, t/47.0);',
-			'    vec2 uv3 = uv/vec2(991.0, 877.0) - vec2(t/59.0, t/-63.0);',
-			'    vec4 noise = (texture2D(normalMap, uv0)*0.25) +',
-			'                 (texture2D(normalMap, uv1)*0.25) +',
-			'                 (texture2D(normalMap, uv2)*0.75) +',
-			'                 (texture2D(normalMap, uv3)*1.0);',
-			'    return noise/2.25-0.48;',
+			'	vec4 coarse1 = texture2D(normalMap, coords * vec2(0.0012, 0.001) + vec2(0.019 * t, 0.021 * t));',
+			'	vec4 coarse2 = texture2D(normalMap, coords * vec2(0.001, 0.0011) + vec2(-0.017 * t, 0.016 * t));',
+			'	vec4 detail1 = texture2D(normalMap, coords * vec2(0.008) + vec2(0.06 * t, 0.03 * t));',
+			'	vec4 detail2 = texture2D(normalMap, coords * vec2(0.006) + vec2(0.05 * t, -0.04 * t));',
+			'	return (detail1 * 0.25 + detail2 * 0.25 + coarse1 * 0.75 + coarse2 * 1.0) / 2.25 - 0.48;',
 			'}',
 
-			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, const float shiny, const float spec, inout vec3 specularColor){',
-			'    vec3 reflection = normalize(reflect(-sunDirection, surfaceNormal));',
-			'    float direction = max(0.0, dot(normalize(eyeDirection), reflection));',
-			'    specularColor += pow(direction, shiny) * spec * sunColor;',
-			'}',
-
+			'#ifdef REFRACTION',
 			ShaderFragment.methods.unpackDepth,//
+			'#endif',
 
 			'void main(void)',//
 			'{',//
 			'	float fogDist = clamp((viewCoords.z-fogStart)/fogScale,0.0,1.0);',
 
 			'	vec2 normCoords = texCoord0;',
-			'	vec4 noise = getNoise(normCoords);',
+			'	vec4 noise = combineTurbulence(normCoords);',
 			'	vec3 normalVector = normalize(noise.xyz * vec3(normalMultiplier, normalMultiplier, 1.0));',
 
 			'	vec3 localView = normalize(eyeVec);',
@@ -414,11 +402,9 @@ function (
 			'		gl_FragColor = mix(endColor,waterColorX,fogDist);',
 			'	}',
 			'	else {',
-			// '		vec3 diffuse = vec3(0.0);',
-			'		vec3 specular = vec3(0.0);',
-			// '	    sunLight(normalVector, localView, sunShininess, sunSpecPower, sunDiffusePower, diffuse, specular);',
-			'	    sunLight(normalVector, localView, sunShininess, sunSpecPower, specular);',
-			// '		reflectionColor *= reflectionMultiplier;',
+			'		vec3 sunSpecReflection = normalize(reflect(-sunDirection, normalVector));',
+			'		float sunSpecDirection = max(0.0, dot(localView, sunSpecReflection));',
+			'		vec3 specular = pow(sunSpecDirection, sunShininess) * sunSpecPower * sunColor;',
 
 			'		vec4 endColor = waterColorX;',
 			'#ifdef REFRACTION',
@@ -427,7 +413,6 @@ function (
 			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
 			'		endColor = mix(refractionColor, waterColorX, depth);',
 			'#endif',
-
 			'		endColor = mix(endColor, reflectionColor, fresnelTerm);',
 
 			'		if (doFog) {',
@@ -435,7 +420,6 @@ function (
 			'		} else {',
 			'			gl_FragColor = vec4(specular, 1.0) + mix(endColor,reflectionColor,fogDist);',
 			'		}',
-			// '		gl_FragColor = vec4(waterColor, 1.0);',
 			'	}',
 			'}'
 		].join('\n')
