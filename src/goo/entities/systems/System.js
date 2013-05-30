@@ -52,7 +52,7 @@ function() {
 	/**
 	 * Check if a system is interested in an entity based on its interests list.
 	 *
-	 * @param entity {@link Entity} to check if the system is interested in
+	 * @param entity {Entity} to check if the system is interested in
 	 */
 	System.prototype._check = function(entity) {
 		var isInterested = this.interests === null;
