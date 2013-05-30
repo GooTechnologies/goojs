@@ -14,8 +14,16 @@ runCommand = (cmd, callback) ->
 		if callback
 			callback()
 
+
+task 'coffee', 'Compiles all the coffeescript in src/goo.coffee and adds it to the js source tree in /src/goo', (options)->
+	coffeeRoot = 'src/goo.coffee'
+	jsRoot = "src/goo"
+	runCommand "coffee -cbo #{jsRoot} #{coffeeRoot}", ->
+		console.log "Compiled coffeescript" 	
+
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 
+	invoke 'coffee'
 	if options.arguments.length == 2
 		fileIn = options.arguments[0]
 		fileOut = options.arguments[1]
@@ -94,7 +102,12 @@ task 'convert',
 task 'jsdoc',
 	'Creates the API documentation',
 	->
+		invoke 'coffee'
 		# This requires a shell.
 		# To make this work in Windows too,
 		# we could run JSdoc as a Node module.
 		runCommand 'tools/generate_jsdoc.sh'
+
+
+
+
