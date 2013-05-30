@@ -139,6 +139,18 @@ function () {
 		store.y = radius * Math.sin(polar);
 		store.z = a * Math.sin(azimuth);
 	};
+	
+	
+	/**
+	 *
+	 */
+	MathUtils.cartesianToSpherical = function(x,y,z, store) {
+		var a = Math.sqrt(x*x + z*z);
+		store.x = Math.sqrt(x*x+y*y+z*z); // radius
+		store.y = Math.atan2(z,x); // azimuth
+		store.z = Math.atan2(y,a); // polar
+		
+	}
 
 	return MathUtils;
 });

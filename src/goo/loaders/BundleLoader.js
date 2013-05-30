@@ -78,6 +78,7 @@ define([
 
 		BundleLoader.prototype._parse = function (bundle) {
 			this._bundle = JSON.parse(bundle);
+			return this._bundle;
 		};
 
 		return BundleLoader;
