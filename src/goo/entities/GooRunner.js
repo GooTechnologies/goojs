@@ -64,6 +64,7 @@ function (
 		this.renderSystem = new RenderSystem();
 		this.world.setSystem(this.renderSystem);
 
+		this.doProcess = true;
 		this.doRender = true;
 
 		GameUtils.initAllShims();
@@ -166,7 +167,9 @@ function (
 			this.callbacksPreProcess[i](this.world.tpf);
 		}
 
-		this.world.process();
+		if (this.doProcess) {
+			this.world.process();
+		}
 
 		for (var i = 0; i < this.callbacksPreRender.length; i++) {
 			this.callbacksPreRender[i](this.world.tpf);
