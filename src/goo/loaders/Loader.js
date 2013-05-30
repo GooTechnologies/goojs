@@ -56,11 +56,10 @@ define([
 			ajaxProperties.responseType = Loader.ARRAY_BUFFER;
 		}
 
-		var that = this;
 		var promise = this.xhr.get(ajaxProperties)
 		.then(function(request) {
 			return request.response;
-		})
+		});
 
 		if (parser) {
 			promise = promise.then(function(data) {
@@ -68,7 +67,7 @@ define([
 			});
 		}
 
-		promise.then(function(parsed) {
+		promise.then(function(/*parsed*/) {
 			console.log('Loaded: ' + ajaxProperties.url);
 		});
 		// Bubble an error

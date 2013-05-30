@@ -9,6 +9,7 @@ function () {
 	function ShaderCall(context, uniform, type) {
 		this.context = context;
 		this.location = uniform;
+		this.location.value = undefined;
 
 		if (type) {
 			switch (type) {

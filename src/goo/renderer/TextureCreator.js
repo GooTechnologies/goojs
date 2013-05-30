@@ -43,6 +43,13 @@ function (
 		TextureCreator.cache = {};
 	};
 
+	/**
+	 * Creates a texture and loads image into it
+	 * @example gridMaterial.textures[0] = new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg');
+	 * @param {string} imageURL
+	 * @param {object} settings passed to the {Texture} constructor
+	 * @returns {Texture}
+	 */
 	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
 		if (TextureCreator.cache[imageURL] !== undefined) {
 			return TextureCreator.cache[imageURL];

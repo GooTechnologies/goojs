@@ -1441,7 +1441,7 @@ define([
 			jointPalette: function (shaderInfo) {
 				var skMesh = shaderInfo.meshData;
 				var pose = skMesh.currentPose;
-				if (pose !== null) {
+				if (pose) {
 					var palette = pose._matrixPalette;
 					var buffLength = skMesh.paletteMap.length * 16;
 					var store = skMesh.store;

@@ -29,16 +29,21 @@ function (BoundingBox, BoundingSphere, Vector3) {
 		meshData.updatePrimitiveCounts();
 		if (meshData.getSectionCount() === 1) {
 			this.primitiveIndices = [];
+			// REVIEW: Is there a better way to do this?
 			for ( var i = 0, max = meshData.getPrimitiveCount(0); i < max; i++) {
 				this.primitiveIndices.push(i);
 			}
 			this.createTree(entity, 0, 0, this.primitiveIndices.length);
 		} else {
+			// REVIEW: This doesn't exist?
 			this.split(entity, 0, meshData.getSectionCount());
 		}
 	};
 
 	BoundingTree.prototype.createTree = function (entity, section, start, end) {
+		start = Math.floor(start);
+		end = Math.floor(end);
+
 		var meshData = entity.meshDataComponent.meshData;
 
 		this.section = section;
@@ -91,8 +96,6 @@ function (BoundingBox, BoundingSphere, Vector3) {
 	};
 
 	BoundingTree.prototype.findPick = function (ray, entity, store) {
-		// console.log('-------- testing: ', entity);
-
 		var result = store;
 		if (!result) {
 			result = {};
@@ -129,9 +132,22 @@ function (BoundingBox, BoundingSphere, Vector3) {
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
 					result.points.push(vecStore);
+
+					// result.hits = result.hits || [];
+					// result.hits.push({
+					// 	distance: ray.origin.distance(vecStore),
+					// 	point: vecStore
+					// });
 				}
 			}
 		}
+
+		// if (result.hits) {
+		// 	result.hits.sort(function (a, b) {
+		// 		return a.distance - b.distance;
+		// 	});
+		// }
+
 		return result;
 	};
 

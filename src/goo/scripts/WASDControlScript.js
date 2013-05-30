@@ -16,6 +16,7 @@ function (Vector, Vector3) {
 	 * @param {number} [properties.forwardKey=87] Key code to move forward. (default: W)
 	 * @param {number} [properties.backKey=83] Key code to move back. (default: S)
 	 * @param {number} [properties.strafeLeftKey=65] Key code to strafe left. (default: A)
+	 * @param {number} [properties.strafeRightKey=68] Key code to strafe right. (default: D)
 	 */
 	function WASDControlScript (properties) {
 

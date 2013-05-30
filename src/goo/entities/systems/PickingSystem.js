@@ -50,6 +50,11 @@ function (System) {
 			var entity = entities[i];
 			var meshRendererComponent = entity.meshRendererComponent;
 
+			// REVIEW: Shouldn't this check be done on this.inserted(entity), if creating picking tree is the slow part?
+			if (!meshRendererComponent.isPickable) {
+				continue;
+			}
+
 			// If we have custom pickLogic, use that.
 			if (this.pickLogic) {
 				var result = this.pickLogic.getPickResult(this.pickRay, entity);

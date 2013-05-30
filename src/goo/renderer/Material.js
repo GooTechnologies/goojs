@@ -10,15 +10,25 @@ function(
 	/**
 	 * @class A Material defines the look of an object
 	 * @param {String} name Material name
-	 * @property {String} name Material name
-	 * @property {Shader} shader Shader to use when rendering
-	 * @property {Texture[]} textures Array of textures in use
 	 */
 	function Material(name) {
+		/**
+		 * @type {String}
+		 */
 		this.name = name;
 
+		/** Shader to use when rendering
+		 * @type {Shader}
+		 */
 		this.shader = null;
+		/** Possible overrides for shader uniforms
+		 * @type {Object}
+		 * @default
+		 */
 		this.uniforms = {}; //possible overrides on shader uniforms
+		/** Array of textures in use
+		 * @type {Texture[]}
+		 */
 		this.textures = [];
 		this._originalTextureCount = -1;
 		this.materialState = undefined;
@@ -29,11 +39,24 @@ function(
 		// specular: [0.7, 0.7, 0.7, 1.0],
 		// shininess: 16.0
 		// };
+		/** Specification of culling for this Material.
+		 * @type {Object}
+		 * @property {boolean} enabled
+		 * @property {String} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
+		 * @property {String} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
+		 */
 		this.cullState = {
 			enabled: true,
 			cullFace: 'Back', // Front, Back, FrontAndBack
 			frontFace: 'CCW' // CW, CCW
 		};
+		/**
+		 * @type {Object}
+		 * @property {String} blending possible values: 'NoBlending' (default), 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
+		 * @property {String} blendEquation possible values: 'AddEquation' (default), 'SubtractEquation', 'ReverseSubtractEquation'
+		 * @property {String} blendSrc possible values: 'SrcAlphaFactor' (default), 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
+		 * @property {String} blendDst possible values: as above, default 'OneMinusSrcAlphaFactor'
+		 */
 		this.blendState = {
 			// 'NoBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 			blending: 'NoBlending',
@@ -46,16 +69,31 @@ function(
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
+		/**
+		 * @type {Object}
+		 * @property {boolean} enabled
+		 * @property {boolean} write
+		 */
 		this.depthState = {
 			enabled: true,
 			write: true
 		};
+		/**
+		 * @type {Object}
+		 * @property {boolean} enabled
+		 * @property {number} factor default: 1
+		 * @property {number} units default: 1
+		 */
 		this.offsetState = {
 			enabled: false,
 			factor: 1,
 			units: 1
 		};
 
+		/** Show wireframe on this material
+		 * @type {boolean}
+		 * @default
+		 */
 		this.wireframe = false;
 
 		this.renderQueue = null;
@@ -74,6 +112,14 @@ function(
 
 	Material.store = [];
 	Material.hash = [];
+
+	/**
+	 * Creates a new or finds an existing, cached Shader object
+	 *
+	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
+	 * @param {String} [name=DefaultShader]
+	 * @return {Shader}
+	 */
 	Material.createShader = function (shaderDefinition, name) {
 		var index = Material.store.indexOf(shaderDefinition);
 		if (index !== -1) {
@@ -85,11 +131,20 @@ function(
 		return shader;
 	};
 
+	/** Clears the shader cache.
+	 */
 	Material.clearShaderCache = function () {
 		Material.store.length = 0;
 		Material.hash.length = 0;
 	};
 
+	/**
+	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
+	 *
+	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
+	 * @param {String} [name=DefaultMaterial]
+	 * @return {Material}
+	 */
 	Material.createMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'DefaultMaterial');
 

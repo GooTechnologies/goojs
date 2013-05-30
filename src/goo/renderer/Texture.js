@@ -14,7 +14,15 @@ function (
 	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
 	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
-	 * @param {Settings} settings Texturing settings
+	 * @param {object} settings Texturing settings
+	 * @param {string} [settings.wrapS='Repeat']
+	 * @param {string} [settings.wrapT='Repeat']
+	 * @param {string} [settings.magFilter='Bilinear']
+	 * @param {string} [settings.minFilter='TriLinear']
+	 * @param {number} [settings.anisotropy=1]
+	 * @param {string} [settings.format='RGBA']
+	 * @param {string} [settings.type='UnsignedByte']
+	 * @param {boolean} [settings.flipY='true']
 	 */
 	function Texture(image, settings, width, height) {
 		this.glTexture = null;
