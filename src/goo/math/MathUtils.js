@@ -142,7 +142,12 @@ function () {
 	
 	
 	/**
-	 *
+	 * @static
+	 * @description Converts a point from Cartesian coordinates to Spherical to Cartesian (using positive Y as up) and stores the results in the store var.
+	 * @param {Float} x
+	 * @param {Float} y
+	 * @param {Float} z
+	 * @param {Vector3} store
 	 */
 	MathUtils.cartesianToSpherical = function(x,y,z, store) {
 		var a = Math.sqrt(x*x + z*z);
