@@ -25,6 +25,7 @@ console)->
 			_.defaults config, 
 				fov: 45
 				near: 1
+				# REVIEW 1000?
 				far: 10000
 		
 		_create: (entity, config)->

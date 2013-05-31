@@ -47,6 +47,8 @@ console) ->
 				@_loader = new Loader(rootPath: options.rootPath)
 			else
 				throw new Error("parameters.rootPath or parameters.loader must be defined")
+			# REVIEW this looks like it's intended to be private
+			# Shouldn't we be able to access the loaded objects/configs after loading?
 			@_configs = {}
 			@_textureCreator = new TextureCreator(loader:@_loader)
 			
@@ -72,6 +74,7 @@ console) ->
 		update: (ref, config)->
 			console.log "Loading/updating #{ref}"
 			if config then @_configs[ref] = config
+			# REVIEW why not construct this in the constructor? Also, same comment as for @_configs
 			@_objects = {}
 			
 			@_loadRef(ref).then (config)=>
@@ -101,6 +104,8 @@ console) ->
 				
 				if type == "texture"
 					# Textures are special
+					# REVIEW do we support pixel map textures in the file format? Like in the picking or the shapes example
+					# If yes, this ignores them
 					textureObj = @_objects[ref] = @_textureCreator.loadTexture2D(config.url)
 					pu.dummyPromise(textureObj)
 				else

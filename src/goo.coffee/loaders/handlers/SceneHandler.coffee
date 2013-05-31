@@ -22,6 +22,8 @@ define [
 
 				RSVP.all(promises).then (entities)->
 					for entity in entities
+						# REVIEW we should be able to get a hold of the entities before adding them
+						# Perhaps add a function to be ran on each entity instead of adding them?
 						console.log "Adding #{entity.ref} to world"
 						entity.addToWorld()
 			
