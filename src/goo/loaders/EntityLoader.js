@@ -91,10 +91,6 @@ function(
 
 
 	EntityLoader.prototype._parse = function(entitySource, entityRef) {
-		// REVIEW martin: Why this check? Instead make sure config is always an object, not a string
-		if (typeof entitySource === 'string') {
-			entitySource = JSON.parse(entitySource);
-		}
 		var promises = []; // Keep track of promises
 		var loadedComponents = []; // Array containing loaded components
 		var that = this;
