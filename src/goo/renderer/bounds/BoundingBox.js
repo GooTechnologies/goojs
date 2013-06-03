@@ -12,8 +12,8 @@ function (
 	"use strict";
 
 	/**
-	 * @class <code>BoundingBox</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
-	 *        sphere defines a radius and a center. <br>
+	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
+	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
@@ -204,6 +204,10 @@ function (
 		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + '[' + this.xExtent + ',' + this.yExtent + ',' + this.zExtent + ']';
 	};
 
+	BoundingBox.prototype.intersects = function (bv) {
+        return bv.intersectsBoundingBox(this);
+	};
+
 	BoundingBox.prototype.intersectsBoundingBox = function (bb) {
 		if (this.center.x + this.xExtent < bb.center.x - bb.xExtent || this.center.x - this.xExtent > bb.center.x + bb.xExtent) {
 			return false;
@@ -214,6 +218,16 @@ function (
 		} else {
 			return true;
 		}
+	};
+
+	BoundingBox.prototype.intersectsSphere = function (bs) {
+        if (Math.abs(this.center.x - bs.center.x) < bs.radius + this.xExtent
+                && Math.abs(this.center.y - bs.center.y) < bs.radius + this.yExtent
+                && Math.abs(this.center.z - bs.center.z) < bs.radius + this.zExtent) {
+            return true;
+        }
+
+        return false;
 	};
 
 	BoundingBox.prototype.testStaticAABBAABB = function (bb, contact) {

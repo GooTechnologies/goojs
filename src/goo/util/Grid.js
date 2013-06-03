@@ -30,18 +30,45 @@ function(
 		color: [0,0,0,1],
 		width: 1
 	};
-	/** REVIEW: Explain these! I got around by tinkering/reading the code, but in the API ref, this needs an example, in the least.
+	/**
 	 * @class Creates an entity with all components needed to display a grid
 	 * @param {World} world
 	 * @param {object} [properties]
-	 * @param {object[]} [properties.grids]
-	 * @param {boolean} [properties.surface=false]
-	 * @param {boolean} [properties.surfaceColor=[1,1,1,1]
-	 * @param {boolean} [properties.floor=false]
-	 * @param {number} [properties.width=1]
-	 * @param {number} [properties.height=1]
-	 * @param {boolean} [properties.fogOn=false]
-	 * @param {number[]} [properties.fogColor=[0,0,0,1]
+	 * @param {object[]} [properties.grids] An array of grid settings
+	 * @param {boolean} [properties.surface=false] Whether to have a base surface or not
+	 * @param {boolean} [properties.surfaceColor=[1,1,1,1] If there is a base surface you can specify which color it should have
+	 * @param {boolean} [properties.floor=false] When set to true, the surface will be rotated to be in the XZ-plane, like a floor.
+	 * @param {number} [properties.width=1] Width of the grid
+	 * @param {number} [properties.height=1] Height of the grid
+	 * @param {boolean} [properties.fogOn=false] Set if the grid should fade in the distance, like fog
+	 * @param {number[]} [properties.fogColor=[0,0,0,1] The color the grid should fade to.
+	 *
+	 * @example
+	 * var floor = new Grid(goo.world, {
+	 * 	floor: true,
+	 *	width: 100,
+	 * 	height: 100,
+	 * 	fogOn: true,
+	 * 	fogFar: 60,
+	 * 	fogColor: [0.9, 0.9, 0.9, 1.0],
+	 * 	surface: true,
+	 * 	surfaceColor: [1.5, 1.5, 1.5, 1.0],
+	 * 	grids: [
+	 *   {
+	 *    stepX: 1, // The length between grid lines on the X-axis
+	 *    stepY: 1, // The length between grid lines on the X-axis
+	 *    width: 1, // The width of the grid lines drawn
+	 *    color: [0.4, 0.4, 0.4, 0.8] // The color of the grid lines
+	 *   },
+	 *   {
+	 *    stepX: 0.5,
+	 *    stepY: 0.5,
+	 *    width: 1,
+	 *    color: [0.7, 0.7, 0.7, 0.8]
+	 *   }
+	 *  ]
+	 * });
+	 *
 	 */
 	function Grid(world, properties) {
 		properties = properties || {};
