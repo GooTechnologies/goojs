@@ -137,6 +137,7 @@ function (
 
 		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
 		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
+		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
 //		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
 		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
 		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
@@ -148,6 +149,9 @@ function (
 
 		if (!this.glExtensionTextureFloat) {
 			console.log('Float textures not supported.');
+		}
+		if (!this.glExtensionTextureFloatLinear) {
+			console.log('Float textures with linear filtering not supported.');
 		}
 //		if (!this.glExtensionTextureHalfFloat) {
 //			console.log('Half Float textures not supported.');
