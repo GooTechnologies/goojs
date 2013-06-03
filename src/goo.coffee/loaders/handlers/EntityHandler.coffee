@@ -4,8 +4,7 @@ define [
 	'goo/entities/Entity'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
-], (ConfigHandler, ComponentHandler, Entity, RSVP, pu, console) ->
+], (ConfigHandler, ComponentHandler, Entity, RSVP, pu) ->
 			
 	class EntityHandler extends ConfigHandler
 		@_register('entity')
@@ -28,12 +27,14 @@ define [
 					@_componentHandlers ?= {}
 					handler = @_componentHandlers[componentName]
 					if handler
-						handler.entity = object
-						handler.world = @world
-						handler.getConfig = @getConfig
-						handler.updateObject = @updateObject
+						_.extend handler,
+							world: @_world
+							getConfig: @getConfig
+							updateObject: @updateObject
+							options: _.clone(@options)
+					
 					else 
-						handler = @_componentHandlers[componentName] = new handlerClass(@world, @getConfig, @updateObject)
+						handler = @_componentHandlers[componentName] = new handlerClass(@world, @getConfig, @updateObject, @options)
 					
 					promise = handler.update(object, componentConfig)
 					if not promise?.then

@@ -6,15 +6,13 @@ define [
 	'goo/math/MathUtils'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 	'goo/lib/underscore'
 ], (
 ComponentHandler,
 TransformComponent,
 MathUtils,
 RSVP,
-pu,
-console) ->
+pu) ->
 
 	class TransformComponentHandler extends ComponentHandler
 		@_register('transform')
@@ -44,7 +42,7 @@ console) ->
 			if config.parentRef? 
 				console.log "Found a parentref, getting..."
 				@getConfig(config.parentRef).then (parentConfig)=>
-					@updateObject(config.parentRef, parentConfig).then (parent)=>
+					@updateObject(config.parentRef, parentConfig, @options).then (parent)=>
 						if parent? and component.parentRef?.entity != parent
 							console.log "Adding parent #{config.parentRef}"
 							parent.transformComponent.attachChild(component)

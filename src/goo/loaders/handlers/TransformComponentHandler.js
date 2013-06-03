@@ -2,7 +2,7 @@
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-define(['goo/loaders/handlers/ComponentHandler', 'goo/entities/components/TransformComponent', 'goo/math/MathUtils', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/util/ConsoleUtil', 'goo/lib/underscore'], function(ComponentHandler, TransformComponent, MathUtils, RSVP, pu, console) {
+define(['goo/loaders/handlers/ComponentHandler', 'goo/entities/components/TransformComponent', 'goo/math/MathUtils', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/lib/underscore'], function(ComponentHandler, TransformComponent, MathUtils, RSVP, pu) {
   var TransformComponentHandler, _ref;
 
   return TransformComponentHandler = (function(_super) {
@@ -41,7 +41,7 @@ define(['goo/loaders/handlers/ComponentHandler', 'goo/entities/components/Transf
       if (config.parentRef != null) {
         console.log("Found a parentref, getting...");
         this.getConfig(config.parentRef).then(function(parentConfig) {
-          return _this.updateObject(config.parentRef, parentConfig).then(function(parent) {
+          return _this.updateObject(config.parentRef, parentConfig, _this.options).then(function(parent) {
             var _ref1;
 
             if ((parent != null) && ((_ref1 = component.parentRef) != null ? _ref1.entity : void 0) !== parent) {

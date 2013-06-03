@@ -2,8 +2,7 @@ define [
 	'goo/loaders/handlers/ConfigHandler'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
-], (ConfigHandler, RSVP, pu, console) ->
+], (ConfigHandler, RSVP, pu) ->
 							
 	class SceneHandler extends ConfigHandler
 		@_register('scene')
@@ -18,14 +17,13 @@ define [
 				for entityRef in config.entityRefs
 					do (entityRef)=>
 						promises.push @getConfig(entityRef).then (entityConfig)=>
-							@updateObject(entityRef, entityConfig)
+							@updateObject(entityRef, entityConfig, @options)
 
-				RSVP.all(promises).then (entities)->
-					for entity in entities
-						# REVIEW we should be able to get a hold of the entities before adding them
-						# Perhaps add a function to be ran on each entity instead of adding them?
-						console.log "Adding #{entity.ref} to world"
-						entity.addToWorld()
+				RSVP.all(promises).then (entities)=>
+					if not @options.beforeAdd?.apply or @options.beforeAdd(config)
+						for entity in entities
+							console.log "Adding #{entity.ref} to world"
+							entity.addToWorld()
 			
 				.then null, (err)-> console.error "Error updating entities: #{err}"
 			else

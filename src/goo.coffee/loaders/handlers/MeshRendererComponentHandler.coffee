@@ -12,7 +12,6 @@ define [
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 	
 	'goo/lib/underscore'
 ], (
@@ -25,14 +24,13 @@ define [
 	Util, 
 	ShaderLib,
 	RSVP,
-	pu,
-	console
+	pu
 ) ->
 
 	class MaterialHandler extends ConfigHandler			
 		@_register('material')		
 		
-		constructor: (@world, @getConfig, @updateObject)->
+		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_objects = {}
 		
 		_prepare: (config)->
@@ -93,7 +91,7 @@ define [
 					for textureRef in config.textureRefs
 						do (textureRef)=>
 							promises.push @getConfig(textureRef).then (textureConfig)=>
-								@updateObject(textureRef, textureConfig).then (texture)=>
+								@updateObject(textureRef, textureConfig, @options).then (texture)=>
 									ref: textureRef 
 									texture: texture
 				
@@ -120,7 +118,7 @@ define [
 				return promise
 			else
 				@getConfig(ref).then (config)=>
-					@updateObject(ref, config)
+					@updateObject(ref, config, @options)
 	
 	
 	class ShaderHandler extends ConfigHandler
@@ -213,5 +211,5 @@ define [
 		_getMaterial: (ref)->
 			console.log "GetMaterial #{ref}"
 			@getConfig(ref).then (config)=>
-				@updateObject(ref, config)
+				@updateObject(ref, config, @options)
 				

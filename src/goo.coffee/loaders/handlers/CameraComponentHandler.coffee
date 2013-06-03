@@ -6,15 +6,13 @@ define [
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 	'goo/lib/underscore'
 ], (
 ComponentHandler,
 CameraComponent,
 Camera,
 RSVP,
-pu,
-console)->
+pu)->
 
 	
 	
@@ -26,6 +24,7 @@ console)->
 				fov: 45
 				near: 1
 				# REVIEW 1000?
+				# MB: Copied from EntityBinding. Ask Vilcans.
 				far: 10000
 		
 		_create: (entity, config)->

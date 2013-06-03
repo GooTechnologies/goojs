@@ -1,4 +1,5 @@
 define [
+	'goo/loaders/handlers/ConfigHandler'
 	'goo/loaders/handlers/ComponentHandler'
 
 	'goo/renderer/MeshData'
@@ -6,70 +7,55 @@ define [
 	'goo/loaders/JsonUtils'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 	'goo/lib/underscore'
 	
 ], (
+ConfigHandler,
 ComponentHandler,
 MeshData,
 MeshDataComponent,
 JsonUtils,
 RSVP,
-pu,
-console) ->
-
-	class MeshDataComponentHandler extends ComponentHandler
-		@_register('meshData')
-		_prepare: (config) ->
-			_.defaults config,
-				# TODO: make default for mesh or support missing mesh
-				meshRef: null
-				
-		_create: (entity, config) ->
-			# Created in update
+pu) ->
 
 
-		update: (entity, config) ->
-			super(entity, config) # Creates component if needed
+	class MeshDataHandler extends ConfigHandler
+		@_register('mesh')
+	
+	
+		_create: (meshConfig)->
+			if meshConfig.compression and meshConfig.compression.compressed
+				compression = 
+					compressedVertsRange: meshConfig.compression.compressedVertsRange or (1 << 14) - 1 #int
+					compressedColorsRange: meshConfig.compression.compressedColorsRange or (1 << 8) - 1 #int
+					compressedUnitVectorRange: meshConfig.compression.compressedUnitVectorRange or (1 << 10) - 1 #int
+	
+			if meshConfig.type == 'SkinnedMesh'
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh')
+				meshData.type = MeshData.SKINMESH
+			else
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh')
+				meshData.type = MeshData.MESH
 			
-			# I wonder if is is actually possible to change the meshdata.
-			# Maybe bounds aren't updated properly?
-
-			@getConfig(config.meshRef).then (mesh)=>
-# 				meshLoader = new MeshLoader(loader: 'dummy')
-# 				meshData = meshLoader._parseMeshData(mesh, 0, 'Mesh')
-# 				component = new MeshDataComponent(meshData)
-# 				entity.setComponent(component)
-# 				return component
-
-				if mesh.compression and mesh.compression.compressed
-					compression = 
-						compressedVertsRange: mesh.compression.compressedVertsRange or (1 << 14) - 1 #int
-						compressedColorsRange: mesh.compression.compressedColorsRange or (1 << 8) - 1 #int
-						compressedUnitVectorRange: mesh.compression.compressedUnitVectorRange or (1 << 10) - 1 #int
-		
-				if mesh.type == 'SkinnedMesh'
-					meshData = @_parseMeshData(mesh.data or mesh, 4, 'SkinnedMesh')
-					meshData.type = MeshData.SKINMESH
-				else
-					meshData = @_parseMeshData(mesh.data or mesh, 0, 'Mesh')
-					meshData.type = MeshData.MESH
-
-				component = new MeshDataComponent(meshData)
-				entity.setComponent(component)
-				
-				if mesh.pose
-					console.warn "SkeletonLoader is not yet supported"
+			if meshConfig.pose
+				# TODO: Add skeleton loading functionality
+				console.warn "SkeletonLoader is not yet supported"
 # 					var skeletonLoader = this._skeletonLoader;
 # 					promise = skeletonLoader.load(data.pose)
 # 						.then(function(skeletonPose) {
 # 						meshData.currentPose = skeletonPose;
 # 						return meshData;
 # 					});
-				
-				return component
-				
+			
+			return meshData
+			
+		update: (ref, config)->
+			meshData = @_create(config)
+			return pu.dummyPromise(meshData)
+		
+			
 		# Translated into coffeescript from goo/loaders/MeshLoader.js
+		# Returns MeshData object
 		_parseMeshData: (data, weightsPerVert, type, compression)->
 			vertexCount = data.vertexCount # int
 			if vertexCount == 0 then return null
@@ -219,3 +205,28 @@ console) ->
 				meshData.boundingBox = data.boundingBox
 	
 			return meshData
+
+
+	class MeshDataComponentHandler extends ComponentHandler
+		@_register('meshData')
+		
+		_prepare: (config) ->
+			_.defaults config,
+				# TODO: make default for mesh or support missing mesh
+				meshRef: null
+				
+		_create: (entity, config) ->
+			# Created in update
+
+		update: (entity, config) ->
+			super(entity, config) # Creates component if needed
+			meshRef = config.meshRef
+			
+			@getConfig(meshRef).then (config)=>
+				@updateObject(meshRef, config).then (meshData)=>
+					component = new MeshDataComponent(meshData)
+					entity.setComponent(component)
+					return component
+			
+
+				

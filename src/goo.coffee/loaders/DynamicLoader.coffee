@@ -8,7 +8,7 @@ define [
 	'goo/util/rsvp'
 	'goo/util/StringUtil'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
+	'goo/lib/underscore'
 	
 	# Load all handlers
 	'goo/loaders/handlers/SceneHandler'
@@ -25,8 +25,7 @@ Loader,
 TextureCreator,
 RSVP,
 su,
-pu,
-console) ->
+pu) ->
 
 	###*
 	* @class Class to load scenes into the world, or to update the scene/world based on the data model.
@@ -47,8 +46,6 @@ console) ->
 				@_loader = new Loader(rootPath: options.rootPath)
 			else
 				throw new Error("parameters.rootPath or parameters.loader must be defined")
-			# REVIEW this looks like it's intended to be private
-			# Shouldn't we be able to access the loaded objects/configs after loading?
 			@_configs = {}
 			@_textureCreator = new TextureCreator(loader:@_loader)
 			
@@ -58,10 +55,13 @@ console) ->
 		* type, what loading does is determined by the registered {ConfigHandler}
 		* 
 		* @param {string} ref Ref of object to load
+		* @param {object} options
+		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world, with the config data as argument.
 		*###
-		load: (ref)->
-			@update(ref, null)
+		load: (ref, options={})->
+			@update(ref, null, options)
 
 		###*
 		* Update an object in the world with an updated config. The object can be of any
@@ -71,10 +71,9 @@ console) ->
 		* @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
-		update: (ref, config)->
+		update: (ref, config, options={})->
 			console.log "Loading/updating #{ref}"
 			if config then @_configs[ref] = config
-			# REVIEW why not construct this in the constructor? Also, same comment as for @_configs
 			@_objects = {}
 			
 			@_loadRef(ref).then (config)=>
@@ -82,9 +81,9 @@ console) ->
 				for childRef in @_getRefsFromConfig(config)
 					do (childRef)=>
 						promises.push @_loadRef(childRef).then (childConfig)=>
-							@_handle(childRef, childConfig)
+							@_handle(childRef, childConfig, options)
 						
-				promises.push @_handle(ref, config)
+				promises.push @_handle(ref, config, options)
 				return RSVP.all(promises)
 			.then ()=>
 				return @_configs	
@@ -92,20 +91,18 @@ console) ->
 				console.error "Error updating #{ref} #{err}"
 			
 
-		_handle: (ref, config, noCache=false)-> 
+		_handle: (ref, config, options)-> 
 			if @_objects[ref]?.then
 				#console.log "#{ref} is handling"	
 				return @_objects[ref]
-			else if @_objects[ref] and not noCache
+			else if @_objects[ref] and not options.noCache
 				#console.log "#{ref} is already handled"
 				return pu.dummyPromise(@_objects[ref])
 			else
 				type = @_getTypeForRef(ref)
 				
 				if type == "texture"
-					# Textures are special
-					# REVIEW do we support pixel map textures in the file format? Like in the picking or the shapes example
-					# If yes, this ignores them
+					# TODO: Support pixel map textures
 					textureObj = @_objects[ref] = @_textureCreator.loadTexture2D(config.url)
 					pu.dummyPromise(textureObj)
 				else
@@ -114,10 +111,13 @@ console) ->
 						@_handlers ?= {}
 						handler = @_handlers[type]
 						if handler
-							handler.world = @_world
-							handler.getConfig = @_loadRef.bind(@)
+							_.extend handler,
+								world: @_world
+								getConfig: @_loadRef.bind(@)
+								updateObject: @_handle.bind(@)
+								options: _.clone(options)
 						else
-							handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@) )
+							handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
 						
 						console.log "Handling #{ref}"
 						@_objects[ref] = handler.update(ref, config).then (object)=>
@@ -137,17 +137,14 @@ console) ->
 		*###
 		_loadRef: (ref, noCache=false)->
 			if @_configs[ref]?.then
-				#console.log "#{ref} is loading"	
 				return @_configs[ref]
 			else if @_configs[ref]? and not noCache
-				#console.log "#{ref} is already loaded"
 				return pu.dummyPromise(@_configs[ref])
 			else
 				@_configs[ref] = @_loader.load ref, (data)=>
 					try 
 						output = JSON.parse(data)
 					catch e
-						#console.warn "#{ref} is not a JSON file"
 						output = data
 					finally
 						@_configs[ref] = output

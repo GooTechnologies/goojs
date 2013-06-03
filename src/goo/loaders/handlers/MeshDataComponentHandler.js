@@ -2,58 +2,50 @@
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-define(['goo/loaders/handlers/ComponentHandler', 'goo/renderer/MeshData', 'goo/entities/components/MeshDataComponent', 'goo/loaders/JsonUtils', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/util/ConsoleUtil', 'goo/lib/underscore'], function(ComponentHandler, MeshData, MeshDataComponent, JsonUtils, RSVP, pu, console) {
-  var MeshDataComponentHandler, _ref;
+define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHandler', 'goo/renderer/MeshData', 'goo/entities/components/MeshDataComponent', 'goo/loaders/JsonUtils', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/lib/underscore'], function(ConfigHandler, ComponentHandler, MeshData, MeshDataComponent, JsonUtils, RSVP, pu) {
+  var MeshDataComponentHandler, MeshDataHandler, _ref, _ref1;
 
-  return MeshDataComponentHandler = (function(_super) {
-    __extends(MeshDataComponentHandler, _super);
+  MeshDataHandler = (function(_super) {
+    __extends(MeshDataHandler, _super);
 
-    function MeshDataComponentHandler() {
-      _ref = MeshDataComponentHandler.__super__.constructor.apply(this, arguments);
+    function MeshDataHandler() {
+      _ref = MeshDataHandler.__super__.constructor.apply(this, arguments);
       return _ref;
     }
 
-    MeshDataComponentHandler._register('meshData');
+    MeshDataHandler._register('mesh');
 
-    MeshDataComponentHandler.prototype._prepare = function(config) {
-      return _.defaults(config, {
-        meshRef: null
-      });
+    MeshDataHandler.prototype._create = function(meshConfig) {
+      var compression, meshData;
+
+      if (meshConfig.compression && meshConfig.compression.compressed) {
+        compression = {
+          compressedVertsRange: meshConfig.compression.compressedVertsRange || (1 << 14) - 1,
+          compressedColorsRange: meshConfig.compression.compressedColorsRange || (1 << 8) - 1,
+          compressedUnitVectorRange: meshConfig.compression.compressedUnitVectorRange || (1 << 10) - 1
+        };
+      }
+      if (meshConfig.type === 'SkinnedMesh') {
+        meshData = this._parseMeshData(meshConfig.data || meshConfig, 4, 'SkinnedMesh');
+        meshData.type = MeshData.SKINMESH;
+      } else {
+        meshData = this._parseMeshData(meshConfig.data || meshConfig, 0, 'Mesh');
+        meshData.type = MeshData.MESH;
+      }
+      if (meshConfig.pose) {
+        console.warn("SkeletonLoader is not yet supported");
+      }
+      return meshData;
     };
 
-    MeshDataComponentHandler.prototype._create = function(entity, config) {};
+    MeshDataHandler.prototype.update = function(ref, config) {
+      var meshData;
 
-    MeshDataComponentHandler.prototype.update = function(entity, config) {
-      var _this = this;
-
-      MeshDataComponentHandler.__super__.update.call(this, entity, config);
-      return this.getConfig(config.meshRef).then(function(mesh) {
-        var component, compression, meshData;
-
-        if (mesh.compression && mesh.compression.compressed) {
-          compression = {
-            compressedVertsRange: mesh.compression.compressedVertsRange || (1 << 14) - 1,
-            compressedColorsRange: mesh.compression.compressedColorsRange || (1 << 8) - 1,
-            compressedUnitVectorRange: mesh.compression.compressedUnitVectorRange || (1 << 10) - 1
-          };
-        }
-        if (mesh.type === 'SkinnedMesh') {
-          meshData = _this._parseMeshData(mesh.data || mesh, 4, 'SkinnedMesh');
-          meshData.type = MeshData.SKINMESH;
-        } else {
-          meshData = _this._parseMeshData(mesh.data || mesh, 0, 'Mesh');
-          meshData.type = MeshData.MESH;
-        }
-        component = new MeshDataComponent(meshData);
-        entity.setComponent(component);
-        if (mesh.pose) {
-          console.warn("SkeletonLoader is not yet supported");
-        }
-        return component;
-      });
+      meshData = this._create(config);
+      return pu.dummyPromise(meshData);
     };
 
-    MeshDataComponentHandler.prototype._parseMeshData = function(data, weightsPerVert, type, compression) {
+    MeshDataHandler.prototype._parseMeshData = function(data, weightsPerVert, type, compression) {
       var attributeMap, buffer, indexCount, jointData, jointIdx, jointIndex, localIndex, localJointMap, localMap, meshData, offset, offsetObj, scale, texCoords, texIdx, texObj, textureUnits, vertexCount, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _n, _ref1, _ref2, _ref3, _ref4;
 
       vertexCount = data.vertexCount;
@@ -198,6 +190,44 @@ define(['goo/loaders/handlers/ComponentHandler', 'goo/renderer/MeshData', 'goo/e
         meshData.boundingBox = data.boundingBox;
       }
       return meshData;
+    };
+
+    return MeshDataHandler;
+
+  })(ConfigHandler);
+  return MeshDataComponentHandler = (function(_super) {
+    __extends(MeshDataComponentHandler, _super);
+
+    function MeshDataComponentHandler() {
+      _ref1 = MeshDataComponentHandler.__super__.constructor.apply(this, arguments);
+      return _ref1;
+    }
+
+    MeshDataComponentHandler._register('meshData');
+
+    MeshDataComponentHandler.prototype._prepare = function(config) {
+      return _.defaults(config, {
+        meshRef: null
+      });
+    };
+
+    MeshDataComponentHandler.prototype._create = function(entity, config) {};
+
+    MeshDataComponentHandler.prototype.update = function(entity, config) {
+      var meshRef,
+        _this = this;
+
+      MeshDataComponentHandler.__super__.update.call(this, entity, config);
+      meshRef = config.meshRef;
+      return this.getConfig(meshRef).then(function(config) {
+        return _this.updateObject(meshRef, config).then(function(meshData) {
+          var component;
+
+          component = new MeshDataComponent(meshData);
+          entity.setComponent(component);
+          return component;
+        });
+      });
     };
 
     return MeshDataComponentHandler;

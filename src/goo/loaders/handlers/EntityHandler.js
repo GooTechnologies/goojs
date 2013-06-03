@@ -2,7 +2,7 @@
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHandler', 'goo/entities/Entity', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/util/ConsoleUtil'], function(ConfigHandler, ComponentHandler, Entity, RSVP, pu, console) {
+define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHandler', 'goo/entities/Entity', 'goo/util/rsvp', 'goo/util/PromiseUtil'], function(ConfigHandler, ComponentHandler, Entity, RSVP, pu) {
   var EntityHandler, _ref;
 
   return EntityHandler = (function(_super) {
@@ -41,12 +41,14 @@ define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHan
           }
           handler = this._componentHandlers[componentName];
           if (handler) {
-            handler.entity = object;
-            handler.world = this.world;
-            handler.getConfig = this.getConfig;
-            handler.updateObject = this.updateObject;
+            _.extend(handler, {
+              world: this._world,
+              getConfig: this.getConfig,
+              updateObject: this.updateObject,
+              options: _.clone(this.options)
+            });
           } else {
-            handler = this._componentHandlers[componentName] = new handlerClass(this.world, this.getConfig, this.updateObject);
+            handler = this._componentHandlers[componentName] = new handlerClass(this.world, this.getConfig, this.updateObject, this.options);
           }
           promise = handler.update(object, componentConfig);
           if (!(promise != null ? promise.then : void 0)) {

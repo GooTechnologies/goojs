@@ -1,10 +1,7 @@
-define [
-	'goo/util/ConsoleUtil'
-], 
-(console) ->
+define [], () ->
 
 	class ConfigHandler
-		constructor: (@world, @getConfig, @updateObject)->
+		constructor: (@world, @getConfig, @updateObject, @options)->
 		
 		@handlerClasses = {}
 		@getHandler: (type)->
@@ -14,3 +11,5 @@ define [
 			@_type = type
 			ConfigHandler.handlerClasses[type] = @
 	
+		update: (ref, config)->
+			# Override me!

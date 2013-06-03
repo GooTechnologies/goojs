@@ -1,12 +1,11 @@
 define [
 	'goo/util/rsvp', 
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 ], 
-(RSVP, pu, console) ->
+(RSVP, pu) ->
 
 	class ComponentHandler
-		constructor: (@world, @getConfig, @updateObject)->
+		constructor: (@world, @getConfig, @updateObject, @options)->
 
 		_prepare: (config)->
 		

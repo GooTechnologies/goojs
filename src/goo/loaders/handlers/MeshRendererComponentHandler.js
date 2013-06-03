@@ -2,7 +2,7 @@
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHandler', 'goo/loaders/Loader', 'goo/entities/components/MeshRendererComponent', 'goo/entities/components/MeshDataComponent', 'goo/renderer/Material', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/util/ConsoleUtil', 'goo/lib/underscore'], function(ConfigHandler, ComponentHandler, Loader, MeshRendererComponent, MeshDataComponent, Material, Util, ShaderLib, RSVP, pu, console) {
+define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHandler', 'goo/loaders/Loader', 'goo/entities/components/MeshRendererComponent', 'goo/entities/components/MeshDataComponent', 'goo/renderer/Material', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/lib/underscore'], function(ConfigHandler, ComponentHandler, Loader, MeshRendererComponent, MeshDataComponent, Material, Util, ShaderLib, RSVP, pu) {
   var MaterialHandler, MeshRendererComponentHandler, ShaderHandler, _ref, _ref1;
 
   MaterialHandler = (function(_super) {
@@ -10,10 +10,11 @@ define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHan
 
     MaterialHandler._register('material');
 
-    function MaterialHandler(world, getConfig, updateObject) {
+    function MaterialHandler(world, getConfig, updateObject, options) {
       this.world = world;
       this.getConfig = getConfig;
       this.updateObject = updateObject;
+      this.options = options;
       this._objects = {};
     }
 
@@ -95,7 +96,7 @@ define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHan
           _ref3 = config.textureRefs;
           _fn = function(textureRef) {
             return promises.push(_this.getConfig(textureRef).then(function(textureConfig) {
-              return _this.updateObject(textureRef, textureConfig).then(function(texture) {
+              return _this.updateObject(textureRef, textureConfig, _this.options).then(function(texture) {
                 return {
                   ref: textureRef,
                   texture: texture
@@ -139,7 +140,7 @@ define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHan
         return promise;
       } else {
         return this.getConfig(ref).then(function(config) {
-          return _this.updateObject(ref, config);
+          return _this.updateObject(ref, config, _this.options);
         });
       }
     };
@@ -265,7 +266,7 @@ define(['goo/loaders/handlers/ConfigHandler', 'goo/loaders/handlers/ComponentHan
 
       console.log("GetMaterial " + ref);
       return this.getConfig(ref).then(function(config) {
-        return _this.updateObject(ref, config);
+        return _this.updateObject(ref, config, _this.options);
       });
     };
 

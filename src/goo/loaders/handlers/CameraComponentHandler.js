@@ -2,7 +2,7 @@
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-define(['goo/loaders/handlers/ComponentHandler', 'goo/entities/components/CameraComponent', 'goo/renderer/Camera', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/util/ConsoleUtil', 'goo/lib/underscore'], function(ComponentHandler, CameraComponent, Camera, RSVP, pu, console) {
+define(['goo/loaders/handlers/ComponentHandler', 'goo/entities/components/CameraComponent', 'goo/renderer/Camera', 'goo/util/rsvp', 'goo/util/PromiseUtil', 'goo/lib/underscore'], function(ComponentHandler, CameraComponent, Camera, RSVP, pu) {
   var CameraComponentHandler, _ref;
 
   return CameraComponentHandler = (function(_super) {

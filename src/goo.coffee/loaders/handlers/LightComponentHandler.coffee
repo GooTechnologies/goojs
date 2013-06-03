@@ -8,7 +8,6 @@ define [
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/util/ConsoleUtil'
 	'goo/lib/underscore'
 ], (
 	ComponentHandler,
@@ -16,8 +15,7 @@ define [
 	PointLight,
 	Vector,
 	RSVP,
-	pu,
-	console	
+	pu	
 ) ->
 
 	class LightComponentHandler extends ComponentHandler
