@@ -148,6 +148,26 @@ function (
 		return '[' + x + ',' + y + ',' + z + ']' + ' - ' + radius;
 	};
 
+	BoundingSphere.prototype.intersects = function (bv) {
+        return bv.intersectsSphere(this);
+	};
+
+	BoundingSphere.prototype.intersectsBoundingBox = function (bb) {
+        if (Math.abs(bb.center.x - this.center.x) < this.radius + bb.xExtent
+                && Math.abs(bb.center.y - this.center.y) < this.radius + bb.yExtent
+                && Math.abs(bb.center.z - this.center.z) < this.radius + bb.zExtent) {
+            return true;
+        }
+
+        return false;
+	};
+
+	BoundingSphere.prototype.intersectsSphere = function (bs) {
+        var diff = this.vec.setv(this.center).subv(bs.center);
+        var rsum = this.radius + bs.radius;
+        return diff.dot(diff) <= rsum * rsum;
+	};
+
 	BoundingSphere.prototype.intersectsRay = function (ray) {
 		if (!this.center) {
 			return false;
