@@ -7,6 +7,21 @@ define [
 	noop = -> #
 	ConsoleUtil =
 		
+		# REVIEW: The doc is a bit confusing, as the `console` parameter
+		# isn't actually required to get the behavior.
+		# Actually, the global window.console is modified.
+		# Does the code in the docs really work?
+		#
+		# Isn't the following example closer to the truth:
+		#
+		# require (['goo/util/ConsoleUtil'], function(ConsoleUtil) {
+		# 	ConsoleUtil.setLogLevel('warn');
+		# 	console.log('This message will NOT be printed');
+		# 	console.warn('This warning will be printed');
+		# 	ConsoleUtil.clearLogLevel();
+		# 	console.log('This message will be printed');
+		# }
+
 		###*
 		* Set the log level. Messages with lower urgency will not be printed. Example usage: 
 		* <code>

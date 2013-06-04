@@ -8,6 +8,18 @@ define [
 	'goo/util/rsvp'
 	'goo/util/StringUtil'
 	'goo/util/PromiseUtil'
+	# REVIEW: Require from goo/lib does not work with the minified code (in the examples at least).
+	# The way the build system now works, you can't load modules from goo/lib
+	# using require. They are not included in the minified code.
+	# The idea is that files in goo/lib are not AMD modules,
+	# and shouldn't be loaded by require.
+	# Instead to use modules that depend on external libraries (e.g. Box2D)
+	# the user will have to add <script> tags or other code to ensure it's loaded.
+	# This is why we put RSVP, which is a non-optional part of the engine,
+	# into src instead. Maybe we should do the same with underscore
+	# (or switch to lodash which is API compatible with underscore but smaller
+	# and with AMD support).
+	# Maybe some other solution altogether to avoid cluttering src/ with third party code?
 	'goo/lib/underscore'
 	
 	# Load all handlers
@@ -60,6 +72,9 @@ pu) ->
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world, with the config data as argument.
 		*###
+		# REVIEW: When loading a scene at least, the promise resolved into an object that maps refs to configs (for all loaded refs I think).
+		# The comment is a bit unclear about this.
+		# BTW, is there a way to get the Entity *object* given a ref? Otherwise getting that mapping here would be very useful.
 		load: (ref, options={})->
 			@update(ref, null, options)
 
@@ -142,6 +157,15 @@ pu) ->
 				return pu.dummyPromise(@_configs[ref])
 			else
 				@_configs[ref] = @_loader.load ref, (data)=>
+					# REVIEW: We can't assume that data is JSON just because it can be parsed as JSON.
+					# Otherwise invalid JSON will result in the data being treated as a string,
+					# when it should give an error.
+					# And data that just happens to look like JSON is parsed as JSON
+					# even though it shouldn't.
+					# Instead, the assumed file format should depend on file type.
+					# Do as the tool server, that checks the file extension when loading,
+					# see Tool/server/models/project.coffee
+					# (It doesn't check when saving though, but that shouldn't cause problems.)
 					try 
 						output = JSON.parse(data)
 					catch e
