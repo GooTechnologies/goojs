@@ -10,8 +10,11 @@ function(
 	/**
 	 * @class <code>BoundingVolume</code> Base class for boundings
 	 */
-	function BoundingVolume() {
+	function BoundingVolume(center) {
 		this.center = new Vector3();
+		if (center !== undefined) {
+			this.center.setv(center);
+		}
 
 		this.min = new Vector3(Infinity, Infinity, Infinity);
 		this.max = new Vector3(-Infinity, -Infinity, -Infinity);

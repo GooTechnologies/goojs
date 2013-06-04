@@ -17,16 +17,27 @@ function (BoundingTree) {
 	};
 
 	PrimitivePickLogic.prototype.added = function (entity) {
-		// build bounding tree
-		entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
-
-		// calculate bounding tree.
-		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
+		// Build boundingtree if not existing
+		if (!this.isConstructed(entity)) {
+			this.rebuild(entity);
+		}
 	};
 
 	PrimitivePickLogic.prototype.removed = function (entity) {
 		// clear bounding tree
 		entity.meshDataComponent.meshData.__boundingTree = null;
+	};
+
+	PrimitivePickLogic.prototype.isConstructed = function (entity) {
+		return !!entity.meshDataComponent.meshData.__boundingTree;
+	};
+
+	PrimitivePickLogic.prototype.rebuild = function (entity) {
+		// build bounding tree
+		entity.meshDataComponent.meshData.__boundingTree = new BoundingTree();
+
+		// calculate bounding tree.
+		entity.meshDataComponent.meshData.__boundingTree.construct(entity);
 	};
 
 	return PrimitivePickLogic;

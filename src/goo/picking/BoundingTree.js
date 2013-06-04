@@ -35,15 +35,11 @@ function (BoundingBox, BoundingSphere, Vector3) {
 			}
 			this.createTree(entity, 0, 0, this.primitiveIndices.length);
 		} else {
-			// REVIEW: This doesn't exist?
 			this.split(entity, 0, meshData.getSectionCount());
 		}
 	};
 
 	BoundingTree.prototype.createTree = function (entity, section, start, end) {
-		start = Math.floor(start);
-		end = Math.floor(end);
-
 		var meshData = entity.meshDataComponent.meshData;
 
 		this.section = section;
@@ -70,14 +66,66 @@ function (BoundingBox, BoundingSphere, Vector3) {
 			this.leftTree = new BoundingTree(this.boundType);
 		}
 		this.leftTree.primitiveIndices = this.primitiveIndices;
-		this.leftTree.createTree(entity, section, start, (start + end) / 2);
+		this.leftTree.createTree(entity, section, start, Math.floor((start + end) / 2));
 
 		// create the right child
 		if (!this.rightTree) {
 			this.rightTree = new BoundingTree(this.boundType);
 		}
 		this.rightTree.primitiveIndices = this.primitiveIndices;
-		this.rightTree.createTree(entity, section, (start + end) / 2, end);
+		this.rightTree.createTree(entity, section, Math.floor((start + end) / 2), end);
+	};
+
+	BoundingTree.prototype.split = function (entity, sectionStart, sectionEnd) {
+		// Split range in half
+		var rangeSize = sectionEnd - sectionStart;
+		var halfRange = Math.floor(rangeSize / 2); // odd number will give +1 to right.
+
+		// left half:
+		// if half size === 1, create as regular CollisionTree
+		if (halfRange === 1) {
+			// compute section
+			var section = sectionStart;
+
+			// create the left child
+			this.leftTree = new BoundingTree(this.boundType);
+
+			this.leftTree.primitiveIndices = [];
+			for (var i = 0; i < this.leftTree.primitiveIndices.length; i++) {
+				this.leftTree.primitiveIndices.push(i);
+			}
+			this.leftTree.createTree(entity, section, 0, this.leftTree.primitiveIndices.length);
+		} else {
+			// otherwise, make an empty collision tree and call split with new range
+			this.leftTree = new BoundingTree(this.boundType);
+			this.leftTree.split(entity, sectionStart, sectionStart + halfRange);
+		}
+
+		// right half:
+		// if rangeSize - half size === 1, create as regular CollisionTree
+		if (rangeSize - halfRange === 1) {
+			// compute section
+			var section = sectionStart + 1;
+
+			// create the left child
+			this.rightTree = new BoundingTree(this.boundType);
+
+			this.rightTree._primitiveIndices = [];
+			for (var i = 0; i < this.rightTree.primitiveIndices.length; i++) {
+				this.rightTree.primitiveIndices.push(i);
+			}
+			this.rightTree.createTree(entity, section, 0, this.rightTree.primitiveIndices.length);
+		} else {
+			// otherwise, make an empty collision tree and call split with new range
+			this.rightTree = new BoundingTree(this.boundType);
+			this.rightTree.split(entity, sectionStart + halfRange, sectionEnd);
+		}
+
+		// Ok, now since we technically have no primitives, we need our bounds to be the merging of our children bounds
+		// instead:
+		this.localBound = this.leftTree.localBound.clone(this.localBound);
+		this.localBound.merge(this.rightTree.localBound);
+		this.worldBound = this.localBound.clone(this.worldBound);
 	};
 
 	BoundingTree.prototype.createBounds = function () {

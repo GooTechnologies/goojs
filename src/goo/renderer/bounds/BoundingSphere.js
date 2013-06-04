@@ -1,12 +1,16 @@
 define([
 	'goo/math/Vector3',
+	'goo/math/MathUtils',
 	'goo/renderer/bounds/BoundingVolume',
+	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/MeshData'
 ],
 /** @lends */
 function (
 	Vector3,
+	MathUtils,
 	BoundingVolume,
+	BoundingBox,
 	MeshData
 ) {
 	"use strict";
@@ -18,10 +22,10 @@ function (
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingSphere() {
-		BoundingVolume.call(this);
+	function BoundingSphere(center, radius) {
+		BoundingVolume.call(this, center);
 
-		this.radius = 1;
+		this.radius = radius !== undefined ? radius : 1;
 
 		this.vec = new Vector3();
 	}
@@ -149,23 +153,23 @@ function (
 	};
 
 	BoundingSphere.prototype.intersects = function (bv) {
-        return bv.intersectsSphere(this);
+		return bv.intersectsSphere(this);
 	};
 
 	BoundingSphere.prototype.intersectsBoundingBox = function (bb) {
-        if (Math.abs(bb.center.x - this.center.x) < this.radius + bb.xExtent
-                && Math.abs(bb.center.y - this.center.y) < this.radius + bb.yExtent
-                && Math.abs(bb.center.z - this.center.z) < this.radius + bb.zExtent) {
-            return true;
-        }
+		if (Math.abs(bb.center.x - this.center.x) < this.radius + bb.xExtent
+				&& Math.abs(bb.center.y - this.center.y) < this.radius + bb.yExtent
+				&& Math.abs(bb.center.z - this.center.z) < this.radius + bb.zExtent) {
+			return true;
+		}
 
-        return false;
+		return false;
 	};
 
 	BoundingSphere.prototype.intersectsSphere = function (bs) {
-        var diff = this.vec.setv(this.center).subv(bs.center);
-        var rsum = this.radius + bs.radius;
-        return diff.dot(diff) <= rsum * rsum;
+		var diff = this.vec.setv(this.center).subv(bs.center);
+		var rsum = this.radius + bs.radius;
+		return diff.dot(diff) <= rsum * rsum;
 	};
 
 	BoundingSphere.prototype.intersectsRay = function (ray) {
@@ -231,6 +235,79 @@ function (
 			"distances": distances,
 			"points": points
 		};
+	};
+
+	BoundingSphere.prototype.merge = function (bv) {
+		if (bv instanceof BoundingBox) {
+			return this.mergeSphere(bv.center, Math.max(bv.xExtent, bv.yExtent, bv.zExtent), this);
+		} else if (bv instanceof BoundingSphere) {
+			return this.mergeSphere(bv.center, bv.radius, this);
+		}
+	};
+
+	BoundingSphere.prototype.mergeSphere = function (center, radius, store) {
+		if (!store) {
+			store = new BoundingSphere();
+		}
+
+		// if (Float.isInfinite(otherRadius) || Float.isInfinite(getRadius())) {
+		//     store.setCenter(Vector3.ZERO);
+		//     store.setRadius(Float.POSITIVE_INFINITY);
+		//     return store;
+		// }
+
+		var diff = this.vec.setv(center).subv(this.center);
+		var lengthSquared = diff.lengthSquared();
+		var radiusDiff = radius - this.radius;
+		var radiusDiffSqr = radiusDiff * radiusDiff;
+
+		// if one sphere wholly contains the other
+		if (radiusDiffSqr >= lengthSquared) {
+			// if we contain the other
+			if (radiusDiff <= 0.0) {
+				store.setCenter(this.center);
+				store.setRadius(this.radius);
+				return store;
+			}
+			// else the other contains us
+			else {
+				store.setCenter(center);
+				store.setRadius(radius);
+				return store;
+			}
+		}
+
+		// distance between sphere centers
+		var length = Math.sqrt(lengthSquared);
+
+		// init a center var using our center
+		var rCenter = store.center;
+		rCenter.setv(this.center);
+
+		// if our centers are at least a tiny amount apart from each other...
+		if (length > MathUtils.EPSILON) {
+			// place us between the two centers, weighted by radii
+			var coeff = (length + radiusDiff) / (2.0 * length);
+			rCenter.addv(diff.mul(coeff));
+		}
+
+		// set center on our resulting bounds
+		store.center.setv(rCenter);
+
+		// Set radius
+		store.radius = 0.5 * (length + this.radius + radius);
+
+		return store;
+	};
+
+	BoundingSphere.prototype.clone = function (store) {
+		if (store && store instanceof BoundingSphere) {
+			store.center.setv(this.center);
+			store.radius = this.radius;
+			return store;
+		}
+
+		return new BoundingSphere(this.center, this.radius);
 	};
 
 	return BoundingSphere;

@@ -1,12 +1,14 @@
 define([
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingVolume',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	Vector3,
 	BoundingVolume,
+	BoundingSphere,
 	MathUtils
 ) {
 	"use strict";
@@ -18,12 +20,12 @@ function (
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingBox() {
-		BoundingVolume.call(this);
+	function BoundingBox(center, xExtent, yExtent, zExtent) {
+		BoundingVolume.call(this, center);
 
-		this.xExtent = 1;
-		this.yExtent = 1;
-		this.zExtent = 1;
+		this.xExtent = xExtent !== undefined ? xExtent : 1;
+		this.yExtent = yExtent !== undefined ? yExtent : 1;
+		this.zExtent = zExtent !== undefined ? zExtent : 1;
 
 		this._compVect1 = new Vector3();
 		this._compVect2 = new Vector3();
@@ -205,7 +207,7 @@ function (
 	};
 
 	BoundingBox.prototype.intersects = function (bv) {
-        return bv.intersectsBoundingBox(this);
+		return bv.intersectsBoundingBox(this);
 	};
 
 	BoundingBox.prototype.intersectsBoundingBox = function (bb) {
@@ -221,13 +223,13 @@ function (
 	};
 
 	BoundingBox.prototype.intersectsSphere = function (bs) {
-        if (Math.abs(this.center.x - bs.center.x) < bs.radius + this.xExtent
-                && Math.abs(this.center.y - bs.center.y) < bs.radius + this.yExtent
-                && Math.abs(this.center.z - bs.center.z) < bs.radius + this.zExtent) {
-            return true;
-        }
+		if (Math.abs(this.center.x - bs.center.x) < bs.radius + this.xExtent
+				&& Math.abs(this.center.y - bs.center.y) < bs.radius + this.yExtent
+				&& Math.abs(this.center.z - bs.center.z) < bs.radius + this.zExtent) {
+			return true;
+		}
 
-        return false;
+		return false;
 	};
 
 	BoundingBox.prototype.testStaticAABBAABB = function (bb, contact) {
@@ -442,6 +444,78 @@ function (
 		} else {
 			return numer <= 0.0;
 		}
+	};
+
+	BoundingBox.prototype.merge = function (bv) {
+		if (bv instanceof BoundingBox) {
+			return this.mergeBox(bv.center, bv.xExtent, bv.yExtent, bv.zExtent, this);
+		} else if (bv instanceof BoundingSphere) {
+			return this.mergeBox(bv.center, bv.radius, bv.radius, bv.radius, this);
+		}
+	};
+
+	BoundingBox.prototype.mergeBox = function (center, xExtent, yExtent, zExtent, store) {
+		if (!store) {
+			store = new BoundingBox();
+		}
+
+		// if (Float.isInfinite(getXExtent()) || Float.isInfinite(getYExtent()) || Float.isInfinite(getZExtent())
+		//         || Float.isInfinite(boxX) || Float.isInfinite(boxY) || Float.isInfinite(boxZ)) {
+		//     store.setCenter(Vector3.ZERO);
+		//     store.setXExtent(Float.POSITIVE_INFINITY);
+		//     store.setYExtent(Float.POSITIVE_INFINITY);
+		//     store.setZExtent(Float.POSITIVE_INFINITY);
+		//     return store;
+		// }
+
+		var calcVec1 = this.vec;
+		var calcVec2 = store.center;
+
+		calcVec1.x = this.center.x - this.xExtent;
+		if (calcVec1.x > center.x - xExtent) {
+			calcVec1.x = center.x - xExtent;
+		}
+		calcVec1.y = this.center.y - this.yExtent;
+		if (calcVec1.y > center.y - yExtent) {
+			calcVec1.y = center.y - yExtent;
+		}
+		calcVec1.z = this.center.z - this.zExtent;
+		if (calcVec1.z > center.z - zExtent) {
+			calcVec1.z = center.z - zExtent;
+		}
+
+		calcVec2.x = this.center.x + this.xExtent;
+		if (calcVec2.x < center.x + xExtent) {
+			calcVec2.x = center.x + xExtent;
+		}
+		calcVec2.y = this.center.y + this.yExtent;
+		if (calcVec2.y < center.y + yExtent) {
+			calcVec2.y = center.y + yExtent;
+		}
+		calcVec2.z = this.center.z + this.zExtent;
+		if (calcVec2.z < center.z + zExtent) {
+			calcVec2.z = center.z + zExtent;
+		}
+
+		store.center.set(calcVec2).addv(calcVec1).muld(0.5, 0.5, 0.5);
+
+		store.xExtent = calcVec2.x - store.center.x;
+		store.yExtent = calcVec2.y - store.center.y;
+		store.zExtent = calcVec2.z - store.center.z;
+
+		return store;
+	};
+
+	BoundingBox.prototype.clone = function (store) {
+		if (store && store instanceof BoundingBox) {
+			store.center.setv(this.center);
+			store.xExtent = this.xExtent;
+			store.yExtent = this.yExtent;
+			store.zExtent = this.zExtent;
+			return store;
+		}
+
+		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 
 	return BoundingBox;

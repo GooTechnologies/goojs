@@ -29,9 +29,8 @@ function (System) {
 	};
 
 	PickingSystem.prototype.inserted = function (entity) {
-		if (this.pickLogic) {
+		if (entity.meshRendererComponent.isPickable && this.pickLogic) {
 			this.pickLogic.added(entity);
-			// console.log('----------- added: ', entity);
 		}
 	};
 
@@ -57,6 +56,10 @@ function (System) {
 
 			// If we have custom pickLogic, use that.
 			if (this.pickLogic) {
+				if (!this.pickLogic.isConstructed(entity)) {
+					this.pickLogic.added(entity);
+				}
+
 				var result = this.pickLogic.getPickResult(this.pickRay, entity);
 				if (result && result.distances && result.distances.length) {
 					pickList.push({
