@@ -40,7 +40,7 @@ task 'coffee', 'Compiles all the coffeescript in src/goo.coffee and adds it to t
 
 	coffeeRoot = 'src/goo.coffee'
 	jsRoot = "src/goo"
-	runCommand "coffee -cbo #{jsRoot} #{coffeeRoot}", ->
+	runCommand "node node_modules/coffee-script/bin/coffee -cbo #{jsRoot} #{coffeeRoot}", ->
 		console.log "Compiled coffeescript" 	
 
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
