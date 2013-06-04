@@ -66,7 +66,9 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var domElement = entity.getComponent("CSSTransformComponent").domElement;
-			style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(entity.transformComponent.worldTransform.matrix) + ' scale3d(1,-1,1)';
+			var scale = entity.getComponent("CSSTransformComponent").scale;
+			scale = [scale, -scale, scale].join(',');
+			style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(entity.transformComponent.worldTransform.matrix) + ' scale3d('+scale+')';
 			setStyle(domElement, 'transform', style);
 
 			if (domElement.parentNode !== this.containerDom2) {
