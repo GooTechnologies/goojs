@@ -14,7 +14,7 @@
     "requirejs" : ">=2.1.2"
   },
   "devDependencies": {
-    "coffee-script": "1.4.0",
+    "coffee-script": "1.6.3",
     "testacular": "0.6.0",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
     "jshint": "1.0.0",
