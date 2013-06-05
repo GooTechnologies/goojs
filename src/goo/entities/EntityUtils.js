@@ -78,14 +78,16 @@ define([
 		 * @param {Entity} entity The entity to begin traversing from
 		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy
 		 */
-		EntityUtils.traverse = function (entity, callback) {
+		EntityUtils.traverse = function (entity, callback, level) {
+			level = level !== undefined ? level : 0;
+
 			if (callback) {
-				callback(entity);
+				callback(entity, level);
 			}
 
 			for (var j=0;j<entity.transformComponent.children.length;j++) {
 				var child = entity.transformComponent.children[j];
-				EntityUtils.traverse(child.entity, callback);
+				EntityUtils.traverse(child.entity, callback, level + 1);
 			}
 		};
 
