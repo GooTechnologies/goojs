@@ -139,6 +139,10 @@ define([
 			promise.reject('Loader.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 
+		image.src = this._buildURL(url);
+		return promise;
+		/*
+
 		// Loading image as binary, then base64 encoding them. Needed to listen to progress
 		this.load(url, function(data) {
 			var bytes = new Uint8Array(data,0,data.byteLength);
@@ -155,6 +159,7 @@ define([
 			}
 		}, Loader.ARRAY_BUFFER);
 		return promise;
+		*/
 	};
 
 	Loader.prototype._buildURL = function(url) {

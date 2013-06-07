@@ -42,6 +42,7 @@ define([
 		this._loader = parameters.loader;
 		this._cache = {};
 		this._shaderLoader = new ShaderLoader({ loader: this._loader, doCache: parameters.cacheShader });
+		this._waitForTextures = true;
 	}
 
 	/**
@@ -69,6 +70,8 @@ define([
 		return promise;
 	};
 
+
+
 	MaterialLoader.prototype._parse = function(materialDataSource) {
 		if (typeof materialDataSource === 'string') {
 			materialDataSource = JSON.parse(materialDataSource);
@@ -80,13 +83,21 @@ define([
 		var materialUniforms = {};
 		var textures = [];
 
+
 		function addTexture(i, texture) {
 			if (typeof texture === 'string') {
 				texture = JSON.parse(texture);
 			}
-			textures[i] = (new TextureCreator({
-				loader:that._loader
-			}).loadTexture2D(texture.url));
+			var tc = new TextureCreator({loader: that._loader });
+			if(that._waitForTextures) {
+				var p = new RSVP.Promise();
+				textures[i] = tc.loadTexture2D(texture.url, null, function() {
+					p.resolve();
+				});
+				return p;
+			} else {
+				textures[i] = tc.loadTexture2D(texture.url);
+			}
 		}
 
 		var name = materialDataSource.name || 'DefaultMaterial';

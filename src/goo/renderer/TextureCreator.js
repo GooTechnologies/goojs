@@ -50,8 +50,11 @@ function (
 	 * @param {object} settings passed to the {Texture} constructor
 	 * @returns {Texture}
 	 */
-	TextureCreator.prototype.loadTexture2D = function (imageURL, settings) {
+	TextureCreator.prototype.loadTexture2D = function (imageURL, settings, callback) {
 		if (TextureCreator.cache[imageURL] !== undefined) {
+			if(callback) {
+				callback();
+			}
 			return TextureCreator.cache[imageURL];
 		}
 
@@ -61,10 +64,11 @@ function (
 //				console.info("Loaded image: " + imageURL);
 				TextureCreator._finishedLoading();
 				// callLoadCallback(url);
-			},
+				if (callback) { callback(); }
+			}.bind(this),
 			onError: function (t) {
 				console.warn("Error loading texture: " + imageURL + " | " + t);
-			}
+			}.bind(this)
 		};
 
 		var creator = this;
@@ -98,6 +102,9 @@ function (
 		}
 
 		if (TextureCreator.cache[imageURL] !== undefined) {
+			if(callback) {
+				callback();
+			}
 			return TextureCreator.cache[imageURL];
 		}
 
@@ -109,6 +116,11 @@ function (
 		this._loader.loadImage(imageURL).then(function (data) {
 			texture.setImage(data);
 			TextureCreator._finishedLoading(data);
+			if(callback) {
+				callback();
+			}
+		}).then(null, function(err) {
+			console.error(err);
 		});
 
 //		console.info("Loaded image: " + imageURL);
