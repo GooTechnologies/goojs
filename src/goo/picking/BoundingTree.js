@@ -29,7 +29,6 @@ function (BoundingBox, BoundingSphere, Vector3) {
 		meshData.updatePrimitiveCounts();
 		if (meshData.getSectionCount() === 1) {
 			this.primitiveIndices = [];
-			// REVIEW: Is there a better way to do this?
 			for ( var i = 0, max = meshData.getPrimitiveCount(0); i < max; i++) {
 				this.primitiveIndices.push(i);
 			}
