@@ -240,6 +240,12 @@ function (
 			that.applyWheel(event);
 		}, false);
 
+		// Avoid missing the mouseup event because of Chrome bug:
+		// https://code.google.com/p/chromium/issues/detail?id=244289
+		this.domElement.addEventListener('dragstart', function (event) {
+			event.preventDefault();
+		}, false);
+
 		// optional touch controls... requires Hammer.js v2
 		if (typeof (window.Hammer) !== "undefined") {
 			// Disable warning that we call `Hammer()`, not `new Hammer()`
