@@ -132,6 +132,7 @@ define([
 
 		image.addEventListener('load', function () {
 			image.dataReady = true;
+			window.URL.revokeObjectURL(image.src);
 			promise.resolve(image);
 		}, false);
 
@@ -139,27 +140,21 @@ define([
 			promise.reject('Loader.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 
+		/**
 		image.src = this._buildURL(url);
 		return promise;
-		/*
+		/**/
 
 		// Loading image as binary, then base64 encoding them. Needed to listen to progress
 		this.load(url, function(data) {
 			var bytes = new Uint8Array(data,0,data.byteLength);
-			var ascii = '';
-			for (var i=0; i<bytes.length; i++) {
-				ascii += String.fromCharCode(bytes[i]);
-			}
-			var base64 = btoa(ascii);
+			var blob = new Blob([bytes]);
 
-			if (/^\x89PNG/.test(ascii)) {
-				image.src = 'data:image/png;base64,'+base64;
-			} else {
-				image.src = 'data:image/jpeg;base64,'+base64;
-			}
+			image.src = window.URL.createObjectURL(blob);
+
 		}, Loader.ARRAY_BUFFER);
 		return promise;
-		*/
+		/**/
 	};
 
 	Loader.prototype._buildURL = function(url) {
