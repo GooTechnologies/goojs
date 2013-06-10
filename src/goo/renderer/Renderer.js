@@ -169,6 +169,16 @@ function (
 			console.log('Depth textures not supported.');
 		}
 
+		if (this.context.getShaderPrecisionFormat === undefined) {
+			this.context.getShaderPrecisionFormat = function () {
+				return {
+					"rangeMin": 1,
+					"rangeMax": 1,
+					"precision": 1
+				};
+			};
+		}
+
 		// Check capabilities (move out to separate module)
 		this.capabilities = {
 			maxTexSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
@@ -180,8 +190,32 @@ function (
 			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
 			maxVertexShader: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
 			maxFragmentShader: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
-			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS)
+			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
+
+			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
+			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
+			vertexShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_FLOAT),
+			fragmentShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_FLOAT),
+			fragmentShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_FLOAT),
+			fragmentShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_FLOAT),
+
+			vertexShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_INT),
+			vertexShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_INT),
+			vertexShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_INT),
+			fragmentShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_INT),
+			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
+			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
+
+		this.shaderPrecision = parameters.shaderPrecision || 'mediump';
+		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
+			this.shaderPrecision = 'highp';
+		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
+			this.shaderPrecision = 'mediump';
+		} else {
+			this.shaderPrecision = 'lowp';
+		}
+		console.log("Shader precision: " + this.shaderPrecision);
 
 		this.downScale = parameters.downScale || 1;
 

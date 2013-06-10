@@ -339,8 +339,6 @@ function (
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision highp float;',//
-
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
 			'uniform sampler2D normalMapCoarse;',//

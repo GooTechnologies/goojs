@@ -81,6 +81,7 @@ function (
 		setupDefaultCallbacks(this.defaultCallbacks);
 		this.currentCallbacks = {};
 
+		this.overridePrecision = shaderDefinition.precision || null;
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes;
 		this.uniforms = shaderDefinition.uniforms;
@@ -113,6 +114,7 @@ function (
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
 			this.addDefines(this.defines);
+			this.addPrecision(this.overridePrecision || renderer.shaderPrecision);
 			this.compile(renderer);
 		}
 
@@ -352,6 +354,19 @@ function (
 		}
 
 		return shader;
+	};
+
+	var precisionRegExp = /\bprecision\s+(lowp|mediump|highp)\s+(float|int);/g;
+
+	Shader.prototype.addPrecision = function (precision) {
+		var vertMatcher = precisionRegExp.exec(this.vertexSource);
+		if (vertMatcher === null) {
+			this.vertexSource = 'precision ' + precision + ' float;' + '\n' + this.vertexSource;
+		}
+		var fragMatcher = precisionRegExp.exec(this.fragmentSource);
+		if (fragMatcher === null) {
+			this.fragmentSource = 'precision ' + precision + ' float;' + '\n' + this.fragmentSource;
+		}
 	};
 
 	Shader.prototype.addDefines = function (defines) {

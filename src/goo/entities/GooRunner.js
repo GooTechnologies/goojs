@@ -45,6 +45,7 @@ function (
 	 * @param {boolean} [parameters.showStats=false]
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 * @param {boolean} [parameters.logo=true]
+	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -68,6 +69,8 @@ function (
 		this.doRender = true;
 
 		GameUtils.initAllShims();
+
+		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -145,24 +148,43 @@ function (
 		};
 	}
 
+	var tpfSmoothingArrary = [];
+	var tpfIndex = 0;
+
 	GooRunner.prototype._updateFrame = function (time) {
 		if (this.start < 0) {
 			this.start = time;
 		}
-		this.world.tpf = (time - this.start) / 1000.0;
-		this.world.time += this.world.tpf;
-		World.time = this.world.time;
-		this.start = time;
-		if (this.world.tpf < 0) {// skip a loop - original start time probably bad.
+
+		var tpf = (time - this.start) / 1000.0;
+
+		if (tpf < 0) { // skip a loop - original start time probably bad.
 			this.world.time = 0;
 			this.world.tpf = 0;
 			World.time = 0;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
-		} else if (this.world.tpf > 0.5) {
+		} else if (tpf > 0.5) { // big tpf, probably lost focus
+			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
 		}
+
+		tpf = Math.max(Math.min(tpf, 0.5), 0.0001);
+
+		// Smooth out the tpf
+		tpfSmoothingArrary[tpfIndex] = tpf;
+		tpfIndex = (tpfIndex + 1) % this.tpfSmoothingCount;
+		var avg = 0;
+		for (var i = 0; i < tpfSmoothingArrary.length; i++) {
+			avg += tpfSmoothingArrary[i];
+		}
+		avg /= tpfSmoothingArrary.length;
+		this.world.tpf = avg;
+
+		this.world.time += this.world.tpf;
+		World.time = this.world.time;
+		this.start = time;
 
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
 			this.callbacksPreProcess[i](this.world.tpf);

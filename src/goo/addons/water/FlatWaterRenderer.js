@@ -303,9 +303,6 @@ function (
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision highp float;',//
-			// 'precision mediump float;',//
-
 			'uniform sampler2D normalMap;',//
 			'uniform sampler2D reflection;',//
 			'#ifdef REFRACTION',
@@ -448,8 +445,6 @@ function (
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision highp float;',//
-
 			'uniform float farPlane;',//
 
 			ShaderFragment.methods.packDepth,//
