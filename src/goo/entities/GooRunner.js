@@ -106,6 +106,7 @@ function (
 		this.callbacks = [];
 		this.callbacksPreProcess = [];
 		this.callbacksPreRender = [];
+		this._takeSnapshots = [];
 
 		var that = this;
 		this.start = -1;
@@ -188,6 +189,18 @@ function (
 		if (this.stats) {
 			this.stats.update(this.renderer.info);
 		}
+		if (this._takeSnapshots.length) {
+			try {
+				var image = this.renderer.domElement.toDataURL();
+				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+					this._takeSnapshots[i](image);
+				}
+			} catch (err) {
+				console.error('Failed to take snapshot', err.message);
+			}
+			this._takeSnapshots = [];
+		}
+
 
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
@@ -205,6 +218,13 @@ function (
 	 */
 	GooRunner.prototype.stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
+	};
+
+	/**
+	 * Takes snapshot at next rendercall
+	 */
+	GooRunner.prototype.takeSnapshot = function(callback) {
+		this._takeSnapshots.push(callback);
 	};
 
 	return GooRunner;
