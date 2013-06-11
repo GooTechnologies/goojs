@@ -6,13 +6,14 @@ define [
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/lib/underscore'
+	'goo/util/ObjectUtil'
 ], (
 ComponentHandler,
 CameraComponent,
 Camera,
 RSVP,
-pu)->
+pu,
+_)->
 
 	
 	

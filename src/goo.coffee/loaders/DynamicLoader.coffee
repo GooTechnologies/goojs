@@ -20,7 +20,8 @@ define [
 	# (or switch to lodash which is API compatible with underscore but smaller
 	# and with AMD support).
 	# Maybe some other solution altogether to avoid cluttering src/ with third party code?
-	'goo/lib/underscore'
+	
+	'goo/util/ObjectUtil'
 	
 	# Load all handlers
 	'goo/loaders/handlers/SceneHandler'
@@ -37,7 +38,8 @@ Loader,
 TextureCreator,
 RSVP,
 su,
-pu) ->
+pu,
+_) ->
 
 	###*
 	* @class Class to load scenes into the world, or to update the scene/world based on the data model.

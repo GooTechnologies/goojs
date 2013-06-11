@@ -1,6 +1,6 @@
 define [	
-	'goo/lib/underscore'
-], ()->
+	'goo/util/ObjectUtil'
+], (_)->
 
 	_console = null
 	levels = ['debug','log','info','warn','error']

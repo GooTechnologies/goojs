@@ -8,14 +8,15 @@ define [
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/lib/underscore'
+	'goo/util/ObjectUtil'
 ], (
 	ComponentHandler,
 	LightComponent,
 	PointLight,
 	Vector,
 	RSVP,
-	pu	
+	pu,
+	_
 ) ->
 
 	class LightComponentHandler extends ComponentHandler

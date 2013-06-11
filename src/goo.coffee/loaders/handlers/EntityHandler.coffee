@@ -4,7 +4,8 @@ define [
 	'goo/entities/Entity'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-], (ConfigHandler, ComponentHandler, Entity, RSVP, pu) ->
+	'goo/util/ObjectUtil'
+], (ConfigHandler, ComponentHandler, Entity, RSVP, pu, _) ->
 			
 	class EntityHandler extends ConfigHandler
 		@_register('entity')

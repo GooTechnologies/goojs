@@ -6,13 +6,14 @@ define [
 	'goo/math/MathUtils'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/lib/underscore'
+	'goo/util/ObjectUtil'
 ], (
 ComponentHandler,
 TransformComponent,
 MathUtils,
 RSVP,
-pu) ->
+pu,
+_) ->
 
 	class TransformComponentHandler extends ComponentHandler
 		@_register('transform')

@@ -7,7 +7,7 @@ define [
 	'goo/loaders/JsonUtils'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
-	'goo/lib/underscore'
+	'goo/util/ObjectUtil'
 	
 ], (
 ConfigHandler,
@@ -16,7 +16,8 @@ MeshData,
 MeshDataComponent,
 JsonUtils,
 RSVP,
-pu) ->
+pu,
+_) ->
 
 
 	class MeshDataHandler extends ConfigHandler

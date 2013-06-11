@@ -13,7 +13,7 @@ define [
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
 	
-	'goo/lib/underscore'
+	'goo/util/ObjectUtil'
 ], (
 	ConfigHandler,
 	ComponentHandler
@@ -24,7 +24,8 @@ define [
 	Util, 
 	ShaderLib,
 	RSVP,
-	pu
+	pu,
+	_
 ) ->
 
 	class MaterialHandler extends ConfigHandler			
