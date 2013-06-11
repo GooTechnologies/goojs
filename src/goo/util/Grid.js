@@ -54,19 +54,19 @@ function(
 	 * 	surface: true,
 	 * 	surfaceColor: [1.5, 1.5, 1.5, 1.0],
 	 * 	grids: [
-	 *   {
-	 *    stepX: 1, // The length between grid lines on the X-axis
-	 *    stepY: 1, // The length between grid lines on the X-axis
-	 *    width: 1, // The width of the grid lines drawn
-	 *    color: [0.4, 0.4, 0.4, 0.8] // The color of the grid lines
-	 *   },
-	 *   {
-	 *    stepX: 0.5,
-	 *    stepY: 0.5,
-	 *    width: 1,
-	 *    color: [0.7, 0.7, 0.7, 0.8]
-	 *   }
-	 *  ]
+	 *		{
+	 *		 stepX: 1, // The length between grid lines on the X-axis
+	 *		 stepY: 1, // The length between grid lines on the X-axis
+	 *		 width: 1, // The width of the grid lines drawn
+	 *		 color: [0.4, 0.4, 0.4, 0.8] // The color of the grid lines
+	 *		},
+	 *		{
+	 *		 stepX: 0.5,
+	 *		 stepY: 0.5,
+	 *		 width: 1,
+	 *		 color: [0.7, 0.7, 0.7, 0.8]
+	 *		}
+	 *	 ]
 	 * });
 	 *
 	 */
@@ -89,6 +89,11 @@ function(
 			var floorMaterial = Material.createMaterial(ShaderLib.simpleLit);
 
 			floorMaterial.uniforms.materialDiffuse = properties.surfaceColor || [1,1,1,1];
+			floorMaterial.depthState = {
+				writable: false,
+				enabled: false
+			};
+			floorMaterial.renderQueue = 9;
 			quadEntity.meshRendererComponent.materials.push(floorMaterial);
 			this.topEntity.transformComponent.attachChild(quadEntity.transformComponent);
 		}
@@ -123,7 +128,7 @@ function(
 			);
 			entity.setComponent(meshRendererComponent);
 
-			entity.transformComponent.transform.translation.z = 0.001 * (properties.grids.length - i);
+			//entity.transformComponent.transform.translation.z = 0.001 * (properties.grids.length - i);
 
 			this.topEntity.transformComponent.attachChild(entity.transformComponent);
 		}
@@ -217,6 +222,11 @@ function(
 		if(this.gridShader) {	material.shader = this.gridShader; }
 		material.uniforms.color = grid.color;
 		material.lineWidth = grid.width;
+		material.depthState = {
+			enabled: false,
+			write: false
+		};
+		material.renderQueue = 10 + i;
 
 		/*
 		material.blendState = {
