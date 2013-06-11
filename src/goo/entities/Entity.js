@@ -17,6 +17,12 @@ function () {
 			writable : false
 		});
 		this.name = name !== undefined ? name : 'Entity_' + this.id;
+
+		/** Set to true to skip rendering (move to meshrenderercomponent)
+		 * @type {boolean}
+		 * @default false
+		 */
+		this.skip = false;
 	}
 
 	/**

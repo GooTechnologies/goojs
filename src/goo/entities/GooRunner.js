@@ -80,30 +80,8 @@ function (
 			document.body.appendChild(this.stats.domElement);
 		}
 		if (parameters.logo === undefined || parameters.logo) {
-			var div = document.createElement('div');
-			var svg = Logo.getLogo({
-				width: '70px',
-				height: '50px',
-				color: Logo.blue
-			});
-			var span = '<span style="color: #EEE; font-family: Helvetica, sans-serif; font-size: 11px; display: inline-block; margin-top: 14px; margin-right: -3px; vertical-align: top;">Powered by</span>';
-
-			div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + span+svg + '</a>';
-
-			div.style.position = 'absolute';
-			div.style.top = '10px';
-			div.style.right = '10px';
-			div.style.zIndex = '2000';
-			div.id = 'goologo';
-			div.style.webkitTouchCallout = 'none';
-			div.style.webkitUserSelect = 'none';
-			div.style.khtmlUserSelect = 'none';
-			div.style.mozUserSelect = 'none';
-			div.style.msUserSelect = 'none';
-			div.style.userSelect = 'none';
-			div.ondragstart = function() { return false; };
-
-			document.body.appendChild(div);
+			var logoDiv = this._buildLogo(parameters.logo);
+			document.body.appendChild(logoDiv);
 		}
 
 		this.callbacks = [];
@@ -225,6 +203,47 @@ function (
 
 
 		this.animationId = window.requestAnimationFrame(this.run);
+	};
+
+	GooRunner.prototype._buildLogo = function (settings) {
+		var div = document.createElement('div');
+		var svg = Logo.getLogo({
+			width: '70px',
+			height: '50px',
+			color: Logo.blue
+		});
+		var span = '<span style="color: #EEE; font-family: Helvetica, sans-serif; font-size: 11px; display: inline-block; margin-top: 14px; margin-right: -3px; vertical-align: top;">Powered by</span>';
+		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + span + svg + '</a>';
+		div.style.position = 'absolute';
+		div.style.zIndex = '2000';
+		if (settings === 'topright') {
+			div.style.top = '10px';
+			div.style.right = '10px';
+		} else if (settings === 'topleft') {
+			div.style.top = '10px';
+			div.style.left = '10px';
+		} else if (settings === 'bottomright') {
+			div.style.bottom = '10px';
+			div.style.right = '10px';
+		} else if (settings === 'bottomleft') {
+			div.style.bottom = '10px';
+			div.style.left = '10px';
+		} else {
+			div.style.top = '10px';
+			div.style.right = '10px';
+		}
+		div.id = 'goologo';
+		div.style.webkitTouchCallout = 'none';
+		div.style.webkitUserSelect = 'none';
+		div.style.khtmlUserSelect = 'none';
+		div.style.mozUserSelect = 'none';
+		div.style.msUserSelect = 'none';
+		div.style.userSelect = 'none';
+		div.ondragstart = function() {
+			return false;
+		};
+
+		return div;
 	};
 
 	/**
