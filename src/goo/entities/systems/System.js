@@ -22,6 +22,7 @@ function() {
 		this.interests = interests;
 
 		this._activeEntities = [];
+		this.passive = false;
 	}
 
 	/**

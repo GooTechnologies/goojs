@@ -11,6 +11,7 @@ define([
 	'goo/entities/systems/ParticlesSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
+	"goo/entities/systems/AnimationSystem",
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -28,6 +29,7 @@ function (
 	ParticlesSystem,
 	Stats,
 	CSSTransformSystem,
+	AnimationSystem,
 	GameUtils,
 	Logo
 ) {
@@ -62,6 +64,7 @@ function (
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
+		this.world.setSystem(new AnimationSystem());
 		this.renderSystem = new RenderSystem();
 		this.world.setSystem(this.renderSystem);
 
