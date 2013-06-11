@@ -868,10 +868,6 @@ function (
 		rhs.y = d[1] * x + d[5] * y + d[9] * z;
 		rhs.z = d[2] * x + d[6] * y + d[10] * z;
 
-		rhs.x = this.e00 * x + this.e01 * y + this.e02 * z;
-		rhs.y = this.e10 * x + this.e11 * y + this.e12 * z;
-		rhs.z = this.e20 * x + this.e21 * y + this.e22 * z;
-
 		return rhs;
 	};
 
