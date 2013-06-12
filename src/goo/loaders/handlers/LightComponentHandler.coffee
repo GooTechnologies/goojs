@@ -50,5 +50,5 @@ define [
 				else
 					light[key] = _.clone(value)
 			
-			return pu.dummyPromise(component)
+			return pu.createDummyPromise(component)
 			

@@ -8,9 +8,7 @@ define [
 	* @param {any} arg 
 	* @returns {RSVP.Promise}
 	*###
-	dummyPromise: (arg)->
-		# REVIEW: Function names should be verb constructs (see code style),
-		# e.g. createDummyPromise
+	createDummyPromise: (arg)->
 		promise = new RSVP.Promise()
 		promise.resolve(arg)
 		return promise

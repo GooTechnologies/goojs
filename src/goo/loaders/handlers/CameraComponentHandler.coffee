@@ -42,7 +42,7 @@ _)->
 				config.near,
 				config.far)
 
-			return pu.dummyPromise(component)
+			return pu.createDummyPromise(component)
 
 
 		remove: (entity)->

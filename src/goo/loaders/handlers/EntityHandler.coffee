@@ -52,5 +52,5 @@ define [
 					
 			else 
 				console.error "No promises in #{ref} ", config
-				return pu.dummyPromise(object)
+				return pu.createDummyPromise(object)
 		

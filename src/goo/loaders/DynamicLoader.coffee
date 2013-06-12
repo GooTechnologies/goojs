@@ -105,14 +105,14 @@ _) ->
 				return @_objects[ref]
 			else if @_objects[ref] and not options.noCache
 				#console.log "#{ref} is already handled"
-				return pu.dummyPromise(@_objects[ref])
+				return pu.createDummyPromise(@_objects[ref])
 			else
 				type = @_getTypeForRef(ref)
 				
 				if type == "texture"
 					# TODO: Support pixel map textures
 					textureObj = @_objects[ref] = @_textureCreator.loadTexture2D(config.url)
-					pu.dummyPromise(textureObj)
+					pu.createDummyPromise(textureObj)
 				else
 					handlerClass = ConfigHandler.getHandler(type)
 					if handlerClass
@@ -133,7 +133,7 @@ _) ->
 							
 					else
 						console.warn "No handler for type #{type}"
-						pu.dummyPromise(null)
+						pu.createDummyPromise(null)
 
 
 		###*
@@ -147,7 +147,7 @@ _) ->
 			if @_configs[ref]?.then
 				return @_configs[ref]
 			else if @_configs[ref]? and not noCache
-				return pu.dummyPromise(@_configs[ref])
+				return pu.createDummyPromise(@_configs[ref])
 			else
 				@_configs[ref] = @_loader.load ref, (data)=>
 					if _jsonTest.test(ref) 
