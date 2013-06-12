@@ -52,7 +52,7 @@ _) ->
 			
 		update: (ref, config)->
 			meshData = @_create(config)
-			return pu.dummyPromise(meshData)
+			return pu.createDummyPromise(meshData)
 		
 			
 		# Translated into coffeescript from goo/loaders/MeshLoader.js

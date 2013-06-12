@@ -56,7 +56,7 @@ _) ->
 # 				if parent? and (not component.parentRef? or component.parentRef?.entity != parent.object)
 # 					parent.object.transformComponent.attachChild(component)
 # 			#component.setUpdated()
-			return pu.dummyPromise(component)
+			return pu.createDummyPromise(component)
 			
 		remove: (entity) ->
 			# We never remove the transform component, just set it to the defaults.

@@ -185,7 +185,7 @@ define [
 			materialRefs = config.materialRefs
 			if not materialRefs or materialRefs.length == 0
 				console.log "No material refs"
-				promise = pu.dummyPromise([])
+				promise = pu.createDummyPromise([])
 			else
 				promises = []
 				for materialRef in materialRefs
