@@ -15,37 +15,8 @@ runCommand = (cmd, callback) ->
 			callback()
 
 
-task 'coffee', 'Compiles all the coffeescript in src/goo.coffee and adds it to the js source tree in /src/goo', (options)->
-
-	# REVIEW: Do not put generated files in version control.
-	# The result of the CoffeeScript compilation is now put into src/goo.
-	# A file that can be generated from a file under version control should not
-	# by be under version control itself.
-	# It is a source of unnecessary diffs and other confusion.
-	# For example, I got lots of diffs because I used another version of Coffeescript.
-	# Also, you get duplicate results when you search for file content.
-	# And also the risk that someone commits the JS code without committing
-	# the coffeescript code and vice versa.
-	#
-	# This is how it should work:
-	#
-	# coffee and js files should live in the same source tree (src)
-	# so they can be easily found even if you don't know the file type
-	# (like the tool does).
-	# For development, simple-node-server should take care of compiling on the fly.
-	# For release, the build process should copy the js files into a build directory
-	# (typically called build, but that name is already taken)
-	# and compile the coffee files into the same directory,
-	# then use that as a source for minification etc.
-
-	coffeeRoot = 'src/goo.coffee'
-	jsRoot = "src/goo"
-	runCommand "node node_modules/coffee-script/bin/coffee -cbo #{jsRoot} #{coffeeRoot}", ->
-		console.log "Compiled coffeescript" 	
-
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 
-	invoke 'coffee'
 	if options.arguments.length == 2
 		fileIn = options.arguments[0]
 		fileOut = options.arguments[1]
@@ -124,7 +95,6 @@ task 'convert',
 task 'jsdoc',
 	'Creates the API documentation',
 	->
-		invoke 'coffee'
 		# This requires a shell.
 		# To make this work in Windows too,
 		# we could run JSdoc as a Node module.
