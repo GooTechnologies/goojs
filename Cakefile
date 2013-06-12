@@ -1,4 +1,5 @@
 fs = require('fs')
+path = require('path')
 minify = require('./buildengine/minify').minify
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
@@ -14,6 +15,7 @@ runCommand = (cmd, callback) ->
 		if callback
 			callback()
 
+endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 
@@ -25,16 +27,62 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		minify(fileIn, fileOut, true);
 	else 	
 		console.log 'minifying'
+		
+		output = 'output'
 		fileIn = 'src'
 		fileOut = 'minified/goo/goo.js'
 		includefile = 'buildengine/glob/minify.glob'
-	
-		minify(fileIn, fileOut, true, includefile)	
+
+		# Copy all the js to the output dir
 		
-		source = 'lib'
-		target = 'minified/goo/lib'
-		includeFile = 'buildengine/glob/copy.glob'
-		copyLibs(source, target, includeFile)
+		if not fs.existsSync output
+			fs.mkdirSync output
+		
+		traverse = (file)->
+			if endsWith(file,'.js')
+				fpath = output+'/'+file.split('/')[...-1].join('/')
+				
+				# Create output dir if not exists
+				if not fs.existsSync fpath
+					tokens = fpath.split('/')
+					cpath = ""
+					for token in tokens
+						cpath += token
+						if not fs.existsSync cpath 
+							fs.mkdirSync cpath
+						cpath += '/'
+				
+				# Copy file
+				fs.createReadStream(file).pipe(fs.createWriteStream("#{output}/#{file}"))
+			else 
+				stat = fs.statSync path.resolve(file)
+				if stat.isDirectory()
+					files = fs.readdirSync file
+					for child in files
+						traverse("#{file}/#{child}")
+					
+		traverse(fileIn)	
+		
+		console.log "Copied js files"
+		
+		# Compile coffeescript
+		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
+			console.log "Compiled coffeescript" 			
+	
+			minify "#{output}/#{fileIn}", fileOut, true, includefile, (success)->
+				if success
+					runCommand "rm -Rf #{output}", ->
+						console.log "Removed output dir"
+				
+
+			console.log "Minifying everything in #{output}/#{fileIn}"
+			
+			source = 'lib'
+			target = 'minified/goo/lib'
+			includeFile = 'buildengine/glob/copy.glob'
+			copyLibs(source, target, includeFile)
+			
+			console.log "Copied lib"
 
 
 task 'testserver', 'Start Testacular server', (options) ->
