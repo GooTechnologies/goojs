@@ -5,7 +5,7 @@ mkdirp = require('mkdirp')
 
 # Minifying files
 
-doClosure = (fileIn, fileOut, deleteAfter) ->
+doClosure = (fileIn, fileOut, deleteAfter, callback) ->
 	dir = path.dirname(path.resolve(fileOut))
 	mkdirp.sync dir
 	
@@ -24,12 +24,12 @@ doClosure = (fileIn, fileOut, deleteAfter) ->
 			fs.unlink fileIn
 		if error?
 			console.log('closure error: ' + error);
+			callback?(false)
 		else
 			console.log('Minify complete')
+			callback?(true)
 
-handleRequire = (fileIn, fileOut, deleteAfter) ->
-
-	absroot = path.resolve('src')
+handleRequire = (absroot, fileIn, fileOut, deleteAfter, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
 
 	base = path.dirname(fileIn)
@@ -51,17 +51,18 @@ handleRequire = (fileIn, fileOut, deleteAfter) ->
 		console.log 'here'
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
-		doClosure tempClosure, fileOut, true
+		doClosure tempClosure, fileOut, true, callback
 		console.log buildResponse
 	, (err) ->
 		console.log err
+		callback?(false)
 
 
 
-minify = (sourcePath, targetFile, bundle, includefile) ->
+minify = (sourcePath, targetFile, bundle, includefile, callback) ->
 
 	if bundle
-		absroot = path.resolve('src')
+		absroot = path.resolve(sourcePath)
 		if includefile
 			fs.readFile includefile, 'utf-8', (err, data) ->
 				if err then return console.log err
@@ -91,11 +92,11 @@ minify = (sourcePath, targetFile, bundle, includefile) ->
 					tempClosure = "#{absroot}/clos_temp.js"
 	
 					fs.writeFile "#{absroot}/#{tempRequire}.js", str, ->
-						handleRequire "#{absroot}/#{tempRequire}.js", targetFile, true
+						handleRequire absroot, "#{absroot}/#{tempRequire}.js", targetFile, true, callback
 		else
-			handleRequire path.resolve(sourcePath), targetFile, false
+			handleRequire path.resolve(sourcePath), targetFile, false, callback
 	else
-		doClosure sourcePath, targetFile, false
+		doClosure sourcePath, targetFile, false, callback
 			
 exports.minify = minify
 			

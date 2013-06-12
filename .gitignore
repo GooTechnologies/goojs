@@ -11,3 +11,4 @@ virtualenv.pyc
 doc/
 out/
 minified/
+output/
