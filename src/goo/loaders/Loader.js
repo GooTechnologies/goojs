@@ -148,7 +148,11 @@ define([
 		// Loading image as binary, then base64 encoding them. Needed to listen to progress
 		this.load(url, function(data) {
 			var bytes = new Uint8Array(data,0,data.byteLength);
-			var blob = new Blob([bytes]);
+			var type = 'image/jpeg';
+			if(/\.png$/.test(url)) {
+				type = 'image/png';
+			}
+			var blob = new Blob([bytes], { type: type });
 
 			image.src = window.URL.createObjectURL(blob);
 
