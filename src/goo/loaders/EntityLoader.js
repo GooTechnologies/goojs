@@ -82,9 +82,10 @@ function(
 		if (this._cache[entityRef]) {
 			return this._cache[entityRef];
 		}
-		var promise = this._loader.load(entityRef, (function(data) {
+
+		var promise = this._loader.load(entityRef, function(data) {
 			return this._parse(data, entityRef);
-		}).bind(this));
+		}.bind(this));
 		this._cache[entityRef] = promise;
 		return promise;
 	};

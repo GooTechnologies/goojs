@@ -4,6 +4,11 @@ define [
 
 	'goo/renderer/MeshData'
 	'goo/entities/components/MeshDataComponent'
+	'goo/animation/Joint'
+	'goo/animation/Skeleton'
+	'goo/animation/SkeletonPose'
+
+
 	'goo/loaders/JsonUtils'
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
@@ -14,11 +19,51 @@ ConfigHandler,
 ComponentHandler,
 MeshData,
 MeshDataComponent,
+Joint, 
+Skeleton, 
+SkeletonPose,
 JsonUtils,
 RSVP,
 pu,
 _) ->
 
+	class SkeletonHandler extends ConfigHandler
+		@_register('skeleton')
+		
+		_create: (skeletonConfig)->
+			console.debug "Creating skeleton"
+			joints = (
+				for jointConfig in skeletonConfig.Joints
+					joint = new Joint(jointConfig.Name)
+					joint._index = Math.round(jointConfig.Index)
+					joint._parentIndex = Math.round(jointConfig.ParentIndex)
+					
+					
+					if jointConfig.InverseBindPose.Matrix
+						parseTransform = JsonUtils.parseTransformMatrix
+	
+					else if jointConfig.InverseBindPose.Rotation.length == 4
+						parseTransform = JsonUtils.parseTransformQuat
+						
+					else if jointObj.InverseBindPose.Rotation.length == 3
+						parseTransform = JsonUtils.parseTransformEuler
+					else 
+						parseTransform = JsonUtils.parseTransform
+	
+					joint._inverseBindPose.copy(parseTransform(jointConfig.InverseBindPose))
+					
+					if not jointConfig.InverseBindPose.Matrix 
+						joint._inverseBindPose.update()
+					
+					joint
+			)
+			new Skeleton(skeletonConfig.name, joints)
+			
+		update: (ref, config)->
+			skeleton = @_create(config)
+			return pu.createDummyPromise(skeleton)
+		
+		
 
 	class MeshDataHandler extends ConfigHandler
 		@_register('mesh')
@@ -32,27 +77,28 @@ _) ->
 					compressedUnitVectorRange: meshConfig.compression.compressedUnitVectorRange or (1 << 10) - 1 #int
 	
 			if meshConfig.type == 'SkinnedMesh'
-				meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh')
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh', compression)
 				meshData.type = MeshData.SKINMESH
 			else
-				meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh')
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh', compression)
 				meshData.type = MeshData.MESH
 			
-			if meshConfig.pose
-				# TODO: Add skeleton loading functionality
-				console.warn "SkeletonLoader is not yet supported"
-# 					var skeletonLoader = this._skeletonLoader;
-# 					promise = skeletonLoader.load(data.pose)
-# 						.then(function(skeletonPose) {
-# 						meshData.currentPose = skeletonPose;
-# 						return meshData;
-# 					});
 			
 			return meshData
 			
 		update: (ref, config)->
 			meshData = @_create(config)
-			return pu.createDummyPromise(meshData)
+			
+			if config.pose
+				skelRef = config.pose
+				@getConfig(skelRef).then (skelConfig)=>
+					@updateObject(skelRef, skelConfig).then (skeleton)=>
+						pose = new SkeletonPose(skeleton)
+						pose.setToBindPose()
+						meshData.currentPose = pose
+						return meshData
+			else
+				pu.createDummyPromise(meshData)
 		
 			
 		# Translated into coffeescript from goo/loaders/MeshLoader.js
@@ -83,7 +129,6 @@ _) ->
 				attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short')
 			
 			if data.textureCoords
-				# TODO: Ask Rikard about this
 				for texCoords, texIdx in data.textureCoords
 					console.log "TEXCOORD #{texIdx}"
 					attributeMap['TEXCOORD' + texIdx] = MeshData.createAttribute(2, 'Float')
@@ -171,11 +216,11 @@ _) ->
 					# map these joints to local.
 					localJointMap = [];
 					localIndex = 0;
-					for jointIndex in jointData
+					for jointIndex, idx in jointData
 						if localJointMap[jointIndex] == undefined
 							localJointMap[jointIndex] = localIndex++
 	
-						buffer.set([localJointMap[jointIndex]], i)
+						buffer.set([localJointMap[jointIndex]], idx)
 	
 					# store local map
 					localMap = [];
@@ -222,7 +267,10 @@ _) ->
 		update: (entity, config) ->
 			super(entity, config) # Creates component if needed
 			meshRef = config.meshRef
-			
+
+			if not meshRef
+				console.error "No meshRef in meshDataComponent for #{entity.ref}"
+				
 			@getConfig(meshRef).then (config)=>
 				@updateObject(meshRef, config).then (meshData)=>
 					component = new MeshDataComponent(meshData)

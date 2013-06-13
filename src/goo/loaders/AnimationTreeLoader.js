@@ -150,6 +150,10 @@ define([
 					promise.reject(error);
 				}
 			};
+			if (typeof root === 'string') {
+				root = JSON.parse(root);
+			}
+
 			JsonUtils.parseAnimationLayers(manager, completeCallback, inputStore, outputStore, root);
 			return promise;
 		};

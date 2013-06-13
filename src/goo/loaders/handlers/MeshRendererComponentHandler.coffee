@@ -131,10 +131,28 @@ define [
 
 		update: (ref, config) ->
 			console.log "Updating shader #{ref}"
-				# Currently not possible to update a shader, so update = create
-# 			@_objects(config)
-# 			if not @_objects?[ref] then @_objects[ref]
-# 			object = @_objects[ref]
+			# Currently not possible to update a shader, so update = create
+
+			if config?.attributes and config?.uniforms
+				shaderDefinition =
+					attributes: config.attributes,
+					uniforms: config.uniforms
+	
+				for key, uniform of shaderDefinition.uniforms
+	
+					if typeof uniform == 'string'
+						funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/
+						test = uniform.match(funcRegexp);
+						if test?.length == 3
+							args = test[1].replace(' ','').split(',')
+							body = test[2]
+							### jshint -W054 ###
+							shaderDefinition.uniforms[key] = new Function(args, body)
+	
+				if config.defines
+					shaderDefinition.defines = config.defines
+			else
+				shaderDefinition = this._getDefaultShaderDefinition()
 			
 			promises = [
 				@getConfig(config.vshaderRef)
@@ -155,7 +173,7 @@ define [
 				# This leaks resources since the old shader isn't deleted.
 				# TODO: Add Shader.release function to release allocated GL resources
 				# or a function to re-initialize a shader.
-				shaderDefinition = 
+				_.extend shaderDefinition,
 					attributes: config.attributes ? {}
 					uniforms: config.uniforms ? {}
 					vshader: vshader

@@ -139,8 +139,8 @@ function () {
 		store.y = radius * Math.sin(polar);
 		store.z = a * Math.sin(azimuth);
 	};
-	
-	
+
+
 	/**
 	 * @static
 	 * @description Converts a point from Cartesian coordinates to Spherical to Cartesian (using positive Y as up) and stores the results in the store var.
@@ -154,8 +154,7 @@ function () {
 		store.x = Math.sqrt(x*x+y*y+z*z); // radius
 		store.y = Math.atan2(z,x); // azimuth
 		store.z = Math.atan2(y,a); // polar
-		
-	}
+	};
 
 	return MathUtils;
 });

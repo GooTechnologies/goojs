@@ -7,7 +7,8 @@ define(
     var browserGlobal = (typeof window !== 'undefined') ? window : {};
 
     var MutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-    var RSVP;
+    //var RSVP;
+    var process = window.process;
 
     if (typeof process !== 'undefined' &&
       {}.toString.call(process) === '[object process]') {
@@ -254,17 +255,17 @@ define(
         allPromise.resolve([]);
       }
 
-      var resolver = function(index) {
-        return function(value) {
-          resolve(index, value);
-        };
-      };
-
       var resolve = function(index, value) {
         results[index] = value;
         if (--remaining === 0) {
           allPromise.resolve(results);
         }
+      };
+
+      var resolver = function(index) {
+        return function(value) {
+          resolve(index, value);
+        };
       };
 
       var reject = function(error) {
