@@ -42,6 +42,17 @@ _) ->
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
 		
+		
+		###*
+		* Create a new loader
+		*
+		* @param {object} options
+		* @param {Loader} [config.loader] Loader to take care of the AJAX calls
+		* @param {Loader} [config.rootPath] Root path of the resources that will be loaded. Either {config.rootPath} or {config.loader} must be set.
+		* 	
+		* @returns {DynamicLoader} 
+		*###
+		
 		constructor: (options)->
 			@_world = options.world or throw new Error("World argument cannot be null")
 			if options.loader
@@ -54,9 +65,43 @@ _) ->
 			@_textureCreator = new TextureCreator(loader:@_loader)
 			
 			
+			
+		###*
+		* Load an object with the specified ref from a .bundle file. The object can be of any
+		* type, what loading does is determined by the file extension of the ref and the 
+		* registered {ConfigHandler}.
+		* The loader cache will be filled with all the resources in the bundle, so loading other
+		* resources from the bundle won't require new AJAX calls. 
+		* 
+		* @param {string} ref Ref of object to load
+		* @param {string} bundleName name of the bundle (including extension) 
+		* @param {object} options
+		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
+		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
+		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
+		*###
+		loadFromBundle: (ref, bundleName, options={})->
+			@_loader.load bundleName, (data)=>
+				bundleData = JSON.parse(data)
+				if options.noCache
+					@_configs = bundleData
+				else
+					_.extend @_configs, bundleData
+				
+				if not @_configs[ref]?
+					throw Error "#{ref} not found in bundle #{bundleName}. Available keys: \n#{_.keys(@_configs).join('\n')}"
+				else 
+					console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
+				
+				console.log "Loaded bundle"
+				@load(ref)
+				
+		
 		###*
 		* Load an object with the specified path into the world. The object can be of any
-		* type, what loading does is determined by the registered {ConfigHandler}
+		* type, what loading does is determined by the file extension of the ref and the 
+		* registered {ConfigHandler}
 		* 
 		* @param {string} ref Ref of object to load
 		* @param {object} options
@@ -65,9 +110,6 @@ _) ->
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
-		# REVIEW: When loading a scene at least, the promise resolved into an object that maps refs to configs (for all loaded refs I think).
-		# The comment is a bit unclear about this.
-		# BTW, is there a way to get the Entity *object* given a ref? Otherwise getting that mapping here would be very useful.
 		load: (ref, options={})->
 			@update(ref, null, options)
 
@@ -97,7 +139,9 @@ _) ->
 				return @_configs	
 			.then null, (err)->
 				console.error "Error updating #{ref} #{err}"
-			
+		
+		getCachedObjectForRef: (ref)-> 
+			@_objects[ref]
 
 		_handle: (ref, config, options)-> 
 			if @_objects[ref]?.then
@@ -171,4 +215,6 @@ _) ->
 			return _refs
 
 		_getTypeForRef: (ref)->
-			ref.split('.').pop()
+			type = ref.split('.').pop()
+			if type == 'ent' then type = 'entity'
+			return type

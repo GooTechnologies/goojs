@@ -45,15 +45,15 @@ function(
 	 *
 	 * @example
 	 * var floor = new Grid(goo.world, {
-	 * 	floor: true,
+	 *	floor: true,
 	 *	width: 100,
-	 * 	height: 100,
-	 * 	fogOn: true,
-	 * 	fogFar: 60,
-	 * 	fogColor: [0.9, 0.9, 0.9, 1.0],
-	 * 	surface: true,
-	 * 	surfaceColor: [1.5, 1.5, 1.5, 1.0],
-	 * 	grids: [
+	 *	height: 100,
+	 *	fogOn: true,
+	 *	fogFar: 60,
+	 *	fogColor: [0.9, 0.9, 0.9, 1.0],
+	 *	surface: true,
+	 *	surfaceColor: [1.5, 1.5, 1.5, 1.0],
+	 *	grids: [
 	 *		{
 	 *		 stepX: 1, // The length between grid lines on the X-axis
 	 *		 stepY: 1, // The length between grid lines on the X-axis
@@ -66,7 +66,7 @@ function(
 	 *		 width: 1,
 	 *		 color: [0.7, 0.7, 0.7, 0.8]
 	 *		}
-	 *	 ]
+	 *	]
 	 * });
 	 *
 	 */
