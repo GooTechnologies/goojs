@@ -82,9 +82,9 @@ function(
 		if (this._cache[entityRef]) {
 			return this._cache[entityRef];
 		}
-		var promise = this._loader.load(entityRef, (function(data) {
+		var promise = this._loader.load(entityRef, function(data) {
 			return this._parse(data, entityRef);
-		}).bind(this));
+		}.bind(this));
 		this._cache[entityRef] = promise;
 		return promise;
 	};
@@ -146,7 +146,7 @@ function(
 		// either create an entity or return an error
 		return RSVP.all(promises)
 		.then(function() {
-			var entity = new Entity(that._world, entitySource.name);
+			var entity = new Entity(that._world, entitySource.name || entityRef);
 			entity.ref = entityRef;
 			for(var i in loadedComponents) {
 				if(loadedComponents[i].type === 'TransformComponent') {
