@@ -77,7 +77,7 @@ function (
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
-					composer.render(renderer, this.currentTpf);
+					composer.render(renderer, this.currentTpf, this.camera, this.lights);
 				}
 			} else {
 				renderer.render(this.renderList, this.camera, this.lights);
