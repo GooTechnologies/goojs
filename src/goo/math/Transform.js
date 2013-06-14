@@ -118,7 +118,7 @@ function (
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Transform.prototype.lookAt = function (position, up) {
-		this.tmpVec.copy(this.translation).sub(position).normalize();
+		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};
 
