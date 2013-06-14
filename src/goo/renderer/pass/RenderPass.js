@@ -25,7 +25,7 @@ define(['goo/renderer/Renderer',
 	// RenderPasses may have a fourth additional parameter called delta
 	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights) {
 		camera = camera || Renderer.mainCamera;
-		lights = lights = [];
+		lights = lights || [];
 		if (this.clearColor) {
 			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
