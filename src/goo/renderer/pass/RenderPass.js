@@ -31,7 +31,6 @@ define(['goo/renderer/Renderer',
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 		}
 
-		// TODO: how to get lights?
 		renderer.overrideMaterial = this.overrideMaterial;
 		if (this.renderToScreen) {
 			renderer.render(this.renderList, camera, lights);
