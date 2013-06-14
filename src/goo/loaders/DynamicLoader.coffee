@@ -140,9 +140,8 @@ _) ->
 			.then null, (err)->
 				console.error "Error updating #{ref} #{err}"
 		
-		getCachedObjectForRef: (ref)-> 
-			@_objects[ref]
-
+		
+		# Load/update an object with the given reference into the engine
 		_handle: (ref, config, options)-> 
 			if @_objects[ref]?.then
 				#console.log "#{ref} is handling"	
@@ -218,3 +217,15 @@ _) ->
 			type = ref.split('.').pop()
 			if type == 'ent' then type = 'entity'
 			return type
+			
+		###*
+		* Get the engine object for a given ref from the loader cache.
+		* The {DynamicLoader} cache is still quite rudimentary, and should be updated. 
+		* 
+		* @param {string} ref Ref of object 
+		* @returns {object} The engine object, e.g. {Entity} with the given ref, if it's still 
+		* available in the loader cache. Otherwise undefined.
+		*###
+		getCachedObjectForRef: (ref)-> 
+			@_objects[ref]
+
