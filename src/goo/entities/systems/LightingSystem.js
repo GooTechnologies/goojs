@@ -7,7 +7,8 @@ define(['goo/entities/systems/System'],
 	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms
 	 */
 	function LightingSystem() {
-		System.call(this, 'LightingSystem', ['LightComponent']);
+		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
+
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
@@ -19,7 +20,8 @@ define(['goo/entities/systems/System'],
 			var lightComponent = entity.lightComponent;
 
 			if (transformComponent._updated) {
-				lightComponent.light.translation.copy(transformComponent.transform.translation);
+				var m = transformComponent.worldTransform.matrix;
+				lightComponent.light.translation.setd(m[12], m[13], m[14]);
 			}
 		}
 	};
