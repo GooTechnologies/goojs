@@ -491,9 +491,10 @@ function (
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
-		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) -
-			this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) +
-			this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
+		var d = this.data;
+		return d[0] * (d[4] * d[8] - d[7] * d[5]) -
+					d[3] * (d[1] * d[8] - d[7] * d[2]) +
+					d[6] * (d[1] * d[5] - d[4] * d[2]);
 	};
 
 	/* ====================================================================== */
