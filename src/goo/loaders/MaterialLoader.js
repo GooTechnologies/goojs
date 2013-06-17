@@ -119,7 +119,7 @@ define([
 					shader = iShader;
 					return shader;
 				});
-				p.resolve(Material.createShader(ShaderLib.texturedLit), 'DefaultShader');
+				p.resolve(Material.createShader(ShaderLib.texturedLit, 'DefaultShader'));
 				promises.push(p);
 			}
 

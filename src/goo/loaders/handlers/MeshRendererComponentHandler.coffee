@@ -100,8 +100,11 @@ define [
 					return RSVP.all(promises).then (textures)-> 
 						# Textures must be in the right order
 						tlist = []
-						for texture in textures
-							tlist[config.textureRefs.indexOf(texture.ref)] = texture.texture
+						for texture in textures 
+							if texture.texture?
+								tlist[config.textureRefs.indexOf(texture.ref)] = texture.texture
+							else
+								console.warn "Missing texture #{texture.ref}"
 						
 						object.textures = tlist
 						return object
@@ -117,9 +120,12 @@ define [
 				shader = Material.createShader ShaderLib.simple
 				promise.resolve(shader)
 				return promise
-			else
+			else if ref?
 				@getConfig(ref).then (config)=>
 					@updateObject(ref, config, @options)
+			else
+				defaultShader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader')
+				pu.createDummyPromise(defaultShader)
 	
 	
 	class ShaderHandler extends ConfigHandler

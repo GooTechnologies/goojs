@@ -154,7 +154,10 @@ _) ->
 				
 				if type == "texture"
 					# TODO: Support pixel map textures
-					textureObj = @_objects[ref] = @_textureCreator.loadTexture2D(config.url)
+					textureObj = @_objects[ref] = if config.url?
+						@_textureCreator.loadTexture2D(config.url)
+					else
+						null
 					pu.createDummyPromise(textureObj)
 				else
 					handlerClass = ConfigHandler.getHandler(type)
