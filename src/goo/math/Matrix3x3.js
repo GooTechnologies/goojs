@@ -16,9 +16,8 @@ function (
 	/**
 	 * @class Matrix with 3x3 components.
 	 * @extends Matrix
-	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Matrix3x3|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Matrix3x3|number[]|number...} arguments Initial values for the components.
 	 */
 
 	function Matrix3x3() {
@@ -36,15 +35,15 @@ function (
 
 	/* ====================================================================== */
 
+	/** @type {Matrix3x3} */
 	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition.
+	 * Performs a component-wise addition.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -92,10 +91,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -143,10 +141,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication.
+	 * Performs a component-wise multiplication.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -194,10 +191,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -236,7 +232,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -247,8 +243,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
+	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
@@ -286,7 +281,7 @@ function (
 	};
 
 	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
@@ -298,7 +293,6 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
@@ -343,7 +337,7 @@ function (
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -354,8 +348,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
 	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
@@ -469,8 +462,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is orthonormal.
-	 * @return {Boolean} True if orthonormal.
+	 * Tests if the matrix is orthonormal.
+	 * @return {boolean} True if orthonormal.
 	 */
 
 	Matrix3x3.prototype.isOrthonormal = function () {
@@ -480,8 +473,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the determinant of the matrix.
-	 * @return {Float} Determinant of matrix.
+	 * Computes the determinant of the matrix.
+	 * @return {number} Determinant of matrix.
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
@@ -493,7 +486,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix to identity.
+	 * Sets the matrix to identity.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -518,7 +511,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * pplies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
@@ -561,7 +554,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Post-multiplies the matrix ("before") with a scaling vector.
+	 * Post-multiplies the matrix ("before") with a scaling vector.
 	 * @param {Vector3} vec Vector on the right-hand side.
 	 * @result {Matrix3x3} result Storage matrix.
 	 * @returns {Matrix3x3} Storage matrix.
@@ -590,10 +583,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix from rotational angles.
-	 * @param {Float} yaw Yaw angle in radians.
-	 * @param {Float} roll Roll angle in radians.
-	 * @param {Float} pitch Pitch angle in radians.
+	 * Sets the matrix from rotational angles.
+	 * @param {number} yaw Yaw angle in radians.
+	 * @param {number} roll Roll angle in radians.
+	 * @param {number} pitch Pitch angle in radians.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
@@ -621,10 +614,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the X axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateX = function (rad, store) {
 		store = store || this;
@@ -660,10 +653,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Y axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateY = function (rad, store) {
 		store = store || this;
@@ -699,10 +692,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Z axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateZ = function (rad, store) {
 		store = store || this;
@@ -736,7 +729,7 @@ function (
 	};
 
 	/**
-	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
+	 * Converts this matrix to Euler rotation angles (yaw, roll, pitch
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
 	 */
@@ -768,13 +761,12 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
-	 * @param angle the angle to rotate (in radians).
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return this matrix for chaining
-	 * @throws NullPointerException if axis is null.
+	 * Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
+	 * @param {number} angle the angle to rotate (in radians).
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @return {Matrix3x3} this for chaining
 	 */
 
 	Matrix3x3.prototype.fromAngleNormalAxis = function (angle, x, y, z) {
@@ -807,46 +799,47 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix to look in a specific direction.
+	 * Sets the matrix to look in a specific direction.
 	 * @param {Vector3} direction Direction vector.
 	 * @param {Vector3} up Up vector.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.lookAt = function (direction, up) {
-		var xAxis = new Vector3();
-		var yAxis = new Vector3();
-		var zAxis = new Vector3();
-
-		zAxis.copy(direction).normalize();
-		xAxis.copy(up).normalize().cross(zAxis).normalize();
-		if (xAxis.equals(Vector3.ZERO)) {
-			if (zAxis.x !== 0.0) {
-				xAxis.set(zAxis.y, -zAxis.x, 0);
+		var x = this._tempX, y = this._tempY, z = this._tempZ;
+	
+		z.setv(direction).normalize();
+		
+		x.setv(up).cross(z).normalize();
+		
+		if (x.equals(Vector3.ZERO)) {
+			if (z.data[0] !== 0.0) {
+				x.setd(z.data[1], -z.data[0], 0);
 			} else {
-				xAxis.set(0, zAxis.z, -zAxis.y);
+				x.setd(0, z.data[2], -z.data[1]);
 			}
 		}
-		yAxis.copy(zAxis).cross(xAxis).normalize();
-
-		this.e00 = xAxis.x;
-		this.e10 = xAxis.y;
-		this.e20 = xAxis.z;
-
-		this.e01 = yAxis.x;
-		this.e11 = yAxis.y;
-		this.e21 = yAxis.z;
-
-		this.e02 = zAxis.x;
-		this.e12 = zAxis.y;
-		this.e22 = zAxis.z;
-
+		
+		y.setv(z).cross(x);
+		
+		var d = this.data;
+		d[0] = x.data[0];
+		d[1] = x.data[1];
+		d[2] = x.data[2];
+		d[3] = y.data[0];
+		d[4] = y.data[1];
+		d[5] = y.data[2];
+		d[6] = z.data[0];
+		d[7] = z.data[1];
+		d[8] = z.data[2];
+		
+		
 		return this;
 	};
 
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix from a quaternion.
+	 * Sets the matrix from a quaternion.
 	 * @param {Quaternion} quaternion Rotational quaternion.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
@@ -856,7 +849,7 @@ function (
 	};
 
 	/**
-	 * @description Copies component values and stores them locally.
+	 * Copies component values and stores them locally.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @return {Matrix4x4} Self for chaining.
 	 */

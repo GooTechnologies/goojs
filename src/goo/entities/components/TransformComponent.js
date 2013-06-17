@@ -50,7 +50,7 @@ function (
 	/**
 	 * Attach a child transform to this component tree
 	 *
-	 * @param childComponent child transform component to attach
+	 * @param {TransformComponent} childComponent child transform component to attach
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent) {
 		var component = this;
@@ -71,7 +71,7 @@ function (
 	/**
 	 * Detach a child transform from this component tree
 	 *
-	 * @param childComponent child transform component to detach
+	 * @param {TransformComponent} childComponent child transform component to detach
 	 */
 	TransformComponent.prototype.detachChild = function (childComponent) {
 		if (childComponent === this) {
