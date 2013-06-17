@@ -489,6 +489,18 @@ function (
 		return Math.sqrt(Vector.dot(this, this));
 	};
 
+	/**
+	 * Scales the vector
+	 * @param {number} factor
+	 * @returns {Vector} this for chaining
+	 */
+	Vector.prototype.scale = function(factor) {
+		for (var i = this.data.length - 1; i >= 0; i--) {
+			this.data[i] *= factor;
+		}
+		return this;
+	};
+
 	/* ====================================================================== */
 
 	/**

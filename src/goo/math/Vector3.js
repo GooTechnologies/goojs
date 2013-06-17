@@ -479,7 +479,7 @@ function (
 
 		return this;
 	};
-	
+
 	/**
 	 * Performs component-wise multiplication with numbers as inputs
 	 * @param {number} x
