@@ -17,10 +17,16 @@ function (
 	 *        scales and reflections, use setMatrix, which will consider M as being a general 3x3 matrix and disregard anything set in scale.
 	 */
 	function Transform() {
+		/** Read only, will be updated automatically by {@link Transform.update}
+		 * @type {Matrix4x4}
+		 */
 		this.matrix = new Matrix4x4();
 
+		/** @type {Vector3} */
 		this.translation = new Vector3();
+		/** @type {Matrix3x3} */
 		this.rotation = new Matrix3x3();
+		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
 
 		this.tmpVec = new Vector3();
@@ -29,6 +35,13 @@ function (
 		this.tmpMat2 = new Matrix3x3();
 	}
 
+	/**
+	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
+	 * @param {Transform} lhs left hand side transform
+	 * @param {Transform} rhs right hand side transform
+	 * @param {Transform} target
+	 * @returns {Transform} target
+	 */
 	Transform.combine = function(lhs, rhs, target) {
 		if(lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
 			throw {
@@ -66,6 +79,11 @@ function (
 		return target;
 	};
 
+	/**
+	 * Combines new transform into this one. This will only work if scaling in the left hand transform is uniform
+	 * @param {Transform} rhs right hand side transform
+	 * @returns {Transform} this for chaining
+	 */
 	Transform.prototype.combine = function(rhs) {
 		return Transform.combine(this, rhs, this);
 	};
@@ -84,6 +102,9 @@ function (
 		this.scale.setv(a.scale).mulv(b.scale);
 	};
 
+	/**
+	 * Set Transform to identity
+	 */
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
@@ -92,6 +113,12 @@ function (
 		this.scale.setv(Vector3.ONE);
 	};
 
+	/**
+	 * Applies this transform to supplied vector as a point
+	 * @param {Vector3} point
+	 * @param {Vector3} store
+	 * @returns {Vector3} store
+	 */
 	Transform.prototype.applyForward = function (point, store) {
 		store.setv(point);
 
@@ -104,6 +131,12 @@ function (
 		return store;
 	};
 
+	/**
+	 * Applies this transform to supplied vector as a direction-vector (translation will not affect it)
+	 * @param {Vector3} vector
+	 * @param {Vector3} store
+	 * @returns {Vector3} store
+	 */
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
 
@@ -113,6 +146,9 @@ function (
 		return store;
 	};
 
+	/**
+	 * Updates the transform according to set scaling, rotation and translation. This is done automatically by the engine
+	 */
 	Transform.prototype.update = function () {
 		var target = this.matrix.data;
 		var rotation = this.rotation.data;
@@ -137,6 +173,10 @@ function (
 		target[15] = 1.0;
 	};
 
+	/**
+	 * Copy supplied transform into this transform
+	 * @param {Transform} transform
+	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
@@ -148,22 +188,29 @@ function (
 	/**
 	 * Set this transform's rotation to rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
 	};
 
 	/**
-	 * @description Sets the transform to look in a specific direction.
+	 * Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} up Up vector.
-	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Transform.prototype.lookAt = function (position, up) {
 		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};
 
+	/**
+	 * Invert this transform and store it in supplied transform
+	 * @param {Transform} store
+	 * @returns {Transform} store
+	 */
 	Transform.prototype.invert = function (store) {
 		var result = store;
 		if (!result) {
