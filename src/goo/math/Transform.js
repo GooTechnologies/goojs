@@ -24,9 +24,51 @@ function (
 		this.scale = new Vector3(1, 1, 1);
 
 		this.tmpVec = new Vector3();
+		this.tmpVec2 = new Vector3();
 		this.tmpMat1 = new Matrix3x3();
 		this.tmpMat2 = new Matrix3x3();
 	}
+
+	Transform.combine = function(lhs, rhs, target) {
+		if(lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
+			throw {
+				name: 'NonUniformScaleException',
+				message: 'Non-uniform scaling in left hand transform, cannot resolve combined transform'
+			};
+		}
+		target = target || new Transform();
+
+		// Translation
+		var tmpVec = target.tmpVec;
+		tmpVec.setv(rhs.translation);
+		// Rotate translation
+		lhs.rotation.applyPost(tmpVec);
+		// Scale translation
+		tmpVec.mulv(lhs.scale);
+		// Translate translation
+		tmpVec.addv(lhs.translation);
+
+		// Scale
+		var tmpVec2 = target.tmpVec2;
+		tmpVec2.setv(rhs.scale);
+		// Scale scale
+		tmpVec2.mulv(lhs.scale);
+
+		// Rotation
+		var tmpMat1 = target.tmpMat1;
+		// Rotate rotation
+		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
+
+		target.rotation.copy(tmpMat1);
+		target.scale.setv(tmpVec2);
+		target.translation.setv(tmpVec);
+
+		return target;
+	};
+
+	Transform.prototype.combine = function(rhs) {
+		return Transform.combine(this, rhs, this);
+	};
 
 	// TODO: sort this crap out!
 	Transform.prototype.multiply = function (a, b) {
