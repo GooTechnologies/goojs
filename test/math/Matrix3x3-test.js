@@ -104,7 +104,8 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 		it("can be set to look in a specific direction", function() {
 			var a = new Matrix3x3().lookAt(new Vector3(0.0, 0.0, 1.0), new Vector3(0.0, 1.0, 0.0));
 
-			expect(a).toEqual(new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1));
+			var b = new Matrix3x3(1,0,0,0,1,0,0,0,1);
+			expect(a.data).toEqual(b.data);
 		});
 
 		it("can be set from a quaternion", function() {
