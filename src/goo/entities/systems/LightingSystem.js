@@ -20,8 +20,7 @@ define(['goo/entities/systems/System'],
 			var lightComponent = entity.lightComponent;
 
 			if (transformComponent._updated) {
-				var m = transformComponent.worldTransform.matrix;
-				lightComponent.light.translation.setd(m[12], m[13], m[14]);
+				lightComponent.updateLight(transformComponent.worldTransform);
 			}
 		}
 	};
