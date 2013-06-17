@@ -34,6 +34,7 @@ function (
 			throw new Error('SceneLoader(): Argument `parameters.world` was undefined/null');
 		}
 
+		this._parameters = parameters;
 		this._loader = parameters.loader;
 		this._world = parameters.world;
 		this._cacheShader = parameters.cacheShader;
@@ -62,11 +63,7 @@ function (
 		var promises = [];
 
 		if (sceneConfig && sceneConfig.entityRefs && sceneConfig.entityRefs.length) {
-			var entityLoader = new EntityLoader({
-				world: this._world,
-				loader: this._loader,
-				cacheShader: this._cacheShader
-			});
+			var entityLoader = new EntityLoader(this._parameters);
 
 			for (var i = 0; i < sceneConfig.entityRefs.length; ++i) {
 				var entityRef = sceneConfig.entityRefs[i];

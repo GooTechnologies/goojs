@@ -32,9 +32,7 @@ function(
 		}
 
 		this._loader = parameters.loader;
-		this._skeletonLoader = new SkeletonLoader({
-			loader: this._loader
-		});
+		this._skeletonLoader = new SkeletonLoader(parameters);
 		this._cache = {};
 	}
 

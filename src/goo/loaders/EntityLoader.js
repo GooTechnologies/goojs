@@ -65,8 +65,8 @@ function(
 		this._world = parameters.world;
 
 		this._cache = {};
-		this._materialLoader = new MaterialLoader({ loader: this._loader, cacheShader: parameters.cacheShader });
-		this._meshLoader = new MeshLoader({ loader: this._loader });
+		this._materialLoader = new MaterialLoader(parameters);
+		this._meshLoader = new MeshLoader(parameters);
 	}
 
 	/**

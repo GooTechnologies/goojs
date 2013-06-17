@@ -41,8 +41,8 @@ define([
 
 		this._loader = parameters.loader;
 		this._cache = {};
-		this._shaderLoader = new ShaderLoader({ loader: this._loader, doCache: parameters.cacheShader });
-		this._waitForTextures = true;
+		this._shaderLoader = new ShaderLoader(parameters);
+		this._waitForTextures = parameters.waitForTextures !== undefined ? parameters.waitForTextures : true;
 	}
 
 	/**
