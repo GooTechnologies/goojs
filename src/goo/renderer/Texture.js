@@ -15,13 +15,49 @@ function (
 	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
 	 * @param {object} settings Texturing settings
-	 * @param {string} [settings.wrapS='Repeat']
-	 * @param {string} [settings.wrapT='Repeat']
-	 * @param {string} [settings.magFilter='Bilinear']
-	 * @param {string} [settings.minFilter='TriLinear']
+	 * @param {string} [settings.wrapS='Repeat'] possible values:
+	 *		<ul>
+	 *			<li>'Repeat' = Repeat texture (ignore integer part of texture coords)
+	 *			<li>'MirroredRepeat' = Repeat with reversed direction on odd integer part of texture coords
+	 *			<li>'EdgeClamp' = Clamp texture coord range to 0..1 and use edge color
+	 *		</ul>
+	 * @param {string} [settings.wrapT='Repeat'] possible values:
+	 *		<ul>
+	 *			<li>'Repeat' = Repeat texture (ignore integer part of texture coords)
+	 *			<li>'MirroredRepeat' = Repeat with reversed direction on odd integer part of texture coords
+	 *			<li>'EdgeClamp' = Clamp texture coord range to 0..1 and use edge color
+	 *		</ul>
+	 * @param {string} [settings.magFilter='Bilinear'] possible values:
+	 *		<ul>
+	 *			<li>'NearestNeighbor' =
+	 *			<li>'Bilinear' =
+	 *		</ul>
+	 * @param {string} [settings.minFilter='TriLinear'] possible values:
+	 *		<ul>
+	 *			<li>'NearestNeighborNoMipMaps' =
+	 *			<li>'NearestNeighborNearestMipMap' =
+	 *			<li>'NearestNeighborLinearMipMap' =
+	 *			<li>'BilinearNoMipMaps' =
+	 *			<li>'BilinearNearestMipMap' =
+	 *			<li>'Trilinear' =
+	 *		</ul>
 	 * @param {number} [settings.anisotropy=1]
-	 * @param {string} [settings.format='RGBA']
-	 * @param {string} [settings.type='UnsignedByte']
+	 * @param {string} [settings.format='RGBA'] possible values:
+	 *		<ul>
+	 *			<li>'RGBA' =
+	 *			<li>'RGB' =
+	 *			<li>'Alpha' =
+	 *			<li>'Luminance' =
+	 *			<li>'LuminanceAlpha' =
+	 *		</ul>
+	 * @param {string} [settings.type='UnsignedByte'] possible values:
+	 *		<ul>
+	 *			<li>'UnsignedByte' =
+	 *			<li>'UnsignedShort565' =
+	 *			<li>'UnsignedShort4444' =
+	 *			<li>'UnsignedShort5551' =
+	 *			<li>'Float' =
+	 *		</ul>
 	 * @param {boolean} [settings.flipY='true']
 	 */
 	function Texture(image, settings, width, height) {
