@@ -67,6 +67,16 @@ function () {
 	};
 
 	/**
+	 * Checks if a component of a specific type is present or not
+	 *
+	 * @param {string} type Type of component to check for (eg. 'transformComponent')
+	 * @returns {boolean}
+	 */
+	Entity.prototype.hasComponent = function (type) {
+		return this[getTypeAttributeName(type)] !== undefined;
+	};
+
+	/**
 	 * Retrieve a component of a specific type
 	 *
 	 * @param {string} type Type of component to retrieve (eg. 'transformComponent')

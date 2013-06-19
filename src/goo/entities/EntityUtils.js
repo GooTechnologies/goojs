@@ -104,9 +104,9 @@ define([
 		 * @param {World} world
 		 * @param {MeshData} meshData
 		 */
-		EntityUtils.createTypicalEntity = function (world, meshData) {
+		EntityUtils.createTypicalEntity = function (world, meshData, name) {
 			// Create entity
-			var entity = world.createEntity();
+			var entity = world.createEntity(name);
 
 			// Create meshdata component using above data
 			var meshDataComponent = new MeshDataComponent(meshData);
