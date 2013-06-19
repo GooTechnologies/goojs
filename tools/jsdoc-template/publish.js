@@ -72,6 +72,9 @@ function linkName(name) {
 		});
 		return 'function('+links.join(', ')+')';
 	}
+	else if (name === '') {
+		return '';
+	}
 	else {
 		return '{@link '+name+'}';
 	}

@@ -17,6 +17,9 @@
         });
         return 'function('+links.join(', ')+')';
       }
+      else if (name === '') {
+	      return '';
+      }
       else {
         return self.linkto(name, self.htmlsafe(name));
       }
