@@ -22,7 +22,7 @@ function (System) {
 			var entity = entities[i];
 			var particleComponent = entity.particleComponent;
 
-			if (particleComponent && particleComponent.enabled) {
+			if (particleComponent.enabled) {
 				try {
 					this.updateParticles(entity, particleComponent, tpf);
 				} catch (e) {

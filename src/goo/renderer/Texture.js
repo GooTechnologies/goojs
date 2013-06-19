@@ -103,6 +103,21 @@ function (
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};
 
+	/**
+	 * Marks the texture as needing to be updated by the engine.
+	 */
+	Texture.prototype.setNeedsUpdate = function () {
+		this.needsUpdate = true;
+	};
+
+	/**
+	 * Sets an image on the texture object.
+	 *
+	 * @param {Image} image The image to set. Can be an Image, TypedArray or an array of Images (for cubemaps)
+	 * @param {Object} [settings]
+	 * @param {Number} [width]
+	 * @param {Number} [height]
+	 */
 	Texture.prototype.setImage = function (image, settings, width, height) {
 		this.image = image;
 
