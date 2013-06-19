@@ -17,6 +17,7 @@ define([
     'test/shapes/Box-test',
     'test/shapes/Quad-test',
     'test/shapes/Sphere-test',
+	'test/shapes/Cylinder-test',
     'test/shapes/Torus-test',
     'test/entities/entities-test',
     'test/util/URLTools-test',

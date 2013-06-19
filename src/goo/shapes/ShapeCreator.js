@@ -2,6 +2,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
+	'goo/shapes/Cylinder',
 	'goo/shapes/Torus'
 ],
 /** @lends */
@@ -9,6 +10,7 @@ function (
 	Box,
 	Quad,
 	Sphere,
+	Cylinder,
 	Torus
 ) {
 	"use strict";
@@ -53,6 +55,16 @@ function (
 	 */
 	ShapeCreator.createSphere = function (zSamples, radialSamples, radius, textureMode) {
 		return new Sphere(zSamples, radialSamples, radius, textureMode);
+	};
+
+	/**
+	 * @param {number} radialSamples Number of slices.
+	 * @param {number} radius Radius.
+	 * @param {Enum} textureMode Texture wrapping mode.
+	 * @returns {Cylinder} The created cylinder.
+	 */
+	ShapeCreator.createCylinder = function (radialSamples, radius, textureMode) {
+		return new Cylinder(radialSamples, radius, textureMode);
 	};
 
 	/**
