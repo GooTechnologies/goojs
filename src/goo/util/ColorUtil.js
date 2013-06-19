@@ -23,7 +23,9 @@ function(
 	};
 
 	/** 
-	 *
+	 * Convert from hexadecimal to array with [r, g, b] in the range 0..1
+	 * @param {Number} hex Color in hexadecimal format
+	 * @param {Number[]} [store]
 	 */
 	ColorUtil.hexToArray = function(hex, store) {
 		store = store || [];

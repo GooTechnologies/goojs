@@ -25,7 +25,7 @@ function(
 		 * @type {Object}
 		 * @default
 		 */
-		this.uniforms = {}; //possible overrides on shader uniforms
+		this.uniforms = {};
 		/** Array of textures in use
 		 * @type {Texture[]}
 		 */
