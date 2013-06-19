@@ -23,18 +23,19 @@ define(['goo/renderer/Renderer',
 	}
 
 	// RenderPasses may have a fourth additional parameter called delta
-	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
+	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights) {
+		camera = camera || Renderer.mainCamera;
+		lights = lights || [];
 		if (this.clearColor) {
 			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 		}
 
-		// TODO: how to get lights?
 		renderer.overrideMaterial = this.overrideMaterial;
 		if (this.renderToScreen) {
-			renderer.render(this.renderList, Renderer.mainCamera, []);
+			renderer.render(this.renderList, camera, lights);
 		} else {
-			renderer.render(this.renderList, Renderer.mainCamera, [], readBuffer, this.clear);
+			renderer.render(this.renderList, camera, lights, readBuffer, this.clear);
 		}
 		renderer.overrideMaterial = null;
 

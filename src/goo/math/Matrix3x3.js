@@ -16,9 +16,8 @@ function (
 	/**
 	 * @class Matrix with 3x3 components.
 	 * @extends Matrix
-	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Matrix3x3|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Matrix3x3|number[]|number...} arguments Initial values for the components.
 	 */
 
 	function Matrix3x3() {
@@ -29,6 +28,10 @@ function (
 		} else {
 			this.set(arguments);
 		}
+
+		this._tempX = new Vector3();
+		this._tempY = new Vector3();
+		this._tempZ = new Vector3();
 	}
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
@@ -36,15 +39,15 @@ function (
 
 	/* ====================================================================== */
 
+	/** @type {Matrix3x3} */
 	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition.
+	 * Performs a component-wise addition.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -54,34 +57,36 @@ function (
 			target = new Matrix3x3();
 		}
 
+		var td = target.data, ld = lhs.data;
 		if (rhs instanceof Matrix3x3) {
-			target.e00 = lhs.e00 + rhs.e00;
-			target.e10 = lhs.e10 + rhs.e10;
-			target.e20 = lhs.e20 + rhs.e20;
-			target.e01 = lhs.e01 + rhs.e01;
-			target.e11 = lhs.e11 + rhs.e11;
-			target.e21 = lhs.e21 + rhs.e21;
-			target.e02 = lhs.e02 + rhs.e02;
-			target.e12 = lhs.e12 + rhs.e12;
-			target.e22 = lhs.e22 + rhs.e22;
+			var rd = rhs.data;
+			td[0] = ld[0] + rd[0];
+			td[1] = ld[1] + rd[1];
+			td[2] = ld[2] + rd[2];
+			td[3] = ld[3] + rd[3];
+			td[4] = ld[4] + rd[4];
+			td[5] = ld[5] + rd[5];
+			td[6] = ld[6] + rd[6];
+			td[7] = ld[7] + rd[7];
+			td[8] = ld[8] + rd[8];
 		} else {
-			target.e00 = lhs.e00 + rhs;
-			target.e10 = lhs.e10 + rhs;
-			target.e20 = lhs.e20 + rhs;
-			target.e01 = lhs.e01 + rhs;
-			target.e11 = lhs.e11 + rhs;
-			target.e21 = lhs.e21 + rhs;
-			target.e02 = lhs.e02 + rhs;
-			target.e12 = lhs.e12 + rhs;
-			target.e22 = lhs.e22 + rhs;
+			td[0] = ld[0] + rhs;
+			td[1] = ld[1] + rhs;
+			td[2] = ld[2] + rhs;
+			td[3] = ld[3] + rhs;
+			td[4] = ld[4] + rhs;
+			td[5] = ld[5] + rhs;
+			td[6] = ld[6] + rhs;
+			td[7] = ld[7] + rhs;
+			td[8] = ld[8] + rhs;
 		}
 
 		return target;
 	};
 
 	/**
-	 * @description Performs a component-wise addition.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise addition.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -92,10 +97,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -105,34 +109,36 @@ function (
 			target = new Matrix3x3();
 		}
 
+		var td = target.data, ld = lhs.data;
 		if (rhs instanceof Matrix3x3) {
-			target.e00 = lhs.e00 - rhs.e00;
-			target.e10 = lhs.e10 - rhs.e10;
-			target.e20 = lhs.e20 - rhs.e20;
-			target.e01 = lhs.e01 - rhs.e01;
-			target.e11 = lhs.e11 - rhs.e11;
-			target.e21 = lhs.e21 - rhs.e21;
-			target.e02 = lhs.e02 - rhs.e02;
-			target.e12 = lhs.e12 - rhs.e12;
-			target.e22 = lhs.e22 - rhs.e22;
+			var rd = rhs.data;
+			td[0] = ld[0] - rd[0];
+			td[1] = ld[1] - rd[1];
+			td[2] = ld[2] - rd[2];
+			td[3] = ld[3] - rd[3];
+			td[4] = ld[4] - rd[4];
+			td[5] = ld[5] - rd[5];
+			td[6] = ld[6] - rd[6];
+			td[7] = ld[7] - rd[7];
+			td[8] = ld[8] - rd[8];
 		} else {
-			target.e00 = lhs.e00 - rhs;
-			target.e10 = lhs.e10 - rhs;
-			target.e20 = lhs.e20 - rhs;
-			target.e01 = lhs.e01 - rhs;
-			target.e11 = lhs.e11 - rhs;
-			target.e21 = lhs.e21 - rhs;
-			target.e02 = lhs.e02 - rhs;
-			target.e12 = lhs.e12 - rhs;
-			target.e22 = lhs.e22 - rhs;
+			td[0] = ld[0] - rhs;
+			td[1] = ld[1] - rhs;
+			td[2] = ld[2] - rhs;
+			td[3] = ld[3] - rhs;
+			td[4] = ld[4] - rhs;
+			td[5] = ld[5] - rhs;
+			td[6] = ld[6] - rhs;
+			td[7] = ld[7] - rhs;
+			td[8] = ld[8] - rhs;
 		}
 
 		return target;
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise subtraction.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -143,10 +149,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication.
+	 * Performs a component-wise multiplication.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -156,34 +161,36 @@ function (
 			target = new Matrix3x3();
 		}
 
+		var td = target.data, ld = lhs.data;
 		if (rhs instanceof Matrix3x3) {
-			target.e00 = lhs.e00 * rhs.e00;
-			target.e10 = lhs.e10 * rhs.e10;
-			target.e20 = lhs.e20 * rhs.e20;
-			target.e01 = lhs.e01 * rhs.e01;
-			target.e11 = lhs.e11 * rhs.e11;
-			target.e21 = lhs.e21 * rhs.e21;
-			target.e02 = lhs.e02 * rhs.e02;
-			target.e12 = lhs.e12 * rhs.e12;
-			target.e22 = lhs.e22 * rhs.e22;
+			var rd = rhs.data;
+			td[0] = ld[0] * rd[0];
+			td[1] = ld[1] * rd[1];
+			td[2] = ld[2] * rd[2];
+			td[3] = ld[3] * rd[3];
+			td[4] = ld[4] * rd[4];
+			td[5] = ld[5] * rd[5];
+			td[6] = ld[6] * rd[6];
+			td[7] = ld[7] * rd[7];
+			td[8] = ld[8] * rd[8];
 		} else {
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
+			td[0] = ld[0] * rhs;
+			td[1] = ld[1] * rhs;
+			td[2] = ld[2] * rhs;
+			td[3] = ld[3] * rhs;
+			td[4] = ld[4] * rhs;
+			td[5] = ld[5] * rhs;
+			td[6] = ld[6] * rhs;
+			td[7] = ld[7] * rhs;
+			td[8] = ld[8] * rhs;
 		}
 
 		return target;
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise multiplication.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -194,10 +201,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
@@ -207,28 +213,28 @@ function (
 			target = new Matrix3x3();
 		}
 
+		var td = target.data, ld = lhs.data;
 		if (rhs instanceof Matrix3x3) {
-			target.e00 = lhs.e00 / rhs.e00;
-			target.e10 = lhs.e10 / rhs.e10;
-			target.e20 = lhs.e20 / rhs.e20;
-			target.e01 = lhs.e01 / rhs.e01;
-			target.e11 = lhs.e11 / rhs.e11;
-			target.e21 = lhs.e21 / rhs.e21;
-			target.e02 = lhs.e02 / rhs.e02;
-			target.e12 = lhs.e12 / rhs.e12;
-			target.e22 = lhs.e22 / rhs.e22;
+			var rd = rhs.data;
+			td[0] = ld[0] / rd[0];
+			td[1] = ld[1] / rd[1];
+			td[2] = ld[2] / rd[2];
+			td[3] = ld[3] / rd[3];
+			td[4] = ld[4] / rd[4];
+			td[5] = ld[5] / rd[5];
+			td[6] = ld[6] / rd[6];
+			td[7] = ld[7] / rd[7];
+			td[8] = ld[8] / rd[8];
 		} else {
-			rhs = 1.0 / rhs;
-
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
+			td[0] = ld[0] / rhs;
+			td[1] = ld[1] / rhs;
+			td[2] = ld[2] / rhs;
+			td[3] = ld[3] / rhs;
+			td[4] = ld[4] / rhs;
+			td[5] = ld[5] / rhs;
+			td[6] = ld[6] / rhs;
+			td[7] = ld[7] / rhs;
+			td[8] = ld[8] / rhs;
 		}
 
 		return target;
@@ -236,7 +242,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division.
-	 * @param {Matrix3x3|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -247,8 +253,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
+	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
@@ -286,7 +291,7 @@ function (
 	};
 
 	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
@@ -298,7 +303,6 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
@@ -343,7 +347,7 @@ function (
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -354,8 +358,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
 	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
@@ -381,22 +384,25 @@ function (
 		}
 
 		det = 1.0 / det;
+		var td = target.data, sd = source.data;
 
-		target.e00 = (source.e11 * source.e22 - source.e12 * source.e21) * det;
-		target.e10 = (source.e12 * source.e20 - source.e10 * source.e22) * det;
-		target.e20 = (source.e10 * source.e21 - source.e11 * source.e20) * det;
-		target.e01 = (source.e02 * source.e21 - source.e01 * source.e22) * det;
-		target.e11 = (source.e00 * source.e22 - source.e02 * source.e20) * det;
-		target.e21 = (source.e01 * source.e20 - source.e00 * source.e21) * det;
-		target.e02 = (source.e01 * source.e12 - source.e02 * source.e11) * det;
-		target.e12 = (source.e02 * source.e10 - source.e00 * source.e12) * det;
-		target.e22 = (source.e00 * source.e11 - source.e01 * source.e10) * det;
+		td[0] = (sd[4] * sd[8] - sd[7] * sd[5]) * det;
+		td[1] = (sd[7] * sd[2] - sd[1] * sd[8]) * det;
+		td[2] = (sd[1] * sd[5] - sd[4] * sd[2]) * det;
+
+		td[3] = (sd[6] * sd[5] - sd[3] * sd[8]) * det;
+		td[4] = (sd[0] * sd[8] - sd[6] * sd[2]) * det;
+		td[5] = (sd[3] * sd[2] - sd[0] * sd[5]) * det;
+
+		td[6] = (sd[3] * sd[7] - sd[6] * sd[4]) * det;
+		td[7] = (sd[6] * sd[1] - sd[0] * sd[7]) * det;
+		td[8] = (sd[0] * sd[4] - sd[3] * sd[1]) * det;
 
 		return target;
 	};
 
 	/**
-	 * @description Computes the analytical inverse and stores the result locally.
+	 * Computes the analytical inverse and stores the result locally.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -407,26 +413,26 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is orthogonal.
+	 * Tests if the matrix is orthogonal.
 	 * @return {Boolean} True if orthogonal.
 	 */
 
 	Matrix3x3.prototype.isOrthogonal = function () {
-		var dot;
+		var d = this.data;
 
-		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21;
-
-		if (Math.abs(dot) > MathUtils.EPSILON) {
-			return false;
-		}
-
-		dot = this.e00 * this.e02 + this.e10 * this.e12 + this.e20 * this.e22;
+		var dot = d[0] * d[3] + d[1] * d[4] + d[2] * d[5];
 
 		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
 		}
 
-		dot = this.e01 * this.e02 + this.e11 * this.e12 + this.e21 * this.e22;
+		dot = d[0] * d[6] + d[1] * d[7] + d[2] * d[8];
+
+		if (Math.abs(dot) > MathUtils.EPSILON) {
+			return false;
+		}
+
+		dot = d[3] * d[6] + d[4] * d[7] + d[5] * d[8];
 
 		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
@@ -438,26 +444,26 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is normal.
-	 * @return {Boolean} True if normal.
+	 * Tests if the matrix is normal.
+	 * @return {boolean} True if normal.
 	 */
 
 	Matrix3x3.prototype.isNormal = function () {
-		var l;
+		var d = this.data;
 
-		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20;
-
-		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
-			return false;
-		}
-
-		l = this.e01 * this.e01 + this.e11 * this.e11 + this.e21 * this.e21;
+		var l = d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
 
 		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
 
-		l = this.e02 * this.e02 + this.e12 * this.e12 + this.e22 * this.e22;
+		l = d[3] * d[3] + d[4] * d[4] + d[5] * d[5];
+
+		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
+			return false;
+		}
+
+		l = d[6] * d[6] + d[7] * d[7] + d[8] * d[8];
 
 		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
@@ -469,8 +475,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is orthonormal.
-	 * @return {Boolean} True if orthonormal.
+	 * Tests if the matrix is orthonormal.
+	 * @return {boolean} True if orthonormal.
 	 */
 
 	Matrix3x3.prototype.isOrthonormal = function () {
@@ -480,20 +486,21 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the determinant of the matrix.
-	 * @return {Float} Determinant of matrix.
+	 * Computes the determinant of the matrix.
+	 * @return {number} Determinant of matrix.
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
-		return this.e00 * (this.e11 * this.e22 - this.e12 * this.e21) -
-			this.e01 * (this.e10 * this.e22 - this.e12 * this.e20) +
-			this.e02 * (this.e10 * this.e21 - this.e11 * this.e20);
+		var d = this.data;
+		return d[0] * (d[4] * d[8] - d[7] * d[5]) -
+					d[3] * (d[1] * d[8] - d[7] * d[2]) +
+					d[6] * (d[1] * d[5] - d[4] * d[2]);
 	};
 
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix to identity.
+	 * Sets the matrix to identity.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -518,7 +525,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * pplies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
@@ -541,19 +548,22 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the left-hand side.
 	 * @returns {Vector3} Transformed left-hand side vector.
 	 */
 
 	Matrix3x3.prototype.applyPre = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
+		var target = rhs.data;
+		var source = this.data;
 
-		rhs.x = this.e00 * x + this.e10 * y + this.e20 * z;
-		rhs.y = this.e01 * x + this.e11 * y + this.e21 * z;
-		rhs.z = this.e02 * x + this.e12 * y + this.e22 * z;
+		var x = target[0];
+		var y = target[1];
+		var z = target[2];
+
+		target[0] = source[0] * x + source[1] * y + source[2] * z;
+		target[1] = source[3] * x + source[4] * y + source[5] * z;
+		target[2] = source[6] * x + source[7] * y + source[8] * z;
 
 		return rhs;
 	};
@@ -561,7 +571,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Post-multiplies the matrix ("before") with a scaling vector.
+	 * Post-multiplies the matrix ("before") with a scaling vector.
 	 * @param {Vector3} vec Vector on the right-hand side.
 	 * @result {Matrix3x3} result Storage matrix.
 	 * @returns {Matrix3x3} Storage matrix.
@@ -590,10 +600,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix from rotational angles.
-	 * @param {Float} yaw Yaw angle in radians.
-	 * @param {Float} roll Roll angle in radians.
-	 * @param {Float} pitch Pitch angle in radians.
+	 * Sets the matrix from rotational angles.
+	 * @param {number} yaw Yaw angle in radians.
+	 * @param {number} roll Roll angle in radians.
+	 * @param {number} pitch Pitch angle in radians.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
@@ -605,15 +615,16 @@ function (
 		var cp = Math.cos(pitch);
 		var sp = Math.sin(pitch);
 
-		this.e00 = ch * cp;
-		this.e01 = sh * sy - ch * sp * cy;
-		this.e02 = ch * sp * sy + sh * cy;
-		this.e10 = sp;
-		this.e11 = cp * cy;
-		this.e12 = -cp * sy;
-		this.e20 = -sh * cp;
-		this.e21 = sh * sp * cy + ch * sy;
-		this.e22 = -sh * sp * sy + ch * cy;
+		var d = this.data;
+		d[0] = ch * cp;
+		d[3] = sh * sy - ch * sp * cy;
+		d[6] = ch * sp * sy + sh * cy;
+		d[1] = sp;
+		d[4] = cp * cy;
+		d[7] = -cp * sy;
+		d[2] = -sh * cp;
+		d[5] = sh * sp * cy + ch * sy;
+		d[8] = -sh * sp * sy + ch * cy;
 
 		return this;
 	};
@@ -621,10 +632,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the X axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateX = function (rad, store) {
 		store = store || this;
@@ -660,10 +671,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Y axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateY = function (rad, store) {
 		store = store || this;
@@ -699,10 +710,10 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Z axis
 	 *
-	 * @param {mat4} out the receiving matrix
-	 * @param {mat4} a the matrix to rotate
-	 * @param {Number} rad the angle to rotate the matrix by
-	 * @returns {mat4} out
+	 * @param {Matrix3x3} out the receiving matrix
+	 * @param {Matrix3x3} a the matrix to rotate
+	 * @param {number} rad the angle to rotate the matrix by
+	 * @returns {Matrix3x3} out
 	 */
 	Matrix3x3.prototype.rotateZ = function (rad, store) {
 		store = store || this;
@@ -736,7 +747,7 @@ function (
 	};
 
 	/**
-	 * @description Converts this matrix to Euler rotation angles (yaw, roll, pitch
+	 * Converts this matrix to Euler rotation angles (yaw, roll, pitch
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
 	 */
@@ -748,18 +759,19 @@ function (
 		}
 
 		var d = this.data;
+		var rd = result.data;
 		if (d[3] > 1 - MathUtils.EPSILON) { // singularity at north pole
-			result.y = Math.atan2(d[2], d[8]);
-			result.z = Math.PI / 2;
-			result.x = 0;
+			rd[1] = Math.atan2(d[2], d[8]);
+			rd[2] = Math.PI / 2;
+			rd[0] = 0;
 		} else if (d[3] < -1 + MathUtils.EPSILON) { // singularity at south pole
-			result.y = Math.atan2(d[2], d[8]);
-			result.z = -Math.PI / 2;
-			result.x = 0;
+			rd[1] = Math.atan2(d[2], d[8]);
+			rd[2] = -Math.PI / 2;
+			rd[0] = 0;
 		} else {
-			result.y = Math.atan2(-d[2], d[0]);
-			result.x = Math.atan2(-d[7], d[4]);
-			result.z = Math.asin(d[1]);
+			rd[1] = Math.atan2(-d[2], d[0]);
+			rd[0] = Math.atan2(-d[7], d[4]);
+			rd[2] = Math.asin(d[1]);
 		}
 
 		return result;
@@ -768,13 +780,12 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
-	 * @param angle the angle to rotate (in radians).
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return this matrix for chaining
-	 * @throws NullPointerException if axis is null.
+	 * Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
+	 * @param {number} angle the angle to rotate (in radians).
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @return {Matrix3x3} this for chaining
 	 */
 
 	Matrix3x3.prototype.fromAngleNormalAxis = function (angle, x, y, z) {
@@ -791,15 +802,16 @@ function (
 		var fYSin = y * fSin;
 		var fZSin = z * fSin;
 
-		this.e00 = fX2 * fOneMinusCos + fCos;
-		this.e01 = fXYM - fZSin;
-		this.e02 = fXZM + fYSin;
-		this.e10 = fXYM + fZSin;
-		this.e11 = fY2 * fOneMinusCos + fCos;
-		this.e12 = fYZM - fXSin;
-		this.e20 = fXZM - fYSin;
-		this.e21 = fYZM + fXSin;
-		this.e22 = fZ2 * fOneMinusCos + fCos;
+		var d = this.data;
+		d[0] = fX2 * fOneMinusCos + fCos;
+		d[3] = fXYM - fZSin;
+		d[6] = fXZM + fYSin;
+		d[1] = fXYM + fZSin;
+		d[4] = fY2 * fOneMinusCos + fCos;
+		d[7] = fYZM - fXSin;
+		d[2] = fXZM - fYSin;
+		d[5] = fYZM + fXSin;
+		d[8] = fZ2 * fOneMinusCos + fCos;
 
 		return this;
 	};
@@ -807,38 +819,39 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix to look in a specific direction.
+	 * Sets the matrix to look in a specific direction.
 	 * @param {Vector3} direction Direction vector.
 	 * @param {Vector3} up Up vector.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.lookAt = function (direction, up) {
-		var xAxis = new Vector3();
-		var yAxis = new Vector3();
-		var zAxis = new Vector3();
+		var x = this._tempX, y = this._tempY, z = this._tempZ;
 
-		zAxis.copy(direction).normalize();
-		xAxis.copy(up).normalize().cross(zAxis).normalize();
-		if (xAxis.equals(Vector3.ZERO)) {
-			if (zAxis.x !== 0.0) {
-				xAxis.set(zAxis.y, -zAxis.x, 0);
+		z.setv(direction).normalize();
+
+		x.setv(up).cross(z).normalize();
+
+		if (x.equals(Vector3.ZERO)) {
+			if (z.data[0] !== 0.0) {
+				x.setd(z.data[1], -z.data[0], 0);
 			} else {
-				xAxis.set(0, zAxis.z, -zAxis.y);
+				x.setd(0, z.data[2], -z.data[1]);
 			}
 		}
-		yAxis.copy(zAxis).cross(xAxis).normalize();
 
-		this.e00 = xAxis.x;
-		this.e10 = xAxis.y;
-		this.e20 = xAxis.z;
+		y.setv(z).cross(x);
 
-		this.e01 = yAxis.x;
-		this.e11 = yAxis.y;
-		this.e21 = yAxis.z;
+		var d = this.data;
+		d[0] = x.data[0];
+		d[1] = x.data[1];
+		d[2] = x.data[2];
+		d[3] = y.data[0];
+		d[4] = y.data[1];
+		d[5] = y.data[2];
+		d[6] = z.data[0];
+		d[7] = z.data[1];
+		d[8] = z.data[2];
 
-		this.e02 = zAxis.x;
-		this.e12 = zAxis.y;
-		this.e22 = zAxis.z;
 
 		return this;
 	};
@@ -846,7 +859,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the matrix from a quaternion.
+	 * Sets the matrix from a quaternion.
 	 * @param {Quaternion} quaternion Rotational quaternion.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
@@ -856,7 +869,7 @@ function (
 	};
 
 	/**
-	 * @description Copies component values and stores them locally.
+	 * Copies component values and stores them locally.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @return {Matrix4x4} Self for chaining.
 	 */

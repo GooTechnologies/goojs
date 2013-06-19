@@ -11,7 +11,8 @@ define [
 		@_register('entity')
 		
 		_prepare: (config)->
-			#
+			#	
+			
 			
 		_create: (ref)->
 			object = @world.createEntity(ref)

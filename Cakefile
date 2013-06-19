@@ -34,7 +34,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		includefile = 'buildengine/glob/minify.glob'
 
 		# Copy all the js to the output dir
-		
+		###
 		if not fs.existsSync output
 			fs.mkdirSync output
 		
@@ -62,6 +62,9 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 						traverse("#{file}/#{child}")
 					
 		traverse(fileIn)	
+		###
+		# This does the same
+		copyLibs fileIn, path.resolve(output, fileIn), includefile
 		
 		console.log "Copied js files"
 		

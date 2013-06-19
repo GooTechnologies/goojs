@@ -57,14 +57,40 @@ _) ->
 			@_world = options.world or throw new Error("World argument cannot be null")
 			if options.loader
 				@_loader = options.loader 
-			else if options.rootPath
+			else if options.rootPath?
 				@_loader = new Loader(rootPath: options.rootPath)
 			else
 				throw new Error("parameters.rootPath or parameters.loader must be defined")
 			@_configs = {}
 			@_textureCreator = new TextureCreator(loader:@_loader)
 			
+		
+
+
+		###*
+		* Load an object with the specified ref from an already loaded associative array. Keys should be refs, and values 
+		* are the config objects.  
+		* The loader cache will be filled with all the resources in the supplied configs, so loading resources
+		* should not involve ajax calls.
+		* 
+		* @param {string} ref Ref of object to load
+		* @param {object} configs Configs object. Keys should be refs, and values are the config objects.
+		* @param {object} options
+		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
+		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
+		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
+		*###
+		loadFromConfig: (ref, configs, options={})->
+			if options.noCache
+				@_configs = configs
+			else
+				_.extend @_configs, configs
 			
+			if not @_configs[ref]?
+				throw Error "#{ref} not found in the supplied configs Available keys: \n#{_.keys(@_configs).join('\n')}"
+
+			@load(ref, options)	
 			
 		###*
 		* Load an object with the specified ref from a .bundle file. The object can be of any
@@ -95,7 +121,7 @@ _) ->
 					console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
 				
 				console.log "Loaded bundle"
-				@load(ref)
+				@load(ref, options)
 				
 		
 		###*
@@ -154,7 +180,10 @@ _) ->
 				
 				if type == "texture"
 					# TODO: Support pixel map textures
-					textureObj = @_objects[ref] = @_textureCreator.loadTexture2D(config.url)
+					textureObj = @_objects[ref] = if config.url?
+						@_textureCreator.loadTexture2D(config.url)
+					else
+						null
 					pu.createDummyPromise(textureObj)
 				else
 					handlerClass = ConfigHandler.getHandler(type)

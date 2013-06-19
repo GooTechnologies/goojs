@@ -11,16 +11,17 @@ function (
 
 	/**
 	 * @class Matrix with RxC components.
-	 * @property {Float32Array} data Column-major storage for the matrix components.
-	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Integer} rows Number of rows.
-	 * @param {Integer} cols Number of columns.
+	 * @param {number} rows Number of rows.
+	 * @param {number} cols Number of columns.
 	 */
 
 	function Matrix(rows, cols) {
 		this.rows = rows || 0;
 		this.cols = cols || 0;
+		/** Column-major storage for the matrix components.
+		 * @type {Float32Array}
+		 */
 		this.data = new Float32Array(this.rows * this.cols);
 	}
 
@@ -31,7 +32,6 @@ function (
 	 * @description Binds aliases to the different matrix components.
 	 * @param {String[][]} aliases Array of component aliases for each component index.
 	 */
-
 	Matrix.prototype.setupAliases = function (aliases) {
 		var that = this;
 
@@ -64,12 +64,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition.
+	 * Performs a component-wise addition.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -103,8 +101,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise addition.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -115,12 +113,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -154,8 +150,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise subtraction.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -166,12 +162,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication.
+	 * Performs a component-wise multiplication.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -205,8 +199,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise multiplication.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -217,12 +211,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -258,8 +250,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division.
-	 * @param {Matrix|Float} rhs Matrix or scalar on the right-hand side.
+	 * Performs a component-wise division.
+	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -270,12 +262,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
+	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -314,7 +304,7 @@ function (
 	};
 
 	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
 	 * @return {Matrix} Self for chaining.
 	 */
@@ -326,11 +316,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
+	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix} source Source matrix.
 	 * @param {Matrix} [target] Target matrix.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -362,7 +350,7 @@ function (
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -373,11 +361,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Copies component values and stores them in a separate matrix.
+	 * Copies component values and stores them in a separate matrix.
 	 * @param {Matrix} source Source matrix.
 	 * @param {Matrix} [target] Target matrix.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -399,7 +385,7 @@ function (
 	};
 
 	/**
-	 * @description Copies component values and stores them locally.
+	 * Copies component values and stores them locally.
 	 * @param {Matrix} source Source matrix.
 	 * @return {Matrix} Self for chaining.
 	 */
@@ -411,11 +397,10 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Compares two matrices for approximate equality.
+	 * Compares two matrices for approximate equality.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {Boolean} True if equal.
+	 * @return {boolean} True if equal.
 	 */
 
 	Matrix.equals = function (lhs, rhs) {
@@ -433,9 +418,9 @@ function (
 	};
 
 	/**
-	 * @description Compares two matrices for approximate equality.
+	 * Compares two matrices for approximate equality.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {Boolean} True if equal.
+	 * @return {boolean} True if equal.
 	 */
 
 	Matrix.prototype.equals = function (rhs) {
@@ -445,8 +430,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is orthogonal.
-	 * @return {Boolean} True if orthogonal.
+	 * Tests if the matrix is orthogonal.
+	 * @return {boolean} True if orthogonal.
 	 */
 
 	Matrix.prototype.isOrthogonal = function () {
@@ -472,8 +457,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is normal.
-	 * @return {Boolean} True if normal.
+	 * Tests if the matrix is normal.
+	 * @return {boolean} True if normal.
 	 */
 
 	Matrix.prototype.isNormal = function () {
@@ -496,8 +481,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Tests if the matrix is orthonormal.
-	 * @return {Boolean} True if orthonormal.
+	 * Tests if the matrix is orthonormal.
+	 * @return {boolean} True if orthonormal.
 	 */
 
 	Matrix.prototype.isOrthonormal = function () {
@@ -507,7 +492,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Clones the matrix.
+	 * Clones the matrix.
 	 * @return {Matrix} Clone of self.
 	 */
 
@@ -518,8 +503,8 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Sets the components of the matrix.
-	 * @param {Matrix|Float[]|Float} arguments Component values.
+	 * Sets the components of the matrix.
+	 * @param {Matrix|number[]|number} arguments Component values.
 	 * @return {Matrix} Self for chaining.
 	 */
 
@@ -544,7 +529,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Converts the matrix into a string.
+	 * Converts the matrix into a string.
 	 * @return {String} String of component values.
 	 */
 

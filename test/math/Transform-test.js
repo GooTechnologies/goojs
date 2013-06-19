@@ -32,6 +32,14 @@ define([
 
 	describe('Transform', function() {
 		var t, v1, v2, v3;
+
+		function rnd(n) {
+			if(n) {
+				return Math.random() * n;
+			} else {
+				return Math.random();
+			}
+		}
 		beforeEach(function() {
 			t = new Transform();
 			v1 = new Vector3(10, 20, 30);
@@ -47,6 +55,19 @@ define([
 							notText + ' to be equal to vector ' + expected;
 					};
 					return actual.equals(expected);
+				},
+				toBeEqualToMatrix: function(expected) {
+					var actual = this.actual;
+					var notText = this.isNot ? ' not' : '';
+					this.message = function() {
+						return 'Expected ' + actual + notText + ' to be equal to matrix ' + expected;
+					};
+					for (var i = 0; i < expected.data.length; i ++) {
+						if (Math.abs(expected.data[i] - actual.data[i]) > 0.00001) {
+							return false;
+						}
+					}
+					return true;
 				}
 			});
 		});
@@ -97,6 +118,22 @@ define([
 			t.setRotationXYZ(0.2, 0, 0);
 			t.update();
 			checkInversion(t);
+		});
+		it('combines correctly', function() {
+			t.translation.setd(rnd(5), rnd(5), rnd(5));
+			t.scale.setd(3, 3, 3);
+			t.setRotationXYZ(rnd(5),rnd(5),rnd(5));
+			t.update();
+			var t2 = new Transform();
+			t2.translation.setd(rnd(5),rnd(5),rnd(5));
+			t2.setRotationXYZ(rnd(5),rnd(5),rnd(5));
+			t2.scale.setd(rnd(5),rnd(5),rnd(5));
+			t2.update();
+			var t3 = Transform.combine(t, t2);
+			t3.update();
+			t.matrix.combine(t2.matrix);
+
+			expect(t3.matrix).toBeEqualToMatrix(t.matrix);
 		});
 	});
 

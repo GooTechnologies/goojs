@@ -20,5 +20,28 @@ define(
 		this._dataNeedsRefresh = false;
 	}
 
+	/**
+	 * Set the usage type of this bufferdata.
+	 * @param {string} dataUsage Usage Type
+	 * <pre>
+	 *		Usage Type:
+	 *		'StaticDraw' - The data store contents will be speciﬁed once by the application,
+	 *				and used many times as the source for GL drawing commands
+	 *		'DynamicDraw' - The data store contents will be respeciﬁed repeatedly by the application, and used many times as the source for GL drawing commands.
+	 *		'StreamDraw' - The data store contents will be speciﬁed once by the application,
+	 *				and used at most a few times as the source of a GL drawing command
+	 * </pre>
+	 */
+	BufferData.prototype.setDataUsage = function (dataUsage) {
+		this._dataUsage = dataUsage;
+	};
+
+	/**
+	 * Tell the engine that a buffer has been updated and needs to be refreshed.
+	 */
+	BufferData.prototype.setDataNeedsRefresh = function () {
+		this._dataNeedsRefresh = true;
+	};
+
 	return BufferData;
 });

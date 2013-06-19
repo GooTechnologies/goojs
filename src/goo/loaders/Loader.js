@@ -162,7 +162,7 @@ define([
 	};
 
 	Loader.prototype._buildURL = function(url) {
-		return this.rootPath + url;
+		return this.rootPath + escape(url);
 	};
 
 	/** @type {string}

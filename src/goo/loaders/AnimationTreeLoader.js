@@ -50,7 +50,7 @@ define([
 
 			this._loader = parameters.loader;
 			this._cache = {};
-			this._animationLoader = new AnimationLoader({ loader: this._loader });
+			this._animationLoader = new AnimationLoader(parameters);
 		}
 
 		/**

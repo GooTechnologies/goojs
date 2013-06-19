@@ -42,7 +42,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 		this.passes.push(pass);
 	};
 
-	Composer.prototype.render = function (renderer, delta) {
+	Composer.prototype.render = function (renderer, delta, camera, lights) {
 		this.writeBuffer = this.renderTarget1;
 		this.readBuffer = this.renderTarget2;
 
@@ -55,13 +55,13 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 				continue;
 			}
 
-			pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive);
+			pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive, camera, lights);
 
 			if (pass.needsSwap) {
 				if (maskActive) {
 					var context = this.renderer.context;
 					context.stencilFunc(WebGLRenderingContext.NOTEQUAL, 1, 0xffffffff);
-					this.copyPass.render(renderer, this.writeBuffer, this.readBuffer, delta);
+					this.copyPass.render(renderer, this.writeBuffer, this.readBuffer, delta, camera, lights);
 					context.stencilFunc(WebGLRenderingContext.EQUAL, 1, 0xffffffff);
 				}
 				this.swapBuffers();
