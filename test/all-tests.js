@@ -24,6 +24,7 @@ define([
 	'test/entities/EntityUtils-test',
     'test/util/URLTools-test',
     'test/util/Ajax-test',
+    'test/util/ColorUtil-test',
     'test/loaders/MaterialLoader-test',
     'test/loaders/MeshLoader-test',
     'test/loaders/EntityLoader-test',
