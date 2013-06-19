@@ -57,6 +57,26 @@ function needsSignature(doclet) {
     return needsSig;
 }
 
+function linkName(name) {
+	var matchArray = name.match(/^(.*)((\[\])+)$/);
+	var matchFunc = name.match(/^function\((.*)\)$/);
+	if(matchArray) {
+		return linkName(matchArray[1])+matchArray[2];
+	}
+	else if(matchFunc && matchFunc.length) {
+		var m = matchFunc[1].replace(/\s+/g,'');
+		var names = m.split(',');
+		var links = [];
+		names.forEach(function(name, i) {
+			links.push(linkName(name));
+		});
+		return 'function('+links.join(', ')+')';
+	}
+	else {
+		return '{@link '+name+'}';
+	}
+}
+
 function addSignatureParams(f) {
     var params = helper.getSignatureParams(f, 'optional');
     f.signature = (f.signature || '') + '('+params.join(', ')+')';
@@ -72,7 +92,7 @@ function addSignatureParams(f) {
         if (p.type) {
           var names = []
           p.type.names.forEach(function(name) {
-            names.push('{@link '+name+'}');
+            names.push(linkName(name));
           })
           str += names.join('|')+' ';
         }
@@ -100,8 +120,18 @@ function addSignatureReturns(f) {
 
 function addSignatureTypes(f) {
     var types = helper.getSignatureTypes(f);
-
-    f.signature = (f.signature || '') + '<span class="type-signature">'+(types.length? ' :'+types.join('|') : '')+'</span>';
+		var names = [];
+		if(types.length) {
+			types.forEach(function(name) {
+				var m = name.match(/>([^<]*)</);
+				if(m) {
+					names.push(linkName(m[1]));
+				} else {
+					names.push(linkName(name));
+				}
+			});
+		}
+    f.signature = (f.signature || '') + '<span class="type-signature">'+(types.length? ' :'+names.join('|') : '')+'</span>';
 }
 
 function addAttribs(f) {
@@ -192,7 +222,7 @@ function generateSourceFiles(sourceFiles) {
  * @return {string} The HTML for the navigation sidebar.
  */
 function buildNav(members) {
-    var nav = '<h2><a href="index.html">Index</a></h2>',
+    var nav = '<a href="index.html"><img class="logo" src="images/goo.png" width="128" height="128" /></a>',
         seen = {};
 
     if (members.modules.length) {
