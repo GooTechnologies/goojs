@@ -334,7 +334,7 @@ function (
 
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
-
+	// REVIEW add parameter descriptions and ranges since this function will probably be one of the first that newcomers will use
 	/**
 	 * Set the background color of the 3D view
 	 * @param {number} r
@@ -365,6 +365,7 @@ function (
 		}
 	};
 
+	// REVIEW Replace/expand "things" & add parameter description
 	/**
 	 * Render things
 	 * @param {Entity[]} renderList

@@ -90,7 +90,7 @@ function linkName(name) {
 		return '{@link '+name+'}';
 	}
 }
-
+// REVIEW Use of tabs and spaces in indenting
 function addSignatureParams(f) {
     var params = helper.getSignatureParams(f, 'optional');
     f.signature = (f.signature || '') + '('+params.join(', ')+')';
@@ -262,7 +262,7 @@ function buildNav(members) {
 
         nav += '</ul>';
     }
-
+// REVIEW Use of tabs and spaces in indenting
     function buildClassTree(classes) {
       var tree = {
         goo: {}

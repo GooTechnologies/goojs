@@ -90,7 +90,7 @@ function(
 		 * @default
 		 */
 		this.wireframe = false;
-
+		// REVIEW "Decides where in the order the material will ..." sounds odd
 		/** Decides where in the order the material will be rendered, see {@link RenderQueue} for options
 		 * @type {number}
 		 */
