@@ -1,6 +1,6 @@
 define([
 	'goo/entities/Entity',
-	'goo/entities/managers/EntityManager',
+	'goo/entities/managers/FastEntityManager',
 	'goo/entities/components/TransformComponent'
 ],
 /** @lends */
