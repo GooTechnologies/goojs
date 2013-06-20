@@ -18,6 +18,9 @@ function(Vector3) {
 
 			var shader1 = a.meshRendererComponent.materials[0].shader;
 			var shader2 = b.meshRendererComponent.materials[0].shader;
+			if (shader1 === null || shader2 === null) {
+				return 0;
+			}
 			if (shader1._id === shader2._id) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
