@@ -25,7 +25,7 @@ function(
 		 * @type {Object}
 		 * @default
 		 */
-		this.uniforms = {}; //possible overrides on shader uniforms
+		this.uniforms = {};
 		/** Array of textures in use
 		 * @type {Texture[]}
 		 */
@@ -102,8 +102,10 @@ function(
 	Material.prototype.getRenderQueue = function () {
 		if (this.renderQueue !== null) {
 			return this.renderQueue;
+		} else if (this.shader !== null) {
+			return this.shader.renderQueue;
 		}
-		return this.shader.renderQueue;
+		return 1000;
 	};
 
 	Material.prototype.setRenderQueue = function (queue) {

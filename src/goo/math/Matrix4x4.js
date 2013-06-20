@@ -752,9 +752,27 @@ function (
 	 */
 
 	Matrix4x4.prototype.getTranslation = function (store) {
-		store.x = this.e03;
-		store.y = this.e13;
-		store.z = this.e23;
+		store.x = this.data[12];
+		store.y = this.data[13];
+		store.z = this.data[14];
+
+		return this;
+	};
+
+	/**
+	 * @description Gets the scaling part of the matrix.
+	 * @param {Vector3} store Scaling vector to store result in.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+
+	Matrix4x4.prototype.getScale = function (store) {
+		var sx = Math.sqrt(store.setd(this.data[0], this.data[4], this.data[8]).lengthSquared());
+		var sy = Math.sqrt(store.setd(this.data[1], this.data[5], this.data[9]).lengthSquared());
+		var sz = Math.sqrt(store.setd(this.data[2], this.data[6], this.data[10]).lengthSquared());
+
+		store.x = sx;
+		store.y = sy;
+		store.z = sz;
 
 		return this;
 	};

@@ -420,8 +420,13 @@ function (
 		for (var i = 0; i < materials.length; i++) {
 			var material = materials[i];
 			if (!material.shader) {
-				// console.warn('No shader set on material: ' + material.name);
+				if (!material.errorOnce) {
+					console.warn('No shader set on material: ' + material.name);
+					material.errorOnce = true;
+				}
 				continue;
+			} else {
+				material.errorOnce = false;
 			}
 
 			if (material._originalTextureCount === -1) {

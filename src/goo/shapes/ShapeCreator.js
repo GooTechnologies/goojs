@@ -6,6 +6,7 @@ define([
 	'goo/shapes/Torus'
 ],
 /** @lends */
+/* REVIEW What's the purpose of this class? Why can't people just use the appropriate classes? */
 function (
 	Box,
 	Quad,
