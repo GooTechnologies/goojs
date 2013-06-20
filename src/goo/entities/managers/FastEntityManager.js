@@ -10,7 +10,6 @@ define(
 		this.type = 'EntityManager';
 
 		this._entitiesById = [];
-		console.log('aaaaaaaaaa');
 	}
 
 	FastEntityManager.prototype.added = function (entity) {
