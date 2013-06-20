@@ -10,12 +10,13 @@ function (
 	"use strict";
 
 	/**
-	 * @class It's a damn directional light
-	 * @property {Vector3} direction Where it is looking
+	 * @class A directional light. So far it has the same effect as {@link Light}
+	 * @extends Light
 	 */
 	function DirectionalLight () {
 		Light.call(this);
 
+		/** @type {Vector3} */
 		this.direction = new Vector3();
 	}
 
