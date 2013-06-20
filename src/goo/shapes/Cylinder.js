@@ -158,7 +158,7 @@ function (
 		// south pole
 		vbuf[i * 3 + 0] = 0;
 		vbuf[i * 3 + 1] = 0;
-		vbuf[i * 3 + 2] = -this.radius;
+		vbuf[i * 3 + 2] = -0.5;
 
 		if (!this.viewInside) {
 			norms[i * 3 + 0] = 0;
@@ -183,7 +183,7 @@ function (
 		// north pole
 		vbuf[i * 3 + 0] = 0;
 		vbuf[i * 3 + 1] = 0;
-		vbuf[i * 3 + 2] = this.radius;
+		vbuf[i * 3 + 2] = 0.5;
 
 		if (!this.viewInside) {
 			norms[i * 3 + 0] = 0;
