@@ -60,17 +60,28 @@ function needsSignature(doclet) {
 function linkName(name) {
 	var matchArray = name.match(/^(.*)((\[\])+)$/);
 	var matchFunc = name.match(/^function\((.*)\)$/);
+	var matchObject = name.match(/^Object\.(&lt;|<)(.*)(&gt;|>)$/);
+	//matchObject = false;
 	if(matchArray) {
 		return linkName(matchArray[1])+matchArray[2];
 	}
-	else if(matchFunc && matchFunc.length) {
-		var m = matchFunc[1].replace(/\s+/g,'');
+	else if(matchFunc && matchFunc.length || matchObject && matchObject.length) {
+		if(matchFunc) {
+			var m = matchFunc[1].replace(/\s+/g,'');
+		} else 	if(matchObject) {
+			var m = matchObject[2].replace(/\s+/g,'');
+		}
 		var names = m.split(',');
 		var links = [];
 		names.forEach(function(name, i) {
 			links.push(linkName(name));
 		});
-		return 'function('+links.join(', ')+')';
+		if(matchFunc) {
+			return 'function('+links.join(', ')+')';
+		}
+		if (matchObject) {
+			return 'Object.&lt;'+links.join(', ')+'&gt;';
+		}
 	}
 	else if (name === '') {
 		return '';
@@ -126,7 +137,7 @@ function addSignatureTypes(f) {
 		var names = [];
 		if(types.length) {
 			types.forEach(function(name) {
-				var m = name.match(/>([^<]*)</);
+				var m = name.match(/^<[^<]+>(.*)<[^<]+>$/);
 				if(m) {
 					names.push(linkName(m[1]));
 				} else {
