@@ -6,7 +6,7 @@ html
 
 body
 {
-	font: 14px "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
+	font: 14px 'Avenir', Helvetica Neue, Arial, Sans-serif;
 	line-height: 130%;
 	color: #000;
 	background-color: #fff;
@@ -42,6 +42,7 @@ header
 #main {
 	display: inline-block;
 	width: 75%;
+	margin-top: 128px;
 }
 
 section
@@ -67,7 +68,7 @@ section
 nav
 {
 	display: inline-block;
-    margin-top: 28px;
+    margin-top: 0px;
     padding-left: 9px;
     width: 20%;
     vertical-align: top;
@@ -84,7 +85,7 @@ nav ul {
 }
 
 nav h2 a, nav h2 a:visited {
-    color: #A35A00;
+    color: #2a3276;
     text-decoration: none;
 }
 
@@ -124,7 +125,7 @@ h1
 	font-size: 200%;
 	font-weight: bold;
 	letter-spacing: -0.01em;
-	margin: 6px 0 9px 0;
+	margin: 12px 0 9px 0;
 }
 
 h2
@@ -133,6 +134,10 @@ h2
 	font-weight: bold;
 	letter-spacing: -0.01em;
 	margin: 6px 0 3px 0;
+}
+h2 small {
+	font-size: 50%;
+	font-weight: normal;
 }
 
 h3
@@ -143,6 +148,15 @@ h3
 	margin-top: 16px;
 	margin: 6px 0 3px 0;
 }
+h3.subsection-title {
+	margin-top: 2em;
+	margin-bottom: 0.5em;
+}
+h3.extends {
+	font-size: 100%;
+	margin-left: 1em;
+	font-weight: normal;
+}
 
 h4
 {
@@ -151,7 +165,10 @@ h4
 	letter-spacing: -0.01em;
 	margin-top: 16px;
 	margin: 18px 0 3px 0;
-	color: #A35A00;
+	color: #2a3276;
+}
+.container-overview h4 a, .container-overview h4 a:visited {
+	color: inherit;
 }
 
 h5, .container-overview .subsection-title
@@ -180,7 +197,7 @@ h6
 .important
 {
 	font-weight: bold;
-	color: #950B02;
+	color: #2a3276;
 }
 
 .yes-def {
@@ -248,7 +265,7 @@ h6
 }
 
 .params .name, .props .name, .name code {
-	color: #A35A00;
+	color: #2a3276;
 	font-family: Consolas, 'Lucida Console', Monaco, monospace;
 	font-size: 100%;
 }
@@ -283,4 +300,28 @@ h6
 }
 code {
 	white-space: pre;
+}
+table.summary tr {
+	min-height: 4em;
+}
+table.summary td {
+	vertical-align: top;
+}
+table.summary td:nth-child(1) {
+	width: 10em;
+	text-align: right;
+	padding-right: 1em;
+}
+table.summary td .description {
+	margin-left: 1em;
+	margin-top: 0;
+	display: block;
+}
+
+table.summary a.summaryLink, table.summary a.summaryLink:visited {
+	color: #2a3276;
+	font-weight: bold;
+}
+nav img.logo {
+	display: block;
 }

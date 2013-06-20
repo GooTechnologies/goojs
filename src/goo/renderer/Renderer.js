@@ -39,27 +39,17 @@ function (
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * The renderer handles displaying of graphics data to a render context. It accepts a JSON object containing the settings for the renderer.
-	 * default = { alpha : false, premultipliedAlpha : true, antialias : false, stencil : false, preserveDrawingBuffer : false }
+	 * @class The renderer handles displaying of graphics data to a render context.
 	 *
-	 *   alpha:
-	 *   Enables the possibility to render non-opaque pixels.
-	 *
-	 *   premultipliedAlpha:
-	 *   Whether the colors are premultiplied with the alpha channel.
-	 *
-	 *   antialias:
-	 *   Enables antialiasing.
-	 *
-	 *   stencil:
-	 *   Enables the stencil buffer.
-	 *
-	 *   onError:
-	 *   Function that is called when an error occurs. Currently only is called in debug mode.
-	 *   Called with the error description as a parameter.
-	 *
-	 * @constructor
-	 * @param {Settings} parameters Renderer settings.
+	 * @description Constructor. It accepts a JSON object containing the settings for the renderer.
+	 * @param {object} parameters Renderer settings.
+	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
+	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
+	 * @param {boolean} [parameters.antialias=false] Enables antialiasing.
+	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
+	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
 	function Renderer(parameters) {
 		parameters = parameters || {};
@@ -87,6 +77,7 @@ function (
 			preserveDrawingBuffer: this._preserveDrawingBuffer
 		};
 
+		/** @type {WebGLRenderingContext} */
 		this.context = null;
 		try {
 			this.context = _canvas.getContext('experimental-webgl', settings);
@@ -133,13 +124,19 @@ function (
 		}
 
 		// this.lineRecord = null;// new LineRecord();
+		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
+		/** @type {boolean} */
 		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
+		/** @type {boolean} */
 		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
+		/** @type {boolean} */
 		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
 //		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
+		/** @type {boolean} */
 		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
+		/** @type {boolean} */
 		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
 			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
 			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
@@ -180,6 +177,18 @@ function (
 		}
 
 		// Check capabilities (move out to separate module)
+		/** @type {object}
+		 * @property {number} maxTexSize Maximum 2D texture size
+		 * @property {number} maxCubeSize Maximum cubemap size
+		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
+		 * @property {number} vertexUnits Maximum vertex shader texture units
+		 * @property {number} fragmentUnits Maximum fragment shader texture units
+		 * @property {number} combinedUnits Maximum total texture units
+		 * @property {number} maxVertexAttributes Maximum vertex attributes
+		 * @property {number} maxVertexShader Maximum vertex uniform vectors
+		 * @property {number} maxFragmentShader Maximum fragment uniform vectors
+		 * @property {number} maxVaryingVectors Maximum varying vectors
+		 */
 		this.capabilities = {
 			maxTexSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
 			maxCubeSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
@@ -207,6 +216,10 @@ function (
 			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
 
+		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
+		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
+		 * @type {string}
+		 */
 		this.shaderPrecision = parameters.shaderPrecision || 'highp';
 		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
 			this.shaderPrecision = 'highp';
@@ -220,6 +233,7 @@ function (
 		this.downScale = parameters.downScale || 1;
 
 		// Default setup
+
 		this.clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
@@ -229,15 +243,20 @@ function (
 		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
 		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
+		/** @type {number} */
 		this.viewportX = 0;
+		/** @type {number} */
 		this.viewportY = 0;
+		/** @type {number} */
 		this.viewportWidth = 0;
+		/** @type {number} */
 		this.viewportHeight = 0;
+		/** @type {number} */
 		this.currentWidth = 0;
+		/** @type {number} */
 		this.currentHeight = 0;
 
 		this.overrideMaterial = null;
-
 		this.renderQueue = new RenderQueue();
 
 		this.info = {
@@ -316,6 +335,13 @@ function (
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
 
+	/**
+	 * Set the background color of the 3D view
+	 * @param {number} r
+	 * @param {number} g
+	 * @param {number} b
+	 * @param {number} a
+	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
 		this.clearColor.set(r, g, b, a);
 		this.context.clearColor(r, g, b, a);
@@ -339,6 +365,15 @@ function (
 		}
 	};
 
+	/**
+	 * Render things
+	 * @param {Entity[]} renderList
+	 * @param {Camera} camera
+	 * @param {Light[]} lights
+	 * @param {RenderTarget} renderTarget
+	 * @param {boolean} clear
+	 * @param {boolena} shadowPass
+	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, shadowPass) {
 		if (!camera) {
 			return;

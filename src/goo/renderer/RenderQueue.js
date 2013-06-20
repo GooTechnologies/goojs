@@ -43,7 +43,10 @@ function(Vector3) {
 			return a - b;
 		};
 	}
-
+	/**
+	 * @param {Entity[]} renderList
+	 * @param {Camera} camera
+	 */
 	RenderQueue.prototype.sort = function(renderList, camera) {
 		var index = 0;
 		this.camera = camera;
@@ -83,10 +86,29 @@ function(Vector3) {
 			}
 		}
 	};
-
+	/** 
+	 * @type {number}
+	 * @readonly
+	 * @default
+	 */
 	RenderQueue.BACKGROUND = 0;
+	/** 
+	 * @type {number}
+	 * @readonly
+	 * @default
+	 */
 	RenderQueue.OPAQUE = 1000;
+	/** 
+	 * @type {number}
+	 * @readonly
+	 * @default
+	 */
 	RenderQueue.TRANSPARENT = 2000;
+	/** 
+	 * @type {number}
+	 * @readonly
+	 * @default
+	 */
 	RenderQueue.OVERLAY = 3000;
 
 	return RenderQueue;

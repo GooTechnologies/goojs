@@ -373,24 +373,63 @@ function (
 	MeshData.prototype.resetVertexCount = function () {
 		this.vertexCount = this.vertexCountStore;
 	};
-
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.POSITION = 'POSITION';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.NORMAL = 'NORMAL';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.COLOR = 'COLOR';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.TANGENT = 'TANGENT';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.TEXCOORD0 = 'TEXCOORD0';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.TEXCOORD1 = 'TEXCOORD1';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.TEXCOORD2 = 'TEXCOORD2';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.TEXCOORD3 = 'TEXCOORD3';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.WEIGHTS = 'WEIGHTS';
+	/** 
+	 * @type {string}
+	 * @readonly
+	 */
 	MeshData.JOINTIDS = 'JOINTIDS';
 
 	/**
 	 * Creates a definition for a vertex attribute
 	 *
-	 * @param count Tuple size of attribute
-	 * @param type Data type
-	 * @param normalized If data should be normalized (true) or converted direction (false)
+	 * @param {number} count Tuple size of attribute
+	 * @param {string} type Data type
+	 * @param {boolean} [normalized=false] If data should be normalized (true) or converted direction (false)
 	 * @returns {Object} Attribute definition
 	 */
 	MeshData.createAttribute = function (count, type, normalized) {
@@ -429,6 +468,12 @@ function (
 		return map;
 	}
 
+	/**
+	 * Creates an attribute given the types
+	 * @param {string[]} [types] An array of default types. If not provided you get an attributeMap with all default attributes
+	 * @returns {object}
+	 * @example var map = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
+	 */
 	MeshData.defaultMap = function (types) {
 		if (types === undefined) {
 			return buildMap(Object.keys(defaults));

@@ -870,8 +870,8 @@ function (
 
 	/**
 	 * Copies component values and stores them locally.
-	 * @param {Matrix4x4} source Source matrix.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @param {Matrix3x3} source Source matrix.
+	 * @return {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.copy = function (source) {

@@ -31,6 +31,7 @@ function(
 		 */
 		this.textures = [];
 		this._originalTextureCount = -1;
+		/** @type {object} */
 		this.materialState = undefined;
 		// {
 		// ambient: [0.1, 0.1, 0.1, 1.0],
@@ -52,27 +53,21 @@ function(
 		};
 		/**
 		 * @type {Object}
-		 * @property {String} blending possible values: 'NoBlending' (default), 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
-		 * @property {String} blendEquation possible values: 'AddEquation' (default), 'SubtractEquation', 'ReverseSubtractEquation'
-		 * @property {String} blendSrc possible values: 'SrcAlphaFactor' (default), 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
-		 * @property {String} blendDst possible values: as above, default 'OneMinusSrcAlphaFactor'
+		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
+		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
+		 * @property {String} blendSrc possible values: <strong>'SrcAlphaFactor'</strong>, 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
+		 * @property {String} blendDst possible values: 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', <strong>'OneMinusSrcAlphaFactor'</strong>, 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 		 */
 		this.blendState = {
-			// 'NoBlending', 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 			blending: 'NoBlending',
-
-			// 'AddEquation', 'SubtractEquation', 'ReverseSubtractEquation'
 			blendEquation: 'AddEquation',
-
-			// 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor',
-			// 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
 		/**
 		 * @type {Object}
-		 * @property {boolean} enabled
-		 * @property {boolean} write
+		 * @property {boolean} enabled default: true
+		 * @property {boolean} write default: true
 		 */
 		this.depthState = {
 			enabled: true,
@@ -96,9 +91,15 @@ function(
 		 */
 		this.wireframe = false;
 
+		/** Decides where in the order the material will be rendered, see {@link RenderQueue} for options
+		 * @type {number}
+		 */
 		this.renderQueue = null;
 	}
 
+	/**
+	 * @returns {number}
+	 */
 	Material.prototype.getRenderQueue = function () {
 		if (this.renderQueue !== null) {
 			return this.renderQueue;
@@ -108,6 +109,9 @@ function(
 		return 1000;
 	};
 
+	/**
+	 * @param {number} queue See {@link RenderQueue} for options
+	 */
 	Material.prototype.setRenderQueue = function (queue) {
 		this.renderQueue = queue;
 	};

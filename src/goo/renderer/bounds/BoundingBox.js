@@ -59,7 +59,7 @@ function (
 		this.yExtent = vec.y;
 		this.zExtent = vec.z;
 
-		this.center.setv(max).add_d(min).div(2.0);
+		this.center.setv(max).addv(min).div(2.0);
 	};
 
 	BoundingBox.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
