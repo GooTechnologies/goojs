@@ -286,7 +286,7 @@ function (
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
-				console.warn('Uniform [' + key + '] variable not found in shader. Probably unused and optimized away. ' + key);
+				console.warn('Uniform [' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -345,6 +345,8 @@ function (
 		console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
+	var errorRegExp = /\bERROR: \d+:(\d+):\s(.+)\b/g;
+
 	Shader.prototype._getShader = function (context, type, source) {
 		var shader = context.createShader(type);
 
@@ -353,7 +355,25 @@ function (
 
 		// check if the Shader is successfully compiled
 		if (!context.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS)) {
-			console.error('Shader [' + this.name + '][' + this._id + '] ' + context.getShaderInfoLog(shader));
+			var infoLog = context.getShaderInfoLog(shader);
+			var shaderType = type === WebGLRenderingContext.VERTEX_SHADER ? 'VertexShader' : 'FragmentShader';
+
+			errorRegExp.lastIndex = 0;
+			var errorMatcher = errorRegExp.exec(infoLog);
+			if (errorMatcher !== null) {
+				while (errorMatcher !== null) {
+					var splitSource = source.split('\n');
+					var lineNum = errorMatcher[1];
+					var errorStr = errorMatcher[2];
+					console.error('Error in ' + shaderType + ' - [' + this.name + '][' + this._id + '] at line ' + lineNum + ':');
+					console.error('\tError: ' + errorStr);
+					console.error('\tSource: ' + splitSource[lineNum - 1]);
+					errorMatcher = errorRegExp.exec(infoLog);
+				}
+			} else {
+				console.error('Error in ' + shaderType + ' - [' + this.name + '][' + this._id + '] ' + infoLog);
+			}
+
 			return null;
 		}
 
@@ -363,10 +383,12 @@ function (
 	var precisionRegExp = /\bprecision\s+(lowp|mediump|highp)\s+(float|int);/g;
 
 	Shader.prototype.addPrecision = function (precision) {
+		precisionRegExp.lastIndex = 0;
 		var vertMatcher = precisionRegExp.exec(this.vertexSource);
 		if (vertMatcher === null) {
 			this.vertexSource = 'precision ' + precision + ' float;' + '\n' + this.vertexSource;
 		}
+		precisionRegExp.lastIndex = 0;
 		var fragMatcher = precisionRegExp.exec(this.fragmentSource);
 		if (fragMatcher === null) {
 			this.fragmentSource = 'precision ' + precision + ' float;' + '\n' + this.fragmentSource;
