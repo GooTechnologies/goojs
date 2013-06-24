@@ -1,5 +1,9 @@
 define([
 	'goo/entities/Entity',
+	// REVIEW: If FastEntityManager is just better than EntityManager
+	// and the APIs are compatible, just remove EntityManager altogether
+	// and rename FastEntityManager into EntityManager.
+	// Is there a reason you didn't do that?
 	'goo/entities/managers/FastEntityManager',
 	'goo/entities/components/TransformComponent'
 ],

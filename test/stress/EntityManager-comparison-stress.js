@@ -13,6 +13,7 @@ define(
 		'use strict';
 
 		function measureDuration(fun) {
+			// REVIEW: Try performance.now() for better timer resolution
 			var startTime = new Date();
 			fun();
 			var endTime = new Date();
@@ -26,6 +27,7 @@ define(
 			var max = Number.MIN_VALUE;
 			for(var i = 0; i < times; i++) {
 				var duration = measureDuration(fun);
+				// REVIEW: Style: always use {}
 				if(duration > max) max = duration;
 				if(duration < min) min = duration;
 				sum += duration;
@@ -88,6 +90,7 @@ define(
 			}
 		});
 
+		// REVIEW: Is this 4 supposed to be 10 as the description says?
 		responseTime('Repeat 10 times ( EntityManager.added for 30000 entities and Entity.removed all )', 4, function() {
 			var nEntities = 30000;
 			var world = new World();
@@ -108,6 +111,7 @@ define(
 			}
 		});
 
+		// REVIEW: Is this 4 supposed to be 10 as the description says?
 		responseTime('Repeat 10 times ( FastEntityManager.added for 30000 entities and Entity.removed all )', 4, function() {
 			var nEntities = 30000;
 			var world = new World();

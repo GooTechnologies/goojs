@@ -7,6 +7,25 @@ define([
 ) {
 	'use strict';
 
+	// REVIEW: Great with tests! Some feedback on them:
+	// Regarding naming,
+	// imagine that `it` is the first world of a sentence.
+	// This helps with keeping the tests focused and small,
+	// and also makes it obvious what went wrong if it failed.
+	//
+	// Also, it's possible to use nested describes for clarity.
+	// Consider something like:
+	//
+	// describe('FastEntityManager', function() {
+	//   describe('containsEntity', function() {
+	//     beforeEach(...);
+	//     it('returns false before entity is added', ...);
+	//     it('returns true after entity is added', ...);
+	//     it('returns true after entity is added a second time', ...);
+	//   });
+	//   describe('removed', ...);
+	// });
+
 	describe('FastEntityManager', function() {
 		var world;
 		var entityManager;
