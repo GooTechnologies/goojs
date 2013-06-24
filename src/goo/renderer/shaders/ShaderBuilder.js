@@ -21,8 +21,19 @@ function(
 	function ShaderBuilder() {
 	}
 
+	var defaultLight = new DirectionalLight();
+	defaultLight.translation.setd(10, 10, 10);
+	defaultLight.direction.setd(1, 1, 1).normalize();
+	ShaderBuilder.defaultLight = defaultLight;
+
 	ShaderBuilder.light = {
 		processor: function (shader, shaderInfo) {
+			shader.uniforms.materialAmbient = shader.uniforms.materialAmbient || 'AMBIENT';
+			shader.uniforms.materialEmissive = shader.uniforms.materialEmissive || 'EMISSIVE';
+			shader.uniforms.materialDiffuse = shader.uniforms.materialDiffuse || 'DIFFUSE';
+			shader.uniforms.materialSpecular = shader.uniforms.materialSpecular || 'SPECULAR';
+			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
+
 			var pointCount = 0;
 			shader.uniforms.pointLightColor = shader.uniforms.pointLightColor || [];
 			shader.uniforms.pointLight = shader.uniforms.pointLight || [];
@@ -38,8 +49,11 @@ function(
 			shader.uniforms.spotLightAngle = shader.uniforms.spotLightAngle || [];
 			shader.uniforms.spotLightExponent = shader.uniforms.spotLightExponent || [];
 
-			for (var i = 0; i < shaderInfo.lights.length; i++) {
-				var light = shaderInfo.lights[i];
+			// Use default light?
+			// var lights = shaderInfo.lights.length > 0 ? shaderInfo.lights : [ShaderBuilder.defaultLight];
+			var lights = shaderInfo.lights;
+			for (var i = 0; i < lights.length; i++) {
+				var light = lights[i];
 
 				if (light instanceof PointLight) {
 					shader.uniforms.pointLight[pointCount * 4 + 0] = light.translation.x;
@@ -132,19 +146,25 @@ function(
 			"#if MAX_POINT_LIGHTS > 0",
 				"for(int i = 0; i < MAX_POINT_LIGHTS; i++) {",
 					'vec3 lightVec = pointLight[i].xyz - worldPos.xyz;',
-					"float lightDist = 1.0 - min( ( length( lightVec ) / pointLight[i].w), 1.0 );",
-					"vPointLight[i] = vec4( lightVec, lightDist );",
+					"float lightDist = 1.0 - min((length(lightVec) / pointLight[i].w), 1.0);",
+					"vPointLight[i] = vec4(lightVec, lightDist);",
 				"}",
 			"#endif",
 			"#if MAX_SPOT_LIGHTS > 0",
-				"for( int i = 0; i < MAX_SPOT_LIGHTS; i ++ ) {",
+				"for(int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
 					'vec3 lightVec = spotLight[i].xyz - worldPos.xyz;',
-					"float lightDist = 1.0 - min( ( length( lightVec ) / spotLight[i].w), 1.0 );",
-					"vSpotLight[i] = vec4( lightVec, lightDist );",
+					"float lightDist = 1.0 - min((length(lightVec) / spotLight[i].w), 1.0);",
+					"vSpotLight[i] = vec4(lightVec, lightDist);",
 				"}",
 			"#endif"
 		].join('\n'),
 		prefragment: [
+			'uniform vec4 materialAmbient;',
+			'uniform vec4 materialEmissive;',
+			'uniform vec4 materialDiffuse;',
+			'uniform vec4 materialSpecular;',
+			'uniform float materialSpecularPower;',
+
 			'#ifndef MAX_DIRECTIONAL_LIGHTS',
 				'#define MAX_DIRECTIONAL_LIGHTS 0',
 			"#endif",
@@ -156,20 +176,20 @@ function(
 			"#endif",
 
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
-				"uniform vec3 directionalLightColor[ MAX_DIRECTIONAL_LIGHTS ];",
-				"uniform vec3 directionalLightDirection[ MAX_DIRECTIONAL_LIGHTS ];",
+				"uniform vec3 directionalLightColor[MAX_DIRECTIONAL_LIGHTS];",
+				"uniform vec3 directionalLightDirection[MAX_DIRECTIONAL_LIGHTS];",
 			"#endif",
 			"#if MAX_POINT_LIGHTS > 0",
-				"uniform vec3 pointLightColor[ MAX_POINT_LIGHTS ];",
-				"varying vec4 vPointLight[ MAX_POINT_LIGHTS ];",
+				"uniform vec3 pointLightColor[MAX_POINT_LIGHTS];",
+				"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
 			"#endif",
 			"#if MAX_SPOT_LIGHTS > 0",
-				"uniform vec3 spotLightColor[ MAX_SPOT_LIGHTS ];",
-				"uniform vec4 spotLight[ MAX_SPOT_LIGHTS ];",
-				"uniform vec3 spotLightDirection[ MAX_SPOT_LIGHTS ];",
-				"uniform float spotLightAngle[ MAX_SPOT_LIGHTS ];",
-				"uniform float spotLightExponent[ MAX_SPOT_LIGHTS ];",
-				"varying vec4 vSpotLight[ MAX_SPOT_LIGHTS ];",
+				"uniform vec3 spotLightColor[MAX_SPOT_LIGHTS];",
+				"uniform vec4 spotLight[MAX_SPOT_LIGHTS];",
+				"uniform vec3 spotLightDirection[MAX_SPOT_LIGHTS];",
+				"uniform float spotLightAngle[MAX_SPOT_LIGHTS];",
+				"uniform float spotLightExponent[MAX_SPOT_LIGHTS];",
+				"varying vec4 vSpotLight[MAX_SPOT_LIGHTS];",
 			"#endif"
 		].join('\n'),
 		fragment: [
@@ -180,138 +200,129 @@ function(
 			'#endif',
 
 			"#if MAX_POINT_LIGHTS > 0",
-				"vec3 pointDiffuse  = vec3( 0.0 );",
-				"vec3 pointSpecular = vec3( 0.0 );",
+				"vec3 pointDiffuse  = vec3(0.0);",
+				"vec3 pointSpecular = vec3(0.0);",
 
 				"for (int i = 0; i < MAX_POINT_LIGHTS; i++) {",
-					"vec3 lVector = normalize( vPointLight[ i ].xyz );",
-					"float lDistance = vPointLight[ i ].w;",
+					"vec3 lVector = normalize(vPointLight[i].xyz);",
+					"float lDistance = vPointLight[i].w;",
 
 					// diffuse
-					"float dotProduct = dot( N, lVector );",
+					"float dotProduct = dot(N, lVector);",
 
 					"#ifdef WRAP_AROUND",
-						"float pointDiffuseWeightFull = max( dotProduct, 0.0 );",
-						"float pointDiffuseWeightHalf = max( 0.5 * dotProduct + 0.5, 0.0 );",
+						"float pointDiffuseWeightFull = max(dotProduct, 0.0);",
+						"float pointDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);",
 
-						"vec3 pointDiffuseWeight = mix( vec3 ( pointDiffuseWeightFull ), vec3( pointDiffuseWeightHalf ), wrapRGB );",
+						"vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapRGB);",
 					"#else",
-						"float pointDiffuseWeight = max( dotProduct, 0.0 );",
+						"float pointDiffuseWeight = max(dotProduct, 0.0);",
 					"#endif",
 
-					"pointDiffuse += materialDiffuse.rgb * pointLightColor[ i ] * pointDiffuseWeight * lDistance;",
+					"pointDiffuse += materialDiffuse.rgb * pointLightColor[i] * pointDiffuseWeight * lDistance;",
 
 					// specular
-					"vec3 pointHalfVector = normalize( lVector + viewPosition );",
-					"float pointDotNormalHalf = max( dot( N, pointHalfVector ), 0.0 );",
-					"float pointSpecularWeight = specularStrength * max( pow( pointDotNormalHalf, materialSpecularPower ), 0.0 );",
+					"vec3 pointHalfVector = normalize(lVector + viewPosition);",
+					"float pointDotNormalHalf = max(dot(N, pointHalfVector), 0.0);",
+					"float pointSpecularWeight = specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);",
 
 					"#ifdef PHYSICALLY_BASED_SHADING",
-						// 2.0 => 2.0001 is hack to work around ANGLE bug
-
-						"float specularNormalization = ( materialSpecularPower + 2.0001 ) / 8.0;",
-
-						"vec3 schlick = materialSpecular.rgb + vec3( 1.0 - materialSpecular.rgb ) * pow( 1.0 - dot( lVector, pointHalfVector ), 5.0 );",
-						"pointSpecular += schlick * pointLightColor[ i ] * pointSpecularWeight * pointDiffuseWeight * lDistance * specularNormalization;",
+						"float specularNormalization = (materialSpecularPower + 2.0001 ) / 8.0;",
+						"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, pointHalfVector), 5.0);",
+						"pointSpecular += schlick * pointLightColor[i] * pointSpecularWeight * pointDiffuseWeight * lDistance * specularNormalization;",
 					"#else",
-						"pointSpecular += materialSpecular.rgb * pointLightColor[ i ] * pointSpecularWeight * pointDiffuseWeight * lDistance;",
+						"pointSpecular += materialSpecular.rgb * pointLightColor[i] * pointSpecularWeight * pointDiffuseWeight * lDistance;",
 					"#endif",
 				"}",
 			"#endif",
 
 			"#if MAX_SPOT_LIGHTS > 0",
-				"vec3 spotDiffuse  = vec3( 0.0 );",
-				"vec3 spotSpecular = vec3( 0.0 );",
+				"vec3 spotDiffuse  = vec3(0.0);",
+				"vec3 spotSpecular = vec3(0.0);",
 
-				"for ( int i = 0; i < MAX_SPOT_LIGHTS; i ++ ) {",
-					"vec3 lVector = normalize( vSpotLight[ i ].xyz );",
-					"float lDistance = vSpotLight[ i ].w;",
+				"for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
+					"vec3 lVector = normalize(vSpotLight[i].xyz);",
+					"float lDistance = vSpotLight[i].w;",
 
 					// "float spotEffect = dot( spotLightDirection[ i ], normalize( spotLightPosition[ i ] - vWorldPosition ) );",
-					"float spotEffect = dot( normalize(-spotLightDirection[ i ]), lVector );",
+					"float spotEffect = dot( normalize(-spotLightDirection[i]), lVector);",
 
 					// 'spotDiffuse = vec3(spotEffect);',
 
-					"if ( spotEffect > spotLightAngle[ i ] ) {",
-						"spotEffect = max( pow( spotEffect, spotLightExponent[ i ] ), 0.0 );",
+					"if (spotEffect > spotLightAngle[i]) {",
+						"spotEffect = max(pow(spotEffect, spotLightExponent[i]), 0.0);",
 
 						// diffuse
-						"float dotProduct = dot( N, lVector );",
+						"float dotProduct = dot(N, lVector);",
 
 						"#ifdef WRAP_AROUND",
-							"float spotDiffuseWeightFull = max( dotProduct, 0.0 );",
-							"float spotDiffuseWeightHalf = max( 0.5 * dotProduct + 0.5, 0.0 );",
+							"float spotDiffuseWeightFull = max(dotProduct, 0.0);",
+							"float spotDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);",
 
-							"vec3 spotDiffuseWeight = mix( vec3 ( spotDiffuseWeightFull ), vec3( spotDiffuseWeightHalf ), wrapRGB );",
+							"vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapRGB);",
 						"#else",
-							"float spotDiffuseWeight = max( dotProduct, 0.0 );",
+							"float spotDiffuseWeight = max(dotProduct, 0.0);",
 						"#endif",
 
-						"spotDiffuse += materialDiffuse.rgb * spotLightColor[ i ] * spotDiffuseWeight * lDistance * spotEffect;",
+						"spotDiffuse += materialDiffuse.rgb * spotLightColor[i] * spotDiffuseWeight * lDistance * spotEffect;",
 
 						// specular
-						"vec3 spotHalfVector = normalize( lVector + viewPosition );",
-						"float spotDotNormalHalf = max( dot( N, spotHalfVector ), 0.0 );",
-						"float spotSpecularWeight = specularStrength * max( pow( spotDotNormalHalf, materialSpecularPower ), 0.0 );",
+						"vec3 spotHalfVector = normalize(lVector + viewPosition);",
+						"float spotDotNormalHalf = max( dot(N, spotHalfVector), 0.0);",
+						"float spotSpecularWeight = specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);",
 
 						"#ifdef PHYSICALLY_BASED_SHADING",
-							// 2.0 => 2.0001 is hack to work around ANGLE bug
-
-							"float specularNormalization = ( materialSpecularPower + 2.0001 ) / 8.0;",
-
-							"vec3 schlick = materialSpecular.rgb + vec3( 1.0 - materialSpecular.rgb ) * pow( 1.0 - dot( lVector, spotHalfVector ), 5.0 );",
-							"spotSpecular += schlick * spotLightColor[ i ] * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect;",
+							"float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;",
+							"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, spotHalfVector), 5.0);",
+							"spotSpecular += schlick * spotLightColor[i] * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect;",
 						"#else",
-							"spotSpecular += materialSpecular.rgb * spotLightColor[ i ] * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect;",
+							"spotSpecular += materialSpecular.rgb * spotLightColor[i] * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect;",
 						"#endif",
 					"}",
 				"}",
 			"#endif",
 
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
-				"vec3 dirDiffuse  = vec3( 0.0 );",
-				"vec3 dirSpecular = vec3( 0.0 );" ,
+				"vec3 dirDiffuse  = vec3(0.0);",
+				"vec3 dirSpecular = vec3(0.0);" ,
 
-				"for( int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i ++ ) {",
-					"vec4 lDirection = vec4( directionalLightDirection[ i ], 0.0 );",
+				"for(int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++) {",
+					"vec4 lDirection = vec4(directionalLightDirection[i], 0.0);",
 					// "vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ i ], 0.0 );",
-					"vec3 dirVector = normalize( lDirection.xyz );",
+					"vec3 dirVector = normalize(lDirection.xyz);",
 
 					// diffuse
-					"float dotProduct = dot( N, dirVector );",
+					"float dotProduct = dot(N, dirVector);",
 
 					"#ifdef WRAP_AROUND",
-						"float dirDiffuseWeightFull = max( dotProduct, 0.0 );",
-						"float dirDiffuseWeightHalf = max( 0.5 * dotProduct + 0.5, 0.0 );",
+						"float dirDiffuseWeightFull = max(dotProduct, 0.0);",
+						"float dirDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);",
 
-						"vec3 dirDiffuseWeight = mix( vec3( dirDiffuseWeightFull ), vec3( dirDiffuseWeightHalf ), wrapRGB );",
+						"vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapRGB);",
 					"#else",
-						"float dirDiffuseWeight = max( dotProduct, 0.0 );",
+						"float dirDiffuseWeight = max(dotProduct, 0.0);",
 					"#endif",
 
-					"dirDiffuse  += materialDiffuse.rgb * directionalLightColor[ i ] * dirDiffuseWeight;",
+					"dirDiffuse += materialDiffuse.rgb * directionalLightColor[i] * dirDiffuseWeight;",
 
 					// specular
-					"vec3 dirHalfVector = normalize( dirVector + viewPosition );",
-					"float dirDotNormalHalf = max( dot( N, dirHalfVector ), 0.0 );",
-					"float dirSpecularWeight = specularStrength * max( pow( dirDotNormalHalf, materialSpecularPower ), 0.0 );",
+					"vec3 dirHalfVector = normalize(dirVector + viewPosition);",
+					"float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);",
+					"float dirSpecularWeight = specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);",
 
 					"#ifdef PHYSICALLY_BASED_SHADING",
-						// 2.0 => 2.0001 is hack to work around ANGLE bug
-
-						"float specularNormalization = ( materialSpecularPower + 2.0001 ) / 8.0;",
+						"float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;",
 						//"dirSpecular += materialSpecular.rgb * directionalLightColor[ i ] * dirSpecularWeight * dirDiffuseWeight * specularNormalization * fresnel;",
-
-						"vec3 schlick = materialSpecular.rgb + vec3( 1.0 - materialSpecular.rgb ) * pow( 1.0 - dot( dirVector, dirHalfVector ), 5.0 );",
-						"dirSpecular += schlick * directionalLightColor[ i ] * dirSpecularWeight * dirDiffuseWeight * specularNormalization;",
+						"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(dirVector, dirHalfVector), 5.0);",
+						"dirSpecular += schlick * directionalLightColor[i] * dirSpecularWeight * dirDiffuseWeight * specularNormalization;",
 					"#else",
-						"dirSpecular += materialSpecular.rgb * directionalLightColor[ i ] * dirSpecularWeight * dirDiffuseWeight;",
+						"dirSpecular += materialSpecular.rgb * directionalLightColor[i] * dirSpecularWeight * dirDiffuseWeight;",
 					"#endif",
 				"}",
 			"#endif",
 
-			"vec3 totalDiffuse = vec3( 0.0 );",
-			"vec3 totalSpecular = vec3( 0.0 );",
+			"vec3 totalDiffuse = vec3(0.0);",
+			"vec3 totalSpecular = vec3(0.0);",
 
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
 				"totalDiffuse += dirDiffuse;",
@@ -326,12 +337,11 @@ function(
 				"totalSpecular += spotSpecular;",
 			"#endif",
 
-			"vec3 emissive = vec3(0.0, 0.0, 0.0);",
-			"vec3 ambientLightColor = vec3(0.0, 0.0, 0.0);",
+			"vec3 ambientLightColor = vec3(1.0, 1.0, 1.0);",
 			"#ifdef METAL",
-				"final_color.xyz = final_color.xyz * ( emissive + totalDiffuse + ambientLightColor * materialAmbient.rgb + totalSpecular );",
+				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + ambientLightColor * materialAmbient.rgb + totalSpecular);",
 			"#else",
-				"final_color.xyz = final_color.xyz * ( emissive + totalDiffuse + ambientLightColor * materialAmbient.rgb ) + totalSpecular;",
+				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + ambientLightColor * materialAmbient.rgb) + totalSpecular;",
 			"#endif"
 		].join('\n')
 	};

@@ -25,7 +25,9 @@ function (
 	DirectionalLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
-		this.direction.setv(this.translation).normalize();
+		this.direction.setd(0.0, 0.0, 1.0);
+		transform.matrix.applyPostVector(this.direction);
+		// this.direction.setv(this.translation).normalize();
 	};
 
 	return DirectionalLight;

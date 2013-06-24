@@ -2,6 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/entities/World'
 ],
 	/** @lends */
@@ -9,6 +10,7 @@ define([
 		MeshData,
 		Shader,
 		ShaderFragment,
+		ShaderBuilder,
 		World
 		) {
 	"use strict";
@@ -193,6 +195,9 @@ define([
 	};
 
 	ShaderLib.simpleLit = {
+		processors: [
+			ShaderBuilder.light.processor
+		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL
@@ -200,12 +205,7 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			lightPosition : Shader.LIGHT0,
-			materialAmbient : Shader.AMBIENT,
-			materialDiffuse : Shader.DIFFUSE,
-			materialSpecular : Shader.SPECULAR,
-			materialSpecularPower : Shader.SPECULAR_POWER
+			cameraPosition : Shader.CAMERA
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -214,55 +214,41 @@ define([
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 cameraPosition;', //
-		'uniform vec3 lightPosition;', //
+
+		ShaderBuilder.light.prevertex,
 
 		'varying vec3 normal;',//
-		'varying vec3 lightDir;',//
-		'varying vec3 eyeVec;',//
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
 
 		'void main(void) {', //
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;', //
 
+			ShaderBuilder.light.vertex,
+
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
-		'	lightDir = lightPosition - worldPos.xyz;', //
-		'	eyeVec = cameraPosition - worldPos.xyz;', //
+		'	viewPosition = cameraPosition - worldPos.xyz;', //
 		'}'//
 		].join('\n'),
 		fshader : [//
 		'precision mediump float;',//
 
-		'uniform vec4 materialAmbient;',//
-		'uniform vec4 materialDiffuse;',//
-		'uniform vec4 materialSpecular;',//
-		'uniform float materialSpecularPower;',//
+		ShaderBuilder.light.prefragment,
 
 		'varying vec3 normal;',//
-		'varying vec3 lightDir;',//
-		'varying vec3 eyeVec;',//
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
 
 		'void main(void)',//
 		'{',//
-
-		'	vec4 final_color = materialAmbient;',//
-
 		'	vec3 N = normalize(normal);',//
-		'	vec3 L = normalize(lightDir);',//
+		'	vec4 final_color = vec4(1.0);',//
 
-		'	float lambertTerm = dot(N,L)*0.75+0.25;',//
+			ShaderBuilder.light.fragment,
 
-		'	if(lambertTerm > 0.0)',//
-		'	{',//
-		'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
-		'			lambertTerm;',//
-		'		vec3 E = normalize(eyeVec);',//
-		'		vec3 R = reflect(-L, N);',//
-		'		float specular = pow( max(dot(R, E), 0.0), materialSpecularPower);',//
-		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
-		'			specular;',//
-		'		final_color = clamp(final_color, vec4(0.0), vec4(1.0));',//
-		'	}',//
-		'	gl_FragColor = vec4(final_color.rgb, 1.0);',//
+		'	gl_FragColor = final_color;',//
 		'}'//
 		].join('\n')
 	};
@@ -306,6 +292,9 @@ define([
 	};
 
 	ShaderLib.texturedLit = {
+		processors: [
+			ShaderBuilder.light.processor
+		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL,
@@ -315,12 +304,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
-			lightPosition : Shader.LIGHT0,
-			diffuseMap : Shader.TEXTURE0,
-			materialAmbient : Shader.AMBIENT,
-			materialDiffuse : Shader.DIFFUSE,
-			materialSpecular : Shader.SPECULAR,
-			materialSpecularPower : Shader.SPECULAR_POWER
+			diffuseMap : Shader.TEXTURE0
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -330,58 +314,44 @@ define([
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',//
 		'uniform vec3 cameraPosition;', //
-		'uniform vec3 lightPosition;', //
+
+		ShaderBuilder.light.prevertex,
 
 		'varying vec3 normal;',//
-		'varying vec3 lightDir;',//
-		'varying vec3 eyeVec;',//
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
 		'varying vec2 texCoord0;',//
 
 		'void main(void) {', //
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+		'	vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;', //
+
+			ShaderBuilder.light.vertex,
 
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;', //
 		'	texCoord0 = vertexUV0;', //
-		'	lightDir = lightPosition - worldPos.xyz;', //
-		'	eyeVec = cameraPosition - worldPos.xyz;', //
+		'	viewPosition = cameraPosition - worldPos.xyz;', //
 		'}'//
 		].join('\n'),
 		fshader : [//
 		'uniform sampler2D diffuseMap;',//
 
-		'uniform vec4 materialAmbient;',//
-		'uniform vec4 materialDiffuse;',//
-		'uniform vec4 materialSpecular;',//
-		'uniform float materialSpecularPower;',//
+		ShaderBuilder.light.prefragment,
 
 		'varying vec3 normal;',//
-		'varying vec3 lightDir;',//
-		'varying vec3 eyeVec;',//
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
 		'varying vec2 texCoord0;',//
 
 		'void main(void)',//
 		'{',//
-		'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
-
-		'	vec4 final_color = materialAmbient;',//
-
 		'	vec3 N = normalize(normal);',//
-		'	vec3 L = normalize(lightDir);',//
+		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',//
 
-		'	float lambertTerm = dot(N,L)*0.75+0.25;',//
+			ShaderBuilder.light.fragment,
 
-		'	if(lambertTerm > 0.0)',//
-		'	{',//
-		'		final_color += materialDiffuse * // gl_LightSource[0].diffuse * ',//
-		'			lambertTerm;',//
-		'		vec3 E = normalize(eyeVec);',//
-		'		vec3 R = reflect(-L, N);',//
-		'		float specular = pow( clamp(dot(R, E), 0.0, 1.0), materialSpecularPower);',//
-		'		final_color += materialSpecular * // gl_LightSource[0].specular * ',//
-		'			specular;',//
-		'	}',//
-		'	gl_FragColor = vec4(texCol.rgb * final_color.rgb, texCol.a);',//
+		'	gl_FragColor = final_color;',//
 		'}'//
 		].join('\n')
 	};
