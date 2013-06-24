@@ -16,7 +16,7 @@ define(['goo/entities/components/Component'],
 	LightComponent.prototype = Object.create(Component.prototype);
 
 	LightComponent.prototype.updateLight = function (transform) {
-		transform.matrix.getTranslation(this.light.translation);
+		this.light.update(transform);
 	};
 
 	return LightComponent;

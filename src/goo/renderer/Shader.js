@@ -40,8 +40,8 @@ function (
 		}
 
 		this.name = name;
-		this.vertexSource = shaderDefinition.vshader;
-		this.fragmentSource = shaderDefinition.fshader;
+		this.origVertexSource = this.vertexSource = shaderDefinition.vshader;
+		this.origFragmentSource = this.fragmentSource = shaderDefinition.fshader;
 
 		this.shaderProgram = null;
 
@@ -83,10 +83,21 @@ function (
 		this.currentCallbacks = {};
 
 		this.overridePrecision = shaderDefinition.precision || null;
+		this.processors = shaderDefinition.processors;
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes;
 		this.uniforms = shaderDefinition.uniforms;
 
+		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
+		 *		<ul>
+		 *			<li>RenderQueue.BACKGROUND = Rendered before any other objects. Commonly used for skyboxes and the likes (0-999)
+		 *			<li>RenderQueue.OPAQUE = Used for most objects, typically opaque geometry. Rendered front to back (1000-1999)
+		 *			<li>RenderQueue.TRANSPARENT = For all alpha-blended objects. Rendered back to front (2000-2999)
+		 *			<li>RenderQueue.OVERLAY = For overlay effects like lens-flares etc (3000+)
+		 *		</ul>
+		 * By default materials use the render queue of the shader. See {@link RenderQueue} for more info
+		 * @type {number}
+		 */
 		this.renderQueue = RenderQueue.OPAQUE;
 
 		this._id = Shader.id++;
@@ -111,6 +122,12 @@ function (
 	Shader.prototype.apply = function (shaderInfo, renderer) {
 		var context = renderer.context;
 		var record = renderer.rendererRecord;
+
+		if (this.processors) {
+			for (var i = 0; i < this.processors.length; i++) {
+				this.processors[i](this, shaderInfo);
+			}
+		}
 
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
@@ -150,7 +167,6 @@ function (
 			}
 		}
 
-		// Bind uniforms
 		if (this.uniforms) {
 			try {
 				for (var name in this.uniforms) {
@@ -192,6 +208,8 @@ function (
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
+		this.vertexSource = this.origVertexSource;
+		this.fragmentSource = this.origFragmentSource;
 	};
 
 	Shader.prototype._investigateShaders = function () {
@@ -567,7 +585,7 @@ function (
 	for (var i = 0; i < 16; i++) {
 		Shader['TEXTURE' + i] = 'TEXTURE' + i;
 	}
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < 8; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
 	Shader.CAMERA = 'CAMERA';

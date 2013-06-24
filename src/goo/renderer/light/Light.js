@@ -16,7 +16,10 @@ function (
 		/** @type {Vector3} */
 		this.translation = new Vector3();
 
+		/** @type {Vector4} */
 		this.color = new Vector4(1, 1, 1, 1);
+
+		/** @type {number} */
 		this.intensity = 1;
 
 		/**

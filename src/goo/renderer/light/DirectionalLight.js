@@ -22,5 +22,11 @@ function (
 
 	DirectionalLight.prototype = Object.create(Light.prototype);
 
+	DirectionalLight.prototype.update = function (transform) {
+		transform.matrix.getTranslation(this.translation);
+
+		this.direction.setv(this.translation).normalize();
+	};
+
 	return DirectionalLight;
 });

@@ -16,11 +16,14 @@ function (
 	function PointLight () {
 		Light.call(this);
 
-		this.direction = new Vector3();
-		this.range = 100;
+		this.range = 1000;
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);
+
+	PointLight.prototype.update = function (transform) {
+		transform.matrix.getTranslation(this.translation);
+	};
 
 	return PointLight;
 });

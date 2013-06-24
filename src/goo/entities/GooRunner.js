@@ -55,8 +55,6 @@ function (
 		this.world = new World();
 		this.renderer = new Renderer(parameters);
 
-		this.world.setManager(new LightManager());
-
 		this.world.setSystem(new ScriptSystem());
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());

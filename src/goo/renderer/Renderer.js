@@ -334,13 +334,13 @@ function (
 
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 	};
-	// REVIEW add parameter descriptions and ranges since this function will probably be one of the first that newcomers will use
+
 	/**
-	 * Set the background color of the 3D view
-	 * @param {number} r
-	 * @param {number} g
-	 * @param {number} b
-	 * @param {number} a
+	 * Set the background color of the 3D view. All colors are defined in the range 0.0 - 1.0
+	 * @param {number} r Red
+	 * @param {number} g Green
+	 * @param {number} b Blue
+	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
 		this.clearColor.set(r, g, b, a);
@@ -365,15 +365,14 @@ function (
 		}
 	};
 
-	// REVIEW Replace/expand "things" & add parameter description
 	/**
-	 * Render things
-	 * @param {Entity[]} renderList
-	 * @param {Camera} camera
-	 * @param {Light[]} lights
-	 * @param {RenderTarget} renderTarget
-	 * @param {boolean} clear
-	 * @param {boolena} shadowPass
+	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
+	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
+	 * @param {Camera} camera Main camera for rendering
+	 * @param {Light[]} lights Lights used in the rendering
+	 * @param {RenderTarget} renderTarget Optional rendertarget to use as target for rendering, or null to render to the screen
+	 * @param {boolean} clear true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
+	 * @param {boolean} [shadowPass=false] If this is a shader pass (used internally) 
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, shadowPass) {
 		if (!camera) {

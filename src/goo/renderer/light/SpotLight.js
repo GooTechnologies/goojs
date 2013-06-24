@@ -17,10 +17,19 @@ function (
 		Light.call(this);
 
 		this.direction = new Vector3();
-		this.spotAngle = 45;
+		this.range = 1000;
+		this.angle = Math.cos(Math.PI*0.25);
+		this.exponent = 16.0;
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);
+
+	SpotLight.prototype.update = function (transform) {
+		transform.matrix.getTranslation(this.translation);
+
+		this.direction.setd(0.0, 0.0, 1.0);
+		transform.matrix.applyPostVector(this.direction);
+	};
 
 	return SpotLight;
 });

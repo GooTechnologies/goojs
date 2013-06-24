@@ -90,8 +90,15 @@ function(
 		 * @default
 		 */
 		this.wireframe = false;
-		// REVIEW "Decides where in the order the material will ..." sounds odd
-		/** Decides where in the order the material will be rendered, see {@link RenderQueue} for options
+
+		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
+		 *		<ul>
+		 *			<li>RenderQueue.BACKGROUND = Rendered before any other objects. Commonly used for skyboxes and the likes (0-999)
+		 *			<li>RenderQueue.OPAQUE = Used for most objects, typically opaque geometry. Rendered front to back (1000-1999)
+		 *			<li>RenderQueue.TRANSPARENT = For all alpha-blended objects. Rendered back to front (2000-2999)
+		 *			<li>RenderQueue.OVERLAY = For overlay effects like lens-flares etc (3000+)
+		 *		</ul>
+		 * By default materials use the render queue of the shader. See {@link Shader} or {@link RenderQueue} for more info
 		 * @type {number}
 		 */
 		this.renderQueue = null;

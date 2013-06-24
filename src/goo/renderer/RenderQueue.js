@@ -86,25 +86,25 @@ function(Vector3) {
 			}
 		}
 	};
-	/** 
+	/** Rendered before any other objects. Commonly used for skyboxes and the likes
 	 * @type {number}
 	 * @readonly
 	 * @default
 	 */
 	RenderQueue.BACKGROUND = 0;
-	/** 
+	/** Used for most objects, typically opaque geometry. Rendered front to back
 	 * @type {number}
 	 * @readonly
 	 * @default
 	 */
 	RenderQueue.OPAQUE = 1000;
-	/** 
+	/** For all alpha-blended objects. Rendered back to front
 	 * @type {number}
 	 * @readonly
 	 * @default
 	 */
 	RenderQueue.TRANSPARENT = 2000;
-	/** 
+	/** For overlay effects like lens-flares etc
 	 * @type {number}
 	 * @readonly
 	 * @default
