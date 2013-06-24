@@ -15,121 +15,157 @@ define([
 			entityManager = new EntityManager();
 		});
 
-		it('added & containsEntity', function() {
-			var entity1 = world.createEntity();
-			var entity2 = world.createEntity();
+		describe('added & containsEntity', function() {
+			var entity1, entity2;
+			beforeEach(function() {
+				entityManager = new EntityManager();
+				entity1 = world.createEntity();
+				entity2 = world.createEntity();
+			});
 
-			expect(entityManager.containsEntity(entity1)).toBe(false);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
+			it('adds nothing and contains nothing', function() {
+				expect(entityManager.containsEntity(entity1)).toBe(false);
+				expect(entityManager.containsEntity(entity2)).toBe(false);
+			});
 
-			entityManager.added(entity1);
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
+			it('adds an entity and contains it', function() {
+				entityManager.added(entity1);
+				expect(entityManager.containsEntity(entity1)).toBe(true);
+				expect(entityManager.containsEntity(entity2)).toBe(false);
+			});
 
-			entityManager.added(entity2);
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(true);
+			it('adds 2 entities and contains them both', function() {
+				entityManager.added(entity1);
+				entityManager.added(entity2);
+				expect(entityManager.containsEntity(entity1)).toBe(true);
+				expect(entityManager.containsEntity(entity2)).toBe(true);
+			});
 
-			entityManager.added(entity1); //add again to see what happens
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(true);
-
-			entityManager.added(entity2); //add again to see what happens
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(true);
+			it('tries to add the same entity twice and contains it', function() {
+				entityManager.added(entity1);
+				entityManager.added(entity1); //add again to see what happens
+				expect(entityManager.containsEntity(entity1)).toBe(true);
+			});
 		});
 
-		it('removed', function() {
-			var entity1 = world.createEntity();
-			var entity2 = world.createEntity();
-			var entity3 = world.createEntity();
-			var entity4 = world.createEntity();
+		describe('removed', function() {
+			var entity1, entity2;
+			beforeEach(function() {
+				entityManager = new EntityManager();
+				entity1 = world.createEntity();
+				entity2 = world.createEntity();
+			});
 
-			entityManager.added(entity1);
-			entityManager.added(entity3);
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
-			expect(entityManager.containsEntity(entity3)).toBe(true);
-			expect(entityManager.containsEntity(entity4)).toBe(false);
+			it('tries to remove a non-added entity', function() {
+				entityManager.removed(entity1);
+				expect(entityManager.containsEntity(entity1)).toBe(false);
+			});
 
-			entityManager.removed(entity1);
-			entityManager.removed(entity3);
-			expect(entityManager.containsEntity(entity1)).toBe(false);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
-			expect(entityManager.containsEntity(entity3)).toBe(false);
-			expect(entityManager.containsEntity(entity4)).toBe(false);
+			it('removes an entity', function() {
+				entityManager.added(entity1);
+				entityManager.removed(entity1);
+				expect(entityManager.containsEntity(entity1)).toBe(false);
+			});
 
-			entityManager.removed(entity2);
-			entityManager.removed(entity3); //remove entity3 again
-			expect(entityManager.containsEntity(entity1)).toBe(false);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
-			expect(entityManager.containsEntity(entity3)).toBe(false);
-			expect(entityManager.containsEntity(entity4)).toBe(false);
+			it('removes one entity and leaves the other intact', function() {
+				entityManager.added(entity1);
+				entityManager.added(entity2);
+				entityManager.removed(entity1);
+				expect(entityManager.containsEntity(entity1)).toBe(false);
+				expect(entityManager.containsEntity(entity2)).toBe(true);
+			});
 
-			entityManager.added(entity1);
-			entityManager.added(entity2);
-			entityManager.added(entity4);
-			entityManager.removed(entity2);
-			entityManager.removed(entity3);
-			expect(entityManager.containsEntity(entity1)).toBe(true);
-			expect(entityManager.containsEntity(entity2)).toBe(false);
-			expect(entityManager.containsEntity(entity3)).toBe(false);
-			expect(entityManager.containsEntity(entity4)).toBe(true);
+			it('tries to remove the same entity twice', function() {
+				entityManager.added(entity1);
+				entityManager.removed(entity1);
+				entityManager.removed(entity1);
+				expect(entityManager.containsEntity(entity1)).toBe(false);
+			});
 		});
 
-		it('getEntityById', function() {
-			var entity1 = world.createEntity();
-			var entity2 = world.createEntity();
-			var entity3 = world.createEntity();
+		describe('getEntityById', function() {
+			var entity1, entity2, entity3;
+			beforeEach(function() {
+				entityManager = new EntityManager();
+				entity1 = world.createEntity();
+				entity2 = world.createEntity();
+				entity3 = world.createEntity();
+				entityManager.added(entity1);
+				entityManager.added(entity3);
+			});
 
-			entityManager.added(entity1);
-			entityManager.added(entity3);
+			it('gets an entity by its id', function() {
+				expect(entityManager.getEntityById(entity1.id)).toEqual(entity1);
+				expect(entityManager.getEntityById(entity3.id)).toEqual(entity3);
+			});
 
-			expect(entityManager.getEntityById(entity1.id)).toEqual(entity1);
-			expect(entityManager.getEntityById(entity1.id)).not.toEqual(entity2);
-			expect(entityManager.getEntityById(entity2.id)).toBeUndefined();
-			expect(entityManager.getEntityById(entity3.id)).toEqual(entity3);
-			expect(entityManager.getEntityById(1234)).toBeUndefined();
+			it('tries to get a non-added entity by its id', function() {
+				expect(entityManager.getEntityById(entity2.id)).toBeUndefined();
+			});
 		});
 
-		it('getEntityByName', function() {
-			var entity1 = world.createEntity('entity1');
-			var entity2 = world.createEntity('entity2');
-			entityManager.added(entity1);
+		describe('getEntityByName', function() {
+			var entity1, entity2, entity3;
+			beforeEach(function() {
+				entityManager = new EntityManager();
+				entity1 = world.createEntity();
+				entity2 = world.createEntity();
+				entity3 = world.createEntity();
+				entityManager.added(entity1);
+				entityManager.added(entity3);
+			});
 
-			expect(entityManager.getEntityByName(entity1.name)).toEqual(entity1);
-			expect(entityManager.getEntityByName(entity1.name)).not.toEqual(entity2);
-			expect(entityManager.getEntityByName('uknownentity')).toBeUndefined();
+			it('gets an entity by its name', function() {
+				expect(entityManager.getEntityByName(entity1.name)).toEqual(entity1);
+				expect(entityManager.getEntityByName(entity3.name)).toEqual(entity3);
+			});
+
+			it('tries to get a non-added entity by its name', function() {
+				expect(entityManager.getEntityByName(entity2.id)).toBeUndefined();
+			});
 		});
 
-		it('getEntities', function() {
-			var entity1 = world.createEntity('entity1');
-			var entity2 = world.createEntity('entity2');
-			var entity3 = world.createEntity('entity3');
+		describe('getEntities', function() {
+			var entity1, entity2, entity3;
+			beforeEach(function() {
+				entityManager = new EntityManager();
+				entity1 = world.createEntity();
+				entity2 = world.createEntity();
+				entity3 = world.createEntity();
+			});
 
-			entityManager.added(entity1);
-			expect(entityManager.getEntities().length).toEqual(1);
-			expect(entityManager.getEntities()).toContain(entity1);
-			expect(entityManager.getEntities()).not.toContain(entity2);
-			expect(entityManager.getEntities()).not.toContain(entity3);
-			expect(entityManager.getEntities()).not.toContain('fishbowl');
+			it('adds an entity and gets all entities', function() {
+				entityManager.added(entity1);
+				expect(entityManager.getEntities().length).toEqual(1);
+				expect(entityManager.getEntities()).toContain(entity1);
+				expect(entityManager.getEntities()).not.toContain(entity2);
+				expect(entityManager.getEntities()).not.toContain(entity3);
+				expect(entityManager.getEntities()).not.toContain('fishbowl');
+			});
 
-			entityManager.added(entity2);
-			expect(entityManager.getEntities().length).toEqual(2);
-			expect(entityManager.getEntities()).toContain(entity1);
-			expect(entityManager.getEntities()).toContain(entity2);
-			expect(entityManager.getEntities()).not.toContain(entity3);
-			expect(entityManager.getEntities()).not.toContain('fishbowl');
+			it('adds two entities and gets all entities', function() {
+				entityManager.added(entity1);
+				entityManager.added(entity2);
+				expect(entityManager.getEntities().length).toEqual(2);
+				expect(entityManager.getEntities()).toContain(entity1);
+				expect(entityManager.getEntities()).toContain(entity2);
+				expect(entityManager.getEntities()).not.toContain(entity3);
+				expect(entityManager.getEntities()).not.toContain('fishbowl');
+			});
 
-			entityManager.removed(entity1);
-			expect(entityManager.getEntities().length).toEqual(1);
-			expect(entityManager.getEntities()).not.toContain(entity1);
-			expect(entityManager.getEntities()).toContain(entity2);
-			expect(entityManager.getEntities()).not.toContain(entity3);
-			expect(entityManager.getEntities()).not.toContain('fishbowl');
+			it('adds two entities, removed one and gets all entities', function() {
+				entityManager.added(entity1);
+				entityManager.added(entity2);
+				entityManager.removed(entity1);
+				expect(entityManager.getEntities().length).toEqual(1);
+				expect(entityManager.getEntities()).not.toContain(entity1);
+				expect(entityManager.getEntities()).toContain(entity2);
+				expect(entityManager.getEntities()).not.toContain(entity3);
+				expect(entityManager.getEntities()).not.toContain('fishbowl');
+			});
 		});
 
-		it('getTopEntities', function() {
+		it('can get top entities', function() {
 			var entity1 = world.createEntity('entity1');
 			var entity2 = world.createEntity('entity2');
 			entity2.transformComponent.attachChild(entity1.transformComponent);

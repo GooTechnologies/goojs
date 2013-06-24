@@ -9,7 +9,6 @@ define(
 	describe("MeshData", function() {
 		it("getNormalsMeshData: number of vertices and indices", function() {
 			var box = ShapeCreator.createBox();
-			console.log(box);
 			var normalsMD = box.getNormalsMeshData();
 
 			var nNormalsPerFace = 4;
