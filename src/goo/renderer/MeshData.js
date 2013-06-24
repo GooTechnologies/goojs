@@ -373,6 +373,46 @@ function (
 	MeshData.prototype.resetVertexCount = function () {
 		this.vertexCount = this.vertexCountStore;
 	};
+
+	/**
+	 * Creates a new MeshData object representing the normals of the current MeshData object
+	 * @param {number} [size=1] The size of the normals
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.getNormalsMeshData = function (size) {
+		if(this.getAttributeBuffer('POSITION') === undefined) return;
+		if(this.getAttributeBuffer('NORMAL') === undefined) return;
+
+		size = size !== undefined ? size : 1;
+
+		var verts = [];
+		var indices = [];
+
+		var nVertices = this.dataViews.POSITION.length / 3;
+		for (var i = 0; i < nVertices; i++) {
+			verts.push(
+				this.dataViews.POSITION[i * 3 + 0],
+				this.dataViews.POSITION[i * 3 + 1],
+				this.dataViews.POSITION[i * 3 + 2],
+				this.dataViews.POSITION[i * 3 + 0] + this.dataViews.NORMAL[i * 3 + 0] * size,
+				this.dataViews.POSITION[i * 3 + 1] + this.dataViews.NORMAL[i * 3 + 1] * size,
+				this.dataViews.POSITION[i * 3 + 2] + this.dataViews.NORMAL[i * 3 + 2] * size);
+		}
+
+		for (var i = 0; i < nVertices * 2; i += 2) {
+			indices.push(i, i + 1);
+		}
+
+		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length, indices.length);
+
+		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+		meshData.getIndexBuffer().set(indices);
+
+		meshData.indexModes[0] = 'Lines';
+
+		return meshData;
+	};
+
 	/** 
 	 * @type {string}
 	 * @readonly

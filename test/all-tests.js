@@ -32,5 +32,6 @@ define([
     'test/loaders/SceneLoader-test',
     'test/loaders/Loader-test',
     'test/renderer/Shader-test',
+	'test/renderer/MeshData-test',
     'test/renderer/Camera-test'
 ], function() {});
