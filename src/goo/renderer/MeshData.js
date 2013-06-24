@@ -380,8 +380,12 @@ function (
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.getNormalsMeshData = function (size) {
-		if(this.getAttributeBuffer('POSITION') === undefined) return;
-		if(this.getAttributeBuffer('NORMAL') === undefined) return;
+		if(this.getAttributeBuffer('POSITION') === undefined) {
+			return;
+		}
+		if(this.getAttributeBuffer('NORMAL') === undefined) {
+			return;
+		}
 
 		size = size !== undefined ? size : 1;
 
