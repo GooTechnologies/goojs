@@ -3,7 +3,7 @@ define(
 	"goo/entities/Entity",
 	"goo/entities/managers/EntityManager",
 	"goo/entities/World",
-	"goo/entities/managers/FastEntityManager",
+	"goo/entities/managers/FastEntityManager"
 ], function(
 	Entity,
 	EntityManager,

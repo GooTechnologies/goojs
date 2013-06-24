@@ -81,7 +81,6 @@ define([
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
 			var entity3 = world.createEntity();
-			var entity4 = world.createEntity();
 
 			entityManager.added(entity1);
 			entityManager.added(entity3);
