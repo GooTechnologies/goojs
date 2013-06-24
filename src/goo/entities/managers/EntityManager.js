@@ -9,19 +9,18 @@ define(
 	function EntityManager() {
 		this.type = 'EntityManager';
 
-		this._entities = [];
+		this._entitiesById = [];
 	}
 
 	EntityManager.prototype.added = function (entity) {
-		if (this._entities.indexOf(entity) === -1) {
-			this._entities.push(entity);
+		if (!this.containsEntity(entity)) {
+			this._entitiesById[entity.id] = entity;
 		}
 	};
 
 	EntityManager.prototype.removed = function (entity) {
-		var index = this._entities.indexOf(entity);
-		if (index !== -1) {
-			this._entities.splice(index, 1);
+		if (this.containsEntity(entity)) {
+			delete this._entitiesById[entity.id];
 		}
 	};
 
@@ -32,7 +31,7 @@ define(
 	 * @returns {Boolean} true if the entity exists
 	 */
 	EntityManager.prototype.containsEntity = function (entity) {
-		return this._entities.indexOf(entity) !== -1;
+		return this._entitiesById[entity.id] !== undefined;
 	};
 
 	/**
@@ -42,13 +41,7 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityById = function (id) {
-		for (var i = 0, l = this._entities.length; i < l; i++) {
-			var entity = this._entities[i];
-			if (entity.id === id) {
-				return entity;
-			}
-		}
-		return undefined;
+		return this._entitiesById[id];
 	};
 
 	/**
@@ -58,13 +51,12 @@ define(
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityByName = function (name) {
-		for (var i = 0, l = this._entities.length; i < l; i++) {
-			var entity = this._entities[i];
+		for(var i in this._entitiesById) {
+			var entity = this._entitiesById[i];
 			if (entity.name === name) {
 				return entity;
 			}
 		}
-		return undefined;
 	};
 
 	/**
@@ -73,7 +65,11 @@ define(
 	 * @returns {Array} Array containing all entities in the world
 	 */
 	EntityManager.prototype.getEntities = function () {
-		return this._entities;
+		var entities = [];
+		for(var i in this._entitiesById) {
+			entities.push(this._entitiesById[i]);
+		}
+		return entities;
 	};
 
 	/**
@@ -83,8 +79,8 @@ define(
 	 */
 	EntityManager.prototype.getTopEntities = function () {
 		var entities = [];
-		for (var i = 0; i < this._entities.length; i++) {
-			var entity = this._entities[i];
+		for (var i in this._entitiesById) {
+			var entity = this._entitiesById[i];
 			if (entity.transformComponent) {
 				if (!entity.transformComponent.parent) {
 					entities.push(entity);

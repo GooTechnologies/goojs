@@ -8,7 +8,7 @@ require.config({
 	waitSeconds: 5
 });
 
-require(['test/stress/EntityManager-comparison-stress'], function() {
+require(['test/stress/EntityManager-stress'], function() {
 	'use strict';
 
 
