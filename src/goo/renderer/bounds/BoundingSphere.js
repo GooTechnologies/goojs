@@ -2,7 +2,6 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/renderer/bounds/BoundingVolume',
-	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/MeshData'
 ],
 /** @lends */
@@ -10,7 +9,6 @@ function (
 	Vector3,
 	MathUtils,
 	BoundingVolume,
-	BoundingBox,
 	MeshData
 ) {
 	"use strict";
@@ -238,10 +236,10 @@ function (
 	};
 
 	BoundingSphere.prototype.merge = function (bv) {
-		if (bv instanceof BoundingBox) {
-			return this.mergeSphere(bv.center, Math.max(bv.xExtent, bv.yExtent, bv.zExtent), this);
-		} else if (bv instanceof BoundingSphere) {
+		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
+		} else if (bv instanceof BoundingSphere) {
+			return this.mergeSphere(bv.center, Math.max(bv.xExtent, bv.yExtent, bv.zExtent), this);
 		}
 	};
 
@@ -249,12 +247,6 @@ function (
 		if (!store) {
 			store = new BoundingSphere();
 		}
-
-		// if (Float.isInfinite(otherRadius) || Float.isInfinite(getRadius())) {
-		//     store.setCenter(Vector3.ZERO);
-		//     store.setRadius(Float.POSITIVE_INFINITY);
-		//     return store;
-		// }
 
 		var diff = this.vec.setv(center).subv(this.center);
 		var lengthSquared = diff.lengthSquared();
@@ -265,14 +257,14 @@ function (
 		if (radiusDiffSqr >= lengthSquared) {
 			// if we contain the other
 			if (radiusDiff <= 0.0) {
-				store.setCenter(this.center);
-				store.setRadius(this.radius);
+				store.center.setv(this.center);
+				store.radius = this.radius;
 				return store;
 			}
 			// else the other contains us
 			else {
-				store.setCenter(center);
-				store.setRadius(radius);
+				store.center.setv(center);
+				store.radius = radius;
 				return store;
 			}
 		}

@@ -1,14 +1,12 @@
 define([
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingVolume',
-	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	Vector3,
 	BoundingVolume,
-	BoundingSphere,
 	MathUtils
 ) {
 	"use strict";
@@ -449,7 +447,7 @@ function (
 	BoundingBox.prototype.merge = function (bv) {
 		if (bv instanceof BoundingBox) {
 			return this.mergeBox(bv.center, bv.xExtent, bv.yExtent, bv.zExtent, this);
-		} else if (bv instanceof BoundingSphere) {
+		} else {
 			return this.mergeBox(bv.center, bv.radius, bv.radius, bv.radius, this);
 		}
 	};
@@ -458,15 +456,6 @@ function (
 		if (!store) {
 			store = new BoundingBox();
 		}
-
-		// if (Float.isInfinite(getXExtent()) || Float.isInfinite(getYExtent()) || Float.isInfinite(getZExtent())
-		//         || Float.isInfinite(boxX) || Float.isInfinite(boxY) || Float.isInfinite(boxZ)) {
-		//     store.setCenter(Vector3.ZERO);
-		//     store.setXExtent(Float.POSITIVE_INFINITY);
-		//     store.setYExtent(Float.POSITIVE_INFINITY);
-		//     store.setZExtent(Float.POSITIVE_INFINITY);
-		//     return store;
-		// }
 
 		var calcVec1 = this.vec;
 		var calcVec2 = store.center;
