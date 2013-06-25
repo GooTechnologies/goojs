@@ -25,6 +25,9 @@ define([
 		this.indexData = [];
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
+
+		this.indexLengths = [];
+		this.indexModes = [];
 	}
 
 	MeshBuilder.prototype.addEntity = function (entity) {
@@ -111,6 +114,15 @@ define([
 		}
 		this.vertexCounter += meshData.vertexCount;
 		this.indexCounter += meshData.indexCount;
+
+		if(meshData.indexLengths) {
+			this.indexLengths = this.indexLengths.concat(meshData.indexLengths);
+		}
+		else {
+			this.indexLengths = this.indexLengths.concat(meshData.getIndexBuffer().length);
+		}
+
+		this.indexModes = this.indexModes.concat(meshData.indexModes);
 	};
 
 	MeshBuilder.prototype._generateMesh = function () {
@@ -126,6 +138,9 @@ define([
 			meshData.getAttributeBuffer(key).set(data);
 		}
 		meshData.getIndexBuffer().set(this.indexData);
+
+		meshData.indexLengths = this.indexLengths;
+		meshData.indexModes = this.indexModes;
 
 		this.meshDatas.push(meshData);
 
