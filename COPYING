@@ -116,7 +116,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--A subset of ShaderLib.js (MIT license)
+-three.js (MIT license) (Code and/or ideas for a subset of ShaderLib.js, ShaderBuilder.js and Renderer.js)
 The MIT License
 
 Copyright (c) 2010-2013 three.js authors

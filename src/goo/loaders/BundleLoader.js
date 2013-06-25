@@ -32,6 +32,22 @@ define([
 		BundleLoader.prototype = Object.create(Loader.prototype);
 
 		/**
+		 * Add configs from an object.
+		 * This is useful if the configs have been loaded from somewhere already.
+		 * Any already loaded configs with the same ref will be overwritten.
+		 *
+		 * @param configs Maps ref (string) to config (object).
+		 *                The configs will be shallowly copied into this BundleLoader.
+		 */
+		BundleLoader.prototype.addBundle = function(configs) {
+			for (var key in configs) {
+				if (configs.hasOwnProperty(key)) {
+					this._bundle[key] = configs[key];
+				}
+			}
+		};
+
+		/**
 		 * Loads a file of asset-bundle. If the file is not in the bundle, it is loaded regularly with ajax
 		 * calls. This is used internally in the other loaders.
 		 *
