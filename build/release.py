@@ -7,6 +7,17 @@ import subprocess
 from zipfile import ZipFile
 
 
+def prepend(filename, to_prepend):
+	"""Prepends a string to a file
+
+	"""
+	with open(filename, 'r') as stream:
+		content = stream.read()
+	with open(filename, 'w') as stream:
+		stream.write(to_prepend)
+		stream.write(content)
+
+
 if len(sys.argv) != 2:
     print 'Usage: release.py version-number'
     sys.exit(1)
@@ -31,6 +42,14 @@ subprocess.check_call([command, 'minify'])
 zipfile = ZipFile(name + '.zip', 'w')
 zipfile.write('COPYING', zip_root + 'COPYING')
 goo_root = work_dir + '/goo'
+
+prepend(goo_root + '/goo.js',
+	'/*\n' +
+	' * Goo Engine ' + version + '\n' +
+	' * Copyright 2013 Goo Technologies AB\n' +
+	' */\n'
+)
+
 for root, dirs, files in os.walk(goo_root):
     for f in files:
         filename = root[len(goo_root) + 1:] + '/' + f
