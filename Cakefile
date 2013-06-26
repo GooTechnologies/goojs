@@ -1,6 +1,6 @@
 fs = require('fs')
 path = require('path')
-minify = require('./buildengine/minify').minify
+{minifyProject, minifyFile} = require('./buildengine/minify')
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
@@ -24,47 +24,18 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = options.arguments[1]
 
 		console.log "minifying #{fileIn}"
-		minify(fileIn, fileOut, true);
+		minifyFile fileIn, fileOut, null, (err) ->
+			if err
+				console.log 'Minification failed:', err
 	else 	
 		console.log 'minifying'
-		
+
 		output = 'output'
 		fileIn = 'src'
 		fileOut = 'minified/goo/goo.js'
-		includefile = 'buildengine/glob/minify.glob'
+		includes = ['goo/**/*.js']
 
-		# Copy all the js to the output dir
-		###
-		if not fs.existsSync output
-			fs.mkdirSync output
-		
-		traverse = (file)->
-			if endsWith(file,'.js')
-				fpath = output+'/'+file.split('/')[...-1].join('/')
-				
-				# Create output dir if not exists
-				if not fs.existsSync fpath
-					tokens = fpath.split('/')
-					cpath = ""
-					for token in tokens
-						cpath += token
-						if not fs.existsSync cpath 
-							fs.mkdirSync cpath
-						cpath += '/'
-				
-				# Copy file
-				fs.createReadStream(file).pipe(fs.createWriteStream("#{output}/#{file}"))
-			else 
-				stat = fs.statSync path.resolve(file)
-				if stat.isDirectory()
-					files = fs.readdirSync file
-					for child in files
-						traverse("#{file}/#{child}")
-					
-		traverse(fileIn)	
-		###
-		# This does the same
-		copyLibs fileIn, path.resolve(output, fileIn), includefile
+		copyLibs fileIn, path.resolve(output, fileIn), includes
 		
 		console.log "Copied js files"
 		
@@ -72,18 +43,24 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minify "#{output}/#{fileIn}", fileOut, true, includefile, (success)->
-				if success
-					runCommand "rm -Rf #{output}", ->
-						console.log "Removed output dir"
+			minifyProject "#{output}/#{fileIn}", fileOut, includes, (err)->
+				if err
+					console.log 'Minification failed:', err
+					return
+				runCommand "rm -Rf #{output}", ->
+					console.log "Removed output dir"
 				
 
 			console.log "Minifying everything in #{output}/#{fileIn}"
 			
 			source = 'lib'
 			target = 'minified/goo/lib'
-			includeFile = 'buildengine/glob/copy.glob'
-			copyLibs(source, target, includeFile)
+			includes = [
+				'box2d/*.*'
+				'cannon/*.*'
+				'soundmanager2/*.*'
+			]
+			copyLibs source, target, includes
 			
 			console.log "Copied lib"
 
