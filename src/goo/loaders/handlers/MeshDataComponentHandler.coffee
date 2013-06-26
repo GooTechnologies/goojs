@@ -7,7 +7,7 @@ define [
 	'goo/animation/Joint'
 	'goo/animation/Skeleton'
 	'goo/animation/SkeletonPose'
-
+	'goo/renderer/bounds/BoundingBox'
 
 	'goo/loaders/JsonUtils'
 	'goo/util/rsvp'
@@ -22,6 +22,7 @@ MeshDataComponent,
 Joint, 
 Skeleton, 
 SkeletonPose,
+BoundingBox,
 JsonUtils,
 RSVP,
 pu,
@@ -274,6 +275,21 @@ _) ->
 			@getConfig(meshRef).then (config)=>
 				@updateObject(meshRef, config).then (meshData)=>
 					component = new MeshDataComponent(meshData)
+
+					if meshData.boundingBox
+						min = meshData.boundingBox.min;
+						max = meshData.boundingBox.max;
+						size = [max[0]-min[0], max[1]-min[1], max[2]-min[2]];
+						center = [(max[0]+min[0])*0.5, (max[1]+min[1])*0.5, (max[2]+min[2])*0.5];
+
+						bounding = new BoundingBox();
+						bounding.xExtent = size[0];
+						bounding.yExtent = size[1];
+						bounding.zExtent = size[2];
+						bounding.center.seta(center);
+						component.modelBound = bounding;
+						component.autoCompute = false;
+
 					entity.setComponent(component)
 					return component
 			
