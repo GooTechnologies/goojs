@@ -9,6 +9,7 @@ define [
 	'goo/renderer/Material'
 	'goo/renderer/Util'
 	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderBuilder'
 	
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
@@ -23,6 +24,7 @@ define [
 	Material,
 	Util, 
 	ShaderLib,
+	ShaderBuilder,
 	RSVP,
 	pu,
 	_
@@ -88,25 +90,20 @@ define [
 
 				#console.log "#{config.textureRefs?.length or 0} textures"
 				promises = []
-				if config.textureRefs?.length
-					for textureRef in config.textureRefs
-						do (textureRef)=>
-							promises.push @getConfig(textureRef).then (textureConfig)=>
-								@updateObject(textureRef, textureConfig, @options).then (texture)=>
-									ref: textureRef 
-									texture: texture
+
+				for textureType, textureRef of config.texturesMapping
+					do (textureType, textureRef)=>
+						promises.push @getConfig(textureRef).then (textureConfig)=>
+							@updateObject(textureRef, textureConfig, @options).then (texture)=>
+								type: textureType
+								ref: textureRef 
+								texture: texture
 				
 				if promises?.length 
 					return RSVP.all(promises).then (textures)-> 
-						# Textures must be in the right order
-						tlist = []
-						for texture in textures 
-							if texture.texture?
-								tlist[config.textureRefs.indexOf(texture.ref)] = texture.texture
-							else
-								console.warn "Missing texture #{texture.ref}"
-						
-						object.textures = tlist
+						for texture in textures
+							object.setTexture(texture.type, texture.texture)
+
 						return object
 					.then null, (err)->
 						console.error "Error loading textures: #{err}"
@@ -155,6 +152,11 @@ define [
 							### jshint -W054 ###
 							shaderDefinition.uniforms[key] = new Function(args, body)
 	
+				if config.processors
+					shaderDefinition.processors = [];
+					for i in [0...config.processors.length]
+						shaderDefinition.processors.push ShaderBuilder[config.processors[i]].processor
+
 				if config.defines
 					shaderDefinition.defines = config.defines
 			else

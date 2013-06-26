@@ -2,14 +2,16 @@ define([
 		'goo/util/rsvp',
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
-		'goo/loaders/Loader'
+		'goo/loaders/Loader',
+		'goo/loaders/ShaderBuilder'
 	],
 	/** @lends */
 	function(
 		RSVP,
 		MeshData,
 		Shader,
-		Loader
+		Loader,
+		ShaderBuilder
 	) {
 	"use strict";
 	/**
@@ -62,8 +64,9 @@ define([
 			data = JSON.parse(data);
 		}
 		var promises = [];
+		var shaderDefinition;
 		if (data && data.attributes && data.uniforms) {
-			var shaderDefinition = {
+			shaderDefinition = {
 				attributes: data.attributes,
 				uniforms: data.uniforms
 			};
@@ -85,8 +88,14 @@ define([
 			if (data.defines) {
 				shaderDefinition.defines = data.defines;
 			}
+			if (data.processors) {
+				shaderDefinition.processors = [];
+				for (var i = 0; i < data.processors.length; i++) {
+					shaderDefinition.processors.push(ShaderBuilder[data.processor[i]].processor);
+				}
+			}
 		} else {
-			var shaderDefinition = this._getDefaultShaderDefinition();
+			shaderDefinition = this._getDefaultShaderDefinition();
 		}
 
 		if(data && data.vshaderRef && data.fshaderRef) {

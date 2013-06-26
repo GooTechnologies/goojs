@@ -110,16 +110,16 @@ _) ->
 			indexCount = data.indexLengths?[0] or  data.indices?.length or 0
 			
 			attributeMap = {}
-			if data.vertices
+			if (data.vertices && data.vertices.length > 0)
 				attributeMap.POSITION = MeshData.createAttribute(3, 'Float')
 			
-			if data.normals
+			if (data.normals && data.normals.length > 0)
 				attributeMap.NORMAL = MeshData.createAttribute(3, 'Float')
 			
-			if (data.tangents) 
+			if (data.tangents && data.tangents.length > 0) 
 				attributeMap.TANGENT = MeshData.createAttribute(4, 'Float')
 			
-			if (data.colors) 
+			if (data.colors && data.colors.length > 0) 
 				attributeMap.COLOR = MeshData.createAttribute(4, 'Float')
 			
 			if (weightsPerVert > 0 && data.weights) 
@@ -128,7 +128,7 @@ _) ->
 			if (weightsPerVert > 0 && data.joints) 
 				attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short')
 			
-			if data.textureCoords
+			if (data.textureCoords && data.textureCoords.length > 0)
 				for texCoords, texIdx in data.textureCoords
 					console.log "TEXCOORD #{texIdx}"
 					attributeMap['TEXCOORD' + texIdx] = MeshData.createAttribute(2, 'Float')
@@ -137,7 +137,7 @@ _) ->
 				
 			meshData = new MeshData(attributeMap, vertexCount, indexCount)
 	
-			if (data.vertices) 
+			if (data.vertices && data.vertices.length > 0) 
 				if compression? 
 					offsetObj = data.vertexOffsets
 					JsonUtils.fillAttributeBufferFromCompressedString(
@@ -166,7 +166,7 @@ _) ->
 				else
 					JsonUtils.fillAttributeBuffer(data.weights, meshData, MeshData.WEIGHTS)
 				
-			if (data.normals) 
+			if (data.normals && data.normals.length > 0) 
 				if compression?
 					offset = 1 - (compression.compressedUnitVectorRange + 1 >> 1)
 					scale = 1 / -offset
@@ -176,7 +176,7 @@ _) ->
 				else
 					JsonUtils.fillAttributeBuffer(data.normals, meshData, MeshData.NORMAL)
 	
-			if (data.tangents) 
+			if (data.tangents && data.tangents.length > 0) 
 				if compression?
 					offset = 1 - (compression.compressedUnitVectorRange + 1 >> 1)
 					scale = 1 / -offset
@@ -186,7 +186,7 @@ _) ->
 				else
 					JsonUtils.fillAttributeBuffer(data.tangents, meshData, MeshData.TANGENT)
 	
-			if (data.colors) 
+			if (data.colors && data.colors.length > 0) 
 				if compression?
 					offset = 0
 					scale = 255 / (compression.compressedColorsRange + 1)
@@ -195,7 +195,7 @@ _) ->
 				else
 					JsonUtils.fillAttributeBuffer(data.colors, meshData, MeshData.COLOR)
 	
-			if (data.textureCoords)
+			if (data.textureCoords && data.textureCoords.length > 0)
 				textureUnits = data.textureCoords
 				if compression?
 					for texObj, texIdx in textureUnits

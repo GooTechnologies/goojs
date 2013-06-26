@@ -3,7 +3,8 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
+	'goo/renderer/light/SpotLight',
+	'goo/util/TangentGenerator'
 ],
 /** @lends */
 function(
@@ -11,7 +12,8 @@ function(
 	MeshData,
 	PointLight,
 	DirectionalLight,
-	SpotLight
+	SpotLight,
+	TangentGenerator
 ) {
 	"use strict";
 
@@ -25,6 +27,39 @@ function(
 	defaultLight.translation.setd(10, 10, 10);
 	defaultLight.direction.setd(1, 1, 1).normalize();
 	ShaderBuilder.defaultLight = defaultLight;
+
+	ShaderBuilder.uber = {
+		processor: function (shader, shaderInfo) {
+			var attributeMap = shaderInfo.meshData.attributeMap;
+			var textureMaps = shaderInfo.material._textureMaps;
+
+			shader.defines = shader.defines || {};
+
+			var updated = false;
+			for (var attribute in attributeMap) {
+				if (!shader.defines[attribute]) {
+					shader.defines[attribute] = true;
+					updated = true;
+				}
+			}
+
+			for (var type in textureMaps) {
+				if (!shader.defines[type]) {
+					shader.defines[type] = true;
+					updated = true;
+				}
+			}
+
+			if (updated) {
+				shader.rebuild();
+			}
+
+			//TODO: hack
+			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
+				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
+			}
+		}
+	};
 
 	ShaderBuilder.light = {
 		processor: function (shader, shaderInfo) {

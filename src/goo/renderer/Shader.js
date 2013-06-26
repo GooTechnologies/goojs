@@ -194,6 +194,14 @@ function (
 			var callback = this.currentCallbacks[name];
 			if (callback) {
 				callback(mapping, shaderInfo);
+			} else {
+				for (var i = 0; i < this.textureSlots.length; i++) {
+					var slot = this.textureSlots[i];
+					if (slot.name === name) {
+						mapping.call(i);
+						break;
+					}
+				}
 			}
 		} else {
 			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
@@ -253,7 +261,8 @@ function (
 				if (definition.format.indexOf("sampler") === 0) {
 					var textureSlot = {
 						format: definition.format,
-						name: variableName
+						name: variableName,
+						mapping: target.uniforms[variableName]
 					};
 					target.textureSlots.push(textureSlot);
 				}
@@ -532,7 +541,7 @@ function (
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
-			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 8.0;
+			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 16.0;
 			shininess = Math.max(shininess, 1.0);
 			uniformCall.uniform1f(shininess);
 		};
@@ -605,6 +614,14 @@ function (
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
 	Shader.LIGHT_NEAR_PLANE = 'LIGHT_NEAR_PLANE';
 	Shader.LIGHT_FAR_PLANE = 'LIGHT_FAR_PLANE';
+
+	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
+	Shader.NORMAL_MAP = 'NORMAL_MAP';
+	Shader.SPECULAR_MAP = 'SPECULAR_MAP';
+	Shader.LIGHT_MAP = 'LIGHT_MAP';
+	Shader.SHADOW_MAP = 'SHADOW_MAP';
+	Shader.AO_MAP = 'AO_MAP';
+	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 
 	return Shader;
 });

@@ -30,7 +30,10 @@ function(
 		 * @type {Texture[]}
 		 */
 		this.textures = [];
-		this._originalTextureCount = -1;
+
+		//TODO: test replacement. deprecate the old this.textures
+		this._textureMaps = {};
+
 		/** @type {object} */
 		this.materialState = undefined;
 		// {
@@ -103,6 +106,27 @@ function(
 		 */
 		this.renderQueue = null;
 	}
+
+	Material.prototype.setTexture = function (name, texture) {
+		this._textureMaps[name] = texture;
+		// this.textures[this.textures.length] = texture;
+	};
+	Material.prototype.getTexture = function (name) {
+		return this._textureMaps[name];
+	};
+	Material.prototype.getTextures = function () {
+		var textures = [];
+		for (var key in this._textureMaps) {
+			textures.push(this._textureMaps[key]);
+		}
+		return textures;
+	};
+	Material.prototype.getTextureEntries = function () {
+		return this._textureMaps;
+	};
+	Material.prototype.removeTexture = function (name) {
+		delete this._textureMaps[name];
+	};
 
 	/**
 	 * @returns {number}

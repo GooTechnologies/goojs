@@ -24,11 +24,11 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 		this.poseMap = {};
 
 		this.slotUnitMap = {
-			diffuse : 0,
-			normal : 1,
-			ao : 2,
-			occlusion : 3,
-			specular : 3
+			diffuse : Shader.DIFFUSE_MAP,
+			normal : Shader.NORMAL_MAP,
+			ao : Shader.AO_MAP,
+			occlusion : 'OCCLUSION_MAP',
+			specular : Shader.SPECULAR_MAP
 		};
 
 		this.loadedEntities = [];
@@ -499,7 +499,8 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 						tex = new TextureCreator().loadTexture2D(this.baseTextureDir + baseTexFileName);
 
 						// tex.setWrap(WrapMode.Repeat);
-						material.textures[this.slotUnitMap[key]] = tex;
+						material.setTexture(this.slotUnitMap[key], tex);
+						// material.textures[this.slotUnitMap[key]] = tex;
 					}
 				}
 			}

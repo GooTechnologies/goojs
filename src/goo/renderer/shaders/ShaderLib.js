@@ -261,7 +261,7 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -304,7 +304,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -370,9 +370,9 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
-			diffuseMap : Shader.TEXTURE0,
-			normalMap : Shader.TEXTURE1,
-			aoMap : Shader.TEXTURE2,
+			diffuseMap : Shader.DIFFUSE_MAP,
+			normalMap : Shader.NORMAL_MAP,
+			aoMap : Shader.AO_MAP,
 			materialAmbient : Shader.AMBIENT,
 			materialDiffuse : Shader.DIFFUSE,
 			materialSpecular : Shader.SPECULAR,
@@ -443,7 +443,7 @@ define([
 		'								binormal,',//
 		'								normal);',//
 
-		'	vec4 texCol = texture2D(diffuseMap, texCoord1);',//
+		'	vec4 texCol = texture2D(diffuseMap, texCoord0);',//
 		'	vec4 final_color = materialAmbient;',//
 
 		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',//
@@ -1404,7 +1404,7 @@ define([
 		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-			diffuseMap: Shader.TEXTURE0,
+			diffuseMap: Shader.DIFFUSE_MAP,
 			jointPalette: function (shaderInfo) {
 				var skMesh = shaderInfo.meshData;
 				var pose = skMesh.currentPose;

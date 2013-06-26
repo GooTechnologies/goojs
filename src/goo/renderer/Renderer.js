@@ -464,12 +464,9 @@ function (
 				material.errorOnce = false;
 			}
 
-			if (material._originalTextureCount === -1) {
-				material._originalTextureCount = material.textures.length;
-			}
-
 			if (this.shadowCount > 0) {
-				material.textures[material._originalTextureCount] = this.shadowHandler.shadowResult;
+				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResult);
+				// material.textures[material._originalTextureCount] = this.shadowHandler.shadowResult;
 			}
 
 			if (material.wireframe && !isWireframe) {
@@ -498,6 +495,7 @@ function (
 			this.updateOffset(material);
 			this.updateTextures(material);
 
+			//TODO!
 			var lineWidth;
 			if(meshData.indexModes[0] === 'Lines') {
 				lineWidth = this.context.getParameter(WebGLRenderingContext.LINE_WIDTH);
@@ -676,15 +674,29 @@ function (
 
 	Renderer.prototype.updateTextures = function (material) {
 		var context = this.context;
-		for (var i = 0; i < material.shader.textureSlots.length; i++) {
-			var texture = material.textures[i];
+		var textureSlots = material.shader.textureSlots;
+		for (var i = 0; i < textureSlots.length; i++) {
+			var textureSlot = textureSlots[i];
+
+			var texture = material.getTexture(textureSlot.mapping);
+			if (!texture) {
+				texture = material.textures[i];
+			}
+
+			// var texture = material.textures[i];
+			// var realTexture = material.getTexture(textureSlot.mapping);
+			// console.log('slot', textureSlot);
+			// if (texture && realTexture) {
+			// 	console.log('	t1', texture.name);
+			// 	console.log('	t2', realTexture.name);				
+			// }
 
 			if (texture === undefined ||
 				texture instanceof RenderTarget === false && (texture.image === undefined ||
 					texture.checkDataReady() === false)) {
-				if (material.shader.textureSlots[i].format === 'sampler2D') {
+				if (textureSlot.format === 'sampler2D') {
 					texture = TextureCreator.DEFAULT_TEXTURE_2D;
-				} else if (material.shader.textureSlots[i].format === 'samplerCube') {
+				} else if (textureSlot.format === 'samplerCube') {
 					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
 				}
 			}
