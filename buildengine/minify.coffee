@@ -29,7 +29,7 @@ doClosure = (fileIn, fileOut, deleteAfter, callback) ->
 			console.log('Minify complete')
 			callback?(true)
 
-handleRequire = (absroot, fileIn, fileOut, deleteAfter, callback) ->
+optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
 
 	base = path.dirname(fileIn)
@@ -47,8 +47,7 @@ handleRequire = (absroot, fileIn, fileOut, deleteAfter, callback) ->
 			'goo/lib' : 'empty:'
 
 	requirejs.optimize config, (buildResponse) ->
-		files = buildResponse.split("\n")
-		console.log 'here'
+		#files = buildResponse.split("\n")
 		if deleteAfter
 			fs.unlink "#{absroot}/#{fileIn}.js"
 		doClosure tempClosure, fileOut, true, callback
@@ -58,45 +57,44 @@ handleRequire = (absroot, fileIn, fileOut, deleteAfter, callback) ->
 		callback?(false)
 
 
+minify = (sourcePath, targetFile, includefile, callback) ->
 
-minify = (sourcePath, targetFile, bundle, includefile, callback) ->
+	absroot = path.resolve(sourcePath)
+	if includefile
+		fs.readFile includefile, 'utf-8', (err, data) ->
+			if err then return console.log err
 
-	if bundle
-		absroot = path.resolve(sourcePath)
-		if includefile
-			fs.readFile includefile, 'utf-8', (err, data) ->
-				if err then return console.log err
-				
-				lines = data.split(/\s+/)
+			lines = data.split(/\s+/)
 
-				if lines.length > 1
-					pathsToInclude = '{'+lines.join(',')+'}'
-				else
-					pathsToInclude = lines[0]
-				
-				# If there are no paths to include
-				if /^(\{[\s,]*\}|\s*)$/.test pathsToInclude
-					return console.log 'No files to include'
+			if lines.length > 1
+				pathsToInclude = '{'+lines.join(',')+'}'
+			else
+				pathsToInclude = lines[0]
 
-				glob = require('glob')
-				glob pathsToInclude, {cwd: absroot}, (err, files) ->
-					if(files.length == 0)
-						console.log 'No files found'
-						process.exit
+			# If there are no paths to include
+			if /^(\{[\s,]*\}|\s*)$/.test pathsToInclude
+				return console.log 'No files to include'
 
-					for f,idx in files
-						files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
-	
-					str = "require([#{files}]);\n"
-					tempRequire = 'req_temp'
-					tempClosure = "#{absroot}/clos_temp.js"
-	
-					fs.writeFile "#{absroot}/#{tempRequire}.js", str, ->
-						handleRequire absroot, "#{absroot}/#{tempRequire}.js", targetFile, true, callback
-		else
-			handleRequire path.resolve(sourcePath), targetFile, false, callback
+			glob = require('glob')
+			glob pathsToInclude, {cwd: absroot}, (err, files) ->
+				if files.length == 0
+					console.log 'No files found'
+					process.exit
+
+				for f, idx in files
+					files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
+
+				source = "require([#{files}]);\n"
+				tempRequire = "#{absroot}/req_temp.js"
+
+				fs.writeFile tempRequire, source, ->
+					optimize {
+						absroot: absroot
+						fileIn: tempRequire
+						fileOut: targetFile
+						deleteAfter: true
+					}, callback
 	else
 		doClosure sourcePath, targetFile, false, callback
-			
+
 exports.minify = minify
-			

@@ -24,7 +24,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = options.arguments[1]
 
 		console.log "minifying #{fileIn}"
-		minify(fileIn, fileOut, true);
+		minify fileIn, fileOut
 	else 	
 		console.log 'minifying'
 		
@@ -33,37 +33,6 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = 'minified/goo/goo.js'
 		includefile = 'buildengine/glob/minify.glob'
 
-		# Copy all the js to the output dir
-		###
-		if not fs.existsSync output
-			fs.mkdirSync output
-		
-		traverse = (file)->
-			if endsWith(file,'.js')
-				fpath = output+'/'+file.split('/')[...-1].join('/')
-				
-				# Create output dir if not exists
-				if not fs.existsSync fpath
-					tokens = fpath.split('/')
-					cpath = ""
-					for token in tokens
-						cpath += token
-						if not fs.existsSync cpath 
-							fs.mkdirSync cpath
-						cpath += '/'
-				
-				# Copy file
-				fs.createReadStream(file).pipe(fs.createWriteStream("#{output}/#{file}"))
-			else 
-				stat = fs.statSync path.resolve(file)
-				if stat.isDirectory()
-					files = fs.readdirSync file
-					for child in files
-						traverse("#{file}/#{child}")
-					
-		traverse(fileIn)	
-		###
-		# This does the same
 		copyLibs fileIn, path.resolve(output, fileIn), includefile
 		
 		console.log "Copied js files"
@@ -72,7 +41,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minify "#{output}/#{fileIn}", fileOut, true, includefile, (success)->
+			minify "#{output}/#{fileIn}", fileOut, includefile, (success)->
 				if success
 					runCommand "rm -Rf #{output}", ->
 						console.log "Removed output dir"
