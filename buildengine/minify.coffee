@@ -55,45 +55,42 @@ optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
 	, (err) ->
 		callback err
 
+exports.minifyFile = (sourcePath, targetFile, callback) ->
+	doClosure sourcePath, targetFile, false, callback
 
-minify = (sourcePath, targetFile, includefile, callback) ->
+exports.minifyProject = (sourcePath, targetFile, includefile, callback) ->
 
 	absroot = path.resolve(sourcePath)
-	if includefile
-		fs.readFile includefile, 'utf-8', (err, data) ->
-			if err
-				return callback? err
+	fs.readFile includefile, 'utf-8', (err, data) ->
+		if err
+			return callback? err
 
-			lines = data.split(/\s+/)
+		lines = data.split(/\s+/)
 
-			if lines.length == 0
-				console.log 'No files to include'
-				return
-			else if lines.length > 1
-				pathsToInclude = '{'+lines.join(',')+'}'
-			else
-				pathsToInclude = lines[0]
+		if lines.length == 0
+			console.log 'No files to include'
+			return
+		else if lines.length > 1
+			pathsToInclude = '{'+lines.join(',')+'}'
+		else
+			pathsToInclude = lines[0]
 
-			glob = require('glob')
-			glob pathsToInclude, {cwd: absroot}, (err, files) ->
-				if files.length == 0
-					console.log 'No files found'
-					process.exit
+		glob = require('glob')
+		glob pathsToInclude, {cwd: absroot}, (err, files) ->
+			if files.length == 0
+				console.log 'No files found'
+				process.exit
 
-				for f, idx in files
-					files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
+			for f, idx in files
+				files[idx] = "\""+f.slice(0, f.lastIndexOf('.'))+"\""
 
-				source = "require([#{files}]);\n"
-				tempRequire = "#{absroot}/req_temp.js"
+			source = "require([#{files}]);\n"
+			tempRequire = "#{absroot}/req_temp.js"
 
-				fs.writeFile tempRequire, source, ->
-					optimize {
-						absroot: absroot
-						fileIn: tempRequire
-						fileOut: targetFile
-						deleteAfter: true
-					}, callback
-	else
-		doClosure sourcePath, targetFile, false, callback
-
-exports.minify = minify
+			fs.writeFile tempRequire, source, ->
+				optimize {
+					absroot: absroot
+					fileIn: tempRequire
+					fileOut: targetFile
+					deleteAfter: true
+				}, callback

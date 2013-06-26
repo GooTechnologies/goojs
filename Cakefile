@@ -1,6 +1,6 @@
 fs = require('fs')
 path = require('path')
-minify = require('./buildengine/minify').minify
+{minifyProject, minifyFile} = require('./buildengine/minify')
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
@@ -24,12 +24,12 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = options.arguments[1]
 
 		console.log "minifying #{fileIn}"
-		minify fileIn, fileOut, null, (err) ->
+		minifyFile fileIn, fileOut, null, (err) ->
 			if err
 				console.log 'Minification failed:', err
 	else 	
 		console.log 'minifying'
-		
+
 		output = 'output'
 		fileIn = 'src'
 		fileOut = 'minified/goo/goo.js'
@@ -43,7 +43,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minify "#{output}/#{fileIn}", fileOut, includefile, (err)->
+			minifyProject "#{output}/#{fileIn}", fileOut, includefile, (err)->
 				if err
 					console.log 'Minification failed:', err
 					return
