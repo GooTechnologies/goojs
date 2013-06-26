@@ -33,9 +33,9 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		output = 'output'
 		fileIn = 'src'
 		fileOut = 'minified/goo/goo.js'
-		includefile = 'buildengine/glob/minify.glob'
+		includes = ['goo/**/*.js']
 
-		copyLibs fileIn, path.resolve(output, fileIn), includefile
+		copyLibs fileIn, path.resolve(output, fileIn), includes
 		
 		console.log "Copied js files"
 		
@@ -43,7 +43,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minifyProject "#{output}/#{fileIn}", fileOut, includefile, (err)->
+			minifyProject "#{output}/#{fileIn}", fileOut, includes, (err)->
 				if err
 					console.log 'Minification failed:', err
 					return
@@ -55,8 +55,12 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 			
 			source = 'lib'
 			target = 'minified/goo/lib'
-			includeFile = 'buildengine/glob/copy.glob'
-			copyLibs(source, target, includeFile)
+			includes = [
+				'box2d/*.*'
+				'cannon/*.*'
+				'soundmanager2/*.*'
+			]
+			copyLibs source, target, includes
 			
 			console.log "Copied lib"
 
