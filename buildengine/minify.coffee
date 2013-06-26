@@ -5,10 +5,10 @@ mkdirp = require('mkdirp')
 
 # Minifying files
 
-doClosure = (fileIn, fileOut, deleteAfter, callback) ->
+minifyFile = exports.minifyFile = (fileIn, fileOut, callback) ->
 	dir = path.dirname(path.resolve(fileOut))
 	mkdirp.sync dir
-	
+
 	command = 'java -jar buildengine/compiler.jar ' + 
 		'--compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT ' +
 		#'--jscomp_warning=checkTypes ' +
@@ -20,8 +20,6 @@ doClosure = (fileIn, fileOut, deleteAfter, callback) ->
 	exec command,
 		maxBuffer: 100*1024*1024
 	, (error, stdout, stderr) ->
-		if deleteAfter
-			fs.unlink fileIn
 		if error?
 			console.log('closure error: ' + error);
 			callback error
@@ -29,7 +27,7 @@ doClosure = (fileIn, fileOut, deleteAfter, callback) ->
 			console.log('Minify complete')
 			callback null
 
-optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
+optimize = ({absroot, fileIn, fileOut}, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
 
 	base = path.dirname(fileIn)
@@ -48,15 +46,10 @@ optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
 
 	requirejs.optimize config, (buildResponse) ->
 		#files = buildResponse.split("\n")
-		if deleteAfter
-			fs.unlink "#{absroot}/#{fileIn}.js"
-		doClosure tempClosure, fileOut, true, callback
+		minifyFile tempClosure, fileOut, callback
 		console.log buildResponse
 	, (err) ->
 		callback err
-
-exports.minifyFile = (sourcePath, targetFile, callback) ->
-	doClosure sourcePath, targetFile, false, callback
 
 exports.minifyProject = (sourcePath, targetFile, includes, callback) ->
 
@@ -87,5 +80,4 @@ exports.minifyProject = (sourcePath, targetFile, includes, callback) ->
 				absroot: absroot
 				fileIn: tempRequire
 				fileOut: targetFile
-				deleteAfter: true
 			}, callback
