@@ -19,10 +19,6 @@ copyLibs = (base, target, includes) ->
 		pathsToInclude = includes[0]
 
 	glob pathsToInclude, {cwd: base}, (err, files) ->
-		if(files.length == 0)
-			console.log 'No files found'
-			process.exit
-
 		for file in files
 			console.log "Copying",path.resolve(base, file), path.resolve(target, file)
 			copyFile path.resolve(base, file), path.resolve(target, file)
