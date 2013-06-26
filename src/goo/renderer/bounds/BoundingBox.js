@@ -457,8 +457,8 @@ function (
 			store = new BoundingBox();
 		}
 
-		var calcVec1 = this.vec;
-		var calcVec2 = store.center;
+		var calcVec1 = this._compVect1;
+		var calcVec2 = this._compVect2;
 
 		calcVec1.x = this.center.x - this.xExtent;
 		if (calcVec1.x > center.x - xExtent) {
