@@ -66,14 +66,13 @@ minify = (sourcePath, targetFile, includefile, callback) ->
 
 			lines = data.split(/\s+/)
 
-			if lines.length > 1
+			if lines.length == 0
+				console.log 'No files to include'
+				return
+			else if lines.length > 1
 				pathsToInclude = '{'+lines.join(',')+'}'
 			else
 				pathsToInclude = lines[0]
-
-			# If there are no paths to include
-			if /^(\{[\s,]*\}|\s*)$/.test pathsToInclude
-				return console.log 'No files to include'
 
 			glob = require('glob')
 			glob pathsToInclude, {cwd: absroot}, (err, files) ->
