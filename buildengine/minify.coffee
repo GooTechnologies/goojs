@@ -24,10 +24,10 @@ doClosure = (fileIn, fileOut, deleteAfter, callback) ->
 			fs.unlink fileIn
 		if error?
 			console.log('closure error: ' + error);
-			callback?(false)
+			callback error
 		else
 			console.log('Minify complete')
-			callback?(true)
+			callback null
 
 optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
@@ -53,8 +53,7 @@ optimize = ({absroot, fileIn, fileOut, deleteAfter}, callback) ->
 		doClosure tempClosure, fileOut, true, callback
 		console.log buildResponse
 	, (err) ->
-		console.log err
-		callback?(false)
+		callback err
 
 
 minify = (sourcePath, targetFile, includefile, callback) ->
@@ -62,7 +61,8 @@ minify = (sourcePath, targetFile, includefile, callback) ->
 	absroot = path.resolve(sourcePath)
 	if includefile
 		fs.readFile includefile, 'utf-8', (err, data) ->
-			if err then return console.log err
+			if err
+				return callback? err
 
 			lines = data.split(/\s+/)
 

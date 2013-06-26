@@ -24,7 +24,9 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = options.arguments[1]
 
 		console.log "minifying #{fileIn}"
-		minify fileIn, fileOut
+		minify fileIn, fileOut, null, (err) ->
+			if err
+				console.log 'Minification failed:', err
 	else 	
 		console.log 'minifying'
 		
@@ -41,10 +43,12 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minify "#{output}/#{fileIn}", fileOut, includefile, (success)->
-				if success
-					runCommand "rm -Rf #{output}", ->
-						console.log "Removed output dir"
+			minify "#{output}/#{fileIn}", fileOut, includefile, (err)->
+				if err
+					console.log 'Minification failed:', err
+					return
+				runCommand "rm -Rf #{output}", ->
+					console.log "Removed output dir"
 				
 
 			console.log "Minifying everything in #{output}/#{fileIn}"
