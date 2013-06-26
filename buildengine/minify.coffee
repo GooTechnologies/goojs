@@ -27,6 +27,23 @@ minifyFile = exports.minifyFile = (fileIn, fileOut, callback) ->
 			console.log('Minify complete')
 			callback null
 
+# Removes unnecessary whitespace from JS source code
+strip = (source) ->
+	source.replace /\s+/g, ' '
+
+wrap = (source) ->
+	return '// Goo Engine. Copyright 2013 Goo Technologies AB\n' + strip("""
+(function(window,undefined){
+	var f=function(){""") + source + strip("""};
+	if(window.localStorage&&window.localStorage.gooPath){
+		require.config({
+			paths: {
+				goo: localStorage.gooPath
+			}
+		});
+	}else f();
+})(window);""");
+
 optimize = ({absroot, fileIn, fileOut}, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
 
@@ -44,9 +61,17 @@ optimize = ({absroot, fileIn, fileOut}, callback) ->
 		paths:
 			'goo/lib' : 'empty:'
 
+
+	# Concatenate all files into the file tempClosure
 	requirejs.optimize config, (buildResponse) ->
 		#files = buildResponse.split("\n")
-		minifyFile tempClosure, fileOut, callback
+		# Now minify that concatenated file
+		tempMinified = "#{absroot}/minified_temp.js"
+		minifyFile tempClosure, tempMinified, (err)->
+			if err
+				return callback err
+			minifiedSource = fs.readFileSync(tempMinified)
+			fs.writeFile fileOut, wrap(minifiedSource), callback
 		console.log buildResponse
 	, (err) ->
 		callback err
