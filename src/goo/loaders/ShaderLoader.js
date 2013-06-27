@@ -94,7 +94,7 @@ define([
 			if (data.processors) {
 				shaderDefinition.processors = [];
 				for (var i = 0; i < data.processors.length; i++) {
-					shaderDefinition.processors.push(ShaderBuilder[data.processor[i]].processor);
+					shaderDefinition.processors.push(ShaderBuilder[data.processors[i]].processor);
 				}
 			}
 		} else {
