@@ -238,7 +238,7 @@ function (
 	BoundingSphere.prototype.merge = function (bv) {
 		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
-		} else if (bv instanceof BoundingSphere) {
+		} else {
 			return this.mergeSphere(bv.center, Math.max(bv.xExtent, bv.yExtent, bv.zExtent), this);
 		}
 	};
