@@ -10,6 +10,7 @@ define([
 			var target;
 			beforeEach(function() {
 				target = {
+					uniforms: {},
 					attributeMapping: {},
 					uniformMapping: {},
 					textureSlots: []
