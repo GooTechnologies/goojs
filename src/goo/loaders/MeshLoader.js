@@ -112,16 +112,16 @@ function(
 		var indexCount = data.indexLengths ? data.indexLengths[0] : data.indices ? data.indices.length : 0;
 
 		var attributeMap = {};
-		if (data.vertices) {
+		if (data.vertices && data.vertices.length > 0) {
 			attributeMap.POSITION = MeshData.createAttribute(3, 'Float');
 		}
-		if (data.normals) {
+		if (data.normals && data.normals.length > 0) {
 			attributeMap.NORMAL = MeshData.createAttribute(3, 'Float');
 		}
-		if (data.tangents) {
+		if (data.tangents && data.tangents.length > 0) {
 			attributeMap.TANGENT = MeshData.createAttribute(4, 'Float');
 		}
-		if (data.colors) {
+		if (data.colors && data.colors.length > 0) {
 			attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
 		}
 		if (weightsPerVert > 0 && data.weights) {
@@ -130,14 +130,14 @@ function(
 		if (weightsPerVert > 0 && data.joints) {
 			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
 		}
-		if (data.textureCoords) {
+		if (data.textureCoords && data.textureCoords.length > 0) {
 			for (var i in data.textureCoords) {
 				attributeMap['TEXCOORD' + i] = MeshData.createAttribute(2, 'Float');
 			}
 		}
 		var meshData = new MeshData(attributeMap, vertexCount, indexCount);
 
-		if (data.vertices) {
+		if (data.vertices && data.vertices.length > 0) {
 			if (this.useCompression) {
 				var offsetObj = data.vertexOffsets;
 				JsonUtils.fillAttributeBufferFromCompressedString(data.vertices, meshData, MeshData.POSITION, [data.vertexScale,
@@ -156,7 +156,7 @@ function(
 				JsonUtils.fillAttributeBuffer(data.weights, meshData, MeshData.WEIGHTS);
 			}
 		}
-		if (data.normals) {
+		if (data.normals && data.normals.length > 0) {
 			if (this.useCompression) {
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
@@ -167,7 +167,7 @@ function(
 				JsonUtils.fillAttributeBuffer(data.normals, meshData, MeshData.NORMAL);
 			}
 		}
-		if (data.tangents) {
+		if (data.tangents && data.tangents.length > 0) {
 			if (this.useCompression) {
 				var offset = 1 - (this.compressedUnitVectorRange + 1 >> 1);
 				var scale = 1 / -offset;
@@ -178,7 +178,7 @@ function(
 				JsonUtils.fillAttributeBuffer(data.tangents, meshData, MeshData.TANGENT);
 			}
 		}
-		if (data.colors) {
+		if (data.colors && data.colors.length > 0) {
 			if (this.useCompression) {
 				var offset = 0;
 				var scale = 255 / (this.compressedColorsRange + 1);
@@ -188,7 +188,7 @@ function(
 				JsonUtils.fillAttributeBuffer(data.colors, meshData, MeshData.COLOR);
 			}
 		}
-		if (data.textureCoords) {
+		if (data.textureCoords && data.textureCoords.length > 0) {
 			var textureUnits = data.textureCoords;
 			if (this.useCompression) {
 				for (var i = 0; i < textureUnits.length; i++) {
