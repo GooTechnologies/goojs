@@ -81,22 +81,21 @@ define([
 		var shader;
 		var materialState = this._getDefaultMaterialState();
 		var materialUniforms = {};
-		var textures = [];
+		var textures = {};
 
-
-		function addTexture(i, texture) {
+		function addTexture(key, texture) {
 			if (typeof texture === 'string') {
 				texture = JSON.parse(texture);
 			}
 			var tc = new TextureCreator({loader: that._loader });
 			if(that._waitForTextures) {
 				var p = new RSVP.Promise();
-				textures[i] = tc.loadTexture2D(texture.url, null, function() {
+				textures[key] = tc.loadTexture2D(texture.url, null, function() {
 					p.resolve();
 				});
 				return p;
 			} else {
-				textures[i] = tc.loadTexture2D(texture.url);
+				textures[key] = tc.loadTexture2D(texture.url);
 			}
 		}
 
@@ -128,10 +127,11 @@ define([
 					materialUniforms[key] = materialDataSource.uniforms[key];
 				}
 			}
-			if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
-				for (var i = 0; i < materialDataSource.textureRefs.length; i++) {
-					var pushTexture = addTexture.bind(null,i);
-					var p = this._loader.load(materialDataSource.textureRefs[i])
+			if (materialDataSource.texturesMapping && Object.keys(materialDataSource.texturesMapping).length) {
+				for (var key in materialDataSource.texturesMapping) {
+					var textureRef = materialDataSource.texturesMapping[key];
+					var pushTexture = addTexture.bind(null,key);
+					var p = this._loader.load(textureRef)
 						.then(pushTexture);
 					promises.push(p);
 				}
@@ -147,7 +147,7 @@ define([
 		.then(function() {
 			var material = new Material(name);
 			material.shader = shader;
-			material.textures = textures;
+			material._textureMaps = textures;
 			material.materialState = materialState;
 			material.uniforms = materialUniforms;
 			if (materialDataSource) {
