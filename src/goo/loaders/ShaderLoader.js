@@ -72,6 +72,9 @@ define([
 			};
 
 			for (var key in shaderDefinition.uniforms) {
+				if (!shaderDefinition.uniforms.hasOwnProperty(key)) {
+					continue;
+				}
 				var uniform = shaderDefinition.uniforms[key];
 
 				if (typeof uniform === 'string') {
