@@ -14,21 +14,23 @@ define([
 	describe('BoundingBox', function() {
 		var boundingBox1, boundingBox2;
 
+		function buildCustomTriangle(verts) {
+			var indices = [];
+			indices.push(0, 1, 2);
+
+			var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 3, indices.length);
+
+			meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+			meshData.getIndexBuffer().set(indices);
+
+			meshData.indexLengths = [3];
+			meshData.indexModes = ['Triangles'];
+
+			return meshData;
+		}
+
 		describe('computeFromPoints', function() {
-			function buildCustomTriangle(verts) {
-				var indices = [];
-				indices.push(0, 1, 2);
 
-				var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 3, indices.length);
-
-				meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
-				meshData.getIndexBuffer().set(indices);
-
-				meshData.indexLengths = [3];
-				meshData.indexModes = ['Triangles'];
-
-				return meshData;
-			}
 
 			it('computes the center of the bounding box from verts (of default box)', function() {
 				boundingBox1 = new BoundingBox();
@@ -91,17 +93,55 @@ define([
 				expect(boundingBox1.zExtent).toBeCloseTo(5);
 			});
 		});
-		describe('merge BoundingBox with BoundingBox', function() {
+
+		describe('BoundingBox.merge', function() {
 			it('merges two identical boxes', function() {
 				var boxMeshData = ShapeCreator.createBox(2, 3, 4);
 				boundingBox1 = new BoundingBox();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
 				boundingBox2 = new BoundingBox();
-				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
+				boundingBox2.computeFromPoints(boxMeshData.dataViews.POSITION);
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
 				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
 				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
 				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(0);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(1);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(1.5);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(2);
+			});
+
+			it('merges two distinct boxes', function() {
+				var boxMeshData1 = ShapeCreator.createBox(2, 30, 4);
+				boundingBox1 = new BoundingBox();
+				boundingBox1.computeFromPoints(boxMeshData1.dataViews.POSITION);
+				var boxMeshData2 = ShapeCreator.createBox(20, 3, 40);
+				boundingBox2 = new BoundingBox();
+				boundingBox2.computeFromPoints(boxMeshData2.dataViews.POSITION);
+				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
+				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
+				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
+				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(0);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(10);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(15);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(20);
+			});
+
+			it('merges a triangle and a box', function() {
+				var boxMeshData = ShapeCreator.createBox(2, 2, 2);
+				var triangleMeshData = buildCustomTriangle([0, 0, 9, 0, 0, 10, 0, 1, 10]);
+				boundingBox1 = new BoundingBox();
+				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
+				console.log(boundingBox1);
+				boundingBox2 = new BoundingBox();
+				boundingBox2.computeFromPoints(triangleMeshData.dataViews.POSITION);
+				console.log(boundingBox2);
+				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
+				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
+				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
+				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(4.5);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(1);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(1);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(5.5);
 			});
 		});
 	});

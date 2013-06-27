@@ -3,7 +3,7 @@ define([
 		'goo/renderer/MeshData',
 		'goo/renderer/Shader',
 		'goo/loaders/Loader',
-		'goo/loaders/ShaderBuilder'
+		'goo/renderer/shaders/ShaderBuilder'
 	],
 	/** @lends */
 	function(
