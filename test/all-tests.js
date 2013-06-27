@@ -32,5 +32,6 @@ define([
     'test/loaders/Loader-test',
     'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
-    'test/renderer/Camera-test'
+    'test/renderer/Camera-test',
+	'test/renderer/bounds/BoundingBox-test'
 ], function() {});
