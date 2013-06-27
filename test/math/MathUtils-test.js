@@ -1,4 +1,4 @@
-define(["goo/math/MathUtils"], function(MathUtils) {
+define(["goo/math/MathUtils", "goo/math/Vector3"], function(MathUtils, Vector3) {
 	"use strict";
 
 	describe("MathUtils", function() {
@@ -40,6 +40,25 @@ define(["goo/math/MathUtils"], function(MathUtils) {
 			expect(MathUtils.scurve5(0.50)).toEqual(0.5);
 			expect(MathUtils.scurve5(0.75)).toEqual(((6.0 * 0.75 - 15.0) * 0.75 + 10.0) * 0.75 * 0.75 * 0.75);
 			expect(MathUtils.scurve5(1.00)).toEqual(1.0);
+		});
+
+		it("can convert to cartesian coordinates from spherical coordinates", function(){
+			var c = new Vector3();
+
+			MathUtils.sphericalToCartesian(16, 0, 0, c);
+			expect(c.x).toBeCloseTo(16);
+			expect(c.y).toBeCloseTo(0);
+			expect(c.z).toBeCloseTo(0);
+
+			MathUtils.sphericalToCartesian(16, Math.PI/2, 0, c);
+			expect(c.x).toBeCloseTo(0);
+			expect(c.y).toBeCloseTo(0);
+			expect(c.z).toBeCloseTo(16);
+
+			MathUtils.sphericalToCartesian(4, Math.PI/2, Math.PI/4, c);
+			expect(c.x).toBeCloseTo(0);
+			expect(c.y).toBeCloseTo(Math.sqrt(8));
+			expect(c.z).toBeCloseTo(Math.sqrt(8));
 		});
 	});
 });
