@@ -43,12 +43,7 @@ zipfile = ZipFile(name + '.zip', 'w')
 zipfile.write('COPYING', zip_root + 'COPYING')
 goo_root = work_dir + '/goo'
 
-prepend(goo_root + '/goo.js',
-	'/*\n' +
-	' * Goo Engine ' + version + '\n' +
-	' * Copyright 2013 Goo Technologies AB\n' +
-	' */\n'
-)
+prepend(goo_root + '/goo.js', '// Version ' + version + '\n')
 
 for root, dirs, files in os.walk(goo_root):
     for f in files:
