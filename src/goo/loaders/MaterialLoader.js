@@ -87,6 +87,9 @@ define([
 			if (typeof texture === 'string') {
 				texture = JSON.parse(texture);
 			}
+			if (!texture.url) {
+				return;
+			}
 			var tc = new TextureCreator({loader: that._loader });
 			if(that._waitForTextures) {
 				var p = new RSVP.Promise();
