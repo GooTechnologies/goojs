@@ -22,6 +22,9 @@ function (
 		/** @type {number} */
 		this.intensity = 1;
 
+		/** @type {number} */
+		this.specularIntensity = 1;
+
 		/**
 		 * @type boolean
 		 * @default

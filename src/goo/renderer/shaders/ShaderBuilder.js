@@ -96,9 +96,10 @@ function(
 					shader.uniforms.pointLight[pointCount * 4 + 2] = light.translation.z;
 					shader.uniforms.pointLight[pointCount * 4 + 3] = light.range;
 
-					shader.uniforms.pointLightColor[pointCount * 3 + 0] = light.color.r * light.intensity;
-					shader.uniforms.pointLightColor[pointCount * 3 + 1] = light.color.g * light.intensity;
-					shader.uniforms.pointLightColor[pointCount * 3 + 2] = light.color.b * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 0] = light.color.r * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 1] = light.color.g * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 3] = light.specularIntensity;
 
 					pointCount++;
 				} else if (light instanceof DirectionalLight) {
@@ -106,9 +107,10 @@ function(
 					shader.uniforms.directionalLightDirection[directionalCount * 3 + 1] = light.direction.y;
 					shader.uniforms.directionalLightDirection[directionalCount * 3 + 2] = light.direction.z;
 
-					shader.uniforms.directionalLightColor[directionalCount * 3 + 0] = light.color.r * light.intensity;
-					shader.uniforms.directionalLightColor[directionalCount * 3 + 1] = light.color.g * light.intensity;
-					shader.uniforms.directionalLightColor[directionalCount * 3 + 2] = light.color.b * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 0] = light.color.r * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 1] = light.color.g * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 3] = light.specularIntensity;
 
 					directionalCount++;
 				} else if (light instanceof SpotLight) {
@@ -117,9 +119,10 @@ function(
 					shader.uniforms.spotLight[spotCount * 4 + 2] = light.translation.z;
 					shader.uniforms.spotLight[spotCount * 4 + 3] = light.range;
 
-					shader.uniforms.spotLightColor[spotCount * 3 + 0] = light.color.r * light.intensity;
-					shader.uniforms.spotLightColor[spotCount * 3 + 1] = light.color.g * light.intensity;
-					shader.uniforms.spotLightColor[spotCount * 3 + 2] = light.color.b * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 0] = light.color.r * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 1] = light.color.g * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 3] = light.specularIntensity;
 
 					shader.uniforms.spotLightDirection[spotCount * 3 + 0] = light.direction.x;
 					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.y;
@@ -136,7 +139,7 @@ function(
 				shader.defines = shader.defines || {};
 				shader.defines.MAX_POINT_LIGHTS = pointCount;
 				shader.uniforms.pointLight.length = pointCount * 4;
-				shader.uniforms.pointLightColor.length = pointCount * 3;
+				shader.uniforms.pointLightColor.length = pointCount * 4;
 				shader.pointCount = pointCount;
 				shader.rebuild();
 			}
@@ -144,7 +147,7 @@ function(
 				shader.defines = shader.defines || {};
 				shader.defines.MAX_DIRECTIONAL_LIGHTS = directionalCount;
 				shader.uniforms.directionalLightDirection.length = directionalCount * 3;
-				shader.uniforms.directionalLightColor.length = directionalCount * 3;
+				shader.uniforms.directionalLightColor.length = directionalCount * 4;
 				shader.directionalCount = directionalCount;
 				shader.rebuild();
 			}
@@ -152,7 +155,7 @@ function(
 				shader.defines = shader.defines || {};
 				shader.defines.MAX_SPOT_LIGHTS = spotCount;
 				shader.uniforms.spotLight.length = spotCount * 4;
-				shader.uniforms.spotLightColor.length = spotCount * 3;
+				shader.uniforms.spotLightColor.length = spotCount * 4;
 				shader.uniforms.spotLightDirection.length = spotCount * 3;
 				shader.uniforms.spotLightAngle.length = spotCount * 1;
 				shader.uniforms.spotLightExponent.length = spotCount * 1;
@@ -211,15 +214,15 @@ function(
 			"#endif",
 
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
-				"uniform vec3 directionalLightColor[MAX_DIRECTIONAL_LIGHTS];",
+				"uniform vec4 directionalLightColor[MAX_DIRECTIONAL_LIGHTS];",
 				"uniform vec3 directionalLightDirection[MAX_DIRECTIONAL_LIGHTS];",
 			"#endif",
 			"#if MAX_POINT_LIGHTS > 0",
-				"uniform vec3 pointLightColor[MAX_POINT_LIGHTS];",
+				"uniform vec4 pointLightColor[MAX_POINT_LIGHTS];",
 				"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
 			"#endif",
 			"#if MAX_SPOT_LIGHTS > 0",
-				"uniform vec3 spotLightColor[MAX_SPOT_LIGHTS];",
+				"uniform vec4 spotLightColor[MAX_SPOT_LIGHTS];",
 				"uniform vec4 spotLight[MAX_SPOT_LIGHTS];",
 				"uniform vec3 spotLightDirection[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightAngle[MAX_SPOT_LIGHTS];",
@@ -254,19 +257,19 @@ function(
 						"float pointDiffuseWeight = max(dotProduct, 0.0);",
 					"#endif",
 
-					"pointDiffuse += materialDiffuse.rgb * pointLightColor[i] * pointDiffuseWeight * lDistance;",
+					"pointDiffuse += materialDiffuse.rgb * pointLightColor[i].rgb * pointDiffuseWeight * lDistance;",
 
 					// specular
 					"vec3 pointHalfVector = normalize(lVector + viewPosition);",
 					"float pointDotNormalHalf = max(dot(N, pointHalfVector), 0.0);",
-					"float pointSpecularWeight = specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);",
+					"float pointSpecularWeight = pointLightColor[i].a * specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);",
 
 					"#ifdef PHYSICALLY_BASED_SHADING",
 						"float specularNormalization = (materialSpecularPower + 2.0001 ) / 8.0;",
 						"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, pointHalfVector), 5.0);",
-						"pointSpecular += schlick * pointLightColor[i] * pointSpecularWeight * pointDiffuseWeight * lDistance * specularNormalization;",
+						"pointSpecular += schlick * pointLightColor[i].rgb * pointSpecularWeight * pointDiffuseWeight * lDistance * specularNormalization;",
 					"#else",
-						"pointSpecular += materialSpecular.rgb * pointLightColor[i] * pointSpecularWeight * pointDiffuseWeight * lDistance;",
+						"pointSpecular += materialSpecular.rgb * pointLightColor[i].rgb * pointSpecularWeight * pointDiffuseWeight * lDistance;",
 					"#endif",
 				"}",
 			"#endif",
@@ -299,19 +302,19 @@ function(
 							"float spotDiffuseWeight = max(dotProduct, 0.0);",
 						"#endif",
 
-						"spotDiffuse += materialDiffuse.rgb * spotLightColor[i] * spotDiffuseWeight * lDistance * spotEffect;",
+						"spotDiffuse += materialDiffuse.rgb * spotLightColor[i].rgb * spotDiffuseWeight * lDistance * spotEffect;",
 
 						// specular
 						"vec3 spotHalfVector = normalize(lVector + viewPosition);",
 						"float spotDotNormalHalf = max( dot(N, spotHalfVector), 0.0);",
-						"float spotSpecularWeight = specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);",
+						"float spotSpecularWeight = spotLightColor[i].a * specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);",
 
 						"#ifdef PHYSICALLY_BASED_SHADING",
 							"float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;",
 							"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, spotHalfVector), 5.0);",
-							"spotSpecular += schlick * spotLightColor[i] * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect;",
+							"spotSpecular += schlick * spotLightColor[i].rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect;",
 						"#else",
-							"spotSpecular += materialSpecular.rgb * spotLightColor[i] * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect;",
+							"spotSpecular += materialSpecular.rgb * spotLightColor[i].rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect;",
 						"#endif",
 					"}",
 				"}",
@@ -338,20 +341,20 @@ function(
 						"float dirDiffuseWeight = max(dotProduct, 0.0);",
 					"#endif",
 
-					"dirDiffuse += materialDiffuse.rgb * directionalLightColor[i] * dirDiffuseWeight;",
+					"dirDiffuse += materialDiffuse.rgb * directionalLightColor[i].rgb * dirDiffuseWeight;",
 
 					// specular
 					"vec3 dirHalfVector = normalize(dirVector + viewPosition);",
 					"float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);",
-					"float dirSpecularWeight = specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);",
+					"float dirSpecularWeight = directionalLightColor[i].a * specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);",
 
 					"#ifdef PHYSICALLY_BASED_SHADING",
 						"float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;",
 						//"dirSpecular += materialSpecular.rgb * directionalLightColor[ i ] * dirSpecularWeight * dirDiffuseWeight * specularNormalization * fresnel;",
 						"vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(dirVector, dirHalfVector), 5.0);",
-						"dirSpecular += schlick * directionalLightColor[i] * dirSpecularWeight * dirDiffuseWeight * specularNormalization;",
+						"dirSpecular += schlick * directionalLightColor[i].rgb * dirSpecularWeight * dirDiffuseWeight * specularNormalization;",
 					"#else",
-						"dirSpecular += materialSpecular.rgb * directionalLightColor[i] * dirSpecularWeight * dirDiffuseWeight;",
+						"dirSpecular += materialSpecular.rgb * directionalLightColor[i].rgb * dirSpecularWeight * dirDiffuseWeight;",
 					"#endif",
 				"}",
 			"#endif",
