@@ -65,10 +65,6 @@ function (
 
 		settings = settings || {};
 
-		if (image) {
-			this.setImage(image, settings, width, height);
-		}
-
 		this.wrapS = settings.wrapS || 'Repeat';
 		this.wrapT = settings.wrapT || 'Repeat';
 
@@ -93,6 +89,10 @@ function (
 		this.needsUpdate = false;
 		this.updateCallback = null;
 		this.readyCallback = null;
+
+		if (image) {
+			this.setImage(image, settings, width, height);
+		}
 	}
 
 	Texture.prototype.checkDataReady = function () {

@@ -18,7 +18,7 @@ function (
 
 		this.direction = new Vector3();
 		this.range = 1000;
-		this.angle = Math.cos(Math.PI*0.25);
+		this.angle = 45;
 		this.exponent = 16.0;
 	}
 

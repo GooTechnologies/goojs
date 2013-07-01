@@ -493,6 +493,10 @@ define(['goo/loaders/dds/DdsUtils'],
 		var contentOffset = 128 + (info.headerDX10 ? 20 : 0);
 		DdsLoader.populate(tex, info, new Uint8Array(buffer, arrayByteOffset + contentOffset, arrayByteLength - contentOffset));
 
+		if (!info.mipmapByteSizes || info.mipmapByteSizes.length < 2) {
+			tex.minFilter = 'BilinearNoMipMaps';
+		}
+
 		image.bpp = info.bpp;
 		image.dataReady = true;
 		tex.needsUpdate = true;

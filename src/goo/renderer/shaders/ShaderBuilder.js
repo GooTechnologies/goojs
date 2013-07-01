@@ -4,6 +4,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
+	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
 ],
 /** @lends */
@@ -13,6 +14,7 @@ function(
 	PointLight,
 	DirectionalLight,
 	SpotLight,
+	MathUtils,
 	TangentGenerator
 ) {
 	"use strict";
@@ -141,7 +143,7 @@ function(
 					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.y;
 					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.z;
 
-					shader.uniforms.spotLightAngle[spotCount] = light.angle;
+					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
 					shader.uniforms.spotLightExponent[spotCount] = light.exponent;
 
 					spotCount++;
