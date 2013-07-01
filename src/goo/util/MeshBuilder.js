@@ -143,11 +143,13 @@ define([
 		meshData.indexModes = this.indexModes;
 
 		this.meshDatas.push(meshData);
-		//REVIEW: Shouldn't this.indexLengths and this.indexModes also be reset for the next meshData?
+
 		this.vertexData = {};
 		this.indexData = [];
 		this.vertexCounter = 0;
 		this.indexCounter = 0;
+		this.indexLengths = [];
+		this.indexModes = [];
 	};
 
 	MeshBuilder.prototype.build = function () {
