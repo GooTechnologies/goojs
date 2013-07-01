@@ -35,26 +35,39 @@ function(
 
 			shader.defines = shader.defines || {};
 
-			var updated = false;
+			// var updated = false;
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
 					shader.defines[attribute] = true;
-					updated = true;
+					// updated = true;
 				}
 			}
 
 			for (var type in textureMaps) {
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
-					updated = true;
+					// updated = true;
 				}
 			}
 
-			if (updated) {
-				shader.rebuild();
+			// TODO: This is needed but requires caching of shaders to prevent constant rebuilding. Fix in a nicer way
+			for (var attribute in shader.defines) {
+				if (attribute === 'MAX_POINT_LIGHTS' ||
+					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
+					attribute === 'MAX_SPOT_LIGHTS') {
+					continue;
+				}
+				if (!attributeMap[attribute] && !textureMaps[attribute]) {
+					delete shader.defines[attribute];
+					// updated = true;
+				}
 			}
 
-			//TODO: hack
+			// if (updated) {
+				// shader.rebuild();
+			// }
+
+			//TODO: Nicer way?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
 			}
@@ -141,7 +154,7 @@ function(
 				shader.uniforms.pointLight.length = pointCount * 4;
 				shader.uniforms.pointLightColor.length = pointCount * 4;
 				shader.pointCount = pointCount;
-				shader.rebuild();
+				// shader.rebuild();
 			}
 			if (shader.directionalCount !== directionalCount) {
 				shader.defines = shader.defines || {};
@@ -149,7 +162,7 @@ function(
 				shader.uniforms.directionalLightDirection.length = directionalCount * 3;
 				shader.uniforms.directionalLightColor.length = directionalCount * 4;
 				shader.directionalCount = directionalCount;
-				shader.rebuild();
+				// shader.rebuild();
 			}
 			if (shader.spotCount !== spotCount) {
 				shader.defines = shader.defines || {};
@@ -160,7 +173,7 @@ function(
 				shader.uniforms.spotLightAngle.length = spotCount * 1;
 				shader.uniforms.spotLightExponent.length = spotCount * 1;
 				shader.spotCount = spotCount;
-				shader.rebuild();
+				// shader.rebuild();
 			}
 		},
 		prevertex: [

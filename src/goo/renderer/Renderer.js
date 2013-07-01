@@ -487,7 +487,46 @@ function (
 			}
 
 			renderInfo.material = material;
-			material.shader.apply(renderInfo, this);
+
+			// Check for caching of shader that use defines
+			var shader = material.shader;
+			if (shader.processors || shader.defines) {
+			// Call processors
+				if (shader.processors) {
+					for (var i = 0; i < shader.processors.length; i++) {
+						shader.processors[i](shader, renderInfo);
+					}
+				}
+
+				// check defines. if no hit in cache -> add to cache. if hit in cache, 
+				// replace with cache version and copy over uniforms.
+				var defineArray = Object.keys(shader.defines);
+				var len = defineArray.length;
+				var shaderKeyArray = [];
+				for (var i = 0; i < len; i++) {
+					var key = defineArray[i];
+					shaderKeyArray.push(key + '_' + shader.defines[key]);
+				}
+				shaderKeyArray.sort();
+				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+				if (!shaderCache[defineKey]) {
+					shader = material.shader = shader.clone();
+					shaderCache[defineKey] = shader;
+					console.log('Shader not in cache, adding:', defineKey, shader.name);
+				} else {
+					shader = shaderCache[defineKey];
+					if (shader !== material.shader) {
+						for (var key in material.shader.uniforms) {
+							shader.uniforms[key] = material.shader.uniforms[key];
+						}
+						material.shader = shader;
+					}
+				}
+			}
+
+			shader.apply(renderInfo, this);
 
 			this.updateDepthTest(material);
 			this.updateCulling(material);

@@ -107,6 +107,18 @@ function (
 
 	Shader.id = 0;
 
+	Shader.prototype.clone = function () {
+		return new Shader(this.name, {
+			precision: this.precision,
+			processors: this.processors,
+			defines: this.defines,
+			attributes: this.attributes,
+			uniforms: this.uniforms,
+			vshader: this.origVertexSource,
+			fshader: this.origFragmentSource
+		});
+	};
+
 	/*
 	 * Matches an attribute or uniform variable declaration.
 	 *
@@ -122,12 +134,6 @@ function (
 	Shader.prototype.apply = function (shaderInfo, renderer) {
 		var context = renderer.context;
 		var record = renderer.rendererRecord;
-
-		if (this.processors) {
-			for (var i = 0; i < this.processors.length; i++) {
-				this.processors[i](this, shaderInfo);
-			}
-		}
 
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
@@ -301,8 +307,8 @@ function (
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
-				console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key
-					+ '] variable not found in shader. Probably unused and optimized away.');
+				// console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key
+				// 	+ '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -313,28 +319,27 @@ function (
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
-				console.warn('Uniform [' + key + '] variable not found in shader. Probably unused and optimized away.');
+				// console.warn('Uniform [' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
 			this.uniformCallMapping[key] = new ShaderCall(context, uniform, this.uniformMapping[key].format);
 		}
 
-		if (this.attributes) {
-			for (var name in this.attributes) {
-				var mapping = this.attributeIndexMapping[name];
-				if (mapping === undefined) {
-					console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-					// delete this.attributes[name];
-				}
-			}
-			for (var name in this.attributeIndexMapping) {
-				var mapping = this.attributes[name];
-				if (mapping === undefined) {
-					console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
-				}
-			}
-		}
+		// if (this.attributes) {
+		// 	for (var name in this.attributes) {
+		// 		var mapping = this.attributeIndexMapping[name];
+		// 		if (mapping === undefined) {
+		// 			console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
+		// 		}
+		// 	}
+		// 	for (var name in this.attributeIndexMapping) {
+		// 		var mapping = this.attributes[name];
+		// 		if (mapping === undefined) {
+		// 			console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
+		// 		}
+		// 	}
+		// }
 
 		if (this.uniforms) {
 			// Fix links ($link)
@@ -350,23 +355,22 @@ function (
 			}
 
 			for (var name in this.uniforms) {
-				var mapping = this.uniformCallMapping[name];
-				if (mapping === undefined) {
-					console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-					// delete this.uniforms[name];
-				}
+				// var mapping = this.uniformCallMapping[name];
+				// if (mapping === undefined) {
+					// console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
+				// }
 
 				var value = this.uniforms[name];
 				if (this.defaultCallbacks[value]) {
 					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
-			for (var name in this.uniformCallMapping) {
-				var mapping = this.uniforms[name];
-				if (mapping === undefined) {
-					console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
-				}
-			}
+			// for (var name in this.uniformCallMapping) {
+				// var mapping = this.uniforms[name];
+				// if (mapping === undefined) {
+					// console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
+				// }
+			// }
 		}
 
 		console.log('Shader [' + this.name + '][' + this._id + '] compiled');

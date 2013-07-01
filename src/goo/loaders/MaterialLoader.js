@@ -79,7 +79,7 @@ define([
 		var that = this;
 		var promises = []; // Keep track of promises
 		var shader;
-		var materialState = this._getDefaultMaterialState();
+		var materialState; // = this._getDefaultMaterialState();
 		var materialUniforms = {};
 		var textures = {};
 
@@ -88,6 +88,7 @@ define([
 				texture = JSON.parse(texture);
 			}
 			if (!texture.url) {
+				textures[key] = null;
 				return;
 			}
 			var tc = new TextureCreator({loader: that._loader });
