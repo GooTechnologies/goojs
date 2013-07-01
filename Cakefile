@@ -127,6 +127,12 @@ task 'jsdoc',
 		# To make this work in Windows too,
 		# we could run JSdoc as a Node module.
 		runCommand 'tools/generate_jsdoc.sh'
+		
+task 'visualtoc',
+	'Creates a table of content index.html for visual tests',
+	->
+		toc = require('./visual-test/toc')
+		toc.run()
 
 
 
