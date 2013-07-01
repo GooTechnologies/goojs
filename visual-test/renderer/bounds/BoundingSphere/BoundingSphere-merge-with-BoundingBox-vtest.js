@@ -75,58 +75,54 @@ require([
 		boxEntity.addToWorld();
 	}
 
-	function boundingBoxDemo(goo) {
-		function showMergedBoundingBoxes(shape1MeshData, shape2MeshData) {
-			// shapes and boundingBox material
-			var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
-			material1.uniforms.color = [0.3, 0.6, 0.9];
-
-			// wrap shapeMeshData-s entities entity
-			var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
-			shape1Entity.meshRendererComponent.materials.push(material1);
-			shape1Entity.addToWorld();
-			var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
-			shape2Entity.meshRendererComponent.materials.push(material1);
-			shape2Entity.addToWorld();
-
-			// bounding sphere for shape 1
-			var boundingSphere1 = new BoundingSphere();
-			boundingSphere1.computeFromPoints(shape1MeshData.dataViews.POSITION);
-
-			// bounding box for shape 2
-			var boundingBox2 = new BoundingBox();
-			boundingBox2.computeFromPoints(shape2MeshData.dataViews.POSITION);
-
-			// get mergedBoundingSphere
-			var boundingSphere1_1 = new BoundingSphere();
-			boundingSphere1_1.computeFromPoints(shape1MeshData.dataViews.POSITION);
-			var mergedBoundingSphere = boundingSphere1_1.merge(boundingBox2);
-
-			addBoundingSphereToWorld(goo, boundingSphere1);
-			addBoundingBoxToWorld(goo, boundingBox2);
-			addBoundingSphereToWorld(goo, mergedBoundingSphere);
-
-			// camera
-			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.addToWorld();
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(new OrbitCamControlScript({
-				domElement : goo.renderer.domElement,
-				spherical : new Vector3(5, Math.PI / 2, 0)
-			}));
-			cameraEntity.setComponent(scripts);
-		}
-
+	function boundingSphereDemo(goo) {
 		var shape1MeshData = ShapeCreator.createQuad();
 		shape1MeshData.translateVertices(2, 0, 0);
 		var shape2MeshData = ShapeCreator.createBox();
 		shape2MeshData.translateVertices(0, 2, 0);
 
-		showMergedBoundingBoxes(shape1MeshData, shape2MeshData);
+		// shapes and boundingBox material
+		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		material1.uniforms.color = [0.3, 0.6, 0.9];
+
+		// wrap shapeMeshData-s entities entity
+		var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
+		shape1Entity.meshRendererComponent.materials.push(material1);
+		shape1Entity.addToWorld();
+		var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
+		shape2Entity.meshRendererComponent.materials.push(material1);
+		shape2Entity.addToWorld();
+
+		// bounding sphere for shape 1
+		var boundingSphere1 = new BoundingSphere();
+		boundingSphere1.computeFromPoints(shape1MeshData.dataViews.POSITION);
+
+		// bounding box for shape 2
+		var boundingBox2 = new BoundingBox();
+		boundingBox2.computeFromPoints(shape2MeshData.dataViews.POSITION);
+
+		// get mergedBoundingSphere
+		var boundingSphere1_1 = new BoundingSphere();
+		boundingSphere1_1.computeFromPoints(shape1MeshData.dataViews.POSITION);
+		var mergedBoundingSphere = boundingSphere1_1.merge(boundingBox2);
+
+		addBoundingSphereToWorld(goo, boundingSphere1);
+		addBoundingBoxToWorld(goo, boundingBox2);
+		addBoundingSphereToWorld(goo, mergedBoundingSphere);
+
+		// camera
+		var camera = new Camera(45, 1, 1, 1000);
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.addToWorld();
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(5, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
 	}
 
 	function init() {
@@ -134,7 +130,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		boundingBoxDemo(goo);
+		boundingSphereDemo(goo);
 	}
 
 	init();

@@ -76,57 +76,53 @@ require([
 	}
 
 	function boundingBoxDemo(goo) {
-		function showMergedBoundingBoxes(shape1MeshData, shape2MeshData) {
-			// shapes and boundingBox material
-			var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
-			material1.uniforms.color = [0.3, 0.6, 0.9];
-
-			// wrap shapeMeshData-s entities entity
-			var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
-			shape1Entity.meshRendererComponent.materials.push(material1);
-			shape1Entity.addToWorld();
-			var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
-			shape2Entity.meshRendererComponent.materials.push(material1);
-			shape2Entity.addToWorld();
-
-			// bounding box for shape 1
-			var boundingBox1 = new BoundingBox();
-			boundingBox1.computeFromPoints(shape1MeshData.dataViews.POSITION);
-
-			// bounding sphere for shape 2
-			var boundingSphere2 = new BoundingSphere();
-			boundingSphere2.computeFromPoints(shape2MeshData.dataViews.POSITION);
-
-			// get mergedBoundingBox
-			var boundingBox1_1 = new BoundingBox();
-			boundingBox1_1.computeFromPoints(shape1MeshData.dataViews.POSITION);
-			var mergedBoundingBox = boundingBox1_1.merge(boundingSphere2);
-
-			addBoundingBoxToWorld(goo, boundingBox1);
-			addBoundingSphereToWorld(goo, boundingSphere2);
-			addBoundingBoxToWorld(goo, mergedBoundingBox);
-
-			// camera
-			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.addToWorld();
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(new OrbitCamControlScript({
-				domElement : goo.renderer.domElement,
-				spherical : new Vector3(5, Math.PI / 2, 0)
-			}));
-			cameraEntity.setComponent(scripts);
-		}
-
 		var shape1MeshData = ShapeCreator.createSphere();
 		shape1MeshData.translateVertices(2, 0, 0);
 		var shape2MeshData = ShapeCreator.createQuad();
 		shape2MeshData.translateVertices(0, 2, 0);
 
-		showMergedBoundingBoxes(shape1MeshData, shape2MeshData);
+		// shapes and boundingBox material
+		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		material1.uniforms.color = [0.3, 0.6, 0.9];
+
+		// wrap shapeMeshData-s entities entity
+		var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
+		shape1Entity.meshRendererComponent.materials.push(material1);
+		shape1Entity.addToWorld();
+		var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
+		shape2Entity.meshRendererComponent.materials.push(material1);
+		shape2Entity.addToWorld();
+
+		// bounding box for shape 1
+		var boundingBox1 = new BoundingBox();
+		boundingBox1.computeFromPoints(shape1MeshData.dataViews.POSITION);
+
+		// bounding sphere for shape 2
+		var boundingSphere2 = new BoundingSphere();
+		boundingSphere2.computeFromPoints(shape2MeshData.dataViews.POSITION);
+
+		// get mergedBoundingBox
+		var boundingBox1_1 = new BoundingBox();
+		boundingBox1_1.computeFromPoints(shape1MeshData.dataViews.POSITION);
+		var mergedBoundingBox = boundingBox1_1.merge(boundingSphere2);
+
+		addBoundingBoxToWorld(goo, boundingBox1);
+		addBoundingSphereToWorld(goo, boundingSphere2);
+		addBoundingBoxToWorld(goo, mergedBoundingBox);
+
+		// camera
+		var camera = new Camera(45, 1, 1, 1000);
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.addToWorld();
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(5, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
 	}
 
 	function init() {

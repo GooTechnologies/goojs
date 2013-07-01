@@ -52,52 +52,48 @@ require([
 		return meshData;
 	}
 
-	// REVIEW: Should be boundingsphere I guess.
-	function boundingBoxDemo(goo) {
-		function showBoundingBox(shapeMeshData) {
-			// shape and boundingBox material
-			var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
-			material1.uniforms.color = [0.3, 0.6, 0.9];
-			var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
-			material2.uniforms.color = [0.3, 0.9, 0.6];
-			material2.wireframe = true;
-
-			// wrap shapeMeshData in an entity
-			var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
-			shapeEntity.meshRendererComponent.materials.push(material1);
-			shapeEntity.addToWorld();
-
-			// bounding sphere
-			var boundingSphere = new BoundingSphere();
-			boundingSphere.computeFromPoints(shapeMeshData.dataViews.POSITION);
-			var radius = boundingSphere.radius;
-			var xCenter = boundingSphere.center.data[0];
-			var yCenter = boundingSphere.center.data[1];
-			var zCenter = boundingSphere.center.data[2];
-
-			var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
-			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-			sphereEntity.meshRendererComponent.materials.push(material2);
-			sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-			sphereEntity.addToWorld();
-
-			// camera
-			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.addToWorld();
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(new OrbitCamControlScript({
-				domElement : goo.renderer.domElement,
-				spherical : new Vector3(5, Math.PI / 2, 0)
-			}));
-			cameraEntity.setComponent(scripts);
-		}
-
+	function boundingSphereDemo(goo) {
 		var shapeMeshData = buildCustomTriangle([0, -1, 0, 1, 0, 0, 0, 1, 0]);
-		showBoundingBox(shapeMeshData);
+
+		// shape and boundingBox material
+		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		material1.uniforms.color = [0.3, 0.6, 0.9];
+		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		material2.uniforms.color = [0.3, 0.9, 0.6];
+		material2.wireframe = true;
+
+		// wrap shapeMeshData in an entity
+		var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
+		shapeEntity.meshRendererComponent.materials.push(material1);
+		shapeEntity.addToWorld();
+
+		// bounding sphere
+		var boundingSphere = new BoundingSphere();
+		boundingSphere.computeFromPoints(shapeMeshData.dataViews.POSITION);
+		var radius = boundingSphere.radius;
+		var xCenter = boundingSphere.center.data[0];
+		var yCenter = boundingSphere.center.data[1];
+		var zCenter = boundingSphere.center.data[2];
+
+		var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
+		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
+		sphereEntity.meshRendererComponent.materials.push(material2);
+		sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
+		sphereEntity.addToWorld();
+
+		// camera
+		var camera = new Camera(45, 1, 1, 1000);
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.addToWorld();
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(5, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
 	}
 
 	function init() {
@@ -105,7 +101,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		boundingBoxDemo(goo);
+		boundingSphereDemo(goo);
 	}
 
 	init();
