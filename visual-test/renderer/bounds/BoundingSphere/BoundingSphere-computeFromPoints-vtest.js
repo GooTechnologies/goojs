@@ -17,7 +17,7 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3'
 ], function (
 	GooRunner,
@@ -32,10 +32,25 @@ require([
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
-	BoundingBox,
+	BoundingSphere,
 	Vector3
 	) {
 	'use strict';
+
+	function buildCustomTriangle(verts) {
+		var indices = [];
+		indices.push(0, 1, 2);
+
+		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 3, indices.length);
+
+		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+		meshData.getIndexBuffer().set(indices);
+
+		meshData.indexLengths = [3];
+		meshData.indexModes = ['Triangles'];
+
+		return meshData;
+	}
 
 	function boundingBoxDemo(goo) {
 		function showBoundingBox(shapeMeshData) {
@@ -51,21 +66,19 @@ require([
 			shapeEntity.meshRendererComponent.materials.push(material1);
 			shapeEntity.addToWorld();
 
-			// bounding box
-			var boundingBox = new BoundingBox();
-			boundingBox.computeFromPoints(shapeMeshData.dataViews.POSITION);
-			var xSize = boundingBox.xExtent * 2;
-			var ySize = boundingBox.yExtent * 2;
-			var zSize = boundingBox.zExtent * 2;
-			var xCenter = boundingBox.center.data[0];
-			var yCenter = boundingBox.center.data[1];
-			var zCenter = boundingBox.center.data[2];
+			// bounding sphere
+			var boundingSphere = new BoundingSphere();
+			boundingSphere.computeFromPoints(shapeMeshData.dataViews.POSITION);
+			var radius = boundingSphere.radius;
+			var xCenter = boundingSphere.center.data[0];
+			var yCenter = boundingSphere.center.data[1];
+			var zCenter = boundingSphere.center.data[2];
 
-			var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-			var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-			boxEntity.meshRendererComponent.materials.push(material2);
-			boxEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-			boxEntity.addToWorld();
+			var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
+			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
+			sphereEntity.meshRendererComponent.materials.push(material2);
+			sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
+			sphereEntity.addToWorld();
 
 			// camera
 			var camera = new Camera(45, 1, 1, 1000);
@@ -82,7 +95,7 @@ require([
 			cameraEntity.setComponent(scripts);
 		}
 
-		var shapeMeshData = ShapeCreator.createSphere();
+		var shapeMeshData = buildCustomTriangle([0, -1, 0, 1, 0, 0, 0, 1, 0]);
 		showBoundingBox(shapeMeshData);
 	}
 

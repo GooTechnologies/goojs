@@ -375,6 +375,22 @@ function (
 	};
 
 	/**
+	 * Translates the vertices of the MeshData
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {MeshData} Self to allow chaining
+	 */
+	MeshData.prototype.translateVertices = function(x, y, z) {
+		for (var i = 0; i < this.dataViews.POSITION.length; i += 3) {
+			this.dataViews.POSITION[i + 0] += x;
+			this.dataViews.POSITION[i + 1] += y;
+			this.dataViews.POSITION[i + 2] += z;
+		}
+		return this;
+	};
+
+	/**
 	 * Creates a new MeshData object representing the normals of the current MeshData object
 	 * @param {number} [size=1] The size of the normals
 	 * @returns {MeshData}

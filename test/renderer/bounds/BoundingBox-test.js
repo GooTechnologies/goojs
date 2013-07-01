@@ -131,10 +131,8 @@ define([
 				var triangleMeshData = buildCustomTriangle([0, 0, 9, 0, 0, 10, 0, 1, 10]);
 				boundingBox1 = new BoundingBox();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
-				console.log(boundingBox1);
 				boundingBox2 = new BoundingBox();
 				boundingBox2.computeFromPoints(triangleMeshData.dataViews.POSITION);
-				console.log(boundingBox2);
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
 				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
 				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
