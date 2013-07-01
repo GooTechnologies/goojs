@@ -62,7 +62,7 @@ _) ->
 			else
 				throw new Error("parameters.rootPath or parameters.loader must be defined")
 			@_configs = {}
-			@_textureCreator = new TextureCreator(loader:@_loader)
+			
 			
 		
 
@@ -178,34 +178,26 @@ _) ->
 			else
 				type = @_getTypeForRef(ref)
 				
-				if type == "texture"
-					# TODO: Support pixel map textures
-					textureObj = @_objects[ref] = if config.url?
-						@_textureCreator.loadTexture2D(config.url)
+				handlerClass = ConfigHandler.getHandler(type)
+				if handlerClass
+					@_handlers ?= {}
+					handler = @_handlers[type]
+					if handler
+						_.extend handler,
+							world: @_world
+							getConfig: @_loadRef.bind(@)
+							updateObject: @_handle.bind(@)
+							options: _.clone(options)
 					else
-						null
-					pu.createDummyPromise(textureObj)
-				else
-					handlerClass = ConfigHandler.getHandler(type)
-					if handlerClass
-						@_handlers ?= {}
-						handler = @_handlers[type]
-						if handler
-							_.extend handler,
-								world: @_world
-								getConfig: @_loadRef.bind(@)
-								updateObject: @_handle.bind(@)
-								options: _.clone(options)
-						else
-							handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
+						handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
+					
+					console.log "Handling #{ref}"
+					@_objects[ref] = handler.update(ref, config).then (object)=>
+						@_objects[ref] = object
 						
-						console.log "Handling #{ref}"
-						@_objects[ref] = handler.update(ref, config).then (object)=>
-							@_objects[ref] = object
-							
-					else
-						console.warn "No handler for type #{type}"
-						pu.createDummyPromise(null)
+				else
+					console.warn "No handler for type #{type}"
+					pu.createDummyPromise(null)
 
 
 		###*
@@ -221,12 +213,19 @@ _) ->
 			else if @_configs[ref]? and not noCache
 				return pu.createDummyPromise(@_configs[ref])
 			else
-				@_configs[ref] = @_loader.load ref, (data)=>
-					if _jsonTest.test(ref) 
-						@_configs[ref] = JSON.parse(data)
-					else
+				if @_isImageRef(ref)
+					@_configs[ref] = @_loader.loadImage(ref)
+					.then (data)=>
 						@_configs[ref] = data
-
+				else
+					if @_isBinaryRef(ref) then mode = Loader.ARRAY_BUFFER else mode = null
+					@_configs[ref] = @_loader.load ref, (data)=>
+						if _jsonTest.test(ref) 
+							@_configs[ref] = JSON.parse(data)
+						else
+							@_configs[ref] = data
+					,mode
+				
 		# Find all the references in a config, and return in a flat list
 		_getRefsFromConfig: (config)->
 			_refs = []
@@ -243,10 +242,20 @@ _) ->
 			return _refs
 
 		_getTypeForRef: (ref)->
-			type = ref.split('.').pop()
+			type = ref.split('.').pop().toLowerCase()
 			if type == 'ent' then type = 'entity'
-			return type
-			
+			return type	
+
+		_isImageRef: (ref)->
+			type = @_getTypeForRef(ref)
+			return type in ['png', 'jpg', 'jpeg']
+
+		_isBinaryRef: (ref)->
+			type = @_getTypeForRef(ref)
+			return type in ['dds']
+
+
+
 		###*
 		* Get the engine object for a given ref from the loader cache.
 		* The {DynamicLoader} cache is still quite rudimentary, and should be updated. 
