@@ -239,7 +239,8 @@ function (
 		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
 		} else {
-			return this.mergeSphere(bv.center, Math.max(bv.xExtent, bv.yExtent, bv.zExtent), this);
+			var v = new Vector3().setd(bv.xExtent, bv.yExtent, bv.zExtent);
+			return this.mergeSphere(bv.center, v.length(), this);
 		}
 	};
 
