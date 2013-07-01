@@ -38,6 +38,7 @@ require([
 	'use strict';
 
 	function boundingBoxDemo(goo) {
+		//REVIEW: Why wrap a function in a function?
 		function showBoundingBox(shapeMeshData) {
 			// shape and boundingBox material
 			var material1 = Material.createMaterial(ShaderLib.simpleColored, '');

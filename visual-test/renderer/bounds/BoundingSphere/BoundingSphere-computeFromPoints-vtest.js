@@ -52,6 +52,7 @@ require([
 		return meshData;
 	}
 
+	// REVIEW: Should be boundingsphere I guess.
 	function boundingBoxDemo(goo) {
 		function showBoundingBox(shapeMeshData) {
 			// shape and boundingBox material
