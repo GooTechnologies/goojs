@@ -170,8 +170,9 @@ define([
 			image.src = window.URL.createObjectURL(blob);
 			return image;
 		});
+
 		return promise;
-	}
+	};
 
 	return Ajax;
 });
