@@ -36,8 +36,7 @@ define [
 				for key, uniform of shaderDefinition.uniforms
 	
 					if typeof uniform == 'string'
-						# REVIEW: this doesn't match a function without arguments!
-						funcRegexp = /^function\s?\(([^\)]+)\)\s*\{(.*)}$/
+						funcRegexp = /^function\s?\(([^\)]*)\)\s*\{(.*)\}$/
 						test = uniform.match(funcRegexp);
 						if test?.length == 3
 							args = test[1].replace(' ','').split(',')

@@ -41,8 +41,8 @@ _) ->
 	*
 	* @constructor
 	* @param {object} parameters
-	* @param {World} parameters.world The target World object.
-	* @param {string} [parameters.rootPath] The root path where to get resources. Either <code>parameters.rootPath</code> or <code>parameters.loader</code> must be defined.
+	* @param {World} [parameters.world] The target World object.
+	* @param {string} [parameters.rootPath] The root path where to get resources. 
 	*###
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
@@ -51,9 +51,9 @@ _) ->
 		###*
 		* Create a new loader
 		*
-		* @param {object} options
-		* @param {World} parameters.world The target World object.
-		* @param {string} [options.rootPath] Root path of the resources that will be loaded.
+		* @param {object} parameters
+		* @param {World} [parameters.world] The target World object.
+		* @param {string} [parameters.rootPath] The root path where to get resources. 
 		* 	
 		* @returns {DynamicLoader} 
 		*###
@@ -75,8 +75,8 @@ _) ->
 		* @param {object} configs Configs object. Keys should be refs, and values are the config objects.
 		* @param {object} options
 		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-		* REVIEW: document options.noCache as well?
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
+		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -103,7 +103,7 @@ _) ->
 		* @param {object} options
 		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* REVIEW: document options.noCache as well?
+		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -133,6 +133,7 @@ _) ->
 		* @param {object} options
 		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
+		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -145,6 +146,10 @@ _) ->
 		* 
 		* @param {string} ref Ref of object to update
 		* @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
+		* @param {object} options
+		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
+		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
 		update: (ref, config, options={})->
