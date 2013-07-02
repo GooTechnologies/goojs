@@ -53,7 +53,7 @@ _) ->
 		*
 		* @param {object} options
 		* @param {World} parameters.world The target World object.
-		* @param {string} [config.rootPath] Root path of the resources that will be loaded. 
+		* @param {string} [options.rootPath] Root path of the resources that will be loaded.
 		* 	
 		* @returns {DynamicLoader} 
 		*###
@@ -74,7 +74,8 @@ _) ->
 		* @param {string} ref Ref of object to load
 		* @param {object} configs Configs object. Keys should be refs, and values are the config objects.
 		* @param {object} options
-		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* REVIEW: document options.noCache as well?
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
@@ -100,9 +101,10 @@ _) ->
 		* @param {string} ref Ref of object to load
 		* @param {string} bundleName name of the bundle (including extension) 
 		* @param {object} options
-		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
+		* REVIEW: document options.noCache as well?
+		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromBundle: (ref, bundleName, options={})->
