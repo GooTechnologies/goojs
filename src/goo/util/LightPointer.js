@@ -252,5 +252,17 @@ define([
 		return lightEntity;
 	};
 
+	/**
+	 * Removes any mesh attached to an entity with a light component
+	 * @param {Entity} light entity to remove the mesh components from
+	 * @return {Entity} the light entity for chaining.
+	 */
+	LightPointer.removeMesh = function (lightEntity) {
+		lightEntity.clearComponent('meshDataComponent');
+		lightEntity.clearComponent('meshRendererComponent');
+
+		return lightEntity;
+	};
+
 	return LightPointer;
 });

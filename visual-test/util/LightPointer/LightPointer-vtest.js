@@ -122,9 +122,9 @@ require([
 
 		// add spot light -----------------------------------------------------
 		var spotLight = new SpotLight();
-		spotLight.color.data[0] = 0.0;
-		spotLight.color.data[1] = 0.2;
-		spotLight.color.data[2] = 0.9;
+		spotLight.color.data[0] = 0.2;
+		spotLight.color.data[1] = 0.4;
+		spotLight.color.data[2] = 1.0;
 		spotLight.angle = 15;
 		spotLight.range = 10;
 
