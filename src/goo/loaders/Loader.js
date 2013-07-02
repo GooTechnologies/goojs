@@ -30,6 +30,7 @@ define([
 		this.xhr = parameters.xhr || new Ajax(this._progressCallback.bind(this));
 		this._progressCallbacks = [];
 		this.total = 0;
+		console.warn('Loader is deprecated, use DynamicLoader instead');
 	}
 
 	/**

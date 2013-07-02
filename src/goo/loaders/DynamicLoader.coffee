@@ -3,7 +3,7 @@ define [
 	'goo/loaders/handlers/ConfigHandler'
 	'goo/loaders/handlers/ComponentHandler'
 	
-	'goo/loaders/Loader'
+	'goo/util/Ajax'
 	'goo/renderer/TextureCreator'
 	'goo/util/rsvp'
 	'goo/util/StringUtil'
@@ -12,18 +12,24 @@ define [
 	# Short version of underscore.js
 	'goo/util/ObjectUtil'
 	
-	# Load all handlers
-	'goo/loaders/handlers/SceneHandler'
-	'goo/loaders/handlers/EntityHandler'
+	# Load all built-in handlers
 	'goo/loaders/handlers/CameraComponentHandler'
+	'goo/loaders/handlers/EntityHandler'
 	'goo/loaders/handlers/LightComponentHandler'
+	'goo/loaders/handlers/MaterialHandler'
 	'goo/loaders/handlers/MeshDataComponentHandler'
+	'goo/loaders/handlers/MeshDataHandler'
 	'goo/loaders/handlers/MeshRendererComponentHandler'
+	'goo/loaders/handlers/SceneHandler'
+	#'goo/loaders/handlers/ScriptComponentHandler'
+	'goo/loaders/handlers/ShaderHandler'
+	'goo/loaders/handlers/SkeletonHandler'
+	'goo/loaders/handlers/TextureHandler'
 	'goo/loaders/handlers/TransformComponentHandler'
 ], (
 ConfigHandler,
 ComponentHandler,
-Loader,
+Ajax,
 TextureCreator,
 RSVP,
 su,
@@ -36,7 +42,6 @@ _) ->
 	* @constructor
 	* @param {object} parameters
 	* @param {World} parameters.world The target World object.
-	* @param {Loader} [parameters.loader]
 	* @param {string} [parameters.rootPath] The root path where to get resources. Either <code>parameters.rootPath</code> or <code>parameters.loader</code> must be defined.
 	*###
 	class DynamicLoader			
@@ -47,25 +52,18 @@ _) ->
 		* Create a new loader
 		*
 		* @param {object} options
-		* @param {Loader} [config.loader] Loader to take care of the AJAX calls
-		* @param {Loader} [config.rootPath] Root path of the resources that will be loaded. Either {config.rootPath} or {config.loader} must be set.
+		* @param {World} parameters.world The target World object.
+		* @param {string} [config.rootPath] Root path of the resources that will be loaded. 
 		* 	
 		* @returns {DynamicLoader} 
 		*###
 		
 		constructor: (options)->
 			@_world = options.world or throw new Error("World argument cannot be null")
-			if options.loader
-				@_loader = options.loader 
-			else if options.rootPath?
-				@_loader = new Loader(rootPath: options.rootPath)
-			else
-				throw new Error("parameters.rootPath or parameters.loader must be defined")
+			@_rootPath = options.rootPath 
+			if not @_rootPath? then throw new Error("parameters.rootPath must be defined")
 			@_configs = {}
-			
-			
-		
-
+			@_ajax = new Ajax()
 
 		###*
 		* Load an object with the specified ref from an already loaded associative array. Keys should be refs, and values 
@@ -213,18 +211,19 @@ _) ->
 			else if @_configs[ref]? and not noCache
 				return pu.createDummyPromise(@_configs[ref])
 			else
+				url = @_rootPath + window.escape(ref)
 				if @_isImageRef(ref)
-					@_configs[ref] = @_loader.loadImage(ref)
+					@_configs[ref] = @_ajax.loadImage(url)
 					.then (data)=>
 						@_configs[ref] = data
 				else
-					if @_isBinaryRef(ref) then mode = Loader.ARRAY_BUFFER else mode = null
-					@_configs[ref] = @_loader.load ref, (data)=>
+					if @_isBinaryRef(ref) then mode = Ajax.ARRAY_BUFFER else mode = null
+					@_configs[ref] = @_ajax.load(url, mode)
+					.then (data)=>
 						if _jsonTest.test(ref) 
 							@_configs[ref] = JSON.parse(data)
 						else
 							@_configs[ref] = data
-					,mode
 				
 		# Find all the references in a config, and return in a flat list
 		_getRefsFromConfig: (config)->

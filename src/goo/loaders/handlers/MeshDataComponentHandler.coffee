@@ -1,7 +1,5 @@
 define [
 	'goo/loaders/handlers/ComponentHandler'
-	'goo/loaders/handlers/MeshDataHandler'
-	'goo/loaders/handlers/SkeletonHandler'
 
 	'goo/entities/components/MeshDataComponent'
 	'goo/renderer/bounds/BoundingBox'
@@ -12,8 +10,6 @@ define [
 	
 ], (
 ComponentHandler,
-MeshDataHandler,
-SkeletonHandler,
 MeshDataComponent,
 BoundingBox,
 RSVP,

@@ -8,8 +8,6 @@ define [
 	
 	'goo/util/ObjectUtil'
 	
-	'goo/loaders/handlers/ShaderHandler'
-	'goo/loaders/handlers/MaterialHandler'
 
 ], (
 	ComponentHandler

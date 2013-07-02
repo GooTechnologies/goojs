@@ -9,7 +9,6 @@ define [
 	'goo/util/PromiseUtil'
 	'goo/util/ObjectUtil'
 
-	'goo/loaders/handlers/TextureHandler'
 ], (
 	ConfigHandler,
 	Material,
