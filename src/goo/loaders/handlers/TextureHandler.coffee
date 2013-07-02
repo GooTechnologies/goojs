@@ -28,11 +28,9 @@ define [
 		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_ddsLoader = new DdsLoader()
 
-		_prepare: (config)->
-			_.defaults config, 
-				flipVertical:true
-
 		update: (ref, config)->
+			_.defaults config, 
+				verticalFlip:true
 			console.log "Loading texture with url #{config.url}"
 			if not config.url
 				return pu.createDummyPromise(null)
