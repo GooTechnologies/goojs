@@ -45,17 +45,17 @@ require([
 	) {
 	'use strict';
 
-	function addSpin(entity, radius, speed, altitude) {
+	function addSpin(entity, radiusX, radiusZ, speed, altitude) {
 		entity.setComponent(new ScriptComponent({
 			run: function (entity) {
 				entity.transformComponent.transform.translation.setd(
-					Math.cos(World.time * speed) * radius,
+					Math.cos(World.time * speed) * radiusX,
 					altitude,
-					Math.sin(World.time * speed) * radius
+					Math.sin(World.time * speed) * radiusZ
 				);
 				entity.transformComponent.transform.setRotationXYZ(
 					0,
-					-World.time * speed - Math.PI/2,
+					-World.time * speed - Math.PI/4,
 					0
 				);
 				entity.transformComponent.setUpdated();
@@ -84,7 +84,7 @@ require([
 		pointLight.color.data[0] = 0.9;
 		pointLight.color.data[1] = 0.0;
 		pointLight.color.data[2] = 0.2;
-		pointLight.range = 10;
+		pointLight.range = 8;
 
 		var pointLightOrbitRadius = 5;
 		var pointLightOrbitSpeed = 0.5;
@@ -95,7 +95,7 @@ require([
 
 		LightPointer.attachPointer(pointLightEntity);
 
-		addSpin(pointLightEntity, pointLightOrbitRadius, pointLightOrbitSpeed, pointLightAltitude);
+		addSpin(pointLightEntity, pointLightOrbitRadius, pointLightOrbitRadius, pointLightOrbitSpeed, pointLightAltitude);
 		pointLightEntity.addToWorld();
 		goo.world.process();
 
@@ -105,6 +105,7 @@ require([
 		directionalLight.color.data[0] = 0.2;
 		directionalLight.color.data[1] = 0.9;
 		directionalLight.color.data[2] = 0.0;
+		directionalLight.intensity = 0.25;
 
 		var directionalLightOrbitRadius = 0;
 		var directionalLightOrbitSpeed = 0.7;
@@ -115,7 +116,7 @@ require([
 
 		LightPointer.attachPointer(directionalLightEntity);
 
-		addSpin(directionalLightEntity, directionalLightOrbitRadius, directionalLightOrbitSpeed, directionalLightAltitude);
+		addSpin(directionalLightEntity, directionalLightOrbitRadius, directionalLightOrbitRadius, directionalLightOrbitSpeed, directionalLightAltitude);
 		directionalLightEntity.addToWorld();
 		goo.world.process();
 
@@ -137,7 +138,7 @@ require([
 
 		LightPointer.attachPointer(spotLightEntity);
 
-		addSpin(spotLightEntity, spotLightOrbitRadius, spotLightOrbitSpeed, spotLightAltitude);
+		addSpin(spotLightEntity, spotLightOrbitRadius, spotLightOrbitRadius * 2, spotLightOrbitSpeed, spotLightAltitude);
 		spotLightEntity.addToWorld();
 		goo.world.process();
 
@@ -145,14 +146,12 @@ require([
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(5, Math.PI / 2, 0)
+			spherical : new Vector3(20, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}

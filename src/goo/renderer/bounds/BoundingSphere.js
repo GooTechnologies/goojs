@@ -239,8 +239,8 @@ function (
 		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
 		} else {
-			var v = new Vector3().setd(bv.xExtent, bv.yExtent, bv.zExtent);
-			return this.mergeSphere(bv.center, v.length(), this);
+			var boxRadius = this.vec.setd(bv.xExtent, bv.yExtent, bv.zExtent).length();
+			return this.mergeSphere(bv.center, boxRadius, this);
 		}
 	};
 
@@ -275,7 +275,6 @@ function (
 
 		// init a center var using our center
 		var rCenter = store.center;
-		rCenter.setv(this.center);
 
 		// if our centers are at least a tiny amount apart from each other...
 		if (length > MathUtils.EPSILON) {
@@ -283,9 +282,6 @@ function (
 			var coeff = (length + radiusDiff) / (2.0 * length);
 			rCenter.addv(diff.mul(coeff));
 		}
-
-		// set center on our resulting bounds
-		store.center.setv(rCenter);
 
 		// Set radius
 		store.radius = 0.5 * (length + this.radius + radius);
