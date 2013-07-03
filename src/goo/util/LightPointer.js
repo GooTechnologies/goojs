@@ -29,26 +29,13 @@ define([
 	) {
 	"use strict";
 
-	/* REVIEW:
-	 * All the shape building functionality should be moved to goo/shapes/ somewhere,
-	 * might be useful for people.
-	 *
-	 * The attachpointer stuff and so on should be moved to a new DebugDrawComponent
-	 * (Which will cover cameras and other components in the future)
-	 * All the meshdata attached to the DebugDrawComponent should be unit size.
-	 * We should then implement a DebugDrawSystem that updates colors, directions and sizes
-	 * and draws the debug meshes correctly.
-	 *
-	 * But perhaps that's another story.
-	 */
-
 	function LightPointer() {
 	}
 
 	function buildCircle(radius, nSegments) {
-		// REVIEW: Perhaps some defaults like
-		// radius = radius || 1;
-		// nSegments = nSegments || 8;
+		radius = radius || 1;
+		nSegments = nSegments || 8;
+
 		var verts = [];
 		var indices = [];
 
@@ -71,33 +58,33 @@ define([
 	}
 
 	function buildBall(radius) {
+		radius = radius || 1;
+
 		var meshBuilder = new MeshBuilder();
-
 		var nSegments = 128;
-
 		var circle = buildCircle(radius, nSegments);
+		var transform;
 
-		var transform1 = new Transform();
-		transform1.update();
-		meshBuilder.addMeshData(circle, transform1);
+		transform = new Transform();
+		meshBuilder.addMeshData(circle, transform);
 
-		//REVIEW: You could reuse transform1 and only use one transform object per function.
-		// You could even have a static object wide LightPointer.transform, since you don't do anything asynchronous.
-		var transform2 = new Transform();
-		transform2.rotation.fromAngles(0, Math.PI/2, 0);
-		transform2.update();
-		meshBuilder.addMeshData(circle, transform2);
+		transform = new Transform();
+		transform.rotation.fromAngles(0, Math.PI/2, 0);
+		transform.update();
+		meshBuilder.addMeshData(circle, transform);
 
-		var transform3 = new Transform();
-		transform3.rotation.fromAngles(Math.PI/2, Math.PI/2, 0);
-		transform3.update();
-		meshBuilder.addMeshData(circle, transform3);
+		transform = new Transform();
+		transform.rotation.fromAngles(Math.PI/2, Math.PI/2, 0);
+		transform.update();
+		meshBuilder.addMeshData(circle, transform);
 
 		var meshDatas = meshBuilder.build();
 		return meshDatas[0];
 	}
 
 	function buildUmbrella(nSegments) {
+		nSegments = nSegments || 8;
+
 		var verts = [0, 0, 0];
 		var indices = [];
 
@@ -119,6 +106,9 @@ define([
 	}
 
 	function buildCone(angle, length) {
+		angle = angle || 45;
+		length = length || 1;
+
 		var meshBuilder = new MeshBuilder();
 
 		var nSegments = 64;
@@ -145,6 +135,8 @@ define([
 	}
 
 	function buildTube(nSegments) {
+		nSegments = nSegments || 8;
+
 		var verts = [];
 		var indices = [];
 
