@@ -4,7 +4,8 @@ define [
 	'goo/renderer/TextureCreator'
 	'goo/renderer/Texture'
 	'goo/loaders/dds/DdsLoader'
-	
+	'goo/loaders/tga/TgaLoader'
+
 	'goo/util/rsvp'
 	'goo/util/PromiseUtil'
 	'goo/renderer/Util'
@@ -15,6 +16,7 @@ define [
 	TextureCreator,
 	Texture,
 	DdsLoader,
+	TgaLoader,
 	RSVP,
 	pu,
 	ru,
@@ -24,6 +26,10 @@ define [
 
 	class TextureHandler extends ConfigHandler			
 		@_register('texture')		
+
+		@loaders:
+			dds: DdsLoader
+			tga: TgaLoader
 
 		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_ddsLoader = new DdsLoader()
@@ -39,13 +45,15 @@ define [
 
 			type = imgRef.split('.').pop().toLowerCase()
 
-			if type == 'dds'
+
+			if type of TextureHandler.loaders
+				textureLoader = new TextureHandler.loaders[type]()
 				texture = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), config)
 				texture.image.dataReady = false
 				texture.a = imgRef
 
 				@getConfig(imgRef).then (data)=>
-					@_ddsLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
+					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
 					return texture
 
 				pu.createDummyPromise(texture)

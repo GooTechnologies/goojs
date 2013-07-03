@@ -47,6 +47,7 @@ _) ->
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
 		
+		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		
 		###*
 		* Create a new loader
@@ -62,6 +63,9 @@ _) ->
 			@_world = options.world or throw new Error("World argument cannot be null")
 			@_rootPath = options.rootPath 
 			if not @_rootPath? then throw new Error("parameters.rootPath must be defined")
+			if @_rootPath.length>1 and @_rootPath.charAt(@_rootPath.length-1) != '/'
+				@_rootPath += '/'
+
 			@_configs = {}
 			@_ajax = new Ajax()
 
@@ -258,8 +262,7 @@ _) ->
 
 		_isBinaryRef: (ref)->
 			type = @_getTypeForRef(ref)
-			return type in ['dds']
-
+			return type in _texture_types
 
 
 		###*
