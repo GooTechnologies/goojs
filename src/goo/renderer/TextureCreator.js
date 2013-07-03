@@ -2,6 +2,7 @@ define([
 	'goo/loaders/Loader',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
+	'goo/loaders/tga/TgaLoader',
 	'goo/util/SimpleResourceUtil',
 	'goo/renderer/Util',
 	'goo/util/Latch'
@@ -11,6 +12,7 @@ function (
 	Loader,
 	Texture,
 	DdsLoader,
+	TgaLoader,
 	SimpleResourceUtil,
 	Util,
 	Latch
@@ -28,7 +30,8 @@ function (
 		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
 
 		this.textureLoaders = {
-			'.dds': new DdsLoader()
+			'.dds': new DdsLoader(),
+			'.tga': new TgaLoader()
 		};
 	}
 
@@ -61,9 +64,7 @@ function (
 		var simpleResourceUtilCallback = {
 			onSuccess: function (/* ArrayBuffer */response) {
 				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
-//				console.info("Loaded image: " + imageURL);
 				TextureCreator._finishedLoading();
-				// callLoadCallback(url);
 				if (callback) { callback(); }
 			}.bind(this),
 			onError: function (t) {
@@ -75,7 +76,6 @@ function (
 		for (var extension in this.textureLoaders) {
 			if (endsWith(imageURL.toLowerCase(), extension)) {
 				var loader = this.textureLoaders[extension];
-//				console.log(extension + ' - ' + loader);
 
 				if (!loader || !loader.isSupported()) {
 					imageURL = imageURL.substring(0, imageURL.length - extension.length);

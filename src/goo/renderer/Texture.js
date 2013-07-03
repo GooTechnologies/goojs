@@ -122,7 +122,7 @@ function (
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
-		if (data instanceof Uint8Array || data instanceof Uint16Array) {
+		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array) {
 			width = width || image.width;
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
@@ -133,7 +133,7 @@ function (
 				this.image.height = height;
 				this.image.isData = true;
 				this.image.dataReady = true;
-				if (data instanceof Uint8Array) {
+				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					settings.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
 					settings.type = 'UnsignedShort4444';
