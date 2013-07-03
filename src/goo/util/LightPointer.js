@@ -29,10 +29,26 @@ define([
 	) {
 	"use strict";
 
+	/* REVIEW:
+	 * All the shape building functionality should be moved to goo/shapes/ somewhere,
+	 * might be useful for people.
+	 *
+	 * The attachpointer stuff and so on should be moved to a new DebugDrawComponent
+	 * (Which will cover cameras and other components in the future)
+	 * All the meshdata attached to the DebugDrawComponent should be unit size.
+	 * We should then implement a DebugDrawSystem that updates colors, directions and sizes
+	 * and draws the debug meshes correctly.
+	 *
+	 * But perhaps that's another story.
+	 */
+
 	function LightPointer() {
 	}
 
 	function buildCircle(radius, nSegments) {
+		// REVIEW: Perhaps some defaults like
+		// radius = radius || 1;
+		// nSegments = nSegments || 8;
 		var verts = [];
 		var indices = [];
 
@@ -65,6 +81,8 @@ define([
 		transform1.update();
 		meshBuilder.addMeshData(circle, transform1);
 
+		//REVIEW: You could reuse transform1 and only use one transform object per function.
+		// You could even have a static object wide LightPointer.transform, since you don't do anything asynchronous.
 		var transform2 = new Transform();
 		transform2.rotation.fromAngles(0, Math.PI/2, 0);
 		transform2.update();
