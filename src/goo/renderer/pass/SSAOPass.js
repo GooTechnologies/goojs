@@ -43,8 +43,8 @@ define([
 		SSAOPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 			this.depthPass.render(renderer, null, this.depthTarget, delta);
 
-			this.outPass.material.textures[0] = readBuffer;
-			this.outPass.material.textures[1] = this.depthTarget;
+			this.outPass.material.setTexture(Shader.DIFFUSE_MAP, readBuffer);
+			this.outPass.material.setTexture(Shader.DEPTH_MAP, this.depthTarget);
 			this.outPass.render(renderer, writeBuffer, readBuffer, delta);
 
 //			this.blurPass.render(renderer, writeBuffer, readBuffer, delta);

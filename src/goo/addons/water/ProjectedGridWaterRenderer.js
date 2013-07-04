@@ -32,8 +32,7 @@ function (
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function ProjectedGridWaterRenderer (camera, settings) {
-		this.camera = camera;
+	function ProjectedGridWaterRenderer (settings) {
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);
 		this.renderList = [];
 
@@ -58,12 +57,11 @@ function (
 
 		var waterMaterial = this.waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
-		// waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/normalmap3.dds');
-		waterMaterial.textures[0] = new TextureCreator().loadTexture2D('../resources/water/waternormals3.png');
-		waterMaterial.textures[1] = this.renderTarget;
-		// waterMaterial.textures[2] = new TextureCreator().loadTexture2D('../resources/water/waterbump1.jpg');
-		waterMaterial.textures[2] = this.heightTarget;
-		waterMaterial.textures[3] = this.normalTarget;
+
+		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D('../resources/water/waternormals3.png'));
+		waterMaterial.setTexture('REFLECTION_MAP', this.renderTarget);
+		waterMaterial.setTexture('BUMP_MAP', this.heightTarget);
+		waterMaterial.setTexture('NORMAL_MAP_COARSE', this.normalTarget);
 		//waterMaterial.shader.uniforms.screenSize = [this.heightTarget.width, this.heightTarget.height];
 
 		var materialWire = this.materialWire = Material.createMaterial(ShaderLib.simple, 'mat');
@@ -88,7 +86,7 @@ function (
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
 		var materialProj = Material.createMaterial(projShaderDef, 'mat');
-		materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/uniformclouds.jpg');
+		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/uniformclouds.jpg');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/perlin_noise.png');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');
 		this.projRenderable = {
@@ -114,11 +112,9 @@ function (
 		this.projData.setVertexDataUpdated();
 	};
 
-	ProjectedGridWaterRenderer.prototype.process = function (renderer, entities, partitioner) {
-		var camera = this.camera;
-
+	ProjectedGridWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
 		var meshData = this.waterEntity.meshDataComponent.meshData;
-		meshData.update(this.camera);
+		meshData.update(camera);
 		this.waterMaterial.shader.uniforms.intersectBottomLeft = [meshData.intersectBottomLeft.x, meshData.intersectBottomLeft.y, meshData.intersectBottomLeft.z, meshData.intersectBottomLeft.w];
 		this.waterMaterial.shader.uniforms.intersectBottomRight = [meshData.intersectBottomRight.x, meshData.intersectBottomRight.y, meshData.intersectBottomRight.z, meshData.intersectBottomRight.w];
 		this.waterMaterial.shader.uniforms.intersectTopLeft = [meshData.intersectTopLeft.x, meshData.intersectTopLeft.y, meshData.intersectTopLeft.z, meshData.intersectTopLeft.w];
@@ -126,7 +122,7 @@ function (
 
 		this.updateHelper(meshData.intersectBottomLeft, meshData.intersectBottomRight, meshData.intersectTopRight, meshData.intersectTopLeft);
 		//TODO: draw helper to rendertarget
-		renderer.render(this.projRenderable, camera, [], this.heightTarget, true);
+		renderer.render(this.projRenderable, camera, lights, this.heightTarget, true);
 		this.fullscreenPass.render(renderer, this.normalTarget, this.heightTarget, 0);
 
 		var waterPlane = this.waterPlane;
@@ -183,7 +179,7 @@ function (
 		this.renderList.length = 0;
 		partitioner.process(this.waterCamera, entities, this.renderList);
 
-		renderer.render(this.renderList, this.waterCamera, [], this.renderTarget, true);
+		renderer.render(this.renderList, this.waterCamera, lights, this.renderTarget, true);
 
 		this.waterEntity.skip = false;
 		// textured1.uniforms.heightLimit = -10000.0;
@@ -221,10 +217,10 @@ function (
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
-			normalMap: Shader.TEXTURE0,
-			reflection: Shader.TEXTURE1,
-			bump: Shader.TEXTURE2,
-			normalMapCoarse: Shader.TEXTURE3,
+			normalMap: 'NORMAL_MAP',
+			reflection: 'REFLECTION_MAP',
+			bump: 'BUMP_MAP',
+			normalMapCoarse: 'NORMAL_MAP_COARSE',
 			vertexNormal: [
 				0, -1, 0
 			],

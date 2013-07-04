@@ -34,8 +34,7 @@ function (
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function FlatWaterRenderer(camera, settings) {
-		this.camera = camera;
+	function FlatWaterRenderer(settings) {
 		settings = settings || {};
 
 		this.useRefraction = settings.useRefraction !== undefined ? settings.useRefraction : true;
@@ -58,11 +57,12 @@ function (
 		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
 		waterMaterial.cullState.enabled = false;
 		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
-		waterMaterial.textures[0] = new TextureCreator().loadTexture2D(normalsTextureUrl);
-		waterMaterial.textures[1] = this.reflectionTarget;
+
+		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D(normalsTextureUrl));
+		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		if (this.useRefraction) {
-			waterMaterial.textures[2] = this.refractionTarget;
-			waterMaterial.textures[3] = this.depthTarget;
+			waterMaterial.setTexture('REFRACTION_MAP', this.refractionTarget);
+			waterMaterial.setTexture('DEPTH_MAP', this.depthTarget);
 		}
 		this.waterMaterial = waterMaterial;
 
@@ -81,22 +81,9 @@ function (
 		this.waterEntity = null;
 
 		this.depthMaterial = Material.createMaterial(packDepthY, 'depth');
-
-		var that = this;
-		this.camera = null;
-		this.lights = [];
-		EventHandler.addListener({
-			setCurrentCamera: function (camera) {
-				that.camera = camera;
-			},
-			setLights: function (lights) {
-				that.lights = lights;
-			}
-		});
 	}
 
-	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner) {
-		var camera = this.camera;
+	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
 		var waterPlane = this.waterPlane;
 
 		this.waterCamera.copy(camera);
@@ -113,10 +100,10 @@ function (
 				this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 				renderer.overrideMaterial = this.depthMaterial;
-				renderer.render(this.renderList, this.waterCamera, this.lights, this.depthTarget, true);
+				renderer.render(this.renderList, this.waterCamera, lights, this.depthTarget, true);
 				renderer.overrideMaterial = null;
 
-				renderer.render(this.renderList, this.waterCamera, this.lights, this.refractionTarget, true);
+				renderer.render(this.renderList, this.waterCamera, lights, this.refractionTarget, true);
 			}
 
 			var calcVect = this.calcVect;
@@ -169,11 +156,11 @@ function (
 				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
 				for (var i = 0; i < this.skybox.length; i++) {
-					renderer.render(this.skybox[i], this.waterCamera, this.lights, this.reflectionTarget, false);
+					renderer.render(this.skybox[i], this.waterCamera, lights, this.reflectionTarget, false);
 					this.skybox[i].skip = true;
 				}
 			} else {
-				renderer.render(this.skybox, this.waterCamera, this.lights, this.reflectionTarget, false);
+				renderer.render(this.skybox, this.waterCamera, lights, this.reflectionTarget, false);
 				this.skybox.skip = true;
 			}
 		}
@@ -181,7 +168,7 @@ function (
 		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-		renderer.render(this.renderList, this.waterCamera, this.lights, this.reflectionTarget, false);
+		renderer.render(this.renderList, this.waterCamera, lights, this.reflectionTarget, false);
 
 		this.waterEntity.skip = false;
 		if (this.skybox) {
@@ -232,10 +219,10 @@ function (
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
 
-			normalMap: Shader.TEXTURE0,
-			reflection: Shader.TEXTURE1,
-			refraction: Shader.TEXTURE2,
-			depthmap: Shader.TEXTURE3,
+			normalMap: 'NORMAL_MAP',
+			reflection: 'REFLECTION_MAP',
+			refraction: 'REFRACTION_MAP',
+			depthmap: 'DEPTH_MAP',
 
 			vertexTangent: [
 				1, 0, 0, 1

@@ -56,18 +56,18 @@ define([
 	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 		this.renderable.materials[0] = this.convolutionMaterial;
 
-		this.convolutionMaterial.textures[0] = readBuffer;
+		this.convolutionMaterial.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
-		this.convolutionMaterial.textures[0] = this.renderTargetX;
+		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
 
 		this.renderable.materials[0] = this.copyMaterial;
-		this.copyMaterial.textures[0] = this.renderTargetY;
+		this.copyMaterial.setTexture('DIFFUSE_MAP', this.renderTargetY);
 
 		if (this.target !== null) {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);

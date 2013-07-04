@@ -27,7 +27,7 @@ define([
 			vertexUV0 : MeshData.TEXCOORD0
 		},
 		uniforms : {
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -63,7 +63,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -103,7 +103,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -196,7 +196,8 @@ define([
 
 	ShaderLib.simpleLit = {
 		processors: [
-			ShaderBuilder.light.processor
+			ShaderBuilder.light.processor,
+			ShaderBuilder.shadow.processor
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -236,6 +237,7 @@ define([
 		'precision mediump float;',//
 
 		ShaderBuilder.light.prefragment,
+		ShaderBuilder.shadow.prefragment,
 
 		'varying vec3 normal;',//
 		'varying vec3 vWorldPos;',
@@ -247,6 +249,7 @@ define([
 		'	vec4 final_color = vec4(1.0);',//
 
 			ShaderBuilder.light.fragment,
+			ShaderBuilder.shadow.fragment,
 
 		'	gl_FragColor = final_color;',//
 		'}'//
@@ -485,7 +488,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : 0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			uImageIncrement : [0.001953125, 0.0],
 			cKernel : []
 		},
@@ -639,8 +642,8 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tColor : 0,
-			tDepth : 1,
+			tColor : Shader.DIFFUSE_MAP,
+			tDepth : Shader.DEPTH_MAP,
 			focus : 1.0,
 			aspect : 1.0,
 			aperture : 0.025,
@@ -743,7 +746,7 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			diffuseMap : Shader.TEXTURE0
+			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [ //
 		'attribute vec3 vertexPosition;', //
@@ -788,7 +791,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			amount : 1.0
 		},
 		vshader: [
@@ -835,7 +838,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			tSize:    [256, 256],
 			center:   [0.5, 0.5],
 			angle:	  1.57,
@@ -892,7 +895,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			offset:   1.0,
 			darkness: 1.5
 		},
@@ -938,7 +941,7 @@ define([
 	ShaderLib.film = {
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
-			tDiffuse : 0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			time : function() {
 				return World.time;
 			},
@@ -987,7 +990,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			opacity:   1.0
 		},
 		vshader: [
@@ -1044,7 +1047,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			h : 1.0 / 128.0,
 			r : 0.5
 		},
@@ -1099,7 +1102,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			color: [1.0, 1.0, 1.0]
 		},
 		vshader: [
@@ -1142,7 +1145,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			heightMap : Shader.TEXTURE0,
+			heightMap : Shader.DIFFUSE_MAP,
 			resolution : [512, 512],
 			height	: 0.05
 		},
@@ -1188,8 +1191,8 @@ define([
 			viewMatrix :        Shader.VIEW_MATRIX,
 			projectionMatrix :  Shader.PROJECTION_MATRIX,
 			worldMatrix :       Shader.WORLD_MATRIX,
-			tDiffuse:           Shader.TEXTURE0,
-			tDepth:             Shader.TEXTURE1,
+			tDiffuse:           Shader.DIFFUSE_MAP,
+			tDepth:             Shader.DEPTH_MAP,
 			size:               [512, 512],
 			cameraNear:         Shader.MAIN_NEAR_PLANE,
 			cameraFar:          Shader.MAIN_FAR_PLANE,
@@ -1479,7 +1482,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			amount : 0.005,
 			angle : 0.0
 		},
@@ -1525,7 +1528,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			brightness: 0,
 			contrast: 0
 		},
@@ -1574,7 +1577,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0
+			tDiffuse : Shader.DIFFUSE_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1728,9 +1731,9 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			gaussBlurredImage1 : Shader.TEXTURE0,
-			gaussBlurredImage2 : Shader.TEXTURE1,
-			originalImage : Shader.TEXTURE2,
+			gaussBlurredImage1 : 'BLUR1',
+			gaussBlurredImage2 : 'BLUR2',
+			originalImage : 'ORIGINAL',
 			threshold : 0.01
 		},
 		vshader : [ //
@@ -1781,7 +1784,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0
+			tDiffuse : Shader.DIFFUSE_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;', //
@@ -1819,7 +1822,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			tDiffuse : Shader.TEXTURE0,
+			tDiffuse : Shader.DIFFUSE_MAP,
 			viewport : [128, 128]
 		},
 		vshader: [

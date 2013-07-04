@@ -39,9 +39,9 @@ define([
 
 			this.blurPass.render(renderer, writeBuffer, readBuffer, delta);
 
-			this.outPass.material.textures[0] = this.depthTarget;
-			this.outPass.material.textures[1] = readBuffer;
-			this.outPass.material.textures[2] = this.blurTarget;
+			this.outPass.material.setTexture(Shader.DEPTH_MAP, this.depthTarget);
+			this.outPass.material.setTexture(Shader.DIFFUSE_MAP, readBuffer);
+			this.outPass.material.setTexture('BLUR_MAP', this.blurTarget);
 			this.outPass.render(renderer, writeBuffer, readBuffer, delta);
 		};
 
@@ -98,8 +98,8 @@ define([
 				viewMatrix : Shader.VIEW_MATRIX,
 				projectionMatrix : Shader.PROJECTION_MATRIX,
 				worldMatrix : Shader.WORLD_MATRIX,
-				depthMap : Shader.TEXTURE0,
-				diffuseMap : Shader.TEXTURE1
+				depthMap : Shader.DEPTH_MAP,
+				diffuseMap : Shader.DIFFUSE_MAP
 			},
 			vshader : [ //
 				'attribute vec3 vertexPosition;', //

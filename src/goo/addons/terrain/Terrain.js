@@ -24,9 +24,9 @@ function(
 		var resourcePath = "../resources";
 		var material = Material.createMaterial(terrainShaderDef);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/head_diffuse.jpg');
-		material.textures.push(texture);
+		material.setTexture('DIFFUSE_MAP', texture);
 		var material2 = Material.createMaterial(terrainShaderDef);
-		material2.textures.push(texture);
+		material2.setTexture('HEIGHT_MAP', texture);
 		material2.wireframe = true;
 		this.material = material;
 		this.material2 = material2;
@@ -149,7 +149,7 @@ function(
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-			diffuseMap: Shader.TEXTURE0,
+			diffuseMap: 'DIFFUSE_MAP',
 			time: Shader.TIME
 		},
 		vshader: [ //

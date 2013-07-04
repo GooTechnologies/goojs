@@ -28,7 +28,7 @@ function (
 
 	FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		if (this.useReadBuffer) {
-			this.material.textures[0] = readBuffer;
+			this.material.setTexture('DIFFUSE_MAP', readBuffer);
 		}
 
 		if (this.renderToScreen) {

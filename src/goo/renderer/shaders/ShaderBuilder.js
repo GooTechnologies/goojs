@@ -179,37 +179,37 @@ function(
 			}
 		},
 		prevertex: [
-			'#ifndef MAX_POINT_LIGHTS',
-				'#define MAX_POINT_LIGHTS 0',
-			"#endif",
-			'#ifndef MAX_SPOT_LIGHTS',
-				'#define MAX_SPOT_LIGHTS 0',
-			"#endif",
+			// '#ifndef MAX_POINT_LIGHTS',
+			// 	'#define MAX_POINT_LIGHTS 0',
+			// "#endif",
+			// '#ifndef MAX_SPOT_LIGHTS',
+			// 	'#define MAX_SPOT_LIGHTS 0',
+			// "#endif",
 
-			"#if MAX_POINT_LIGHTS > 0",
-				"uniform vec4 pointLight[MAX_POINT_LIGHTS];",
-				"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
-			"#endif",
-			"#if MAX_SPOT_LIGHTS > 0",
-				"uniform vec4 spotLight[MAX_SPOT_LIGHTS];",
-				"varying vec4 vSpotLight[MAX_SPOT_LIGHTS];",
-			"#endif"
+			// "#if MAX_POINT_LIGHTS > 0",
+			// 	"uniform vec4 pointLight[MAX_POINT_LIGHTS];",
+			// 	"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
+			// "#endif",
+			// "#if MAX_SPOT_LIGHTS > 0",
+			// 	"uniform vec4 spotLight[MAX_SPOT_LIGHTS];",
+			// 	"varying vec4 vSpotLight[MAX_SPOT_LIGHTS];",
+			// "#endif"
 		].join('\n'),
 		vertex: [
-			"#if MAX_POINT_LIGHTS > 0",
-				"for(int i = 0; i < MAX_POINT_LIGHTS; i++) {",
-					'vec3 lightVec = pointLight[i].xyz - worldPos.xyz;',
-					"float lightDist = 1.0 - min((length(lightVec) / pointLight[i].w), 1.0);",
-					"vPointLight[i] = vec4(lightVec, lightDist);",
-				"}",
-			"#endif",
-			"#if MAX_SPOT_LIGHTS > 0",
-				"for(int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
-					'vec3 lightVec = spotLight[i].xyz - worldPos.xyz;',
-					"float lightDist = 1.0 - min((length(lightVec) / spotLight[i].w), 1.0);",
-					"vSpotLight[i] = vec4(lightVec, lightDist);",
-				"}",
-			"#endif"
+			// "#if MAX_POINT_LIGHTS > 0",
+			// 	"for(int i = 0; i < MAX_POINT_LIGHTS; i++) {",
+			// 		'vec3 lightVec = pointLight[i].xyz - worldPos.xyz;',
+			// 		"float lightDist = 1.0 - min((length(lightVec) / pointLight[i].w), 1.0);",
+			// 		"vPointLight[i] = vec4(lightVec, lightDist);",
+			// 	"}",
+			// "#endif",
+			// "#if MAX_SPOT_LIGHTS > 0",
+			// 	"for(int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
+			// 		'vec3 lightVec = spotLight[i].xyz - worldPos.xyz;',
+			// 		"float lightDist = 1.0 - min((length(lightVec) / spotLight[i].w), 1.0);",
+			// 		"vSpotLight[i] = vec4(lightVec, lightDist);",
+			// 	"}",
+			// "#endif"
 		].join('\n'),
 		prefragment: [
 			'uniform vec4 materialAmbient;',
@@ -233,6 +233,7 @@ function(
 				"uniform vec3 directionalLightDirection[MAX_DIRECTIONAL_LIGHTS];",
 			"#endif",
 			"#if MAX_POINT_LIGHTS > 0",
+				"uniform vec4 pointLight[MAX_POINT_LIGHTS];",
 				"uniform vec4 pointLightColor[MAX_POINT_LIGHTS];",
 				"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
 			"#endif",
@@ -257,8 +258,10 @@ function(
 				"vec3 pointSpecular = vec3(0.0);",
 
 				"for (int i = 0; i < MAX_POINT_LIGHTS; i++) {",
-					"vec3 lVector = normalize(vPointLight[i].xyz);",
-					"float lDistance = vPointLight[i].w;",
+					'vec3 lVector = normalize(pointLight[i].xyz - vWorldPos.xyz);',
+					"float lDistance = 1.0 - min((length(lVector) / pointLight[i].w), 1.0);",
+					// "vec3 lVector = normalize(vPointLight[i].xyz);",
+					// "float lDistance = vPointLight[i].w;",
 
 					// diffuse
 					"float dotProduct = dot(N, lVector);",
@@ -294,8 +297,10 @@ function(
 				"vec3 spotSpecular = vec3(0.0);",
 
 				"for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
-					"vec3 lVector = normalize(vSpotLight[i].xyz);",
-					"float lDistance = vSpotLight[i].w;",
+					'vec3 lVector = normalize(spotLight[i].xyz - vWorldPos.xyz);',
+					"float lDistance = 1.0 - min((length(lVector) / spotLight[i].w), 1.0);",
+					// "vec3 lVector = normalize(vSpotLight[i].xyz);",
+					// "float lDistance = vSpotLight[i].w;",
 
 					// "float spotEffect = dot( spotLightDirection[ i ], normalize( spotLightPosition[ i ] - vWorldPosition ) );",
 					"float spotEffect = dot( normalize(-spotLightDirection[i]), lVector);",
@@ -396,6 +401,75 @@ function(
 			"#else",
 				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + ambientLightColor * materialAmbient.rgb) + totalSpecular;",
 			"#endif"
+		].join('\n')
+	};
+
+	ShaderBuilder.shadow = {
+		processor: function (shader, shaderInfo) {
+			var textureMaps = shaderInfo.material._textureMaps;
+			shader.defines = shader.defines || {};
+
+			if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
+				shader.defines.SHADOW_MAP = true;
+
+				shader.uniforms.viewMatrix = 'VIEW_MATRIX';
+				shader.uniforms.projectionMatrix = 'PROJECTION_MATRIX';
+				shader.uniforms.lightViewMatrix = 'LIGHT_VIEW_MATRIX';
+				shader.uniforms.lightProjectionMatrix = 'LIGHT_PROJECTION_MATRIX';
+				shader.uniforms.shadowMap = 'SHADOW_MAP';
+
+				shader.uniforms.depthControl = 950.0;
+				shader.uniforms.attenuationPower = 500.0;
+			} else if (textureMaps.SHADOW_MAP === undefined && shader.defines.SHADOW_MAP) {
+				delete shader.defines.SHADOW_MAP;
+			}
+		},
+		prevertex: [
+		].join('\n'),
+		vertex: [
+		].join('\n'),
+		prefragment: [
+			"#ifdef SHADOW_MAP",
+				'uniform mat4 viewMatrix;', //
+				'uniform mat4 projectionMatrix;',//
+				'uniform mat4 lightViewMatrix;', //
+				'uniform mat4 lightProjectionMatrix;',//
+
+				'uniform sampler2D shadowMap;',//
+				'uniform float depthControl;',
+				'uniform float attenuationPower;',
+
+				'const float PI = 3.1415926535897932384626;',
+
+		        'float linstep(float low, float high, float v){',
+		        '    return clamp((v-low)/(high-low), 0.0, 1.0);',
+		        '}',
+
+		        'float VSM(sampler2D depths, vec2 uv, float compare){',
+		        '    vec2 moments = texture2D(depths, uv).xy;',
+		        '    float p = smoothstep(compare-0.02, compare, moments.x);',
+		        '    float variance = max(moments.y - moments.x*moments.x, -0.001);',
+		        '    float d = compare - moments.x;',
+		        '    float p_max = linstep(0.3, 1.0, variance / (variance + d*d));',
+		        '    return clamp(max(p, p_max), 0.0, 1.0);',
+		        '}',
+			"#endif"
+		].join('\n'),
+		fragment: [
+			'#ifdef SHADOW_MAP',
+			'	vec3 camPos = (viewMatrix * vec4(vWorldPos, 1.0)).xyz;',
+			'	vec3 lightPos = (lightViewMatrix * vec4(vWorldPos, 1.0)).xyz;',
+            '	vec3 lightPosNormal = normalize(lightPos);',
+			'	vec4 lightDevice = lightProjectionMatrix * vec4(lightPos, 1.0);',
+			'	vec2 lightDeviceNormal = lightDevice.xy/lightDevice.w;',
+			'	vec2 lightUV = lightDeviceNormal*0.5+0.5;',
+
+			'	float lightDepth2 = clamp(length(lightPos) / depthControl, 0.0, 1.0);',
+			'	float illuminated = VSM(shadowMap, lightUV, lightDepth2);// * 0.8 + 0.2;',
+
+			'	final_color.rgb *= vec3(illuminated);',
+			// '	final_color.rgb *= vec3(lightDepth2);',
+			'#endif'
 		].join('\n')
 	};
 

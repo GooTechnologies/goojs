@@ -92,12 +92,12 @@ define([
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;
 
-		this.convolutionMaterial1.textures[0] = readBuffer;
+		this.convolutionMaterial1.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionShader1.uniforms.uImageIncrement = this.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
-		this.convolutionMaterial1.textures[0] = this.renderTargetX;
+		this.convolutionMaterial1.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionShader1.uniforms.uImageIncrement = this.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.gaussian1, true);
@@ -105,12 +105,12 @@ define([
 		// Gaussian sigma2
 		this.renderable.materials[0] = this.convolutionMaterial2;
 
-		this.convolutionMaterial2.textures[0] = readBuffer;
+		this.convolutionMaterial2.setTexture('DIFFUSE_MAP', readBuffer);
 		this.convolutionShader2.uniforms.uImageIncrement = this.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
-		this.convolutionMaterial2.textures[0] = this.renderTargetX;
+		this.convolutionMaterial2.setTexture('DIFFUSE_MAP', this.renderTargetX);
 		this.convolutionShader2.uniforms.uImageIncrement = this.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.gaussian2, true);
@@ -118,9 +118,9 @@ define([
 		// OUT
 		this.renderable.materials[0] = this.differenceMaterial;
 		// produces the difference gaussian1 - gaussian2
-		this.differenceMaterial.textures[0] = this.gaussian1;
-		this.differenceMaterial.textures[1] = this.gaussian2;
-		this.differenceMaterial.textures[2] = readBuffer;
+		this.differenceMaterial.setTexture('BLUR1', this.gaussian1);
+		this.differenceMaterial.setTexture('BLUR2', this.gaussian2);
+		this.differenceMaterial.setTexture('ORIGINAL', readBuffer);
 
 		if (this.target !== null) {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);

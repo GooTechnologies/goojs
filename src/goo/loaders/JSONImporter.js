@@ -500,7 +500,6 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 
 						// tex.setWrap(WrapMode.Repeat);
 						material.setTexture(this.slotUnitMap[key], tex);
-						// material.textures[this.slotUnitMap[key]] = tex;
 					}
 				}
 			}

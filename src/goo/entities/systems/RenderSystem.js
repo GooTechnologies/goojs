@@ -69,7 +69,7 @@ function (
 		if (this.camera) {
 			for (var i = 0; i < this.preRenderers.length; i++) {
 				var preRenderer = this.preRenderers[i];
-				preRenderer.process(renderer, this.entities, this.partitioner);
+				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);
 			}
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);

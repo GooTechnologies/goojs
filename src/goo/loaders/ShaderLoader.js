@@ -141,7 +141,7 @@ define([
 				worldMatrix : Shader.WORLD_MATRIX,
 				cameraPosition : Shader.CAMERA,
 				lightPosition : Shader.LIGHT0,
-				diffuseMap : Shader.TEXTURE0,
+				diffuseMap : Shader.DIFFUSE_MAP,
 				materialAmbient : Shader.AMBIENT,
 				materialDiffuse : Shader.DIFFUSE,
 				materialSpecular : Shader.SPECULAR,

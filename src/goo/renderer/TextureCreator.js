@@ -48,7 +48,7 @@ function (
 
 	/**
 	 * Creates a texture and loads image into it
-	 * @example gridMaterial.textures[0] = new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg');
+	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
 	 * @param {string} imageURL
 	 * @param {object} settings passed to the {Texture} constructor
 	 * @returns {Texture}

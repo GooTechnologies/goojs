@@ -595,9 +595,6 @@ function (
 	Shader.VIEW_PROJECTION_MATRIX = 'VIEW_PROJECTION_MATRIX';
 	Shader.VIEW_PROJECTION_INVERSE_MATRIX = 'VIEW_PROJECTION_INVERSE_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
-	for (var i = 0; i < 16; i++) {
-		Shader['TEXTURE' + i] = 'TEXTURE' + i;
-	}
 	for (var i = 0; i < 8; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
@@ -626,6 +623,7 @@ function (
 	Shader.SHADOW_MAP = 'SHADOW_MAP';
 	Shader.AO_MAP = 'AO_MAP';
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
+	Shader.DEPTH_MAP = 'DEPTH_MAP';
 
 	return Shader;
 });

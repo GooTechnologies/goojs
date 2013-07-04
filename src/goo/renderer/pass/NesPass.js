@@ -27,8 +27,8 @@ define([
 	}
 
 	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
-		this.material.textures[0] = readBuffer;
-		this.material.textures[1] = this.mapping;
+		this.material.setTexture('DIFFUSE_MAP', readBuffer);
+		this.material.setTexture('COLOR_MAPPING', this.mapping);
 
 		if (this.renderToScreen) {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], null, this.clear);
@@ -40,8 +40,8 @@ define([
 	var nesShader = {
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
-			"diffuse" : 0,
-			"mapping" : 1,
+			diffuse : 'DIFFUSE_MAP',
+			mapping : 'COLOR_MAPPING',
 			$link : ShaderLib.copy.uniforms
 		},
 		vshader : ShaderLib.copy.vshader,

@@ -26,12 +26,8 @@ function(
 		 * @default
 		 */
 		this.uniforms = {};
-		/** Array of textures in use
-		 * @type {Texture[]}
-		 */
-		this.textures = [];
 
-		//TODO: test replacement. deprecate the old this.textures
+		// Texture storage
 		this._textureMaps = {};
 
 		/** @type {object} */
@@ -107,13 +103,40 @@ function(
 		this.renderQueue = null;
 	}
 
+	/**
+	 * Sets a texture in a specific slot
+	 *
+	 * @param {String} name Name of texture slot
+	 * @param {Texture} texture Texture to set
+	 */
 	Material.prototype.setTexture = function (name, texture) {
 		this._textureMaps[name] = texture;
-		// this.textures[this.textures.length] = texture;
 	};
+
+	/**
+	 * Gets a texture in a specific slot
+	 *
+	 * @param {String} name Name of texture slot to retrieve texture from
+	 * @return {Texture} Texture if found, or undefined if not in slot
+	 */
 	Material.prototype.getTexture = function (name) {
 		return this._textureMaps[name];
 	};
+
+	/**
+	 * Removes a texture in a specific slot
+	 *
+	 * @param {String} name Name of texture slot to remove
+	 */
+	Material.prototype.removeTexture = function (name) {
+		delete this._textureMaps[name];
+	};
+
+	/**
+	 * Get all textures as an array
+	 *
+	 * @return {Texture[]} Array containing all set textures
+	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
 		for (var key in this._textureMaps) {
@@ -121,11 +144,14 @@ function(
 		}
 		return textures;
 	};
+
+	/**
+	 * Get the map of [slot_name]: [Texture]
+	 *
+	 * @return {Object} Mapping of slot - textures
+	 */
 	Material.prototype.getTextureEntries = function () {
 		return this._textureMaps;
-	};
-	Material.prototype.removeTexture = function (name) {
-		delete this._textureMaps[name];
 	};
 
 	/**

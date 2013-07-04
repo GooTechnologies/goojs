@@ -466,7 +466,8 @@ function (
 
 			if (this.shadowCount > 0) {
 				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResult);
-				// material.textures[material._originalTextureCount] = this.shadowHandler.shadowResult;
+			} else if (material.getTexture('SHADOW_MAP')) {
+				material.removeTexture('SHADOW_MAP');
 			}
 
 			if (material.wireframe && !isWireframe) {
@@ -716,19 +717,7 @@ function (
 		var textureSlots = material.shader.textureSlots;
 		for (var i = 0; i < textureSlots.length; i++) {
 			var textureSlot = textureSlots[i];
-
 			var texture = material.getTexture(textureSlot.mapping);
-			if (!texture) {
-				texture = material.textures[i];
-			}
-
-			// var texture = material.textures[i];
-			// var realTexture = material.getTexture(textureSlot.mapping);
-			// console.log('slot', textureSlot);
-			// if (texture && realTexture) {
-			// 	console.log('	t1', texture.name);
-			// 	console.log('	t2', realTexture.name);				
-			// }
 
 			if (texture === undefined ||
 				texture instanceof RenderTarget === false && (texture.image === undefined ||

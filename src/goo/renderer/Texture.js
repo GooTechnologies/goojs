@@ -96,7 +96,7 @@ function (
 	}
 
 	Texture.prototype.checkDataReady = function () {
-		return this.image && this.image.dataReady || this.readyCallback !== null && this.readyCallback();
+		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
 	};
 
 	Texture.prototype.checkNeedsUpdate = function () {
