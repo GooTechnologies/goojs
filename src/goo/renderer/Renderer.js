@@ -719,7 +719,7 @@ function (
 			var textureSlot = textureSlots[i];
 			var texture = material.getTexture(textureSlot.mapping);
 
-			if (texture === undefined ||
+			if (texture === undefined || texture === null ||
 				texture instanceof RenderTarget === false && (texture.image === undefined ||
 					texture.checkDataReady() === false)) {
 				if (textureSlot.format === 'sampler2D') {
