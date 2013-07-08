@@ -446,7 +446,7 @@ function (
 
 		var materials = renderInfo.materials;
 		if (this.overrideMaterial !== null) {
-			materials = [this.overrideMaterial];
+			materials = this.overrideMaterial instanceof Array ? this.overrideMaterial : [this.overrideMaterial];
 		}
 
 		var isWireframe = false;
@@ -494,8 +494,8 @@ function (
 			if (shader.processors || shader.defines) {
 			// Call processors
 				if (shader.processors) {
-					for (var i = 0; i < shader.processors.length; i++) {
-						shader.processors[i](shader, renderInfo);
+					for (var j = 0; j < shader.processors.length; j++) {
+						shader.processors[j](shader, renderInfo);
 					}
 				}
 
@@ -504,8 +504,8 @@ function (
 				var defineArray = Object.keys(shader.defines);
 				var len = defineArray.length;
 				var shaderKeyArray = [];
-				for (var i = 0; i < len; i++) {
-					var key = defineArray[i];
+				for (var j = 0; j < len; j++) {
+					var key = defineArray[j];
 					shaderKeyArray.push(key + '_' + shader.defines[key]);
 				}
 				shaderKeyArray.sort();

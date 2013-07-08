@@ -617,7 +617,7 @@ define([
 
 		'void main() {', //
 		'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );', //
-		'vNormal = vec3(viewMatrix * worldMatrix * vec4(vertexNormal, 0.0)); //normalMatrix * vertexNormal;', //
+		'vNormal = vec3(worldMatrix * vec4(vertexNormal, 0.0));', //
 		'gl_Position = projectionMatrix * mvPosition;', //
 		'}' //
 		].join("\n"),
