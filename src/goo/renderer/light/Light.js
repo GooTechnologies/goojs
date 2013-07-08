@@ -1,11 +1,9 @@
 define([
-        'goo/math/Vector3',
-        'goo/math/Vector4'
+        'goo/math/Vector3'
         ],
 /** @lends */
 function (
-	Vector3,
-	Vector4
+	Vector3
 	) {
 	"use strict";
 
@@ -16,8 +14,8 @@ function (
 		/** @type {Vector3} */
 		this.translation = new Vector3();
 
-		/** @type {Vector4} */
-		this.color = new Vector4(1, 1, 1, 1);
+		/** @type {Vector3} */
+		this.color = new Vector3(1, 1, 1);
 
 		/** @type {number} */
 		this.intensity = 1;

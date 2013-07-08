@@ -37,22 +37,19 @@ function(
 
 			shader.defines = shader.defines || {};
 
-			// var updated = false;
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
 					shader.defines[attribute] = true;
-					// updated = true;
 				}
 			}
 
 			for (var type in textureMaps) {
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
-					// updated = true;
 				}
 			}
 
-			// TODO: This is needed but requires caching of shaders to prevent constant rebuilding. Fix in a nicer way
+			// Exclude in a nicer way
 			for (var attribute in shader.defines) {
 				if (attribute === 'MAX_POINT_LIGHTS' ||
 					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
@@ -61,15 +58,10 @@ function(
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
 					delete shader.defines[attribute];
-					// updated = true;
 				}
 			}
 
-			// if (updated) {
-				// shader.rebuild();
-			// }
-
-			//TODO: Nicer way?
+			//TODO: Hacky?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
 			}
