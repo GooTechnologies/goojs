@@ -3,6 +3,9 @@ define([
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
 	'goo/renderer/Renderer',
+	'goo/renderer/Material',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/systems/BoundingUpdateSystem',
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/systems/LightingSystem',
@@ -21,6 +24,9 @@ function (
 	TransformSystem,
 	RenderSystem,
 	Renderer,
+	Material,
+	Util,
+	ShaderLib,
 	BoundingUpdateSystem,
 	ScriptSystem,
 	LightingSystem,
@@ -109,22 +115,7 @@ function (
 			this.startGameLoop(this.run);
 		}
 
-		//TODO: Temporary shift+space for fullscreen and shift+enter for mouselock
-		var isCtrl = false;
-		document.onkeyup = function (e) {
-			if (e.which === 17) {
-				isCtrl = false;
-			}
-		};
-		document.onkeydown = function (e) {
-			if (e.which === 17) {
-				isCtrl = true;
-			} else if (e.which === 32 && isCtrl) {
-				GameUtils.toggleFullScreen();
-			} else if (e.which === 13 && isCtrl) {
-				GameUtils.togglePointerLock();
-			}
-		};
+		this._addDebugKeys();
 	}
 
 	var tpfSmoothingArrary = [];
@@ -245,6 +236,58 @@ function (
 		};
 
 		return div;
+	};
+
+	GooRunner.prototype._addDebugKeys = function () {
+		//TODO: Temporary keymappings
+		// shift+space = toggle fullscreen
+		// shift+enter = toggle mouselock
+		// shift+1 = normal rendering
+		// shift+2 = show normals
+		// shift+3 = simple lit
+		// shift+4 = wireframe
+		// shift+5 = flat wireframe
+		// shift+6 = lit wireframe
+		var isCtrl = false;
+		document.addEventListener("keyup", function (e) {
+			if (e.which === 16) {
+				isCtrl = false;
+			}
+		}, false);
+		document.addEventListener("keydown", function (e) {
+			if (e.which === 16) {
+				isCtrl = true;
+			} else if (e.which === 32 && isCtrl) {
+				GameUtils.toggleFullScreen();
+			} else if (e.which === 13 && isCtrl) {
+				GameUtils.togglePointerLock();
+			} else if (e.which === 49 && isCtrl) {
+				this.renderer.overrideMaterial = null;
+			} else if (e.which === 50 && isCtrl) {
+				this.renderer.overrideMaterial = Material.createMaterial(Util.clone(ShaderLib.showNormals), 'OverrideMaterial1');
+			} else if (e.which === 51 && isCtrl) {
+				this.renderer.overrideMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleLit), 'OverrideMaterial2');
+			} else if (e.which === 52 && isCtrl) {
+				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
+				material4.wireframe = true;
+				material4.wireframeColor = [0, 0, 0];
+				this.renderer.overrideMaterial = material4;
+			} else if (e.which === 53 && isCtrl) {
+				var material3 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial3');
+				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
+				material4.wireframe = true;
+				material4.wireframeColor = [0, 0, 0];
+				var material5 = [material3, material4];
+				this.renderer.overrideMaterial = material5;
+			} else if (e.which === 54 && isCtrl) {
+				var material2 = Material.createMaterial(Util.clone(ShaderLib.simpleLit), 'OverrideMaterial2');
+				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
+				material4.wireframe = true;
+				material4.wireframeColor = [0, 0, 0];
+				var material6 = [material2, material4];
+				this.renderer.overrideMaterial = material6;
+			}
+		}.bind(this), false);
 	};
 
 	/**

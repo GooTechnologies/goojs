@@ -113,7 +113,7 @@ _) ->
 			if not @_configs[ref]?
 				throw Error "#{ref} not found in the supplied configs Available keys: \n#{_.keys(@_configs).join('\n')}"
 
-			@load(refs, options)	
+			@load(ref, options)	
 			
 		###*
 		* Load an object with the specified ref from a .bundle file. The object can be of any
@@ -145,7 +145,7 @@ _) ->
 					console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
 				
 				console.log "Loaded bundle"
-				@load(refs, options)
+				@load(ref, options)
 				
 		
 		###*
