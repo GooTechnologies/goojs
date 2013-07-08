@@ -2,14 +2,18 @@ define([
 	'goo/renderer/BufferData',
 	'goo/renderer/Util',
 	'goo/renderer/BufferUtils',
-	'goo/math/Vector3'
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/math/Vector4'
 ],
 /** @lends */
 function (
 	BufferData,
 	Util,
 	BufferUtils,
-	Vector3
+	Vector2,
+	Vector3,
+	Vector4
 ) {
 	"use strict";
 
@@ -375,18 +379,103 @@ function (
 	};
 
 	/**
-	 * Translates the vertices of the MeshData
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * Applies a transformation on a specified attribute buffer
+	 * @param {String} attributeName
+	 * @param {Transform} transform
 	 * @returns {MeshData} Self to allow chaining
 	 */
-	MeshData.prototype.translateVertices = function(x, y, z) {
-		for (var i = 0; i < this.dataViews.POSITION.length; i += 3) {
-			this.dataViews.POSITION[i + 0] += x;
-			this.dataViews.POSITION[i + 1] += y;
-			this.dataViews.POSITION[i + 2] += z;
+	MeshData.prototype.applyTransform = function(attributeName, transform) {
+		var vert = new Vector3();
+		var view = this.getAttributeBuffer(attributeName);
+		var viewLength = view.length;
+
+		if (attributeName === MeshData.POSITION) {
+			for (var i = 0; i < viewLength; i += 3) {
+				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				transform.matrix.applyPostPoint(vert);
+				view[i + 0] = vert[0];
+				view[i + 1] = vert[1];
+				view[i + 2] = vert[2];
+			}
+		} else if (attributeName === MeshData.NORMAL) {
+			for (var i = 0; i < viewLength; i += 3) {
+				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				transform.rotation.applyPost(vert);
+				view[i + 0] = vert[0];
+				view[i + 1] = vert[1];
+				view[i + 2] = vert[2];
+			}
+		} else if (attributeName === MeshData.TANGENT) {
+			for (var i = 0; i < viewLength; i += 3) {
+				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				transform.rotation.applyPost(vert);
+				view[i + 0] = vert[0];
+				view[i + 1] = vert[1];
+				view[i + 2] = vert[2];
+			}
 		}
+
+		return this;
+	};
+
+	/**
+	 * Applies a function on the vertices of a specified attribute buffer
+	 * @param {String} attributeName
+	 * @param {Function} fun
+	 * @returns {MeshData} Self to allow chaining
+	 */
+	MeshData.prototype.applyFunction = function(attributeName, fun) {
+		var vert;
+		var outVert;
+		var view = this.getAttributeBuffer(attributeName);
+		var viewLength = view.length;
+
+		var count = this.attributeMap[attributeName].count;
+
+		switch (count) {
+			case 1:
+				for (var i = 0; i < viewLength; i++) {
+					view[i] = fun(view[i]);
+				}
+				break;
+			case 2:
+				vert = new Vector2();
+				for (var i = 0; i < viewLength; i += 2) {
+					vert.setd(view[i + 0], view[i + 1]);
+
+					outVert = fun(vert);
+
+					view[i + 0] = outVert[0];
+					view[i + 1] = outVert[1];
+				}
+				break;
+			case 3:
+				vert = new Vector3();
+				for (var i = 0; i < viewLength; i += 3) {
+					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+
+					outVert = fun(vert);
+
+					view[i + 0] = outVert[0];
+					view[i + 1] = outVert[1];
+					view[i + 2] = outVert[2];
+				}
+				break;
+			case 4:
+				vert = new Vector4();
+				for (var i = 0; i < viewLength; i += 4) {
+					vert.setd(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
+
+					outVert = fun(vert);
+
+					view[i + 0] = outVert[0];
+					view[i + 1] = outVert[1];
+					view[i + 2] = outVert[2];
+					view[i + 3] = outVert[3];
+				}
+				break;
+		}
+
 		return this;
 	};
 

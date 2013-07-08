@@ -19,7 +19,8 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingSphere'
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/math/Transform'
 ], function (
 	GooRunner,
 	World,
@@ -35,7 +36,8 @@ require([
 	MeshRendererComponent,
 	BoundingBox,
 	Vector3,
-	BoundingSphere
+	BoundingSphere,
+	Transform
 	) {
 	'use strict';
 
@@ -76,10 +78,16 @@ require([
 	}
 
 	function boundingBoxDemo(goo) {
+		var transform = new Transform();
+
 		var shape1MeshData = ShapeCreator.createSphere();
-		shape1MeshData.translateVertices(2, 0, 0);
+		transform.translation.setd(2, 0, 0);
+		transform.update();
+		shape1MeshData.applyTransform(MeshData.POSITION, transform);
 		var shape2MeshData = ShapeCreator.createQuad();
-		shape2MeshData.translateVertices(0, 2, 0);
+		transform.translation.setd(0, 2, 0);
+		transform.update();
+		shape1MeshData.applyTransform(MeshData.POSITION, transform);
 
 		// shapes and boundingBox material
 		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');

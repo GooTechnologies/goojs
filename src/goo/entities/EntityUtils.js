@@ -81,9 +81,7 @@ define([
 		EntityUtils.traverse = function (entity, callback, level) {
 			level = level !== undefined ? level : 0;
 
-			if (callback) {
-				callback(entity, level);
-			}
+			callback(entity, level);
 
 			for (var j=0;j<entity.transformComponent.children.length;j++) {
 				var child = entity.transformComponent.children[j];
