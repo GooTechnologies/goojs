@@ -60,6 +60,8 @@ define [
 					console.warn 'Unknown shader', config.shaderRef, '- not updating material', ref
 					return
 	
+				if config.wireframe
+					object.wireframe = config.wireframe
 				if config.wireframeColor
 					object.wireframeColor = Util.clone config.wireframeColor
 	
