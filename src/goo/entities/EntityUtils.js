@@ -103,8 +103,10 @@ define([
 		 * Creates an entity with the common rendering components and a mesh.
 		 * @param {World} world
 		 * @param {MeshData} meshData
+		 * @param {Material} [material]
+		 * @param {String} [name]
 		 */
-		EntityUtils.createTypicalEntity = function (world, meshData, name) {
+		EntityUtils.createTypicalEntity = function (world, meshData, material, name) {
 			// Create entity
 			var entity = world.createEntity(name);
 
@@ -115,6 +117,10 @@ define([
 			// Create meshrenderer component with material and shader
 			var meshRendererComponent = new MeshRendererComponent();
 			entity.setComponent(meshRendererComponent);
+
+			if(material !== undefined) {
+				meshRendererComponent.materials.push(material);
+			}
 
 			return entity;
 		};

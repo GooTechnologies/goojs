@@ -17,7 +17,7 @@ define([
 		});
 		it('createTypicalEntity', function() {
 			var entity1 = EntityUtils.createTypicalEntity(world);
-			var entity2 = EntityUtils.createTypicalEntity(world, undefined, 'myEnt');
+			var entity2 = EntityUtils.createTypicalEntity(world, undefined, undefined, 'myEnt');
 			var entity3 = EntityUtils.createTypicalEntity(world);
 			expect(entity1.toString()).toBe('Entity_0');
 			expect(entity2.toString()).toBe('myEnt');
