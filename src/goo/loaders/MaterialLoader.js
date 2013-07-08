@@ -139,6 +139,17 @@ define([
 						.then(pushTexture);
 					promises.push(p);
 				}
+			} else if (materialDataSource.textureRefs && materialDataSource.textureRefs.length) {
+				// TODO: hack to make old converted models work
+				var maps = ['DIFFUSE_MAP', 'NORMAL_MAP', 'SPECULAR_MAP'];
+				var size = Math.min(materialDataSource.textureRefs.length, maps.length);
+				for (var i = 0; i < size; i++) {
+					var textureRef = materialDataSource.textureRefs[i];
+					var pushTexture = addTexture.bind(null,maps[i]);
+					var p = this._loader.load(textureRef)
+						.then(pushTexture);
+					promises.push(p);
+				}
 			}
 		}
 		if(promises.length === 0) {
