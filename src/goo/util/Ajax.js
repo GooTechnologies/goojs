@@ -102,7 +102,7 @@ define([
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
 	 *
-	 * @param {string} path Relative path to whatever shall be loaded.
+	 * @param {string} path Path to whatever shall be loaded.
 	 * @param {string} [mode] Currently only supports {@link Ajax.ARRAY_BUFFER}, otherwise skip.
 	 *
 	 * @returns {RSVP.Promise} The promise is resolved with the data loaded. If a parser is specified

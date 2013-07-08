@@ -32,14 +32,23 @@ define [
 			tga: TgaLoader
 
 		constructor: (@world, @getConfig, @updateObject, @options)->
-			@_ddsLoader = new DdsLoader()
+			@_objects = {}
 
-		update: (ref, config)->
+		_create: (ref, config)->
 			_.defaults config, 
 				verticalFlip:true
+			texture = @_objects[ref] = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), config)
+			texture.image.dataReady = false
+			return texture
+
+
+		update: (ref, config)->
+			texture = @_objects[ref]
+			if not texture then texture = @_create(ref, config)
+
 			console.log "Loading texture with url #{config.url}"
 			if not config.url
-				return pu.createDummyPromise(null)
+				return pu.createDummyPromise(texture)
 
 			imgRef = config.url
 
@@ -48,20 +57,21 @@ define [
 
 			if type of TextureHandler.loaders
 				textureLoader = new TextureHandler.loaders[type]()
-				texture = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), config)
-				texture.image.dataReady = false
 				texture.a = imgRef
 
 				@getConfig(imgRef).then (data)=>
 					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
 					return texture
 
+				# We don't wait for images to load
 				pu.createDummyPromise(texture)
 
 			else
-				texture = new Texture null, config
+				#texture = new Texture null, config
 				@getConfig(imgRef).then (data)=>
 					console.log "Adding texture #{imgRef}, data is #{data}"
 					texture.setImage(data)
 					return texture	
+
+				# We don't wait for images to load
 				pu.createDummyPromise(texture)

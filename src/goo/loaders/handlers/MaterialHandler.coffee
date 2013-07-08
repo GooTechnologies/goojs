@@ -85,7 +85,7 @@ define [
 					do (textureType, textureRef)=>
 						promises.push @getConfig(textureRef).then (textureConfig)=>
 							@updateObject(textureRef, textureConfig, @options).then (texture)=>
-								console.log "Got texture: #{texture}"
+								#console.log "Got texture: #{textureRef} #{texture}"
 								type: textureType
 								ref: textureRef 
 								texture: texture

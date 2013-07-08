@@ -69,14 +69,33 @@ _) ->
 			@_configs = {}
 			@_ajax = new Ajax()
 
+
+
+
 		###*
-		* Load an object with the specified ref from an already loaded associative array. Keys should be refs, and values 
+		* Load configs into the loader cache without loading anything into the engine. Subsequent calls to load and update will draw
+		* configs from the prefilled cache.
+		* 
+		* @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null, 
+		* 	the loader will search for the appropriate config in the loader's internal cache.
+		* @param {boolean} clear If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
+		*###
+		preloadCache: (configs, clear=false)->
+			if clear
+				@_configs = configs
+			else
+				_.extend @_configs, configs
+
+
+		###*
+		* Load an object with the specified ref from an associative array. Keys should be refs, and values 
 		* are the config objects.  
 		* The loader cache will be filled with all the resources in the supplied configs, so loading resources
 		* should not involve ajax calls.
 		* 
 		* @param {string} ref Ref of object to load
-		* @param {object} configs Configs object. Keys should be refs, and values are the config objects.
+		* @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null, 
+		* 	the loader will search for the appropriate config in the loader's internal cache.
 		* @param {object} options
 		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
@@ -85,15 +104,16 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromConfig: (ref, configs, options={})->
-			if options.noCache
-				@_configs = configs
-			else
-				_.extend @_configs, configs
+			if configs?
+				if options.noCache
+					@_configs = configs
+				else
+					_.extend @_configs, configs
 			
 			if not @_configs[ref]?
 				throw Error "#{ref} not found in the supplied configs Available keys: \n#{_.keys(@_configs).join('\n')}"
 
-			@load(ref, options)	
+			@load(refs, options)	
 			
 		###*
 		* Load an object with the specified ref from a .bundle file. The object can be of any
@@ -125,7 +145,7 @@ _) ->
 					console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
 				
 				console.log "Loaded bundle"
-				@load(ref, options)
+				@load(refs, options)
 				
 		
 		###*
