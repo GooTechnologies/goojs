@@ -534,13 +534,7 @@ function (
 			this.updateBlending(material);
 			this.updateOffset(material);
 			this.updateTextures(material);
-
-			//TODO!
-			var lineWidth;
-			if(meshData.indexModes[0] === 'Lines') {
-				lineWidth = this.context.getParameter(WebGLRenderingContext.LINE_WIDTH);
-				this.context.lineWidth(material.lineWidth || 1);
-			}
+			this.updateLineAndPointSettings(material);
 
 			if (meshData.getIndexBuffer() !== null) {
 				this.bindData(meshData.getIndexData());
@@ -555,9 +549,6 @@ function (
 				} else {
 					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 				}
-			}
-			if(lineWidth) {
-				this.context.lineWidth(lineWidth);
 			}
 
 			this.info.calls++;
@@ -652,6 +643,16 @@ function (
 		var wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
 		wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 		return wireframeMaterial;
+	};
+
+	Renderer.prototype.updateLineAndPointSettings = function (material) {
+		var record = this.rendererRecord.lineRecord;
+		var lineWidth = material.lineWidth || 1;
+
+		if (record.lineWidth !== lineWidth) {
+			this.context.lineWidth(lineWidth);
+			record.lineWidth = lineWidth;
+		}
 	};
 
 	Renderer.prototype.updateDepthTest = function (material) {
