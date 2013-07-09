@@ -1,6 +1,10 @@
-define(
+define([
+	'goo/entities/World'
+],
 /** @lends */
-function () {
+function (
+	World
+) {
 	"use strict";
 
 	/**
@@ -18,17 +22,18 @@ function () {
 		this._animationListeners = [];
 	}
 
-	AnimationClipInstance.prototype.setTimeScale = function (scale, manager) {
+	AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
+		var globalTime = globalTime || World.time;
 		if (this._active && this._timeScale !== scale) {
 			if (this._timeScale !== 0.0 && scale !== 0.0) {
 				// move startTime to account for change in scale
-				var now = manager.globalTime;
+				var now = globalTime;
 				var timePassed = now - this._startTime;
 				timePassed *= this._timeScale;
 				timePassed /= scale;
 				this._startTime = now - timePassed;
 			} else if (this._timeScale === 0.0) {
-				var now = manager.globalTime;
+				var now = globalTime;
 				this._startTime = now - this._prevUnscaledClockTime;
 			}
 		}

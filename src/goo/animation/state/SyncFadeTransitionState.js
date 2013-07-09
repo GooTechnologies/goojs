@@ -22,18 +22,18 @@ function (FadeTransitionState) {
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	SyncFadeTransitionState.prototype.getTransitionState = function (callingState, layer) {
+	SyncFadeTransitionState.prototype.getTransitionState = function (callingState, globalStartTime) {
 		// grab current time as our start
-		this._start = layer._manager.getCurrentGlobalTime();
+		this._start = globalStartTime;
 		// set "current" start state
 		this.setStateA(callingState);
 		// set "target" end state
-		this.setStateB(layer._steadyStates[this._targetState]);
+		this.setStateB(this._targetState);
 		if (!this._stateB) {
 			return null;
 		}
 		// grab current state's start time and set on end state
-		this._stateB.resetClips(layer._manager, this._stateA._globalStartTime);
+		this._stateB.resetClips(this._stateA._globalStartTime);
 		return this;
 	};
 

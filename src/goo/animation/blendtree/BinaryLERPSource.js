@@ -1,6 +1,14 @@
-define(['goo/math/MathUtils', 'goo/animation/clip/TransformData', 'goo/animation/blendtree/AbstractTwoPartSource'],
+define([
+	'goo/math/MathUtils',
+	'goo/animation/clip/TransformData',
+	'goo/animation/blendtree/AbstractTwoPartSource'
+],
 /** @lends */
-function (MathUtils, TransformData, AbstractTwoPartSource) {
+function (
+	MathUtils,
+	TransformData,
+	AbstractTwoPartSource
+) {
 	"use strict";
 
 	/**
@@ -11,49 +19,49 @@ function (MathUtils, TransformData, AbstractTwoPartSource) {
 	 * @param sourceB our second source.
 	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 */
-	function BinaryLERPSource (sourceA, sourceB, blendKey) {
-		AbstractTwoPartSource.call(this, sourceA, sourceB, blendKey);
+	function BinaryLERPSource (sourceA, sourceB, blendWeight) {
+		AbstractTwoPartSource.call(this, sourceA, sourceB, blendWeight);
 	}
 
 	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
 
-	BinaryLERPSource.prototype.getSourceData = function (manager) {
+	BinaryLERPSource.prototype.getSourceData = function () {
 		// grab our data maps from the two sources
-		var sourceAData = this._sourceA ? this._sourceA.getSourceData(manager) : null;
-		var sourceBData = this._sourceB ? this._sourceB.getSourceData(manager) : null;
+		var sourceAData = this._sourceA ? this._sourceA.getSourceData() : null;
+		var sourceBData = this._sourceB ? this._sourceB.getSourceData() : null;
 
-		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, manager._valuesStore[this._blendKey]);
+		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this.blendWeight);
 	};
 
-	BinaryLERPSource.prototype.setTime = function (globalTime, manager) {
+	BinaryLERPSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive = foundActive || this._sourceA.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceA.setTime(globalTime);
 		}
 		if (this._sourceB) {
-			foundActive = foundActive || this._sourceB.setTime(globalTime, manager);
+			foundActive = foundActive || this._sourceB.setTime(globalTime);
 		}
 		return foundActive;
 	};
 
-	BinaryLERPSource.prototype.resetClips = function (manager, globalStartTime) {
+	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
 		if (this._sourceA) {
-			this._sourceA.resetClips(manager, globalStartTime);
+			this._sourceA.resetClips(globalStartTime);
 		}
 		if (this._sourceB) {
-			this._sourceB.resetClips(manager, globalStartTime);
+			this._sourceB.resetClips(globalStartTime);
 		}
 	};
 
-	BinaryLERPSource.prototype.isActive = function (manager) {
+	BinaryLERPSource.prototype.isActive = function () {
 		var foundActive = false;
 		if (this._sourceA) {
-			foundActive = foundActive || this._sourceA.isActive(manager);
+			foundActive = foundActive || this._sourceA.isActive();
 		}
 		if (this._sourceB) {
-			foundActive = foundActive || this._sourceB.isActive(manager);
+			foundActive = foundActive || this._sourceB.isActive();
 		}
 		return foundActive;
 	};

@@ -20,25 +20,25 @@ function (AbstractFiniteState) {
 
 	SteadyState.prototype = Object.create(AbstractFiniteState.prototype);
 
-	SteadyState.prototype.doTransition = function (key, layer) {
+	SteadyState.prototype.doTransition = function (key, globalTime) {
 		var state = this._transitions[key];
 		if (!state) {
 			state = this._transitions["*"];
 		} else {
-			return state.doTransition(this, layer);
+			return state.doTransition(this, globalTime);
 		}
 		return null;
 	};
 
-	SteadyState.prototype.update = function (globalTime, layer) {
-		if (!this._sourceTree.setTime(globalTime, layer._manager)) {
+	SteadyState.prototype.update = function (globalTime) {
+		if (!this._sourceTree.setTime(globalTime)) {
 			var lastOwner = this._lastOwner;
 			if (this._endTransition !== null) {
 				// time to move to end transition
-				var newState = this._endTransition.doTransition(this, layer);
+				var newState = this._endTransition.doTransition(this, globalTime);
 				if (newState) {
-					newState.resetClips(layer.getManager());
-					newState.update(globalTime, layer);
+					newState.resetClips(globalTime);
+					newState.update(globalTime);
 				}
 				if (this !== newState) {
 					lastOwner.replaceState(this, newState);
@@ -47,8 +47,8 @@ function (AbstractFiniteState) {
 		}
 	};
 
-	SteadyState.prototype.postUpdate = function (layer) {
-		if (!this._sourceTree.isActive(layer._manager)) {
+	SteadyState.prototype.postUpdate = function () {
+		if (!this._sourceTree.isActive()) {
 			var lastOwner = this._lastOwner;
 			if (this._endTransition === null) {
 				// we're done. end.
@@ -57,13 +57,13 @@ function (AbstractFiniteState) {
 		}
 	};
 
-	SteadyState.prototype.getCurrentSourceData = function (manager) {
-		return this._sourceTree.getSourceData(manager);
+	SteadyState.prototype.getCurrentSourceData = function () {
+		return this._sourceTree.getSourceData();
 	};
 
-	SteadyState.prototype.resetClips = function (manager, globalStartTime) {
-		AbstractFiniteState.prototype.resetClips.call(this, manager, globalStartTime);
-		this._sourceTree.resetClips(manager, this._globalStartTime);
+	SteadyState.prototype.resetClips = function (globalStartTime) {
+		AbstractFiniteState.prototype.resetClips.call(this, globalStartTime);
+		this._sourceTree.resetClips(globalStartTime);
 	};
 
 	return SteadyState;

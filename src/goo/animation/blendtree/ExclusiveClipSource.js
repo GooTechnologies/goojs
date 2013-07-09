@@ -9,8 +9,8 @@ function (JointChannel, ClipSource) {
 	 * @param clip our source clip.
 	 * @param manager the manager used to track clip state.
 	 */
-	function ExclusiveClipSource (clip, manager) {
-		ClipSource.call(this, clip, manager);
+	function ExclusiveClipSource (clip) {
+		ClipSource.call(this, clip);
 
 		this._disabledChannels = {};
 	}
@@ -48,8 +48,8 @@ function (JointChannel, ClipSource) {
 		}
 	};
 
-	ExclusiveClipSource.prototype.getSourceData = function (manager) {
-		var orig = ClipSource.prototype.getSourceData.call(this, manager);
+	ExclusiveClipSource.prototype.getSourceData = function () {
+		var orig = ClipSource.prototype.getSourceData.call(this);
 
 		// make a copy, removing specific channels
 		var rVal = {};

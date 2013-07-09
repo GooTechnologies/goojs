@@ -1,6 +1,8 @@
-define(
+define([
+],
 /** @lends */
-function () {
+function (
+) {
 	"use strict";
 
 	/**
@@ -14,12 +16,8 @@ function () {
 	/**
 	 * TODO...
 	 */
-	AbstractFiniteState.prototype.resetClips = function (manager, globalStartTime) {
-		if (isNaN(globalStartTime)) {
-			this._globalStartTime = manager.getCurrentGlobalTime();
-		} else {
-			this._globalStartTime = globalStartTime;
-		}
+	AbstractFiniteState.prototype.resetClips = function (globalTime) {
+		this._globalStartTime = globalTime;
 	};
 
 	return AbstractFiniteState;

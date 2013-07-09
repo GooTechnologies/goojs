@@ -21,12 +21,12 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */
-	FrozenTransitionState.prototype.update = function (globalTime, layer) {
-		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime, layer);
+	FrozenTransitionState.prototype.update = function (globalTime) {
+		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime);
 
 		// update only the B state - the first is frozen
 		if (this._stateB !== null) {
-			this._stateB.update(globalTime, layer);
+			this._stateB.update(globalTime);
 		}
 	};
 
@@ -36,18 +36,18 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	FrozenTransitionState.prototype.getTransitionState = function (callingState, layer) {
+	FrozenTransitionState.prototype.getTransitionState = function (callingState, globalTime) {
 		// grab current time as our start
-		this._start = layer._manager.getCurrentGlobalTime();
+		this._start = globalTime;
 		// set "frozen" start state
 		this.setStateA(callingState);
 		// set "target" end state
-		this.setStateB(layer._steadyStates[this._targetState]);
+		this.setStateB(this._targetState);
 		if (!this._stateB) {
 			return null;
 		}
 		// restart end state.
-		this._stateB.resetClips(layer._manager, this._start);
+		this._stateB.resetClips(this._start);
 		return this;
 	};
 
@@ -55,10 +55,10 @@ function (AbstractTwoStateLerpTransition) {
 	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
-	FrozenTransitionState.prototype.postUpdate = function (layer) {
+	FrozenTransitionState.prototype.postUpdate = function () {
 		// update only the B state - the first is frozen
 		if (this._stateB !== null) {
-			this._stateB.postUpdate(layer);
+			this._stateB.postUpdate();
 		}
 	};
 

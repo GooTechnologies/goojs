@@ -19,14 +19,14 @@ function (AbstractTransitionState) {
 	 * @param layer the layer our state belongs to.
 	 * @return the state to transition to. Often ourselves.
 	 */
-	ImmediateTransitionState.prototype.getTransitionState = function (callingState, layer) {
+	ImmediateTransitionState.prototype.getTransitionState = function (callingState, globalTime) {
 		// Pull our state from the layer
-		var state = layer._steadyStates[this._targetState];
+		var state = this._targetState;
 		if (!state) {
 			return null;
 		}
 		// Reset to start
-		state.resetClips(layer._manager);
+		state.resetClips(globalTime);
 		// return state.
 		return state;
 	};

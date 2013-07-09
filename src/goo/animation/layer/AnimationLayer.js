@@ -1,6 +1,12 @@
-define(['goo/animation/state/SteadyState'],
+define([
+	'goo/animation/state/SteadyState',
+	'goo/entities/World'
+],
 /** @lends */
-function (SteadyState) {
+function (
+	SteadyState,
+	World
+) {
 	"use strict";
 
 	/**
@@ -15,12 +21,18 @@ function (SteadyState) {
 
 		this._steadyStates = {};
 		this._currentState = null;
-		this._manager = null;
 		this._layerBlender = null;
 		this._transitions = {};
 	}
 
 	AnimationLayer.BASE_LAYER_NAME = '-BASE_LAYER-';
+
+
+	AnimationLayer.prototype.update = function(globalTime) {
+		if(this._currentState) {
+			this._currentState.update(globalTime || World.time);
+		}
+	};
 
 	/**
 	 * @description Attempt to perform a transition. First, check the current state to see if it has a transition for the given key. If not, check
@@ -28,11 +40,12 @@ function (SteadyState) {
 	 * @param key the transition key, a string key used to look up a transition in the current animation state.
 	 * @return true if there is a current state and we were able to do the given transition.
 	 */
-	AnimationLayer.prototype.doTransition = function (key) {
+	AnimationLayer.prototype.doTransition = function (key, globalTime) {
+		globalTime = globalTime || World.time;
 		var state = this._currentState;
 		// see if current state has a transition
 		if (state instanceof SteadyState) {
-			var nextState = state.doTransition(key, this);
+			var nextState = state.doTransition(key, globalTime);
 			if (!nextState) {
 				// no transition found, check if there is a global transition
 				var transition = this._transitions[key];
@@ -40,7 +53,7 @@ function (SteadyState) {
 					transition = this._transitions['*'];
 				}
 				if (transition) {
-					nextState = transition.doTransition(state, this);
+					nextState = transition.doTransition(state, globalTime);
 				}
 			}
 
@@ -57,7 +70,7 @@ function (SteadyState) {
 				transition = this._transitions['*'];
 			}
 			if (transition) {
-				this.setCurrentState(transition.doTransition(state, this), true);
+				this.setCurrentState(transition.doTransition(state, globalTime), true);
 				return true;
 			}
 		}
@@ -71,12 +84,13 @@ function (SteadyState) {
 	 * @param state our new state. If null, then no state is currently set on this layer.
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 */
-	AnimationLayer.prototype.setCurrentState = function (state, rewind) {
+	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
+		globalTime = globalTime || World.time;
 		this._currentState = state;
 		if (state) {
 			state._lastOwner = this;
 			if (rewind) {
-				state.resetClips(this._manager);
+				state.resetClips(globalTime);
 			}
 		}
 	};
@@ -87,11 +101,11 @@ function (SteadyState) {
 	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @return true if succeeds
 	 */
-	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind) {
+	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {
 			var state = this._steadyStates[stateName];
 			if (state) {
-				this.setCurrentState(state, rewind);
+				this.setCurrentState(state, rewind, globalTime);
 				return true;
 			} else {
 				console.warn("unable to find SteadyState named: " + stateName);
@@ -105,11 +119,11 @@ function (SteadyState) {
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
 		if (this._layerBlender !== null) {
-			return this._layerBlender.getBlendedSourceData(this._manager);
+			return this._layerBlender.getBlendedSourceData();
 		}
 
 		if (this._currentState !== null) {
-			return this._currentState.getCurrentSourceData(this._manager);
+			return this._currentState.getCurrentSourceData();
 		} else {
 			return null;
 		}

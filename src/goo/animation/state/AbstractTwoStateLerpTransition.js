@@ -115,27 +115,10 @@ function (AbstractTransitionState, StateBlendType, BinaryLERPSource, MathUtils) 
 	/**
 	 * @return the current map of source channel data for this layer.
 	 */
-	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function (manager) {
+	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function () {
 		// grab our data maps from the two states
-		var sourceAData = this._stateA ? this._stateA.getCurrentSourceData(manager) : null;
-		var sourceBData = this._stateB ? this._stateB.getCurrentSourceData(manager) : null;
-
-		// reuse previous _sourceData transforms to avoid re-creating
-		// too many new transform data objects. This assumes that a
-		// same state always returns the same transform data objects.
-		if (!this._sourceData) {
-			this._sourceData = {};
-		}
-		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
-	};
-
-	/**
-	 * @return the current map of source channel data for this layer.
-	 */
-	AbstractTwoStateLerpTransition.prototype.getCurrentSourceData = function (manager) {
-		// grab our data maps from the two states
-		var sourceAData = this._stateA ? this._stateA.getCurrentSourceData(manager) : null;
-		var sourceBData = this._stateB ? this._stateB.getCurrentSourceData(manager) : null;
+		var sourceAData = this._stateA ? this._stateA.getCurrentSourceData() : null;
+		var sourceBData = this._stateB ? this._stateB.getCurrentSourceData() : null;
 
 		// reuse previous _sourceData transforms to avoid re-creating
 		// too many new transform data objects. This assumes that a

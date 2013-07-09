@@ -1,6 +1,14 @@
-define(['goo/math/MathUtils'],
+define([
+	'goo/math/MathUtils',
+	'goo/entites/World',
+	'goo/animation/clip/AnimationClipInstance'
+],
 /** @lends */
-function (MathUtils) {
+function (
+	MathUtils,
+	World,
+	AnimationClipInstance
+) {
 	"use strict";
 
 	/**
@@ -8,14 +16,17 @@ function (MathUtils) {
 	 * @param clip the clip to use.
 	 * @param manager the manager to track clip state with.
 	 */
-	function ClipSource (clip, manager) {
+	function ClipSource (clip) {
 		this._clip = clip;
-
-		manager.getClipInstance(clip);
+		this._clipInstance = new AnimationClipInstance();
 	}
 
-	ClipSource.prototype.setTime = function (globalTime, manager) {
-		var instance = manager.getClipInstance(this._clip);
+	ClipSource.prototype.setTime = function (globalTime) {
+		var instance = this._clipInstance;
+		if(!instance._startTime) {
+			instance._startTime = globalTime;
+		}
+
 		var clockTime;
 		if (instance._active) {
 			if (instance._timeScale !== 0.0) {
@@ -59,17 +70,17 @@ function (MathUtils) {
 		return instance._active;
 	};
 
-	ClipSource.prototype.resetClips = function (manager, globalStartTime) {
-		manager.resetClipInstance(this._clip, globalStartTime);
+	ClipSource.prototype.resetClips = function (globalTime) {
+		this._clipInstance._startTime = globalTime;
+		this._clipInstance._active = true;
 	};
 
-	ClipSource.prototype.isActive = function (manager) {
-		var instance = manager.getClipInstance(this._clip);
-		return instance._active && (this._clip._maxTime !== -1);
+	ClipSource.prototype.isActive = function () {
+		return this._clipInstance._active && (this._clip._maxTime !== -1);
 	};
 
-	ClipSource.prototype.getSourceData = function (manager) {
-		return manager.getClipInstance(this._clip)._clipStateObjects;
+	ClipSource.prototype.getSourceData = function () {
+		return this._clipInstance._clipStateObjects;
 	};
 
 	return ClipSource;

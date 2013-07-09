@@ -14,18 +14,18 @@ function () {
 		this._time = frozenTime;
 	}
 
-	FrozenTreeSource.prototype.getSourceData = function (manager) {
-		return this._source.getSourceData(manager);
+	FrozenTreeSource.prototype.getSourceData = function () {
+		return this._source.getSourceData();
 	};
 
 	// Was: function (manager, globalStartTime)
-	FrozenTreeSource.prototype.resetClips = function (manager) {
+	FrozenTreeSource.prototype.resetClips = function () {
 		// ignores the command to reset our subtree
-		this._source.resetClips(manager, 0);
+		this._source.resetClips(0);
 	};
 
-	FrozenTreeSource.prototype.setTime = function (globalTime, manager) {
-		this._source.setTime(this._time, manager);
+	FrozenTreeSource.prototype.setTime = function () {
+		this._source.setTime(this._time);
 		return true;
 	};
 
