@@ -27,6 +27,8 @@ define  [
 	'goo/loaders/handlers/TextureHandler'
 	'goo/loaders/handlers/TransformComponentHandler'
 	'goo/loaders/handlers/AnimationComponentHandler'
+	'goo/loaders/handlers/AnimationLayersHandler'
+	'goo/loaders/handlers/AnimationClipHandler'
 ], (
 ConfigHandler,
 ComponentHandler,
@@ -47,7 +49,7 @@ _) ->
 	* @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	*###
 	class DynamicLoader			
-		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
+		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip)$/		
 		
 		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		

@@ -2,6 +2,7 @@ define [
 	'goo/loaders/handlers/ConfigHandler'
 	
 	'goo/renderer/MeshData'
+	'goo/animation/SkeletonPose'
 
 	'goo/loaders/JsonUtils'
 	'goo/util/PromiseUtil'
@@ -10,6 +11,7 @@ define [
 ], (
 ConfigHandler,
 MeshData,
+SkeletonPose,
 JsonUtils,
 pu,
 _) ->

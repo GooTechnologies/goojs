@@ -34,6 +34,12 @@ function (
 		}
 	};
 
+	AnimationLayer.prototype.postUpdate = function() {
+		if (this._currentState) {
+			this._currentState.update();
+		}
+	};
+
 	/**
 	 * @description Attempt to perform a transition. First, check the current state to see if it has a transition for the given key. If not, check
 	 *              this layer for a general purpose transition. If no transition is found, this does nothing.

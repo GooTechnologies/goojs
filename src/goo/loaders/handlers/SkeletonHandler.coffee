@@ -4,6 +4,7 @@ define [
 	'goo/animation/Joint'
 	'goo/animation/Skeleton'
 	'goo/animation/SkeletonPose'
+	'goo/loaders/JsonUtils'
 	
 	'goo/util/PromiseUtil'
 ], (
@@ -11,6 +12,8 @@ ConfigHandler,
 Joint, 
 Skeleton, 
 SkeletonPose,
+JsonUtils,
+
 pu,
 _) ->
 

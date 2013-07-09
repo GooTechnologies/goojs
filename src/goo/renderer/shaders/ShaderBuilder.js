@@ -58,7 +58,9 @@ function(
 				if (attribute === 'MAX_POINT_LIGHTS' ||
 					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
 					attribute === 'MAX_SPOT_LIGHTS' ||
-					attribute === 'SHADOW_TYPE') {
+					attribute === 'SHADOW_TYPE' ||
+					attribute === 'JOINT_COUNT' ||
+					attribute === 'WEIGHTS') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {

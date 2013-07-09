@@ -11,6 +11,9 @@ define [
 	ConfigHandler
 	AnimationClip
 	JsonUtils
+	JointChannel
+	TransformChannel
+	InterpolatedFloatChannel
 	
 	pu
 ) ->
@@ -23,49 +26,49 @@ define [
 			
 			useCompression = clipConfig.useCompression || false
 			if useCompression
-				compsreesdAnimRange = clipConfig.compressedRange || (1 << 15) - 1; # int
+				compressedAnimRange = clipConfig.compressedRange || (1 << 15) - 1; # int
 			
 			if clipConfig.channels and clipConfig.channels.length
-				for channelConfig in clip.channels
+				for channelConfig in clipConfig.channels
 					times = JsonUtils.parseChannelTimes(channelConfig, useCompression)
 				
-					if channelConfig.type in ['Joint', 'Transform']
+					if channelConfig.Type in ['Joint', 'Transform']
 						rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression)
 						trans = JsonUtils.parseTranslationSamples(channelConfig, times.length, useCompression)
 						scales = JsonUtils.parseScaleSamples(channelConfig, times.length, useCompression)
 					
-					if channelConfig.type == 'Joint'
+					if channelConfig.Type == 'Joint'
 						channel = new JointChannel(
-							channelConfig.jointName,
-							channelConfig.jointIndex,
+							channelConfig.JointName,
+							channelConfig.JointIndex,
 							times,
 							rots,
 							trans,
 							scales
 						)
-					else if channelConfig.type == 'Transform'
+					else if channelConfig.Type == 'Transform'
 						channel = new TransformChannel(
-							channelConfig.name,
+							channelConfig.Name,
 							times,
 							rots,
 							trans,
 							scales
 						)
-					else if channelConfig.type == 'FloatLERP'
+					else if channelConfig.Type == 'FloatLERP'
 						channel = new InterPolatedFloatChannel(
-							channelConfig.name
+							channelConfig.Name
 							times
 							JsonUtils.parseFloatLERPValues(channelConfig, useCompression)
 						)
 					else #TODO: Trigger channel
-						console.warn("Unhandled channel type: " + type)
+						console.warn("Unhandled channel type: " + channelConfig.Type)
 						continue
 					
-				clip.addChannel(channel)
+					clip.addChannel(channel)
 			
 			return clip
 						
-		update: (config) ->
+		update: (ref, config) ->
 			clip = @_create(config)
 			pu.createDummyPromise(clip)
 			

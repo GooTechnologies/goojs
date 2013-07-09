@@ -31,20 +31,18 @@ define [
 		update: (entity, config) ->
 			component = super(entity, config) # Creates component if needed
 			
-			animTreeRef = config.animationTree
+			layersRef = config.layersRef
 			
-			if not animTreeRef
+			if not layersRef
 				console.log "No animation tree ref"
 				promise = pu.createDummyPromise([])
 			else
-				promise =  @_getAnimationTree(animTreeRef)
+				promise =  @_getAnimationLayers(layersRef)
 				
-			promise.then (animationTree) =>
-				component.
+			promise.then (layers) =>
+				component.layers = layers
 			
-		
-		
-		_getAnimationTree: (ref) ->
+		_getAnimationLayers: (ref) ->
 			console.log "GetAnimationLayers #{ref}"
 			@getConfig(ref).then (config) =>
 				@updateObject(ref, config, @options)
