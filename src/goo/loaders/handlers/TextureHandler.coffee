@@ -69,7 +69,7 @@ define [
 			else
 				#texture = new Texture null, config
 				@getConfig(imgRef).then (data)=>
-					console.log "Adding texture #{imgRef}, data is #{data}"
+					console.log "Adding texture #{imgRef}, data is #{typeof data}"
 					texture.setImage(data)
 					return texture	
 
