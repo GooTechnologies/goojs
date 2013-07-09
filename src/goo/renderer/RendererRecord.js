@@ -34,6 +34,8 @@ function() {
 		this.cullRecord = {};
 		this.blendRecord = {};
 		this.offsetRecord = {};
+		this.lineRecord = {};
+		this.pointRecord = {};
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {
