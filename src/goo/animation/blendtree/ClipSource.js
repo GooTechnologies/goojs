@@ -1,12 +1,10 @@
 define([
 	'goo/math/MathUtils',
-	'goo/entites/World',
 	'goo/animation/clip/AnimationClipInstance'
 ],
 /** @lends */
 function (
 	MathUtils,
-	World,
 	AnimationClipInstance
 ) {
 	"use strict";

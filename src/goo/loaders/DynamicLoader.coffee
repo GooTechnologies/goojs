@@ -26,8 +26,8 @@ define  [
 	'goo/loaders/handlers/SkeletonHandler'
 	'goo/loaders/handlers/TextureHandler'
 	'goo/loaders/handlers/TransformComponentHandler'
-],
-(
+	'goo/loaders/handlers/AnimationComponentHandler'
+], (
 ConfigHandler,
 ComponentHandler,
 Ajax,
