@@ -26,7 +26,7 @@ define  [
 	'goo/loaders/handlers/SkeletonHandler'
 	'goo/loaders/handlers/TextureHandler'
 	'goo/loaders/handlers/TransformComponentHandler'
-], `/** @lends */` 
+],
 (
 ConfigHandler,
 ComponentHandler,

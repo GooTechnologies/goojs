@@ -1,7 +1,7 @@
 define [
 	'goo/util/rsvp', 
 	'goo/util/PromiseUtil'
-],  `/** @lends */` 
+],
 (RSVP, pu) ->
 
 
