@@ -13,6 +13,7 @@ define(['goo/renderer/MeshData'],
 		this.vertsPerLine = vertsPerLine;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
 
 		var nVerts = this.verts.length / 3;
 		var nLines = nVerts / this.vertsPerLine;
@@ -33,11 +34,6 @@ define(['goo/renderer/MeshData'],
 		var indices = [];
 		var nVerts = this.verts.length / 3;
 		var nLines = nVerts / this.vertsPerLine;
-
-		console.log('===');
-		console.log(nVerts);
-		console.log(this.vertsPerLine);
-		console.log(nLines);
 
 		for (var i = 0; i < nLines - 1; i++) {
 			for (var j = 0; j < this.vertsPerLine - 1; j++) {

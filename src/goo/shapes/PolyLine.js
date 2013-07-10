@@ -113,6 +113,12 @@ define([
 		return new PolyLine(this.verts.concat(that.verts), closed);
 	};
 
+	/**
+	 * @description Creates a polyLine that approximates a given cubic Bezier curve
+	 * @param {number[]} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
+	 * @param {number} [nSegments=16] The number of segments (higher values result in smoother curves)
+	 * @returns {PolyLine} The resulting polyLine
+	 */
 	PolyLine.fromCubicBezier = function (verts, nSegments) {
 		if(verts.length !== 3 * 4) {
 			return ;
@@ -125,7 +131,7 @@ define([
 		var p012 = [], p123 = [];
 		var p0123 = [];
 
-		//better off with a bernstein polynomial or for loops?
+		//better off with a bernstein polynomial?
 		for (var pas = 0; pas <= nSegments; pas++) {
 			var rap = pas / nSegments;
 
@@ -159,6 +165,13 @@ define([
 		return new PolyLine(plVerts);
 	};
 
+	/**
+	 * @description Creates a polyLine that approximates a given cubic spline
+	 * @param {number[]} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
+	 * @param {number} [nSegments=16] The number of segments for each Bezier curve that forms the spline (higher values result in smoother curves)
+	 * @param {boolean} [closed=false] True if the spline should be closed or not
+	 * @returns {PolyLine} The resulting polyLine
+	 */
 	PolyLine.fromCubicSpline = function (verts, nSegments, closed) {
 		if(closed) {
 			if(verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
