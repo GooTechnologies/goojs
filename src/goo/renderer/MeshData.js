@@ -199,7 +199,7 @@ function (
 				index += primitiveIndex + point;
 				break;
 			default:
-				MeshData.logger.warning("unimplemented index mode: " + this.getIndexMode(0));
+				MeshData.logger.warning("unimplemented index mode: " + this.indexModes[section]);
 				return -1;
 		}
 		return index;

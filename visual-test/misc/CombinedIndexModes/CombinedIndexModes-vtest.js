@@ -71,7 +71,7 @@ require([
 		x = x || 0;
 		y = y || 0;
 		z = z || 0;
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = Material.createMaterial(ShaderLib.simple, '');
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
@@ -87,7 +87,7 @@ require([
 			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineLoop'},
 			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -1, 2, 0], i: [0, 1, 2, 0, 3, 4], m: 'Triangles'},
 			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, 2, 2, 0], i: [0, 1, 3, 2, 4], m: 'TriangleStrip'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'TriangleFan'}];
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -0.5, 1, 0], i: [0, 1, 2, 3, 4], m: 'TriangleFan'}];
 
 		// build a grid of all possible 7x7 combinations
 		for (var i = 0; i < modes.length; i++) {

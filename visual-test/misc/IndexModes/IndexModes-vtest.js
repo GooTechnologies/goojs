@@ -104,7 +104,7 @@ require([
 		x = x || 0;
 		y = y || 0;
 		z = z || 0;
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = Material.createMaterial(ShaderLib.simple, '');
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();

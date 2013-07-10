@@ -98,7 +98,7 @@ function (
 		if (parameters.debug) {
 			// XXX: This is a temporary solution to easily enable webgl debugging during development...
 			var request = new XMLHttpRequest();
-			request.open('GET', '../lib/webgl-debug.js', false);
+			request.open('GET', '/../lib/webgl-debug.js', false);
 			request.onreadystatechange = function () {
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
@@ -477,8 +477,9 @@ function (
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
 				if (!material.wireframeMaterial) {
-					material.wireframeMaterial = this.buildWireframeMaterial(material);
+					material.wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
 				}
+				material.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 				material = material.wireframeMaterial;
 				isWireframe = true;
 			} else if (!material.wireframe && isWireframe) {
@@ -573,14 +574,12 @@ function (
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
+		var type = this.getGLArrayType(indices);
+		var byteSize = this.getGLByteSize(indices);
 
 		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
-
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
-
-			var type = this.getGLArrayType(indices);
-			var byteSize = this.getGLByteSize(indices);
 
 			this.context.drawElements(glIndexMode, count, type, offset * byteSize);
 
@@ -598,7 +597,6 @@ function (
 
 		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
-
 			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
 
 			this.context.drawArrays(glIndexMode, offset, count);
@@ -612,37 +610,69 @@ function (
 	};
 
 	Renderer.prototype.buildWireframeData = function (meshData) {
-		var attributeMap = Util.clone(meshData.attributeMap);
-		var wireframeData = new MeshData(attributeMap, 0, 0);
-		wireframeData.vertexData = meshData.vertexData;
-		wireframeData.dataViews = meshData.dataViews;
-		wireframeData.attributeMap = meshData.attributeMap;
-		wireframeData.vertexCount = wireframeData._vertexCountStore = meshData.vertexCount;
-		wireframeData.rebuildIndexData(meshData.indexCount * 2);
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
+		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, 0);
+		wireframeData.indexModes[0] = 'Lines';
 
 		var origI = meshData.getIndexBuffer();
-		var targetI = wireframeData.getIndexBuffer();
-		// TODO: fix this to handle other indexmodes than 'triangles'
-		for (var ii = 0; ii < meshData.indexCount; ii++) {
-			var i1 = origI[ii * 3 + 0];
-			var i2 = origI[ii * 3 + 1];
-			var i3 = origI[ii * 3 + 2];
+		var targetI = [];
+		var indexCount = 0;
+		meshData.updatePrimitiveCounts();
+		for (var section = 0; section < meshData.getSectionCount(); section++) {
+			var indexMode = meshData.indexModes[section];
 
-			targetI[ii * 6 + 0] = i1;
-			targetI[ii * 6 + 1] = i2;
-			targetI[ii * 6 + 2] = i2;
-			targetI[ii * 6 + 3] = i3;
-			targetI[ii * 6 + 4] = i3;
-			targetI[ii * 6 + 5] = i1;
+			var primitiveCount = meshData.getPrimitiveCount(section);
+			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
+				switch (indexMode) {
+					case "Triangles":
+					case "TriangleFan":
+					case "TriangleStrip":
+						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
+						var i3 = origI[meshData.getVertexIndex(primitiveIndex, 2, section)];
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						targetI[indexCount + 2] = i2;
+						targetI[indexCount + 3] = i3;
+						targetI[indexCount + 4] = i3;
+						targetI[indexCount + 5] = i1;
+						indexCount += 6;
+					break;
+					case "Lines":
+					case "LineStrip":
+						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						indexCount += 2;
+					break;
+					case "LineLoop":
+						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
+						if (primitiveIndex === primitiveCount - 1) {
+							i2 = origI[meshData.getVertexIndex(0, 0, section)];
+						}
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						indexCount += 2;
+					break;
+					case "Points":
+						// Not supported in wireframe
+					break;
+				}
+			}
 		}
-		wireframeData.indexModes[0] = 'Lines';
-		return wireframeData;
-	};
 
-	Renderer.prototype.buildWireframeMaterial = function (material) {
-		var wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
-		wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
-		return wireframeMaterial;
+		if (indexCount > 0) {
+			wireframeData.rebuildIndexData(indexCount);
+			wireframeData.getAttributeBuffer(MeshData.POSITION).set(meshData.getAttributeBuffer(MeshData.POSITION));
+			wireframeData.getIndexBuffer().set(targetI);
+		}
+
+		return wireframeData;
 	};
 
 	Renderer.prototype.updateLineAndPointSettings = function (material) {
