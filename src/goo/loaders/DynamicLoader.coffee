@@ -44,6 +44,7 @@ _) ->
 	* @param {object} parameters
 	* @param {World} [parameters.world] The target World object.
 	* @param {string} [parameters.rootPath] The root path where to get resources. 
+	* @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	*###
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
