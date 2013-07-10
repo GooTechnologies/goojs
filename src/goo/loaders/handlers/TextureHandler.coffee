@@ -75,3 +75,8 @@ define [
 
 				# We don't wait for images to load
 				pu.createDummyPromise(texture)
+
+		remove: (ref)->
+			console.log "Deleting texture #{ref}"
+			delete @_objects[ref]
+

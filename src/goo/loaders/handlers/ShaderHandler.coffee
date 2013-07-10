@@ -80,3 +80,6 @@ define [
 					fshader: fshader
 				
 				object = Material.createShader(shaderDefinition, ref)
+
+		remove: (ref)->
+			delete @_objects[ref]

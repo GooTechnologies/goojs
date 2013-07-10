@@ -36,6 +36,7 @@ _) ->
 			return meshData
 			
 		update: (ref, config)->
+			# TODO: can you update meshdata?
 			meshData = @_create(config)
 			
 			if config.pose
@@ -49,7 +50,10 @@ _) ->
 			else
 				pu.createDummyPromise(meshData)
 		
+		remove: (ref)->
+			# Do nothing, we didn't save anything
 			
+
 		# Translated into coffeescript from goo/loaders/MeshLoader.js
 		# Returns MeshData object
 		_parseMeshData: (data, weightsPerVert, type, compression)->

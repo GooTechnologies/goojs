@@ -55,3 +55,7 @@ define [
 				console.error "No promises in #{ref} ", config
 				return pu.createDummyPromise(object)
 		
+		remove: (ref)->
+			entity = @world.entityManager.getEntityByName(ref)
+			@world.removeEntity(entity)
+

@@ -30,4 +30,5 @@ define [
 				console.warn "No entity refs in scene #{ref}"
 				return config
 	
-	
+		remove: (ref)->
+				# Do nothing

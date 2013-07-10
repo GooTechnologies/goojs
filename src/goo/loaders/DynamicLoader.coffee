@@ -61,6 +61,7 @@ _) ->
 		*###
 		
 		constructor: (options)->
+			_.defaults(options, ajax:true)
 			@_world = options.world or throw new Error("World argument cannot be null")
 			@_rootPath = options.rootPath 
 			if not @_rootPath? then throw new Error("parameters.rootPath must be defined")
@@ -68,7 +69,9 @@ _) ->
 				@_rootPath += '/'
 
 			@_configs = {}
-			@_ajax = new Ajax()
+			
+			if options.ajax
+				@_ajax = new Ajax()
 
 
 
@@ -172,7 +175,7 @@ _) ->
 		* @param {string} ref Ref of object to update
 		* @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
 		* @param {object} options
-		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
+		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
 		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
@@ -222,8 +225,12 @@ _) ->
 						handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
 					
 					console.log "Handling #{ref}"
-					@_objects[ref] = handler.update(ref, config).then (object)=>
-						@_objects[ref] = object
+					if config? 
+						@_objects[ref] = handler.update(ref, config).then (object)=>
+							@_objects[ref] = object
+					else
+						handler.remove(ref)
+						pu.createDummyPromise(null)
 						
 				else
 					console.warn "No handler for type #{type}"
@@ -242,7 +249,7 @@ _) ->
 				return @_configs[ref]
 			else if @_configs[ref]? and not noCache
 				return pu.createDummyPromise(@_configs[ref])
-			else
+			else if @_ajax
 				url = @_rootPath + window.escape(ref)
 				if @_isImageRef(ref)
 					@_configs[ref] = @_ajax.loadImage(url)
@@ -256,6 +263,8 @@ _) ->
 							@_configs[ref] = JSON.parse(data)
 						else
 							@_configs[ref] = data
+			else
+				pu.createDummyPromise(null)
 				
 		# Find all the references in a config, and return in a flat list
 		_getRefsFromConfig: (config)->

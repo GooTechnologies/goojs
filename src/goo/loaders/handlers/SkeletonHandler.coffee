@@ -49,3 +49,6 @@ _) ->
 		update: (ref, config)->
 			skeleton = @_create(config)
 			return pu.createDummyPromise(skeleton)
+
+		remove: (ref)->
+			# Do nothing, we didn't save anything

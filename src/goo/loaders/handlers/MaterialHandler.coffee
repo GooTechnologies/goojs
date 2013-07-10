@@ -102,6 +102,9 @@ define [
 					return object
 				
 		
+		remove: (ref)->
+			delete @_objects[ref]
+
 		_getShaderObject: (ref, wireframe)->
 			if wireframe
 				promise = new RSVP.Promise()
@@ -114,3 +117,6 @@ define [
 			else
 				defaultShader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader')
 				pu.createDummyPromise(defaultShader)
+
+
+
