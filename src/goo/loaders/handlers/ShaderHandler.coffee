@@ -21,8 +21,8 @@ define [
 		@_register('shader')
 		
 		_create: (ref) ->
-			@_objects ?= {}
-			@_objects[ref] = Material.createShader(ShaderLib.simple, ref)
+			#@_objects ?= {}
+			#@_objects[ref] = Material.createShader(ShaderLib.simple, ref)
 
 		update: (ref, config) ->
 			console.log "Updating shader #{ref}"
@@ -82,4 +82,4 @@ define [
 				object = Material.createShader(shaderDefinition, ref)
 
 		remove: (ref)->
-			delete @_objects[ref]
+			# delete @_objects[ref]

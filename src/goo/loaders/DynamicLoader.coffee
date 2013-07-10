@@ -200,6 +200,20 @@ _) ->
 			.then null, (err)->
 				console.error "Error updating #{ref} #{err}"
 		
+
+		###*
+		* Remove an object in the world. The object can be of any
+		* type, updating behavior is determined by the registered {ConfigHandler}
+		* 
+		* @param {string} ref Ref of object to update
+		* @returns {RSVP.Promise} The promise is resolved when the object is removed, with no argument
+		*###
+		remove: (ref, options)->
+			delete @_objects[ref]
+			delete @_configs[ref]
+			@_handle(ref, null)
+
+
 		
 		# Load/update an object with the given reference into the engine
 		_handle: (ref, config, options)-> 
