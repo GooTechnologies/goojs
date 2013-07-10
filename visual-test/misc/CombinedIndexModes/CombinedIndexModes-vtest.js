@@ -43,14 +43,23 @@ require([
 	) {
 	'use strict';
 
-	function buildCombined(verts1, indices1, indexLength1, indexMode1, verts2, indices2, indexLength2, indexMode2) {
-		var verts = verts1.concat(verts2);
-		var indices = indices1.concat(indices2);
+	function buildCombined(verts1, indices1, indexMode1, verts2, indices2, indexMode2) {
+		var nVerts1 = verts1.length / 3;
+		var translatedVerts1 = verts1.map(function(e, i) { return e - (i % 3 === 0 ? 1 : 0); });
+		var translatedVerts2 = verts2.map(function(e, i) { return e + (i % 3 === 0 ? 1 : 0); });
+		var verts = translatedVerts1.concat(translatedVerts2);
+		var indexLength1 = indices1.length;
+		var indexLength2 = indices2.length;
+		var shiftedIndices2 = indices2.map(function(e) { return e + nVerts1; });
+		var indices = indices1.concat(shiftedIndices2);
 
 		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length, indices.length);
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
-		meshData.getIndexBuffer().set(indices);
+
+		if(indices.length > 0) {
+			meshData.getIndexBuffer().set(indices);
+		}
 
 		meshData.indexLengths = [indexLength1, indexLength2];
 		meshData.indexModes = [indexMode1, indexMode2];
@@ -71,21 +80,24 @@ require([
 	}
 	//--------
 	function indexModesDemo(goo) {
-		//have a 7x7 grid of all possible combiations? (Points-Points, Points-Lines, ... )
-		/*
-		var indexModes = [
-			[[6, 6, 0], 'Points'],
-			'Lines',
-			'LineStrip',
-			'LineLoop',
-			'Triangles',
-			'TriangleStrip',
-			'TriangleFan']; */
+		var modes = [
+			{ v: [0, 0, 0, 1, 0, 0,	1, 1, 0, 0, 2, 0], i: [], m: 'Points'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 0, 2, 0, 3], m: 'Lines'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineStrip'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineLoop'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -1, 2, 0], i: [0, 1, 2, 0, 3, 4], m: 'Triangles'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, 2, 2, 0], i: [0, 1, 3, 2, 4], m: 'TriangleStrip'},
+			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'TriangleFan'}];
 
-		var triangleAndLine = buildCombined(
-			[0, 0, 0, 1, 0, 0, 0, 1, 0], [0, 1, 2], 3, 'Triangles',
-			[2, 2, 0, 2, 3, 0], [3, 4], 2, 'Lines');
-		wrapAndAdd(goo, triangleAndLine, 5, -5);
+		// build a grid of all possible 7x7 combinations
+		for (var i = 0; i < modes.length; i++) {
+			for (var j = 0; j < modes.length; j++) {
+				var mode1 = modes[i];
+				var mode2 = modes[j];
+				var combinedMesh = buildCombined(mode1.v, mode1.i, mode1.m, mode2.v, mode2.i, mode2.m);
+				wrapAndAdd(goo, combinedMesh, (i - modes.length/2) * 8, -(j - modes.length/2) * 3);
+			}
+		}
 
 		// light
 		var light = new PointLight();
@@ -102,7 +114,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(20, Math.PI / 2, 0)
+			spherical : new Vector3(35, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}
