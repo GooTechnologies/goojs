@@ -148,7 +148,6 @@ function(
 				shader.uniforms.pointLight.length = pointCount * 4;
 				shader.uniforms.pointLightColor.length = pointCount * 4;
 				shader.pointCount = pointCount;
-				// shader.rebuild();
 			}
 			if (shader.directionalCount !== directionalCount) {
 				shader.defines = shader.defines || {};
@@ -156,7 +155,6 @@ function(
 				shader.uniforms.directionalLightDirection.length = directionalCount * 3;
 				shader.uniforms.directionalLightColor.length = directionalCount * 4;
 				shader.directionalCount = directionalCount;
-				// shader.rebuild();
 			}
 			if (shader.spotCount !== spotCount) {
 				shader.defines = shader.defines || {};
@@ -167,7 +165,6 @@ function(
 				shader.uniforms.spotLightAngle.length = spotCount * 1;
 				shader.uniforms.spotLightExponent.length = spotCount * 1;
 				shader.spotCount = spotCount;
-				// shader.rebuild();
 			}
 		},
 		prevertex: [
@@ -227,7 +224,7 @@ function(
 			"#if MAX_POINT_LIGHTS > 0",
 				"uniform vec4 pointLight[MAX_POINT_LIGHTS];",
 				"uniform vec4 pointLightColor[MAX_POINT_LIGHTS];",
-				"varying vec4 vPointLight[MAX_POINT_LIGHTS];",
+				// "varying vec4 vPointLight[MAX_POINT_LIGHTS];",
 			"#endif",
 			"#if MAX_SPOT_LIGHTS > 0",
 				"uniform vec4 spotLightColor[MAX_SPOT_LIGHTS];",
@@ -235,7 +232,7 @@ function(
 				"uniform vec3 spotLightDirection[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightAngle[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightExponent[MAX_SPOT_LIGHTS];",
-				"varying vec4 vSpotLight[MAX_SPOT_LIGHTS];",
+				// "varying vec4 vSpotLight[MAX_SPOT_LIGHTS];",
 			"#endif"
 		].join('\n'),
 		fragment: [
@@ -251,7 +248,7 @@ function(
 
 				"for (int i = 0; i < MAX_POINT_LIGHTS; i++) {",
 					'vec3 lVector = normalize(pointLight[i].xyz - vWorldPos.xyz);',
-					"float lDistance = 1.0 - min((length(lVector) / pointLight[i].w), 1.0);",
+					"float lDistance = 1.0 - min((length(pointLight[i].xyz - vWorldPos.xyz) / pointLight[i].w), 1.0);",
 					// "vec3 lVector = normalize(vPointLight[i].xyz);",
 					// "float lDistance = vPointLight[i].w;",
 
@@ -270,7 +267,7 @@ function(
 					"pointDiffuse += materialDiffuse.rgb * pointLightColor[i].rgb * pointDiffuseWeight * lDistance;",
 
 					// specular
-					"vec3 pointHalfVector = normalize(lVector + viewPosition);",
+					"vec3 pointHalfVector = normalize(lVector + normalize(viewPosition));",
 					"float pointDotNormalHalf = max(dot(N, pointHalfVector), 0.0);",
 					"float pointSpecularWeight = pointLightColor[i].a * specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);",
 
@@ -290,7 +287,7 @@ function(
 
 				"for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {",
 					'vec3 lVector = normalize(spotLight[i].xyz - vWorldPos.xyz);',
-					"float lDistance = 1.0 - min((length(lVector) / spotLight[i].w), 1.0);",
+					"float lDistance = 1.0 - min((length(spotLight[i].xyz - vWorldPos.xyz) / spotLight[i].w), 1.0);",
 					// "vec3 lVector = normalize(vSpotLight[i].xyz);",
 					// "float lDistance = vSpotLight[i].w;",
 
@@ -317,7 +314,7 @@ function(
 						"spotDiffuse += materialDiffuse.rgb * spotLightColor[i].rgb * spotDiffuseWeight * lDistance * spotEffect;",
 
 						// specular
-						"vec3 spotHalfVector = normalize(lVector + viewPosition);",
+						"vec3 spotHalfVector = normalize(lVector + normalize(viewPosition));",
 						"float spotDotNormalHalf = max( dot(N, spotHalfVector), 0.0);",
 						"float spotSpecularWeight = spotLightColor[i].a * specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);",
 
@@ -356,7 +353,7 @@ function(
 					"dirDiffuse += materialDiffuse.rgb * directionalLightColor[i].rgb * dirDiffuseWeight;",
 
 					// specular
-					"vec3 dirHalfVector = normalize(dirVector + viewPosition);",
+					"vec3 dirHalfVector = normalize(dirVector + normalize(viewPosition));",
 					"float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);",
 					"float dirSpecularWeight = directionalLightColor[i].a * specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);",
 
@@ -401,66 +398,82 @@ function(
 			var textureMaps = shaderInfo.material._textureMaps;
 			shader.defines = shader.defines || {};
 
+			if (textureMaps.SHADOW_MAP && shaderInfo.lights.length > 0) {
+				shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
+			}
+
 			if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
 				shader.defines.SHADOW_MAP = true;
 
-				shader.uniforms.viewMatrix = 'VIEW_MATRIX';
-				shader.uniforms.projectionMatrix = 'PROJECTION_MATRIX';
 				shader.uniforms.lightViewMatrix = 'LIGHT_VIEW_MATRIX';
 				shader.uniforms.lightProjectionMatrix = 'LIGHT_PROJECTION_MATRIX';
+				shader.uniforms.lightPos = 'LIGHT0';
+				shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
 				shader.uniforms.shadowMap = 'SHADOW_MAP';
-
-				shader.uniforms.depthControl = 950.0;
-				shader.uniforms.attenuationPower = 500.0;
 			} else if (textureMaps.SHADOW_MAP === undefined && shader.defines.SHADOW_MAP) {
 				delete shader.defines.SHADOW_MAP;
 			}
 		},
 		prevertex: [
+			"#ifdef SHADOW_MAP",
+				'uniform mat4 lightViewMatrix;',
+				'uniform mat4 lightProjectionMatrix;',
+
+				'varying vec4 lPosition;',
+				'const mat4 ScaleMatrix = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);',
+			"#endif"
 		].join('\n'),
 		vertex: [
+			"#ifdef SHADOW_MAP",
+				'lPosition = ScaleMatrix * lightProjectionMatrix * lightViewMatrix * worldPos;',
+			"#endif"
 		].join('\n'),
 		prefragment: [
 			"#ifdef SHADOW_MAP",
-				'uniform mat4 viewMatrix;', //
-				'uniform mat4 projectionMatrix;',//
-				'uniform mat4 lightViewMatrix;', //
-				'uniform mat4 lightProjectionMatrix;',//
+				'#ifndef SHADOW_TYPE',
+					'#define SHADOW_TYPE 0',
+				"#endif",
 
-				'uniform sampler2D shadowMap;',//
-				'uniform float depthControl;',
-				'uniform float attenuationPower;',
+				'uniform vec3 lightPos;',
+				'uniform float cameraScale;',
+				'varying vec4 lPosition;',
+				'uniform sampler2D shadowMap;',
 
-				'const float PI = 3.1415926535897932384626;',
+				'float ChebychevInequality(in vec2 moments, in float t) {',
+					'if ( t <= moments.x ) return 1.0;',
+					'float variance = moments.y - (moments.x * moments.x);',
+					'variance = max(variance, 0.02);',
+					'float d = t - moments.x;',
+					'return variance / (variance + d * d);',
+				'}',
 
-		        'float linstep(float low, float high, float v){',
-		        '    return clamp((v-low)/(high-low), 0.0, 1.0);',
-		        '}',
-
-		        'float VSM(sampler2D depths, vec2 uv, float compare){',
-		        '    vec2 moments = texture2D(depths, uv).xy;',
-		        '    float p = smoothstep(compare-0.02, compare, moments.x);',
-		        '    float variance = max(moments.y - moments.x*moments.x, -0.001);',
-		        '    float d = compare - moments.x;',
-		        '    float p_max = linstep(0.3, 1.0, variance / (variance + d*d));',
-		        '    return clamp(max(p, p_max), 0.0, 1.0);',
-		        '}',
+				'float VsmFixLightBleed(in float pMax, in float amount) {',
+					'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
+				'}',
 			"#endif"
 		].join('\n'),
 		fragment: [
 			'#ifdef SHADOW_MAP',
-			'	vec3 camPos = (viewMatrix * vec4(vWorldPos, 1.0)).xyz;',
-			'	vec3 lightPos = (lightViewMatrix * vec4(vWorldPos, 1.0)).xyz;',
-            '	vec3 lightPosNormal = normalize(lightPos);',
-			'	vec4 lightDevice = lightProjectionMatrix * vec4(lightPos, 1.0);',
-			'	vec2 lightDeviceNormal = lightDevice.xy/lightDevice.w;',
-			'	vec2 lightUV = lightDeviceNormal*0.5+0.5;',
+				'vec3 depth = lPosition.xyz / lPosition.w;',
+				'depth.z = length(vWorldPos - lightPos) * cameraScale;',
+				'float shadow = 1.0;',
 
-			'	float lightDepth2 = clamp(length(lightPos) / depthControl, 0.0, 1.0);',
-			'	float illuminated = VSM(shadowMap, lightUV, lightDepth2);// * 0.8 + 0.2;',
+				'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
+					'#if SHADOW_TYPE == 0',
+						'depth.z *= 0.96;',
+						'float shadowDepth = texture2D(shadowMap, depth.xy).x;',
+						'if ( depth.z > shadowDepth ) shadow = 0.5;',
+					'#elif SHADOW_TYPE == 1',
+						'vec4 texel = texture2D(shadowMap, depth.xy);',
+						'vec2 moments = vec2(texel.x, texel.y);',
+						'shadow = ChebychevInequality(moments, depth.z);',
+						// 'shadow = VsmFixLightBleed(shadow, 0.1);',
+						// 'shadow = pow(shadow, 8.0);',
+					'#endif',
+					'shadow = clamp(shadow, 0.0, 1.0);',
+				'}',
 
-			'	final_color.rgb *= vec3(illuminated);',
-			// '	final_color.rgb *= vec3(lightDepth2);',
+				'final_color *= vec4(shadow, shadow, shadow, 1.0);',
 			'#endif'
 		].join('\n')
 	};

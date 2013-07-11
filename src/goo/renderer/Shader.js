@@ -524,7 +524,7 @@ function (
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
-		var DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
+		var DEFAULT_AMBIENT = [0, 0, 0, 1.0];
 		var DEFAULT_EMISSIVE = [0, 0, 0, 0];
 		var DEFAULT_DIFFUSE = [1, 1, 1, 1];
 		var DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
@@ -569,6 +569,9 @@ function (
 		};
 		defaultCallbacks[Shader.LIGHT_FAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.lightCamera.far);
+		};
+		defaultCallbacks[Shader.LIGHT_DEPTH_SCALE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(1.0 / (shaderInfo.lightCamera.far - shaderInfo.lightCamera.near));
 		};
 		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
@@ -615,6 +618,7 @@ function (
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
 	Shader.LIGHT_NEAR_PLANE = 'LIGHT_NEAR_PLANE';
 	Shader.LIGHT_FAR_PLANE = 'LIGHT_FAR_PLANE';
+	Shader.LIGHT_DEPTH_SCALE = 'LIGHT_DEPTH_SCALE';
 
 	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
 	Shader.NORMAL_MAP = 'NORMAL_MAP';
