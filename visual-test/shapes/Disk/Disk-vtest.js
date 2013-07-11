@@ -22,7 +22,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/PolyLine'
+	'goo/shapes/Disk'
 ], function (
 	GooRunner,
 	World,
@@ -41,49 +41,30 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	PolyLine
+	Disk
 	) {
 	'use strict';
 
-	function surfaceDemo(goo) {
-		var xGenerator = PolyLine.fromCubicSpline([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 1, 0,
-			-1, 1, 0,
-			-1, 2, 0,
-			0, 2, 0], 20);
-
-		var yGenerator = PolyLine.fromCubicSpline([
-			0, 0, 0,
-			1, 0, 0,
-			1, 0, 1,
-			0, 0, 1,
-			-1, 0, 1,
-			-1, 0, 2,
-			0, 0, 2], 20);
-
-		var surfaceMeshData = xGenerator.mul(yGenerator);
+	function diskDemo(goo) {
+		var meshData = new Disk(64, 4, 4); // pointy disk
+		//var meshData = new Disk(64, 4, 0); // flat disk
+		//var meshData = new Disk(64, 4, -4); // -pointy disk
 
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, surfaceMeshData, material, '');
-		boxEntity.transformComponent.transform.setRotationXYZ(0, -Math.PI/2, -Math.PI/16);
-		boxEntity.addToWorld();
+		var diskEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
+		diskEntity.addToWorld();
 
-		var light1 = new PointLight();
-		//light1.color = [1.0, 0.3, 0.0];
-		var light1Entity = goo.world.createEntity('light');
-		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set(-1, -3, -5);
-		light1Entity.addToWorld();
+		var normalsMeshData = meshData.getNormalsMeshData(4);
+		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
+		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		normalsEntity.addToWorld();
 
-		var light2 = new PointLight();
-		//light2.color = [1.0, 0.3, 0.0];
-		var light2Entity = goo.world.createEntity('light');
-		light2Entity.setComponent(new LightComponent(light2));
-		light2Entity.transformComponent.transform.translation.set( 1,  3,  5);
-		light2Entity.addToWorld();
+		var light = new PointLight();
+		var lightEntity = goo.world.createEntity('light');
+		lightEntity.setComponent(new LightComponent(light));
+		lightEntity.transformComponent.transform.translation.set(0, 10, 10);
+		lightEntity.addToWorld();
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -95,7 +76,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(10, Math.PI / 2, 0)
+			spherical : new Vector3(5, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}
@@ -105,7 +86,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		surfaceDemo(goo);
+		diskDemo(goo);
 	}
 
 	init();

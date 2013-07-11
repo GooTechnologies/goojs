@@ -55,16 +55,24 @@ require([
 			3 + -1, 2, 0,
 			3 + 0, 2, 0], 20);
 
+		//var section = new PolyLine([1, 1, 0,  2, 0, 0,  1, -1, 0]);
+
 		var latheMeshData = section.lathe(20);
 
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, latheMeshData, material, '');
-		boxEntity.addToWorld();
+		var latheEntity = EntityUtils.createTypicalEntity(goo.world, latheMeshData, material, '');
+		latheEntity.addToWorld();
+
+		var normalsMeshData = latheMeshData.getNormalsMeshData(4);
+		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
+		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		normalsEntity.addToWorld();
 
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(-1, -3, -5);
+		lightEntity.transformComponent.transform.translation.set(0, 10, 10);
 		lightEntity.addToWorld();
 
 		// camera

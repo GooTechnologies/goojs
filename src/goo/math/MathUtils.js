@@ -160,5 +160,35 @@ function () {
 		store.z = Math.atan2(y,a); // polar
 	};
 
+	/**
+	 * @static
+	 * @description Computes the normal of a given triangle
+	 * @param {number} P.x
+	 * @param {number} P.y
+	 * @param {number} P.z
+	 * @param {number} Q.x
+	 * @param {number} Q.y
+	 * @param {number} Q.z
+	 * @param {number} R.x
+	 * @param {number} R.y
+	 * @param {number} R.z
+	 * @return {number[]} The triangle's normal
+	 */
+	MathUtils.getTriangleNormals = function(p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
+		var ux = p2x - p1x;
+		var uy = p2y - p1y;
+		var uz = p2z - p1z;
+
+		var vx = p3x - p1x;
+		var vy = p3y - p1y;
+		var vz = p3z - p1z;
+
+		var nx = uy * vz - uz * vy;
+		var ny = uz * vx - ux * vz;
+		var nz = ux * vy - uy * vx;
+
+		return [nx, ny, nz];
+	};
+
 	return MathUtils;
 });

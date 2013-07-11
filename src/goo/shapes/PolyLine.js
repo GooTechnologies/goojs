@@ -90,13 +90,13 @@ define([
 		for (var i = 0; i < this.verts.length; i += 3) {
 			for (var j = 0, k = 0; j <= nSegments; j++, k += ak) {
 				verts.push(
-					-Math.cos(k) * this.verts[i + 0],
+					Math.cos(k) * this.verts[i + 0],
 					this.verts[i + 1],
 					Math.sin(k) * this.verts[i + 0]);
 			}
 		}
 
-		return new Surface(verts, nSegments + 1);
+		return new Surface(verts, nSegments + 1, true);
 	};
 
 	/**
