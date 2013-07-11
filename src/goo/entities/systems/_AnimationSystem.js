@@ -21,7 +21,7 @@ define(['goo/entities/systems/System'],
 				var pose = entity.meshDataComponent.meshData.currentPose;
 			}
 			animComp.update(entity._world.time);
-			animComp.apply(entity.transformComponent.transform, pose);
+			animComp.apply(entity.transformComponent, pose);
 			animComp.postUpdate();
 		}
 	};

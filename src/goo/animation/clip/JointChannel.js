@@ -6,8 +6,8 @@ function (TransformChannel, JointData) {
 	/**
 	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
 	 */
-	function JointChannel (jointName, jointIndex, times, rotations, translations, scales) {
-		TransformChannel.call(this, JointChannel.JOINT_CHANNEL_NAME + jointIndex, times, rotations, translations, scales);
+	function JointChannel (jointName, jointIndex, times, rotations, translations, scales, blendType) {
+		TransformChannel.call(this, JointChannel.JOINT_CHANNEL_NAME + jointIndex, times, rotations, translations, scales, blendType);
 
 		this._jointName = jointName;
 		this._jointIndex = jointIndex;

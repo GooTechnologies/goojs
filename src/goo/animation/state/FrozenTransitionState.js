@@ -1,6 +1,6 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'],
+define(['goo/animation/state/AbstractTransitionState'],
 /** @lends */
-function (AbstractTwoStateLerpTransition) {
+function (AbstractTransitionState) {
 	"use strict";
 
 	/**
@@ -10,11 +10,11 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function FrozenTransitionState (targetState, fadeTime, blendType) {
-		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
+	function FrozenTransitionState () {
+		AbstractTransitionState.call(this);
 	}
 
-	FrozenTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
+	FrozenTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
 	/**
 	 * @description Update this state using the current global time.
@@ -22,33 +22,12 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param layer the layer this state belongs to.
 	 */
 	FrozenTransitionState.prototype.update = function (globalTime) {
-		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime);
+		AbstractTransitionState.prototype.update.call(this, globalTime);
 
 		// update only the B state - the first is frozen
-		if (this._stateB !== null) {
-			this._stateB.update(globalTime);
+		if (this._targetState !== null) {
+			this._targetState.update(globalTime);
 		}
-	};
-
-	/**
-	 * @description Do the transition logic for this transition state.
-	 * @param callingState the state calling for this transition.
-	 * @param layer the layer our state belongs to.
-	 * @return the state to transition to. Often ourselves.
-	 */
-	FrozenTransitionState.prototype.getTransitionState = function (callingState, globalTime) {
-		// grab current time as our start
-		this._start = globalTime;
-		// set "frozen" start state
-		this.setStateA(callingState);
-		// set "target" end state
-		this.setStateB(this._targetState);
-		if (!this._stateB) {
-			return null;
-		}
-		// restart end state.
-		this._stateB.resetClips(this._start);
-		return this;
 	};
 
 	/**
@@ -57,9 +36,14 @@ function (AbstractTwoStateLerpTransition) {
 	 */
 	FrozenTransitionState.prototype.postUpdate = function () {
 		// update only the B state - the first is frozen
-		if (this._stateB !== null) {
-			this._stateB.postUpdate();
+		if (this._targetState !== null) {
+			this._targetState.postUpdate();
 		}
+	};
+
+	FrozenTransitionState.prototype.resetClips = function(globalTime) {
+		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
+		this._targetState.resetClips(globalTime);
 	};
 
 	return FrozenTransitionState;

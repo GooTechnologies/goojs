@@ -11,8 +11,8 @@ function (TriggerChannel) {
 	 * @param times the time samples
 	 * @param keys our key samples. Entries may be null. Should have as many entries as the times array.
 	 */
-	function GuaranteedTriggerChannel (channelName, times, keys) {
-		TriggerChannel.call(this, channelName, times, keys);
+	function GuaranteedTriggerChannel (channelName, times, keys, blendType) {
+		TriggerChannel.call(this, channelName, times, keys, blendType);
 	}
 
 	GuaranteedTriggerChannel.prototype = Object.create(TriggerChannel.prototype);

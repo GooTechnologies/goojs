@@ -11,8 +11,8 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	 * @param translations the translations to set on this channel at each time offset.
 	 * @param scales the scales to set on this channel at each time offset.
 	 */
-	function TransformChannel (channelName, times, rotations, translations, scales) {
-		AbstractAnimationChannel.call(this, channelName, times);
+	function TransformChannel (channelName, times, rotations, translations, scales, blendType) {
+		AbstractAnimationChannel.call(this, channelName, times, blendType);
 
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
 			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);

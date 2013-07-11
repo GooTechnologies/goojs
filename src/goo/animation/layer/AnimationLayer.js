@@ -23,6 +23,7 @@ function (
 		this._currentState = null;
 		this._layerBlender = null;
 		this._transitions = {};
+		this._transitionStates = {};
 	}
 
 	AnimationLayer.BASE_LAYER_NAME = '-BASE_LAYER-';
@@ -36,8 +37,55 @@ function (
 
 	AnimationLayer.prototype.postUpdate = function() {
 		if (this._currentState) {
-			this._currentState.update();
+			this._currentState.postUpdate();
 		}
+	};
+
+	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
+		globalTime = globalTime || World.time;
+		var cState = this._currentState;
+		var transition;
+		if (cState._transitions) {
+			transition = cState._transitions[state] || cState._transitions['*'];
+		}
+		if(!transition && this._transitions) {
+			transition = this._transitions[state] || this._transitions['*'];
+		}
+		if (cState instanceof SteadyState && transition) {
+			var transitionState = this._transitionStates[transition.type];
+			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime);
+			return;
+		} else if (!cState) {
+			transition = this._transitions[state];
+			if(transition) {
+				var transitionState = this._transitionStates[transition.type];
+				if (transitionState) {
+					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
+					return;
+				}
+			}
+		}
+		console.warn('No transition performed');
+	};
+
+	AnimationLayer.prototype._doTransition = function(transition, source, target, config, globalTime) {
+		if(source) {
+			transition._sourceState = source;
+			var timeWindow = config.timeWindow || [-1, -1];
+			if (!transition.isValid(timeWindow, globalTime)) {
+				console.warn('State not in allowed time window');
+				return;
+			}
+		}
+		transition._targetState = target;
+		transition.readFromConfig(config);
+		transition.resetClips(globalTime);
+
+		transition.onFinished = function() {
+			this._currentState = target;
+		}.bind(this);
+
+		this._currentState = transition;
 	};
 
 	/**

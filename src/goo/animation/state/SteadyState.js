@@ -1,6 +1,6 @@
-define(['goo/animation/state/AbstractFiniteState'],
+define(['goo/animation/state/AbstractState'],
 /** @lends */
-function (AbstractFiniteState) {
+function (AbstractState) {
 	"use strict";
 
 	/**
@@ -10,7 +10,7 @@ function (AbstractFiniteState) {
 	 * @property {String} name Name of state
 	 */
 	function SteadyState (name) {
-		AbstractFiniteState.call(this);
+		AbstractState.call(this);
 
 		this._name = name;
 		this._transitions = {};
@@ -18,7 +18,7 @@ function (AbstractFiniteState) {
 		this._sourceTree = null;
 	}
 
-	SteadyState.prototype = Object.create(AbstractFiniteState.prototype);
+	SteadyState.prototype = Object.create(AbstractState.prototype);
 
 	SteadyState.prototype.doTransition = function (key, globalTime) {
 		var state = this._transitions[key];
@@ -62,7 +62,7 @@ function (AbstractFiniteState) {
 	};
 
 	SteadyState.prototype.resetClips = function (globalStartTime) {
-		AbstractFiniteState.prototype.resetClips.call(this, globalStartTime);
+		AbstractState.prototype.resetClips.call(this, globalStartTime);
 		this._sourceTree.resetClips(globalStartTime);
 	};
 

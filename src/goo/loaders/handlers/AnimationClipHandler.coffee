@@ -31,6 +31,7 @@ define [
 			if clipConfig.channels and clipConfig.channels.length
 				for channelConfig in clipConfig.channels
 					times = JsonUtils.parseChannelTimes(channelConfig, useCompression)
+					blendType = channelConfig.blendType
 				
 					if channelConfig.Type in ['Joint', 'Transform']
 						rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression)
@@ -39,26 +40,29 @@ define [
 					
 					if channelConfig.Type == 'Joint'
 						channel = new JointChannel(
-							channelConfig.JointName,
-							channelConfig.JointIndex,
-							times,
-							rots,
-							trans,
+							channelConfig.JointName
+							channelConfig.JointIndex
+							times
+							rots
+							trans
 							scales
+							blendType
 						)
 					else if channelConfig.Type == 'Transform'
 						channel = new TransformChannel(
-							channelConfig.Name,
-							times,
-							rots,
-							trans,
+							channelConfig.Name
+							times
+							rots
+							trans
 							scales
+							blendType
 						)
 					else if channelConfig.Type == 'FloatLERP'
 						channel = new InterPolatedFloatChannel(
 							channelConfig.Name
 							times
 							JsonUtils.parseFloatLERPValues(channelConfig, useCompression)
+							blendType
 						)
 					else #TODO: Trigger channel
 						console.warn("Unhandled channel type: " + channelConfig.Type)

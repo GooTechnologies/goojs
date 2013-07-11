@@ -63,7 +63,7 @@ function (
 		}
 	};
 
-	AnimationComponent.prototype.apply = function(transform, pose) {
+	AnimationComponent.prototype.apply = function(transformComponent, pose) {
 		var data = this.getCurrentSourceData();
 
 		// cycle through, pulling out and applying those we know about
@@ -75,8 +75,10 @@ function (
 						value.applyTo(pose._localTransforms[value._jointIndex]);
 					}
 				} else if (value instanceof TransformData) {
-					if (transform) {
-						value.applyTo(transform);
+					if (transformComponent) {
+						value.applyTo(transformComponent.transform);
+						transformComponent.updateTransform();
+						this._updateWorldTransform(transformComponent);
 					}
 				} else if (value instanceof TriggerData) {
 					if (value.armed) {
@@ -94,6 +96,14 @@ function (
 			if (pose) {
 				pose.updateTransforms();
 			}
+		}
+	};
+
+	AnimationComponent.prototype._updateWorldTransform = function(transformComponent) {
+		transformComponent.updateWorldTransform();
+
+		for (var i = 0; i < transformComponent.children.length; i++) {
+			this._updateWorldTransform(transformComponent.children[i]);
 		}
 	};
 

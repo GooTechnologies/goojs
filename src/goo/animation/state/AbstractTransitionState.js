@@ -1,82 +1,117 @@
 define([
-	'goo/animation/state/AbstractFiniteState'
+	'goo/animation/state/AbstractState',
+	'goo/animation/blendtree/BinaryLERPSource',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
-	AbstractFiniteState
+	AbstractState,
+	BinaryLERPSource,
+	MathUtils
 ) {
 	"use strict";
 
 	/**
-	 * @class Base class for transition states - states responsible for moving between other finite states.
+	 * @class An abstract transition state that blends between two other states.
+	 * @extends AbstractState
 	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
+	 * @param fadeTime the amount of time we should take to do the transition.
+	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function AbstractTransitionState (targetState) {
-		AbstractFiniteState.call(this);
+	function AbstractTransitionState() {
+		AbstractState.call(this);
 
-		// the name of the steady state we want the Animation Layer to be in at the end of the transition.
-		this._targetState = targetState;
-
-		// start window value. If greater than 0, this transition is only valid if the current time is >= startWindow. Note that animations are
-		// separate from states, so time scaling an animation will not affect transition windows directly and must be factored into the start/end
-		// values.
-		this._startWindow = -1;
-
-		// end window value. If greater than 0, this transition is only valid if the current time is <= endWindow. Note that animations are separate
-		// from states, so time scaling an animation will not affect transition windows directly and must be factored into the start/end values.
-		this._endWindow = -1;
+		this._sourceState = null;
+		this._targetState = null;
+		this._percent = 0.0;
+		this._sourceData = null;
+		this._onFinished = null;
+		this._fadeTime = 0;
+		this._blendType = 'Linear';
 	}
 
-	AbstractTransitionState.prototype = Object.create(AbstractFiniteState.prototype);
+	AbstractTransitionState.prototype = Object.create(AbstractState.prototype);
 
 	/**
-	 * @description Request that this state perform a transition to another.
-	 * @param callingState the state calling for this transition.
-	 * @param layer the layer our state belongs to.
-	 * @return the new state to transition to. May be null if the transition was not possible or was ignored for some reason.
+	 * Update this state using the current global time.
+	 * @param globalTime the current global time.
+	 * @param layer the layer this state belongs to.
 	 */
-	AbstractTransitionState.prototype.doTransition = function (callingState, globalTime) {
-		var time = globalTime - callingState._globalStartTime;
-		if (this.isInTimeWindow(time)) {
-			return this.getTransitionState(callingState, globalTime);
-		} else {
-			return null;
+	// Was: function (globalTime, layer)
+	AbstractTransitionState.prototype.update = function (globalTime) {
+		var currentTime = globalTime - this._globalStartTime;
+		if(currentTime > this._fadeTime && this.onFinished) {
+			this.onFinished();
+			return;
+		}
+		var percent = currentTime / this._fadeTime;
+		switch (this._blendType) {
+			case 'SCurve3':
+				this._percent = MathUtils.scurve3(percent);
+				break;
+			case 'SCurve5':
+				this._percent = MathUtils.scurve5(percent);
+				break;
+			default:
+				this._percent = percent;
 		}
 	};
 
-	AbstractTransitionState.prototype.isInTimeWindow = function (localTime) {
-		if (this._startWindow <= 0) {
-			if (this._endWindow <= 0) {
+	AbstractTransitionState.prototype.readFromConfig = function(config) {
+		if (config) {
+			if (config.fadeTime !== undefined) { this._fadeTime = config.fadeTime; }
+			if (config.blendType !== undefined) { this._blendType = config.blendType; }
+		}
+	};
+
+	/**
+	 * @return the current map of source channel data for this layer.
+	 */
+	AbstractTransitionState.prototype.getCurrentSourceData = function () {
+		// grab our data maps from the two states
+		var sourceAData = this._sourceState ? this._sourceState.getCurrentSourceData() : null;
+		var sourceBData = this._targetState ? this._targetState.getCurrentSourceData() : null;
+
+		// reuse previous _sourceData transforms to avoid re-creating
+		// too many new transform data objects. This assumes that a
+		// same state always returns the same transform data objects.
+		if (!this._sourceData) {
+			this._sourceData = {};
+		}
+		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
+	};
+
+	AbstractTransitionState.prototype.isValid = function(timeWindow, globalTime) {
+		var localTime = globalTime - this._sourceState._globalStartTime;
+		var start = timeWindow[0];
+		var end = timeWindow[1];
+
+		if (start <= 0) {
+			if (end <= 0) {
 				// no window, so true
 				return true;
 			} else {
 				// just check end
-				return localTime <= this._endWindow;
+				return localTime <= end;
 			}
 		} else {
-			if (this._endWindow <= 0) {
+			if (end <= 0) {
 				// just check start
-				return localTime >= this._startWindow;
-			} else if (this._startWindow <= this._endWindow) {
+				return localTime >= start;
+			} else if (start <= end) {
 				// check between start and end
-				return this._startWindow <= localTime && localTime <= this._endWindow;
+				return start <= localTime && localTime <= end;
 			} else {
 				// start is greater than end, so there are two windows.
-				return localTime >= this._startWindow || localTime <= this._endWindow;
+				return localTime >= start || localTime <= end;
 			}
 		}
 	};
 
-	/**
-	 * @description Do the transition logic for this transition state. (override in subclass)
-	 * @param callingState the state calling for this transition.
-	 * @param layer the layer our state belongs to.
-	 * @return the state to transition to. Often ourselves.
-	 */
-
-	// Was: function (callingState, layer)
-	AbstractTransitionState.prototype.getTransitionState = function () {
-		return null;
+	AbstractTransitionState.prototype.resetClips = function(globalTime) {
+		AbstractState.prototype.resetClips.call(this, globalTime);
+		this._sourceData = {};
+		this._percent = 0.0;
 	};
 
 	return AbstractTransitionState;

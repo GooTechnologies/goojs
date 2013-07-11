@@ -35,14 +35,15 @@ function (
 
 	BinaryLERPSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
-		var foundActive = false;
+		var activeA = false;
+		var activeB = false;
 		if (this._sourceA) {
-			foundActive = foundActive || this._sourceA.setTime(globalTime);
+			activeA = this._sourceA.setTime(globalTime);
 		}
 		if (this._sourceB) {
-			foundActive = foundActive || this._sourceB.setTime(globalTime);
+			activeB = this._sourceB.setTime(globalTime);
 		}
-		return foundActive;
+		return activeA || activeB;
 	};
 
 	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {

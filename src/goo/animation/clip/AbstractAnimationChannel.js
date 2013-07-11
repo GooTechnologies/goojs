@@ -1,6 +1,10 @@
-define(
+define([
+	'goo/math/MathUtils'
+],
 /** @lends */
-function () {
+function (
+	MathUtils
+) {
 	"use strict";
 
 	/**
@@ -9,7 +13,8 @@ function () {
 	 * @param channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param times our time indices. Copied into the channel.
 	 */
-	function AbstractAnimationChannel (channelName, times) {
+	function AbstractAnimationChannel (channelName, times, blendType) {
+		this._blendType = blendType || 'Linear';
 		this._channelName = channelName;
 		this._times = times instanceof Array && times.length ? times.slice(0) : [];
 	}
@@ -41,6 +46,11 @@ function () {
 				}
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
+			if (this._blendType === 'SCurve3') {
+				progressPercent = MathUtils.scurve3(progressPercent);
+			} else if (this._blendType === 'SCurve5') {
+				progressPercent = MathUtils.scurve5(progressPercent);
+			}
 
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
 		}

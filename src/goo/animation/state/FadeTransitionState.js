@@ -1,6 +1,6 @@
-define(['goo/animation/state/AbstractTwoStateLerpTransition'],
+define(['goo/animation/state/AbstractTransitionState'],
 /** @lends */
-function (AbstractTwoStateLerpTransition) {
+function (AbstractTransitionState) {
 	"use strict";
 
 	/**
@@ -10,11 +10,11 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param fadeTime the amount of time we should take to do the transition.
 	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
-	function FadeTransitionState (targetState, fadeTime, blendType) {
-		AbstractTwoStateLerpTransition.call(this, targetState, fadeTime, blendType);
+	function FadeTransitionState () {
+		AbstractTransitionState.call(this);
 	}
 
-	FadeTransitionState.prototype = Object.create(AbstractTwoStateLerpTransition.prototype);
+	FadeTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
 	/**
 	 * @description Update this state using the current global time.
@@ -22,36 +22,15 @@ function (AbstractTwoStateLerpTransition) {
 	 * @param layer the layer this state belongs to.
 	 */
 	FadeTransitionState.prototype.update = function (globalTime) {
-		AbstractTwoStateLerpTransition.prototype.update.call(this, globalTime);
+		AbstractTransitionState.prototype.update.call(this, globalTime);
 
 		// update both of our states
-		if (this._stateA !== null) {
-			this._stateA.update(globalTime);
+		if (this._sourceState !== null) {
+			this._sourceState.update(globalTime);
 		}
-		if (this._stateB !== null) {
-			this._stateB.update(globalTime);
+		if (this._targetState !== null) {
+			this._targetState.update(globalTime);
 		}
-	};
-
-	/**
-	 * @description Do the transition logic for this transition state.
-	 * @param callingState the state calling for this transition.
-	 * @param layer the layer our state belongs to.
-	 * @return the state to transition to. Often ourselves.
-	 */
-	FadeTransitionState.prototype.getTransitionState = function (callingState, globalStartTime) {
-		// grab current time as our start
-		this._start = globalStartTime;
-		// set "current" start state
-		this.setStateA(callingState);
-		// set "target" end state
-		this.setStateB(this._targetState);
-		if (!this._stateB) {
-			return null;
-		}
-		// restart end state.
-		this._stateB.resetClips(this._start);
-		return this;
 	};
 
 	/**
@@ -60,11 +39,18 @@ function (AbstractTwoStateLerpTransition) {
 	 */
 	FadeTransitionState.prototype.postUpdate = function () {
 		// post update both of our states
-		if (this._stateA !== null) {
-			this._stateA.postUpdate();
+		if (this._targetState !== null) {
+			this._targetState.postUpdate();
 		}
-		if (this._stateB !== null) {
-			this._stateB.postUpdate();
+		if (this._targetState !== null) {
+			this._targetState.postUpdate();
+		}
+	};
+
+	FadeTransitionState.prototype.resetClips = function(globalTime) {
+		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
+		if(this._targetState !== null) {
+			this._targetState.resetClips(globalTime);
 		}
 	};
 
