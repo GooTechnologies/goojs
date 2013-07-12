@@ -65,7 +65,7 @@ require([
 
 	function lightPointerDemo(goo) {
 		// add spheres to cast light on
-		var sphereMeshData = ShapeCreator.createSphere();
+		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
 		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
 

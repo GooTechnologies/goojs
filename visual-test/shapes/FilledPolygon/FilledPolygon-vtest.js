@@ -22,7 +22,8 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/PolyLine'
+	'goo/shapes/FilledPolygon',
+	'goo/renderer/TextureCreator'
 ], function (
 	GooRunner,
 	World,
@@ -41,39 +42,33 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	PolyLine
+	FilledPolygon,
+	TextureCreator
 	) {
 	'use strict';
 
-	function latheDemo(goo) {
-		var section = PolyLine.fromCubicSpline([
-			3 + 0, 0, 0,
-			3 + 1, 0, 0,
-			3 + 1, 1, 0,
-			3 + 0, 1, 0,
-			3 + -1, 1, 0,
-			3 + -1, 2, 0,
-			3 + 0, 2, 0], 20);
+	function filledPolygonDemo(goo) {
+		var verts = [
+			0, 0, 0,
+			1, 0, 0,
+			1+0.1, 1-0.1, 0,
+			2, 1, 0,
+			2, 2, 0,
+			0, 2, 0];
+		var meshData = new FilledPolygon(verts);
 
-		//var section = new PolyLine([1, 1, 0,  2, 0, 0,  1, -1, 0]);
+		var material = Material.createMaterial(ShaderLib.texturedLit, '');
+		var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
+		material.setTexture('DIFFUSE_MAP', texture);
+		var boxEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
+		boxEntity.addToWorld();
 
-		var latheMeshData = section.lathe(20);
-
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		var latheEntity = EntityUtils.createTypicalEntity(goo.world, latheMeshData, material, '');
-		latheEntity.addToWorld();
-
-		var normalsMeshData = latheMeshData.getNormalsMeshData(4);
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
-		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
-		normalsEntity.addToWorld();
-
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 10, 10);
-		lightEntity.addToWorld();
+		var light1 = new PointLight();
+		//light1.color = [1.0, 0.3, 0.0];
+		var light1Entity = goo.world.createEntity('light');
+		light1Entity.setComponent(new LightComponent(light1));
+		light1Entity.transformComponent.transform.translation.set(10, 10, 10);
+		light1Entity.addToWorld();
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -85,7 +80,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(5, Math.PI / 2, 0)
+			spherical : new Vector3(10, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}
@@ -95,7 +90,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		latheDemo(goo);
+		filledPolygonDemo(goo);
 	}
 
 	init();

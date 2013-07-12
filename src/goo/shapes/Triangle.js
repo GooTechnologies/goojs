@@ -26,7 +26,7 @@ define([
 	Triangle.prototype.rebuild = function () {
 		this.getAttributeBuffer(MeshData.POSITION).set(this.verts);
 
-		var normals = MathUtils.getTriangleNormals(
+		var normals = MathUtils.getTriangleNormal(
 			this.verts[0], this.verts[1], this.verts[2],
 			this.verts[3], this.verts[4], this.verts[5],
 			this.verts[6], this.verts[7], this.verts[8]);

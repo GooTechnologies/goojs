@@ -22,7 +22,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/Disk'
+	'goo/shapes/PolyLine'
 ], function (
 	GooRunner,
 	World,
@@ -41,43 +41,32 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	Disk
+	PolyLine
 	) {
 	'use strict';
 
-	function addNormalsToWorld(goo, entity) {
-		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
+	function latheDemo(goo) {
+		var section = PolyLine.fromCubicSpline([
+			3 + 0, 0, 0,
+			3 + 1, 0, 0,
+			3 + 1, 1, 0,
+			3 + 0, 1, 0,
+			3 + -1, 1, 0,
+			3 + -1, 2, 0,
+			3 + 0, 2, 0], 20);
+
+		var latheMeshData = section.lathe(20);
+
+		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var latheEntity = EntityUtils.createTypicalEntity(goo.world, latheMeshData, material, '');
+		latheEntity.addToWorld();
+
+		var normalsMeshData = latheMeshData.getNormalsMeshData(4);
 		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
 		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
-		normalsEntity.transformComponent.transform = entity.transformComponent.transform;
 		normalsEntity.addToWorld();
-	}
 
-	function diskDemo(goo) {
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-
-		// add pointy disk
-		var pointyDiskMeshData = new Disk(64, 4, 8);
-		var pointyDiskEntity = EntityUtils.createTypicalEntity(goo.world, pointyDiskMeshData, material, 'Pointy Disk');
-		pointyDiskEntity.transformComponent.transform.translation.setd(-9, 0, 0);
-		pointyDiskEntity.addToWorld();
-		addNormalsToWorld(goo, pointyDiskEntity);
-
-		// add flat disk
-		var flatDiskMeshData = new Disk(64, 4, 0);
-		var flatDiskEntity = EntityUtils.createTypicalEntity(goo.world, flatDiskMeshData, material, 'Flat Disk');
-		flatDiskEntity.addToWorld();
-		addNormalsToWorld(goo, flatDiskEntity);
-
-		// add inversly pointy disk
-		var ipointyDiskMeshData = new Disk(64, 4, -4);
-		var iPointyDiskEntity = EntityUtils.createTypicalEntity(goo.world, ipointyDiskMeshData, material, '-Pointy Disk');
-		iPointyDiskEntity.transformComponent.transform.translation.setd(9, 0, 0);
-		iPointyDiskEntity.addToWorld();
-		addNormalsToWorld(goo, iPointyDiskEntity);
-
-		// add lights
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
@@ -94,7 +83,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(25, Math.PI / 2, 0)
+			spherical : new Vector3(5, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}
@@ -104,7 +93,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		diskDemo(goo);
+		latheDemo(goo);
 	}
 
 	init();

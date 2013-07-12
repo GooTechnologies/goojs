@@ -174,7 +174,7 @@ function () {
 	 * @param {number} R.z
 	 * @return {number[]} The triangle's normal
 	 */
-	MathUtils.getTriangleNormals = function(p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
+	MathUtils.getTriangleNormal = function(p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;
 		var uy = p2y - p1y;
 		var uz = p2z - p1z;
