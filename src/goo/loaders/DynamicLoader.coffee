@@ -75,7 +75,7 @@ _) ->
 				@_ajax = new Ajax()
 
 
-
+				
 
 		###*
 		* Load configs into the loader cache without loading anything into the engine. Subsequent calls to load and update will draw
@@ -101,10 +101,7 @@ _) ->
 		* @param {string} ref Ref of object to load
 		* @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null, 
 		* 	the loader will search for the appropriate config in the loader's internal cache.
-		* @param {object} options
-		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
+		* @param {object} options See {DynamicLoader.update}
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -129,10 +126,7 @@ _) ->
 		* 
 		* @param {string} ref Ref of object to load
 		* @param {string} bundleName name of the bundle (including extension) 
-		* @param {object} options
-		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
+		* @param {object} options See {DynamicLoader.update}
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -159,10 +153,7 @@ _) ->
 		* registered {ConfigHandler}
 		* 
 		* @param {string} ref Ref of object to load
-		* @param {object} options
-		* @param {function(object)} [config.beforeAdd] Function called before updating the world with the loaded objects. Takes
-		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
+		* @param {object} options See {DynamicLoader.update}
 		* @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object 
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
@@ -179,19 +170,23 @@ _) ->
 		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
 		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
 		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
+		* @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
 		update: (ref, config, options={})->
+			_.defaults(options, recursive:true)
 			console.log "Loading/updating #{ref}"
 			if config then @_configs[ref] = config
 			@_objects = {}
 			
 			@_loadRef(ref).then (config)=>
+				console.log "Loaded ref"
 				promises = []
-				for childRef in @_getRefsFromConfig(config)
-					do (childRef)=>
-						promises.push @_loadRef(childRef).then (childConfig)=>
-							@_handle(childRef, childConfig, options)
+				if options.recursive and ConfigHandler.getHandler(@_getTypeForRef(ref))
+					for childRef in @_getRefsFromConfig(config)
+						do (childRef)=>
+							promises.push @_loadRef(childRef).then (childConfig)=>
+								@_handle(childRef, childConfig, options)
 						
 				promises.push @_handle(ref, config, options)
 				return RSVP.all(promises)
@@ -218,14 +213,14 @@ _) ->
 		# Load/update an object with the given reference into the engine
 		_handle: (ref, config, options)-> 
 			if @_objects[ref]?.then
-				#console.log "#{ref} is handling"	
+				console.debug "#{ref} is handling"	
 				return @_objects[ref]
 			else if @_objects[ref] and not options.noCache
-				#console.log "#{ref} is already handled"
+				console.debug "#{ref} is already handled"
 				return pu.createDummyPromise(@_objects[ref])
 			else
 				type = @_getTypeForRef(ref)
-				
+				console.debug "Handling #{ref}, type is #{type}"
 				handlerClass = ConfigHandler.getHandler(type)
 				if handlerClass
 					@_handlers ?= {}
@@ -239,7 +234,7 @@ _) ->
 					else
 						handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
 					
-					console.log "Handling #{ref}"
+					console.debug "Handling #{ref}"
 					if config? 
 						@_objects[ref] = handler.update(ref, config).then (object)=>
 							@_objects[ref] = object
@@ -261,8 +256,10 @@ _) ->
 		*###
 		_loadRef: (ref, noCache=false)->
 			if @_configs[ref]?.then
+				console.log "#{ref} is loading"
 				return @_configs[ref]
 			else if @_configs[ref]? and not noCache
+				console.log "#{ref} is loaded"
 				return pu.createDummyPromise(@_configs[ref])
 			else if @_ajax
 				url = @_rootPath + window.escape(ref)
@@ -279,6 +276,7 @@ _) ->
 						else
 							@_configs[ref] = data
 			else
+				console.log "#{ref} is none"
 				pu.createDummyPromise(null)
 				
 		# Find all the references in a config, and return in a flat list
