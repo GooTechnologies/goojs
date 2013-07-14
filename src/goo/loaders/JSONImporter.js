@@ -287,7 +287,7 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 		if (object.Colors) {
 			if (this.useCompression) {
 				var offset = 0;
-				var scale = 255 / (this.compressedColorsRange + 1);
+				var scale = 1 / (this.compressedColorsRange + 1);
 				JsonUtils.fillAttributeBufferFromCompressedString(object.Colors, meshData, MeshData.COLOR, [scale, scale, scale, scale], [offset,
 						offset, offset, offset]);
 			} else {

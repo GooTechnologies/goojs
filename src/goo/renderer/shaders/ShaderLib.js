@@ -21,6 +21,169 @@ define([
 	function ShaderLib() {
 	}
 
+	ShaderLib.uber = {
+		processors: [
+			ShaderBuilder.uber.processor,
+			ShaderBuilder.light.processor
+		],
+	    attributes: {
+	        vertexPosition: MeshData.POSITION,
+	        vertexNormal: MeshData.NORMAL,
+	        vertexTangent: MeshData.TANGENT,
+	        vertexColor: MeshData.COLOR,
+	        vertexUV0: MeshData.TEXCOORD0,
+	        vertexUV1: MeshData.TEXCOORD1
+	    },
+	    uniforms: {
+	        viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+	        worldMatrix: Shader.WORLD_MATRIX,
+	        cameraPosition: Shader.CAMERA,
+			diffuseMap : Shader.DIFFUSE_MAP,
+			normalMap : Shader.NORMAL_MAP,
+			specularMap : Shader.SPECULAR_MAP,
+			emissiveMap : Shader.EMISSIVE_MAP
+	    },
+		vshader : [
+			'attribute vec3 vertexPosition;',
+
+			'#ifdef NORMAL',
+				'attribute vec3 vertexNormal;',
+			'#endif',
+			'#ifdef TANGENT',
+				'attribute vec4 vertexTangent;',
+			'#endif',
+			'#ifdef COLOR',
+				'attribute vec4 vertexColor;',
+			'#endif',
+			'#ifdef TEXCOORD0',
+				'attribute vec2 vertexUV0;',
+			'#endif',
+			'#ifdef TEXCOORD1',
+				'attribute vec2 vertexUV1;',
+			'#endif',
+
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
+
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'#ifdef NORMAL',
+			'varying vec3 normal;',
+			'#endif',
+			'#ifdef TANGENT',
+			'varying vec3 binormal;',
+			'varying vec3 tangent;',
+			'#endif',
+			'#ifdef COLOR',
+			'varying vec4 color;',
+			'#endif',
+			'#ifdef TEXCOORD0',
+			'varying vec2 texCoord0;',
+			'#endif',
+			'#ifdef TEXCOORD1',
+			'varying vec2 texCoord1;',
+			'#endif',
+
+			ShaderBuilder.light.prevertex,
+
+			'void main(void) {',
+				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+				'vWorldPos = worldPos.xyz;',
+				'gl_Position = viewProjectionMatrix * worldPos;',
+
+				'viewPosition = cameraPosition - worldPos.xyz;',
+
+				'#ifdef NORMAL',
+				'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'#endif',
+				'#ifdef TANGENT',
+				'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
+				'#endif',
+				'#ifdef COLOR',
+				'	color = vertexColor;',
+				'#endif',
+				'#ifdef TEXCOORD0',
+				'	texCoord0 = vertexUV0;',
+				'#endif',
+				'#ifdef TEXCOORD1',
+				'	texCoord1 = vertexUV1;',
+				'#endif',
+
+				ShaderBuilder.light.vertex,
+			'}'
+		].join('\n'),
+		fshader : [//
+			'#ifdef DIFFUSE_MAP',
+				'uniform sampler2D diffuseMap;',
+			'#endif',
+			'#ifdef NORMAL_MAP',
+				'uniform sampler2D normalMap;',
+			'#endif',
+			'#ifdef SPECULAR_MAP',
+				'uniform sampler2D specularMap;',
+			'#endif',
+			'#ifdef EMISSIVE_MAP',
+				'uniform sampler2D emissiveMap;',
+			'#endif',
+
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'#ifdef NORMAL',
+				'varying vec3 normal;',
+			'#endif',
+			'#ifdef TANGENT',
+				'varying vec3 binormal;',
+				'varying vec3 tangent;',
+			'#endif',
+			'#ifdef COLOR',
+				'varying vec4 color;',
+			'#endif',
+			'#ifdef TEXCOORD0',
+				'varying vec2 texCoord0;',
+			'#endif',
+			'#ifdef TEXCOORD1',
+				'varying vec2 texCoord1; //Use for lightmap',
+			'#endif',
+
+			ShaderBuilder.light.prefragment,
+
+			'void main(void)',
+			'{',
+				'vec4 final_color = vec4(1.0);',
+
+				'#ifdef DIFFUSE_MAP',
+					'final_color *= texture2D(diffuseMap, texCoord0);',
+				'#endif',
+
+				'#ifdef COLOR',
+					'final_color *= color;',
+				'#endif',
+
+				'#if defined(TANGENT) && defined(NORMAL_MAP)',
+					'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
+					'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
+					'vec3 worldNormal = (tangentToWorld * tangentNormal);',
+					'vec3 N = normalize(worldNormal);',
+				'#elif defined(NORMAL)',
+					'vec3 N = normalize(normal);',
+				'#else',
+					'vec3 N = vec3(0.0, 1.0, 0.0);',
+				'#endif',
+
+				ShaderBuilder.light.fragment,
+
+				'#ifdef EMISSIVE_MAP',
+					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
+					'final_color.xyz += final_color.xyz * emissive;',
+				'#endif',
+
+				'gl_FragColor = final_color;',
+			'}'
+		].join('\n')
+	};
+
 	ShaderLib.screenCopy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -196,8 +359,7 @@ define([
 
 	ShaderLib.simpleLit = {
 		processors: [
-			ShaderBuilder.light.processor,
-			ShaderBuilder.shadow.processor
+			ShaderBuilder.light.processor
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -217,7 +379,6 @@ define([
 		'uniform vec3 cameraPosition;',
 
 		ShaderBuilder.light.prevertex,
-		ShaderBuilder.shadow.prevertex,
 
 		'varying vec3 normal;',
 		'varying vec3 vWorldPos;',
@@ -229,7 +390,6 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
-			ShaderBuilder.shadow.vertex,
 
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 		'	viewPosition = cameraPosition - worldPos.xyz;',
@@ -237,7 +397,6 @@ define([
 		].join('\n'),
 		fshader : [//
 		ShaderBuilder.light.prefragment,
-		ShaderBuilder.shadow.prefragment,
 
 		'varying vec3 normal;',
 		'varying vec3 vWorldPos;',
@@ -249,7 +408,6 @@ define([
 		'	vec4 final_color = vec4(1.0);',
 
 			ShaderBuilder.light.fragment,
-			ShaderBuilder.shadow.fragment,
 
 		'	gl_FragColor = final_color;',
 		'}'//
@@ -296,8 +454,7 @@ define([
 
 	ShaderLib.texturedLit = {
 		processors: [
-			ShaderBuilder.light.processor,
-			ShaderBuilder.shadow.processor
+			ShaderBuilder.light.processor
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -320,7 +477,6 @@ define([
 		'uniform vec3 cameraPosition;',
 
 		ShaderBuilder.light.prevertex,
-		ShaderBuilder.shadow.prevertex,
 
 		'varying vec3 normal;',
 		'varying vec3 vWorldPos;',
@@ -333,7 +489,6 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
-			ShaderBuilder.shadow.vertex,
 
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 		'	texCoord0 = vertexUV0;',
@@ -344,7 +499,6 @@ define([
 		'uniform sampler2D diffuseMap;',
 
 		ShaderBuilder.light.prefragment,
-		ShaderBuilder.shadow.prefragment,
 
 		'varying vec3 normal;',
 		'varying vec3 vWorldPos;',
@@ -357,7 +511,6 @@ define([
 		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
 
 			ShaderBuilder.light.fragment,
-			ShaderBuilder.shadow.fragment,
 
 		'	gl_FragColor = final_color;',
 		'}'//
