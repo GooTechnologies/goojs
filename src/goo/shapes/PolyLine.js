@@ -106,7 +106,6 @@ define([
 	 * @returns {PolyLine} The new polyLine
 	 */
 	PolyLine.prototype.concat = function(that, closed) {
-		console.log(this.verts.slice(this.verts.length-3), that.verts[0],that.verts[1],that.verts[2]);
 		if(!(that instanceof PolyLine)) {
 			return ;
 		}
@@ -133,7 +132,7 @@ define([
 		var p012 = [], p123 = [];
 		var p0123 = [];
 
-		//better off with a bernstein polynomial?
+		// better off with a bernstein polynomial?
 		for (var pas = startFraction; pas <= nSegments; pas++) {
 			var rap = pas / nSegments;
 
