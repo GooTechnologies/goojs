@@ -142,7 +142,7 @@ _) ->
 			if data.colors?.length>0
 				if compression?
 					offset = 0
-					scale = 255 / (compression.compressedColorsRange + 1)
+					scale = 1 / (compression.compressedColorsRange + 1)
 					JsonUtils.fillAttributeBufferFromCompressedString(data.colors, meshData, MeshData.COLOR, 
 						[scale, scale, scale, scale], [offset,offset, offset, offset])
 				else
