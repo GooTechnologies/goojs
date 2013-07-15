@@ -9,6 +9,7 @@ define([
 	"use strict";
 
 	/**
+	 * REVIEW: This doesn't seem correct
 	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
 	 * while the width defines the x-axis. The z-axis will always be 0.
 	 * @param {number} [width=1] Total width of quad.
@@ -28,6 +29,8 @@ define([
 
 	FilledPolygon.prototype = Object.create(MeshData.prototype);
 
+
+	// REVIEW: Some more informing variable names would be nice
 	function getTriangulation(p) {
 		var n = p.length / 3;
 		if(n<3) { return []; }

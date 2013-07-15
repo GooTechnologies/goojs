@@ -9,8 +9,9 @@ define([
 
 	/**
 	 * @class A grid-like surface shape
+	 * REVIEW: are verts really optional? Otherwise no brackets.
 	 * @param {number[]} [verts] The vertices data array
-	 * @param {number=2} [verticesPerLine] The number of vertices
+	 * @param {number} [verticesPerLine=2] The number of vertices
 	 */
 	function Surface(verts, vertsPerLine, verticallyClosed) {
 		this.verts = verts;
