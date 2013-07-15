@@ -70,6 +70,7 @@ require([
 		var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var boxEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
+		boxEntity.transformComponent.transform.translation.setd(-32, -32, 0);
 		boxEntity.addToWorld();
 
 		var light1 = new PointLight();
@@ -89,7 +90,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(10, Math.PI / 2, 0)
+			spherical : new Vector3(60, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}

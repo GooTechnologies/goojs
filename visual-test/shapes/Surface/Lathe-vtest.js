@@ -47,13 +47,13 @@ require([
 
 	function latheDemo(goo) {
 		var section = PolyLine.fromCubicSpline([
-			3 + 0, 0, 0,
+			3 + 0, -1, 0,
 			3 + 1, 0, 0,
 			3 + 1, 1, 0,
 			3 + 0, 1, 0,
 			3 + -1, 1, 0,
 			3 + -1, 2, 0,
-			3 + 0, 2, 0], 20);
+			3 + 0, 3, 0], 20);
 
 		var latheMeshData = section.lathe(20);
 
@@ -70,7 +70,7 @@ require([
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 10, 10);
+		lightEntity.transformComponent.transform.translation.set(0, 2, 10);
 		lightEntity.addToWorld();
 
 		// camera
@@ -83,7 +83,7 @@ require([
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
 			domElement : goo.renderer.domElement,
-			spherical : new Vector3(5, Math.PI / 2, 0)
+			spherical : new Vector3(10, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
 	}

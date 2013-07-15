@@ -49,40 +49,68 @@ require([
 		var xGenerator = PolyLine.fromCubicSpline([
 			0, 0, 0,
 			1, 0, 0,
-			1, 1, 0,
+			1, 0.5, 0,
 			0, 1, 0,
-			-1, 1, 0,
+			-1, 1.5, 0,
 			-1, 2, 0,
 			0, 2, 0], 20);
-
+		/*
+		var xGenerator = PolyLine.fromCubicSpline([
+			0, 0, 0,
+			1, 0, 0,
+			1, 0.5, 0,
+			0, 1, 0], 20);
+        */
 		var yGenerator = PolyLine.fromCubicSpline([
 			0, 0, 0,
 			1, 0, 0,
-			1, 0, 1,
+			1, 0, 0.5,
 			0, 0, 1,
-			-1, 0, 1,
+			-1, 0, 1.5,
 			-1, 0, 2,
 			0, 0, 2], 20);
 
+		// generator material
+		var generatorMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+
+		// x generator
+		var xGeneratorEntity = EntityUtils.createTypicalEntity(goo.world, xGenerator, generatorMaterial, '');
+		xGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
+		xGeneratorEntity.addToWorld();
+
+		// y generator
+		var yGeneratorEntity = EntityUtils.createTypicalEntity(goo.world, yGenerator, generatorMaterial, '');
+		yGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
+		yGeneratorEntity.addToWorld();
+
+		// surface mesh data
 		var surfaceMeshData = xGenerator.mul(yGenerator);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, surfaceMeshData, material, '');
-		boxEntity.transformComponent.transform.setRotationXYZ(0, -Math.PI/2, -Math.PI/16);
-		boxEntity.addToWorld();
+		// surface material
+		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, '');
+
+		// surface entity
+		var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, surfaceMeshData, surfaceMaterial, '');
+		surfaceEntity.addToWorld();
+
+		var normalsMeshData = surfaceMeshData.getNormalsMeshData(6);
+		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
+		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		normalsEntity.addToWorld();
 
 		var light1 = new PointLight();
 		//light1.color = [1.0, 0.3, 0.0];
 		var light1Entity = goo.world.createEntity('light');
 		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set(-1, -3, -5);
+		light1Entity.transformComponent.transform.translation.set(10, 10, 10);
 		light1Entity.addToWorld();
 
 		var light2 = new PointLight();
 		//light2.color = [1.0, 0.3, 0.0];
 		var light2Entity = goo.world.createEntity('light');
 		light2Entity.setComponent(new LightComponent(light2));
-		light2Entity.transformComponent.transform.translation.set( 1,  3,  5);
+		light2Entity.transformComponent.transform.translation.set(-10, -10,  -10);
 		light2Entity.addToWorld();
 
 		// camera

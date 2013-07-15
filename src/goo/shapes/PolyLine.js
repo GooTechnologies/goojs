@@ -106,6 +106,7 @@ define([
 	 * @returns {PolyLine} The new polyLine
 	 */
 	PolyLine.prototype.concat = function(that, closed) {
+		console.log(this.verts.slice(this.verts.length-3), that.verts[0],that.verts[1],that.verts[2]);
 		if(!(that instanceof PolyLine)) {
 			return ;
 		}
@@ -119,11 +120,12 @@ define([
 	 * @param {number} [nSegments=16] The number of segments (higher values result in smoother curves)
 	 * @returns {PolyLine} The resulting polyLine
 	 */
-	PolyLine.fromCubicBezier = function (verts, nSegments) {
+	PolyLine.fromCubicBezier = function (verts, nSegments, startFraction) {
 		if(verts.length !== 3 * 4) {
 			return ;
 		}
 		nSegments = nSegments || 16;
+		startFraction = startFraction || 0;
 
 		var plVerts = [];
 
@@ -132,7 +134,7 @@ define([
 		var p0123 = [];
 
 		//better off with a bernstein polynomial?
-		for (var pas = 0; pas <= nSegments; pas++) {
+		for (var pas = startFraction; pas <= nSegments; pas++) {
 			var rap = pas / nSegments;
 
 			p01[0] = verts[0 + 0] + (verts[3 + 0] - verts[0 + 0]) * rap;
@@ -181,14 +183,14 @@ define([
 			var nVerts = verts.length / 3;
 			var nCurves = nVerts / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
 
 			for (var i = 1; i < nCurves - 1; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 
-			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 3*3).concat(verts.slice(0, 3)), nSegments);
+			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 3*3).concat(verts.slice(0, 3)), nSegments, 1);
 			ret = ret.concat(plToAdd);
 
 			return ret;
@@ -201,10 +203,10 @@ define([
 			var nVerts = verts.length / 3;
 			var nCurves = (nVerts - 1) / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
 
 			for (var i = 1; i < nCurves; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 
