@@ -1,3 +1,5 @@
+var path = require('path');
+
 if (process.argv.indexOf('--help') > 0 || process.argv.length < 8) {
 	console.log("Run\n" + 
 		"node build.js --path [my_app_directory] --name [my_app_main] --out [out_name] [[--closure]]\n" + 
@@ -64,14 +66,14 @@ if (i > 0) {
 }
 
 var requirejs = require('requirejs');
-var workingDir = process.cwd();
+var workingDir = __dirname;
 
 var config = {
 	baseUrl : appPath,
 	paths : {
-		goo : workingDir+'/../src/goo',
-		almond : workingDir+'/../build/almond',
-		'goo/lib' : workingDir + '/../lib'
+		goo : path.resolve(workingDir,'../src/goo'),
+		almond : path.resolve(workingDir,'../build/almond'),
+		'goo/lib' : path.resolve(workingDir, '../lib')
 	},
 	name : 'almond',
 	include : [appName],
@@ -98,7 +100,9 @@ requirejs.optimize(config, function(buildResponse) {
 	console.log(buildResponse);
 	
 	if (doClosureStep) {
-		var command = 'java -jar compiler.jar --compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file '
+		var compiler = path.resolve(__dirname, 'compiler.jar');
+		var extracted = path.resolve(__dirname, 'extracted.js');
+		var command = 'java -jar '+compiler+' --compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file '
 			+ appOut;
 		var exec = require('child_process').exec;
 		exec(command, function callback(error, stdout, stderr) {
