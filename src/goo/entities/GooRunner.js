@@ -15,6 +15,7 @@ define([
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
+	"goo/entities/systems/TextSystem",
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -36,6 +37,7 @@ function (
 	Stats,
 	CSSTransformSystem,
 	AnimationSystem,
+	TextSystem,
 	GameUtils,
 	Logo
 ) {
@@ -69,6 +71,7 @@ function (
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
+		this.world.setSystem(new TextSystem());
 		this.renderSystem = new RenderSystem();
 		this.world.setSystem(this.renderSystem);
 
