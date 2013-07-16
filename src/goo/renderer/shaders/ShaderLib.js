@@ -41,7 +41,9 @@ define([
 			diffuseMap : Shader.DIFFUSE_MAP,
 			normalMap : Shader.NORMAL_MAP,
 			specularMap : Shader.SPECULAR_MAP,
-			emissiveMap : Shader.EMISSIVE_MAP
+			emissiveMap : Shader.EMISSIVE_MAP,
+			aoMap : Shader.AO_MAP,
+			lightMap : Shader.LIGHT_MAP
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -57,9 +59,11 @@ define([
 			'#endif',
 			'#ifdef TEXCOORD0',
 				'attribute vec2 vertexUV0;',
+				'varying vec2 texCoord0;',
 			'#endif',
 			'#ifdef TEXCOORD1',
 				'attribute vec2 vertexUV1;',
+				'varying vec2 texCoord1;',
 			'#endif',
 
 			'uniform mat4 viewProjectionMatrix;',
@@ -77,12 +81,6 @@ define([
 			'#endif',
 			'#ifdef COLOR',
 			'varying vec4 color;',
-			'#endif',
-			'#ifdef TEXCOORD0',
-			'varying vec2 texCoord0;',
-			'#endif',
-			'#ifdef TEXCOORD1',
-			'varying vec2 texCoord1;',
 			'#endif',
 
 			ShaderBuilder.light.prevertex,
@@ -127,6 +125,12 @@ define([
 			'#ifdef EMISSIVE_MAP',
 				'uniform sampler2D emissiveMap;',
 			'#endif',
+			'#ifdef AO_MAP',
+				'uniform sampler2D aoMap;',
+			'#endif',
+			'#ifdef LIGHT_MAP',
+				'uniform sampler2D lightMap;',
+			'#endif',
 
 			'varying vec3 vWorldPos;',
 			'varying vec3 viewPosition;',
@@ -159,6 +163,13 @@ define([
 
 				'#ifdef COLOR',
 					'final_color *= color;',
+				'#endif',
+
+				'#ifdef AO_MAP',
+					'final_color *= texture2D(aoMap, texCoord1);',
+				'#endif',
+				'#ifdef LIGHT_MAP',
+					'final_color *= texture2D(lightMap, texCoord1);',
 				'#endif',
 
 				'#if defined(TANGENT) && defined(NORMAL_MAP)',
@@ -513,122 +524,6 @@ define([
 			ShaderBuilder.light.fragment,
 
 		'	gl_FragColor = final_color;',
-		'}'//
-		].join('\n')
-	};
-
-	ShaderLib.texturedNormalAOLit = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL,
-			vertexTangent : MeshData.TANGENT,
-			vertexUV0 : MeshData.TEXCOORD0,
-			vertexUV1 : MeshData.TEXCOORD1,
-			vertexUV2 : MeshData.TEXCOORD2
-		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			lightPosition : Shader.LIGHT0,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			normalMap : Shader.NORMAL_MAP,
-			aoMap : Shader.AO_MAP,
-			materialAmbient : Shader.AMBIENT,
-			materialDiffuse : Shader.DIFFUSE,
-			materialSpecular : Shader.SPECULAR,
-			materialSpecularPower : Shader.SPECULAR_POWER
-		},
-		vshader : [
-		'attribute vec3 vertexPosition;',
-		'attribute vec3 vertexNormal;',
-		'attribute vec4 vertexTangent;',
-		'attribute vec2 vertexUV0;',
-		'attribute vec2 vertexUV1;',
-		'attribute vec2 vertexUV2;',
-
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
-		'uniform vec3 lightPosition;',
-
-		'varying vec3 normal;',
-		'varying vec3 binormal;',
-		'varying vec3 tangent;',
-		'varying vec3 lightDir;',
-		'varying vec3 eyeVec;',
-		'varying vec2 texCoord0;',
-		'varying vec2 texCoord1;',
-		'varying vec2 texCoord2;',
-
-		'void main(void) {',
-		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-		'	gl_Position = viewProjectionMatrix * worldPos;',
-
-		'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
-		'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
-		'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
-
-		'	texCoord0 = vertexUV0;',
-		'	texCoord1 = vertexUV1;',
-		'	texCoord2 = vertexUV2;',
-
-		'	lightDir = lightPosition - worldPos.xyz;',
-		'	eyeVec = cameraPosition - worldPos.xyz;',
-		'}'//
-		].join('\n'),
-		fshader : [//
-		'precision mediump float;',
-
-		'uniform sampler2D diffuseMap;',
-		'uniform sampler2D normalMap;',
-		'uniform sampler2D aoMap;',
-
-		'uniform vec4 materialAmbient;',
-		'uniform vec4 materialDiffuse;',
-		'uniform vec4 materialSpecular;',
-		'uniform float materialSpecularPower;',
-
-		'varying vec3 normal;',
-		'varying vec3 binormal;',
-		'varying vec3 tangent;',
-		'varying vec3 lightDir;',
-		'varying vec3 eyeVec;',
-		'varying vec2 texCoord0;',
-		'varying vec2 texCoord1;',
-		'varying vec2 texCoord2;',
-
-		'void main(void)',
-		'{',
-		'	mat3 tangentToWorld = mat3(tangent,',
-		'								binormal,',
-		'								normal);',
-
-		'	vec4 texCol = texture2D(diffuseMap, texCoord0);',
-		'	vec4 final_color = materialAmbient;',
-
-		'	vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
-		'	vec3 worldNormal = (tangentToWorld * tangentNormal);',
-		'	vec3 N = normalize(worldNormal);',
-
-		'	vec4 aoCol = texture2D(aoMap, texCoord2);',
-
-		'	vec3 L = normalize(lightDir);',
-
-		'	float lambertTerm = dot(N,L)*0.75+0.25;',
-
-		'	if(lambertTerm > 0.0)',
-		'	{',
-		'		final_color += materialDiffuse * gl_LightSource[0].diffuse * ',
-		'			lambertTerm;',
-		'		vec3 E = normalize(eyeVec);',
-		'		vec3 R = reflect(-L, N);',
-		'		float specular = pow( max(dot(R, E), 0.0),',
-		'						materialSpecularPower);',
-		'		final_color += materialSpecular * gl_LightSource[0].specular * ',
-		'			specular;',
-		'	}',
-		'	gl_FragColor = vec4(texCol.rgb * aoCol.rgb * final_color.rgb, texCol.a);',
 		'}'//
 		].join('\n')
 	};

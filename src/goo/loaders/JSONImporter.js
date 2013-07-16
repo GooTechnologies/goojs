@@ -439,22 +439,23 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 
 				var material = null;
 				if (!this.shaderExtractor) {
-					var shaderSource, type;
-					if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1 && attributes.TEXCOORD2
-						&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
-						shaderSource = ShaderLib.texturedNormalAOLit;
-						type = 'texturedNormalAOLit';
-					} else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-						shaderSource = ShaderLib.texturedLit;
-						type = 'texturedLit';
-					} else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
-						shaderSource = ShaderLib.textured;
-						type = 'textured';
-					} else {
-						shaderSource = ShaderLib.simple;
-						type = 'simple';
-					}
-					material = Material.createMaterial(shaderSource, info.materialName);
+					// var shaderSource, type;
+					// if (attributes.NORMAL && attributes.TANGENT && attributes.TEXCOORD0 && attributes.TEXCOORD1 && attributes.TEXCOORD2
+					// 	&& info.textureFileNames.diffuse && info.textureFileNames.normal && info.textureFileNames.ao) {
+					// 	shaderSource = ShaderLib.texturedNormalAOLit;
+					// 	type = 'texturedNormalAOLit';
+					// } else if (attributes.NORMAL && attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+					// 	shaderSource = ShaderLib.texturedLit;
+					// 	type = 'texturedLit';
+					// } else if (attributes.TEXCOORD0 && info.textureFileNames.diffuse) {
+					// 	shaderSource = ShaderLib.textured;
+					// 	type = 'textured';
+					// } else {
+					// 	shaderSource = ShaderLib.simple;
+					// 	type = 'simple';
+					// }
+					// material = Material.createMaterial(shaderSource, info.materialName);
+					material = Material.createMaterial(ShaderLib.uber, info.materialName);
 				} else {
 					var extractedData = this.shaderExtractor(attributes, info);
 					if (extractedData instanceof Material) {
