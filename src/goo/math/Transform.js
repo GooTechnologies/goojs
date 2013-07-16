@@ -32,7 +32,6 @@ function (
 		this.tmpVec = new Vector3();
 		this.tmpVec2 = new Vector3();
 		this.tmpMat1 = new Matrix3x3();
-		this.tmpMat2 = new Matrix3x3();
 	}
 
 	/**
@@ -94,9 +93,9 @@ function (
 
 		this.tmpMat1.data.set(a.rotation.data);
 		this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
-		this.tmpMat2.data.set(b.rotation.data);
-		this.tmpMat2.multiplyDiagonalPost(b.scale, this.tmpMat2);
-		Matrix3x3.combine(this.tmpMat1, this.tmpMat2, this.rotation);
+		this.rotation.data.set(b.rotation.data);
+		this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
+		Matrix3x3.combine(this.tmpMat1, this.rotation, this.rotation);
 		this.translation.setv(b.translation);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
 		this.scale.setv(a.scale).mulv(b.scale);

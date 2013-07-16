@@ -610,7 +610,9 @@ function (
 	};
 
 	Renderer.prototype.buildWireframeData = function (meshData) {
-		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
+		var attributeMap = {
+			POSITION: meshData.attributeMap.POSITION
+		};
 		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 

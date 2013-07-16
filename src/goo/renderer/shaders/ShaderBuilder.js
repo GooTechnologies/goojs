@@ -318,7 +318,7 @@ function(
 					// "float lDistance = vSpotLight[i].w;",
 
 					// "float spotEffect = dot( spotLightDirection[ i ], normalize( spotLightPosition[ i ] - vWorldPosition ) );",
-					"float spotEffect = dot( normalize(-spotLightDirection[i]), lVector);",
+					"float spotEffect = dot(normalize(spotLightDirection[i]), lVector);",
 
 					// 'spotDiffuse = vec3(spotEffect);',
 
@@ -341,7 +341,7 @@ function(
 
 						// specular
 						"vec3 spotHalfVector = normalize(lVector + normalize(viewPosition));",
-						"float spotDotNormalHalf = max( dot(N, spotHalfVector), 0.0);",
+						"float spotDotNormalHalf = max(dot(N, spotHalfVector), 0.0);",
 						"float spotSpecularWeight = spotLightColor[i].a * specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);",
 
 						"#ifdef PHYSICALLY_BASED_SHADING",
@@ -413,7 +413,7 @@ function(
 			'float shadow = 1.0;',
 			'#ifdef SHADOW_MAP',
 				'vec3 depth = lPosition.xyz / lPosition.w;',
-				'depth.z = length(vWorldPos - lightPos) * cameraScale;',
+				'depth.z = length(vWorldPos.xyz - lightPos) * cameraScale;',
 
 				'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
 					'#if SHADOW_TYPE == 0',
