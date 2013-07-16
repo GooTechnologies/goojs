@@ -1,8 +1,14 @@
 define([
-	'goo/math/Vector3', 'goo/math/Matrix3x3'],
+	'goo/math/Vector3',
+	'goo/math/Matrix3x3',
+	'goo/math/MathUtils'
+],
 	/** @lends */
 	function (
-	Vector3, Matrix3x3) {
+	Vector3,
+	Matrix3x3,
+	MathUtils
+) {
 		"use strict";
 
 		/**
@@ -43,9 +49,14 @@ define([
 
 			this.onRun = properties.onRun;
 
+			this.maxAscent = (properties.maxAscent !== undefined) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
+			this.minAscent = (properties.minAscent !== undefined) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
+
 			this.calcVector = new Vector3();
 			this.calcMat1 = new Matrix3x3();
 			this.calcMat2 = new Matrix3x3();
+			this.rotX = 0.0;
+			this.rotY = 0.0;
 
 			this.resetMouseState();
 			this.setupMouseControls();
@@ -164,20 +175,29 @@ define([
 
 			// apply dx around upVector
 			if (this.mouseState.dX !== 0) {
-				this.calcMat1.fromAngleNormalAxis(moveMultH * -this.mouseState.dX, this.worldUpVector.x, this.worldUpVector.y, this.worldUpVector.z);
+				this.rotX -= moveMultH * this.mouseState.dX;
 
-				Matrix3x3.combine(this.calcMat1, transform.rotation, this.calcMat2);
-				transform.rotation.set(this.calcMat2);
+				//this.calcMat1.fromAngleNormalAxis(this.rotX, this.worldUpVector.x, this.worldUpVector.y, this.worldUpVector.z);
+
+				//Matrix3x3.combine(this.calcMat1, transform.rotation, this.calcMat2);
+				//transform.rotation.set(this.calcMat2);
 			}
-
 			// apply dy around left vector
 			if (this.mouseState.dY !== 0) {
-				this.calcMat1.fromAngleNormalAxis(moveMultV * this.mouseState.dY, this.localLeftVector.x, this.localLeftVector.y,
-					this.localLeftVector.z);
+				this.rotY -= moveMultV * this.mouseState.dY;
+				if(this.rotY > this.maxAscent) {
+					this.rotY = this.maxAscent;
+				} else if (this.rotY < this.minAscent) {
+					this.rotY = this.minAscent;
+				}
+				//this.calcMat2.fromAngleNormalAxis(this.rotY, this.localLeftVector.x, this.localLeftVector.y,
+				//	this.localLeftVector.z);
 
-				Matrix3x3.combine(transform.rotation, this.calcMat1, this.calcMat2);
-				transform.rotation.set(this.calcMat2);
+				//Matrix3x3.combine(transform.rotation, this.calcMat1, this.calcMat2);
+				//transform.rotation.set(this.calcMat2);
 			}
+			//Matrix3x3.combine(this.calcMat1, thisCalcMat2, transform.rotation);
+			transform.rotation.fromAngles(this.rotY, this.rotX, 0.0);
 
 			// set our component updated.
 			transformComponent.setUpdated();

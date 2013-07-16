@@ -40,6 +40,7 @@ function (Vector, Vector3) {
 		this.backKey = !isNaN(properties.backKey) ? properties.backKey : 83;
 		this.strafeLeftKey = !isNaN(properties.strafeLeftKey) ? properties.strafeLeftKey : 65;
 		this.strafeRightKey = !isNaN(properties.strafeRightKey) ? properties.strafeRightKey : 68;
+		this.XZ = properties.XZ || false;
 
 		this.onRun = properties.onRun;
 
@@ -122,6 +123,7 @@ function (Vector, Vector3) {
 		}
 
 		// direction of movement in local coords
+
 		this.calcVector.set(this.fwdVector.x * this.moveVector.z + this.leftVector.x * this.moveVector.x, this.fwdVector.y * this.moveVector.z
 			+ this.leftVector.y * this.moveVector.x, this.fwdVector.z * this.moveVector.z + this.leftVector.z * this.moveVector.x);
 		this.calcVector.normalize();
@@ -136,6 +138,10 @@ function (Vector, Vector3) {
 		var orient = transform.rotation;
 		// reorient our movement to entity space
 		orient.applyPost(this.calcVector);
+
+		if(this.XZ) {
+			this.calcVector.data[1] = 0.0;
+		}
 
 		// add to our transform
 		transform.translation.add(this.calcVector);
