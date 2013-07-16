@@ -67,6 +67,8 @@ function (
 		}
 
 		if (this.camera) {
+			renderer.updateShadows(this.partitioner, this.entities, this.lights);
+
 			for (var i = 0; i < this.preRenderers.length; i++) {
 				var preRenderer = this.preRenderers[i];
 				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);

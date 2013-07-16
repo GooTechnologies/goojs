@@ -274,7 +274,7 @@ function (
 		};
 
 		this.shadowCount = 0;
-		this.shadowHandler = null;
+		this.shadowHandler = new ShadowHandler();
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -365,33 +365,23 @@ function (
 		}
 	};
 
+	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
+		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
+	};
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
 	 * @param {Camera} camera Main camera for rendering
 	 * @param {Light[]} lights Lights used in the rendering
-	 * @param {RenderTarget} renderTarget Optional rendertarget to use as target for rendering, or null to render to the screen
-	 * @param {boolean} clear true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
-	 * @param {boolean} [shadowPass=false] If this is a shader pass (used internally) 
+	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
+	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
-	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, shadowPass) {
+	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear) {
 		if (!camera) {
 			return;
 		} else if (Renderer.mainCamera === null) {
 			Renderer.mainCamera = camera;
-		}
-
-		if (!shadowPass) {
-			if (this.shadowHandler) {
-				this.shadowHandler.checkShadowRendering(this, renderList, camera, lights);
-			} else {
-				for (var i = 0; i < lights.length; i++) {
-					if (lights[i].shadowCaster) {
-						this.shadowHandler = new ShadowHandler();
-						break;
-					}
-				}
-			}
 		}
 
 		this.setRenderTarget(renderTarget);

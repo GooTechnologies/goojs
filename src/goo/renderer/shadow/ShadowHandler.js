@@ -61,6 +61,12 @@ define([
 
 		this.oldClearColor = new Vector4(0,0,0,0);
 		this.shadowClearColor = new Vector4(1,1,1,1);
+
+		this.renderList = [];
+		this.shadowList = [];
+		this.upVector = Vector3.UNIT_Z;
+
+		this.tmpVec = new Vector3();
 	}
 
 	ShadowHandler.prototype._testStatesEqual = function (state1, state2) {
@@ -72,7 +78,7 @@ define([
 		return true;
 	};
 
-	ShadowHandler.prototype.checkShadowRendering = function (renderer, renderList, camera, lights) {
+	ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, entities, lights) {
 		renderer.shadowCount = 0;
 		for (var i=0; i<lights.length; i++) {
 			var light = lights[i];
@@ -80,11 +86,12 @@ define([
 				var lightCam = this.lightCam;
 
 				lightCam.translation.copy(light.translation);
-
-				//HACK
-				// if (light.shadowSettings.projection === 'Perspective') {
+				if (light.direction) {
+					this.tmpVec.setv(light.translation).addv(light.direction);
+					lightCam.lookAt(this.tmpVec, this.upVector);
+				} else {
 					lightCam.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-				// }
+				}
 
 				if (!this._testStatesEqual(this.currentSettings, light.shadowSettings)) {
 					if (light.shadowSettings.projection === 'Perspective') {
@@ -102,7 +109,6 @@ define([
 						// this.depthMaterial.shader.rebuild();
 						//Nope?
 					} else {
-						this.depthMaterial.cullState.cullFace = 'Front';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 0;
 						// this.depthMaterial.shader.rebuild();
 					}
@@ -111,7 +117,8 @@ define([
 					for (var key in light.shadowSettings) {
 						this.currentSettings[key] = light.shadowSettings[key];
 					}
-					console.log('updated light settings for shadow');
+
+					console.log('updated light');
 				}
 
 				lightCam.onFrameChange();
@@ -120,7 +127,17 @@ define([
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
 
 				renderer.overrideMaterial = this.depthMaterial;
-				renderer.render(renderList, lightCam, [], this.shadowTarget, true, true);
+
+				this.shadowList.length = 0;
+				for (var j = 0; j < entities.length; j++) {
+					var entity = entities[j];
+					if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows) {
+						this.shadowList.push(entity);
+					}
+				}
+				partitioner.process(lightCam, this.shadowList, this.renderList);
+				renderer.render(this.renderList, lightCam, [], this.shadowTarget);
+
 				renderer.overrideMaterial = null;
 
 				switch (light.shadowSettings.type) {

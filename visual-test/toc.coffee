@@ -5,7 +5,7 @@ fs = require('fs')
 makeTree = (files) ->
 	tree = {}
 	for file in files
-		parts = file.split(path.sep)
+		parts = file.split('/')
 		branch = tree
 		for part, idx in parts
 			if idx == parts.length - 1

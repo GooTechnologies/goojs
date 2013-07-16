@@ -1357,7 +1357,7 @@ define([
 			fogNear:            Shader.MAIN_NEAR_PLANE,
 			fogFar:             Shader.MAIN_FAR_PLANE,
 			fogEnabled:         0,
-			onlyAO:             1,
+			onlyAO:             0,
 			aoClamp:            0.3,
 			lumInfluence:       0.0
 		},
@@ -1411,7 +1411,7 @@ define([
 
 			// user variables
 			"const int samples = 16;",    // ao sample count
-			"const float radius = 4.0;",  // ao radius
+			"const float radius = 2.0;",  // ao radius
 
 			"const bool useNoise = false;",      // use noise instead of pattern for sample dithering
 			"const float noiseAmount = 0.0003;", // dithering amount
