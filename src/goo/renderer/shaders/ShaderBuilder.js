@@ -318,7 +318,7 @@ function(
 					// "float lDistance = vSpotLight[i].w;",
 
 					// "float spotEffect = dot( spotLightDirection[ i ], normalize( spotLightPosition[ i ] - vWorldPosition ) );",
-					"float spotEffect = dot(normalize(spotLightDirection[i]), lVector);",
+					"float spotEffect = dot(normalize(-spotLightDirection[i]), lVector);",
 
 					// 'spotDiffuse = vec3(spotEffect);',
 
@@ -360,7 +360,7 @@ function(
 				"vec3 dirSpecular = vec3(0.0);" ,
 
 				"for(int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++) {",
-					"vec4 lDirection = vec4(directionalLightDirection[i], 0.0);",
+					"vec4 lDirection = vec4(-directionalLightDirection[i], 0.0);",
 					// "vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ i ], 0.0 );",
 					"vec3 dirVector = normalize(lDirection.xyz);",
 
