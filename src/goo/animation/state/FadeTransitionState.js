@@ -6,9 +6,7 @@ function (AbstractTransitionState) {
 	/**
 	 * @class A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start
 	 *        of the transition. This is best used with two clips that have similar motions.
-	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
-	 * @param fadeTime the amount of time we should take to do the transition.
-	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
+	 * @extends AbstractTransitionState
 	 */
 	function FadeTransitionState () {
 		AbstractTransitionState.call(this);
@@ -16,7 +14,7 @@ function (AbstractTransitionState) {
 
 	FadeTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
-	/**
+	/*
 	 * @description Update this state using the current global time.
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
@@ -33,14 +31,14 @@ function (AbstractTransitionState) {
 		}
 	};
 
-	/**
-	 * @description Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
+	/*
+	 * Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
 	FadeTransitionState.prototype.postUpdate = function () {
 		// post update both of our states
-		if (this._targetState !== null) {
-			this._targetState.postUpdate();
+		if (this._sourceState !== null) {
+			this._sourceState.postUpdate();
 		}
 		if (this._targetState !== null) {
 			this._targetState.postUpdate();

@@ -14,7 +14,7 @@ define([
 	'goo/entities/systems/ParticlesSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
-	"goo/entities/systems/_AnimationSystem",
+	"goo/entities/systems/AnimationSystem",
 	"goo/entities/systems/TextSystem",
 	'goo/util/GameUtils',
 	'goo/util/Logo'

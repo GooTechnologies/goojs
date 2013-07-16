@@ -1,13 +1,11 @@
 define([
 	'goo/math/MathUtils',
-	'goo/animation/clip/TransformData',
-	'goo/animation/blendtree/AbstractTwoPartSource'
+	'goo/animation/clip/TransformData'
 ],
 /** @lends */
 function (
 	MathUtils,
-	TransformData,
-	AbstractTwoPartSource
+	TransformData
 ) {
 	"use strict";
 
@@ -20,10 +18,10 @@ function (
 	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 */
 	function BinaryLERPSource (sourceA, sourceB, blendWeight) {
-		AbstractTwoPartSource.call(this, sourceA, sourceB, blendWeight);
+		this._sourceA = sourceA ? sourceA : null;
+		this._sourceB = sourceB ? sourceB : null;
+		this.blendWeight = blendWeight ? blendWeight : null;
 	}
-
-	BinaryLERPSource.prototype = Object.create(AbstractTwoPartSource.prototype);
 
 	BinaryLERPSource.prototype.getSourceData = function () {
 		// grab our data maps from the two sources

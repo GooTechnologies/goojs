@@ -6,61 +6,41 @@ function (AbstractState) {
 	/**
 	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for
 	 *        example.)
-	 * @param {String} name Name of state
-	 * @property {String} name Name of state
+	 * @extends AbstractState
+	 * @param {string} name Name of state
 	 */
 	function SteadyState (name) {
 		AbstractState.call(this);
 
 		this._name = name;
 		this._transitions = {};
-		this._endTransition = null;
 		this._sourceTree = null;
 	}
 
 	SteadyState.prototype = Object.create(AbstractState.prototype);
 
-	SteadyState.prototype.doTransition = function (key, globalTime) {
-		var state = this._transitions[key];
-		if (!state) {
-			state = this._transitions["*"];
-		} else {
-			return state.doTransition(this, globalTime);
-		}
-		return null;
-	};
-
+	/*
+	 * Updates the states clip instances
+	 */
 	SteadyState.prototype.update = function (globalTime) {
 		if (!this._sourceTree.setTime(globalTime)) {
-			var lastOwner = this._lastOwner;
-			if (this._endTransition !== null) {
-				// time to move to end transition
-				var newState = this._endTransition.doTransition(this, globalTime);
-				if (newState) {
-					newState.resetClips(globalTime);
-					newState.update(globalTime);
-				}
-				if (this !== newState) {
-					lastOwner.replaceState(this, newState);
-				}
+			if(this.onFinished) {
+				this.onFinished();
 			}
 		}
 	};
 
-	SteadyState.prototype.postUpdate = function () {
-		if (!this._sourceTree.isActive()) {
-			var lastOwner = this._lastOwner;
-			if (this._endTransition === null) {
-				// we're done. end.
-				lastOwner.replaceState(this, null);
-			}
-		}
-	};
-
+	/*
+	 * Gets the current animation data, used in {@link AnimationLayer}
+	 */
 	SteadyState.prototype.getCurrentSourceData = function () {
 		return this._sourceTree.getSourceData();
 	};
 
+	/*
+	 * Resets the animationclips in the sourcetree
+	 * @param {number} globalStartTime Usually current time
+	 */
 	SteadyState.prototype.resetClips = function (globalStartTime) {
 		AbstractState.prototype.resetClips.call(this, globalStartTime);
 		this._sourceTree.resetClips(globalStartTime);

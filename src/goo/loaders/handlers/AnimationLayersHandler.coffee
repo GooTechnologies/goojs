@@ -58,7 +58,6 @@ define [
 						layer._steadyStates[stateKey]._transitions[transitionKey] = transition
 						if not layer._transitionStates[transition.type]?
 							layer._transitionStates[transition.type] = @_getTransitionByType(transition.type)
-
 								
 				if layerConfig.transitions?
 					for transitionKey, transitionConfig of layerConfig.transitions when layer._steadyStates[transitionKey]? or transitionKey == '*'

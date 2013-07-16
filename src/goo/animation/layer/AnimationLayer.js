@@ -14,7 +14,6 @@ function (
 	 *        "steady states" - main states that the layer can be in. The layer can only be in one state at any given time. It may transition between
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
-	 * @property {String} name Name of layer
 	 */
 	function AnimationLayer (name) {
 		this._name = name;
@@ -29,23 +28,34 @@ function (
 	AnimationLayer.BASE_LAYER_NAME = '-BASE_LAYER-';
 
 
+	/*
+	 * Does the updating before animations are applied
+	 */
 	AnimationLayer.prototype.update = function(globalTime) {
 		if(this._currentState) {
 			this._currentState.update(globalTime || World.time);
 		}
 	};
 
+	/*
+	 * Does the updating after animations are applied
+	 */
 	AnimationLayer.prototype.postUpdate = function() {
 		if (this._currentState) {
 			this._currentState.postUpdate();
 		}
 	};
 
+	/**
+	 * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
+	 * @param {string} state
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 */
 	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
 		globalTime = globalTime || World.time;
 		var cState = this._currentState;
 		var transition;
-		if (cState._transitions) {
+		if (cState && cState._transitions) {
 			transition = cState._transitions[state] || cState._transitions['*'];
 		}
 		if(!transition && this._transitions) {
@@ -76,84 +86,41 @@ function (
 				console.warn('State not in allowed time window');
 				return;
 			}
+			source.onFinished = null;
 		}
 		transition._targetState = target;
 		transition.readFromConfig(config);
 		transition.resetClips(globalTime);
 
-		transition.onFinished = function() {
-			this._currentState = target;
-		}.bind(this);
-
-		this._currentState = transition;
+		this.setCurrentState(transition);
 	};
 
 	/**
-	 * @description Attempt to perform a transition. First, check the current state to see if it has a transition for the given key. If not, check
-	 *              this layer for a general purpose transition. If no transition is found, this does nothing.
-	 * @param key the transition key, a string key used to look up a transition in the current animation state.
-	 * @return true if there is a current state and we were able to do the given transition.
-	 */
-	AnimationLayer.prototype.doTransition = function (key, globalTime) {
-		globalTime = globalTime || World.time;
-		var state = this._currentState;
-		// see if current state has a transition
-		if (state instanceof SteadyState) {
-			var nextState = state.doTransition(key, globalTime);
-			if (!nextState) {
-				// no transition found, check if there is a global transition
-				var transition = this._transitions[key];
-				if (!transition) {
-					transition = this._transitions['*'];
-				}
-				if (transition) {
-					nextState = transition.doTransition(state, globalTime);
-				}
-			}
-
-			if (nextState) {
-				if (nextState !== state) {
-					this.setCurrentState(nextState, false);
-					return true;
-				}
-			}
-		} else if (!state) {
-			// check if there is a global transition
-			var transition = this._transitions[key];
-			if (!transition) {
-				transition = this._transitions['*'];
-			}
-			if (transition) {
-				this.setCurrentState(transition.doTransition(state, globalTime), true);
-				return true;
-			}
-		}
-
-		// no transition found
-		return false;
-	};
-
-	/**
-	 * @description Sets the current finite state to the given state. Generally for transitional state use.
-	 * @param state our new state. If null, then no state is currently set on this layer.
-	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * Sets the current state to the given state. Generally for transitional state use.
+	 * @param {AbstractState} state our new state. If null, then no state is currently set on this layer.
+	 * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
 		globalTime = globalTime || World.time;
 		this._currentState = state;
 		if (state) {
-			state._lastOwner = this;
 			if (rewind) {
 				state.resetClips(globalTime);
 			}
+			state.onFinished = function() {
+				this.setCurrentState(state._targetState || null);
+				this.update();
+			}.bind(this);
 		}
 	};
 
 	/**
-	 * @description Force the current state of the machine to the steady state with the given name. Used to set the FSM's initial state.
-	 * @param stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
-	 * @param rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @return true if succeeds
+	 * Force the current state of the machine to the state with the given name. 
+	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
+	 * @param {boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @returns {boolean} true if succeeds
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {
@@ -168,7 +135,7 @@ function (
 		return false;
 	};
 
-	/**
+	/*
 	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
@@ -182,8 +149,8 @@ function (
 			return null;
 		}
 	};
-	/**
-	 * @description Update the layer blender in this animation layer to properly point to the previous layer.
+	/*
+	 * Update the layer blender in this animation layer to properly point to the previous layer.
 	 * @param previousLayer the layer before this layer in the animation manager.
 	 */
 	AnimationLayer.prototype.updateLayerBlending = function (previousLayer) {
@@ -194,16 +161,10 @@ function (
 	};
 
 	/**
-	 * @description Set the currently playing state on this layer to null.
+	 * Set the currently playing state on this layer to null.
 	 */
 	AnimationLayer.prototype.clearCurrentState = function () {
-		this.setCurrentState(null, false);
-	};
-
-	AnimationLayer.prototype.replaceState = function (currentState, newState) {
-		if (this._currentState === currentState) {
-			this.setCurrentState(newState, false);
-		}
+		this.setCurrentState(null);
 	};
 
 	return AnimationLayer;

@@ -12,9 +12,17 @@ define(['goo/entities/systems/System'],
 
 	AnimationSystem.prototype = Object.create(System.prototype);
 
-	AnimationSystem.prototype.process = function (entities, tpf) {
+	AnimationSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {
-			entities[i].animationComponent.update(tpf);
+			var entity = entities[i];
+			var animComp = entity.animationComponent;
+			var pose;
+			if(entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose) {
+				var pose = entity.meshDataComponent.meshData.currentPose;
+			}
+			animComp.update(entity._world.time);
+			animComp.apply(entity.transformComponent, pose);
+			animComp.postUpdate();
 		}
 	};
 

@@ -1,7 +1,7 @@
 define [
 	'goo/loaders/handlers/ComponentHandler'
 	
-	'goo/entities/components/_AnimationComponent'
+	'goo/entities/components/AnimationComponent'
 
 	'goo/math/MathUtils'
 	'goo/util/rsvp'
