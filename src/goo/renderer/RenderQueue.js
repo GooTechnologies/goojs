@@ -54,12 +54,14 @@ function(Vector3) {
 		var bucketSortList = [];
 		for (var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
-			if (!renderable.meshRendererComponent || renderable.meshRendererComponent.materials.length === 0) {
+			var meshRendererComponent = renderable.meshRendererComponent;
+
+			if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
 				renderList[index] = renderable;
 				index++;
 				continue;
 			}
-			var renderQueue = renderable.meshRendererComponent.materials[0].getRenderQueue();
+			var renderQueue = meshRendererComponent.materials[0].getRenderQueue();
 			var bucket = buckets[renderQueue];
 			if (!bucket) {
 				bucket = [];

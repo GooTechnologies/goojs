@@ -103,42 +103,42 @@ function(
 				var light = lights[i];
 
 				if (light instanceof PointLight) {
-					shader.uniforms.pointLight[pointCount * 4 + 0] = light.translation.x;
-					shader.uniforms.pointLight[pointCount * 4 + 1] = light.translation.y;
-					shader.uniforms.pointLight[pointCount * 4 + 2] = light.translation.z;
+					shader.uniforms.pointLight[pointCount * 4 + 0] = light.translation.data[0];
+					shader.uniforms.pointLight[pointCount * 4 + 1] = light.translation.data[1];
+					shader.uniforms.pointLight[pointCount * 4 + 2] = light.translation.data[2];
 					shader.uniforms.pointLight[pointCount * 4 + 3] = light.range;
 
-					shader.uniforms.pointLightColor[pointCount * 4 + 0] = light.color.r * light.intensity;
-					shader.uniforms.pointLightColor[pointCount * 4 + 1] = light.color.g * light.intensity;
-					shader.uniforms.pointLightColor[pointCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 0] = light.color.data[0] * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 1] = light.color.data[1] * light.intensity;
+					shader.uniforms.pointLightColor[pointCount * 4 + 2] = light.color.data[2] * light.intensity;
 					shader.uniforms.pointLightColor[pointCount * 4 + 3] = light.specularIntensity;
 
 					pointCount++;
 				} else if (light instanceof DirectionalLight) {
-					shader.uniforms.directionalLightDirection[directionalCount * 3 + 0] = light.direction.x;
-					shader.uniforms.directionalLightDirection[directionalCount * 3 + 1] = light.direction.y;
-					shader.uniforms.directionalLightDirection[directionalCount * 3 + 2] = light.direction.z;
+					shader.uniforms.directionalLightDirection[directionalCount * 3 + 0] = light.direction.data[0];
+					shader.uniforms.directionalLightDirection[directionalCount * 3 + 1] = light.direction.data[1];
+					shader.uniforms.directionalLightDirection[directionalCount * 3 + 2] = light.direction.data[2];
 
-					shader.uniforms.directionalLightColor[directionalCount * 4 + 0] = light.color.r * light.intensity;
-					shader.uniforms.directionalLightColor[directionalCount * 4 + 1] = light.color.g * light.intensity;
-					shader.uniforms.directionalLightColor[directionalCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 0] = light.color.data[0] * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 1] = light.color.data[1] * light.intensity;
+					shader.uniforms.directionalLightColor[directionalCount * 4 + 2] = light.color.data[2] * light.intensity;
 					shader.uniforms.directionalLightColor[directionalCount * 4 + 3] = light.specularIntensity;
 
 					directionalCount++;
 				} else if (light instanceof SpotLight) {
-					shader.uniforms.spotLight[spotCount * 4 + 0] = light.translation.x;
-					shader.uniforms.spotLight[spotCount * 4 + 1] = light.translation.y;
-					shader.uniforms.spotLight[spotCount * 4 + 2] = light.translation.z;
+					shader.uniforms.spotLight[spotCount * 4 + 0] = light.translation.data[0];
+					shader.uniforms.spotLight[spotCount * 4 + 1] = light.translation.data[1];
+					shader.uniforms.spotLight[spotCount * 4 + 2] = light.translation.data[2];
 					shader.uniforms.spotLight[spotCount * 4 + 3] = light.range;
 
-					shader.uniforms.spotLightColor[spotCount * 4 + 0] = light.color.r * light.intensity;
-					shader.uniforms.spotLightColor[spotCount * 4 + 1] = light.color.g * light.intensity;
-					shader.uniforms.spotLightColor[spotCount * 4 + 2] = light.color.b * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 0] = light.color.data[0] * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 1] = light.color.data[1] * light.intensity;
+					shader.uniforms.spotLightColor[spotCount * 4 + 2] = light.color.data[2] * light.intensity;
 					shader.uniforms.spotLightColor[spotCount * 4 + 3] = light.specularIntensity;
 
-					shader.uniforms.spotLightDirection[spotCount * 3 + 0] = light.direction.x;
-					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.y;
-					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.z;
+					shader.uniforms.spotLightDirection[spotCount * 3 + 0] = light.direction.data[0];
+					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.data[1];
+					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.data[2];
 
 					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
 					shader.uniforms.spotLightExponent[spotCount] = light.exponent;
