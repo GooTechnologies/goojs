@@ -13,28 +13,33 @@ function (JointChannel, JointData) {
 		this._data = {};
 	}
 
-	// Was: function (manager, globalStartTime)
+	/*
+	 * This has no effect on clip source, but will be called by owning {@link SteadyState}
+	 */
 	ManagedTransformSource.prototype.resetClips = function () {
-		// ignore
 	};
 
-	// Was: function (globalTime, manager)
+	/*
+	 * This has no effect, but will be called by owning {@link SteadyState}
+	 * @return true to stay active
+	 */
 	ManagedTransformSource.prototype.setTime = function () {
 		return true;
 	};
 
-	// Was: function (manager)
+	/*
+	 * ManagedTransformSource is always active
+	 */
 	ManagedTransformSource.prototype.isActive = function () {
 		return true;
 	};
 
 	/**
 	 * @description Set the local source transform data for a given joint index.
-	 * @param jointIndex our joint index value.
-	 * @param jointData the joint transform data. This object is copied into the local store.
+	 * @param {JointData} jointData the joint transform data. This object is copied into the local store.
 	 */
-	ManagedTransformSource.prototype.setJointTransformData = function (jointIndex, jointData) {
-		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
+	ManagedTransformSource.prototype.setJointTransformData = function (jointData) {
+		var key = JointChannel.JOINT_CHANNEL_NAME + jointData._jointIndex;
 		// reuse JointData object
 		if (!this._data[key]) {
 			this._data[key] = new JointData(jointData);
@@ -45,8 +50,8 @@ function (JointChannel, JointData) {
 
 	/**
 	 * @description Sets a translation to the local transformdata for a given joint index.
-	 * @param jointIndex our joint index value.
-	 * @param translation the translation to set
+	 * @param {number} jointIndex our joint index value.
+	 * @param {Vector3} translation the translation to set
 	 */
 	ManagedTransformSource.prototype.setJointTranslation = function (jointIndex, translation) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
@@ -62,8 +67,8 @@ function (JointChannel, JointData) {
 
 	/**
 	 * @description Sets a scale to the local transformdata for a given joint index.
-	 * @param jointIndex our joint index value.
-	 * @param scale the scale to set
+	 * @param {number} jointIndex our joint index value.
+	 * @param {Vector3} scale the scale to set
 	 */
 	ManagedTransformSource.prototype.setJointScale = function (jointIndex, scale) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
@@ -79,8 +84,8 @@ function (JointChannel, JointData) {
 
 	/**
 	 * @description Sets a rotation to the local transformdata for a given joint index.
-	 * @param jointIndex our joint index value.
-	 * @param scale the rotation to set
+	 * @param {number} jointIndex our joint index value.
+	 * @param {Quaternion} rotation the rotation to set
 	 */
 	ManagedTransformSource.prototype.setJointRotation = function (jointIndex, rotation) {
 		var key = JointChannel.JOINT_CHANNEL_NAME + jointIndex;
@@ -96,9 +101,9 @@ function (JointChannel, JointData) {
 
 	/**
 	 * @description Setup transform data on this source, using the first frame from a specific clip and jointNames from a specific pose.
-	 * @param pose the pose to sample joints from
-	 * @param clip the animation clip to pull data from
-	 * @param jointNames the names of the joints to find indices of.
+	 * @param {SkeletonPose} pose the pose to sample joints from
+	 * @param {AnimationClip} clip the animation clip to pull data from
+	 * @param {string[]} jointNames the names of the joints to find indices of.
 	 */
 	ManagedTransformSource.prototype.initJointsByName = function (pose, clip, jointNames) {
 		for ( var i = 0, max = jointNames.length; i < max; i++) {

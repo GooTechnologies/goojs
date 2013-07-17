@@ -50,8 +50,8 @@ function (
 		return rVal;
 	};
 
-	/**
-	 * @description Tell any animation listeners on this instance that the associated clip has finished playing.
+	/*
+	 * Tell any animation listeners on this instance that the associated clip has finished playing.
 	 */
 	AnimationClipInstance.prototype.fireAnimationFinished = function () {
 		for ( var i = 0, max = this._animationListeners.length; i < max; i++) {

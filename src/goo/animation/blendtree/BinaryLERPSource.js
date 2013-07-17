@@ -10,12 +10,12 @@ function (
 	"use strict";
 
 	/**
-	 * @class Takes two blend sources and uses linear interpolation to merge TransformData values. If one of the sources is null, or does not have a
-	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not TransformData is not
+	 * @class Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
+	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not
 	 *        combined, rather A's value will always be used unless it is null.
-	 * @param sourceA our first source.
-	 * @param sourceB our second source.
-	 * @param blendKey A key into the related AnimationManager's values store for pulling blend weighting.
+	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
+	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceB our second source.
+	 * @param {number} blendKey A key into the related AnimationManager's values store for pulling blend weighting.
 	 */
 	function BinaryLERPSource (sourceA, sourceB, blendWeight) {
 		this._sourceA = sourceA ? sourceA : null;
@@ -23,6 +23,9 @@ function (
 		this.blendWeight = blendWeight ? blendWeight : null;
 	}
 
+	/*
+	 * @return a source data mapping for the channels in this clip source
+	 */
 	BinaryLERPSource.prototype.getSourceData = function () {
 		// grab our data maps from the two sources
 		var sourceAData = this._sourceA ? this._sourceA.getSourceData() : null;
@@ -31,6 +34,10 @@ function (
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this.blendWeight);
 	};
 
+	/*
+	 * Sets the current time and moves the {@link AnimationClipInstance} forward
+	 * @param {number} globalTime
+	 */
 	BinaryLERPSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
 		var activeA = false;
@@ -44,6 +51,10 @@ function (
 		return activeA || activeB;
 	};
 
+	/*
+	 * Sets start time of clipinstance. If set to current time, clip is reset
+	 * @param {number} globalTime
+	 */
 	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
 		if (this._sourceA) {
@@ -54,6 +65,9 @@ function (
 		}
 	};
 
+	/*
+	 * @returns {boolean} if clipsource is active
+	 */
 	BinaryLERPSource.prototype.isActive = function () {
 		var foundActive = false;
 		if (this._sourceA) {
@@ -65,6 +79,14 @@ function (
 		return foundActive;
 	};
 
+	/*
+	 * Blends two sourceData maps together
+	 * @param {object} sourceAData
+	 * @param {object} sourceBData
+	 * @param {number} blendWeight
+	 * @param {object} [store] If store is supplied, the result is stored there
+	 * @returns {object} The blended result,
+	 */
 	BinaryLERPSource.combineSourceData = function (sourceAData, sourceBData, blendWeight, store) {
 		if (!sourceBData) {
 			return sourceAData;
@@ -103,6 +125,14 @@ function (
 		return rVal;
 	};
 
+	/*
+	 * Blends two float values and stores them in rVal
+	 * @param {object} rVal The object in which to store result
+	 * @param {string} key The key to object rVal, so rVal[key] is the store
+	 * @param {number} blendWeight
+	 * @param {number[0]} dataA The float is wrapped in an array
+	 * @param {number[0]} dataB The float is wrapped in an array
+	 */
 	BinaryLERPSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {
 			rVal[key] = dataA;

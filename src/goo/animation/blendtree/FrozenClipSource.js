@@ -5,31 +5,40 @@ function () {
 
 	/**
 	 * @class A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
-	 *        for purposes of transitioning between two unrelated animations. Originally implemented BlendTreeSource.
-	 * @param source Our sub source.
-	 * @param frozenTime The time we are frozen at.
+	 *        for purposes of transitioning between two unrelated animations.
+	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} source Our sub source.
+	 * @param {number} frozenTime The time we are frozen at.
 	 */
 	function FrozenTreeSource (source, frozenTime) {
 		this._source = source;
 		this._time = frozenTime;
 	}
 
+	/*
+	 * @return a source data mapping for the channels in this clip source
+	 */
 	FrozenTreeSource.prototype.getSourceData = function () {
 		return this._source.getSourceData();
 	};
 
-	// Was: function (manager, globalStartTime)
+	/*
+	 * Sets start time of clipinstance to 0, so frozenTime will calculate correctly
+	 */
 	FrozenTreeSource.prototype.resetClips = function () {
-		// ignores the command to reset our subtree
 		this._source.resetClips(0);
 	};
 
+	/*
+	 * This will be called by a {@link SteadyState}, but will not update the animation, and will return true, to indicate animation is still active
+	 */
 	FrozenTreeSource.prototype.setTime = function () {
 		this._source.setTime(this._time);
 		return true;
 	};
 
-	// Was: function (manager)
+	/*
+	 * A FrozenTreeSource is always active
+	 */
 	FrozenTreeSource.prototype.isActive = function () {
 		return true;
 	};

@@ -11,14 +11,17 @@ function (
 
 	/**
 	 * @class A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
-	 * @param clip the clip to use.
-	 * @param manager the manager to track clip state with.
+	 * @param {AnimationClip} clip the clip to use.
 	 */
 	function ClipSource (clip) {
 		this._clip = clip;
 		this._clipInstance = new AnimationClipInstance();
 	}
 
+	/*
+	 * Sets the current time and moves the {@link AnimationClipInstance} forward
+	 * @param {number} globalTime
+	 */
 	ClipSource.prototype.setTime = function (globalTime) {
 		var instance = this._clipInstance;
 		if(!instance._startTime) {
@@ -68,15 +71,25 @@ function (
 		return instance._active;
 	};
 
+	/*
+	 * Sets start time of clipinstance. If set to current time, clip is reset
+	 * @param {number} globalTime
+	 */
 	ClipSource.prototype.resetClips = function (globalTime) {
 		this._clipInstance._startTime = globalTime;
 		this._clipInstance._active = true;
 	};
 
+	/*
+	 * @returns {boolean} if clipsource is active
+	 */
 	ClipSource.prototype.isActive = function () {
 		return this._clipInstance._active && (this._clip._maxTime !== -1);
 	};
 
+	/*
+	 * @return a source data mapping for the channels in this clip source
+	 */
 	ClipSource.prototype.getSourceData = function () {
 		return this._clipInstance._clipStateObjects;
 	};
