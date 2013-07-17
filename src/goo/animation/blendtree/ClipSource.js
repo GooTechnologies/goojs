@@ -12,10 +12,20 @@ function (
 	/**
 	 * @class A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param {AnimationClip} clip the clip to use.
+	 * @param {string} [filter] 'Exclude' or 'Include'
+	 * @param {string[]} [channelNames]
 	 */
-	function ClipSource (clip) {
+	function ClipSource (clip, filter, channelNames) {
 		this._clip = clip;
 		this._clipInstance = new AnimationClipInstance();
+
+		this._filterChannels = {};
+		if(filter && channelNames) {
+			this._filter = (['Exclude', 'Include'].indexOf(filter) > -1) ? filter : null;
+			for (var i = 0; i < channelNames.length; i++) {
+				this._filterChannels[channelNames[i]] = true;
+			}
+		}
 	}
 
 	/*
@@ -91,7 +101,20 @@ function (
 	 * @return a source data mapping for the channels in this clip source
 	 */
 	ClipSource.prototype.getSourceData = function () {
-		return this._clipInstance._clipStateObjects;
+		if(!this._filter || !this._filterChannels) {
+			return this._clipInstance._clipStateObjects;
+		}
+		var cso = this._clipInstance._clipStateObjects;
+		var rVal = {};
+
+		var filter = (this._filter === 'Include');
+
+		for (var key in cso) {
+			if ((this._filterChannels[key] !== undefined) === filter) {
+				rVal[key] = cso[key];
+			}
+		}
+		return rVal;
 	};
 
 	return ClipSource;

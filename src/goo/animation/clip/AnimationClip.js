@@ -5,7 +5,7 @@ function () {
 
 	/**
 	 * @class AnimationClip manages a set of animation channels as a single clip entity.
-	 * @param {String} name Name of joint
+	 * @param {string} name Name of joint
 	 * @param {AbstractAnimationChannel[]} channels an array of channels to shallow copy locally.
 	 */
 	function AnimationClip (name, channels) {
@@ -15,9 +15,9 @@ function () {
 		this.updateMaxTimeIndex();
 	}
 
-	/**
-	 * @description Update an instance of this clip.
-	 * @param {double} clockTime the current local clip time (where 0 == start of clip)
+	/*
+	 * Update an instance of this clip.
+	 * @param {number} clockTime the current local clip time (where 0 == start of clip)
 	 * @param {AnimationClipInstance} instance the instance record to update.
 	 */
 	AnimationClip.prototype.update = function (clockTime, instance) {
@@ -29,8 +29,8 @@ function () {
 		}
 	};
 
-	/**
-	 * @description Add a channel to this clip.
+	/*
+	 * Add a channel to this clip.
 	 * @param channel the channel to add.
 	 */
 	AnimationClip.prototype.addChannel = function (channel) {
@@ -38,7 +38,7 @@ function () {
 		this.updateMaxTimeIndex();
 	};
 
-	/**
+	/*
 	 * @description Remove a given channel from this clip.
 	 * @param channel the channel to remove.
 	 * @return true if this clip had the given channel and it was removed.
@@ -54,7 +54,7 @@ function () {
 	};
 
 	/**
-	 * @description Locate a channel in this clip using its channel name.
+	 * Locate a channel in this clip using its channel name.
 	 * @param channelName the name to match against.
 	 * @return the first channel with a name matching the given channelName, or null if no matches are found.
 	 */
@@ -68,8 +68,8 @@ function () {
 		return null;
 	};
 
-	/**
-	 * @description Update our max time value to match the max time in our managed animation channels.
+	/*
+	 * description Update our max time value to match the max time in our managed animation channels.
 	 */
 	AnimationClip.prototype.updateMaxTimeIndex = function () {
 		this._maxTime = -1;

@@ -28,5 +28,11 @@ function (AbstractAnimationChannel,
 		value[0] = MathUtils.lerp(progressPercent, this._values[sampleIndex], this._values[sampleIndex + 1]);
 	};
 
+	InterpolatedFloatChannel.prototype.getData = function(index, store) {
+		var rVal = store || [];
+		rVal[0] = this._values[index];
+		return rVal;
+	};
+
 	return InterpolatedFloatChannel;
 });

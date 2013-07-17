@@ -127,7 +127,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	 * @param store the TransformData to store in. If null, a new one is created.
 	 * @return our resulting TransformData.
 	 */
-	TransformChannel.prototype.getTransformData = function (index, store) {
+	TransformChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new TransformData();
 		rVal.setRotation(this._rotations[index]);
 		rVal.setScale(this._scales[index]);

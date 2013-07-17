@@ -418,10 +418,10 @@ function (
 	};
 */
 	JsonUtils.parseChannelTimes = function (chanObj, useCompression) {
-		var timesVal = chanObj.Times;
+		var timesVal = chanObj.times;
 		if (timesVal) {
 			if (useCompression) {
-				var scaleOffset = chanObj.TimeOffsetScale;
+				var scaleOffset = chanObj.timeOffsetScale;
 				var offset = scaleOffset[0];
 				var scale = scaleOffset[1];
 				return JsonUtils.parseFloatArrayFromCompressedString(timesVal, [scale], [offset]);
@@ -433,10 +433,10 @@ function (
 	};
 
 	JsonUtils.parseFloatLERPValues = function (chanObj, useCompression) {
-		var valuesVal = chanObj.IFCValues;
+		var valuesVal = chanObj.values;
 		if (valuesVal) {
 			if (useCompression) {
-				var scaleOffset = chanObj.IFCOffsetScale;
+				var scaleOffset = chanObj.offsetScale;
 				var offset = scaleOffset[0];
 				var scale = scaleOffset[1];
 				return JsonUtils.parseFloatArrayFromCompressedString(valuesVal, [scale], [offset]);
@@ -448,7 +448,7 @@ function (
 	};
 
 	JsonUtils.parseRotationSamples = function (chanObj, range, useCompression) {
-		var transVal = chanObj.RotationSamples;
+		var transVal = chanObj.rotationSamples;
 		if (transVal) {
 			if (useCompression) {
 				var offset = 1 - (range + 1 >> 1);
@@ -463,12 +463,9 @@ function (
 	};
 
 	JsonUtils.parseTranslationSamples = function (chanObj, size, useCompression) {
-		var uniform = chanObj.UniformTranslation;
+		var uniform = chanObj.uniformTranslation;
 		if (uniform) {
 			var translation = uniform;
-			if (uniform === undefined) {
-				console.log('asdf');
-			}
 			var xScale = translation[0];
 			var yScale = translation[1];
 			var zScale = translation[2];
@@ -481,10 +478,10 @@ function (
 			return rVal;
 		}
 
-		var transVal = chanObj.TranslationSamples;
+		var transVal = chanObj.translationSamples;
 		if (transVal) {
 			if (useCompression) {
-				var scaleOffset = chanObj.TranslationOffsetScale;
+				var scaleOffset = chanObj.translationOffsetScale;
 				var xOffset = scaleOffset[0];
 				var yOffset = scaleOffset[1];
 				var zOffset = scaleOffset[2];
@@ -498,7 +495,7 @@ function (
 	};
 
 	JsonUtils.parseScaleSamples = function (chanObj, size, useCompression) {
-		var uniform = chanObj.UniformScale;
+		var uniform = chanObj.uniformScale;
 		if (uniform) {
 			var scale = uniform;
 			var xScale = scale[0];
@@ -513,7 +510,7 @@ function (
 			return rVal;
 		}
 
-		var scalesVal = chanObj.ScaleSamples;
+		var scalesVal = chanObj.scaleSamples;
 		if (scalesVal) {
 			if (useCompression) {
 				var scaleOffset = chanObj.ScaleOffsetScale;

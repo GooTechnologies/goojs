@@ -26,9 +26,9 @@ function (TransformChannel, JointData) {
 		jointData._jointIndex = this._jointIndex;
 	};
 
-	JointChannel.prototype.getJointData = function (index, store) {
+	JointChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new JointData();
-		TransformChannel.prototype.getTransformData.call(this, index, rVal);
+		TransformChannel.prototype.getData.call(this, index, rVal);
 		rVal._jointIndex = this._jointIndex;
 		return rVal;
 	};

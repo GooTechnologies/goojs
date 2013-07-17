@@ -6,6 +6,7 @@ define [
 	'goo/animation/blendtree/ClipSource'
 	'goo/animation/blendtree/ManagedTransformSource'
 	'goo/animation/blendtree/BinaryLERPSource'
+	'goo/animation/blendtree/FrozenClipSource'
 	'goo/animation/state/FadeTransitionState'
 	'goo/animation/state/SyncFadeTransitionState'
 	'goo/animation/state/FrozenTransitionState'
@@ -21,6 +22,7 @@ define [
 	ClipSource
 	ManagedTransformSource
 	BinaryLERPSource
+	FrozenClipSource
 	FadeTransitionState
 	SyncFadeTransitionState
 	FrozenTransitionState
@@ -34,43 +36,49 @@ define [
 		
 		_create: (layersConfig) ->
 			console.debug "Creating animation layers"
-			layers = []
-
 			promises = []
-			for layerKey, layerConfig of layersConfig
-				layer = new AnimationLayer(layerConfig.name)
-				layers.push(layer)
-				
-				if layerConfig.blendWeight?
-					layer._layerBlender = new LayerLERPBlender()
-					layer._layerBlender._blendWeight = layerConfig.blendWeight
-				
-				for stateKey, stateConfig of layerConfig.states
-					state = new SteadyState(stateConfig.name)
-					layer._steadyStates[stateKey] = state
-					do (state) =>
-						promises.push @_parseClipSource(stateConfig.clipSource).then (source) =>
-							state._sourceTree = source
-
-				for stateKey, stateConfig of layerConfig.states when stateConfig.transitions?
-					for transitionKey, transitionConfig of stateConfig.transitions when layer._steadyStates[transitionKey]? or transitionKey == '*'
-						transition = _.clone(transitionConfig)
-						layer._steadyStates[stateKey]._transitions[transitionKey] = transition
-						if not layer._transitionStates[transition.type]?
-							layer._transitionStates[transition.type] = @_getTransitionByType(transition.type)
-								
-				if layerConfig.transitions?
-					for transitionKey, transitionConfig of layerConfig.transitions when layer._steadyStates[transitionKey]? or transitionKey == '*'
-						transition = _.clone(transitionConfig)
-						layer._transitions[transitionKey] = transition
-						if not layer._transitionStates[transition.type]?
-							layer._transitionStates[transition.type] = @_getTransitionByType(transition.type)
-
-				if layerConfig.defaultState?
-					layer.setCurrentStateByName(layerConfig.defaultState)
-
-			return RSVP.all(promises).then ->
+			
+			promises.push @_parseLayer(layersConfig.DEFAULT)
+			
+			for layerKey, layerConfig of layersConfig when layerKey != 'DEFAULT'
+				promises.push @_parseLayer(layerConfig)
+			return RSVP.all(promises).then (layers) ->
 				return layers
+				
+		_parseLayer: (layerConfig) ->
+			promises = []
+			layer = new AnimationLayer(layerConfig.name)
+			
+			if layerConfig.blendWeight?
+				layer._layerBlender = new LayerLERPBlender()
+				layer._layerBlender._blendWeight = layerConfig.blendWeight
+			
+			for stateKey, stateConfig of layerConfig.states
+				state = new SteadyState(stateConfig.name)
+				layer._steadyStates[stateKey] = state
+				do (state) =>
+					promises.push @_parseClipSource(stateConfig.clipSource).then (source) =>
+						state._sourceTree = source
+
+			for stateKey, stateConfig of layerConfig.states when stateConfig.transitions?
+				for transitionKey, transitionConfig of stateConfig.transitions when layer._steadyStates[transitionKey]? or transitionKey == '*'
+					transition = _.clone(transitionConfig)
+					layer._steadyStates[stateKey]._transitions[transitionKey] = transition
+					if not layer._transitionStates[transition.type]?
+						layer._transitionStates[transition.type] = @_getTransitionByType(transition.type)
+							
+			if layerConfig.transitions?
+				for transitionKey, transitionConfig of layerConfig.transitions when layer._steadyStates[transitionKey]? or transitionKey == '*'
+					transition = _.clone(transitionConfig)
+					layer._transitions[transitionKey] = transition
+					if not layer._transitionStates[transition.type]?
+						layer._transitionStates[transition.type] = @_getTransitionByType(transition.type)
+
+			if layerConfig.defaultState?
+				layer.setCurrentStateByName(layerConfig.defaultState)
+			
+			return RSVP.all(promises).then ->
+				return layer
 			
 		_parseClipSource: (cfg) ->
 			switch cfg.type
@@ -78,7 +86,7 @@ define [
 					return @getConfig(cfg.clipRef).then (config) =>
 						@updateObject(cfg.clipRef, config, @options)
 						.then (clip) =>
-							clipSource = new ClipSource(clip)
+							clipSource = new ClipSource(clip, cfg.filter, cfg.channels)
 							
 							for key in ['loopCount', 'timeScale', 'active']
 								if cfg[key] and not isNaN(cfg[key])

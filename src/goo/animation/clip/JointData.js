@@ -13,6 +13,7 @@ function (TransformData) {
 	}
 
 	JointData.prototype = Object.create(TransformData.prototype);
+	JointData.prototype.constructor = JointData;
 
 	/**
 	 * @description Copy the source's values into this transform data object.
