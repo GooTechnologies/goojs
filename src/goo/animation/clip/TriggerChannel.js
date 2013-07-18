@@ -18,11 +18,20 @@ function (AbstractAnimationChannel, TriggerData) {
 
 	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
-	// Was: function (instance)
+	/*
+	 * Creates a data item for this type of channel
+	 * @returns {TriggerData}
+	 */
 	TriggerChannel.prototype.createStateDataObject = function () {
 		return new TriggerData();
 	};
 
+	/*
+	 * Applies the channels animation state to supplied data item
+	 * @param {number} sampleIndex
+	 * @param {number} progressPercent
+	 * @param {TriggerData} value The data item to apply animation to
+	 */
 	TriggerChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, triggerData) {
 		var oldIndex = triggerData._currentIndex;
 

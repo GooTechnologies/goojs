@@ -5,8 +5,6 @@ function (BinaryLERPSource) {
 
 	/**
 	 * @class A layer blender that uses linear interpolation to merge the results of two layers.
-	 * @param {String} name Name of layer
-	 * @property {String} name Name of layer
 	 */
 	function LayerLERPBlender () {
 		this._blendWeight = null;
@@ -14,8 +12,7 @@ function (BinaryLERPSource) {
 		this._layerB = null;
 	}
 
-	/**
-	 * @param manager the manager this is being called from
+	/*
 	 * @return a key-value map representing the blended data from both animation layers.
 	 */
 	LayerLERPBlender.prototype.getBlendedSourceData = function () {

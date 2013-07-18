@@ -4,7 +4,7 @@ function () {
 	"use strict";
 
 	/**
-	 * @class Transient class that maintains the current triggers and armed status for a TriggerChannel.
+	 * @class Transient class that maintains the current triggers and armed status for a {@link TriggerChannel}.
 	 */
 	function TriggerData () {
 		this._currentTriggers = [];
@@ -14,6 +14,8 @@ function () {
 
 	/*
 	 * Arms the data to be triggered on next animation loop
+	 * @param {number} index The index of the data in the {@link TriggerChannel}, so we only trigger once per triggerdata
+	 * @param {string[]} triggers String keys that will trigger callbacks in the {@link AnimationComponent}
 	 */
 	TriggerData.prototype.arm = function (index, triggers) {
 		if (triggers === null || triggers.length === 0) {

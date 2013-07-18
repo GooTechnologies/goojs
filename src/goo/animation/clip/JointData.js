@@ -5,7 +5,7 @@ function (TransformData) {
 
 	/**
 	 * @class Describes transform of a joint.
-	 * @param our optional JointData source to copy.
+	 * @param {JointData} [source] source to copy
 	 */
 	function JointData (source) {
 		TransformData.call(this, source);
@@ -16,8 +16,8 @@ function (TransformData) {
 	JointData.prototype.constructor = JointData;
 
 	/**
-	 * @description Copy the source's values into this transform data object.
-	 * @param jointData our source to copy. Must not be null.
+	 * Copy the jointData's values into this transform data object.
+	 * @param {JointData} jointData our source to copy. Must not be null.
 	 */
 	JointData.prototype.set = function (jointData) {
 		TransformData.prototype.set.call(this, jointData);
@@ -25,11 +25,11 @@ function (TransformData) {
 	};
 
 	/**
-	 * @description Blend this transform with the given transform.
-	 * @param blendTo The transform to blend to
-	 * @param blendWeight The blend weight
-	 * @param store The transform store.
-	 * @return The blended transform.
+	 * Blend this transform with the given transform.
+	 * @param {TransformData} blendTo The transform to blend to
+	 * @param {number} blendWeight The blend weight
+	 * @param {TransformData} store The transform store.
+	 * @return {TransformData} The blended transform.
 	 */
 	JointData.prototype.blend = function (blendTo, blendWeight, store) {
 		var rVal = store;

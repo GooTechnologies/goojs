@@ -5,7 +5,7 @@ function (Quaternion, Vector3) {
 
 	/**
 	 * @class Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.
-	 * @param source our optional TransformData source to copy.
+	 * @param {TransformData} [source] source to copy.
 	 */
 	function TransformData (source) {
 		this._rotation = new Quaternion().copy(source ? source._rotation : Quaternion.IDENTITY);
@@ -13,6 +13,10 @@ function (Quaternion, Vector3) {
 		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
 	}
 
+	/*
+	 * Applies the data from this transformdata to supplied transform
+	 * @param {Transform}
+	 */
 	TransformData.prototype.applyTo = function (transform) {
 		transform.setIdentity();
 		// TODO: matrix vs quaternion?
@@ -23,8 +27,8 @@ function (Quaternion, Vector3) {
 	};
 
 	/**
-	 * @description Copy the source's values into this transform data object.
-	 * @param source our source to copy.
+	 * Copy the source's values into this transform data object.
+	 * @param {TransformData} source our source to copy.
 	 */
 	TransformData.prototype.set = function (source) {
 		this._rotation.copy(source._rotation);
@@ -33,11 +37,11 @@ function (Quaternion, Vector3) {
 	};
 
 	/**
-	 * @description Blend this TransformData with the given TransformData.
-	 * @param blendTo The TransformData to blend to
-	 * @param blendWeight The blend weight
-	 * @param store The TransformData store.
-	 * @return The blended transform.
+	 * Blend this TransformData with the given TransformData.
+	 * @param {TransformData} blendTo The TransformData to blend to
+	 * @param {number} blendWeight The blend weight
+	 * @param {TransformData} store The TransformData store.
+	 * @return {TransformData} The blended transform.
 	 */
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
