@@ -124,7 +124,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	/**
 	 * @description Apply a specific index of this channel to a TransformData object.
 	 * @param index the index to grab.
-	 * @param store the TransformData to store in. If null, a new one is created.
+	 * @param {TransformData} store the TransformData to store in. If null, a new one is created.
 	 * @return our resulting TransformData.
 	 */
 	TransformChannel.prototype.getData = function (index, store) {

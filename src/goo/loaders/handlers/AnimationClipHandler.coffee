@@ -5,6 +5,7 @@ define [
 	'goo/animation/clip/JointChannel'
 	'goo/animation/clip/TransformChannel'
 	'goo/animation/clip/InterpolatedFloatChannel'
+	'goo/animation/clip/TriggerChannel'
 
 	'goo/util/PromiseUtil'
 ], (
@@ -14,6 +15,7 @@ define [
 	JointChannel
 	TransformChannel
 	InterpolatedFloatChannel
+	TriggerChannel
 	
 	pu
 ) ->
@@ -58,12 +60,20 @@ define [
 							blendType
 						)
 					else if channelConfig.type == 'FloatLERP'
-						channel = new InterPolatedFloatChannel(
+						channel = new InterpolatedFloatChannel(
 							channelConfig.name
 							times
 							JsonUtils.parseFloatLERPValues(channelConfig, useCompression)
 							blendType
 						)
+					else if channelConfig.type == 'Trigger'
+						channel = new TriggerChannel(
+							channelConfig.name
+							times
+							channelConfig.keys
+						)
+						if channelConfig.guarantee
+							channel.guarantee = true
 					else #TODO: Trigger channel
 						console.warn("Unhandled channel type: " + channelConfig.type)
 						continue

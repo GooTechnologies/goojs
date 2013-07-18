@@ -22,6 +22,11 @@ function (
 		this._animationListeners = [];
 	}
 
+	/**
+	 * Sets the timescale of the animation, speeding it up or slowing it down
+	 * @param {number} scale
+	 * @param {number} [globalTime=World.time]
+	 */
 	AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
 		var globalTime = globalTime || World.time;
 		if (this._active && this._timeScale !== scale) {
@@ -40,6 +45,11 @@ function (
 		this._timeScale = scale;
 	};
 
+	/*
+	 * Gives the corresponding data for a channel, to apply animations to
+	 * @param {AbstractAnimationChannel} channel
+	 * @returns {TransformData|TriggerData|number[0]} the animation data item
+	 */
 	AnimationClipInstance.prototype.getApplyTo = function (channel) {
 		var channelName = channel._channelName;
 		var rVal = this._clipStateObjects[channelName];
@@ -48,15 +58,6 @@ function (
 			this._clipStateObjects[channelName] = rVal;
 		}
 		return rVal;
-	};
-
-	/*
-	 * Tell any animation listeners on this instance that the associated clip has finished playing.
-	 */
-	AnimationClipInstance.prototype.fireAnimationFinished = function () {
-		for ( var i = 0, max = this._animationListeners.length; i < max; i++) {
-			this._animationListeners[i].animationFinished(this);
-		}
 	};
 
 	return AnimationClipInstance;

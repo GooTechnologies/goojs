@@ -69,7 +69,7 @@ function () {
 	};
 
 	/*
-	 * description Update our max time value to match the max time in our managed animation channels.
+	 * Update our max time value to match the max time in our managed animation channels.
 	 */
 	AnimationClip.prototype.updateMaxTimeIndex = function () {
 		this._maxTime = -1;

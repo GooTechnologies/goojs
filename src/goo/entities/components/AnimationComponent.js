@@ -31,6 +31,7 @@ function (
 		 * @type {AnimationLayer[]}
 		 */
 		this.layers = [];
+		this.floats = {};
 
 		this._updateRate = 1.0 / 60.0;
 		this._lastUpdate = 0.0;
@@ -100,12 +101,16 @@ function (
 						// TODO: Integrate with GameMaker somehow
 						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
-							for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
-								callbacks[j]();
+							if (callbacks && callbacks.length) {
+								for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+									callbacks[j]();
+								}
 							}
 						}
 						value.armed = false;
 					}
+				} else if (value instanceof Array) {
+					this.floats[key] = value[0];
 				}
 			}
 			if (pose) {
@@ -122,6 +127,9 @@ function (
 		}
 	};
 
+	/*
+	 * Called after the animations are applied
+	 */
 	AnimationComponent.prototype.postUpdate = function() {
 		// post update to clear states
 		for ( var i = 0, max = this.layers.length; i < max; i++) {
@@ -129,6 +137,9 @@ function (
 		}
 	};
 
+	/*
+	 * Gets the current animation data for all layers blended together
+	 */
 	AnimationComponent.prototype.getCurrentSourceData = function () {
 		// set up our layer blending.
 		var last = this.layers.length - 1;
@@ -138,6 +149,11 @@ function (
 		return this.layers[last].getCurrentSourceData();
 	};
 
+	/**
+	 * Add a new {@link AnimationLayer} to the stack
+	 * @param {AnimationLayer} layer
+	 * @param {number} [index] if no index is supplied, it's put on top of the stack
+	 */
 	AnimationComponent.prototype.addLayer = function (layer, index) {
 		if (!isNaN(index)) {
 			this.layers.splice(index, 0, layer);

@@ -68,8 +68,6 @@ function (
 				// Check for past max time
 				if (clockTime > maxTime || clockTime < 0) {
 					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
-					// signal to any listeners that we have ended our animation.
-					instance.fireAnimationFinished();
 					// deactivate this instance of the clip
 					instance._active = false;
 				}
