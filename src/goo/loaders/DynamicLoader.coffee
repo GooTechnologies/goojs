@@ -211,7 +211,7 @@ _) ->
 
 		
 		# Load/update an object with the given reference into the engine
-		_handle: (ref, config, options)-> 
+		_handle: (ref, config, options={})-> 
 			if @_objects[ref]?.then
 				#console.debug "#{ref} is handling"	
 				return @_objects[ref]

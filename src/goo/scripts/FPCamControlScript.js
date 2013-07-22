@@ -202,6 +202,7 @@ function (Vector, Vector3) {
 		}
 		// set our component updated.
 		transformComponent.setUpdated();
+		//console.log ('['+ transform.translation.x.toFixed(1) + ',' + transform.translation.z.toFixed(1) + ']');
 	};
 
 	return FPCamControlScript;
