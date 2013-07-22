@@ -83,10 +83,9 @@ _) ->
 			
 			if (data.textureCoords && data.textureCoords.length > 0)
 				for texCoords, texIdx in data.textureCoords
-					console.log "TEXCOORD #{texIdx}"
 					attributeMap['TEXCOORD' + texIdx] = MeshData.createAttribute(2, 'Float')
 
-			console.log "Parsing mesh data: #{_.keys(attributeMap).join(',')}"
+			#console.log "Parsing mesh data: #{_.keys(attributeMap).join(',')}"
 				
 			meshData = new MeshData(attributeMap, vertexCount, indexCount)
 	

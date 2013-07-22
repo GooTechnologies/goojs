@@ -58,6 +58,7 @@ function (Vector, Vector3) {
 		this.calcVector = new Vector3();
 
 		this.setupKeyControls();
+		console.log ("Creating wasd");
 	}
 
 	WASDControlScript.prototype.updateMovementVector = function () {

@@ -46,7 +46,7 @@ define [
 			texture = @_objects[ref]
 			if not texture then texture = @_create(ref, config)
 
-			console.log "Loading texture with url #{config.url}"
+			#console.log "Loading texture with url #{config.url}"
 			if not config.url
 				return pu.createDummyPromise(texture)
 
@@ -69,7 +69,7 @@ define [
 			else
 				#texture = new Texture null, config
 				@getConfig(imgRef).then (data)=>
-					console.log "Adding texture #{imgRef}, data is #{typeof data}"
+					#console.log "Adding texture #{imgRef}, data is #{typeof data}"
 					texture.setImage(data)
 					return texture	
 
