@@ -37,7 +37,22 @@ define [
 		_create: (ref, config)->
 			_.defaults config, 
 				verticalFlip:true
-			texture = @_objects[ref] = new Texture ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), null				
+
+			# Copy texture settings
+			settings = 
+				wrapS: config.wrapU
+				wrapT: config.wrapV
+				magFilter: config.magFilter
+				minFilter: config.minFilter
+				repeat: config.repeat
+				offset: config.offset
+				# not in converter:
+				#anisotropy
+				#format: 
+				#type
+				#flipY
+
+			texture = @_objects[ref] = new Texture ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings				
 			texture.image.dataReady = false
 			return texture
 
