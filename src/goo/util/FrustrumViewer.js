@@ -117,9 +117,9 @@ define([
 	}
 
 	/**
-	 * Attaches a pointer mesh to the specifies light entity that represents the light's properties (color, position, direction and range)
-	 * @param {Entity} light entity to attach the pointer mesh to
-	 * @return {Entity} the light entity for chaining.
+	 * Attaches a guide mesh to the specifies camera entity that represents the frustrum of the camera
+	 * @param {Entity} camera entity to attach the guide mesh to
+	 * @return {Entity} the camera entity for chaining
 	 */
 	FrustrumViewer.attachGuide = function (cameraEntity) {
 		var camera = cameraEntity.getComponent('CameraComponent').camera;
@@ -138,13 +138,15 @@ define([
 	};
 
 	/**
-	 * Removes any mesh attached to an entity with a light component
-	 * @param {Entity} light entity to remove the mesh components from
-	 * @return {Entity} the light entity for chaining.
+	 * Removes any mesh attached to an entity with a camera component
+	 * @param {Entity} camera entity to remove the mesh components from
+	 * @return {Entity} the camera entity for chaining
 	 */
 	FrustrumViewer.removeMesh = function (cameraEntity) {
-		cameraEntity.clearComponent('meshDataComponent');
-		cameraEntity.clearComponent('meshRendererComponent');
+		if(cameraEntity.hasComponent('cameraComponent')) {
+			cameraEntity.clearComponent('meshDataComponent');
+			cameraEntity.clearComponent('meshRendererComponent');
+		}
 
 		return cameraEntity;
 	};
