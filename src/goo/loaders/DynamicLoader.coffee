@@ -61,17 +61,17 @@ _) ->
 		* @returns {DynamicLoader} 
 		*###
 		
-		constructor: (options)->
-			_.defaults(options, ajax:true)
-			@_world = options.world or throw new Error("World argument cannot be null")
-			@_rootPath = options.rootPath 
-			if not @_rootPath? then throw new Error("parameters.rootPath must be defined")
-			if @_rootPath.length>1 and @_rootPath.charAt(@_rootPath.length-1) != '/'
-				@_rootPath += '/'
+		constructor: (@options)->
+			_.defaults(@options, ajax:true)
+			@_world = @options.world or throw new Error("World argument cannot be null")
+			if not @options.rootPath? then throw new Error("parameters.rootPath must be defined")
+			@setRootPath(@options.rootPath)
+
 
 			@_configs = {}
+
 			
-			if options.ajax
+			if @options.ajax
 				@_ajax = new Ajax()
 
 
@@ -106,6 +106,7 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromConfig: (ref, configs, options={})->
+			_.defaults(options, @options)
 			if configs?
 				if options.noCache
 					@_configs = configs
@@ -131,6 +132,7 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromBundle: (ref, bundleName, options={})->
+			_.defaults(options, @options)
 			@_loader.load bundleName, (data)=>
 				bundleData = JSON.parse(data)
 				if options.noCache
@@ -174,7 +176,7 @@ _) ->
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
 		update: (ref, config, options={})->
-			_.defaults(options, recursive:true)
+			_.defaults(options, @options, recursive:true)
 			#console.debug "Loading/updating #{ref}"
 			if config then @_configs[ref] = config
 			@_objects = {}
@@ -318,4 +320,10 @@ _) ->
 		*###
 		getCachedObjectForRef: (ref)-> 
 			@_objects[ref]
+
+		setRootPath: (path)->
+			@_rootPath = path
+			if path.length>1 and path.charAt(path.length-1) != '/'
+				@_rootPath += '/'
+
 

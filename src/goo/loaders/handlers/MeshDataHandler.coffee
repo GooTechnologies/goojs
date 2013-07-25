@@ -154,7 +154,9 @@ _) ->
 						JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + texIdx, texObj.UVScales, texObj.UVOffsets)
 				else
 					for texObj, texIdx in textureUnits
-						JsonUtils.fillAttributeBuffer(texObj, meshData, 'TEXCOORD' + texIdx)
+						attr = 'TEXCOORD' + texIdx
+						#console.debug("Filling attribute " + attr + ' with ' + texObj.length + ' indices');
+						JsonUtils.fillAttributeBuffer(texObj, meshData, attr)
 	
 			if weightsPerVert > 0 and data.joints
 				buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS)

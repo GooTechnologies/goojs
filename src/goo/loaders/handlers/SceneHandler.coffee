@@ -22,7 +22,7 @@ define [
 				RSVP.all(promises).then (entities)=>
 					if not @options.beforeAdd?.apply or @options.beforeAdd(config)
 						for entity in entities
-							console.log "Adding #{entity.ref} to world"
+							#console.log "Adding #{entity.ref} to world"
 							entity.addToWorld()
 			
 				.then null, (err)-> console.error "Error updating entities: #{err}"

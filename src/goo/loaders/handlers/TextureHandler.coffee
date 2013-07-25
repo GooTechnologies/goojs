@@ -37,7 +37,7 @@ define [
 		_create: (ref, config)->
 			_.defaults config, 
 				verticalFlip:true
-			texture = @_objects[ref] = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), config)
+			texture = @_objects[ref] = new Texture ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), null				
 			texture.image.dataReady = false
 			return texture
 
@@ -46,8 +46,9 @@ define [
 			texture = @_objects[ref]
 			if not texture then texture = @_create(ref, config)
 
-			#console.log "Loading texture with url #{config.url}"
+			console.log "Loading texture #{ref} with url #{config.url}"
 			if not config.url
+				console.log "Texture #{ref} has no url"
 				return pu.createDummyPromise(texture)
 
 			imgRef = config.url
@@ -60,8 +61,11 @@ define [
 				texture.a = imgRef
 
 				@getConfig(imgRef).then (data)=>
+					console.log "Adding special texture #{imgRef}, data is #{typeof data}"
 					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
 					return texture
+				.then null, (e)->
+					console.error "Error loading texture: ", e
 
 				# We don't wait for images to load
 				pu.createDummyPromise(texture)
@@ -69,10 +73,11 @@ define [
 			else
 				#texture = new Texture null, config
 				@getConfig(imgRef).then (data)=>
-					#console.log "Adding texture #{imgRef}, data is #{typeof data}"
+					console.log "Adding texture #{imgRef}, data is #{typeof data}"
 					texture.setImage(data)
 					return texture	
-
+				.then null, (e)->
+					console.error "Error loading texture: ", e
 				# We don't wait for images to load
 				pu.createDummyPromise(texture)
 
