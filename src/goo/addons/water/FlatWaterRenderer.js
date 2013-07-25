@@ -84,6 +84,10 @@ function (
 	}
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
+		entities = entities.filter(function(entity) {
+			return entity.meshRendererComponent.isReflectable;
+		});
+
 		var waterPlane = this.waterPlane;
 
 		this.waterCamera.copy(camera);
