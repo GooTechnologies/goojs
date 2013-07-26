@@ -46,6 +46,9 @@ function (
 			/** @type {number} */
 			far: 1000
 		};
+
+		this.changedProperties = false;
+		this.changedColor =  false;
 	}
 
 	return Light;
