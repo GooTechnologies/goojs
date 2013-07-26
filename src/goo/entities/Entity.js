@@ -49,11 +49,15 @@ function () {
 	 * @param {Component} component Component to set on the entity
 	 */
 	Entity.prototype.setComponent = function (component) {
-		var index = this._components.indexOf(component);
-		if (index === -1) {
-			this._components.push(component);
+		if (this.hasComponent(component.type)) {
+			for (var i = 0; i < this._components.length; i++) {
+				if (this._components[i].type === component.type) {
+					this._components[i] = component;
+					break;
+				}
+			}
 		} else {
-			this._components[index] = component;
+			this._components.push(component);
 		}
 		this[getTypeAttributeName(component.type)] = component;
 
