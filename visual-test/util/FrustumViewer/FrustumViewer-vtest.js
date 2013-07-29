@@ -21,7 +21,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/entities/EventHandler',
-	'goo/util/FrustrumViewer'
+	'goo/util/FrustumViewer'
 ], function (
 	GooRunner,
 	World,
@@ -39,7 +39,7 @@ require([
 	PointLight,
 	LightComponent,
 	EventHandler,
-	FrustrumViewer
+	FrustumViewer
 	) {
 	'use strict';
 
@@ -54,7 +54,7 @@ require([
 		EventHandler.dispatch("setCurrentCamera", mainCamera);
 	}
 
-	function frustrumViewerDemo(goo) {
+	function frustumViewerDemo(goo) {
 		// add spheres to have the cameras view them
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
@@ -135,9 +135,9 @@ require([
 		}));
 		camera2Entity.setComponent(scripts);
 
-		// attach frustrums
-		FrustrumViewer.attachGuide(camera1Entity);
-		FrustrumViewer.attachGuide(camera2Entity);
+		// attach frustums
+		FrustumViewer.attachGuide(camera1Entity);
+		FrustumViewer.attachGuide(camera2Entity);
 	}
 
 	function init() {
@@ -145,7 +145,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		frustrumViewerDemo(goo);
+		frustumViewerDemo(goo);
 	}
 
 	init();

@@ -21,59 +21,59 @@ define([
 	) {
 	"use strict";
 
-	function FrustrumViewer() {
+	function FrustumViewer() {
 	}
 
-	function buildFrustrum(fov, aspect, near, far) {
+	function buildFrustum(fov, aspect, near, far) {
 		var angle = (fov * Math.PI/180) / 2;
 		var sine = Math.sin(angle);
 
 		var f0, f1, f2, f3;
 		f0 = {
-			x: -sine * far,
+			x: -sine * far * aspect,
 			y:  sine * far,
 			z: -far
 		};
 
 		f1 = {
-			x: -sine * far,
+			x: -sine * far * aspect,
 			y: -sine * far,
 			z: -far
 		};
 
 		f2 = {
-			x:  sine * far,
+			x:  sine * far * aspect,
 			y: -sine * far,
 			z: -far
 		};
 
 		f3 = {
-			x:  sine * far,
+			x:  sine * far * aspect,
 			y:  sine * far,
 			z: -far
 		};
 
 		var n0, n1, n2, n3;
 		n0 = {
-			x: -sine * near,
+			x: -sine * near * aspect,
 			y:  sine * near,
 			z: -near
 		};
 
 		n1 = {
-			x: -sine * near,
+			x: -sine * near * aspect,
 			y: -sine * near,
 			z: -near
 		};
 
 		n2 = {
-			x:  sine * near,
+			x:  sine * near * aspect,
 			y: -sine * near,
 			z: -near
 		};
 
 		n3 = {
-			x:  sine * near,
+			x:  sine * near * aspect,
 			y:  sine * near,
 			z: -near
 		};
@@ -116,15 +116,20 @@ define([
 		return meshData;
 	}
 
+	FrustumViewer.getMeshData = function(camera) {
+		var meshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far);
+		return meshData;
+	};
+
 	/**
-	 * Attaches a guide mesh to the specifies camera entity that represents the frustrum of the camera
+	 * Attaches a guide mesh to the specifies camera entity that represents the frustum of the camera
 	 * @param {Entity} camera entity to attach the guide mesh to
 	 * @return {Entity} the camera entity for chaining
 	 */
-	FrustrumViewer.attachGuide = function (cameraEntity) {
+	FrustumViewer.attachGuide = function (cameraEntity) {
 		var camera = cameraEntity.getComponent('CameraComponent').camera;
 
-		var meshData = buildFrustrum(camera.fov, camera.aspect, camera.near, camera.far - camera.far/1000);
+		var meshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far - camera.far/1000);
 		var meshDataComponent = new MeshDataComponent(meshData);
 		cameraEntity.setComponent(meshDataComponent);
 
@@ -142,7 +147,7 @@ define([
 	 * @param {Entity} camera entity to remove the mesh components from
 	 * @return {Entity} the camera entity for chaining
 	 */
-	FrustrumViewer.removeMesh = function (cameraEntity) {
+	FrustumViewer.removeMesh = function (cameraEntity) {
 		if(cameraEntity.hasComponent('cameraComponent')) {
 			cameraEntity.clearComponent('meshDataComponent');
 			cameraEntity.clearComponent('meshRendererComponent');
@@ -151,5 +156,5 @@ define([
 		return cameraEntity;
 	};
 
-	return FrustrumViewer;
+	return FrustumViewer;
 });
