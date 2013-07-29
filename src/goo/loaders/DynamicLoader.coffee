@@ -47,7 +47,7 @@ _) ->
 	* @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	*###
 	class DynamicLoader			
-		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture)$/		
+		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|bundle)$/
 		
 		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		
@@ -133,12 +133,11 @@ _) ->
 		*###
 		loadFromBundle: (ref, bundleName, options={})->
 			_.defaults(options, @options)
-			@_loader.load bundleName, (data)=>
-				bundleData = JSON.parse(data)
+			@_loadRef(bundleName).then (data)=>
 				if options.noCache
-					@_configs = bundleData
+					@_configs = data
 				else
-					_.extend @_configs, bundleData
+					_.extend @_configs, data
 				
 				if not @_configs[ref]?
 					throw Error "#{ref} not found in bundle #{bundleName}. Available keys: \n#{_.keys(@_configs).join('\n')}"
@@ -147,7 +146,7 @@ _) ->
 				
 				#console.log "Loaded bundle"
 				@load(ref, options)
-				
+
 		
 		###*
 		* Load an object with the specified path into the world. The object can be of any
