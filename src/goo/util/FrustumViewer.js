@@ -26,6 +26,12 @@ define([
 
 	function buildFrustum(fov, aspect, near, far) {
 		var angle = (fov * Math.PI/180) / 2;
+		/* REVIEW:
+		 * Camera uses Math.tan shouldn't this be tan also?
+		 * Would be nice to make it unit size and use transforms to display it.
+		 * Which would work except when near/far ratio changes
+		 * So buildFrustum(near_far) should be enough
+		 */
 		var sine = Math.sin(angle);
 
 		var f0, f1, f2, f3;
