@@ -896,7 +896,7 @@ function (
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else {
-				if (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize) {
+				if (image.isCompressed === false && (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexSize);
 					image = texture.image;
 				}
