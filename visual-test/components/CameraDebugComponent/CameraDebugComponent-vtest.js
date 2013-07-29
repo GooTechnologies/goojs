@@ -93,8 +93,16 @@ require([
 				case 51:
 					cameraState.spin = !cameraState.spin;
 					break;
+				case 52:
+					if(camera1Entity.hasComponent('CameraDebugComponent')) {
+						camera1Entity.clearComponent('CameraDebugComponent');
+					}
+					else {
+						camera1Entity.setComponent(new CameraDebugComponent());
+					}
+					break;
 				default:
-					console.log('Keys 1, 2 switch main camera; key 3 starts/stops the spinning of camera 1');
+					console.log('Keys 1, 2 switch main camera\nkey 3 starts/stops the spinning of camera 1\nkey 4 adds/removes camera debug component on camera 1');
 			}
 		});
 
