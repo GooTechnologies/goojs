@@ -215,7 +215,7 @@ _) ->
 			if @_objects[ref]?.then
 				console.debug "#{ref} is handling"	
 				return @_objects[ref]
-			else if @_objects[ref] and not options.noCache
+			else if @_objects[ref] and not options?.noCache
 				console.debug "#{ref} is already handled"
 				return pu.createDummyPromise(@_objects[ref])
 			else
