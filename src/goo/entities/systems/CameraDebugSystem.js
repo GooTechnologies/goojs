@@ -52,5 +52,10 @@ define([
 		}
 	};
 
+	CameraDebugSystem.prototype.deleted = function(entity) {
+		entity.clearComponent('MeshDataComponent');
+		entity.clearComponent('MeshRendererComponent');
+	};
+
 	return CameraDebugSystem;
 });
