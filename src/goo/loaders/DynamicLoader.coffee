@@ -49,7 +49,7 @@ _) ->
 	* @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	*###
 	class DynamicLoader			
-		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip)$/		
+		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/
 		
 		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		
@@ -133,12 +133,11 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromBundle: (ref, bundleName, options={})->
-			@_loader.load bundleName, (data)=>
-				bundleData = JSON.parse(data)
+			@_loadRef(bundleName).then (data)=>
 				if options.noCache
-					@_configs = bundleData
+					@_configs = data
 				else
-					_.extend @_configs, bundleData
+					_.extend @_configs, data
 				
 				if not @_configs[ref]?
 					throw Error "#{ref} not found in bundle #{bundleName}. Available keys: \n#{_.keys(@_configs).join('\n')}"
