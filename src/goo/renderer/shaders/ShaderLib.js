@@ -39,6 +39,7 @@ define([
 	        worldMatrix: Shader.WORLD_MATRIX,
 	        cameraPosition: Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
+			diffuseRepeat : [1,1],
 			normalMap : Shader.NORMAL_MAP,
 			specularMap : Shader.SPECULAR_MAP,
 			emissiveMap : Shader.EMISSIVE_MAP,

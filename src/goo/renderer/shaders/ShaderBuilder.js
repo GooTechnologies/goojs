@@ -51,6 +51,13 @@ function(
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
 				}
+
+				if (type === 'DIFFUSE_MAP') {
+					var repeat = textureMaps[type].repeat;
+					shader.uniforms.diffuseRepeat = shader.uniforms.diffuseRepeat || [1, 1];
+					shader.uniforms.diffuseRepeat[0] = repeat.x;
+					shader.uniforms.diffuseRepeat[1] = repeat.y;
+				}
 			}
 
 			// Exclude in a nicer way
