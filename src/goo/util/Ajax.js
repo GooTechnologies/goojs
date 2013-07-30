@@ -154,7 +154,8 @@ define([
 			promise.resolve(image);
 		}, false);
 
-		image.addEventListener('error', function () {
+		image.addEventListener('error', function (e) {
+			console.log(e);
 			promise.reject('Ajax.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 

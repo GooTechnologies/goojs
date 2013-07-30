@@ -39,6 +39,8 @@ define(['goo/entities/components/Component'],
 		 * @default
 		 */
 		this.isPickable = false;
+
+		this.isReflectable = true;
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);

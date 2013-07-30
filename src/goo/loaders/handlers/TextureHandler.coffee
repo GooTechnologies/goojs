@@ -31,13 +31,34 @@ define [
 			dds: DdsLoader
 			tga: TgaLoader
 
+
+		###
+		Options:
+			{bool} dontWaitForTextures if true, return promise that resolves once the texture object is created, don't wait 
+			for the image to load. Defaults to false. 
+		###
 		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_objects = {}
 
 		_create: (ref, config)->
 			_.defaults config, 
 				verticalFlip:true
-			texture = @_objects[ref] = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), config)
+
+			# Copy texture settings
+			settings = 
+				wrapS: config.wrapU
+				wrapT: config.wrapV
+				magFilter: config.magFilter
+				minFilter: config.minFilter
+				repeat: config.repeat
+				offset: config.offset
+				# not in converter:
+				#anisotropy
+				#format: 
+				#type
+				#flipY
+
+			texture = @_objects[ref] = new Texture ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings				
 			texture.image.dataReady = false
 			return texture
 
@@ -46,8 +67,9 @@ define [
 			texture = @_objects[ref]
 			if not texture then texture = @_create(ref, config)
 
-			console.log "Loading texture with url #{config.url}"
+			console.log "Loading texture #{ref} with url #{config.url}"
 			if not config.url
+				console.log "Texture #{ref} has no url"
 				return pu.createDummyPromise(texture)
 
 			imgRef = config.url
@@ -59,22 +81,27 @@ define [
 				textureLoader = new TextureHandler.loaders[type]()
 				texture.a = imgRef
 
-				@getConfig(imgRef).then (data)=>
+				loadedPromise = @getConfig(imgRef).then (data)=>
+					console.log "Adding special texture #{imgRef}, data is #{typeof data}"
 					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
 					return texture
-
-				# We don't wait for images to load
-				pu.createDummyPromise(texture)
+				.then null, (e)->
+					console.error "Error loading texture: ", e
 
 			else
 				#texture = new Texture null, config
-				@getConfig(imgRef).then (data)=>
+				loadedPromise = @getConfig(imgRef).then (data)=>
 					console.log "Adding texture #{imgRef}, data is #{typeof data}"
 					texture.setImage(data)
 					return texture	
+				.then null, (e)->
+					console.error "Error loading texture: ", e
 
+			if @options?.dontWaitForTextures
 				# We don't wait for images to load
-				pu.createDummyPromise(texture)
+				return pu.createDummyPromise(texture)
+			else
+				return loadedPromise
 
 		remove: (ref)->
 			console.log "Deleting texture #{ref}"
