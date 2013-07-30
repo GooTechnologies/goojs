@@ -79,20 +79,35 @@ function (
 
 		/** @type {WebGLRenderingContext} */
 		this.context = null;
-		try {
-			this.context = _canvas.getContext('experimental-webgl', settings);
-			if (!this.context) {
-				this.context = _canvas.getContext('webgl', settings);
+		if (!!window.WebGLRenderingContext) {
+			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
+			for (var i = 0; i < contextNames.length; i++) {
+				try {
+					this.context = _canvas.getContext(contextNames[i]);
+					if (this.context && typeof(this.context.getParameter) == "function") {
+						// WebGL is supported & enabled
+						break;	
+					}
+				} catch (e){}
 			}
-		} catch (error) {
-			//Silent
+			if (!this.context) {
+				// WebGL is supported but disabled
+				throw {
+					name: 'GooWebGLError',
+					message: 'WebGL is supported but disabled',
+					supported: true,
+					enabled: false
+				}
+			}
 		}
-
-		if (!this.context) {
+		else {
+			// WebGL is not supported
 			throw {
 				name: 'GooWebGLError',
-				message: 'WebGL is not supported! (Could not create WebGL context)'
-			};
+				message: 'WebGL is not supported',
+				supported: false,
+				enabled: false
+			}
 		}
 
 		if (parameters.debug) {
