@@ -31,6 +31,12 @@ define [
 			dds: DdsLoader
 			tga: TgaLoader
 
+
+		###
+		Options:
+			{bool} dontWaitForTextures if true, return promise that resolves once the texture object is created, don't wait 
+			for the image to load. Defaults to false. 
+		###
 		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_objects = {}
 
@@ -75,26 +81,27 @@ define [
 				textureLoader = new TextureHandler.loaders[type]()
 				texture.a = imgRef
 
-				@getConfig(imgRef).then (data)=>
+				loadedPromise = @getConfig(imgRef).then (data)=>
 					console.log "Adding special texture #{imgRef}, data is #{typeof data}"
 					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
 					return texture
 				.then null, (e)->
 					console.error "Error loading texture: ", e
 
-				# We don't wait for images to load
-				pu.createDummyPromise(texture)
-
 			else
 				#texture = new Texture null, config
-				@getConfig(imgRef).then (data)=>
+				loadedPromise = @getConfig(imgRef).then (data)=>
 					console.log "Adding texture #{imgRef}, data is #{typeof data}"
 					texture.setImage(data)
 					return texture	
 				.then null, (e)->
 					console.error "Error loading texture: ", e
+
+			if @options?.dontWaitForTextures
 				# We don't wait for images to load
-				pu.createDummyPromise(texture)
+				return pu.createDummyPromise(texture)
+			else
+				return loadedPromise
 
 		remove: (ref)->
 			console.log "Deleting texture #{ref}"
