@@ -23,13 +23,26 @@ define([
 	) {
 	"use strict";
 
-	function Debugger(goo, ownREPL, exportPicked) {
-		this.goo = goo;
+	/**
+	 * @class The debugger utility class
+	 * @param {boolean} [ownREPL] True if the debugger should come with it's own REPL
+	 * @param {boolean} [exportPicked] True if the debugger should create and update window.picked that points to the currently picked entity
+	 */
+	function Debugger(ownREPL, exportPicked) {
+		this.goo = null;
 		this.ownREPL = ownREPL || false;
 		this.exportPicked = exportPicked || false;
 	}
 
-	Debugger.prototype.inject = function() {
+	/**
+	 * Inject the debugger into the engine and create the debug panel
+	 *
+	 * @param {GooRunner} goo A GooRunner reference
+	 * @returns {Debugger} Self to allow chaining
+	 */
+	Debugger.prototype.inject = function(goo) {
+		this.goo = goo;
+
 		createPanel(this.ownREPL);
 
 		// adding marker system if there is none
@@ -41,7 +54,6 @@ define([
 		var picking = new PickingSystem({
 			pickLogic: new PrimitivePickLogic()
 		});
-
 		this.goo.world.setSystem(picking);
 
 		// current and old picked entity
@@ -120,8 +132,14 @@ define([
 				}
 			}, false);
 		}
+
+		return this;
 	};
 
+	/**
+	 * Builds and appends the GUI for the debugger
+	 * @param {boolean} ownREPL True if the debugger should supply its own debugger
+	 */
 	function createPanel(ownREPL) {
 		var div = document.createElement('div');
 		div.id = 'debugdiv';
@@ -155,6 +173,11 @@ define([
 		document.body.appendChild(div);
 	}
 
+	/**
+	 * Transforms a string into an array of regexps
+	 * @param {String} str
+	 * @returns {Array}
+	 */
 	function getFilterList(str) {
 		return str.split(',').map(function(entry) {
 				return entry.replace(/(^[\s]+|[\s]+$)/g, '');
@@ -165,8 +188,16 @@ define([
 			});
 	}
 
-	function filterProperties(obj, interests, ident) {
-		if(interests.length === 0) { return 'No interests specified;\n\nSome popular interests: is, tran, Compo\n\nEvery entry separated by a comma is a regex'; }
+	/**
+	 * Walks on the property tree of an object and return a string containing properties matched by a list of interests
+	 * @param {Object} obj Root object to start the walk from
+	 * @param {RegExp[]} interests A list of Regexps to filter the properties the walker is visiting
+	 * @returns {string}
+	 */
+	function filterProperties(obj, interests) {
+		if(interests.length === 0) {
+			return 'No interests specified;\n\nSome popular interests: is, tran, Compo\n\nEvery entry separated by a comma is a regex';
+		}
 
 		if(obj === null) {
 			return 'null';
@@ -190,12 +221,15 @@ define([
 			return ret;
 		} else {
 			var ret = '';
+			// go through all the properties of a function
 			for (var prop in obj) {
+				// skip if it's a function
 				if(typeof obj[prop] !== 'function') {
+					// explore further if it matches with at least one interest
 					for (var i in interests) {
 						if(interests[i].test(prop)) {
 							ret += prop;
-							var filter_Str = filterProperties(obj[prop], interests, ident + ' ');
+							var filter_Str = filterProperties(obj[prop], interests);
 
 							if(filter_Str.length === 0) {
 								ret += filter_Str;
@@ -213,6 +247,11 @@ define([
 		}
 	}
 
+	/**
+	 * Takes away the marker component of the previously picked entity and sets a marker component on the current picked entity
+	 * @param picked
+	 * @param oldPicked
+	 */
 	function updateMarker(picked, oldPicked) {
 		if(picked !== oldPicked) {
 			if(oldPicked !== null) { if(oldPicked.hasComponent('MarkerComponent')) { oldPicked.clearComponent('MarkerComponent'); } }
@@ -227,6 +266,10 @@ define([
 		}
 	}
 
+	/**
+	 * Builds the interest list and performs the walk on the supplied entity
+	 * @param {Entity} entity
+	 */
 	function displayInfo(entity) {
 		var filterList = getFilterList(document.getElementById('debugparams').value);
 

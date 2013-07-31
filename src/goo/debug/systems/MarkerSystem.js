@@ -30,6 +30,7 @@ define([
 		this.goo = goo;
 		this.renderer = this.goo.renderer;
 
+		// drawing needs to be performed AFTER the render system completes its execution
 		this.entities = [];
 		var that = this;
 		this.goo.callbacks.push(function() {
