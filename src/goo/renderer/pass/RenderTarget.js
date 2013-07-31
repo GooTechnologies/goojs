@@ -16,8 +16,8 @@ define(['goo/math/Vector2'],
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
 
-		this.width = width;
-		this.height = height;
+		this.width = Math.floor(width);
+		this.height = Math.floor(height);
 
 		options = options || {};
 

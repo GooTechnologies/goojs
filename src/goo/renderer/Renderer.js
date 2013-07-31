@@ -290,6 +290,9 @@ function (
 
 		this.shadowCount = 0;
 		this.shadowHandler = new ShadowHandler();
+
+		// Hardware picking
+		this.hardwarePicking = null;
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -338,6 +341,10 @@ function (
 		this.domElement.height = height;
 
 		this.setViewport(0, 0, width, height);
+
+		if (this.hardwarePicking !== null) {
+			this.hardwarePicking.pickingTarget = null;
+		}
 	};
 
 	Renderer.prototype.setViewport = function (x, y, width, height) {
@@ -439,6 +446,8 @@ function (
 			renderInfo.materials = renderable.materials;
 			renderInfo.transform = renderable.transform;
 		}
+
+		renderInfo.renderable = renderable;
 	};
 
 	Renderer.prototype.renderMesh = function (renderInfo) {
@@ -612,6 +621,41 @@ function (
 				indexModeCounter++;
 			}
 		}
+	};
+
+	// Hardware picking
+	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer) {
+		var pickingResolutionDivider = 4;
+		if (this.hardwarePicking === null) {
+			this.hardwarePicking = {
+				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider),
+				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
+				pickingBuffer: new Uint8Array(4)
+			};
+			skipUpdateBuffer = false;
+		} else if (this.hardwarePicking.pickingTarget === null) {
+			this.hardwarePicking.pickingTarget = new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider);
+			skipUpdateBuffer = false;
+		}
+
+		var x = Math.floor(clientX / pickingResolutionDivider);
+		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
+
+		if (!skipUpdateBuffer) {
+			this.overrideMaterial = this.hardwarePicking.pickingMaterial;
+			this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
+			this.context.scissor(x, y, 1, 1);
+			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
+			this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
+			this.overrideMaterial = null;
+		}
+
+		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
+
+		var id = this.hardwarePicking.pickingBuffer[0] * 255.0 + this.hardwarePicking.pickingBuffer[1];
+		var depth = (this.hardwarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
+		pickingStore.id = id;
+		pickingStore.depth = depth;
 	};
 
 	Renderer.prototype.buildWireframeData = function (meshData) {
@@ -1419,8 +1463,6 @@ function (
 			renderTarget._glRenderBuffer = this.context.createRenderbuffer();
 
 			this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
-			// TODO
-			// setTextureParameters(WebGLRenderingContext.TEXTURE_2D, renderTarget, isTargetPowerOfTwo);
 			this.updateTextureParameters(renderTarget, isTargetPowerOfTwo);
 
 			this.context
@@ -1444,19 +1486,17 @@ function (
 		if (renderTarget) {
 			framebuffer = renderTarget._glFrameBuffer;
 
-			width = renderTarget.width;
-			height = renderTarget.height;
-
 			vx = 0;
 			vy = 0;
+			width = renderTarget.width;
+			height = renderTarget.height;
 		} else {
 			framebuffer = null;
 
-			width = this.viewportWidth;
-			height = this.viewportHeight;
-
 			vx = this.viewportX;
 			vy = this.viewportY;
+			width = this.viewportWidth;
+			height = this.viewportHeight;
 		}
 
 		if (framebuffer !== this.rendererRecord.currentFrameBuffer) {

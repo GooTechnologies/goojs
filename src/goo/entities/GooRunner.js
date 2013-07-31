@@ -297,6 +297,17 @@ function (
 				this.renderer.overrideMaterial = material6;
 			}
 		}.bind(this), false);
+
+		document.addEventListener("mousedown", function (e) {
+			if (isCtrl) {
+				var x = e.clientX;
+				var y = e.clientY;
+				this.renderSystem.pick(x, y, function(id, depth) {
+					var entity = this.world.entityManager.getEntityById(id);
+					console.log('Picked entity:', entity, 'At depth:', depth);
+				}.bind(this));
+			}
+		}.bind(this), false);
 	};
 
 	/**

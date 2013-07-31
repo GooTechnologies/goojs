@@ -137,6 +137,18 @@ define(
 			'	float depth = dot( rgba_depth, bit_shift );', //
 			'	return depth;', //
 			'}' //
+		].join("\n"),
+		packDepth16 : [ //
+			'vec2 packDepth16( const in float depth ) {',//
+			'	const vec2 bias = vec2(1.0 / 255.0, 0.0);',
+			'	vec2 res = vec2(depth, fract(depth * 255.0));',
+			'	return res - (res.yy * bias);',
+			'}' //
+		].join("\n"),
+		unpackDepth16 : [ //
+			'float unpackDepth16( const in vec2 rg_depth ) {', //
+			'	return rg_depth.x + (rg_depth.y / 255.0);',
+			'}' //
 		].join("\n")
 	};
 
