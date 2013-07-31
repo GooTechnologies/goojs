@@ -164,6 +164,7 @@ function (
 			}
 			return false;
 		};
+
 		texture.updateCallback = function () {
 			return !video.paused;
 		};
@@ -171,7 +172,7 @@ function (
 		video.crossOrigin = 'anonymous';
 
 		video.src = videoURL;
-
+		
 		TextureCreator.cache[videoURL] = texture;
 
 		return texture;

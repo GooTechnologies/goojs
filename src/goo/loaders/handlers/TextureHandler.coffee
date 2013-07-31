@@ -64,38 +64,50 @@ define [
 
 
 		update: (ref, config)->
-			texture = @_objects[ref]
-			if not texture then texture = @_create(ref, config)
+			imgRef = config.url
+			type = imgRef?.split('.').pop().toLowerCase()
 
-			console.log "Loading texture #{ref} with url #{config.url}"
-			if not config.url
-				console.log "Texture #{ref} has no url"
+
+			if type in ['mp4']
+				# Video textures. Works, but sort of hacky.
+				loadedPromise = new RSVP.Promise()
+				tc = new TextureCreator()
+				texture = tc.loadTextureVideo(config.url, true)
 				return pu.createDummyPromise(texture)
 
-			imgRef = config.url
-
-			type = imgRef.split('.').pop().toLowerCase()
-
-
-			if type of TextureHandler.loaders
-				textureLoader = new TextureHandler.loaders[type]()
-				texture.a = imgRef
-
-				loadedPromise = @getConfig(imgRef).then (data)=>
-					console.log "Adding special texture #{imgRef}, data is #{typeof data}"
-					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
-					return texture
-				.then null, (e)->
-					console.error "Error loading texture: ", e
-
 			else
-				#texture = new Texture null, config
-				loadedPromise = @getConfig(imgRef).then (data)=>
-					console.log "Adding texture #{imgRef}, data is #{typeof data}"
-					texture.setImage(data)
-					return texture	
-				.then null, (e)->
-					console.error "Error loading texture: ", e
+				texture = @_objects[ref]
+				if not texture then texture = @_create(ref, config)
+
+				#console.log "Loading texture #{ref} with url #{config.url}"
+				if not config.url
+					console.log "Texture #{ref} has no url"
+					return pu.createDummyPromise(texture)
+
+
+				if type of TextureHandler.loaders
+					textureLoader = new TextureHandler.loaders[type]()
+					texture.a = imgRef
+
+					loadedPromise = @getConfig(imgRef).then (data)=>
+						#console.log "Adding special texture #{imgRef}, data is #{typeof data}"
+						textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength)
+						return texture
+					.then null, (e)->
+						console.error "Error loading texture: ", e
+
+				else if type in ['jpg', 'jpeg', 'png', 'gif']
+					#texture = new Texture null, config
+					loadedPromise = @getConfig(imgRef).then (data)=>
+						#console.log "Adding texture #{imgRef}, data is #{typeof data}"
+						texture.setImage(data)
+						return texture	
+					.then null, (e)->
+						console.error "Error loading texture: ", e
+				else
+					throw new Error("Unknown texture type #{type}")
+
+
 
 			if @options?.dontWaitForTextures
 				# We don't wait for images to load
