@@ -5,7 +5,9 @@ define([
 	'goo/math/Ray',
 	'goo/entities/systems/PickingSystem',
 	'goo/picking/PrimitivePickLogic',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/debug/components/MarkerComponent',
+	'goo/debug/systems/MarkerSystem'
 ],
 	/** @lends */
 	function (
@@ -15,35 +17,54 @@ define([
 	Ray,
 	PickingSystem,
 	PrimitivePickLogic,
-	Renderer
+	Renderer,
+	MarkerComponent,
+	MarkerSystem
 	) {
 	"use strict";
 
-	function Debugger(goo) {
+	function Debugger(goo, ownREPL, exportPicked) {
 		this.goo = goo;
-		this.active = true;
+		this.ownREPL = ownREPL || false;
+		this.exportPicked = exportPicked || false;
 	}
 
 	Debugger.prototype.inject = function() {
-		createPanel();
+		createPanel(this.ownREPL);
 
+		// adding marker system if there is none
+		if(!this.goo.world.getSystem('MarkerSystem')) {
+			this.goo.world.setSystem(new MarkerSystem(this.goo));
+		}
+
+		// adding picking system
 		var picking = new PickingSystem({
 			pickLogic: new PrimitivePickLogic()
 		});
 
 		this.goo.world.setSystem(picking);
 
+		// current and old picked entity
 		var picked = null;
+		var oldPicked = null;
 
+		var that = this;
 		picking.onPick = function(pickedList) {
 			if (pickedList && pickedList.length) {
+				oldPicked = picked;
 				picked = pickedList[0].entity;
+
+				if(that.exportPicked) {
+					window.picked = picked;
+				}
+
 				displayInfo(picked);
+				updateMarker(picked, oldPicked);
 			}
 		};
 
-		var that = this;
-		document.addEventListener('mousedown', function(event) {
+		// picking entities
+		document.addEventListener('mouseup', function(event) {
 			//event.preventDefault();
 			event.stopPropagation();
 
@@ -58,20 +79,64 @@ define([
 			picking._process();
 		}, false);
 
-		// setting up onchange for debug parameters
+		// setting up onchange for debug parameter filters
 		document.getElementById('debugparams').addEventListener('keyup', function() {
 			displayInfo(picked);
 		});
+
+		if(this.ownREPL) {
+			var lastCommStr = '';
+
+			// repl keypresses
+			document.getElementById('replintex').addEventListener('keyup', function(event) {
+				/* jshint evil: true */
+				//event.preventDefault();
+				event.stopPropagation();
+				var replinElemHandle = document.getElementById('replintex');
+				var reploutElemHandle = document.getElementById('replouttex');
+				if(event.keyCode === 13 && !event.shiftKey) {
+					var commStr = replinElemHandle.value.substr(0, replinElemHandle.value.length - 1);
+					lastCommStr = commStr;
+
+					// setup variables for eval scope
+					var entity = picked;
+					var goo = that.goo;
+					// manually suppressing "unused variable"
+					void(entity);
+					void(goo);
+
+					var resultStr = '';
+					try {
+						resultStr += eval(commStr);
+					} catch(err) {
+						resultStr += err;
+					}
+					replinElemHandle.value = 'entity.';
+					reploutElemHandle.value += '\n-------\n' + resultStr;
+
+					displayInfo(picked);
+				} else if(event.keyCode === 38) {
+					replinElemHandle.value = lastCommStr;
+				}
+			}, false);
+		}
 	};
 
-	function createPanel() {
+	function createPanel(ownREPL) {
 		var div = document.createElement('div');
 		div.id = 'debugdiv';
-		div.innerHTML =
+		var innerHTML =
 			'<span style="font-size: x-small;font-family: sans-serif">Filter</span><br />' +
 			'<textarea cols="30" id="debugparams">name, Compo, tran, data</textarea><br />' +
-			'<span style="font-size: x-small;font-family: sans-serif">Result:</span><br />' +
-			'<textarea readonly rows="10" cols="30" id="debugtex">Click on an entity</textarea>';
+			'<span style="font-size: x-small;font-family: sans-serif">Result</span><br />' +
+			'<textarea readonly rows="10" cols="30" id="debugtex">Click on an entity</textarea><br />';
+		if(ownREPL) {
+			innerHTML += '<hr />' +
+			'<span style="font-size: x-small;font-family: sans-serif">REPL</span><br />' +
+			'<textarea readonly rows="10" cols="30" id="replouttex">...</textarea><br />' +
+			'<textarea cols="30" id="replintex">entity.</textarea>';
+		}
+		div.innerHTML = innerHTML;
 		div.style.position = 'absolute';
 		div.style.zIndex = '2001';
 		div.style.backgroundColor = '#DDDDDD';
@@ -148,8 +213,23 @@ define([
 		}
 	}
 
+	function updateMarker(picked, oldPicked) {
+		if(picked !== oldPicked) {
+			if(oldPicked !== null) { if(oldPicked.hasComponent('MarkerComponent')) { oldPicked.clearComponent('MarkerComponent'); } }
+			if(picked !== null) { picked.setComponent(new MarkerComponent(picked)); }
+		}
+		else {
+			if(picked.hasComponent('MarkerComponent')) {
+				picked.clearComponent('MarkerComponent');
+			} else {
+				picked.setComponent(new MarkerComponent(picked));
+			}
+		}
+	}
+
 	function displayInfo(entity) {
 		var filterList = getFilterList(document.getElementById('debugparams').value);
+
 		console.log('==> ', entity);
 
 		var elem = document.getElementById('debugtex');
