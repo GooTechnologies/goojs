@@ -83,10 +83,10 @@ function (
 			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
 			for (var i = 0; i < contextNames.length; i++) {
 				try {
-					this.context = _canvas.getContext(contextNames[i]);
-					if (this.context && typeof(this.context.getParameter) == "function") {
+					this.context = _canvas.getContext(contextNames[i], settings);
+					if (this.context && typeof(this.context.getParameter) === "function") {
 						// WebGL is supported & enabled
-						break;	
+						break;
 					}
 				} catch (e){}
 			}
@@ -97,7 +97,7 @@ function (
 					message: 'WebGL is supported but disabled',
 					supported: true,
 					enabled: false
-				}
+				};
 			}
 		}
 		else {
@@ -107,7 +107,7 @@ function (
 				message: 'WebGL is not supported',
 				supported: false,
 				enabled: false
-			}
+			};
 		}
 
 		if (parameters.debug) {
@@ -1504,6 +1504,9 @@ function (
 			this.context.viewport(vx, vy, width, height);
 
 			this.rendererRecord.currentFrameBuffer = framebuffer;
+
+			// Need to force rebinding of textures on framebuffer change (TODO: verify this)
+			this.rendererRecord.textureRecord = [];
 		}
 
 		this.currentWidth = width;
