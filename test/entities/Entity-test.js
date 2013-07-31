@@ -52,6 +52,30 @@ define([
 			entity.setComponent(new MeshDataComponent());
 			expect(entity.meshDataComponent !== undefined).toBe(true);
 		});
+
+		it('cannot add the same component twice', function() {
+			var entity = world.createEntity();
+			var component = new MeshDataComponent();
+			entity.setComponent(component);
+			entity.setComponent(component);
+			expect(entity._components.length).toBe(2);
+		});
+		it('cannot add more than one component of the same type to the same entity', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new MeshDataComponent());
+			entity.setComponent(new MeshDataComponent());
+			expect(entity._components.length).toBe(2);
+		});
+		it('preserves the last addec component of the same type', function() {
+			var entity = world.createEntity();
+			var component1 = new MeshDataComponent();
+			var component2 = new MeshDataComponent();
+			entity.setComponent(component1);
+			entity.setComponent(component2);
+			var gotComponent = entity.getComponent('MeshDataComponent');
+			expect(gotComponent).toBe(component2);
+		});
+
 		it('getComponent', function() {
 			var entity = world.createEntity();
 			var mdc = new MeshDataComponent();

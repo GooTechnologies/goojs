@@ -50,6 +50,7 @@ _) ->
 	*###
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/
+		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|bundle)$/
 		
 		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		
@@ -63,17 +64,17 @@ _) ->
 		* @returns {DynamicLoader} 
 		*###
 		
-		constructor: (options)->
-			_.defaults(options, ajax:true)
-			@_world = options.world or throw new Error("World argument cannot be null")
-			@_rootPath = options.rootPath 
-			if not @_rootPath? then throw new Error("parameters.rootPath must be defined")
-			if @_rootPath.length>1 and @_rootPath.charAt(@_rootPath.length-1) != '/'
-				@_rootPath += '/'
+		constructor: (@options)->
+			_.defaults(@options, ajax:true)
+			@_world = @options.world or throw new Error("World argument cannot be null")
+			if not @options.rootPath? then throw new Error("parameters.rootPath must be defined")
+			@setRootPath(@options.rootPath)
+
 
 			@_configs = {}
+
 			
-			if options.ajax
+			if @options.ajax
 				@_ajax = new Ajax()
 
 
@@ -108,6 +109,7 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromConfig: (ref, configs, options={})->
+			_.defaults(options, @options)
 			if configs?
 				if options.noCache
 					@_configs = configs
@@ -133,6 +135,7 @@ _) ->
 		* mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 		*###
 		loadFromBundle: (ref, bundleName, options={})->
+			_.defaults(options, @options)
 			@_loadRef(bundleName).then (data)=>
 				if options.noCache
 					@_configs = data
@@ -141,12 +144,12 @@ _) ->
 				
 				if not @_configs[ref]?
 					throw Error "#{ref} not found in bundle #{bundleName}. Available keys: \n#{_.keys(@_configs).join('\n')}"
-				else 
-					console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
+				#else 
+				#	console.debug "#{ref} was found in bundle #{bundleName}: #{@_configs[ref]}. Available keys: \n#{_.keys(@_configs).join('\n')}"
 				
-				console.log "Loaded bundle"
+				#console.log "Loaded bundle"
 				@load(ref, options)
-				
+
 		
 		###*
 		* Load an object with the specified path into the world. The object can be of any
@@ -175,13 +178,13 @@ _) ->
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
 		update: (ref, config, options={})->
-			_.defaults(options, recursive:true)
-			console.log "Loading/updating #{ref}"
+			_.defaults(options, @options, recursive:true)
+			#console.debug "Loading/updating #{ref}"
 			if config then @_configs[ref] = config
 			@_objects = {}
 			
 			@_loadRef(ref).then (config)=>
-				console.log "Loaded ref"
+				#console.debug "Loaded ref"
 				promises = []
 				if options.recursive and ConfigHandler.getHandler(@_getTypeForRef(ref))
 					for childRef in @_getRefsFromConfig(config)
@@ -212,16 +215,16 @@ _) ->
 
 		
 		# Load/update an object with the given reference into the engine
-		_handle: (ref, config, options)-> 
+		_handle: (ref, config, options={})-> 
 			if @_objects[ref]?.then
-				console.debug "#{ref} is handling"	
+				#console.debug "#{ref} is handling"	
 				return @_objects[ref]
 			else if @_objects[ref] and not options.noCache
-				console.debug "#{ref} is already handled"
+				#console.debug "#{ref} is already handled"
 				return pu.createDummyPromise(@_objects[ref])
 			else
 				type = @_getTypeForRef(ref)
-				console.debug "Handling #{ref}, type is #{type}"
+				#console.debug "Handling #{ref}, type is #{type}"
 				handlerClass = ConfigHandler.getHandler(type)
 				if handlerClass
 					@_handlers ?= {}
@@ -235,7 +238,7 @@ _) ->
 					else
 						handler = @_handlers[type] = new handlerClass(@_world, @_loadRef.bind(@), @_handle.bind(@), options)
 					
-					console.debug "Handling #{ref}"
+					#console.debug "Handling #{ref}"
 					if config? 
 						@_objects[ref] = handler.update(ref, config).then (object)=>
 							@_objects[ref] = object
@@ -257,10 +260,10 @@ _) ->
 		*###
 		_loadRef: (ref, noCache=false)->
 			if @_configs[ref]?.then
-				console.log "#{ref} is loading"
+				#console.log "#{ref} is loading"
 				return @_configs[ref]
 			else if @_configs[ref]? and not noCache
-				console.log "#{ref} is loaded"
+				#console.log "#{ref} is loaded"
 				return pu.createDummyPromise(@_configs[ref])
 			else if @_ajax
 				url = @_rootPath + window.escape(ref)
@@ -277,7 +280,7 @@ _) ->
 						else
 							@_configs[ref] = data
 			else
-				console.log "#{ref} is none"
+				console.warn "#{ref} is none"
 				pu.createDummyPromise(null)
 				
 		# Find all the references in a config, and return in a flat list
@@ -319,4 +322,10 @@ _) ->
 		*###
 		getCachedObjectForRef: (ref)-> 
 			@_objects[ref]
+
+		setRootPath: (path)->
+			@_rootPath = path
+			if path.length>1 and path.charAt(path.length-1) != '/'
+				@_rootPath += '/'
+
 

@@ -137,6 +137,12 @@ define([
 			}
 			var transform = transformComponent.transform;
 
+			var orient = transform.rotation;
+			orient.toAngles(this.calcVector);
+			this.rotY = this.calcVector.x;
+			this.rotX = this.calcVector.y;
+
+
 			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
 			// if (!this.rest) {
 			// // apply transform to localFwdVector

@@ -202,8 +202,12 @@ define([
 
 		var coneMeshData = buildCone(light.angle, light.range);
 		var sphereMeshData = ShapeCreator.createSphere(8, 8, 0.1);
-		meshBuilder.addMeshData(coneMeshData, transform);
+
 		meshBuilder.addMeshData(sphereMeshData, transform);
+		transform.scale.setd(1, 1, -1);
+		transform.update();
+		meshBuilder.addMeshData(coneMeshData, transform);
+
 		var meshDatas = meshBuilder.build();
 		return meshDatas[0];
 	}
@@ -234,6 +238,11 @@ define([
 			return buildSpotLightMeshData(light);
 		}
 	}
+
+	LightPointer.getMeshData = function (light) {
+		var lampMeshData = getLampMeshData(light);
+		return lampMeshData;
+	};
 
 	/**
 	 * Attaches a pointer mesh to the specifies light entity that represents the light's properties (color, position, direction and range)

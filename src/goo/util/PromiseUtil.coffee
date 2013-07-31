@@ -16,3 +16,17 @@ define [
 		else
 			promise.resolve(arg)
 		return promise
+
+
+	###*
+	* Create a promise that resolves after the specified delay 
+	*
+	* @param {Number} delay in ms 
+	* @returns {RSVP.Promise}
+	*###
+	defer: (delay)->
+		promise = new RSVP.Promise()
+		setTimeout ->
+			promise.resolve()
+		, delay
+		return promise

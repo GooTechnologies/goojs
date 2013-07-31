@@ -41,14 +41,14 @@ _) ->
 			component.transform.scale.set config.scale
 
 			if config.parentRef? 
-				console.log "Found a parentref, getting..."
+				#console.log "Found a parentref, getting..."
 				@getConfig(config.parentRef).then (parentConfig)=>
 					@updateObject(config.parentRef, parentConfig, @options).then (parent)=>
 						if parent? and component.parentRef?.entity != parent
-							console.log "Adding parent #{config.parentRef}"
+							#console.log "Adding parent #{config.parentRef}"
 							parent.transformComponent.attachChild(component)
 						else if parent?
-							console.log "Parent is already set"
+							#console.log "Parent is already set"
 						else
 							console.warn "Could not find parent with ref #{config.parentRef}"
 

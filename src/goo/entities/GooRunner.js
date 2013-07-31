@@ -16,6 +16,8 @@ define([
 	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
 	"goo/entities/systems/TextSystem",
+	"goo/entities/systems/LightDebugSystem",
+	"goo/entities/systems/CameraDebugSystem",
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -38,6 +40,8 @@ function (
 	CSSTransformSystem,
 	AnimationSystem,
 	TextSystem,
+	LightDebugSystem,
+	CameraDebugSystem,
 	GameUtils,
 	Logo
 ) {
@@ -72,6 +76,8 @@ function (
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
 		this.world.setSystem(new TextSystem());
+		this.world.setSystem(new LightDebugSystem());
+		this.world.setSystem(new CameraDebugSystem());
 		this.renderSystem = new RenderSystem();
 		this.world.setSystem(this.renderSystem);
 

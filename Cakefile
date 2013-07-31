@@ -17,6 +17,8 @@ runCommand = (cmd, callback) ->
 
 endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 
+option '-i', '--include [LIB]', 'Include library e.g. requireLib'
+
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 
 	if options.arguments.length == 2
@@ -43,13 +45,13 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
 			console.log "Compiled coffeescript" 			
 	
-			minifyProject "#{output}/#{fileIn}", fileOut, includes, (err)->
+			minifyProject "#{output}/#{fileIn}", fileOut, includes, options, (err)->
 				if err
 					console.log 'Minification failed:', err
 					return
-				runCommand "rm -Rf #{output}", ->
-					console.log "Removed output dir"
-				
+				if process.platform != 'win32'
+					runCommand "rm -Rf #{output}", ->
+						console.log "Removed output dir"
 
 			console.log "Minifying everything in #{output}/#{fileIn}"
 			

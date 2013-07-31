@@ -85,10 +85,9 @@ _) ->
 			
 			if (data.textureCoords && data.textureCoords.length > 0)
 				for texCoords, texIdx in data.textureCoords
-					console.log "TEXCOORD #{texIdx}"
 					attributeMap['TEXCOORD' + texIdx] = MeshData.createAttribute(2, 'Float')
 
-			console.log "Parsing mesh data: #{_.keys(attributeMap).join(',')}"
+			#console.log "Parsing mesh data: #{_.keys(attributeMap).join(',')}"
 				
 			meshData = new MeshData(attributeMap, vertexCount, indexCount)
 	
@@ -157,7 +156,9 @@ _) ->
 						JsonUtils.fillAttributeBufferFromCompressedString(texObj.UVs, meshData, 'TEXCOORD' + texIdx, texObj.UVScales, texObj.UVOffsets)
 				else
 					for texObj, texIdx in textureUnits
-						JsonUtils.fillAttributeBuffer(texObj, meshData, 'TEXCOORD' + texIdx)
+						attr = 'TEXCOORD' + texIdx
+						#console.debug("Filling attribute " + attr + ' with ' + texObj.length + ' indices');
+						JsonUtils.fillAttributeBuffer(texObj, meshData, attr)
 	
 			if weightsPerVert > 0 and data.joints
 				buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS)

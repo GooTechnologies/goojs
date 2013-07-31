@@ -307,8 +307,7 @@ function (
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
-				// console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key
-				// 	+ '] variable not found in shader. Probably unused and optimized away.');
+				// console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -319,7 +318,7 @@ function (
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
-				// console.warn('Uniform [' + key + '] variable not found in shader. Probably unused and optimized away.');
+				// console.warn('Uniform [' + this.uniformMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
 
@@ -327,12 +326,6 @@ function (
 		}
 
 		// if (this.attributes) {
-		// 	for (var name in this.attributes) {
-		// 		var mapping = this.attributeIndexMapping[name];
-		// 		if (mapping === undefined) {
-		// 			console.warn('No attribute found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
-		// 		}
-		// 	}
 		// 	for (var name in this.attributeIndexMapping) {
 		// 		var mapping = this.attributes[name];
 		// 		if (mapping === undefined) {
@@ -555,13 +548,15 @@ function (
 		};
 
 		defaultCallbacks[Shader.LIGHT_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var camera = shaderInfo.lightCamera;
-			var matrix = camera.getProjectionMatrix();
+			var matrix = shaderInfo.lightCamera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.LIGHT_VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var camera = shaderInfo.lightCamera;
-			var matrix = camera.getViewMatrix();
+			var matrix = shaderInfo.lightCamera.getViewMatrix();
+			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.LIGHT_VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.lightCamera.getViewProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.LIGHT_NEAR_PLANE] = function (uniformCall, shaderInfo) {
@@ -616,6 +611,7 @@ function (
 
 	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
 	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
+	Shader.LIGHT_VIEW_PROJECTION_MATRIX = 'LIGHT_VIEW_PROJECTION_MATRIX';
 	Shader.LIGHT_NEAR_PLANE = 'LIGHT_NEAR_PLANE';
 	Shader.LIGHT_FAR_PLANE = 'LIGHT_FAR_PLANE';
 	Shader.LIGHT_DEPTH_SCALE = 'LIGHT_DEPTH_SCALE';

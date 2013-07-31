@@ -64,7 +64,7 @@ define [
 
 		
 		_getMaterial: (ref)->
-			console.log "GetMaterial #{ref}"
+			#console.log "GetMaterial #{ref}"
 			@getConfig(ref).then (config)=>
 				@updateObject(ref, config, @options)
 				

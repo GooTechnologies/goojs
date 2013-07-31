@@ -51,6 +51,13 @@ function(
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
 				}
+
+				if (type === 'DIFFUSE_MAP') {
+					var repeat = textureMaps[type].repeat;
+					shader.uniforms.diffuseRepeat = shader.uniforms.diffuseRepeat || [1, 1];
+					shader.uniforms.diffuseRepeat[0] = repeat.x;
+					shader.uniforms.diffuseRepeat[1] = repeat.y;
+				}
 			}
 
 			// Exclude in a nicer way
@@ -184,8 +191,7 @@ function(
 			if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
 				shader.defines.SHADOW_MAP = true;
 
-				shader.uniforms.lightViewMatrix = 'LIGHT_VIEW_MATRIX';
-				shader.uniforms.lightProjectionMatrix = 'LIGHT_PROJECTION_MATRIX';
+				shader.uniforms.lightViewProjectionMatrix = 'LIGHT_VIEW_PROJECTION_MATRIX';
 				shader.uniforms.lightPos = 'LIGHT0';
 				shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
 				shader.uniforms.shadowMap = 'SHADOW_MAP';
@@ -195,8 +201,7 @@ function(
 		},
 		prevertex: [
 			"#ifdef SHADOW_MAP",
-				'uniform mat4 lightViewMatrix;',
-				'uniform mat4 lightProjectionMatrix;',
+				'uniform mat4 lightViewProjectionMatrix;',
 
 				'varying vec4 lPosition;',
 				'const mat4 ScaleMatrix = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);',
@@ -204,7 +209,7 @@ function(
 		].join('\n'),
 		vertex: [
 			"#ifdef SHADOW_MAP",
-				'lPosition = ScaleMatrix * lightProjectionMatrix * lightViewMatrix * worldPos;',
+				'lPosition = ScaleMatrix * lightViewProjectionMatrix * worldPos;',
 			"#endif"
 		].join('\n'),
 		prefragment: [

@@ -44,12 +44,13 @@ wrap = (source) ->
 	}else f();
 })(window);""");
 
-optimize = ({absroot, fileIn, fileOut}, callback) ->
+optimize = ({absroot, fileIn, fileOut, options}, callback) ->
 	filePathIn = path.relative(absroot, fileIn).slice(0,-3)
 
 	base = path.dirname(fileIn)
 	fileIn = path.basename(fileIn, '.js')
 	tempClosure = "#{absroot}/clos_temp.js"
+	includeRequireLib = options.include == 'requireLib'
 	
 	requirejs = require('requirejs')
 	config =
@@ -60,7 +61,12 @@ optimize = ({absroot, fileIn, fileOut}, callback) ->
 		optimize: 'none'
 		paths:
 			'goo/lib' : 'empty:'
+			'requireLib' : '../../lib/require'
 
+	# this is an implementation of the idea to include require.js into goo.js
+	# this currently does not work with the wrap code
+	if options.include
+		config.include = [options.include]
 
 	# Concatenate all files into the file tempClosure
 	requirejs.optimize config, (buildResponse) ->
@@ -71,12 +77,14 @@ optimize = ({absroot, fileIn, fileOut}, callback) ->
 			if err
 				return callback err
 			minifiedSource = fs.readFileSync(tempMinified)
-			fs.writeFile fileOut, wrap(minifiedSource), callback
+			if !includeRequireLib
+				minifiedSource = wrap(minifiedSource)
+			fs.writeFile fileOut, minifiedSource, callback
 		console.log buildResponse
 	, (err) ->
 		callback err
 
-exports.minifyProject = (sourcePath, targetFile, includes, callback) ->
+exports.minifyProject = (sourcePath, targetFile, includes, options, callback) ->
 
 	absroot = path.resolve(sourcePath)
 
@@ -105,4 +113,5 @@ exports.minifyProject = (sourcePath, targetFile, includes, callback) ->
 				absroot: absroot
 				fileIn: tempRequire
 				fileOut: targetFile
+				options: options
 			}, callback

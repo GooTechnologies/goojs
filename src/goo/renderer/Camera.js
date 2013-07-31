@@ -112,6 +112,8 @@ function(
 		this.up = new Vector3();
 		this.planeNormal = new Vector3();
 
+		this.changedProperties = true;
+
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
 	}
@@ -409,6 +411,8 @@ function(
 		this._updateMVPMatrix = true;
 		this._updateInverseMVMatrix = true;
 		this._updateInverseMVPMatrix = true;
+
+		this.changedProperties = true;
 	};
 
 	/**
