@@ -20,7 +20,7 @@ function (
 	/**
 	 * @class Holds the animation data.
 	 */
-	function AnimationComponent() {
+	function AnimationComponent(pose) {
 		/**
 		 * @type {string}
 		 * @readonly
@@ -40,6 +40,7 @@ function (
 		// Base layer
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
 		this.layers.push(layer);
+		this._skeletonPose = pose;
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -61,7 +62,7 @@ function (
 
 		// check throttle
 		if (this._updateRate !== 0.0) {
-			if (globalTime - this._lastUpdate < this._updateRate) {
+			if (globalTime > this._lastUpdate && globalTime - this._lastUpdate < this._updateRate) {
 				return;
 			}
 
@@ -78,8 +79,9 @@ function (
 	/*
 	 * Applying calculated animations to the concerned data
 	 */
-	AnimationComponent.prototype.apply = function(transformComponent, pose) {
+	AnimationComponent.prototype.apply = function(transformComponent) {
 		var data = this.getCurrentSourceData();
+		var pose = this._skeletonPose;
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {

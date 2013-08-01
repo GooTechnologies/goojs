@@ -45,9 +45,7 @@ _) ->
 				skelRef = config.pose
 				@getConfig(skelRef).then (skelConfig)=>
 					@updateObject(skelRef, skelConfig).then (skeleton)=>
-						pose = new SkeletonPose(skeleton)
-						pose.setToBindPose()
-						meshData.currentPose = pose
+						meshData.currentPose = skeleton
 						return meshData
 			else
 				pu.createDummyPromise(meshData)

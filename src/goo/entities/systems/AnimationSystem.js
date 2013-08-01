@@ -1,6 +1,12 @@
-define(['goo/entities/systems/System'],
-	/** @lends */
-	function (System) {
+define([
+	'goo/entities/systems/System',
+	'goo/entities/World'
+],
+/** @lends */
+function (
+	System,
+	World
+) {
 	"use strict";
 
 	/**
@@ -16,12 +22,8 @@ define(['goo/entities/systems/System'],
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var animComp = entity.animationComponent;
-			var pose;
-			if(entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose) {
-				var pose = entity.meshDataComponent.meshData.currentPose;
-			}
-			animComp.update(entity._world.time);
-			animComp.apply(entity.transformComponent, pose);
+			animComp.update(World.time);
+			animComp.apply(entity.transformComponent);
 			animComp.postUpdate();
 		}
 	};

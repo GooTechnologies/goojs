@@ -20,7 +20,7 @@ define [
 			return object
 			
 		update: (ref, config)->
-			object = @world.entityManager.getEntityByName(ref) or @_create(ref)
+			object = @world.entityManager.getEntityByName(ref) or @world._addedEntities.filter((entity) -> entity.ref == ref)?[0]	or @_create(ref)
 			
 			promises = []
 			for componentName, componentConfig of config.components

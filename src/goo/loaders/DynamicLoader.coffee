@@ -50,7 +50,6 @@ _) ->
 	*###
 	class DynamicLoader			
 		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/
-		_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|bundle)$/
 		
 		_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders)
 		

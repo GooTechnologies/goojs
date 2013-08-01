@@ -47,8 +47,11 @@ _) ->
 					
 					joint
 			)
-			new Skeleton(skeletonConfig.name, joints)
-			
+			skeleton = new Skeleton(skeletonConfig.name, joints)
+			pose = new SkeletonPose(skeleton)
+			pose.setToBindPose()
+			return pose
+
 		update: (ref, config)->
 			skeleton = @_create(config)
 			return pu.createDummyPromise(skeleton)
