@@ -37,7 +37,7 @@ define([],
 					outStr += system.type + ': ' + system._activeEntities.length + '\n';
 				}
 
-				that.texhandle.value = outStr;
+				that.texHandle.value = outStr;
 			}
 		});
 
