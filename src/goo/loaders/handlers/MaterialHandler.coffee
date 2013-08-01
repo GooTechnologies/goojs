@@ -50,57 +50,60 @@ define [
 		
 		update: (ref, config)->
 			@_prepare(config)
-			if not @_objects?[ref] then @_create(ref)
-			object = @_objects[ref]
+			if not @_objects?[ref] 
+				@_create(ref)
+				object = @_objects[ref]
 
-			@_getShaderObject(config.shaderRef, config.wireframe).then (shader)=>
-				#console.log "Got shader"
-				
-				if not shader
-					console.warn 'Unknown shader', config.shaderRef, '- not updating material', ref
-					return
-	
-				if config.wireframe
-					object.wireframe = config.wireframe
-				if config.wireframeColor
-					object.wireframeColor = Util.clone config.wireframeColor
-	
-				object.blendState = Util.clone config.blendState
-				object.cullState = Util.clone config.cullState
-				object.depthState = Util.clone config.depthState
-				if config.renderQueue == -1 then object.renderQueue = null
-				else object.renderQueue = config.renderQueue
-	
+				@_getShaderObject(config.shaderRef, config.wireframe).then (shader)=>
+					#console.log "Got shader"
+					
+					if not shader
+						console.warn 'Unknown shader', config.shaderRef, '- not updating material', ref
+						return
+		
+					if config.wireframe
+						object.wireframe = config.wireframe
+					if config.wireframeColor
+						object.wireframeColor = Util.clone config.wireframeColor
+		
+					object.blendState = Util.clone config.blendState
+					object.cullState = Util.clone config.cullState
+					object.depthState = Util.clone config.depthState
+					if config.renderQueue == -1 then object.renderQueue = null
+					else object.renderQueue = config.renderQueue
+		
 
-				object.shader = shader
-				object.uniforms = {}
-				for name, value of config.uniforms
-					object.uniforms[name] = _.clone(value)
-	
+					object.shader = shader
+					object.uniforms = {}
+					for name, value of config.uniforms
+						object.uniforms[name] = _.clone(value)
+		
 
-				#console.log "#{config.textureRefs?.length or 0} textures"
-				promises = []
+					#console.log "#{config.textureRefs?.length or 0} textures"
+					promises = []
 
-				for textureType, textureRef of config.texturesMapping
-					do (textureType, textureRef)=>
-						promises.push @getConfig(textureRef).then (textureConfig)=>
-							@updateObject(textureRef, textureConfig, @options).then (texture)=>
-								#console.log "Got texture: #{textureRef} #{texture}"
-								type: textureType
-								ref: textureRef 
-								texture: texture
-				
-				if promises?.length 
-					return RSVP.all(promises).then (textures)-> 
-						for texture in textures
-							object.setTexture(texture.type, texture.texture)
+					for textureType, textureRef of config.texturesMapping
+						do (textureType, textureRef)=>
+							promises.push @getConfig(textureRef).then (textureConfig)=>
+								@updateObject(textureRef, textureConfig, @options).then (texture)=>
+									#console.log "Got texture: #{textureRef} #{texture}"
+									type: textureType
+									ref: textureRef 
+									texture: texture
+					
+					if promises?.length 
+						return RSVP.all(promises).then (textures)-> 
+							for texture in textures
+								object.setTexture(texture.type, texture.texture)
 
+							return object
+						.then null, (err)->
+							console.error "Error loading textures: #{err}"
+					else 
 						return object
-					.then null, (err)->
-						console.error "Error loading textures: #{err}"
-				else 
-					return object
-				
+			else
+				# Already loaded this material
+				pu.createDummyPromise(@_objects[ref])				
 		
 		remove: (ref)->
 			delete @_objects[ref]
