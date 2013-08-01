@@ -19,7 +19,8 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/util/GameUtils',
-	'goo/util/Logo'
+	'goo/util/Logo',
+	'goo/entities/EventHandler'
 ],
 /** @lends */
 function (
@@ -43,7 +44,8 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	GameUtils,
-	Logo
+	Logo,
+	EventHandler
 ) {
 	"use strict";
 
@@ -125,6 +127,8 @@ function (
 		}
 
 		this._addDebugKeys();
+		this.currentMouseOn = null;
+		this.lastMosueOn = null;
 	}
 
 	var tpfSmoothingArrary = [];
@@ -305,6 +309,24 @@ function (
 				this.renderSystem.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
+				}.bind(this));
+			}
+		}.bind(this), false);
+
+		///
+		var mouseMovePicking = true;
+		var lastEntity = null;
+		document.addEventListener("mousemove", function (e) {
+			if (mouseMovePicking) {
+				var x = e.clientX;
+				var y = e.clientY;
+				this.renderSystem.pick(x, y, function(id) {
+					var entity = this.world.entityManager.getEntityById(id);
+					if(entity !== lastEntity) {
+						EventHandler.dispatch('mouseOut', lastEntity);
+						EventHandler.dispatch('mouseEnter', entity);
+						lastEntity = entity;
+					}
 				}.bind(this));
 			}
 		}.bind(this), false);
