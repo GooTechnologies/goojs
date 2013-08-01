@@ -38,9 +38,30 @@ function (
 				that.lights = lights;
 			}
 		});
+
+		this.picking = {
+			doPick: false,
+			x: 0,
+			y: 0,
+			pickingStore: {},
+			pickingCallback: function(id, depth) {
+				console.log(id, depth);
+			},
+			skipUpdateBuffer: false
+		};
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
+
+	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
+		this.picking.x = x;
+		this.picking.y = y;
+		this.picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
+		if (callback) {
+			this.picking.pickingCallback = callback;
+		}
+		this.picking.doPick = true;
+	};
 
 	RenderSystem.prototype.inserted = function (entity) {
 		if (this.partitioner) {
@@ -75,6 +96,12 @@ function (
 			}
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);
+
+			if (this.picking.doPick) {
+				renderer.pick(this.renderList, this.camera, this.picking.x, this.picking.y, this.picking.pickingStore, this.picking.skipUpdateBuffer);
+				this.picking.pickingCallback(this.picking.pickingStore.id, this.picking.pickingStore.depth);
+				this.picking.doPick = false;
+			}
 
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {

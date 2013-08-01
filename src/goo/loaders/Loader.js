@@ -126,7 +126,7 @@ define([
 	 * @param {string} url Relative path to whatever shall be loaded.
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
-	Loader.prototype.loadImage = function (url) {
+	Loader.prototype.loadImage = function (url, needsProgress) {
 		var promise = new RSVP.Promise();
 		var image = new Image();
 
@@ -140,25 +140,24 @@ define([
 			promise.reject('Loader.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 
-		/**
-		image.src = this._buildURL(url);
+		if (needsProgress) {
+			// Loading image as binary, then base64 encoding them. Needed to listen to progress
+			this.load(url, function(data) {
+				var bytes = new Uint8Array(data,0,data.byteLength);
+				var type = 'image/jpeg';
+				if(/\.png$/.test(url)) {
+					type = 'image/png';
+				}
+				var blob = new Blob([bytes], { type: type });
+
+				image.src = window.URL.createObjectURL(blob);
+
+			}, Loader.ARRAY_BUFFER);
+		} else {
+			image.src = this._buildURL(url);
+		}
+
 		return promise;
-		/**/
-
-		// Loading image as binary, then base64 encoding them. Needed to listen to progress
-		this.load(url, function(data) {
-			var bytes = new Uint8Array(data,0,data.byteLength);
-			var type = 'image/jpeg';
-			if(/\.png$/.test(url)) {
-				type = 'image/png';
-			}
-			var blob = new Blob([bytes], { type: type });
-
-			image.src = window.URL.createObjectURL(blob);
-
-		}, Loader.ARRAY_BUFFER);
-		return promise;
-		/**/
 	};
 
 	Loader.prototype._buildURL = function(url) {

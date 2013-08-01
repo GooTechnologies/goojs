@@ -175,5 +175,21 @@ define([
 			expect(entityManager.getTopEntities()).toContain(entity2);
 			expect(entityManager.getTopEntities()).not.toContain(entity1);
 		});
+
+		it('can get the number of entities that the Entity Manager holds', function() {
+			var entity1 = world.createEntity('entity1');
+			var entity2 = world.createEntity('entity2');
+
+			expect(entityManager.size()).toBe(0);
+
+			entityManager.added(entity1);
+			expect(entityManager.size()).toBe(1);
+
+			entityManager.added(entity2);
+			expect(entityManager.size()).toBe(2);
+
+			entityManager.removed(entity2);
+			expect(entityManager.size()).toBe(1);
+		});
 	});
 });
