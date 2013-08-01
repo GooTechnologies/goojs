@@ -447,5 +447,39 @@ function(
 		].join('\n')
 	};
 
+	ShaderBuilder.animation = {
+		processor: function(shader, shaderInfo) {
+			var pose = shaderInfo.meshData.currentPose;
+			if (pose) {
+				shader.defines = shader.defines || {};
+				shader.defines.JOINT_COUNT = pose._skeleton._joints.length;
+				shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
+			}
+		},
+		jointPalette: function (shaderInfo) {
+			var skMesh = shaderInfo.meshData;
+			var pose = skMesh.currentPose;
+			if (pose) {
+				var palette = pose._matrixPalette;
+				var buffLength = skMesh.paletteMap.length * 16;
+				var store = skMesh.store;
+				if (!store) {
+					store = new Float32Array(buffLength);
+					skMesh.store = store;
+				}
+				var refMat;
+				for (var index = 0; index < skMesh.paletteMap.length; index++) {
+					refMat = palette[skMesh.paletteMap[index]];
+					for (var i = 0; i < 4; i++) {
+						for (var j = 0; j < 4; j++) {
+							store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
+						}
+					}
+				}
+				return store;
+			}
+		}
+	};
+
 	return ShaderBuilder;
 });

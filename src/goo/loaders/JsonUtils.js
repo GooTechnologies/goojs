@@ -97,9 +97,9 @@ function (
 	JsonUtils.parseTransform = function (object) {
 		var transform = new Transform();
 
-		transform.translation = JsonUtils.parseVector3(object.Translation);
-		transform.scale = JsonUtils.parseVector3(object.Scale);
-		transform.rotation = JsonUtils.parseMatrix3(object.Rotation);
+		transform.translation = JsonUtils.parseVector3(object.translation);
+		transform.scale = JsonUtils.parseVector3(object.scale);
+		transform.rotation = JsonUtils.parseMatrix3(object.rotation);
 
 		return transform;
 	};
@@ -107,9 +107,9 @@ function (
 	JsonUtils.parseTransformQuat = function (object) {
 		var transform = new Transform();
 
-		transform.translation = JsonUtils.parseVector3(object.Translation);
-		transform.scale = JsonUtils.parseVector3(object.Scale);
-		transform.rotation = JsonUtils.parseQuaternion(object.Rotation).toRotationMatrix();
+		transform.translation = JsonUtils.parseVector3(object.translation);
+		transform.scale = JsonUtils.parseVector3(object.scale);
+		transform.rotation = JsonUtils.parseQuaternion(object.rotation).toRotationMatrix();
 
 		return transform;
 	};
@@ -117,9 +117,9 @@ function (
 	JsonUtils.parseTransformEuler = function (object) {
 		var transform = new Transform();
 
-		transform.translation = JsonUtils.parseVector3(object.Translation);
-		transform.scale = JsonUtils.parseVector3(object.Scale);
-		var euler = JsonUtils.parseVector3(object.Rotation);
+		transform.translation = JsonUtils.parseVector3(object.translation);
+		transform.scale = JsonUtils.parseVector3(object.scale);
+		var euler = JsonUtils.parseVector3(object.rotation);
 		transform.setRotationXYZ(euler.x, euler.y, euler.z);
 
 		return transform;
@@ -128,7 +128,7 @@ function (
 	JsonUtils.parseTransformMatrix = function (object) {
 		var transform = new Transform();
 
-		transform.matrix = JsonUtils.parseMatrix4(object.Matrix);
+		transform.matrix = JsonUtils.parseMatrix4(object.matrix);
 
 		return transform;
 	};

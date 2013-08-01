@@ -23,26 +23,26 @@ _) ->
 		_create: (skeletonConfig)->
 			console.debug "Creating skeleton"
 			joints = (
-				for jointConfig in skeletonConfig.Joints
-					joint = new Joint(jointConfig.Name)
-					joint._index = Math.round(jointConfig.Index)
-					joint._parentIndex = Math.round(jointConfig.ParentIndex)
+				for jointConfig in skeletonConfig.joints
+					joint = new Joint(jointConfig.name)
+					joint._index = Math.round(jointConfig.index)
+					joint._parentIndex = Math.round(jointConfig.parentIndex)
 					
 					
-					if jointConfig.InverseBindPose.Matrix
+					if jointConfig.inverseBindPose.matrix
 						parseTransform = JsonUtils.parseTransformMatrix
 	
-					else if jointConfig.InverseBindPose.Rotation.length == 4
+					else if jointConfig.inverseBindPose.rotation.length == 4
 						parseTransform = JsonUtils.parseTransformQuat
 						
-					else if jointObj.InverseBindPose.Rotation.length == 3
+					else if jointObj.InverseBindPose.rotation.length == 3
 						parseTransform = JsonUtils.parseTransformEuler
 					else 
 						parseTransform = JsonUtils.parseTransform
 	
-					joint._inverseBindPose.copy(parseTransform(jointConfig.InverseBindPose))
+					joint._inverseBindPose.copy(parseTransform(jointConfig.inverseBindPose))
 					
-					if not jointConfig.InverseBindPose.Matrix 
+					if not jointConfig.inverseBindPose.matrix 
 						joint._inverseBindPose.update()
 					
 					joint
