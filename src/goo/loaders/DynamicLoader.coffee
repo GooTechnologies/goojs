@@ -269,7 +269,12 @@ _) ->
 					.then (data)=>
 						@_configs[ref] = data
 				else
-					if @_isBinaryRef(ref) then mode = Ajax.ARRAY_BUFFER else mode = null
+					if @_isBinaryRef(ref)
+						console.log "#{ref} is binary"
+						mode = Ajax.ARRAY_BUFFER 
+					else 
+						console.log "#{ref} is ascii"
+						mode = null
 					@_configs[ref] = @_ajax.load(url, mode)
 					.then (data)=>
 						if _jsonTest.test(ref) 
@@ -306,7 +311,7 @@ _) ->
 
 		_isBinaryRef: (ref)->
 			type = @_getTypeForRef(ref)
-			return type in _texture_types
+			return type in _texture_types or type == 'dat'
 
 
 		###*
