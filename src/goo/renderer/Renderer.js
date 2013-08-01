@@ -659,9 +659,7 @@ function (
 	};
 
 	Renderer.prototype.buildWireframeData = function (meshData) {
-		var attributeMap = {
-			POSITION: meshData.attributeMap.POSITION
-		};
+		var attributeMap = Util.clone(meshData.attributeMap);
 		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -719,7 +717,9 @@ function (
 
 		if (indexCount > 0) {
 			wireframeData.rebuildIndexData(indexCount);
-			wireframeData.getAttributeBuffer(MeshData.POSITION).set(meshData.getAttributeBuffer(MeshData.POSITION));
+			for (var attribute in attributeMap) {
+				wireframeData.getAttributeBuffer(attribute).set(meshData.getAttributeBuffer(attribute));
+			}
 			wireframeData.getIndexBuffer().set(targetI);
 		}
 

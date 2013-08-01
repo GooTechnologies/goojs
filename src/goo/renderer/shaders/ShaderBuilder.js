@@ -65,7 +65,8 @@ function(
 				if (attribute === 'MAX_POINT_LIGHTS' ||
 					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
 					attribute === 'MAX_SPOT_LIGHTS' ||
-					attribute === 'SHADOW_TYPE') {
+					attribute === 'SHADOW_TYPE' ||
+					attribute === 'PHYSICALLY_BASED_SHADING') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
