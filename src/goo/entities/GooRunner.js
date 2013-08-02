@@ -320,11 +320,11 @@ function (
 			if (mouseMovePicking) {
 				var x = e.clientX;
 				var y = e.clientY;
-				this.renderSystem.pick(x, y, function(id) {
+				this.renderSystem.pick(x, y, function(id, dist) {
 					var entity = this.world.entityManager.getEntityById(id);
 					if(entity !== lastEntity) {
-						EventHandler.dispatch('mouseOut', lastEntity);
-						EventHandler.dispatch('mouseEnter', entity);
+						EventHandler.dispatch('mouseOut', { entity: lastEntity, dist: dist });
+						EventHandler.dispatch('mouseEnter', { entity: entity, dist: dist });
 						lastEntity = entity;
 					}
 				}.bind(this));
