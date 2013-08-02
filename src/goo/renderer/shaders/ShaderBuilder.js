@@ -44,6 +44,10 @@ function(
 			}
 
 			for (var type in textureMaps) {
+				if (textureMaps[type] === undefined) {
+					continue;
+				}
+
 				if (type === 'SHADOW_MAP') {
 					continue;
 				}
