@@ -255,7 +255,7 @@ function (
 			normalMultiplier: 3.0,
 			fresnelMultiplier: 1.0,
 			waterScale: 5.0,
-			doFog: true,
+			doFog: false,
 			resolution: Shader.RESOLUTION
 		},
 		vshader: [ //
