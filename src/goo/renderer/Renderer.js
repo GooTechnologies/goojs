@@ -625,6 +625,11 @@ function (
 
 	// Hardware picking
 	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer) {
+		if(this.viewportWidth * this.viewportHeight === 0) {
+			pickingStore.id = -1;
+			pickingStore.depth = 0;
+			return ;
+		}
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			this.hardwarePicking = {
