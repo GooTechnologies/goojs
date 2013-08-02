@@ -14,77 +14,88 @@ JsonUtils,
 pu,
 _) ->
 
+
+	# Perhaps move to utils later
+	_getTypedArray = (bindata, format, range)->
+		if format == 'float32'
+			new Float32Array(bindata.slice(range[0], range[1]))
+		else if format == 'uint16'
+			new Uint16Array(bindata.slice(range[0], range[1]))
+
+
+
 	class MeshDataHandler extends ConfigHandler
 		@_register('mesh')
 	
-	
+		constructor: (@world, @getConfig, @updateObject, @options)->
+			@_objects = {}
+
+
 		_create: (meshConfig)->
 			# We do everything in update instead			
 			
-			return meshData
-			
 		update: (ref, meshConfig)->
+			if not @_objects[ref]
+				if meshConfig.binary_data
+					@getConfig(meshConfig.binary_data).then (bindata)=>
+						if not bindata then throw new Error("Binary mesh data was empty")
+						@_createMeshData(meshConfig, bindata)
+						.then (meshData)=>
+							@_objects[ref] = meshData
+				else
+					@_createMeshData(meshConfig, null)
+					.then (meshData)=>
+						@_objects[ref] = meshData
+			else
+				pu.createDummyPromise(@_objects[ref])
+
+		remove: (ref)->
+			# Do nothing, we didn't save anything
+			
+
+		# Returns promise that resolves with the created meshdata object
+		_createMeshData: (meshConfig, bindata)->
 
 			if meshConfig.compression and meshConfig.compression.compressed
 				compression = 
 					compressedVertsRange: meshConfig.compression.compressedVertsRange or (1 << 14) - 1 #int
 					compressedColorsRange: meshConfig.compression.compressedColorsRange or (1 << 8) - 1 #int
 					compressedUnitVectorRange: meshConfig.compression.compressedUnitVectorRange or (1 << 10) - 1 #int
-	
-		
-			getTypedArray = (bindata, format, range)->
-				if format == 'float32'
-					new Float32Array(bindata.slice(range[0], range[1]))
-				else if format == 'uint16'
-					new Uint16Array(bindata.slice(range[0], range[1]))
 
-			createMeshData = (bindata)=>
+			if bindata
+				# Binary data is stored in a separate file. Experimental format. 
 
-				if bindata
-					indices = getTypedArray(bindata, 'uint16', meshConfig.indices)
-					meshConfig.indices = indices
+				indices = _getTypedArray(bindata, 'uint16', meshConfig.indices)
+				meshConfig.indices = indices
 
-					textureCoords = []
-					for layer, idx in meshConfig.textureCoords
-						textureCoords[idx] = getTypedArray(bindata, 'float32', layer)
-					meshConfig.textureCoords = textureCoords
+				textureCoords = []
+				for layer, idx in meshConfig.textureCoords
+					textureCoords[idx] = _getTypedArray(bindata, 'float32', layer)
+				meshConfig.textureCoords = textureCoords
 
-					meshConfig.vertices = getTypedArray(bindata, 'float32', meshConfig.vertices)
+				meshConfig.vertices = _getTypedArray(bindata, 'float32', meshConfig.vertices)
 
-					meshConfig.normals = getTypedArray(bindata, 'float32', meshConfig.normals)
+				meshConfig.normals = _getTypedArray(bindata, 'float32', meshConfig.normals)
 
-
-				if meshConfig.type == 'SkinnedMesh'
-					meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh', compression)
-					meshData.type = MeshData.SKINMESH
-				else
-					meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh', compression)
-					meshData.type = MeshData.MESH
-
-				if meshConfig.pose
-					skelRef = meshConfig.pose
-					@getConfig(skelRef).then (skelConfig)=>
-						@updateObject(skelRef, skelConfig).then (skeleton)=>
-							pose = new SkeletonPose(skeleton)
-							pose.setToBindPose()
-							meshData.currentPose = pose
-							return meshData
-				else
-					pu.createDummyPromise(meshData)
-
-
-			if meshConfig.binary_data
-				@getConfig(meshConfig.binary_data).then (bindata)=>
-					if not bindata then throw new Error("Binary mesh data was empty")
-					createMeshData(bindata)
+			if meshConfig.type == 'SkinnedMesh'
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh', compression)
+				meshData.type = MeshData.SKINMESH
 			else
-				createMeshData(null)
+				meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh', compression)
+				meshData.type = MeshData.MESH
 
-		remove: (ref)->
-			# Do nothing, we didn't save anything
-			
+			if meshConfig.pose
+				skelRef = meshConfig.pose
+				@getConfig(skelRef).then (skelConfig)=>
+					@updateObject(skelRef, skelConfig).then (skeleton)=>
+						pose = new SkeletonPose(skeleton)
+						pose.setToBindPose()
+						meshData.currentPose = pose
+						return meshData
+			else
+				pu.createDummyPromise(meshData)
 
-		# Translated into coffeescript from goo/loaders/MeshLoader.js
+
 		# Returns MeshData object
 		_parseMeshData: (data, weightsPerVert, type, compression)->
 			vertexCount = data.vertexCount # int
