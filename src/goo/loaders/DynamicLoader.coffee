@@ -270,10 +270,8 @@ _) ->
 						@_configs[ref] = data
 				else
 					if @_isBinaryRef(ref)
-						console.log "#{ref} is binary"
 						mode = Ajax.ARRAY_BUFFER 
 					else 
-						console.log "#{ref} is ascii"
 						mode = null
 					@_configs[ref] = @_ajax.load(url, mode)
 					.then (data)=>
