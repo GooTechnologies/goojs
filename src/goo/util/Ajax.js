@@ -144,7 +144,7 @@ define([
 	 * @param {string} url Path to whatever shall be loaded.
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
-	Ajax.prototype.loadImage = function (url) {
+	Ajax.prototype.loadImage = function (url, needsProgress) {
 		var promise = new RSVP.Promise();
 		var image = new Image();
 
@@ -159,19 +159,22 @@ define([
 			promise.reject('Ajax.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
 
-		// Loading image as binary, then base64 encoding them. Needed to listen to progress
-		this.load(url, Ajax.ARRAY_BUFFER)
-		.then(function(data) {
-			var bytes = new Uint8Array(data,0,data.byteLength);
-			var type = 'image/jpeg';
-			if(/\.png$/.test(url)) {
-				type = 'image/png';
-			}
-			var blob = new Blob([bytes], { type: type });
-			image.src = window.URL.createObjectURL(blob);
-			return image;
-		});
 
+		if (needsProgress) {
+			// Loading image as binary, then base64 encoding them. Needed to listen to progress
+			this.load(url, function(data) {
+				var bytes = new Uint8Array(data,0,data.byteLength);
+				var type = 'image/jpeg';
+				if(/\.png$/.test(url)) {
+					type = 'image/png';
+				}
+				var blob = new Blob([bytes], { type: type });
+				image.src = window.URL.createObjectURL(blob);
+				return image;
+			}, Loader.ARRAY_BUFFER);
+		} else {
+			image.src = url;
+		}
 		return promise;
 	};
 

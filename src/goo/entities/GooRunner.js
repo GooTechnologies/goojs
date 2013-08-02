@@ -314,7 +314,7 @@ function (
 		}.bind(this), false);
 
 		///
-		var mouseMovePicking = false;
+		var mouseMovePicking = true;
 		var lastEntity = null;
 		document.addEventListener("mousemove", function (e) {
 			if (mouseMovePicking) {
