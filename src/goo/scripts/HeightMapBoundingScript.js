@@ -44,5 +44,10 @@ define([],
 		return totalAvg;
 	};
 
+	HeightMapBoundingScript.prototype.run = function(entity) {
+		var translation = entity.transformComponent.transform.translation;
+		translation.data[1] = this.getInterpolated(translation.data[0], translation.data[2]);
+	};
+
 	return HeightMapBoundingScript;
 });
