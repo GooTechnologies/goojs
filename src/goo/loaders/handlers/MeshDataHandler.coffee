@@ -137,8 +137,6 @@ _) ->
 							offsetObj.zOffset
 						])
 				else if data.vertices instanceof Float32Array
-					# ----- DO MAGIC HERE
-					console.debug "Vertices are float32array..."
 					meshData.getAttributeBuffer(MeshData.POSITION).set(data.vertices)
 				else 
 					JsonUtils.fillAttributeBuffer(data.vertices, meshData, MeshData.POSITION)
@@ -161,8 +159,6 @@ _) ->
 						[scale, scale, scale], [offset, offset,offset])
 
 				else if data.normals instanceof Float32Array
-					# ----- DO MAGIC HERE
-					console.debug "Normals are float32array..."
 					meshData.getAttributeBuffer(MeshData.NORMAL).set(data.normals)
 				else
 					JsonUtils.fillAttributeBuffer(data.normals, meshData, MeshData.NORMAL)
@@ -195,8 +191,6 @@ _) ->
 					for texObj, texIdx in textureUnits
 						attr = 'TEXCOORD' + texIdx
 						if texObj instanceof Float32Array
-							# ----- DO MAGIC HERE
-							console.debug "Texture coordinates in layer #{texIdx} are float32array..."
 							meshData.getAttributeBuffer(attr).set(texObj)
 						else
 							JsonUtils.fillAttributeBuffer(texObj, meshData, attr)
