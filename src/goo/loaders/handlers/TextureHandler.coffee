@@ -97,7 +97,6 @@ define [
 						console.error "Error loading texture: ", e
 
 				else if type in ['jpg', 'jpeg', 'png', 'gif']
-					#texture = new Texture null, config
 					loadedPromise = @getConfig(imgRef).then (data)=>
 						#console.log "Adding texture #{imgRef}, data is #{typeof data}"
 						texture.setImage(data)

@@ -241,7 +241,6 @@ _) ->
 				if compression?
 					meshData.getIndexBuffer().set(JsonUtils.getIntBufferFromCompressedString(data.indices, vertexCount))
 				else if data.indices instanceof Uint16Array
-					# ----- DO MAGIC HERE
 					meshData.getIndexBuffer().set(data.indices)
 
 				else					
