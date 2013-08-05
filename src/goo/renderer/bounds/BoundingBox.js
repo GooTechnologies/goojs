@@ -175,10 +175,10 @@ function (
 	};
 
 	BoundingBox.prototype.whichSide = function (plane) {
-		var radius = Math.abs(this.xExtent * plane.normal.x) + Math.abs(this.yExtent * plane.normal.y) + Math.abs(this.zExtent * plane.normal.z);
-
 		var planeData = plane.normal.data;
 		var pointData = this.center.data;
+
+		var radius = Math.abs(this.xExtent * planeData[0]) + Math.abs(this.yExtent * planeData[1]) + Math.abs(this.zExtent * planeData[2]);
 		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 
 		if (distance < -radius) {
@@ -191,7 +191,10 @@ function (
 	};
 
 	BoundingBox.prototype._pseudoDistance = function (plane, point) {
-		return plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z - plane.constant;
+		var planeData = plane.normal.data;
+		var pointData = point.data;
+
+		return planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
 	};
 
 	BoundingBox.prototype._maxAxis = function (scale) {
