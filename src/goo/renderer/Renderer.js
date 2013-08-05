@@ -529,7 +529,13 @@ function (
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 				if (!shaderCache[defineKey]) {
 					shader = material.shader = shader.clone();
+					// shader = material.shader = shader.cloneOriginal();
 					shaderCache[defineKey] = shader;
+					// if (shader.processors) {
+						// for (var j = 0; j < shader.processors.length; j++) {
+							// shader.processors[j](shader, renderInfo);
+						// }
+					// }
 					console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
