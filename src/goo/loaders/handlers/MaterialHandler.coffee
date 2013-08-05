@@ -94,7 +94,8 @@ define [
 					if promises?.length 
 						return RSVP.all(promises).then (textures)-> 
 							for texture in textures
-								object.setTexture(texture.type, texture.texture)
+								if texture.texture?
+									object.setTexture(texture.type, texture.texture)
 
 							return object
 						.then null, (err)->
