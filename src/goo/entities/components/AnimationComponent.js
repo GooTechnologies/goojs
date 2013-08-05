@@ -52,6 +52,20 @@ function (
 	AnimationComponent.prototype.transitionTo = function(stateKey) {
 		this.layers[0].transitionTo(stateKey);
 	};
+	/**
+	 * Get available states
+	 * returns {string[]} available state keys
+	 */
+	AnimationComponent.prototype.getStates = function() {
+		return this.layers[0].getStates();
+	};
+	/**
+	 * Get available transitions
+	 * returns {string[]} available state keys
+	 */
+	AnimationComponent.prototype.getTransitions = function() {
+		return this.layers[0].getTransitions();
+	};
 
 	/*
 	 * Update animations

@@ -27,6 +27,35 @@ function (
 
 	AnimationLayer.BASE_LAYER_NAME = '-BASE_LAYER-';
 
+	/**
+	 * Get available states for layer
+	 * @returns {string[]}
+	 */
+	AnimationLayer.prototype.getStates = function() {
+		return Object.keys(this._steadyStates);
+	};
+
+	/**
+	 * Get available transitions for current State
+	 * @returns {string[]}
+	 */
+	AnimationLayer.prototype.getTransitions = function() {
+		var transitions;
+		if (this._currentState) {
+			transitions = Object.keys(this._currentState._transitions);
+		} else {
+			transitions = [];
+		}
+		if (this._transitions) {
+			for (var key in this._transitions) {
+				if (transitions.indexOf(key) === -1) {
+					transitions.push(key);
+				}
+			}
+		}
+		transitions.sort();
+		return transitions;
+	};
 
 	/*
 	 * Does the updating before animations are applied
