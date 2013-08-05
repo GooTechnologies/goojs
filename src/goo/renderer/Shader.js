@@ -3,8 +3,8 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector3',
 	'goo/entities/World',
-	'goo/renderer/RenderQueue'
-	// 'goo/renderer/Util'
+	'goo/renderer/RenderQueue',
+	'goo/renderer/Util'
 ],
 /** @lends */
 function (
@@ -12,8 +12,8 @@ function (
 	Matrix4x4,
 	Vector3,
 	World,
-	RenderQueue
-	// Util
+	RenderQueue,
+	Util
 ) {
 	"use strict";
 
@@ -114,7 +114,7 @@ function (
 	Shader.id = 0;
 
 	Shader.prototype.clone = function () {
-		return new Shader(this.name, {
+		return new Shader(this.name, Util.clone({
 			precision: this.precision,
 			processors: this.processors,
 			defines: this.defines,
@@ -122,7 +122,7 @@ function (
 			uniforms: this.uniforms,
 			vshader: this.origVertexSource,
 			fshader: this.origFragmentSource
-		});
+		}));
 
 		// return new Shader(this.name, this.shaderDefinition);
 	};
