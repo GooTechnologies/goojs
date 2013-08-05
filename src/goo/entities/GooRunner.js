@@ -129,6 +129,7 @@ function (
 		this._addDebugKeys();
 		this.currentMouseOn = null;
 		this.lastMosueOn = null;
+		this.redoPickRender = true;
 	}
 
 	var tpfSmoothingArrary = [];
@@ -309,7 +310,8 @@ function (
 				this.renderSystem.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
-				}.bind(this));
+				}.bind(this),
+				!this.redoPickRender);
 			}
 		}.bind(this), false);
 
@@ -322,12 +324,22 @@ function (
 				var y = e.clientY;
 				this.renderSystem.pick(x, y, function(id, dist) {
 					var entity = this.world.entityManager.getEntityById(id);
+
+					//console.log('goorunnner mouseOut', lastEntity);
+					console.log('goorunnner mouseEnter', entity);
+					console.log('goorunner !redopickrender', !this.redoPickRender);
 					if(entity !== lastEntity) {
+
 						EventHandler.dispatch('mouseOut', { entity: lastEntity, dist: dist });
 						EventHandler.dispatch('mouseEnter', { entity: entity, dist: dist });
 						lastEntity = entity;
 					}
-				}.bind(this));
+				}.bind(this),
+				!this.redoPickRender && false);
+
+				if(this.redoPickRender) {
+					this.redoPickRender = false;
+				}
 			}
 		}.bind(this), false);
 	};
