@@ -833,6 +833,7 @@ function (
 			if (unitrecord === undefined) {
 				unitrecord = this.rendererRecord.textureRecord[i] = {};
 			}
+			unitrecord.boundTexture = null;
 
 			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();
