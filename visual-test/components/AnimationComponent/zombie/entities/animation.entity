@@ -1,0 +1,10 @@
+{
+"components":{
+"animation":{
+"layersRef":"animations/Animations.animation",
+"poseRef":"skeletons/Skeleton.skeleton"
+}
+},
+"name":"Animation Node",
+"nodeType":"animation"
+}
