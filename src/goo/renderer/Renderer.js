@@ -636,6 +636,7 @@ function (
 			pickingStore.depth = 0;
 			return ;
 		}
+
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			this.hardwarePicking = {
@@ -659,6 +660,8 @@ function (
 			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
 			this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			this.overrideMaterial = null;
+		} else {
+			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);

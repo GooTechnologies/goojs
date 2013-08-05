@@ -326,8 +326,7 @@ function (
 					var entity = this.world.entityManager.getEntityById(id);
 
 					//console.log('goorunnner mouseOut', lastEntity);
-					console.log('goorunnner mouseEnter', entity);
-					console.log('goorunner !redopickrender', !this.redoPickRender);
+					// console.log('goorunnner mouseEnter', entity);
 					if(entity !== lastEntity) {
 
 						EventHandler.dispatch('mouseOut', { entity: lastEntity, dist: dist });
@@ -336,6 +335,8 @@ function (
 					}
 				}.bind(this),
 				!this.redoPickRender && false);
+
+				// console.log('goorunner !redopickrender', !this.redoPickRender);
 
 				if(this.redoPickRender) {
 					this.redoPickRender = false;

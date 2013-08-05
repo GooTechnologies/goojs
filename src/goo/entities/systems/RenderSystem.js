@@ -54,7 +54,6 @@ function (
 	RenderSystem.prototype = Object.create(System.prototype);
 
 	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
-		if(!skipUpdateBuffer) console.log('...................... RenderSystem.prototype.pick: skipUodateBuffer false');
 		this.picking.x = x;
 		this.picking.y = y;
 		this.picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
