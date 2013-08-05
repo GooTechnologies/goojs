@@ -52,6 +52,7 @@ define [
 			else
 				p2 = @_getAnimationLayers(layersRef).then (layers) =>
 					component.layers = layers
+			promises.push(p2);
 				
 			RSVP.all(promises).then =>
 				component
