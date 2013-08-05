@@ -57,7 +57,7 @@ mat += jointPalette[int(vertexJointIDs.x)] * vertexWeights.x;
 mat += jointPalette[int(vertexJointIDs.y)] * vertexWeights.y;
 mat += jointPalette[int(vertexJointIDs.z)] * vertexWeights.z;
 mat += jointPalette[int(vertexJointIDs.w)] * vertexWeights.w;
-	newWorldMatrix = mat * newWorldMatrix;
+	newWorldMatrix = newWorldMatrix * mat;
 #endif
 #endif
 #endif
