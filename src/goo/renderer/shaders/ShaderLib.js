@@ -2015,5 +2015,49 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.pickingShader = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraFar : Shader.FAR_PLANE,
+			id : function(shaderInfo) {
+				return shaderInfo.renderable.id;
+			}
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform float cameraFar;',
+
+		'varying float depth;',
+
+		'void main() {',
+			'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'depth = length(mvPosition.xyz) / cameraFar;',
+			'gl_Position = projectionMatrix * mvPosition;',
+		'}'
+		].join("\n"),
+		fshader : [
+		'uniform float id;',
+
+		'varying float depth;',
+
+		ShaderFragment.methods.packDepth16,
+
+		'void main() {',
+			'vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
+			'vec2 packedDepth = packDepth16(depth);',
+			'gl_FragColor = vec4(packedId, packedDepth);',
+		'}'
+		].join("\n")
+	};
+
 	return ShaderLib;
 });

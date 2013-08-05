@@ -66,7 +66,7 @@ define([
 			entity.setComponent(new MeshDataComponent());
 			expect(entity._components.length).toBe(2);
 		});
-		it('preserves the last addec component of the same type', function() {
+		it('preserves the last added component of the same type', function() {
 			var entity = world.createEntity();
 			var component1 = new MeshDataComponent();
 			var component2 = new MeshDataComponent();

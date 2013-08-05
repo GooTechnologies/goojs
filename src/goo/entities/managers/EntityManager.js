@@ -10,17 +10,20 @@ define(
 		this.type = 'EntityManager';
 
 		this._entitiesById = [];
+		this._entityCount = 0;
 	}
 
 	EntityManager.prototype.added = function (entity) {
 		if (!this.containsEntity(entity)) {
 			this._entitiesById[entity.id] = entity;
+			this._entityCount++;
 		}
 	};
 
 	EntityManager.prototype.removed = function (entity) {
 		if (this.containsEntity(entity)) {
 			delete this._entitiesById[entity.id];
+			this._entityCount--;
 		}
 	};
 
@@ -57,6 +60,15 @@ define(
 				return entity;
 			}
 		}
+	};
+
+	/**
+	 * Get the number of entities currently indexed by the Entity Manager
+	 *
+	 * @returns {number}
+	 */
+	EntityManager.prototype.size = function () {
+		return this._entityCount;
 	};
 
 	/**

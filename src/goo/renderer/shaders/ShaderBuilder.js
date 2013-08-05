@@ -67,7 +67,8 @@ function(
 					attribute === 'MAX_SPOT_LIGHTS' ||
 					attribute === 'SHADOW_TYPE' ||
 					attribute === 'JOINT_COUNT' ||
-					attribute === 'WEIGHTS') {
+					attribute === 'WEIGHTS' ||
+					attribute === 'PHYSICALLY_BASED_SHADING') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
