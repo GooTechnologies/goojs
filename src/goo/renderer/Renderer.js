@@ -634,7 +634,7 @@ function (
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			pickingStore.id = -1;
 			pickingStore.depth = 0;
-			return ;
+			return;
 		}
 
 		var pickingResolutionDivider = 4;
@@ -655,8 +655,6 @@ function (
 				});
 			skipUpdateBuffer = false;
 		}
-
-		console.log(skipUpdateBuffer);
 
 		var x = Math.floor(clientX / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
