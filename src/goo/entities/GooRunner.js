@@ -125,9 +125,6 @@ function (
 		}
 
 		this._addDebugKeys();
-		this.currentMouseOn = null;
-		this.lastMosueOn = null;
-		this.redoPickRender = true;
 	}
 
 	var tpfSmoothingArrary = [];
