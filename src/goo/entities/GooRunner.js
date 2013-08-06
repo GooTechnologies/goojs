@@ -19,8 +19,7 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/util/GameUtils',
-	'goo/util/Logo',
-	'goo/entities/EventHandler'
+	'goo/util/Logo'
 ],
 /** @lends */
 function (
@@ -44,8 +43,7 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	GameUtils,
-	Logo,
-	EventHandler
+	Logo
 ) {
 	"use strict";
 
@@ -312,35 +310,6 @@ function (
 					console.log('Picked entity:', entity, 'At depth:', depth);
 				}.bind(this),
 				!this.redoPickRender);
-			}
-		}.bind(this), false);
-
-		///
-		var mouseMovePicking = true;
-		var lastEntity = null;
-		document.addEventListener("mousemove", function (e) {
-			if (mouseMovePicking) {
-				var x = e.clientX;
-				var y = e.clientY;
-				this.renderSystem.pick(x, y, function(id, dist) {
-					var entity = this.world.entityManager.getEntityById(id);
-
-					//console.log('goorunnner mouseOut', lastEntity);
-					// console.log('goorunnner mouseEnter', entity);
-					if(entity !== lastEntity) {
-
-						EventHandler.dispatch('mouseOut', { entity: lastEntity, dist: dist });
-						EventHandler.dispatch('mouseEnter', { entity: entity, dist: dist });
-						lastEntity = entity;
-					}
-				}.bind(this),
-				!this.redoPickRender && false);
-
-				// console.log('goorunner !redopickrender', !this.redoPickRender);
-
-				if(this.redoPickRender) {
-					this.redoPickRender = false;
-				}
 			}
 		}.bind(this), false);
 	};
