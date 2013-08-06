@@ -630,7 +630,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer) {
+	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer, doScissor) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			pickingStore.id = -1;
 			pickingStore.depth = 0;
@@ -640,25 +640,37 @@ function (
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			this.hardwarePicking = {
-				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider),
+				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
+					minFilter: 'NearestNeighborNoMipMaps',
+					magFilter: 'NearestNeighbor'
+				}),
 				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
 		} else if (this.hardwarePicking.pickingTarget === null) {
-			this.hardwarePicking.pickingTarget = new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider);
+			this.hardwarePicking.pickingTarget = new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
+					minFilter: 'NearestNeighborNoMipMaps',
+					magFilter: 'NearestNeighbor'
+				});
 			skipUpdateBuffer = false;
 		}
+
+		console.log(skipUpdateBuffer);
 
 		var x = Math.floor(clientX / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		if (!skipUpdateBuffer) {
 			this.overrideMaterial = this.hardwarePicking.pickingMaterial;
-			this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
-			this.context.scissor(x, y, 1, 1);
+			if (doScissor) {
+				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
+				this.context.scissor(x, y, 1, 1);
+			}
 			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
-			this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
+			if (doScissor) {
+				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
+			}
 			this.overrideMaterial = null;
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
