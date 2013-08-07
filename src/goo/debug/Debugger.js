@@ -23,6 +23,14 @@ define([
 	) {
 	"use strict";
 
+	// REVIEW: The @class documentation doesn't give me any information.
+	// I already know that this class is related to debugging as it's called Debugger.
+	// I also know that it has some utility and I can see that it's a class.
+	// There's a small description in the story, why not paste that into the documentation?
+
+	// REVIEW: What's the ownREPL argument for? Why not remove it and always have a REPL?
+	// (Boolean arguments is a code smell, but exportPicked is convenient so I'm not complaining about that one.)
+
 	/**
 	 * @class The debugger utility class
 	 * @param {boolean} [ownREPL] True if the debugger should come with it's own REPL
@@ -41,6 +49,7 @@ define([
 	 * @returns {Debugger} Self to allow chaining
 	 */
 	Debugger.prototype.inject = function(goo) {
+		// REVIEW: This function is long and contains functionality for different concerns (picking, UI etc). Split it up!
 		this.goo = goo;
 
 		createPanel(this.ownREPL);
@@ -88,6 +97,10 @@ define([
 
 			// Ask all appropriate world entities if they've been picked
 			picking.pickRay = ray;
+
+			// REVIEW: Calling a private method is not allowed. Should _process be public instead?
+			// It's a mess since there's both a _process and a process function in the PickingSystem
+			// but with different arguments. I think they should swap names with each other.
 			picking._process();
 		}, false);
 
@@ -111,6 +124,7 @@ define([
 					lastCommStr = commStr;
 
 					// setup variables for eval scope
+					//noinspection UnnecessaryLocalVariableJS
 					var entity = picked;
 					var goo = that.goo;
 					// manually suppressing "unused variable"
@@ -195,15 +209,19 @@ define([
 	 * @returns {string}
 	 */
 	function filterProperties(obj, interests) {
+		// REVIEW: The variables i and ret are declared twice in this function.
+		// Strange that JSHint doesn't complain about that. WebStorm does anyway.
 		if(interests.length === 0) {
 			return 'No interests specified;\n\nSome popular interests: is, tran, Compo\n\nEvery entry separated by a comma is a regex';
 		}
 
+		// REVIEW: Try replacing all of this with a call to JSON.stringify.
 		if(obj === null) {
 			return 'null';
 		} else if(typeof obj === 'undefined') {
 			return obj + '\n';
 		} else if(typeof obj === 'number') {
+			// REVIEW: Is this a mistake? Adding quotes around a number.
 			return '"' + obj + '"\n';
 		} else if(typeof obj === 'boolean') {
 			return obj + '\n';
@@ -223,14 +241,28 @@ define([
 			var ret = '';
 			// go through all the properties of a function
 			for (var prop in obj) {
+				// REVIEW: Add a hasOwnProperty check here!
+
 				// skip if it's a function
+				// REVIEW: Instead of this comment, and to avoid another level of indentation, just do:
+				// if(typeof obj[prop] === 'function') {
+				//   continue;
+				// }
+				// That makes it very clear what happens (the `continue` keyword corresponds to the word skip).
 				if(typeof obj[prop] !== 'function') {
 					// explore further if it matches with at least one interest
 					for (var i in interests) {
 						if(interests[i].test(prop)) {
 							ret += prop;
+							// REVIEW: Underscore in variable name. Unconventional in JS.
 							var filter_Str = filterProperties(obj[prop], interests);
 
+							// REVIEW: To avoid this if statement, just collect all the attribute names in an array
+							// and join them using the join function,
+							// e.g.
+							// attributes = ['entity', 'transformComponent', 'transform']; // all names
+							// return attributes.join('.');
+							// The speed difference of this compared to the += operator can be huge too!
 							if(filter_Str.length === 0) {
 								ret += filter_Str;
 								ret += '\n';
@@ -254,11 +286,16 @@ define([
 	 */
 	function updateMarker(picked, oldPicked) {
 		if(picked !== oldPicked) {
+			// REVIEW: Long lines! Keep one statement per line!
 			if(oldPicked !== null) { if(oldPicked.hasComponent('MarkerComponent')) { oldPicked.clearComponent('MarkerComponent'); } }
 			if(picked !== null) { picked.setComponent(new MarkerComponent(picked)); }
 		}
 		else {
 			if(picked.hasComponent('MarkerComponent')) {
+				// REVIEW: This makes it look like the selection was cleared,
+				// but actually picked isn't set to null or anything, so the GUI is lying.
+				// Either don't support deselection at all or implement it so that picked is actually cleared
+				// (the function calling this one should do that).
 				picked.clearComponent('MarkerComponent');
 			} else {
 				picked.setComponent(new MarkerComponent(picked));
@@ -281,6 +318,8 @@ define([
 		try {
 			entityStr = filterProperties(entity, filterList, '');
 		} catch(err) {
+			// REVIEW: Dangerous error handling. Don't just assume that the error is what you think it is,
+			// as that can hide other errors and give a completely wrong error message to the user.
 			entityStr = 'Too many results; narrow your search';
 		}
 		elem.value = entityStr;

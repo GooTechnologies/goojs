@@ -3,6 +3,9 @@ define([],
 	function () {
 	"use strict";
 
+	// REVIEW: This class description doesn't say anything that I can't figure out from the class name.
+	//         It doesn't seem to be used in the engine, so I supposed it's a public class,
+	//         which means it needs proper documentation.
 	/**
 	 * @class The entity counter utility class
 	 * @param {number} [skipFrames] Sets how many frames should it skip between refreshes
