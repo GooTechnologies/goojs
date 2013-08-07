@@ -42,14 +42,19 @@ exports.run = ->
 		#console.log JSON.stringify(tree, null, '\t')
 		
 		content = '''
-	<html>
-	<head>
-		<title>Visual tests</title>
-	</head>
-	<body>
-	<h1>Contents</h1>
-	'''
+			<html>
+			<head>
+				<title>Visual tests</title>
+			</head>
+			<body>
+			<h1>Contents</h1>
+		'''
 	
 		content += printTree(tree)
+		
+		content += '''
+			</body>
+			</html>
+		'''
 		
 		fs.writeFileSync path.resolve('visual-test','index.html'), content
