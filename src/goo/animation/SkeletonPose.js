@@ -95,7 +95,7 @@ function (
 			Matrix4x4
 				.combine(this._globalTransforms[index].matrix, this._skeleton._joints[index]._inverseBindPose.matrix, this._matrixPalette[index]);
 			// since we can't call this in the shader callback anymore?
-			this._matrixPalette[index].transpose();
+			//this._matrixPalette[index].transpose();
 			// this._globalTransforms[index].multiply(this._skeleton._joints[index]._inverseBindPose, temp);
 			// temp.getHomogeneousMatrix(this._matrixPalette[index]);
 		}

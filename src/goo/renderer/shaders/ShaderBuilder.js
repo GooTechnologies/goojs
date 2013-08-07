@@ -454,7 +454,9 @@ function(
 			if (pose) {
 				shader.defines = shader.defines || {};
 				shader.defines.JOINT_COUNT = pose._skeleton._joints.length;
-				shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
+				shader.uniforms.jointPaletteRotScale = ShaderBuilder.animation.jointPaletteRotScale;
+				shader.uniforms.jointPaletteTranslation = ShaderBuilder.animation.jointPaletteTranslation;
+				//shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 			}
 		},
 		jointPalette: function (shaderInfo) {
@@ -473,8 +475,51 @@ function(
 					refMat = palette[skMesh.paletteMap[index]];
 					for (var i = 0; i < 4; i++) {
 						for (var j = 0; j < 4; j++) {
-							store[index * 16 + i * 4 + j] = refMat.data[j * 4 + i];
+							store[index * 16 + i * 4 + j] = refMat.data[i * 4 + j];
 						}
+					}
+				}
+				return store;
+			}
+		},
+		jointPaletteRotScale: function (shaderInfo) {
+			var skMesh = shaderInfo.meshData;
+			var pose = skMesh.currentPose;
+			if (pose) {
+				var palette = pose._matrixPalette;
+				var buffLength = skMesh.paletteMap.length * 9;
+				var store = skMesh.rotScaleStore;
+				if (!store) {
+					store = new Float32Array(buffLength);
+					skMesh.rotScaleStore = store;
+				}
+				var refMat;
+				for (var index = 0; index < skMesh.paletteMap.length; index++) {
+					refMat = palette[skMesh.paletteMap[index]];
+					for (var i = 0; i < 3; i++) {
+						for (var j = 0; j < 3; j++) {
+							store[index * 9 + i * 3 + j] = refMat.data[i * 4 + j];
+						}
+					}
+				}
+				return store;
+			}
+		},
+		jointPaletteTranslation: function (shaderInfo) {
+			var skMesh = shaderInfo.meshData;
+			var pose = skMesh.currentPose;
+			if (pose) {
+				var palette = pose._matrixPalette;
+				var store = skMesh.translationStore;
+				if (!store) {
+					store = [];
+					skMesh.translationStore = store;
+				}
+				var refMat;
+				for (var index = 0; index < skMesh.paletteMap.length; index++) {
+					refMat = palette[skMesh.paletteMap[index]];
+					for (var i = 0; i < 3; i++) {
+						store[index * 3 + i] = refMat.data[12 + i];
 					}
 				}
 				return store;
