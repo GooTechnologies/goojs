@@ -47,7 +47,10 @@ define [
 				if config.processors
 					shaderDefinition.processors = [];
 					for processor in config.processors
-						shaderDefinition.processors.push ShaderBuilder[processor].processor
+						if ShaderBuilder[processor]
+							shaderDefinition.processors.push ShaderBuilder[processor].processor
+						else
+							throw new Error("Unknown processor: #{processor}")
 
 				if config.defines
 					shaderDefinition.defines = config.defines

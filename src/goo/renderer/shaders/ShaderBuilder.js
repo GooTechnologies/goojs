@@ -446,5 +446,11 @@ function(
 		].join('\n')
 	};
 
+	// Latest version of converter creates shaders that depend on an "animation" processor.
+	ShaderBuilder.animation = {
+		processor: function (/*shader, shaderInfo*/) {
+			// I suppose we should do something animation related here
+		}
+	};
 	return ShaderBuilder;
 });
