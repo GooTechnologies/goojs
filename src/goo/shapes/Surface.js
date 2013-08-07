@@ -172,7 +172,7 @@ define([
 		var verts = [];
 		for (var i = 0; i < heightMap.length; i++) {
 			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j], j * yScale);
+				verts.push(i * xScale, j * yScale, heightMap[i][j]);
 			}
 		}
 
