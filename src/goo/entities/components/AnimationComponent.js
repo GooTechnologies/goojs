@@ -178,6 +178,12 @@ function (
 		}
 	};
 
+	AnimationComponent.prototype.resetClips = function(globalTime) {
+		for (var i = 0; i < this.layers.length; i++) {
+			this.layers[i].resetClips(globalTime);
+		}
+	};
+
 
 	return AnimationComponent;
 });

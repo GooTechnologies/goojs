@@ -463,8 +463,10 @@ function(
 			if (pose) {
 				shader.defines = shader.defines || {};
 				shader.defines.JOINT_COUNT = pose._skeleton._joints.length;
-				shader.uniforms.jointPaletteRotScale = ShaderBuilder.animation.jointPaletteRotScale;
-				shader.uniforms.jointPaletteTranslation = ShaderBuilder.animation.jointPaletteTranslation;
+				if (!shader.uniforms.jointPalleteRotScale) {
+					shader.uniforms.jointPaletteRotScale = ShaderBuilder.animation.jointPaletteRotScale;
+					shader.uniforms.jointPaletteTranslation = ShaderBuilder.animation.jointPaletteTranslation;
+				}
 				//shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 			}
 		},

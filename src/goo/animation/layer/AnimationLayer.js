@@ -196,5 +196,11 @@ function (
 		this.setCurrentState(null);
 	};
 
+	AnimationLayer.prototype.resetClips = function(globalTime) {
+		if (this._currentState) {
+			this._currentState.resetClips(globalTime || World.time);
+		}
+	};
+
 	return AnimationLayer;
 });

@@ -513,7 +513,7 @@ function (
 		var scalesVal = chanObj.scaleSamples;
 		if (scalesVal) {
 			if (useCompression) {
-				var scaleOffset = chanObj.ScaleOffsetScale;
+				var scaleOffset = chanObj.scaleOffsetScale;
 				var xOffset = scaleOffset[0];
 				var yOffset = scaleOffset[1];
 				var zOffset = scaleOffset[2];
