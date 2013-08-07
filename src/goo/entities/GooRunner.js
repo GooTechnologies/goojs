@@ -305,8 +305,7 @@ function (
 				this.renderSystem.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
-				}.bind(this),
-				!this.redoPickRender);
+				}.bind(this));
 			}
 		}.bind(this), false);
 	};
