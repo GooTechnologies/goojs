@@ -1,4 +1,23 @@
 /* jshint bitwise: false */
+
+/*
+REVIEW: This is copied from an existing library without mentioning the source.
+
+It's much better to keep the original code if possible.
+
+If anyone make a due diligence review etc, it looks very bad for Goo if we have removed the original
+author's copyright statement (even if it's in the LICENSE file).
+
+Also, if we open source the engine, it may be a copyright infringement to have removed the copyright statement.
+
+If there's a new release of PolyK it's trivial to update our version only if we haven't made changes
+to the PolyK code. (If we *have* to make changes, make a comment about every change, either in code or separate document.)
+I noticed that Rikard made a bug fix to PolyK. We should try to get that into the original code to avoid merge problems.
+
+Programmers reading this code need to know that we didn't write this code to begin with
+and where it comes from (to find documentation and updates etc).
+*/
+
 define([],
 	function() {
 		var PolyK = {};
