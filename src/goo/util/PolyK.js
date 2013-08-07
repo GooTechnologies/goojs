@@ -231,7 +231,7 @@ define([],
 			a2.x = x + dx;
 			a2.y = y + dy;
 
-			if (isc === null) {
+			if (!isc) {
 				isc = {
 					dist: 0,
 					edge: 0,
@@ -275,7 +275,7 @@ define([],
 			a1.x = x;
 			a1.y = y;
 
-			if (isc === null) {
+			if (!isc) {
 				isc = {
 					dist: 0,
 					edge: 0,
