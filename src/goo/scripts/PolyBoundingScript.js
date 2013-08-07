@@ -1,10 +1,4 @@
-require.config({
-	paths: {
-		"goo/lib": "../../../../goojs/lib"
-	}
-});
-
-define(['goo/lib/polyk'],
+define(['goo/util/PolyK'],
 	function(PolyK) {
 
 	"use strict";
