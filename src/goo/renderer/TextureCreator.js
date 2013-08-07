@@ -164,6 +164,7 @@ function (
 			}
 			return false;
 		};
+
 		texture.updateCallback = function () {
 			return !video.paused;
 		};

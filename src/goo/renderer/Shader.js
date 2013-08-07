@@ -3,7 +3,8 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector3',
 	'goo/entities/World',
-	'goo/renderer/RenderQueue'
+	'goo/renderer/RenderQueue',
+	'goo/renderer/Util'
 ],
 /** @lends */
 function (
@@ -11,7 +12,8 @@ function (
 	Matrix4x4,
 	Vector3,
 	World,
-	RenderQueue
+	RenderQueue,
+	Util
 ) {
 	"use strict";
 
@@ -38,6 +40,10 @@ function (
 		if (!shaderDefinition.vshader || !shaderDefinition.fshader) {
 			throw new Error('Missing shader sources for shader: ' + name);
 		}
+
+		this.originalShaderDefinition = shaderDefinition;
+		// shaderDefinition = this.shaderDefinition = Util.clone(shaderDefinition);
+		this.shaderDefinition = shaderDefinition;
 
 		this.name = name;
 		this.origVertexSource = this.vertexSource = shaderDefinition.vshader;
@@ -108,7 +114,7 @@ function (
 	Shader.id = 0;
 
 	Shader.prototype.clone = function () {
-		return new Shader(this.name, {
+		return new Shader(this.name, Util.clone({
 			precision: this.precision,
 			processors: this.processors,
 			defines: this.defines,
@@ -116,7 +122,13 @@ function (
 			uniforms: this.uniforms,
 			vshader: this.origVertexSource,
 			fshader: this.origFragmentSource
-		});
+		}));
+
+		// return new Shader(this.name, this.shaderDefinition);
+	};
+
+	Shader.prototype.cloneOriginal = function () {
+		return new Shader(this.name, this.originalShaderDefinition);
 	};
 
 	/*
@@ -307,6 +319,9 @@ function (
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
+				// if (this.attributes[key]) {
+					// delete this.attributes[key];
+				// }
 				// console.warn('Attribute [' + this.attributeMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}
@@ -318,6 +333,16 @@ function (
 			var uniform = context.getUniformLocation(this.shaderProgram, key);
 
 			if (uniform === null) {
+				// if (this.uniforms[key]) {
+					// delete this.uniforms[key];
+				// }
+				for (var i = 0; i < this.textureSlots.length; i++) {
+					var slot = this.textureSlots[i];
+					if (slot.name === key) {
+						this.textureSlots.splice(i, 1);
+						break;
+					}
+				}
 				// console.warn('Uniform [' + this.uniformMapping[key].format + ' ' + key + '] variable not found in shader. Probably unused and optimized away.');
 				continue;
 			}

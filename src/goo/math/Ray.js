@@ -9,6 +9,11 @@ function (Vector3, MathUtils) {
 	function Ray (origin, direction) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
+
+		this.calcVec1 = new Vector3();
+		this.calcVec2 = new Vector3();
+		this.calcVec3 = new Vector3();
+		this.calcVec4 = new Vector3();
 	}
 
 	/**
@@ -41,10 +46,10 @@ function (Vector3, MathUtils) {
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = new Vector3().set(this.origin).sub(pointA);
-		var edge1 = new Vector3().set(pointB).sub(pointA);
-		var edge2 = new Vector3().set(pointC).sub(pointA);
-		var norm = new Vector3().set(edge1).cross(edge2);
+		var diff = this.calcVec1.set(this.origin).sub(pointA);
+		var edge1 = this.calcVec2.set(pointB).sub(pointA);
+		var edge2 = this.calcVec3.set(pointC).sub(pointA);
+		var norm = this.calcVec4.set(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;
@@ -101,7 +106,7 @@ function (Vector3, MathUtils) {
 	 */
 	Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
 		// Intersection test
-		var intersect = new Vector3();
+		var intersect = this.calcVec1;
 		if (this.intersects(worldVertices, false, intersect)) {
 			return this.origin.distance(intersect.x, intersect.y, intersect.z);
 		}
@@ -141,7 +146,7 @@ function (Vector3, MathUtils) {
 	 * @return the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
-		var vectorA = new Vector3();
+		var vectorA = this.calcVec1;
 		vectorA.set(point).subtractLocal(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
