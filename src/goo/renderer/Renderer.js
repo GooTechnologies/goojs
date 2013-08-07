@@ -529,7 +529,13 @@ function (
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 				if (!shaderCache[defineKey]) {
 					shader = material.shader = shader.clone();
+					// shader = material.shader = shader.cloneOriginal();
 					shaderCache[defineKey] = shader;
+					// if (shader.processors) {
+						// for (var j = 0; j < shader.processors.length; j++) {
+							// shader.processors[j](shader, renderInfo);
+						// }
+					// }
 					console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
@@ -624,17 +630,29 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer) {
+	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer, doScissor) {
+		if(this.viewportWidth * this.viewportHeight === 0) {
+			pickingStore.id = -1;
+			pickingStore.depth = 0;
+			return;
+		}
+
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			this.hardwarePicking = {
-				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider),
+				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
+					minFilter: 'NearestNeighborNoMipMaps',
+					magFilter: 'NearestNeighbor'
+				}),
 				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
 		} else if (this.hardwarePicking.pickingTarget === null) {
-			this.hardwarePicking.pickingTarget = new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider);
+			this.hardwarePicking.pickingTarget = new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
+					minFilter: 'NearestNeighborNoMipMaps',
+					magFilter: 'NearestNeighbor'
+				});
 			skipUpdateBuffer = false;
 		}
 
@@ -643,11 +661,17 @@ function (
 
 		if (!skipUpdateBuffer) {
 			this.overrideMaterial = this.hardwarePicking.pickingMaterial;
-			this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
-			this.context.scissor(x, y, 1, 1);
+			if (doScissor) {
+				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
+				this.context.scissor(x, y, 1, 1);
+			}
 			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
-			this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
+			if (doScissor) {
+				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
+			}
 			this.overrideMaterial = null;
+		} else {
+			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
@@ -801,7 +825,11 @@ function (
 			var textureSlot = textureSlots[i];
 			var texture = material.getTexture(textureSlot.mapping);
 
-			if (texture === undefined || texture === null ||
+			if (texture === undefined) {
+				continue;
+			}
+
+			if (texture === null ||
 				texture instanceof RenderTarget === false && (texture.image === undefined ||
 					texture.checkDataReady() === false)) {
 				if (textureSlot.format === 'sampler2D') {
@@ -815,6 +843,7 @@ function (
 			if (unitrecord === undefined) {
 				unitrecord = this.rendererRecord.textureRecord[i] = {};
 			}
+			unitrecord.boundTexture = null;
 
 			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();

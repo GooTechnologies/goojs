@@ -16,45 +16,95 @@ JsonUtils,
 pu,
 _) ->
 
+
+	# Perhaps move to utils later
+	_getTypedArray = (bindata, pointer)->
+		[start, length, format] = pointer
+		if format == 'float32'
+			#new Float32Array(bindata, start, length) Inexplicably doesn't work
+			new Float32Array(bindata.slice(start, start+length*4))
+		else if format == 'uint8'
+			#new Uint8Array(bindata, start, length)
+			new Uint8Array(bindata.slice(start, start+length))
+		else if format == 'uint16'
+			#new Uint16Array(bindata, start, length)
+			new Uint16Array(bindata.slice(start, start+length*2))
+		else if format == 'uint32'
+			#new Uint32Array(bindata, start, length)
+			new Uint32Array(bindata.slice(start, start+length*4))
+		else
+			throw new Error("Binary format #{format} is not supported")
+
+	_unpackBinary = (key, meshConfig, bindata)->
+		if key of meshConfig and meshConfig[key].length == 3
+			meshConfig[key] = _getTypedArray(bindata, meshConfig[key])
+
+
 	class MeshDataHandler extends ConfigHandler
 		@_register('mesh')
 	
-	
+		constructor: (@world, @getConfig, @updateObject, @options)->
+			@_objects = {}
+
 		_create: (meshConfig)->
+			# We do everything in update instead			
+			
+		update: (ref, meshConfig)->
+			if not @_objects[ref]
+				if meshConfig.binary_data
+					@getConfig(meshConfig.binary_data).then (bindata)=>
+						if not bindata then throw new Error("Binary mesh data was empty")
+						@_createMeshData(meshConfig, bindata)
+						.then (meshData)=>
+							@_objects[ref] = meshData
+				else
+					@_createMeshData(meshConfig, null)
+					.then (meshData)=>
+						@_objects[ref] = meshData
+			else
+				pu.createDummyPromise(@_objects[ref])
+
+		remove: (ref)->
+			# Do nothing, we didn't save anything
+			
+
+		# Returns promise that resolves with the created meshdata object
+		_createMeshData: (meshConfig, bindata)->
+
 			if meshConfig.compression and meshConfig.compression.compressed
 				compression = 
 					compressedVertsRange: meshConfig.compression.compressedVertsRange or (1 << 14) - 1 #int
 					compressedColorsRange: meshConfig.compression.compressedColorsRange or (1 << 8) - 1 #int
 					compressedUnitVectorRange: meshConfig.compression.compressedUnitVectorRange or (1 << 10) - 1 #int
-	
+
+			if bindata
+				# Binary data is stored in a separate file. Experimental format. 
+				for key in ['indices', 'vertices', 'normals', 'joints', 'weights', 'colors', 'tangents']
+					_unpackBinary(key, meshConfig, bindata)
+
+				textureCoords = []
+				for layer, idx in meshConfig.textureCoords
+					textureCoords[idx] = _getTypedArray(bindata, layer)
+				meshConfig.textureCoords = textureCoords
+
+
 			if meshConfig.type == 'SkinnedMesh'
 				meshData = @_parseMeshData(meshConfig.data or meshConfig, 4, 'SkinnedMesh', compression)
 				meshData.type = MeshData.SKINMESH
 			else
 				meshData = @_parseMeshData(meshConfig.data or meshConfig, 0, 'Mesh', compression)
 				meshData.type = MeshData.MESH
-			
-			
-			return meshData
-			
-		update: (ref, config)->
-			# TODO: can you update meshdata?
-			meshData = @_create(config)
-			
-			if config.pose
-				skelRef = config.pose
+
+			if meshConfig.pose
+				skelRef = meshConfig.pose
 				@getConfig(skelRef).then (skelConfig)=>
 					@updateObject(skelRef, skelConfig).then (skeleton)=>
 						meshData.currentPose = skeleton
 						return meshData
 			else
 				pu.createDummyPromise(meshData)
-		
-		remove: (ref)->
-			# Do nothing, we didn't save anything
-			
 
-		# Translated into coffeescript from goo/loaders/MeshLoader.js
+
 		# Returns MeshData object
 		_parseMeshData: (data, weightsPerVert, type, compression)->
 			vertexCount = data.vertexCount # int
@@ -89,7 +139,7 @@ _) ->
 				
 			meshData = new MeshData(attributeMap, vertexCount, indexCount)
 	
-			if (data.vertices && data.vertices.length > 0) 
+			if data.vertices?.length > 0
 				if compression? 
 					offsetObj = data.vertexOffsets
 					JsonUtils.fillAttributeBufferFromCompressedString(
@@ -106,7 +156,9 @@ _) ->
 							offsetObj.yOffset, 
 							offsetObj.zOffset
 						])
-				else
+				else if data.vertices instanceof Float32Array
+					meshData.getAttributeBuffer(MeshData.POSITION).set(data.vertices)
+				else 
 					JsonUtils.fillAttributeBuffer(data.vertices, meshData, MeshData.POSITION)
 				
 			if weightsPerVert > 0 and data.weights
@@ -115,6 +167,8 @@ _) ->
 					scale = 1 / compression.compressedVertsRange
 	
 					JsonUtils.fillAttributeBufferFromCompressedString(data.weights, meshData, MeshData.WEIGHTS, [scale], [offset])
+				else if data.weights instanceof Float32Array
+					meshData.getAttributeBuffer(MeshData.WEIGHTS).set(data.weights)
 				else
 					JsonUtils.fillAttributeBuffer(data.weights, meshData, MeshData.WEIGHTS)
 				
@@ -125,6 +179,9 @@ _) ->
 	
 					JsonUtils.fillAttributeBufferFromCompressedString(data.normals, meshData, MeshData.NORMAL, 
 						[scale, scale, scale], [offset, offset,offset])
+
+				else if data.normals instanceof Float32Array
+					meshData.getAttributeBuffer(MeshData.NORMAL).set(data.normals)
 				else
 					JsonUtils.fillAttributeBuffer(data.normals, meshData, MeshData.NORMAL)
 	
@@ -135,6 +192,9 @@ _) ->
 	
 					JsonUtils.fillAttributeBufferFromCompressedString(data.tangents, meshData, MeshData.TANGENT, 
 						[scale, scale, scale, scale], [offset,offset, offset, offset])
+
+				else if data.tangents instanceof Float32Array
+					meshData.getAttributeBuffer(MeshData.TANGENTS).set(data.tangents)
 				else
 					JsonUtils.fillAttributeBuffer(data.tangents, meshData, MeshData.TANGENT)
 	
@@ -144,6 +204,8 @@ _) ->
 					scale = 1 / (compression.compressedColorsRange + 1)
 					JsonUtils.fillAttributeBufferFromCompressedString(data.colors, meshData, MeshData.COLOR, 
 						[scale, scale, scale, scale], [offset,offset, offset, offset])
+				else if data.colors instanceof Float32Array
+					meshData.getAttributeBuffer(MeshData.COLOR).set(data.colors)
 				else
 					JsonUtils.fillAttributeBuffer(data.colors, meshData, MeshData.COLOR)
 	
@@ -155,14 +217,18 @@ _) ->
 				else
 					for texObj, texIdx in textureUnits
 						attr = 'TEXCOORD' + texIdx
-						#console.debug("Filling attribute " + attr + ' with ' + texObj.length + ' indices');
-						JsonUtils.fillAttributeBuffer(texObj, meshData, attr)
+						if texObj instanceof Float32Array
+							meshData.getAttributeBuffer(attr).set(texObj)
+						else
+							JsonUtils.fillAttributeBuffer(texObj, meshData, attr)
 	
 			if weightsPerVert > 0 and data.joints
 				buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS)
 	
 				if compression
 					jointData = JsonUtils.getIntBufferFromCompressedString(data.joints, 32767)
+				else if data.joints instanceof Uint16Array or data.joints instanceof Uint8Array
+					jointData = data.joints
 				else
 					jointData = JsonUtils.getIntBuffer(data.joints, 32767)
 				
@@ -192,7 +258,10 @@ _) ->
 			if data.indices
 				if compression?
 					meshData.getIndexBuffer().set(JsonUtils.getIntBufferFromCompressedString(data.indices, vertexCount))
-				else
+				else if data.indices instanceof Uint16Array or data.indices instanceof Uint8Array
+					meshData.getIndexBuffer().set(data.indices)
+
+				else					
 					meshData.getIndexBuffer().set(JsonUtils.getIntBuffer(data.indices, vertexCount))
 	
 			if data.indexModes 

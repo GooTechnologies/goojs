@@ -44,9 +44,18 @@ function(
 			}
 
 			for (var type in textureMaps) {
+				if (textureMaps[type] === undefined) {
+					continue;
+				}
+
 				if (type === 'SHADOW_MAP') {
 					continue;
 				}
+
+				//Casino hack
+				// if (type !== 'DIFFUSE_MAP' && type !== 'LIGHT_MAP') {
+				// 	continue;
+				// }
 
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
@@ -526,6 +535,5 @@ function(
 			}
 		}
 	};
-
 	return ShaderBuilder;
 });
