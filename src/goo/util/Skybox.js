@@ -28,7 +28,7 @@ define([
 
 	function Skybox(world, cameraEntity, type, images) {
 		Entity.call(this, world, 'Skybox');
-		this._posMatrix = cameraEntity.transformComponent.worldTransform.matrix;
+		this._cameraPos = cameraEntity.transformComponent.transform.translation;
 		var meshData, texture;
 		if (type === Skybox.SPHERE) {
 			meshData = ShapeCreator.createSphere(10, 10, 1, Sphere.TextureModes.Projected);
@@ -47,6 +47,11 @@ define([
 		tfc.transform.scale.scale(100);
 		if(type === Skybox.SPHERE) {
 			tfc.transform.setRotationXYZ(-Math.PI/2, 0, 0);
+		}
+
+		var parent = cameraEntity.transformComponent.parent;
+		if (parent) {
+			parent.attachChild(tfc);
 		}
 		this.setComponent(tfc);
 		this.setComponent(new MeshDataComponent(meshData));
@@ -67,8 +72,9 @@ define([
 		this.setComponent(
 			new ScriptComponent({
 				run: function(entity) {
-					entity._posMatrix.getTranslation(entity.transformComponent.transform.translation);
-				}
+					entity.transformComponent.transform.translation.setv(this._cameraPos);
+					entity.transformComponent.setUpdated();
+				}.bind(this)
 			})
 		);
 	}

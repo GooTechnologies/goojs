@@ -35,7 +35,7 @@ _) ->
 					else if jointConfig.inverseBindPose.rotation.length == 4
 						parseTransform = JsonUtils.parseTransformQuat
 						
-					else if jointObj.InverseBindPose.rotation.length == 3
+					else if jointConfig.inverseBindPose.rotation.length == 3
 						parseTransform = JsonUtils.parseTransformEuler
 					else 
 						parseTransform = JsonUtils.parseTransform
