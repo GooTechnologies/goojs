@@ -1,11 +1,12 @@
 require.config({
 	paths: {
-		"goo/lib": "goojs/lib"
+		"goo/lib": "../../../../goojs/lib"
 	}
 });
 
 define(['goo/lib/polyk'],
 	function(PolyK) {
+
 	"use strict";
 
 	function PolyBoundingScript() {
@@ -30,11 +31,18 @@ define(['goo/lib/polyk'],
 
 		for (var i in this.collidables) {
 			var collidable = this.collidables[i];
+
 			if(collidable.bottom <= translation.data[1] && collidable.top >= translation.data[1]) {
 				if(PolyK.ContainsPoint(collidable.poly, translation.data[0], translation.data[2])) {
-					var pointOutside = PolyK.ClosestEdge(collidable.poly, translation.data[0], translation.data[2]);
-					translation.data[0] = pointOutside.x;
-					translation.data[2] = pointOutside.y;
+
+					var pointOutside = PolyK.ClosestEdge(
+						collidable.poly,
+						translation.data[0],
+						translation.data[2]
+					);
+
+					translation.data[0] = pointOutside.point.x;
+					translation.data[2] = pointOutside.point.y;
 					transformComponent.setUpdated();
 					return ;
 				}
