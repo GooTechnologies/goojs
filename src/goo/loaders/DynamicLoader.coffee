@@ -268,6 +268,10 @@ _) ->
 					@_configs[ref] = @_ajax.loadImage(url)
 					.then (data)=>
 						@_configs[ref] = data
+					.then null, (e)=>
+						delete @_configs[ref]
+						return e
+
 				else
 					if @_isBinaryRef(ref)
 						mode = Ajax.ARRAY_BUFFER 
@@ -279,6 +283,9 @@ _) ->
 							@_configs[ref] = JSON.parse(data)
 						else
 							@_configs[ref] = data
+					.then null, (e)=>
+						delete @_configs[ref]
+						return e
 			else
 				console.warn "#{ref} is none"
 				pu.createDummyPromise(null)
