@@ -25,7 +25,7 @@ require([
 	'goo/shapes/Box',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/PolyBoundingScript'
+	'goo/addons/scripts/PolyBoundingScript'
 ], function (
 	GooRunner,
 	World,
