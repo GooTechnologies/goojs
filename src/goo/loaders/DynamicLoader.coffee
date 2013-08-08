@@ -33,6 +33,7 @@ ComponentHandler,
 Ajax,
 TextureCreator,
 RSVP,
+# REVIEW: These two variable names suck. Call them StringUtil and PromiseUtil as we're used to.
 su,
 pu,
 _) ->
@@ -214,9 +215,11 @@ _) ->
 		# Load/update an object with the given reference into the engine
 		_handle: (ref, config, options={})-> 
 			if @_objects[ref]?.then
+				# REVIEW: Isn't this an error condition? The config won't be updated.
 				#console.debug "#{ref} is handling"	
 				return @_objects[ref]
 			else if @_objects[ref] and not options.noCache
+				# REVIEW: Isn't this an error condition? The config won't be updated.
 				#console.debug "#{ref} is already handled"
 				return pu.createDummyPromise(@_objects[ref])
 			else
@@ -257,21 +260,34 @@ _) ->
 		*###
 		_loadRef: (ref, noCache=false)->
 			if @_configs[ref]?.then
-				#console.log "#{ref} is loading"
+				# There's a panding request for this config; return the promise
 				return @_configs[ref]
+			# REVIEW: No need for an else statement if the previous if statement ends with return.
+			# See for example http://programmers.stackexchange.com/questions/18454/should-i-return-from-a-function-early-or-use-an-if-statement
+			# We'd avoid indentation and confusion by just doing:
+			# if @_configs[ref]?.then
+			# 	return @_configs[ref]
+			# if @_configs[ref]? and not noCache
+			# 	return pu.createDummyPromise(@_configs[ref])
+			# if @_ajax
+			# ...
+
 			else if @_configs[ref]? and not noCache
-				#console.log "#{ref} is loaded"
 				return pu.createDummyPromise(@_configs[ref])
 			else if @_ajax
 				url = @_rootPath + window.escape(ref)
 				if @_isImageRef(ref)
+					# REVIEW: I was didn't see what this code did at first. It would be clearer if written more specifically:
+					# promise = @_ajax.loadImage(url)
+					# @_configs[ref] = promise
+					# promise.then...
 					@_configs[ref] = @_ajax.loadImage(url)
 					.then (data)=>
 						@_configs[ref] = data
 					.then null, (e)=>
 						delete @_configs[ref]
 						return e
-
+					# REVIEW: Is there an implicit return here? Make it explicit.
 				else
 					if @_isBinaryRef(ref)
 						mode = Ajax.ARRAY_BUFFER 
@@ -288,6 +304,8 @@ _) ->
 						return e
 			else
 				console.warn "#{ref} is none"
+				# REVIEW: Use explicit returns (esp. in long functions like this one), i.e.
+				# return pu.createDummyPromise(null)
 				pu.createDummyPromise(null)
 				
 		# Find all the references in a config, and return in a flat list

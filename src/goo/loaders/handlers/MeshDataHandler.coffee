@@ -11,6 +11,7 @@ define [
 ConfigHandler,
 MeshData,
 JsonUtils,
+# REVIEW: Bad variable name, just call it PromiseUtil
 pu,
 _) ->
 
@@ -37,19 +38,23 @@ _) ->
 
 	class MeshDataHandler extends ConfigHandler
 		@_register('mesh')
+		# REVIEW: BufferTypes is not used. What's it for?
 		BufferTypes = 
 			PLAIN: 1
 			COMPRESSED: 2
 			BINARY: 3
-	
+
 		constructor: (@world, @getConfig, @updateObject, @options)->
 			@_objects = {}
+			# REVIEW: _binaryBuffers isn't used. Remove it?
 			@_binaryBuffers = {}
 
 		_create: (meshConfig)->
-			# We do everything in update instead			
+			# We do everything in update instead
+			# REVIEW: Then why not remove this function? It seems to be unused.
 			
 		update: (ref, meshConfig)->
+			# REVIEW: Why do we clear _binaryBuffers here? It's not used anyway, so...
 			@_binaryBuffers = {}
 
 			if not @_objects[ref]
@@ -85,6 +90,7 @@ _) ->
 			@_fillMeshData(meshData, meshConfig, bindata, compression)
 
 			if meshConfig.pose
+				# REVIEW: Shouldn't "pose" be "poseRef" if it's a ref?
 				skelRef = meshConfig.pose
 				@getConfig(skelRef).then (skelConfig)=>
 					@updateObject(skelRef, skelConfig).then (skeleton)=>
@@ -150,6 +156,9 @@ _) ->
 			else
 				weightsPerVert = 0
 
+			# REVIEW: _fillAttrbuteBuffer has an overwhelming amount of parameters (6).
+			# But it's only used within _fillMeshData, so just put the definition of
+			# _fillAttributeBuffer here (i.e. a closure) and we can avoid all parameters that are the same for every call.
 			@_fillAttributeBuffer(meshData, MeshData.POSITION, data.vertices, config, bindata, compression)
 			@_fillAttributeBuffer(meshData, MeshData.NORMAL, data.normals, config, bindata, compression)
 			@_fillAttributeBuffer(meshData, MeshData.TANGENT, data.tangents, config, bindata, compression)
@@ -277,6 +286,7 @@ _) ->
 					offset: texObj.UVOffsets 
 					scale: texObj.UVScales
 
+		# REVIEW: Remove this long block of commented-out code
 		# Returns MeshData object
 		# _parseMeshData: (data, weightsPerVert, type, compression)->
 	
