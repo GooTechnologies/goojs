@@ -53,6 +53,8 @@ _) ->
 			@_binaryBuffers = {}
 
 			if not @_objects[ref]
+				# REVIEW: For consistency with typical JS/JSON capitalization and other configs,
+				# binary_data should be called binaryDataRef
 				if meshConfig.binary_data
 					@getConfig(meshConfig.binary_data).then (bindata)=>
 						if not bindata then throw new Error("Binary mesh data was empty")
