@@ -278,12 +278,12 @@ _) ->
 			else
 				promise = @_ajax.load(url)
 					
-			promise.then (data)=>
+			promise = promise.then (data)=>
 				if _jsonTest.test(ref) 
 					@_configs[ref] = JSON.parse(data)
 				else
 					@_configs[ref] = data
-			promise.then null, (e)=>
+			promise = promise.then null, (e)=>
 				delete @_configs[ref]
 				return e
 

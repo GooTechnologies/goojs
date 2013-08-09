@@ -144,7 +144,7 @@ _) ->
 				weightsPerVert = 0
 
 
-			_fillAttributeBuffer = (attr, data)->
+			_fillAttributeBuffer = (attr, data)=>
 				if data?.length
 					if compression
 						opts = @_getCompressionOptions(attr, config, compression)
