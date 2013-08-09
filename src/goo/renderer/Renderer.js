@@ -843,7 +843,6 @@ function (
 			if (unitrecord === undefined) {
 				unitrecord = this.rendererRecord.textureRecord[i] = {};
 			}
-			unitrecord.boundTexture = null;
 
 			if (texture.glTexture === null) {
 				texture.glTexture = context.createTexture();
@@ -964,8 +963,10 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
-		this.bindTexture(context, texture, unit, record);
+	Renderer.prototype.updateTexture = function (context, texture, unit /*, record*/) {
+		// this.bindTexture(context, texture, unit, record);
+		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
+		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned

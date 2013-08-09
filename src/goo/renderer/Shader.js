@@ -83,6 +83,7 @@ function (
 		 * @type {object[]}
 		 */
 		this.textureSlots = [];
+		this.textureSlotsNaming = {};
 
 		this.defaultCallbacks = {};
 		setupDefaultCallbacks(this.defaultCallbacks);
@@ -202,7 +203,7 @@ function (
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
 		var mapping = this.uniformCallMapping[name];
-		if (!mapping) {
+		if (mapping === undefined) {
 			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
@@ -213,13 +214,18 @@ function (
 			if (callback) {
 				callback(mapping, shaderInfo);
 			} else {
-				for (var i = 0; i < this.textureSlots.length; i++) {
-					var slot = this.textureSlots[i];
-					if (slot.name === name) {
-						mapping.call(i);
-						break;
-					}
+				var slot = this.textureSlotsNaming[name];
+				if (slot !== undefined) {
+					mapping.call(slot.index);
 				}
+
+				// for (var i = 0; i < this.textureSlots.length; i++) {
+					// var slot = this.textureSlots[i];
+					// if (slot.name === name) {
+						// mapping.call(i);
+						// break;
+					// }
+				// }
 			}
 		} else {
 			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
@@ -240,6 +246,7 @@ function (
 
 	Shader.prototype._investigateShaders = function () {
 		this.textureSlots = [];
+		this.textureSlotsNaming = {};
 		Shader.investigateShader(this.vertexSource, this);
 		Shader.investigateShader(this.fragmentSource, this);
 	};
@@ -280,9 +287,11 @@ function (
 					var textureSlot = {
 						format: definition.format,
 						name: variableName,
-						mapping: target.uniforms[variableName]
+						mapping: target.uniforms[variableName],
+						index: target.textureSlots.length
 					};
 					target.textureSlots.push(textureSlot);
+					target.textureSlotsNaming[textureSlot.name] = textureSlot;
 				}
 				target.uniformMapping[variableName] = definition;
 			}
@@ -336,10 +345,16 @@ function (
 				// if (this.uniforms[key]) {
 					// delete this.uniforms[key];
 				// }
-				for (var i = 0; i < this.textureSlots.length; i++) {
+
+				var l = this.textureSlots.length;
+				for (var i = 0; i < l; i++) {
 					var slot = this.textureSlots[i];
 					if (slot.name === key) {
 						this.textureSlots.splice(i, 1);
+						delete this.textureSlotsNaming[slot.name];
+						for (; i < l-1; i++) {
+							this.textureSlots[i].index--;
+						}
 						break;
 					}
 				}
