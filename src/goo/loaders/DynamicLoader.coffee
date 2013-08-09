@@ -33,9 +33,8 @@ ComponentHandler,
 Ajax,
 TextureCreator,
 RSVP,
-# REVIEW: These two variable names suck. Call them StringUtil and PromiseUtil as we're used to.
-su,
-pu,
+StringUtil,
+PromiseUtil,
 _) ->
 
 	###*
@@ -215,16 +214,13 @@ _) ->
 		# Load/update an object with the given reference into the engine
 		_handle: (ref, config, options={})-> 
 			if @_objects[ref]?.then
-				# REVIEW: Isn't this an error condition? The config won't be updated.
-				#console.debug "#{ref} is handling"	
+				# The object is already being handled in this update cycle, avoid duplicate handling
+				# Object cache is reset when a new update call is initiated by the user
 				return @_objects[ref]
 			else if @_objects[ref] and not options.noCache
-				# REVIEW: Isn't this an error condition? The config won't be updated.
-				#console.debug "#{ref} is already handled"
-				return pu.createDummyPromise(@_objects[ref])
+				return PromiseUtil.createDummyPromise(@_objects[ref])
 			else
 				type = @_getTypeForRef(ref)
-				#console.debug "Handling #{ref}, type is #{type}"
 				handlerClass = ConfigHandler.getHandler(type)
 				if handlerClass
 					@_handlers ?= {}
@@ -244,11 +240,11 @@ _) ->
 							@_objects[ref] = object
 					else
 						handler.remove(ref)
-						pu.createDummyPromise(null)
+						PromiseUtil.createDummyPromise(null)
 						
 				else
 					console.warn "No handler for type #{type}"
-					pu.createDummyPromise(null)
+					PromiseUtil.createDummyPromise(null)
 
 
 		###*
@@ -260,61 +256,46 @@ _) ->
 		*###
 		_loadRef: (ref, noCache=false)->
 			if @_configs[ref]?.then
-				# There's a panding request for this config; return the promise
+				# There's a pending request for this config; return the promise
 				return @_configs[ref]
-			# REVIEW: No need for an else statement if the previous if statement ends with return.
-			# See for example http://programmers.stackexchange.com/questions/18454/should-i-return-from-a-function-early-or-use-an-if-statement
-			# We'd avoid indentation and confusion by just doing:
-			# if @_configs[ref]?.then
-			# 	return @_configs[ref]
-			# if @_configs[ref]? and not noCache
-			# 	return pu.createDummyPromise(@_configs[ref])
-			# if @_ajax
-			# ...
 
-			else if @_configs[ref]? and not noCache
-				return pu.createDummyPromise(@_configs[ref])
-			else if @_ajax
-				url = @_rootPath + window.escape(ref)
-				if @_isImageRef(ref)
-					# REVIEW: I was didn't see what this code did at first. It would be clearer if written more specifically:
-					# promise = @_ajax.loadImage(url)
-					# @_configs[ref] = promise
-					# promise.then...
-					@_configs[ref] = @_ajax.loadImage(url)
-					.then (data)=>
-						@_configs[ref] = data
-					.then null, (e)=>
-						delete @_configs[ref]
-						return e
-					# REVIEW: Is there an implicit return here? Make it explicit.
-				else
-					if @_isBinaryRef(ref)
-						mode = Ajax.ARRAY_BUFFER 
-					else 
-						mode = null
-					@_configs[ref] = @_ajax.load(url, mode)
-					.then (data)=>
-						if _jsonTest.test(ref) 
-							@_configs[ref] = JSON.parse(data)
-						else
-							@_configs[ref] = data
-					.then null, (e)=>
-						delete @_configs[ref]
-						return e
+			if @_configs[ref]? and not noCache
+				return PromiseUtil.createDummyPromise(@_configs[ref])
+			
+			if not @_ajax
+				# There is no config loaded for this ref, and we don't have the means to load it
+				return PromiseUtil.createDummyPromise(null)
+
+			# Load ref with ajax
+			url = @_rootPath + window.escape(ref)
+
+			if @_isImageRef(ref)
+				promise = @_ajax.loadImage(url)
+			else if @_isBinaryRef(ref)
+				promise = @_ajax.load(url, Ajax.ARRAY_BUFFER)
 			else
-				console.warn "#{ref} is none"
-				# REVIEW: Use explicit returns (esp. in long functions like this one), i.e.
-				# return pu.createDummyPromise(null)
-				pu.createDummyPromise(null)
+				promise = @_ajax.load(url)
+					
+			promise.then (data)=>
+				if _jsonTest.test(ref) 
+					@_configs[ref] = JSON.parse(data)
+				else
+					@_configs[ref] = data
+			promise.then null, (e)=>
+				delete @_configs[ref]
+				return e
+
+			@_configs[ref] = promise
+			return promise
+
 				
 		# Find all the references in a config, and return in a flat list
 		_getRefsFromConfig: (config)->
 			_refs = []
 			traverse = (key,value)->
-				if su.endsWith(key, 'Refs')
+				if StringUtil.endsWith(key, 'Refs')
 					_refs = _refs.concat(value)
-				else if su.endsWith(key, 'Ref')
+				else if StringUtil.endsWith(key, 'Ref')
 					_refs.push(value)
 				else if value instanceof Object
 					for own _key, _value of value
