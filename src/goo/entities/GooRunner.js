@@ -119,7 +119,7 @@ function (
 			}
 		};
 
-		this.animationId = -1;
+		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
 			this.startGameLoop(this.run);
 		}
@@ -314,8 +314,10 @@ function (
 	 * Starts the game loop. (done through requestAnimationFrame)
 	 */
 	GooRunner.prototype.startGameLoop = function () {
-		this.start = -1;
-		this.animationId = window.requestAnimationFrame(this.run);
+		if (!this.animationId) {
+			this.start = -1;
+			this.animationId = window.requestAnimationFrame(this.run);
+		}
 	};
 
 	/**
@@ -323,6 +325,7 @@ function (
 	 */
 	GooRunner.prototype.stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
+		this.animationId = 0;
 	};
 
 	/**

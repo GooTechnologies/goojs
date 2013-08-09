@@ -188,7 +188,10 @@ function(
 		if (index !== -1) {
 			return Material.hash[index];
 		}
-		var shader = new Shader(name || 'DefaultShader', shaderDefinition);
+		var shader = new Shader(name || null, shaderDefinition);
+		if (shader.name === null) {
+			shader.name = 'DefaultShader' + shader._id;
+		}
 		Material.store.push(shaderDefinition);
 		Material.hash.push(shader);
 		return shader;
