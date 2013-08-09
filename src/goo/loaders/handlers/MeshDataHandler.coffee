@@ -144,7 +144,7 @@ _) ->
 				weightsPerVert = 0
 
 
-			_fillAttributeBuffer = (attr, data)->
+			_fillAttributeBuffer = (attr, data)=>
 				if data?.length
 					if compression
 						opts = @_getCompressionOptions(attr, config, compression)
@@ -153,12 +153,6 @@ _) ->
 						meshData.getAttributeBuffer(attr).set(_getTypedArray(bindata, data))
 					else
 						JsonUtils.fillAttributeBuffer(data, meshData, attr)			
-
-			# REVIEW: _fillAttrbuteBuffer has an overwhelming amount of parameters (6).
-			# But it's only used within _fillMeshData, so just put the definition of
-			# _fillAttributeBuffer here (i.e. a closure) and we can avoid all parameters that are the same for every call.
-
-			# Smart. Closure?
 
 			_fillAttributeBuffer(MeshData.POSITION, data.vertices)
 			_fillAttributeBuffer(MeshData.NORMAL, data.normals)
