@@ -59,6 +59,9 @@ function (
 	AnimationComponent.prototype.getStates = function() {
 		return this.layers[0].getStates();
 	};
+	AnimationComponent.prototype.getCurrentState = function() {
+		return this.layers[0].getCurrentState();
+	};
 	/**
 	 * Get available transitions
 	 * returns {string[]} available state keys

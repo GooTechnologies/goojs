@@ -144,6 +144,9 @@ function (
 		}
 	};
 
+	AnimationLayer.prototype.getCurrentState = function () {
+		return this._currentState;
+	};
 	/**
 	 * Force the current state of the machine to the state with the given name. 
 	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
