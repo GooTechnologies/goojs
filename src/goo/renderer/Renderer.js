@@ -434,6 +434,9 @@ function (
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
+		if (renderTarget && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
+			this.updateRenderTargetMipmap(renderTarget);
+		}
 	};
 
 	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {

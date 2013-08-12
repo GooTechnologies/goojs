@@ -8,8 +8,9 @@ define(['goo/renderer/Renderer',
 	/**
 	 * @class A pass that renders provided renderlist to the rendertarget or screen
 	 */
-	function RenderPass(renderList) {
+	function RenderPass(renderList, filter) {
 		this.renderList = renderList;
+		this.filter = filter;
 
 		this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
 		this.oldClearColor = new Vector4();
@@ -31,11 +32,17 @@ define(['goo/renderer/Renderer',
 			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 		}
 
+		var renderList;
+		if (this.filter) {
+			renderList = this.renderList.filter(this.filter);
+		} else {
+			renderList = this.renderList;
+		}
 		renderer.overrideMaterial = this.overrideMaterial;
 		if (this.renderToScreen) {
-			renderer.render(this.renderList, camera, lights);
+			renderer.render(renderList, camera, lights);
 		} else {
-			renderer.render(this.renderList, camera, lights, readBuffer, this.clear);
+			renderer.render(renderList, camera, lights, readBuffer, this.clear);
 		}
 		renderer.overrideMaterial = null;
 
