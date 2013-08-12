@@ -202,5 +202,11 @@ function (
 		}
 	};
 
+	AnimationLayer.prototype.setTimeScale = function(timeScale) {
+		if(this._currentState) {
+			this._currentState.setTimeScale(timeScale);
+		}
+	};
+
 	return AnimationLayer;
 });

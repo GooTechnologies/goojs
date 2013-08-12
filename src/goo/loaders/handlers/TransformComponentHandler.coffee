@@ -33,11 +33,15 @@ _) ->
 			component = super(entity, config) # Creates component if needed
 
 			component.transform.translation.set config.translation
-			component.transform.setRotationXYZ(
-				MathUtils.radFromDeg(config.rotation[0]),
-				MathUtils.radFromDeg(config.rotation[1]),
-				MathUtils.radFromDeg(config.rotation[2])
-			)
+			if config.rotation.length == 3
+				component.transform.setRotationXYZ(
+					MathUtils.radFromDeg(config.rotation[0]),
+					MathUtils.radFromDeg(config.rotation[1]),
+					MathUtils.radFromDeg(config.rotation[2])
+				)
+			else
+				component.transform.rotation.set(config.rotation)
+			
 			component.transform.scale.set config.scale
 
 			if config.parentRef? 

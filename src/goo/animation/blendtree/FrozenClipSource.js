@@ -43,5 +43,7 @@ function () {
 		return true;
 	};
 
+	FrozenTreeSource.prototype.setTimeScale = function() {};
+
 	return FrozenTreeSource;
 });

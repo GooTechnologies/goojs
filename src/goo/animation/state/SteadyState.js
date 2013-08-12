@@ -46,5 +46,8 @@ function (AbstractState) {
 		this._sourceTree.resetClips(globalStartTime);
 	};
 
+	SteadyState.prototype.setTimeScale = function (timeScale) {
+		this._sourceTree.setTimeScale(timeScale);
+	};
 	return SteadyState;
 });

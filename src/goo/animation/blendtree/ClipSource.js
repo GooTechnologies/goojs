@@ -88,6 +88,10 @@ function (
 		this._clipInstance._active = true;
 	};
 
+	ClipSource.prototype.setTimeScale = function (timeScale) {
+		this._clipInstance.setTimeScale(timeScale);
+	};
+
 	/*
 	 * @returns {boolean} if clipsource is active
 	 */

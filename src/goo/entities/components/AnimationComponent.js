@@ -184,6 +184,11 @@ function (
 		}
 	};
 
+	AnimationComponent.prototype.setTimeScale = function(timeScale) {
+		for (var i = 0; i < this.layers.length; i++) {
+			this.layers[i].setTimeScale(timeScale);
+		}
+	};
 
 	return AnimationComponent;
 });

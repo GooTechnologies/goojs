@@ -65,6 +65,10 @@ function (
 		}
 	};
 
+	BinaryLERPSource.prototype.setTimeScale = function (timeScale) {
+		this._sourceA.setTimeScale(timeScale);
+		this._sourceB.setTimeScale(timeScale);
+	};
 	/*
 	 * @returns {boolean} if clipsource is active
 	 */

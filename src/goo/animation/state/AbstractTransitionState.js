@@ -114,5 +114,14 @@ function (
 		this._percent = 0.0;
 	};
 
+	AbstractTransitionState.prototype.setTimeScale = function (timeScale) {
+		if (this._sourceState) {
+			this._sourceState.setTimeScale(timeScale);
+		}
+		if (this._targetState) {
+			this._targetState.setTimeScale(timeScale);
+		}
+	};
+
 	return AbstractTransitionState;
 });
