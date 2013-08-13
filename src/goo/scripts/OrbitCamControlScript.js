@@ -56,6 +56,9 @@ function (
 	 * @param {number} [properties.maxZoomDistance=1000]
 	 * @param {number} [properties.minAscent=-89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach below the target point
 	 * @param {number} [properties.maxAscent=89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach above the target point
+	 * @param {boolean} [properties.clampAzimuth=false]
+	 * @param {number} [properties.minAzimuth=-90 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach clockwise of the target point
+	 * @param {number} [properties.maxAzimuth=270 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach counter-clockwise of the target point
 	 * @param {boolean} [properties.invertedX=false]
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
