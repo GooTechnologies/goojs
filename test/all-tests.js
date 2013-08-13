@@ -22,6 +22,7 @@ define([
     'test/entities/Entity-test',
 	'test/entities/EntityUtils-test',
 	'test/entities/managers/EntityManager-test',
+	'test/entities/components/TransformComponent-test',
     'test/util/URLTools-test',
     'test/util/Ajax-test',
     'test/util/ColorUtil-test',
