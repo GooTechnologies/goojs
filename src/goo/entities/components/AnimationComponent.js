@@ -48,9 +48,10 @@ function (
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
+	 * @returns {boolean} true if a transition was found and started
 	 */
 	AnimationComponent.prototype.transitionTo = function(stateKey) {
-		this.layers[0].transitionTo(stateKey);
+		return this.layers[0].transitionTo(stateKey);
 	};
 	/**
 	 * Get available states

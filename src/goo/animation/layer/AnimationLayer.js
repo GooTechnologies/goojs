@@ -79,6 +79,7 @@ function (
 	 * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
 	 * @param {string} state
 	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @returns {boolean} true if a transition was found and started
 	 */
 	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
 		globalTime = globalTime || World.time;
@@ -93,18 +94,18 @@ function (
 		if (cState instanceof SteadyState && transition) {
 			var transitionState = this._transitionStates[transition.type];
 			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime);
-			return;
+			return true;
 		} else if (!cState) {
 			transition = this._transitions[state];
 			if(transition) {
 				var transitionState = this._transitionStates[transition.type];
 				if (transitionState) {
 					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
-					return;
+					return true;
 				}
 			}
 		}
-		console.warn('No transition performed');
+		return false;
 	};
 
 	AnimationLayer.prototype._doTransition = function(transition, source, target, config, globalTime) {
