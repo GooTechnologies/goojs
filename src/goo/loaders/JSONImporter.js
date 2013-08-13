@@ -1,12 +1,35 @@
 /* jshint bitwise: false */
-define(['goo/renderer/MeshData', 'goo/loaders/JsonUtils', 'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent', 'goo/renderer/Material', 'goo/renderer/TextureCreator', 'goo/animation/Joint',
-		'goo/animation/Skeleton', 'goo/animation/SkeletonPose', 'goo/animation/clip/AnimationClip', 'goo/animation/clip/JointChannel',
-		'goo/animation/clip/TransformChannel', 'goo/animation/clip/InterpolatedFloatChannel', 'goo/animation/state/loader/OutputStore',
-		'goo/util/URLTools', 'goo/util/SimpleResourceUtil', 'goo/renderer/shaders/ShaderLib', 'goo/renderer/Shader'],
+define([
+	'goo/renderer/MeshData',
+	'goo/loaders/JsonUtils',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/renderer/Material',
+	'goo/renderer/TextureCreator',
+	'goo/animation/Joint',
+	'goo/animation/Skeleton',
+	'goo/animation/SkeletonPose',
+	'goo/util/URLTools',
+	'goo/util/SimpleResourceUtil',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Shader'
+],
 /** @lends */
-function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Material, TextureCreator, Joint, Skeleton, SkeletonPose, AnimationClip,
-	JointChannel, TransformChannel, InterpolatedFloatChannel, OutputStore, URLTools, SimpleResourceUtil, ShaderLib, Shader) {
+function (
+	MeshData,
+	JsonUtils,
+	MeshDataComponent,
+	MeshRendererComponent,
+	Material,
+	TextureCreator,
+	Joint,
+	Skeleton,
+	SkeletonPose,
+	URLTools,
+	SimpleResourceUtil,
+	ShaderLib,
+	Shader
+) {
 	"use strict";
 
 	/**
@@ -528,7 +551,7 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 			result[4] !== undefined ? parseInt(result[4], 16) / 255.0 : 1.0
 		] : null;
 	};
-
+	/*
 	JSONImporter.prototype.importAnimationTree = function (manager, treeSource, completeCallback) {
 		return this.importAnimationTreeFromJSON(manager, JSON.parse(treeSource), completeCallback);
 	};
@@ -616,7 +639,7 @@ function (MeshData, JsonUtils, MeshDataComponent, MeshRendererComponent, Materia
 
 		return clip;
 	};
-
+	*/
 	function MaterialInfo () {
 		this.materialName = 'not set';
 		this.profile = null;
