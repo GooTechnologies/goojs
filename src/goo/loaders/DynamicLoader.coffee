@@ -283,7 +283,7 @@ _) ->
 					@_configs[ref] = JSON.parse(data)
 				else
 					@_configs[ref] = data
-			promise = promise.then null, (e)=>
+			.then null, (e)=>
 				delete @_configs[ref]
 				return e
 

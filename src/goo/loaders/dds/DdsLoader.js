@@ -231,10 +231,8 @@ define(['goo/loaders/dds/DdsUtils'],
 		var rVal = new Uint8Array(totalSize);
 		var offset = 0;
 		for (var mip = 0; mip < info.header.dwMipMapCount; mip++) {
-			var data = [];
-			for (var i = 0, max = info.mipmapByteSizes[mip]; i < max; i++) {
-				data.push(imgData[i + offset]);
-			}
+			var data = imgData.subarray(offset, offset+info.mipmapByteSizes[mip]);
+
 			var flipped = DdsUtils.flipDXT(data, mipWidth, mipHeight, texture.format);
 			rVal.set(flipped, offset);
 			offset += flipped.length;
