@@ -1,12 +1,13 @@
 var path = require('path');
+var exec = require('child_process').exec;
 
 if (process.argv.indexOf('--help') > 0 || process.argv.length < 8) {
-	console.log("Run\n" + 
+	console.log("Run\n" +
 		"node build.js --path [my_app_directory] --name [my_app_main] --out [out_name] [[--closure]]\n" + 
-		"\n" + 
-		"Arguments\n" + 
-		"--path	Path to js entry-point.\n" + 
-		"--name	Name of entry-point.\n" + 
+		"\n" +
+		"Arguments\n" +
+		"--path	Path to js entry-point.\n" +
+		"--name	Name of entry-point.\n" +
 		"--out Optimized file output name.\n" +
 		"[[--closure]] Optional argument to optimize with closure instead of uglify.\n",
 		"[[--simple]] Optional argument to not mangle the code, needed for angularjs atm.\n"
@@ -86,33 +87,39 @@ var config = {
 		no_copyright: true
 	} : {},
 	optimize : optimizer,
-	wrap : true,
+	wrap : true
 };
 
-// console.log(config);
+// compile coffee files and then optimize
+exec('coffee -c ' + path.resolve(workingDir,'../src/goo'),
+	function (error, stdout, stderr) {
+		// console.log(config);
 
-requirejs.optimize(config, function(buildResponse) {
-	// buildResponse is just a text output of the modules
-	// included. Load the built file for the contents.
-	// Use config.out to get the optimized file contents.
-//	var contents = fs.readFileSync(config.out, 'utf8');
-	
-	console.log(buildResponse);
-	
-	if (doClosureStep) {
-		var compiler = path.resolve(__dirname, 'compiler.jar');
-		var extracted = path.resolve(__dirname, 'extracted.js');
-		var command = 'java -jar '+compiler+' --compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file '
-			+ appOut;
-		var exec = require('child_process').exec;
-		exec(command, function callback(error, stdout, stderr) {
-			console.log('stdout: ' + stdout);
-			console.log('stderr: ' + stderr);
-			if (error !== null) {
-				console.log('closure error: ' + error);
+		requirejs.optimize(config, function(buildResponse) {
+			// buildResponse is just a text output of the modules
+			// included. Load the built file for the contents.
+			// Use config.out to get the optimized file contents.
+			//	var contents = fs.readFileSync(config.out, 'utf8');
+
+			console.log(buildResponse);
+
+			if (doClosureStep) {
+				var compiler = path.resolve(__dirname, 'compiler.jar');
+				var extracted = path.resolve(__dirname, 'extracted.js');
+				var command = 'java -jar '+compiler+' --compilation_level=SIMPLE_OPTIMIZATIONS --language_in ECMASCRIPT5_STRICT --jscomp_off=internetExplorerChecks --js extracted.js --js_output_file '
+					+ appOut;
+				var exec = require('child_process').exec;
+				exec(command, function callback(error, stdout, stderr) {
+					console.log('stdout: ' + stdout);
+					console.log('stderr: ' + stderr);
+					if (error !== null) {
+						console.log('closure error: ' + error);
+					}
+				});
 			}
+		}, function(error) {
+			console.log('optimize error: ' + error);
 		});
+
 	}
-}, function(error) {
-	console.log('optimize error: ' + error);
-});
+)
