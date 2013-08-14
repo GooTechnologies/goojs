@@ -272,6 +272,7 @@ function (
 		this.currentHeight = 0;
 
 		this.overrideMaterial = null;
+		this.overrideShader = null;
 		this.renderQueue = new RenderQueue();
 
 		this.info = {
@@ -508,7 +509,10 @@ function (
 			renderInfo.material = material;
 
 			// Check for caching of shader that use defines
-			var shader = material.shader;
+			var shader;
+			if(this.overrideShader) { shader = this.overrideShader; }
+			else { shader = material.shader; }
+
 			if (shader.processors || shader.defines) {
 			// Call processors
 				if (shader.processors) {
@@ -531,7 +535,13 @@ function (
 
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 				if (!shaderCache[defineKey]) {
-					shader = material.shader = shader.clone();
+					if(!this.overrideShader) {
+						shader = material.shader = shader.clone();
+					}
+					//else {
+					//	shader = shader.clone();
+					//}
+
 					// shader = material.shader = shader.cloneOriginal();
 					shaderCache[defineKey] = shader;
 					// if (shader.processors) {
@@ -542,6 +552,8 @@ function (
 					console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
+
+					//if(!this.overrideShader)
 					if (shader !== material.shader) {
 						for (var key in material.shader.uniforms) {
 							shader.uniforms[key] = material.shader.uniforms[key];
@@ -648,6 +660,7 @@ function (
 					magFilter: 'NearestNeighbor'
 				}),
 				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
+				pickingShader: Material.createShader(ShaderLib.pickingShader, 'pickingShader'),
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
@@ -663,16 +676,19 @@ function (
 		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		if (!skipUpdateBuffer) {
-			this.overrideMaterial = this.hardwarePicking.pickingMaterial;
+			// this.overrideMaterial = this.hardwarePicking.pickingMaterial; ///
+			this.overrideShader = this.hardwarePicking.pickingShader;
 			if (doScissor) {
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
+			console.log('pickrender begin');
 			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
-			this.overrideMaterial = null;
+			//this.overrideMaterial = null; ///
+			this.overrideShader = null;
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
