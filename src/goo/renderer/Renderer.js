@@ -155,9 +155,12 @@ function (
 		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
 			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
 			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+		/** @type {boolean} */
 		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
 			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
 			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
+		/** @type {boolean} */
+		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
 
 		if (!this.glExtensionTextureFloat) {
 			console.log('Float textures not supported.');
@@ -179,6 +182,9 @@ function (
 		}
 		if (!this.glExtensionDepthTexture) {
 			console.log('Depth textures not supported.');
+		}
+		if (!this.glExtensionElementIndexUInt) {
+			console.log('32 bit indices not supported.');
 		}
 
 		if (this.context.getShaderPrecisionFormat === undefined) {
@@ -597,7 +603,7 @@ function (
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
-		var type = this.getGLArrayType(indices);
+		var type = indices.type = indices.type || this.getGLArrayType(indices);
 		var byteSize = this.getGLByteSize(indices);
 
 		for (var i = 0; i < indexLengths.length; i++) {
@@ -988,7 +994,7 @@ function (
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else {
-				if (image.isCompressed === false && (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize)) {
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexSize);
 					image = texture.image;
 				}
@@ -1177,8 +1183,6 @@ function (
 		}
 
 		return null;
-		// throw new IllegalArgumentException("Unknown buffer type: " +
-		// indices);
 	};
 
 	Renderer.prototype.getGLByteSize = function (indices) {

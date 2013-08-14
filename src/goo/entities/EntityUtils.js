@@ -63,12 +63,10 @@ define([
 		 * @param {function(Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
-			console.log('Cloning', settings);
 			settings = settings || {};
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
-			console.log('Share material?', settings.shareMaterial);
 
 			return cloneEntity(world, entity, settings);
 		};
@@ -116,7 +114,7 @@ define([
 			var meshRendererComponent = new MeshRendererComponent();
 			entity.setComponent(meshRendererComponent);
 
-			if(material !== undefined) {
+			if(material) {
 				meshRendererComponent.materials.push(material);
 			}
 
