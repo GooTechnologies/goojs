@@ -4,6 +4,7 @@ path = require('path')
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
+wrench = require('wrench')
 
 # Run a command and exit with an error message if it fails.
 runCommand = (cmd, callback) ->
@@ -36,6 +37,10 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileIn = 'src'
 		fileOut = 'minified/goo/goo.js'
 		includes = ['goo/**/*.js']
+
+		failSilently = false
+		wrench.rmdirSyncRecursive('output', failSilently)
+		fs.mkdirSync 'output'
 
 		copyLibs fileIn, path.resolve(output, fileIn), includes
 		
