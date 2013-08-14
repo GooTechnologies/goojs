@@ -24,9 +24,21 @@ define [
 	* @param {Number} delay in ms 
 	* @returns {RSVP.Promise}
 	*###
-	defer: (delay)->
+	defer: (delay, arg)->
 		promise = new RSVP.Promise()
-		setTimeout ->
-			promise.resolve()
-		, delay
+		if arg.apply
+			p1 = new RSVP.Promise()
+			p2 = p1.then ->
+			 	arg()
+
+			setTimeout ->
+				p1.resolve()
+			,delay
+
+			return p2
+
+		else
+			setTimeout ->
+				promise.resolve(arg)
+			, delay
 		return promise
