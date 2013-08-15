@@ -38,7 +38,7 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 		fileOut = 'minified/goo/goo.js'
 		includes = ['goo/**/*.js']
 
-		failSilently = false
+		failSilently = true
 		wrench.rmdirSyncRecursive('output', failSilently)
 		fs.mkdirSync 'output'
 
