@@ -11,6 +11,7 @@ define([
 	'goo/loaders/dds/DdsUtils',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
+	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
@@ -29,6 +30,7 @@ function (
 	DdsUtils,
 	MeshData,
 	Material,
+	Shader,
 	Transform,
 	RenderQueue,
 	ShaderLib,
@@ -277,7 +279,10 @@ function (
 		/** @type {number} */
 		this.currentHeight = 0;
 
-		this.overrideMaterial = null;
+		//this.overrideMaterial = null;
+		this._overrideMaterial = null;
+		this._mergedMaterial = new Material('Merged Material');
+
 		this.renderQueue = new RenderQueue();
 
 		this.info = {
@@ -405,7 +410,12 @@ function (
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
-	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear) {
+	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterial) {
+		if (overrideMaterial) {
+			this._overrideMaterial = overrideMaterial;
+		} else {
+			this._overrideMaterial = null;
+		}
 		if (!camera) {
 			return;
 		} else if (Renderer.mainCamera === null) {
@@ -459,6 +469,58 @@ function (
 		renderInfo.renderable = renderable;
 	};
 
+	Renderer.prototype.override = function(obj1, obj2, store) {
+		var keys = {};
+		for (var key in obj1) { keys[key] = true; }
+		for (var key in obj2) { keys[key] = true; }
+		for (var key in store) { keys[key] = true; }
+		var keys = Object.keys(keys);
+		for (var j = 0; j < keys.length; j++) {
+			var key = keys[j];
+			if (obj1[key] instanceof Shader || obj1[key] instanceof Texture) {
+				store[key] = obj1[key];
+			} else if (obj2[key] instanceof Shader || obj2[key] instanceof Texture) {
+				store[key] = obj2[key];
+			} else if (obj1[key] instanceof Array || obj2[key] instanceof Array) {
+				store[key] = [];
+
+				if(obj1[key] && typeof obj1[key][0] === 'number') {
+					for (var i = obj1[key].length - 1; i >= 0; i--) {
+						store[key][i] = obj1[key][i];
+					}
+				} else if(obj2[key] && typeof obj2[key][0] === 'number') {
+					for (var i = obj2[key].length - 1; i >= 0; i--) {
+						store[key][i] = obj2[key][i];
+					}
+				} else {
+					if(obj1[key]) {
+						for (var i = 0; i < obj1[key].length; i++) {
+							store[key].push(obj1[key][i]);
+						}
+					}
+					if(obj2[key]) {
+						for (var i = 0; i < obj2[key].length; i++) {
+							if(store[key].indexOf(obj2[key][i]) === -1) {
+								store[key].push(obj2[key][i]);
+							}
+						}
+					}
+				}
+			} else if (obj1[key] instanceof Object || obj2[key] instanceof Object) {
+				store[key] = store[key] || {};
+				this.override(obj1[key] || {}, obj2[key] || {}, store[key]);
+			} else {
+				if (obj1[key] !== undefined && obj1[key] !== null) {
+					store[key] = obj1[key];
+				} else if (obj2[key] !== undefined && obj2[key] !== null) {
+					store[key] = obj2[key];
+				} else {
+					delete store[key];
+				}
+			}
+		}
+	};
+
 	Renderer.prototype.renderMesh = function (renderInfo) {
 		var meshData = renderInfo.meshData;
 		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
@@ -468,15 +530,37 @@ function (
 		this.bindData(meshData.vertexData);
 
 		var materials = renderInfo.materials;
-		if (this.overrideMaterial !== null) {
+
+		/*if (this.overrideMaterial !== null) {
 			materials = this.overrideMaterial instanceof Array ? this.overrideMaterial : [this.overrideMaterial];
-		}
+		}*/
 
 		var isWireframe = false;
 		var originalData = meshData;
 
-		for (var i = 0; i < materials.length; i++) {
-			var material = materials[i];
+		var count = 0;
+		if(!this._overrideMaterial) {
+			count = materials.length;
+		} else {
+			count = Math.max(this._overrideMaterial.length || 0, materials.length);
+		}
+
+		for (var i = 0; i < count; i++) {
+			var material, orMaterial;
+			if (i < materials.length) {
+				material = materials[i];
+			}
+			if(this._overrideMaterial instanceof Array && i < this._overrideMaterial.length) {
+				orMaterial = this._overrideMaterial[i];
+			} else if (this._overrideMaterial && i === 0) {
+				orMaterial = this._overrideMaterial;
+			}
+			if (material && orMaterial) {
+				this.override(orMaterial, material, this._mergedMaterial);
+				material = this._mergedMaterial;
+			} else if (orMaterial) {
+				material = orMaterial;
+			}
 			if (!material.shader) {
 				if (!material.errorOnce) {
 					console.warn('No shader set on material: ' + material.name);
@@ -499,11 +583,13 @@ function (
 				}
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
-				if (!material.wireframeMaterial) {
-					material.wireframeMaterial = Material.createMaterial(ShaderLib.simpleColored, 'Wireframe');
+				if (!this.wireframeMaterial) {
+					var shaderDef = Util.clone(ShaderLib.uber);
+					shaderDef.fshader = Util.clone(ShaderLib.simpleColored.fshader);
+					this.wireframeMaterial = Material.createMaterial(shaderDef, 'Wireframe');
 				}
-				material.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
-				material = material.wireframeMaterial;
+				this.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
+				material = this.wireframeMaterial;
 				isWireframe = true;
 			} else if (!material.wireframe && isWireframe) {
 				meshData = originalData;
@@ -523,7 +609,7 @@ function (
 					}
 				}
 
-				// check defines. if no hit in cache -> add to cache. if hit in cache, 
+				// check defines. if no hit in cache -> add to cache. if hit in cache,
 				// replace with cache version and copy over uniforms.
 				var defineArray = Object.keys(shader.defines);
 				var len = defineArray.length;
@@ -669,16 +755,16 @@ function (
 		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		if (!skipUpdateBuffer) {
-			this.overrideMaterial = this.hardwarePicking.pickingMaterial;
+			//this.overrideMaterial = this.hardwarePicking.pickingMaterial;
 			if (doScissor) {
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
-			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget);
+			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, false, this.hardwarePicking.pickingMaterial);
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
-			this.overrideMaterial = null;
+			//this.overrideMaterial = null;
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}

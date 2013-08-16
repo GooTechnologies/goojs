@@ -1,13 +1,19 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/EventHandler',
-	'goo/renderer/SimplePartitioner'
+	'goo/renderer/SimplePartitioner',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Util'
 ],
 /** @lends */
 function (
 	System,
 	EventHandler,
-	SimplePartitioner
+	SimplePartitioner,
+	Material,
+	ShaderLib,
+	Util
 ) {
 	"use strict";
 
@@ -24,6 +30,9 @@ function (
 		this.preRenderers = [];
 		this.composers = [];
 		this.doRender = true;
+
+		this._debugMaterials = {};
+		this.overrideMaterial = [];
 
 		this.camera = null;
 		this.lights = [];
@@ -106,12 +115,68 @@ function (
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
-					composer.render(renderer, this.currentTpf, this.camera, this.lights);
+					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, false, this.overrideMaterial);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights);
+				renderer.render(this.renderList, this.camera, this.lights, null, false, this.overrideMaterial);
 			}
 		}
+	};
+
+	RenderSystem.prototype._createDebugMaterial = function(key) {
+		if (key === '') {
+			return;
+		}
+		var fshader;
+		switch(key) {
+			case 'wireframe':
+			case 'color':
+				fshader = Util.clone(ShaderLib.simpleColored.fshader);
+				break;
+			case 'lit':
+				fshader = Util.clone(ShaderLib.simpleLit.fshader);
+				break;
+			case 'texture':
+				fshader = Util.clone(ShaderLib.textured.fshader);
+				break;
+			case 'normals':
+				fshader = Util.clone(ShaderLib.showNormals.fshader);
+				break;
+			case 'simple':
+				fshader = Util.clone(ShaderLib.simple.fshader);
+				break;
+		}
+		var shaderDef = Util.clone(ShaderLib.uber);
+		shaderDef.fshader = fshader;
+		this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
+		if (key === 'wireframe') {
+			this._debugMaterials[key].wireframe = true;
+		}
+	};
+
+	RenderSystem.prototype.setDebugMaterial = function(key) {
+		if(!key || key === '') {
+			this.overrideMaterial = null;
+			return;
+		}
+		var debugs = key.split('+');
+
+		for(var i = 0; i < debugs.length; i++) {
+			var key = debugs[i];
+			if(!this._debugMaterials[key]) {
+				this._createDebugMaterial(key);
+			}
+		}
+		this.overrideMaterial = [];
+		for (var i = 0; i < debugs.length; i++) {
+			if(debugs[i] === '') {
+				this.overrideMaterial.push(null);
+			} else {
+				this.overrideMaterial.push(this._debugMaterials[debugs[i]]);
+			}
+		}
+
+		//this.overrideMaterial = this._debugMaterials[key];
 	};
 
 	return RenderSystem;

@@ -24,7 +24,8 @@ define([
 	ShaderLib.uber = {
 		processors: [
 			ShaderBuilder.uber.processor,
-			ShaderBuilder.light.processor
+			ShaderBuilder.light.processor,
+			ShaderBuilder.animation.processor
 		],
 	    attributes: {
 	        vertexPosition: MeshData.POSITION,
@@ -32,7 +33,9 @@ define([
 	        vertexTangent: MeshData.TANGENT,
 	        vertexColor: MeshData.COLOR,
 	        vertexUV0: MeshData.TEXCOORD0,
-	        vertexUV1: MeshData.TEXCOORD1
+	        vertexUV1: MeshData.TEXCOORD1,
+	        vertexJointIDs: MeshData.JOINTIDS,
+	        vertexWeights: MeshData.WEIGHTS
 	    },
 	    uniforms: {
 	        viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
@@ -44,7 +47,8 @@ define([
 			specularMap : Shader.SPECULAR_MAP,
 			emissiveMap : Shader.EMISSIVE_MAP,
 			aoMap : Shader.AO_MAP,
-			lightMap : Shader.LIGHT_MAP
+			lightMap : Shader.LIGHT_MAP,
+			color: [1,1,1]
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -86,18 +90,22 @@ define([
 
 			ShaderBuilder.light.prevertex,
 
+			ShaderBuilder.animation.prevertex,
+
 			'void main(void) {',
-				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+				'mat4 wMatrix = worldMatrix;',
+				ShaderBuilder.animation.vertex,
+				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
 				'vWorldPos = worldPos.xyz;',
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize((wMatrix * vec4(vertexNormal, 0.0)).xyz);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((worldMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize((wMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -669,6 +677,7 @@ define([
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0
 		},
@@ -676,26 +685,24 @@ define([
 		'attribute vec3 vertexPosition;',
 		'attribute vec3 vertexNormal;',
 
-		'uniform mat4 viewMatrix;',
-		'uniform mat4 projectionMatrix;',
+		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 
-		'varying vec3 vNormal;',
+		'varying vec3 normal;',
 
 		'void main() {',
-		'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
-		'vNormal = vec3(worldMatrix * vec4(vertexNormal, 0.0));',
-		'gl_Position = projectionMatrix * mvPosition;',
+		'normal = vec3(worldMatrix * vec4(vertexNormal, 0.0));',
+		'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'
 		].join("\n"),
 		fshader : [
 		'precision mediump float;',
 
 		'uniform float opacity;',
-		'varying vec3 vNormal;',
+		'varying vec3 normal;',
 
 		'void main() {',
-		'gl_FragColor = vec4( 0.5 * normalize( vNormal ) + 0.5, opacity );',
+		'gl_FragColor = vec4( 0.5 * normalize( normal ) + 0.5, opacity );',
 		'}'
 		].join("\n")
 	};

@@ -89,10 +89,10 @@ function (
 		this.currentCallbacks = {};
 
 		this.overridePrecision = shaderDefinition.precision || null;
-		this.processors = shaderDefinition.processors;
-		this.defines = shaderDefinition.defines;
-		this.attributes = shaderDefinition.attributes;
-		this.uniforms = shaderDefinition.uniforms;
+		this.processors = shaderDefinition.processors || [];
+		this.defines = shaderDefinition.defines || {};
+		this.attributes = shaderDefinition.attributes || {};
+		this.uniforms = shaderDefinition.uniforms || {};
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>

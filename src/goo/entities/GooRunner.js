@@ -264,37 +264,29 @@ function (
 			}
 		}, false);
 		document.addEventListener("keydown", function (e) {
+			console.log(e);
 			if (e.which === 16) {
 				isCtrl = true;
-			} else if (e.which === 32 && isCtrl) {
+			} else if (e.which === 32 && isCtrl) { // Space
 				GameUtils.toggleFullScreen();
-			} else if (e.which === 13 && isCtrl) {
+			} else if (e.which === 13 && isCtrl) { // Enter
 				GameUtils.togglePointerLock();
-			} else if (e.which === 49 && isCtrl) {
-				this.renderer.overrideMaterial = null;
-			} else if (e.which === 50 && isCtrl) {
-				this.renderer.overrideMaterial = Material.createMaterial(Util.clone(ShaderLib.showNormals), 'OverrideMaterial1');
-			} else if (e.which === 51 && isCtrl) {
-				this.renderer.overrideMaterial = Material.createMaterial(Util.clone(ShaderLib.simpleLit), 'OverrideMaterial2');
-			} else if (e.which === 52 && isCtrl) {
-				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
-				material4.wireframe = true;
-				material4.wireframeColor = [0, 0, 0];
-				this.renderer.overrideMaterial = material4;
-			} else if (e.which === 53 && isCtrl) {
-				var material3 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial3');
-				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
-				material4.wireframe = true;
-				material4.wireframeColor = [0, 0, 0];
-				var material5 = [material3, material4];
-				this.renderer.overrideMaterial = material5;
-			} else if (e.which === 54 && isCtrl) {
-				var material2 = Material.createMaterial(Util.clone(ShaderLib.simpleLit), 'OverrideMaterial2');
-				var material4 = Material.createMaterial(Util.clone(ShaderLib.simple), 'OverrideMaterial4');
-				material4.wireframe = true;
-				material4.wireframeColor = [0, 0, 0];
-				var material6 = [material2, material4];
-				this.renderer.overrideMaterial = material6;
+			} else if (e.which === 49 && isCtrl) { // 1
+				this.renderSystem.setDebugMaterial();
+			} else if ((e.which === 50 || e.which === 222) && isCtrl) { // 2
+				this.renderSystem.setDebugMaterial('normals');
+			} else if (e.which === 51 && isCtrl) { // 3
+				this.renderSystem.setDebugMaterial('lit');
+			} else if (e.which === 52 && isCtrl) { // 4
+				this.renderSystem.setDebugMaterial('color');
+			} else if (e.which === 53 && isCtrl) { // 5
+				this.renderSystem.setDebugMaterial('wireframe');
+			} else if (e.which === 54 && isCtrl) { // 6
+				this.renderSystem.setDebugMaterial('texture');
+			} else if ((e.which === 55 || e.which === 191) && isCtrl) { // 7
+				this.renderSystem.setDebugMaterial('texture+wireframe');
+			} else if ((e.which === 56) && isCtrl) { // 7
+				this.renderSystem.setDebugMaterial('+wireframe');
 			}
 		}.bind(this), false);
 

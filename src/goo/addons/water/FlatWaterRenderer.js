@@ -103,9 +103,9 @@ function (
 				this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-				renderer.overrideMaterial = this.depthMaterial;
-				renderer.render(this.renderList, this.waterCamera, lights, this.depthTarget, true);
-				renderer.overrideMaterial = null;
+				//renderer.overrideMaterial = this.depthMaterial;
+				renderer.render(this.renderList, this.waterCamera, lights, this.depthTarget, true, this.depthMaterial);
+				//renderer.overrideMaterial = null;
 
 				renderer.render(this.renderList, this.waterCamera, lights, this.refractionTarget, true);
 			}

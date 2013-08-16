@@ -535,7 +535,44 @@ function(
 				}
 				return store;
 			}
-		}
+		},
+		prevertex: [
+			'#ifdef JOINTIDS',
+			'attribute vec4 vertexJointIDs;',
+			'#endif',
+			'#ifdef WEIGHTS',
+			'attribute vec4 vertexWeights;',
+			'#endif',
+			'#ifdef JOINT_COUNT',
+			'uniform mat3 jointPaletteRotScale[JOINT_COUNT];',
+			'uniform vec3 jointPaletteTranslation[JOINT_COUNT];',
+			'#endif'
+		].join('\n'),
+		vertex: [
+			'#ifdef JOINT_COUNT',
+			'#ifdef WEIGHTS',
+			'#ifdef JOINTIDS',
+			'mat3 smallMat = mat3(0.0);',
+			'smallMat += jointPaletteRotScale[int(vertexJointIDs.x)] * vertexWeights.x;',
+			'smallMat += jointPaletteRotScale[int(vertexJointIDs.y)] * vertexWeights.y;',
+			'smallMat += jointPaletteRotScale[int(vertexJointIDs.z)] * vertexWeights.z;',
+			'smallMat += jointPaletteRotScale[int(vertexJointIDs.w)] * vertexWeights.w;',
+			'mat4 mat = mat4(smallMat);',
+			'mat[3][3] = vertexWeights.x + vertexWeights.y + vertexWeights.z + vertexWeights.w;',
+			'',
+			'vec3 trans = vec3(0.0);',
+			'trans += jointPaletteTranslation[int(vertexJointIDs.x)] * vertexWeights.x;',
+			'trans += jointPaletteTranslation[int(vertexJointIDs.y)] * vertexWeights.y;',
+			'trans += jointPaletteTranslation[int(vertexJointIDs.z)] * vertexWeights.z;',
+			'trans += jointPaletteTranslation[int(vertexJointIDs.w)] * vertexWeights.w;',
+			'',
+			'mat[3] += vec4(trans, 0.0);',
+			'',
+			'wMatrix = wMatrix * mat;',
+			'#endif',
+			'#endif',
+			'#endif'
+		].join('\n')
 	};
 	return ShaderBuilder;
 });
