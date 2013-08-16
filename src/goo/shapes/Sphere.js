@@ -48,8 +48,10 @@ function (
 		this.viewInside = false;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
-		var verts = (this.zSamples - 2) * (this.radialSamples + 1) + 2;
-		var tris = 6 * (this.zSamples - 2) * this.radialSamples;
+
+		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
+		var verts = ((samples) - 2) * (this.radialSamples + 1) + 2;
+		var tris = 6 * ((samples) - 2) * this.radialSamples;
 
 		MeshData.call(this, attributeMap, verts, tris);
 
@@ -137,6 +139,13 @@ function (
 					var v = r * afSin[iR] + 0.5;
 					texs[i * 2 + 0] = u;
 					texs[i * 2 + 1] = v;
+				} else if (this.textureMode === Sphere.TextureModes.Chromeball) {
+					var r = Math.sin((MathUtils.HALF_PI + fAFraction) / 2);
+					r /= 2;
+					var u = r * afCos[iR] + 0.5;
+					var v = r * afSin[iR] + 0.5;
+					texs[i * 2 + 0] = u;
+					texs[i * 2 + 1] = v;
 				}
 
 				i++;
@@ -155,10 +164,54 @@ function (
 				var r = (MathUtils.HALF_PI - Math.abs(fAFraction)) / Math.PI;
 				texs[i * 2 + 0] = r + 0.5;
 				texs[i * 2 + 1] = 0.5;
+			} else if (this.textureMode === Sphere.TextureModes.Chromeball) {
+				var r = Math.sin((MathUtils.HALF_PI + fAFraction) / 2);
+				r /= 2;
+				texs[i * 2 + 0] = r + 0.5;
+				texs[i * 2 + 1] = 0.5;
 			}
 
 			i++;
 		}
+		// We need to add an extra slice so the north pole doesn't look freake
+		if (this.textureMode === Sphere.TextureModes.Chromeball) {
+			var epsilonAngle = MathUtils.HALF_PI - 1e-3;
+			var z = this.radius * Math.sin(epsilonAngle);
+			var sliceR = Math.sqrt(Math.abs(this.radius * this.radius - z * z));
+			var iSave = i;
+			for (var iR = 0; iR < this.radialSamples; iR++) {
+				vbuf[i * 3 + 0] = sliceR * afCos[iR];
+				vbuf[i * 3 + 1] = sliceR * afSin[iR];
+				vbuf[i * 3 + 2] = z;
+
+				var kNormal = tempVa.set(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
+				kNormal.normalize();
+				if (!this.viewInside) {
+					norms[i * 3 + 0] = kNormal.x;
+					norms[i * 3 + 1] = kNormal.y;
+					norms[i * 3 + 2] = kNormal.z;
+				} else {
+					norms[i * 3 + 0] = -kNormal.x;
+					norms[i * 3 + 1] = -kNormal.y;
+					norms[i * 3 + 2] = -kNormal.z;
+				}
+				var r = Math.sin((MathUtils.HALF_PI + epsilonAngle) / 2);
+				r /= 2;
+				var u = r * afCos[iR] + 0.5;
+				var v = r * afSin[iR] + 0.5;
+				texs[i * 2 + 0] = u;
+				texs[i * 2 + 1] = v;
+				i++;
+			}
+			copyInternal(vbuf, iSave, i);
+			copyInternal(norms, iSave, i);
+			var r = Math.sin((MathUtils.HALF_PI + epsilonAngle) / 2);
+			r /= 2;
+			texs[i * 2 + 0] = r + 0.5;
+			texs[i * 2 + 1] = 0.5;
+			i++;
+		}
+
 
 		// south pole
 		vbuf[i * 3 + 0] = 0;
@@ -175,7 +228,7 @@ function (
 			norms[i * 3 + 2] = 1;
 		}
 
-		if (this.textureMode === Sphere.TextureModes.Polar) {
+		if (this.textureMode === Sphere.TextureModes.Polar || this.textureMode === Sphere.TextureModes.Chromeball) {
 			texs[i * 2 + 0] = 0.5;
 			texs[i * 2 + 1] = 0.5;
 		} else {
@@ -203,6 +256,9 @@ function (
 		if (this.textureMode === Sphere.TextureModes.Polar) {
 			texs[i * 2 + 0] = 0.5;
 			texs[i * 2 + 1] = 0.5;
+		} else if (this.textureMode === Sphere.TextureModes.Chromeball) {
+			texs[i * 2 + 0] = 1;
+			texs[i * 2 + 1] = -0.5;
 		} else {
 			texs[i * 2 + 0] = 0.5;
 			texs[i * 2 + 1] = 1.0;
@@ -210,7 +266,8 @@ function (
 
 		// generate connectivity
 		var index = 0;
-		for (var iZ = 0, iZStart = 0; iZ < this.zSamples - 3; iZ++) {
+		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
+		for (var iZ = 0, iZStart = 0; iZ < samples - 3; iZ++) {
 			var i0 = iZStart;
 			var i1 = i0 + 1;
 			iZStart += this.radialSamples + 1;
@@ -249,7 +306,7 @@ function (
 		}
 
 		// north pole triangles
-		var iOffset = (this.zSamples - 3) * (this.radialSamples + 1);
+		var iOffset = (samples - 3) * (this.radialSamples + 1);
 		for (var i = 0; i < this.radialSamples; i++) {
 			if (!this.viewInside) {
 				indices[index++] = i + iOffset;
@@ -261,7 +318,7 @@ function (
 				indices[index++] = i + 1 + iOffset;
 			}
 		}
-
+		console.log (vbuf.length/3, norms.length/3, texs.length/2, indices.length);
 		return this;
 	};
 
@@ -274,7 +331,7 @@ function (
 	/** Possible texture wrapping modes: Linear, Projected, Polar
 	 * @type {Enum}
 	 */
-	Sphere.TextureModes = new Enum('Linear', 'Projected', 'Polar');
+	Sphere.TextureModes = new Enum('Linear', 'Projected', 'Polar', 'Chromeball');
 
 	return Sphere;
 });

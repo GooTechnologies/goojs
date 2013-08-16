@@ -26,12 +26,13 @@ define([
 ) {
 	'use strict';
 
-	function Skybox(world, cameraEntity, type, images) {
+	function Skybox(world, cameraEntity, type, images, textureMode) {
 		Entity.call(this, world, 'Skybox');
 		this._cameraPos = cameraEntity.transformComponent.transform.translation;
 		var meshData, texture;
 		if (type === Skybox.SPHERE) {
-			meshData = ShapeCreator.createSphere(10, 10, 1, Sphere.TextureModes.Projected);
+
+			meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
@@ -45,7 +46,8 @@ define([
 
 		var tfc = new TransformComponent();
 		tfc.transform.scale.scale(100);
-		if(type === Skybox.SPHERE) {
+
+		if(type === Skybox.SPHERE && textureMode !== Sphere.TextureModes.Chromeball) {
 			tfc.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 		}
 
