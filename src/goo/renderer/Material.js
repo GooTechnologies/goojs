@@ -221,7 +221,9 @@ function(
 
 	Material.createEmptyMaterial = function(shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
-		material.shader = Material.createShader(shaderDefinition);
+		if(shaderDefinition) {
+			material.shader = Material.createShader(shaderDefinition);
+		}
 
 		material.cullState = {};
 		material.blendState = {};

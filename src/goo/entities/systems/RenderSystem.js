@@ -32,7 +32,7 @@ function (
 		this.doRender = true;
 
 		this._debugMaterials = {};
-		this.overrideMaterial = [];
+		this.overrideMaterials = [];
 
 		this.camera = null;
 		this.lights = [];
@@ -115,10 +115,10 @@ function (
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
-					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, false, this.overrideMaterial);
+					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, false, this.overrideMaterials);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights, null, false, this.overrideMaterial);
+				renderer.render(this.renderList, this.camera, this.lights, null, false, this.overrideMaterials);
 			}
 		}
 	};
@@ -156,7 +156,7 @@ function (
 
 	RenderSystem.prototype.setDebugMaterial = function(key) {
 		if(!key || key === '') {
-			this.overrideMaterial = null;
+			this.overrideMaterials = [];
 			return;
 		}
 		var debugs = key.split('+');
@@ -167,12 +167,12 @@ function (
 				this._createDebugMaterial(key);
 			}
 		}
-		this.overrideMaterial = [];
+		this.overrideMaterials = [];
 		for (var i = 0; i < debugs.length; i++) {
 			if(debugs[i] === '') {
-				this.overrideMaterial.push(null);
+				this.overrideMaterials.push(null);
 			} else {
-				this.overrideMaterial.push(this._debugMaterials[debugs[i]]);
+				this.overrideMaterials.push(this._debugMaterials[debugs[i]]);
 			}
 		}
 

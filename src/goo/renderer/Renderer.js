@@ -280,7 +280,7 @@ function (
 		this.currentHeight = 0;
 
 		//this.overrideMaterial = null;
-		this._overrideMaterial = null;
+		this._overrideMaterials = [];
 		this._mergedMaterial = new Material('Merged Material');
 
 		this.renderQueue = new RenderQueue();
@@ -410,11 +410,11 @@ function (
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
-	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterial) {
-		if (overrideMaterial) {
-			this._overrideMaterial = overrideMaterial;
+	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
+		if (overrideMaterials) {
+			this._overrideMaterials = (overrideMaterials instanceof Array) ? overrideMaterials : [overrideMaterials];
 		} else {
-			this._overrideMaterial = null;
+			this._overrideMaterials = [];
 		}
 		if (!camera) {
 			return;
@@ -539,10 +539,10 @@ function (
 		var originalData = meshData;
 
 		var count = 0;
-		if(!this._overrideMaterial) {
+		if(this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {
-			count = Math.max(this._overrideMaterial.length || 0, materials.length);
+			count = Math.max(this._overrideMaterials.length, materials.length);
 		}
 
 		for (var i = 0; i < count; i++) {
@@ -550,10 +550,10 @@ function (
 			if (i < materials.length) {
 				material = materials[i];
 			}
-			if(this._overrideMaterial instanceof Array && i < this._overrideMaterial.length) {
-				orMaterial = this._overrideMaterial[i];
-			} else if (this._overrideMaterial && i === 0) {
-				orMaterial = this._overrideMaterial;
+			if(i < this._overrideMaterials.length) {
+				orMaterial = this._overrideMaterials[i];
+			} else if (this._overrideMaterials.length > 0) {
+				orMaterial = this._overrideMaterials[0];
 			}
 			if (material && orMaterial) {
 				this.override(orMaterial, material, this._mergedMaterial);
