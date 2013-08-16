@@ -1528,6 +1528,12 @@ function (
 			bits |= WebGLRenderingContext.STENCIL_BUFFER_BIT;
 		}
 
+		var record = this.rendererRecord.depthRecord;
+		if (record.write !== true) {
+			this.context.depthMask(true);
+			record.write = true;
+		}
+
 		this.context.clear(bits);
 	};
 
