@@ -21,17 +21,13 @@ _) ->
 	_getTypedArray = (bindata, pointer)->
 		[start, length, format] = pointer
 		if format == 'float32'
-			#new Float32Array(bindata, start, length) Inexplicably doesn't work
-			new Float32Array(bindata.slice(start, start+length*4))
+			new Float32Array(bindata, start, length)
 		else if format == 'uint8'
-			#new Uint8Array(bindata, start, length)
-			new Uint8Array(bindata.slice(start, start+length))
+			new Uint8Array(bindata, start, length)
 		else if format == 'uint16'
-			#new Uint16Array(bindata, start, length)
-			new Uint16Array(bindata.slice(start, start+length*2))
+			new Uint16Array(bindata, start, length)
 		else if format == 'uint32'
-			#new Uint32Array(bindata, start, length)
-			new Uint32Array(bindata.slice(start, start+length*4))
+			new Uint32Array(bindata, start, length)
 		else
 			throw new Error("Binary format #{format} is not supported")
 
