@@ -58,6 +58,7 @@ function (
 			},
 			skipUpdateBuffer: false
 		};
+		//this.setDebugMaterial('wireframe');
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);

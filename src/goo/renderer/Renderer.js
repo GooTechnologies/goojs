@@ -579,16 +579,16 @@ function (
 
 			if (material.wireframe && !isWireframe) {
 				if (!meshData.wireframeData) {
-					meshData.wireframeData = this.buildWireframeData(meshData);
+					meshData.wireframeData = this.buildFlatMeshData(meshData);
 				}
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
 				if (!this.wireframeMaterial) {
 					var shaderDef = Util.clone(ShaderLib.uber);
-					shaderDef.fshader = Util.clone(ShaderLib.simpleColored.fshader);
+					shaderDef.fshader = Util.clone(ShaderLib.simpleLit.fshader);
 					this.wireframeMaterial = Material.createMaterial(shaderDef, 'Wireframe');
 				}
-				this.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
+				//this.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
 				material = this.wireframeMaterial;
 				isWireframe = true;
 			} else if (!material.wireframe && isWireframe) {
@@ -775,6 +775,105 @@ function (
 		var depth = (this.hardwarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
 		pickingStore.id = id;
 		pickingStore.depth = depth;
+	};
+
+	Renderer.prototype.buildFlatMeshData = function(meshData) {
+		//var attributeMap = Util.clone(meshData.attributeMap);
+
+		var verts = [], oldVerts = meshData.getAttributeBuffer(MeshData.POSITION);
+		var norms = [];
+		var idcs = [], oldIdcs = meshData.getIndexBuffer();
+		var v1 = [], v2 = [], v3 = [], v4 = [], v5 = [], n = [];
+		var indexCount = 0;
+
+		meshData.updatePrimitiveCounts();
+		for (var section = 0; section < meshData.getSectionCount(); section++) {
+			var indexMode = meshData.indexModes[section];
+			var primitiveCount = meshData.getPrimitiveCount(section);
+			console.log(primitiveCount, meshData.getSectionCount());
+			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
+
+				switch (indexMode) {
+					case "Triangles":
+					case "TriangleFan":
+					case "TriangleStrip":
+
+						var i1 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 1, section)];
+						var i3 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 2, section)];
+
+						v1[0] = oldVerts[i1*3 + 0];
+						v1[1] = oldVerts[i1*3 + 1];
+						v1[2] = oldVerts[i1*3 + 2];
+
+						v2[0] = oldVerts[i2*3 + 0];
+						v2[1] = oldVerts[i2*3 + 1];
+						v2[2] = oldVerts[i2*3 + 2];
+
+						v3[0] = oldVerts[i3*3 + 0];
+						v3[1] = oldVerts[i3*3 + 1];
+						v3[2] = oldVerts[i3*3 + 2];
+
+						v4[0] = v2[0] - v1[0];
+						v4[1] = v2[1] - v1[1];
+						v4[2] = v2[2] - v1[2];
+
+						v5[0] = v3[0] - v1[0];
+						v5[1] = v3[1] - v1[1];
+						v5[2] = v3[2] - v1[2];
+
+
+						n[0] = v4[1]*v5[2] - v4[2]*v5[1];
+						n[1] = v4[2]*v5[0] - v4[0]*v5[2];
+						n[2] = v4[0]*v5[1] - v4[1]*v5[0];
+						var len = Math.sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+						n[0] /= len;
+						n[1] /= len;
+						n[2] /= len;
+
+						n[0] = 0.0;
+						n[1] = 1.0;
+						n[2] = 0.0;
+
+						verts[indexCount + 0] = v1[0];
+						verts[indexCount + 1] = v1[1];
+						verts[indexCount + 2] = v1[2];
+
+						norms[indexCount + 0] = n[0];
+						norms[indexCount + 1] = n[1];
+						norms[indexCount + 2] = n[2];
+						idcs.push(idcs.length);
+
+						verts[indexCount + 3] = v2[0];
+						verts[indexCount + 4] = v2[1];
+						verts[indexCount + 5] = v2[2];
+
+						norms[indexCount + 3] = n[0];
+						norms[indexCount + 4] = n[1];
+						norms[indexCount + 5] = n[2];
+						idcs.push(idcs.length);
+
+						verts[indexCount + 6] = v3[0];
+						verts[indexCount + 7] = v3[1];
+						verts[indexCount + 8] = v3[2];
+
+						norms[indexCount + 6] = n[0];
+						norms[indexCount + 7] = n[1];
+						norms[indexCount + 8] = n[2];
+						idcs.push(idcs.length);
+						indexCount += 9;
+				}
+			}
+		}
+		var flatMeshData = new MeshData(MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]), verts.length / 3.0, idcs.length);
+
+		flatMeshData.getAttributeBuffer(MeshData.NORMAL).set(norms);
+		flatMeshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+		flatMeshData.getIndexBuffer().set(idcs);
+
+		//return flatMeshData.getNormalsMeshData();
+
+		return flatMeshData;
 	};
 
 	Renderer.prototype.buildWireframeData = function (meshData) {
