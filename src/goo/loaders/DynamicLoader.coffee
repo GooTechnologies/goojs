@@ -171,8 +171,8 @@ _) ->
 		* @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
 		* @param {object} options
 		* @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-		* 	the config as argument and returns true to continue updating the world, and false to cancel load.
-		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false. 
+		* 	each object as argument and if it returns true, it is added to the world.
+		* @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 		* @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 		* @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 		*###
