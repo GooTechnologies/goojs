@@ -462,12 +462,10 @@ function(
 			var pose = shaderInfo.meshData.currentPose;
 			if (pose) {
 				shader.defines = shader.defines || {};
-				shader.defines.JOINT_COUNT = pose._skeleton._joints.length;
-				if (!shader.uniforms.jointPalleteRotScale) {
-					shader.uniforms.jointPaletteRotScale = ShaderBuilder.animation.jointPaletteRotScale;
-					shader.uniforms.jointPaletteTranslation = ShaderBuilder.animation.jointPaletteTranslation;
+				shader.defines.JOINT_COUNT = shaderInfo.meshData.paletteMap.length * 3;
+				if (!shader.uniforms.jointPalette) {
+					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				//shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 			}
 		},
 		jointPalette: function (shaderInfo) {
@@ -475,62 +473,19 @@ function(
 			var pose = skMesh.currentPose;
 			if (pose) {
 				var palette = pose._matrixPalette;
-				var buffLength = skMesh.paletteMap.length * 16;
 				var store = skMesh.store;
 				if (!store) {
-					store = new Float32Array(buffLength);
+					store = [];
 					skMesh.store = store;
 				}
 				var refMat;
 				for (var index = 0; index < skMesh.paletteMap.length; index++) {
 					refMat = palette[skMesh.paletteMap[index]];
-					for (var i = 0; i < 4; i++) {
-						for (var j = 0; j < 4; j++) {
-							store[index * 16 + i * 4 + j] = refMat.data[i * 4 + j];
+					for (var row = 0; row < 3; row++) {
+						for (var col = 0; col < 4; col++) {
+							// Transposed, so we can pad with translation
+							store[index * 12 + row * 4 + col] = refMat.data[col * 4 + row];
 						}
-					}
-				}
-				return store;
-			}
-		},
-		jointPaletteRotScale: function (shaderInfo) {
-			var skMesh = shaderInfo.meshData;
-			var pose = skMesh.currentPose;
-			if (pose) {
-				var palette = pose._matrixPalette;
-				var buffLength = skMesh.paletteMap.length * 9;
-				var store = skMesh.rotScaleStore;
-				if (!store) {
-					store = new Float32Array(buffLength);
-					skMesh.rotScaleStore = store;
-				}
-				var refMat;
-				for (var index = 0; index < skMesh.paletteMap.length; index++) {
-					refMat = palette[skMesh.paletteMap[index]];
-					for (var i = 0; i < 3; i++) {
-						for (var j = 0; j < 3; j++) {
-							store[index * 9 + i * 3 + j] = refMat.data[i * 4 + j];
-						}
-					}
-				}
-				return store;
-			}
-		},
-		jointPaletteTranslation: function (shaderInfo) {
-			var skMesh = shaderInfo.meshData;
-			var pose = skMesh.currentPose;
-			if (pose) {
-				var palette = pose._matrixPalette;
-				var store = skMesh.translationStore;
-				if (!store) {
-					store = [];
-					skMesh.translationStore = store;
-				}
-				var refMat;
-				for (var index = 0; index < skMesh.paletteMap.length; index++) {
-					refMat = palette[skMesh.paletteMap[index]];
-					for (var i = 0; i < 3; i++) {
-						store[index * 3 + i] = refMat.data[12 + i];
 					}
 				}
 				return store;
@@ -544,30 +499,46 @@ function(
 			'attribute vec4 vertexWeights;',
 			'#endif',
 			'#ifdef JOINT_COUNT',
-			'uniform mat3 jointPaletteRotScale[JOINT_COUNT];',
-			'uniform vec3 jointPaletteTranslation[JOINT_COUNT];',
+			'uniform vec4 jointPalette[JOINT_COUNT];',
 			'#endif'
 		].join('\n'),
 		vertex: [
 			'#ifdef JOINT_COUNT',
 			'#ifdef WEIGHTS',
 			'#ifdef JOINTIDS',
-			'mat3 smallMat = mat3(0.0);',
-			'smallMat += jointPaletteRotScale[int(vertexJointIDs.x)] * vertexWeights.x;',
-			'smallMat += jointPaletteRotScale[int(vertexJointIDs.y)] * vertexWeights.y;',
-			'smallMat += jointPaletteRotScale[int(vertexJointIDs.z)] * vertexWeights.z;',
-			'smallMat += jointPaletteRotScale[int(vertexJointIDs.w)] * vertexWeights.w;',
-			'mat4 mat = mat4(smallMat);',
-			'mat[3][3] = vertexWeights.x + vertexWeights.y + vertexWeights.z + vertexWeights.w;',
-			'',
-			'vec3 trans = vec3(0.0);',
-			'trans += jointPaletteTranslation[int(vertexJointIDs.x)] * vertexWeights.x;',
-			'trans += jointPaletteTranslation[int(vertexJointIDs.y)] * vertexWeights.y;',
-			'trans += jointPaletteTranslation[int(vertexJointIDs.z)] * vertexWeights.z;',
-			'trans += jointPaletteTranslation[int(vertexJointIDs.w)] * vertexWeights.w;',
-			'',
-			'mat[3] += vec4(trans, 0.0);',
-			'',
+
+			'int x = 3*int(vertexJointIDs.x);',
+			'int y = 3*int(vertexJointIDs.y);',
+			'int z = 3*int(vertexJointIDs.z);',
+			'int w = 3*int(vertexJointIDs.w);',
+
+			'mat4 mat = mat4(0.0);',
+
+			'mat += mat4(',
+			'	jointPalette[x+0].x, jointPalette[x+1].x, jointPalette[x+2].x, 0,',
+			'	jointPalette[x+0].y, jointPalette[x+1].y, jointPalette[x+2].y, 0,',
+			'	jointPalette[x+0].z, jointPalette[x+1].z, jointPalette[x+2].z, 0,',
+			'	jointPalette[x+0].w, jointPalette[x+1].w, jointPalette[x+2].w, 1',
+			') * vertexWeights.x;',
+			'mat += mat4(',
+			'	jointPalette[y+0].x, jointPalette[y+1].x, jointPalette[y+2].x, 0,',
+			'	jointPalette[y+0].y, jointPalette[y+1].y, jointPalette[y+2].y, 0,',
+			'	jointPalette[y+0].z, jointPalette[y+1].z, jointPalette[y+2].z, 0,',
+			'	jointPalette[y+0].w, jointPalette[y+1].w, jointPalette[y+2].w, 1',
+			') * vertexWeights.y;',
+			'mat += mat4(',
+			'	jointPalette[z+0].x, jointPalette[z+1].x, jointPalette[z+2].x, 0,',
+			'	jointPalette[z+0].y, jointPalette[z+1].y, jointPalette[z+2].y, 0,',
+			'	jointPalette[z+0].z, jointPalette[z+1].z, jointPalette[z+2].z, 0,',
+			'	jointPalette[z+0].w, jointPalette[z+1].w, jointPalette[z+2].w, 1',
+			') * vertexWeights.z;',
+			'mat += mat4(',
+			'	jointPalette[w+0].x, jointPalette[w+1].x, jointPalette[w+2].x, 0,',
+			'	jointPalette[w+0].y, jointPalette[w+1].y, jointPalette[w+2].y, 0,',
+			'	jointPalette[w+0].z, jointPalette[w+1].z, jointPalette[w+2].z, 0,',
+			'	jointPalette[w+0].w, jointPalette[w+1].w, jointPalette[w+2].w, 1',
+			') * vertexWeights.w;',
+
 			'wMatrix = wMatrix * mat;',
 			'#endif',
 			'#endif',
