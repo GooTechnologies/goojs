@@ -7,33 +7,18 @@ define [
 	'goo/loaders/JsonUtils'
 	'goo/util/PromiseUtil'
 	'goo/util/ObjectUtil'
-	
+	'goo/util/ArrayUtil'
 ], (
 ConfigHandler,
 MeshData,
 SkeletonPose,
 JsonUtils,
 PromiseUtil,
-_) ->
+_
+ArrayUtil
+) ->
 
 
-	# Perhaps move to utils later
-	_getTypedArray = (bindata, pointer)->
-		[start, length, format] = pointer
-		if format == 'float32'
-			#new Float32Array(bindata, start, length) Inexplicably doesn't work
-			new Float32Array(bindata.slice(start, start+length*4))
-		else if format == 'uint8'
-			#new Uint8Array(bindata, start, length)
-			new Uint8Array(bindata.slice(start, start+length))
-		else if format == 'uint16'
-			#new Uint16Array(bindata, start, length)
-			new Uint16Array(bindata.slice(start, start+length*2))
-		else if format == 'uint32'
-			#new Uint32Array(bindata, start, length)
-			new Uint32Array(bindata.slice(start, start+length*4))
-		else
-			throw new Error("Binary format #{format} is not supported")
 
 
 
@@ -150,7 +135,7 @@ _) ->
 						opts = @_getCompressionOptions(attr, config, compression)
 						JsonUtils.fillAttributeBufferFromCompressedString(data, meshData, attr, opts.scale, opts.offset)
 					else if bindata
-						meshData.getAttributeBuffer(attr).set(_getTypedArray(bindata, data))
+						meshData.getAttributeBuffer(attr).set(ArrayUtil.getTypedArray(bindata, data))
 					else
 						JsonUtils.fillAttributeBuffer(data, meshData, attr)			
 
@@ -210,7 +195,7 @@ _) ->
 			else if compression
 				JsonUtils.getIntBufferFromCompressedString(data, len)
 			else if bindata
-				_getTypedArray(bindata, data)
+				ArrayUtil.getTypedArray(bindata, data)
 			else
 				JsonUtils.getIntBuffer(data, len)
 

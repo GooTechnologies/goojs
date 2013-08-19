@@ -6,10 +6,10 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	/**
 	 * @class An animation channel consisting of a series of transforms interpolated over time.
 	 * @param channelName our name.
-	 * @param times our time offset values.
-	 * @param rotations the rotations to set on this channel at each time offset.
-	 * @param translations the translations to set on this channel at each time offset.
-	 * @param scales the scales to set on this channel at each time offset.
+	 * @param {Array} times our time offset values.
+	 * @param {Array} rotations the rotations to set on this channel at each time offset.
+	 * @param {Array} translations the translations to set on this channel at each time offset.
+	 * @param {Array} scales the scales to set on this channel at each time offset.
 	 */
 	function TransformChannel (channelName, times, rotations, translations, scales, blendType) {
 		AbstractAnimationChannel.call(this, channelName, times, blendType);
@@ -18,9 +18,10 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
 		}
 
-		this._rotations = rotations.slice(0);
-		this._translations = translations.slice(0);
-		this._scales = scales.slice(0);
+
+		this._rotations = new Float32Array(rotations);
+		this._translations = new Float32Array(translations);
+		this._scales = new Float32Array(scales);
 
 		this.tmpVec = new Vector3();
 		this.tmpQuat = new Quaternion();

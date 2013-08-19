@@ -447,6 +447,49 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.billboard = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			viewMatrix: Shader.VIEW_MATRIX,
+
+			worldMatrix : Shader.WORLD_MATRIX,
+			diffuseMap : Shader.DIFFUSE_MAP
+		},
+		vshader : [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 viewMatrix;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void) {',
+			'	texCoord0 = vertexUV0;',
+			'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(0.0, 0.0, 0.0, 1.0) + projectionMatrix * vec4(vertexPosition.x, vertexPosition.y, 0.0, 0.0);',
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'precision mediump float;',
+
+			'uniform sampler2D diffuseMap;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void)',
+			'{',
+			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+			'}'//
+		].join('\n')
+	};
+
 	ShaderLib.textured = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,

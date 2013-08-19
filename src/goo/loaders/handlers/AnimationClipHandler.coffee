@@ -8,6 +8,7 @@ define [
 	'goo/animation/clip/TriggerChannel'
 
 	'goo/util/PromiseUtil'
+	'goo/util/ArrayUtil'
 ], (
 	ConfigHandler
 	AnimationClip
@@ -17,12 +18,25 @@ define [
 	InterpolatedFloatChannel
 	TriggerChannel
 	
-	pu
+	PromiseUtil
+	ArrayUtil
 ) ->
 	class AnimationClipHandler extends ConfigHandler
 		@_register('clip')
 		
-		_create: (clipConfig) ->
+
+						
+		update: (ref, config) ->
+			if config.binaryData
+				@getConfig(config.binaryData).then (bindata)=>
+					if not bindata then throw new Error("Binary clip data was empty")
+					@_createAnimationClip(config, bindata)
+			else
+				clip = @_createAnimationClip(config)
+				PromiseUtil.createDummyPromise(clip)
+
+
+		_createAnimationClip: (clipConfig, bindata) ->
 			console.debug "Creating animation clip"
 			clip = new AnimationClip(clipConfig.name)
 			
@@ -32,13 +46,22 @@ define [
 			
 			if clipConfig.channels and clipConfig.channels.length
 				for channelConfig in clipConfig.channels
-					times = JsonUtils.parseChannelTimes(channelConfig, useCompression)
+					if bindata
+						times = ArrayUtil.getTypedArray(bindata, channelConfig.times)
+					else
+						times = new Float32Array JsonUtils.parseChannelTimes(channelConfig, useCompression)
 					blendType = channelConfig.blendType
 				
 					if channelConfig.type in ['Joint', 'Transform']
-						rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression)
-						trans = JsonUtils.parseTranslationSamples(channelConfig, times.length, useCompression)
-						scales = JsonUtils.parseScaleSamples(channelConfig, times.length, useCompression)
+						if bindata
+							rots = ArrayUtil.getTypedArray(bindata, channelConfig.rotationSamples)
+							trans = ArrayUtil.getTypedArray(bindata, channelConfig.translationSamples)
+							scales = ArrayUtil.getTypedArray(bindata, channelConfig.scaleSamples)
+
+						else
+							rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression)
+							trans = JsonUtils.parseTranslationSamples(channelConfig, times.length, useCompression)
+							scales = JsonUtils.parseScaleSamples(channelConfig, times.length, useCompression)
 					
 					if channelConfig.type == 'Joint'
 						channel = new JointChannel(
@@ -80,9 +103,4 @@ define [
 					
 					clip.addChannel(channel)
 			
-			return clip
-						
-		update: (ref, config) ->
-			clip = @_create(config)
-			pu.createDummyPromise(clip)
-			
+			return clip			

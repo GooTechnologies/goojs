@@ -55,7 +55,7 @@ define [
 				if config.defines
 					shaderDefinition.defines = config.defines
 			else
-				shaderDefinition = this._getDefaultShaderDefinition()
+				shaderDefinition = @_getDefaultShaderDefinition()
 			
 			promises = [
 				@getConfig(config.vshaderRef)
@@ -86,3 +86,21 @@ define [
 
 		remove: (ref)->
 			# delete @_objects[ref]
+
+		_getDefaultShaderDefinition: ->
+			attributes : 
+				vertexPosition : MeshData.POSITION
+				vertexNormal : MeshData.NORMAL
+				vertexUV0 : MeshData.TEXCOORD0
+			uniforms : 
+				viewMatrix : Shader.VIEW_MATRIX
+				projectionMatrix : Shader.PROJECTION_MATRIX
+				worldMatrix : Shader.WORLD_MATRIX
+				cameraPosition : Shader.CAMERA
+				lightPosition : Shader.LIGHT0
+				diffuseMap : Shader.DIFFUSE_MAP
+				materialAmbient : Shader.AMBIENT
+				materialDiffuse : Shader.DIFFUSE
+				materialSpecular : Shader.SPECULAR
+				materialSpecularPower : Shader.SPECULAR_POWER
+

@@ -142,7 +142,6 @@ function (
 			}
 		}
 
-		// this.lineRecord = null;// new LineRecord();
 		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
@@ -152,7 +151,8 @@ function (
 		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
 		/** @type {boolean} */
 		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
-//		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
+		/** @type {boolean} */
+		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
 		/** @type {boolean} */
 		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
 		/** @type {boolean} */
@@ -203,28 +203,60 @@ function (
 
 		// Check capabilities (move out to separate module)
 		/** @type {object}
-		 * @property {number} maxTexSize Maximum 2D texture size
-		 * @property {number} maxCubeSize Maximum cubemap size
+		 * @property {number} maxTexureSize Maximum 2D texture size
+		 * @property {number} maxCubemapSize Maximum cubemap size
 		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
-		 * @property {number} vertexUnits Maximum vertex shader texture units
-		 * @property {number} fragmentUnits Maximum fragment shader texture units
-		 * @property {number} combinedUnits Maximum total texture units
+		 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
+		 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
+		 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
+		 * @property {number} maxCombinedTextureUnits Maximum total texture units
 		 * @property {number} maxVertexAttributes Maximum vertex attributes
-		 * @property {number} maxVertexShader Maximum vertex uniform vectors
-		 * @property {number} maxFragmentShader Maximum fragment uniform vectors
-		 * @property {number} maxVaryingVectors Maximum varying vectors
+		 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
+		 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
+		 * @property {number} maxVaryingVectors Maximum varying vectors
+		 * @property {number} aliasedPointSizeRange Point size min/max [min, max]
+		 * @property {number} aliasedLineWidthRange Line width min/max [min, max]
+		 * @property {number} samples Antialiasing sample size
+		 * @property {number} sampleBuffers Sample buffer count
+		 * @property {number} depthBits Depth bits
+		 * @property {number} stencilBits Stencil bits
+		 * @property {number} subpixelBits Sub-pixel bits
+		 * @property {number} supportedExtensionsList Supported extension as an array
+		 * @property {number} renderer Renderer name
+		 * @property {number} vendor Vendor name
+		 * @property {number} version Version string
+		 * @property {number} shadingLanguageVersion Shadinglanguage version string
 		 */
 		this.capabilities = {
-			maxTexSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
-			maxCubeSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
+			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
+			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
 			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
-			vertexUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
-			fragmentUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
-			combinedUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
+
+			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
+			maxCombinedTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+
 			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
-			maxVertexShader: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
-			maxFragmentShader: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
+			maxVertexUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
+			maxFragmentUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
 			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
+
+			aliasedPointSizeRange: this.context.getParameter(WebGLRenderingContext.ALIASED_POINT_SIZE_RANGE), // [min, max]
+			aliasedLineWidthRange: this.context.getParameter(WebGLRenderingContext.ALIASED_LINE_WIDTH_RANGE), // [min, max]
+
+			samples: this.context.getParameter(WebGLRenderingContext.SAMPLES),
+			sampleBuffers: this.context.getParameter(WebGLRenderingContext.SAMPLE_BUFFERS),
+
+			depthBits: this.context.getParameter(WebGLRenderingContext.DEPTH_BITS),
+			stencilBits: this.context.getParameter(WebGLRenderingContext.STENCIL_BITS),
+			subpixelBits: this.context.getParameter(WebGLRenderingContext.SUBPIXEL_BITS),
+			supportedExtensionsList: this.context.getSupportedExtensions(),
+
+			renderer: this.context.getParameter(WebGLRenderingContext.RENDERER),
+			vendor: this.context.getParameter(WebGLRenderingContext.VENDOR),
+			version: this.context.getParameter(WebGLRenderingContext.VERSION),
+			shadingLanguageVersion: this.context.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION),
 
 			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
 			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
@@ -1190,8 +1222,8 @@ function (
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.capabilities.maxTexSize || image.height > this.capabilities.maxTexSize)) {
-					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexSize);
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.capabilities.maxTexureSize || image.height > this.capabilities.maxTexureSize)) {
+					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexureSize);
 					image = texture.image;
 				}
 
@@ -1213,9 +1245,9 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubeSize || image.height > this.capabilities.maxCubeSize)) {
+			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubeSize);
+					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize);
 				}
 				image = texture.image;
 			}
@@ -1756,6 +1788,28 @@ function (
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
+	};
+
+	Renderer.prototype.getCapabilitiesString = function () {
+		var caps = [];
+		for (var name in this.capabilities) {
+			var cap = this.capabilities[name];
+			var str = '';
+			if (cap instanceof ArrayBufferView) {
+				str += '[';
+				for (var i = 0; i < cap.length; i++) {
+					str += cap[i];
+					if (i < cap.length - 1) {
+						str += ',';
+					}
+				}
+				str += ']';
+			} else {
+				str = cap;
+			}
+			caps.push(name + ': ' + str);
+		}
+		return caps.join('\n');
 	};
 
 	//TODO!!!

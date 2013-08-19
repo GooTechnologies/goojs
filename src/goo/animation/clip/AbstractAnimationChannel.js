@@ -16,7 +16,11 @@ function (
 	function AbstractAnimationChannel (channelName, times, blendType) {
 		this._blendType = blendType || 'Linear';
 		this._channelName = channelName;
-		this._times = times instanceof Array && times.length ? times.slice(0) : [];
+
+		if ((times instanceof Array || times instanceof Float32Array) && times.length)
+			this._times = new Float32Array(times)
+		else
+			this._times = []
 	}
 
 	/*
