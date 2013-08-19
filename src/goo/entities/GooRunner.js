@@ -282,7 +282,7 @@ function (
 			} else if (e.which === 53 && isCtrl) { // 5
 				this.renderSystem.setDebugMaterial('wireframe');
 			} else if (e.which === 54 && isCtrl) { // 6
-				this.renderSystem.setDebugMaterial('texture');
+				this.renderSystem.setDebugMaterial('flat');
 			} else if ((e.which === 55 || e.which === 191) && isCtrl) { // 7
 				this.renderSystem.setDebugMaterial('texture+wireframe');
 			} else if ((e.which === 56) && isCtrl) { // 7

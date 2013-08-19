@@ -116,10 +116,10 @@ function (
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
-					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, false, this.overrideMaterials);
+					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, true, this.overrideMaterials);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights, null, false, this.overrideMaterials);
+				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
 			}
 		}
 	};
@@ -149,9 +149,14 @@ function (
 		}
 		var shaderDef = Util.clone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
-		this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
-		if (key === 'wireframe') {
-			this._debugMaterials[key].wireframe = true;
+		if(key !== 'flat') {
+			this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
+			if (key === 'wireframe') {
+				this._debugMaterials[key].wireframe = true;
+			}
+		} else {
+			this._debugMaterials[key] = Material.createEmptyMaterial(null, key);
+			this._debugMaterials[key].flat = true;
 		}
 	};
 

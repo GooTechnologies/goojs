@@ -15,7 +15,8 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shadow/ShadowHandler'
+	'goo/renderer/shadow/ShadowHandler',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function (
@@ -34,7 +35,8 @@ function (
 	Transform,
 	RenderQueue,
 	ShaderLib,
-	ShadowHandler
+	ShadowHandler,
+	Vector3
 ) {
 	"use strict";
 
@@ -115,7 +117,7 @@ function (
 		if (parameters.debug) {
 			// XXX: This is a temporary solution to easily enable webgl debugging during development...
 			var request = new XMLHttpRequest();
-			request.open('GET', '/../lib/webgl-debug.js', false);
+			request.open('GET', '/js/goo/lib/webgl-debug.js', false);
 			request.onreadystatechange = function () {
 				if (request.readyState === 4) {
 					if (request.status >= 200 && request.status <= 299) {
@@ -535,7 +537,7 @@ function (
 			materials = this.overrideMaterial instanceof Array ? this.overrideMaterial : [this.overrideMaterial];
 		}*/
 
-		var isWireframe = false;
+		var flatOrWire = null;
 		var originalData = meshData;
 
 		var count = 0;
@@ -577,27 +579,28 @@ function (
 				material.removeTexture('SHADOW_MAP');
 			}
 
-			if (material.wireframe && !isWireframe) {
+			if (material.wireframe && flatOrWire !== 'wire') {
 				if (!meshData.wireframeData) {
-					meshData.wireframeData = this.buildFlatMeshData(meshData);
+					meshData.wireframeData = this.buildWireframeData(meshData);
 				}
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
-				if (!this.wireframeMaterial) {
-					var shaderDef = Util.clone(ShaderLib.uber);
-					shaderDef.fshader = Util.clone(ShaderLib.simpleLit.fshader);
-					this.wireframeMaterial = Material.createMaterial(shaderDef, 'Wireframe');
+				flatOrWire = 'wire';
+			} else if (material.flat && flatOrWire !== 'flat') {
+				if (!meshData.flatMeshData) {
+					meshData.flatMeshData = this.buildFlatMeshData(meshData);
 				}
-				//this.wireframeMaterial.uniforms.color = material.wireframeColor || [1, 1, 1];
-				material = this.wireframeMaterial;
-				isWireframe = true;
-			} else if (!material.wireframe && isWireframe) {
+				meshData = meshData.flatMeshData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'flat';
+			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
 				meshData = originalData;
 				this.bindData(meshData.vertexData);
-				isWireframe = false;
+				flatOrWire = null;
 			}
 
 			renderInfo.material = material;
+			renderInfo.meshData = meshData;
 
 			// Check for caching of shader that use defines
 			var shader = material.shader;
@@ -777,15 +780,24 @@ function (
 		pickingStore.depth = depth;
 	};
 
+	// Calc helpers
+	var v1 = new Vector3();
+	var v2 = new Vector3();
+	var v3 = new Vector3();
+
 	Renderer.prototype.buildFlatMeshData = function(meshData) {
 		//var attributeMap = Util.clone(meshData.attributeMap);
 
-		var verts = [], oldVerts = meshData.getAttributeBuffer(MeshData.POSITION);
-		var norms = [];
+		var attributeMap = Util.clone(meshData.attributeMap);
+		var attribs = {};
+		for (var key in attributeMap) {
+			attribs[key] = {
+				oldBuffer: meshData.getAttributeBuffer(key),
+				values: []
+			};
+		}
 		var idcs = [], oldIdcs = meshData.getIndexBuffer();
-		var v1 = [], v2 = [], v3 = [], v4 = [], v5 = [], n = [];
 		var indexCount = 0;
-
 		meshData.updatePrimitiveCounts();
 		for (var section = 0; section < meshData.getSectionCount(); section++) {
 			var indexMode = meshData.indexModes[section];
@@ -801,77 +813,70 @@ function (
 						var i1 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 0, section)];
 						var i2 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 1, section)];
 						var i3 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 2, section)];
+						for (var key in attribs) {
+							if(key === MeshData.NORMAL) {
+								continue;
+							}
+							var count = attributeMap[key].count;
+							for (var i = 0; i < count; i++) {
+								attribs[key].values[indexCount*count+i] = attribs[key].oldBuffer[i1*count+i];
+								attribs[key].values[(indexCount+1)*count+i] = attribs[key].oldBuffer[i2*count+i];
+								attribs[key].values[(indexCount+2)*count+i] = attribs[key].oldBuffer[i3*count+i];
+							}
+							if(key === MeshData.POSITION) {
+								v1.setd(
+									attribs[key].values[indexCount*3],
+									attribs[key].values[indexCount*3+1],
+									attribs[key].values[indexCount*3+2]
+								);
+								v2.setd(
+									attribs[key].values[(indexCount+1)*3],
+									attribs[key].values[(indexCount+1)*3+1],
+									attribs[key].values[(indexCount+1)*3+2]
+								);
+								v3.setd(
+									attribs[key].values[(indexCount+2)*3],
+									attribs[key].values[(indexCount+2)*3+1],
+									attribs[key].values[(indexCount+2)*3+2]
+								);
+								v2.subv(v1);
+								v3.subv(v1);
+								v2.cross(v3).normalize();
 
-						v1[0] = oldVerts[i1*3 + 0];
-						v1[1] = oldVerts[i1*3 + 1];
-						v1[2] = oldVerts[i1*3 + 2];
+								if (attribs[MeshData.NORMAL]) {
+									attribs[MeshData.NORMAL].values[(indexCount)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount)*3+2] = v2.data[2];
 
-						v2[0] = oldVerts[i2*3 + 0];
-						v2[1] = oldVerts[i2*3 + 1];
-						v2[2] = oldVerts[i2*3 + 2];
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3+2] = v2.data[2];
 
-						v3[0] = oldVerts[i3*3 + 0];
-						v3[1] = oldVerts[i3*3 + 1];
-						v3[2] = oldVerts[i3*3 + 2];
-
-						v4[0] = v2[0] - v1[0];
-						v4[1] = v2[1] - v1[1];
-						v4[2] = v2[2] - v1[2];
-
-						v5[0] = v3[0] - v1[0];
-						v5[1] = v3[1] - v1[1];
-						v5[2] = v3[2] - v1[2];
-
-
-						n[0] = v4[1]*v5[2] - v4[2]*v5[1];
-						n[1] = v4[2]*v5[0] - v4[0]*v5[2];
-						n[2] = v4[0]*v5[1] - v4[1]*v5[0];
-						var len = Math.sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
-						n[0] /= len;
-						n[1] /= len;
-						n[2] /= len;
-
-						n[0] = 0.0;
-						n[1] = 1.0;
-						n[2] = 0.0;
-
-						verts[indexCount + 0] = v1[0];
-						verts[indexCount + 1] = v1[1];
-						verts[indexCount + 2] = v1[2];
-
-						norms[indexCount + 0] = n[0];
-						norms[indexCount + 1] = n[1];
-						norms[indexCount + 2] = n[2];
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3+2] = v2.data[2];
+								}
+							}
+						}
 						idcs.push(idcs.length);
-
-						verts[indexCount + 3] = v2[0];
-						verts[indexCount + 4] = v2[1];
-						verts[indexCount + 5] = v2[2];
-
-						norms[indexCount + 3] = n[0];
-						norms[indexCount + 4] = n[1];
-						norms[indexCount + 5] = n[2];
 						idcs.push(idcs.length);
-
-						verts[indexCount + 6] = v3[0];
-						verts[indexCount + 7] = v3[1];
-						verts[indexCount + 8] = v3[2];
-
-						norms[indexCount + 6] = n[0];
-						norms[indexCount + 7] = n[1];
-						norms[indexCount + 8] = n[2];
 						idcs.push(idcs.length);
-						indexCount += 9;
+						indexCount += 3;
 				}
 			}
 		}
-		var flatMeshData = new MeshData(MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL]), verts.length / 3.0, idcs.length);
+		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
 
-		flatMeshData.getAttributeBuffer(MeshData.NORMAL).set(norms);
-		flatMeshData.getAttributeBuffer(MeshData.POSITION).set(verts);
+		for (var key in attribs) {
+			flatMeshData.getAttributeBuffer(key).set(attribs[key].values);
+		}
 		flatMeshData.getIndexBuffer().set(idcs);
 
-		//return flatMeshData.getNormalsMeshData();
+		if (meshData.currentPose) {
+			flatMeshData.currentPose = meshData.currentPose;
+			flatMeshData.paletteMap = meshData.paletteMap;
+			flatMeshData.weightsPerVertex = meshData.weightsPerVertex;
+		}
 
 		return flatMeshData;
 	};
@@ -939,6 +944,12 @@ function (
 				wireframeData.getAttributeBuffer(attribute).set(meshData.getAttributeBuffer(attribute));
 			}
 			wireframeData.getIndexBuffer().set(targetI);
+		}
+
+		if (meshData.currentPose) {
+			wireframeData.currentPose = meshData.currentPose;
+			wireframeData.paletteMap = meshData.paletteMap;
+			wireframeData.weightsPerVertex = meshData.weightsPerVertex;
 		}
 
 		return wireframeData;
