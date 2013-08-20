@@ -264,7 +264,6 @@ function (
 			}
 		}, false);
 		document.addEventListener("keydown", function (e) {
-			console.log(e);
 			if (e.which === 16) {
 				isCtrl = true;
 			} else if (e.which === 32 && isCtrl) { // Space

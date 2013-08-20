@@ -318,7 +318,6 @@ function (
 				indices[index++] = i + 1 + iOffset;
 			}
 		}
-		console.log (vbuf.length/3, norms.length/3, texs.length/2, indices.length);
 		return this;
 	};
 
