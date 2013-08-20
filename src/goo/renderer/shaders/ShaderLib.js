@@ -2067,7 +2067,9 @@ define([
 
 	ShaderLib.pickingShader = {
 		attributes : {
-			vertexPosition : MeshData.POSITION
+			vertexPosition : MeshData.POSITION,
+      vertexJointIDs: MeshData.JOINTIDS,
+      vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,
@@ -2078,6 +2080,10 @@ define([
 				return shaderInfo.renderable.id;
 			}
 		},
+		processors: [
+			ShaderBuilder.uber.processor,
+			ShaderBuilder.animation.processor
+		],
 		vshader : [
 		'attribute vec3 vertexPosition;',
 
@@ -2086,10 +2092,14 @@ define([
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
 
+		ShaderBuilder.animation.prevertex,
+
 		'varying float depth;',
 
 		'void main() {',
-			'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'mat4 wMatrix = worldMatrix;',
+			ShaderBuilder.animation.vertex,
+			'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = length(mvPosition.xyz) / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'

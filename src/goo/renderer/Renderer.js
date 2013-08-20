@@ -496,6 +496,8 @@ function (
 			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
 			if(renderable.meshDataComponent.currentPose) {
 				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
+			} else {
+				delete renderInfo.currentPose;
 			}
 		} else {
 			renderInfo.meshData = renderable.meshData;
@@ -777,7 +779,7 @@ function (
 					minFilter: 'NearestNeighborNoMipMaps',
 					magFilter: 'NearestNeighbor'
 				}),
-				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
+				pickingMaterial: Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
