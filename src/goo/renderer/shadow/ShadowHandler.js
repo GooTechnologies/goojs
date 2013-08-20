@@ -126,7 +126,7 @@ define([
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
 
-				renderer.overrideMaterial = this.depthMaterial;
+				//renderer.overrideMaterial = this.depthMaterial;
 
 				this.shadowList.length = 0;
 				for (var j = 0; j < entities.length; j++) {
@@ -136,9 +136,9 @@ define([
 					}
 				}
 				partitioner.process(lightCam, this.shadowList, this.renderList);
-				renderer.render(this.renderList, lightCam, [], this.shadowTarget);
+				renderer.render(this.renderList, lightCam, [], this.shadowTarget, true, this.depthMaterial);
 
-				renderer.overrideMaterial = null;
+				//renderer.overrideMaterial = null;
 
 				switch (light.shadowSettings.type) {
 					case 'Blur':
