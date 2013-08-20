@@ -110,6 +110,7 @@ define([
 
 			document.addEventListener('mousemove', boundMouseMove, false);
 			document.addEventListener('mouseup', boundMouseUp, false);
+			document.addEventListener('mouseout', boundMouseUp, false);
 		};
 
 		var mousemove = function (event) {
@@ -121,6 +122,7 @@ define([
 
 			document.removeEventListener('mousemove', boundMouseMove);
 			document.removeEventListener('mouseup', boundMouseUp);
+			document.removeEventListener('mouseout', boundMouseUp);
 		};
 
 		MouseLookControlScript.prototype.setupMouseControls = function () {
