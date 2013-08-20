@@ -37,7 +37,7 @@ require([
 			for (var key in configs) {
 				if (/\.entity$/.test(key)) {
 					var entity = loader.getCachedObjectForRef(key);
-					if (entity.meshDataComponent && entity.meshDataComponent.meshData.currentPose) {
+					if (entity.meshDataComponent && entity.meshDataComponent.currentPose) {
 						skinnedEntities.push(entity);
 					}
 

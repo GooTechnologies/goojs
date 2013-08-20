@@ -28,6 +28,7 @@ function (
 		 * @default
 		 */
 		this.autoCompute = true;
+		this.currentPose = null;
 	}
 
 	MeshDataComponent.prototype = Object.create(Component.prototype);

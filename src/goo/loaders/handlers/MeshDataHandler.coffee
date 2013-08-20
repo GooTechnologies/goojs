@@ -64,6 +64,7 @@ ArrayUtil
 			# Backwards compatibility
 			if meshConfig.pose then meshConfig.poseRef = meshConfig.pose
 
+			###
 			if meshConfig.poseRef
 				skelRef = meshConfig.poseRef
 				@getConfig(skelRef).then (skelConfig)=>
@@ -71,7 +72,8 @@ ArrayUtil
 						meshData.currentPose = skeleton
 						return meshData
 			else
-				PromiseUtil.createDummyPromise(meshData)
+			###
+			PromiseUtil.createDummyPromise(meshData)
 
 
 		# Creates a MeshData object with the given config

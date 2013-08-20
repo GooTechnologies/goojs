@@ -459,7 +459,7 @@ function(
 
 	ShaderBuilder.animation = {
 		processor: function(shader, shaderInfo) {
-			var pose = shaderInfo.meshData.currentPose;
+			var pose = shaderInfo.currentPose;
 			if (pose) {
 				shader.defines = shader.defines || {};
 				shader.defines.JOINT_COUNT = shaderInfo.meshData.paletteMap.length * 3;
@@ -470,7 +470,7 @@ function(
 		},
 		jointPalette: function (shaderInfo) {
 			var skMesh = shaderInfo.meshData;
-			var pose = skMesh.currentPose;
+			var pose = shaderInfo.currentPose;
 			if (pose) {
 				var palette = pose._matrixPalette;
 				var store = skMesh.store;

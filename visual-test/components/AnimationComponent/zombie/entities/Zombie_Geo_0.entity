@@ -1,7 +1,8 @@
 {
 "components":{
 "meshData":{
-"meshRef":"meshes/Zombie_Geo_0.mesh"
+"meshRef":"meshes/Zombie_Geo_0.mesh",
+"poseRef":"skeletons/Skeleton.skeleton"
 },
 "meshRenderer":{
 "castShadows":false,

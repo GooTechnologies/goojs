@@ -126,8 +126,7 @@ define([
 
 
 	return function(entity, renderer) {
-		var meshData = entity.meshDataComponent.meshData;
-		var pose = meshData.currentPose;
+		var pose = entity.meshDataComponent.currentPose;
 		if (pose !== undefined) {
 			// If we're in view, go ahead and draw our associated skeleton pose
 			var joints = pose._skeleton._joints;

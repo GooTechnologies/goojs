@@ -44,8 +44,7 @@ varying vec4 lPosition;
 const mat4 ScaleMatrix = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);
 #endif
 #ifdef JOINT_COUNT
-uniform mat3 jointPaletteRotScale[JOINT_COUNT];
-uniform vec3 jointPaletteTranslation[JOINT_COUNT];
+uniform vec4 jointPalette[JOINT_COUNT];
 #endif
 void main(void) {
 vec4 pos = vec4(vertexPosition, 1.0);
@@ -53,21 +52,37 @@ mat4 newWorldMatrix = worldMatrix;
 #ifdef JOINT_COUNT
 #ifdef WEIGHTS
 #ifdef JOINTIDS
-mat3 smallMat = mat3(0.0);
-smallMat += jointPaletteRotScale[int(vertexJointIDs.x)] * vertexWeights.x;
-smallMat += jointPaletteRotScale[int(vertexJointIDs.y)] * vertexWeights.y;
-smallMat += jointPaletteRotScale[int(vertexJointIDs.z)] * vertexWeights.z;
-smallMat += jointPaletteRotScale[int(vertexJointIDs.w)] * vertexWeights.w;
-mat4 mat = mat4(smallMat);
-mat[3][3] = vertexWeights.x + vertexWeights.y + vertexWeights.z + vertexWeights.w;
+int x = 3*int(vertexJointIDs.x);
+int y = 3*int(vertexJointIDs.y);
+int z = 3*int(vertexJointIDs.z);
+int w = 3*int(vertexJointIDs.w);
 
-vec3 trans = vec3(0.0);
-trans += jointPaletteTranslation[int(vertexJointIDs.x)] * vertexWeights.x;
-trans += jointPaletteTranslation[int(vertexJointIDs.y)] * vertexWeights.y;
-trans += jointPaletteTranslation[int(vertexJointIDs.z)] * vertexWeights.z;
-trans += jointPaletteTranslation[int(vertexJointIDs.w)] * vertexWeights.w;
+mat4 mat = mat4(0.0);
 
-mat[3] += vec4(trans, 0.0);
+mat += mat4(
+	jointPalette[x+0].x, jointPalette[x+1].x, jointPalette[x+2].x, 0,
+	jointPalette[x+0].y, jointPalette[x+1].y, jointPalette[x+2].y, 0,
+	jointPalette[x+0].z, jointPalette[x+1].z, jointPalette[x+2].z, 0,
+	jointPalette[x+0].w, jointPalette[x+1].w, jointPalette[x+2].w, 1
+) * vertexWeights.x;
+mat += mat4(
+	jointPalette[y+0].x, jointPalette[y+1].x, jointPalette[y+2].x, 0,
+	jointPalette[y+0].y, jointPalette[y+1].y, jointPalette[y+2].y, 0,
+	jointPalette[y+0].z, jointPalette[y+1].z, jointPalette[y+2].z, 0,
+	jointPalette[y+0].w, jointPalette[y+1].w, jointPalette[y+2].w, 1
+) * vertexWeights.y;
+mat += mat4(
+	jointPalette[z+0].x, jointPalette[z+1].x, jointPalette[z+2].x, 0,
+	jointPalette[z+0].y, jointPalette[z+1].y, jointPalette[z+2].y, 0,
+	jointPalette[z+0].z, jointPalette[z+1].z, jointPalette[z+2].z, 0,
+	jointPalette[z+0].w, jointPalette[z+1].w, jointPalette[z+2].w, 1
+) * vertexWeights.z;
+mat += mat4(
+	jointPalette[w+0].x, jointPalette[w+1].x, jointPalette[w+2].x, 0,
+	jointPalette[w+0].y, jointPalette[w+1].y, jointPalette[w+2].y, 0,
+	jointPalette[w+0].z, jointPalette[w+1].z, jointPalette[w+2].z, 0,
+	jointPalette[w+0].w, jointPalette[w+1].w, jointPalette[w+2].w, 1
+) * vertexWeights.w;
 
 newWorldMatrix = newWorldMatrix * mat;
 #endif
