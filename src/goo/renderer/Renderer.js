@@ -795,7 +795,7 @@ function (
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
-			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, false, this.hardwarePicking.pickingMaterial);
+			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, true, this.hardwarePicking.pickingMaterial);
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
@@ -819,6 +819,11 @@ function (
 
 	Renderer.prototype.buildFlatMeshData = function(meshData) {
 		//var attributeMap = Util.clone(meshData.attributeMap);
+		var idcs = [], oldIdcs = meshData.getIndexBuffer();
+		if (oldIdcs.length > 65535) {
+			console.warn('Mesh too big, cannot build flat mesh data');
+			return meshData;
+		}
 
 		var attributeMap = Util.clone(meshData.attributeMap);
 		var attribs = {};
@@ -828,13 +833,11 @@ function (
 				values: []
 			};
 		}
-		var idcs = [], oldIdcs = meshData.getIndexBuffer();
 		var indexCount = 0;
 		meshData.updatePrimitiveCounts();
 		for (var section = 0; section < meshData.getSectionCount(); section++) {
 			var indexMode = meshData.indexModes[section];
 			var primitiveCount = meshData.getPrimitiveCount(section);
-			console.log(primitiveCount, meshData.getSectionCount());
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 
 				switch (indexMode) {
