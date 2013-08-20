@@ -283,8 +283,8 @@ function (
 			} else if (e.which === 54 && isCtrl) { // 6
 				this.renderSystem.setDebugMaterial('flat');
 			} else if ((e.which === 55 || e.which === 191) && isCtrl) { // 7
-				this.renderSystem.setDebugMaterial('texture+wireframe');
-			} else if ((e.which === 56) && isCtrl) { // 7
+				this.renderSystem.setDebugMaterial('texture');
+			} else if ((e.which === 56) && isCtrl) { // 8
 				this.renderSystem.setDebugMaterial('+wireframe');
 			}
 		}.bind(this), false);

@@ -459,18 +459,20 @@ function(
 
 	ShaderBuilder.animation = {
 		processor: function(shader, shaderInfo) {
-			var pose = shaderInfo.meshData.currentPose;
+			var pose = shaderInfo.currentPose;
+			shader.defines = shader.defines || {};
 			if (pose) {
-				shader.defines = shader.defines || {};
-				shader.defines.JOINT_COUNT = shaderInfo.meshData.paletteMap.length * 3;
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
+				shader.defines.JOINT_COUNT = shaderInfo.meshData.paletteMap.length * 3;
+			} else {
+				delete shader.defines.JOINT_COUNT;
 			}
 		},
 		jointPalette: function (shaderInfo) {
 			var skMesh = shaderInfo.meshData;
-			var pose = skMesh.currentPose;
+			var pose = shaderInfo.currentPose;
 			if (pose) {
 				var palette = pose._matrixPalette;
 				var store = skMesh.store;

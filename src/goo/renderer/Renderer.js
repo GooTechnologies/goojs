@@ -494,6 +494,11 @@ function (
 			renderInfo.meshData = renderable.meshDataComponent.meshData;
 			renderInfo.materials = renderable.meshRendererComponent.materials;
 			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
+			if(renderable.meshDataComponent.currentPose) {
+				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
+			} else {
+				delete renderInfo.currentPose;
+			}
 		} else {
 			renderInfo.meshData = renderable.meshData;
 			renderInfo.materials = renderable.materials;
@@ -774,7 +779,7 @@ function (
 					minFilter: 'NearestNeighborNoMipMaps',
 					magFilter: 'NearestNeighbor'
 				}),
-				pickingMaterial: Material.createMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
+				pickingMaterial: Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
@@ -900,6 +905,10 @@ function (
 				}
 			}
 		}
+		if (idcs.length === 0) {
+			console.warn('Could not build flat data');
+			return meshData;
+		}
 		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
 
 		for (var key in attribs) {
@@ -907,11 +916,8 @@ function (
 		}
 		flatMeshData.getIndexBuffer().set(idcs);
 
-		if (meshData.currentPose) {
-			flatMeshData.currentPose = meshData.currentPose;
-			flatMeshData.paletteMap = meshData.paletteMap;
-			flatMeshData.weightsPerVertex = meshData.weightsPerVertex;
-		}
+		flatMeshData.paletteMap = meshData.paletteMap;
+		flatMeshData.weightPerVertex = meshData.weightsPerVertex;
 
 		return flatMeshData;
 	};
@@ -981,11 +987,8 @@ function (
 			wireframeData.getIndexBuffer().set(targetI);
 		}
 
-		if (meshData.currentPose) {
-			wireframeData.currentPose = meshData.currentPose;
-			wireframeData.paletteMap = meshData.paletteMap;
-			wireframeData.weightsPerVertex = meshData.weightsPerVertex;
-		}
+		wireframeData.paletteMap = meshData.paletteMap;
+		wireframeData.weightsPerVertex = meshData.weightsPerVertex;
 
 		return wireframeData;
 	};
