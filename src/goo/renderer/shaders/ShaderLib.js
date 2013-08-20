@@ -96,7 +96,7 @@ define([
 				'mat4 wMatrix = worldMatrix;',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
-				'vWorldPos = worldPos.xyz;',
+				'vWorldPos = worldPos.xyz / worldPos.w;',
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
 				'viewPosition = cameraPosition - worldPos.xyz;',
@@ -419,7 +419,7 @@ define([
 
 		'void main(void) {',
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-		'	vWorldPos = worldPos.xyz;',
+		' vWorldPos = worldPos.xyz / worldPos.w;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
@@ -561,7 +561,7 @@ define([
 
 		'void main(void) {',
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-		'	vWorldPos = worldPos.xyz;',
+		' vWorldPos = worldPos.xyz / worldPos.w;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
