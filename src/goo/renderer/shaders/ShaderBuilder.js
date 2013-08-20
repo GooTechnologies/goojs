@@ -481,16 +481,25 @@ function(
 				var refMat;
 				for (var index = 0; index < skMesh.paletteMap.length; index++) {
 					refMat = palette[skMesh.paletteMap[index]];
+					for (var i = 0; i < 12; i++) {
+						store[index * 12 + i] = refMat.data[ShaderBuilder.animation.order[i]];
+					}
+					/*
 					for (var row = 0; row < 3; row++) {
 						for (var col = 0; col < 4; col++) {
 							// Transposed, so we can pad with translation
 							store[index * 12 + row * 4 + col] = refMat.data[col * 4 + row];
 						}
-					}
+					}*/
 				}
 				return store;
 			}
 		},
+		order: [
+			0,4,8,12,
+			1,5,9,13,
+			2,6,10,14
+		],
 		prevertex: [
 			'#ifdef JOINTIDS',
 			'attribute vec4 vertexJointIDs;',
