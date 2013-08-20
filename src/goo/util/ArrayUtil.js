@@ -44,6 +44,13 @@ define([], function() {
 		}
 	}
 
+
+	ArrayUtil.remove = function(array, value) {
+		array.splice(array.indexOf(value), 1);
+	}
+
+
 	return ArrayUtil;
+
 
 });

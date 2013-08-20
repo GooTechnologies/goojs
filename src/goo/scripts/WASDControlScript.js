@@ -146,6 +146,7 @@ function (Vector, Vector3) {
 		// add to our transform
 		transform.translation.add(this.calcVector);
 
+		// console.log(transform.translation.x + ';' + transform.translation.z);
 		// set our component updated.
 		transformComponent.setUpdated();
 	};
