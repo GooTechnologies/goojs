@@ -52,9 +52,10 @@ require([
 		var textEntity = goo.world.createEntity();
 
 		// get a font
-		var material = Material.createMaterial(ShaderLib.texturedLit, '');
+		var material = Material.createMaterial(ShaderLib.billboard, '');
 		var texture = new TextureCreator().loadTexture2D('../../resources/font.png');
 		material.setTexture('DIFFUSE_MAP', texture);
+		material.blendState.blending = 'AlphaBlending';
 
 		var meshRendererComponent = new MeshRendererComponent();
 		meshRendererComponent.materials.push(material);
