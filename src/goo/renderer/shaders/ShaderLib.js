@@ -96,7 +96,7 @@ define([
 				'mat4 wMatrix = worldMatrix;',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
-				'vWorldPos = worldPos.xyz / worldPos.w;',
+				'vWorldPos = worldPos.xyz;',
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
 				'viewPosition = cameraPosition - worldPos.xyz;',
@@ -419,7 +419,7 @@ define([
 
 		'void main(void) {',
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-		' vWorldPos = worldPos.xyz / worldPos.w;',
+		' vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
@@ -429,6 +429,12 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
+		'#ifdef SPECULAR_MAP',
+			'uniform sampler2D specularMap;',
+		'#ifdef TEXCOORD0',
+			'varying vec2 texCoord0;',
+		'#endif',
+		'#endif',
 		ShaderBuilder.light.prefragment,
 
 		'varying vec3 normal;',
@@ -561,7 +567,7 @@ define([
 
 		'void main(void) {',
 		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-		' vWorldPos = worldPos.xyz / worldPos.w;',
+		' vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,

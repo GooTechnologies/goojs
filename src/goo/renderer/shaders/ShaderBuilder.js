@@ -550,7 +550,7 @@ function(
 			'	jointPalette[w+0].w, jointPalette[w+1].w, jointPalette[w+2].w, 1',
 			') * vertexWeights.w;',
 
-			'wMatrix = wMatrix * mat;',
+			'wMatrix = wMatrix * mat / mat[3][3];',
 			'#endif',
 			'#endif',
 			'#endif'
