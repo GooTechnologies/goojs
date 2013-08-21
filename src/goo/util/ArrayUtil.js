@@ -4,7 +4,7 @@ define([], function() {
 	/**
 	 * Utilities for arrays and typed arrays
 	 */
-	
+
 
 	/** 
 	 * Create a typed array view on an ArrayBuffer, using the supplied pointer. Notice that this
@@ -27,27 +27,30 @@ define([], function() {
 		var length = pointer[1];
 		var format = pointer[2];
 
-		if (format == 'float32') {
+		if (format === 'float32') {
 			return new Float32Array(arrayBuffer, start, length);
 		}
-		else if (format == 'uint8') {
+		else if (format === 'uint8') {
 			return new Uint8Array(arrayBuffer, start, length);
 		}
-		else if (format == 'uint16') {
+		else if (format === 'uint16') {
 			return new Uint16Array(arrayBuffer, start, length);
 		}
-		else if (format == 'uint32') {
+		else if (format === 'uint32') {
 			return new Uint32Array(arrayBuffer, start, length);
 		}
 		else {
 			throw new Error("Binary format #{format} is not supported");
 		}
-	}
+	};
 
 
 	ArrayUtil.remove = function(array, value) {
-		array.splice(array.indexOf(value), 1);
-	}
+		var idx = array.indexOf(value);
+		if (idx > -1) {
+			array.splice(idx, 1);
+		}
+	};
 
 
 	return ArrayUtil;
