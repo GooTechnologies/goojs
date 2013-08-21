@@ -295,7 +295,11 @@ function (
 				var y = e.clientY;
 				this.renderSystem.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
-					console.log('Picked entity:', entity, 'At depth:', depth);
+					// console.log('Picked entity:', entity, 'At depth:', depth);
+					console.log('Picked entity:', entity);
+					if (entity) {
+						console.log('   Material:', entity.meshRendererComponent.materials[0]);
+					}
 				}.bind(this));
 			}
 		}.bind(this), false);

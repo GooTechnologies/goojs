@@ -104,11 +104,12 @@ define([
 					lightCam.update();
 
 					if (light.shadowSettings.type === 'Blur') {
-						this.depthMaterial.cullState.cullFace = 'Back';
+						this.depthMaterial.cullState.cullFace = 'Front';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 1;
 						// this.depthMaterial.shader.rebuild();
 						//Nope?
 					} else {
+						this.depthMaterial.cullState.cullFace = 'Front';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 0;
 						// this.depthMaterial.shader.rebuild();
 					}

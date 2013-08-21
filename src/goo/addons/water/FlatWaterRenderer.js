@@ -91,7 +91,7 @@ function (
 		var waterPlane = this.waterPlane;
 
 		this.waterCamera.copy(camera);
-		waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
+		// waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
 		var aboveWater = camera.translation.y > waterPlane.constant;
 
 		this.waterEntity.skip = true;
