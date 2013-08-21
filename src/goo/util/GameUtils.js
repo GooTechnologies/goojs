@@ -38,6 +38,24 @@ function () {
 	/**
 	 * Attempts to lock the mouse pointer in the window.
 	 */
+	GameUtils.requestPointerLock = function () {
+		if (document.documentElement.requestPointerLock) {
+			document.documentElement.requestPointerLock();
+		}
+	}
+
+	/**
+	 * Attempts to unlock the mouse pointer in the window.
+	 */
+	GameUtils.exitPointerLock = function () {
+		if (document.exitPointerLock) {
+			document.exitPointerLock();
+		}
+	}
+
+	/**
+	 * Attempts to toggle the lock on the mouse pointer in the window.
+	 */
 	GameUtils.togglePointerLock = function () {
 		if (!document.pointerLockElement) {
 			if (document.documentElement.requestPointerLock) {
