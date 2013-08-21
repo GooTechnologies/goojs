@@ -17,10 +17,13 @@ function (
 		this._blendType = blendType || 'Linear';
 		this._channelName = channelName;
 
-		if ((times instanceof Array || times instanceof Float32Array) && times.length)
-			this._times = new Float32Array(times)
-		else
-			this._times = []
+		if ((times instanceof Array || times instanceof Float32Array) && times.length) {
+			this._times = new Float32Array(times);
+		} else {
+			this._times = [];
+		}
+
+		this._lastStartFrame = 0;
 	}
 
 	/*
@@ -53,13 +56,23 @@ function (
 		} else if (clockTime >= this._times[lastFrame]) {
 			this.setCurrentSample(lastFrame, 0.0, applyTo);
 		} else {
-			var startFrame = 0;
-
-			for ( var i = 0; i < this._times.length - 1; i++) {
-				if (this._times[i] < clockTime) {
-					startFrame = i;
+			var startFrame = this._lastStartFrame;
+			if (clockTime >= this._times[startFrame]) {
+				for (var i = startFrame; i < this._times.length - 1; i++) {
+					if (this._times[i] >= clockTime) {
+						startFrame = (i === 0) ? 0 : i - 1;
+						break;
+					}
+				}
+			} else {
+				for (var i = 0; i < this._lastStartFrame; i++) {
+					if (this._times[i] >= clockTime) {
+						startFrame = (i === 0) ? 0 : i - 1;
+						break;
+					}
 				}
 			}
+			this._lastStartFrame = startFrame;
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
 
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
