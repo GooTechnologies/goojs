@@ -1,7 +1,9 @@
 define([
-	'goo/entities/World'
+	'goo/entities/World',
+	'goo/entities/systems/TransformSystem'
 ], function(
-	World
+	World,
+	TransformSystem
 ) {
 	'use strict';
 
@@ -9,7 +11,9 @@ define([
 		var world;
 		beforeEach(function() {
 			world = new World();
+			world.setSystem(new TransformSystem());
 		});
+
 		it('can attach a child component via the transformComponent', function() {
 			var parentEntity = world.createEntity();
 			var childEntity = world.createEntity();
@@ -33,7 +37,9 @@ define([
 			world.process();
 			childEntity.removeFromWorld();
 			world.process();
-			expect(childEntity.transformComponent.parent).toBeNull();
+			console.log(parentEntity.transformComponent);
+			expect(parentEntity.transformComponent.children)
+				.not.toContain(childEntity.transformComponent);
 		});
 
 		it('correctly removes child reference of parent on its removal from the world', function() {
@@ -45,8 +51,7 @@ define([
 			world.process();
 			parentEntity.removeFromWorld();
 			world.process();
-			expect(parentEntity.transformComponent.children)
-				.not.toContain(childEntity.transformComponent);
+			expect(childEntity.transformComponent.parent).toBeNull();
 		});
 	});
 });
