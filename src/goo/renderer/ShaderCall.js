@@ -196,28 +196,12 @@ function () {
 	ShaderCall.prototype.uniform4fv = function (values) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			// Performance test
-			var a1 = curValue, a2 = values;
-			if (a1.length === a2.length
-			 && a1[0] === a2[0]
-			 && a1[1] === a2[1]
-			 && a1[2] === a2[2]
-			 && a1[3] === a2[3]) {
-				 return;
-			}
-			/*if (compareArrays(values, curValue)) {
+			if (compareArrays(values, curValue)) {
 				return;
-			}*/
+			}
 		}
 		this.context.uniform4fv(this.location, values);
-		if(curValue !== undefined) {
-			curValue[0] = values[0];
-			curValue[1] = values[1];
-			curValue[2] = values[2];
-			curValue[3] = values[3];
-		} else {
-			this.location.value = values.slice();
-		}
+		this.location.value = values.slice();
 	};
 
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
