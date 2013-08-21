@@ -81,25 +81,6 @@ define([
 	 * @private
 	 */
 	Debugger.prototype._setUpPicking = function() {
-		// adding picking system
-		var picking = new PickingSystem({
-			pickLogic: new PrimitivePickLogic()
-		});
-		this.goo.world.setSystem(picking);
-
-		picking.onPick = function(pickedList) {
-			if (pickedList && pickedList.length) {
-				this.oldPicked = this.picked;
-				this.picked = pickedList[0].entity;
-
-				if(this.picked === this.oldPicked) { this.picked = null; console.log('asd'); }
-
-				if(this.exportPicked) { window.picked = this.picked; }
-				displayInfo(this.picked);
-				updateMarker(this.picked, this.oldPicked);
-			}
-		}.bind(this);
-
 		// picking entities
 		document.addEventListener('mouseup', function(event) {
 			//event.preventDefault();
@@ -108,22 +89,19 @@ define([
 			var mouseDownX = event.pageX;
 			var mouseDownY = event.pageY;
 
-			var ray = new Ray();
-			Renderer.mainCamera.getPickRay(
-				mouseDownX,
-				mouseDownY,
-				this.goo.renderer.viewportWidth,
-				this.goo.renderer.viewportHeight,
-				ray
-			);
+			this.goo.renderSystem.pick(mouseDownX, mouseDownY, function(id) {
+				var entity = this.goo.world.entityManager.getEntityById(id);
+				if(entity) {
+					this.oldPicked = this.picked;
+					this.picked = entity;
 
-			// Ask all appropriate world entities if they've been picked
-			picking.pickRay = ray;
+					if(this.picked === this.oldPicked) { this.picked = null; }
 
-			// TODO/REVIEW: Calling a private method is not allowed. Should _process be public instead?
-			// It's a mess since there's both a _process and a process function in the PickingSystem
-			// but with different arguments. I think they should swap names with each other.
-			picking._process();
+					if(this.exportPicked) { window.picked = this.picked; }
+					displayInfo(this.picked);
+					updateMarker(this.picked, this.oldPicked);
+				}
+			}.bind(this));
 		}.bind(this), false);
 	};
 

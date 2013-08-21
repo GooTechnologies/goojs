@@ -30,23 +30,25 @@ define([
 		this.goo = goo;
 		this.renderer = this.goo.renderer;
 
-		// drawing needs to be performed AFTER the render system completes its execution
 		this.entities = [];
-		var that = this;
+
+		// drawing needs to be performed AFTER the render system completes its execution
 		this.goo.callbacks.push(function() {
-			for (var i = 0; i < that.entities.length; i++) {
-				var entity = that.entities[i];
-				var transform = entity.transformComponent.transform;
+			for (var i = 0; i < this.entities.length; i++) {
+				var entity = this.entities[i];
+				if(entity.hasComponent('MarkerComponent')) {
+					var transform = entity.transformComponent.transform;
 
-				var renderableMarker = {
-					meshData: entity.markerComponent.meshData,
-					materials: [that.material],
-					transform: transform
-				};
+					var renderableMarker = {
+						meshData: entity.markerComponent.meshData,
+						materials: [this.material],
+						transform: transform
+					};
 
-				that.goo.renderer.render(renderableMarker, Renderer.mainCamera, [], null, false);
+					this.goo.renderer.render(renderableMarker, Renderer.mainCamera, [], null, false);
+				}
 			}
-		});
+		}.bind(this));
 	}
 
 	MarkerSystem.prototype = Object.create(System.prototype);
