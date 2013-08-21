@@ -60,6 +60,7 @@ function (
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
+	 * @param {boolean} [parameters.debugMaterials=false]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -124,7 +125,9 @@ function (
 			this.startGameLoop(this.run);
 		}
 
-		this._addDebugKeys();
+		if (parameters.debugMaterials) {
+			this._addDebugKeys();
+		}
 	}
 
 	var tpfSmoothingArrary = [];
