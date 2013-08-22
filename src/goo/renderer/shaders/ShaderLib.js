@@ -237,7 +237,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'uniform sampler2D diffuseMap;',
 
@@ -276,7 +275,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
@@ -316,7 +314,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
@@ -350,7 +347,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'void main(void)',
 		'{',
@@ -379,7 +375,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'uniform vec3 color;',
 
@@ -628,8 +623,6 @@ define([
 		'}'//
 		].join("\n"),
 		fshader : [//
-		'precision mediump float;',
-
 		'uniform float cKernel[ KERNEL_SIZE_INT ];',
 		'uniform sampler2D tDiffuse;',
 		'uniform vec2 uImageIncrement;',
@@ -698,8 +691,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
-
 		'uniform float near;',
 		'uniform float far;',
 
@@ -739,8 +730,6 @@ define([
 		'}'
 		].join("\n"),
 		fshader : [
-		'precision mediump float;',
-
 		'uniform float opacity;',
 		'varying vec3 normal;',
 
@@ -781,8 +770,6 @@ define([
 		'}'//
 		].join("\n"),
 		fshader : [//
-		'precision mediump float;',
-
 		'varying vec2 vUv;',
 
 		'uniform sampler2D tColor;',
@@ -883,8 +870,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
-
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
@@ -926,8 +911,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform float amount;",
 			"uniform sampler2D tDiffuse;",
 
@@ -976,8 +959,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform vec2 center;",
 			"uniform float angle;",
 			"uniform float scale;",
@@ -1031,8 +1012,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform float offset;",
 			"uniform float darkness;",
 
@@ -1073,8 +1052,6 @@ define([
 		},
 		vshader : ShaderLib.copy.vshader,
 		fshader : [//
-		"precision mediump float;",
-
 		"uniform float time;",
 		"uniform bool grayscale;",
 		"uniform float nIntensity;",
@@ -1125,8 +1102,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform float opacity;",
 			"uniform sampler2D tDiffuse;",
 
@@ -1183,8 +1158,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform sampler2D tDiffuse;",
 			"uniform float h;",
 			"uniform float r;",
@@ -1237,8 +1210,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform vec3 color;",
 			"uniform sampler2D tDiffuse;",
 
@@ -1281,8 +1252,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
-
 			"uniform float height;",
 			"uniform vec2 resolution;",
 			"uniform sampler2D heightMap;",
@@ -1335,7 +1304,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform float cameraNear;",
 			"uniform float cameraFar;",
@@ -1577,7 +1545,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader: [//
-		'precision mediump float;',
 
 		'uniform sampler2D diffuseMap;',
 
@@ -1618,7 +1585,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform sampler2D tDiffuse;",
 			"uniform float amount;",
@@ -1664,7 +1630,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform sampler2D tDiffuse;",
 			"uniform float brightness;",
@@ -1711,7 +1676,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform sampler2D tDiffuse;",
 			"varying vec2 vUv;",
@@ -1753,7 +1717,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'varying vec4 color;',
 
@@ -1806,7 +1769,6 @@ define([
 			'}'
 		].join('\n'),
 		fshader : [//
-			'precision mediump float;',
 
 			'uniform vec4 HighlightColour;',
 			'uniform vec4 MidColour;',
@@ -1869,7 +1831,6 @@ define([
 		'}'//
 		].join('\n'),
 		fshader : [//
-		'precision mediump float;',
 
 		'uniform sampler2D gaussBlurredImage1;',
 		'uniform sampler2D gaussBlurredImage2;',
@@ -1918,7 +1879,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform sampler2D tDiffuse;",
 
@@ -1957,7 +1917,6 @@ define([
 			"}"
 		].join("\n"),
 		fshader: [
-			'precision mediump float;',
 
 			"uniform sampler2D tDiffuse;",
 			"uniform vec2 viewport;",
@@ -2049,7 +2008,6 @@ define([
 			'}'//
 		].join('\n'),
 		fshader : [//
-			'precision mediump float;',
 
 			'uniform float farPlane;',
 

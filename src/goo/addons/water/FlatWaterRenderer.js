@@ -158,7 +158,7 @@ function (
 		if (this.skybox) {
 			if (this.skybox instanceof Array) {
 				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
-				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
+				// this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
 				for (var i = 0; i < this.skybox.length; i++) {
 					renderer.render(this.skybox[i], this.waterCamera, lights, this.reflectionTarget, false);
 					this.skybox[i].skip = true;
@@ -170,7 +170,7 @@ function (
 		}
 
 		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
-		this.waterCamera.setToObliqueMatrix(this.clipPlane);
+		// this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 		renderer.render(this.renderList, this.waterCamera, lights, this.reflectionTarget, false);
 
