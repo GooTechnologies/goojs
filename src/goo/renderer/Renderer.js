@@ -522,9 +522,9 @@ function (
 		var keys = Object.keys(keys);
 		for (var j = 0; j < keys.length; j++) {
 			var key = keys[j];
-			if (obj1[key] instanceof Shader || obj1[key] instanceof Texture) {
+			if (obj1[key] instanceof Shader || obj1[key] instanceof Texture || obj1[key] instanceof RenderTarget) {
 				store[key] = obj1[key];
-			} else if (obj2[key] instanceof Shader || obj2[key] instanceof Texture) {
+			} else if (obj2[key] instanceof Shader || obj2[key] instanceof Texture || obj2[key] instanceof RenderTarget) {
 				store[key] = obj2[key];
 			} else if (obj1[key] instanceof Array || obj2[key] instanceof Array) {
 				store[key] = [];
