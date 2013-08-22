@@ -56,26 +56,25 @@ function (
 		} else if (clockTime >= this._times[lastFrame]) {
 			this.setCurrentSample(lastFrame, 0.0, applyTo);
 		} else {
-			var startFrame = this._lastStartFrame;
-			if (clockTime >= this._times[startFrame]) {
-				for (var i = startFrame; i < this._times.length - 1; i++) {
+			var startFrame = 0;
+			if (clockTime >= this._times[this._lastStartFrame]) {
+				for (var i = this._lastStartFrame; i < this._times.length - 1; i++) {
 					if (this._times[i] >= clockTime) {
-						startFrame = (i === 0) ? 0 : i - 1;
 						break;
 					}
+					startFrame = i;
 				}
 			} else {
 				for (var i = 0; i < this._lastStartFrame; i++) {
 					if (this._times[i] >= clockTime) {
-						startFrame = (i === 0) ? 0 : i - 1;
 						break;
 					}
+					startFrame = i;
 				}
 			}
-			this._lastStartFrame = startFrame;
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
-
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
+			this._lastFrame = startFrame;
 		}
 	};
 
