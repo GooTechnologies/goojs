@@ -508,6 +508,12 @@ function (
 		renderInfo.renderable = renderable;
 	};
 
+	/*
+	REVIEW:
+	+ it is not called from anywhere outside of the renderer and it probably is not of public interest so it should be private
+	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
+	+ it could also use a description of what it's supposed to do
+	 */
 	Renderer.prototype.override = function(obj1, obj2, store) {
 		var keys = {};
 		for (var key in obj1) { keys[key] = true; }
@@ -812,16 +818,23 @@ function (
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 
 		var id = this.hardwarePicking.pickingBuffer[0] * 255.0 + this.hardwarePicking.pickingBuffer[1];
-		var depth = (this.hardwarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
+		var depth = (this.hardwShaderBuilder.animation.vertexarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
 		pickingStore.id = id;
 		pickingStore.depth = depth;
 	};
 
+	/*
+	REVIEW: why do you need these here and not in the function's scope?
+	 */
 	// Calc helpers
 	var v1 = new Vector3();
 	var v2 = new Vector3();
 	var v3 = new Vector3();
 
+	/*
+	REVIEW: this should belong to MeshData
+	it also fails when run on the CombinedIndexModes vtest in Shift+6 mode (and not because of a shader error)
+	 */
 	Renderer.prototype.buildFlatMeshData = function(meshData) {
 		//var attributeMap = Util.clone(meshData.attributeMap);
 		var idcs = [], oldIdcs = meshData.getIndexBuffer();
@@ -922,6 +935,9 @@ function (
 		return flatMeshData;
 	};
 
+	/*
+	REVIEW: this too should belong to MeshData
+	 */
 	Renderer.prototype.buildWireframeData = function (meshData) {
 		var attributeMap = Util.clone(meshData.attributeMap);
 		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, 0);

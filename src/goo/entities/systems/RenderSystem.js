@@ -167,6 +167,9 @@ function (
 		}
 		var debugs = key.split('+');
 
+		/*
+		REVIEW: why store debugs[i] in only one loop?
+		 */
 		for(var i = 0; i < debugs.length; i++) {
 			var key = debugs[i];
 			if(!this._debugMaterials[key]) {

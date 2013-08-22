@@ -125,7 +125,7 @@ function (
 			this.startGameLoop(this.run);
 		}
 
-		if (parameters.debugMaterials) {
+		if (parameters.debugMaterials || true) {
 			this._addDebugKeys();
 		}
 	}
@@ -266,6 +266,10 @@ function (
 				isCtrl = false;
 			}
 		}, false);
+		/*
+		REVIEW: why check individually for the same isCtrl?
+		and why not use the inbuilt e.ctrlKey?
+		 */
 		document.addEventListener("keydown", function (e) {
 			if (e.which === 16) {
 				isCtrl = true;

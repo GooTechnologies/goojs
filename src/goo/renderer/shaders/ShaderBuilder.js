@@ -514,6 +514,7 @@ function(
 			'#endif'
 		].join('\n'),
 		vertex: [
+			//REVIEW: replace with #if defined(JOINT_COUNT) && defined(WEIGHTS) && ...
 			'#ifdef JOINT_COUNT',
 			'#ifdef WEIGHTS',
 			'#ifdef JOINTIDS',
