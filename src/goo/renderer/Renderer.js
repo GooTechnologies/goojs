@@ -818,7 +818,7 @@ function (
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 
 		var id = this.hardwarePicking.pickingBuffer[0] * 255.0 + this.hardwarePicking.pickingBuffer[1];
-		var depth = (this.hardwShaderBuilder.animation.vertexarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
+		var depth = (this.hardwarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
 		pickingStore.id = id;
 		pickingStore.depth = depth;
 	};
