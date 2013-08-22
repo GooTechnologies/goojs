@@ -279,11 +279,25 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 */
 
 	Quaternion.prototype.negate = function () {
-		this.x *= -1;
-		this.y *= -1;
-		this.z *= -1;
-		this.w *= -1;
+		this.data[0] *= -1;
+		this.data[1] *= -1;
+		this.data[2] *= -1;
+		this.data[3] *= -1;
 		return this;
+	};
+
+	Quaternion.prototype.dot = function (lhs, rhs) {
+		var ldata = lhs.data || lhs;
+		var rdata = rhs.data || rhs;
+
+		var sum = 0.0;
+
+		sum += ldata[0] * rdata[0];
+		sum += ldata[1] * rdata[1];
+		sum += ldata[2] * rdata[2];
+		sum += ldata[3] * rdata[3];
+
+		return sum;
 	};
 
 	/**

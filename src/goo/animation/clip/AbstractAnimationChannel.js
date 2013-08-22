@@ -46,19 +46,21 @@ function (
 	 * @param {TransformData|TriggerData|number[1]} applyTo
 	 */
 	AbstractAnimationChannel.prototype.updateSample = function (clockTime, applyTo) {
-		if (!(this._times.length)) {
+		var timeCount = this._times.length;
+
+		if (!(timeCount)) {
 			return;
 		}
 		// figure out what frames we are between and by how much
-		var lastFrame = this._times.length - 1;
-		if (clockTime < 0 || this._times.length === 1) {
+		var lastFrame = timeCount - 1;
+		if (clockTime < 0 || timeCount === 1) {
 			this.setCurrentSample(0, 0.0, applyTo);
 		} else if (clockTime >= this._times[lastFrame]) {
 			this.setCurrentSample(lastFrame, 0.0, applyTo);
 		} else {
 			var startFrame = 0;
 			if (clockTime >= this._times[this._lastStartFrame]) {
-				for (var i = this._lastStartFrame; i < this._times.length - 1; i++) {
+				for (var i = this._lastStartFrame; i < timeCount - 1; i++) {
 					if (this._times[i] >= clockTime) {
 						break;
 					}
