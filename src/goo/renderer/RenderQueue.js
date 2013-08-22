@@ -16,21 +16,31 @@ function(Vector3) {
 		this.opaqueSorter = function(a, b) {
 			//TODO: Add texture checks on material
 
+			var m1 = a.meshRendererComponent.materials[0];
+			var m2 = b.meshRendererComponent.materials[0];
+
+			if (m1 === null || m2 === null) {
+				return 0;
+			}
 			var shader1 = a.meshRendererComponent.materials[0].shader;
 			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1 === null || shader2 === null) {
 				return 0;
 			}
-			if (shader1._id === shader2._id) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
+			if(m1 !== m2) {
+				if (shader1._id === shader2._id) {
+					var bound1 = a.meshRendererComponent.worldBound;
+					var bound2 = b.meshRendererComponent.worldBound;
 
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
+					var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
+					var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
 
-				return dist1 - dist2;
+					return dist1 - dist2;
+				}
+				return shader1._id - shader2._id;
+			} else {
+				return 0;
 			}
-			return shader1._id - shader2._id;
 		};
 		this.transparentSorter = function(a, b) {
 			var bound1 = a.meshRendererComponent.worldBound;
