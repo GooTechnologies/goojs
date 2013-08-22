@@ -48,21 +48,15 @@ function (
 	 * Update our local joint transforms so that they reflect the skeleton in bind pose.
 	 */
 	SkeletonPose.prototype.setToBindPose = function () {
-		var temp = new Transform();
-		// go through our local transforms
-		for ( var i = 0; i < this._localTransforms.length; i++) {
-			// Set us to the bind pose
-			this._localTransforms[i].copy(this._skeleton._joints[i]._inverseBindPose);
-			// then invert.
-			this._localTransforms[i].invert(this._localTransforms[i]);
+		for (var i = 0; i < this._localTransforms.length; i++) {
+			// Set the localTransform to the inverted inverseBindPose, i e the bindpose
+			this._localTransforms[i].matrix.copy(this._skeleton._joints[i]._inverseBindPose.matrix).invert();
 
 			// At this point we are in model space, so we need to remove our parent's transform (if we have one.)
 			var parentIndex = this._skeleton._joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
-				// We remove the parent's transform simply by multiplying by its inverse bind pose. Done! :)
-				temp.multiply(this._skeleton._joints[parentIndex]._inverseBindPose, this._localTransforms[i]);
-				// this._skeleton._joints[parentIndex]._inverseBindPose.multiply(this._localTransforms[i], temp);
-				this._localTransforms[i].copy(temp);
+				// We remove the parent's transform simply by multiplying by its inverse bind pose.
+				Matrix4x4.combine(this._skeleton._joints[parentIndex]._inverseBindPose.matrix, this._localTransforms[i].matrix, this._localTransforms[i].matrix);
 			}
 		}
 		this.updateTransforms();
@@ -72,32 +66,24 @@ function (
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
 	SkeletonPose.prototype.updateTransforms = function () {
-		var nrJoints = this._skeleton._joints.length;
-		for ( var i = 0; i < nrJoints; i++) {
-			// the joint index
-			var index = i;
+		for ( var i = 0; i < this._skeleton._joints.length; i++) {
 
-			// find our parent
-			var parentIndex = this._skeleton._joints[index]._parentIndex;
+			var parentIndex = this._skeleton._joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
-				// we have a parent, so take us from local->parent->model space by multiplying by parent's local->model
-				// space transform.
-				// this._globalTransforms[parentIndex].multiply(this._localTransforms[index], this._globalTransforms[index]);
-				this._globalTransforms[index].multiply(this._globalTransforms[parentIndex], this._localTransforms[index]);
+				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
+				Matrix4x4.combine(this._globalTransforms[parentIndex].matrix, this._localTransforms[i].matrix, this._globalTransforms[i].matrix);
 			} else {
-				// no parent so just set global to the local transform
-				this._globalTransforms[index].copy(this._localTransforms[index]);
+				// No parent so just set global to the local transform
+				this._globalTransforms[i].matrix.copy(this._localTransforms[i].matrix);
 			}
 
-			// at this point we have a local->model space transform for this joint, for skinning we multiply this by the
-			// joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
-			// vertex from bind pose (model space) to current pose (model space).
+			/* 
+			 * At this point we have a local->model space transform for this joint, for skinning we multiply this by the
+			 * joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
+			 * vertex from bind pose (model space) to current pose (model space).
+			 */
 			Matrix4x4
-				.combine(this._globalTransforms[index].matrix, this._skeleton._joints[index]._inverseBindPose.matrix, this._matrixPalette[index]);
-			// since we can't call this in the shader callback anymore?
-			//this._matrixPalette[index].transpose();
-			// this._globalTransforms[index].multiply(this._skeleton._joints[index]._inverseBindPose, temp);
-			// temp.getHomogeneousMatrix(this._matrixPalette[index]);
+				.combine(this._globalTransforms[i].matrix, this._skeleton._joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
 		}
 		this.firePoseUpdated();
 	};
