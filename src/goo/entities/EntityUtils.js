@@ -30,6 +30,9 @@ define([
 				} else if (component instanceof MeshDataComponent) {
 					var meshDataComponent = new MeshDataComponent(component.meshData);
 					meshDataComponent.modelBound = new component.modelBound.constructor();
+					if (component.currentPose) {
+						meshDataComponent.currentPose = component.currentPose;
+					}
 					newEntity.setComponent(meshDataComponent);
 				} else if (component instanceof MeshRendererComponent) {
 					var meshRendererComponent = new MeshRendererComponent();
@@ -40,12 +43,11 @@ define([
 				} else {
 					newEntity.setComponent(component);
 				}
-
-				for (var j=0;j<entity.transformComponent.children.length;j++) {
-					var child = entity.transformComponent.children[j];
-					var clonedChild = cloneEntity(world, child.entity, settings);
-					newEntity.transformComponent.attachChild(clonedChild.transformComponent);
-				}
+			}
+			for (var j=0;j<entity.transformComponent.children.length;j++) {
+				var child = entity.transformComponent.children[j];
+				var clonedChild = cloneEntity(world, child.entity, settings);
+				newEntity.transformComponent.attachChild(clonedChild.transformComponent);
 			}
 
 			if (settings.callback) {
