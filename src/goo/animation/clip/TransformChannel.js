@@ -96,31 +96,13 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 			transformData._rotation.setv(this.tmpQuat2);
 		}
 
+		transformData._translation.data[0] = (1 - progressPercent) * this._translations[index3A+0] + progressPercent * this._translations[index3B+0];
+		transformData._translation.data[1] = (1 - progressPercent) * this._translations[index3A+1] + progressPercent * this._translations[index3B+1];
+		transformData._translation.data[2] = (1 - progressPercent) * this._translations[index3A+2] + progressPercent * this._translations[index3B+2];
 
-		transformData._translation.data[0] = this._translations[index3A + 0];
-		transformData._translation.data[1] = this._translations[index3A + 1];
-		transformData._translation.data[2] = this._translations[index3A + 2];
-
-		this.tmpVec.data[0] = this._translations[index3B + 0];
-		this.tmpVec.data[1] = this._translations[index3B + 1];
-		this.tmpVec.data[2] = this._translations[index3B + 2];
-
-		if (!transformData._translation.equals(this.tmpVec)) {
-			transformData._translation.lerp(this.tmpVec, progressPercent);
-		}
-
-
-		transformData._scale.data[0] = this._scales[index3A + 0];
-		transformData._scale.data[1] = this._scales[index3A + 1];
-		transformData._scale.data[2] = this._scales[index3A + 2];
-
-		this.tmpVec.data[0] = this._scales[index3B + 0];
-		this.tmpVec.data[1] = this._scales[index3B + 1];
-		this.tmpVec.data[2] = this._scales[index3B + 2];
-
-		if (!transformData._scale.equals(this.tmpVec)) {
-			transformData._scale.lerp(this.tmpVec, progressPercent);
-		}
+		transformData._scale.data[0] = (1 - progressPercent) * this._scales[index3A+0] + progressPercent * this._scales[index3B+0];
+		transformData._scale.data[1] = (1 - progressPercent) * this._scales[index3A+1] + progressPercent * this._scales[index3B+1];
+		transformData._scale.data[2] = (1 - progressPercent) * this._scales[index3A+2] + progressPercent * this._scales[index3B+2];
 	};
 
 	/**
