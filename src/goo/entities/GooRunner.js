@@ -128,6 +128,14 @@ function (
 		if (parameters.debugMaterials || true) {
 			this._addDebugKeys();
 		}
+
+		GameUtils.addVisibilityChangeListener(function (paused) {
+			if (paused) {
+				this.stopGameLoop();
+			} else {
+				this.startGameLoop();
+			}
+		}.bind(this));
 	}
 
 	var tpfSmoothingArrary = [];

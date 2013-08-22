@@ -42,7 +42,7 @@ function () {
 		if (document.documentElement.requestPointerLock) {
 			document.documentElement.requestPointerLock();
 		}
-	}
+	};
 
 	/**
 	 * Attempts to unlock the mouse pointer in the window.
@@ -51,7 +51,7 @@ function () {
 		if (document.exitPointerLock) {
 			document.exitPointerLock();
 		}
-	}
+	};
 
 	/**
 	 * Attempts to toggle the lock on the mouse pointer in the window.
@@ -65,6 +65,41 @@ function () {
 			if (document.exitPointerLock) {
 				document.exitPointerLock();
 			}
+		}
+	};
+
+	/**
+	 * Add a visibilitychange listener.
+	 * @param {Function} callback function called with a boolean (true=hidden, false=visible)
+	 */
+	GameUtils.addVisibilityChangeListener = function(callback) {
+		if (typeof(callback) !== 'function') {
+			return;
+		}
+
+		var vendors = ['', 'ms', 'moz', 'webkit'];
+
+		var hidden, visibilityChange;
+		for (var x = 0; x < vendors.length; ++x) {
+			var hiddenAttribute = vendors[x] + (vendors[x].length === 0 ? 'hidden' : 'Hidden');
+			var visibilityAttribute = vendors[x] + 'visibilitychange';
+
+			if (typeof document[hiddenAttribute] !== 'undefined') {
+				hidden = hiddenAttribute;
+				visibilityChange = visibilityAttribute;
+				break;
+			}
+		}
+
+		if (typeof document.addEventListener !== 'undefined' &&
+			typeof hidden !== 'undefined') {
+			document.addEventListener(visibilityChange, function() {
+				if (document[hidden]) {
+					callback(true);
+				} else {
+					callback(false);
+				}
+			});
 		}
 	};
 
