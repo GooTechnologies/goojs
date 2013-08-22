@@ -780,12 +780,20 @@ function (
 
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
+			var pickingMaterial = Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial');
+			pickingMaterial.blendState = {
+				blending: 'NoBlending',
+				blendEquation: 'AddEquation',
+				blendSrc: 'SrcAlphaFactor',
+				blendDst: 'OneMinusSrcAlphaFactor'
+			};
+
 			this.hardwarePicking = {
 				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
 					minFilter: 'NearestNeighborNoMipMaps',
 					magFilter: 'NearestNeighbor'
 				}),
-				pickingMaterial: Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial'),
+				pickingMaterial: pickingMaterial,
 				pickingBuffer: new Uint8Array(4)
 			};
 			skipUpdateBuffer = false;
@@ -801,7 +809,6 @@ function (
 		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		if (!skipUpdateBuffer) {
-			//this.overrideMaterial = this.hardwarePicking.pickingMaterial;
 			if (doScissor) {
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
@@ -810,7 +817,6 @@ function (
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
-			//this.overrideMaterial = null;
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
