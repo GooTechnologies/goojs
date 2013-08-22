@@ -201,7 +201,13 @@ function () {
 			}
 		}
 		this.context.uniform4fv(this.location, values);
-		this.location.value = values.slice();
+		if(this.location.value === undefined) {
+			this.location.value = new Float32Array(values.length);
+		}
+		var v = this.location.value, l = values.length;
+		while(l--) {
+			v[l] = values[l];
+		}
 	};
 
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
@@ -227,16 +233,34 @@ function () {
 	};
 
 	function compareMatrices(e1, e2, size) {
+		if (size < 0) {
+			return false;
+		}
+		while(size--) {
+			if(e1[size] !== e2[size]) {
+				return false;
+			}
+		}
+		return true;
+		/*
 		for (var i = size - 1; i >= 0; i--) {
 			if (e1[i] !== e2[i]) {
 				return false;
 			}
 		}
 		return true;
+		*/
 	}
 
 	function compareArrays(a1, a2) {
 		var l = a1.length;
+		while(l--) {
+			if(a1[l] !== a2[l]) {
+				return false;
+			}
+		}
+		return true;
+		/*
 		if (l !== a2.length) {
 			return false;
 		}
@@ -248,6 +272,7 @@ function () {
 		}
 
 		return true;
+		*/
 	}
 
 	// NOTE: optimize check before calling.

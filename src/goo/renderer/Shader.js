@@ -86,6 +86,7 @@ function (
 		this.textureSlotsNaming = {};
 
 		//this.defaultCallbacks = {};
+		//setupDefaultCallbacks(this.defaultCallbacks);
 		this.currentCallbacks = {};
 
 		this.overridePrecision = shaderDefinition.precision || null;
@@ -393,8 +394,8 @@ function (
 				// }
 
 				var value = this.uniforms[name];
-				if (defaultCallbacks[value]) {
-					this.currentCallbacks[name] = defaultCallbacks[value];
+				if (this.defaultCallbacks[value]) {
+					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
 			// for (var name in this.uniformCallMapping) {
@@ -664,8 +665,8 @@ function (
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 	Shader.DEPTH_MAP = 'DEPTH_MAP';
 
-	var defaultCallbacks = {};
-	setupDefaultCallbacks(defaultCallbacks);
+	Shader.prototype.defaultCallbacks = {};
+	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);
 
 	return Shader;
 });

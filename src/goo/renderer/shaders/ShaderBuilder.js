@@ -465,7 +465,7 @@ function(
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				shader.defines.JOINT_COUNT = shaderInfo.meshData.paletteMap.length * 3;
+				shader.defines.JOINT_COUNT = Math.max(shaderInfo.meshData.paletteMap.length * 3, 80);
 			} else {
 				delete shader.defines.JOINT_COUNT;
 			}
@@ -477,7 +477,7 @@ function(
 				var palette = pose._matrixPalette;
 				var store = skMesh.store;
 				if (!store) {
-					store = [];
+					store = new Float32Array(skMesh.paletteMap.length*12);
 					skMesh.store = store;
 				}
 				var refMat;
