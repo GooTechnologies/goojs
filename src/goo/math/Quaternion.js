@@ -286,8 +286,8 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return this;
 	};
 
-	Quaternion.prototype.dot = function (lhs, rhs) {
-		var ldata = lhs.data || lhs;
+	Quaternion.prototype.dot = function (rhs) {
+		var ldata = this.data;
 		var rdata = rhs.data || rhs;
 
 		var sum = 0.0;
