@@ -166,26 +166,19 @@ function (
 			return;
 		}
 		var debugs = key.split('+');
+		this.overrideMaterials = [];
 
-		/*
-		REVIEW: why store debugs[i] in only one loop?
-		 */
 		for(var i = 0; i < debugs.length; i++) {
 			var key = debugs[i];
 			if(!this._debugMaterials[key]) {
 				this._createDebugMaterial(key);
 			}
-		}
-		this.overrideMaterials = [];
-		for (var i = 0; i < debugs.length; i++) {
-			if(debugs[i] === '') {
+			if(key === '') {
 				this.overrideMaterials.push(null);
 			} else {
-				this.overrideMaterials.push(this._debugMaterials[debugs[i]]);
+				this.overrideMaterials.push(this._debugMaterials[key]);
 			}
 		}
-
-		//this.overrideMaterial = this._debugMaterials[key];
 	};
 
 	return RenderSystem;

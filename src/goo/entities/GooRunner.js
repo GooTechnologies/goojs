@@ -60,7 +60,7 @@ function (
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
-	 * @param {boolean} [parameters.debugMaterials=false]
+	 * @param {boolean} [parameters.debugKeys=false]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -125,7 +125,7 @@ function (
 			this.startGameLoop(this.run);
 		}
 
-		if (parameters.debugMaterials || true) {
+		if (parameters.debugKeys) {
 			this._addDebugKeys();
 		}
 
@@ -265,47 +265,39 @@ function (
 		// shift+1 = normal rendering
 		// shift+2 = show normals
 		// shift+3 = simple lit
-		// shift+4 = wireframe
-		// shift+5 = flat wireframe
-		// shift+6 = lit wireframe
-		var isCtrl = false;
-		document.addEventListener("keyup", function (e) {
-			if (e.which === 16) {
-				isCtrl = false;
-			}
-		}, false);
-		/*
-		REVIEW: why check individually for the same isCtrl?
-		and why not use the inbuilt e.ctrlKey?
-		 */
+		// shift+4 = color
+		// shift+5 = wireframe
+		// shift+6 = flat
+		// shift+7 = textured
+		// shift+8 = regular material + wireframe
+		// shift+click = log picked entity
+		var activeKey = 'shiftKey';
 		document.addEventListener("keydown", function (e) {
-			if (e.which === 16) {
-				isCtrl = true;
-			} else if (e.which === 32 && isCtrl) { // Space
+			if (e.which === 32 && e[activeKey]) { // Space
 				GameUtils.toggleFullScreen();
-			} else if (e.which === 13 && isCtrl) { // Enter
+			} else if (e.which === 13 && e[activeKey]) { // Enter
 				GameUtils.togglePointerLock();
-			} else if (e.which === 49 && isCtrl) { // 1
+			} else if (e.which === 49 && e[activeKey]) { // 1
 				this.renderSystem.setDebugMaterial();
-			} else if ((e.which === 50 || e.which === 222) && isCtrl) { // 2
+			} else if ((e.which === 50 || e.which === 222) && e[activeKey]) { // 2
 				this.renderSystem.setDebugMaterial('normals');
-			} else if (e.which === 51 && isCtrl) { // 3
+			} else if (e.which === 51 && e[activeKey]) { // 3
 				this.renderSystem.setDebugMaterial('lit');
-			} else if (e.which === 52 && isCtrl) { // 4
+			} else if (e.which === 52 && e[activeKey]) { // 4
 				this.renderSystem.setDebugMaterial('color');
-			} else if (e.which === 53 && isCtrl) { // 5
+			} else if (e.which === 53 && e[activeKey]) { // 5
 				this.renderSystem.setDebugMaterial('wireframe');
-			} else if (e.which === 54 && isCtrl) { // 6
+			} else if (e.which === 54 && e[activeKey]) { // 6
 				this.renderSystem.setDebugMaterial('flat');
-			} else if ((e.which === 55 || e.which === 191) && isCtrl) { // 7
+			} else if ((e.which === 55 || e.which === 191) && e[activeKey]) { // 7
 				this.renderSystem.setDebugMaterial('texture');
-			} else if ((e.which === 56) && isCtrl) { // 8
+			} else if ((e.which === 56) && e[activeKey]) { // 8
 				this.renderSystem.setDebugMaterial('+wireframe');
 			}
 		}.bind(this), false);
 
 		document.addEventListener("mousedown", function (e) {
-			if (isCtrl) {
+			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
 				this.renderSystem.pick(x, y, function(id, depth) {

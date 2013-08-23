@@ -170,7 +170,7 @@ require([
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(-1, -3, -5);
+		lightEntity.transformComponent.transform.translation.set(-1, -3, 5);
 		lightEntity.addToWorld();
 
 		// camera

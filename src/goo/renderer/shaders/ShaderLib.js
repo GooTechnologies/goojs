@@ -394,6 +394,9 @@ define([
 		processors: [
 			ShaderBuilder.light.processor
 		],
+		defines: {
+			NORMAL: true
+		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL
@@ -412,7 +415,6 @@ define([
 		'uniform vec3 cameraPosition;',
 
 		ShaderBuilder.light.prevertex,
-
 		'varying vec3 normal;',
 		'varying vec3 vWorldPos;',
 		'varying vec3 viewPosition;',
@@ -437,13 +439,19 @@ define([
 		'#endif',
 		ShaderBuilder.light.prefragment,
 
+		'#ifdef NORMAL',
 		'varying vec3 normal;',
+		'#endif',
 		'varying vec3 vWorldPos;',
 		'varying vec3 viewPosition;',
 
 		'void main(void)',
 		'{',
+		' #ifdef NORMAL',
 		'	vec3 N = normalize(normal);',
+		' #else',
+		' vec3 N = vec3(0,0,1);',
+		' #endif',
 		'	vec4 final_color = vec4(1.0);',
 
 			ShaderBuilder.light.fragment,
@@ -497,6 +505,10 @@ define([
 	};
 
 	ShaderLib.textured = {
+		defines: {
+			TEXCOORD0: true,
+			DIFFUSE_MAP: true
+		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -523,13 +535,19 @@ define([
 		fshader : [//
 		'precision mediump float;',
 
+		'#if defined(TEXCOORD0) && defined(DIFFUSE_MAP)',
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
+		'#endif',
 
 		'void main(void)',
 		'{',
+		' #if defined(TEXCOORD0) && defined(DIFFUSE_MAP)',
 		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+		' #else',
+		' gl_FragColor = vec4(1.0);',
+		' #endif',
 		'}'//
 		].join('\n')
 	};
@@ -719,6 +737,9 @@ define([
 	};
 
 	ShaderLib.showNormals = {
+		defines: {
+			NORMAL: true
+		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL
@@ -748,7 +769,11 @@ define([
 		'precision mediump float;',
 
 		'uniform float opacity;',
+		'#ifdef NORMAL',
 		'varying vec3 normal;',
+		'#else',
+		'vec3 normal = vec3(0,0,1);',
+		'#endif',
 
 		'void main() {',
 		'gl_FragColor = vec4( 0.5 * normalize( normal ) + 0.5, opacity );',

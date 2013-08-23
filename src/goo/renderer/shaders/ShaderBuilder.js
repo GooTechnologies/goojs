@@ -514,10 +514,7 @@ function(
 			'#endif'
 		].join('\n'),
 		vertex: [
-			//REVIEW: replace with #if defined(JOINT_COUNT) && defined(WEIGHTS) && ...
-			'#ifdef JOINT_COUNT',
-			'#ifdef WEIGHTS',
-			'#ifdef JOINTIDS',
+			'#ifdef defined(JOINT_COUNT) && defined(WEIGHTS) && defined(JOINTIDS)',
 
 			'int x = 3*int(vertexJointIDs.x);',
 			'int y = 3*int(vertexJointIDs.y);',
@@ -552,8 +549,6 @@ function(
 			') * vertexWeights.w;',
 
 			'wMatrix = wMatrix * mat / mat[3][3];',
-			'#endif',
-			'#endif',
 			'#endif'
 		].join('\n')
 	};

@@ -15,8 +15,7 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shadow/ShadowHandler',
-	'goo/math/Vector3'
+	'goo/renderer/shadow/ShadowHandler'
 ],
 /** @lends */
 function (
@@ -35,8 +34,7 @@ function (
 	Transform,
 	RenderQueue,
 	ShaderLib,
-	ShadowHandler,
-	Vector3
+	ShadowHandler
 ) {
 	"use strict";
 
@@ -624,14 +622,14 @@ function (
 
 			if (material.wireframe && flatOrWire !== 'wire') {
 				if (!meshData.wireframeData) {
-					meshData.wireframeData = this.buildWireframeData(meshData);
+					meshData.wireframeData = meshData.buildWireframeData();
 				}
 				meshData = meshData.wireframeData;
 				this.bindData(meshData.vertexData);
 				flatOrWire = 'wire';
 			} else if (material.flat && flatOrWire !== 'flat') {
 				if (!meshData.flatMeshData) {
-					meshData.flatMeshData = this.buildFlatMeshData(meshData);
+					meshData.flatMeshData = meshData.buildFlatMeshData();
 				}
 				meshData = meshData.flatMeshData;
 				this.bindData(meshData.vertexData);
@@ -827,192 +825,6 @@ function (
 		var depth = (this.hardwarePicking.pickingBuffer[2] / 255.0 + (this.hardwarePicking.pickingBuffer[3] / (255.0 * 255.0))) * camera.far;
 		pickingStore.id = id;
 		pickingStore.depth = depth;
-	};
-
-	/*
-	REVIEW: why do you need these here and not in the function's scope?
-	 */
-	// Calc helpers
-	var v1 = new Vector3();
-	var v2 = new Vector3();
-	var v3 = new Vector3();
-
-	/*
-	REVIEW: this should belong to MeshData
-	it also fails when run on the CombinedIndexModes vtest in Shift+6 mode (and not because of a shader error)
-	 */
-	Renderer.prototype.buildFlatMeshData = function(meshData) {
-		//var attributeMap = Util.clone(meshData.attributeMap);
-		var idcs = [], oldIdcs = meshData.getIndexBuffer();
-		if (oldIdcs.length > 65535) {
-			console.warn('Mesh too big, cannot build flat mesh data');
-			return meshData;
-		}
-
-		var attributeMap = Util.clone(meshData.attributeMap);
-		var attribs = {};
-		for (var key in attributeMap) {
-			attribs[key] = {
-				oldBuffer: meshData.getAttributeBuffer(key),
-				values: []
-			};
-		}
-		var indexCount = 0;
-		meshData.updatePrimitiveCounts();
-		for (var section = 0; section < meshData.getSectionCount(); section++) {
-			var indexMode = meshData.indexModes[section];
-			var primitiveCount = meshData.getPrimitiveCount(section);
-			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
-
-				switch (indexMode) {
-					case "Triangles":
-					case "TriangleFan":
-					case "TriangleStrip":
-
-						var i1 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 1, section)];
-						var i3 = oldIdcs[meshData.getVertexIndex(primitiveIndex, 2, section)];
-						for (var key in attribs) {
-							if(key === MeshData.NORMAL) {
-								continue;
-							}
-							var count = attributeMap[key].count;
-							for (var i = 0; i < count; i++) {
-								attribs[key].values[indexCount*count+i] = attribs[key].oldBuffer[i1*count+i];
-								attribs[key].values[(indexCount+1)*count+i] = attribs[key].oldBuffer[i2*count+i];
-								attribs[key].values[(indexCount+2)*count+i] = attribs[key].oldBuffer[i3*count+i];
-							}
-							if(key === MeshData.POSITION) {
-								v1.setd(
-									attribs[key].values[indexCount*3],
-									attribs[key].values[indexCount*3+1],
-									attribs[key].values[indexCount*3+2]
-								);
-								v2.setd(
-									attribs[key].values[(indexCount+1)*3],
-									attribs[key].values[(indexCount+1)*3+1],
-									attribs[key].values[(indexCount+1)*3+2]
-								);
-								v3.setd(
-									attribs[key].values[(indexCount+2)*3],
-									attribs[key].values[(indexCount+2)*3+1],
-									attribs[key].values[(indexCount+2)*3+2]
-								);
-								v2.subv(v1);
-								v3.subv(v1);
-								v2.cross(v3).normalize();
-
-								if (attribs[MeshData.NORMAL]) {
-									attribs[MeshData.NORMAL].values[(indexCount)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount)*3+2] = v2.data[2];
-
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3+2] = v2.data[2];
-
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3+2] = v2.data[2];
-								}
-							}
-						}
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
-						indexCount += 3;
-				}
-			}
-		}
-		if (idcs.length === 0) {
-			console.warn('Could not build flat data');
-			return meshData;
-		}
-		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
-
-		for (var key in attribs) {
-			flatMeshData.getAttributeBuffer(key).set(attribs[key].values);
-		}
-		flatMeshData.getIndexBuffer().set(idcs);
-
-		flatMeshData.paletteMap = meshData.paletteMap;
-		flatMeshData.weightPerVertex = meshData.weightsPerVertex;
-
-		return flatMeshData;
-	};
-
-	/*
-	REVIEW: this too should belong to MeshData
-	 */
-	Renderer.prototype.buildWireframeData = function (meshData) {
-		var attributeMap = Util.clone(meshData.attributeMap);
-		var wireframeData = new MeshData(attributeMap, meshData.vertexCount, 0);
-		wireframeData.indexModes[0] = 'Lines';
-
-		var origI = meshData.getIndexBuffer();
-		var targetI = [];
-		var indexCount = 0;
-		meshData.updatePrimitiveCounts();
-		for (var section = 0; section < meshData.getSectionCount(); section++) {
-			var indexMode = meshData.indexModes[section];
-
-			var primitiveCount = meshData.getPrimitiveCount(section);
-			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
-				switch (indexMode) {
-					case "Triangles":
-					case "TriangleFan":
-					case "TriangleStrip":
-						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
-						var i3 = origI[meshData.getVertexIndex(primitiveIndex, 2, section)];
-
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						targetI[indexCount + 2] = i2;
-						targetI[indexCount + 3] = i3;
-						targetI[indexCount + 4] = i3;
-						targetI[indexCount + 5] = i1;
-						indexCount += 6;
-					break;
-					case "Lines":
-					case "LineStrip":
-						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
-
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						indexCount += 2;
-					break;
-					case "LineLoop":
-						var i1 = origI[meshData.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[meshData.getVertexIndex(primitiveIndex, 1, section)];
-						if (primitiveIndex === primitiveCount - 1) {
-							i2 = origI[meshData.getVertexIndex(0, 0, section)];
-						}
-
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						indexCount += 2;
-					break;
-					case "Points":
-						// Not supported in wireframe
-					break;
-				}
-			}
-		}
-
-		if (indexCount > 0) {
-			wireframeData.rebuildIndexData(indexCount);
-			for (var attribute in attributeMap) {
-				wireframeData.getAttributeBuffer(attribute).set(meshData.getAttributeBuffer(attribute));
-			}
-			wireframeData.getIndexBuffer().set(targetI);
-		}
-
-		wireframeData.paletteMap = meshData.paletteMap;
-		wireframeData.weightsPerVertex = meshData.weightsPerVertex;
-
-		return wireframeData;
 	};
 
 	Renderer.prototype.updateLineAndPointSettings = function (material) {

@@ -522,6 +522,201 @@ function (
 		return meshData;
 	};
 
+	/**
+	 * Builds wireframe meshdata from mesh
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.buildWireframeData = function () {
+		var attributeMap = Util.clone(this.attributeMap);
+		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
+		wireframeData.indexModes[0] = 'Lines';
+
+		var origI = this.getIndexBuffer();
+		var targetI = [];
+		var indexCount = 0;
+		this.updatePrimitiveCounts();
+		for (var section = 0; section < this.getSectionCount(); section++) {
+			var indexMode = this.indexModes[section];
+
+			var primitiveCount = this.getPrimitiveCount(section);
+			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
+				switch (indexMode) {
+					case "Triangles":
+					case "TriangleFan":
+					case "TriangleStrip":
+						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+						var i3 = origI[this.getVertexIndex(primitiveIndex, 2, section)];
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						targetI[indexCount + 2] = i2;
+						targetI[indexCount + 3] = i3;
+						targetI[indexCount + 4] = i3;
+						targetI[indexCount + 5] = i1;
+						indexCount += 6;
+					break;
+					case "Lines":
+					case "LineStrip":
+						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						indexCount += 2;
+					break;
+					case "LineLoop":
+						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+						if (primitiveIndex === primitiveCount - 1) {
+							i2 = origI[this.getVertexIndex(0, 0, section)];
+						}
+
+						targetI[indexCount + 0] = i1;
+						targetI[indexCount + 1] = i2;
+						indexCount += 2;
+					break;
+					case "Points":
+						// Not supported in wireframe
+					break;
+				}
+			}
+		}
+
+		if (indexCount > 0) {
+			wireframeData.rebuildIndexData(indexCount);
+			for (var attribute in attributeMap) {
+				wireframeData.getAttributeBuffer(attribute).set(this.getAttributeBuffer(attribute));
+			}
+			wireframeData.getIndexBuffer().set(targetI);
+		}
+
+		wireframeData.paletteMap = this.paletteMap;
+		wireframeData.weightsPerVertex = this.weightsPerVertex;
+
+		return wireframeData;
+	};
+
+
+	// Calculation helpers
+	var v1 = new Vector3();
+	var v2 = new Vector3();
+	var v3 = new Vector3();
+	/**
+	 * Builds flat meshdata from mesh
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.buildFlatMeshData = function() {
+		var idcs = [], oldIdcs = this.getIndexBuffer();
+		if (oldIdcs === null) {
+			console.debug('No indices, probably a point mesh');
+			return this;
+		}
+		if (oldIdcs.length > 65535) {
+			console.warn('Mesh too big, cannot build flat mesh data');
+			return this;
+		}
+
+		var attributeMap = Util.clone(this.attributeMap);
+		var attribs = {};
+		for (var key in attributeMap) {
+			attribs[key] = {
+				oldBuffer: this.getAttributeBuffer(key),
+				values: []
+			};
+		}
+		var indexCount = 0;
+		this.updatePrimitiveCounts();
+		for (var section = 0; section < this.getSectionCount(); section++) {
+			var indexMode = this.indexModes[section];
+			var primitiveCount = this.getPrimitiveCount(section);
+			var flip = false;
+			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
+				switch (indexMode) {
+					/*jshint -W086 */
+					case "TriangleStrip":
+						flip = (primitiveIndex % 2 === 1) ? true : false;
+					case "Triangles":
+					case "TriangleFan":
+
+						var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
+						var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
+						var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
+						if(flip) {
+							var f = i3;
+							i3 = i2;
+							i2 = f;
+						}
+						for (var key in attribs) {
+							if(key === MeshData.NORMAL) {
+								continue;
+							}
+							var count = attributeMap[key].count;
+							for (var i = 0; i < count; i++) {
+								attribs[key].values[indexCount*count+i] = attribs[key].oldBuffer[i1*count+i];
+								attribs[key].values[(indexCount+1)*count+i] = attribs[key].oldBuffer[i2*count+i];
+								attribs[key].values[(indexCount+2)*count+i] = attribs[key].oldBuffer[i3*count+i];
+							}
+							if(key === MeshData.POSITION) {
+								v1.setd(
+									attribs[key].values[indexCount*3],
+									attribs[key].values[indexCount*3+1],
+									attribs[key].values[indexCount*3+2]
+								);
+								v2.setd(
+									attribs[key].values[(indexCount+1)*3],
+									attribs[key].values[(indexCount+1)*3+1],
+									attribs[key].values[(indexCount+1)*3+2]
+								);
+								v3.setd(
+									attribs[key].values[(indexCount+2)*3],
+									attribs[key].values[(indexCount+2)*3+1],
+									attribs[key].values[(indexCount+2)*3+2]
+								);
+								v2.subv(v1);
+								v3.subv(v1);
+								v2.cross(v3).normalize();
+
+								if (attribs[MeshData.NORMAL]) {
+									attribs[MeshData.NORMAL].values[(indexCount)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount)*3+2] = v2.data[2];
+
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount+1)*3+2] = v2.data[2];
+
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3] = v2.data[0];
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3+1] = v2.data[1];
+									attribs[MeshData.NORMAL].values[(indexCount+2)*3+2] = v2.data[2];
+								}
+							}
+						}
+						idcs.push(idcs.length);
+						idcs.push(idcs.length);
+						idcs.push(idcs.length);
+						indexCount += 3;
+				}
+			}
+		}
+		if (idcs.length === 0) {
+			console.warn('Could not build flat data');
+			return this;
+		}
+		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
+
+		for (var key in attribs) {
+			flatMeshData.getAttributeBuffer(key).set(attribs[key].values);
+		}
+		flatMeshData.getIndexBuffer().set(idcs);
+
+		flatMeshData.paletteMap = this.paletteMap;
+		flatMeshData.weightPerVertex = this.weightsPerVertex;
+
+		return flatMeshData;
+	};
+
+
 	/** 
 	 * @type {string}
 	 * @readonly
