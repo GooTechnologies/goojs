@@ -9,14 +9,15 @@ function(
 	) {
 	"use strict";
 
-	function PortalComponent(camera, aspectRatio, multiply) {
-		aspectRatio = aspectRatio || 1;
-		multiply = multiply || 200;
+	function PortalComponent(camera, height) {
+		height = height || 200;
+
+		var aspect = camera.aspect;
+		console.log('aspect', aspect, 'height', height, 'height / aspect', height / aspect);
 
 		this.type = 'PortalComponent';
 		this.camera = camera;
-		// get aspect ratio from camera and multiply with resolution multiplier
-		this.target = new RenderTarget(multiply, aspectRatio * multiply);
+		this.target = new RenderTarget(height, height / aspect);
 	}
 
 	PortalComponent.prototype = Object.create(Component.prototype);

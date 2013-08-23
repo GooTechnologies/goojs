@@ -53,10 +53,10 @@ require([
 
 	function addPortal(goo, camera, x, y, z, dim) {
 		var quadMeshData = ShapeCreator.createQuad(dim, dim);
-		var quadMaterial = Material.createMaterial(ShaderLib.texturedLit, '');
+		var quadMaterial = Material.createMaterial(ShaderLib.textured, '');
 		var quadEntity = EntityUtils.createTypicalEntity(goo.world, quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.set(x, y, z);
-		quadEntity.setComponent(new PortalComponent(camera));
+		quadEntity.setComponent(new PortalComponent(camera, 500));
 		quadEntity.addToWorld();
 	}
 
@@ -93,7 +93,7 @@ require([
 			}
 		}));
 
-		// cameraEntity.setComponent(new CameraDebugComponent());
+		//cameraEntity.setComponent(new CameraDebugComponent());
 
 		cameraEntity.addToWorld();
 
@@ -119,6 +119,8 @@ require([
 		cameraEntity.setComponent(scripts);
 
 		cameraEntity.addToWorld();
+
+		return camera;
 	}
 
 	function addLight(goo) {
@@ -133,18 +135,19 @@ require([
 		// basic setup
 		addSpheres(goo, 15);
 		addLight(goo);
-		addUserCamera(goo);
+		var camera0 = addUserCamera(goo);
 
 		// create 2 more cameras
 		var camera1 = addSpinningCamera(goo, 0);
-		var camera2 = addSpinningCamera(goo, Math.PI/8);
+		var camera2 = addSpinningCamera(goo, Math.PI);
 
 		// add the portal system tot the world
 		addPortalSystem(goo);
 
 		// add portals
-		addPortal(goo, camera1, -3, 0, 2, 5);
-		addPortal(goo, camera2,  3, 0, 2, 5);
+		addPortal(goo, camera1, -3,  3, 2, 5);
+		addPortal(goo, camera2,  3,  3, 2, 5);
+		addPortal(goo, camera0,  0, -3, 2, 5);
 	}
 
 	function init() {

@@ -28,6 +28,7 @@ function (
 			var camera = portalComponent.camera;
 			var target = portalComponent.target;
 
+			// do not perform the render if the surface is culled
 			this.render(this.renderer, camera, target);
 
 			var material = entity.meshRendererComponent.materials[0];
@@ -38,7 +39,15 @@ function (
 	};
 
 	PortalSystem.prototype.render = function (renderer, camera, target) {
-		renderer.checkResize(camera);
+		//renderer.checkResize(camera);
+
+		//
+		var w = renderer.viewportWidth;
+		var h = renderer.viewportHeight;
+
+		console.log(w, h);
+
+		renderer.setViewport(0, 0, 500, 500);
 
 		if (!this.doRender) {
 			return;
@@ -55,8 +64,6 @@ function (
 
 		this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
 
-		console.log();
-
 		/*
 		if (this.composers.length > 0) {
 			for (var i = 0; i < this.composers.length; i++) {
@@ -69,6 +76,8 @@ function (
 		*/
 
 		renderer.render(this.renderList, camera, this.renderSystem.lights, target, true);
+
+		renderer.setViewport(0, 0, w, h);
 	};
 
 	return PortalSystem;
