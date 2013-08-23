@@ -54,11 +54,9 @@ require([
 		EventHandler.dispatch("setCurrentCamera", mainCamera);
 	}
 
-	function frustumViewerDemo(goo) {
-		// add spheres to have the cameras view them
+	function addSpheres(goo, nSpheres) {
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
-		var nSpheres = 15;
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
 				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
@@ -68,6 +66,11 @@ require([
 				sphereEntity.addToWorld();
 			}
 		}
+	}
+
+	function frustumViewerDemo(goo) {
+		// add spheres to have the cameras view them
+		addSpheres(goo, 15);
 
 		// add light
 		var light = new PointLight();
