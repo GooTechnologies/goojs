@@ -1040,10 +1040,11 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateTexture = function (context, texture, unit /*, record*/) {
+	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
 		// this.bindTexture(context, texture, unit, record);
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
 		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+		record.boundTexture = texture.glTexture;
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
