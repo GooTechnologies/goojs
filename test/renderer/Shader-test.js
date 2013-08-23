@@ -13,7 +13,8 @@ define([
 					uniforms: {},
 					attributeMapping: {},
 					uniformMapping: {},
-					textureSlots: []
+					textureSlots: [],
+					textureSlotsNaming: {}
 				};
 			});
 			it('can parse a uniform declaration', function() {
@@ -45,7 +46,9 @@ define([
 				expect(target.textureSlots).toEqual([
 					{
 						format: 'sampler2D',
-						name: 'tex'
+						name: 'tex',
+						mapping : undefined,
+						index : 0
 					}
 				]);
 			});
