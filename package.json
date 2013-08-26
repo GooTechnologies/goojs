@@ -2,7 +2,7 @@
   "name": "goojs",
   "version": "0.1.0",
   "author": "Goo Technologies AB <info@gootechnologies.com>", 
-  "description": "The Goo Javascript WebGL Engine.", 
+  "description": "Goo Engine - the WebGL graphics engine",
   "homepage": "http://www.gootechnologies.com/",
   "licenses": [
     {
@@ -16,7 +16,7 @@
   "devDependencies": {
     "coffee-script": "1.6.3",
     "testacular": "0.6.0",
-    "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "jsdoc": "git://github.com/jsdoc3/jsdoc.git#v3.1.0",
     "jshint": "1.0.0",
     "glob": ">= 3.1.20",
     "wrench": ">= 1.4.4",
