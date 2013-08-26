@@ -110,7 +110,7 @@ define([
 	};
 
 	ComponentHandler._registerClass = function(type, klass) {
-		this._type = type;
+		klass._type = type;
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 
