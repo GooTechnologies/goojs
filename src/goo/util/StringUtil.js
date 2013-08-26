@@ -1,4 +1,4 @@
-define(function() {
+define([], function() {
 	return {
 		endsWith: function(str, suffix) {
 			return str.indexOf(suffix, str.length - suffix.length) !== -1;
