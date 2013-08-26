@@ -57,7 +57,7 @@ function (
 		return transitions;
 	};
 
-	/*
+	/**
 	 * Does the updating before animations are applied
 	 */
 	AnimationLayer.prototype.update = function(globalTime) {
@@ -66,7 +66,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Does the updating after animations are applied
 	 */
 	AnimationLayer.prototype.postUpdate = function() {
@@ -149,7 +149,7 @@ function (
 		return this._currentState;
 	};
 	/**
-	 * Force the current state of the machine to the state with the given name. 
+	 * Force the current state of the machine to the state with the given name.
 	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
 	 * @param {boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
@@ -168,7 +168,7 @@ function (
 		return false;
 	};
 
-	/*
+	/**
 	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
@@ -182,7 +182,7 @@ function (
 			return null;
 		}
 	};
-	/*
+	/**
 	 * Update the layer blender in this animation layer to properly point to the previous layer.
 	 * @param previousLayer the layer before this layer in the animation manager.
 	 */

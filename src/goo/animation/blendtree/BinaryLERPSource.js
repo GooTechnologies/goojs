@@ -34,7 +34,7 @@ function (
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this.blendWeight);
 	};
 
-	/*
+	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
 	 * @param {number} globalTime
 	 */
@@ -51,7 +51,7 @@ function (
 		return activeA || activeB;
 	};
 
-	/*
+	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
 	 * @param {number} globalTime
 	 */
@@ -69,7 +69,8 @@ function (
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);
 	};
-	/*
+
+	/**
 	 * @returns {boolean} if clipsource is active
 	 */
 	BinaryLERPSource.prototype.isActive = function () {
@@ -83,7 +84,7 @@ function (
 		return foundActive;
 	};
 
-	/*
+	/**
 	 * Blends two sourceData maps together
 	 * @param {object} sourceAData
 	 * @param {object} sourceBData
@@ -129,7 +130,7 @@ function (
 		return rVal;
 	};
 
-	/*
+	/**
 	 * Blends two float values and stores them in rVal
 	 * @param {object} rVal The object in which to store result
 	 * @param {string} key The key to object rVal, so rVal[key] is the store

@@ -12,7 +12,7 @@ function (BinaryLERPSource) {
 		this._layerB = null;
 	}
 
-	/*
+	/**
 	 * @return a key-value map representing the blended data from both animation layers.
 	 */
 	LayerLERPBlender.prototype.getBlendedSourceData = function () {
