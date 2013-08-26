@@ -29,11 +29,12 @@ function (
 				var camera = portalComponent.camera;
 				var target = portalComponent.target;
 				var secondaryTarget = portalComponent.secondaryTarget;
+				var overrideMaterial = portalComponent.overrideMaterial;
 
 				this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
 
 				if(portalComponent.alwaysRender || entity.isVisible) {
-					this.render(this.renderer, camera, target);
+					this.render(this.renderer, camera, target, overrideMaterial);
 
 					var material = entity.meshRendererComponent.materials[0];
 					material.setTexture('DIFFUSE_MAP', target);
@@ -48,7 +49,7 @@ function (
 		}
 	};
 
-	PortalSystem.prototype.render = function (renderer, camera, target) {
+	PortalSystem.prototype.render = function (renderer, camera, target, overrideMaterial) {
 		renderer.updateShadows(this.renderSystem.partitioner, this.renderSystem.entities, this.renderSystem.lights);
 
 		for (var i = 0; i < this.renderSystem.preRenderers.length; i++) {
@@ -64,7 +65,7 @@ function (
 				composer.render(renderer, this.renderSystem.currentTpf, camera, this.renderSystem.lights, null, true);
 			}
 		} else {
-			renderer.render(this.renderList, camera, this.renderSystem.lights, target, true);
+			renderer.render(this.renderList, camera, this.renderSystem.lights, target, true, overrideMaterial);
 		}
 	};
 

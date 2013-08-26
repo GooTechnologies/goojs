@@ -9,7 +9,7 @@ function(
 	) {
 	"use strict";
 
-	function PortalComponent(camera, height, options) {
+	function PortalComponent(camera, height, options, overrideMaterial) {
 		height = height || 200;
 
 		this.options = options || {};
@@ -17,7 +17,9 @@ function(
 		this.options.autoUpdate = this.options.autoUpdate === false ? false : true;
 		this.options.alwaysRender = !!this.options.alwaysRender;
 
-		this.doUpdate = false;
+		this.overrideMaterial = overrideMaterial;
+
+		this.doUpdate = true;
 
 		var aspect = camera.aspect;
 

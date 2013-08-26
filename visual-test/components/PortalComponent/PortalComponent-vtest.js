@@ -51,12 +51,12 @@ require([
 		goo.world.setSystem(new PortalSystem(renderer, renderingSystem));
 	}
 
-	function addPortal(goo, camera, x, y, z, dim, options) {
+	function addPortal(goo, camera, x, y, z, dim, options, overrideMaterial) {
 		var quadMeshData = ShapeCreator.createQuad(dim, dim);
 		var quadMaterial = Material.createMaterial(ShaderLib.textured, '');
 		var quadEntity = EntityUtils.createTypicalEntity(goo.world, quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.set(x, y, z);
-		var portalComponent = new PortalComponent(camera, 500, options);
+		var portalComponent = new PortalComponent(camera, 500, options, overrideMaterial);
 		quadEntity.setComponent(portalComponent);
 		quadEntity.addToWorld();
 
@@ -148,9 +148,17 @@ require([
 		addPortalSystem(goo);
 
 		// add portals
+		var pickingMaterial = Material.createEmptyMaterial(ShaderLib.simpleLit, 'pickingMaterial');
+		pickingMaterial.blendState = {
+			blending: 'NoBlending',
+			blendEquation: 'AddEquation',
+			blendSrc: 'SrcAlphaFactor',
+			blendDst: 'OneMinusSrcAlphaFactor'
+		};
+
 		//var portalComponent0 =
 		addPortal(goo, camera1, -3,  3, 2, 5, { preciseRecursion: true });
-		var portalComponent1 = addPortal(goo, camera2,  3,  3, 2, 5, { preciseRecursion: true, autoUpdate: false });
+		var portalComponent1 = addPortal(goo, camera2,  3,  3, 2, 5, { preciseRecursion: true, autoUpdate: false }, pickingMaterial);
 		//var portalComponent2 =
 		addPortal(goo, camera0,  0, -3, 2, 5, { preciseRecursion: true });
 
