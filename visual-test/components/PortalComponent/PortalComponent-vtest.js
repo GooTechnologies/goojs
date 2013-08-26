@@ -51,13 +51,16 @@ require([
 		goo.world.setSystem(new PortalSystem(renderer, renderingSystem));
 	}
 
-	function addPortal(goo, camera, x, y, z, dim) {
+	function addPortal(goo, camera, x, y, z, dim, options) {
 		var quadMeshData = ShapeCreator.createQuad(dim, dim);
 		var quadMaterial = Material.createMaterial(ShaderLib.textured, '');
 		var quadEntity = EntityUtils.createTypicalEntity(goo.world, quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.set(x, y, z);
-		quadEntity.setComponent(new PortalComponent(camera, 500));
+		var portalComponent = new PortalComponent(camera, 500, options);
+		quadEntity.setComponent(portalComponent);
 		quadEntity.addToWorld();
+
+		return portalComponent;
 	}
 
 	function addSpheres(goo, nSpheres) {
@@ -145,9 +148,15 @@ require([
 		addPortalSystem(goo);
 
 		// add portals
-		addPortal(goo, camera1, -3,  3, 2, 5);
-		addPortal(goo, camera2,  3,  3, 2, 5);
-		addPortal(goo, camera0,  0, -3, 2, 5);
+		//var portalComponent0 =
+		addPortal(goo, camera1, -3,  3, 2, 5, { preciseRecursion: true });
+		var portalComponent1 = addPortal(goo, camera2,  3,  3, 2, 5, { preciseRecursion: true, autoUpdate: false });
+		//var portalComponent2 =
+		addPortal(goo, camera0,  0, -3, 2, 5, { preciseRecursion: true });
+
+		document.addEventListener('mousedown', function() {
+			portalComponent1.requestUpdate();
+		});
 	}
 
 	function init() {

@@ -14,73 +14,58 @@ function (
 		this.renderSystem = renderSystem;
 
 		this.renderList = [];
-		this.doRender = true;
-
-		this.currentTpf = 0.0;
 	}
 
 	PortalSystem.prototype = Object.create(System.prototype);
 
-	PortalSystem.prototype.process = function (entities, tpf) {
+	PortalSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var portalComponent = entity.portalComponent;
-			var camera = portalComponent.camera;
-			var target1 = portalComponent.target1;
-			var target2 = portalComponent.target2;
 
-			// do not perform the render if the surface is culled
-			this.render(this.renderer, camera, target1);
+			if(portalComponent.options.autoUpdate || portalComponent.doUpdate) {
+				portalComponent.doUpdate = false;
 
-			var material = entity.meshRendererComponent.materials[0];
-			material.setTexture('DIFFUSE_MAP', target1);
+				var camera = portalComponent.camera;
+				var target = portalComponent.target;
+				var secondaryTarget = portalComponent.secondaryTarget;
 
-			var tmp = target1;
-			portalComponent.target1 = target2;
-			portalComponent.target2 = tmp;
+				this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
+
+				if(portalComponent.alwaysRender || entity.isVisible) {
+					this.render(this.renderer, camera, target);
+
+					var material = entity.meshRendererComponent.materials[0];
+					material.setTexture('DIFFUSE_MAP', target);
+
+					if(portalComponent.options.preciseRecursion) {
+						var tmp = target;
+						portalComponent.target = secondaryTarget;
+						portalComponent.secondaryTarget = tmp;
+					}
+				}
+			}
 		}
-
-		this.currentTpf = tpf;
 	};
 
 	PortalSystem.prototype.render = function (renderer, camera, target) {
-		//renderer.checkResize(camera);
+		renderer.updateShadows(this.renderSystem.partitioner, this.renderSystem.entities, this.renderSystem.lights);
 
-		// var w = renderer.viewportWidth;
-		// var h = renderer.viewportHeight;
-		// console.log(w, h);
-
-		// renderer.setViewport(0, 0, target.width, target.height);
-
-		if (!this.doRender) {
-			return;
+		for (var i = 0; i < this.renderSystem.preRenderers.length; i++) {
+			var preRenderer = this.renderSystem.preRenderers[i];
+			preRenderer.process(renderer, this.renderSystem.entities, this.renderSystem.partitioner, camera, this.renderSystem.lights);
 		}
-
-		/*
-		renderer.updateShadows(this.partitioner, this.renderSystem.entities, this.lights);
-
-		for (var i = 0; i < this.preRenderers.length; i++) {
-			var preRenderer = this.preRenderers[i];
-			preRenderer.process(renderer, this.renderSystem.entities, this.partitioner, camera, this.lights);
-		}
-		*/
 
 		this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
 
-		/*
-		if (this.composers.length > 0) {
-			for (var i = 0; i < this.composers.length; i++) {
-				var composer = this.composers[i];
-				composer.render(renderer, this.currentTpf, camera, this.lights, null, true);
+		if (this.renderSystem.composers.length > 0) {
+			for (var i = 0; i < this.renderSystem.composers.length; i++) {
+				var composer = this.renderSystem.composers[i];
+				composer.render(renderer, this.renderSystem.currentTpf, camera, this.renderSystem.lights, null, true);
 			}
 		} else {
-			renderer.render(this.renderList, camera, this.lights, target, true);
+			renderer.render(this.renderList, camera, this.renderSystem.lights, target, true);
 		}
-		*/
-
-		renderer.render(this.renderList, camera, this.renderSystem.lights, target, true);
-
-		// renderer.setViewport(0, 0, w, h);
 	};
 
 	return PortalSystem;
