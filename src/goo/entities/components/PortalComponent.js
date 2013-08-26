@@ -17,7 +17,8 @@ function(
 
 		this.type = 'PortalComponent';
 		this.camera = camera;
-		this.target = new RenderTarget(height, height / aspect);
+		this.target1 = new RenderTarget(height, height / aspect);
+		this.target2 = new RenderTarget(height, height / aspect);
 	}
 
 	PortalComponent.prototype = Object.create(Component.prototype);

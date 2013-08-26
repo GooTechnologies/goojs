@@ -26,13 +26,18 @@ function (
 			var entity = entities[i];
 			var portalComponent = entity.portalComponent;
 			var camera = portalComponent.camera;
-			var target = portalComponent.target;
+			var target1 = portalComponent.target1;
+			var target2 = portalComponent.target2;
 
 			// do not perform the render if the surface is culled
-			this.render(this.renderer, camera, target);
+			this.render(this.renderer, camera, target1);
 
 			var material = entity.meshRendererComponent.materials[0];
-			material.setTexture('DIFFUSE_MAP', target);
+			material.setTexture('DIFFUSE_MAP', target1);
+
+			var tmp = target1;
+			portalComponent.target1 = target2;
+			portalComponent.target2 = tmp;
 		}
 
 		this.currentTpf = tpf;
@@ -41,13 +46,11 @@ function (
 	PortalSystem.prototype.render = function (renderer, camera, target) {
 		//renderer.checkResize(camera);
 
-		//
-		var w = renderer.viewportWidth;
-		var h = renderer.viewportHeight;
+		// var w = renderer.viewportWidth;
+		// var h = renderer.viewportHeight;
+		// console.log(w, h);
 
-		console.log(w, h);
-
-		renderer.setViewport(0, 0, 500, 500);
+		// renderer.setViewport(0, 0, target.width, target.height);
 
 		if (!this.doRender) {
 			return;
@@ -77,7 +80,7 @@ function (
 
 		renderer.render(this.renderList, camera, this.renderSystem.lights, target, true);
 
-		renderer.setViewport(0, 0, w, h);
+		// renderer.setViewport(0, 0, w, h);
 	};
 
 	return PortalSystem;
