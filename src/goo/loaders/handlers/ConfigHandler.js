@@ -60,7 +60,7 @@ define(function() {
 	};
 
 	ConfigHandler._registerClass = function(type, klass) {
-		this._type = type;
+		klass._type = type;
 		return ConfigHandler.handlerClasses[type] = klass;
 	};
 
