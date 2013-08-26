@@ -39,7 +39,6 @@ define([
 			world.process();
 			expect(parentEntity.transformComponent.children)
 				.not.toContain(childEntity.transformComponent);
-			// REVIEW: What about this?
 			expect(childEntity.transformComponent.parent).toBeNull();
 		});
 
@@ -53,7 +52,6 @@ define([
 			parentEntity.removeFromWorld();
 			world.process();
 			expect(childEntity.transformComponent.parent).toBeNull();
-			// REVIEW: What about this?
 			expect(parentEntity.transformComponent.children)
 				.not.toContain(childEntity.transformComponent);
 		});
