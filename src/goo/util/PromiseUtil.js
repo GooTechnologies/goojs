@@ -16,7 +16,7 @@ define([
 		createDummyPromise: function(arg, error) {
 			var promise;
 			promise = new RSVP.Promise();
-			if (error !== null) {
+			if (error != null) {
 				promise.reject(error);
 			} else {
 				promise.resolve(arg);
