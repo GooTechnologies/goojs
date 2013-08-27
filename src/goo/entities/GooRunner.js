@@ -76,8 +76,6 @@ function (
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
-		//REVIEW: Probably shouldn't be on by default
-		this.world.setSystem(new TextSystem());
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
 		this.renderSystem = new RenderSystem();

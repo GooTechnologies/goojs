@@ -23,7 +23,8 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/TextComponent',
-	'goo/renderer/TextureCreator'
+	'goo/renderer/TextureCreator',
+	'goo/entities/systems/TextSystem'
 ], function (
 	GooRunner,
 	World,
@@ -43,11 +44,15 @@ require([
 	SpotLight,
 	LightComponent,
 	TextComponent,
-	TextureCreator
+	TextureCreator,
+	TextSystem
 	) {
 	'use strict';
 
 	function textComponentDemo(goo) {
+		// add text system to world
+		goo.world.setSystem(new TextSystem());
+
 		// create text entity
 		var textEntity = goo.world.createEntity();
 
@@ -65,13 +70,19 @@ require([
 		var textComponent = new TextComponent('Vivos brunneis vulpes\nsalit super\npiger canis');
 		textEntity.setComponent(textComponent);
 
+		textEntity.transformComponent.transform.translation.setd(3, 3, 0);
+
 		textEntity.addToWorld();
 
 		// change text
-		textEntity.textComponent.setText('The quick brown fox\njumps over\nthe lazy dog');
+		var text = 'The quick brown fox\njumps over\nthe lazy dog ';
+		var counter = 0;
+		setInterval(function() {
+			counter++;
+			if(counter > text.length) { counter = 1; }
 
-		// REVEIW: Why?
-		goo.world.process();
+			textEntity.textComponent.setText(text.substr(0, counter));
+		}, 100);
 
 
 		// setup lights and camera

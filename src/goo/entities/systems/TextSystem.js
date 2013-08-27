@@ -1,6 +1,13 @@
-define(['goo/entities/systems/System'],
+define([
+	'goo/entities/systems/System',
+	'goo/shapes/TextureGrid',
+	'goo/entities/components/MeshDataComponent'],
 	/** @lends */
-	function (System) {
+	function (
+		System,
+		TextureGrid,
+		MeshDataComponent
+	) {
 	"use strict";
 
 	/**
@@ -12,16 +19,21 @@ define(['goo/entities/systems/System'],
 
 	TextSystem.prototype = Object.create(System.prototype);
 
-	TextSystem.prototype.process = function (entities, tpf) {
+	TextSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {
-			var textComponent = entities[i].textComponent;
-			//REVIEW: Do the dirty check first is faster i think
-			/*
-			 * if(textComponent.dirty) {
-			 *  textComponent.update(entities[i], tpf);
-			 * }
-			 */
-			textComponent.checkUpdate(entities[i], tpf);
+			var entity = entities[i];
+			var textComponent = entity.textComponent;
+			if(textComponent.dirty) {
+				if(entity.hasComponent('MeshDataComponent')) {
+					entity.getComponent('MeshDataComponent').meshData = TextureGrid.fromString(textComponent.text);
+				}
+				else {
+					var meshData = TextureGrid.fromString(textComponent.text);
+					var meshDataComponent = new MeshDataComponent(meshData);
+					entity.setComponent(meshDataComponent);
+				}
+				this.dirty = false;
+			}
 		}
 	};
 
