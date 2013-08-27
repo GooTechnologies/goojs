@@ -221,7 +221,7 @@ function(
 				var handleChildRef = function(childRef) {
 					return promises.push(that._loadRef(childRef).then(function(childConfig) {
 						handled++;
-						if(options.progressCallback !== null && options.progressCallback.call !== null) {
+						if(options.progressCallback && options.progressCallback.call) {
 							options.progressCallback.call(null, handled, promises.length);
 						}
 						return that._handle(childRef, childConfig, options);
