@@ -514,7 +514,7 @@ function(
 			'#endif'
 		].join('\n'),
 		vertex: [
-			'#ifdef defined(JOINT_COUNT) && defined(WEIGHTS) && defined(JOINTIDS)',
+			'#if defined(JOINT_COUNT) && defined(WEIGHTS) && defined(JOINTIDS)',
 
 			'int x = 3*int(vertexJointIDs.x);',
 			'int y = 3*int(vertexJointIDs.y);',
