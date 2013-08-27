@@ -525,7 +525,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * pplies the matrix (rotation, scale) to a three-dimensional vector.
+	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
