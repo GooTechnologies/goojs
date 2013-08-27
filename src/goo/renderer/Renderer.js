@@ -283,7 +283,7 @@ function (
 		} else {
 			this.shaderPrecision = 'lowp';
 		}
-		console.log("Shader precision: " + this.shaderPrecision);
+		//console.log("Shader precision: " + this.shaderPrecision);
 
 		this.downScale = parameters.downScale || 1;
 
@@ -675,7 +675,7 @@ function (
 							// shader.processors[j](shader, renderInfo);
 						// }
 					// }
-					console.log('Shader not in cache, adding:', defineKey, shader.name);
+					//console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
 					if (shader !== material.shader) {

@@ -39,7 +39,7 @@ function(
 		var poseRef = config.poseRef;
 		var promises = [];
 		if (!poseRef) {
-			console.log("No skeleton pose ref");
+			console.warn("No skeleton pose ref");
 			p1 = pu.createDummyPromise();
 		} else {
 			p1 = this.getConfig(poseRef).then(function(config) {
@@ -52,7 +52,7 @@ function(
 		promises.push(p1);
 
 		if (!layersRef) {
-			console.log("No animation tree ref");
+			console.warn("No animation tree ref");
 			p2 = pu.createDummyPromise([]);
 		} else {
 			p2 = this._getAnimationLayers(layersRef).then(function(layers) {
@@ -69,7 +69,7 @@ function(
 
 	AnimationComponentHandler.prototype._getAnimationLayers = function(ref) {
 		var that = this;
-		console.log("GetAnimationLayers " + ref);
+		//console.log("GetAnimationLayers " + ref);
 		return this.getConfig(ref).then(function(config) {
 			return that.updateObject(ref, config, that.options);
 		});

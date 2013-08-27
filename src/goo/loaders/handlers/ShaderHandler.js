@@ -29,7 +29,7 @@ define([
 	ShaderHandler.prototype.update = function(ref, config) {
 		var shaderDefinition;
 
-		console.log("Updating shader " + ref);
+		// console.log("Updating shader " + ref);
 		// Currently not possible to update a shader, so update = create
 
 		if (config != null && config.attributes != null && config.uniforms != null) {

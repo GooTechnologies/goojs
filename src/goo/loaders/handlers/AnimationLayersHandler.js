@@ -37,7 +37,7 @@ define([
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
 	AnimationLayersHandler.prototype._create = function(layersConfig) {
-		console.debug("Creating animation layers");
+		//console.debug("Creating animation layers");
 
 		var promises = [];
 		promises.push(this._parseLayer(layersConfig.DEFAULT));

@@ -22,7 +22,7 @@ define([
 	ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
 	SkeletonHandler.prototype._create = function(skeletonConfig) {
-		console.debug("Creating skeleton");
+		//console.debug("Creating skeleton");
 
 		var joints = [];
 		for (var i = 0; i < skeletonConfig.joints.length; i++) {

@@ -406,7 +406,7 @@ function (
 			// }
 		}
 
-		console.log('Shader [' + this.name + '][' + this._id + '] compiled');
+		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
 	var errorRegExp = /\bERROR: \d+:(\d+):\s(.+)\b/g;

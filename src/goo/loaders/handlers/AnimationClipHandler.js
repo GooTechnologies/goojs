@@ -43,7 +43,7 @@ function(
 	};
 
 	AnimationClipHandler.prototype._createAnimationClip = function(clipConfig, bindata) {
-		console.debug("Creating animation clip");
+		//console.debug("Creating animation clip");
 		var clip = new AnimationClip(clipConfig.name);
 
 		var useCompression = clipConfig.useCompression || false;
