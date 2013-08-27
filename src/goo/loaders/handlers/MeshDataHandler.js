@@ -143,7 +143,7 @@ define([
 		var _fillAttributeBuffer = function(attr, data) {
 			var opts;
 			if (data != null ? data.length : void 0) {
-				if (compression) {
+				if (compression && typeof data === 'string') {
 					opts = that._getCompressionOptions(attr, config, compression);
 					JsonUtils.fillAttributeBufferFromCompressedString(data, meshData, attr, opts.scale, opts.offset);
 				} else if (bindata) {
