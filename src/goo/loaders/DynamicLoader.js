@@ -211,13 +211,19 @@ function(
 		}
 		this._objects = {};
 		var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
+
 		return this._loadRef(ref).then(function(config) {
+			var handled = 0;
 			var promises = [];
 			if (options.recursive && ConfigHandler.getHandler(that._getTypeForRef(ref))) {
 				var childRefs = that._getRefsFromConfig(config);
 
 				var handleChildRef = function(childRef) {
 					return promises.push(that._loadRef(childRef).then(function(childConfig) {
+						handled++;
+						if(options.progressCallback !== null && options.progressCallback.call !== null) {
+							options.progressCallback.call(null, handled, promises.length);
+						}
 						return that._handle(childRef, childConfig, options);
 					}));
 				};
