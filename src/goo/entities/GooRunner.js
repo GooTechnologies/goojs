@@ -153,7 +153,7 @@ function (
 			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
-		} else if (tpf > 0.5) { // big tpf, probably lost focus
+		} else if (tpf > 1.0) { // big tpf, probably lost focus
 			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
