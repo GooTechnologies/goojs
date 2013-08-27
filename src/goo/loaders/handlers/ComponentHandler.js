@@ -1,4 +1,4 @@
-define([], function() {
+define(function() {
 	/**
 	 * @class Base class for component handlers. All different types of components that an entity
 	 * can have need to have a registered component handler. To handle a new type of component,
@@ -63,6 +63,7 @@ define([], function() {
 		this._prepare(config);
 		var object;
 		// REVIEW: I would prefer ===
+		// ANSWER: entity !== null && entity !== undefined is unseemly
 		if(entity == null || entity[this.constructor._type + "Component"] == null) {
 			object = this._create(entity, config);
 		} else {
@@ -79,6 +80,7 @@ define([], function() {
 	// REVIEW should it fails silently if entity is null?
 	ComponentHandler.prototype.remove = function(entity) {
 		// REVIEW: I would prefer !==
+		// ANSWER: entity !== null && entity !== undefined is unseemly
 		if(entity != null) {
 			entity.clearComponent(this.constructor._type + "Component");
 		}
@@ -94,19 +96,14 @@ define([], function() {
 	 * @returns {Class} A subclass of {ComponentHandler}, or null if no registered handler for the given type was found.
 	 */
 	ComponentHandler.getHandler = function(type) {
-		// REVIEW: I would prefer ComponentHandler.handlerClasses
-		return this.handlerClasses[type];
+		return ComponentHandler.handlerClasses[type];
 	};
 
 	/**
 	 * Register a handler for a component type. Called in the class body of subclasses.
 	 * @param {string} type
+	 * @param {Class} klass the class to register for this component type
 	 */
-	ComponentHandler._register = function(type) {
-		this._type = type;
-		ComponentHandler.handlerClasses[type] = this;
-	};
-
 	ComponentHandler._registerClass = function(type, klass) {
 		klass._type = type;
 		ComponentHandler.handlerClasses[type] = klass;

@@ -12,12 +12,6 @@ define([
 	SceneHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('scene', SceneHandler);
 
-	/* SELF-REVIEW: This is pretty much what CoffeeScript did. I think the above is better
-	SceneHandler._register = ConfigHandler._register;
-	SceneHandler._register('scene');
-	*/
-	// REVIEW: I agree
-
 	SceneHandler.prototype._prepare = function(/*config*/) {};
 
 	SceneHandler.prototype._create = function(/*ref*/) {};

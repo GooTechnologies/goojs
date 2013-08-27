@@ -48,19 +48,14 @@ define(function() {
 	 * @returns {Class} A subclass of {ConfigHandler}, or null if no registered handler for the given type was found.
 	 */
 	ConfigHandler.getHandler = function(type) {
-		// REVIEW: I would prefer ConfigHandler.handlerClasses
-		return this.handlerClasses[type];
+		return ConfigHandler.handlerClasses[type];
 	};
 
 	/**
 	 * Register a handler for a component type. Called in the class body of subclasses.
 	 * @param {string} type
+	 * @param {Class} klass the class to register for this component type
 	 */
-	ConfigHandler._register = function(type) {
-		this._type = type;
-		return ConfigHandler.handlerClasses[type] = this;
-	};
-
 	ConfigHandler._registerClass = function(type, klass) {
 		klass._type = type;
 		return ConfigHandler.handlerClasses[type] = klass;
