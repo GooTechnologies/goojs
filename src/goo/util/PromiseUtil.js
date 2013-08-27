@@ -2,7 +2,8 @@ define([
 	'goo/util/rsvp'
 ], function(
 	RSVP
-) {
+) /* @lends */ {
+	// REVIEW: This doesn't look like GooJS code, see ArrayUtil.js
 	return {
 
 		/**
@@ -40,11 +41,13 @@ define([
 					return arg();
 				});
 				setTimeout(function() {
+					// REVIEW: returns are useless here
 					return p1.resolve();
 				}, delay);
 				return p2;
 			} else {
 				setTimeout(function() {
+					// REVIEW: returns are useless here
 					return promise.resolve(arg);
 				}, delay);
 			}

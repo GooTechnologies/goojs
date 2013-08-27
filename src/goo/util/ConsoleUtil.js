@@ -2,12 +2,15 @@ define([
 	'goo/util/ObjectUtil'
 ], function(
 	_
-) {
+) /* @lends */ {
+	// REVIEW: This doesn't look like GooJS code, see ArrayUtil.js
+
 	var ConsoleUtil, levels, noop, _console;
 	_console = null;
 	levels = ['debug', 'log', 'info', 'warn', 'error'];
 	noop = function() {};
 	return ConsoleUtil = {
+		/*jshint -W099*/
 		/**
 		 * Set the log level. Messages with lower urgency will not be printed. Example usage:
 		 * <code>

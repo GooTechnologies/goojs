@@ -1,10 +1,4 @@
-define([
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
-], function(
-	RSVP,
-	pu
-) {
+define([], function() {
 	/**
 	 * @class Base class for component handlers. All different types of components that an entity
 	 * can have need to have a registered component handler. To handle a new type of component,
@@ -31,7 +25,7 @@ define([
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 */
-	ComponentHandler.prototype._prepare = function(config) {};
+	ComponentHandler.prototype._prepare = function(/*config*/) {};
 
 	/**
 	 * Create engine component object based on the config. Should be overridden in subclasses.
@@ -39,10 +33,11 @@ define([
 	 * @param {object} config
 	 * @returns {Component} the created component object
 	 */
-	ComponentHandler.prototype._create = function(entity, config) {
+	ComponentHandler.prototype._create = function(/*entity, config*/) {
 		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
 	};
 
+	/*jshint -W099*/
 	/**
 	 * Update engine component object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{EntityHandler} to load new component configs into the engine.
@@ -67,6 +62,7 @@ define([
 	ComponentHandler.prototype.update = function(entity, config) {
 		this._prepare(config);
 		var object;
+		// REVIEW: I would prefer ===
 		if(entity == null || entity[this.constructor._type + "Component"] == null) {
 			object = this._create(entity, config);
 		} else {
@@ -82,6 +78,7 @@ define([
 	 */
 	// REVIEW should it fails silently if entity is null?
 	ComponentHandler.prototype.remove = function(entity) {
+		// REVIEW: I would prefer !==
 		if(entity != null) {
 			entity.clearComponent(this.constructor._type + "Component");
 		}
@@ -97,6 +94,7 @@ define([
 	 * @returns {Class} A subclass of {ComponentHandler}, or null if no registered handler for the given type was found.
 	 */
 	ComponentHandler.getHandler = function(type) {
+		// REVIEW: I would prefer ComponentHandler.handlerClasses
 		return this.handlerClasses[type];
 	};
 

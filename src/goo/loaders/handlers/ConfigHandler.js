@@ -22,6 +22,7 @@ define(function() {
 		this.options = options;
 	}
 
+	/*jshint -W099*/
 	/**
 	 * Update engine object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{DynamicLoader} to load new resources into the engine.
@@ -37,7 +38,7 @@ define(function() {
 	 * @param {object} config
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
-	ConfigHandler.prototype.update = function(ref, config) {};
+	ConfigHandler.prototype.update = function(/*ref, config*/) {};
 
 	ConfigHandler.handlerClasses = {};
 
@@ -47,6 +48,7 @@ define(function() {
 	 * @returns {Class} A subclass of {ConfigHandler}, or null if no registered handler for the given type was found.
 	 */
 	ConfigHandler.getHandler = function(type) {
+		// REVIEW: I would prefer ConfigHandler.handlerClasses
 		return this.handlerClasses[type];
 	};
 

@@ -16,10 +16,11 @@ define([
 	SceneHandler._register = ConfigHandler._register;
 	SceneHandler._register('scene');
 	*/
+	// REVIEW: I agree
 
-	SceneHandler.prototype._prepare = function(config) {};
+	SceneHandler.prototype._prepare = function(/*config*/) {};
 
-	SceneHandler.prototype._create = function(ref) {};
+	SceneHandler.prototype._create = function(/*ref*/) {};
 
 	// Returns a promise which resolves when updating is done
 	SceneHandler.prototype.update = function(ref, config) {
@@ -53,7 +54,7 @@ define([
 		}
 	};
 
-	SceneHandler.prototype.remove = function(ref) {};
+	SceneHandler.prototype.remove = function(/*ref*/) {};
 
 	return SceneHandler;
 
