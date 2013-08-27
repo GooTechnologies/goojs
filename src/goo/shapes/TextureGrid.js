@@ -9,6 +9,7 @@ define(['goo/renderer/MeshData'],
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 		var nCells = countCells(matrix);
+		// REVIEW: Shouldn't it be nCells * 4?
 		MeshData.call(this, attributeMap, nCells * 3 * 2, nCells * 6);
 
 		this.rebuild();
@@ -27,6 +28,7 @@ define(['goo/renderer/MeshData'],
 	TextureGrid.prototype.setText = function (str) {
 		this.matrix = stringToMatrix(str);
 		var nCells = countCells(this.matrix);
+		// REVIEW: Shouldn't it be nCells * 4?
 		this.rebuildData(nCells * 3 * 2, nCells * 6);
 		this.rebuild();
 	};

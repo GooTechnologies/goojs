@@ -52,7 +52,7 @@ require([
 		var textEntity = goo.world.createEntity();
 
 		// get a font
-		var material = Material.createMaterial(ShaderLib.billboard, '');
+		var material = Material.createMaterial(ShaderLib.billboard, 'Billboard material');
 		var texture = new TextureCreator().loadTexture2D('../../resources/font.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';
@@ -70,6 +70,7 @@ require([
 		// change text
 		textEntity.textComponent.setText('The quick brown fox\njumps over\nthe lazy dog');
 
+		// REVEIW: Why?
 		goo.world.process();
 
 

@@ -13,6 +13,7 @@ function(
 		this.type = 'TextComponent';
 
 		this._text = text || '';
+		//REVIEW this._dirty
 		this.dirty = true;
 	}
 
@@ -27,6 +28,7 @@ function(
 	TextComponent.prototype.checkUpdate = function(entity) {
 		if(this.dirty) {
 			if(entity.hasComponent('MeshDataComponent')) {
+				//REVIEW: What if meshData already is TextureGrid? Then you only need to call .setText()
 				entity.getComponent('MeshDataComponent').meshData = TextureGrid.fromString(this._text);
 			}
 			else {
