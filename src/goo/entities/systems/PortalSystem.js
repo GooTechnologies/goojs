@@ -7,6 +7,11 @@ function (
 ) {
 	"use strict";
 
+	/**
+	 * @class Processes all entities with a portal component, a mesh renderer component and a mesh data component
+	 * @param {Renderer} renderer
+	 * @param {RenderSystem} renderSystem
+	 */
 	function PortalSystem(renderer, renderSystem) {
 		System.call(this, 'PortalSystem', ['MeshRendererComponent', 'MeshDataComponent', 'PortalComponent']);
 
