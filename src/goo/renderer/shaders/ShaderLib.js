@@ -2108,7 +2108,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
 			id : function(shaderInfo) {
-				return shaderInfo.renderable.id;
+				return shaderInfo.renderable.id + 1;
 			}
 		},
 		processors: [

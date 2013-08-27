@@ -303,6 +303,43 @@ function (
 		}.bind(this), false);
 	};
 
+	GooRunner.prototype.setEventHandlers = function(handlers) {
+		if(!handlers) { return; }
+
+		if(handlers.onClick) {
+			this.renderer.domElement.addEventListener("mousedown", function (e) {
+				if(!this.renderSystem.picking.doPick) {
+					var x = e.clientX;
+					var y = e.clientY;
+					this.renderSystem.pick(x, y, function(id, depth) {
+						var entity = this.world.entityManager.getEntityById(id);
+						handlers.onClick(entity, depth);
+					}.bind(this));
+				}
+			}.bind(this), false);
+		}
+
+		if(handlers.onChange) {
+			var lastEntity;
+
+			this.renderer.domElement.addEventListener("mousemove", function (e) {
+				// mouse move events might fire faster than the picker gets a chance to do its rendering
+				if(!this.renderSystem.picking.doPick) {
+					var x = e.clientX;
+					var y = e.clientY;
+					this.renderSystem.pick(x, y, function(id, depth) {
+						//console.log(id);
+						var entity = this.world.entityManager.getEntityById(id);
+						if(entity !== lastEntity) {
+							handlers.onChange(lastEntity, entity, depth);
+							lastEntity = entity;
+						}
+					}.bind(this));
+				}
+			}.bind(this), false);
+		}
+	};
+
 	/**
 	 * Starts the game loop. (done through requestAnimationFrame)
 	 */
