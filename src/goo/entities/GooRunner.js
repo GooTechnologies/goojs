@@ -76,8 +76,6 @@ function (
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
-		//REVIEW: Probably shouldn't be on by default
-		this.world.setSystem(new TextSystem());
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
 		this.renderSystem = new RenderSystem();
@@ -149,13 +147,7 @@ function (
 
 		var tpf = (time - this.start) / 1000.0;
 
-		if (tpf < 0) { // skip a loop - original start time probably bad.
-			this.world.time = 0;
-			this.world.tpf = 0;
-			World.time = 0;
-			this.animationId = window.requestAnimationFrame(this.run);
-			return;
-		} else if (tpf > 0.5) { // big tpf, probably lost focus
+		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
@@ -307,6 +299,43 @@ function (
 				}.bind(this));
 			}
 		}.bind(this), false);
+	};
+
+	GooRunner.prototype.setEventHandlers = function(handlers) {
+		if(!handlers) { return; }
+
+		if(handlers.onClick) {
+			this.renderer.domElement.addEventListener("mousedown", function (e) {
+				if(!this.renderSystem.picking.doPick) {
+					var x = e.clientX;
+					var y = e.clientY;
+					this.renderSystem.pick(x, y, function(id, depth) {
+						var entity = this.world.entityManager.getEntityById(id);
+						handlers.onClick(entity, depth);
+					}.bind(this));
+				}
+			}.bind(this), false);
+		}
+
+		if(handlers.onChange) {
+			var lastEntity;
+
+			this.renderer.domElement.addEventListener("mousemove", function (e) {
+				// mouse move events might fire faster than the picker gets a chance to do its rendering
+				if(!this.renderSystem.picking.doPick) {
+					var x = e.clientX;
+					var y = e.clientY;
+					this.renderSystem.pick(x, y, function(id, depth) {
+						//console.log(id);
+						var entity = this.world.entityManager.getEntityById(id);
+						if(entity !== lastEntity) {
+							handlers.onChange(lastEntity, entity, depth);
+							lastEntity = entity;
+						}
+					}.bind(this));
+				}
+			}.bind(this), false);
+		}
 	};
 
 	/**

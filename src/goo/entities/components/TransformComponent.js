@@ -1,10 +1,12 @@
 define([
 	'goo/math/Transform',
+	'goo/math/Vector3',
 	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
 	Transform,
+	Vector3,
 	Component
 ) {
 	"use strict";
@@ -39,6 +41,54 @@ function (
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
+
+	/**
+	 * Set this transform's translation.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	TransformComponent.prototype.setTranslation = function (x,y,z) {
+		if( toString.call(x) === "[object Array]") {
+			if( x.length != 3)
+				throw "length of the array argument to setTranslation must be 3";
+			for( var i=0; i<3; i++) {
+				if( typeof x[i] !== 'number') {
+					throw "elements of the array argument to setTranslation must be of type number";
+				}
+			}
+			this.transform.translation.seta(x);
+		} else if( x instanceof Vector3) {
+			this.transform.translation.setv(x);
+		} else if( typeof x === 'number' && typeof y === 'number' && typeof z === 'number') {
+			this.transform.translation.setd(x,y,z);
+		} else {
+			throw "arguments to setTranslation must be either 3 numbers or one Vector3 or one Array with 3 numbers.";
+		}
+		this._dirty = true;
+	};
+
+	/**
+	 * Set this transform's rotation around X, Y and Z axis.
+	 * The rotation is applied in XYZ order.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	TransformComponent.prototype.setRotation = function (x,y,z) {
+		this.transform.rotation.fromAngles(x,y,z);
+		this._dirty = true;
+	};
+
+	/**
+	 * Sets the transform to look in a specific direction.
+	 * @param {Vector3} position Target position.
+	 * @param {Vector3} up Up vector.
+	 */
+	TransformComponent.prototype.lookAt = function (position, up) {
+		this.transform.lookAt(position, up);
+		this._dirty = true;
+	};
 
 	/**
 	 * Mark the component for updates of world transform
