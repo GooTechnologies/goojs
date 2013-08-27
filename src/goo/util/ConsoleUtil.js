@@ -24,7 +24,7 @@ define([
 	 * @param {string} newLevel Minimum urgency level. One of <code>['debug','log','info','warn','error']</code> (ordered by priority).
 	 *
 	 */
-	ConsoleUtil.prototype.setLogLevel = function(newLevel) {
+	ConsoleUtil.setLogLevel = function(newLevel) {
 		var level, i;
 		if (_console == null) {
 			_console = _.clone(window.console);
@@ -43,7 +43,7 @@ define([
 	 * Reset the log level. All messages will be printed.
 	 *
 	 */
-	ConsoleUtil.prototype.clearLogLevel = function() {
+	ConsoleUtil.clearLogLevel = function() {
 		var level, i;
 		if (_console) {
 			for (i = 0; i < levels.length; i++) {

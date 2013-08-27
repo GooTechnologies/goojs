@@ -13,7 +13,7 @@ define([
 	 * @returns {RSVP.Promise}
 	 *
 	 */
-	PromiseUtil.prototype.createDummyPromise = function(arg, error) {
+	PromiseUtil.createDummyPromise = function(arg, error) {
 		var promise;
 		promise = new RSVP.Promise();
 		if (error != null) {
@@ -31,7 +31,7 @@ define([
 	 * @returns {RSVP.Promise}
 	 *
 	 */
-	PromiseUtil.prototype.defer = function(delay, arg) {
+	PromiseUtil.defer = function(delay, arg) {
 		var p1, p2, promise;
 		promise = new RSVP.Promise();
 		if (arg.apply) {
@@ -50,4 +50,6 @@ define([
 		}
 		return promise;
 	};
+
+	return PromiseUtil;
 });
