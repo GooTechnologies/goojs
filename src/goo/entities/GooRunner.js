@@ -149,11 +149,7 @@ function (
 
 		var tpf = (time - this.start) / 1000.0;
 
-		if (tpf < 0) { // skip a loop - original start time probably bad.
-			this.start = time;
-			this.animationId = window.requestAnimationFrame(this.run);
-			return;
-		} else if (tpf > 1.0) { // big tpf, probably lost focus
+		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
 			this.animationId = window.requestAnimationFrame(this.run);
 			return;
