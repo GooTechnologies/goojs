@@ -46,13 +46,13 @@ function (
 	 * @param {number} y
 	 * @param {number} z
 	 */
-	TransformComponent.prototype.setPosition = function (x,y,z) {
+	TransformComponent.prototype.setTranslation = function (x,y,z) {
 		if( toString.call(x) === "[object Array]") {
-			this.transform.translation.seta( x);
+			this.transform.translation.seta(x);
 		} else if( typeof x === 'object') {
-			this.transform.translation.setv( x);
+			this.transform.translation.setv(x);
 		} else {
-			this.transform.translation.setd( x, y, z);
+			this.transform.translation.setd(x,y,z);
 		}
 		this._dirty = true;
 	};
@@ -65,7 +65,7 @@ function (
 	 * @param {number} z
 	 */
 	TransformComponent.prototype.setRotation = function (x,y,z) {
-		this.transform.rotation.fromAngles( x, y, z);
+		this.transform.rotation.fromAngles(x,y,z);
 		this._dirty = true;
 	};
 
@@ -75,7 +75,7 @@ function (
 	 * @param {Vector3} up Up vector.
 	 */
 	TransformComponent.prototype.lookAt = function (position, up) {
-		this.transform.lookAt( position, up);
+		this.transform.lookAt(position, up);
 		this._dirty = true;
 	};
 
