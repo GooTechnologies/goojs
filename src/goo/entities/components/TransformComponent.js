@@ -41,6 +41,45 @@ function (
 	TransformComponent.prototype = Object.create(Component.prototype);
 
 	/**
+	 * Set this transform's translation.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	TransformComponent.prototype.setPosition = function (x,y,z) {
+		if( toString.call(x) === "[object Array]") {
+			this.transform.translation.seta( x);
+		} else if( typeof x === 'object') {
+			this.transform.translation.setv( x);
+		} else {
+			this.transform.translation.setd( x, y, z);
+		}
+		this._dirty = true;
+	};
+
+	/**
+	 * Set this transform's rotation around X, Y and Z axis.
+	 * The rotation is applied in XYZ order.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	TransformComponent.prototype.setRotation = function (x,y,z) {
+		this.transform.rotation.fromAngles( x, y, z);
+		this._dirty = true;
+	};
+
+	/**
+	 * Sets the transform to look in a specific direction.
+	 * @param {Vector3} position Target position.
+	 * @param {Vector3} up Up vector.
+	 */
+	TransformComponent.prototype.lookAt = function (position, up) {
+		this.transform.lookAt( position, up);
+		this._dirty = true;
+	};
+
+	/**
 	 * Mark the component for updates of world transform
 	 */
 	TransformComponent.prototype.setUpdated = function () {
