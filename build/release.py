@@ -38,16 +38,22 @@ if os.name == 'nt':
 else:
     command = 'cake'
 subprocess.check_call([command, 'minify'])
+subprocess.check_call([command, 'jsdoc'])
 
-zipfile = ZipFile(name + '.zip', 'w')
+zipfile_name = name + '.zip'
+print 'Creating', zipfile_name
+zipfile = ZipFile(zipfile_name, 'w')
 zipfile.write('COPYING', zip_root + 'COPYING')
 goo_root = work_dir + '/goo'
 
 prepend(goo_root + '/goo.js', '// Version ' + version + '\n')
 
-for root, dirs, files in os.walk(goo_root):
-    for f in files:
-        filename = root[len(goo_root) + 1:] + '/' + f
-        zipfile.write(root + '/' + f, zip_root + filename)
+def zip_folder(root_dir, zip_root):
+	for root, dirs, files in os.walk(root_dir):
+	    for f in files:
+	        filename = root[len(root_dir) + 1:] + '/' + f
+	        zipfile.write(root + '/' + f, zip_root + filename)
 
+zip_folder(goo_root, zip_root)
+zip_folder('goojs-jsdoc', zip_root + 'docs/')
 zipfile.close()
