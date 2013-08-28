@@ -49,12 +49,13 @@ function (
 	 * @param {number} z
 	 */
 	TransformComponent.prototype.setTranslation = function (x,y,z) {
-		if( toString.call(x) === "[object Array]") {
-			if( x.length != 3)
-				throw "length of the array argument to setTranslation must be 3";
+		if( x instanceof Array) {
+			if( x.length !== 3) {
+				throw new Error("length of the array argument to setTranslation must be 3");
+			}
 			for( var i=0; i<3; i++) {
 				if( typeof x[i] !== 'number') {
-					throw "elements of the array argument to setTranslation must be of type number";
+					throw new Error("elements of the array argument to setTranslation must be of type number");
 				}
 			}
 			this.transform.translation.seta(x);
@@ -63,7 +64,7 @@ function (
 		} else if( typeof x === 'number' && typeof y === 'number' && typeof z === 'number') {
 			this.transform.translation.setd(x,y,z);
 		} else {
-			throw "arguments to setTranslation must be either 3 numbers or one Vector3 or one Array with 3 numbers.";
+			throw new Error("arguments to setTranslation must be either 3 numbers or one Vector3 or one Array with 3 numbers.");
 		}
 		this._dirty = true;
 	};
