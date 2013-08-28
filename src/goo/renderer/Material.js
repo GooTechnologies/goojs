@@ -223,12 +223,16 @@ function(
 		var material = new Material(name || 'Empty Material');
 		if(shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
+		} else {
+			material.shader = undefined;
 		}
 
 		material.cullState = {};
 		material.blendState = {};
 		material.depthState = {};
 		material.offsetState = {};
+		material.wireframe = undefined;
+		material.renderQueue = undefined;
 		return material;
 	};
 
