@@ -84,10 +84,10 @@ require([
 		lightEntity.addToWorld();
 	}
 
-	function swapChannels(colors) {
+	/*function swapChannels(colors) {
 		var tmp;
 		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;
-	}
+	}*/
 
 	function pickingEventsDemo(goo) {
 		// basic setup
@@ -96,7 +96,7 @@ require([
 		addUserCamera(goo);
 
 		// pick events
-		goo.setEventHandlers({
+		/*goo.setEventHandlers({
 			onClick: function(clickedEntity, depth) {
 				console.log('mouseclick', clickedEntity ? clickedEntity.toString() + ' at depth ' + depth : 'nothing');
 				if(clickedEntity) {
@@ -113,11 +113,36 @@ require([
 					swapChannels(color);
 				}
 			}
+		});*/
+		goo.addEventListener('mousemove', function(evt) {
+			console.log('mousemove', evt);
+		});
+		goo.addEventListener('click', function(evt) {
+			console.log('click', evt);
+		});
+		goo.addEventListener('mousedown', function(evt) {
+			console.log('mousedown', evt);
+		});
+		goo.addEventListener('mouseup', function(evt) {
+			console.log('mouseup', evt);
 		});
 	}
 
 	function init() {
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			events: {
+				click: true,
+				//mousemove: true,
+				mousedown: true,
+				mouseup: true
+			}
+		});
+		setTimeout(function() {
+			goo.enableEvent('mousemove');
+		}, 4000);
+		setTimeout(function() {
+			goo.disableEvent('mousemove');
+		}, 8000);
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 

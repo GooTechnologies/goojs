@@ -61,6 +61,11 @@ function (
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 * @param {boolean} [parameters.debugKeys=false]
+	 * @param {object} [parameters.events]
+	 * @param {boolean} [parameters.events.click]
+	 * @param {boolean} [parameters.events.mousedown]
+	 * @param {boolean} [parameters.events.mouseup]
+	 * @param {boolean} [parameters.events.mousemove]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -126,6 +131,33 @@ function (
 
 		if (parameters.debugKeys) {
 			this._addDebugKeys();
+		}
+
+		// Event stuff
+		this._events = {
+			click: false,
+			mousedown: false,
+			mouseup: false,
+			mousemove: false
+		};
+		this._eventListeners = {
+			click: [],
+			mousedown: [],
+			mouseup: [],
+			mousemove: []
+		};
+		this._eventTriggered = {
+			click: false,
+			mousedown: false,
+			mouseup: false,
+			mousemove: false
+		};
+		if (parameters.events) {
+			for (var key in this._events) {
+				if(parameters.events[key]) {
+					this.enableEvent(key);
+				}
+			}
 		}
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
@@ -301,41 +333,88 @@ function (
 		}.bind(this), false);
 	};
 
-	GooRunner.prototype.setEventHandlers = function(handlers) {
-		if(!handlers) { return; }
-
-		if(handlers.onClick) {
-			this.renderer.domElement.addEventListener("mousedown", function (e) {
-				if(!this.renderSystem.picking.doPick) {
-					var x = e.clientX;
-					var y = e.clientY;
-					this.renderSystem.pick(x, y, function(id, depth) {
-						var entity = this.world.entityManager.getEntityById(id);
-						handlers.onClick(entity, depth);
-					}.bind(this));
-				}
-			}.bind(this), false);
+	/*
+	 * Adds an event listener to the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {function(event)} Callback to call when event is fired
+	 */
+	GooRunner.prototype.addEventListener = function(type, callback) {
+		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
+			return;
 		}
-
-		if(handlers.onChange) {
-			var lastEntity;
-
-			this.renderer.domElement.addEventListener("mousemove", function (e) {
-				// mouse move events might fire faster than the picker gets a chance to do its rendering
-				if(!this.renderSystem.picking.doPick) {
-					var x = e.clientX;
-					var y = e.clientY;
-					this.renderSystem.pick(x, y, function(id, depth) {
-						//console.log(id);
-						var entity = this.world.entityManager.getEntityById(id);
-						if(entity !== lastEntity) {
-							handlers.onChange(lastEntity, entity, depth);
-							lastEntity = entity;
-						}
-					}.bind(this));
-				}
-			}.bind(this), false);
+		if(callback.apply) {
+			this._eventListeners[type].push(callback);
 		}
+	};
+
+	/*
+	 * Removes an event listener to the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {function(event)} Callback to remove from event listener
+	 */
+	GooRunner.prototype.removeEventListener = function(type, callback) {
+		if(!this._eventListeners[type]) {
+			return;
+		}
+		var idx = this._eventListeners[type].indexOf(callback);
+		if (idx > -1) {
+			this._eventListeners[type].splice(idx, 1);
+		}
+	};
+
+	GooRunner.prototype._dispatchEvent = function(evt) {
+		for (var type in this._eventTriggered) {
+			if(this._eventTriggered[type] && this._eventListeners[type]) {
+				var e = {
+					entity: evt.entity,
+					depth: evt.depth,
+					x: evt.x,
+					y: evt.y,
+					type: type
+				};
+				for (var i = 0; i < this._eventListeners[type].length; i++) {
+					this._eventListeners[type][i](e);
+				}
+				this._eventTriggered[type] = false;
+			}
+		}
+	};
+
+	/*
+	 * Enables event listening on the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 */
+	GooRunner.prototype.enableEvent = function(type) {
+		if(this._events[type]) {
+			return;
+		}
+		var func = function(e) {
+			var x = e.clientX;
+			var y = e.clientY;
+			this._eventTriggered[type] = true;
+			this.renderSystem.pick(x, y, function(id, depth) {
+				var entity = this.world.entityManager.getEntityById(id);
+				this._dispatchEvent({
+					entity: entity,
+					depth: depth,
+					x: x,
+					y: y
+				});
+			}.bind(this));
+		}.bind(this);
+		this.renderer.domElement.addEventListener(type, func);
+		this._events[type] = func;
+	};
+
+	/*
+	 * Disables event listening on the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 */
+	GooRunner.prototype.disableEvent = function(type) {
+		if (this._events[type]) {
+			this.renderer.domElement.removeEventListener(type, this._events[type]);
+		}
+		this._events[type] = false;
 	};
 
 	/**
