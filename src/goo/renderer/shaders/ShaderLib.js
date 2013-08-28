@@ -2097,6 +2097,10 @@ define([
 	};
 
 	ShaderLib.pickingShader = {
+		defines: {
+			WEIGHTS: true,
+			JOINTIDS: true
+		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
       vertexJointIDs: MeshData.JOINTIDS,
@@ -2112,7 +2116,7 @@ define([
 			}
 		},
 		processors: [
-			ShaderBuilder.uber.processor,
+			//ShaderBuilder.uber.processor,
 			ShaderBuilder.animation.processor
 		],
 		vshader : [

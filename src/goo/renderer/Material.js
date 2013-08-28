@@ -89,6 +89,7 @@ function(
 		 * @default
 		 */
 		this.wireframe = false;
+		this.flat = false;
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
@@ -221,15 +222,24 @@ function(
 
 	Material.createEmptyMaterial = function(shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
+		material.empty();
 		if(shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
 		}
-
-		material.cullState = {};
-		material.blendState = {};
-		material.depthState = {};
-		material.offsetState = {};
 		return material;
+	};
+
+	Material.prototype.empty = function() {
+		this.cullState = {};
+		this.blendState = {};
+		this.depthState = {};
+		this.offsetState = {};
+		this.wireframe = undefined;
+		this.renderQueue = undefined;
+		this.flat = undefined;
+		this._textureMaps = {};
+		this.shader = undefined;
+		this.uniforms = {};
 	};
 
 	return Material;

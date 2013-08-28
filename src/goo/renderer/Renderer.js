@@ -512,53 +512,24 @@ function (
 	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
 	+ it could also use a description of what it's supposed to do
 	 */
-	Renderer.prototype.override = function(obj1, obj2, store) {
-		var keys = {};
-		for (var key in obj1) { keys[key] = true; }
-		for (var key in obj2) { keys[key] = true; }
-		for (var key in store) { keys[key] = true; }
-		var keys = Object.keys(keys);
-		for (var j = 0; j < keys.length; j++) {
-			var key = keys[j];
-			if (obj1[key] instanceof Shader || obj1[key] instanceof Texture || obj1[key] instanceof RenderTarget) {
-				store[key] = obj1[key];
-			} else if (obj2[key] instanceof Shader || obj2[key] instanceof Texture || obj2[key] instanceof RenderTarget) {
-				store[key] = obj2[key];
-			} else if (obj1[key] instanceof Array || obj2[key] instanceof Array) {
-				store[key] = [];
-
-				if(obj1[key] && typeof obj1[key][0] === 'number') {
-					for (var i = obj1[key].length - 1; i >= 0; i--) {
-						store[key][i] = obj1[key][i];
+	Renderer.prototype.override = function(mat1, mat2, store) {
+		store.empty();
+		for (var key in store) {
+			if(store.hasOwnProperty(key)) {
+				if (store[key] instanceof Object && key !== 'shader') {
+					for (var prop in mat1[key]) {
+						store[key][prop] = mat1[key][prop];
 					}
-				} else if(obj2[key] && typeof obj2[key][0] === 'number') {
-					for (var i = obj2[key].length - 1; i >= 0; i--) {
-						store[key][i] = obj2[key][i];
-					}
-				} else {
-					if(obj1[key]) {
-						for (var i = 0; i < obj1[key].length; i++) {
-							store[key].push(obj1[key][i]);
+					for (var prop in mat2[key]) {
+						if(store[key][prop] === undefined) {
+							store[key][prop] = mat2[key][prop];
 						}
 					}
-					if(obj2[key]) {
-						for (var i = 0; i < obj2[key].length; i++) {
-							if(store[key].indexOf(obj2[key][i]) === -1) {
-								store[key].push(obj2[key][i]);
-							}
-						}
-					}
-				}
-			} else if (obj1[key] instanceof Object || obj2[key] instanceof Object) {
-				store[key] = store[key] || {};
-				this.override(obj1[key] || {}, obj2[key] || {}, store[key]);
-			} else {
-				if (obj1[key] !== undefined && obj1[key] !== null) {
-					store[key] = obj1[key];
-				} else if (obj2[key] !== undefined && obj2[key] !== null) {
-					store[key] = obj2[key];
 				} else {
-					delete store[key];
+					store[key] = mat1[key];
+					if(store[key] === undefined) {
+						store[key] = mat2[key];
+					}
 				}
 			}
 		}
@@ -775,6 +746,7 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
+
 
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
