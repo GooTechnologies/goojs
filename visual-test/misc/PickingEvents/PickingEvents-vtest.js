@@ -84,10 +84,10 @@ require([
 		lightEntity.addToWorld();
 	}
 
-	/*function swapChannels(colors) {
+	function swapChannels(colors) {
 		var tmp;
 		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;
-	}*/
+	}
 
 	function pickingEventsDemo(goo) {
 		// basic setup
@@ -114,17 +114,26 @@ require([
 				}
 			}
 		});*/
+		var lastEntity;
+		var lastDepth;
 		goo.addEventListener('mousemove', function(evt) {
-			console.log('mousemove', evt);
+			if(evt.entity && lastEntity !== evt.entity) {
+				console.log('Entity is '+evt.entity+' at '+evt.depth);
+				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
+				swapChannels(color);
+				if(lastEntity && lastDepth) {
+					console.log('Last entity was '+lastEntity+' at '+lastDepth);
+				}
+			}
+			lastEntity = evt.entity;
+			lastDepth = evt.depth;
 		});
 		goo.addEventListener('click', function(evt) {
-			console.log('click', evt);
-		});
-		goo.addEventListener('mousedown', function(evt) {
-			console.log('mousedown', evt);
-		});
-		goo.addEventListener('mouseup', function(evt) {
-			console.log('mouseup', evt);
+			console.log('Entity is '+evt.entity+' at '+evt.depth);
+			if(evt.entity) {
+				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
+				swapChannels(color);
+			}
 		});
 	}
 
@@ -132,17 +141,11 @@ require([
 		var goo = new GooRunner({
 			events: {
 				click: true,
-				//mousemove: true,
-				mousedown: true,
-				mouseup: true
-			}
+				mousemove: true
+			},
+			debugKeys: true,
+			showStats: true
 		});
-		setTimeout(function() {
-			goo.enableEvent('mousemove');
-		}, 4000);
-		setTimeout(function() {
-			goo.disableEvent('mousemove');
-		}, 8000);
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
