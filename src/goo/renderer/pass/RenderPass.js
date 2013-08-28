@@ -38,13 +38,11 @@ define(['goo/renderer/Renderer',
 		} else {
 			renderList = this.renderList;
 		}
-		renderer.overrideMaterial = this.overrideMaterial;
 		if (this.renderToScreen) {
 			renderer.render(renderList, camera, lights);
 		} else {
-			renderer.render(renderList, camera, lights, readBuffer, this.clear);
+			renderer.render(renderList, camera, lights, readBuffer, this.clear, this.overrideMaterial);
 		}
-		renderer.overrideMaterial = null;
 
 		if (this.clearColor) {
 			renderer.setClearColor(this.oldClearColor.r, this.oldClearColor.g, this.oldClearColor.b, this.oldClearColor.a);

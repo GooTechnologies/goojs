@@ -117,10 +117,10 @@ define([
 			diffuseMip : 'DIFFUSE_MIP',
 			zfar : Shader.FAR_PLANE,
 			focalDepth: 100.0,
-			fStop: 1.0,
+			fStop: 2.0,
 			CoC: 0.003,
 			focalLength: 75.0,
-			maxBlur: 64.0
+			maxBlur: 16.0
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',
