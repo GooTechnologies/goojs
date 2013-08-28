@@ -61,11 +61,6 @@ function (
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 * @param {boolean} [parameters.debugKeys=false]
-	 * @param {object} [parameters.events]
-	 * @param {boolean} [parameters.events.click]
-	 * @param {boolean} [parameters.events.mousedown]
-	 * @param {boolean} [parameters.events.mouseup]
-	 * @param {boolean} [parameters.events.mousemove]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -135,10 +130,10 @@ function (
 
 		// Event stuff
 		this._events = {
-			click: false,
-			mousedown: false,
-			mouseup: false,
-			mousemove: false
+			click: null,
+			mousedown: null,
+			mouseup: null,
+			mousemove: null
 		};
 		this._eventListeners = {
 			click: [],
@@ -152,13 +147,6 @@ function (
 			mouseup: false,
 			mousemove: false
 		};
-		if (parameters.events) {
-			for (var key in this._events) {
-				if(parameters.events[key]) {
-					this.enableEvent(key);
-				}
-			}
-		}
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
 			if (paused) {
@@ -344,6 +332,9 @@ function (
 		}
 		if(callback.apply) {
 			this._eventListeners[type].push(callback);
+			if(this._eventListeners[type].length === 1) {
+				this._enableEvent(type);
+			}
 		}
 	};
 
@@ -360,6 +351,9 @@ function (
 		if (idx > -1) {
 			this._eventListeners[type].splice(idx, 1);
 		}
+		if (this._eventListeners[type].length === 0) {
+			this._disableEvent(type);
+		}
 	};
 
 	GooRunner.prototype._dispatchEvent = function(evt) {
@@ -373,7 +367,9 @@ function (
 					type: type
 				};
 				for (var i = 0; i < this._eventListeners[type].length; i++) {
-					this._eventListeners[type][i](e);
+					if(this._eventListeners[type][i](e) === false) {
+						break;
+					}
 				}
 				this._eventTriggered[type] = false;
 			}
@@ -384,7 +380,7 @@ function (
 	 * Enables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
-	GooRunner.prototype.enableEvent = function(type) {
+	GooRunner.prototype._enableEvent = function(type) {
 		if(this._events[type]) {
 			return;
 		}
@@ -410,11 +406,11 @@ function (
 	 * Disables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
-	GooRunner.prototype.disableEvent = function(type) {
+	GooRunner.prototype._disableEvent = function(type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
 		}
-		this._events[type] = false;
+		this._events[type] = null;
 	};
 
 	/**

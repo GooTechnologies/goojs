@@ -116,6 +116,7 @@ require([
 		});*/
 		var lastEntity;
 		var lastDepth;
+
 		goo.addEventListener('mousemove', function(evt) {
 			if(evt.entity && lastEntity !== evt.entity) {
 				console.log('Entity is '+evt.entity+' at '+evt.depth);
@@ -139,11 +140,6 @@ require([
 
 	function init() {
 		var goo = new GooRunner({
-			events: {
-				click: true,
-				mousemove: true
-			},
-			debugKeys: true,
 			showStats: true
 		});
 		goo.renderer.domElement.id = 'goo';
