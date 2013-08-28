@@ -28,7 +28,7 @@ function (
 			var entity = entities[i];
 			var portalComponent = entity.portalComponent;
 
-			if(portalComponent.options.autoUpdate || portalComponent.doUpdate) {
+			if (portalComponent.options.autoUpdate || portalComponent.doUpdate) {
 				portalComponent.doUpdate = false;
 
 				var camera = portalComponent.camera;
@@ -36,15 +36,13 @@ function (
 				var secondaryTarget = portalComponent.secondaryTarget;
 				var overrideMaterial = portalComponent.overrideMaterial;
 
-				this.renderSystem.partitioner.process(camera, this.renderSystem.entities, this.renderList);
-
-				if(portalComponent.alwaysRender || entity.isVisible) {
+				if (portalComponent.alwaysRender || entity.isVisible) {
 					this.render(this.renderer, camera, target, overrideMaterial);
 
 					var material = entity.meshRendererComponent.materials[0];
 					material.setTexture('DIFFUSE_MAP', target);
 
-					if(portalComponent.options.preciseRecursion) {
+					if (portalComponent.options.preciseRecursion) {
 						var tmp = target;
 						portalComponent.target = secondaryTarget;
 						portalComponent.secondaryTarget = tmp;
