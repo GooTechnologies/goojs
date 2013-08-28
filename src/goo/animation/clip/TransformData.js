@@ -70,8 +70,8 @@ function (Quaternion, Vector3) {
 		scaleY += vectorData.y * weight;
 		scaleZ += vectorData.z * weight;
 
-		tData._scale.set(scaleX, scaleY, scaleZ);
-		tData._translation.set(transX, transY, transZ);
+		tData._scale.setd(scaleX, scaleY, scaleZ);
+		tData._translation.setd(transX, transY, transZ);
 		Quaternion.slerp(this._rotation, blendTo._rotation, weight, tData._rotation);
 		return tData;
 	};
