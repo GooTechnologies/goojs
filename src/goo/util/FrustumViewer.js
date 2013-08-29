@@ -6,7 +6,8 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/shapes/Box'
 	],
 	/* @lends */
 	function (
@@ -17,7 +18,8 @@ define([
 		MeshDataComponent,
 		MeshRendererComponent,
 		Material,
-		ShaderLib
+		ShaderLib,
+		Box
 	) {
 	"use strict";
 
@@ -27,60 +29,59 @@ define([
 	function buildFrustum(fov, aspect, near, far) {
 		var angle = (fov * Math.PI/180) / 2;
 		/* REVIEW:
-		 * Camera uses Math.tan shouldn't this be tan also?
 		 * Would be nice to make it unit size and use transforms to display it.
 		 * Which would work except when near/far ratio changes
 		 * So buildFrustum(near_far) should be enough
 		 */
-		var sine = Math.sin(angle);
+		var tan = Math.tan(angle);
 
 		var f0, f1, f2, f3;
 		f0 = {
-			x: -sine * far * aspect,
-			y:  sine * far,
+			x: -tan * far * aspect,
+			y:  tan * far,
 			z: -far
 		};
 
 		f1 = {
-			x: -sine * far * aspect,
-			y: -sine * far,
+			x: -tan * far * aspect,
+			y: -tan * far,
 			z: -far
 		};
 
 		f2 = {
-			x:  sine * far * aspect,
-			y: -sine * far,
+			x:  tan * far * aspect,
+			y: -tan * far,
 			z: -far
 		};
 
 		f3 = {
-			x:  sine * far * aspect,
-			y:  sine * far,
+			x:  tan * far * aspect,
+			y:  tan * far,
 			z: -far
 		};
 
 		var n0, n1, n2, n3;
 		n0 = {
-			x: -sine * near * aspect,
-			y:  sine * near,
+			x: -tan * near * aspect,
+			y:  tan * near,
 			z: -near
 		};
 
 		n1 = {
-			x: -sine * near * aspect,
-			y: -sine * near,
+			x: -tan * near * aspect,
+			y: -tan * near,
 			z: -near
 		};
 
 		n2 = {
-			x:  sine * near * aspect,
-			y: -sine * near,
+			x:  tan * near * aspect,
+			y: -tan * near,
 			z: -near
 		};
 
 		n3 = {
-			x:  sine * near * aspect,
-			y:  sine * near,
+			x:  tan * near * aspect,
+			y:  tan * near,
 			z: -near
 		};
 
@@ -122,8 +123,35 @@ define([
 		return meshData;
 	}
 
+	function buildCompleteMesh(camera) {
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+
+		var frustumMeshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far);
+		meshBuilder.addMeshData(frustumMeshData, transform);
+
+		var cameraBox1 = new Box(0.2, 1, 1);
+		var cameraBox2 = new Box(0.2, 1, 1);
+		var cameraBox3 = new Box(0.5, 1, 2);
+
+		transform.translation.setd(0,  0.6, -0.4);
+		transform.update();
+		meshBuilder.addMeshData(cameraBox1, transform);
+
+		transform.translation.setd(0,  0.6, 0.8);
+		transform.update();
+		meshBuilder.addMeshData(cameraBox2, transform);
+
+		transform.translation.setd(0, -0.6, 0.2);
+		transform.update();
+		meshBuilder.addMeshData(cameraBox3, transform);
+
+		var meshDatas = meshBuilder.build();
+		return meshDatas[0];
+	}
+
 	FrustumViewer.getMeshData = function(camera) {
-		var meshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far);
+		var meshData = buildCompleteMesh(camera);
 		return meshData;
 	};
 
