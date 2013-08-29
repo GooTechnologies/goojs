@@ -1,6 +1,10 @@
-define(['goo/math/Vector3'],
+define([
+	'goo/math/Vector3'
+],
 /** @lends */
-function (Vector3) {
+function (
+	Vector3
+) {
 	"use strict";
 
 	/**
@@ -58,6 +62,30 @@ function (Vector3) {
 		var dotProd = this.normal.dot(unitVector) * 2;
 		result.set(unitVector).subtractLocal(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd);
 		return result;
+	};
+
+	var p0 = new Vector3();
+
+	/**
+	 * Get the intersection of a ray with a plane
+	 * @param {Ray} ray
+	 * @param {Vector3} [store]
+	 * @returns {Vector3} store or new Vector3
+	 */
+	Plane.prototype.rayIntersect = function (ray, store) {
+		store = store || new Vector3();
+
+		var lDotN = ray.direction.dot(this.normal);
+		if(lDotN < 1e-8) {
+			console.warn('Ray parallell with plane');
+			return null;
+		}
+		var c = this.constant;
+		var pMinusL0DotN = p0.set(this.normal).muld(c,c,c).subv(ray.origin).dot(this.normal);
+
+		var d = pMinusL0DotN / lDotN;
+
+		return store.setv(ray.direction).muld(d,d,d).addv(ray.origin);
 	};
 
 	return Plane;
