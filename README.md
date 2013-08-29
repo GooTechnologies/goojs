@@ -91,3 +91,28 @@ One way is to install jsdoc using the package.json file and running `npm install
     tools/generate-jsdoc.sh
 
 The resulting documentation will be generated in the goojs-jsdoc directory and also packaged in a tar.gz file.
+
+## Releasing
+
+First make sure you have a clean Git repository. Run `git status` to make sure you have no local edits.
+
+Then create a release:
+
+    build/release.py <version>
+
+For example `build/release.py 0.5` which creates goo-0.5.zip.
+
+Copy minified/goo/goo.js to the following locations:
+
+    tool/template/lib/
+    tool/content/libs/
+    examples/lib/
+
+Make sure the examples and the tool work with the new version.
+
+Tag the release:
+
+    git tag v<version>
+    git push --tags
+
+Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download

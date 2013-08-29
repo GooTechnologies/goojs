@@ -70,10 +70,12 @@ define([
 			var entity = entities[i];
 			var light = entity.lightComponent.light;
 			if(light.changedProperties) {
+				light.changedProperties = false;
 				entity.meshDataComponent.meshData = LightPointer.getMeshData(light);
 				entity.meshRendererComponent.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
 			}
 			if(light.changedColor) {
+				light.changedColor = false;
 				entity.meshRendererComponent.materials[0].uniforms.color = [
 					light.color.data[0],
 					light.color.data[1],

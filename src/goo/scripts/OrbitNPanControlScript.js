@@ -8,6 +8,8 @@ define([
 	Vector3
 ) {
 
+// REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
+
 	function SuperCamScript(goo, properties) {
 		properties = properties || {};
 		properties.dragButton = 2;
@@ -59,7 +61,9 @@ define([
 				u.z,
 				v
 			);
-			console.log(v.data);
+			// REVIEW: made the console.log conditional
+			if( this.debug)
+				console.log(v.data);
 			this.lookAtPoint.setv(v);
 			this.dirty = true;
 		}
