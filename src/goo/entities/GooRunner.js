@@ -330,7 +330,8 @@ function (
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
 		}
-		if(callback.apply) {
+
+		if(typeof callback === 'function') {
 			this._eventListeners[type].push(callback);
 			if(this._eventListeners[type].length === 1) {
 				this._enableEvent(type);
@@ -347,9 +348,9 @@ function (
 		if(!this._eventListeners[type]) {
 			return;
 		}
-		var idx = this._eventListeners[type].indexOf(callback);
-		if (idx > -1) {
-			this._eventListeners[type].splice(idx, 1);
+		var index = this._eventListeners[type].indexOf(callback);
+		if (index > -1) {
+			this._eventListeners[type].splice(index, 1);
 		}
 		if (this._eventListeners[type].length === 0) {
 			this._disableEvent(type);
