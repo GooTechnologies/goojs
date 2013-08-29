@@ -111,9 +111,14 @@ function () {
 			if (compareArrays(values, curValue)) {
 				return;
 			}
+		} else {
+			curValue = this.location.value = new Float64Array(values.length);
 		}
 		this.context.uniform2fv(this.location, values);
-		this.location.value = values.slice();
+		var l = values.length;
+		while(l--) {
+			curValue[l] = values[l];
+		}
 	};
 
 	ShaderCall.prototype.uniform2i = function (v0, v1) {
@@ -155,9 +160,14 @@ function () {
 			if (compareArrays(values, curValue)) {
 				return;
 			}
+		} else {
+			curValue = this.location.value = new Float64Array(values.length);
 		}
 		this.context.uniform3fv(this.location, values);
-		this.location.value = values.slice();
+		var l = values.length;
+		while(l--) {
+			curValue[l] = values[l];
+		}
 	};
 
 	ShaderCall.prototype.uniform3i = function (v0, v1, v2) {
@@ -199,14 +209,13 @@ function () {
 			if (compareArrays(values, curValue)) {
 				return;
 			}
+		} else {
+			curValue = this.location.value = new Float64Array(values.length);
 		}
 		this.context.uniform4fv(this.location, values);
-		if(this.location.value === undefined) {
-			this.location.value = new Float32Array(values.length);
-		}
-		var v = this.location.value, l = values.length;
+		var l = values.length;
 		while(l--) {
-			v[l] = values[l];
+			curValue[l] = values[l];
 		}
 	};
 
