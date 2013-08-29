@@ -142,10 +142,10 @@ function (
 			mousemove: []
 		};
 		this._eventTriggered = {
-			click: false,
-			mousedown: false,
-			mouseup: false,
-			mousemove: false
+			click: null,
+			mousedown: null,
+			mouseup: null,
+			mousemove: null
 		};
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
@@ -364,14 +364,15 @@ function (
 					depth: evt.depth,
 					x: evt.x,
 					y: evt.y,
-					type: type
+					type: type,
+					domEvent: this._eventTriggered[type]
 				};
 				for (var i = 0; i < this._eventListeners[type].length; i++) {
 					if(this._eventListeners[type][i](e) === false) {
 						break;
 					}
 				}
-				this._eventTriggered[type] = false;
+				this._eventTriggered[type] = null;
 			}
 		}
 	};
@@ -387,7 +388,7 @@ function (
 		var func = function(e) {
 			var x = e.clientX;
 			var y = e.clientY;
-			this._eventTriggered[type] = true;
+			this._eventTriggered[type] = e;
 			this.renderSystem.pick(x, y, function(id, depth) {
 				var entity = this.world.entityManager.getEntityById(id);
 				this._dispatchEvent({
