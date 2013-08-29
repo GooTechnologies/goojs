@@ -513,6 +513,7 @@ function (
 	+ it could also use a description of what it's supposed to do
 	 */
 	Renderer.prototype.override = function(mat1, mat2, store) {
+		store.empty();
 		for (var key in store) {
 			if(store.hasOwnProperty(key)) {
 				if (store[key] instanceof Object && key !== 'shader') {
@@ -520,7 +521,7 @@ function (
 						store[key][prop] = mat1[key][prop];
 					}
 					for (var prop in mat2[key]) {
-						if(!store[key][prop]) {
+						if(store[key][prop] === undefined) {
 							store[key][prop] = mat2[key][prop];
 						}
 					}
