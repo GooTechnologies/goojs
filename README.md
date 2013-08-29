@@ -94,11 +94,13 @@ The resulting documentation will be generated in the goojs-jsdoc directory and a
 
 ## Releasing
 
-Create a release:
+First make sure you have a clean Git repository. Run `git status` to make sure you have no local edits.
+
+Then create a release:
 
     build/release.py <version>
 
-For example build/release.py 0.5 which creates goo-0.5.zip.
+For example `build/release.py 0.5` which creates goo-0.5.zip.
 
 Copy minified/goo/goo.js to the following locations:
 
@@ -107,5 +109,10 @@ Copy minified/goo/goo.js to the following locations:
     examples/lib/
 
 Make sure the examples and the tool work with the new version.
+
+Tag the release:
+
+    git tag v<version>
+    git push --tags
 
 Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download
