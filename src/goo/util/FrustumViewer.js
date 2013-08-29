@@ -7,7 +7,8 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box'
+	'goo/shapes/Box',
+	'goo/shapes/Cylinder'
 	],
 	/* @lends */
 	function (
@@ -19,7 +20,8 @@ define([
 		MeshRendererComponent,
 		Material,
 		ShaderLib,
-		Box
+		Box,
+		Cylinder
 	) {
 	"use strict";
 
@@ -130,21 +132,36 @@ define([
 		var frustumMeshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far);
 		meshBuilder.addMeshData(frustumMeshData, transform);
 
-		var cameraBox1 = new Box(0.2, 1, 1);
-		var cameraBox2 = new Box(0.2, 1, 1);
-		var cameraBox3 = new Box(0.5, 1, 2);
+		var cameraBox1 = new Cylinder(32, 0.6);
+		var cameraBox2 = new Cylinder(32, 0.6);
+		var cameraBox3 = new Box(0.3, 1, 1.6);
 
-		transform.translation.setd(0,  0.6, -0.4);
+		var cameraBox4 = new Box(0.2, 0.15, 0.7);
+		cameraBox4.applyFunction(MeshData.POSITION, function(vert) {
+			return [
+				vert.x + vert.x / ((vert.z + 1.1) * 0.3),
+				vert.y + vert.y / ((vert.z + 1.1) * 0.3),
+				vert.z];
+		});
+
+		transform.translation.setd(0, 0.0, 0);
+		transform.update();
+		meshBuilder.addMeshData(cameraBox4, transform);
+
+		transform.translation.setd(0, 0.0, 1.3);
+		transform.update();
+		meshBuilder.addMeshData(cameraBox3, transform);
+
+		transform.scale.setd(1, 1, 0.5);
+		transform.setRotationXYZ(0, Math.PI/2, 0);
+
+		transform.translation.setd(0, 1.2, 0.6);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox1, transform);
 
-		transform.translation.setd(0,  0.6, 0.8);
+		transform.translation.setd(0, 1.2, 2.0);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox2, transform);
-
-		transform.translation.setd(0, -0.6, 0.2);
-		transform.update();
-		meshBuilder.addMeshData(cameraBox3, transform);
 
 		var meshDatas = meshBuilder.build();
 		return meshDatas[0];

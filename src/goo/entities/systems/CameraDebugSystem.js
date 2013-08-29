@@ -48,6 +48,7 @@ define([
 			if(camera.changedProperties) {
 				entity.meshDataComponent.meshData = FrustumViewer.getMeshData(camera);
 				entity.meshRendererComponent.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+				camera.changedProperties = false;
 			}
 		}
 	};

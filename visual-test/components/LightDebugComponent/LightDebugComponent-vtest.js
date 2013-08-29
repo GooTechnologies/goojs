@@ -55,22 +55,8 @@ require([
 	function addSpin(entity/*, radiusX, radiusZ, speed, altitude*/) {
 		entity.setComponent(new ScriptComponent({
 			run: function (entity) {
-				/*
-				entity.transformComponent.transform.translation.setd(
-					Math.cos(World.time * speed) * radiusX,
-					altitude,
-					Math.sin(World.time * speed) * radiusZ
-				);
-				entity.transformComponent.transform.setRotationXYZ(
-					0,
-					-World.time * speed - Math.PI/4,
-					0
-				);
-				entity.transformComponent.setUpdated();
-                */
-
 				var light = entity.getComponent('LightComponent').light;
-				//console.log(entity);
+
 				light.color.data[0] = Math.cos(World.time) * 0.5 + 0.5;
 				light.color.data[1] = Math.cos(World.time + Math.PI * 2 / 3) * 0.5 + 0.5;
 				light.color.data[2] = Math.cos(World.time + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
