@@ -17,7 +17,8 @@ function (
 ) {
 	"use strict";
 
-	var Uint8ClampedArray = window.Uint8ClampedArray;
+	var window;
+	var Uint8ClampedArray = window?window.Uint8ClampedArray:self.Uint8ClampedArray;
 
 	/**
 	 * @class Stores all buffers for geometric data and similar attributes

@@ -38,7 +38,8 @@ function (
 ) {
 	"use strict";
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
+	var window;
+	var WebGLRenderingContext = window?window.WebGLRenderingContext:undefined;
 
 	/**
 	 * @class The renderer handles displaying of graphics data to a render context.

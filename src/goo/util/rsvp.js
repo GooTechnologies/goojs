@@ -8,7 +8,8 @@ define(
 
     var MutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
     //var RSVP;
-    var process = window.process;
+    var window;
+    var process = window?window.process:undefined;
 
     if (typeof process !== 'undefined' &&
       {}.toString.call(process) === '[object process]') {

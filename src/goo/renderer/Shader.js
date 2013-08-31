@@ -17,7 +17,8 @@ function (
 ) {
 	"use strict";
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
+	var window;
+	var WebGLRenderingContext = window?window.WebGLRenderingContext:undefined;
 
 	/**
 	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
