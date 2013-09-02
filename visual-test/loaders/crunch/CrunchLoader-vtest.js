@@ -15,7 +15,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
-	'goo/scripts/BasicControlScript',
+	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
 	'goo/renderer/shaders/ShaderLib'
 ], function (
@@ -29,7 +29,7 @@ require([
 	PointLight,
 	Camera,
 	CameraComponent,
-	BasicControlScript,
+	OrbitCamControlScript,
 	Vector3,
 	ShaderLib
 ) {
@@ -52,14 +52,6 @@ require([
 		box.addToWorld();
 
 		box.transformComponent.transform.translation.set(x, y, 0);
-
-		var axis = new Vector3(1, 1, 0.5).normalize();
-		goo.callbacks.push(function(/*tpf*/) {
-			// rotate
-			var t = box._world.time;
-			box.transformComponent.transform.rotation.fromAngleNormalAxis(t, axis.x, axis.y, axis.z);
-			box.transformComponent.setUpdated();
-		});
 	}
 
 	function init() {
@@ -75,7 +67,12 @@ require([
 		cameraEntity.transformComponent.transform.translation.set(0, 5, 60);
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.setComponent(new ScriptComponent(new BasicControlScript()));
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(new OrbitCamControlScript({
+			domElement : goo.renderer.domElement,
+			spherical : new Vector3(60, Math.PI / 2, 0)
+		}));
+		cameraEntity.setComponent(scripts);
 		cameraEntity.addToWorld();
 
 		// Setup light
@@ -88,13 +85,13 @@ require([
 		transformComponent.transform.translation.z = 80;
 		entity.addToWorld();
 
-		createBox(10, -10, 15, '/lena/lena.jpg', goo);
-		createBox(10, 10, 15, '/lena/lena_uncompressed.dds', goo);
-		createBox(10, -20, 0, '/lena/lena_dxt1.dds', goo);
-		createBox(10, 0, 0, '/lena/lena_dxt3.dds', goo);
-		createBox(10, 20, 0, '/lena/lena_dxt5_BC3.dds', goo);
+		createBox(10, -10, 0, '/Pot_Diffuse.dds', goo);
+		createBox(10, 10, 0, '/Pot_Diffuse.crn', goo);
+		// createBox(10, -20, 0, '/lena/lena_dxt1.dds', goo);
+		// createBox(10, 0, 0, '/lena/lena_dxt3.dds', goo);
+		// createBox(10, 20, 0, '/lena/lena_dxt5_BC3.dds', goo);
 		// createBox(10, -10, -15, '/lena/lena_dxt5_RXGB.dds', goo);
-		createBox(10, 10, -15, '/lena/lena_dxt5_YCoCg.dds', goo);
+		// createBox(10, 10, -15, '/lena/lena_dxt5_YCoCg.dds', goo);
 
 		// NB: YCoCg -> RGB
 		// ' gl_FragColor.r = (texCol.r * 1.0) + (texCol.g * -1.0) + (texCol.b * (0.0 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //

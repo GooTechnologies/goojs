@@ -24,20 +24,18 @@
 /*jshint bitwise: false */
 define([
 	'goo/loaders/dds/DdsLoader',
+	'goo/loaders/dds/DdsUtils',
 	'goo/loaders/crunch/crn_decomp'
 ],
 /** @lends */
 function(
 	DdsLoader,
+	DdsUtils,
 	Module
 ) {
 
 	function CrunchLoader() {
 	}
-
-	// If you want to force crunch to decode in a worker set this to true.
-	// Otherwise it will decode in the main browser process by default.
-	CrunchLoader.CRUNCH_DECODE_IN_WORKER = false;
 
 	// Taken from crnlib.h
 	CrunchLoader.cCRNFmtInvalid = -1;
@@ -74,7 +72,7 @@ function(
 		}
 	};
 
-	CrunchLoader.prototype.load = function(arrayBuffer, texture/*, flipped, arrayByteOffset, arrayByteLength*/) {
+	CrunchLoader.prototype.load = function(arrayBuffer, texture, flipped/*, arrayByteOffset, arrayByteLength*/) {
 		var bytes = new Uint8Array(arrayBuffer),
 			srcSize = arrayBuffer.byteLength,
 			src = Module._malloc(srcSize),
@@ -126,7 +124,6 @@ function(
 
 		// if (ext) {
 			var imageData = [];
-			var mipmapByteSizes = [];
 			for (i = 0; i < levels; ++i) {
 				if (i) {
 					dstSize = Module._crn_get_uncompressed_size(src, srcSize, i);
@@ -134,7 +131,6 @@ function(
 				Module._crn_decompress(src, srcSize, dst, dstSize, i);
 				dxtData = new Uint8Array(Module.HEAPU8.buffer, dst, dstSize);
 
-				mipmapByteSizes.push(dstSize);
 				imageData.push(dxtData);
 
 				width *= 0.5;
@@ -155,19 +151,30 @@ function(
 		// }
 
 		var totalSize = 0;
-		for (var i = 0; i < mipmapByteSizes.length; i++) {
-			totalSize += mipmapByteSizes[i];
+		texture.image.mipmapSizes = [];
+		for (var i = 0; i < imageData.length; i++) {
+			totalSize += imageData[i].length;
+			texture.image.mipmapSizes.push(imageData[i].length);
 		}
 
 		var imageBuffer = new Uint8Array(totalSize);
 		var offset = 0;
+		var mipWidth = image.width;
+		var mipHeight = image.height;
 		for (i = 0; i < levels; i++) {
 			var data = imageData[i];
+
+			if (flipped) {
+				data = DdsUtils.flipDXT(data, mipWidth, mipHeight, texture.format);
+			}
+
 			imageBuffer.set(data, offset);
 			offset += data.length;
+
+			mipWidth = ~~(mipWidth / 2) > 1 ? ~~(mipWidth / 2) : 1;
+			mipHeight = ~~(mipHeight / 2) > 1 ? ~~(mipHeight / 2) : 1;
 		}
 
-		texture.image.mipmapSizes = mipmapByteSizes;
 		texture.image.data = imageBuffer;
 		texture.image.useArrays = true;
 
