@@ -3,6 +3,10 @@ define([],
 
 	"use strict";
 
+	var window;
+	var PolyK = window?window.PolyK:self.PolyK;
+
+
 	/**
 	 * @class Checks for collisions against a set of `collidables` and repositions the host object accordingly.
 	 * This script uses the PolyK library which is not part of the engine; make sure you add it manually.
@@ -35,7 +39,7 @@ define([],
 	PolyBoundingScript.prototype.removeAllAt = function(x, y, z) {
 		this.collidables = this.collidables.filter(function(collidable) {
 			if(collidable.bottom <= z && collidable.top >= z) {
-				return !window.PolyK.ContainsPoint(collidable.poly, x, y);
+				return !PolyK.ContainsPoint(collidable.poly, x, y);
 			}
 		});
 	};
@@ -53,9 +57,9 @@ define([],
 			var collidable = this.collidables[i];
 
 			if(collidable.bottom <= translation.data[1] && collidable.top >= translation.data[1]) {
-				if(window.PolyK.ContainsPoint(collidable.poly, translation.data[0], translation.data[2])) {
+				if(PolyK.ContainsPoint(collidable.poly, translation.data[0], translation.data[2])) {
 
-					var pointOutside = window.PolyK.ClosestEdge(
+					var pointOutside = PolyK.ClosestEdge(
 						collidable.poly,
 						translation.data[0],
 						translation.data[2]

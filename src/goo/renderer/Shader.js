@@ -17,8 +17,7 @@ function (
 ) {
 	"use strict";
 
-	var window;
-	var WebGLRenderingContext = window?window.WebGLRenderingContext:undefined;
+	var WebGLRenderingContext;
 
 	/**
 	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
@@ -38,6 +37,8 @@ function (
 	 * </code>
 	 */
 	function Shader(name, shaderDefinition) {
+		WebGLRenderingContext = window.WebGLRenderingContext;
+
 		if (!shaderDefinition.vshader || !shaderDefinition.fshader) {
 			throw new Error('Missing shader sources for shader: ' + name);
 		}

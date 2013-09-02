@@ -34,6 +34,8 @@ function(
 	_
 ) {
 	'use strict';
+
+
 	/**
 	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
 	 *
@@ -49,6 +51,11 @@ function(
 	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/;
 
 	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+
+	var window;
+ 	var escape = window?window.escape:self.escape;
+
+
 
 	/**
 	 * Create a new loader
@@ -337,7 +344,9 @@ function(
 		}
 
 		// Load ref with ajax
-		url = this._rootPath + window.escape(ref);
+		url = this._rootPath + escape(ref);
+
+		console.debug("No cache for ref "+ ref);
 
 		if (this._isImageRef(ref)) {
 			promise = this._ajax.loadImage(url);

@@ -19,6 +19,9 @@ function (
 ) {
 	"use strict";
 
+	var window;
+	var URL = window?(window.URL || window.webkitURL):self.URL||self.webkitURL;
+
 	/**
 	 * @class Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
@@ -210,13 +213,12 @@ function (
 		};
 
 		// Webcam video
-		window.URL = window.URL || window.webkitURL;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 		if (navigator.getUserMedia) {
 			navigator.getUserMedia({
 				video: true
 			}, function (stream) {
-				video.src = window.URL.createObjectURL(stream);
+				video.src = URL.createObjectURL(stream);
 			}, function (e) {
 				console.warn('Unable to capture WebCam. Please reload the page.', e);
 			});

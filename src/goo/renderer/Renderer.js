@@ -38,8 +38,8 @@ function (
 ) {
 	"use strict";
 
-	var window;
-	var WebGLRenderingContext = window?window.WebGLRenderingContext:undefined;
+	//var window;
+	var WebGLRenderingContext;// = window?window.WebGLRenderingContext:undefined;
 
 	/**
 	 * @class The renderer handles displaying of graphics data to a render context.
@@ -55,6 +55,8 @@ function (
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
 	function Renderer(parameters) {
+		WebGLRenderingContext = window.WebGLRenderingContext;
+		
 		parameters = parameters || {};
 
 		var _canvas = parameters.canvas;

@@ -7,6 +7,9 @@ function(
 ) {
 	"use strict";
 
+	var window;
+	var soundManager = window?window.soundManager:self.soundManager;
+
 	/**
 	 * @class Handles integration with Sound Manager 2
 	 * @desc Depends on the global soundManager object.
@@ -18,10 +21,10 @@ function(
 		settings = settings || {};
 
 		this.isReady = false;
-		if (!window.soundManager) {
+		if (!soundManager) {
 			console.warn('SoundManager2System: soundManager global not found');
 		} else {
-			window.soundManager.bind(this).setup({
+			soundManager.bind(this).setup({
 				url: 'swf',
 				onready: function() {
 					this.isReady = true;
@@ -40,7 +43,7 @@ function(
 
 		for (var i = 0; i < soundManagerComponent.sounds.length; i++) {
 			var sound = soundManagerComponent.sounds[i];
-			var soundObject = window.soundManager.createSound(sound);
+			var soundObject = soundManager.createSound(sound);
 			sound.soundObject = soundObject;
 		}
 	};

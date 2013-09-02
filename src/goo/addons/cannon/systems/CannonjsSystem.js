@@ -21,7 +21,8 @@ function(
 ) {
 	"use strict";
 
-	var CANNON = window.CANNON;
+	var window;
+	var CANNON = window?window.CANNON:self.CANNON;
 
 	/**
 	 * @class Handles integration with Cannon.js

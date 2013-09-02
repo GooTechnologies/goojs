@@ -5,7 +5,8 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 	ShaderLib) {
 	"use strict";
 
-	var WebGLRenderingContext = window.WebGLRenderingContext;
+	var window;
+	var WebGLRenderingContext = window?window.WebGLRenderingContext:window;
 
 	/**
 	 * @class Post processing handler

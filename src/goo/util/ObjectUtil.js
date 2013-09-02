@@ -72,6 +72,14 @@ define([], function() {
 		return keys;
 	};
 
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var values = [];
+    for (var key in obj) if (_.has(obj, key)) values.push(obj[key]);
+    return values;
+  };
+	
+
 
 
 	_.isArray = nativeIsArray || function(obj) {

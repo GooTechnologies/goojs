@@ -4,11 +4,11 @@ define(
     "use strict";
     var config = {};
 
-    var browserGlobal = (typeof window !== 'undefined') ? window : {};
+    var window,self;
+    var browserGlobal = typeof window !== 'undefined' ? window : (typeof self !== 'undefined'?self:{});
 
     var MutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
     //var RSVP;
-    var window;
     var process = window?window.process:undefined;
 
     if (typeof process !== 'undefined' &&

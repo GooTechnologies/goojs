@@ -4,7 +4,7 @@ define([
 function (
 	Vector2, Vector3, MathUtils) {
 	"use strict";
-
+	var document;
 	var _defaults = {
 		domElement: document,
 

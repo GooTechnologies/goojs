@@ -27,6 +27,9 @@ function() {
 	 * @param {string} [properties.height]
 	 */
 	Logo.getLogo = function(properties) {
+		var document;
+		if (!document) return '';
+		
 		properties = properties || {};
 		for (var key in defaults) {
 			if(properties[key] === undefined) {

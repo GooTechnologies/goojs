@@ -23,6 +23,9 @@ define([
 	) {
 	"use strict";
 
+	var window,self;
+	if (!window) window = self;
+
 	/**
 	 * @class The debugger utility class adds a way to "select" entities and run a filtered serializer on them. It can also create a REPL and export the selected entity to global scope to aid in debugging with the browser's web console.
 	 * @param {boolean} [exportPicked] True if the debugger should create and update window.picked that points to the currently picked entity

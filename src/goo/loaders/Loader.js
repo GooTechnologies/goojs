@@ -10,6 +10,10 @@ define([
 	) {
 	"use strict";
 
+	var window;
+	var URL = window?(window.URL || window.webkitURL):self.URL||self.webkitURL;
+	var escape = window?window.escape:self.escape;
+
 	/**
 	 * @class Handles loading of data.
 	 *
@@ -127,13 +131,14 @@ define([
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
 	Loader.prototype.loadImage = function (url, needsProgress) {
-		window.URL = window.URL || window.webkitURL;
+		
+		
 		var promise = new RSVP.Promise();
 		var image = new Image();
 
 		image.addEventListener('load', function () {
 			image.dataReady = true;
-			window.URL.revokeObjectURL(image.src);
+			URL.revokeObjectURL(image.src);
 			promise.resolve(image);
 		}, false);
 
@@ -151,7 +156,7 @@ define([
 				}
 				var blob = new Blob([bytes], { type: type });
 
-				image.src = window.URL.createObjectURL(blob);
+				image.src = URL.createObjectURL(blob);
 
 			}, Loader.ARRAY_BUFFER);
 		} else {
@@ -162,7 +167,7 @@ define([
 	};
 
 	Loader.prototype._buildURL = function(url) {
-		return this.rootPath + window.escape(url);
+		return this.rootPath + escape(url);
 	};
 
 	/** @type {string}

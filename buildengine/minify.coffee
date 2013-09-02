@@ -33,9 +33,10 @@ strip = (source) ->
 
 wrap = (source) ->
 	return '// Goo Engine. Copyright 2013 Goo Technologies AB\n' + strip("""
+var window;
 (function(window,undefined){
 	var f=function(){""") + source + strip("""};
-	if(window.localStorage&&window.localStorage.gooPath){
+	if(window&&window.localStorage&&window.localStorage.gooPath){
 		require.config({
 			paths: {
 				goo: localStorage.gooPath
