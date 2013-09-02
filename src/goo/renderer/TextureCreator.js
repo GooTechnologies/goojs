@@ -2,7 +2,7 @@ define([
 	'goo/loaders/Loader',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/crunch/crunch',
+	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/SimpleResourceUtil',
 	'goo/renderer/Util',
@@ -33,7 +33,7 @@ function (
 
 		this.textureLoaders = {
 			'.dds': new DdsLoader(),
-			'.dxt': new CrunchLoader(),
+			'.crn': new CrunchLoader(),
 			'.tga': new TgaLoader()
 		};
 	}
