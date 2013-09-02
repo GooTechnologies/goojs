@@ -23,8 +23,12 @@
 
 define([
 	"texture-util/dds",
-	"texture-util/crn_decomp.js"
-], function (dss) {
+	//// marking own comments with ////
+	"goo/loaders/crunch/crn_decomp.js"
+], function (
+	dss,
+	Module
+) {
 
 	// If you want to force crunch to decode in a worker set this to true.
 	// Otherwise it will decode in the main browser process by default.
@@ -119,7 +123,7 @@ define([
 		} else {
 			if(format == cCRNFmtDXT1) {
 				Module._crn_decompress(src, srcSize, dst, dstSize, 0);
-				rgb565Data = dss.dxtToRgb565(Module.HEAPU16, dst / 2, width, height);
+				rgb565Data = dss.dxtToRgb565(Module.HEAPU16, dst / 2, width, height); //// only place where dss is used
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, rgb565Data);
 				if(loadMipmaps) {
 					gl.generateMipmap(gl.TEXTURE_2D);
