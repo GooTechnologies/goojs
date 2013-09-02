@@ -37,25 +37,9 @@ function(
 	function CrunchLoader() {
 	}
 
-	// Taken from crnlib.h
-	CrunchLoader.cCRNFmtInvalid = -1;
-
 	CrunchLoader.cCRNFmtDXT1 = 0;
 	CrunchLoader.cCRNFmtDXT3 = 1;
 	CrunchLoader.cCRNFmtDXT5 = 2;
-
-	// Various DXT5 derivatives
-	CrunchLoader.cCRNFmtDXT5_CCxY = 3; // Luma-chroma
-	CrunchLoader.cCRNFmtDXT5_xGxR = 4; // Swizzled 2-component
-	CrunchLoader.cCRNFmtDXT5_xGBR = 5; // Swizzled 3-component
-	CrunchLoader.cCRNFmtDXT5_AGBR = 6; // Swizzled 4-component
-
-	// ATI 3DC and X360 DXN
-	CrunchLoader.cCRNFmtDXN_XY = 7;
-	CrunchLoader.cCRNFmtDXN_YX = 8;
-
-	// DXT5 alpha blocks only
-	CrunchLoader.cCRNFmtDXT5A = 9;
 
 	CrunchLoader.prototype.arrayBufferCopy = function(src, dst, dstByteOffset, numBytes) {
 		var dst32Offset = dstByteOffset / 4,
@@ -81,8 +65,6 @@ function(
 
 		this.arrayBufferCopy(bytes, Module.HEAPU8, src, srcSize);
 
-		texture.type = 'UnsignedByte';
-
 		format = Module._crn_get_dxt_format(src, srcSize);
 
 		var bpp;
@@ -103,8 +85,6 @@ function(
 				console.error("Unsupported image format");
 				return 0;
 		}
-
-		texture.image.isCompressed = true;
 
 		width = Module._crn_get_width(src, srcSize);
 		height = Module._crn_get_height(src, srcSize);
@@ -177,6 +157,8 @@ function(
 
 		texture.image.data = imageBuffer;
 		texture.image.useArrays = true;
+		texture.type = 'UnsignedByte';
+		texture.image.isCompressed = true;
 
 		if (levels <= 1) {
 			texture.minFilter = 'BilinearNoMipMaps';
