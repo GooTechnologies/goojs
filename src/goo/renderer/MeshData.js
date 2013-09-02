@@ -271,8 +271,8 @@ function (
 		UnsignedShort: Uint16Array,
 		Int: Int32Array,
 		UnsignedInt: Uint32Array,
-		Float: Float32Array,
-		Double: Float64Array
+		Float: Float32Array
+		// Double: Float64Array
 	};
 
 	MeshData.prototype.generateAttributeData = function () {
@@ -346,8 +346,8 @@ function (
 				return 'setInt16';
 			case 'Float':
 				return 'setFloat32';
-			case 'Double':
-				return 'setFloat64';
+			// case 'Double':
+				// return 'setFloat64';
 		}
 	};
 
