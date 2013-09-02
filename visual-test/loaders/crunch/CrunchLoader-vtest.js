@@ -85,8 +85,11 @@ require([
 		transformComponent.transform.translation.z = 80;
 		entity.addToWorld();
 
-		createBox(10, -10, 0, '/Pot_Diffuse.dds', goo);
-		createBox(10, 10, 0, '/Pot_Diffuse.crn', goo);
+		createBox(10, -10, 10, '/Pot_Diffuse.dds', goo);
+		createBox(10, 10, 10, '/Pot_Diffuse.crn', goo);
+		createBox(10, -10, -10, '/collectedBottles_diffuse_1024.dds', goo);
+		createBox(10, 10, -10, '/collectedBottles_diffuse_1024.crn', goo);
+
 		// createBox(10, -20, 0, '/lena/lena_dxt1.dds', goo);
 		// createBox(10, 0, 0, '/lena/lena_dxt3.dds', goo);
 		// createBox(10, 20, 0, '/lena/lena_dxt5_BC3.dds', goo);
