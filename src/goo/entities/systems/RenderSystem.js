@@ -26,6 +26,7 @@ function (
 
 		this.entities = [];
 		this.renderList = [];
+		this.postRenderables = [];
 		this.partitioner = new SimplePartitioner();
 		this.preRenderers = [];
 		this.composers = [];
@@ -107,8 +108,14 @@ function (
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
-			if (this.picking.doPick) {
-				renderer.pick(this.renderList, this.camera, this.picking.x, this.picking.y, this.picking.pickingStore, this.picking.skipUpdateBuffer);
+			if(this.picking.doPick) {
+				var renderLists;
+				if(this.postRenderables.length) {
+					renderLists = [this.renderList, this.postRenderables];
+				} else {
+					renderLists = [this.renderList];
+				}
+				renderer.pick(renderLists, this.camera, this.picking.x, this.picking.y, this.picking.pickingStore, this.picking.skipUpdateBuffer);
 				this.picking.pickingCallback(this.picking.pickingStore.id, this.picking.pickingStore.depth);
 				this.picking.doPick = false;
 			}
@@ -120,6 +127,13 @@ function (
 				}
 			} else {
 				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
+				if(this.postRenderables.length) {
+					renderer.render(this.postRenderables, this.camera, this.lights, null, {
+						color: false,
+						depth: true,
+						stencil: true
+					}, this.overrideMaterials);
+				}
 			}
 		}
 	};

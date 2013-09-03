@@ -76,7 +76,7 @@ function (
 		store = store || new Vector3();
 
 		var lDotN = ray.direction.dot(this.normal);
-		if(lDotN < 1e-8) {
+		if(Math.abs(lDotN) < 1e-8) {
 			console.warn('Ray parallell with plane');
 			return null;
 		}

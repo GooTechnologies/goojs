@@ -365,7 +365,8 @@ function (
 					x: evt.x,
 					y: evt.y,
 					type: type,
-					domEvent: this._eventTriggered[type]
+					domEvent: this._eventTriggered[type],
+					id: evt.id
 				};
 				for (var i = 0; i < this._eventListeners[type].length; i++) {
 					if(this._eventListeners[type][i](e) === false) {
@@ -395,7 +396,8 @@ function (
 					entity: entity,
 					depth: depth,
 					x: x,
-					y: y
+					y: y,
+					id: id
 				});
 			}.bind(this));
 		}.bind(this);

@@ -92,9 +92,9 @@ function (
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
 		this.tmpMat1.data.set(a.rotation.data);
-		this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
+		//this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
 		this.rotation.data.set(b.rotation.data);
-		this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
+		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(this.tmpMat1, this.rotation, this.rotation);
 		this.translation.setv(b.translation);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
