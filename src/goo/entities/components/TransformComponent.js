@@ -49,6 +49,7 @@ function (
 	 * @param {number} z
 	 */
 	TransformComponent.prototype.setTranslation = function (x,y,z) {
+		// REVIEW: How about using this.transform.translation.set(x,y,z) instead? Will keep the code cleaner
 		if( x instanceof Array) {
 			if( x.length !== 3) {
 				throw new Error("length of the array argument to setTranslation must be 3");
