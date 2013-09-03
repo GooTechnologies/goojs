@@ -88,8 +88,14 @@ define([
 				var textureLoader = new TextureHandler.loaders[type]();
 				texture.a = imgRef;
 				loadedPromise = this.getConfig(imgRef).then(function(data) {
-					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
-
+					if (data && data.preloaded) {
+						_.extend(texture.image, data.image);
+						texture.format = data.format;
+						texture.needsUpdate = true;
+					}
+					else {
+						textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
+					}
 					return texture;
 				}).then(null, function(e) {
 					return console.error("Error loading texture: ", e);
