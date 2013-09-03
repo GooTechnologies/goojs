@@ -3,6 +3,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
+	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
@@ -13,6 +14,7 @@ define([
 	TextureCreator,
 	Texture,
 	DdsLoader,
+	CrunchLoader,
 	TgaLoader,
 	RSVP,
 	pu,
@@ -34,6 +36,7 @@ define([
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
+		crn: CrunchLoader,
 		tga: TgaLoader
 	};
 
