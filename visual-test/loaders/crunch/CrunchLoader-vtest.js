@@ -89,18 +89,6 @@ require([
 		createBox(10, 10, 10, '/Pot_Diffuse.crn', goo);
 		createBox(10, -10, -10, '/collectedBottles_diffuse_1024.dds', goo);
 		createBox(10, 10, -10, '/collectedBottles_diffuse_1024.crn', goo);
-
-		// createBox(10, -20, 0, '/lena/lena_dxt1.dds', goo);
-		// createBox(10, 0, 0, '/lena/lena_dxt3.dds', goo);
-		// createBox(10, 20, 0, '/lena/lena_dxt5_BC3.dds', goo);
-		// createBox(10, -10, -15, '/lena/lena_dxt5_RXGB.dds', goo);
-		// createBox(10, 10, -15, '/lena/lena_dxt5_YCoCg.dds', goo);
-
-		// NB: YCoCg -> RGB
-		// ' gl_FragColor.r = (texCol.r * 1.0) + (texCol.g * -1.0) + (texCol.b * (0.0 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
-		// ' gl_FragColor.g = (texCol.r * 0.0) + (texCol.g * 1.0) + (texCol.b * (-0.5 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
-		// ' gl_FragColor.b = (texCol.r * -1.0) + (texCol.g * -1.0) + (texCol.b * (1.0 * 256.0 / 255.0)) + (texCol.a * 1.0); ', //
-
 	}
 
 	init();

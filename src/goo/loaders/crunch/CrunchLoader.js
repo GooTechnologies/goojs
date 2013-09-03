@@ -102,60 +102,26 @@ function(
 		image.height = height;
 		image.depth = 1;
 
-		// if (ext) {
-			var imageData = [];
-			for (i = 0; i < levels; ++i) {
-				if (i) {
-					dstSize = Module._crn_get_uncompressed_size(src, srcSize, i);
-				}
-				Module._crn_decompress(src, srcSize, dst, dstSize, i);
-				dxtData = new Uint8Array(Module.HEAPU8.buffer, dst, dstSize);
-
-				imageData.push(dxtData);
-
-				width *= 0.5;
-				height *= 0.5;
-			}
-		// } else {
-		// 	if (format === CrunchLoader.cCRNFmtDXT1) {
-		// 		Module._crn_decompress(src, srcSize, dst, dstSize, 0);
-		// 		rgb565Data = this.dxtToRgb565(Module.HEAPU16, dst / 2, width, height); //// only place where dss is used
-		// 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, rgb565Data);
-		// 		if (loadMipmaps) {
-		// 			gl.generateMipmap(gl.TEXTURE_2D);
-		// 		}
-		// 	} else {
-		// 		console.error("No manual decoder for format and no native support");
-		// 		return 0;
-		// 	}
-		// }
-
-		var totalSize = 0;
+		var imageData = [];
 		texture.image.mipmapSizes = [];
-		for (var i = 0; i < imageData.length; i++) {
-			totalSize += imageData[i].length;
-			texture.image.mipmapSizes.push(imageData[i].length);
-		}
-
-		var imageBuffer = new Uint8Array(totalSize);
-		var offset = 0;
-		var mipWidth = image.width;
-		var mipHeight = image.height;
-		for (i = 0; i < levels; i++) {
-			var data = imageData[i];
-
+		for (i = 0; i < levels; ++i) {
+			if (i) {
+				dstSize = Module._crn_get_uncompressed_size(src, srcSize, i);
+			}
+			Module._crn_decompress(src, srcSize, dst, dstSize, i);
+			dxtData = new Uint8Array(Module.HEAPU8.buffer, dst, dstSize);
 			if (flipped) {
-				data = DdsUtils.flipDXT(data, mipWidth, mipHeight, texture.format);
+				dxtData = DdsUtils.flipDXT(dxtData, width, height, texture.format);
 			}
 
-			imageBuffer.set(data, offset);
-			offset += data.length;
+			imageData.push(dxtData);
+			texture.image.mipmapSizes.push(dstSize);
 
-			mipWidth = ~~(mipWidth / 2) > 1 ? ~~(mipWidth / 2) : 1;
-			mipHeight = ~~(mipHeight / 2) > 1 ? ~~(mipHeight / 2) : 1;
+			width *= 0.5;
+			height *= 0.5;
 		}
 
-		texture.image.data = imageBuffer;
+		texture.image.data = imageData;
 		texture.image.useArrays = true;
 		texture.type = 'UnsignedByte';
 		texture.image.isCompressed = true;
