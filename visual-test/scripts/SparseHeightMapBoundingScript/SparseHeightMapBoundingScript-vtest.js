@@ -59,6 +59,22 @@ require([
 
 		var nSpheres = 10;
 		var ak = Math.PI * 2 / nSpheres;
+		/* REVIEW Suggestion */
+		/*
+		function makeScript(i) {
+			return {
+				run: function(entity) {
+					var translation = entity.transformComponent.transform.translation;
+
+					translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+					translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+
+					entity.transformComponent.setUpdated();
+				}
+			}
+		}
+		*/
+
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
 			var material = Material.createMaterial(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
@@ -69,6 +85,11 @@ require([
 			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 			sphereEntity.transformComponent.transform.translation.setd(i, 0, 0);
 
+			/* REVIEW suggestion */
+			/*
+			scriptComponent = new ScriptComponent(makeScript(i));
+			scriptComponent.scripts.push(sparseHeightMapBoundingScript);
+			*/
 			var scripts = new ScriptComponent();
 			(function(i) {
 				scripts.scripts.push({
