@@ -29,6 +29,16 @@ define([
 			expect(gotData2).toBe(123);
 		});
 
+		it('cannot add the same listener to a channel', function() {
+			var gotData;
+
+			var listener = function(data) { gotData = data; };
+			bus.addListener('main', listener);
+			bus.addListener('main', listener);
+
+			expect(bus.trie.children[0].listeners.length).toBe(1);
+		});
+
 		it('can send to multiple channels', function() {
 			var gotData1, gotData2, gotData3;
 			bus.addListener('first', function(data) { gotData1 = data; });
@@ -159,6 +169,29 @@ define([
 
 			expect(gotData1).toBeUndefined();
 			expect(gotData2).toBe(321);
+		});
+
+		it('can remove a channel and its children', function() {
+			var gotData1, gotData2, gotData3, gotData4, gotData5;
+
+			bus.addListener('first', function(data) { gotData1 = data; });
+			bus.addListener('first.second', function(data) { gotData2 = data; });
+			bus.addListener('first.second', function(data) { gotData3 = data; });
+			bus.addListener('first.second.third', function(data) { gotData4 = data; });
+			bus.addListener('fourth', function(data) { gotData5 = data; });
+
+			bus.removeChannelAndChildren('first.second');
+
+			bus.emit('first', 123);
+			bus.emit('first.second', 234);
+			bus.emit('first.second.third', 345);
+			bus.emit('fourth', 456);
+
+			expect(gotData1).toBe(123);
+			expect(gotData2).toBeUndefined();
+			expect(gotData3).toBeUndefined();
+			expect(gotData4).toBeUndefined();
+			expect(gotData5).toBe(456);
 		});
 	});
 });

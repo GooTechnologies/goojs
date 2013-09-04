@@ -4,7 +4,7 @@ define(
 	"use strict";
 
 	function Bus() {
-		this.trie = { name: '', listeners: [], children: [] }; // *: { listeners: {name, callback}, children: * }
+		this.trie = { name: '', listeners: [], children: [] };
 	}
 
 	function removeFromArray(array, element) {
@@ -30,28 +30,30 @@ define(
 		}
 	};
 
-	Bus.prototype._emitToSingle = function(channelName, data) {
-		// this whole bit is common to all
+	Bus.prototype._getNode = function(channelName) {
 		var node = this.trie;
 		var channelPath = channelName.split('.');
 
 		for (var i = 0; i < channelPath.length; i++) {
 			var channelSub = channelPath[i];
 
-			// advance to next level
-			var advanced = false;
+			var exists = false;
 			for (var j = 0; j < node.children.length; j++) {
 				if (node.children[j].name === channelSub) {
 					node = node.children[j];
-					advanced = true;
+					exists = true;
 					break;
 				}
 			}
-			if (!advanced) { return; }
+			if (!exists) { return; }
 		}
-		///
 
-		this._emitToAll(node, data);
+		return node;
+	};
+
+	Bus.prototype._emitToSingle = function(channelName, data) {
+		var node = this._getNode(channelName);
+		if(node) { this._emitToAll(node, data); }
 	};
 
 	Bus.prototype._emitToAll = function(node, data) {
@@ -89,9 +91,9 @@ define(
 			}
 		}
 
-		node.listeners.push(callback);
-
-		// verify if listener is already present on the same channel
+		if(node.listeners.indexOf(callback) === -1) {
+			node.listeners.push(callback);
+		}
 	};
 
 	/**
@@ -100,24 +102,8 @@ define(
 	 * @param callbackToRemove
 	 */
 	Bus.prototype.removeListener = function (channelName, callbackToRemove) {
-		var node = this.trie;
-		var channelPath = channelName.split('.');
-
-		for (var i = 0; i < channelPath.length; i++) {
-			var channelSub = channelPath[i];
-
-			var exists = false;
-			for (var j = 0; j < node.children.length; j++) {
-				if (node.children[j].name === channelSub) {
-					node = node.children[j];
-					exists = true;
-					break;
-				}
-			}
-			if (!exists) { return; }
-		}
-
-		removeFromArray(node.listeners, callbackToRemove);
+		var node = this._getNode(channelName);
+		if(node) { removeFromArray(node.listeners, callbackToRemove); }
 	};
 
 	/**
@@ -125,34 +111,26 @@ define(
 	 * @param channelName
 	 */
 	Bus.prototype.removeAllOnChannel = function(channelName) {
-		var node = this.trie;
-		var channelPath = channelName.split('.');
-
-		for (var i = 0; i < channelPath.length; i++) {
-			var channelSub = channelPath[i];
-
-			var exists = false;
-			for (var j = 0; j < node.children.length; j++) {
-				if (node.children[j].name === channelSub) {
-					node = node.children[j];
-					exists = true;
-					break;
-				}
-			}
-			if (!exists) { return; }
-		}
-
-		node.listeners = [];
+		var node = this._getNode(channelName);
+		if(node) { node.listeners = []; }
 	};
 
-	//Bus.prototype.removeChannel (and children)
-
 	/**
-	 * Removes a listener from all channels
-	 * @param callbackToRemove
+	 * Removes a channel and its children
+	 * @param channelName
 	 */
-	Bus.prototype.removeListenerFromAllChannels = function(callbackToRemove) {
-		this._remove(this.trie, callbackToRemove);
+	Bus.prototype.removeChannelAndChildren = function(channelName) {
+		var channelParts = channelName.split('.');
+		var leafChannelName = channelParts.pop();
+		var parentChannelName = channelParts.join('.');
+		var parentNode = this._getNode(parentChannelName);
+
+		for (var i = 0; i < parentNode.children.length; i++) {
+			if (parentNode.children[i].name === leafChannelName) {
+				parentNode.children.splice(i, 1);
+				break;
+			}
+		}
 	};
 
 	Bus.prototype._remove = function(node, callbackToRemove) {
@@ -160,6 +138,14 @@ define(
 		for (var i = 0; i < node.children.length; i++) {
 			this._remove(node.children[i], callbackToRemove);
 		}
+	};
+
+	/**
+	 * Removes a listener from all channels
+	 * @param callbackToRemove
+	 */
+	Bus.prototype.removeListenerFromAllChannels = function(callbackToRemove) {
+		this._remove(this.trie, callbackToRemove);
 	};
 
 	return Bus;
