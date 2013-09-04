@@ -127,13 +127,13 @@ function (
 				}
 			} else {
 				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
-				if(this.postRenderables.length) {
+				/*if(this.postRenderables.length) {
 					renderer.render(this.postRenderables, this.camera, this.lights, null, {
 						color: false,
 						depth: true,
 						stencil: true
 					}, this.overrideMaterials);
-				}
+				}*/
 			}
 		}
 	};

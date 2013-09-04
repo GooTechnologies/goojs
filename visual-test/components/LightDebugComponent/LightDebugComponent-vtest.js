@@ -53,15 +53,21 @@ require([
 		spotLightOn: false};
 
 	function addSpin(entity/*, radiusX, radiusZ, speed, altitude*/) {
+		var offset = Math.random()*12;
 		entity.setComponent(new ScriptComponent({
 			run: function (entity) {
 				var light = entity.getComponent('LightComponent').light;
 
-				light.color.data[0] = Math.cos(World.time) * 0.5 + 0.5;
-				light.color.data[1] = Math.cos(World.time + Math.PI * 2 / 3) * 0.5 + 0.5;
-				light.color.data[2] = Math.cos(World.time + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
+				light.color.data[0] = Math.cos(World.time + offset) * 0.5 + 0.5;
+				light.color.data[1] = Math.cos(World.time +offset+ Math.PI * 2 / 3) * 0.5 + 0.5;
+				light.color.data[2] = Math.cos(World.time +offset+ Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
 				light.range = (Math.cos(World.time) * 0.5 + 0.5) * 6 + 2;
 
+				/*
+				if(light.angle) {
+					light.angle = (Math.cos(World.time+0.3) * 0.5 + 0.5) * 40 + 20;
+				}
+				*/
 				light.changedProperties = true;
 				light.changedColor = true;
 			}
@@ -125,6 +131,7 @@ require([
 		spotLight.color.data[2] = 1.0;
 		spotLight.angle = 15;
 		spotLight.range = 10;
+		spotLight.exponent = 0.0;
 
 		var spotLightOrbitRadius = 5;
 		var spotLightOrbitSpeed = 0.3;
@@ -212,7 +219,10 @@ require([
 	}
 
 	function init() {
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			showStats: true,
+			toolMode: true
+		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 

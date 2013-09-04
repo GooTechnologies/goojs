@@ -2,6 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
+	'goo/entities/systems/DebugRenderSystem',
 	'goo/renderer/Renderer',
 	'goo/renderer/Material',
 	'goo/renderer/Util',
@@ -26,6 +27,7 @@ function (
 	World,
 	TransformSystem,
 	RenderSystem,
+	DebugRenderSystem,
 	Renderer,
 	Material,
 	Util,
@@ -61,6 +63,7 @@ function (
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 * @param {boolean} [parameters.debugKeys=false]
+	 * @param {boolean} [parameters.toolMode=false]
 	 */
 	function GooRunner (parameters) {
 		parameters = parameters || {};
@@ -79,7 +82,14 @@ function (
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
 		this.renderSystem = new RenderSystem();
+		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
+
+		if(parameters.toolMode) {
+			var debugRenderSystem = new DebugRenderSystem();
+			this.world.setSystem(debugRenderSystem);
+			this.renderSystems.push(debugRenderSystem);
+		}
 
 		this.doProcess = true;
 		this.doRender = true;
@@ -204,7 +214,9 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
-			this.renderSystem.render(this.renderer);
+			for (var i = 0; i < this.renderSystems.length; i++) {
+				this.renderSystems[i].render(this.renderer);
+			}
 		}
 
 		for (var i = 0; i < this.callbacks.length; i++) {

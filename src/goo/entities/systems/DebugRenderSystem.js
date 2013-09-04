@@ -1,0 +1,105 @@
+define([
+	'goo/entities/systems/System',
+	'goo/entities/EventHandler',
+	'goo/renderer/SimplePartitioner',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Util',
+	'goo/util/DebugDrawHelper'
+],
+/** @lends */
+function (
+	System,
+	EventHandler,
+	SimplePartitioner,
+	Material,
+	ShaderLib,
+	Util,
+	DebugDrawHelper
+) {
+	"use strict";
+
+	/**
+	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * @property {Boolean} doRender Only render if set to true
+	 */
+	function DebugRenderSystem() {
+		System.call(this, 'DebugRenderSystem', ['TransformComponent']);
+
+		this._renderablesTree = {};
+		this.renderList = [];
+		this.preRenderers = [];
+		this.composers = [];
+		this.doRender = {
+			CameraComponent: true,
+			LightComponent: true,
+			MeshRendererComponent: false
+		};
+
+		this._interestComponents = [
+			'CameraComponent',
+			'LightComponent',
+			'MeshRendererComponent'
+		];
+
+		this.camera = null;
+		this.lights = [];
+		this.currentTpf = 0.0;
+
+		var that = this;
+		EventHandler.addListener({
+			setCurrentCamera : function (camera) {
+				that.camera = camera;
+			},
+			setLights : function (lights) {
+				that.lights = lights;
+			}
+		});
+	}
+
+	DebugRenderSystem.prototype = Object.create(System.prototype);
+
+	DebugRenderSystem.prototype.inserted = function (/*entity*/) {
+	};
+
+	DebugRenderSystem.prototype.deleted = function (/*entity*/) {
+	};
+
+	DebugRenderSystem.prototype.process = function (entities, tpf) {
+		var count = this.renderList.length = 0;
+		for(var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
+				var componentName = this._interestComponents[j];
+				if(entity.hasComponent(componentName) && this.doRender[componentName]) {
+					var component = entity.getComponent(componentName);
+					var renderables;
+					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
+					if(tree[componentName]) {
+						renderables = tree[componentName];
+					} else {
+						renderables = DebugDrawHelper.getRenderablesFor(component);
+						tree[componentName] = renderables;
+					}
+					renderables[0].transform.copy(entity.transformComponent.worldTransform);
+					renderables[1].transform.copy(entity.transformComponent.worldTransform);
+					DebugDrawHelper.update(renderables, component);
+					this.renderList[count++] = renderables[0];
+					this.renderList[count++] = renderables[1];
+				}
+			}
+		}
+		this.renderList.length = count;
+		this.currentTpf = tpf;
+	};
+
+	DebugRenderSystem.prototype.render = function (renderer) {
+		renderer.checkResize(this.camera);
+
+		if (this.camera) {
+			renderer.render(this.renderList, this.camera, this.lights, null, false);
+		}
+	};
+
+	return DebugRenderSystem;
+});
