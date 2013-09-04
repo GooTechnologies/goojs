@@ -89,6 +89,9 @@ function (
 			var debugRenderSystem = new DebugRenderSystem();
 			this.world.setSystem(debugRenderSystem);
 			this.renderSystems.push(debugRenderSystem);
+			var handleRenderSystem = new HandleRenderSystem();
+			this.world.setSystem(handleRenderSystem);
+			this.renderSystems.push(handleRenderSystem);
 		}
 
 		this.doProcess = true;
