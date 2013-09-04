@@ -740,14 +740,10 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.pick = function (renderLists, camera, clientX, clientY, pickingStore, skipUpdateBuffer, doScissor) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
-			pickingStore.id = -1;
-			pickingStore.depth = 0;
 			return;
 		}
-
-
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			var pickingMaterial = Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial');
@@ -775,28 +771,32 @@ function (
 			skipUpdateBuffer = false;
 		}
 
-		var x = Math.floor(clientX / pickingResolutionDivider);
-		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
-
 		if (!skipUpdateBuffer) {
-			if (doScissor) {
+			if (doScissor && clientX !== undefined && clientY !== undefined) {
+				var x = Math.floor(clientX / pickingResolutionDivider);
+				var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
-			for (var i = 0; i < renderLists.length; i++) {
-				var renderList = renderLists[i];
-				if(i === 0) {
-					this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, true, this.hardwarePicking.pickingMaterial);
-				} else {
-					this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, { color: false, depth: true, stencil: true }, this.hardwarePicking.pickingMaterial);
-				}
-			}
+			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
+	};
+
+	Renderer.prototype.pick = function (clientX, clientY, pickingStore, camera) {
+		if(this.viewportWidth * this.viewportHeight === 0) {
+			pickingStore.id = -1;
+			pickingStore.depth = 0;
+			return;
+		}
+		var pickingResolutionDivider = 4;
+		var x = Math.floor(clientX / pickingResolutionDivider);
+		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 

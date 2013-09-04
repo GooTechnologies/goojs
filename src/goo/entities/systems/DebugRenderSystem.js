@@ -79,6 +79,8 @@ function (
 						renderables = tree[componentName];
 					} else {
 						renderables = DebugDrawHelper.getRenderablesFor(component);
+						renderables[0].id = entity.id;
+						renderables[1].id = entity.id;
 						tree[componentName] = renderables;
 					}
 					renderables[0].transform.copy(entity.transformComponent.worldTransform);
@@ -93,11 +95,14 @@ function (
 		this.currentTpf = tpf;
 	};
 
-	DebugRenderSystem.prototype.render = function (renderer) {
+	DebugRenderSystem.prototype.render = function (renderer, picking) {
 		renderer.checkResize(this.camera);
 
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
+			if(picking.doPick) {
+				renderer.renderToPick(this.renderList, this.camera, false, picking.skipupdateBuffer);
+			}
 		}
 	};
 

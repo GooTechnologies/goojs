@@ -91,7 +91,7 @@ function (
 		this.currentTpf = tpf;
 	};
 
-	RenderSystem.prototype.render = function (renderer) {
+	RenderSystem.prototype.render = function (renderer, picking) {
 		renderer.checkResize(this.camera);
 
 		if (!this.doRender) {
@@ -108,18 +108,6 @@ function (
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
-			if(this.picking.doPick) {
-				var renderLists;
-				if(this.postRenderables.length) {
-					renderLists = [this.renderList, this.postRenderables];
-				} else {
-					renderLists = [this.renderList];
-				}
-				renderer.pick(renderLists, this.camera, this.picking.x, this.picking.y, this.picking.pickingStore, this.picking.skipUpdateBuffer);
-				this.picking.pickingCallback(this.picking.pickingStore.id, this.picking.pickingStore.depth);
-				this.picking.doPick = false;
-			}
-
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
@@ -127,13 +115,9 @@ function (
 				}
 			} else {
 				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
-				/*if(this.postRenderables.length) {
-					renderer.render(this.postRenderables, this.camera, this.lights, null, {
-						color: false,
-						depth: true,
-						stencil: true
-					}, this.overrideMaterials);
-				}*/
+				if(picking.doPick) {
+					renderer.renderToPick(this.renderList, this.camera, true, picking.skipUpdateBuffer);
+				}
 			}
 		}
 	};

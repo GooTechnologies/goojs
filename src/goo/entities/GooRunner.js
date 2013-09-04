@@ -165,6 +165,15 @@ function (
 				this.startGameLoop();
 			}
 		}.bind(this));
+
+		this._picking = {
+			x: 0,
+			y: 0,
+			skipUpdateBuffer: false,
+			doPick: false,
+			pickingCallback: null,
+			pickingStore: {}
+		};
 	}
 
 	var tpfSmoothingArrary = [];
@@ -215,7 +224,12 @@ function (
 
 		if (this.doRender) {
 			for (var i = 0; i < this.renderSystems.length; i++) {
-				this.renderSystems[i].render(this.renderer);
+				this.renderSystems[i].render(this.renderer, this._picking);
+			}
+			if(this._picking.doPick) {
+				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
+				this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				this._picking.doPick = false;
 			}
 		}
 
@@ -325,7 +339,7 @@ function (
 			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
-				this.renderSystem.pick(x, y, function(id, depth) {
+				this.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
 				}.bind(this));
@@ -452,6 +466,16 @@ function (
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
+	};
+
+	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
+		this._picking.x = x;
+		this._picking.y = y;
+		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
+		if (callback) {
+			this._picking.pickingCallback = callback;
+		}
+		this._picking.doPick = true;
 	};
 
 	return GooRunner;
