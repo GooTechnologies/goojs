@@ -19,7 +19,7 @@ function (
 		this._prevClockTime = 0.0;
 		this._prevUnscaledClockTime = 0.0;
 		this._clipStateObjects = {};
-		this._animationListeners = [];
+		this._animationListeners = []; //REVIEW: unused
 	}
 
 	/**

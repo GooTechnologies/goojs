@@ -89,7 +89,8 @@ function (
 	ManagedTransformSource.prototype.resetClips = function () {
 	};
 
-	ManagedTransformSource.prototype.setTimeScale = function () {};
+	ManagedTransformSource.prototype.setTimeScale = function () {
+	};
 
 	/*
 	 * This has no effect, but will be called by owning {@link SteadyState}

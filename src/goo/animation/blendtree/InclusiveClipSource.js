@@ -18,7 +18,7 @@ function (JointChannel, ClipSource) {
 	InclusiveClipSource.prototype = Object.create(ClipSource.prototype);
 
 	InclusiveClipSource.prototype.clearEnabled = function () {
-		// NB: doesn't handle is we have external ref to this property, but we really shouldn't.
+		// NB: doesn't handle if we have external ref to this property, but we really shouldn't.
 		this._enabledChannels = {};
 	};
 

@@ -76,6 +76,8 @@ function (
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
+
+			//REVIEW: unused variable _lastFrame
 			this._lastFrame = startFrame;
 		}
 	};
