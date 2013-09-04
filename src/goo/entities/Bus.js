@@ -58,12 +58,13 @@ define(
 	 */
 	Bus.prototype.removeAllOnChannel = function(channelName) {
 		this.listeners = this.listeners.filter(function(listener) {
-			return listener.name === channelName;
+			return listener.name !== channelName;
 		});
 	};
 
 	/**
 	 * Removes a listener from all channels
+	 * @param callbackToRemove
 	 */
 	Bus.prototype.removeListenerFromAllChannels = function(callbackToRemove) {
 		this.listeners = this.listeners.filter(function(listener) {
