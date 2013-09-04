@@ -43,7 +43,7 @@ define(["goo/math/MathUtils"],
 	 * @private
 	 * @description Splits a real-valued number into a record for use in smooth interpolation.
 	 * @param {Float} x Input value.
-	 * @return {Integer,Integer,Float,Float} Object containing "i0", "i1", "f0" and "f1" members.
+	 * @return {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
 	 */
 
 	Noise.split = function (x) {

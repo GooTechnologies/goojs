@@ -237,7 +237,7 @@ function(
 	};
 
 	/**
-	 * Sets the axes and location of the camera. Similar to {@link #setAxes(ReadOnlyVector3, ReadOnlyVector3, ReadOnlyVector3)}, but sets camera
+	 * Sets the axes and location of the camera. Similar to {@link setAxes}, but sets camera
 	 * location as well.
 	 *
 	 * @param location

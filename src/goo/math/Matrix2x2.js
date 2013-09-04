@@ -9,7 +9,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @class Matrix with 2x2 components.
 	 * @extends Matrix
 	 * @description Creates a new matrix.
-	 * @param {Matrix2x2|number[]|number...} arguments Initial values for the components.
+	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
 	 */
 
 	function Matrix2x2() {
@@ -270,7 +270,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix2x2} source Source matrix.
 	 * @param {Matrix2x2} [target] Target matrix.
-	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
+	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 

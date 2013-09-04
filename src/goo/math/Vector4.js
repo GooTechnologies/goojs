@@ -14,7 +14,7 @@ function (
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Vector4|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Vector4|Float[]|...Float} arguments Initial values for the components.
 	 */
 
 	function Vector4() {
@@ -49,7 +49,7 @@ function (
 	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -105,7 +105,7 @@ function (
 	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -161,7 +161,7 @@ function (
 	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -217,7 +217,7 @@ function (
 	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -271,7 +271,7 @@ function (
 	 *            every component.
 	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Float} Dot product.
 	 */
 

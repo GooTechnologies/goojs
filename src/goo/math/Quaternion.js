@@ -10,7 +10,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new quaternion.
-	 * @param {Float...} arguments Initial values for the components.
+	 * @param {...Float} arguments Initial values for the components.
 	 */
 
 	function Quaternion () {

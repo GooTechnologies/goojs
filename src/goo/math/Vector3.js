@@ -13,7 +13,7 @@ function (
 	 * @class Vector with 3 components.
 	 * @extends Vector
 	 * @description Creates a new vector.
-	 * @param {Vector3|number[]|number...} arguments Initial values for the components.
+	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
 	 */
 
 	function Vector3() {
@@ -51,7 +51,7 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -124,7 +124,7 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -190,7 +190,7 @@ function (
 	 * @param {Vector3|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -244,7 +244,7 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -297,7 +297,7 @@ function (
 	 *            every component.
 	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {number} Dot product.
 	 */
 
@@ -347,7 +347,7 @@ function (
 	 * @param {Vector3|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector3|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
 	 */
 

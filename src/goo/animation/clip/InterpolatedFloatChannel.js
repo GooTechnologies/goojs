@@ -21,7 +21,7 @@ function (AbstractAnimationChannel,
 
 	/*
 	 * Creates a data item for this type of channel
-	 * @returns {number[1]}
+	 * @returns {number[]}
 	 */
 	InterpolatedFloatChannel.prototype.createStateDataObject = function () {
 		return [0.0];
@@ -31,7 +31,7 @@ function (AbstractAnimationChannel,
 	 * Applies the channels animation state to supplied data item
 	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
-	 * @param {number[1]} value The data item to apply animation to
+	 * @param {number[]} value The data item to apply animation to
 	 */
 	InterpolatedFloatChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, value) {
 		value[0] = MathUtils.lerp(progressPercent, this._values[sampleIndex], this._values[sampleIndex + 1]);
@@ -40,8 +40,8 @@ function (AbstractAnimationChannel,
 	/**
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
-	 * @param {number[1]} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {number[1]} our resulting TransformData.
+	 * @param {number[]} [store] the TransformData to store in. If null, a new one is created.
+	 * @return {number[]} our resulting TransformData.
 	 */
 	InterpolatedFloatChannel.prototype.getData = function(index, store) {
 		var rVal = store || [];

@@ -16,7 +16,7 @@ function (
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Matrix4x4|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Matrix4x4|Float[]|...Float} arguments Initial values for the components.
 	 */
 
 	function Matrix4x4() {
@@ -439,7 +439,7 @@ function (
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
+	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
