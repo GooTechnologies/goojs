@@ -45,11 +45,13 @@ function(
 	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
-	var _jsonTest, _texture_types;
+	var _jsonTest, _texture_types, _ENGINE_SHADER_PREFIX;
 
 	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
 
 	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+
+	_ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
 	 * Create a new loader
@@ -316,6 +318,13 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
+		// Do not create a request to load the reference if it is a shader
+		// to be loaded from the engine's shader library.
+		if (ref.indexOf(_ENGINE_SHADER_PREFIX) !== -1) {
+			promise = PromiseUtil.createDummyPromise(null);
+			this._configs[ref] = promise;
+		}
+
 		var promise, url,
 			that = this;
 		if (noCache == null) {
