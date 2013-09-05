@@ -150,14 +150,9 @@ function (
 				var translation = this.entity.transformComponent.transform.translation;
 				translation.setv(change);
 				if (this.entity.transformComponent.parent) {
-					if(this.global) {
-						translation.div(this.entity.transformComponent.parent.worldTransform.scale);
-						translation.addv(this.entity.transformComponent.parent.worldTransform.translation);
-					} else {
-						inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
-						inverseTransformation.invert();
-						inverseTransformation.applyPostVector(translation);
-					}
+					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
+					inverseTransformation.invert();
+					inverseTransformation.applyPostPoint(translation);
 				}
 				this.entity.transformComponent.setUpdated();
 			}
@@ -201,9 +196,9 @@ function (
 		if (this.activeGizmo) {
 			if (this.activeGizmo.dirty) {
 				this.activeGizmo.process();
-			}/* else if (this.entity) { // Sort out!
-				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTRansform)
-			}*/
+			} else if (this.entity && this.entity.transformComponent._updated) {
+				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
+			}
 			this.activeGizmo.updateTransforms();
 		}
 

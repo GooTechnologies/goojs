@@ -68,7 +68,7 @@ define([
 	ScaleGizmo.prototype._scaleUniform = function() {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
-		var scale = Math.pow(1 + op[1] - p[1],this._scale);
+		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1],this._scale);
 		this._transformScale.muld(scale,scale,scale);
 	};
 
