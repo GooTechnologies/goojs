@@ -59,18 +59,6 @@ define([
 
 		var meshData = this._createMeshDataObject(meshConfig);
 		this._fillMeshData(meshData, meshConfig, bindata, compression);
-		if (meshConfig.pose) {
-			meshConfig.poseRef = meshConfig.pose;
-		}
-		/*
-		 if meshConfig.poseRef
-		 skelRef = meshConfig.poseRef
-		 @getConfig(skelRef).then (skelConfig)=>
-		 @updateObject(skelRef, skelConfig).then (skeleton)=>
-		 meshData.currentPose = skeleton
-		 return meshData
-		 else
-		 */
 
 		return PromiseUtil.createDummyPromise(meshData);
 	};
