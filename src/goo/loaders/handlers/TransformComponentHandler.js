@@ -13,11 +13,13 @@ define([
 	pu,
 	_
 ) {
+	/*jshint eqeqeq: false, -W041 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
 
 	TransformComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	TransformComponentHandler.prototype.constructor = TransformComponentHandler;
 	ComponentHandler._registerClass('transform', TransformComponentHandler);
 
 	TransformComponentHandler.prototype._prepare = function(config) {
@@ -28,7 +30,7 @@ define([
 		});
 	};
 
-	TransformComponentHandler.prototype._create = function(entity, config) {
+	TransformComponentHandler.prototype._create = function(entity/*, config*/) {
 		var component = new TransformComponent();
 		entity.setComponent(component);
 		return component;
