@@ -93,6 +93,8 @@ define([
 				//var cose = Math.cos(angle);
 				transform.scale.muld(sine, sine, 1);
 			}
+		} else {
+			transform.scale.scale(light.translation.length()/20);
 		}
 		transform.update();
 	};
