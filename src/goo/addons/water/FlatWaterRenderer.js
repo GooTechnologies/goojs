@@ -67,6 +67,7 @@ function (
 		this.waterMaterial = waterMaterial;
 
 		this.followCam = true;
+		this.updateWaterPlaneFromEntity = settings.updateWaterPlaneFromEntity !== undefined ? this.updateWaterPlaneFromEntity : true;
 
 		this.calcVect = new Vector3();
 		this.camReflectDir = new Vector3();
@@ -91,7 +92,9 @@ function (
 		var waterPlane = this.waterPlane;
 
 		this.waterCamera.copy(camera);
-		waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
+		if (this.updateWaterPlaneFromEntity) {
+			waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
+		}
 		var aboveWater = camera.translation.y > waterPlane.constant;
 
 		this.waterEntity.skip = true;
