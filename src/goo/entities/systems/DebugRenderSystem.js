@@ -35,6 +35,7 @@ function (
 			LightComponent: true,
 			MeshRendererComponent: false
 		};
+		this.inserted();
 
 		this._interestComponents = [
 			'CameraComponent',

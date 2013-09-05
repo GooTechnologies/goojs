@@ -760,7 +760,8 @@ function (
 					magFilter: 'NearestNeighbor'
 				}),
 				pickingMaterial: pickingMaterial,
-				pickingBuffer: new Uint8Array(4)
+				pickingBuffer: new Uint8Array(4),
+				clearColorStore: new Vector4()
 			};
 			skipUpdateBuffer = false;
 		} else if (this.hardwarePicking.pickingTarget === null) {
@@ -772,6 +773,8 @@ function (
 		}
 
 		if (!skipUpdateBuffer) {
+			this.hardwarePicking.clearColorStore.setv(this.clearColor);
+			this.setClearColor(0,0,0,1);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var x = Math.floor(clientX / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
@@ -779,7 +782,8 @@ function (
 				this.context.scissor(x, y, 1, 1);
 			}
 			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
-
+			var cd = this.hardwarePicking.clearColorStore;
+			this.setClearColor(cd[0],cd[1],cd[2],cd[3]);
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}

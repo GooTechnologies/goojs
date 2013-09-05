@@ -2,7 +2,6 @@ define([
 	'goo/entities/World',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
-	'goo/entities/systems/DebugRenderSystem',
 	'goo/renderer/Renderer',
 	'goo/renderer/Material',
 	'goo/renderer/Util',
@@ -27,7 +26,6 @@ function (
 	World,
 	TransformSystem,
 	RenderSystem,
-	DebugRenderSystem,
 	Renderer,
 	Material,
 	Util,
@@ -84,15 +82,6 @@ function (
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
-
-		if(parameters.toolMode) {
-			var debugRenderSystem = new DebugRenderSystem();
-			this.world.setSystem(debugRenderSystem);
-			this.renderSystems.push(debugRenderSystem);
-			var handleRenderSystem = new HandleRenderSystem();
-			this.world.setSystem(handleRenderSystem);
-			this.renderSystems.push(handleRenderSystem);
-		}
 
 		this.doProcess = true;
 		this.doRender = true;
@@ -178,6 +167,15 @@ function (
 			pickingStore: {}
 		};
 	}
+
+	GooRunner.prototype.setRenderSystem = function (system, idx) {
+		this.world.setSystem(system);
+		if (idx !== undefined) {
+			this.renderSystems.splice(idx, 0, system);
+		} else {
+			this.renderSystems.push(system);
+		}
+	};
 
 	var tpfSmoothingArrary = [];
 	var tpfIndex = 0;
@@ -420,7 +418,7 @@ function (
 			var x = e.clientX;
 			var y = e.clientY;
 			this._eventTriggered[type] = e;
-			this.renderSystem.pick(x, y, function(id, depth) {
+			this.pick(x, y, function(id, depth) {
 				var entity = this.world.entityManager.getEntityById(id);
 				this._dispatchEvent({
 					entity: entity,
