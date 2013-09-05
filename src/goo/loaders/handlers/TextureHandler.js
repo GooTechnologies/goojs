@@ -3,6 +3,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
+	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
@@ -13,12 +14,14 @@ define([
 	TextureCreator,
 	Texture,
 	DdsLoader,
+	CrunchLoader,
 	TgaLoader,
 	RSVP,
 	pu,
 	ru,
 	_
 ) {
+	/*jshint eqeqeq: false, -W041 */
 	/*
 	 Options:
 	 {bool} dontWaitForTextures if true, return promise that resolves once the texture object is created, don't wait
@@ -34,6 +37,7 @@ define([
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
+		crn: CrunchLoader, // TODO: not working atm.
 		tga: TgaLoader
 	};
 
@@ -59,7 +63,6 @@ define([
 
 	TextureHandler.prototype.update = function(ref, config) {
 		//var imgRef, loadedPromise, tc, texture, textureLoader, type, _ref,
-		var that = this;
 
 		var imgRef = config.url;
 		var type = (imgRef != null) ? imgRef.split('.').pop().toLowerCase() : void 0;
@@ -85,20 +88,30 @@ define([
 				var textureLoader = new TextureHandler.loaders[type]();
 				texture.a = imgRef;
 				loadedPromise = this.getConfig(imgRef).then(function(data) {
-					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
-
+					if (data && data.preloaded) {
+						_.extend(texture.image, data.image);
+						texture.format = data.format;
+						texture.needsUpdate = true;
+					}
+					else if (textureLoader.load) {
+						textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
+					}
+					else {
+						throw new Error("Loader for type " + type + " has no load() function");
+					}
 					return texture;
 				}).then(null, function(e) {
-					return console.error("Error loading texture: ", e);
+					console.error("Error loading texture: ", e);
 				});
 			} else if (type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'gif') {
 				loadedPromise = this.getConfig(imgRef).then(function(data) {
 					texture.setImage(data);
 					return texture;
 				}).then(null, function(e) {
-					return console.error("Error loading texture: ", e);
+					console.error("Error loading texture: ", e);
 				});
-			} else {
+			}
+			else {
 				throw new Error("Unknown texture type " + type);
 			}
 		}

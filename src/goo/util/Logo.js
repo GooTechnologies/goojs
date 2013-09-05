@@ -8,9 +8,9 @@ function() {
 	 */
 	function Logo() {
 	}
-	/** @type {string} Default goo blue */
+	/** @type {string} */
 	Logo.blue = "#2A3276";
-	/** @type {string} White */
+	/** @type {string} */
 	Logo.white = "#FFFFFF";
 
 	var defaults = {

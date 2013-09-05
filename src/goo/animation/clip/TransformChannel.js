@@ -44,6 +44,9 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	 * @param {number} progressPercent
 	 * @param {TransformData} value The data item to apply animation to
 	 */
+
+	//REVIEW: (nitpicking) "percent" goes from 0 to 100 as it is "per cent"
+	// "fraction" would probably be more suited for the unit interval ([0, 1])
 	TransformChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, applyTo) {
 		var transformData = applyTo;
 
@@ -96,6 +99,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 			transformData._rotation.setv(this.tmpQuat2);
 		}
 
+		//REVIEW: split lines!
 		transformData._translation.data[0] = (1 - progressPercent) * this._translations[index3A+0] + progressPercent * this._translations[index3B+0];
 		transformData._translation.data[1] = (1 - progressPercent) * this._translations[index3A+1] + progressPercent * this._translations[index3B+1];
 		transformData._translation.data[2] = (1 - progressPercent) * this._translations[index3A+2] + progressPercent * this._translations[index3B+2];

@@ -10,7 +10,7 @@ define(["goo/math/Vector"],
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Vector2|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Vector2|Float[]|...Float} arguments Initial values for the components.
 	 */
 
 	function Vector2() {
@@ -43,7 +43,7 @@ define(["goo/math/Vector"],
 	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -97,7 +97,7 @@ define(["goo/math/Vector"],
 	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -151,7 +151,7 @@ define(["goo/math/Vector"],
 	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -205,7 +205,7 @@ define(["goo/math/Vector"],
 	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector2} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -257,7 +257,7 @@ define(["goo/math/Vector"],
 	 *            every component.
 	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Float} Dot product.
 	 */
 

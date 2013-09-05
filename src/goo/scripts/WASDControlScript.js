@@ -114,16 +114,12 @@ function (Vector, Vector3) {
 	WASDControlScript.prototype.run = function (entity) {
 		// grab our transformComponent
 		var transformComponent = entity.transformComponent;
-		if (!transformComponent) {
-			return;
-		}
 		var transform = transformComponent.transform;
 		if (Vector.equals(this.moveVector, Vector3.ZERO)) {
 			return;
 		}
 
 		// direction of movement in local coords
-
 		this.calcVector.set(this.fwdVector.x * this.moveVector.z + this.leftVector.x * this.moveVector.x, this.fwdVector.y * this.moveVector.z
 			+ this.leftVector.y * this.moveVector.x, this.fwdVector.z * this.moveVector.z + this.leftVector.z * this.moveVector.x);
 		this.calcVector.normalize();

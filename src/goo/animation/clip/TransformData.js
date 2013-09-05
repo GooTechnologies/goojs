@@ -48,6 +48,7 @@ function (Quaternion, Vector3) {
 		var scaleX = 0.0, scaleY = 0.0, scaleZ = 0.0, transX = 0.0, transY = 0.0, transZ = 0.0;
 		var vectorData, weight;
 
+		//REVIEW: why not use Vector3 instead?
 		weight = 1 - blendWeight;
 		vectorData = this._translation;
 		transX += vectorData.x * weight;

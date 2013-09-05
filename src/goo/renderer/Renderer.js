@@ -1002,14 +1002,23 @@ function (
 			}
 		} else {
 			texture.generateMipmaps = false;
-			for (var i = 0; i < mipSizes.length; i++) {
-				dataLength = mipSizes[i];
-				context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
-					+ dataOffset, dataLength));
-				width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
-				height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
-				dataOffset += dataLength;
+			if (imageData instanceof Array) {
+				for (var i = 0; i < imageData.length; i++) {
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+				}
+			} else {
+				for (var i = 0; i < mipSizes.length; i++) {
+					dataLength = mipSizes[i];
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
+						+ dataOffset, dataLength));
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+					dataOffset += dataLength;
+				}
 			}
+
 			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
 			var size = mipSizes[mipSizes.length - 1];
 			if (mipSizes.length < expectedMipmaps) {

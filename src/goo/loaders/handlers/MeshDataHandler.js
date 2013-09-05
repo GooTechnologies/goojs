@@ -15,6 +15,7 @@ define([
 	_,
 	ArrayUtil
 ) {
+	/*jshint eqeqeq: false, -W041, bitwise: false */
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -45,7 +46,7 @@ define([
 		}
 	};
 
-	MeshDataHandler.prototype.remove = function(ref) {};
+	MeshDataHandler.prototype.remove = function(/*ref*/) {};
 
 	MeshDataHandler.prototype._createMeshData = function(meshConfig, bindata) {
 		var compression;
@@ -59,18 +60,6 @@ define([
 
 		var meshData = this._createMeshDataObject(meshConfig);
 		this._fillMeshData(meshData, meshConfig, bindata, compression);
-		if (meshConfig.pose) {
-			meshConfig.poseRef = meshConfig.pose;
-		}
-		/*
-		 if meshConfig.poseRef
-		 skelRef = meshConfig.poseRef
-		 @getConfig(skelRef).then (skelConfig)=>
-		 @updateObject(skelRef, skelConfig).then (skeleton)=>
-		 meshData.currentPose = skeleton
-		 return meshData
-		 else
-		 */
 
 		return PromiseUtil.createDummyPromise(meshData);
 	};
@@ -264,7 +253,7 @@ define([
 				scale: [scale, scale, scale, scale]
 			};
 		} else if (attr.substr(0, 8) === 'TEXCOORD') {
-			var texIdx = parseInt(attr.substr(8));
+			var texIdx = parseInt(attr.substr(8),10);
 			var texObj = data.textureCoords[texIdx];
 			options = {
 				offset: texObj.UVOffsets,

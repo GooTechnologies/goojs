@@ -160,7 +160,7 @@ define([
 
 	/**
 	 * @description Create a Surface from a supplied height map in the form of a matrix
-	 * @param {number[][]} [heightMap] The height map
+	 * @param {number[]} [heightMap] The height map
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
 	 * @returns {Surface} The created surface

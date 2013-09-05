@@ -42,7 +42,7 @@ function () {
 	/**
 	 * Check if the webgl context contains any errors in the current state
 	 *
-	 * @param {WebGL context} gl A valid WebGL context
+	 * @param {WebGLContext} gl A valid WebGL context
 	 */
 	Util.checkGLError = function (gl) {
 		var error = gl.getError();

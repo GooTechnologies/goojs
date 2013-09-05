@@ -9,8 +9,37 @@ define([
 ) {
 
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
-
-	function SuperCamScript(goo, properties) {
+	/**
+	 * @class Enables camera to orbit around a point in 3D space using the right mouse button, while panning with the middle button.
+	 * @extends OrbitCamControlScript
+	 * @param {Object} [properties]
+	 * @param {Element} [properties.domElement=document] Element to add mouse listeners to
+	 * @param {number} [properties.turnSpeedHorizontal=0.005]
+	 * @param {number} [properties.turnSpeedVertical=0.005]
+	 * @param {number} [properties.zoomSpeed=0.2]
+	 * @param {boolean} [properties.dragOnly=true] Only move the camera when dragging
+	 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
+	 * @param {number} [properties.minZoomDistance=1]
+	 * @param {number} [properties.maxZoomDistance=1000]
+	 * @param {number} [properties.minAscent=-89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach below the target point
+	 * @param {number} [properties.maxAscent=89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach above the target point
+	 * @param {boolean} [properties.clampAzimuth=false]
+	 * @param {number} [properties.minAzimuth=-90 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach clockwise of the target point
+	 * @param {number} [properties.maxAzimuth=270 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach counter-clockwise of the target point
+	 * @param {boolean} [properties.invertedX=false]
+	 * @param {boolean} [properties.invertedY=false]
+	 * @param {boolean} [properties.invertedWheel=true]
+	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi). 
+	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples: 
+	 * <ul>
+	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
+	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
+	 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
+	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
+	 * </ul>
+	 */
+	function OrbitNPanControlScript(goo, properties) {
 		properties = properties || {};
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
@@ -24,9 +53,9 @@ define([
 		this.altKey = false;
 	}
 
-	SuperCamScript.prototype = Object.create(OrbitCamControlScript.prototype);
+	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
-	SuperCamScript.prototype.setupMouseControls = function() {
+	OrbitNPanControlScript.prototype.setupMouseControls = function() {
 		var that = this;
 		this.domElement.addEventListener('mousedown', function (event) {
 			that.shiftKey = event.shiftKey;
@@ -58,7 +87,7 @@ define([
 		}, false);
 	};
 
-	SuperCamScript.prototype.updateButtonState = function(buttonIndex, down) {
+	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
 		if (buttonIndex === 2 || buttonIndex === 0 && this.shiftKey) {
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
 		} else if (buttonIndex === 1 || buttonIndex === 0 && this.altKey) {
@@ -70,7 +99,7 @@ define([
 			}
 		}
 	};
-	SuperCamScript.prototype.updateDeltas = function(mouseX, mouseY) {
+	OrbitNPanControlScript.prototype.updateDeltas = function(mouseX, mouseY) {
 		OrbitCamControlScript.prototype.updateDeltas.call(this, mouseX, mouseY);
 		var v = new Vector3();
 		var u = new Vector3();
@@ -94,14 +123,10 @@ define([
 				u.z,
 				v
 			);
-			// REVIEW: made the console.log conditional
-			if(this.debug) {
-				console.log(v.data);
-			}
 			this.lookAtPoint.setv(v);
 			this.dirty = true;
 		}
 	};
 
-	return SuperCamScript;
+	return OrbitNPanControlScript;
 });

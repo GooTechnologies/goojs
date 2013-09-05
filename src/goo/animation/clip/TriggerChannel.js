@@ -18,7 +18,7 @@ function (AbstractAnimationChannel, TriggerData) {
 
 	TriggerChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
-	/*
+	/**
 	 * Creates a data item for this type of channel
 	 * @returns {TriggerData}
 	 */
@@ -26,7 +26,7 @@ function (AbstractAnimationChannel, TriggerData) {
 		return new TriggerData();
 	};
 
-	/*
+	/**
 	 * Applies the channels animation state to supplied data item
 	 * @param {number} sampleIndex
 	 * @param {number} progressPercent

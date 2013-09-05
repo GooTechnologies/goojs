@@ -21,7 +21,8 @@ define([
 	'goo/loaders/handlers/TransformComponentHandler',
 	'goo/loaders/handlers/AnimationComponentHandler',
 	'goo/loaders/handlers/AnimationLayersHandler',
-	'goo/loaders/handlers/AnimationClipHandler'
+	'goo/loaders/handlers/AnimationClipHandler',
+	'goo/loaders/handlers/ProjectHandler'
 ],
 function(
 	ConfigHandler,
@@ -33,6 +34,7 @@ function(
 	PromiseUtil,
 	_
 ) {
+	/*jshint eqeqeq: false, -W041 */
 	'use strict';
 	/**
 	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
@@ -46,7 +48,7 @@ function(
 	 */
 	var _jsonTest, _texture_types;
 
-	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/;
+	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
 
 	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 
@@ -210,7 +212,7 @@ function(
 			this._configs[ref] = config;
 		}
 		this._objects = {};
-		var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
+		//var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
 
 		return this._loadRef(ref).then(function(config) {
 			var handled = 0;
@@ -289,6 +291,7 @@ function(
 						options: _.clone(options)
 					});
 				} else {
+					/*jshint -W055 */
 					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
 				}
 				if (config != null) {
@@ -373,7 +376,9 @@ function(
 				_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
-					if (!value.hasOwnProperty(_key)) continue;
+					if (!value.hasOwnProperty(_key)) {
+						continue;
+					}
 					traverse(_key, value[_key]);
 				}
 			}
