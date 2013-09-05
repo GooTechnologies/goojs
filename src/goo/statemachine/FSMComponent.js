@@ -11,6 +11,114 @@ function (
 ) {
 	"use strict";
 
+	// function StateMachineComponent() {
+
+	// }
+
+	// function StateLayer() {
+	// 	this.states = [];
+	// 	this.initialState = null;
+	// 	this.variables = {};
+	// }
+
+	// function State() {
+	// 	this.actions = [];
+	// 	this.layers = [];
+	// }
+
+
+
+	// var idleState = {
+	// 	uuid: 'uuid1',
+	// 	name: 'Idle',
+	// 	actions: [
+	// 		{
+	// 			type: 'keydown',
+	// 			properties: {
+	// 				key: 'w',
+	// 				event: 'keyevent'
+	// 			}
+	// 		}
+	// 	],
+	// 	events: [
+	// 		{
+	// 			name: 'keyevent',
+	// 			transition: 'uuid2'
+	// 		}
+	// 	]
+	// }
+
+	// var moveState = {
+	// 	uuid: 'uuid2',
+	// 	name: 'Move',
+	// 	actions: [
+	// 		{
+	// 			type: 'keyup',
+	// 			properties: {
+	// 				key: 'w',
+	// 				event: 'keyevent'
+	// 			}
+	// 		}
+	// 	],
+	// 	events: [
+	// 		{
+	// 			name: 'keyevent',
+	// 			transition: 'uuid1'
+	// 		}
+	// 	]
+	// }
+
+	// var movementLayer = {
+	// 	uuid: 'uuid3',
+	// 	name: 'MovementLayer',
+	// 	stateRefs: [
+	// 		'uuid1',
+	// 		'uuid2'
+	// 	],
+	// 	initialState: 'uuid1'
+	// }
+
+	// var aliveState = {
+	// 	uuid: 'uuid4',
+	// 	name: 'Alive',
+	// 	actions: [
+	// 		{
+	// 			type: 'eventlistener',
+	// 			properties: {
+	// 				event: 'hit'
+	// 			}
+	// 		}
+	// 	],
+	// 	layerRefs: [
+	// 		'uuid3'
+	// 	]
+	// }
+
+	// var deadState = {
+	// 	uuid: 'uuid5',
+	// 	name: 'Dead',
+	// }
+
+	// var playerLayer = {
+	// 	uuid: 'uuid6',
+	// 	name: 'PlayerLayer',
+	// 	stateRefs: [
+	// 		'uuid4',
+	// 		'uuid5'
+	// 	],
+	// 	initialState: 'uuid4'
+	// }
+
+	// var PlayerStateMachine = {
+	// 	layerRefs: [
+	// 		'uuid6'
+	// 	]
+	// };
+
+
+
+	//layer == statemachine
+
 	/**
 	 * @class 
 	 */
