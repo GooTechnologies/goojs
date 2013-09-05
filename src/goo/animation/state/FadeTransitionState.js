@@ -14,7 +14,7 @@ function (AbstractTransitionState) {
 
 	FadeTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
-	/*
+	/**
 	 * @description Update this state using the current global time.
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
@@ -31,7 +31,7 @@ function (AbstractTransitionState) {
 		}
 	};
 
-	/*
+	/**
 	 * Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
