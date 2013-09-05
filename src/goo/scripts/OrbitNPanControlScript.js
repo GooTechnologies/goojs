@@ -12,7 +12,6 @@ define([
 
 	function SuperCamScript(goo, properties) {
 		properties = properties || {};
-		properties.dragButton = 2;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
 			buttonDown : false,
@@ -21,14 +20,48 @@ define([
 			lastPos: new Vector3()
 		};
 		this.goo = goo;
+		this.shiftKey = false;
+		this.altKey = false;
 	}
 
 	SuperCamScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
+	SuperCamScript.prototype.setupMouseControls = function() {
+		var that = this;
+		this.domElement.addEventListener('mousedown', function (event) {
+			that.shiftKey = event.shiftKey;
+			that.altKey = event.altKey;
+
+			that.updateButtonState(event.button, true, event);
+		}, false);
+
+		document.addEventListener('mouseup', function (event) {
+			that.updateButtonState(event.button, false, event);
+		}, false);
+
+		document.addEventListener('mousemove', function (event) {
+			that.updateDeltas(event.clientX, event.clientY);
+		}, false);
+
+		this.domElement.addEventListener('mousewheel', function (event) {
+			that.applyWheel(event);
+		}, false);
+		this.domElement.addEventListener('DOMMouseScroll', function (event) {
+			that.applyWheel(event);
+		}, false);
+
+
+		// Avoid missing the mouseup event because of Chrome bug:
+		// https://code.google.com/p/chromium/issues/detail?id=244289
+		this.domElement.addEventListener('dragstart', function (event) {
+			event.preventDefault();
+		}, false);
+	};
 
 	SuperCamScript.prototype.updateButtonState = function(buttonIndex, down) {
-		OrbitCamControlScript.prototype.updateButtonState.call(this, buttonIndex, down);
-		if (buttonIndex === 1) {
+		if (buttonIndex === 2 || buttonIndex === 0 && this.shiftKey) {
+			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
+		} else if (buttonIndex === 1 || buttonIndex === 0 && this.altKey) {
 			this.panState.buttonDown = down;
 			if(down) {
 				this.panState.lastX = NaN;
@@ -62,8 +95,9 @@ define([
 				v
 			);
 			// REVIEW: made the console.log conditional
-			if( this.debug)
+			if(this.debug) {
 				console.log(v.data);
+			}
 			this.lookAtPoint.setv(v);
 			this.dirty = true;
 		}
