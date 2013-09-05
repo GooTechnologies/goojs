@@ -9,7 +9,7 @@ function () {
 	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} source Our sub source.
 	 * @param {number} frozenTime The time we are frozen at.
 	 */
-	function FrozenTreeSource (source, frozenTime) {
+	function FrozenClipSource (source, frozenTime) {
 		this._source = source;
 		this._time = frozenTime;
 	}
@@ -17,21 +17,21 @@ function () {
 	/*
 	 * @return a source data mapping for the channels in this clip source
 	 */
-	FrozenTreeSource.prototype.getSourceData = function () {
+	FrozenClipSource.prototype.getSourceData = function () {
 		return this._source.getSourceData();
 	};
 
 	/*
 	 * Sets start time of clipinstance to 0, so frozenTime will calculate correctly
 	 */
-	FrozenTreeSource.prototype.resetClips = function () {
+	FrozenClipSource.prototype.resetClips = function () {
 		this._source.resetClips(0);
 	};
 
 	/*
 	 * This will be called by a {@link SteadyState}, but will not update the animation, and will return true, to indicate animation is still active
 	 */
-	FrozenTreeSource.prototype.setTime = function () {
+	FrozenClipSource.prototype.setTime = function () {
 		this._source.setTime(this._time);
 		return true;
 	};
@@ -39,11 +39,11 @@ function () {
 	/*
 	 * A FrozenTreeSource is always active
 	 */
-	FrozenTreeSource.prototype.isActive = function () {
+	FrozenClipSource.prototype.isActive = function () {
 		return true;
 	};
 
-	FrozenTreeSource.prototype.setTimeScale = function() {};
+	FrozenClipSource.prototype.setTimeScale = function() {};
 
-	return FrozenTreeSource;
+	return FrozenClipSource;
 });

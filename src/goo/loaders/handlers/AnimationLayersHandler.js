@@ -137,7 +137,7 @@ define([
 					return this.getConfig(cfg.clipRef).then(function(config) {
 						return that.updateObject(cfg.clipRef, config, that.options);
 					}).then(function(clip) {
-						return source.initJointsById(clip, cfg.joints);
+						return source.initFromClip(clip, cfg.filter, cfg.channels);
 					});
 				} else {
 					return pu.createDummyPromise(source);

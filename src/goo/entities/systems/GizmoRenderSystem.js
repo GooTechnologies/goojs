@@ -127,7 +127,9 @@ function (
 	GizmoRenderSystem.prototype.setGlobal = function(global) {
 		if(this.global !== global) {
 			this.global = !!global;
-			this.showGizmo(this.activeGizmo);
+			if(this.entity && this.activeGizmo) {
+				this.showGizmo(this.activeGizmo);
+			}
 		}
 	};
 
