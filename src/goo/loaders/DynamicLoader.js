@@ -320,7 +320,7 @@ function(
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
 		// Do not create a request to load the reference if it is a shader
 		// to be loaded from the engine's shader library.
-		if (ref.indexOf(_ENGINE_SHADER_PREFIX) !== -1) {
+		if (ref.indexOf(_ENGINE_SHADER_PREFIX) === 0) {
 			promise = PromiseUtil.createDummyPromise(null);
 			this._configs[ref] = promise;
 		}

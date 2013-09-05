@@ -145,19 +145,21 @@ define([
 			var shader = Material.createShader(ShaderLib.simple);
 			promise.resolve(shader);
 			return promise;
-		} else if (ref.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) !== -1) {
-			// The shader is set to load from the engine's shader library.
-			// The shader reference is in the form <ENGINE_SHADER_PREFIX>shaderName,
-			// slicing the reference to get the shaderName.
-			var shaderName = ref.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
-			var shader = Material.createShader(ShaderLib[shaderName]);
-			var promise = new RSVP.Promise();
-			promise.resolve(shader);
-			return promise;
 		} else if (ref != null) {
-			return this.getConfig(ref).then(function(config) {
-				return that.updateObject(ref, config, that.options);
-			});
+			if (ref.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
+				// The shader is set to load from the engine's shader library.
+				// The shader reference is in the form <ENGINE_SHADER_PREFIX>shaderName,
+				// slicing the reference to get the shaderName.
+				var shaderName = ref.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
+				var shader = Material.createShader(ShaderLib[shaderName]);
+				var promise = new RSVP.Promise();
+				promise.resolve(shader);
+				return promise;
+			} else {
+				return this.getConfig(ref).then(function(config) {
+					return that.updateObject(ref, config, that.options);
+				});
+			}
 		} else {
 			var defaultShader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
 			return PromiseUtil.createDummyPromise(defaultShader);
