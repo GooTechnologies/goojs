@@ -18,7 +18,7 @@ function (
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new versor.
-	 * @param {Versor|Float[]|Float...} arguments Initial values for the components.
+	 * @param {Versor|Float[]|...Float} arguments Initial values for the components.
 	 */
 
 	function Versor() {

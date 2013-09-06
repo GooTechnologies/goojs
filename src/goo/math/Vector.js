@@ -26,7 +26,7 @@ function (
 	/**
 	 * @private
 	 * @description Binds aliases to the different vector components.
-	 * @param {String[][]} aliases Array of component aliases for each component index.
+	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
 
 	Vector.prototype.setupAliases = function (aliases) {
@@ -66,7 +66,7 @@ function (
 	 * @param {Vector|Float[]} lhs Vector or array of scalars.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -111,7 +111,7 @@ function (
 	 * @param {Vector|Float[]} lhs Vector or array of scalars.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -156,7 +156,7 @@ function (
 	 * @param {Vector|Float[]} lhs Vector or array of scalars.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -201,7 +201,7 @@ function (
 	 * @param {Vector|Float[]} lhs Vector or array of scalars.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -245,7 +245,7 @@ function (
 	 * @description Copies component values and stores them in a separate vector. Equivalent of "return (target = source);".
 	 * @param {Vector} source Source vector.
 	 * @param {Vector} [target] Target vector.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -284,7 +284,7 @@ function (
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
 	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Float} Dot product.
 	 */
 
@@ -327,7 +327,7 @@ function (
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {Illegal Arguments} If the arguments are of incompatible sizes.
+	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -520,7 +520,7 @@ function (
 
 	/**
 	 * @description Normalizes the vector to unit length. Equivalent of "return (this = this/sqrt(this•this));".
-	 * @throws {Normalization Error} If the magnitude of the vector is incredibly small.
+	 * @throws {NormalizationError} If the magnitude of the vector is incredibly small.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -557,7 +557,7 @@ function (
 
 	/**
 	 * @description Sets the components of the vector.
-	 * @param {Vector|Float[]|Float...} arguments Component values.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
 	 * @return {Vector} Self for chaining.
 	 */
 

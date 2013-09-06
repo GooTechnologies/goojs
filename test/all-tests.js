@@ -35,5 +35,6 @@ define([
 	'test/renderer/MeshData-test',
     'test/renderer/Camera-test',
 	'test/renderer/bounds/BoundingBox-test',
-	'test/statemachine/FSMComponent-test'
+	'test/statemachine/FSMComponent-test',
+	'test/entities/Bus-test'
 ], function() {});

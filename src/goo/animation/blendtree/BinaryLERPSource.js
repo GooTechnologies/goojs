@@ -135,8 +135,8 @@ function (
 	 * @param {object} rVal The object in which to store result
 	 * @param {string} key The key to object rVal, so rVal[key] is the store
 	 * @param {number} blendWeight
-	 * @param {number[0]} dataA The float is wrapped in an array
-	 * @param {number[0]} dataB The float is wrapped in an array
+	 * @param {number[]} dataA The float is wrapped in an array
+	 * @param {number[]} dataB The float is wrapped in an array
 	 */
 	BinaryLERPSource.blendFloatValues = function (rVal, key, blendWeight, dataA, dataB) {
 		if (isNaN(dataB)) {

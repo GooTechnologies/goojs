@@ -15,7 +15,7 @@ function (TransformChannel, JointData) {
 	function JointChannel (jointName, jointIndex, times, rotations, translations, scales, blendType) {
 		TransformChannel.call(this, JointChannel.JOINT_CHANNEL_NAME + jointIndex, times, rotations, translations, scales, blendType);
 
-		this._jointName = jointName;
+		this._jointName = jointName; //REVIEW: unused
 		this._jointIndex = jointIndex;
 	}
 

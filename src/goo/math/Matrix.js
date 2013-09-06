@@ -30,7 +30,7 @@ function (
 	/**
 	 * @private
 	 * @description Binds aliases to the different matrix components.
-	 * @param {String[][]} aliases Array of component aliases for each component index.
+	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
 	Matrix.prototype.setupAliases = function (aliases) {
 		var that = this;

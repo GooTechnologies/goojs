@@ -36,7 +36,7 @@ define([
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
-		crn: CrunchLoader,
+		crn: CrunchLoader, // TODO: not working atm.
 		tga: TgaLoader
 	};
 
@@ -88,20 +88,30 @@ define([
 				var textureLoader = new TextureHandler.loaders[type]();
 				texture.a = imgRef;
 				loadedPromise = this.getConfig(imgRef).then(function(data) {
-					textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
-
+					if (data && data.preloaded) {
+						_.extend(texture.image, data.image);
+						texture.format = data.format;
+						texture.needsUpdate = true;
+					}
+					else if (textureLoader.load) {
+						textureLoader.load(data, texture, config.verticalFlip, 0, data.byteLength);
+					}
+					else {
+						throw new Error("Loader for type " + type + " has no load() function");
+					}
 					return texture;
 				}).then(null, function(e) {
-					return console.error("Error loading texture: ", e);
+					console.error("Error loading texture: ", e);
 				});
 			} else if (type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'gif') {
 				loadedPromise = this.getConfig(imgRef).then(function(data) {
 					texture.setImage(data);
 					return texture;
 				}).then(null, function(e) {
-					return console.error("Error loading texture: ", e);
+					console.error("Error loading texture: ", e);
 				});
-			} else {
+			} 
+			else {
 				throw new Error("Unknown texture type " + type);
 			}
 		}

@@ -17,7 +17,7 @@ function (
 	 * @class Matrix with 3x3 components.
 	 * @extends Matrix
 	 * @description Creates a new matrix.
-	 * @param {Matrix3x3|number[]|number...} arguments Initial values for the components.
+	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
 	 */
 
 	function Matrix3x3() {
@@ -361,7 +361,7 @@ function (
 	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
-	 * @throws {Singular Matrix} If the matrix is singular and cannot be inverted.
+	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
