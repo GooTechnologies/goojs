@@ -15,7 +15,8 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shadow/ShadowHandler'
+	'goo/renderer/shadow/ShadowHandler',
+	'goo/entities/EventHandler'
 ],
 /** @lends */
 function (
@@ -34,7 +35,8 @@ function (
 	Transform,
 	RenderQueue,
 	ShaderLib,
-	ShadowHandler
+	ShadowHandler,
+	EventHandler
 ) {
 	"use strict";
 
@@ -363,6 +365,11 @@ function (
 	};
 
 	Renderer.mainCamera = null;
+	EventHandler.addListener({
+		setCurrentCamera : function (camera) {
+			Renderer.mainCamera = camera;
+		}
+	});
 
 	Renderer.prototype.checkResize = function (camera) {
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;

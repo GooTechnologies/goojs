@@ -46,6 +46,7 @@ function (
 		this.camera = null;
 		this.lights = [];
 		this.currentTpf = 0.0;
+		this.scale = 20;
 
 		var that = this;
 		EventHandler.addListener({
@@ -86,7 +87,7 @@ function (
 					}
 					renderables[0].transform.copy(entity.transformComponent.worldTransform);
 					renderables[1].transform.copy(entity.transformComponent.worldTransform);
-					DebugDrawHelper.update(renderables, component);
+					DebugDrawHelper.update(renderables, component, this.scale);
 					this.renderList[count++] = renderables[0];
 					this.renderList[count++] = renderables[1];
 				}

@@ -132,7 +132,6 @@ define([
 	}
 
 	function buildCone() {
-		var angle = 45;
 		var length = -1;
 
 		var meshBuilder = new MeshBuilder();
@@ -140,7 +139,7 @@ define([
 		var nSegments = 64;
 		var nParallel = 2;
 		var dxParallel = length / 2;
-		var dyParallel = Math.sin(angle * MathUtils.DEG_TO_RAD) * dxParallel;
+		var dyParallel = dxParallel;
 
 		for(var i = 1; i <= nParallel; i++) {
 			var circle = buildCircle(dyParallel * i, nSegments);

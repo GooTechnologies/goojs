@@ -58,7 +58,7 @@ define([
 		];
 	};
 
-	DebugDrawHelper.update = function(renderables, component) {
+	DebugDrawHelper.update = function(renderables, component, scale) {
 		if(component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
 			if((camera.far / camera.near) !== renderables[1].farNear) {
@@ -68,7 +68,10 @@ define([
 			component.camera.changedProperties = false;
 		}
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
-		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
+		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component, scale);
+
+		renderables[0].transform.scale.scale(scale);
+		renderables[0].transform.update();
 	};
 
 	DebugDrawHelper.LightComponent = {};
@@ -82,19 +85,18 @@ define([
 		color[2] = light.color.data[2];
 	};
 
-	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
+	DebugDrawHelper.LightComponent.updateTransform = function(transform, component, scale) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
 			var r = light.range;
 			transform.scale.setd(r,r,r);
 			if (light instanceof SpotLight) {
 				var angle = light.angle * Math.PI / 180;
-				var sine = Math.sin(angle) / 0.7071; // sin(45°)
-				//var cose = Math.cos(angle);
-				transform.scale.muld(sine, sine, 1);
+				var tan = Math.tan(angle);
+				transform.scale.muld(tan, tan, 1);
 			}
 		} else {
-			transform.scale.scale(light.translation.length()/20);
+			transform.scale.scale(scale);
 		}
 		transform.update();
 	};
@@ -106,9 +108,10 @@ define([
 	DebugDrawHelper.CameraComponent.updateTransform = function(transform, component) {
 		var camera = component.camera;
 		var z = camera.far;
-		var y = z * Math.tan(camera.fov);
+		var y = z * 2 * Math.tan(camera.fov/2 * Math.PI/180);
 		var x = y * camera.aspect;
 		transform.scale.setd(x, y, z);
+		transform.update();
 	};
 
 	return DebugDrawHelper;
