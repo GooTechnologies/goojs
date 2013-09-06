@@ -1,119 +1,235 @@
 define([
+	'goo/entities/Bus',
 	'goo/entities/components/Component',
-	'goo/statemachine/State',
-	'goo/lib/machina/machina.min'
+	'goo/statemachine/State'
 ],
 /** @lends */
 function (
+	Bus,
 	Component,
-	State,
-	machina
+	State
 ) {
 	"use strict";
 
-	// function StateMachineComponent() {
+	function StateMachineComponent() {
+		this.bus = new Bus();
+		this.machines = [];
+	}
 
-	// }
+	StateMachineComponent.prototype.update = function() {
+	  	for (var i = 0; i < this.machines.length; i++) {
+			var machine = this.machines[i];
+			machine.update();
+		}
+	};
+	//=========================================================================
+	function Machine() {
+		this.states = [];
+		this.initialState = 0; // convention: always 0
+		this.currentState = null;
+	}
 
-	// function StateLayer() {
-	// 	this.states = [];
-	// 	this.initialState = null;
-	// 	this.variables = {};
-	// }
+	Machine.prototype.update = function() {
+		var jumpUp;
+		jumpUp = this.currentState.update();
 
-	// function State() {
-	// 	this.actions = [];
-	// 	this.layers = [];
-	// }
+		if (this.contains(jumpUp)) {
+			this.curentState.kill();
+			this.setState(jumpUp);
+		} else {
+
+		}
+
+		return jumpUp;
+	}
+
+	Machine.prototype.contains = function(state) {
+		return this.states.indexOf(state) !== -1;
+	}
+
+	Machine.prototype.setState = function(state) {
+		// change state
+		this.activeState = state;
+
+		// reset initial state of child machines
+		this.activeState.reset();
+
+		// do on enter of new state
+		this.activeState.enter();
+	}
+
+	Machine.prototype.reset = function() {
+		// reset self
+		this.activeState = this.states[this.initialState];
+
+		// propagate reset
+		this.activeState.reset();
+	}
+
+	Machine.prototype.kill = function() {
+		this.currentState.kill();
+	}
+
+	Machine.prototype.enter = function() {
+		this.activeState.enter();
+	}
+	//=========================================================================
+	function State(uuid) {
+		this.uuid = uuid;
+		this.onUpdate = [];
+		this.onExit = [];
+		this.onEnter = [];
+		this.machines = [];
+		this.vars = {};
+	}
+
+	State.prototype.update = function() {
+		var jumpUp;
+
+		// do on update of self
+		for (var i = 0; i < this.onUpdate.length; i++) {
+			jumpUp = this.onUpdate[i].run(this);
+			if(jumpUp) { return jumpUp; }
+		}
+
+	    // propagate on update
+		for (var i = 0; i < this.machines.length; i++) {
+			var machine = this.machines[i];
+			jumpUp = machine.update();
+			if(jumpUp) { return jumpUp; }
+		}
+	}
+
+	State.prototype.reset = function() {
+		for (var i = 0; i < this.machines.length; i++) {
+			this.machines.reset();
+		}
+	}
+
+	State.prototype.kill = function() {
+		for (var i = 0; i < this.machines.length; i++) {
+			this.machines.kill();
+		}
+		for (var i = 0; i < this.onExit.length; i++) {
+			this.onExit[i]();
+		}
+	}
+
+	State.prototype.enter = function() {
+		// on enter of self
+		for (var i = 0; i < this.onEnter.length; i++) {
+			this.onEnter[i]();
+		}
+
+		// propagate on enter
+		for (var i = 0; i < this.machines.length; i++) {
+			this.machines.enter();
+		}
+	}
 
 
+	var firstState = {
+		uuid: 'uuid1',
+		onUpdate: [
+			{
+				type: 'console',
+				properties: {
+					text: 'uuid1 onupdate action1'
+				}
+			},
+			{
+				type: 'keytrans',
+				properties: {
+					key: 'uuid1 onupdate action1',
+					dest: 'uuid2'
+				}
+			}
+		],
+		onEnter: [
+			{
+				type: 'console',
+				properties: {
+					text: 'uuid1 onenter action1'
+				}
+			}
+		],
+		onExit: [
+			{
+				type: 'console',
+				properties: {
+					text: 'uuid1 onexit action1'
+				}
+			}
+		],
+		machines: []
+	}
 
-	// var idleState = {
-	// 	uuid: 'uuid1',
-	// 	name: 'Idle',
-	// 	actions: [
-	// 		{
-	// 			type: 'keydown',
-	// 			properties: {
-	// 				key: 'w',
-	// 				event: 'keyevent'
-	// 			}
-	// 		}
-	// 	],
-	// 	events: [
-	// 		{
-	// 			name: 'keyevent',
-	// 			transition: 'uuid2'
-	// 		}
-	// 	]
-	// }
+	var moveState = {
+		uuid: 'uuid2',
+		name: 'Move',
+		actions: [
+			{
+				type: 'keyup',
+				properties: {
+					key: 'w',
+					event: 'keyevent'
+				}
+			}
+		],
+		events: [
+			{
+				name: 'keyevent',
+				transition: 'uuid1'
+			}
+		]
+	}
 
-	// var moveState = {
-	// 	uuid: 'uuid2',
-	// 	name: 'Move',
-	// 	actions: [
-	// 		{
-	// 			type: 'keyup',
-	// 			properties: {
-	// 				key: 'w',
-	// 				event: 'keyevent'
-	// 			}
-	// 		}
-	// 	],
-	// 	events: [
-	// 		{
-	// 			name: 'keyevent',
-	// 			transition: 'uuid1'
-	// 		}
-	// 	]
-	// }
+	var movementLayer = {
+		uuid: 'uuid3',
+		name: 'MovementLayer',
+		stateRefs: [
+			'uuid1',
+			'uuid2'
+		],
+		initialState: 'uuid1'
+	}
 
-	// var movementLayer = {
-	// 	uuid: 'uuid3',
-	// 	name: 'MovementLayer',
-	// 	stateRefs: [
-	// 		'uuid1',
-	// 		'uuid2'
-	// 	],
-	// 	initialState: 'uuid1'
-	// }
+	var aliveState = {
+		uuid: 'uuid4',
+		name: 'Alive',
+		actions: [
+			{
+				type: 'eventlistener',
+				properties: {
+					event: 'hit'
+				}
+			}
+		],
+		layerRefs: [
+			'uuid3'
+		]
+	}
 
-	// var aliveState = {
-	// 	uuid: 'uuid4',
-	// 	name: 'Alive',
-	// 	actions: [
-	// 		{
-	// 			type: 'eventlistener',
-	// 			properties: {
-	// 				event: 'hit'
-	// 			}
-	// 		}
-	// 	],
-	// 	layerRefs: [
-	// 		'uuid3'
-	// 	]
-	// }
+	var deadState = {
+		uuid: 'uuid5',
+		name: 'Dead',
+	}
 
-	// var deadState = {
-	// 	uuid: 'uuid5',
-	// 	name: 'Dead',
-	// }
+	var playerLayer = {
+		uuid: 'uuid6',
+		name: 'PlayerLayer',
+		stateRefs: [
+			'uuid4',
+			'uuid5'
+		],
+		initialState: 'uuid4'
+	}
 
-	// var playerLayer = {
-	// 	uuid: 'uuid6',
-	// 	name: 'PlayerLayer',
-	// 	stateRefs: [
-	// 		'uuid4',
-	// 		'uuid5'
-	// 	],
-	// 	initialState: 'uuid4'
-	// }
-
-	// var PlayerStateMachine = {
-	// 	layerRefs: [
-	// 		'uuid6'
-	// 	]
-	// };
+	var PlayerStateMachine = {
+		layerRefs: [
+			'uuid6'
+		]
+	};
 
 
 
