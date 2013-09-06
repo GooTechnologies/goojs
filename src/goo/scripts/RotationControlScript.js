@@ -54,11 +54,22 @@ define([
 		this.name = 'RotationControlScript';
 		this.states = { 'dirty' : false, 'x' : null, 'y' : null, 'dx' : null, 'dy' : null };
 
+		if(this.element) {
+			this.setupMouseControls();
+		}
+	}
+	RotationControlScript.prototype.setupMouseControls = function() {
 		this.element.addEventListener('mousedown', this.bindings.attach, false);
 		this.element.addEventListener('touchstart', this.bindings.attach, false);
-	}
+	};
 
-	RotationControlScript.prototype.run = function (entity) {
+	RotationControlScript.prototype.run = function (entity, tpf, env) {
+		if(env) {
+			if(!this.element && env.domElement) {
+				this.element = env.domElement;
+				this.setupMouseControls();
+			}
+		}
 		if (this.states.dirty) {
 			var x = Math.PI * this.states.dy / this.element.clientHeight;
 			var y = Math.PI * this.states.dx / this.element.clientWidth;

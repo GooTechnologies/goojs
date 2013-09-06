@@ -10,8 +10,9 @@ function (Vector3, Matrix3x3) {
 	 *
 	 * @param {Element} domElement Element to add mouse/key listeners to
 	 */
-	function BasicControlScript (domElement) {
-		this.domElement = domElement === undefined ? document : domElement.domElement || domElement;
+	function BasicControlScript (properties) {
+		properties = properties || {};
+		this.domElement = properties.domElement === undefined ? null : properties.domElement.domElement || properties.domElement;
 
 		this.name = 'BasicControlScript';
 
@@ -165,8 +166,6 @@ function (Vector3, Matrix3x3) {
 			this.updateRotationVector();
 		};
 
-		var boundMouseDown, boundMouseMove, boundMouseUp;
-
 		this.mousedown = function (event) {
 			if (this.domElement !== document) {
 				this.domElement.focus();
@@ -180,14 +179,11 @@ function (Vector3, Matrix3x3) {
 			this.mouseDownY = event.pageY;
 			this.mouseStatus = 1;
 
-			boundMouseMove = this.mousemove.bind(this);
-			boundMouseUp = this.mouseup.bind(this);
-
-			document.addEventListener('mousemove', boundMouseMove, false);
-			document.addEventListener('mouseup', boundMouseUp, false);
-			document.addEventListener('touchmove', boundMouseMove, false);
-			document.addEventListener('touchend', boundMouseUp, false);
-		};
+			document.addEventListener('mousemove', this.mousemove, false);
+			document.addEventListener('mouseup', this.mouseup, false);
+			document.addEventListener('touchmove', this.mousemove, false);
+			document.addEventListener('touchend', this.mouseup, false);
+		}.bind(this);
 
 		this.mousemove = function (event) {
 			if (this.mouseStatus > 0) {
@@ -201,7 +197,7 @@ function (Vector3, Matrix3x3) {
 				this.mouseDownX = event.pageX;
 				this.mouseDownY = event.pageY;
 			}
-		};
+		}.bind(this);
 
 		this.mouseup = function (event) {
 			if (!this.mouseStatus) {
@@ -215,11 +211,11 @@ function (Vector3, Matrix3x3) {
 
 			this.updateRotationVector();
 
-			document.removeEventListener('mousemove', boundMouseMove);
-			document.removeEventListener('mouseup', boundMouseUp);
-			document.removeEventListener('touchmove', boundMouseMove);
-			document.removeEventListener('touchend', boundMouseUp);
-		};
+			document.removeEventListener('mousemove', this.mousemove);
+			document.removeEventListener('mouseup', this.mouseup);
+			document.removeEventListener('touchmove', this.mousemove);
+			document.removeEventListener('touchend', this.mouseup);
+		}.bind(this);
 
 		this.updateMovementVector = function () {
 			var forward = this.moveState.forward || this.autoForward && !this.moveState.back ? 1 : 0;
@@ -249,16 +245,20 @@ function (Vector3, Matrix3x3) {
 			}
 		};
 
-		boundMouseDown = this.mousedown.bind(this);
-
-		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		this.domElement.addEventListener('touchstart', boundMouseDown, false);
-		this.domElement.addEventListener('keydown', this.keydown.bind(this), false);
-		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
-
+		if(this.domElement) {
+			this.setupMouseControls();
+		}
 		this.updateMovementVector();
 		this.updateRotationVector();
 	}
+
+	BasicControlScript.prototype.setupMouseControls = function() {
+		this.domElement.setAttribute('tabindex', -1);
+		this.domElement.addEventListener('mousedown', this.mousedown, false);
+		this.domElement.addEventListener('touchstart', this.mousedown, false);
+		this.domElement.addEventListener('keydown', this.keydown.bind(this), false);
+		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
+	};
 
 	/*
 	 * @description Test on how to expose variables to a tool.
@@ -274,7 +274,13 @@ function (Vector3, Matrix3x3) {
 		}];
 	};
 
-	BasicControlScript.prototype.run = function (entity) {
+	BasicControlScript.prototype.run = function (entity, tpf, env) {
+		if(env) {
+			if(!this.domElement && env.domElement) {
+				this.domElement = env.domElement;
+				this.setupMouseControls();
+			}
+		}
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 

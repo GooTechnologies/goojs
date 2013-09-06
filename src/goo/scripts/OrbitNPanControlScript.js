@@ -39,7 +39,7 @@ define([
 	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
 	 * </ul>
 	 */
-	function OrbitNPanControlScript(goo, properties) {
+	function OrbitNPanControlScript(properties) {
 		properties = properties || {};
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
@@ -48,7 +48,8 @@ define([
 			lastY: NaN,
 			lastPos: new Vector3()
 		};
-		this.goo = goo;
+		this.viewportWidth = 0;
+		this.viewportHeight = 0;
 		this.shiftKey = false;
 		this.altKey = false;
 	}
@@ -85,6 +86,7 @@ define([
 		this.domElement.addEventListener('dragstart', function (event) {
 			event.preventDefault();
 		}, false);
+		this.domElement.oncontextmenu = function() { return false; };
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
@@ -113,8 +115,8 @@ define([
 
 
 			c.getScreenCoordinates(this.panState.lastPos, 1, 1, u);
-			u.x -= (mouseX - this.panState.lastX) / this.goo.renderer.viewportWidth;
-			u.y += (mouseY - this.panState.lastY) / this.goo.renderer.viewportHeight;
+			u.x -= (mouseX - this.panState.lastX) / this.viewportWidth;
+			u.y += (mouseY - this.panState.lastY) / this.viewportHeight;
 			c.getWorldCoordinates(
 				u.x,
 				u.y,
@@ -125,6 +127,14 @@ define([
 			);
 			this.lookAtPoint.setv(v);
 			this.dirty = true;
+		}
+	};
+
+	OrbitNPanControlScript.prototype.run = function(entity, tpf, env) {
+		OrbitCamControlScript.prototype.run.call(this, entity, tpf, env);
+		if (env) {
+			this.viewportWidth = env.viewportWidth;
+			this.viewportHeight = env.viewportHeight;
 		}
 	};
 

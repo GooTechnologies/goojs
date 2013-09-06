@@ -24,10 +24,7 @@ function (Vector, Vector3) {
 
 		this.name = 'WASDControlScript';
 
-		this.domElement = properties.domElement || document;
-		if (properties.domElement) {
-			this.domElement.setAttribute('tabindex', -1);
-		}
+		this.domElement = properties.domElement || null;
 
 		this.walkSpeed = !isNaN(properties.walkSpeed) ? properties.walkSpeed : 100.0;
 		this.crawlSpeed = !isNaN(properties.crawlSpeed) ? properties.crawlSpeed : 10.0;
@@ -57,7 +54,9 @@ function (Vector, Vector3) {
 		this.moveVector = new Vector3(0, 0, 0);
 		this.calcVector = new Vector3();
 
-		this.setupKeyControls();
+		if(this.domElement) {
+			this.setupKeyControls();
+		}
 	}
 
 	WASDControlScript.prototype.updateMovementVector = function () {
@@ -102,6 +101,7 @@ function (Vector, Vector3) {
 
 	WASDControlScript.prototype.setupKeyControls = function () {
 		var that = this;
+		this.domElement.setAttribute('tabindex', -1);
 		this.domElement.addEventListener('keydown', function (event) {
 			that.updateKeys(event, true);
 		}, false);
@@ -111,7 +111,13 @@ function (Vector, Vector3) {
 		}, false);
 	};
 
-	WASDControlScript.prototype.run = function (entity) {
+	WASDControlScript.prototype.run = function (entity, tpf, env) {
+		if(env) {
+			if (!this.domElement && env.domElement) {
+				this.domElement = env.domElement;
+				this.setupKeyControls();
+			}
+		}
 		// grab our transformComponent
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
