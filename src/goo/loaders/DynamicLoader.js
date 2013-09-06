@@ -22,7 +22,9 @@ define([
 	'goo/loaders/handlers/AnimationComponentHandler',
 	'goo/loaders/handlers/AnimationLayersHandler',
 	'goo/loaders/handlers/AnimationClipHandler',
-	'goo/loaders/handlers/ProjectHandler'
+	'goo/loaders/handlers/ProjectHandler',
+	'goo/loaders/handlers/ScriptComponentHandler',
+	'goo/loaders/handlers/ScriptHandler'
 ],
 function(
 	ConfigHandler,
@@ -34,7 +36,7 @@ function(
 	PromiseUtil,
 	_
 ) {
-	/*jshint eqeqeq: false, -W041 */
+	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
 	/**
 	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.

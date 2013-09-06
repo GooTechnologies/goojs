@@ -26,7 +26,7 @@ define([
 		});
 	};
 
-	MeshDataComponentHandler.prototype._create = function(entity, config) {};
+	MeshDataComponentHandler.prototype._create = function(/*entity, config*/) {};
 
 	MeshDataComponentHandler.prototype.update = function(entity, config) {
 		var that = this;
@@ -48,9 +48,9 @@ define([
 		p2 = this.getConfig(meshRef).then(function(config) {
 			return that.updateObject(meshRef, config);
 		});
-		return RSVP.all([p1, p2]).then(function(arumentArray) {
-			var skeletonPose = arumentArray[0];
-			var meshData = arumentArray[1];
+		return RSVP.all([p1, p2]).then(function(argumentArray) {
+			var skeletonPose = argumentArray[0];
+			var meshData = argumentArray[1];
 			var component = new MeshDataComponent(meshData);
 
 			if (meshData.boundingBox) {
