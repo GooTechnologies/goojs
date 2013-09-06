@@ -1,19 +1,26 @@
 define([
-	'goo/entities/Bus',
+	//'goo/entities/Bus',
 	'goo/entities/components/Component',
 	'goo/statemachine/State'
 ],
 /** @lends */
 function (
-	Bus,
+	//Bus,
 	Component,
 	State
 ) {
 	"use strict";
 
 	function FSMComponent() {
-		this.bus = new Bus();
+		//this.bus = new Bus();
 		this.machines = [];
+	}
+
+	FSMComponent.prototype.init = function() {
+		for (var i = 0; i < this.machines.length; i++) {
+			this.machines[i].reset();
+			this.machines[i].enter();
+		}
 	}
 
 	FSMComponent.prototype.update = function() {

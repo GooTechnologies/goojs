@@ -8,8 +8,8 @@ function (
 	"use strict";
 
 	function Machine() {
-		this.states = [];
-		this.initialState = 0; // convention: always 0
+		this.states = null; //{};
+		this.initialState = 'entry';
 		this.currentState = null;
 	}
 
@@ -18,34 +18,34 @@ function (
 		jumpUp = this.currentState.update();
 
 		if (this.contains(jumpUp)) {
-			this.curentState.kill();
-			this.setState(jumpUp);
+			this.currentState.kill();
+			this.setState(this.states[jumpUp]);
 		}
 
 		return jumpUp;
 	};
 
-	Machine.prototype.contains = function(state) {
-		return this.states.indexOf(state) !== -1;
+	Machine.prototype.contains = function(uuid) {
+		return !!this.states[uuid];
 	};
 
 	Machine.prototype.setState = function(state) {
 		// change state
-		this.activeState = state;
+		this.currentState = state;
 
 		// reset initial state of child machines
-		this.activeState.reset();
+		this.currentState.reset();
 
 		// do on enter of new state
-		this.activeState.enter();
+		this.currentState.enter();
 	};
 
 	Machine.prototype.reset = function() {
 		// reset self
-		this.activeState = this.states[this.initialState];
+		this.currentState = this.states[this.initialState];
 
 		// propagate reset
-		this.activeState.reset();
+		this.currentState.reset();
 	};
 
 	Machine.prototype.kill = function() {
@@ -53,7 +53,15 @@ function (
 	};
 
 	Machine.prototype.enter = function() {
-		this.activeState.enter();
+		this.currentState.enter();
+	};
+
+	Machine.prototype.addState = function(state) {
+		if(!this.states) {
+			this.states = {};
+			this.initialState = state.uuid;
+		}
+		this.states[state.uuid] = state;
 	};
 
 	return Machine;

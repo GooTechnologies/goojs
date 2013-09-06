@@ -21,9 +21,9 @@ define([
 	}
 
 	FSMHandler.prototype = Object.create(ConfigHandler.prototype);
-	ConfigHandler._registerClass('fsm', FSMHandler);
+	ConfigHandler._registerClass('state', FSMHandler);
 
-	FSMHandler.prototype.update = function(ref, meshConfig) {
+	FSMHandler.prototype.update = function(ref, fsmConfig) {
 		var that = this;
 		if (!this._objects[ref]) {
 			if (meshConfig.binaryData) {

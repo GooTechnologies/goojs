@@ -33,13 +33,13 @@ function (
 
 	State.prototype.reset = function() {
 		for (var i = 0; i < this.machines.length; i++) {
-			this.machines.reset();
+			this.machines[i].reset();
 		}
 	};
 
 	State.prototype.kill = function() {
 		for (var i = 0; i < this.machines.length; i++) {
-			this.machines.kill();
+			this.machines[i].kill();
 		}
 		for (var i = 0; i < this.actions.length; i++) {
 			this.actions[i].onExit(this);
@@ -54,7 +54,7 @@ function (
 
 		// propagate on enter
 		for (var i = 0; i < this.machines.length; i++) {
-			this.machines.enter();
+			this.machines[i].enter();
 		}
 	};
 
