@@ -69,7 +69,7 @@ function (
 		this.world = new World();
 		this.renderer = new Renderer(parameters);
 
-		this.world.setSystem(new ScriptSystem());
+		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer));
