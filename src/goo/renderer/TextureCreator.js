@@ -131,12 +131,15 @@ function (
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop) {
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, videoSettings) {
 		if (TextureCreator.cache[videoURL] !== undefined) {
 			return TextureCreator.cache[videoURL];
 		}
 
 		var video = document.createElement('video');
+		for (var attribute in videoSettings) {
+			video[attribute] = videoSettings[attribute];
+		}
 		video.loop = (typeof (loop) === 'boolean') ? loop : true;
 
 		video.addEventListener('error', function () {
