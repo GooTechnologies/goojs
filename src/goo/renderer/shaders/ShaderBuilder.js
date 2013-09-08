@@ -113,6 +113,7 @@ function(
 			shader.uniforms.spotLight = shader.uniforms.spotLight || [];
 			shader.uniforms.spotLightDirection = shader.uniforms.spotLightDirection || [];
 			shader.uniforms.spotLightAngle = shader.uniforms.spotLightAngle || [];
+			shader.uniforms.spotLightPenumbra = shader.uniforms.spotLightPenumbra || [];
 			shader.uniforms.spotLightExponent = shader.uniforms.spotLightExponent || [];
 
 			// Use default light?
@@ -160,6 +161,9 @@ function(
 					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.data[2];
 
 					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
+					/*jshint eqeqeq: false, -W041 */
+					shader.uniforms.spotLightPenumbra[spotCount] =
+						(light.penumbra != null) ? Math.cos(light.penumbra * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
 					shader.uniforms.spotLightExponent[spotCount] = light.exponent;
 
 					spotCount++;
@@ -252,6 +256,7 @@ function(
 				"uniform vec4 spotLight[MAX_SPOT_LIGHTS];",
 				"uniform vec3 spotLightDirection[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightAngle[MAX_SPOT_LIGHTS];",
+				"uniform float spotLightPenumbra[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightExponent[MAX_SPOT_LIGHTS];",
 			"#endif",
 
@@ -340,7 +345,16 @@ function(
 					// 'spotDiffuse = vec3(spotEffect);',
 
 					"if (spotEffect > spotLightAngle[i]) {",
-						"spotEffect = max(pow(spotEffect, spotLightExponent[i]), 0.0);",
+						//"spotEffect = clamp(spotEffect/1.0, 1.0, 0.0);",
+
+						"if (spotLightAngle[i] < spotLightPenumbra[i]) {",
+							"spotEffect = (spotEffect-spotLightAngle[i])/(spotLightPenumbra[i] - spotLightAngle[i]);",
+							"spotEffect = clamp(spotEffect, 0.0, 1.0);",
+						"} else {",
+							"spotEffect = 1.0;",
+						"}",
+
+						//"spotEffect = max(pow(spotEffect, spotLightExponent[i]), 0.0);",
 
 						// diffuse
 						"float dotProduct = dot(N, lVector);",

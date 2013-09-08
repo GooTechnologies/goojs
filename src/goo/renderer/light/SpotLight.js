@@ -29,6 +29,8 @@ function (
 		/** @type {Number} */
 		this.angle = 45;
 		/** @type {Number} */
+		this.penumbra = null;
+		/** @type {Number} */
 		this.exponent = 16.0;
 	}
 
