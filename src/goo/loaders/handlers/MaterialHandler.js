@@ -152,9 +152,7 @@ define([
 				// slicing the reference to get the shaderName.
 				var shaderName = ref.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
 				var shader = Material.createShader(ShaderLib[shaderName]);
-				var promise = new RSVP.Promise();
-				promise.resolve(shader);
-				return promise;
+				return PromiseUtil.createDummyPromise(shader);
 			} else {
 				return this.getConfig(ref).then(function(config) {
 					return that.updateObject(ref, config, that.options);

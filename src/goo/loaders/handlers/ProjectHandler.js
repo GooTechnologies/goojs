@@ -1,9 +1,11 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/PromiseUtil'
 ], function(
 	ConfigHandler,
-	RSVP
+	RSVP,
+	PromiseUtil
 ) {
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -25,26 +27,32 @@ define([
 	ProjectHandler.prototype.update = function(ref, config) {
 		var that = this;
 		var promises = [];
-		if (config.sceneRefs != null && config.sceneRefs.length) {
+		if (config.entityRefs != null && config.entityRefs.length) {
 
-			var handleSceneRef = function(sceneRef) {
-				return promises.push(that.getConfig(sceneRef).then(function(sceneConfig) {
-					return that.updateObject(sceneRef, sceneConfig, that.options);
+			var handleEntityRef = function(entityRef) {
+				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
+					return that.updateObject(entityRef, entityConfig, that.options);
 				}));
 			};
 
-			for (var i = 0; i < config.sceneRefs.length; i++) {
-				handleSceneRef(config.sceneRefs[i]);
+			for (var i = 0; i < config.entityRefs.length; i++) {
+				handleEntityRef(config.entityRefs[i]);
 			}
 
-			return RSVP.all(promises).then(function(scenes) {
-				console.log("Loaded " + scenes.length + " scene(s)");
+			return RSVP.all(promises).then(function(entities) {
+				for (var j = 0; j < entities.length; j++) {
+					var entity = entities[j];
+					if (that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) {
+						console.log("Adding " + entity.name + " to world");
+						entity.addToWorld();
+					}
+				}
 			}).then(null, function(err) {
-				return console.error("Error updating scenes: " + err);
+				return console.error("Error updating entities: " + err);
 			});
 		} else {
-			console.warn("No scene refs in project " + ref);
-			return config;
+			console.warn("No entity refs in project " + ref);
+			return PromiseUtil.createDummyPromise(config);
 		}
 	};
 

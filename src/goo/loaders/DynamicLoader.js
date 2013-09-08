@@ -48,13 +48,15 @@ function(
 	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
-	var _jsonTest, _texture_types, _ENGINE_SHADER_PREFIX;
+	
 
-	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
+	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
 
-	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
+	var _binary_types = ['dat', 'bin'];
 
-	_ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
+	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
 	 * Create a new loader
@@ -404,12 +406,12 @@ function(
 
 	DynamicLoader.prototype._isImageRef = function(ref) {
 		var type = this._getTypeForRef(ref);
-		return type === 'png' || type === 'jpg' || type === 'jpeg';
+		return _.indexOf(_image_types, type) >= 0;
 	};
 
 	DynamicLoader.prototype._isBinaryRef = function(ref) {
 		var type = this._getTypeForRef(ref);
-		return _.indexOf(_texture_types, type) >= 0 || type === 'dat';
+		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
 	};
 
 	/**
