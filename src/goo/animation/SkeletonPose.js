@@ -92,8 +92,7 @@ function (
 	 * Notify any registered PoseListeners that this pose has been "updated".
 	 */
 	SkeletonPose.prototype.firePoseUpdated = function () {
-		//REVIEW: unusual way to simply traverse an array
-		for ( var i = this._poseListeners.length; --i >= 0;) {
+		for (var i = this._poseListeners.length - 1; i >= 0; i--) {
 			this._poseListeners[i].poseUpdated(this);
 		}
 	};

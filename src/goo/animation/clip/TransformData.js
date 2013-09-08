@@ -45,35 +45,10 @@ function (Quaternion, Vector3) {
 	 */
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
-		var scaleX = 0.0, scaleY = 0.0, scaleZ = 0.0, transX = 0.0, transY = 0.0, transZ = 0.0;
-		var vectorData, weight;
 
-		//REVIEW: why not use Vector3 instead?
-		weight = 1 - blendWeight;
-		vectorData = this._translation;
-		transX += vectorData.x * weight;
-		transY += vectorData.y * weight;
-		transZ += vectorData.z * weight;
-
-		vectorData = this._scale;
-		scaleX += vectorData.x * weight;
-		scaleY += vectorData.y * weight;
-		scaleZ += vectorData.z * weight;
-
-		weight = blendWeight;
-		vectorData = blendTo._translation;
-		transX += vectorData.x * weight;
-		transY += vectorData.y * weight;
-		transZ += vectorData.z * weight;
-
-		vectorData = blendTo._scale;
-		scaleX += vectorData.x * weight;
-		scaleY += vectorData.y * weight;
-		scaleZ += vectorData.z * weight;
-
-		tData._scale.setd(scaleX, scaleY, scaleZ);
-		tData._translation.setd(transX, transY, transZ);
-		Quaternion.slerp(this._rotation, blendTo._rotation, weight, tData._rotation);
+		tData._translation.setv(this._translation).lerp(blendTo._translation, blendWeight);
+		tData._scale.setv(this._scale).lerp(blendTo._scale, blendWeight);
+		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
 		return tData;
 	};
 
