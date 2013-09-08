@@ -2,6 +2,14 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/MeshDataComponent',
 	'goo/renderer/bounds/BoundingBox',
+
+	'goo/shapes/Box',
+	'goo/shapes/Cylinder',
+	'goo/shapes/Disk',
+	'goo/shapes/Quad',
+	'goo/shapes/Sphere',
+	'goo/shapes/Torus',
+
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -9,6 +17,14 @@ define([
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,
+
+	Box,
+	Cylinder,
+	Disk,
+	Quad,
+	Sphere,
+	Torus,
+
 	RSVP,
 	pu,
 	_
@@ -19,6 +35,28 @@ define([
 
 	MeshDataComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('meshData', MeshDataComponentHandler);
+
+	var shapes = {
+		Box: Box,
+		Cylinder: Cylinder,
+		Disk: Disk,
+		Quad: Quad,
+		Sphere: Sphere,
+		Torus: Torus
+	};
+
+	function makeShapeConstructor(shape) {
+		function LoadedShape(args) {
+			return shape.apply(this, args);
+		}
+		LoadedShape.prototype = shape.prototype;
+		return LoadedShape;
+	}
+
+	var shapeConstructors = {};
+	for (var key in shapes) {
+		shapeConstructors[key] = makeShapeConstructor(shapes[key]);
+	}
 
 	MeshDataComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
@@ -33,24 +71,32 @@ define([
 		var p1, p2;
 		ComponentHandler.prototype.update.call(this, entity, config);
 
-		var meshRef = config.meshRef;
-		if (!meshRef) {
-			console.error("No meshRef in meshDataComponent for " + entity.ref);
-		}
-		var poseRef = config.poseRef || config.pose;
-		if (poseRef) {
-			p1 = this.getConfig(poseRef).then(function(poseConfig) {
-				return that.updateObject(poseRef, poseConfig);
-			});
+		if(config.shape && shapeConstructors[config.shape]) {
+			var shape = config.shape;
+			var args = config.shapeOptions;
+			var meshData = new shapeConstructors[shape](args);
+			p1 = pu.createDummyPromise(meshData);
+			p2 = pu.createDummyPromise();
 		} else {
-			p1 = pu.createDummyPromise();
+			var meshRef = config.meshRef;
+			if (!meshRef) {
+				console.error("No meshRef in meshDataComponent for " + entity.ref);
+			}
+			p1 = this.getConfig(meshRef).then(function(config) {
+				return that.updateObject(meshRef, config);
+			});
+			var poseRef = config.poseRef || config.pose;
+			if (poseRef) {
+				p2 = this.getConfig(poseRef).then(function(poseConfig) {
+					return that.updateObject(poseRef, poseConfig);
+				});
+			} else {
+				p2 = pu.createDummyPromise();
+			}
 		}
-		p2 = this.getConfig(meshRef).then(function(config) {
-			return that.updateObject(meshRef, config);
-		});
 		return RSVP.all([p1, p2]).then(function(argumentArray) {
-			var skeletonPose = argumentArray[0];
-			var meshData = argumentArray[1];
+			var meshData = argumentArray[0];
+			var skeletonPose = argumentArray[1];
 			var component = new MeshDataComponent(meshData);
 
 			if (meshData.boundingBox) {
