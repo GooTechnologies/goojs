@@ -10,6 +10,7 @@ function (
 	 */
 	function AbstractState () {
 		this._globalStartTime = 0;
+		this.onFinished = null;
 	}
 
 	AbstractState.prototype.update = function() {};

@@ -60,6 +60,7 @@ function (
 		} else {
 			var startFrame = 0;
 			if (clockTime >= this._times[this._lastStartFrame]) {
+				startFrame = this._lastStartFrame;
 				for (var i = this._lastStartFrame; i < timeCount - 1; i++) {
 					if (this._times[i] >= clockTime) {
 						break;
@@ -77,8 +78,7 @@ function (
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
 			this.setCurrentSample(startFrame, progressPercent, applyTo);
 
-			//REVIEW: unused variable _lastFrame
-			this._lastFrame = startFrame;
+			this._lastStartFrame = startFrame;
 		}
 	};
 

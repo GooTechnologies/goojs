@@ -25,7 +25,6 @@ function (
 		this._targetState = null;
 		this._percent = 0.0;
 		this._sourceData = null;
-		this._onFinished = null; //REVIEW: unused private variable
 		this._fadeTime = 0;
 		this._blendType = 'Linear';
 	}

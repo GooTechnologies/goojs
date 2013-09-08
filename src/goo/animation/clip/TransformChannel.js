@@ -41,19 +41,17 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	/*
 	 * Applies the channels animation state to supplied data item
 	 * @param {number} sampleIndex
-	 * @param {number} progressPercent
+	 * @param {number} fraction
 	 * @param {TransformData} value The data item to apply animation to
 	 */
 
-	//REVIEW: (nitpicking) "percent" goes from 0 to 100 as it is "per cent"
-	// "fraction" would probably be more suited for the unit interval ([0, 1])
-	TransformChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, applyTo) {
+	TransformChannel.prototype.setCurrentSample = function (sampleIndex, fraction, applyTo) {
 		var transformData = applyTo;
 
 		// shortcut if we are fully on one sample or the next
 		var index4A = sampleIndex * 4, index3A = sampleIndex * 3;
 		var index4B = (sampleIndex + 1) * 4, index3B = (sampleIndex + 1) * 3;
-		if (progressPercent === 0.0) {
+		if (fraction === 0.0) {
 			transformData._rotation.data[0] = this._rotations[index4A + 0];
 			transformData._rotation.data[1] = this._rotations[index4A + 1];
 			transformData._rotation.data[2] = this._rotations[index4A + 2];
@@ -67,7 +65,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 			transformData._scale.data[1] = this._scales[index3A + 1];
 			transformData._scale.data[2] = this._scales[index3A + 2];
 			return;
-		} else if (progressPercent === 1.0) {
+		} else if (fraction === 1.0) {
 			transformData._rotation.data[0] = this._rotations[index4B + 0];
 			transformData._rotation.data[1] = this._rotations[index4B + 1];
 			transformData._rotation.data[2] = this._rotations[index4B + 2];
@@ -95,18 +93,17 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 		this.tmpQuat.data[3] = this._rotations[index4B + 3];
 
 		if (!transformData._rotation.equals(this.tmpQuat)) {
-			Quaternion.slerp(transformData._rotation, this.tmpQuat, progressPercent, this.tmpQuat2);
+			Quaternion.slerp(transformData._rotation, this.tmpQuat, fraction, this.tmpQuat2);
 			transformData._rotation.setv(this.tmpQuat2);
 		}
 
-		//REVIEW: split lines!
-		transformData._translation.data[0] = (1 - progressPercent) * this._translations[index3A+0] + progressPercent * this._translations[index3B+0];
-		transformData._translation.data[1] = (1 - progressPercent) * this._translations[index3A+1] + progressPercent * this._translations[index3B+1];
-		transformData._translation.data[2] = (1 - progressPercent) * this._translations[index3A+2] + progressPercent * this._translations[index3B+2];
+		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A+0] + fraction * this._translations[index3B+0];
+		transformData._translation.data[1] = (1 - fraction) * this._translations[index3A+1] + fraction * this._translations[index3B+1];
+		transformData._translation.data[2] = (1 - fraction) * this._translations[index3A+2] + fraction * this._translations[index3B+2];
 
-		transformData._scale.data[0] = (1 - progressPercent) * this._scales[index3A+0] + progressPercent * this._scales[index3B+0];
-		transformData._scale.data[1] = (1 - progressPercent) * this._scales[index3A+1] + progressPercent * this._scales[index3B+1];
-		transformData._scale.data[2] = (1 - progressPercent) * this._scales[index3A+2] + progressPercent * this._scales[index3B+2];
+		transformData._scale.data[0] = (1 - fraction) * this._scales[index3A+0] + fraction * this._scales[index3B+0];
+		transformData._scale.data[1] = (1 - fraction) * this._scales[index3A+1] + fraction * this._scales[index3B+1];
+		transformData._scale.data[2] = (1 - fraction) * this._scales[index3A+2] + fraction * this._scales[index3B+2];
 	};
 
 	/**
