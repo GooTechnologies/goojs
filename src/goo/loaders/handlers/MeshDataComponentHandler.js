@@ -9,6 +9,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
+	'goo/shapes/Grid',
 
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
@@ -24,6 +25,7 @@ define([
 	Quad,
 	Sphere,
 	Torus,
+	Grid,
 
 	RSVP,
 	pu,
@@ -42,7 +44,8 @@ define([
 		Disk: Disk,
 		Quad: Quad,
 		Sphere: Sphere,
-		Torus: Torus
+		Torus: Torus,
+		Grid: Grid
 	};
 
 	function makeShapeConstructor(shape) {
