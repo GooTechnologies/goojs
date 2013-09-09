@@ -4,16 +4,18 @@ define([
 	'goo/animation/SkeletonPose',
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/ArrayUtil'
+	'goo/statemachine/State',
+	'goo/statemachine/Machine',
+	'goo/statemachine/actions/AddPositionAction'
 ], function(
 	ConfigHandler,
 	MeshData,
 	SkeletonPose,
 	JsonUtils,
 	PromiseUtil,
-	_,
-	ArrayUtil
+	State,
+	Machine,
+	AddPositionAction
 ) {
 	function StateHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -47,7 +49,14 @@ define([
 			var layerName = layer.name;
 			var initialState = layer.initialState;
 
-			// an array of uuids to other states
+			var machine = new Machine(layerName);
+			machine.initialState = initialState;
+
+			for (var j = 0; j < layer.stateRefs.length; j++) {
+				machine.states[layer.stateRefs[j]] = true;
+			}
+
+			state.machines.push(machine);
 			// store them initially as uuids and after every state is loaded do a replace on all
 		}
 
