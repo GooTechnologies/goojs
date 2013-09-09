@@ -1,6 +1,10 @@
-define(['goo/entities/systems/System'],
-	/** @lends */
-	function (System) {
+define([
+	'goo/entities/systems/System'
+],
+/** @lends */
+function (
+	System
+) {
 	"use strict";
 
 	/**
@@ -20,8 +24,6 @@ define(['goo/entities/systems/System'],
 			fsmComponent = entities[i].fSMComponent;
 			fsmComponent.update(tpf);
 		}
-
-		TWEEN.update();
 	};
 
 	FSMSystem.prototype.addedComponent = function (entity, component) {
@@ -31,6 +33,8 @@ define(['goo/entities/systems/System'],
 
 		component.engine = this.engine;
 		component.entity = entity;
+
+		component.init();
 	};
 
 	FSMSystem.prototype.removedComponent = function (entity, component) {

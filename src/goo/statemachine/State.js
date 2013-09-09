@@ -56,5 +56,12 @@ function (
 		}
 	};
 
+	State.prototype.addAction = function (action) {
+		if (action.onCreate) {
+			action.onCreate();
+		}
+		this.actions.push(action);
+	};
+
 	return State;
 });

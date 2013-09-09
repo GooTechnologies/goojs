@@ -33,7 +33,7 @@ Actions
 	}
 
 	GuiButtonAction.prototype = {
-		create: function(fsm) {
+		onEnter: function(fsm) {
 			this.btn = $('<button/>', {
 				text: this.name,
 				css: {
@@ -45,7 +45,7 @@ Actions
 				}.bind(this)
 			}).appendTo($('body'));
 		},
-		destroy: function() {
+		onExit: function() {
 			if (this.btn) {
 				this.btn.remove();
 			}
@@ -53,5 +53,6 @@ Actions
 	};
 
 	Actions.register('GuiButtonAction', GuiButtonAction);
+
 	return GuiButtonAction;
 });
