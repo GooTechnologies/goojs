@@ -72,8 +72,6 @@ define([
 		this._transformScale.muld(scale,scale,scale);
 	};
 
-	//REVIEW: I once managed to flatten a fish without any hope of inflating it back
-	// POST-REVIEW: Don't quite know how to fix that. You can always reset scales numerically in the tool.
 	ScaleGizmo.prototype._scaleNonUniform = function() {
 		var p = this._mouse.position;
 		var op = this._mouse.oldPosition;

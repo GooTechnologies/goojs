@@ -46,12 +46,6 @@ define([
 		this.renderables = [];
 		this.onChange = null;
 
-		// REVIEW: computations in these classes are not intense and don't run in tight loops
-		// I'd get rid of all these helpers with really generic names and spawn clean vectors wherever needed, but that's just me
-		// Not to mention that you always have to not forget to clean them up/initialise them before using them
-		// It's starting to look like code generated from emscripten with 89276539 global-ish variables with names like a0, a1, ... v0, v1, ...
-		// POST-REVIEW: I kept the calculation vectors but named them more readable in the functions they're used
-
 		// Calculation helpers
 		this._oldRay = new Ray();
 		this._newRay = new Ray();
