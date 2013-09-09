@@ -70,7 +70,7 @@ require([
 			});
 
 			goo.startGameLoop();
-			createDebugQuad(goo);
+			//createDebugQuad(goo);
 
 		}).then(null, function(e) {
 			console.log(e, e.message);
