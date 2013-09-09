@@ -29,6 +29,7 @@ function (
 		/** @type {Number} */
 		this.angle = 45;
 		/** @type {Number} */
+		// REVIEW : Add some doc on the penumbra
 		this.penumbra = null;
 		/** @type {Number} */
 		this.exponent = 16.0;
