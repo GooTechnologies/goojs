@@ -53,7 +53,7 @@ function (
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object.
 	 * @param {boolean} [parameters.alpha=false]
 	 * @param {boolean} [parameters.premultipliedAlpha=true]
-	 * @param {boolean} [parameters.antialias=false]
+	 * @param {boolean} [parameters.antialias=true]
 	 * @param {boolean} [parameters.stencil=false]
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
 	 * @param {boolean} [parameters.showStats=false]

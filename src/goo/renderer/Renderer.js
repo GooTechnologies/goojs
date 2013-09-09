@@ -49,7 +49,7 @@ function (
 	 * @param {object} parameters Renderer settings.
 	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
 	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
-	 * @param {boolean} [parameters.antialias=false] Enables antialiasing.
+	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
@@ -68,7 +68,7 @@ function (
 
 		this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
 		this._premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true;
-		this._antialias = parameters.antialias !== undefined ? parameters.antialias : false;
+		this._antialias = parameters.antialias !== undefined ? parameters.antialias : true;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
 		this._onError = parameters.onError;
