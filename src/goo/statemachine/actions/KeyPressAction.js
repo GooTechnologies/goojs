@@ -18,7 +18,7 @@ Actions
 
 		var key = settings.key || 'w';
 
-		this.key = (parseFloat(key) == key)?key:Util.keys[key];
+		this.key = (parseFloat(key) == key)?key:StateUtils.keys[key];
 		this.event = settings.event || 'dummy';
 
 		this.external = [

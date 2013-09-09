@@ -1,9 +1,7 @@
 define([
-	'goo/statemachine/Util'
 ],
 /** @lends */
 function (
-	Util
 ) {
 	"use strict";
 
@@ -12,7 +10,7 @@ function (
 		this.actions = [];
 		this.machines = [];
 		this.vars = {};
-	};
+	}
 
 	State.prototype.update = function() {
 		var jumpUp;
