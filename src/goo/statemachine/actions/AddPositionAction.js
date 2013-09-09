@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function AddPositionAction(settings) {
-		this.type = 'AddPositionAction';
-		
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -36,20 +34,28 @@ Actions
 			key: 'speed',
 			type: 'float',
 			control: 'slider',
-			max: 10,
-			min: 0
+			min: 0,
+			max: 10
 		}];
 	}
 
 	AddPositionAction.prototype = {
-		update: function(fsm, state, tpf) {
+		onEnter: function(/*fsm*/) {
+
+		},
+		onUpdate: function(fsm) {
 			if (this.entity !== null) {
+				var tpf = fsm.getTpf();
 				this.entity.transformComponent.transform.translation.add_d(this.position[0] * this.speed * tpf, this.position[1] * this.speed * tpf, this.position[2] * this.speed * tpf);
 				this.entity.transformComponent.setUpdated();
 			}
+		},
+		onExit: function(/*fsm*/) {
+
 		}
 	};
 
 	Actions.register('AddPositionAction', AddPositionAction);
+
 	return AddPositionAction;
 });
