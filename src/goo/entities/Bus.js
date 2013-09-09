@@ -4,9 +4,11 @@ define(
 	"use strict";
 
 	function Bus() {
+		// REVIEW: Would sure be nice to use objects for children
 		this.trie = { name: '', listeners: [], children: [] };
 	}
 
+	// REVIEW: How about ArrayUtil.remove?
 	function removeFromArray(array, element) {
 		var index = array.indexOf(element);
 		if (index !== -1) {
