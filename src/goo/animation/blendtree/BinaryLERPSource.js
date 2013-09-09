@@ -117,7 +117,11 @@ function (
 			if (dataB) {
 				rVal[key] = dataA.blend(dataB, blendWeight, rVal[key]);
 			} else {
-				rVal[key] = dataA;
+				if(!rVal[key]) {
+					rVal[key] = new dataA.constructor(dataA);
+				} else {
+					rVal[key].set(dataA);
+				}
 			}
 		}
 		for ( var key in sourceBData) {

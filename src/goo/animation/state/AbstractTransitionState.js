@@ -109,7 +109,7 @@ function (
 
 	AbstractTransitionState.prototype.resetClips = function(globalTime) {
 		AbstractState.prototype.resetClips.call(this, globalTime);
-		this._sourceData = {};
+		//this._sourceData = {};
 		this._percent = 0.0;
 	};
 
