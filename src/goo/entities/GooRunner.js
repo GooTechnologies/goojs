@@ -61,8 +61,8 @@ function (
 	 * @param {boolean} [parameters.logo=true]
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 * @param {boolean} [parameters.debugKeys=false]
-	 * @param {boolean} [parameters.toolMode=false]
 	 */
+
 	function GooRunner (parameters) {
 		parameters = parameters || {};
 
