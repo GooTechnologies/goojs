@@ -34,8 +34,15 @@ define(['goo/loaders/handlers/ComponentHandler',
 			shadowCaster: false
 		});
 		if (config.shadowCaster) {
+			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				type: 'Blur'
+				type: 'Blur',
+				projection: 'Perspective',
+				fov: 55,
+				size: 100,
+				near: 1,
+				/** @type {number} */
+				far: 1000
 			});
 		}
 	};

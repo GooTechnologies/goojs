@@ -204,7 +204,7 @@ function (
 
 	};
 
-	GizmoRenderSystem.prototype.render = function (renderer, picking) {
+	GizmoRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
 
 		if(!this.domElement) {
@@ -215,10 +215,11 @@ function (
 
 		if (this.camera) {
 			renderer.render(this.renderables, this.camera, this.lights, null, { color: false, stencil: true, depth: true }, this.overrideMaterials);
-			if(picking.doPick) {
-				renderer.renderToPick(this.renderables, this.camera, { color: false, stencil: true, depth: true }, picking.skipUpdateBuffer);
-			}
 		}
+	};
+
+	GizmoRenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
+				renderer.renderToPick(this.renderables, this.camera, { color: false, stencil: true, depth: true }, skipUpdateBuffer);
 	};
 
 	return GizmoRenderSystem;

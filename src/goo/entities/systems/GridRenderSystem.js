@@ -55,8 +55,11 @@ function (
 			transform: this.transform
 		};
 		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, 'Surface Material');
-		surfaceMaterial.uniforms.materialDiffuse = [0.4,0.4,0.4,1.0];
+		surfaceMaterial.uniforms.materialDiffuse = [0.6,0.6,0.6,1.0];
+		surfaceMaterial.uniforms.materialSpecular = [0.6,0.6,0.6,1.0];
 		surfaceMaterial.cullState.enabled = false;
+		surfaceMaterial.depthState.write = false;
+		surfaceMaterial.depthState.enabled = false;
 
 		this.surface = {
 			meshData: new Quad(),
@@ -85,11 +88,11 @@ function (
 
 	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		var count = this.renderList.length = 0;
-		if (this.doRender.grid) {
-			this.renderList[count++] = this.grid;
-		}
 		if (this.doRender.surface) {
 			this.renderList[count++] = this.surface;
+		}
+		if (this.doRender.grid) {
+			this.renderList[count++] = this.grid;
 		}
 		this.renderList.length = count;
 	};
@@ -98,7 +101,7 @@ function (
 		renderer.checkResize(this.camera);
 
 		if (this.camera) {
-			renderer.render(this.renderList, this.camera, this.lights, null, { color: true, depth: true, stencil: true });
+			renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: true, stencil: true });
 		}
 	};
 
@@ -110,9 +113,9 @@ function (
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			color: [0.9,0.9,0.9,1],
-			fogOn: true,
-			fogColor: [0.3,0.3,0.3,1],
+			color: [0.5,0.5,0.5,1],
+			fogOn: false,
+			fogColor: [0.1,0.1,0.1,1],
 			fogNear: Shader.NEAR_PLANE,
 			fogFar: Shader.FAR_PLANE
 		},
@@ -148,8 +151,8 @@ function (
 			'void main(void)',
 			'{',
 				'if (fogOn) {',
-					'float lerpVal = clamp(depth / (-fogFar - fogNear), 0.0, 1.0);',
-					'lerpVal = pow(lerpVal, 0.4);',
+					'float lerpVal = clamp(depth / (-fogFar + fogNear), 0.0, 1.0);',
+					'lerpVal = pow(lerpVal, 1.5);',
 					'gl_FragColor = mix(color, fogColor, lerpVal);',
 				'} else {',
 					'gl_FragColor = color;',

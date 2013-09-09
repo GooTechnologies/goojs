@@ -41,7 +41,7 @@ function (
 			type: 'Blur',
 			projection: 'Perspective',
 			fov: 55,
-			size: 100,
+			size: 2000,
 			near: 1,
 			/** @type {number} */
 			far: 1000

@@ -164,7 +164,8 @@ function (
 			skipUpdateBuffer: false,
 			doPick: false,
 			pickingCallback: null,
-			pickingStore: {}
+			pickingStore: {},
+			clearColorStore: []
 		};
 	}
 
@@ -224,13 +225,30 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
+			this.renderer.setRenderTarget();
+			this.renderer.clear();
+
 			for (var i = 0; i < this.renderSystems.length; i++) {
-				this.renderSystems[i].render(this.renderer, this._picking);
+				this.renderSystems[i].render(this.renderer);
 			}
 			if(this._picking.doPick) {
+				var cc = this.renderer.clearColor.data;
+				this._picking.clearColorStore[0] = cc[0];
+				this._picking.clearColorStore[1] = cc[1];
+				this._picking.clearColorStore[2] = cc[2];
+				this._picking.clearColorStore[3] = cc[3];
+				this.renderer.setClearColor(0,0,0,1);
+
+				for (var i = 0; i < this.renderSystems.length; i++) {
+					if (this.renderSystems[i].renderToPick) {
+						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
+					}
+				}
 				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
 				this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
 				this._picking.doPick = false;
+
+				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
 			}
 		}
 

@@ -91,7 +91,7 @@ function (
 		this.currentTpf = tpf;
 	};
 
-	RenderSystem.prototype.render = function (renderer, picking) {
+	RenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
 
 		if (!this.doRender) {
@@ -114,12 +114,13 @@ function (
 					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, true, this.overrideMaterials);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights, null, { color: true, depth: true, stencil: true }, this.overrideMaterials);
-				if(picking.doPick) {
-					renderer.renderToPick(this.renderList, this.camera, true, picking.skipUpdateBuffer);
-				}
+				renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: true, stencil: true }, this.overrideMaterials);
 			}
 		}
+	};
+
+	RenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
+		renderer.renderToPick(this.renderList, this.camera, true, skipUpdateBuffer);
 	};
 
 	RenderSystem.prototype._createDebugMaterial = function(key) {

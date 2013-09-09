@@ -97,15 +97,16 @@ function (
 		this.currentTpf = tpf;
 	};
 
-	DebugRenderSystem.prototype.render = function (renderer, picking) {
+	DebugRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
 
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
-			if(picking.doPick) {
-				renderer.renderToPick(this.renderList, this.camera, false, picking.skipupdateBuffer);
-			}
 		}
+	};
+
+	DebugRenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
+		renderer.renderToPick(this.renderList, this.camera, false, skipUpdateBuffer);
 	};
 
 	return DebugRenderSystem;
