@@ -1,6 +1,6 @@
 define([
 	'goo/statemachine/StateUtils',
-	'goo/StateUtils/ObjectUtil'
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(

@@ -1,9 +1,7 @@
-define([
-	'goo/statemachine/StateUtils'
-],
+define([],
 /** @lends */
 function (
-	StateUtils
+
 ) {
 	"use strict";
 

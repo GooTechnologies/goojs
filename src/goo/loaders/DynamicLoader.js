@@ -21,7 +21,9 @@ define([
 	'goo/loaders/handlers/TransformComponentHandler',
 	'goo/loaders/handlers/AnimationComponentHandler',
 	'goo/loaders/handlers/AnimationLayersHandler',
-	'goo/loaders/handlers/AnimationClipHandler'
+	'goo/loaders/handlers/AnimationClipHandler',
+	'goo/loaders/handlers/StateHandler',
+	'goo/loaders/handlers/FSMComponentHandler'
 ],
 function(
 	ConfigHandler,
