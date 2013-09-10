@@ -88,14 +88,12 @@ function(
 	 * configs from the prefilled cache.
 	 *
 	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null,
-	 * 	the loader will search for the appropriate config in the loader's internal cache.
+	 * the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {boolean} clear If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
 	 */
 	DynamicLoader.prototype.preloadCache = function(configs, clear) {
-		if (clear == null) {
-			clear = false;
-		}
+		clear = clear !== false;
 		if (clear) {
 			return this._configs = configs;
 		} else {
@@ -111,18 +109,16 @@ function(
 	 *
 	 * @param {string} ref Ref of object to load
 	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null,
-	 * 	the loader will search for the appropriate config in the loader's internal cache.
+	 * the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {object} options See {DynamicLoader.update}
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 *
 	 */
 	DynamicLoader.prototype.loadFromConfig = function(ref, configs, options) {
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 		_.defaults(options, this.options);
-		if (configs != null) {
+		if (configs) {
 			if (options.noCache) {
 				this._configs = configs;
 			} else {
@@ -151,9 +147,7 @@ function(
 	 */
 	DynamicLoader.prototype.loadFromBundle = function(ref, bundleName, options) {
 		var that = this;
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 		_.defaults(options, this.options);
 		return this._loadRef(bundleName).then(function(data) {
 			if (options.noCache) {
@@ -161,7 +155,7 @@ function(
 			} else {
 				_.extend(that._configs, data);
 			}
-			if (that._configs[ref] == null) {
+			if (!that._configs[ref]) {
 				throw new Error("" + ref + " not found in bundle " + bundleName + ". Available keys: \n" + (_.keys(that._configs).join('\n')));
 			}
 			return that.load(ref, options);
@@ -180,9 +174,7 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.load = function(ref, options) {
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 		return this.update(ref, null, options);
 	};
 
@@ -194,7 +186,7 @@ function(
 	 * @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
 	 * @param {object} options
 	 * @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-	 * 	each object as argument and if it returns true, it is added to the world.
+	 * each object as argument and if it returns true, it is added to the world.
 	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 	 * @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
@@ -202,9 +194,7 @@ function(
 	 */
 	DynamicLoader.prototype.update = function(ref, config, options) {
 		var that = this;
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 		_.defaults(options, this.options, {
 			recursive: true
 		});
@@ -212,7 +202,7 @@ function(
 			this._configs[ref] = config;
 		}
 		this._objects = {};
-		var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
+		//var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
 
 		return this._loadRef(ref).then(function(config) {
 			var handled = 0;
@@ -260,14 +250,13 @@ function(
 
 	// Load/update an object with the given reference into the engine
 	DynamicLoader.prototype._handle = function(ref, config, options) {
+		/*jshint newcap: false */
 		var that = this;
 
 		var handler, handlerClass, type;
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 		if (this._objects[ref]) {
-			if(this._objects[ref].then) {
+			if (this._objects[ref].then) {
 				// The object is already being handled in this update cycle, avoid duplicate handling
 				// Object cache is reset when a new update call is initiated by the user
 				return this._objects[ref];
@@ -279,9 +268,7 @@ function(
 			handlerClass = ConfigHandler.getHandler(type);
 
 			if (handlerClass) {
-				if (this._handlers == null) {
-					this._handlers = {};
-				}
+				this._handlers = this._handlers || {};
 				handler = this._handlers[type];
 				if (handler) {
 					_.extend(handler, {
@@ -293,7 +280,7 @@ function(
 				} else {
 					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
 				}
-				if (config != null) {
+				if (config) {
 					return this._objects[ref] = handler.update(ref, config).then(function(object) {
 						return that._objects[ref] = object;
 					});
@@ -319,9 +306,7 @@ function(
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
 		var promise, url,
 			that = this;
-		if (noCache == null) {
-			noCache = false;
-		}
+		noCache = noCache !== false;
 
 		if (this._configs[ref]) {
 			if(this._configs[ref].then) {
@@ -375,12 +360,12 @@ function(
 				_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
-					if (!value.hasOwnProperty(_key)) continue;
+					if (!value.hasOwnProperty(_key)) { continue; }
 					traverse(_key, value[_key]);
 				}
 			}
 		};
-		traverse("", config);
+		traverse('', config);
 		return _refs;
 	};
 
