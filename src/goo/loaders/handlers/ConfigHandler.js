@@ -40,6 +40,17 @@ define(function() {
 	 */
 	ConfigHandler.prototype.update = function(/*ref, config*/) {};
 
+
+	/**
+	 * Remove the engine object denoted by the given ref. Should be overridden in subclasses.
+	 * This method is called by #{DynamicLoader} to remove resources from the engine.
+	 * Synchronous, returns nothing.
+	 * 
+	 * @param {string} ref The ref of this config
+	 */
+	ConfigHandler.prototype.remove = function(/*ref, config*/) {};
+
+	
 	ConfigHandler.handlerClasses = {};
 
 	/**
