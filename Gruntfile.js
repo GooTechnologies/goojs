@@ -21,43 +21,28 @@ module.exports = function(grunt) {
 			}
 		},
 		requirejs: {
-/*
-			compile: {
-				options: {
-					baseUrl: 'src',
-					name: 'goo',
-					//include: '*',
-					//mainConfigFile: "path/to/config.js",
-					//out: "path/to/optimized.js"
-					out: 'optimized.js'
-				}
-			}
-*/
 			dist: {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
 					baseUrl: 'src/',
-					optimize: 'uglify',  // uglify, uglify2, closure, closure.keepLines
+					optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
 					preserveLicenseComments: false,
 					useStrict: true,
 					wrap: true,
-					//name: '*.js',
-					//out: 'out.js',
-					//keepBuildDir: true
-					//generateSourceMaps: true
+					keepBuildDir: true,
+					generateSourceMaps: true,
 					dir: 'out/minified/',
 					modules: [{
-						//name: 'goo/loaders/DynamicLoader',
 						name: 'gooengine',
 					}],
 					wrap: {
-						start: '// Goo Engine <%= pkg.version %>\n(function() {',
-						end: '}());'
+						start:
+							'/* Goo Engine <%= pkg.version %>\n' +
+							' * Copyright 2013 Goo Technologies AB\n' +
+							' */\n' +
+							'(function(window, undefined) {',
+						end: '}(window));'
 					},
-					uglify: {
-						make_seqs: false,
-						beautify: true
-					}
 				}
 			}
 		}
@@ -66,8 +51,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-	grunt.registerTask('default', ['uglify']);
-
-	grunt.registerTask('foo', ['requirejs']);
+	grunt.registerTask('default', ['minify']);
+	grunt.registerTask('minify', ['requirejs']);
 
 };
