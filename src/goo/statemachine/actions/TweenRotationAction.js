@@ -15,8 +15,6 @@ function(
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function TweenRotationAction(settings) {
-		this.type = 'TweenRotationAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -32,8 +30,8 @@ function(
 			y: 0,
 			z: Math.PI * 2
 		};
-		this.easing = settings.easing || TWEEN.Easing.Elastic.InOut;
-		this.tween = new TWEEN.Tween();
+		this.easing = settings.easing || window.TWEEN.Easing.Elastic.InOut;
+		this.tween = new window.TWEEN.Tween();
 
 		this.external = [
 			{ name: 'Entity', key: 'entity', type: 'entity' },
@@ -46,7 +44,7 @@ function(
 	}
 
 	TweenRotationAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			var that = this;
 			this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
 				if (that.entity !== null) {
@@ -58,7 +56,7 @@ function(
 				console.log('complete:', this.event);
 			}.bind(this)).start();
 		},
-		destroy: function() {
+		onDestroy: function() {
 			this.tween.stop();
 		}
 	};

@@ -1,7 +1,8 @@
-define([
+define(['goo/util/ArrayUtil'
 ],
 /** @lends */
 function (
+	ArrayUtil
 ) {
 	"use strict";
 
@@ -40,14 +41,18 @@ function (
 			this.machines[i].kill();
 		}
 		for (var i = 0; i < this.actions.length; i++) {
-			this.actions[i].onExit(this);
+			if (this.actions[i].onExit) {
+				this.actions[i].onExit(this);
+			}
 		}
 	};
 
 	State.prototype.enter = function() {
 		// on enter of self
 		for (var i = 0; i < this.actions.length; i++) {
-			this.actions[i].onEnter();
+			if (this.actions[i].onEnter) {
+				this.actions[i].onEnter();
+			}
 		}
 
 		// propagate on enter
@@ -61,6 +66,14 @@ function (
 			action.onCreate();
 		}
 		this.actions.push(action);
+	};
+
+	State.prototype.removeAction = function (action) {
+		if (action.onDestroy) {
+			action.onDestroy();
+		}
+
+		ArrayUtil.remove(this.actions, action);
 	};
 
 	return State;

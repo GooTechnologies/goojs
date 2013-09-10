@@ -1,9 +1,11 @@
 define([
+	'goo/statemachine/StateUtils',
 	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function(
-Actions
+	StateUtils,
+	Actions
 ) {
 	"use strict";
 
@@ -12,13 +14,11 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function KeyPressAction(settings) {
-		this.type = 'KeyPressAction';
-
 		settings = settings || {};
 
 		var key = settings.key || 'w';
 
-		this.key = (parseFloat(key) == key)?key:StateUtils.keys[key];
+		this.key = (parseFloat(key) === key) ? key : StateUtils.keys[key];
 		this.event = settings.event || 'dummy';
 
 		this.external = [
@@ -35,7 +35,7 @@ Actions
 	}
 
 	KeyPressAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			$(document).keypress(function(event) {
 				var charCode = event.which || event.keyCode;
 				//var charStr = String.fromCharCode(charCode);
@@ -44,7 +44,7 @@ Actions
 				}
 			}.bind(this));
 		},
-		destroy: function() {
+		onDestroy: function() {
 			$(document).off('keypress');
 		}
 	};

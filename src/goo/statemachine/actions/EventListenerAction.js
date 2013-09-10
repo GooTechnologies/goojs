@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function EventListenerAction(settings) {
-		this.type = 'EventListenerAction';
-
 		settings = settings || {};
 
 		this.listen = settings.listen || 'input';
@@ -34,7 +32,8 @@ Actions
 	}
 
 	EventListenerAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
+			/*
 			if (!this.anotherSub) {
 				this.anotherSub = postal.subscribe({
 					channel: 'statefsm.events',
@@ -46,8 +45,9 @@ Actions
 					}.bind(this)
 				});
 			}
+			*/
 		},
-		destroy: function() {
+		onDestroy: function() {
 			this.anotherSub.unsubscribe();
 			this.anotherSub = null;
 		}

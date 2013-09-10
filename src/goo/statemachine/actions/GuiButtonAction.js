@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function GuiButtonAction(settings) {
-		this.type = 'GuiButtonAction';
-
 		settings = settings || {};
 
 		this.name = settings.name || 'Button';
@@ -53,6 +51,5 @@ Actions
 	};
 
 	Actions.register('GuiButtonAction', GuiButtonAction);
-
 	return GuiButtonAction;
 });

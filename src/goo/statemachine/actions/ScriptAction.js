@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function ScriptAction(script) {
-		this.type = 'ScriptAction';
-
 		this.script = script || 'console.log("hello!")';
 
 		this.external = [{
@@ -24,7 +22,8 @@ Actions
 	}
 
 	ScriptAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
+			/* jshint evil: true */
 			eval(this.script);
 		}
 	};

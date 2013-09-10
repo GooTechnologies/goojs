@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function TestAngleAction(settings) {
-		this.type = 'TestAngleAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -52,7 +50,7 @@ Actions
 	}
 
 	TestAngleAction.prototype = {
-		update: function(fsm) {
+		onUpdate: function(fsm) {
 			if (this.entity !== null && this.entity.body) {
 				var angle = this.entity.body.GetAngle() % (Math.PI*2);
 				if (angle < 0) {

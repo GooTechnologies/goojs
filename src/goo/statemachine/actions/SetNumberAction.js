@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function SetNumberAction(settings) {
-		this.type = 'SetNumberAction';
-
 		settings = settings || {};
 
 		this.variable = settings.variable || 'None';
@@ -26,7 +24,7 @@ Actions
 	}
 
 	SetNumberAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			fsm.setLocalVariable(this.variable, this.value);
 		}
 	};

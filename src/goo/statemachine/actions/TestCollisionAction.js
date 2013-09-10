@@ -14,8 +14,6 @@ function(
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function TestCollisionAction(settings) {
-		this.type = 'TestCollisionAction';
-
 		settings = settings || {};
 
 		this.entity1 = settings.entity1 || null;
@@ -32,7 +30,7 @@ function(
 	}
 
 	TestCollisionAction.prototype = {
-		update: function(fsm, state, tpf) {
+		onUpdate: function(fsm/*, state, tpf*/) {
 			if (this.entity1 !== null && this.entity2 !== null) {
 				if (this.entity1.meshRendererComponent.worldBound.intersects(this.entity2.meshRendererComponent.worldBound)) {
 					fsm.handle(this.collisionEvent);

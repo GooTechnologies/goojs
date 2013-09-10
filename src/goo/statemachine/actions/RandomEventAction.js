@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function RandomEventAction(settings) {
-		this.type = 'RandomEventAction';
-
 		settings = settings || {};
 
 		// this.external = {
@@ -23,7 +21,7 @@ Actions
 	}
 
 	RandomEventAction.prototype = {
-		create: function(fsm, state) {
+		onCreate: function(fsm, state) {
 			var val = Math.floor(Math.random() * state.getEvents().length);
 			fsm.handle(state.getEvents()[val]);
 		}

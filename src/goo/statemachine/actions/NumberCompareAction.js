@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function NumberCompareAction(settings) {
-		this.type = 'NumberCompareAction';
-
 		settings = settings || {};
 
 		this.float1 = settings.float1 || 0.0;
@@ -21,7 +19,7 @@ Actions
 		this.float2 = settings.float2 || 0.0;
 		this.float2Variable = settings.float2Variable || '';
 		this.tolerance = settings.tolerance || 0.0;
-		
+
 		this.equalsEvent = settings.equalsEvent || 'equals';
 		this.lessThanEvent = settings.lessThanEvent || 'lessThan';
 		this.greaterThanEvent = settings.greaterThanEvent || 'greaterThan';
@@ -35,27 +33,22 @@ Actions
 
 			equalsEvent: ['string', 'Equals Event'],
 			lessThanEvent: ['string', 'Less Than Event'],
-			greaterThanEvent: ['string', 'Greater Than Event'],
+			greaterThanEvent: ['string', 'Greater Than Event']
 		};
 	}
 
 	NumberCompareAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getLocalVariable(this.float1Variable) : this.float1;
 			var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getLocalVariable(this.float2Variable) : this.float2;
 			var diff = float1 - float2;
 			if (Math.abs(diff) <= this.tolerance) {
 				fsm.handle(this.equalsEvent);
 			} else if (diff < 0) {
-				fsm.handle(this.lessThanEvent);				
+				fsm.handle(this.lessThanEvent);
 			} else {
-				fsm.handle(this.greaterThanEvent);				
+				fsm.handle(this.greaterThanEvent);
 			}
-		},
-		destroy: function() {
-		},
-		run: function(fsm, state, tpf) {
-
 		}
 	};
 

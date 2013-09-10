@@ -52,7 +52,7 @@ Actions
 	}
 
 	TestSpeedAction.prototype = {
-		update: function(fsm) {
+		onUpdate: function(fsm) {
 			if (this.entity !== null && this.entity.body) {
 				var speed = this.entity.body.GetLinearVelocity().Length();
 				// var speed = this.entity.body.GetVelocity();

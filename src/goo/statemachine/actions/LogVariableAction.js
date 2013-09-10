@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/FSMComponent'
+	'goo/statemachine/FSMComponent',
+	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function(
-	FSMComponent
+	FSMComponent,
+	Actions
 ) {
 	"use strict";
 
@@ -11,8 +13,6 @@ function(
 	 * @class
 	 */
 	function LogVariableAction(settings) {
-		this.type = 'LogVariableAction';
-
 		settings = settings || {};
 
 		this.posVariable = settings.posVariable || null;
@@ -28,7 +28,7 @@ function(
 	}
 
 	LogVariableAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			if (this.posVariable) {
 				if (fsm.localVariables[this.posVariable] !== undefined) {
 					console.log(this.posVariable, fsm.localVariables[this.posVariable]);
@@ -39,5 +39,6 @@ function(
 		}
 	};
 
+	Actions.register('LogVariableAction', LogVariableAction);
 	return LogVariableAction;
 });

@@ -14,13 +14,11 @@ function(
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function KeyDownAction(settings) {
-		this.type = 'KeyDownAction';
-
 		settings = settings || {};
-		
+
 		var key = settings.key || 'w';
 
-		this.key = (parseFloat(key) == key)?key:StateUtils.keys[key];
+		this.key = (parseFloat(key) === key) ? key : StateUtils.keys[key];
 		this.event = settings.event || 'dummy';
 
 		this.external = [
@@ -37,7 +35,7 @@ function(
 	}
 
 	KeyDownAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			$(document).keydown(function(event) {
 				var keyCode = event.which || event.keyCode;
 				if (this.key === keyCode) {
@@ -45,7 +43,7 @@ function(
 				}
 			}.bind(this));
 		},
-		destroy: function() {
+		onDestroy: function() {
 			$(document).off('keydown');
 		}
 	};

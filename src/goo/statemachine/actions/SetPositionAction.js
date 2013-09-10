@@ -3,7 +3,7 @@ define([
 ],
 /** @lends */
 function(
-Actions
+	Actions
 ) {
 	"use strict";
 
@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function SetPositionAction(settings) {
-		this.type = 'SetPositionAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -33,7 +31,7 @@ Actions
 	}
 
 	SetPositionAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
 			if (this.entity !== null) {
 				this.entity.transformComponent.transform.translation.seta(this.position);
 				this.entity.transformComponent.setUpdated();
@@ -41,7 +39,7 @@ Actions
 				// Hack for box2d physics, tmp
 				if (this.entity.body) {
 					var translation = this.entity.transformComponent.transform.translation;
-					this.entity.body.SetTransform(new Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
+					this.entity.body.SetTransform(new window.Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
 				}
 			}
 		}

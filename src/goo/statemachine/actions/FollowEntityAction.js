@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function FollowEntityAction(settings) {
-		this.type = 'FollowEntityAction';
-
 		settings = settings || {};
 
 		this.sourceEntity = settings.sourceEntity || null;
@@ -39,9 +37,9 @@ Actions
 	}
 
 	FollowEntityAction.prototype = {
-		// create: function(fsm) {
+		// onCreate: function(fsm) {
 		// },
-		update: function(fsm, state, tpf) {
+		onUpdate: function(/*fsm, state, tpf*/) {
 			if (this.sourceEntity !== null && this.targetEntity !== null) {
 				var targetTranslation = this.targetEntity.transformComponent.transform.translation;
 				targetTranslation.setv(this.sourceEntity.transformComponent.transform.translation);

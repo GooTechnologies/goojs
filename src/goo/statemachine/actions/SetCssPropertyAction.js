@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function SetCssPropertyAction(settings) {
-		this.type = 'SetCssPropertyAction';
-
 		settings = settings || {};
 
 		this.selector = settings.selector || 'body';
@@ -28,7 +26,7 @@ Actions
 	}
 
 	SetCssPropertyAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
 			$(this.selector).css(this.property, this.value);
 		}
 	};

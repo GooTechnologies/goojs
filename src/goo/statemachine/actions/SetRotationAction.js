@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function SetRotationAction(settings) {
-		this.type = 'SetRotationAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -33,7 +31,7 @@ Actions
 	}
 
 	SetRotationAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
 			if (this.entity !== null) {
 				this.entity.transformComponent.transform.setRotationXYZ(this.rotation[0], this.rotation[1], this.rotation[2]);
 				this.entity.transformComponent.setUpdated();

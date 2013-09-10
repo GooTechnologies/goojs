@@ -15,8 +15,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function TweenAction(settings) {
-		this.type = 'TweenAction';
-
 		settings = settings || {};
 
 		this.script = settings.script || "$('button').css('padding-left', this.x + 'px');";
@@ -28,8 +26,8 @@ Actions
 		this.to = settings.to || {
 			x: 100
 		};
-		this.easing = settings.easing || TWEEN.Easing.Elastic.InOut;
-		this.tween = new TWEEN.Tween();
+		this.easing = settings.easing || window.TWEEN.Easing.Elastic.InOut;
+		this.tween = new window.TWEEN.Tween();
 
 		this.external = {
 			script: ['string', 'Tween action'],
@@ -42,16 +40,17 @@ Actions
 	}
 
 	TweenAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			var that = this;
 			this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
+				/* jshint evil: true */
 				eval(that.script);
 			}).onComplete(function() {
 				fsm.handle(this.event);
 				console.log('complete:', this.event);
 			}.bind(this)).start();
 		},
-		destroy: function() {
+		onDestroy: function() {
 			this.tween.stop();
 		}
 	};

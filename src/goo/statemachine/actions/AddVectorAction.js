@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function AddVectorAction(settings) {
-		this.type = 'AddVectorAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -30,7 +28,7 @@ Actions
 	}
 
 	AddVectorAction.prototype = {
-		update: function(fsm, state, tpf) {
+		onUpdate: function(fsm, state, tpf) {
 			if (this.entity !== null) {
 				var x = this.vector[0] * this.speed * tpf;
 				var y = this.vector[1] * this.speed * tpf;

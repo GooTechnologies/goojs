@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/FSMComponent'
+	'goo/statemachine/FSMComponent',
+	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function(
-	FSMComponent
+	FSMComponent,
+	Actions
 ) {
 	"use strict";
 
@@ -11,8 +13,6 @@ function(
 	 * @class
 	 */
 	function MouseClickAction(settings) {
-		this.type = 'MouseClickAction';
-
 		settings = settings || {};
 
 		this.posVariable = settings.posVariable || null;
@@ -28,7 +28,7 @@ function(
 	}
 
 	MouseClickAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(fsm) {
 			$(document).click(function(event) {
 				console.log(event);
 				if (this.posVariable) {
@@ -40,10 +40,11 @@ function(
 				}
 			}.bind(this));
 		},
-		destroy: function() {
+		onDestroy: function() {
 			$(document).off('click');
 		}
 	};
 
+	Actions.register('MouseClickAction', MouseClickAction);
 	return MouseClickAction;
 });

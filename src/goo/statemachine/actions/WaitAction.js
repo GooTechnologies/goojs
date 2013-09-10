@@ -1,7 +1,9 @@
 define([
+	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function(
+	Actions
 ) {
 	"use strict";
 
@@ -9,8 +11,6 @@ function(
 	 * @class
 	 */
 	function WaitAction(settings) {
-		this.type = 'WaitAction';
-
 		settings = settings || {};
 
 		this.time = settings.time || 1000;
@@ -25,18 +25,18 @@ function(
 	}
 
 	WaitAction.prototype = {
-		create: function(fsm) {
+		onCreate: function(/*fsm*/) {
 			this.currentTime = 0;
 		},
-		update: function(fsm, state, tpf) {
+		onUpdate: function(fsm, state, tpf) {
+			/* jshint -W052 */
 			this.currentTime += ~~(tpf * 1000);
 			if (this.currentTime >= this.time) {
 				fsm.handle(this.event);
 			}
-		},
-		destroy: function() {
 		}
 	};
 
+	Actions.register('WaitAction', WaitAction);
 	return WaitAction;
 });

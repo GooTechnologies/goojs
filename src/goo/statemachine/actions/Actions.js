@@ -12,7 +12,7 @@ _
 	var _actions = {};
 
 	var Actions = {
-		register:function (name, actionClass) {
+		register: function (name, actionClass) {
 			_actions[name] = actionClass;
 		},
 

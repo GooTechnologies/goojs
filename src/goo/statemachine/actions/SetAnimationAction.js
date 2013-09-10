@@ -12,8 +12,6 @@ Actions
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
 	function SetAnimationAction(settings) {
-		this.type = 'SetAnimationAction';
-
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -33,7 +31,7 @@ Actions
 	}
 
 	SetAnimationAction.prototype = {
-		update: function(fsm) {
+		onUpdate: function(/*fsm*/) {
 			if (this.entity !== null && this.animation !== null && this.entity.animationComponent) {
 				this.entity.animationComponent.animationManager.getBaseAnimationLayer().doTransition(this.animation);
 			}
