@@ -26,7 +26,7 @@ define([
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	RSVP,
-	pu,
+	PromiseUtil,
 	_
 ) {
 	function AnimationLayersHandler() {
@@ -36,8 +36,10 @@ define([
 	AnimationLayersHandler.prototype = Object.create(ConfigHandler);
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
-	AnimationLayersHandler.prototype._create = function(layersConfig) {
-		//console.debug("Creating animation layers");
+	AnimationLayersHandler.prototype._create = function(animationConfig) {
+
+		// The animation layers are stored in the map called layers.
+		var layersConfig = animationConfig.layers;
 
 		var promises = [];
 		promises.push(this._parseLayer(layersConfig.DEFAULT));
@@ -103,10 +105,11 @@ define([
 				}
 			}
 		}
-		if (layerConfig.defaultState != null) {
-			layer.setCurrentStateByName(layerConfig.defaultState);
-		}
+
 		return RSVP.all(promises).then(function() {
+			if (layerConfig.defaultState != null) {
+				layer.setCurrentStateByName(layerConfig.defaultState);
+			}
 			return layer;
 		});
 	};
@@ -140,7 +143,7 @@ define([
 						return source.initFromClip(clip, cfg.filter, cfg.channels);
 					});
 				} else {
-					return pu.createDummyPromise(source);
+					return PromiseUtil.createDummyPromise(source);
 				}
 				break;
 			case 'Lerp':
@@ -158,7 +161,7 @@ define([
 				});
 			default:
 				console.error('Unable to parse clip source');
-				return pu.createDummyPromise();
+				return PromiseUtil.createDummyPromise();
 		}
 	};
 
@@ -178,7 +181,7 @@ define([
 
 	AnimationLayersHandler.prototype.update = function(ref, config) {
 		var layers = this._create(config);
-		return pu.createDummyPromise(layers);
+		return PromiseUtil.createDummyPromise(layers);
 	};
 
 	return AnimationLayersHandler;
