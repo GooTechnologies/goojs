@@ -424,7 +424,7 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.getCachedObjectForRef = function(ref) {
-		return this._objects[ref];
+		return this._objects?this._objects[ref]:undefined;
 	};
 
 	/**
