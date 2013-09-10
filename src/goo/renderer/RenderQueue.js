@@ -4,11 +4,9 @@ function(Vector3) {
 	"use strict";
 
 	/**
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
-	 * @property {ArrayBuffer} data Data to wrap
-	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
+	 * @class The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.
+	 * Entities within the opaque buckets are sorted front to back and entities within the transparent buckets are sorted
+	 * back to front.
 	 */
 	function RenderQueue() {
 		var that = this;
@@ -59,6 +57,7 @@ function(Vector3) {
 			return a - b;
 		};
 	}
+
 	/**
 	 * @param {Entity[]} renderList
 	 * @param {Camera} camera
@@ -104,6 +103,7 @@ function(Vector3) {
 			}
 		}
 	};
+
 	/** Rendered before any other objects. Commonly used for skyboxes and the likes
 	 * @type {number}
 	 * @readonly
