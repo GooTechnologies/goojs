@@ -20,7 +20,7 @@ define([
 	}
 
 	FSMComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('fsmComponent', FSMComponentHandler);
+	ComponentHandler._registerClass('fsm', FSMComponentHandler);
 
 	FSMComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
@@ -36,13 +36,14 @@ define([
 
 	FSMComponentHandler.prototype.update = function(entity, config) {
 		var that = this;
+
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 
-		var firstLevel = [];
 		var promises = [];
 
 		for (var i = 0; i < config.stateRefs.length; i++) {
 			promises.push(that._getState(config.stateRefs[i]));
+			//promises.push(this.getConfig(config.stateRefs[i]));
 		}
 
 		var promise = RSVP.all(promises);
@@ -68,11 +69,13 @@ define([
 					}
 				}
 
+				var firstLevel = [];
+
 				for (var i = 0; i < config.machines.length; i++) {
 					var machine = new Machine(config.machines[i].name);
 
-					for (var j = 0; j < machine.stateRefs.length; j++) {
-						var stateRef = machine.stateRefs[j];
+					for (var j = 0; j < config.machines[i].states.length; j++) {
+						var stateRef = config.machines[i].states[j];
 						machine.addState(statesByUuid[stateRef]);
 					}
 

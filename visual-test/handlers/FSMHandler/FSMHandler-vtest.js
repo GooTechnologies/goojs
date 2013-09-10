@@ -19,12 +19,22 @@ require([
 			rootPath: './fsm/'
 		});
 
-		loader.load('fsm.fsmComponent').then(function(v) {
+		loader.load('scene.scene').then(function(v) {
+		//loader.load('entity.entity').then(function(v) {
+			console.log('Success!');
+			console.log(v);
+			//window.goo = goo;
+		}).then(null, function(e) {
+				alert('Failed to load fsm: ' + e);
+		});
+		/*
+		loader.load('m1_s1.state').then(function(v) {
 			console.log('Success!');
 			console.log(v);
 		}).then(null, function(e) {
 			alert('Failed to load fsm: ' + e);
 		});
+		*/
 	}
 
 	function init() {

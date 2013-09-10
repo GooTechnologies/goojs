@@ -1,0 +1,24 @@
+{
+    "components":{
+        "fsm": {
+            "stateRefs": [
+                "m1_s1.state",
+                "m1_s2.state",
+                "m2_s1.state",
+                "m2_s2.state"
+            ],
+            "machines": [
+                {
+                    "name": "machine1",
+                    "initialState": "m1_s1",
+                    "states": ["m1_s1", "m1_s2"]
+                }, {
+                    "name": "machine2",
+                    "initialState": "m2_s1",
+                    "states": ["m2_s1", "m2_s2"]
+                }
+            ]
+        }
+    },
+    "name": "dummy"
+}

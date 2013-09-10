@@ -48,7 +48,7 @@ function(
 	 */
 	var _jsonTest, _texture_types;
 
-	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle)$/;
+	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|state)$/;
 
 	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 
