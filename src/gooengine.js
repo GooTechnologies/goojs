@@ -90,8 +90,6 @@ define([
 	'goo/loaders/ScriptLoader',
 	'goo/loaders/ShaderLoader',
 	'goo/loaders/SkeletonLoader',
-	'goo/loaders/crunch/CrunchLoader',
-	'goo/loaders/crunch/crn_decomp',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/dds/DdsUtils',
 	'goo/loaders/handlers/AnimationClipHandler',
