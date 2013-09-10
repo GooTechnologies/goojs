@@ -567,14 +567,12 @@ function (
 		}
 
 		for (var i = 0; i < count; i++) {
-			var material, orMaterial;
+			var material = null, orMaterial = null;
 			if (i < materials.length) {
 				material = materials[i];
 			}
 			if(i < this._overrideMaterials.length) {
 				orMaterial = this._overrideMaterials[i];
-			} else if (this._overrideMaterials.length > 0) {
-				orMaterial = this._overrideMaterials[0];
 			}
 			if (material && orMaterial) {
 				this.override(orMaterial, material, this._mergedMaterial);

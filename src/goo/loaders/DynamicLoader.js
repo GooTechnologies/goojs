@@ -48,7 +48,6 @@ function(
 	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
-	
 
 	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
 
@@ -70,6 +69,7 @@ function(
 	 */
 	function DynamicLoader(options) {
 		this.options = options;
+		this._objects = {};
 		_.defaults(this.options, {
 			ajax: true
 		});
@@ -217,7 +217,7 @@ function(
 		if (config) {
 			this._configs[ref] = config;
 		}
-		this._objects = {};
+		delete this._objects[ref];
 		//var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
 
 		return this._loadRef(ref).then(function(config) {
@@ -324,6 +324,8 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
+		var promise, url,
+			that = this;
 		// Do not create a request to load the reference if it is a shader
 		// to be loaded from the engine's shader library.
 		if (ref.indexOf(_ENGINE_SHADER_PREFIX) === 0) {
@@ -331,8 +333,6 @@ function(
 			this._configs[ref] = promise;
 		}
 
-		var promise, url,
-			that = this;
 		if (noCache == null) {
 			noCache = false;
 		}

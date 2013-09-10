@@ -52,6 +52,7 @@ define([
 		this.viewportHeight = 0;
 		this.shiftKey = false;
 		this.altKey = false;
+		this.goingToLookAt = new Vector3().setv(this.lookAtPoint);
 	}
 
 	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
@@ -126,11 +127,17 @@ define([
 				v
 			);
 			this.lookAtPoint.setv(v);
+			this.goingToLookAt.setv(this.lookAtPoint);
 			this.dirty = true;
 		}
 	};
 
 	OrbitNPanControlScript.prototype.run = function(entity, tpf, env) {
+		if(!this.goingToLookAt.equals(this.lookAtPoint)) {
+			var delta = tpf * 7;
+			this.lookAtPoint.lerp(this.goingToLookAt, delta);
+			this.dirty = true;
+		}
 		OrbitCamControlScript.prototype.run.call(this, entity, tpf, env);
 		if (env) {
 			this.viewportWidth = env.viewportWidth;
