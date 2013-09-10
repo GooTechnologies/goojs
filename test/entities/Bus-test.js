@@ -32,11 +32,12 @@ define([
 		it('cannot add the same listener to a channel', function() {
 			var gotData;
 
+			var channel = 'main';
 			var listener = function(data) { gotData = data; };
-			bus.addListener('main', listener);
-			bus.addListener('main', listener);
+			bus.addListener(channel, listener);
+			bus.addListener(channel, listener);
 
-			expect(bus.trie.children[0].listeners.length).toBe(1);
+			expect(bus.trie.children[channel].listeners.length).toBe(1);
 		});
 
 		it('can send to multiple channels', function() {

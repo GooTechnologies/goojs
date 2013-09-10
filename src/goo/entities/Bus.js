@@ -1,19 +1,10 @@
-define(
+define(['goo/util/ArrayUtil'],
 	/** @lends */
-	function () {
+	function (ArrayUtil) {
 	"use strict";
 
 	function Bus() {
-		// REVIEW: Would sure be nice to use objects for children
-		this.trie = { name: '', listeners: [], children: [] };
-	}
-
-	// REVIEW: How about ArrayUtil.remove?
-	function removeFromArray(array, element) {
-		var index = array.indexOf(element);
-		if (index !== -1) {
-			array.splice(index, 1);
-		}
+		this.trie = { name: '', listeners: [], children: {} };
 	}
 
 	/**
@@ -39,15 +30,11 @@ define(
 		for (var i = 0; i < channelPath.length; i++) {
 			var channelSub = channelPath[i];
 
-			var exists = false;
-			for (var j = 0; j < node.children.length; j++) {
-				if (node.children[j].name === channelSub) {
-					node = node.children[j];
-					exists = true;
-					break;
-				}
+			if(node.children[channelSub]) {
+				node = node.children[channelSub];
+			} else {
+				return;
 			}
-			if (!exists) { return; }
 		}
 
 		return node;
@@ -62,8 +49,10 @@ define(
 		for (var i = 0; i < node.listeners.length; i++) {
 			node.listeners[i](data);
 		}
-		for (var i = 0; i < node.children.length; i++) {
-			this._emitToAll(node.children[i], data);
+
+		var childrenKeys = Object.keys(node.children);
+		for (var i = 0; i < childrenKeys.length; i++) {
+			this._emitToAll(node.children[childrenKeys], data);
 		}
 	};
 
@@ -78,17 +67,11 @@ define(
 		for (var i = 0; i < channelPath.length; i++) {
 			var channelSub = channelPath[i];
 
-			var exists = false;
-			for (var j = 0; j < node.children.length; j++) {
-				if (node.children[j].name === channelSub) {
-					node = node.children[j];
-					exists = true;
-					break;
-				}
-			}
-			if (!exists) {
-				var newNode = { name: channelSub, listeners: [], children: [] };
-				node.children.push(newNode);
+			if (node.children[channelSub]) {
+				node = node.children[channelSub];
+			} else {
+				var newNode = { listeners: [], children: [] };
+				node.children[channelSub] = newNode;
 				node = newNode;
 			}
 		}
@@ -105,7 +88,7 @@ define(
 	 */
 	Bus.prototype.removeListener = function (channelName, callbackToRemove) {
 		var node = this._getNode(channelName);
-		if(node) { removeFromArray(node.listeners, callbackToRemove); }
+		if(node) { ArrayUtil.remove(node.listeners, callbackToRemove); }
 	};
 
 	/**
@@ -127,18 +110,15 @@ define(
 		var parentChannelName = channelParts.join('.');
 		var parentNode = this._getNode(parentChannelName);
 
-		for (var i = 0; i < parentNode.children.length; i++) {
-			if (parentNode.children[i].name === leafChannelName) {
-				parentNode.children.splice(i, 1);
-				break;
-			}
-		}
+		delete parentNode.children[leafChannelName];
 	};
 
-	Bus.prototype._remove = function(node, callbackToRemove) {
-		removeFromArray(node.listeners, callbackToRemove);
-		for (var i = 0; i < node.children.length; i++) {
-			this._remove(node.children[i], callbackToRemove);
+	Bus.prototype._removeListener = function(node, callbackToRemove) {
+		ArrayUtil.remove(node.listeners, callbackToRemove);
+
+		var childrenKeys = Object.keys(node.children);
+		for (var i = 0; i < childrenKeys.length; i++) {
+			this._removeListener(node.children[childrenKeys[i]], callbackToRemove);
 		}
 	};
 
@@ -147,7 +127,7 @@ define(
 	 * @param callbackToRemove
 	 */
 	Bus.prototype.removeListenerFromAllChannels = function(callbackToRemove) {
-		this._remove(this.trie, callbackToRemove);
+		this._removeListener(this.trie, callbackToRemove);
 	};
 
 	return Bus;
