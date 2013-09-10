@@ -48,18 +48,6 @@ define([
 		Grid: Grid
 	};
 
-	function makeShapeConstructor(shape) {
-		function LoadedShape(args) {
-			return shape.apply(this, args);
-		}
-		LoadedShape.prototype = shape.prototype;
-		return LoadedShape;
-	}
-
-	var shapeConstructors = {};
-	for (var key in shapes) {
-		shapeConstructors[key] = makeShapeConstructor(shapes[key]);
-	}
 
 	MeshDataComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
@@ -74,10 +62,10 @@ define([
 		var p1, p2;
 		ComponentHandler.prototype.update.call(this, entity, config);
 
-		if(config.shape && shapeConstructors[config.shape]) {
+		if(config.shape && shapes[config.shape]) {
 			var shape = config.shape;
-			var args = config.shapeOptions;
-			var meshData = new shapeConstructors[shape](args);
+			var properties = config.shapeOptions;
+			var meshData = new shapes[shape](properties);
 			p1 = pu.createDummyPromise(meshData);
 			p2 = pu.createDummyPromise();
 		} else {

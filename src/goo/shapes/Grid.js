@@ -5,6 +5,13 @@ define([
 ) {
 	'use strict';
 	function Grid(xSegments, ySegments, width, height) {
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			xSegments = props.xSegments;
+			ySegments = props.ySegments;
+			width = props.width;
+			height = props.height;
+		}
 		this.xSegments = xSegments || 10;
 		this.ySegments = ySegments || 10;
 		this.width = width || 1;

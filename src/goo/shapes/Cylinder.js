@@ -20,6 +20,12 @@ function (
 	 * @param {Enum} [textureMode=Cylinder.TextureModes.Polar] Texture wrapping mode.
 	 */
 	function Cylinder(radialSamples, radius, textureMode) {
+		if(arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			radialSamples = props.radialSamples;
+			radius = props.radius;
+			textureMode = props.textureMode;
+		}
 		/** Number of slices.
 		 * @type {number}
 		 * @default 8

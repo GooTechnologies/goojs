@@ -19,6 +19,13 @@ function (
 	 * @param {number} [centerRadius=2] Radius from center.
 	 */
 	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			circleSamples = props.circleSamples;
+			radialSamples = props.radialSamples;
+			tubeRadius = props.tubeRadius;
+			centerRadius = props.centerRadius;
+		}
 		this._circleSamples = circleSamples !== undefined ? circleSamples : 8;
 		this._radialSamples = radialSamples !== undefined ? radialSamples : 8;
 		this._tubeRadius = tubeRadius !== undefined ? tubeRadius : 1;
