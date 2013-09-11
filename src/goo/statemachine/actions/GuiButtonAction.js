@@ -32,20 +32,20 @@ Actions
 
 	GuiButtonAction.prototype = {
 		onEnter: function(fsm) {
-			this.btn = $('<button/>', {
+			this.button = $('<button/>', {
 				text: this.name,
 				css: {
 					'position': 'relative',
-					'z-index': 100
+					'z-index': 10000
 				},
 				click: function() {
-					fsm.handle(this.event);
+					fsm.send(this.event);
 				}.bind(this)
 			}).appendTo($('body'));
 		},
 		onExit: function() {
-			if (this.btn) {
-				this.btn.remove();
+			if (this.button) {
+				this.button.remove();
 			}
 		}
 	};

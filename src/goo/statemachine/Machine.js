@@ -7,6 +7,7 @@ function (
 
 	function Machine(name) {
 		this.name = name;
+		this._fsm = null;
 		this.states = null; //{};
 		this.initialState = 'entry';
 		this.currentState = null;
@@ -60,6 +61,7 @@ function (
 			this.states = {};
 			this.initialState = state.uuid;
 		}
+		state._fsm = this._fsm;
 		this.states[state.uuid] = state;
 	};
 
