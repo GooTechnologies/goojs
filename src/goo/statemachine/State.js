@@ -51,7 +51,7 @@ function (
 		// on enter of self
 		for (var i = 0; i < this.actions.length; i++) {
 			if (this.actions[i].onEnter) {
-				this.actions[i].onEnter();
+				this.actions[i].onEnter(this);
 			}
 		}
 
@@ -63,14 +63,14 @@ function (
 
 	State.prototype.addAction = function (action) {
 		if (action.onCreate) {
-			action.onCreate();
+			action.onCreate(this);
 		}
 		this.actions.push(action);
 	};
 
 	State.prototype.removeAction = function (action) {
 		if (action.onDestroy) {
-			action.onDestroy();
+			action.onDestroy(this);
 		}
 
 		ArrayUtil.remove(this.actions, action);

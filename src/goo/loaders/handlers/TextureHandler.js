@@ -46,8 +46,8 @@ define([
 		});
 
 		var settings = {
-			wrapS: config.wrapU,
-			wrapT: config.wrapV,
+			wrapS: config.wrapS,
+			wrapT: config.wrapT,
 			magFilter: config.magFilter,
 			minFilter: config.minFilter,
 			repeat: config.repeat,
@@ -62,10 +62,9 @@ define([
 
 	TextureHandler.prototype.update = function(ref, config) {
 		//var imgRef, loadedPromise, tc, texture, textureLoader, type, _ref,
-		var that = this;
 
 		var imgRef = config.url;
-		var type = (imgRef != null) ? imgRef.split('.').pop().toLowerCase() : void 0;
+		var type = imgRef ? imgRef.split('.').pop().toLowerCase() : void 0;
 
 		var texture, loadedPromise;
 		if (type === 'mp4') {
@@ -110,12 +109,12 @@ define([
 				}).then(null, function(e) {
 					console.error("Error loading texture: ", e);
 				});
-			} 
+			}
 			else {
 				throw new Error("Unknown texture type " + type);
 			}
 		}
-		if (this.options != null && this.options.dontWaitForTextures) {
+		if (this.options && this.options.dontWaitForTextures) {
 			// We don't wait for images to load
 			return pu.createDummyPromise(texture);
 		} else {

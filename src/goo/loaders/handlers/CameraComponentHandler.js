@@ -23,12 +23,13 @@ define([
 	CameraComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
 			fov: 45,
+			aspect: 1,
 			near: 1,
 			far: 10000
 		});
 	};
 
-	CameraComponentHandler.prototype._create = function(entity, config) {
+	CameraComponentHandler.prototype._create = function(entity/*, config*/) {
 		var camera = new Camera(45, 1, 1, 1000);
 		var component = new CameraComponent(camera);
 		entity.setComponent(component);
@@ -37,17 +38,22 @@ define([
 
 	CameraComponentHandler.prototype.update = function(entity, config) {
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		component.camera.setFrustumPerspective(config.fov, void 0, config.near, config.far);
+		component.camera.setFrustumPerspective(
+			config.fov,
+			config.aspect,
+			config.near,
+			config.far
+		);
 		return pu.createDummyPromise(component);
 	};
 
 	CameraComponentHandler.prototype.remove = function(entity) {
-		var _ref;
+		// var _ref;
 		// This removes the camera entity,
 		// but there is still a visible view that isn't updated.
 		// Perhaps change the engine so it draws just black if
 		// there is no camera?
-		if (entity != null && entity.cameraComponent != null && entity.cameraComponent.camera != null) {
+		if (entity && entity.cameraComponent && entity.cameraComponent.camera) {
 			this.world.removeEntity(entity.cameraComponent.camera);
 		}
 		return ComponentHandler.prototype.remove.call(this, entity);

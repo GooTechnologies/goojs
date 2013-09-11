@@ -11,6 +11,14 @@ function() {
 
 	}
 
+	StateUtils.getKey = function(str) {
+		if (StateUtils.keys[str]) {
+			return StateUtils.keys[str];
+		} else {
+			return str.charCodeAt(0);
+		}
+	};
+
 	StateUtils.keys = {
 		'Backspace': 8,
 		'Tab': 9,
@@ -100,6 +108,20 @@ function() {
 		'Backslash': 220
 	};
 
+	StateUtils.keyInverse = [];
+	// have it prebuilt
+
+	StateUtils.buildKeyInverse = function(assoc) {
+		var inverseAssoc = [];
+
+		var keys = Object.keys(assoc);
+		for (var i = 0; i < keys.length; i++) {
+			inverseAssoc[assoc[keys[i]]] = keys[i];
+		}
+
+		return inverseAssoc;
+	};
+
 	StateUtils.keyForCode = function(code) {
 		for (var key in StateUtils.keys) {
 			if (StateUtils.keys.hasOwnProperty(key) && StateUtils.keys[key] === code) {
@@ -121,7 +143,6 @@ function() {
 			s4() + '-' + s4() + s4() + s4();
 	};
 
-	
 	StateUtils.capitalizeFirst = function(str) {
 		return str.charAt(0).toUpperCase()+str.substr(1);
 	};
