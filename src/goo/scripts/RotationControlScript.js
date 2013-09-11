@@ -43,14 +43,16 @@ define([
 	 * @class Script for controlling the rotation of an entity.
 	 * @param {Element} element Document element on which to attach the event handlers.
 	 */
-	function RotationControlScript(element) {
+	function RotationControlScript(properties) {
+		properties = properties || {};
+
 		/**
 		 * @desc Bound event handlers.
 		 * @type {Object}
 		 * @default
 		 */
 		this.bindings = { 'attach' : attach.bind(this), 'update' : null, 'remove' : null };
-		this.element = element;
+		this.element = properties.domElement || null;
 		this.name = 'RotationControlScript';
 		this.states = { 'dirty' : false, 'x' : null, 'y' : null, 'dx' : null, 'dy' : null };
 
