@@ -97,6 +97,7 @@ function (
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(this.tmpMat1, this.rotation, this.rotation);
 		this.translation.setv(b.translation);
+		this.translation.mulv(a.scale);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
 		this.scale.setv(a.scale).mulv(b.scale);
 	};

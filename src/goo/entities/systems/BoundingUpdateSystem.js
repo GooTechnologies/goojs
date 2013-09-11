@@ -36,9 +36,9 @@ function (
 			}
 		}
 		if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
-			for (var i = 1; i < entities.length; i++) {
+			for (var i = 0; i < entities.length; i++) {
 				var mrc = entities[i].meshRendererComponent;
-				if (i === 1) {
+				if (i === 0) {
 					mrc.worldBound.clone(this._worldBound);
 				} else {
 					this._worldBound = this._worldBound.merge(mrc.worldBound);
