@@ -6,8 +6,9 @@ function (
 ) {
 	"use strict";
 
-	function State(uuid) {
+	function State(uuid, fsm) {
 		this.uuid = uuid;
+		this.fsm = fsm;
 		this.actions = [];
 		this.machines = [];
 		this.vars = {};
@@ -18,7 +19,7 @@ function (
 
 		// do on update of self
 		for (var i = 0; i < this.actions.length; i++) {
-			jumpUp = this.actions[i].onUpdate(this);
+			jumpUp = this.actions[i].onUpdate(this.fsm, this);
 			if(jumpUp) { return jumpUp; }
 		}
 
@@ -42,7 +43,7 @@ function (
 		}
 		for (var i = 0; i < this.actions.length; i++) {
 			if (this.actions[i].onExit) {
-				this.actions[i].onExit(this);
+				this.actions[i].onExit(this.fsm, this);
 			}
 		}
 	};
@@ -51,7 +52,7 @@ function (
 		// on enter of self
 		for (var i = 0; i < this.actions.length; i++) {
 			if (this.actions[i].onEnter) {
-				this.actions[i].onEnter(this);
+				this.actions[i].onEnter(this.fsm, this);
 			}
 		}
 
@@ -63,14 +64,14 @@ function (
 
 	State.prototype.addAction = function (action) {
 		if (action.onCreate) {
-			action.onCreate(this);
+			action.onCreate(this.fsm, this);
 		}
 		this.actions.push(action);
 	};
 
 	State.prototype.removeAction = function (action) {
 		if (action.onDestroy) {
-			action.onDestroy(this);
+			action.onDestroy(this.fsm, this);
 		}
 
 		ArrayUtil.remove(this.actions, action);

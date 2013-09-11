@@ -15,38 +15,69 @@ define([
 			fsmComponent = new FSMComponent();
 		});
 
-		it('can run onEnter on initialisation', function() {
-			var gotData1, gotData2;
+		it('can run onEnter on initialisation on all machines', function() {
+			var gotData1 = 0, gotData2 = 0;
 
 			// set up machine 1
+			var machine1 = new Machine();
 			var state1 = new State('entry');
-			state1.actions = [{
-				onEnter: function() { gotData1 = 123; },
+			state1.addAction({
+				onEnter: function() { gotData1 += 123; },
 				onExit: function() {},
 				onUpdate: function() {}
-			}];
-
-			var machine1 = new Machine();
+			});
 			machine1.addState(state1);
 
 
 			// set up machine 2
+			var machine2 = new Machine();
 			var state2 = new State('entry');
-			state2.actions = [{
-				onEnter: function() { gotData2 = 321; },
+			state2.addAction({
+				onEnter: function() { gotData2 += 234; },
 				onExit: function() {},
 				onUpdate: function() {}
-			}];
-			var machine2 = new Machine();
+			});
 			machine2.addState(state2);
 
-			fsmComponent.machines.push(machine1, machine2);
+			fsmComponent.machines = [machine1, machine2];
 
 			// init
 			fsmComponent.init();
 
 			expect(gotData1).toBe(123);
-			expect(gotData2).toBe(321);
+			expect(gotData2).toBe(234);
+		});
+
+		it('can run onEnter on initialisation only on the initial state', function() {
+			var gotData1 = 0, gotData2 = 0;
+
+			// set up machine 1
+			var machine1 = new Machine();
+
+			var state1 = new State('first');
+			state1.addAction({
+				onEnter: function() { gotData1 += 123; },
+				onExit: function() {},
+				onUpdate: function() {}
+			});
+
+			var state2 = new State('second');
+			state2.addAction({
+				onEnter: function() { gotData2 += 234; },
+				onExit: function() {},
+				onUpdate: function() {}
+			});
+
+			machine1.addState(state1);
+			machine1.addState(state2);
+
+			fsmComponent.machines = [machine1];
+
+			// init
+			fsmComponent.init();
+
+			expect(gotData1).toBe(123);
+			expect(gotData2).toBe(0);
 		});
 
 		it('can run onUpdate', function() {

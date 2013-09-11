@@ -5,7 +5,8 @@ function (
 ) {
 	"use strict";
 
-	function Machine() {
+	function Machine(name) {
+		this.name = name;
 		this.states = null; //{};
 		this.initialState = 'entry';
 		this.currentState = null;
