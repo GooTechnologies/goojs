@@ -34,6 +34,10 @@ function (
 	 * @property {Boolean} doRender Only render if set to true
 	 */
 	function GridRenderSystem() {
+		/*
+		null means that it listens to all entities which is not true - this system si not interested in any entity at all,
+		so then why have it as a system and not as a callback?
+		 */
 		System.call(this, 'GridRenderSystem', null);
 
 		this.renderList = [];
@@ -45,18 +49,18 @@ function (
 		this.camera = null;
 		this.lights = [];
 		this.transform = new Transform();
-		this.transform.rotation.rotateX(-Math.PI/2);
-		this.transform.scale.setd(10000,10000,10000);
+		this.transform.rotation.rotateX(-Math.PI / 2);
+		this.transform.scale.setd(10000, 10000, 10000);
 		this.transform.update();
 
 		this.grid = {
-			meshData: new Grid(100,100),
+			meshData: new Grid(100, 100),
 			materials: [Material.createMaterial(gridShaderDef, 'Grid Material')],
 			transform: this.transform
 		};
 		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, 'Surface Material');
-		surfaceMaterial.uniforms.materialDiffuse = [0.6,0.6,0.6,1.0];
-		surfaceMaterial.uniforms.materialSpecular = [0.6,0.6,0.6,1.0];
+		surfaceMaterial.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1.0];
+		surfaceMaterial.uniforms.materialSpecular = [0.6, 0.6, 0.6, 1.0];
 		surfaceMaterial.cullState.enabled = false;
 		surfaceMaterial.depthState.write = false;
 		surfaceMaterial.depthState.enabled = false;
@@ -113,9 +117,9 @@ function (
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			color: [0.5,0.5,0.5,1],
+			color: [0.5, 0.5, 0.5, 1],
 			fogOn: false,
-			fogColor: [0.1,0.1,0.1,1],
+			fogColor: [0.1, 0.1, 0.1, 1],
 			fogNear: Shader.NEAR_PLANE,
 			fogFar: Shader.FAR_PLANE
 		},
