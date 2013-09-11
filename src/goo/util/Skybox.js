@@ -9,7 +9,8 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/ScriptComponent'
+	'goo/entities/components/ScriptComponent',
+	'goo/math/Transform'
 
 ], /** @lends */ function (
 	ShapeCreator,
@@ -22,67 +23,39 @@ define([
 	TransformComponent,
 	MeshDataComponent,
 	MeshRendererComponent,
-	ScriptComponent
+	ScriptComponent,
+	Transform
 ) {
 	'use strict';
 
-	function Skybox(world, cameraEntity, type, images, textureMode) {
-		Entity.call(this, world, 'Skybox');
-		this._cameraPos = cameraEntity.transformComponent.transform.translation;
-		var meshData, texture;
+	function Skybox(type, images, textureMode) {
+		var texture;
 		if (type === Skybox.SPHERE) {
-
-			meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
+			this.meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
 			texture = new TextureCreator().loadTexture2D(images);
 		} else if (type === Skybox.BOX) {
-			meshData = ShapeCreator.createBox(1, 1, 1);
+			this.meshData = ShapeCreator.createBox(1, 1, 1);
 			texture = new TextureCreator().loadTextureCube(images);
 		} else {
 			throw new Error('Unknown geometry type');
 		}
-
-		var tfc = new TransformComponent();
-		tfc.transform.scale.scale(100);
-
-		if(type === Skybox.SPHERE && textureMode !== Sphere.TextureModes.Chromeball) {
-			tfc.transform.setRotationXYZ(-Math.PI/2, 0, 0);
-		}
-
-		var parent = cameraEntity.transformComponent.parent;
-		if (parent) {
-			parent.attachChild(tfc);
-		}
-		this.setComponent(tfc);
-		this.setComponent(new MeshDataComponent(meshData));
-
-		var mrc = new MeshRendererComponent();
 		var material = Material.createMaterial(shaders[type], 'Skybox material');
 
 		material.setTexture(Shader.DIFFUSE_MAP, texture);
+
 		material.cullState.cullFace = 'Front';
 		material.depthState.enabled = false;
-		material.renderQueue = 0;
 
-		mrc.materials[0] = material;
-		mrc.cullMode = 'Never';
-
-		this.setComponent(mrc);
-
-		this.setComponent(
-			new ScriptComponent({
-				run: function(entity) {
-					entity.transformComponent.transform.translation.setv(this._cameraPos);
-					entity.transformComponent.setUpdated();
-				}.bind(this)
-			})
-		);
+		this.materials = [material];
+		this.transform = new Transform();
+		this.transform.rotation.rotateX(-Math.PI/2);
+		//this.transform.scale.setd(100,100,100);
+		this.transform.update();
+		this.active = true;
 	}
-
-	Skybox.prototype = Object.create(Entity.prototype);
-
 
 	Skybox.SPHERE = 'sphere';
 	Skybox.BOX = 'box';
@@ -110,7 +83,7 @@ define([
 			'varying vec3 eyeVec;',//
 
 			'void main(void) {', //
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition+cameraPosition, 1.0);', //
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
 			'	eyeVec = cameraPosition - worldPos.xyz;', //
 			'}'//
@@ -140,6 +113,7 @@ define([
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			cameraPosition: Shader.CAMERA,
+			near: Shader.NEAR_PLANE,
 			diffuseMap: Shader.DIFFUSE_MAP
 		},
 		vshader: [ //
@@ -150,13 +124,15 @@ define([
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
 			'uniform vec3 cameraPosition;', //
+			'uniform float near;',
 
 			'varying vec2 texCoord0;',
 			'varying vec3 eyeVec;',//
 
 			'void main(void) {', //
 			'	texCoord0 = vertexUV0;',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
+			' worldPos += vec4(cameraPosition, 0.0);',
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
 			'	eyeVec = cameraPosition - worldPos.xyz;', //
 			'}'//
