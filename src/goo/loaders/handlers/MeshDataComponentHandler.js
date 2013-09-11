@@ -96,9 +96,9 @@ define([
 				var size = [max[0] - min[0], max[1] - min[1], max[2] - min[2]];
 				var center = [(max[0] + min[0]) * 0.5, (max[1] + min[1]) * 0.5, (max[2] + min[2]) * 0.5];
 				var bounding = new BoundingBox();
-				bounding.xExtent = size[0];
-				bounding.yExtent = size[1];
-				bounding.zExtent = size[2];
+				bounding.xExtent = size[0] / 2;
+				bounding.yExtent = size[1] / 2;
+				bounding.zExtent = size[2] / 2;
 				bounding.center.seta(center);
 				component.modelBound = bounding;
 				component.autoCompute = false;
