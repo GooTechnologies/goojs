@@ -218,15 +218,14 @@ function (
 			this.world.process();
 		}
 
-		for (var i = 0; i < this.callbacksPreRender.length; i++) {
-			this.callbacksPreRender[i](this.world.tpf);
-		}
-
 		this.renderer.info.reset();
 
 		if (this.doRender) {
 			this.renderer.setRenderTarget();
 			this.renderer.clear();
+			for (var i = 0; i < this.callbacksPreRender.length; i++) {
+				this.callbacksPreRender[i](this.world.tpf);
+			}
 
 			for (var i = 0; i < this.renderSystems.length; i++) {
 				this.renderSystems[i].render(this.renderer);

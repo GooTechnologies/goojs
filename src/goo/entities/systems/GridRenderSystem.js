@@ -59,6 +59,7 @@ function (
 			transform: this.transform
 		};
 		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, 'Surface Material');
+		surfaceMaterial.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1.0];
 		surfaceMaterial.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1.0];
 		surfaceMaterial.uniforms.materialSpecular = [0.6, 0.6, 0.6, 1.0];
 		surfaceMaterial.cullState.enabled = false;
