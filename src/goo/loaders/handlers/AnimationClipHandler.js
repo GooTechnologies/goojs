@@ -29,8 +29,8 @@ function(
 
 	AnimationClipHandler.prototype.update = function(ref, config) {
 		var clip, that = this;
-		if (config.binaryData) {
-			return this.getConfig(config.binaryData).then(function(bindata) {
+		if (config.binaryRef) {
+			return this.getConfig(config.binaryRef).then(function(bindata) {
 				if (!bindata) {
 					throw new Error("Binary clip data was empty");
 				}

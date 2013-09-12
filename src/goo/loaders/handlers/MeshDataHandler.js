@@ -27,8 +27,8 @@ define([
 	MeshDataHandler.prototype.update = function(ref, meshConfig) {
 		var that = this;
 		if (!this._objects[ref]) {
-			if (meshConfig.binaryData) {
-				return this.getConfig(meshConfig.binaryData).then(function(bindata) {
+			if (meshConfig.binaryRef) {
+				return this.getConfig(meshConfig.binaryRef).then(function(bindata) {
 					if (!bindata) {
 						throw new Error("Binary mesh data was empty");
 					}
@@ -197,8 +197,10 @@ define([
 		if (data.indexLengths) {
 			meshData.indexLengths = data.indexLengths.slice(0);
 		}
-		if (data.boundingBox) {
-			meshData.boundingBox = data.boundingBox;
+		if (data.boundingVolume) {
+			if (data.boundingVolume.type === "BoundingBox") {
+				meshData.boundingBox = {min: data.boundingVolume.min, max: data.boundingVolume.max};
+			}
 		}
 		return meshData;
 	};

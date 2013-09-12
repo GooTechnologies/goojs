@@ -124,13 +124,13 @@ define([
 					return that.updateObject(cfg.clipRef, config, that.options).then(function(clip) {
 						var clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
 
-						var keys = ['loopCount', 'timeScale', 'active'];
-						for (var i = 0; i < keys.length; i++) {
-							var key = keys[i];
-							if (cfg[key] && !isNaN(cfg[key])) {
-								clipSource._clipInstance['_' + key] = cfg[key];
-							}
+						if (cfg.loopCount) {
+							clipSource._clipInstance['_loopCount'] = cfg.loopCount;
 						}
+						if (cfg.timeScale) {
+							clipSource._clipInstance['_timeScale'] = cfg.timeScale;
+						}
+
 						return clipSource;
 					});
 				});
