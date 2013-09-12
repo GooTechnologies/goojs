@@ -54,7 +54,7 @@ require([
 		pointLight.color.data[0] = 0.9;
 		pointLight.color.data[1] = 0.0;
 		pointLight.color.data[2] = 0.2;
-		pointLight.range = 8;
+		pointLight.range = 5;
 
 		var pointLightEntity = goo.world.createEntity('pointLight');
 		pointLightEntity.setComponent(new LightComponent(pointLight));
@@ -66,10 +66,14 @@ require([
 		pointLightEntity.addToWorld();
 
 		var pointlightGui = gui.addFolder('Point Light');
-		// var controller = pointlightGui.addColor(pointLight.color, 'data');
-		// controller.onChange(function() {
-		// 	pointLight.changedColor = true;
-		// });
+		var data = {
+			color: [pointLight.color.data[0] * 255, pointLight.color.data[1] * 255, pointLight.color.data[2] * 255]
+		};
+		var controller = pointlightGui.addColor(data, 'color');
+		controller.onChange(function() {
+			pointLight.color.seta(data.color).div(255);
+			pointLight.changedColor = true;
+		});
 		var controller = pointlightGui.add(pointLight, 'intensity', 0, 1);
 		controller.onChange(function() {
 			pointLight.changedProperties = true;
@@ -99,10 +103,14 @@ require([
 		directionalLightEntity.addToWorld();
 
 		var directionallightGui = gui.addFolder('Directional Light');
-		// var controller = directionallightGui.addColor(directionalLight.color, 'data');
-		// controller.onChange(function() {
-		// 	directionalLight.changedColor = true;
-		// });
+		var data = {
+			color: [directionalLight.color.data[0] * 255, directionalLight.color.data[1] * 255, directionalLight.color.data[2] * 255]
+		};
+		var controller = directionallightGui.addColor(data, 'color');
+		controller.onChange(function() {
+			directionalLight.color.seta(data.color).div(255);
+			directionalLight.changedColor = true;
+		});
 		var controller = directionallightGui.add(directionalLight, 'intensity', 0, 1);
 		controller.onChange(function() {
 			directionalLight.changedProperties = true;
@@ -130,10 +138,14 @@ require([
 		spotLightEntity.addToWorld();
 
 		var spotLightGui = gui.addFolder('Spot Light');
-		// var controller = spotLightGui.addColor(spotLight.color, 'data');
-		// controller.onChange(function() {
-		// 	spotLight.changedColor = true;
-		// });
+		var data = {
+			color: [spotLight.color.data[0] * 255, spotLight.color.data[1] * 255, spotLight.color.data[2] * 255]
+		};
+		var controller = spotLightGui.addColor(data, 'color');
+		controller.onChange(function() {
+			spotLight.color.seta(data.color).div(255);
+			spotLight.changedColor = true;
+		});
 		var controller = spotLightGui.add(spotLight, 'angle', 0, 90);
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
