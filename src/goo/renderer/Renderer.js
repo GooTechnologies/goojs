@@ -785,7 +785,16 @@ function (
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
-			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+
+			var pickList = [];
+			for (var i = 0, l = renderList.length; i < l; i++) {
+				var entity = renderList[i];
+				if (entity.meshRendererComponent && entity.meshRendererComponent.isPickable) {
+					pickList.push(entity);
+				}
+			}
+			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}

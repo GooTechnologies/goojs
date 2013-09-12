@@ -38,8 +38,12 @@ define(['goo/entities/components/Component'],
 		 * @type {boolean}
 		 * @default
 		 */
-		this.isPickable = false;
+		this.isPickable = true;
 
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.isReflectable = true;
 	}
 

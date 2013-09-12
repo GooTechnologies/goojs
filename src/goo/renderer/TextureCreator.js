@@ -131,7 +131,7 @@ function (
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, videoSettings) {
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, videoSettings, errorCallback) {
 		if (TextureCreator.cache[videoURL] !== undefined) {
 			return TextureCreator.cache[videoURL];
 		}
@@ -144,6 +144,9 @@ function (
 
 		video.addEventListener('error', function () {
 			console.warn('Couldn\'t load video URL [' + videoURL + ']');
+			if (errorCallback) {
+				errorCallback();
+			}
 		}, false);
 
 		var texture = new Texture(video, {
