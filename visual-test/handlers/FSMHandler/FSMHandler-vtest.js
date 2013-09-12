@@ -23,7 +23,7 @@ require([
 		//loader.load('entity.entity').then(function(v) {
 			console.log('Success!');
 			console.log(v);
-			//window.goo = goo;
+			window.goo = goo;
 		}).then(null, function(e) {
 				alert('Failed to load fsm: ' + e);
 		});

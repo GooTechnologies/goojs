@@ -39,7 +39,7 @@ function(
 		this.eventListener = function(event) {
 			//console.log('.......... keyup');
 
-			if (event.which === this.key) this.updated = true;
+			if (event.which === this.key) { this.updated = true; }
 			/*
 			 if (this.posVariable) {
 			 if (fsm.localVariables[this.posVariable] !== undefined) {
