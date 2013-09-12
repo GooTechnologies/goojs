@@ -41,6 +41,20 @@ function (
 			}.bind(this),
 			removeListener: function (channelName, callback) {
 				this._fsm._bus.removeListener(channelName, callback);
+			}.bind(this),
+			getVariable: function (name) {
+				if (this.vars[name]) {
+					return this.vars[name];
+				} else {
+					return this._fsm.getVariable(name);
+				}
+			}.bind(this),
+			applyToVariable: function (name, fun) {
+				if (this.vars[name]) {
+					this.vars[name] = fun(this.vars[name]);
+				} else {
+					return this._fsm.applyToVariable(name, fun);
+				}
 			}.bind(this)
 		};
 	}

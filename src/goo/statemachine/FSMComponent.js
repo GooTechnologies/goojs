@@ -18,9 +18,28 @@ function (
 		this._bus = new Bus();
 		this._machines = [];
 		this.entity = null;
+		this.vars = {};
 	}
 
 	FSMComponent.prototype = Object.create(Component.prototype);
+
+	FSMComponent.vars = {};
+
+	FSMComponent.getVariable = function(name) {
+		if (this.vars[name]) {
+			return this.vars[name];
+		} else {
+			return FSMComponent.vars[name];
+		}
+	};
+
+	FSMComponent.applyToVariable = function(name, fun) {
+		if (this.vars[name]) {
+			this.vars[name] = fun(this.vars[name]);
+		} else if (FSMComponent.vars[name]) {
+			FSMComponent.vars[name] = fun(FSMComponent.vars[name]);
+		}
+	};
 
 	FSMComponent.prototype.addMachine = function(machine) {
 		machine._fsm = this;

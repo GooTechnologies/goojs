@@ -60,45 +60,39 @@ require([
 
 		var speed = 10;
 
-		// horizontal moving
-		var machine1 = new Machine('horizontalMoving');
-		fsmComponent.addMachine(machine1);
+		// paddle
+		var machinePaddle = new Machine('paddle');
+		fsmComponent.addMachine(machinePaddle);
 
-		var stateIdle = new State('idle');
-		machine1.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'a', jumpTo: 'movingLeft' }));
-		stateIdle.addAction(new KeyDownAction({ key: 'd', jumpTo: 'movingRight' }));
-
-		var stateMovingLeft = new State('movingLeft');
-		machine1.addState(stateMovingLeft);
-		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', jumpTo: 'idle' }));
-		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, position: [-speed, 0, 0] }));
-
-		var stateMovingRight = new State('movingRight');
-		machine1.addState(stateMovingRight);
-		stateMovingRight.addAction(new KeyUpAction({ key: 'd', jumpTo: 'idle' }));
-		stateMovingRight.addAction(new AddPositionAction({ entity: entity, position: [ speed, 0, 0] }));
+		var stateSingular = new State('singular');
+		machine1.addState(stateSingular);
+		stateSingular.addAction(new MouseMoveAction({ variable: 'mousePos' }));
 
 
-		// vertical moving
-		var machine1 = new Machine('verticalMoving');
-		fsmComponent.addMachine(machine1);
+		// ball mover
+		var machineBall = new Machine('ball');
+		fsmComponent.addMachine(machineBall);
 
-		var stateIdle = new State('idle');
-		machine1.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'w', jumpTo: 'movingUp' }));
-		stateIdle.addAction(new KeyDownAction({ key: 's', jumpTo: 'movingDown' }));
-
-		var stateMovingUp = new State('movingUp');
+		var stateSingular = new State('singular');
 		machine1.addState(stateMovingUp);
-		stateMovingUp.addAction(new KeyUpAction({ key: 'w', jumpTo: 'idle' }));
-		stateMovingUp.addAction(new AddPositionAction({ entity: entity, position: [0, 0, -speed] }));
+		stateSingular.addAction(new AddPositionAction({ position: ['dx', 'dy', 0] }));
 
-		var stateMovingDown = new State('movingDown');
-		machine1.addState(stateMovingDown);
-		stateMovingDown.addAction(new KeyUpAction({ key: 's', jumpTo: 'idle' }));
-		stateMovingDown.addAction(new AddPositionAction({ entity: entity, position: [0, 0, speed] }));
 
+		// ball collider
+		var machineWall = new Machine('wall');
+		fsmComponent.addMachine(machineWall);
+
+		var stateIdle = new State('idle');
+		stateIdle.addAction(new KeyUpAction({ key: 'w', jumpTo: 'idle' }));
+		stateIdle.addAction(new ConditionalEmmitAction());
+
+		var stateFlipX = new State('flipX');
+		stateFlipX.addAction(new MultiplyVariableAction({ variable: 'dx', amount: -1 }));
+		stateFlipX.addAction(new EmmitAction({ variable: 'dx', amount: -1 }));
+
+		var stateFlipY = new State('flipY');
+		stateFlipY.addAction(new MultiplyVariableAction({ variable: 'dy', amount: -1 }));
+		stateFlipY.addAction(new EmmitAction({ variable: 'dy', amount: -1 }));
 
 		return fsmComponent;
 	}

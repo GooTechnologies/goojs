@@ -11,7 +11,7 @@ Actions
 	 * @class
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function AddPositionAction(settings) {
+	function MultiplyVariableAction(settings) {
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
@@ -39,7 +39,7 @@ Actions
 		}];
 	}
 
-	AddPositionAction.prototype = {
+	MultiplyVariableAction.prototype = {
 		onEnter: function(/*fsm*/) {
 
 		},
@@ -50,14 +50,6 @@ Actions
 				var dx = (typeof this.position[0] === 'number') ? this.position[0] : fsm.getVariable(this.position[0]);
 				var dy = (typeof this.position[1] === 'number') ? this.position[1] : fsm.getVariable(this.position[1]);
 				var dz = (typeof this.position[2] === 'number') ? this.position[2] : fsm.getVariable(this.position[2]);
-
-				this.entity.transformComponent.transform.translation.add_d(
-					dx * this.speed * tpf,
-					dy * this.speed * tpf,
-					dz * this.speed * tpf
-				);
-
-				this.entity.transformComponent.setUpdated();
 			}
 		},
 		onExit: function(/*fsm*/) {
@@ -65,7 +57,7 @@ Actions
 		}
 	};
 
-	Actions.register('AddPositionAction', AddPositionAction);
+	Actions.register('MultiplyVariableAction', MultiplyVariableAction);
 
 	return AddPositionAction;
 });

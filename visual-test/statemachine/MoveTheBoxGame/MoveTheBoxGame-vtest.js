@@ -84,24 +84,24 @@ require([
 		stateMovingRight.setTransition('toIdle', 'idle');
 
 		// vertical moving
-		var machine1 = new Machine('verticalMoving');
+		var machine2 = new Machine('verticalMoving');
 		fsmComponent.addMachine(machine1);
 
 		var stateIdle = new State('idle');
-		machine1.addState(stateIdle);
+		machine2.addState(stateIdle);
 		stateIdle.addAction(new KeyDownAction({ key: 'w', eventToEmmit: { channel: 'toMovingUp' } }));
 		stateIdle.addAction(new KeyDownAction({ key: 's', eventToEmmit: { channel: 'toMovingDown' } }));
 		stateIdle.setTransition('toMovingUp', 'movingUp');
 		stateIdle.setTransition('toMovingDown', 'movingDown');
 
 		var stateMovingUp = new State('movingUp');
-		machine1.addState(stateMovingUp);
+		machine2.addState(stateMovingUp);
 		stateMovingUp.addAction(new KeyUpAction({ key: 'w', eventToEmmit: { channel: 'toIdle' } }));
 		stateMovingUp.addAction(new AddPositionAction({ entity: entity, position: [0, 0, -speed] }));
 		stateMovingUp.setTransition('toIdle', 'idle');
 
 		var stateMovingDown = new State('movingDown');
-		machine1.addState(stateMovingDown);
+		machine2.addState(stateMovingDown);
 		stateMovingDown.addAction(new KeyUpAction({ key: 's', eventToEmmit: { channel: 'toIdle' } }));
 		stateMovingDown.addAction(new AddPositionAction({ entity: entity, position: [0, 0, speed] }));
 		stateMovingDown.setTransition('toIdle', 'idle');
