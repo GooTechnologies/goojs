@@ -18,7 +18,7 @@ define(['goo/entities/components/Component'],
 		 */
 		this.worldBound = null;
 
-		/** Culling mode. Other alid values: 'Never'
+		/** Culling mode. Other valid values: 'Never'
 		 * @type {string}
 		 * @default
 		 */
