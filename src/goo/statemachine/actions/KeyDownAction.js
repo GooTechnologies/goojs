@@ -18,33 +18,54 @@ function(
 
 		var key = settings.key || 'w';
 
-		this.key = (parseFloat(key) === key) ? key : StateUtils.keys[key];
-		this.event = settings.event || 'dummy';
+		this.key = (typeof key === 'number') ? key : StateUtils.keys[key];
+		//this.event = settings.event || 'dummy'
+
+		this.jumpTo = settings.jumpTo;
 
 		this.external = [
-		{
-			name: 'Key',
-			key: 'key',
-			type: 'key'
-		},
-		{
-			name:'Send event',
-			key:'event',
-			type:'event'
-		}];
+			{
+				name: 'Key',
+				key: 'key',
+				type: 'key'
+			},
+			{
+				name:'Send event',
+				key:'event',
+				type:'event'
+			}];
+
+		this.updated = false;
+		this.eventListener = function(event) {
+			//console.log('.......... keydown');
+
+			if (event.which === this.key) this.updated = true;
+			/*
+			 if (this.posVariable) {
+			 if (fsm.localVariables[this.posVariable] !== undefined) {
+			 fsm.localVariables[this.posVariable] = [event.clientX, event.clientY];
+			 } else if (FSMComponent.globalVariables[this.posVariable] !== undefined) {
+			 FSMComponent.globalVariables[this.posVariable] = [event.clientX, event.clientY];
+			 }
+			 }
+			 */
+		}.bind(this);
 	}
 
 	KeyDownAction.prototype = {
-		onCreate: function(fsm) {
-			$(document).keydown(function(event) {
-				var keyCode = event.which || event.keyCode;
-				if (this.key === keyCode) {
-					fsm.handle(this.event);
-				}
-			}.bind(this));
+		onEnter: function() {
+			document.addEventListener('keydown', this.eventListener);
 		},
-		onDestroy: function() {
-			$(document).off('keydown');
+		onUpdate: function(proxy) {
+			if (this.updated) {
+				this.updated = false;
+				if (this.jumpTo !== '') {
+					proxy.send('transition', this.jumpTo);
+				}
+			}
+		},
+		onExit: function() {
+			document.removeEventListener('keydown', this.eventListener);
 		}
 	};
 

@@ -17,7 +17,7 @@ function (
 
 		this.proxy = {
 			getTpf: function () {
-				return this._fsm.entity.world.tpf;
+				return this._fsm.entity._world.tpf;
 			}.bind(this),
 			getState: function () {
 				return this;

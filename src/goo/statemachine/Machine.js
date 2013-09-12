@@ -25,7 +25,7 @@ function (
 		var jump;
 		jump = this.currentState.update();
 
-		if (this.contains(jump)) {
+		if (jump && this.contains(jump)) {
 			this.currentState.kill();
 			this.setState(this._states[jump]);
 		}
@@ -34,7 +34,6 @@ function (
 	};
 
 	Machine.prototype.contains = function(uuid) {
-		console.log('contains? ', uuid);
 		return !!this._states[uuid];
 	};
 

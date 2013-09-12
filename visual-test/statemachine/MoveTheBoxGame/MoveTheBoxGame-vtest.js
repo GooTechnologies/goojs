@@ -26,7 +26,7 @@ require([
 	'goo/statemachine/Machine',
 	'goo/statemachine/actions/KeyDownAction',
 	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/AddPositionAction'
+	'goo/statemachine/actions/AddPositionAction'
 ], function (
 	GooRunner,
 	World,
@@ -58,44 +58,46 @@ require([
 		// create action tied to listen to pick events
 		// tie pick event to a channel
 
+		var speed = 10;
+
 		// horizontal moving
 		var machine1 = new Machine('horizontalMoving');
 		fsmComponent.addMachine(machine1);
 
-		var stateIdle = new State('on');
+		var stateIdle = new State('idle');
 		machine1.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'a', eventToEmmit: { topic: 'transition', destination: 'movingLeft' } }));
-		stateIdle.addAction(new KeyDownAction({ key: 'd', eventToEmmit: { topic: 'transition', destination: 'movingRight' } }));
+		stateIdle.addAction(new KeyDownAction({ key: 'a', jumpTo: 'movingLeft' }));
+		stateIdle.addAction(new KeyDownAction({ key: 'd', jumpTo: 'movingRight' }));
 
 		var stateMovingLeft = new State('movingLeft');
 		machine1.addState(stateMovingLeft);
-		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', eventToEmmit: { topic: 'transition', destination: 'idle' } }));
-		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, value: -0.1 }));
+		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', jumpTo: 'idle' }));
+		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, position: [-speed, 0, 0] }));
 
 		var stateMovingRight = new State('movingRight');
 		machine1.addState(stateMovingRight);
-		stateMovingRight.addAction(new KeyUpAction({ key: 'd', eventToEmmit: { topic: 'transition', destination: 'idle' } }));
-		stateMovingRight.addAction(new AddPositionAction({ entity: entity, value: 0.1 }));
+		stateMovingRight.addAction(new KeyUpAction({ key: 'd', jumpTo: 'idle' }));
+		stateMovingRight.addAction(new AddPositionAction({ entity: entity, position: [ speed, 0, 0] }));
 
 
 		// vertical moving
-		var machine1 = new Machine('horizontalMoving');
+		var machine1 = new Machine('verticalMoving');
 		fsmComponent.addMachine(machine1);
 
-		var stateIdle = new State('on');
+		var stateIdle = new State('idle');
 		machine1.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'a', eventToEmmit: { topic: 'transition', destination: 'movingLeft' } }));
-		stateIdle.addAction(new KeyDownAction({ key: 'd', eventToEmmit: { topic: 'transition', destination: 'movingRight' } }));
+		stateIdle.addAction(new KeyDownAction({ key: 'w', jumpTo: 'movingUp' }));
+		stateIdle.addAction(new KeyDownAction({ key: 's', jumpTo: 'movingDown' }));
 
-		var stateMovingLeft = new State('movingLeft');
-		machine1.addState(stateMovingLeft);
-		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', eventToEmmit: { topic: 'transition', destination: 'idle' } }));
-		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, value: -0.1 }));
+		var stateMovingUp = new State('movingUp');
+		machine1.addState(stateMovingUp);
+		stateMovingUp.addAction(new KeyUpAction({ key: 'w', jumpTo: 'idle' }));
+		stateMovingUp.addAction(new AddPositionAction({ entity: entity, position: [0, 0, -speed] }));
 
-		var stateMovingRight = new State('movingRight');
-		machine1.addState(stateMovingRight);
-		stateMovingRight.addAction(new KeyUpAction({ key: 'd', eventToEmmit: { topic: 'transition', destination: 'idle' } }));
-		stateMovingRight.addAction(new AddPositionAction({ entity: entity, value: 0.1 }));
+		var stateMovingDown = new State('movingDown');
+		machine1.addState(stateMovingDown);
+		stateMovingDown.addAction(new KeyUpAction({ key: 's', jumpTo: 'idle' }));
+		stateMovingDown.addAction(new AddPositionAction({ entity: entity, position: [0, 0, speed] }));
 
 
 		return fsmComponent;

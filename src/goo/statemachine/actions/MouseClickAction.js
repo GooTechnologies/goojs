@@ -18,8 +18,6 @@ function(
 		this.posVariable = settings.posVariable || null;
 		this.jumpTo = settings.jumpTo || '';
 
-		this.updated = false;
-
 		this.external = [
 		{
 			name: 'Store for click position',
@@ -29,6 +27,7 @@ function(
 
 		this.currentTime = 0;
 
+		this.updated = false;
 		this.eventListener = function(event) {
 			console.log(event);
 			this.updated = true;
@@ -48,11 +47,11 @@ function(
 		onEnter: function() {
 			document.addEventListener('click', this.eventListener);
 		},
-		onUpdate: function() {
+		onUpdate: function(proxy) {
 			if (this.updated) {
 				this.updated = false;
 				if (this.jumpTo !== '') {
-					return this.jumpTo;
+					proxy.send('transition', this.jumpTo);
 				}
 			}
 		},

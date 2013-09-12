@@ -17,6 +17,7 @@ function (
 
 		this._bus = new Bus();
 		this._machines = [];
+		this.entity;
 	}
 
 	FSMComponent.prototype = Object.create(Component.prototype);

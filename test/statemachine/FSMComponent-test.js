@@ -124,21 +124,21 @@ define([
 		});
 
 		it('can transition on the same level', function() {
-			var gotData1, gotData2, gotData3;
+			var gotData1 = 0, gotData2 = 0, gotData3 = 0;
 
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
 				onEnter: function() {},
-				onExit: function() { gotData1 = 123; },
+				onExit: function() { gotData1 += 123; },
 				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
 			});
 
 			var state2 = new State('second');
 			state2.addAction({
-				onEnter: function() { gotData2 = 234; },
+				onEnter: function() { gotData2 += 234; },
 				onExit: function() {},
-				onUpdate: function() { gotData3 = 345; }
+				onUpdate: function() { gotData3 += 345; }
 			});
 
 			var machine1 = new Machine();

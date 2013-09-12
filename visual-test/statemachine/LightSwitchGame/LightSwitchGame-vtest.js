@@ -69,7 +69,7 @@ require([
 		machine.addState(stateOn);
 		machine.addState(stateOff);
 
-		fsmComponent.machines.push(machine);
+		fsmComponent.addMachine(machine);
 
 		return fsmComponent;
 	}
