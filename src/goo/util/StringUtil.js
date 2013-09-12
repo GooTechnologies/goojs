@@ -9,5 +9,10 @@ define(function() {
 		return str.indexOf(prefix) === 0;
 	};
 
+	StringUtil.capitalize = function(str) {
+		return str.substring(0,1).toUpperCase()+str.substring(1);
+	};
+
+
 	return StringUtil;
 });
