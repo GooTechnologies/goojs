@@ -34,11 +34,7 @@ function (
 	 * @property {Boolean} doRender Only render if set to true
 	 */
 	function GridRenderSystem() {
-		/*
-		null means that it listens to all entities which is not true - this system si not interested in any entity at all,
-		so then why have it as a system and not as a callback?
-		 */
-		System.call(this, 'GridRenderSystem', null);
+		System.call(this, 'GridRenderSystem', []);
 
 		this.renderList = [];
 		this.doRender = {
@@ -53,18 +49,34 @@ function (
 		this.transform.scale.setd(10000, 10000, 10000);
 		this.transform.update();
 
+		var gridMaterial = Material.createMaterial(gridShaderDef, 'Grid Material');
+		gridMaterial.depthState.write = true;
+		gridMaterial.depthState.enabled = true;
+
 		this.grid = {
 			meshData: new Grid(100, 100),
-			materials: [Material.createMaterial(gridShaderDef, 'Grid Material')],
+			materials: [gridMaterial],
 			transform: this.transform
 		};
-		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, 'Surface Material');
+		var surfaceShader = Util.clone(ShaderLib.simpleLit);
+		surfaceShader.uniforms.opacity = 1.0;
+		var fshader = surfaceShader.fshader.split('\n');
+		fshader.unshift('uniform float opacity;');
+		fshader.splice(fshader.length - 2, 0, 'final_color.a = opacity;');
+		surfaceShader.fshader = fshader.join('\n');
+
+		var surfaceMaterial = Material.createMaterial(surfaceShader, 'Surface Material');
 		surfaceMaterial.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1.0];
 		surfaceMaterial.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1.0];
 		surfaceMaterial.uniforms.materialSpecular = [0.6, 0.6, 0.6, 1.0];
+		surfaceMaterial.uniforms.opacity = 0.9;
+		surfaceMaterial.blendState.blending = 'CustomBlending';
 		surfaceMaterial.cullState.enabled = false;
-		surfaceMaterial.depthState.write = false;
-		surfaceMaterial.depthState.enabled = false;
+		surfaceMaterial.depthState.write = true;
+		surfaceMaterial.depthState.enabled = true;
+		surfaceMaterial.offsetState.enabled = true;
+		surfaceMaterial.offsetState.units = 10;
+		surfaceMaterial.offsetState.factor = 0.8;
 
 		this.surface = {
 			meshData: new Quad(),
@@ -106,7 +118,7 @@ function (
 		renderer.checkResize(this.camera);
 
 		if (this.camera) {
-			renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: true, stencil: true });
+			renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: false, stencil: false });
 		}
 	};
 
