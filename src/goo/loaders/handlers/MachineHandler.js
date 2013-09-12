@@ -6,7 +6,10 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/statemachine/State',
 	'goo/statemachine/Machine',
-	'goo/statemachine/actions/AddPositionAction'
+	'goo/statemachine/actions/AddPositionAction',
+	'goo/statemachine/actions/MouseClickAction',
+	'goo/statemachine/actions/KeyUpAction',
+	'goo/statemachine/actions/KeyDownAction'
 ], function(
 	ConfigHandler,
 	MeshData,
@@ -15,7 +18,10 @@ define([
 	PromiseUtil,
 	State,
 	Machine,
-	AddPositionAction
+	AddPositionAction,
+	MouseClickAction,
+	KeyUpAction,
+	KeyDownAction
 ) {
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -23,7 +29,10 @@ define([
 	}
 
 	MachineHandler.actions = {
-		AddPositionAction: AddPositionAction
+		AddPositionAction: AddPositionAction,
+		MouseClickAction: MouseClickAction,
+		KeyUpAction: KeyUpAction,
+		KeyDownAction: KeyDownAction
 		// populate this list
 	};
 
@@ -59,7 +68,7 @@ define([
 
 		// vars
 
-		return PromiseUtil.createDummyPromise(state);
+		return PromiseUtil.createDummyPromise(realMachine);
 	};
 
 	return MachineHandler;

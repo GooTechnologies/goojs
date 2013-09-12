@@ -24,8 +24,9 @@ require([
 	'goo/statemachine/FSMSystem',
 	'goo/statemachine/State',
 	'goo/statemachine/Machine',
-	'goo/statemachine/actions/MouseClickAction',
-	'goo/statemachine/actions/SetLightRangeAction'
+	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/KeyUpAction',
+	'goo/statemachine/actions/AddPositionAction'
 ], function (
 	GooRunner,
 	World,
@@ -46,8 +47,9 @@ require([
 	FSMSystem,
 	State,
 	Machine,
-	MouseClickAction,
-	SetLightRangeAction
+	KeyDownAction,
+	KeyUpAction,
+	AddPositionAction
 	) {
 	'use strict';
 
@@ -56,40 +58,58 @@ require([
 		// create action tied to listen to pick events
 		// tie pick event to a channel
 
-		var machine = new Machine('switch');
+		var speed = 10;
 
-		var stateOn = new State('on');
-		stateOn.addAction(new MouseClickAction({ eventToEmmit: { channel: 'toOff' } }));
-		stateOn.addAction(new SetLightRangeAction({ entity: entity, range: 1 }));
-		stateOn.setTransition('toOff', 'off');
+		// horizontal moving
+		var machine1 = new Machine('horizontalMoving');
+		fsmComponent.addMachine(machine1);
 
-		var stateOff = new State('off');
-		stateOff.addAction(new MouseClickAction({ eventToEmmit: { channel: 'toOn' } }));
-		stateOff.addAction(new SetLightRangeAction({ entity: entity, range: 10 }));
-		stateOff.setTransition('toOn', 'on');
+		var stateIdle = new State('idle');
+		machine1.addState(stateIdle);
+		stateIdle.addAction(new KeyDownAction({ key: 'a', jumpTo: 'movingLeft' }));
+		stateIdle.addAction(new KeyDownAction({ key: 'd', jumpTo: 'movingRight' }));
 
-		machine.addState(stateOn);
-		machine.addState(stateOff);
+		var stateMovingLeft = new State('movingLeft');
+		machine1.addState(stateMovingLeft);
+		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', jumpTo: 'idle' }));
+		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, position: [-speed, 0, 0] }));
 
-		fsmComponent.addMachine(machine);
+		var stateMovingRight = new State('movingRight');
+		machine1.addState(stateMovingRight);
+		stateMovingRight.addAction(new KeyUpAction({ key: 'd', jumpTo: 'idle' }));
+		stateMovingRight.addAction(new AddPositionAction({ entity: entity, position: [ speed, 0, 0] }));
+
+
+		// vertical moving
+		var machine1 = new Machine('verticalMoving');
+		fsmComponent.addMachine(machine1);
+
+		var stateIdle = new State('idle');
+		machine1.addState(stateIdle);
+		stateIdle.addAction(new KeyDownAction({ key: 'w', jumpTo: 'movingUp' }));
+		stateIdle.addAction(new KeyDownAction({ key: 's', jumpTo: 'movingDown' }));
+
+		var stateMovingUp = new State('movingUp');
+		machine1.addState(stateMovingUp);
+		stateMovingUp.addAction(new KeyUpAction({ key: 'w', jumpTo: 'idle' }));
+		stateMovingUp.addAction(new AddPositionAction({ entity: entity, position: [0, 0, -speed] }));
+
+		var stateMovingDown = new State('movingDown');
+		machine1.addState(stateMovingDown);
+		stateMovingDown.addAction(new KeyUpAction({ key: 's', jumpTo: 'idle' }));
+		stateMovingDown.addAction(new AddPositionAction({ entity: entity, position: [0, 0, speed] }));
+
 
 		return fsmComponent;
 	}
 
-	function addBox(goo, x, y, z, lightEntity) {
+	function addCharacter(goo, x, y, z) {
 		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
 		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
 		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(x, y, z);
-		boxEntity.setComponent(getFSMComponent(lightEntity));
+		boxEntity.setComponent(getFSMComponent(boxEntity));
 		boxEntity.addToWorld();
-	}
-
-	function addBoxes(goo, lightEntity) {
-		var nBoxes = 1;
-		for(var i = 0; i < nBoxes; i++) {
-			addBox(goo, (i - ((nBoxes - 1) / 2)) * 4, 0, 0, lightEntity);
-		}
 	}
 
 	function getColor(x, y, z) {
@@ -143,7 +163,7 @@ require([
 		cameraEntity.setComponent(scripts);
 	}
 
-	function lightSwitchGame(goo) {
+	function pongGame(goo) {
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -151,9 +171,9 @@ require([
 		goo.world.setSystem(new FSMSystem(goo));
 
 		addCamera(goo);
-		var lampEntities = addLamps(goo);
+		/*var lampEntities = */addLamps(goo);
 
-		/*var boxEntities = */addBoxes(goo, lampEntities[0]);
+		/*var boxEntity = */addCharacter(goo, 0, 0, 0);
 	}
 
 	function init() {
@@ -161,7 +181,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		lightSwitchGame(goo);
+		pongGame(goo);
 	}
 
 	init();

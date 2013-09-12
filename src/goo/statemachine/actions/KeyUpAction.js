@@ -19,9 +19,9 @@ function(
 		var key = settings.key || 'w';
 
 		this.key = (typeof key === 'number') ? key : StateUtils.keys[key];
-		//this.event = settings.event || 'dummy';
+		// variable to store the key and moment of press?
 
-		this.jumpTo = settings.jumpTo;
+		this.eventToEmmit = settings.eventToEmmit || null;
 
 		this.external = [
 		{
@@ -59,8 +59,8 @@ function(
 		onUpdate: function(proxy) {
 			if (this.updated) {
 				this.updated = false;
-				if (this.jumpTo !== '') {
-					proxy.send('transition', this.jumpTo);
+				if (this.eventToEmmit) {
+					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 				}
 			}
 		},

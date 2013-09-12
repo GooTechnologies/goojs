@@ -16,7 +16,7 @@ function(
 		settings = settings || {};
 
 		this.posVariable = settings.posVariable || null;
-		this.jumpTo = settings.jumpTo || '';
+		this.eventToEmmit = settings.eventToEmmit || null;
 
 		this.external = [
 		{
@@ -28,8 +28,7 @@ function(
 		this.currentTime = 0;
 
 		this.updated = false;
-		this.eventListener = function(event) {
-			console.log(event);
+		this.eventListener = function(/*event*/) {
 			this.updated = true;
 			/*
 			if (this.posVariable) {
@@ -50,8 +49,8 @@ function(
 		onUpdate: function(proxy) {
 			if (this.updated) {
 				this.updated = false;
-				if (this.jumpTo !== '') {
-					proxy.send('transition', this.jumpTo);
+				if (this.eventToEmmit) {
+					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 				}
 			}
 		},

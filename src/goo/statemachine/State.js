@@ -11,6 +11,7 @@ function (
 		this._fsm = null;
 		this._actions = [];
 		this._machines = [];
+		this._transitions = {};
 		this.vars = {};
 
 		this.transitionTarget = null;
@@ -29,9 +30,8 @@ function (
 				return this._fsm.entity;
 			}.bind(this),
 			send: function (channels, data) {
-				/* might change */
-				if (typeof channels === 'string' && channels === 'transition') {
-					this.requestTransition(data);
+				if (typeof channels === 'string' && this._transitions[channels]) {
+					this.requestTransition(this._transitions[channels]);
 				} else {
 					this._fsm._bus.emit(channels, data);
 				}
@@ -55,6 +55,14 @@ function (
 
 	State.prototype.requestTransition = function(target) {
 		this.transitionTarget = target;
+	};
+
+	State.prototype.setTransition = function(eventName, target) {
+		this._transitions[eventName] = target;
+	};
+
+	State.prototype.clearTransition = function(eventName) {
+		delete this._transitions[eventName];
 	};
 
 	State.prototype.update = function() {

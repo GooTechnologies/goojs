@@ -127,23 +127,24 @@ define([
 			var gotData1 = 0, gotData2 = 0, gotData3 = 0;
 
 			// set up machine 1
+			var machine1 = new Machine();
+
 			var state1 = new State('entry');
+			machine1.addState(state1);
 			state1.addAction({
 				onEnter: function() {},
 				onExit: function() { gotData1 += 123; },
-				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 
 			var state2 = new State('second');
+			machine1.addState(state2);
 			state2.addAction({
 				onEnter: function() { gotData2 += 234; },
 				onExit: function() {},
 				onUpdate: function() { gotData3 += 345; }
 			});
-
-			var machine1 = new Machine();
-			machine1.addState(state1);
-			machine1.addState(state2);
 
 			fsmComponent.addMachine(machine1);
 
@@ -169,8 +170,9 @@ define([
 			state1.addAction({
 				onEnter: function() {},
 				onExit: function() { gotData1 += 123; },
-				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 
 			var state2 = new State('second');
 			state2.addAction({
@@ -222,8 +224,9 @@ define([
 			state1.addAction({
 				onEnter: function() { gotData1 += 123; },
 				onExit: function() {},
-				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 
 			var state2 = new State('second');
 			state2.addAction({
@@ -237,8 +240,9 @@ define([
 			state2_1.addAction({
 				onEnter: function() { gotData3 += 345; },
 				onExit: function() { gotData4 += 456; },
-				onUpdate: function(proxy) {proxy.send('transition', 'entry'); }
+				onUpdate: function(proxy) {proxy.send('toEntry'); }
 			});
+			state2_1.setTransition('toEntry', 'entry');
 
 			state2.addMachine(state2_1);
 
@@ -276,8 +280,9 @@ define([
 			state1.addAction({
 				onEnter: function() {},
 				onExit: function() { gotData[2] += 345; },
-				onUpdate: function(proxy) { gotData[3] += 456; proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { gotData[3] += 456; proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 			state1.addAction({
 				onEnter: function() {},
 				onExit: function() { gotData[4] += 567; },
@@ -322,8 +327,9 @@ define([
 			state1.addAction({
 				onEnter: function() {},
 				onExit: function() { gotData[0] += 123; },
-				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 
 			var state2 = new State('second');
 			state2.addAction({
@@ -386,8 +392,9 @@ define([
 			state1.addAction({
 				onEnter: function() { gotData[0] += 123; },
 				onExit: function() { gotData[1] += 234; },
-				onUpdate: function(proxy) { proxy.send('transition', 'second'); }
+				onUpdate: function(proxy) { proxy.send('toSecond'); }
 			});
+			state1.setTransition('toSecond', 'second');
 
 			var state2 = new State('second');
 			state2.addAction({
@@ -407,8 +414,9 @@ define([
 					state2_1_1.addAction({
 						onEnter: function() {},
 						onExit: function() { gotData[6] += 789; },
-						onUpdate: function(proxy) { proxy.send('transition', 'entry'); }
+						onUpdate: function(proxy) { proxy.send('toEntry'); }
 					});
+					state2_1_1.setTransition('toEntry', 'entry');
 
 				var machine1_1_1 = new Machine();
 				machine1_1_1.addState(state2_1_1);
