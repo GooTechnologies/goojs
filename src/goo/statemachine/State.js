@@ -13,6 +13,8 @@ function (
 		this._machines = [];
 		this.vars = {};
 
+		this.transitionTarget = null;
+
 		this.proxy = {
 			getTpf: function () {
 				return this._fsm.entity.world.tpf;
@@ -27,7 +29,12 @@ function (
 				return this._fsm.entity;
 			}.bind(this),
 			send: function (channels, data) {
-				this._fsm._bus.emit(channels, data);
+				/* might change */
+				if (typeof channels === 'string' && channels === 'transition') {
+					this.requestTransition(data);
+				} else {
+					this._fsm._bus.emit(channels, data);
+				}
 			}.bind(this),
 			addListener: function (channelName, callback) {
 				this._fsm._bus.addListener(channelName, callback);
@@ -38,22 +45,37 @@ function (
 		};
 	}
 
-	State.prototype.update = function() {
-		var jumpUp;
+	State.prototype.setRefs = function(parentFSM) {
+		this._fsm = parentFSM;
+		for (var i = 0; i < this._machines.length; i++) {
+			var machine = this._machines[i];
+			machine.setRefs(parentFSM);
+		}
+	};
 
+	State.prototype.requestTransition = function(target) {
+		this.transitionTarget = target;
+	};
+
+	State.prototype.update = function() {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
 			if (this._actions[i].onUpdate) {
-				jumpUp = this._actions[i].onUpdate(this.proxy);
-				if(jumpUp) { return jumpUp; }
+				this._actions[i].onUpdate(this.proxy);
+				if(this.transitionTarget) {
+					var tmp = this.transitionTarget;
+					this.transitionTarget = null;
+					return tmp;
+				}
 			}
 		}
 
+		var jump;
 		// propagate on update
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
-			jumpUp = machine.update();
-			if(jumpUp) { return jumpUp; }
+			jump = machine.update();
+			if(jump) { return jump; }
 		}
 	};
 

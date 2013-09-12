@@ -28,8 +28,10 @@ function (
 
 	FSMComponent.prototype.init = function() {
 		for (var i = 0; i < this._machines.length; i++) {
-			this._machines[i].reset();
-			this._machines[i].enter();
+			var machine = this._machines[i];
+			machine.setRefs(this);
+			machine.reset();
+			machine.enter();
 		}
 	};
 

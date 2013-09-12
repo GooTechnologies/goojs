@@ -8,25 +8,34 @@ function (
 	function Machine(name) {
 		this.name = name;
 		this._fsm = null;
-		this.states = null; //{};
+		this._states = null;
 		this.initialState = 'entry';
 		this.currentState = null;
 	}
 
-	Machine.prototype.update = function() {
-		var jumpUp;
-		jumpUp = this.currentState.update();
+	Machine.prototype.setRefs = function(parentFSM) {
+		this._fsm = parentFSM;
+		for (var i = 0; i < this._states.length; i++) {
+			var state = this._states[i];
+			state.setRefs(parentFSM);
+		}
+	};
 
-		if (this.contains(jumpUp)) {
+	Machine.prototype.update = function() {
+		var jump;
+		jump = this.currentState.update();
+
+		if (this.contains(jump)) {
 			this.currentState.kill();
-			this.setState(this.states[jumpUp]);
+			this.setState(this._states[jump]);
 		}
 
-		return jumpUp;
+		return jump;
 	};
 
 	Machine.prototype.contains = function(uuid) {
-		return !!this.states[uuid];
+		console.log('contains? ', uuid);
+		return !!this._states[uuid];
 	};
 
 	Machine.prototype.setState = function(state) {
@@ -42,7 +51,7 @@ function (
 
 	Machine.prototype.reset = function() {
 		// reset self
-		this.currentState = this.states[this.initialState];
+		this.currentState = this._states[this.initialState];
 
 		// propagate reset
 		this.currentState.reset();
@@ -57,12 +66,12 @@ function (
 	};
 
 	Machine.prototype.addState = function(state) {
-		if(!this.states) {
-			this.states = {};
+		if(!this._states) {
+			this._states = {};
 			this.initialState = state.uuid;
 		}
 		state._fsm = this._fsm;
-		this.states[state.uuid] = state;
+		this._states[state.uuid] = state;
 	};
 
 	return Machine;
