@@ -78,9 +78,7 @@ define([
 				if (config.wireframe) {
 					object.wireframe = config.wireframe;
 				}
-				if (config.wireframeColor) {
-					object.wireframeColor = Util.clone(config.wireframeColor);
-				}
+
 				object.blendState = Util.clone(config.blendState);
 				object.cullState = Util.clone(config.cullState);
 				object.depthState = Util.clone(config.depthState);
