@@ -21,56 +21,7 @@ endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 option '-i', '--include [LIB]', 'Include library e.g. requireLib'
 
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
-
-	if options.arguments.length == 2
-		fileIn = options.arguments[0]
-		fileOut = options.arguments[1]
-
-		console.log "minifying #{fileIn}"
-		minifyFile fileIn, fileOut, null, (err) ->
-			if err
-				console.log 'Minification failed:', err
-	else 	
-		console.log 'minifying'
-
-		output = 'output'
-		fileIn = 'src'
-		fileOut = 'minified/goo/goo.js'
-		includes = ['goo/**/*.js']
-
-		failSilently = true
-		wrench.rmdirSyncRecursive('output', failSilently)
-		fs.mkdirSync 'output'
-
-		copyLibs fileIn, path.resolve(output, fileIn), includes
-		
-		console.log "Copied js files"
-		
-		# Compile coffeescript
-		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
-			console.log "Compiled coffeescript" 			
-	
-			minifyProject "#{output}/#{fileIn}", fileOut, includes, options, (err)->
-				if err
-					console.log 'Minification failed:', err
-					return
-				if process.platform != 'win32'
-					runCommand "rm -Rf #{output}", ->
-						console.log "Removed output dir"
-
-			console.log "Minifying everything in #{output}/#{fileIn}"
-			
-			source = 'lib'
-			target = 'minified/goo/lib'
-			includes = [
-				'box2d/*.*'
-				'cannon/*.*'
-				'soundmanager2/*.*'
-			]
-			copyLibs source, target, includes
-			
-			console.log "Copied lib"
-
+	runCommand 'grunt minify'
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server
