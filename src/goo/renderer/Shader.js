@@ -557,28 +557,25 @@ function (
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
 
-		var DEFAULT_AMBIENT = [0, 0, 0, 1.0];
-		var DEFAULT_EMISSIVE = [0, 0, 0, 0];
-		var DEFAULT_DIFFUSE = [1, 1, 1, 1];
-		var DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
+
 		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : DEFAULT_AMBIENT;
+			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.ambient : Shader.DEFAULT_AMBIENT;
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.EMISSIVE] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive : DEFAULT_EMISSIVE;
+			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.emissive : Shader.DEFAULT_EMISSIVE;
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.DIFFUSE] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse : DEFAULT_DIFFUSE;
+			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.diffuse : Shader.DEFAULT_DIFFUSE;
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : DEFAULT_SPECULAR;
+			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : Shader.DEFAULT_SPECULAR;
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
-			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : 16.0;
+			var shininess = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.shininess : Shader.DEFAULT_SHININESS;
 			shininess = Math.max(shininess, 1.0);
 			uniformCall.uniform1f(shininess);
 		};
@@ -664,6 +661,12 @@ function (
 	Shader.AO_MAP = 'AO_MAP';
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 	Shader.DEPTH_MAP = 'DEPTH_MAP';
+
+	Shader.DEFAULT_AMBIENT = [0, 0, 0, 1.0];
+	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
+	Shader.DEFAULT_DIFFUSE = [1, 1, 1, 1];
+	Shader.DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
+	Shader.DEFAULT_SHININESS = 16.0;
 
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);

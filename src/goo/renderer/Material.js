@@ -31,14 +31,13 @@ function(
 		this._textureMaps = {};
 
 		/** @type {object} */
-		this.materialState = undefined;
-		// {
-		// ambient: [0.1, 0.1, 0.1, 1.0],
-		// diffuse: [1.0, 1.0, 1.0, 1.0],
-		// emissive: [0.0, 0.0, 0.0, 1.0],
-		// specular: [0.7, 0.7, 0.7, 1.0],
-		// shininess: 16.0
-		// };
+		this.materialState = {
+			ambient: Shader.DEFAULT_AMBIENT,
+			diffuse: Shader.DEFAULT_DIFFUSE,
+			emissive: Shader.DEFAULT_EMISSIVE,
+			specular: Shader.DEFAULT_SPECULAR,
+			shininess: Shader.DEFAULT_SHININESS
+		};
 		/** Specification of culling for this Material.
 		 * @type {Object}
 		 * @property {boolean} enabled
