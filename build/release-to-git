@@ -1,0 +1,48 @@
+#!/bin/bash -e
+
+# Releases the current working directory to Git.
+# Assumes that the project has already been built.
+
+BASE_DIR=$(cd $(dirname $0)/..;pwd)
+BUILD_DIR=$BASE_DIR/out
+
+VERSION=$1
+
+if [ "$VERSION" == '' ]; then
+	echo "Usage:"
+	echo "  $0 version"
+	exit 1
+fi
+
+# The Git revision of the main project
+COMMIT=$(git rev-parse HEAD)
+
+# The repo that stores all releases.
+RELEASES_REPO=/home/martin/goo/gooengine-release.git
+
+# Working directory where the release is created
+RELEASE_DIR=$BUILD_DIR/release
+
+rm -rf $RELEASE_DIR
+mkdir $RELEASE_DIR
+
+# Copy files that should be included in the release
+cp out/minified/gooengine.js $RELEASE_DIR
+cp COPYING $RELEASE_DIR
+cp -r lib/ $RELEASE_DIR/lib
+cp -r goojs-jsdoc $RELEASE_DIR/docs
+
+
+cd $RELEASE_DIR
+git init
+git remote add origin $RELEASES_REPO
+
+echo "adding $PWD"
+git add -fA .
+echo 'committing'
+MESSAGE=$(echo -e "Version $VERSION\n\nBuild of $COMMIT")
+git commit --allow-empty -m "$MESSAGE"
+git tag v$VERSION
+git push origin v$VERSION
+
+git archive --format zip --output $BUILD_DIR/gooengine-$VERSION.zip master
