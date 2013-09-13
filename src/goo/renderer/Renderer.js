@@ -789,7 +789,7 @@ function (
 			var pickList = [];
 			for (var i = 0, l = renderList.length; i < l; i++) {
 				var entity = renderList[i];
-				if (entity.meshRendererComponent && entity.meshRendererComponent.isPickable) {
+				if (!entity.meshRendererComponent || entity.meshRendererComponent.isPickable) {
 					pickList.push(entity);
 				}
 			}
