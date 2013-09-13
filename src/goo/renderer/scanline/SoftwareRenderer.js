@@ -1461,14 +1461,17 @@ define([
 		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return; // Nothing to draw here. early exit.
 		}
-
+		/*
 		if (leftZ < 0 || leftZ > 1.0000001) {
+			// This should not happen.
 			console.error("Rendering depth buffer : leftZ =", leftZ);
 		}
 
 		if (rightZ < 0 || rightZ > 1.0000001) {
+			// This should not happen.
 			console.error("Rendering depth buffer : rightZ =", rightZ);
 		}
+		*/
 
 		// Horizontal clipping
 		// TODO : Implement a clippping method to clip hoorizontally earlier in the pipeline.

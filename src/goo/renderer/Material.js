@@ -30,7 +30,13 @@ function(
 		// Texture storage
 		this._textureMaps = {};
 
-		/** @type {object} */
+		/** @type {object}
+		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
+		 * @property {Array<Number>} diffuse The diffuse color, [r,g,b,a]
+		 * @property {Array<Number>} emissive The emissive color, [r,g,b,a]
+		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
+		 * @property {Number} shininess The shininess exponent.
+		 * */
 		this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
 			diffuse: Shader.DEFAULT_DIFFUSE,
