@@ -9,7 +9,8 @@ define([
 	'goo/statemachine/actions/AddPositionAction',
 	'goo/statemachine/actions/MouseClickAction',
 	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/actions/KeyDownAction'
+	'goo/statemachine/actions/KeyDownAction',
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	MeshData,
@@ -21,7 +22,8 @@ define([
 	AddPositionAction,
 	MouseClickAction,
 	KeyUpAction,
-	KeyDownAction
+	KeyDownAction,
+	RSVP
 ) {
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -57,7 +59,7 @@ define([
 		realMachine.addState(realState);
 		this._updateActions(realState, stateConfig);
 		
-		
+		var that = this;
 		function update(ref) {
 			return that.getConfig(ref).then(function(config) {
 				return that.updateObject(ref, config);
@@ -67,10 +69,16 @@ define([
 		// machine refs
 		var promises = [];
 		for (var j = 0; j < stateConfig.machineRefs.length; j++) {
-			var machine = stateConfig.machineRefs[j];
-
-			//realState._machines.push(machine.name);			
+			var machineRef = stateConfig.machineRefs[j];
+			promises.push(update(machineRef));	
 		}
+		
+		RSVP.all(promises).then(function(realMachines) {
+			//console.log(realMachines); // why empty arrays?
+			realMachines.forEach(function(realMachine) {			
+				realState.addMachine(realMachine);
+			});
+    });
 	};
 	
 	MachineHandler.prototype.update = function(ref, config) {

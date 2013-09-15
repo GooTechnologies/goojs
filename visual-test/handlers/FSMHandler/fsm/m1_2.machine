@@ -1,12 +1,12 @@
 {
-    "name": "machine1",
+    "name": "machine1_2",
     "states": [{
-            "uuid": "m1_s1",
+            "uuid": "m1_s1_m2_s1",
             "actions": [],
             "machineRefs": []
         },
         {
-            "uuid": "m1_s2",
+            "uuid": "m1_s2_m2_s2",
             "actions": [],
             "machineRefs": []
         }
