@@ -3,7 +3,7 @@
     "states": [{
             "uuid": "m1_s1",
             "actions": [],
-            "machineRefs": ["m1_1.machine", "m1_2.machine"]
+            "machineRefs": []
         },
         {
             "uuid": "m1_s2",
