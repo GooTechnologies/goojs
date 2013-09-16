@@ -31,20 +31,19 @@ function (
 
 		/**
 		 * @type {object}
-		 * @property {string} type possible values <strong>'Blur'</strong>, 'None'
-		 * @property {string} projection possible values <strong>'Perspective'</strong>, 'Parallel'
-		 * @property {number} fov 55
+		 * @property {string} type possible values <strong>'Blur'</strong> = VSM, 'Pcf' = Pcf, 'None' = Regular
+		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000
 		 */
 		this.shadowSettings = {
-			type: 'Blur',
-			projection: 'Perspective',
-			fov: 55,
+			type: 'None',
+			// type: 'Blur',
 			size: 2000,
 			near: 1,
-			/** @type {number} */
-			far: 1000
+			far: 1000,
+			resolution: [512, 512],
+			upVector: Vector3.UNIT_Y
 		};
 
 		this.changedProperties = false;

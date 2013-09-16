@@ -333,7 +333,6 @@ function (
 			}
 		};
 
-		this.shadowCount = 0;
 		this.shadowHandler = new ShadowHandler();
 
 		// Hardware picking
@@ -590,7 +589,7 @@ function (
 				material.errorOnce = false;
 			}
 
-			if (this.shadowCount > 0) {
+			if (this.shadowHandler.shadowResults.length > 0) {
 				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResult);
 			} else if (material.getTexture('SHADOW_MAP')) {
 				material.removeTexture('SHADOW_MAP');

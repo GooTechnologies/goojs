@@ -52,11 +52,6 @@ function(
 					continue;
 				}
 
-				//Casino hack
-				// if (type !== 'DIFFUSE_MAP' && type !== 'LIGHT_MAP') {
-				// 	continue;
-				// }
-
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
 				}
