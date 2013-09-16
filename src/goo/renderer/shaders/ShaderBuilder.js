@@ -160,10 +160,10 @@ function(
 					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.data[1];
 					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.data[2];
 
-					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
+					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle / 2 * MathUtils.DEG_TO_RAD);
 					/*jshint eqeqeq: false, -W041 */
 					shader.uniforms.spotLightPenumbra[spotCount] =
-						(light.penumbra != null) ? Math.cos(light.penumbra * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
+						(light.penumbra != null) ? Math.cos(light.penumbra / 2 * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
 					shader.uniforms.spotLightExponent[spotCount] = light.exponent;
 
 					spotCount++;

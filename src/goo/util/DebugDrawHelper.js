@@ -92,7 +92,7 @@ define([
 			transform.scale.setd(r,r,r);
 			if (light instanceof SpotLight) {
 				var angle = light.angle * Math.PI / 180;
-				var tan = Math.tan(angle);
+				var tan = Math.tan(angle / 2);
 				transform.scale.muld(tan, tan, 1);
 			}
 		} else {
