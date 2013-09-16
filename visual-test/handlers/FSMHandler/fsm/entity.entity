@@ -1,0 +1,11 @@
+{
+    "components":{
+        "fsm": {
+            "machineRefs": [
+                "m1.machine",
+                "m2.machine"
+            ]
+        }
+    },
+    "name": "dummy"
+}

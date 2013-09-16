@@ -1,7 +1,7 @@
 define(function() {
 	/**
 	 * @class Base class for resource handlers, used to load all types of resources into the engine.
-	 * All the resource types in the bundle (noted by their extension) needs to have a registered config
+	 * All the resource types in the bundle (noted by their extension) need to have a registered config
 	 * handler.
 	 * To handle a new type of component, create a class that inherits from this class, and override {update}.
 	 * In your class, call <code>@_register('yourResourceExtension')</code> to _register
