@@ -3,7 +3,7 @@ define([
 ],
 /** @lends */
 function(
-Actions
+	Actions
 ) {
 	"use strict";
 
@@ -25,7 +25,7 @@ Actions
 
 	SetNumberAction.prototype = {
 		onCreate: function(fsm) {
-			fsm.setLocalVariable(this.variable, this.value);
+			fsm.applyOnVariable(this.variable, function() { return this.value; }.bind(this));
 		}
 	};
 

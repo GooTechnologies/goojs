@@ -85,7 +85,7 @@ require([
 
 		// vertical moving
 		var machine2 = new Machine('verticalMoving');
-		fsmComponent.addMachine(machine1);
+		fsmComponent.addMachine(machine2);
 
 		var stateIdle = new State('idle');
 		machine2.addState(stateIdle);

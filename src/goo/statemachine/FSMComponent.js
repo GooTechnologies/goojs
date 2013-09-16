@@ -26,10 +26,26 @@ function (
 	FSMComponent.vars = {};
 
 	FSMComponent.getVariable = function(name) {
+		return FSMComponent.vars[name];
+	};
+
+	FSMComponent.prototype.getVariable = function(name) {
 		if (this.vars[name]) {
 			return this.vars[name];
 		} else {
-			return FSMComponent.vars[name];
+			return FSMComponent.getVariable(name);
+		}
+	};
+
+	FSMComponent.applyOnVariable = function(name, fun) {
+		FSMComponent.vars[name] = fun(FSMComponent.vars[name]);
+	};
+
+	FSMComponent.prototype.applyOnVariable = function(name, fun) {
+		if (this.vars[name]) {
+			this.vars[name] = fun(this.vars[name]);
+		} else {
+			FSMComponent.applyOnVariable(name, fun);
 		}
 	};
 

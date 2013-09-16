@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Actions'
+	'goo/statemachine/actions/Actions',
+	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
-Actions
+	Actions,
+	StateUtils
 ) {
 	"use strict";
 
@@ -47,9 +49,9 @@ Actions
 			if (this.entity !== null) {
 				var tpf = fsm.getTpf();
 
-				var dx = (typeof this.position[0] === 'number') ? this.position[0] : fsm.getVariable(this.position[0]);
-				var dy = (typeof this.position[1] === 'number') ? this.position[1] : fsm.getVariable(this.position[1]);
-				var dz = (typeof this.position[2] === 'number') ? this.position[2] : fsm.getVariable(this.position[2]);
+				var dx = StateUtils.getValue(this.position[0], fsm);
+				var dy = StateUtils.getValue(this.position[1], fsm);
+				var dz = StateUtils.getValue(this.position[2], fsm);
 
 				this.entity.transformComponent.transform.translation.add_d(
 					dx * this.speed * tpf,

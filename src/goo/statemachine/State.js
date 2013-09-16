@@ -31,6 +31,7 @@ function (
 			}.bind(this),
 			send: function (channels, data) {
 				if (typeof channels === 'string' && this._transitions[channels]) {
+					console.log(channels);
 					this.requestTransition(this._transitions[channels]);
 				} else {
 					this._fsm._bus.emit(channels, data);
@@ -49,11 +50,11 @@ function (
 					return this._fsm.getVariable(name);
 				}
 			}.bind(this),
-			applyToVariable: function (name, fun) {
+			applyOnVariable: function (name, fun) {
 				if (this.vars[name]) {
 					this.vars[name] = fun(this.vars[name]);
 				} else {
-					return this._fsm.applyToVariable(name, fun);
+					this._fsm.applyOnVariable(name, fun);
 				}
 			}.bind(this)
 		};

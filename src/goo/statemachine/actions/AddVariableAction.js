@@ -1,11 +1,9 @@
 define([
-	'goo/statemachine/actions/Actions',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function(
-	Actions,
-	StateUtils
+Actions
 ) {
 	"use strict";
 
@@ -13,7 +11,7 @@ function(
 	 * @class
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function MultiplyVariableAction(settings) {
+	function AddVariableAction(settings) {
 		settings = settings || {};
 
 		this.variable = settings.variable || null;
@@ -40,10 +38,10 @@ function(
 		}];
 	}
 
-	MultiplyVariableAction.prototype = {
+	AddVariableAction.prototype = {
 		onEnter: function(fsm) {
-			fsm.applyOnVariable(this.variable, function(v) {
-				return v * StateUtils.getValue(this.amount, fsm);
+			fsm.applyToVariable(this.variable, function() {
+				return this.getVariable(this.variable) + StateUtils.getValue(this.amount, fsm);
 			}.bind(this));
 		},
 		onUpdate: function(/*fsm*/) {
@@ -54,7 +52,7 @@ function(
 		}
 	};
 
-	Actions.register('MultiplyVariableAction', MultiplyVariableAction);
+	Actions.register('AddVariableAction', AddVariableAction);
 
-	return MultiplyVariableAction;
+	return AddVariableAction;
 });

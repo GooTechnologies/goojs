@@ -151,5 +151,13 @@ function() {
 		return str.charAt(0).toLowerCase()+str.substr(1);
 	};
 
+	StateUtils.getValue = function(par, fsm) {
+		if (typeof par === 'number') {
+			return par;
+		} else {
+			return fsm.getVariable(par);
+		}
+	}
+
 	return StateUtils;
 });

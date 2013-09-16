@@ -38,10 +38,11 @@ Actions
 	}
 
 	NumberCompareAction.prototype = {
-		onCreate: function(fsm) {
+		onUpdate: function(fsm) {
 			var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
 			var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;
 			var diff = float1 - float2;
+
 			if (Math.abs(diff) <= this.tolerance) {
 				fsm.send(this.equalsEvent);
 			} else if (diff < 0) {

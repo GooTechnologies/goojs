@@ -26,7 +26,12 @@ require([
 	'goo/statemachine/Machine',
 	'goo/statemachine/actions/KeyDownAction',
 	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/actions/AddPositionAction'
+	'goo/statemachine/actions/AddPositionAction',
+	'goo/statemachine/actions/NumberCompareAction',
+	'goo/statemachine/actions/MouseMoveAction',
+	'goo/statemachine/actions/MultiplyVariableAction',
+	'goo/statemachine/actions/GetPositionAction',
+	'goo/statemachine/actions/SetNumberAction'
 ], function (
 	GooRunner,
 	World,
@@ -49,61 +54,99 @@ require([
 	Machine,
 	KeyDownAction,
 	KeyUpAction,
-	AddPositionAction
+	AddPositionAction,
+	NumberCompareAction,
+	MouseMoveAction,
+	MultiplyVariableAction,
+	GetPositionAction,
+	SetNumberAction
 	) {
 	'use strict';
 
-	function getFSMComponent(entity) {
+	function getFSMComponent(ballEntity, paddleEntity, dx, dy) {
 		var fsmComponent = new FSMComponent();
-		// create action tied to listen to pick events
-		// tie pick event to a channel
 
-		var speed = 10;
+		(function() {
+			// paddle
+			var machinePaddle = new Machine('paddle');
+			fsmComponent.addMachine(machinePaddle);
 
-		// paddle
-		var machinePaddle = new Machine('paddle');
-		fsmComponent.addMachine(machinePaddle);
+			var stateSingular = new State('singular');
+			machinePaddle.addState(stateSingular);
+			stateSingular.addAction(new MouseMoveAction({ variable: 'mousePos' }));
+		}); //();
 
-		var stateSingular = new State('singular');
-		machine1.addState(stateSingular);
-		stateSingular.addAction(new MouseMoveAction({ variable: 'mousePos' }));
+		(function() {
+			// ball mover
+			var machineBall = new Machine('ball');
+			fsmComponent.addMachine(machineBall);
 
+			var stateSingular = new State('singular');
+			machineBall.addState(stateSingular);
+			stateSingular.addAction(new AddPositionAction({ position: ['dx', 'dy', 0] }));
+		})();
 
-		// ball mover
-		var machineBall = new Machine('ball');
-		fsmComponent.addMachine(machineBall);
+		(function() {
+			// ball collider
+			var machineWall = new Machine('wall');
+			fsmComponent.addMachine(machineWall);
 
-		var stateSingular = new State('singular');
-		machine1.addState(stateMovingUp);
-		stateSingular.addAction(new AddPositionAction({ position: ['dx', 'dy', 0] }));
+			var stateMoving = new State('moving');
+			machineWall.addState(stateMoving);
+			stateMoving.addAction(new SetNumberAction({ variable: 'dx', value: 9 }));
+			stateMoving.addAction(new SetNumberAction({ variable: 'dy', value: 11 }));
+			stateMoving.addAction(new AddPositionAction({ entity: ballEntity, position: [ 'dx', 'dy', 0] }));
+			stateMoving.addAction(new GetPositionAction({ entity: ballEntity, position: [ 'px', 'py'] }));
+			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2: -dx/2, lessThanEvent: 'toFlipX' }));
+			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2:  dx/2, greaterThanEvent: 'toFlipX' }));
+			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'py', float2: -dy/2, lessThanEvent: 'toFlipY' }));
+			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'py', float2:  dy/2, greaterThanEvent: 'toFlipY' }));
+			stateMoving.setTransition('toFlipX', 'flipX');
+			stateMoving.setTransition('toFlipY', 'flipY');
 
+			var stateFlipX = new State('flipX');
+			machineWall.addState(stateFlipX);
+			stateFlipX.addAction(new MultiplyVariableAction({ variable: 'dx', amount: -1 }));
+			//stateFlipX.addAction(new EmmitAction({ event: 'toMoving' }));
+			stateFlipX.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
+			stateFlipX.setTransition('toMoving', 'moving');
 
-		// ball collider
-		var machineWall = new Machine('wall');
-		fsmComponent.addMachine(machineWall);
-
-		var stateIdle = new State('idle');
-		stateIdle.addAction(new KeyUpAction({ key: 'w', jumpTo: 'idle' }));
-		stateIdle.addAction(new ConditionalEmmitAction());
-
-		var stateFlipX = new State('flipX');
-		stateFlipX.addAction(new MultiplyVariableAction({ variable: 'dx', amount: -1 }));
-		stateFlipX.addAction(new EmmitAction({ variable: 'dx', amount: -1 }));
-
-		var stateFlipY = new State('flipY');
-		stateFlipY.addAction(new MultiplyVariableAction({ variable: 'dy', amount: -1 }));
-		stateFlipY.addAction(new EmmitAction({ variable: 'dy', amount: -1 }));
+			var stateFlipY = new State('flipY');
+			machineWall.addState(stateFlipY);
+			stateFlipY.addAction(new MultiplyVariableAction({ variable: 'dy', amount: -1 }));
+			//stateFlipY.addAction(new EmmitAction({ event: 'toMoving' }));
+			stateFlipY.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
+			stateFlipY.setTransition('toMoving', 'moving');
+		})();
 
 		return fsmComponent;
 	}
 
-	function addCharacter(goo, x, y, z) {
+	function addWall(goo, x, y, dx, dy) {
+		var boxMeshData = ShapeCreator.createBox(dx, dy, 1);
+		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
+		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
+		boxEntity.transformComponent.transform.translation.setd(x, y, 0);
+		//boxEntity.setComponent(getFSMComponent(boxEntity)); //enable this for weirdness
+		boxEntity.addToWorld();
+	}
+
+	function addWalls(goo, dx, dy) {
+		addWall(goo, -dx/2,     0,  1, dy + 1);
+		addWall(goo,     0,  dy/2, dx + 1,  1);
+		addWall(goo,  dx/2,     0,  1, dy + 1);
+		addWall(goo,     0, -dy/2, dx + 1,  1);
+	}
+
+	function addPaddle(goo, x, y, z) {
 		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
 		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
 		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(x, y, z);
 		boxEntity.setComponent(getFSMComponent(boxEntity));
 		boxEntity.addToWorld();
+
+		return boxEntity;
 	}
 
 	function getColor(x, y, z) {
@@ -114,7 +157,7 @@ require([
 			Math.cos(x + y + z + step * 2) / 2 + 0.5];
 	}
 
-	function addLamp(goo, x, y, z) {
+	function addBall(goo, x, y, z) {
 		var color = getColor(x, y, z);
 
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
@@ -130,15 +173,6 @@ require([
 		lampEntity.addToWorld();
 
 		return lampEntity;
-	}
-
-	function addLamps(goo) {
-		var nLamps = 1;
-		var lampEntities = [];
-		for(var i = 0; i < nLamps; i++) {
-			lampEntities.push(addLamp(goo, (i - ((nLamps - 1) / 2)) * 4, 5, 0));
-		}
-		return lampEntities;
 	}
 
 	function addCamera(goo) {
@@ -165,9 +199,15 @@ require([
 		goo.world.setSystem(new FSMSystem(goo));
 
 		addCamera(goo);
-		/*var lampEntities = */addLamps(goo);
 
-		/*var boxEntity = */addCharacter(goo, 0, 0, 0);
+		addWalls(goo, 32, 32);
+
+		var ballEntity = addBall(goo, 3, 3, 0);
+
+		ballEntity.setComponent(getFSMComponent(ballEntity, null, 30, 30));
+
+		window.ball = ballEntity;
+		//var paddleEntity = addPaddle(goo, 0, 0, 0);
 	}
 
 	function init() {
