@@ -81,7 +81,6 @@ define([
 		}
 
 		return RSVP.all(promises).then(function(realMachines) {
-			//console.log(realMachines); // why empty arrays?
 			realMachines.forEach(function(realMachine) {
 				realState.addMachine(realMachine);
 			});

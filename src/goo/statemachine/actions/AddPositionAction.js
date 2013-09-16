@@ -19,6 +19,7 @@ function(
 		this.entity = settings.entity || null;
 		this.position = settings.position || [0, 0, 0];
 		this.speed = settings.speed || 1;
+		this.everyFrame = settings.everyFrame || true;
 	}
 
 	AddPositionAction.external = [
@@ -41,33 +42,36 @@ function(
 			max: 10
 		}];
 
-	AddPositionAction.prototype = {
-		onEnter: function(/*fsm*/) {
+	AddPositionAction.prototype._run = function(fsm) {
+		if (this.entity !== null) {
+			var tpf = fsm.getTpf();
 
-		},
-		onUpdate: function(fsm) {
-			if (this.entity !== null) {
-				var tpf = fsm.getTpf();
+			var dx = StateUtils.getValue(this.position[0], fsm);
+			var dy = StateUtils.getValue(this.position[1], fsm);
+			var dz = StateUtils.getValue(this.position[2], fsm);
 
-				var dx = StateUtils.getValue(this.position[0], fsm);
-				var dy = StateUtils.getValue(this.position[1], fsm);
-				var dz = StateUtils.getValue(this.position[2], fsm);
+			this.entity.transformComponent.transform.translation.add_d(
+				dx * this.speed * tpf,
+				dy * this.speed * tpf,
+				dz * this.speed * tpf
+			);
 
-				this.entity.transformComponent.transform.translation.add_d(
-					dx * this.speed * tpf,
-					dy * this.speed * tpf,
-					dz * this.speed * tpf
-				);
+			this.entity.transformComponent.setUpdated();
+		}
+	};
 
-				this.entity.transformComponent.setUpdated();
-			}
-		},
-		onExit: function(/*fsm*/) {
+	AddPositionAction.prototype.onEnter = function(fsm) {
+		if (!this.everyFrame) {
+			this._run(fsm);
+		}
+	};
 
+	AddPositionAction.prototype.onUpdate = function(fsm) {
+		if (this.everyFrame) {
+			this._run(fsm);
 		}
 	};
 
 	Actions.register('AddPositionAction', AddPositionAction);
-
 	return AddPositionAction;
 });
