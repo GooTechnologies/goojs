@@ -23,8 +23,7 @@ function (
 	};
 
 	Machine.prototype.update = function() {
-		var jump;
-		jump = this.currentState.update();
+		var jump = this.currentState.update();
 
 		if (jump && this.contains(jump)) {
 			this.currentState.kill();
@@ -72,6 +71,10 @@ function (
 		}
 		state._fsm = this._fsm;
 		this._states[state.uuid] = state;
+	};
+
+	Machine.prototype.setInitialState = function(initialState) {
+		this.initialState = initialState;
 	};
 
 	return Machine;

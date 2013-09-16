@@ -19,28 +19,17 @@ function (
 	FSMSystem.prototype = Object.create(System.prototype);
 
 	FSMSystem.prototype.process = function (entities, tpf) {
-		var i, fsmComponent;
-		for (i = 0; i < entities.length; i++) {
-			fsmComponent = entities[i].fSMComponent;
+		for (var i = 0; i < entities.length; i++) {
+			var fsmComponent = entities[i].fSMComponent;
 			fsmComponent.update(tpf);
 		}
 	};
 
-	FSMSystem.prototype.addedComponent = function (entity, component) {
-		if (component.type !== 'FSMComponent') {
-			return;
-		}
+	FSMSystem.prototype.inserted = function(entity) {
+		var fSMComponent = entity.fSMComponent;
 
-		component.engine = this.engine;
-		component.entity = entity;
-
-		component.init();
-	};
-
-	FSMSystem.prototype.removedComponent = function (entity, component) {
-		if (component.type !== 'FSMComponent') {
-			return;
-		}
+		fSMComponent.entity = entity;
+		fSMComponent.init();
 	};
 
 	return FSMSystem;

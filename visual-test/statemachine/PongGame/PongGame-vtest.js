@@ -63,18 +63,8 @@ require([
 	) {
 	'use strict';
 
-	function getFSMComponent(ballEntity, paddleEntity, dx, dy) {
+	function getFSMComponent(ballEntity, dx, dy) {
 		var fsmComponent = new FSMComponent();
-
-		(function() {
-			// paddle
-			var machinePaddle = new Machine('paddle');
-			fsmComponent.addMachine(machinePaddle);
-
-			var stateSingular = new State('singular');
-			machinePaddle.addState(stateSingular);
-			stateSingular.addAction(new MouseMoveAction({ variable: 'mousePos' }));
-		}); //();
 
 		(function() {
 			// ball mover
@@ -204,7 +194,7 @@ require([
 
 		var ballEntity = addBall(goo, 3, 3, 0);
 
-		ballEntity.setComponent(getFSMComponent(ballEntity, null, 30, 30));
+		ballEntity.setComponent(getFSMComponent(ballEntity, 30, 30));
 
 		window.ball = ballEntity;
 		//var paddleEntity = addPaddle(goo, 0, 0, 0);

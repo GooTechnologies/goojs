@@ -19,8 +19,9 @@ function(
 		this.entity = settings.entity || null;
 		this.position = settings.position || [0, 0, 0];
 		this.speed = settings.speed || 1;
+	}
 
-		this.external = [
+	AddPositionAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -39,7 +40,6 @@ function(
 			min: 0,
 			max: 10
 		}];
-	}
 
 	AddPositionAction.prototype = {
 		onEnter: function(/*fsm*/) {

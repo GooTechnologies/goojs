@@ -51,13 +51,21 @@ define([
 			}
 		}
 	};
-	
+
+	MachineHandler.prototype._updateTransitions = function(realState, stateConfig) {
+		var transitionKeys = Object.keys(stateConfig.transitions);
+		for (var i = 0; i < transitionKeys.length; i++) {
+			var transitionKey = transitionKeys[i];
+			realState.setTransition(transitionKey, stateConfig.transitions[transitionKey]);
+		}
+	};
 	
 	MachineHandler.prototype._updateState = function(realMachine, stateConfig) {
 		var realState = new State(stateConfig.uuid);
 		
 		realMachine.addState(realState);
 		this._updateActions(realState, stateConfig);
+		this._updateTransitions(realState, stateConfig);
 		
 		var that = this;
 		function update(ref) {
@@ -78,7 +86,7 @@ define([
 			realMachines.forEach(function(realMachine) {			
 				realState.addMachine(realMachine);
 			});
-    });
+    	});
 	};
 	
 	MachineHandler.prototype.update = function(ref, config) {

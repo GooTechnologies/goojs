@@ -6,35 +6,30 @@ require.config({
 
 require([
 	'goo/entities/GooRunner',
-	'goo/loaders/DynamicLoader'
+	'goo/loaders/DynamicLoader',
+	'goo/statemachine/FSMSystem'
 ], function (
 	GooRunner,
-	DynamicLoader
+	DynamicLoader,
+	FSMSystem
 	) {
 	'use strict';
 
 	function fsmHandlerDemo(goo) {
+		//goo.world.setSystem(new FSMSystem(goo));
+
 		var loader = new DynamicLoader({
 			world: goo.world,
 			rootPath: './fsm/'
 		});
 
 		loader.load('scene.scene').then(function(v) {
-		//loader.load('entity.entity').then(function(v) {
 			console.log('Success!');
 			console.log(v);
 			window.goo = goo;
 		}).then(null, function(e) {
-				alert('Failed to load fsm: ' + e);
+			console.error('Failed to load fsm: ' + e);
 		});
-		/*
-		loader.load('m1_s1.state').then(function(v) {
-			console.log('Success!');
-			console.log(v);
-		}).then(null, function(e) {
-			alert('Failed to load fsm: ' + e);
-		});
-		*/
 	}
 
 	function init() {

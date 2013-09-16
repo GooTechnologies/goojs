@@ -23,18 +23,6 @@ function(
 
 		this.eventToEmmit = settings.eventToEmmit || null;
 
-		this.external = [
-			{
-				name: 'Key',
-				key: 'key',
-				type: 'key'
-			},
-			{
-				name:'Send event',
-				key:'event',
-				type:'event'
-			}];
-
 		this.updated = false;
 		this.eventListener = function(event) {
 			//console.log('.......... keydown');
@@ -51,6 +39,18 @@ function(
 			 */
 		}.bind(this);
 	}
+
+	KeyDownAction.external = [
+		{
+			name: 'Key',
+			key: 'key',
+			type: 'key'
+		},
+		{
+			name: 'Send event',
+			key: 'event',
+			type: 'event'
+		}];
 
 	KeyDownAction.prototype = {
 		onEnter: function() {

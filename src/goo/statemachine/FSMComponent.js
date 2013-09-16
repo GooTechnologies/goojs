@@ -30,7 +30,7 @@ function (
 	};
 
 	FSMComponent.prototype.getVariable = function(name) {
-		if (this.vars[name]) {
+		if (this.vars[name] !== undefined) {
 			return this.vars[name];
 		} else {
 			return FSMComponent.getVariable(name);
@@ -42,12 +42,20 @@ function (
 	};
 
 	FSMComponent.prototype.applyOnVariable = function(name, fun) {
-		if (this.vars[name]) {
+		if (this.vars[name] !== undefined) {
 			this.vars[name] = fun(this.vars[name]);
 		} else {
 			FSMComponent.applyOnVariable(name, fun);
 		}
 	};
+
+	FSMComponent.prototype.defineVariable = function(name, initialValue) {
+		this.vars[name] = initialValue;
+	};
+
+	FSMComponent.prototype.removeVariable = function(name) {
+		delete this.vars[name];
+	}
 
 	FSMComponent.applyToVariable = function(name, fun) {
 		if (this.vars[name]) {

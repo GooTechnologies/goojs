@@ -39,7 +39,7 @@ Actions
 	FollowEntityAction.prototype = {
 		// onCreate: function(fsm) {
 		// },
-		onUpdate: function(/*fsm, state, tpf*/) {
+		onUpdate: function(/*fsm*/) {
 			if (this.sourceEntity !== null && this.targetEntity !== null) {
 				var targetTranslation = this.targetEntity.transformComponent.transform.translation;
 				targetTranslation.setv(this.sourceEntity.transformComponent.transform.translation);

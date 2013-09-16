@@ -43,15 +43,21 @@ function (
 			removeListener: function (channelName, callback) {
 				this._fsm._bus.removeListener(channelName, callback);
 			}.bind(this),
+			defineVariable: function (name, initialValue) {
+				this.vars[name] = initialValue;
+			}.bind(this),
+			removeVariable: function (name) {
+				delete this.vars[name];
+			}.bind(this),
 			getVariable: function (name) {
-				if (this.vars[name]) {
+				if (this.vars[name] !== undefined) {
 					return this.vars[name];
 				} else {
 					return this._fsm.getVariable(name);
 				}
 			}.bind(this),
 			applyOnVariable: function (name, fun) {
-				if (this.vars[name]) {
+				if (this.vars[name] !== undefined) {
 					this.vars[name] = fun(this.vars[name]);
 				} else {
 					this._fsm.applyOnVariable(name, fun);

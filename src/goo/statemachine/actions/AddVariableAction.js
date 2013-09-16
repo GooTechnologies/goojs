@@ -16,8 +16,10 @@ Actions
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
+		this.everyFrame = settings.everyFrame || false;
+	}
 
-		this.external = [
+	AddVariableAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -36,12 +38,11 @@ Actions
 			min: 0,
 			max: 10
 		}];
-	}
 
 	AddVariableAction.prototype = {
 		onEnter: function(fsm) {
-			fsm.applyToVariable(this.variable, function() {
-				return this.getVariable(this.variable) + StateUtils.getValue(this.amount, fsm);
+			fsm.applyToVariable(this.variable, function(v) {
+				return v + StateUtils.getValue(this.amount, fsm);
 			}.bind(this));
 		},
 		onUpdate: function(/*fsm*/) {

@@ -3,12 +3,16 @@
     "states": [{
             "uuid": "m1_s1",
             "actions": [],
-            "machineRefs": ["m1_1.machine", "m1_2.machine"]
+            "machineRefs": ["m1_1.machine", "m1_2.machine"],
+            "transitions": {}
         },
         {
             "uuid": "m1_s2",
             "actions": [],
-            "machineRefs": []
+            "machineRefs": [],
+            "transitions": {
+                "toS2": "s2"
+            }
         }
     ]
 }
