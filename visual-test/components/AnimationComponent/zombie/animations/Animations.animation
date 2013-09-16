@@ -1,4 +1,5 @@
 {
+	"layers" : {
 	"DEFAULT":{
 		"defaultState":"idle",
 		"states": {
@@ -79,5 +80,6 @@
 				"fadeTime": 2.0
 			}
 		}
+	}
 	}
 }
