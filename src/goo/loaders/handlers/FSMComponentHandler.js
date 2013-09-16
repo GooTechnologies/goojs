@@ -29,7 +29,7 @@ define([
 		var that = this, promises = [];
 		function update(ref) {
 			return that.getConfig(ref).then(function(config) {
-				return that.updateObject(ref,config);
+				return that.updateObject(ref, config);
 			});
 		}
 		var component = ComponentHandler.prototype.update.call(this, entity, config);

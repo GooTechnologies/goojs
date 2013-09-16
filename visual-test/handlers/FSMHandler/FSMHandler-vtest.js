@@ -16,7 +16,7 @@ require([
 	'use strict';
 
 	function fsmHandlerDemo(goo) {
-		//goo.world.setSystem(new FSMSystem(goo));
+		goo.world.setSystem(new FSMSystem(goo));
 
 		var loader = new DynamicLoader({
 			world: goo.world,

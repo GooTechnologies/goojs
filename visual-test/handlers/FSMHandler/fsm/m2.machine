@@ -1,5 +1,6 @@
 {
     "name": "machine2",
+    "initialState": "m2_s1",
     "states": [{
             "uuid": "m2_s1",
             "actions": [],

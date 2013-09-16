@@ -52,6 +52,8 @@ function (
 		// reset self
 		this.currentState = this._states[this.initialState];
 
+		//console.log('machine reset', this.name, this.currentState.uuid);
+
 		// propagate reset
 		this.currentState.reset();
 	};
