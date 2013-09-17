@@ -16,6 +16,7 @@ function (
 		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
 
 		this.lights = [];
+		this.overrideLights = null;
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
@@ -27,7 +28,9 @@ function (
 
 		if (this.lights.indexOf(component.light) === -1) {
 			this.lights.push(component.light);
-			EventHandler.dispatch("setLights", this.lights);
+			if (!this.overrideLights) {
+				EventHandler.dispatch("setLights", this.lights);
+			}
 		}
 	};
 
@@ -39,18 +42,27 @@ function (
 		var index = this.lights.indexOf(component.light);
 		if (index !== -1) {
 			this.lights.splice(index, 1);
-			EventHandler.dispatch("setLights", this.lights);
+			if(!this.overrideLights) {
+				EventHandler.dispatch("setLights", this.lights);
+			}
 		}
 	};
 
-	LightingSystem.prototype.process = function (entities) {
-		for (var i = 0; i < entities.length; i++) {
-			var entity = entities[i];
-			var transformComponent = entity.transformComponent;
-			var lightComponent = entity.lightComponent;
+	LightingSystem.prototype.setOverrideLights = function(lights) {
+		this.overrideLights = lights;
+		EventHandler.dispatch("setLights", this.overrideLights || this.lights);
+	};
 
-			if (transformComponent._updated) {
-				lightComponent.updateLight(transformComponent.worldTransform);
+	LightingSystem.prototype.process = function (entities) {
+		if (!this.overrideLights) {
+			for (var i = 0; i < entities.length; i++) {
+				var entity = entities[i];
+				var transformComponent = entity.transformComponent;
+				var lightComponent = entity.lightComponent;
+
+				if (transformComponent._updated) {
+					lightComponent.updateLight(transformComponent.worldTransform);
+				}
 			}
 		}
 	};
