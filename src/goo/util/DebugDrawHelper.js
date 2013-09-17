@@ -34,16 +34,20 @@ define([
 	var cameraDebug = new CameraDebug();
 
 	DebugDrawHelper.getRenderablesFor = function(component) {
-		var meshes;
+		var meshes, material;
 		if(component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light);
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera);
+			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
+			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
+			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
+			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			return;
 			// Not done yet
 		}
-		var material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawMaterial');
 		return [
 		 {
 			 meshData: meshes[0],
