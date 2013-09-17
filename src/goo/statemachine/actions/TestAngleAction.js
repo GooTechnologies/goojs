@@ -1,12 +1,8 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function TestAngleAction(settings) {
 		settings = settings || {};
 
@@ -15,8 +11,11 @@ function() {
 		this.rangeMax = settings.rangeMax || Math.PI;
 		this.eventInRange = settings.eventInRange || 'inRange';
 		this.eventOutRange = settings.eventOutRange || 'outRange';
+	}
 
-		this.external = [
+	TestAngleAction.prototype = Object.create(Action.prototype);
+
+	TestAngleAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -42,22 +41,19 @@ function() {
 			key:'eventOutRange',
 			type:'event'
 		}
-		];
-	}
+	];
 
-	TestAngleAction.prototype = {
-		onUpdate: function(fsm) {
-			if (this.entity !== null && this.entity.body) {
-				var angle = this.entity.body.GetAngle() % (Math.PI*2);
-				if (angle < 0) {
-					angle = Math.PI*2 + angle;
-				}
+	TestAngleAction.prototype.onUpdate = function(fsm) {
+		if (this.entity !== null && this.entity.body) {
+			var angle = this.entity.body.GetAngle() % (Math.PI*2);
+			if (angle < 0) {
+				angle = Math.PI*2 + angle;
+			}
 
-				if (angle >= this.rangeMin && angle <= this.rangeMax) {
-					fsm.handle(this.eventInRange);
-				} else {
-					fsm.handle(this.eventOutRange);
-				}
+			if (angle >= this.rangeMin && angle <= this.rangeMax) {
+				fsm.handle(this.eventInRange);
+			} else {
+				fsm.handle(this.eventOutRange);
 			}
 		}
 	};

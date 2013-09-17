@@ -1,16 +1,14 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function KeyUpAction(settings) {
 		settings = settings || {};
 
@@ -20,18 +18,6 @@ function(
 		// variable to store the key and moment of press?
 
 		this.eventToEmmit = settings.eventToEmmit || null;
-
-		this.external = [
-		{
-			name: 'Key',
-			key: 'key',
-			type: 'key'
-		},
-		{
-			name:'Send event',
-			key:'event',
-			type:'event'
-		}];
 
 		this.updated = false;
 		this.eventListener = function(event) {
@@ -50,21 +36,35 @@ function(
 		}.bind(this);
 	}
 
-	KeyUpAction.prototype = {
-		onEnter: function() {
-			document.addEventListener('keyup', this.eventListener);
+	KeyUpAction.prototype = Object.create(Action.prototype);
+
+	KeyUpAction.external = [
+		{
+			name: 'Key',
+			key: 'key',
+			type: 'key'
 		},
-		onUpdate: function(proxy) {
-			if (this.updated) {
-				this.updated = false;
-				if (this.eventToEmmit) {
-					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
-				}
+		{
+			name:'Send event',
+			key:'event',
+			type:'event'
+		}];
+
+	KeyUpAction.prototype._setup = function() {
+		document.addEventListener('keyup', this.eventListener);
+	};
+
+	KeyUpAction.prototype._run = function(fsm) {
+		if (this.updated) {
+			this.updated = false;
+			if (this.eventToEmmit) {
+				fsm.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 			}
-		},
-		onExit: function() {
-			document.removeEventListener('keyup', this.eventListener);
 		}
+	};
+
+	KeyUpAction.prototype.exit = function() {
+		document.removeEventListener('keyup', this.eventListener);
 	};
 
 	return KeyUpAction;

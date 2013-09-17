@@ -1,23 +1,17 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
-	/**
-	 * @class
-	 */
 	function MouseClickAction(settings) {
 		settings = settings || {};
 
 		this.posVariable = settings.posVariable || null;
 		this.eventToEmmit = settings.eventToEmmit || null;
-
-		this.external = [
-		{
-			name: 'Store for click position',
-			key: 'posVariable',
-			type: 'string'
-		}];
 
 		this.currentTime = 0;
 
@@ -36,21 +30,30 @@ function() {
 		}.bind(this);
 	}
 
-	MouseClickAction.prototype = {
-		onEnter: function() {
-			document.addEventListener('click', this.eventListener);
-		},
-		onUpdate: function(proxy) {
-			if (this.updated) {
-				this.updated = false;
-				if (this.eventToEmmit) {
-					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
-				}
+	MouseClickAction.prototype = Object.create(Action.prototype);
+
+	MouseClickAction.external = [
+		{
+			name: 'Store for click position',
+			key: 'posVariable',
+			type: 'string'
+		}];
+
+	MouseClickAction.prototype._setup = function() {
+		document.addEventListener('click', this.eventListener);
+	};
+
+	MouseClickAction.prototype._run = function(proxy) {
+		if (this.updated) {
+			this.updated = false;
+			if (this.eventToEmmit) {
+				proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 			}
-		},
-		onExit: function() {
-			document.removeEventListener('click', this.eventListener);
 		}
+	};
+
+	MouseClickAction.prototype.exit = function() {
+		document.removeEventListener('click', this.eventListener);
 	};
 
 	return MouseClickAction;

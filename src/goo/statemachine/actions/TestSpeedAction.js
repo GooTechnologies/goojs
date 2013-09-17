@@ -1,12 +1,8 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function TestSpeedAction(settings) {
 		this.type = 'TestSpeedAction';
 
@@ -17,9 +13,11 @@ function() {
 		this.rangeMax = settings.rangeMax || Math.PI;
 		this.eventInRange = settings.eventInRange || 'inRange';
 		this.eventOutRange = settings.eventOutRange || 'outRange';
+	}
 
-		this.external = [
-		{
+	TestSpeedAction.prototype = Object.create(Action.prototype);
+
+	TestSpeedAction.external = [{
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity'
@@ -43,23 +41,19 @@ function() {
 			name:'Event Out Of Range',
 			key:'eventOutRange',
 			type:'event'
-		}
-		];
-	}
+		}];
 
-	TestSpeedAction.prototype = {
-		onUpdate: function(fsm) {
-			if (this.entity !== null && this.entity.body) {
-				var speed = this.entity.body.GetLinearVelocity().Length();
-				// var speed = this.entity.body.GetVelocity();
+	TestSpeedAction.prototype.onUpdate = function(fsm) {
+		if (this.entity !== null && this.entity.body) {
+			var speed = this.entity.body.GetLinearVelocity().Length();
+			// var speed = this.entity.body.GetVelocity();
 
-				// console.log(speed);
+			// console.log(speed);
 
-				if (speed >= this.rangeMin && speed <= this.rangeMax) {
-					fsm.handle(this.eventInRange);
-				} else {
-					fsm.handle(this.eventOutRange);
-				}
+			if (speed >= this.rangeMin && speed <= this.rangeMax) {
+				fsm.handle(this.eventInRange);
+			} else {
+				fsm.handle(this.eventOutRange);
 			}
 		}
 	};

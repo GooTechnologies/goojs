@@ -1,6 +1,6 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
 	/**
@@ -20,16 +20,17 @@ function() {
 		this.currentTime = 0;
 	}
 
-	WaitAction.prototype = {
-		onCreate: function(/*fsm*/) {
-			this.currentTime = 0;
-		},
-		onUpdate: function(fsm, state, tpf) {
-			/* jshint -W052 */
-			this.currentTime += ~~(tpf * 1000);
-			if (this.currentTime >= this.time) {
-				fsm.handle(this.event);
-			}
+	WaitAction.prototype = Object.create(Action.prototype);
+
+	WaitAction.prototype.onCreate = function(/*fsm*/) {
+		this.currentTime = 0;
+	};
+
+	WaitAction.prototype.onUpdate = function(fsm) {
+		/* jshint -W052 */
+		this.currentTime += ~~(fsm.getTpf() * 1000);
+		if (this.currentTime >= this.time) {
+			fsm.handle(this.event);
 		}
 	};
 

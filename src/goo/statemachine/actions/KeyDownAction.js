@@ -1,16 +1,14 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function KeyDownAction(settings) {
 		settings = settings || {};
 
@@ -38,6 +36,8 @@ function(
 		}.bind(this);
 	}
 
+	KeyDownAction.prototype = Object.create(Action.prototype);
+
 	KeyDownAction.external = [
 		{
 			name: 'Key',
@@ -50,21 +50,21 @@ function(
 			type: 'event'
 		}];
 
-	KeyDownAction.prototype = {
-		onEnter: function() {
-			document.addEventListener('keydown', this.eventListener);
-		},
-		onUpdate: function(proxy) {
-			if (this.updated) {
-				this.updated = false;
-				if (this.eventToEmmit) {
-					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
-				}
+	KeyDownAction.prototype._setup = function() {
+		document.addEventListener('keydown', this.eventListener);
+	};
+
+	KeyDownAction.prototype._run = function(proxy) {
+		if (this.updated) {
+			this.updated = false;
+			if (this.eventToEmmit) {
+				proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 			}
-		},
-		onExit: function() {
-			document.removeEventListener('keydown', this.eventListener);
 		}
+	};
+
+	KeyDownAction.prototype.exit = function() {
+		document.removeEventListener('keydown', this.eventListener);
 	};
 
 	return KeyDownAction;

@@ -1,19 +1,18 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function SetRotationAction(settings) {
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
 		this.rotation = settings.rotation || [0, 0, 0];
+	}
 
-		this.external = [
+	SetRotationAction.prototype = Object.create(Action.prototype);
+
+	SetRotationAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -24,14 +23,12 @@ function() {
 			key:'rotation',
 			type:'vec3'
 		}];
-	}
 
-	SetRotationAction.prototype = {
-		onCreate: function(/*fsm*/) {
-			if (this.entity !== null) {
-				this.entity.transformComponent.transform.setRotationXYZ(this.rotation[0], this.rotation[1], this.rotation[2]);
-				this.entity.transformComponent.setUpdated();
-			}
+	// not on create
+	SetRotationAction.prototype.onCreate = function(/*fsm*/) {
+		if (this.entity !== null) {
+			this.entity.transformComponent.transform.setRotationXYZ(this.rotation[0], this.rotation[1], this.rotation[2]);
+			this.entity.transformComponent.setUpdated();
 		}
 	};
 

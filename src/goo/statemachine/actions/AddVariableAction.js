@@ -1,23 +1,23 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function AddVariableAction(settings) {
 		settings = settings || {};
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
-		this.everyFrame = settings.everyFrame || false;
+		this.everyFrame = true;
 	}
+
+	AddVariableAction.prototype = Object.create(Action.prototype);
 
 	AddVariableAction.external = [
 		{
@@ -39,18 +39,11 @@ function(
 			max: 10
 		}];
 
-	AddVariableAction.prototype = {
-		onEnter: function(fsm) {
-			fsm.applyToVariable(this.variable, function(v) {
-				return v + StateUtils.getValue(this.amount, fsm);
-			}.bind(this));
-		},
-		onUpdate: function(/*fsm*/) {
-
-		},
-		onExit: function(/*fsm*/) {
-
-		}
+	AddVariableAction.prototype._run = function(fsm) {
+		console.log('add var');
+		fsm.applyToVariable(this.variable, function(v) {
+			return v + StateUtils.getValue(this.amount, fsm);
+		}.bind(this));
 	};
 
 	return AddVariableAction;

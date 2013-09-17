@@ -1,17 +1,15 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function TweenPositionAction(settings) {
 		settings = settings || {};
 
@@ -30,33 +28,34 @@ function(
 		};
 		this.easing = settings.easing || window.TWEEN.Easing.Elastic.InOut;
 		this.tween = new window.TWEEN.Tween();
+	}
 
-		this.external = {
+	TweenPositionAction.prototype = Object.create(Action.prototype);
+
+	TweenPositionAction.external = [{
 			entity: ['entity', 'Entity'],
 			time: ['int', 'Time'],
 			event: ['string', 'Send event'],
 			from: ['json', 'From'],
 			to: ['json', 'To'],
 			easing: ['function', 'Easing']
-		};
-	}
+		}];
 
-	TweenPositionAction.prototype = {
-		onCreate: function(fsm) {
-			var that = this;
-			this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
-				if (that.entity !== null) {
-					that.entity.transformComponent.transform.translation.setd(this.x, this.y, this.z);
-					that.entity.transformComponent.setUpdated();
-				}
-			}).onComplete(function() {
-				fsm.handle(this.event);
-				console.log('complete:', this.event);
-			}.bind(this)).start();
-		},
-		onDestroy: function() {
-			this.tween.stop();
-		}
+	TweenPositionAction.prototype.onCreate = function(fsm) {
+		var that = this;
+		this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
+			if (that.entity !== null) {
+				that.entity.transformComponent.transform.translation.setd(this.x, this.y, this.z);
+				that.entity.transformComponent.setUpdated();
+			}
+		}).onComplete(function() {
+			fsm.handle(this.event);
+			console.log('complete:', this.event);
+		}.bind(this)).start();
+	};
+
+	TweenPositionAction.prototype.onDestroy = function() {
+		this.tween.stop();
 	};
 
 	return TweenPositionAction;

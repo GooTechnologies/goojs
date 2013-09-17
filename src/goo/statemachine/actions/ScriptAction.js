@@ -1,12 +1,10 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(
+	Action
+	) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function ScriptAction(script) {
 		this.script = script || 'console.log("hello!")';
 
@@ -17,11 +15,11 @@ function() {
 		}];
 	}
 
-	ScriptAction.prototype = {
-		onCreate: function(/*fsm*/) {
-			/* jshint evil: true */
-			eval(this.script);
-		}
+	ScriptAction.prototype = Object.create(Action.prototype);
+
+	ScriptAction.prototype.onCreate = function(/*fsm*/) {
+		/* jshint evil: true */
+		eval(this.script);
 	};
 
 	return ScriptAction;

@@ -30,8 +30,8 @@ function (
 				return this._fsm.entity;
 			}.bind(this),
 			send: function (channels, data) {
+				//console.log('send', channels);
 				if (typeof channels === 'string' && this._transitions[channels]) {
-					console.log(channels);
 					this.requestTransition(this._transitions[channels]);
 				} else {
 					this._fsm._bus.emit(channels, data);
@@ -89,8 +89,8 @@ function (
 	State.prototype.update = function() {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].onUpdate) {
-				this._actions[i].onUpdate(this.proxy);
+			if (this._actions[i].update) {
+				this._actions[i].update(this.proxy);
 				if(this.transitionTarget) {
 					var tmp = this.transitionTarget;
 					this.transitionTarget = null;
@@ -119,8 +119,8 @@ function (
 			this._machines[i].kill();
 		}
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].onExit) {
-				this._actions[i].onExit(this.proxy);
+			if (this._actions[i].exit) {
+				this._actions[i].exit(this.proxy);
 			}
 		}
 	};
@@ -128,8 +128,8 @@ function (
 	State.prototype.enter = function() {
 		// on enter of self
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].onEnter) {
-				this._actions[i].onEnter(this.proxy);
+			if (this._actions[i].enter) {
+				this._actions[i].enter(this.proxy);
 			}
 		}
 

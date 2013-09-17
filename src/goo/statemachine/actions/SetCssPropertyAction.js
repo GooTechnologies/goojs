@@ -1,30 +1,27 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function SetCssPropertyAction(settings) {
 		settings = settings || {};
 
 		this.selector = settings.selector || 'body';
 		this.property = settings.property || 'background-color';
 		this.value = settings.value || 'black';
+	}
 
-		this.external = {
+	SetCssPropertyAction.prototype = Object.create(Action.prototype);
+
+	SetCssPropertyAction.external = [{
 			selector: ['string', 'Selector'],
 			property: ['string', 'Property'],
 			value: ['string', 'Value']
-		};
-	}
+		}];
 
-	SetCssPropertyAction.prototype = {
-		onCreate: function(/*fsm*/) {
-			$(this.selector).css(this.property, this.value);
-		}
+	// not onCreate
+	SetCssPropertyAction.prototype.onCreate = function(/*fsm*/) {
+		$(this.selector).css(this.property, this.value);
 	};
 
 	return SetCssPropertyAction;

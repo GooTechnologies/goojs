@@ -1,16 +1,14 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function AddPositionAction(settings) {
 		settings = settings || {};
 
@@ -19,6 +17,8 @@ function(
 		this.speed = settings.speed || 1;
 		this.everyFrame = settings.everyFrame || true;
 	}
+
+	AddPositionAction.prototype = Object.create(Action.prototype);
 
 	AddPositionAction.external = [
 		{
@@ -41,6 +41,7 @@ function(
 		}];
 
 	AddPositionAction.prototype._run = function(fsm) {
+		console.log('add position');
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
@@ -55,18 +56,6 @@ function(
 			);
 
 			this.entity.transformComponent.setUpdated();
-		}
-	};
-
-	AddPositionAction.prototype.onEnter = function(fsm) {
-		if (!this.everyFrame) {
-			this._run(fsm);
-		}
-	};
-
-	AddPositionAction.prototype.onUpdate = function(fsm) {
-		if (this.everyFrame) {
-			this._run(fsm);
 		}
 	};
 

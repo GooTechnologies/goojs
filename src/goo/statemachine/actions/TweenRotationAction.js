@@ -1,17 +1,15 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function TweenRotationAction(settings) {
 		settings = settings || {};
 
@@ -41,22 +39,23 @@ function(
 		];
 	}
 
-	TweenRotationAction.prototype = {
-		onCreate: function(fsm) {
-			var that = this;
-			this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
-				if (that.entity !== null) {
-					that.entity.transformComponent.transform.setRotationXYZ(this.x, this.y, this.z);
-					that.entity.transformComponent.setUpdated();
-				}
-			}).onComplete(function() {
-				fsm.handle(this.event);
-				console.log('complete:', this.event);
-			}.bind(this)).start();
-		},
-		onDestroy: function() {
-			this.tween.stop();
-		}
+	TweenRotationAction.prototype = Object.create(Action.prototype);
+
+	TweenRotationAction.prototype.onCreate = function(fsm) {
+		var that = this;
+		this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
+			if (that.entity !== null) {
+				that.entity.transformComponent.transform.setRotationXYZ(this.x, this.y, this.z);
+				that.entity.transformComponent.setUpdated();
+			}
+		}).onComplete(function() {
+			fsm.handle(this.event);
+			console.log('complete:', this.event);
+		}.bind(this)).start();
+	};
+
+	TweenRotationAction.prototype.onDestroy = function() {
+		this.tween.stop();
 	};
 
 	return TweenRotationAction;

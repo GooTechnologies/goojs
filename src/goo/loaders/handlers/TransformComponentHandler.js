@@ -46,6 +46,8 @@ define([
 				MathUtils.radFromDeg(config.rotation[0]),
 				MathUtils.radFromDeg(config.rotation[1]),
 				MathUtils.radFromDeg(config.rotation[2]));
+		} else if (config.rotation.length === 4) {
+			new Quaternion(config.rotation).toRotationMatrix(component.transform.rotation);
 		} else {
 			component.transform.rotation.set(config.rotation);
 		}

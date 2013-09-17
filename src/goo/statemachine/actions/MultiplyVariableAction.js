@@ -1,23 +1,26 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function MultiplyVariableAction(settings) {
 		settings = settings || {};
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
 
-		this.external = [
+		this.everyFrame = false; ///
+	}
+
+	MultiplyVariableAction.prototype = Object.create(Action.prototype);
+
+	MultiplyVariableAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -36,20 +39,11 @@ function(
 			min: 0,
 			max: 10
 		}];
-	}
 
-	MultiplyVariableAction.prototype = {
-		onEnter: function(fsm) {
-			fsm.applyOnVariable(this.variable, function(v) {
-				return v * StateUtils.getValue(this.amount, fsm);
-			}.bind(this));
-		},
-		onUpdate: function(/*fsm*/) {
-
-		},
-		onExit: function(/*fsm*/) {
-
-		}
+	MultiplyVariableAction.prototype._run = function(fsm) {
+		fsm.applyOnVariable(this.variable, function(v) {
+			return v * StateUtils.getValue(this.amount, fsm);
+		}.bind(this));
 	};
 
 	return MultiplyVariableAction;

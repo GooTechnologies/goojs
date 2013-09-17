@@ -1,6 +1,10 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
 	/**
@@ -9,18 +13,19 @@ function() {
 	 */
 	function RandomEventAction(settings) {
 		settings = settings || {};
-
-		// this.external = {
-		// 	key: ['string', 'Key'],
-		// 	event: ['string', 'Send event']
-		// };
 	}
 
-	RandomEventAction.prototype = {
-		onCreate: function(fsm, state) {
-			var val = Math.floor(Math.random() * state.getEvents().length);
-			fsm.handle(state.getEvents()[val]);
-		}
+	RandomEventAction.prototype = Object.create(Action.prototype);
+
+	RandomEventAction.external = {
+		key: ['string', 'Key'],
+		event: ['string', 'Send event']
+	};
+
+	// not onCreate
+	RandomEventAction.prototype.onCreate = function(fsm) {
+		var val = Math.floor(Math.random() * state.getEvents().length);
+		fsm.handle(state.getEvents()[val]);
 	};
 
 	return RandomEventAction;

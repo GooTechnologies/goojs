@@ -1,20 +1,23 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function FollowEntityAction(settings) {
 		settings = settings || {};
 
 		this.sourceEntity = settings.sourceEntity || null;
 		this.targetEntity = settings.targetEntity || null;
 		this.offset = settings.offset || [0, 0, 0];
+	}
 
-		this.external = [
+	FollowEntityAction.prototype = Object.create(Action.prototype);
+
+	FollowEntityAction.external = [
 		{
 			name: 'Source Entity',
 			key: 'sourceEntity',
@@ -30,9 +33,8 @@ function() {
 			key:'offset',
 			type:'vec3'
 		}];
-	}
 
-	FollowEntityAction.prototype.onUpdate = function(/*fsm*/) {
+	FollowEntityAction.prototype._run = function(/*fsm*/) {
 		if (this.sourceEntity !== null && this.targetEntity !== null) {
 			var targetTranslation = this.targetEntity.transformComponent.transform.translation;
 			targetTranslation.setv(this.sourceEntity.transformComponent.transform.translation);

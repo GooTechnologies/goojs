@@ -1,16 +1,14 @@
 define([
+	'goo/statemachine/actions/Action',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
+	Action,
 	StateUtils
 ) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function KeyPressAction(settings) {
 		settings = settings || {};
 
@@ -18,8 +16,11 @@ function(
 
 		this.key = (parseFloat(key) === key) ? key : StateUtils.keys[key];
 		this.event = settings.event || 'dummy';
+	}
 
-		this.external = [
+	KeyPressAction.prototype = Object.create(Action.prototype);
+
+	KeyPressAction.external = [
 		{
 			name: 'Key',
 			key: 'key',
@@ -30,21 +31,20 @@ function(
 			key:'event',
 			type:'event'
 		}];
-	}
 
-	KeyPressAction.prototype = {
-		onCreate: function(fsm) {
-			$(document).keypress(function(event) {
-				var charCode = event.which || event.keyCode;
-				//var charStr = String.fromCharCode(charCode);
-				if (charCode === this.key) {
-					fsm.handle(this.event);
-				}
-			}.bind(this));
-		},
-		onDestroy: function() {
-			$(document).off('keypress');
-		}
+	// not onCreate and onDestroy
+	KeyPressAction.prototype.onCreate = function(fsm) {
+		$(document).keypress(function(event) {
+			var charCode = event.which || event.keyCode;
+			//var charStr = String.fromCharCode(charCode);
+			if (charCode === this.key) {
+				fsm.handle(this.event);
+			}
+		}.bind(this));
+	};
+
+	KeyPressAction.prototype.onDestroy = function() {
+		$(document).off('keypress');
 	};
 
 	return KeyPressAction;

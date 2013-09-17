@@ -1,14 +1,15 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function NumberCompareAction(settings) {
 		settings = settings || {};
+		this.everyFrame = true; ///
 
 		this.float1 = settings.float1 || 0.0;
 		this.float1Variable = settings.float1Variable || '';
@@ -16,9 +17,9 @@ function() {
 		this.float2Variable = settings.float2Variable || '';
 		this.tolerance = settings.tolerance || 0.0;
 
-		this.equalsEvent = settings.equalsEvent || 'equals';
-		this.lessThanEvent = settings.lessThanEvent || 'lessThan';
-		this.greaterThanEvent = settings.greaterThanEvent || 'greaterThan';
+		this.equalsEvent = settings.equalsEvent;
+		this.lessThanEvent = settings.lessThanEvent;
+		this.greaterThanEvent = settings.greaterThanEvent;
 
 		this.external = {
 			float1: ['float', 'Number 1'],
@@ -33,19 +34,19 @@ function() {
 		};
 	}
 
-	NumberCompareAction.prototype = {
-		onUpdate: function(fsm) {
-			var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
-			var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;
-			var diff = float1 - float2;
+	NumberCompareAction.prototype = Object.create(Action.prototype);
 
-			if (Math.abs(diff) <= this.tolerance) {
-				fsm.send(this.equalsEvent);
-			} else if (diff < 0) {
-				fsm.send(this.lessThanEvent);
-			} else {
-				fsm.send(this.greaterThanEvent);
-			}
+	NumberCompareAction.prototype._run = function(fsm) {
+		var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
+		var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;
+		var diff = float1 - float2;
+		                    //console.log(diff);
+		if (Math.abs(diff) <= this.tolerance) {
+			if (this.equalsEvent) fsm.send(this.equalsEvent);
+		} else if (diff < 0) {
+			if (this.lessThanEvent) fsm.send(this.lessThanEvent);
+		} else {
+			if (this.greaterThanEvent) fsm.send(this.greaterThanEvent);
 		}
 	};
 

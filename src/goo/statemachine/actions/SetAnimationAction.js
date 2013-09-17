@@ -1,19 +1,20 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(
+	Action
+	) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function SetAnimationAction(settings) {
 		settings = settings || {};
 
 		this.entity = settings.entity || null;
 		this.animation = settings.animation || null;
+	}
 
-		this.external = [
+	SetAnimationAction.prototype = Object.create(Action.prototype);
+
+	SetAnimationAction.external = [
 		{
 			name: 'Entity',
 			key: 'entity',
@@ -24,13 +25,10 @@ function() {
 			key:'animation',
 			type:'string'
 		}];
-	}
 
-	SetAnimationAction.prototype = {
-		onUpdate: function(/*fsm*/) {
-			if (this.entity !== null && this.animation !== null && this.entity.animationComponent) {
-				this.entity.animationComponent.animationManager.getBaseAnimationLayer().doTransition(this.animation);
-			}
+	SetAnimationAction.prototype._run = function(/*fsm*/) {
+		if (this.entity !== null && this.animation !== null && this.entity.animationComponent) {
+			this.entity.animationComponent.animationManager.getBaseAnimationLayer().doTransition(this.animation);
 		}
 	};
 

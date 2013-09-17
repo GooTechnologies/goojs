@@ -1,23 +1,17 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
-	/**
-	 * @class
-	 */
 	function MouseMoveAction(settings) {
 		settings = settings || {};
 
 		this.posVariable = settings.posVariable || null;
 		this.eventToEmmit = settings.eventToEmmit || null;
-
-		this.external = [
-		{
-			name: 'Store for click position',
-			key: 'posVariable',
-			type: 'string'
-		}];
 
 		this.currentTime = 0;
 
@@ -36,21 +30,30 @@ function() {
 		}.bind(this);
 	}
 
-	MouseMoveAction.prototype = {
-		onEnter: function() {
-			document.addEventListener('mousemove', this.eventListener);
-		},
-		onUpdate: function(proxy) {
-			if (this.updated) {
-				this.updated = false;
-				if (this.eventToEmmit) {
-					proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
-				}
+	MouseMoveAction.prototype = Object.create(Action.prototype);
+
+	MouseMoveAction.external = [
+		{
+			name: 'Store for click position',
+			key: 'posVariable',
+			type: 'string'
+		}];
+
+	MouseMoveAction.prototype._setup = function() {
+		document.addEventListener('mousemove', this.eventListener);
+	};
+
+	MouseMoveAction.prototype._run = function(proxy) {
+		if (this.updated) {
+			this.updated = false;
+			if (this.eventToEmmit) {
+				proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
 			}
-		},
-		onExit: function() {
-			document.removeEventListener('mousemove', this.eventListener);
 		}
+	};
+
+	MouseMoveAction.prototype.exit = function() {
+		document.removeEventListener('mousemove', this.eventListener);
 	};
 
 	return MouseMoveAction;

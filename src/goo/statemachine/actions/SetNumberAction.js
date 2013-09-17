@@ -1,28 +1,27 @@
-define([],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function() {
+function(Action) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function SetNumberAction(settings) {
 		settings = settings || {};
 
+		this.everyFrame = false;
 		this.variable = settings.variable || 'None';
 		this.value = settings.value || '0';
-
-		this.external = {
-			variable: ['string', 'Variable'],
-			value: ['float', 'Value']
-		};
 	}
 
-	SetNumberAction.prototype = {
-		onCreate: function(fsm) {
-			fsm.applyOnVariable(this.variable, function() { return this.value; }.bind(this));
-		}
+	SetNumberAction.prototype = Object.create(Action.prototype);
+
+	SetNumberAction.external = [{
+			variable: ['string', 'Variable'],
+			value: ['float', 'Value']
+		}];
+
+	SetNumberAction.prototype._run = function(fsm) {
+		fsm.applyOnVariable(this.variable, function() {
+			return this.value;
+		}.bind(this));
 	};
 
 	return SetNumberAction;

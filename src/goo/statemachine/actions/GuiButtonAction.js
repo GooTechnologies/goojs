@@ -1,19 +1,22 @@
-define([],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function() {
+function(
+	Action
+) {
 	"use strict";
 
-	/**
-	 * @class
-	 * @property {ArrayBuffer} data Data to wrap
-	 */
 	function GuiButtonAction(settings) {
 		settings = settings || {};
 
 		this.name = settings.name || 'Button';
 		this.event = settings.event || 'dummy';
+	}
 
-		this.external = [
+	GuiButtonAction.prototype = Object.create(Action.prototype);
+
+	GuiButtonAction.external = [
 		{
 			name: 'Name',
 			key: 'name',
@@ -24,25 +27,23 @@ function() {
 			key: 'event',
 			type: 'event'
 		}];
-	}
 
-	GuiButtonAction.prototype = {
-		onEnter: function(fsm) {
-			this.button = $('<button/>', {
-				text: this.name,
-				css: {
-					'position': 'relative',
-					'z-index': 10000
-				},
-				click: function() {
-					fsm.send(this.event);
-				}.bind(this)
-			}).appendTo($('body'));
-		},
-		onExit: function() {
-			if (this.button) {
-				this.button.remove();
-			}
+	GuiButtonAction.prototype._setup = function(fsm) {
+		this.button = $('<button/>', {
+			text: this.name,
+			css: {
+				'position': 'relative',
+				'z-index': 10000
+			},
+			click: function() {
+				fsm.send(this.event);
+			}.bind(this)
+		}).appendTo($('body'));
+	};
+
+	GuiButtonAction.prototype.exit = function() {
+		if (this.button) {
+			this.button.remove();
 		}
 	};
 
