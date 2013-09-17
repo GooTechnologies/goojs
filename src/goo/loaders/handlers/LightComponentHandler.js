@@ -37,9 +37,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
 				type: 'Blur',
-				projection: 'Perspective',
+				projection: (config.type === 'DirectionalLight') ? 'Parallel' : 'Perspective',
 				fov: 55,
-				size: 100,
+				size: 400,
 				near: 1,
 				/** @type {number} */
 				far: 1000

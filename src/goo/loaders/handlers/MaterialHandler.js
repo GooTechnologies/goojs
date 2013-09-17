@@ -66,9 +66,9 @@ define([
 	MaterialHandler.prototype.update = function(ref, config) {
 		var that = this;
 		if (!this._objects[ref]) {
-			this._prepare(config);
 			this._create(ref);
 		}
+		this._prepare(config);
 		var object = this._objects[ref];
 
 		return this._getShaderObject(config.shaderRef, config.wireframe).then(function(shader) {

@@ -73,7 +73,7 @@ function (
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
-				if(entity.hasComponent(componentName) && this.doRender[componentName]) {
+				if(entity.hasComponent(componentName) && (this.doRender[componentName] || entity.getComponent(componentName).forceDebug)) {
 					var component = entity.getComponent(componentName);
 					var renderables;
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};

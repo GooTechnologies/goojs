@@ -19,6 +19,7 @@ define([
 
 	CameraComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('camera', CameraComponentHandler);
+	CameraComponentHandler.prototype.constructor = CameraComponentHandler;
 
 	CameraComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
