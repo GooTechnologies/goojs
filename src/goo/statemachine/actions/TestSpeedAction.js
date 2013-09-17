@@ -5,6 +5,7 @@ function(Action) {
 
 	function TestSpeedAction(settings) {
 		this.type = 'TestSpeedAction';
+		this.everyFrame = settings.everyFrame || true;
 
 		settings = settings || {};
 

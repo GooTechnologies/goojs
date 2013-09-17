@@ -9,6 +9,7 @@ function(
 
 	function GuiButtonAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.name = settings.name || 'Button';
 		this.event = settings.event || 'dummy';

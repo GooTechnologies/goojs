@@ -5,6 +5,7 @@ function(Action) {
 
 	function SetRotationAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.rotation = settings.rotation || [0, 0, 0];

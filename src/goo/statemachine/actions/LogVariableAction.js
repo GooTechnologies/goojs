@@ -11,6 +11,7 @@ function(
 
 	function LogVariableAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.posVariable = settings.posVariable || null;
 

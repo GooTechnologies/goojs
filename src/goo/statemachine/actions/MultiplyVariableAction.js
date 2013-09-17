@@ -11,7 +11,7 @@ function(
 
 	function MultiplyVariableAction(settings) {
 		settings = settings || {};
-		this.everyFrame = false; ///
+		this.everyFrame = settings.everyFrame || false;
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;

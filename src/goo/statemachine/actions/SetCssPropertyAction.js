@@ -5,6 +5,7 @@ function(Action) {
 
 	function SetCssPropertyAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || false;
 
 		this.selector = settings.selector || 'body';
 		this.property = settings.property || 'background-color';

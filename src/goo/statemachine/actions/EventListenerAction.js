@@ -9,6 +9,7 @@ function(
 
 	function EventListenerAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.eventName = settings.eventName || 'input';
 		this.event = settings.event || 'output';

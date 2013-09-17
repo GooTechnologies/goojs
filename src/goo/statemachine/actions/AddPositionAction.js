@@ -11,7 +11,7 @@ function(
 
 	function AddPositionAction(settings) {
 		settings = settings || {};
-		this.everyFrame = true;
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.position = settings.position || [0, 0, 0];

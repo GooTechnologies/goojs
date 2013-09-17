@@ -5,6 +5,7 @@ function(Action) {
 
 	function TestCollisionAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity1 = settings.entity1 || null;
 		this.entity2 = settings.entity2 || null;

@@ -5,6 +5,7 @@ function(Action) {
 
 	function SetPositionAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.position = settings.position || [0, 0, 0];

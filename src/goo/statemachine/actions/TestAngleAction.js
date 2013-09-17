@@ -5,6 +5,7 @@ function(Action) {
 
 	function TestAngleAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.rangeMin = settings.rangeMin || 0;

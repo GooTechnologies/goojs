@@ -5,7 +5,7 @@ function(Action) {
 
 	function SetNumberAction(settings) {
 		settings = settings || {};
-		this.everyFrame = false;
+		this.everyFrame = settings.everyFrame || false;
 
 		this.variable = settings.variable || 'None';
 		this.value = settings.value || '0';

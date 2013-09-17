@@ -12,6 +12,7 @@ function(
 
 	function TweenRotationAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.time = settings.time || 2000;

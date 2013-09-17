@@ -7,11 +7,11 @@ function() {
 	}
 
 	/* this gets executed on enter - override this */
-	Action.prototype._setup = function(fsm) {
+	Action.prototype._setup = function(/*fsm*/) {
 	};
 
 	/* this gets executed on enter or on update depending on `everyFrame` - override this */
-	Action.prototype._run = function(fsm) {
+	Action.prototype._run = function(/*fsm*/) {
 	};
 
 	/* this is called by external functions - called once, when the host state becomes active */
@@ -29,8 +29,8 @@ function() {
 		}
 	};
 
-	/* this is called by external functions; also the place to cleanup whatever _onEnter did */
-	Action.prototype.exit = function(fsm) {
+	/* this is called by external functions; also the place to cleanup whatever _setup did */
+	Action.prototype.exit = function(/*fsm*/) {
 	};
 
 	return Action;

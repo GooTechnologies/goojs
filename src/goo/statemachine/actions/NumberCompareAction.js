@@ -9,7 +9,7 @@ function(
 
 	function NumberCompareAction(settings) {
 		settings = settings || {};
-		this.everyFrame = true; ///
+		this.everyFrame = settings.everyFrame || true;
 
 		this.float1 = settings.float1 || 0.0;
 		this.float1Variable = settings.float1Variable || '';

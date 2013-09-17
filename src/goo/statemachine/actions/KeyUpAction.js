@@ -11,7 +11,7 @@ function(
 
 	function KeyUpAction(settings) {
 		settings = settings || {};
-		this.everyFrame = true;
+		this.everyFrame = settings.everyFrame || true;
 
 		var key = settings.key || 'w';
 

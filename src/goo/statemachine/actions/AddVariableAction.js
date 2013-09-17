@@ -11,10 +11,10 @@ function(
 
 	function AddVariableAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || false;
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
-		this.everyFrame = true;
 	}
 
 	AddVariableAction.prototype = Object.create(Action.prototype);

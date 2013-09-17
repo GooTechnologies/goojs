@@ -9,8 +9,7 @@ function(
 
 	function MouseClickAction(settings) {
 		settings = settings || {};
-
-		this.everyFrame = true;
+		this.everyFrame = settings.everyFrame || true;
 
 		this.posVariable = settings.posVariable || null;
 		this.eventToEmmit = settings.eventToEmmit || null;

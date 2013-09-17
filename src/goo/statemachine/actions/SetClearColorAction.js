@@ -5,6 +5,7 @@ function(Action) {
 
 	function SetClearColorAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || false;
 
 		this.color = settings.color || [0, 0, 0, 0];
 	}

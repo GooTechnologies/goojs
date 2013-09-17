@@ -8,6 +8,7 @@ function(Action) {
 	 */
 	function WaitAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.time = settings.time || 1000;
 		this.event = settings.event || 'dummy';

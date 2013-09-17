@@ -12,6 +12,7 @@ function(
 
 	function TweenAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.script = settings.script || "$('button').css('padding-left', this.x + 'px');";
 		this.time = settings.time || 1000;

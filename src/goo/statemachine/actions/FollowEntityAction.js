@@ -9,6 +9,7 @@ function(
 
 	function FollowEntityAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.sourceEntity = settings.sourceEntity || null;
 		this.targetEntity = settings.targetEntity || null;

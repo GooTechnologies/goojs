@@ -7,6 +7,7 @@ function(
 
 	function SetAnimationAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || false;
 
 		this.entity = settings.entity || null;
 		this.animation = settings.animation || null;

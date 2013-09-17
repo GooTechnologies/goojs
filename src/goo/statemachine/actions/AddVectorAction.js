@@ -9,6 +9,7 @@ function(
 
 	function AddVectorAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
 		this.vector = settings.vector || [0, 0, 0];
@@ -27,9 +28,9 @@ function(
 
 	AddVectorAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
-			var x = this.vector[0] * this.speed * tpf;
-			var y = this.vector[1] * this.speed * tpf;
-			var z = this.vector[2] * this.speed * tpf;
+			var x = this.vector[0] * this.speed * fsm.getTpf();
+			var y = this.vector[1] * this.speed * fsm.getTpf();
+			var z = this.vector[2] * this.speed * fsm.getTpf();
 
 			if (this.mode === 0) {
 				this.entity.transformComponent.transform.translation.add_d(x, y, z);

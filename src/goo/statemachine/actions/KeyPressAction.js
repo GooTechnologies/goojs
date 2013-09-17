@@ -11,6 +11,7 @@ function(
 
 	function KeyPressAction(settings) {
 		settings = settings || {};
+		this.everyFrame = settings.everyFrame || true;
 
 		var key = settings.key || 'w';
 
