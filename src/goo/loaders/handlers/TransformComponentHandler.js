@@ -2,6 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
+	'goo/math/Quaternion',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -9,6 +10,7 @@ define([
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
+	Quaternion,
 	RSVP,
 	pu,
 	_
