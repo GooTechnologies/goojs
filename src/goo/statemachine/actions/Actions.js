@@ -46,7 +46,6 @@ function(
 	var Actions = {};
 
 	Actions.register = function (name, actionClass) {
-		console.log('action register', '|'+name+'|');
 		_actions[name] = actionClass;
 	};
 
@@ -63,7 +62,7 @@ function(
 		var items = {};
 		for (var i = 0; i < keys.length; i++){
 			var key = keys[i];
-			items[StateUtils.uncapitalizeFirst(key)] = {name:key};
+			items[StateUtils.uncapitalizeFirst(key)] = {name:key}; // uncapitalize should go in stringutils
 		}
 		return items;
 	};

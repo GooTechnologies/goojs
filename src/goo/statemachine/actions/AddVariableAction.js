@@ -40,7 +40,6 @@ function(
 		}];
 
 	AddVariableAction.prototype._run = function(fsm) {
-		console.log('add var');
 		fsm.applyToVariable(this.variable, function(v) {
 			return v + StateUtils.getValue(this.amount, fsm);
 		}.bind(this));

@@ -30,7 +30,6 @@ function (
 				return this._fsm.entity;
 			}.bind(this),
 			send: function (channels, data) {
-				//console.log('send', channels);
 				if (typeof channels === 'string' && this._transitions[channels]) {
 					this.requestTransition(this._transitions[channels]);
 				} else {
@@ -89,13 +88,11 @@ function (
 	State.prototype.update = function() {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].update) {
-				this._actions[i].update(this.proxy);
-				if(this.transitionTarget) {
-					var tmp = this.transitionTarget;
-					this.transitionTarget = null;
-					return tmp;
-				}
+			this._actions[i].update(this.proxy);
+			if(this.transitionTarget) {
+				var tmp = this.transitionTarget;
+				this.transitionTarget = null;
+				return tmp;
 			}
 		}
 
@@ -119,18 +116,14 @@ function (
 			this._machines[i].kill();
 		}
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].exit) {
-				this._actions[i].exit(this.proxy);
-			}
+			this._actions[i].exit(this.proxy);
 		}
 	};
 
 	State.prototype.enter = function() {
 		// on enter of self
 		for (var i = 0; i < this._actions.length; i++) {
-			if (this._actions[i].enter) {
-				this._actions[i].enter(this.proxy);
-			}
+			this._actions[i].enter(this.proxy);
 		}
 
 		// propagate on enter

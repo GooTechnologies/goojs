@@ -11,11 +11,10 @@ function(
 
 	function MultiplyVariableAction(settings) {
 		settings = settings || {};
+		this.everyFrame = false; ///
 
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
-
-		this.everyFrame = false; ///
 	}
 
 	MultiplyVariableAction.prototype = Object.create(Action.prototype);

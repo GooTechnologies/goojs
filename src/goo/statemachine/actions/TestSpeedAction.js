@@ -48,8 +48,6 @@ function(Action) {
 			var speed = this.entity.body.GetLinearVelocity().Length();
 			// var speed = this.entity.body.GetVelocity();
 
-			// console.log(speed);
-
 			if (speed >= this.rangeMin && speed <= this.rangeMax) {
 				fsm.handle(this.eventInRange);
 			} else {

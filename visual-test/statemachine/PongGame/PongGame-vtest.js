@@ -82,11 +82,13 @@ require([
 			fsmComponent.addMachine(machineWall);
 
 			var stateMoving = new State('moving');
+
+			fsmComponent.defineVariable('dx', 9);
+			fsmComponent.defineVariable('dy', 11);
+
 			machineWall.addState(stateMoving);
-			stateMoving.addAction(new SetNumberAction({ variable: 'dx', value: 9 }));
-			stateMoving.addAction(new SetNumberAction({ variable: 'dy', value: 11 }));
-			stateMoving.addAction(new AddPositionAction({ entity: ballEntity, position: [ 'dx', 'dy', 0] }));
-			stateMoving.addAction(new GetPositionAction({ entity: ballEntity, position: [ 'px', 'py'] }));
+			stateMoving.addAction(new AddPositionAction({ entity: ballEntity, position: ['dx', 'dy', 0] }));
+			stateMoving.addAction(new GetPositionAction({ entity: ballEntity, position: ['px', 'py'] }));
 			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2: -dx/2, lessThanEvent: 'toFlipX' }));
 			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2:  dx/2, greaterThanEvent: 'toFlipX' }));
 			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'py', float2: -dy/2, lessThanEvent: 'toFlipY' }));

@@ -40,13 +40,13 @@ function(
 		var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
 		var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;
 		var diff = float1 - float2;
-		                    //console.log(diff);
+
 		if (Math.abs(diff) <= this.tolerance) {
-			if (this.equalsEvent) fsm.send(this.equalsEvent);
+			if (this.equalsEvent) { fsm.send(this.equalsEvent); }
 		} else if (diff < 0) {
-			if (this.lessThanEvent) fsm.send(this.lessThanEvent);
+			if (this.lessThanEvent) { fsm.send(this.lessThanEvent); }
 		} else {
-			if (this.greaterThanEvent) fsm.send(this.greaterThanEvent);
+			if (this.greaterThanEvent) { fsm.send(this.greaterThanEvent); }
 		}
 	};
 

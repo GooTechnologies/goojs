@@ -11,6 +11,7 @@ function(
 
 	function KeyUpAction(settings) {
 		settings = settings || {};
+		this.everyFrame = true;
 
 		var key = settings.key || 'w';
 
@@ -21,8 +22,6 @@ function(
 
 		this.updated = false;
 		this.eventListener = function(event) {
-			//console.log('.......... keyup');
-
 			if (event.which === this.key) { this.updated = true; }
 			/*
 			 if (this.posVariable) {

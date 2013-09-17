@@ -11,11 +11,11 @@ function(
 
 	function AddPositionAction(settings) {
 		settings = settings || {};
+		this.everyFrame = true;
 
 		this.entity = settings.entity || null;
 		this.position = settings.position || [0, 0, 0];
 		this.speed = settings.speed || 1;
-		this.everyFrame = settings.everyFrame || true;
 	}
 
 	AddPositionAction.prototype = Object.create(Action.prototype);
@@ -41,7 +41,6 @@ function(
 		}];
 
 	AddPositionAction.prototype._run = function(fsm) {
-		console.log('add position');
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 

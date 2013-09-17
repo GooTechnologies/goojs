@@ -30,7 +30,6 @@ function(
 		}];
 
 	GetPositionAction.prototype._run = function(fsm) {
-		//console.log('');
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
 			if (this.position[0]) {  // !== undefined
