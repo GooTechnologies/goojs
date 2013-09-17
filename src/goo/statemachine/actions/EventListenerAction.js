@@ -1,10 +1,6 @@
-define([
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -42,6 +38,5 @@ Actions
 		fsm.removeListener(this.eventName, this.listen);
 	};
 
-	Actions.register('EventListenerAction', EventListenerAction);
 	return EventListenerAction;
 });

@@ -1,10 +1,8 @@
 define([
-	'goo/statemachine/actions/Actions',
 	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
-	Actions,
 	StateUtils
 ) {
 	"use strict";
@@ -53,8 +51,6 @@ function(
 
 		}
 	};
-
-	Actions.register('MultiplyVariableAction', MultiplyVariableAction);
 
 	return MultiplyVariableAction;
 });

@@ -1,12 +1,6 @@
-define([
-	'goo/math/Vector3',
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-	Vector3,
-	Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -41,6 +35,5 @@ function(
 		}
 	};
 
-	Actions.register('TestCollisionAction', TestCollisionAction);
 	return TestCollisionAction;
 });

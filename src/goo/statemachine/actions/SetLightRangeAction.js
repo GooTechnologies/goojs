@@ -1,10 +1,6 @@
-define([
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -40,15 +36,8 @@ Actions
 				this.entity.lightComponent.light) {
 				this.entity.lightComponent.light.range = this.range;
 			}
-		},
-		onUpdate: function(/*fsm*/) {
-
-		},
-		onExit: function(/*fsm*/) {
-
 		}
 	};
 
-	Actions.register('ChangeLightRangeAction', SetLightRangeAction);
 	return SetLightRangeAction;
 });

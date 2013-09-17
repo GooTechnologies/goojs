@@ -1,11 +1,9 @@
 define([
-	'goo/statemachine/FSMComponent',
-	'goo/statemachine/actions/Actions'
+	'goo/statemachine/FSMComponent'
 ],
 /** @lends */
 function(
-	FSMComponent,
-	Actions
+	FSMComponent
 ) {
 	"use strict";
 
@@ -39,6 +37,5 @@ function(
 		}
 	};
 
-	Actions.register('LogVariableAction', LogVariableAction);
 	return LogVariableAction;
 });

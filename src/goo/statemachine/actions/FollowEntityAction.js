@@ -1,10 +1,6 @@
-define([
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -36,19 +32,14 @@ Actions
 		}];
 	}
 
-	FollowEntityAction.prototype = {
-		// onCreate: function(fsm) {
-		// },
-		onUpdate: function(/*fsm*/) {
-			if (this.sourceEntity !== null && this.targetEntity !== null) {
-				var targetTranslation = this.targetEntity.transformComponent.transform.translation;
-				targetTranslation.setv(this.sourceEntity.transformComponent.transform.translation);
-				targetTranslation.add_d(this.offset[0], this.offset[1], this.offset[2]);
-				this.targetEntity.transformComponent.setUpdated();
-			}
+	FollowEntityAction.prototype.onUpdate = function(/*fsm*/) {
+		if (this.sourceEntity !== null && this.targetEntity !== null) {
+			var targetTranslation = this.targetEntity.transformComponent.transform.translation;
+			targetTranslation.setv(this.sourceEntity.transformComponent.transform.translation);
+			targetTranslation.add_d(this.offset[0], this.offset[1], this.offset[2]);
+			this.targetEntity.transformComponent.setUpdated();
 		}
 	};
 
-	Actions.register('FollowEntityAction', FollowEntityAction);
 	return FollowEntityAction;
 });

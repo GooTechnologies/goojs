@@ -1,10 +1,6 @@
-define([
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -53,6 +49,5 @@ Actions
 		}
 	};
 
-	Actions.register('NumberCompareAction', NumberCompareAction);
 	return NumberCompareAction;
 });

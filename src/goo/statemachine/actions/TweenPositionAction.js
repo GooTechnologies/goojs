@@ -1,12 +1,10 @@
 define([
-	'goo/statemachine/StateUtils',
-	'goo/statemachine/actions/Actions'
+	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 
 function(
-	StateUtils,
-	Actions
+	StateUtils
 ) {
 	"use strict";
 
@@ -61,6 +59,5 @@ function(
 		}
 	};
 
-	Actions.register('TweenPositionAction', TweenPositionAction);
 	return TweenPositionAction;
 });

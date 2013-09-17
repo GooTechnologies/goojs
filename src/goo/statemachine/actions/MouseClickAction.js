@@ -1,12 +1,6 @@
-define([
-	'goo/statemachine/FSMComponent',
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-	FSMComponent,
-	Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -59,6 +53,5 @@ function(
 		}
 	};
 
-	Actions.register('MouseClickAction', MouseClickAction);
 	return MouseClickAction;
 });

@@ -1,10 +1,6 @@
-define([
-	'goo/statemachine/actions/Actions'
-],
+define([],
 /** @lends */
-function(
-	Actions
-) {
+function() {
 	"use strict";
 
 	/**
@@ -37,6 +33,5 @@ function(
 		}
 	};
 
-	Actions.register('WaitAction', WaitAction);
 	return WaitAction;
 });

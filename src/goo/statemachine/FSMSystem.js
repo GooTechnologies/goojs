@@ -1,5 +1,7 @@
 define([
-	'goo/entities/systems/System'
+	'goo/entities/systems/System',
+
+	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
 function (

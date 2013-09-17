@@ -1,9 +1,9 @@
 define([
-	'goo/statemachine/actions/Actions'
+	'goo/statemachine/StateUtils'
 ],
 /** @lends */
 function(
-Actions
+	StateUtils
 ) {
 	"use strict";
 
@@ -52,8 +52,6 @@ Actions
 
 		}
 	};
-
-	Actions.register('AddVariableAction', AddVariableAction);
 
 	return AddVariableAction;
 });
