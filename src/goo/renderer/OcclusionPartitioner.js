@@ -37,9 +37,6 @@ define([
 			this._viewFrustumCuller.added(entity);
 		};
 
-		/**
-		 *
-		 */
 		OcclusionPartitioner.prototype.process = function (camera, entities, renderList) {
 			// View frustum culling
 			this._viewFrustumCuller.process(camera, entities, renderList);
