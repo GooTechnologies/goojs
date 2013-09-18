@@ -198,9 +198,11 @@ define([
 			meshData.indexLengths = data.indexLengths.slice(0);
 		}
 		if (data.boundingVolume) {
-			// REVIEW: Throw error if the type is not "BoundingBox"
 			if (data.boundingVolume.type === "BoundingBox") {
 				meshData.boundingBox = {min: data.boundingVolume.min, max: data.boundingVolume.max};
+			}
+			else {
+				throw new Error("Bounding volume was not BoundingBox");
 			}
 		}
 		return meshData;
