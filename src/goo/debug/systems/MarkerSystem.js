@@ -25,7 +25,7 @@ define([
 		this.material = Material.createMaterial(ShaderLib.simpleColored, '');
 		this.material.depthState.enabled = false;
 		this.material.shader.uniforms.color = [0.0, 1.0, 0.0];
-		this.material.wireframe = true;
+		//this.material.wireframe = true;
 
 		this.goo = goo;
 		this.renderer = this.goo.renderer;
