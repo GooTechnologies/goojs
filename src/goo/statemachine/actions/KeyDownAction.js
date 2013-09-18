@@ -18,7 +18,7 @@ function(
 		this.key = (typeof key === 'number') ? key : StateUtils.keys[key];
 		// variable to store the key and moment of press?
 
-		this.eventToEmmit = settings.eventToEmmit || null;
+		this.transitions = settings.transitions || {};
 
 		this.updated = false;
 		this.eventListener = function(event) {
@@ -37,17 +37,27 @@ function(
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
 
-	KeyDownAction.external = [
+
+
+	KeyDownAction.external = {};
+	KeyDownAction.external.parameters = [
 		{
 			name: 'Key',
 			key: 'key',
-			type: 'key'
-		},
+			type: 'key',
+			description: 'Key to listen for'
+		}
+	];
+
+	KeyDownAction.external.transitions = [
 		{
-			name: 'Send event',
-			key: 'event',
-			type: 'event'
-		}];
+			name: 'keydown',
+			'default': 'w', 
+			description: 'Fired on key down'
+		}
+	];
+
+
 
 	KeyDownAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
@@ -56,8 +66,8 @@ function(
 	KeyDownAction.prototype._run = function(proxy) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmmit) {
-				proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
+			if (this.eventToEmit) {
+				proxy.send(this.eventToEmit.channel, this.eventToEmit.data);
 			}
 		}
 	};

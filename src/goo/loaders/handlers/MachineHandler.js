@@ -6,10 +6,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/statemachine/State',
 	'goo/statemachine/Machine',
-	'goo/statemachine/actions/AddPositionAction',
-	'goo/statemachine/actions/MouseClickAction',
-	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/Actions',
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
@@ -19,10 +16,7 @@ define([
 	PromiseUtil,
 	State,
 	Machine,
-	AddPositionAction,
-	MouseClickAction,
-	KeyUpAction,
-	KeyDownAction,
+	Actions,
 	RSVP
 ) {
 	function MachineHandler() {
@@ -30,13 +24,6 @@ define([
 		this._objects = {};
 	}
 
-	MachineHandler.actions = {
-		AddPositionAction: AddPositionAction,
-		MouseClickAction: MouseClickAction,
-		KeyUpAction: KeyUpAction,
-		KeyDownAction: KeyDownAction
-		// populate this list
-	};
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('machine', MachineHandler);
@@ -44,8 +31,9 @@ define([
 	MachineHandler.prototype._updateActions = function(realState, stateConfig) {
 		for (var j = 0; j < stateConfig.actions.length; j++) {
 			var action = stateConfig.actions[j];
-			if (MachineHandler.actions[action.type] instanceof Function) {
-				var realAction = new MachineHandler.actions[action.type](action.options);
+			var actionClass = Actions.actionForType(action.type);
+			if (actionClass instanceof Function) {
+				var realAction = new actionClass(action.options);
 				realState.addAction(realAction);
 			}
 		}
@@ -102,7 +90,7 @@ define([
 		// ...
 
 		return RSVP.all(promises).then(function() {
-			return PromiseUtil.createDummyPromise(realMachine);
+			return realMachine;
 		});
 	};
 

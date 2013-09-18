@@ -29,6 +29,7 @@ function() {
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,
+		'Space':32,
 		'Pageup': 33,
 		'Pagedown': 34,
 		'End': 35,
