@@ -472,6 +472,7 @@ function (
 			camera: camera,
 			mainCamera: Renderer.mainCamera,
 			lights: lights,
+			shadowHandler: this.shadowHandler,
 			lightCamera: this.shadowHandler ? this.shadowHandler.lightCam : null,
 			renderer: this
 		};
@@ -488,7 +489,9 @@ function (
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
-		if (renderTarget && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
+
+		// TODO: shouldnt we check for generateMipmaps setting on rendertarget?
+		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
 	};
@@ -590,7 +593,7 @@ function (
 			}
 
 			if (this.shadowHandler.shadowResults.length > 0) {
-				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResult);
+				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResults);
 			} else if (material.getTexture('SHADOW_MAP')) {
 				material.removeTexture('SHADOW_MAP');
 			}
@@ -899,34 +902,43 @@ function (
 				continue;
 			}
 
-			if (texture === null ||
-				texture instanceof RenderTarget === false && (texture.image === undefined ||
-					texture.checkDataReady() === false)) {
-				if (textureSlot.format === 'sampler2D') {
-					texture = TextureCreator.DEFAULT_TEXTURE_2D;
-				} else if (textureSlot.format === 'samplerCube') {
-					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+			var textureList = texture;
+			if (texture instanceof Array === false) {
+				textureList = [texture];
+			}
+
+			for (var j = 0; j < textureList.length; j++) {
+				texture = textureList[j];
+
+				if (texture === null ||
+					texture instanceof RenderTarget === false && (texture.image === undefined ||
+						texture.checkDataReady() === false)) {
+					if (textureSlot.format === 'sampler2D') {
+						texture = TextureCreator.DEFAULT_TEXTURE_2D;
+					} else if (textureSlot.format === 'samplerCube') {
+						texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+					}
 				}
-			}
 
-			var unitrecord = this.rendererRecord.textureRecord[i];
-			if (unitrecord === undefined) {
-				unitrecord = this.rendererRecord.textureRecord[i] = {};
-			}
+				var unitrecord = this.rendererRecord.textureRecord[i];
+				if (unitrecord === undefined) {
+					unitrecord = this.rendererRecord.textureRecord[i] = {};
+				}
 
-			if (texture.glTexture === null) {
-				texture.glTexture = context.createTexture();
-				this.updateTexture(context, texture, i, unitrecord);
-			} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
-				this.updateTexture(context, texture, i, unitrecord);
-				texture.needsUpdate = false;
-			} else {
-				this.bindTexture(context, texture, i, unitrecord);
-			}
+				if (texture.glTexture === null) {
+					texture.glTexture = context.createTexture();
+					this.updateTexture(context, texture, i, unitrecord);
+				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+					this.updateTexture(context, texture, i, unitrecord);
+					texture.needsUpdate = false;
+				} else {
+					this.bindTexture(context, texture, i, unitrecord);
+				}
 
-			var imageObject = texture.image !== undefined ? texture.image : texture;
-			var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
-			this.updateTextureParameters(texture, isTexturePowerOfTwo);
+				var imageObject = texture.image !== undefined ? texture.image : texture;
+				var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
+				this.updateTextureParameters(texture, isTexturePowerOfTwo);
+			}
 		}
 	};
 

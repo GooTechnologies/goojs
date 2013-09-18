@@ -190,35 +190,59 @@ function(
 				shader.spotCount = spotCount;
 			}
 
-			var textureMaps = shaderInfo.material._textureMaps;
+			// var textureMaps = shaderInfo.material._textureMaps;
 			shader.defines = shader.defines || {};
 
-			if (textureMaps.SHADOW_MAP && shaderInfo.lights.length > 0) {
-				shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
-			}
+			var shadowHandler = shaderInfo.shadowHandler;
+			var shadowCount = shadowHandler.shadowResults.length;
+			if (shadowCount > 0) {
+				shader.defines.MAX_SHADOWS = shadowCount;
 
-			if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
-				shader.defines.SHADOW_MAP = true;
-
-				shader.uniforms.lightViewProjectionMatrix = 'LIGHT_VIEW_PROJECTION_MATRIX';
-				shader.uniforms.lightPos = 'LIGHT0';
+				shader.uniforms.shadowLightMatrices = [];
+				shader.uniforms.shadowLightPositions = [];
+				for (var i = 0; i < shadowCount; i++) {
+					for (var j = 0; j < 16; j++) {
+						shader.uniforms.shadowLightMatrices[i*16+j] = shadowHandler.shadowMatrices[i].data[j];
+					}
+					shader.uniforms.shadowLightPositions[i*3+0] = shadowHandler.shadowLightPositions[i].data[0];
+					shader.uniforms.shadowLightPositions[i*3+1] = shadowHandler.shadowLightPositions[i].data[1];
+					shader.uniforms.shadowLightPositions[i*3+2] = shadowHandler.shadowLightPositions[i].data[2];
+				}
 				shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
-				shader.uniforms.shadowMap = 'SHADOW_MAP';
-			} else if (textureMaps.SHADOW_MAP === undefined && shader.defines.SHADOW_MAP) {
-				delete shader.defines.SHADOW_MAP;
+				shader.uniforms.shadowMaps = 'SHADOW_MAP';
+			} else if (shader.defines.MAX_SHADOWS) {
+				delete shader.defines.MAX_SHADOWS;
 			}
+
+			// if (textureMaps.SHADOW_MAP && shaderInfo.lights.length > 0) {
+			// 	shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
+			// }
+
+			// if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
+			// 	shader.defines.SHADOW_MAP = true;
+			// 	shader.uniforms.lightViewProjectionMatrix = 'LIGHT_VIEW_PROJECTION_MATRIX';
+			// 	shader.uniforms.lightPos = 'LIGHT0';
+			// 	shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
+			// 	shader.uniforms.shadowMap = 'SHADOW_MAP';
+			// } else if (textureMaps.SHADOW_MAP === undefined && shader.defines.SHADOW_MAP) {
+			// 	delete shader.defines.SHADOW_MAP;
+			// }
 		},
 		prevertex: [
-			"#ifdef SHADOW_MAP",
-				'uniform mat4 lightViewProjectionMatrix;',
-
-				'varying vec4 lPosition;',
+			'#ifndef MAX_SHADOWS',
+				'#define MAX_SHADOWS 0',
+			"#endif",
+			"#if MAX_SHADOWS > 0",
+				'uniform mat4 shadowLightMatrices[MAX_SHADOWS];',
+				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 				'const mat4 ScaleMatrix = mat4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0);',
 			"#endif"
 		].join('\n'),
 		vertex: [
-			"#ifdef SHADOW_MAP",
-				'lPosition = ScaleMatrix * lightViewProjectionMatrix * worldPos;',
+			"#if MAX_SHADOWS > 0",
+				'for (int i = 0; i < MAX_SHADOWS; i++) {',
+					'shadowLightDepths[i] = ScaleMatrix * shadowLightMatrices[i] * worldPos;',
+				'}',
 			"#endif"
 		].join('\n'),
 		prefragment: [
@@ -236,6 +260,9 @@ function(
 			"#endif",
 			'#ifndef MAX_SPOT_LIGHTS',
 				'#define MAX_SPOT_LIGHTS 0',
+			"#endif",
+			'#ifndef MAX_SHADOWS',
+				'#define MAX_SHADOWS 0',
 			"#endif",
 
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
@@ -255,15 +282,15 @@ function(
 				"uniform float spotLightExponent[MAX_SPOT_LIGHTS];",
 			"#endif",
 
-			"#ifdef SHADOW_MAP",
+			"#if MAX_SHADOWS > 0",
 				'#ifndef SHADOW_TYPE',
 					'#define SHADOW_TYPE 0',
 				"#endif",
 
-				'uniform vec3 lightPos;',
+				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
+				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
 				'uniform float cameraScale;',
-				'varying vec4 lPosition;',
-				'uniform sampler2D shadowMap;',
+				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
 				'float ChebychevInequality(in vec2 moments, in float t) {',
 					'if ( t <= moments.x ) return 1.0;',
@@ -437,24 +464,27 @@ function(
 			"#endif",
 
 			'float shadow = 1.0;',
-			'#ifdef SHADOW_MAP',
-				'vec3 depth = lPosition.xyz / lPosition.w;',
-				'depth.z = length(vWorldPos.xyz - lightPos) * cameraScale;',
+			"#if MAX_SHADOWS > 0",
+				'for (int i = 0; i < MAX_SHADOWS; i++) {',
+					'vec3 depth = shadowLightDepths[i].xyz / shadowLightDepths[i].w;',
+					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScale;',
 
-				'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
-					'#if SHADOW_TYPE == 0',
-						'depth.z *= 0.96;',
-						'float shadowDepth = texture2D(shadowMap, depth.xy).x;',
-						'if ( depth.z > shadowDepth ) shadow = 0.5;',
-					'#elif SHADOW_TYPE == 1',
-						'vec4 texel = texture2D(shadowMap, depth.xy);',
-						'vec2 moments = vec2(texel.x, texel.y);',
-						'shadow = ChebychevInequality(moments, depth.z);',
-						// 'shadow = VsmFixLightBleed(shadow, 0.1);',
-						// 'shadow = pow(shadow, 8.0);',
-					'#endif',
-					'shadow = clamp(shadow, 0.0, 1.0);',
+					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
+						'#if SHADOW_TYPE == 0', // Normal
+							'depth.z *= 0.96;',
+							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
+							'if ( depth.z > shadowDepth ) shadow *= 0.5;',
+						'#elif SHADOW_TYPE == 1', // VSM
+							'vec4 texel = texture2D(shadowMaps[i], depth.xy);',
+							'vec2 moments = vec2(texel.x, texel.y);',
+							'shadow *= ChebychevInequality(moments, depth.z);',
+							// 'shadow = VsmFixLightBleed(shadow, 0.1);',
+							// 'shadow = pow(shadow, 8.0);',
+						'#elif SHADOW_TYPE == 2', // PCF TODO
+						'#endif',
+					'}',
 				'}',
+				'shadow = clamp(shadow, 0.0, 1.0);',
 			'#endif',
 
 			"vec3 ambientLightColor = vec3(1.0, 1.0, 1.0);",

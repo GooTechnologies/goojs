@@ -334,7 +334,22 @@ function () {
 	ShaderCall.prototype.uniformMatrix4fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix4fv(this.location, transpose, matrix);
+			var values = matrix;
+			var curValue = this.location.value;
+			if (curValue !== undefined) {
+				if (compareArrays(values, curValue)) {
+					return;
+				}
+			} else {
+				curValue = this.location.value = new Float64Array(values.length);
+			}
+			this.context.uniformMatrix4fv(this.location, transpose, values);
+			var l = values.length;
+			while(l--) {
+				curValue[l] = values[l];
+			}
+
+			// this.context.uniformMatrix4fv(this.location, transpose, matrix);
 			return;
 		}
 

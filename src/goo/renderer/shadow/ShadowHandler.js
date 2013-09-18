@@ -31,7 +31,7 @@ function(
 	 */
 
 	function ShadowHandler() {
-		this.currentSettings = null;
+		this.currentSettings = {};
 		this.lightCam = new Camera(55, 1, 1, 1000);
 
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
@@ -46,6 +46,8 @@ function(
 		this.renderList = [];
 		this.shadowList = [];
 
+		this.shadowMatrices = [];
+		this.shadowLightPositions = [];
 		this.shadowResults = [];
 
 		this.tmpVec = new Vector3();
@@ -69,7 +71,13 @@ function(
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
-		for (var key in state1) {
+		var keys1 = Object.keys(state1);
+		var keys2 = Object.keys(state2);
+		if (keys1.length !== keys2.length) {
+			return false;
+		}
+		for (var i = 0; i < keys1.lengh; i++) {
+			var key = keys1[i];
 			if (state1[key] !== state2[key]) {
 				return false;
 			}
@@ -78,7 +86,9 @@ function(
 	};
 
 	ShadowHandler.prototype.checkShadowRendering = function(renderer, partitioner, entities, lights) {
+		this.shadowMatrices = [];
 		this.shadowResults = [];
+		this.shadowLightPositions = [];
 		for (var i = 0; i < lights.length; i++) {
 			var light = lights[i];
 
@@ -129,6 +139,10 @@ function(
 				}
 
 				lightCam.onFrameChange();
+
+				var matrix = lightCam.getViewProjectionMatrix();
+				this.shadowMatrices.push(matrix.clone());
+				this.shadowLightPositions.push(lightCam.translation.clone());
 
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);

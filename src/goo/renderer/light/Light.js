@@ -39,7 +39,7 @@ function (
 		this.shadowSettings = {
 			type: 'None',
 			// type: 'Blur',
-			size: 2000,
+			size: 1000,
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],

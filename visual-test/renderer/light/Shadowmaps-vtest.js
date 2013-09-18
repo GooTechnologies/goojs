@@ -92,6 +92,7 @@ require([
 		directionalLight.color.data[1] = 0.9;
 		directionalLight.color.data[2] = 0.0;
 		directionalLight.intensity = 0.25;
+		directionalLight.shadowCaster = true;
 
 		var directionalLightEntity = goo.world.createEntity('directionalLight');
 		directionalLightEntity.setComponent(new LightComponent(directionalLight));
@@ -127,13 +128,15 @@ require([
 		spotLight.angle = 25;
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
+		spotLight.shadowCaster = true;
 
 		var spotLightEntity = goo.world.createEntity('spotLight');
 		spotLightEntity.setComponent(new LightComponent(spotLight));
 
 		spotLightEntity.setComponent(new LightDebugComponent());
 
-		spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
+		// spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
+		spotLightEntity.transformComponent.transform.translation.setd(0, 0, 5);
 
 		spotLightEntity.addToWorld();
 
@@ -188,8 +191,8 @@ require([
 		boxEntity.meshRendererComponent.materials.push(sphereMaterial);
 		boxEntity.addToWorld();
 
-		addPointLight(goo);
-		addDirectionalLight(goo);
+		// addPointLight(goo);
+		// addDirectionalLight(goo);
 		addSpotLight(goo);
 
 		// camera
