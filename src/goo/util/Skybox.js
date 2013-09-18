@@ -28,7 +28,7 @@ define([
 ) {
 	'use strict';
 
-	function Skybox(type, images, textureMode) {
+	function Skybox(type, images, textureMode, yRotation) {
 		var texture;
 		if (type === Skybox.SPHERE) {
 			this.meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
@@ -51,7 +51,10 @@ define([
 
 		this.materials = [material];
 		this.transform = new Transform();
-		this.transform.rotation.rotateX(-Math.PI/2);
+		this.transform.rotation.fromAngles(-Math.PI/2, yRotation, 0);
+		//this.transform.rotation.rotateX(-Math.PI/2);
+		//this.transform.rotation.rotateY(yRotation);
+		// y rotation goes here
 		//this.transform.scale.setd(100,100,100);
 		this.transform.update();
 		this.active = true;

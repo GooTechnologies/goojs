@@ -66,7 +66,7 @@ function (
 	function GooRunner (parameters) {
 		parameters = parameters || {};
 
-		this.world = new World();
+		this.world = new World(this);
 		this.renderer = new Renderer(parameters);
 
 		this.world.setSystem(new ScriptSystem(this.renderer));

@@ -1,0 +1,13 @@
+{
+	"name": "Test",
+	"magFilter": "Bilinear",
+	"minFilter": "NearestNeighborLinearMipMap",
+	"offset": [ 0, 0 ],
+	"repeat": [ 1, 1 ],
+	"wrapU": "EdgeClamp",
+	"wrapV": "EdgeClamp",
+	"anisotropy": 1,
+	"format": "RGBA",
+	"url": "../../../resources/skybox_2048.jpg",
+	"verticalFlip": true
+}

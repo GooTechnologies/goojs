@@ -1,11 +1,17 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/Skybox',
+	'goo/shapes/Sphere',
+	'goo/renderer/Renderer'
 ], function(
 	ConfigHandler,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	Skybox,
+	Sphere,
+	Renderer
 ) {
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -23,12 +29,35 @@ define([
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
 
+	ProjectHandler.prototype._addSkybox = function(goo, shape, textures, rotation) {
+		var skybox = new Skybox(shape, textures, Sphere.TextureModes.Projected, rotation);
+		goo.callbacksPreRender.push(function() {
+			if (skybox.active) {
+				goo.renderer.render([skybox], Renderer.mainCamera, []);
+			}
+		});
+	};
+
+	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
+		if (skyboxConfig) {
+			var shape = skyboxConfig.shape.toLowerCase();
+			var rotation = skyboxConfig.rotation;
+			var texturePaths = skyboxConfig.texturePaths;
+
+			this._addSkybox(this.world.gooRunner, shape, texturePaths, rotation);
+		}
+	};
+
 	// Returns a promise which resolves when updating is done
 	ProjectHandler.prototype.update = function(ref, config) {
 		var that = this;
+
+		// skybox
+		this._updateSkybox(config.skybox);
+
+		// entity refs
 		var promises = [];
 		if (config.entityRefs != null && config.entityRefs.length) {
-
 			var handleEntityRef = function(entityRef) {
 				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
 					return that.updateObject(entityRef, entityConfig, that.options);
