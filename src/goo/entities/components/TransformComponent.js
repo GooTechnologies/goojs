@@ -54,6 +54,17 @@ function (
 	};
 
 	/**
+	 * Set this transform's scale.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @return {TransformComponent} Self for chaining.
+	 */
+	TransformComponent.prototype.setScale = function () {
+		this.transform.scale.set(arguments);
+		this._dirty = true;
+		return this;
+	};
+
+	/**
 	 * Add to this transform's translation.
 	 * @param {Vector|Float[]|...Float} arguments Component values.
 	 * @return {TransformComponent} Self for chaining.
