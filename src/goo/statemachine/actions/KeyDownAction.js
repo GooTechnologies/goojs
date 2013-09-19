@@ -13,7 +13,9 @@ function(
 		settings = settings || {};
 		this.everyFrame = settings.everyFrame || true;
 
-		var key = settings.key || 'w';
+		this.eventToEmit = { channel: settings.transitions.keydown };
+
+		var key = settings.key || 'a';
 
 		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
 		// variable to store the key and moment of press?
