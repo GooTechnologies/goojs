@@ -45,14 +45,14 @@ function(
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for'
+			description: 'Key to listen for',
+			'default': 'w'
 		}
 	];
 
 	KeyDownAction.external.transitions = [
 		{
 			name: 'keydown',
-			'default': 'w', 
 			description: 'Fired on key down'
 		}
 	];
