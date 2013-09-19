@@ -13,20 +13,26 @@ function(Action) {
 
 	SetLightRangeAction.prototype = Object.create(Action.prototype);
 
-	SetLightRangeAction.external = [
+	SetLightRangeAction.external = {};
+	SetLightRangeAction.external.parameters = [
 		{
 			name: 'Entity',
 			key: 'entity',
-			type: 'entity'
+			type: 'entity',
+			description: 'Light entity'
 		},
 		{
 			name: 'Range',
 			key: 'range',
 			type: 'float',
-			control: 'slider',
-			min: 0,
-			max: 1000
-		}];
+			description: 'Light range',
+			'default': 100,
+			min: 0
+		}
+	];
+
+	SetLightRangeAction.external.transitions = [
+	];
 
 	SetLightRangeAction.prototype._run = function(/*fsm*/) {
 		if (this.entity &&

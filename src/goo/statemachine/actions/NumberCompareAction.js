@@ -36,6 +36,24 @@ function(
 
 	NumberCompareAction.prototype = Object.create(Action.prototype);
 
+	NumberCompareAction.external = {};
+	NumberCompareAction.external.parameters = [
+		{
+			name: 'First value',
+			key: '',
+			type: 'key',
+			description: 'Key to listen for',
+			'default': 'w'
+		}
+	];
+
+	NumberCompareAction.external.transitions = [
+		{
+			name: 'On key up',
+			description: 'Event fired on key up'
+		}
+	];
+
 	NumberCompareAction.prototype._run = function(fsm) {
 		var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
 		var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;

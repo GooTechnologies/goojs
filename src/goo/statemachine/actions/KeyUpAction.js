@@ -37,17 +37,23 @@ function(
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
 
-	KeyUpAction.external = [
+	KeyUpAction.external = {};
+	KeyUpAction.external.parameters = [
 		{
 			name: 'Key',
 			key: 'key',
-			type: 'key'
-		},
+			type: 'key',
+			description: 'Key to listen for',
+			'default': 'w'
+		}
+	];
+
+	KeyUpAction.external.transitions = [
 		{
-			name:'Send event',
-			key:'event',
-			type:'event'
-		}];
+			name: 'On key up',
+			description: 'Event fired on key up'
+		}
+	];
 
 	KeyUpAction.prototype._setup = function() {
 		document.addEventListener('keyup', this.eventListener);

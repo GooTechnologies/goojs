@@ -17,17 +17,7 @@ function(
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
 
-	GetPositionAction.external = [
-		{
-			name: 'Entity',
-			key: 'entity',
-			type: 'entity'
-		},
-		{
-			name: 'Position',
-			key: 'position',
-			type: 'vec3'
-		}];
+
 
 	GetPositionAction.prototype._run = function(fsm) {
 		var translation = this.entity.transformComponent.transform.translation;

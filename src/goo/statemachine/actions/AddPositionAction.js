@@ -14,39 +14,69 @@ function(
 		this.everyFrame = settings.everyFrame || true;
 
 		this.entity = settings.entity || null;
-		this.position = settings.position || [0, 0, 0];
+		this.amountX = settings.amountX || 0;
+		this.amountY = settings.amountY || 0;
+		this.amountZ = settings.amountZ || 0;
 		this.speed = settings.speed || 1;
 	}
 
 	AddPositionAction.prototype = Object.create(Action.prototype);
 
-	AddPositionAction.external = [
+	AddPositionAction.external = {};
+	AddPositionAction.external.parameters = [
 		{
 			name: 'Entity',
 			key: 'entity',
-			type: 'entity'
+			type: 'entity',
+			description: 'Entity to move'
 		},
 		{
-			name: 'Position',
-			key: 'position',
-			type: 'vec3'
+			name: 'Amount X',
+			key: 'amountX',
+			type: 'float',
+			description: 'Amount to move on the X axis',
+			'default': 0
+		},
+		{
+			name: 'Amount Y',
+			key: 'amountY',
+			type: 'float',
+			description: 'Amount to move on the Y axis',
+			'default': 0
+		},
+		{
+			name: 'Amount Z',
+			key: 'amountZ',
+			type: 'float',
+			description: 'Amount to move on the Z axis',
+			'default': 0
 		},
 		{
 			name: 'Speed',
 			key: 'speed',
 			type: 'float',
-			control: 'slider',
-			min: 0,
-			max: 10
-		}];
+			description: 'Speed to multiply',
+			'default': 1
+		},
+		{
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
+		}
+	];
+
+	AddPositionAction.external.transitions = [
+	];
 
 	AddPositionAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
-			var dx = FSMUtil.getValue(this.position[0], fsm);
-			var dy = FSMUtil.getValue(this.position[1], fsm);
-			var dz = FSMUtil.getValue(this.position[2], fsm);
+			var dx = FSMUtil.getValue(this.amountX, fsm);
+			var dy = FSMUtil.getValue(this.amountY, fsm);
+			var dz = FSMUtil.getValue(this.amountZ, fsm);
 
 			this.entity.transformComponent.transform.translation.add_d(
 				dx * this.speed * tpf,
