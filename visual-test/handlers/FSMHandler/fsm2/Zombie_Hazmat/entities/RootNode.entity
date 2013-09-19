@@ -1,0 +1,33 @@
+{
+    "components": {
+        "animation": {
+            "layersRef": "Zombie_Hazmat/animations/Animations.animation", 
+            "poseRef": "Zombie_Hazmat/skeletons/Skeleton.skeleton"
+        }, 
+        "stateMachine": {
+            "machineRefs": [
+                "Zombie_Hazmat/states/Machine.machine"
+            ]
+        }, 
+        "transform": {
+            "rotation": [
+                0, 
+                0, 
+                0
+            ], 
+            "scale": [
+                1, 
+                1, 
+                1
+            ], 
+            "translation": [
+                0, 
+                0, 
+                0
+            ]
+        }
+    }, 
+    "name": "RootNode", 
+    "nodeType": "Null", 
+    "ref": "Zombie_Hazmat/entities/RootNode.entity"
+}

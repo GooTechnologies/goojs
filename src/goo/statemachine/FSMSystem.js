@@ -16,14 +16,17 @@ function (
 		System.call(this, 'FSMSystem', ['FSMComponent']);
 
 		this.engine = engine;
+		this.active = true;
 	}
 
 	FSMSystem.prototype = Object.create(System.prototype);
 
 	FSMSystem.prototype.process = function (entities, tpf) {
-		for (var i = 0; i < entities.length; i++) {
-			var fsmComponent = entities[i].fSMComponent;
-			fsmComponent.update(tpf);
+		if (this.active) {
+			for (var i = 0; i < entities.length; i++) {
+				var fsmComponent = entities[i].fSMComponent;
+				fsmComponent.update(tpf);
+			}
 		}
 	};
 

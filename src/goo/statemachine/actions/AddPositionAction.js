@@ -1,11 +1,11 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
 	Action,
-	StateUtils
+	FSMUtil
 ) {
 	"use strict";
 
@@ -44,9 +44,9 @@ function(
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 
-			var dx = StateUtils.getValue(this.position[0], fsm);
-			var dy = StateUtils.getValue(this.position[1], fsm);
-			var dz = StateUtils.getValue(this.position[2], fsm);
+			var dx = FSMUtil.getValue(this.position[0], fsm);
+			var dy = FSMUtil.getValue(this.position[1], fsm);
+			var dz = FSMUtil.getValue(this.position[2], fsm);
 
 			this.entity.transformComponent.transform.translation.add_d(
 				dx * this.speed * tpf,

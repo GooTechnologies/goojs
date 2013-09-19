@@ -30,8 +30,7 @@ require([
 	'goo/statemachine/actions/NumberCompareAction',
 	'goo/statemachine/actions/MouseMoveAction',
 	'goo/statemachine/actions/MultiplyVariableAction',
-	'goo/statemachine/actions/GetPositionAction',
-	'goo/statemachine/actions/SetNumberAction'
+	'goo/statemachine/actions/GetPositionAction'
 ], function (
 	GooRunner,
 	World,
@@ -58,8 +57,7 @@ require([
 	NumberCompareAction,
 	MouseMoveAction,
 	MultiplyVariableAction,
-	GetPositionAction,
-	SetNumberAction
+	GetPositionAction
 	) {
 	'use strict';
 
@@ -99,14 +97,14 @@ require([
 			var stateFlipX = new State('flipX');
 			machineWall.addState(stateFlipX);
 			stateFlipX.addAction(new MultiplyVariableAction({ variable: 'dx', amount: -1 }));
-			//stateFlipX.addAction(new EmmitAction({ event: 'toMoving' }));
+			//stateFlipX.addAction(new EmitAction({ event: 'toMoving' }));
 			stateFlipX.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
 			stateFlipX.setTransition('toMoving', 'moving');
 
 			var stateFlipY = new State('flipY');
 			machineWall.addState(stateFlipY);
 			stateFlipY.addAction(new MultiplyVariableAction({ variable: 'dy', amount: -1 }));
-			//stateFlipY.addAction(new EmmitAction({ event: 'toMoving' }));
+			//stateFlipY.addAction(new EmitAction({ event: 'toMoving' }));
 			stateFlipY.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
 			stateFlipY.setTransition('toMoving', 'moving');
 		})();

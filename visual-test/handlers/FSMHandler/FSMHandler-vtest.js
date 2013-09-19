@@ -20,10 +20,11 @@ require([
 
 		var loader = new DynamicLoader({
 			world: goo.world,
-			rootPath: './fsm/'
+			rootPath: './fsm2/'
 		});
 
-		loader.load('scene.scene').then(function(v) {
+		loader.load('project.project').then(function(v) {
+		//loader.load('scene.scene').then(function(v) {
 			console.log('Success!');
 			console.log(v);
 			window.goo = goo;

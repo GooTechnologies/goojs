@@ -48,9 +48,10 @@ define([
 	};
 
 	MachineHandler.prototype._updateState = function(realMachine, stateConfig) {
-		var realState = new State(stateConfig.uuid);
+		var realState = new State(stateConfig.id);
 
 		realMachine.addState(realState);
+		realState.name = stateConfig.name;
 		this._updateActions(realState, stateConfig);
 		this._updateTransitions(realState, stateConfig);
 

@@ -59,12 +59,12 @@ require([
 		var machine = new Machine('switch');
 
 		var stateOn = new State('on');
-		stateOn.addAction(new MouseClickAction({ eventToEmmit: { channel: 'toOff' } }));
+		stateOn.addAction(new MouseClickAction({ eventToEmit: { channel: 'toOff' } }));
 		stateOn.addAction(new SetLightRangeAction({ entity: entity, range: 1 }));
 		stateOn.setTransition('toOff', 'off');
 
 		var stateOff = new State('off');
-		stateOff.addAction(new MouseClickAction({ eventToEmmit: { channel: 'toOn' } }));
+		stateOff.addAction(new MouseClickAction({ eventToEmit: { channel: 'toOn' } }));
 		stateOff.addAction(new SetLightRangeAction({ entity: entity, range: 10 }));
 		stateOff.setTransition('toOn', 'on');
 

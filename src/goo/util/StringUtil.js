@@ -12,7 +12,11 @@ define(function() {
 	};
 
 	StringUtil.capitalize = function(str) {
-		return str.substring(0,1).toUpperCase()+str.substring(1);
+		return str.charAt(0).toUpperCase() + str.substring(1);
+	};
+
+	StringUtil.uncapitalize = function(str) {
+		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
 	StringUtil.getIndexedName = function(base, takenNames, separator){

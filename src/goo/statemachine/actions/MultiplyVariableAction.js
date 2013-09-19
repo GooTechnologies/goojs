@@ -1,11 +1,11 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
 	Action,
-	StateUtils
+	FSMUtil
 ) {
 	"use strict";
 
@@ -41,7 +41,7 @@ function(
 
 	MultiplyVariableAction.prototype._run = function(fsm) {
 		fsm.applyOnVariable(this.variable, function(v) {
-			return v * StateUtils.getValue(this.amount, fsm);
+			return v * FSMUtil.getValue(this.amount, fsm);
 		}.bind(this));
 	};
 

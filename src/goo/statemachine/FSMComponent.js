@@ -19,6 +19,8 @@ function (
 		this._machines = [];
 		this.entity = null;
 		this.vars = {};
+
+		this.active = true;
 	}
 
 	FSMComponent.prototype = Object.create(Component.prototype);
@@ -55,7 +57,7 @@ function (
 
 	FSMComponent.prototype.removeVariable = function(name) {
 		delete this.vars[name];
-	}
+	};
 
 	FSMComponent.applyToVariable = function(name, fun) {
 		if (this.vars[name]) {
@@ -80,9 +82,11 @@ function (
 	};
 
 	FSMComponent.prototype.update = function() {
-		for (var i = 0; i < this._machines.length; i++) {
-			var machine = this._machines[i];
-			machine.update();
+		if (this.active) {
+			for (var i = 0; i < this._machines.length; i++) {
+				var machine = this._machines[i];
+				machine.update();
+			}
 		}
 	};
 

@@ -1,6 +1,6 @@
 {
     "components":{
-        "fsm": {
+        "stateMachine": {
             "machineRefs": [
                 "m1.machine",
                 "m2.machine"

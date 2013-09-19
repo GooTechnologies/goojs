@@ -1,12 +1,12 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 
 function(
 	Action,
-	StateUtils
+	FSMUtil
 ) {
 	"use strict";
 
@@ -44,7 +44,7 @@ function(
 
 	TweenPositionAction.prototype.onCreate = function(fsm) {
 		var that = this;
-		this.tween.from(StateUtils.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from(FSMUtil.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
 			if (that.entity !== null) {
 				that.entity.transformComponent.transform.translation.setd(this.x, this.y, this.z);
 				that.entity.transformComponent.setUpdated();

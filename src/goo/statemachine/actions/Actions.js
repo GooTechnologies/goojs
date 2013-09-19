@@ -1,5 +1,5 @@
 define([
-	'goo/statemachine/StateUtils',
+	'goo/util/StringUtil',
 	'goo/util/ObjectUtil',
 
 	'goo/statemachine/actions/LogVariableAction',
@@ -36,7 +36,7 @@ define([
 ],
 /** @lends */
 function(
-	StateUtils,
+	StringUtil,
 	_
 ) {
 	"use strict";
@@ -54,15 +54,21 @@ function(
 	};
 
 	Actions.allActions = function() {
-		return _actions; // should return a shallow copy and not the array itself
+		var actions = {};
+		var keys = Object.keys(_actions);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			actions[key] = _actions[key];
+		}
+		return actions;
 	};
 
 	Actions.menuItems = function() {
 		var keys = _.keys(_actions).sort();
 		var items = {};
-		for (var i = 0; i < keys.length; i++){
+		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			items[StateUtils.uncapitalizeFirst(key)] = {name:key}; // uncapitalize should go in stringutils
+			items[StringUtil.uncapitalize(key)] = { name: key };
 		}
 		return items;
 	};

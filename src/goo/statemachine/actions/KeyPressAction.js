@@ -1,11 +1,11 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
 	Action,
-	StateUtils
+	FSMUtil
 ) {
 	"use strict";
 
@@ -15,7 +15,7 @@ function(
 
 		var key = settings.key || 'w';
 
-		this.key = (parseFloat(key) === key) ? key : StateUtils.keys[key];
+		this.key = (parseFloat(key) === key) ? key : FSMUtil.keys[key];
 		this.event = settings.event || 'dummy';
 	}
 

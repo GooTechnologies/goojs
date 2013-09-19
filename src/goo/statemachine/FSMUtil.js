@@ -5,21 +5,20 @@ function() {
 	"use strict";
 
 	/**
-	 * @class State utilities
+	 * @class FSM utilities
 	 */
-	function StateUtils() {
-
+	function FSMUtil() {
 	}
 
-	StateUtils.getKey = function(str) {
-		if (StateUtils.keys[str]) {
-			return StateUtils.keys[str];
+	FSMUtil.getKey = function(str) {
+		if (FSMUtil.keys[str]) {
+			return FSMUtil.keys[str];
 		} else {
 			return str.charCodeAt(0);
 		}
 	};
 
-	StateUtils.keys = {
+	FSMUtil.keys = {
 		'Backspace': 8,
 		'Tab': 9,
 		'Enter': 13,
@@ -50,32 +49,32 @@ function() {
 		'7': 55,
 		'8': 56,
 		'9': 57,
-		'a': 65,
-		'b': 66,
-		'c': 67,
-		'd': 68,
-		'e': 69,
-		'f': 70,
-		'g': 71,
-		'h': 72,
-		'i': 73,
-		'j': 74,
-		'k': 75,
-		'l': 76,
-		'm': 77,
-		'n': 78,
-		'o': 79,
-		'p': 80,
-		'q': 81,
-		'r': 82,
-		's': 83,
-		't': 84,
-		'u': 85,
-		'v': 86,
-		'w': 87,
-		'x': 88,
-		'y': 89,
-		'z': 90,
+		'A': 65,
+		'B': 66,
+		'C': 67,
+		'D': 68,
+		'E': 69,
+		'F': 70,
+		'G': 71,
+		'H': 72,
+		'I': 73,
+		'J': 74,
+		'K': 75,
+		'L': 76,
+		'M': 77,
+		'N': 78,
+		'O': 79,
+		'P': 80,
+		'Q': 81,
+		'R': 82,
+		'S': 83,
+		'T': 84,
+		'U': 85,
+		'V': 86,
+		'W': 87,
+		'X': 88,
+		'Y': 89,
+		'Z': 90,
 		'0numpad': 96,
 		'1numpad': 97,
 		'2numpad': 98,
@@ -88,7 +87,7 @@ function() {
 		'9numpad': 105,
 		'Multiply': 106,
 		'Plus': 107,
-		'Minut': 109,
+		'Minus': 109,
 		'Dot': 110,
 		'Slash1': 111,
 		'F1': 112,
@@ -109,10 +108,9 @@ function() {
 		'Backslash': 220
 	};
 
-	StateUtils.keyInverse = [];
-	// have it prebuilt
+	FSMUtil.keyInverse = [];
 
-	StateUtils.buildKeyInverse = function(assoc) {
+	function buildKeyInverse(assoc) {
 		var inverseAssoc = [];
 
 		var keys = Object.keys(assoc);
@@ -121,15 +119,15 @@ function() {
 		}
 
 		return inverseAssoc;
-	};
+	}
 
-	StateUtils.keyForCode = function(code) {
-		for (var key in StateUtils.keys) {
-			if (StateUtils.keys.hasOwnProperty(key) && StateUtils.keys[key] === code) {
-				return key;
-			}
+	FSMUtil.keyInverse = buildKeyInverse(FSMUtil.keys);
+
+	FSMUtil.keyForCode = function(code) {
+		if (FSMUtil.keyInverse[code]) {
+			return FSMUtil.keyInverse[code];
 		}
-		return "Not found: " + code;
+		return 'FSMUtil.keyForCode: key not found for code ' + code;
 	};
 
 	var s4 = function () {
@@ -139,26 +137,18 @@ function() {
 	};
 
 	// Random unique id
-	StateUtils.guid = function () {
+	FSMUtil.guid = function() {
 		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 			s4() + '-' + s4() + s4() + s4();
 	};
 
-	StateUtils.capitalizeFirst = function(str) {
-		return str.charAt(0).toUpperCase()+str.substr(1);
-	};
-
-	StateUtils.uncapitalizeFirst = function(str) {
-		return str.charAt(0).toLowerCase()+str.substr(1);
-	};
-
-	StateUtils.getValue = function(par, fsm) {
+	FSMUtil.getValue = function(par, fsm) {
 		if (typeof par === 'number') {
 			return par;
 		} else {
 			return fsm.getVariable(par);
 		}
-	}
+	};
 
-	return StateUtils;
+	return FSMUtil;
 });

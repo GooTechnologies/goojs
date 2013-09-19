@@ -1,0 +1,32 @@
+{
+    "id": "LTE5MzkyNjM0Nzg=", 
+    "initialState": "DEFAULT", 
+    "name": "Layer 0", 
+    "ref": "Zombie_Hazmat/states/Machine.machine", 
+    "states": [
+        {
+            "actions": [], 
+            "id": "Njk3MDM3NTI3", 
+            "machineRefs": [], 
+            "name": "DEFAULT", 
+            "transitions": {}
+        }, 
+        {
+            "actions": [], 
+            "id": "ODMyMTU0ODky", 
+            "machineRefs": [
+                "Zombie_Hazmat/states/Machine_0.machine", 
+                "Zombie_Hazmat/states/Machine_1.machine"
+            ], 
+            "name": "State 0", 
+            "transitions": {}
+        }, 
+        {
+            "actions": [], 
+            "id": "ODMyMTU0ODkz", 
+            "machineRefs": [], 
+            "name": "State 1", 
+            "transitions": {}
+        }
+    ]
+}

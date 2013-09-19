@@ -15,7 +15,7 @@ define([
 	}
 	FSMComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	FSMComponentHandler.prototype.constructor = FSMComponentHandler;
-	ComponentHandler._registerClass('fsm', FSMComponentHandler);
+	ComponentHandler._registerClass('stateMachine', FSMComponentHandler);
 
 	FSMComponentHandler.prototype._prepare = function(/*config*/) {};
 

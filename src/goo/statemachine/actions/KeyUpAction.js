@@ -1,11 +1,11 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/StateUtils'
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
 	Action,
-	StateUtils
+	FSMUtil
 ) {
 	"use strict";
 
@@ -15,10 +15,10 @@ function(
 
 		var key = settings.key || 'w';
 
-		this.key = (typeof key === 'number') ? key : StateUtils.keys[key];
+		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
 		// variable to store the key and moment of press?
 
-		this.eventToEmmit = settings.eventToEmmit || null;
+		this.eventToEmit = settings.eventToEmit || null;
 
 		this.updated = false;
 		this.eventListener = function(event) {
@@ -56,8 +56,8 @@ function(
 	KeyUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmmit) {
-				fsm.send(this.eventToEmmit.channel, this.eventToEmmit.data);
+			if (this.eventToEmit) {
+				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
 			}
 		}
 	};

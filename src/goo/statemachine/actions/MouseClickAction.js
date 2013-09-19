@@ -12,7 +12,7 @@ function(
 		this.everyFrame = settings.everyFrame || true;
 
 		this.posVariable = settings.posVariable || null;
-		this.eventToEmmit = settings.eventToEmmit || null;
+		this.eventToEmit = settings.eventToEmit || null;
 
 		this.currentTime = 0;
 
@@ -47,8 +47,8 @@ function(
 	MouseClickAction.prototype._run = function(proxy) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmmit) {
-				proxy.send(this.eventToEmmit.channel, this.eventToEmmit.data);
+			if (this.eventToEmit) {
+				proxy.send(this.eventToEmit.channel, this.eventToEmit.data);
 			}
 		}
 	};
