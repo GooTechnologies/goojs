@@ -26,7 +26,8 @@ define([
 	'goo/loaders/handlers/ScriptComponentHandler',
 	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/FSMComponentHandler',
-	'goo/loaders/handlers/MachineHandler'
+	'goo/loaders/handlers/MachineHandler',
+	'goo/loaders/handlers/PosteffectHandler'
 ],
 function(
 	ConfigHandler,
@@ -51,7 +52,7 @@ function(
 	 *
 	 */
 
-	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine)$/;
+	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine|posteffect)$/;
 
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
