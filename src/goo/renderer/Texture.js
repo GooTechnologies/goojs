@@ -41,7 +41,7 @@ function (
 	 *			<li>'BilinearNearestMipMap' =
 	 *			<li>'Trilinear' =
 	 *		</ul>
-	 * @param {number} [settings.anisotropy=1]
+	 * @param {number} [settings.anisotropy=1] Amount of anisotropic filtering (1=1x, 4=4x etc, max usually 4 or 16)
 	 * @param {string} [settings.format='RGBA'] possible values:
 	 *		<ul>
 	 *			<li>'RGBA' =

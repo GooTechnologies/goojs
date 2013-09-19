@@ -232,6 +232,7 @@ function (
 			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
 			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
 			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
+			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
 
 			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
 			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
@@ -951,31 +952,36 @@ function (
 			texture.textureRecord = texrecord;
 		}
 
+		var glType = this.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {
-			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
 		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
-			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
-			var glType = this.getGLType(texture.variant);
 			var glwrapS = this.getGLWrap(wrapS, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 			texrecord.wrapS = wrapS;
 		}
 		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 		if (texrecord.wrapT !== wrapT) {
-			var glType = this.getGLType(texture.variant);
 			var glwrapT = this.getGLWrap(wrapT, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 			texrecord.wrapT = wrapT;
+		}
+
+		if (this.glExtensionTextureFilterAnisotropic && texture.type !== 'Float') {
+			var anisotropy = texture.anisotropy;
+			if (texrecord.anisotropy !== anisotropy) {
+				context.texParameterf(glType, this.glExtensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, this.capabilities.maxAnisotropy));
+				texrecord.anisotropy = anisotropy;
+			}
 		}
 	};
 
