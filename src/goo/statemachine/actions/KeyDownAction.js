@@ -9,18 +9,10 @@ function(
 ) {
 	"use strict";
 
-	function KeyDownAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.eventToEmit = { channel: settings.transitions.keydown };
-
-		var key = settings.key || 'a';
-
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		// variable to store the key and moment of press?
-
-		this.transitions = settings.transitions || {};
+	function KeyDownAction(id, settings) {
+		this.id = id;
+		
+		this.configure(settings||{});
 
 		this.updated = false;
 		this.eventListener = function(event) {
@@ -40,6 +32,14 @@ function(
 	KeyDownAction.prototype = Object.create(Action.prototype);
 
 
+	KeyDownAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame || true;
+		this.eventToEmit = { channel: settings.transitions.keydown };
+		var key = settings.key || 'a';
+		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
+		// variable to store the key and moment of press?
+		this.transitions = settings.transitions || {};
+	};
 
 	KeyDownAction.external = {};
 	KeyDownAction.external.parameters = [

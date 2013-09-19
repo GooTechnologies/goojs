@@ -9,17 +9,20 @@ function(
 ) {
 	"use strict";
 
-	function LogVariableAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || false;
-
-		this.message = settings.message || '';
-		this.posVariable = settings.posVariable || null;
+	function LogVariableAction(id, settings) {
+		this.id = id;
+		this.configure(settings || {});
 
 		this.currentTime = 0;
 	}
 
 	LogVariableAction.prototype = Object.create(Action.prototype);
+
+	LogVariableAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame || false;
+		this.message = settings.message || '';
+		this.posVariable = settings.posVariable || null;
+	};
 
 	LogVariableAction.external = {};
 	LogVariableAction.external.parameters = [

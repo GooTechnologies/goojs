@@ -38,16 +38,20 @@ define([
 			for (var i = 0; i < refs.length; i++) {
 				promises.push(update(refs[i]));
 			}
-		} else {
-			promises.push(PromiseUtil.createDummyPromise());
+		} 
+
+		if (promises.lenght>0) {
+			return RSVP.all(promises).then(function(scripts) {
+				if(!scripts[0]) {
+					component.scripts = [];
+				} else {
+					component.scripts = scripts;
+				}
+			});
 		}
-		return RSVP.all(promises).then(function(scripts) {
-			if(!scripts[0]) {
-				component.scripts = [];
-			} else {
-				component.scripts = scripts;
-			}
-		});
+		else {
+			return PromiseUtil.createDummyPromise(component)
+		}
 	};
 
 	return ScriptComponentHandler;

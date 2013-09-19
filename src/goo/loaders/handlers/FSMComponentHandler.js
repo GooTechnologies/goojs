@@ -38,14 +38,18 @@ define([
 			for (var i = 0; i < refs.length; i++) {
 				promises.push(update(refs[i]));
 			}
-		} else {
-			promises.push(PromiseUtil.createDummyPromise());
+		} 
+
+		if (promises.length > 0) {
+			return RSVP.all(promises).then(function(machines) {
+				for (var i = 0; i < machines.length; i++) {
+					component.addMachine(machines[i]);
+				}
+			});
 		}
-		return RSVP.all(promises).then(function(machines) {
-			for (var i = 0; i < machines.length; i++) {
-				component.addMachine(machines[i]);
-			}
-		});
+		else {
+			return PromiseUtil.createDummyPromise(component);
+		}
 	};
 
 	return FSMComponentHandler;

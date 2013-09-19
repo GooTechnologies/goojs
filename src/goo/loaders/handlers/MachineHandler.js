@@ -19,6 +19,7 @@ define([
 	Actions,
 	RSVP
 ) {
+	
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -28,13 +29,23 @@ define([
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('machine', MachineHandler);
 
-	MachineHandler.prototype._updateActions = function(realState, stateConfig) {
+	MachineHandler.prototype._updateActions = function(state, stateConfig) {
 		for (var j = 0; j < stateConfig.actions.length; j++) {
-			var action = stateConfig.actions[j];
-			var actionClass = Actions.actionForType(action.type);
-			if (actionClass instanceof Function) {
-				var realAction = new actionClass(action.options);
-				realState.addAction(realAction);
+			
+			var actionConfig = stateConfig.actions[j];
+			var action = state.getAction(actionConfig.id);
+
+			if (action===undefined) {
+				// New action
+				var actionClass = Actions.actionForType(actionConfig.type);
+				if (actionClass instanceof Function) {
+					action = new actionClass(actionConfig.id, actionConfig.options);
+					state.addAction(action);
+				}
+			}
+			else {
+				// Update properties on existing action
+				action.configure(actionConfig.options);
 			}
 		}
 	};
@@ -48,9 +59,12 @@ define([
 	};
 
 	MachineHandler.prototype._updateState = function(realMachine, stateConfig) {
-		var realState = new State(stateConfig.id);
 
-		realMachine.addState(realState);
+		var realState = realMachine._states? realMachine._states[stateConfig.id]:undefined;
+		if (realState === undefined) {
+			realState = new State(stateConfig.id);
+			realMachine.addState(realState);
+		}
 		realState.name = stateConfig.name;
 		this._updateActions(realState, stateConfig);
 		this._updateTransitions(realState, stateConfig);
@@ -69,15 +83,23 @@ define([
 			promises.push(update(machineRef));
 		}
 
-		return RSVP.all(promises).then(function(realMachines) {
-			realMachines.forEach(function(realMachine) {
-				realState.addMachine(realMachine);
+		if (promises.length>0) {
+			return RSVP.all(promises).then(function(realMachines) {
+				realMachines.forEach(function(realMachine) {
+					realState.addMachine(realMachine);
+				});
 			});
-		});
+		}
+		else {
+			return PromiseUtil.createDummyPromise(realState)
+		}
 	};
 
 	MachineHandler.prototype.update = function(ref, config) {
-		var realMachine = new Machine(config.name);
+		
+		var realMachine = this._objects[ref];
+		if (!realMachine) 
+			realMachine = this._objects[ref] = new Machine(config.name);
 
 		realMachine.setInitialState(config.initialState);
 

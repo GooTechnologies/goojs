@@ -132,6 +132,16 @@ function (
 		}
 	};
 
+	State.prototype.getAction = function(id) {
+		if (!this._actions) return undefined;
+		for (var i = 0; i < this._actions.length; i++) {
+			var action = this._actions[i];
+			if (id !==undefined && action.id === id) 
+				return action;
+		}
+		return undefined;
+	}
+
 	State.prototype.addAction = function (action) {
 		if (action.onCreate) {
 			action.onCreate(this.proxy);
