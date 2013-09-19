@@ -127,13 +127,28 @@ task 'convert',
 			console.log "#{options.arguments[1]} converted"
 		process.exit(0)
 
+option '-t', '--template [TEMPLATE]', 'The template to build the docs with: json, default'
+
 task 'jsdoc',
 	'Creates the API documentation',
-	->
+	(options) ->
 		# This requires a shell.
 		# To make this work in Windows too,
 		# we could run JSdoc as a Node module.
-		runCommand 'tools/generate_jsdoc.sh'
+
+		if options.template
+			template = options.template
+		else
+			template = 'default'
+
+		console.log 'template: ', template
+
+		if template == 'json'
+			command = 'tools/generate_jsdoc_json.sh'
+		else
+			command = 'tools/generate_jsdoc.sh'
+
+		runCommand command
 		
 task 'visualtoc',
 	'Creates a table of content index.html for visual tests',
