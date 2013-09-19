@@ -109,7 +109,6 @@ function(
 			shader.uniforms.spotLightDirection = shader.uniforms.spotLightDirection || [];
 			shader.uniforms.spotLightAngle = shader.uniforms.spotLightAngle || [];
 			shader.uniforms.spotLightPenumbra = shader.uniforms.spotLightPenumbra || [];
-			shader.uniforms.spotLightExponent = shader.uniforms.spotLightExponent || [];
 
 			// Use default light?
 			// var lights = shaderInfo.lights.length > 0 ? shaderInfo.lights : [ShaderBuilder.defaultLight];
@@ -156,10 +155,7 @@ function(
 					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.data[2];
 
 					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
-					/*jshint eqeqeq: false, -W041 */
-					shader.uniforms.spotLightPenumbra[spotCount] =
-						(light.penumbra != null) ? Math.cos(light.penumbra * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
-					shader.uniforms.spotLightExponent[spotCount] = light.exponent;
+					shader.uniforms.spotLightPenumbra[spotCount] = light.penumbra !== undefined ? Math.cos((light.angle + light.penumbra) * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
 
 					spotCount++;
 				}
@@ -186,7 +182,6 @@ function(
 				shader.uniforms.spotLightColor.length = spotCount * 4;
 				shader.uniforms.spotLightDirection.length = spotCount * 3;
 				shader.uniforms.spotLightAngle.length = spotCount * 1;
-				shader.uniforms.spotLightExponent.length = spotCount * 1;
 				shader.spotCount = spotCount;
 			}
 
@@ -210,6 +205,8 @@ function(
 				}
 				shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
 				shader.uniforms.shadowMaps = 'SHADOW_MAP';
+				// shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
+				shader.defines.SHADOW_TYPE = 0;
 			} else if (shader.defines.MAX_SHADOWS) {
 				delete shader.defines.MAX_SHADOWS;
 			}
@@ -279,7 +276,6 @@ function(
 				"uniform vec3 spotLightDirection[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightAngle[MAX_SPOT_LIGHTS];",
 				"uniform float spotLightPenumbra[MAX_SPOT_LIGHTS];",
-				"uniform float spotLightExponent[MAX_SPOT_LIGHTS];",
 			"#endif",
 
 			"#if MAX_SHADOWS > 0",
@@ -369,14 +365,12 @@ function(
 					"if (spotEffect > spotLightAngle[i]) {",
 						//"spotEffect = clamp(spotEffect/1.0, 1.0, 0.0);",
 
-						"if (spotLightAngle[i] < spotLightPenumbra[i]) {",
-							"spotEffect = (spotEffect-spotLightAngle[i])/(spotLightPenumbra[i] - spotLightAngle[i]);",
+						"if (spotLightPenumbra[i] > 0.0) {",
+							"spotEffect = (spotEffect - spotLightAngle[i]) / (spotLightAngle[i] - spotLightPenumbra[i]);",
 							"spotEffect = clamp(spotEffect, 0.0, 1.0);",
 						"} else {",
 							"spotEffect = 1.0;",
 						"}",
-
-						//"spotEffect = max(pow(spotEffect, spotLightExponent[i]), 0.0);",
 
 						// diffuse
 						"float dotProduct = dot(N, lVector);",
@@ -492,7 +486,7 @@ function(
 				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb + totalSpecular * shadow);",
 			"#else",
 				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb) + totalSpecular * shadow;",
-			"#endif"
+			"#endif",
 		].join('\n')
 	};
 

@@ -59,13 +59,19 @@ function(
 
 		shadowSettings.shadowData = {
 			shadowTarget: new RenderTarget(shadowX, shadowY, {
-				type: 'Float'
+				type: 'Float',
+				magFilter : 'NearestNeighbor',
+				minFilter : 'NearestNeighborNoMipMaps'
 			}),
 			shadowTargetDown: new RenderTarget(shadowX / 2, shadowY / 2, {
-				type: 'Float'
+				type: 'Float',
+				magFilter : 'NearestNeighbor',
+				minFilter : 'NearestNeighborNoMipMaps'
 			}),
 			shadowBlurred: new RenderTarget(shadowX / 2, shadowY / 2, {
-				type: 'Float'
+				type: 'Float',
+				magFilter : 'NearestNeighbor',
+				minFilter : 'NearestNeighborNoMipMaps'
 			})
 		};
 	};
@@ -111,9 +117,10 @@ function(
 				}
 
 				// Update settings
-				if (!this._testStatesEqual(this.currentSettings, shadowSettings)) {
+				if (!this._testStatesEqual(this.currentSettings, shadowSettings) || this.currentSettings.angle !== light.angle) {
 					if (light instanceof SpotLight) {
-						lightCam.setFrustumPerspective(light.angle, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
+						lightCam.setFrustumPerspective(light.angle * 2, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
+						this.currentSettings.angle = light.angle;
 					} else {
 						var radius = shadowSettings.size;
 						lightCam.setFrustum(shadowSettings.near, shadowSettings.far, -radius, radius, radius, -radius);

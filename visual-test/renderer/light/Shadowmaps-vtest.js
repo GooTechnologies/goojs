@@ -16,6 +16,8 @@ require([
 	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
+	'goo/renderer/Shader',
+	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
@@ -36,6 +38,8 @@ require([
 	EntityUtils,
 	ScriptComponent,
 	MeshData,
+	Shader,
+	MeshDataComponent,
 	MeshRendererComponent,
 	Vector3,
 	PointLight,
@@ -120,14 +124,15 @@ require([
 		directionallightGui.open();
 	}
 
+	var ind = 0;
 	function addSpotLight(goo) {
 		var spotLight = new SpotLight();
-		spotLight.color.data[0] = 0.2;
-		spotLight.color.data[1] = 0.4;
+		spotLight.color.data[0] = 0.6;
+		spotLight.color.data[1] = 0.8;
 		spotLight.color.data[2] = 1.0;
 		spotLight.angle = 25;
-		spotLight.range = 10;
-		spotLight.penumbra = 5;
+		spotLight.penumbra = 25;
+		spotLight.range = 20;
 		spotLight.shadowCaster = true;
 
 		var spotLightEntity = goo.world.createEntity('spotLight');
@@ -140,7 +145,7 @@ require([
 
 		spotLightEntity.addToWorld();
 
-		var spotLightGui = gui.addFolder('Spot Light');
+		var spotLightGui = gui.addFolder('Spot Light' + ind++);
 		var data = {
 			color: [spotLight.color.data[0] * 255, spotLight.color.data[1] * 255, spotLight.color.data[2] * 255]
 		};
@@ -157,22 +162,24 @@ require([
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
 		});
-		var controller = spotLightGui.add(spotLight, 'intensity', 0, 1);
+		var controller = spotLightGui.add(spotLight, 'intensity', 0, 2);
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
 		});
-		var controller = spotLightGui.add(spotLight, 'range', 0, 10);
+		var controller = spotLightGui.add(spotLight, 'range', 0, 30);
 		controller.onChange(function() {
 			spotLight.changedProperties = true;
 		});
 		spotLightGui.add(spotLight, 'shadowCaster');
 
 		spotLightGui.open();
+
+		return spotLightEntity;
 	}
 
 	function lightPointerDemo(goo) {
 		// add spheres to cast light on
-		var sphereMeshData = ShapeCreator.createSphere(16, 16);
+		var sphereMeshData = ShapeCreator.createSphere(16, 16, 0.5);
 		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
 
 		var nSpheres = 15;
@@ -181,6 +188,7 @@ require([
 				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
 				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
 				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
+				sphereEntity.meshRendererComponent.castShadows = true;
 				sphereEntity.addToWorld();
 			}
 		}
@@ -194,6 +202,8 @@ require([
 		// addPointLight(goo);
 		// addDirectionalLight(goo);
 		addSpotLight(goo);
+		var spot = addSpotLight(goo);
+		spot.transformComponent.transform.translation.setd(3, 0, 5);
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -206,12 +216,73 @@ require([
 			spherical : new Vector3(20, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
+
+		createDebugQuad(goo);
+	}
+
+	function createDebugQuad(goo) {
+		var world = goo.world;
+		var entity = world.createEntity('Quad');
+		entity.transformComponent.transform.translation.set(0, 0, 0);
+
+		var quad = ShapeCreator.createQuad(2, 2);
+		var meshDataComponent = new MeshDataComponent(quad);
+		entity.setComponent(meshDataComponent);
+
+		var fsShader = {
+			attributes: {
+				vertexPosition: MeshData.POSITION
+			},
+			uniforms: {
+				diffuseMap: Shader.DIFFUSE_MAP,
+				resolution: Shader.RESOLUTION
+			},
+			vshader: [ //
+				'attribute vec3 vertexPosition;', //
+
+				'const vec2 madd = vec2(0.5,0.5);',
+				'uniform vec2 resolution;', //
+				'varying vec2 textureCoord;',
+
+				'void main(void) {', //
+				'	textureCoord = vertexPosition.xy * madd + madd;', // scale vertex attribute to [0-1] range
+				'	gl_Position = vec4(vertexPosition.xy * vec2(512.0) / resolution - vec2(0.5, 0.25), 0.0, 1.0);',
+					'}' //
+			].join('\n'),
+			fshader: [ //
+				'precision mediump float;', //
+
+				'uniform sampler2D diffuseMap;', //
+
+				'varying vec2 textureCoord;',
+
+				'void main(void)', //
+				'{', //
+				'	gl_FragColor = texture2D(diffuseMap,textureCoord);', //
+				'}' //
+			].join('\n')
+		};
+
+		var meshRendererComponent = new MeshRendererComponent();
+		meshRendererComponent.cullMode = 'Never';
+		var material = Material.createMaterial(fsShader, 'fsshader');
+		meshRendererComponent.materials.push(material);
+		entity.setComponent(meshRendererComponent);
+
+		goo.callbacks.push(function (tpf) {
+			if (goo.renderer.shadowHandler.shadowResults.length > 0) {
+				material.setTexture(Shader.DIFFUSE_MAP, goo.renderer.shadowHandler.shadowResults[0]);
+			}
+		});
+
+		entity.addToWorld();
 	}
 
 	function init() {
 		var goo = new GooRunner({
 			showStats: true,
 			toolMode: true,
+			debug: true,
 			logo: 'bottomleft'
 		});
 		goo.renderer.domElement.id = 'goo';
