@@ -1,14 +1,28 @@
 define([
-		'goo/entities/components/TransformComponent',
-		'goo/entities/components/MeshDataComponent',
-		'goo/entities/components/MeshRendererComponent',
-		'goo/entities/components/CSSTransformComponent'
-	],
+	'goo/entities/components/TransformComponent',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/CameraComponent',
+	'goo/entities/components/LightComponent',
+	'goo/renderer/Camera',
+	'goo/renderer/light/Light',
+	'goo/renderer/Material',
+	'goo/renderer/MeshData',
+	'goo/math/Transform',
+	'goo/entities/components/CSSTransformComponent'
+],
 	/** @lends */
 	function (
 		TransformComponent,
 		MeshDataComponent,
 		MeshRendererComponent,
+		CameraComponent,
+		LightComponent,
+		Camera,
+		Light,
+		Material,
+		MeshData,
+		Transform,
 		CSSTransformComponent
 	) {
 		"use strict";
@@ -98,26 +112,49 @@ define([
 		};
 
 		/**
-		 * Creates an entity with the common rendering components and a mesh.
+		 * Creates an entity with an optional MeshData, MeshRenderer, Camera and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
 		 * @param {World} world
-		 * @param {MeshData} meshData
+		 * @param {MeshData} [meshData]
 		 * @param {Material} [material]
 		 * @param {String} [name]
+		 * @param {Camera} [camera]
+		 * @param {Light} [light]
 		 */
-		EntityUtils.createTypicalEntity = function (world, meshData, material, name) {
+		EntityUtils.createTypicalEntity = function (world) {
 			// Create entity
-			var entity = world.createEntity(name);
+			var entity = world.createEntity();
 
-			// Create meshdata component using above data
-			var meshDataComponent = new MeshDataComponent(meshData);
-			entity.setComponent(meshDataComponent);
+			for (var i = 1; i < arguments.length; i++) {
+				var arg = arguments[i];
 
-			// Create meshrenderer component with material and shader
-			var meshRendererComponent = new MeshRendererComponent();
-			entity.setComponent(meshRendererComponent);
+				if (arg instanceof MeshData) {
+					var meshDataComponent = new MeshDataComponent(arg);
+					entity.setComponent(meshDataComponent);
 
-			if(material) {
-				meshRendererComponent.materials.push(material);
+					// attach mesh renderer component for backwards compatibility reasons
+					if (!entity.hasComponent('MeshRendererComponent')) {
+						var meshRendererComponent = new MeshRendererComponent();
+						entity.setComponent(meshRendererComponent);
+					}
+				} else if (arg instanceof Material) {
+					if (!entity.hasComponent('MeshRendererComponent')) {
+						var meshRendererComponent = new MeshRendererComponent();
+						entity.setComponent(meshRendererComponent);
+					}
+					entity.meshRendererComponent.materials.push(arg);
+				} else if (arg instanceof Light) {
+					var lightComponent = new LightComponent(arg);
+					entity.setComponent(lightComponent);
+				} else if (arg instanceof Camera) {
+					var cameraComponent = new CameraComponent(arg);
+					entity.setComponent(cameraComponent);
+				} else if (arg instanceof Transform) {
+					entity.transformComponent.transform = arg;
+				} else if (typeof arg === 'string') {
+					entity.name = arg;
+				} else if (Array.isArray(arg) && arg.length === 3) {
+					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+				}
 			}
 
 			return entity;
