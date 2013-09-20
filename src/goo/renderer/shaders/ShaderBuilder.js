@@ -195,6 +195,7 @@ function(
 				shader.uniforms.shadowLightMatrices = [];
 				shader.uniforms.shadowLightPositions = [];
 				shader.uniforms.cameraScales = [];
+				shader.uniforms.shadowMapSizes = [];
 				for (var i = 0; i < shadowCount; i++) {
 					var shadowData = shadowHandler.shadowLights[i].shadowSettings.shadowData;
 
@@ -209,6 +210,9 @@ function(
 					shader.uniforms.shadowLightPositions[i*3+2] = translationData[2];
 
 					shader.uniforms.cameraScales[i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+
+					shader.uniforms.shadowMapSizes[i*2+0] = shadowHandler.shadowLights[i].shadowSettings.resolution[0];
+					shader.uniforms.shadowMapSizes[i*2+1] = shadowHandler.shadowLights[i].shadowSettings.resolution[1];
 				}
 				shader.uniforms.shadowMaps = 'SHADOW_MAP';
 
@@ -287,6 +291,7 @@ function(
 				"#endif",
 
 				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
+				'uniform vec2 shadowMapSizes[MAX_SHADOWS];',
 				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
 				'uniform float cameraScales[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
@@ -472,6 +477,38 @@ function(
 							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
 							'if ( depth.z > shadowDepth ) shadow *= 0.5;',
 						'#elif SHADOW_TYPE == 1', // PCF TODO
+							'depth.z *= 0.96;',
+							'float shadowPcf = 0.0;',
+							'const float shadowDelta = 1.0 / 9.0;',
+							'float xPixelOffset = 1.0 / shadowMapSizes[i].x;',
+							'float yPixelOffset = 1.0 / shadowMapSizes[i].y;',
+
+							'float dx0 = -1.25 * xPixelOffset;',
+							'float dy0 = -1.25 * yPixelOffset;',
+							'float dx1 = 1.25 * xPixelOffset;',
+							'float dy1 = 1.25 * yPixelOffset;',
+
+							'float fDepth = 0.0;',
+
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx0, dy0)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(0.0, dy0)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx1, dy0)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx0, 0.0)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth =  texture2D(shadowMaps[i], depth.xy).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx1, 0.0)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx0, dy1)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(0.0, dy1)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx1, dy1)).r;',
+							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+							'shadow *= (1.0 - shadowPcf) * 0.5 + 0.5;',
 						'#elif SHADOW_TYPE == 2', // VSM
 							'vec4 texel = texture2D(shadowMaps[i], depth.xy);',
 							'vec2 moments = vec2(texel.x, texel.y);',
