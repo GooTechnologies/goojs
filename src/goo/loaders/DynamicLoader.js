@@ -22,7 +22,12 @@ define([
 	'goo/loaders/handlers/AnimationComponentHandler',
 	'goo/loaders/handlers/AnimationLayersHandler',
 	'goo/loaders/handlers/AnimationClipHandler',
-	'goo/loaders/handlers/ProjectHandler'
+	'goo/loaders/handlers/ProjectHandler',
+	'goo/loaders/handlers/ScriptComponentHandler',
+	'goo/loaders/handlers/ScriptHandler',
+	'goo/loaders/handlers/FSMComponentHandler',
+	'goo/loaders/handlers/MachineHandler',
+	'goo/loaders/handlers/PosteffectHandler'
 ],
 function(
 	ConfigHandler,
@@ -34,6 +39,7 @@ function(
 	PromiseUtil,
 	_
 ) {
+	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
 	/**
 	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
@@ -45,13 +51,14 @@ function(
 	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
-	var _jsonTest, _texture_types, _ENGINE_SHADER_PREFIX;
 
-	_jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project)$/;
+	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine|posteffect)$/;
 
-	_texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
+	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
+	var _binary_types = ['dat', 'bin'];
 
-	_ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
+	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
 	 * Create a new loader
@@ -65,6 +72,7 @@ function(
 	 */
 	function DynamicLoader(options) {
 		this.options = options;
+		this._objects = {};
 		_.defaults(this.options, {
 			ajax: true
 		});
@@ -212,8 +220,8 @@ function(
 		if (config) {
 			this._configs[ref] = config;
 		}
-		this._objects = {};
-		var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
+		delete this._objects[ref];
+		//var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
 
 		return this._loadRef(ref).then(function(config) {
 			var handled = 0;
@@ -292,6 +300,7 @@ function(
 						options: _.clone(options)
 					});
 				} else {
+					/*jshint -W055 */
 					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
 				}
 				if (config != null) {
@@ -318,6 +327,8 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
+		var promise, url,
+			that = this;
 		// Do not create a request to load the reference if it is a shader
 		// to be loaded from the engine's shader library.
 		if (ref.indexOf(_ENGINE_SHADER_PREFIX) === 0) {
@@ -325,8 +336,6 @@ function(
 			this._configs[ref] = promise;
 		}
 
-		var promise, url,
-			that = this;
 		if (noCache == null) {
 			noCache = false;
 		}
@@ -383,7 +392,9 @@ function(
 				_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
-					if (!value.hasOwnProperty(_key)) continue;
+					if (!value.hasOwnProperty(_key)) {
+						continue;
+					}
 					traverse(_key, value[_key]);
 				}
 			}
@@ -398,12 +409,12 @@ function(
 
 	DynamicLoader.prototype._isImageRef = function(ref) {
 		var type = this._getTypeForRef(ref);
-		return type === 'png' || type === 'jpg' || type === 'jpeg';
+		return _.indexOf(_image_types, type) >= 0;
 	};
 
 	DynamicLoader.prototype._isBinaryRef = function(ref) {
 		var type = this._getTypeForRef(ref);
-		return _.indexOf(_texture_types, type) >= 0 || type === 'dat';
+		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
 	};
 
 	/**
@@ -416,7 +427,7 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.getCachedObjectForRef = function(ref) {
-		return this._objects[ref];
+		return this._objects?this._objects[ref]:undefined;
 	};
 
 	/**

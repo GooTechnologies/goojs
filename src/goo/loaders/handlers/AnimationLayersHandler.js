@@ -26,7 +26,7 @@ define([
 	SyncFadeTransitionState,
 	FrozenTransitionState,
 	RSVP,
-	pu,
+	PromiseUtil,
 	_
 ) {
 	function AnimationLayersHandler() {
@@ -36,8 +36,10 @@ define([
 	AnimationLayersHandler.prototype = Object.create(ConfigHandler);
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
-	AnimationLayersHandler.prototype._create = function(layersConfig) {
-		//console.debug("Creating animation layers");
+	AnimationLayersHandler.prototype._create = function(animationConfig) {
+
+		// The animation layers are stored in the map called layers.
+		var layersConfig = animationConfig.layers;
 
 		var promises = [];
 		promises.push(this._parseLayer(layersConfig.DEFAULT));
@@ -103,10 +105,11 @@ define([
 				}
 			}
 		}
-		if (layerConfig.defaultState != null) {
-			layer.setCurrentStateByName(layerConfig.defaultState);
-		}
+
 		return RSVP.all(promises).then(function() {
+			if (layerConfig.defaultState != null) {
+				layer.setCurrentStateByName(layerConfig.defaultState);
+			}
 			return layer;
 		});
 	};
@@ -121,13 +124,13 @@ define([
 					return that.updateObject(cfg.clipRef, config, that.options).then(function(clip) {
 						var clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
 
-						var keys = ['loopCount', 'timeScale', 'active'];
-						for (var i = 0; i < keys.length; i++) {
-							var key = keys[i];
-							if (cfg[key] && !isNaN(cfg[key])) {
-								clipSource._clipInstance['_' + key] = cfg[key];
-							}
+						if (cfg.loopCount) {
+							clipSource._clipInstance['_loopCount'] = cfg.loopCount;
 						}
+						if (cfg.timeScale) {
+							clipSource._clipInstance['_timeScale'] = cfg.timeScale;
+						}
+
 						return clipSource;
 					});
 				});
@@ -137,10 +140,10 @@ define([
 					return this.getConfig(cfg.clipRef).then(function(config) {
 						return that.updateObject(cfg.clipRef, config, that.options);
 					}).then(function(clip) {
-						return source.initJointsById(clip, cfg.joints);
+						return source.initFromClip(clip, cfg.filter, cfg.channels);
 					});
 				} else {
-					return pu.createDummyPromise(source);
+					return PromiseUtil.createDummyPromise(source);
 				}
 				break;
 			case 'Lerp':
@@ -158,7 +161,7 @@ define([
 				});
 			default:
 				console.error('Unable to parse clip source');
-				return pu.createDummyPromise();
+				return PromiseUtil.createDummyPromise();
 		}
 	};
 
@@ -178,7 +181,7 @@ define([
 
 	AnimationLayersHandler.prototype.update = function(ref, config) {
 		var layers = this._create(config);
-		return pu.createDummyPromise(layers);
+		return PromiseUtil.createDummyPromise(layers);
 	};
 
 	return AnimationLayersHandler;

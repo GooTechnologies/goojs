@@ -18,7 +18,7 @@ define(['goo/entities/components/Component'],
 		 */
 		this.worldBound = null;
 
-		/** Culling mode. Other alid values: 'Never'
+		/** Culling mode. Other valid values: 'Never'
 		 * @type {string}
 		 * @default
 		 */
@@ -38,8 +38,12 @@ define(['goo/entities/components/Component'],
 		 * @type {boolean}
 		 * @default
 		 */
-		this.isPickable = false;
+		this.isPickable = true;
 
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.isReflectable = true;
 	}
 

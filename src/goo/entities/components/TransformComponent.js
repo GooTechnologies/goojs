@@ -54,12 +54,23 @@ function (
 	};
 
 	/**
+	 * Set this transform's scale.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @return {TransformComponent} Self for chaining.
+	 */
+	TransformComponent.prototype.setScale = function () {
+		this.transform.scale.set(arguments);
+		this._dirty = true;
+		return this;
+	};
+
+	/**
 	 * Add to this transform's translation.
 	 * @param {Vector|Float[]|...Float} arguments Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		if( arguments.length == 3) {
+		if(arguments.length === 3) {
 			this.transform.translation.add(arguments);
 		} else { 
 			this.transform.translation.add(arguments[0]);

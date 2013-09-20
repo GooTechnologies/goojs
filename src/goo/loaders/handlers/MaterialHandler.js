@@ -26,7 +26,7 @@ define([
 	MaterialHandler.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
 
 	MaterialHandler.prototype._prepare = function(config) {
-		if (config.blendState == null) {
+		if (!config.blendState) {
 			config.blendState = {};
 		}
 		_.defaults(config.blendState, {
@@ -35,7 +35,7 @@ define([
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		});
-		if (config.cullState == null) {
+		if (!config.cullState) {
 			config.cullState = {};
 		}
 		_.defaults(config.cullState, {
@@ -43,20 +43,21 @@ define([
 			cullFace: 'Back',
 			frontFace: 'CCW'
 		});
-		if (config.depthState == null) {
+		if (!config.depthState) {
 			config.depthState = {};
 		}
 		_.defaults(config.depthState, {
 			enabled: true,
 			write: true
 		});
+		/*jshint eqeqeq: false, -W041*/
 		if (config.renderQueue == null) {
 			config.renderQueue = -1;
 		}
 	};
 
 	MaterialHandler.prototype._create = function(ref) {
-		if (this._objects == null) {
+		if (!this._objects) {
 			this._objects = {};
 		}
 		return this._objects[ref] = new Material(ref);
@@ -64,74 +65,65 @@ define([
 
 	MaterialHandler.prototype.update = function(ref, config) {
 		var that = this;
-
+		var object = this._objects[ref] || this._create(ref);
 		this._prepare(config);
-		if (this._objects[ref] == null) {
-			this._create(ref);
-			var object = this._objects[ref];
 
-			return this._getShaderObject(config.shaderRef, config.wireframe).then(function(shader) {
-				if (!shader) {
-					console.warn('Unknown shader', config.shaderRef, '- not updating material', ref);
-					return;
-				}
-				if (config.wireframe) {
-					object.wireframe = config.wireframe;
-				}
-				if (config.wireframeColor) {
-					object.wireframeColor = Util.clone(config.wireframeColor);
-				}
-				object.blendState = Util.clone(config.blendState);
-				object.cullState = Util.clone(config.cullState);
-				object.depthState = Util.clone(config.depthState);
-				if (config.renderQueue === -1) {
-					object.renderQueue = null;
-				} else {
-					object.renderQueue = config.renderQueue;
-				}
-				object.shader = shader;
-				object.uniforms = {};
-				for (var name in config.uniforms) {
-					object.uniforms[name] = _.clone(config.uniforms[name]);
-				}
+		return this._getShaderObject(config.shaderRef, config.wireframe).then(function(shader) {
+			if (!shader) {
+				console.warn('Unknown shader', config.shaderRef, '- not updating material', ref);
+				return;
+			}
+			if (config.wireframe) {
+				object.wireframe = config.wireframe;
+			}
 
-				var promises = [];
+			object.blendState = Util.clone(config.blendState);
+			object.cullState = Util.clone(config.cullState);
+			object.depthState = Util.clone(config.depthState);
+			if (config.renderQueue === -1) {
+				object.renderQueue = null;
+			} else {
+				object.renderQueue = config.renderQueue;
+			}
+			object.shader = shader;
+			object.uniforms = {};
+			for (var name in config.uniforms) {
+				object.uniforms[name] = _.clone(config.uniforms[name]);
+			}
 
-				var updateTexture = function(textureType, textureRef) {
-					return promises.push(that.getConfig(textureRef).then(function(textureConfig) {
-						return that.updateObject(textureRef, textureConfig, that.options).then(function(texture) {
-							return {
-								type: textureType,
-								ref: textureRef,
-								texture: texture
-							};
-						});
-					}));
-				};
-				for (var textureType in config.texturesMapping) {
-					var textureRef = config.texturesMapping[textureType];
-					updateTexture(textureType, textureRef);
-				}
-				if (promises.length) {
-					return RSVP.all(promises).then(function(textures) {
-						for (var i = 0; i < textures.length;  i++) {
-							var texture = textures[i];
-							if (texture.texture != null) {
-								object.setTexture(texture.type, texture.texture);
-							}
-						}
-						return object;
-					}).then(null, function(err) {
-						return console.error("Error loading textures: " + err);
+			var promises = [];
+
+			var updateTexture = function(textureType, textureRef) {
+				return promises.push(that.getConfig(textureRef).then(function(textureConfig) {
+					return that.updateObject(textureRef, textureConfig, that.options).then(function(texture) {
+						return {
+							type: textureType,
+							ref: textureRef,
+							texture: texture
+						};
 					});
-				} else {
+				}));
+			};
+			for (var textureType in config.texturesMapping) {
+				var textureRef = config.texturesMapping[textureType];
+				updateTexture(textureType, textureRef);
+			}
+			if (promises.length) {
+				return RSVP.all(promises).then(function(textures) {
+					for (var i = 0; i < textures.length;  i++) {
+						var texture = textures[i];
+						if (texture.texture) {
+							object.setTexture(texture.type, texture.texture);
+						}
+					}
 					return object;
-				}
-			});
-		} else {
-			// Already loaded this material
-			return PromiseUtil.createDummyPromise(this._objects[ref]);
-		}
+				}).then(null, function(err) {
+					return console.error("Error loading textures: " + err);
+				});
+			} else {
+				return object;
+			}
+		});
 	};
 
 	MaterialHandler.prototype.remove = function(ref) {
@@ -145,16 +137,14 @@ define([
 			var shader = Material.createShader(ShaderLib.simple);
 			promise.resolve(shader);
 			return promise;
-		} else if (ref != null) {
+		} else if (ref) {
 			if (ref.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
 				// The shader is set to load from the engine's shader library.
 				// The shader reference is in the form <ENGINE_SHADER_PREFIX>shaderName,
 				// slicing the reference to get the shaderName.
 				var shaderName = ref.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
 				var shader = Material.createShader(ShaderLib[shaderName]);
-				var promise = new RSVP.Promise();
-				promise.resolve(shader);
-				return promise;
+				return PromiseUtil.createDummyPromise(shader);
 			} else {
 				return this.getConfig(ref).then(function(config) {
 					return that.updateObject(ref, config, that.options);

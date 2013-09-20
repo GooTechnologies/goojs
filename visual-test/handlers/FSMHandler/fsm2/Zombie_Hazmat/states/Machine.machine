@@ -1,0 +1,68 @@
+{
+    "id": "LTE5MzkyNjM0Nzg=", 
+    "initialState": "DEFAULT", 
+    "name": "Layer 0", 
+    "ref": "Zombie_Hazmat/states/Machine.machine", 
+    "states": [
+        {
+            "actions": [
+                {
+                    "name": "KeyDownAction", 
+                    "options": {
+                        "Key": "w", 
+                        "key": "W", 
+                        "transitions": {
+                            "keydown": "to1"
+                        }
+                    }, 
+                    "type": "KeyDownAction"
+                }, 
+                {
+                    "name": "LogVariableAction", 
+                    "options": {
+                        "Message": "hello", 
+                        "message": "prim", 
+                        "transitions": {}
+                    }, 
+                    "type": "LogVariableAction"
+                }
+            ], 
+            "id": "Njk3MDM3NTI3", 
+            "machineRefs": [], 
+            "name": "DEFAULT", 
+            "transitions": {
+                "to1": "ODMyMTU0ODkz"
+            }
+        }, 
+        {
+            "actions": [
+                {
+                    "name": "KeyDownAction", 
+                    "options": {
+                        "Key": "w", 
+                        "key": "E", 
+                        "transitions": {
+                            "keydown": "to0"
+                        }
+                    }, 
+                    "type": "KeyDownAction"
+                }, 
+                {
+                    "name": "LogVariableAction", 
+                    "options": {
+                        "Message": "hello", 
+                        "message": "second", 
+                        "transitions": {}
+                    }, 
+                    "type": "LogVariableAction"
+                }
+            ], 
+            "id": "ODMyMTU0ODkz", 
+            "machineRefs": [], 
+            "name": "State 1", 
+            "transitions": {
+                "to0": "Njk3MDM3NTI3"
+            }
+        }
+    ]
+}

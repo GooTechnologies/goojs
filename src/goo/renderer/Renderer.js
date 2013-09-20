@@ -15,7 +15,8 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shadow/ShadowHandler'
+	'goo/renderer/shadow/ShadowHandler',
+	'goo/entities/EventHandler'
 ],
 /** @lends */
 function (
@@ -34,7 +35,8 @@ function (
 	Transform,
 	RenderQueue,
 	ShaderLib,
-	ShadowHandler
+	ShadowHandler,
+	EventHandler
 ) {
 	"use strict";
 
@@ -363,6 +365,11 @@ function (
 	};
 
 	Renderer.mainCamera = null;
+	EventHandler.addListener({
+		setCurrentCamera : function (camera) {
+			Renderer.mainCamera = camera;
+		}
+	});
 
 	Renderer.prototype.checkResize = function (camera) {
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
@@ -560,14 +567,12 @@ function (
 		}
 
 		for (var i = 0; i < count; i++) {
-			var material, orMaterial;
+			var material = null, orMaterial = null;
 			if (i < materials.length) {
 				material = materials[i];
 			}
 			if(i < this._overrideMaterials.length) {
 				orMaterial = this._overrideMaterials[i];
-			} else if (this._overrideMaterials.length > 0) {
-				orMaterial = this._overrideMaterials[0];
 			}
 			if (material && orMaterial) {
 				this.override(orMaterial, material, this._mergedMaterial);
@@ -740,14 +745,10 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.pick = function (renderList, camera, clientX, clientY, pickingStore, skipUpdateBuffer, doScissor) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
-			pickingStore.id = -1;
-			pickingStore.depth = 0;
 			return;
 		}
-
-
 		var pickingResolutionDivider = 4;
 		if (this.hardwarePicking === null) {
 			var pickingMaterial = Material.createEmptyMaterial(ShaderLib.pickingShader, 'pickingMaterial');
@@ -764,7 +765,8 @@ function (
 					magFilter: 'NearestNeighbor'
 				}),
 				pickingMaterial: pickingMaterial,
-				pickingBuffer: new Uint8Array(4)
+				pickingBuffer: new Uint8Array(4),
+				clearColorStore: new Vector4()
 			};
 			skipUpdateBuffer = false;
 		} else if (this.hardwarePicking.pickingTarget === null) {
@@ -775,21 +777,41 @@ function (
 			skipUpdateBuffer = false;
 		}
 
-		var x = Math.floor(clientX / pickingResolutionDivider);
-		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
-
 		if (!skipUpdateBuffer) {
-			if (doScissor) {
+			this.hardwarePicking.clearColorStore.setv(this.clearColor);
+			if (doScissor && clientX !== undefined && clientY !== undefined) {
+				var x = Math.floor(clientX / pickingResolutionDivider);
+				var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
-			this.render(renderList, camera, [], this.hardwarePicking.pickingTarget, true, this.hardwarePicking.pickingMaterial);
+
+			var pickList = [];
+			for (var i = 0, l = renderList.length; i < l; i++) {
+				var entity = renderList[i];
+				if (!entity.meshRendererComponent || entity.meshRendererComponent.isPickable) {
+					pickList.push(entity);
+				}
+			}
+			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
 			}
 		} else {
 			this.setRenderTarget(this.hardwarePicking.pickingTarget);
 		}
+	};
+
+	Renderer.prototype.pick = function (clientX, clientY, pickingStore, camera) {
+		if(this.viewportWidth * this.viewportHeight === 0) {
+			pickingStore.id = -1;
+			pickingStore.depth = 0;
+			return;
+		}
+		var pickingResolutionDivider = 4;
+		var x = Math.floor(clientX / pickingResolutionDivider);
+		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 

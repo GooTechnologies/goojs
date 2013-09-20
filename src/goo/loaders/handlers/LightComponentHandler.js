@@ -1,6 +1,8 @@
 define(['goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/light/PointLight',
+	'goo/renderer/light/SpotLight',
+	'goo/renderer/light/DirectionalLight',
 	'goo/math/Vector',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
@@ -9,6 +11,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	ComponentHandler,
 	LightComponent,
 	PointLight,
+	SpotLight,
+	DirectionalLight,
 	Vector,
 	RSVP,
 	pu,
@@ -19,6 +23,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	}
 
 	LightComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
 	LightComponentHandler.prototype._prepare = function(config) {
@@ -28,15 +33,36 @@ define(['goo/loaders/handlers/ComponentHandler',
 			attenuate: true,
 			shadowCaster: false
 		});
+		if (config.type !== 'DirectionalLight') {
+			config.range = config.range || 1000;
+		}
 		if (config.shadowCaster) {
+			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				type: 'Blur'
+				type: 'Blur',
+				projection: (config.type === 'DirectionalLight') ? 'Parallel' : 'Perspective',
+				fov: 55,
+				size: 400,
+				near: 1,
+				/** @type {number} */
+				far: 1000
 			});
 		}
 	};
 
 	LightComponentHandler.prototype._create = function(entity, config) {
-		var component = new LightComponent(new PointLight());
+		var light;
+		switch(config.type) {
+			case 'SpotLight':
+				light = new SpotLight();
+				break;
+			case 'DirectionalLight':
+				light = new DirectionalLight();
+				break;
+			default:
+				light = new PointLight();
+		}
+		var component = new LightComponent(light);
 		entity.setComponent(component);
 		return component;
 	};

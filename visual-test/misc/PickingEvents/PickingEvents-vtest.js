@@ -96,7 +96,7 @@ require([
 		addUserCamera(goo);
 
 		// pick events
-		goo.setEventHandlers({
+		/*goo.setEventHandlers({
 			onClick: function(clickedEntity, depth) {
 				console.log('mouseclick', clickedEntity ? clickedEntity.toString() + ' at depth ' + depth : 'nothing');
 				if(clickedEntity) {
@@ -113,11 +113,35 @@ require([
 					swapChannels(color);
 				}
 			}
+		});*/
+		var lastEntity;
+		var lastDepth;
+
+		goo.addEventListener('mousemove', function(evt) {
+			if(evt.entity && lastEntity !== evt.entity) {
+				console.log('Entity is '+evt.entity+' at '+evt.depth);
+				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
+				swapChannels(color);
+				if(lastEntity && lastDepth) {
+					console.log('Last entity was '+lastEntity+' at '+lastDepth);
+				}
+			}
+			lastEntity = evt.entity;
+			lastDepth = evt.depth;
+		});
+		goo.addEventListener('click', function(evt) {
+			console.log('Entity is '+evt.entity+' at '+evt.depth);
+			if(evt.entity) {
+				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
+				swapChannels(color);
+			}
 		});
 	}
 
 	function init() {
-		var goo = new GooRunner();
+		var goo = new GooRunner({
+			showStats: true
+		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 

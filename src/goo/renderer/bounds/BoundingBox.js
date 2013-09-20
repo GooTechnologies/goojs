@@ -36,6 +36,7 @@ function (
 	}
 
 	BoundingBox.prototype = Object.create(BoundingVolume.prototype);
+	BoundingBox.prototype.constructor = BoundingBox;
 
 	BoundingBox.prototype.computeFromPoints = function (verts) {
 		var min = this.min;

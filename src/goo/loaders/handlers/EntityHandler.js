@@ -44,6 +44,8 @@ define([
 			object = this._create(ref);
 		}
 
+		object.skip = !!config.hidden;
+
 		var promises = [];
 		for (var componentName in config.components) {
 			var componentConfig = config.components[componentName];

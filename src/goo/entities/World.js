@@ -14,7 +14,8 @@ function (
 	/**
 	 * @class Main handler for an entity world
 	 */
-	function World () {
+	function World (gooRunner) {
+		this.gooRunner = gooRunner;
 		this._managers = [];
 		this._systems = [];
 

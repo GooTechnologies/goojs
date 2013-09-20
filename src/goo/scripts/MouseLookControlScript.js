@@ -27,7 +27,7 @@ define([
 
 			this.name = 'MouseLookControlScript';
 
-			this.domElement = properties.domElement || document;
+			this.domElement = properties.domElement || null;
 
 			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
 			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
@@ -35,8 +35,8 @@ define([
 			this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 			this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
 
-			this.worldUpVector = properties.worldUpVector || new Vector3(0, 1, 0);
-			this.localLeftVector = properties.localLeftVector || new Vector3(-1, 0, 0);
+			this.worldUpVector = new Vector3(properties.worldUpVector) || new Vector3(0, 1, 0);
+			this.localLeftVector = new Vector3(properties.localLeftVector) || new Vector3(-1, 0, 0);
 
 			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
 			// this.localFwdVector = properties.localFwdVector || new Vector3(0, 0, -1);
@@ -59,7 +59,9 @@ define([
 			this.rotY = 0.0;
 
 			this.resetMouseState();
-			this.setupMouseControls();
+			if(this.domElement) {
+				this.setupMouseControls();
+			}
 		}
 
 		MouseLookControlScript.prototype.resetMouseState = function () {
@@ -131,8 +133,14 @@ define([
 			this.domElement.addEventListener('mousedown', boundMouseDown, false);
 		};
 
-		MouseLookControlScript.prototype.run = function (entity) {
+		MouseLookControlScript.prototype.run = function (entity, tpf, env) {
 			// grab our transformComponent
+			if (env) {
+				if(!this.domElement && env.domElement) {
+					this.domElement = env.domElement;
+					this.setupMouseControls();
+				}
+			}
 			var transformComponent = entity.transformComponent;
 			if (!transformComponent) {
 				return;

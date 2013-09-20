@@ -10,6 +10,12 @@ define(['goo/renderer/MeshData'],
 	 * @param {number} [pointiness=0] By default a disk is flat, however, its center can be raised above the disk's outer edge
 	 */
 	function Disk(nSegments, radius, pointiness) {
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			nSegments = props.nSegments;
+			radius = props.radius;
+			pointiness = props.pointiness;
+		}
 		this.nSegments = nSegments || 8;
 		this.radius = radius || 1;
 		this.pointiness = pointiness || 0;

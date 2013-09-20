@@ -15,6 +15,7 @@ define([
 	_,
 	ArrayUtil
 ) {
+	/*jshint eqeqeq: false, -W041, bitwise: false */
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -26,8 +27,8 @@ define([
 	MeshDataHandler.prototype.update = function(ref, meshConfig) {
 		var that = this;
 		if (!this._objects[ref]) {
-			if (meshConfig.binaryData) {
-				return this.getConfig(meshConfig.binaryData).then(function(bindata) {
+			if (meshConfig.binaryRef) {
+				return this.getConfig(meshConfig.binaryRef).then(function(bindata) {
 					if (!bindata) {
 						throw new Error("Binary mesh data was empty");
 					}
@@ -45,7 +46,7 @@ define([
 		}
 	};
 
-	MeshDataHandler.prototype.remove = function(ref) {};
+	MeshDataHandler.prototype.remove = function(/*ref*/) {};
 
 	MeshDataHandler.prototype._createMeshData = function(meshConfig, bindata) {
 		var compression;
@@ -196,8 +197,13 @@ define([
 		if (data.indexLengths) {
 			meshData.indexLengths = data.indexLengths.slice(0);
 		}
-		if (data.boundingBox) {
-			meshData.boundingBox = data.boundingBox;
+		if (data.boundingVolume) {
+			if (data.boundingVolume.type === "BoundingBox") {
+				meshData.boundingBox = {min: data.boundingVolume.min, max: data.boundingVolume.max};
+			}
+			else {
+				throw new Error("Bounding volume was not BoundingBox");
+			}
 		}
 		return meshData;
 	};
@@ -252,7 +258,7 @@ define([
 				scale: [scale, scale, scale, scale]
 			};
 		} else if (attr.substr(0, 8) === 'TEXCOORD') {
-			var texIdx = parseInt(attr.substr(8));
+			var texIdx = parseInt(attr.substr(8),10);
 			var texObj = data.textureCoords[texIdx];
 			options = {
 				offset: texObj.UVOffsets,

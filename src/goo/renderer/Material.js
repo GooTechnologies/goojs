@@ -30,15 +30,20 @@ function(
 		// Texture storage
 		this._textureMaps = {};
 
-		/** @type {object} */
-		this.materialState = undefined;
-		// {
-		// ambient: [0.1, 0.1, 0.1, 1.0],
-		// diffuse: [1.0, 1.0, 1.0, 1.0],
-		// emissive: [0.0, 0.0, 0.0, 1.0],
-		// specular: [0.7, 0.7, 0.7, 1.0],
-		// shininess: 16.0
-		// };
+		/** @type {object}
+		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
+		 * @property {Array<Number>} diffuse The diffuse color, [r,g,b,a]
+		 * @property {Array<Number>} emissive The emissive color, [r,g,b,a]
+		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
+		 * @property {Number} shininess The shininess exponent.
+		 * */
+		this.materialState = {
+			ambient: Shader.DEFAULT_AMBIENT,
+			diffuse: Shader.DEFAULT_DIFFUSE,
+			emissive: Shader.DEFAULT_EMISSIVE,
+			specular: Shader.DEFAULT_SPECULAR,
+			shininess: Shader.DEFAULT_SHININESS
+		};
 		/** Specification of culling for this Material.
 		 * @type {Object}
 		 * @property {boolean} enabled
@@ -225,6 +230,8 @@ function(
 		material.empty();
 		if(shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
+		} else {
+			material.shader = undefined;
 		}
 		return material;
 	};

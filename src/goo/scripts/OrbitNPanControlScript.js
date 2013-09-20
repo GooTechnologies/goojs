@@ -39,9 +39,8 @@ define([
 	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
 	 * </ul>
 	 */
-	function OrbitNPanControlScript(goo, properties) {
+	function OrbitNPanControlScript(properties) {
 		properties = properties || {};
-		properties.dragButton = 2;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
 			buttonDown : false,
@@ -49,15 +48,52 @@ define([
 			lastY: NaN,
 			lastPos: new Vector3()
 		};
-		this.goo = goo;
+		this.viewportWidth = 0;
+		this.viewportHeight = 0;
+		this.shiftKey = false;
+		this.altKey = false;
+		this.goingToLookAt = new Vector3().setv(this.lookAtPoint);
 	}
 
 	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
+	OrbitNPanControlScript.prototype.setupMouseControls = function() {
+		var that = this;
+		this.domElement.addEventListener('mousedown', function (event) {
+			that.shiftKey = event.shiftKey;
+			that.altKey = event.altKey;
+
+			that.updateButtonState(event.button, true, event);
+		}, false);
+
+		document.addEventListener('mouseup', function (event) {
+			that.updateButtonState(event.button, false, event);
+		}, false);
+
+		document.addEventListener('mousemove', function (event) {
+			that.updateDeltas(event.clientX, event.clientY);
+		}, false);
+
+		this.domElement.addEventListener('mousewheel', function (event) {
+			that.applyWheel(event);
+		}, false);
+		this.domElement.addEventListener('DOMMouseScroll', function (event) {
+			that.applyWheel(event);
+		}, false);
+
+
+		// Avoid missing the mouseup event because of Chrome bug:
+		// https://code.google.com/p/chromium/issues/detail?id=244289
+		this.domElement.addEventListener('dragstart', function (event) {
+			event.preventDefault();
+		}, false);
+		this.domElement.oncontextmenu = function() { return false; };
+	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		OrbitCamControlScript.prototype.updateButtonState.call(this, buttonIndex, down);
-		if (buttonIndex === 1) {
+		if (buttonIndex === 2 || buttonIndex === 0 && this.shiftKey) {
+			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
+		} else if (buttonIndex === 1 || buttonIndex === 0 && this.altKey) {
 			this.panState.buttonDown = down;
 			if(down) {
 				this.panState.lastX = NaN;
@@ -80,8 +116,8 @@ define([
 
 
 			c.getScreenCoordinates(this.panState.lastPos, 1, 1, u);
-			u.x -= (mouseX - this.panState.lastX) / this.goo.renderer.viewportWidth;
-			u.y += (mouseY - this.panState.lastY) / this.goo.renderer.viewportHeight;
+			u.x -= (mouseX - this.panState.lastX) / this.viewportWidth;
+			u.y += (mouseY - this.panState.lastY) / this.viewportHeight;
 			c.getWorldCoordinates(
 				u.x,
 				u.y,
@@ -91,7 +127,21 @@ define([
 				v
 			);
 			this.lookAtPoint.setv(v);
+			this.goingToLookAt.setv(this.lookAtPoint);
 			this.dirty = true;
+		}
+	};
+
+	OrbitNPanControlScript.prototype.run = function(entity, tpf, env) {
+		if(!this.goingToLookAt.equals(this.lookAtPoint)) {
+			var delta = tpf * 7;
+			this.lookAtPoint.lerp(this.goingToLookAt, delta);
+			this.dirty = true;
+		}
+		OrbitCamControlScript.prototype.run.call(this, entity, tpf, env);
+		if (env) {
+			this.viewportWidth = env.viewportWidth;
+			this.viewportHeight = env.viewportHeight;
 		}
 	};
 

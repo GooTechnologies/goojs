@@ -13,6 +13,14 @@ define(['goo/renderer/MeshData'],
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */
 	function Box(width, height, length, tileX, tileY) {
+		if(arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			width = props.width;
+			height = props.height;
+			length = props.length;
+			tileX = props.tileX;
+			tileY = props.tileY;
+		}
 		/** Extent along the local x axis.
 		 * @type {number}
 		 * @default 0.5

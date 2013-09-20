@@ -3,16 +3,14 @@ define([
 	'goo/entities/components/AnimationComponent',
 	'goo/math/MathUtils',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/PromiseUtil'
 ],
 function(
 	ComponentHandler,
 	AnimationComponent,
 	MathUtils,
 	RSVP,
-	pu,
-	_
+	pu
 ) {
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -21,9 +19,9 @@ function(
 	AnimationComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('animation', AnimationComponentHandler);
 
-	AnimationComponentHandler.prototype._prepare = function(config) {};
+	AnimationComponentHandler.prototype._prepare = function(/*config*/) {};
 
-	AnimationComponentHandler.prototype._create = function(entity, config) {
+	AnimationComponentHandler.prototype._create = function(entity/*, config*/) {
 		var component = new AnimationComponent();
 		entity.setComponent(component);
 		return component;
@@ -39,7 +37,6 @@ function(
 		var poseRef = config.poseRef;
 		var promises = [];
 		if (!poseRef) {
-			console.warn("No skeleton pose ref");
 			p1 = pu.createDummyPromise();
 		} else {
 			p1 = this.getConfig(poseRef).then(function(config) {

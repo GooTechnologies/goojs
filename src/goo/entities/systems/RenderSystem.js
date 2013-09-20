@@ -26,6 +26,7 @@ function (
 
 		this.entities = [];
 		this.renderList = [];
+		this.postRenderables = [];
 		this.partitioner = new SimplePartitioner();
 		this.preRenderers = [];
 		this.composers = [];
@@ -107,21 +108,19 @@ function (
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
-			if (this.picking.doPick) {
-				renderer.pick(this.renderList, this.camera, this.picking.x, this.picking.y, this.picking.pickingStore, this.picking.skipUpdateBuffer);
-				this.picking.pickingCallback(this.picking.pickingStore.id, this.picking.pickingStore.depth);
-				this.picking.doPick = false;
-			}
-
 			if (this.composers.length > 0) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
 					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, true, this.overrideMaterials);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
+				renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: true, stencil: true }, this.overrideMaterials);
 			}
 		}
+	};
+
+	RenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
+		renderer.renderToPick(this.renderList, this.camera, true, skipUpdateBuffer);
 	};
 
 	RenderSystem.prototype._createDebugMaterial = function(key) {

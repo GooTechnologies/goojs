@@ -53,8 +53,6 @@ define([
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
 		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
-			console.log('Mesh size limit reached, creating new mesh');
-
 			this._generateMesh();
 		}
 

@@ -9,7 +9,7 @@ function() {
 	 * @class Base class for all entity systems
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
-	 *        <li> interests = [] -> listen to entities with no components
+	 *        <li> interests = [] -> don't listen to any entities
 	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
 	 *        </ul>
 	 * @param {String} type System type name as a string
@@ -56,6 +56,9 @@ function() {
 	 * @param entity {Entity} to check if the system is interested in
 	 */
 	System.prototype._check = function(entity) {
+		if (this.interests && this.interests.length === 0) {
+			return;
+		}
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;

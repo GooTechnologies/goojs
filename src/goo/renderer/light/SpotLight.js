@@ -22,12 +22,14 @@ function (
 	function SpotLight () {
 		Light.call(this);
 
-		/** @type {Vector3} */
+		/* @type {Vector3} */
 		this.direction = new Vector3();
 		/** @type {Number} */
 		this.range = 1000;
 		/** @type {Number} */
 		this.angle = 45;
+		/** @type {Number} The angle to where light is full strength. Then it falls off linearly to the angle-value. So penumbra is always smaller than angle, and null to default to angle value */
+		this.penumbra = null;
 		/** @type {Number} */
 		this.exponent = 16.0;
 	}

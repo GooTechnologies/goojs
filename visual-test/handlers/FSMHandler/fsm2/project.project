@@ -1,0 +1,13 @@
+{
+    "created": "2013-09-19T12:27:37.745000", 
+    "entityRefs": [
+        "Zombie_Hazmat/entities/Zombie_0.entity", 
+        "Zombie_Hazmat/entities/RootNode.entity"
+    ], 
+    "id": "project-4f0ce211-98af-4144-aa92-500fe3fd69a7", 
+    "modified": "2013-09-19T12:28:13.118000", 
+    "name": "Default Goo Project", 
+    "parent": null, 
+    "public": true, 
+    "ref": "project.project"
+}

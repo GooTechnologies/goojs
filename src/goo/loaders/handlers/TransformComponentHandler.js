@@ -2,6 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
+	'goo/math/Quaternion',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -9,15 +10,18 @@ define([
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
+	Quaternion,
 	RSVP,
 	pu,
 	_
 ) {
+	/*jshint eqeqeq: false, -W041 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
 
 	TransformComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	TransformComponentHandler.prototype.constructor = TransformComponentHandler;
 	ComponentHandler._registerClass('transform', TransformComponentHandler);
 
 	TransformComponentHandler.prototype._prepare = function(config) {
@@ -28,7 +32,7 @@ define([
 		});
 	};
 
-	TransformComponentHandler.prototype._create = function(entity, config) {
+	TransformComponentHandler.prototype._create = function(entity/*, config*/) {
 		var component = new TransformComponent();
 		entity.setComponent(component);
 		return component;
@@ -44,6 +48,8 @@ define([
 				MathUtils.radFromDeg(config.rotation[0]),
 				MathUtils.radFromDeg(config.rotation[1]),
 				MathUtils.radFromDeg(config.rotation[2]));
+		} else if (config.rotation.length === 4) {
+			new Quaternion(config.rotation).toRotationMatrix(component.transform.rotation);
 		} else {
 			component.transform.rotation.set(config.rotation);
 		}

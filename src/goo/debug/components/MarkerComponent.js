@@ -1,10 +1,12 @@
 define([
 	'goo/entities/components/Component',
-	'goo/shapes/ShapeCreator'],
+	'goo/shapes/ShapeCreator',
+	'goo/debug/BoundingVolumeMeshBuilder'],
 /** @lends */
 function(
 	Component,
-	ShapeCreator) {
+	ShapeCreator,
+	BoundingVolumeMeshBuilder) {
 	"use strict";
 
 	/**
@@ -15,7 +17,8 @@ function(
 		this.type = 'MarkerComponent';
 
 		var hostModelBound = hostEntity.meshDataComponent.modelBound;
-		this.meshData = ShapeCreator.createBox(hostModelBound.radius * 2, hostModelBound.radius * 2, hostModelBound.radius * 2);
+		//this.meshData = ShapeCreator.createBox(hostModelBound.radius * 2, hostModelBound.radius * 2, hostModelBound.radius * 2);
+		this.meshData = BoundingVolumeMeshBuilder.build(hostModelBound);
 	}
 
 	MarkerComponent.prototype = Object.create(Component.prototype);

@@ -1,6 +1,12 @@
-define(['goo/entities/systems/System'],
+define([
+	'goo/entities/systems/System',
+	'goo/renderer/bounds/BoundingBox'
+],
 /** @lends */
-function (System) {
+function (
+	System,
+	BoundingBox
+) {
 	"use strict";
 
 	/**
@@ -8,6 +14,8 @@ function (System) {
 	 */
 	function BoundingUpdateSystem () {
 		System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
+		this._worldBound = new BoundingBox();
+		this._computeWorldBound = null;
 	}
 
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
@@ -27,6 +35,22 @@ function (System) {
 				// meshDataComponent.setDirty(false);
 			}
 		}
+		if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
+			for (var i = 0; i < entities.length; i++) {
+				var mrc = entities[i].meshRendererComponent;
+				if (i === 0) {
+					mrc.worldBound.clone(this._worldBound);
+				} else {
+					this._worldBound = this._worldBound.merge(mrc.worldBound);
+				}
+			}
+			this._computeWorldBound(this._worldBound);
+			this._computeWorldBound = null;
+		}
+	};
+
+	BoundingUpdateSystem.prototype.getWorldBound = function (callback) {
+		this._computeWorldBound = callback;
 	};
 
 	return BoundingUpdateSystem;

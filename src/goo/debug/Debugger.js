@@ -89,7 +89,7 @@ define([
 			var mouseDownX = event.pageX;
 			var mouseDownY = event.pageY;
 
-			this.goo.renderSystem.pick(mouseDownX, mouseDownY, function(id) {
+			this.goo.pick(mouseDownX, mouseDownY, function(id) {
 				var entity = this.goo.world.entityManager.getEntityById(id);
 				if(entity) {
 					this.oldPicked = this.picked;

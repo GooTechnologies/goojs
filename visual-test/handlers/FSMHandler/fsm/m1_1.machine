@@ -1,0 +1,17 @@
+{
+    "name": "machine1_1",
+    "initialState": "m1_s1_m1_s1",
+    "states": [{
+            "uuid": "m1_s1_m1_s1",
+            "actions": [],
+            "machineRefs": [],
+            "transitions": {}
+        },
+        {
+            "uuid": "m1_s1_m1_s2",
+            "actions": [],
+            "machineRefs": [],
+            "transitions": {}
+        }
+    ]
+}

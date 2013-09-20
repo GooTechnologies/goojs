@@ -21,6 +21,13 @@ function (
 	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			zSamples = props.zSamples;
+			radialSamples = props.radialSamples;
+			radius = props.radius;
+			textureMode = props.textureMode;
+		}
 		/** Number of segments.
 		 * @type {number}
 		 * @default 8

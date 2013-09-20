@@ -6,7 +6,7 @@ function (
 	"use strict";
 
 	var _defaults = {
-		domElement: document,
+		domElement: null,
 
 		turnSpeedHorizontal: 0.005,
 		turnSpeedVertical: 0.005,
@@ -82,7 +82,7 @@ function (
 				this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
 			}
 			else if(_defaults[key] instanceof Vector3) {
-				this[key] = properties[key] || new Vector3().copy(_defaults[key]);
+				this[key] = (properties[key]) ? new Vector3(properties[key]) : new Vector3().set(_defaults[key]);
 			}
 			else {
 				this[key] = properties[key] || _defaults[key];
@@ -109,9 +109,9 @@ function (
 			lastY : NaN
 		};
 
-		this.setupMouseControls();
-
-		this.domElement.oncontextmenu = function() { return false; };
+		if(this.domElement) {
+			this.setupMouseControls();
+		}
 	}
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
@@ -280,6 +280,7 @@ function (
 				}
 			});
 		}
+		this.domElement.oncontextmenu = function() { return false; };
 	};
 
 	OrbitCamControlScript.prototype.updateVelocity = function (time) {
@@ -292,7 +293,13 @@ function (
 		}
 	};
 
-	OrbitCamControlScript.prototype.run = function (entity) {
+	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
+		if (env) {
+			if(!this.domElement && env.domElement) {
+				this.domElement = env.domElement;
+				this.setupMouseControls();
+			}
+		}
 		// grab our transformComponent
 		var transformComponent = entity.transformComponent;
 		if (!transformComponent) {

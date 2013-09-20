@@ -62,13 +62,14 @@ function (
 	 * @param {boolean} [parameters.tpfSmoothingCount=10]
 	 * @param {boolean} [parameters.debugKeys=false]
 	 */
+
 	function GooRunner (parameters) {
 		parameters = parameters || {};
 
-		this.world = new World();
+		this.world = new World(this);
 		this.renderer = new Renderer(parameters);
 
-		this.world.setSystem(new ScriptSystem());
+		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer));
@@ -79,6 +80,7 @@ function (
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
 		this.renderSystem = new RenderSystem();
+		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
 
 		this.doProcess = true;
@@ -128,6 +130,26 @@ function (
 			this._addDebugKeys();
 		}
 
+		// Event stuff
+		this._events = {
+			click: null,
+			mousedown: null,
+			mouseup: null,
+			mousemove: null
+		};
+		this._eventListeners = {
+			click: [],
+			mousedown: [],
+			mouseup: [],
+			mousemove: []
+		};
+		this._eventTriggered = {
+			click: null,
+			mousedown: null,
+			mouseup: null,
+			mousemove: null
+		};
+
 		GameUtils.addVisibilityChangeListener(function (paused) {
 			if (paused) {
 				this.stopGameLoop();
@@ -135,7 +157,26 @@ function (
 				this.startGameLoop();
 			}
 		}.bind(this));
+
+		this._picking = {
+			x: 0,
+			y: 0,
+			skipUpdateBuffer: false,
+			doPick: false,
+			pickingCallback: null,
+			pickingStore: {},
+			clearColorStore: []
+		};
 	}
+
+	GooRunner.prototype.setRenderSystem = function (system, idx) {
+		this.world.setSystem(system);
+		if (idx !== undefined) {
+			this.renderSystems.splice(idx, 0, system);
+		} else {
+			this.renderSystems.push(system);
+		}
+	};
 
 	var tpfSmoothingArrary = [];
 	var tpfIndex = 0;
@@ -177,14 +218,37 @@ function (
 			this.world.process();
 		}
 
-		for (var i = 0; i < this.callbacksPreRender.length; i++) {
-			this.callbacksPreRender[i](this.world.tpf);
-		}
-
 		this.renderer.info.reset();
 
 		if (this.doRender) {
-			this.renderSystem.render(this.renderer);
+			this.renderer.setRenderTarget();
+			this.renderer.clear();
+			for (var i = 0; i < this.callbacksPreRender.length; i++) {
+				this.callbacksPreRender[i](this.world.tpf);
+			}
+
+			for (var i = 0; i < this.renderSystems.length; i++) {
+				this.renderSystems[i].render(this.renderer);
+			}
+			if(this._picking.doPick) {
+				var cc = this.renderer.clearColor.data;
+				this._picking.clearColorStore[0] = cc[0];
+				this._picking.clearColorStore[1] = cc[1];
+				this._picking.clearColorStore[2] = cc[2];
+				this._picking.clearColorStore[3] = cc[3];
+				this.renderer.setClearColor(0,0,0,1);
+
+				for (var i = 0; i < this.renderSystems.length; i++) {
+					if (this.renderSystems[i].renderToPick) {
+						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
+					}
+				}
+				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
+				this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				this._picking.doPick = false;
+
+				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
+			}
 		}
 
 		for (var i = 0; i < this.callbacks.length; i++) {
@@ -293,7 +357,7 @@ function (
 			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
-				this.renderSystem.pick(x, y, function(id, depth) {
+				this.pick(x, y, function(id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
 				}.bind(this));
@@ -301,41 +365,100 @@ function (
 		}.bind(this), false);
 	};
 
-	GooRunner.prototype.setEventHandlers = function(handlers) {
-		if(!handlers) { return; }
-
-		if(handlers.onClick) {
-			this.renderer.domElement.addEventListener("mousedown", function (e) {
-				if(!this.renderSystem.picking.doPick) {
-					var x = e.clientX;
-					var y = e.clientY;
-					this.renderSystem.pick(x, y, function(id, depth) {
-						var entity = this.world.entityManager.getEntityById(id);
-						handlers.onClick(entity, depth);
-					}.bind(this));
-				}
-			}.bind(this), false);
+	/*
+	 * Adds an event listener to the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {function(event)} Callback to call when event is fired
+	 */
+	GooRunner.prototype.addEventListener = function(type, callback) {
+		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
+			return;
 		}
 
-		if(handlers.onChange) {
-			var lastEntity;
-
-			this.renderer.domElement.addEventListener("mousemove", function (e) {
-				// mouse move events might fire faster than the picker gets a chance to do its rendering
-				if(!this.renderSystem.picking.doPick) {
-					var x = e.clientX;
-					var y = e.clientY;
-					this.renderSystem.pick(x, y, function(id, depth) {
-						//console.log(id);
-						var entity = this.world.entityManager.getEntityById(id);
-						if(entity !== lastEntity) {
-							handlers.onChange(lastEntity, entity, depth);
-							lastEntity = entity;
-						}
-					}.bind(this));
-				}
-			}.bind(this), false);
+		if(typeof callback === 'function') {
+			this._eventListeners[type].push(callback);
+			if(this._eventListeners[type].length === 1) {
+				this._enableEvent(type);
+			}
 		}
+	};
+
+	/*
+	 * Removes an event listener to the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {function(event)} Callback to remove from event listener
+	 */
+	GooRunner.prototype.removeEventListener = function(type, callback) {
+		if(!this._eventListeners[type]) {
+			return;
+		}
+		var index = this._eventListeners[type].indexOf(callback);
+		if (index > -1) {
+			this._eventListeners[type].splice(index, 1);
+		}
+		if (this._eventListeners[type].length === 0) {
+			this._disableEvent(type);
+		}
+	};
+
+	GooRunner.prototype._dispatchEvent = function(evt) {
+		for (var type in this._eventTriggered) {
+			if(this._eventTriggered[type] && this._eventListeners[type]) {
+				var e = {
+					entity: evt.entity,
+					depth: evt.depth,
+					x: evt.x,
+					y: evt.y,
+					type: type,
+					domEvent: this._eventTriggered[type],
+					id: evt.id
+				};
+				for (var i = 0; i < this._eventListeners[type].length; i++) {
+					if(this._eventListeners[type][i](e) === false) {
+						break;
+					}
+				}
+				this._eventTriggered[type] = null;
+			}
+		}
+	};
+
+	/*
+	 * Enables event listening on the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 */
+	GooRunner.prototype._enableEvent = function(type) {
+		if(this._events[type]) {
+			return;
+		}
+		var func = function(e) {
+			var x = e.offsetX;
+			var y = e.offsetY;
+			this._eventTriggered[type] = e;
+			this.pick(x, y, function(id, depth) {
+				var entity = this.world.entityManager.getEntityById(id);
+				this._dispatchEvent({
+					entity: entity,
+					depth: depth,
+					x: x,
+					y: y,
+					id: id
+				});
+			}.bind(this));
+		}.bind(this);
+		this.renderer.domElement.addEventListener(type, func);
+		this._events[type] = func;
+	};
+
+	/*
+	 * Disables event listening on the goorunner
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 */
+	GooRunner.prototype._disableEvent = function(type) {
+		if (this._events[type]) {
+			this.renderer.domElement.removeEventListener(type, this._events[type]);
+		}
+		this._events[type] = null;
 	};
 
 	/**
@@ -361,6 +484,16 @@ function (
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
+	};
+
+	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
+		this._picking.x = x;
+		this._picking.y = y;
+		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
+		if (callback) {
+			this._picking.pickingCallback = callback;
+		}
+		this._picking.doPick = true;
 	};
 
 	return GooRunner;

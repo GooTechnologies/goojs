@@ -100,7 +100,7 @@ Then create a release:
 
     build/release.py <version>
 
-For example `build/release.py 0.5` which creates goo-0.5.zip.
+For example `build/release.py 0.5.0` which creates goo-0.5.0.zip.
 
 Copy minified/goo/goo.js to the following locations:
 
@@ -114,5 +114,9 @@ Tag the release:
 
     git tag v<version>
     git push --tags
+
+Copy the release to Dropbox:
+
+    cp goo-<version>.zip ~/Dropbox/Goo\ Technologies\ AB/2.\ Research\ \&\ Development/Releases/
 
 Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download
