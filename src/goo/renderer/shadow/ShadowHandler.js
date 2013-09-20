@@ -94,8 +94,6 @@ function(
 	ShadowHandler.prototype.checkShadowRendering = function(renderer, partitioner, entities, lights) {
 		this.shadowResults = [];
 		this.shadowLights = [];
-		// this.shadowMatrices = [];
-		// this.shadowLightPositions = [];
 		for (var i = 0; i < lights.length; i++) {
 			var light = lights[i];
 
@@ -146,8 +144,6 @@ function(
 					record.near = shadowSettings.near;
 					record.far = shadowSettings.far;
 					record.size = shadowSettings.size;
-
-					console.log('updated stuff');
 				}
 
 				if (this.shadowTypeRecord !== this.shadowType) {
@@ -160,16 +156,11 @@ function(
 					}
 
 					this.shadowTypeRecord = this.shadowType;
-
-					console.log('updated type');
 				}
 
 				lightCamera.onFrameChange();
 
-				// var matrix = lightCamera.getViewProjectionMatrix();
 				this.shadowLights.push(light);
-				// this.shadowMatrices.push(matrix.clone());
-				// this.shadowLightPositions.push(lightCamera.translation.clone());
 
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);

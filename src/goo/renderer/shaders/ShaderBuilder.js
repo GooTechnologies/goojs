@@ -154,8 +154,8 @@ function(
 					shader.uniforms.spotLightDirection[spotCount * 3 + 1] = light.direction.data[1];
 					shader.uniforms.spotLightDirection[spotCount * 3 + 2] = light.direction.data[2];
 
-					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD);
-					shader.uniforms.spotLightPenumbra[spotCount] = light.penumbra !== undefined ? Math.cos((light.angle + light.penumbra) * MathUtils.DEG_TO_RAD) : shader.uniforms.spotLightAngle[spotCount];
+					shader.uniforms.spotLightAngle[spotCount] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
+					shader.uniforms.spotLightPenumbra[spotCount] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
 
 					spotCount++;
 				}
@@ -369,7 +369,7 @@ function(
 						//"spotEffect = clamp(spotEffect/1.0, 1.0, 0.0);",
 
 						"if (spotLightPenumbra[i] > 0.0) {",
-							"spotEffect = (spotEffect - spotLightAngle[i]) / (spotLightAngle[i] - spotLightPenumbra[i]);",
+							"spotEffect = (spotEffect - spotLightAngle[i]) / spotLightPenumbra[i];",
 							"spotEffect = clamp(spotEffect, 0.0, 1.0);",
 						"} else {",
 							"spotEffect = 1.0;",

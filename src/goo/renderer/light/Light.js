@@ -35,6 +35,8 @@ function (
 		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000
+		 * @property {number[]} resolution 512x512
+		 * @property {Vector3} upVector UNIT_Y
 		 */
 		this.shadowSettings = {
 			size: 100,
