@@ -2,14 +2,14 @@ var glob = require('glob');
 var _ = require('underscore')
 var fs = require('fs')
 
-// Create the gooengine.js dummy module that depends on all other js files.
+// Create the goo.js dummy module that depends on all other js files.
 function createMainFile() {
 	var sourceFiles = glob.sync('**/*.js', {cwd: 'src/goo/'})
 	var allModules = _.map(sourceFiles, function(f) {
 		return 'goo/' + f.replace(/\.js/, '');
 	});
 
-	fs.writeFileSync('src/gooengine.js', 'define([\n' +
+	fs.writeFileSync('src/goo.js', 'define([\n' +
 		_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
 	'\n], function() {});\n')
 }
@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 					generateSourceMaps: true,
 					dir: 'out/minified/',
 					modules: [{
-						name: 'gooengine',
+						name: 'goo',
 					}],
 					wrap: {
 						start:

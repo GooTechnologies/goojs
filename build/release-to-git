@@ -27,7 +27,7 @@ rm -rf $RELEASE_DIR
 mkdir $RELEASE_DIR
 
 # Copy files that should be included in the release
-cp out/minified/gooengine.js $RELEASE_DIR
+cp out/minified/goo.js $RELEASE_DIR
 cp COPYING $RELEASE_DIR
 cp -r lib/ $RELEASE_DIR/lib
 cp -r goojs-jsdoc $RELEASE_DIR/docs
