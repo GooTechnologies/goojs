@@ -64,7 +64,7 @@ define([
 		var that = this;
 
 		var promises = [];
-		if (config.entityRefs && Array.isArray(config.entityRefs)) {
+		if (config.entityRefs && Array.isArray(config.entityRefs) && config.entityRefs.length > 0) {
 			var handleEntityRef = function(entityRef) {
 				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
 					return that.updateObject(entityRef, entityConfig, that.options);
@@ -96,7 +96,7 @@ define([
 		var that = this;
 
 		var promises = [];
-		if (config.posteffectRefs && Array.isArray(config.posteffectRefs)) {
+		if (config.posteffectRefs && Array.isArray(config.posteffectRefs && config.posteffectRefs.length > 0)) {
 			var handlePosteffectRef = function(posteffectRef) {
 				return promises.push(that.getConfig(posteffectRef).then(function(posteffectConfig) {
 					return that.updateObject(posteffectRef, posteffectConfig, that.options);
@@ -115,7 +115,7 @@ define([
 
 				for (var j = 0; j < posteffects.length; j++) {
 					var posteffect = posteffects[j];
-					console.log('posteffect', posteffect);
+					console.log('Added posteffect', posteffect);
 
 					composer.addPass(posteffect);
 				}
@@ -130,7 +130,7 @@ define([
 				return console.error("Error updating posteffects: " + err);
 			});
 		} else {
-			console.warn("No posteffect refs in project");
+			console.log("No posteffect refs in project");
 			return PromiseUtil.createDummyPromise(config);
 		}
 	};
