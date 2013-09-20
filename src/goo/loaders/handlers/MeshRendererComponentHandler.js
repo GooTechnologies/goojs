@@ -17,6 +17,7 @@ define([
 
 	MeshRendererComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
+	MeshRendererComponentHandler.prototype.constructor = MeshRendererComponentHandler;
 
 	MeshRendererComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
@@ -27,7 +28,7 @@ define([
 		});
 	};
 
-	MeshRendererComponentHandler.prototype._create = function(entity, config) {
+	MeshRendererComponentHandler.prototype._create = function(entity) {
 		var component = new MeshRendererComponent();
 		entity.setComponent(component);
 		return component;
@@ -55,6 +56,17 @@ define([
 		}
 		return promise.then(function(materials) {
 			var key, value;
+			if (component.materials && component.materials.length) {
+				var selectMaterial;
+				for (var i = 0; i < component.materials.length; i++) {
+					var material = component.materials[i];
+					if (material.name === 'gooSelectionIndicator') {
+						selectMaterial = material;
+						break;
+					}
+				}
+				materials.push(selectMaterial);
+			}
 			component.materials = materials;
 			for (key in config) {
 				value = config[key];
