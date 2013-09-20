@@ -88,7 +88,16 @@ define([
 			object.shader = shader;
 			object.uniforms = {};
 			for (var name in config.uniforms) {
-				object.uniforms[name] = _.clone(config.uniforms[name]);
+				if (typeof config.uniforms[name].enabled === 'undefined') {
+					object.uniforms[name] = _.clone(config.uniforms[name]);
+				} else {
+					if (config.uniforms[name].enabled) {
+						object.uniforms[name] = _.clone(config.uniforms[name]);
+					} else {
+						delete object.uniforms[name];
+					}
+				}
+
 			}
 
 			var promises = [];
