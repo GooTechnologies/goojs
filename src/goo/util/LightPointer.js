@@ -114,7 +114,7 @@ define([
 		var nSegments = 64;
 		var nParallel = 2;
 		var dxParallel = length / 2;
-		var dyParallel = Math.sin(angle * MathUtils.DEG_TO_RAD) * dxParallel;
+		var dyParallel = Math.tan(angle * MathUtils.DEG_TO_RAD / 2) * dxParallel;
 
 		for(var i = 1; i <= nParallel; i++) {
 			var circle = buildCircle(dyParallel * i, nSegments);
