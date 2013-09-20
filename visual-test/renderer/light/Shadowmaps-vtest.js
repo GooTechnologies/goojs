@@ -86,6 +86,7 @@ require([
 		controller.onChange(function() {
 			pointLight.changedProperties = true;
 		});
+		pointlightGui.add(pointLight, 'shadowCaster');
 
 		pointlightGui.open();
 	}
@@ -96,7 +97,7 @@ require([
 		directionalLight.color.data[1] = 0.9;
 		directionalLight.color.data[2] = 0.0;
 		directionalLight.intensity = 0.25;
-		directionalLight.shadowCaster = true;
+		directionalLight.shadowSettings.size = 10;
 
 		var directionalLightEntity = goo.world.createEntity('directionalLight');
 		directionalLightEntity.setComponent(new LightComponent(directionalLight));
@@ -120,6 +121,7 @@ require([
 		controller.onChange(function() {
 			directionalLight.changedProperties = true;
 		});
+		directionallightGui.add(directionalLight, 'shadowCaster');
 
 		directionallightGui.open();
 	}
@@ -130,10 +132,9 @@ require([
 		spotLight.color.data[0] = 0.6;
 		spotLight.color.data[1] = 0.8;
 		spotLight.color.data[2] = 1.0;
-		spotLight.angle = 25;
-		spotLight.penumbra = 25;
+		spotLight.angle = 35;
+		spotLight.penumbra = 0;
 		spotLight.range = 20;
-		spotLight.shadowCaster = true;
 
 		var spotLightEntity = goo.world.createEntity('spotLight');
 		spotLightEntity.setComponent(new LightComponent(spotLight));
@@ -182,7 +183,7 @@ require([
 		var sphereMeshData = ShapeCreator.createSphere(16, 16, 0.5);
 		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
 
-		var nSpheres = 15;
+		var nSpheres = 1;
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
 				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
@@ -195,15 +196,16 @@ require([
 
 		var boxMeshData = ShapeCreator.createBox(30, 30, 0.5);
 		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.transformComponent.transform.translation.set(0, 0, -3);
+		boxEntity.transformComponent.transform.translation.set(0, 0, -6);
 		boxEntity.meshRendererComponent.materials.push(sphereMaterial);
 		boxEntity.addToWorld();
 
-		// addPointLight(goo);
-		// addDirectionalLight(goo);
+		addPointLight(goo);
+		addDirectionalLight(goo);
 		addSpotLight(goo);
 		var spot = addSpotLight(goo);
-		spot.transformComponent.transform.translation.setd(3, 0, 5);
+		spot.transformComponent.transform.translation.setd(3, -4, 5);
+		spot.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
@@ -216,73 +218,11 @@ require([
 			spherical : new Vector3(20, Math.PI / 2, 0)
 		}));
 		cameraEntity.setComponent(scripts);
-
-		createDebugQuad(goo);
-	}
-
-	function createDebugQuad(goo) {
-		var world = goo.world;
-		var entity = world.createEntity('Quad');
-		entity.transformComponent.transform.translation.set(0, 0, 0);
-
-		var quad = ShapeCreator.createQuad(2, 2);
-		var meshDataComponent = new MeshDataComponent(quad);
-		entity.setComponent(meshDataComponent);
-
-		var fsShader = {
-			attributes: {
-				vertexPosition: MeshData.POSITION
-			},
-			uniforms: {
-				diffuseMap: Shader.DIFFUSE_MAP,
-				resolution: Shader.RESOLUTION
-			},
-			vshader: [ //
-				'attribute vec3 vertexPosition;', //
-
-				'const vec2 madd = vec2(0.5,0.5);',
-				'uniform vec2 resolution;', //
-				'varying vec2 textureCoord;',
-
-				'void main(void) {', //
-				'	textureCoord = vertexPosition.xy * madd + madd;', // scale vertex attribute to [0-1] range
-				'	gl_Position = vec4(vertexPosition.xy * vec2(512.0) / resolution - vec2(0.5, 0.25), 0.0, 1.0);',
-					'}' //
-			].join('\n'),
-			fshader: [ //
-				'precision mediump float;', //
-
-				'uniform sampler2D diffuseMap;', //
-
-				'varying vec2 textureCoord;',
-
-				'void main(void)', //
-				'{', //
-				'	gl_FragColor = texture2D(diffuseMap,textureCoord);', //
-				'}' //
-			].join('\n')
-		};
-
-		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.cullMode = 'Never';
-		var material = Material.createMaterial(fsShader, 'fsshader');
-		meshRendererComponent.materials.push(material);
-		entity.setComponent(meshRendererComponent);
-
-		goo.callbacks.push(function (tpf) {
-			if (goo.renderer.shadowHandler.shadowResults.length > 0) {
-				material.setTexture(Shader.DIFFUSE_MAP, goo.renderer.shadowHandler.shadowResults[0]);
-			}
-		});
-
-		entity.addToWorld();
 	}
 
 	function init() {
 		var goo = new GooRunner({
 			showStats: true,
-			toolMode: true,
-			debug: true,
 			logo: 'bottomleft'
 		});
 		goo.renderer.domElement.id = 'goo';

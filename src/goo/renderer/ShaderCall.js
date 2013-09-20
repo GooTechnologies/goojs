@@ -28,6 +28,7 @@ function () {
 					this.call = this.uniform1fv;
 					break;
 				case 'intarray':
+				case 'samplerArray':
 					this.call = this.uniform1iv;
 					break;
 				case 'vec2':

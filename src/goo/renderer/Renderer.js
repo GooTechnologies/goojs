@@ -437,6 +437,10 @@ function (
 		}
 	};
 
+	Renderer.prototype.setShadowType = function (type) {
+		this.shadowHandler.shadowType = type;
+	};
+
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
 	};
@@ -474,7 +478,6 @@ function (
 			mainCamera: Renderer.mainCamera,
 			lights: lights,
 			shadowHandler: this.shadowHandler,
-			lightCamera: this.shadowHandler ? this.shadowHandler.lightCam : null,
 			renderer: this
 		};
 
@@ -895,6 +898,8 @@ function (
 	Renderer.prototype.updateTextures = function (material) {
 		var context = this.context;
 		var textureSlots = material.shader.textureSlots;
+
+		var texIndex = 0;
 		for (var i = 0; i < textureSlots.length; i++) {
 			var textureSlot = textureSlots[i];
 			var texture = material.getTexture(textureSlot.mapping);
@@ -921,24 +926,26 @@ function (
 					}
 				}
 
-				var unitrecord = this.rendererRecord.textureRecord[i];
+				var unitrecord = this.rendererRecord.textureRecord[texIndex];
 				if (unitrecord === undefined) {
-					unitrecord = this.rendererRecord.textureRecord[i] = {};
+					unitrecord = this.rendererRecord.textureRecord[texIndex] = {};
 				}
 
 				if (texture.glTexture === null) {
 					texture.glTexture = context.createTexture();
-					this.updateTexture(context, texture, i, unitrecord);
+					this.updateTexture(context, texture, texIndex, unitrecord);
 				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
-					this.updateTexture(context, texture, i, unitrecord);
+					this.updateTexture(context, texture, texIndex, unitrecord);
 					texture.needsUpdate = false;
 				} else {
-					this.bindTexture(context, texture, i, unitrecord);
+					this.bindTexture(context, texture, texIndex, unitrecord);
 				}
 
 				var imageObject = texture.image !== undefined ? texture.image : texture;
 				var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
 				this.updateTextureParameters(texture, isTexturePowerOfTwo);
+
+				texIndex++;
 			}
 		}
 	};

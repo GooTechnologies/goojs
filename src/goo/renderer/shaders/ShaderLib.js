@@ -1958,7 +1958,7 @@ define([
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			cameraScale : Shader.LIGHT_DEPTH_SCALE
+			cameraScale : Shader.MAIN_DEPTH_SCALE
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',

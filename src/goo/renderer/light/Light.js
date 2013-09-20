@@ -37,9 +37,7 @@ function (
 		 * @property {number} far 1000
 		 */
 		this.shadowSettings = {
-			type: 'None',
-			// type: 'Blur',
-			size: 1000,
+			size: 100,
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],

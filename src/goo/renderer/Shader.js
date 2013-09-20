@@ -188,6 +188,7 @@ function (
 
 		if (this.uniforms) {
 			try {
+				this.textureIndex = 0;
 				for (var name in this.uniforms) {
 					this._bindUniform(name, shaderInfo);
 				}
@@ -216,7 +217,18 @@ function (
 			} else {
 				var slot = this.textureSlotsNaming[name];
 				if (slot !== undefined) {
-					mapping.call(slot.index);
+					var maps = shaderInfo.material.getTexture(slot.mapping);
+					if (maps instanceof Array) {
+						var arr = [];
+						for (var i = 0; i < maps.length; i++) {
+							arr.push(this.textureIndex++);
+						}
+						mapping.call(arr);
+					} else {
+						mapping.call(this.textureIndex);
+					}
+					// mapping.call(slot.index);
+					this.textureIndex += 1;
 				}
 
 				// for (var i = 0; i < this.textureSlots.length; i++) {
@@ -277,6 +289,8 @@ function (
 					definition.format = 'floatarray';
 				} else if (definition.format === 'int') {
 					definition.format = 'intarray';
+				} else if (definition.format.indexOf("sampler") === 0) {
+					definition.format = 'samplerArray';
 				}
 			}
 
@@ -556,6 +570,9 @@ function (
 		defaultCallbacks[Shader.MAIN_FAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.mainCamera.far);
 		};
+		defaultCallbacks[Shader.MAIN_DEPTH_SCALE] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(1.0 / (shaderInfo.mainCamera.far - shaderInfo.mainCamera.near));
+		};
 
 
 		defaultCallbacks[Shader.AMBIENT] = function (uniformCall, shaderInfo) {
@@ -584,27 +601,6 @@ function (
 			uniformCall.uniform1f(World.time);
 		};
 
-		defaultCallbacks[Shader.LIGHT_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.lightCamera.getProjectionMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
-		};
-		defaultCallbacks[Shader.LIGHT_VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.lightCamera.getViewMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
-		};
-		defaultCallbacks[Shader.LIGHT_VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.lightCamera.getViewProjectionMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
-		};
-		defaultCallbacks[Shader.LIGHT_NEAR_PLANE] = function (uniformCall, shaderInfo) {
-			uniformCall.uniform1f(shaderInfo.lightCamera.near);
-		};
-		defaultCallbacks[Shader.LIGHT_FAR_PLANE] = function (uniformCall, shaderInfo) {
-			uniformCall.uniform1f(shaderInfo.lightCamera.far);
-		};
-		defaultCallbacks[Shader.LIGHT_DEPTH_SCALE] = function (uniformCall, shaderInfo) {
-			uniformCall.uniform1f(1.0 / (shaderInfo.lightCamera.far - shaderInfo.lightCamera.near));
-		};
 		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
 		};
@@ -643,15 +639,9 @@ function (
 	Shader.FAR_PLANE = 'FAR_PLANE';
 	Shader.MAIN_NEAR_PLANE = 'NEAR_PLANE';
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
+	Shader.MAIN_DEPTH_SCALE = 'DEPTH_SCALE';
 	Shader.TIME = 'TIME';
 	Shader.RESOLUTION = 'RESOLUTION';
-
-	Shader.LIGHT_PROJECTION_MATRIX = 'LIGHT_PROJECTION_MATRIX';
-	Shader.LIGHT_VIEW_MATRIX = 'LIGHT_VIEW_MATRIX';
-	Shader.LIGHT_VIEW_PROJECTION_MATRIX = 'LIGHT_VIEW_PROJECTION_MATRIX';
-	Shader.LIGHT_NEAR_PLANE = 'LIGHT_NEAR_PLANE';
-	Shader.LIGHT_FAR_PLANE = 'LIGHT_FAR_PLANE';
-	Shader.LIGHT_DEPTH_SCALE = 'LIGHT_DEPTH_SCALE';
 
 	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
 	Shader.NORMAL_MAP = 'NORMAL_MAP';

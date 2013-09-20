@@ -185,7 +185,6 @@ function(
 				shader.spotCount = spotCount;
 			}
 
-			// var textureMaps = shaderInfo.material._textureMaps;
 			shader.defines = shader.defines || {};
 
 			var shadowHandler = shaderInfo.shadowHandler;
@@ -195,35 +194,39 @@ function(
 
 				shader.uniforms.shadowLightMatrices = [];
 				shader.uniforms.shadowLightPositions = [];
+				shader.uniforms.cameraScales = [];
 				for (var i = 0; i < shadowCount; i++) {
+					var shadowData = shadowHandler.shadowLights[i].shadowSettings.shadowData;
+
+					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
 					for (var j = 0; j < 16; j++) {
-						shader.uniforms.shadowLightMatrices[i*16+j] = shadowHandler.shadowMatrices[i].data[j];
+						shader.uniforms.shadowLightMatrices[i*16+j] = matrix[j];
 					}
-					shader.uniforms.shadowLightPositions[i*3+0] = shadowHandler.shadowLightPositions[i].data[0];
-					shader.uniforms.shadowLightPositions[i*3+1] = shadowHandler.shadowLightPositions[i].data[1];
-					shader.uniforms.shadowLightPositions[i*3+2] = shadowHandler.shadowLightPositions[i].data[2];
+
+					var translationData = shadowData.lightCamera.translation.data;
+					shader.uniforms.shadowLightPositions[i*3+0] = translationData[0];
+					shader.uniforms.shadowLightPositions[i*3+1] = translationData[1];
+					shader.uniforms.shadowLightPositions[i*3+2] = translationData[2];
+
+					shader.uniforms.cameraScales[i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
 				}
-				shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
 				shader.uniforms.shadowMaps = 'SHADOW_MAP';
-				// shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
-				shader.defines.SHADOW_TYPE = 0;
+
+				var type = 0;
+				switch (shadowHandler.shadowType) {
+					case 'VSM':
+						type = 2;
+					break;
+					case 'PCF':
+						type = 1;
+					break;
+					default:
+						type = 0;
+				}
+				shader.defines.SHADOW_TYPE = type;
 			} else if (shader.defines.MAX_SHADOWS) {
 				delete shader.defines.MAX_SHADOWS;
 			}
-
-			// if (textureMaps.SHADOW_MAP && shaderInfo.lights.length > 0) {
-			// 	shader.defines.SHADOW_TYPE = shaderInfo.lights[0].shadowSettings.type === 'Blur' ? 1 : 0;
-			// }
-
-			// if (textureMaps.SHADOW_MAP !== undefined && !shader.defines.SHADOW_MAP) {
-			// 	shader.defines.SHADOW_MAP = true;
-			// 	shader.uniforms.lightViewProjectionMatrix = 'LIGHT_VIEW_PROJECTION_MATRIX';
-			// 	shader.uniforms.lightPos = 'LIGHT0';
-			// 	shader.uniforms.cameraScale = 'LIGHT_DEPTH_SCALE';
-			// 	shader.uniforms.shadowMap = 'SHADOW_MAP';
-			// } else if (textureMaps.SHADOW_MAP === undefined && shader.defines.SHADOW_MAP) {
-			// 	delete shader.defines.SHADOW_MAP;
-			// }
 		},
 		prevertex: [
 			'#ifndef MAX_SHADOWS',
@@ -285,7 +288,7 @@ function(
 
 				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
 				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
-				'uniform float cameraScale;',
+				'uniform float cameraScales[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
 				'float ChebychevInequality(in vec2 moments, in float t) {',
@@ -461,19 +464,25 @@ function(
 			"#if MAX_SHADOWS > 0",
 				'for (int i = 0; i < MAX_SHADOWS; i++) {',
 					'vec3 depth = shadowLightDepths[i].xyz / shadowLightDepths[i].w;',
-					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScale;',
+					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScales[i];',
 
 					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
 						'#if SHADOW_TYPE == 0', // Normal
 							'depth.z *= 0.96;',
 							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
 							'if ( depth.z > shadowDepth ) shadow *= 0.5;',
-						'#elif SHADOW_TYPE == 1', // VSM
+						'#elif SHADOW_TYPE == 1', // PCF TODO
+						'#elif SHADOW_TYPE == 2', // VSM
 							'vec4 texel = texture2D(shadowMaps[i], depth.xy);',
 							'vec2 moments = vec2(texel.x, texel.y);',
 							'shadow *= ChebychevInequality(moments, depth.z);',
 							// 'shadow = VsmFixLightBleed(shadow, 0.1);',
 							// 'shadow = pow(shadow, 8.0);',
+						'#endif',
+					'} else {',
+						'#if SHADOW_TYPE == 0', // Normal
+							'shadow *= 0.5;',
+						'#elif SHADOW_TYPE == 1', // VSM
 						'#elif SHADOW_TYPE == 2', // PCF TODO
 						'#endif',
 					'}',
@@ -486,7 +495,7 @@ function(
 				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb + totalSpecular * shadow);",
 			"#else",
 				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb) + totalSpecular * shadow;",
-			"#endif",
+			"#endif"
 		].join('\n')
 	};
 

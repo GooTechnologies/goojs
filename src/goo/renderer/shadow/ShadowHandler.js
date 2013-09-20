@@ -31,14 +31,13 @@ function(
 	 */
 
 	function ShadowHandler() {
-		this.currentSettings = {};
-		this.lightCam = new Camera(55, 1, 1, 1000);
-
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
-
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
+
+		this.shadowType = 'Basic';
+		this.shadowTypeRecord = null;
 
 		this.oldClearColor = new Vector4(0, 0, 0, 0);
 		this.shadowClearColor = new Vector4(1, 1, 1, 1);
@@ -46,8 +45,7 @@ function(
 		this.renderList = [];
 		this.shadowList = [];
 
-		this.shadowMatrices = [];
-		this.shadowLightPositions = [];
+		this.shadowLights = [];
 		this.shadowResults = [];
 
 		this.tmpVec = new Vector3();
@@ -72,8 +70,10 @@ function(
 				type: 'Float',
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
-			})
+			}),
+			lightCamera: new Camera(55, 1, 1, 1000)
 		};
+		shadowSettings.shadowRecord = {};
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
@@ -82,7 +82,7 @@ function(
 		if (keys1.length !== keys2.length) {
 			return false;
 		}
-		for (var i = 0; i < keys1.lengh; i++) {
+		for (var i = 0; i < keys1.length; i++) {
 			var key = keys1[i];
 			if (state1[key] !== state2[key]) {
 				return false;
@@ -92,64 +92,84 @@ function(
 	};
 
 	ShadowHandler.prototype.checkShadowRendering = function(renderer, partitioner, entities, lights) {
-		this.shadowMatrices = [];
 		this.shadowResults = [];
-		this.shadowLightPositions = [];
+		this.shadowLights = [];
+		// this.shadowMatrices = [];
+		// this.shadowLightPositions = [];
 		for (var i = 0; i < lights.length; i++) {
 			var light = lights[i];
 
 			if (light.shadowCaster) {
-				var lightCam = this.lightCam;
-
 				var shadowSettings = light.shadowSettings;
 
 				if (!shadowSettings.shadowData) {
 					this._createShadowData(shadowSettings);
 				}
 
+				var record = shadowSettings.shadowRecord;
+				var lightCamera = shadowSettings.shadowData.lightCamera;
+
 				// Update transformation
-				lightCam.translation.copy(light.translation);
+				lightCamera.translation.copy(light.translation);
 				if (light.direction) {
 					this.tmpVec.setv(light.translation).addv(light.direction);
-					lightCam.lookAt(this.tmpVec, shadowSettings.upVector);
+					lightCamera.lookAt(this.tmpVec, shadowSettings.upVector);
 				} else {
-					lightCam.lookAt(Vector3.ZERO, shadowSettings.upVector);
+					lightCamera.lookAt(Vector3.ZERO, shadowSettings.upVector);
 				}
 
 				// Update settings
-				if (!this._testStatesEqual(this.currentSettings, shadowSettings) || this.currentSettings.angle !== light.angle) {
+				if (record.angle !== light.angle ||
+					!record.resolution ||
+					record.resolution[0] !== shadowSettings.resolution[0] ||
+					record.resolution[1] !== shadowSettings.resolution[1] ||
+					record.near !== shadowSettings.near ||
+					record.far !== shadowSettings.far ||
+					record.size !== shadowSettings.size) {
+
 					if (light instanceof SpotLight) {
-						lightCam.setFrustumPerspective(light.angle * 2, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
-						this.currentSettings.angle = light.angle;
+						lightCamera.setFrustumPerspective(light.angle * 2, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
+					} else if (light instanceof PointLight) {
+						lightCamera.setFrustumPerspective(90, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
 					} else {
 						var radius = shadowSettings.size;
-						lightCam.setFrustum(shadowSettings.near, shadowSettings.far, -radius, radius, radius, -radius);
-						lightCam.projectionMode = Camera.Parallel;
+						lightCamera.setFrustum(shadowSettings.near, shadowSettings.far, -radius, radius, radius, -radius);
+						lightCamera.projectionMode = Camera.Parallel;
 					}
-					lightCam.update();
 
-					if (shadowSettings.type === 'Blur') {
+					lightCamera.update();
+
+					record.resolution = record.resolution || [];
+					record.resolution[0] = shadowSettings.resolution[0];
+					record.resolution[1] = shadowSettings.resolution[1];
+					record.angle = light.angle;
+					record.near = shadowSettings.near;
+					record.far = shadowSettings.far;
+					record.size = shadowSettings.size;
+
+					console.log('updated stuff');
+				}
+
+				if (this.shadowTypeRecord !== this.shadowType) {
+					if (this.shadowType === 'VSM') {
 						this.depthMaterial.cullState.cullFace = 'Back';
-						this.depthMaterial.shader.defines.SHADOW_TYPE = 1;
+						this.depthMaterial.shader.defines.SHADOW_TYPE = 2;
 					} else {
 						this.depthMaterial.cullState.cullFace = 'Back';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 0;
 					}
 
-					// copy settings
-					this.currentSettings = {};
-					for (var key in shadowSettings) {
-						this.currentSettings[key] = shadowSettings[key];
-					}
+					this.shadowTypeRecord = this.shadowType;
 
-					console.log('updated light');
+					console.log('updated type');
 				}
 
-				lightCam.onFrameChange();
+				lightCamera.onFrameChange();
 
-				var matrix = lightCam.getViewProjectionMatrix();
-				this.shadowMatrices.push(matrix.clone());
-				this.shadowLightPositions.push(lightCam.translation.clone());
+				// var matrix = lightCamera.getViewProjectionMatrix();
+				this.shadowLights.push(light);
+				// this.shadowMatrices.push(matrix.clone());
+				// this.shadowLightPositions.push(lightCamera.translation.clone());
 
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
@@ -161,11 +181,11 @@ function(
 						this.shadowList.push(entity);
 					}
 				}
-				partitioner.process(lightCam, this.shadowList, this.renderList);
-				renderer.render(this.renderList, lightCam, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
+				partitioner.process(lightCamera, this.shadowList, this.renderList);
+				renderer.render(this.renderList, lightCamera, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
 
-				switch (shadowSettings.type) {
-					case 'Blur':
+				switch (this.shadowType) {
+					case 'VSM':
 						this.fullscreenPass.material.shader = this.downsample;
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
 
@@ -175,7 +195,10 @@ function(
 
 						this.shadowResults.push(shadowSettings.shadowData.shadowBlurred);
 						break;
-					case 'None':
+					case 'PCF':
+						this.shadowResults.push(shadowSettings.shadowData.shadowTarget);
+						break;
+					case 'Basic':
 						this.shadowResults.push(shadowSettings.shadowData.shadowTarget);
 						break;
 					default:
