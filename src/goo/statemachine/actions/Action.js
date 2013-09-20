@@ -4,7 +4,6 @@ function() {
 	"use strict";
 
 	function Action(id, settings) {
-		console.log(id, settings);
 		this.id = id;
 		this.configure(settings || {});
 	}

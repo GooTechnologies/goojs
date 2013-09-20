@@ -106,7 +106,15 @@ define([
 			};
 			for (var textureType in config.texturesMapping) {
 				var textureRef = config.texturesMapping[textureType];
-				updateTexture(textureType, textureRef);
+				if (typeof textureRef === 'string') {
+					updateTexture(textureType, textureRef);
+				} else {
+					if (textureRef.enabled) {
+						updateTexture(textureType, textureRef.textureRef);
+					} else {
+						object.removeTexture(textureType);
+					}
+				}
 			}
 			if (promises.length) {
 				return RSVP.all(promises).then(function(textures) {
