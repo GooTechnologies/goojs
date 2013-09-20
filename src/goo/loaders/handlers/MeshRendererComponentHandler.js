@@ -65,7 +65,9 @@ define([
 						break;
 					}
 				}
-				materials.push(selectMaterial);
+				if (selectMaterial) {
+					materials.push(selectMaterial);
+				}
 			}
 			component.materials = materials;
 			for (key in config) {

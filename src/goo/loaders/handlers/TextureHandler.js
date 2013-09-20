@@ -127,7 +127,7 @@ define([
 					throw new Error("Unknown texture type " + type);
 				}
 			} else {
-				loadedPromise.resolve(texture);
+				return pu.createDummyPromise(texture);
 			}
 
 		}
