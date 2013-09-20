@@ -36,7 +36,7 @@ function(
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
 
-		this.shadowType = 'VSM';
+		this.shadowType = 'Basic';
 		this.shadowTypeRecord = null;
 
 		this.oldClearColor = new Vector4(0, 0, 0, 0);
