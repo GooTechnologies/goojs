@@ -39,8 +39,8 @@ function (
 
 		this._interestComponents = [
 			'CameraComponent',
-			'LightComponent',
-			'MeshRendererComponent'
+			'LightComponent'
+			//'MeshRendererComponent'
 		];
 
 		this.camera = null;
@@ -57,6 +57,9 @@ function (
 				that.lights = lights;
 			}
 		});
+
+		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
+		this.selectionActive = false;
 	}
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
@@ -92,6 +95,9 @@ function (
 					this.renderList[count++] = renderables[1];
 				}
 			}
+		}
+		if (this.selectionActive) {
+			this.renderList[count++] = this.selectionRenderable[0];
 		}
 		this.renderList.length = count;
 		this.currentTpf = tpf;

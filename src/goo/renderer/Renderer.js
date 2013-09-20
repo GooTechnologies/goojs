@@ -569,7 +569,7 @@ function (
 		if(this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {
-			count = Math.max(this._overrideMaterials.length, materials.length);
+			count = this._overrideMaterials.length;
 		}
 
 		for (var i = 0; i < count; i++) {

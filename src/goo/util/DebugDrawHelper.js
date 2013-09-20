@@ -9,6 +9,7 @@ define([
 
 	'goo/shapes/debug/LightDebug',
 	'goo/shapes/debug/CameraDebug',
+	'goo/shapes/debug/MeshRendererDebug',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Transform'
@@ -23,6 +24,7 @@ define([
 
 	LightDebug,
 	CameraDebug,
+	MeshRendererDebug,
 	Material,
 	ShaderLib,
 	Transform
@@ -32,6 +34,7 @@ define([
 
 	var lightDebug = new LightDebug();
 	var cameraDebug = new CameraDebug();
+	var meshRendererDebug = new MeshRendererDebug();
 
 	DebugDrawHelper.getRenderablesFor = function(component) {
 		var meshes, material;
@@ -45,8 +48,8 @@ define([
 			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
-			return;
-			// Not done yet
+			meshes = meshRendererDebug.getMesh();
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		}
 		return [
 		 {
