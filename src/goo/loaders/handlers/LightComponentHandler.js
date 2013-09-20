@@ -6,7 +6,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/math/Vector',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/math/Vector3'
 ], function(
 	ComponentHandler,
 	LightComponent,
@@ -16,7 +17,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	Vector,
 	RSVP,
 	pu,
-	_
+	_,
+	Vector3
 ) {
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -45,7 +47,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 				size: 400,
 				near: 1,
 				/** @type {number} */
-				far: 1000
+				far: 1000,
+				resolution: [512, 512],
+				upVector: Vector3.UNIT_Y
 			});
 		}
 	};
