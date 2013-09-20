@@ -34,6 +34,7 @@ define([
 
 	TextureHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('texture', TextureHandler);
+	TextureHandler.prototype.constructor = TextureHandler;
 
 	TextureHandler.loaders = {
 		dds: DdsLoader,
@@ -85,7 +86,7 @@ define([
 			texture.anisotropy = config.anisotropy;
 
 			texture.offset.set(config.offset);
-			texture.repeat.set(config.offset);
+			texture.repeat.set(config.repeat);
 
 			texture.flipY = config.flipY;
 
