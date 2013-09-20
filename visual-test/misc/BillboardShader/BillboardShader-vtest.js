@@ -106,23 +106,14 @@ require([
 		cameraEntity.setComponent(scripts);
 	}
 
-	function flatwaterAndParticlesDemo(goo) {
+	function init() {
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
 		addCamera(goo);
 		addLamps(goo);
-
 		addBox(goo);
-	}
-
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		flatwaterAndParticlesDemo(goo);
 	}
 
 	init();
