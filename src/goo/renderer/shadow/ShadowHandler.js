@@ -126,7 +126,7 @@ function(
 					record.size !== shadowSettings.size) {
 
 					if (light instanceof SpotLight) {
-						lightCamera.setFrustumPerspective(light.angle * 2, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
+						lightCamera.setFrustumPerspective(light.angle, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
 					} else if (light instanceof PointLight) {
 						lightCamera.setFrustumPerspective(90, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
 					} else {
