@@ -10,66 +10,57 @@ function(
 	"use strict";
 
 	function KeyDownAction(id, settings) {
-		this.id = id;
-		
-		this.configure(settings||{});
+		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === this.key) { this.updated = true; }
-			/*
-			 if (this.posVariable) {
-			 if (fsm.localVariables[this.posVariable] !== undefined) {
-			 fsm.localVariables[this.posVariable] = [event.clientX, event.clientY];
-			 } else if (FSMComponent.globalVariables[this.posVariable] !== undefined) {
-			 FSMComponent.globalVariables[this.posVariable] = [event.clientX, event.clientY];
-			 }
-			 }
-			 */
+			if (event.which === this.key) {
+				this.updated = true;
+				if (this.keyVariable) {
+					fsm.applyToVariable(this.keyVariable, function() { return event.which; });
+				}
+			}
 		}.bind(this);
 	}
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
-
 
 	KeyDownAction.prototype.configure = function(settings) {
 		this.everyFrame = settings.everyFrame || true;
 		this.eventToEmit = { channel: settings.transitions.keydown };
 		var key = settings.key || 'a';
 		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		// variable to store the key and moment of press?
-		this.transitions = settings.transitions || {};
+		this.keyVariable = settings.keyVariable;
 	};
 
-	KeyDownAction.external = {};
-	KeyDownAction.external.parameters = [
-		{
-			name: 'Key',
-			key: 'key',
-			type: 'key',
-			description: 'Key to listen for',
-			'default': 'w'
-		}
-	];
+	KeyDownAction.external = {
+		parameters: [{
+				name: 'Key',
+				key: 'key',
+				type: 'key',
+				description: 'Key to listen for'
+			}, {
+				name: 'Key variable',
+				key: 'keyVariable',
+				type: 'identifier',
+				description: 'Variable to store the key in'
+			}],
 
-	KeyDownAction.external.transitions = [
-		{
+		transitions: [{
 			name: 'keydown',
 			description: 'Fired on key down'
-		}
-	];
-
-
+		}]
+	};
 
 	KeyDownAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	KeyDownAction.prototype._run = function(proxy) {
+	KeyDownAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.eventToEmit) {
-				proxy.send(this.eventToEmit.channel, this.eventToEmit.data);
+				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
 			}
 		}
 	};

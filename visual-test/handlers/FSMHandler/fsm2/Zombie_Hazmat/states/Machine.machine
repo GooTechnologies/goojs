@@ -7,6 +7,7 @@
         {
             "actions": [
                 {
+                    "id": "LTM0NjY0OTQ2Ng==", 
                     "name": "KeyDownAction", 
                     "options": {
                         "Key": "w", 
@@ -18,10 +19,11 @@
                     "type": "KeyDownAction"
                 }, 
                 {
+                    "id": "OTEyMzc3ODYx", 
                     "name": "LogVariableAction", 
                     "options": {
                         "Message": "hello", 
-                        "message": "prim", 
+                        "message": "message", 
                         "transitions": {}
                     }, 
                     "type": "LogVariableAction"
@@ -37,6 +39,7 @@
         {
             "actions": [
                 {
+                    "id": "LTIwOTc1MDk0NTY=", 
                     "name": "KeyDownAction", 
                     "options": {
                         "Key": "w", 
@@ -48,10 +51,11 @@
                     "type": "KeyDownAction"
                 }, 
                 {
+                    "id": "MTM0NjI0OTI2Mw==", 
                     "name": "LogVariableAction", 
                     "options": {
                         "Message": "hello", 
-                        "message": "second", 
+                        "message": "mesaj", 
                         "transitions": {}
                     }, 
                     "type": "LogVariableAction"

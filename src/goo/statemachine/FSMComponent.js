@@ -10,7 +10,7 @@ function (
 	"use strict";
 
 	/**
-	 * @class Machines!.
+	 * @class FSMComponent
 	 */
 	function FSMComponent() {
 		this.type = 'FSMComponent';

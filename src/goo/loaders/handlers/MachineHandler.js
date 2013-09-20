@@ -19,23 +19,22 @@ define([
 	Actions,
 	RSVP
 ) {
-	
+	'use strict';
+
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
 	}
-
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('machine', MachineHandler);
 
 	MachineHandler.prototype._updateActions = function(state, stateConfig) {
 		for (var j = 0; j < stateConfig.actions.length; j++) {
-			
 			var actionConfig = stateConfig.actions[j];
 			var action = state.getAction(actionConfig.id);
 
-			if (action===undefined) {
+			if (action === undefined) {
 				// New action
 				var actionClass = Actions.actionForType(actionConfig.type);
 				if (actionClass instanceof Function) {
@@ -59,8 +58,7 @@ define([
 	};
 
 	MachineHandler.prototype._updateState = function(realMachine, stateConfig) {
-
-		var realState = realMachine._states? realMachine._states[stateConfig.id]:undefined;
+		var realState = realMachine._states ? realMachine._states[stateConfig.id] : undefined;
 		if (realState === undefined) {
 			realState = new State(stateConfig.id);
 			realMachine.addState(realState);

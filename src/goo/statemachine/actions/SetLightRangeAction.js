@@ -3,36 +3,34 @@ define(['goo/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
-	function SetLightRangeAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || false;
-
-		this.entity = settings.entity || null;
-		this.range = settings.range || 100;
+	function SetLightRangeAction(id, settings) {
+		Action.apply(this, arguments);
 	}
 
 	SetLightRangeAction.prototype = Object.create(Action.prototype);
 
-	SetLightRangeAction.external = {};
-	SetLightRangeAction.external.parameters = [
-		{
+	SetLightRangeAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame || false;
+		this.entity = settings.entity || null;
+		this.range = settings.range || 100;
+	};
+
+	SetLightRangeAction.external = {
+		parameters: [{
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
 			description: 'Light entity'
-		},
-		{
+		}, {
 			name: 'Range',
 			key: 'range',
-			type: 'float',
+			type: 'real',
 			description: 'Light range',
 			'default': 100,
 			min: 0
-		}
-	];
-
-	SetLightRangeAction.external.transitions = [
-	];
+		}],
+		transitions: []
+	};
 
 	SetLightRangeAction.prototype._run = function(/*fsm*/) {
 		if (this.entity &&

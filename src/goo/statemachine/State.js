@@ -143,6 +143,9 @@ function (
 	}
 
 	State.prototype.addAction = function (action) {
+		// check if action is already added
+		if (this._actions[action.id]) return;
+
 		if (action.onCreate) {
 			action.onCreate(this.proxy);
 		}
