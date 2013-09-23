@@ -58,7 +58,12 @@ function (
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {boolean} [settings.flipY='true']
+	 * @param {boolean} [settings.offset=(0,0)] Texture offset
+	 * @param {boolean} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
+	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
+	 * @param {boolean} [settings.unpackAlignment=1] Unpack alignment setting
+	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
 	 */
 	function Texture(image, settings, width, height) {
 		this.glTexture = null;
@@ -82,6 +87,7 @@ function (
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
 		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
+		this.unpackAlignment = settings.unpackAlignment !== undefined ? settings.unpackAlignment : 1;
 		this.flipY = settings.flipY !== undefined ? settings.flipY : true;
 
 		this.hasBorder = false;

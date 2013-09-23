@@ -1097,7 +1097,10 @@ function (
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
-		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, 1);
+		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, texture.unpackAlignment);
+
+		// Using premultiplied alpha
+		context.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultiplyAlpha);
 
 		// set if we want to flip on Y
 		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);
