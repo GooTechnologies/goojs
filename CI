@@ -2,4 +2,6 @@
 
 # Continuous integration script
 
+#rm -rf node_modules
+npm install
 ./build/release.py build-$BUILD_NUMBER
