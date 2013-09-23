@@ -23,15 +23,6 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		uglify: {
-			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-			},
-			build: {
-				src: 'src/<%= pkg.name %>.js',
-				dest: 'build/<%= pkg.name %>.min.js'
-			}
-		},
 		requirejs: {
 			dist: {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -42,19 +33,44 @@ module.exports = function(grunt) {
 					useStrict: true,
 					wrap: true,
 					keepBuildDir: true,
-					generateSourceMaps: true,
+					//generateSourceMaps: true,
 					dir: 'out/minified/',
 					modules: [{
 						name: 'goo',
 					}],
-					wrap: {
-						start:
-							'/* Goo Engine <%= pkg.version %>\n' +
-							' * Copyright 2013 Goo Technologies AB\n' +
-							' */\n' +
-							'(function(window, undefined) {',
-						end: '}(window));'
-					},
+					wrap: true
+					// I tried using a wrap block like this, but it has no effect
+					// wrap: { ... }
+					/*
+					uglify2: {
+						output: {
+							beautify: true
+						},
+						compress: {
+							sequences: false,
+							global_defs: {
+								DEBUG: false
+							}
+						},
+						warnings: true,
+						mangle: false
+					}*/
+				}
+			}
+		},
+		wrap: {
+			basic: {
+				src: ['out/minified/goo.js'],
+				dest: 'out/',
+				options: {
+					wrapper: [
+						'/* Goo Engine <%= pkg.version %>\n' +
+						' * Copyright 2013 Goo Technologies AB\n' +
+						' */\n' +
+						'(function(window, undefined) {',
+						// ...
+						'}(window));'
+					]
 				}
 			}
 		}
@@ -62,8 +78,9 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-wrap');
 
 	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['requirejs']);
+	grunt.registerTask('minify', ['requirejs', 'wrap']);
 
 };
