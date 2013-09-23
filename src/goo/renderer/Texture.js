@@ -77,7 +77,7 @@ function (
 		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = new Vector2(settings.offset || [0,0]);
+		this.offset = new Vector2(settings.offset || [0, 0]);
 		this.repeat = new Vector2(settings.repeat || [1, 1]);
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;

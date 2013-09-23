@@ -57,10 +57,13 @@ function(
 				}
 
 				if (type === 'DIFFUSE_MAP') {
+					var offset = textureMaps[type].offset;
 					var repeat = textureMaps[type].repeat;
-					shader.uniforms.diffuseRepeat = shader.uniforms.diffuseRepeat || [1, 1];
-					shader.uniforms.diffuseRepeat[0] = repeat.x;
-					shader.uniforms.diffuseRepeat[1] = repeat.y;
+					shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
+					shader.uniforms.offsetRepeat[0] = offset.x;
+					shader.uniforms.offsetRepeat[1] = offset.y;
+					shader.uniforms.offsetRepeat[2] = repeat.x;
+					shader.uniforms.offsetRepeat[3] = repeat.y;
 				}
 			}
 
