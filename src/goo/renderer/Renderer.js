@@ -371,6 +371,12 @@ function (
 		}
 	});
 
+	/**
+	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
+	 * if that is the case it will call this.setSize
+	 * It also checks if the camera aspect changed and will update it calling camera.setFrustumPerspective()
+	 * @param {Camera} [camera] optional camera argument
+	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
 		var adjustHeight = this.domElement.offsetHeight / this.downScale;
@@ -386,6 +392,13 @@ function (
 		}
 	};
 
+	/**
+	 * Sets this.domElement.width and height using the parameters.
+	 * Then it calls this.setViewport(0, 0, width, height);
+	 * Finally it resets the hardwarePicking.pickingTarget
+	 * @param {number} width
+	 * @param {number} height
+	 */
 	Renderer.prototype.setSize = function (width, height) {
 		this.domElement.width = width;
 		this.domElement.height = height;
@@ -397,6 +410,15 @@ function (
 		}
 	};
 
+	/**
+	 * Sets this.viewportX and viewportY to the parameters or to 0
+	 * Sets this.viewportWidth and viewportHeight to the parameters or to this.domElement.width and height.
+	 * Finally it calls this.context.viewport(x,y,w,h) with the resulting values.
+	 * @param {number} [x] optional x coordinate
+	 * @param {number} [y] optional y coordinate
+	 * @param {number} [width] optional width coordinate
+	 * @param {number} [height] optional height coordinate
+	 */
 	Renderer.prototype.setViewport = function (x, y, width, height) {
 		this.viewportX = x !== undefined ? x : 0;
 		this.viewportY = y !== undefined ? y : 0;
