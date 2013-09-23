@@ -92,7 +92,7 @@ define([
 					object.uniforms[name] = _.clone(config.uniforms[name]);
 				} else {
 					if (config.uniforms[name].enabled) {
-						object.uniforms[name] = _.clone(config.uniforms[name]);
+						object.uniforms[name] = _.clone(config.uniforms[name].value);
 					} else {
 						delete object.uniforms[name];
 					}
