@@ -49,13 +49,11 @@ define([
 		material.cullState.cullFace = 'Front';
 		material.depthState.enabled = false;
 
+		material.renderQueue = 1;
+
 		this.materials = [material];
 		this.transform = new Transform();
 		this.transform.rotation.fromAngles(-Math.PI/2, yRotation, 0);
-		//this.transform.rotation.rotateX(-Math.PI/2);
-		//this.transform.rotation.rotateY(yRotation);
-		// y rotation goes here
-		//this.transform.scale.setd(100,100,100);
 		this.transform.update();
 		this.active = true;
 	}

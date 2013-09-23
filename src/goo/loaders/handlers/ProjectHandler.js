@@ -10,7 +10,8 @@ define([
 	'goo/math/Vector4',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util'
+	'goo/renderer/Util',
+	'goo/entities/EntityUtils'
 ], function(
 	ConfigHandler,
 	RSVP,
@@ -23,7 +24,8 @@ define([
 	Vector4,
 	ShaderLib,
 	FullscreenPass,
-	Util
+	Util,
+	EntityUtils
 ) {
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -43,11 +45,16 @@ define([
 
 	ProjectHandler.prototype._addSkybox = function(goo, shape, textures, rotation) {
 		var skybox = new Skybox(shape, textures, Sphere.TextureModes.Projected, rotation);
+		var skyboxEntity = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
+		skyboxEntity.transformComponent.updateWorldTransform();
+		goo.world.getSystem('RenderSystem').added(skyboxEntity);
+		/*
 		goo.callbacksPreRender.push(function() {
 			if (skybox.active) {
 				goo.renderer.render([skybox], Renderer.mainCamera, []);
 			}
 		});
+		*/
 	};
 
 	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
@@ -96,7 +103,7 @@ define([
 		var that = this;
 
 		var promises = [];
-		if (config.posteffectRefs && Array.isArray(config.posteffectRefs && config.posteffectRefs.length > 0)) {
+		if (config.posteffectRefs && Array.isArray(config.posteffectRefs) && config.posteffectRefs.length > 0) {
 			var handlePosteffectRef = function(posteffectRef) {
 				return promises.push(that.getConfig(posteffectRef).then(function(posteffectConfig) {
 					return that.updateObject(posteffectRef, posteffectConfig, that.options);
