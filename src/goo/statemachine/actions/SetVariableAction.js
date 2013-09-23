@@ -1,27 +1,27 @@
 define([
 	'goo/statemachine/actions/Action',
 	'goo/statemachine/FSMUtil'
-],
+	],
 /** @lends */
 function(
 	Action,
 	FSMUtil
-) {
+	) {
 	"use strict";
 
-	function MultiplyVariableAction(settings) {
+	function SetVariableAction(settings) {
 		Action.apply(this, arguments);
 	}
 
-	MultiplyVariableAction.prototype = Object.create(Action.prototype);
+	SetVariableAction.prototype = Object.create(Action.prototype);
 
-	MultiplyVariableAction.prototype.configure = function(settings) {
-		this.everyFrame = !!settings.everyFrame;
+	SetVariableAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame !== false;
 		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
+		this.amount = settings.amount || 0;
 	};
 
-	MultiplyVariableAction.external = {
+	SetVariableAction.external = {
 		parameters: [{
 			name: 'Variable',
 			key: 'variable',
@@ -40,11 +40,13 @@ function(
 		transitions: []
 	};
 
-	MultiplyVariableAction.prototype._run = function(fsm) {
-		fsm.applyToVariable(this.variable, function(v) {
-			return v * FSMUtil.getValue(this.amount, fsm);
-		}.bind(this));
+	SetVariableAction.prototype._run = function(fsm) {
+		if (this.variable) {
+			fsm.applyOnVariable(this.variable, function() {
+				return FSMUtil.getValue(this.amount, fsm);
+			}.bind(this));
+		}
 	};
 
-	return MultiplyVariableAction;
+	return SetVariableAction;
 });

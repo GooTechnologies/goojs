@@ -1,70 +1,74 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	FSMUtil
 ) {
 	"use strict";
 
 	function NumberCompareAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.float1 = settings.float1 || 0.0;
-		this.float1Variable = settings.float1Variable || '';
-		this.float2 = settings.float2 || 0.0;
-		this.float2Variable = settings.float2Variable || '';
-		this.tolerance = settings.tolerance || 0.0;
-
-		this.equalsEvent = settings.equalsEvent;
-		this.lessThanEvent = settings.lessThanEvent;
-		this.greaterThanEvent = settings.greaterThanEvent;
-
-		this.external = {
-			float1: ['float', 'Number 1'],
-			float1Variable: ['string', 'Number 1 Variable'],
-			float2: ['float', 'Number 2'],
-			float2Variable: ['string', 'Number 2 Variable'],
-			tolerance: ['float', 'Tolerance'],
-
-			equalsEvent: ['string', 'Equals Event'],
-			lessThanEvent: ['string', 'Less Than Event'],
-			greaterThanEvent: ['string', 'Greater Than Event']
-		};
+		Action.apply(this, arguments);
 	}
 
 	NumberCompareAction.prototype = Object.create(Action.prototype);
 
-	NumberCompareAction.external = {};
-	NumberCompareAction.external.parameters = [
-		{
-			name: 'First value',
-			key: '',
-			type: 'key',
-			description: 'Key to listen for',
-			'default': 'w'
-		}
-	];
+	NumberCompareAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame !== false;
+		this.leftHand = settings.leftHand || 0;
+		this.rightHand = settings.rightHand || 0;
+		this.tolerance = settings.tolerance || 0.0001;
+		this.lessThanEvent = { channel: settings.transitions.less };
+		this.equalEvent = { channel: settings.transitions.equal };
+		this.greaterThanEvent = { channel: settings.transitions.greater };
+	};
 
-	NumberCompareAction.external.transitions = [
-		{
-			name: 'On key up',
-			description: 'Event fired on key up'
-		}
-	];
+	NumberCompareAction.external = {
+		parameters: [{
+			name: 'Left hand value',
+			key: 'leftHand',
+			type: 'float'
+		}, {
+			name: 'Right hand value',
+			key: 'rightHand',
+			type: 'float'
+		}, {
+			name: 'Tolerance',
+			key: 'tolerance',
+			type: 'float',
+			'default': 0.0001
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
+		}],
+		transitions: [{
+			name: 'less',
+			description: 'Event fired if left hand argument is smaller than right hand argument'
+		}, {
+			name: 'equal',
+			description: 'Event fired if both sides are approximately equal'
+		}, {
+			name: 'greater',
+			description: 'Event fired if left hand argument is greater than right hand argument'
+		}]
+	};
 
 	NumberCompareAction.prototype._run = function(fsm) {
-		var float1 = !!this.float1Variable || this.float1Variable !== '' ? fsm.getVariable(this.float1Variable) : this.float1;
-		var float2 = !!this.float2Variable || this.float2Variable !== '' ? fsm.getVariable(this.float2Variable) : this.float2;
-		var diff = float1 - float2;
+		var leftHand = FSMUtil.getValue(this.leftHand, fsm);
+		var rightHand = FSMUtil.getValue(this.rightHand, fsm);
+		var diff = rightHand - leftHand;
 
 		if (Math.abs(diff) <= this.tolerance) {
-			if (this.equalsEvent) { fsm.send(this.equalsEvent); }
+			if (this.equalEvent) { fsm.send(this.equalEvent.channel); }
 		} else if (diff < 0) {
-			if (this.lessThanEvent) { fsm.send(this.lessThanEvent); }
+			if (this.lessThanEvent) { fsm.send(this.lessThanEvent.channel); }
 		} else {
-			if (this.greaterThanEvent) { fsm.send(this.greaterThanEvent); }
+			if (this.greaterThanEvent) { fsm.send(this.greaterThanEvent.channel); }
 		}
 	};
 

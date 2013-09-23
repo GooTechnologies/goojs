@@ -10,7 +10,7 @@ function(Action) {
 	SetLightRangeAction.prototype = Object.create(Action.prototype);
 
 	SetLightRangeAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame || false;
+		this.everyFrame = !!settings.everyFrame;
 		this.entity = settings.entity || null;
 		this.range = settings.range || 100;
 	};
@@ -28,6 +28,12 @@ function(Action) {
 			description: 'Light range',
 			'default': 100,
 			min: 0
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
 		}],
 		transitions: []
 	};

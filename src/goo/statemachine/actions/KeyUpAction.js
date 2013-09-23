@@ -17,7 +17,7 @@ function(
 			if (event.which === this.key) {
 				this.updated = true;
 				if (this.keyVariable) {
-					fsm.applyToVariable(this.keyVariable, function() { return event.which; });
+					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
 				}
 			}
 		}.bind(this);
@@ -26,7 +26,7 @@ function(
 	KeyUpAction.prototype = Object.create(Action.prototype);
 
 	KeyUpAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame || true;
+		this.everyFrame = true;
 		this.eventToEmit = { channel: settings.transitions.keyup };
 		var key = settings.key || 'a';
 		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];

@@ -17,7 +17,7 @@ function(
 			if (event.which === this.key) {
 				this.updated = true;
 				if (this.keyVariable) {
-					fsm.applyToVariable(this.keyVariable, function() { return event.which; });
+					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
 				}
 			}
 		}.bind(this);
@@ -26,7 +26,7 @@ function(
 	KeyDownAction.prototype = Object.create(Action.prototype);
 
 	KeyDownAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame || true;
+		this.everyFrame = true;
 		this.eventToEmit = { channel: settings.transitions.keydown };
 		var key = settings.key || 'a';
 		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
@@ -35,16 +35,16 @@ function(
 
 	KeyDownAction.external = {
 		parameters: [{
-				name: 'Key',
-				key: 'key',
-				type: 'key',
-				description: 'Key to listen for'
-			}, {
-				name: 'Key variable',
-				key: 'keyVariable',
-				type: 'identifier',
-				description: 'Variable to store the key in'
-			}],
+			name: 'Key',
+			key: 'key',
+			type: 'key',
+			description: 'Key to listen for'
+		}, {
+			name: 'Key variable',
+			key: 'keyVariable',
+			type: 'identifier',
+			description: 'Variable to store the key in'
+		}],
 
 		transitions: [{
 			name: 'keydown',

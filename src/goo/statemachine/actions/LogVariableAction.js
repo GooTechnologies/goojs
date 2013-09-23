@@ -16,7 +16,7 @@ function(
 	LogVariableAction.prototype = Object.create(Action.prototype);
 
 	LogVariableAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame || false;
+		this.everyFrame = !!settings.everyFrame;
 		this.message = settings.message || '';
 	};
 
@@ -27,6 +27,12 @@ function(
 			type: 'string',
 			description: 'message to print',
 			'default': 'hello'
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': false
 		}],
 		transitions: []
 	};

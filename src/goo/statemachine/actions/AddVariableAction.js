@@ -10,34 +10,35 @@ function(
 	"use strict";
 
 	function AddVariableAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || false;
-
-		this.variable = settings.variable || null;
-		this.amount = settings.amount || 1;
+		Action.apply(this, arguments);
 	}
 
 	AddVariableAction.prototype = Object.create(Action.prototype);
 
-	AddVariableAction.external = [
-		{
-			name: 'Entity',
-			key: 'entity',
-			type: 'entity'
-		},
-		{
-			name: 'Position',
-			key: 'position',
-			type: 'vec3'
-		},
-		{
-			name: 'Speed',
-			key: 'speed',
-			type: 'float',
-			control: 'slider',
-			min: 0,
-			max: 10
-		}];
+	AddVariableAction.prototype.configure = function(settings) {
+		this.everyFrame = !!settings.everyFrame;
+		this.variable = settings.variable || null;
+		this.amount = settings.amount || 1;
+	};
+
+	AddVariableAction.external = {
+		parameters: [{
+			name: 'Variable',
+			key: 'variable',
+			type: 'identifier'
+		}, {
+			name: 'Amount',
+			key: 'amount',
+			type: 'float'
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': false
+		}],
+		transitions: []
+	};
 
 	AddVariableAction.prototype._run = function(fsm) {
 		fsm.applyToVariable(this.variable, function(v) {

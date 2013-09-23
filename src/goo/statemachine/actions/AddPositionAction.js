@@ -16,7 +16,7 @@ function(
 	AddPositionAction.prototype = Object.create(Action.prototype);
 
 	AddPositionAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame || true;
+		this.everyFrame = settings.everyFrame !== false;
 		this.entity = settings.entity || null;
 		this.amountX = settings.amountX || 0;
 		this.amountY = settings.amountY || 0;
