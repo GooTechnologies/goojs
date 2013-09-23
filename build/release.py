@@ -44,7 +44,8 @@ release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
 print 'Creating release in', release_dir
 if not os.path.isdir(release_dir):
 	os.makedirs(release_dir)
-shutil.copy('minified/goo/goo.js', release_dir)
 shutil.copytree('minified/goo/lib', release_dir + '/lib')
+shutil.copy('minified/goo/goo.js', release_dir + '/lib/goo.js')
 shutil.copytree('goojs-jsdoc', release_dir + '/docs')
+shutil.copytree('visual-test', release_dir + '/visual-test')
 shutil.copy('COPYING', release_dir + '/COPYING')
