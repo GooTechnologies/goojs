@@ -1,0 +1,20 @@
+v0.5.0 --- 2013-09-23
+
+Additions:
+ + Shadows for more than one light
+ + Anisotropic filtering
+ + Bus - a message bus with hierarchical channels
+ + Texture offset/repeat handling for übershader
+ + More texture settings (premultiplyAlpha, unpackAlignment)
+ + More visual tests
+ + More API-documentation
+
+Experimental additions:
+ + Software occlusion culling
+ + Nested, layered, event driven state machine system
+
+Fixes:
+ * Marker system now displays both bounding boxes and bounding spheres
+ * Fixed a background flickering bug
+ * Fixed bugs in the light debug mesh
+ * Fixed numerous other bugs
