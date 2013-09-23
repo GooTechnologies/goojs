@@ -36,6 +36,7 @@ else:
 subprocess.check_call([command, 'minify'])
 subprocess.check_call([command, '-i', 'requireLib', 'minify'])
 subprocess.check_call([command, 'jsdoc'])
+subprocess.check_call([command, 'visualtoc'])
 
 goo_root = work_dir + '/goo'
 
@@ -53,3 +54,4 @@ shutil.copy('minified/goo/goo-require.js', release_dir + '/lib/goo-require.js')
 shutil.copytree('goojs-jsdoc', release_dir + '/docs')
 shutil.copytree('visual-test', release_dir + '/visual-test')
 shutil.copy('COPYING', release_dir + '/COPYING')
+shutil.copytree('visual-test', release_dir + '/visual-test')
