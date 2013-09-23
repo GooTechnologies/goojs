@@ -88,7 +88,16 @@ define([
 			object.shader = shader;
 			object.uniforms = {};
 			for (var name in config.uniforms) {
-				object.uniforms[name] = _.clone(config.uniforms[name]);
+				if (typeof config.uniforms[name].enabled === 'undefined') {
+					object.uniforms[name] = _.clone(config.uniforms[name]);
+				} else {
+					if (config.uniforms[name].enabled) {
+						object.uniforms[name] = _.clone(config.uniforms[name]);
+					} else {
+						delete object.uniforms[name];
+					}
+				}
+
 			}
 
 			var promises = [];
@@ -106,7 +115,15 @@ define([
 			};
 			for (var textureType in config.texturesMapping) {
 				var textureRef = config.texturesMapping[textureType];
-				updateTexture(textureType, textureRef);
+				if (typeof textureRef === 'string') {
+					updateTexture(textureType, textureRef);
+				} else {
+					if (textureRef.enabled) {
+						updateTexture(textureType, textureRef.textureRef);
+					} else {
+						object.removeTexture(textureType);
+					}
+				}
 			}
 			if (promises.length) {
 				return RSVP.all(promises).then(function(textures) {

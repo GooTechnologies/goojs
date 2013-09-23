@@ -1,27 +1,48 @@
-define(['goo/statemachine/actions/Action'],
+define([
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
+],
 /** @lends */
-function(Action) {
+function(
+	Action,
+	FSMUtil
+	) {
 	"use strict";
 
 	function SetClearColorAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || false;
-
-		this.color = settings.color || [0, 0, 0, 0];
+		Action.apply(this, arguments);
 	}
 
 	SetClearColorAction.prototype = Object.create(Action.prototype);
 
-	SetClearColorAction.external = [{
-			name:'Color',
-			key:'color',
-			type:'color'
-		}];
+	SetClearColorAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame !== false;
+		this.color = settings.color || [0, 0.05, 0.1, 1];
+	};
 
-	// not onCreate
+	SetClearColorAction.external = {
+		parameters: [{
+			name: 'Color',
+			key: 'color',
+			type: 'color'
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': false
+		}],
+		transitions: []
+	};
+
 	SetClearColorAction.prototype.onCreate = function(fsm) {
 		console.log("Setting clear color to " + JSON.stringify(this.color));
-		fsm.getEngine().renderer.setClearColor(this.color[0], this.color[1], this.color[2], this.color[3]);
+		fsm.getEngine().renderer.setClearColor(
+			FSMUtil.getValue(this.this.color[0], fsm),
+			FSMUtil.getValue(this.this.color[1], fsm),
+			FSMUtil.getValue(this.this.color[2], fsm),
+			FSMUtil.getValue(this.this.color[3], fsm)
+		);
 	};
 
 	return SetClearColorAction;

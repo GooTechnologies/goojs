@@ -18,6 +18,8 @@ function (
 		this.engine = engine;
 		this.resetRequest = false;
 		this.active = true;
+
+		//window.goor = engine;
 	}
 
 	FSMSystem.prototype = Object.create(System.prototype);

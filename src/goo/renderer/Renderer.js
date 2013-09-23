@@ -232,6 +232,7 @@ function (
 			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
 			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
 			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
+			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
 
 			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
 			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
@@ -333,7 +334,6 @@ function (
 			}
 		};
 
-		this.shadowCount = 0;
 		this.shadowHandler = new ShadowHandler();
 
 		// Hardware picking
@@ -371,6 +371,12 @@ function (
 		}
 	});
 
+	/**
+	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
+	 * if that is the case it will call this.setSize
+	 * It also checks if the camera aspect changed and will update it calling camera.setFrustumPerspective()
+	 * @param {Camera} [camera] optional camera argument
+	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
 		var adjustHeight = this.domElement.offsetHeight / this.downScale;
@@ -386,6 +392,13 @@ function (
 		}
 	};
 
+	/**
+	 * Sets this.domElement.width and height using the parameters.
+	 * Then it calls this.setViewport(0, 0, width, height);
+	 * Finally it resets the hardwarePicking.pickingTarget
+	 * @param {number} width
+	 * @param {number} height
+	 */
 	Renderer.prototype.setSize = function (width, height) {
 		this.domElement.width = width;
 		this.domElement.height = height;
@@ -397,6 +410,15 @@ function (
 		}
 	};
 
+	/**
+	 * Sets this.viewportX and viewportY to the parameters or to 0
+	 * Sets this.viewportWidth and viewportHeight to the parameters or to this.domElement.width and height.
+	 * Finally it calls this.context.viewport(x,y,w,h) with the resulting values.
+	 * @param {number} [x] optional x coordinate
+	 * @param {number} [y] optional y coordinate
+	 * @param {number} [width] optional width coordinate
+	 * @param {number} [height] optional height coordinate
+	 */
 	Renderer.prototype.setViewport = function (x, y, width, height) {
 		this.viewportX = x !== undefined ? x : 0;
 		this.viewportY = y !== undefined ? y : 0;
@@ -437,6 +459,10 @@ function (
 		}
 	};
 
+	Renderer.prototype.setShadowType = function (type) {
+		this.shadowHandler.shadowType = type;
+	};
+
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
 	};
@@ -473,7 +499,7 @@ function (
 			camera: camera,
 			mainCamera: Renderer.mainCamera,
 			lights: lights,
-			lightCamera: this.shadowHandler ? this.shadowHandler.lightCam : null,
+			shadowHandler: this.shadowHandler,
 			renderer: this
 		};
 
@@ -489,7 +515,9 @@ function (
 			this.fillRenderInfo(renderList, renderInfo);
 			this.renderMesh(renderInfo);
 		}
-		if (renderTarget && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
+
+		// TODO: shouldnt we check for generateMipmaps setting on rendertarget?
+		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
 	};
@@ -563,7 +591,7 @@ function (
 		if(this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {
-			count = Math.max(this._overrideMaterials.length, materials.length);
+			count = this._overrideMaterials.length;
 		}
 
 		for (var i = 0; i < count; i++) {
@@ -590,8 +618,8 @@ function (
 				material.errorOnce = false;
 			}
 
-			if (this.shadowCount > 0) {
-				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResult);
+			if (this.shadowHandler.shadowResults.length > 0) {
+				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResults);
 			} else if (material.getTexture('SHADOW_MAP')) {
 				material.removeTexture('SHADOW_MAP');
 			}
@@ -892,6 +920,8 @@ function (
 	Renderer.prototype.updateTextures = function (material) {
 		var context = this.context;
 		var textureSlots = material.shader.textureSlots;
+
+		var texIndex = 0;
 		for (var i = 0; i < textureSlots.length; i++) {
 			var textureSlot = textureSlots[i];
 			var texture = material.getTexture(textureSlot.mapping);
@@ -900,34 +930,45 @@ function (
 				continue;
 			}
 
-			if (texture === null ||
-				texture instanceof RenderTarget === false && (texture.image === undefined ||
-					texture.checkDataReady() === false)) {
-				if (textureSlot.format === 'sampler2D') {
-					texture = TextureCreator.DEFAULT_TEXTURE_2D;
-				} else if (textureSlot.format === 'samplerCube') {
-					texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+			var textureList = texture;
+			if (texture instanceof Array === false) {
+				textureList = [texture];
+			}
+
+			for (var j = 0; j < textureList.length; j++) {
+				texture = textureList[j];
+
+				if (texture === null ||
+					texture instanceof RenderTarget === false && (texture.image === undefined ||
+						texture.checkDataReady() === false)) {
+					if (textureSlot.format === 'sampler2D') {
+						texture = TextureCreator.DEFAULT_TEXTURE_2D;
+					} else if (textureSlot.format === 'samplerCube') {
+						texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+					}
 				}
-			}
 
-			var unitrecord = this.rendererRecord.textureRecord[i];
-			if (unitrecord === undefined) {
-				unitrecord = this.rendererRecord.textureRecord[i] = {};
-			}
+				var unitrecord = this.rendererRecord.textureRecord[texIndex];
+				if (unitrecord === undefined) {
+					unitrecord = this.rendererRecord.textureRecord[texIndex] = {};
+				}
 
-			if (texture.glTexture === null) {
-				texture.glTexture = context.createTexture();
-				this.updateTexture(context, texture, i, unitrecord);
-			} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
-				this.updateTexture(context, texture, i, unitrecord);
-				texture.needsUpdate = false;
-			} else {
-				this.bindTexture(context, texture, i, unitrecord);
-			}
+				if (texture.glTexture === null) {
+					texture.glTexture = context.createTexture();
+					this.updateTexture(context, texture, texIndex, unitrecord);
+				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+					this.updateTexture(context, texture, texIndex, unitrecord);
+					texture.needsUpdate = false;
+				} else {
+					this.bindTexture(context, texture, texIndex, unitrecord);
+				}
 
-			var imageObject = texture.image !== undefined ? texture.image : texture;
-			var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
-			this.updateTextureParameters(texture, isTexturePowerOfTwo);
+				var imageObject = texture.image !== undefined ? texture.image : texture;
+				var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
+				this.updateTextureParameters(texture, isTexturePowerOfTwo);
+
+				texIndex++;
+			}
 		}
 	};
 
@@ -940,31 +981,36 @@ function (
 			texture.textureRecord = texrecord;
 		}
 
+		var glType = this.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {
-			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
 		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
-			var glType = this.getGLType(texture.variant);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
-			var glType = this.getGLType(texture.variant);
 			var glwrapS = this.getGLWrap(wrapS, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 			texrecord.wrapS = wrapS;
 		}
 		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 		if (texrecord.wrapT !== wrapT) {
-			var glType = this.getGLType(texture.variant);
 			var glwrapT = this.getGLWrap(wrapT, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 			texrecord.wrapT = wrapT;
+		}
+
+		if (this.glExtensionTextureFilterAnisotropic && texture.type !== 'Float') {
+			var anisotropy = texture.anisotropy;
+			if (texrecord.anisotropy !== anisotropy) {
+				context.texParameterf(glType, this.glExtensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, this.capabilities.maxAnisotropy));
+				texrecord.anisotropy = anisotropy;
+			}
 		}
 	};
 
@@ -1051,7 +1097,10 @@ function (
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
-		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, 1);
+		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, texture.unpackAlignment);
+
+		// Using premultiplied alpha
+		context.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultiplyAlpha);
 
 		// set if we want to flip on Y
 		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);

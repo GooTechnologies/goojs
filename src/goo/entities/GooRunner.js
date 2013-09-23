@@ -221,6 +221,7 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
+			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
 			this.renderer.clear();
 			for (var i = 0; i < this.callbacksPreRender.length; i++) {

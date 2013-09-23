@@ -41,7 +41,7 @@ function (
 	 *			<li>'BilinearNearestMipMap' =
 	 *			<li>'Trilinear' =
 	 *		</ul>
-	 * @param {number} [settings.anisotropy=1]
+	 * @param {number} [settings.anisotropy=1] Amount of anisotropic filtering (1=1x, 4=4x etc, max usually 4 or 16. Card max in renderer.capabilities.maxAnisotropy)
 	 * @param {string} [settings.format='RGBA'] possible values:
 	 *		<ul>
 	 *			<li>'RGBA' =
@@ -58,7 +58,12 @@ function (
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {boolean} [settings.flipY='true']
+	 * @param {boolean} [settings.offset=(0,0)] Texture offset
+	 * @param {boolean} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
+	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
+	 * @param {boolean} [settings.unpackAlignment=1] Unpack alignment setting
+	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
 	 */
 	function Texture(image, settings, width, height) {
 		this.glTexture = null;
@@ -77,11 +82,12 @@ function (
 		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = new Vector2(settings.offset || [0,0]);
+		this.offset = new Vector2(settings.offset || [0, 0]);
 		this.repeat = new Vector2(settings.repeat || [1, 1]);
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
 		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
+		this.unpackAlignment = settings.unpackAlignment !== undefined ? settings.unpackAlignment : 1;
 		this.flipY = settings.flipY !== undefined ? settings.flipY : true;
 
 		this.hasBorder = false;

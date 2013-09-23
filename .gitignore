@@ -2,6 +2,7 @@
 node_modules/
 dist/
 goojs-jsdoc/
+goojs-jsdoc-json/
 goojs-jsdoc_*.tar.gz
 test-out/
 .idea

@@ -4,38 +4,69 @@ function(Action) {
 	"use strict";
 
 	function SetPositionAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.entity = settings.entity || null;
-		this.position = settings.position || [0, 0, 0];
+		Action.apply(this, arguments);
 	}
 
 	SetPositionAction.prototype = Object.create(Action.prototype);
 
-	SetPositionAction.external = [
-		{
+	SetPositionAction.prototype.configure = function(settings) {
+		this.everyFrame = !!settings.everyFrame;
+		this.entity = settings.entity || null;
+		this.amountX = settings.amountX || 0;
+		this.amountY = settings.amountY || 0;
+		this.amountZ = settings.amountZ || 0;
+	};
+
+	SetPositionAction.external = {
+		parameters: [{
 			name: 'Entity',
 			key: 'entity',
-			type: 'entity'
-		},
-		{
-			name:'Position',
-			key:'position',
-			type:'vec3'
-		}];
+			type: 'entity',
+			description: 'Entity to move'
+		}, {
+			name: 'Amount X',
+			key: 'amountX',
+			type: 'float',
+			description: 'Position on the X axis',
+			'default': 0
+		}, {
+			name: 'Amount Y',
+			key: 'amountY',
+			type: 'float',
+			description: 'Position on the Y axis',
+			'default': 0
+		}, {
+			name: 'Amount Z',
+			key: 'amountZ',
+			type: 'float',
+			description: 'Position on the Z axis',
+			'default': 0
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
+		}],
+		transitions: []
+	};
 
-	// not on create
-	SetPositionAction.prototype.onCreate = function(/*fsm*/) {
+	SetPositionAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
-			this.entity.transformComponent.transform.translation.seta(this.position);
+			this.entity.transformComponent.transform.translation.setd(
+				FSMUtil.getValue(this.amountX, fsm),
+				FSMUtil.getValue(this.amountY, fsm),
+				FSMUtil.getValue(this.amountZ, fsm)
+			);
 			this.entity.transformComponent.setUpdated();
 
+			/*
 			// Hack for box2d physics, tmp
 			if (this.entity.body) {
 				var translation = this.entity.transformComponent.transform.translation;
 				this.entity.body.SetTransform(new window.Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
 			}
+			*/
 		}
 	};
 

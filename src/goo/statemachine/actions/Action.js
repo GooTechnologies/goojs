@@ -3,8 +3,9 @@ define([],
 function() {
 	"use strict";
 
-	function Action(id /*,options*/) {
+	function Action(id, settings) {
 		this.id = id;
+		this.configure(settings || {});
 	}
 
 	/* this gets executed on enter - override this */
@@ -16,9 +17,8 @@ function() {
 	};
 
 	/* this should be called by the constructor and by the handlers when new options are loaded */
-	Action.prototype.configure = function(/*options*/) {
-	}
-
+	Action.prototype.configure = function(/*settings*/) {
+	};
 
 	/* this is called by external functions - called once, when the host state becomes active */
 	Action.prototype.enter = function(fsm) {

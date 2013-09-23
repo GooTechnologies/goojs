@@ -16,9 +16,9 @@
         "transform": {
             "parentRef": "Zombie_Hazmat/entities/RootNode.entity", 
             "rotation": [
-                -3.41, 
-                16.45, 
-                10.5
+                -90, 
+                0, 
+                0
             ], 
             "scale": [
                 2.54, 

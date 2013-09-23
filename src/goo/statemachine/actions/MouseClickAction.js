@@ -8,47 +8,48 @@ function(
 	"use strict";
 
 	function MouseClickAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.posVariable = settings.posVariable || null;
-		this.eventToEmit = settings.eventToEmit || null;
+		Action.apply(this, arguments);
 
 		this.currentTime = 0;
 
 		this.updated = false;
 		this.eventListener = function(/*event*/) {
 			this.updated = true;
-			/*
-			if (this.posVariable) {
-				if (fsm.localVariables[this.posVariable] !== undefined) {
-					fsm.localVariables[this.posVariable] = [event.clientX, event.clientY];
-				} else if (FSMComponent.globalVariables[this.posVariable] !== undefined) {
-					FSMComponent.globalVariables[this.posVariable] = [event.clientX, event.clientY];
-				}
+			if (this.keyVariable) {
+				//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
 			}
-			*/
 		}.bind(this);
 	}
 
 	MouseClickAction.prototype = Object.create(Action.prototype);
 
-	MouseClickAction.external = [
-		{
-			name: 'Store for click position',
-			key: 'posVariable',
-			type: 'string'
-		}];
+	MouseClickAction.prototype.configure = function(settings) {
+		this.everyFrame = true;
+		this.eventToEmit = { channel: settings.transitions.click };
+		this.positionVariable = settings.positionVariable;
+	};
+
+	MouseClickAction.external = {
+		parameters: [{
+			name: 'Position variable',
+			key: 'positionVariable',
+			type: 'identifier'
+		}],
+		transitions: [{
+			name: 'click',
+			description: 'Fired on click'
+		}]
+	};
 
 	MouseClickAction.prototype._setup = function() {
 		document.addEventListener('click', this.eventListener);
 	};
 
-	MouseClickAction.prototype._run = function(proxy) {
+	MouseClickAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
 			if (this.eventToEmit) {
-				proxy.send(this.eventToEmit.channel, this.eventToEmit.data);
+				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
 			}
 		}
 	};

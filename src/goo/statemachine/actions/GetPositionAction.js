@@ -8,16 +8,31 @@ function(
 	"use strict";
 
 	function GetPositionAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.entity = settings.entity || null;
-		this.position = settings.position || [];
+		Action.apply(this, arguments);
 	}
 
 	GetPositionAction.prototype = Object.create(Action.prototype);
 
+	GetPositionAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame !== false;
+		this.entity = settings.entity || null;
+		this.variable = settings.variable || null;
+	};
 
+	GetPositionAction.external = {
+		parameters: [{
+			name: 'Variable',
+			key: 'variable',
+			type: 'identifier'
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
+		}],
+		transitions: []
+	};
 
 	GetPositionAction.prototype._run = function(fsm) {
 		var translation = this.entity.transformComponent.transform.translation;

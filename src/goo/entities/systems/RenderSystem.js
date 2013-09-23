@@ -92,8 +92,6 @@ function (
 	};
 
 	RenderSystem.prototype.render = function (renderer) {
-		renderer.checkResize(this.camera);
-
 		if (!this.doRender) {
 			return;
 		}

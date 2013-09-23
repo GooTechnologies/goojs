@@ -139,10 +139,10 @@ function (
 		}
 		video.loop = (typeof (loop) === 'boolean') ? loop : true;
 
-		video.addEventListener('error', function () {
-			console.warn('Couldn\'t load video URL [' + videoURL + ']');
+		video.addEventListener('error', function (error) {
+			console.warn('Couldn\'t load video URL [' + videoURL + ']', error);
 			if (errorCallback) {
-				errorCallback();
+				errorCallback(error);
 			}
 		}, false);
 

@@ -9,51 +9,48 @@ function(
 ) {
 	"use strict";
 
-	function KeyUpAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		var key = settings.key || 'w';
-
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		// variable to store the key and moment of press?
-
-		this.eventToEmit = settings.eventToEmit || null;
+	function KeyUpAction(id, settings) {
+		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === this.key) { this.updated = true; }
-			/*
-			 if (this.posVariable) {
-			 if (fsm.localVariables[this.posVariable] !== undefined) {
-			 fsm.localVariables[this.posVariable] = [event.clientX, event.clientY];
-			 } else if (FSMComponent.globalVariables[this.posVariable] !== undefined) {
-			 FSMComponent.globalVariables[this.posVariable] = [event.clientX, event.clientY];
-			 }
-			 }
-			 */
+			if (event.which === this.key) {
+				this.updated = true;
+				if (this.keyVariable) {
+					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
+				}
+			}
 		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
 
-	KeyUpAction.external = {};
-	KeyUpAction.external.parameters = [
-		{
+	KeyUpAction.prototype.configure = function(settings) {
+		this.everyFrame = true;
+		this.eventToEmit = { channel: settings.transitions.keyup };
+		var key = settings.key || 'a';
+		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
+		this.keyVariable = settings.keyVariable;
+	};
+
+	KeyUpAction.external = {
+		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for',
-			'default': 'w'
-		}
-	];
+			description: 'Key to listen for'
+		}, {
+			name: 'Key variable',
+			key: 'keyVariable',
+			type: 'identifier',
+			description: 'Variable to store the key in'
+		}],
 
-	KeyUpAction.external.transitions = [
-		{
-			name: 'On key up',
-			description: 'Event fired on key up'
-		}
-	];
+		transitions: [{
+			name: 'keydown',
+			description: 'Fired on key up'
+		}]
+	};
 
 	KeyUpAction.prototype._setup = function() {
 		document.addEventListener('keyup', this.eventListener);

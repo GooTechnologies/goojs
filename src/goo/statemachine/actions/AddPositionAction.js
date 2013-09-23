@@ -9,66 +9,60 @@ function(
 ) {
 	"use strict";
 
-	function AddPositionAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
+	function AddPositionAction(id, settings) {
+		Action.apply(this, arguments);
+	}
 
+	AddPositionAction.prototype = Object.create(Action.prototype);
+
+	AddPositionAction.prototype.configure = function(settings) {
+		this.everyFrame = settings.everyFrame !== false;
 		this.entity = settings.entity || null;
 		this.amountX = settings.amountX || 0;
 		this.amountY = settings.amountY || 0;
 		this.amountZ = settings.amountZ || 0;
 		this.speed = settings.speed || 1;
-	}
+	};
 
-	AddPositionAction.prototype = Object.create(Action.prototype);
-
-	AddPositionAction.external = {};
-	AddPositionAction.external.parameters = [
-		{
+	AddPositionAction.external = {
+		parameters: [{
 			name: 'Entity',
 			key: 'entity',
 			type: 'entity',
 			description: 'Entity to move'
-		},
-		{
+		}, {
 			name: 'Amount X',
 			key: 'amountX',
 			type: 'float',
 			description: 'Amount to move on the X axis',
 			'default': 0
-		},
-		{
+		}, {
 			name: 'Amount Y',
 			key: 'amountY',
 			type: 'float',
 			description: 'Amount to move on the Y axis',
 			'default': 0
-		},
-		{
+		}, {
 			name: 'Amount Z',
 			key: 'amountZ',
 			type: 'float',
 			description: 'Amount to move on the Z axis',
 			'default': 0
-		},
-		{
+		}, {
 			name: 'Speed',
 			key: 'speed',
 			type: 'float',
 			description: 'Speed to multiply',
 			'default': 1
-		},
-		{
+		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
 			description: 'Do this action every frame',
 			'default': true
-		}
-	];
-
-	AddPositionAction.external.transitions = [
-	];
+		}],
+		transitions: []
+	};
 
 	AddPositionAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
