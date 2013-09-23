@@ -35,7 +35,10 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 
 		output = 'output'
 		fileIn = 'src'
-		fileOut = 'minified/goo/goo.js'
+		if options.include == 'requireLib'
+			fileOut = 'minified/goo/goo-require.js'
+		else
+			fileOut = 'minified/goo/goo.js'
 		includes = ['goo/**/*.js']
 
 		failSilently = true
