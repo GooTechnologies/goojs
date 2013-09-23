@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+# Continuous integration script
+
+./build/release.py build-$BUILD_NUMBER
