@@ -550,7 +550,7 @@ function (
 	 * @return {Float} distance.
 	 */
 	Vector3.distance = function (lhs, rhs) {
-		return Math.sqrt(Vector3.distanceSquared(lhs rhs));
+		return Math.sqrt(Vector3.distanceSquared(lhs, rhs));
 	};
 	
 	/**
