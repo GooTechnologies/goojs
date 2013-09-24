@@ -24,7 +24,8 @@ define([
 			materialRefs: [],
 			cullMode: 'Dynamic',
 			castShadows: false,
-			receiveShadows: false
+			receiveShadows: false,
+			hidden: false
 		});
 	};
 
