@@ -28,15 +28,15 @@ function () {
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
 	 */
-	Entity.prototype.addToWorld = function () {
-		this._world.addEntity(this);
+	Entity.prototype.addToWorld = function (recursive) {
+		this._world.addEntity(this, recursive);
 	};
 
 	/**
 	 * Remove entity from the world.
 	 */
-	Entity.prototype.removeFromWorld = function () {
-		this._world.removeEntity(this);
+	Entity.prototype.removeFromWorld = function (recursive) {
+		this._world.removeEntity(this, recursive);
 	};
 
 	function getTypeAttributeName(type) {
