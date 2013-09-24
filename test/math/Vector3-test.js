@@ -150,5 +150,16 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a).toEqual(new Vector3(4, -8, 4));
 			expect(Vector3.cross(b, c)).toEqual(new Vector3(4, -8, 4));
 		});
+
+		it("can calculate the distance", function() {
+			var a = new Vector3(3, 2, 1);
+			var b = new Vector3(3, 2, 1);
+			var c = new Vector3(1, 2, 3);
+
+			var dist = a.distanceSquared(c);
+
+			expect(dist).toEqual(8);
+		});
+
 	});
 });
