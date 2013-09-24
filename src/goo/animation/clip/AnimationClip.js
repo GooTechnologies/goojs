@@ -15,7 +15,7 @@ function () {
 		this.updateMaxTimeIndex();
 	}
 
-	/*
+	/**
 	 * Update an instance of this clip.
 	 * @param {number} clockTime the current local clip time (where 0 == start of clip)
 	 * @param {AnimationClipInstance} instance the instance record to update.
@@ -68,7 +68,7 @@ function () {
 		return null;
 	};
 
-	/*
+	/**
 	 * Update our max time value to match the max time in our managed animation channels.
 	 */
 	AnimationClip.prototype.updateMaxTimeIndex = function () {

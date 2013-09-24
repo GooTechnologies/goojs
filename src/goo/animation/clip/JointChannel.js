@@ -28,7 +28,7 @@ function (TransformChannel, JointData) {
 	 */
 	JointChannel.JOINT_CHANNEL_NAME = '_jnt';
 
-	/*
+	/**
 	 * Creates a data item for this type of channel
 	 * @returns {JointData}
 	 */
@@ -36,14 +36,14 @@ function (TransformChannel, JointData) {
 		return new JointData();
 	};
 
-	/*
+	/**
 	 * Applies the channels animation state to supplied data item
 	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
 	 * @param {JointData} value The data item to apply animation to
 	 */
-	JointChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, jointData) {
-		TransformChannel.prototype.setCurrentSample.call(this, sampleIndex, progressPercent, jointData);
+	JointChannel.prototype.setCurrentSample = function (sampleIndex, progressPercent, jointData, time) {
+		TransformChannel.prototype.setCurrentSample.call(this, sampleIndex, progressPercent, jointData, time);
 		jointData._jointIndex = this._jointIndex;
 	};
 

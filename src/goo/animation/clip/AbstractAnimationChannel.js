@@ -13,22 +13,26 @@ function (
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param {number[]} times our time indices. Copied into the channel.
 	 */
+	// times goes away
 	function AbstractAnimationChannel (channelName, times, blendType) {
 		this._blendType = blendType || 'Linear';
 		this._channelName = channelName;
 
+		// no more time
 		if ((times instanceof Array || times instanceof Float32Array) && times.length) {
 			this._times = new Float32Array(times);
 		} else {
 			this._times = [];
 		}
+		//
 
-		this._lastStartFrame = 0;
+		this._lastStartFrame = 0; // no more this
 	}
 
 	/**
 	 * @returns {number} number of samples
 	 */
+	// no need for this
 	AbstractAnimationChannel.prototype.getSampleCount = function () {
 		return this._times.length;
 	};
@@ -37,6 +41,7 @@ function (
 	 * @returns {number} The last time sample of the animation channel
 	 */
 	AbstractAnimationChannel.prototype.getMaxTime = function () {
+		// this needs redoing
 		return this._times.length ? this._times[this._times.length - 1] : 0;
 	};
 
@@ -54,9 +59,9 @@ function (
 		// figure out what frames we are between and by how much
 		var lastFrame = timeCount - 1;
 		if (clockTime < 0 || timeCount === 1) {
-			this.setCurrentSample(0, 0.0, applyTo);
+			this.setCurrentSample(0, 0.0, applyTo, clockTime);
 		} else if (clockTime >= this._times[lastFrame]) {
-			this.setCurrentSample(lastFrame, 0.0, applyTo);
+			this.setCurrentSample(lastFrame, 0.0, applyTo, clockTime);
 		} else {
 			var startFrame = 0;
 			if (clockTime >= this._times[this._lastStartFrame]) {
@@ -70,7 +75,7 @@ function (
 					}
 					startFrame = i;
 				}
-				console.log('..............', z);
+				//console.log('..............', z);
 			} else {
 				var zz = 0;
 				for (var i = 0; i < this._lastStartFrame; i++) {
@@ -80,10 +85,10 @@ function (
 					}
 					startFrame = i;
 				}
-				console.log(',,,,,,,,,,,,,,', zz);
+				//console.log(',,,,,,,,,,,,,,', zz);
 			}
 			var progressPercent = (clockTime - this._times[startFrame]) / (this._times[startFrame + 1] - this._times[startFrame]);
-			this.setCurrentSample(startFrame, progressPercent, applyTo);
+			this.setCurrentSample(startFrame, progressPercent, applyTo, clockTime);
 
 			this._lastStartFrame = startFrame;
 		}

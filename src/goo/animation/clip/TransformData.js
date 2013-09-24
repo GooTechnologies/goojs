@@ -13,7 +13,7 @@ function (Quaternion, Vector3) {
 		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
 	}
 
-	/*
+	/**
 	 * Applies the data from this transformdata to supplied transform
 	 * @param {Transform}
 	 */

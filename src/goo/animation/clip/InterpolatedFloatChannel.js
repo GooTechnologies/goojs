@@ -19,7 +19,7 @@ function (AbstractAnimationChannel,
 
 	InterpolatedFloatChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
-	/*
+	/**
 	 * Creates a data item for this type of channel
 	 * @returns {number[]}
 	 */
@@ -27,7 +27,7 @@ function (AbstractAnimationChannel,
 		return [0.0];
 	};
 
-	/*
+	/**
 	 * Applies the channels animation state to supplied data item
 	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
