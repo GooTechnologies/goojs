@@ -21,12 +21,19 @@ function () {
 	};
 
 	LinearInterpolator.prototype.getKeyBefore = function(time) {
-		//if (time === 0) return 0;
-	  	// use binary search?
-		for (this.lastKey = 0; this.data[this.lastKey].time <= time; this.lastKey++) ;
-		this.lastKey--;
+		// if time > this.data[this.lastkey].time do a linear search
+		// else do a binary search from the beginning
 
-		//console.log(this.lastKey);
+		//for (this.lastKey = 0; this.data[this.lastKey].time <= time; this.lastKey++) ;
+		//this.lastKey--;
+
+		if (time > this.data[this.lastKey].time) {
+			for (; this.data[this.lastKey].time <= time; this.lastKey++) ;
+			this.lastKey--;
+		} else {
+			for (this.lastKey = 0; this.data[this.lastKey].time <= time; this.lastKey++) ;
+			this.lastKey--;
+		}
 
 		return this.lastKey;
 	};

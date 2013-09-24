@@ -65,13 +65,26 @@ function (
 		var every3Start1 = every3(1);
 		var every3Start2 = every3(2);
 
+		var every4 = every(4);
+		var every4Start0 = every4(0);
+		var every4Start1 = every4(1);
+		var every4Start2 = every4(2);
+		var every4Start3 = every4(3);
 
 		// these become entries in an array
 		this._rotations = new Float32Array(rotations);
 		this._translationX = new LinearInterpolator(getArray(times, every3Start0(translations)));
 		this._translationY = new LinearInterpolator(getArray(times, every3Start1(translations)));
 		this._translationZ = new LinearInterpolator(getArray(times, every3Start2(translations)));
-		this._scales = new Float32Array(scales);
+
+		this._rotationX = new LinearInterpolator(getArray(times, every4Start0(rotations)));
+		this._rotationY = new LinearInterpolator(getArray(times, every4Start1(rotations)));
+		this._rotationZ = new LinearInterpolator(getArray(times, every4Start2(rotations)));
+		this._rotationW = new LinearInterpolator(getArray(times, every4Start3(rotations)));
+
+		this._scaleX = new LinearInterpolator(getArray(times, every3Start0(scales)));
+		this._scaleY = new LinearInterpolator(getArray(times, every3Start1(scales)));
+		this._scaleZ = new LinearInterpolator(getArray(times, every3Start2(scales)));
 
 		//this.tmpVec = new Vector3(); // unused?
 		this.tmpQuat = new Quaternion();
@@ -101,62 +114,14 @@ function (
 		transformData._translation.data[1] = this._translationY.getAt(time);
 		transformData._translation.data[2] = this._translationZ.getAt(time);
 
-		// shortcut if we are fully on one sample or the next
-		var index4A = sampleIndex * 4, index3A = sampleIndex * 3;
-		var index4B = (sampleIndex + 1) * 4, index3B = (sampleIndex + 1) * 3;
-		if (fraction === 0.0) {
-			transformData._rotation.data[0] = this._rotations[index4A + 0];
-			transformData._rotation.data[1] = this._rotations[index4A + 1];
-			transformData._rotation.data[2] = this._rotations[index4A + 2];
-			transformData._rotation.data[3] = this._rotations[index4A + 3];
+		transformData._rotation.data[0] = this._rotationX.getAt(time);
+		transformData._rotation.data[1] = this._rotationY.getAt(time);
+		transformData._rotation.data[2] = this._rotationZ.getAt(time);
+		transformData._rotation.data[3] = this._rotationW.getAt(time);
 
-//			transformData._translation.data[0] = this._translations[index3A + 0];
-//			transformData._translation.data[1] = this._translations[index3A + 1];
-//			transformData._translation.data[2] = this._translations[index3A + 2];
-
-			transformData._scale.data[0] = this._scales[index3A + 0];
-			transformData._scale.data[1] = this._scales[index3A + 1];
-			transformData._scale.data[2] = this._scales[index3A + 2];
-			return;
-		} else if (fraction === 1.0) {
-			transformData._rotation.data[0] = this._rotations[index4B + 0];
-			transformData._rotation.data[1] = this._rotations[index4B + 1];
-			transformData._rotation.data[2] = this._rotations[index4B + 2];
-			transformData._rotation.data[3] = this._rotations[index4B + 3];
-
-//			transformData._translation.data[0] = this._translations[index3B + 0];
-//			transformData._translation.data[1] = this._translations[index3B + 1];
-//			transformData._translation.data[2] = this._translations[index3B + 2];
-
-			transformData._scale.data[0] = this._scales[index3B + 0];
-			transformData._scale.data[1] = this._scales[index3B + 1];
-			transformData._scale.data[2] = this._scales[index3B + 2];
-			return;
-		}
-
-		// Apply (s)lerp and set in transform
-		transformData._rotation.data[0] = this._rotations[index4A + 0];
-		transformData._rotation.data[1] = this._rotations[index4A + 1];
-		transformData._rotation.data[2] = this._rotations[index4A + 2];
-		transformData._rotation.data[3] = this._rotations[index4A + 3];
-
-		this.tmpQuat.data[0] = this._rotations[index4B + 0];
-		this.tmpQuat.data[1] = this._rotations[index4B + 1];
-		this.tmpQuat.data[2] = this._rotations[index4B + 2];
-		this.tmpQuat.data[3] = this._rotations[index4B + 3];
-
-		if (!transformData._rotation.equals(this.tmpQuat)) {
-			Quaternion.slerp(transformData._rotation, this.tmpQuat, fraction, this.tmpQuat2);
-			transformData._rotation.setv(this.tmpQuat2);
-		}
-
-//		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
-//		transformData._translation.data[1] = (1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1];
-//		transformData._translation.data[2] = (1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2];
-
-		transformData._scale.data[0] = (1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0];
-		transformData._scale.data[1] = (1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1];
-		transformData._scale.data[2] = (1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2];
+		transformData._scale.data[0] = this._scaleX.getAt(time);
+		transformData._scale.data[1] = this._scaleY.getAt(time);
+		transformData._scale.data[2] = this._scaleZ.getAt(time);
 	};
 
 	/**
