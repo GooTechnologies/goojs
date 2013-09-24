@@ -527,6 +527,53 @@ function (
 	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
 	};
+	
+	/**
+	 * @static
+	 * @description Computes the squared distance between two vectors.
+	 * @param {Vector3} lhs Vector3.
+	 * @param {Vector3} rhs Vector3.
+	 * @return {Float} distance squared.
+	 */
+	Vector3.distanceSquared = function (lhs, rhs) {
+		var x = lhs.data[0] - rhs.data[0],
+			y = lhs.data[1] - rhs.data[1],
+			z = lhs.data[2] - rhs.data[2];
+		return x*x + y*y + z*z;
+	};
+
+	/**
+	 * @static
+	 * @description Computes the distance between two vectors.
+	 * @param {Vector3} lhs Vector3.
+	 * @param {Vector3} rhs Vector3.
+	 * @return {Float} distance.
+	 */
+	Vector3.distance = function (lhs, rhs) {
+		return Math.sqrt(Vector3.distanceSquared(lhs rhs));
+	};
+	
+	/**
+	 * @description Computes the squared distance between this and another vector.
+	 *              Note: When comparing the relative distances between two points it is usually sufficient
+	 *              to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector3} v Vector3.
+	 * @return {Float} distance squared.
+	 */
+	Vector3.prototype.distanceSquared = function (v) {
+		return Vector3.distanceSquared( this, v);
+	};
+
+	/**
+	 * @description Computes the distance between this and another vector.
+	 *              Note: When comparing the relative distances between two points it is usually sufficient
+	 *              to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector3} v Vector3.
+	 * @return {Float} distance.
+	 */
+	Vector3.prototype.distance = function (v) {
+		return Vector3.distance( this, v);
+	};
 
 	/* ====================================================================== */
 
