@@ -71,7 +71,7 @@ function (
 		return this.layers[0].getTransitions();
 	};
 
-	/*
+	/**
 	 * Update animations
 	 */
 	AnimationComponent.prototype.update = function (globalTime) {
@@ -94,7 +94,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Applying calculated animations to the concerned data
 	 */
 	AnimationComponent.prototype.apply = function(transformComponent) {
@@ -119,6 +119,7 @@ function (
 					if (value.armed) {
 						// pull callback(s) for the current trigger key, if exists, and call.
 						// TODO: Integrate with GameMaker somehow
+						// through the BUS!!!
 						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
 							if (callbacks && callbacks.length) {
@@ -147,7 +148,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Called after the animations are applied
 	 */
 	AnimationComponent.prototype.postUpdate = function() {
@@ -157,7 +158,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Gets the current animation data for all layers blended together
 	 */
 	AnimationComponent.prototype.getCurrentSourceData = function () {
