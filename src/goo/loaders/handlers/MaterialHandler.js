@@ -118,7 +118,7 @@ define([
 				if (typeof textureRef === 'string') {
 					updateTexture(textureType, textureRef);
 				} else {
-					if (textureRef.enabled) {
+					if (textureRef && textureRef.enabled) {
 						updateTexture(textureType, textureRef.textureRef);
 					} else {
 						object.removeTexture(textureType);
