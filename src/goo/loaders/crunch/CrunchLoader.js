@@ -24,15 +24,14 @@
 /*jshint bitwise: false */
 define([
 	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/dds/DdsUtils',
-	'goo/loaders/crunch/crn_decomp'
+	'goo/loaders/dds/DdsUtils'
 ],
 /** @lends */
 function(
 	DdsLoader,
-	DdsUtils,
-	Module
+	DdsUtils
 ) {
+	"use strict";
 
 	function CrunchLoader() {
 	}
@@ -57,40 +56,47 @@ function(
 	};
 
 	CrunchLoader.prototype.load = function(arrayBuffer, texture, flipped/*, arrayByteOffset, arrayByteLength*/) {
+		if (typeof (window.CrunchModule) === 'undefined') {
+			console.warn('Crunch library not loaded! Include a script tag pointing to lib/crunch/crunch.js in your html-file.');
+			return;
+		}
+
+		var CrunchModule = window.CrunchModule;
+
 		var bytes = new Uint8Array(arrayBuffer),
 			srcSize = arrayBuffer.byteLength,
-			src = Module._malloc(srcSize),
+			src = CrunchModule._malloc(srcSize),
 			format, dst, dstSize,
 			width, height, levels, dxtData, i;
 
-		this.arrayBufferCopy(bytes, Module.HEAPU8, src, srcSize);
+		this.arrayBufferCopy(bytes, CrunchModule.HEAPU8, src, srcSize);
 
-		format = Module._crn_get_dxt_format(src, srcSize);
+		format = CrunchModule._crn_get_dxt_format(src, srcSize);
 
 		var bpp;
 		switch (format) {
 			case CrunchLoader.cCRNFmtDXT1:
-				texture.format = "PrecompressedDXT1A";
+				texture.format = 'PrecompressedDXT1A';
 				bpp = 4;
 				break;
 			case CrunchLoader.cCRNFmtDXT3:
-				texture.format = "PrecompressedDXT3";
+				texture.format = 'PrecompressedDXT3';
 				bpp = 8;
 				break;
 			case CrunchLoader.cCRNFmtDXT5:
-				texture.format = "PrecompressedDXT5";
+				texture.format = 'PrecompressedDXT5';
 				bpp = 8;
 				break;
 			default:
-				console.error("Unsupported image format");
+				console.error('Unsupported image format');
 				return 0;
 		}
 
-		width = Module._crn_get_width(src, srcSize);
-		height = Module._crn_get_height(src, srcSize);
-		levels = Module._crn_get_levels(src, srcSize);
-		dstSize = Module._crn_get_uncompressed_size(src, srcSize, 0);
-		dst = Module._malloc(dstSize);
+		width = CrunchModule._crn_get_width(src, srcSize);
+		height = CrunchModule._crn_get_height(src, srcSize);
+		levels = CrunchModule._crn_get_levels(src, srcSize);
+		dstSize = CrunchModule._crn_get_uncompressed_size(src, srcSize, 0);
+		dst = CrunchModule._malloc(dstSize);
 
 		var image = texture.image;
 		if (typeof image === 'undefined' || image === null) {
@@ -106,10 +112,10 @@ function(
 		texture.image.mipmapSizes = [];
 		for (i = 0; i < levels; ++i) {
 			if (i) {
-				dstSize = Module._crn_get_uncompressed_size(src, srcSize, i);
+				dstSize = CrunchModule._crn_get_uncompressed_size(src, srcSize, i);
 			}
-			Module._crn_decompress(src, srcSize, dst, dstSize, i);
-			dxtData = new Uint8Array(Module.HEAPU8.buffer, dst, dstSize);
+			CrunchModule._crn_decompress(src, srcSize, dst, dstSize, i);
+			dxtData = new Uint8Array(CrunchModule.HEAPU8.buffer, dst, dstSize);
 			if (flipped) {
 				dxtData = DdsUtils.flipDXT(dxtData, width, height, texture.format);
 			}
@@ -134,8 +140,8 @@ function(
 		image.dataReady = true;
 		texture.needsUpdate = true;
 
-		Module._free(src);
-		Module._free(dst);
+		CrunchModule._free(src);
+		CrunchModule._free(dst);
 	};
 
 	/**
@@ -226,7 +232,7 @@ function(
 	};
 
 	CrunchLoader.prototype.toString = function () {
-		return "CrunchLoader";
+		return 'CrunchLoader';
 	};
 
 	return CrunchLoader;
