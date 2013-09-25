@@ -27,6 +27,7 @@ function () {
 
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
+	 * @param {boolean} [recursive=true] Add children recursively
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
 		this._world.addEntity(this, recursive);
@@ -34,6 +35,7 @@ function () {
 
 	/**
 	 * Remove entity from the world.
+	 * @param {boolean} [recursive=true] Remove children recursively
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
 		this._world.removeEntity(this, recursive);
