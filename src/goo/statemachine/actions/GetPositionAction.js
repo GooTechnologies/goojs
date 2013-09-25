@@ -16,13 +16,23 @@ function(
 	GetPositionAction.prototype.configure = function(settings) {
 		this.everyFrame = settings.everyFrame !== false;
 		this.entity = settings.entity || null;
-		this.variable = settings.variable || null;
+		this.variableX = settings.variableX || null;
+		this.variableY = settings.variableY || null;
+		this.variableZ = settings.variableZ || null;
 	};
 
 	GetPositionAction.external = {
 		parameters: [{
-			name: 'Variable',
-			key: 'variable',
+			name: 'VariableX',
+			key: 'variableX',
+			type: 'identifier'
+		}, {
+			name: 'VariableY',
+			key: 'variableY',
+			type: 'identifier'
+		}, {
+			name: 'VariableZ',
+			key: 'variableZ',
 			type: 'identifier'
 		}, {
 			name: 'On every frame',
@@ -37,18 +47,18 @@ function(
 	GetPositionAction.prototype._run = function(fsm) {
 		var translation = this.entity.transformComponent.transform.translation;
 		if (this.entity !== null) {
-			if (this.position[0]) {  // !== undefined
-				fsm.applyOnVariable(this.position[0], function() {
+			if (this.variableX) {  // !== undefined
+				fsm.applyOnVariable(this.variableX, function() {
 					return translation.data[0];
 				});
 			}
-			if (this.position[1]) {
-				fsm.applyOnVariable(this.position[1], function() {
+			if (this.variableY) {
+				fsm.applyOnVariable(this.variableY, function() {
 					return translation.data[1];
 				});
 			}
-			if (this.position[2]) {
-				fsm.applyOnVariable(this.position[2], function() {
+			if (this.variableZ) {
+				fsm.applyOnVariable(this.variableZ, function() {
 					return translation.data[2];
 				});
 			}

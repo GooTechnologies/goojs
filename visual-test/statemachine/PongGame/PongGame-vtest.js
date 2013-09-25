@@ -71,7 +71,7 @@ require([
 
 			var stateSingular = new State('singular');
 			machineBall.addState(stateSingular);
-			stateSingular.addAction(new AddPositionAction({ position: ['dx', 'dy', 0] }));
+			stateSingular.addAction(new AddPositionAction(null, { position: ['dx', 'dy', 0] }));
 		})();
 
 		(function() {
@@ -85,27 +85,27 @@ require([
 			fsmComponent.defineVariable('dy', 11);
 
 			machineWall.addState(stateMoving);
-			stateMoving.addAction(new AddPositionAction({ entity: ballEntity, position: ['dx', 'dy', 0] }));
-			stateMoving.addAction(new GetPositionAction({ entity: ballEntity, position: ['px', 'py'] }));
-			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2: -dx/2, lessThanEvent: 'toFlipX' }));
-			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'px', float2:  dx/2, greaterThanEvent: 'toFlipX' }));
-			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'py', float2: -dy/2, lessThanEvent: 'toFlipY' }));
-			stateMoving.addAction(new NumberCompareAction({ float1Variable: 'py', float2:  dy/2, greaterThanEvent: 'toFlipY' }));
+			stateMoving.addAction(new AddPositionAction(null, { entity: ballEntity, amountX: 'dx', amountY: 'dy', everyFrame: true }));
+			stateMoving.addAction(new GetPositionAction(null, { entity: ballEntity, variableX: 'px', variableY: 'py' }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand: -dx/2, transitions: { less: 'toFlipX' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand:  dx/2, transitions: { greater: 'toFlipX' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand: -dy/2, transitions: { less: 'toFlipY' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand:  dy/2, transitions: { greater: 'toFlipY' } }));
 			stateMoving.setTransition('toFlipX', 'flipX');
 			stateMoving.setTransition('toFlipY', 'flipY');
 
 			var stateFlipX = new State('flipX');
 			machineWall.addState(stateFlipX);
-			stateFlipX.addAction(new MultiplyVariableAction({ variable: 'dx', amount: -1 }));
+			stateFlipX.addAction(new MultiplyVariableAction(null, { variable: 'dx', amount: -1 }));
 			//stateFlipX.addAction(new EmitAction({ event: 'toMoving' }));
-			stateFlipX.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
+			stateFlipX.addAction(new NumberCompareAction(null, { leftHand: 0, rightHand: 1, transitions: { less: 'toMoving' } }));
 			stateFlipX.setTransition('toMoving', 'moving');
 
 			var stateFlipY = new State('flipY');
 			machineWall.addState(stateFlipY);
-			stateFlipY.addAction(new MultiplyVariableAction({ variable: 'dy', amount: -1 }));
+			stateFlipY.addAction(new MultiplyVariableAction(null, { variable: 'dy', amount: -1 }));
 			//stateFlipY.addAction(new EmitAction({ event: 'toMoving' }));
-			stateFlipY.addAction(new NumberCompareAction({ float1: 0, float2: 1, lessThanEvent: 'toMoving' }));
+			stateFlipY.addAction(new NumberCompareAction(null, { leftHand: 0, rightHand: 1, transitions: { less: 'toMoving' } }));
 			stateFlipY.setTransition('toMoving', 'moving');
 		})();
 
