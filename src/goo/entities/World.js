@@ -129,7 +129,8 @@ function (
 	/**
 	 * Remove an entity from the world
 	 *
-	 * @param entity
+	 * @param {Entity} entity Entity to remove
+	 * @param {boolean} [recursive=true] If entity hierarchy should be removed recursively
 	 */
 	World.prototype.removeEntity = function (entity, recursive) {
 		if (this._removedEntities.indexOf(entity) === -1) {
