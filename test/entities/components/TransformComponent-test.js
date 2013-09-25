@@ -42,14 +42,14 @@ define([
 			expect(childEntity.transformComponent.parent).toBeNull();
 		});
 
-		it('correctly removes child reference of parent on its removal from the world', function() {
+		it('correctly removes child reference of parent on its removal from the world (in non-recursive mode)', function() {
 			var parentEntity = world.createEntity();
 			var childEntity = world.createEntity();
 			parentEntity.addToWorld();
 			childEntity.addToWorld();
 			parentEntity.transformComponent.attachChild(childEntity.transformComponent);
 			world.process();
-			parentEntity.removeFromWorld();
+			parentEntity.removeFromWorld(false);
 			world.process();
 			expect(childEntity.transformComponent.parent).toBeNull();
 			expect(parentEntity.transformComponent.children)
