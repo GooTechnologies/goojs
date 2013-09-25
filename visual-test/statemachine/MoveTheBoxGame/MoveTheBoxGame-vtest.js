@@ -66,21 +66,21 @@ require([
 
 		var stateIdle = new State('idle');
 		machine1.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'a', eventToEmit: { channel: 'toMovingLeft' } }));
-		stateIdle.addAction(new KeyDownAction({ key: 'd', eventToEmit: { channel: 'toMovingRight' } }));
+		stateIdle.addAction(new KeyDownAction(null, { key: 'a', transitions: { keydown: 'toMovingLeft' } }));
+		stateIdle.addAction(new KeyDownAction(null, { key: 'd', transitions: { keydown: 'toMovingRight' } }));
 		stateIdle.setTransition('toMovingLeft', 'movingLeft');
 		stateIdle.setTransition('toMovingRight', 'movingRight');
 
 		var stateMovingLeft = new State('movingLeft');
 		machine1.addState(stateMovingLeft);
-		stateMovingLeft.addAction(new KeyUpAction({ key: 'a', eventToEmit: { channel: 'toIdle' } }));
-		stateMovingLeft.addAction(new AddPositionAction({ entity: entity, position: [-speed, 0, 0] }));
+		stateMovingLeft.addAction(new KeyUpAction(null, { key: 'a', transitions: { keyup: 'toIdle' } }));
+		stateMovingLeft.addAction(new AddPositionAction(null, { entity: entity, amountX: -speed }));
 		stateMovingLeft.setTransition('toIdle', 'idle');
 
 		var stateMovingRight = new State('movingRight');
 		machine1.addState(stateMovingRight);
-		stateMovingRight.addAction(new KeyUpAction({ key: 'd', eventToEmit: { channel: 'toIdle' } }));
-		stateMovingRight.addAction(new AddPositionAction({ entity: entity, position: [ speed, 0, 0] }));
+		stateMovingRight.addAction(new KeyUpAction(null, { key: 'd', transitions: { keyup: 'toIdle' } }));
+		stateMovingRight.addAction(new AddPositionAction(null, { entity: entity, amountX: speed }));
 		stateMovingRight.setTransition('toIdle', 'idle');
 
 		// vertical moving
@@ -89,21 +89,21 @@ require([
 
 		var stateIdle = new State('idle');
 		machine2.addState(stateIdle);
-		stateIdle.addAction(new KeyDownAction({ key: 'w', eventToEmit: { channel: 'toMovingUp' } }));
-		stateIdle.addAction(new KeyDownAction({ key: 's', eventToEmit: { channel: 'toMovingDown' } }));
+		stateIdle.addAction(new KeyDownAction(null, { key: 'w', transitions: { keydown: 'toMovingUp' } }));
+		stateIdle.addAction(new KeyDownAction(null, { key: 's', transitions: { keydown: 'toMovingDown' } }));
 		stateIdle.setTransition('toMovingUp', 'movingUp');
 		stateIdle.setTransition('toMovingDown', 'movingDown');
 
 		var stateMovingUp = new State('movingUp');
 		machine2.addState(stateMovingUp);
-		stateMovingUp.addAction(new KeyUpAction({ key: 'w', eventToEmit: { channel: 'toIdle' } }));
-		stateMovingUp.addAction(new AddPositionAction({ entity: entity, position: [0, 0, -speed] }));
+		stateMovingUp.addAction(new KeyUpAction(null, { key: 'w', transitions: { keyup: 'toIdle' } }));
+		stateMovingUp.addAction(new AddPositionAction(null, { entity: entity, amountZ: -speed }));
 		stateMovingUp.setTransition('toIdle', 'idle');
 
 		var stateMovingDown = new State('movingDown');
 		machine2.addState(stateMovingDown);
-		stateMovingDown.addAction(new KeyUpAction({ key: 's', eventToEmit: { channel: 'toIdle' } }));
-		stateMovingDown.addAction(new AddPositionAction({ entity: entity, position: [0, 0, speed] }));
+		stateMovingDown.addAction(new KeyUpAction(null, { key: 's', transitions: { keyup: 'toIdle' } }));
+		stateMovingDown.addAction(new AddPositionAction(null, { entity: entity, amountZ: speed }));
 		stateMovingDown.setTransition('toIdle', 'idle');
 
 		return fsmComponent;

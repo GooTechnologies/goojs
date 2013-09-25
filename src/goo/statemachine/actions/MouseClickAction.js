@@ -26,7 +26,7 @@ function(
 	MouseClickAction.prototype.configure = function(settings) {
 		this.everyFrame = true;
 		this.eventToEmit = { channel: settings.transitions.click };
-		this.positionVariable = settings.positionVariable;
+		this.positionVariable = settings.positionVariable || null;
 	};
 
 	MouseClickAction.external = {

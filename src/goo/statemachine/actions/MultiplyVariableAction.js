@@ -41,7 +41,7 @@ function(
 	};
 
 	MultiplyVariableAction.prototype._run = function(fsm) {
-		fsm.applyToVariable(this.variable, function(v) {
+		fsm.applyOnVariable(this.variable, function(v) {
 			return v * FSMUtil.getValue(this.amount, fsm);
 		}.bind(this));
 	};

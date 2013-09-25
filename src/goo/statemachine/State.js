@@ -32,9 +32,9 @@ function (
 			send: function (channels, data) {
 				if (typeof channels === 'string' && this._transitions[channels]) {
 					this.requestTransition(this._transitions[channels]);
-				} else {
+				} /*else {
 					this._fsm._bus.emit(channels, data);
-				}
+				}*/
 			}.bind(this),
 			addListener: function (channelName, callback) {
 				this._fsm._bus.addListener(channelName, callback);
