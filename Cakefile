@@ -69,6 +69,9 @@ task 'minify', 'Minifies the whole project, or only one file if given two argume
 				'box2d/*.*'
 				'cannon/*.*'
 				'soundmanager2/*.*'
+				'howler/*.*'
+				'crunch/*.*'
+				'hammerv2/*.*'
 				'require.js'
 			]
 			copyLibs source, target, includes
