@@ -36,6 +36,18 @@ define([
 			expect(world.entityManager.containsEntity(entity2)).toBe(true);
 			expect(world.entityManager.containsEntity(entity3)).toBe(true);
 		});
+		it('addToWorld non-recursive', function() {
+			var entity1 = world.createEntity();
+			var entity2 = world.createEntity();
+			var entity3 = world.createEntity();
+			entity1.transformComponent.attachChild(entity2.transformComponent);
+			entity2.transformComponent.attachChild(entity3.transformComponent);
+			entity1.addToWorld(false);
+			world.process();
+			expect(world.entityManager.containsEntity(entity1)).toBe(true);
+			expect(world.entityManager.containsEntity(entity2)).toBe(false);
+			expect(world.entityManager.containsEntity(entity3)).toBe(false);
+		});
 		it('removeFromWorld', function() {
 			var entity1 = world.createEntity();
 			var entity2 = world.createEntity();
