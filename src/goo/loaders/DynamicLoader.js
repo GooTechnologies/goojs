@@ -27,7 +27,9 @@ define([
 	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/FSMComponentHandler',
 	'goo/loaders/handlers/MachineHandler',
-	'goo/loaders/handlers/PosteffectHandler'
+	'goo/loaders/handlers/PosteffectHandler',
+	'goo/loaders/handlers/SoundComponentHandler',
+	'goo/loaders/handlers/SoundHandler'
 ],
 function(
 	ConfigHandler,
@@ -57,6 +59,7 @@ function(
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
+	var _url_types = ['mp3', 'wav'];
 
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
@@ -362,6 +365,8 @@ function(
 			promise = this._ajax.loadImage(url);
 		} else if (this._isBinaryRef(ref)) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
+		} else if (this._isUrlRef(ref)) {
+			promise = PromiseUtil.createDummyPromise(url);
 		} else {
 			promise = this._ajax.load(url);
 		}
@@ -415,6 +420,11 @@ function(
 	DynamicLoader.prototype._isBinaryRef = function(ref) {
 		var type = this._getTypeForRef(ref);
 		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
+	};
+
+	DynamicLoader.prototype._isUrlRef = function(ref) {
+		var type = this._getTypeForRef(ref);
+		return _.indexOf(_url_types, type) >= 0;
 	};
 
 	/**
