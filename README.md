@@ -96,27 +96,38 @@ The resulting documentation will be generated in the goojs-jsdoc directory and a
 
 First make sure you have a clean Git repository. Run `git status` to make sure you have no local edits.
 
-Then create a release:
+If this is a new major or minor release (i.e. the first or second number in the version number changed),
+create a new branch:
 
-    build/release.py <version>
+    git checkout -b release-x.y  # replace x.y with major and minor version number
 
-For example `build/release.py 0.5.0` which creates goo-0.5.0.zip.
+Then create a release (the GOO_VERSION variable is just there to make the commands below work):
 
-Copy minified/goo/goo.js to the following locations:
+    export GOO_VERSION=0.5.0
+    build/release.py $GOO_VERSION
 
-    tool/template/lib/
-    tool/content/libs/
-    examples/lib/
+This creates the directory out/release/goo-$GOO_VERSION.
+
+Create a zip file:
+
+    (cd out/release && zip -r goo-$GOO_VERSION.zip goo-GOO_VERSION)
+
+Copy goo.js and goo-require.js to the tool and examples,
+assuming those ../tool and ../examples exist:
+
+    cp out/release/goo-$GOO_VERSION/lib/goo-require.js ../tool/template/lib/goo-require.js
+    cp out/release/goo-$GOO_VERSION/lib/goo-require.js ../tool/content/libs/goo-require.js
+    cp out/release/goo-$GOO_VERSION/lib/goo.js ../examples/lib/goo.js 
 
 Make sure the examples and the tool work with the new version.
 
 Tag the release:
 
-    git tag v<version>
+    git tag v$GOO_VERSION
     git push --tags
 
 Copy the release to Dropbox:
 
-    cp goo-<version>.zip ~/Dropbox/Goo\ Technologies\ AB/2.\ Research\ \&\ Development/Releases/
+    cp goo-$GOO_VERSION.zip ~/Dropbox/Goo\ Technologies\ AB/2.\ Research\ \&\ Development/Releases/
 
 Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download
