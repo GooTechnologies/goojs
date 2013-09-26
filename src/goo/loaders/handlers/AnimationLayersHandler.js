@@ -82,7 +82,7 @@ define([
 				for (var transitionKey in stateConfig.transitions) {
 					var transitionConfig = stateConfig.transitions[transitionKey];
 
-					if ((layer._steadyStates[transitionKey] != null) || transitionKey === '*') {
+					if ((layerConfig.states[transitionKey] != null) || transitionKey === '*') {
 						var transition = _.clone(transitionConfig);
 						layer._steadyStates[stateKey]._transitions[transitionKey] = transition;
 						if (layer._transitionStates[transition.type] == null) {
