@@ -921,7 +921,6 @@ function (
 		var context = this.context;
 		var textureSlots = material.shader.textureSlots;
 
-		var texIndex = 0;
 		for (var i = 0; i < textureSlots.length; i++) {
 			var textureSlot = textureSlots[i];
 			var texture = material.getTexture(textureSlot.mapping);
@@ -937,6 +936,7 @@ function (
 
 			for (var j = 0; j < textureList.length; j++) {
 				texture = textureList[j];
+				var texIndex = textureSlot.index instanceof Array ? textureSlot.index[j] : textureSlot.index;
 
 				if (texture === null ||
 					texture instanceof RenderTarget === false && (texture.image === undefined ||
@@ -966,8 +966,6 @@ function (
 				var imageObject = texture.image !== undefined ? texture.image : texture;
 				var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
 				this.updateTextureParameters(texture, isTexturePowerOfTwo);
-
-				texIndex++;
 			}
 		}
 	};
