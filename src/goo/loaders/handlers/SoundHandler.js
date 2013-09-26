@@ -54,8 +54,6 @@ define([
 		}
 		return RSVP.all(promises).then(function(urls) {
 			object.urls(urls);
-			window.mySounds = window.mySounds || [];
-			window.mySounds.push(object);
 			return object;
 		});
 	};
