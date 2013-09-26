@@ -23,7 +23,8 @@ define([
 		_.defaults(config, {
 			loop: false,
 			urls: [],
-			volume: 1.0
+			volume: 1.0,
+			name: "A Sound"
 		});
 	};
 
