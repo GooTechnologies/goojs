@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightNostril",
+	"components": {
+		"transform": {
+			"translation": [ 0.02145208, 0.02444346, -0.1550138 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}

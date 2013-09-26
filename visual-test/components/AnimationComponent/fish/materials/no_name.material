@@ -1,0 +1,29 @@
+{
+	"name": "no_name",
+	"shaderRef": "shaders/uber.shader",
+	"unityShaderName": "Diffuse",
+	"texturesMapping": {
+	},
+	"type": "Phong",
+	"uniforms": {
+	},
+	"blendState": {
+		"blending": "NoBlending",
+		"blendEquation": "AddEquation",
+		"blendSrc": "SrcAlphaFactor",
+		"blendDst": "OneMinusSrcAlphaFactor"
+	},
+	"cullState": {
+		"enabled": true,
+		"cullFace": "Back",
+		"frontFace": "CCW"
+	},
+	"depthState": {
+		"enabled": true,
+		"write": true
+	},
+	"wireframe": false,
+	"flat": false,
+	"renderQueue": 1000
+}
+

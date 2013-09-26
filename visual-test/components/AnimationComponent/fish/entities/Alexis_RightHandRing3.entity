@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightHandRing3",
+	"components": {
+		"transform": {
+			"translation": [ 0.02911999, -0.00134852, 0.00028407 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_RightHandRing2.entity"
+		}
+	}
+}

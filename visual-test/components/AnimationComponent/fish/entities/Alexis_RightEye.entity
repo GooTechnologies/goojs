@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightEye",
+	"components": {
+		"transform": {
+			"translation": [ 0.035717, 0.07657112, -0.1158223 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}

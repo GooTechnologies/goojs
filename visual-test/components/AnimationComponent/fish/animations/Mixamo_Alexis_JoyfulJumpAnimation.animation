@@ -1,0 +1,18 @@
+{
+	"layers": {
+		"DEFAULT": {
+"defaultState": "mixamo_com",
+			"states": { 
+				"mixamo_com": {
+					"clipSource": {
+						"clipRef": "animations/mixamo_com.clip",
+						"loopCount": -1,
+						"type": "Clip"
+					}
+				}
+		  	
+		  	}
+		}
+	}
+}
+

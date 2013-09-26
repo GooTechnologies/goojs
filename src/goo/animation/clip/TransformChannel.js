@@ -15,6 +15,20 @@ function (
 	) {
 	"use strict";
 
+	function getNewArray(data) {
+		var ret = [];
+		if (!data) return ret;
+
+		for (var i = 0; i < data.length; i += 4) {
+			ret.push({
+				time: data[i],
+				value: data[i + 1]
+			});
+		}
+
+		return ret;
+	}
+
 	function getArray(times, data) {
 		var ret = [];
 
@@ -52,39 +66,21 @@ function (
 	 * @param {Array} scales the scales to set on this channel at each time offset.
 	 */
 	// no more time
-	function TransformChannel (channelName, times, rotations, translations, scales, blendType) {
-		AbstractAnimationChannel.call(this, channelName, times, blendType);
-		/*
-		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
-			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
-		}
-		*/
+	function TransformChannel (channelName, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
+		AbstractAnimationChannel.call(this, channelName, []/*times*/, blendType);
 
-		var every3 = every(3);
-		var every3Start0 = every3(0);
-		var every3Start1 = every3(1);
-		var every3Start2 = every3(2);
+		this._translationX = new LinearInterpolator(getNewArray(translationX));
+		this._translationY = new LinearInterpolator(getNewArray(translationY));
+		this._translationZ = new LinearInterpolator(getNewArray(translationZ));
 
-		var every4 = every(4);
-		var every4Start0 = every4(0);
-		var every4Start1 = every4(1);
-		var every4Start2 = every4(2);
-		var every4Start3 = every4(3);
+		this._rotationX = new LinearInterpolator(getNewArray(rotationX));
+		this._rotationY = new LinearInterpolator(getNewArray(rotationY));
+		this._rotationZ = new LinearInterpolator(getNewArray(rotationZ));
+		this._rotationW = new LinearInterpolator(getNewArray(rotationW));
 
-		// these become entries in an array
-		this._rotations = new Float32Array(rotations);
-		this._translationX = new LinearInterpolator(getArray(times, every3Start0(translations)));
-		this._translationY = new LinearInterpolator(getArray(times, every3Start1(translations)));
-		this._translationZ = new LinearInterpolator(getArray(times, every3Start2(translations)));
-
-		this._rotationX = new LinearInterpolator(getArray(times, every4Start0(rotations)));
-		this._rotationY = new LinearInterpolator(getArray(times, every4Start1(rotations)));
-		this._rotationZ = new LinearInterpolator(getArray(times, every4Start2(rotations)));
-		this._rotationW = new LinearInterpolator(getArray(times, every4Start3(rotations)));
-
-		this._scaleX = new LinearInterpolator(getArray(times, every3Start0(scales)));
-		this._scaleY = new LinearInterpolator(getArray(times, every3Start1(scales)));
-		this._scaleZ = new LinearInterpolator(getArray(times, every3Start2(scales)));
+		this._scaleX = new LinearInterpolator(getNewArray(scaleX));
+		this._scaleY = new LinearInterpolator(getNewArray(scaleY));
+		this._scaleZ = new LinearInterpolator(getNewArray(scaleZ));
 
 		//this.tmpVec = new Vector3(); // unused?
 		this.tmpQuat = new Quaternion();
@@ -99,6 +95,21 @@ function (
 	 */
 	TransformChannel.prototype.createStateDataObject = function () {
 		return new TransformData();
+	};
+
+	TransformChannel.prototype.getMaxTime = function() {
+		return Math.max(
+			this._translationX.getMaxTime(),
+			this._translationY.getMaxTime(),
+			this._translationZ.getMaxTime(),
+			this._rotationX.getMaxTime(),
+			this._rotationY.getMaxTime(),
+			this._rotationZ.getMaxTime(),
+			this._rotationW.getMaxTime(),
+			this._scaleX.getMaxTime(),
+			this._scaleY.getMaxTime(),
+			this._scaleZ.getMaxTime()
+		);
 	};
 
 	/**
@@ -119,9 +130,16 @@ function (
 		transformData._rotation.data[2] = this._rotationZ.getAt(time);
 		transformData._rotation.data[3] = this._rotationW.getAt(time);
 
-		transformData._scale.data[0] = this._scaleX.getAt(time);
+		transformData._rotation.normalize();
+
+		transformData._scale.data[0] = 1;
+		transformData._scale.data[1] = 1;
+		transformData._scale.data[2] = 1;
+        /*
+		transformData._scale.data[0] = this._scaleX.getAt(time);  // these return 0
 		transformData._scale.data[1] = this._scaleY.getAt(time);
 		transformData._scale.data[2] = this._scaleZ.getAt(time);
+        */
 	};
 
 	/**
@@ -131,6 +149,7 @@ function (
 	 * @return {TransformData} our resulting TransformData.
 	 */
 	TransformChannel.prototype.getData = function (index, store) {
+		console.log(';asd');
 		var rVal = store ? store : new TransformData();
 		rVal.setRotation(this._rotations[index]);
 		rVal.setScale(this._scales[index]);

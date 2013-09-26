@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightHandThumb3",
+	"components": {
+		"transform": {
+			"translation": [ 0.02827938, -0.00457375, -0.01702995 ],
+			"rotation": [ 0.00896688, 0.02379674, 0.00520644, -0.9996631 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_RightHandThumb2.entity"
+		}
+	}
+}

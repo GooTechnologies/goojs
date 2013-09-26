@@ -1,0 +1,1853 @@
+{
+	"joints": [
+		{
+			"index": 0,
+			"parentIndex": -32768,
+			"name": "Alexis_Hips",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-0.963794,
+					0,
+					0,
+					1,
+					0.03985525,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 1,
+			"parentIndex": 0,
+			"name": "Alexis_Spine",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.056057,
+					0,
+					0,
+					1,
+					0.05562658,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 2,
+			"parentIndex": 1,
+			"name": "Alexis_Spine1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.218597,
+					0,
+					0,
+					1,
+					0.05397053,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 3,
+			"parentIndex": 2,
+			"name": "Alexis_Spine2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.354994,
+					0,
+					0,
+					1,
+					0.04104748,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 4,
+			"parentIndex": 3,
+			"name": "Alexis_Neck",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.493768,
+					0,
+					0,
+					1,
+					-0.0024944,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 5,
+			"parentIndex": 4,
+			"name": "Alexis_Neck1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.537169,
+					0,
+					0,
+					1,
+					0.00677456,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 6,
+			"parentIndex": 5,
+			"name": "Alexis_Head",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.577435,
+					0,
+					0,
+					1,
+					0.01535976,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 7,
+			"parentIndex": 6,
+			"name": "Alexis_LeftEye",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.035717,
+					0,
+					1,
+					0,
+					-1.654006,
+					0,
+					0,
+					1,
+					0.1311821,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 8,
+			"parentIndex": 6,
+			"name": "Alexis_RightEye",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.035717,
+					0,
+					1,
+					0,
+					-1.654006,
+					0,
+					0,
+					1,
+					0.1311821,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 9,
+			"parentIndex": 6,
+			"name": "Alexis_Jaw",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.578276,
+					0,
+					0,
+					1,
+					0.06763488,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 10,
+			"parentIndex": 9,
+			"name": "Alexis_TongueBack",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.570096,
+					0,
+					0,
+					1,
+					0.1233854,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 11,
+			"parentIndex": 9,
+			"name": "Alexis_TongueTip",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.564308,
+					0,
+					0,
+					1,
+					0.1477336,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 12,
+			"parentIndex": 9,
+			"name": "Alexis_LeftLipLower",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.01425082,
+					0,
+					1,
+					0,
+					-1.569431,
+					0,
+					0,
+					1,
+					0.1644897,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 13,
+			"parentIndex": 9,
+			"name": "Alexis_JawEND",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					-1.554796,
+					0,
+					0,
+					1,
+					0.158456,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 14,
+			"parentIndex": 9,
+			"name": "Alexis_RightLipLower",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.01425082,
+					0,
+					1,
+					0,
+					-1.569431,
+					0,
+					0,
+					1,
+					0.1644897,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 15,
+			"parentIndex": 9,
+			"name": "Alexis_RightLipCorner",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.03643423,
+					0,
+					1,
+					0,
+					-1.580017,
+					0,
+					0,
+					1,
+					0.147639,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 16,
+			"parentIndex": 9,
+			"name": "Alexis_LeftLipCorner",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.03643423,
+					0,
+					1,
+					0,
+					-1.580017,
+					0,
+					0,
+					1,
+					0.147639,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 17,
+			"parentIndex": 6,
+			"name": "Alexis_LeftLipUpper",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.01450132,
+					0,
+					1,
+					0,
+					-1.58262,
+					0,
+					0,
+					1,
+					0.1714936,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 18,
+			"parentIndex": 6,
+			"name": "Alexis_LeftNostril",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.02145208,
+					0,
+					1,
+					0,
+					-1.601878,
+					0,
+					0,
+					1,
+					0.1703735,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 19,
+			"parentIndex": 6,
+			"name": "Alexis_LeftCheek",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.04922222,
+					0,
+					1,
+					0,
+					-1.610654,
+					0,
+					0,
+					1,
+					0.1488754,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 20,
+			"parentIndex": 6,
+			"name": "Alexis_LeftEyelidLower",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.035717,
+					0,
+					0.997564,
+					-0.06975646,
+					-1.640826,
+					0,
+					0.06975646,
+					0.997564,
+					0.2462401,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 21,
+			"parentIndex": 6,
+			"name": "Alexis_LeftEyelidUpper",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.035717,
+					0,
+					1,
+					0,
+					-1.654006,
+					0,
+					0,
+					1,
+					0.1311821,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 22,
+			"parentIndex": 6,
+			"name": "Alexis_LeftInnerBrow",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.01861044,
+					0,
+					1,
+					0,
+					-1.674224,
+					0,
+					0,
+					1,
+					0.1676573,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 23,
+			"parentIndex": 6,
+			"name": "Alexis_LeftIOuterBrow",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.05302053,
+					0,
+					1,
+					0,
+					-1.671878,
+					0,
+					0,
+					1,
+					0.1499651,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 24,
+			"parentIndex": 6,
+			"name": "Alexis_RightInnerBrow",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.01861044,
+					0,
+					1,
+					0,
+					-1.674224,
+					0,
+					0,
+					1,
+					0.1676573,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 25,
+			"parentIndex": 6,
+			"name": "Alexis_RightIOuterBrow",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.05302053,
+					0,
+					1,
+					0,
+					-1.671878,
+					0,
+					0,
+					1,
+					0.1499651,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 26,
+			"parentIndex": 6,
+			"name": "Alexis_RightEyelidUpper",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.035717,
+					0,
+					1,
+					0,
+					-1.654006,
+					0,
+					0,
+					1,
+					0.1311821,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 27,
+			"parentIndex": 6,
+			"name": "Alexis_RightEyelidLower",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.035717,
+					0,
+					0.997564,
+					-0.06975646,
+					-1.640826,
+					0,
+					0.06975646,
+					0.997564,
+					0.2462401,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 28,
+			"parentIndex": 6,
+			"name": "Alexis_RightCheek",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.04922222,
+					0,
+					1,
+					0,
+					-1.610654,
+					0,
+					0,
+					1,
+					0.1488754,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 29,
+			"parentIndex": 6,
+			"name": "Alexis_RightNostril",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.02145208,
+					0,
+					1,
+					0,
+					-1.601878,
+					0,
+					0,
+					1,
+					0.1703735,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 30,
+			"parentIndex": 6,
+			"name": "Alexis_RightLipUpper",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.01450132,
+					0,
+					1,
+					0,
+					-1.58262,
+					0,
+					0,
+					1,
+					0.1714936,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 31,
+			"parentIndex": 3,
+			"name": "Alexis_LeftShoulder",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.06144226,
+					0,
+					1,
+					0,
+					-1.456864,
+					0,
+					0,
+					1,
+					0.00311504,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 32,
+			"parentIndex": 31,
+			"name": "Alexis_LeftArm",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.1516328,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 33,
+			"parentIndex": 32,
+			"name": "Alexis_LeftForeArm",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.4285029,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 34,
+			"parentIndex": 33,
+			"name": "Alexis_LeftHand",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.7072407,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 35,
+			"parentIndex": 34,
+			"name": "Alexis_LeftHandThumb1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.7324184,
+					0,
+					1,
+					0,
+					-1.436367,
+					0,
+					0,
+					1,
+					0.01031704,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 36,
+			"parentIndex": 35,
+			"name": "Alexis_LeftHandThumb2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.765507,
+					0,
+					1,
+					0,
+					-1.424875,
+					0,
+					0,
+					1,
+					0.03957017,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 37,
+			"parentIndex": 36,
+			"name": "Alexis_LeftHandThumb3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.7937863,
+					0,
+					1,
+					0,
+					-1.420301,
+					0,
+					0,
+					1,
+					0.05660012,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 38,
+			"parentIndex": 34,
+			"name": "Alexis_LeftHandMiddle1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8091887,
+					0,
+					1,
+					0,
+					-1.452916,
+					0,
+					0,
+					1,
+					-0.00503803,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 39,
+			"parentIndex": 38,
+			"name": "Alexis_LeftHandMiddle2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8487902,
+					0,
+					1,
+					0,
+					-1.452445,
+					0,
+					0,
+					1,
+					-0.00439651,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 40,
+			"parentIndex": 39,
+			"name": "Alexis_LeftHandMiddle3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8773903,
+					0,
+					1,
+					0,
+					-1.450184,
+					0,
+					0,
+					1,
+					-0.00434136,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 41,
+			"parentIndex": 34,
+			"name": "Alexis_LeftHandIndex1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8079649,
+					0,
+					1,
+					0,
+					-1.45063,
+					0,
+					0,
+					1,
+					0.01279129,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 42,
+			"parentIndex": 41,
+			"name": "Alexis_LeftHandIndex2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8453057,
+					0,
+					1,
+					0,
+					-1.45063,
+					0,
+					0,
+					1,
+					0.01330381,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 43,
+			"parentIndex": 42,
+			"name": "Alexis_LeftHandIndex3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8740429,
+					0,
+					1,
+					0,
+					-1.449266,
+					0,
+					0,
+					1,
+					0.01330381,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 44,
+			"parentIndex": 34,
+			"name": "Alexis_LeftHandRing1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8065429,
+					0,
+					1,
+					0,
+					-1.451654,
+					0,
+					0,
+					1,
+					-0.02440583,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 45,
+			"parentIndex": 44,
+			"name": "Alexis_LeftHandRing2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.845188,
+					0,
+					1,
+					0,
+					-1.449664,
+					0,
+					0,
+					1,
+					-0.02455328,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 46,
+			"parentIndex": 45,
+			"name": "Alexis_LeftHandRing3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.874308,
+					0,
+					1,
+					0,
+					-1.448316,
+					0,
+					0,
+					1,
+					-0.02483734,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 47,
+			"parentIndex": 34,
+			"name": "Alexis_LeftHandPinky1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8040207,
+					0,
+					1,
+					0,
+					-1.444543,
+					0,
+					0,
+					1,
+					-0.04034492,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 48,
+			"parentIndex": 47,
+			"name": "Alexis_LeftHandPinky2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8349589,
+					0,
+					1,
+					0,
+					-1.443781,
+					0,
+					0,
+					1,
+					-0.04017697,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 49,
+			"parentIndex": 48,
+			"name": "Alexis_LeftHandPinky3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.8621837,
+					0,
+					1,
+					0,
+					-1.44314,
+					0,
+					0,
+					1,
+					-0.0399454,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 50,
+			"parentIndex": 3,
+			"name": "Alexis_RightShoulder",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.06140197,
+					0,
+					1,
+					0,
+					-1.456864,
+					0,
+					0,
+					1,
+					0.00311504,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 51,
+			"parentIndex": 50,
+			"name": "Alexis_RightArm",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.1516328,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 52,
+			"parentIndex": 51,
+			"name": "Alexis_RightForeArm",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.4285029,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 53,
+			"parentIndex": 52,
+			"name": "Alexis_RightHand",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.7072407,
+					0,
+					1,
+					0,
+					-1.445734,
+					0,
+					0,
+					1,
+					-0.01481965,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 54,
+			"parentIndex": 53,
+			"name": "Alexis_RightHandThumb1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.7324184,
+					0,
+					1,
+					0,
+					-1.436367,
+					0,
+					0,
+					1,
+					0.01031704,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 55,
+			"parentIndex": 54,
+			"name": "Alexis_RightHandThumb2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					-0.00000001,
+					-0.7655069,
+					0,
+					1,
+					0,
+					-1.424875,
+					-0.00000001,
+					0,
+					1,
+					0.03957017,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 56,
+			"parentIndex": 55,
+			"name": "Alexis_RightHandThumb3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.7937864,
+					0,
+					1,
+					0,
+					-1.420301,
+					0,
+					0,
+					0.9999999,
+					0.05660012,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 57,
+			"parentIndex": 53,
+			"name": "Alexis_RightHandIndex1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8079649,
+					0,
+					1,
+					0,
+					-1.45063,
+					0,
+					0,
+					1,
+					0.01279129,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 58,
+			"parentIndex": 57,
+			"name": "Alexis_RightHandIndex2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8453057,
+					0,
+					1,
+					0,
+					-1.45063,
+					0,
+					0,
+					1,
+					0.01330381,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 59,
+			"parentIndex": 58,
+			"name": "Alexis_RightHandIndex3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8740429,
+					0,
+					1,
+					0,
+					-1.449266,
+					0,
+					0,
+					1,
+					0.01330381,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 60,
+			"parentIndex": 53,
+			"name": "Alexis_RightHandMiddle1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8091887,
+					0,
+					1,
+					0,
+					-1.452916,
+					0,
+					0,
+					1,
+					-0.00503803,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 61,
+			"parentIndex": 60,
+			"name": "Alexis_RightHandMiddle2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8487902,
+					0,
+					1,
+					0,
+					-1.452445,
+					0,
+					0,
+					1,
+					-0.00439651,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 62,
+			"parentIndex": 61,
+			"name": "Alexis_RightHandMiddle3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8773903,
+					0,
+					1,
+					0,
+					-1.450184,
+					0,
+					0,
+					1,
+					-0.00434136,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 63,
+			"parentIndex": 53,
+			"name": "Alexis_RightHandRing1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8065429,
+					0,
+					1,
+					0,
+					-1.451654,
+					0,
+					0,
+					1,
+					-0.02440583,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 64,
+			"parentIndex": 63,
+			"name": "Alexis_RightHandRing2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.845188,
+					0,
+					1,
+					0,
+					-1.449664,
+					0,
+					0,
+					1,
+					-0.02455328,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 65,
+			"parentIndex": 64,
+			"name": "Alexis_RightHandRing3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.874308,
+					0,
+					1,
+					0,
+					-1.448316,
+					0,
+					0,
+					1,
+					-0.02483734,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 66,
+			"parentIndex": 53,
+			"name": "Alexis_RightHandPinky1",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8040207,
+					0,
+					1,
+					0,
+					-1.444543,
+					0,
+					0,
+					1,
+					-0.04034492,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 67,
+			"parentIndex": 66,
+			"name": "Alexis_RightHandPinky2",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8349589,
+					0,
+					1,
+					0,
+					-1.443781,
+					0,
+					0,
+					1,
+					-0.04017697,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 68,
+			"parentIndex": 67,
+			"name": "Alexis_RightHandPinky3",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.8621837,
+					0,
+					1,
+					0,
+					-1.44314,
+					0,
+					0,
+					1,
+					-0.0399454,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 69,
+			"parentIndex": 0,
+			"name": "Alexis_LeftUpLeg",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.09633789,
+					0,
+					1,
+					0,
+					-0.9310614,
+					0,
+					0,
+					1,
+					0.03985524,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 70,
+			"parentIndex": 69,
+			"name": "Alexis_LeftLeg",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.09633789,
+					0,
+					1,
+					0,
+					-0.4638105,
+					0,
+					0,
+					1,
+					0.02255559,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 71,
+			"parentIndex": 70,
+			"name": "Alexis_LeftFoot",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.09646393,
+					0,
+					1,
+					0,
+					-0.1218671,
+					0,
+					0,
+					1,
+					0.01407872,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 72,
+			"parentIndex": 71,
+			"name": "Alexis_LeftToeBase",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					0.09463107,
+					0,
+					1,
+					0,
+					0.00006371,
+					0,
+					0,
+					1,
+					0.09690136,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 73,
+			"parentIndex": 0,
+			"name": "Alexis_RightUpLeg",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.09633789,
+					0,
+					1,
+					0,
+					-0.9310614,
+					0,
+					0,
+					1,
+					0.03985524,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 74,
+			"parentIndex": 73,
+			"name": "Alexis_RightLeg",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.09633789,
+					0,
+					1,
+					0,
+					-0.4638105,
+					0,
+					0,
+					1,
+					0.02255559,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 75,
+			"parentIndex": 74,
+			"name": "Alexis_RightFoot",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.09621182,
+					0,
+					1,
+					0,
+					-0.1218671,
+					0,
+					0,
+					1,
+					0.01407872,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		},{
+			"index": 76,
+			"parentIndex": 75,
+			"name": "Alexis_RightToeBase",
+			"inverseBindPose": {
+				"matrix": [
+					1,
+					0,
+					0,
+					-0.09804492,
+					0,
+					1,
+					0,
+					0.00006371,
+					0,
+					0,
+					1,
+					0.09690136,
+					0,
+					0,
+					0,
+					1
+				]
+			}
+		}
+	]
+}

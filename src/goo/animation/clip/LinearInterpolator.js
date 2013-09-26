@@ -11,13 +11,15 @@ function () {
 	}
 
 	LinearInterpolator.prototype.getMinTime = function() {
+		if (this.data.length === 0) return 0;
 		var firstIndex = 0;
-		return this.data[firstIndex].time;
+		return this.data.length ? this.data[firstIndex].time : 0;
 	};
 
 	LinearInterpolator.prototype.getMaxTime = function() {
+		if (this.data.length === 0) return 0;
 		var lastIndex = this.data.length - 1;
-		return this.data[lastIndex].time;
+		return this.data.length ? this.data[lastIndex].time : 0;
 	};
 
 	LinearInterpolator.prototype.getKeyBefore = function(time) {
@@ -39,6 +41,7 @@ function () {
 	};
 
 	LinearInterpolator.prototype.getAt = function(time) {
+		if (this.data.length === 0) { return -1234; }
 		if (this.data.length === 1) return this.data[0].value;
 
 		if (time < this.minTime) return this.data[0].value;

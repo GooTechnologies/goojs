@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftToeBase",
+	"components": {
+		"transform": {
+			"translation": [ 0.00183287, -0.1219309, -0.08282264 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_LeftFoot.entity"
+		}
+	}
+}

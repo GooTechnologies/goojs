@@ -17,33 +17,7 @@ function (
 	function AbstractAnimationChannel (channelName, times, blendType) {
 		this._blendType = blendType || 'Linear';
 		this._channelName = channelName;
-
-		// no more time
-		if ((times instanceof Array || times instanceof Float32Array) && times.length) {
-			this._times = new Float32Array(times);
-		} else {
-			this._times = [];
-		}
-		//
-
-		this._lastStartFrame = 0; // no more this
 	}
-
-	/**
-	 * @returns {number} number of samples
-	 */
-	// no need for this
-	AbstractAnimationChannel.prototype.getSampleCount = function () {
-		return this._times.length;
-	};
-
-	/**
-	 * @returns {number} The last time sample of the animation channel
-	 */
-	AbstractAnimationChannel.prototype.getMaxTime = function () {
-		// this needs redoing
-		return this._times.length ? this._times[this._times.length - 1] : 0;
-	};
 
 	/**
 	 * Calculates which samples to use for extracting animation state, then applies the animation state to supplied data item.
@@ -51,6 +25,8 @@ function (
 	 * @param {TransformData|TriggerData|number[]} applyTo
 	 */
 	AbstractAnimationChannel.prototype.updateSample = function (clockTime, applyTo) {
+		this.setCurrentSample(0, 0.0, applyTo, clockTime);
+		/*
 		var timeCount = this._times.length;
 
 		if (!(timeCount)) {
@@ -92,6 +68,7 @@ function (
 
 			this._lastStartFrame = startFrame;
 		}
+		*/
 	};
 
 	return AbstractAnimationChannel;

@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_HeadTop_End",
+	"components": {
+		"transform": {
+			"translation": [ 0, 0.1788659, -0.00123129 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}

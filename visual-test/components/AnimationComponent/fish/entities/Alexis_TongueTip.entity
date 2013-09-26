@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_TongueTip",
+	"components": {
+		"transform": {
+			"translation": [ 0, -0.01396813, -0.08009871 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Jaw.entity"
+		}
+	}
+}

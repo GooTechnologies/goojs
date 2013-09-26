@@ -1,0 +1,11 @@
+{
+	"created": "9/25/2013 6:04:52 PM",
+	"modified": "9/25/2013 6:04:52 PM",
+	"id": "-1",
+	"public": true,
+	"options": {},
+	"posteffectRefs": [],
+	"entityRefs": [ 
+		"entities/Cube.entity" ]
+}
+

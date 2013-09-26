@@ -1,0 +1,19 @@
+{
+	"name": "Cube",
+	"components": {
+		"meshData": {
+			"meshRef": "meshes/Cube.mesh"
+		},
+		"transform": {
+			"translation": [ 0, 0, 0 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ]
+		},
+		"meshRenderer": {
+			"castShadows": true,
+			"receiveShadows": true,
+			"cullMode": "Dynamic",
+			"materialRefs": [  "materials/default_diffuse.material"  ]
+		}
+	}
+}

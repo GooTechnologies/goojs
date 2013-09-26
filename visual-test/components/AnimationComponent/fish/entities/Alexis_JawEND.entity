@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_JawEND",
+	"components": {
+		"transform": {
+			"translation": [ 0, -0.02348061, -0.09082112 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Jaw.entity"
+		}
+	}
+}

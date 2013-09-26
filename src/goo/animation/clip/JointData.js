@@ -9,6 +9,7 @@ function (TransformData) {
 	 */
 	function JointData (source) {
 		TransformData.call(this, source);
+		console.log(source);
 		this._jointIndex = source ? source._jointIndex : 0;
 	}
 

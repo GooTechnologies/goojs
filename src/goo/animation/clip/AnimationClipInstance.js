@@ -44,7 +44,7 @@ function (
 		this._timeScale = scale;
 	};
 
-	/*
+	/**
 	 * Gives the corresponding data for a channel, to apply animations to
 	 * @param {AbstractAnimationChannel} channel
 	 * @returns {TransformData|TriggerData|number[]} the animation data item

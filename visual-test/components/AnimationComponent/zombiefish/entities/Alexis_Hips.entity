@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_Hips",
+	"components": {
+		"transform": {
+			"translation": [ 0, 0.963794, -0.03985525 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Mixamo_Alexis_JoyfulJumpAnimation.entity"
+		}
+	}
+}

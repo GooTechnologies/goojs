@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftArm",
+	"components": {
+		"transform": {
+			"translation": [ -0.09019056, -0.01113005, 0.01793469 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_LeftShoulder.entity"
+		}
+	}
+}

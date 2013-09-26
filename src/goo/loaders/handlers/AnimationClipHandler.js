@@ -54,31 +54,79 @@ function(
 		}
 		if (clipConfig.channels && clipConfig.channels.length) {
 			for (var i = 0; i < clipConfig.channels.length; i++) {
-				var channel, times, rots, trans, scales, blendType;
 				var channelConfig = clipConfig.channels[i];
+				//console.log(channelConfig);
 
-				if (bindata) {
-					times = ArrayUtil.getTypedArray(bindata, channelConfig.times);
-				} else {
-					times = new Float32Array(JsonUtils.parseChannelTimes(channelConfig, useCompression));
-				}
+				var channel;
+				var translationX, translationY, translationZ;
+				var rotationX, rotationY, rotationZ, rotationW;
+				var scaleX, scaleY, scaleZ;
+				var blendType;
+
 				var blendType = channelConfig.blendType;
 				var type = channelConfig.type;
 				if (type === 'Joint' || type === 'Transform') {
 					if (bindata) {
-						rots = ArrayUtil.getTypedArray(bindata, channelConfig.rotationSamples);
-						trans = ArrayUtil.getTypedArray(bindata, channelConfig.translationSamples);
-						scales = ArrayUtil.getTypedArray(bindata, channelConfig.scaleSamples);
+						if (channelConfig.properties.positionX) {
+							translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionX);
+						}
+						if (channelConfig.properties.positionY) {
+							translationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionY);
+						}
+						if (channelConfig.properties.positionZ) {
+							translationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionZ);
+						}
+						if (channelConfig.properties.rotationX) {
+							rotationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationX);
+						}
+						if (channelConfig.properties.rotationY) {
+							rotationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationY);
+						}
+						if (channelConfig.properties.rotationZ) {
+							rotationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationZ);
+						}
+						if (channelConfig.properties.rotationW) {
+							rotationW = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationW);
+						}
+						if (channelConfig.properties.scaleX) {
+							scaleX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleX);
+						}
+						if (channelConfig.properties.scaleY) {
+							scaleY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleY);
+						}
+						if (channelConfig.properties.scaleZ) {
+							scaleZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleZ);
+						}
 					} else {
-						rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression);
-						trans = JsonUtils.parseTranslationSamples(channelConfig, times.length, useCompression);
-						scales = JsonUtils.parseScaleSamples(channelConfig, times.length, useCompression);
+						translationX = channelConfig.properties.positionX;
+						translationY = channelConfig.properties.positionY;
+						translationZ = channelConfig.properties.positionZ;
+
+						rotationX = channelConfig.properties.rotationX;
+						rotationY = channelConfig.properties.rotationY;
+						rotationZ = channelConfig.properties.rotationZ;
+						rotationW = channelConfig.properties.rotationW;
+
+						scaleX = channelConfig.properties.scaleX;
+						scaleY = channelConfig.properties.scaleY;
+						scaleZ = channelConfig.properties.scaleZ;
 					}
 				}
 				if (type === 'Joint') {
-					channel = new JointChannel(channelConfig.jointName, channelConfig.jointIndex, times, rots, trans, scales, blendType);
+					channel = new JointChannel(
+						channelConfig.jointName, channelConfig.jointIndex,
+						translationX, translationY, translationZ,
+						rotationX, rotationY, rotationZ, rotationW,
+						scaleX, scaleY, scaleZ,
+						blendType
+					);
 				} else if (channelConfig.type === 'Transform') {
-					channel = new TransformChannel(channelConfig.name, times, rots, trans, scales, blendType);
+					channel = new TransformChannel(channelConfig.name,
+						translationX, translationY, translationZ,
+						rotationX, rotationY, rotationZ, rotationW,
+						scaleX, scaleY, scaleZ,
+						blendType
+					);
 				} else if (channelConfig.type === 'FloatLERP') {
 					channel = new InterpolatedFloatChannel(channelConfig.name, times, JsonUtils.parseFloatLERPValues(channelConfig, useCompression), blendType);
 				} else if (channelConfig.type === 'Trigger') {

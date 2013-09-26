@@ -1,0 +1,620 @@
+{
+	"name": "mixamo_com",
+	"channels": [ {
+			"blendType": "hermite",
+			"jointIndex": "0",
+			"jointName": "Alexis_Hips",
+			"name": "Alexis_Hips_0",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.02361587,-0.16136,-0.16136 ],
+				"rotationY": [ 0,-0.00262095,0.03143521,0.03143521 ],
+				"rotationZ": [ 0,0.00583973,-0.01725968,-0.01725968 ],
+				"rotationW": [ 0,0.9997006,-0.00408411,-0.00408411 ],
+				"positionX": [ 0,-0.00169893,0.07065744,0.07065744 ],
+				"positionY": [ 0,0.9454657,-0.01360659,-0.01360659 ],
+				"positionZ": [ 0,0.0051734,0.03725944,0.03725944 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "1",
+			"jointName": "Alexis_Spine",
+			"name": "Alexis_Spine_1",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.06266867,0.231618,0.231618 ],
+				"rotationY": [ 0,-0.00221892,-0.03183673,-0.03183673 ],
+				"rotationZ": [ 0,-0.0061439,-0.01313672,-0.01313672 ],
+				"rotationW": [ 0,0.998013,0.01347363,0.01347363 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "2",
+			"jointName": "Alexis_Spine1",
+			"name": "Alexis_Spine1_2",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.04760448,-0.0516732,-0.0516732 ],
+				"rotationY": [ 0,0.00038408,-0.00678063,-0.00678063 ],
+				"rotationZ": [ 0,0.01744147,0.006261,0.006261 ],
+				"rotationW": [ 0,0.9987139,0.00231028,0.00231028 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "3",
+			"jointName": "Alexis_Spine2",
+			"name": "Alexis_Spine2_3",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.04758958,-0.05112145,-0.05112145 ],
+				"rotationY": [ 0,0.0001884,-0.0057983,-0.0057983 ],
+				"rotationZ": [ 0,0.01739858,0.00648418,0.00648418 ],
+				"rotationW": [ 0,0.9987155,0.00227809,0.00227809 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "4",
+			"jointName": "Alexis_Neck",
+			"name": "Alexis_Neck_4",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.02509531,0.03046101,0.03046101 ],
+				"rotationY": [ 0,0.00315641,0.00106184,0.00106184 ],
+				"rotationZ": [ 0,-0.01872468,-0.01641277,-0.01641277 ],
+				"rotationW": [ 0,0.9995047,-0.00109613,-0.00109613 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "5",
+			"jointName": "Alexis_Neck1",
+			"name": "Alexis_Neck1_5",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.02509562,0.03045279,0.03045279 ],
+				"rotationY": [ 0,0.0031564,0.00106246,0.00106246 ],
+				"rotationZ": [ 0,-0.01872464,-0.01641506,-0.01641506 ],
+				"rotationW": [ 0,0.9995047,-0.00109434,-0.00109434 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "6",
+			"jointName": "Alexis_Head",
+			"name": "Alexis_Head_6",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.1243992,0.04511073,0.04511073 ],
+				"rotationY": [ 0,-0.01153768,0.00952187,0.00952187 ],
+				"rotationZ": [ 0,0.02164005,-0.07447622,-0.07447622 ],
+				"rotationW": [ 0,0.9919292,0.00726342,0.00726342 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "31",
+			"jointName": "Alexis_LeftShoulder",
+			"name": "Alexis_LeftShoulder_31",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00803427,0.00228737,0.00228737 ],
+				"rotationY": [ 0,0.01061652,0.05884769,0.05884769 ],
+				"rotationZ": [ 0,0.101952,0.03812044,0.03812044 ],
+				"rotationW": [ 0,0.9947003,-0.00463665,-0.00463665 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "32",
+			"jointName": "Alexis_LeftArm",
+			"name": "Alexis_LeftArm_32",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.2550587,0.5945554,0.5945554 ],
+				"rotationY": [ 0,0.2375279,0.5167606,0.5167606 ],
+				"rotationZ": [ 0,0.4875395,-0.3205615,-0.3205615 ],
+				"rotationW": [ 0,0.8005191,-0.163148,-0.163148 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "33",
+			"jointName": "Alexis_LeftForeArm",
+			"name": "Alexis_LeftForeArm_33",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,-0.00000072,-0.00000072 ],
+				"rotationY": [ 0,0.0976008,-0.1915459,-0.1915459 ],
+				"rotationZ": [ 0,0.00000005,0.00000137,0.00000137 ],
+				"rotationW": [ 0,0.9952257,0.01816392,0.01816392 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "34",
+			"jointName": "Alexis_LeftHand",
+			"name": "Alexis_LeftHand_34",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.147847,-0.5166337,-0.5166337 ],
+				"rotationY": [ 0,0.01122786,0.02715116,0.02715116 ],
+				"rotationZ": [ 0,-0.0431093,-0.3270754,-0.3270754 ],
+				"rotationW": [ 0,0.9880065,-0.09837269,-0.09837269 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "35",
+			"jointName": "Alexis_LeftHandThumb1",
+			"name": "Alexis_LeftHandThumb1_35",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.02698758,0.01846684,0.01846684 ],
+				"rotationY": [ 0,-0.1948074,-0.01531809,-0.01531809 ],
+				"rotationZ": [ 0,0.00426392,0.00210977,0.00210977 ],
+				"rotationW": [ 0,0.9804609,-0.0035727,-0.0035727 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "36",
+			"jointName": "Alexis_LeftHandThumb2",
+			"name": "Alexis_LeftHandThumb2_36",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.01269406,0.00154132,0.00154132 ],
+				"rotationY": [ 0,-0.0696683,-0.0011833,-0.0011833 ],
+				"rotationZ": [ 0,-0.0046417,0.00494082,0.00494082 ],
+				"rotationW": [ 0,0.9974787,-0.00008047,-0.00008047 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "37",
+			"jointName": "Alexis_LeftHandThumb3",
+			"name": "Alexis_LeftHandThumb3_37",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00642417,0.00068644,0.00068644 ],
+				"rotationY": [ 0,-0.03484563,-0.00060674,-0.00060674 ],
+				"rotationZ": [ 0,-0.00209851,0.00250274,0.00250274 ],
+				"rotationW": [ 0,0.9993699,-0.00001967,-0.00001967 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "38",
+			"jointName": "Alexis_LeftHandMiddle1",
+			"name": "Alexis_LeftHandMiddle1_38",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000002,0.00181883,0.00181883 ],
+				"rotationY": [ 0,-0.00000002,-0.0065502,-0.0065502 ],
+				"rotationZ": [ 0,0.266904,0.01370966,0.01370966 ],
+				"rotationW": [ 0,0.9637231,-0.00380158,-0.00380158 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "39",
+			"jointName": "Alexis_LeftHandMiddle2",
+			"name": "Alexis_LeftHandMiddle2_39",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.00000002,0.00000088,0.00000088 ],
+				"rotationY": [ 0,0.00000001,-0.00000039,-0.00000039 ],
+				"rotationZ": [ 0,0.1622119,-0.00159904,-0.00159904 ],
+				"rotationW": [ 0,0.986756,0.00026286,0.00026286 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "40",
+			"jointName": "Alexis_LeftHandMiddle3",
+			"name": "Alexis_LeftHandMiddle3_40",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000001,0.00000001,0.00000001 ],
+				"rotationY": [ 0,-0.00000001,-0.00000002,-0.00000002 ],
+				"rotationZ": [ 0,0.1112633,-0.00438318,-0.00438318 ],
+				"rotationW": [ 0,0.993791,0.00048995,0.00048995 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "41",
+			"jointName": "Alexis_LeftHandIndex1",
+			"name": "Alexis_LeftHandIndex1_41",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,-0.00000077,-0.00000077 ],
+				"rotationY": [ 0,-0.00000001,0.00000241,0.00000241 ],
+				"rotationZ": [ 0,0.2104725,0.02086803,0.02086803 ],
+				"rotationW": [ 0,0.9775998,-0.00450075,-0.00450075 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "42",
+			"jointName": "Alexis_LeftHandIndex2",
+			"name": "Alexis_LeftHandIndex2_42",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000002,0.00000001,0.00000001 ],
+				"rotationY": [ 0,-0.00000004,0.00000058,0.00000058 ],
+				"rotationZ": [ 0,0.1011959,0.00576116,0.00576116 ],
+				"rotationW": [ 0,0.9948665,-0.00058651,-0.00058651 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "43",
+			"jointName": "Alexis_LeftHandIndex3",
+			"name": "Alexis_LeftHandIndex3_43",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000002,-0.00000035,-0.00000035 ],
+				"rotationY": [ 0,0.00000001,-0.00000105,-0.00000105 ],
+				"rotationZ": [ 0,0.05066303,0.00288807,0.00288807 ],
+				"rotationW": [ 0,0.9987158,-0.00014663,-0.00014663 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "44",
+			"jointName": "Alexis_LeftHandRing1",
+			"name": "Alexis_LeftHandRing1_44",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.00000002,0.00514489,0.00514489 ],
+				"rotationY": [ 0,-0.00000002,-0.01440135,-0.01440135 ],
+				"rotationZ": [ 0,0.336154,0.00501394,0.00501394 ],
+				"rotationW": [ 0,0.9418071,-0.00179529,-0.00179529 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "45",
+			"jointName": "Alexis_LeftHandRing2",
+			"name": "Alexis_LeftHandRing2_45",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000006,-0.00000178,-0.00000178 ],
+				"rotationY": [ 0,-0.00000001,0.00000157,0.00000157 ],
+				"rotationZ": [ 0,0.2375904,-0.01056701,-0.01056701 ],
+				"rotationW": [ 0,0.9713655,0.00258207,0.00258207 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "46",
+			"jointName": "Alexis_LeftHandRing3",
+			"name": "Alexis_LeftHandRing3_46",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.00000002,0.00000008,0.00000008 ],
+				"rotationY": [ 0,0.00000008,-0.00000265,-0.00000265 ],
+				"rotationZ": [ 0,0.1864091,-0.01330778,-0.01330778 ],
+				"rotationW": [ 0,0.9824722,0.00252128,0.00252128 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "47",
+			"jointName": "Alexis_LeftHandPinky1",
+			"name": "Alexis_LeftHandPinky1_47",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000004,0.00908084,0.00908084 ],
+				"rotationY": [ 0,-0.00000003,-0.02101813,-0.02101813 ],
+				"rotationZ": [ 0,0.3966216,-0.00242472,-0.00242472 ],
+				"rotationW": [ 0,0.9179822,0.00103891,0.00103891 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "48",
+			"jointName": "Alexis_LeftHandPinky2",
+			"name": "Alexis_LeftHandPinky2_48",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000001,-0.00000114,-0.00000114 ],
+				"rotationY": [ 0,0.00000006,-0.00000111,-0.00000111 ],
+				"rotationZ": [ 0,0.2927916,-0.0169614,-0.0169614 ],
+				"rotationW": [ 0,0.9561763,0.00518918,0.00518918 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "49",
+			"jointName": "Alexis_LeftHandPinky3",
+			"name": "Alexis_LeftHandPinky3_49",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.00000001,0.00000183,0.00000183 ],
+				"rotationY": [ 0,0.00000004,-0.00000241,-0.00000241 ],
+				"rotationZ": [ 0,0.2439727,-0.02000928,-0.02000928 ],
+				"rotationW": [ 0,0.9697821,0.00502646,0.00502646 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "50",
+			"jointName": "Alexis_RightShoulder",
+			"name": "Alexis_RightShoulder_50",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.01141352,0.00173486,0.00173486 ],
+				"rotationY": [ 0,0.05260246,-0.04140325,-0.04140325 ],
+				"rotationZ": [ 0,-0.104065,-0.00014819,-0.00014819 ],
+				"rotationW": [ 0,0.9931129,0.00212967,0.00212967 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "51",
+			"jointName": "Alexis_RightArm",
+			"name": "Alexis_RightArm_51",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.3497012,0.1974776,0.1974776 ],
+				"rotationY": [ 0,-0.2954153,-0.3246617,-0.3246617 ],
+				"rotationZ": [ 0,-0.4648519,0.2511844,0.2511844 ],
+				"rotationW": [ 0,0.7578598,-0.06826937,-0.06826937 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "52",
+			"jointName": "Alexis_RightForeArm",
+			"name": "Alexis_RightForeArm_52",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000002,-0.00000031,-0.00000031 ],
+				"rotationY": [ 0,-0.2162717,0.2602552,0.2602552 ],
+				"rotationZ": [ 0,-0.00000002,0.00000022,0.00000022 ],
+				"rotationW": [ 0,0.9763333,0.05643904,0.05643904 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "53",
+			"jointName": "Alexis_RightHand",
+			"name": "Alexis_RightHand_53",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.1857243,-0.1458447,-0.1458447 ],
+				"rotationY": [ 0,-0.01020715,0.1283187,0.1283187 ],
+				"rotationZ": [ 0,0.07402774,-0.204389,-0.204389 ],
+				"rotationW": [ 0,0.9797562,-0.01222193,-0.01222193 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "54",
+			"jointName": "Alexis_RightHandThumb1",
+			"name": "Alexis_RightHandThumb1_54",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.08086365,0.01065105,0.01065105 ],
+				"rotationY": [ 0,0.1530024,0.01432791,0.01432791 ],
+				"rotationZ": [ 0,0.03918871,-0.00021268,-0.00021268 ],
+				"rotationW": [ 0,0.9841319,-0.00310063,-0.00310063 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "57",
+			"jointName": "Alexis_RightHandIndex1",
+			"name": "Alexis_RightHandIndex1_57",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000002,-0.00000044,-0.00000044 ],
+				"rotationY": [ 0,0,0.00000005,0.00000005 ],
+				"rotationZ": [ 0,-0.1963718,-0.00638947,-0.00638947 ],
+				"rotationW": [ 0,0.9805295,-0.0012821,-0.0012821 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "58",
+			"jointName": "Alexis_RightHandIndex2",
+			"name": "Alexis_RightHandIndex2_58",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.00000003,0.0000005,0.0000005 ],
+				"rotationY": [ 0,-0.00000003,0.00000011,0.00000011 ],
+				"rotationZ": [ 0,-0.1296067,-0.00694424,-0.00694424 ],
+				"rotationW": [ 0,0.9915655,-0.00090837,-0.00090837 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "59",
+			"jointName": "Alexis_RightHandIndex3",
+			"name": "Alexis_RightHandIndex3_59",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000004,-0.00000419,-0.00000419 ],
+				"rotationY": [ 0,0.00000001,-0.00000006,-0.00000006 ],
+				"rotationZ": [ 0,-0.06494036,-0.00349648,-0.00349648 ],
+				"rotationW": [ 0,0.9978892,-0.00022709,-0.00022709 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "60",
+			"jointName": "Alexis_RightHandMiddle1",
+			"name": "Alexis_RightHandMiddle1_60",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000004,0.0011599,0.0011599 ],
+				"rotationY": [ 0,0.00000001,0.00493629,0.00493629 ],
+				"rotationZ": [ 0,-0.2286352,-0.00124991,-0.00124991 ],
+				"rotationW": [ 0,0.9735122,-0.00029325,-0.00029325 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "61",
+			"jointName": "Alexis_RightHandMiddle2",
+			"name": "Alexis_RightHandMiddle2_61",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,-0.00000025,-0.00000025 ],
+				"rotationY": [ 0,0,0.00000238,0.00000238 ],
+				"rotationZ": [ 0,-0.1641997,-0.00143364,-0.00143364 ],
+				"rotationW": [ 0,0.9864271,-0.00023782,-0.00023782 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "62",
+			"jointName": "Alexis_RightHandMiddle3",
+			"name": "Alexis_RightHandMiddle3_62",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000003,-0.00146207,-0.00146207 ],
+				"rotationY": [ 0,0.00000002,0.00014352,0.00014352 ],
+				"rotationZ": [ 0,-0.09936859,0.00196897,0.00196897 ],
+				"rotationW": [ 0,0.9950507,0.0001967,0.0001967 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "63",
+			"jointName": "Alexis_RightHandRing1",
+			"name": "Alexis_RightHandRing1_63",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000005,0.00306059,0.00306059 ],
+				"rotationY": [ 0,0.00000006,0.01099021,0.01099021 ],
+				"rotationZ": [ 0,-0.26861,0.00507116,0.00507116 ],
+				"rotationW": [ 0,0.963249,0.00141263,0.00141263 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "64",
+			"jointName": "Alexis_RightHandRing2",
+			"name": "Alexis_RightHandRing2_64",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000003,0.00000039,0.00000039 ],
+				"rotationY": [ 0,-0.00000001,0.00000227,0.00000227 ],
+				"rotationZ": [ 0,-0.2071535,0.00536218,0.00536218 ],
+				"rotationW": [ 0,0.9783084,0.00113547,0.00113547 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "65",
+			"jointName": "Alexis_RightHandRing3",
+			"name": "Alexis_RightHandRing3_65",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,-0.00175619,-0.00175619 ],
+				"rotationY": [ 0,-0.00000008,0.00025328,0.00025328 ],
+				"rotationZ": [ 0,-0.1422323,0.00874043,0.00874043 ],
+				"rotationW": [ 0,0.9898334,0.00125349,0.00125349 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "66",
+			"jointName": "Alexis_RightHandPinky1",
+			"name": "Alexis_RightHandPinky1_66",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,0.00518856,0.00518856 ],
+				"rotationY": [ 0,0.00000007,0.01627655,0.01627655 ],
+				"rotationZ": [ 0,-0.3039909,0.0105983,0.0105983 ],
+				"rotationW": [ 0,0.9526749,0.00337422,0.00337422 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "67",
+			"jointName": "Alexis_RightHandPinky2",
+			"name": "Alexis_RightHandPinky2_67",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0,-0.00000053,-0.00000053 ],
+				"rotationY": [ 0,-0.00000005,0.0000023,0.0000023 ],
+				"rotationZ": [ 0,-0.2388633,0.01033232,0.01033232 ],
+				"rotationW": [ 0,0.9710532,0.00253916,0.00253916 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "68",
+			"jointName": "Alexis_RightHandPinky3",
+			"name": "Alexis_RightHandPinky3_68",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.00000003,0.00000108,0.00000108 ],
+				"rotationY": [ 0,0.00000005,-0.00000149,-0.00000149 ],
+				"rotationZ": [ 0,-0.1752985,0.01392335,0.01392335 ],
+				"rotationW": [ 0,0.9845154,0.00247479,0.00247479 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "69",
+			"jointName": "Alexis_LeftUpLeg",
+			"name": "Alexis_LeftUpLeg_69",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.04716725,0.1796966,0.1796966 ],
+				"rotationY": [ 0,-0.03088728,0.08081059,0.08081059 ],
+				"rotationZ": [ 0,-0.00868988,-0.01179946,-0.01179946 ],
+				"rotationW": [ 0,0.9983715,0.01023531,0.01023531 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "70",
+			"jointName": "Alexis_LeftLeg",
+			"name": "Alexis_LeftLeg_70",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.2159139,0.03806993,0.03806993 ],
+				"rotationY": [ 0,0.05464816,-0.1103004,-0.1103004 ],
+				"rotationZ": [ 0,0.01822166,-0.03859374,-0.03859374 ],
+				"rotationW": [ 0,0.9747117,-0.00178635,-0.00178635 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "71",
+			"jointName": "Alexis_LeftFoot",
+			"name": "Alexis_LeftFoot_71",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.1455399,-0.06195813,-0.06195813 ],
+				"rotationY": [ 0,-0.00007406,0.00051275,0.00051275 ],
+				"rotationZ": [ 0,-0.02270895,0.07656416,0.07656416 ],
+				"rotationW": [ 0,0.9890918,-0.00752449,-0.00752449 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "72",
+			"jointName": "Alexis_LeftToeBase",
+			"name": "Alexis_LeftToeBase_72",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.01936971,0.00301916,0.00301916 ],
+				"rotationY": [ 0,-0.00000001,-0.00000003,-0.00000003 ],
+				"rotationZ": [ 0,0,0.00000023,0.00000023 ],
+				"rotationW": [ 0,0.9998124,0.00005722,0.00005722 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "73",
+			"jointName": "Alexis_RightUpLeg",
+			"name": "Alexis_RightUpLeg_73",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.04270785,0.1636699,0.1636699 ],
+				"rotationY": [ 0,0.03105815,0.09809318,0.09809318 ],
+				"rotationZ": [ 0,-0.00102462,-0.02490411,-0.02490411 ],
+				"rotationW": [ 0,0.9986042,0.00330448,0.00330448 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "74",
+			"jointName": "Alexis_RightLeg",
+			"name": "Alexis_RightLeg_74",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,0.2036466,0.0786817,0.0786817 ],
+				"rotationY": [ 0,-0.02868773,-0.1333358,-0.1333358 ],
+				"rotationZ": [ 0,-0.00196517,0.03163495,0.03163495 ],
+				"rotationW": [ 0,0.9786221,-0.02065122,-0.02065122 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "75",
+			"jointName": "Alexis_RightFoot",
+			"name": "Alexis_RightFoot_75",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.1381369,-0.08126511,-0.08126511 ],
+				"rotationY": [ 0,0.00068531,-0.00420251,-0.00420251 ],
+				"rotationZ": [ 0,0.00186817,0.03862305,0.03862305 ],
+				"rotationW": [ 0,0.9904112,-0.01154244,-0.01154244 ]
+			}
+		},{
+			"blendType": "hermite",
+			"jointIndex": "76",
+			"jointName": "Alexis_RightToeBase",
+			"name": "Alexis_RightToeBase_76",
+			"type": "Joint",
+			"properties": {
+				"rotationX": [ 0,-0.01974597,0.00472398,0.00472398 ],
+				"rotationY": [ 0,0,0.00000017,0.00000017 ],
+				"rotationZ": [ 0,0,0.00000002,0.00000002 ],
+				"rotationW": [ 0,0.999805,0.00009298,0.00009298 ]
+			}
+		}
+	]
+}

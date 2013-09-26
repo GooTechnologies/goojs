@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightFoot",
+	"components": {
+		"transform": {
+			"translation": [ -0.00012607, -0.3419434, 0.00847687 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_RightLeg.entity"
+		}
+	}
+}

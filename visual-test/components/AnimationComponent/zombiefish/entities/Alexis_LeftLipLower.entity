@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftLipLower",
+	"components": {
+		"transform": {
+			"translation": [ -0.01425082, -0.00884498, -0.09685487 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Jaw.entity"
+		}
+	}
+}

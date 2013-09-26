@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftHandMiddle2",
+	"components": {
+		"transform": {
+			"translation": [ -0.03960144, -0.00047075, -0.00064152 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_LeftHandMiddle1.entity"
+		}
+	}
+}

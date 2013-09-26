@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_Spine",
+	"components": {
+		"transform": {
+			"translation": [ 0, 0.09226318, -0.01577133 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Hips.entity"
+		}
+	}
+}

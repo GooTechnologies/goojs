@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftHandPinky3",
+	"components": {
+		"transform": {
+			"translation": [ -0.02722489, -0.00064053, -0.00023157 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_LeftHandPinky2.entity"
+		}
+	}
+}

@@ -4,7 +4,8 @@ define([
 	'goo/animation/layer/AnimationLayer',
 	'goo/animation/clip/JointData',
 	'goo/animation/clip/TransformData',
-	'goo/animation/clip/TriggerData'
+	'goo/animation/clip/TriggerData',
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	AnimationLayer,
 	JointData,
 	TransformData,
-	TriggerData
+	TriggerData,
+	Matrix4x4
 ) {
 	"use strict";
 
@@ -158,6 +160,45 @@ function (
 		}
 	};
 
+	var tmpMatrix = new Matrix4x4();
+	var tmpMatrix2 = new Matrix4x4();
+
+	function getDefaults(datas, skeleton) {
+		var keys = Object.keys(datas);
+		for (var i = 0; i < keys.length; i++) {
+			var data = datas[keys[i]];
+
+			var cur = skeleton._joints[data._jointIndex];
+			var parent = skeleton._joints[cur._parentIndex];
+
+			Matrix4x4.invert(cur._inverseBindPose.matrix, tmpMatrix);
+
+			if (parent) {
+				Matrix4x4.combine(parent._inverseBindPose.matrix, tmpMatrix, tmpMatrix2);
+
+				if (data._translation.data[0] === -1234) {
+					data._translation.data[0] = tmpMatrix2.data[12];
+				}
+				if (data._translation.data[1] === -1234) {
+					data._translation.data[1] = tmpMatrix2.data[13];
+				}
+				if (data._translation.data[2] === -1234) {
+					data._translation.data[2] = tmpMatrix2.data[14];
+				}
+			} else {
+				if (data._translation.data[0] === -1234) {
+					data._translation.data[0] = tmpMatrix.data[12];
+				}
+				if (data._translation.data[1] === -1234) {
+					data._translation.data[1] = tmpMatrix.data[13];
+				}
+				if (data._translation.data[2] === -1234) {
+					data._translation.data[2] = tmpMatrix.data[14];
+				}
+			}
+		}
+	}
+
 	/**
 	 * Gets the current animation data for all layers blended together
 	 */
@@ -167,7 +208,11 @@ function (
 		for ( var i = 0; i < last; i++) {
 			this.layers[i + 1].updateLayerBlending(this.layers[i]);
 		}
-		return this.layers[last].getCurrentSourceData();
+		var ret = this.layers[last].getCurrentSourceData();
+
+		getDefaults(ret, this._skeletonPose._skeleton);
+
+		return ret;
 	};
 
 	/**

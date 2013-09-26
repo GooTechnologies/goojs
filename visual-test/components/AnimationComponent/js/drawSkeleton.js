@@ -64,7 +64,7 @@ define([
 	jointMaterial.blendState.blending = 'CustomBlending';
 	jointMaterial.uniforms.color = [1.0, 0.0, 0.0, 0.2];
 	var renderableJoint = {
-		meshData : ShapeCreator.createBox(1, 1, 1),
+		meshData : ShapeCreator.createBox(0.01, 0.01, 0.01),
 		materials : [jointMaterial],
 		transform : new Transform()
 	};
@@ -74,7 +74,7 @@ define([
 	boneMaterial.blendState.blending = 'CustomBlending';
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0, 0.1];
 	var renderableBone = {
-		meshData : ShapeCreator.createBox(1, 1, 1),
+		meshData : ShapeCreator.createBox(0.01, 0.01, 0.01),
 		materials : [boneMaterial],
 		transform : new Transform()
 	};

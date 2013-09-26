@@ -28,7 +28,7 @@ define([
 			manuallyStartGameLoop : true
 		});
 		goo.renderer.domElement.id = 'goo';
-		goo.renderer.setClearColor(0.5, 0.5, 0.5, 1);
+		goo.renderer.setClearColor(0.2, 0.4, 0.5, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		// Camera
@@ -39,13 +39,13 @@ define([
 		// Camera control
 		var orbitCamScript = new OrbitCamControlScript({
 			domElement: goo.renderer.domElement,
-			spherical: new Vector3(400, Math.PI/6, Math.PI/6),
+			spherical: new Vector3(40, Math.PI/6, Math.PI/6),
 			// zoomSpeed: 0.01,
 			zoomSpeed: 10.0,
 			minZoomDistance: 3,
 			maxZoomDistance: 1000,
 			baseDistance: 5,
-			lookAtPoint: new Vector3(0, 120, 0)
+			lookAtPoint: new Vector3(0, 1, 0)
 		});
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(orbitCamScript);
@@ -84,6 +84,7 @@ define([
 		lightEntity.transformComponent.transform.lookAt(new Vector3(0,0,0), Vector3.UNIT_Y);
 		lightEntity.addToWorld();
 
+		/*
 		var grid = new Grid(goo.world, {
 			floor: true,
 			width: 400,
@@ -97,7 +98,7 @@ define([
 			}]
 		});
 		grid.addToWorld();
-
+        */
 
 		return goo;
 	};

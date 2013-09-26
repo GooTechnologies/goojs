@@ -1,0 +1,14 @@
+{
+	"name": "Mixamo_Alexis_JoyfulJumpAnimation",
+	"components": {
+		"animation": {
+			"layersRef": "animations/Mixamo_Alexis_JoyfulJumpAnimation.animation",
+			"poseRef": "skeletons/Alexis_Geo_High.skeleton"
+		},
+		"transform": {
+			"translation": [ 15302.59, 9666.358, 1352.172 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ]
+		}
+	}
+}

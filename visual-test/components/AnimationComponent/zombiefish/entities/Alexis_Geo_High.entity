@@ -1,0 +1,20 @@
+{
+	"name": "Alexis_Geo_High",
+	"components": {
+		"meshData": {
+			"meshRef": "meshes/Alexis_Geo_High.mesh",
+			"poseRef": "skeletons/Alexis_Geo_High.skeleton"
+		},
+		"transform": {
+			"translation": [ 0, 0, 0 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Mixamo_Alexis_JoyfulJumpAnimation.entity"
+		},
+		"meshRenderer": {
+			"castShadows": true,
+			"receiveShadows": true,
+			"cullMode": "Dynamic",
+			"materialRefs": [  "materials/no_name.material"  ]
+		}
+	}
+}

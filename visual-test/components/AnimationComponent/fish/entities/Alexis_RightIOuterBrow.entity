@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightIOuterBrow",
+	"components": {
+		"transform": {
+			"translation": [ 0.05302053, 0.09444366, -0.1346053 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}

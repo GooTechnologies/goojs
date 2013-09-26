@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_LeftEyelidLower",
+	"components": {
+		"transform": {
+			"translation": [ -0.035717, 0.07657112, -0.1158223 ],
+			"rotation": [ -0.0348995, 0, 0, -0.9993908 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}

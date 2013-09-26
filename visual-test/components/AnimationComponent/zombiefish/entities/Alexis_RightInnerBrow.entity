@@ -1,0 +1,10 @@
+{
+	"name": "Alexis_RightInnerBrow",
+	"components": {
+		"transform": {
+			"translation": [ 0.01861044, 0.09678956, -0.1522975 ],
+			"rotation": [ 0, 0, 0, -1 ],
+			"scale": [ 1, 1, 1 ],"parentRef": "entities/Alexis_Head.entity"
+		}
+	}
+}
