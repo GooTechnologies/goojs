@@ -110,7 +110,7 @@ This creates the directory out/release/goo-$GOO_VERSION.
 
 Create a zip file:
 
-    (cd out/release && zip -r goo-$GOO_VERSION.zip goo-GOO_VERSION)
+    (cd out/release && zip -r goo-$GOO_VERSION.zip goo-$GOO_VERSION)
 
 Copy goo.js and goo-require.js to the tool and examples,
 assuming those ../tool and ../examples exist:
