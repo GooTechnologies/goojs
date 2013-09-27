@@ -1404,13 +1404,13 @@ define([
 			return true; // Nothing to draw here. it is occluded
 		}
 
-		if (leftZ < 0 || leftZ > 1.0000001) {
-//			console.error("leftZ : ", leftZ);
-		}
+// 		if (leftZ < 0 || leftZ > 1.0000001) {
+// //			console.error("leftZ : ", leftZ);
+// 		}
 
-		if (rightZ < 0 || rightZ > 1.0000001) {
-//			console.error("rightZ : ", rightZ);
-		}
+// 		if (rightZ < 0 || rightZ > 1.0000001) {
+// //			console.error("rightZ : ", rightZ);
+// 		}
 
 		// Horizontal clipping
 		var t;

@@ -38,7 +38,7 @@ define([
 			for (var i = 0; i < refs.length; i++) {
 				promises.push(update(refs[i]));
 			}
-		} 
+		}
 
 		if (promises.lenght>0) {
 			return RSVP.all(promises).then(function(scripts) {
@@ -50,7 +50,7 @@ define([
 			});
 		}
 		else {
-			return PromiseUtil.createDummyPromise(component)
+			return PromiseUtil.createDummyPromise(component);
 		}
 	};
 

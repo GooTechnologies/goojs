@@ -125,10 +125,10 @@ define([
 						var clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
 
 						if (cfg.loopCount) {
-							clipSource._clipInstance['_loopCount'] = cfg.loopCount;
+							clipSource._clipInstance._loopCount = cfg.loopCount;
 						}
 						if (cfg.timeScale) {
-							clipSource._clipInstance['_timeScale'] = cfg.timeScale;
+							clipSource._clipInstance._timeScale = cfg.timeScale;
 						}
 
 						return clipSource;

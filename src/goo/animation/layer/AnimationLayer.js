@@ -85,6 +85,10 @@ function (
 		globalTime = globalTime || World.time;
 		var cState = this._currentState;
 		var transition;
+		if (this._steadyStates[state] === cState) {
+			return false;
+		}
+
 		if (cState && cState._transitions) {
 			transition = cState._transitions[state] || cState._transitions['*'];
 		}
