@@ -81,10 +81,10 @@ function(
 		var composer = new Composer();
 
 		var regularPass = new RenderPass(renderList);
+		regularPass.renderToScreen = true;
+
 		// TODO: Add filter , to only render entities with FurComponents in the FurPass.
 		var furPass = new FurPass(renderList);
-
-		regularPass.renderToScreen = true;
 
 		composer.addPass(regularPass);
 		composer.addPass(furPass);

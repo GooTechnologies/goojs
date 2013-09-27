@@ -19,8 +19,8 @@ function (
 		this.renderList = renderList;
 		this.filter = filter;
 
-		this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
-		this.oldClearColor = new Vector4();
+		//this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
+		//this.oldClearColor = new Vector4();
 		this.renderToScreen = true;
 
 		this.overrideMaterial = null;
@@ -35,6 +35,7 @@ function (
 
 		this.furMaterial = Material.createMaterial(furShader);
 		// TODO: The blending method is maybe not correct... lets see.
+		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		this.furMaterial.blendState.blending = "AdditiveBlending";
 		this.furMaterial.depthState.write = false;
 	}
@@ -63,20 +64,26 @@ function (
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
+			colorTexture: Shader.DIFFUSE_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec3 vertexNormal;',
 			'attribute vec4 vertexTangent;',
+			'attribute vec2 vertexUV0;',
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float normalizedLength;',
 
+			'uniform sampler2D colorTexture;',
+
 			'varying vec3 normal;',
+			'varying vec2 texCoord0;',
 
 			'void main(void) {',
+			'	texCoord0 = vertexUV0;',
 			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
 			'	worldPos += normalizedLength * vec4(normal, 0.0);',
@@ -85,14 +92,21 @@ function (
 			'}'//
 		].join("\n"),
 		fshader: [
+
 			'uniform float normalizedLength;',
+			'uniform sampler2D colorTexture;',
+
 			'varying vec3 normal;',
+			'varying vec2 texCoord0;',
+
 			'void main(void)',
 			'{',
 			'	vec3 red = vec3(1.0, 0.0, 0.0);',
-			 '	vec3 blue = vec3(0.0, 0.0, 1.0);',
-			'	vec3 color = mix(blue, red, normalizedLength);',
-			'	gl_FragColor = vec4(color, 1.0);',
+			'	vec3 blue = vec3(0.0, 0.0, 1.0);',
+			'	vec4 color = vec4(mix(blue, red, normalizedLength), 1.0);',
+			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'	texCol.a = 1.0;',
+			'	gl_FragColor = mix(color, texCol, 0.1);',
 			'}'//
 		].join("\n")
 	};
