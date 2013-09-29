@@ -527,7 +527,7 @@ function (
 	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
 	};
-	
+
 	/**
 	 * @static
 	 * @description Computes the squared distance between two vectors.
@@ -552,7 +552,7 @@ function (
 	Vector3.distance = function (lhs, rhs) {
 		return Math.sqrt(Vector3.distanceSquared(lhs, rhs));
 	};
-	
+
 	/**
 	 * @description Computes the squared distance between this and another vector.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
