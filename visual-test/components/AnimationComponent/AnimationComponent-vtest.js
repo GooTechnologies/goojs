@@ -36,11 +36,11 @@ require([
 	// Load the character
 	function loadScene(goo) {
 		var loader = new DynamicLoader({
-			rootPath: './zombiefish/',
+			rootPath: './zombie/',
 			world: goo.world
 		});
 
-		loader.load('fish.project').then(function (configs) {
+		loader.load('test.scene').then(function (configs) {
 			var skinnedEntities = [];
 
 			var func = function() {
@@ -51,13 +51,13 @@ require([
 			for (var key in configs) {
 				if (/\.entity$/.test(key)) {
 					var entity = loader.getCachedObjectForRef(key);
-					console.log(entity);
 
+					/*
 					var meshRendererComponent = new MeshRendererComponent();
 					var material = Material.createMaterial(ShaderLib.uber, 'xMaterial');
 					meshRendererComponent.materials.push(material);
 					entity.setComponent(meshRendererComponent);
-
+					*/
 
 					if (entity.meshDataComponent && entity.meshDataComponent.currentPose) {
 						skinnedEntities.push(entity);
