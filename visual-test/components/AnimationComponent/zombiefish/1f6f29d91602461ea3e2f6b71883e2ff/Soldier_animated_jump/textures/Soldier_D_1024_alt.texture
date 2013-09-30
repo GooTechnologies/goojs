@@ -1,0 +1,17 @@
+{
+    "fileName": "Soldier_D_1024_alt.jpg",
+    "magFilter": "Bilinear",
+    "minFilter": "Trilinear",
+    "name": "Soldier_D_1024_alt",
+    "offset": [
+        0.0,
+        0.0
+    ],
+    "repeat": [
+        1.0,
+        1.0
+    ],
+    "url": "Soldier_animated_jump/images/Soldier_D_1024_alt.jpg",
+    "wrapU": "Repeat",
+    "wrapV": "Repeat"
+}

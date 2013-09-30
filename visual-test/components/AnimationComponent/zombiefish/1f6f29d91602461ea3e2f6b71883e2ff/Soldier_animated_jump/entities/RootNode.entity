@@ -1,0 +1,27 @@
+{
+    "components": {
+        "animation": {
+            "layersRef": "Soldier_animated_jump/animations/Animations.animation",
+            "poseRef": "Soldier_animated_jump/skeletons/Skeleton.skeleton"
+        },
+        "transform": {
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    },
+    "name": "Soldier_animated_jump",
+    "nodeType": "Null"
+}

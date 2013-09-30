@@ -1,0 +1,57 @@
+{
+    "name": "PlaneMat",
+    "shaderRef": "GOO_ENGINE_SHADERS/uber",
+    "texturesMapping": {
+        "DIFFUSE_MAP": {
+            "enabled": true,
+            "textureRef": "Soldier_animated_jump/textures/text.texture"
+        }
+    },
+    "type": "Phong",
+    "uniforms": {
+        "materialAmbient": {
+            "enabled": true,
+            "value": [
+                0.2,
+                0.2,
+                0.2,
+                1.0
+            ]
+        },
+        "materialDiffuse": {
+            "enabled": true,
+            "value": [
+                0.8,
+                0.8,
+                0.8,
+                1.0
+            ]
+        },
+        "materialEmissive": {
+            "enabled": true,
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "materialSpecular": {
+            "enabled": true,
+            "value": [
+                0.2,
+                0.2,
+                0.2,
+                1.0
+            ]
+        },
+        "materialSpecularPower": {
+            "enabled": true,
+            "value": 20.0
+        },
+        "opacity": {
+            "enabled": true,
+            "value": 1.0
+        }
+    }
+}

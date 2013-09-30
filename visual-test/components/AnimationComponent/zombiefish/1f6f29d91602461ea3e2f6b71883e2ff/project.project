@@ -1,0 +1,17 @@
+{
+    "created": "2013-09-26T16:59:19.203000",
+    "deleted": false,
+    "entityRefs": ["Soldier_animated_jump/entities/Plane_0.entity",
+        "Soldier_animated_jump/entities/RootNode.entity",
+        "Soldier_animated_jump/entities/soldier_Military_Male_Lod_1_0.entity"],
+    "id": "1f6f29d91602461ea3e2f6b71883e2ff",
+    "libraryRefs": [
+        "Soldier_animated_jump/entities/Plane_0.entity",
+        "Soldier_animated_jump/entities/RootNode.entity",
+        "Soldier_animated_jump/entities/soldier_Military_Male_Lod_1_0.entity"
+    ],
+    "modified": "2013-09-26T16:59:46.881000",
+    "name": "Default Goo Project",
+    "parent": null,
+    "public": true
+}

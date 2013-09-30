@@ -5,9 +5,9 @@
 			"meshRef": "meshes/Cube.mesh"
 		},
 		"transform": {
-			"translation": [ -1.2773, -1.31526, 2.2432 ],
+			"translation": [ -115.2773, -89.31526, 254.2432 ],
 			"rotation": [ 0, 0, 0, -1 ],
-			"scale": [ 1.93876, 1.93876, 1.93876 ]
+			"scale": [ 29.93876, 29.93876, 29.93876 ]
 		},
 		"meshRenderer": {
 			"castShadows": true,

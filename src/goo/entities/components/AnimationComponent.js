@@ -160,6 +160,7 @@ function (
 		}
 	};
 
+	// these need to go at load time
 	var tmpMatrix = new Matrix4x4();
 	var tmpMatrix2 = new Matrix4x4();
 
@@ -198,6 +199,7 @@ function (
 			}
 		}
 	}
+	//
 
 	/**
 	 * Gets the current animation data for all layers blended together

@@ -149,7 +149,6 @@ function (
 	 * @return {TransformData} our resulting TransformData.
 	 */
 	TransformChannel.prototype.getData = function (index, store) {
-		console.log(';asd');
 		var rVal = store ? store : new TransformData();
 		rVal.setRotation(this._rotations[index]);
 		rVal.setScale(this._scales[index]);

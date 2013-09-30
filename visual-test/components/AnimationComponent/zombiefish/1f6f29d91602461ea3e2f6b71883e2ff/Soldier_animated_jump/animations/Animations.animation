@@ -1,0 +1,19 @@
+{
+    "layers": {
+        "DEFAULT": {
+            "defaultState": "default",
+            "name": "Default animation layer",
+            "states": {
+                "default": {
+                    "clipSource": {
+                        "clipRef": "Soldier_animated_jump/animations/mixamo_com.clip",
+                        "loopCount": -1,
+                        "timeScale": 1.0,
+                        "type": "Clip"
+                    },
+                    "name": "Default state"
+                }
+            }
+        }
+    }
+}

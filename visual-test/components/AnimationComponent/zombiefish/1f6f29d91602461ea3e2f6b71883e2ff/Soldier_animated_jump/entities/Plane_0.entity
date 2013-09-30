@@ -1,0 +1,36 @@
+{
+    "components": {
+        "meshData": {
+            "meshRef": "Soldier_animated_jump/meshes/Plane_0.mesh"
+        },
+        "meshRenderer": {
+            "castShadows": false,
+            "cullMode": "Dynamic",
+            "materialRefs": [
+                "Soldier_animated_jump/materials/PlaneMat_1.material"
+            ],
+            "receiveShadows": false,
+            "reflectable": false
+        },
+        "transform": {
+            "parentRef": "Soldier_animated_jump/entities/RootNode.entity",
+            "rotation": [
+                90.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.7287619709968567,
+                1.0,
+                0.5263158082962036
+            ],
+            "translation": [
+                -107.92147827148438,
+                73.07379150390625,
+                0.0
+            ]
+        }
+    },
+    "name": "Plane",
+    "nodeType": "Mesh"
+}

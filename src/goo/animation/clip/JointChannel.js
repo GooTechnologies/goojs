@@ -14,7 +14,7 @@ function (TransformChannel, JointData) {
 	 */
 	function JointChannel (jointName, jointIndex, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
 		TransformChannel.call(this, JointChannel.JOINT_CHANNEL_NAME + jointIndex, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType);
-		console.log('...', jointIndex);
+
 		this._jointName = jointName; //REVIEW: unused POST-REVIEW: can be used for debuggins purposes. Joint has a name even though index is used for id:ing
 		this._jointIndex = jointIndex;
 	}

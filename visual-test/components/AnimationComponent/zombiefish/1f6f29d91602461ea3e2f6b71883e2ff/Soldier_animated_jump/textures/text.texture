@@ -1,0 +1,17 @@
+{
+    "fileName": "text.jpg",
+    "magFilter": "Bilinear",
+    "minFilter": "Trilinear",
+    "name": "text",
+    "offset": [
+        0.0,
+        0.0
+    ],
+    "repeat": [
+        1.0,
+        1.0
+    ],
+    "url": "Soldier_animated_jump/images/text.jpg",
+    "wrapU": "Repeat",
+    "wrapV": "Repeat"
+}

@@ -1,0 +1,57 @@
+{
+    "name": "Casual_Male_Lod_0",
+    "shaderRef": "GOO_ENGINE_SHADERS/uber",
+    "texturesMapping": {
+        "DIFFUSE_MAP": {
+            "enabled": true,
+            "textureRef": "Soldier_animated_jump/textures/Soldier_D_1024_alt.texture"
+        }
+    },
+    "type": "Phong",
+    "uniforms": {
+        "materialAmbient": {
+            "enabled": true,
+            "value": [
+                0.5881999731063843,
+                0.5881999731063843,
+                0.5881999731063843,
+                1.0
+            ]
+        },
+        "materialDiffuse": {
+            "enabled": true,
+            "value": [
+                0.5881999731063843,
+                0.5881999731063843,
+                0.5881999731063843,
+                1.0
+            ]
+        },
+        "materialEmissive": {
+            "enabled": true,
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "materialSpecular": {
+            "enabled": true,
+            "value": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        "materialSpecularPower": {
+            "enabled": true,
+            "value": 1.9999999173704188
+        },
+        "opacity": {
+            "enabled": true,
+            "value": 1.0
+        }
+    }
+}

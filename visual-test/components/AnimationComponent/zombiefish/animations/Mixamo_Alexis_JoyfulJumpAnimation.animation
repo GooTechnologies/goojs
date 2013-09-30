@@ -1,30 +1,16 @@
 {
 	"layers": {
-		
 		"DEFAULT": {
-			"transitions": {
-				"*": { "type": "Fade" }
-			},
 			"defaultState": "mixamo_com",
 			"states": { 
 				"mixamo_com": {
 					"clipSource": {
-						"clipRef": "/animations/mixamo_com.clip", 
-						"loopCount": -1, 
-						"timeScale": 1, 
+						"clipRef": "animations/mixamo_com.clip",
+						"loopCount": -1,
 						"type": "Clip"
-					}, 
-					"name": "Default state"
-				},
-				"mixamo_com2": {
-					"clipSource": {
-						"clipRef": "/animations/mixamo_com2.clip", 
-						"loopCount": -1, 
-						"timeScale": 1, 
-						"type": "Clip"
-					}, 
-					"name": "Default state"
+					}
 				}
+		  	
 		  	}
 		}
 	}

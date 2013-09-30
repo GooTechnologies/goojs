@@ -67,6 +67,7 @@ function(
 				var type = channelConfig.type;
 				if (type === 'Joint' || type === 'Transform') {
 					if (bindata) {
+						/* // animations exported from unity use this position instead of translation
 						if (channelConfig.properties.positionX) {
 							translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionX);
 						}
@@ -76,6 +77,17 @@ function(
 						if (channelConfig.properties.positionZ) {
 							translationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionZ);
 						}
+						*/
+						if (channelConfig.properties.translationX) {
+							translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationX);
+						}
+						if (channelConfig.properties.translationY) {
+							translationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationY);
+						}
+						if (channelConfig.properties.translationZ) {
+							translationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationZ);
+						}
+
 						if (channelConfig.properties.rotationX) {
 							rotationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationX);
 						}
@@ -88,6 +100,7 @@ function(
 						if (channelConfig.properties.rotationW) {
 							rotationW = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationW);
 						}
+
 						if (channelConfig.properties.scaleX) {
 							scaleX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleX);
 						}
@@ -98,9 +111,13 @@ function(
 							scaleZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleZ);
 						}
 					} else {
-						translationX = channelConfig.properties.positionX;
-						translationY = channelConfig.properties.positionY;
-						translationZ = channelConfig.properties.positionZ;
+						//translationX = channelConfig.properties.positionX;
+						//translationY = channelConfig.properties.positionY;
+						//translationZ = channelConfig.properties.positionZ;
+
+						translationX = channelConfig.properties.translationX;
+						translationY = channelConfig.properties.translationY;
+						translationZ = channelConfig.properties.translationZ;
 
 						rotationX = channelConfig.properties.rotationX;
 						rotationY = channelConfig.properties.rotationY;
