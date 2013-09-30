@@ -105,34 +105,42 @@ define([
 		var promises = [];
 		if (config.posteffectRefs && Array.isArray(config.posteffectRefs) && config.posteffectRefs.length > 0) {
 			var handlePosteffectRef = function(posteffectRef) {
-				return promises.push(that.getConfig(posteffectRef).then(function(posteffectConfig) {
+				return that.getConfig(posteffectRef).then(function(posteffectConfig) {
 					return that.updateObject(posteffectRef, posteffectConfig, that.options);
-				}));
+				});
 			};
 
 			for (var i = 0; i < config.posteffectRefs.length; i++) {
-				handlePosteffectRef(config.posteffectRefs[i]);
+				promises.push(handlePosteffectRef(config.posteffectRefs[i]));
 			}
 
 			return RSVP.all(promises).then(function(posteffects) {
-				var composer = new Composer();
-				var renderPass = new RenderPass(that.world.getSystem('RenderSystem').renderList);  // this does not contains the skybox
-				renderPass.clearColor = new Vector4(0, 0, 0, 0);
+				var mainRenderSystem = that.world.getSystem('RenderSystem');
+				var composer, renderPass, outPass;
+				if (mainRenderSystem.composers.length === 0) {
+					composer = new Composer();
+					mainRenderSystem.composers.push(composer);
+					renderPass = new RenderPass(mainRenderSystem.renderList);
+					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
+					// Regular copy
+					var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+					//outPass.material.blendState.blending = 'CustomBlending';
+					outPass.renderToScreen = true;
+					//outPass.clear = { color: false, depth: true, stencil: true };
+					outPass.clear = true;
+				} else {
+					composer = mainRenderSystem.composers[0];
+					renderPass = composer.passes[0];
+					outPass = composer.passes[composer.passes.length - 1];
+				}
+				composer.passes = [];
 				composer.addPass(renderPass);
-
 				for (var j = 0; j < posteffects.length; j++) {
 					var posteffect = posteffects[j];
 					console.log('Added posteffect', posteffect);
-
 					composer.addPass(posteffect);
 				}
-
-				// Regular copy
-				var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
-				outPass.renderToScreen = true;
 				composer.addPass(outPass);
-
-				that.world.gooRunner.renderSystem.composers.push(composer);
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);
 			});
