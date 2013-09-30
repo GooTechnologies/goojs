@@ -1138,8 +1138,10 @@ function (
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize);
+					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize, i);
 				}
+				texture.image.width = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -1171,7 +1173,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize) {
+	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
@@ -1184,7 +1186,12 @@ function (
 			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
 			document.body.appendChild(canvas);
 			canvas.dataReady = true;
-			texture.image = canvas;
+			canvas.src = image.src;
+			if (index === undefined) {
+				texture.image = canvas;
+			} else {
+				texture.image.data[index] = canvas;
+			}
 			canvas.parentNode.removeChild(canvas);
 		}
 	};

@@ -13,7 +13,8 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/Util',
 	'goo/renderer/Texture',
-	'goo/entities/EntityUtils'
+	'goo/entities/EntityUtils',
+	'goo/util/ObjectUtil'
 ], function(
 	ConfigHandler,
 	RSVP,
@@ -29,7 +30,8 @@ define([
 	FullscreenPass,
 	Util,
 	Texture,
-	EntityUtils
+	EntityUtils,
+	_
 ) {
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -44,7 +46,14 @@ define([
 	ProjectHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('project', ProjectHandler);
 
-	ProjectHandler.prototype._prepare = function(/*config*/) {};
+	ProjectHandler.prototype._prepare = function(config) {
+		config.skybox = config.skybox || {};
+		_.defaults(config.skybox, {
+			shape: 'Box',
+			imageUrls: ['','','','','',''],
+			rotation: 0
+		});
+	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
 
@@ -70,7 +79,10 @@ define([
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
 			var imageUrls = skyboxConfig.imageUrls;
 			var type = (this._skybox) ? this._skybox.name.split('_')[1] : null;
-			if (!this._skybox || type !== shape) {
+			if (!shape || type !== shape) {
+				if(this._skybox) {
+					this.world.getSystem('RenderSystem').removed(this._skybox);
+				}
 				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation);
 				type = shape;
 			}
@@ -84,38 +96,56 @@ define([
 			if(!update) {
 				if (texture.image.data) {
 					for (var i = 0; i < imageUrls.length; i++) {
-						if (texture.image.data[i].src.indexOf(imageUrls[i]) === -1) {
+						var img = texture.image.data[i];
+						if (img && img.src.indexOf(imageUrls[i]) === -1) {
 							update = true;
 							break;
 						}
 					}
-				} else if (texture.image.src.indexOf(imageUrls[0]) === -1) {
+				} else if (texture.image && texture.image.src.indexOf(imageUrls[0]) === -1) {
 					update = true;
 				}
 			}
 			if(!update) { return; }
 			var promises = [];
 			for (var i = 0; i < imageUrls.length; i++) {
-				promises.push(this.getConfig(imageUrls[i]));
-			}
-			var that = this;
-			RSVP.all(promises).then(function(images) {
-				if (type === Skybox.SPHERE) {
-					images = images[0];
+				if(imageUrls[i] && imageUrls[i] !== '') {
+					promises.push(this.getConfig(imageUrls[i]));
 				}
-					material.getTexture('DIFFUSE_MAP');
+			}
+			if (!promises.length) {
+				return;
+			}
+			RSVP.all(promises).then(function(images) {
+					if (type === Skybox.SPHERE) {
+						images = images[0];
+					} else {
+						var w = images[0].width;
+						var h = images[0].height;
+						for (var i = 0; i < 6; i++) {
+							var img = images[i];
+							if (w !== img.width || h !== img.height) {
+								console.error('Images not all the same size, not updating');
+								return;
+							}
+						}
+					}
+					var texture = material.getTexture('DIFFUSE_MAP');
 					if (!texture) {
 						texture = new Texture();
 						if (type === Skybox.BOX) {
 							texture.variant = 'CUBE';
 						}
-						that._skybox.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', texture);
 					}
 					texture.setImage(images);
-					if (type === Skybox.BOX) {
+					if (type === Skybox.BOX && images.length) {
 						texture.image.width = images[0].width;
 						texture.image.height = images[0].height;
 						texture.image.dataReady = true;
+					}
+					texture.setNeedsUpdate();
+					if (type === Skybox.BOX && images.length || images) {
+						material.setTexture('DIFFUSE_MAP', texture);
 					}
 			});
 		}
@@ -206,6 +236,7 @@ define([
 
 	// Returns a promise which resolves when updating is done
 	ProjectHandler.prototype.update = function(ref, config) {
+		this._prepare(config);
 		// skybox
 		this._updateSkybox(config.skybox);
 
