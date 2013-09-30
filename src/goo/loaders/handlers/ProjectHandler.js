@@ -3,6 +3,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/Skybox',
+	'goo/math/MathUtils',
 	'goo/shapes/Sphere',
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/Composer',
@@ -11,12 +12,14 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/Util',
+	'goo/renderer/Texture',
 	'goo/entities/EntityUtils'
 ], function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
 	Skybox,
+	MathUtils,
 	Sphere,
 	Renderer,
 	Composer,
@@ -25,6 +28,7 @@ define([
 	ShaderLib,
 	FullscreenPass,
 	Util,
+	Texture,
 	EntityUtils
 ) {
 	/*jshint eqeqeq: false, -W041 */
@@ -34,6 +38,7 @@ define([
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._skybox = null;
 	}
 
 	ProjectHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -43,11 +48,13 @@ define([
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
 
-	ProjectHandler.prototype._addSkybox = function(goo, shape, textures, rotation) {
-		var skybox = new Skybox(shape, textures, Sphere.TextureModes.Projected, rotation);
-		var skyboxEntity = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
+	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation) {
+		var skybox = new Skybox(shape, [], Sphere.TextureModes.Projected, rotation);
+		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
+		skyboxEntity.name = 'Skybox_'+shape;
 		skyboxEntity.transformComponent.updateWorldTransform();
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
+		//skyboxEntity.addToWorld();
 		/*
 		goo.callbacksPreRender.push(function() {
 			if (skybox.active) {
@@ -60,10 +67,57 @@ define([
 	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
 		if (skyboxConfig) {
 			var shape = skyboxConfig.shape.toLowerCase();
-			var rotation = skyboxConfig.rotation;
-			var texturePaths = skyboxConfig.texturePaths;
-
-			this._addSkybox(this.world.gooRunner, shape, texturePaths, rotation);
+			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
+			var imageUrls = skyboxConfig.imageUrls;
+			var type = (this._skybox) ? this._skybox.name.split('_')[1] : null;
+			if (!this._skybox || type !== shape) {
+				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation);
+				type = shape;
+			}
+			var xAngle = (type === Skybox.SPHERE) ? Math.PI / 2 : 0;
+			this._skybox.transformComponent.transform.rotation.fromAngles(xAngle, rotation, 0);
+			this._skybox.transformComponent.updateTransform();
+			this._skybox.transformComponent.updateWorldTransform();
+			var material = this._skybox.meshRendererComponent.materials[0];
+			var texture = material.getTexture('DIFFUSE_MAP');
+			var update = !texture;
+			if(!update) {
+				if (texture.image.data) {
+					for (var i = 0; i < imageUrls.length; i++) {
+						if (texture.image.data[i].src.indexOf(imageUrls[i]) === -1) {
+							update = true;
+							break;
+						}
+					}
+				} else if (texture.image.src.indexOf(imageUrls[0]) === -1) {
+					update = true;
+				}
+			}
+			if(!update) { return; }
+			var promises = [];
+			for (var i = 0; i < imageUrls.length; i++) {
+				promises.push(this.getConfig(imageUrls[i]));
+			}
+			var that = this;
+			RSVP.all(promises).then(function(images) {
+				if (type === Skybox.SPHERE) {
+					images = images[0];
+				}
+					material.getTexture('DIFFUSE_MAP');
+					if (!texture) {
+						texture = new Texture();
+						if (type === Skybox.BOX) {
+							texture.variant = 'CUBE';
+						}
+						that._skybox.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', texture);
+					}
+					texture.setImage(images);
+					if (type === Skybox.BOX) {
+						texture.image.width = images[0].width;
+						texture.image.height = images[0].height;
+						texture.image.dataReady = true;
+					}
+			});
 		}
 	};
 
@@ -85,7 +139,7 @@ define([
 			return RSVP.all(promises).then(function(entities) {
 				for (var j = 0; j < entities.length; j++) {
 					var entity = entities[j];
-					if (that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) {
+					if ((that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) && !that.world.entityManager.containsEntity(entity)) {
 						console.log("Adding " + entity.name + " to world");
 						entity.addToWorld();
 					}
@@ -145,7 +199,7 @@ define([
 				return console.error("Error updating posteffects: " + err);
 			});
 		} else {
-			console.log("No posteffect refs in project");
+			console.debug("No posteffect refs in project");
 			return PromiseUtil.createDummyPromise(config);
 		}
 	};
