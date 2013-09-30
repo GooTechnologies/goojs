@@ -36,6 +36,10 @@ function (
 			}
 		}
 		if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
+			if (entities.length === 0) {
+				this._computeWorldBound = null;
+				return;
+			}
 			for (var i = 0; i < entities.length; i++) {
 				var mrc = entities[i].meshRendererComponent;
 				if (i === 0) {
