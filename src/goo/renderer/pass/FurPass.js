@@ -2,14 +2,16 @@ define([
 	'goo/renderer/Material',
 	'goo/math/Vector4',
 	'goo/renderer/MeshData',
-	'goo/renderer/Shader'
+	'goo/renderer/Shader',
+	'goo/renderer/Texture'
 ],
 /** @lends */
 function (
 	Material,
 	Vector4,
 	MeshData,
-	Shader) {
+	Shader,
+	Texture) {
 	"use strict";
 
 	/**
@@ -19,8 +21,6 @@ function (
 		this.renderList = renderList;
 		this.filter = filter;
 
-		//this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
-		//this.oldClearColor = new Vector4();
 		this.renderToScreen = true;
 
 		this.overrideMaterial = null;
@@ -29,16 +29,121 @@ function (
 		this.clear = false;
 		this.needsSwap = false;
 
-
-		// TODO : This variable shall be fetched from the FurComponent
-		this.layerCount = 10;
+		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
+		this.layerCount = 1;
+		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
 
 		this.furMaterial = Material.createMaterial(furShader);
 		// TODO: The blending method is maybe not correct... lets see.
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
-		this.furMaterial.blendState.blending = "AdditiveBlending";
+		//this.furMaterial.blendState.blending = "AdditiveBlending";
 		this.furMaterial.depthState.write = false;
+
+		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
+
+	// Convolve a data array with the symmetrical kernel made of the weighs.
+	FurPass.prototype.convolute = function(data, width, height, weights) {
+		var side = Math.round(Math.sqrt(weights.length));
+		var halfSide = Math.floor(side/2);
+		var src = data;
+		var sw = width;
+		var sh = height;
+		// pad output by the convolution matrix
+		var w = sw;
+		var h = sh;
+		var dst = new Uint8Array(data.length);
+		// go through the destination image pixels
+		for (var y=0; y<h; y++) {
+			for (var x=0; x<w; x++) {
+			var sy = y;
+			var sx = x;
+			var dstOff = (y*w+x)*4;
+			// calculate the weighed sum of the source image pixels that
+			// fall under the convolution matrix
+			var r=0, g=0, b=0, a=0;
+			for (var cy=0; cy<side; cy++) {
+				for (var cx=0; cx<side; cx++) {
+					var scy = sy + cy - halfSide;
+					var scx = sx + cx - halfSide;
+					if (scy >= 0 && scy < sh && scx >= 0 && scx < sw) {
+						var srcOff = (scy*sw+scx)*4;
+						var wt = weights[cy*side+cx];
+						r += src[srcOff] * wt;
+						g += src[srcOff+1] * wt;
+						b += src[srcOff+2] * wt;
+						a += src[srcOff+3] * wt;
+					}
+				}
+			}
+			dst[dstOff] = r;
+			dst[dstOff+1] = g;
+			dst[dstOff+2] = b;
+			dst[dstOff+3] = a + alphaFac*(255-a);
+			}
+		}
+		return output;
+	};
+
+	/**
+	* Returns an array of generated opacity textures.
+	*/
+	FurPass.prototype.generateOpacityTextures = function(numberOfLayers, width, height) {
+
+		if (width === undefined || height === undefined) {
+			width = height = 256 * 3;
+		}
+
+		var textures = [];
+
+
+		var textureSettings = {
+			type: "RGB"
+		};
+
+		var channels = 3;
+		var dataLength = width * height * channels;
+
+		// Create an array to hold the image data representaiton.
+		var noiseData = new Uint8Array(dataLength);
+		
+		// Add noise.
+		for (var i = 0; i < dataLength; i++) {
+			noiseData[i] = Math.round(Math.random() * 255);
+		}
+
+		// Gaussian blur convolve the canvas to a suitable level, should be pretty spikey
+		var blurredData = new Float32Array(dataLength);
+
+		var blurKernel = [1/9, 1/9, 1/9,
+							1/9, 1/9, 1/9,
+							1/9, 1/9, 1/9];
+
+
+
+		// Now treshhold the blurred image with an increasing threhhold, experiment to get good results.  
+		// Save the output as binary data if possible. Texture seeems to only be able to use uint8, 
+		/*
+
+		var threshhold = 0.5;
+		var maxThreshhold = 0.9;
+		var threshholdIncrement = (maxThreshhold - threshhold) / numberOfLayers;
+		for (var i = 0; i < numberOfLayers; i++) {
+			
+
+			
+			// Get data from the canvas as an image.
+			var image = .... 
+			textures[i] = new Texture(image);
+			threshhold += threshholdIncrement;
+		}
+		*/
+
+
+		textures[0] = new Texture(noiseData, textureSettings, width, height);
+
+		return textures;
+	};
 
 
 	// RenderPasses may have a fourth additional parameter called delta
@@ -46,7 +151,8 @@ function (
 		for (var i = 0; i < this.renderList.length; i++) {
 			for (var furLayer = 1; furLayer <= this.layerCount; furLayer++) {
 				// update opacity texture and uniforms per layer here.
-				this.furMaterial.shader.uniforms.normalizedLength = furLayer / this.layerCount;
+				this.furUniforms.normalizedLength = furLayer / this.layerCount;
+				this.furUniforms.opacityTexture = this.opacityTextures[0];
 				renderer.render(this.renderList[i], camera, lights, null, this.clear, this.furMaterial);
 			}
 		}
@@ -64,7 +170,8 @@ function (
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
-			colorTexture: Shader.DIFFUSE_MAP
+			colorTexture: Shader.DIFFUSE_MAP,
+			opacityTexture: {}
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -78,6 +185,7 @@ function (
 			'uniform float normalizedLength;',
 
 			'uniform sampler2D colorTexture;',
+			'uniform sampler2D opacityTexture;',
 
 			'varying vec3 normal;',
 			'varying vec2 texCoord0;',
@@ -86,7 +194,7 @@ function (
 			'	texCoord0 = vertexUV0;',
 			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	worldPos += normalizedLength * vec4(normal, 0.0);',
+			'	worldPos += normalizedLength * 0.1 * vec4(normal, 0.0);',
 			'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			'}'//
@@ -94,7 +202,9 @@ function (
 		fshader: [
 
 			'uniform float normalizedLength;',
+			
 			'uniform sampler2D colorTexture;',
+			'uniform sampler2D opacityTexture;',
 
 			'varying vec3 normal;',
 			'varying vec2 texCoord0;',
@@ -104,9 +214,10 @@ function (
 			'	vec3 red = vec3(1.0, 0.0, 0.0);',
 			'	vec3 blue = vec3(0.0, 0.0, 1.0);',
 			'	vec4 color = vec4(mix(blue, red, normalizedLength), 1.0);',
-			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'	vec4 texCol = texture2D(opacityTexture, texCoord0);',
 			'	texCol.a = 1.0;',
-			'	gl_FragColor = mix(color, texCol, 0.1);',
+			//'	gl_FragColor = mix(color, texCol, 0.0);',
+			'	gl_FragColor = vec4(texCol.r, texCol.r, texCol.r, 1.0);',
 			'}'//
 		].join("\n")
 	};
