@@ -1191,6 +1191,9 @@ function (
 			var canvas = document.createElement('canvas'); // !!!!!
 			canvas.width = newWidth;
 			canvas.height = newHeight;
+			if (image.getAttribute) {
+				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
+			}
 			var ctx = canvas.getContext('2d');
 			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
 			document.body.appendChild(canvas);
