@@ -547,24 +547,33 @@ function (
 	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
 	+ it could also use a description of what it's supposed to do
 	 */
-	Renderer.prototype.override = function(mat1, mat2, store) {
+	Renderer.prototype._override = function(mat1, mat2, store) {
 		store.empty();
-		for (var key in store) {
-			if(store.hasOwnProperty(key)) {
-				if (store[key] instanceof Object && key !== 'shader') {
-					for (var prop in mat1[key]) {
-						store[key][prop] = mat1[key][prop];
+		var keys = Object.keys(store);
+		for (var i = 0, l = keys.length; i < l; i++) {
+			var key = keys[i];
+
+			var storeVal = store[key];
+			var mat1Val = mat1[key];
+			var mat2Val = mat2[key];
+			if (storeVal instanceof Object && key !== 'shader') {
+				var matkeys = Object.keys(mat1Val);
+				for (var j = 0, l2 = matkeys.length; j < l2; j++) {
+					var prop = matkeys[j];
+					storeVal[prop] = mat1Val[prop];
+				}
+				var matkeys = Object.keys(mat2Val);
+				for (var j = 0, l2 = matkeys.length; j < l2; j++) {
+					var prop = matkeys[j];
+					if (storeVal[prop] === undefined) {
+						storeVal[prop] = mat2Val[prop];
 					}
-					for (var prop in mat2[key]) {
-						if(store[key][prop] === undefined) {
-							store[key][prop] = mat2[key][prop];
-						}
-					}
+				}
+			} else {
+				if (mat1Val !== undefined) {
+					store[key] = mat1Val;
 				} else {
-					store[key] = mat1[key];
-					if(store[key] === undefined) {
-						store[key] = mat2[key];
-					}
+					store[key] = mat2Val;
 				}
 			}
 		}
@@ -603,7 +612,7 @@ function (
 				orMaterial = this._overrideMaterials[i];
 			}
 			if (material && orMaterial) {
-				this.override(orMaterial, material, this._mergedMaterial);
+				this._override(orMaterial, material, this._mergedMaterial);
 				material = this._mergedMaterial;
 			} else if (orMaterial) {
 				material = orMaterial;
