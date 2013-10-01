@@ -65,22 +65,22 @@ function (
 	 * @param {Array} translations the translations to set on this channel at each time offset.
 	 * @param {Array} scales the scales to set on this channel at each time offset.
 	 */
-	// no more time
+
 	function TransformChannel (channelName, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
 		AbstractAnimationChannel.call(this, channelName, []/*times*/, blendType);
 
-		this._translationX = new LinearInterpolator(getNewArray(translationX));
-		this._translationY = new LinearInterpolator(getNewArray(translationY));
-		this._translationZ = new LinearInterpolator(getNewArray(translationZ));
+		this._translationX = translationX ? new LinearInterpolator(getNewArray(translationX)) : undefined;
+		this._translationY = translationY ? new LinearInterpolator(getNewArray(translationY)) : undefined;
+		this._translationZ = translationZ ? new LinearInterpolator(getNewArray(translationZ)) : undefined;
 
-		this._rotationX = new LinearInterpolator(getNewArray(rotationX));
-		this._rotationY = new LinearInterpolator(getNewArray(rotationY));
-		this._rotationZ = new LinearInterpolator(getNewArray(rotationZ));
-		this._rotationW = new LinearInterpolator(getNewArray(rotationW));
+		this._rotationX = rotationX ? new LinearInterpolator(getNewArray(rotationX)) : undefined;
+		this._rotationY = rotationY ? new LinearInterpolator(getNewArray(rotationY)) : undefined;
+		this._rotationZ = rotationZ ? new LinearInterpolator(getNewArray(rotationZ)) : undefined;
+		this._rotationW = rotationW ? new LinearInterpolator(getNewArray(rotationW)) : undefined;
 
-		this._scaleX = new LinearInterpolator(getNewArray(scaleX));
-		this._scaleY = new LinearInterpolator(getNewArray(scaleY));
-		this._scaleZ = new LinearInterpolator(getNewArray(scaleZ));
+		this._scaleX = scaleX ? new LinearInterpolator(getNewArray(scaleX)) : undefined;
+		this._scaleY = scaleY ? new LinearInterpolator(getNewArray(scaleY)) : undefined;
+		this._scaleZ = scaleZ ? new LinearInterpolator(getNewArray(scaleZ)) : undefined;
 
 		//this.tmpVec = new Vector3(); // unused?
 		this.tmpQuat = new Quaternion();
@@ -97,18 +97,25 @@ function (
 		return new TransformData();
 	};
 
-	TransformChannel.prototype.getMaxTime = function() {
+	TransformChannel.prototype.setDefaultData = function (transform) {
+		if (!this._translationX) { this._translationXDefault = transform.translation.data[0]; }
+		if (!this._translationY) { this._translationYDefault = transform.translation.data[1]; }
+		if (!this._translationZ) { this._translationZDefault = transform.translation.data[2]; }
+		// fill with rotation and scale
+	};
+
+	TransformChannel.prototype.getMaxTime = function () {
 		return Math.max(
-			this._translationX.getMaxTime(),
-			this._translationY.getMaxTime(),
-			this._translationZ.getMaxTime(),
-			this._rotationX.getMaxTime(),
-			this._rotationY.getMaxTime(),
-			this._rotationZ.getMaxTime(),
-			this._rotationW.getMaxTime(),
-			this._scaleX.getMaxTime(),
-			this._scaleY.getMaxTime(),
-			this._scaleZ.getMaxTime()
+			this._translationX ? this._translationX.getMaxTime() : 0,
+			this._translationX ? this._translationY.getMaxTime() : 0,
+			this._translationX ? this._translationZ.getMaxTime() : 0,
+			this._rotationX ? this._rotationX.getMaxTime() : 0,
+			this._rotationX ? this._rotationY.getMaxTime() : 0,
+			this._rotationX ? this._rotationZ.getMaxTime() : 0,
+			this._rotationX ? this._rotationW.getMaxTime() : 0,
+			this._scaleX ? this._scaleX.getMaxTime() : 0,
+			this._scaleX ? this._scaleY.getMaxTime() : 0,
+			this._scaleX ? this._scaleZ.getMaxTime() : 0
 		);
 	};
 
@@ -121,14 +128,17 @@ function (
 	TransformChannel.prototype.setCurrentSample = function (sampleIndex, fraction, applyTo, time) {
 		var transformData = applyTo;
 
-		transformData._translation.data[0] = this._translationX.getAt(time);
-		transformData._translation.data[1] = this._translationY.getAt(time);
-		transformData._translation.data[2] = this._translationZ.getAt(time);
+		if(this._translationX) { transformData._translation.data[0] = this._translationX.getAt(time); }
+		else { transformData._translation.data[0] = this._translationXDefault; }
+		if(this._translationY) { transformData._translation.data[1] = this._translationY.getAt(time); }
+		else { transformData._translation.data[1] = this._translationYDefault; }
+		if(this._translationZ) { transformData._translation.data[2] = this._translationZ.getAt(time); }
+		else { transformData._translation.data[2] = this._translationZDefault; }
 
-		transformData._rotation.data[0] = this._rotationX.getAt(time);
-		transformData._rotation.data[1] = this._rotationY.getAt(time);
-		transformData._rotation.data[2] = this._rotationZ.getAt(time);
-		transformData._rotation.data[3] = this._rotationW.getAt(time);
+		if(this._rotationX) { transformData._rotation.data[0] = this._rotationX.getAt(time); }
+		if(this._rotationY) { transformData._rotation.data[1] = this._rotationY.getAt(time); }
+		if(this._rotationZ) { transformData._rotation.data[2] = this._rotationZ.getAt(time); }
+		if(this._rotationW) { transformData._rotation.data[3] = this._rotationW.getAt(time); }
 
 		transformData._rotation.normalize();
 

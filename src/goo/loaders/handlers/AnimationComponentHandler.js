@@ -60,6 +60,7 @@ function(
 		promises.push(p2);
 
 		return RSVP.all(promises).then(function() {
+			component._fixDefaults();
 			return component;
 		});
 	};

@@ -5,7 +5,8 @@ define([
 	'goo/animation/clip/JointData',
 	'goo/animation/clip/TransformData',
 	'goo/animation/clip/TriggerData',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/animation/blendtree/DefaultDataVisitor'
 ],
 /** @lends */
 function (
@@ -15,7 +16,8 @@ function (
 	JointData,
 	TransformData,
 	TriggerData,
-	Matrix4x4
+	Matrix4x4,
+	DefaultDataVisitor
 ) {
 	"use strict";
 
@@ -47,6 +49,17 @@ function (
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
 
+	AnimationComponent.prototype._fixDefaults = function() {
+		var visitor = new DefaultDataVisitor(this._skeletonPose._skeleton._joints);
+	    for (var i = 0; i < this.layers.length; i++) {
+			var layer = this.layers[i];
+			for (var key in layer._steadyStates) {
+				var state = layer._steadyStates[key];
+				state._sourceTree.accept(visitor);
+			}
+		}
+	};
+
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
@@ -77,6 +90,9 @@ function (
 	 * Update animations
 	 */
 	AnimationComponent.prototype.update = function (globalTime) {
+		//if(!this.z) this._fixDefaults();
+		//this.z = true;
+
 		// grab current global time
 		var globalTime = globalTime || World.time;
 
@@ -160,47 +176,6 @@ function (
 		}
 	};
 
-	// these need to go at load time
-	var tmpMatrix = new Matrix4x4();
-	var tmpMatrix2 = new Matrix4x4();
-
-	function getDefaults(datas, skeleton) {
-		var keys = Object.keys(datas);
-		for (var i = 0; i < keys.length; i++) {
-			var data = datas[keys[i]];
-
-			var cur = skeleton._joints[data._jointIndex];
-			var parent = skeleton._joints[cur._parentIndex];
-
-			Matrix4x4.invert(cur._inverseBindPose.matrix, tmpMatrix);
-
-			if (parent) {
-				Matrix4x4.combine(parent._inverseBindPose.matrix, tmpMatrix, tmpMatrix2);
-
-				if (data._translation.data[0] === -1234) {
-					data._translation.data[0] = tmpMatrix2.data[12];
-				}
-				if (data._translation.data[1] === -1234) {
-					data._translation.data[1] = tmpMatrix2.data[13];
-				}
-				if (data._translation.data[2] === -1234) {
-					data._translation.data[2] = tmpMatrix2.data[14];
-				}
-			} else {
-				if (data._translation.data[0] === -1234) {
-					data._translation.data[0] = tmpMatrix.data[12];
-				}
-				if (data._translation.data[1] === -1234) {
-					data._translation.data[1] = tmpMatrix.data[13];
-				}
-				if (data._translation.data[2] === -1234) {
-					data._translation.data[2] = tmpMatrix.data[14];
-				}
-			}
-		}
-	}
-	//
-
 	/**
 	 * Gets the current animation data for all layers blended together
 	 */
@@ -212,7 +187,7 @@ function (
 		}
 		var ret = this.layers[last].getCurrentSourceData();
 
-		getDefaults(ret, this._skeletonPose._skeleton);
+		//getDefaults(ret, this._skeletonPose._skeleton);
 
 		return ret;
 	};

@@ -84,6 +84,12 @@ function (
 		return foundActive;
 	};
 
+	BinaryLERPSource.prototype.accept = function (visitor) {
+		visitor.visitBinaryLERPSource(this);
+		this._sourceA.accept(visitor);
+		this._sourceB.accept(visitor);
+	};
+
 	/**
 	 * Blends two sourceData maps together
 	 * @param {object} sourceAData

@@ -36,11 +36,11 @@ require([
 	// Load the character
 	function loadScene(goo) {
 		var loader = new DynamicLoader({
-			rootPath: './zombie/',
+			rootPath: './zombiefish/',
 			world: goo.world
 		});
 
-		loader.load('test.scene').then(function (configs) {
+		loader.load('fish.project').then(function (configs) {
 			var skinnedEntities = [];
 
 			var func = function() {

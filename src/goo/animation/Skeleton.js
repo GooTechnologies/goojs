@@ -16,7 +16,20 @@ function (
 	function Skeleton (name, joints) {
 		this._name = name;
 		this._joints = joints;
+		this._updateLocalTransforms();
 	}
+
+	Skeleton.prototype._updateLocalTransforms = function() {
+		for (var i = 0; i < this._joints.length; i++) {
+			var joint = this._joints[i];
+			if (joint._parentIndex !== Joint.NO_PARENT) {
+				var parentJoint = this._joints[joint._parentIndex];
+				joint.computeLocalTransform(parentJoint._inverseBindPose);
+			} else {
+				joint.computeLocalTransform();
+			}
+		}
+	};
 
 	Skeleton.prototype.copy = function() {
 		var name = this._name;
@@ -36,5 +49,6 @@ function (
 		}
 		return new Skeleton(name, joints);
 	};
+
 	return Skeleton;
 });

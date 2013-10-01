@@ -34,6 +34,15 @@ function (
 		this.tmpMat1 = new Matrix3x3();
 	}
 
+	Transform.fromMatrix = function(matrix) {
+		var transform = new Transform();
+		transform.translation.data[0] = matrix.data[12];
+		transform.translation.data[1] = matrix.data[13];
+		transform.translation.data[2] = matrix.data[14];
+		// fill this up
+		return transform;
+	};
+
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
 	 * @param {Transform} lhs left hand side transform

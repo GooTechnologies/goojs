@@ -119,5 +119,9 @@ function (
 		return rVal;
 	};
 
+	ClipSource.prototype.accept = function (visitor) {
+		visitor.visitClipSource(this);
+	};
+
 	return ClipSource;
 });
