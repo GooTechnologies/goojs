@@ -208,7 +208,7 @@ function (
 			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
-		var defValue = shaderInfo.material.uniforms[name] || this.uniforms[name];
+		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
 
 		if (typeof defValue === 'string') {
 			var callback = this.currentCallbacks[name];
