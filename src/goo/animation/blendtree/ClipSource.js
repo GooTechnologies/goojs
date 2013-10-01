@@ -20,13 +20,25 @@ function (
 		this._clipInstance = new AnimationClipInstance();
 
 		this._filterChannels = {};
+		this._filter = null;
+		this.setFilter(filter, channelNames);
+	}
+
+	/*
+	 * Sets the filter on the joints which the clipsource will affect
+	 * @param {string} [filter] 'Exclude' or 'Include'
+	 * @param {string[]} [channelNames]
+	 */
+	ClipSource.prototype.setFilter = function(filter, channelNames) {
 		if(filter && channelNames) {
 			this._filter = (['Exclude', 'Include'].indexOf(filter) > -1) ? filter : null;
 			for (var i = 0; i < channelNames.length; i++) {
 				this._filterChannels[channelNames[i]] = true;
 			}
+		} else {
+			this._filter = null;
 		}
-	}
+	};
 
 	/*
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward

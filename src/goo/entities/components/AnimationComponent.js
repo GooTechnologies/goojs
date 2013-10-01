@@ -163,6 +163,7 @@ function (
 	AnimationComponent.prototype.getCurrentSourceData = function () {
 		// set up our layer blending.
 		var last = this.layers.length - 1;
+		this.layers[0]._layerBlender = null;
 		for ( var i = 0; i < last; i++) {
 			this.layers[i + 1].updateLayerBlending(this.layers[i]);
 		}
