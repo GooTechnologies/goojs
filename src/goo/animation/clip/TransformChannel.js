@@ -69,18 +69,18 @@ function (
 	function TransformChannel (channelName, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
 		AbstractAnimationChannel.call(this, channelName, []/*times*/, blendType);
 
-		this._translationX = translationX ? new LinearInterpolator(getNewArray(translationX)) : undefined;
-		this._translationY = translationY ? new LinearInterpolator(getNewArray(translationY)) : undefined;
-		this._translationZ = translationZ ? new LinearInterpolator(getNewArray(translationZ)) : undefined;
+		this._translationX = translationX && translationX.length ? new LinearInterpolator(getNewArray(translationX)) : undefined;
+		this._translationY = translationY && translationY.length ? new LinearInterpolator(getNewArray(translationY)) : undefined;
+		this._translationZ = translationZ && translationZ.length ? new LinearInterpolator(getNewArray(translationZ)) : undefined;
 
-		this._rotationX = rotationX ? new LinearInterpolator(getNewArray(rotationX)) : undefined;
-		this._rotationY = rotationY ? new LinearInterpolator(getNewArray(rotationY)) : undefined;
-		this._rotationZ = rotationZ ? new LinearInterpolator(getNewArray(rotationZ)) : undefined;
-		this._rotationW = rotationW ? new LinearInterpolator(getNewArray(rotationW)) : undefined;
+		this._rotationX = rotationX && rotationX.length ? new LinearInterpolator(getNewArray(rotationX)) : undefined;
+		this._rotationY = rotationY && rotationY.length ? new LinearInterpolator(getNewArray(rotationY)) : undefined;
+		this._rotationZ = rotationZ && rotationZ.length ? new LinearInterpolator(getNewArray(rotationZ)) : undefined;
+		this._rotationW = rotationW && rotationW.length ? new LinearInterpolator(getNewArray(rotationW)) : undefined;
 
-		this._scaleX = scaleX ? new LinearInterpolator(getNewArray(scaleX)) : undefined;
-		this._scaleY = scaleY ? new LinearInterpolator(getNewArray(scaleY)) : undefined;
-		this._scaleZ = scaleZ ? new LinearInterpolator(getNewArray(scaleZ)) : undefined;
+		this._scaleX = scaleX && scaleX.length ? new LinearInterpolator(getNewArray(scaleX)) : undefined;
+		this._scaleY = scaleY && scaleY.length ? new LinearInterpolator(getNewArray(scaleY)) : undefined;
+		this._scaleZ = scaleZ && scaleZ.length ? new LinearInterpolator(getNewArray(scaleZ)) : undefined;
 
 		//this.tmpVec = new Vector3(); // unused?
 		this.tmpQuat = new Quaternion();
@@ -98,24 +98,36 @@ function (
 	};
 
 	TransformChannel.prototype.setDefaultData = function (transform) {
+		// --- translation ---
 		if (!this._translationX) { this._translationXDefault = transform.translation.data[0]; }
 		if (!this._translationY) { this._translationYDefault = transform.translation.data[1]; }
 		if (!this._translationZ) { this._translationZDefault = transform.translation.data[2]; }
-		// fill with rotation and scale
+
+		// --- rotation ---
+		var rotationQuaternion = Quaternion.fromMatrix(transform.rotation);
+		if (!this._rotationX) { this._rotationXDefault = rotationQuaternion.data[0]; }
+		if (!this._rotationY) { this._rotationYDefault = rotationQuaternion.data[1]; }
+		if (!this._rotationZ) { this._rotationZDefault = rotationQuaternion.data[2]; }
+		if (!this._rotationW) { this._rotationWDefault = rotationQuaternion.data[3]; }
+
+		// --- scale ---
+		if (!this._scaleX) { this._scaleXDefault = transform.scale.data[0]; }
+		if (!this._scaleY) { this._scaleYDefault = transform.scale.data[1]; }
+		if (!this._scaleZ) { this._scaleZDefault = transform.scale.data[2]; }
 	};
 
 	TransformChannel.prototype.getMaxTime = function () {
 		return Math.max(
 			this._translationX ? this._translationX.getMaxTime() : 0,
-			this._translationX ? this._translationY.getMaxTime() : 0,
-			this._translationX ? this._translationZ.getMaxTime() : 0,
+			this._translationY ? this._translationY.getMaxTime() : 0,
+			this._translationZ ? this._translationZ.getMaxTime() : 0,
 			this._rotationX ? this._rotationX.getMaxTime() : 0,
-			this._rotationX ? this._rotationY.getMaxTime() : 0,
-			this._rotationX ? this._rotationZ.getMaxTime() : 0,
-			this._rotationX ? this._rotationW.getMaxTime() : 0,
+			this._rotationY ? this._rotationY.getMaxTime() : 0,
+			this._rotationZ ? this._rotationZ.getMaxTime() : 0,
+			this._rotationW ? this._rotationW.getMaxTime() : 0,
 			this._scaleX ? this._scaleX.getMaxTime() : 0,
-			this._scaleX ? this._scaleY.getMaxTime() : 0,
-			this._scaleX ? this._scaleZ.getMaxTime() : 0
+			this._scaleY ? this._scaleY.getMaxTime() : 0,
+			this._scaleZ ? this._scaleZ.getMaxTime() : 0
 		);
 	};
 
@@ -128,28 +140,70 @@ function (
 	TransformChannel.prototype.setCurrentSample = function (sampleIndex, fraction, applyTo, time) {
 		var transformData = applyTo;
 
-		if(this._translationX) { transformData._translation.data[0] = this._translationX.getAt(time); }
-		else { transformData._translation.data[0] = this._translationXDefault; }
-		if(this._translationY) { transformData._translation.data[1] = this._translationY.getAt(time); }
-		else { transformData._translation.data[1] = this._translationYDefault; }
-		if(this._translationZ) { transformData._translation.data[2] = this._translationZ.getAt(time); }
-		else { transformData._translation.data[2] = this._translationZDefault; }
+		// --- translation ---
+		if (this._translationX) {
+			transformData._translation.data[0] = this._translationX.getAt(time);
+		} else {
+			transformData._translation.data[0] = this._translationXDefault;
+		}
 
-		if(this._rotationX) { transformData._rotation.data[0] = this._rotationX.getAt(time); }
-		if(this._rotationY) { transformData._rotation.data[1] = this._rotationY.getAt(time); }
-		if(this._rotationZ) { transformData._rotation.data[2] = this._rotationZ.getAt(time); }
-		if(this._rotationW) { transformData._rotation.data[3] = this._rotationW.getAt(time); }
+		if (this._translationY) {
+			transformData._translation.data[1] = this._translationY.getAt(time);
+		} else {
+			transformData._translation.data[1] = this._translationYDefault;
+		}
+
+		if (this._translationZ) {
+			transformData._translation.data[2] = this._translationZ.getAt(time);
+		} else {
+			transformData._translation.data[2] = this._translationZDefault;
+		}
+
+		// --- rotation ---
+		if (this._rotationX) {
+			transformData._rotation.data[0] = this._rotationX.getAt(time);
+		} else {
+			transformData._rotation.data[0] = this._rotationXDefault;
+		}
+
+		if (this._rotationY) {
+			transformData._rotation.data[1] = this._rotationY.getAt(time);
+		} else {
+			transformData._rotation.data[1] = this._rotationYDefault;
+		}
+
+		if (this._rotationZ) {
+			transformData._rotation.data[2] = this._rotationZ.getAt(time);
+		} else {
+			transformData._rotation.data[2] = this._rotationZDefault;
+		}
+
+		if (this._rotationW) {
+			transformData._rotation.data[3] = this._rotationW.getAt(time);
+		} else {
+			transformData._rotation.data[3] = this._rotationWDefault;
+		}
 
 		transformData._rotation.normalize();
 
-		transformData._scale.data[0] = 1;
-		transformData._scale.data[1] = 1;
-		transformData._scale.data[2] = 1;
-        /*
-		transformData._scale.data[0] = this._scaleX.getAt(time);  // these return 0
-		transformData._scale.data[1] = this._scaleY.getAt(time);
-		transformData._scale.data[2] = this._scaleZ.getAt(time);
-        */
+		// --- scale ---
+		if (this._scaleX) {
+			transformData._scale.data[0] = this._scaleX.getAt(time);
+		} else {
+			transformData._scale.data[0] = this._scaleXDefault;
+		}
+
+		if (this._scaleY) {
+			transformData._scale.data[1] = this._scaleY.getAt(time);
+		} else {
+			transformData._scale.data[1] = this._scaleYDefault;
+		}
+
+		if (this._scaleZ) {
+			transformData._scale.data[2] = this._scaleZ.getAt(time);
+		} else {
+			transformData._scale.data[2] = this._scaleZDefault;
+		}
 	};
 
 	/**

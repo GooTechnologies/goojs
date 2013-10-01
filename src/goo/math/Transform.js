@@ -36,10 +36,36 @@ function (
 
 	Transform.fromMatrix = function(matrix) {
 		var transform = new Transform();
+
+		// --- translation ---
 		transform.translation.data[0] = matrix.data[12];
 		transform.translation.data[1] = matrix.data[13];
 		transform.translation.data[2] = matrix.data[14];
-		// fill this up
+
+		// --- scale ---
+		transform.scale.data[0] = Math.sqrt(
+				new Vector3(matrix.data[0], matrix.data[1], matrix.data[2]
+			).lengthSquared());
+		transform.scale.data[1] = Math.sqrt(
+				new Vector3(matrix.data[4], matrix.data[5], matrix.data[6]
+			).lengthSquared());
+		transform.scale.data[2] = Math.sqrt(
+				new Vector3(matrix.data[8], matrix.data[9], matrix.data[10]
+			).lengthSquared());
+
+		// --- rotation ---
+		transform.rotation.data[0] = matrix.data[0] / transform.scale.data[0];
+		transform.rotation.data[1] = matrix.data[1] / transform.scale.data[0];
+		transform.rotation.data[2] = matrix.data[2] / transform.scale.data[0];
+
+		transform.rotation.data[3] = matrix.data[4] / transform.scale.data[1];
+		transform.rotation.data[4] = matrix.data[5] / transform.scale.data[1];
+		transform.rotation.data[5] = matrix.data[6] / transform.scale.data[1];
+
+		transform.rotation.data[6] = matrix.data[8] / transform.scale.data[2];
+		transform.rotation.data[7] = matrix.data[9] / transform.scale.data[2];
+		transform.rotation.data[8] = matrix.data[10] / transform.scale.data[2];
+
 		return transform;
 	};
 
