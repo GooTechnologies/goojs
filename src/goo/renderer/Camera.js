@@ -118,9 +118,7 @@ function(
 		this.onFrameChange();
 	}
 
-	/**
-	 * Planes of the frustum
-	 */
+	// Planes of the frustum
 	Camera.LEFT_PLANE = 0;
 	Camera.RIGHT_PLANE = 1;
 	Camera.BOTTOM_PLANE = 2;
@@ -130,17 +128,26 @@ function(
 	Camera.FRUSTUM_PLANES = 6;
 
 	/**
-	 * Projection mode used by the camera.
+	 * Projection mode for perspective frustum
 	 */
 	Camera.Perspective = 0;
+	/**
+	 * Projection mode for parallel/ortographic frustum
+	 */
 	Camera.Parallel = 1;
 	Camera.Custom = 2;
 
 	/**
-	 * Intersection type
+	 * Intersection response from camera.intersect
 	 */
 	Camera.Outside = 0;
+	/**
+	 * Intersection response from camera.intersect
+	 */
 	Camera.Inside = 1;
+	/**
+	 * Intersection response from camera.intersect
+	 */
 	Camera.Intersects = 2;
 
 	/**
@@ -151,6 +158,16 @@ function(
 		this._up.normalize();
 		this._direction.normalize();
 		this.onFrameChange();
+	};
+
+	/**
+	 * Sets the projection mode of the camera. (Camera.Perspective / Camera.Parallel)
+	 *
+	 * @param {ProjectionMode} projectionMode The new projection mode - Camera.Perspective or Camera.Parallel
+	 */
+	Camera.prototype.setProjectionMode = function (projectionMode) {
+		this.projectionMode = projectionMode;
+		this.update();
 	};
 
 	/**
