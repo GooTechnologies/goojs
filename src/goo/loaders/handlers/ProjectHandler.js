@@ -41,6 +41,7 @@ define([
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._skybox = null;
+		this._skyboxTexture = null;
 	}
 
 	ProjectHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -62,15 +63,8 @@ define([
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
 		skyboxEntity.transformComponent.updateWorldTransform();
+		skyboxEntity.meshRendererComponent.hidden = true;
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
-		//skyboxEntity.addToWorld();
-		/*
-		goo.callbacksPreRender.push(function() {
-			if (skybox.active) {
-				goo.renderer.render([skybox], Renderer.mainCamera, []);
-			}
-		});
-		*/
 	};
 
 	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
@@ -84,29 +78,35 @@ define([
 					this.world.getSystem('RenderSystem').removed(this._skybox);
 				}
 				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation);
+				this._skyboxTexture = null;
 				type = shape;
 			}
 			var xAngle = (type === Skybox.SPHERE) ? Math.PI / 2 : 0;
 			this._skybox.transformComponent.transform.rotation.fromAngles(xAngle, rotation, 0);
 			this._skybox.transformComponent.updateTransform();
 			this._skybox.transformComponent.updateWorldTransform();
-			var material = this._skybox.meshRendererComponent.materials[0];
-			var texture = material.getTexture('DIFFUSE_MAP');
+
+			var skybox = this._skybox;
+			var material = skybox.meshRendererComponent.materials[0];
+			var texture = this._skyboxTexture;
+
 			var update = !texture;
 			if(!update) {
 				if (texture.image.data) {
 					for (var i = 0; i < imageUrls.length; i++) {
 						var img = texture.image.data[i];
-						if (img && img.src.indexOf(imageUrls[i]) === -1) {
+						if (img && img.getAttribute('data-ref') !== imageUrls[i]) {
 							update = true;
 							break;
 						}
 					}
-				} else if (texture.image && texture.image.src.indexOf(imageUrls[0]) === -1) {
+				} else if (texture.image && texture.image.getAttribute('data-ref') !== imageUrls[0]) {
 					update = true;
 				}
 			}
+
 			if(!update) { return; }
+
 			var promises = [];
 			for (var i = 0; i < imageUrls.length; i++) {
 				if(imageUrls[i] && imageUrls[i] !== '') {
@@ -114,25 +114,41 @@ define([
 				}
 			}
 			if (!promises.length) {
+				skybox.meshRendererComponent.hidden = true;
+				material.setTexture('DIFFUSE_MAP', null);
 				return;
 			}
+			var that = this;
 			RSVP.all(promises).then(function(images) {
 					if (type === Skybox.SPHERE) {
+						if (imageUrls[0] === '') {
+							console.debug('Missing front texture');
+							return;
+						}
 						images = images[0];
+						images.setAttribute('data-ref', imageUrls[0]);
 					} else {
+						if (images.length < 6) {
+							console.debug('Need 6 images to work, have '+images.length);
+							skybox.meshRendererComponent.hidden = true;
+							material.setTexture('DIFFUSE_MAP', null);
+							return;
+						}
 						var w = images[0].width;
 						var h = images[0].height;
 						for (var i = 0; i < 6; i++) {
 							var img = images[i];
 							if (w !== img.width || h !== img.height) {
 								console.error('Images not all the same size, not updating');
+								skybox.meshRendererComponent.hidden = true;
+								material.setTexture('DIFFUSE_MAP', null);
 								return;
 							}
+							img.setAttribute('data-ref', imageUrls[i]);
 						}
 					}
-					var texture = material.getTexture('DIFFUSE_MAP');
 					if (!texture) {
-						texture = new Texture();
+						texture = that._skyboxTexture = new Texture();
 						if (type === Skybox.BOX) {
 							texture.variant = 'CUBE';
 						}

@@ -58,6 +58,7 @@ function (
 			materials: [gridMaterial],
 			transform: this.transform
 		};
+		// It ain't pretty, but it works
 		var surfaceShader = Util.clone(ShaderLib.simpleLit);
 		surfaceShader.uniforms.opacity = 1.0;
 		var fshader = surfaceShader.fshader.split('\n');
