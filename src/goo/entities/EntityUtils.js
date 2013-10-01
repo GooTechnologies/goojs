@@ -4,6 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
 	'goo/renderer/Camera',
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
@@ -18,6 +19,7 @@ define([
 		MeshRendererComponent,
 		CameraComponent,
 		LightComponent,
+		ScriptComponent,
 		Camera,
 		Light,
 		Material,
@@ -154,7 +156,10 @@ define([
 					entity.name = arg;
 				} else if (Array.isArray(arg) && arg.length === 3) {
 					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+				} else if( typeof arg.run === 'function' ) {
+					entity.setComponent(new ScriptComponent(arg));
 				}
+				
 			}
 
 			return entity;
