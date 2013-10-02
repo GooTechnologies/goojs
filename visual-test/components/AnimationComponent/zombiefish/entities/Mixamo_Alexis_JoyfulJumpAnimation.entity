@@ -6,8 +6,8 @@
 			"poseRef": "skeletons/Alexis_Geo_High.skeleton"
 		},
 		"transform": {
-			"translation": [ 0, 0, 0 ],
-			"rotation": [ 0, 0, 0, -1 ],
+			"translation": [ -0.00333649, 0, 0.05307034 ],
+			"rotation": [ 0, 0.9980296, 0, 0.06274557 ],
 			"scale": [ 1, 1, 1 ]
 		}
 	}

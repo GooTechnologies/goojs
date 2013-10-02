@@ -3,7 +3,8 @@ define([
 	'goo/animation/clip/TransformData',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
-	'goo/animation/clip/LinearInterpolator'
+	'goo/animation/clip/LinearInterpolator',
+	'goo/animation/clip/HermiteInterpolator'
 	],
 /** @lends */
 function (
@@ -11,50 +12,25 @@ function (
 	TransformData,
 	Quaternion,
 	Vector3,
-	LinearInterpolator
+	LinearInterpolator,
+	HermiteInterpolator
 	) {
 	"use strict";
 
-	function getNewArray(data) {
+	function getStructuredArray(data) {
 		var ret = [];
 		if (!data) return ret;
 
 		for (var i = 0; i < data.length; i += 4) {
 			ret.push({
 				time: data[i],
-				value: data[i + 1]
+				value: data[i + 1],
+				tangentIn: data[i + 2],
+				tangentOut: data[i + 3]
 			});
 		}
 
 		return ret;
-	}
-
-	function getArray(times, data) {
-		var ret = [];
-
-		for (var i = 0; i < times.length; i++) {
-			ret.push({
-				time: times[i],
-				value: data[i]
-			});
-		}
-
-		return ret;
-	}
-
-	function every(everyN) {
-		return function(start) {
-			return function(arr) {
-				//console.log(everyN, start, arr.length);
-				var ret = [];
-				for (var i = start; i < arr.length; i += everyN) {
-					ret.push(arr[i]);
-				}
-
-				//console.log(ret.length);
-				return ret;
-			};
-		}
 	}
 
 	/**
@@ -69,25 +45,28 @@ function (
 	function TransformChannel (channelName, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
 		AbstractAnimationChannel.call(this, channelName, []/*times*/, blendType);
 
-		this._translationX = translationX && translationX.length ? new LinearInterpolator(getNewArray(translationX)) : undefined;
-		this._translationY = translationY && translationY.length ? new LinearInterpolator(getNewArray(translationY)) : undefined;
-		this._translationZ = translationZ && translationZ.length ? new LinearInterpolator(getNewArray(translationZ)) : undefined;
+		var interpolator = TransformChannel._interpolators[blendType.toLowerCase()];
 
-		this._rotationX = rotationX && rotationX.length ? new LinearInterpolator(getNewArray(rotationX)) : undefined;
-		this._rotationY = rotationY && rotationY.length ? new LinearInterpolator(getNewArray(rotationY)) : undefined;
-		this._rotationZ = rotationZ && rotationZ.length ? new LinearInterpolator(getNewArray(rotationZ)) : undefined;
-		this._rotationW = rotationW && rotationW.length ? new LinearInterpolator(getNewArray(rotationW)) : undefined;
+		if (translationX && translationX.length) { this._translationX = new interpolator(getStructuredArray(translationX)); }
+		if (translationY && translationY.length) { this._translationY = new interpolator(getStructuredArray(translationY)); }
+		if (translationZ && translationZ.length) { this._translationZ = new interpolator(getStructuredArray(translationZ)); }
 
-		this._scaleX = scaleX && scaleX.length ? new LinearInterpolator(getNewArray(scaleX)) : undefined;
-		this._scaleY = scaleY && scaleY.length ? new LinearInterpolator(getNewArray(scaleY)) : undefined;
-		this._scaleZ = scaleZ && scaleZ.length ? new LinearInterpolator(getNewArray(scaleZ)) : undefined;
+		if (rotationX && rotationX.length) { this._rotationX = new interpolator(getStructuredArray(rotationX)); }
+		if (rotationY && rotationX.length) { this._rotationY = new interpolator(getStructuredArray(rotationY)); }
+		if (rotationZ && rotationX.length) { this._rotationZ = new interpolator(getStructuredArray(rotationZ)); }
+		if (rotationW && rotationX.length) { this._rotationW = new interpolator(getStructuredArray(rotationW)); }
 
-		//this.tmpVec = new Vector3(); // unused?
-		this.tmpQuat = new Quaternion();
-		this.tmpQuat2 = new Quaternion();
+		if (scaleX && scaleX.length) { this._scaleX = new interpolator(getStructuredArray(scaleX)); }
+		if (scaleY && scaleX.length) { this._scaleY = new interpolator(getStructuredArray(scaleY)); }
+		if (scaleZ && scaleX.length) { this._scaleZ = new interpolator(getStructuredArray(scaleZ)); }
 	}
 
 	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
+
+	TransformChannel._interpolators = {
+		linear: LinearInterpolator,
+		hermite: HermiteInterpolator
+	};
 
 	/**
 	 * Creates a data item for this type of channel
@@ -98,19 +77,16 @@ function (
 	};
 
 	TransformChannel.prototype.setDefaultData = function (transform) {
-		// --- translation ---
 		if (!this._translationX) { this._translationXDefault = transform.translation.data[0]; }
 		if (!this._translationY) { this._translationYDefault = transform.translation.data[1]; }
 		if (!this._translationZ) { this._translationZDefault = transform.translation.data[2]; }
 
-		// --- rotation ---
 		var rotationQuaternion = Quaternion.fromMatrix(transform.rotation);
 		if (!this._rotationX) { this._rotationXDefault = rotationQuaternion.data[0]; }
 		if (!this._rotationY) { this._rotationYDefault = rotationQuaternion.data[1]; }
 		if (!this._rotationZ) { this._rotationZDefault = rotationQuaternion.data[2]; }
 		if (!this._rotationW) { this._rotationWDefault = rotationQuaternion.data[3]; }
 
-		// --- scale ---
 		if (!this._scaleX) { this._scaleXDefault = transform.scale.data[0]; }
 		if (!this._scaleY) { this._scaleYDefault = transform.scale.data[1]; }
 		if (!this._scaleZ) { this._scaleZDefault = transform.scale.data[2]; }

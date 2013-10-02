@@ -3,26 +3,26 @@ define([],
 function () {
 	"use strict";
 
-	function LinearInterpolator(data) {
+	function HermiteInterpolator(data) {
 		this.data = data;
 		this.lastKey = 0;
 		this.minTime = this.getMinTime(data);
 		this.maxTime = this.getMaxTime(data);
 	}
 
-	LinearInterpolator.prototype.getMinTime = function() {
+	HermiteInterpolator.prototype.getMinTime = function() {
 		if (this.data.length === 0) return 0;
 		var firstIndex = 0;
 		return this.data.length ? this.data[firstIndex].time : 0;
 	};
 
-	LinearInterpolator.prototype.getMaxTime = function() {
+	HermiteInterpolator.prototype.getMaxTime = function() {
 		if (this.data.length === 0) return 0;
 		var lastIndex = this.data.length - 1;
 		return this.data.length ? this.data[lastIndex].time : 0;
 	};
 
-	LinearInterpolator.prototype.getKeyBefore = function(time) {
+	HermiteInterpolator.prototype.getKeyBefore = function(time) {
 		// if time > this.data[this.lastkey].time do a linear search
 		// else do a binary search from the beginning
 		// would that be faster? probably, but in rare circumstances when there are a lot of frames skipped
@@ -38,24 +38,34 @@ function () {
 		return this.lastKey;
 	};
 
-	LinearInterpolator.prototype.getAt = function(time) {
+	HermiteInterpolator.prototype.getAt = function(time) {
 		if (this.data.length === 1) return this.data[0].value;
 
 		if (time < this.minTime) return this.data[0].value;
 		if (time > this.maxTime) return this.data[this.data.length - 1].value;
 
-		var keyBefore = this.getKeyBefore(time);
-		var keyAfter = keyBefore + 1;
+		var keyBeforeIndex = this.getKeyBefore(time);
+		var keyAfterIndex = keyBeforeIndex + 1;
 
-		var timeBefore = this.data[keyBefore].time;
-		var timeAfter = this.data[keyAfter].time;
+		var keyBefore = this.data[keyBeforeIndex];
+		var keyAfter = this.data[keyAfterIndex];
 
-		var fraction = (time - timeBefore) / (timeAfter - timeBefore);
-
-		var interpolatedValue = fraction * this.data[keyAfter].value + (1 - fraction) * this.data[keyBefore].value;
-
-		return interpolatedValue;
+		// hermite interpolation starts here
+		var dt = keyAfter.time - keyBefore.time;
+		if( dt > 0 ) {
+			var dts = dt;// / 1000;
+			var t  = ( time - keyBefore.time ) / dt;
+			var t2 = t * t;
+			var t3 = t2 * t;
+			var h1 =  2 * t3 - 3 * t2 + 1;
+			var h2 = -2 * t3 + 3 * t2;
+			var h3 = t3 - 2 * t2 + t;
+			var h4 = t3 - t2;
+			return h1 * keyBefore.value + h2 * keyAfter.value + h3 * keyBefore.tangentOut * dts + h4 * keyAfter.tangentIn * dts;
+		}
+		return keyAfter.value;
+		//
 	};
 
-	return LinearInterpolator;
+	return HermiteInterpolator;
 });

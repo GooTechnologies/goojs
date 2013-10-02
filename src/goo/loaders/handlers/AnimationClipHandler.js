@@ -137,17 +137,6 @@ function(
 				} else {
 					if (type === 'Joint' || type === 'Transform') {
 						if (bindata) {
-							/* // animations exported from unity use this position instead of translation
-							if (channelConfig.properties.positionX) {
-								translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionX);
-							}
-							if (channelConfig.properties.positionY) {
-								translationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionY);
-							}
-							if (channelConfig.properties.positionZ) {
-								translationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.positionZ);
-							}
-							*/
 							if (channelConfig.properties.translationX) {
 								translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationX);
 							}
@@ -181,10 +170,6 @@ function(
 								scaleZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleZ);
 							}
 						} else {
-							//translationX = channelConfig.properties.positionX;
-							//translationY = channelConfig.properties.positionY;
-							//translationZ = channelConfig.properties.positionZ;
-
 							translationX = channelConfig.properties.translationX;
 							translationY = channelConfig.properties.translationY;
 							translationZ = channelConfig.properties.translationZ;
