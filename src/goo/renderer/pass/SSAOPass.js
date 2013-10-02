@@ -17,6 +17,8 @@ define([
 
 			var width = window.innerWidth/4;
 			var height = window.innerHeight/4;
+			width = Math.floor(width);
+			height = Math.floor(height);
 			var shader = Util.clone(ShaderLib.ssao);
 			shader.uniforms.size = [width, height];
 			this.outPass = new FullscreenPass(shader);

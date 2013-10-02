@@ -53,6 +53,7 @@ function(
 	}
 
 	AnimationClipHandler.prototype._createAnimationClip = function(clipConfig, bindata) {
+		/* jshint bitwise:false */
 		//console.debug("Creating animation clip");
 		var clip = new AnimationClip(clipConfig.name);
 

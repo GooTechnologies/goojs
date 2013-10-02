@@ -23,6 +23,9 @@ function(Vector3) {
 			if(m1 === m2) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
+				if (bound1 === null || bound2 === null) {
+					return 0;
+				}
 
 				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
 				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
@@ -38,6 +41,9 @@ function(Vector3) {
 			if (shader1._id === shader2._id) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
+				if (bound1 === null || bound2 === null) {
+					return 0;
+				}
 
 				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
 				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();

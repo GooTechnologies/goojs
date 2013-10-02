@@ -20,6 +20,7 @@ define([
 	'goo/loaders/handlers/TextureHandler',
 	'goo/loaders/handlers/TransformComponentHandler',
 	'goo/loaders/handlers/AnimationComponentHandler',
+	'goo/loaders/handlers/AnimationStateHandler',
 	'goo/loaders/handlers/AnimationLayersHandler',
 	'goo/loaders/handlers/AnimationClipHandler',
 	'goo/loaders/handlers/ProjectHandler',
