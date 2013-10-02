@@ -40,13 +40,20 @@ define([
 	AnimationLayersHandler.prototype.update = function(ref, config) {
 		var object = this._objects[ref] || this._create(ref);
 		var promises = [];
-		promises.push(this._parseLayer(config.layers.DEFAULT, object[0]));
 
-		var i = 1;
-		for (var key in config.layers) {
-			var layerConfig = config.layers[key];
-			if (key !== 'DEFAULT') {
-				promises.push(this._parseLayer(layerConfig, object[i++]));
+		if (config.layers instanceof Array) {
+			for (var i = 0; i < config.layers.length; i++) {
+				var layerConfig = config.layers[i];
+				promises.push(this._parseLayer(layerConfig, object[i]));
+			}
+		} else {
+			var i = 1;
+			promises.push(this._parseLayer(config.layers.DEFAULT, object[0]));
+			for (var key in config.layers) {
+				var layerConfig = config.layers[key];
+				if (key !== 'DEFAULT') {
+					promises.push(this._parseLayer(layerConfig, object[i++]));
+				}
 			}
 		}
 		return RSVP.all(promises);
