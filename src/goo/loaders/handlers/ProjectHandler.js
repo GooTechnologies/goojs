@@ -42,6 +42,9 @@ define([
 		ConfigHandler.apply(this, arguments);
 		this._skybox = null;
 		this._skyboxTexture = null;
+
+		this._composer = null;
+		this._passes = [];
 	}
 
 	ProjectHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -203,6 +206,7 @@ define([
 		var that = this;
 
 		var promises = [];
+		var mainRenderSystem = that.world.getSystem('RenderSystem');
 		if (config.posteffectRefs && Array.isArray(config.posteffectRefs) && config.posteffectRefs.length > 0) {
 			var handlePosteffectRef = function(posteffectRef) {
 				return that.getConfig(posteffectRef).then(function(posteffectConfig) {
@@ -215,10 +219,9 @@ define([
 			}
 
 			return RSVP.all(promises).then(function(posteffects) {
-				var mainRenderSystem = that.world.getSystem('RenderSystem');
 				var composer, renderPass, outPass;
-				if (mainRenderSystem.composers.length === 0) {
-					composer = new Composer();
+				if(!this._composer) {
+					composer = this._composer = new Composer();
 					mainRenderSystem.composers.push(composer);
 					renderPass = new RenderPass(mainRenderSystem.renderList);
 					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
@@ -227,9 +230,9 @@ define([
 					//outPass.material.blendState.blending = 'CustomBlending';
 					outPass.renderToScreen = true;
 					//outPass.clear = { color: false, depth: true, stencil: true };
-					outPass.clear = true;
+					//outPass.clear = true;
 				} else {
-					composer = mainRenderSystem.composers[0];
+					composer = this._composer;
 					renderPass = composer.passes[0];
 					outPass = composer.passes[composer.passes.length - 1];
 				}
@@ -238,7 +241,7 @@ define([
 				for (var j = 0; j < posteffects.length; j++) {
 					var posteffect = posteffects[j];
 					console.log('Added posteffect', posteffect);
-					composer.addPass(posteffect);
+					composer.addPass(posteffect.get());
 				}
 				composer.addPass(outPass);
 			}).then(null, function(err) {
@@ -246,6 +249,7 @@ define([
 			});
 		} else {
 			console.debug("No posteffect refs in project");
+			mainRenderSystem.composers.length = 0;
 			return PromiseUtil.createDummyPromise(config);
 		}
 	};

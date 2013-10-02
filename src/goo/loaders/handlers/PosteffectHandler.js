@@ -3,6 +3,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
+	'goo/renderer/pass/PassLib',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
@@ -12,55 +13,52 @@ define([
 	RSVP,
 	PromiseUtil,
 	Util,
+	PassLib,
 	ShaderLib,
 	FullscreenPass,
 	BloomPass,
 	_
 ) {
+	'use strict';
 	function PosteffectHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
 	}
 
-	PosteffectHandler.posteffects = {
-		Vignette: function () { return new FullscreenPass(Util.clone(ShaderLib.sepia)); },
-		Bloom: function (options) { return new BloomPass(options); },
-		Grain: function (/*options*/) {
-			var shader = Util.clone(ShaderLib.film);
-			shader.uniforms.nIntensity = 1.0;
-			shader.uniforms.sIntensity = 0.0;
-			return new FullscreenPass(shader);
-		}
-		// populate this list
-	};
 
 	PosteffectHandler.prototype = Object.create(ConfigHandler.prototype);
 	PosteffectHandler.prototype.constructor = PosteffectHandler;
 	ConfigHandler._registerClass('posteffect', PosteffectHandler);
 
 	PosteffectHandler.prototype._prepare = function(config) {
+		var pass = PassLib[config.name];
 		_.defaults(config, {
-			enabled: true
+			enabled: true,
+			options: {}
 		});
+		var defaults = pass.options;
+		for(var i = 0; i < defaults.length; i++) {
+			var option = defaults[i];
+			if(config.options[option.key] === undefined) {
+				config.options[option.key] = option['default'];
+			}
+		}
 	};
 
 	PosteffectHandler.prototype._create = function(ref, config) {
-		if (!config.name || !PosteffectHandler.posteffects[config.name]) {
+		if (!config.name || !PassLib[config.name]) {
 			throw new Error('Unknown posteffect name: ' + config.name);
 		}
-		var name = config.name;
-		return this._objects[ref] = PosteffectHandler.posteffects[name](config.options);
+		this._objects[ref] = PassLib[config.name];
+		this._objects[ref].create();
+		return this._objects[ref];
 	};
 
 	PosteffectHandler.prototype.update = function(ref, config) {
 		var object = this._objects[ref] || this._create(ref, config);
 		this._prepare(config);
+		object.update(config);
 
-		for (var name in config.options) {
-			if (object.hasOwnProperty(name)) {
-				object[name] = _.clone(config.options[name]);
-			}
-		}
 		return PromiseUtil.createDummyPromise(object);
 	};
 
