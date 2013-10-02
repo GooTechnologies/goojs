@@ -55,7 +55,7 @@ function(
 	 *
 	 */
 
-	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine|posteffect)$/;
+	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine|posteffect|animstate)$/;
 
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
