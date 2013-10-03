@@ -55,10 +55,6 @@ define(['goo/entities/components/Component'],
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
 
-//	MeshRendererComponent.prototype.updateHidden = function() {
-//		this.hidden = this.ownHidden && this.overrideHidden;
-//	};
-
 	/**
 	 * Update world bounding
 	 *
