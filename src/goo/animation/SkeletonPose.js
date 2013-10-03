@@ -60,6 +60,9 @@ function (
 			}
 		}
 		this.updateTransforms();
+
+		console.log(this._localTransforms);
+		this._skeleton._setLocalTransforms(this._localTransforms);
 	};
 
 	/**

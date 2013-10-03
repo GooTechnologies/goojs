@@ -16,7 +16,7 @@ function (
 	function Skeleton (name, joints) {
 		this._name = name;
 		this._joints = joints;
-		this._updateLocalTransforms();
+		//this._updateLocalTransforms();
 	}
 
 	Skeleton.prototype._updateLocalTransforms = function() {
@@ -28,6 +28,14 @@ function (
 			} else {
 				joint.computeLocalTransform();
 			}
+		}
+	};
+
+	Skeleton.prototype._setLocalTransforms = function(localTransforms) {
+		for (var i = 0; i < this._joints.length; i++) {
+			var joint = this._joints[i];
+
+			joint.localTransform = localTransforms[i];
 		}
 	};
 

@@ -138,36 +138,36 @@ function(
 				} else {
 					if (type === 'Joint' || type === 'Transform') {
 						if (bindata) {
-							if (channelConfig.properties.translationX) {
+							if (channelConfig.properties.translationX && channelConfig.properties.translationX.length) {
 								translationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationX);
 							}
-							if (channelConfig.properties.translationY) {
+							if (channelConfig.properties.translationY && channelConfig.properties.translationY.length) {
 								translationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationY);
 							}
-							if (channelConfig.properties.translationZ) {
+							if (channelConfig.properties.translationZ && channelConfig.properties.translationZ.length) {
 								translationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.translationZ);
 							}
 
-							if (channelConfig.properties.rotationX) {
+							if (channelConfig.properties.rotationX && channelConfig.properties.rotationX.length) {
 								rotationX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationX);
 							}
-							if (channelConfig.properties.rotationY) {
+							if (channelConfig.properties.rotationY && channelConfig.properties.rotationY.length) {
 								rotationY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationY);
 							}
-							if (channelConfig.properties.rotationZ) {
+							if (channelConfig.properties.rotationZ && channelConfig.properties.rotationZ.length) {
 								rotationZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationZ);
 							}
-							if (channelConfig.properties.rotationW) {
+							if (channelConfig.properties.rotationW && channelConfig.properties.rotationW.length) {
 								rotationW = ArrayUtil.getTypedArray(bindata, channelConfig.properties.rotationW);
 							}
 
-							if (channelConfig.properties.scaleX) {
+							if (channelConfig.properties.scaleX && channelConfig.properties.scaleX.length) {
 								scaleX = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleX);
 							}
-							if (channelConfig.properties.scaleY) {
+							if (channelConfig.properties.scaleY && channelConfig.properties.scaleY.length) {
 								scaleY = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleY);
 							}
-							if (channelConfig.properties.scaleZ) {
+							if (channelConfig.properties.scaleZ && channelConfig.properties.scaleZ.length) {
 								scaleZ = ArrayUtil.getTypedArray(bindata, channelConfig.properties.scaleZ);
 							}
 						} else {
@@ -183,6 +183,12 @@ function(
 							scaleX = channelConfig.properties.scaleX;
 							scaleY = channelConfig.properties.scaleY;
 							scaleZ = channelConfig.properties.scaleZ;
+
+							if (!translationX && !translationY && !translationZ &&
+								!rotationX && !rotationY && !rotationZ && !rotationW &&
+								!scaleX && !scaleY && !scaleZ) {
+								console.log('EMPTY!!!!!!!!!', channelConfig.jointName, channelConfig.jointIndex);
+							}
 						}
 					}
 					if (type === 'Joint') {

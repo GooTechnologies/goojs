@@ -178,5 +178,11 @@ function () {
 		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
 	};
 
+	MathUtils.isCloseTo = function(value1, value2, threshold) {
+		threshold = threshold || 0.0001;
+		var diff = value2 - value1;
+		return diff > -threshold && diff < threshold;
+	};
+
 	return MathUtils;
 });

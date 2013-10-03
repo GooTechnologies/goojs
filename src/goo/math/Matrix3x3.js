@@ -401,6 +401,31 @@ function (
 		return target;
 	};
 
+	Matrix3x3.fromQuaternion = function(quat) {
+		var x = quat[0], y = quat[1], z = quat[2], w = quat[3];
+
+		var x2 = x + x;
+		var y2 = y + y;
+		var z2 = z + z;
+
+		var xx = x*x2;
+		var xy = x*y2;
+		var xz = x*z2;
+
+		var yy = y*y2;
+		var yz = y*z2;
+		var zz = z*z2;
+
+		var wx = w*x2;
+		var wy = w*y2;
+		var wz = w*z2;
+
+		return new Matrix3x3(
+			1 - (yy + zz), xy - wz, xz + wy,
+			xy + wz, 1 - (xx + zz), yz - wx,
+			xz - wy, yz + wx, 1 - (xx + yy));
+	}
+
 	/**
 	 * Computes the analytical inverse and stores the result locally.
 	 * @return {Matrix3x3} Self for chaining.

@@ -40,7 +40,7 @@ define([], function() {
 			return new Uint32Array(arrayBuffer, start, length);
 		}
 		else {
-			throw new Error("Binary format #{format} is not supported");
+			throw new Error("Binary format " + format + " is not supported");
 		}
 	};
 

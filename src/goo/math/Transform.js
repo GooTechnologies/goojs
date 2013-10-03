@@ -1,13 +1,15 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	Vector3,
 	Matrix3x3,
-	Matrix4x4
+	Matrix4x4,
+	MathUtils
 ) {
 	"use strict";
 
@@ -65,6 +67,29 @@ function (
 		transform.rotation.data[6] = matrix.data[8] / transform.scale.data[2];
 		transform.rotation.data[7] = matrix.data[9] / transform.scale.data[2];
 		transform.rotation.data[8] = matrix.data[10] / transform.scale.data[2];
+
+		/*
+		transform.update();
+
+		if (!(MathUtils.isCloseTo(transform.matrix.data[0], matrix.data[0]) &&
+			MathUtils.isCloseTo(transform.matrix.data[1], matrix.data[1]) &&
+			MathUtils.isCloseTo(transform.matrix.data[2], matrix.data[2]) &&
+			MathUtils.isCloseTo(transform.matrix.data[3], matrix.data[3]) &&
+			MathUtils.isCloseTo(transform.matrix.data[4], matrix.data[4]) &&
+			MathUtils.isCloseTo(transform.matrix.data[5], matrix.data[5]) &&
+			MathUtils.isCloseTo(transform.matrix.data[6], matrix.data[6]) &&
+			MathUtils.isCloseTo(transform.matrix.data[7], matrix.data[7]) &&
+			MathUtils.isCloseTo(transform.matrix.data[8], matrix.data[8]) &&
+			MathUtils.isCloseTo(transform.matrix.data[9], matrix.data[9]) &&
+			MathUtils.isCloseTo(transform.matrix.data[10], matrix.data[10]) &&
+			MathUtils.isCloseTo(transform.matrix.data[11], matrix.data[11]) &&
+			MathUtils.isCloseTo(transform.matrix.data[12], matrix.data[12]) &&
+			MathUtils.isCloseTo(transform.matrix.data[13], matrix.data[13]) &&
+			MathUtils.isCloseTo(transform.matrix.data[14], matrix.data[14]) &&
+			MathUtils.isCloseTo(transform.matrix.data[15], matrix.data[15]))) {
+			console.error('Not TRS');
+		}
+		*/
 
 		return transform;
 	};

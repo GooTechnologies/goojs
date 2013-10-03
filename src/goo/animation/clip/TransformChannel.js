@@ -4,7 +4,9 @@ define([
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
 	'goo/animation/clip/LinearInterpolator',
-	'goo/animation/clip/HermiteInterpolator'
+	'goo/animation/clip/HermiteInterpolator',
+	'goo/math/Matrix3x3',
+	'goo/math/MathUtils'
 	],
 /** @lends */
 function (
@@ -13,7 +15,9 @@ function (
 	Quaternion,
 	Vector3,
 	LinearInterpolator,
-	HermiteInterpolator
+	HermiteInterpolator,
+	Matrix3x3,
+	MathUtils
 	) {
 	"use strict";
 
@@ -59,9 +63,17 @@ function (
 		if (scaleX && scaleX.length) { this._scaleX = new interpolator(getStructuredArray(scaleX)); }
 		if (scaleY && scaleX.length) { this._scaleY = new interpolator(getStructuredArray(scaleY)); }
 		if (scaleZ && scaleX.length) { this._scaleZ = new interpolator(getStructuredArray(scaleZ)); }
+
+		this.record = [];
 	}
 
 	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
+
+	TransformChannel.id = 0;
+	TransformChannel.getId = function() {
+		TransformChannel.id++;
+		return TransformChannel.id;
+	}
 
 	TransformChannel._interpolators = {
 		linear: LinearInterpolator,
@@ -86,6 +98,21 @@ function (
 		if (!this._rotationY) { this._rotationYDefault = rotationQuaternion.data[1]; }
 		if (!this._rotationZ) { this._rotationZDefault = rotationQuaternion.data[2]; }
 		if (!this._rotationW) { this._rotationWDefault = rotationQuaternion.data[3]; }
+
+
+		var matrix = Matrix3x3.fromQuaternion(rotationQuaternion);
+		if (!(MathUtils.isCloseTo(transform.rotation.data[0], matrix.data[0]) &&
+			MathUtils.isCloseTo(transform.rotation.data[1], matrix.data[1]) &&
+			MathUtils.isCloseTo(transform.rotation.data[2], matrix.data[2]) &&
+			MathUtils.isCloseTo(transform.rotation.data[3], matrix.data[3]) &&
+			MathUtils.isCloseTo(transform.rotation.data[4], matrix.data[4]) &&
+			MathUtils.isCloseTo(transform.rotation.data[5], matrix.data[5]) &&
+			MathUtils.isCloseTo(transform.rotation.data[6], matrix.data[6]) &&
+			MathUtils.isCloseTo(transform.rotation.data[7], matrix.data[7]) &&
+			MathUtils.isCloseTo(transform.rotation.data[8], matrix.data[8]))) {
+			console.error('...................Not identical');
+		}
+
 
 		if (!this._scaleX) { this._scaleXDefault = transform.scale.data[0]; }
 		if (!this._scaleY) { this._scaleYDefault = transform.scale.data[1]; }
@@ -180,6 +207,16 @@ function (
 		} else {
 			transformData._scale.data[2] = this._scaleZDefault;
 		}
+
+		//this.doRecord();
+	};
+
+	TransformChannel.prototype.doRecord = function() {
+		if (this.record.length > 1000) {
+			console.log(this.record);
+			this.record = [];
+		}
+		this.record.push({ time: time, value: this.rotation.data[0] });
 	};
 
 	/**

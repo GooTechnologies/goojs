@@ -1,7 +1,17 @@
 /*jshint bitwise: false*/
-define(["goo/math/Vector", "goo/math/Vector3", "goo/math/Matrix3x3", "goo/math/MathUtils"],
+define([
+	"goo/math/Vector",
+	"goo/math/Vector3",
+	"goo/math/Matrix3x3",
+	"goo/math/MathUtils"
+	],
 /** @lends */
-function (Vector, Vector3, Matrix3x3, MathUtils) {
+function (
+	Vector,
+	Vector3,
+	Matrix3x3,
+	MathUtils
+	) {
 	"use strict";
 
 	/**
@@ -62,7 +72,6 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 			out[j] = (m[j*3+i] + m[i*3+j]) * fRoot;
 			out[k] = (m[k*3+i] + m[i*3+k]) * fRoot;
 		}
-		    console.log(m.data, quat.data);
 		return quat;
 	};
 
