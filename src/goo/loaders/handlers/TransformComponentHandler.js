@@ -5,15 +5,17 @@ define([
 	'goo/math/Quaternion',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/ArrayUtil'
 ], function(
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
 	Quaternion,
 	RSVP,
-	pu,
-	_
+	PromiseUtil,
+	_,
+	ArrayUtil
 ) {
 	/*jshint eqeqeq: false, -W041 */
 	function TransformComponentHandler() {
@@ -56,7 +58,7 @@ define([
 		component.transform.scale.set(config.scale);
 
 		if (config.parentRef != null) {
-			this.getConfig(config.parentRef).then(function(parentConfig) {
+			var promise = this.getConfig(config.parentRef).then(function(parentConfig) {
 				return that.updateObject(config.parentRef, parentConfig, that.options).then(function(parent) {
 					if (parent != null) {
 						var componentParent = component.parent;
@@ -68,11 +70,21 @@ define([
 					}
 				});
 			});
+
+			return promise.then(function() {
+				component.setUpdated();
+				return component;
+			});
+		}
+		else if (component.parent) {
+			console.log('Orphaned entity');
+			ArrayUtil.remove(component.parent.children, component);
+			component.parent.setUpdated();
+			component.parent = null;
 		}
 
 		component.setUpdated();
-
-		return pu.createDummyPromise(component);
+		return PromiseUtil.createDummyPromise(component);
 	};
 
 	TransformComponentHandler.prototype.remove = function(entity) {
