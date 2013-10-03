@@ -73,7 +73,7 @@ define([
 			component.materials = materials;
 			for (key in config) {
 				value = config[key];
-				if (key !== 'materials' && component.hasOwnProperty(key)) {
+				if (key !== 'materials' && key !== 'hidden' && component.hasOwnProperty(key)) {
 					component[key] = _.clone(value);
 				}
 			}
