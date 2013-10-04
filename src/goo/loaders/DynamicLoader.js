@@ -246,7 +246,7 @@ function(
 		return this._loadRef(ref).then(function(config) {
 			var handled = 0;
 			var promises = [];
-			if (options.recursive && ConfigHandler.getHandler(DynamicLoader._getTypeForRef(ref))) {
+			if (options.recursive && ConfigHandler.getHandler(DynamicLoader.getTypeForRef(ref))) {
 				var childRefs = that._getRefsFromConfig(config);
 
 				var handleChildRef = function(childRef) {
@@ -304,7 +304,7 @@ function(
 				return PromiseUtil.createDummyPromise(this._objects[ref]);
 			}
 		} else {
-			type = DynamicLoader._getTypeForRef(ref);
+			type = DynamicLoader.getTypeForRef(ref);
 			handlerClass = ConfigHandler.getHandler(type);
 
 			if (handlerClass) {
@@ -378,18 +378,18 @@ function(
 		// Load ref with ajax
 		url = this._rootPath + window.escape(ref);
 
-		if (DynamicLoader._isImageRef(ref)) {
+		if (DynamicLoader.isImageRef(ref)) {
 			promise = this._ajax.loadImage(url);
-		} else if (DynamicLoader._isBinaryRef(ref)) {
+		} else if (DynamicLoader.isBinaryRef(ref)) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader._isUrlRef(ref)) {
+		} else if (DynamicLoader.isUrlRef(ref)) {
 			promise = PromiseUtil.createDummyPromise(url);
 		} else {
 			promise = this._ajax.load(url);
 		}
 
 		promise = promise.then(function(data) {
-			if (DynamicLoader._isJSONRef(ref)) {
+			if (DynamicLoader.isJSONRef(ref)) {
 				return that._configs[ref] = JSON.parse(data);
 			} else {
 				return that._configs[ref] = data;
@@ -425,27 +425,39 @@ function(
 		return _refs;
 	};
 
-	DynamicLoader._getTypeForRef = function(ref) {
+
+
+	DynamicLoader.getTypeForRef = function(ref) {
 		return ref.split('.').pop().toLowerCase();
 	};
 
-	DynamicLoader._isJSONRef = function(ref) {
-		var type = DynamicLoader._getTypeForRef(ref);
+
+	DynamicLoader.isJSONRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_json_types, type) >= 0;
 	};
 
-	DynamicLoader._isImageRef = function(ref) {
-		var type = DynamicLoader._getTypeForRef(ref);
+	/**
+	 * Images that the browser can handle (jpg, png, gif)
+	 */
+	DynamicLoader.isImageRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_image_types, type) >= 0;
 	};
 
-	DynamicLoader._isBinaryRef = function(ref) {
-		var type = DynamicLoader._getTypeForRef(ref);
+	/**
+	 * .bin files and non-image textures (dds, tga, crn...)
+	 */
+	DynamicLoader.isBinaryRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
 	};
 
-	DynamicLoader._isUrlRef = function(ref) {
-		var type = DynamicLoader._getTypeForRef(ref);
+	/**
+	 * Lazy loaded media (sound)
+	 */
+	DynamicLoader.isUrlRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_url_types, type) >= 0;
 	};
 
