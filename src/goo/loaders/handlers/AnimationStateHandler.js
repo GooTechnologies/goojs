@@ -64,7 +64,7 @@ define([
 						}
 
 						if (cfg.loopCount) {
-							clipSource._clipInstance._loopCount = cfg.loopCount;
+							clipSource._clipInstance._loopCount = +cfg.loopCount;
 						}
 						if (cfg.timeScale) {
 							clipSource._clipInstance._timeScale = cfg.timeScale;
