@@ -1,13 +1,13 @@
 {
   "name": "gooengine",
-  "version": "0.4.1",
+  "version": "0.0.0",
   "author": "Goo Technologies AB <info@gootechnologies.com>",
   "description": "Goo Engine - the WebGL graphics engine",
-  "homepage": "http://www.engine.com/",
+  "homepage": "http://www.gooengine.com/",
   "licenses": [
     {
       "type": "Proprietary",
-      "url": "http://www.engine.com/"
+      "url": "http://www.gooengine.com/"
     }
   ],
   "dependencies": {
