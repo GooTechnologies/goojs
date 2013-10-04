@@ -176,11 +176,11 @@ function (
 	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
-		if (this._layerBlender !== null) {
+		if (this._layerBlender) {
 			return this._layerBlender.getBlendedSourceData();
 		}
 
-		if (this._currentState !== null) {
+		if (this._currentState) {
 			return this._currentState.getCurrentSourceData();
 		} else {
 			return null;

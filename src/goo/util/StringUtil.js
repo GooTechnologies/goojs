@@ -55,7 +55,7 @@ define(function() {
 	};
 
 	StringUtil.toAscii = function (input) {
-		return input.replace(/([^\x00-\x7F]|\s)*/g, '');
+		return input.replace(/([^\x00-\x7F])*/g, '');
 	};
 
 	/*jshint bitwise: false */

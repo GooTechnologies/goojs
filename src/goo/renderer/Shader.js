@@ -186,6 +186,10 @@ function (
 			}
 		}
 
+		this._bindUniforms(shaderInfo);
+	};
+
+	Shader.prototype._bindUniforms = function (shaderInfo) {
 		if (this.uniforms) {
 			try {
 				this.textureIndex = 0;

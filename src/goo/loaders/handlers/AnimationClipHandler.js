@@ -22,31 +22,38 @@ function(
 ) {
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._objects = {};
 	}
 
 	AnimationClipHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('clip', AnimationClipHandler);
 
+	AnimationClipHandler.prototype._create = function(ref) {
+		return this._objects[ref] = new AnimationClip();
+	};
+
 	AnimationClipHandler.prototype.update = function(ref, config) {
+		var object = this._objects[ref] || this._create(ref);
+		object._name = config.name;
 		var clip, that = this;
 		if (config.binaryRef) {
 			return this.getConfig(config.binaryRef).then(function(bindata) {
 				if (!bindata) {
 					throw new Error("Binary clip data was empty");
 				}
-				return that._createAnimationClip(config, bindata);
+				return that._updateAnimationClip(config, bindata, object);
 			});
 		} else {
-			clip = this._createAnimationClip(config);
+			clip = this._updateAnimationClip(config, null, object);
 			return PromiseUtil.createDummyPromise(clip);
 		}
 	};
 
-	AnimationClipHandler.prototype._createAnimationClip = function(clipConfig, bindata) {
+	AnimationClipHandler.prototype._updateAnimationClip = function(clipConfig, bindata, clip) {
 		/* jshint bitwise:false */
 		//console.debug("Creating animation clip");
-		var clip = new AnimationClip(clipConfig.name);
 
+		clip._channels = [];
 		var useCompression = clipConfig.useCompression || false;
 
 		var compressedAnimRange = null;

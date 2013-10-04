@@ -56,7 +56,13 @@ define([
 				}
 			}
 		}
-		return RSVP.all(promises);
+		return RSVP.all(promises).then(function(layers) {
+			object.length = 0;
+			for (var i = 0; i < layers.length; i++) {
+				object.push(layers[i]);
+			}
+			return object;
+		});
 	};
 
 	AnimationLayersHandler.prototype._create = function(ref) {
@@ -65,6 +71,9 @@ define([
 
 	AnimationLayersHandler.prototype._parseLayer = function(layerConfig, layer) {
 		var that = this;
+		if (layerConfig.blendWeight === undefined) {
+			layerConfig.blendWeight = 1.0;
+		}
 
 		if (!layer) {
 			layer = new AnimationLayer(layerConfig.name);
@@ -72,7 +81,13 @@ define([
 		} else {
 			layer._name = layerConfig.name;
 		}
-		layer._layerBlender._blendWeight = layerConfig.blendWeight || 1.0;
+		if (layer._layerBlender) {
+			if (layerConfig.blendWeight !== undefined) {
+				layer._layerBlender._blendWeight = layerConfig.blendWeight;
+			} else {
+				layer._layerBlender._blendWeight = 1.0;
+			}
+		}
 
 		var promises = [];
 
@@ -129,8 +144,12 @@ define([
 					}
 				}
 			}
-			if (layerConfig.defaultState) {
-				layer.setCurrentStateByName(layerConfig.defaultState);
+			if (layerConfig.defaultState && layer._steadyStates[layerConfig.defaultState]) {
+				if (layer._currentState !== layer._steadyStates[layerConfig.defaultState]) {
+					layer.setCurrentStateByName(layerConfig.defaultState, true);
+				}
+			} else {
+				layer.setCurrentState();
 			}
 			return layer;
 		});
