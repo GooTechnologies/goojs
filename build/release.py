@@ -22,7 +22,7 @@ if os.name == 'nt':
 else:
     command = 'cake'
 subprocess.check_call(['grunt', 'minify', '--goo-version=' + version])
-#subprocess.check_call([command, '-i', 'requireLib', 'minify'])
+subprocess.check_call(['grunt', 'minify', '--goo-version=' + version, '--bundle-require'])
 subprocess.check_call([command, 'jsdoc'])
 subprocess.check_call([command, 'visualtoc'])
 
@@ -49,6 +49,6 @@ for directory in (
 	shutil.copytree(source, release_dir + '/' + destination)
 
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
-#shutil.copy('out/goo-require.js', release_dir + '/lib/goo-require.js')
+shutil.copy('out/goo-require.js', release_dir + '/lib/goo-require.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('CHANGES', release_dir + '/CHANGES')

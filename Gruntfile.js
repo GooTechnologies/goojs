@@ -20,6 +20,17 @@ createMainFile();
 
 module.exports = function(grunt) {
 	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
+	var bundleRequire = grunt.option('bundle-require');
+
+	var gooModule = {
+		name: 'goo'
+	};
+	var engineFilename = './out/goo.js'
+	if(bundleRequire) {
+		console.log('Bundling require');
+		gooModule.include = ['requireLib'];
+		engineFilename = './out/goo-require.js'
+	}
 
 	// Project configuration.
 	grunt.initConfig({
@@ -36,10 +47,12 @@ module.exports = function(grunt) {
 					keepBuildDir: true,
 					//generateSourceMaps: true,
 					dir: 'out/minified/',
-					modules: [{
-						name: 'goo',
-					}],
-					wrap: true
+					modules: [gooModule],
+					paths: {
+						'requireLib': '../lib/require'
+					},
+					wrap: true,
+
 					// I tried using a wrap block like this, but it has no effect
 					// wrap: { ... }
 					/*
@@ -62,7 +75,7 @@ module.exports = function(grunt) {
 		wrap: {
 			build: {
 				src: ['out/minified/goo.js'],
-				dest: './out/goo.js',
+				dest: engineFilename,
 				options: {
 					wrapper: [
 						'/* Goo Engine ' + engineVersion + '\n' +
@@ -82,6 +95,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 
 	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['requirejs', 'wrap']);
+	grunt.registerTask('minify', ['requirejs:build', 'wrap']);
 
 };
