@@ -1,15 +1,16 @@
 fs = require('fs')
 path = require('path')
-{minifyProject, minifyFile} = require('./buildengine/minify')
 exec = require('child_process').exec
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
 wrench = require('wrench')
+rimraf = require('rimraf')
 
 # Run a command and exit with an error message if it fails.
 runCommand = (cmd, callback) ->
 	exec cmd, (error, stdout, stderr) ->
 		if error != null
+			console.log stdout
 			console.log stderr
 			console.log 'Command failed: ' + cmd
 			process.exit(1)
@@ -21,7 +22,8 @@ endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 option '-i', '--include [LIB]', 'Include library e.g. requireLib'
 
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
-	runCommand 'grunt minify'
+	rimraf 'out/minified', ->
+		runCommand 'grunt minify'
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server

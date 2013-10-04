@@ -26,7 +26,8 @@
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-requirejs": "~0.4.1",
-    "grunt-wrap": "~0.3.0"
+    "grunt-wrap": "~0.3.0",
+    "rimraf": "~2.2.2"
   },
   "engines": {
     "node": ">=0.8.2"
