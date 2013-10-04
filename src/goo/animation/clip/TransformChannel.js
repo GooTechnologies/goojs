@@ -204,8 +204,8 @@ function (
 		}
 
 
-
-		transformData._rotation.normalize();
+		// should normalize if keys are too distant
+		//transformData._rotation.normalize();
 
 		// --- scale ---
 		if (this._scaleX) {

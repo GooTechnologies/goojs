@@ -30,9 +30,9 @@ function (
 		this._scaleZ = 1;
 
 
-		this._rotation = new Quaternion().copy(source ? source._rotation : Quaternion.IDENTITY);
-		this._scale = new Vector3().copy(source ? source._scale : Vector3.ONE);
-		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
+//		this._rotation = new Quaternion().copy(source ? source._rotation : Quaternion.IDENTITY);
+//		this._scale = new Vector3().copy(source ? source._scale : Vector3.ONE);
+//		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
 
 	}
 
@@ -81,9 +81,10 @@ function (
 	 * @param {TransformData} source our source to copy.
 	 */
 	TransformData.prototype.set = function (source) {
-		this._rotation.copy(source._rotation);
-		this._scale.copy(source._scale);
-		this._translation.copy(source._translation);
+		console.error('not implemented');
+//		this._rotation.copy(source._rotation);
+//		this._scale.copy(source._scale);
+//		this._translation.copy(source._translation);
 	};
 
 	/**
@@ -94,12 +95,13 @@ function (
 	 * @return {TransformData} The blended transform.
 	 */
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
-		var tData = store ? store : new TransformData();
-
-		tData._translation.setv(this._translation).lerp(blendTo._translation, blendWeight);
-		tData._scale.setv(this._scale).lerp(blendTo._scale, blendWeight);
-		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
-		return tData;
+		console.log('not implemented yet');
+//		var tData = store ? store : new TransformData();
+//
+//		tData._translation.setv(this._translation).lerp(blendTo._translation, blendWeight);
+//		tData._scale.setv(this._scale).lerp(blendTo._scale, blendWeight);
+//		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
+//		return tData;
 	};
 
 	return TransformData;
