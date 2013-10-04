@@ -16,7 +16,7 @@ function (
 	function Skeleton (name, joints) {
 		this._name = name;
 		this._joints = joints;
-		//this._updateLocalTransforms();
+		this._updateLocalTransforms();
 	}
 
 	Skeleton.prototype._updateLocalTransforms = function() {

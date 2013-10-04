@@ -49,7 +49,8 @@ function (
 	function TransformChannel (channelName, translationX, translationY, translationZ, rotationX, rotationY, rotationZ, rotationW, scaleX, scaleY, scaleZ, blendType) {
 		AbstractAnimationChannel.call(this, channelName, []/*times*/, blendType);
 
-		var interpolator = TransformChannel._interpolators[blendType.toLowerCase()];
+		var interpolator = LinearInterpolator; //TransformChannel._interpolators[blendType.toLowerCase()];
+
 
 		if (translationX && translationX.length) { this._translationX = new interpolator(getStructuredArray(translationX)); }
 		if (translationY && translationY.length) { this._translationY = new interpolator(getStructuredArray(translationY)); }
@@ -77,6 +78,7 @@ function (
 
 	TransformChannel._interpolators = {
 		linear: LinearInterpolator,
+		cubic: LinearInterpolator,
 		hermite: HermiteInterpolator
 	};
 
@@ -99,7 +101,7 @@ function (
 		if (!this._rotationZ) { this._rotationZDefault = rotationQuaternion.data[2]; }
 		if (!this._rotationW) { this._rotationWDefault = rotationQuaternion.data[3]; }
 
-
+		/*
 		var matrix = Matrix3x3.fromQuaternion(rotationQuaternion);
 		if (!(MathUtils.isCloseTo(transform.rotation.data[0], matrix.data[0]) &&
 			MathUtils.isCloseTo(transform.rotation.data[1], matrix.data[1]) &&
@@ -112,7 +114,7 @@ function (
 			MathUtils.isCloseTo(transform.rotation.data[8], matrix.data[8]))) {
 			console.error('...................Not identical');
 		}
-
+		*/
 
 		if (!this._scaleX) { this._scaleXDefault = transform.scale.data[0]; }
 		if (!this._scaleY) { this._scaleYDefault = transform.scale.data[1]; }
@@ -145,67 +147,89 @@ function (
 
 		// --- translation ---
 		if (this._translationX) {
-			transformData._translation.data[0] = this._translationX.getAt(time);
+			//transformData._translation.data[0] = this._translationX.getAt(time);
+			transformData._translationX = this._translationX.getAt(time);
 		} else {
-			transformData._translation.data[0] = this._translationXDefault;
+			//transformData._translation.data[0] = this._translationXDefault;
+			transformData._translationX = null;
 		}
 
 		if (this._translationY) {
-			transformData._translation.data[1] = this._translationY.getAt(time);
+			//transformData._translation.data[1] = this._translationY.getAt(time);
+			transformData._translationY = this._translationY.getAt(time);
 		} else {
-			transformData._translation.data[1] = this._translationYDefault;
+			//transformData._translation.data[1] = this._translationYDefault;
+			transformData._translationY = null;
 		}
 
 		if (this._translationZ) {
-			transformData._translation.data[2] = this._translationZ.getAt(time);
+			//transformData._translation.data[2] = this._translationZ.getAt(time);
+			transformData._translationZ = this._translationZ.getAt(time);
 		} else {
-			transformData._translation.data[2] = this._translationZDefault;
+			//transformData._translation.data[2] = this._translationZDefault;
+			transformData._translationZ = null;
 		}
 
 		// --- rotation ---
 		if (this._rotationX) {
-			transformData._rotation.data[0] = this._rotationX.getAt(time);
+			//transformData._rotation.data[0] = this._rotationX.getAt(time);
+			transformData._rotationX = this._rotationX.getAt(time);
 		} else {
-			transformData._rotation.data[0] = this._rotationXDefault;
+			//transformData._rotation.data[0] = this._rotationXDefault;
+			transformData._rotationX = null;
 		}
 
 		if (this._rotationY) {
-			transformData._rotation.data[1] = this._rotationY.getAt(time);
+			//transformData._rotation.data[1] = this._rotationY.getAt(time);
+			transformData._rotationY = this._rotationY.getAt(time);
 		} else {
-			transformData._rotation.data[1] = this._rotationYDefault;
+			//transformData._rotation.data[1] = this._rotationYDefault;
+			transformData._rotationY = null;
 		}
 
 		if (this._rotationZ) {
-			transformData._rotation.data[2] = this._rotationZ.getAt(time);
+			//transformData._rotation.data[2] = this._rotationZ.getAt(time);
+			transformData._rotationZ = this._rotationZ.getAt(time);
 		} else {
-			transformData._rotation.data[2] = this._rotationZDefault;
+			//transformData._rotation.data[2] = this._rotationZDefault;
+			transformData._rotationZ = null;
 		}
 
 		if (this._rotationW) {
-			transformData._rotation.data[3] = this._rotationW.getAt(time);
+			//transformData._rotation.data[3] = this._rotationW.getAt(time);
+			transformData._rotationW = this._rotationW.getAt(time);
 		} else {
-			transformData._rotation.data[3] = this._rotationWDefault;
+			//transformData._rotation.data[3] = this._rotationWDefault;
+			transformData._rotationW = null;
 		}
+
+
 
 		transformData._rotation.normalize();
 
 		// --- scale ---
 		if (this._scaleX) {
-			transformData._scale.data[0] = this._scaleX.getAt(time);
+			//transformData._scale.data[0] = this._scaleX.getAt(time);
+			transformData._scaleX = this._scaleX.getAt(time);
 		} else {
-			transformData._scale.data[0] = this._scaleXDefault;
+			//transformData._scale.data[0] = this._scaleXDefault;
+			transformData._scaleX = null;
 		}
 
 		if (this._scaleY) {
-			transformData._scale.data[1] = this._scaleY.getAt(time);
+			//transformData._scale.data[1] = this._scaleY.getAt(time);
+			transformData._scaleY = this._scaleY.getAt(time);
 		} else {
-			transformData._scale.data[1] = this._scaleYDefault;
+			//transformData._scale.data[1] = this._scaleYDefault;
+			transformData._scaleY = null;
 		}
 
 		if (this._scaleZ) {
-			transformData._scale.data[2] = this._scaleZ.getAt(time);
+			//transformData._scale.data[2] = this._scaleZ.getAt(time);
+			transformData._scaleZ = this._scaleZ.getAt(time);
 		} else {
-			transformData._scale.data[2] = this._scaleZDefault;
+			//transformData._scale.data[2] = this._scaleZDefault;
+			transformData._scaleZ = null;
 		}
 
 		//this.doRecord();

@@ -1,6 +1,14 @@
-define(['goo/math/Quaternion', 'goo/math/Vector3'],
+define([
+	'goo/math/Quaternion',
+	'goo/math/Vector3',
+	'goo/math/Matrix3x3'
+	],
 /** @lends */
-function (Quaternion, Vector3) {
+function (
+	Quaternion,
+	Vector3,
+	Matrix3x3
+	) {
 	"use strict";
 
 	/**
@@ -8,9 +16,24 @@ function (Quaternion, Vector3) {
 	 * @param {TransformData} [source] source to copy.
 	 */
 	function TransformData (source) {
+		this._translationX = null;
+		this._translationY = null;
+		this._translationZ = null;
+
+		this._rotationX = null;
+		this._rotationY = null;
+		this._rotationZ = null;
+		this._rotationW = null;
+
+		this._scaleX = 1;
+		this._scaleY = 1;
+		this._scaleZ = 1;
+
+
 		this._rotation = new Quaternion().copy(source ? source._rotation : Quaternion.IDENTITY);
 		this._scale = new Vector3().copy(source ? source._scale : Vector3.ONE);
 		this._translation = new Vector3().copy(source ? source._translation : Vector3.ZERO);
+
 	}
 
 	/**
@@ -18,12 +41,42 @@ function (Quaternion, Vector3) {
 	 * @param {Transform}
 	 */
 	TransformData.prototype.applyTo = function (transform) {
-		transform.setIdentity();
+		//transform.setIdentity();
+
+		if (this._translationX !== null) transform.translation.data[0] = this._translationX;
+		if (this._translationY !== null) transform.translation.data[1] = this._translationY;
+		if (this._translationZ !== null) transform.translation.data[2] = this._translationZ;
+
+		if (this._rotationX !== null || this._rotationY !== null || this._rotationZ !== null || this._rotationW !== null) {
+			var z = Math.random();
+			//if (z < 0.0001) console.log(transform.rotation.data);
+			var quat = Quaternion.fromMatrix(transform.rotation);
+
+			if (this._rotationX !== null) quat.data[0] = this._rotationX;
+			if (this._rotationY !== null) quat.data[1] = this._rotationY;
+			if (this._rotationZ !== null) quat.data[2] = this._rotationZ;
+			if (this._rotationW !== null) quat.data[3] = this._rotationW;
+
+			quat.data[0] *= -1;
+			quat.data[1] *= -1;
+			quat.data[2] *= -1;
+
+			//transform.rotation.copyQuaternion(quat);
+			transform.rotation = Matrix3x3.fromQuaternion(quat);
+			//if (z < 0.0001) console.log(transform.rotation.data);
+
+		}
+
+		if (this._scaleX !== null) transform.scale.data[0] = this._scaleX;
+		if (this._scaleY !== null) transform.scale.data[1] = this._scaleY;
+		if (this._scaleZ !== null) transform.scale.data[2] = this._scaleZ;
+
 		// TODO: matrix vs quaternion?
-		transform.rotation.copyQuaternion(this._rotation);
-		transform.scale.setv(this._scale);
-		transform.translation.setv(this._translation);
+		//transform.rotation.copyQuaternion(this._rotation);
+		//transform.scale.setv(this._scale);
+		//transform.translation.setv(this._translation); */
 		transform.update();
+		//*/
 	};
 
 	/**

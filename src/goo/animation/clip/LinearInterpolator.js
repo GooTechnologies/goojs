@@ -39,10 +39,11 @@ function () {
 	};
 
 	LinearInterpolator.prototype.getAt = function(time) {
-		if (this.data.length === 1) return this.data[0].value;
+		if (this.data.length === 0) console.error('0');
+		if (this.data.length === 1) { console.log('len = 1'); return this.data[0].value; }
 
-		if (time < this.minTime) return this.data[0].value;
-		if (time > this.maxTime) return this.data[this.data.length - 1].value;
+		if (time < this.minTime) { console.log('neevrhere1'); return this.data[0].value; }
+		if (time > this.maxTime) { console.log('neevrhere2'); return this.data[this.data.length - 1].value; }
 
 		var keyBefore = this.getKeyBefore(time);
 		var keyAfter = keyBefore + 1;
@@ -52,7 +53,8 @@ function () {
 
 		var fraction = (time - timeBefore) / (timeAfter - timeBefore);
 
-		var interpolatedValue = fraction * this.data[keyAfter].value + (1 - fraction) * this.data[keyBefore].value;
+		var interpolatedValue = this.data[keyBefore].value;
+		//var interpolatedValue = fraction * this.data[keyAfter].value + (1 - fraction) * this.data[keyBefore].value;
 
 		return interpolatedValue;
 	};

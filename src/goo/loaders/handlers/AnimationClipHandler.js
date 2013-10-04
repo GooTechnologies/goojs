@@ -68,9 +68,9 @@ function(
 				var channelConfig = clipConfig.channels[i];
 
 				var channel;
-				var translationX, translationY, translationZ;
-				var rotationX, rotationY, rotationZ, rotationW;
-				var scaleX, scaleY, scaleZ;
+				var translationX = null, translationY = null, translationZ = null;
+				var rotationX = null, rotationY = null, rotationZ = null, rotationW = null;
+				var scaleX = null, scaleY = null, scaleZ = null;
 				var blendType;
 
 				var blendType = channelConfig.blendType;

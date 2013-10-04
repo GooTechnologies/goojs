@@ -68,7 +68,7 @@ function (
 		transform.rotation.data[7] = matrix.data[9] / transform.scale.data[2];
 		transform.rotation.data[8] = matrix.data[10] / transform.scale.data[2];
 
-		/*
+
 		transform.update();
 
 		if (!(MathUtils.isCloseTo(transform.matrix.data[0], matrix.data[0]) &&
@@ -89,7 +89,8 @@ function (
 			MathUtils.isCloseTo(transform.matrix.data[15], matrix.data[15]))) {
 			console.error('Not TRS');
 		}
-		*/
+		console.log(transform);
+
 
 		return transform;
 	};
@@ -232,6 +233,11 @@ function (
 		target[14] = translation[2];
 		target[15] = 1.0;
 	};
+	/*
+	Transform.prototype.reverseUpdate = function() {
+
+	};
+	*/
 
 	/**
 	 * Copy supplied transform into this transform

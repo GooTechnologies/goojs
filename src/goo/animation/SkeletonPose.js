@@ -58,11 +58,14 @@ function (
 				// We remove the parent's transform simply by multiplying by its inverse bind pose.
 				Matrix4x4.combine(this._skeleton._joints[parentIndex]._inverseBindPose.matrix, this._localTransforms[i].matrix, this._localTransforms[i].matrix);
 			}
+
+			///
+			this._localTransforms[i] = Transform.fromMatrix(this._localTransforms[i].matrix);
 		}
 		this.updateTransforms();
 
-		console.log(this._localTransforms);
-		this._skeleton._setLocalTransforms(this._localTransforms);
+		//console.log(this._localTransforms);
+		//this._skeleton._setLocalTransforms(this._localTransforms); // this gets weird data
 	};
 
 	/**
