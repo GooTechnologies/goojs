@@ -164,7 +164,10 @@ define([
 				} else if (Array.isArray(arg) && arg.length === 3) {
 					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
 				} else if (typeof arg.run === 'function') {
-					entity.setComponent(new ScriptComponent(arg));
+					if (!entity.hasComponent('ScriptComponent')) {
+						entity.setComponent(new ScriptComponent());
+					}
+					entity.scriptComponent.scripts.push(arg);
 				}
 			}
 
