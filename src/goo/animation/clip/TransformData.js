@@ -40,6 +40,8 @@ function (
 	 * Applies the data from this transformdata to supplied transform
 	 * @param {Transform}
 	 */
+	var tmpQuat = new Quaternion();
+
 	TransformData.prototype.applyTo = function (transform) {
 		//transform.setIdentity();
 
@@ -49,22 +51,17 @@ function (
 
 		if (this._rotationX !== null || this._rotationY !== null || this._rotationZ !== null || this._rotationW !== null) {
 			var z = Math.random();
-			//if (z < 0.0001) console.log(transform.rotation.data);
-			var quat = Quaternion.fromMatrix(transform.rotation);
+			if (z < 0.0001) console.log(transform.rotation.data);
+			tmpQuat.setd(0, 0, 0, 1);
+			var quat = tmpQuat.fromRotationMatrix(transform.rotation);
 
 			if (this._rotationX !== null) quat.data[0] = this._rotationX;
 			if (this._rotationY !== null) quat.data[1] = this._rotationY;
 			if (this._rotationZ !== null) quat.data[2] = this._rotationZ;
 			if (this._rotationW !== null) quat.data[3] = this._rotationW;
 
-			quat.data[0] *= -1;
-			quat.data[1] *= -1;
-			quat.data[2] *= -1;
-
-			//transform.rotation.copyQuaternion(quat);
-			transform.rotation = Matrix3x3.fromQuaternion(quat);
-			//if (z < 0.0001) console.log(transform.rotation.data);
-
+			transform.rotation.copyQuaternion(quat);
+			if (z < 0.0001) console.log(transform.rotation.data);
 		}
 
 		if (this._scaleX !== null) transform.scale.data[0] = this._scaleX;

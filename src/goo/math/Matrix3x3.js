@@ -401,37 +401,6 @@ function (
 		return target;
 	};
 
-	// from glmatrix
-	Matrix3x3.prototype.fromQuaternion = function(quat) {
-		var x = quat[0], y = quat[1], z = quat[2], w = quat[3];
-
-		var x2 = x + x;
-		var y2 = y + y;
-		var z2 = z + z;
-
-		var xx = x*x2;
-		var xy = x*y2;
-		var xz = x*z2;
-
-		var yy = y*y2;
-		var yz = y*z2;
-		var zz = z*z2;
-
-		var wx = w*x2;
-		var wy = w*y2;
-		var wz = w*z2;
-
-		this.data[0] = 1 - (yy + zz);
-		this.data[1] = xy - wz;
-		this.data[2] = xz + wy;
-		this.data[3] = xy + wz;
-		this.data[4] = 1 - (xx + zz);
-		this.data[5] = yz - wx;
-		this.data[6] = xz - wy;
-		this.data[7] = yz + wx;
-		this.data[8] = 1 - (xx + yy);
-	}
-
 	/**
 	 * Computes the analytical inverse and stores the result locally.
 	 * @return {Matrix3x3} Self for chaining.

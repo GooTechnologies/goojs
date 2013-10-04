@@ -50,6 +50,7 @@ function (
 	AnimationComponent.prototype = Object.create(Component.prototype);
 
 	AnimationComponent.prototype._fixDefaults = function() {
+		/*
 		var visitor = new DefaultDataVisitor(this._skeletonPose._skeleton._joints);
 	    for (var i = 0; i < this.layers.length; i++) {
 			var layer = this.layers[i];
@@ -58,6 +59,7 @@ function (
 				state._sourceTree.accept(visitor);
 			}
 		}
+		*/
 	};
 
 	/**

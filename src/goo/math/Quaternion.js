@@ -39,41 +39,6 @@ function (
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
-	// taken from glmatrix
-	Quaternion.prototype.fromMatrix = function (m) {
-		m = m.data;
-
-		var fTrace = m[0] + m[4] + m[8];
-		var fRoot;
-
-		if ( fTrace > 0.0 ) {
-			// |w| > 1/2, may as well choose w > 1/2
-			fRoot = Math.sqrt(fTrace + 1.0);  // 2w
-			this.data[3] = 0.5 * fRoot;
-			fRoot = 0.5/fRoot;  // 1/(4w)
-			this.data[0] = (m[7]-m[5])*fRoot;
-			this.data[1] = (m[2]-m[6])*fRoot;
-			this.data[2] = (m[3]-m[1])*fRoot;
-		} else {
-			// |w| <= 1/2
-			var i = 0;
-			if ( m[4] > m[0] )
-				i = 1;
-			if ( m[8] > m[i*3+i] )
-				i = 2;
-			var j = (i+1)%3;
-			var k = (i+2)%3;
-
-			fRoot = Math.sqrt(m[i*3+i]-m[j*3+j]-m[k*3+k] + 1.0);
-			this.data[i] = 0.5 * fRoot;
-			fRoot = 0.5 / fRoot;
-			this.data[3] = (m[k*3+j] - m[j*3+k]) * fRoot;
-			this.data[j] = (m[j*3+i] + m[i*3+j]) * fRoot;
-			this.data[k] = (m[k*3+i] + m[i*3+k]) * fRoot;
-		}
-		return this;
-	};
-
 	/**
 	 * @static
 	 * @description Performs a component-wise addition between two vectors and stores the result in a separate vector.

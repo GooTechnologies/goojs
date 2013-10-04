@@ -121,5 +121,22 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 			testMatrix.toAngles(store);
 			expect(testVec).toEqual(store);
 		});
+
+		it("can be set from a quaternion", function() {
+			var quat = new Quaternion(20, 30, 40, 10).normalize();
+			var matrix = new Matrix3x3().copyQuaternion(quat);
+
+			expect(matrix.data[0]).toBeCloseTo(-2/3);
+			expect(matrix.data[3]).toBeCloseTo(2/15);
+			expect(matrix.data[6]).toBeCloseTo(11/15);
+
+			expect(matrix.data[1]).toBeCloseTo(2/3);
+			expect(matrix.data[4]).toBeCloseTo(-1/3);
+			expect(matrix.data[7]).toBeCloseTo(2/3);
+
+			expect(matrix.data[2]).toBeCloseTo(1/3);
+			expect(matrix.data[5]).toBeCloseTo(14/15);
+			expect(matrix.data[8]).toBeCloseTo(2/15);
+		});
 	});
 });
