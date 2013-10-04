@@ -50,7 +50,6 @@ define(function() {
 	 */
 	ConfigHandler.prototype.remove = function(/*ref, config*/) {};
 
-	
 	ConfigHandler.handlerClasses = {};
 
 	/**

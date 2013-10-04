@@ -60,5 +60,24 @@ define(["goo/math/MathUtils", "goo/math/Vector3"], function(MathUtils, Vector3) 
 			expect(c.y).toBeCloseTo(Math.sqrt(8));
 			expect(c.z).toBeCloseTo(Math.sqrt(8));
 		});
+
+		it("can check if power of two", function() {
+			expect(MathUtils.isPowerOfTwo(0)).toBeTruthy();
+			expect(MathUtils.isPowerOfTwo(8)).toBeTruthy();
+			expect(MathUtils.isPowerOfTwo(256)).toBeTruthy();
+			expect(MathUtils.isPowerOfTwo(13)).toBeFalsy();
+			expect(MathUtils.isPowerOfTwo(257)).toBeFalsy();
+			expect(MathUtils.isPowerOfTwo(255)).toBeFalsy();
+		});
+
+		it("can get nearest power of two", function() {
+			expect(MathUtils.nearestHigherPowerOfTwo(0)).toEqual(0);
+			expect(MathUtils.nearestHigherPowerOfTwo(8)).toEqual(8);
+			expect(MathUtils.nearestHigherPowerOfTwo(6)).toEqual(8);
+			expect(MathUtils.nearestHigherPowerOfTwo(10)).toEqual(16);
+			expect(MathUtils.nearestHigherPowerOfTwo(255)).toEqual(256);
+			expect(MathUtils.nearestHigherPowerOfTwo(256)).toEqual(256);
+			expect(MathUtils.nearestHigherPowerOfTwo(257)).toEqual(512);
+		});
 	});
 });

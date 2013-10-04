@@ -34,17 +34,24 @@ if os.name == 'nt':
 else:
     command = 'cake'
 subprocess.check_call([command, 'minify'])
+subprocess.check_call([command, '-i', 'requireLib', 'minify'])
 subprocess.check_call([command, 'jsdoc'])
+subprocess.check_call([command, 'visualtoc'])
 
 goo_root = work_dir + '/goo'
 
-prepend(goo_root + '/goo.js', '// Version ' + version + '\n')
+header = '// Version ' + version + '\n'
+prepend(goo_root + '/goo.js', header)
+prepend(goo_root + '/goo-require.js', header)
 
 release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
 print 'Creating release in', release_dir
 if not os.path.isdir(release_dir):
 	os.makedirs(release_dir)
-shutil.copy('minified/goo/goo.js', release_dir)
 shutil.copytree('minified/goo/lib', release_dir + '/lib')
+shutil.copy('minified/goo/goo.js', release_dir + '/lib/goo.js')
+shutil.copy('minified/goo/goo-require.js', release_dir + '/lib/goo-require.js')
 shutil.copytree('goojs-jsdoc', release_dir + '/docs')
+shutil.copytree('visual-test', release_dir + '/visual-test')
 shutil.copy('COPYING', release_dir + '/COPYING')
+shutil.copy('CHANGES', release_dir + '/CHANGES')

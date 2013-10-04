@@ -64,11 +64,11 @@ function(
 		var diff = rightHand - leftHand;
 
 		if (Math.abs(diff) <= this.tolerance) {
-			if (this.equalEvent) { fsm.send(this.equalEvent.channel); }
-		} else if (diff < 0) {
-			if (this.lessThanEvent) { fsm.send(this.lessThanEvent.channel); }
+			if (this.equalEvent.channel) { fsm.send(this.equalEvent.channel); }
+		} else if (diff > 0) {
+			if (this.lessThanEvent.channel) { fsm.send(this.lessThanEvent.channel); }
 		} else {
-			if (this.greaterThanEvent) { fsm.send(this.greaterThanEvent.channel); }
+			if (this.greaterThanEvent.channel) { fsm.send(this.greaterThanEvent.channel); }
 		}
 	};
 

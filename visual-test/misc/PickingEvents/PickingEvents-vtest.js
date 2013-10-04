@@ -118,7 +118,7 @@ require([
 		var lastDepth;
 
 		goo.addEventListener('mousemove', function(evt) {
-			if(evt.entity && lastEntity !== evt.entity) {
+			if(evt.entity && lastEntity !== evt.entity) {
 				console.log('Entity is '+evt.entity+' at '+evt.depth);
 				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
 				swapChannels(color);
@@ -131,7 +131,7 @@ require([
 		});
 		goo.addEventListener('click', function(evt) {
 			console.log('Entity is '+evt.entity+' at '+evt.depth);
-			if(evt.entity) {
+			if(evt.entity) {
 				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
 				swapChannels(color);
 			}

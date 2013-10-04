@@ -4,6 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
 	'goo/renderer/Camera',
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
@@ -18,6 +19,7 @@ define([
 		MeshRendererComponent,
 		CameraComponent,
 		LightComponent,
+		ScriptComponent,
 		Camera,
 		Light,
 		Material,
@@ -95,12 +97,19 @@ define([
 		EntityUtils.traverse = function (entity, callback, level) {
 			level = level !== undefined ? level : 0;
 
-			callback(entity, level);
-
-			for (var j=0;j<entity.transformComponent.children.length;j++) {
-				var child = entity.transformComponent.children[j];
-				EntityUtils.traverse(child.entity, callback, level + 1);
+			if (callback(entity, level) !== false) {
+				for (var j=0;j<entity.transformComponent.children.length;j++) {
+					var child = entity.transformComponent.children[j];
+					EntityUtils.traverse(child.entity, callback, level + 1);
+				}
 			}
+		};
+
+		EntityUtils.getRoot = function (entity) {
+			while (entity.transformComponent.parent) {
+				entity = entity.transformComponent.parent;
+			}
+			return entity;
 		};
 
 		EntityUtils.updateWorldTransform = function (transformComponent) {
@@ -154,6 +163,8 @@ define([
 					entity.name = arg;
 				} else if (Array.isArray(arg) && arg.length === 3) {
 					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+				} else if (typeof arg.run === 'function') {
+					entity.setComponent(new ScriptComponent(arg));
 				}
 			}
 

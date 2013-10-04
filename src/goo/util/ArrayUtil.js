@@ -45,8 +45,19 @@ define([], function() {
 	};
 
 
-	ArrayUtil.remove = function(array, value) {
-		var idx = array.indexOf(value);
+	ArrayUtil.remove = function(array, value, equals) {
+		var idx = -1;
+		if (typeof equals === 'function') {
+			for (var i = 0; i < array.length; i++) {
+				if (equals(array[i], value)) {
+					idx = i;
+					break;
+				}
+			}
+		}
+		else {
+			idx = array.indexOf(value);
+		}
 		if (idx > -1) {
 			array.splice(idx, 1);
 		}

@@ -29,17 +29,20 @@ define(['goo/math/Vector2'],
 
 		this.anisotropy = options.anisotropy !== undefined ? options.anisotropy : 1;
 
-		this.offset = new Vector2(0, 0);
-		this.repeat = new Vector2(1, 1);
-
 		this.format = options.format !== undefined ? options.format : 'RGBA';
 		this.type = options.type !== undefined ? options.type : 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
+		this.offset = new Vector2(0, 0);
+		this.repeat = new Vector2(1, 1);
+
+		this.generateMipmaps = options.generateMipmaps !== undefined ? options.generateMipmaps : false;
+		this.premultiplyAlpha = options.premultiplyAlpha !== undefined ? options.premultiplyAlpha : false;
+		this.unpackAlignment = options.unpackAlignment !== undefined ? options.unpackAlignment : 1;
+		this.flipY = options.flipY !== undefined ? options.flipY : true;
+
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
-
-		this.generateMipmaps = false; // TODO: fix mipmap case
 	}
 
 	RenderTarget.prototype.clone = function () {
@@ -49,21 +52,24 @@ define(['goo/math/Vector2'],
 		tmp.wrapT = this.wrapT;
 
 		tmp.magFilter = this.magFilter;
-		tmp.anisotropy = this.anisotropy;
-
 		tmp.minFilter = this.minFilter;
 
-		tmp.offset.copy(this.offset);
-		tmp.repeat.copy(this.repeat);
+		tmp.anisotropy = this.anisotropy;
 
 		tmp.format = this.format;
 		tmp.type = this.type;
 		tmp.variant = this.variant;
 
-		tmp.depthBuffer = this.depthBuffer;
-		tmp.stencilBuffer = this.stencilBuffer;
+		tmp.offset.copy(this.offset);
+		tmp.repeat.copy(this.repeat);
 
 		tmp.generateMipmaps = this.generateMipmaps;
+		tmp.premultiplyAlpha = this.premultiplyAlpha;
+		tmp.unpackAlignment = this.unpackAlignment;
+		tmp.flipY = this.flipY;
+
+		tmp.depthBuffer = this.depthBuffer;
+		tmp.stencilBuffer = this.stencilBuffer;
 
 		return tmp;
 	};

@@ -430,7 +430,6 @@ function (
 	};
 
 	/**
-	 * @static
 	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the
 	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
 	 *              root operation.
@@ -457,7 +456,6 @@ function (
 	};
 
 	/**
-	 * @static
 	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - this)•(rhs - this));".
 	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {Float} Distance.

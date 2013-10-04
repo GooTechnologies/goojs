@@ -110,19 +110,65 @@ function (
 	/**
 	 * Add an entity to the world
 	 *
-	 * @param entity
+	 * @param {Entity} entity Entity to add
+	 * @param {boolean} [recursive=true] If entity hierarchy should be added recursively
 	 */
-	World.prototype.addEntity = function (entity) {
-		this._addedEntities.push(entity);
+	World.prototype.addEntity = function (entity, recursive) {
+		if (this._addedEntities.indexOf(entity) === -1) {
+			this._addedEntities.push(entity);
+		}
+
+		if (entity.transformComponent && (recursive === undefined || recursive === true)) {
+			var children = entity.transformComponent.children;
+			for (var i = 0; i < children.length; i++) {
+				this.addEntity(children[i].entity, recursive);
+			}
+		}
 	};
 
 	/**
 	 * Remove an entity from the world
 	 *
-	 * @param entity
+	 * @param {Entity} entity Entity to remove
+	 * @param {boolean} [recursive=true] If entity hierarchy should be removed recursively
 	 */
-	World.prototype.removeEntity = function (entity) {
-		this._removedEntities.push(entity);
+	World.prototype.removeEntity = function (entity, recursive) {
+		if (this._removedEntities.indexOf(entity) === -1) {
+			this._removedEntities.push(entity);
+		}
+
+		var transformComponent = entity.transformComponent;
+		if (transformComponent.parent) {
+			transformComponent.parent.detachChild(transformComponent);
+			transformComponent.parent = null;
+		}
+
+		if (recursive === false) {
+			var children = transformComponent.children;
+			for (var i = 0; i < children.length; i++) {
+				children[i].parent = null;
+			}
+
+			transformComponent.children = [];
+		} else {
+			var children = transformComponent.children;
+			for (var i = 0; i < children.length; i++) {
+				this._recursiveRemoval(children[i].entity, recursive);
+			}
+		}
+	};
+
+	World.prototype._recursiveRemoval = function (entity, recursive) {
+		if (this._removedEntities.indexOf(entity) === -1) {
+			this._removedEntities.push(entity);
+		}
+
+		if (entity.transformComponent && (recursive === undefined || recursive === true)) {
+			var children = entity.transformComponent.children;
+			for (var i = 0; i < children.length; i++) {
+				this._recursiveRemoval(children[i].entity, recursive);
+			}
+		}
 	};
 
 	/**

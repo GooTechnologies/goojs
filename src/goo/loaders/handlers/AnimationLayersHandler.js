@@ -31,138 +31,109 @@ define([
 ) {
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._objects = {};
 	}
 
 	AnimationLayersHandler.prototype = Object.create(ConfigHandler);
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
-	AnimationLayersHandler.prototype._create = function(animationConfig) {
-
-		// The animation layers are stored in the map called layers.
-		var layersConfig = animationConfig.layers;
-
+	AnimationLayersHandler.prototype.update = function(ref, config) {
+		var object = this._objects[ref] || this._create(ref);
 		var promises = [];
-		promises.push(this._parseLayer(layersConfig.DEFAULT));
 
-		for (var layerKey in layersConfig) {
-			var layerConfig = layersConfig[layerKey];
-			if (layerKey !== 'DEFAULT') {
-				promises.push(this._parseLayer(layerConfig));
+		if (config.layers instanceof Array) {
+			for (var i = 0; i < config.layers.length; i++) {
+				var layerConfig = config.layers[i];
+				promises.push(this._parseLayer(layerConfig, object[i]));
+			}
+		} else {
+			var i = 1;
+			promises.push(this._parseLayer(config.layers.DEFAULT, object[0]));
+			for (var key in config.layers) {
+				var layerConfig = config.layers[key];
+				if (key !== 'DEFAULT') {
+					promises.push(this._parseLayer(layerConfig, object[i++]));
+				}
 			}
 		}
-		return RSVP.all(promises).then(function(layers) {
-			return layers;
-		});
+		return RSVP.all(promises);
 	};
 
-	AnimationLayersHandler.prototype._parseLayer = function(layerConfig) {
+	AnimationLayersHandler.prototype._create = function(ref) {
+		return this._objects[ref] = [];
+	};
+
+	AnimationLayersHandler.prototype._parseLayer = function(layerConfig, layer) {
 		var that = this;
 
-		var promises = [];
-		var layer = new AnimationLayer(layerConfig.name);
-
-		if (layerConfig.blendWeight != null) {
+		if (!layer) {
+			layer = new AnimationLayer(layerConfig.name);
 			layer._layerBlender = new LayerLERPBlender();
-			layer._layerBlender._blendWeight = layerConfig.blendWeight;
+		} else {
+			layer._name = layerConfig.name;
+		}
+		layer._layerBlender._blendWeight = layerConfig.blendWeight || 1.0;
+
+		var promises = [];
+
+		function getState(key, ref) {
+			return that.getConfig(ref).then(function(config) {
+				return that.updateObject(ref, config, that.options).then(function(state) {
+					return {
+						state: state,
+						ref: ref,
+						config: config,
+						key: key
+					};
+				});
+			});
 		}
 
-		var parseState = function(state) {
-			return promises.push(that._parseClipSource(stateConfig.clipSource).then(function(source) {
-				return state._sourceTree = source;
-			}));
-		};
-
 		for (var stateKey in layerConfig.states) {
-			var stateConfig = layerConfig.states[stateKey];
-			var state = new SteadyState(stateConfig.name);
-			layer._steadyStates[stateKey] = state;
-			parseState(state);
+			promises.push(getState(stateKey, layerConfig.states[stateKey].stateRef));
+		}
 
-			if (stateConfig.transitions != null) {
-				for (var transitionKey in stateConfig.transitions) {
-					var transitionConfig = stateConfig.transitions[transitionKey];
+		return RSVP.all(promises).then(function(stateObjects) {
+			layer._steadyStates = {};
+			for (var i = 0; i < stateObjects.length; i++) {
+				var stateObject = stateObjects[i];
+				layer._steadyStates[stateObject.key] = stateObject.state;
+			}
+			for(var i = 0; i < stateObjects.length; i++) {
+				var transitions = stateObjects[i].config.transitions;
+				var state = stateObjects[i].state;
+				if (transitions) {
+					for (var key in transitions) {
+						var transitionConfig = transitions[key];
 
-					if ((layer._steadyStates[transitionKey] != null) || transitionKey === '*') {
-						var transition = _.clone(transitionConfig);
-						layer._steadyStates[stateKey]._transitions[transitionKey] = transition;
-						if (layer._transitionStates[transition.type] == null) {
-							layer._transitionStates[transition.type] = this._getTransitionByType(transition.type);
+						if (layer._steadyStates[key] || key === '*') {
+							var transition = _.clone(transitionConfig);
+							state._transitions[key] = transition;
+							if (!layer._transitionStates[transition.type]) {
+								layer._transitionStates[transition.type] = that._getTransitionByType(transition.type);
+							}
 						}
 					}
 				}
 			}
-		}
-
-		if (layerConfig.transitions != null) {
-			for (var transitionKey in layerConfig.transitions) {
-				var transitionConfig = layerConfig.transitions[transitionKey];
-				if ((layer._steadyStates[transitionKey] != null) || transitionKey === '*') {
-					var transition = _.clone(transitionConfig);
-					layer._transitions[transitionKey] = transition;
-					if (layer._transitionStates[transition.type] == null) {
-						layer._transitionStates[transition.type] = this._getTransitionByType(transition.type);
+		}).then(function() {
+			if (layerConfig.transitions) {
+				for (var transitionKey in layerConfig.transitions) {
+					var transitionConfig = layerConfig.transitions[transitionKey];
+					if (layer._steadyStates[transitionKey] || transitionKey === '*') {
+						var transition = _.clone(transitionConfig);
+						layer._transitions[transitionKey] = transition;
+						if (!layer._transitionStates[transition.type]) {
+							layer._transitionStates[transition.type] = that._getTransitionByType(transition.type);
+						}
 					}
 				}
 			}
-		}
-
-		return RSVP.all(promises).then(function() {
-			if (layerConfig.defaultState != null) {
+			if (layerConfig.defaultState) {
 				layer.setCurrentStateByName(layerConfig.defaultState);
 			}
 			return layer;
 		});
-	};
-
-	AnimationLayersHandler.prototype._parseClipSource = function(cfg) {
-		//var promises, source;
-		var that = this;
-
-		switch (cfg.type) {
-			case 'Clip':
-				return this.getConfig(cfg.clipRef).then(function(config) {
-					return that.updateObject(cfg.clipRef, config, that.options).then(function(clip) {
-						var clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
-
-						if (cfg.loopCount) {
-							clipSource._clipInstance['_loopCount'] = cfg.loopCount;
-						}
-						if (cfg.timeScale) {
-							clipSource._clipInstance['_timeScale'] = cfg.timeScale;
-						}
-
-						return clipSource;
-					});
-				});
-			case 'Managed':
-				var source = new ManagedTransformSource();
-				if (cfg.clipRef != null) {
-					return this.getConfig(cfg.clipRef).then(function(config) {
-						return that.updateObject(cfg.clipRef, config, that.options);
-					}).then(function(clip) {
-						return source.initFromClip(clip, cfg.filter, cfg.channels);
-					});
-				} else {
-					return PromiseUtil.createDummyPromise(source);
-				}
-				break;
-			case 'Lerp':
-				var promises = [this._parseClipSource(cfg.clipSourceA), this._parseClipSource(cfg.clipSourceB)];
-				return RSVP.all(promises).then(function(clipSources) {
-					var source = new BinaryLERPSource(clipSources[0], clipSources[1]);
-					if (cfg.blendWeight) {
-						source.blendWeight = cfg.blendWeight;
-					}
-					return source;
-				});
-			case 'Frozen':
-				return this._parseClipSource(cfg.clipSource).then(function(clipSource) {
-					return new FrozenClipSource(clipSource, cfg.frozenTime || 0.0);
-				});
-			default:
-				console.error('Unable to parse clip source');
-				return PromiseUtil.createDummyPromise();
-		}
 	};
 
 	AnimationLayersHandler.prototype._getTransitionByType = function(type) {
@@ -177,11 +148,6 @@ define([
 				console.log('Defaulting to frozen transition type');
 				return new FrozenTransitionState();
 		}
-	};
-
-	AnimationLayersHandler.prototype.update = function(ref, config) {
-		var layers = this._create(config);
-		return PromiseUtil.createDummyPromise(layers);
 	};
 
 	return AnimationLayersHandler;

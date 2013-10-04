@@ -1,20 +1,16 @@
+/*jshint bitwise: false */
 define([],
 /** @lends */
 function () {
 	"use strict";
-
-	/* ====================================================================== */
 
 	/**
 	 * @class A collection of useful math-related functions, constants and helpers.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
-
 	function MathUtils() {
 	}
-
-	/* ====================================================================== */
 
 	/** @type {number} */
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
@@ -27,31 +23,23 @@ function () {
 	/** @type {number} */
 	MathUtils.EPSILON = 0.0000001;
 
-	/* ====================================================================== */
-
 	/**
 	 * Converts an angle from degrees to radians.
 	 * @param {Float} degrees Angle in degrees.
 	 * @return {Float} Angle in radians.
 	 */
-
 	MathUtils.radFromDeg = function (degrees) {
 		return degrees * MathUtils.DEG_TO_RAD;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Converts an angle from radians to degrees.
 	 * @param {Float} radians Angle in radians.
 	 * @return {Float} Angle in degrees.
 	 */
-
 	MathUtils.degFromRad = function (radians) {
 		return radians * MathUtils.RAD_TO_DEG;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Linearly interpolates between two values. Extrapolates if factor is smaller than zero or greater than one.
@@ -60,7 +48,6 @@ function () {
 	 * @param {number} end End value.
 	 * @return {number} Interpolated value.
 	 */
-
 	MathUtils.lerp = function (factor, start, end) {
 		if (start === end) {
 			return start;
@@ -68,8 +55,6 @@ function () {
 			return start + (end - start) * factor;
 		}
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Clamps a value to a given interval. The interval is defined by min and max where min should be smaller than max. If min is greater
@@ -79,7 +64,6 @@ function () {
 	 * @param {number} max Upper bound of interval (inclusive).
 	 * @return {number} Clamped value.
 	 */
-
 	MathUtils.clamp = function (value, min, max) {
 		if (min < max) {
 			return value < min ? min : value > max ? max : value;
@@ -87,8 +71,6 @@ function () {
 			return value < max ? max : value > min ? min : value;
 		}
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Calculates the positive modulo
@@ -102,31 +84,23 @@ function () {
 		return wrappedValue;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Computes a value on the c1-continuous cubic s-curve "y = -2x^3 + 3x^2".
 	 * @param {number} x Input value in the range between zero and one.
 	 * @return {number} Value on curve.
 	 */
-
 	MathUtils.scurve3 = function (x) {
 		return (-2.0 * x + 3.0) * x * x;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Computes a value on the c2-continuous quintic s-curve "y = 6x^5 - 15x^4 + 10x^3".
+	 * Computes a value on the c2-continuous quintic s-curve "y = 6x^5 - 15x^4 + 10x^3".
 	 * @param {number} x Input value in the range between zero and one.
 	 * @return {number} Value on curve.
 	 */
-
 	MathUtils.scurve5 = function (x) {
 		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Converts a point from Spherical coordinates to Cartesian (using positive Y as up) and stores the results in the store var.
@@ -135,7 +109,6 @@ function () {
 	 * @param {number} polar
 	 * @param {Vector3} store
 	 */
-
 	MathUtils.sphericalToCartesian = function (radius, azimuth, polar, store) {
 		var a = radius * Math.cos(polar);
 
@@ -144,16 +117,14 @@ function () {
 		store.z = a * Math.sin(azimuth);
 	};
 
-
 	/**
-	 * @static
-	 * @description Converts a point from Cartesian coordinates to Spherical to Cartesian (using positive Y as up) and stores the results in the store var.
+	 * Converts a point from Cartesian coordinates to Spherical to Cartesian (using positive Y as up) and stores the results in the store var.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {Vector3} store
 	 */
-	MathUtils.cartesianToSpherical = function(x,y,z, store) {
+	MathUtils.cartesianToSpherical = function (x,y,z, store) {
 		var a = Math.sqrt(x*x + z*z);
 		store.x = Math.sqrt(x*x+y*y+z*z); // radius
 		store.y = Math.atan2(z,x); // azimuth
@@ -161,8 +132,7 @@ function () {
 	};
 
 	/**
-	 * @static
-	 * @description Computes the normal of a given triangle
+	 * Computes the normal of a given triangle
 	 * @param {number} P.x
 	 * @param {number} P.y
 	 * @param {number} P.z
@@ -174,7 +144,7 @@ function () {
 	 * @param {number} R.z
 	 * @return {number[]} The triangle's normal
 	 */
-	MathUtils.getTriangleNormal = function(p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
+	MathUtils.getTriangleNormal = function (p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;
 		var uy = p2y - p1y;
 		var uz = p2z - p1z;
@@ -188,6 +158,24 @@ function () {
 		var nz = ux * vy - uy * vx;
 
 		return [nx, ny, nz];
+	};
+
+	/**
+	 * Checks if a value is power of two
+	 * @param {number} value Number to check for power of two
+	 * @returns {boolean} true if value is power of two
+	 */
+	MathUtils.isPowerOfTwo = function (value) {
+		return (value & (value - 1)) === 0;
+	};
+
+	/**
+	 * Gets the nearest higher power of two for a value
+	 * @param {number} value Number to get the nearest power of two from
+	 * @returns {number} Nearest power of two 
+	 */
+	MathUtils.nearestHigherPowerOfTwo = function (value) {
+		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
 	};
 
 	return MathUtils;

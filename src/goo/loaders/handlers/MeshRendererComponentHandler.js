@@ -24,7 +24,8 @@ define([
 			materialRefs: [],
 			cullMode: 'Dynamic',
 			castShadows: false,
-			receiveShadows: false
+			receiveShadows: false,
+			hidden: false
 		});
 	};
 
@@ -42,7 +43,7 @@ define([
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 		var materialRefs = config.materialRefs;
 		if (!materialRefs || materialRefs.length === 0) {
-			console.log("No material refs");
+			console.log('No material refs in config for', entity);
 			promise = pu.createDummyPromise([]);
 		} else {
 			var promises = [];
@@ -72,7 +73,7 @@ define([
 			component.materials = materials;
 			for (key in config) {
 				value = config[key];
-				if (key !== 'materials' && component.hasOwnProperty(key)) {
+				if (key !== 'materials' && key !== 'hidden' && component.hasOwnProperty(key)) {
 					component[key] = _.clone(value);
 				}
 			}

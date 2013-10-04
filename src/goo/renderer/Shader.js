@@ -208,7 +208,7 @@ function (
 			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
-		var defValue = shaderInfo.material.uniforms[name] || this.uniforms[name];
+		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
 
 		if (typeof defValue === 'string') {
 			var callback = this.currentCallbacks[name];
@@ -220,24 +220,17 @@ function (
 					var maps = shaderInfo.material.getTexture(slot.mapping);
 					if (maps instanceof Array) {
 						var arr = [];
+						slot.index = [];
 						for (var i = 0; i < maps.length; i++) {
+							slot.index.push(this.textureIndex);
 							arr.push(this.textureIndex++);
 						}
 						mapping.call(arr);
 					} else {
-						mapping.call(this.textureIndex);
+						slot.index = this.textureIndex;
+						mapping.call(this.textureIndex++);
 					}
-					// mapping.call(slot.index);
-					this.textureIndex += 1;
 				}
-
-				// for (var i = 0; i < this.textureSlots.length; i++) {
-					// var slot = this.textureSlots[i];
-					// if (slot.name === name) {
-						// mapping.call(i);
-						// break;
-					// }
-				// }
 			}
 		} else {
 			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;

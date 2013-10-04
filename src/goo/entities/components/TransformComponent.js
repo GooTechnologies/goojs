@@ -72,7 +72,7 @@ function (
 	TransformComponent.prototype.addTranslation = function () {
 		if(arguments.length === 3) {
 			this.transform.translation.add(arguments);
-		} else { 
+		} else {
 			this.transform.translation.add(arguments[0]);
 		}
 		this._dirty = true;

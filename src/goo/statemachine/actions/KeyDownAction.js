@@ -29,7 +29,7 @@ function(
 		this.everyFrame = true;
 		this.eventToEmit = { channel: settings.transitions.keydown };
 		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
+		this.key = (typeof key === 'number') ? key : FSMUtil.getKey(key);
 		this.keyVariable = settings.keyVariable;
 	};
 

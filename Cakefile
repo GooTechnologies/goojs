@@ -95,9 +95,9 @@ task 'jsdoc',
 		console.log 'template: ', template
 
 		if template == 'json'
-			command = 'tools/generate_jsdoc_json.sh'
+			command = path.resolve('tools', 'generate_jsdoc_json.sh')
 		else
-			command = 'tools/generate_jsdoc.sh'
+			command = path.resolve('tools', 'generate_jsdoc.sh')
 
 		runCommand command
 		
