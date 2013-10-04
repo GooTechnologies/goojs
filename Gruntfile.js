@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		requirejs: {
-			dist: {
+			build: {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
 					baseUrl: 'src/',
@@ -60,7 +60,7 @@ module.exports = function(grunt) {
 			}
 		},
 		wrap: {
-			basic: {
+			build: {
 				src: ['out/minified/goo.js'],
 				dest: './out/goo.js',
 				options: {
