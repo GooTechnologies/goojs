@@ -1,6 +1,6 @@
 fs = require('fs')
 path = require('path')
-exec = require('child_process').exec
+child_process = require('child_process')
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
 wrench = require('wrench')
@@ -8,14 +8,20 @@ rimraf = require('rimraf')
 
 # Run a command and exit with an error message if it fails.
 runCommand = (cmd, callback) ->
-	exec cmd, (error, stdout, stderr) ->
-		if error != null
-			console.log stdout
-			console.log stderr
+	args = cmd.split(/\s+/)
+	executable = args.shift()
+	child = child_process.spawn(executable, args);
+
+	child.stdout.on 'data', (data) ->
+		process.stdout.write data
+	child.stderr.on 'data', (data) ->
+		process.stdout.write data
+	child.on 'close', (code) ->
+		if code == 0
+			callback?()
+		else
 			console.log 'Command failed: ' + cmd
 			process.exit(1)
-		if callback
-			callback()
 
 endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 
