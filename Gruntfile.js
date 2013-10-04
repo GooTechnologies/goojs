@@ -19,6 +19,7 @@ function createMainFile() {
 createMainFile();
 
 module.exports = function(grunt) {
+	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
 
 	// Project configuration.
 	grunt.initConfig({
@@ -61,10 +62,10 @@ module.exports = function(grunt) {
 		wrap: {
 			basic: {
 				src: ['out/minified/goo.js'],
-				dest: 'out/',
+				dest: './out/goo.js',
 				options: {
 					wrapper: [
-						'/* Goo Engine <%= pkg.version %>\n' +
+						'/* Goo Engine ' + engineVersion + '\n' +
 						' * Copyright 2013 Goo Technologies AB\n' +
 						' */\n' +
 						'(function(window, undefined) {',
