@@ -47,21 +47,21 @@ require([
 
 	function anisotropicDemo(goo) {
 		var boxEntity1 = createBoxEntity(goo, 3);
-		boxEntity1.transformComponent.setTranslation(0, 0, 0);
+		boxEntity1.transform.setTranslation(0, 0, 0);
 
 		var boxEntity2 = createBoxEntity(goo, 2);
-		boxEntity2.transformComponent.setTranslation(3, 0, 0);
-		boxEntity1.transformComponent.attachChild(boxEntity2.transformComponent);
+		boxEntity2.transform.setTranslation(3, 0, 0);
+		boxEntity1.attachChild(boxEntity2);
 
 		var boxEntity3 = createBoxEntity(goo, 1);
-		boxEntity3.transformComponent.setTranslation(2, 0, 0);
-		boxEntity2.transformComponent.attachChild(boxEntity3.transformComponent);
+		boxEntity3.transform.setTranslation(2, 0, 0);
+		boxEntity2.attachChild(boxEntity3);
 
 		boxEntity1.addToWorld();
 		boxEntity1.setComponent(new ScriptComponent({
 			run: function (entity) {
 				var t = entity._world.time;
-				entity.transformComponent.setRotation(t, 0, 0);
+				entity.transform.setRotation(t, 0, 0);
 			}
 		}));
 
@@ -80,8 +80,8 @@ require([
 		var light = new DirectionalLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(1, 10, 1);
-		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+		lightEntity.transform.translation.set(1, 10, 1);
+		lightEntity.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 		lightEntity.addToWorld();
 
 		var camera = new Camera(45, 1, 0.1, 1000);
@@ -94,11 +94,16 @@ require([
 			spherical: new Vector3(15, Math.PI / 2, 0.3)
 		}));
 		cameraEntity.setComponent(scripts);
+
+		cameraEntity.addComponent(CameraComponent);
+		cameraEntity.addComponent(new CameraComponent(camera));
+
 	}
 
 	function createBoxEntity(goo, size) {
 		var meshData = ShapeCreator.createBox(size, size, size);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		TextureCreator.clearCache();
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
@@ -111,7 +116,6 @@ require([
 	function init() {
 		var goo = new GooRunner({
 			showStats: true,
-			toolMode: true,
 			logo: 'bottomleft'
 		});
 		goo.renderer.domElement.id = 'goo';

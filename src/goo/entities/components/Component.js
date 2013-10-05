@@ -12,6 +12,14 @@ define(
 		 * @default
 		 */
 		this.enabled = true;
+
+		/** If it is allowed to have more than one instance of this component on the same Entity
+		 * @type {boolean}
+		 * @default
+		 */
+		this.allowMultiple = false;
+
+		this.ownerEntity = null;
 	}
 
 	return Component;

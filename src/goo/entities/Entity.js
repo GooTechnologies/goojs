@@ -1,6 +1,10 @@
-define(
+define([
+	'goo/math/Transform'
+],
 /** @lends */
-function () {
+function (
+	Transform
+) {
 	"use strict";
 
 	/**
@@ -17,6 +21,28 @@ function () {
 			writable : false
 		});
 		this.name = name !== undefined ? name : 'Entity_' + this.id;
+
+		/** Parent transformcomponent in the "scene graph"
+		 * @type {TransformComponent}
+		 * @default
+		 */
+		this.parent = null;
+		/**
+		 * Child transformcomponents in the "scenegraph"
+		 * @type {TransformComponent[]}
+		 */
+		this.children = [];
+
+		/** @type {Transform} */
+		this.transform = new Transform();
+
+		/** The entity's transform in world space.
+		 * Read only. Automatically updated.
+		 * @type {Transform} */
+		this.worldTransform = new Transform();
+
+		this._dirty = true;
+		this._updated = false;
 
 		/** Set to true to skip rendering (move to meshrenderercomponent)
 		 * @type {boolean}
@@ -47,13 +73,12 @@ function () {
 		return type.charAt(0).toLowerCase() + type.substr(1);
 	}
 
-	/**
-	 * Set component of a certain type on entity. Existing component of the same type will be overwritten.
-	 *
-	 * @param {Component} component Component to set on the entity
-	 */
-	Entity.prototype.setComponent = function (component) {
-		if (this.hasComponent(component.type)) {
+	Entity.prototype.addComponent = function (component) {
+		if (component instanceof Function) {
+			component = new component();
+		}
+		if (!component.allowMultiple && this.hasComponent(component.type)) {
+			// TODO: Overwrite or reject?
 			for (var i = 0; i < this._components.length; i++) {
 				if (this._components[i].type === component.type) {
 					this._components[i] = component;
@@ -65,13 +90,21 @@ function () {
 		}
 		this[getTypeAttributeName(component.type)] = component;
 
-		if (component.type === 'TransformComponent') {
-			component.entity = this;
-		}
+		component.ownerEntity = this;
 
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
+	};
+
+	/**
+	 * Set component of a certain type on entity. Existing component of the same type will be overwritten.
+	 *
+	 * @param {Component} component Component to set on the entity
+	 * @deprecated Since v0.5.x. Should now use addComponent
+	 */
+	Entity.prototype.setComponent = function (component) {
+		this.addComponent(component);
 	};
 
 	/**
@@ -114,6 +147,72 @@ function () {
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'removedComponent');
 		}
+	};
+
+	/**
+	 * Mark the component for updates of world transform
+	 */
+	Entity.prototype.setUpdated = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Attach a child entity to this entity
+	 *
+	 * @param {Entity} childEntity child entity to attach
+	 */
+	Entity.prototype.attachChild = function (childEntity) {
+		var entity = this;
+		while(entity) {
+			if (entity === childEntity) {
+				console.warn('attachChild: An object can\'t be added as a descendant of itself.');
+				return;
+			}
+			entity = entity.parent;
+		}
+		if (childEntity.parent) {
+			childEntity.parent.detachChild(childEntity);
+		}
+		childEntity.parent = this;
+		this.children.push(childEntity);
+	};
+
+	/**
+	 * Detach a child transform from this component tree
+	 *
+	 * @param {Entity} childComponent child transform component to detach
+	 */
+	Entity.prototype.detachChild = function (childEntity) {
+		if (childEntity === this) {
+			console.warn('attachChild: An object can\'t be removed from itself.');
+			return;
+		}
+
+		var index = this.children.indexOf(childEntity);
+		if (index !== -1) {
+			childEntity.parent = null;
+			this.children.splice(index, 1);
+		}
+	};
+
+	/**
+	 * Update target transform contained by this component
+	 */
+	Entity.prototype.updateTransform = function () {
+		this.transform.update();
+	};
+
+	/**
+	 * Update this transform components world transform (resulting transform considering parent transformations)
+	 */
+	Entity.prototype.updateWorldTransform = function () {
+		if (this.parent) {
+			this.worldTransform.multiply(this.parent.worldTransform, this.transform);
+		} else {
+			this.worldTransform.copy(this.transform);
+		}
+		this._dirty = false;
+		this._updated = true;
 	};
 
 	/**
