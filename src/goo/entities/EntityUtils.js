@@ -1,5 +1,4 @@
 define([
-	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
@@ -14,7 +13,6 @@ define([
 ],
 	/** @lends */
 	function (
-		TransformComponent,
 		MeshDataComponent,
 		MeshRendererComponent,
 		CameraComponent,
@@ -41,9 +39,7 @@ define([
 
 			for (var i=0;i<entity._components.length;i++) {
 				var component = entity._components[i];
-				if (component instanceof TransformComponent) {
-					newEntity.transformComponent.transform.copy(component.transform);
-				} else if (component instanceof MeshDataComponent) {
+				if (component instanceof MeshDataComponent) {
 					var meshDataComponent = new MeshDataComponent(component.meshData);
 					meshDataComponent.modelBound = new component.modelBound.constructor();
 					if (component.currentPose) {
@@ -60,10 +56,10 @@ define([
 					newEntity.setComponent(component);
 				}
 			}
-			for (var j=0;j<entity.transformComponent.children.length;j++) {
-				var child = entity.transformComponent.children[j];
-				var clonedChild = cloneEntity(world, child.entity, settings);
-				newEntity.transformComponent.attachChild(clonedChild.transformComponent);
+			for (var j=0;j<entity.children.length;j++) {
+				var child = entity.children[j];
+				var clonedChild = cloneEntity(world, child, settings);
+				newEntity.attachChild(clonedChild);
 			}
 
 			if (settings.callback) {
@@ -98,25 +94,25 @@ define([
 			level = level !== undefined ? level : 0;
 
 			if (callback(entity, level) !== false) {
-				for (var j=0;j<entity.transformComponent.children.length;j++) {
-					var child = entity.transformComponent.children[j];
-					EntityUtils.traverse(child.entity, callback, level + 1);
+				for (var j=0;j<entity.children.length;j++) {
+					var child = entity.children[j];
+					EntityUtils.traverse(child, callback, level + 1);
 				}
 			}
 		};
 
 		EntityUtils.getRoot = function (entity) {
-			while (entity.transformComponent.parent) {
-				entity = entity.transformComponent.parent;
+			while (entity.parent) {
+				entity = entity.parent;
 			}
 			return entity;
 		};
 
-		EntityUtils.updateWorldTransform = function (transformComponent) {
-			transformComponent.updateWorldTransform();
+		EntityUtils.updateWorldTransform = function (entity) {
+			entity.updateWorldTransform();
 
-			for (var i = 0; i < transformComponent.children.length; i++) {
-				EntityUtils.updateWorldTransform(transformComponent.children[i]);
+			for (var i = 0; i < entity.children.length; i++) {
+				EntityUtils.updateWorldTransform(entity.children[i]);
 			}
 		};
 
@@ -158,11 +154,11 @@ define([
 					var cameraComponent = new CameraComponent(arg);
 					entity.setComponent(cameraComponent);
 				} else if (arg instanceof Transform) {
-					entity.transformComponent.transform = arg;
+					entity.transform = arg;
 				} else if (typeof arg === 'string') {
 					entity.name = arg;
 				} else if (Array.isArray(arg) && arg.length === 3) {
-					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+					entity.transform.translation.setd(arg[0], arg[1], arg[2]);
 				} else if (typeof arg.run === 'function') {
 					entity.setComponent(new ScriptComponent(arg));
 				}

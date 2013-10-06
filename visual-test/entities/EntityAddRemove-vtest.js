@@ -19,8 +19,7 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/TextureCreator',
-	'goo/entities/components/LightComponent'
+	'goo/renderer/TextureCreator'
 ], function(
 	GooRunner,
 	World,
@@ -36,8 +35,7 @@ require([
 	MeshRendererComponent,
 	Vector3,
 	DirectionalLight,
-	TextureCreator,
-	LightComponent
+	TextureCreator
 ) {
 	'use strict';
 
@@ -58,12 +56,27 @@ require([
 		boxEntity2.attachChild(boxEntity3);
 
 		boxEntity1.addToWorld();
-		boxEntity1.setComponent(new ScriptComponent({
+		boxEntity1.addComponent(ScriptComponent).addScript({
 			run: function (entity) {
 				var t = entity._world.time;
 				entity.transform.setRotation(t, 0, 0);
 			}
+		});
+
+		var lightEntity = goo.world.createEntity('light');
+		lightEntity.addComponent(DirectionalLight);
+		lightEntity.transform.setTranslation(1, 10, 1);
+		lightEntity.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+		lightEntity.addToWorld();
+
+		var cameraEntity = goo.world.createEntity("CameraEntity");
+		cameraEntity.addComponent(Camera);
+		var scriptComponent = cameraEntity.addComponent(ScriptComponent);
+		scriptComponent.addScript(new OrbitCamControlScript({
+			domElement: goo.renderer.domElement,
+			spherical: new Vector3(15, Math.PI / 2, 0.3)
 		}));
+		cameraEntity.addToWorld();
 
 		var data = {
 			add_remove: true
@@ -76,28 +89,6 @@ require([
 				boxEntity1.removeFromWorld();
 			}
 		});
-
-		var light = new DirectionalLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transform.translation.set(1, 10, 1);
-		lightEntity.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-		lightEntity.addToWorld();
-
-		var camera = new Camera(45, 1, 0.1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(15, Math.PI / 2, 0.3)
-		}));
-		cameraEntity.setComponent(scripts);
-
-		cameraEntity.addComponent(CameraComponent);
-		cameraEntity.addComponent(new CameraComponent(camera));
-
 	}
 
 	function createBoxEntity(goo, size) {

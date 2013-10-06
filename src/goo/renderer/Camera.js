@@ -1,4 +1,5 @@
 define([
+	'goo/entities/components/Component',
 	'goo/util/Handy',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
@@ -12,6 +13,7 @@ define([
 ],
 /** @lends */
 function(
+	Component,
 	Handy,
 	Vector3,
 	Vector4,
@@ -34,6 +36,8 @@ function(
 	 */
 
 	function Camera(fov, aspect, near, far) {
+		Component.call(this, 'CameraComponent', false);
+
 		// These need an onFrameChange() after being modified
 		this.translation = new Vector3(0, 0, 0);
 		this._left = new Vector3(-1, 0, 0);
@@ -114,9 +118,20 @@ function(
 
 		this.changedProperties = true;
 
+		this.leftVec = new Vector3(-1, 0, 0);
+		this.upVec = new Vector3(0, 1, 0);
+		this.dirVec = new Vector3(0, 0, -1);
+
+		this.fov = 45;
+		this.aspect = 1;
+		this.near = 1;
+		this.far = 1000;
+
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
 	}
+
+	Camera.prototype = Object.create(Component.prototype);
 
 	// Planes of the frustum
 	Camera.LEFT_PLANE = 0;
@@ -149,6 +164,25 @@ function(
 	 * Intersection response from camera.intersect
 	 */
 	Camera.Intersects = 2;
+
+	/**
+	 * Updates the camera according to a transform
+	 * @param {Transform} transform
+	 */
+	Camera.prototype.updateCamera = function (transform) {
+		this._left.setv(this.leftVec);
+		transform.matrix.applyPostVector(this._left);
+
+		this._up.setv(this.upVec);
+		transform.matrix.applyPostVector(this._up);
+
+		this._direction.setv(this.dirVec);
+		transform.matrix.applyPostVector(this._direction);
+
+		transform.matrix.getTranslation(this.translation);
+
+		this.update();
+	};
 
 	/**
 	 * Ensure our up, left and direction are unit-length vectors.

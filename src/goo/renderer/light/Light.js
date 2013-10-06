@@ -1,16 +1,20 @@
 define([
-        'goo/math/Vector3'
-        ],
+	'goo/entities/components/Component',
+	'goo/math/Vector3'
+],
 /** @lends */
 function (
+	Component,
 	Vector3
-	) {
+) {
 	"use strict";
 
 	/**
 	 * @class A plain lightsource in the scene, to be handled in the shader.
 	 */
 	function Light () {
+		Component.call(this, 'LightComponent', false);
+
 		/** @type {Vector3} */
 		this.translation = new Vector3();
 
@@ -49,6 +53,8 @@ function (
 		this.changedProperties = false;
 		this.changedColor =  false;
 	}
+
+	Light.prototype = Object.create(Component.prototype);
 
 	return Light;
 });

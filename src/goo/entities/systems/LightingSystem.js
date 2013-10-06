@@ -13,7 +13,7 @@ function (
 	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms
 	 */
 	function LightingSystem() {
-		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
+		System.call(this, 'LightingSystem', ['LightComponent']);
 
 		this.lights = [];
 		this.overrideLights = null;
@@ -26,8 +26,8 @@ function (
 			return;
 		}
 
-		if (this.lights.indexOf(component.light) === -1) {
-			this.lights.push(component.light);
+		if (this.lights.indexOf(component) === -1) {
+			this.lights.push(component);
 			if (!this.overrideLights) {
 				EventHandler.dispatch("setLights", this.lights);
 			}
@@ -39,7 +39,7 @@ function (
 			return;
 		}
 
-		var index = this.lights.indexOf(component.light);
+		var index = this.lights.indexOf(component);
 		if (index !== -1) {
 			this.lights.splice(index, 1);
 			if(!this.overrideLights) {
@@ -57,11 +57,10 @@ function (
 		if (!this.overrideLights) {
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
-				var transformComponent = entity.transformComponent;
 				var lightComponent = entity.lightComponent;
 
-				if (transformComponent._updated) {
-					lightComponent.updateLight(transformComponent.worldTransform);
+				if (entity._updated) {
+					lightComponent.update(entity.worldTransform);
 				}
 			}
 		}

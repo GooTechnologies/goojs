@@ -1,9 +1,11 @@
 define([
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
-	Transform
+	Transform,
+	Component
 ) {
 	"use strict";
 
@@ -77,6 +79,9 @@ function (
 		if (component instanceof Function) {
 			component = new component();
 		}
+		if ((component instanceof Component) === false) {
+			console.error('Trying to add something else than a Component', component);
+		}
 		if (!component.allowMultiple && this.hasComponent(component.type)) {
 			// TODO: Overwrite or reject?
 			for (var i = 0; i < this._components.length; i++) {
@@ -95,6 +100,8 @@ function (
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
+
+		return component;
 	};
 
 	/**
@@ -154,6 +161,7 @@ function (
 	 */
 	Entity.prototype.setUpdated = function () {
 		this._dirty = true;
+		this.transform.setUpdated();
 	};
 
 	/**

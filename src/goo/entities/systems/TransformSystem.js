@@ -7,33 +7,33 @@ define(['goo/entities/systems/System'],
 	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
 	 */
 	function TransformSystem() {
-		System.call(this, 'TransformSystem', ['TransformComponent']);
+		System.call(this, 'TransformSystem', null);
 	}
 
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function (entities) {
-		var i, transformComponent;
+		var i, entity;
 		for (i = 0; i < entities.length; i++) {
-			transformComponent = entities[i].transformComponent;
-			transformComponent._updated = false;
-			if (transformComponent._dirty) {
-				transformComponent.updateTransform();
+			entity = entities[i];
+			entity._updated = false;
+			if (entity.transform._dirty) {
+				entity.updateTransform();
 			}
 		}
 		for (i = 0; i < entities.length; i++) {
-			transformComponent = entities[i].transformComponent;
-			if (transformComponent._dirty) {
-				this.updateWorldTransform(transformComponent);
+			entity = entities[i];
+			if (entity.transform._dirty) {
+				this.updateWorldTransform(entity);
 			}
 		}
 	};
 
-	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
-		transformComponent.updateWorldTransform();
+	TransformSystem.prototype.updateWorldTransform = function (entity) {
+		entity.updateWorldTransform();
 
-		for (var i = 0; i < transformComponent.children.length; i++) {
-			this.updateWorldTransform(transformComponent.children[i]);
+		for (var i = 0; i < entity.children.length; i++) {
+			this.updateWorldTransform(entity.children[i]);
 		}
 	};
 

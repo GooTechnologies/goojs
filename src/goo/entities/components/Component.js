@@ -6,7 +6,9 @@ define(
 	/**
 	 * @class Base class/module for all components
 	 */
-	function Component() {
+	function Component(type, allowMultiple) {
+		this.type = type;
+
 		/** If the component should be processed for containing entities
 		 * @type {boolean}
 		 * @default
@@ -17,7 +19,7 @@ define(
 		 * @type {boolean}
 		 * @default
 		 */
-		this.allowMultiple = false;
+		this.allowMultiple = !!allowMultiple;
 
 		this.ownerEntity = null;
 	}

@@ -14,7 +14,7 @@ function (
 	 * @param {Camera} camera Camera to contain in this component
 	 */
 	function CameraComponent (camera) {
-		this.type = 'CameraComponent';
+		Component.call(this, 'CameraComponent', true);
 
 		this.camera = camera;
 

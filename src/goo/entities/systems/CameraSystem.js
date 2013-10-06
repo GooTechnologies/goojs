@@ -7,7 +7,7 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/rendere
 	 * @class Updates cameras/cameracomponents with ther transform component transforms
 	 */
 	function CameraSystem() {
-		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
+		System.call(this, 'CameraSystem', ['CameraComponent']);
 
 		this.mainCamera = null;
 	}
@@ -19,7 +19,7 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/rendere
 		for (var i = 0; i < this._activeEntities.length; i++) {
 			var cameraComponent = this._activeEntities[i].cameraComponent;
 			if (!mainCamera || cameraComponent.isMain) {
-				mainCamera = cameraComponent.camera;
+				mainCamera = cameraComponent;
 			}
 		}
 		EventHandler.dispatch("setCurrentCamera", mainCamera);
@@ -37,11 +37,10 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/rendere
 	CameraSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var transformComponent = entity.transformComponent;
 			var cameraComponent = entity.cameraComponent;
 
-			if (transformComponent._updated) {
-				cameraComponent.updateCamera(transformComponent.worldTransform);
+			if (entity._updated) {
+				cameraComponent.updateCamera(entity.worldTransform);
 			}
 		}
 	};

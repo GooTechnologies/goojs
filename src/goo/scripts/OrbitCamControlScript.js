@@ -301,11 +301,7 @@ function (
 			}
 		}
 		// grab our transformComponent
-		var transformComponent = entity.transformComponent;
-		if (!transformComponent) {
-			return;
-		}
-		var transform = transformComponent.transform;
+		var transform = entity.transform;
 
 		if (this.releaseVelocity) {
 			this.updateVelocity(entity._world.tpf);
@@ -356,7 +352,7 @@ function (
 		}
 
 		// set our component updated.
-		transformComponent.setUpdated();
+		entity.setUpdated();
 	};
 
 	return OrbitCamControlScript;

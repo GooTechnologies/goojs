@@ -93,11 +93,7 @@ define(
 		var entities = [];
 		for (var i in this._entitiesById) {
 			var entity = this._entitiesById[i];
-			if (entity.transformComponent) {
-				if (!entity.transformComponent.parent) {
-					entities.push(entity);
-				}
-			} else {
+			if (!entity.parent) {
 				entities.push(entity);
 			}
 		}

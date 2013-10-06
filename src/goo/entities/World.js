@@ -1,13 +1,11 @@
 define([
 	'goo/entities/Entity',
-	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent'
+	'goo/entities/managers/EntityManager'
 ],
 /** @lends */
 function (
 	Entity,
-	EntityManager,
-	TransformComponent
+	EntityManager
 ) {
 	"use strict";
 
@@ -93,9 +91,7 @@ function (
 	 * @returns {Entity}
 	 */
 	World.prototype.createEntity = function (name) {
-		var entity = new Entity(this, name);
-		entity.setComponent(new TransformComponent());
-		return entity;
+		return new Entity(this, name);
 	};
 
 	/**
@@ -118,10 +114,10 @@ function (
 			this._addedEntities.push(entity);
 		}
 
-		if (entity.transformComponent && (recursive === undefined || recursive === true)) {
-			var children = entity.transformComponent.children;
+		if (recursive === undefined || recursive === true) {
+			var children = entity.children;
 			for (var i = 0; i < children.length; i++) {
-				this.addEntity(children[i].entity, recursive);
+				this.addEntity(children[i], recursive);
 			}
 		}
 	};
@@ -137,23 +133,22 @@ function (
 			this._removedEntities.push(entity);
 		}
 
-		var transformComponent = entity.transformComponent;
-		if (transformComponent.parent) {
-			transformComponent.parent.detachChild(transformComponent);
-			transformComponent.parent = null;
+		if (entity.parent) {
+			entity.parent.detachChild(entity);
+			entity.parent = null;
 		}
 
 		if (recursive === false) {
-			var children = transformComponent.children;
+			var children = entity.children;
 			for (var i = 0; i < children.length; i++) {
 				children[i].parent = null;
 			}
 
-			transformComponent.children = [];
+			entity.children = [];
 		} else {
-			var children = transformComponent.children;
+			var children = entity.children;
 			for (var i = 0; i < children.length; i++) {
-				this._recursiveRemoval(children[i].entity, recursive);
+				this._recursiveRemoval(children[i], recursive);
 			}
 		}
 	};
@@ -163,10 +158,10 @@ function (
 			this._removedEntities.push(entity);
 		}
 
-		if (entity.transformComponent && (recursive === undefined || recursive === true)) {
-			var children = entity.transformComponent.children;
+		if (recursive === undefined || recursive === true) {
+			var children = entity.children;
 			for (var i = 0; i < children.length; i++) {
-				this._recursiveRemoval(children[i].entity, recursive);
+				this._recursiveRemoval(children[i], recursive);
 			}
 		}
 	};

@@ -526,7 +526,7 @@ function (
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshDataComponent.meshData;
 			renderInfo.materials = renderable.meshRendererComponent.materials;
-			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
+			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.worldTransform;
 			if(renderable.meshDataComponent.currentPose) {
 				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
 			} else {

@@ -35,5 +35,9 @@ function(Component) {
 		}
 	};
 
+	ScriptComponent.prototype.addScript = function(script) {
+		this.scripts.push(script);
+	};
+
 	return ScriptComponent;
 });

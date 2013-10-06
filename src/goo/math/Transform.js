@@ -32,7 +32,67 @@ function (
 		this.tmpVec = new Vector3();
 		this.tmpVec2 = new Vector3();
 		this.tmpMat1 = new Matrix3x3();
+
+		this._dirty = false;
 	}
+
+	/**
+	 * Mark the component for updates of world transform
+	 */
+	Transform.prototype.setUpdated = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Set this transform's translation.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @return {Transform} Self for chaining.
+	 */
+	Transform.prototype.setTranslation = function () {
+		this.translation.set(arguments);
+		this._dirty = true;
+		return this;
+	};
+
+	/**
+	 * Set this transform's scale.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @return {Transform} Self for chaining.
+	 */
+	Transform.prototype.setScale = function () {
+		this.scale.set(arguments);
+		this._dirty = true;
+		return this;
+	};
+
+	/**
+	 * Add to this transform's translation.
+	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @return {Transform} Self for chaining.
+	 */
+	Transform.prototype.addTranslation = function () {
+		if(arguments.length === 3) {
+			this.translation.add(arguments);
+		} else {
+			this.translation.add(arguments[0]);
+		}
+		this._dirty = true;
+		return this;
+	};
+
+	/**
+	 * Set this transform's rotation around X, Y and Z axis.
+	 * The rotation is applied in XYZ order.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @return {Transform} Self for chaining.
+	 */
+	Transform.prototype.setRotation = function (x,y,z) {
+		this.rotation.fromAngles(x,y,z);
+		this._dirty = true;
+		return this;
+	};
 
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
@@ -200,10 +260,13 @@ function (
 	 * Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} up Up vector.
+	 * @return {Transform} Self for chaining.
 	 */
 	Transform.prototype.lookAt = function (position, up) {
 		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
+		this._dirty = true;
+		return this;
 	};
 
 	/**
