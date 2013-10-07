@@ -14,19 +14,22 @@ define([
 	'goo/util/PromiseUtil'
 ], function(
 	ConfigHandler,
-	AnimationLayer,
-	LayerLERPBlender,
+	AnimationLayer,   /* REVIEW: AnimationLayer does not appear to be used here? */
+	LayerLERPBlender, /* REVIEW: LayerLERPBlender does not appear to be used either? */
 	SteadyState,
 	ClipSource,
 	ManagedTransformSource,
 	BinaryLERPSource,
 	FrozenClipSource,
-	FadeTransitionState,
-	SyncFadeTransitionState,
-	FrozenTransitionState,
+	FadeTransitionState,      /* REVIEW: Neither does FadeTransitionState appear to be used? */
+	SyncFadeTransitionState,  /* REVIEW: Nor SyncFadeTransitionState? */
+	FrozenTransitionState,    /* REVIEW: Or FrozenTransitionState? */
 	RSVP,
 	PromiseUtil
 ) {
+
+	/* REVIEW: Where is this code used. (Appears in DynamicLoader.js but does not appear to be used there?) */
+
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
