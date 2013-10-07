@@ -71,7 +71,6 @@ define([
 				}
 			}
 		}
-		// REVIEW: if promises is empty then it will never resolve
 		return RSVP.all(promises).then(function(layers) {
 			object.length = 0;
 			for (var i = 0; i < layers.length; i++) {
