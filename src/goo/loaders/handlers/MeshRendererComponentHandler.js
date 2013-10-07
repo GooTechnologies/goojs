@@ -1,12 +1,16 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/MeshRendererComponent',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ], function(
 	ComponentHandler,
 	MeshRendererComponent,
+	Material,
+	ShaderLib,
 	RSVP,
 	pu,
 	_
@@ -43,8 +47,12 @@ define([
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 		var materialRefs = config.materialRefs;
 		if (!materialRefs || materialRefs.length === 0) {
-			console.log('No material refs in config for', entity);
-			promise = pu.createDummyPromise([]);
+			//console.log('No material refs in config for ' + entity.ref + ', creating default');
+			var defaultShader = Material.createShader(ShaderLib.simpleLit, 'DefaultShader');
+			var material = new Material();
+			material.shader = defaultShader;
+
+			promise = pu.createDummyPromise([material]);
 		} else {
 			var promises = [];
 			var pushPromise = function(materialRef) {

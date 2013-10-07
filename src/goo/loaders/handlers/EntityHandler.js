@@ -124,7 +124,8 @@ define([
 
 	EntityHandler.prototype.remove = function(ref) {
 		var entity = this.world.entityManager.getEntityByName(ref);
-		this.world.removeEntity(entity);
+		if (typeof entity === 'object')
+			this.world.removeEntity(entity);
 	};
 
 	return EntityHandler;

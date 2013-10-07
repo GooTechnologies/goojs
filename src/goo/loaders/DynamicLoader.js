@@ -283,7 +283,6 @@ function(
 	 */
 	DynamicLoader.prototype.remove = function(ref) {
 		delete this._objects[ref];
-		delete this._configs[ref];
 		return this._handle(ref, null);
 	};
 
