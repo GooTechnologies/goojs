@@ -9,7 +9,7 @@ function(
 ) {
 	"use strict";
 
-	function NumberCompareAction(settings) {
+	function NumberCompareAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 

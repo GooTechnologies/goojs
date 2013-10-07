@@ -3,7 +3,7 @@ define(['goo/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
-	function SetLightRangeAction(id, settings) {
+	function SetLightRangeAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 

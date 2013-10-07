@@ -3,23 +3,23 @@ define(['goo/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
-	function TransformAction(settings) {
+	function TransformAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
 	TransformAction.prototype = Object.create(Action.prototype);
 
 	TransformAction.prototype.configure = function(settings) {
-		
 		var parameters = TransformAction.external.parameters;
 
 		for (var pi = 0; pi < parameters.length; pi++) {
 			var parameter = parameters[pi];
 
-			if (settings[parameter.key] != null)
+			if (settings[parameter.key] != null) {
 				this[parameter.key] = settings[parameter.key];
-			else 
+			} else {
 				this[parameter.key] = parameter['default'];
+			}
 		}
 	};
 
@@ -36,15 +36,13 @@ function(Action) {
 			type: 'rotation',
 			description: 'Rotate',
 			'default': [0,0,0]
-		},
-		{
+		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
 			description: 'If true add, otherwise set',
 			'default': true
-		},		
-		{
+		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
@@ -63,7 +61,6 @@ function(Action) {
 				transform.rotation.rotateX(this.rotation[0]*Math.PI/180);
 				transform.rotation.rotateY(this.rotation[1]*Math.PI/180);
 				transform.rotation.rotateZ(this.rotation[2]*Math.PI/180);
-
 			}
 			else {
 				transform.translation.set(this.translation);

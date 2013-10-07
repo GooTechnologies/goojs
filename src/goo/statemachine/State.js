@@ -1,4 +1,5 @@
-define(['goo/util/ArrayUtil'
+define([
+	'goo/util/ArrayUtil'
 ],
 /** @lends */
 function (
@@ -32,9 +33,10 @@ function (
 			send: function (channels, data) {
 				if (typeof channels === 'string' && this._transitions[channels]) {
 					this.requestTransition(this._transitions[channels]);
-				} /*else {
-					this._fsm._bus.emit(channels, data);
-				}*/
+				}
+				/*else {
+				 this._fsm._bus.emit(channels, data);
+				 }*/
 			}.bind(this),
 			addListener: function (channelName, callback) {
 				this._fsm._bus.addListener(channelName, callback);
@@ -65,7 +67,7 @@ function (
 		};
 	}
 
-	State.prototype.setRefs = function(parentFSM) {
+	State.prototype.setRefs = function (parentFSM) {
 		this._fsm = parentFSM;
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
@@ -73,23 +75,23 @@ function (
 		}
 	};
 
-	State.prototype.requestTransition = function(target) {
+	State.prototype.requestTransition = function (target) {
 		this.transitionTarget = target;
 	};
 
-	State.prototype.setTransition = function(eventName, target) {
+	State.prototype.setTransition = function (eventName, target) {
 		this._transitions[eventName] = target;
 	};
 
-	State.prototype.clearTransition = function(eventName) {
+	State.prototype.clearTransition = function (eventName) {
 		delete this._transitions[eventName];
 	};
 
-	State.prototype.update = function() {
+	State.prototype.update = function () {
 		// do on update of self
 		for (var i = 0; i < this._actions.length; i++) {
 			this._actions[i].update(this.proxy);
-			if(this.transitionTarget) {
+			if (this.transitionTarget) {
 				var tmp = this.transitionTarget;
 				this.transitionTarget = null;
 				return tmp;
@@ -101,17 +103,19 @@ function (
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			jump = machine.update();
-			if(jump) { return jump; }
+			if (jump) {
+				return jump;
+			}
 		}
 	};
 
-	State.prototype.reset = function() {
+	State.prototype.reset = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			this._machines[i].reset();
 		}
 	};
 
-	State.prototype.kill = function() {
+	State.prototype.kill = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			this._machines[i].kill();
 		}
@@ -120,7 +124,7 @@ function (
 		}
 	};
 
-	State.prototype.enter = function() {
+	State.prototype.enter = function () {
 		// on enter of self
 		for (var i = 0; i < this._actions.length; i++) {
 			this._actions[i].enter(this.proxy);
@@ -132,19 +136,23 @@ function (
 		}
 	};
 
-	State.prototype.getAction = function(id) {
-		if (!this._actions) return undefined;
+	State.prototype.getAction = function (id) {
+		if (!this._actions) {
+			return undefined;
+		}
 		for (var i = 0; i < this._actions.length; i++) {
 			var action = this._actions[i];
-			if (id !==undefined && action.id === id) 
+			if (id !== undefined && action.id === id)
 				return action;
 		}
 		return undefined;
-	}
+	};
 
 	State.prototype.addAction = function (action) {
 		// check if action is already added
-		if (this._actions[action.id]) return;
+		if (this._actions[action.id]) {
+			return;
+		}
 
 		if (action.onCreate) {
 			action.onCreate(this.proxy);
@@ -160,7 +168,7 @@ function (
 		ArrayUtil.remove(this._actions, action);
 	};
 
-	State.prototype.addMachine = function(machine) {
+	State.prototype.addMachine = function (machine) {
 		machine._fsm = this._fsm;
 		this._machines.push(machine);
 	};

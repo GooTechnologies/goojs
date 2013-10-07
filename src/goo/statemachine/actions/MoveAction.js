@@ -3,23 +3,23 @@ define(['goo/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
-	function MoveAction(settings) {
+	function MoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
 	MoveAction.prototype = Object.create(Action.prototype);
 
 	MoveAction.prototype.configure = function(settings) {
-		
 		var parameters = MoveAction.external.parameters;
 
 		for (var pi = 0; pi < parameters.length; pi++) {
 			var parameter = parameters[pi];
 
-			if (settings[parameter.key] != null)
+			if (settings[parameter.key] != null) {
 				this[parameter.key] = settings[parameter.key];
-			else 
+			} else {
 				this[parameter.key] = parameter['default'];
+			}
 		}
 	};
 
@@ -29,16 +29,14 @@ function(Action) {
 			key: 'translation',
 			type: 'position',
 			description: 'Move',
-			'default': [0,0,0]
-		},
-		{
+			'default': [0, 0, 0]
+		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
 			description: 'If true add, otherwise set',
 			'default': true
-		},		
-		{
+		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
@@ -52,10 +50,11 @@ function(Action) {
 		var entity = fsm.getOwnerEntity();
 		if (entity != null) {
 			var transform = entity.transformComponent.transform;
-			if (this.relative) 
+			if (this.relative) {
 				transform.translation.add(this.translation);
-			else 
+			} else {
 				transform.translation.set(this.translation);
+			}
 
 			entity.transformComponent.setUpdated();
 		}

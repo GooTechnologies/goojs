@@ -7,7 +7,7 @@ function(
 ) {
 	"use strict";
 
-	function MouseClickAction(settings) {
+	function MouseClickAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.currentTime = 0;

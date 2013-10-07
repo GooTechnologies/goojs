@@ -1,9 +1,15 @@
-define(['goo/statemachine/actions/Action'],
+define([
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
+],
 /** @lends */
-function(Action) {
+function(
+	Action,
+	FSMUtil
+) {
 	"use strict";
 
-	function SetPositionAction(settings) {
+	function SetPositionAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
