@@ -1,5 +1,5 @@
 define([
-	'goo/renderer/MeshData'
+	'goo/entities/components/MeshData'
 ], function (
 	MeshData
 ) {

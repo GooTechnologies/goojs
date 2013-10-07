@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',

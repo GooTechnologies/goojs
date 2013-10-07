@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/Material',
 	'goo/renderer/Renderer',

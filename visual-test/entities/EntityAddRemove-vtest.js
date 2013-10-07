@@ -9,30 +9,28 @@ require([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
+	'goo/entities/components/Camera',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
 	'goo/math/Vector3',
-	'goo/renderer/light/DirectionalLight',
+	'goo/entities/components/DirectionalLight',
 	'goo/renderer/TextureCreator'
 ], function(
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
+	Camera,
 	OrbitCamControlScript,
 	EntityUtils,
 	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
+	MeshRenderer,
 	Vector3,
 	DirectionalLight,
 	TextureCreator
@@ -98,8 +96,8 @@ require([
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
-		var meshRendererComponent = boxEntity.addComponent(MeshRendererComponent);
-		meshRendererComponent.materials.push(material);
+		var meshRenderer = boxEntity.addComponent(MeshRenderer);
+		meshRenderer.materials.push(material);
 
 		return boxEntity;
 	}

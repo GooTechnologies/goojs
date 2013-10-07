@@ -1,10 +1,10 @@
 define([
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/MathUtils',

@@ -3,7 +3,7 @@ define([
 	'goo/math/Vector',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/renderer/MeshData'
+	'goo/entities/components/MeshData'
 ],
 /** @lends */
 function (

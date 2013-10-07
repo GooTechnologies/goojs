@@ -185,6 +185,25 @@ function(
 	};
 
 	/**
+	 * @param {number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z
+	 */
+	Camera.prototype.setUpVector = function (axisId) {
+		if (axisId === 0) {
+			this.leftVec.setd(0, -1, 0);
+			this.upVec.setd(1, 0, 0);
+			this.dirVec.setd(0, 0, -1);
+		} else if (axisId === 2) {
+			this.leftVec.setd(-1, 0, 0);
+			this.upVec.setd(0, 0, 1);
+			this.dirVec.setd(0, -1, 0);
+		} else {
+			this.leftVec.setd(-1, 0, 0);
+			this.upVec.setd(0, 1, 0);
+			this.dirVec.setd(0, 0, -1);
+		}
+	};
+
+	/**
 	 * Ensure our up, left and direction are unit-length vectors.
 	 */
 	Camera.prototype.normalize = function () {

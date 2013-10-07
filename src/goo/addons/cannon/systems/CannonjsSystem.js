@@ -6,7 +6,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
-	'goo/renderer/MeshData'
+	'goo/entities/components/MeshData'
 ],
 /** @lends */
 function(

@@ -1,7 +1,7 @@
 define([
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/TextureCreator'

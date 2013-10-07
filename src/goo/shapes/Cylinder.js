@@ -1,5 +1,5 @@
 define([
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/util/Enum',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'

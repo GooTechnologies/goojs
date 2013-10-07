@@ -1,5 +1,5 @@
 define([
-        'goo/renderer/MeshData',
+        'goo/entities/components/MeshData',
         'goo/math/Vector3'
         ],
 	/** @lends */

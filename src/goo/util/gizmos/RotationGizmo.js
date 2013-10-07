@@ -1,8 +1,8 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
+	'goo/entities/components/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',

@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshData',
 	'goo/renderer/bounds/BoundingBox',
 
 	'goo/shapes/Box',

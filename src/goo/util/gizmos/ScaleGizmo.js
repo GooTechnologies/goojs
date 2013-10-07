@@ -1,6 +1,6 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Box',
 	'goo/renderer/Material',

@@ -1,7 +1,7 @@
 /* jshint bitwise: false */
 define([
 		'goo/util/rsvp',
-		'goo/renderer/MeshData',
+		'goo/entities/components/MeshData',
 		'goo/renderer/Shader',
 		'goo/renderer/TextureCreator',
 		'goo/renderer/Material',

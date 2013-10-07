@@ -1,4 +1,4 @@
-define(['goo/renderer/MeshData'],
+define(['goo/entities/components/MeshData'],
 	/** @lends */
 	function (MeshData) {
 	"use strict";

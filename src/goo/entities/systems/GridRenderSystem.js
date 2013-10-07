@@ -2,7 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/EventHandler',
 	'goo/renderer/SimplePartitioner',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',

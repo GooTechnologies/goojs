@@ -1,6 +1,6 @@
 define([
 		'goo/util/rsvp',
-		'goo/renderer/MeshData',
+		'goo/entities/components/MeshData',
 		'goo/renderer/Shader',
 		'goo/loaders/Loader',
 		'goo/renderer/shaders/ShaderBuilder'

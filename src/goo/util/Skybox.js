@@ -1,14 +1,14 @@
 define([
 	'goo/shapes/ShapeCreator',
 	'goo/shapes/Sphere',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/entities/Entity',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Transform'
 

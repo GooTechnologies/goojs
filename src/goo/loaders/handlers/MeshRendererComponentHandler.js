@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshRenderer',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'

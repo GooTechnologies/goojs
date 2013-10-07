@@ -9,7 +9,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/math/Transform',

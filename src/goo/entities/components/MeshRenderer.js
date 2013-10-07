@@ -6,8 +6,8 @@ define(['goo/entities/components/Component'],
 	/**
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 */
-	function MeshRendererComponent() {
-		Component.call(this, 'MeshRendererComponent', false);
+	function MeshRenderer() {
+		Component.call(this, 'MeshRenderer', false);
 
 		/** Materials to use when rendering
 		 * @type {Material[]}
@@ -53,7 +53,7 @@ define(['goo/entities/components/Component'],
 		this.hidden = false;
 	}
 
-	MeshRendererComponent.prototype = Object.create(Component.prototype);
+	MeshRenderer.prototype = Object.create(Component.prototype);
 
 	/**
 	 * Update world bounding
@@ -61,9 +61,9 @@ define(['goo/entities/components/Component'],
 	 * @param {BoundingVolume} bounding Bounding volumen in local space
 	 * @param {Transform} transform Transform to apply to local bounding -> world bounding
 	 */
-	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
+	MeshRenderer.prototype.updateBounds = function (bounding, transform) {
 		this.worldBound = bounding.transform(transform, this.worldBound);
 	};
 
-	return MeshRendererComponent;
+	return MeshRenderer;
 });

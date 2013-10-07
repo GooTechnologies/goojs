@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/Camera',
+	'goo/entities/components/MeshRenderer',
 
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',

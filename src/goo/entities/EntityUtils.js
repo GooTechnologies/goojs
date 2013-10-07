@@ -1,13 +1,13 @@
 define([
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
+	'goo/entities/components/Camera',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/Camera',
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent'
 ],

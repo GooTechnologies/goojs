@@ -2,7 +2,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/util/MeshBuilder',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/math/Transform'
 ],
 	/** @lends */

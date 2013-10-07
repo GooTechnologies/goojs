@@ -1,7 +1,7 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/util/LightPointer'],

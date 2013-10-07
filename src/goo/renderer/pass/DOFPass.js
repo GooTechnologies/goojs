@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/pass/RenderPass',

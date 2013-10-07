@@ -1,5 +1,5 @@
 define([
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/shaders/ShaderBuilder',

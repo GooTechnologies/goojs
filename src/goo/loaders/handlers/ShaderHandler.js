@@ -1,7 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/Material',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',

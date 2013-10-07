@@ -2,7 +2,7 @@
 define([
 	'goo/util/rsvp',
 	'goo/loaders/JsonUtils',
-	'goo/renderer/MeshData',
+	'goo/entities/components/MeshData',
 	'goo/loaders/SkeletonLoader'
 ],
 /** @lends */
