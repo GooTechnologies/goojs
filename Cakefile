@@ -25,8 +25,6 @@ runCommand = (cmd, callback) ->
 
 endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 
-option '-i', '--include [LIB]', 'Include library e.g. requireLib'
-
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 	rimraf 'out/minified', ->
 		runCommand 'node_modules/grunt-cli/bin/grunt minify'
@@ -114,7 +112,3 @@ task 'visualtoc',
 	->
 		toc = require('./visual-test/toc')
 		toc.run()
-
-
-
-
