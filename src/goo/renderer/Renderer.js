@@ -16,7 +16,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
-	'goo/entities/EventHandler'
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -36,7 +36,7 @@ function (
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
-	EventHandler
+	SystemBus
 ) {
 	"use strict";
 
@@ -365,10 +365,8 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	EventHandler.addListener({
-		setCurrentCamera : function (camera) {
-			Renderer.mainCamera = camera;
-		}
+	SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+		Renderer.mainCamera = camera;
 	});
 
 	/**

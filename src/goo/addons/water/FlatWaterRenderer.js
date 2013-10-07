@@ -9,7 +9,6 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/EventHandler',
 	'goo/renderer/shaders/ShaderFragment'
 ],
 /** @lends */
@@ -24,7 +23,6 @@ function (
 	Material,
 	TextureCreator,
 	ShaderLib,
-	EventHandler,
 	ShaderFragment
 ) {
 	"use strict";

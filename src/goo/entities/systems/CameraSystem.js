@@ -1,6 +1,14 @@
-define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/renderer/Renderer'],
+define([
+	'goo/entities/systems/System',
+	'goo/entities/SystemBus',
+	'goo/renderer/Renderer'
+],
 	/** @lends */
-	function (System, EventHandler, Renderer) {
+function (
+	System,
+	SystemBus,
+	Renderer
+) {
 	"use strict";
 
 	/**
@@ -22,7 +30,7 @@ define(['goo/entities/systems/System', 'goo/entities/EventHandler', 'goo/rendere
 				mainCamera = cameraComponent.camera;
 			}
 		}
-		EventHandler.dispatch("setCurrentCamera", mainCamera);
+		SystemBus.emit('goo.setCurrentCamera', mainCamera);
 		Renderer.mainCamera = mainCamera;
 	};
 

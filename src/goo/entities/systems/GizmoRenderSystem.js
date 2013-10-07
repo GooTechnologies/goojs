@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler',
+	'goo/entities/SystemBus',
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
@@ -15,7 +15,7 @@ define([
 /** @lends */
 function (
 	System,
-	EventHandler,
+	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
@@ -64,10 +64,8 @@ function (
 
 
 		var that = this;
-		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
-				that.camera = camera;
-			}
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
 		});
 	}
 

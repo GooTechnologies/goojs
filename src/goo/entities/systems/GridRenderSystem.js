@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler',
+	'goo/entities/SystemBus',
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
@@ -15,7 +15,7 @@ define([
 /** @lends */
 function (
 	System,
-	EventHandler,
+	SystemBus,
 	SimplePartitioner,
 	MeshData,
 	Material,
@@ -86,13 +86,12 @@ function (
 		};
 
 		var that = this;
-		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
-				that.camera = camera;
-			},
-			setLights : function (lights) {
-				that.lights = lights;
-			}
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
+		});
+
+		SystemBus.addListener('goo.setLights', function (lights) {
+			that.lights = lights;
 		});
 	}
 
