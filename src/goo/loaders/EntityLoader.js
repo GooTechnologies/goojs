@@ -2,7 +2,7 @@
 
 define([
 		'goo/entities/Entity',
-		'goo/renderer/Camera',
+		'goo/entities/components/Camera',
 		'goo/entities/components/Camera',
 		'goo/entities/components/TransformComponent',
 		'goo/entities/components/MeshRenderer',

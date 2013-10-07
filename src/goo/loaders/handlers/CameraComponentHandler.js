@@ -1,7 +1,7 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/Camera',
-	'goo/renderer/Camera',
+	'goo/entities/components/Camera',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'

@@ -1,14 +1,14 @@
 define([
 	'goo/math/Vector3',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Camera',
+	'goo/entities/components/Camera',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/RenderTarget',
 	'goo/math/Vector4',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight'
 ],
 /** @lends */
 

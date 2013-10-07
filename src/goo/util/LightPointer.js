@@ -8,9 +8,9 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/MathUtils',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight'
 	],
 	/* @lends */
 	function (

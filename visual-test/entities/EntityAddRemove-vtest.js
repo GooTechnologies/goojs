@@ -96,6 +96,7 @@ require([
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
+
 		var meshRenderer = boxEntity.addComponent(MeshRenderer);
 		meshRenderer.materials.push(material);
 

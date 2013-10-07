@@ -3,9 +3,9 @@ define([
 	'goo/entities/components/Camera',
 	'goo/entities/components/MeshRenderer',
 
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight',
 
 	'goo/shapes/debug/LightDebug',
 	'goo/shapes/debug/CameraDebug',

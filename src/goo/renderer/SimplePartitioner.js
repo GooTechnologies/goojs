@@ -1,4 +1,4 @@
-define(['goo/renderer/Camera'],
+define(['goo/entities/components/Camera'],
 	/** @lends */
 	function (Camera) {
 	"use strict";

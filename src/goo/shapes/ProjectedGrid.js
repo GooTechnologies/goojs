@@ -4,7 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
-	'goo/renderer/Camera',
+	'goo/entities/components/Camera',
 	'goo/math/MathUtils'
 ],
 /** @lends */

@@ -2,26 +2,18 @@ define([
 	'goo/entities/components/MeshData',
 	'goo/entities/components/MeshRenderer',
 	'goo/entities/components/Camera',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/Camera',
-	'goo/renderer/light/Light',
+	'goo/entities/components/Light',
 	'goo/renderer/Material',
-	'goo/entities/components/MeshData',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent'
 ],
 	/** @lends */
 	function (
-		MeshDataComponent,
-		MeshRendererComponent,
-		CameraComponent,
-		LightComponent,
-		ScriptComponent,
+		MeshData,
+		MeshRenderer,
 		Camera,
 		Light,
 		Material,
-		MeshData,
 		Transform,
 		CSSTransformComponent
 	) {
@@ -37,34 +29,33 @@ define([
 		function cloneEntity (world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
 
-			for (var i=0;i<entity._components.length;i++) {
-				var component = entity._components[i];
-				if (component instanceof MeshDataComponent) {
-					var meshDataComponent = new MeshDataComponent(component.meshData);
-					meshDataComponent.modelBound = new component.modelBound.constructor();
-					if (component.currentPose) {
-						meshDataComponent.currentPose = component.currentPose;
-					}
-					newEntity.setComponent(meshDataComponent);
-				} else if (component instanceof MeshRendererComponent) {
-					var meshRendererComponent = new MeshRendererComponent();
-					for (var j=0;j<component.materials.length;j++) {
-						meshRendererComponent.materials.push(component.materials[j]);
-					}
-					newEntity.setComponent(meshRendererComponent);
-				} else {
-					newEntity.setComponent(component);
-				}
-			}
-			for (var j=0;j<entity.children.length;j++) {
-				var child = entity.children[j];
-				var clonedChild = cloneEntity(world, child, settings);
-				newEntity.attachChild(clonedChild);
-			}
+			// for (var i=0;i<entity._components.length;i++) {
+			// 	var component = entity._components[i];
+			// 	if (component instanceof MeshData) {
+			// 		component.modelBound = new component.modelBound.constructor();
+			// 		if (component.currentPose) {
+			// 			meshDataComponent.currentPose = component.currentPose;
+			// 		}
+			// 		newEntity.setComponent(meshDataComponent);
+			// 	} else if (component instanceof MeshRendererComponent) {
+			// 		var meshRendererComponent = new MeshRendererComponent();
+			// 		for (var j=0;j<component.materials.length;j++) {
+			// 			meshRendererComponent.materials.push(component.materials[j]);
+			// 		}
+			// 		newEntity.setComponent(meshRendererComponent);
+			// 	} else {
+			// 		newEntity.setComponent(component);
+			// 	}
+			// }
+			// for (var j=0;j<entity.children.length;j++) {
+			// 	var child = entity.children[j];
+			// 	var clonedChild = cloneEntity(world, child, settings);
+			// 	newEntity.attachChild(clonedChild);
+			// }
 
-			if (settings.callback) {
-				settings.callback(newEntity);
-			}
+			// if (settings.callback) {
+			// 	settings.callback(newEntity);
+			// }
 
 			return newEntity;
 		}
@@ -129,40 +120,35 @@ define([
 			// Create entity
 			var entity = world.createEntity();
 
-			for (var i = 1; i < arguments.length; i++) {
-				var arg = arguments[i];
+			// for (var i = 1; i < arguments.length; i++) {
+			// 	var arg = arguments[i];
 
-				if (arg instanceof MeshData) {
-					var meshDataComponent = new MeshDataComponent(arg);
-					entity.setComponent(meshDataComponent);
+			// 	if (arg instanceof MeshData) {
+			// 		entity.setComponent(arg);
 
-					// attach mesh renderer component for backwards compatibility reasons
-					if (!entity.hasComponent('MeshRendererComponent')) {
-						var meshRendererComponent = new MeshRendererComponent();
-						entity.setComponent(meshRendererComponent);
-					}
-				} else if (arg instanceof Material) {
-					if (!entity.hasComponent('MeshRendererComponent')) {
-						var meshRendererComponent = new MeshRendererComponent();
-						entity.setComponent(meshRendererComponent);
-					}
-					entity.meshRendererComponent.materials.push(arg);
-				} else if (arg instanceof Light) {
-					var lightComponent = new LightComponent(arg);
-					entity.setComponent(lightComponent);
-				} else if (arg instanceof Camera) {
-					var cameraComponent = new CameraComponent(arg);
-					entity.setComponent(cameraComponent);
-				} else if (arg instanceof Transform) {
-					entity.transform = arg;
-				} else if (typeof arg === 'string') {
-					entity.name = arg;
-				} else if (Array.isArray(arg) && arg.length === 3) {
-					entity.transform.translation.setd(arg[0], arg[1], arg[2]);
-				} else if (typeof arg.run === 'function') {
-					entity.setComponent(new ScriptComponent(arg));
-				}
-			}
+			// 		// attach mesh renderer component for backwards compatibility reasons
+			// 		if (!entity.hasComponent('MeshRenderer')) {
+			// 			entity.setComponent(MeshRenderer);
+			// 		}
+			// 	} else if (arg instanceof Material) {
+			// 		if (!entity.hasComponent('MeshRenderer')) {
+			// 			entity.setComponent(MeshRenderer);
+			// 		}
+			// 		entity.meshRenderer.materials.push(arg);
+			// 	} else if (arg instanceof Light) {
+			// 		entity.setComponent(arg);
+			// 	} else if (arg instanceof Camera) {
+			// 		entity.setComponent(arg);
+			// 	} else if (arg instanceof Transform) {
+			// 		entity.transform = arg;
+			// 	} else if (typeof arg === 'string') {
+			// 		entity.name = arg;
+			// 	} else if (Array.isArray(arg) && arg.length === 3) {
+			// 		entity.transform.translation.setd(arg[0], arg[1], arg[2]);
+			// 	} else if (typeof arg.run === 'function') {
+			// 		entity.setComponent(new ScriptComponent(arg));
+			// 	}
+			// }
 
 			return entity;
 		};

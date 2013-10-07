@@ -1,9 +1,9 @@
 define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/entities/components/MeshData',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
 ],

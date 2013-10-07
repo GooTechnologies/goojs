@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/Camera',
+	'goo/entities/components/Camera',
 	'goo/math/Plane',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/pass/FullscreenPass',
