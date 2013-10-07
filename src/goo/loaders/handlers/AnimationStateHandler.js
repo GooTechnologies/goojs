@@ -28,8 +28,6 @@ define([
 	PromiseUtil
 ) {
 
-	/* REVIEW: Where is this code used. (Appears in DynamicLoader.js but does not appear to be used there?) */
-
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
