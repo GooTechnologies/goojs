@@ -13,7 +13,7 @@ function (
 	 * @class A plain lightsource in the scene, to be handled in the shader.
 	 */
 	function Light () {
-		Component.call(this, 'LightComponent', false);
+		Component.call(this, 'Light', false);
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();

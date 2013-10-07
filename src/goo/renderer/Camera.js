@@ -36,7 +36,7 @@ function(
 	 */
 
 	function Camera(fov, aspect, near, far) {
-		Component.call(this, 'CameraComponent', false);
+		Component.call(this, 'Camera', false);
 
 		// These need an onFrameChange() after being modified
 		this.translation = new Vector3(0, 0, 0);
@@ -169,7 +169,7 @@ function(
 	 * Updates the camera according to a transform
 	 * @param {Transform} transform
 	 */
-	Camera.prototype.updateCamera = function (transform) {
+	Camera.prototype.updateFromTransform = function (transform) {
 		this._left.setv(this.leftVec);
 		transform.matrix.applyPostVector(this._left);
 

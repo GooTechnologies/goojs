@@ -7,7 +7,7 @@ function (System) {
 	 * @class Helps gather pickable entities
 	 */
 	function PickingSystem (settings) {
-		System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);
+		System.call(this, 'PickingSystem', ['MeshRendererComponent']);
 		this.passive = true;
 		this.pickRay = null;
 		this.onPick = null;

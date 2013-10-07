@@ -1,4 +1,6 @@
 define([
+	'goo/entities/components/Component',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/BufferData',
 	'goo/renderer/Util',
 	'goo/renderer/BufferUtils',
@@ -8,6 +10,8 @@ define([
 ],
 /** @lends */
 function (
+	Component,
+	BoundingSphere,
 	BufferData,
 	Util,
 	BufferUtils,
@@ -26,6 +30,8 @@ function (
 	 * @param {Number} indexCount Number of indices in buffer
 	 */
 	function MeshData(attributeMap, vertexCount, indexCount) {
+		Component.call(this, 'MeshData', false);
+
 		this.attributeMap = attributeMap;
 
 		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
@@ -43,10 +49,48 @@ function (
 		this.type = MeshData.MESH;
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		/** Bounding volume in local space
+		 * @type {BoundingVolume}
+		 * @default
+		 */
+		this.modelBound = new BoundingSphere();
+		/** Automatically compute bounding fit
+		 * @type {boolean}
+		 * @default
+		 */
+		this.autoCompute = true;
+		this.currentPose = null;
 	}
+
+	MeshData.prototype = Object.create(Component.prototype);
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
+
+	/**
+	 * Set the bounding volume type (sphere, box etc)
+	 *
+	 * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component
+	 * @param {boolean} autoCompute If true, automatically compute bounding fit
+	 */
+	MeshData.prototype.setModelBound = function (modelBound, autoCompute) {
+		this.modelBound = modelBound;
+		this.autoCompute = autoCompute;
+	};
+
+	/**
+	 * Compute bounding center and bounds for this mesh
+	 */
+	MeshData.prototype.computeBoundFromPoints = function () {
+		if (this.autoCompute && this.modelBound !== null) {
+			var verts = this.getAttributeBuffer('POSITION');
+			if (verts !== undefined) {
+				this.modelBound.computeFromPoints(verts);
+				this.autoCompute = false;
+			}
+		}
+	};
 
 	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};

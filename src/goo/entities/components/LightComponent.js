@@ -8,7 +8,7 @@ define(['goo/entities/components/Component'],
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
 	 */
 	function LightComponent(light) {
-		this.type = 'LightComponent';
+		Component.call(this, 'LightComponent', false);
 
 		this.light = light;
 	}

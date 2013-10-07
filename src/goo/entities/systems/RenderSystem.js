@@ -22,7 +22,7 @@ function (
 	 * @property {Boolean} doRender Only render if set to true
 	 */
 	function RenderSystem() {
-		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
+		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshData']);
 
 		this.entities = [];
 		this.renderList = [];

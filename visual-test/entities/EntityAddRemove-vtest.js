@@ -43,7 +43,7 @@ require([
 
 	var gui = new window.dat.GUI();
 
-	function anisotropicDemo(goo) {
+	function entityTest(goo) {
 		var boxEntity1 = createBoxEntity(goo, 3);
 		boxEntity1.transform.setTranslation(0, 0, 0);
 
@@ -92,16 +92,16 @@ require([
 	}
 
 	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createBox(size, size, size);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+		var boxEntity = goo.world.createEntity('box');
+		boxEntity.addComponent(ShapeCreator.createBox(size, size, size));
 
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		TextureCreator.clearCache();
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
-		entity.meshRendererComponent.materials.push(material);
+		var meshRendererComponent = boxEntity.addComponent(MeshRendererComponent);
+		meshRendererComponent.materials.push(material);
 
-		return entity;
+		return boxEntity;
 	}
 
 	function init() {
@@ -112,7 +112,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		anisotropicDemo(goo);
+		entityTest(goo);
 	}
 
 	init();

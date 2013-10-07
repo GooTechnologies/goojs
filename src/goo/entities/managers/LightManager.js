@@ -13,7 +13,7 @@ define(['goo/entities/EventHandler'],
 	}
 
 	LightManager.prototype.addedComponent = function (entity, component) {
-		if (component.type !== 'LightComponent') {
+		if (component.componentType !== 'LightComponent') {
 			return;
 		}
 
@@ -24,7 +24,7 @@ define(['goo/entities/EventHandler'],
 	};
 
 	LightManager.prototype.removedComponent = function (entity, component) {
-		if (component.type !== 'LightComponent') {
+		if (component.componentType !== 'LightComponent') {
 			return;
 		}
 

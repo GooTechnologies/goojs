@@ -1,9 +1,22 @@
-define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix4x4", 'goo/math/MathUtils', 'goo/math/Vector3'], /** @lends */
-function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
+define([
+	"goo/entities/systems/System",
+	"goo/renderer/Renderer",
+	"goo/math/Matrix4x4",
+	'goo/math/MathUtils',
+	'goo/math/Vector3'
+],
+/** @lends */
+function (
+	System,
+	Renderer,
+	Matrix4x4,
+	MathUtils,
+	Vector3
+) {
 	"use strict";
 
 	function CSSTransformSystem (renderer) {
-		System.call(this, "CSSTransformSystem", ["TransformComponent", "CSSTransformComponent"]);
+		System.call(this, "CSSTransformSystem", ["CSSTransformComponent"]);
 
 		this.renderer = renderer;
 
@@ -72,11 +85,11 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 			scale = [scale, -scale, scale].join(',');
 
 			if(component.faceCamera) {
-				entity.transformComponent.worldTransform.matrix.getTranslation(this.tmpVector);
+				entity.worldTransform.matrix.getTranslation(this.tmpVector);
 				this.tmpMatrix.copy(camera.getViewInverseMatrix());
 				this.tmpMatrix.setTranslation(this.tmpVector);
 			} else {
-				this.tmpMatrix.copy(entity.transformComponent.worldTransform.matrix);
+				this.tmpMatrix.copy(entity.worldTransform.matrix);
 			}
 
 			style = 'translate3d(-50%,-50%,0) '+getCSSMatrix(this.tmpMatrix) + 'scale3d('+scale+')';

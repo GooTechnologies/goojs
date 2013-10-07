@@ -38,16 +38,16 @@ define([
 
 	DebugDrawHelper.getRenderablesFor = function(component) {
 		var meshes, material;
-		if(component.type === 'LightComponent') {
+		if(component.componentType === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light);
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
-		} else if (component.type === 'CameraComponent') {
+		} else if (component.componentType === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera);
 			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
 			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
-		} else if (component.type === 'MeshRendererComponent') {
+		} else if (component.componentType === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		}
@@ -74,8 +74,8 @@ define([
 			}
 			component.camera.changedProperties = false;
 		}
-		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
-		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component, scale);
+		DebugDrawHelper[component.componentType].updateMaterial(renderables[0].materials[0], component);
+		DebugDrawHelper[component.componentType].updateTransform(renderables[1].transform, component, scale);
 
 		renderables[0].transform.scale.scale(scale);
 		renderables[0].transform.update();

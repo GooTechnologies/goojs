@@ -9,7 +9,7 @@ function(Component) {
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
 	 */
 	function ScriptComponent(scripts) {
-		this.type = 'ScriptComponent';
+		Component.call(this, 'ScriptComponent', true);
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;

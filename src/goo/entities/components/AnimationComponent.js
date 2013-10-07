@@ -21,12 +21,8 @@ function (
 	 * @class Holds the animation data.
 	 */
 	function AnimationComponent(pose) {
-		/**
-		 * @type {string}
-		 * @readonly
-		 * @default
-		 */
-		this.type = 'AnimationComponent';
+		Component.call(this, 'AnimationComponent', false);
+
 		/**
 		 * @type {AnimationLayer[]}
 		 */

@@ -24,7 +24,7 @@ function (
 	 * @property {Boolean} doRender Only render if set to true
 	 */
 	function DebugRenderSystem() {
-		System.call(this, 'DebugRenderSystem', ['TransformComponent']);
+		System.call(this, 'DebugRenderSystem', null);
 
 		this._renderablesTree = {};
 		this.renderList = [];

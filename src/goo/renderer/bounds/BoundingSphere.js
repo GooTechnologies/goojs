@@ -1,15 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
-	'goo/renderer/bounds/BoundingVolume',
-	'goo/renderer/MeshData'
+	'goo/renderer/bounds/BoundingVolume'
 ],
 /** @lends */
 function (
 	Vector3,
 	MathUtils,
-	BoundingVolume,
-	MeshData
+	BoundingVolume
 ) {
 	"use strict";
 
@@ -71,7 +69,22 @@ function (
 
 		var vertList = [];
 		var store = [];
-		var vertsPerPrimitive = MeshData.getVertexCount(data.indexModes[section]);
+		var vertsPerPrimitive = 3;
+		switch (data.indexModes[section]) {
+			case "Triangles":
+			case "TriangleFan":
+			case "TriangleStrip":
+				vertsPerPrimitive = 3;
+				break;
+			case "Lines":
+			case "LineStrip":
+			case "LineLoop":
+				vertsPerPrimitive = 2;
+				break;
+			case "Points":
+				vertsPerPrimitive = 1;
+				break;
+		}
 
 		var count = 0;
 		for (var i = start; i < end; i++) {

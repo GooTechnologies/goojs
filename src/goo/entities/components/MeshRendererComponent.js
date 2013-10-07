@@ -7,7 +7,7 @@ define(['goo/entities/components/Component'],
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 */
 	function MeshRendererComponent() {
-		this.type = 'MeshRendererComponent';
+		Component.call(this, 'MeshRendererComponent', false);
 
 		/** Materials to use when rendering
 		 * @type {Material[]}
