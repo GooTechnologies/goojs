@@ -27,6 +27,10 @@ function () {
 		// else do a binary search from the beginning
 		// would that be faster? probably, but in rare circumstances when there are a lot of frames skipped
 
+		for (var i = 0; this.data[i].time <= time; i++) ;
+		return i;
+
+		/*
 		if (time > this.data[this.lastKey].time) {
 			for (; this.data[this.lastKey].time <= time; this.lastKey++) ;
 			this.lastKey--;
@@ -36,6 +40,7 @@ function () {
 		}
 
 		return this.lastKey;
+		*/
 	};
 
 	LinearInterpolator.prototype.getAt = function(time) {
