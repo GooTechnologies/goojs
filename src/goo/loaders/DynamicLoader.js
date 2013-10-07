@@ -323,7 +323,7 @@ function(
 					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
 				}
 				if (config != null) {
-					return this._objects[ref] = handler.update(ref, config).then(function(object) {
+					return this._objects[ref] = handler.update(ref, config, options).then(function(object) {
 						return that._objects[ref] = object;
 					});
 				} else {

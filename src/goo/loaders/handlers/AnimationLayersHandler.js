@@ -37,10 +37,25 @@ define([
 	AnimationLayersHandler.prototype = Object.create(ConfigHandler);
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
-	AnimationLayersHandler.prototype.update = function(ref, config) {
+	AnimationLayersHandler.prototype.update = function(ref, config, options) {
 		var object = this._objects[ref] || this._create(ref);
 		var promises = [];
-
+		if (options && options.animation && options.animation.shallow) {
+			for (var i = 0; i < config.layers.length; i++) {
+				var layer = object[i];
+				if (layer._layerBlender) {
+					layer._layerBlender._blendWeight = config.layers[i].blendWeight;
+				}
+				if (config.layers[i].defaultState && layer._steadyStates[config.layers[i].defaultState]) {
+					if (layer._currentState !== layer._steadyStates[config.layers[i].defaultState]) {
+						layer.setCurrentStateByName(config.layers[i].defaultState, true);
+					}
+				} else {
+					layer.setCurrentState();
+				}
+			}
+			return PromiseUtil.createDummyPromise(object);
+		}
 		if (config.layers instanceof Array) {
 			for (var i = 0; i < config.layers.length; i++) {
 				var layerConfig = config.layers[i];
