@@ -3,6 +3,18 @@ GooJS
 
 Goo Engine in JavaScript
 
+Install dependencies
+--------------------
+
+First install dependencies:
+
+    npm install
+
+Optionally, if you want to runt Grunt using just the `grunt` command,
+install Grunt globally (may need to be run as root):
+
+    npm install -g grunt-cli
+
 Style checks
 ------------
 

@@ -29,7 +29,7 @@ option '-i', '--include [LIB]', 'Include library e.g. requireLib'
 
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
 	rimraf 'out/minified', ->
-		runCommand 'grunt minify'
+		runCommand 'node_modules/grunt-cli/bin/grunt minify'
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server
