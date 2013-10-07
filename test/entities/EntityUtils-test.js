@@ -74,5 +74,18 @@ define([
 			expect(entity.hasComponent('LightComponent')).toBeTruthy();
 			expect(entity.hasComponent('CameraComponent')).toBeTruthy();
 		});
+
+		it('can get the root entity', function() {
+			var e1 = world.createEntity();
+			var e2 = world.createEntity();
+			e1.transformComponent.attachChild(e2.transformComponent);
+			var e3 = world.createEntity();
+			e2.transformComponent.attachChild(e3.transformComponent);
+			world.process();
+
+			expect(EntityUtils.getRoot(e1)).toBe(e1);
+			expect(EntityUtils.getRoot(e2)).toBe(e1);
+			expect(EntityUtils.getRoot(e3)).toBe(e1);
+		});
 	});
 });

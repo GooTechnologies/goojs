@@ -11,14 +11,14 @@ function(
 ) {
 	"use strict";
 
-	function WASDAction(id, settings) {
+	function WASDAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.keysPressed = {};
 
 		this.eventListener = function(event) {
-			var keyname = WASDAction._keys[event.which]
+			var keyname = WASDAction._keys[event.which];
 			if (keyname !== undefined) {
 				this.updated = true;
 				this.keysPressed[keyname] = true;
@@ -30,7 +30,7 @@ function(
 
 	WASDAction.prototype.configure = function(settings) {
 		this.everyFrame = true;
-		this.targets = settings.transitions
+		this.targets = settings.transitions;
 	};
 
 	WASDAction._keys = {
@@ -43,7 +43,7 @@ function(
 		40:'down',
 		39:'right',
 		32:'space'
-	}
+	};
 
 	WASDAction.external = (function(){
 		var transitions = [];
@@ -58,22 +58,20 @@ function(
 		return {
 			transitions:transitions,
 			parameters: []
-		}
+		};
 	})();
-
 
 	WASDAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-
 	WASDAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			var keyKeys = _.keys(WASDAction._keys)
+			var keyKeys = _.keys(WASDAction._keys);
 
 			for (var keyname in this.keysPressed) {
-				var target = this.targets[keyname]
+				var target = this.targets[keyname];
 				if (typeof target === 'string') {
 					fsm.send(target, {});
 				}

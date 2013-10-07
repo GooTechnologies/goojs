@@ -9,7 +9,7 @@ function(
 ) {
 	"use strict";
 
-	function KeyDownAction(id, settings) {
+	function KeyDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;

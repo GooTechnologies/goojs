@@ -13,3 +13,6 @@ doc/
 out/
 minified/
 output/
+
+# Created when minifying
+src/goo.js

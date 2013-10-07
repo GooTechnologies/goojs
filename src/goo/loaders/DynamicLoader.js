@@ -55,8 +55,24 @@ function(
 	 *
 	 */
 
-	var _jsonTest = /\.(shader|script|entity|material|scene|mesh|texture|skeleton|animation|clip|bundle|project|machine|posteffect|animstate)$/;
+	var _json_types = [
+		'shader',
+		'script',
+		'entity',
+		'material',
+		'scene',
+		'mesh',
+		'texture',
+		'skeleton',
+		'animation',
+		'clip',
+		'bundle',
+		'project',
+		'machine',
+		'posteffect',
+		'animstate'];
 
+	var _text_types = ['vert', 'frag'];
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
@@ -230,7 +246,7 @@ function(
 		return this._loadRef(ref).then(function(config) {
 			var handled = 0;
 			var promises = [];
-			if (options.recursive && ConfigHandler.getHandler(that._getTypeForRef(ref))) {
+			if (options.recursive && ConfigHandler.getHandler(DynamicLoader.getTypeForRef(ref))) {
 				var childRefs = that._getRefsFromConfig(config);
 
 				var handleChildRef = function(childRef) {
@@ -267,7 +283,6 @@ function(
 	 */
 	DynamicLoader.prototype.remove = function(ref) {
 		delete this._objects[ref];
-		delete this._configs[ref];
 		return this._handle(ref, null);
 	};
 
@@ -288,7 +303,7 @@ function(
 				return PromiseUtil.createDummyPromise(this._objects[ref]);
 			}
 		} else {
-			type = this._getTypeForRef(ref);
+			type = DynamicLoader.getTypeForRef(ref);
 			handlerClass = ConfigHandler.getHandler(type);
 
 			if (handlerClass) {
@@ -308,7 +323,7 @@ function(
 					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
 				}
 				if (config != null) {
-					return this._objects[ref] = handler.update(ref, config).then(function(object) {
+					return this._objects[ref] = handler.update(ref, config, options).then(function(object) {
 						return that._objects[ref] = object;
 					});
 				} else {
@@ -362,18 +377,18 @@ function(
 		// Load ref with ajax
 		url = this._rootPath + window.escape(ref);
 
-		if (this._isImageRef(ref)) {
+		if (DynamicLoader.isImageRef(ref)) {
 			promise = this._ajax.loadImage(url);
-		} else if (this._isBinaryRef(ref)) {
+		} else if (DynamicLoader.isBinaryRef(ref)) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (this._isUrlRef(ref)) {
+		} else if (DynamicLoader.isUrlRef(ref)) {
 			promise = PromiseUtil.createDummyPromise(url);
 		} else {
 			promise = this._ajax.load(url);
 		}
 
 		promise = promise.then(function(data) {
-			if (_jsonTest.test(ref)) {
+			if (DynamicLoader.isJSONRef(ref)) {
 				return that._configs[ref] = JSON.parse(data);
 			} else {
 				return that._configs[ref] = data;
@@ -409,22 +424,39 @@ function(
 		return _refs;
 	};
 
-	DynamicLoader.prototype._getTypeForRef = function(ref) {
+
+
+	DynamicLoader.getTypeForRef = function(ref) {
 		return ref.split('.').pop().toLowerCase();
 	};
 
-	DynamicLoader.prototype._isImageRef = function(ref) {
-		var type = this._getTypeForRef(ref);
+
+	DynamicLoader.isJSONRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		return _.indexOf(_json_types, type) >= 0;
+	};
+
+	/**
+	 * Images that the browser can handle (jpg, png, gif)
+	 */
+	DynamicLoader.isImageRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_image_types, type) >= 0;
 	};
 
-	DynamicLoader.prototype._isBinaryRef = function(ref) {
-		var type = this._getTypeForRef(ref);
+	/**
+	 * .bin files and non-image textures (dds, tga, crn...)
+	 */
+	DynamicLoader.isBinaryRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
 	};
 
-	DynamicLoader.prototype._isUrlRef = function(ref) {
-		var type = this._getTypeForRef(ref);
+	/**
+	 * Lazy loaded media (sound)
+	 */
+	DynamicLoader.isUrlRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
 		return _.indexOf(_url_types, type) >= 0;
 	};
 

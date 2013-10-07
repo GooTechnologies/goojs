@@ -7,7 +7,7 @@ function(
 ) {
 	"use strict";
 
-	function LogVariableAction(id, settings) {
+	function LogVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.currentTime = 0;

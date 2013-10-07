@@ -5,13 +5,12 @@ function(
 	) {
 	"use strict";
 
-	function SetAnimationAction(settings) {
+	function SetAnimationAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 		this.everyFrame = false;
 	}
 
 	SetAnimationAction.prototype = Object.create(Action.prototype);
-
 
 	SetAnimationAction.prototype.configure = function(settings) {
 		var parameters = SetAnimationAction.external.parameters;
@@ -19,30 +18,24 @@ function(
 		for (var pi = 0; pi < parameters.length; pi++) {
 			var parameter = parameters[pi];
 
-			if (settings[parameter.key] != null)
+			if (settings[parameter.key] != null) {
 				this[parameter.key] = settings[parameter.key];
-			else 
+			} else {
 				this[parameter.key] = parameter['default'];
+			}
 		}
 	};
 
-
-
 	SetAnimationAction.external = {
-		parameters: [
-		{
+		parameters: [{
 			name:'Animation',
 			key:'animation',
 			type:'string'
-		},
-		{
+		}, {
 			name:'On every frame',
 			key:'everyFrame',
 			type:'boolean'
-		}
-
-		],
-
+		}],
 		transitions:[]
 	};
 

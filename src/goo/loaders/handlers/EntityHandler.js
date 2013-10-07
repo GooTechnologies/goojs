@@ -4,14 +4,16 @@ define([
 	'goo/entities/Entity',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/entities/EntityUtils'
 ], function(
 	ConfigHandler,
 	ComponentHandler,
 	Entity,
 	RSVP,
 	pu,
-	_
+	_,
+	EntityUtils
 ) {
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -44,7 +46,37 @@ define([
 			object = this._create(ref);
 		}
 
-		object.skip = !!config.hidden;
+		// hide/unhide entities and their descendants
+		if (!!config.hidden) {
+			object.hidden = true;
+
+			// hide everything underneath this
+			EntityUtils.traverse(object, function(entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.hidden = true;
+				}
+			});
+		} else {
+			object.hidden = false;
+
+			//first search if it has hidden parents
+			var cont = true;
+			var pointer = object;
+			while (pointer.transformComponent.parent) {
+				pointer = pointer.transformComponent.parent.entity;
+				if (pointer.hidden) { cont = false; break; }
+			}
+
+			if (cont) {
+				EntityUtils.traverse(object, function(entity) {
+					if (entity.hidden) { return false; }
+					if (entity.meshRendererComponent) {
+						entity.meshRendererComponent.hidden = entity.hidden;
+					}
+				});
+			}
+		}
+
 
 		var promises = [];
 		for (var componentName in config.components) {
@@ -92,7 +124,8 @@ define([
 
 	EntityHandler.prototype.remove = function(ref) {
 		var entity = this.world.entityManager.getEntityByName(ref);
-		this.world.removeEntity(entity);
+		if (typeof entity === 'object')
+			this.world.removeEntity(entity);
 	};
 
 	return EntityHandler;

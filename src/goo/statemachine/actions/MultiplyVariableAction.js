@@ -9,7 +9,7 @@ function(
 ) {
 	"use strict";
 
-	function MultiplyVariableAction(settings) {
+	function MultiplyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 

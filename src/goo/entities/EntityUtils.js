@@ -92,17 +92,30 @@ define([
 		/**
 		 * Traverse entity hierarchy with callback
 		 * @param {Entity} entity The entity to begin traversing from
-		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy
+		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
+		 * The traversing can be stopped from propagating if the callback returns false.
 		 */
 		EntityUtils.traverse = function (entity, callback, level) {
 			level = level !== undefined ? level : 0;
 
-			callback(entity, level);
-
-			for (var j=0;j<entity.transformComponent.children.length;j++) {
-				var child = entity.transformComponent.children[j];
-				EntityUtils.traverse(child.entity, callback, level + 1);
+			if (callback(entity, level) !== false) {
+				for (var i = 0; i < entity.transformComponent.children.length; i++) {
+					var child = entity.transformComponent.children[i];
+					EntityUtils.traverse(child.entity, callback, level + 1);
+				}
 			}
+		};
+
+		/**
+		 * Traverse the entity hierarchy upwards, returning the root entity
+		 * @param {Entity} entity The entity to begin traversing from
+		 * @returns {Entity} The root entity
+		 */
+		EntityUtils.getRoot = function (entity) {
+			while (entity.transformComponent.parent) {
+				entity = entity.transformComponent.parent.entity;
+			}
+			return entity;
 		};
 
 		EntityUtils.updateWorldTransform = function (transformComponent) {
@@ -156,10 +169,12 @@ define([
 					entity.name = arg;
 				} else if (Array.isArray(arg) && arg.length === 3) {
 					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
-				} else if( typeof arg.run === 'function' ) {
-					entity.setComponent(new ScriptComponent(arg));
+				} else if (typeof arg.run === 'function') {
+					if (!entity.hasComponent('ScriptComponent')) {
+						entity.setComponent(new ScriptComponent());
+					}
+					entity.scriptComponent.scripts.push(arg);
 				}
-				
 			}
 
 			return entity;

@@ -189,7 +189,7 @@ define([
 				for (var j = 0; j < entities.length; j++) {
 					var entity = entities[j];
 					if ((that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) && !that.world.entityManager.containsEntity(entity)) {
-						console.log("Adding " + entity.name + " to world");
+						//console.log("Adding " + entity.name + " to world");
 						entity.addToWorld();
 					}
 				}

@@ -23,11 +23,7 @@ function (System) {
 			var particleComponent = entity.particleComponent;
 
 			if (particleComponent.enabled) {
-				try {
-					this.updateParticles(entity, particleComponent, tpf);
-				} catch (e) {
-					console.log(e.stack);
-				}
+				this.updateParticles(entity, particleComponent, tpf);
 			}
 		}
 	};

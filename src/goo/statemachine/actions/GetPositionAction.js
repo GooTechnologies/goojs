@@ -7,7 +7,7 @@ function(
 ) {
 	"use strict";
 
-	function GetPositionAction(settings) {
+	function GetPositionAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
