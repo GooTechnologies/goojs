@@ -5,7 +5,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/util/DebugDrawHelper'
+	'goo/debug/DebugDrawHelper'
 ],
 /** @lends */
 function (

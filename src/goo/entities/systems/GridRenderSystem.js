@@ -7,7 +7,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/util/DebugDrawHelper',
+	'goo/debug/DebugDrawHelper',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'

@@ -273,6 +273,7 @@ function (
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
 
+	//TODO: move this to Logo
 	GooRunner.prototype._buildLogo = function (settings) {
 		var div = document.createElement('div');
 		var svg = Logo.getLogo({

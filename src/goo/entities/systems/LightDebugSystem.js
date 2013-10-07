@@ -4,7 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/LightPointer'],
+	'goo/debug/LightPointer'],
 	/** @lends */
 	function (
 		System,
