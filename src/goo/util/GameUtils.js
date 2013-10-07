@@ -255,6 +255,7 @@ function () {
 	 * @param {Element} [global=window] The global element (for compatibility checks and patching)
 	 */
 	GameUtils.initPointerLockShims = function (global) {
+		return;
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 		var mouseEventPrototype = global.MouseEvent.prototype;

@@ -98,8 +98,8 @@ function (
 			document.body.appendChild(this.stats.domElement);
 		}
 		if (parameters.logo === undefined || parameters.logo) {
-			var logoDiv = this._buildLogo(parameters.logo);
-			document.body.appendChild(logoDiv);
+			//var logoDiv = this._buildLogo(parameters.logo);
+			//document.body.appendChild(logoDiv);
 		}
 
 		this.callbacks = [];
