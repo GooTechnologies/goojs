@@ -19,7 +19,8 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../../lib/V'
 ], function (
 	GooRunner,
 	World,
@@ -35,7 +36,8 @@ require([
 	MeshRendererComponent,
 	Vector3,
 	PointLight,
-	LightComponent
+	LightComponent,
+	V
 	) {
 	'use strict';
 
@@ -51,29 +53,6 @@ require([
 				sphereEntity.addToWorld();
 			}
 		}
-	}
-
-	function addUserCamera(goo) {
-		var camera = new Camera(45, 1, 1, 1000);
-
-		var cameraEntity = goo.world.createEntity("UserCameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-
-		var cameraComponent = new CameraComponent(camera);
-		cameraComponent.isMain = true;
-		cameraEntity.setComponent(cameraComponent);
-
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(25, Math.PI / 4, 0)
-		}));
-		cameraEntity.setComponent(scripts);
-
-		cameraEntity.addToWorld();
-
-		return camera;
 	}
 
 	function addLight(goo) {
@@ -93,7 +72,7 @@ require([
 		// basic setup
 		addSpheres(goo, 15);
 		addLight(goo);
-		addUserCamera(goo);
+		V.addOrbitCamera(goo, new Vector3(25, Math.PI / 4, 0));
 
 		// pick events
 		/*goo.setEventHandlers({

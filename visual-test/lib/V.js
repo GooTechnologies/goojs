@@ -1,8 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
 
 define([
 	'goo/entities/GooRunner',
