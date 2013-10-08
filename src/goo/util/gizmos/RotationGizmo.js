@@ -215,7 +215,20 @@ define([
 		}
 	}
 
-	var inclined8thpi = inclinedType1(Math.PI / 4, Math.PI / 16);
+	function inclinedType2 (size, t) {
+		return function (x) {
+			var z = x % size;
+			z += z < 0 ? size : 0;
+			if (z < t) {
+				return x - z;
+			} else if (z > size - t) {
+				return x + size - z;
+			}
+			return x;
+		}
+	}
+
+	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 32);
 	var identitate = function(x) { return x; };
 	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
 	var tranFun = inclined8thpi;
@@ -236,45 +249,18 @@ define([
 					var newAngleX = tranFun(this.accumulatedRotationThorX);
 					this._rotation.rotateX(newAngleX - this.oldAngleX);
 					this.oldAngleX = newAngleX;
-					/*
-					if (this.accumulatedRotationThorX > angleLimit) {
-						this.accumulatedRotationThorX -= angleLimit;
-						this._rotation.rotateX(angleLimit);
-					} else if (this.accumulatedRotationThorX < 0) {
-						this.accumulatedRotationThorX += angleLimit;
-						this._rotation.rotateX(-angleLimit);
-					}
-					*/
 					break;
 				case 1:
 					this.accumulatedRotationThorY += sum;
 					var newAngleY = tranFun(this.accumulatedRotationThorY);
 					this._rotation.rotateY(newAngleY - this.oldAngleY);
 					this.oldAngleY = newAngleY;
-					/*
-					if (this.accumulatedRotationThorY > angleLimit) {
-						this.accumulatedRotationThorY -= angleLimit;
-						this._rotation.rotateY(angleLimit);
-					} else if (this.accumulatedRotationThorY < 0) {
-						this.accumulatedRotationThorY += angleLimit;
-						this._rotation.rotateY(-angleLimit);
-					}
-					*/
 					break;
 				case 2:
 					this.accumulatedRotationThorZ += sum;
 					var newAngleZ = tranFun(this.accumulatedRotationThorZ);
 					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
 					this.oldAngleZ = newAngleZ;
-					/*
-					if (this.accumulatedRotationThorZ > angleLimit) {
-						this.accumulatedRotationThorZ -= angleLimit;
-						this._rotation.rotateZ(angleLimit);
-					} else if (this.accumulatedRotationThorZ < 0) {
-						this.accumulatedRotationThorZ += angleLimit;
-						this._rotation.rotateZ(-angleLimit);
-					}
-					*/
 					break;
 			}
 		} else {
@@ -283,12 +269,18 @@ define([
 
 			switch(this._activeHandle.axis) {
 				case 0:
+					this.accumulatedRotationThorX += sum;
+					//this.oldAngleX = this.accumulatedRotationThorX;
 					this._rotation.rotateX(sum);
 					break;
 				case 1:
+					this.accumulatedRotationThorY += sum;
+					//this.oldAngleY = this.accumulatedRotationThorY;
 					this._rotation.rotateY(sum);
 					break;
 				case 2:
+					this.accumulatedRotationThorZ += sum;
+					//this.oldAngleZ = this.accumulatedRotationThorZ;
 					this._rotation.rotateZ(sum);
 					break;
 			}
