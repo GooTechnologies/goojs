@@ -2,22 +2,6 @@ var glob = require('glob');
 var _ = require('underscore')
 var fs = require('fs')
 
-// Create the goo.js dummy module that depends on all other js files.
-function createMainFile() {
-	var sourceFiles = glob.sync('**/*.js', {cwd: 'src/goo/'})
-	var allModules = _.map(sourceFiles, function(f) {
-		return 'goo/' + f.replace(/\.js/, '');
-	});
-
-	fs.writeFileSync('src/goo.js', 'define([\n' +
-		_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
-	'\n], function() {});\n')
-}
-
-// This should not be done every time grunt runs; only when we're minifying.
-// I wonder how to make this a dependency on the requirejs task.
-createMainFile();
-
 module.exports = function(grunt) {
 	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
 	var bundleRequire = grunt.option('bundle-require');
@@ -122,6 +106,18 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 
 	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['requirejs:build', 'wrap']);
+	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);
+
+	// Creates src/goo.js that depends on all engine modules
+	grunt.registerTask('main-file', function() {
+		var sourceFiles = glob.sync('**/*.js', {cwd: 'src/goo/'})
+		var allModules = _.map(sourceFiles, function(f) {
+			return 'goo/' + f.replace(/\.js/, '');
+		});
+
+		fs.writeFileSync('src/goo.js', 'define([\n' +
+			_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
+		'\n], function() {});\n')
+	});
 
 };
