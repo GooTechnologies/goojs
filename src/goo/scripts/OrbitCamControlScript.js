@@ -95,7 +95,7 @@ function (
 		this.xSamples = [0, 0, 0, 0, 0];
 		this.ySamples = [0, 0, 0, 0, 0];
 		this.sample = 0;
-		this.velocity = new Vector2();
+		this.velocity = new Vector2(0, 0);
 
 		this.targetSpherical = new Vector3(this.spherical);
 		this.cartesian = new Vector3();
@@ -112,7 +112,15 @@ function (
 		if(this.domElement) {
 			this.setupMouseControls();
 		}
+
+		this.lastTimeMoved = Date.now();
+
+		//this.updateDeltas(200, 300);
+		this.move(3, 1);
+		//this.applyReleaseDrift();
 	}
+
+
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
@@ -234,10 +242,12 @@ function (
 
 		document.addEventListener('mousemove', function (event) {
 			that.updateDeltas(event.clientX, event.clientY);
+			that.lastTimeMoved = Date.now();
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.applyWheel(event);
+			that.lastTimeMoved = Date.now();
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.applyWheel(event);
@@ -294,6 +304,18 @@ function (
 	};
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
+		/*
+		var now = Date.now();
+
+		if (now - this.lastTimeMoved > 5000) {
+			console.log('jolt');
+			this.lastTimeMoved = now + 2500;
+			//this.velocity.set((Math.round(Math.random) * 2 - 1) * 0.2, (Math.round(Math.random) * 2 - 1) * 0.2);
+			//this.updateDeltas(Math.random() * 100, Math.random() * 100);
+
+			this.move(Math.random()-0.5, Math.random()-0.5);
+		}
+          */
 		if (env) {
 			if(!this.domElement && env.domElement) {
 				this.domElement = env.domElement;

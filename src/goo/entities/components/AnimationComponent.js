@@ -41,6 +41,10 @@ function (
 		var layer = new AnimationLayer(AnimationLayer.BASE_LAYER_NAME);
 		this.layers.push(layer);
 		this._skeletonPose = pose;
+
+		this.paused = false;
+		this.lastTimeOfPause = null;
+		this.accumulatedDelay = 0;
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -75,6 +79,10 @@ function (
 	 * Update animations
 	 */
 	AnimationComponent.prototype.update = function (globalTime) {
+		if (this.paused) return;
+
+		globalTime -= this.accumulatedDelay;
+
 		// grab current global time
 		var globalTime = globalTime || World.time;
 
@@ -192,6 +200,21 @@ function (
 	AnimationComponent.prototype.setTimeScale = function(timeScale) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setTimeScale(timeScale);
+		}
+	};
+
+	AnimationComponent.prototype.pause = function() {
+		if (!this.paused) {
+			this.lastTimeOfPause = World.time;
+			this.paused = true;
+		}
+	};
+
+	AnimationComponent.prototype.resume = function() {
+		if (this.paused) {
+			this.accumulatedDelay += World.time - this.lastTimeOfPause;
+			console.log(this.accumulatedDelay);
+			this.paused = false;
 		}
 	};
 
