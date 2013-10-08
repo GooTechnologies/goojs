@@ -48,6 +48,14 @@ define([
 		this._ray = new Ray();
 		this._m1 = new Matrix3x3();
 		this._m2 = new Matrix3x3();
+
+		//TODO: create a function that does this sort of thing
+		this.snap = false;
+		this.accumulatedRotationX = 0;
+		this.accumulatedRotationY = 0;
+		this.accumulatedRotationThorX = 0;
+		this.accumulatedRotationThorY = 0;
+		this.accumulatedRotationThorZ = 0;
 	}
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 
@@ -120,8 +128,32 @@ define([
 
 	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
 		this._rotation.setIdentity();
-		this._rotation.rotateY(dx * this._rotationScale);
-		this._rotation.rotateX(dy * this._rotationScale);
+
+		if (this.snap) {
+			this.accumulatedRotationY += dx * this._rotationScale;
+			this.accumulatedRotationX += dy * this._rotationScale;
+
+			var angleLimit = Math.PI / 8;
+
+			if (this.accumulatedRotationX > angleLimit) {
+				this.accumulatedRotationX -= angleLimit;
+				this._rotation.rotateX(angleLimit);
+			} else if (this.accumulatedRotationX < 0) {
+				this.accumulatedRotationX += angleLimit;
+				this._rotation.rotateX(-angleLimit);
+			}
+
+			if (this.accumulatedRotationY > angleLimit) {
+				this.accumulatedRotationY -= angleLimit;
+				this._rotation.rotateY(angleLimit);
+			} else if (this.accumulatedRotationY < 0) {
+				this.accumulatedRotationY += angleLimit;
+				this._rotation.rotateY(-angleLimit);
+			}
+		} else {
+			this._rotation.rotateY(dx * this._rotationScale);
+			this._rotation.rotateX(dy * this._rotationScale);
+		}
 
 		var camMat = Renderer.mainCamera.getViewMatrix().data;
 		var camRotation = this._m1, screenRotation = this._m2;
@@ -144,19 +176,60 @@ define([
 
 	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
 		this._rotation.setIdentity();
-		var sum = (dx * this._direction.x) + (dy * this._direction.y);
-		sum *= this._rotationScale;
 
-		switch(this._activeHandle.axis) {
-			case 0:
-				this._rotation.rotateX(sum);
-				break;
-			case 1:
-				this._rotation.rotateY(sum);
-				break;
-			case 2:
-				this._rotation.rotateZ(sum);
-				break;
+		if (this.snap) {
+			var angleLimit = Math.PI / 8;
+
+			var sum = (dx * this._direction.x) + (dy * this._direction.y);
+			sum *= this._rotationScale;
+
+			switch(this._activeHandle.axis) {
+				case 0:
+					this.accumulatedRotationThorX += sum;
+					if (this.accumulatedRotationThorX > angleLimit) {
+						this.accumulatedRotationThorX -= angleLimit;
+						this._rotation.rotateX(angleLimit);
+					} else if (this.accumulatedRotationThorX < 0) {
+						this.accumulatedRotationThorX += angleLimit;
+						this._rotation.rotateX(-angleLimit);
+					}
+					break;
+				case 1:
+					this.accumulatedRotationThorY += sum;
+					if (this.accumulatedRotationThorY > angleLimit) {
+						this.accumulatedRotationThorY -= angleLimit;
+						this._rotation.rotateY(angleLimit);
+					} else if (this.accumulatedRotationThorY < 0) {
+						this.accumulatedRotationThorY += angleLimit;
+						this._rotation.rotateY(-angleLimit);
+					}
+					break;
+				case 2:
+					this.accumulatedRotationThorZ += sum;
+					if (this.accumulatedRotationThorZ > angleLimit) {
+						this.accumulatedRotationThorZ -= angleLimit;
+						this._rotation.rotateZ(angleLimit);
+					} else if (this.accumulatedRotationThorZ < 0) {
+						this.accumulatedRotationThorZ += angleLimit;
+						this._rotation.rotateZ(-angleLimit);
+					}
+					break;
+			}
+		} else {
+			var sum = (dx * this._direction.x) + (dy * this._direction.y);
+			sum *= this._rotationScale;
+
+			switch(this._activeHandle.axis) {
+				case 0:
+					this._rotation.rotateX(sum);
+					break;
+				case 1:
+					this._rotation.rotateY(sum);
+					break;
+				case 2:
+					this._rotation.rotateZ(sum);
+					break;
+			}
 		}
 		Matrix3x3.combine(
 			this.transform.rotation,

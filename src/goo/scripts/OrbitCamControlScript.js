@@ -113,14 +113,12 @@ function (
 			this.setupMouseControls();
 		}
 
-		this.lastTimeMoved = Date.now();
-
-		//this.updateDeltas(200, 300);
-		this.move(3, 1);
-		//this.applyReleaseDrift();
+		if (properties.demoMode) {
+			this.demoMode = true;
+			this.moveInterval = properties.moveInterval;
+			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
+		}
 	}
-
-
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
@@ -304,18 +302,14 @@ function (
 	};
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
-		/*
-		var now = Date.now();
+		if (this.demoMode) {
+			var now = Date.now();
 
-		if (now - this.lastTimeMoved > 5000) {
-			console.log('jolt');
-			this.lastTimeMoved = now + 2500;
-			//this.velocity.set((Math.round(Math.random) * 2 - 1) * 0.2, (Math.round(Math.random) * 2 - 1) * 0.2);
-			//this.updateDeltas(Math.random() * 100, Math.random() * 100);
-
-			this.move(Math.random()-0.5, Math.random()-0.5);
+			if (now - this.lastTimeMoved > this.moveInterval) {
+				this.lastTimeMoved = now;
+				this.move(Math.round(Math.random())-0.5, Math.round(Math.random())-0.5);
+			}
 		}
-          */
 		if (env) {
 			if(!this.domElement && env.domElement) {
 				this.domElement = env.domElement;
