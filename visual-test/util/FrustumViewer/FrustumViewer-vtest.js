@@ -21,7 +21,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/entities/SystemBus',
-	'goo/util/FrustumViewer'
+	'goo/debug/FrustumViewer'
 ], function (
 	GooRunner,
 	World,

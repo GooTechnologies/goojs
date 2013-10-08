@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		"goo": "../../../src/goo"
+		"goo": "../../src/goo"
 	}
 });
 
@@ -20,7 +20,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../lib/V'
 ], function(
 	GooRunner,
 	World,
@@ -37,7 +38,8 @@ require([
 	Vector3,
 	DirectionalLight,
 	TextureCreator,
-	LightComponent
+	LightComponent,
+	V
 ) {
 	'use strict';
 
@@ -84,16 +86,7 @@ require([
 		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 		lightEntity.addToWorld();
 
-		var camera = new Camera(45, 1, 0.1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(15, Math.PI / 2, 0.3)
-		}));
-		cameraEntity.setComponent(scripts);
+		V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
 	}
 
 	function createBoxEntity(goo, size) {

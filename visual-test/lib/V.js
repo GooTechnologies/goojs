@@ -50,8 +50,8 @@ define([
 	'use strict';
 
 	var V = {
-		addOrbitCamera: function(goo, distance) {
-			distance = distance || 10;
+		addOrbitCamera: function(goo, spherical) {
+			var spherical = spherical || new Vector3(20, Math.PI / 2, 0);
 
 			var camera = new Camera(45, 1, 1, 1000);
 			var cameraEntity = goo.world.createEntity("CameraEntity");
@@ -62,7 +62,7 @@ define([
 			var scripts = new ScriptComponent();
 			scripts.scripts.push(new OrbitCamControlScript({
 				domElement : goo.renderer.domElement,
-				spherical : new Vector3(distance, Math.PI / 2, 0),
+				spherical : spherical,
 				demoMode: true,
 				moveInterval: 4000,
 				moveInitialDelay: 2000
