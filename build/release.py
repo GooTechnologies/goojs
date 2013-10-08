@@ -21,8 +21,9 @@ if os.name == 'nt':
     command = 'cake.cmd'
 else:
     command = 'cake'
-subprocess.check_call(['grunt', 'minify', '--goo-version=' + version])
-subprocess.check_call(['grunt', 'minify', '--goo-version=' + version, '--bundle-require'])
+grunt_command = 'node_modules/grunt-cli/bin/grunt'
+subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
+subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version, '--bundle-require'])
 subprocess.check_call([command, 'jsdoc'])
 subprocess.check_call([command, 'visualtoc'])
 
