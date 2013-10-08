@@ -51,5 +51,6 @@ for directory in (
 
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
 shutil.copy('out/goo-require.js', release_dir + '/lib/goo-require.js')
+shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('CHANGES', release_dir + '/CHANGES')
