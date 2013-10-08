@@ -193,8 +193,9 @@ function (
 		if (this.uniforms) {
 			try {
 				this.textureIndex = 0;
-				for (var name in this.uniforms) {
-					this._bindUniform(name, shaderInfo);
+				var keys = Object.keys(this.uniforms);
+				for (var i = 0, l = keys.length; i < l; i++) {
+					this._bindUniform(keys[i], shaderInfo);
 				}
 				this.errorOnce = false;
 			} catch (err) {

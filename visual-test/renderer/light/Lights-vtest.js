@@ -9,19 +9,15 @@ require([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
+	'goo/entities/components/Camera',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight',
 	'goo/util/LightPointer',
 	'goo/entities/components/LightDebugComponent'
 ], function (
@@ -29,19 +25,15 @@ require([
 	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
+	Camera,
 	OrbitCamControlScript,
 	EntityUtils,
 	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightComponent,
 	LightPointer,
 	LightDebugComponent
 	) {
@@ -57,11 +49,11 @@ require([
 		pointLight.range = 5;
 
 		var pointLightEntity = goo.world.createEntity('pointLight');
-		pointLightEntity.setComponent(new LightComponent(pointLight));
+		pointLightEntity.setComponent(pointLight);
 
 		pointLightEntity.setComponent(new LightDebugComponent());
 
-		pointLightEntity.transformComponent.transform.translation.setd(0, 0, 3);
+		pointLightEntity.transform.translation.setd(0, 0, 3);
 
 		pointLightEntity.addToWorld();
 
@@ -94,11 +86,11 @@ require([
 		directionalLight.intensity = 0.25;
 
 		var directionalLightEntity = goo.world.createEntity('directionalLight');
-		directionalLightEntity.setComponent(new LightComponent(directionalLight));
+		directionalLightEntity.setComponent(directionalLight);
 
 		directionalLightEntity.setComponent(new LightDebugComponent());
 
-		directionalLightEntity.transformComponent.transform.translation.setd(0, -5, 3);
+		directionalLightEntity.transform.translation.setd(0, -5, 3);
 
 		directionalLightEntity.addToWorld();
 
@@ -129,11 +121,11 @@ require([
 		spotLight.penumbra = 5;
 
 		var spotLightEntity = goo.world.createEntity('spotLight');
-		spotLightEntity.setComponent(new LightComponent(spotLight));
+		spotLightEntity.setComponent(spotLight);
 
 		spotLightEntity.setComponent(new LightDebugComponent());
 
-		spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
+		spotLightEntity.transform.translation.setd(0, 5, 5);
 
 		spotLightEntity.addToWorld();
 
@@ -176,8 +168,8 @@ require([
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
 				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
+				sphereEntity.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
+				sphereEntity.meshRenderer.materials.push(sphereMaterial);
 				sphereEntity.addToWorld();
 			}
 		}
@@ -189,7 +181,7 @@ require([
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.setComponent(camera);
 		cameraEntity.addToWorld();
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({

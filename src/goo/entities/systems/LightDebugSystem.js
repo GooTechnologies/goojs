@@ -46,10 +46,10 @@ define([
 	LightDebugSystem.prototype = Object.create(System.prototype);
 
 	LightDebugSystem.prototype.inserted = function (entity) {
-		var light = entity.lightComponent.light;
+		var light = entity.light;
 
 		var meshData = LightPointer.getMeshData(light);
-		entity.setComponent(new MeshDataComponent(meshData));
+		entity.addComponent(meshData);
 
 		var material = Material.createMaterial(ShaderLib.simpleColored, '');
 		material.uniforms.color = [
@@ -62,17 +62,17 @@ define([
 		meshRenderer.materials.push(material);
 		entity.setComponent(meshRenderer);
 
-		meshRenderer.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+		meshRenderer.updateBounds(entity.meshData.modelBound, entity.worldTransform);
 	};
 
 	LightDebugSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var light = entity.lightComponent.light;
+			var light = entity.light;
 			if(light.changedProperties) {
 				light.changedProperties = false;
-				entity.meshDataComponent.meshData = LightPointer.getMeshData(light);
-				entity.meshRenderer.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+				entity.meshData = LightPointer.getMeshData(light);
+				entity.meshRenderer.updateBounds(entity.meshData.modelBound, entity.worldTransform);
 			}
 			if(light.changedColor) {
 				light.changedColor = false;
@@ -86,7 +86,7 @@ define([
 	};
 
 	LightDebugSystem.prototype.deleted = function(entity) {
-		entity.clearComponent('MeshDataComponent');
+		entity.clearComponent('MeshData');
 		entity.clearComponent('MeshRenderer');
 	};
 
