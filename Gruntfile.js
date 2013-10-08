@@ -32,6 +32,41 @@ module.exports = function(grunt) {
 		engineFilename = './out/goo-require.js'
 	}
 
+	// Returns the code to add at the start and end of the minified file
+	function getWrapper() {
+		var wrapperHead = '';
+		var wrapperTail = '';
+
+		wrapperHead +=
+			'/* Goo Engine ' + engineVersion + '\n' +
+			' * Copyright 2013 Goo Technologies AB\n' +
+			' */\n' +
+			'(function(window) {';
+
+		if (bundleRequire) {
+			wrapperTail += 'window.requirejs=requirejs;';
+			wrapperTail += 'window.require=require;';
+			wrapperTail += 'window.define=define;';
+		}
+		else {
+			// Put all calls to define and require in the f function
+			wrapperHead +=
+				'function f(){';
+			wrapperTail +=
+				'}' +
+				'if(window.localStorage&&window.localStorage.gooPath){' +
+					// We're configured to not use the engine from goo.js.
+					// Don't call the f function so the modules won't be defined
+					// and require will load them separately instead.
+					'window.require.config({' +
+						'paths:{goo:localStorage.gooPath}' +
+					'})' +
+				'}else f()'
+		}
+		wrapperTail += '})(window,undefined)';
+		return [wrapperHead, wrapperTail];
+	}
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -51,7 +86,6 @@ module.exports = function(grunt) {
 					paths: {
 						'requireLib': '../lib/require'
 					},
-					wrap: true,
 
 					// I tried using a wrap block like this, but it has no effect
 					// wrap: { ... }
@@ -77,12 +111,7 @@ module.exports = function(grunt) {
 				src: ['out/minified/goo.js'],
 				dest: engineFilename,
 				options: {
-					wrapper: [
-						'/* Goo Engine ' + engineVersion + '\n' +
-						' * Copyright 2013 Goo Technologies AB\n' +
-						' */\n',
-						''
-					]
+					wrapper: getWrapper()
 				}
 			}
 		}
