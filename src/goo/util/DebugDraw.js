@@ -12,8 +12,8 @@ define(
 		// var frustumMaterial = Material.createMaterial(ShaderLib.simple, 'mat');
 		// frustumMaterial.wireframe = true;
 		// frustumMaterial.cullState.enabled = false;
-		// frustumEntity.meshRendererComponent.cullMode = 'Never';
-		// frustumEntity.meshRendererComponent.materials.push(frustumMaterial);
+		// frustumEntity.meshRenderer.cullMode = 'Never';
+		// frustumEntity.meshRenderer.materials.push(frustumMaterial);
 		// frustumEntity.addToWorld();
 
 		// goo.callbacks.push(function () {

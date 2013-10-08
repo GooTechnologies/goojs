@@ -525,7 +525,7 @@ function (
 	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshData;
-			renderInfo.materials = renderable.meshRendererComponent.materials;
+			renderInfo.materials = renderable.meshRenderer.materials;
 			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.worldTransform;
 			if(renderable.meshData.currentPose) {
 				renderInfo.currentPose = renderable.meshData.currentPose;
@@ -826,7 +826,7 @@ function (
 			var pickList = [];
 			for (var i = 0, l = renderList.length; i < l; i++) {
 				var entity = renderList[i];
-				if (!entity.meshRendererComponent || entity.meshRendererComponent.isPickable) {
+				if (!entity.meshRenderer || entity.meshRenderer.isPickable) {
 					pickList.push(entity);
 				}
 			}

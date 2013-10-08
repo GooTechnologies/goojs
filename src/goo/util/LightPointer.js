@@ -19,7 +19,7 @@ define([
 		Transform,
 		ShapeCreator,
 		MeshDataComponent,
-		MeshRendererComponent,
+		MeshRenderer,
 		Material,
 		ShaderLib,
 		MathUtils,
@@ -257,8 +257,8 @@ define([
 		var meshDataComponent = new MeshDataComponent(lampMeshData);
 		lightEntity.setComponent(meshDataComponent);
 
-		var meshRendererComponent = new MeshRendererComponent();
-		lightEntity.setComponent(meshRendererComponent);
+		var meshRenderer = new MeshRenderer();
+		lightEntity.setComponent(meshRenderer);
 
 		var material = Material.createMaterial(ShaderLib.simpleColored, '');
 		material.uniforms.color = [
@@ -266,7 +266,7 @@ define([
 			light.color.data[1],
 			light.color.data[2]
 		];
-		lightEntity.meshRendererComponent.materials.push(material);
+		lightEntity.meshRenderer.materials.push(material);
 
 		return lightEntity;
 	};
@@ -278,7 +278,7 @@ define([
 	 */
 	LightPointer.removeMesh = function (lightEntity) {
 		lightEntity.clearComponent('meshDataComponent');
-		lightEntity.clearComponent('meshRendererComponent');
+		lightEntity.clearComponent('meshRenderer');
 
 		return lightEntity;
 	};

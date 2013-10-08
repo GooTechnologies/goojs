@@ -199,9 +199,9 @@ function (
 
 	ProjectedGridWaterRenderer.prototype.setWaterEntity = function (entity) {
 		this.waterEntity = entity;
-		this.waterEntity.meshRendererComponent.cullMode = 'Never';
-		this.waterEntity.meshRendererComponent.materials[0] = this.waterMaterial;
-		// this.waterEntity.meshRendererComponent.materials[1] = this.materialWire;
+		this.waterEntity.meshRenderer.cullMode = 'Never';
+		this.waterEntity.meshRenderer.materials[0] = this.waterMaterial;
+		// this.waterEntity.meshRenderer.materials[1] = this.materialWire;
 
 		var meshData = this.waterEntity.meshDataComponent.meshData;
 		this.waterMaterial.shader.uniforms.density = [meshData.densityX, meshData.densityY];

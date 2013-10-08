@@ -22,15 +22,15 @@ define(['goo/entities/components/Camera'],
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 
-			if (entity.skip || entity.meshRendererComponent.hidden) {
+			if (entity.skip || entity.meshRenderer.hidden) {
 				continue;
 			}
 
-			if (entity.meshRendererComponent.cullMode === 'Never') {
+			if (entity.meshRenderer.cullMode === 'Never') {
 				renderList[index++] = entity;
 				entity.isVisible = true;
 			} else {
-				var bounds = entity.meshRendererComponent.worldBound;
+				var bounds = entity.meshRenderer.worldBound;
 				var result = camera.contains(bounds);
 				if (result !== Camera.Outside) {
 					renderList[index++] = entity;

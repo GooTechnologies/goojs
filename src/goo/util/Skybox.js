@@ -22,7 +22,7 @@ define([
 	TextureCreator,
 	TransformComponent,
 	MeshDataComponent,
-	MeshRendererComponent,
+	MeshRenderer,
 	ScriptComponent,
 	Transform
 ) {

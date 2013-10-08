@@ -164,7 +164,7 @@ define([
 
 		for (var i = 0; i < renderList.length; i++) {
 			var entity = renderList[i];
-			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
+			if (entity.meshRenderer.cullMode !== 'NeverOcclusionCull') {
 				var cull;
 				var bound;
 				var ocludeeComponent = entity.occludeeComponent;

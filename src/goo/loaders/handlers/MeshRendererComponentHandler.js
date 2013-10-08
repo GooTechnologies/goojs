@@ -6,20 +6,20 @@ define([
 	'goo/util/ObjectUtil'
 ], function(
 	ComponentHandler,
-	MeshRendererComponent,
+	MeshRenderer,
 	RSVP,
 	pu,
 	_
 ) {
-	function MeshRendererComponentHandler() {
+	function MeshRendererHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
 
-	MeshRendererComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
-	MeshRendererComponentHandler.prototype.constructor = MeshRendererComponentHandler;
+	MeshRendererHandler.prototype = Object.create(ComponentHandler.prototype);
+	ComponentHandler._registerClass('meshRenderer', MeshRendererHandler);
+	MeshRendererHandler.prototype.constructor = MeshRendererHandler;
 
-	MeshRendererComponentHandler.prototype._prepare = function(config) {
+	MeshRendererHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
 			materialRefs: [],
 			cullMode: 'Dynamic',
@@ -29,13 +29,13 @@ define([
 		});
 	};
 
-	MeshRendererComponentHandler.prototype._create = function(entity) {
-		var component = new MeshRendererComponent();
+	MeshRendererHandler.prototype._create = function(entity) {
+		var component = new MeshRenderer();
 		entity.setComponent(component);
 		return component;
 	};
 
-	MeshRendererComponentHandler.prototype.update = function(entity, config) {
+	MeshRendererHandler.prototype.update = function(entity, config) {
 		var that = this;
 
 		var promise;
@@ -83,12 +83,12 @@ define([
 		});
 	};
 
-	MeshRendererComponentHandler.prototype._getMaterial = function(ref) {
+	MeshRendererHandler.prototype._getMaterial = function(ref) {
 		var that = this;
 		return this.getConfig(ref).then(function(config) {
 			return that.updateObject(ref, config, that.options);
 		});
 	};
 
-	return MeshRendererComponentHandler;
+	return MeshRendererHandler;
 });

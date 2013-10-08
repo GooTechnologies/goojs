@@ -17,7 +17,7 @@ define([
 	*	@param {{camera:Camera, width:Number, height:Number}} parameters <ul> <li>camera, the camera used in the world.</li> <li>width, the width of the depth buffer.</li> <li>height, the height of the depth buffer.</li> </ul>
 	*/
 	function OcclusionCullingSystem (parameters) {
-		System.call(this, 'OcclusionCullingSystem', ['MeshRendererComponent']);
+		System.call(this, 'OcclusionCullingSystem', ['MeshRenderer']);
 
 		// TODO : Fail if some parameters are missing.
 		parameters = parameters || {};

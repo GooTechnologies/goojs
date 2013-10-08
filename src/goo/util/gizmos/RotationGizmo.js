@@ -16,7 +16,7 @@ define([
 ], function(
 	Gizmo,
 	MeshDataComponent,
-	MeshRendererComponent,
+	MeshRenderer,
 	MeshData,
 	MeshBuilder,
 	Sphere,

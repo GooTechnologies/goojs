@@ -19,7 +19,7 @@ define([
 		Transform,
 		ShapeCreator,
 		MeshDataComponent,
-		MeshRendererComponent,
+		MeshRenderer,
 		Material,
 		ShaderLib,
 		MathUtils,

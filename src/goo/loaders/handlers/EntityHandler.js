@@ -52,8 +52,8 @@ define([
 
 			// hide everything underneath this
 			EntityUtils.traverse(object, function(entity) {
-				if (entity.meshRendererComponent) {
-					entity.meshRendererComponent.hidden = true;
+				if (entity.meshRenderer) {
+					entity.meshRenderer.hidden = true;
 				}
 			});
 		} else {
@@ -70,8 +70,8 @@ define([
 			if (cont) {
 				EntityUtils.traverse(object, function(entity) {
 					if (entity.hidden) { return false; }
-					if (entity.meshRendererComponent) {
-						entity.meshRendererComponent.hidden = entity.hidden;
+					if (entity.meshRenderer) {
+						entity.meshRenderer.hidden = entity.hidden;
 					}
 				});
 			}

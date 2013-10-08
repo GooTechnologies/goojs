@@ -19,7 +19,7 @@ function (BoundingBox, BoundingSphere, Vector3) {
 
 	BoundingTree.prototype.construct = function (entity) {
 		// check entity has required components
-		if (!entity.meshRendererComponent || !entity.meshDataComponent || !entity.transformComponent) {
+		if (!entity.meshRenderer || !entity.meshDataComponent || !entity.transformComponent) {
 			console.warn("Entity missing required components for boundingtree construction: ", entity);
 			return;
 		}

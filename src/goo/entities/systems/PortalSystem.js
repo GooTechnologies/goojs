@@ -13,7 +13,7 @@ function (
 	 * @param {RenderSystem} renderSystem
 	 */
 	function PortalSystem(renderer, renderSystem) {
-		System.call(this, 'PortalSystem', ['MeshRendererComponent', 'MeshDataComponent', 'PortalComponent']);
+		System.call(this, 'PortalSystem', ['MeshRenderer', 'MeshDataComponent', 'PortalComponent']);
 
 		this.renderer = renderer;
 		this.renderSystem = renderSystem;
@@ -39,7 +39,7 @@ function (
 				if (portalComponent.alwaysRender || entity.isVisible) {
 					this.render(this.renderer, camera, target, overrideMaterial);
 
-					var material = entity.meshRendererComponent.materials[0];
+					var material = entity.meshRenderer.materials[0];
 					material.setTexture('DIFFUSE_MAP', target);
 
 					if (portalComponent.options.preciseRecursion) {

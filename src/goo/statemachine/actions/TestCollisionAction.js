@@ -24,7 +24,7 @@ function(Action) {
 
 	TestCollisionAction.prototype.onUpdate = function(fsm) {
 		if (this.entity1 !== null && this.entity2 !== null) {
-			if (this.entity1.meshRendererComponent.worldBound.intersects(this.entity2.meshRendererComponent.worldBound)) {
+			if (this.entity1.meshRenderer.worldBound.intersects(this.entity2.meshRenderer.worldBound)) {
 				fsm.handle(this.collisionEvent);
 			} else {
 				fsm.handle(this.noCollisionEvent);

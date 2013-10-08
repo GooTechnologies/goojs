@@ -7,7 +7,7 @@ function (System) {
 	 * @class Helps gather pickable entities
 	 */
 	function PickingSystem (settings) {
-		System.call(this, 'PickingSystem', ['MeshRendererComponent']);
+		System.call(this, 'PickingSystem', ['MeshRenderer']);
 		this.passive = true;
 		this.pickRay = null;
 		this.onPick = null;
@@ -29,7 +29,7 @@ function (System) {
 	};
 
 	PickingSystem.prototype.inserted = function (entity) {
-		if (entity.meshRendererComponent.isPickable && this.pickLogic) {
+		if (entity.meshRenderer.isPickable && this.pickLogic) {
 			this.pickLogic.added(entity);
 		}
 	};
@@ -47,9 +47,9 @@ function (System) {
 		var pickList = [];
 		for ( var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var meshRendererComponent = entity.meshRendererComponent;
+			var meshRenderer = entity.meshRenderer;
 
-			if (!meshRendererComponent.isPickable) {
+			if (!meshRenderer.isPickable) {
 				continue;
 			}
 
@@ -69,9 +69,9 @@ function (System) {
 			}
 
 			// just use bounding pick instead... first must have a world bound
-			else if (meshRendererComponent.worldBound) {
+			else if (meshRenderer.worldBound) {
 				// pick ray must intersect world bound
-				var result = meshRendererComponent.worldBound.intersectsRayWhere(this.pickRay);
+				var result = meshRenderer.worldBound.intersectsRayWhere(this.pickRay);
 				if (result && result.distances.length) {
 					pickList.push({
 						"entity" : entity,

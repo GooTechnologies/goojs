@@ -14,15 +14,15 @@ function(Vector3) {
 		this.opaqueSorter = function(a, b) {
 			//TODO: Add texture checks on material
 
-			var m1 = a.meshRendererComponent.materials[0];
-			var m2 = b.meshRendererComponent.materials[0];
+			var m1 = a.meshRenderer.materials[0];
+			var m2 = b.meshRenderer.materials[0];
 
 			if (m1 === null || m2 === null) {
 				return 0;
 			}
 			if(m1 === m2) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
+				var bound1 = a.meshRenderer.worldBound;
+				var bound2 = b.meshRenderer.worldBound;
 				if (bound1 === null || bound2 === null) {
 					return 0;
 				}
@@ -39,8 +39,8 @@ function(Vector3) {
 				return 0;
 			}
 			if (shader1._id === shader2._id) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
+				var bound1 = a.meshRenderer.worldBound;
+				var bound2 = b.meshRenderer.worldBound;
 				if (bound1 === null || bound2 === null) {
 					return 0;
 				}
@@ -53,8 +53,8 @@ function(Vector3) {
 			return shader1._id - shader2._id;
 		};
 		this.transparentSorter = function(a, b) {
-			var bound1 = a.meshRendererComponent.worldBound;
-			var bound2 = b.meshRendererComponent.worldBound;
+			var bound1 = a.meshRenderer.worldBound;
+			var bound2 = b.meshRenderer.worldBound;
 			var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
 			var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
 			return dist2 - dist1;
@@ -75,14 +75,14 @@ function(Vector3) {
 		var bucketSortList = [];
 		for (var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
-			var meshRendererComponent = renderable.meshRendererComponent;
+			var meshRenderer = renderable.meshRenderer;
 
-			if (!meshRendererComponent || meshRendererComponent.materials.length === 0) {
+			if (!meshRenderer || meshRenderer.materials.length === 0) {
 				renderList[index] = renderable;
 				index++;
 				continue;
 			}
-			var renderQueue = meshRendererComponent.materials[0].getRenderQueue();
+			var renderQueue = meshRenderer.materials[0].getRenderQueue();
 			var bucket = buckets[renderQueue];
 			if (!bucket) {
 				bucket = [];

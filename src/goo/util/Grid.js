@@ -15,7 +15,7 @@ function(
 	Entity,
 	EntityUtils,
 	MeshDataComponent,
-	MeshRendererComponent,
+	MeshRenderer,
 	MeshData,
 	Material,
 	Shader,
@@ -94,7 +94,7 @@ function(
 				enabled: false
 			};
 			floorMaterial.renderQueue = 9;
-			quadEntity.meshRendererComponent.materials.push(floorMaterial);
+			quadEntity.meshRenderer.materials.push(floorMaterial);
 			this.topEntity.transformComponent.attachChild(quadEntity.transformComponent);
 		}
 
@@ -108,7 +108,7 @@ function(
 		this.grids = properties.grids;
 
 		// Add the grids
-		var entity, grid, meshRendererComponent;
+		var entity, grid, meshRenderer;
 		for(var i = 0; i < properties.grids.length; i++) {
 			grid = properties.grids[i];
 
@@ -122,11 +122,11 @@ function(
 					this._buildGrid(grid)
 				)
 			);
-			meshRendererComponent = new MeshRendererComponent();
-			meshRendererComponent.materials.push(
+			meshRenderer = new MeshRenderer();
+			meshRenderer.materials.push(
 				this._buildGridMaterial(grid, i)
 			);
-			entity.setComponent(meshRendererComponent);
+			entity.setComponent(meshRenderer);
 
 			//entity.transformComponent.transform.translation.z = 0.001 * (properties.grids.length - i);
 

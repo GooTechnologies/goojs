@@ -66,7 +66,7 @@ define([
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
 		skyboxEntity.transformComponent.updateWorldTransform();
-		skyboxEntity.meshRendererComponent.hidden = true;
+		skyboxEntity.meshRenderer.hidden = true;
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
 	};
 
@@ -90,7 +90,7 @@ define([
 			this._skybox.transformComponent.updateWorldTransform();
 
 			var skybox = this._skybox;
-			var material = skybox.meshRendererComponent.materials[0];
+			var material = skybox.meshRenderer.materials[0];
 			var texture = this._skyboxTexture;
 
 			var update = !texture;
@@ -117,7 +117,7 @@ define([
 				}
 			}
 			if (!promises.length) {
-				skybox.meshRendererComponent.hidden = true;
+				skybox.meshRenderer.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
 				return;
 			}
@@ -133,7 +133,7 @@ define([
 					} else {
 						if (images.length < 6) {
 							console.debug('Need 6 images to work, have '+images.length);
-							skybox.meshRendererComponent.hidden = true;
+							skybox.meshRenderer.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
 							return;
 						}
@@ -143,7 +143,7 @@ define([
 							var img = images[i];
 							if (w !== img.width || h !== img.height) {
 								console.error('Images not all the same size, not updating');
-								skybox.meshRendererComponent.hidden = true;
+								skybox.meshRenderer.hidden = true;
 								material.setTexture('DIFFUSE_MAP', null);
 								return;
 							}

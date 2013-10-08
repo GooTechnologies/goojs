@@ -33,14 +33,14 @@ function (
 		this.doRender = {
 			CameraComponent: true,
 			LightComponent: true,
-			MeshRendererComponent: false
+			MeshRenderer: false
 		};
 		this.inserted();
 
 		this._interestComponents = [
 			'CameraComponent',
 			'LightComponent'
-			//'MeshRendererComponent'
+			//'MeshRenderer'
 		];
 
 		this.camera = null;
@@ -58,7 +58,7 @@ function (
 			}
 		});
 
-		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
+		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRenderer' });
 		this.selectionActive = false;
 	}
 

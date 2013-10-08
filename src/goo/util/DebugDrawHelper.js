@@ -16,7 +16,7 @@ define([
 ], function(
 	LightComponent,
 	CameraComponent,
-	MeshRendererComponent,
+	MeshRenderer,
 
 	PointLight,
 	DirectionalLight,
@@ -47,9 +47,9 @@ define([
 			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
 			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
-		} else if (component.componentType === 'MeshRendererComponent') {
+		} else if (component.componentType === 'MeshRenderer') {
 			meshes = meshRendererDebug.getMesh();
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererMaterial');
 		}
 		return [
 		 {

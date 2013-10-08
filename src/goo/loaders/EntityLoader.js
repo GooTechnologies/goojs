@@ -24,7 +24,7 @@ function(
 		Camera,
 		CameraComponent,
 		TransformComponent,
-		MeshRendererComponent,
+		MeshRenderer,
 		MeshDataComponent,
 		MeshData,
 		Vector3,
@@ -115,10 +115,10 @@ function(
 
 			component = entitySource.components.meshRenderer;
 			if(component) {
-				var p = this._getMeshRendererComponent(component)
-				.then(function(meshRendererComponent) {
-					loadedComponents.push(meshRendererComponent);
-					return meshRendererComponent;
+				var p = this._getMeshRenderer(component)
+				.then(function(meshRenderer) {
+					loadedComponents.push(meshRenderer);
+					return meshRenderer;
 				});
 
 				promises.push(p);
@@ -157,9 +157,9 @@ function(
 
 			if (entity.meshDataComponent
 			&& entity.meshDataComponent.meshData.type === MeshData.SKINMESH
-			&& entity.meshRendererComponent
-			&& entity.meshRendererComponent.materials.length) {
-				var materials = entity.meshRendererComponent.materials;
+			&& entity.meshRenderer
+			&& entity.meshRenderer.materials.length) {
+				var materials = entity.meshRenderer.materials;
 				for (var defines, i = 0, max = materials.length; i < max; i++) {
 					defines = materials[i].shader.defines;
 					if (defines && defines.JOINT_COUNT !== undefined
@@ -214,14 +214,14 @@ function(
 		return new CameraComponent(cam);
 	};
 
-	EntityLoader.prototype._getMeshRendererComponent = function(meshRendererComponentSource) {
+	EntityLoader.prototype._getMeshRenderer = function(meshRendererSource) {
 		var promises = [];
 		var ml = this._materialLoader;
 
-		for(var attribute in meshRendererComponentSource) {
+		for(var attribute in meshRendererSource) {
 			if(attribute === 'materialRefs') {
-				for(var i in meshRendererComponentSource[attribute]) {
-					var p = ml.load(meshRendererComponentSource[attribute][i]);
+				for(var i in meshRendererSource[attribute]) {
+					var p = ml.load(meshRendererSource[attribute][i]);
 					promises.push(p);
 				}
 			}
@@ -229,10 +229,10 @@ function(
 
 		return RSVP.all(promises)
 		.then(function(materials) {
-			var mrc = new MeshRendererComponent();
-			for(var attribute in meshRendererComponentSource) {
+			var mrc = new MeshRenderer();
+			for(var attribute in meshRendererSource) {
 				if (mrc.hasOwnProperty(attribute) && attribute !== 'materials') {
-					mrc[attribute] = meshRendererComponentSource[attribute];
+					mrc[attribute] = meshRendererSource[attribute];
 				}
 			}
 			for(var i in materials) {

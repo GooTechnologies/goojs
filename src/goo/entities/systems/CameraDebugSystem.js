@@ -9,7 +9,7 @@ define([
 	function (
 		System,
 		MeshDataComponent,
-		MeshRendererComponent,
+		MeshRenderer,
 		Material,
 		ShaderLib,
 		FrustumViewer
@@ -34,11 +34,11 @@ define([
 		var material = Material.createMaterial(ShaderLib.simpleColored, '');
 		material.uniforms.color = [0.4, 0.7, 1.0];
 
-		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.materials.push(material);
-		entity.setComponent(meshRendererComponent);
+		var meshRenderer = new MeshRenderer();
+		meshRenderer.materials.push(material);
+		entity.setComponent(meshRenderer);
 
-		meshRendererComponent.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+		meshRenderer.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
 	};
 
 	CameraDebugSystem.prototype.process = function (entities) {
@@ -47,7 +47,7 @@ define([
 			var camera = entity.cameraComponent.camera;
 			if(camera.changedProperties) {
 				entity.meshDataComponent.meshData = FrustumViewer.getMeshData(camera);
-				entity.meshRendererComponent.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
+				entity.meshRenderer.updateBounds(entity.meshDataComponent.modelBound, entity.transformComponent.worldTransform);
 				camera.changedProperties = false;
 			}
 		}
@@ -55,7 +55,7 @@ define([
 
 	CameraDebugSystem.prototype.deleted = function(entity) {
 		entity.clearComponent('MeshDataComponent');
-		entity.clearComponent('MeshRendererComponent');
+		entity.clearComponent('MeshRenderer');
 	};
 
 	return CameraDebugSystem;

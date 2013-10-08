@@ -86,7 +86,7 @@ function (
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
 		entities = entities.filter(function(entity) {
-			return entity.meshRendererComponent.isReflectable;
+			return entity.meshRenderer.isReflectable;
 		});
 
 		var waterPlane = this.waterPlane;
@@ -199,16 +199,16 @@ function (
 
 	FlatWaterRenderer.prototype.setSkyBox = function (skyboxEntity) {
 		this.skybox = skyboxEntity;
-		if (skyboxEntity.meshRendererComponent) {
-			this.skybox.meshRendererComponent.materials[0].depthState.enabled = false;
-			this.skybox.meshRendererComponent.materials[0].renderQueue = 0;
-			this.skybox.meshRendererComponent.cullMode = 'Never';
+		if (skyboxEntity.meshRenderer) {
+			this.skybox.meshRenderer.materials[0].depthState.enabled = false;
+			this.skybox.meshRenderer.materials[0].renderQueue = 0;
+			this.skybox.meshRenderer.cullMode = 'Never';
 		}
 	};
 
 	FlatWaterRenderer.prototype.setWaterEntity = function (entity) {
 		this.waterEntity = entity;
-		this.waterEntity.meshRendererComponent.materials[0] = this.waterMaterial;
+		this.waterEntity.meshRenderer.materials[0] = this.waterMaterial;
 	};
 
 	var waterShaderDef = {

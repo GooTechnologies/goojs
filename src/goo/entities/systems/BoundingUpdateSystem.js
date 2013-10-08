@@ -13,7 +13,7 @@ function (
 	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
 	 */
 	function BoundingUpdateSystem () {
-		System.call(this, 'BoundingUpdateSystem', ['MeshRendererComponent', 'MeshData']);
+		System.call(this, 'BoundingUpdateSystem', ['MeshRenderer', 'MeshData']);
 		this._worldBound = new BoundingBox();
 		this._computeWorldBound = null;
 	}
@@ -24,13 +24,13 @@ function (
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var meshData = entity.meshData;
-			var meshRendererComponent = entity.meshRendererComponent;
+			var meshRenderer = entity.meshRenderer;
 
 			if (meshData.autoCompute) {
 				meshData.computeBoundFromPoints();
-				meshRendererComponent.updateBounds(meshData.modelBound, entity.worldTransform);
+				meshRenderer.updateBounds(meshData.modelBound, entity.worldTransform);
 			} else if (entity._updated) {
-				meshRendererComponent.updateBounds(meshData.modelBound, entity.worldTransform);
+				meshRenderer.updateBounds(meshData.modelBound, entity.worldTransform);
 				// meshData.setDirty(false);
 			}
 		}
@@ -40,7 +40,7 @@ function (
 				return;
 			}
 			for (var i = 0; i < entities.length; i++) {
-				var mrc = entities[i].meshRendererComponent;
+				var mrc = entities[i].meshRenderer;
 				if (i === 0) {
 					mrc.worldBound.clone(this._worldBound);
 				} else {

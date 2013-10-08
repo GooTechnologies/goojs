@@ -17,7 +17,7 @@ define([
 		Transform,
 		ShapeCreator,
 		MeshDataComponent,
-		MeshRendererComponent,
+		MeshRenderer,
 		Material,
 		ShaderLib,
 		Box,
@@ -184,11 +184,11 @@ define([
 		var meshDataComponent = new MeshDataComponent(meshData);
 		cameraEntity.setComponent(meshDataComponent);
 
-		var meshRendererComponent = new MeshRendererComponent();
+		var meshRenderer = new MeshRenderer();
 		var material = Material.createMaterial(ShaderLib.simpleColored, '');
 		material.uniforms.color = [0.5, 0.7, 1];
-		meshRendererComponent.materials.push(material);
-		cameraEntity.setComponent(meshRendererComponent);
+		meshRenderer.materials.push(material);
+		cameraEntity.setComponent(meshRenderer);
 
 		return cameraEntity;
 	};
@@ -201,7 +201,7 @@ define([
 	FrustumViewer.removeMesh = function (cameraEntity) {
 		if(cameraEntity.hasComponent('cameraComponent')) {
 			cameraEntity.clearComponent('meshDataComponent');
-			cameraEntity.clearComponent('meshRendererComponent');
+			cameraEntity.clearComponent('meshRenderer');
 		}
 
 		return cameraEntity;

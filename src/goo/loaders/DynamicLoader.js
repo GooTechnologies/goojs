@@ -13,7 +13,7 @@ define([
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
-	'goo/loaders/handlers/MeshRendererComponentHandler',
+	'goo/loaders/handlers/MeshRendererHandler',
 	'goo/loaders/handlers/SceneHandler',
 	'goo/loaders/handlers/ShaderHandler',
 	'goo/loaders/handlers/SkeletonHandler',

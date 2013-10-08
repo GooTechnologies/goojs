@@ -9,7 +9,7 @@ define([
 /** @lends */
 function(
 	MeshDataComponent,
-	MeshRendererComponent,
+	MeshRenderer,
 	MeshData,
 	Material,
 	Shader,
@@ -94,10 +94,10 @@ function(
 		parentEntity.transformComponent.attachChild(entity.transformComponent);
 		var meshDataComponent = new MeshDataComponent(meshData);
 		entity.setComponent(meshDataComponent);
-		var meshRendererComponent = new MeshRendererComponent();
-		// meshRendererComponent.materials.push(this.material);
-		meshRendererComponent.materials.push(this.material2);
-		entity.setComponent(meshRendererComponent);
+		var meshRenderer = new MeshRenderer();
+		// meshRenderer.materials.push(this.material);
+		meshRenderer.materials.push(this.material2);
+		entity.setComponent(meshRenderer);
 
 		entity.addToWorld();
 

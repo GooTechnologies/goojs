@@ -37,12 +37,12 @@ define([
 			// 			meshDataComponent.currentPose = component.currentPose;
 			// 		}
 			// 		newEntity.setComponent(meshDataComponent);
-			// 	} else if (component instanceof MeshRendererComponent) {
-			// 		var meshRendererComponent = new MeshRendererComponent();
+			// 	} else if (component instanceof MeshRenderer) {
+			// 		var meshRenderer = new MeshRenderer();
 			// 		for (var j=0;j<component.materials.length;j++) {
-			// 			meshRendererComponent.materials.push(component.materials[j]);
+			// 			meshRenderer.materials.push(component.materials[j]);
 			// 		}
-			// 		newEntity.setComponent(meshRendererComponent);
+			// 		newEntity.setComponent(meshRenderer);
 			// 	} else {
 			// 		newEntity.setComponent(component);
 			// 	}
