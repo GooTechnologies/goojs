@@ -237,12 +237,10 @@ define([
 	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
 		this._rotation.setIdentity();
 
+		var sum = (dx * this._direction.x) + (dy * this._direction.y);
+		sum *= this._rotationScale;
+
 		if (this.snap) {
-			var angleLimit = Math.PI / 8;
-
-			var sum = (dx * this._direction.x) + (dy * this._direction.y);
-			sum *= this._rotationScale;
-
 			switch(this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
@@ -264,24 +262,24 @@ define([
 					break;
 			}
 		} else {
-			var sum = (dx * this._direction.x) + (dy * this._direction.y);
-			sum *= this._rotationScale;
-
 			switch(this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
-					//this.oldAngleX = this.accumulatedRotationThorX;
-					this._rotation.rotateX(sum);
+					var newAngleX = this.accumulatedRotationThorX;
+					this._rotation.rotateX(newAngleX - this.oldAngleX);
+					this.oldAngleX = newAngleX;
 					break;
 				case 1:
 					this.accumulatedRotationThorY += sum;
-					//this.oldAngleY = this.accumulatedRotationThorY;
-					this._rotation.rotateY(sum);
+					var newAngleY = this.accumulatedRotationThorY;
+					this._rotation.rotateY(newAngleY - this.oldAngleY);
+					this.oldAngleY = newAngleY;
 					break;
 				case 2:
 					this.accumulatedRotationThorZ += sum;
-					//this.oldAngleZ = this.accumulatedRotationThorZ;
-					this._rotation.rotateZ(sum);
+					var newAngleZ = this.accumulatedRotationThorZ;
+					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
+					this.oldAngleZ = newAngleZ;
 					break;
 			}
 		}
