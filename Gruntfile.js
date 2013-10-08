@@ -110,7 +110,12 @@ module.exports = function(grunt) {
 				src: [
 					'visual-test/index.html'
 				]
-			}
+			},
+			docs: [
+				'goojs-jsdoc/',
+				'goojs-jsdoc-json/',
+				'goojs-jsdoc_*.tar.gz',
+			]
 		}
 	});
 
