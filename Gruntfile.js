@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 					optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
 					preserveLicenseComments: false,
 					useStrict: true,
-					wrap: true,
+					wrap: false,
 					keepBuildDir: true,
 					//generateSourceMaps: true,
 					dir: 'out/minified/',
@@ -80,10 +80,8 @@ module.exports = function(grunt) {
 					wrapper: [
 						'/* Goo Engine ' + engineVersion + '\n' +
 						' * Copyright 2013 Goo Technologies AB\n' +
-						' */\n' +
-						'(function(window, undefined) {',
-						// ...
-						'}(window));'
+						' */\n',
+						''
 					]
 				}
 			}
