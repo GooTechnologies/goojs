@@ -45,7 +45,7 @@ function(
 	};
 
 	GetPositionAction.prototype._run = function(fsm) {
-		var translation = this.entity.transformComponent.transform.translation;
+		var translation = this.entity.transform.translation;
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined
 				fsm.applyOnVariable(this.variableX, function() {

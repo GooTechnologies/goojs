@@ -51,7 +51,7 @@ function (
 		};
 
 		this.changedProperties = false;
-		this.changedColor =  false;
+		this.changedColor = false;
 	}
 
 	Light.prototype = Object.create(Component.prototype);

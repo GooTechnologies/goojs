@@ -14,7 +14,7 @@ define([
 		 * @constructor
 		 */
 		function OccludeeComponent(meshData, useBoundingBox) {
-			this.type = 'OccludeeComponent';
+			Component.call(this, 'OccludeeComponent', false);
 
 			if (useBoundingBox === true){
 				this.modelBound = new BoundingBox();

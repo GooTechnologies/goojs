@@ -128,7 +128,7 @@ function(
 			);
 			entity.setComponent(meshRenderer);
 
-			//entity.transformComponent.transform.translation.z = 0.001 * (properties.grids.length - i);
+			//entity.transform.translation.z = 0.001 * (properties.grids.length - i);
 
 			this.topEntity.transformComponent.attachChild(entity.transformComponent);
 		}

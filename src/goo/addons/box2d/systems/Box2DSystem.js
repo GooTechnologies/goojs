@@ -119,7 +119,7 @@ function(
 			bd.set_type(Box2D.b2_dynamicBody);
 		}
 
-		bd.set_position(new Box2D.b2Vec2(entity.transformComponent.transform.translation.x + p.offsetX, entity.transformComponent.transform.translation.y + p.offsetY));
+		bd.set_position(new Box2D.b2Vec2(entity.transform.translation.x + p.offsetX, entity.transform.translation.y + p.offsetY));
 		var body = this.world.CreateBody(bd);
 		body.CreateFixture(fd);
 		body.SetLinearDamping(0.95);

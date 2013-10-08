@@ -33,11 +33,11 @@ function(
 			var z = this.vector[2] * this.speed * fsm.getTpf();
 
 			if (this.mode === 0) {
-				this.entity.transformComponent.transform.translation.add_d(x, y, z);
+				this.entity.transform.translation.add_d(x, y, z);
 			} else if (this.mode === 1) {
-				this.entity.transformComponent.transform.setRotationXYZ(x, y, z);
+				this.entity.transform.setRotationXYZ(x, y, z);
 			} else if (this.mode === 2) {
-				this.entity.transformComponent.transform.scale.add_d(x, y, z);
+				this.entity.transform.scale.add_d(x, y, z);
 			}
 			this.entity.transformComponent.setUpdated();
 		}

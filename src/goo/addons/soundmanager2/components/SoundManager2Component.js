@@ -8,7 +8,7 @@ function(
 	"use strict";
 
 	function SoundManager2Component(settings) {
-		this.type = 'SoundManager2Component';
+		Component.call(this, 'SoundManager2Component', false);
 
 		this.settings = settings || {};
 

@@ -69,7 +69,7 @@ define([],
 	};
 
 	HeightMapBoundingScript.prototype.run = function(entity) {
-		var translation = entity.transformComponent.transform.translation;
+		var translation = entity.transform.translation;
 		translation.data[1] = this.getInterpolated(translation.data[0], translation.data[2]);
 	};
 

@@ -9,19 +9,17 @@ require([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
+	'goo/entities/components/Camera',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshData',
+	'goo/entities/components/MeshRenderer',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
+	'goo/entities/components/PointLight',
+	'goo/entities/components/DirectionalLight',
+	'goo/entities/components/SpotLight',
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/addons/howler/systems/HowlerSystem',
 	'goo/renderer/TextureCreator'
@@ -30,19 +28,17 @@ require([
 	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
+	Camera,
 	OrbitCamControlScript,
 	EntityUtils,
 	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
+	MeshRenderer,
 	Vector3,
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightComponent,
 	HowlerComponent,
 	HowlerSystem,
 	TextureCreator
@@ -71,16 +67,16 @@ require([
 
 		cubeEntity.setComponent(new ScriptComponent({
 			run: function (entity) {
-				entity.transformComponent.transform.setRotationXYZ(
+				entity.transform.setRotationXYZ(
 					World.time * 1.2,
 					World.time * 2.0,
 					0);
-				entity.transformComponent.transform.translation.setd(
+				entity.transform.translation.setd(
 					Math.cos(World.time) * 10,
 					0,
 					0
 				);
-				entity.transformComponent.setUpdated();
+				entity.setUpdated();
 			}
 		}));
 
@@ -92,8 +88,7 @@ require([
 		// create fixed sphere
 		meshData = ShapeCreator.createSphere(32, 32);
 		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
-		sphereEntity.transformComponent.transform.translation.setd(0, 0, 5);
-		sphereEntity.transformComponent.setUpdated();
+		sphereEntity.transform.translation.setd(0, 0, 5);
 		sphereEntity.addToWorld();
 
 		howlerComponent = new HowlerComponent();
@@ -103,16 +98,16 @@ require([
 		// add light
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(100, 100, 100);
+		lightEntity.setComponent(light);
+		lightEntity.transform.translation.set(100, 100, 100);
 		lightEntity.addToWorld();
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
+		cameraEntity.transform.translation.set(0, 0, 3);
+		cameraEntity.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.setComponent(camera);
 		cameraEntity.addToWorld();
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({

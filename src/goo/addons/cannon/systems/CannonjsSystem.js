@@ -146,13 +146,13 @@ function(
 			var cannonComponent = entity.cannonjsComponent;
 
 			var position = cannonComponent.body.position;
-			entity.transformComponent.transform.translation.x = position.x;
-			entity.transformComponent.transform.translation.y = position.y;
-			entity.transformComponent.transform.translation.z = position.z;
+			entity.transform.translation.x = position.x;
+			entity.transform.translation.y = position.y;
+			entity.transform.translation.z = position.z;
 
 			var cannonQuat = cannonComponent.body.quaternion;
 			this.quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
-			entity.transformComponent.transform.rotation.copyQuaternion(this.quat);
+			entity.transform.rotation.copyQuaternion(this.quat);
 			entity.transformComponent.setUpdated();
 		}
 	};

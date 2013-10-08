@@ -34,7 +34,7 @@ function(
 
 		var aspect = camera.aspect;
 
-		this.type = 'PortalComponent';
+		Component.call(this, 'PortalComponent', false);
 		this.camera = camera;
 		this.target = new RenderTarget(height, height / aspect);
 

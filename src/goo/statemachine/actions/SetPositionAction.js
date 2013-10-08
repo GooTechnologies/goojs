@@ -53,7 +53,7 @@ function(Action) {
 
 	SetPositionAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
-			this.entity.transformComponent.transform.translation.setd(
+			this.entity.transform.translation.setd(
 				FSMUtil.getValue(this.amountX, fsm),
 				FSMUtil.getValue(this.amountY, fsm),
 				FSMUtil.getValue(this.amountZ, fsm)
@@ -63,7 +63,7 @@ function(Action) {
 			/*
 			// Hack for box2d physics, tmp
 			if (this.entity.body) {
-				var translation = this.entity.transformComponent.transform.translation;
+				var translation = this.entity.transform.translation;
 				this.entity.body.SetTransform(new window.Box2D.b2Vec2(translation.x, translation.y), this.entity.body.GetAngle());
 			}
 			*/

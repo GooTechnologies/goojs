@@ -8,7 +8,7 @@ function(
 	"use strict";
 
 	function CannonjsComponent(settings) {
-		this.type = 'CannonjsComponent';
+		Component.call(this, 'CannonjsComponent', false);
 
 		this.settings = settings || {};
 

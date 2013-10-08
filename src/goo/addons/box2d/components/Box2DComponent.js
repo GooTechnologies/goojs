@@ -8,7 +8,7 @@ function(
 	"use strict";
 
 	function Box2DComponent(settings) {
-		this.type = 'Box2DComponent';
+		Component.call(this, 'Box2DComponent', false);
 
 		this.body = null;
 		this.world = null;

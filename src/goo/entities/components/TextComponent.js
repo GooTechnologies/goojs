@@ -8,7 +8,7 @@ function(
 	"use strict";
 
 	function TextComponent(text) {
-		this.type = 'TextComponent';
+		Component.call(this, 'TextComponent', false);
 
 		this.text = text || '';
 		this.dirty = true;

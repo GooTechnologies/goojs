@@ -40,7 +40,7 @@ function(
 			var sounds = howlerComponent.sounds;
 
 			var entityWorldTranslation = new Vector3();
-			entityWorldTranslation.copy(entity.transformComponent.transform.translation);
+			entityWorldTranslation.copy(entity.transform.translation);
 
 			var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
 			for (var key in sounds) {

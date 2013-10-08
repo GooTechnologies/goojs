@@ -63,7 +63,7 @@ define([
 
 			combinedMatrix.applyPost(tempVec);
 
-			var scale = entity.transformComponent.transform.scale;
+			var scale = entity.transform.scale;
 
 			var radius = scale.maxAxis() * boundingSphere.radius;
 

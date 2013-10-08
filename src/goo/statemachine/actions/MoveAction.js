@@ -51,7 +51,7 @@ function(Action) {
 	MoveAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity != null) {
-			var transform = entity.transformComponent.transform;
+			var transform = entity.transform;
 			if (this.relative) 
 				transform.translation.add(this.translation);
 			else 

@@ -43,10 +43,10 @@ function(
 		var entity = world.createEntity();
 
 		var size = Math.pow(2, scale);
-		entity.transformComponent.transform.scale.set(size, size, 1);
+		entity.transform.scale.set(size, size, 1);
 		var move = (2 * Math.pow(-1, scale+1) + Math.pow(2, scale+1))/6;
 		var diff = scale % 2 === 0 ? move : -move;
-		entity.transformComponent.transform.translation.set(diff, -diff, 0);
+		entity.transform.translation.set(diff, -diff, 0);
 		entity.addToWorld();
 
 		// 0

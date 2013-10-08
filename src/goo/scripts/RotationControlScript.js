@@ -81,7 +81,7 @@ define([
 			var siny = Math.sin(y);
 			var matrix = new Matrix3x3(cosy, sinx * siny, 0.0 - cosx * siny, 0.0, cosx, sinx, siny, 0.0 - sinx * cosy, cosx * cosy);
 
-			Matrix3x3.combine(matrix, entity.transformComponent.transform.rotation, entity.transformComponent.transform.rotation);
+			Matrix3x3.combine(matrix, entity.transform.rotation, entity.transform.rotation);
 			entity.transformComponent.setUpdated();
 
 			this.states.dirty = false;

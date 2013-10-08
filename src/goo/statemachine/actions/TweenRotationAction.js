@@ -46,7 +46,7 @@ function(
 		var that = this;
 		this.tween.from(FSMUtil.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
 			if (that.entity !== null) {
-				that.entity.transformComponent.transform.setRotationXYZ(this.x, this.y, this.z);
+				that.entity.transform.setRotationXYZ(this.x, this.y, this.z);
 				that.entity.transformComponent.setUpdated();
 			}
 		}).onComplete(function() {

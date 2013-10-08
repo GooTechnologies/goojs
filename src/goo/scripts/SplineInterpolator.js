@@ -28,10 +28,10 @@ define([
 		this.firstIteration = true;
 		this.tolerance = properties.tolerance || 0.01;
 		this.beforeFunction = properties.beforeFunction || function (entity) {
-			return entity.transformComponent.transform.translation.clone().data;
+			return entity.transform.translation.clone().data;
 		};
 		this.updateFunction = properties.updateFunction || function (entity, array) {
-			entity.transformComponent.transform.translation.set(array);
+			entity.transform.translation.set(array);
 			entity.transformComponent.setUpdated();
 		};
 		this.afterFunction = properties.afterFunction || function () {};

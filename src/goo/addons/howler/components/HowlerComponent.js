@@ -8,7 +8,7 @@ function(
 	"use strict";
 
 	function HowlerComponent() {
-		this.type = 'HowlerComponent';
+		Component.call(this, 'HowlerComponent', false);
 
 		this.sounds = { };
 	}

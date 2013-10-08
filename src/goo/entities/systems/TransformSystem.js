@@ -17,13 +17,13 @@ define(['goo/entities/systems/System'],
 		for (i = 0; i < entities.length; i++) {
 			entity = entities[i];
 			entity._updated = false;
-			if (entity.transform._dirty) {
+			if (entity._dirty) {
 				entity.updateTransform();
 			}
 		}
 		for (i = 0; i < entities.length; i++) {
 			entity = entities[i];
-			if (entity.transform._dirty) {
+			if (entity._dirty) {
 				this.updateWorldTransform(entity);
 			}
 		}

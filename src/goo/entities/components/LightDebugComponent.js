@@ -4,7 +4,7 @@ function(Component) {
 	"use strict";
 
 	function LightDebugComponent() {
-		this.type = 'LightDebugComponent';
+		Component.call(this, 'LightDebugComponent', false);
 	}
 
 	LightDebugComponent.prototype = Object.create(Component.prototype);

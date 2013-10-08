@@ -57,7 +57,7 @@ function(Action) {
 	TransformAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity != null) {
-			var transform = entity.transformComponent.transform;
+			var transform = entity.transform;
 			if (this.relative) {
 				transform.translation.add(this.translation);
 				transform.rotation.rotateX(this.rotation[0]*Math.PI/180);

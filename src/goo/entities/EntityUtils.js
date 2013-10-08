@@ -1,18 +1,22 @@
 define([
+	'goo/entities/components/Component',
 	'goo/entities/components/MeshData',
 	'goo/entities/components/MeshRenderer',
 	'goo/entities/components/Camera',
 	'goo/entities/components/Light',
+	'goo/entities/components/ScriptComponent',
 	'goo/renderer/Material',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent'
 ],
 	/** @lends */
 	function (
+		Component,
 		MeshData,
 		MeshRenderer,
 		Camera,
 		Light,
+		ScriptComponent,
 		Material,
 		Transform,
 		CSSTransformComponent
@@ -120,35 +124,33 @@ define([
 			// Create entity
 			var entity = world.createEntity();
 
-			// for (var i = 1; i < arguments.length; i++) {
-			// 	var arg = arguments[i];
+			for (var i = 1; i < arguments.length; i++) {
+				var arg = arguments[i];
 
-			// 	if (arg instanceof MeshData) {
-			// 		entity.setComponent(arg);
+				if (arg instanceof MeshData) {
+					entity.addComponent(arg);
 
-			// 		// attach mesh renderer component for backwards compatibility reasons
-			// 		if (!entity.hasComponent('MeshRenderer')) {
-			// 			entity.setComponent(MeshRenderer);
-			// 		}
-			// 	} else if (arg instanceof Material) {
-			// 		if (!entity.hasComponent('MeshRenderer')) {
-			// 			entity.setComponent(MeshRenderer);
-			// 		}
-			// 		entity.meshRenderer.materials.push(arg);
-			// 	} else if (arg instanceof Light) {
-			// 		entity.setComponent(arg);
-			// 	} else if (arg instanceof Camera) {
-			// 		entity.setComponent(arg);
-			// 	} else if (arg instanceof Transform) {
-			// 		entity.transform = arg;
-			// 	} else if (typeof arg === 'string') {
-			// 		entity.name = arg;
-			// 	} else if (Array.isArray(arg) && arg.length === 3) {
-			// 		entity.transform.translation.setd(arg[0], arg[1], arg[2]);
-			// 	} else if (typeof arg.run === 'function') {
-			// 		entity.setComponent(new ScriptComponent(arg));
-			// 	}
-			// }
+					// attach mesh renderer component for backwards compatibility reasons
+					if (!entity.hasComponent('MeshRenderer')) {
+						entity.addComponent(MeshRenderer);
+					}
+				} else if (arg instanceof Material) {
+					if (!entity.hasComponent('MeshRenderer')) {
+						entity.addComponent(MeshRenderer);
+					}
+					entity.meshRenderer.materials.push(arg);
+				} else if (arg instanceof Component) {
+					entity.addComponent(arg);
+				} else if (arg instanceof Transform) {
+					entity.transform = arg;
+				} else if (typeof arg === 'string') {
+					entity.name = arg;
+				} else if (Array.isArray(arg) && arg.length === 3) {
+					entity.transform.translation.setd(arg[0], arg[1], arg[2]);
+				} else if (typeof arg.run === 'function') {
+					entity.addComponent(new ScriptComponent(arg));
+				}
+			}
 
 			return entity;
 		};

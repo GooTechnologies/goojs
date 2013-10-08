@@ -14,7 +14,7 @@ function(
 	 * @param {Entity} entity The entity this component is attached to
 	 */
 	function MarkerComponent(hostEntity) {
-		this.type = 'MarkerComponent';
+		Component.call(this, 'MarkerComponent', false);
 
 		var hostModelBound = hostEntity.meshDataComponent.modelBound;
 		//this.meshData = ShapeCreator.createBox(hostModelBound.radius * 2, hostModelBound.radius * 2, hostModelBound.radius * 2);

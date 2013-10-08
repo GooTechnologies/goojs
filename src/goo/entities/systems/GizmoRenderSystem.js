@@ -147,7 +147,7 @@ function (
 		// Set bound entities translation
 		this.gizmos[0].onChange = function(change) {
 			if (this.entity) {
-				var translation = this.entity.transformComponent.transform.translation;
+				var translation = this.entity.transform.translation;
 				translation.setv(change);
 				if (this.entity.transformComponent.parent) {
 					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
@@ -161,15 +161,15 @@ function (
 		// Set bound entities rotation
 		this.gizmos[1].onChange = function(change) {
 			if (this.entity) {
-				this.entity.transformComponent.transform.rotation.copy(change);
+				this.entity.transform.rotation.copy(change);
 				if (this.entity.transformComponent.parent) {
 					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 					inverseRotation.invert();
 				}
 				Matrix3x3.combine(
 					inverseRotation,
-					this.entity.transformComponent.transform.rotation,
-					this.entity.transformComponent.transform.rotation
+					this.entity.transform.rotation,
+					this.entity.transform.rotation
 				);
 				this.entity.transformComponent.setUpdated();
 			}
@@ -178,7 +178,7 @@ function (
 		// Set bound entities scale
 		this.gizmos[2].onChange = function(change) {
 			if (this.entity) {
-				var scale = this.entity.transformComponent.transform.scale;
+				var scale = this.entity.transform.scale;
 				scale.setv(change);
 				if (this.entity.transformComponent.parent) {
 					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
@@ -196,8 +196,8 @@ function (
 		if (this.activeGizmo) {
 			if (this.activeGizmo.dirty) {
 				this.activeGizmo.process();
-			} else if (this.entity && this.entity.transformComponent._updated) {
-				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
+			} else if (this.entity && this.entity._updated) {
+				this.activeGizmo.copyTransform(this.entity.worldTransform, this.global);
 			}
 			this.activeGizmo.updateTransforms();
 		}

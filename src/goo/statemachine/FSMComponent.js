@@ -13,7 +13,7 @@ function (
 	 * @class FSMComponent
 	 */
 	function FSMComponent() {
-		this.type = 'FSMComponent';
+		Component.call(this, 'FSMComponent', false);
 
 		this._bus = new Bus();
 		this._machines = [];

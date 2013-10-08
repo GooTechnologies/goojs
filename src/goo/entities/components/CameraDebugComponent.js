@@ -4,7 +4,7 @@ function(Component) {
 	"use strict";
 
 	function CameraDebugComponent() {
-		this.type = 'CameraDebugComponent';
+		Component.call(this, 'CameraDebugComponent', false);
 	}
 
 	CameraDebugComponent.prototype = Object.create(Component.prototype);

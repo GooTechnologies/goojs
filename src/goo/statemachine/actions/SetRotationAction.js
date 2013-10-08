@@ -53,7 +53,7 @@ function(Action) {
 
 	SetRotationAction.prototype._run = function(fsm) {
 		if (this.entity !== null) {
-			this.entity.transformComponent.transform.setRotationXYZ(
+			this.entity.transform.setRotationXYZ(
 				FSMUtil.getValue(this.amountX, fsm),
 				FSMUtil.getValue(this.amountY, fsm),
 				FSMUtil.getValue(this.amountZ, fsm)

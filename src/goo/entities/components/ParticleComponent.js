@@ -35,7 +35,7 @@ function (
 	 * @param {number} [settings.particleCount=100]
 	 */
 	function ParticleComponent (settings) {
-		this.type = 'ParticleComponent';
+		Component.call(this, 'ParticleComponent', false);
 
 		Component.call(this);
 
