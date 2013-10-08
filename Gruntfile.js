@@ -98,12 +98,26 @@ module.exports = function(grunt) {
 					wrapper: getWrapper()
 				}
 			}
+		},
+		clean: {
+			build: {
+				src: [
+					'out/',
+					'src/goo.js',
+				]
+			},
+			toc: {
+				src: [
+					'visual-test/index.html'
+				]
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	grunt.registerTask('default', ['minify']);
 	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);

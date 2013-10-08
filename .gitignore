@@ -11,8 +11,6 @@ virtualenv.py
 virtualenv.pyc
 doc/
 out/
-minified/
-output/
 
 # Created when minifying
 src/goo.js
