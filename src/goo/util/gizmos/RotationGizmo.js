@@ -32,8 +32,8 @@ define([
 	'use strict';
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
-		this._ballMesh = new Sphere(32, 32, 1.3);
-		this._torusMesh = new Torus(64, 8, 0.2);
+		this._ballMesh = new Sphere(32, 32, 1.1);
+		this._torusMesh = new Torus(64, 8, 0.12);
 
 		this._buildBall();
 		this._buildTorus(0);
@@ -56,6 +56,9 @@ define([
 		this.accumulatedRotationThorX = 0;
 		this.accumulatedRotationThorY = 0;
 		this.accumulatedRotationThorZ = 0;
+		this.oldAngleX = 0;
+		this.oldAngleY = 0;
+		this.oldAngleZ = 0;
 	}
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 
@@ -126,10 +129,12 @@ define([
 		}
 	};
 
+
+
 	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
 		this._rotation.setIdentity();
 
-		if (this.snap) {
+		if (this.snap && false) { // snap in this mode is confusing
 			this.accumulatedRotationY += dx * this._rotationScale;
 			this.accumulatedRotationX += dy * this._rotationScale;
 
@@ -173,6 +178,48 @@ define([
 			this.transform.rotation
 		);
 	};
+	// --- experimental functions go here
+	function step (size) {
+		return function (x) {
+			return Math.floor(x / size) * size;
+		}
+	}
+
+	var step8thpi = step(Math.PI / 8);
+
+	function inter(x, fromStart, fromEnd, toStart, toEnd) {
+		var fraction = (x - fromStart) / (fromEnd - fromStart);
+		return fraction * (toEnd - toStart) + toStart;
+	}
+
+	function inclinedType1 (size, t) {
+		return function (x) {
+			x += size / 2 + t;
+			if (x < 0) {
+				x -= size + t*2;
+				x *= -1;
+				var intr = Math.floor(x / size) * size;
+				var frac = x % size - t;
+
+				return -(frac < t || frac > size - t ?
+					intr + inter(frac, -t, t, 0, size) - size :
+					intr);
+			} else {
+				var intr = Math.floor(x / size) * size;
+				var frac = x % size - t;
+
+				return frac < t || frac > size - t ?
+					intr + inter(frac, -t, t, 0, size) - size :
+					intr;
+			}
+		}
+	}
+
+	var inclined8thpi = inclinedType1(Math.PI / 4, Math.PI / 16);
+	var identitate = function(x) { return x; };
+	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
+	var tranFun = inclined8thpi;
+	// ---
 
 	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
 		this._rotation.setIdentity();
@@ -186,6 +233,10 @@ define([
 			switch(this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
+					var newAngleX = tranFun(this.accumulatedRotationThorX);
+					this._rotation.rotateX(newAngleX - this.oldAngleX);
+					this.oldAngleX = newAngleX;
+					/*
 					if (this.accumulatedRotationThorX > angleLimit) {
 						this.accumulatedRotationThorX -= angleLimit;
 						this._rotation.rotateX(angleLimit);
@@ -193,9 +244,14 @@ define([
 						this.accumulatedRotationThorX += angleLimit;
 						this._rotation.rotateX(-angleLimit);
 					}
+					*/
 					break;
 				case 1:
 					this.accumulatedRotationThorY += sum;
+					var newAngleY = tranFun(this.accumulatedRotationThorY);
+					this._rotation.rotateY(newAngleY - this.oldAngleY);
+					this.oldAngleY = newAngleY;
+					/*
 					if (this.accumulatedRotationThorY > angleLimit) {
 						this.accumulatedRotationThorY -= angleLimit;
 						this._rotation.rotateY(angleLimit);
@@ -203,9 +259,14 @@ define([
 						this.accumulatedRotationThorY += angleLimit;
 						this._rotation.rotateY(-angleLimit);
 					}
+					*/
 					break;
 				case 2:
 					this.accumulatedRotationThorZ += sum;
+					var newAngleZ = tranFun(this.accumulatedRotationThorZ);
+					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
+					this.oldAngleZ = newAngleZ;
+					/*
 					if (this.accumulatedRotationThorZ > angleLimit) {
 						this.accumulatedRotationThorZ -= angleLimit;
 						this._rotation.rotateZ(angleLimit);
@@ -213,6 +274,7 @@ define([
 						this.accumulatedRotationThorZ += angleLimit;
 						this._rotation.rotateZ(-angleLimit);
 					}
+					*/
 					break;
 			}
 		} else {
@@ -239,6 +301,8 @@ define([
 	};
 
 	RotationGizmo.prototype._buildBall = function() {
+		var transform = new Transform();
+		transform.scale.setd(1.2, 1.2, 1.2);
 		this.renderables.push({
 			meshData: this._ballMesh,
 			materials: [this._buildMaterialForAxis(3)],
@@ -249,6 +313,7 @@ define([
 
 	RotationGizmo.prototype._buildTorus = function(dim) {
 		var transform = new Transform();
+		transform.scale.setd(1.6, 1.6, 1.6);
 		if(dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {

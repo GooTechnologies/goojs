@@ -24,7 +24,8 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/addons/howler/systems/HowlerSystem',
-	'goo/renderer/TextureCreator'
+	'goo/renderer/TextureCreator',
+	'../../lib/V'
 ], function (
 	GooRunner,
 	World,
@@ -45,7 +46,8 @@ require([
 	LightComponent,
 	HowlerComponent,
 	HowlerSystem,
-	TextureCreator
+	TextureCreator,
+	V
 	) {
 	'use strict';
 
@@ -108,18 +110,7 @@ require([
 		lightEntity.addToWorld();
 
 		// camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(10, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
+		V.addOrbitCamera(goo);
 
 		// bind keys
 		document.body.addEventListener('keypress', function(e) {
