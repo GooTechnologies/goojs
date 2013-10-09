@@ -63,8 +63,8 @@ function (
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
 	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi). 
-	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples: 
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
+	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
 	 * <ul>
 	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
 	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
