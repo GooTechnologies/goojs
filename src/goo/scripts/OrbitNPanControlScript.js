@@ -42,6 +42,7 @@ define([
 	 */
 	function OrbitNPanControlScript(properties) {
 		properties = properties || {};
+		// REVIEW: move this detail zoom to OrbitCamControlScript
 		this.detailZoom = properties.detailZoom || 0.15;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
@@ -137,6 +138,7 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.applyWheel = function (e) {
+		// REVIEW: use MathUtil.clamp instead
 		var delta = (this.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 		// Decrease zoom if shift is pressed
 		if (this.shiftKey) {
