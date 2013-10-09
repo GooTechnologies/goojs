@@ -28,9 +28,7 @@ define([
 	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/FSMComponentHandler',
 	'goo/loaders/handlers/MachineHandler',
-	'goo/loaders/handlers/PosteffectHandler',
-	'goo/loaders/handlers/SoundComponentHandler',
-	'goo/loaders/handlers/SoundHandler'
+	'goo/loaders/handlers/PosteffectHandler'
 ],
 function(
 	ConfigHandler,
@@ -70,7 +68,8 @@ function(
 		'project',
 		'machine',
 		'posteffect',
-		'animstate'];
+		'animstate',
+		'sound'];
 
 	var _text_types = ['vert', 'frag'];
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
