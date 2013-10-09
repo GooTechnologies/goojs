@@ -179,9 +179,8 @@ require([
 		addSpotLight(goo);
 
 		// camera
-		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(camera);
+		cameraEntity.addComponent(Camera);
 		cameraEntity.addToWorld();
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(new OrbitCamControlScript({
