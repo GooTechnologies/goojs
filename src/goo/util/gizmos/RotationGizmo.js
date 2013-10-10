@@ -1,13 +1,7 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/renderer/Material',
-	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/Transform',
@@ -15,14 +9,8 @@ define([
 	'goo/math/Ray'
 ], function(
 	Gizmo,
-	MeshDataComponent,
-	MeshRendererComponent,
-	MeshData,
-	MeshBuilder,
 	Sphere,
 	Torus,
-	Material,
-	EntityUtils,
 	Vector3,
 	Matrix3x3,
 	Transform,

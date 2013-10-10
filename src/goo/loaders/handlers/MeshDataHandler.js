@@ -4,7 +4,6 @@ define([
 	'goo/animation/SkeletonPose',
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil'
 ], function(
 	ConfigHandler,
@@ -12,7 +11,6 @@ define([
 	SkeletonPose,
 	JsonUtils,
 	PromiseUtil,
-	_,
 	ArrayUtil
 ) {
 	/*jshint eqeqeq: false, -W041, bitwise: false */

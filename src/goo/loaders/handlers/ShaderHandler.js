@@ -3,7 +3,6 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil'
@@ -12,7 +11,6 @@ define([
 	Material,
 	MeshData,
 	Shader,
-	ShaderLib,
 	ShaderBuilder,
 	RSVP,
 	_

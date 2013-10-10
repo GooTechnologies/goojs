@@ -4,12 +4,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
-	'goo/entities/Entity',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/ScriptComponent',
 	'goo/math/Transform'
 
 ], /** @lends */ function (
@@ -18,12 +13,7 @@ define([
 	MeshData,
 	Material,
 	Shader,
-	Entity,
 	TextureCreator,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	ScriptComponent,
 	Transform
 ) {
 	'use strict';

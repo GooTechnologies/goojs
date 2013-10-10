@@ -1,10 +1,8 @@
 define([
-		'goo/math/Vector3',
-		'goo/renderer/light/Light'
-		],
+	'goo/renderer/light/Light'
+	],
 /** @lends */
-function (
-	Vector3,
+	function (
 	Light
 	) {
 	"use strict";

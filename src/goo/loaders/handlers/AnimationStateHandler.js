@@ -1,29 +1,19 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/layer/AnimationLayer',
-	'goo/animation/layer/LayerLERPBlender',
 	'goo/animation/state/SteadyState',
 	'goo/animation/blendtree/ClipSource',
 	'goo/animation/blendtree/ManagedTransformSource',
 	'goo/animation/blendtree/BinaryLERPSource',
 	'goo/animation/blendtree/FrozenClipSource',
-	'goo/animation/state/FadeTransitionState',
-	'goo/animation/state/SyncFadeTransitionState',
-	'goo/animation/state/FrozenTransitionState',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
 ], function(
 	ConfigHandler,
-	AnimationLayer,   /* REVIEW: AnimationLayer does not appear to be used here? */
-	LayerLERPBlender, /* REVIEW: LayerLERPBlender does not appear to be used either? */
 	SteadyState,
 	ClipSource,
 	ManagedTransformSource,
 	BinaryLERPSource,
 	FrozenClipSource,
-	FadeTransitionState,      /* REVIEW: Neither does FadeTransitionState appear to be used? */
-	SyncFadeTransitionState,  /* REVIEW: Nor SyncFadeTransitionState? */
-	FrozenTransitionState,    /* REVIEW: Or FrozenTransitionState? */
 	RSVP,
 	PromiseUtil
 ) {

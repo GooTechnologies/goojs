@@ -3,7 +3,6 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Box',
-	'goo/renderer/Material',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Vector3'
@@ -12,7 +11,6 @@ define([
 	MeshData,
 	MeshBuilder,
 	Box,
-	Material,
 	Transform,
 	Renderer,
 	Vector3

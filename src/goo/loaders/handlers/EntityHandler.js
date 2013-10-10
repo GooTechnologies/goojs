@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/Entity',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
@@ -9,7 +8,6 @@ define([
 ], function(
 	ConfigHandler,
 	ComponentHandler,
-	Entity,
 	RSVP,
 	pu,
 	_,
