@@ -33,7 +33,7 @@ define([
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.12);
+		this._torusMesh = new Torus(64, 8, 0.18);
 
 		this._buildBall();
 		this._buildTorus(0);
@@ -182,7 +182,7 @@ define([
 	function step (size) {
 		return function (x) {
 			return Math.floor(x / size) * size;
-		}
+		};
 	}
 
 	var step8thpi = step(Math.PI / 8);
@@ -212,7 +212,7 @@ define([
 					intr + inter(frac, -t, t, 0, size) - size :
 					intr;
 			}
-		}
+		};
 	}
 
 	function inclinedType2 (size, t) {
@@ -225,7 +225,7 @@ define([
 				return x + size - z;
 			}
 			return x;
-		}
+		};
 	}
 
 	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 32);
@@ -303,7 +303,7 @@ define([
 
 	RotationGizmo.prototype._buildTorus = function(dim) {
 		var transform = new Transform();
-		transform.scale.setd(1.6, 1.6, 1.6);
+		transform.scale.setd(1.7, 1.7, 1.7);
 		if(dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {
