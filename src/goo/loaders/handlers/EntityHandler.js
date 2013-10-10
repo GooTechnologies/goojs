@@ -48,35 +48,10 @@ define([
 
 		// hide/unhide entities and their descendants
 		if (!!config.hidden) {
-			object.hidden = true;
-
-			// hide everything underneath this
-			EntityUtils.traverse(object, function(entity) {
-				if (entity.meshRendererComponent) {
-					entity.meshRendererComponent.hidden = true;
-				}
-			});
+			EntityUtils.hide(object);
 		} else {
-			object.hidden = false;
-
-			//first search if it has hidden parents
-			var cont = true;
-			var pointer = object;
-			while (pointer.transformComponent.parent) {
-				pointer = pointer.transformComponent.parent.entity;
-				if (pointer.hidden) { cont = false; break; }
-			}
-
-			if (cont) {
-				EntityUtils.traverse(object, function(entity) {
-					if (entity.hidden) { return false; }
-					if (entity.meshRendererComponent) {
-						entity.meshRendererComponent.hidden = entity.hidden;
-					}
-				});
-			}
+			EntityUtils.show(object);
 		}
-
 
 		var promises = [];
 		for (var componentName in config.components) {
