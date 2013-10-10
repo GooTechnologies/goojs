@@ -10,7 +10,20 @@ function() {
 	function FSMUtil() {
 	}
 
-	FSMUtil.getKey = function(str) {
+	FSMUtil.setParameters = function (settings, externalParameters) {
+		for (var i = 0; i < externalParameters.length; i++) {
+			var externalParameter = externalParameters[i];
+			var key = externalParameter.key;
+
+			if (settings[key]) {
+				this[key] = settings[key];
+			} else {
+				this[key] = externalParameter['default'];
+			}
+		}
+	};
+
+	FSMUtil.getKey = function (str) {
 		if (FSMUtil.keys[str]) {
 			return FSMUtil.keys[str];
 		} else {
