@@ -164,7 +164,11 @@ function (
 		}
 
 		// Bind attributes
+		//TODO: good?
 		if (this.attributes) {
+		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+			// record.attributes = this.attributes;
+			// record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			for (var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];

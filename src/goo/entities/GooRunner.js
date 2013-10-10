@@ -107,6 +107,7 @@ function (
 
 		var that = this;
 		this.start = -1;
+		//Move out
 		this.run = function (time) {
 			try {
 				that._updateFrame(time);

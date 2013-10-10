@@ -83,7 +83,7 @@ define([
 			texture.wrapT = config.wrapV;
 			texture.magFilter = config.magFilter;
 			texture.minFilter = config.minFilter;
-			texture.anisotropy = config.anisotropy;
+			texture.anisotropy = Math.max(config.anisotropy, 1);
 
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
