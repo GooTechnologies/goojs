@@ -79,7 +79,9 @@ function (
 	 * Update animations
 	 */
 	AnimationComponent.prototype.update = function (globalTime) {
-		if (this.paused) return;
+		if (this.paused) {
+			return;
+		}
 
 		globalTime -= this.accumulatedDelay;
 

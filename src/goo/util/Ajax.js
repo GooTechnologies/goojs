@@ -147,7 +147,7 @@ define([
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
 	Ajax.prototype.loadImage = function (url, needsProgress) {
-		window.URL = window.URL || window.webkitURL;		
+		window.URL = window.URL || window.webkitURL;
 		var promise = new RSVP.Promise();
 		var image = new Image();
 

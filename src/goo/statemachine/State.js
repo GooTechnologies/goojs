@@ -142,8 +142,9 @@ function (
 		}
 		for (var i = 0; i < this._actions.length; i++) {
 			var action = this._actions[i];
-			if (id !== undefined && action.id === id)
+			if (id !== undefined && action.id === id) {
 				return action;
+			}
 		}
 		return undefined;
 	};

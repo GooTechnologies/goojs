@@ -89,7 +89,7 @@ function (
 
 	GizmoRenderSystem.prototype.getGizmo = function(id) {
 		return this.gizmos[id];
-	}
+	};
 
 	GizmoRenderSystem.prototype.show = function(entity) {
 		this.entity = entity;
