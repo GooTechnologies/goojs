@@ -255,18 +255,20 @@ define([
 	};
 
 	// Returns a promise which resolves when updating is done
-	ProjectHandler.prototype.update = function(ref, config) {
+	ProjectHandler.prototype.update = function(ref, config, options) {
 		this._prepare(config);
 		// skybox
 		this._updateSkybox(config.skybox);
 
+		var promises = [];
 		// entity refs
-		var entitiesPromise = this._updateEntities(config);
+		if (!options || !options.shallow)
+			promises.push(this._updateEntities(config));
 
 		// posteffect refs
-		var posteffectsPromise = this._updatePosteffects(config);
+		promises.push(this._updatePosteffects(config));
 
-		return RSVP.all([entitiesPromise, posteffectsPromise]);
+		return RSVP.all(promises);
 	};
 
 	ProjectHandler.prototype.remove = function(/*ref*/) {};
