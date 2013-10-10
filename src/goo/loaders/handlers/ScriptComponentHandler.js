@@ -40,7 +40,7 @@ define([
 			}
 		}
 
-		if (promises.lenght>0) {
+		if (promises.length > 0) {
 			return RSVP.all(promises).then(function(scripts) {
 				if(!scripts[0]) {
 					component.scripts = [];
