@@ -187,7 +187,8 @@ function (
 			opacityTexture: Shader.SPECULAR_MAP,
 			time: Shader.TIME,
 			curlFrequency: 1.0,
-			curlRadius: 0.009
+			curlRadius: 0.009,
+			furRepeat: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -203,6 +204,7 @@ function (
 			'uniform float time;',
 			'uniform float curlFrequency;',
 			'uniform float curlRadius;',
+			'uniform float furRepeat;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
@@ -214,7 +216,7 @@ function (
 
 			// Pos will hold the final position
 			'	vec3 pos;',
-			'	texCoord0 = vertexUV0 * 6.0;',
+			'	texCoord0 = vertexUV0 * furRepeat;',
 			'	vec3 normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
 			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'	vec3 p_0 = p_root + (normal * hairLength);',

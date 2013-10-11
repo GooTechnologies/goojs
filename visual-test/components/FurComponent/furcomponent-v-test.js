@@ -48,12 +48,17 @@ function(
 
 	var resourcePath = "../../resources";
 
+	var gui;
+
 	function init() {
 		var goo = new GooRunner({
-			showStats: true
+			showStats: true,
+			logo: "bottomleft"
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
+
+		gui = new window.dat.GUI();
 
 		var light = new DirectionalLight();
 		var lightEntity = goo.world.createEntity('light');
@@ -73,7 +78,7 @@ function(
 	}
 
 	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createSphere(20, 20, size);
+		var meshData = ShapeCreator.createSphere(40, 40, size);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		TextureCreator.clearCache();
@@ -125,6 +130,13 @@ function(
 		// TODO: Add filter , to only render entities with FurComponents in the FurPass.
 		var furPass = new FurPass(renderList);
 		furPass.clear = false;
+
+		var furFolder = gui.addFolder("Fur settings");
+		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 20);
+		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 2);
+		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
+		furFolder.add(furPass.furUniforms, 'curlRadius', -0.1, 0.1);
+		furFolder.open();
 
 		composer.addPass(regularPass);
 		composer.addPass(furPass);
