@@ -1,23 +1,18 @@
 define( 
 	[ "goo/core/ProcessParameters"
 	  "goo/core/Scene",
-	  "goo/systems/RenderSystem",
-	  "goo/systems/TransformSystem" ],
+	  "goo/renderer/Renderer" ],
 	  
-	function( ProcessParameters, Scene, RenderSystem, TransformSystem ) {
+	function( ProcessParameters, Scene, Renderer ) {
 
 		"use strict";
 
 		function Goo( parameters ) {
-			this.systems           = [];
-			this.systemsByType     = {};
-			this.scenes            = [];
 			this.processParameters = new ProcessParameters();
+			this.scenes            = [];
+			this.renderer          = new Renderer();
 
-			this.addSystem( TransformSystem );
-			this.addSystem( new RenderSystem( parameters ));
-
-			this.add( parameters.systems, parameters.scenes );
+			this.add( parameters.scenes );
 
 			if( this.scenes.length === 0 ) {
 				this.addScene( Scene );
@@ -30,36 +25,6 @@ define(
 
 		Goo.prototype.add = function() {
 			// todo
-		};
-
-		// system methods
-
-		Goo.prototype.addSystem = function( system ) {
-			if( !this.hasSystem( system )) {
-				if( typeof( system ) === "function" ) {
-					system = new system();
-				} else {
-					system = system;
-				}
-				system.init( this );
-				this.systems.push( system ); 
-			}
-		};
-
-		Goo.prototype.getSystem = function( system ) {
-			if( this.hasSystem( system )) {
-				return this.systems[ systemType( system )];
-			} else {
-				console.warn( "Goo.getSystem: Trying to get " + systemType( system ) + " which doesnt exist" );
-			}
-		};
-
-		Goo.prototype.getSystems = function() {
-
-		};
-
-		Goo.prototype.hasSystem = function( system ) {
-			return this.systems[ systemType( system ) ] !== undefined ? true : false;
 		};
 
 		// scene methods
