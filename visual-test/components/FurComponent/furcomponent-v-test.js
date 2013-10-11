@@ -133,9 +133,10 @@ function(
 
 		var furFolder = gui.addFolder("Fur settings");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 20);
-		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 2);
-		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
-		furFolder.add(furPass.furUniforms, 'curlRadius', -0.1, 0.1);
+		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 1);
+		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
+		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);
+		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);
 		furFolder.open();
 
 		composer.addPass(regularPass);

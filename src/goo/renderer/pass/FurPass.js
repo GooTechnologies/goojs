@@ -3,7 +3,8 @@ define([
 	'goo/math/Vector4',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/Texture'
+	'goo/renderer/Texture',
+	'goo/renderer/shaders/ShaderBuilder'
 ],
 /** @lends */
 function (
@@ -11,7 +12,8 @@ function (
 	Vector4,
 	MeshData,
 	Shader,
-	Texture) {
+	Texture,
+	ShaderBuilder) {
 	"use strict";
 
 	/**
@@ -30,7 +32,7 @@ function (
 		this.needsSwap = false;
 
 		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
-		this.layerCount = 10;
+		this.layerCount = 50;
 		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
 
 		this.furMaterial = Material.createMaterial(furShader, "FurMaterial");
@@ -40,6 +42,8 @@ function (
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
 		this.furMaterial.depthState.write = false;
+
+		this.furMaterial.materialState.ambient = [0.1, 0.1, 0.1, 1.0];
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
@@ -118,21 +122,24 @@ function (
 							0.1183, 0.1477, 0.1183,
 						0.09474,0.1183, 0.09474];
 
+		var blurKernel = [
+			0.25/10, 0.25/10, 0.25/10,
+			0.25/10, 8/10, 0.25/10,
+			0.25/10, 0.25/10, 0.25/10];
+
 		var blurredData = this.convolute(noiseData, width, height, blurKernel);
 
 		// Now treshold the blurred image with an increasing threhhold, experiment to get good results.
 		// Save the output as binary data if possible. Texture seeems to only be able to use uint8,
 		var textures = new Array(numberOfLayers);
-		var threshold = 0.5;
-		var maxThreshold = 0.9;
+		var threshold = 0.7;
+		var maxThreshold = 0.99;
 		var thresholdIncrement = (maxThreshold - threshold) / numberOfLayers;
 		for (var layerIndex = 0; layerIndex < numberOfLayers; layerIndex++) {
 			var layerData = this.thresholdData(blurredData, Math.round(threshold * 255));
 			threshold += thresholdIncrement;
 			textures[layerIndex] = new Texture(layerData, textureSettings, width, height);
 		}
-
-		//textures[layerIndex] = new Texture(blurredData, textureSettings, width, height);
 
 		return textures;
 	};
@@ -171,6 +178,9 @@ function (
 	};
 
 	var furShader = {
+		processors: [
+			ShaderBuilder.light.processor
+		],
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexNormal: MeshData.NORMAL,
@@ -188,7 +198,8 @@ function (
 			time: Shader.TIME,
 			curlFrequency: 1.0,
 			curlRadius: 0.009,
-			furRepeat: 1.0
+			furRepeat: 1.0,
+			gravity: 9.81,
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -205,12 +216,14 @@ function (
 			'uniform float curlFrequency;',
 			'uniform float curlRadius;',
 			'uniform float furRepeat;',
+			'uniform float gravity;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
 
 			'varying vec2 texCoord0;',
 			'varying vec3 T;',
+			'varying vec3 viewPosition;',
 
 			'void main(void) {',
 
@@ -223,12 +236,12 @@ function (
 			'	float L_0 = length(p_0 - p_root);',
 			// Gravity
 			'	float mass =  0.00001;',
-			'	float gY = 9.81 * mass;',
+			'	float gY = gravity * mass;',
 			'	vec3 sinusNoise = 20.0 * sin(time * 4.0) * mass * vec3(1,0,0);',
-			'	vec3 gravity = vec3(0,-gY,0);',
+			'	vec3 gravityForce = vec3(0,-gY,0);',
 
 			'	float k = gY/(L_0*0.5);',
-			'	vec3 p = (gravity )/k + p_0;',
+			'	vec3 p = (gravityForce)/k + p_0;',
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
 			// c1: |p-p_root| <= L_0
@@ -287,10 +300,14 @@ function (
 
 			'	float wh = curlFrequency * normalizedLength;',
 			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
+			'	viewPosition = cameraPosition - pos;',
 			'	gl_Position = viewProjectionMatrix * vec4(pos, 1.0);',
+
 			'}'//
 		].join("\n"),
 		fshader: [
+
+			ShaderBuilder.light.prefragment,
 
 			'uniform float normalizedLength;',
 
@@ -298,18 +315,54 @@ function (
 			'uniform sampler2D opacityTexture;',
 
 			'varying vec2 texCoord0;',
+			'varying vec3 T;',
+			'varying vec3 viewPosition;',
 
 			'void main(void)',
 			'{',
 			'	float Kshadow = 1.2;',
-			'	vec3 red = vec3(1.0, 0.0, 0.0);',
-			'	vec3 blue = vec3(0.0, 0.0, 1.0);',
-			'	vec4 color = vec4(mix(blue, red, normalizedLength), 1.0);',
-			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
 			'	vec4 opacity = texture2D(opacityTexture, texCoord0);',
 			'	if (opacity.a == 0.0) discard;',
-			'	float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
-			'	gl_FragColor = shadowFactor * vec4(texCol.r, texCol.g, texCol.b, 1.0);',
+			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+
+
+			'	vec3 tangent = normalize(T);',
+			'	vec3 color = texCol.rgb;',
+
+			/*
+			Kajiya and Kay , 1989 , Illumination model
+
+			http://http.developer.nvidia.com/GPUGems/gpugems_ch33.html
+			http://vilsen.se/Evaluation_of_Hair_Modeling_Simulation_and_Rendering_Algorithms_for_a_VFX_Hair_Modeling_System.pdf
+			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
+			*/
+
+			// stuff from ShaderBuilder.light.fragment
+			"#if MAX_DIRECTIONAL_LIGHTS > 0",
+			"for(int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++) {",
+				"vec4 lDirection = vec4(-directionalLightDirection[i], 0.0);",
+				// "vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ i ], 0.0 );",
+				"vec3 dirVector = normalize(lDirection.xyz);",
+
+				// diffuse
+				'float TdotL = dot(T, dirVector);',
+				// TODO: Read through stuff to find out why I set this magic number.
+				'if (TdotL > -0.3) {',
+					'float TdotE = dot(T, normalize(viewPosition));',
+					'float sinTL = sin(acos(TdotL));',
+					'float sinTE = sin(acos(TdotE));',
+					'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
+					'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, materialSpecularPower), 0.0);',
+					// "Simple shadow effect"
+					'float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
+					'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
+				'}',
+				'else {',
+					'color *= materialAmbient.r;',
+				'}',
+			'}',
+			'#endif',
+			'	gl_FragColor = vec4(color, 1.0);',
 			'}'//
 		].join("\n")
 	};
