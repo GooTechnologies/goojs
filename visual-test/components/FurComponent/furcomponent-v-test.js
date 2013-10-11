@@ -78,7 +78,8 @@ function(
 	}
 
 	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createSphere(40, 40, size);
+		//var meshData = ShapeCreator.createSphere(40, 40, size);
+		var meshData = ShapeCreator.createBox(size, size, size);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		TextureCreator.clearCache();

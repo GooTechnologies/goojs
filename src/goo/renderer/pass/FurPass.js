@@ -17,7 +17,9 @@ function (
 	"use strict";
 
 	/**
+	 *
 	 * @class A pass that renders provided renderlist to the rendertarget or screen
+	 * Original paper : http://web.media.mit.edu/~bandy/fur/ by Paulo Silva, Yosuke Bando, Bing-Yu Chen and Tomoyuki Nishita
 	 */
 	function FurPass(renderList, filter) {
 		this.renderList = renderList;
@@ -43,12 +45,14 @@ function (
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
 		this.furMaterial.depthState.write = false;
 
-		this.furMaterial.materialState.ambient = [0.1, 0.1, 0.1, 1.0];
+		this.furMaterial.materialState.ambient = [0.2, 0.2, 0.2, 1.0];
+		this.furMaterial.materialState.shininess = 120;
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
 
 	// Convolve a data array with the symmetrical kernel made of the weighs.
+	// TODO: Make the convolusion outside edges act as repeatable texture.
 	FurPass.prototype.convolute = function(data, width, height, weights) {
 		var side = Math.round(Math.sqrt(weights.length));
 		var halfSide = Math.floor(side/2);
@@ -97,7 +101,7 @@ function (
 	FurPass.prototype.generateOpacityTextures = function(numberOfLayers, width, height) {
 
 		if (width === undefined || height === undefined) {
-			width = height = 256 * 2;
+			width = height = 256 * 1;
 		}
 
 		var textureSettings = {
@@ -231,7 +235,7 @@ function (
 
 			// Pos will hold the final position
 			'	vec3 pos;',
-			'	texCoord0 = vertexUV0 * furRepeat;',
+			'	texCoord0 = vertexUV0;',
 			'	vec3 normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
 			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'	vec3 p_0 = p_root + (normal * hairLength);',
@@ -313,6 +317,7 @@ function (
 			ShaderBuilder.light.prefragment,
 
 			'uniform float normalizedLength;',
+			'uniform float furRepeat;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
@@ -323,15 +328,8 @@ function (
 
 			'void main(void)',
 			'{',
-			'	float Kshadow = 1.2;',
-			'	vec4 opacity = texture2D(opacityTexture, texCoord0);',
+			'	vec4 opacity = texture2D(opacityTexture, texCoord0 * furRepeat);',
 			'	if (opacity.a == 0.0) discard;',
-			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
-
-
-			'	vec3 tangent = normalize(T);',
-			'	vec3 color = texCol.rgb;',
-
 			/*
 			Kajiya and Kay , 1989 , Illumination model
 
@@ -339,19 +337,20 @@ function (
 			http://vilsen.se/Evaluation_of_Hair_Modeling_Simulation_and_Rendering_Algorithms_for_a_VFX_Hair_Modeling_System.pdf
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
 			*/
-
+			'	float Kshadow = 1.2;',
+			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'	vec3 tangent = normalize(T);',
+			'	vec3 color = texCol.rgb;',
 			// stuff from ShaderBuilder.light.fragment
 			"#if MAX_DIRECTIONAL_LIGHTS > 0",
 			"for(int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++) {",
 				"vec4 lDirection = vec4(-directionalLightDirection[i], 0.0);",
-				// "vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ i ], 0.0 );",
 				"vec3 dirVector = normalize(lDirection.xyz);",
-
 				// diffuse
-				'float TdotL = dot(T, dirVector);',
+				'float TdotL = dot(tangent, dirVector);',
 				// TODO: Read through stuff to find out why I set this magic number.
 				'if (TdotL > -0.3) {',
-					'float TdotE = dot(T, normalize(viewPosition));',
+					'float TdotE = dot(tangent, normalize(viewPosition));',
 					'float sinTL = sin(acos(TdotL));',
 					'float sinTE = sin(acos(TdotE));',
 					'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
