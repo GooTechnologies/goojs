@@ -30,10 +30,12 @@ function (
 		this.needsSwap = false;
 
 		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
-		this.layerCount = 1;
+		this.layerCount = 10;
 		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
 
-		this.furMaterial = Material.createMaterial(furShader);
+		this.furMaterial = Material.createMaterial(furShader, "FurMaterial");
+		// TODO: How to best do the binding of texture?
+		//this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[0]);
 		// TODO: The blending method is maybe not correct... lets see.
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
@@ -79,10 +81,10 @@ function (
 			dst[dstOff] = r;
 			dst[dstOff+1] = g;
 			dst[dstOff+2] = b;
-			dst[dstOff+3] = a + alphaFac*(255-a);
+			dst[dstOff+3] = a;
 			}
 		}
-		return output;
+		return dst;
 	};
 
 	/**
@@ -91,68 +93,78 @@ function (
 	FurPass.prototype.generateOpacityTextures = function(numberOfLayers, width, height) {
 
 		if (width === undefined || height === undefined) {
-			width = height = 256 * 3;
+			width = height = 256 * 1;
 		}
 
-		var textures = [];
-
-
 		var textureSettings = {
-			type: "RGB"
+			format: "Alpha"
 		};
 
-		var channels = 3;
+		var channels = 1;
 		var dataLength = width * height * channels;
 
 		// Create an array to hold the image data representaiton.
 		var noiseData = new Uint8Array(dataLength);
-		
+
 		// Add noise.
 		for (var i = 0; i < dataLength; i++) {
 			noiseData[i] = Math.round(Math.random() * 255);
 		}
 
 		// Gaussian blur convolve the canvas to a suitable level, should be pretty spikey
-		var blurredData = new Float32Array(dataLength);
-
-		var blurKernel = [1/9, 1/9, 1/9,
-							1/9, 1/9, 1/9,
-							1/9, 1/9, 1/9];
 
 
+		var blurKernel = [0.09474, 0.1183, 0.09474,
+							0.1183, 0.1477, 0.1183,
+						0.09474,0.1183, 0.09474];
 
-		// Now treshhold the blurred image with an increasing threhhold, experiment to get good results.  
-		// Save the output as binary data if possible. Texture seeems to only be able to use uint8, 
-		/*
+		var blurredData = this.convolute(noiseData, width, height, blurKernel);
 
-		var threshhold = 0.5;
-		var maxThreshhold = 0.9;
-		var threshholdIncrement = (maxThreshhold - threshhold) / numberOfLayers;
-		for (var i = 0; i < numberOfLayers; i++) {
-			
-
-			
-			// Get data from the canvas as an image.
-			var image = .... 
-			textures[i] = new Texture(image);
-			threshhold += threshholdIncrement;
+		// Now treshold the blurred image with an increasing threhhold, experiment to get good results.
+		// Save the output as binary data if possible. Texture seeems to only be able to use uint8,
+		var textures = new Array(numberOfLayers);
+		var threshold = 0.5;
+		var maxThreshold = 0.9;
+		var thresholdIncrement = (maxThreshold - threshold) / numberOfLayers;
+		for (var layerIndex = 0; layerIndex < numberOfLayers; layerIndex++) {
+			var layerData = this.thresholdData(blurredData, Math.round(threshold * 255));
+			threshold += thresholdIncrement;
+			textures[layerIndex] = new Texture(layerData, textureSettings, width, height);
 		}
-		*/
 
-
-		textures[0] = new Texture(noiseData, textureSettings, width, height);
+		//textures[layerIndex] = new Texture(blurredData, textureSettings, width, height);
 
 		return textures;
+	};
+
+	/**
+	 * Threshholds the data and returns a new array with the thresholded data.
+	 * @param sourceData
+	 * @param thresholdValue
+	 */
+	FurPass.prototype.thresholdData = function (sourceData, thresholdValue) {
+
+		var data = new Uint8Array(sourceData.length);
+
+		for (var i = 0; i < data.length; i++) {
+			if (sourceData[i] < thresholdValue) {
+				data[i] = 0;
+			} else {
+				data[i] = 255;
+			}
+		}
+
+		return data;
 	};
 
 
 	// RenderPasses may have a fourth additional parameter called delta
 	FurPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights) {
 		for (var i = 0; i < this.renderList.length; i++) {
-			for (var furLayer = 1; furLayer <= this.layerCount; furLayer++) {
+			for (var layerIndex = 0; layerIndex < this.layerCount; layerIndex++) {
 				// update opacity texture and uniforms per layer here.
-				this.furUniforms.normalizedLength = furLayer / this.layerCount;
-				this.furUniforms.opacityTexture = this.opacityTextures[0];
+				this.furUniforms.normalizedLength = (layerIndex + 1) / this.layerCount;
+				this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[layerIndex]);
 				renderer.render(this.renderList[i], camera, lights, null, this.clear, this.furMaterial);
 			}
 		}
@@ -171,7 +183,7 @@ function (
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
 			colorTexture: Shader.DIFFUSE_MAP,
-			opacityTexture: {}
+			opacityTexture: Shader.SPECULAR_MAP
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -202,7 +214,7 @@ function (
 		fshader: [
 
 			'uniform float normalizedLength;',
-			
+
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
 
@@ -211,13 +223,15 @@ function (
 
 			'void main(void)',
 			'{',
+			'	float Kshadow = 1.2;',
 			'	vec3 red = vec3(1.0, 0.0, 0.0);',
 			'	vec3 blue = vec3(0.0, 0.0, 1.0);',
 			'	vec4 color = vec4(mix(blue, red, normalizedLength), 1.0);',
-			'	vec4 texCol = texture2D(opacityTexture, texCoord0);',
-			'	texCol.a = 1.0;',
-			//'	gl_FragColor = mix(color, texCol, 0.0);',
-			'	gl_FragColor = vec4(texCol.r, texCol.r, texCol.r, 1.0);',
+			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'	vec4 opacity = texture2D(opacityTexture, texCoord0);',
+			'	if (opacity.a == 0.0) discard;',
+			'	float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
+			'	gl_FragColor = shadowFactor * vec4(texCol.r, texCol.g, texCol.b, 1.0);',
 			'}'//
 		].join("\n")
 	};
