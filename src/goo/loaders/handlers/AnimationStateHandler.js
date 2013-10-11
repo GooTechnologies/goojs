@@ -35,6 +35,12 @@ define([
 		});
 	};
 
+	AnimationStateHandler.prototype.remove = function(ref) {
+		if (this._objects[ref]) {
+			delete this._objects[ref];
+		}
+	};
+
 	AnimationStateHandler.prototype._create = function(ref) {
 		return this._objects[ref] = new SteadyState();
 	};

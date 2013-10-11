@@ -70,6 +70,14 @@ define([
 		});
 	};
 
+
+	AnimationLayersHandler.prototype.remove = function(ref) {
+		if (this._objects[ref]) {
+			delete this._objects[ref];
+		}
+	};
+
+
 	AnimationLayersHandler.prototype._create = function(ref) {
 		return this._objects[ref] = [];
 	};

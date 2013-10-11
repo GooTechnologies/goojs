@@ -216,7 +216,7 @@ define([
 		};
 	}
 
-	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 32);
+	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 16);
 	var identitate = function(x) { return x; };
 	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
 	var tranFun = inclined8thpi;
