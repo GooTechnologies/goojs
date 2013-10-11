@@ -32,7 +32,13 @@ define([
 	//'goo/statemachine/actions/SetCssPropertyAction',
 	//'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/actions/SetLightRangeAction'
+	'goo/statemachine/actions/SetLightRangeAction',
+
+	'goo/statemachine/actions/WASDAction',
+	// 'goo/statemachine/actions/TransformAction',
+	'goo/statemachine/actions/MoveAction',
+	'goo/statemachine/actions/RotateAction'
+
 ],
 /** @lends */
 function(

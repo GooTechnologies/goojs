@@ -46,6 +46,9 @@ function (
 		 * @type {Enum}
 		 * @default Sphere.TextureModes.Polar
 		 */
+		if (typeof textureMode === 'string') {
+			textureMode = Sphere.TextureModes[textureMode];
+		}
 		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Polar;
 
 		/** Inward-facing normals, for skydomes.

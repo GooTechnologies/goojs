@@ -1,17 +1,17 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/Entity',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/entities/EntityUtils'
 ], function(
 	ConfigHandler,
 	ComponentHandler,
-	Entity,
 	RSVP,
 	pu,
-	_
+	_,
+	EntityUtils
 ) {
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -44,7 +44,12 @@ define([
 			object = this._create(ref);
 		}
 
-		object.skip = !!config.hidden;
+		// hide/unhide entities and their descendants
+		if (!!config.hidden) {
+			EntityUtils.hide(object);
+		} else {
+			EntityUtils.show(object);
+		}
 
 		var promises = [];
 		for (var componentName in config.components) {
@@ -92,7 +97,9 @@ define([
 
 	EntityHandler.prototype.remove = function(ref) {
 		var entity = this.world.entityManager.getEntityByName(ref);
-		this.world.removeEntity(entity);
+		if (typeof entity === 'object') {
+			this.world.removeEntity(entity);
+		}
 	};
 
 	return EntityHandler;

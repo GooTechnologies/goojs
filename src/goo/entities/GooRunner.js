@@ -3,19 +3,14 @@ define([
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
 	'goo/renderer/Renderer',
-	'goo/renderer/Material',
-	'goo/renderer/Util',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/systems/BoundingUpdateSystem',
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/systems/LightingSystem',
-	'goo/entities/managers/LightManager',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
-	"goo/entities/systems/TextSystem",
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/util/GameUtils',
@@ -27,19 +22,14 @@ function (
 	TransformSystem,
 	RenderSystem,
 	Renderer,
-	Material,
-	Util,
-	ShaderLib,
 	BoundingUpdateSystem,
 	ScriptSystem,
 	LightingSystem,
-	LightManager,
 	CameraSystem,
 	ParticlesSystem,
 	Stats,
 	CSSTransformSystem,
 	AnimationSystem,
-	TextSystem,
 	LightDebugSystem,
 	CameraDebugSystem,
 	GameUtils,
@@ -109,6 +99,7 @@ function (
 
 		var that = this;
 		this.start = -1;
+		//Move out
 		this.run = function (time) {
 			try {
 				that._updateFrame(time);
@@ -275,6 +266,7 @@ function (
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
 
+	//TODO: move this to Logo
 	GooRunner.prototype._buildLogo = function (settings) {
 		var div = document.createElement('div');
 		var svg = Logo.getLogo({

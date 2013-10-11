@@ -1,11 +1,11 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler'
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
 	System,
-	EventHandler
+	SystemBus
 ) {
 	"use strict";
 
@@ -29,7 +29,7 @@ function (
 		if (this.lights.indexOf(component.light) === -1) {
 			this.lights.push(component.light);
 			if (!this.overrideLights) {
-				EventHandler.dispatch("setLights", this.lights);
+				SystemBus.emit('goo.setLights', this.lights);
 			}
 		}
 	};
@@ -43,14 +43,14 @@ function (
 		if (index !== -1) {
 			this.lights.splice(index, 1);
 			if(!this.overrideLights) {
-				EventHandler.dispatch("setLights", this.lights);
+				SystemBus.emit('goo.setLights', this.lights);
 			}
 		}
 	};
 
 	LightingSystem.prototype.setOverrideLights = function(lights) {
 		this.overrideLights = lights;
-		EventHandler.dispatch("setLights", this.overrideLights || this.lights);
+		SystemBus.emit('goo.setLights', this.overrideLights || this.lights);
 	};
 
 	LightingSystem.prototype.process = function (entities) {

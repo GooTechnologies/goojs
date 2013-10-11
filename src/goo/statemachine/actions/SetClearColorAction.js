@@ -9,7 +9,7 @@ function(
 	) {
 	"use strict";
 
-	function SetClearColorAction(settings) {
+	function SetClearColorAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
@@ -17,7 +17,7 @@ function(
 
 	SetClearColorAction.prototype.configure = function(settings) {
 		this.everyFrame = settings.everyFrame !== false;
-		this.color = settings.color || [0, 0.05, 0.1, 1];
+		this.color = settings.color || [0, 0.07, 0.14, 1];
 	};
 
 	SetClearColorAction.external = {
@@ -38,10 +38,10 @@ function(
 	SetClearColorAction.prototype.onCreate = function(fsm) {
 		console.log("Setting clear color to " + JSON.stringify(this.color));
 		fsm.getEngine().renderer.setClearColor(
-			FSMUtil.getValue(this.this.color[0], fsm),
-			FSMUtil.getValue(this.this.color[1], fsm),
-			FSMUtil.getValue(this.this.color[2], fsm),
-			FSMUtil.getValue(this.this.color[3], fsm)
+			FSMUtil.getValue(this.color[0], fsm),
+			FSMUtil.getValue(this.color[1], fsm),
+			FSMUtil.getValue(this.color[2], fsm),
+			FSMUtil.getValue(this.color[3], fsm)
 		);
 	};
 

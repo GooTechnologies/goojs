@@ -1,7 +1,6 @@
 define([
 	'goo/renderer/ShaderCall',
 	'goo/math/Matrix4x4',
-	'goo/math/Vector3',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/Util'
@@ -10,7 +9,6 @@ define([
 function (
 	ShaderCall,
 	Matrix4x4,
-	Vector3,
 	World,
 	RenderQueue,
 	Util
@@ -164,7 +162,11 @@ function (
 		}
 
 		// Bind attributes
+		//TODO: good?
 		if (this.attributes) {
+		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+			// record.attributes = this.attributes;
+			// record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			for (var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];
@@ -186,6 +188,10 @@ function (
 			}
 		}
 
+		this._bindUniforms(shaderInfo);
+	};
+
+	Shader.prototype._bindUniforms = function (shaderInfo) {
 		if (this.uniforms) {
 			try {
 				this.textureIndex = 0;
@@ -208,7 +214,7 @@ function (
 			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
-		var defValue = shaderInfo.material.uniforms[name] || this.uniforms[name];
+		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
 
 		if (typeof defValue === 'string') {
 			var callback = this.currentCallbacks[name];

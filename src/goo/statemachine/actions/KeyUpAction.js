@@ -9,12 +9,12 @@ function(
 ) {
 	"use strict";
 
-	function KeyUpAction(id, settings) {
+	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === this.key) {
+			if (!this.key || event.which === this.key) {
 				this.updated = true;
 				if (this.keyVariable) {
 					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
@@ -47,7 +47,7 @@ function(
 		}],
 
 		transitions: [{
-			name: 'keydown',
+			name: 'keyup',
 			description: 'Fired on key up'
 		}]
 	};

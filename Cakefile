@@ -1,83 +1,33 @@
 fs = require('fs')
 path = require('path')
-{minifyProject, minifyFile} = require('./buildengine/minify')
-exec = require('child_process').exec
+child_process = require('child_process')
 convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
 wrench = require('wrench')
+rimraf = require('rimraf')
 
 # Run a command and exit with an error message if it fails.
 runCommand = (cmd, callback) ->
-	exec cmd, (error, stdout, stderr) ->
-		if error != null
-			console.log stderr
+	args = cmd.split(/\s+/)
+	executable = args.shift()
+	child = child_process.spawn(executable, args);
+
+	child.stdout.on 'data', (data) ->
+		process.stdout.write data
+	child.stderr.on 'data', (data) ->
+		process.stdout.write data
+	child.on 'close', (code) ->
+		if code == 0
+			callback?()
+		else
 			console.log 'Command failed: ' + cmd
 			process.exit(1)
-		if callback
-			callback()
 
 endsWith = (str, suffix)-> str.indexOf(suffix, str.length - suffix.length) != -1
 
-option '-i', '--include [LIB]', 'Include library e.g. requireLib'
-
 task 'minify', 'Minifies the whole project, or only one file if given two arguments', (options) ->
-
-	if options.arguments.length == 2
-		fileIn = options.arguments[0]
-		fileOut = options.arguments[1]
-
-		console.log "minifying #{fileIn}"
-		minifyFile fileIn, fileOut, null, (err) ->
-			if err
-				console.log 'Minification failed:', err
-	else 	
-		console.log 'minifying'
-
-		output = 'output'
-		fileIn = 'src'
-		if options.include == 'requireLib'
-			fileOut = 'minified/goo/goo-require.js'
-		else
-			fileOut = 'minified/goo/goo.js'
-		includes = ['goo/**/*.js']
-
-		failSilently = true
-		wrench.rmdirSyncRecursive('output', failSilently)
-		fs.mkdirSync 'output'
-
-		copyLibs fileIn, path.resolve(output, fileIn), includes
-		
-		console.log "Copied js files"
-		
-		# Compile coffeescript
-		runCommand "coffee -cbo #{output}/#{fileIn} #{fileIn}", ->
-			console.log "Compiled coffeescript" 			
-	
-			minifyProject "#{output}/#{fileIn}", fileOut, includes, options, (err)->
-				if err
-					console.log 'Minification failed:', err
-					return
-				if process.platform != 'win32'
-					runCommand "rm -Rf #{output}", ->
-						console.log "Removed output dir"
-
-			console.log "Minifying everything in #{output}/#{fileIn}"
-			
-			source = 'lib'
-			target = 'minified/goo/lib'
-			includes = [
-				'box2d/*.*'
-				'cannon/*.*'
-				'soundmanager2/*.*'
-				'howler/*.*'
-				'crunch/*.*'
-				'hammerv2/*.*'
-				'require.js'
-			]
-			copyLibs source, target, includes
-			
-			console.log "Copied lib"
-
+	rimraf 'out/minified', ->
+		runCommand 'node_modules/grunt-cli/bin/grunt minify'
 
 task 'testserver', 'Start Testacular server', (options) ->
 	server = require('testacular').server
@@ -151,9 +101,9 @@ task 'jsdoc',
 		console.log 'template: ', template
 
 		if template == 'json'
-			command = 'tools/generate_jsdoc_json.sh'
+			command = path.resolve('tools', 'generate_jsdoc_json.sh')
 		else
-			command = 'tools/generate_jsdoc.sh'
+			command = path.resolve('tools', 'generate_jsdoc.sh')
 
 		runCommand command
 		
@@ -162,7 +112,3 @@ task 'visualtoc',
 	->
 		toc = require('./visual-test/toc')
 		toc.run()
-
-
-
-

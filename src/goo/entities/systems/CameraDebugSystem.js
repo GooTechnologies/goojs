@@ -4,7 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/util/FrustumViewer'],
+	'goo/debug/FrustumViewer'],
 	/** @lends */
 	function (
 		System,

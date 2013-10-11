@@ -1,13 +1,13 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler',
+	'goo/entities/SystemBus',
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/util/DebugDrawHelper',
+	'goo/debug/DebugDrawHelper',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
@@ -15,7 +15,7 @@ define([
 /** @lends */
 function (
 	System,
-	EventHandler,
+	SystemBus,
 	SimplePartitioner,
 	MeshData,
 	Material,
@@ -58,6 +58,7 @@ function (
 			materials: [gridMaterial],
 			transform: this.transform
 		};
+		// It ain't pretty, but it works
 		var surfaceShader = Util.clone(ShaderLib.simpleLit);
 		surfaceShader.uniforms.opacity = 1.0;
 		var fshader = surfaceShader.fshader.split('\n');
@@ -85,13 +86,12 @@ function (
 		};
 
 		var that = this;
-		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
-				that.camera = camera;
-			},
-			setLights : function (lights) {
-				that.lights = lights;
-			}
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
+		});
+
+		SystemBus.addListener('goo.setLights', function (lights) {
+			that.lights = lights;
 		});
 	}
 

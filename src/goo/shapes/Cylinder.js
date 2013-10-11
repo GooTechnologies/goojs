@@ -39,6 +39,9 @@ function (
 		 * @type {Enum}
 		 * @default Cylinder.TextureModes.Polar
 		 */
+		if (typeof textureMode === 'string') {
+			textureMode = Cylinder.TextureModes[textureMode];
+		}
 		this.textureMode = textureMode !== undefined ? textureMode : Cylinder.TextureModes.Polar;
 
 		/** Inward-facing normals, for skydomes.

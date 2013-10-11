@@ -9,7 +9,7 @@ function(
 ) {
 	"use strict";
 
-	function AddVariableAction(settings) {
+	function AddVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 

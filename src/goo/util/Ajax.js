@@ -56,6 +56,9 @@ define([
 			request.responseType = options.responseType;
 		}
 
+		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
 				if ( request.status >= 200 && request.status <= 299 ) {
@@ -144,7 +147,7 @@ define([
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
 	Ajax.prototype.loadImage = function (url, needsProgress) {
-		window.URL = window.URL || window.webkitURL;		
+		window.URL = window.URL || window.webkitURL;
 		var promise = new RSVP.Promise();
 		var image = new Image();
 

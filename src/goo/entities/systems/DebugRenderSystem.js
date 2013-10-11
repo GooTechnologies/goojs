@@ -1,16 +1,16 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler',
+	'goo/entities/SystemBus',
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/util/DebugDrawHelper'
+	'goo/debug/DebugDrawHelper'
 ],
 /** @lends */
 function (
 	System,
-	EventHandler,
+	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
@@ -49,13 +49,12 @@ function (
 		this.scale = 20;
 
 		var that = this;
-		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
-				that.camera = camera;
-			},
-			setLights : function (lights) {
-				that.lights = lights;
-			}
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
+		});
+
+		SystemBus.addListener('goo.setLights', function (lights) {
+			that.lights = lights;
 		});
 
 		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });

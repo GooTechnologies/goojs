@@ -9,14 +9,12 @@ define([
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/MeshData',
 	'goo/renderer/Material',
-	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
-	'goo/entities/EventHandler'
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -29,14 +27,12 @@ function (
 	Texture,
 	DdsLoader,
 	DdsUtils,
-	MeshData,
 	Material,
-	Shader,
 	Transform,
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
-	EventHandler
+	SystemBus
 ) {
 	"use strict";
 
@@ -365,10 +361,8 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	EventHandler.addListener({
-		setCurrentCamera : function (camera) {
-			Renderer.mainCamera = camera;
-		}
+	SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+		Renderer.mainCamera = camera;
 	});
 
 	/**
@@ -547,24 +541,33 @@ function (
 	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
 	+ it could also use a description of what it's supposed to do
 	 */
-	Renderer.prototype.override = function(mat1, mat2, store) {
+	Renderer.prototype._override = function(mat1, mat2, store) {
 		store.empty();
-		for (var key in store) {
-			if(store.hasOwnProperty(key)) {
-				if (store[key] instanceof Object && key !== 'shader') {
-					for (var prop in mat1[key]) {
-						store[key][prop] = mat1[key][prop];
+		var keys = Object.keys(store);
+		for (var i = 0, l = keys.length; i < l; i++) {
+			var key = keys[i];
+
+			var storeVal = store[key];
+			var mat1Val = mat1[key];
+			var mat2Val = mat2[key];
+			if (storeVal instanceof Object && key !== 'shader') {
+				var matkeys = Object.keys(mat1Val);
+				for (var j = 0, l2 = matkeys.length; j < l2; j++) {
+					var prop = matkeys[j];
+					storeVal[prop] = mat1Val[prop];
+				}
+				var matkeys = Object.keys(mat2Val);
+				for (var j = 0, l2 = matkeys.length; j < l2; j++) {
+					var prop = matkeys[j];
+					if (storeVal[prop] === undefined) {
+						storeVal[prop] = mat2Val[prop];
 					}
-					for (var prop in mat2[key]) {
-						if(store[key][prop] === undefined) {
-							store[key][prop] = mat2[key][prop];
-						}
-					}
+				}
+			} else {
+				if (mat1Val !== undefined) {
+					store[key] = mat1Val;
 				} else {
-					store[key] = mat1[key];
-					if(store[key] === undefined) {
-						store[key] = mat2[key];
-					}
+					store[key] = mat2Val;
 				}
 			}
 		}
@@ -603,7 +606,7 @@ function (
 				orMaterial = this._overrideMaterials[i];
 			}
 			if (material && orMaterial) {
-				this.override(orMaterial, material, this._mergedMaterial);
+				this._override(orMaterial, material, this._mergedMaterial);
 				material = this._mergedMaterial;
 			} else if (orMaterial) {
 				material = orMaterial;
@@ -1138,8 +1141,10 @@ function (
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize);
+					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize, i);
 				}
+				texture.image.width = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -1171,7 +1176,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize) {
+	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
 		newWidth = Math.min(newWidth, maxSize);
@@ -1180,11 +1185,19 @@ function (
 			var canvas = document.createElement('canvas'); // !!!!!
 			canvas.width = newWidth;
 			canvas.height = newHeight;
+			if (image.getAttribute) {
+				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
+			}
 			var ctx = canvas.getContext('2d');
 			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
 			document.body.appendChild(canvas);
 			canvas.dataReady = true;
-			texture.image = canvas;
+			canvas.src = image.src;
+			if (index === undefined) {
+				texture.image = canvas;
+			} else {
+				texture.image.data[index] = canvas;
+			}
 			canvas.parentNode.removeChild(canvas);
 		}
 	};

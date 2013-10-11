@@ -2,11 +2,6 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
 	],
@@ -15,11 +10,6 @@ define([
 		MeshData,
 		MeshBuilder,
 		Transform,
-		ShapeCreator,
-		MeshDataComponent,
-		MeshRendererComponent,
-		Material,
-		ShaderLib,
 		Box,
 		Cylinder
 	) {

@@ -21,7 +21,8 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../../lib/V'
 ], function (
 	GooRunner,
 	World,
@@ -39,7 +40,8 @@ require([
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightComponent
+	LightComponent,
+	V
 	) {
 	'use strict';
 
@@ -107,16 +109,7 @@ require([
 		lightEntity.addToWorld();
 
 		// camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(35, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
+		V.addOrbitCamera(goo, new Vector3(35, Math.PI / 2, 0));
 	}
 
 	function init() {

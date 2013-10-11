@@ -23,6 +23,8 @@ function () {
 		 * @default false
 		 */
 		this.skip = false;
+
+		this.hidden = false;
 	}
 
 	/**

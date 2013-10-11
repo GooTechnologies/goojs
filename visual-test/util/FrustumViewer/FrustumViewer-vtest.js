@@ -20,8 +20,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/entities/EventHandler',
-	'goo/util/FrustumViewer'
+	'goo/entities/SystemBus',
+	'goo/debug/FrustumViewer'
 ], function (
 	GooRunner,
 	World,
@@ -38,7 +38,7 @@ require([
 	Vector3,
 	PointLight,
 	LightComponent,
-	EventHandler,
+	SystemBus,
 	FrustumViewer
 	) {
 	'use strict';
@@ -51,7 +51,7 @@ require([
 
 	function setMainCamera(id, cameraEntities) {
 		var mainCamera = cameraEntities[id].getComponent('CameraComponent').camera;
-		EventHandler.dispatch("setCurrentCamera", mainCamera);
+		SystemBus.emit('goo.setCurrentCamera', mainCamera);
 	}
 
 	function frustumViewerDemo(goo) {

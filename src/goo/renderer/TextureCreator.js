@@ -4,7 +4,6 @@ define([
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/crunch/CrunchLoader',
 	'goo/loaders/tga/TgaLoader',
-	'goo/util/SimpleResourceUtil',
 	'goo/renderer/Util',
 	'goo/util/Latch'
 ],
@@ -15,7 +14,6 @@ function (
 	DdsLoader,
 	CrunchLoader,
 	TgaLoader,
-	SimpleResourceUtil,
 	Util,
 	Latch
 ) {

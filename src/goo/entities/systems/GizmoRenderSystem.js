@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/EventHandler',
+	'goo/entities/SystemBus',
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
@@ -15,7 +15,7 @@ define([
 /** @lends */
 function (
 	System,
-	EventHandler,
+	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
@@ -64,10 +64,8 @@ function (
 
 
 		var that = this;
-		EventHandler.addListener({
-			setCurrentCamera : function (camera) {
-				that.camera = camera;
-			}
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
 		});
 	}
 
@@ -87,6 +85,10 @@ function (
 
 	GizmoRenderSystem.prototype.deactivate = function() {
 		this.domElement.removeEventListener('mousemove', this.mouseMove);
+	};
+
+	GizmoRenderSystem.prototype.getGizmo = function(id) {
+		return this.gizmos[id];
 	};
 
 	GizmoRenderSystem.prototype.show = function(entity) {

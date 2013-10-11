@@ -21,7 +21,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/CameraDebugComponent',
-	'goo/entities/EventHandler'
+	'goo/entities/SystemBus'
 ], function (
 	GooRunner,
 	World,
@@ -39,7 +39,7 @@ require([
 	PointLight,
 	LightComponent,
 	CameraDebugComponent,
-	EventHandler
+	SystemBus
 	) {
 	'use strict';
 
@@ -51,7 +51,7 @@ require([
 
 	function setMainCamera(id, cameraEntities) {
 		var mainCamera = cameraEntities[id].getComponent('CameraComponent').camera;
-		EventHandler.dispatch("setCurrentCamera", mainCamera);
+		SystemBus.emit('goo.setCurrentCamera', mainCamera);
 	}
 
 	function addSpheres(goo, nSpheres) {

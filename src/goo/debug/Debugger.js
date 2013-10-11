@@ -1,23 +1,9 @@
 define([
-	'goo/entities/Entity',
-	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent',
-	'goo/math/Ray',
-	'goo/entities/systems/PickingSystem',
-	'goo/picking/PrimitivePickLogic',
-	'goo/renderer/Renderer',
 	'goo/debug/components/MarkerComponent',
 	'goo/debug/systems/MarkerSystem'
 ],
 	/** @lends */
 	function (
-	Entity,
-	EntityManager,
-	TransformComponent,
-	Ray,
-	PickingSystem,
-	PrimitivePickLogic,
-	Renderer,
 	MarkerComponent,
 	MarkerSystem
 	) {

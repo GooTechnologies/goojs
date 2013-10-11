@@ -54,7 +54,9 @@ define([
 			promises.push(this.getConfig(config.urls[i]));
 		}
 		return RSVP.all(promises).then(function(urls) {
-			object.urls(urls);
+			if (!isEqual(urls, object._urls)) {
+				object.urls(urls);
+			}
 			return object;
 		});
 	};
@@ -63,6 +65,19 @@ define([
 		this._objects[ref].stop();
 		delete this._objects[ref];
 	};
+
+	function isEqual(a, b) {
+		var len = a.length;
+		if (len !== b.length) {
+			return false;
+		}
+		while (len--) {
+			if(a[len] !== b[len]) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	return SoundHandler;
 });

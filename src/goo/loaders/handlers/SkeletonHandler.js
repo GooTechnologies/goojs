@@ -11,8 +11,7 @@ define([
 		Skeleton,
 		SkeletonPose,
 		JsonUtils,
-		pu,
-		_
+		pu
 ) {
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);

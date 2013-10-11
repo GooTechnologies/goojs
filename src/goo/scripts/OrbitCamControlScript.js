@@ -63,8 +63,8 @@ function (
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
 	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi). 
-	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples: 
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
+	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
 	 * <ul>
 	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
 	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
@@ -95,7 +95,7 @@ function (
 		this.xSamples = [0, 0, 0, 0, 0];
 		this.ySamples = [0, 0, 0, 0, 0];
 		this.sample = 0;
-		this.velocity = new Vector2();
+		this.velocity = new Vector2(0, 0);
 
 		this.targetSpherical = new Vector3(this.spherical);
 		this.cartesian = new Vector3();
@@ -111,6 +111,12 @@ function (
 
 		if(this.domElement) {
 			this.setupMouseControls();
+		}
+
+		if (properties.demoMode) {
+			this.demoMode = true;
+			this.moveInterval = properties.moveInterval;
+			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
 		}
 	}
 
@@ -234,10 +240,12 @@ function (
 
 		document.addEventListener('mousemove', function (event) {
 			that.updateDeltas(event.clientX, event.clientY);
+			that.lastTimeMoved = Date.now();
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.applyWheel(event);
+			that.lastTimeMoved = Date.now();
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.applyWheel(event);
@@ -294,6 +302,14 @@ function (
 	};
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
+		if (this.demoMode) {
+			var now = Date.now();
+
+			if (now - this.lastTimeMoved > this.moveInterval) {
+				this.lastTimeMoved = now;
+				this.move(Math.round(Math.random())-0.5, Math.round(Math.random())-0.5);
+			}
+		}
 		if (env) {
 			if(!this.domElement && env.domElement) {
 				this.domElement = env.domElement;

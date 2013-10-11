@@ -1,17 +1,17 @@
 {
-  "name": "goojs",
-  "version": "0.1.0",
-  "author": "Goo Technologies AB <info@gootechnologies.com>", 
+  "name": "gooengine",
+  "version": "0.0.0",
+  "author": "Goo Technologies AB <info@gootechnologies.com>",
   "description": "Goo Engine - the WebGL graphics engine",
-  "homepage": "http://www.gootechnologies.com/",
+  "homepage": "http://www.gooengine.com/",
   "licenses": [
     {
-        "type": "Proprietary",
-        "url": "http://www.gootechnologies.com/"
+      "type": "Proprietary",
+      "url": "http://www.gooengine.com/"
     }
   ],
-  "dependencies" : {
-    "requirejs" : ">=2.1.2"
+  "dependencies": {
+    "requirejs": ">=2.1.2"
   },
   "devDependencies": {
     "coffee-script": "1.6.3",
@@ -22,7 +22,14 @@
     "wrench": ">= 1.4.4",
     "requirejs": ">= 2.1.4",
     "mkdirp": ">= 0.3.5",
-    "underscore": ">= 1.4.4"
+    "underscore": ">= 1.4.4",
+    "grunt-cli": "~0.1.9",
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-wrap": "~0.3.0",
+    "rimraf": "~2.2.2",
+    "grunt-contrib-clean": "~0.5.0"
   },
   "engines": {
     "node": ">=0.8.2"

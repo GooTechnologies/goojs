@@ -1,13 +1,7 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/renderer/Material',
-	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/Transform',
@@ -15,14 +9,8 @@ define([
 	'goo/math/Ray'
 ], function(
 	Gizmo,
-	MeshDataComponent,
-	MeshRendererComponent,
-	MeshData,
-	MeshBuilder,
 	Sphere,
 	Torus,
-	Material,
-	EntityUtils,
 	Vector3,
 	Matrix3x3,
 	Transform,
@@ -32,8 +20,8 @@ define([
 	'use strict';
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
-		this._ballMesh = new Sphere(32, 32, 1.3);
-		this._torusMesh = new Torus(64, 8, 0.2);
+		this._ballMesh = new Sphere(32, 32, 1.1);
+		this._torusMesh = new Torus(64, 8, 0.18);
 
 		this._buildBall();
 		this._buildTorus(0);
@@ -48,6 +36,17 @@ define([
 		this._ray = new Ray();
 		this._m1 = new Matrix3x3();
 		this._m2 = new Matrix3x3();
+
+		//TODO: create a function that does this sort of thing
+		this.snap = false;
+		this.accumulatedRotationX = 0;
+		this.accumulatedRotationY = 0;
+		this.accumulatedRotationThorX = 0;
+		this.accumulatedRotationThorY = 0;
+		this.accumulatedRotationThorZ = 0;
+		this.oldAngleX = 0;
+		this.oldAngleY = 0;
+		this.oldAngleZ = 0;
 	}
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 
@@ -118,10 +117,36 @@ define([
 		}
 	};
 
+
+
 	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
 		this._rotation.setIdentity();
-		this._rotation.rotateY(dx * this._rotationScale);
-		this._rotation.rotateX(dy * this._rotationScale);
+
+		if (this.snap && false) { // snap in this mode is confusing
+			this.accumulatedRotationY += dx * this._rotationScale;
+			this.accumulatedRotationX += dy * this._rotationScale;
+
+			var angleLimit = Math.PI / 8;
+
+			if (this.accumulatedRotationX > angleLimit) {
+				this.accumulatedRotationX -= angleLimit;
+				this._rotation.rotateX(angleLimit);
+			} else if (this.accumulatedRotationX < 0) {
+				this.accumulatedRotationX += angleLimit;
+				this._rotation.rotateX(-angleLimit);
+			}
+
+			if (this.accumulatedRotationY > angleLimit) {
+				this.accumulatedRotationY -= angleLimit;
+				this._rotation.rotateY(angleLimit);
+			} else if (this.accumulatedRotationY < 0) {
+				this.accumulatedRotationY += angleLimit;
+				this._rotation.rotateY(-angleLimit);
+			}
+		} else {
+			this._rotation.rotateY(dx * this._rotationScale);
+			this._rotation.rotateX(dy * this._rotationScale);
+		}
 
 		var camMat = Renderer.mainCamera.getViewMatrix().data;
 		var camRotation = this._m1, screenRotation = this._m2;
@@ -141,22 +166,110 @@ define([
 			this.transform.rotation
 		);
 	};
+	// --- experimental functions go here
+	function step (size) {
+		return function (x) {
+			return Math.floor(x / size) * size;
+		};
+	}
+
+	var step8thpi = step(Math.PI / 8);
+
+	function inter(x, fromStart, fromEnd, toStart, toEnd) {
+		var fraction = (x - fromStart) / (fromEnd - fromStart);
+		return fraction * (toEnd - toStart) + toStart;
+	}
+
+	function inclinedType1 (size, t) {
+		return function (x) {
+			x += size / 2 + t;
+			if (x < 0) {
+				x -= size + t*2;
+				x *= -1;
+				var intr = Math.floor(x / size) * size;
+				var frac = x % size - t;
+
+				return -(frac < t || frac > size - t ?
+					intr + inter(frac, -t, t, 0, size) - size :
+					intr);
+			} else {
+				var intr = Math.floor(x / size) * size;
+				var frac = x % size - t;
+
+				return frac < t || frac > size - t ?
+					intr + inter(frac, -t, t, 0, size) - size :
+					intr;
+			}
+		};
+	}
+
+	function inclinedType2 (size, t) {
+		return function (x) {
+			var z = x % size;
+			z += z < 0 ? size : 0;
+			if (z < t) {
+				return x - z;
+			} else if (z > size - t) {
+				return x + size - z;
+			}
+			return x;
+		};
+	}
+
+	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 32);
+	var identitate = function(x) { return x; };
+	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
+	var tranFun = inclined8thpi;
+	// ---
 
 	RotationGizmo.prototype._rotateOnAxis = function(dx, dy) {
 		this._rotation.setIdentity();
+
 		var sum = (dx * this._direction.x) + (dy * this._direction.y);
 		sum *= this._rotationScale;
 
-		switch(this._activeHandle.axis) {
-			case 0:
-				this._rotation.rotateX(sum);
-				break;
-			case 1:
-				this._rotation.rotateY(sum);
-				break;
-			case 2:
-				this._rotation.rotateZ(sum);
-				break;
+		if (this.snap) {
+			switch(this._activeHandle.axis) {
+				case 0:
+					this.accumulatedRotationThorX += sum;
+					var newAngleX = tranFun(this.accumulatedRotationThorX);
+					this._rotation.rotateX(newAngleX - this.oldAngleX);
+					this.oldAngleX = newAngleX;
+					break;
+				case 1:
+					this.accumulatedRotationThorY += sum;
+					var newAngleY = tranFun(this.accumulatedRotationThorY);
+					this._rotation.rotateY(newAngleY - this.oldAngleY);
+					this.oldAngleY = newAngleY;
+					break;
+				case 2:
+					this.accumulatedRotationThorZ += sum;
+					var newAngleZ = tranFun(this.accumulatedRotationThorZ);
+					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
+					this.oldAngleZ = newAngleZ;
+					break;
+			}
+		} else {
+			switch(this._activeHandle.axis) {
+				case 0:
+					this.accumulatedRotationThorX += sum;
+					var newAngleX = this.accumulatedRotationThorX;
+					this._rotation.rotateX(newAngleX - this.oldAngleX);
+					this.oldAngleX = newAngleX;
+					break;
+				case 1:
+					this.accumulatedRotationThorY += sum;
+					var newAngleY = this.accumulatedRotationThorY;
+					this._rotation.rotateY(newAngleY - this.oldAngleY);
+					this.oldAngleY = newAngleY;
+					break;
+				case 2:
+					this.accumulatedRotationThorZ += sum;
+					var newAngleZ = this.accumulatedRotationThorZ;
+					this._rotation.rotateZ(newAngleZ - this.oldAngleZ);
+					this.oldAngleZ = newAngleZ;
+					break;
+			}
 		}
 		Matrix3x3.combine(
 			this.transform.rotation,
@@ -166,6 +279,8 @@ define([
 	};
 
 	RotationGizmo.prototype._buildBall = function() {
+		var transform = new Transform();
+		transform.scale.setd(1.2, 1.2, 1.2);
 		this.renderables.push({
 			meshData: this._ballMesh,
 			materials: [this._buildMaterialForAxis(3)],
@@ -176,6 +291,7 @@ define([
 
 	RotationGizmo.prototype._buildTorus = function(dim) {
 		var transform = new Transform();
+		transform.scale.setd(1.7, 1.7, 1.7);
 		if(dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {

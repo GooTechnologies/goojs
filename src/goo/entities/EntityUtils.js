@@ -4,6 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
 	'goo/renderer/Camera',
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
@@ -18,6 +19,7 @@ define([
 		MeshRendererComponent,
 		CameraComponent,
 		LightComponent,
+		ScriptComponent,
 		Camera,
 		Light,
 		Material,
@@ -90,17 +92,30 @@ define([
 		/**
 		 * Traverse entity hierarchy with callback
 		 * @param {Entity} entity The entity to begin traversing from
-		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy
+		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
+		 * The traversing can be stopped from propagating if the callback returns false.
 		 */
 		EntityUtils.traverse = function (entity, callback, level) {
 			level = level !== undefined ? level : 0;
 
-			callback(entity, level);
-
-			for (var j=0;j<entity.transformComponent.children.length;j++) {
-				var child = entity.transformComponent.children[j];
-				EntityUtils.traverse(child.entity, callback, level + 1);
+			if (callback(entity, level) !== false) {
+				for (var i = 0; i < entity.transformComponent.children.length; i++) {
+					var child = entity.transformComponent.children[i];
+					EntityUtils.traverse(child.entity, callback, level + 1);
+				}
 			}
+		};
+
+		/**
+		 * Traverse the entity hierarchy upwards, returning the root entity
+		 * @param {Entity} entity The entity to begin traversing from
+		 * @returns {Entity} The root entity
+		 */
+		EntityUtils.getRoot = function (entity) {
+			while (entity.transformComponent.parent) {
+				entity = entity.transformComponent.parent.entity;
+			}
+			return entity;
 		};
 
 		EntityUtils.updateWorldTransform = function (transformComponent) {
@@ -109,6 +124,43 @@ define([
 			for (var i = 0; i < transformComponent.children.length; i++) {
 				EntityUtils.updateWorldTransform(transformComponent.children[i]);
 			}
+		};
+
+		/**
+		 * Shows an entity and its descendants if they are not hidden
+		 * @param {Entity} entity The entity to show
+		 */
+		EntityUtils.show = function(entity) {
+			entity.hidden = false;
+
+			//first search if it has hidden parents to determine if itself should be visible
+			var pointer = entity;
+			while (pointer.transformComponent.parent) {
+				pointer = pointer.transformComponent.parent.entity;
+				if (pointer.hidden) { return ; }
+			}
+
+			EntityUtils.traverse(entity, function(entity) {
+				if (entity.hidden) { return false; }
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.hidden = entity.hidden;
+				}
+			});
+		};
+
+		/**
+		 * Hides the entity and its descendants
+		 * @param {Entity} entity The entity to hide
+		 */
+		EntityUtils.hide = function(entity) {
+			entity.hidden = true;
+
+			// hide everything underneath this
+			EntityUtils.traverse(entity, function(entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.hidden = true;
+				}
+			});
 		};
 
 		/**
@@ -154,6 +206,11 @@ define([
 					entity.name = arg;
 				} else if (Array.isArray(arg) && arg.length === 3) {
 					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+				} else if (typeof arg.run === 'function') {
+					if (!entity.hasComponent('ScriptComponent')) {
+						entity.setComponent(new ScriptComponent());
+					}
+					entity.scriptComponent.scripts.push(arg);
 				}
 			}
 

@@ -29,23 +29,20 @@ define([
 			throw new Error('Howler is missing');
 		}
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		if (component.sounds instanceof Object) {
-			for (var key in component.sounds) {
-				component.sounds.pause();
-			}
-			component.sounds = {};
+		for (var i = 0; i < component.sounds.length; i++) {
+			component.sounds[i].stop();
 		}
-		var soundsMapping = config.soundsMapping;
-		if (soundsMapping instanceof Object) {
+		component.sounds = [];
+
+		var soundRefs = config.soundRefs;
+		if (soundRefs) {
 			var promises = [];
 
-			for (var key in soundsMapping) {
-				promises.push(this._getSound(key, soundsMapping[key]));
+			for (var i = 0; i < soundRefs.length; i++) {
+				promises.push(this._getSound(soundRefs[i]));
 			}
-			return RSVP.all(promises).then(function(soundObjects) {
-				for(var i = 0; i < soundObjects.length; i++) {
-					component.sounds[soundObjects[i].key] = soundObjects[i].sound;
-				}
+			return RSVP.all(promises).then(function(sounds) {
+				component.sounds = sounds;
 				return component;
 			});
 		} else {
@@ -53,16 +50,10 @@ define([
 		}
 	};
 
-	SoundComponentHandler.prototype._getSound = function(key, ref) {
+	SoundComponentHandler.prototype._getSound = function(ref) {
 		var that = this;
 		return this.getConfig(ref).then(function(config) {
 			return that.updateObject(ref, config, that.options);
-		}).then(function(sound) {
-			return {
-				key: key,
-				soundRef: ref,
-				sound: sound
-			};
 		});
 	};
 

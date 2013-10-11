@@ -9,7 +9,7 @@ function(
 ) {
 	"use strict";
 
-	function AddPositionAction(id, settings) {
+	function AddPositionAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 

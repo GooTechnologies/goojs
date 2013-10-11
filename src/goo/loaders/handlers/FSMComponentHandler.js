@@ -38,7 +38,7 @@ define([
 			for (var i = 0; i < refs.length; i++) {
 				promises.push(update(refs[i]));
 			}
-		} 
+		}
 
 		if (promises.length > 0) {
 			return RSVP.all(promises).then(function(machines) {

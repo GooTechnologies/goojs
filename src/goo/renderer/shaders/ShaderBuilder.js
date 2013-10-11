@@ -1,5 +1,4 @@
 define([
-	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/MeshData',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
@@ -9,7 +8,6 @@ define([
 ],
 /** @lends */
 function(
-	ShaderFragment,
 	MeshData,
 	PointLight,
 	DirectionalLight,

@@ -36,9 +36,9 @@ define([
 
 			if (action === undefined) {
 				// New action
-				var actionClass = Actions.actionForType(actionConfig.type);
-				if (actionClass instanceof Function) {
-					action = new actionClass(actionConfig.id, actionConfig.options);
+				var ActionClass = Actions.actionForType(actionConfig.type);
+				if (ActionClass instanceof Function) {
+					action = new ActionClass(actionConfig.id, actionConfig.options);
 					state.addAction(action);
 				}
 			}
@@ -50,10 +50,10 @@ define([
 	};
 
 	MachineHandler.prototype._updateTransitions = function(realState, stateConfig) {
-		var transitionKeys = Object.keys(stateConfig.transitions);
-		for (var i = 0; i < transitionKeys.length; i++) {
-			var transitionKey = transitionKeys[i];
-			realState.setTransition(transitionKey, stateConfig.transitions[transitionKey]);
+		var transitions = stateConfig.transitions;
+		for (var i = 0; i < transitions.length; i++) {
+			var transition = transitions[i];
+			realState.setTransition(transition.id, transition.targetState);
 		}
 	};
 
@@ -89,16 +89,17 @@ define([
 			});
 		}
 		else {
-			return PromiseUtil.createDummyPromise(realState)
+			return PromiseUtil.createDummyPromise(realState);
 		}
 	};
 
 	MachineHandler.prototype.update = function(ref, config) {
-		
-		var realMachine = this._objects[ref];
-		if (!realMachine) 
-			realMachine = this._objects[ref] = new Machine(config.name);
 
+		var realMachine = this._objects[ref];
+		if (!realMachine) {
+			realMachine = this._objects[ref] = new Machine(config.name);
+		}
+		
 		realMachine.setInitialState(config.initialState);
 
 		// states
