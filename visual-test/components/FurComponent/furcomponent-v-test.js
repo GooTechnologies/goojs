@@ -137,6 +137,7 @@ function(
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);
 		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);
+		furFolder.add(furPass.furUniforms, 'sinusAmount', 0, 20.0);
 		furFolder.open();
 
 		composer.addPass(regularPass);

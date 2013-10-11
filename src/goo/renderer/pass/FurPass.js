@@ -200,6 +200,7 @@ function (
 			curlRadius: 0.009,
 			furRepeat: 1.0,
 			gravity: 9.81,
+			sinusAmount: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -217,6 +218,7 @@ function (
 			'uniform float curlRadius;',
 			'uniform float furRepeat;',
 			'uniform float gravity;',
+			'uniform float sinusAmount;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
@@ -237,11 +239,12 @@ function (
 			// Gravity
 			'	float mass =  0.00001;',
 			'	float gY = gravity * mass;',
-			'	vec3 sinusNoise = 20.0 * sin(time * 4.0) * mass * vec3(1,0,0);',
+			'	vec3 sinusNoise = 20.0 * sin(time*4.0) * mass * vec3(1,0,0);',
+			'	sinusNoise *= sinusAmount;',
 			'	vec3 gravityForce = vec3(0,-gY,0);',
 
 			'	float k = gY/(L_0*0.5);',
-			'	vec3 p = (gravityForce)/k + p_0;',
+			'	vec3 p = (gravityForce + sinusNoise)/k + p_0;',
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
 			// c1: |p-p_root| <= L_0
