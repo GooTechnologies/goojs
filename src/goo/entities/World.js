@@ -38,6 +38,7 @@ function (
 	}
 
 	World.time = 0.0;
+	World.tpf = 1.0;
 
 	/**
 	 * Adds a Manager to the world

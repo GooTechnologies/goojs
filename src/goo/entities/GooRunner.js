@@ -199,6 +199,7 @@ function (
 
 		this.world.time += this.world.tpf;
 		World.time = this.world.time;
+		World.tpf = this.world.tpf;
 		this.start = time;
 
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {

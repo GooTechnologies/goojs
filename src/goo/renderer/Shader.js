@@ -599,6 +599,9 @@ function (
 		defaultCallbacks[Shader.TIME] = function (uniformCall) {
 			uniformCall.uniform1f(World.time);
 		};
+		defaultCallbacks[Shader.TPF] = function (uniformCall) {
+			uniformCall.uniform1f(World.tpf);
+		};
 
 		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
@@ -640,6 +643,7 @@ function (
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.MAIN_DEPTH_SCALE = 'DEPTH_SCALE';
 	Shader.TIME = 'TIME';
+	Shader.TPF = 'TPF';
 	Shader.RESOLUTION = 'RESOLUTION';
 
 	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
