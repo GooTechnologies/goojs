@@ -50,7 +50,7 @@ function(
 
 	function init() {
 		var goo = new GooRunner({
-			showStats : true
+			showStats: true
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -73,7 +73,7 @@ function(
 	}
 
 	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createBox(size, size, size);
+		var meshData = ShapeCreator.createSphere(20, 20, size);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		TextureCreator.clearCache();

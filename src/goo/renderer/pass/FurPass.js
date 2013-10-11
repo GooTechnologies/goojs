@@ -93,7 +93,7 @@ function (
 	FurPass.prototype.generateOpacityTextures = function(numberOfLayers, width, height) {
 
 		if (width === undefined || height === undefined) {
-			width = height = 256 * 1;
+			width = height = 256 * 2;
 		}
 
 		var textureSettings = {
@@ -182,8 +182,12 @@ function (
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
+			hairLength : 0.05,
 			colorTexture: Shader.DIFFUSE_MAP,
-			opacityTexture: Shader.SPECULAR_MAP
+			opacityTexture: Shader.SPECULAR_MAP,
+			time: Shader.TIME,
+			curlFrequency: 1.0,
+			curlRadius: 0.009
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -195,20 +199,93 @@ function (
 			'uniform mat4 worldMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float normalizedLength;',
+			'uniform float hairLength;',
+			'uniform float time;',
+			'uniform float curlFrequency;',
+			'uniform float curlRadius;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
 
-			'varying vec3 normal;',
 			'varying vec2 texCoord0;',
+			'varying vec3 T;',
 
 			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'	worldPos += normalizedLength * 0.1 * vec4(normal, 0.0);',
-			'	gl_Position = viewProjectionMatrix * worldPos;',
 
+			// Pos will hold the final position
+			'	vec3 pos;',
+			'	texCoord0 = vertexUV0 * 6.0;',
+			'	vec3 normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
+			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
+			'	vec3 p_0 = p_root + (normal * hairLength);',
+			'	float L_0 = length(p_0 - p_root);',
+			// Gravity
+			'	float mass =  0.00001;',
+			'	float gY = 9.81 * mass;',
+			'	vec3 sinusNoise = 20.0 * sin(time * 4.0) * mass * vec3(1,0,0);',
+			'	vec3 gravity = vec3(0,-gY,0);',
+
+			'	float k = gY/(L_0*0.5);',
+			'	vec3 p = (gravity )/k + p_0;',
+			// CONSTRAINTS
+			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
+			// c1: |p-p_root| <= L_0
+			// c2: dot((p-p_root),normal) >= 0
+			'	vec3 constraint = p - p_root;',
+			'	float c1 = length(constraint);',
+			'	if (c1 > L_0) {',
+			'		p = p_root + ( L_0 * normalize(constraint));',
+			'}',
+
+			'	float c2 = dot((p-p_0),normal);',
+			'	if (c2 < 0.0) {',
+				//If p is below the surface, add the depth in the normal's direction
+
+				// Depth is calculated as the projection of the vector from the root
+				// to the point p projected at the negative normal
+			'	p = p + normal * -c2;',
+			'}',
+
+			'	if (normalizedLength < 1.0) {',
+			//Qudratic bezier approximation of the curvture of the hair
+			//pos = (1-h)^2 * proot + 2h(1-h)p0 + h^2 *p
+			//pos = a*a*proot + 2*h*a*p0 + h*h*p
+			'		float a = (1.0-normalizedLength);',
+			'		pos = (a*a*p_root) + (2.0*normalizedLength*a*p_0) + (normalizedLength*normalizedLength*p);',
+			//Derivative of bezier curve == hair tangent
+			//The tangent is used for lighting computations in the fragment shader
+			'		T = (2.0*a*(p_0 - p_root) + 2.0*normalizedLength*(p-p_0));',
+			'}',
+			'else {',
+			'		pos = p;',
+			'		T = 2.0*(p - p_0);',
+			'}',
+
+			// Curliness Control
+			// Displace the pos in a circle in the surface plane to create curls!
+			// TODO: Use meshdata tangents, pregenerated
+			'vec3 tangent;',
+			'vec3 binormal;',
+
+			'vec3 x1 = cross(vertexNormal, vec3(0.0, 0.0, 1.0));',
+			'vec3 x2 = cross(vertexNormal, vec3(0.0, 1.0, 0.0));',
+			'if(length(x1) > length(x2)) {',
+			'	tangent = x1;',
+			'}',
+			'else {',
+			'	tangent = x2;',
+			'}',
+
+			'	tangent = normalize(tangent);',
+			'	binormal = cross(vertexNormal, tangent);',
+			'	binormal = normalize(binormal);',
+
+			'	tangent = normalize((worldMatrix * vec4(tangent,0.0)).xyz);',
+			'	binormal = normalize((worldMatrix * vec4(binormal,0.0)).xyz);',
+
+			'	float wh = curlFrequency * normalizedLength;',
+			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
+			'	gl_Position = viewProjectionMatrix * vec4(pos, 1.0);',
 			'}'//
 		].join("\n"),
 		fshader: [
@@ -218,7 +295,6 @@ function (
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
 
-			'varying vec3 normal;',
 			'varying vec2 texCoord0;',
 
 			'void main(void)',
