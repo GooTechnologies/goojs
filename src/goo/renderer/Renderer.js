@@ -61,8 +61,8 @@ function (
 		var _canvas = parameters.canvas;
 		if (_canvas === undefined) {
 			_canvas = document.createElement('canvas');
-			_canvas.width = 500;
-			_canvas.height = 500;
+			//_canvas.width = 500;
+			//_canvas.height = 500;
 		}
 		this.domElement = _canvas;
 
@@ -381,7 +381,7 @@ function (
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
 		var adjustHeight = this.domElement.offsetHeight / this.downScale;
 		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
-			this.setSize(adjustWidth, adjustHeight);
+			//this.setSize(adjustWidth, adjustHeight);
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
