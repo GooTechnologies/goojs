@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
 	"use strict";
 
@@ -54,7 +56,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;
-		var initialScale = new Vector3().copy(translation); // can tween.js tween over this type of object?
+		var initialScale = new Vector3().copy(scale); // can tween.js tween over this type of object?
 
 		if (this.relative) {
 			var to = Vector3.add(initialScale, this.to);
@@ -74,8 +76,6 @@ function(
 				console.log('complete:', this.event);
 			}.bind(this)).start();
 		}
-
-		entity.transformComponent.setUpdated();
 	};
 
 	return TweenScaleAction;

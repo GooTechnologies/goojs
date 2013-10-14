@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
 	"use strict";
 

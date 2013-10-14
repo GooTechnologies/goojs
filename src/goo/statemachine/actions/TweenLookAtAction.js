@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
 	"use strict";
 
@@ -63,8 +65,6 @@ function(
 			fsm.send(this.event);
 			console.log('complete:', this.event);
 		}.bind(this)).start();
-
-		entity.transformComponent.setUpdated();
 	};
 
 	return TweenLookAtAction;
