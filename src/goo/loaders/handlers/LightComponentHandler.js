@@ -34,7 +34,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 			shadowCaster: false
 		});
 		if (config.type !== 'DirectionalLight') {
-			config.range = config.range || 1000;
+			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
