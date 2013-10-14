@@ -3,12 +3,14 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
+	'goo/renderer/pass/SSAOPass',
 	'goo/renderer/Util'
 ], function(
 	ShaderLib,
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
+	SSAOPass,
 	Util
 ) {
 	'use strict';
@@ -84,7 +86,7 @@ define([
 				}
 			]
 		};
-	}()),
+	}());
 	PassLib.Grain = (function() {
 		var shader, pass;
 		return {
@@ -127,6 +129,199 @@ define([
 			]
 		};
 	}());
+	PassLib.BC = (function() {
+		var shader, pass;
+		return {
+			create: function() {
+				shader = Util.clone(ShaderLib.brightnesscontrast);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.brightness !== undefined) {
+					shader.uniforms.brightness = options.brightness;
+				}
+				if(options.contrast !== undefined) {
+					shader.uniforms.contrast = options.contrast;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'brightness',
+					type: 'float',
+					name: 'Brightness',
+					min: -1,
+					max: 1,
+					decimals: 2,
+					'default': 0
+				},
+				{
+					key: 'contrast',
+					type: 'float',
+					name: 'Contrast',
+					min: 0,
+					max: 1,
+					decimals: 2,
+					'default': 0
+				}
+			]
+		};
+	}());
+	PassLib.RgbShift = (function() {
+		var shader, pass;
+		return {
+			create: function() {
+				shader = Util.clone(ShaderLib.rgbshift);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.amount !== undefined) {
+					shader.uniforms.amount = options.amount;
+				}
+				if(options.angle !== undefined) {
+					shader.uniforms.angle = options.angle;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'amount',
+					type: 'float',
+					name: 'Amount',
+					min: 0,
+					max: 0.05,
+					decimals: 3,
+					'default': 0.005
+				},
+				{
+					key: 'angle',
+					type: 'float',
+					name: 'Angle',
+					min: 0,
+					max: 6.28,
+					decimals: 1,
+					'default': 0
+				}
+			]
+		};
+	}());
+	PassLib.Vignette = (function() {
+		var shader, pass;
+		return {
+			create: function() {
+				shader = Util.clone(ShaderLib.vignette);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.offset !== undefined) {
+					shader.uniforms.offset = options.offset;
+				}
+				if(options.darkness !== undefined) {
+					shader.uniforms.darkness = options.darkness;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'offset',
+					type: 'float',
+					name: 'Offset',
+					min: 0,
+					max: 10,
+					decimals: 1,
+					'default': 1
+				},
+				{
+					key: 'darkness',
+					type: 'float',
+					name: 'Darkness',
+					min: 0,
+					max: 2,
+					decimals: 2,
+					'default': 1.5
+				}
+			]
+		};
+	}());
+	PassLib.Bleach = (function() {
+		var shader, pass;
+		return {
+			create: function() {
+				shader = Util.clone(ShaderLib.bleachbypass);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.opacity !== undefined) {
+					shader.uniforms.opacity = options.opacity;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'opacity',
+					type: 'float',
+					name: 'Opacity',
+					min: 0,
+					max: 1,
+					decimals: 2,
+					'default': 1
+				}
+			]
+		};
+	}());
+	// PassLib.Colorify = (function() {
+	// 	var shader, pass;
+	// 	return {
+	// 		create: function() {
+	// 			shader = Util.clone(ShaderLib.colorify);
+	// 			return pass = new FullscreenPass(shader);
+	// 		},
+	// 		update: function(config) {
+	// 			var options = config.options;
+	// 			if(options.color !== undefined) {
+	// 				shader.uniforms.color = options.color;
+	// 			}
+				// if (config.enabled !== undefined) {
+					// pass.enabled = config.enabled;
+				// }
+	// 		},
+	// 		get: function() {
+	// 			return pass;
+	// 		},
+	// 		options: [
+	// 			{
+	// 				key: 'color',
+	// 				type: 'color',
+	// 				name: 'Color',
+	// 				'default': [1.0, 1.0, 1.0]
+	// 			}
+	// 		]
+	// 	};
+	// }());
 
 	return PassLib;
 });
