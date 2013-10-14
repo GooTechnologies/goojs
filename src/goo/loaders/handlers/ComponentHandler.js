@@ -1,4 +1,4 @@
-define(function() {
+define( /** @lends */ function() {
 	/**
 	 * @class Base class for component handlers. All different types of components that an entity
 	 * can have need to have a registered component handler. To handle a new type of component,
