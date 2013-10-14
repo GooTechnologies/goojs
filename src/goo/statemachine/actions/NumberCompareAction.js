@@ -38,7 +38,7 @@ function(
 			name: 'Tolerance',
 			key: 'tolerance',
 			type: 'float',
-			'default': 0.0001
+			'default': 0.001
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',

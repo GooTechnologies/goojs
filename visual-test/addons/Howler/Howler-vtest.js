@@ -52,6 +52,10 @@ require([
 	'use strict';
 
 	function howlerComponentDemo(goo) {
+		var sound0 = new window.Howl({
+			urls: ['../../resources/sfx1.wav']
+		}).fadeIn(1);
+
 		var sound1 = new window.Howl({
 			urls: ['../../resources/sfx1.wav']
 		});
@@ -88,7 +92,7 @@ require([
 
 		// add howler component to the cube
 		var howlerComponent = new HowlerComponent();
-		howlerComponent.addSound('s1', sound1);
+		howlerComponent.addSound(sound1);
 		cubeEntity.setComponent(howlerComponent);
 
 		// create fixed sphere
@@ -99,7 +103,7 @@ require([
 		sphereEntity.addToWorld();
 
 		howlerComponent = new HowlerComponent();
-		howlerComponent.addSound('s2', sound2);
+		howlerComponent.addSound(sound2);
 		sphereEntity.setComponent(howlerComponent);
 
 		// add light
@@ -116,11 +120,12 @@ require([
 		document.body.addEventListener('keypress', function(e) {
 			switch(e.keyCode) {
 				case 49:
-					cubeEntity.howlerComponent.playSound('s1');
+
+					cubeEntity.howlerComponent.playSound(0);
 					console.log('boing');
 					break;
 				case 50:
-					sphereEntity.howlerComponent.playSound('s2');
+					sphereEntity.howlerComponent.playSound(0);
 					console.log('squigly');
 					break;
 				default:
