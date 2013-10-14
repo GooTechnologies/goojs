@@ -79,7 +79,8 @@ define([
 					return this.getConfig(cfg.clipRef).then(function(config) {
 						return that.updateObject(cfg.clipRef, config, that.options);
 					}).then(function(clip) {
-						return source.initFromClip(clip, cfg.filter, cfg.channels);
+						source.initFromClip(clip, cfg.filter, cfg.channels);
+						return source;
 					});
 				} else {
 					return PromiseUtil.createDummyPromise(source);
