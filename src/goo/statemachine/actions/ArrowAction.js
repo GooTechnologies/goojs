@@ -11,7 +11,7 @@ function(
 ) {
 	"use strict";
 
-	function WASDAction(/*id, settings*/) {
+	function ArrowAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;
@@ -26,21 +26,21 @@ function(
 		}.bind(this);
 	}
 
-	WASDAction.prototype = Object.create(Action.prototype);
+	ArrowAction.prototype = Object.create(Action.prototype);
 
-	WASDAction.prototype.configure = function(settings) {
+	ArrowAction.prototype.configure = function(settings) {
 		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
-	WASDAction._keys = {
-		87:'w',
-		65:'a',
-		83:'s',
-		68:'d'
+	ArrowAction._keys = {
+		38:'up',
+		37:'left',
+		40:'down',
+		39:'right'
 	};
 
-	WASDAction.external = (function(){
+	ArrowAction.external = (function(){
 		var transitions = [];
 		for (var keycode in WASDAction._keys) {
 			var keyname = WASDAction._keys[keycode];
@@ -56,11 +56,11 @@ function(
 		};
 	})();
 
-	WASDAction.prototype._setup = function() {
+	ArrowAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	WASDAction.prototype._run = function(fsm) {
+	ArrowAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
 			var keyKeys = _.keys(WASDAction._keys); // unused
@@ -75,9 +75,9 @@ function(
 		}
 	};
 
-	WASDAction.prototype.exit = function() {
+	ArrowAction.prototype.exit = function() {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	return WASDAction;
+	return ArrowAction;
 });

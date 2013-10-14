@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	MathUtils
 ) {
 	"use strict";
 
@@ -46,14 +48,15 @@ function(
 
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
-			transform.rotation.rotateX(this.rotation[0]*Math.PI/180);
-			transform.rotation.rotateY(this.rotation[1]*Math.PI/180);
-			transform.rotation.rotateZ(this.rotation[2]*Math.PI/180);
+			transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD);
+			transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD);
+			transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD);
 		} else {
 			transform.setRotationXYZ(
-				this.rotation[0]*Math.PI/180,
-				this.rotation[1]*Math.PI/180,
-				this.rotation[2]*Math.PI/180);
+				this.rotation[0] * MathUtils.DEG_TO_RAD,
+				this.rotation[1] * MathUtils.DEG_TO_RAD,
+				this.rotation[2] * MathUtils.DEG_TO_RAD
+			);
 		}
 
 		entity.transformComponent.setUpdated();
