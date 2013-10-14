@@ -95,11 +95,11 @@ define( [
 		Scene.prototype.addSystem = function( System ) {
 			ProcessArguments( this, arguments, function( scene, type, value ) {
 				if( type === ProcessArguments.INSTANCE ) {
-					this.systems.push( value );
+					scene.systems.push( value );
 					value.init( this );
 				} else if( type === ProcessArguments.CONSTRUCTOR ) {
 					value = new value();
-					this.systems.push( value );
+					scene.systems.push( value );
 					value.init( this );
 				}
 			});
@@ -219,7 +219,7 @@ define( [
 			if( eventType !== undefined ) {
 				e.eventType = eventType;
 			}
-			
+
 			this.entities.changed.push( e );
 		};
 

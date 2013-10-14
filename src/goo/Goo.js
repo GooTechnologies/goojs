@@ -138,7 +138,6 @@ define(
 		// start and stuff
 
 		Goo.prototype.start = function( preProcessCallback ) {
-			w
 		};
 
 		Goo.prototype.pause = function() {

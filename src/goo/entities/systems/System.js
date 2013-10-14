@@ -1,96 +1,111 @@
-define(
-/** @lends */
-function() {
-	"use strict";
+define( 
+	[],
+	function() {
 
-	/**
-	 * Creates a new System
-	 *
-	 * @class Base class for all entity systems
-	 *        <ul>
-	 *        <li> interests = null -> listen to all entities
-	 *        <li> interests = [] -> don't listen to any entities
-	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
-	 *        </ul>
-	 * @param {String} type System type name as a string
-	 * @param {String[]} interests Array of component types this system is interested in
-	 * @property {String} type System type
-	 * @property {String[]} interests Array of component types this system is interested in
-	 */
-	function System(type, interests) {
-		this.type = type;
-		this.interests = interests;
+		"use strict";
 
-		this._activeEntities = [];
-		this.passive = false;
-	}
-
-	/**
-	 * @param entity
-	 */
-	System.prototype.added = function(entity) {
-		this._check(entity);
-	};
-
-	System.prototype.changed = function(entity) {
-		this._check(entity);
-	};
-
-	System.prototype.removed = function(entity) {
-		var index = this._activeEntities.indexOf(entity);
-		if (index !== -1) {
-			this._activeEntities.splice(index, 1);
-			if (this.deleted) {
-				this.deleted(entity);
-			}
+		function System( type, interests ) {
+			this.enabled   = true;
+			this.type      = type      || "System";
+			this.interests = interests || [];
+			this.entities  = [];
+			this.scene     = undefined;
 		}
-	};
 
-	function getTypeAttributeName(type) {
-		return type.charAt(0).toLowerCase() + type.substr(1);
-	}
+		System.prototype.init = function( scene ) {
+			this.scene = scene;
+		};
 
-	/**
-	 * Check if a system is interested in an entity based on its interests list.
-	 *
-	 * @param entity {Entity} to check if the system is interested in
-	 */
-	System.prototype._check = function(entity) {
-		if (this.interests && this.interests.length === 0) {
-			return;
-		}
-		var isInterested = this.interests === null;
-		if (!isInterested && this.interests.length <= entity._components.length) {
-			isInterested = true;
-			for (var i = 0; i < this.interests.length; i++) {
-				var interest = getTypeAttributeName(this.interests[i]);
+		/**
+		 * Check if a system is interested in an entity based on its interests list.
+		 *
+		 * @param entity {Entity} to check if the system is interested in
+		 */
 
-				if (!entity[interest]) {
-					isInterested = false;
-					break;
+		System.prototype.isInterestedIn = function( entity ) {
+			var isInterested = false;
+
+			if( this.interests && this.interests.length > 0 ) {
+				isInterested = true;
+				for( var i = 0; i < this.interests.length; i++ ) {
+					var type = this.interests[ i ];
+
+					if( entity.components[ type ] === undefined ) {
+						isInterested = false;
+						break;
+					}
 				}
 			}
-		}
 
-		var index = this._activeEntities.indexOf(entity);
-		if (isInterested && index === -1) {
-			this._activeEntities.push(entity);
-			if (this.inserted) {
-				this.inserted(entity);
+			return isInterested;
+		};
+
+		System.prototype.addedEntity = function( entity ) {
+			if( this.isInterestedIn( entity ) && !this.hasEntity( entity )) {
+				this.entities.push( entity );
+			
+				if( this.addedComponent !== undefined ) {
+					entity.getComponents().each( function( component ) {
+						this.addedComponent( entity, component );
+					});
+				}
+
+				if( this.inserted !== undefined ) {
+					this.inserted( entity );
+				}
 			}
-		} else if (!isInterested && index !== -1) {
-			this._activeEntities.splice(index, 1);
-			if (this.deleted) {
-				this.deleted(entity);
+		};
+
+		System.prototype.changedEntity = function( event ) {
+			if( this.hasEntity( event.entity )) {
+				if( event.eventType !== undefined && this[ event.eventType ] !== undefined ) {
+					system[ event.eventType ]( event.entity, event.component );
+				}
 			}
-		}
-	};
+		};
 
-	System.prototype._process = function(tpf) {
-		if (this.process) {
-			this.process(this._activeEntities, tpf);
-		}
-	};
+		System.prototype.removedEntity = function( entity ) {
+			var i = this.entities.indexOf( entity );
+			if( i !== -1 ) {
+				this.entities.splice( i, 1 );
 
-	return System;
-});
+				if( this.removedComponent !== undefined ) {
+					entity.getComponents().each( function( component ) {
+						this.removedComponent( entity, component );
+					});
+				}
+
+				if( this.deleted !== undefined ) {
+					this.deleted( entity );
+				}
+			}
+		};
+
+		System.prototype.hasEntity = function( entity ) {
+			return this.entities.indexOf( event.entity ) !== -1;
+		};
+
+		// REVIEW: This need to be removed as it's extremely hard to read. Please change
+		// this to System.process and override it in the systems as with 
+		// your own function and don't expect entites as variable. You have them in this.entities
+		// already! 
+
+		System.prototype._process = function( deltaTime ) {
+			if( this.process !== undefined ) {
+				this.process( this.entites, deltaTime );
+			}  
+		};
+
+		// REVIEW: This is how it should look like. Please override in all systems and use processParameters.deltaTime for "tpf".
+		// Entities exists in this.entities
+
+		System.prototype.process = function( processParameters ) {
+
+		};
+
+		System.prototype.dispose = function () {
+		};
+	
+		return System;
+	}
+);
