@@ -30,6 +30,7 @@ define([
 	'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/PosteffectHandler'
 ],
+/** @lends */
 function(
 	ConfigHandler,
 	ComponentHandler,
@@ -42,17 +43,6 @@ function(
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
-	/**
-	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
-	 *
-	 * @constructor
-	 * @param {object} parameters
-	 * @param {World} [parameters.world] The target World object.
-	 * @param {string} [parameters.rootPath] The root path where to get resources.
-	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
-	 *
-	 */
-
 	var _json_types = [
 		'shader',
 		'script',
@@ -80,13 +70,13 @@ function(
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
-	 * Create a new loader
+	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
 	 *
+	 * @constructor
 	 * @param {object} parameters
 	 * @param {World} [parameters.world] The target World object.
 	 * @param {string} [parameters.rootPath] The root path where to get resources.
-	 *
-	 * @returns {DynamicLoader}
+	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
 	function DynamicLoader(options) {
