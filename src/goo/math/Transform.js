@@ -28,7 +28,10 @@ function (
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
+		// REVIEW: Emtinger: Should this be a new Euler class?
+		this.euler = new Vector3(0, 0, 0);
 
+		// REVIEW: Emtinger: Should these be moved out from instance and be shared by all transforms?
 		this.tmpVec = new Vector3();
 		this.tmpVec2 = new Vector3();
 		this.tmpMat1 = new Matrix3x3();

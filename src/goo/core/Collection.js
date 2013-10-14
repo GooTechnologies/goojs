@@ -4,21 +4,52 @@ define(
 		"use strict";
 
 		function Collection() {
-			this.first = undefined;
-			this.items = [];
-			this.last  = undefined;
+			this.first        = undefined;
+			this.items        = [];
+			this.last         = undefined;
+			this.clearAllowed = true;
 		}
 
 		Collection.prototype.clear = function() {
-			this.first        = undefined;
-			this.items.length = 0;
-			this.last         = undefined;
+			if( this.clearAllowed ) {
+				this.first        = undefined;
+				this.items.length = 0;
+				this.last         = undefined;
+			}
+
+			return this;
+		};
+
+		Collection.prototype.preventClear = function() {
+			this.clearAllowed = false;
+		};
+
+		Collection.prototype.allowClear = function() {
+			this.clearAllowed = true;
+		};
+
+		Collection.prototype.fromArray = function( items ) {
+			this.items = items.concat( [] );
+
+			if( this.items.length > 0 ) {
+				this.first = this.items[ 0 ];
+				this.last  = this.items[ this.items.length - 1 ];
+			} else {
+				this.first = undefined;
+				this.last  = undefined;
+			}
+
+			return this;
 		};
 
 		Collection.prototype.add = function( item ) {
-			this.items.push( item );
-			this.first = this.first || item;
-			this.last  = item;
+			if( this.items.indexOf( item ) === -1 ) {
+				this.items.push( item );
+				this.first = this.first || item;
+				this.last  = item;
+			}
+
+			return this;
 		};
 
 		Collection.prototype.remove = function( item ) {
@@ -34,7 +65,13 @@ define(
 					this.last  = undefined;
 				}
 			}
+
+			return this;
 		}
+
+		Collection.prototype.orFirst = function() {
+			return this.items.length !== 1 ? this : this.first;
+		};
 
 		Collection.prototype.each = function( callback ) {
 			var all = this.items;
@@ -44,22 +81,41 @@ define(
 			for( ; a < al; a++ ) {
 				callback( all[ a ] );
 			}
+
+			return this;
+		};
+
+		Collection.prototype.compare = function( property, value ) {
+			var all = this.items;
+			var al  = all.length;
+
+			while( al-- ) {
+				if( all[ al ][ property ] === value ) {
+					return all[ al ];
+				}
+			}
+
+			return undefined;
 		};
 
 		Collection.prototype.init = function( parameters ) {
 			callFunction( this.items, "init", parameters );
+			return this;
 		};
 
 		Collection.prototype.process = function( parameters ) {
 			callFunction( this.items, "process", parameters );
+			return this;
 		};
 
 		Collection.prototype.draw = function( parameters ) {
 			callFunction( this.items, "draw", parameters );
+			return this;
 		};
 
 		Collection.prototype.dispose = function( parameters ) {
 			callFunction( this.items, "dispose", parameters );
+			return this;
 		};
 
 		// helpers
@@ -74,5 +130,7 @@ define(
 				}
 			}
 		}
+
+		return Collection;
 	}
 );

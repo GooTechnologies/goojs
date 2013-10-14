@@ -1,7 +1,8 @@
 define(
 	[ "goo/core/Collection",
-	  "goo/components/TransformComponent" ],
-	function( Collection, TransformComponent ) {
+	  "goo/core/ProcessArguments",
+	  "goo/entities/components/TransformComponent" ],
+	function( Collection, ProcessArguments, TransformComponent ) {
 		"use strict";
 
 		// static
@@ -11,65 +12,51 @@ define(
 
 		// constructor
 
-		function Entity( parameters ) {
-			this.enabled    = parameters.enabled !== undefined ? parameters.enabled : true;
-			this.name       = parameters.name    !== undefined ? parameters.name    : "Entity" + (uniqueID++);
-			this.scene      = parameters.scene   !== undefined ? parameters.scene   : undefined;
+		function Entity() {
 			this.components = {};
 			this.tags       = {};
 			this.attributes = {};
 
-			this.add( parameters.components, parameters.tags, parameters.attributes );
+			this.add.apply( this, arguments );
 
 			if( !this.hasComponent( TransformComponent )) {
 				this.addComponent( TransformComponent );
 			}
 		}
 
-		Entity.prototype.init = function( scene ) {
-			this.scene = this.scene || scene;
-		};
-
 		// general add/get/has methods
 
 		Entity.prototype.add = function() {
-			var a, argument, al = arguments.length;
-			var type;
-			for( a = 0; a < al; a++ ) {
-				argument = arguments[ a ];
-
-				if( argument !== undefined ) {
-					type = typeof( argument );
-
-					if( type === "object" ) { 
-						if( argument.constructor.toString().indexOf( "function Array()" ) === 0 ) {
-							this.add( argument );
-						} else {
-							this.addComponent( argument );
-						}
-					} else if( type === "function" ) {
-						this.addComponent( argument );
-					} else if( type === "string" ) {
-						if( argument.indexOf( "#" ) !== -1 ) {
-							this.addTag( argument );
-						} else if( argument.indexOf( "@" ) !== -1 ) {
-							this.addAttribute( argument );
-						} else {
-							this.name = argument;
-						}
-					}
+			ProcessArguments( this, arguments, function( entity, type, value ) {
+				if( type === ProcessArguments.PARAMETERS ) {
+					entity.enabled    = value.enabled !== undefined ? value.enabled : true;
+					entity.name       = value.name    !== undefined ? value.name    : "Entity" + (uniqueID++);
+					entity.scene      = value.scene   !== undefined ? value.scene   : undefined;
+					
+					entity.add( value.components, value.tags, value.attributes );
+				} else if( type === ProcessArguments.CONSTRUCTOR ) {
+					entity.addComponent( new value());
+				} else if( type === ProcessArguments.INSTANCE ) {
+					entity.addComponent( value );
+				} else if( type === ProcessArguments.TAG ) {
+					entity.addTag( value );
+				} else if( type === ProcessArguments.ATTRIBUTE ) {
+					entity.addAttribute( value );
+				} else if( type === ProcessArguments.STRING ) {
+					entity.name = value;
 				}
-			}
+			} );
 		};
 
 		Entity.prototype.get = function() {
-
+			// TODO: cooler get
+			return this.getComponent( arguments[ 0 ] );
 		};
 
 		Entity.prototype.has = function() {
 			var a, argument, al = arguments.length;
 			var type;
-			var doHave = false;
+			var has = false;
 
 			for( a = 0; a < al; a++ ) {
 				argument = arguments[ a ];
@@ -79,20 +66,34 @@ define(
 
 					if( type === "string" ) {
 						if( argument.indexOf( "#" ) === 0 ) {
-							doHave &= hasTag( argument );
+							has &= hasTag( argument );
 						} else if( argument.indexOf( "@" ) === 0 ) {
-							doHave &= hasAttribute( argument );
+							has &= hasAttribute( argument );
 						} else {
-							doHave &= argument === this.name;
+							has &= argument === this.name;
 						}
-					} else {
-						doHave &= this.hasComponent( argument );
+					} else if( type === "object" ) {
+						if( Array.isArray( argument )) {
+							has &= this.has.apply( argument );
+						} else {
+							has &= this.hasComponent( argument );
+						}
 					}
 				}
 			}
 
-			return doHave;
+			return has;
  		};
+
+ 		// scene methods
+
+		Entity.prototype.setScene = function( scene ) {
+			this.scene = scene;
+
+			this.getChildren().each( function( entitiy ) {
+				entitiy.setScene( scene );
+			});
+		};
 
 		// component methods
 
@@ -107,11 +108,10 @@ define(
 			this.components[ component.type ].push( component );
 
 			component.init( this );
-			component.applyAPI();
 		};
 
 		Entity.prototype.getComponent = function( component ) {
-			var type = componentType( component );
+			var type = component.type;
 
 			if( this.components[ type ] !== undefined ) {
 				return this.components[ type ][ 0 ];
@@ -122,7 +122,7 @@ define(
 			collection.clear();
 
 			if( component !== undefined ) {
-				var type = componentType( component );
+				var type = component.type;
 
 				if( this.components[ type ] !== undefined ) {
 					var c, components = this.components[ type ];
@@ -190,17 +190,17 @@ define(
 
 		// helpers
 
-		function componentType( component ) {
-			var type = typeof( component );
-			if( type === "string" ) {
-				return component;
-			} else if( type === "object" && component.type !== undefined ) {
-				return component.type;
-			} else {
-				var raw = component.constructor.toString();
-				return raw.splice( 9, raw.indexOf( "(" ));
-			}
-		}
+        function componentType( component ) {
+                var type = typeof( component );
+                if( type === "string" ) {
+                        return component;
+                } else if( type === "object" && component.type !== undefined ) {
+                        return component.type;
+                } else {
+                        var raw = component.toString();
+                        return raw.slice( 9, raw.indexOf( "(" ));
+                }
+        }
 
 		function ensureTag( tag ) {
 			if( tag.indexOf( "#" ) === -1 ) {

@@ -1,10 +1,12 @@
 define([
 	'goo/entities/components/Component',
+	'goo/renderer/Camera',
 	'goo/math/Vector3'
 ],
 /** @lends */
 function (
 	Component,
+	Camera,
 	Vector3
 ) {
 	"use strict";
@@ -14,16 +16,30 @@ function (
 	 * @param {Camera} camera Camera to contain in this component
 	 */
 	function CameraComponent (camera) {
+		Component.call( this );
 		this.type = 'CameraComponent';
 
-		this.camera = camera;
+		this.camera = camera || new Camera( 60, window.innerWidth / window.innerHeight, 0.5, 1000 );
 
 		this.leftVec = new Vector3(-1, 0, 0);
-		this.upVec = new Vector3(0, 1, 0);
-		this.dirVec = new Vector3(0, 0, -1);
+		this.upVec   = new Vector3(0, 1, 0);
+		this.dirVec  = new Vector3(0, 0, -1);
+
+		this.api = {
+			"setProjectionMode" 	: this.camera.setProjectionMode.bind( this.camera ),
+			"setFrustumPerspective"	: this.camera.setFrustumPerspective.bind( this.camera ),
+			"lookAt" 				: this.camera.lookAt.bind( this.camera )
+		};
 	}
 
+
 	CameraComponent.prototype = Object.create(Component.prototype);
+
+	CameraComponent.prototype.componentInit = Component.prototype.init;
+	CameraComponent.prototype.init = function( enitiy ) {
+		this.componentInit( enitiy );
+		this.entity.addAttribute( "@camera" );
+	};
 
 	/**
 	 * @param {number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z

@@ -65,6 +65,7 @@ function (
 			_canvas.height = 500;
 		}
 		this.domElement = _canvas;
+		this.domElement.id = "goo";
 
 		this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
 		this._premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true;
