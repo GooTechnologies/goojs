@@ -14,6 +14,7 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/Texture',
 	'goo/entities/EntityUtils',
+	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil'
 ], function(
 	ConfigHandler,
@@ -31,6 +32,7 @@ define([
 	Util,
 	Texture,
 	EntityUtils,
+	ArrayUtil,
 	_
 ) {
 	/*jshint eqeqeq: false, -W041 */
@@ -222,7 +224,7 @@ define([
 				var composer, renderPass, outPass;
 				if(!this._composer) {
 					composer = this._composer = new Composer();
-					mainRenderSystem.composers.push(composer);
+					//mainRenderSystem.composers.push(composer);
 					renderPass = new RenderPass(mainRenderSystem.renderList);
 					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
 					// Regular copy
@@ -238,17 +240,26 @@ define([
 				}
 				composer.passes = [];
 				composer.addPass(renderPass);
+				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
-					var posteffect = posteffects[j];
-					console.log('Added posteffect', posteffect);
-					composer.addPass(posteffect.get());
+					var posteffect = posteffects[j].get();
+					if (posteffect.enabled && !enabled) {
+						enabled = true;
+					}
+					composer.addPass(posteffect);
 				}
 				composer.addPass(outPass);
+				if (enabled) {
+					if (mainRenderSystem.composers.indexOf(composer) === -1) {
+						mainRenderSystem.composers.push(composer);
+					}
+				} else {
+					ArrayUtil.remove(mainRenderSystem.composers, composer);
+				}
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);
 			});
 		} else {
-			console.debug("No posteffect refs in project");
 			mainRenderSystem.composers.length = 0;
 			return PromiseUtil.createDummyPromise(config);
 		}
@@ -262,8 +273,9 @@ define([
 
 		var promises = [];
 		// entity refs
-		if (!options || !options.shallow)
+		if (!options || !options.shallow) {
 			promises.push(this._updateEntities(config));
+		}
 
 		// posteffect refs
 		promises.push(this._updatePosteffects(config));

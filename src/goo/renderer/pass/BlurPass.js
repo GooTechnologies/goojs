@@ -57,12 +57,12 @@ define([
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', readBuffer);
-		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurX;
+		this.convolutionMaterial.uniforms.uImageIncrement = BlurPass.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
-		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurY;
+		this.convolutionMaterial.uniforms.uImageIncrement = BlurPass.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
 

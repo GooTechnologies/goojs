@@ -619,7 +619,8 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.DIFFUSE_MAP,
 			uImageIncrement : [0.001953125, 0.0],
-			cKernel : []
+			cKernel : [],
+			size: 1.0
 		},
 		vshader : [//
 		'attribute vec3 position;',
@@ -628,13 +629,14 @@ define([
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
 		'uniform mat4 worldMatrix;',
+		'uniform float size;',
 
 		'uniform vec2 uImageIncrement;',
 
 		'varying vec2 vUv;',
 
 		'void main() {',
-		'	vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;',
+		'	vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * size * uImageIncrement;',
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
 		'}'//
 		].join("\n"),
@@ -642,6 +644,7 @@ define([
 		'uniform float cKernel[ KERNEL_SIZE_INT ];',
 		'uniform sampler2D tDiffuse;',
 		'uniform vec2 uImageIncrement;',
+		'uniform float size;',
 
 		'varying vec2 vUv;',
 
@@ -651,7 +654,7 @@ define([
 
 		'	for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
 		'		sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
-		'		imageCoord += uImageIncrement;',
+		'		imageCoord += uImageIncrement * size;',
 		'	}',
 
 		'	gl_FragColor = sum;',
