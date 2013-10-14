@@ -56,9 +56,6 @@ define([
 			request.responseType = options.responseType;
 		}
 
-		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {
 				if ( request.status >= 200 && request.status <= 299 ) {

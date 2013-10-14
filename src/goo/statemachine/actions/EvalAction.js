@@ -25,7 +25,7 @@ function(
 		transitions: []
 	};
 
-	EvalAction.prototype._run = function(fsm) {
+	EvalAction.prototype._run = function(/*fsm*/) {
 		eval(this.expression);
 	};
 

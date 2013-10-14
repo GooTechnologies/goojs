@@ -16,9 +16,6 @@ function(
 		this.eventListener = function(event) {
 			if (event.which === this.key) {
 				this.updated = true;
-				if (this.keyVariable) {
-					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-				}
 			}
 		}.bind(this);
 	}

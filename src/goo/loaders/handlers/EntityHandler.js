@@ -20,7 +20,7 @@ define([
 	EntityHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('entity', EntityHandler);
 
-	EntityHandler.prototype._prepare = function(config) {};
+	EntityHandler.prototype._prepare = function(/*config*/) {};
 
 	EntityHandler.prototype._create = function(ref) {
 		var object = this.world.createEntity(ref);
@@ -86,7 +86,7 @@ define([
 			}
 		}
 		if (promises.length) {
-			return RSVP.all(promises).then(function(components) {
+			return RSVP.all(promises).then(function(/*components*/) {
 				return object;
 			});
 		} else {

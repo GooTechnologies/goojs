@@ -55,7 +55,7 @@ define([
 		return pu.createDummyPromise(skeleton);
 	};
 
-	SkeletonHandler.prototype.remove = function(ref) {};
+	SkeletonHandler.prototype.remove = function(/*ref*/) {};
 
 	return SkeletonHandler;
 });

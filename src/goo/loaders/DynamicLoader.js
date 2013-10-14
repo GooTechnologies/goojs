@@ -61,7 +61,7 @@ function(
 		'animstate',
 		'sound'];
 
-	var _text_types = ['vert', 'frag'];
+	//var _text_types = ['vert', 'frag']; // unused
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];

@@ -15,9 +15,6 @@ function(
 		this.updated = false;
 		this.eventListener = function(/*event*/) {
 			this.updated = true;
-			if (this.keyVariable) {
-				//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-			}
 		}.bind(this);
 	}
 
