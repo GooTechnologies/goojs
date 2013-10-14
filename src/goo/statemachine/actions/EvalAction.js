@@ -26,6 +26,7 @@ function(
 	};
 
 	EvalAction.prototype._run = function(/*fsm*/) {
+		/* jshint evil: true */
 		eval(this.expression);
 	};
 

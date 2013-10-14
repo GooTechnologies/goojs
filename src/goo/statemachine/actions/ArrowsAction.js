@@ -7,14 +7,14 @@ function(
 ) {
 	"use strict";
 
-	function ArrowAction(/*id, settings*/) {
+	function ArrowsAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.updated = false;
 		this.keysPressed = {};
 
 		this.eventListener = function(event) {
-			var keyname = ArrowAction._keys[event.which];
+			var keyname = ArrowsAction._keys[event.which];
 			if (keyname !== undefined) {
 				this.updated = true;
 				this.keysPressed[keyname] = true;
@@ -22,24 +22,24 @@ function(
 		}.bind(this);
 	}
 
-	ArrowAction.prototype = Object.create(Action.prototype);
+	ArrowsAction.prototype = Object.create(Action.prototype);
 
-	ArrowAction.prototype.configure = function(settings) {
+	ArrowsAction.prototype.configure = function(settings) {
 		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
 
-	ArrowAction._keys = {
+	ArrowsAction._keys = {
 		38:'up',
 		37:'left',
 		40:'down',
 		39:'right'
 	};
 
-	ArrowAction.external = (function(){
+	ArrowsAction.external = (function(){
 		var transitions = [];
-		for (var keycode in ArrowAction._keys) {
-			var keyname = ArrowAction._keys[keycode];
+		for (var keycode in ArrowsAction._keys) {
+			var keyname = ArrowsAction._keys[keycode];
 			transitions.push({
 				name: keyname,
 				description: "Key '" + keyname + "' pressed"
@@ -52,11 +52,11 @@ function(
 		};
 	})();
 
-	ArrowAction.prototype._setup = function() {
+	ArrowsAction.prototype._setup = function() {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	ArrowAction.prototype._run = function(fsm) {
+	ArrowsAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
 			//var keyKeys = _.keys(ArrowAction._keys); // unused
@@ -71,9 +71,9 @@ function(
 		}
 	};
 
-	ArrowAction.prototype.exit = function() {
+	ArrowsAction.prototype.exit = function() {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
-	return ArrowAction;
+	return ArrowsAction;
 });

@@ -99,7 +99,7 @@ define([
 		if (!realMachine) {
 			realMachine = this._objects[ref] = new Machine(config.name);
 		}
-		
+
 		realMachine.setInitialState(config.initialState);
 
 		// states

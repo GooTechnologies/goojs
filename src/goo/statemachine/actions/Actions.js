@@ -1,7 +1,7 @@
 define([
 	'goo/util/StringUtil',
 	'goo/util/ObjectUtil',
-
+	/*
 	'goo/statemachine/actions/LogVariableAction',
 	'goo/statemachine/actions/SetVariableAction',
 	'goo/statemachine/actions/AddPositionAction',
@@ -34,11 +34,51 @@ define([
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/SetLightRangeAction',
 
-	'goo/statemachine/actions/WASDAction',
 	// 'goo/statemachine/actions/TransformAction',
 	'goo/statemachine/actions/MoveAction',
 	'goo/statemachine/actions/RotateAction'
+    */
+	'goo/statemachine/actions/MoveAction',
+	'goo/statemachine/actions/MoveWithRotationAction',
+	'goo/statemachine/actions/RotateAction',
+	'goo/statemachine/actions/ScaleAction',
+	'goo/statemachine/actions/LookAtAction',
 
+	'goo/statemachine/actions/TweenMoveAction',
+	//'goo/statemachine/actions/TweenRotateAction',
+	'goo/statemachine/actions/TweenScaleAction',
+	'goo/statemachine/actions/TweenLookAtAction',
+
+	'goo/statemachine/actions/HideAction',
+	'goo/statemachine/actions/ShowAction',
+	'goo/statemachine/actions/RemoveAction',
+	'goo/statemachine/actions/AddLightAction',
+	'goo/statemachine/actions/RemoveLightAction',
+
+	'goo/statemachine/actions/InBoxAction',
+	'goo/statemachine/actions/CompareDistanceAction',
+
+	'goo/statemachine/actions/SetClearColorAction',
+	'goo/statemachine/actions/SuspendFSMAction',
+	'goo/statemachine/actions/ResumeFSMAction',
+
+	'goo/statemachine/actions/InFrustumAction',
+	'goo/statemachine/actions/TransitionAction',
+	'goo/statemachine/actions/EmitAction',
+	'goo/statemachine/actions/EvalAction',
+
+	'goo/statemachine/actions/SwitchCameraAction',
+	'goo/statemachine/actions/LogMessageAction',
+	'goo/statemachine/actions/PauseAnimationAction',
+	'goo/statemachine/actions/ResumeAnimationAction',
+	'goo/statemachine/actions/SetAnimationAction',
+
+	'goo/statemachine/actions/MouseUpAction',
+	'goo/statemachine/actions/MouseDownAction',
+	'goo/statemachine/actions/KeyUpAction',
+	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/WASDAction',
+	'goo/statemachine/actions/ArrowsAction'
 ],
 /** @lends */
 function(
