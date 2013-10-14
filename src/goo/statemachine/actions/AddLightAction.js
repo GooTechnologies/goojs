@@ -1,9 +1,13 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/entities/components/LightComponent',
+	'goo/renderer/light/PointLight'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	LightComponent,
+	PointLight
 ) {
 	"use strict";
 

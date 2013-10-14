@@ -35,21 +35,22 @@ function(
 			'default': true
 		}],
 		transitions: [{
-			name: 'in',
+			name: 'inside',
 			description: 'Event fired if the entity is inside the box'
 		}, {
-			name: 'out',
+			name: 'outside',
 			description: 'Event fired if the entity is ouside the box'
 		}]
 	};
 
 	InBoxAction.prototype._run = function(fsm) {
+		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 		if (translation.data[0] > this.point1[0] && translation.data[1] > this.point1[1] && translation.data[2] > this.point1[2] &&
 			translation.data[0] < this.point2[0] && translation.data[1] < this.point2[1] && translation.data[2] < this.point2[2]) {
-			fsm.send(this.in);
+			fsm.send(this.inside);
 		} else {
-			fsm.send(this.out);
+			fsm.send(this.outside);
 		}
 	};
 

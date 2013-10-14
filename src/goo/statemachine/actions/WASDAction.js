@@ -1,13 +1,9 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil',
-	'goo/util/ObjectUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil,
-	_
+	Action
 ) {
 	"use strict";
 
@@ -63,7 +59,7 @@ function(
 	WASDAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			var keyKeys = _.keys(WASDAction._keys); // unused
+			//var keyKeys = _.keys(WASDAction._keys); // unused
 
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];

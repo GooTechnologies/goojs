@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
 	"use strict";
 
@@ -65,6 +67,7 @@ function(
 
 	CompareDistanceAction.prototype._run = function(fsm) {
 		if (this.entity1) {
+			var entity = fsm.getOwnerEntity();
 			var diff;
 			var translation0 = entity.transformComponent.worldTransform.translation;
 			var translation1 = this.entity1.transfomComponent.worldTransform.translation;
