@@ -38,7 +38,8 @@ define([
 				{
 					key: 'amount',
 					name: 'Amount',
-					type: 'float',
+					type: 'int',
+					control: 'slider',
 					min: 0,
 					max: 100,
 					'default': 100
@@ -71,7 +72,8 @@ define([
 				{
 					key: 'opacity',
 					name: 'Opacity',
-					type: 'float',
+					type: 'int',
+					control: 'slider',
 					min: 0,
 					max: 200,
 					'default': 100
@@ -80,8 +82,10 @@ define([
 					key: 'size',
 					name: 'Size',
 					type: 'float',
+					control: 'slider',
 					min: 0,
 					max: 10,
+					decimals: 1,
 					'default': 10
 				}
 			]
@@ -112,7 +116,8 @@ define([
 			options: [
 				{
 					key: 'nIntensity',
-					type: 'float',
+					type: 'int',
+					control: 'slider',
 					name: 'N Intensity',
 					min: 0,
 					max: 150,
@@ -120,7 +125,8 @@ define([
 				},
 				{
 					key: 'sIntensity',
-					type: 'float',
+					type: 'int',
+					control: 'slider',
 					name: "S Intensity",
 					min: 0,
 					max: 100,
@@ -155,6 +161,7 @@ define([
 				{
 					key: 'brightness',
 					type: 'float',
+					control: 'slider',
 					name: 'Brightness',
 					min: -1,
 					max: 1,
@@ -164,10 +171,10 @@ define([
 				{
 					key: 'contrast',
 					type: 'float',
+					control: 'slider',
 					name: 'Contrast',
 					min: 0,
 					max: 1,
-					decimals: 2,
 					'default': 0
 				}
 			]
@@ -199,6 +206,7 @@ define([
 				{
 					key: 'amount',
 					type: 'float',
+					control: 'slider',
 					name: 'Amount',
 					min: 0,
 					max: 0.05,
@@ -208,6 +216,7 @@ define([
 				{
 					key: 'angle',
 					type: 'float',
+					control: 'slider',
 					name: 'Angle',
 					min: 0,
 					max: 6.28,
@@ -243,6 +252,7 @@ define([
 				{
 					key: 'offset',
 					type: 'float',
+					control: 'slider',
 					name: 'Offset',
 					min: 0,
 					max: 10,
@@ -252,6 +262,7 @@ define([
 				{
 					key: 'darkness',
 					type: 'float',
+					control: 'slider',
 					name: 'Darkness',
 					min: 0,
 					max: 2,
@@ -284,6 +295,7 @@ define([
 				{
 					key: 'opacity',
 					type: 'float',
+					control: 'slider',
 					name: 'Opacity',
 					min: 0,
 					max: 1,
