@@ -28,10 +28,16 @@ function(
 	defaultLight.direction.setd(1, 1, 1).normalize();
 	ShaderBuilder.defaultLight = defaultLight;
 
+	ShaderBuilder.SKYBOX = null;
+
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			var textureMaps = shaderInfo.material._textureMaps;
+
+			if (ShaderBuilder.SKYBOX) {
+				shaderInfo.material.setTexture('ENVIRONMENT_MAP', ShaderBuilder.SKYBOX);
+			}
 
 			shader.defines = shader.defines || {};
 

@@ -44,11 +44,15 @@ define([
 			diffuseMap : Shader.DIFFUSE_MAP,
 			offsetRepeat : [0,0,1,1],
 			normalMap : Shader.NORMAL_MAP,
+			normalMultiplier: 1.0,
 			specularMap : Shader.SPECULAR_MAP,
 			emissiveMap : Shader.EMISSIVE_MAP,
 			aoMap : Shader.AO_MAP,
 			lightMap : Shader.LIGHT_MAP,
-			color: [1,1,1]
+			environmentMap : 'ENVIRONMENT_MAP',
+			opacity: 1.0,
+			reflectivity: 1.0,
+			fresnel: 1.0
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -132,6 +136,7 @@ define([
 			'#endif',
 			'#ifdef NORMAL_MAP',
 				'uniform sampler2D normalMap;',
+				'uniform float normalMultiplier;',
 			'#endif',
 			'#ifdef SPECULAR_MAP',
 				'uniform sampler2D specularMap;',
@@ -145,6 +150,19 @@ define([
 			'#ifdef LIGHT_MAP',
 				'uniform sampler2D lightMap;',
 			'#endif',
+			'#ifdef TRANSPARENCY_MAP',
+				'uniform sampler2D transparencyMap;',
+			'#endif',
+			'#ifdef ENVIRONMENT_MAP',
+				'uniform samplerCube environmentMap;',
+				'uniform float reflectivity;',
+				'uniform float fresnel;',
+				'#ifdef REFLECTION_MAP',
+					'uniform sampler2D reflectionMap;',
+				'#endif',
+			'#endif',
+
+			'uniform float opacity;',
 
 			'varying vec3 vWorldPos;',
 			'varying vec3 viewPosition;',
@@ -197,6 +215,7 @@ define([
 					'#if defined(TANGENT) && defined(NORMAL_MAP)',
 						'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 						'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
+						'tangentNormal.xy *= normalMultiplier;',
 						'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 						'vec3 N = normalize(worldNormal);',
 					'#elif defined(NORMAL)',
@@ -211,6 +230,26 @@ define([
 				'#ifdef EMISSIVE_MAP',
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
 					'final_color.xyz += final_color.xyz * emissive;',
+				'#endif',
+
+				'#ifdef TRANSPARENCY_MAP',
+					'final_color.a *= texture2D(transparencyMap, texCoord0).r;',
+				'#endif',
+				'final_color.a *= opacity;',
+
+				'#ifdef ENVIRONMENT_MAP',
+					'vec3 reflectionVector = reflect(viewPosition, N);',
+					'vec4 environment = textureCube(environmentMap, reflectionVector);',
+
+					'float reflectionAmount = reflectivity;',
+					'#ifdef REFLECTION_MAP',
+						'reflectionAmount *= texture2D(reflectionMap, texCoord0).r;',
+					'#endif',
+
+					'float fresnelVal = pow(1.0 - max(dot(normalize(viewPosition), N), 0.0), fresnel * 4.0);',
+					'reflectionAmount *= fresnelVal;',
+
+					'final_color = mix(final_color, environment, reflectionAmount);',
 				'#endif',
 
 				'gl_FragColor = final_color;',
