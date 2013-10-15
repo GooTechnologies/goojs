@@ -27,11 +27,7 @@ function(
 	};
 
 	MouseClickAction.external = {
-		parameters: [{
-			name: 'Position variable',
-			key: 'positionVariable',
-			type: 'identifier'
-		}],
+		parameters: [],
 		transitions: [{
 			name: 'click',
 			description: 'Fired on click'

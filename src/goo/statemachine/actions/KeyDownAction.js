@@ -36,13 +36,7 @@ function(
 			key: 'key',
 			type: 'key',
 			description: 'Key to listen for'
-		}, {
-			name: 'Key variable',
-			key: 'keyVariable',
-			type: 'identifier',
-			description: 'Variable to store the key in'
 		}],
-
 		transitions: [{
 			name: 'keydown',
 			description: 'Fired on key down'

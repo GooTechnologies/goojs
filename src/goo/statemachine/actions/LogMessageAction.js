@@ -19,7 +19,7 @@ function(
 			name: 'Message',
 			key: 'message',
 			type: 'string',
-			description: 'message to print',
+			description: 'Message to print',
 			'default': 'hello'
 		}, {
 			name: 'On every frame',
