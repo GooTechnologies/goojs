@@ -16,7 +16,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
 ],
 /** @lends */
 function (
@@ -41,6 +41,7 @@ function (
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
+	var defaultMaterial = [ Material.createMaterial( ShaderLib.simpleLit, "rendererDefaultMaterial" ) ];
 
 	/**
 	 * @class The renderer handles displaying of graphics data to a render context.
@@ -524,7 +525,7 @@ function (
 	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshDataComponent.meshData;
-			renderInfo.materials = renderable.meshRendererComponent.materials;
+			renderInfo.materials = renderable.meshRendererComponent.materials.length ? renderable.meshRendererComponent.materials : defaultMaterial;
 			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
 			if(renderable.meshDataComponent.currentPose) {
 				renderInfo.currentPose = renderable.meshDataComponent.currentPose;

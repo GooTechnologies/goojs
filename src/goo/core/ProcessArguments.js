@@ -5,7 +5,7 @@ define( [],
 		var types  = [];
 		var values = [];
 
-		function process( target, args, callback ) {
+		function ProcessArguments( target, args, callback ) {
 			types .length = 0;
 			values.length = 0;
 
@@ -17,12 +17,12 @@ define( [],
 			}
 		}
 
-		process.STRING      = "string",
-		process.TAG         = "tag",
-		process.ATTRIBUTE   = "attribute",
-		process.CONSTRUCTOR = "constructor",
-		process.INSTANCE    = "instance",
-		process.PARAMETERS  = "parameters"
+		ProcessArguments.STRING      = "string",
+		ProcessArguments.TAG         = "tag",
+		ProcessArguments.ATTRIBUTE   = "attribute",
+		ProcessArguments.CONSTRUCTOR = "constructor",
+		ProcessArguments.INSTANCE    = "instance",
+		ProcessArguments.PARAMETERS  = "parameters"
 
 		function recurseArguments( args ) {
 			if( args !== undefined ) {
@@ -41,27 +41,27 @@ define( [],
 								recurseArguments.apply( this, args );
 							} else {
 								if( arg.constructor.toString().indexOf( "function Object()" ) === 0 ) {
-									types.push( process.PARAMETERS );
+									types.push( ProcessArguments.PARAMETERS );
 								} else {
-									types.push( process.INSTANCE );
+									types.push( ProcessArguments.INSTANCE );
 								}
 							}
 						} else if( type === "string" ) {
 							if( arg.indexOf( "#" ) === 0 ) {
-								types.push( process.TAG );
+								types.push( ProcessArguments.TAG );
 							} else if( arg.indexOf( "@" ) === 0 ) {
-								types.push( process.ATTRIBUTE );
+								types.push( ProcessArguments.ATTRIBUTE );
 							} else {
-								types.push( process.STRING );
+								types.push( ProcessArguments.STRING );
 							}
 						} else if( type === "function" ) {
-							types.push( process.CONSTRUCTOR );
+							types.push( ProcessArguments.CONSTRUCTOR );
 						}
 					}
 				}
 			}
 		}
 
-		return process;
+		return ProcessArguments;
 	}
 )

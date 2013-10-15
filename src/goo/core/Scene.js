@@ -1,8 +1,7 @@
 define( [
 	'goo/core/Collection',
 	'goo/core/ProcessArguments',
-	'goo/core/System',
-	'goo/core/Entity',
+	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
 	'goo/entities/systems/BoundingUpdateSystem',
@@ -14,12 +13,12 @@ define( [
 	"goo/entities/systems/AnimationSystem",
 	"goo/entities/systems/TextSystem",
 	"goo/entities/systems/LightDebugSystem",
-	"goo/entities/systems/CameraDebugSystem" ],
+	"goo/entities/systems/CameraDebugSystem",
+	"goo/renderer/Renderer" ],
 	
 	function( 
 		Collection,
 		ProcessArguments,
-		System,
 		Entity,
 		TransformSystem, 
 		RenderSystem, 
@@ -32,7 +31,8 @@ define( [
 		AnimationSystem,
 		TextSystem,
 		LightDebugSystem,
-		CameraDebugSystem ) {
+		CameraDebugSystem, 
+		Renderer ) {
 	
 		"use strict";
 
@@ -56,11 +56,12 @@ define( [
 			this.add( parameters.systems, parameters.scenes );
 
 			if( this.systems.length === 0 ) {
-				this.addSystem( TransformSystem, CameraSystem, ParticlesSystem, BoundingUpdateSystem, LightingSystem, AnimationSystem, LightDebugSystem, CameraDebugSystem, TransformSystem, RenderSystem );
+				this.addSystem( TransformSystem, CameraSystem, ParticlesSystem, BoundingUpdateSystem, LightingSystem, AnimationSystem, LightDebugSystem, CameraDebugSystem, RenderSystem );
 			}
 		}
 
 		Scene.prototype.init = function( goo ) {
+			// REVIEW: Should scenes share renderer? Probably not.
 			this.renderer = goo.renderer;
 		};
 
@@ -105,60 +106,51 @@ define( [
 			});
 		};
 
-		Scene.prototype.getSystem = function() {
+		Scene.prototype.getSystem = function( type ) {
+			var systems = this.systems;
+			var sl = systems.length;
+
+			while( sl-- ) {
+				if( systems[ sl ] instanceof type ) {
+					return systems[ sl ];
+				}
+			}
+			return undefined;
 		};
 
-		Scene.prototype.hasSystem = function() {
+		Scene.prototype.hasSystem = function( type ) {
+			var systems = this.systems;
+			var sl = systems.length;
+
+			while( sl-- ) {
+				if( systems[ sl ] instanceof type ) {
+					return true;
+				}
+			}
 			return false;
-		};
+		}; 
 
 		Scene.prototype.removeSystem = function() {
 		};
 
 		// entity methods
 
-		Scene.prototype.addEntity = function() {
-			if( arguments.length === 0 ) {
-				var entity   = new Entity();
-				entity.scene = this;
-				return entity;				
+		Scene.prototype.addEntity = function( entity ) {
+			entity = entity || new Entity();
+
+			this.entities.push( entity );
+			this.entities.added.push( entity );
+
+			entity.scene = this;
+
+			if( entity.hasChildren()) {
+				var scene = this;
+				entity.getChildren().each( function( child ) {
+					scene.addEntitiy( child );
+				});
 			}
 
-			collection.clear();
-			collection.preventClear();
-
-			ProcessArguments( this, arguments, function( scene, type, value ) {
-				if( type === ProcessArguments.INSTANCE ) {
-					collection.add( value );
-				} else if( type === ProcessArguments.CONSTRUCTOR ) {
-					collection.add( new value());
-				} else if( type === ProcessArguments.STRING ) {
-					collection.add( new Entity( { name: value } ));
-				} else if( type === ProcessArguments.TAG ) {
-					collection.add( new Entity( { tags: [ value ] } ));
-				} else if( type === ProcessArguments.ATTRIBUTE ) {
-					collection.add( new Entity( { attributes: [ value ] } ));
-				}
-			});
-
-			var self = this;
-
-			collection.each( function( entity ) {
-				self.entities.push( entity );
-				self.entities.added.push( entity );
-
-				entity.scene = this;
-
-				if( entity.hasChildren()) {
-					entity.getChildren().each( function( child ) {
-						self.addEntitiy( child );
-						collection.preventClear();
-					});
-				}
-			});
-
-			collection.allowClear();
-			return collection.orFirst();
+			return entity;
 		};
 
 		Scene.prototype.getEntity = function() {
@@ -208,7 +200,8 @@ define( [
 		};
 
 		Scene.prototype.changedEntity = function( entity, component, eventType ) {
-			// REVIEW: Move this to class!
+			// REVIEW: Move event to class!
+			// should be something like: this.entities.changed.push( new ChangedEvent( entity, component, eventType ));
 			var e = {
 				entity: entity
 			};
@@ -267,22 +260,22 @@ define( [
 				for( s = 0; s < sl; s++ ) {
 					system = systems[ s ];
 					// REVIEW: change .passive to .enabled to have similar API as entities and components
-					if( systems.enabled ) {
+					if( system.enabled ) {
 						// REVIEW: shouldn't we send in the entire processParameters object? Also, we
 						// should NOT call _process as it defies all religions out there. Please see to
 						// that you override the System.process and use the this.entities instead of
 						// the (now) incoming entities parameter. 
 
-						systems._process( processParameters.deltaTime );
+						system._process( processParameters.deltaTime );
 					}
 				}
 			}
 		};
 
 		Scene.prototype.render = function() {
-			if( this.visible ) {
+			if( this.visible && this.renderer ) {
 				if( this.hasSystem( RenderSystem )) {
-					this.getSystem( RenderSystem ).render( renderer );
+					this.getSystem( RenderSystem ).render( this.renderer );
 				}
 			}
 		};

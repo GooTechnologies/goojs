@@ -1,13 +1,17 @@
 define([
 	'goo/renderer/bounds/BoundingSphere',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/shapes/ShapeCreator'
 ],
 /** @lends */
 function (
 	BoundingSphere,
-	Component
+	Component,
+	ShapeCreator
 ) {
 	"use strict";
+
+	var defaultMeshData = ShapeCreator.createBox(1, 1, 1);
 
 	/**
 	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
@@ -16,7 +20,7 @@ function (
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
-		this.meshData = meshData;
+		this.meshData = meshData || defaultMeshData;
 
 		/** Bounding volume in local space
 		 * @type {BoundingVolume}
@@ -29,6 +33,10 @@ function (
 		 */
 		this.autoCompute = true;
 		this.currentPose = null;
+
+		this.api = {
+			"meshDataComponent": this
+		}
 	}
 
 	MeshDataComponent.prototype = Object.create(Component.prototype);

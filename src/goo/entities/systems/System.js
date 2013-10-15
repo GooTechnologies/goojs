@@ -10,6 +10,11 @@ define(
 			this.interests = interests || [];
 			this.entities  = [];
 			this.scene     = undefined;
+
+			// REVIEW: _activeEntities isn't private, it's being used all over. Use this.entities?
+
+			this._activeEntities = this.entities;
+
 		}
 
 		System.prototype.init = function( scene ) {
@@ -23,30 +28,29 @@ define(
 		 */
 
 		System.prototype.isInterestedIn = function( entity ) {
-			var isInterested = false;
-
 			if( this.interests && this.interests.length > 0 ) {
-				isInterested = true;
 				for( var i = 0; i < this.interests.length; i++ ) {
 					var type = this.interests[ i ];
 
 					if( entity.components[ type ] === undefined ) {
-						isInterested = false;
-						break;
+						return false;
 					}
 				}
+				return true;
 			}
-
-			return isInterested;
+			return false;
 		};
 
 		System.prototype.addedEntity = function( entity ) {
 			if( this.isInterestedIn( entity ) && !this.hasEntity( entity )) {
-				this.entities.push( entity );
-			
+				// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
+				//this.entities.push( entity );
+				this._activeEntities.push( entity );
+
 				if( this.addedComponent !== undefined ) {
+					var system = this;
 					entity.getComponents().each( function( component ) {
-						this.addedComponent( entity, component );
+						system.addedComponent( entity, component );
 					});
 				}
 
@@ -65,9 +69,13 @@ define(
 		};
 
 		System.prototype.removedEntity = function( entity ) {
-			var i = this.entities.indexOf( entity );
+			// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
+			//var i = this.entities.indexOf( entity );
+			var i = this._activeEntities.indexOf( entity );
 			if( i !== -1 ) {
-				this.entities.splice( i, 1 );
+				// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
+				//this.entities.splice( i, 1 );
+				this._activeEntities.splice( i, 1 );
 
 				if( this.removedComponent !== undefined ) {
 					entity.getComponents().each( function( component ) {
@@ -82,7 +90,9 @@ define(
 		};
 
 		System.prototype.hasEntity = function( entity ) {
-			return this.entities.indexOf( event.entity ) !== -1;
+			// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
+			//return this.entities.indexOf( entity ) !== -1;
+			return this._activeEntities.indexOf( entity ) !== -1;
 		};
 
 		// REVIEW: This need to be removed as it's extremely hard to read. Please change
@@ -92,7 +102,8 @@ define(
 
 		System.prototype._process = function( deltaTime ) {
 			if( this.process !== undefined ) {
-				this.process( this.entites, deltaTime );
+				// REVIEW: This shouldn't be necessary to do, sending in _activeEntities for compability
+				this.process( this._activeEntities, deltaTime );
 			}  
 		};
 

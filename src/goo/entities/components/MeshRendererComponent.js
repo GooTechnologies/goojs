@@ -51,9 +51,24 @@ define(['goo/entities/components/Component'],
 		 * @default
 		 */
 		this.hidden = false;
+
+		/** api containing the fields and methods that'll be available through entity 
+		* @type {object}
+		*/
+
+		this.api = {
+			"meshRendererComponent"	: this,
+			"materials"				: this.materials
+		}
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
+
+	MeshRendererComponent.prototype.componentInit = Component.prototype.init;
+	MeshRendererComponent.prototype.init = function( entity ) {
+		this.componentInit( entity );
+		this.entity.addAttribute( "@renderable" );
+	}
 
 	/**
 	 * Update world bounding

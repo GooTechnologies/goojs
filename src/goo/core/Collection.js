@@ -42,11 +42,22 @@ define(
 			return this;
 		};
 
+		Collection.prototype.toArray = function() {
+			return this.items.concat( [] );
+		};
+
 		Collection.prototype.add = function( item ) {
-			if( this.items.indexOf( item ) === -1 ) {
-				this.items.push( item );
-				this.first = this.first || item;
-				this.last  = item;
+			if( item !== undefined ) {
+				if( item instanceof Collection ) {
+					var collection = this;
+					item.each( function( otherItem ) {
+						collection.add( otherItem );
+					});
+				} else if( this.items.indexOf( item ) === -1 ) {
+					this.items.push( item );
+					this.first = this.first || item;
+					this.last  = item;
+				}
 			}
 
 			return this;
@@ -117,6 +128,28 @@ define(
 			callFunction( this.items, "dispose", parameters );
 			return this;
 		};
+
+		Collection.prototype.clone = function() {
+			var collection   = new Collection();
+			collection.first = this.first;
+			collection.items = this.items.concat( [] );
+			collection.last  = this.last;
+			return collection;
+		};
+
+		// static
+
+		Collection.clone = function( instanceOrCollection ) {
+			if( instanceOrCollection instanceof Collection ) {
+				return instanceOrCollection.clone();
+			} else {
+				var collection = new Collection();
+				collection.add( instanceOrCollection );
+				return collection;
+			}
+ 		}
+
+
 
 		// helpers
 

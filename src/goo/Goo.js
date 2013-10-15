@@ -2,26 +2,38 @@ define(
 	[ "goo/core/Collection",
 	  "goo/core/ProcessParameters",
 	  "goo/core/Scene",
-	  "goo/renderer/Renderer" ],
+	  "goo/renderer/Renderer",
+	  "goo/util/GameUtils",
+	  "goo/util/Logo",
+	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
 	  
-	function( Collection, ProcessParameters, Scene, Renderer ) {
+	function( Collection, ProcessParameters, Scene, Renderer, GameUtils, Logo, World ) {
 
 		"use strict";
 
-		var collection = new Collection();
+		var collection       = new Collection();
+		var collectionScenes = new Collection();
 
 		function Goo( parameters ) {
 			parameters = parameters || {};
 
-			this.processParameters  = new ProcessParameters();
-			this.scenes             = [];
-			this.renderer           = new Renderer( parameters );
-			this.preProcessCallback = undefined;
+			this.processParameters   = new ProcessParameters();
+			this.scenes              = [];
+			this.renderer            = new Renderer( parameters );
+			this.rafId               = -1;
+
+			// REVIEW: all callbacks should have an API (add/get etc).
+			// Also, would look better to wrap all callbacks in an object, like this.callbacks = { preProcess: [], preRender: [], postRender: [] }; 
+
+			this.callbacks           = [];
+			this.callbacksPreProcess = [];
+			this.callbacksPreRender  = [];
 
 			// setup renderer access methods
+			// TODO: add more access methods
 
-			defineGetter( this, "domElement",    this.renderer.domElement );
-			defineGetter( this, "setClearColor", this.renderer.setClearColor.bind( this.renderer ));
+			this.domElement    = this.renderer.domElement;
+			this.setClearColor = this.renderer.setClearColor.bind( this.renderer );
 
 			if( parameters.domContainer ) {
 				parameters.domContainer.appendChild( this.domElement );
@@ -35,14 +47,29 @@ define(
 				this.addScene( new Scene( { name: "default" } ));
 			}
 
-			// this should be removed!
+			// setup GameUtils
+			// REVIEW: what happens here if we've got multiple Goo-instances?
+
+			GameUtils.initAllShims();
+			GameUtils.addVisibilityChangeListener( function( paused ) {
+				if( paused ) {
+					this.pause();
+				} else {
+					this.start();
+				}
+			}.bind( this ));
+
+			// REVIEW: this should be removed!
 
 			this.world = this.scenes[ 0 ];
+			World.time = 0;
 		}
 
 		Goo.prototype.add = function() {
 			collection.clear();
 			collection.preventClear();
+
+			// TODO: change to ProcessArguments
 
 			var argument, a, al = arguments.length;
 			var type;
@@ -72,6 +99,8 @@ define(
 		Goo.prototype.get = function() {
 			collection.clear();
 			collection.preventClear();
+
+			// TODO: Change to ProcessArguments
 
 			var argument, a, al = arguments.length;
 			var type;
@@ -104,6 +133,9 @@ define(
 		// scene methods
 
 		Goo.prototype.addScene = function( scene ) {
+
+			// TODO: Change to process parameters
+
 			if( scene === undefined ) {
 				scene = new Scene();
 			} else if( typeof( scene ) === "string" ) {
@@ -122,59 +154,101 @@ define(
 			return scene;
 		};
 
-		Goo.prototype.getScene = function( name ) {
-			var scenes = this.scenes;
-			var sl = scenes.length;
-
-			while( sl-- ) {
-				if( scenes[ sl ].name === name ) {
-					return scenes[ sl ];
-				}
+		Goo.prototype.getScene = function() {
+			if( arguments.length === 0 ) {
+				return collection.fromArray( this.scenes ).orFirst();
 			}
+ 
+			collectionScenes.fromArray( this.scenes );
+			collection.clear();
 
-			return scenes[ 0 ];
+			ProcessParameters( this, arguments, function( goo, type, value ) {
+				if( type === ProcessParameters.STRING ) {
+					collection.add( collectionScenes.compare( "name", value ));
+				} else if( type === ProcessParameters.INSTANCE ) {
+					collection.add( value );
+				} else if( type === ProcessParameters.CONSTRUCTOR ) {
+					collectionScenes.each( function( scene ) {
+						collection.add( scene );
+					});
+				}
+			});
+
+			return collection.orFirst();
 		};
 
 		// start and stuff
 
 		Goo.prototype.start = function( preProcessCallback ) {
-		};
+			if( preProcessCallback ) {
+				this.callbacksPreProcess.push( preProcessCallback );
+			}
 
-		Goo.prototype.pause = function() {
-		};
-
-		Goo.prototype.stop = function() {
-		};
-
-		Goo.prototype.process = function( timeStamp ) {
-			processParameters.updateTime( timeStamp );
-
-			var scene, scenes = this.scenes;
-			var sl = scenes.length;
-			
-			while( sl-- ) {
-				scene = scenes[ sl ];
-				if( scene ) {
-					if( scene.enabled ) {
-						scene.process( processParameters );
-					}
-
-					if( scene.visible ) {
-						scene.render( processParameters );
-					}
-				} 
+			if( this.rafId === -1 ) {
+				this.processParameters.resetTime();
+				this.rafId = window.requestAnimationFrame( this.process.bind( this ));
 			}
 		};
 
-		// helpers
+		Goo.prototype.pause = function() {
+			if( this.rafId !== -1 ) {
+				window.cancelAnimationFrame( this.rafId );
+				this.rafId = -1;
+			}
+		};
 
-		function defineGetter( target, propertyName, propertyData ) {
-			Object.defineProperty( target, propertyName, {
-				get: function() {
-					return propertyData;
-				}
-			} );
-		}
+		Goo.prototype.stop = function() {
+			processParameters.resetTime();
+			World.time = 0;						// REVIEW: Remove!
+			this.pause();
+		};
+
+		Goo.prototype.process = function( timeStamp ) {		
+			// REVIEW: add some sort of debug-flag which wraps everything in here with a try-catch or
+			// have a separate processDebug which is attached to the raf if debug === true
+
+			this.processParameters.updateTime( timeStamp );
+			World.time = timeStamp;				// REVIEW: Remove!
+
+			var c, cl = this.callbacksPreProcess.length;
+			for( c = 0; c < cl; c++ ) {
+				// REVIEW: Would be nice to send processParameters only!
+				this.callbacksPreProcess[ c ]( this.processParameters.deltaTime, this.processParameters );
+			}
+
+			var scenes = this.scenes;
+			var sl = scenes.length;
+			
+			while( sl-- ) {
+				scenes[ sl ].process( this.processParameters );
+			}
+
+			cl = this.callbacksPreRender.length;
+			for( c = 0; c < cl; c++ ) {
+				// REVIEW: Would be nice to send processParameters only!
+				this.callbacksPreRender[ c ]( this.processParameters.deltaTime, this.processParameters );
+			}
+
+			this.renderer.info.reset();
+			this.renderer.checkResize( Renderer.mainCamera );
+			this.renderer.setRenderTarget();
+			this.renderer.clear();
+
+			sl = scenes.length;
+			while( sl-- ) {
+				scenes[ sl ].render( this.processParameters );
+			}
+
+			// TODO: Picking
+
+			cl = this.callbacks.length;
+			for( c = 0; c < cl; c++ ) {
+				// REVIEW: Would be nice to send processParameters only!
+				this.callbacks[ c ]( this.processParameters.deltaTime, this.processParameters );
+			}
+
+			this.rafId = window.requestAnimationFrame( this.process.bind( this ));
+		};
 
 		return Goo;
 	}
