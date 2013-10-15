@@ -190,7 +190,19 @@ define([
 			return RSVP.all(promises).then(function(entities) {
 				for (var j = 0; j < entities.length; j++) {
 					var entity = entities[j];
-					if ((that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) && !that.world.entityManager.containsEntity(entity)) {
+					if (
+
+						// beforeAdd returns true (or is not defined)
+						(that.options.beforeAdd == null || 
+							that.options.beforeAdd.apply == null || 
+							that.options.beforeAdd(entity)) && 
+						
+						// Entity is not already in the scene
+						!(that.world.entityManager.containsEntity(entity) ||
+							that.world._addedEntities.filter(function(e){return e.id === entity.id}).length > 0
+							)
+						) {
+						
 						//console.log("Adding " + entity.name + " to world");
 						entity.addToWorld();
 					}
