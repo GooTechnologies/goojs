@@ -1,11 +1,13 @@
 define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/renderer/Renderer',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function(
 	OrbitCamControlScript,
 	Renderer,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
 
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
@@ -44,6 +46,7 @@ define([
 		properties = properties || {};
 		// REVIEW: move this detail zoom to OrbitCamControlScript
 		this.detailZoom = properties.detailZoom || 0.15;
+		this.zoomDistanceFactor = 0.0035;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
 			buttonDown : false,
@@ -138,12 +141,15 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.applyWheel = function (e) {
-		// REVIEW: use MathUtil.clamp instead
-		var delta = (this.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta, -1, 1);
+
 		// Decrease zoom if shift is pressed
 		if (this.shiftKey) {
 			delta *= this.detailZoom;
+		} else {
+			delta *= this.zoomDistanceFactor * this.targetSpherical.x;
 		}
+
 		this.zoom(this.zoomSpeed * delta);
 	};
 
