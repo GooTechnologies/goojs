@@ -178,5 +178,17 @@ function () {
 		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
 	};
 
+	/**
+	 * Returns true if the 2 values supplied are approximately the same
+	 * @param v1
+	 * @param v2
+	 * @param tolerance
+	 * @returns {boolean}
+	 */
+	MathUtils.closeTo = function(v1, v2, tolerance) {
+		tolerance = typeof tolerance !== 'undefined' ? tolerance : 0.001;
+		return Math.abs(v1 - v2) <= tolerance;
+	};
+
 	return MathUtils;
 });
