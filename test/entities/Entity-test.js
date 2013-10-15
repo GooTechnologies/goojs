@@ -133,14 +133,14 @@ define([
 			entity.setComponent(new MeshDataComponent());
 			expect(entity._components.length).toBe(2);
 		});
-		it('preserves the last added component of the same type', function() {
+		it('discards the second added component of the same type', function() {
 			var entity = world.createEntity();
 			var component1 = new MeshDataComponent();
 			var component2 = new MeshDataComponent();
 			entity.setComponent(component1);
 			entity.setComponent(component2);
 			var gotComponent = entity.getComponent('MeshDataComponent');
-			expect(gotComponent).toBe(component2);
+			expect(gotComponent).toBe(component1);
 		});
 
 		it('getComponent', function() {
@@ -157,15 +157,6 @@ define([
 			expect(entity.hasComponent('alabalaportocala')).toBe(false);
 			expect(entity.hasComponent('TransformComponent')).toBe(true);
 			expect(entity.hasComponent('MeshDataComponent')).toBe(true);
-		});
-		it('overwriting components', function() {
-			var entity = world.createEntity();
-			var mdc1 = new MeshDataComponent();
-			entity.setComponent(mdc1);
-
-			var mdc2 = new MeshDataComponent();
-			entity.setComponent(mdc2);
-			expect(entity.getComponent('meshDataComponent')).toBe(mdc2);
 		});
 	});
 });
