@@ -54,12 +54,7 @@ function () {
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			for (var i = 0; i < this._components.length; i++) {
-				if (this._components[i].type === component.type) {
-					this._components[i] = component;
-					break;
-				}
-			}
+			return ;
 		} else {
 			this._components.push(component);
 		}
