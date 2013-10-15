@@ -50,6 +50,8 @@ define([
 			aoMap : Shader.AO_MAP,
 			lightMap : Shader.LIGHT_MAP,
 			environmentMap : 'ENVIRONMENT_MAP',
+			reflectionMap : 'REFLECTION_MAP',
+			transparencyMap : 'TRANSPARENCY_MAP',
 			opacity: 1.0,
 			reflectivity: 1.0,
 			fresnel: 1.0
