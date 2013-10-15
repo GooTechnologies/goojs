@@ -65,12 +65,21 @@ function (
 	};
 
 	Machine.prototype.addState = function(state) {
-		if(!this._states) {
+		if (!this._states) {
 			this._states = {};
 			this.initialState = state.uuid;
 		}
 		state._fsm = this._fsm;
 		this._states[state.uuid] = state;
+	};
+
+	Machine.prototype.removeState = function(id) {
+		if (!this._states[id]) { return; }
+		if (this.initialState === id) { throw new Error('Cannot remove initial state'); }
+		if (this.currentState === this._states[id]) {
+			this.reset();
+		}
+		delete this._states[id];
 	};
 
 	Machine.prototype.setInitialState = function(initialState) {
