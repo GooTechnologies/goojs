@@ -31,9 +31,10 @@ function(
 
 	AddLightAction.prototype._run = function(fsm) {
 		var light = new PointLight();
-		//light.color.setd(1, 0, 0);
-		//console.log(this.color[0], this.color[1], this.color[2]); //phony stuff
-		//this.color[0], this.color[1], this.color[2]);
+		console.log('AddLightAction color', this.color);
+
+		var tmp = this.color.split(',');
+		light.color.setd(+tmp[0], +tmp[1], +tmp[2]);
 
 		var entity = fsm.getOwnerEntity();
 		entity.setComponent(new LightComponent(light));
