@@ -53,7 +53,8 @@ function (
 		this.currentState = this._states[this.initialState];
 
 		// propagate reset
-		this.currentState.reset();
+		if (this.currentState)
+			this.currentState.reset();
 	};
 
 	Machine.prototype.kill = function() {
