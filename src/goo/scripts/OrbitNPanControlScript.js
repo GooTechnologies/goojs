@@ -46,7 +46,7 @@ define([
 		properties = properties || {};
 		// REVIEW: move this detail zoom to OrbitCamControlScript
 		this.detailZoom = properties.detailZoom || 0.15;
-		this.zoomDistanceFactor = 0.0035;
+		this.zoomDistanceFactor = 0.35;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
 			buttonDown : false,
