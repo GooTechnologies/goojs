@@ -2,18 +2,27 @@ define( [],
 	function() {
 		"use strict";
 
-		var types  = [];
-		var values = [];
+		var typesAndValues;
+		var typesAndValuesStack = [];
 
 		function ProcessArguments( target, args, callback ) {
-			types .length = 0;
-			values.length = 0;
+			if( typesAndValues !== undefined ) {
+				typesAndValuesStack.push( typesAndValues );
+			}
+			typesAndValues = { types: [], values: [] };
 
-			recurseArguments( args );
+			var types  = typesAndValues.types;
+			var values = typesAndValues.values;
+
+			recurseArguments( args, types, values );
 
 			var t, tl = types.length;
 			for( t = 0; t < tl; t++ ) {
 				callback( target, types[ t ], values[ t ] );
+			}
+
+			if( typesAndValuesStack.length ) {
+				typesAndValues = typesAndValuesStack.pop();
 			}
 		}
 
@@ -24,7 +33,7 @@ define( [],
 		ProcessArguments.INSTANCE    = "instance",
 		ProcessArguments.PARAMETERS  = "parameters"
 
-		function recurseArguments( args ) {
+		function recurseArguments( args, types, values ) {
 			if( args !== undefined ) {
 				var arg, a, al = args.length;
 				var type;

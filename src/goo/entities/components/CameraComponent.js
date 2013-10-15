@@ -15,12 +15,24 @@ function (
 	 * @class Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component
 	 */
-	function CameraComponent (camera) {
+	function CameraComponent (cameraOrParameters) {
 		Component.call( this );
 		this.type = 'CameraComponent';
 
-		this.camera = camera || new Camera( 60, window.innerWidth / window.innerHeight, 0.5, 1000 );
+		cameraOrParameters = cameraOrParameters || {};
+		if( cameraOrParameters instanceof Camera ) {
+			this.camera = camera;
+		} else {
+			var fov    = cameraOrParameters.fov    !== undefined ? cameraOrParameters.fov    : 60;
+			var aspect = cameraOrParameters.aspect !== undefined ? cameraOrParameters.aspect : window.innerWidth / window.innerHeight;
+			var near   = cameraOrParameters.near   !== undefined ? cameraOrParameters.near   : 0.5;
+			var far    = cameraOrParameters.far    !== undefined ? cameraOrParameters.far    : 1000;
 
+			this.camera = new Camera( fov, aspect, near, far );
+		}
+
+
+		// REVIEW: Can't these be static?
 		this.leftVec = new Vector3(-1, 0, 0);
 		this.upVec   = new Vector3(0, 1, 0);
 		this.dirVec  = new Vector3(0, 0, -1);

@@ -14,6 +14,10 @@ define( [
 	"goo/entities/systems/TextSystem",
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
+	"goo/entities/components/CameraComponent",
+	"goo/entities/components/MeshDataComponent",
+	"goo/entities/components/MeshRendererComponent",
+	"goo/entities/components/LightComponent",
 	"goo/renderer/Renderer" ],
 	
 	function( 
@@ -31,7 +35,11 @@ define( [
 		AnimationSystem,
 		TextSystem,
 		LightDebugSystem,
-		CameraDebugSystem, 
+		CameraDebugSystem,
+		CameraComponent,
+		MeshDataComponent,
+		MeshRendererComponent,
+		LightComponent,
 		Renderer ) {
 	
 		"use strict";
@@ -56,7 +64,16 @@ define( [
 			this.add( parameters.systems, parameters.scenes );
 
 			if( this.systems.length === 0 ) {
-				this.addSystem( TransformSystem, CameraSystem, ParticlesSystem, BoundingUpdateSystem, LightingSystem, AnimationSystem, LightDebugSystem, CameraDebugSystem, RenderSystem );
+				this.add( 
+					TransformSystem,
+					CameraSystem,
+					ParticlesSystem,
+					BoundingUpdateSystem,
+					LightingSystem,
+					AnimationSystem,
+					LightDebugSystem,
+					CameraDebugSystem,
+					RenderSystem );
 			}
 		}
 
@@ -70,11 +87,17 @@ define( [
 		Scene.prototype.add = function() {
 			ProcessArguments( this, arguments, function( scene, type, value ) {
 				if( type === ProcessArguments.INSTANCE ) {
-					// todo: check if system or entity
-					scene.addEntity( value );
+					if( value instanceof Entity ) {
+						scene.addEntity( value );
+					} else {
+						scene.addSystem( value );
+					}
 				} else if( type === ProcessArguments.CONSTRUCTOR ) {
-					// todo: check if system or entity
-					scene.addEntity( new value());
+					if( value instanceof Entity ) {
+						scene.addEntity( new value());
+					} else {
+						scene.addSystem( new value());
+					}
 				} else {
 					scene.addEntity( value );
 				}
@@ -93,7 +116,7 @@ define( [
 
 		// system methods
 
-		Scene.prototype.addSystem = function( System ) {
+		Scene.prototype.addSystem = function() {
 			ProcessArguments( this, arguments, function( scene, type, value ) {
 				if( type === ProcessArguments.INSTANCE ) {
 					scene.systems.push( value );
@@ -107,6 +130,9 @@ define( [
 		};
 
 		Scene.prototype.getSystem = function( type ) {
+			ProcessArguments( this, arguments, function( scene, type, value ) {
+				// TODO: ...replace below so you can seledt many
+			});
 			var systems = this.systems;
 			var sl = systems.length;
 
@@ -131,6 +157,7 @@ define( [
 		}; 
 
 		Scene.prototype.removeSystem = function() {
+			// TODO: select many to remove
 		};
 
 		// entity methods
@@ -190,6 +217,7 @@ define( [
 				}
 			} );
 
+			// REVIEW: should we always return a collection for simplicity?
 			return collection.orFirst();
 		};
 
@@ -199,6 +227,9 @@ define( [
 			return this.entities.indexOf( entity ) !== -1;
 		};
 
+		// REVIEW: Try to remove this as it's quite weird to have to mark an entity as changed
+		// when you've just changed it. The entity and its components should keep track of any
+		// changed state and report accordingly
 		Scene.prototype.changedEntity = function( entity, component, eventType ) {
 			// REVIEW: Move event to class!
 			// should be something like: this.entities.changed.push( new ChangedEvent( entity, component, eventType ));
@@ -233,10 +264,20 @@ define( [
 				}
 			});
 		
-			return collection.orFirst();
+			return collection;
 		};
 
-		// process
+		// helper methods for easy creation of enities
+
+		Scene.prototype.createCamera = function( parameters ) {
+			return this.addEntity( new Entity( new CameraComponent( parameters )));
+		};
+
+		Scene.prototype.createLight = function( parameters ) {
+			return this.addEntity( new Entity( new LightComponent( parameters )));
+		};
+
+		// process & render
 
 		Scene.prototype.process = function( processParameters ) {
 			if( this.enabled ) {

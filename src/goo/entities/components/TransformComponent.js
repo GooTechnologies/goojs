@@ -30,7 +30,8 @@ define(
 				"removeChild" 			: this.detachChild.bind( this ),
 				"getChild" 				: this.getChild.bind( this ),
 				"getChildren" 			: this.getChildren.bind( this ),
-				"hasChildren" 		    : this.hasChildren.bind( this )
+				"hasChildren" 		    : this.hasChildren.bind( this ),
+				"setPosition" 			: this.setTranslation.bind( this )
 			};
 
 			// REVIEW: shouldn't these be moved into Transform?
