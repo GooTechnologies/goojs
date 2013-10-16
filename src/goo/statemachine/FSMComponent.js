@@ -1,13 +1,15 @@
 define([
 	'goo/entities/components/Component',
+	'goo/util/ArrayUtil',
 	'goo/entities/Bus'
 ],
 /** @lends */
 function (
 	Component,
+	ArrayUtil,
 	Bus
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class FSMComponent
@@ -27,11 +29,11 @@ function (
 
 	FSMComponent.vars = {};
 
-	FSMComponent.getVariable = function(name) {
+	FSMComponent.getVariable = function (name) {
 		return FSMComponent.vars[name];
 	};
 
-	FSMComponent.prototype.getVariable = function(name) {
+	FSMComponent.prototype.getVariable = function (name) {
 		if (this.vars[name] !== undefined) {
 			return this.vars[name];
 		} else {
@@ -39,11 +41,11 @@ function (
 		}
 	};
 
-	FSMComponent.applyOnVariable = function(name, fun) {
+	FSMComponent.applyOnVariable = function (name, fun) {
 		FSMComponent.vars[name] = fun(FSMComponent.vars[name]);
 	};
 
-	FSMComponent.prototype.applyOnVariable = function(name, fun) {
+	FSMComponent.prototype.applyOnVariable = function (name, fun) {
 		if (this.vars[name] !== undefined) {
 			this.vars[name] = fun(this.vars[name]);
 		} else {
@@ -51,15 +53,15 @@ function (
 		}
 	};
 
-	FSMComponent.prototype.defineVariable = function(name, initialValue) {
+	FSMComponent.prototype.defineVariable = function (name, initialValue) {
 		this.vars[name] = initialValue;
 	};
 
-	FSMComponent.prototype.removeVariable = function(name) {
+	FSMComponent.prototype.removeVariable = function (name) {
 		delete this.vars[name];
 	};
 
-	FSMComponent.applyToVariable = function(name, fun) {
+	FSMComponent.applyToVariable = function (name, fun) {
 		if (this.vars[name]) {
 			this.vars[name] = fun(this.vars[name]);
 		} else if (FSMComponent.vars[name]) {
@@ -67,12 +69,18 @@ function (
 		}
 	};
 
-	FSMComponent.prototype.addMachine = function(machine) {
+	FSMComponent.prototype.addMachine = function (machine) {
 		machine._fsm = this;
+		machine.parent = this;
 		this._machines.push(machine);
 	};
 
-	FSMComponent.prototype.init = function() {
+	FSMComponent.prototype.removeMachine = function (machine) {
+		machine.recursiveRemove();
+		ArrayUtil.remove(this._machines, machine);
+	};
+
+	FSMComponent.prototype.init = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			machine.setRefs(this);
@@ -81,7 +89,7 @@ function (
 		}
 	};
 
-	FSMComponent.prototype.update = function() {
+	FSMComponent.prototype.update = function () {
 		if (this.active) {
 			for (var i = 0; i < this._machines.length; i++) {
 				var machine = this._machines[i];

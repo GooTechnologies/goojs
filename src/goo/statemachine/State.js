@@ -161,6 +161,24 @@ function (
 		this._actions.push(action);
 	};
 
+	State.prototype.recursiveRemove = function () {
+		this.removeAllActions();
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].recursiveRemove();
+		}
+		this._machines = [];
+	};
+
+	State.prototype.removeAllActions = function () {
+		for (var i = 0; i < this._actions.length; i++) {
+			var action = this._actions[i];
+			if (action.onDestroy) {
+				action.onDestroy(this.proxy);
+			}
+		}
+		this._actions = [];
+	};
+
 	State.prototype.removeAction = function (action) {
 		if (action.onDestroy) {
 			action.onDestroy(this.proxy);
@@ -170,8 +188,17 @@ function (
 	};
 
 	State.prototype.addMachine = function (machine) {
-		machine._fsm = this._fsm;
-		this._machines.push(machine);
+		var index = this._machines.indexOf(machine);
+		if (index === -1) {
+			machine._fsm = this._fsm;
+			machine.parent = this;
+			this._machines.push(machine);
+		}
+	};
+
+	State.prototype.removeMachine = function (machine) {
+		machine.recursiveRemove();
+		ArrayUtil.remove(this._machines, machine);
 	};
 
 	return State;

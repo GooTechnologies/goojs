@@ -30,10 +30,9 @@ define([
 	ConfigHandler._registerClass('machine', MachineHandler);
 
 	MachineHandler.prototype.remove = function(ref) {
-		console.log('....................machinehandler.remove', ref);
-		//var machine = this._objects[ref];
-		//machine.remove();
-		//delete this._objects[ref];
+		var machine = this._objects[ref];
+		machine.removeFromParent();
+		delete this._objects[ref];
 	};
 
 	MachineHandler.prototype._updateActions = function(state, stateConfig) {
