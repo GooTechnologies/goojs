@@ -210,6 +210,12 @@ function (
 		}
 	};
 
+	AnimationLayer.prototype.shiftClipTime = function(shiftTime) {
+		if (this._currentState) {
+			this._currentState.shiftClipTime(shiftTime || 0);
+		}
+	};
+
 	AnimationLayer.prototype.setTimeScale = function(timeScale) {
 		if(this._currentState) {
 			this._currentState.setTimeScale(timeScale);

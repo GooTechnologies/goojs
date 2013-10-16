@@ -123,6 +123,12 @@ function (
 		this._percent = 0.0;
 	};
 
+	AbstractTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		AbstractState.prototype.shiftClipTime.call(this, shiftTime);
+		//this._sourceData = {};
+		this._percent = 0.0;  // not 0
+	};
+
 	AbstractTransitionState.prototype.setTimeScale = function (timeScale) {
 		if (this._sourceState) {
 			this._sourceState.setTimeScale(timeScale);

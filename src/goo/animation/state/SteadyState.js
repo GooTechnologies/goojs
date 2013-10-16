@@ -46,6 +46,11 @@ function (AbstractState) {
 		this._sourceTree.resetClips(globalStartTime);
 	};
 
+	SteadyState.prototype.shiftClipTime = function (shiftTime) {
+		AbstractState.prototype.shiftClipTime.call(this, shiftTime);
+		this._sourceTree.shiftClipTime(shiftTime);
+	};
+
 	SteadyState.prototype.setTimeScale = function (timeScale) {
 		this._sourceTree.setTimeScale(timeScale);
 	};

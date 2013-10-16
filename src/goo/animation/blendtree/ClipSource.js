@@ -103,6 +103,11 @@ function (
 		this._clipInstance._active = true;
 	};
 
+	ClipSource.prototype.shiftClipTime = function (shiftTime) {
+		this._clipInstance._startTime += shiftTime;
+		this._clipInstance._active = true;  // ?
+	};
+
 	ClipSource.prototype.setTimeScale = function (timeScale) {
 		this._clipInstance.setTimeScale(timeScale);
 	};

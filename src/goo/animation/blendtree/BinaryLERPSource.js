@@ -65,11 +65,20 @@ function (
 		}
 	};
 
-	/**
-	 * Sets the time scale for sources A and B
-	 * @param {Number} timeScale
-	 */
+	BinaryLERPSource.prototype.shiftClipTime = function (shiftTime) {
+		// reset our two sub sources
+		if (this._sourceA) {
+			this._sourceA.shiftClipTime(shiftTime);
+		}
+		if (this._sourceB) {
+			this._sourceB.shiftClipTime(shiftTime);
+		}
+	};
 
+	/**
+	* Sets the time scale for sources A and B
+	* @param {Number} timeScale
+	*/
 	BinaryLERPSource.prototype.setTimeScale = function (timeScale) {
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);

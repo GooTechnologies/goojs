@@ -199,6 +199,12 @@ function (
 		}
 	};
 
+	AnimationComponent.prototype.shiftClipTime = function(shiftTime) {
+		for (var i = 0; i < this.layers.length; i++) {
+			this.layers[i].shiftClipTime(shiftTime);
+		}
+	};
+
 	AnimationComponent.prototype.setTimeScale = function(timeScale) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setTimeScale(timeScale);
@@ -214,8 +220,9 @@ function (
 
 	AnimationComponent.prototype.resume = function() {
 		if (this.paused) {
-			this.accumulatedDelay += World.time - this.lastTimeOfPause;
-			console.log(this.accumulatedDelay);
+			this.shiftClipTime(World.time - this.lastTimeOfPause);
+			//this.accumulatedDelay += World.time - this.lastTimeOfPause;
+			console.log(this.accumulatedDelay); // rogue comment
 			this.paused = false;
 		}
 	};
