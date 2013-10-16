@@ -77,9 +77,9 @@ function (
 
 	/**
 	 * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
-	 * @param {string} state
-	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @returns {boolean} true if a transition was found and started
+	 * @param {String} state
+	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @returns {Boolean} true if a transition was found and started
 	 */
 	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
 		globalTime = globalTime || World.time;
@@ -132,8 +132,8 @@ function (
 	/**
 	 * Sets the current state to the given state. Generally for transitional state use.
 	 * @param {AbstractState} state our new state. If null, then no state is currently set on this layer.
-	 * @param {boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
 		globalTime = globalTime || World.time;
@@ -155,9 +155,9 @@ function (
 	/**
 	 * Force the current state of the machine to the state with the given name.
 	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
-	 * @param {boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
-	 * @param {number} [globalTime=World.time] start time for the transition, defaults to current time
-	 * @returns {boolean} true if succeeds
+	 * @param {Boolean} rewind if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @returns {Boolean} true if succeeds
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {
@@ -188,7 +188,7 @@ function (
 	};
 	/**
 	 * Update the layer blender in this animation layer to properly point to the previous layer.
-	 * @param previousLayer the layer before this layer in the animation manager.
+	 * @param {Object} previousLayer the layer before this layer in the animation manager.
 	 */
 	AnimationLayer.prototype.updateLayerBlending = function (previousLayer) {
 		if (this._layerBlender) {
