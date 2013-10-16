@@ -53,7 +53,7 @@ function (
 
 	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
-	 * @param {number} globalTime
+	 * @param {number} globalStartTime
 	 */
 	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
@@ -65,13 +65,18 @@ function (
 		}
 	};
 
+	/**
+	 * Sets the time scale for sources A and B
+	 * @param {Number} timeScale
+	 */
+
 	BinaryLERPSource.prototype.setTimeScale = function (timeScale) {
 		this._sourceA.setTimeScale(timeScale);
 		this._sourceB.setTimeScale(timeScale);
 	};
 
 	/**
-	 * @returns {boolean} if clipsource is active
+	 * @returns {boolean} from calling the isActive method on sources A or B
 	 */
 	BinaryLERPSource.prototype.isActive = function () {
 		var foundActive = false;
