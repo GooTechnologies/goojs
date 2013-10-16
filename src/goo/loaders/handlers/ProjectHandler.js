@@ -254,21 +254,13 @@ define([
 				}
 				composer.passes = [];
 				composer.addPass(renderPass);
-				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
 					var posteffect = posteffects[j].get();
-					if (posteffect.enabled && !enabled) {
-						enabled = true;
-					}
 					composer.addPass(posteffect);
 				}
 				composer.addPass(outPass);
-				if (enabled) {
-					if (mainRenderSystem.composers.indexOf(composer) === -1) {
-						mainRenderSystem.composers.push(composer);
-					}
-				} else {
-					ArrayUtil.remove(mainRenderSystem.composers, composer);
+				if (mainRenderSystem.composers.indexOf(composer) === -1) {
+					mainRenderSystem.composers.push(composer);
 				}
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);

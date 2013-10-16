@@ -11,7 +11,9 @@ define([
 	'goo/shapes/debug/CameraDebug',
 	'goo/shapes/debug/MeshRendererDebug',
 	'goo/renderer/Material',
+	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/Transform'
 ], function(
 	LightComponent,
@@ -26,7 +28,9 @@ define([
 	CameraDebug,
 	MeshRendererDebug,
 	Material,
+	Util,
 	ShaderLib,
+	ShaderBuilder,
 	Transform
 ) {
 	'use strict';
@@ -37,30 +41,46 @@ define([
 	var meshRendererDebug = new MeshRendererDebug();
 
 	DebugDrawHelper.getRenderablesFor = function(component) {
-		var meshes, material;
+		var meshes, materials;
 		if(component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light);
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
+			materials = [
+				Material.createMaterial(scaledColoredShader, 'ScaledDebugDrawLightMaterial'),
+				Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial')
+			];
+			if (component.light instanceof DirectionalLight) {
+				materials[1] = materials[0];
+			}
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera);
-			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
-			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
-			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
-			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
+			materials = [
+				Material.createMaterial(scaledLitShader, 'ScaledDebugDrawCameraMaterial'),
+				Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial')
+			];
+
+			materials[0].uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
+			materials[0].uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
+			materials[0].uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
+			materials[1].uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
+			materials[1].uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
+			materials[1].uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
+			materials = [
+				Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial'),
+				null
+			];
 		}
 		return [
 		 {
 			 meshData: meshes[0],
 			 transform: new Transform(),
-			 materials: [material]
+			 materials: [materials[0]]
 		 },
 		 {
 			 meshData: meshes[1],
 			 transform: new Transform(),
-			 materials: [material]
+			 materials: [materials[1]]
 		 }
 		];
 	};
@@ -75,10 +95,11 @@ define([
 			component.camera.changedProperties = false;
 		}
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
+		DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
 		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component, scale);
 
-		renderables[0].transform.scale.scale(scale);
-		renderables[0].transform.update();
+		//renderables[0].transform.scale.scale(scale);
+		//renderables[0].transform.update();
 	};
 
 	DebugDrawHelper.LightComponent = {};
@@ -92,7 +113,7 @@ define([
 		color[2] = light.color.data[2];
 	};
 
-	DebugDrawHelper.LightComponent.updateTransform = function(transform, component, scale) {
+	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
 			var r = light.range;
@@ -102,8 +123,6 @@ define([
 				var tan = Math.tan(angle / 2);
 				transform.scale.muld(tan, tan, 1);
 			}
-		} else {
-			transform.scale.scale(scale);
 		}
 		transform.update();
 	};
@@ -120,6 +139,51 @@ define([
 		transform.scale.setd(x, y, z);
 		transform.update();
 	};
+
+	var scaledLitShader = Util.clone(ShaderLib.simpleLit);
+	scaledLitShader.vshader = [
+		'attribute vec3 vertexPosition;',
+		'attribute vec3 vertexNormal;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform vec3 cameraPosition;',
+
+		ShaderBuilder.light.prevertex,
+		'varying vec3 normal;',
+		'varying vec3 vWorldPos;',
+		'varying vec3 viewPosition;',
+
+		'void main(void) {',
+		' vec3 worldCenter = (worldMatrix * vec4(0.0,0.0,0.0,1.0)).xyz;',
+		' float scale = length(cameraPosition-worldCenter)/30.0;',
+		'	vec4 worldPos = worldMatrix * vec4(scale*vertexPosition, 1.0);',
+		' vWorldPos = worldPos.xyz;',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+
+			ShaderBuilder.light.vertex,
+
+		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+		'	viewPosition = cameraPosition - worldPos.xyz;',
+		'}'//
+	].join('\n');
+
+	var scaledColoredShader = Util.clone(ShaderLib.simpleColored);
+	scaledColoredShader.uniforms.cameraPosition = 'CAMERA';
+
+	scaledColoredShader.vshader = [
+		'attribute vec3 vertexPosition;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform vec3 cameraPosition;',
+
+		'void main(void) {',
+		' vec3 worldCenter = (worldMatrix * vec4(0.0,0.0,0.0,1.0)).xyz;',
+		' float scale = length(cameraPosition-worldCenter)/30.0;',
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(scale*vertexPosition, 1.0);',
+		'}'//
+	].join('\n');
 
 	return DebugDrawHelper;
 });
