@@ -17,7 +17,7 @@ function(
 		parameters: [{
 			name:'Animation',
 			key:'animation',
-			type:'string'
+			type:'animstate'
 		}, {
 			name:'On every frame',
 			key:'everyFrame',
