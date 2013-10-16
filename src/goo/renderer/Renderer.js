@@ -703,24 +703,44 @@ function (
 			this.updateTextures(material);
 			this.updateLineAndPointSettings(material);
 
-			if (meshData.getIndexBuffer() !== null) {
-				this.bindData(meshData.getIndexData());
-				if (meshData.getIndexLengths() !== null) {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
-				}
-			} else {
-				if (meshData.getIndexLengths() !== null) {
-					this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
-				}
-			}
+			this._checkDualTransparency(material, meshData);
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
 
 			this.info.calls++;
 			this.info.vertices += meshData.vertexCount;
 			this.info.indices += meshData.indexCount;
+		}
+	};
+
+	Renderer.prototype._drawBuffers = function (meshData) {
+		if (meshData.getIndexBuffer() !== null) {
+			this.bindData(meshData.getIndexData());
+			if (meshData.getIndexLengths() !== null) {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
+			}
+		} else {
+			if (meshData.getIndexLengths() !== null) {
+				this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
+			}
+		}
+	};
+
+	Renderer.prototype._checkDualTransparency = function (material, meshData) {
+		if (material.dualTransparency) {
+			var savedCullFace = material.cullState.cullFace;
+			var newCullFace = savedCullFace === 'Front' ? 'Back' : 'Front';
+			material.cullState.cullFace = newCullFace;
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
+
+			material.cullState.cullFace = savedCullFace;
 		}
 	};
 

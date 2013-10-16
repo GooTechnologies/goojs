@@ -249,7 +249,7 @@ define([
 						'reflectionAmount *= texture2D(reflectionMap, texCoord0).r;',
 					'#endif',
 
-					'float fresnelVal = pow(1.0 - max(dot(normalize(viewPosition), N), 0.0), fresnel * 4.0);',
+					'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 					'reflectionAmount *= fresnelVal;',
 
 					'final_color = mix(final_color, environment, reflectionAmount);',
