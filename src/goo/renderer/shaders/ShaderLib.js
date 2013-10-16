@@ -241,6 +241,7 @@ define([
 
 				'#ifdef ENVIRONMENT_MAP',
 					'vec3 reflectionVector = reflect(viewPosition, N);',
+					'reflectionVector.x = -reflectionVector.x;',
 					'vec4 environment = textureCube(environmentMap, reflectionVector);',
 
 					'float reflectionAmount = reflectivity;',
