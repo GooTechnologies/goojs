@@ -2,34 +2,20 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/MeshDataComponent',
 	'goo/renderer/bounds/BoundingBox',
-
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/shapes/Disk',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/shapes/Grid',
-
+	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/StringUtil'
 ], function(
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,
-
-	Box,
-	Cylinder,
-	Disk,
-	Quad,
-	Sphere,
-	Torus,
-	Grid,
-
+	ShapeCreatorMemoized,
 	RSVP,
 	pu,
-	_
+	_,
+	StringUtil
 ) {
 	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -37,17 +23,6 @@ define([
 
 	MeshDataComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('meshData', MeshDataComponentHandler);
-
-	var shapes = {
-		Box: Box,
-		Cylinder: Cylinder,
-		Disk: Disk,
-		Quad: Quad,
-		Sphere: Sphere,
-		Torus: Torus,
-		Grid: Grid
-	};
-
 
 	MeshDataComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
@@ -62,10 +37,9 @@ define([
 		var p1, p2;
 		ComponentHandler.prototype.update.call(this, entity, config);
 
-		if(config.shape && shapes[config.shape]) {
-			var shape = config.shape;
-			var properties = config.shapeOptions;
-			var meshData = new shapes[shape](properties);
+		var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)]
+		if(config.shape && shapeCreator instanceof Function) {
+			var meshData = shapeCreator(config.shapeOptions, entity.meshDataComponent ? entity.meshDataComponent.meshData : null);
 			p1 = pu.createDummyPromise(meshData);
 			p2 = pu.createDummyPromise();
 		} else {
@@ -106,6 +80,8 @@ define([
 			if (skeletonPose) {
 				component.currentPose = skeletonPose;
 			}
+
+			entity.clearComponent('MeshDataComponent'); // hack
 			entity.setComponent(component);
 			return component;
 		});
