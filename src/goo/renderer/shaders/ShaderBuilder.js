@@ -323,7 +323,7 @@ function(
 			"#endif"
 		].join('\n'),
 		fragment: [
-			'#ifdef SPECULAR_MAP',
+			'#if defined(SPECULAR_MAP) && defined(TEXCOORD0)',
 				'float specularStrength = texture2D(specularMap, texCoord0).x;',
 			'#else',
 				'float specularStrength = 1.0;',

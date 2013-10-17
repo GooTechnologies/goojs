@@ -24,12 +24,14 @@ define([
 
 		var vertexBuffer = meshData.getAttributeBuffer(MeshData.POSITION);
 		if (!vertexBuffer) {
-			throw new Error("Vertex buffer is null!");
+			// console.warn("Vertex buffer is null!");
+			return;
 		}
 
 		var normalBuffer = meshData.getAttributeBuffer(MeshData.NORMAL);
 		if (!normalBuffer) {
-			throw new Error("Normal buffer is null!");
+			// console.warn("Normal buffer is null!");
+			return;
 		}
 
 		var textureBuffer = meshData.getAttributeBuffer('TEXCOORD' + uvUnit);
@@ -37,12 +39,14 @@ define([
 			textureBuffer = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
 		}
 		if (!textureBuffer) {
-			throw new Error("Texture buffer is null!");
+			// console.warn("Texture buffer is null!");
+			return;
 		}
 
 		var indexBuffer = meshData.getIndexBuffer();
 		if (!indexBuffer) {
-			throw new Error("Index buffer is null!");
+			// console.warn("Index buffer is null!");
+			return;
 		}
 
 		var vertexCount = meshData.vertexCount;

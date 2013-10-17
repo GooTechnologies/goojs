@@ -199,7 +199,7 @@ define([
 			'{',
 				'vec4 final_color = vec4(1.0);',
 
-				'#ifdef DIFFUSE_MAP',
+				'#if defined(DIFFUSE_MAP) && defined(TEXCOORD0)',
 					'final_color *= texture2D(diffuseMap, texCoord0);',
 				'#endif',
 
@@ -210,7 +210,7 @@ define([
 				'#ifdef AO_MAP',
 					'#ifdef TEXCOORD1',
 						'final_color *= texture2D(aoMap, texCoord1);',
-					'#else',
+					'#elif TEXCOORD0',
 						'final_color *= texture2D(aoMap, texCoord0);',
 					'#endif',
 				'#endif',
@@ -218,11 +218,11 @@ define([
 				'#ifdef LIGHT_MAP',
 					'#ifdef TEXCOORD1',
 						'final_color *= texture2D(lightMap, texCoord1) * 2.0 - 0.5;',
-					'#else',
+					'#elif TEXCOORD0',
 						'final_color *= texture2D(lightMap, texCoord0) * 2.0 - 0.5;',
 					'#endif',
 				'#else',
-					'#if defined(TANGENT) && defined(NORMAL_MAP)',
+					'#if defined(TANGENT) && defined(NORMAL_MAP) && defined(TEXCOORD0)',
 						'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 						'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
 						'tangentNormal.xy *= normalMultiplier;',
@@ -237,12 +237,12 @@ define([
 					ShaderBuilder.light.fragment,
 				'#endif',
 
-				'#ifdef EMISSIVE_MAP',
+				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
 					'final_color.xyz += final_color.xyz * emissive;',
 				'#endif',
 
-				'#ifdef TRANSPARENCY_MAP',
+				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
 					'final_color.a *= texture2D(transparencyMap, texCoord0).r;',
 				'#endif',
 				'final_color.a *= opacity;',
@@ -283,7 +283,7 @@ define([
 					'#endif',
 
 					'float reflectionAmount = reflectivity;',
-					'#ifdef REFLECTION_MAP',
+					'#if defined(REFLECTION_MAP) && defined(TEXCOORD0)',
 						'reflectionAmount *= texture2D(reflectionMap, texCoord0).r;',
 					'#endif',
 
