@@ -480,6 +480,15 @@ function (
 		this._takeSnapshots.push(callback);
 	};
 
+	/**
+	 * Requests a pick from screenspace coordinates. A successful pick returns id and depth of the pick target.
+	 *
+	 * @param {Number} x screen coordinate
+	 * @param {Number} y screen coordinate
+	 * @param {Function} callback to handle the pick result
+	 * @param {Boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
+	 */
+
 	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;
 		this._picking.y = y;
