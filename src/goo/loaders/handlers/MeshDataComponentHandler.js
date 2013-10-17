@@ -38,8 +38,10 @@ define([
 		ComponentHandler.prototype.update.call(this, entity, config);
 
 		var shapeCreator;
-		if (config.shape) { shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)]; }
-		if (shapeCreator instanceof Function) {
+		if (config.shape) {
+			shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
+		}
+		if(shapeCreator instanceof Function) {
 			var meshData = shapeCreator(config.shapeOptions, entity.meshDataComponent ? entity.meshDataComponent.meshData : null);
 			p1 = pu.createDummyPromise(meshData);
 			p2 = pu.createDummyPromise();
