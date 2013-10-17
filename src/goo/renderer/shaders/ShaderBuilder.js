@@ -29,17 +29,22 @@ function(
 	ShaderBuilder.defaultLight = defaultLight;
 
 	ShaderBuilder.SKYBOX = null;
+	ShaderBuilder.SKYSPHERE = null;
+	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			var textureMaps = shaderInfo.material._textureMaps;
 
-			if (ShaderBuilder.SKYBOX) {
-				shaderInfo.material.setTexture('ENVIRONMENT_MAP', ShaderBuilder.SKYBOX);
-			}
-
 			shader.defines = shader.defines || {};
+
+			if (ShaderBuilder.SKYBOX) {
+				shaderInfo.material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
+			} else if (ShaderBuilder.SKYSPHERE) {
+				shaderInfo.material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
+				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+			}
 
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
@@ -79,7 +84,8 @@ function(
 					attribute === 'SHADOW_TYPE' ||
 					attribute === 'JOINT_COUNT' ||
 					attribute === 'WEIGHTS' ||
-					attribute === 'PHYSICALLY_BASED_SHADING') {
+					attribute === 'PHYSICALLY_BASED_SHADING' ||
+					attribute === 'ENVIRONMENT_TYPE') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {

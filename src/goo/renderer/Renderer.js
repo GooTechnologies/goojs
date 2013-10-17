@@ -381,7 +381,7 @@ function (
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
-		if (camera && camera.aspect !== aspect) {
+		if (camera && camera.aspect !== aspect && camera.projectionMode === 0) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
 			camera.onFrameChange();

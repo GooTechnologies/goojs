@@ -49,7 +49,8 @@ define([
 			emissiveMap : Shader.EMISSIVE_MAP,
 			aoMap : Shader.AO_MAP,
 			lightMap : Shader.LIGHT_MAP,
-			environmentMap : 'ENVIRONMENT_MAP',
+			environmentCube : 'ENVIRONMENT_CUBE',
+			environmentSphere : 'ENVIRONMENT_SPHERE',
 			reflectionMap : 'REFLECTION_MAP',
 			transparencyMap : 'TRANSPARENCY_MAP',
 			opacity: 1.0,
@@ -155,8 +156,15 @@ define([
 			'#ifdef TRANSPARENCY_MAP',
 				'uniform sampler2D transparencyMap;',
 			'#endif',
-			'#ifdef ENVIRONMENT_MAP',
-				'uniform samplerCube environmentMap;',
+			'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
+				'#ifndef ENVIRONMENT_TYPE',
+					'#define ENVIRONMENT_TYPE 0',
+				"#endif",
+				'#ifdef ENVIRONMENT_CUBE',
+					'uniform samplerCube environmentCube;',
+				'#else',
+					'uniform sampler2D environmentSphere;',
+				'#endif',
 				'uniform float reflectivity;',
 				'uniform float fresnel;',
 				'#ifdef REFLECTION_MAP',
@@ -239,10 +247,40 @@ define([
 				'#endif',
 				'final_color.a *= opacity;',
 
-				'#ifdef ENVIRONMENT_MAP',
+				'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
+
+// Refraction
+// float etaRatio = 1.5;
+// float cosI = dot(-viewPosition, N);
+// float cosT2 = 1.0 - etaRatio * etaRatio * (1.0 – cosI * cosI);
+// vec3 T = etaRatio * I + ((etaRatio * cosI - sqrt(abs(cosT2))) * N);
+// vec3 refractVec = T * step(cosT2, 0.0);
+
 					'vec3 reflectionVector = reflect(viewPosition, N);',
 					'reflectionVector.yz = -reflectionVector.yz;',
-					'vec4 environment = textureCube(environmentMap, reflectionVector);',
+
+					'#ifdef ENVIRONMENT_CUBE',
+						'vec4 environment = textureCube(environmentCube, reflectionVector);',
+					'#else',
+						'#if ENVIRONMENT_TYPE == 0',
+							'reflectionVector = -reflectionVector;',
+							'float m = 4.0 * sqrt(reflectionVector.x*reflectionVector.x + reflectionVector.y*reflectionVector.y + (reflectionVector.z+1.0)*(reflectionVector.z+1.0));',
+							'vec4 environment = texture2D(environmentSphere, (reflectionVector.xy / m) + 0.5);',
+						'#else',
+							'reflectionVector.xyz = vec3(-reflectionVector.z, -reflectionVector.y, reflectionVector.x);',
+							'vec2 index;',
+							'index.y = dot(normalize(reflectionVector), vec3(0.0,1.0,0.0));',
+							'reflectionVector.y = 0.0;',
+							'index.x = dot(normalize(reflectionVector), vec3(1.0,0.0,0.0)) * 0.5;',
+							'if (reflectionVector.z >= 0.0) {',
+								'index = (index + 1.0) * 0.5;',
+							'} else {',
+								'index.t = (index.t + 1.0) * 0.5;',
+								'index.s = (-index.s) * 0.5 + 1.0;',
+							'}',
+							'vec4 environment = texture2D(environmentSphere, index);',
+						'#endif',
+					'#endif',
 
 					'float reflectionAmount = reflectivity;',
 					'#ifdef REFLECTION_MAP',

@@ -59,7 +59,8 @@ define([
 		_.defaults(config.skybox, {
 			shape: 'Box',
 			imageUrls: ['','','','','',''],
-			rotation: 0
+			rotation: 0,
+			environmentType: 0
 		});
 		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
 	};
@@ -112,6 +113,9 @@ define([
 					update = true;
 				}
 			}
+
+			//Hacky
+			ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
 
 			if(!update) { return; }
 
@@ -170,9 +174,16 @@ define([
 					texture.setNeedsUpdate();
 					if (type === Skybox.BOX && images.length || images) {
 						material.setTexture('DIFFUSE_MAP', texture);
-					}
 
-					ShaderBuilder.SKYBOX = texture;
+						if (type === Skybox.BOX) {
+							ShaderBuilder.SKYBOX = texture;
+							ShaderBuilder.SKYSPHERE = null;
+						} else {
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = texture;
+							ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
+						}
+					}
 			});
 		}
 	};

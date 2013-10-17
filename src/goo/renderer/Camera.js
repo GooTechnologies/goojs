@@ -217,12 +217,32 @@ function(
 	 * @param bottom
 	 */
 	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom) {
-		this.near = this._frustumNear = near;
-		this.far = this._frustumFar = far;
-		this._frustumLeft = left;
-		this._frustumRight = right;
-		this._frustumTop = top;
-		this._frustumBottom = bottom;
+		if (near !== undefined && near !== null) {
+			this.near = near;
+		}
+		if (far !== undefined && far !== null) {
+			this.far = far;
+		}
+
+		if (left !== undefined && left !== null) {
+			this.left = left;
+		}
+		if (right !== undefined && right !== null) {
+			this.right = right;
+		}
+		if (top !== undefined && top !== null) {
+			this.top = top;
+		}
+		if (bottom !== undefined && bottom !== null) {
+			this.bottom = bottom;
+		}
+
+		this._frustumNear = this.near;
+		this._frustumFar = this.far;
+		this._frustumLeft = this.left;
+		this._frustumRight = this.right;
+		this._frustumTop = this.top;
+		this._frustumBottom = this.bottom;
 
 		this.onFrustumChange();
 	};
