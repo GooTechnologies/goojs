@@ -156,7 +156,7 @@ define([
 						}
 					}
 					if (!texture) {
-						texture = that._skyboxTexture = new Texture();
+						texture = that._skyboxTexture = new Texture(null, {flipY: false });
 						if (type === Skybox.BOX) {
 							texture.variant = 'CUBE';
 						}
