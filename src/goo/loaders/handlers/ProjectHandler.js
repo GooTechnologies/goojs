@@ -15,6 +15,7 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/Texture',
 	'goo/entities/EntityUtils',
+	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil'
 ], function(
@@ -34,6 +35,7 @@ define([
 	Util,
 	Texture,
 	EntityUtils,
+	SystemBus,
 	ArrayUtil,
 	_
 ) {
@@ -134,14 +136,20 @@ define([
 			RSVP.all(promises).then(function(images) {
 					if (type === Skybox.SPHERE) {
 						if (imageUrls[0] === '') {
-							console.debug('Missing front texture');
+							SystemBus.emit('goo.error.skybox', {
+								type: 'Sphere',
+								message: 'The skysphere needs an image to display.'
+							});
 							return;
 						}
 						images = images[0];
 						images.setAttribute('data-ref', imageUrls[0]);
 					} else {
 						if (images.length < 6) {
-							console.debug('Need 6 images to work, have '+images.length);
+							SystemBus.emit('goo.error.skybox', {
+								type: 'Box',
+								message: 'The skybox needs six images of the same size to display'
+							});
 							skybox.meshRendererComponent.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
 							return;
@@ -151,7 +159,10 @@ define([
 						for (var i = 0; i < 6; i++) {
 							var img = images[i];
 							if (w !== img.width || h !== img.height) {
-								console.error('Images not all the same size, not updating');
+								SystemBus.emit('goo.error.skybox', {
+									type: 'Box',
+									message: 'The skybox needs six images of the same size to display'
+								});
 								skybox.meshRendererComponent.hidden = true;
 								material.setTexture('DIFFUSE_MAP', null);
 								return;
