@@ -289,6 +289,8 @@ function (
 		// Default setup
 
 		this.clearColor = new Vector4();
+		// You need 64 bits for number equality
+		this._clearColor = new Float64Array(4);
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
@@ -431,7 +433,17 @@ function (
 	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
-		this.clearColor.set(r, g, b, a);
+		if (this._clearColor[0] === r
+			&& this._clearColor[1] === g
+			&& this._clearColor[2] === b
+			&& this._clearColor[3] === a) {
+				return;
+			}
+		this._clearColor[0] = r;
+		this._clearColor[1] = g;
+		this._clearColor[2] = b;
+		this._clearColor[3] = a;
+		this.clearColor.seta(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 

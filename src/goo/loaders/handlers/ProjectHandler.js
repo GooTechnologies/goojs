@@ -61,6 +61,7 @@ define([
 			imageUrls: ['','','','','',''],
 			rotation: 0
 		});
+		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
@@ -236,8 +237,8 @@ define([
 
 			return RSVP.all(promises).then(function(posteffects) {
 				var composer, renderPass, outPass;
-				if(!this._composer) {
-					composer = this._composer = new Composer();
+				if(!that._composer) {
+					composer = that._composer = new Composer();
 					//mainRenderSystem.composers.push(composer);
 					renderPass = new RenderPass(mainRenderSystem.renderList);
 					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
@@ -248,7 +249,7 @@ define([
 					//outPass.clear = { color: false, depth: true, stencil: true };
 					//outPass.clear = true;
 				} else {
-					composer = this._composer;
+					composer = that._composer;
 					renderPass = composer.passes[0];
 					outPass = composer.passes[composer.passes.length - 1];
 				}
@@ -273,6 +274,7 @@ define([
 
 	// Returns a promise which resolves when updating is done
 	ProjectHandler.prototype.update = function(ref, config, options) {
+		var that = this;
 		this._prepare(config);
 		// skybox
 		this._updateSkybox(config.skybox);
@@ -286,7 +288,14 @@ define([
 		// posteffect refs
 		promises.push(this._updatePosteffects(config));
 
-		return RSVP.all(promises);
+		return RSVP.all(promises).then(function(results) {
+			var renderer = that.world.gooRunner.renderer;
+			renderer.setClearColor.apply(renderer, config.backgroundColor);
+			if (that._composer) {
+				that._composer.setClearColor(config.backgroundColor);
+			}
+			return results;
+		});
 	};
 
 	ProjectHandler.prototype.remove = function(/*ref*/) {};
