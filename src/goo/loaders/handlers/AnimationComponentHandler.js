@@ -17,6 +17,7 @@ function(
 	}
 
 	AnimationComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	AnimationComponentHandler.prototype.constructor = AnimationComponentHandler;
 	ComponentHandler._registerClass('animation', AnimationComponentHandler);
 
 	AnimationComponentHandler.prototype._prepare = function(/*config*/) {};
@@ -60,6 +61,11 @@ function(
 		promises.push(p2);
 
 		return RSVP.all(promises).then(function() {
+			//var paused = component.paused;
+			component.paused = false;
+			component.resetClips();
+			component.update();
+			component.paused = true;
 			return component;
 		});
 	};

@@ -36,6 +36,12 @@ function (
 			entity.animationComponent.pause();
 		}
 	};
+	AnimationSystem.prototype.stop = function() {
+		for (var i = 0; i < this.entities.length; i++) {
+			var entity = this.entities[i];
+			entity.animationComponent.stop();
+		}
+	};
 
 	AnimationSystem.prototype.resume = function () {
 		for (var i = 0; i < this.entities.length; i++) {
