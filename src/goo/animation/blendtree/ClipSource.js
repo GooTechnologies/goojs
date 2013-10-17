@@ -24,7 +24,7 @@ function (
 		this.setFilter(filter, channelNames);
 	}
 
-	/*
+	/**
 	 * Sets the filter on the joints which the clipsource will affect
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {string[]} [channelNames]
@@ -40,7 +40,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
 	 * @param {number} globalTime
 	 */
@@ -68,14 +68,11 @@ function (
 			// Check for looping.
 			if (maxTime !== 0) {
 				if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
-					//REVIEW: optimise this by choosing the first branch always (a conditional is more expensive than an extra addition)
-					//POST-REVIEW: Citation needed =)
 					if (clockTime < 0) {
 						clockTime = maxTime + clockTime % maxTime;
 					} else {
 						clockTime %= maxTime;
 					}
-					//
 				} else if (clockTime < 0) {
 					clockTime = maxTime + clockTime;
 				}

@@ -125,8 +125,7 @@ function (
 
 	AbstractTransitionState.prototype.shiftClipTime = function(shiftTime) {
 		AbstractState.prototype.shiftClipTime.call(this, shiftTime);
-		//this._sourceData = {};
-		this._percent = 0.0;  // not 0
+		//this._percent = 0.0;  // definitely not 0, or maybe 0
 	};
 
 	AbstractTransitionState.prototype.setTimeScale = function (timeScale) {
