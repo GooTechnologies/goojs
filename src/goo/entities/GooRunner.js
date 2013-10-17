@@ -309,6 +309,11 @@ function (
 		return div;
 	};
 
+	/**
+	 * Enable misc debug configurations for inspecting aspects of the scene on hotkeys.
+	 * @private
+	 */
+
 	GooRunner.prototype._addDebugKeys = function () {
 		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
@@ -359,11 +364,12 @@ function (
 		}.bind(this), false);
 	};
 
-	/*
+	/**
 	 * Adds an event listener to the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
+
 	GooRunner.prototype.addEventListener = function(type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
@@ -377,11 +383,12 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Removes an event listener to the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
+
 	GooRunner.prototype.removeEventListener = function(type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
@@ -417,10 +424,11 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Enables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
+
 	GooRunner.prototype._enableEvent = function(type) {
 		if(this._events[type]) {
 			return;
@@ -444,10 +452,11 @@ function (
 		this._events[type] = func;
 	};
 
-	/*
+	/**
 	 * Disables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
+
 	GooRunner.prototype._disableEvent = function(type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
@@ -474,7 +483,7 @@ function (
 	};
 
 	/**
-	 * Takes snapshot at next rendercall
+	 * Takes an image snapshot from the 3d scene at next rendercall
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
