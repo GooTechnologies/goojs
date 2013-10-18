@@ -1,14 +1,12 @@
-define(['goo/statemachine/actions/Action',
-	'goo/entities/SystemBus'],
+define(['goo/statemachine/actions/Action'],
 /** @lends */
-function(Action,
-		 SystemBus) {
+function(Action) {
 	"use strict";
 
 	/**
 	 * @class
 	 */
-	function WaitAction(settings) {
+	function WaitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.currentTime = 0;
@@ -47,7 +45,7 @@ function(Action,
 	WaitAction.prototype.resume = function() {
 		this.increment = 1;
 	};
-	WaitAction.prototype._setup = function(fsm) {
+	WaitAction.prototype._setup = function() {
 		this.currentTime = 0;
 	};
 
