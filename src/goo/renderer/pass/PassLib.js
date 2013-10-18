@@ -75,7 +75,7 @@ define([
 					type: 'int',
 					control: 'slider',
 					min: 0,
-					max: 200,
+					max: 100,
 					'default': 100
 				},
 				{
@@ -86,7 +86,7 @@ define([
 					min: 0,
 					max: 10,
 					decimals: 1,
-					'default': 10
+					'default': 2
 				}
 			]
 		};
