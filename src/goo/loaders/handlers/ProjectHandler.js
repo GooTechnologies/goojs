@@ -119,7 +119,7 @@ define([
 			//Hacky
 			ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
 
-			if(!update) { return; }
+			if(!update) { return PromiseUtil.createDummyPromise() }
 
 			var promises = [];
 			for (var i = 0; i < imageUrls.length; i++) {
@@ -130,10 +130,10 @@ define([
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
-				return;
+				return PromiseUtil.createDummyPromise()
 			}
 			var that = this;
-			RSVP.all(promises).then(function(images) {
+			return RSVP.all(promises).then(function(images) {
 					if (type === Skybox.SPHERE) {
 						if (imageUrls[0] === '') {
 							SystemBus.emit('goo.error.skybox', {
@@ -298,10 +298,11 @@ define([
 	ProjectHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		this._prepare(config);
-		// skybox
-		this._updateSkybox(config.skybox);
-
 		var promises = [];
+
+		// skybox
+		promises.push(this._updateSkybox(config.skybox));
+
 		// entity refs
 		if (!options || !options.shallow) {
 			promises.push(this._updateEntities(config));
