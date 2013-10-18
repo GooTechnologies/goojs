@@ -2032,11 +2032,18 @@ define([
 	};
 
 	ShaderLib.lightDepth = {
+		processors: [
+			ShaderBuilder.animation.processor
+		],
 		defines: {
-			SHADOW_TYPE: 0
+			SHADOW_TYPE: 0,
+			WEIGHTS: true,
+			JOINTIDS: true
 		},
 		attributes : {
-			vertexPosition : MeshData.POSITION
+			vertexPosition : MeshData.POSITION,
+      vertexJointIDs: MeshData.JOINTIDS,
+      vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,
@@ -2052,9 +2059,11 @@ define([
 		'uniform mat4 worldMatrix;',
 
 		'varying vec4 worldPosition;',
-
+		ShaderBuilder.animation.prevertex,
 		'void main(void) {',
-			'worldPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'mat4 wMatrix = worldMatrix;',
+			ShaderBuilder.animation.vertex,
+			'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
 			'gl_Position = projectionMatrix * worldPosition;',
 		'}'
 		].join('\n'),
