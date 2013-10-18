@@ -655,11 +655,11 @@ function (
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 	Shader.DEPTH_MAP = 'DEPTH_MAP';
 
-	Shader.DEFAULT_AMBIENT = [0, 0, 0, 1.0];
+	Shader.DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
 	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
-	Shader.DEFAULT_DIFFUSE = [1, 1, 1, 1];
-	Shader.DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
-	Shader.DEFAULT_SHININESS = 16.0;
+	Shader.DEFAULT_DIFFUSE = [0.8, 0.8, 0.8, 1.0];
+	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 1.0];
+	Shader.DEFAULT_SHININESS = 64.0;
 
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);
