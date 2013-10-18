@@ -40,19 +40,19 @@ define([
     */
 	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/MoveAction',
-	'goo/statemachine/actions/MoveWithRotationAction',
+	// 'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
 	'goo/statemachine/actions/ScaleAction',
-	'goo/statemachine/actions/LookAtAction',
+	// 'goo/statemachine/actions/LookAtAction',
 
-	'goo/statemachine/actions/TweenMoveAction',
+	// 'goo/statemachine/actions/TweenMoveAction',
 	//'goo/statemachine/actions/TweenRotateAction',
-	'goo/statemachine/actions/TweenScaleAction',
-	'goo/statemachine/actions/TweenLookAtAction',
+	//'goo/statemachine/actions/TweenScaleAction',
+	//'goo/statemachine/actions/TweenLookAtAction',
 
 	'goo/statemachine/actions/HideAction',
 	'goo/statemachine/actions/ShowAction',
-	'goo/statemachine/actions/RemoveAction',
+	// 'goo/statemachine/actions/RemoveAction',
 	'goo/statemachine/actions/AddLightAction',
 	'goo/statemachine/actions/RemoveLightAction',
 
