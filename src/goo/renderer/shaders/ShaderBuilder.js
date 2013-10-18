@@ -309,17 +309,19 @@ function(
 				'uniform float cameraScales[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
-				'float ChebychevInequality(in vec2 moments, in float t) {',
-					'if ( t <= moments.x ) return 1.0;',
-					'float variance = moments.y - (moments.x * moments.x);',
-					'variance = max(variance, 0.02);',
-					'float d = t - moments.x;',
-					'return variance / (variance + d * d);',
-				'}',
+				'#if SHADOW_TYPE == 2', // VSM
+					'float ChebychevInequality(in vec2 moments, in float t) {',
+						'if ( t <= moments.x ) return 1.0;',
+						'float variance = moments.y - (moments.x * moments.x);',
+						'variance = max(variance, 0.02);',
+						'float d = t - moments.x;',
+						'return variance / (variance + d * d);',
+					'}',
 
-				'float VsmFixLightBleed(in float pMax, in float amount) {',
-					'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
-				'}',
+					// 'float VsmFixLightBleed(in float pMax, in float amount) {',
+						// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
+					// '}',
+				"#endif",
 			"#endif"
 		].join('\n'),
 		fragment: [
