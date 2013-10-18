@@ -1,39 +1,66 @@
-define(['goo/statemachine/actions/Action'],
+define(['goo/statemachine/actions/Action',
+	'goo/entities/SystemBus'],
 /** @lends */
-function(Action) {
+function(Action,
+		 SystemBus) {
 	"use strict";
 
 	/**
 	 * @class
 	 */
 	function WaitAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.time = settings.time || 1000;
-		this.event = settings.event || 'dummy';
-
-		this.external = {
-			time: ['int', 'Time'],
-			event: ['string', 'Send event']
-		};
+		Action.apply(this, arguments);
 
 		this.currentTime = 0;
+		this.increment = 1;
+
 	}
 
 	WaitAction.prototype = Object.create(Action.prototype);
+	WaitAction.prototype.constructor = WaitAction;
 
-	WaitAction.prototype.onCreate = function(/*fsm*/) {
+
+	WaitAction.external = {
+		parameters: [{
+			name: 'Wait Time',
+			key: 'waitTime',
+			type: 'float',
+			description: 'Time to wait before transition fires',
+			"default": 5
+		}],
+		transitions: [{
+			name: 'TimeUp',
+			description: 'Fired on time up'
+		}]
+	};
+
+	WaitAction.prototype.configure = function(settings) {
+		this.everyFrame = true;
+		this.waitTime = settings.waitTime;
+		this.eventToEmit = { channel: settings.transitions.TimeUp };
+	};
+
+	WaitAction.prototype.pause = function() {
+		this.increment = 0;
+	};
+
+	WaitAction.prototype.resume = function() {
+		this.increment = 1;
+	};
+	WaitAction.prototype._setup = function(fsm) {
 		this.currentTime = 0;
 	};
 
-	WaitAction.prototype.onUpdate = function(fsm) {
+	WaitAction.prototype._run = function(fsm) {
 		/* jshint -W052 */
-		this.currentTime += ~~(fsm.getTpf() * 1000);
-		if (this.currentTime >= this.time) {
-			fsm.handle(this.event);
+	//	console.log(this.currentTime, this.waitTime)
+		this.currentTime += fsm.getTpf() * this.increment;
+		if (this.currentTime >= this.waitTime) {
+			fsm.send(this.eventToEmit.channel);
 		}
 	};
+
+
 
 	return WaitAction;
 });

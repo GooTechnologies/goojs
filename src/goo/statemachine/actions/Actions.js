@@ -30,7 +30,7 @@ define([
 	//'goo/statemachine/actions/TweenRotationAction',
 	//'goo/statemachine/actions/KeyPressAction',
 	//'goo/statemachine/actions/SetCssPropertyAction',
-	//'goo/statemachine/actions/WaitAction',
+
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/SetLightRangeAction',
 
@@ -38,6 +38,7 @@ define([
 	'goo/statemachine/actions/MoveAction',
 	'goo/statemachine/actions/RotateAction'
     */
+	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/MoveAction',
 	'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
