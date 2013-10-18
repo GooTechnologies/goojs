@@ -121,7 +121,7 @@ define([
 			//Hacky
 			ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
 
-			if(!update) { return PromiseUtil.createDummyPromise() }
+			if(!update) { return PromiseUtil.createDummyPromise(); }
 
 			var promises = [];
 			for (var i = 0; i < imageUrls.length; i++) {
@@ -132,7 +132,7 @@ define([
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
-				return PromiseUtil.createDummyPromise()
+				return PromiseUtil.createDummyPromise();
 			}
 			var that = this;
 			return RSVP.all(promises).then(function(images) {
