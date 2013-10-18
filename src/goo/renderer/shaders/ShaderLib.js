@@ -2042,8 +2042,8 @@ define([
 		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-      vertexJointIDs: MeshData.JOINTIDS,
-      vertexWeights: MeshData.WEIGHTS
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,
@@ -2060,6 +2060,7 @@ define([
 
 		'varying vec4 worldPosition;',
 		ShaderBuilder.animation.prevertex,
+
 		'void main(void) {',
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
@@ -2082,6 +2083,8 @@ define([
 			'#if SHADOW_TYPE == 0',
 				'gl_FragColor = vec4(linearDepth);',
 			'#elif SHADOW_TYPE == 1',
+				'gl_FragColor = vec4(linearDepth);',
+			'#elif SHADOW_TYPE == 2',
 				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',
 		'}'//

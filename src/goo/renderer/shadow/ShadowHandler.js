@@ -157,10 +157,11 @@ function(
 
 					this.shadowTypeRecord = this.shadowType;
 				}
-
 				lightCamera.onFrameChange();
 
 				this.shadowLights.push(light);
+
+				this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 
 				this.oldClearColor.copy(renderer.clearColor);
 				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
