@@ -41,10 +41,10 @@ function(
 
 	MoveWithRotationAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent();
+		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 
-		var forward = new Vector3().copy(this.translation);
+		var forward = new Vector3().seta(this.translation);
 		var orientation = transform.rotation;
 		orientation.applyPost(forward);
 
