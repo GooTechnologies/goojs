@@ -1,13 +1,15 @@
 define( 
 	[ "goo/core/Collection",
 	  "goo/core/ProcessParameters",
+	  "goo/core/ProcessArguments",
 	  "goo/core/Scene",
+	  "goo/entities/Entity",
 	  "goo/renderer/Renderer",
 	  "goo/util/GameUtils",
 	  "goo/util/Logo",
 	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
 	  
-	function( Collection, ProcessParameters, Scene, Renderer, GameUtils, Logo, World ) {
+	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, World ) {
 
 		"use strict";
 
@@ -162,7 +164,7 @@ define(
 			collectionScenes.fromArray( this.scenes );
 			collection.clear();
 
-			ProcessParameters( this, arguments, function( goo, type, value ) {
+			ProcessArguments( this, arguments, function( goo, type, value ) {
 				if( type === ProcessParameters.STRING ) {
 					collection.add( collectionScenes.compare( "name", value ));
 				} else if( type === ProcessParameters.INSTANCE ) {
@@ -249,6 +251,21 @@ define(
 
 			this.rafId = window.requestAnimationFrame( this.process.bind( this ));
 		};
+
+		// REVIEW: to not demand users to use require (which honestly is a bit of hurdle) it might
+		// be a good thing to clutter the global scope with a "goo" namespace.
+
+		if( window.goo === undefined ) {
+			window.goo = {
+				Goo: Goo,
+				Scene: Scene,
+				Entity: Entity,
+				Collection: Collection,
+				Vector2: Vector2,
+				Vector3: Vector3,
+				Vector4: Vector4
+			}
+		}
 
 		return Goo;
 	}
