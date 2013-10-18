@@ -50,6 +50,7 @@ define([
 		ConfigHandler.apply(this, arguments);
 		this._skybox = null;
 		this._skyboxTexture = null;
+		this._skyboxGeographic = false;
 
 		this._composer = null;
 		this._passes = [];
@@ -64,15 +65,17 @@ define([
 			shape: 'Box',
 			imageUrls: ['','','','','',''],
 			rotation: 0,
-			environmentType: 0
+			environmentType: 1
 		});
 		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
 
-	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation) {
-		var skybox = new Skybox(shape, [], Sphere.TextureModes.Projected, rotation);
+
+	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation, mapping) {
+		var mapping = mapping ? Sphere.TextureModes.Projected : Sphere.TextureModes.Chromeball;
+		var skybox = new Skybox(shape, [], mapping, rotation);
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
 		skyboxEntity.transformComponent.updateWorldTransform();
@@ -86,15 +89,19 @@ define([
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
 			var imageUrls = skyboxConfig.imageUrls;
 			var type = (this._skybox) ? this._skybox.name.split('_')[1] : null;
-			if (!shape || type !== shape) {
+			if (!shape || type !== shape || type === 'sphere' && skyboxConfig.environmentType !== this._skyboxGeographic) {
 				if(this._skybox) {
 					this.world.getSystem('RenderSystem').removed(this._skybox);
 				}
-				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation);
+				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation, skyboxConfig.environmentType);
 				this._skyboxTexture = null;
 				type = shape;
+				this._skyboxGeographic = skyboxConfig.environmentType;
 			}
-			var xAngle = (type === Skybox.SPHERE) ? Math.PI / 2 : 0;
+			var xAngle = 0;
+			if (type === Skybox.SPHERE) {
+				xAngle = (skyboxConfig.environmentType) ? Math.PI / 2 : Math.PI;
+			}
 			this._skybox.transformComponent.transform.rotation.fromAngles(xAngle, rotation, 0);
 			this._skybox.transformComponent.updateTransform();
 			this._skybox.transformComponent.updateWorldTransform();
