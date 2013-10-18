@@ -190,5 +190,14 @@ function () {
 		return Math.abs(v1 - v2) <= tolerance;
 	};
 
+	/**
+	 * Returns the sign of the supplied parameter
+	 * @param value
+	 * @returns {number}
+	 */
+	MathUtils.sign = function(value) {
+		return value < 0 ? -1 : value > 0 ? 1 : 0;
+	};
+
 	return MathUtils;
 });

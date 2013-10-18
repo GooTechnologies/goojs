@@ -40,12 +40,12 @@ function (
 		this.camera = null;
 
 		this.gizmos = [
-			new TranslationGizmo(),
-			new RotationGizmo(),
-			new ScaleGizmo()
+			new TranslationGizmo(this),
+			new RotationGizmo(this),
+			new ScaleGizmo(this)
 		];
 		this.setupCallbacks(callbacks);
-		this.boundEntity = null;
+		//this.boundEntity = null; //unused
 		this.activeGizmo = null;
 		this.viewportWidth = 0;
 		this.viewportHeight = 0;
