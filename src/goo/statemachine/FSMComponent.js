@@ -1,13 +1,13 @@
 define([
 	'goo/entities/components/Component',
 	'goo/util/ArrayUtil',
-	'goo/entities/Bus'
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
 	Component,
 	ArrayUtil,
-	Bus
+	SystemBus
 ) {
 	'use strict';
 
@@ -17,7 +17,6 @@ function (
 	function FSMComponent() {
 		this.type = 'FSMComponent';
 
-		this._bus = new Bus();
 		this._machines = [];
 		this.entity = null;
 		this.vars = {};
@@ -61,11 +60,11 @@ function (
 		delete this.vars[name];
 	};
 
-	FSMComponent.applyToVariable = function (name, fun) {
+	FSMComponent.applyOnVariable = function (name, fun) {
 		if (this.vars[name]) {
 			this.vars[name] = fun(this.vars[name]);
 		} else if (FSMComponent.vars[name]) {
-			FSMComponent.vars[name] = fun(FSMComponent.vars[name]);
+			FSMComponent.applyOnVariable(name, fun);
 		}
 	};
 
@@ -80,6 +79,9 @@ function (
 		ArrayUtil.remove(this._machines, machine);
 	};
 
+	/**
+	 * Resets all state machines to their initial state
+	 */
 	FSMComponent.prototype.init = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
@@ -89,6 +91,9 @@ function (
 		}
 	};
 
+	/**
+	 * Updated the state machines
+	 */
 	FSMComponent.prototype.update = function () {
 		if (this.active) {
 			for (var i = 0; i < this._machines.length; i++) {
@@ -96,6 +101,22 @@ function (
 				machine.update();
 			}
 		}
+	};
+
+	/**
+	 * Stops updating the state machines
+	 */
+	FSMComponent.prototype.pause = function () {
+		this.active = false;
+		SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.pause');
+	};
+
+	/**
+	 * Resumes updating the state machines
+	 */
+	FSMComponent.prototype.play = function () {
+		this.active = true;
+		SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.play');
 	};
 
 	return FSMComponent;

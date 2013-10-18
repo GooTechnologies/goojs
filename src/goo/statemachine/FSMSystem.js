@@ -49,14 +49,23 @@ function (
 		fsmComponent.init();
 	};
 
+	/**
+	 * Stops updating the entities
+	 */
 	FSMSystem.prototype.pause = function() {
 		this.active = false;
 	};
 
+	/**
+	 * Resumes updating the entities
+	 */
 	FSMSystem.prototype.play = function() {
 		this.active = true;
 	};
 
+	/**
+	 * Stop updating entities and resets the state machines tot heir initial state
+	 */
 	FSMSystem.prototype.reset = function() {
 		this.resetRequest = true;
 		this.active = false;
