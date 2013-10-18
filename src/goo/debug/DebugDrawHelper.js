@@ -127,50 +127,5 @@ define([
 		transform.update();
 	};
 
-	var scaledLitShader = Util.clone(ShaderLib.simpleLit);
-	scaledLitShader.vshader = [
-		'attribute vec3 vertexPosition;',
-		'attribute vec3 vertexNormal;',
-
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
-
-		ShaderBuilder.light.prevertex,
-		'varying vec3 normal;',
-		'varying vec3 vWorldPos;',
-		'varying vec3 viewPosition;',
-
-		'void main(void) {',
-		' vec3 worldCenter = (worldMatrix * vec4(0.0,0.0,0.0,1.0)).xyz;',
-		' float scale = length(cameraPosition-worldCenter)/30.0;',
-		'	vec4 worldPos = worldMatrix * vec4(scale*vertexPosition, 1.0);',
-		' vWorldPos = worldPos.xyz;',
-		'	gl_Position = viewProjectionMatrix * worldPos;',
-
-			ShaderBuilder.light.vertex,
-
-		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-		'	viewPosition = cameraPosition - worldPos.xyz;',
-		'}'//
-	].join('\n');
-
-	var scaledColoredShader = Util.clone(ShaderLib.simpleColored);
-	scaledColoredShader.uniforms.cameraPosition = 'CAMERA';
-
-	scaledColoredShader.vshader = [
-		'attribute vec3 vertexPosition;',
-
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
-
-		'void main(void) {',
-		' vec3 worldCenter = (worldMatrix * vec4(0.0,0.0,0.0,1.0)).xyz;',
-		' float scale = length(cameraPosition-worldCenter)/30.0;',
-		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(scale*vertexPosition, 1.0);',
-		'}'//
-	].join('\n');
-
 	return DebugDrawHelper;
 });
