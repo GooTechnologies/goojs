@@ -23,8 +23,8 @@ function (
 		this._filter = null;
 		this.setFilter(filter, channelNames);
 
-		this._startTime = 0.5; //-Infinity
-		this._endTime = 1.5; //Infinity
+		this._startTime = -Infinity;
+		this._endTime = Infinity;
 	}
 
 	/**
