@@ -15,6 +15,8 @@ define([
 	RSVP,
 	_
 ) {
+	"use strict";
+
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

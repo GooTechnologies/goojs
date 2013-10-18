@@ -3,6 +3,8 @@
  * For documentation, see http://underscorejs.org. Gotta love open source.
  */
 define([], function() {
+	"use strict";
+
 	var _ = {};
 
 

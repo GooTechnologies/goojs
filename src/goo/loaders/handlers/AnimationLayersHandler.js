@@ -19,6 +19,8 @@ define([
 	PromiseUtil,
 	_
 ) {
+	"use strict";
+
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

@@ -17,6 +17,8 @@ define([
 	_,
 	StringUtil
 ) {
+	"use strict";
+
 	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

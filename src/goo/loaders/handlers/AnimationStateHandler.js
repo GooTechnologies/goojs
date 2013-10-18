@@ -17,6 +17,7 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
+	"use strict";
 
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);

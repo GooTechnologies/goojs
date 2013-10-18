@@ -12,6 +12,8 @@ function(
 	RSVP,
 	pu
 ) {
+	"use strict";
+
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

@@ -13,6 +13,8 @@ define([
 	_,
 	EntityUtils
 ) {
+	"use strict";
+
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

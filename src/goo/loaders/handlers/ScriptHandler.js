@@ -15,6 +15,8 @@ define([
 	BasicControlScript,
 	PromiseUtil
 ) {
+	"use strict";
+
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

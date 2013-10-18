@@ -39,6 +39,8 @@ define([
 	ArrayUtil,
 	_
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	/**
 	 * @class

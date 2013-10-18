@@ -19,7 +19,8 @@ define([
 	BloomPass,
 	_
 ) {
-	'use strict';
+	"use strict";
+
 	function PosteffectHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

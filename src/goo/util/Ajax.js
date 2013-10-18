@@ -1,10 +1,11 @@
 define([
-		'goo/util/rsvp'
-	],
-	/** @lends */
-	function(
-		RSVP
-	) {
+	'goo/util/rsvp'
+],
+/** @lends */
+function(
+	RSVP
+) {
+	"use strict";
 
 	/**
 	 * @class Subclass of Promise. Wrapper class around an XHR call.

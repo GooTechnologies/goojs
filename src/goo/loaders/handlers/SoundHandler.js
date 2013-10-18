@@ -9,7 +9,8 @@ define([
 	PromiseUtil,
 	_
 ) {
-	'use strict';
+	"use strict";
+
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

@@ -9,7 +9,8 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
-	'use strict';
+	"use strict";
+
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

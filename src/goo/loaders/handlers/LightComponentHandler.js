@@ -18,6 +18,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	pu,
 	_
 ) {
+	"use strict";
+
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

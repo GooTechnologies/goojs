@@ -13,6 +13,8 @@ define([
 		JsonUtils,
 		pu
 ) {
+	"use strict";
+
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

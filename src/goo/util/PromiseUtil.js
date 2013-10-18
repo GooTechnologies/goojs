@@ -3,6 +3,8 @@ define([
 ], function(
 	RSVP
 ) /* @lends */ {
+	"use strict";
+
 	var PromiseUtil = {};
 
 	/**

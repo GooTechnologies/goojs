@@ -21,6 +21,8 @@ define([
 	ru,
 	_
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	/*
 	 Options:

@@ -9,6 +9,7 @@ define([
 	Vector3,
 	MathUtils
 ) {
+	"use strict";
 
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
 	/**
