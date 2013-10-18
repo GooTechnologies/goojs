@@ -48,6 +48,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -80,6 +81,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(0);
@@ -115,6 +117,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// do update
 			fsmComponent.update();
@@ -150,6 +153,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -202,6 +206,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -254,6 +259,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -304,6 +310,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -368,6 +375,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -434,6 +442,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();

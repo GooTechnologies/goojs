@@ -37,7 +37,7 @@ function(
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
-			'default': true
+			'default': 1000
 		}, {
 			name: 'Easing',
 			key: 'easing_',
@@ -52,28 +52,45 @@ function(
 		}]
 	};
 
+	TweenMoveAction.prototype.configure = function(settings) {
+		this.to = settings.to;
+		this.relative = settings.relative;
+		this.time = settings.time;
+		//this.easing = 'linear';
+		this.eventToEmit = { channel: settings.transitions.complete };
+	};
+
 	TweenMoveAction.prototype._run = function(fsm) {
+		this.tween = new window.TWEEN.Tween();
+
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
 		var initialTranslation = new Vector3().copy(translation); // can tween.js tween over this type of object?
 
+		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
+		var fakeTo;
+
 		if (this.relative) {
-			var to = Vector3.add(initialTranslation).add(this.to);
-			this.tween.from(initialTranslation).to(to, this.time).easing(this.easing).onUpdate(function() {
+			var to = Vector3.add(initialTranslation, this.to);
+			fakeTo = { x: to.x, y: to.y, z: to.z };
+
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
 				translation.setd(this.x, this.y, this.z);
 				transformComponent.setUpdated();
 			}).onComplete(function() {
-				fsm.send(this.event);
-				console.log('complete:', this.event);
+				fsm.send(this.eventToEmit.channel);
+				console.log('complete:');
 			}.bind(this)).start();
 		} else {
-			this.tween.from(initialTranslation).to(this.to, this.time).easing(this.easing).onUpdate(function() {
+			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
+
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
 				translation.setd(this.x, this.y, this.z);
 				transformComponent.setUpdated();
 			}).onComplete(function() {
-				fsm.send(this.event);
-				console.log('complete:', this.event);
+				fsm.send(this.eventToEmit.channel);
+				console.log('complete:');
 			}.bind(this)).start();
 		}
 	};

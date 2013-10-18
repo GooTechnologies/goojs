@@ -22,8 +22,12 @@ function(
 		}]
 	};
 
+	TransitionAction.prototype.configure = function(settings) {
+		this.eventToEmit = { channel: settings.transitions.transition };
+	};
+
 	TransitionAction.prototype._run = function(fsm) {
-		fsm.send('transition');
+		fsm.send(this.eventToEmit.channel);
 	};
 
 	return TransitionAction;

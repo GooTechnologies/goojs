@@ -29,12 +29,23 @@ function (
 
 		if (this.resetRequest) {
 			this.resetRequest = false;
+			this.justReset = true;
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.init();
 			}
 		}
 		if (this.active) {
+			if (this.justReset) {
+				this.justReset = false;
+				for (var i = 0; i < entities.length; i++) {
+					fsmComponent = entities[i].fSMComponent;
+					fsmComponent.doEnter();
+				}
+			}
+
+			if (window.TWEEN) { window.TWEEN.update(); } // this should not stay here
+
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.update(tpf);

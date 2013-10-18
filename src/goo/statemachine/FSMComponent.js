@@ -87,6 +87,13 @@ function (
 			var machine = this._machines[i];
 			machine.setRefs(this);
 			machine.reset();
+			// machine.enter(); // needed ?
+		}
+	};
+
+	FSMComponent.prototype.doEnter = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			var machine = this._machines[i];
 			machine.enter();
 		}
 	};
