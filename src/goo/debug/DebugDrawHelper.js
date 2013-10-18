@@ -41,51 +41,37 @@ define([
 	var meshRendererDebug = new MeshRendererDebug();
 
 	DebugDrawHelper.getRenderablesFor = function(component) {
-		var meshes, materials;
+		var meshes, material;
 		if(component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light);
-			materials = [
-				Material.createMaterial(scaledColoredShader, 'ScaledDebugDrawLightMaterial'),
-				Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial')
-			];
-			if (component.light instanceof DirectionalLight) {
-				materials[1] = materials[0];
-			}
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
+
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera);
-			materials = [
-				Material.createMaterial(scaledLitShader, 'ScaledDebugDrawCameraMaterial'),
-				Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial')
-			];
+			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 
-			materials[0].uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
-			materials[0].uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
-			materials[0].uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
-			materials[1].uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
-			materials[1].uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
-			materials[1].uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
+			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
+			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
+			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
-			materials = [
-				Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial'),
-				null
-			];
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		}
 		return [
 		 {
 			 meshData: meshes[0],
 			 transform: new Transform(),
-			 materials: [materials[0]]
+			 materials: [material]
 		 },
 		 {
 			 meshData: meshes[1],
 			 transform: new Transform(),
-			 materials: [materials[1]]
+			 materials: [material]
 		 }
 		];
 	};
 
-	DebugDrawHelper.update = function(renderables, component, scale) {
+	DebugDrawHelper.update = function(renderables, component, camPosition) {
 		if(component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
 			if((camera.far / camera.near) !== renderables[1].farNear) {
@@ -96,10 +82,11 @@ define([
 		}
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
 		DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
-		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component, scale);
+		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
 
-		//renderables[0].transform.scale.scale(scale);
-		//renderables[0].transform.update();
+		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
+		renderables[0].transform.scale.scale(scale);
+		renderables[0].transform.update();
 	};
 
 	DebugDrawHelper.LightComponent = {};

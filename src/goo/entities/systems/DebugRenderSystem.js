@@ -89,7 +89,7 @@ function (
 					}
 					renderables[0].transform.copy(entity.transformComponent.worldTransform);
 					renderables[1].transform.copy(entity.transformComponent.worldTransform);
-					DebugDrawHelper.update(renderables, component, this.scale);
+					DebugDrawHelper.update(renderables, component, this.camera.translation);
 					this.renderList[count++] = renderables[0];
 					this.renderList[count++] = renderables[1];
 				}
