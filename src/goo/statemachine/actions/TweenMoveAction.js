@@ -77,7 +77,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation); // can tween.js tween over this type of object?
+		var initialTranslation = new Vector3().copy(translation);
 
 		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
 		var fakeTo;
