@@ -11,9 +11,6 @@ function(
 
 	function TweenMoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.easing = window.TWEEN.Easing.Elastic.InOut;
-		this.tween = new window.TWEEN.Tween();
 	}
 
 	TweenMoveAction.prototype = Object.create(Action.prototype);
@@ -39,12 +36,19 @@ function(
 			description: 'Time it takes for this movement to complete',
 			'default': 1000
 		}, {
-			name: 'Easing',
-			key: 'easing_',
-			type: '[linear, exponential.in, exponential.out, exponential.inout, back.in, back.out, back.inout]', // there are 31 in total
-			// proposed: linear, sinusoidal, exponential, circular, back, elastic, bounce.out
-			description: 'Easting type',
-			'default': 'linear'
+			name: 'Easing 1',
+			key: 'easing1',
+			type: 'dropdown',
+			description: 'Easing 1',
+			'default': 'Linear',
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+		}, {
+			name: 'Easing 2',
+			key: 'easing2',
+			type: 'dropdown',
+			description: 'Easing 2',
+			'default': 'In',
+			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
@@ -57,13 +61,19 @@ function(
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
-		//this.easing = 'linear';
+		if (settings.easing1 === 'Linear') {
+			this.easing = window.TWEEN.Easing.Linear.None;
+		} else {
+			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenMoveAction.prototype._run = function(fsm) {
+	TweenMoveAction.prototype._setup = function() {
 		this.tween = new window.TWEEN.Tween();
+	};
 
+	TweenMoveAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -81,7 +91,6 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-				console.log('complete:');
 			}.bind(this)).start();
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
@@ -91,7 +100,6 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-				console.log('complete:');
 			}.bind(this)).start();
 		}
 	};
