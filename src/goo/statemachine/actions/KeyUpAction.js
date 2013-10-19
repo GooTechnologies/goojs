@@ -30,7 +30,8 @@ function(
 			description: 'Key to listen for'
 		}],
 		transitions: [{
-			name: 'keyup',
+			key: 'keyup',
+			name: 'Key up',
 			description: 'Fired on key up'
 		}]
 	};

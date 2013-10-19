@@ -47,7 +47,8 @@ function(
 			'default': 'linear'
 		}],
 		transitions: [{
-			name: 'complete',
+			key: 'complete',
+			name: 'On Completion',
 			description: 'Event fired when the movement completes'
 		}]
 	};

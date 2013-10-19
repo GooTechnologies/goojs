@@ -42,6 +42,7 @@ function(
 			var keyname = ArrowsAction._keys[keycode];
 			transitions.push({
 				name: keyname,
+				key: keyname,
 				description: "Key '" + keyname + "' pressed"
 			});
 		}

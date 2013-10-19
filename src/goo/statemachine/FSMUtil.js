@@ -26,7 +26,7 @@ function() {
 	FSMUtil.setTransitions = function (settings, externalTransitions) {
 		for (var i = 0; i < externalTransitions.length; i++) {
 			var externalTransition = externalTransitions[i];
-			var key = externalTransition.name;
+			var key = externalTransition.key;
 
 			this.transitions = this.transitions || {};
 			this.transitions[key] = settings.transitions[key];

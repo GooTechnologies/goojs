@@ -26,7 +26,8 @@ function(Action) {
 			"default": 5
 		}],
 		transitions: [{
-			name: 'TimeUp',
+			key: 'timeUp',
+			name: 'Time up',
 			description: 'Fired on time up'
 		}]
 	};
@@ -38,7 +39,7 @@ function(Action) {
 	WaitAction.prototype._run = function(fsm) {
 		this.currentTime += fsm.getTpf() * this.increment;
 		if (this.currentTime >= this.waitTime) {
-			fsm.send(this.transitions.TimeUp);
+			fsm.send(this.transitions.timeUp);
 		}
 	};
 

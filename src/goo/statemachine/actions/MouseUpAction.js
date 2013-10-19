@@ -23,7 +23,8 @@ function(
 	MouseUpAction.external = {
 		parameters: [],
 		transitions: [{
-			name: 'mouseup',
+			key: 'mouseup',
+			name: 'Mouse up',
 			description: 'Fired on mouse up'
 		}]
 	};
