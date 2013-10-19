@@ -29,10 +29,10 @@ function(
 			'default': true
 		}],
 		transitions: [{
-			name: 'in',
+			name: 'inside',
 			description: 'State to transition to if entity is in frustum'
 		}, {
-			name: 'out',
+			name: 'outside',
 			description: 'State to transition to if entity is out of frustum'
 		}]
 	};
@@ -40,9 +40,9 @@ function(
 	InFrustumAction.prototype._run = function(fsm) {
 		if (this.observedEntity) {
 		    if (this.observedEntity.isVisible) {
-				fsm.send('in');
+				fsm.send(this.transitions.inside);
 			} else {
-				fsm.send('out');
+				fsm.send(this.transitions.outside);
 			}
 		}
 	};

@@ -52,7 +52,7 @@ define([
 
 	'goo/statemachine/actions/HideAction',
 	'goo/statemachine/actions/ShowAction',
-	// 'goo/statemachine/actions/RemoveAction',
+	'goo/statemachine/actions/RemoveAction',
 	'goo/statemachine/actions/AddLightAction',
 	'goo/statemachine/actions/RemoveLightAction',
 
@@ -74,7 +74,7 @@ define([
 	'goo/statemachine/actions/ResumeAnimationAction',
 	'goo/statemachine/actions/SetAnimationAction',
 
-//	'goo/statemachine/actions/MouseUpAction',
+	'goo/statemachine/actions/MouseUpAction',
 	'goo/statemachine/actions/MouseDownAction',
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/KeyDownAction',

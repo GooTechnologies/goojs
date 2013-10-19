@@ -42,9 +42,7 @@ function(
 	KeyUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.transitions.keyup) {
-				fsm.send(this.transitions.keyup);
-			}
+			fsm.send(this.transitions.keyup);
 		}
 	};
 

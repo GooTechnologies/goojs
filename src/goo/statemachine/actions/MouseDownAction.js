@@ -10,6 +10,7 @@ function(
 	function MouseDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(/*event*/) {
 			this.updated = true;
@@ -17,16 +18,12 @@ function(
 	}
 
 	MouseDownAction.prototype = Object.create(Action.prototype);
-
-	MouseDownAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.click };
-	};
+	MouseDownAction.prototype.constructor = MouseDownAction;
 
 	MouseDownAction.external = {
 		parameters: [],
 		transitions: [{
-			name: 'click',
+			name: 'mousedown',
 			description: 'Fired on mouse down'
 		}]
 	};
@@ -38,9 +35,7 @@ function(
 	MouseDownAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.mousedown);
 		}
 	};
 

@@ -64,7 +64,7 @@ function(
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
-					fsm.send(target, {});
+					fsm.send(target);
 				}
 			}
 			this.keysPressed = [];

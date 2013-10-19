@@ -31,12 +31,14 @@ function (
 				return this._fsm.entity;
 			}.bind(this),
 			send: function (channels, data) {
-				if (typeof channels === 'string' && this._transitions[channels]) {
-					this.requestTransition(this._transitions[channels]);
+				if (channels) {
+					if (typeof channels === 'string' && this._transitions[channels]) {
+						this.requestTransition(this._transitions[channels]);
+					}
+					/*else {
+					 this._fsm._bus.emit(channels, data);
+					 }*/
 				}
-				/*else {
-				 this._fsm._bus.emit(channels, data);
-				 }*/
 			}.bind(this),
 			addListener: function (channelName, callback) {
 				this._fsm._bus.addListener(channelName, callback);

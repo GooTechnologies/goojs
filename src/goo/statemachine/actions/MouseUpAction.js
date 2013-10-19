@@ -10,6 +10,7 @@ function(
 	function MouseUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(/*event*/) {
 			this.updated = true;
@@ -17,16 +18,12 @@ function(
 	}
 
 	MouseUpAction.prototype = Object.create(Action.prototype);
-
-	MouseUpAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.click };
-	};
+	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
 		parameters: [],
 		transitions: [{
-			name: 'click',
+			name: 'mouseup',
 			description: 'Fired on mouse up'
 		}]
 	};
@@ -38,9 +35,7 @@ function(
 	MouseUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.mouseup);
 		}
 	};
 

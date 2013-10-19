@@ -42,9 +42,7 @@ function(
 	KeyDownAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.transitions.keydown) {
-				fsm.send(this.transitions.keydown);
-			}
+			fsm.send(this.transitions.keydown);
 		}
 	};
 

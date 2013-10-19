@@ -27,7 +27,7 @@ function(
 
 	RemoveAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.remove(this.recursive);
+		entity.removeFromWorld(this.recursive);
 	};
 
 	return RemoveAction;

@@ -39,7 +39,7 @@ function(
 			description: 'Event fired if the entity is inside the box'
 		}, {
 			name: 'outside',
-			description: 'Event fired if the entity is ouside the box'
+			description: 'Event fired if the entity is outside the box'
 		}]
 	};
 
@@ -48,9 +48,9 @@ function(
 		var translation = entity.transformComponent.worldTransform.translation;
 		if (translation.data[0] > this.point1[0] && translation.data[1] > this.point1[1] && translation.data[2] > this.point1[2] &&
 			translation.data[0] < this.point2[0] && translation.data[1] < this.point2[1] && translation.data[2] < this.point2[2]) {
-			fsm.send(this.inside);
+			fsm.send(this.transitions.inside);
 		} else {
-			fsm.send(this.outside);
+			fsm.send(this.transitions.outside);
 		}
 	};
 
