@@ -1,34 +1,26 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil
+	Action
 ) {
 	"use strict";
 
 	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (!this.key || event.which === this.key) {
+			if (!this.key || event.which === +this.key) {
 				this.updated = true;
 			}
 		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
-
-	KeyUpAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.keyup };
-		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		this.keyVariable = settings.keyVariable;
-	};
+	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
 		parameters: [{
@@ -50,8 +42,8 @@ function(
 	KeyUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
+			if (this.transitions.keyup) {
+				fsm.send(this.transitions.keyup);
 			}
 		}
 	};

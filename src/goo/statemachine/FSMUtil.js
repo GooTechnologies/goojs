@@ -23,6 +23,16 @@ function() {
 		}
 	};
 
+	FSMUtil.setTransitions = function (settings, externalTransitions) {
+		for (var i = 0; i < externalTransitions.length; i++) {
+			var externalTransition = externalTransitions[i];
+			var key = externalTransition.name;
+
+			this.transitions = this.transitions || {};
+			this.transitions[key] = settings.transitions[key];
+		}
+	};
+
 	FSMUtil.getKey = function (str) {
 		if (FSMUtil.keys[str]) {
 			return FSMUtil.keys[str];
