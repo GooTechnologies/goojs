@@ -82,6 +82,7 @@ define([
 			object.blendState = Util.clone(config.blendState);
 			object.cullState = Util.clone(config.cullState);
 			object.depthState = Util.clone(config.depthState);
+			object.dualTransparency = config.dualTransparency || false;
 			if (config.renderQueue === -1) {
 				object.renderQueue = null;
 			} else {
