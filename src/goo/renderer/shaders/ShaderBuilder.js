@@ -32,6 +32,9 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
+	ShaderBuilder.USE_FOG = false;
+	ShaderBuilder.FOG_SETTINGS = [0, 10000];
+	ShaderBuilder.FOG_COLOR = [1, 1, 1];
 
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
@@ -51,10 +54,6 @@ function(
 			} else {
 				shaderInfo.material.removeTexture('ENVIRONMENT_SPHERE');
 			}
-
-			// discard
-
-			// fog
 
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
@@ -101,6 +100,22 @@ function(
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
 					delete shader.defines[attribute];
 				}
+			}
+
+			// discard
+			if (shaderInfo.material.uniforms.discardThreshold >= 0.0) {
+				shader.defines.DISCARD = true;
+			} else {
+				delete shader.defines.DISCARD;
+			}
+
+			// fog
+			if (ShaderBuilder.USE_FOG) {
+				shader.defines.FOG = true;
+				shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+				shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+			} else {
+				delete shader.defines.FOG;
 			}
 
 			shader.defines.SKIP_SPECULAR = true;

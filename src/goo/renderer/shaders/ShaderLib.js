@@ -57,7 +57,7 @@ define([
 			opacity: 1.0,
 			reflectivity: 1.0,
 			fresnel: 1.0,
-			discardThreshold: 0.0,
+			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
 			fogColor: [1, 1, 1]
 	    },
