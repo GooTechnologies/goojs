@@ -68,6 +68,7 @@ define([
 			environmentType: 1
 		});
 		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
+		config.globalAmbient = config.globalAmbient || [0, 0, 0];
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
@@ -326,6 +327,7 @@ define([
 			if (that._composer) {
 				that._composer.setClearColor(config.backgroundColor);
 			}
+			ShaderBuilder.GLOBAL_AMBIENT = config.globalAmbient;
 			return results;
 		});
 	};

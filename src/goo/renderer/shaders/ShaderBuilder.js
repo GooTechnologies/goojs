@@ -31,6 +31,7 @@ function(
 	ShaderBuilder.SKYBOX = null;
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
+	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
 
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
@@ -118,7 +119,7 @@ function(
 			shader.uniforms.materialDiffuse = shader.uniforms.materialDiffuse || 'DIFFUSE';
 			shader.uniforms.materialSpecular = shader.uniforms.materialSpecular || 'SPECULAR';
 			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
-			shader.uniforms.globalAmbient = shader.uniforms.globalAmbient || [0, 0, 0];
+			shader.uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
 			var pointCount = 0;
 			shader.uniforms.pointLightColor = shader.uniforms.pointLightColor || [];
