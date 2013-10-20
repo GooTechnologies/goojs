@@ -56,7 +56,10 @@ define([
 			transparencyMap : 'TRANSPARENCY_MAP',
 			opacity: 1.0,
 			reflectivity: 1.0,
-			fresnel: 1.0
+			fresnel: 1.0,
+			discardThreshold: 0.0,
+			fogSettings: [0, 10000],
+			fogColor: [1, 1, 1]
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -178,6 +181,14 @@ define([
 			'#endif',
 
 			'uniform float opacity;',
+			'#ifdef DISCARD',
+				'uniform float discardThreshold;',
+			'#endif',
+
+			'#ifdef FOG',
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
+			'#endif',
 
 			'varying vec3 vWorldPos;',
 			'varying vec3 viewPosition;',
@@ -210,6 +221,15 @@ define([
 
 				'#ifdef COLOR',
 					'final_color *= color;',
+				'#endif',
+
+				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
+					'final_color.a *= texture2D(transparencyMap, texCoord0).r;',
+				'#endif',
+				'final_color.a *= opacity;',
+
+				'#ifdef DISCARD',
+					'if (final_color.a < discardThreshold) discard;',
 				'#endif',
 
 				'#ifdef AO_MAP',
@@ -246,11 +266,6 @@ define([
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
 					'final_color.rgb += final_color.rgb * emissive;',
 				'#endif',
-
-				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
-					'final_color.a *= texture2D(transparencyMap, texCoord0).r;',
-				'#endif',
-				'final_color.a *= opacity;',
 
 				'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
 
@@ -296,6 +311,16 @@ define([
 					'reflectionAmount *= fresnelVal;',
 
 					'final_color = mix(final_color, environment, reflectionAmount);',
+				'#endif',
+
+				'#ifndef LIGHT_MAP',
+					'final_color.rgb += totalSpecular;',
+					'final_color.a += min(length(totalSpecular), 1.0);',
+				'#endif',
+
+				'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 				'#endif',
 
 				'gl_FragColor = final_color;',

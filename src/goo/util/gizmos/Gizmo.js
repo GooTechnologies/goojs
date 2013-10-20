@@ -232,7 +232,7 @@ define([
 			'}'//
 		].join('\n'),
 		fshader : [//
-			ShaderBuilder.light.prefragment,
+			// ShaderBuilder.light.prefragment,
 
 			'varying vec3 normal;',
 			'varying vec3 viewPosition;',

@@ -41,10 +41,19 @@ function(
 
 			if (ShaderBuilder.SKYBOX) {
 				shaderInfo.material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
-			} else if (ShaderBuilder.SKYSPHERE) {
+			} else {
+				shaderInfo.material.removeTexture('ENVIRONMENT_CUBE');
+			}
+			if (ShaderBuilder.SKYSPHERE) {
 				shaderInfo.material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+			} else {
+				shaderInfo.material.removeTexture('ENVIRONMENT_SPHERE');
 			}
+
+			// discard
+
+			// fog
 
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
@@ -93,6 +102,8 @@ function(
 				}
 			}
 
+			shader.defines.SKIP_SPECULAR = true;
+
 			//TODO: Hacky?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
@@ -107,6 +118,7 @@ function(
 			shader.uniforms.materialDiffuse = shader.uniforms.materialDiffuse || 'DIFFUSE';
 			shader.uniforms.materialSpecular = shader.uniforms.materialSpecular || 'SPECULAR';
 			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
+			shader.uniforms.globalAmbient = shader.uniforms.globalAmbient || [0, 0, 0];
 
 			var pointCount = 0;
 			shader.uniforms.pointLightColor = shader.uniforms.pointLightColor || [];
@@ -268,6 +280,8 @@ function(
 			'uniform vec4 materialDiffuse;',
 			'uniform vec4 materialSpecular;',
 			'uniform float materialSpecularPower;',
+
+			'uniform vec3 globalAmbient;',
 
 			'#ifndef MAX_DIRECTIONAL_LIGHTS',
 				'#define MAX_DIRECTIONAL_LIGHTS 0',
@@ -485,8 +499,8 @@ function(
 			// 	'final_color.rgb *= texture2D(normalMap, depth.xy).rgb;',
 			// '}',
 
-			'float shadow = 1.0;',
 			"#if MAX_SHADOWS > 0",
+				'float shadow = 1.0;',
 				'for (int i = 0; i < MAX_SHADOWS; i++) {',
 					'vec3 depth = shadowLightDepths[i].xyz / shadowLightDepths[i].w;',
 					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScales[i];',
@@ -539,14 +553,15 @@ function(
 					'}',
 				'}',
 				'shadow = clamp(shadow, 0.0, 1.0);',
+				'totalDiffuse *= shadow;',
+				'totalSpecular *= shadow;',
 			'#endif',
 
-			"vec3 ambientLightColor = vec3(1.0, 1.0, 1.0);",
-			"#ifdef METAL",
-				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb + totalSpecular * shadow);",
-			"#else",
-				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb) + totalSpecular * shadow;",
-			"#endif"
+			'#ifdef SKIP_SPECULAR',
+				'final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + globalAmbient + materialAmbient.rgb);',
+			'#else',
+				'final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + globalAmbient + materialAmbient.rgb) + totalSpecular;',
+			'#endif'
 		].join('\n')
 	};
 
