@@ -69,6 +69,10 @@ define([
 		});
 		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
 		config.globalAmbient = config.globalAmbient || [0, 0, 0];
+		config.useFog = config.useFog || false;
+		config.fogColor = config.fogColor || [1, 1, 1];
+		config.fogNear = config.fogNear || 0;
+		config.fogFar = config.fogFar || 10000;
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
@@ -327,7 +331,13 @@ define([
 			if (that._composer) {
 				that._composer.setClearColor(config.backgroundColor);
 			}
+
 			ShaderBuilder.GLOBAL_AMBIENT = config.globalAmbient;
+
+			ShaderBuilder.USE_FOG = config.useFog;
+			ShaderBuilder.FOG_SETTINGS = [config.fogNear, config.fogFar];
+			ShaderBuilder.FOG_COLOR = config.fogColor;
+
 			return results;
 		});
 	};
