@@ -381,10 +381,10 @@ function (
 		var adjustWidth = this.domElement.offsetWidth / this.downScale;
 		var adjustHeight = this.domElement.offsetHeight / this.downScale;
 		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
-			//this.setSize(adjustWidth, adjustHeight);
+			this.setSize(window.innerWidth, window.innerHeight);
 		}
 
-		var aspect = this.domElement.width / this.domElement.height;
+		var aspect = window.innerWidth / window.innerHeight;
 		if (camera && camera.aspect !== aspect) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
