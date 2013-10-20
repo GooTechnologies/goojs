@@ -500,6 +500,7 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		var IDENTITY_MATRIX = new Matrix4x4();
+		var tmpMatrix = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
@@ -512,6 +513,11 @@ function (
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			tmpMatrix.copy(matrix).invert();
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
@@ -628,6 +634,7 @@ function (
 	Shader.VIEW_PROJECTION_MATRIX = 'VIEW_PROJECTION_MATRIX';
 	Shader.VIEW_PROJECTION_INVERSE_MATRIX = 'VIEW_PROJECTION_INVERSE_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
+	Shader.NORMAL_MATRIX = 'NORMAL_MATRIX';
 	for (var i = 0; i < 8; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}

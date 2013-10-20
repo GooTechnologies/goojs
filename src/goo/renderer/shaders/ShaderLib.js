@@ -40,6 +40,7 @@ define([
 	    uniforms: {
 	        viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 	        worldMatrix: Shader.WORLD_MATRIX,
+	        normalMatrix: Shader.NORMAL_MATRIX,
 	        cameraPosition: Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			offsetRepeat : [0,0,1,1],
@@ -81,6 +82,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
+			'uniform mat4 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -102,6 +104,9 @@ define([
 
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
+				'#ifdef NORMAL',
+					'mat4 nMatrix = normalMatrix;',
+				'#endif',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
 				'vWorldPos = worldPos.xyz;',
@@ -110,10 +115,10 @@ define([
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((wMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((wMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -209,17 +214,17 @@ define([
 
 				'#ifdef AO_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color *= texture2D(aoMap, texCoord1);',
+						'final_color.rgb *= texture2D(aoMap, texCoord1).rgb;',
 					'#elif TEXCOORD0',
-						'final_color *= texture2D(aoMap, texCoord0);',
+						'final_color.rgb *= texture2D(aoMap, texCoord0).rgb;',
 					'#endif',
 				'#endif',
 
 				'#ifdef LIGHT_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color *= texture2D(lightMap, texCoord1) * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0 - 0.5;',
 					'#elif TEXCOORD0',
-						'final_color *= texture2D(lightMap, texCoord0) * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0 - 0.5;',
 					'#endif',
 				'#else',
 					'#if defined(TANGENT) && defined(NORMAL_MAP) && defined(TEXCOORD0)',
@@ -239,7 +244,7 @@ define([
 
 				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
-					'final_color.xyz += final_color.xyz * emissive;',
+					'final_color.rgb += final_color.rgb * emissive;',
 				'#endif',
 
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',

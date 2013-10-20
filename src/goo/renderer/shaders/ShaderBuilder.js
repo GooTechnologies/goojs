@@ -304,12 +304,13 @@ function(
 				"#endif",
 
 				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
-				'uniform vec2 shadowMapSizes[MAX_SHADOWS];',
 				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
 				'uniform float cameraScales[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
-				'#if SHADOW_TYPE == 2', // VSM
+				'#if SHADOW_TYPE == 1', // PCF
+					'uniform vec2 shadowMapSizes[MAX_SHADOWS];',
+				'#elif SHADOW_TYPE == 2', // VSM
 					'float ChebychevInequality(in vec2 moments, in float t) {',
 						'if ( t <= moments.x ) return 1.0;',
 						'float variance = moments.y - (moments.x * moments.x);',
@@ -480,6 +481,10 @@ function(
 				"totalSpecular += spotSpecular;",
 			"#endif",
 
+			// 'if (shadowLightDepths[i].w > 0.0) {',
+			// 	'final_color.rgb *= texture2D(normalMap, depth.xy).rgb;',
+			// '}',
+
 			'float shadow = 1.0;',
 			"#if MAX_SHADOWS > 0",
 				'for (int i = 0; i < MAX_SHADOWS; i++) {',
@@ -637,6 +642,9 @@ function(
 			') * vertexWeights.w;',
 
 			'wMatrix = wMatrix * mat / mat[3][3];',
+			'#ifdef NORMAL',
+				'nMatrix = nMatrix * mat / mat[3][3];',
+			'#endif',
 			'#endif'
 		].join('\n')
 	};
