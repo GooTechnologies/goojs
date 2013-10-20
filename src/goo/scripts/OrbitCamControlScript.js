@@ -233,6 +233,8 @@ function (
 		}, false);
 
 		document.addEventListener('mousemove', function (event) {
+			
+
 			that.updateDeltas(event.clientX, event.clientY);
 		}, false);
 
@@ -259,6 +261,8 @@ function (
 			});
 
 			hammertime.on('touch drag transform release', function (ev) {
+				if(ev.gesture.center.pageX < 500) return; // FIX for pearlboy
+
 				switch (ev.type) {
 					case 'transform':
 						var scale = ev.gesture.scale;
@@ -275,6 +279,7 @@ function (
 						that.updateButtonState(0, false);
 						break;
 					case 'drag':
+						console.log("uodateDeltas" + ev.gesture.center.pageY)
 						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
 						break;
 				}

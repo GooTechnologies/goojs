@@ -36,7 +36,7 @@ define(['goo/math/Vector2'],
 		this.type = options.type !== undefined ? options.type : 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
+		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : false;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
 
 		this.generateMipmaps = false; // TODO: fix mipmap case

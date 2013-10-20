@@ -27,6 +27,7 @@ function() {
 	 * @param {string} [properties.height]
 	 */
 	Logo.getLogo = function(properties) {
+		return;
 		properties = properties || {};
 		for (var key in defaults) {
 			if(properties[key] === undefined) {
@@ -43,8 +44,7 @@ function() {
 		svg.setAttribute('viewBox', '0 0 396.603 277.343');
 		svg.setAttribute('enable-background', 'new 0 0 396.603 277.343');
 		svg.setAttribute('xml:space', 'preserve');
-
-
+		
 		if(properties.width) {
 			svg.setAttribute('width', properties.width);
 		}
