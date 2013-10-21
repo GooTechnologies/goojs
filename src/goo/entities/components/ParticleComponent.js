@@ -35,6 +35,7 @@ function (
 	 * @param {number} [settings.particleCount=100]
 	 */
 	function ParticleComponent (settings) {
+		Component.call( this );
 		this.type = 'ParticleComponent';
 
 		Component.call(this);
@@ -57,6 +58,10 @@ function (
 		this.recreateParticles(particleCount);
 
 		this.enabled = true;
+
+		this.api = {
+			'particleComponent': this
+		};
 	}
 
 	ParticleComponent.prototype = Object.create(Component.prototype);

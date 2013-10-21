@@ -1,6 +1,6 @@
 define(
-	[ "goo/core/Collection",
-	  "goo/core/ProcessArguments",
+	[ "goo/entities/Collection",
+	  "goo/util/ProcessArguments",
 	  "goo/entities/components/TransformComponent" ],
 	function( Collection, ProcessArguments, TransformComponent ) {
 		"use strict";

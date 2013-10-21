@@ -57,9 +57,9 @@ define(['goo/entities/components/Component'],
 		*/
 
 		this.api = {
-			"meshRendererComponent"	: this,
-			"materials"				: this.materials
-		}
+			'meshRendererComponent'	: this,
+			'materials'				: this.materials
+		};
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);

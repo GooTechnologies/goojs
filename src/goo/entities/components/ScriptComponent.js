@@ -9,6 +9,7 @@ function(Component) {
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
 	 */
 	function ScriptComponent(scripts) {
+		Component.call( this );
 		this.type = 'ScriptComponent';
 
 		if (scripts instanceof Array) {
@@ -20,6 +21,10 @@ function(Component) {
 			 * @type {Array}
 			 */
 			this.scripts = [];
+		}
+
+		this.api = {
+			'scriptComponent': this
 		}
 	}
 

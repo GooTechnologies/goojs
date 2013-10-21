@@ -1,6 +1,6 @@
 define( [
-	'goo/core/Collection',
-	'goo/core/ProcessArguments',
+	'goo/entities/Collection',
+	'goo/util/ProcessArguments',
 	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
@@ -220,6 +220,7 @@ define( [
 			// REVIEW: should we always return a collection for simplicity?
 			return collection.orFirst();
 		};
+
 
 
 		Scene.prototype.hasEntity = function( entity ) {

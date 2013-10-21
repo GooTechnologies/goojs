@@ -17,6 +17,9 @@ define([
 		this.domElement = domElement;
 		this.scale = 1;
 		this.faceCamera = (typeof faceCamera === 'undefined') ? false : faceCamera;
+		this.api = {
+			'CSSTransformComponent': this
+		};
 	}
 
 	CSSTransformComponent.prototype = Object.create(Component.prototype);

@@ -16,8 +16,13 @@ define([
 	*	@property {MeshData} meshData The triangle occluder geometry.
 	*/
 	function OccluderComponent(meshData) {
+		Component.call( this );
 		this.type = 'OccluderComponent';
 		this.meshData = meshData;
+
+		api = {
+			'occluderComponent': this
+		};
 	}
 
 	OccluderComponent.prototype = Object.create(Component.prototype);

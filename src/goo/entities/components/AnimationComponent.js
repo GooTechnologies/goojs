@@ -21,6 +21,7 @@ function (
 	 * @class Holds the animation data.
 	 */
 	function AnimationComponent(pose) {
+		Component.call( this );
 		/**
 		 * @type {string}
 		 * @readonly
@@ -45,6 +46,12 @@ function (
 		this.paused = false;
 		this.lastTimeOfPause = null;
 		this.accumulatedDelay = 0;
+
+		// api
+
+		this.api = {
+			'animationComponent': this
+		};
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);

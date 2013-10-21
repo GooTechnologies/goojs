@@ -21,6 +21,7 @@ function(
 	 * @constructor
 	 */
 	function PortalComponent(camera, height, options, overrideMaterial) {
+		Component.call( this );
 		height = height || 200;
 
 		this.options = options || {};
@@ -40,6 +41,10 @@ function(
 
 		if(this.options.preciseRecursion) {
 			this.secondaryTarget = new RenderTarget(height, height / aspect);
+		}
+
+		this.api = {
+			'portalComponent': this
 		}
 	}
 

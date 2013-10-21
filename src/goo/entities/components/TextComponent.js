@@ -8,10 +8,15 @@ function(
 	"use strict";
 
 	function TextComponent(text) {
+		Component.call( this );
 		this.type = 'TextComponent';
 
 		this.text = text || '';
 		this.dirty = true;
+
+		this.api = {
+			'textComponent': this
+		};
 	}
 
 	TextComponent.prototype = Object.create(Component.prototype);

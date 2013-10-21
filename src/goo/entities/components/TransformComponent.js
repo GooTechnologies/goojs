@@ -1,6 +1,6 @@
 define( 
 	[ "goo/entities/components/Component",
-	  "goo/core/Collection",
+	  "goo/entities/Collection",
 	  "goo/math/Transform" ],
 
 	function( Component, Collection, Transform ) {
@@ -20,18 +20,18 @@ define(
 			this.worldTransform = new Transform();
 
 			this.api = {
-				"transformComponent" 	: this,
-				"position" 				: this.transform.translation,
-				"rotation" 				: this.transform.rotation,
-				"scale"      		   	: this.transform.scale,
-				"setParent" 			: this.setParent.bind( this ),
-				"getParent" 			: this.getParent.bind( this ),
-				"addChild" 				: this.attachChild.bind( this ),
-				"removeChild" 			: this.detachChild.bind( this ),
-				"getChild" 				: this.getChild.bind( this ),
-				"getChildren" 			: this.getChildren.bind( this ),
-				"hasChildren" 		    : this.hasChildren.bind( this ),
-				"setPosition" 			: this.setTranslation.bind( this )
+				'transformComponent' 	: this,
+				'position' 				: this.transform.translation,
+				'rotation' 				: this.transform.rotation,
+				'scale'      		   	: this.transform.scale,
+				'setParent' 			: this.setParent.bind( this ),
+				'getParent' 			: this.getParent.bind( this ),
+				'addChild' 				: this.attachChild.bind( this ),
+				'removeChild' 			: this.detachChild.bind( this ),
+				'getChild' 				: this.getChild.bind( this ),
+				'getChildren' 			: this.getChildren.bind( this ),
+				'hasChildren' 		    : this.hasChildren.bind( this ),
+				'setPosition' 			: this.setTranslation.bind( this )
 			};
 
 			// REVIEW: shouldn't these be moved into Transform?

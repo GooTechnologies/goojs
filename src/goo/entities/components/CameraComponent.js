@@ -38,10 +38,10 @@ function (
 		this.dirVec  = new Vector3(0, 0, -1);
 
 		this.api = {
-			"cameraComponent" 		: this,
-			"setProjectionMode" 	: this.camera.setProjectionMode.bind( this.camera ),
-			"setFrustumPerspective"	: this.camera.setFrustumPerspective.bind( this.camera ),
-			"lookAt" 				: this.camera.lookAt.bind( this.camera )
+			'cameraComponent' 		: this,
+			'setProjectionMode' 	: this.camera.setProjectionMode.bind( this.camera ),
+			'setFrustumPerspective'	: this.camera.setFrustumPerspective.bind( this.camera ),
+			'lookAt' 				: this.camera.lookAt.bind( this.camera )
 		};
 	}
 

@@ -35,8 +35,8 @@ function (
 		this.currentPose = null;
 
 		this.api = {
-			"meshDataComponent": this
-		}
+			'meshDataComponent': this
+		};
 	}
 
 	MeshDataComponent.prototype = Object.create(Component.prototype);

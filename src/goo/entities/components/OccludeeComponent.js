@@ -14,6 +14,7 @@ define([
 		 * @constructor
 		 */
 		function OccludeeComponent(meshData, useBoundingBox) {
+			Component.call( this );
 			this.type = 'OccludeeComponent';
 
 			if (useBoundingBox === true){
@@ -47,6 +48,10 @@ define([
 					x, -y, -z, 1.0
 				]);
 			}
+
+			this.api = {
+				'occludeeComponent': this
+			};
 		}
 
 		OccludeeComponent.prototype = Object.create(Component.prototype);
