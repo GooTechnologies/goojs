@@ -1204,7 +1204,9 @@ define([
 
 		"void main() {",
 		"	vec4 cTextureScreen = texture2D( tDiffuse, texCoord0 );",
-		"	float x = texCoord0.x * texCoord0.y * time * 1000.0;", "x = mod( x, 13.0 ) * mod( x, 123.0 );", "float dx = mod( x, 0.01 );",
+		"	float x = texCoord0.x * texCoord0.y * time * 1000.0;",
+		"	x = mod( x, 13.0 ) * mod( x, 123.0 );",
+		"	float dx = mod( x, 0.01 );",
 		"	vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx * 100.0, 0.0, 1.0 );",
 		"	vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );",
 		"	cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;",

@@ -524,7 +524,7 @@ function(
 					'vec3 depth = shadowLightDepths[i].xyz / shadowLightDepths[i].w;',
 					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScales[i];',
 
-					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
+					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths[i].z >= 0.0 && depth.z <= 1.0) {',
 						'#if SHADOW_TYPE == 0', // Normal
 							'depth.z *= 0.96;',
 							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
