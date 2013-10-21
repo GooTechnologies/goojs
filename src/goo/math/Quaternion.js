@@ -95,6 +95,17 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return target;
 	};
 
+	Quaternion.mul2 = function(a, b, out) {
+		var ax = a.data[0], ay = a.data[1], az = a.data[2], aw = a.data[3],
+			bx = b.data[0], by = b.data[1], bz = b.data[2], bw = b.data[3];
+
+		out.data[0] = ax * bw + aw * bx + ay * bz - az * by;
+		out.data[1] = ay * bw + aw * by + az * bx - ax * bz;
+		out.data[2] = az * bw + aw * bz + ax * by - ay * bx;
+		out.data[3] = aw * bw - ax * bx - ay * by - az * bz;
+		return out;
+	};
+
 	/**
 	 * @static
 	 * @description Performs a component-wise division between two vectors and stores the result in a separate vector.

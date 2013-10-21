@@ -751,7 +751,6 @@ function (
 	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
 	 */
-
 	Matrix3x3.prototype.toAngles = function (store) {
 		var result = store;
 		if (!result) {
