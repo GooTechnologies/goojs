@@ -210,6 +210,9 @@ define([
 							ShaderBuilder.SKYSPHERE = texture;
 							ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
 						}
+
+						skybox.meshRendererComponent.hidden = false;
+
 					}
 			});
 		}
@@ -341,7 +344,7 @@ define([
 			ShaderBuilder.USE_FOG = config.useFog;
 			ShaderBuilder.FOG_SETTINGS = [config.fogNear, config.fogFar];
 			ShaderBuilder.FOG_COLOR = config.fogColor;
-
+			
 			return results;
 		});
 	};
