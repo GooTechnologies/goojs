@@ -87,6 +87,10 @@ define([
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 		renderables[0].transform.scale.scale(scale);
 		renderables[0].transform.update();
+		if (component.light && component.light instanceof DirectionalLight) {
+			renderables[1].transform.scale.scale(scale*100);
+			renderables[1].transform.update();
+		}
 	};
 
 	DebugDrawHelper.LightComponent = {};
