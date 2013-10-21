@@ -30,13 +30,13 @@ function(
 	};
 
 	ArrowsAction._keys = {
-		38:'up',
-		37:'left',
-		40:'down',
-		39:'right'
+		38: 'up',
+		37: 'left',
+		40: 'down',
+		39: 'right'
 	};
 
-	ArrowsAction.external = (function(){
+	ArrowsAction.external = (function() {
 		var transitions = [];
 		for (var keycode in ArrowsAction._keys) {
 			var keyname = ArrowsAction._keys[keycode];

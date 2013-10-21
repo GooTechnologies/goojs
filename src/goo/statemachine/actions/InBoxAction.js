@@ -15,16 +15,17 @@ function(
 	InBoxAction.prototype.constructor = InBoxAction;
 
 	InBoxAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Point1',
 			key: 'point1',
-			type: 'vec3',
+			type: 'position',
 			description: 'First box point',
 			'default': [-1, -1, -1]
 		}, {
 			name: 'Point2',
 			key: 'point2',
-			type: 'vec3',
+			type: 'position',
 			description: 'Second box point',
 			'default': [1, 1, 1]
 		}, {
@@ -35,10 +36,12 @@ function(
 			'default': true
 		}],
 		transitions: [{
-			name: 'inside',
+			key: 'inside',
+			name: 'Inside',
 			description: 'Event fired if the entity is inside the box'
 		}, {
-			name: 'outside',
+			key: 'outside',
+			name: 'Outside',
 			description: 'Event fired if the entity is outside the box'
 		}]
 	};

@@ -30,13 +30,13 @@ function(
 	};
 
 	WASDAction._keys = {
-		87:'w',
-		65:'a',
-		83:'s',
-		68:'d'
+		87: 'w',
+		65: 'a',
+		83: 's',
+		68: 'd'
 	};
 
-	WASDAction.external = (function(){
+	WASDAction.external = (function() {
 		var transitions = [];
 		for (var keycode in WASDAction._keys) {
 			var keyname = WASDAction._keys[keycode];
@@ -66,7 +66,7 @@ function(
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
-					fsm.send(target, {});
+					fsm.send(target);
 				}
 			}
 			this.keysPressed = [];
