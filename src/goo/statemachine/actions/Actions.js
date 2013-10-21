@@ -79,7 +79,9 @@ define([
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/KeyDownAction',
 	'goo/statemachine/actions/WASDAction',
-	'goo/statemachine/actions/ArrowsAction'
+	'goo/statemachine/actions/ArrowsAction',
+
+	'goo/statemachine/actions/AddTVAction'
 ],
 /** @lends */
 function(
