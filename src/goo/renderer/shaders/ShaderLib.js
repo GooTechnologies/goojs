@@ -232,6 +232,10 @@ define([
 					'if (final_color.a < discardThreshold) discard;',
 				'#endif',
 
+				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
+					'vec3 saveColor = final_color.rgb;',
+				'#endif',
+
 				'#ifdef AO_MAP',
 					'#ifdef TEXCOORD1',
 						'final_color.rgb *= texture2D(aoMap, texCoord1).rgb;',
@@ -264,7 +268,7 @@ define([
 
 				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
-					'final_color.rgb += final_color.rgb * emissive;',
+					'final_color.rgb = max(final_color.rgb, saveColor * emissive);',
 				'#endif',
 
 				'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
