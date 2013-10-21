@@ -88,7 +88,7 @@ define([
 		renderables[0].transform.scale.scale(scale);
 		renderables[0].transform.update();
 		if (component.light && component.light instanceof DirectionalLight) {
-			renderables[1].transform.scale.scale(scale*100);
+			renderables[1].transform.scale.scale(scale);
 			renderables[1].transform.update();
 		}
 	};
