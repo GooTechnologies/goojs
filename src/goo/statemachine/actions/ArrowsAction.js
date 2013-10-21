@@ -42,7 +42,7 @@ function(
 			var keyname = ArrowsAction._keys[keycode];
 			transitions.push({
 				name: keyname,
-				key: keyname,
+				key: 'Key ' + keyname.toUpperCase(),
 				description: "Key '" + keyname + "' pressed"
 			});
 		}

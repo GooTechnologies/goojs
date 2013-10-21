@@ -41,7 +41,8 @@ function(
 		for (var keycode in WASDAction._keys) {
 			var keyname = WASDAction._keys[keycode];
 			transitions.push({
-				name: keyname,
+				key: keyname,
+				name: 'Key ' + keyname.toUpperCase(),
 				description: "Key '" + keyname + "' pressed"
 			});
 		}
