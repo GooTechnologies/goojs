@@ -23,6 +23,7 @@ function(
 	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',

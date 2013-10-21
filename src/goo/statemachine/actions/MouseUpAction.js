@@ -21,6 +21,7 @@ function(
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
+		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mouseup',

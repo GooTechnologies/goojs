@@ -20,6 +20,7 @@ function(
 	TweenLookAtAction.prototype.constructor = TweenLookAtAction;
 
 	TweenLookAtAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Translation',
 			key: 'to',

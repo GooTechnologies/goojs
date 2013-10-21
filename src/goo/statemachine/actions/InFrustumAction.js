@@ -15,6 +15,7 @@ function(
 	InFrustumAction.prototype.constructor = InFrustumAction;
 
 	InFrustumAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Observed entity',
 			key: 'observedEntity',

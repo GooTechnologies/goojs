@@ -15,6 +15,7 @@ function(
 	RandomTransitionAction.prototype.constructor = RandomTransitionAction;
 
 	RandomTransitionAction.external = {
+		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition1',

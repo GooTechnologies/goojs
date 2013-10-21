@@ -48,6 +48,7 @@ function(
 		}
 
 		return {
+			canTransition: true,
 			parameters: [],
 			transitions: transitions
 		};

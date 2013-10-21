@@ -23,6 +23,7 @@ function(
 	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',

@@ -17,6 +17,7 @@ function(
 	TweenMoveAction.prototype.constructor = TweenMoveAction;
 
 	TweenMoveAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Translation',
 			key: 'to',

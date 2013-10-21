@@ -15,6 +15,7 @@ function(
 	TransitionAction.prototype.constructor = TransitionAction;
 
 	TransitionAction.external = {
+		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'transition',

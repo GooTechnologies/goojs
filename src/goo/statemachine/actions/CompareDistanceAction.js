@@ -17,6 +17,7 @@ function(
 	CompareDistanceAction.prototype.constructor = CompareDistanceAction;
 
 	CompareDistanceAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Entity1',
 			key: 'entity1',

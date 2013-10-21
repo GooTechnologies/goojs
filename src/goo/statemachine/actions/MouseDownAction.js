@@ -21,6 +21,7 @@ function(
 	MouseDownAction.prototype.constructor = MouseDownAction;
 
 	MouseDownAction.external = {
+		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'mousedown',
