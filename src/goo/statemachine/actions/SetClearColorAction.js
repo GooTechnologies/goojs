@@ -1,11 +1,9 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil
+	Action
 	) {
 	"use strict";
 
@@ -14,17 +12,15 @@ function(
 	}
 
 	SetClearColorAction.prototype = Object.create(Action.prototype);
-
-	SetClearColorAction.prototype.configure = function(settings) {
-		this.everyFrame = settings.everyFrame !== false;
-		this.color = settings.color || [0, 0.07, 0.14, 1];
-	};
+	SetClearColorAction.prototype.constructor = SetClearColorAction;
 
 	SetClearColorAction.external = {
 		parameters: [{
 			name: 'Color',
 			key: 'color',
-			type: 'color'
+			type: 'color',
+			description: 'Color',
+			'default': [1, 1, 1]
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
@@ -35,14 +31,10 @@ function(
 		transitions: []
 	};
 
-	SetClearColorAction.prototype.onCreate = function(fsm) {
-		console.log("Setting clear color to " + JSON.stringify(this.color));
-		fsm.getEngine().renderer.setClearColor(
-			FSMUtil.getValue(this.color[0], fsm),
-			FSMUtil.getValue(this.color[1], fsm),
-			FSMUtil.getValue(this.color[2], fsm),
-			FSMUtil.getValue(this.color[3], fsm)
-		);
+	SetClearColorAction.prototype._run = function(fsm) {
+		var entity = fsm.getOwnerEntity();
+		var goo = entity._world.gooRunner;
+		goo.renderer.setClearColor(this.color[0], this.color[1], this.color[2], 1);
 	};
 
 	return SetClearColorAction;

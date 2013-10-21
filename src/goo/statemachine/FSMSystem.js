@@ -64,6 +64,7 @@ function (
 	 * Stops updating the entities
 	 */
 	FSMSystem.prototype.pause = function() {
+		console.log('FSMSystem: pause');
 		this.active = false;
 	};
 
@@ -71,6 +72,7 @@ function (
 	 * Resumes updating the entities
 	 */
 	FSMSystem.prototype.play = function() {
+		console.log('FSMSystem: play');
 		this.active = true;
 	};
 
@@ -78,6 +80,7 @@ function (
 	 * Stop updating entities and resets the state machines tot heir initial state
 	 */
 	FSMSystem.prototype.reset = function() {
+		console.log('FSMSystem: reset');
 		this.resetRequest = true;
 		this.active = false;
 	};
