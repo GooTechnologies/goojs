@@ -72,7 +72,7 @@ define([
 		config.useFog = config.useFog || false;
 		config.fogColor = config.fogColor || [1, 1, 1];
 		config.fogNear = config.fogNear || 0;
-		config.fogFar = config.fogFar || 10000;
+		config.fogFar = config.fogFar==null? 10000: config.fogFar;
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
@@ -115,8 +115,10 @@ define([
 			var material = skybox.meshRendererComponent.materials[0];
 			var texture = this._skyboxTexture;
 
-			var update = !texture;
+			var update = !texture; // New load or skybox shape changed 
 			if(!update) {
+
+				// Same shape, just maybe some new images
 				if (texture.image.data) {
 					for (var i = 0; i < imageUrls.length; i++) {
 						var img = texture.image.data[i];
@@ -342,7 +344,17 @@ define([
 		});
 	};
 
-	ProjectHandler.prototype.remove = function(/*ref*/) {};
+	ProjectHandler.prototype.remove = function(/*ref*/) {
+		if (this._skybox) {
+			this.world.getSystem('RenderSystem').removed(this._skybox);
+		}
+		this._skybox = null;
+		this._skyboxTexture = null;
+		this._skyboxGeographic = false;
+
+		this._composer = null;
+		this._passes = [];
+	};
 
 	return ProjectHandler;
 
