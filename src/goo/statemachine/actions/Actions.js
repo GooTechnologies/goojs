@@ -82,7 +82,8 @@ define([
 	'goo/statemachine/actions/ArrowsAction',
 
 	'goo/statemachine/actions/AddTVAction',
-	'goo/statemachine/actions/WaitAction'
+	'goo/statemachine/actions/WaitAction',
+	'goo/statemachine/actions/RandomTransitionAction'
 ],
 /** @lends */
 function(
