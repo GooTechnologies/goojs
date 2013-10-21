@@ -17,7 +17,8 @@ function(
 	TransitionAction.external = {
 		parameters: [],
 		transitions: [{
-			name: 'transition',
+			key: 'transition',
+			name: 'To',
 			description: 'State to transition to'
 		}]
 	};
