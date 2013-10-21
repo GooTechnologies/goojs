@@ -57,7 +57,7 @@ define([
 	'goo/statemachine/actions/RemoveLightAction',
 
 	'goo/statemachine/actions/InBoxAction',
-	'goo/statemachine/actions/CompareDistanceAction',
+	//'goo/statemachine/actions/CompareDistanceAction',
 
 	'goo/statemachine/actions/SetClearColorAction',
 	'goo/statemachine/actions/SuspendFSMAction',

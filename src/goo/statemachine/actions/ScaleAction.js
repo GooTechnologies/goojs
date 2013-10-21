@@ -18,7 +18,7 @@ function(
 		parameters: [{
 			name: 'Scale',
 			key: 'scale',
-			type: 'vec3',
+			type: 'position',
 			description: 'Move',
 			'default': [0, 0, 0]
 		}, {
@@ -26,19 +26,19 @@ function(
 			key: 'relative',
 			type: 'boolean',
 			description: 'If true add/multiply, otherwise set',
-			'default': 'absolute'
+			'default': false
 		}, {
 			name: 'Multiply',
 			key: 'multiply',
 			type: 'boolean',
 			description: 'If true multiply, otherwise add',
-			'default': true
+			'default': false
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
-			'default': true
+			description: 'Repeat this action every frame',
+			'default': false
 		}],
 		transitions: []
 	};
@@ -48,12 +48,12 @@ function(
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
 			if (this.multiply) {
-				transform.translation.mul(this.translation);
+				transform.scale.mul(this.scale);
 			} else {
-				transform.translation.add(this.translation);
+				transform.scale.add(this.scale);
 			}
 		} else {
-			transform.translation.set(this.scale);
+			transform.scale.set(this.scale);
 		}
 
 		entity.transformComponent.setUpdated();
