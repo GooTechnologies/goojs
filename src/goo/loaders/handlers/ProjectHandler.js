@@ -270,7 +270,9 @@ define([
 			};
 
 			for (var i = 0; i < config.posteffectRefs.length; i++) {
-				promises.push(handlePosteffectRef(config.posteffectRefs[i]));
+				if(config.posteffectRefs[i]) {
+					promises.push(handlePosteffectRef(config.posteffectRefs[i]));
+				}
 			}
 
 			return RSVP.all(promises).then(function(posteffects) {
