@@ -38,9 +38,9 @@ define([
 	'goo/statemachine/actions/MoveAction',
 	'goo/statemachine/actions/RotateAction'
     */
-	'goo/statemachine/actions/WaitAction',
+
 	'goo/statemachine/actions/MoveAction',
-	// 'goo/statemachine/actions/MoveWithRotationAction',
+	'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
 	'goo/statemachine/actions/ScaleAction',
 	// 'goo/statemachine/actions/LookAtAction',
@@ -81,7 +81,8 @@ define([
 	'goo/statemachine/actions/WASDAction',
 	'goo/statemachine/actions/ArrowsAction',
 
-	'goo/statemachine/actions/AddTVAction'
+	'goo/statemachine/actions/AddTVAction',
+	'goo/statemachine/actions/WaitAction'
 ],
 /** @lends */
 function(
