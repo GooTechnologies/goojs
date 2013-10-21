@@ -17,12 +17,6 @@ function(
 	InFrustumAction.external = {
 		canTransition: true,
 		parameters: [{
-			name: 'Observed entity',
-			key: 'observedEntity',
-			type: 'entity',
-			description: 'Entity to check whether it is in the active camera\'s frustum',
-			'default': null
-		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
@@ -30,21 +24,22 @@ function(
 			'default': true
 		}],
 		transitions: [{
-			name: 'inside',
+			key: 'inside',
+			name: 'Inside',
 			description: 'State to transition to if entity is in frustum'
 		}, {
-			name: 'outside',
+			key: 'outside',
+			name: 'Outside',
 			description: 'State to transition to if entity is out of frustum'
 		}]
 	};
 
 	InFrustumAction.prototype._run = function(fsm) {
-		if (this.observedEntity) {
-		    if (this.observedEntity.isVisible) {
-				fsm.send(this.transitions.inside);
-			} else {
-				fsm.send(this.transitions.outside);
-			}
+		var entity = fsm.getOwnerEntity();
+		if (entity.isVisible) {
+			fsm.send(this.transitions.inside);
+		} else {
+			fsm.send(this.transitions.outside);
 		}
 	};
 
