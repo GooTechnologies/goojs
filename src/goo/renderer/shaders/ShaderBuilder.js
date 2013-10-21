@@ -236,6 +236,7 @@ function(
 				shader.uniforms.shadowLightMatrices = [];
 				shader.uniforms.shadowLightPositions = [];
 				shader.uniforms.cameraScales = [];
+				shader.uniforms.shadowDarkness = [];
 				shader.uniforms.shadowMapSizes = [];
 				for (var i = 0; i < shadowCount; i++) {
 					var shadowData = shadowHandler.shadowLights[i].shadowSettings.shadowData;
@@ -251,6 +252,7 @@ function(
 					shader.uniforms.shadowLightPositions[i*3+2] = translationData[2];
 
 					shader.uniforms.cameraScales[i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+					shader.uniforms.shadowDarkness[i] = shadowHandler.shadowLights[i].shadowSettings.darkness;
 
 					shader.uniforms.shadowMapSizes[i*2+0] = shadowHandler.shadowLights[i].shadowSettings.resolution[0];
 					shader.uniforms.shadowMapSizes[i*2+1] = shadowHandler.shadowLights[i].shadowSettings.resolution[1];
@@ -336,6 +338,7 @@ function(
 				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
 				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
 				'uniform float cameraScales[MAX_SHADOWS];',
+				'uniform float shadowDarkness[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
 				'#if SHADOW_TYPE == 1', // PCF
@@ -525,7 +528,7 @@ function(
 						'#if SHADOW_TYPE == 0', // Normal
 							'depth.z *= 0.96;',
 							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
-							'if ( depth.z > shadowDepth ) shadow *= 0.5;',
+							'if ( depth.z > shadowDepth ) shadow *= shadowDarkness[i];',
 						'#elif SHADOW_TYPE == 1', // PCF TODO
 							'depth.z *= 0.96;',
 							'float shadowPcf = 0.0;',
@@ -558,7 +561,8 @@ function(
 							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx1, dy1)).r;',
 							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-							'shadow *= (1.0 - shadowPcf) * 0.5 + 0.5;',
+							// 'shadow *= (1.0 - shadowPcf) * 0.5 + 0.5;',
+							'shadow *= (1.0 - shadowPcf) * (1.0 - shadowDarkness[i]) + shadowDarkness[i];',
 						'#elif SHADOW_TYPE == 2', // VSM
 							'vec4 texel = texture2D(shadowMaps[i], depth.xy);',
 							'vec2 moments = vec2(texel.x, texel.y);',

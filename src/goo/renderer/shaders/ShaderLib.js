@@ -59,7 +59,8 @@ define([
 			fresnel: 1.0,
 			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
-			fogColor: [1, 1, 1]
+			fogColor: [1, 1, 1],
+			shadowDarkness: 0.5
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',

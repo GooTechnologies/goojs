@@ -49,7 +49,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 				/** @type {number} */
 				far: 1000,
 				resolution: [512, 512],
-				upVector: [0,1,0]
+				upVector: [0,1,0],
+				darkness: 0.5
 			});
 		}
 	};
