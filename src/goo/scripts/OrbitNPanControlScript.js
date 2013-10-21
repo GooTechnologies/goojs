@@ -142,7 +142,7 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.applyWheel = function (e) {
-		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta, -1, 1);
+		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta || -e.detail, -1, 1);
 
 		// Decrease zoom if shift is pressed
 		if (this.shiftKey) {

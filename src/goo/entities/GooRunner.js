@@ -434,8 +434,8 @@ function (
 			return;
 		}
 		var func = function(e) {
-			var x = e.offsetX;
-			var y = e.offsetY;
+			var x = e.layerX;
+			var y = e.layerY;
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function(id, depth) {
 				var entity = this.world.entityManager.getEntityById(id);

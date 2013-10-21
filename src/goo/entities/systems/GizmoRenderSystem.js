@@ -57,8 +57,8 @@ function (
 				return;
 			}
 			this.activeGizmo.update([
-				evt.offsetX / this.viewportWidth,
-				evt.offsetY / this.viewportHeight
+				evt.layerX / this.viewportWidth,
+				evt.layerY / this.viewportHeight
 			]);
 		}.bind(this);
 
