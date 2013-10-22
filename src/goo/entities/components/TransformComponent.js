@@ -217,6 +217,7 @@ define(
 			this._dirty = false;
 			this._updated = true;
 		};
+		
 		// helpers
 
 		function ensureTransformComponent( entityOrTransformComponent ) {
