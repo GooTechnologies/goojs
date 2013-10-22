@@ -86,7 +86,10 @@ define( [
 
 			// REVIEW: Remove!
 
-			this.entityManager = new EntityManager();
+			this.entityManager    = new EntityManager();
+			this._addedEntities   = this.entities.added;
+			this._changedEntities = this.entities.changed;
+			this._removedEntities = this.entities.removed;
 		}
 
 		Scene.prototype.init = function( goo ) {

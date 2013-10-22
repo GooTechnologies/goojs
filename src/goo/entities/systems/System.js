@@ -41,6 +41,10 @@ define(
 			return false;
 		};
 
+		// REVIEW: .added is here for backwards compability
+		System.prototype.added = function( entity ) {
+			this.addedEntity( entity );
+		};
 		System.prototype.addedEntity = function( entity ) {
 			if( this.isInterestedIn( entity ) && !this.hasEntity( entity )) {
 				// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
@@ -60,6 +64,10 @@ define(
 			}
 		};
 
+		// REVIEW: .changed is here for backwards compability
+		System.prototype.changed = function( entity ) {
+			this.changedEntity( { entity: entity } );
+		};
 		System.prototype.changedEntity = function( event ) {
 			if( this.hasEntity( event.entity )) {
 				if( event.eventType !== undefined && this[ event.eventType ] !== undefined ) {
@@ -68,6 +76,10 @@ define(
 			}
 		};
 
+		// REVIEW: removed is here for backwards compability
+		System.prototype.removed = function( entity ) {
+			this.removedEntity( entity );
+		};
 		System.prototype.removedEntity = function( entity ) {
 			// REVIEW: need to operate on _activeEntities as .entities are overwritten by some systems
 			//var i = this.entities.indexOf( entity );

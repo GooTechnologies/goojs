@@ -21,7 +21,7 @@ function (
 
 		cameraOrParameters = cameraOrParameters || {};
 		if( cameraOrParameters instanceof Camera ) {
-			this.camera = camera;
+			this.camera = cameraOrParameters;
 		} else {
 			var fov    = cameraOrParameters.fov    !== undefined ? cameraOrParameters.fov    : 60;
 			var aspect = cameraOrParameters.aspect !== undefined ? cameraOrParameters.aspect : window.innerWidth / window.innerHeight;

@@ -169,6 +169,15 @@ define(
 			return this.components[ type ] ? this.components[ type ].length > 0 ? true : false : false;
 		};
 
+		// REVIEW: To be in line with new api, this should be removeComponent
+		Entity.prototype.clearComponent = function( type ) {
+			for( var componentType in this.components ) {
+				if( componentType === type ) {
+					this.components[ componentType ].length = 0;
+				}
+			}
+		};
+
 
 		// tag methods
 
