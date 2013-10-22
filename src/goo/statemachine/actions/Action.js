@@ -41,8 +41,12 @@ function(
 		}
 	};
 
+	/* this is called when the machine stops and makes sure that any changes not undone by exit methods get undone */
+	Action.prototype.cleanup = function (/*fsm*/) {
+	};
+
 	/* this is called by external functions; also the place to cleanup whatever _setup did */
-	Action.prototype.exit = function(/*fsm*/) {
+	Action.prototype.exit = function (/*fsm*/) {
 	};
 
 	return Action;

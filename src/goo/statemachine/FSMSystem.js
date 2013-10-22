@@ -32,6 +32,8 @@ function (
 			this.justReset = true;
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
+				fsmComponent.kill();
+				fsmComponent.cleanup();
 				fsmComponent.init();
 			}
 		}
@@ -77,7 +79,7 @@ function (
 	};
 
 	/**
-	 * Stop updating entities and resets the state machines tot heir initial state
+	 * Stop updating entities and resets the state machines to their initial state
 	 */
 	FSMSystem.prototype.reset = function() {
 		console.log('FSMSystem: reset');

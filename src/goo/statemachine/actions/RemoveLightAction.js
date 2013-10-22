@@ -19,9 +19,11 @@ function(
 		transitions: []
 	};
 
-	RemoveLightAction.prototype._run = function(fsm) {
+	RemoveLightAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.clearComponent('LightComponent');
+		if (entity.hasComponent('LightComponent')) {
+			entity.clearComponent('LightComponent');
+		}
 	};
 
 	return RemoveLightAction;

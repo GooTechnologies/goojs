@@ -10,6 +10,7 @@ function (
 	function State(uuid) {
 		this.uuid = uuid;
 		this._fsm = null;
+		this.parent = null;
 		this._actions = [];
 		this._machines = [];
 		this._transitions = {};
@@ -77,8 +78,14 @@ function (
 		}
 	};
 
+	State.prototype.isCurrentState = function () {
+		return this === this.parent.getCurrentState();
+	};
+
 	State.prototype.requestTransition = function (target) {
-		this.transitionTarget = target;
+		if (this.isCurrentState()) {
+			this.transitionTarget = target;
+		}
 	};
 
 	State.prototype.setTransition = function (eventName, target) {
@@ -123,6 +130,15 @@ function (
 		}
 		for (var i = 0; i < this._actions.length; i++) {
 			this._actions[i].exit(this.proxy);
+		}
+	};
+
+	State.prototype.cleanup = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].cleanup();
+		}
+		for (var i = 0; i < this._actions.length; i++) {
+			this._actions[i].cleanup(this.proxy);
 		}
 	};
 

@@ -99,7 +99,27 @@ function (
 	};
 
 	/**
-	 * Updated the state machines
+	 * Kills the state machines triggering exit functions in all current states
+	 */
+	FSMComponent.prototype.kill = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			var machine = this._machines[i];
+			machine.kill();
+		}
+	};
+
+	/**
+	 * Performs a cleanup; undoes any changes not undone by exit methods
+	 */
+	FSMComponent.prototype.cleanup = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			var machine = this._machines[i];
+			machine.cleanup();
+		}
+	};
+
+	/**
+	 * Updates the state machines
 	 */
 	FSMComponent.prototype.update = function () {
 		if (this.active) {
