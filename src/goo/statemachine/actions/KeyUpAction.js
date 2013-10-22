@@ -23,6 +23,7 @@ function(
 	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		description: 'Listens for a key release and performs a transition',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',

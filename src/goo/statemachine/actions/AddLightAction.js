@@ -19,6 +19,7 @@ function(
 	AddLightAction.prototype.constructor = AddLightAction;
 
 	AddLightAction.external = {
+		description: 'Adds a light',
 		parameters: [{
 			name: 'Color',
 			key: 'color',

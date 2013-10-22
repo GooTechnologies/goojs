@@ -15,6 +15,7 @@ function(
 	LookAtAction.prototype.constructor = LookAtAction;
 
 	LookAtAction.external = {
+		description: 'Reorients an entity so that it\'s facing a specific point',
 		parameters: [{
 			name: 'Look at entity',
 			key: 'lookAtEntity',

@@ -18,6 +18,7 @@ function(Action) {
 	WaitAction.prototype.constructor = WaitAction;
 
 	WaitAction.external = {
+		description: 'Performs a transition after a specified amont of time',
 		canTransition: true,
 		parameters: [{
 			name: 'Base Time',

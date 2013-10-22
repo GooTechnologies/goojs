@@ -15,6 +15,7 @@ function(
 	ResumeFSMAction.prototype.constructor = ResumeFSMAction;
 
 	ResumeFSMAction.external = {
+		description: 'Continue running a suspended state machine',
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',

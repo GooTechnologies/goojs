@@ -15,6 +15,7 @@ function(
 	LogMessageAction.prototype.constructor = LogMessageAction;
 
 	LogMessageAction.external = {
+		description: 'Prints a message in the debug console of your browser',
 		parameters: [{
 			name: 'Message',
 			key: 'message',

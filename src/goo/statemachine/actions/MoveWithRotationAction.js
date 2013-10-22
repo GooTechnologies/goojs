@@ -17,6 +17,7 @@ function(
 	MoveWithRotationAction.prototype.constructor = MoveWithRotationAction;
 
 	MoveWithRotationAction.external = {
+		description: 'Moves the entity with rotation taken into account',
 		parameters: [{
 			name: 'Translation',
 			key: 'translation',

@@ -23,6 +23,7 @@ function(
 	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		description: 'Listens for a key press and performs a transition',
 		canTransition: true,
 		parameters: [{
 			name: 'Key',

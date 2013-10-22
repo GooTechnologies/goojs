@@ -31,6 +31,7 @@ function(
 	AddTVAction.prototype.constructor = AddTVAction;
 
 	AddTVAction.external = {
+		description: 'Adds a TV',
 		parameters: [{
 			name: 'Translation',
 			key: 'position',

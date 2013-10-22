@@ -60,8 +60,8 @@ define([
 	//'goo/statemachine/actions/CompareDistanceAction',
 
 	'goo/statemachine/actions/SetClearColorAction',
-	'goo/statemachine/actions/SuspendFSMAction',
-	'goo/statemachine/actions/ResumeFSMAction',
+	//'goo/statemachine/actions/SuspendFSMAction',
+	//'goo/statemachine/actions/ResumeFSMAction',
 
 	'goo/statemachine/actions/InFrustumAction',
 	'goo/statemachine/actions/TransitionAction',
@@ -84,7 +84,8 @@ define([
 	'goo/statemachine/actions/AddTVAction',
 	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/RandomTransitionAction',
-	'goo/statemachine/actions/ShakeAction'
+	'goo/statemachine/actions/ShakeAction',
+	'goo/statemachine/actions/SmokeAction'
 ],
 /** @lends */
 function(

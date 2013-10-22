@@ -15,6 +15,7 @@ function(
 	ResumeAnimationAction.prototype.constructor = ResumeAnimationAction;
 
 	ResumeAnimationAction.external = {
+		description: 'Continues playing an animation',
 		parameters: [{
 			name: 'On all',
 			key: 'onAll',
