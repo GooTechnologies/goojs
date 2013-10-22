@@ -66,6 +66,7 @@ define( [
 			this.entities.added   = [];
 			this.entities.changed = [];
 			this.entities.removed = [];
+			this.gooRunner        = undefined;
 			this.renderer         = undefined;
 
 			this.add( parameters.systems, parameters.scenes );
@@ -90,7 +91,8 @@ define( [
 
 		Scene.prototype.init = function( goo ) {
 			// REVIEW: Should scenes share renderer? Probably not.
-			this.renderer = goo.renderer;
+			this.gooRunner = goo;
+			this.renderer  = goo.renderer;
 		};
 
 		// REVIEW: Remove all references to managers

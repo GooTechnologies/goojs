@@ -95,7 +95,6 @@ define(
  		// alread part of a scene (done in Scene.createXXX)
 
  		Entity.prototype.addToWorld = function(first_argument) {
-
  		};
 
 		Entity.prototype.setScene = function( scene ) {
