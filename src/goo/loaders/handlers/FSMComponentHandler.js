@@ -2,12 +2,14 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/statemachine/FSMComponent',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ArrayUtil'
 ], function(
 	ComponentHandler,
 	FSMComponent,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	ArrayUtil
 	) {
 	"use strict";
 
@@ -17,6 +19,7 @@ define([
 	FSMComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	FSMComponentHandler.prototype.constructor = FSMComponentHandler;
 	ComponentHandler._registerClass('stateMachine', FSMComponentHandler);
+	FSMComponentHandler._type = 'fSM';
 
 	FSMComponentHandler.prototype._prepare = function(/*config*/) {};
 
@@ -43,8 +46,14 @@ define([
 
 		if (promises.length > 0) {
 			return RSVP.all(promises).then(function(machines) {
+				var oldMachines = component._machines;
+				component._machines = [];
 				for (var i = 0; i < machines.length; i++) {
 					component.addMachine(machines[i]);
+					ArrayUtil.remove(oldMachines, machines[i]);
+				}
+				for (var i = 0; i < oldMachines.length; i++) {
+					component.removeMachine(oldMachines[i]);
 				}
 				return component;
 			});

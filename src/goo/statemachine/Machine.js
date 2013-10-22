@@ -62,7 +62,9 @@ function (
 	};
 
 	Machine.prototype.kill = function () {
-		this.currentState.kill();
+		if (this.currentState) {
+			this.currentState.kill();
+		}
 	};
 
 	Machine.prototype.cleanup = function () {
@@ -71,15 +73,17 @@ function (
 			var state = this._states[keys[i]];
 			state.cleanup();
 		}
-	}
+	};
 
 	Machine.prototype.enter = function () {
-		this.currentState.enter();
+		if (this.currentState) {
+			this.currentState.enter();
+		}
 	};
 
 	Machine.prototype.getCurrentState = function() {
 		return this.currentState;
-	}
+	};
 
 	Machine.prototype.addState = function (state) {
 		if (!this._states) {
