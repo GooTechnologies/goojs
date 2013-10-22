@@ -46,6 +46,7 @@ define([
 				for (var i = 0; i < machines.length; i++) {
 					component.addMachine(machines[i]);
 				}
+				return component;
 			});
 		}
 		else {

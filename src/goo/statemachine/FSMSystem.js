@@ -17,7 +17,8 @@ function (
 
 		this.engine = engine;
 		this.resetRequest = false;
-		this.active = true;
+		this.justReset = false;
+		this.passive = true;
 
 		//window.goor = engine;
 	}
@@ -29,29 +30,20 @@ function (
 
 		if (this.resetRequest) {
 			this.resetRequest = false;
-			this.justReset = true;
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.kill();
 				fsmComponent.cleanup();
 				fsmComponent.init();
+				fsmComponent.doEnter();
 			}
 		}
-		if (this.active) {
-			if (this.justReset) {
-				this.justReset = false;
-				for (var i = 0; i < entities.length; i++) {
-					fsmComponent = entities[i].fSMComponent;
-					fsmComponent.doEnter();
-				}
-			}
 
-			if (window.TWEEN) { window.TWEEN.update(); } // this should not stay here
+		if (window.TWEEN) { window.TWEEN.update(); } // this should not stay here
 
-			for (var i = 0; i < entities.length; i++) {
-				fsmComponent = entities[i].fSMComponent;
-				fsmComponent.update(tpf);
-			}
+		for (var i = 0; i < entities.length; i++) {
+			fsmComponent = entities[i].fSMComponent;
+			fsmComponent.update(tpf);
 		}
 	};
 
@@ -67,7 +59,7 @@ function (
 	 */
 	FSMSystem.prototype.pause = function() {
 		console.log('FSMSystem: pause');
-		this.active = false;
+		this.passive = true;
 	};
 
 	/**
@@ -75,7 +67,7 @@ function (
 	 */
 	FSMSystem.prototype.play = function() {
 		console.log('FSMSystem: play');
-		this.active = true;
+		this.passive = false;
 	};
 
 	/**
@@ -84,7 +76,7 @@ function (
 	FSMSystem.prototype.reset = function() {
 		console.log('FSMSystem: reset');
 		this.resetRequest = true;
-		this.active = false;
+		this.passive = true;
 	};
 
 	return FSMSystem;
