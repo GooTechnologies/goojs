@@ -172,11 +172,20 @@ define( [
 			var systems = this.systems;
 			var sl = systems.length;
 
-			while( sl-- ) {
-				if( systems[ sl ] instanceof type ) {
-					return systems[ sl ];
+			if( typeof( type ) === "string" ) {
+				while( sl-- ) {
+					if( systems[ sl ].type === type ) {
+						return systems[ sl ];
+					}
+				}
+			} else {
+				while( sl-- ) {
+					if( systems[ sl ] instanceof type ) {
+						return systems[ sl ];
+					}
 				}
 			}
+
 			return undefined;
 		};
 
