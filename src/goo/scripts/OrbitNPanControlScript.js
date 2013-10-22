@@ -1,12 +1,15 @@
 define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/renderer/Renderer',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function(
 	OrbitCamControlScript,
 	Renderer,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
+	"use strict";
 
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
 	/**
@@ -21,6 +24,7 @@ define([
 	 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
 	 * @param {number} [properties.minZoomDistance=1]
 	 * @param {number} [properties.maxZoomDistance=1000]
+	 * @parma {number} [properties.detailZoom=0.15] Multiplies the zoom when using shift+zoom to enable smaller zoom increments.
 	 * @param {number} [properties.minAscent=-89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach below the target point
 	 * @param {number} [properties.maxAscent=89.95 * MathUtils.DEG_TO_RAD] Maximum arc (in radians) the camera can reach above the target point
 	 * @param {boolean} [properties.clampAzimuth=false]
@@ -30,8 +34,8 @@ define([
 	 * @param {boolean} [properties.invertedY=false]
 	 * @param {boolean} [properties.invertedWheel=true]
 	 * @param {Vector3} [properties.lookAtPoint=Vector3(0,0,0)] The point to orbit around.
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi). 
-	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples: 
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
+	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
 	 * <ul>
 	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
 	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
@@ -41,6 +45,9 @@ define([
 	 */
 	function OrbitNPanControlScript(properties) {
 		properties = properties || {};
+		// REVIEW: move this detail zoom to OrbitCamControlScript
+		this.detailZoom = properties.detailZoom || 0.15;
+		this.zoomDistanceFactor = properties.zoomDistanceFactor || 0.035;
 		OrbitCamControlScript.call(this, properties);
 		this.panState = {
 			buttonDown : false,
@@ -75,9 +82,11 @@ define([
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
+			that.shiftKey = event.shiftKey;
 			that.applyWheel(event);
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
+			that.shiftKey = event.shiftKey;
 			that.applyWheel(event);
 		}, false);
 
@@ -130,6 +139,19 @@ define([
 			this.goingToLookAt.setv(this.lookAtPoint);
 			this.dirty = true;
 		}
+	};
+
+	OrbitNPanControlScript.prototype.applyWheel = function (e) {
+		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta || -e.detail, -1, 1);
+
+		// Decrease zoom if shift is pressed
+		if (this.shiftKey) {
+			delta *= this.detailZoom;
+		}
+		delta *= this.zoomDistanceFactor * this.targetSpherical.x;
+
+
+		this.zoom(this.zoomSpeed * delta);
 	};
 
 	OrbitNPanControlScript.prototype.run = function(entity, tpf, env) {

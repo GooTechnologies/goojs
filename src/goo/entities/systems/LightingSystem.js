@@ -17,6 +17,7 @@ function (
 
 		this.lights = [];
 		this.overrideLights = null;
+		this._needsUpdate = true;
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
@@ -27,6 +28,7 @@ function (
 		}
 
 		if (this.lights.indexOf(component.light) === -1) {
+			entity.transformComponent.setUpdated();
 			this.lights.push(component.light);
 			if (!this.overrideLights) {
 				SystemBus.emit('goo.setLights', this.lights);
@@ -51,6 +53,7 @@ function (
 	LightingSystem.prototype.setOverrideLights = function(lights) {
 		this.overrideLights = lights;
 		SystemBus.emit('goo.setLights', this.overrideLights || this.lights);
+		this._needsUpdate = true;
 	};
 
 	LightingSystem.prototype.process = function (entities) {
@@ -60,10 +63,11 @@ function (
 				var transformComponent = entity.transformComponent;
 				var lightComponent = entity.lightComponent;
 
-				if (transformComponent._updated) {
+				if (transformComponent._updated || this._needsUpdate) {
 					lightComponent.updateLight(transformComponent.worldTransform);
 				}
 			}
+			this._needsUpdate = false;
 		}
 	};
 

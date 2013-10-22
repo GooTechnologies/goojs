@@ -11,7 +11,9 @@ define([
 	'goo/shapes/debug/CameraDebug',
 	'goo/shapes/debug/MeshRendererDebug',
 	'goo/renderer/Material',
+	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/Transform'
 ], function(
 	LightComponent,
@@ -26,7 +28,9 @@ define([
 	CameraDebug,
 	MeshRendererDebug,
 	Material,
+	Util,
 	ShaderLib,
+	ShaderBuilder,
 	Transform
 ) {
 	'use strict';
@@ -41,9 +45,11 @@ define([
 		if(component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light);
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
+
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera);
 			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
+
 			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
 			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
@@ -65,7 +71,7 @@ define([
 		];
 	};
 
-	DebugDrawHelper.update = function(renderables, component, scale) {
+	DebugDrawHelper.update = function(renderables, component, camPosition) {
 		if(component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
 			if((camera.far / camera.near) !== renderables[1].farNear) {
@@ -75,10 +81,16 @@ define([
 			component.camera.changedProperties = false;
 		}
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
-		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component, scale);
+		DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
+		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
 
+		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 		renderables[0].transform.scale.scale(scale);
 		renderables[0].transform.update();
+		if (component.light && component.light instanceof DirectionalLight) {
+			renderables[1].transform.scale.scale(scale);
+			renderables[1].transform.update();
+		}
 	};
 
 	DebugDrawHelper.LightComponent = {};
@@ -92,7 +104,7 @@ define([
 		color[2] = light.color.data[2];
 	};
 
-	DebugDrawHelper.LightComponent.updateTransform = function(transform, component, scale) {
+	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
 			var r = light.range;
@@ -102,8 +114,6 @@ define([
 				var tan = Math.tan(angle / 2);
 				transform.scale.muld(tan, tan, 1);
 			}
-		} else {
-			transform.scale.scale(scale);
 		}
 		transform.update();
 	};

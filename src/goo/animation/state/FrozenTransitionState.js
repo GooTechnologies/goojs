@@ -13,7 +13,7 @@ function (AbstractTransitionState) {
 
 	FrozenTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
 
-	/*
+	/**
 	 * Update this state using the current global time.
 	 * @param {number} globalTime the current global time.
 	 */
@@ -26,7 +26,7 @@ function (AbstractTransitionState) {
 		}
 	};
 
-	/*
+	/**
 	 * Post update. If the state has no more clips and no end transition, this will clear this state from the layer.
 	 * @param layer the layer this state belongs to.
 	 */
@@ -37,13 +37,18 @@ function (AbstractTransitionState) {
 		}
 	};
 
-	/*
+	/**
 	 * Resets the clips to start at given time
 	 * @param {number} globalTime
 	 */
 	FrozenTransitionState.prototype.resetClips = function(globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
 		this._targetState.resetClips(globalTime);
+	};
+
+	FrozenTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		AbstractTransitionState.prototype.shiftClipTime.call(this, shiftTime);
+		this._targetState.shiftClipTime(shiftTime);
 	};
 
 	return FrozenTransitionState;

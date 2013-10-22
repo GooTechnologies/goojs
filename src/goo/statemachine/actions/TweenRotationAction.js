@@ -1,62 +1,101 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil'
+	'goo/math/Quaternion',
+	'goo/math/Matrix3x3'
 ],
 /** @lends */
-
-function(
+	function(
 	Action,
-	FSMUtil
-) {
+	Quaternion,
+	Matrix3x3
+	) {
 	"use strict";
 
-	function TweenRotationAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.entity = settings.entity || null;
-		this.time = settings.time || 2000;
-		this.event = settings.event || 'dummy';
-		this.from = settings.from || {
-			x: 0,
-			y: 0,
-			z: 0
-		};
-		this.to = settings.to || {
-			x: 0,
-			y: 0,
-			z: Math.PI * 2
-		};
-		this.easing = settings.easing || window.TWEEN.Easing.Elastic.InOut;
-		this.tween = new window.TWEEN.Tween();
-
-		this.external = [
-			{ name: 'Entity', key: 'entity', type: 'entity' },
-			{ name: 'Time', key: 'time', type: 'spinner' },
-			{ name: 'Send event', key: 'event', type: 'event' },
-			{ name: 'From', key: 'from', type: 'json' },
-			{ name: 'To', key: 'to', type: 'json' },
-			{ name: 'Easing', key: 'easing', type: 'function' }
-		];
+	function TweenRotationAction(/*id, settings*/) {
+		Action.apply(this, arguments);
 	}
 
 	TweenRotationAction.prototype = Object.create(Action.prototype);
+	TweenRotationAction.prototype.constructor = TweenRotationAction;
 
-	TweenRotationAction.prototype.onCreate = function(fsm) {
-		var that = this;
-		this.tween.from(FSMUtil.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
-			if (that.entity !== null) {
-				that.entity.transformComponent.transform.setRotationXYZ(this.x, this.y, this.z);
-				that.entity.transformComponent.setUpdated();
-			}
-		}).onComplete(function() {
-			fsm.handle(this.event);
-			console.log('complete:', this.event);
-		}.bind(this)).start();
+	TweenRotationAction.external = {
+		canTransition: true,
+		parameters: [{
+			name: 'Rotation',
+			key: 'to',
+			type: 'rotation',
+			description: 'Rotation',
+			'default': [0, 0, 0]
+		}, {
+			name: 'Relative',
+			key: 'relative',
+			type: 'boolean',
+			description: 'If true add, otherwise set',
+			'default': true
+		}, {
+			name: 'Time',
+			key: 'time',
+			type: 'number',
+			description: 'Time it takes for this movement to complete',
+			'default': 1000
+		}, {
+			name: 'Easing 1',
+			key: 'easing1',
+			type: 'dropdown',
+			description: 'Easing 1',
+			'default': 'Linear',
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+		}, {
+			name: 'Easing 2',
+			key: 'easing2',
+			type: 'dropdown',
+			description: 'Easing 2',
+			'default': 'In',
+			options: ['In', 'Out', 'InOut']
+		}],
+		transitions: [{
+			key: 'complete',
+			name: 'On Completion',
+			description: 'Event fired when the movement completes'
+		}]
 	};
 
-	TweenRotationAction.prototype.onDestroy = function() {
-		this.tween.stop();
+	TweenRotationAction.prototype.configure = function(settings) {
+		this.to = settings.to;
+		this.relative = settings.relative;
+		this.time = settings.time;
+		if (settings.easing1 === 'Linear') {
+			this.easing = window.TWEEN.Easing.Linear.None;
+		} else {
+			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+		}
+		this.eventToEmit = { channel: settings.transitions.complete };
+	};
+
+	TweenRotationAction.prototype._setup = function() {
+		this.tween = new window.TWEEN.Tween();
+	};
+
+	TweenRotationAction.prototype._run = function(fsm) {
+		var entity = fsm.getOwnerEntity();
+		var transformComponent = entity.transformComponent;
+		var rotation = transformComponent.transform.rotation;
+
+		var initialRotation = new Quaternion().fromRotationMatrix(rotation);
+		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0], this.to[1], this.to[2]));
+		var workQuaternion = new Quaternion();
+
+		if (this.relative) {
+			Quaternion.mul2(initialRotation, finalRotation, finalRotation);
+		}
+
+		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {
+			Quaternion.slerp(initialRotation, finalRotation, this.t, workQuaternion);
+			rotation.copyQuaternion(workQuaternion);
+			transformComponent.setUpdated();
+		}).onComplete(function() {
+			fsm.send(this.eventToEmit.channel);
+		}.bind(this)).start();
 	};
 
 	return TweenRotationAction;

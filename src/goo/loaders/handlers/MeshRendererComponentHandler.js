@@ -15,6 +15,8 @@ define([
 	pu,
 	_
 ) {
+	"use strict";
+
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

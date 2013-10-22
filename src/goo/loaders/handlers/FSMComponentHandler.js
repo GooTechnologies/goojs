@@ -9,6 +9,7 @@ define([
 	RSVP,
 	PromiseUtil
 	) {
+	"use strict";
 
 	function FSMComponentHandler() {
 		ComponentHandler.apply(this, arguments);

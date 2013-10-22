@@ -127,6 +127,43 @@ define([
 		};
 
 		/**
+		 * Shows an entity and its descendants if they are not hidden
+		 * @param {Entity} entity The entity to show
+		 */
+		EntityUtils.show = function(entity) {
+			entity.hidden = false;
+
+			//first search if it has hidden parents to determine if itself should be visible
+			var pointer = entity;
+			while (pointer.transformComponent.parent) {
+				pointer = pointer.transformComponent.parent.entity;
+				if (pointer.hidden) { return ; }
+			}
+
+			EntityUtils.traverse(entity, function(entity) {
+				if (entity.hidden) { return false; }
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.hidden = entity.hidden;
+				}
+			});
+		};
+
+		/**
+		 * Hides the entity and its descendants
+		 * @param {Entity} entity The entity to hide
+		 */
+		EntityUtils.hide = function(entity) {
+			entity.hidden = true;
+
+			// hide everything underneath this
+			EntityUtils.traverse(entity, function(entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.hidden = true;
+				}
+			});
+		};
+
+		/**
 		 * Creates an entity with an optional MeshData, MeshRenderer, Camera and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
 		 * @param {World} world
 		 * @param {MeshData} [meshData]

@@ -21,6 +21,8 @@ define([
 	ru,
 	_
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	/*
 	 Options:
@@ -83,7 +85,7 @@ define([
 			texture.wrapT = config.wrapV;
 			texture.magFilter = config.magFilter;
 			texture.minFilter = config.minFilter;
-			texture.anisotropy = config.anisotropy;
+			texture.anisotropy = Math.max(config.anisotropy, 1);
 
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);

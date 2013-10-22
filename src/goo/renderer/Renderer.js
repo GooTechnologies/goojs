@@ -9,9 +9,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/dds/DdsUtils',
-	'goo/renderer/MeshData',
 	'goo/renderer/Material',
-	'goo/renderer/Shader',
 	'goo/math/Transform',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
@@ -29,9 +27,7 @@ function (
 	Texture,
 	DdsLoader,
 	DdsUtils,
-	MeshData,
 	Material,
-	Shader,
 	Transform,
 	RenderQueue,
 	ShaderLib,
@@ -295,6 +291,8 @@ function (
 		// Default setup
 
 		this.clearColor = new Vector4();
+		// You need 64 bits for number equality
+		this._clearColor = new Float64Array(4);
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
@@ -385,7 +383,7 @@ function (
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
-		if (camera && camera.aspect !== aspect) {
+		if (camera && camera.aspect !== aspect && camera.projectionMode === 0) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
 			camera.onFrameChange();
@@ -437,7 +435,17 @@ function (
 	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
-		this.clearColor.set(r, g, b, a);
+		if (this._clearColor[0] === r
+			&& this._clearColor[1] === g
+			&& this._clearColor[2] === b
+			&& this._clearColor[3] === a) {
+				return;
+			}
+		this._clearColor[0] = r;
+		this._clearColor[1] = g;
+		this._clearColor[2] = b;
+		this._clearColor[3] = a;
+		this.clearColor.seta(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -709,24 +717,44 @@ function (
 			this.updateTextures(material);
 			this.updateLineAndPointSettings(material);
 
-			if (meshData.getIndexBuffer() !== null) {
-				this.bindData(meshData.getIndexData());
-				if (meshData.getIndexLengths() !== null) {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
-				}
-			} else {
-				if (meshData.getIndexLengths() !== null) {
-					this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
-				}
-			}
+			this._checkDualTransparency(material, meshData);
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
 
 			this.info.calls++;
 			this.info.vertices += meshData.vertexCount;
 			this.info.indices += meshData.indexCount;
+		}
+	};
+
+	Renderer.prototype._drawBuffers = function (meshData) {
+		if (meshData.getIndexBuffer() !== null) {
+			this.bindData(meshData.getIndexData());
+			if (meshData.getIndexLengths() !== null) {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
+			}
+		} else {
+			if (meshData.getIndexLengths() !== null) {
+				this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
+			}
+		}
+	};
+
+	Renderer.prototype._checkDualTransparency = function (material, meshData) {
+		if (material.dualTransparency) {
+			var savedCullFace = material.cullState.cullFace;
+			var newCullFace = savedCullFace === 'Front' ? 'Back' : 'Front';
+			material.cullState.cullFace = newCullFace;
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
+
+			material.cullState.cullFace = savedCullFace;
 		}
 	};
 

@@ -22,9 +22,12 @@ function (
 		this._filterChannels = {};
 		this._filter = null;
 		this.setFilter(filter, channelNames);
+
+		this._startTime = -Infinity;
+		this._endTime = Infinity;
 	}
 
-	/*
+	/**
 	 * Sets the filter on the joints which the clipsource will affect
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {string[]} [channelNames]
@@ -40,7 +43,7 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
 	 * @param {number} globalTime
 	 */
@@ -51,6 +54,7 @@ function (
 		}
 
 		var clockTime;
+		var duration;
 		if (instance._active) {
 			if (instance._timeScale !== 0.0) {
 				instance._prevUnscaledClockTime = globalTime - instance._startTime;
@@ -60,22 +64,60 @@ function (
 				clockTime = instance._prevClockTime;
 			}
 
-			var maxTime = this._clip._maxTime;
+			var maxTime = Math.min(this._clip._maxTime, this._endTime);
+			var minTime = Math.max(this._startTime, 0);
+			duration = maxTime - minTime;
 			if (maxTime === -1) {
 				return false;
 			}
 
 			// Check for looping.
 			if (maxTime !== 0) {
+				//*
+				if (instance._loopCount === -1) {
+					if (clockTime < 0) {
+						// ???
+						//clockTime = maxTime + clockTime % duration + minTime;
+						clockTime %= duration;
+						clockTime -= minTime;
+						clockTime *= -1;
+					} else {
+						// this works fine
+						//clockTime -= this._startTime; // strictly without this
+						clockTime %= duration;
+						clockTime += minTime;
+					}
+				} else if (instance._loopCount > 1 && duration * instance._loopCount >= Math.abs(clockTime)) {
+					// probably still the same?
+					if (clockTime < 0) {
+						// ???
+						//clockTime = maxTime + clockTime % duration + this._startTime;
+						clockTime %= duration;
+						clockTime -= minTime;
+					} else {
+						// this works fine
+						//clockTime -= this._startTime; // strictly without this
+						clockTime %= duration;
+						clockTime += minTime;
+					}
+				}
+
+
+				if (clockTime > maxTime || clockTime < 0) {
+					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
+					// deactivate this instance of the clip
+					instance._active = false;
+				}
+				//*/
+
+
+				/*
 				if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
-					//REVIEW: optimise this by choosing the first branch always (a conditional is more expensive than an extra addition)
-					//POST-REVIEW: Citation needed =)
 					if (clockTime < 0) {
 						clockTime = maxTime + clockTime % maxTime;
 					} else {
 						clockTime %= maxTime;
 					}
-					//
 				} else if (clockTime < 0) {
 					clockTime = maxTime + clockTime;
 				}
@@ -86,6 +128,7 @@ function (
 					// deactivate this instance of the clip
 					instance._active = false;
 				}
+				//*/
 			}
 
 			// update the clip with the correct clip local time.
@@ -94,7 +137,7 @@ function (
 		return instance._active;
 	};
 
-	/*
+	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
 	 * @param {number} globalTime
 	 */
@@ -103,18 +146,23 @@ function (
 		this._clipInstance._active = true;
 	};
 
+	ClipSource.prototype.shiftClipTime = function (shiftTime) {
+		this._clipInstance._startTime += shiftTime;
+		this._clipInstance._active = true;  // ?
+	};
+
 	ClipSource.prototype.setTimeScale = function (timeScale) {
 		this._clipInstance.setTimeScale(timeScale);
 	};
 
-	/*
+	/**
 	 * @returns {boolean} if clipsource is active
 	 */
 	ClipSource.prototype.isActive = function () {
 		return this._clipInstance._active && (this._clip._maxTime !== -1);
 	};
 
-	/*
+	/**
 	 * @return a source data mapping for the channels in this clip source
 	 */
 	ClipSource.prototype.getSourceData = function () {

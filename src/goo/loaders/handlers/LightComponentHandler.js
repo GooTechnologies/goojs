@@ -6,8 +6,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/math/Vector',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/math/Vector3'
+	'goo/util/ObjectUtil'
 ], function(
 	ComponentHandler,
 	LightComponent,
@@ -17,9 +16,10 @@ define(['goo/loaders/handlers/ComponentHandler',
 	Vector,
 	RSVP,
 	pu,
-	_,
-	Vector3
+	_
 ) {
+	"use strict";
+
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
@@ -36,7 +36,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 			shadowCaster: false
 		});
 		if (config.type !== 'DirectionalLight') {
-			config.range = config.range || 1000;
+			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
@@ -49,7 +49,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 				/** @type {number} */
 				far: 1000,
 				resolution: [512, 512],
-				upVector: Vector3.UNIT_Y
+				upVector: [0,1,0],
+				darkness: 0.5
 			});
 		}
 	};
@@ -78,7 +79,17 @@ define(['goo/loaders/handlers/ComponentHandler',
 		for (var key in config) {
 			var value = config[key];
 			if (light.hasOwnProperty(key)) {
-				if (light[key] instanceof Vector) {
+				if (key === 'shadowSettings') {
+					for (var key in value) {
+						var shadowVal = value[key];
+						if (light.shadowSettings[key] instanceof Vector) {
+							light.shadowSettings[key].set(shadowVal);
+						} else {
+							light.shadowSettings[key] = _.clone(shadowVal);
+						}
+					}
+				}
+				else if (light[key] instanceof Vector) {
 					light[key].set(value);
 				} else {
 					light[key] = _.clone(value);

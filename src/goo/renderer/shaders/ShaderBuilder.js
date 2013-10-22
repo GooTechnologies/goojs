@@ -1,5 +1,4 @@
 define([
-	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/MeshData',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
@@ -9,7 +8,6 @@ define([
 ],
 /** @lends */
 function(
-	ShaderFragment,
 	MeshData,
 	PointLight,
 	DirectionalLight,
@@ -30,12 +28,32 @@ function(
 	defaultLight.direction.setd(1, 1, 1).normalize();
 	ShaderBuilder.defaultLight = defaultLight;
 
+	ShaderBuilder.SKYBOX = null;
+	ShaderBuilder.SKYSPHERE = null;
+	ShaderBuilder.ENVIRONMENT_TYPE = 0;
+	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
+	ShaderBuilder.USE_FOG = false;
+	ShaderBuilder.FOG_SETTINGS = [0, 10000];
+	ShaderBuilder.FOG_COLOR = [1, 1, 1];
+
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			var textureMaps = shaderInfo.material._textureMaps;
 
 			shader.defines = shader.defines || {};
+
+			if (ShaderBuilder.SKYBOX) {
+				shaderInfo.material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
+			} else {
+				shaderInfo.material.removeTexture('ENVIRONMENT_CUBE');
+			}
+			if (ShaderBuilder.SKYSPHERE) {
+				shaderInfo.material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
+				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+			} else {
+				shaderInfo.material.removeTexture('ENVIRONMENT_SPHERE');
+			}
 
 			for (var attribute in attributeMap) {
 				if (!shader.defines[attribute]) {
@@ -75,13 +93,32 @@ function(
 					attribute === 'SHADOW_TYPE' ||
 					attribute === 'JOINT_COUNT' ||
 					attribute === 'WEIGHTS' ||
-					attribute === 'PHYSICALLY_BASED_SHADING') {
+					attribute === 'PHYSICALLY_BASED_SHADING' ||
+					attribute === 'ENVIRONMENT_TYPE') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
 					delete shader.defines[attribute];
 				}
 			}
+
+			// discard
+			if (shaderInfo.material.uniforms.discardThreshold >= 0.0) {
+				shader.defines.DISCARD = true;
+			} else {
+				delete shader.defines.DISCARD;
+			}
+
+			// fog
+			if (ShaderBuilder.USE_FOG) {
+				shader.defines.FOG = true;
+				shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+				shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+			} else {
+				delete shader.defines.FOG;
+			}
+
+			shader.defines.SKIP_SPECULAR = true;
 
 			//TODO: Hacky?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
@@ -97,6 +134,7 @@ function(
 			shader.uniforms.materialDiffuse = shader.uniforms.materialDiffuse || 'DIFFUSE';
 			shader.uniforms.materialSpecular = shader.uniforms.materialSpecular || 'SPECULAR';
 			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
+			shader.uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
 			var pointCount = 0;
 			shader.uniforms.pointLightColor = shader.uniforms.pointLightColor || [];
@@ -198,6 +236,7 @@ function(
 				shader.uniforms.shadowLightMatrices = [];
 				shader.uniforms.shadowLightPositions = [];
 				shader.uniforms.cameraScales = [];
+				shader.uniforms.shadowDarkness = [];
 				shader.uniforms.shadowMapSizes = [];
 				for (var i = 0; i < shadowCount; i++) {
 					var shadowData = shadowHandler.shadowLights[i].shadowSettings.shadowData;
@@ -213,6 +252,7 @@ function(
 					shader.uniforms.shadowLightPositions[i*3+2] = translationData[2];
 
 					shader.uniforms.cameraScales[i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+					shader.uniforms.shadowDarkness[i] = shadowHandler.shadowLights[i].shadowSettings.darkness;
 
 					shader.uniforms.shadowMapSizes[i*2+0] = shadowHandler.shadowLights[i].shadowSettings.resolution[0];
 					shader.uniforms.shadowMapSizes[i*2+1] = shadowHandler.shadowLights[i].shadowSettings.resolution[1];
@@ -259,6 +299,8 @@ function(
 			'uniform vec4 materialSpecular;',
 			'uniform float materialSpecularPower;',
 
+			'uniform vec3 globalAmbient;',
+
 			'#ifndef MAX_DIRECTIONAL_LIGHTS',
 				'#define MAX_DIRECTIONAL_LIGHTS 0',
 			"#endif",
@@ -294,26 +336,30 @@ function(
 				"#endif",
 
 				'uniform sampler2D shadowMaps[MAX_SHADOWS];',
-				'uniform vec2 shadowMapSizes[MAX_SHADOWS];',
 				'uniform vec3 shadowLightPositions[MAX_SHADOWS];',
 				'uniform float cameraScales[MAX_SHADOWS];',
+				'uniform float shadowDarkness[MAX_SHADOWS];',
 				'varying vec4 shadowLightDepths[MAX_SHADOWS];',
 
-				'float ChebychevInequality(in vec2 moments, in float t) {',
-					'if ( t <= moments.x ) return 1.0;',
-					'float variance = moments.y - (moments.x * moments.x);',
-					'variance = max(variance, 0.02);',
-					'float d = t - moments.x;',
-					'return variance / (variance + d * d);',
-				'}',
+				'#if SHADOW_TYPE == 1', // PCF
+					'uniform vec2 shadowMapSizes[MAX_SHADOWS];',
+				'#elif SHADOW_TYPE == 2', // VSM
+					'float ChebychevInequality(in vec2 moments, in float t) {',
+						'if ( t <= moments.x ) return 1.0;',
+						'float variance = moments.y - (moments.x * moments.x);',
+						'variance = max(variance, 0.02);',
+						'float d = t - moments.x;',
+						'return variance / (variance + d * d);',
+					'}',
 
-				'float VsmFixLightBleed(in float pMax, in float amount) {',
-					'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
-				'}',
+					// 'float VsmFixLightBleed(in float pMax, in float amount) {',
+						// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
+					// '}',
+				"#endif",
 			"#endif"
 		].join('\n'),
 		fragment: [
-			'#ifdef SPECULAR_MAP',
+			'#if defined(SPECULAR_MAP) && defined(TEXCOORD0)',
 				'float specularStrength = texture2D(specularMap, texCoord0).x;',
 			'#else',
 				'float specularStrength = 1.0;',
@@ -468,17 +514,21 @@ function(
 				"totalSpecular += spotSpecular;",
 			"#endif",
 
-			'float shadow = 1.0;',
+			// 'if (shadowLightDepths[i].w > 0.0) {',
+			// 	'final_color.rgb *= texture2D(normalMap, depth.xy).rgb;',
+			// '}',
+
 			"#if MAX_SHADOWS > 0",
+				'float shadow = 1.0;',
 				'for (int i = 0; i < MAX_SHADOWS; i++) {',
 					'vec3 depth = shadowLightDepths[i].xyz / shadowLightDepths[i].w;',
 					'depth.z = length(vWorldPos.xyz - shadowLightPositions[i]) * cameraScales[i];',
 
-					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && depth.z >= 0.0 && depth.z <= 1.0) {',
+					'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths[i].z >= 0.0 && depth.z <= 1.0) {',
 						'#if SHADOW_TYPE == 0', // Normal
 							'depth.z *= 0.96;',
 							'float shadowDepth = texture2D(shadowMaps[i], depth.xy).x;',
-							'if ( depth.z > shadowDepth ) shadow *= 0.5;',
+							'if ( depth.z > shadowDepth ) shadow *= shadowDarkness[i];',
 						'#elif SHADOW_TYPE == 1', // PCF TODO
 							'depth.z *= 0.96;',
 							'float shadowPcf = 0.0;',
@@ -511,7 +561,8 @@ function(
 							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 							'fDepth = texture2D(shadowMaps[i], depth.xy + vec2(dx1, dy1)).r;',
 							'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-							'shadow *= (1.0 - shadowPcf) * 0.5 + 0.5;',
+							// 'shadow *= (1.0 - shadowPcf) * 0.5 + 0.5;',
+							'shadow *= (1.0 - shadowPcf) * (1.0 - shadowDarkness[i]) + shadowDarkness[i];',
 						'#elif SHADOW_TYPE == 2', // VSM
 							'vec4 texel = texture2D(shadowMaps[i], depth.xy);',
 							'vec2 moments = vec2(texel.x, texel.y);',
@@ -522,14 +573,15 @@ function(
 					'}',
 				'}',
 				'shadow = clamp(shadow, 0.0, 1.0);',
+				'totalDiffuse *= shadow;',
+				'totalSpecular *= shadow;',
 			'#endif',
 
-			"vec3 ambientLightColor = vec3(1.0, 1.0, 1.0);",
-			"#ifdef METAL",
-				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb + totalSpecular * shadow);",
-			"#else",
-				"final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse * shadow + ambientLightColor * materialAmbient.rgb) + totalSpecular * shadow;",
-			"#endif"
+			'#ifdef SKIP_SPECULAR',
+				'final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + globalAmbient + materialAmbient.rgb);',
+			'#else',
+				'final_color.xyz = final_color.xyz * (materialEmissive.rgb + totalDiffuse + globalAmbient + materialAmbient.rgb) + totalSpecular;',
+			'#endif'
 		].join('\n')
 	};
 
@@ -625,6 +677,9 @@ function(
 			') * vertexWeights.w;',
 
 			'wMatrix = wMatrix * mat / mat[3][3];',
+			'#ifdef NORMAL',
+				'nMatrix = nMatrix * mat / mat[3][3];',
+			'#endif',
 			'#endif'
 		].join('\n')
 	};

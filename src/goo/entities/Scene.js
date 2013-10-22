@@ -93,6 +93,9 @@ define( [
 			// REVIEW: Should scenes share renderer? Probably not.
 			this.gooRunner = goo;
 			this.renderer  = goo.renderer;
+
+			this.addSystemAt( new ScriptSystem      ( this.renderer ), 0 );
+			this.addSystemAt( new CSSTransformSystem( this.renderer ), 3 );
 		};
 
 		// REVIEW: Remove all references to managers
@@ -154,6 +157,12 @@ define( [
 					value.init( this );
 				}
 			});
+		};
+
+		Scene.prototype.addSystemAt = function( system, index ) {
+			if( this.systems.indexOf( system ) === -1 ) {
+				this.systems.splice( index, 1, system );
+			}
 		};
 
 		Scene.prototype.getSystem = function( type ) {

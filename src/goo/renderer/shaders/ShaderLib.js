@@ -40,15 +40,27 @@ define([
 	    uniforms: {
 	        viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 	        worldMatrix: Shader.WORLD_MATRIX,
+	        normalMatrix: Shader.NORMAL_MATRIX,
 	        cameraPosition: Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			offsetRepeat : [0,0,1,1],
 			normalMap : Shader.NORMAL_MAP,
+			normalMultiplier: 1.0,
 			specularMap : Shader.SPECULAR_MAP,
 			emissiveMap : Shader.EMISSIVE_MAP,
 			aoMap : Shader.AO_MAP,
 			lightMap : Shader.LIGHT_MAP,
-			color: [1,1,1]
+			environmentCube : 'ENVIRONMENT_CUBE',
+			environmentSphere : 'ENVIRONMENT_SPHERE',
+			reflectionMap : 'REFLECTION_MAP',
+			transparencyMap : 'TRANSPARENCY_MAP',
+			opacity: 1.0,
+			reflectivity: 1.0,
+			fresnel: 1.0,
+			discardThreshold: -0.01,
+			fogSettings: [0, 10000],
+			fogColor: [1, 1, 1],
+			shadowDarkness: 0.5
 	    },
 		vshader : [
 			'attribute vec3 vertexPosition;',
@@ -74,6 +86,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
+			'uniform mat4 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -95,6 +108,9 @@ define([
 
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
+				'#ifdef NORMAL',
+					'mat4 nMatrix = normalMatrix;',
+				'#endif',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
 				'vWorldPos = worldPos.xyz;',
@@ -103,10 +119,10 @@ define([
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((wMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((wMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -132,6 +148,7 @@ define([
 			'#endif',
 			'#ifdef NORMAL_MAP',
 				'uniform sampler2D normalMap;',
+				'uniform float normalMultiplier;',
 			'#endif',
 			'#ifdef SPECULAR_MAP',
 				'uniform sampler2D specularMap;',
@@ -144,6 +161,34 @@ define([
 			'#endif',
 			'#ifdef LIGHT_MAP',
 				'uniform sampler2D lightMap;',
+			'#endif',
+			'#ifdef TRANSPARENCY_MAP',
+				'uniform sampler2D transparencyMap;',
+			'#endif',
+			'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
+				'#ifndef ENVIRONMENT_TYPE',
+					'#define ENVIRONMENT_TYPE 0',
+				"#endif",
+				'#ifdef ENVIRONMENT_CUBE',
+					'uniform samplerCube environmentCube;',
+				'#else',
+					'uniform sampler2D environmentSphere;',
+				'#endif',
+				'uniform float reflectivity;',
+				'uniform float fresnel;',
+				'#ifdef REFLECTION_MAP',
+					'uniform sampler2D reflectionMap;',
+				'#endif',
+			'#endif',
+
+			'uniform float opacity;',
+			'#ifdef DISCARD',
+				'uniform float discardThreshold;',
+			'#endif',
+
+			'#ifdef FOG',
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
 			'#endif',
 
 			'varying vec3 vWorldPos;',
@@ -171,7 +216,7 @@ define([
 			'{',
 				'vec4 final_color = vec4(1.0);',
 
-				'#ifdef DIFFUSE_MAP',
+				'#if defined(DIFFUSE_MAP) && defined(TEXCOORD0)',
 					'final_color *= texture2D(diffuseMap, texCoord0);',
 				'#endif',
 
@@ -179,24 +224,38 @@ define([
 					'final_color *= color;',
 				'#endif',
 
+				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
+					'final_color.a *= texture2D(transparencyMap, texCoord0).r;',
+				'#endif',
+				'final_color.a *= opacity;',
+
+				'#ifdef DISCARD',
+					'if (final_color.a < discardThreshold) discard;',
+				'#endif',
+
+				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
+					'vec3 saveColor = final_color.rgb;',
+				'#endif',
+
 				'#ifdef AO_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color *= texture2D(aoMap, texCoord1);',
-					'#else',
-						'final_color *= texture2D(aoMap, texCoord0);',
+						'final_color.rgb *= texture2D(aoMap, texCoord1).rgb;',
+					'#elif TEXCOORD0',
+						'final_color.rgb *= texture2D(aoMap, texCoord0).rgb;',
 					'#endif',
 				'#endif',
 
 				'#ifdef LIGHT_MAP',
 					'#ifdef TEXCOORD1',
-						'final_color *= texture2D(lightMap, texCoord1) * 2.0 - 0.5;',
-					'#else',
-						'final_color *= texture2D(lightMap, texCoord0) * 2.0 - 0.5;',
+						'final_color.rgb *= texture2D(lightMap, texCoord1).rgb * 2.0 - 0.5;',
+					'#elif TEXCOORD0',
+						'final_color.rgb *= texture2D(lightMap, texCoord0).rgb * 2.0 - 0.5;',
 					'#endif',
 				'#else',
-					'#if defined(TANGENT) && defined(NORMAL_MAP)',
+					'#if defined(TANGENT) && defined(NORMAL_MAP) && defined(TEXCOORD0)',
 						'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 						'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
+						'tangentNormal.xy *= normalMultiplier;',
 						'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 						'vec3 N = normalize(worldNormal);',
 					'#elif defined(NORMAL)',
@@ -208,9 +267,65 @@ define([
 					ShaderBuilder.light.fragment,
 				'#endif',
 
-				'#ifdef EMISSIVE_MAP',
+				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
 					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
-					'final_color.xyz += final_color.xyz * emissive;',
+					'final_color.rgb = max(final_color.rgb, saveColor * emissive);',
+				'#endif',
+
+				'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
+
+// Refraction
+// float etaRatio = 1.5;
+// float cosI = dot(-viewPosition, N);
+// float cosT2 = 1.0 - etaRatio * etaRatio * (1.0 – cosI * cosI);
+// vec3 T = etaRatio * I + ((etaRatio * cosI - sqrt(abs(cosT2))) * N);
+// vec3 refractVec = T * step(cosT2, 0.0);
+
+					'vec3 reflectionVector = reflect(viewPosition, N);',
+					'reflectionVector.yz = -reflectionVector.yz;',
+
+					'#ifdef ENVIRONMENT_CUBE',
+						'vec4 environment = textureCube(environmentCube, reflectionVector);',
+					'#else',
+						'#if ENVIRONMENT_TYPE == 0',
+							'reflectionVector = -reflectionVector;',
+							'float m = 4.0 * sqrt(reflectionVector.x*reflectionVector.x + reflectionVector.y*reflectionVector.y + (reflectionVector.z+1.0)*(reflectionVector.z+1.0));',
+							'vec4 environment = texture2D(environmentSphere, (reflectionVector.xy / m) + 0.5);',
+						'#else',
+							'reflectionVector.xyz = vec3(-reflectionVector.z, -reflectionVector.y, reflectionVector.x);',
+							'vec2 index;',
+							'index.y = dot(normalize(reflectionVector), vec3(0.0,1.0,0.0));',
+							'reflectionVector.y = 0.0;',
+							'index.x = dot(normalize(reflectionVector), vec3(1.0,0.0,0.0)) * 0.5;',
+							'if (reflectionVector.z >= 0.0) {',
+								'index = (index + 1.0) * 0.5;',
+							'} else {',
+								'index.t = (index.t + 1.0) * 0.5;',
+								'index.s = (-index.s) * 0.5 + 1.0;',
+							'}',
+							'vec4 environment = texture2D(environmentSphere, index);',
+						'#endif',
+					'#endif',
+
+					'float reflectionAmount = reflectivity;',
+					'#if defined(REFLECTION_MAP) && defined(TEXCOORD0)',
+						'reflectionAmount *= texture2D(reflectionMap, texCoord0).r;',
+					'#endif',
+
+					'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
+					'reflectionAmount *= fresnelVal;',
+
+					'final_color = mix(final_color, environment, reflectionAmount);',
+				'#endif',
+
+				'#ifndef LIGHT_MAP',
+					'final_color.rgb += totalSpecular;',
+					'final_color.a += min(length(totalSpecular), 1.0);',
+				'#endif',
+
+				'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 				'#endif',
 
 				'gl_FragColor = final_color;',
@@ -619,7 +734,8 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.DIFFUSE_MAP,
 			uImageIncrement : [0.001953125, 0.0],
-			cKernel : []
+			cKernel : [],
+			size: 1.0
 		},
 		vshader : [//
 		'attribute vec3 position;',
@@ -628,13 +744,14 @@ define([
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
 		'uniform mat4 worldMatrix;',
+		'uniform float size;',
 
 		'uniform vec2 uImageIncrement;',
 
 		'varying vec2 vUv;',
 
 		'void main() {',
-		'	vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;',
+		'	vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * size * uImageIncrement;',
 		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( position, 1.0 );',
 		'}'//
 		].join("\n"),
@@ -642,6 +759,7 @@ define([
 		'uniform float cKernel[ KERNEL_SIZE_INT ];',
 		'uniform sampler2D tDiffuse;',
 		'uniform vec2 uImageIncrement;',
+		'uniform float size;',
 
 		'varying vec2 vUv;',
 
@@ -651,7 +769,7 @@ define([
 
 		'	for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
 		'		sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
-		'		imageCoord += uImageIncrement;',
+		'		imageCoord += uImageIncrement * size;',
 		'	}',
 
 		'	gl_FragColor = sum;',
@@ -1086,7 +1204,9 @@ define([
 
 		"void main() {",
 		"	vec4 cTextureScreen = texture2D( tDiffuse, texCoord0 );",
-		"	float x = texCoord0.x * texCoord0.y * time * 1000.0;", "x = mod( x, 13.0 ) * mod( x, 123.0 );", "float dx = mod( x, 0.01 );",
+		"	float x = texCoord0.x * texCoord0.y * time * 1000.0;",
+		"	x = mod( x, 13.0 ) * mod( x, 123.0 );",
+		"	float dx = mod( x, 0.01 );",
 		"	vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx * 100.0, 0.0, 1.0 );",
 		"	vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );",
 		"	cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;",
@@ -1949,11 +2069,18 @@ define([
 	};
 
 	ShaderLib.lightDepth = {
+		processors: [
+			ShaderBuilder.animation.processor
+		],
 		defines: {
-			SHADOW_TYPE: 0
+			SHADOW_TYPE: 0,
+			WEIGHTS: true,
+			JOINTIDS: true
 		},
 		attributes : {
-			vertexPosition : MeshData.POSITION
+			vertexPosition : MeshData.POSITION,
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,
@@ -1969,9 +2096,12 @@ define([
 		'uniform mat4 worldMatrix;',
 
 		'varying vec4 worldPosition;',
+		ShaderBuilder.animation.prevertex,
 
 		'void main(void) {',
-			'worldPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'mat4 wMatrix = worldMatrix;',
+			ShaderBuilder.animation.vertex,
+			'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
 			'gl_Position = projectionMatrix * worldPosition;',
 		'}'
 		].join('\n'),
@@ -1990,6 +2120,8 @@ define([
 			'#if SHADOW_TYPE == 0',
 				'gl_FragColor = vec4(linearDepth);',
 			'#elif SHADOW_TYPE == 1',
+				'gl_FragColor = vec4(linearDepth);',
+			'#elif SHADOW_TYPE == 2',
 				'gl_FragColor = vec4(linearDepth, linearDepth * linearDepth, 0.0, 0.0);',
 			'#endif',
 		'}'//

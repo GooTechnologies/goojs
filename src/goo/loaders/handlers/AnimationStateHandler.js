@@ -1,32 +1,23 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/layer/AnimationLayer',
-	'goo/animation/layer/LayerLERPBlender',
 	'goo/animation/state/SteadyState',
 	'goo/animation/blendtree/ClipSource',
 	'goo/animation/blendtree/ManagedTransformSource',
 	'goo/animation/blendtree/BinaryLERPSource',
 	'goo/animation/blendtree/FrozenClipSource',
-	'goo/animation/state/FadeTransitionState',
-	'goo/animation/state/SyncFadeTransitionState',
-	'goo/animation/state/FrozenTransitionState',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
 ], function(
 	ConfigHandler,
-	AnimationLayer,   /* REVIEW: AnimationLayer does not appear to be used here? */
-	LayerLERPBlender, /* REVIEW: LayerLERPBlender does not appear to be used either? */
 	SteadyState,
 	ClipSource,
 	ManagedTransformSource,
 	BinaryLERPSource,
 	FrozenClipSource,
-	FadeTransitionState,      /* REVIEW: Neither does FadeTransitionState appear to be used? */
-	SyncFadeTransitionState,  /* REVIEW: Nor SyncFadeTransitionState? */
-	FrozenTransitionState,    /* REVIEW: Or FrozenTransitionState? */
 	RSVP,
 	PromiseUtil
 ) {
+	"use strict";
 
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -43,6 +34,12 @@ define([
 			object._sourceTree = source;
 			return object;
 		});
+	};
+
+	AnimationStateHandler.prototype.remove = function(ref) {
+		if (this._objects[ref]) {
+			delete this._objects[ref];
+		}
 	};
 
 	AnimationStateHandler.prototype._create = function(ref) {
@@ -83,7 +80,8 @@ define([
 					return this.getConfig(cfg.clipRef).then(function(config) {
 						return that.updateObject(cfg.clipRef, config, that.options);
 					}).then(function(clip) {
-						return source.initFromClip(clip, cfg.filter, cfg.channels);
+						source.initFromClip(clip, cfg.filter, cfg.channels);
+						return source;
 					});
 				} else {
 					return PromiseUtil.createDummyPromise(source);

@@ -271,7 +271,8 @@ define(
 			// have a separate processDebug which is attached to the raf if debug === true
 
 			this.processParameters.updateTime( timeStamp );
-			World.time = timeStamp;				// REVIEW: Remove!
+			World.time = this.processParameters.time;				// REVIEW: Remove!
+			World.tpf  = this.processParameters.deltaTime;
 
 			var c, cl = this.callbacksPreProcess.length;
 			for( c = 0; c < cl; c++ ) {

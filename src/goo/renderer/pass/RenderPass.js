@@ -24,12 +24,12 @@ define(['goo/renderer/Renderer',
 	}
 
 	// RenderPasses may have a fourth additional parameter called delta
-	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights) {
+	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights, clearColor) {
 		camera = camera || Renderer.mainCamera;
 		lights = lights || [];
-		if (this.clearColor) {
+		if (clearColor) {
 			this.oldClearColor.setv(renderer.clearColor);
-			renderer.setClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
+			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 
 		var renderList;
@@ -45,7 +45,8 @@ define(['goo/renderer/Renderer',
 		}
 
 		if (this.clearColor) {
-			renderer.setClearColor(this.oldClearColor.r, this.oldClearColor.g, this.oldClearColor.b, this.oldClearColor.a);
+			var oc = this.oldClearColor.data;
+			renderer.setClearColor(oc[0], oc[1], oc[2], oc[3]);
 		}
 	};
 

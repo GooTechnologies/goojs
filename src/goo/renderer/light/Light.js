@@ -43,7 +43,8 @@ function (
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],
-			upVector: Vector3.UNIT_Y
+			upVector: Vector3.UNIT_Y,
+			darkness: 0.5
 		};
 
 		this.changedProperties = false;

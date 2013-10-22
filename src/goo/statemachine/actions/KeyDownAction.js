@@ -1,53 +1,38 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil
+	Action
 ) {
 	"use strict";
 
 	function KeyDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === this.key) {
+			if (event.which === +this.key) {
 				this.updated = true;
-				if (this.keyVariable) {
-					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-				}
 			}
 		}.bind(this);
 	}
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
-
-	KeyDownAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.keydown };
-		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.getKey(key);
-		this.keyVariable = settings.keyVariable;
-	};
+	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'key',
 			description: 'Key to listen for'
-		}, {
-			name: 'Key variable',
-			key: 'keyVariable',
-			type: 'identifier',
-			description: 'Variable to store the key in'
 		}],
-
 		transitions: [{
-			name: 'keydown',
+			key: 'keydown',
+			name: 'Key down',
 			description: 'Fired on key down'
 		}]
 	};
@@ -59,9 +44,7 @@ function(
 	KeyDownAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.keydown);
 		}
 	};
 

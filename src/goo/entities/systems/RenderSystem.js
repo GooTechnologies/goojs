@@ -30,6 +30,7 @@ function (
 		this.partitioner = new SimplePartitioner();
 		this.preRenderers = [];
 		this.composers = [];
+		this._composersActive = true;
 		this.doRender = true;
 
 		this._debugMaterials = {};
@@ -105,7 +106,7 @@ function (
 
 			this.partitioner.process(this.camera, this.entities, this.renderList);
 
-			if (this.composers.length > 0) {
+			if (this.composers.length > 0 && this._composersActive) {
 				for (var i = 0; i < this.composers.length; i++) {
 					var composer = this.composers[i];
 					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, true, this.overrideMaterials);
@@ -118,6 +119,10 @@ function (
 
 	RenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
 		renderer.renderToPick(this.renderList, this.camera, true, skipUpdateBuffer);
+	};
+
+	RenderSystem.prototype.enableComposers = function(activate) {
+		this._composersActive = !!activate;
 	};
 
 	RenderSystem.prototype._createDebugMaterial = function(key) {

@@ -3,7 +3,6 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/math/MathUtils',
 	'goo/math/Quaternion',
-	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil'
@@ -12,11 +11,12 @@ define([
 	TransformComponent,
 	MathUtils,
 	Quaternion,
-	RSVP,
 	PromiseUtil,
 	_,
 	ArrayUtil
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);

@@ -1,5 +1,4 @@
 define([
-	'goo/entities/Entity',
 	'goo/entities/EntityUtils',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
@@ -12,7 +11,6 @@ define([
 ],
 /** @lends */
 function(
-	Entity,
 	EntityUtils,
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -23,6 +21,7 @@ function(
 	ShaderLib,
 	Util
 ) {
+	"use strict";
 
 	var _defaultGrid = {
 		stepX: 1,

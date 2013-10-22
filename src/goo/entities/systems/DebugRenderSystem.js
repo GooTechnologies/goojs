@@ -75,7 +75,7 @@ function (
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
-				if(entity.hasComponent(componentName) && (this.doRender[componentName] || entity.getComponent(componentName).forceDebug)) {
+				if(entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName) && (this.doRender[componentName] || entity.getComponent(componentName).forceDebug)) {
 					var component = entity.getComponent(componentName);
 					var renderables;
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
@@ -89,7 +89,7 @@ function (
 					}
 					renderables[0].transform.copy(entity.transformComponent.worldTransform);
 					renderables[1].transform.copy(entity.transformComponent.worldTransform);
-					DebugDrawHelper.update(renderables, component, this.scale);
+					DebugDrawHelper.update(renderables, component, this.camera.translation);
 					this.renderList[count++] = renderables[0];
 					this.renderList[count++] = renderables[1];
 				}

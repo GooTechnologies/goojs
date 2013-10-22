@@ -10,10 +10,13 @@ define([
 	'goo/renderer/pass/RenderPass',
 	'goo/math/Vector4',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/Util',
 	'goo/renderer/Texture',
 	'goo/entities/EntityUtils',
+	'goo/entities/SystemBus',
+	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil'
 ], function(
 	ConfigHandler,
@@ -27,12 +30,17 @@ define([
 	RenderPass,
 	Vector4,
 	ShaderLib,
+	ShaderBuilder,
 	FullscreenPass,
 	Util,
 	Texture,
 	EntityUtils,
+	SystemBus,
+	ArrayUtil,
 	_
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	/**
 	 * @class
@@ -42,6 +50,7 @@ define([
 		ConfigHandler.apply(this, arguments);
 		this._skybox = null;
 		this._skyboxTexture = null;
+		this._skyboxGeographic = false;
 
 		this._composer = null;
 		this._passes = [];
@@ -55,14 +64,23 @@ define([
 		_.defaults(config.skybox, {
 			shape: 'Box',
 			imageUrls: ['','','','','',''],
-			rotation: 0
+			rotation: 0,
+			environmentType: 1
 		});
+		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
+		config.globalAmbient = config.globalAmbient || [0, 0, 0];
+		config.useFog = config.useFog || false;
+		config.fogColor = config.fogColor || [1, 1, 1];
+		config.fogNear = config.fogNear || 0;
+		config.fogFar = config.fogFar==null? 10000: config.fogFar;
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
 
-	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation) {
-		var skybox = new Skybox(shape, [], Sphere.TextureModes.Projected, rotation);
+
+	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation, mapping) {
+		var mapping = mapping ? Sphere.TextureModes.Projected : Sphere.TextureModes.Chromeball;
+		var skybox = new Skybox(shape, [], mapping, rotation);
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
 		skyboxEntity.transformComponent.updateWorldTransform();
@@ -76,15 +94,19 @@ define([
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
 			var imageUrls = skyboxConfig.imageUrls;
 			var type = (this._skybox) ? this._skybox.name.split('_')[1] : null;
-			if (!shape || type !== shape) {
+			if (!shape || type !== shape || type === 'sphere' && skyboxConfig.environmentType !== this._skyboxGeographic) {
 				if(this._skybox) {
 					this.world.getSystem('RenderSystem').removed(this._skybox);
 				}
-				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation);
+				this._createSkybox(this.world.gooRunner, shape, imageUrls, rotation, skyboxConfig.environmentType);
 				this._skyboxTexture = null;
 				type = shape;
+				this._skyboxGeographic = skyboxConfig.environmentType;
 			}
-			var xAngle = (type === Skybox.SPHERE) ? Math.PI / 2 : 0;
+			var xAngle = 0;
+			if (type === Skybox.SPHERE) {
+				xAngle = (skyboxConfig.environmentType) ? Math.PI / 2 : Math.PI;
+			}
 			this._skybox.transformComponent.transform.rotation.fromAngles(xAngle, rotation, 0);
 			this._skybox.transformComponent.updateTransform();
 			this._skybox.transformComponent.updateWorldTransform();
@@ -93,8 +115,10 @@ define([
 			var material = skybox.meshRendererComponent.materials[0];
 			var texture = this._skyboxTexture;
 
-			var update = !texture;
+			var update = !texture; // New load or skybox shape changed 
 			if(!update) {
+
+				// Same shape, just maybe some new images
 				if (texture.image.data) {
 					for (var i = 0; i < imageUrls.length; i++) {
 						var img = texture.image.data[i];
@@ -108,7 +132,10 @@ define([
 				}
 			}
 
-			if(!update) { return; }
+			//Hacky
+			ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
+
+			if(!update) { return PromiseUtil.createDummyPromise(); }
 
 			var promises = [];
 			for (var i = 0; i < imageUrls.length; i++) {
@@ -119,20 +146,26 @@ define([
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
-				return;
+				return PromiseUtil.createDummyPromise();
 			}
 			var that = this;
-			RSVP.all(promises).then(function(images) {
+			return RSVP.all(promises).then(function(images) {
 					if (type === Skybox.SPHERE) {
 						if (imageUrls[0] === '') {
-							console.debug('Missing front texture');
+							SystemBus.emit('goo.error.skybox', {
+								type: 'Sphere',
+								message: 'The skysphere needs an image to display.'
+							});
 							return;
 						}
 						images = images[0];
 						images.setAttribute('data-ref', imageUrls[0]);
 					} else {
 						if (images.length < 6) {
-							console.debug('Need 6 images to work, have '+images.length);
+							SystemBus.emit('goo.error.skybox', {
+								type: 'Box',
+								message: 'The skybox needs six images of the same size to display'
+							});
 							skybox.meshRendererComponent.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
 							return;
@@ -142,7 +175,10 @@ define([
 						for (var i = 0; i < 6; i++) {
 							var img = images[i];
 							if (w !== img.width || h !== img.height) {
-								console.error('Images not all the same size, not updating');
+								SystemBus.emit('goo.error.skybox', {
+									type: 'Box',
+									message: 'The skybox needs six images of the same size to display'
+								});
 								skybox.meshRendererComponent.hidden = true;
 								material.setTexture('DIFFUSE_MAP', null);
 								return;
@@ -151,7 +187,7 @@ define([
 						}
 					}
 					if (!texture) {
-						texture = that._skyboxTexture = new Texture();
+						texture = that._skyboxTexture = new Texture(null, {flipY: false });
 						if (type === Skybox.BOX) {
 							texture.variant = 'CUBE';
 						}
@@ -165,6 +201,18 @@ define([
 					texture.setNeedsUpdate();
 					if (type === Skybox.BOX && images.length || images) {
 						material.setTexture('DIFFUSE_MAP', texture);
+
+						if (type === Skybox.BOX) {
+							ShaderBuilder.SKYBOX = texture;
+							ShaderBuilder.SKYSPHERE = null;
+						} else {
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = texture;
+							ShaderBuilder.ENVIRONMENT_TYPE = skyboxConfig.environmentType ? 1 : 0;
+						}
+
+						skybox.meshRendererComponent.hidden = false;
+
 					}
 			});
 		}
@@ -188,7 +236,17 @@ define([
 			return RSVP.all(promises).then(function(entities) {
 				for (var j = 0; j < entities.length; j++) {
 					var entity = entities[j];
-					if ((that.options.beforeAdd == null || that.options.beforeAdd.apply == null || that.options.beforeAdd(entity)) && !that.world.entityManager.containsEntity(entity)) {
+					if (
+						// beforeAdd returns true (or is not defined)
+						(that.options.beforeAdd == null ||
+							that.options.beforeAdd.apply == null ||
+							that.options.beforeAdd(entity)) &&
+
+						// Entity is not already in the scene
+						!(that.world.entityManager.containsEntity(entity) ||
+							that.world._addedEntities.filter(function(e) {
+								return e.id === entity.id;
+						}).length > 0)) {
 						//console.log("Adding " + entity.name + " to world");
 						entity.addToWorld();
 					}
@@ -215,14 +273,16 @@ define([
 			};
 
 			for (var i = 0; i < config.posteffectRefs.length; i++) {
-				promises.push(handlePosteffectRef(config.posteffectRefs[i]));
+				if(config.posteffectRefs[i]) {
+					promises.push(handlePosteffectRef(config.posteffectRefs[i]));
+				}
 			}
 
 			return RSVP.all(promises).then(function(posteffects) {
 				var composer, renderPass, outPass;
-				if(!this._composer) {
-					composer = this._composer = new Composer();
-					mainRenderSystem.composers.push(composer);
+				if(!that._composer) {
+					composer = that._composer = new Composer();
+					//mainRenderSystem.composers.push(composer);
 					renderPass = new RenderPass(mainRenderSystem.renderList);
 					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
 					// Regular copy
@@ -232,44 +292,74 @@ define([
 					//outPass.clear = { color: false, depth: true, stencil: true };
 					//outPass.clear = true;
 				} else {
-					composer = this._composer;
+					composer = that._composer;
 					renderPass = composer.passes[0];
 					outPass = composer.passes[composer.passes.length - 1];
 				}
 				composer.passes = [];
 				composer.addPass(renderPass);
 				for (var j = 0; j < posteffects.length; j++) {
-					var posteffect = posteffects[j];
-					console.log('Added posteffect', posteffect);
-					composer.addPass(posteffect.get());
+					var posteffect = posteffects[j].get();
+					composer.addPass(posteffect);
 				}
 				composer.addPass(outPass);
+				if (mainRenderSystem.composers.indexOf(composer) === -1) {
+					mainRenderSystem.composers.push(composer);
+				}
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);
 			});
 		} else {
-			console.debug("No posteffect refs in project");
 			mainRenderSystem.composers.length = 0;
 			return PromiseUtil.createDummyPromise(config);
 		}
 	};
 
 	// Returns a promise which resolves when updating is done
-	ProjectHandler.prototype.update = function(ref, config) {
+	ProjectHandler.prototype.update = function(ref, config, options) {
+		var that = this;
 		this._prepare(config);
+		var promises = [];
+
 		// skybox
-		this._updateSkybox(config.skybox);
+		promises.push(this._updateSkybox(config.skybox));
 
 		// entity refs
-		var entitiesPromise = this._updateEntities(config);
+		if (!options || !options.shallow) {
+			promises.push(this._updateEntities(config));
+		}
 
 		// posteffect refs
-		var posteffectsPromise = this._updatePosteffects(config);
+		promises.push(this._updatePosteffects(config));
 
-		return RSVP.all([entitiesPromise, posteffectsPromise]);
+		return RSVP.all(promises).then(function(results) {
+			var renderer = that.world.gooRunner.renderer;
+			renderer.setClearColor.apply(renderer, config.backgroundColor);
+			if (that._composer) {
+				that._composer.setClearColor(config.backgroundColor);
+			}
+
+			ShaderBuilder.GLOBAL_AMBIENT = config.globalAmbient;
+
+			ShaderBuilder.USE_FOG = config.useFog;
+			ShaderBuilder.FOG_SETTINGS = [config.fogNear, config.fogFar];
+			ShaderBuilder.FOG_COLOR = config.fogColor;
+			
+			return results;
+		});
 	};
 
-	ProjectHandler.prototype.remove = function(/*ref*/) {};
+	ProjectHandler.prototype.remove = function(/*ref*/) {
+		if (this._skybox) {
+			this.world.getSystem('RenderSystem').removed(this._skybox);
+		}
+		this._skybox = null;
+		this._skyboxTexture = null;
+		this._skyboxGeographic = false;
+
+		this._composer = null;
+		this._passes = [];
+	};
 
 	return ProjectHandler;
 

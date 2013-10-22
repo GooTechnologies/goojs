@@ -1,7 +1,6 @@
 define([
 	'goo/renderer/ShaderCall',
 	'goo/math/Matrix4x4',
-	'goo/math/Vector3',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
 	'goo/renderer/Util'
@@ -10,7 +9,6 @@ define([
 function (
 	ShaderCall,
 	Matrix4x4,
-	Vector3,
 	World,
 	RenderQueue,
 	Util
@@ -164,7 +162,11 @@ function (
 		}
 
 		// Bind attributes
+		//TODO: good?
 		if (this.attributes) {
+		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+			// record.attributes = this.attributes;
+			// record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			for (var key in this.attributes) {
 				var attribute = attributeMap[this.attributes[key]];
@@ -498,6 +500,7 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		var IDENTITY_MATRIX = new Matrix4x4();
+		var tmpMatrix = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
@@ -510,6 +513,11 @@ function (
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			tmpMatrix.copy(matrix).invert();
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
@@ -597,6 +605,9 @@ function (
 		defaultCallbacks[Shader.TIME] = function (uniformCall) {
 			uniformCall.uniform1f(World.time);
 		};
+		defaultCallbacks[Shader.TPF] = function (uniformCall) {
+			uniformCall.uniform1f(World.tpf);
+		};
 
 		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
@@ -623,6 +634,7 @@ function (
 	Shader.VIEW_PROJECTION_MATRIX = 'VIEW_PROJECTION_MATRIX';
 	Shader.VIEW_PROJECTION_INVERSE_MATRIX = 'VIEW_PROJECTION_INVERSE_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
+	Shader.NORMAL_MATRIX = 'NORMAL_MATRIX';
 	for (var i = 0; i < 8; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
@@ -638,6 +650,7 @@ function (
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.MAIN_DEPTH_SCALE = 'DEPTH_SCALE';
 	Shader.TIME = 'TIME';
+	Shader.TPF = 'TPF';
 	Shader.RESOLUTION = 'RESOLUTION';
 
 	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
@@ -649,11 +662,11 @@ function (
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 	Shader.DEPTH_MAP = 'DEPTH_MAP';
 
-	Shader.DEFAULT_AMBIENT = [0, 0, 0, 1.0];
+	Shader.DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
 	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
-	Shader.DEFAULT_DIFFUSE = [1, 1, 1, 1];
-	Shader.DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
-	Shader.DEFAULT_SHININESS = 16.0;
+	Shader.DEFAULT_DIFFUSE = [0.8, 0.8, 0.8, 1.0];
+	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 1.0];
+	Shader.DEFAULT_SHININESS = 64.0;
 
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);

@@ -10,21 +10,24 @@ function(
 	function HowlerComponent() {
 		this.type = 'HowlerComponent';
 
-		this.sounds = { };
+		this.sounds = [];
 	}
 
 	HowlerComponent.prototype = Object.create(Component.prototype);
 
-	HowlerComponent.prototype.addSound = function(soundName, howl) {
-		this.sounds[soundName] = howl;
+	HowlerComponent.prototype.addSound = function(howl) {
+		if(this.sounds.indexOf(howl) === -1) {
+			this.sounds.push(howl);
+		}
 	};
 
-	HowlerComponent.prototype.playSound = function(soundName, sprite, callback) {
-		this.sounds[soundName].play(sprite, callback);
+	HowlerComponent.prototype.playSound = function(soundIndex, sprite, callback) {
+		console.log(this.sounds[soundIndex].play);
+		this.sounds[soundIndex].play(sprite, callback);
 	};
 
-	HowlerComponent.prototype.getSound = function(soundName) {
-		return this.sounds[soundName];
+	HowlerComponent.prototype.getSound = function(soundIndex) {
+		return this.sounds[soundIndex];
 	};
 
 	return HowlerComponent;

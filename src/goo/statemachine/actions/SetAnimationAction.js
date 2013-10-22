@@ -11,26 +11,13 @@ function(
 	}
 
 	SetAnimationAction.prototype = Object.create(Action.prototype);
-
-	SetAnimationAction.prototype.configure = function(settings) {
-		var parameters = SetAnimationAction.external.parameters;
-
-		for (var pi = 0; pi < parameters.length; pi++) {
-			var parameter = parameters[pi];
-
-			if (settings[parameter.key] != null) {
-				this[parameter.key] = settings[parameter.key];
-			} else {
-				this[parameter.key] = parameter['default'];
-			}
-		}
-	};
+	SetAnimationAction.prototype.constructor = SetAnimationAction;
 
 	SetAnimationAction.external = {
 		parameters: [{
 			name:'Animation',
 			key:'animation',
-			type:'string'
+			type:'animstate'
 		}, {
 			name:'On every frame',
 			key:'everyFrame',
@@ -41,7 +28,7 @@ function(
 
 	SetAnimationAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity != null && typeof this.animation === 'string' && entity.animationComponent) {
+		if (typeof this.animation === 'string' && entity.animationComponent) {
 			entity.animationComponent.transitionTo(this.animation);
 		}
 	};

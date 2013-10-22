@@ -13,6 +13,8 @@ define([
 	pu,
 	_
 ) {
+	"use strict";
+
 	function CameraComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

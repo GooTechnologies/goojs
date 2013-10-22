@@ -29,12 +29,23 @@ function (
 
 		if (this.resetRequest) {
 			this.resetRequest = false;
+			this.justReset = true;
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.init();
 			}
 		}
 		if (this.active) {
+			if (this.justReset) {
+				this.justReset = false;
+				for (var i = 0; i < entities.length; i++) {
+					fsmComponent = entities[i].fSMComponent;
+					fsmComponent.doEnter();
+				}
+			}
+
+			if (window.TWEEN) { window.TWEEN.update(); } // this should not stay here
+
 			for (var i = 0; i < entities.length; i++) {
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.update(tpf);
@@ -49,15 +60,27 @@ function (
 		fsmComponent.init();
 	};
 
+	/**
+	 * Stops updating the entities
+	 */
 	FSMSystem.prototype.pause = function() {
+		console.log('FSMSystem: pause');
 		this.active = false;
 	};
 
+	/**
+	 * Resumes updating the entities
+	 */
 	FSMSystem.prototype.play = function() {
+		console.log('FSMSystem: play');
 		this.active = true;
 	};
 
+	/**
+	 * Stop updating entities and resets the state machines tot heir initial state
+	 */
 	FSMSystem.prototype.reset = function() {
+		console.log('FSMSystem: reset');
 		this.resetRequest = true;
 		this.active = false;
 	};

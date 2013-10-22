@@ -52,5 +52,15 @@ function (AbstractTransitionState) {
 		}
 	};
 
+	FadeTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		AbstractTransitionState.prototype.shiftClipTime.call(this, shiftTime);
+		if(this._targetState !== null) {
+			this._targetState.shiftClipTime(shiftTime);
+		}
+		if(this._sourceState !== null) {
+			this._sourceState.shiftClipTime(shiftTime);
+		}
+	};
+
 	return FadeTransitionState;
 });

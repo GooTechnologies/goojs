@@ -1,53 +1,38 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil
+	Action
 ) {
 	"use strict";
 
 	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (!this.key || event.which === this.key) {
+			if (!this.key || event.which === +this.key) {
 				this.updated = true;
-				if (this.keyVariable) {
-					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-				}
 			}
 		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
-
-	KeyUpAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.keyup };
-		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		this.keyVariable = settings.keyVariable;
-	};
+	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'key',
 			description: 'Key to listen for'
-		}, {
-			name: 'Key variable',
-			key: 'keyVariable',
-			type: 'identifier',
-			description: 'Variable to store the key in'
 		}],
-
 		transitions: [{
-			name: 'keyup',
+			key: 'keyup',
+			name: 'Key up',
 			description: 'Fired on key up'
 		}]
 	};
@@ -59,9 +44,7 @@ function(
 	KeyUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.keyup);
 		}
 	};
 

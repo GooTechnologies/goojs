@@ -153,10 +153,9 @@ define(["goo/math/Vector3"], function(Vector3) {
 
 		it("can calculate the distance", function() {
 			var a = new Vector3(3, 2, 1);
-			var b = new Vector3(3, 2, 1);
-			var c = new Vector3(1, 2, 3);
+			var b = new Vector3(1, 2, 3);
 
-			var dist = a.distanceSquared(c);
+			var dist = a.distanceSquared(b);
 
 			expect(dist).toEqual(8);
 		});

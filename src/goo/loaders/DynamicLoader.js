@@ -28,10 +28,9 @@ define([
 	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/FSMComponentHandler',
 	'goo/loaders/handlers/MachineHandler',
-	'goo/loaders/handlers/PosteffectHandler',
-	'goo/loaders/handlers/SoundComponentHandler',
-	'goo/loaders/handlers/SoundHandler'
+	'goo/loaders/handlers/PosteffectHandler'
 ],
+/** @lends */
 function(
 	ConfigHandler,
 	ComponentHandler,
@@ -44,17 +43,6 @@ function(
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
-	/**
-	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
-	 *
-	 * @constructor
-	 * @param {object} parameters
-	 * @param {World} [parameters.world] The target World object.
-	 * @param {string} [parameters.rootPath] The root path where to get resources.
-	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
-	 *
-	 */
-
 	var _json_types = [
 		'shader',
 		'script',
@@ -70,9 +58,10 @@ function(
 		'project',
 		'machine',
 		'posteffect',
-		'animstate'];
+		'animstate',
+		'sound'];
 
-	var _text_types = ['vert', 'frag'];
+	//var _text_types = ['vert', 'frag']; // unused
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
@@ -81,13 +70,13 @@ function(
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
-	 * Create a new loader
+	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
 	 *
+	 * @constructor
 	 * @param {object} parameters
 	 * @param {World} [parameters.world] The target World object.
 	 * @param {string} [parameters.rootPath] The root path where to get resources.
-	 *
-	 * @returns {DynamicLoader}
+	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
 	 *
 	 */
 	function DynamicLoader(options) {

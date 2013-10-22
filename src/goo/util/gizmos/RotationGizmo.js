@@ -1,13 +1,7 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/MeshData',
-	'goo/util/MeshBuilder',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/renderer/Material',
-	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/Transform',
@@ -15,14 +9,8 @@ define([
 	'goo/math/Ray'
 ], function(
 	Gizmo,
-	MeshDataComponent,
-	MeshRendererComponent,
-	MeshData,
-	MeshBuilder,
 	Sphere,
 	Torus,
-	Material,
-	EntityUtils,
 	Vector3,
 	Matrix3x3,
 	Transform,
@@ -33,7 +21,7 @@ define([
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.12);
+		this._torusMesh = new Torus(64, 8, 0.18);
 
 		this._buildBall();
 		this._buildTorus(0);
@@ -182,7 +170,7 @@ define([
 	function step (size) {
 		return function (x) {
 			return Math.floor(x / size) * size;
-		}
+		};
 	}
 
 	var step8thpi = step(Math.PI / 8);
@@ -212,7 +200,7 @@ define([
 					intr + inter(frac, -t, t, 0, size) - size :
 					intr;
 			}
-		}
+		};
 	}
 
 	function inclinedType2 (size, t) {
@@ -225,10 +213,10 @@ define([
 				return x + size - z;
 			}
 			return x;
-		}
+		};
 	}
 
-	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 32);
+	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 16);
 	var identitate = function(x) { return x; };
 	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
 	var tranFun = inclined8thpi;
@@ -303,7 +291,7 @@ define([
 
 	RotationGizmo.prototype._buildTorus = function(dim) {
 		var transform = new Transform();
-		transform.scale.setd(1.6, 1.6, 1.6);
+		transform.scale.setd(1.7, 1.7, 1.7);
 		if(dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {

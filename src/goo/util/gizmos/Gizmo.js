@@ -22,8 +22,9 @@ define([
 	Vector3
 ) {
 	'use strict';
-	function Gizmo(name) {
+	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
+		this.gizmoRenderSystem = gizmoRenderSystem;
 		this._colors = [
 			[1, 0.1, 0.3],
 			[0.2, 1, 0.3],
@@ -231,7 +232,7 @@ define([
 			'}'//
 		].join('\n'),
 		fshader : [//
-			ShaderBuilder.light.prefragment,
+			// ShaderBuilder.light.prefragment,
 
 			'varying vec3 normal;',
 			'varying vec3 viewPosition;',

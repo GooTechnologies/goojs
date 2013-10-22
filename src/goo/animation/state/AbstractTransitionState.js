@@ -14,10 +14,8 @@ function (
 	/**
 	 * @class An abstract transition state that blends between two other states.
 	 * @extends AbstractState
-	 * @param targetState the name of the steady state we want the Animation Layer to be in at the end of the transition.
-	 * @param fadeTime the amount of time we should take to do the transition.
-	 * @param blendType {StateBlendType} the way we should interpolate the weighting during the transition.
 	 */
+
 	function AbstractTransitionState() {
 		AbstractState.call(this);
 
@@ -33,8 +31,7 @@ function (
 
 	/**
 	 * Update this state using the current global time.
-	 * @param globalTime the current global time.
-	 * @param layer the layer this state belongs to.
+	 * @param {Number} globalTime the current global time.
 	 */
 	// Was: function (globalTime, layer)
 	AbstractTransitionState.prototype.update = function (globalTime) {
@@ -55,6 +52,11 @@ function (
 				this._percent = percent;
 		}
 	};
+
+	/**
+	 * Method for setting fade time and blend type from config data.
+	 * @param {Object} configuration data
+	 */
 
 	AbstractTransitionState.prototype.readFromConfig = function(config) {
 		if (config) {
@@ -79,6 +81,14 @@ function (
 		}
 		return BinaryLERPSource.combineSourceData(sourceAData, sourceBData, this._percent, this._sourceData);
 	};
+
+	/**
+	 * Check if a transition is valid within a given time window.
+	 *
+	 * @param {Array} timeWindow start and end time
+	 * @param {Number} current world time
+	 * @returns {Boolean} true if transition is valid
+	 */
 
 	AbstractTransitionState.prototype.isValid = function(timeWindow, globalTime) {
 		var localTime = globalTime - this._sourceState._globalStartTime;
@@ -111,6 +121,11 @@ function (
 		AbstractState.prototype.resetClips.call(this, globalTime);
 		//this._sourceData = {};
 		this._percent = 0.0;
+	};
+
+	AbstractTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		AbstractState.prototype.shiftClipTime.call(this, shiftTime);
+		//this._percent = 0.0;  // definitely not 0, or maybe 0
 	};
 
 	AbstractTransitionState.prototype.setTimeScale = function (timeScale) {

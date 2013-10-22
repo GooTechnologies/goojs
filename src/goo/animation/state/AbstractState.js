@@ -21,5 +21,9 @@ function (
 		this._globalStartTime = globalTime;
 	};
 
+	AbstractState.prototype.shiftClipTime = function (shiftTime) {
+		this._globalStartTime += shiftTime;
+	};
+
 	return AbstractState;
 });

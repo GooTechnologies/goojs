@@ -1,8 +1,8 @@
 define([
 ],
-	/** @lends */
-
-	function () {
+/** @lends */
+function () {
+	"use strict";
 
 		/**
 		 *

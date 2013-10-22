@@ -86,12 +86,12 @@ function (
 	 * Update animations
 	 */
 	AnimationComponent.prototype.update = function (globalTime) {
-		if (this.paused) return;
-
-		globalTime -= this.accumulatedDelay;
+		if (this.paused) {
+			return;
+		}
 
 		// grab current global time
-		var globalTime = globalTime || World.time;
+		globalTime = globalTime || World.time;
 
 		// check throttle
 		if (this._updateRate !== 0.0) {
@@ -204,6 +204,12 @@ function (
 		}
 	};
 
+	AnimationComponent.prototype.shiftClipTime = function(shiftTime) {
+		for (var i = 0; i < this.layers.length; i++) {
+			this.layers[i].shiftClipTime(shiftTime);
+		}
+	};
+
 	AnimationComponent.prototype.setTimeScale = function(timeScale) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setTimeScale(timeScale);
@@ -217,12 +223,25 @@ function (
 		}
 	};
 
+	AnimationComponent.prototype.stop = function() {
+		this.resetClips();
+		this.paused = false;
+		this.update();
+		this.paused = true;
+		this.lastTimeOfPause = -1;
+	};
+
 	AnimationComponent.prototype.resume = function() {
 		if (this.paused) {
-			this.accumulatedDelay += World.time - this.lastTimeOfPause;
-			console.log(this.accumulatedDelay);
-			this.paused = false;
+			if (this.lastTimeOfPause === -1) {
+				this.resetClips();
+			} else {
+				this.shiftClipTime(World.time - this.lastTimeOfPause);
+			}
+			//this.accumulatedDelay += World.time - this.lastTimeOfPause;
+			console.log(this.accumulatedDelay); // rogue comment
 		}
+		this.paused = false;
 	};
 
 	return AnimationComponent;

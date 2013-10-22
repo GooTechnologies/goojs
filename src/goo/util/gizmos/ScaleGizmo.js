@@ -3,23 +3,23 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Box',
-	'goo/renderer/Material',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function(
 	Gizmo,
 	MeshData,
 	MeshBuilder,
 	Box,
-	Material,
 	Transform,
 	Renderer,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
 	'use strict';
-	function ScaleGizmo(world) {
-		Gizmo.call(this, world, 'ScaleGizmo');
+	function ScaleGizmo(gizmoRenderSystem) {
+		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 		this._boxMesh = new Box();
 		this._arrowMesh = this._buildArrowMesh();
 		this._scale = 1;
@@ -68,8 +68,14 @@ define([
 	ScaleGizmo.prototype._scaleUniform = function() {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
-		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1],this._scale);
-		this._transformScale.muld(scale,scale,scale);
+		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1], this._scale);
+
+		var boundEntityTranslation = this.gizmoRenderSystem.entity.transformComponent.worldTransform.translation;
+		var mainCameraTranslation = Renderer.mainCamera.translation;
+		var cameraEntityDistance = mainCameraTranslation.distance(boundEntityTranslation);
+		scale += cameraEntityDistance / 200000 * MathUtils.sign(scale - 1);
+
+		this._transformScale.muld(scale, scale, scale);
 	};
 
 	ScaleGizmo.prototype._scaleNonUniform = function() {
@@ -91,7 +97,7 @@ define([
 		result.div(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
-		result.setv(line).muld(d,d,d);
+		result.setv(line).muld(d, d, d);
 		var scale = Math.pow(1 + d, this._scale);
 
 		switch(this._activeHandle.axis) {

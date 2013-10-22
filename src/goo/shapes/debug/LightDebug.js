@@ -3,11 +3,6 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/math/MathUtils',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
@@ -18,11 +13,6 @@ define([
 		MeshBuilder,
 		Transform,
 		ShapeCreator,
-		MeshDataComponent,
-		MeshRendererComponent,
-		Material,
-		ShaderLib,
-		MathUtils,
 		PointLight,
 		DirectionalLight,
 		SpotLight

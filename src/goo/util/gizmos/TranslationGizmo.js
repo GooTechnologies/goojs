@@ -1,28 +1,18 @@
 define([
 	'goo/util/gizmos/Gizmo',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Disk',
 	'goo/shapes/Quad',
-	'goo/renderer/Material',
 	'goo/math/Transform',
-	'goo/entities/EntityUtils',
-	'goo/math/Vector3',
 	'goo/renderer/Renderer'
 ], function(
 	Gizmo,
-	MeshDataComponent,
-	MeshRendererComponent,
 	MeshData,
 	MeshBuilder,
 	Disk,
 	Quad,
-	Material,
 	Transform,
-	EntityUtils,
-	Vector3,
 	Renderer
 ) {
 	'use strict';

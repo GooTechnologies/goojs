@@ -7,25 +7,19 @@ function(
 ) {
 	"use strict";
 
-	function LogVariableAction(/*id, settings*/) {
+	function LogMessageAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.currentTime = 0;
 	}
 
-	LogVariableAction.prototype = Object.create(Action.prototype);
+	LogMessageAction.prototype = Object.create(Action.prototype);
+	LogMessageAction.prototype.constructor = LogMessageAction;
 
-	LogVariableAction.prototype.configure = function(settings) {
-		this.everyFrame = !!settings.everyFrame;
-		this.message = settings.message || '';
-	};
-
-	LogVariableAction.external = {
+	LogMessageAction.external = {
 		parameters: [{
 			name: 'Message',
 			key: 'message',
 			type: 'string',
-			description: 'message to print',
+			description: 'Message to print',
 			'default': 'hello'
 		}, {
 			name: 'On every frame',
@@ -37,9 +31,9 @@ function(
 		transitions: []
 	};
 
-	LogVariableAction.prototype._run = function(/*fsm*/) {
+	LogMessageAction.prototype._run = function(/*fsm*/) {
 		console.log(this.message);
 	};
 
-	return LogVariableAction;
+	return LogMessageAction;
 });

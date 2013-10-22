@@ -84,7 +84,6 @@ function (
 						this._data[channelName] = data;
 				}
 			}
-
 		}
 	};
 

@@ -4,12 +4,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
-	'goo/entities/Entity',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/ScriptComponent',
 	'goo/math/Transform'
 
 ], /** @lends */ function (
@@ -18,12 +13,7 @@ define([
 	MeshData,
 	Material,
 	Shader,
-	Entity,
 	TextureCreator,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	ScriptComponent,
 	Transform
 ) {
 	'use strict';
@@ -41,7 +31,7 @@ define([
 		} else if (type === Skybox.BOX) {
 			this.meshData = ShapeCreator.createBox(1, 1, 1);
 			if (images.length) {
-				texture = new TextureCreator().loadTextureCube(images);
+				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
 			}
 		} else {
 			throw new Error('Unknown geometry type');
@@ -94,7 +84,7 @@ define([
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
 			' worldPos += vec4(cameraPosition, 0.0);',
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'	eyeVec = cameraPosition - worldPos.xyz;', //
+			'	eyeVec = worldPos.xyz - cameraPosition;', //
 			' eyeVec.x = -eyeVec.x;',
 			' eyeVec = (worldMatrix * vec4(eyeVec, 0.0)).xyz;',
 			'}'//
@@ -142,7 +132,6 @@ define([
 
 			'void main(void) {', //
 			'	texCoord0 = vertexUV0;',
-			' texCoord0.y = 1.0 - texCoord0.y;',
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
 			' worldPos += vec4(cameraPosition, 0.0);',
 			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //

@@ -20,6 +20,8 @@ function(
 	PromiseUtil,
 	ArrayUtil
 ) {
+	"use strict";
+
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

@@ -15,9 +15,6 @@ function(
 		this.updated = false;
 		this.eventListener = function(/*event*/) {
 			this.updated = true;
-			if (this.keyVariable) {
-				//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-			}
 		}.bind(this);
 	}
 
@@ -30,11 +27,7 @@ function(
 	};
 
 	MouseClickAction.external = {
-		parameters: [{
-			name: 'Position variable',
-			key: 'positionVariable',
-			type: 'identifier'
-		}],
+		parameters: [],
 		transitions: [{
 			name: 'click',
 			description: 'Fired on click'

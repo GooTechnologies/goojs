@@ -1,6 +1,10 @@
-define([],
+define([
+	'goo/statemachine/FSMUtil'
+],
 /** @lends */
-function() {
+function(
+	FSMUtil
+) {
 	"use strict";
 
 	function Action(id, settings) {
@@ -8,7 +12,7 @@ function() {
 		this.configure(settings || {});
 	}
 
-	/* this gets executed on enter - override this */
+	/* this gets executed on enter - override this if needed */
 	Action.prototype._setup = function(/*fsm*/) {
 	};
 
@@ -17,7 +21,9 @@ function() {
 	};
 
 	/* this should be called by the constructor and by the handlers when new options are loaded */
-	Action.prototype.configure = function(/*settings*/) {
+	Action.prototype.configure = function(settings) {
+		FSMUtil.setParameters.call(this, settings, this.constructor.external.parameters);
+		FSMUtil.setTransitions.call(this, settings, this.constructor.external.transitions);
 	};
 
 	/* this is called by external functions - called once, when the host state becomes active */

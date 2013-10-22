@@ -6,6 +6,7 @@ goojs-jsdoc-json/
 goojs-jsdoc_*.tar.gz
 test-out/
 .idea
+*.iml
 .env
 virtualenv.py
 virtualenv.pyc

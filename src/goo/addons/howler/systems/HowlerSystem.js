@@ -28,8 +28,8 @@ function(
 	HowlerSystem.prototype.deleted = function(entity) {
 		var howlerComponent = entity.howlerComponent;
 		var sounds = howlerComponent.sounds;
-		for (var key in sounds) {
-			sounds[key].stop();
+		for (var i = 0; i < sounds.length; i++) {
+			sounds[i].stop();
 		}
 	};
 
@@ -43,8 +43,8 @@ function(
 			entityWorldTranslation.copy(entity.transformComponent.transform.translation);
 
 			var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
-			for (var key in sounds) {
-				sounds[key].pos3d(
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].pos3d(
 					soundTranslation.data[0] * this.settings.scale,
 					soundTranslation.data[1] * this.settings.scale,
 					soundTranslation.data[2] * this.settings.scale

@@ -1,10 +1,11 @@
 define([
-		'goo/util/rsvp'
-	],
-	/** @lends */
-	function(
-		RSVP
-	) {
+	'goo/util/rsvp'
+],
+/** @lends */
+function(
+	RSVP
+) {
+	"use strict";
 
 	/**
 	 * @class Subclass of Promise. Wrapper class around an XHR call.
@@ -144,7 +145,7 @@ define([
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
 	Ajax.prototype.loadImage = function (url, needsProgress) {
-		window.URL = window.URL || window.webkitURL;		
+		window.URL = window.URL || window.webkitURL;
 		var promise = new RSVP.Promise();
 		var image = new Image();
 

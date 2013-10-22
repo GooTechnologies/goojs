@@ -1,6 +1,10 @@
-define(['goo/statemachine/actions/Action'],
+define([
+	'goo/statemachine/actions/Action'
+],
 /** @lends */
-function(Action) {
+function(
+	Action
+) {
 	"use strict";
 
 	function MoveAction(/*id, settings*/) {
@@ -8,20 +12,7 @@ function(Action) {
 	}
 
 	MoveAction.prototype = Object.create(Action.prototype);
-
-	MoveAction.prototype.configure = function(settings) {
-		var parameters = MoveAction.external.parameters;
-
-		for (var pi = 0; pi < parameters.length; pi++) {
-			var parameter = parameters[pi];
-
-			if (settings[parameter.key] != null) {
-				this[parameter.key] = settings[parameter.key];
-			} else {
-				this[parameter.key] = parameter['default'];
-			}
-		}
-	};
+	MoveAction.prototype.constructor = MoveAction;
 
 	MoveAction.external = {
 		parameters: [{
@@ -48,16 +39,14 @@ function(Action) {
 
 	MoveAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity != null) {
-			var transform = entity.transformComponent.transform;
-			if (this.relative) {
-				transform.translation.add(this.translation);
-			} else {
-				transform.translation.set(this.translation);
-			}
-
-			entity.transformComponent.setUpdated();
+		var transform = entity.transformComponent.transform;
+		if (this.relative) {
+			transform.translation.add(this.translation);
+		} else {
+			transform.translation.set(this.translation);
 		}
+
+		entity.transformComponent.setUpdated();
 	};
 
 	return MoveAction;

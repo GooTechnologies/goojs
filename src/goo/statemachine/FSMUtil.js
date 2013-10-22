@@ -10,7 +10,30 @@ function() {
 	function FSMUtil() {
 	}
 
-	FSMUtil.getKey = function(str) {
+	FSMUtil.setParameters = function (settings, externalParameters) {
+		for (var i = 0; i < externalParameters.length; i++) {
+			var externalParameter = externalParameters[i];
+			var key = externalParameter.key;
+
+			if (settings[key]) {
+				this[key] = settings[key];
+			} else {
+				this[key] = externalParameter['default'];
+			}
+		}
+	};
+
+	FSMUtil.setTransitions = function (settings, externalTransitions) {
+		for (var i = 0; i < externalTransitions.length; i++) {
+			var externalTransition = externalTransitions[i];
+			var key = externalTransition.key;
+
+			this.transitions = this.transitions || {};
+			this.transitions[key] = settings.transitions[key];
+		}
+	};
+
+	FSMUtil.getKey = function (str) {
 		if (FSMUtil.keys[str]) {
 			return FSMUtil.keys[str];
 		} else {
