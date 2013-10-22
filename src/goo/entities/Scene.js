@@ -18,7 +18,13 @@ define( [
 	"goo/entities/components/MeshDataComponent",
 	"goo/entities/components/MeshRendererComponent",
 	"goo/entities/components/LightComponent",
-	"goo/renderer/Renderer" ],
+	"goo/renderer/Renderer",
+
+	// REVIEW: The entity manager is only here for backwards compability
+
+	'goo/entities/managers/EntityManager'
+
+	 ],
 	
 	function( 
 		Collection,
@@ -40,7 +46,8 @@ define( [
 		MeshDataComponent,
 		MeshRendererComponent,
 		LightComponent,
-		Renderer ) {
+		Renderer,
+		EntityManager ) {
 	
 		"use strict";
 
@@ -75,11 +82,29 @@ define( [
 					CameraDebugSystem,
 					RenderSystem );
 			}
+
+			// REVIEW: Remove!
+
+			this.entityManager = new EntityManager();
 		}
 
 		Scene.prototype.init = function( goo ) {
 			// REVIEW: Should scenes share renderer? Probably not.
 			this.renderer = goo.renderer;
+		};
+
+		// REVIEW: Remove all references to managers
+
+		Scene.prototype.setManager = function( manager ) {
+			console.warn( "Scene.setManager: not used any more" );
+		}
+
+		Scene.prototype.getManager = function( type ) {
+			console.warn( "Scene.getManager: not used any more" );
+			if( type === "EntityManager" ) {
+				return this.entityManager;
+			}
+			return undefined;
 		};
 
 		// general purpuse add/get/has
@@ -218,9 +243,14 @@ define( [
 			} );
 
 			// REVIEW: should we always return a collection for simplicity?
-			return collection.orFirst();
+			return collection;
 		};
 
+		// REVIEW: Here for backwards compability. Not necessary as getEntity also
+		// returns all entities
+		Scene.prototype.getEntities = function () {
+			return this.entities;
+		};
 
 
 		Scene.prototype.hasEntity = function( entity ) {
@@ -248,8 +278,41 @@ define( [
 			this.entities.changed.push( e );
 		};
 
-		Scene.prototype.removeEntity = function() {
-			this.getEntity.apply( this, arguments );
+		// REVIEW: rewrite remove to work with multiple selectors
+		// This code is copied (and modified) from World.js
+
+		Scene.prototype.removeEntity = function (entity, recursive) {
+			var index = this.entities.indexOf( entity );
+			if( index !== -1 ) {
+				this.entities.splice( index, 1 );
+				this.entities.removed.push( entity );
+
+				var parent = entity.getParent();
+				if( parent !== undefined ) {
+					parent.removeChild( entity );
+				}
+
+				if( entity.hasChildren()) {
+					var children = entity.transformComponent.children;
+					var cl = children.length;
+
+					if( recursive ) {
+						while( cl-- ) {
+							this.removeEntity( children[ cl ], recursive );
+						}
+					} else {
+						for( var i = 0; i < children.length; i++) {
+							children[ i ].parent = parent;
+						}
+
+						entity.transformComponent.children.length = 0;
+					}
+				}
+			}
+		};
+
+/*		Scene.prototype.removeEntity = function() {
+			var entities = this.getEntity.apply( this, arguments ).clone();
 
 			collection.each( function( entity ) {
 				var i = this.entities.indexOf( entity );
@@ -261,14 +324,20 @@ define( [
 				}
 
 				if( entity.hasChildren()) {
-					// TODO: add entitiy recursive get children and remove manually 
+
 				}
 			});
 		
 			return collection;
-		};
+		};*/
 
 		// helper methods for easy creation of enities
+
+		Scene.prototype.createEntity = function () {
+			var entity = new Entity();
+			entity.add.apply( entity, arguments );
+			return this.addEntity( entity );
+		};
 
 		Scene.prototype.createCamera = function( parameters ) {
 			return this.addEntity( new Entity( new CameraComponent( parameters )));

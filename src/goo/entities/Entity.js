@@ -16,6 +16,7 @@ define(
 			this.components = {};
 			this.tags       = {};
 			this.attributes = {};
+			this.name       = "";
 
 			this.add.apply( this, arguments );
 
@@ -90,6 +91,12 @@ define(
  		};
 
  		// scene methods
+ 		// REVIEW: addToWorld is here for backwards compabiolity but by now the entity is
+ 		// alread part of a scene (done in Scene.createXXX)
+
+ 		Entity.prototype.addToWorld = function(first_argument) {
+
+ 		};
 
 		Entity.prototype.setScene = function( scene ) {
 			this.scene = scene;
@@ -100,6 +107,12 @@ define(
 		};
 
 		// component methods
+		// REVIEW: setComponent here for backwards compability. addComponent is more
+		// in line with other apis
+
+		Entity.prototype.setComponent = function( component ) {
+			this.addComponent( component );
+		};
 
 		Entity.prototype.addComponent = function( component ) {
 			if( typeof( component ) === "function" ) {

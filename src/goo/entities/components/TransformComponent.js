@@ -63,7 +63,7 @@ define(
 				}
 			} else if( this.parent !== undefined ) {
 				this.parent.detachChild( this );
-				this.entity.scene.removeEntity( this )
+				this.entity.scene.removeEntity( this );
 			}
 		};
 
