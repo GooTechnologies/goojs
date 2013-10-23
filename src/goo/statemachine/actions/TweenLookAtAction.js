@@ -11,9 +11,6 @@ function(
 
 	function TweenLookAtAction(/*id, settings*/) {
 		Action.apply(this, arguments);
-
-		this.easing = window.TWEEN.Easing.Elastic.InOut;
-		this.tween = new window.TWEEN.Tween();
 	}
 
 	TweenLookAtAction.prototype = Object.create(Action.prototype);
@@ -24,29 +21,53 @@ function(
 		description: 'Smoothly transitions between two look at points',
 		canTransition: true,
 		parameters: [{
-			name: 'Translation',
+			name: 'Position',
 			key: 'to',
 			type: 'position',
-			description: 'Move',
+			description: 'Look at point',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Time',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
-			'default': true
+			'default': 1000
 		}, {
-			name: 'Easing',
-			key: 'easing_',
-			type: '[linear, exponential.in, exponential.out, exponential.inout, back.in, back.out, back.inout]', // there are 31 in total
-			// proposed: linear, sinusoidal, exponential, circular, back, elastic, bounce.out
-			description: 'Easting type',
-			'default': 'linear'
+			name: 'Easing 1',
+			key: 'easing1',
+			type: 'dropdown',
+			description: 'Easing 1',
+			'default': 'Linear',
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+		}, {
+			name: 'Easing 2',
+			key: 'easing2',
+			type: 'dropdown',
+			description: 'Easing 2',
+			'default': 'In',
+			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
-			name: 'complete',
+			key: 'complete',
+			name: 'On completion',
 			description: 'Event fired when the movement completes'
 		}]
+	};
+
+	TweenLookAtAction.prototype.configure = function(settings) {
+		this.to = settings.to;
+		this.relative = settings.relative;
+		this.time = settings.time;
+		if (settings.easing1 === 'Linear') {
+			this.easing = window.TWEEN.Easing.Linear.None;
+		} else {
+			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+		}
+		this.eventToEmit = { channel: settings.transitions.complete };
+	};
+
+	TweenLookAtAction.prototype._setup = function() {
+		this.tween = new window.TWEEN.Tween();
 	};
 
 	TweenLookAtAction.prototype._run = function(fsm) {
@@ -54,19 +75,25 @@ function(
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 
-		var distance = Vector3.distance(this.to, transform.translation);
+		var distance = Vector3.distance(new Vector3(this.to), transform.translation);
 
-		var initialLookAt = new Vector3(0, 0, -1);
+		var initialLookAt = new Vector3(0, 0, 1);
 		var orientation = transform.rotation;
 		orientation.applyPost(initialLookAt);
 		initialLookAt.scale(distance);
 
-		this.tween.from(initialLookAt).to(this.to, this.time).easing(this.easing).onUpdate(function() {
-			transform.lookAt(this.x, this.y, this.z);
+		var fakeFrom = { x: initialLookAt.x, y: initialLookAt.y, z: initialLookAt.z };
+		var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
+		var tmpVec3 = new Vector3();
+
+		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			tmpVec3.data[0] = this.x;
+			tmpVec3.data[1] = this.y;
+			tmpVec3.data[2] = this.z;
+			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
 			transformComponent.setUpdated();
 		}).onComplete(function() {
-			fsm.send(this.event);
-			console.log('complete:', this.event);
+			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start();
 	};
 

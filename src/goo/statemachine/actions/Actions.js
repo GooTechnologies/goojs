@@ -46,7 +46,7 @@ define([
 	'goo/statemachine/actions/TweenMoveAction',
 	'goo/statemachine/actions/TweenRotationAction',
 	'goo/statemachine/actions/TweenScaleAction',
-	//'goo/statemachine/actions/TweenLookAtAction',
+	'goo/statemachine/actions/TweenLookAtAction',
 
 	'goo/statemachine/actions/HideAction',
 	'goo/statemachine/actions/ShowAction',
