@@ -148,6 +148,12 @@ define( [
 		};
 
 		// system methods
+		// REVIEW: setSystem is here for backwards compability. addSystem is more in 
+		// line with the rest of the API
+
+		Scene.prototype.setSystem = function() {
+			this.addSystem.apply( this, arguments );
+		};
 
 		Scene.prototype.addSystem = function() {
 			ProcessArguments( this, arguments, function( scene, type, value ) {

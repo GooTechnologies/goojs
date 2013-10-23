@@ -161,13 +161,13 @@ define(
           value, error, succeeded, failed;
 
       if (hasCallback) {
-        //try {
+        try {
           value = callback(event.detail);
           succeeded = true;
-        /*} catch(e) {
+        } catch(e) {
           failed = true;
           error = e;
-        }*/
+        }
       } else {
         value = event.detail;
         succeeded = true;
