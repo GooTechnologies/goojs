@@ -15,6 +15,7 @@ function(
 	EmitAction.prototype.constructor = EmitAction;
 
 	EmitAction.external = {
+		description: 'Sends a message on the bus',
 		parameters: [{
 			name: 'Channel',
 			key: 'channel',

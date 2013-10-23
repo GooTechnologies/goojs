@@ -15,12 +15,9 @@ function(
 
 	RotateAction.prototype = Object.create(Action.prototype);
 	RotateAction.prototype.constructor = RotateAction;
-	/*
-	RotateAction.prototype.configure = function(settings) {
-		FSMUtil.settings.call(this, settings, RotateAction.external.parameters);
-	};
-	*/
+
 	RotateAction.external = {
+		description: 'Rotates the entity',
 		parameters: [{
 			name: 'Rotation',
 			key: 'rotation',

@@ -48,6 +48,7 @@ function(
 		}
 
 		return {
+			description: 'A 4-in-1 key down action',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions

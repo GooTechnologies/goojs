@@ -20,6 +20,7 @@ function(
 	TweenLookAtAction.prototype.constructor = TweenLookAtAction;
 
 	TweenLookAtAction.external = {
+		description: 'Smoothly transitions between two look at points',
 		canTransition: true,
 		parameters: [{
 			name: 'Translation',

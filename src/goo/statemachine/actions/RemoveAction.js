@@ -15,6 +15,7 @@ function(
 	RemoveAction.prototype.constructor = RemoveAction;
 
 	RemoveAction.external = {
+		description: 'Removes an entity from the world',
 		parameters: [{
 			name: 'Recursive',
 			key: 'recursive',

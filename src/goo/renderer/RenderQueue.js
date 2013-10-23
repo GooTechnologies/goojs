@@ -98,7 +98,7 @@ function(Vector3) {
 		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
-			if (key <= RenderQueue.TRANSPARENT) {
+			if (key < RenderQueue.TRANSPARENT) {
 				bucket.sort(this.opaqueSorter);
 			} else {
 				bucket.sort(this.transparentSorter);

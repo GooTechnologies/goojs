@@ -15,13 +15,16 @@ function(
 	RemoveLightAction.prototype.constructor = RemoveLightAction;
 
 	RemoveLightAction.external = {
+		description: 'Removes the light attached to the entity',
 		parameters: [],
 		transitions: []
 	};
 
-	RemoveLightAction.prototype._run = function(fsm) {
+	RemoveLightAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.clearComponent('LightComponent');
+		if (entity.hasComponent('LightComponent')) {
+			entity.clearComponent('LightComponent');
+		}
 	};
 
 	return RemoveLightAction;

@@ -27,12 +27,12 @@ define(['goo/entities/components/Component'],
 		 * @type {boolean}
 		 * @default
 		 */
-		this.castShadows = false;
+		this.castShadows = true;
 		/**
 		 * @type {boolean}
 		 * @default
 		 */
-		this.receiveShadows = false;
+		this.receiveShadows = true;
 
 		/**
 		 * @type {boolean}

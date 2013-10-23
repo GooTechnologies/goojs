@@ -230,7 +230,7 @@ function(
 
 			var shadowHandler = shaderInfo.shadowHandler;
 			var shadowCount = shadowHandler.shadowResults.length;
-			if (shadowCount > 0) {
+			if (shadowCount > 0 && shaderInfo.renderable.meshRendererComponent && shaderInfo.renderable.meshRendererComponent.receiveShadows) {
 				shader.defines.MAX_SHADOWS = shadowCount;
 
 				shader.uniforms.shadowLightMatrices = [];

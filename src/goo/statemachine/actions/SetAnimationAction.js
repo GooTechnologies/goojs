@@ -14,6 +14,7 @@ function(
 	SetAnimationAction.prototype.constructor = SetAnimationAction;
 
 	SetAnimationAction.external = {
+		description: 'Transitions between animations',
 		parameters: [{
 			name:'Animation',
 			key:'animation',

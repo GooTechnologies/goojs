@@ -48,6 +48,7 @@ function(
 		}
 
 		return {
+			description: 'Arrows are useful',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions

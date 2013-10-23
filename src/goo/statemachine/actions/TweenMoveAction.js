@@ -17,6 +17,7 @@ function(
 	TweenMoveAction.prototype.constructor = TweenMoveAction;
 
 	TweenMoveAction.external = {
+		description: 'Smoothly transitions between 2 locations',
 		canTransition: true,
 		parameters: [{
 			name: 'Translation',
