@@ -29,8 +29,8 @@ define([
 		return _.defaults(config, {
 			materialRefs: [],
 			cullMode: 'Dynamic',
-			castShadows: false,
-			receiveShadows: false,
+			castShadows: true,
+			receiveShadows: true,
 			hidden: false
 		});
 	};
