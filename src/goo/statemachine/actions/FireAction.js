@@ -17,23 +17,23 @@ function(
 ) {
 	"use strict";
 
-	function SmokeAction(/*id, settings*/) {
+	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	SmokeAction.material = null;
+	FireAction.material = null;
 
-	SmokeAction.prototype = Object.create(Action.prototype);
-	SmokeAction.prototype.constructor = SmokeAction;
+	FireAction.prototype = Object.create(Action.prototype);
+	FireAction.prototype.constructor = FireAction;
 
-	SmokeAction.external = {
-		name: 'Smoke',
+	FireAction.external = {
+		name: 'Fire',
 		description: 'Makes the entity emit smoke',
 		parameters: [],
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function(fsm) {
+	FireAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
@@ -59,5 +59,5 @@ function(
 		particleSystemEntity.addToWorld();
 	};
 
-	return SmokeAction;
+	return FireAction;
 });

@@ -17,6 +17,7 @@ function(
 	RotateAction.prototype.constructor = RotateAction;
 
 	RotateAction.external = {
+		name: 'Rotate',
 		description: 'Rotates the entity',
 		parameters: [{
 			name: 'Rotation',

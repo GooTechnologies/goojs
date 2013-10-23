@@ -15,6 +15,7 @@ function(
 	SoundFadeOutAction.prototype.constructor = SoundFadeOutAction;
 
 	SoundFadeOutAction.external = {
+		name: 'Sound Fade Out',
 		descriptions: 'Fades out a sound or stops it',
 		canTransition: true,
 		parameters: [{

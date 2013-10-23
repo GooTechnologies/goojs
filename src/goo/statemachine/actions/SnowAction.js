@@ -4,7 +4,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/util/ParticleSystemUtils',
+	'goo/entities/EntityUtils'
 ],
 /** @lends */
 function(
@@ -13,39 +14,40 @@ function(
 	ShaderLib,
 	TextureCreator,
 	ParticleLib,
-	ParticleSystemUtils
+	ParticleSystemUtils,
+	EntityUtils
 ) {
 	"use strict";
 
-	function SmokeAction(/*id, settings*/) {
+	function SnowAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	SmokeAction.material = null;
+	SnowAction.material = null;
 
-	SmokeAction.prototype = Object.create(Action.prototype);
-	SmokeAction.prototype.constructor = SmokeAction;
+	SnowAction.prototype = Object.create(Action.prototype);
+	SnowAction.prototype.constructor = SnowAction;
 
-	SmokeAction.external = {
-		name: 'Smoke',
-		description: 'Makes the entity emit smoke',
+	SnowAction.external = {
+		name: 'Snow',
+		description: 'Makes the entity emit snow',
 		parameters: [],
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function(fsm) {
+	SnowAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
 		if (!SmokeAction.material) {
-			SmokeAction.material = Material.createMaterial(ShaderLib.particles);
+			SnowAction.material = Material.createMaterial(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
-			SmokeAction.material.setTexture('DIFFUSE_MAP', texture);
-			SmokeAction.material.blendState.blending = 'AlphaBlending';
-			SmokeAction.material.cullState.enabled = false;
-			SmokeAction.material.depthState.write = false;
-			SmokeAction.material.renderQueue = 2001;
+			SnowAction.material.setTexture('DIFFUSE_MAP', texture);
+			SnowAction.material.blendState.blending = 'AlphaBlending';
+			SnowAction.material.cullState.enabled = false;
+			SnowAction.material.depthState.write = false;
+			SnowAction.material.renderQueue = 2001;
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
@@ -59,5 +61,5 @@ function(
 		particleSystemEntity.addToWorld();
 	};
 
-	return SmokeAction;
+	return SnowAction;
 });

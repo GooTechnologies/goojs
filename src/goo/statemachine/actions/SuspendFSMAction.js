@@ -15,6 +15,7 @@ function(
 	SuspendFSMAction.prototype.constructor = SuspendFSMAction;
 
 	SuspendFSMAction.external = {
+		name: 'Suspend FSM',
 		description: 'Suspends the state machine of another entity',
 		parameters: [{
 			name: 'Entity',

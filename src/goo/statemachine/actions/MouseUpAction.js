@@ -21,6 +21,7 @@ function(
 	MouseUpAction.prototype.constructor = MouseUpAction;
 
 	MouseUpAction.external = {
+		name: 'Mouse Up',
 		description: 'Listens for a mouse button release and performs a transition',
 		canTransition: true,
 		parameters: [],

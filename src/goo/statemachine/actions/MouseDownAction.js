@@ -21,6 +21,7 @@ function(
 	MouseDownAction.prototype.constructor = MouseDownAction;
 
 	MouseDownAction.external = {
+		name: 'Mouse down',
 		description: 'Listens for a mouse button press and performs a transition',
 		canTransition: true,
 		parameters: [],

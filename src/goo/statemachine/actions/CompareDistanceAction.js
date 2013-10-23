@@ -17,6 +17,7 @@ function(
 	CompareDistanceAction.prototype.constructor = CompareDistanceAction;
 
 	CompareDistanceAction.external = {
+		name: 'Compare Distance',
 		description: 'Compares the distances transitions based on the result of that',
 		canTransition: true,
 		parameters: [{

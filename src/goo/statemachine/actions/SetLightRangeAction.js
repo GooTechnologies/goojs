@@ -16,6 +16,7 @@ function(Action) {
 	};
 
 	SetLightRangeAction.external = {
+		name: 'Set Light Range',
 		description: 'Sets the range of a light',
 		parameters: [{
 			name: 'Entity',

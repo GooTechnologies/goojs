@@ -7,14 +7,15 @@ function(
 ) {
 	"use strict";
 
-	function SoundFadeOutAction(/*id, settings*/) {
+	function SoundFadeInAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	SoundFadeOutAction.prototype = Object.create(Action.prototype);
-	SoundFadeOutAction.prototype.constructor = SoundFadeOutAction;
+	SoundFadeInAction.prototype = Object.create(Action.prototype);
+	SoundFadeInAction.prototype.constructor = SoundFadeInAction;
 
-	SoundFadeOutAction.external = {
+	SoundFadeInAction.external = {
+		name: 'Sound Fade In',
 		descriptions: 'Starts playing a sound or increases the volume of an already playing sound',
 		canTransition: true,
 		parameters: [{
@@ -43,7 +44,7 @@ function(
 		}]
 	};
 
-	SoundFadeOutAction.prototype._run = function(fsm) {
+	SoundFadeInAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('HowlerComponent')) {
 			entity.howlerComponent.soundFadeIn(this.sound, this.volume, this.time, function() {
@@ -53,5 +54,5 @@ function(
 		// if howler's fade out method is not behaving nice then we can switch to tweening the volume 'manually'
 	};
 
-	return SoundFadeOutAction;
+	return SoundFadeInAction;
 });

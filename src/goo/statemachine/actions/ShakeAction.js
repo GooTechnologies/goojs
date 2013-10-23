@@ -17,6 +17,7 @@ function(
 	ShakeAction.prototype.constructor = ShakeAction;
 
 	ShakeAction.external = {
+		name: 'Shake',
 		description: 'Shakes the entity',
 		parameters: [{
 			name: 'Amount',
