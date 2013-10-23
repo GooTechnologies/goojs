@@ -85,6 +85,7 @@ define([
 	'goo/statemachine/actions/ShakeAction',
 	'goo/statemachine/actions/SmokeAction',
 	'goo/statemachine/actions/FireAction',
+	'goo/statemachine/actions/RemoveParticlesAction',
 
 	'goo/statemachine/actions/SoundFadeInAction',
 	'goo/statemachine/actions/SoundFadeOutAction'

@@ -29,10 +29,14 @@ function(
 			name: 'Time',
 			key: 'time',
 			type: 'number',
-			description: 'Shake amount',
+			description: 'Shake time amount',
 			'default': 1000
 		}],
-		transitions: []
+		transitions: [{
+			key: 'complete',
+			name: 'On Completion',
+			description: 'Event fired when the shake completes'
+		}]
 	};
 
 	ShakeAction.prototype.configure = function(settings) {
@@ -43,11 +47,6 @@ function(
 
 		this.easing = window.TWEEN.Easing.Linear.None;
 
-//		if (settings.easing1 === 'Linear') {
-//			this.easing = window.TWEEN.Easing.Linear.None;
-//		} else {
-//			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
-//		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 

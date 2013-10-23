@@ -1,14 +1,9 @@
 define([
-	'goo/particles/ParticleUtils',
-	'goo/math/Vector3',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/particles/ParticleUtils'
 ],
 	/** @lends */
 function (
-	ParticleUtils,
-	Vector3,
-	ShaderLib,
-	ParticleComponent
+	ParticleUtils
 ) {
 	'use strict';
 

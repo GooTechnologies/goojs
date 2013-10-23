@@ -4,7 +4,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/util/ParticleSystemUtils',
+	'goo/entities/EntityUtils'
 ],
 /** @lends */
 function(
@@ -13,7 +14,8 @@ function(
 	ShaderLib,
 	TextureCreator,
 	ParticleLib,
-	ParticleSystemUtils
+	ParticleSystemUtils,
+	EntityUtils
 ) {
 	"use strict";
 
@@ -53,10 +55,21 @@ function(
 			ParticleLib.getFire(),
 			FireAction.material
 		);
-		particleSystemEntity.name = '_ParticleSystemSmoke';
+		particleSystemEntity.name = '_ParticleSystemFire';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
 
 		particleSystemEntity.addToWorld();
+	};
+
+	FireAction.prototype.cleanup = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var children = EntityUtils.getChildren(entity);
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
+				child.removeFromWorld();
+			}
+		}
 	};
 
 	return FireAction;
