@@ -8,6 +8,7 @@ function(
 	"use strict";
 
 	function CannonjsComponent(settings) {
+		Component.call( this );
 		this.type = 'CannonjsComponent';
 
 		this.settings = settings || {};
@@ -17,6 +18,10 @@ function(
 
 		this.linearDamping = settings.linearDamping !== undefined ? settings.linearDamping : 0;
 		this.angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0;
+
+		this.api = {
+			'cannonjsComponent': this
+		}
 	}
 
 	CannonjsComponent.prototype = Object.create(Component.prototype);

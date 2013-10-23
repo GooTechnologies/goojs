@@ -124,6 +124,17 @@ define(
 
 			this.world = this.scenes[ 0 ];
 			World.time = 0;
+
+			// REVIEW: Start like this?
+
+			if (!parameters.manuallyStartGameLoop) {
+				this.startGameLoop(this.run);
+			}
+
+			if (parameters.debugKeys) {
+				this._addDebugKeys();
+			}
+
 		}
 
 		// general add/get methods
