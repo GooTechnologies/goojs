@@ -41,7 +41,7 @@ define([
 	'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
 	'goo/statemachine/actions/ScaleAction',
-	// 'goo/statemachine/actions/LookAtAction',
+	'goo/statemachine/actions/LookAtAction',
 
 	'goo/statemachine/actions/TweenMoveAction',
 	'goo/statemachine/actions/TweenRotationAction',
