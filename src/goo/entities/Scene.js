@@ -164,7 +164,7 @@ define( [
 
 		Scene.prototype.addSystemAt = function( system, index ) {
 			if( this.systems.indexOf( system ) === -1 ) {
-				this.systems.splice( index, 1, system );
+				this.systems.splice( index, 0, system );
 			}
 		};
 
