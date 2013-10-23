@@ -28,7 +28,7 @@ function(
 
 	FireAction.external = {
 		name: 'Fire',
-		description: 'Makes the entity emit smoke',
+		description: 'Makes the entity emit fire',
 		parameters: [],
 		transitions: []
 	};
@@ -37,21 +37,21 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
-		if (!SmokeAction.material) {
-			SmokeAction.material = Material.createMaterial(ShaderLib.particles);
+		if (!FireAction.material) {
+			FireAction.material = Material.createMaterial(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
-			SmokeAction.material.setTexture('DIFFUSE_MAP', texture);
-			SmokeAction.material.blendState.blending = 'AlphaBlending';
-			SmokeAction.material.cullState.enabled = false;
-			SmokeAction.material.depthState.write = false;
-			SmokeAction.material.renderQueue = 2001;
+			FireAction.material.setTexture('DIFFUSE_MAP', texture);
+			FireAction.material.blendState.blending = 'AdditiveBlending';
+			FireAction.material.cullState.enabled = false;
+			FireAction.material.depthState.write = false;
+			FireAction.material.renderQueue = 2001;
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getSmoke(),
-			SmokeAction.material
+			ParticleLib.getFire(),
+			FireAction.material
 		);
 		particleSystemEntity.name = '_ParticleSystemSmoke';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);

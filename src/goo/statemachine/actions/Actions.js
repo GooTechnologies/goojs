@@ -1,6 +1,4 @@
 define([
-	'goo/util/StringUtil',
-	'goo/util/ObjectUtil',
 	/*
 	'goo/statemachine/actions/LogVariableAction',
 	'goo/statemachine/actions/SetVariableAction',
@@ -86,14 +84,14 @@ define([
 	'goo/statemachine/actions/RandomTransitionAction',
 	'goo/statemachine/actions/ShakeAction',
 	'goo/statemachine/actions/SmokeAction',
+	'goo/statemachine/actions/FireAction',
 
 	'goo/statemachine/actions/SoundFadeInAction',
 	'goo/statemachine/actions/SoundFadeOutAction'
 ],
 /** @lends */
 function(
-	StringUtil,
-	_
+
 ) {
 	'use strict';
 
@@ -109,7 +107,7 @@ function(
 		return _actions[name];
 	};
 
-	Actions.allActions = function() {
+	Actions.allActions = function () {
 		var actions = {};
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
@@ -119,8 +117,8 @@ function(
 		return actions;
 	};
 
-	function registerAll(args) {
-		var actionsStartIndex = 2;
+	function registerAll (args) {
+		var actionsStartIndex = 0;
 		for (var i = actionsStartIndex; i < args.length; i++) {
 			var arg = args[i];
 			Actions.register(arg.external.name, arg);
