@@ -8,15 +8,9 @@ define(
 	  "goo/util/GameUtils",
 	  "goo/util/Logo",
 	  "goo/util/Stats",
-	  "goo/entities/World",
-
-	'goo/renderer/Material',
-	'goo/renderer/Util',
-	'goo/renderer/shaders/ShaderLib'
-
-	   ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
+	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
 	  
-	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World, Material, Util, ShaderLib ) {
+	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
 
 		"use strict";
 
@@ -28,7 +22,7 @@ define(
 
 			this.processParameters   = new ProcessParameters();
 			this.scenes              = [];
-			this.renderer            = new Renderer( parameters );
+			this.renderer            = new Renderer( parameters );		// REVIEW: maybe renderer should be on Scene level?
 			this.rafId               = -1;
 
 			// setup renderer access methods
@@ -130,6 +124,11 @@ define(
 
 			this.world = this.scenes[ 0 ];
 			World.time = 0;
+
+			// REVIEW: this is for backwards compability. RenderSystems now live on Scene level.
+
+			this.renderSystem  = this.world.getSystem( "RenderSystem" );
+			this.renderSystems = [ this.renderSystem ];			// REVIEW: maybe renderer should be on Scene level?
 
 			// REVIEW: Start like this?
 
@@ -288,7 +287,7 @@ define(
 			// have a separate processDebug which is attached to the raf if debug === true
 
 			this.processParameters.updateTime( timeStamp );
-			World.time = this.processParameters.time;				// REVIEW: Remove!
+			World.time = this.processParameters.timeInSeconds;				// REVIEW: Remove!
 			World.tpf  = this.processParameters.deltaTimeInSeconds;
 
 			var c, cl = this.callbacksPreProcess.length;
