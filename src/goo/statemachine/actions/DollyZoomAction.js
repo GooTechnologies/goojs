@@ -9,16 +9,16 @@ function(
 ) {
 	"use strict";
 
-	function ShakeAction(/*id, settings*/) {
+	function DollyZoomAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	ShakeAction.prototype = Object.create(Action.prototype);
-	ShakeAction.prototype.constructor = ShakeAction;
+	DollyZoomAction.prototype = Object.create(Action.prototype);
+	DollyZoomAction.prototype.constructor = DollyZoomAction;
 
-	ShakeAction.external = {
-		name: 'Shake',
-		description: 'Shakes the entity',
+	DollyZoomAction.external = {
+		name: 'Dolly Zoom',
+		description: 'Performs dolly zoom',
 		parameters: [{
 			name: 'Amount',
 			key: 'amount',
@@ -35,7 +35,7 @@ function(
 		transitions: []
 	};
 
-	ShakeAction.prototype.configure = function(settings) {
+	DollyZoomAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -51,11 +51,11 @@ function(
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	ShakeAction.prototype._setup = function() {
+	DollyZoomAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
-	ShakeAction.prototype._run = function(fsm) {
+	DollyZoomAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -75,5 +75,5 @@ function(
 		}.bind(this)).start();
 	};
 
-	return ShakeAction;
+	return DollyZoomAction;
 });

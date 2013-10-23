@@ -15,6 +15,7 @@ function(
 	MoveAction.prototype.constructor = MoveAction;
 
 	MoveAction.external = {
+		name: 'Move',
 		description: 'Moves the entity',
 		parameters: [{
 			name: 'Translation',

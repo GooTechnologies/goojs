@@ -18,7 +18,9 @@ function(
 	AddLightAction.prototype = Object.create(Action.prototype);
 	AddLightAction.prototype.constructor = AddLightAction;
 
+	AddLightAction.name = 'Add Light';
 	AddLightAction.external = {
+		name: 'Add Light',
 		description: 'Adds a light',
 		parameters: [{
 			name: 'Color',

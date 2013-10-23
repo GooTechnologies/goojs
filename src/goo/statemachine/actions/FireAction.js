@@ -17,41 +17,41 @@ function(
 ) {
 	"use strict";
 
-	function SmokeAction(/*id, settings*/) {
+	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	SmokeAction.material = null;
+	FireAction.material = null;
 
-	SmokeAction.prototype = Object.create(Action.prototype);
-	SmokeAction.prototype.constructor = SmokeAction;
+	FireAction.prototype = Object.create(Action.prototype);
+	FireAction.prototype.constructor = FireAction;
 
-	SmokeAction.external = {
-		name: 'Smoke',
-		description: 'Makes the entity emit smoke',
+	FireAction.external = {
+		name: 'Fire',
+		description: 'Makes the entity emit fire',
 		parameters: [],
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function(fsm) {
+	FireAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
-		if (!SmokeAction.material) {
-			SmokeAction.material = Material.createMaterial(ShaderLib.particles);
+		if (!FireAction.material) {
+			FireAction.material = Material.createMaterial(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
-			SmokeAction.material.setTexture('DIFFUSE_MAP', texture);
-			SmokeAction.material.blendState.blending = 'AlphaBlending';
-			SmokeAction.material.cullState.enabled = false;
-			SmokeAction.material.depthState.write = false;
-			SmokeAction.material.renderQueue = 2001;
+			FireAction.material.setTexture('DIFFUSE_MAP', texture);
+			FireAction.material.blendState.blending = 'AdditiveBlending';
+			FireAction.material.cullState.enabled = false;
+			FireAction.material.depthState.write = false;
+			FireAction.material.renderQueue = 2001;
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getSmoke(),
-			SmokeAction.material
+			ParticleLib.getFire(),
+			FireAction.material
 		);
 		particleSystemEntity.name = '_ParticleSystemSmoke';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
@@ -59,5 +59,5 @@ function(
 		particleSystemEntity.addToWorld();
 	};
 
-	return SmokeAction;
+	return FireAction;
 });

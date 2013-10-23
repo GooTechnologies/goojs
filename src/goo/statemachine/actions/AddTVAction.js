@@ -6,8 +6,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Texture'
+	'goo/renderer/shaders/ShaderLib'
 ],
 /** @lends */
 function(
@@ -18,8 +17,7 @@ function(
 	CameraComponent,
 	Camera,
 	Material,
-	ShaderLib,
-	Texture
+	ShaderLib
 ) {
 	"use strict";
 
@@ -31,7 +29,8 @@ function(
 	AddTVAction.prototype.constructor = AddTVAction;
 
 	AddTVAction.external = {
-		description: 'Adds a TV',
+		name: 'Add TV',
+		description: 'Adds a camera and renders what the camera sees on the current entity\'s texture',
 		parameters: [{
 			name: 'Translation',
 			key: 'position',

@@ -15,6 +15,7 @@ function(
 	InFrustumAction.prototype.constructor = InFrustumAction;
 
 	InFrustumAction.external = {
+		name: 'In Frustum',
 		description: 'Perfrms a transition based on whether the entity is in the current camera\'s frustum or not',
 		canTransition: true,
 		parameters: [{

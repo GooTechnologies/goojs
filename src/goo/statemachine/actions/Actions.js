@@ -1,6 +1,4 @@
 define([
-	'goo/util/StringUtil',
-	'goo/util/ObjectUtil',
 	/*
 	'goo/statemachine/actions/LogVariableAction',
 	'goo/statemachine/actions/SetVariableAction',
@@ -85,14 +83,17 @@ define([
 	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/RandomTransitionAction',
 	'goo/statemachine/actions/ShakeAction',
-	'goo/statemachine/actions/SmokeAction'
+	'goo/statemachine/actions/SmokeAction',
+	'goo/statemachine/actions/FireAction',
+
+	'goo/statemachine/actions/SoundFadeInAction',
+	'goo/statemachine/actions/SoundFadeOutAction'
 ],
 /** @lends */
 function(
-	StringUtil,
-	_
+
 ) {
-	"use strict";
+	'use strict';
 
 	var _actions = {};
 
@@ -106,7 +107,7 @@ function(
 		return _actions[name];
 	};
 
-	Actions.allActions = function() {
+	Actions.allActions = function () {
 		var actions = {};
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
@@ -116,23 +117,11 @@ function(
 		return actions;
 	};
 
-	Actions.menuItems = function() {
-		var keys = _.keys(_actions).sort();
-		var items = {};
-		for (var i = 0; i < keys.length; i++) {
-			var key = keys[i];
-			items[StringUtil.uncapitalize(key)] = { name: key };
-		}
-		return items;
-	};
-
-	function registerAll(args) {
-		var actionsStartIndex = 2;
+	function registerAll (args) {
+		var actionsStartIndex = 0;
 		for (var i = actionsStartIndex; i < args.length; i++) {
 			var arg = args[i];
-			var stringedFun = arg.toString();
-			var type = stringedFun.substring(9, stringedFun.indexOf('('));
-			Actions.register(type, arg);
+			Actions.register(arg.external.name, arg);
 		}
 	}
 

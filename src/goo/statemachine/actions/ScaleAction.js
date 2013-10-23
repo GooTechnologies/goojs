@@ -15,6 +15,7 @@ function(
 	ScaleAction.prototype.constructor = ScaleAction;
 
 	ScaleAction.external = {
+		name: 'Scale',
 		description: 'Scales the entity',
 		parameters: [{
 			name: 'Scale',

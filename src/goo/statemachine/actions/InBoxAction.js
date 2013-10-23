@@ -15,6 +15,7 @@ function(
 	InBoxAction.prototype.constructor = InBoxAction;
 
 	InBoxAction.external = {
+		name: 'In Box',
 		description: 'Performs a transition based on whether an entity is inside a user defined box or not',
 		canTransition: true,
 		parameters: [{

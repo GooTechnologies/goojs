@@ -15,7 +15,8 @@ function(
 	EvalAction.prototype.constructor = EvalAction;
 
 	EvalAction.external = {
-		description: 'This is all you need, really',
+		name: 'Eval',
+		description: 'Evaluates a JS expression',
 		parameters: [{
 			name: 'expression',
 			key: 'expression',

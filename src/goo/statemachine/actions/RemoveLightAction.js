@@ -15,6 +15,7 @@ function(
 	RemoveLightAction.prototype.constructor = RemoveLightAction;
 
 	RemoveLightAction.external = {
+		name: 'Remove Light',
 		description: 'Removes the light attached to the entity',
 		parameters: [],
 		transitions: []

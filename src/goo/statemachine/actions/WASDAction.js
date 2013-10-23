@@ -48,7 +48,8 @@ function(
 		}
 
 		return {
-			description: 'A 4-in-1 key down action',
+			name: 'WASD Keys Listener',
+			description: 'A 4-in-1 key down listener',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions

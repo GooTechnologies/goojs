@@ -48,6 +48,8 @@ define([
 		options = options || {};
 		options.startRadius = typeof options.startRadius !== 'undefined' ? options.startRadius : 0;
 		options.endRadius = typeof options.endRadius !== 'undefined' ? options.endRadius : size / 2;
+		options.steps = options.steps || [{ fraction: 0, value: 0 },{ fraction: 0.5, value: 0.2 }, { fraction: 1, value: 0 }];
+		// options array of (fraction, alpha)
 
 		var canvas = document.createElement('canvas');
 		document.body.appendChild(canvas);
@@ -56,8 +58,11 @@ define([
 		var con2d = canvas.getContext('2d');
 
 		var gradient = con2d.createRadialGradient(size/2, size/2, options.startRadius, size/2, size/2, options.endRadius);
-		gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-		gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+		for (var i = 0; i < options.steps.length; i++) {
+			var step = options.steps[i];
+			gradient.addColorStop(step.fraction, 'rgba(255, 255, 255, ' + step.value + ')');
+		}
 
 		con2d.fillStyle = gradient;
 		con2d.fillRect(0, 0, size, size);;

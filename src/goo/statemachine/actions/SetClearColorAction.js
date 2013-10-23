@@ -15,6 +15,7 @@ function(
 	SetClearColorAction.prototype.constructor = SetClearColorAction;
 
 	SetClearColorAction.external = {
+		name: 'Set Clear Color',
 		description: 'Sets the clear color',
 		parameters: [{
 			name: 'Color',

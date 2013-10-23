@@ -17,6 +17,7 @@ define([
 	TweenScaleAction.prototype.constructor = TweenScaleAction;
 
 	TweenScaleAction.external = {
+		name: 'Tween Scale',
 		description: 'Smoothly scales the entity',
 		canTransition: true,
 		parameters: [{
