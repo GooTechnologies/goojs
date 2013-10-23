@@ -51,7 +51,7 @@ define( [],
 				this.actualTime = timeStamp;
 			}
 
-			this.deltaTime          = Math.max( Math.min( 500, ( this.actualTime - timeStamp ) * this.timeScale ), 1 );
+			this.deltaTime          = Math.min( Math.max( 1, ( timeStamp - this.actualTime ) * this.timeScale ), 1000 );
 			this.deltaTimeInSeconds = this.deltaTime / 1000;
 
 			// smooth
