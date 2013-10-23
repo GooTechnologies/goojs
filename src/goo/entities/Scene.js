@@ -18,7 +18,6 @@ define( [
 	"goo/entities/components/MeshDataComponent",
 	"goo/entities/components/MeshRendererComponent",
 	"goo/entities/components/LightComponent",
-	"goo/renderer/Renderer",
 
 	// REVIEW: The entity manager is only here for backwards compability
 
@@ -46,7 +45,6 @@ define( [
 		MeshDataComponent,
 		MeshRendererComponent,
 		LightComponent,
-		Renderer,
 		EntityManager ) {
 	
 		"use strict";

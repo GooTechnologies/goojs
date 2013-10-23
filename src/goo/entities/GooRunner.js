@@ -8,9 +8,15 @@ define(
 	  "goo/util/GameUtils",
 	  "goo/util/Logo",
 	  "goo/util/Stats",
-	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
+	  "goo/entities/World",
+
+	'goo/renderer/Material',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib'
+
+	   ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
 	  
-	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
+	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World, Material, Util, ShaderLib ) {
 
 		"use strict";
 

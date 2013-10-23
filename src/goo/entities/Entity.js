@@ -1,13 +1,13 @@
 define(
 	[ "goo/entities/Collection",
-	  "goo/entities/Scene",
 	  "goo/util/ProcessArguments",
 	  "goo/entities/components/TransformComponent" ],
-	function( Collection, Scene, ProcessArguments, TransformComponent ) {
+	function( Collection, ProcessArguments, TransformComponent ) {
 		"use strict";
 
 		// static
 
+		var Scene      = undefined;
 		var uniqueID   = 0;
 		var collection = new Collection();
 
@@ -23,6 +23,14 @@ define(
 
 			if( !this.hasComponent( TransformComponent )) {
 				this.addComponent( TransformComponent );
+			}
+
+			// REVIEW: need better solution here for 
+			// circular dependency. Or simply remove the 
+			// the Scene comparison in add-method
+
+			if( Scene === undefined ) {
+				Scene = require( [ "goo/entities/Scene" ] );
 			}
 
 			// REVIEW: remove!
