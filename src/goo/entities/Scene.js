@@ -68,6 +68,7 @@ define( [
 			this.entities.removed = [];
 			this.gooRunner        = undefined;
 			this.renderer         = undefined;
+			this.time 			  = 1;	// REVIEW: find better name?
 
 			this.add( parameters.systems, parameters.scenes );
 
@@ -90,7 +91,7 @@ define( [
 			this._addedEntities   = this.entities.added;
 			this._changedEntities = this.entities.changed;
 			this._removedEntities = this.entities.removed;
-			this.tpf = 1;
+			this.tpf 			  = 1;
 		}
 
 		Scene.prototype.init = function( goo ) {
@@ -385,6 +386,10 @@ define( [
 
 		Scene.prototype.process = function( processParameters ) {
 			if( this.enabled ) {
+				// REVIEW: remove!
+				this.tpf  = processParameters.deltaTimeInSeconds;
+				this.time = processParameters.timeInSeconds;
+
 				var entities = this.entities;
 				var system, systems = this.systems;
 				var s, sl = systems.length;
@@ -411,7 +416,7 @@ define( [
 						// that you override the System.process and use the this.entities instead of
 						// the (now) incoming entities parameter. 
 
-						system._process( processParameters.deltaTime );
+						system._process( processParameters.deltaTimeInSeconds );
 					}
 				}
 			}

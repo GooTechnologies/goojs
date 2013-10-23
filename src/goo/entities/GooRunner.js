@@ -283,12 +283,12 @@ define(
 
 			this.processParameters.updateTime( timeStamp );
 			World.time = this.processParameters.time;				// REVIEW: Remove!
-			World.tpf  = this.processParameters.deltaTime;
+			World.tpf  = this.processParameters.deltaTimeInSeconds;
 
 			var c, cl = this.callbacksPreProcess.length;
 			for( c = 0; c < cl; c++ ) {
 				// REVIEW: Would be nice to send processParameters only!
-				this.callbacksPreProcess[ c ]( this.processParameters.deltaTime, this.processParameters );
+				this.callbacksPreProcess[ c ]( this.processParameters.deltaTimeInSeconds, this.processParameters );
 			}
 
 			var scenes = this.scenes;
@@ -312,7 +312,7 @@ define(
 				cl = this.callbacksPreRender.length;
 				for( c = 0; c < cl; c++ ) {
 					// REVIEW: Would be nice to send processParameters only!
-					this.callbacksPreRender[ c ]( this.processParameters.deltaTime, this.processParameters );
+					this.callbacksPreRender[ c ]( this.processParameters.deltaTimeInSeconds, this.processParameters );
 				}
 
 				sl = scenes.length;
@@ -345,7 +345,7 @@ define(
 			cl = this.callbacks.length;
 			for( c = 0; c < cl; c++ ) {
 				// REVIEW: Would be nice to send processParameters only!
-				this.callbacks[ c ]( this.processParameters.deltaTime, this.processParameters );
+				this.callbacks[ c ]( this.processParameters.deltaTimeInSeconds, this.processParameters );
 			}
 	
 			if (this.stats) {
