@@ -90,6 +90,7 @@ define( [
 			this._addedEntities   = this.entities.added;
 			this._changedEntities = this.entities.changed;
 			this._removedEntities = this.entities.removed;
+			this.tpf = 1;
 		}
 
 		Scene.prototype.init = function( goo ) {
@@ -217,18 +218,22 @@ define( [
 		// entity methods
 
 		Scene.prototype.addEntity = function( entity ) {
-			entity = entity || new Entity();
+			if( !this.hasEntity( entity )) {
+				entity = entity || new Entity();
 
-			this.entities.push( entity );
-			this.entities.added.push( entity );
+				this.entities.push( entity );
+				this.entities.added.push( entity );
 
-			entity.scene = this;
+				entity.scene = this;
+				// REVIEW: remove!
+				entity._world = this;
 
-			if( entity.hasChildren()) {
-				var scene = this;
-				entity.getChildren().each( function( child ) {
-					scene.addEntitiy( child );
-				});
+				if( entity.hasChildren()) {
+					var scene = this;
+					entity.getChildren().each( function( child ) {
+						scene.addEntitiy( child );
+					});
+				}
 			}
 
 			return entity;

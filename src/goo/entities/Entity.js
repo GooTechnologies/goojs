@@ -1,8 +1,9 @@
 define(
 	[ "goo/entities/Collection",
+	  "goo/entities/Scene",
 	  "goo/util/ProcessArguments",
 	  "goo/entities/components/TransformComponent" ],
-	function( Collection, ProcessArguments, TransformComponent ) {
+	function( Collection, Scene, ProcessArguments, TransformComponent ) {
 		"use strict";
 
 		// static
@@ -23,6 +24,10 @@ define(
 			if( !this.hasComponent( TransformComponent )) {
 				this.addComponent( TransformComponent );
 			}
+
+			// REVIEW: remove!
+
+			this._world = undefined;
 		}
 
 		// general add/get/has methods
@@ -40,6 +45,8 @@ define(
 				} else if( type === ProcessArguments.INSTANCE ) {
 					if( value instanceof Entity ) {
 						entity.addChild( value );
+					} else if( value instanceof Scene ) {
+						this.setScene( value );
 					} else {
 						entity.addComponent( value );
 					}
@@ -94,11 +101,14 @@ define(
  		// REVIEW: addToWorld is here for backwards compabiolity but by now the entity is
  		// alread part of a scene (done in Scene.createXXX)
 
- 		Entity.prototype.addToWorld = function(first_argument) {
+ 		Entity.prototype.addToWorld = function() {
  		};
 
 		Entity.prototype.setScene = function( scene ) {
 			this.scene = scene;
+			scene.addEntity( this );
+			// REVIEW: Remove!
+			this._world = this.scene;
 
 			this.getChildren().each( function( entitiy ) {
 				entitiy.setScene( scene );
