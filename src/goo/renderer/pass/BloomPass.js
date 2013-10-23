@@ -57,7 +57,7 @@ define([
 
 		this.bcMaterial = Material.createMaterial(ShaderLib.brightnesscontrast);
 		this.bcMaterial.uniforms.brightness = 0.0;
-		this.bcMaterial.uniforms.contrast = 0.5;
+		this.bcMaterial.uniforms.contrast = 0.0;
 
 		this.enabled = true;
 		this.clear = false;
