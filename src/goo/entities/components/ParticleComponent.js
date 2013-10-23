@@ -38,8 +38,6 @@ function (
 		Component.call( this );
 		this.type = 'ParticleComponent';
 
-		Component.call(this);
-
 		settings = settings || {};
 
 		this.emitters = [];
