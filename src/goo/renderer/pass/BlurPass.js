@@ -1,8 +1,16 @@
 define([
-	'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(
-	Material, FullscreenUtil, RenderTarget,
-	Util, ShaderLib) {
+	'goo/renderer/Material',
+	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/RenderTarget',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib'
+], function(
+	Material,
+	FullscreenUtil,
+	RenderTarget,
+	Util,
+	ShaderLib
+) {
 	"use strict";
 
 	/**

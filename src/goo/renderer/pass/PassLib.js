@@ -61,6 +61,12 @@ define([
 				if (options.size !== undefined) {
 					pass.convolutionMaterial.uniforms.size = options.size;
 				}
+				if (options.brightness !== undefined) {
+					pass.bcMaterial.uniforms.brightness = options.brightness / 100;
+				}
+				if (options.contrast !== undefined) {
+					pass.bcMaterial.uniforms.contrast = options.contrast / 100;
+				}
 				if (config.enabled !== undefined) {
 					pass.enabled = config.enabled;
 				}
@@ -87,6 +93,24 @@ define([
 					max: 10,
 					decimals: 1,
 					'default': 2
+				},
+				{
+					key: 'brightness',
+					name: 'Gain',
+					type: 'int',
+					control: 'slider',
+					min: -100,
+					max: 100,
+					'default': 0
+				},
+				{
+					key: 'contrast',
+					name: 'Intensity',
+					type: 'int',
+					control: 'slider',
+					min: -100,
+					max: 100,
+					'default': 0
 				}
 			]
 		};
