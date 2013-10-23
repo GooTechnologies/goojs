@@ -14,6 +14,16 @@ define(
 		// constructor
 
 		function Entity() {
+			// REVIEW: need better solution here for 
+			// circular dependency. Or simply remove the 
+			// the Scene comparison in add-method
+
+			if( Scene === undefined ) {
+				Scene = require( [ "goo/entities/Scene" ] );
+			}
+
+			// construct entitiy
+
 			this.components = {};
 			this.tags       = {};
 			this.attributes = {};
@@ -25,13 +35,6 @@ define(
 				this.addComponent( TransformComponent );
 			}
 
-			// REVIEW: need better solution here for 
-			// circular dependency. Or simply remove the 
-			// the Scene comparison in add-method
-
-			if( Scene === undefined ) {
-				Scene = require( [ "goo/entities/Scene" ] );
-			}
 
 			// REVIEW: remove!
 
