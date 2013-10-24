@@ -85,12 +85,21 @@ function(
 		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
 		var fakeTo;
 
+		var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
+
 		if (this.relative) {
 			var to = Vector3.add(initialTranslation, this.to);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.setd(this.x, this.y, this.z);
+				translation.data[0] += this.x - old.x;
+				translation.data[1] += this.y - old.y;
+				translation.data[2] += this.z - old.z;
+
+				old.x = this.x;
+				old.y = this.y;
+				old.z = this.z;
+
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
@@ -99,7 +108,14 @@ function(
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.setd(this.x, this.y, this.z);
+				translation.data[0] += this.x - old.x;
+				translation.data[1] += this.y - old.y;
+				translation.data[2] += this.z - old.z;
+
+				old.x = this.x;
+				old.y = this.y;
+				old.z = this.z;
+
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
