@@ -20,10 +20,6 @@ function(
 			name:'Animation',
 			key:'animation',
 			type:'animstate'
-		}, {
-			name:'On every frame',
-			key:'everyFrame',
-			type:'boolean'
 		}],
 		transitions:[]
 	};

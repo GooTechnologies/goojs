@@ -71,64 +71,36 @@ function (
 				return false;
 			}
 
-			// Check for looping.
+			// Check for looping
 			if (maxTime !== 0) {
-				//*
 				if (instance._loopCount === -1) {
 					if (clockTime < 0) {
-						// ???
-						//clockTime = maxTime + clockTime % duration + minTime;
-						clockTime %= duration;
-						clockTime -= minTime;
 						clockTime *= -1;
+						clockTime %= duration;
+						clockTime = duration - clockTime;
+						clockTime += minTime;
 					} else {
-						// this works fine
-						//clockTime -= this._startTime; // strictly without this
 						clockTime %= duration;
 						clockTime += minTime;
 					}
-				} else if (instance._loopCount > 1 && duration * instance._loopCount >= Math.abs(clockTime)) {
+				} else if (instance._loopCount > 0 && duration * instance._loopCount >= Math.abs(clockTime)) {
 					// probably still the same?
 					if (clockTime < 0) {
-						// ???
-						//clockTime = maxTime + clockTime % duration + this._startTime;
+						clockTime *= -1;
 						clockTime %= duration;
-						clockTime -= minTime;
+						clockTime = duration - clockTime;
+						clockTime += minTime;
 					} else {
-						// this works fine
-						//clockTime -= this._startTime; // strictly without this
 						clockTime %= duration;
 						clockTime += minTime;
 					}
 				}
 
-
 				if (clockTime > maxTime || clockTime < 0) {
 					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
 					// deactivate this instance of the clip
 					instance._active = false;
 				}
-				//*/
-
-
-				/*
-				if (instance._loopCount === -1 || instance._loopCount > 1 && maxTime * instance._loopCount >= Math.abs(clockTime)) {
-					if (clockTime < 0) {
-						clockTime = maxTime + clockTime % maxTime;
-					} else {
-						clockTime %= maxTime;
-					}
-				} else if (clockTime < 0) {
-					clockTime = maxTime + clockTime;
-				}
-
-				// Check for past max time
-				if (clockTime > maxTime || clockTime < 0) {
-					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
-					// deactivate this instance of the clip
-					instance._active = false;
-				}
-				//*/
 			}
 
 			// update the clip with the correct clip local time.
