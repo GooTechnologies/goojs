@@ -9,19 +9,24 @@ function (
 
 	var ParticleLib = {};
 
-	ParticleLib.getSmoke = function() {
+	ParticleLib.getSmoke = function(options) {
+		options = options || {};
+		options.spread = typeof options.spread !== 'undefined' ? options.speed : 2;
+		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 2;
+
 		return {
 			totalParticlesToSpawn : -1,
 			releaseRatePerSecond : 25,
 			minLifetime : 0.5,
 			maxLifetime : 4.0,
-//			getEmissionPoint : function (particle, particleEntity) {
-//				var vec3 = particle.position;
-//				ParticleUtils.applyEntityTransformPoint(vec3.set(0, 0, 0), particleEntity);
-//			},
 			getEmissionVelocity : function (particle, particleEntity) {
+				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 18 / 180, 8);
+				vec3.data[0] = (Math.random()-0.5) * 2 * options.spread;
+				vec3.data[1] = (Math.random() + 4) * options.velocity;
+				vec3.data[2] = (Math.random()-0.5) * 2 * options.spread;
+				return vec3;
+				//return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 18 / 180, 8);
 			},
 			timeline : [{
 				timeOffset : 0.0,
@@ -37,19 +42,24 @@ function (
 		};
 	};
 
-	ParticleLib.getFire = function() {
+	ParticleLib.getFire = function(options) {
+		options = options || {};
+		options.spread = typeof options.spread !== 'undefined' ? options.speed : 2;
+		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 10;
+
 		return {
 			totalParticlesToSpawn : -1,
 			releaseRatePerSecond : 30,
 			minLifetime : 0.5,
 			maxLifetime : 2.0,
-//			getEmissionPoint : function (particle, particleEntity) {
-//				var vec3 = particle.position;
-//				ParticleUtils.applyEntityTransformPoint(vec3.set(25, 0, 0), particleEntity);
-//			},
 			getEmissionVelocity : function (particle, particleEntity) {
+				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 15 / 180, 5);
+				vec3.data[0] = (Math.random()-0.5) * 2 * options.spread;
+				vec3.data[1] = (Math.random() + 1) * options.velocity;
+				vec3.data[2] = (Math.random()-0.5) * 2 * options.spread;
+				return vec3;
+				//return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 15 / 180, 5);
 			},
 			timeline : [{
 				timeOffset : 0.0,
