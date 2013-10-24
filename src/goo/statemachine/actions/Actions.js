@@ -38,7 +38,6 @@ define([
     */
 
 	'goo/statemachine/actions/MoveAction',
-	'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
 	'goo/statemachine/actions/ScaleAction',
 	'goo/statemachine/actions/LookAtAction',
