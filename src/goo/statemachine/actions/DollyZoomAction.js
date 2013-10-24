@@ -20,59 +20,104 @@ function(
 		name: 'Dolly Zoom',
 		description: 'Performs dolly zoom',
 		parameters: [{
-			name: 'Amount',
-			key: 'amount',
+			name: 'Forward',
+			key: 'forward',
 			type: 'number',
-			description: 'Shake amount',
-			'default': 1
+			description: 'Forward',
+			'default': 100
+		}, {
+			name: 'Focus point',
+			key: 'lookAt',
+			type: 'position',
+			description: 'Point to focus',
+			'default': [0, 0, 0]
 		}, {
 			name: 'Time',
 			key: 'time',
 			type: 'number',
-			description: 'Shake amount',
-			'default': 1000
+			description: 'Time',
+			'default': 10000
+		}, {
+			name: 'Easing 1',
+			key: 'easing1',
+			type: 'dropdown',
+			description: 'Easing 1',
+			'default': 'Linear',
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+		}, {
+			name: 'Easing 2',
+			key: 'easing2',
+			type: 'dropdown',
+			description: 'Easing 2',
+			'default': 'In',
+			options: ['In', 'Out', 'InOut']
 		}],
-		transitions: []
+		transitions: [{
+			key: 'complete',
+			name: 'On Completion',
+			description: 'Event fired when the movement completes'
+		}]
 	};
 
 	DollyZoomAction.prototype.configure = function (settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
+		this.forward = settings.forward;
+		this.lookAt = settings.lookAt;
 		this.time = settings.time;
-		this.amount = settings.amount;
 
-		this.easing = window.TWEEN.Easing.Linear.None;
-
-//		if (settings.easing1 === 'Linear') {
-//			this.easing = window.TWEEN.Easing.Linear.None;
-//		} else {
-//			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
-//		}
+		if (settings.easing1 === 'Linear') {
+			this.easing = window.TWEEN.Easing.Linear.None;
+		} else {
+			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+		}
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	DollyZoomAction.prototype._setup = function () {
+	DollyZoomAction.prototype._setup = function (fsm) {
 		this.tween = new window.TWEEN.Tween();
+		var entity = fsm.getOwnerEntity();
+
+		if (entity.cameraComponent && entity.cameraComponent.camera) {
+			var camera = entity.cameraComponent.camera;
+			this.initialDistance = new Vector3(this.lookAt).distance(camera.translation);
+			this.eyeTargetScale = Math.tan(camera.fov * (Math.PI / 180) / 2) * this.initialDistance;
+		} else {
+			this.eyeTargetScale = null;
+		}
 	};
 
 	DollyZoomAction.prototype._run = function (fsm) {
-		var entity = fsm.getOwnerEntity();
-		var transformComponent = entity.transformComponent;
-		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation);
+		if (this.eyeTargetScale) {
+			var entity = fsm.getOwnerEntity();
+			var transformComponent = entity.transformComponent;
+			var translation = transformComponent.transform.translation;
+			var initialTranslation = new Vector3().copy(translation);
+			var camera = entity.cameraComponent.camera;
 
-		var that = this;
-		this.tween.from({ amplitude: 0 }).to({ amplitude: 1 }, +this.time).easing(this.easing).onUpdate(function() {
-			translation.setd(
-				initialTranslation.data[0] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[1] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[2] + (Math.random()-0.5) * that.amount
-			);
-			transformComponent.setUpdated();
-		}).onComplete(function() {
-			translation.copy(initialTranslation);
-			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start();
+			var to = new Vector3(this.lookAt).sub(initialTranslation).normalize().scale(this.forward).add(initialTranslation);
+
+			var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z, d: this.initialDistance };
+			var fakeTo = { x: to.x, y: to.y, z: to.z, d: +this.initialDistance - +this.forward };
+
+			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
+			var that = this;
+
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+				translation.data[0] += this.x - old.x;
+				translation.data[1] += this.y - old.y;
+				translation.data[2] += this.z - old.z;
+
+				old.x = this.x;
+				old.y = this.y;
+				old.z = this.z;
+
+				transformComponent.setUpdated();
+
+				var fov = (180 / Math.PI) * 2 * Math.atan(that.eyeTargetScale / this.d);
+				camera.setFrustumPerspective(fov);
+			}).onComplete(function() {
+				fsm.send(this.eventToEmit.channel);
+			}.bind(this)).start();
+		}
 	};
 
 	return DollyZoomAction;
