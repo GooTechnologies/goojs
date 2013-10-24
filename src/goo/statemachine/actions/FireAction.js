@@ -31,7 +31,19 @@ function(
 	FireAction.external = {
 		name: 'Fire',
 		description: 'Makes the entity emit fire',
-		parameters: [],
+		parameters: [{
+			name: 'Start Color',
+			key: 'startColor',
+			type: 'color',
+			description: 'Flame color at source',
+			'default': [1, 1, 0]
+		}, {
+			name: 'End color',
+			key: 'endColor',
+			type: 'color',
+			description: 'Flame color at near the end of a flame\'s life',
+			'default': [1, 0, 0]
+		}],
 		transitions: []
 	};
 
@@ -47,12 +59,15 @@ function(
 			FireAction.material.blendState.blending = 'AdditiveBlending';
 			FireAction.material.cullState.enabled = false;
 			FireAction.material.depthState.write = false;
-			FireAction.material.renderQueue = 2001;
+			FireAction.material.renderQueue = 2002;
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getFire(),
+			ParticleLib.getFire({
+				startColor: this.startColor,
+				endColor: this.endColor
+			}),
 			FireAction.material
 		);
 		particleSystemEntity.name = '_ParticleSystemFire';
