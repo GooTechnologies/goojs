@@ -58,21 +58,35 @@ function(
 	MoveAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
+		var translation = transform.translation;
 
 		if (this.oriented) {
 			if (this.relative) {
 				var forward = new Vector3().seta(this.translation);
 				var orientation = transform.rotation;
 				orientation.applyPost(forward);
-				transform.translation.add(forward);
+
+				if (this.everyFrame) {
+					forward.scale(fsm.getTpf());
+					translation.add(forward);
+				} else {
+					translation.add(forward);
+				}
 			} else {
-				transform.translation.set(this.forward);
+				translation.set(this.forward);
 			}
 		} else {
 			if (this.relative) {
-				transform.translation.add(this.translation);
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 1000;
+					translation.data[0] += this.translation[0] * tpf;
+					translation.data[1] += this.translation[1] * tpf;
+					translation.data[2] += this.translation[2] * tpf;
+				} else {
+					translation.add(this.translation);
+				}
 			} else {
-				transform.translation.set(this.translation);
+				translation.set(this.translation);
 			}
 		}
 

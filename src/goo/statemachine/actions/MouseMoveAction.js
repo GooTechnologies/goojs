@@ -5,7 +5,7 @@ define([
 	function(
 	Action
 	) {
-	"use strict";
+	'use strict';
 
 	function MouseMoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -32,18 +32,18 @@ define([
 		}]
 	};
 
-	MouseMoveAction.prototype._setup = function() {
+	MouseMoveAction.prototype._setup = function () {
 		document.addEventListener('mousemove', this.eventListener);
 	};
 
-	MouseMoveAction.prototype._run = function(fsm) {
+	MouseMoveAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.mousemove);
 		}
 	};
 
-	MouseMoveAction.prototype.exit = function() {
+	MouseMoveAction.prototype.exit = function () {
 		document.removeEventListener('mousemove', this.eventListener);
 	};
 
