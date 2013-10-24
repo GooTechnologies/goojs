@@ -13,6 +13,7 @@ function (
 		options = options || {};
 		options.spread = typeof options.spread !== 'undefined' ? options.speed : 2;
 		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 2;
+		options.color = options.color || [0, 0, 0];
 
 		return {
 			totalParticlesToSpawn : -1,
@@ -33,19 +34,21 @@ function (
 				spin : 0,
 				mass : 1,
 				size : 3.0,
-				color : [0, 0, 0, 1]
+				color : [options.color[0], options.color[1], options.color[2], 1]
 			}, {
 				timeOffset : 1.0,
 				size : 6.0,
-				color : [0, 0, 0, 0]
+				color : [options.color[0], options.color[1], options.color[2], 0]
 			}]
 		};
 	};
 
 	ParticleLib.getFire = function(options) {
 		options = options || {};
-		options.spread = typeof options.spread !== 'undefined' ? options.speed : 2;
+		options.spread = typeof options.spread !== 'undefined' ? options.spread : 2;
 		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 10;
+		options.startColor = options.startColor || [1, 1, 0];
+		options.endColor = options.endColor || [1, 0, 0];
 
 		return {
 			totalParticlesToSpawn : -1,
@@ -66,10 +69,10 @@ function (
 				spin : 0,
 				mass : 1,
 				size : 2.0,
-				color : [1, 1, 0, 1]
+				color : [options.startColor[0], options.startColor[1], options.startColor[2], 1]
 			}, {
 				timeOffset : 0.25,
-				color : [1, 0, 0, 1]
+				color : [options.endColor[0], options.endColor[1], options.endColor[2], 1]
 			}, {
 				timeOffset : 0.25,
 				color : [0, 0, 0, 1]

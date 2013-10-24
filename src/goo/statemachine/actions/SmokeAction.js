@@ -31,7 +31,13 @@ function(
 	SmokeAction.external = {
 		name: 'Smoke',
 		description: 'Makes the entity emit smoke',
-		parameters: [],
+		parameters: [{
+			name: 'Color',
+			key: 'color',
+			type: 'color',
+			description: 'Smoke color',
+			'default': [0, 0, 0]
+		}],
 		transitions: []
 	};
 
@@ -52,7 +58,9 @@ function(
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getSmoke(),
+			ParticleLib.getSmoke({
+				color: this.color
+			}),
 			SmokeAction.material
 		);
 		particleSystemEntity.name = '_ParticleSystemSmoke';
