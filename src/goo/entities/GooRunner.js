@@ -46,6 +46,7 @@ function (
 	 * @param {boolean} [parameters.antialias=true]
 	 * @param {boolean} [parameters.stencil=false]
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false]
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 * @param {boolean} [parameters.logo=true]
