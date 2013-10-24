@@ -58,18 +58,23 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation);
+
+		var oldRan = new Vector3();
+		var ran = new Vector3();
 
 		var that = this;
 		this.tween.from({ amplitude: 0 }).to({ amplitude: 1 }, +this.time).easing(this.easing).onUpdate(function() {
-			translation.setd(
-				initialTranslation.data[0] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[1] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[2] + (Math.random()-0.5) * that.amount
+			ran.setd(
+				(Math.random()-0.5) * that.amount,
+				(Math.random()-0.5) * that.amount,
+				(Math.random()-0.5) * that.amount
 			);
+			translation.add(ran).sub(oldRan);
+			oldRan.copy(ran);
 			transformComponent.setUpdated();
 		}).onComplete(function() {
-			translation.copy(initialTranslation);
+			translation.sub(oldRan);
+			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start();
 	};
