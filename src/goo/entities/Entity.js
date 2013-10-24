@@ -48,7 +48,7 @@ function () {
 	}
 
 	/**
-	 * Set component of a certain type on entity. The operation has no effect if the entity already contains an entity of the same type.
+	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
 	 * @param {Component} component Component to set on the entity
 	 */
