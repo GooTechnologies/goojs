@@ -154,6 +154,7 @@ function (
 				};
 			}
 		}
+		this.setNeedsUpdate();
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

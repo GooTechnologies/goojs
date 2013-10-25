@@ -64,11 +64,12 @@ define([
 		return texture;
 	};
 
-	TextureHandler.prototype.update = function(ref, config) {
+	TextureHandler.prototype.update = function(ref, config, options) {
 		//var imgRef, loadedPromise, tc, texture, textureLoader, type, _ref,
 
 		var imgRef = config.url;
 		var type = imgRef ? imgRef.split('.').pop().toLowerCase() : void 0;
+		var reload = (options && options.texture && options.texture.reload !== undefined);
 
 		var texture, loadedPromise;
 		if (type === 'mp4') {
@@ -97,7 +98,7 @@ define([
 				console.log("Texture " + ref + " has no url");
 
 				return pu.createDummyPromise(texture);
-			} else if (config.url !== texture.a && config.url !== texture.image.src) {
+			} else if (reload || config.url !== texture.a && (!texture.image || !texture.image.src || config.url !== texture.image.src.slice(-config.url.length))) {
 				if (type in TextureHandler.loaders) {
 					var textureLoader = new TextureHandler.loaders[type]();
 					texture.a = imgRef;
@@ -118,7 +119,7 @@ define([
 						console.error("Error loading texture: ", e);
 					});
 				} else if (type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'gif') {
-					loadedPromise = this.getConfig(imgRef).then(function(data) {
+					loadedPromise = this.getConfig(imgRef, reload).then(function(data) {
 						texture.setImage(data);
 						return texture;
 					}).then(null, function(e) {
