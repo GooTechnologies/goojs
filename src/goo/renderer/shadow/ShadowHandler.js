@@ -80,8 +80,6 @@ function(
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
 		shadowSettings.shadowRecord.resolution[1] = shadowY;
-
-		console.log("UPDATED SHADOWS: ", shadowX, shadowY);
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
