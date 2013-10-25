@@ -37,7 +37,7 @@ function(
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
 
 		this.shadowType = 'PCF';
-		this.shadowTypeRecord = null;
+		this.shadowTypeRecord = this.shadowType;
 
 		this.oldClearColor = new Vector4(0, 0, 0, 0);
 		this.shadowClearColor = new Vector4(1, 1, 1, 1);
@@ -69,17 +69,16 @@ function(
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
 			});
-			shadowSettings.shadowDatashadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
-				type: 'Float',
-				magFilter : 'NearestNeighbor',
-				minFilter : 'NearestNeighborNoMipMaps'
+			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
+				type: 'Float'
 			});
 		}
 
 		shadowSettings.shadowRecord = shadowSettings.shadowRecord || {};
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
-		shadowSettings.shadowRecord.resolution[1] = shadowY;
+		shadowSettings.shadowRecord.resolution[0] = shadowX;
+		this.shadowTypeRecord = this.shadowType;
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
