@@ -50,7 +50,7 @@ define([
 		var materialRefs = config.materialRefs;
 		if (!materialRefs || materialRefs.length === 0) {
 			//console.log('No material refs in config for ' + entity.ref + ', creating default');
-			var defaultShader = Material.createShader(ShaderLib.simpleLit, 'DefaultShader');
+			var defaultShader = Material.createShader(ShaderLib.uber, 'DefaultShader');
 			var material = new Material();
 			material.shader = defaultShader;
 
