@@ -13,7 +13,6 @@ function(
 		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(evt) {
-			console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
 			if(evt.entity === this.ownerEntity) {
 				this.updated = true;
 			}
