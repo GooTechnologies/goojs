@@ -1,11 +1,13 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/renderer/Renderer'
 ],
 /** @lends */
 function(
 	Action,
-	Vector3
+	Vector3,
+	Renderer
 ) {
 	"use strict";
 
@@ -18,13 +20,19 @@ function(
 
 	CompareDistanceAction.external = {
 		name: 'Compare Distance',
-		description: 'Performs a transition based on the distance to a location',
+		description: 'Performs a transition based on the distance to the main camera or to a location',
 		canTransition: true,
 		parameters: [{
+			name: 'Current camera',
+			key: 'camera',
+			type: 'boolean',
+			description: 'Measure the diatnce from the current camera or from an arbitrary point',
+			'default': true
+		}, {
 			name: 'Position',
 			key: 'position',
 			type: 'position',
-			description: 'Position to measure the distance to',
+			description: 'Position to measure the distance to; Will be ignored if previous option is selected',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Value',
@@ -69,7 +77,13 @@ function(
 	CompareDistanceAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
-		var delta = Vector3.sub(translation, new Vector3(this.position));
+		var delta;
+
+		if (this.camera) {
+			delta = Vector3.sub(translation, Renderer.mainCamera.translation);
+		} else {
+			delta = Vector3.sub(translation, new Vector3(this.position));
+		}
 
 		var distance;
 		if (this.type === 'Euclidean') {
