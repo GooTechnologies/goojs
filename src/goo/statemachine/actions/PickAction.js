@@ -36,7 +36,7 @@ function(
 
 	PickAction.prototype._setup = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
-		this.goo = this.entity._world.gooRunner;
+		this.goo = this.ownerEntity._world.gooRunner;
 		this.goo.addEventListener('click', this.eventListener);
 	};
 
@@ -48,7 +48,9 @@ function(
 	};
 
 	PickAction.prototype.exit = function () {
-		this.goo.removeEventListener('click', this.eventListener);
+		if (this.goo) {
+			this.goo.removeEventListener('click', this.eventListener);
+		}
 	};
 
 	return PickAction;
