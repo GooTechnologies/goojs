@@ -87,6 +87,7 @@ define([
 	'goo/statemachine/actions/FireAction',
 	'goo/statemachine/actions/RemoveParticlesAction',
 	'goo/statemachine/actions/DollyZoomAction',
+	'goo/statemachine/actions/TweenTextureOffsetAction',
 
 	'goo/statemachine/actions/SoundFadeInAction',
 	'goo/statemachine/actions/SoundFadeOutAction'
