@@ -65,7 +65,7 @@ define([
 	'goo/statemachine/actions/EmitAction',
 	'goo/statemachine/actions/EvalAction',
 
-//	'goo/statemachine/actions/SwitchCameraAction',
+	'goo/statemachine/actions/SwitchCameraAction',
 	'goo/statemachine/actions/LogMessageAction',
 	'goo/statemachine/actions/PauseAnimationAction',
 	'goo/statemachine/actions/ResumeAnimationAction',

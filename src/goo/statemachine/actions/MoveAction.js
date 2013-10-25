@@ -67,7 +67,7 @@ function(
 				orientation.applyPost(forward);
 
 				if (this.everyFrame) {
-					forward.scale(fsm.getTpf());
+					forward.scale(fsm.getTpf() * 1000);
 					translation.add(forward);
 				} else {
 					translation.add(forward);

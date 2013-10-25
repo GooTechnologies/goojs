@@ -25,6 +25,12 @@ function(
 			type: 'position',
 			description: 'Position to look at',
 			'default': [0, 0, 0]
+		}, {
+			name: 'On every frame',
+			key: 'everyFrame',
+			type: 'boolean',
+			description: 'Do this action every frame',
+			'default': true
 		}],
 		transitions: []
 	};
