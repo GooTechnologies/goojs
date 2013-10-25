@@ -55,25 +55,33 @@ function(
 		var shadowX = shadowSettings.resolution[0];
 		var shadowY = shadowSettings.resolution[1];
 
-		shadowSettings.shadowData = {
-			shadowTarget: new RenderTarget(shadowX, shadowY, {
+		shadowSettings.shadowData = shadowSettings.shadowData || {};
+
+		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
 				type: 'Float',
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
-			}),
-			shadowTargetDown: new RenderTarget(shadowX / 2, shadowY / 2, {
+			});
+
+		if (this.shadowType === 'VSM') {
+			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float',
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
-			}),
-			shadowBlurred: new RenderTarget(shadowX / 2, shadowY / 2, {
+			});
+			shadowSettings.shadowDatashadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float',
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
-			}),
-			lightCamera: new Camera(55, 1, 1, 1000)
-		};
-		shadowSettings.shadowRecord = {};
+			});
+		}
+
+		shadowSettings.shadowRecord = shadowSettings.shadowRecord || {};
+		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
+		shadowSettings.shadowRecord.resolution[0] = shadowX;
+		shadowSettings.shadowRecord.resolution[1] = shadowY;
+
+		console.log("UPDATED SHADOWS: ", shadowX, shadowY);
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
@@ -102,6 +110,7 @@ function(
 
 				if (!shadowSettings.shadowData) {
 					this._createShadowData(shadowSettings);
+					shadowSettings.shadowData.lightCamera = new Camera(55, 1, 1, 1000);
 				}
 
 				var record = shadowSettings.shadowRecord;
@@ -124,6 +133,12 @@ function(
 					record.near !== shadowSettings.near ||
 					record.far !== shadowSettings.far ||
 					record.size !== shadowSettings.size) {
+
+					if (!record.resolution ||
+						record.resolution[0] !== shadowSettings.resolution[0] ||
+						record.resolution[1] !== shadowSettings.resolution[1]) {
+						this._createShadowData(shadowSettings);
+					}
 
 					if (light instanceof SpotLight) {
 						lightCamera.setFrustumPerspective(light.angle, shadowSettings.resolution[0] / shadowSettings.resolution[1], shadowSettings.near, shadowSettings.far);
@@ -148,6 +163,7 @@ function(
 
 				if (this.shadowTypeRecord !== this.shadowType) {
 					if (this.shadowType === 'VSM') {
+						this._createShadowData(shadowSettings);
 						this.depthMaterial.cullState.cullFace = 'Back';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 2;
 					} else {

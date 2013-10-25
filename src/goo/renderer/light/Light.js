@@ -37,6 +37,7 @@ function (
 		 * @property {number} far 1000
 		 * @property {number[]} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
+		 * @property {number} darkness shadow contribution
 		 */
 		this.shadowSettings = {
 			size: 100,
