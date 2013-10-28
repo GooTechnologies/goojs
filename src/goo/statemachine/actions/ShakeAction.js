@@ -20,11 +20,17 @@ function(
 		name: 'Shake',
 		description: 'Shakes the entity',
 		parameters: [{
-			name: 'Amount',
-			key: 'amount',
+			name: 'Start level',
+			key: 'startLevel',
 			type: 'number',
-			description: 'Shake amount',
-			'default': 1
+			description: 'Shake amount at start',
+			'default': 0
+		}, {
+			name: 'End level',
+			key: 'endLevel',
+			type: 'number',
+			description: 'Shake amount at the end',
+			'default': 0
 		}, {
 			name: 'Time',
 			key: 'time',
@@ -40,13 +46,10 @@ function(
 	};
 
 	ShakeAction.prototype.configure = function(settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
+		this.startLevel = settings.startLevel;
+		this.endLevel = settings.endLevel;
 		this.time = settings.time;
-		this.amount = settings.amount;
-
-		this.easing = window.TWEEN.Easing.Linear.None;
-
+		this.easing = window.TWEEN.Easing.Quadratic.InOut;
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
@@ -62,12 +65,11 @@ function(
 		var oldRan = new Vector3();
 		var ran = new Vector3();
 
-		var that = this;
-		this.tween.from({ amplitude: 0 }).to({ amplitude: 1 }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ level: this.startLevel }).to({ level: this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
 			ran.setd(
-				(Math.random()-0.5) * that.amount,
-				(Math.random()-0.5) * that.amount,
-				(Math.random()-0.5) * that.amount
+				(Math.random()-0.5) * this.level * 2,
+				(Math.random()-0.5) * this.level * 2,
+				(Math.random()-0.5) * this.level * 2
 			);
 			translation.add(ran).sub(oldRan);
 			oldRan.copy(ran);

@@ -1,7 +1,7 @@
 define([
 	'goo/statemachine/actions/Action',
 	'goo/renderer/Camera',
-	'goo/renderer/bounding/BoundingSphere'
+	'goo/renderer/bounds/BoundingSphere'
 ],
 /** @lends */
 function(
