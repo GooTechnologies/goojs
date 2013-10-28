@@ -29,6 +29,8 @@ function (
 		 */
 		this.shadowCaster = false;
 
+		this.lightCookie = null;
+
 		/**
 		 * @type {object}
 		 * @property {number} size 2000

@@ -39,20 +39,21 @@ function(
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
-			var textureMaps = shaderInfo.material._textureMaps;
+			var material = shaderInfo.material;
+			var textureMaps = material._textureMaps;
 
 			shader.defines = shader.defines || {};
 
-			if (ShaderBuilder.SKYBOX) {
-				shaderInfo.material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
+			if (ShaderBuilder.SKYBOX && material.uniforms.reflectivity > 0) {
+				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
 			} else {
-				shaderInfo.material.removeTexture('ENVIRONMENT_CUBE');
+				material.removeTexture('ENVIRONMENT_CUBE');
 			}
-			if (ShaderBuilder.SKYSPHERE) {
-				shaderInfo.material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
+			if (ShaderBuilder.SKYSPHERE && material.uniforms.reflectivity > 0) {
+				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
 			} else {
-				shaderInfo.material.removeTexture('ENVIRONMENT_SPHERE');
+				material.removeTexture('ENVIRONMENT_SPHERE');
 			}
 
 			for (var attribute in attributeMap) {
@@ -163,11 +164,7 @@ function(
 					var shadowData = light.shadowSettings.shadowData;
 
 					shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
-					// if (this.shadowHandler.shadowResults.length > 0) {
-						shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
-					// } else if (material.getTexture('SHADOW_MAP')) {
-						// material.removeTexture('SHADOW_MAP');
-					// }
+					shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
 					var mat = shader.uniforms['shadowLightMatrices'+i] = shader.uniforms['shadowLightMatrices'+i] || [];
@@ -248,7 +245,7 @@ function(
 						'float shadow = 1.0;'
 				);
 
-				if (light.shadowCaster) {
+				if (light.shadowCaster || light.lightCookie) {
 					prevertex.push(
 						'uniform mat4 shadowLightMatrices'+i+';',
 						'varying vec4 shadowLightDepths'+i+';'
@@ -258,18 +255,24 @@ function(
 						'shadowLightDepths'+i+' = ScaleMatrix * shadowLightMatrices'+i+' * worldPos;'
 					);
 
-					prefragment.push(
-						'uniform sampler2D shadowMaps'+i+';',
-						'uniform vec3 shadowLightPositions'+i+';',
-						'uniform float cameraScales'+i+';',
-						'uniform float shadowDarkness'+i+';'
-					);
-
-					// if (doShadow || doCookie) {
+					if (light.shadowCaster) {
 						prefragment.push(
-							'varying vec4 shadowLightDepths'+i+';'
+							'uniform sampler2D shadowMaps'+i+';',
+							'uniform vec3 shadowLightPositions'+i+';',
+							'uniform float cameraScales'+i+';',
+							'uniform float shadowDarkness'+i+';'
 						);
-					// }
+					}
+					if (light.lightCookie) {
+						prefragment.push(
+							'uniform sampler2D lightCookie'+i+';'
+						);
+					}
+					//TODO!!!
+
+					prefragment.push(
+						'varying vec4 shadowLightDepths'+i+';'
+					);
 
 					if (light.shadowSettings.shadowType === 'PCF') {
 						prefragment.push(

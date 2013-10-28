@@ -32,6 +32,7 @@ function(
 
 	function ShadowHandler() {
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
+		this.depthMaterial.cullState.cullFace = 'Back';
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
@@ -155,20 +156,14 @@ function(
 					record.size = shadowSettings.size;
 				}
 
-				if (record.shadowType !== shadowSettings.shadowType) {
-					if (shadowSettings.shadowType === 'VSM') {
-						this._createShadowData(shadowSettings);
-						this.depthMaterial.cullState.cullFace = 'Back';
-						this.depthMaterial.shader.defines.SHADOW_TYPE = 2;
-					} else {
-						this.depthMaterial.cullState.cullFace = 'Back';
-						this.depthMaterial.shader.defines.SHADOW_TYPE = 0;
-					}
+				if (shadowSettings.shadowType === 'VSM' && record.shadowType !== shadowSettings.shadowType) {
+					this._createShadowData(shadowSettings);
 
 					record.shadowType = shadowSettings.shadowType;
 				}
 				lightCamera.onFrameChange();
 
+				this.depthMaterial.shader.defines.SHADOW_TYPE = shadowSettings.shadowType === 'VSM' ? 2 : 0;
 				this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 
 				this.oldClearColor.copy(renderer.clearColor);
