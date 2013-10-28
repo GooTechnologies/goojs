@@ -79,7 +79,7 @@ define([
 	'goo/statemachine/actions/WASDAction',
 	'goo/statemachine/actions/ArrowsAction',
 
-	'goo/statemachine/actions/AddTVAction',
+	'goo/statemachine/actions/SetRenderTargetAction',
 	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/RandomTransitionAction',
 	'goo/statemachine/actions/ShakeAction',

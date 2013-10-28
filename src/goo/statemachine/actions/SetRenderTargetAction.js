@@ -21,33 +21,27 @@ function(
 ) {
 	"use strict";
 
-	function AddTVAction(/*id, settings*/) {
+	function SetRenderTargetAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
-	AddTVAction.prototype = Object.create(Action.prototype);
-	AddTVAction.prototype.constructor = AddTVAction;
+	SetRenderTargetAction.prototype = Object.create(Action.prototype);
+	SetRenderTargetAction.prototype.constructor = SetRenderTargetAction;
 
-	AddTVAction.external = {
-		name: 'Add TV',
-		description: 'Adds a camera and renders what the camera sees on the current entity\'s texture',
+	SetRenderTargetAction.external = {
+		name: 'Set Render Target',
+		description: 'Renders what a camera sees on the current entity\'s texture',
 		parameters: [{
-			name: 'Translation',
-			key: 'position',
-			type: 'position',
-			description: 'Position',
-			'default': [0, 0, 0]
-		}, {
-			name: 'LookAt',
-			key: 'lookAt',
-			type: 'position',
-			description: 'Look at point',
-			'default': [0, 0, -1]
+			name: 'Camera',
+			key: 'cameraEntityRef',
+			type: 'cameraEntity',
+			description: 'Camera to switch to',
+			'default': null
 		}],
 		transitions: []
 	};
 
-	AddTVAction.prototype._run = function(fsm) {
+	SetRenderTargetAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		// add portal system if it's not already added
@@ -58,22 +52,22 @@ function(
 			world.setSystem(new PortalSystem(renderer, renderingSystem));
 		}
 
-		var camera = new Camera(45, 1, 1, 1000);
-
-		var cameraEntity = world.createEntity('TV camera'); // need to remove this when machine stops
-
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.transformComponent.transform.translation.setd(this.position[0], this.position[1], this.position[2]);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(this.lookAt[0], this.lookAt[1], this.lookAt[2]), Vector3.UNIT_Y);
-		cameraEntity.addToWorld();
+		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+		var camera = cameraEntity.cameraComponent.camera;
 
 		var portalMaterial = Material.createMaterial(ShaderLib.textured, '');
 
+		this.oldMaterials = entity.meshRendererComponent.materials;
 		entity.meshRendererComponent.materials = [portalMaterial];
 
 		var portalComponent = new PortalComponent(camera, 500, { preciseRecursion: true });
 		entity.setComponent(portalComponent);
 	};
 
-	return AddTVAction;
+	SetRenderTargetAction.prototype.cleanup = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		entity.meshRendererComponent.materials = this.oldMaterials;
+	};
+
+	return SetRenderTargetAction;
 });
