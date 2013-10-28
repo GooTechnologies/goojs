@@ -1,11 +1,13 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/renderer/Renderer'
 ],
 /** @lends */
 function(
 	Action,
-	SystemBus
+	SystemBus,
+	Renderer
 ) {
 	'use strict';
 
@@ -30,12 +32,20 @@ function(
 		transitions: []
 	};
 
+	SwitchCameraAction.prototype.ready = function (fsm) {
+		this._camera = Renderer.mainCamera;
+	};
+
 	SwitchCameraAction.prototype._run = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {
 			SystemBus.emit('goo.setCurrentCamera', cameraEntity.cameraComponent.camera);
 		}
+	};
+
+	SwitchCameraAction.prototype.cleanup = function (fsm) {
+		SystemBus.emit('goo.setCurrentCamera', this._camera);
 	};
 
 	return SwitchCameraAction;

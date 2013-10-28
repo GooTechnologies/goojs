@@ -67,6 +67,14 @@ function (
 		}
 	};
 
+	Machine.prototype.ready = function () {
+		var keys = Object.keys(this._states);
+		for (var i = 0; i < keys.length; i++) {
+			var state = this._states[keys[i]];
+			state.ready();
+		}
+	};
+
 	Machine.prototype.cleanup = function () {
 		var keys = Object.keys(this._states);
 		for (var i = 0; i < keys.length; i++) {
