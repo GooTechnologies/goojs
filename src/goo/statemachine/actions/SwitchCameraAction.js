@@ -7,7 +7,7 @@ function(
 	Action,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	function SwitchCameraAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -23,14 +23,14 @@ function(
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
-			type: 'cameraEntity',  // an entity with a camera component
+			type: 'cameraEntity',
 			description: 'Camera to switch to',
 			'default': null
 		}],
 		transitions: []
 	};
 
-	SwitchCameraAction.prototype._run = function(fsm) {
+	SwitchCameraAction.prototype._run = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {

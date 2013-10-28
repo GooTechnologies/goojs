@@ -26,7 +26,7 @@ function(
 			name: 'Current camera',
 			key: 'camera',
 			type: 'boolean',
-			description: 'Measure the diatnce from the current camera or from an arbitrary point',
+			description: 'Measure the distance from the current camera or from an arbitrary point',
 			'default': true
 		}, {
 			name: 'Position',
