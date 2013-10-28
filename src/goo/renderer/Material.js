@@ -1,34 +1,114 @@
 define([
-	'goo/renderer/Shader'
+	'goo/renderer/Shader',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/util/ObjectUtil',
+	'goo/renderer/TextureCreator'
 ],
 /** @lends */
 function(
-	Shader
+	Shader,
+	ShaderLib,
+	_,
+	TextureCreator
 ) {
 	"use strict";
+
+	var uniqueId = 0;
 
 	/**
 	 * @class A Material defines the look of an object
 	 * @param {String} name Material name
+	 * @param {String} engineShaderId Engine shader name id (see ShaderLib for more information)
 	 */
-	function Material(name) {
+	function Material(parameters) {
 		/**
 		 * @type {String}
 		 */
-		this.name = name;
+
+		 // REVIEW: This is here for backwards compability and maybe that's fine...
+		 if( typeof( parameters ) === "string" ) {
+			this.name = parameters;
+			parameters = {};
+		 }
+
+		_.defaults( parameters, {
+			name            : ( this.name !== undefined ? this.name : ( "material" + (uniqueId++))),
+			shader          : undefined,
+			textures        : {},
+			uniforms        : {},
+			materialState   : {},
+			culling         : {},
+			blending        : {},
+			depth 	     	: {},
+			offset 		    : {},
+			dualTransparency: false,
+			flat            : false,
+			wireframe       : false,
+			renderQueue     : null,
+		});
+		_.defaults( parameters.materialState, {
+			ambient  : Shader.DEFAULT_AMBIENT,
+			diffuse  : Shader.DEFAULT_DIFFUSE,
+			emissive : Shader.DEFAULT_EMISSIVE,
+			specular : Shader.DEFAULT_SPECULAR,
+			shininess: Shader.DEFAULT_SHININESS
+		} );
+		_.defaults( parameters.culling, {
+			enabled: true,
+			cullFace: 'Back', 	// Front, Back, FrontAndBack
+			frontFace: 'CCW' 	// CW, CCW
+		});
+
+		// REVIEW: Exchange strings for definitions (like Shader.DEFAULT_XYZ above)
+		// REVIEW: Might be nice to send in .blending .blendEquation etc in parameters object
+		_.defaults( parameters.blending, {
+			blending     : 'NoBlending',
+			blendEquation: 'AddEquation',
+			blendSrc     : 'SrcAlphaFactor',
+			blendDst     : 'OneMinusSrcAlphaFactor'
+		});
+		_.defaults( parameters.depth, {
+			enabled: parameters.depthTest  !== undefined ? parameters.depthTest  : true,
+			write  : parameters.depthWrite !== undefined ? parameters.depthWrite : true
+		});
+		_.defaults( parameters.offset, {
+			enabled: false,
+			factor: 1,
+			units: 1
+		});
 
 		/** Shader to use when rendering
 		 * @type {Shader}
 		 */
-		this.shader = null;
+		if( parameters.shader !== undefined ) {
+			if( parameters.shader instanceof Shader ) {
+				this.shader = parameters.shader;
+			} else if( ShaderLib[ parameters.shader ] !== undefined ) {
+				this.shader = Material.createShader( ShaderLib[ parameters.shader ] );
+			} else {
+				console.warn( "Material.construct: " + shader + " is not a Shader nor an ID of ShaderLib. Ignoring!" );
+			}
+		} else { 
+			this.shader = null;
+		}
 		/** Possible overrides for shader uniforms
 		 * @type {Object}
 		 * @default
 		 */
-		this.uniforms = {};
+		this.uniforms = parameters.uniforms;
 
 		// Texture storage
 		this._textureMaps = {};
+
+		// load textures
+		_.each( parameters.textures, function( pathOrTexture, textureId ) {
+			if( typeof( pathOrTexture ) === "string" ) {
+				parameters[ textureId ] = new TextureCreator().loadTexture2D( pathOrTexture );
+				this.setTexture( textureId, parameters[ textureId ] );
+			} else {
+				this.setTexture( textureId, pathOrTexture )
+			}
+		}, this );
 
 		/** @type {object}
 		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
@@ -37,24 +117,15 @@ function(
 		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
 		 * @property {Number} shininess The shininess exponent.
 		 * */
-		this.materialState = {
-			ambient: Shader.DEFAULT_AMBIENT,
-			diffuse: Shader.DEFAULT_DIFFUSE,
-			emissive: Shader.DEFAULT_EMISSIVE,
-			specular: Shader.DEFAULT_SPECULAR,
-			shininess: Shader.DEFAULT_SHININESS
-		};
+		this.materialState = parameters.materialState;
+
 		/** Specification of culling for this Material.
 		 * @type {Object}
 		 * @property {boolean} enabled
 		 * @property {String} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
 		 * @property {String} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
 		 */
-		this.cullState = {
-			enabled: true,
-			cullFace: 'Back', // Front, Back, FrontAndBack
-			frontFace: 'CCW' // CW, CCW
-		};
+		this.cullState = parameters.culling;
 		/**
 		 * @type {Object}
 		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
@@ -62,45 +133,33 @@ function(
 		 * @property {String} blendSrc possible values: <strong>'SrcAlphaFactor'</strong>, 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', 'OneMinusSrcAlphaFactor', 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'SrcAlphaSaturateFactor', 'DstAlphaFactor'
 		 * @property {String} blendDst possible values: 'SrcAlphaFactor', 'ZeroFactor', 'OneFactor', 'SrcColorFactor', 'OneMinusSrcColorFactor', <strong>'OneMinusSrcAlphaFactor'</strong>, 'OneMinusDstAlphaFactor''DstColorFactor', 'OneMinusDstColorFactor', 'DstAlphaFactor'
 		 */
-		this.blendState = {
-			blending: 'NoBlending',
-			blendEquation: 'AddEquation',
-			blendSrc: 'SrcAlphaFactor',
-			blendDst: 'OneMinusSrcAlphaFactor'
-		};
+		this.blendState = parameters.blending;
 		/**
 		 * @type {Object}
 		 * @property {boolean} enabled default: true
 		 * @property {boolean} write default: true
 		 */
-		this.depthState = {
-			enabled: true,
-			write: true
-		};
+		this.depthState = parameters.depth;
 		/**
 		 * @type {Object}
 		 * @property {boolean} enabled
 		 * @property {number} factor default: 1
 		 * @property {number} units default: 1
 		 */
-		this.offsetState = {
-			enabled: false,
-			factor: 1,
-			units: 1
-		};
+		this.offsetState = parameters.offset;
 
 		/** Render the mesh twice with front/back-facing for double transparency rendering
 		 * @type {boolean}
 		 * @default
 		 */
-		this.dualTransparency = false;
+		this.dualTransparency = parameters.dualTransparency;
 
 		/** Show wireframe on this material
 		 * @type {boolean}
 		 * @default
 		 */
-		this.wireframe = false;
-		this.flat = false;
+		this.wireframe = parameters.wireframe;
+		this.flat = parameters.flat;
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
@@ -112,7 +171,7 @@ function(
 		 * By default materials use the render queue of the shader. See {@link Shader} or {@link RenderQueue} for more info
 		 * @type {number}
 		 */
-		this.renderQueue = null;
+		this.renderQueue = parameters.renderQueue;
 	}
 
 	/**

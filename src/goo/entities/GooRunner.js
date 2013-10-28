@@ -1,7 +1,7 @@
 define( 
 	[ "goo/entities/Collection",
 	  "goo/entities/ProcessParameters",
-	  "goo/util/ProcessArguments",
+	  "goo/util/ParseArguments",
 	  "goo/entities/Scene",
 	  "goo/entities/Entity",
 	  "goo/renderer/Renderer",
@@ -10,7 +10,7 @@ define(
 	  "goo/util/Stats",
 	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
 	  
-	function( Collection, ProcessParameters, ProcessArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
+	function( Collection, ProcessParameters, ParseArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
 
 		"use strict";
 
@@ -148,7 +148,7 @@ define(
 			collection.clear();
 			collection.preventClear();
 
-			// TODO: change to ProcessArguments
+			// TODO: change to ParseArguments
 
 			var argument, a, al = arguments.length;
 			var type;
@@ -179,7 +179,7 @@ define(
 			collection.clear();
 			collection.preventClear();
 
-			// TODO: Change to ProcessArguments
+			// TODO: Change to ParseArguments
 
 			var argument, a, al = arguments.length;
 			var type;
@@ -241,7 +241,7 @@ define(
 			collectionScenes.fromArray( this.scenes );
 			collection.clear();
 
-			ProcessArguments( this, arguments, function( goo, type, value ) {
+			ParseArguments( this, arguments, function( goo, type, value ) {
 				if( type === ProcessParameters.STRING ) {
 					collection.add( collectionScenes.compare( "name", value ));
 				} else if( type === ProcessParameters.INSTANCE ) {
@@ -602,21 +602,6 @@ define(
 			this._events[type] = null;
 		};
 
-
-		// REVIEW: to not demand users to use require (which honestly is a bit of hurdle) it might
-		// be a good thing to clutter the global scope with a "goo" namespace.
-/*
-		if( window.goo === undefined ) {
-			window.goo = {
-				Goo: Goo,
-				Scene: Scene,
-				Entity: Entity,
-				Collection: Collection,
-				Vector2: Vector2,
-				Vector3: Vector3,
-				Vector4: Vector4
-			}
-		}*/
 
 		return GooRunner;
 	}

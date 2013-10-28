@@ -5,7 +5,7 @@ define( [],
 		var typesAndValues;
 		var typesAndValuesStack = [];
 
-		function ProcessArguments( target, args, callback ) {
+		function ParseArguments( target, args, callback ) {
 			if( typesAndValues !== undefined ) {
 				typesAndValuesStack.push( typesAndValues );
 			}
@@ -26,12 +26,13 @@ define( [],
 			}
 		}
 
-		ProcessArguments.STRING      = "string",
-		ProcessArguments.TAG         = "tag",
-		ProcessArguments.ATTRIBUTE   = "attribute",
-		ProcessArguments.CONSTRUCTOR = "constructor",
-		ProcessArguments.INSTANCE    = "instance",
-		ProcessArguments.PARAMETERS  = "parameters"
+		ParseArguments.STRING      = "string",
+		ParseArguments.BOOL        = "bool",
+		ParseArguments.TAG         = "tag",
+		ParseArguments.ATTRIBUTE   = "attribute",
+		ParseArguments.CONSTRUCTOR = "constructor",
+		ParseArguments.INSTANCE    = "instance",
+		ParseArguments.PARAMETERS  = "parameters"
 
 		function recurseArguments( args, types, values ) {
 			if( args !== undefined ) {
@@ -50,27 +51,29 @@ define( [],
 								recurseArguments.apply( this, args );
 							} else {
 								if( arg.constructor.toString().indexOf( "function Object()" ) === 0 ) {
-									types.push( ProcessArguments.PARAMETERS );
+									types.push( ParseArguments.PARAMETERS );
 								} else {
-									types.push( ProcessArguments.INSTANCE );
+									types.push( ParseArguments.INSTANCE );
 								}
 							}
 						} else if( type === "string" ) {
 							if( arg.indexOf( "#" ) === 0 ) {
-								types.push( ProcessArguments.TAG );
+								types.push( ParseArguments.TAG );
 							} else if( arg.indexOf( "@" ) === 0 ) {
-								types.push( ProcessArguments.ATTRIBUTE );
+								types.push( ParseArguments.ATTRIBUTE );
 							} else {
-								types.push( ProcessArguments.STRING );
+								types.push( ParseArguments.STRING );
 							}
 						} else if( type === "function" ) {
-							types.push( ProcessArguments.CONSTRUCTOR );
+							types.push( ParseArguments.CONSTRUCTOR );
+						} else if( type === "boolean" ) {
+							types.push( ParseArguments.BOOL )
 						}
 					}
 				}
 			}
 		}
 
-		return ProcessArguments;
+		return ParseArguments;
 	}
 )
