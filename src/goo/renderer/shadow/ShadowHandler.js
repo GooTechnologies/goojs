@@ -36,17 +36,11 @@ function(
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
 
-		this.shadowType = 'PCF';
-		this.shadowTypeRecord = this.shadowType;
-
 		this.oldClearColor = new Vector4(0, 0, 0, 0);
 		this.shadowClearColor = new Vector4(1, 1, 1, 1);
 
 		this.renderList = [];
 		this.shadowList = [];
-
-		this.shadowLights = [];
-		this.shadowResults = [];
 
 		this.tmpVec = new Vector3();
 	}
@@ -62,8 +56,9 @@ function(
 				magFilter : 'NearestNeighbor',
 				minFilter : 'NearestNeighborNoMipMaps'
 			});
+		shadowSettings.shadowData.shadowResult = null;
 
-		if (this.shadowType === 'VSM') {
+		if (shadowSettings.shadowType === 'VSM') {
 			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float',
 				magFilter : 'NearestNeighbor',
@@ -78,7 +73,7 @@ function(
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
-		this.shadowTypeRecord = this.shadowType;
+		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
 	};
 
 	ShadowHandler.prototype._testStatesEqual = function(state1, state2) {
@@ -158,8 +153,8 @@ function(
 					record.size = shadowSettings.size;
 				}
 
-				if (this.shadowTypeRecord !== this.shadowType) {
-					if (this.shadowType === 'VSM') {
+				if (record.shadowType !== shadowSettings.shadowType) {
+					if (shadowSettings.shadowType === 'VSM') {
 						this._createShadowData(shadowSettings);
 						this.depthMaterial.cullState.cullFace = 'Back';
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 2;
@@ -168,11 +163,9 @@ function(
 						this.depthMaterial.shader.defines.SHADOW_TYPE = 0;
 					}
 
-					this.shadowTypeRecord = this.shadowType;
+					record.shadowType = shadowSettings.shadowType;
 				}
 				lightCamera.onFrameChange();
-
-				this.shadowLights.push(light);
 
 				this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 
@@ -189,7 +182,7 @@ function(
 				partitioner.process(lightCamera, this.shadowList, this.renderList);
 				renderer.render(this.renderList, lightCamera, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
 
-				switch (this.shadowType) {
+				switch (shadowSettings.shadowType) {
 					case 'VSM':
 						this.fullscreenPass.material.shader = this.downsample;
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
@@ -198,16 +191,16 @@ function(
 						this.fullscreenPass.material.shader = this.boxfilter;
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
 
-						this.shadowResults.push(shadowSettings.shadowData.shadowBlurred);
+						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowBlurred;
 						break;
 					case 'PCF':
-						this.shadowResults.push(shadowSettings.shadowData.shadowTarget);
+						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
 						break;
 					case 'Basic':
-						this.shadowResults.push(shadowSettings.shadowData.shadowTarget);
+						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
 						break;
 					default:
-						this.shadowResults.push(shadowSettings.shadowData.shadowTarget);
+						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
 						break;
 				}
 

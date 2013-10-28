@@ -31,13 +31,13 @@ function (
 
 		/**
 		 * @type {object}
-		 * @property {string} type possible values <strong>'Blur'</strong> = VSM, 'Pcf' = Pcf, 'None' = Regular
 		 * @property {number} size 2000
 		 * @property {number} near 1
 		 * @property {number} far 1000
 		 * @property {number[]} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
 		 * @property {number} darkness shadow contribution
+		 * @property {string} shadowType possible values <strong>'VSM'</strong> = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
 		 */
 		this.shadowSettings = {
 			size: 100,
@@ -45,7 +45,8 @@ function (
 			far: 1000,
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y,
-			darkness: 0.5
+			darkness: 0.0,
+			shadowType: 'PCF'
 		};
 
 		this.changedProperties = false;
