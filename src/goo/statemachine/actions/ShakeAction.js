@@ -19,6 +19,7 @@ function(
 	ShakeAction.external = {
 		name: 'Shake',
 		description: 'Shakes the entity',
+		canTransition: true,
 		parameters: [{
 			name: 'Start level',
 			key: 'startLevel',
@@ -65,7 +66,7 @@ function(
 		var oldRan = new Vector3();
 		var ran = new Vector3();
 
-		this.tween.from({ level: this.startLevel }).to({ level: this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
 			ran.setd(
 				(Math.random()-0.5) * this.level * 2,
 				(Math.random()-0.5) * this.level * 2,
