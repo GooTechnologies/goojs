@@ -264,6 +264,7 @@ function(
 						'uniform float cameraScales'+i+';',
 						'uniform float shadowDarkness'+i+';'
 					);
+
 					// if (doShadow || doCookie) {
 						prefragment.push(
 							'varying vec4 shadowLightDepths'+i+';'

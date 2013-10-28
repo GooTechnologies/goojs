@@ -60,12 +60,14 @@ function(
 
 		if (shadowSettings.shadowType === 'VSM') {
 			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, {
-				type: 'Float',
-				magFilter : 'NearestNeighbor',
-				minFilter : 'NearestNeighborNoMipMaps'
+				type: 'Float'
+				// magFilter : 'NearestNeighbor',
+				// minFilter : 'NearestNeighborNoMipMaps'
 			});
 			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float'
+				// magFilter : 'NearestNeighbor',
+				// minFilter : 'NearestNeighborNoMipMaps'
 			});
 		}
 
@@ -187,8 +189,8 @@ function(
 						this.fullscreenPass.material.shader = this.downsample;
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
 
-						this.boxfilter.uniforms.viewport = [shadowSettings.resolution[0] / 2, shadowSettings.resolution[1] / 2];
 						this.fullscreenPass.material.shader = this.boxfilter;
+						this.fullscreenPass.material.uniforms.viewport = [shadowSettings.resolution[0] / 2, shadowSettings.resolution[1] / 2];
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
 
 						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowBlurred;
