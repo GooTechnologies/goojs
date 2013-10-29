@@ -28,6 +28,8 @@ define([
 	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/FSMComponentHandler',
 	'goo/loaders/handlers/MachineHandler',
+	'goo/loaders/handlers/SoundComponentHandler',
+	'goo/loaders/handlers/SoundHandler',
 	'goo/loaders/handlers/PosteffectHandler'
 ],
 /** @lends */

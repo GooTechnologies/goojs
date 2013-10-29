@@ -18,7 +18,6 @@ function(
 	AddLightAction.prototype = Object.create(Action.prototype);
 	AddLightAction.prototype.constructor = AddLightAction;
 
-	AddLightAction.name = 'Add Light';
 	AddLightAction.external = {
 		name: 'Add Light',
 		description: 'Adds a light',
@@ -28,12 +27,21 @@ function(
 			type: 'color',
 			description: 'Color of the light',
 			'default': [1, 1, 1]
+		}, {
+			name: 'Range',
+			key: 'range',
+			type: 'number',
+			min: 0,
+			max: 1000,
+			description: 'Range of the light',
+			'default': 200
 		}],
 		transitions: []
 	};
 
 	AddLightAction.prototype._run = function (fsm) {
 		var light = new PointLight();
+		light.range = +this.range;
 		light.color.setd(this.color[0], this.color[1], this.color[2]);
 
 		var entity = fsm.getOwnerEntity();

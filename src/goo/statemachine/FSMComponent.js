@@ -87,7 +87,7 @@ function (
 			var machine = this._machines[i];
 			machine.setRefs(this);
 			machine.reset();
-			// machine.enter(); // needed ?
+			machine.ready();
 		}
 	};
 

@@ -3,6 +3,7 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/shaders/ShaderBuilder',
+	'goo/renderer/Util',
 	'goo/entities/World'
 ],
 	/** @lends */
@@ -11,6 +12,7 @@ define([
 		Shader,
 		ShaderFragment,
 		ShaderBuilder,
+		Util,
 		World
 		) {
 	"use strict";
@@ -55,14 +57,18 @@ define([
 			reflectionMap : 'REFLECTION_MAP',
 			transparencyMap : 'TRANSPARENCY_MAP',
 			opacity: 1.0,
-			reflectivity: 1.0,
-			fresnel: 1.0,
+			reflectivity: 0.0,
+			fresnel: 0.0,
 			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
 			fogColor: [1, 1, 1],
 			shadowDarkness: 0.5
 	    },
-		vshader : [
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
 			'attribute vec3 vertexPosition;',
 
 			'#ifdef NORMAL',
@@ -137,12 +143,10 @@ define([
 
 				ShaderBuilder.light.vertex,
 			'}'
-		].join('\n'),
-		fshader : [//
-			// '#if MAX_DIRECTIONAL_LIGHTS > 0 || MAX_POINT_LIGHTS > 0 || MAX_SPOT_LIGHTS > 0',
-				// '#define USE_LIGHTING true',
-			// "#endif",
-
+		].join('\n');
+		},
+		fshader: function () {
+			return [
 			'#ifdef DIFFUSE_MAP',
 				'uniform sampler2D diffuseMap;',
 			'#endif',
@@ -263,11 +267,6 @@ define([
 					ShaderBuilder.light.fragment,
 				'#endif',
 
-				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
-					'vec3 emissive = texture2D(emissiveMap, texCoord0).rgb;',
-					'final_color.rgb += emissive;',
-				'#endif',
-
 				'#if defined(ENVIRONMENT_CUBE) || defined(ENVIRONMENT_SPHERE)',
 
 // Refraction
@@ -326,7 +325,8 @@ define([
 
 				'gl_FragColor = final_color;',
 			'}'
-		].join('\n')
+		].join('\n');
+		}
 	};
 
 	ShaderLib.screenCopy = {
@@ -470,7 +470,8 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			color : [1.0, 1.0, 1.0]
+			color : [1.0, 1.0, 1.0],
+			opacity : 1.0
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',
@@ -484,10 +485,14 @@ define([
 		].join('\n'),
 		fshader : [//
 		'uniform vec3 color;',
+		'uniform float opacity;',
 
 		'void main(void)',
 		'{',
-		'	gl_FragColor = vec4(color, 1.0);',
+		'	if (opacity == 0.0) {',
+		'		discard;',
+		'	}',
+		'	gl_FragColor = vec4(color, opacity);',
 		'}'//
 		].join('\n')
 	};
@@ -506,9 +511,14 @@ define([
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA
+			cameraPosition : Shader.CAMERA,
+			opacity: 1.0
 		},
-		vshader : [
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
 		'attribute vec3 vertexPosition;',
 		'attribute vec3 vertexNormal;',
 
@@ -531,14 +541,19 @@ define([
 		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 		'	viewPosition = cameraPosition - worldPos.xyz;',
 		'}'//
-		].join('\n'),
-		fshader : [//
+		].join('\n');
+		},
+		fshader: function () {
+			return [
 		'#ifdef SPECULAR_MAP',
 			'uniform sampler2D specularMap;',
 		'#ifdef TEXCOORD0',
 			'varying vec2 texCoord0;',
 		'#endif',
 		'#endif',
+
+		'uniform float opacity;',
+
 		ShaderBuilder.light.prefragment,
 
 		'#ifdef NORMAL',
@@ -549,6 +564,10 @@ define([
 
 		'void main(void)',
 		'{',
+		' if (opacity == 0.0) {',
+		'	discard;',
+		'	return;',
+		' }',
 		' #ifdef NORMAL',
 		'	vec3 N = normalize(normal);',
 		' #else',
@@ -558,9 +577,11 @@ define([
 
 			ShaderBuilder.light.fragment,
 
+		'	final_color.a = opacity;',
 		'	gl_FragColor = final_color;',
 		'}'//
-		].join('\n')
+		].join('\n');
+		}
 	};
 
 	ShaderLib.billboard = {
@@ -665,7 +686,11 @@ define([
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
 		'attribute vec3 vertexPosition;',
 		'attribute vec3 vertexNormal;',
 		'attribute vec2 vertexUV0;',
@@ -692,8 +717,10 @@ define([
 		'	texCoord0 = vertexUV0;',
 		'	viewPosition = cameraPosition - worldPos.xyz;',
 		'}'//
-		].join('\n'),
-		fshader : [//
+		].join('\n');
+		},
+		fshader: function () {
+			return [
 		'uniform sampler2D diffuseMap;',
 
 		ShaderBuilder.light.prefragment,
@@ -712,7 +739,8 @@ define([
 
 		'	gl_FragColor = final_color;',
 		'}'//
-		].join('\n')
+		].join('\n');
+		}
 	};
 
 	ShaderLib.convolution = {

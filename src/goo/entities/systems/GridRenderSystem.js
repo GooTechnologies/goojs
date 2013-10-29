@@ -59,17 +59,9 @@ function (
 			transform: this.transform
 		};
 		// It ain't pretty, but it works
-		var surfaceShader = Util.clone(ShaderLib.simpleLit);
-		surfaceShader.uniforms.opacity = 1.0;
-		var fshader = surfaceShader.fshader.split('\n');
-		fshader.unshift('uniform float opacity;');
-		fshader.splice(fshader.length - 2, 0, 'final_color.a = opacity;');
-		surfaceShader.fshader = fshader.join('\n');
-
+		var surfaceShader = Util.clone(ShaderLib.simpleColored);
 		var surfaceMaterial = Material.createMaterial(surfaceShader, 'Surface Material');
-		surfaceMaterial.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1.0];
-		surfaceMaterial.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1.0];
-		surfaceMaterial.uniforms.materialSpecular = [0.6, 0.6, 0.6, 1.0];
+		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
 		surfaceMaterial.uniforms.opacity = 0.9;
 		surfaceMaterial.blendState.blending = 'CustomBlending';
 		surfaceMaterial.cullState.enabled = false;
@@ -130,7 +122,7 @@ function (
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			color: [0.5, 0.5, 0.5, 1],
+			color: [0.55, 0.55, 0.55, 1],
 			fogOn: false,
 			fogColor: [0.1, 0.1, 0.1, 1],
 			fogNear: Shader.NEAR_PLANE,

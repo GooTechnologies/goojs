@@ -17,8 +17,9 @@ function (
 
 		this.engine = engine;
 		this.resetRequest = false;
-		this.justReset = false;
-		this.passive = true;
+		this.passive = false;
+		this.entered = true;
+		this.paused = false;
 
 		//window.goor = engine;
 	}
@@ -34,6 +35,15 @@ function (
 				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.kill();
 				fsmComponent.cleanup();
+			}
+			this.passive = true;
+			return ;
+		}
+
+		if (this.entered) {
+			this.entered = false;
+			for (var i = 0; i < entities.length; i++) {
+				fsmComponent = entities[i].fSMComponent;
 				fsmComponent.init();
 				fsmComponent.doEnter();
 			}
@@ -47,7 +57,7 @@ function (
 		}
 	};
 
-	FSMSystem.prototype.inserted = function(entity) {
+	FSMSystem.prototype.inserted = function (entity) {
 		var fsmComponent = entity.fSMComponent;
 
 		fsmComponent.entity = entity;
@@ -57,26 +67,29 @@ function (
 	/**
 	 * Stops updating the entities
 	 */
-	FSMSystem.prototype.pause = function() {
-		console.log('FSMSystem: pause');
+	FSMSystem.prototype.pause = function () {
 		this.passive = true;
+		this.paused = true;
 	};
 
 	/**
 	 * Resumes updating the entities
 	 */
-	FSMSystem.prototype.play = function() {
-		console.log('FSMSystem: play');
+	FSMSystem.prototype.play = function () {
 		this.passive = false;
+		if (!this.paused) {
+			this.entered = true;
+		}
+		this.paused = false;
 	};
 
 	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	FSMSystem.prototype.reset = function() {
-		console.log('FSMSystem: reset');
+	FSMSystem.prototype.reset = function () {
+		this.passive = false;
 		this.resetRequest = true;
-		this.passive = true;
+		this.paused = false;
 	};
 
 	return FSMSystem;

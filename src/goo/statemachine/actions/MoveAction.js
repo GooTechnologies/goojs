@@ -1,11 +1,13 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	function MoveAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -24,6 +26,12 @@ function(
 			description: 'Move',
 			'default': [0, 0, 0]
 		}, {
+			name: 'Oriented',
+			key: 'oriented',
+			type: 'boolean',
+			description: 'If true translate with rotation',
+			'default': true
+		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
@@ -39,13 +47,47 @@ function(
 		transitions: []
 	};
 
-	MoveAction.prototype._run = function(fsm) {
+	MoveAction.prototype._setup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
-		if (this.relative) {
-			transform.translation.add(this.translation);
+		this.forward = new Vector3().seta(this.translation);
+		var orientation = transform.rotation;
+		orientation.applyPost(this.forward);
+	};
+
+	MoveAction.prototype._run = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var transform = entity.transformComponent.transform;
+		var translation = transform.translation;
+
+		if (this.oriented) {
+			if (this.relative) {
+				var forward = new Vector3().seta(this.translation);
+				var orientation = transform.rotation;
+				orientation.applyPost(forward);
+
+				if (this.everyFrame) {
+					forward.scale(fsm.getTpf() * 1000);
+					translation.add(forward);
+				} else {
+					translation.add(forward);
+				}
+			} else {
+				translation.set(this.forward);
+			}
 		} else {
-			transform.translation.set(this.translation);
+			if (this.relative) {
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 1000;
+					translation.data[0] += this.translation[0] * tpf;
+					translation.data[1] += this.translation[1] * tpf;
+					translation.data[2] += this.translation[2] * tpf;
+				} else {
+					translation.add(this.translation);
+				}
+			} else {
+				translation.set(this.translation);
+			}
 		}
 
 		entity.transformComponent.setUpdated();

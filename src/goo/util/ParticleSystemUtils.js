@@ -48,7 +48,7 @@ define([
 		options = options || {};
 		options.startRadius = typeof options.startRadius !== 'undefined' ? options.startRadius : 0;
 		options.endRadius = typeof options.endRadius !== 'undefined' ? options.endRadius : size / 2;
-		options.steps = options.steps || [{ fraction: 0, value: 0 },{ fraction: 0.5, value: 0.2 }, { fraction: 1, value: 0 }];
+		options.steps = options.steps || [{ fraction: 0, value: 1 }, { fraction: 1, value: 0 }];
 		// options array of (fraction, alpha)
 
 		var canvas = document.createElement('canvas');

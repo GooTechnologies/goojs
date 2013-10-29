@@ -30,5 +30,6 @@ define([
     'test/renderer/Camera-test',
 	'test/renderer/bounds/BoundingBox-test',
 	'test/statemachine/FSMComponent-test',
-	'test/entities/Bus-test'
+	'test/entities/Bus-test',
+	'test/statemachine/actions/InBoxAction-test'
 ], function() {});

@@ -14,7 +14,7 @@ function(
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(/*event*/) {
+		this.eventListener = function(/*data*/) {
 			this.updated = true;
 		}.bind(this);
 	}
@@ -41,7 +41,7 @@ function(
 	};
 
 	TransitionOnMessageAction.prototype._setup = function(/*fsm*/) {
-		SystemBus.addListener(this.channel, this.handler);
+		SystemBus.addListener(this.channel, this.eventListener);
 	};
 
 	TransitionOnMessageAction.prototype._run = function(fsm) {
@@ -52,7 +52,7 @@ function(
 	};
 
 	TransitionOnMessageAction.prototype.exit = function(/*fsm*/) {
-		SystemBus.removeListener(this.handler, this.eventListener);
+		SystemBus.removeListener(this.channel, this.eventListener);
 	};
 
 	return TransitionOnMessageAction;

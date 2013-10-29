@@ -1,13 +1,15 @@
 define([
 	'goo/statemachine/actions/Action',
 	'goo/math/Quaternion',
-	'goo/math/Matrix3x3'
+	'goo/math/Matrix3x3',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 	function(
 	Action,
 	Quaternion,
-	Matrix3x3
+	Matrix3x3,
+	MathUtils
 	) {
 	"use strict";
 
@@ -84,7 +86,7 @@ define([
 		var rotation = transformComponent.transform.rotation;
 
 		var initialRotation = new Quaternion().fromRotationMatrix(rotation);
-		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0], this.to[1], this.to[2]));
+		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
 		var workQuaternion = new Quaternion();
 
 		if (this.relative) {

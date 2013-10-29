@@ -25,12 +25,6 @@ function(
 			description: 'Sound',
 			'default': 0
 		}, {
-			name: 'Volume',
-			key: 'volume',
-			type: 'number',
-			description: 'Target volume',
-			'default': 0
-		}, {
 			name: 'Time',
 			key: 'time',
 			type: 'number',
@@ -47,11 +41,13 @@ function(
 	SoundFadeInAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.hasComponent('HowlerComponent')) {
-			entity.howlerComponent.soundFadeIn(this.sound, this.volume, this.time, function() {
-				fsm.send(this.transitions.complete);
-			}.bind(this));
+			var sound = entity.howlerComponent.sounds[this.sound];
+			if (sound) {
+				sound.fadeIn(sound.volume(), this.time, function() {
+					fsm.send(this.transitions.complete);
+				}.bind(this));
+			}
 		}
-		// if howler's fade out method is not behaving nice then we can switch to tweening the volume 'manually'
 	};
 
 	return SoundFadeInAction;

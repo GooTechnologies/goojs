@@ -15,7 +15,7 @@ function() {
 			var externalParameter = externalParameters[i];
 			var key = externalParameter.key;
 
-			if (settings[key]) {
+			if (typeof settings[key] !== 'undefined') {
 				this[key] = settings[key];
 			} else {
 				this[key] = externalParameter['default'];

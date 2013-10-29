@@ -19,35 +19,38 @@ function(
 	ShakeAction.external = {
 		name: 'Shake',
 		description: 'Shakes the entity',
+		canTransition: true,
 		parameters: [{
-			name: 'Amount',
-			key: 'amount',
+			name: 'Start level',
+			key: 'startLevel',
 			type: 'number',
-			description: 'Shake amount',
-			'default': 1
+			description: 'Shake amount at start',
+			'default': 0
+		}, {
+			name: 'End level',
+			key: 'endLevel',
+			type: 'number',
+			description: 'Shake amount at the end',
+			'default': 0
 		}, {
 			name: 'Time',
 			key: 'time',
 			type: 'number',
-			description: 'Shake amount',
+			description: 'Shake time amount',
 			'default': 1000
 		}],
-		transitions: []
+		transitions: [{
+			key: 'complete',
+			name: 'On Completion',
+			description: 'Event fired when the shake completes'
+		}]
 	};
 
 	ShakeAction.prototype.configure = function(settings) {
-		this.to = settings.to;
-		this.relative = settings.relative;
+		this.startLevel = settings.startLevel;
+		this.endLevel = settings.endLevel;
 		this.time = settings.time;
-		this.amount = settings.amount;
-
-		this.easing = window.TWEEN.Easing.Linear.None;
-
-//		if (settings.easing1 === 'Linear') {
-//			this.easing = window.TWEEN.Easing.Linear.None;
-//		} else {
-//			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
-//		}
+		this.easing = window.TWEEN.Easing.Quadratic.InOut;
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
@@ -59,18 +62,22 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation);
 
-		var that = this;
-		this.tween.from({ amplitude: 0 }).to({ amplitude: 1 }, +this.time).easing(this.easing).onUpdate(function() {
-			translation.setd(
-				initialTranslation.data[0] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[1] + (Math.random()-0.5) * that.amount,
-				initialTranslation.data[2] + (Math.random()-0.5) * that.amount
+		var oldRan = new Vector3();
+		var ran = new Vector3();
+
+		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
+			ran.setd(
+				(Math.random()-0.5) * this.level * 2,
+				(Math.random()-0.5) * this.level * 2,
+				(Math.random()-0.5) * this.level * 2
 			);
+			translation.add(ran).sub(oldRan);
+			oldRan.copy(ran);
 			transformComponent.setUpdated();
 		}).onComplete(function() {
-			translation.copy(initialTranslation);
+			translation.sub(oldRan);
+			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start();
 	};

@@ -48,11 +48,46 @@ function(
 		}]
 	};
 
+
+	// TODO: Find this in some Util class
+	function checkInside(pos, pt1, pt2) {
+		var inside = false;
+
+		var inOnAxis = function(pos, pt1, pt2) {
+			if (pt1 > pt2) {
+				if (pos < pt1 && pos > pt2) {
+					return true;
+				}
+			} else if (pt2 > pt1) {
+				if (pos < pt2 && pos > pt1) {
+					return true;
+				}
+			} else {
+				if (pos === pt2) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		var isInsideX = inOnAxis(pos[0], pt1[0], pt2[0]);
+		var isInsideY = inOnAxis(pos[1], pt1[1], pt2[1]);
+		var isInsideZ = inOnAxis(pos[2], pt1[2], pt2[2]);
+
+		if (isInsideX && isInsideY && isInsideZ) {
+			inside = true;
+		}
+
+		return inside;
+	}
+
 	InBoxAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
-		if (translation.data[0] > this.point1[0] && translation.data[1] > this.point1[1] && translation.data[2] > this.point1[2] &&
-			translation.data[0] < this.point2[0] && translation.data[1] < this.point2[1] && translation.data[2] < this.point2[2]) {
+
+		var inside = checkInside(translation.data, this.point1, this.point2);
+
+		if (inside) {
 			fsm.send(this.transitions.inside);
 		} else {
 			fsm.send(this.transitions.outside);

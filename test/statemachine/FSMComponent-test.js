@@ -249,7 +249,10 @@ define([
 			});
 			state2_1.setTransition('toEntry', 'entry');
 
-			state2.addMachine(state2_1);
+			var machine1_1 = new Machine();
+			machine1_1.addState(state2_1);
+
+			state2.addMachine(machine1_1);
 
 			var machine1 = new Machine();
 			machine1.addState(state1);

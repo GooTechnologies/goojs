@@ -4,7 +4,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/util/ParticleSystemUtils',
+	'goo/entities/EntityUtils'
 ],
 /** @lends */
 function(
@@ -13,7 +14,8 @@ function(
 	ShaderLib,
 	TextureCreator,
 	ParticleLib,
-	ParticleSystemUtils
+	ParticleSystemUtils,
+	EntityUtils
 ) {
 	"use strict";
 
@@ -29,7 +31,19 @@ function(
 	FireAction.external = {
 		name: 'Fire',
 		description: 'Makes the entity emit fire',
-		parameters: [],
+		parameters: [{
+			name: 'Start Color',
+			key: 'startColor',
+			type: 'color',
+			description: 'Flame color at source',
+			'default': [1, 1, 0]
+		}, {
+			name: 'End color',
+			key: 'endColor',
+			type: 'color',
+			description: 'Flame color at near the end of a flame\'s life',
+			'default': [1, 0, 0]
+		}],
 		transitions: []
 	};
 
@@ -45,18 +59,32 @@ function(
 			FireAction.material.blendState.blending = 'AdditiveBlending';
 			FireAction.material.cullState.enabled = false;
 			FireAction.material.depthState.write = false;
-			FireAction.material.renderQueue = 2001;
+			FireAction.material.renderQueue = 2002;
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getFire(),
+			ParticleLib.getFire({
+				startColor: this.startColor,
+				endColor: this.endColor
+			}),
 			FireAction.material
 		);
-		particleSystemEntity.name = '_ParticleSystemSmoke';
+		particleSystemEntity.name = '_ParticleSystemFire';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
 
 		particleSystemEntity.addToWorld();
+	};
+
+	FireAction.prototype.cleanup = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var children = EntityUtils.getChildren(entity);
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
+				child.removeFromWorld();
+			}
+		}
 	};
 
 	return FireAction;

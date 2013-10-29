@@ -8,7 +8,7 @@ define(
 	  "goo/util/GameUtils",
 	  "goo/util/Logo",
 	  "goo/util/Stats",
-	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which has to go, too.
+	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which should be removed, too.
 	  
 	function( Collection, ProcessParameters, ParseArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
 
@@ -25,6 +25,8 @@ define(
 			this.renderer            = new Renderer( parameters );		// REVIEW: maybe renderer should be on Scene level?
 			this.rafId               = -1;
 
+			// REVIEW: Even though I've writen to add more access methods we should ask ourselves if
+			// the renderer should be shared among scenes or not...
 			// setup renderer access methods
 			// TODO: add more access methods
 

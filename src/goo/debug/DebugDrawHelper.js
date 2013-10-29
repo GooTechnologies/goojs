@@ -85,7 +85,7 @@ define([
 		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
 
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
-		renderables[0].transform.scale.scale(scale);
+		renderables[0].transform.scale.setd(scale,scale,scale);
 		renderables[0].transform.update();
 		if (component.light && component.light instanceof DirectionalLight) {
 			renderables[1].transform.scale.scale(scale);

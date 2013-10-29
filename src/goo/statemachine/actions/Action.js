@@ -13,21 +13,21 @@ function(
 	}
 
 	/* this gets executed on enter - override this if needed */
-	Action.prototype._setup = function(/*fsm*/) {
+	Action.prototype._setup = function (/*fsm*/) {
 	};
 
 	/* this gets executed on enter or on update depending on `everyFrame` - override this */
-	Action.prototype._run = function(/*fsm*/) {
+	Action.prototype._run = function (/*fsm*/) {
 	};
 
 	/* this should be called by the constructor and by the handlers when new options are loaded */
-	Action.prototype.configure = function(settings) {
+	Action.prototype.configure = function (settings) {
 		FSMUtil.setParameters.call(this, settings, this.constructor.external.parameters);
 		FSMUtil.setTransitions.call(this, settings, this.constructor.external.transitions);
 	};
 
 	/* this is called by external functions - called once, when the host state becomes active */
-	Action.prototype.enter = function(fsm) {
+	Action.prototype.enter = function (fsm) {
 		this._setup(fsm);
 		if (!this.everyFrame) {
 			this._run(fsm);
@@ -35,10 +35,14 @@ function(
 	};
 
 	/* this is called by external functions - called on every frame */
-	Action.prototype.update = function(fsm) {
+	Action.prototype.update = function (fsm) {
 		if (this.everyFrame) {
 			this._run(fsm);
 		}
+	};
+
+	/* this is called when the machine stops and makes sure that any changes not undone by exit methods get undone */
+	Action.prototype.ready = function (/*fsm*/) {
 	};
 
 	/* this is called when the machine stops and makes sure that any changes not undone by exit methods get undone */

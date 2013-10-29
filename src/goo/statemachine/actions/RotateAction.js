@@ -41,20 +41,36 @@ function(
 		transitions: []
 	};
 
-	RotateAction.prototype._run = function(fsm) {
+	RotateAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
-			transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD);
-			transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD);
-			transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD);
+			if (this.everyFrame) {
+				var tpf = fsm.getTpf() * 1000;
+				transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD * tpf);
+				transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD * tpf);
+				transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD * tpf);
+			} else {
+				transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD);
+				transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD);
+				transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD);
+			}
 		} else {
-			transform.setRotationXYZ(
-				this.rotation[0] * MathUtils.DEG_TO_RAD,
-				this.rotation[1] * MathUtils.DEG_TO_RAD,
-				this.rotation[2] * MathUtils.DEG_TO_RAD
-			);
+			if (this.everyFrame) {
+				var tpf = fsm.getTpf() * 1000;
+				transform.setRotationXYZ(
+					this.rotation[0] * MathUtils.DEG_TO_RAD * tpf,
+					this.rotation[1] * MathUtils.DEG_TO_RAD * tpf,
+					this.rotation[2] * MathUtils.DEG_TO_RAD * tpf
+				);
+			} else {
+				transform.setRotationXYZ(
+					this.rotation[0] * MathUtils.DEG_TO_RAD,
+					this.rotation[1] * MathUtils.DEG_TO_RAD,
+					this.rotation[2] * MathUtils.DEG_TO_RAD
+				);
+			}
 		}
 
 		entity.transformComponent.setUpdated();

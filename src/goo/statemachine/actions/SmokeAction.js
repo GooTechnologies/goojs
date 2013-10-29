@@ -4,7 +4,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/util/ParticleSystemUtils',
+	'goo/entities/EntityUtils'
 ],
 /** @lends */
 function(
@@ -13,7 +14,8 @@ function(
 	ShaderLib,
 	TextureCreator,
 	ParticleLib,
-	ParticleSystemUtils
+	ParticleSystemUtils,
+	EntityUtils
 ) {
 	"use strict";
 
@@ -29,7 +31,13 @@ function(
 	SmokeAction.external = {
 		name: 'Smoke',
 		description: 'Makes the entity emit smoke',
-		parameters: [],
+		parameters: [{
+			name: 'Color',
+			key: 'color',
+			type: 'color',
+			description: 'Smoke color',
+			'default': [0, 0, 0]
+		}],
 		transitions: []
 	};
 
@@ -50,13 +58,26 @@ function(
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getSmoke(),
+			ParticleLib.getSmoke({
+				color: this.color
+			}),
 			SmokeAction.material
 		);
 		particleSystemEntity.name = '_ParticleSystemSmoke';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
 
 		particleSystemEntity.addToWorld();
+	};
+
+	SmokeAction.prototype.cleanup = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var children = EntityUtils.getChildren(entity);
+		for (var i = 0; i < children.length; i++) {
+			var child = children[i];
+			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
+				child.removeFromWorld();
+			}
+		}
 	};
 
 	return SmokeAction;

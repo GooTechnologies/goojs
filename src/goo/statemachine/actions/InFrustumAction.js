@@ -1,11 +1,15 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/renderer/Camera',
+	'goo/renderer/bounds/BoundingSphere'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Camera,
+	BoundingSphere
 ) {
-	"use strict";
+	'use strict';
 
 	function InFrustumAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -16,9 +20,21 @@ function(
 
 	InFrustumAction.external = {
 		name: 'In Frustum',
-		description: 'Perfrms a transition based on whether the entity is in the current camera\'s frustum or not',
+		description: 'Performs a transition based on whether the entity is in a camera\'s frustum or not',
 		canTransition: true,
 		parameters: [{
+			name: 'Current camera',
+			key: 'current',
+			type: 'boolean',
+			description: 'Measure the distance from the current camera or from an arbitrary point',
+			'default': true
+		}, {
+			name: 'Camera',
+			key: 'cameraEntityRef',
+			type: 'cameraEntity',
+			description: 'Other camera',
+			'default': null
+		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
@@ -36,12 +52,30 @@ function(
 		}]
 	};
 
-	InFrustumAction.prototype._run = function(fsm) {
+	InFrustumAction.prototype._setup = function (fsm) {
+		if (!this.current) {
+			var world = fsm.getOwnerEntity()._world;
+			var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+			this.camera = cameraEntity.cameraComponent.camera;
+		}
+	};
+
+	InFrustumAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity.isVisible) {
-			fsm.send(this.transitions.inside);
+
+		if (this.current) {
+			if (entity.isVisible) {
+				fsm.send(this.transitions.inside);
+			} else {
+				fsm.send(this.transitions.outside);
+			}
 		} else {
-			fsm.send(this.transitions.outside);
+			var boundingVolume = entity.meshDataComponent ? entity.meshDataComponent.modelBound : new BoundingSphere(entity.transformComponent.worldTransform.translation, 0.001);
+			if (this.camera.contains(boundingVolume) === Camera.Outside) {
+				fsm.send(this.transitions.outside);
+			} else {
+				fsm.send(this.transitions.inside);
+			}
 		}
 	};
 

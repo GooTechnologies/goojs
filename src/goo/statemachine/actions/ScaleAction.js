@@ -28,7 +28,7 @@ function(
 			key: 'relative',
 			type: 'boolean',
 			description: 'If true add/multiply, otherwise set',
-			'default': false
+			'default': true
 		}, {
 			name: 'Multiply',
 			key: 'multiply',
@@ -45,14 +45,28 @@ function(
 		transitions: []
 	};
 
-	ScaleAction.prototype._run = function(fsm) {
+	ScaleAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
 			if (this.multiply) {
-				transform.scale.mul(this.scale);
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 1000;
+					transform.scale.data[0] *= this.scale[0] * tpf;
+					transform.scale.data[1] *= this.scale[1] * tpf;
+					transform.scale.data[2] *= this.scale[2] * tpf;
+				} else {
+					transform.scale.mul(this.scale);
+				}
 			} else {
-				transform.scale.add(this.scale);
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 1000;
+					transform.scale.data[0] += this.scale[0] * tpf;
+					transform.scale.data[1] += this.scale[1] * tpf;
+					transform.scale.data[2] += this.scale[2] * tpf;
+				} else {
+					transform.scale.add(this.scale);
+				}
 			}
 		} else {
 			transform.scale.set(this.scale);

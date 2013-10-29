@@ -38,15 +38,14 @@ define([
     */
 
 	'goo/statemachine/actions/MoveAction',
-	'goo/statemachine/actions/MoveWithRotationAction',
 	'goo/statemachine/actions/RotateAction',
 	'goo/statemachine/actions/ScaleAction',
-	// 'goo/statemachine/actions/LookAtAction',
+	'goo/statemachine/actions/LookAtAction',
 
 	'goo/statemachine/actions/TweenMoveAction',
 	'goo/statemachine/actions/TweenRotationAction',
 	'goo/statemachine/actions/TweenScaleAction',
-	//'goo/statemachine/actions/TweenLookAtAction',
+	'goo/statemachine/actions/TweenLookAtAction',
 
 	'goo/statemachine/actions/HideAction',
 	'goo/statemachine/actions/ShowAction',
@@ -55,7 +54,7 @@ define([
 	'goo/statemachine/actions/RemoveLightAction',
 
 	'goo/statemachine/actions/InBoxAction',
-	//'goo/statemachine/actions/CompareDistanceAction',
+	'goo/statemachine/actions/CompareDistanceAction',
 
 	'goo/statemachine/actions/SetClearColorAction',
 	//'goo/statemachine/actions/SuspendFSMAction',
@@ -66,7 +65,7 @@ define([
 	'goo/statemachine/actions/EmitAction',
 	'goo/statemachine/actions/EvalAction',
 
-//	'goo/statemachine/actions/SwitchCameraAction',
+	'goo/statemachine/actions/SwitchCameraAction',
 	'goo/statemachine/actions/LogMessageAction',
 	'goo/statemachine/actions/PauseAnimationAction',
 	'goo/statemachine/actions/ResumeAnimationAction',
@@ -74,20 +73,27 @@ define([
 
 	'goo/statemachine/actions/MouseUpAction',
 	'goo/statemachine/actions/MouseDownAction',
+	'goo/statemachine/actions/MouseMoveAction',
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/KeyDownAction',
 	'goo/statemachine/actions/WASDAction',
 	'goo/statemachine/actions/ArrowsAction',
 
-	'goo/statemachine/actions/AddTVAction',
+	'goo/statemachine/actions/SetRenderTargetAction',
 	'goo/statemachine/actions/WaitAction',
 	'goo/statemachine/actions/RandomTransitionAction',
 	'goo/statemachine/actions/ShakeAction',
 	'goo/statemachine/actions/SmokeAction',
 	'goo/statemachine/actions/FireAction',
+	'goo/statemachine/actions/RemoveParticlesAction',
+	'goo/statemachine/actions/DollyZoomAction',
+	'goo/statemachine/actions/TweenTextureOffsetAction',
+	'goo/statemachine/actions/PickAction',
 
 	'goo/statemachine/actions/SoundFadeInAction',
-	'goo/statemachine/actions/SoundFadeOutAction'
+	'goo/statemachine/actions/SoundFadeOutAction',
+
+	'goo/statemachine/actions/TransitionOnMessageAction'
 ],
 /** @lends */
 function(

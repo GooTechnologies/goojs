@@ -23,12 +23,6 @@ function(
 			type: 'color',
 			description: 'Color',
 			'default': [1, 1, 1]
-		}, {
-			name: 'On every frame',
-			key: 'everyFrame',
-			type: 'boolean',
-			description: 'Do this action every frame',
-			'default': false
 		}],
 		transitions: []
 	};

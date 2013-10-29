@@ -225,5 +225,16 @@ define([
 			return entity;
 		};
 
+		/**
+		 * Returns an array of all this entity's children
+		 * @param entity
+		 * @returns {Entity[]}
+		 */
+		EntityUtils.getChildren = function (entity) {
+			return entity.transformComponent.children.map(function(childTransformComponent) {
+				return childTransformComponent.entity;
+			});
+		}
+
 		return EntityUtils;
 	});

@@ -133,6 +133,15 @@ function (
 		}
 	};
 
+	State.prototype.ready = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].ready();
+		}
+		for (var i = 0; i < this._actions.length; i++) {
+			this._actions[i].ready(this.proxy);
+		}
+	};
+
 	State.prototype.cleanup = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			this._machines[i].cleanup();

@@ -635,12 +635,6 @@ function (
 				material.errorOnce = false;
 			}
 
-			if (this.shadowHandler.shadowResults.length > 0) {
-				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResults);
-			} else if (material.getTexture('SHADOW_MAP')) {
-				material.removeTexture('SHADOW_MAP');
-			}
-
 			if (material.wireframe && flatOrWire !== 'wire') {
 				if (!meshData.wireframeData) {
 					meshData.wireframeData = meshData.buildWireframeData();
@@ -667,7 +661,7 @@ function (
 			// Check for caching of shader that use defines
 			var shader = material.shader;
 			if (shader.processors || shader.defines) {
-			// Call processors
+				// Call processors
 				if (shader.processors) {
 					for (var j = 0; j < shader.processors.length; j++) {
 						shader.processors[j](shader, renderInfo);
@@ -688,15 +682,11 @@ function (
 
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 				if (!shaderCache[defineKey]) {
+					if (shader.builder) {
+						shader.builder(shader, renderInfo);
+					}
 					shader = material.shader = shader.clone();
-					// shader = material.shader = shader.cloneOriginal();
 					shaderCache[defineKey] = shader;
-					// if (shader.processors) {
-						// for (var j = 0; j < shader.processors.length; j++) {
-							// shader.processors[j](shader, renderInfo);
-						// }
-					// }
-					//console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
 					if (shader !== material.shader) {

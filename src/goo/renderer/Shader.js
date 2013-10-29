@@ -39,13 +39,24 @@ function (
 			throw new Error('Missing shader sources for shader: ' + name);
 		}
 
+		// REVIEW: There's a circular reference between World and Shader, somewhere...
+
+		if( World === undefined ) {
+			require( [ "goo/entities/World" ], function( w ) {
+				World = w;
+			});
+		}
+
+
 		this.originalShaderDefinition = shaderDefinition;
-		// shaderDefinition = this.shaderDefinition = Util.clone(shaderDefinition);
 		this.shaderDefinition = shaderDefinition;
 
 		this.name = name;
-		this.origVertexSource = this.vertexSource = shaderDefinition.vshader;
-		this.origFragmentSource = this.fragmentSource = shaderDefinition.fshader;
+		this.origVertexSource = shaderDefinition.vshader;
+		this.origFragmentSource = shaderDefinition.fshader;
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+
 
 		this.shaderProgram = null;
 
@@ -89,6 +100,7 @@ function (
 
 		this.overridePrecision = shaderDefinition.precision || null;
 		this.processors = shaderDefinition.processors;
+		this.builder = shaderDefinition.builder;
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
@@ -116,6 +128,7 @@ function (
 		return new Shader(this.name, Util.clone({
 			precision: this.precision,
 			processors: this.processors,
+			builder: this.builder,
 			defines: this.defines,
 			attributes: this.attributes,
 			uniforms: this.uniforms,
@@ -251,8 +264,8 @@ function (
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
-		this.vertexSource = this.origVertexSource;
-		this.fragmentSource = this.origFragmentSource;
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
 
 	Shader.prototype._investigateShaders = function () {
@@ -315,6 +328,11 @@ function (
 
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
+
+		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
+		// console.log(this.vertexSource);
+		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
+		// console.log(this.fragmentSource);
 
 		var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
 		var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
