@@ -44,6 +44,8 @@ function (
 			new RotationGizmo(this),
 			new ScaleGizmo(this)
 		];
+		this.active = false;
+		this.nextGizmo = null;
 		this.setupCallbacks(callbacks);
 		//this.boundEntity = null; //unused
 		this.activeGizmo = null;
@@ -72,6 +74,7 @@ function (
 	GizmoRenderSystem.prototype = Object.create(System.prototype);
 
 	GizmoRenderSystem.prototype.activate = function(id, x, y) {
+		this.active = true;
 		var handle = Gizmo.getHandle(id);
 		if (handle && this.activeGizmo) {
 			this.activeGizmo.activate({
@@ -84,7 +87,12 @@ function (
 	};
 
 	GizmoRenderSystem.prototype.deactivate = function() {
+		this.active = false;
 		this.domElement.removeEventListener('mousemove', this.mouseMove);
+		if (this.nextGizmo !== null) {
+			this.setActiveGizmo(this.nextGizmo);
+			this.nextGizmo = null;
+		}
 	};
 
 	GizmoRenderSystem.prototype.getGizmo = function(id) {
@@ -118,6 +126,10 @@ function (
 	};
 
 	GizmoRenderSystem.prototype.setActiveGizmo = function(id) {
+		if (this.active) {
+			this.nextGizmo = id;
+			return;
+		}
 		if (this.activeGizmo) {
 			this.hideGizmo(this.activeGizmo);
 		}
