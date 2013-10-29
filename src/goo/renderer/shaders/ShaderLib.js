@@ -489,6 +489,9 @@ define([
 
 		'void main(void)',
 		'{',
+		'	if (opacity == 0.0) {',
+		'		discard;',
+		'	}',
 		'	gl_FragColor = vec4(color, opacity);',
 		'}'//
 		].join('\n')
