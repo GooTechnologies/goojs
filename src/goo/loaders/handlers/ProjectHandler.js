@@ -298,13 +298,21 @@ define([
 				}
 				composer.passes = [];
 				composer.addPass(renderPass);
+				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
 					var posteffect = posteffects[j].get();
+					if (posteffect.enabled && !enabled) {
+						enabled = true;
+					}
 					composer.addPass(posteffect);
 				}
 				composer.addPass(outPass);
-				if (mainRenderSystem.composers.indexOf(composer) === -1) {
-					mainRenderSystem.composers.push(composer);
+				if (enabled) {
+					if (mainRenderSystem.composers.indexOf(composer) === -1) {
+						mainRenderSystem.composers.push(composer);
+					}
+				} else {
+					ArrayUtil.remove(mainRenderSystem.composers, composer);
 				}
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);
@@ -344,7 +352,7 @@ define([
 			ShaderBuilder.USE_FOG = config.useFog;
 			ShaderBuilder.FOG_SETTINGS = [config.fogNear, config.fogFar];
 			ShaderBuilder.FOG_COLOR = config.fogColor;
-			
+
 			return results;
 		});
 	};
