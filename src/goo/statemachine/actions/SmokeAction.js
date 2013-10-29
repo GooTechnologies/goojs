@@ -56,9 +56,12 @@ function(
 			SmokeAction.material.renderQueue = 2001;
 		}
 
+		var entityScale = entity.transformComponent.worldTransform.scale;
+		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
 			ParticleLib.getSmoke({
+				scale: scale,
 				color: this.color
 			}),
 			SmokeAction.material

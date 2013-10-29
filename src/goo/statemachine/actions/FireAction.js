@@ -62,9 +62,12 @@ function(
 			FireAction.material.renderQueue = 2002;
 		}
 
+		var entityScale = entity.transformComponent.worldTransform.scale;
+		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
 			ParticleLib.getFire({
+				scale: scale,
 				startColor: this.startColor,
 				endColor: this.endColor
 			}),
