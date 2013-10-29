@@ -325,7 +325,8 @@ function(
 								fragment.push(
 								'vec4 texel = texture2D(shadowMaps'+i+', depth.xy);',
 								'vec2 moments = vec2(texel.x, texel.y);',
-								'shadow *= ChebychevInequality(moments, depth.z);'
+								'shadow *= ChebychevInequality(moments, depth.z);',
+								'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
 								// 'shadow = VsmFixLightBleed(shadow, 0.1);',
 								);
 							} else {

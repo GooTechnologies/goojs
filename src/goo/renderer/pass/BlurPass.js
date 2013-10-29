@@ -18,7 +18,6 @@ define([
 	 * settings: {
 	 *     target : null,
 	 *     strength : 1.0,
-	 *     kernelSize : 25,
 	 *     sigma : 4.0,
 	 *     sizeX : 256,
 	 *     sizeY : 256
@@ -30,8 +29,8 @@ define([
 
 		this.target = settings.target !== undefined ? settings.target : null;
 		var strength = settings.strength !== undefined ? settings.strength : 1.0;
-		var kernelSize = settings.kernelSize !== undefined ? settings.kernelSize : 25;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
+		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
 		var sizeX = settings.sizeX !== undefined ? settings.sizeX : 256;
 		var sizeY = settings.sizeY !== undefined ? settings.sizeY : 256;
 
