@@ -35,7 +35,15 @@ function(
 		this.depthMaterial.cullState.cullFace = 'Back';
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
-		this.boxfilter = Material.createShader(ShaderLib.boxfilter, 'boxfilter');
+
+		var sigma = 2.0;
+		this.blurfilter = Material.createShader(ShaderLib.convolution, 'blurfilter');
+		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
+		this.blurfilter.defines = {
+			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
+			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+		};
+		this.blurfilter.uniforms.cKernel = ShaderLib.convolution.buildKernel(sigma);
 
 		this.oldClearColor = new Vector4(0, 0, 0, 0);
 		this.shadowClearColor = new Vector4(1, 1, 1, 1);
@@ -62,13 +70,9 @@ function(
 		if (shadowSettings.shadowType === 'VSM') {
 			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float'
-				// magFilter : 'NearestNeighbor',
-				// minFilter : 'NearestNeighborNoMipMaps'
 			});
 			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
 				type: 'Float'
-				// magFilter : 'NearestNeighbor',
-				// minFilter : 'NearestNeighborNoMipMaps'
 			});
 		}
 
@@ -184,11 +188,13 @@ function(
 						this.fullscreenPass.material.shader = this.downsample;
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
 
-						this.fullscreenPass.material.shader = this.boxfilter;
-						this.fullscreenPass.material.uniforms.viewport = [shadowSettings.resolution[0] / 2, shadowSettings.resolution[1] / 2];
+						this.fullscreenPass.material.shader = this.blurfilter;
+						this.fullscreenPass.material.uniforms.uImageIncrement = [2 / shadowSettings.resolution[0], 0.0];
 						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
+						this.fullscreenPass.material.uniforms.uImageIncrement = [0.0, 2 / shadowSettings.resolution[1]];
+						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowBlurred, 0);
 
-						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowBlurred;
+						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTargetDown;
 						break;
 					case 'PCF':
 						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
