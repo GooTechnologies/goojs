@@ -390,7 +390,15 @@ define(
                     return component.type;
 	            } else {
                     var raw = component.toString();
-                    return raw.slice( 9, raw.indexOf( "(" ));
+                    var beginIndex = raw.indexOf( '.type="' );
+
+                    if( beginIndex !== -1 ) {
+	                    // minified code
+	                    return raw.slice( beginIndex + 7, raw.indexOf( '",' ));
+                    } else {
+	                    // unminified code
+						return raw.slice( 9, raw.indexOf( "(" ));
+                    }
 	            }
         	} else return "N/A";
         }

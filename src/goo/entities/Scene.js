@@ -627,8 +627,19 @@ define( [
 	            } else if( type === "object" && system.type !== undefined ) {
                     return system.type;
 	            } else {
+
+//a(){t.call(this,"RenderSystem",["M
+
                     var raw = system.toString();
-                    return raw.slice( 9, raw.indexOf( "(" ));
+                    var beginIndex = raw.indexOf( 'l(this,"' );
+	                if( beginIndex !== -1 ) {
+	                    // minified code
+	                    return raw.slice( beginIndex + 8, raw.indexOf( '",' ));
+                    } else {
+	                    // unminified code
+						return raw.slice( 9, raw.indexOf( "(" ));
+                    }
+
 	            }
         	} else return "N/A";
         }

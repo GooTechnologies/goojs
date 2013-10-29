@@ -16,7 +16,26 @@ define( [
 	"goo/math/Quaternion",
 	"goo/math/Ray",
 	"goo/math/Matrix3x3",
-	"goo/math/Matrix4x4" ],
+	"goo/math/Matrix4x4",
+	"goo/renderer/Material",
+	"goo/renderer/Shader",
+	"goo/renderer/shaders/ShaderLib",
+	"goo/shapes/Box",
+	"goo/shapes/Cylinder",
+	"goo/shapes/Disk",
+	"goo/shapes/FilledPolygon",
+	"goo/shapes/Grid",
+	"goo/shapes/PolyLine",
+	"goo/shapes/ProjectedGrid",
+	"goo/shapes/Quad",
+	"goo/shapes/RegularPolygon",
+	"goo/shapes/SimpleBox",
+	"goo/shapes/Sphere",
+	"goo/shapes/Surface",
+	"goo/shapes/TextureGrid",
+	"goo/shapes/Torus",
+	"goo/shapes/Triangle" ],
+	
 	function( 
 		GooRunner,
 		Scene,
@@ -32,7 +51,25 @@ define( [
 		Quaternion,
 		Ray,
 		Matrix3x3,
-		Matrix4x4 ) {
+		Matrix4x4,
+		Material,
+		Shader,
+		ShaderLib,
+		Box,
+		Cylinder,
+		Disk,
+		FilledPolygon,
+		Grid,
+		PolyLine,
+		ProjectedGrid,
+		Quad,
+		RegularPolygon,
+		SimpleBox,
+		Sphere,
+		Surface,
+		TextureGrid,
+		Torus,
+		Triangle ) {
 
 		"use strict";
 
@@ -42,6 +79,7 @@ define( [
 		if( window.goo === undefined ) {
 			window.goo = {
 				Goo                  : GooRunner,
+				GooRunner            : GooRunner,
 				Scene                : Scene,
 				Entity               : Entity,
 				CameraComponent      : CameraComponent,
@@ -55,8 +93,26 @@ define( [
 				Quaternion           : Quaternion,
 				Ray                  : Ray,
 				Matrix3x3            : Matrix3x3,
-				Matrix4x4            : Matrix4x4
-			}
+				Matrix4x4            : Matrix4x4,
+				Material             : Material,
+				Shader               : Shader,
+				ShaderLib            : ShaderLib,
+				Box                  : Box,
+				Cylinder             : Cylinder,
+				Disk                 : Disk,
+				FilledPolygon        : FilledPolygon,
+				Grid                 : Grid,
+				PolyLine             : PolyLine,
+				ProjectedGrid        : ProjectedGrid,
+				Quad                 : Quad,
+				RegularPolygon       : RegularPolygon,
+				SimpleBox            : SimpleBox,
+				Sphere               : Sphere,
+				Surface              : Surface,
+				TextureGrid          : TextureGrid,
+				Torus                : Torus,
+				Triangle			 : Triangle
+			};
 
 			window.goo.createCamera = function( cameraSettings ) {
 				return new Entity( new CameraComponent( cameraSettings ));
