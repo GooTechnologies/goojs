@@ -207,9 +207,9 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		this.domElement.addEventListener('mousemove', boundMouseMove, false);
-		this.domElement.addEventListener('mouseup', boundMouseUp, false);
-		this.domElement.addEventListener('mouseout', boundMouseUp, false);
+		document.addEventListener('mousemove', boundMouseMove, false);
+		document.addEventListener('mouseup', boundMouseUp, false);
+		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
 		// https://code.google.com/p/chromium/issues/detail?id=244289
