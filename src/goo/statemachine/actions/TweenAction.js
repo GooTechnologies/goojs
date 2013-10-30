@@ -10,7 +10,7 @@ function(
 ) {
 	'use strict';
 
-	function TweenAction(settings) {
+	function TweenAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 	}
 
@@ -69,7 +69,8 @@ function(
 
 	TweenAction.prototype.configure = function (settings) {
 		this.to = settings.to;
-		this.relative = settings.relative;
+		this.objectName = settings.objectName;
+		this.propertyName = settings.propertyName;
 		this.time = settings.time;
 		if (settings.easing1 === 'Linear') {
 			this.easing = window.TWEEN.Easing.Linear.None;
@@ -84,7 +85,7 @@ function(
 
 		var object = eval('entity.' + this.objectName);
 		var from = object[this.propertyName];
-		FSMUtil.createComposableTween(entity, this.propertyName, );
+		FSMUtil.createComposableTween(entity, this.propertyName, from, this.to, this.time);
 	};
 
 	return TweenAction;
