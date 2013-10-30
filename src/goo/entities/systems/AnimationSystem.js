@@ -31,12 +31,14 @@ function (
 	};
 
 	AnimationSystem.prototype.pause = function () {
-		for (var i = 0; i < this.entities.length; i++) {
-			var entity = this.entities[i];
-			entity.animationComponent.pause();
+		this.passive = true;
+		var len = this.entities.length;
+		while (len--) {
+			this.entities[len].animationComponent.pause();
 		}
 	};
 	AnimationSystem.prototype.stop = function() {
+		this.passive = true;
 		for (var i = 0; i < this.entities.length; i++) {
 			var entity = this.entities[i];
 			entity.animationComponent.stop();
@@ -44,6 +46,7 @@ function (
 	};
 
 	AnimationSystem.prototype.resume = function () {
+		this.passive = false;
 		for (var i = 0; i < this.entities.length; i++) {
 			var entity = this.entities[i];
 			entity.animationComponent.resume();
