@@ -88,7 +88,7 @@ define([
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
 	};
 
-	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
+	ProjectHandler.prototype._updateSkybox = function(skyboxConfig, options) {
 		if (skyboxConfig) {
 			var shape = skyboxConfig.shape.toLowerCase();
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
@@ -115,7 +115,10 @@ define([
 			var material = skybox.meshRendererComponent.materials[0];
 			var texture = this._skyboxTexture;
 
-			var update = !texture; // New load or skybox shape changed 
+			var update = !texture; // New load or skybox shape changed
+			if(!update && options && options.skybox && options.skybox.reload) {
+				update = true;
+			}
 			if(!update) {
 
 				// Same shape, just maybe some new images
@@ -330,7 +333,7 @@ define([
 		var promises = [];
 
 		// skybox
-		promises.push(this._updateSkybox(config.skybox));
+		promises.push(this._updateSkybox(config.skybox, options));
 
 		// entity refs
 		if (!options || !options.shallow) {
