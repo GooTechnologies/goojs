@@ -60,10 +60,10 @@ define([
 		}]
 	};
 
-	TweenTextureOffsetAction.prototype.configure = function(settings) {
-		this.toX = settings.toX;
-		this.toY = settings.toY;
-		this.time = settings.time;
+	TweenTextureOffsetAction.prototype.configure = function (settings) {
+		this.toX = +settings.toX;
+		this.toY = +settings.toY;
+		this.time = +settings.time;
 		if (settings.easing1 === 'Linear') {
 			this.easing = window.TWEEN.Easing.Linear.None;
 		} else {
@@ -72,11 +72,11 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenTextureOffsetAction.prototype._setup = function() {
+	TweenTextureOffsetAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
-	TweenTextureOffsetAction.prototype._run = function(fsm) {
+	TweenTextureOffsetAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
 			var meshRendererComponent = entity.meshRendererComponent;
@@ -87,7 +87,7 @@ define([
 			var fakeFrom = { x: initialOffset.x, y: initialOffset.y };
 			var fakeTo = { x: this.toX, y: this.toY };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function() {
 				texture.offset.setd(this.x, this.y);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);

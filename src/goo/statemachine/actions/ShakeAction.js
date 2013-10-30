@@ -79,20 +79,20 @@ function(
 		var iter = 0;
 		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
 			iter++;
-			if (iter > +that.speed) {
+			if (iter > that.speed) {
 				iter = 0;
 
 				target.setd(
-					(Math.random()-0.5) * this.level * 2,
-					(Math.random()-0.5) * this.level * 2,
-					(Math.random()-0.5) * this.level * 2
+					- oldVal.data[0] + (Math.random()-0.5) * this.level * 2,
+					- oldVal.data[1] + (Math.random()-0.5) * this.level * 2,
+					- oldVal.data[2] + (Math.random()-0.5) * this.level * 2
 				);
 			}
 
 			vel.setd(
-				vel.data[0] * 0.98 + (target.data[0] - translation.data[0]) * 0.1,
-				vel.data[1] * 0.98 + (target.data[1] - translation.data[1]) * 0.1,
-				vel.data[2] * 0.98 + (target.data[2] - translation.data[2]) * 0.1
+				vel.data[0] * 0.98 + (target.data[0]) * 0.1,
+				vel.data[1] * 0.98 + (target.data[1]) * 0.1,
+				vel.data[2] * 0.98 + (target.data[2]) * 0.1
 			);
 
 			translation.add(vel).sub(oldVal);
