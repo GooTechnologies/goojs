@@ -111,6 +111,20 @@ define([
 			}
 		}
 	};
+
+	OrbitNPanControlScript.prototype.resetLookAt = function(lookat, x, y, z) {
+		this.goingToLookAt.setv(lookat);
+		this.lookAtPoint.setv(lookat);
+		this.panState.lastX = NaN;
+		this.panState.lastY = NaN;
+		this.panState.lastPos.setv(lookat);
+		this.velocity.set(0);
+
+		MathUtils.cartesianToSpherical(x, y, z, this.spherical);
+		this.targetSpherical.setv(this.spherical);
+		MathUtils.sphericalToCartesian(this.spherical.x, this.spherical.y, this.spherical.z, this.cartesian);
+	};
+
 	OrbitNPanControlScript.prototype.updateDeltas = function(mouseX, mouseY) {
 		OrbitCamControlScript.prototype.updateDeltas.call(this, mouseX, mouseY);
 		var v = new Vector3();
