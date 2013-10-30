@@ -60,7 +60,7 @@ function(
 		}]
 	};
 
-	TweenMoveAction.prototype.configure = function(settings) {
+	TweenMoveAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -72,11 +72,11 @@ function(
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenMoveAction.prototype._setup = function() {
+	TweenMoveAction.prototype._setup = function (/*fsm*/) {
 		this.tween = new window.TWEEN.Tween();
 	};
 
-	TweenMoveAction.prototype._run = function(fsm) {
+	TweenMoveAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
