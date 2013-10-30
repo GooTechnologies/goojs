@@ -14,7 +14,7 @@ function (
 	 */
 	function AnimationSystem() {
 		System.call(this, 'AnimationSystem', ['AnimationComponent']);
-		this.entities = null;
+		this.entities = [];
 	}
 
 	AnimationSystem.prototype = Object.create(System.prototype);
