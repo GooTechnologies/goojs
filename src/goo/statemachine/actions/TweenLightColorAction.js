@@ -66,6 +66,12 @@ function(
 		this.tween = new window.TWEEN.Tween();
 	};
 
+	TweenLightColorAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
 	TweenLightColorAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.lightComponent) {
@@ -87,7 +93,7 @@ function(
 				old.z = this.z;
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start();
+				}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

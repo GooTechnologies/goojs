@@ -20,6 +20,8 @@ function (
 		this._machines = [];
 		this.entity = null;
 		this.vars = {};
+		this.system = null;
+		this.time = 0;
 
 		this.active = true;
 	}

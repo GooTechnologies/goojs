@@ -1,12 +1,10 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/math/Vector2'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
-	function(
-	Action,
-	Vector2
-	) {
+function(
+	Action
+) {
 	"use strict";
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
@@ -76,6 +74,12 @@ define([
 		this.tween = new window.TWEEN.Tween();
 	};
 
+	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
 	TweenTextureOffsetAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
@@ -91,7 +95,7 @@ define([
 				texture.offset.setd(this.x, this.y);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

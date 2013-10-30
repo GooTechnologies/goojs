@@ -85,6 +85,12 @@ function(
 		}
 	};
 
+	DollyZoomAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
 	DollyZoomAction.prototype._run = function (fsm) {
 		if (this.eyeTargetScale) {
 			var entity = fsm.getOwnerEntity();
@@ -116,7 +122,7 @@ function(
 				camera.setFrustumPerspective(fov);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

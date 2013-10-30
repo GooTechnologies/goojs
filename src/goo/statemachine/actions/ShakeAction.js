@@ -66,6 +66,12 @@ function(
 		this.tween = new window.TWEEN.Tween();
 	};
 
+	ShakeAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
 	ShakeAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
@@ -102,7 +108,7 @@ function(
 			translation.sub(oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start();
+		}.bind(this)).start(fsm.getTime() * 1000);
 	};
 
 	return ShakeAction;

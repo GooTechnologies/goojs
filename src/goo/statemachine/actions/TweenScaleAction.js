@@ -76,6 +76,12 @@ define([
 		this.tween = new window.TWEEN.Tween();
 	};
 
+	TweenScaleAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
 	TweenScaleAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
@@ -94,7 +100,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start();
+				}.bind(this)).start(fsm.getTime() * 1000);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
@@ -103,7 +109,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start();
+				}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 
