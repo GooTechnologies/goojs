@@ -46,7 +46,7 @@ function (
 		this.lights = [];
 		this.transform = new Transform();
 		this.transform.rotation.rotateX(-Math.PI / 2);
-		this.transform.scale.setd(10000, 10000, 10000);
+		this.transform.scale.setd(1000, 1000, 1000);
 		this.transform.update();
 
 		var gridMaterial = Material.createMaterial(gridShaderDef, 'Grid Material');
