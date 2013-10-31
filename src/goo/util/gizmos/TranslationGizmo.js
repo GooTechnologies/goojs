@@ -102,14 +102,15 @@ define([
 		var arrowTransform = new Transform();
 		var quadTransform = new Transform();
 
+		quadTransform.scale.setd(1.2, 1.2, 1.2);
 		if (dim === 2) {
-			quadTransform.translation.setd(1, -1, 0);
+			quadTransform.translation.setd(1.2, -1.2, 0);
 		} else if(dim === 0) {
-			quadTransform.translation.setd(0, -1, 1);
+			quadTransform.translation.setd(0, -1.2, 1.2);
 			quadTransform.setRotationXYZ(0, Math.PI/2, 0);
 			arrowTransform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {
-			quadTransform.translation.setd(1, 0, 1);
+			quadTransform.translation.setd(1.2, 0, 1.2);
 			quadTransform.setRotationXYZ(Math.PI/2, 0, 0);
 			arrowTransform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
@@ -133,19 +134,19 @@ define([
 		var meshBuilder = new MeshBuilder();
 
 		// Arrow head
-		var mesh1Data = new Disk(32, 0.5, 2);
+		var mesh1Data = new Disk(32, 0.55, 2.3);
 		// Arrow base
-		var mesh2Data = new Disk(32, 0.5);
+		var mesh2Data = new Disk(32, 0.55);
 		// Line
 		var mesh3Data = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 2, 2);
-		mesh3Data.getAttributeBuffer(MeshData.POSITION).set([0, 0, 0, 0, 0, 1]);
+		mesh3Data.getAttributeBuffer(MeshData.POSITION).set([0, 0, 0, 0, 0, 0.8]);
 		mesh3Data.getIndexBuffer().set([0, 1]);
 		mesh3Data.indexLengths = null;
 		mesh3Data.indexModes = ['Lines'];
 
 		// Arrow head
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 10);
+		transform.translation.setd(0, 0, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 
