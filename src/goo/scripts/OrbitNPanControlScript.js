@@ -83,11 +83,11 @@ define([
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.shiftKey = event.shiftKey;
-			that.applyWheel(event);
+			that.applyWheel(event.wheelDelta || -event.detail);
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.shiftKey = event.shiftKey;
-			that.applyWheel(event);
+			that.applyWheel(event.wheelDelta || -event.detail);
 		}, false);
 
 
@@ -97,6 +97,39 @@ define([
 			event.preventDefault();
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
+
+
+		// optional touch controls... requires Hammer.js v2
+		if (typeof (window.Hammer) !== "undefined") {
+			// Disable warning that we call `Hammer()`, not `new Hammer()`
+			//jshint newcap:false
+			var hammertime = window.Hammer(this.domElement, {
+				transform_always_block : true,
+				transform_min_scale : 1
+			});
+
+			hammertime.on('touch drag transform release', function (ev) {
+				switch (ev.type) {
+					case 'transform':
+						var scale = ev.gesture.scale;
+						if (scale < 1) {
+							that.applyWheel(that.zoomSpeed * 1);
+						} else if (scale > 1) {
+							that.applyWheel(that.zoomSpeed * -1);
+						}
+						break;
+					case 'touch':
+						that.updateButtonState(0, true);
+						break;
+					case 'release':
+						that.updateButtonState(0, false);
+						break;
+					case 'drag':
+						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+						break;
+				}
+			});
+		}
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
@@ -155,8 +188,8 @@ define([
 		}
 	};
 
-	OrbitNPanControlScript.prototype.applyWheel = function (e) {
-		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta || -e.detail, -1, 1);
+	OrbitNPanControlScript.prototype.applyWheel = function (delta) {
+		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(delta, -1, 1);
 
 		// Decrease zoom if shift is pressed
 		if (this.shiftKey) {
