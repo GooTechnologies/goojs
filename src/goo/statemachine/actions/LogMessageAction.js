@@ -27,7 +27,7 @@ function(
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': false
 		}],
 		transitions: []

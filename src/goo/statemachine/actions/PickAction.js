@@ -30,7 +30,7 @@ function(
 		transitions: [{
 			key: 'pick',
 			name: 'Pick',
-			description: 'Fired when picked'
+			description: 'State to transition to when entity is picked'
 		}]
 	};
 

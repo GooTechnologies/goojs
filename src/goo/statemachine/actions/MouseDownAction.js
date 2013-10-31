@@ -28,7 +28,7 @@ function(
 		transitions: [{
 			key: 'mousedown',
 			name: 'Mouse down',
-			description: 'Fired on mouse down'
+			description: 'State to transition to when the mouse button is pressed'
 		}]
 	};
 

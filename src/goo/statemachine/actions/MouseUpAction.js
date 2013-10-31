@@ -28,7 +28,7 @@ function(
 		transitions: [{
 			key: 'mouseup',
 			name: 'Mouse up',
-			description: 'Fired on mouse up'
+			description: 'State to transition to when the mouse button is pressed'
 		}]
 	};
 

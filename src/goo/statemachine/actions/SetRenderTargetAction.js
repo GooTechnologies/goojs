@@ -35,7 +35,7 @@ function(
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'cameraEntity',
-			description: 'Camera to switch to',
+			description: 'Camera to use as source',
 			'default': null
 		}],
 		transitions: []
