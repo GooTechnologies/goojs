@@ -100,9 +100,9 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === 2 || buttonIndex === 0 && this.shiftKey) {
+		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) {
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
-		} else if (buttonIndex === 1 || buttonIndex === 0 && this.altKey) {
+		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
 			this.panState.buttonDown = down;
 			if(down) {
 				this.panState.lastX = NaN;
