@@ -20,7 +20,7 @@ define([
 	'use strict';
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
-		this._boxMesh = new Box();
+		this._boxMesh = new Box(1.3, 1.3, 1.3);
 		this._arrowMesh = this._buildArrowMesh();
 		this._scale = 1;
 		this._transformScale = new Vector3();
@@ -153,13 +153,13 @@ define([
 
 		// Box
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 10);
+		transform.translation.setd(0, 0, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 
 		// Line
 		var transform = new Transform();
-		transform.scale.setd(1, 1, 10);
+		transform.scale.setd(1, 1, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh2Data, transform);
 

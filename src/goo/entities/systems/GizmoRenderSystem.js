@@ -4,9 +4,12 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/Util',
 	'goo/math/Matrix3x3',
 	'goo/math/Matrix4x4',
+	'goo/renderer/MeshData',
+	'goo/renderer/Shader',
 	'goo/util/gizmos/Gizmo',
 	'goo/util/gizmos/TranslationGizmo',
 	'goo/util/gizmos/RotationGizmo',
@@ -19,9 +22,12 @@ function (
 	SimplePartitioner,
 	Material,
 	ShaderLib,
+	ShaderFragment,
 	Util,
 	Matrix3x3,
 	Matrix4x4,
+	MeshData,
+	Shader,
 	Gizmo,
 	TranslationGizmo,
 	RotationGizmo,
@@ -53,6 +59,13 @@ function (
 		this.viewportHeight = 0;
 		this.domElement = null;
 		this.global = false;
+		this.pickingMaterial = Material.createEmptyMaterial(customPickingShader, 'pickingMaterial');
+		this.pickingMaterial.blendState = {
+			blending: 'NoBlending',
+			blendEquation: 'AddEquation',
+			blendSrc: 'SrcAlphaFactor',
+			blendDst: 'OneMinusSrcAlphaFactor'
+		};
 
 		this.mouseMove = function(evt) {
 			if(!this.activeGizmo) {
@@ -233,7 +246,87 @@ function (
 	};
 
 	GizmoRenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
-				renderer.renderToPick(this.renderables, this.camera, { color: false, stencil: true, depth: true }, skipUpdateBuffer);
+		for (var i = 0; i < this.renderables.length; i++) {
+			var renderable = this.renderables[i];
+			if (renderable.thickness !== undefined) {
+				renderable.materials[0].uniforms.thickness = renderable.thickness;
+			}
+		}
+		renderer.renderToPick(this.renderables, this.camera, { color: false, stencil: true, depth: true }, skipUpdateBuffer, undefined, undefined, undefined, this.pickingMaterial);
+		for (var i = 0; i < this.renderables.length; i++) {
+			var renderable = this.renderables[i];
+			if (renderable.thickness) {
+				renderable.materials[0].uniforms.thickness = 0;
+			}
+		}
+	};
+
+	var customPickingShader = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexNormal : MeshData.NORMAL
+		},
+		processors: [
+			function (shader, shaderInfo) {
+				var attributeMap = shaderInfo.meshData.attributeMap;
+
+				shader.defines = shader.defines || {};
+
+				for (var attribute in attributeMap) {
+					if (!shader.defines[attribute]) {
+						shader.defines[attribute] = true;
+					}
+				}
+			}
+		],
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraFar : Shader.FAR_PLANE,
+			thickness: 0.0,
+			id : function(shaderInfo) {
+				return shaderInfo.renderable.id + 1;
+			}
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'#ifdef NORMAL',
+			'attribute vec3 vertexNormal;',
+		'#endif',
+
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform float cameraFar;',
+		'uniform float thickness;',
+
+		'varying float depth;',
+
+		'void main() {',
+			'#ifdef NORMAL',
+				'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+			'#else',
+				'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'#endif',
+
+			'depth = length(mvPosition.xyz) / cameraFar;',
+			'gl_Position = projectionMatrix * mvPosition;',
+		'}'
+		].join("\n"),
+		fshader : [
+		'uniform float id;',
+
+		'varying float depth;',
+
+		ShaderFragment.methods.packDepth16,
+
+		'void main() {',
+			'vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
+			'vec2 packedDepth = packDepth16(depth);',
+			'gl_FragColor = vec4(packedId, packedDepth);',
+		'}'
+		].join("\n")
 	};
 
 	return GizmoRenderSystem;

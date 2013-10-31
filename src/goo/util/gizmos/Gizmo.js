@@ -31,7 +31,7 @@ define([
 			[0.2, 0.3, 1],
 			[0.8, 0.8, 0.8]
 		];
-		this._gizmoSize = 1 / 50;
+		this._gizmoSize = 1 / 55;
 
 		this._plane = new Plane();
 		this._line = new Vector3();
@@ -190,10 +190,11 @@ define([
 		material.uniforms.color = this._colors[axis];
 
 		if(opacity !== undefined && opacity < 1.0) {
-			material.depthState.write = true;
-			material.depthState.enabled = false;
+			// material.depthState.write = true;
+			// material.depthState.enabled = false;
 			material.blendState.blending = 'CustomBlending';
 			material.uniforms.opacity = opacity;
+			material.renderQueue = 3000;
 		}
 		material.cullState.enabled = false;
 
@@ -248,7 +249,7 @@ define([
 			' vec3 lVector = normalize(light);',
 			' float dotProduct = dot(N, lVector);',
 			' float diffuse = max(dotProduct, 0.0);',
-			' final_color.rgb *= (0.7*diffuse+0.3);',
+			' final_color.rgb *= (0.5*diffuse+0.5);',
 
 			' final_color.a = opacity;',
 			'	gl_FragColor = final_color;',
