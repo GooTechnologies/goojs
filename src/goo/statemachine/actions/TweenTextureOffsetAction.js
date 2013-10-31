@@ -22,12 +22,16 @@ function(
 			name: 'X Offset',
 			key: 'toX',
 			type: 'number',
+			min: 0,
+			max: 1,
 			description: 'X Offset',
 			'default': 1
 		}, {
 			name: 'Y Offset',
 			key: 'toY',
 			type: 'number',
+			min: 0,
+			max: 1,
 			description: 'Y Offset',
 			'default': 1
 		}, {
