@@ -67,7 +67,7 @@ define([
 			rotation: 0,
 			environmentType: 1
 		});
-		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
+		config.backgroundColor = config.backgroundColor || [0.75,0.76,0.78,1];
 		config.globalAmbient = config.globalAmbient || [0, 0, 0];
 		config.useFog = config.useFog || false;
 		config.fogColor = config.fogColor || [1, 1, 1];
