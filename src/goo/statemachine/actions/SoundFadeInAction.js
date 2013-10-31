@@ -16,7 +16,7 @@ function(
 
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
-		descriptions: 'Starts playing a sound or increases the volume of an already playing sound',
+		descriptions: 'Starts playing a sound',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
@@ -34,7 +34,7 @@ function(
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the movement completes'
 		}]
 	};
 

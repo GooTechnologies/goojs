@@ -18,7 +18,7 @@ function(
 
 	TweenMoveAction.external = {
 		name: 'Tween Move',
-		description: 'Smoothly transitions between 2 locations',
+		description: 'Smoothly transitions between two locations',
 		canTransition: true,
 		parameters: [{
 			name: 'Translation',

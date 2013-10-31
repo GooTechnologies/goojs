@@ -19,7 +19,7 @@ function(Action) {
 
 	WaitAction.external = {
 		name: 'Wait',
-		description: 'Performs a transition after a specified amont of time',
+		description: 'Performs a transition after a specified amount of time',
 		canTransition: true,
 		parameters: [{
 			name: 'Base Time',
@@ -37,7 +37,7 @@ function(Action) {
 		transitions: [{
 			key: 'timeUp',
 			name: 'Time up',
-			description: 'Fired on time up'
+			description: 'State to transition to when time up'
 		}]
 	};
 

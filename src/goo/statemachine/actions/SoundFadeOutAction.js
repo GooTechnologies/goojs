@@ -16,7 +16,7 @@ function(
 
 	SoundFadeOutAction.external = {
 		name: 'Sound Fade Out',
-		descriptions: 'Fades out a sound or stops it',
+		descriptions: 'Fades out a sound and stops it',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
@@ -34,7 +34,7 @@ function(
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the movement completes'
 		}]
 	};
 

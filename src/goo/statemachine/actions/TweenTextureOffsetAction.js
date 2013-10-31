@@ -21,7 +21,8 @@ function(
 		parameters: [{
 			name: 'X Offset',
 			key: 'toX',
-			type: 'number',
+			type: 'float',
+			control: 'slider',
 			min: 0,
 			max: 1,
 			description: 'X Offset',
@@ -29,7 +30,8 @@ function(
 		}, {
 			name: 'Y Offset',
 			key: 'toY',
-			type: 'number',
+			type: 'float',
+			control: 'slider',
 			min: 0,
 			max: 1,
 			description: 'Y Offset',
