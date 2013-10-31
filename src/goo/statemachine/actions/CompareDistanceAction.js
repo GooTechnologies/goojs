@@ -26,7 +26,7 @@ function(
 			name: 'Current camera',
 			key: 'camera',
 			type: 'boolean',
-			description: 'Measure the distance from the current camera or from an arbitrary point',
+			description: 'Measure the distance to the current camera or to an arbitrary point',
 			'default': true
 		}, {
 			name: 'Position',
@@ -62,15 +62,15 @@ function(
 		transitions: [{
 			key: 'less',
 			name: 'Less',
-			description: 'Event fired if left hand argument is smaller than right hand argument'
+			description: 'State to transition to if the measured distance is smaller than the specified value'
 		}, {
 			key: 'equal',
 			name: 'Equal',
-			description: 'Event fired if both sides are approximately equal'
+			description: 'State to transition to if the measured distance is about the same as the specified value'
 		}, {
 			key: 'greater',
 			name: 'Greater',
-			description: 'Event fired if left hand argument is greater than right hand argument'
+			description: 'State to transition to if the measured distance is greater than the specified value'
 		}]
 	};
 

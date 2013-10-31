@@ -23,13 +23,13 @@ function(
 			name: 'Forward',
 			key: 'forward',
 			type: 'number',
-			description: 'Forward',
+			description: 'Number of units to move towards the focus point; Enter negative values to move away',
 			'default': 100
 		}, {
 			name: 'Focus point',
 			key: 'lookAt',
 			type: 'position',
-			description: 'Point to focus',
+			description: 'Point to focus on while transitioning',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Time',
@@ -38,17 +38,17 @@ function(
 			description: 'Time',
 			'default': 10000
 		}, {
-			name: 'Easing 1',
+			name: 'Easing type',
 			key: 'easing1',
 			type: 'dropdown',
-			description: 'Easing 1',
+			description: 'Easing',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
-			name: 'Easing 2',
+			name: 'Direction',
 			key: 'easing2',
 			type: 'dropdown',
-			description: 'Easing 2',
+			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],

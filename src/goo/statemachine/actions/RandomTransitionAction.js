@@ -19,9 +19,10 @@ function(
 		description: 'Performs a random transition',
 		canTransition: true,
 		parameters: [{
-			name: 'Skeweness',
+			name: 'Skewness',
 			key: 'skewness',
-			type: 'number',
+			type: 'float',
+			control: 'slider',
 			min: 0,
 			max: 1,
 			description: 'Determines the chance that the first destination is picked over the second',

@@ -35,7 +35,7 @@ function(
 		transitions: [{
 			key: 'keyup',
 			name: 'Key up',
-			description: 'Fired on key up'
+			description: 'State to transition to when the key is released'
 		}]
 	};
 

@@ -20,7 +20,7 @@ function(
 
 	AddLightAction.external = {
 		name: 'Add Light',
-		description: 'Adds a light',
+		description: 'Adds a light on the entity',
 		parameters: [{
 			name: 'Color',
 			key: 'color',
@@ -30,9 +30,10 @@ function(
 		}, {
 			name: 'Range',
 			key: 'range',
-			type: 'number',
+			type: 'int',
+			control: 'slider',
 			min: 0,
-			max: 1000,
+			max: 5000,
 			description: 'Range of the light',
 			'default': 200
 		}],

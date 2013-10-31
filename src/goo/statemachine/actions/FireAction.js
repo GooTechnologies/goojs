@@ -41,7 +41,7 @@ function(
 			name: 'End color',
 			key: 'endColor',
 			type: 'color',
-			description: 'Flame color at near the end of a flame\'s life',
+			description: 'Color near the end of a flame\'s life',
 			'default': [1, 0, 0]
 		}],
 		transitions: []
