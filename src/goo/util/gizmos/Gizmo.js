@@ -94,8 +94,10 @@ define([
 	};
 
 	Gizmo.prototype.deactivate = function() {
-		var originalColor = this._activeRenderable.originalColor;
-		this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
+		if (this._activeRenderable) {
+			var originalColor = this._activeRenderable.originalColor;
+			this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
+		}
 	};
 
 	Gizmo.prototype.copyTransform = function(transform) {
