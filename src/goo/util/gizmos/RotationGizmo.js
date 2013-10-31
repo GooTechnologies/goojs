@@ -281,7 +281,7 @@ define([
 	RotationGizmo.prototype._buildBall = function() {
 		var transform = new Transform();
 		transform.scale.setd(1.2, 1.2, 1.2);
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._ballMesh,
 			materials: [this._buildMaterialForAxis(3, 0.6)],
 			transform: new Transform(),
@@ -298,7 +298,7 @@ define([
 			transform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._torusMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: transform,

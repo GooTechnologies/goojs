@@ -116,14 +116,14 @@ define([
 			arrowTransform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._arrowMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: arrowTransform,
 			id: Gizmo.registerHandle({ type: 'Axis', axis: dim })
 		});
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._quadMesh,
 			materials: [this._buildMaterialForAxis(dim, 0.6)],
 			transform: quadTransform,

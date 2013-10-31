@@ -33,7 +33,7 @@ function (
 	RotationGizmo,
 	ScaleGizmo
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
@@ -91,6 +91,7 @@ function (
 		var handle = Gizmo.getHandle(id);
 		if (handle && this.activeGizmo) {
 			this.activeGizmo.activate({
+				id: id,
 				data: handle,
 				x: x / this.viewportWidth,
 				y: y / this.viewportHeight
@@ -100,6 +101,8 @@ function (
 	};
 
 	GizmoRenderSystem.prototype.deactivate = function() {
+		this.activeGizmo.deactivate();
+
 		this.active = false;
 		this.domElement.removeEventListener('mousemove', this.mouseMove);
 		if (this.nextGizmo !== null) {
@@ -228,7 +231,6 @@ function (
 			}
 			this.activeGizmo.updateTransforms();
 		}
-
 	};
 
 	GizmoRenderSystem.prototype.render = function (renderer) {

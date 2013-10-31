@@ -74,10 +74,28 @@ define([
 		return Gizmo.handleStore[id - 16000];
 	};
 
+	Gizmo.prototype.getRenderable = function(id) {
+		for (var i = 0; i < this.renderables.length; i++) {
+			var renderable = this.renderables[i];
+			if (renderable.id === id) {
+				return renderable;
+			}
+		}
+	};
+
 	Gizmo.prototype.activate = function(properties) {
 		this._activeHandle = properties.data;
 		this._mouse.oldPosition[0] = properties.x;
 		this._mouse.oldPosition[1] = properties.y;
+
+		this._activeRenderable = this.getRenderable(properties.id);
+
+		this._activeRenderable.materials[0].uniforms.color = [1, 1, 0];
+	};
+
+	Gizmo.prototype.deactivate = function() {
+		var originalColor = this._activeRenderable.originalColor;
+		this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
 	};
 
 	Gizmo.prototype.copyTransform = function(transform) {
@@ -183,6 +201,11 @@ define([
 		this._line.setv([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 		this.transform.matrix.applyPostVector(this._line);
 		this._line.normalize();
+	};
+
+	Gizmo.prototype.addRenderable = function(renderable) {
+		renderable.originalColor = renderable.materials[0].uniforms.color;
+		this.renderables.push(renderable);
 	};
 
 	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {

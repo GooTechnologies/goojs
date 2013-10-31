@@ -114,7 +114,7 @@ define([
 	};
 
 	ScaleGizmo.prototype._buildBox = function() {
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._boxMesh,
 			materials: [this._buildMaterialForAxis(3)],
 			transform: new Transform(),
@@ -130,7 +130,7 @@ define([
 			transform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._arrowMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: transform,
