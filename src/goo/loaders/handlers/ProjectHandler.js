@@ -303,6 +303,9 @@ define([
 				composer.addPass(renderPass);
 				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
+					if (!posteffects[j]) {
+						continue;
+					}
 					var posteffect = posteffects[j].get();
 					if (posteffect.enabled && !enabled) {
 						enabled = true;

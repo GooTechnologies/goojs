@@ -47,7 +47,7 @@ define([
 			]
 		};
 	}());
-	PassLib.Glow = (function() {
+	PassLib.Bloom = (function() {
 		var pass;
 		return {
 			create: function() {
@@ -159,7 +159,7 @@ define([
 			]
 		};
 	}());
-	PassLib.BC = (function() {
+	PassLib.Contrast = (function() {
 		var shader, pass;
 		return {
 			create: function() {
