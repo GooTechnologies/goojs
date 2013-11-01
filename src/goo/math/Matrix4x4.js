@@ -455,7 +455,8 @@ function (
 		var det = source.determinant();
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
-			throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
+			return target;
+			// throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		var s = source.data;

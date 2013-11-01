@@ -62,6 +62,8 @@ function(
 		this.strafeRightKey = !isNaN(properties.strafeRightKey) ? properties.strafeRightKey : 68;
 		this.XZ = properties.XZ || false;
 
+		this.maxSpeed = properties.maxSpeed || 30;
+
 		this.onRun = properties.onRun;
 
 		// XXX: maybe add a lockPlane?
@@ -255,7 +257,7 @@ function(
 
 		if (this.moveVector.x !== 0 || this.moveVector.z !== 0) {
 			this.movementMultiplier += tpf * this.movementMultiplier * 1.0;
-			this.movementMultiplier = Math.min(this.movementMultiplier, 50.0);
+			this.movementMultiplier = Math.min(this.movementMultiplier, this.maxSpeed);
 		} else {
 			this.movementMultiplier = this.baseMultiplier;
 		}
