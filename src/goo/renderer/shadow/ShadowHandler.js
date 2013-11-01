@@ -181,7 +181,7 @@ function(
 				this.shadowList.length = 0;
 				for (var j = 0; j < entities.length; j++) {
 					var entity = entities[j];
-					if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows) {
+					if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows && !entity.isSkybox) {
 						this.shadowList.push(entity);
 					}
 				}

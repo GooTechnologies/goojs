@@ -83,6 +83,7 @@ define([
 		var skybox = new Skybox(shape, [], mapping, rotation);
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
+		skyboxEntity.isSkybox = true;
 		skyboxEntity.transformComponent.updateWorldTransform();
 		skyboxEntity.meshRendererComponent.hidden = true;
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
