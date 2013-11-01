@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	SystemBus
 ) {
 	"use strict";
 
@@ -23,18 +25,12 @@ function(
 			type: 'string',
 			description: 'Channel to transmit on',
 			'default': ''
-		}, {
-			name: 'Data',
-			key: 'data',
-			type: 'string',
-			description: 'Data to send',
-			'default': ''
 		}],
 		transitions: []
 	};
 
-	EmitAction.prototype._run = function(fsm) {
-		fsm.send(this.channel, this.data);
+	EmitAction.prototype._run = function (/*fsm*/) {
+		SystemBus.emit(this.channel, this.data);
 	};
 
 	return EmitAction;
