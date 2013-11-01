@@ -52,6 +52,7 @@ function(
 		this.shadowList = [];
 
 		this.tmpVec = new Vector3();
+		this.first = true;
 	}
 
 	ShadowHandler.prototype._createShadowData = function(shadowSettings) {
@@ -99,6 +100,10 @@ function(
 	};
 
 	ShadowHandler.prototype.checkShadowRendering = function(renderer, partitioner, entities, lights) {
+		if (this.first === true) {
+			this.first = false;
+			return;
+		}
 		this.shadowResults = [];
 		this.shadowLights = [];
 		for (var i = 0; i < lights.length; i++) {

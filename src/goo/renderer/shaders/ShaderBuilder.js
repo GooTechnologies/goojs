@@ -160,7 +160,8 @@ function(
 					lightDefines.push('S');
 				}
 
-				if (light.shadowCaster && shaderInfo.renderable.meshRendererComponent && shaderInfo.renderable.meshRendererComponent.receiveShadows) {
+				if (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
+					shaderInfo.renderable.meshRendererComponent.receiveShadows && light.shadowSettings.shadowData) {
 					var shadowData = light.shadowSettings.shadowData;
 
 					shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
