@@ -284,6 +284,7 @@ function (
 						break;
 					case 'drag':
 						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+						that.lastTimeMoved = Date.now();
 						break;
 				}
 			});

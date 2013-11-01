@@ -109,24 +109,26 @@ define([
 			});
 
 			hammertime.on('touch drag transform release', function (ev) {
-				switch (ev.type) {
-					case 'transform':
-						var scale = ev.gesture.scale;
-						if (scale < 1) {
-							that.applyWheel(that.zoomSpeed * 1);
-						} else if (scale > 1) {
-							that.applyWheel(that.zoomSpeed * -1);
-						}
-						break;
-					case 'touch':
-						that.updateButtonState(0, true);
-						break;
-					case 'release':
-						that.updateButtonState(0, false);
-						break;
-					case 'drag':
-						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
-						break;
+				if (ev.gesture && ev.gesture.pointerType !== 'mouse') {
+					switch (ev.type) {
+						case 'transform':
+							var scale = ev.gesture.scale;
+							if (scale < 1) {
+								that.applyWheel(that.zoomSpeed * 1);
+							} else if (scale > 1) {
+								that.applyWheel(that.zoomSpeed * -1);
+							}
+							break;
+						case 'touch':
+							that.updateButtonState(2, true);
+							break;
+						case 'release':
+							that.updateButtonState(2, false);
+							break;
+						case 'drag':
+							that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+							break;
+					}
 				}
 			});
 		}
