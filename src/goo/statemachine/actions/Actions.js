@@ -76,6 +76,7 @@ define([
 	'goo/statemachine/actions/MouseMoveAction',
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/KeyPressedAction',
 	'goo/statemachine/actions/WASDAction',
 	'goo/statemachine/actions/ArrowsAction',
 
