@@ -21,6 +21,13 @@ function (
 		this.paused = false;
 		this.time = 0;
 
+		this.evalProxy = {
+			// Add things that are useful from user scripts
+			test: function () {
+				console.log('test');
+			}
+		};
+
 		//window.goor = engine;
 	}
 

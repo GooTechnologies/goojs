@@ -69,6 +69,9 @@ function (
 				} else {
 					this._fsm.applyOnVariable(name, fun);
 				}
+			}.bind(this),
+			getEvalProxy: function () {
+				return this._fsm.system.evalProxy;
 			}.bind(this)
 		};
 	}
