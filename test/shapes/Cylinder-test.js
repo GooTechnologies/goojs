@@ -10,8 +10,8 @@ define(
 		var a = ShapeCreator.createCylinder();
 
 		it("Number of vertices and indices", function() {
-			expect(a.vertexCount).toEqual(20);
-			expect(a.indexCount).toEqual(96);
+			expect(a.vertexCount).toEqual(8 * 4 + 2 + 2);
+			expect(a.indexCount).toEqual(8 * 6 * 2);
 		});
 	});
 });
