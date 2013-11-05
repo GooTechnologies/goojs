@@ -76,6 +76,7 @@ define([
 	'goo/statemachine/actions/MouseMoveAction',
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/KeyPressedAction',
 	'goo/statemachine/actions/WASDAction',
 	'goo/statemachine/actions/ArrowsAction',
 
@@ -93,7 +94,10 @@ define([
 	'goo/statemachine/actions/SoundFadeInAction',
 	'goo/statemachine/actions/SoundFadeOutAction',
 
-	'goo/statemachine/actions/TransitionOnMessageAction'
+	'goo/statemachine/actions/TransitionOnMessageAction',
+	'goo/statemachine/actions/TweenLightColorAction',
+	'goo/statemachine/actions/CollidesAction',
+	'goo/statemachine/actions/TagAction'
 ],
 /** @lends */
 function(

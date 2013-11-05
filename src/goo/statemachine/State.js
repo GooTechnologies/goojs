@@ -22,6 +22,9 @@ function (
 			getTpf: function () {
 				return this._fsm.entity._world.tpf;
 			}.bind(this),
+			getTime: function () {
+				return this._fsm.system.time;
+			}.bind(this),
 			getState: function () {
 				return this;
 			}.bind(this),
@@ -31,7 +34,7 @@ function (
 			getOwnerEntity: function () {
 				return this._fsm.entity;
 			}.bind(this),
-			send: function (channels, data) {
+			send: function (channels/*, data*/) {
 				if (channels) {
 					if (typeof channels === 'string' && this._transitions[channels]) {
 						this.requestTransition(this._transitions[channels]);
@@ -66,6 +69,9 @@ function (
 				} else {
 					this._fsm.applyOnVariable(name, fun);
 				}
+			}.bind(this),
+			getEvalProxy: function () {
+				return this._fsm.system.evalProxy;
 			}.bind(this)
 		};
 	}

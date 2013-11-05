@@ -12,7 +12,8 @@ function(
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(/*event*/) {
+		this.eventListener = function(event) {
+			this.button = event.button;
 			this.updated = true;
 		}.bind(this);
 	}
@@ -26,9 +27,17 @@ function(
 		canTransition: true,
 		parameters: [],
 		transitions: [{
-			key: 'mouseup',
-			name: 'Mouse up',
-			description: 'Fired on mouse up'
+			key: 'mouseLeftUp',
+			name: 'Left mouse up',
+			description: 'State to transition to when the left mouse button is released'
+		}, {
+			key: 'middleMouseUp',
+			name: 'Middle mouse up',
+			description: 'State to transition to when the middle mouse button is released'
+		}, {
+			key: 'rightMouseUp',
+			name: 'Right mouse up',
+			description: 'State to transition to when the right mouse button is released'
 		}]
 	};
 
@@ -39,7 +48,7 @@ function(
 	MouseUpAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			fsm.send(this.transitions.mouseup);
+			fsm.send([this.transitions.mouseLeftUp, this.transitions.middleMouseUp, this.transitions.rightMouseUp][this.button]);
 		}
 	};
 

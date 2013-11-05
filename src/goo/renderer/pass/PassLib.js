@@ -47,7 +47,7 @@ define([
 			]
 		};
 	}());
-	PassLib.Glow = (function() {
+	PassLib.Bloom = (function() {
 		var pass;
 		return {
 			create: function() {
@@ -130,6 +130,9 @@ define([
 				if (options.sIntensity !== undefined) {
 					shader.uniforms.sIntensity = options.sIntensity / 100;
 				}
+				if (options.sCount !== undefined) {
+					shader.uniforms.sCount = options.sCount;
+				}
 				if (config.enabled !== undefined) {
 					pass.enabled = config.enabled;
 				}
@@ -142,24 +145,33 @@ define([
 					key: 'nIntensity',
 					type: 'int',
 					control: 'slider',
-					name: 'N Intensity',
+					name: 'Noise',
 					min: 0,
-					max: 150,
+					max: 100,
 					'default': 50
 				},
 				{
 					key: 'sIntensity',
 					type: 'int',
 					control: 'slider',
-					name: "S Intensity",
+					name: "Intensity",
 					min: 0,
 					max: 100,
 					'default': 50
+				},
+				{
+					key: 'sCount',
+					type: 'int',
+					control: 'slider',
+					name: "Count",
+					min: 1,
+					max: 4096,
+					'default': 1024
 				}
 			]
 		};
 	}());
-	PassLib.BC = (function() {
+	PassLib.Contrast = (function() {
 		var shader, pass;
 		return {
 			create: function() {

@@ -160,7 +160,8 @@ function(
 					lightDefines.push('S');
 				}
 
-				if (light.shadowCaster && shaderInfo.renderable.meshRendererComponent && shaderInfo.renderable.meshRendererComponent.receiveShadows) {
+				if (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
+					shaderInfo.renderable.meshRendererComponent.receiveShadows && light.shadowSettings.shadowData) {
 					var shadowData = light.shadowSettings.shadowData;
 
 					shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
@@ -212,6 +213,10 @@ function(
 				'uniform float materialSpecularPower;',
 				'uniform vec3 globalAmbient;',
 
+				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
+					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
+				// '}',
+
 				'float ChebychevInequality(in vec2 moments, in float t) {',
 					'if ( t <= moments.x ) return 1.0;',
 					'float variance = moments.y - (moments.x * moments.x);',
@@ -219,10 +224,6 @@ function(
 					'float d = t - moments.x;',
 					'return variance / (variance + d * d);',
 				'}'
-
-				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
-					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
-				// '}',
 			);
 
 			fragment.push(
@@ -319,21 +320,21 @@ function(
 								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
 								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'shadow *= (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
+								'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
 								);
 							} else if (light.shadowSettings.shadowType === 'VSM') {
 								fragment.push(
 								'vec4 texel = texture2D(shadowMaps'+i+', depth.xy);',
 								'vec2 moments = vec2(texel.x, texel.y);',
-								'shadow *= ChebychevInequality(moments, depth.z);',
+								'shadow = ChebychevInequality(moments, depth.z);',
+								// 'shadow = VsmFixLightBleed(shadow, 0.5);',
 								'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
-								// 'shadow = VsmFixLightBleed(shadow, 0.1);',
 								);
 							} else {
 								fragment.push(
 								'depth.z *= 0.96;',
 								'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
-								'if ( depth.z > shadowDepth ) shadow *= shadowDarkness'+i+';'
+								'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
 								);
 								}
 					fragment.push(

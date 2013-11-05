@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	SystemBus
 ) {
 	"use strict";
 
@@ -15,26 +17,20 @@ function(
 	EmitAction.prototype.constructor = EmitAction;
 
 	EmitAction.external = {
-		name: 'Emit',
-		description: 'Sends a message on the bus',
+		name: 'Emit message',
+		description: 'Emits a message on the bus',
 		parameters: [{
 			name: 'Channel',
 			key: 'channel',
 			type: 'string',
 			description: 'Channel to transmit on',
 			'default': ''
-		}, {
-			name: 'Data',
-			key: 'data',
-			type: 'string',
-			description: 'Data to send',
-			'default': ''
 		}],
 		transitions: []
 	};
 
-	EmitAction.prototype._run = function(fsm) {
-		fsm.send(this.channel, this.data);
+	EmitAction.prototype._run = function (/*fsm*/) {
+		SystemBus.emit(this.channel, this.data);
 	};
 
 	return EmitAction;

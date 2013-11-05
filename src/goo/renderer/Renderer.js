@@ -800,7 +800,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
@@ -848,7 +848,7 @@ function (
 					pickList.push(entity);
 				}
 			}
-			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
 
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);

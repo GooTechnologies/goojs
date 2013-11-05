@@ -102,28 +102,30 @@ define([
 		var arrowTransform = new Transform();
 		var quadTransform = new Transform();
 
+		var size = 1.0;
+		quadTransform.scale.setd(size, size, size);
 		if (dim === 2) {
-			quadTransform.translation.setd(1, -1, 0);
+			quadTransform.translation.setd(size, -size, 0);
 		} else if(dim === 0) {
-			quadTransform.translation.setd(0, -1, 1);
+			quadTransform.translation.setd(0, -size, size);
 			quadTransform.setRotationXYZ(0, Math.PI/2, 0);
 			arrowTransform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {
-			quadTransform.translation.setd(1, 0, 1);
+			quadTransform.translation.setd(size, 0, size);
 			quadTransform.setRotationXYZ(Math.PI/2, 0, 0);
 			arrowTransform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._arrowMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: arrowTransform,
 			id: Gizmo.registerHandle({ type: 'Axis', axis: dim })
 		});
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._quadMesh,
-			materials: [this._buildMaterialForAxis(dim)],
+			materials: [this._buildMaterialForAxis(dim, 0.6)],
 			transform: quadTransform,
 			id: Gizmo.registerHandle({ type: 'Plane', axis: dim })
 		});
@@ -133,19 +135,19 @@ define([
 		var meshBuilder = new MeshBuilder();
 
 		// Arrow head
-		var mesh1Data = new Disk(32, 0.5, 2);
+		var mesh1Data = new Disk(32, 0.6, 2.3);
 		// Arrow base
-		var mesh2Data = new Disk(32, 0.5);
+		var mesh2Data = new Disk(32, 0.6);
 		// Line
 		var mesh3Data = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 2, 2);
-		mesh3Data.getAttributeBuffer(MeshData.POSITION).set([0, 0, 0, 0, 0, 1]);
+		mesh3Data.getAttributeBuffer(MeshData.POSITION).set([0, 0, 0, 0, 0, 7]);
 		mesh3Data.getIndexBuffer().set([0, 1]);
 		mesh3Data.indexLengths = null;
 		mesh3Data.indexModes = ['Lines'];
 
 		// Arrow head
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 10);
+		transform.translation.setd(0, 0, 7);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 
@@ -156,7 +158,6 @@ define([
 
 		// Line
 		var transform = new Transform();
-		transform.scale.setd(1, 1, 10);
 		transform.update();
 		meshBuilder.addMeshData(mesh3Data, transform);
 

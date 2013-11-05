@@ -9,6 +9,8 @@ function(
 
 	function EvalAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+
+		this.expressionFunction = null;
 	}
 
 	EvalAction.prototype = Object.create(Action.prototype);
@@ -27,9 +29,20 @@ function(
 		transitions: []
 	};
 
-	EvalAction.prototype._run = function(/*fsm*/) {
+	EvalAction.prototype._setup = function () {
 		/* jshint evil: true */
-		eval(this.expression);
+		this.expressionFunction = new Function('goo', this.expression);
+	};
+
+	EvalAction.prototype._run = function (fsm) {
+		/* jshint evil: true */
+		if (this.expressionFunction) {
+			try {
+				this.expressionFunction(fsm.getEvalProxy());
+			} catch (e) {
+				console.warn('Eval code error: ' + e.message);
+			}
+		}
 	};
 
 	return EvalAction;

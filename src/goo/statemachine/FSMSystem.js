@@ -1,6 +1,5 @@
 define([
 	'goo/entities/systems/System',
-
 	'goo/statemachine/actions/Actions'
 ],
 /** @lends */
@@ -20,6 +19,14 @@ function (
 		this.passive = false;
 		this.entered = true;
 		this.paused = false;
+		this.time = 0;
+
+		this.evalProxy = {
+			// Add things that are useful from user scripts
+			test: function () {
+				console.log('test');
+			}
+		};
 
 		//window.goor = engine;
 	}
@@ -36,9 +43,13 @@ function (
 				fsmComponent.kill();
 				fsmComponent.cleanup();
 			}
+			this.time = 0;
+			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
 			this.passive = true;
-			return ;
+			return;
 		}
+
+		this.time += tpf;
 
 		if (this.entered) {
 			this.entered = false;
@@ -49,7 +60,7 @@ function (
 			}
 		}
 
-		if (window.TWEEN) { window.TWEEN.update(); } // this should not stay here
+		if (window.TWEEN) { window.TWEEN.update(this.time * 1000); } // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
 			fsmComponent = entities[i].fSMComponent;
@@ -61,6 +72,7 @@ function (
 		var fsmComponent = entity.fSMComponent;
 
 		fsmComponent.entity = entity;
+		fsmComponent.system = this;
 		fsmComponent.init();
 	};
 

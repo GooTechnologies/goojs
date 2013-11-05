@@ -62,6 +62,8 @@ function(
 		this.strafeRightKey = !isNaN(properties.strafeRightKey) ? properties.strafeRightKey : 68;
 		this.XZ = properties.XZ || false;
 
+		this.maxSpeed = properties.maxSpeed || 30;
+
 		this.onRun = properties.onRun;
 
 		// XXX: maybe add a lockPlane?
@@ -207,9 +209,9 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		this.domElement.addEventListener('mousemove', boundMouseMove, false);
-		this.domElement.addEventListener('mouseup', boundMouseUp, false);
-		this.domElement.addEventListener('mouseout', boundMouseUp, false);
+		document.addEventListener('mousemove', boundMouseMove, false);
+		document.addEventListener('mouseup', boundMouseUp, false);
+		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
 		// https://code.google.com/p/chromium/issues/detail?id=244289
@@ -255,7 +257,7 @@ function(
 
 		if (this.moveVector.x !== 0 || this.moveVector.z !== 0) {
 			this.movementMultiplier += tpf * this.movementMultiplier * 1.0;
-			this.movementMultiplier = Math.min(this.movementMultiplier, 50.0);
+			this.movementMultiplier = Math.min(this.movementMultiplier, this.maxSpeed);
 		} else {
 			this.movementMultiplier = this.baseMultiplier;
 		}

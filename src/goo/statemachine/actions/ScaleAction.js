@@ -27,7 +27,7 @@ function(
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add/multiply, otherwise set',
+			description: 'If true add/multiply the current scaling',
 			'default': true
 		}, {
 			name: 'Multiply',

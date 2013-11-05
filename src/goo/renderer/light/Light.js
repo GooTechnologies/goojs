@@ -48,7 +48,7 @@ function (
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y,
 			darkness: 0.0,
-			shadowType: 'PCF'
+			shadowType: 'VSM'
 		};
 
 		this.changedProperties = false;

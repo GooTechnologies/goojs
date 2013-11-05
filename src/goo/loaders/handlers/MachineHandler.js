@@ -31,7 +31,9 @@ define([
 
 	MachineHandler.prototype.remove = function(ref) {
 		var machine = this._objects[ref];
-		machine.removeFromParent();
+		if (machine) {
+			machine.removeFromParent();
+		}
 		delete this._objects[ref];
 	};
 

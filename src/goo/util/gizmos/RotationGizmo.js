@@ -21,7 +21,7 @@ define([
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.18);
+		this._torusMesh = new Torus(64, 8, 0.1, 2.4);
 
 		this._buildBall();
 		this._buildTorus(0);
@@ -281,9 +281,9 @@ define([
 	RotationGizmo.prototype._buildBall = function() {
 		var transform = new Transform();
 		transform.scale.setd(1.2, 1.2, 1.2);
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._ballMesh,
-			materials: [this._buildMaterialForAxis(3)],
+			materials: [this._buildMaterialForAxis(3, 0.6)],
 			transform: new Transform(),
 			id: Gizmo.registerHandle({ type: 'Rotate', axis: 3 })
 		});
@@ -298,11 +298,12 @@ define([
 			transform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._torusMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: transform,
-			id: Gizmo.registerHandle({ type: 'Rotate', axis: dim })
+			id: Gizmo.registerHandle({ type: 'Rotate', axis: dim }),
+			thickness: 0.35
 		});
 	};
 

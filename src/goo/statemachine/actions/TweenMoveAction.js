@@ -18,7 +18,7 @@ function(
 
 	TweenMoveAction.external = {
 		name: 'Tween Move',
-		description: 'Smoothly transitions between 2 locations',
+		description: 'Smoothly transitions between two locations',
 		canTransition: true,
 		parameters: [{
 			name: 'Translation',
@@ -39,28 +39,28 @@ function(
 			description: 'Time it takes for this movement to complete',
 			'default': 1000
 		}, {
-			name: 'Easing 1',
+			name: 'Easing type',
 			key: 'easing1',
 			type: 'dropdown',
-			description: 'Easing 1',
+			description: 'Easing type',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
-			name: 'Easing 2',
+			name: 'Direction',
 			key: 'easing2',
 			type: 'dropdown',
-			description: 'Easing 2',
+			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the movement completes'
 		}]
 	};
 
-	TweenMoveAction.prototype.configure = function(settings) {
+	TweenMoveAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -72,11 +72,17 @@ function(
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenMoveAction.prototype._setup = function() {
+	TweenMoveAction.prototype._setup = function (/*fsm*/) {
 		this.tween = new window.TWEEN.Tween();
 	};
 
-	TweenMoveAction.prototype._run = function(fsm) {
+	TweenMoveAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
+	TweenMoveAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -103,7 +109,7 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
@@ -119,7 +125,7 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

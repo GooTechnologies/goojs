@@ -29,13 +29,13 @@ function(
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add, otherwise set',
+			description: 'If true add to current rotation',
 			'default': true
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: []

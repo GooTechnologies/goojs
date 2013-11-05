@@ -26,29 +26,29 @@ function(
 			name: 'Current camera',
 			key: 'current',
 			type: 'boolean',
-			description: 'Measure the distance from the current camera or from an arbitrary point',
+			description: 'Check this to always use the current camera',
 			'default': true
 		}, {
 			name: 'Camera',
 			key: 'cameraEntityRef',
 			type: 'cameraEntity',
-			description: 'Other camera',
+			description: 'Other camera; Will be ignored if the previous option is checked',
 			'default': null
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: [{
 			key: 'inside',
 			name: 'Inside',
-			description: 'State to transition to if entity is in frustum'
+			description: 'State to transition to if entity is in the frustum'
 		}, {
 			key: 'outside',
 			name: 'Outside',
-			description: 'State to transition to if entity is out of frustum'
+			description: 'State to transition to if entity is outside the frustum'
 		}]
 	};
 

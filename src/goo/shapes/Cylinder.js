@@ -75,8 +75,8 @@ function (
 		}
 
 		verts.push(
-			1.0, 0.0, 0.5,
-			1.0, 0.0, -0.5
+			this.radius, 0.0, 0.5,
+			this.radius, 0.0, -0.5
 		);
 
 		norms.push(

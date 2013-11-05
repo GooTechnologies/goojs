@@ -284,6 +284,7 @@ function (
 						break;
 					case 'drag':
 						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+						that.lastTimeMoved = Date.now();
 						break;
 				}
 			});
@@ -331,7 +332,7 @@ function (
 			return;
 		}
 
-		var delta = this.interpolationSpeed * entity._world.tpf;
+		var delta = MathUtils.clamp(this.interpolationSpeed * entity._world.tpf, 0.0, 1.0);
 
 		if (this.clampAzimuth) {
 			this.spherical.y = MathUtils.lerp(delta, this.spherical.y, this.targetSpherical.y);

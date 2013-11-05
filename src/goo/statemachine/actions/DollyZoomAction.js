@@ -23,13 +23,13 @@ function(
 			name: 'Forward',
 			key: 'forward',
 			type: 'number',
-			description: 'Forward',
+			description: 'Number of units to move towards the focus point; Enter negative values to move away',
 			'default': 100
 		}, {
 			name: 'Focus point',
 			key: 'lookAt',
 			type: 'position',
-			description: 'Point to focus',
+			description: 'Point to focus on while transitioning',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Time',
@@ -38,24 +38,24 @@ function(
 			description: 'Time',
 			'default': 10000
 		}, {
-			name: 'Easing 1',
+			name: 'Easing type',
 			key: 'easing1',
 			type: 'dropdown',
-			description: 'Easing 1',
+			description: 'Easing',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
-			name: 'Easing 2',
+			name: 'Direction',
 			key: 'easing2',
 			type: 'dropdown',
-			description: 'Easing 2',
+			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the transition completes'
 		}]
 	};
 
@@ -82,6 +82,12 @@ function(
 			this.eyeTargetScale = Math.tan(camera.fov * (Math.PI / 180) / 2) * this.initialDistance;
 		} else {
 			this.eyeTargetScale = null;
+		}
+	};
+
+	DollyZoomAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
 		}
 	};
 
@@ -116,7 +122,7 @@ function(
 				camera.setFrustumPerspective(fov);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

@@ -34,17 +34,17 @@ function(
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: [{
 			key: 'inside',
 			name: 'Inside',
-			description: 'Event fired if the entity is inside the box'
+			description: 'State to transition to if the entity is inside the box'
 		}, {
 			key: 'outside',
 			name: 'Outside',
-			description: 'Event fired if the entity is outside the box'
+			description: 'State to transition to if the entity is outside the box'
 		}]
 	};
 

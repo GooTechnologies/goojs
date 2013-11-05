@@ -24,7 +24,7 @@ define([
 		this._objects = {};
 	}
 	AnimationStateHandler.prototype = Object.create(ConfigHandler);
-	AnimationStateHandler.prototype.construcor = AnimationStateHandler;
+	AnimationStateHandler.prototype.constructor = AnimationStateHandler;
 	ConfigHandler._registerClass('animstate', AnimationStateHandler);
 
 	AnimationStateHandler.prototype.update = function(ref, config) {

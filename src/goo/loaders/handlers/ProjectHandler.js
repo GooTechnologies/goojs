@@ -67,7 +67,7 @@ define([
 			rotation: 0,
 			environmentType: 1
 		});
-		config.backgroundColor = config.backgroundColor || [0.3,0.3,0.3,1];
+		config.backgroundColor = config.backgroundColor || [0.75,0.76,0.78,1];
 		config.globalAmbient = config.globalAmbient || [0, 0, 0];
 		config.useFog = config.useFog || false;
 		config.fogColor = config.fogColor || [1, 1, 1];
@@ -83,12 +83,13 @@ define([
 		var skybox = new Skybox(shape, [], mapping, rotation);
 		var skyboxEntity = this._skybox = EntityUtils.createTypicalEntity(goo.world, skybox.meshData, skybox.materials[0], skybox.transform);
 		skyboxEntity.name = 'Skybox_'+shape;
+		skyboxEntity.isSkybox = true;
 		skyboxEntity.transformComponent.updateWorldTransform();
 		skyboxEntity.meshRendererComponent.hidden = true;
 		goo.world.getSystem('RenderSystem').added(skyboxEntity);
 	};
 
-	ProjectHandler.prototype._updateSkybox = function(skyboxConfig) {
+	ProjectHandler.prototype._updateSkybox = function(skyboxConfig, options) {
 		if (skyboxConfig) {
 			var shape = skyboxConfig.shape.toLowerCase();
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
@@ -115,7 +116,10 @@ define([
 			var material = skybox.meshRendererComponent.materials[0];
 			var texture = this._skyboxTexture;
 
-			var update = !texture; // New load or skybox shape changed 
+			var update = !texture; // New load or skybox shape changed
+			if(!update && options && options.skybox && options.skybox.reload) {
+				update = true;
+			}
 			if(!update) {
 
 				// Same shape, just maybe some new images
@@ -300,6 +304,9 @@ define([
 				composer.addPass(renderPass);
 				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
+					if (!posteffects[j]) {
+						continue;
+					}
 					var posteffect = posteffects[j].get();
 					if (posteffect.enabled && !enabled) {
 						enabled = true;
@@ -330,7 +337,7 @@ define([
 		var promises = [];
 
 		// skybox
-		promises.push(this._updateSkybox(config.skybox));
+		promises.push(this._updateSkybox(config.skybox, options));
 
 		// entity refs
 		if (!options || !options.shallow) {

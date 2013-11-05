@@ -1,12 +1,10 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/math/Vector2'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
-	function(
-	Action,
-	Vector2
-	) {
+function(
+	Action
+) {
 	"use strict";
 
 	function TweenTextureOffsetAction(/*id, settings*/) {
@@ -23,13 +21,19 @@ define([
 		parameters: [{
 			name: 'X Offset',
 			key: 'toX',
-			type: 'number',
+			type: 'float',
+			control: 'slider',
+			min: 0,
+			max: 1,
 			description: 'X Offset',
 			'default': 1
 		}, {
 			name: 'Y Offset',
 			key: 'toY',
-			type: 'number',
+			type: 'float',
+			control: 'slider',
+			min: 0,
+			max: 1,
 			description: 'Y Offset',
 			'default': 1
 		}, {
@@ -39,31 +43,31 @@ define([
 			description: 'Time it takes for this transition to complete',
 			'default': 1000
 		}, {
-			name: 'Easing 1',
+			name: 'Easing type',
 			key: 'easing1',
 			type: 'dropdown',
-			description: 'Easing 1',
+			description: 'Easing type',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
-			name: 'Easing 2',
+			name: 'Direction',
 			key: 'easing2',
 			type: 'dropdown',
-			description: 'Easing 2',
+			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the transition completes'
+			description: 'State to transition to when the transition completes'
 		}]
 	};
 
-	TweenTextureOffsetAction.prototype.configure = function(settings) {
-		this.toX = settings.toX;
-		this.toY = settings.toY;
-		this.time = settings.time;
+	TweenTextureOffsetAction.prototype.configure = function (settings) {
+		this.toX = +settings.toX;
+		this.toY = +settings.toY;
+		this.time = +settings.time;
 		if (settings.easing1 === 'Linear') {
 			this.easing = window.TWEEN.Easing.Linear.None;
 		} else {
@@ -72,11 +76,17 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenTextureOffsetAction.prototype._setup = function() {
+	TweenTextureOffsetAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
-	TweenTextureOffsetAction.prototype._run = function(fsm) {
+	TweenTextureOffsetAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
+	};
+
+	TweenTextureOffsetAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent && entity.meshRendererComponent.materials.length > 0) {
 			var meshRendererComponent = entity.meshRendererComponent;
@@ -87,11 +97,11 @@ define([
 			var fakeFrom = { x: initialOffset.x, y: initialOffset.y };
 			var fakeTo = { x: this.toX, y: this.toY };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function() {
 				texture.offset.setd(this.x, this.y);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start();
+			}.bind(this)).start(fsm.getTime() * 1000);
 		}
 	};
 

@@ -199,5 +199,17 @@ function() {
 		}
 	};
 
+	FSMUtil.createComposableTween = function(object, propertyName, from, to, time, callback) {
+		var tween = new window.TWEEN.Tween();
+		var old = from;
+		return tween.from({ v: from }).to({ v: to }).onUpdate(function() {
+			object[propertyName] += this.v - old;
+			old = this.v;
+			if (callback) {
+				callback();
+			}
+		});
+	};
+
 	return FSMUtil;
 });

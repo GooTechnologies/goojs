@@ -83,11 +83,11 @@ define([
 
 		this.domElement.addEventListener('mousewheel', function (event) {
 			that.shiftKey = event.shiftKey;
-			that.applyWheel(event);
+			that.applyWheel(event.wheelDelta || -event.detail);
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
 			that.shiftKey = event.shiftKey;
-			that.applyWheel(event);
+			that.applyWheel(event.wheelDelta || -event.detail);
 		}, false);
 
 
@@ -97,12 +97,47 @@ define([
 			event.preventDefault();
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
+
+
+		// optional touch controls... requires Hammer.js v2
+		if (typeof (window.Hammer) !== "undefined") {
+			// Disable warning that we call `Hammer()`, not `new Hammer()`
+			//jshint newcap:false
+			var hammertime = window.Hammer(this.domElement, {
+				transform_always_block : true,
+				transform_min_scale : 1
+			});
+
+			hammertime.on('touch drag transform release', function (ev) {
+				if (ev.gesture && ev.gesture.pointerType !== 'mouse') {
+					switch (ev.type) {
+						case 'transform':
+							var scale = ev.gesture.scale;
+							if (scale < 1) {
+								that.applyWheel(that.zoomSpeed * 1);
+							} else if (scale > 1) {
+								that.applyWheel(that.zoomSpeed * -1);
+							}
+							break;
+						case 'touch':
+							that.updateButtonState(2, true);
+							break;
+						case 'release':
+							that.updateButtonState(2, false);
+							break;
+						case 'drag':
+							that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
+							break;
+					}
+				}
+			});
+		}
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === 2 || buttonIndex === 0 && this.shiftKey) {
+		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) {
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
-		} else if (buttonIndex === 1 || buttonIndex === 0 && this.altKey) {
+		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
 			this.panState.buttonDown = down;
 			if(down) {
 				this.panState.lastX = NaN;
@@ -111,6 +146,20 @@ define([
 			}
 		}
 	};
+
+	OrbitNPanControlScript.prototype.resetLookAt = function(lookat, x, y, z) {
+		this.goingToLookAt.setv(lookat);
+		this.lookAtPoint.setv(lookat);
+		this.panState.lastX = NaN;
+		this.panState.lastY = NaN;
+		this.panState.lastPos.setv(lookat);
+		this.velocity.set(0);
+
+		MathUtils.cartesianToSpherical(x, y, z, this.spherical);
+		this.targetSpherical.setv(this.spherical);
+		MathUtils.sphericalToCartesian(this.spherical.x, this.spherical.y, this.spherical.z, this.cartesian);
+	};
+
 	OrbitNPanControlScript.prototype.updateDeltas = function(mouseX, mouseY) {
 		OrbitCamControlScript.prototype.updateDeltas.call(this, mouseX, mouseY);
 		var v = new Vector3();
@@ -141,8 +190,8 @@ define([
 		}
 	};
 
-	OrbitNPanControlScript.prototype.applyWheel = function (e) {
-		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(e.wheelDelta || -e.detail, -1, 1);
+	OrbitNPanControlScript.prototype.applyWheel = function (delta) {
+		var delta = (this.invertedWheel ? -1 : 1) * MathUtils.clamp(delta, -1, 1);
 
 		// Decrease zoom if shift is pressed
 		if (this.shiftKey) {

@@ -43,24 +43,24 @@ define([
 			description: 'Time it takes for this movement to complete',
 			'default': 1000
 		}, {
-			name: 'Easing 1',
+			name: 'Easing type',
 			key: 'easing1',
 			type: 'dropdown',
-			description: 'Easing 1',
+			description: 'Easing type',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
-			name: 'Easing 2',
+			name: 'Direction',
 			key: 'easing2',
 			type: 'dropdown',
-			description: 'Easing 2',
+			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']
 		}],
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the rotation completes'
 		}]
 	};
 
@@ -78,6 +78,12 @@ define([
 
 	TweenRotationAction.prototype._setup = function() {
 		this.tween = new window.TWEEN.Tween();
+	};
+
+	TweenRotationAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.tween) {
+			this.tween.stop();
+		}
 	};
 
 	TweenRotationAction.prototype._run = function(fsm) {
@@ -99,7 +105,7 @@ define([
 			transformComponent.setUpdated();
 		}).onComplete(function() {
 			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start();
+		}.bind(this)).start(fsm.getTime() * 1000);
 	};
 
 	return TweenRotationAction;
