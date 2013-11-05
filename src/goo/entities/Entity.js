@@ -215,6 +215,15 @@ define(
 			this.components[ component.type ].push( component );
 
 			component.init( this );
+
+			// REVIEW: this is a small hack to see to that entites which components are
+			// added over time (in a load scenario, for example) doesn't get filtered out
+			// because they lack certain components att inital add-time. This can probably
+			// be wrapped nicer by the Scene.
+			if( this.scene !== undefined ) {
+				this.scene.entities.added.push( this );
+			}
+
 			return this;
 		};
 
@@ -294,9 +303,9 @@ define(
 		Entity.prototype.removeComponent = function( component ) {
 			var type = componentType( component );
 
-			for( var componentType in this.components ) {
-				if( componentType === type ) {
-					this.components[ componentType ].length = 0;
+			for( var cmpType in this.components ) {
+				if( cmpType === type ) {
+					this.components[ cmpType ].length = 0;
 				}
 			}
 			return this;

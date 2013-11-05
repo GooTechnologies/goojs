@@ -627,9 +627,6 @@ define( [
 	            } else if( type === "object" && system.type !== undefined ) {
                     return system.type;
 	            } else {
-
-//a(){t.call(this,"RenderSystem",["M
-
                     var raw = system.toString();
                     var beginIndex = raw.indexOf( 'l(this,"' );
 	                if( beginIndex !== -1 ) {
