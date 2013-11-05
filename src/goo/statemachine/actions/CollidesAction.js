@@ -20,12 +20,12 @@ function(
 
 	CollidesAction.external = {
 		name: 'Collides',
-		description: 'Checks for collisions with other entities',
+		description: 'Checks for collisions with other entities; Collisions are based on the entities\' bounding volumes',
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
 			type: 'dropdown',
-			description: 'Checks for collisions with other ojects having this tag',
+			description: 'Checks for collisions with other objects having this tag',
 			'default': 'red',
 			options: ['red', 'blue', 'green', 'yellow']
 		}],
