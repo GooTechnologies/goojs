@@ -33,6 +33,10 @@ function(
 			key: 'collides',
 			name: 'On Collision',
 			description: 'States to transition to when a collision occurs'
+		}, {
+			key: 'notCollides',
+			name: 'On Divergence',
+			description: 'States to transition to when a collision is not occurring'
 		}]
 	};
 
@@ -54,9 +58,10 @@ function(
 		for (var i = 0; i < collection.length; i++) {
 			if (worldBound.intersects(collection[i].meshRendererComponent.worldBound)) {
 				fsm.send(this.transitions.collides);
-				break;
+				return;
 			}
 		}
+		fsm.send(this.transitions.notCollides);
 	};
 
 	return CollidesAction;
