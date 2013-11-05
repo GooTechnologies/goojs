@@ -47,7 +47,7 @@ function(
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
 			if (this.everyFrame) {
-				var tpf = fsm.getTpf() * 1000;
+				var tpf = fsm.getTpf();
 				transform.rotation.rotateX(this.rotation[0] * MathUtils.DEG_TO_RAD * tpf);
 				transform.rotation.rotateY(this.rotation[1] * MathUtils.DEG_TO_RAD * tpf);
 				transform.rotation.rotateZ(this.rotation[2] * MathUtils.DEG_TO_RAD * tpf);
@@ -58,7 +58,7 @@ function(
 			}
 		} else {
 			if (this.everyFrame) {
-				var tpf = fsm.getTpf() * 1000;
+				var tpf = fsm.getTpf();
 				transform.setRotationXYZ(
 					this.rotation[0] * MathUtils.DEG_TO_RAD * tpf,
 					this.rotation[1] * MathUtils.DEG_TO_RAD * tpf,
