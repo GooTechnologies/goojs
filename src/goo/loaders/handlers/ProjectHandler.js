@@ -72,7 +72,7 @@ define([
 		config.useFog = config.useFog || false;
 		config.fogColor = config.fogColor || [1, 1, 1];
 		config.fogNear = config.fogNear || 0;
-		config.fogFar = config.fogFar==null? 10000: config.fogFar;
+		config.fogFar = config.fogFar==null? 1000: config.fogFar;
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
