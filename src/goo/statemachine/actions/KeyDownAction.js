@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	FSMUtil
 ) {
 	"use strict";
 
@@ -13,8 +15,10 @@ function(
 		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === +this.key) {
-				this.updated = true;
+			if (this.key) {
+				if (event.which === +this.key) {
+					this.updated = true;
+				}
 			}
 		}.bind(this);
 	}
@@ -30,13 +34,19 @@ function(
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for'
+			description: 'Key to listen for',
+			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keydown',
 			name: 'Key down',
 			description: 'State to transition to when the key is pressed'
 		}]
+	};
+
+	KeyDownAction.prototype.configure = function (settings) {
+		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
 	KeyDownAction.prototype._setup = function() {
