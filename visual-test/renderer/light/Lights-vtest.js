@@ -16,6 +16,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
+	'goo/entities/components/FunctionGeneratorComponent',
 	'goo/debug/LightPointer',
 	'goo/entities/components/LightDebugComponent'
 ], function (
@@ -36,6 +37,7 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
+	FunctionGeneratorComponent,
 	LightPointer,
 	LightDebugComponent
 	) {
@@ -78,6 +80,7 @@ require([
 		});
 
 		pointlightGui.open();
+		return pointLightEntity;
 	}
 
 	function addDirectionalLight(goo) {
@@ -111,6 +114,7 @@ require([
 		});
 
 		directionallightGui.open();
+		return directionalLightEntity;
 	}
 
 	function addSpotLight(goo) {
@@ -130,6 +134,10 @@ require([
 		spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
 
 		spotLightEntity.addToWorld();
+		
+		
+                		
+		
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
@@ -158,6 +166,7 @@ require([
 		});
 
 		spotLightGui.open();
+		return spotLightEntity;
 	}
 
 	function lightPointerDemo(goo) {
@@ -176,9 +185,21 @@ require([
 			}
 		}
 
-		addPointLight(goo);
-		addDirectionalLight(goo);
-		addSpotLight(goo);
+		var l1 = addPointLight(goo);
+		var l2 = addDirectionalLight(goo);
+		var l3 = addSpotLight(goo);
+
+
+
+		// TEST               
+		var entityF = EntityUtils.createTypicalEntity(goo.world);
+		entityF.setComponent(new FunctionGeneratorComponent());
+		entityF.addToWorld();
+		
+                goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l1, "LightComponent.intensity");
+                goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l2, "LightComponent.intensity");
+		goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l3, "LightComponent.intensity");
+                
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);

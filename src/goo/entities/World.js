@@ -1,12 +1,14 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
+	'goo/entities/managers/LogicManager',
 	'goo/entities/components/TransformComponent'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
+	LogicManager,
 	TransformComponent
 ) {
 	"use strict";
@@ -28,6 +30,8 @@ function (
 		 */
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
+		
+		this.logicManager = new LogicManager(this.entityManager);
 
 		this.time = 0.0;
 
@@ -126,6 +130,10 @@ function (
 			}
 		}
 	};
+	
+	World.prototype.addEntityConnection = function(sourceEntity, sourcePort, targetEntity, targetPort) {
+		this.logicManager.addConnection(sourceEntity, sourcePort, targetEntity, targetPort);
+	}
 
 	/**
 	 * Remove an entity from the world

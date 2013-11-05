@@ -78,6 +78,17 @@ function () {
 	Entity.prototype.hasComponent = function (type) {
 		return this[getTypeAttributeName(type)] !== undefined;
 	};
+	
+	/**
+	* Iterates over all components
+	*
+	*/
+	Entity.prototype.forEachComponent = function(func) {
+		for (var i=0;i<this._components.length;i++)
+		{
+			func(this._components[i]);
+		}
+	}
 
 	/**
 	 * Retrieve a component of a specific type

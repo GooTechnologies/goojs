@@ -109,6 +109,9 @@ require([
 		});
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
+		
+		var propEnt = EntityUtils.createTypicalEntity(goo.world);
+		
 
 		anisotropicDemo(goo);
 	}

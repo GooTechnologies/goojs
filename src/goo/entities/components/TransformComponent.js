@@ -16,6 +16,9 @@ function (
 	 * down the tree.
 	 */
 	function TransformComponent() {
+	
+		Component.call(this);
+		
 		this.type = 'TransformComponent';
 
 		/** Parent transformcomponent in the "scene graph"
@@ -38,6 +41,8 @@ function (
 
 		this._dirty = true;
 		this._updated = false;
+		
+		this.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
@@ -67,7 +72,7 @@ function (
 	/**
 	 * Add to this transform's translation.
 	 * @param {Vector|Float[]|...Float} arguments Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
 		if(arguments.length === 3) {

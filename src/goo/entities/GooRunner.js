@@ -8,6 +8,7 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
+	'goo/entities/systems/UpdateSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
@@ -27,6 +28,7 @@ function (
 	LightingSystem,
 	CameraSystem,
 	ParticlesSystem,
+	UpdateSystem,
 	Stats,
 	CSSTransformSystem,
 	AnimationSystem,
@@ -70,6 +72,7 @@ function (
 		this.world.setSystem(new AnimationSystem());
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
+		this.world.setSystem(new UpdateSystem());
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
