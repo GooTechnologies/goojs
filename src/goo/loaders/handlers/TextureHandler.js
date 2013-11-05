@@ -119,7 +119,7 @@ define([
 						console.error("Error loading texture: ", e);
 					});
 				} else if (type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'gif') {
-					loadedPromise = this.getConfig(imgRef, reload).then(function(data) {
+					loadedPromise = this.getConfig(imgRef, false).then(function(data) {
 						texture.setImage(data);
 						return texture;
 					}).then(null, function(e) {
