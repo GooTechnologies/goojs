@@ -29,7 +29,7 @@ define([
 			height = heightMapScript.getInterpolated(1.5, 1);
 			expect(height).toEqual(0.75);
 			height = heightMapScript.getInterpolated(2.5, 1);
-			expect(height).toEqual(0.5);
+			expect(height).toEqual(1);
 		});
 
 		it ('looks for positions outside default dimensions', function() {
