@@ -15,9 +15,9 @@ define(
 		console.log("Created logic manager");
 	}
 
-	LogicLayer.prototype.addInterfaceInstance = function(iface, instance) {
+	LogicLayer.prototype.addInterfaceInstance = function(iface, instance, wantsProcessCall) {
 		// create the instance description
-		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this };
+		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
 		this._logicInterfaces[this._instanceID++] = instDesc;
 		return instDesc;
 	}
@@ -36,9 +36,16 @@ define(
 			cArr[i][0].obj.onPropertyWrite(cArr[i][1], value);
 	}
 	
+	LogicLayer.prototype.process = function(tpf) {
+		for (var i in this._logicInterfaces)
+		{
+			if (this._logicInterfaces[i].wantsProcess)
+				this._logicInterfaces[i].obj.processLogic(tpf);
+		}
+	}
+	
 	// Needs instance descriptions
 	LogicLayer.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
-	
 		var layer = sourceInst.layer;
 		if (layer !== destInst.layer)
 			console.warn("Broken layer linking!");

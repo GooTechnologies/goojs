@@ -34,10 +34,10 @@ function (
 
 	// Adding
 	FunctionGeneratorComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
-		this.logicInstance = logicLayer.addInterfaceInstance(FunctionGeneratorComponent.logicInterface, this);
+		this.logicInstance = logicLayer.addInterfaceInstance(FunctionGeneratorComponent.logicInterface, this, true);
 	}
 
-	FunctionGeneratorComponent.prototype.updateComponent = function(tpf) {
+	FunctionGeneratorComponent.prototype.processLogic = function(tpf) {
 		this._time += tpf;
 		
 		// write all outputs
