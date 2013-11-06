@@ -82,6 +82,7 @@ define([
 						if (pos[2] < dim.maxY && pos[2] > dim.minY) {
 							return this.heightmapScripts[i];
 						}
+
 					}
 				}
 			}
