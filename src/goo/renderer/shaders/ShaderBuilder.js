@@ -3,6 +3,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
+	'goo/renderer/Texture',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
 ],
@@ -12,6 +13,7 @@ function(
 	PointLight,
 	DirectionalLight,
 	SpotLight,
+	Texture,
 	MathUtils,
 	TangentGenerator
 ) {
@@ -137,6 +139,8 @@ function(
 			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
 			shader.uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
+			shader.defines = shader.defines || {};
+
 			var lights = shaderInfo.lights;
 			var lightDefines = [];
 			for (var i = 0; i < lights.length; i++) {
@@ -160,12 +164,23 @@ function(
 					lightDefines.push('S');
 				}
 
-				if (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-					shaderInfo.renderable.meshRendererComponent.receiveShadows && light.shadowSettings.shadowData) {
+				var useLightCookie = light.lightCookie instanceof Texture;
+				if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
+					shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
 					var shadowData = light.shadowSettings.shadowData;
 
-					shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
-					shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
+					if (light.shadowCaster) {
+						shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
+						shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
+					}
+					if (useLightCookie) {
+						shader.uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
+						shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
+						lightDefines.push('C');
+						shader.defines.COOKIE = true;
+					} else {
+						shader.defines.COOKIE = false;
+					}
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
 					var mat = shader.uniforms['shadowLightMatrices'+i] = shader.uniforms['shadowLightMatrices'+i] || [];
@@ -173,26 +188,27 @@ function(
 						mat[j] = matrix[j];
 					}
 
-					var translationData = shadowData.lightCamera.translation.data;
-					var pos = shader.uniforms['shadowLightPositions'+i] = shader.uniforms['shadowLightPositions'+i] || [];
-					pos[0] = translationData[0];
-					pos[1] = translationData[1];
-					pos[2] = translationData[2];
+					if (light.shadowCaster) {
+						var translationData = shadowData.lightCamera.translation.data;
+						var pos = shader.uniforms['shadowLightPositions'+i] = shader.uniforms['shadowLightPositions'+i] || [];
+						pos[0] = translationData[0];
+						pos[1] = translationData[1];
+						pos[2] = translationData[2];
 
-					shader.uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
-					shader.uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
+						shader.uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+						shader.uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
 
-					if (light.shadowSettings.shadowType === 'PCF') {
-						var sizes = shader.uniforms['shadowMapSizes'+i] = shader.uniforms['shadowMapSizes'+i] || [];
-						sizes[0] = light.shadowSettings.resolution[0];
-						sizes[1] = light.shadowSettings.resolution[1];
+						if (light.shadowSettings.shadowType === 'PCF') {
+							var sizes = shader.uniforms['shadowMapSizes'+i] = shader.uniforms['shadowMapSizes'+i] || [];
+							sizes[0] = light.shadowSettings.resolution[0];
+							sizes[1] = light.shadowSettings.resolution[1];
+						}
+
+						lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 					}
-
-					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
 			}
 
-			shader.defines = shader.defines || {};
 			shader.defines.LIGHT = lightDefines.join('');
 		},
 		builder: function (shader, shaderInfo) {
@@ -246,7 +262,8 @@ function(
 						'float shadow = 1.0;'
 				);
 
-				if (light.shadowCaster || light.lightCookie) {
+				var useLightCookie = light.lightCookie instanceof Texture;
+				if (light.shadowCaster || useLightCookie) {
 					prevertex.push(
 						'uniform mat4 shadowLightMatrices'+i+';',
 						'varying vec4 shadowLightDepths'+i+';'
@@ -264,7 +281,7 @@ function(
 							'uniform float shadowDarkness'+i+';'
 						);
 					}
-					if (light.lightCookie) {
+					if (useLightCookie) {
 						prefragment.push(
 							'uniform sampler2D lightCookie'+i+';'
 						);
@@ -275,72 +292,77 @@ function(
 						'varying vec4 shadowLightDepths'+i+';'
 					);
 
-					if (light.shadowSettings.shadowType === 'PCF') {
+					if (light.shadowCaster && light.shadowSettings.shadowType === 'PCF') {
 						prefragment.push(
 							'uniform vec2 shadowMapSizes'+i+';'
 						);
 					}
 
 					fragment.push(
-						'vec3 depth = shadowLightDepths'+i+'.xyz / shadowLightDepths'+i+'.w;',
-						'depth.z = length(vWorldPos.xyz - shadowLightPositions'+i+') * cameraScales'+i+';',
-
-						'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths'+i+'.z >= 0.0 && depth.z <= 1.0) {'
+						'vec3 depth = shadowLightDepths'+i+'.xyz / shadowLightDepths'+i+'.w;'
 					);
-							if (light.shadowSettings.shadowType === 'PCF') {
-								fragment.push(
-								'depth.z *= 0.96;',
-								'float shadowPcf = 0.0;',
-								'const float shadowDelta = 1.0 / 9.0;',
-								'float xPixelOffset = 1.0 / shadowMapSizes'+i+'.x;',
-								'float yPixelOffset = 1.0 / shadowMapSizes'+i+'.y;',
 
-								'float dx0 = -1.25 * xPixelOffset;',
-								'float dy0 = -1.25 * yPixelOffset;',
-								'float dx1 = 1.25 * xPixelOffset;',
-								'float dy1 = 1.25 * yPixelOffset;',
+					if (light.shadowCaster) {
+						fragment.push(
+							'depth.z = length(vWorldPos.xyz - shadowLightPositions'+i+') * cameraScales'+i+';',
 
-								'float fDepth = 0.0;',
+							'if (depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.0 && depth.y <= 1.0 && shadowLightDepths'+i+'.z >= 0.0 && depth.z <= 1.0) {'
+						);
+								if (light.shadowSettings.shadowType === 'PCF') {
+									fragment.push(
+									'depth.z *= 0.96;',
+									'float shadowPcf = 0.0;',
+									'const float shadowDelta = 1.0 / 9.0;',
+									'float xPixelOffset = 1.0 / shadowMapSizes'+i+'.x;',
+									'float yPixelOffset = 1.0 / shadowMapSizes'+i+'.y;',
 
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy0)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy0)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy0)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, 0.0)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth =  texture2D(shadowMaps'+i+', depth.xy).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, 0.0)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy1)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy1)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
-								'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-								'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
-								);
-							} else if (light.shadowSettings.shadowType === 'VSM') {
-								fragment.push(
-								'vec4 texel = texture2D(shadowMaps'+i+', depth.xy);',
-								'vec2 moments = vec2(texel.x, texel.y);',
-								'shadow = ChebychevInequality(moments, depth.z);',
-								// 'shadow = VsmFixLightBleed(shadow, 0.5);',
-								'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
-								);
-							} else {
-								fragment.push(
-								'depth.z *= 0.96;',
-								'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
-								'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
-								);
-								}
-					fragment.push(
-						'}',
-						'shadow = clamp(shadow, 0.0, 1.0);'
-					);
+									'float dx0 = -1.25 * xPixelOffset;',
+									'float dy0 = -1.25 * yPixelOffset;',
+									'float dx1 = 1.25 * xPixelOffset;',
+									'float dy1 = 1.25 * yPixelOffset;',
+
+									'float fDepth = 0.0;',
+
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, 0.0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth =  texture2D(shadowMaps'+i+', depth.xy).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, 0.0)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx0, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(0.0, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
+									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+									'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
+									);
+								} else if (light.shadowSettings.shadowType === 'VSM') {
+									fragment.push(
+									'vec4 texel = texture2D(shadowMaps'+i+', depth.xy);',
+									'vec2 moments = vec2(texel.x, texel.y);',
+									'shadow = ChebychevInequality(moments, depth.z);',
+									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
+									'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
+									);
+								} else {
+									fragment.push(
+									'depth.z *= 0.96;',
+									'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
+									'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
+									);
+									}
+						fragment.push(
+							'}',
+							'shadow = clamp(shadow, 0.0, 1.0);'
+						);
+					}
 				}
 
 				if (light instanceof PointLight) {
@@ -399,7 +421,15 @@ function(
 							'float dirDiffuseWeight = max(dotProduct, 0.0);',
 						'#endif',
 
-						'totalDiffuse += materialDiffuse.rgb * directionalLightColor'+i+'.rgb * dirDiffuseWeight * shadow;',
+						'vec3 cookie = vec3(1.0);'
+					);
+					if (useLightCookie) {
+						fragment.push(
+							'cookie = texture2D(lightCookie'+i+', depth.xy).rgb;'
+						);
+					}
+					fragment.push(
+						'totalDiffuse += materialDiffuse.rgb * directionalLightColor'+i+'.rgb * dirDiffuseWeight * shadow * cookie;',
 
 						'vec3 dirHalfVector = normalize(dirVector + normalize(viewPosition));',
 						'float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);',
@@ -408,9 +438,9 @@ function(
 						'#ifdef PHYSICALLY_BASED_SHADING',
 							'float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;',
 							'vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(dirVector, dirHalfVector), 5.0);',
-							'totalSpecular += schlick * directionalLightColor'+i+'.rgb * dirSpecularWeight * dirDiffuseWeight * specularNormalization * shadow;',
+							'totalSpecular += schlick * directionalLightColor'+i+'.rgb * dirSpecularWeight * dirDiffuseWeight * specularNormalization * shadow * cookie;',
 						'#else',
-							'totalSpecular += materialSpecular.rgb * directionalLightColor'+i+'.rgb * dirSpecularWeight * dirDiffuseWeight * shadow;',
+							'totalSpecular += materialSpecular.rgb * directionalLightColor'+i+'.rgb * dirSpecularWeight * dirDiffuseWeight * shadow * cookie;',
 						'#endif'
 					);
 				} else if (light instanceof SpotLight) {
@@ -447,7 +477,15 @@ function(
 								'float spotDiffuseWeight = max(dotProduct, 0.0);',
 							'#endif',
 
-							'totalDiffuse += materialDiffuse.rgb * spotLightColor'+i+'.rgb * spotDiffuseWeight * lDistance * spotEffect * shadow;',
+							'vec3 cookie = vec3(1.0);'
+					);
+					if (useLightCookie) {
+						fragment.push(
+							'cookie = texture2D(lightCookie'+i+', depth.xy).rgb;'
+						);
+					}
+					fragment.push(
+							'totalDiffuse += materialDiffuse.rgb * spotLightColor'+i+'.rgb * spotDiffuseWeight * lDistance * spotEffect * shadow * cookie;',
 
 							'vec3 spotHalfVector = normalize(lVector + normalize(viewPosition));',
 							'float spotDotNormalHalf = max(dot(N, spotHalfVector), 0.0);',
@@ -456,9 +494,9 @@ function(
 							'#ifdef PHYSICALLY_BASED_SHADING',
 								'float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;',
 								'vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, spotHalfVector), 5.0);',
-								'totalSpecular += schlick * spotLightColor'+i+'.rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect * shadow;',
+								'totalSpecular += schlick * spotLightColor'+i+'.rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect * shadow * cookie;',
 							'#else',
-								'totalSpecular += materialSpecular.rgb * spotLightColor'+i+'.rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect * shadow;',
+								'totalSpecular += materialSpecular.rgb * spotLightColor'+i+'.rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * spotEffect * shadow * cookie;',
 							'#endif',
 						'}'
 					);

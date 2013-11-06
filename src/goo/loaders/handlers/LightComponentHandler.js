@@ -33,7 +33,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 			direction: [0, 0, 0],
 			color: [1, 1, 1, 1],
 			attenuate: true,
-			shadowCaster: false
+			shadowCaster: false,
+			lightCookie: null
 		});
 		if (config.type !== 'DirectionalLight') {
 			config.range = (config.range !== undefined) ? config.range : 1000;
@@ -96,6 +97,42 @@ define(['goo/loaders/handlers/ComponentHandler',
 				}
 			}
 		}
+
+		var that = this;
+		var updateTexture = function(textureType, textureRef) {
+			return that.getConfig(textureRef).then(function(textureConfig) {
+				return that.updateObject(textureRef, textureConfig, that.options).then(function(texture) {
+					return {
+						type: textureType,
+						ref: textureRef,
+						texture: texture
+					};
+				});
+			});
+		};
+
+		if (config.lightCookie) {
+			var promise;
+			var textureRef = config.lightCookie;
+			if (typeof textureRef === 'string') {
+				promise = updateTexture('cookie', textureRef);
+			} else if (textureRef && textureRef.enabled) {
+				promise = updateTexture('cookie', textureRef.textureRef);
+			}
+
+			if (promise) {
+				promise.then(function(texture) {
+					if (texture.texture) {
+						light.lightCookie = texture.texture;
+					} else {
+						light.lightCookie = null;
+					}
+				}).then(null, function(err) {
+					console.error("Error loading texture: " + err);
+				});
+			}
+		}
+
 		return pu.createDummyPromise(component);
 	};
 

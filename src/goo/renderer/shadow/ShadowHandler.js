@@ -109,7 +109,7 @@ function(
 		for (var i = 0; i < lights.length; i++) {
 			var light = lights[i];
 
-			if (light.shadowCaster) {
+			if (light.shadowCaster || light.lightCookie) {
 				var shadowSettings = light.shadowSettings;
 
 				if (!shadowSettings.shadowData) {
@@ -172,47 +172,49 @@ function(
 				}
 				lightCamera.onFrameChange();
 
-				this.depthMaterial.shader.defines.SHADOW_TYPE = shadowSettings.shadowType === 'VSM' ? 2 : 0;
-				this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
+				if (light.shadowCaster) {
+					this.depthMaterial.shader.defines.SHADOW_TYPE = shadowSettings.shadowType === 'VSM' ? 2 : 0;
+					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 
-				this.oldClearColor.copy(renderer.clearColor);
-				renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
+					this.oldClearColor.copy(renderer.clearColor);
+					renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
 
-				this.shadowList.length = 0;
-				for (var j = 0; j < entities.length; j++) {
-					var entity = entities[j];
-					if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows && !entity.isSkybox) {
-						this.shadowList.push(entity);
+					this.shadowList.length = 0;
+					for (var j = 0; j < entities.length; j++) {
+						var entity = entities[j];
+						if (entity.meshRendererComponent && entity.meshRendererComponent.castShadows && !entity.isSkybox) {
+							this.shadowList.push(entity);
+						}
 					}
+					partitioner.process(lightCamera, this.shadowList, this.renderList);
+					renderer.render(this.renderList, lightCamera, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
+
+					switch (shadowSettings.shadowType) {
+						case 'VSM':
+							this.fullscreenPass.material.shader = this.downsample;
+							this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
+
+							this.fullscreenPass.material.shader = this.blurfilter;
+							this.fullscreenPass.material.uniforms.uImageIncrement = [2 / shadowSettings.resolution[0], 0.0];
+							this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
+							this.fullscreenPass.material.uniforms.uImageIncrement = [0.0, 2 / shadowSettings.resolution[1]];
+							this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowBlurred, 0);
+
+							shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTargetDown;
+							break;
+						case 'PCF':
+							shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
+							break;
+						case 'Basic':
+							shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
+							break;
+						default:
+							shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
+							break;
+					}
+
+					renderer.setClearColor(this.oldClearColor.r, this.oldClearColor.g, this.oldClearColor.b, this.oldClearColor.a);
 				}
-				partitioner.process(lightCamera, this.shadowList, this.renderList);
-				renderer.render(this.renderList, lightCamera, [], shadowSettings.shadowData.shadowTarget, true, this.depthMaterial);
-
-				switch (shadowSettings.shadowType) {
-					case 'VSM':
-						this.fullscreenPass.material.shader = this.downsample;
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
-
-						this.fullscreenPass.material.shader = this.blurfilter;
-						this.fullscreenPass.material.uniforms.uImageIncrement = [2 / shadowSettings.resolution[0], 0.0];
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
-						this.fullscreenPass.material.uniforms.uImageIncrement = [0.0, 2 / shadowSettings.resolution[1]];
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowBlurred, 0);
-
-						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTargetDown;
-						break;
-					case 'PCF':
-						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
-						break;
-					case 'Basic':
-						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
-						break;
-					default:
-						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTarget;
-						break;
-				}
-
-				renderer.setClearColor(this.oldClearColor.r, this.oldClearColor.g, this.oldClearColor.b, this.oldClearColor.a);
 			}
 		}
 	};
