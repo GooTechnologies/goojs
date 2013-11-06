@@ -10,7 +10,7 @@ define([
 	describe('Build a basic heightmap and check basic points', function() {
 		it ('adds a simple heightmap gets its height values', function() {
 
-			var heightMatrix = [0, 0, 1, 1];
+			var heightMatrix = [[0, 0], [1, 1]];
 
 			var heightMapScript = new HeightMapBoundingScript(heightMatrix);
 			var height = heightMapScript.getAt(0, 0);

@@ -17,7 +17,7 @@ define([],
 
 	// get the whole height map in matrix form
 	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
-		return this.matrixData[x*this.width+y];
+		return this.matrixData[x][y];
 	};
 
 	// get the value at the precise integer (x, y) coordinates
