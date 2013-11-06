@@ -121,7 +121,7 @@ define([
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: arrowTransform,
 			id: Gizmo.registerHandle({ type: 'Axis', axis: dim }),
-			thickness: 1
+			thickness: 0.8
 		});
 
 		this.addRenderable({
