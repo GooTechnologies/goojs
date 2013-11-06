@@ -51,7 +51,7 @@ function(
 		if (this.relative) {
 			if (this.multiply) {
 				if (this.everyFrame) {
-					var tpf = fsm.getTpf() * 1000;
+					var tpf = fsm.getTpf() * 10;
 					transform.scale.data[0] *= this.scale[0] * tpf;
 					transform.scale.data[1] *= this.scale[1] * tpf;
 					transform.scale.data[2] *= this.scale[2] * tpf;
@@ -60,7 +60,7 @@ function(
 				}
 			} else {
 				if (this.everyFrame) {
-					var tpf = fsm.getTpf() * 1000;
+					var tpf = fsm.getTpf() * 10;
 					transform.scale.data[0] += this.scale[0] * tpf;
 					transform.scale.data[1] += this.scale[1] * tpf;
 					transform.scale.data[2] += this.scale[2] * tpf;

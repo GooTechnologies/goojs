@@ -34,7 +34,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		if (entity.proximityComponent) {
 			if (entity.proximityComponent.tag !== this.tag) {
-				entity.removedComponent('ProximityComponent');
+				entity.clearComponent('ProximityComponent');
 				entity.setComponent(new ProximityComponent(this.tag));
 			}
 		} else {
