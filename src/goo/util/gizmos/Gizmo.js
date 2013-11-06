@@ -31,7 +31,7 @@ define([
 			[0.2, 0.3, 1],
 			[0.8, 0.8, 0.8]
 		];
-		this._gizmoSize = 1 / 55;
+		this._gizmoSize = 1 / 60;
 
 		this._plane = new Plane();
 		this._line = new Vector3();
