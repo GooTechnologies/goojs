@@ -467,6 +467,14 @@ define( [
 			return has;
 		};
 
+		/**
+		* Reports to all Systems that an Entity has changed
+		* @param {Entity} entity The entity 
+		* @param {Component} component The component 
+		* @param {string} eventType The event type 
+		* @returns {Scene} The Scene
+		*/
+
 		// REVIEW: Try to remove this as it's quite weird to have to mark an entity as changed
 		// when you've just changed it. The entity and its components should keep track of any
 		// changed state and report accordingly
@@ -485,12 +493,21 @@ define( [
 			}
 
 			this.entities.changed.push( e );
+		
+			return this;
 		};
 
 		// REVIEW: Remove this code, which is copied (and modified) from World.js and is here for backwards compability
 		// Future code commented below 
 
-		Scene.prototype.removeEntity = function (entity, recursive) {
+		/**
+		* Removes an Entity from the Scene
+		* @param {Entity} entity The entity 
+		* @param {bool} [recursive=true] Remove all children
+		* @returns {Scene} The Scene
+		*/
+
+		Scene.prototype.removeEntity = function( entity, recursive ) {
 			var index = this.entities.indexOf( entity );
 			if( index !== -1 ) {
 				this.entities.splice( index, 1 );
@@ -505,7 +522,7 @@ define( [
 					var children = entity.transformComponent.children;
 					var cl = children.length;
 
-					if( recursive ) {
+					if( recursive !== false ) {
 						while( cl-- ) {
 							this.removeEntity( children[ cl ], recursive );
 						}
@@ -518,6 +535,8 @@ define( [
 					}
 				}
 			}
+
+			return this;
 		};
 
 /*
@@ -546,6 +565,12 @@ define( [
 
 		// helper methods for easy creation and getting of enities
 
+		/**
+		* Creates an Entity and adds it to the Scene. Takes mixed arguments that are passed on to the Entity constructor. This example creates a light:
+		* <pre><code>myScene.createEntity( LightComponent );</code></pre>
+		* @returns {Entity} The Entity
+		*/
+
 		Scene.prototype.createEntity = function () {
 			var entity = new Entity();
 			entity.add.apply( entity, arguments );
@@ -553,23 +578,48 @@ define( [
 			return entity;
 		};
 
+		/**
+		* Creates a Camera and adds it to the Scene. Takes an object as parameter, which is passed to the Camera constructor. This example creates a camera with field of view set to 40:
+		* <pre><code>myScene.createCamera( { fov: 40 } );</code></pre>
+		* @returns {Entity} The Camera
+		*/
+
 		Scene.prototype.createCamera = function( parameters ) {
 			return this.createEntity( new CameraComponent( parameters ));
 		};
+
+		/**
+		* Creates a Light and adds it to the Scene. Takes an object as parameter, which is passed to the Light constructor. This example creates a red light:
+		* <pre><code>myScene.createLight( { color: new Vector3( 1.0, 0.0, 0.0 ) } );</code></pre>
+		* @returns {Entity} The light
+		*/
 
 		Scene.prototype.createLight = function( parameters ) {
 			return this.createEntity( new LightComponent( parameters ));
 		};
 
+		/**
+		* Gets the first camera found in the scene. If no camera has been created, it creates a default camera.
+		* @returns {Entity} The camera
+		*/
+
 		Scene.prototype.getCamera = function() {
 			return this.getEntity( "@camera" ).first;	// this always returns a camera (creates a camera if none exists)
 		};
+
+		/**
+		* Gets all the lights in the scene
+		* @returns {Collection} A collection with all the lights
+		*/
 
 		Scene.prototype.getLights = function() {
 			return this.getEntity( "@light" );
 		};
 
-		// process & render
+		/**
+		* Processes the scene
+		* @returns {Scene} The Scene
+		*/
 
 		Scene.prototype.process = function( processParameters ) {
 			if( this.enabled ) {
@@ -607,7 +657,13 @@ define( [
 					}
 				}
 			}
+			return this;
 		};
+
+		/**
+		* Renders the scene
+		* @returns {Scene} The Scene
+		*/
 
 		Scene.prototype.render = function() {
 			if( this.visible && this.renderer ) {
@@ -615,6 +671,7 @@ define( [
 					this.getSystem( RenderSystem ).render( this.renderer );
 				}
 			}
+			return this;
 		};
 
 		// helpers
