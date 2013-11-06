@@ -49,13 +49,9 @@ define(
 	/**
 	* Connects two objects through their instance descriptors and port names.
 	*/
-	LogicLayer.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
+	LogicLayer.prototype.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
 	
-		var layer = sourceInst.layer;
-		if (layer !== destInst.layer)
-			console.warn("Broken layer linking!");
-			
-		// Note: An option might be to store this in a connection list in the LogicLayer
+		// Note: An option might be to store this in a connection list in this logiclayer
 		//       (which was the original idea), but write into the sourceInst description instead.
 		
 		if (sourceInst.outConnections == undefined)
