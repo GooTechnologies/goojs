@@ -48,6 +48,24 @@ define(
 		for (var i = 0;i < cArr.length;i++)
 			cArr[i][0].obj.onPropertyWrite(cArr[i][1], value);
 	}
+
+	/**
+	* Fire an event.
+	* @param portId The port connecting the event. (Returned when registering the event port)
+	*/
+	LogicLayer.fireEvent = function(instDesc, portID) {
+		// See if there are any connections at all
+		if (instDesc.outConnections === undefined)
+			return;
+			
+		var cArr = instDesc.outConnections[portID];
+		if (cArr === undefined)
+			return;
+		
+		// Write to all connected instances	
+		for (var i = 0;i < cArr.length;i++)
+			cArr[i][0].obj.onEvent(cArr[i][1]);
+	}
 	
 	LogicLayer.prototype.process = function(tpf) {
 		for (var i in this._logicInterfaces)
@@ -55,6 +73,16 @@ define(
 			if (this._logicInterfaces[i].wantsProcess)
 				this._logicInterfaces[i].obj.processLogic(tpf);
 		}
+	}
+	
+	
+	/**
+	* For all objects that follow the convention of having an logicInstance property for their connections
+	* (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance
+	* in the objects passed in and connects their endpoints.
+	*/
+	LogicLayer.prototype.connectObjectsWithLogic = function(sourceObj, sourcePort, destObj, destPort) {
+		this.connectEndpoints(sourceObj.logicInstance, sourcePort, destObj.logicInstance, destPort);	
 	}
 	
 

@@ -95,7 +95,7 @@ define([
 	'goo/statemachine/actions/SoundFadeOutAction',
 
 	'goo/statemachine/actions/TransitionOnMessageAction',
-	'goo/statemachine/actions/TweenLightColorAction'
+	'goo/statemachine/actions/TweenLightColorAction',
 ],
 /** @lends */
 function(

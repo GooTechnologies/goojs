@@ -23,13 +23,13 @@ define(
 		return this.portID;
 	}
 	
-	LogicInterface.prototype.oddInputEvent = function(name_) {
+	LogicInterface.prototype.addInputEvent = function(name_) {
 		this.ports.push({ id: ++this.portID, input: false, property: false, event: true, name: name_ });
 		return this.portID;
 	}
 
-	LogicInterface.prototype.oddOutputEvent = function(name_) {
-		this.port.push({ id: ++this.portID, input: false, property: false, event: true, name: name_ });
+	LogicInterface.prototype.addOutputEvent = function(name_) {
+		this.ports.push({ id: ++this.portID, input: false, property: false, event: true, name: name_ });
 		return this.portID;
 	}
 	

@@ -18,17 +18,54 @@ define(
                 this.wantsProcessCall = true;
                 this.logicInterface = LogicNodeTime.logicInterface;
                 this._time = 0;
+                this._running = true;
 	}
 
 	// Logic interface set-up	
 	LogicNodeTime.prototype = Object.create(LogicNode.prototype);
 	LogicNodeTime.logicInterface = new LogicInterface();
-	LogicNodeTime.outportTime = LogicNodeTime.logicInterface.addOutputProperty("Time", "float");
+	
+	// ports
+	LogicNodeTime.outPropTime = LogicNodeTime.logicInterface.addOutputProperty("Time", "float");
+	
+	// events
+	LogicNodeTime.outEventReached1 = LogicNodeTime.logicInterface.addOutputEvent("Reached1");
+	LogicNodeTime.inEventStart = LogicNodeTime.logicInterface.addInputEvent("Start");
+	LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Sop");
+	LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 	
 	// Process
 	LogicNodeTime.prototype.processLogic = function(tpf) {
-	        this._time += tpf;
-	        LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outportTime, this._time);
+		if (this._running)
+		{
+			var old = this._time;
+		        this._time += tpf;
+		        LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, this._time);
+
+		        if (old < 1 && this._time >= 1)
+		        {
+		        	LogicLayer.fireEvent(this.logicInstance, LogicNodeTime.outEventReached1);
+		        	console.log("LogicNodeTime fired reached1 event");
+			}
+		}
+	}
+	
+	// should they have args too?
+	LogicNodeTime.prototype.onEvent = function(event) {
+		if (event == LogicNodeTime.inEventStart)
+		{
+			this._running = true;
+		}
+		else if (event == LogicNodeTime.inEventStop)
+		{
+			this._running = false;
+		}
+		else if (event == LogicNodeTime.inEventReset)
+		{
+			console.log("LogicNodeTime got reset event");
+			this._time = 0;
+			LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, 0);
+		}
 	}
 	
 	return LogicNodeTime;
