@@ -12,7 +12,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/FunctionGeneratorComponent',
-	'goo/entities/components/PrintValueComponent',
 	'goo/renderer/Texture',
 	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
@@ -25,7 +24,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	FunctionGeneratorComponent,
-	PrintValueComponent,
 	Texture,
 	EntityUtils,
 	Vector3,
@@ -76,11 +74,7 @@ require([
 		entity1.setComponent(new FunctionGeneratorComponent());
 		entity1.addToWorld();
 		
-		var entity2 = EntityUtils.createTypicalEntity(goo.world);
-		entity2.setComponent(new PrintValueComponent());
-		entity2.addToWorld();
-		
-		goo.world.addEntityConnection(entity1, "FunctionGeneratorComponent.functionValue", entity2, "PrintValueComponent.floatInput");
+	//	goo.world.addEntityConnection(entity1, "FunctionGeneratorComponent.functionValue", entity2, "PrintValueComponent.floatInput");
 
 		debuggerDemo(goo);
 	}

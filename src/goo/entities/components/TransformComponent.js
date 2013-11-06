@@ -1,13 +1,15 @@
 define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/logic/LogicInterface'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
-	Component
+	Component,
+	LogicInterface
 ) {
 	"use strict";
 
@@ -42,10 +44,14 @@ function (
 		this._dirty = true;
 		this._updated = false;
 		
-		this.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
+	
+	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
+//		this.logicInterface = new LogicInterface(logicLayer);
+//		this.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
+	}
 
 	/**
 	 * Set this transform's translation.

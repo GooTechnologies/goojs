@@ -1,12 +1,12 @@
 define([
-	'goo/math/Transform',
-	'goo/math/Vector3',
+	'goo/logic/LogicInterface',
+	'goo/logic/LogicLayer',
 	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
-	Transform,
-	Vector3,
+	LogicInterface,
+	LogicLayer,
 	Component
 ) {
 	"use strict";
@@ -20,31 +20,31 @@ function (
 		Component.call(this);
 		
 		this.type = 'FunctionGeneratorComponent';
-
-		/** Parent transformcomponent in the "scene graph"
-		 * @type {FunctionGeneratorComponent}
-		 * @default
-		 */
 		this.parent = null;
 		this._time = 0;
-
-		this._functionValueWriter = this.addOutputProperty("functionValue", "float", 0);
+		this.logicInstance = null;
 	}
 
 	FunctionGeneratorComponent.prototype = Object.create(Component.prototype);
+	
+	// Output ports from this component	
+	FunctionGeneratorComponent.logicInterface = new LogicInterface();
+	FunctionGeneratorComponent.outportTime = FunctionGeneratorComponent.logicInterface.addOutputProperty("Time", "float");
+	FunctionGeneratorComponent.outportSine = FunctionGeneratorComponent.logicInterface.addInputProperty("Sine", "float");
+
+	// Adding
+	FunctionGeneratorComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
+		this.logicInstance = logicLayer.addInterfaceInstance(FunctionGeneratorComponent.logicInterface, this);
+	}
 
 	FunctionGeneratorComponent.prototype.updateComponent = function(tpf) {
 		this._time += tpf;
-		this._functionValueWriter(Math.sin(this._time));
+		
+		// write all outputs
+		LogicLayer.writeValue(this.logicInstance, FunctionGeneratorComponent.outportTime, this._time);
+		LogicLayer.writeValue(this.logicInstance, FunctionGeneratorComponent.outportSine, Math.sin(this._time));
 	}
 
-	/**
-	 * Mark the component for updates of world transform
-	 */
-	FunctionGeneratorComponent.prototype.setUpdated = function () {
-		this._dirty = true;
-	}
-	
 	return FunctionGeneratorComponent;
 
 });

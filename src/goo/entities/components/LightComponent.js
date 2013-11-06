@@ -1,6 +1,6 @@
-define(['goo/entities/components/Component'],
+define(['goo/entities/components/Component', 'goo/logic/LogicInterface'],
 	/** @lends */
-	function (Component) {
+	function (Component, LogicInterface) {
 	"use strict";
 
 	/**
@@ -11,16 +11,9 @@ define(['goo/entities/components/Component'],
 		this.type = 'LightComponent';
 
 		this.light = light;
+		this.logicInstance = null;
 		
 		Component.call(this);
-
-		this._intensityWriter = this.addOutputProperty("intensity", "float");
-		var _this = this;
-				
-		this.addInputProperty("intensity", "float", light.intensity, function(nv) {
-			light.intensity = nv;
-			_this._intensityWriter(light.intensity);
-		});
 	}
 
 	LightComponent.prototype = Object.create(Component.prototype);
@@ -28,6 +21,20 @@ define(['goo/entities/components/Component'],
 	LightComponent.prototype.updateLight = function (transform) {
 		this.light.update(transform);
 	};
+
+	// Logic interface set-up	
+	LightComponent.logicInterface = new LogicInterface();
+	LightComponent.inportIntensity = LightComponent.logicInterface.addInputProperty("Intensity", "float");
+	LightComponent.inportRange = LightComponent.logicInterface.addInputProperty("Range", "float");
+	
+	LightComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
+		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this);
+	}
+	
+	LightComponent.prototype.onPropertyWrite = function(propID, value) {
+		if (propID == LightComponent.inportIntensity)
+			this.light.intensity = value;
+	}
 
 	return LightComponent;
 });

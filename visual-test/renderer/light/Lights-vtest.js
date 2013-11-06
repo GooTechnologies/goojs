@@ -196,10 +196,12 @@ require([
 		entityF.setComponent(new FunctionGeneratorComponent());
 		entityF.addToWorld();
 		
-                goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l1, "LightComponent.intensity");
-                goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l2, "LightComponent.intensity");
-		goo.world.addEntityConnection(entityF, "FunctionGeneratorComponent.functionValue", l3, "LightComponent.intensity");
-                
+		
+		console.log("aa " + FunctionGeneratorComponent.outportTime);
+		
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l1.lightComponent, LightComponent.inportIntensity);
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l2.lightComponent, LightComponent.inportIntensity);
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l3.lightComponent, LightComponent.inportIntensity);
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);

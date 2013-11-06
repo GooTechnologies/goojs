@@ -1,15 +1,15 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
-	'goo/entities/managers/LogicManager',
-	'goo/entities/components/TransformComponent'
+	'goo/entities/components/TransformComponent',
+	'goo/logic/LogicLayer'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
-	LogicManager,
-	TransformComponent
+	TransformComponent,
+	LogicLayer
 ) {
 	"use strict";
 
@@ -31,7 +31,7 @@ function (
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
 		
-		this.logicManager = new LogicManager(this.entityManager);
+		this.logicLayer = new LogicLayer();
 
 		this.time = 0.0;
 
@@ -129,11 +129,25 @@ function (
 				this.addEntity(children[i].entity, recursive);
 			}
 		}
+		
+		// add all components to the logic manager as well
+		var logicLayer = this.logicLayer;
+		entity.forEachComponent(function(comp) {
+			if (comp.insertIntoLogicLayer !== undefined)
+				comp.insertIntoLogicLayer(logicLayer);
+		});
 	};
 	
-	World.prototype.addEntityConnection = function(sourceEntity, sourcePort, targetEntity, targetPort) {
-		this.logicManager.addConnection(sourceEntity, sourcePort, targetEntity, targetPort);
+	/*
+	World.prototype.addPropertyConnection = function(sourceEntity, sourcePort, targetEntity, targetPort) {
+		this.logicLayer.addPropertyConnection(sourceEntity, sourcePort, targetEntity, targetPort);
 	}
+	*/
+	
+	World.prototype.connectComponents = function(sourceComponentInstance, sourcePort, destComponentInstance, destPort) {
+		LogicLayer.connectEndpoints(sourceComponentInstance.logicInstance, sourcePort, destComponentInstance.logicInstance, destPort);
+	};
+	
 
 	/**
 	 * Remove an entity from the world
