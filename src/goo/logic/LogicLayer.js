@@ -23,7 +23,7 @@ define(
 	*/
 	LogicLayer.prototype.addInterfaceInstance = function(iface, instance) {
 		// create the instance description
-		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this };
+		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
 		this._logicInterfaces[this._instanceID++] = instDesc;
 		return instDesc;
 	}
@@ -46,12 +46,24 @@ define(
 			cArr[i][0].obj.onPropertyWrite(cArr[i][1], value);
 	}
 	
+	LogicLayer.prototype.process = function(tpf) {
+		for (var i in this._logicInterfaces)
+		{
+			if (this._logicInterfaces[i].wantsProcess)
+				this._logicInterfaces[i].obj.processLogic(tpf);
+		}
+	}
+	
+
 	/**
 	* Connects two objects through their instance descriptors and port names.
 	*/
 	LogicLayer.prototype.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
-	
-		// Note: An option might be to store this in a connection list in this logiclayer
+		var layer = sourceInst.layer;
+		if (layer !== destInst.layer)
+			console.warn("Broken layer linking!");
+			
+		// Note: An option might be to store this in a connection list in the LogicLayer
 		//       (which was the original idea), but write into the sourceInst description instead.
 		
 		if (sourceInst.outConnections == undefined)

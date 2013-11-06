@@ -16,7 +16,9 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/FunctionGeneratorComponent',
+	'goo/logic/LogicLayer',
+	'goo/logic/LogicNodeTime',
+	'goo/logic/LogicNodeSine',
 	'goo/debug/LightPointer',
 	'goo/entities/components/LightDebugComponent'
 ], function (
@@ -37,7 +39,9 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	FunctionGeneratorComponent,
+	LogicLayer,
+	LogicNodeTime,
+	LogicNodeSine,
 	LightPointer,
 	LightDebugComponent
 	) {
@@ -190,19 +194,24 @@ require([
 		var l3 = addSpotLight(goo);
 
 
+		var lbTime = new LogicNodeTime();
+		lbTime.addToWorldLogic(goo.world);
+		
+		var lbSine = new LogicNodeSine();
+		lbSine.addToWorldLogic(goo.world);
+		
+		
+		LogicLayer.connectEndpoints(lbTime.logicInstance, LogicNodeTime.outportTime, lbSine.logicInstance, LogicNodeSine.inportPhase);
 
-		// TEST               
-		var entityF = EntityUtils.createTypicalEntity(goo.world);
-		entityF.setComponent(new FunctionGeneratorComponent());
-		entityF.addToWorld();
+		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l1.lightComponent.logicInstance, LightComponent.inportIntensity);
+		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l2.lightComponent.logicInstance, LightComponent.inportIntensity);
+		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l3.lightComponent.logicInstance, LightComponent.inportIntensity);
 		
-		
-		console.log("aa " + FunctionGeneratorComponent.outportTime);
-		
+		/*
 		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l1.lightComponent, LightComponent.inportIntensity);
 		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l2.lightComponent, LightComponent.inportIntensity);
 		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l3.lightComponent, LightComponent.inportIntensity);
-
+		*/
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");

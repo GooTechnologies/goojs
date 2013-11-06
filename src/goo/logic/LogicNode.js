@@ -9,7 +9,6 @@ define(
 	 * @class Base class/module for all logic boxes
 	 */
 	function LogicNode() {
-
 		// Generated the same way as entities are, except different naming.
 		Object.defineProperty(this, 'id', {
 			value : LogicNode.instanceCount++,
@@ -26,7 +25,6 @@ define(
 		this.wantsProcessCall = false;
 	}
 	
-	
 	/**
 	 * Add the logic node to the world's logic layer. This is necessary a necessary step for allowing 
 	 * connections. This should be called by logic node implementations.
@@ -37,7 +35,6 @@ define(
 		this.logicInstance = world.logicLayer.addInterfaceInstance(this.logicInterface, this, this.wantsProcessCall);
 	}
 
-	
 	LogicNode.instanceCount = 0;
 
 	return LogicNode;

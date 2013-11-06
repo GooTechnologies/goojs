@@ -9,10 +9,8 @@ define(['goo/entities/components/Component', 'goo/logic/LogicInterface'],
 	 */
 	function LightComponent(light) {
 		this.type = 'LightComponent';
-
 		this.light = light;
 		this.logicInstance = null;
-		
 		Component.call(this);
 	}
 
@@ -28,7 +26,7 @@ define(['goo/entities/components/Component', 'goo/logic/LogicInterface'],
 	LightComponent.inportRange = LightComponent.logicInterface.addInputProperty("Range", "float");
 	
 	LightComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
-		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this);
+		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this, false);
 	}
 	
 	LightComponent.prototype.onPropertyWrite = function(propID, value) {

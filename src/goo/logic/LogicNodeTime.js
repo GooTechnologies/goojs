@@ -25,6 +25,7 @@ define(
 	LogicNodeTime.logicInterface = new LogicInterface();
 	LogicNodeTime.outportTime = LogicNodeTime.logicInterface.addOutputProperty("Time", "float");
 	
+	// Process
 	LogicNodeTime.prototype.processLogic = function(tpf) {
 	        this._time += tpf;
 	        LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outportTime, this._time);

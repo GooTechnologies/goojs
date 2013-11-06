@@ -224,8 +224,7 @@ function (
 			}
 			if (observer.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.addedComponent(entity, entity._components[i]);
-				}
+					observer.addedComponent(entity, entity._components[i]);				}
 			}
 		});
 		this._check(this._changedEntities, function (observer, event) {
@@ -255,6 +254,8 @@ function (
 				system._process(this.tpf);
 			}
 		}
+		
+		this.logicLayer.process(this.tpf);
 	};
 
 	World.prototype._check = function (entities, callback) {
