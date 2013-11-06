@@ -31,5 +31,6 @@ define([
 	'test/renderer/bounds/BoundingBox-test',
 	'test/statemachine/FSMComponent-test',
 	'test/entities/Bus-test',
-	'test/statemachine/actions/InBoxAction-test'
+	'test/statemachine/actions/InBoxAction-test',
+	'test/scripts/WorldFittedTerrainScript-test'
 ], function() {});
