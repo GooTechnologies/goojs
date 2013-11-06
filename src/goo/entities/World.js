@@ -130,19 +130,14 @@ function (
 			}
 		}
 		
-		// add all components to the logic manager as well
+		// Somewhat hacky way of having all the component with logic interfaces get their
+		// node in the logic world.
 		var logicLayer = this.logicLayer;
 		entity.forEachComponent(function(comp) {
 			if (comp.insertIntoLogicLayer !== undefined)
 				comp.insertIntoLogicLayer(logicLayer);
 		});
 	};
-	
-	/*
-	World.prototype.addPropertyConnection = function(sourceEntity, sourcePort, targetEntity, targetPort) {
-		this.logicLayer.addPropertyConnection(sourceEntity, sourcePort, targetEntity, targetPort);
-	}
-	*/
 	
 	World.prototype.connectComponents = function(sourceComponentInstance, sourcePort, destComponentInstance, destPort) {
 		LogicLayer.connectEndpoints(sourceComponentInstance.logicInstance, sourcePort, destComponentInstance.logicInstance, destPort);
@@ -179,6 +174,8 @@ function (
 				this._recursiveRemoval(children[i].entity, recursive);
 			}
 		}
+		
+		// TODO: Remove logic nodes too!
 	};
 
 	World.prototype._recursiveRemoval = function (entity, recursive) {

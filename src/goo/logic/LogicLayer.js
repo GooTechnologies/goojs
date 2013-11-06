@@ -19,9 +19,12 @@ define(
 	* The instance is expected to implement onPropertyWrite and onEvent but can be of any class. The instance descriptor
 	* returned can then be used to make connections through connectEndPoints
 	* 
+	* @param iface The interface descriptor (LogicInterface) for the object 'instance'
+	* @param instance The object that exposes the logic interface definedy by iface
+	* @param wantsProcessCall If the instance passed wants processLogic per-frame calls
 	* @return An instance descriptor 
 	*/
-	LogicLayer.prototype.addInterfaceInstance = function(iface, instance) {
+	LogicLayer.prototype.addInterfaceInstance = function(iface, instance, wantsProcessCall) {
 		// create the instance description
 		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
 		this._logicInterfaces[this._instanceID++] = instDesc;
@@ -59,13 +62,8 @@ define(
 	* Connects two objects through their instance descriptors and port names.
 	*/
 	LogicLayer.prototype.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
-		var layer = sourceInst.layer;
-		if (layer !== destInst.layer)
-			console.warn("Broken layer linking!");
-			
-		// Note: An option might be to store this in a connection list in the LogicLayer
+		// Note: An option might be to store this in a connection list in this layer
 		//       (which was the original idea), but write into the sourceInst description instead.
-		
 		if (sourceInst.outConnections == undefined)
 			sourceInst.outConnections = {};
 		if (sourceInst.outConnections[sourcePort] == undefined)
@@ -73,7 +71,7 @@ define(
 		
 		var connectionDef = [destInst, destPort];
 		sourceInst.outConnections[sourcePort].push(connectionDef);	
-		console.log("Connected from sourcePort to destPort " + sourcePort + "/" + destPort);
+		console.log("Connected from sourcePort to destPort " + sourcePort + "/" + destPort + " dest inst=" + destInst);
 	}
 	
 	return LogicLayer;

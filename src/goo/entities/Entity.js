@@ -79,6 +79,11 @@ function () {
 		return this[getTypeAttributeName(type)] !== undefined;
 	};
 	
+	Entity.prototype.forEachComponent = function(f) {
+		for (var i=0;i<this._components.length;i++)
+			f(this._components[i]);
+	}
+	
 	/**
 	 * Retrieve a component of a specific type
 	 *

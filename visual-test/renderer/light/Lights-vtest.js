@@ -201,11 +201,11 @@ require([
 		lbSine.addToWorldLogic(goo.world);
 		
 		
-		LogicLayer.connectEndpoints(lbTime.logicInstance, LogicNodeTime.outportTime, lbSine.logicInstance, LogicNodeSine.inportPhase);
-
-		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l1.lightComponent.logicInstance, LightComponent.inportIntensity);
-		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l2.lightComponent.logicInstance, LightComponent.inportIntensity);
-		LogicLayer.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l3.lightComponent.logicInstance, LightComponent.inportIntensity);
+		var ll = goo.world.logicLayer;
+		ll.connectEndpoints(lbTime.logicInstance, LogicNodeTime.outportTime, lbSine.logicInstance, LogicNodeSine.inportPhase);
+		ll.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l1.lightComponent.logicInstance, LightComponent.inportIntensity);
+		ll.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l2.lightComponent.logicInstance, LightComponent.inportIntensity);
+		ll.connectEndpoints(lbSine.logicInstance, LogicNodeSine.outportSine, l3.lightComponent.logicInstance, LightComponent.inportIntensity);
 		
 		/*
 		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l1.lightComponent, LightComponent.inportIntensity);
