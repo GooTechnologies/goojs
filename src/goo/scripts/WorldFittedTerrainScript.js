@@ -86,6 +86,12 @@ define([
 			return null;
 		};
 
+
+		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
+			var matrixPos = axPos-axMin;
+			return quadCount*matrixPos/(axMax - axMin);
+		};
+
 		/**
 		 * @method Looks through height data and returns the elevation of the ground at a given position
 		 * @param (Array) pos Position as [x, y, z]
@@ -99,9 +105,11 @@ define([
 			}
 			var dims = heightData.dimensions;
 
-			var tx = heightData.sideQuadCount*(pos[0] - dims.minX)/(dims.maxX - dims.minX);
-			var tz = heightData.sideQuadCount*(pos[2] - dims.minZ)/(dims.maxZ - dims.minZ);
-			return (heightData.script.getInterpolated(tx, tz) + dims.minY)*(dims.maxY - dims.minY);
+			var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
+			var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+			var matrixHeight = heightData.script.getInterpolated(tx, tz);
+		//	console.log(matrixHeight, dims.maxY, dims.minY)
+			return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
 		};
 
 		return WorldFittedTerrainScript;
