@@ -29,6 +29,7 @@ define([
 	'test/renderer/MeshData-test',
     'test/renderer/Camera-test',
 	'test/renderer/bounds/BoundingBox-test',
+	'test/renderer/bounds/BoundingSphere-test',
 	'test/statemachine/FSMComponent-test',
 	'test/entities/Bus-test',
 	'test/statemachine/actions/InBoxAction-test',
