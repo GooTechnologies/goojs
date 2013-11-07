@@ -88,20 +88,31 @@ define([
 				maxZ: 200
 			};
 			terrainScript.addHeightData(heightMatrix, dimensions);
-			heightAtPos = terrainScript.getGroundHeightAtPos([101,51,101]);
-		//	expect(heightAtPos).toEqual(0);
-			heightAtPos = terrainScript.getGroundHeightAtPos([199,99,199]);
-		//	expect(heightAtPos).toEqual(50);
+			heightAtPos = terrainScript.getGroundHeightAtPos([100,50,100]);
+			expect(heightAtPos).toEqual(dimensions.minY);
+			heightAtPos = terrainScript.getGroundHeightAtPos([200,100,200]);
+			expect(heightAtPos).toEqual(dimensions.maxY);
+            heightAtPos = terrainScript.getGroundHeightAtPos([166.666,100,100]);
+            expect(heightAtPos).toBeCloseTo(dimensions.minY+0.5*(dimensions.maxY-dimensions.minY));
 		});
 
-		it ('looks outside default dimensions', function() {
-			terrainScript.addHeightData(heightMatrix);
-			heightAtPos = terrainScript.getGroundHeightAtPos([-1,0,0]);
-		//	expect(heightAtPos).toEqual(null);
-			heightAtPos = terrainScript.getGroundHeightAtPos([100,50,101]);
-		//	expect(heightAtPos).toEqual(null);
-		});
-
+        it ('looks for positions on negative displaced heightMatrix', function() {
+            var dimensions = {
+                minX: -300,
+                maxX: -200,
+                minY: -150,
+                maxY: -100,
+                minZ: -300,
+                maxZ: -200
+            };
+            terrainScript.addHeightData(heightMatrix, dimensions);
+            heightAtPos = terrainScript.getGroundHeightAtPos([-200,-150,-200]);
+            expect(heightAtPos).toEqual(dimensions.maxY);
+            heightAtPos = terrainScript.getGroundHeightAtPos([-300,-150,-300]);
+            expect(heightAtPos).toEqual(dimensions.minY);
+            heightAtPos = terrainScript.getGroundHeightAtPos([-233.333,-150,-200]);
+            expect(heightAtPos).toBeCloseTo(dimensions.minY+0.5*(dimensions.maxY-dimensions.minY));
+        });
 
 
 	});
