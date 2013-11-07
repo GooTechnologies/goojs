@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	FSMUtil
 ) {
 	"use strict";
 
@@ -30,7 +32,8 @@ function(
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for'
+			description: 'Key to listen for',
+			'default': 'A'
 		}],
 		transitions: [{
 			key: 'keyup',
@@ -39,18 +42,23 @@ function(
 		}]
 	};
 
-	KeyUpAction.prototype._setup = function() {
+	KeyUpAction.prototype.configure = function (settings) {
+		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.transitions = { keyup: settings.transitions.keyup };
+	};
+
+	KeyUpAction.prototype._setup = function () {
 		document.addEventListener('keyup', this.eventListener);
 	};
 
-	KeyUpAction.prototype._run = function(fsm) {
+	KeyUpAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.keyup);
 		}
 	};
 
-	KeyUpAction.prototype.exit = function() {
+	KeyUpAction.prototype.exit = function () {
 		document.removeEventListener('keyup', this.eventListener);
 	};
 

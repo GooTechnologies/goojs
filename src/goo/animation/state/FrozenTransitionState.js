@@ -21,7 +21,7 @@ function (AbstractTransitionState) {
 		AbstractTransitionState.prototype.update.call(this, globalTime);
 
 		// update only the target state - the source state is frozen
-		if (this._targetState !== null) {
+		if (this._targetState) {
 			this._targetState.update(globalTime);
 		}
 	};
@@ -32,7 +32,7 @@ function (AbstractTransitionState) {
 	 */
 	FrozenTransitionState.prototype.postUpdate = function () {
 		// update only the B state - the first is frozen
-		if (this._targetState !== null) {
+		if (this._targetState) {
 			this._targetState.postUpdate();
 		}
 	};

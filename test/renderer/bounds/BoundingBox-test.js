@@ -1,10 +1,12 @@
 define([
 	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
 	'goo/shapes/ShapeCreator',
 	'goo/renderer/MeshData'
 ], function(
 	BoundingBox,
+	BoundingSphere,
 	Vector3,
 	ShapeCreator,
 	MeshData
@@ -30,8 +32,6 @@ define([
 		}
 
 		describe('computeFromPoints', function() {
-
-
 			it('computes the center of the bounding box from verts (of default box)', function() {
 				boundingBox1 = new BoundingBox();
 
@@ -94,7 +94,7 @@ define([
 			});
 		});
 
-		describe('BoundingBox.merge', function() {
+		describe('merge', function() {
 			it('merges two identical boxes', function() {
 				var boxMeshData = ShapeCreator.createBox(2, 3, 4);
 				boundingBox1 = new BoundingBox();
@@ -140,6 +140,16 @@ define([
 				expect(mergedBoundingBox.xExtent).toBeCloseTo(1);
 				expect(mergedBoundingBox.yExtent).toBeCloseTo(1);
 				expect(mergedBoundingBox.zExtent).toBeCloseTo(5.5);
+			});
+		});
+
+		describe('intersects', function() {
+			it('does not intersect a bounding sphere', function() {
+				var boundingBox = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
+				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 12);
+				// the distance between bounding box and the bounding sphere should be 12 - sqrt(10*10*2) > 0
+
+				expect(boundingBox.intersects(boundingSphere)).toBeFalsy();
 			});
 		});
 	});

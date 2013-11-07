@@ -55,7 +55,7 @@ function(
 		transitions: [{
 			key: 'complete',
 			name: 'On Completion',
-			description: 'Event fired when the movement completes'
+			description: 'State to transition to when the transition completes'
 		}]
 	};
 

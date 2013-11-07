@@ -21,7 +21,7 @@ define([
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);
-		this._torusMesh = new Torus(64, 8, 0.1, 2.4);
+		this._torusMesh = new Torus(64, 8, 0.1, 2.5);
 
 		this._buildBall();
 		this._buildTorus(0);

@@ -28,7 +28,7 @@ define([
 		transitions: [{
 			key: 'mousemove',
 			name: 'Mouse move',
-			description: 'State to transition to when on mouse movement'
+			description: 'State to transition to on mouse movement'
 		}]
 	};
 

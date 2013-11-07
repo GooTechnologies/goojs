@@ -70,7 +70,7 @@ function(
 				fsm.send(this.transitions.outside);
 			}
 		} else {
-			var boundingVolume = entity.meshDataComponent ? entity.meshDataComponent.modelBound : new BoundingSphere(entity.transformComponent.worldTransform.translation, 0.001);
+			var boundingVolume = entity.meshRendererComponent ? entity.meshRendererComponent.worldBound : new BoundingSphere(entity.transformComponent.worldTransform.translation, 0.001);
 			if (this.camera.contains(boundingVolume) === Camera.Outside) {
 				fsm.send(this.transitions.outside);
 			} else {

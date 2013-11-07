@@ -96,6 +96,8 @@ define([
 
 	'goo/statemachine/actions/TransitionOnMessageAction',
 	'goo/statemachine/actions/TweenLightColorAction',
+	'goo/statemachine/actions/CollidesAction',
+	'goo/statemachine/actions/TagAction'
 ],
 /** @lends */
 function(
