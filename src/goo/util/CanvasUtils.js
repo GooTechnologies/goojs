@@ -50,7 +50,7 @@ define([],
 					return 0;
 				}
 				else {
-					return context.getImageData(x, y, 1, 1).data[0] / 255 * 8;
+					return context.getImageData(x, y, 1, 1).data[0] / 255;
 				}
 			};
 

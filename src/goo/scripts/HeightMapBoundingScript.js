@@ -12,7 +12,7 @@ define([],
 
 	function HeightMapBoundingScript(matrixData) {
 		this.matrixData = matrixData;
-		this.width = Math.sqrt(matrixData.length);
+		this.width = matrixData.length-1;
 	}
 
 	// get the whole height map in matrix form
@@ -22,7 +22,7 @@ define([],
 
 	// get the value at the precise integer (x, y) coordinates
 	HeightMapBoundingScript.prototype.getAt = function(x, y) {
-		if(x < 0 || x > this.width || y < 0 || y > this.height) {
+		if(x < 0 || x > this.width || y < 0 || y > this.width) {
 			return 0;
 		}
 		else {
