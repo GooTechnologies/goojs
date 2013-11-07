@@ -58,7 +58,7 @@ define([],
 			for (var i = 0; i < canvas.width; i++) {
 				matrix.push([]);
 				for (var j = 0; j < canvas.height; j++) {
-					matrix[i].push(getAt(i, j));
+					matrix[i].push(getAt(i, canvas.height-(j+1)));
 				}
 			}
 			return matrix;

@@ -8,11 +8,11 @@ define([
 
 
 	describe('Build a basic heightmap and check basic points', function() {
-		it ('adds a simple heightmap gets its height values', function() {
 
-			var heightMatrix = [[0, 0, 0, 0], [0, 0.5, 0.5, 0], [0.5, 1, 1, 0.5], [1, 1, 1, 1]];
+		var heightMatrix = [[0, 0, 0, 0], [0, 0.5, 0.5, 0], [0.5, 1, 1, 0.5], [1, 1, 1, 1]];
+		var heightMapScript = new HeightMapBoundingScript(heightMatrix);
 
-			var heightMapScript = new HeightMapBoundingScript(heightMatrix);
+		it ('finds values on the heightMap', function() {
 			var height = heightMapScript.getAt(0, 0);
 			expect(height).toEqual(0);
 			height = heightMapScript.getAt(0, 1);
@@ -32,8 +32,13 @@ define([
 			expect(height).toEqual(1);
 		});
 
-		it ('looks for positions outside default dimensions', function() {
-
+		it ('finds zero outside the heightMap', function() {
+			var height = heightMapScript.getAt(-1, 0);
+			expect(height).toEqual(0);
+			height = heightMapScript.getAt(0, 5);
+			expect(height).toEqual(0);
+			height = heightMapScript.getAt(5, 0);
+			expect(height).toEqual(0);
 		});
 	});
 });

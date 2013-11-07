@@ -15,6 +15,15 @@ define([],
 		this.width = matrixData.length-1;
 	}
 
+		/**
+		 * Gets the terrain matrix data
+		 * @returns {Array} the height data matrix
+		 */
+
+	HeightMapBoundingScript.prototype.getMatrixData = function() {
+		return this.matrixData;
+	};
+
 	// get the whole height map in matrix form
 	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
 		return this.matrixData[x][y];
