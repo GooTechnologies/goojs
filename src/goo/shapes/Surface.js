@@ -165,14 +165,15 @@ define([
 	 * @param {number} [yScale=1]
 	 * @returns {Surface} The created surface
 	 */
-	Surface.createFromHeightMap = function(heightMap, xScale, yScale) {
+	Surface.createFromHeightMap = function(heightMap, xScale, yScale, zScale) {
 		xScale = xScale || 1;
 		yScale = yScale || 1;
+        zScale = zScale || 1;
 
 		var verts = [];
 		for (var i = 0; i < heightMap.length; i++) {
 			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, heightMap[i][j], j * yScale);
+				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
 			}
 		}
 
