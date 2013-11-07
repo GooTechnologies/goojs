@@ -1,7 +1,15 @@
 define([
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scripts/HeightMapBoundingScript',
+    'goo/shapes/Surface',
+    'goo/renderer/shaders/ShaderLib',
+    'goo/renderer/Material',
+    'goo/entities/EntityUtils'
 	],
-	function(HeightMapBoundingScript) {
+	function(HeightMapBoundingScript,
+             Surface,
+             ShaderLib,
+             Material,
+             EntityUtils) {
 		"use strict";
 
 		var _defaults = {
@@ -35,6 +43,21 @@ define([
 		}
 
 
+        function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
+            console.log(dimensions)
+            var meshData = Surface.createFromHeightMap(matrix);
+            var material = Material.createMaterial(ShaderLib.simpleLit, '');
+            material.wireframe = true;
+            var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+            surfaceEntity.transformComponent.transform.scale.setd((dimensions.maxX-dimensions.minX)/(matrix.length-1), dimensions.maxY-dimensions.minY, (dimensions.maxZ-dimensions.minZ)/(matrix.length-1));
+            surfaceEntity.transformComponent.transform.setRotationXYZ(0, 0, 0);
+            surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+            surfaceEntity.transformComponent.setUpdated();
+            surfaceEntity.addToWorld();
+        }
+
+
+
 
 		function registerHeightData(heightMatrix, dimensions) {
 			dimensions = dimensions || _defaults;
@@ -62,9 +85,22 @@ define([
 		 * @param (Object) dimensions to fit the data within
 		 */
 
-		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
-			this.heightMapData.push(registerHeightData(heightMatrix, dimensions));
+		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions, gooWorld) {
+			this.heightMapData.push(registerHeightData(heightMatrix, dimensions, "terrain_mesh_"+this.heightMapData.length, gooWorld));
 		};
+
+        /**
+         * Generates surface mesh entities from registered terrain data;
+         * @param gooWorld the goo.world needed for creating typical entities downstream
+         */
+
+        WorldFittedTerrainScript.prototype.generateTerrainSurfaceMeshes = function(gooWorld) {
+            console.log("beep", this.heightMapData)
+            for (var i = 0; i < this.heightMapData.length; i++) {
+                console.log("Build Mesh!")
+                buildSurfaceMesh(this.heightMapData[i].script.matrixData, this.heightMapData[i].dimensions, "terrain_mesh_"+i, gooWorld)
+            }
+        };
 
 		/**
 		 * @method Returns the script relevant to a given position
@@ -76,7 +112,7 @@ define([
 			for (var i = 0; i < this.heightMapData.length; i++) {
 				var dim = this.heightMapData[i].dimensions;
 				if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
-					if (pos[1] <= dim.maxY && pos[1] >= dim.minY) {
+					if (pos[1] < dim.maxY+1 && pos[1] > dim.minY-1) {
 						if (pos[2] <= dim.maxZ && pos[2] >= dim.minZ) {
 							return this.heightMapData[i];
 						}
@@ -86,6 +122,14 @@ define([
 			return null;
 		};
 
+        /**
+         * Adjusts coordinates to fit the dimensions of a registered heightMap.
+         * @param axPos
+         * @param axMin
+         * @param axMax
+         * @param quadCount
+         * @return {Number}
+         */
 
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
 			var matrixPos = axPos-axMin;
@@ -108,11 +152,19 @@ define([
 			var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
 			var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
 			var matrixHeight = heightData.script.getInterpolated(tx, tz);
-		//	console.log(matrixHeight, dims.maxY, dims.minY)
 			return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
 		};
 
-		return WorldFittedTerrainScript;
+        WorldFittedTerrainScript.prototype.run = function(entity) {
+            var translation = entity.transformComponent.transform.translation;
+            var groundHeight = this.getGroundHeightAtPos(translation.data);
+            if (groundHeight) {
+                translation.data[1] = groundHeight;
+            }
+        };
+
+
+        return WorldFittedTerrainScript;
 
 	});
 

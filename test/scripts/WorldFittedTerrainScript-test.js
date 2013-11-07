@@ -22,7 +22,7 @@ define([
 			expect(function() {terrainScript.addHeightData();}).toThrow();
 		});
 
-		it ('finds the registered heightscript', function() {
+		it ('finds the registered heightMatrix', function() {
 			var heightData;
 			terrainScript.addHeightData(heightMatrix);
 			heightData = terrainScript.getHeightDataForPosition([1,1,1]);
