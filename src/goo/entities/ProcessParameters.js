@@ -2,20 +2,20 @@ define( [],
 	function() {
 		"use strict";
 
-		function ProcessParameters() {
+		function ProcessParameters( parameters ) {
 			this.actualTime              = -1;
 			this.time                    = 0;
 			this.timeInSeconds           = 0;
 			this.deltaTime               = 0;
 			this.deltaTimeInSeconds      = 0;
-			this.timeScale               = 1;
+			this.timeScale               = parameters.timeScale !== undefined ? parameters.timeScale : 1;
 			this.parentGlobalMatrixStack = [];
 			this.parentGlobalMatrix      = undefined;
 			this.camera                  = undefined;
 			this.cameraInverseMatrix     = undefined;
 
-			this.timeSmoothingEnabled = true;
-			this.timeSmoothingCount   = 10;
+			this.timeSmoothingEnabled = parameters.timeSmoothing  !== undefined ? parameters.timeSmoothing  : true;
+			this.timeSmoothingCount   = parameters.smoothingCount !== undefined ? parameters.smoothingCount : 10;
 			this.timeSmoothingArray   = [];
 			this.timeSmoothingIndex   = 0;
 

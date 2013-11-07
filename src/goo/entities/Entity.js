@@ -383,9 +383,41 @@ define(
 			return this.attributes[ attribute ] ? true : false;
 		};
 
-		// TODO: well...
+		/**
+		* Clones the Entitiy and all its Components
+		* @param {bool} [recursive=true] Should we clone the entire hierarchy (children and childrens' children etc.)
+		* @returns {Entity} The new Entity
+		*/
 		
-		Entity.prototype.clone = function() {
+		Entity.prototype.clone = function( recursive, parent ) {
+			var entity = new Entity( this.tags, this.name + "_" + uniqueID, this.enabled );
+			
+			this.getComponents().each( function( component ) {
+				if( !(component instanceof TransformComponent )) {
+					entity.addComponent( component.clone());
+				} else {
+					entity.getComponent( TransformComponent ).copy( component );
+				}
+			});
+
+			if( parent !== undefined ) {
+				parent.addChild( entity );
+			} else if( this.getParent() !== undefined ) {
+				this.getParent().addChild( entity );
+			}
+
+			if( this.scene !== undefined ) {
+				this.scene.addEntity( entity );
+			}
+
+			if( recursive !== false && this.hasChildren()) {
+				this.getChildren().each( function( child ) {
+					// REVIEW: TransformComponent.getChildren (which gets injected into Entity) should return a list of Entities and NOT a list of TransformComponents!
+					child.entity.clone( true, entity );
+				});
+			}
+
+			return entity;
 		};
 
 		// helpers

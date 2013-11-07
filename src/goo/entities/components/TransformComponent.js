@@ -24,23 +24,30 @@ define(
 				'position' 				: this.transform.translation,
 				'rotation' 				: this.transform.rotation,
 				'scale'      		   	: this.transform.scale,
+				'hasParent' 			: this.hasParent.bind( this ),
 				'setParent' 			: this.setParent.bind( this ),
 				'getParent' 			: this.getParent.bind( this ),
+				'hasChildren' 		    : this.hasChildren.bind( this ),
 				'addChild' 				: this.attachChild.bind( this ),
 				'removeChild' 			: this.detachChild.bind( this ),
 				'getChild' 				: this.getChild.bind( this ),
 				'getChildren' 			: this.getChildren.bind( this ),
-				'hasChildren' 		    : this.hasChildren.bind( this ),
-				'setPosition' 			: this.setTranslation.bind( this )
+				'setPosition' 			: this.setTranslation.bind( this ),
+				'setRotation' 			: this.setRotation.bind( this )
 			};
 
-			// REVIEW: shouldn't these be moved into Transform?
+			// REVIEW: shouldn't these be moved into Transform? Also, note that these are marked as private but is not referenced (just set) from within this class...
+			// REVIEW: Also, what is the difference between dirty and updated? Find better naming, maybe?
 
 			this._dirty = true;
 			this._updated = false;
 		}
 
 		TransformComponent.prototype = Object.create( Component.prototype );
+
+		TransformComponent.prototype.hasParent = function() {
+			return this.parent !== undefined;
+		};
 
 		TransformComponent.prototype.setParent = function( entityOrTransformComponent ) {
 			if( entityOrTransformComponent !== undefined ) {
@@ -68,8 +75,14 @@ define(
 		};
 
 		TransformComponent.prototype.getParent = function() {
-			return this.parent.entity;
+			if( this.parent !== undefined ) {
+				return this.parent.entity;
+			} else {
+				return undefined;
+			}
 		};
+
+		// REVIEW: The Entity API is addChild (to be in line with other methods), maybe rename this, too?
 
 		TransformComponent.prototype.attachChild = function( entityOrTransformComponent ) {
 			var childTransform = ensureTransformComponent( entityOrTransformComponent );
@@ -90,6 +103,8 @@ define(
 			}
 		};
 
+		// REVIEW: The Entity API is removeChild (to be in line with other methods), maybe rename this, too?
+
 		TransformComponent.prototype.detachChild = function( entityOrTransformComponent ) {
 			var childTransform = ensureTransformComponent( entityOrTransformComponent );
 			var childEntity    = childTransform.entity;
@@ -108,19 +123,21 @@ define(
 		};
 
 		TransformComponent.prototype.getChild = function( name ) {
-			// todo: cooler selector typ so you can get by component, tags and attributes
+			// TODO: cooler selector typ so you can get by component, tags and attributes
 
 			var children = this.children;
 			var cl       = children.length;
 
 			while( cl-- ) {
 				if( children[ cl ].entity.name === name ) {
+					// TODO: Return entity and not the TransformComponent!
 					return children[ cl ];
 				}
 			}
 		};
 
 		TransformComponent.prototype.getChildren = function() {
+			// TODO: Return entity and not the TransformComponent!
 			return collection.fromArray( this.children );
 		};
 
@@ -133,6 +150,9 @@ define(
 		 * @param {Vector|Float[]|...Float} arguments Component values.
 		 * @return {TransformComponent} Self for chaining.
 		 */
+
+		 // REVIEW: "Position" is a more common and used word than "Translation". Entity API is setPosition - maybe rename this, too?
+
 		TransformComponent.prototype.setTranslation = function () {
 			this.transform.translation.set(arguments);
 			this._dirty = true;
@@ -155,6 +175,9 @@ define(
 		 * @param {Vector|Float[]|...Float} arguments Component values.
 		 * @return {TransformComponent} Self for chaining.
 		 */
+
+		 // REVIEW: "Position" is a more common and used word than "Translation". Entity API is setPosition - maybe rename this, too?
+
 		TransformComponent.prototype.addTranslation = function () {
 			if(arguments.length === 3) {
 				this.transform.translation.add(arguments);
@@ -173,11 +196,14 @@ define(
 		 * @param {number} z
 		 * @return {TransformComponent} Self for chaining.
 		 */
+
 		TransformComponent.prototype.setRotation = function (x,y,z) {
 			this.transform.rotation.fromAngles(x,y,z);
 			this._dirty = true;
 			return this;
 		};
+
+		 // TODO: addRotation and subRotation (yes, I know it's just to send in negative values but the code becomes more readable)
 
 		/**
 		 * Sets the transform to look in a specific direction.
@@ -218,6 +244,32 @@ define(
 			this._updated = true;
 		};
 		
+		/**
+		* Copies another TransformComponent into this TransformComponent
+		*/
+
+		TransformComponent.prototype.copy = function( other ) {
+			this.transform     .copy( other.transform );
+			this.worldTransform.copy( other.worldTransform );
+			this._dirty   = true;
+			this._updated = false;
+		
+			return this;
+		};
+
+		/**
+		* Clones the component
+		*/
+
+		TransformComponent.prototype.clone = function() {
+			var theClone = new TransformComponent();
+			
+			theClone.transform     .copy( this.transform );
+			theClone.worldTransform.copy( this.worldTransform );
+			return theClone;
+		};
+
+
 		// helpers
 
 		function ensureTransformComponent( entityOrTransformComponent ) {

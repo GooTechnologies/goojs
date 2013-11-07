@@ -149,8 +149,6 @@ define(
 			}
  		}
 
-
-
 		// helpers
 
 		function callFunction( items, functionName, parameters ) {

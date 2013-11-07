@@ -48,13 +48,24 @@ function (
 		this.accumulatedDelay = 0;
 
 		// api
-
+		// TODO: Inject more into entity. In the best of worlds you should be able to do myEntity.play( { animation: "name" } ); ...or just myEntity.play(); which plays default layer
 		this.api = {
 			'animationComponent': this
 		};
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
+
+	AnimationComponent.prototype.componentInit = Component.prototype.init;
+	AnimationComponent.prototype.init = function( entity ) {
+		this.componentInit( entity );
+		this.entity.addAttribute( "@animated" );
+	}
+
+	AnimationComponent.prototype.clone = function() {
+		// TODO: well...
+		return "THIS NEEDS TO BE DONE!";
+	};
 
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info

@@ -20,7 +20,7 @@ define(
 		function GooRunner( parameters ) {
 			parameters = parameters || {};
 
-			this.processParameters   = new ProcessParameters();
+			this.processParameters   = new ProcessParameters( parameters );
 			this.scenes              = [];
 			this.renderer            = new Renderer( parameters );		// REVIEW: maybe renderer should be on Scene level?
 			this.rafId               = -1;

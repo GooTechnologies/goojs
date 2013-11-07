@@ -92,5 +92,17 @@ function (
 		this.camera.update();
 	};
 
+	/**
+	* Clones the component
+	*/
+
+	CameraComponent.prototype.clone = function() {
+		var theClone = new CameraComponent( this.camera );
+		theClone.leftVec.copy( this.leftVec );
+		theClone.upVec  .copy( this.upVec   );
+		theClone.dirVec .copy( this.dirVec  );
+		return theClone;
+	};
+
 	return CameraComponent;
 });

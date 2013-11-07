@@ -336,12 +336,13 @@ define( [
 
 					entity.scene  = scene;
 					entity._world = scene;	// REVIEW: remove!
+				}
 
-					if( entity.hasChildren()) {
-						entity.getChildren().each( function( child ) {
-							scene.addEntitiy( child );
-						});
-					}
+				if( entity.hasChildren()) {
+					entity.getChildren().each( function( child ) {
+						// REVIEW: TransformComponent.getChildren (which gets injected into Entity) should return a list of Entities and NOT a list of TransformComponents!
+						scene.addEntity( child.entity );
+					});
 				}
 			});
 

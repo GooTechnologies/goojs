@@ -73,6 +73,9 @@ define(
 		this.light.changedProperties = true;
 	};
 
+	LightComponent.prototype.clone = function() {
+		return new LightComponent( this.light );
+	};
 
 	return LightComponent;
 });

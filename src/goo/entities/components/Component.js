@@ -42,6 +42,12 @@ define(
 	Component.prototype.process = function( processParameters ) {
 	};
 
+	Component.prototype.clone = function() {
+		var component = new Component();
+		component.enabled = this.enabled;
+		return component;
+	};
+
 	Component.prototype.dispose = function() {
 	};
 

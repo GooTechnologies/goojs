@@ -50,6 +50,7 @@ define(['goo/entities/components/Component'],
 		 * @type {boolean}
 		 * @default
 		 */
+		 // REVIEW: This feels backwards. Maybe should be "visible", if anything - maybe remove and rely on Entity.enabled?
 		this.hidden = false;
 
 		/** api containing the fields and methods that'll be available through entity 
@@ -80,5 +81,21 @@ define(['goo/entities/components/Component'],
 		this.worldBound = bounding.transform(transform, this.worldBound);
 	};
 
+
+	/**
+	* Clones the component
+	*/
+
+	MeshRendererComponent.prototype.clone = function() {
+		var theClone            = new MeshRendererComponent( this.meshData );
+		theClone.materials      = this.materials.concat( [] );
+		theClone.cullMode       = this.cullMode;
+		theClone.castShadows    = this.castShadows;
+		theClone.receiveShadows = this.receiveShadows;
+		theClone.isPickable     = this.isPickable;
+		theClone.isReflectable  = this.isReflectable;
+		theClone.hidden         = this.hidden;
+		return theClone;
+	};
 	return MeshRendererComponent;
 });

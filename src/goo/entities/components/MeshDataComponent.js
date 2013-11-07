@@ -65,5 +65,16 @@ function (
 		}
 	};
 
+	/**
+	* Clones the component
+	*/
+
+	MeshDataComponent.prototype.clone = function() {
+		var theClone         = new MeshDataComponent( this.meshData );
+		theClone.autoCompute = this.autoCompute;
+		theClone.currentPose = this.currentPose;
+		return theClone;
+	};
+
 	return MeshDataComponent;
 });
