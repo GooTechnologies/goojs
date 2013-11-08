@@ -43,12 +43,11 @@ define( [],
 					arg = args[ a ];
 
 					if( arg !== undefined ) {
-						values.push( arg );
-
 						type = typeof( arg );
 						if( type === "object" ) {
 							if( Array.isArray( arg )) {
-								recurseArguments.apply( this, args );
+								recurseArguments( arg, types, values );
+								return;
 							} else {
 								if( arg.constructor.toString().indexOf( "function Object()" ) === 0 ) {
 									types.push( ParseArguments.PARAMETERS );
@@ -69,6 +68,8 @@ define( [],
 						} else if( type === "boolean" ) {
 							types.push( ParseArguments.BOOL )
 						}
+
+						values.push( arg );
 					}
 				}
 			}

@@ -165,7 +165,11 @@ define(
 		 * @return {TransformComponent} Self for chaining.
 		 */
 		TransformComponent.prototype.setScale = function () {
-			this.transform.scale.set(arguments);
+			if( arguments.length === 1 ) {
+				this.transform.scale.set( arguments[ 0 ], arguments[ 0 ], arguments[ 0 ] );
+			} else {
+				this.transform.scale.set(arguments);
+			}
 			this._dirty = true;
 			return this;
 		};
