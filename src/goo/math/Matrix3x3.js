@@ -632,10 +632,9 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the X axis
 	 *
-	 * @param {Matrix3x3} out the receiving matrix
-	 * @param {Matrix3x3} a the matrix to rotate
 	 * @param {number} rad the angle to rotate the matrix by
-	 * @returns {Matrix3x3} out
+	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @returns {Matrix3x3} store
 	 */
 	Matrix3x3.prototype.rotateX = function (rad, store) {
 		store = store || this;
@@ -671,10 +670,9 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Y axis
 	 *
-	 * @param {Matrix3x3} out the receiving matrix
-	 * @param {Matrix3x3} a the matrix to rotate
 	 * @param {number} rad the angle to rotate the matrix by
-	 * @returns {Matrix3x3} out
+	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @returns {Matrix3x3} store
 	 */
 	Matrix3x3.prototype.rotateY = function (rad, store) {
 		store = store || this;
@@ -710,10 +708,9 @@ function (
 	/**
 	 * Rotates a matrix by the given angle around the Z axis
 	 *
-	 * @param {Matrix3x3} out the receiving matrix
-	 * @param {Matrix3x3} a the matrix to rotate
 	 * @param {number} rad the angle to rotate the matrix by
-	 * @returns {Matrix3x3} out
+	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @returns {Matrix3x3} store
 	 */
 	Matrix3x3.prototype.rotateZ = function (rad, store) {
 		store = store || this;
