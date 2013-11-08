@@ -15,7 +15,6 @@ define([
          * @param {number} zWidth z axis size in units
 		 */
 		function TerrainSurface(heightMatrix, xWidth, yHeight, zWidth) {
-
             var verts = [];
             for (var i = 0; i < heightMatrix.length; i++) {
                 for (var j = 0; j < heightMatrix[i].length; j++) {
@@ -26,6 +25,8 @@ define([
 			this.vertsPerLine = heightMatrix[0].length;
 
 			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
+
+            console.log(attributeMap)
 
 			var nVerts = this.verts.length / 3;
 			var nLines = nVerts / this.vertsPerLine;
@@ -112,13 +113,12 @@ define([
 
 			// compute texture coordinates
 			var tex = [];
-			var bounds = getBounds(this.verts);
-			var extentX = bounds.maxX - bounds.minX;
-			var extentZ = bounds.maxZ - bounds.minZ;
 
+            var maxX = this.verts[this.verts.length-3];
+            var maxZ = this.verts[this.verts.length-1];
 			for (var i = 0; i < this.verts.length; i += 3) {
-				var x = (bounds.minY - this.verts[i + 0]) / extentX;
-				var z = (bounds.minZ - this.verts[i + 1]) / extentZ;
+				var x = (this.verts[i + 0]) / maxX;
+				var z = (this.verts[i + 2]) / maxZ;
 				tex.push(x, z);
 			}
 
@@ -126,26 +126,6 @@ define([
 
 			return this;
 		};
-
-		function getBounds(verts) {
-			var minX = verts[0];
-			var maxX = verts[0];
-			var minZ = verts[2];
-			var maxZ = verts[2];
-
-			for (var i = 3; i < verts.length; i += 3) {
-				minX = minX < verts[i + 0] ? minX : verts[i + 0];
-				maxX = maxX > verts[i + 0] ? maxX : verts[i + 0];
-                minZ = minZ < verts[i + 2] ? minZ : verts[i + 2];
-                maxZ = maxZ > verts[i + 2] ? maxZ : verts[i + 2];
-			}
-
-			return {
-				minX: minX,
-				maxX: maxX,
-                minZ: minZ,
-                maxZ: maxZ};
-		}
 
 		return TerrainSurface;
 	});
