@@ -8,9 +8,10 @@ define(
 	  "goo/util/GameUtils",
 	  "goo/util/Logo",
 	  "goo/util/Stats",
+	  "goo/loaders/DynamicLoader",
 	  "goo/entities/World" ],				// REVIEW: REMOVE! Only reason it's here is because of static World.time, which should be removed, too.
 	  
-	function( Collection, ProcessParameters, ParseArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, World ) {
+	function( Collection, ProcessParameters, ParseArguments, Scene, Entity, Renderer, GameUtils, Logo, Stats, DynamicLoader, World ) {
 
 		"use strict";
 
@@ -27,8 +28,8 @@ define(
 
 			// REVIEW: Even though I've writen to add more access methods we should ask ourselves if
 			// the renderer should be shared among scenes or not...
-			// setup renderer access methods
 			// TODO: add more access methods
+			// setup renderer access methods
 
 			this.domElement    = this.renderer.domElement;
 			this.setClearColor = this.renderer.setClearColor.bind( this.renderer );
@@ -47,20 +48,17 @@ define(
 
 			// REVIEW: all callbacks should have an API (add/get etc).
 			// Also, would look better to wrap all callbacks in an object, like this.callbacks = { preProcess: [], preRender: [], postRender: [] }; 
-
 			this.callbacks           = [];
 			this.callbacksPreProcess = [];
 			this.callbacksPreRender  = [];
 
 			// REVIEW: these should probably be removed and you should use
 			// scene.enabled and scene.visible
-
 			this.doProcess = true;
 			this.doRender = true;
 
 			// REVIEW: maybe move all of this picking out of Goo(Runner) somehow.
 			// Would be nice with just a Pick.pixelAt( 0, 0 ) or something...
-
 			this._takeSnapshots = [];
 			this._picking = {
 				x: 0,
@@ -73,7 +71,6 @@ define(
 			};
 
 			// REVIEW: Move this to signals.js or own Event-class?
-
 			this._events = {
 				click: null,
 				mousedown: null,
@@ -96,7 +93,6 @@ define(
 			// setup GameUtils
 			// REVIEW: what happens here if we've got multiple Goo-instances? Also, should
 			// we be dependent on "GameUtils" or do our own implementation of the features used
-
 			GameUtils.initAllShims();
 			GameUtils.addVisibilityChangeListener( function( paused ) {
 				if( paused ) {
@@ -108,7 +104,6 @@ define(
 
 			// setup stats and logo
 			// REVIEW: put these in separate classes?
-
 			if( parameters.showStats ) {
 				this.stats = new Stats();
 				this.stats.domElement.style.position = 'absolute';
@@ -123,25 +118,27 @@ define(
 			}
 
 			// REVIEW: this should be removed! No more world.
-
 			this.world = this.scenes[ 0 ];
 			World.time = 0;
 
 			// REVIEW: this is for backwards compability. RenderSystems now live on Scene level.
-
 			this.renderSystem  = this.world.getSystem( "RenderSystem" );
 			this.renderSystems = [ this.renderSystem ];			// REVIEW: maybe renderer should be on Scene level?
 
-			// REVIEW: Start like this?
-
-			if (!parameters.manuallyStartGameLoop) {
-				this.startGameLoop(this.run);
+			// REVIEW: Using that ugly API2-hack to turn this off by default and changed name to "start"
+			if( GooRunner.isAPI2 ) {
+				if( parameters.start === true ) {
+					this.startGameLoop(this.run);
+				}
+			} else {
+				if( !parameters.manuallyStartGameLoop ) {
+					this.startGameLoop(this.run);
+				}
 			}
 
-			if (parameters.debugKeys) {
+			if( parameters.debugKeys ) {
 				this._addDebugKeys();
 			}
-
 		}
 
 		// general add/get methods
@@ -256,6 +253,24 @@ define(
 			});
 
 			return collection.orFirst();
+		};
+
+		GooRunner.prototype.loadScene = function( path, onSuccess, onError ) {
+			var scene  = this.scenes.length === 1 ? this.scenes[ 0 ] : this.addScene();
+			var loader = new DynamicLoader( {
+				world   : scene,
+				rootPath: path
+			} );
+
+			loader.load( "project.project" ).then( function( entities ) {
+				if( onSuccess ) {
+					onSuccess( scene );
+				}
+			} ).then( null, function( e ) {
+				if( onError ) {
+					onError( e );
+				}
+			} );
 		};
 
 		// start and stuff

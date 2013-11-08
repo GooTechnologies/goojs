@@ -16,9 +16,35 @@ function(
 	var uniqueId = 0;
 
 	/**
-	 * @class A Material defines the look of an object
-	 * @param {String} name Material name
-	 * @param {String} engineShaderId Engine shader name id (see ShaderLib for more information)
+	 * @class A Material defines the look of an object. Takes either a string or an object with settings for the Material
+	 * @param {String|Object} parameters If a string it becomes the Material name, if Object it carries all the setting of the Material.
+	 * @param {String} [parameters.name="materialXYZ"] Name of the material. Default to a unique name.
+	 * @param {Shader|String} [parameters.shader=undefined] The Shader or the name of the Shader to be used.
+	 * @param {Object} [parameters.textures={}] Textures to load
+	 * @param {String} [parameters.textures.DIFFUSE_MAP] Path to DIFFUSE_MAP. This is an example and is Shader specific. Other possible keys are NORMAL_MAP, SPECULAR_MAP, LIGHT_MAP, SHADOW_MAP, AO_MAP, EMISSIVE_MAP, DEPTH_MAP
+	 * @param {Function} [parameters.onLoad] Callback function for when all textures have been loaded. Note that this isn't called if any of the texture loads fail.
+	 * @param {Object} [parameters.uniforms={}] Uniform overrides
+	 * @param {Object} [parameters.materialState={}] Material State. Possible object keys include ambient, diffuse, emissive and specular (Vector4 color) but are Shader specific
+	 * @param {Object} [parameters.culling={}] Culling for the Material.
+	 * @param {Bool} [parameters.culling.enabled=true] Culling enabled.
+	 * @param {String} [parameters.culling.cullFace="back"] Which side to cull. Possible values are "back", "front" and "FrontAndBack".
+	 * @param {String} [parameters.culling.frontFace="CCW"] Polygon winding order. Possiblie values are "CCW" and "CW".
+	 * @param {Object} [parameters.blending={}] Blending for the Material.
+	 * @param {String} [parameters.blending.blending="NoBlending"] Blending for the Material.
+	 * @param {String} [parameters.blending.blendEquation="AddEquation"] Blending equation for the Material.
+	 * @param {String} [parameters.blending.blendSrc="SrcAlphaFactor"] Source blending factor for the Material.
+	 * @param {String} [parameters.blending.blendDst="OneMinusSrcAlphaFactor"] Destination blending factor for the Material.
+	 * @param {Object} [parameters.depth={}] Depth options for the Material
+	 * @param {Bool} [parameters.depth.enabled=true] Depth test for Material 
+	 * @param {Bool} [parameters.depth.write=true] Depth write for Material 
+	 * @param {Object} [parameters.offset={}] Offset options for Material 
+	 * @param {Bool} [parameters.offset.enabled=false] Offset enabled for Material 
+	 * @param {Number} [parameters.offset.factor=1.0] Offset factor for Material 
+	 * @param {Number} [parameters.offset.units=1.0] Offset units for Material 
+	 * @param {Bool} [parameters.dualTransparency=false] Render the mesh twice (back and forth) if transparent
+	 * @param {Bool} [parameters.flat=false] Flat shading
+	 * @param {Bool} [parameters.wireframe=false] Wireframe shading
+	 * @param {Number} [parameters.renderQueue=null] Render queue
 	 */
 	function Material(parameters) {
 		/**
@@ -101,14 +127,27 @@ function(
 		this._textureMaps = {};
 
 		// load textures
-		_.each( parameters.textures, function( pathOrTexture, textureId ) {
-			if( typeof( pathOrTexture ) === "string" ) {
-				parameters[ textureId ] = new TextureCreator().loadTexture2D( pathOrTexture );
-				this.setTexture( textureId, parameters[ textureId ] );
-			} else {
-				this.setTexture( textureId, pathOrTexture )
-			}
-		}, this );
+		var numTexturesToLoad = 0;
+		_.each( parameters.textures, function() {
+			numTexturesToLoad++;
+		});
+		if( numTexturesToLoad > 0 ) {
+			_.each( parameters.textures, function( pathOrTexture, textureId ) {
+				if( typeof( pathOrTexture ) === "string" ) {
+					parameters[ textureId ] = new TextureCreator().loadTexture2D( pathOrTexture, undefined, function() {
+						numTexturesToLoad--;
+						if( parameters.onLoad ) {
+							parameters.onLoad();
+						}
+					} );
+					this.setTexture( textureId, parameters[ textureId ] );
+				} else {
+					this.setTexture( textureId, pathOrTexture )
+				}
+			}, this );
+		} else if( parameters.onLoad ) {
+			parameters.onLoad();
+		}
 
 		/** @type {object}
 		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]

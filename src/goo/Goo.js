@@ -159,6 +159,9 @@ define( [
 			}
 		} 
 
+		// REVIEW: Remove later and all references to it!
+		GooRunner.isAPI2 = true;
+
 		return GooRunner;
 	}
 );
