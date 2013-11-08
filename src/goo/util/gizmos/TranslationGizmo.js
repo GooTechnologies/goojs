@@ -120,7 +120,8 @@ define([
 			meshData: this._arrowMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: arrowTransform,
-			id: Gizmo.registerHandle({ type: 'Axis', axis: dim })
+			id: Gizmo.registerHandle({ type: 'Axis', axis: dim }),
+			thickness: 0.6
 		});
 
 		this.addRenderable({

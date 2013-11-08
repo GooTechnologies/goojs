@@ -23,6 +23,7 @@ function (
 	function BoundingBox(center, xExtent, yExtent, zExtent) {
 		BoundingVolume.call(this, center);
 
+		// x/y/z Extent is actually width/height/depth * 0.5
 		this.xExtent = xExtent !== undefined ? xExtent : 1;
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;

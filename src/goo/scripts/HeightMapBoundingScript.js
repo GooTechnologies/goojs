@@ -3,50 +3,39 @@ define([],
 
 	"use strict";
 
-	function HeightMapBoundingScript(fileName, callback) {
-		// have the image load
-		var img = new Image();
-		img.src = fileName;
+		/**
+		 * @class Handles the height data for a heightmap and
+		 * provides functions for getting elevation at given coordinates.
+		 * @param {Array} matrixData The height data. Needs to be power of two.
+		 * @constructor
+		 */
 
-		// create an off screen canvas
-		this.canvas = document.createElement('canvas');
-
-		// get its context
-		this.con2d = this.canvas.getContext('2d');
-
-		this.loaded = false;
-		var that = this;
-		img.onload = function() {
-			// when ready, paint the image on the canvas
-			that.canvas.width = img.width;
-			that.canvas.height = img.height;
-
-			that.con2d.drawImage(img, 0, 0);
-			that.loaded = true;
-
-			callback(this);
-		};
+	function HeightMapBoundingScript(matrixData) {
+		this.matrixData = matrixData;
+		this.width = matrixData.length-1;
 	}
 
+		/**
+		 * Gets the terrain matrix data
+		 * @returns {Array} the height data matrix
+		 */
+
+	HeightMapBoundingScript.prototype.getMatrixData = function() {
+		return this.matrixData;
+	};
+
 	// get the whole height map in matrix form
-	HeightMapBoundingScript.prototype.getMatrix = function() {
-		var matrix = [];
-		for (var i = 0; i < this.canvas.width; i++) {
-			matrix.push([]);
-			for (var j = 0; j < this.canvas.height; j++) {
-				matrix[i].push(this.getAt(i, j));
-			}
-		}
-		return matrix;
+	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
+		return this.matrixData[x][y];
 	};
 
 	// get the value at the precise integer (x, y) coordinates
 	HeightMapBoundingScript.prototype.getAt = function(x, y) {
-		if(x < 0 || x > this.canvas.width || y < 0 || y > this.canvas.height) {
+		if(x < 0 || x > this.width || y < 0 || y > this.width) {
 			return 0;
 		}
 		else {
-			return this.con2d.getImageData(x, y, 1, 1).data[0] / 255 * 8;
+			return this.getPointInMatrix(x, y);
 		}
 	};
 

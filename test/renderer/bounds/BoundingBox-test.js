@@ -95,55 +95,68 @@ define([
 		});
 
 		describe('merge', function() {
-			it('merges two identical boxes', function() {
-				var boxMeshData = ShapeCreator.createBox(2, 3, 4);
-				boundingBox1 = new BoundingBox();
-				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
-				boundingBox2 = new BoundingBox();
-				boundingBox2.computeFromPoints(boxMeshData.dataViews.POSITION);
+			it('merges two identical overlapping boxes', function() {
+				boundingBox1 = new BoundingBox(new Vector3(0, 0, 0), 2, 3, 4);
+				boundingBox2 = new BoundingBox(new Vector3(0, 0, 0), 2, 3, 4);
+
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
 				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
 				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
 				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(0);
-				expect(mergedBoundingBox.xExtent).toBeCloseTo(1);
-				expect(mergedBoundingBox.yExtent).toBeCloseTo(1.5);
-				expect(mergedBoundingBox.zExtent).toBeCloseTo(2);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(2);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(3);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(4);
 			});
 
-			it('merges two distinct boxes', function() {
-				var boxMeshData1 = ShapeCreator.createBox(2, 30, 4);
-				boundingBox1 = new BoundingBox();
-				boundingBox1.computeFromPoints(boxMeshData1.dataViews.POSITION);
-				var boxMeshData2 = ShapeCreator.createBox(20, 3, 40);
-				boundingBox2 = new BoundingBox();
-				boundingBox2.computeFromPoints(boxMeshData2.dataViews.POSITION);
+			it('merges two intersecting boxes', function() {
+				boundingBox1 = new BoundingBox(new Vector3(-5, -5, -5), 10, 10, 10);
+				boundingBox2 = new BoundingBox(new Vector3(10, 10, 10), 10, 10, 10);
+
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(0);
-				expect(mergedBoundingBox.xExtent).toBeCloseTo(10);
-				expect(mergedBoundingBox.yExtent).toBeCloseTo(15);
-				expect(mergedBoundingBox.zExtent).toBeCloseTo(20);
+				expect(mergedBoundingBox.center.data[0]).toBeCloseTo((-15 + 20) / 2);
+				expect(mergedBoundingBox.center.data[1]).toBeCloseTo((-15 + 20) / 2);
+				expect(mergedBoundingBox.center.data[2]).toBeCloseTo((-15 + 20) / 2);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(35 / 2);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(35 / 2);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(35 / 2);
 			});
 
-			it('merges a triangle and a box', function() {
-				var boxMeshData = ShapeCreator.createBox(2, 2, 2);
-				var triangleMeshData = buildCustomTriangle([0, 0, 9, 0, 0, 10, 0, 1, 10]);
-				boundingBox1 = new BoundingBox();
-				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
-				boundingBox2 = new BoundingBox();
-				boundingBox2.computeFromPoints(triangleMeshData.dataViews.POSITION);
+			it('merges two nonintersecting boxes', function() {
+				boundingBox1 = new BoundingBox(new Vector3(-10, -10, -10), 5, 5, 5);
+				boundingBox2 = new BoundingBox(new Vector3(20, 20, 20), 10, 10, 10);
+
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(4.5);
-				expect(mergedBoundingBox.xExtent).toBeCloseTo(1);
-				expect(mergedBoundingBox.yExtent).toBeCloseTo(1);
-				expect(mergedBoundingBox.zExtent).toBeCloseTo(5.5);
+				expect(mergedBoundingBox.center.data[0]).toBeCloseTo((-15 + 30) / 2);
+				expect(mergedBoundingBox.center.data[1]).toBeCloseTo((-15 + 30) / 2);
+				expect(mergedBoundingBox.center.data[2]).toBeCloseTo((-15 + 30) / 2);
+				expect(mergedBoundingBox.xExtent).toBeCloseTo(45 / 2);
+				expect(mergedBoundingBox.yExtent).toBeCloseTo(45 / 2);
+				expect(mergedBoundingBox.zExtent).toBeCloseTo(45 / 2);
 			});
 		});
 
 		describe('intersects', function() {
+			it('intersects a bounding box', function() {
+				var boundingBox1 = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
+				var boundingBox2 = new BoundingBox(new Vector3(20, 20, 20), 11, 11, 11);
+
+				expect(boundingBox1.intersects(boundingBox2)).toBeTruthy();
+			});
+
+			it('does not intersect a bounding box', function() {
+				var boundingBox1 = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
+				var boundingBox2 = new BoundingBox(new Vector3(20, 20, 20), 9, 11, 11);
+
+				expect(boundingBox1.intersects(boundingBox2)).toBeFalsy();
+			});
+
+			it('intersects a bounding sphere', function() {
+				var boundingBox = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
+				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 12);
+
+				expect(boundingBox.intersects(boundingSphere)).toBeTruthy();
+			});
+
 			it('does not intersect a bounding sphere', function() {
 				var boundingBox = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
 				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 12);
