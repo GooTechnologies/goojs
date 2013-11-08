@@ -1,15 +1,7 @@
 define([
-	'goo/scripts/HeightMapBoundingScript',
-    'goo/shapes/Surface',
-    'goo/renderer/shaders/ShaderLib',
-    'goo/renderer/Material',
-    'goo/entities/EntityUtils'
+	'goo/scripts/HeightMapBoundingScript'
 	],
-	function(HeightMapBoundingScript,
-             Surface,
-             ShaderLib,
-             Material,
-             EntityUtils) {
+	function(HeightMapBoundingScript) {
 		"use strict";
 
 		var _defaults = {
@@ -21,47 +13,42 @@ define([
 			maxZ: 100
 		};
 
-
-
-		function validateTerrainProperties(properties, heightMatrix) {
+		function validateTerrainProperties(properties, heightMatrix, heightMapData) {
 			if (properties.minX > properties.maxX) {
-				throw { name: "Terrain Properties", message: "minX is larger than maxX" };
+				throw { name: "Terrain Exception", message: "minX is larger than maxX" };
 			}
 			if (properties.minY > properties.maxY) {
-				throw { name: "Terrain Properties", message: "minY is larger than maxY" };
+				throw { name: "Terrain Exception", message: "minY is larger than maxY" };
 			}
 			if (properties.minZ > properties.maxZ) {
-				throw { name: "Terrain Properties", message: "minZ is larger than maxZ" };
+				throw { name: "Terrain Exception", message: "minZ is larger than maxZ" };
 			}
 			if (!heightMatrix) {
-				throw { name: "Terrain Properties", message: "No heightmap data specified" };
+				throw { name: "Terrain Exception", message: "No heightmap data specified" };
 			}
 			if (heightMatrix.length !== heightMatrix[0].length) {
-				throw { name: "Terrain Properties", message: "Heightmap data is not a square" };
+				throw { name: "Terrain Exception", message: "Heightmap data is not a square" };
 			}
+
+        /*  Write tests for this stuff
+            function checkTerrainSpatialConflict(dim) {
+
+            }
+
+            for (var i = 0; i < heightMapData.length; i++) {
+                checkTerrainSpatialConflict(heightMapData[i].dimensions)
+            }
+        */
+
 			return true;
 		}
 
 
-        function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
-            console.log(dimensions)
-            var meshData = Surface.createFromHeightMap(matrix);
-            var material = Material.createMaterial(ShaderLib.simpleLit, '');
-            material.wireframe = true;
-            var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
-            surfaceEntity.transformComponent.transform.scale.setd((dimensions.maxX-dimensions.minX)/(matrix.length-1), dimensions.maxY-dimensions.minY, (dimensions.maxZ-dimensions.minZ)/(matrix.length-1));
-            surfaceEntity.transformComponent.transform.setRotationXYZ(0, 0, 0);
-            surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
-            surfaceEntity.transformComponent.setUpdated();
-            surfaceEntity.addToWorld();
-        }
 
 
-
-
-		function registerHeightData(heightMatrix, dimensions) {
+		function registerHeightData(heightMatrix, dimensions, heightMapData) {
 			dimensions = dimensions || _defaults;
-			validateTerrainProperties(dimensions, heightMatrix);
+			validateTerrainProperties(dimensions, heightMatrix, heightMapData);
 			var scriptContainer = {
 				dimensions:dimensions,
 				sideQuadCount:heightMatrix.length-1,
@@ -72,11 +59,13 @@ define([
 
 		/**
 		 * @class Creates and exposes a square heightmap terrain fitted within given world dimensions.
+         * This does not do any visualizing of the heightMap. That needs to be done elsewhere.
 		 * @constructor
 		 */
 
 		function WorldFittedTerrainScript() {
 			this.heightMapData = [];
+            this.yMargin = 1;
 		}
 
 		/**
@@ -85,22 +74,11 @@ define([
 		 * @param (Object) dimensions to fit the data within
 		 */
 
-		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions, gooWorld) {
-			this.heightMapData.push(registerHeightData(heightMatrix, dimensions, "terrain_mesh_"+this.heightMapData.length, gooWorld));
+		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
+            var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData)
+			this.heightMapData.push(scriptContainer);
+            return scriptContainer;
 		};
-
-        /**
-         * Generates surface mesh entities from registered terrain data;
-         * @param gooWorld the goo.world needed for creating typical entities downstream
-         */
-
-        WorldFittedTerrainScript.prototype.generateTerrainSurfaceMeshes = function(gooWorld) {
-            console.log("beep", this.heightMapData)
-            for (var i = 0; i < this.heightMapData.length; i++) {
-                console.log("Build Mesh!")
-                buildSurfaceMesh(this.heightMapData[i].script.matrixData, this.heightMapData[i].dimensions, "terrain_mesh_"+i, gooWorld)
-            }
-        };
 
 		/**
 		 * @method Returns the script relevant to a given position
@@ -112,7 +90,7 @@ define([
 			for (var i = 0; i < this.heightMapData.length; i++) {
 				var dim = this.heightMapData[i].dimensions;
 				if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
-					if (pos[1] < dim.maxY+1 && pos[1] > dim.minY-1) {
+					if (pos[1] < dim.maxY+this.yMargin && pos[1] > dim.minY-this.yMargin) {
 						if (pos[2] <= dim.maxZ && pos[2] >= dim.minZ) {
 							return this.heightMapData[i];
 						}

@@ -95,8 +95,15 @@ require([
         }
     }
 
-    function addTerrainWithDimensions(matrix, dimensions) {
-        worldFittedTerrainScript.addHeightData(matrix, dimensions, goo.world);
+    function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
+        var meshData = Surface.createFromHeightMap(matrix, (dimensions.maxX-dimensions.minX)/(matrix.length-1), dimensions.maxY-dimensions.minY, (dimensions.maxZ-dimensions.minZ)/(matrix.length-1));
+        var material = Material.createMaterial(ShaderLib.simpleLit, '');
+        material.wireframe = true;
+        var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+        surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+        surfaceEntity.transformComponent.setUpdated();
+        console.log(surfaceEntity)
+        surfaceEntity.addToWorld();
     }
 
     function WorldFittedTerrainScriptDemo() {
@@ -114,7 +121,10 @@ require([
                 maxZ: 50
             };
 
-            addTerrainWithDimensions(matrix, dim1);
+            var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
+
+            buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
+
             addSpheres(goo, worldFittedTerrainScript, dim1);
 
             var dim2 = {
@@ -126,8 +136,10 @@ require([
                 maxZ: 50
             };
 
-            addTerrainWithDimensions(matrix, dim2);
+            var terrainData2 = worldFittedTerrainScript.addHeightData(matrix, dim2);
+            buildSurfaceMesh(terrainData2.script.matrixData, terrainData2.dimensions, "terrain_mesh_2", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim2);
+
             var dim3 = {
                 minX: -50,
                 maxX: 0,
@@ -137,9 +149,23 @@ require([
                 maxZ: 0
             };
 
-            addTerrainWithDimensions(matrix, dim3);
+            var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
+            buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
-            worldFittedTerrainScript.generateTerrainSurfaceMeshes(goo.world);
+
+            var dim4 = {
+                minX: -40,
+                maxX: 0,
+                minY: 16,
+                maxY: 21,
+                minZ: -70,
+                maxZ: 0
+            };
+
+            var terrainData4 = worldFittedTerrainScript.addHeightData(matrix, dim4);
+            buildSurfaceMesh(terrainData4.script.matrixData, terrainData4.dimensions, "terrain_mesh_4", goo.world);
+            addSpheres(goo, worldFittedTerrainScript, dim4);
+
 
             var light1 = new PointLight();
             var light1Entity = goo.world.createEntity('light');
