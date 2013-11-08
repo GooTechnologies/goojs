@@ -22,11 +22,12 @@ require([
     'goo/renderer/light/DirectionalLight',
     'goo/renderer/light/SpotLight',
     'goo/entities/components/LightComponent',
-    'goo/shapes/Surface',
+    'goo/shapes/TerrainSurface',
     'goo/shapes/Sphere',
     'goo/scripts/WASDControlScript',
     'goo/scripts/MouseLookControlScript',
     'goo/scripts/WorldFittedTerrainScript',
+    'goo/renderer/TextureCreator',
     'goo/util/CanvasUtils'
 ], function (
     GooRunner,
@@ -46,11 +47,12 @@ require([
     DirectionalLight,
     SpotLight,
     LightComponent,
-    Surface,
+    TerrainSurface,
     Sphere,
     WASDControlScript,
     MouseLookControlScript,
     WorldFittedTerrainScript,
+    TextureCreator,
     CanvasUtils
     ) {
     'use strict';
@@ -92,11 +94,53 @@ require([
             sphereEntity.setComponent(scripts);
 
             sphereEntity.addToWorld();
+
+            var light1 = new PointLight();
+            light1.color.set(0.1, 0.1,0.1);
+            var light1Entity = goo.world.createEntity('light');
+            light1Entity.setComponent(new LightComponent(light1));
+            light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+            light1Entity.addToWorld();
+
         }
     }
 
+    function buildTexturedGround(matrix, dimensions, id, gooWorld) {
+        var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
+        var material = Material.createMaterial(ShaderLib.texturedLit, '');
+
+        var texture = new TextureCreator().loadTexture2D('../../resources/heightmap_small.png');
+        material.setTexture('DIFFUSE_MAP', texture);
+
+        material.materialState.ambient = [
+            0.310305785123966943,
+            0.310305785123966943,
+            0.386363636363636367,
+            1
+        ];
+        material.materialState.diffuse = [
+            0.25909090909090909,
+            0.24909090909090909,
+            0.29909090909090909,
+            1
+        ];
+        material.cullState.frontFace = "CW";
+        material.cullState.cullFace = "Back";
+  //      material.cullState.enabled = false;
+        //    emissive: materialData.uniforms.materialEmissive,
+        material.materialState.specular = [0.0, 0.0, 0.0, 1];
+        material.materialState.emissive = [0, 0, 0, 1];
+        material.materialState.shininess = 0.1;
+
+        var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+        surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+        surfaceEntity.transformComponent.setUpdated();
+        console.log(surfaceEntity)
+        surfaceEntity.addToWorld();
+    }
+
     function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
-        var meshData = Surface.createFromHeightMap(matrix, (dimensions.maxX-dimensions.minX)/(matrix.length-1), dimensions.maxY-dimensions.minY, (dimensions.maxZ-dimensions.minZ)/(matrix.length-1));
+        var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
         var material = Material.createMaterial(ShaderLib.simpleLit, '');
         material.wireframe = true;
         var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
@@ -150,7 +194,8 @@ require([
             };
 
             var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
-            buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
+            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
+        //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
 
             var dim4 = {
@@ -167,11 +212,7 @@ require([
             addSpheres(goo, worldFittedTerrainScript, dim4);
 
 
-            var light1 = new PointLight();
-            var light1Entity = goo.world.createEntity('light');
-            light1Entity.setComponent(new LightComponent(light1));
-            light1Entity.transformComponent.transform.translation.set(0, 100, 0);
-            light1Entity.addToWorld();
+
 
             // Add camera
             var camera = new Camera(45, 1, 1, 1000);

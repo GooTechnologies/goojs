@@ -9,14 +9,21 @@ define([
 
 		/**
 		 * @class A grid-like surface shape
-		 * REVIEW: are verts really optional? Otherwise no brackets.
-		 * @param {number[]} [verts] The vertices data array
-		 * @param {number} [verticesPerLine=2] The number of vertices
+		 * @param {array} heightMatrix The height data by x and z axis.
+		 * @param {number} xWidth x axis size in units
+         * @param {number} yHeight y axis size in units
+         * @param {number} zWidth z axis size in units
 		 */
-		function TerrainSurface(verts, vertsPerLine, verticallyClosed) {
+		function TerrainSurface(heightMatrix, xWidth, yHeight, zWidth) {
+
+            var verts = [];
+            for (var i = 0; i < heightMatrix.length; i++) {
+                for (var j = 0; j < heightMatrix[i].length; j++) {
+                    verts.push(i * xWidth / (heightMatrix.length-1), heightMatrix[i][j]*yHeight, j * zWidth / (heightMatrix.length-1));
+                }
+            }
 			this.verts = verts;
-			this.vertsPerLine = vertsPerLine || 2;
-			this.verticallyClosed = !!verticallyClosed;
+			this.vertsPerLine = heightMatrix[0].length;
 
 			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
@@ -58,40 +65,20 @@ define([
 						this.verts[upLeft * 3 + 1],
 						this.verts[upLeft * 3 + 2],
 
-						this.verts[downLeft * 3 + 0],
-						this.verts[downLeft * 3 + 1],
-						this.verts[downLeft * 3 + 2],
-
-						this.verts[upRight * 3 + 0],
-						this.verts[upRight * 3 + 1],
-						this.verts[upRight * 3 + 2]);
-
-					norms.push(normals[0], normals[1], normals[2]);
-				}
-
-				if(this.verticallyClosed) {
-					var upLeft = (i + 0) * this.vertsPerLine + (0 + 0);
-					var downLeft = (i + 1) * this.vertsPerLine + (0 + 0);
-					var upRight = (i + 0) * this.vertsPerLine + (0 + 1);
-
-					normals = MathUtils.getTriangleNormal(
-						this.verts[upLeft * 3 + 0],
-						this.verts[upLeft * 3 + 1],
-						this.verts[upLeft * 3 + 2],
+                        this.verts[upRight * 3 + 0],
+                        this.verts[upRight * 3 + 1],
+                        this.verts[upRight * 3 + 2],
 
 						this.verts[downLeft * 3 + 0],
 						this.verts[downLeft * 3 + 1],
-						this.verts[downLeft * 3 + 2],
+						this.verts[downLeft * 3 + 2]
 
-						this.verts[upRight * 3 + 0],
-						this.verts[upRight * 3 + 1],
-						this.verts[upRight * 3 + 2]);
+
+                    );
 
 					norms.push(normals[0], normals[1], normals[2]);
 				}
-				else {
-					norms.push(normals[0], normals[1], normals[2]);
-				}
+				norms.push(normals[0], normals[1], normals[2]);
 			}
 
 			i--;
@@ -105,13 +92,15 @@ define([
 					this.verts[upLeft * 3 + 1],
 					this.verts[upLeft * 3 + 2],
 
+                    this.verts[upRight * 3 + 0],
+                    this.verts[upRight * 3 + 1],
+                    this.verts[upRight * 3 + 2],
+
 					this.verts[downLeft * 3 + 0],
 					this.verts[downLeft * 3 + 1],
-					this.verts[downLeft * 3 + 2],
+					this.verts[downLeft * 3 + 2]
+                );
 
-					this.verts[upRight * 3 + 0],
-					this.verts[upRight * 3 + 1],
-					this.verts[upRight * 3 + 2]);
 
 				norms.push(normals[0], normals[1], normals[2]);
 			}
@@ -125,12 +114,12 @@ define([
 			var tex = [];
 			var bounds = getBounds(this.verts);
 			var extentX = bounds.maxX - bounds.minX;
-			var extentY = bounds.maxY - bounds.minY;
+			var extentZ = bounds.maxZ - bounds.minZ;
 
 			for (var i = 0; i < this.verts.length; i += 3) {
-				var x = (this.verts[i + 0] - bounds.minX) / extentX;
-				var y = (this.verts[i + 1] - bounds.minY) / extentY;
-				tex.push(x, y);
+				var x = (bounds.minY - this.verts[i + 0]) / extentX;
+				var z = (bounds.minZ - this.verts[i + 1]) / extentZ;
+				tex.push(x, z);
 			}
 
 			this.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
@@ -141,44 +130,22 @@ define([
 		function getBounds(verts) {
 			var minX = verts[0];
 			var maxX = verts[0];
-			var minY = verts[1];
-			var maxY = verts[1];
+			var minZ = verts[2];
+			var maxZ = verts[2];
 
 			for (var i = 3; i < verts.length; i += 3) {
 				minX = minX < verts[i + 0] ? minX : verts[i + 0];
 				maxX = maxX > verts[i + 0] ? maxX : verts[i + 0];
-				minY = minY < verts[i + 1] ? minY : verts[i + 1];
-				maxY = maxY > verts[i + 1] ? maxY : verts[i + 1];
+                minZ = minZ < verts[i + 2] ? minZ : verts[i + 2];
+                maxZ = maxZ > verts[i + 2] ? maxZ : verts[i + 2];
 			}
 
 			return {
 				minX: minX,
 				maxX: maxX,
-				minY: minY,
-				maxY: maxY};
+                minZ: minZ,
+                maxZ: maxZ};
 		}
-
-		/**
-		 * @description Create a Surface from a supplied height map in the form of a matrix
-		 * @param {number[]} [heightMap] The height map
-		 * @param {number} [xScale=1]
-		 * @param {number} [yScale=1]
-		 * @returns {Surface} The created surface
-		 */
-		TerrainSurface.createFromHeightMap = function(heightMap, xScale, yScale, zScale) {
-			xScale = xScale || 1;
-			yScale = yScale || 1;
-			zScale = zScale || 1;
-
-			var verts = [];
-			for (var i = 0; i < heightMap.length; i++) {
-				for (var j = 0; j < heightMap[i].length; j++) {
-					verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
-				}
-			}
-
-			return new TerrainSurface(verts, heightMap[0].length);
-		};
 
 		return TerrainSurface;
 	});
