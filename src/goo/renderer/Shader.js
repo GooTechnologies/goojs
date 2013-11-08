@@ -525,7 +525,8 @@ function (
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
-			tmpMatrix.copy(matrix).invert().transpose();
+			Matrix4x4.invert(matrix, tmpMatrix);
+			Matrix4x4.transpose(tmpMatrix, tmpMatrix);
 			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 
