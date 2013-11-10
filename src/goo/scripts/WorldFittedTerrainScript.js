@@ -115,23 +115,55 @@ define([
 		};
 
 		/**
-		 * @method Looks through height data and returns the elevation of the ground at a given position
-		 * @param (Array) pos Position as [x, y, z]
-		 * @returns (Float) height in units
-		 */
+         * @method Looks through height data and returns the elevation of the ground at a given position
+         * @param (Array) pos Position as [x, y, z]
+         * @returns (Float) height in units
+         */
 
-		WorldFittedTerrainScript.prototype.getGroundHeightAtPos = function(pos) {
-			var heightData = this.getHeightDataForPosition(pos);
-			if (heightData === null) {
-				return null;
-			}
-			var dims = heightData.dimensions;
+        WorldFittedTerrainScript.prototype.getGroundHeightAtPos = function(pos) {
+            var heightData = this.getHeightDataForPosition(pos);
+            if (heightData === null) {
+                return null;
+            }
+            var dims = heightData.dimensions;
 
-			var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
-			var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
-			var matrixHeight = heightData.script.getInterpolated(tx, tz);
-			return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
-		};
+            var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
+            var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+            var matrixHeight = heightData.script.getInterpolated(tx, tz);
+            return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
+        };
+
+        /**
+         * @method Looks through height data and returns the steepness of the ground at a given position
+         * @param (Array) pos Position as [x, y, z]
+         * @returns (Float) diff between lowest and highest points in quad
+         */
+
+        WorldFittedTerrainScript.prototype.getGroundSlopeAtPos = function(pos) {
+            var heightData = this.getHeightDataForPosition(pos);
+            if (heightData === null) {
+                return null;
+            }
+            var dims = heightData.dimensions;
+
+            var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
+            var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+
+            var points = [
+                heightData.script.getAt(Math.ceil(x), Math.ceil(y)),
+                heightData.script.getAt(Math.ceil(x), Math.floor(y)),
+                heightData.script.getAt(Math.floor(x), Math.ceil(y)),
+                heightData.script.getAt(Math.floor(x), Math.floor(y))
+            ];
+
+            var min = Infinity;
+            var max = -Infinity;
+            for (var i = 0; i < points.length; i++) {
+                if (points[i] < min) min = points[i];
+                if (points[i] > max) max = points[i];
+            }
+            return max-min;
+        };
 
         WorldFittedTerrainScript.prototype.run = function(entity) {
             var translation = entity.transformComponent.transform.translation;
