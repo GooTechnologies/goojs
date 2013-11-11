@@ -26,8 +26,6 @@ define([
 
 			var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
-            console.log(attributeMap)
-
 			var nVerts = this.verts.length / 3;
 			var nLines = nVerts / this.vertsPerLine;
 			MeshData.call(this, attributeMap, nVerts, (nLines - 1) * (this.vertsPerLine - 1) * 6);

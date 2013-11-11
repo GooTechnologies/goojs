@@ -1,5 +1,5 @@
-define([],
-	function() {
+define(['goo/math/MathUtils'],
+	function(MathUtils) {
 
 	"use strict";
 
@@ -24,7 +24,7 @@ define([],
 		return this.matrixData;
 	};
 
-	// get the whole height map in matrix form
+	// get a height at point from matrix
 	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
 		return this.matrixData[x][y];
 	};
@@ -56,6 +56,32 @@ define([],
 
 		return totalAvg;
 	};
+
+		// get the interpolated value
+		HeightMapBoundingScript.prototype.getPreciseHeight = function(x, y) {
+			var xc = Math.ceil(x);
+			var xf = Math.floor(x);
+			var yc = Math.ceil(y);
+			var yf = Math.floor(y);
+
+			var fracX = x - xf;
+			var fracY = y - yf;
+
+			var p1  = {x:xf, y:yc, z:this.getAt(xf, yc)};
+			var p2  = {x:xc, y:yf, z:this.getAt(xc, yf)};
+
+			var p3;
+
+			if (fracX < 1-fracY) {
+				p3 = {x:xf, y:yf, z:this.getAt(xf, yf)};
+			} else {
+				p3 = {x:xc, y:yc, z:this.getAt(xc, yc)};
+			}
+
+			var find = MathUtils.barycentricInterpolation(p1, p2, p3, {x:x, y:y, z:0});
+		//	console.log(find.z)
+			return find.z;
+		};
 
 	HeightMapBoundingScript.prototype.run = function(entity) {
 		var translation = entity.transformComponent.transform.translation;

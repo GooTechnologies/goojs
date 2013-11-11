@@ -13,7 +13,7 @@ define([
 			maxZ: 100
 		};
 
-		function validateTerrainProperties(properties, heightMatrix, heightMapData) {
+		function validateTerrainProperties(properties, heightMatrix) {
 			if (properties.minX > properties.maxX) {
 				throw { name: "Terrain Exception", message: "minX is larger than maxX" };
 			}
@@ -75,7 +75,7 @@ define([
 		 */
 
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
-            var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData)
+            var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData);
 			this.heightMapData.push(scriptContainer);
             return scriptContainer;
 		};
@@ -129,7 +129,7 @@ define([
 
             var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
             var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
-            var matrixHeight = heightData.script.getInterpolated(tx, tz);
+            var matrixHeight = heightData.script.getPreciseHeight(tx, tz);
             return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
         };
 
@@ -159,11 +159,17 @@ define([
             var min = Infinity;
             var max = -Infinity;
             for (var i = 0; i < points.length; i++) {
-                if (points[i] < min) min = points[i];
-                if (points[i] > max) max = points[i];
+                if (points[i] < min) {
+					min = points[i];
+				}
+                if (points[i] > max) {
+					max = points[i];
+				}
             }
             return max-min;
         };
+
+
 
         WorldFittedTerrainScript.prototype.run = function(entity) {
             var translation = entity.transformComponent.transform.translation;
