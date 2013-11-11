@@ -37,6 +37,7 @@ define([
 		// Create meshRenderer component with material and shader
 		var meshRendererComponent = new MeshRendererComponent();
 		meshRendererComponent.materials.push(material);
+		meshRendererComponent.cullMode = 'Never';
 		particleSystemEntity.setComponent(meshRendererComponent);
 
 		return particleSystemEntity;
