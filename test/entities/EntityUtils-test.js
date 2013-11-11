@@ -66,13 +66,18 @@ define([
 			var translation = entity.transformComponent.transform.translation;
 			expect(translation.data[0] === 10 && translation.data[1] === 20 && translation.data[2] === 30).toBeTruthy();
 		});
+		it('can create a typical entity holding a script', function() {
+			var entity = EntityUtils.createTypicalEntity(world, {run:function(){}});
+			expect(entity.hasComponent('ScriptComponent')).toBeTruthy();
+		});
 		it('can create a typical entity holding all sorts of stuff in random order', function() {
-			var entity = EntityUtils.createTypicalEntity(world, camera, meshData, 'entitate', material, light);
+			var entity = EntityUtils.createTypicalEntity(world, camera, meshData, {run:function(){}}, 'entitate', material, light);
 			expect(entity.toString()).toBe('entitate');
 			expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
 			expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
 			expect(entity.hasComponent('LightComponent')).toBeTruthy();
 			expect(entity.hasComponent('CameraComponent')).toBeTruthy();
+			expect(entity.hasComponent('ScriptComponent')).toBeTruthy();
 		});
 
 		it('can get the root entity', function() {
