@@ -28,6 +28,8 @@ define(
 		// create the instance description
 		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
 		this._logicInterfaces[this._instanceID++] = instDesc;
+		
+		console.log("The interface " + instDesc + " and " + instDesc.iface.getPorts() + " and " + iface);
 		return instDesc;
 	}
 	

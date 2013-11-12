@@ -30,7 +30,8 @@ define([
 	'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
-	'goo/loaders/handlers/PosteffectHandler'
+	'goo/loaders/handlers/PosteffectHandler',
+	'goo/loaders/handlers/LogicHandler'
 ],
 /** @lends */
 function(
@@ -61,7 +62,8 @@ function(
 		'machine',
 		'posteffect',
 		'animstate',
-		'sound'];
+		'sound',
+		'logicnode'];
 
 	//var _text_types = ['vert', 'frag']; // unused
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
@@ -296,6 +298,8 @@ function(
 		} else {
 			type = DynamicLoader.getTypeForRef(ref);
 			handlerClass = ConfigHandler.getHandler(type);
+			
+			console.log("get handler for [" + type + "] is " + handlerClass);
 
 			if (handlerClass) {
 				if (this._handlers == null) {

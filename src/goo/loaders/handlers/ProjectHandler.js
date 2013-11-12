@@ -221,11 +221,13 @@ define([
 			});
 		}
 	};
+	
 
 	ProjectHandler.prototype._updateEntities = function(config) {
 		var that = this;
 
 		var promises = [];
+		
 		if (config.entityRefs && Array.isArray(config.entityRefs) && config.entityRefs.length > 0) {
 			var handleEntityRef = function(entityRef) {
 				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
@@ -262,6 +264,29 @@ define([
 			console.warn("No entity refs in project");
 			return PromiseUtil.createDummyPromise(config);
 		}
+	};
+
+	ProjectHandler.prototype._updateLogicNodes = function(config) {
+	
+		var that = this;
+		var promises = [];
+		if (config.logicRefs && Array.isArray(config.logicRefs) && config.logicRefs.length > 0) {
+		
+			var handleLogicRef = function(entityRef) {
+				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
+					return that.updateObject(entityRef, entityConfig, that.options);
+				}));
+			};
+
+			for (var i = 0; i < config.logicRefs.length; i++) 
+				handleLogicRef(config.logicRefs[i]);
+			
+			return RSVP.all(promises).then(function(p) { }, function(err) { });
+			
+		} else {
+			return PromiseUtil.createDummyPromise(config);
+		}
+		
 	};
 
 	ProjectHandler.prototype._updatePosteffects = function(config) {
@@ -342,6 +367,7 @@ define([
 		// entity refs
 		if (!options || !options.shallow) {
 			promises.push(this._updateEntities(config));
+			promises.push(this._updateLogicNodes(config));
 		}
 
 		// posteffect refs
