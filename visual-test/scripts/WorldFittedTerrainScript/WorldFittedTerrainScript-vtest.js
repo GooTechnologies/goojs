@@ -135,7 +135,6 @@ require([
         var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
-        console.log(surfaceEntity)
         surfaceEntity.addToWorld();
     }
 
@@ -146,7 +145,6 @@ require([
         var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
-        console.log(surfaceEntity)
         surfaceEntity.addToWorld();
     }
 
@@ -159,8 +157,8 @@ require([
             var dim1 = {
                 minX: 0,
                 maxX: 50,
-                minY: 0,
-                maxY: 20,
+                minY: 45,
+                maxY: 65,
                 minZ: 0,
                 maxZ: 50
             };
@@ -235,14 +233,36 @@ require([
             scripts.scripts.push(worldFittedTerrainScript);
             cameraEntity.setComponent(scripts);
         });
+
+
+
+		canvasUtils.loadCanvasFromPath('../../resources/checker_slope.png', function(canvas) {
+			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+
+			var dim = {
+				minX: 0,
+				maxX: 25,
+				minY: -10,
+				maxY: 10,
+				minZ: 0,
+				maxZ: 40
+			};
+
+			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
+
+			buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
+
+			addSpheres(goo, worldFittedTerrainScript, dim);
+
+		});
+
     }
 
     function init() {
         goo = new GooRunner();
         goo.renderer.domElement.id = 'goo';
         document.body.appendChild(goo.renderer.domElement);
-
-        WorldFittedTerrainScriptDemo(goo);
+		new WorldFittedTerrainScriptDemo(goo);
     }
 
     init();
