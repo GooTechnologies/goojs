@@ -103,5 +103,24 @@ define([
 				t1, t2, t3, new Vector3((t1.x + t2.x + t3.x) / 3, (t1.y + t2.y + t3.y) / 3, 123)).z
 			).toBeCloseTo(40);
 		});
+
+		it('gets the correct triangle normal', function() {
+			var p1 = [0, 0, 0];
+			var p2 = [0, 1, 0];
+			var p3 = [1, 1, 0];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([0, 0,-1]);
+
+			p1 = [0, 0, 0];
+			p2 = [0, 0, 1];
+			p3 = [1, 0, 1];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([0, 1, 0]);
+
+			p1 = [1, 0, 0];
+			p2 = [0, 1, 0];
+			p3 = [0, 0, 1];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual(+);
+
+		});
+
 	});
 });

@@ -76,7 +76,7 @@ require([
             ];
             var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
             sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-			sphereEntity.transformComponent.transform.scale.setd(1, 3, 1);
+			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
 
 			var scripts = new ScriptComponent();
             (function(i) {
@@ -250,7 +250,8 @@ require([
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-			buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
+		//	buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
+			buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
 
