@@ -165,19 +165,41 @@ define([
 	 * @param {number} [yScale=1]
 	 * @returns {Surface} The created surface
 	 */
-	Surface.createFromHeightMap = function(heightMap, xScale, yScale) {
+	Surface.createFromHeightMap = function(heightMap, xScale, yScale, zScale) {
 		xScale = xScale || 1;
 		yScale = yScale || 1;
+        zScale = zScale || 1;
 
 		var verts = [];
 		for (var i = 0; i < heightMap.length; i++) {
 			for (var j = 0; j < heightMap[i].length; j++) {
-				verts.push(i * xScale, j * yScale, heightMap[i][j]);
+				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
 			}
 		}
 
 		return new Surface(verts, heightMap[0].length);
 	};
+
+        /**
+         * @description Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
+         * @param {number} xSize x axis size in units
+         * @param {number} ySize y axis size in numbers
+         * @param {number} xCount x axis vertex count
+         * @param {number} yCount y axis vertex count
+         * @returns {Surface} The surface mesh
+         */
+        Surface.createTessellatedFlat = function(xSize, ySize, xCount, yCount) {
+
+            var verts = [];
+            for (var i = 0; i < xCount; i++) {
+                for (var j = 0; j < yCount; j++) {
+                    verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+                }
+            }
+            var surface = new Surface(verts, xCount);
+            return surface;
+        };
+
 
 	return Surface;
 });
