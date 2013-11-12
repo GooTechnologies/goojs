@@ -76,8 +76,9 @@ require([
             ];
             var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
             sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+			sphereEntity.transformComponent.transform.scale.setd(1, 3, 1);
 
-            var scripts = new ScriptComponent();
+			var scripts = new ScriptComponent();
             (function(i) {
                 scripts.scripts.push({
                     run: function(entity) {
@@ -101,15 +102,14 @@ require([
             light1Entity.setComponent(new LightComponent(light1));
             light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
             light1Entity.addToWorld();
-
         }
     }
 
-    function buildTexturedGround(matrix, dimensions, id, gooWorld) {
+    function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
         var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
         var material = Material.createMaterial(ShaderLib.texturedLit, '');
 
-        var texture = new TextureCreator().loadTexture2D('../../resources/heightmap_small.png');
+        var texture = new TextureCreator().loadTexture2D(txPath);
         material.setTexture('DIFFUSE_MAP', texture);
 
         material.materialState.ambient = [
@@ -148,7 +148,7 @@ require([
         surfaceEntity.addToWorld();
     }
 
-    function WorldFittedTerrainScriptDemo() {
+    function worldFittedTerrainScriptDemo() {
         var canvasUtils = new CanvasUtils();
 
         canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
@@ -192,7 +192,7 @@ require([
             };
 
             var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
-            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
+            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../resources/heightmap_small.png');
         //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
 
@@ -241,16 +241,16 @@ require([
 
 			var dim = {
 				minX: 0,
-				maxX: 25,
-				minY: -10,
-				maxY: 10,
+				maxX: 20,
+				minY: -1,
+				maxY: 0,
 				minZ: 0,
-				maxZ: 40
+				maxZ: 20
 			};
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-			buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
+			buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
 
@@ -262,7 +262,7 @@ require([
         goo = new GooRunner();
         goo.renderer.domElement.id = 'goo';
         document.body.appendChild(goo.renderer.domElement);
-		new WorldFittedTerrainScriptDemo(goo);
+		worldFittedTerrainScriptDemo(goo);
     }
 
     init();

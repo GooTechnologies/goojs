@@ -1,7 +1,8 @@
 define([
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scripts/HeightMapBoundingScript',
+	'goo/math/Vector3'
 	],
-	function(HeightMapBoundingScript) {
+	function(HeightMapBoundingScript, Vector3) {
 		"use strict";
 
 		var _defaults = {
@@ -171,11 +172,26 @@ define([
 
 
 
+		WorldFittedTerrainScript.prototype.getGroundNormalAt = function(pos) {
+			var heightData = this.getHeightDataForPosition(pos);
+			var dims = heightData.dimensions;
+
+			var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
+			var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+			var n = heightData.script.getNormalAt(x, y);
+			return [n[0]*(dims.maxX - dims.minX), n[1]*(dims.maxY - dims.minY), n[2]*(dims.maxZ - dims.minZ)];
+	};
+
+
         WorldFittedTerrainScript.prototype.run = function(entity) {
-            var translation = entity.transformComponent.transform.translation;
-            var groundHeight = this.getGroundHeightAtPos(translation.data);
+            var transform = entity.transformComponent.transform;
+            var groundHeight = this.getGroundHeightAtPos(transform.translation.data);
             if (groundHeight) {
-                translation.data[1] = groundHeight;
+				transform.translation.data[1] = groundHeight;
+				var rot = this.getGroundNormalAt(transform.translation.data);
+				transform.lookAt(new Vector3(rot), Vector3.UNIT_Y);
+
+
             }
         };
 

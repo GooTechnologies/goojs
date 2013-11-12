@@ -1,7 +1,7 @@
 define(['goo/math/MathUtils'],
 	function(MathUtils) {
 
-	"use strict";
+		"use strict";
 
 		/**
 		 * @class Handles the height data for a heightmap and
@@ -10,55 +10,55 @@ define(['goo/math/MathUtils'],
 		 * @constructor
 		 */
 
-	function HeightMapBoundingScript(matrixData) {
-		this.matrixData = matrixData;
-		this.width = matrixData.length-1;
-	}
+		function HeightMapBoundingScript(matrixData) {
+			this.matrixData = matrixData;
+			this.width = matrixData.length-1;
+		}
 
 		/**
 		 * Gets the terrain matrix data
 		 * @returns {Array} the height data matrix
 		 */
 
-	HeightMapBoundingScript.prototype.getMatrixData = function() {
-		return this.matrixData;
-	};
+		HeightMapBoundingScript.prototype.getMatrixData = function() {
+			return this.matrixData;
+		};
 
-	// get a height at point from matrix
-	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
-		return this.matrixData[x][y];
-	};
+		// get a height at point from matrix
+		HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
+			return this.matrixData[x][y];
+		};
 
-	// get the value at the precise integer (x, y) coordinates
-	HeightMapBoundingScript.prototype.getAt = function(x, y) {
-		if(x < 0 || x > this.width || y < 0 || y > this.width) {
-			return 0;
-		}
-		else {
-			return this.getPointInMatrix(x, y);
-		}
-	};
-
-	// get the interpolated value
-	HeightMapBoundingScript.prototype.getInterpolated = function(x, y) {
-		var valueLeftUp = this.getAt(Math.ceil(x), Math.ceil(y));
-		var valueLeftDown = this.getAt(Math.ceil(x), Math.floor(y));
-		var valueRightUp = this.getAt(Math.floor(x), Math.ceil(y));
-		var valueRightDown = this.getAt(Math.floor(x), Math.floor(y));
-
-		var fracX = x - Math.floor(x);
-		var fracY = y - Math.floor(y);
-
-		var upAvg = valueLeftUp * fracX + valueRightUp * (1 - fracX);
-		var downAvg = valueLeftDown * fracX + valueRightDown * (1 - fracX);
-
-		var totalAvg = upAvg * fracY + downAvg * (1 - fracY);
-
-		return totalAvg;
-	};
+		// get the value at the precise integer (x, y) coordinates
+		HeightMapBoundingScript.prototype.getAt = function(x, y) {
+			if(x < 0 || x > this.width || y < 0 || y > this.width) {
+				return 0;
+			}
+			else {
+				return this.getPointInMatrix(x, y);
+			}
+		};
 
 		// get the interpolated value
-		HeightMapBoundingScript.prototype.getPreciseHeight = function(x, y) {
+		HeightMapBoundingScript.prototype.getInterpolated = function(x, y) {
+			var valueLeftUp = this.getAt(Math.ceil(x), Math.ceil(y));
+			var valueLeftDown = this.getAt(Math.ceil(x), Math.floor(y));
+			var valueRightUp = this.getAt(Math.floor(x), Math.ceil(y));
+			var valueRightDown = this.getAt(Math.floor(x), Math.floor(y));
+
+			var fracX = x - Math.floor(x);
+			var fracY = y - Math.floor(y);
+
+			var upAvg = valueLeftUp * fracX + valueRightUp * (1 - fracX);
+			var downAvg = valueLeftDown * fracX + valueRightDown * (1 - fracX);
+
+			var totalAvg = upAvg * fracY + downAvg * (1 - fracY);
+
+			return totalAvg;
+		};
+
+
+		HeightMapBoundingScript.prototype.getTriangleAt = function(x, y) {
 			var xc = Math.ceil(x);
 			var xf = Math.floor(x);
 			var yc = Math.ceil(y);
@@ -77,16 +77,28 @@ define(['goo/math/MathUtils'],
 			} else {
 				p3 = {x:xc, y:yc, z:this.getAt(xc, yc)};
 			}
+			return [p1, p2, p3]
+		};
 
-			var find = MathUtils.barycentricInterpolation(p1, p2, p3, {x:x, y:y, z:0});
-		//	console.log(find.z)
+
+		// get the exact height of the triangle at point
+		HeightMapBoundingScript.prototype.getPreciseHeight = function(x, y) {
+			var tri = this.getTriangleAt(x, y);
+			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
 			return find.z;
 		};
 
-	HeightMapBoundingScript.prototype.run = function(entity) {
-		var translation = entity.transformComponent.transform.translation;
-		translation.data[1] = this.getInterpolated(translation.data[0], translation.data[2]);
-	};
+		// get the normal of the triangle at point
+		HeightMapBoundingScript.prototype.getNormalAt = function(x, y) {
+			var tri = this.getTriangleAt(x, y);
+			return MathUtils.getTriangleNormal(tri[0].x, tri[0].y, tri[0].z, tri[1].x, tri[1].y, tri[1].z,tri[2].x, tri[2].y, tri[2].z);
 
-	return HeightMapBoundingScript;
-});
+		};
+
+		HeightMapBoundingScript.prototype.run = function(entity) {
+			var translation = entity.transformComponent.transform.translation;
+			translation.data[1] = this.getInterpolated(translation.data[0], translation.data[2]);
+		};
+
+		return HeightMapBoundingScript;
+	});
