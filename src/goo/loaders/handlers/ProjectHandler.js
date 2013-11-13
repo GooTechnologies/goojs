@@ -279,9 +279,18 @@ define([
 			};
 
 			for (var i = 0; i < config.logicRefs.length; i++) 
-				handleLogicRef(config.logicRefs[i]);
+				promises.push(handleLogicRef(config.logicRefs[i]));
+				
+			console.log("and it was " + config.logicRefs.length + " logics");
+			console.log("making " + promises.length + " promises");
 			
-			return RSVP.all(promises).then(function(p) { }, function(err) { });
+			return RSVP.all(promises).then(function(logics) { 
+				console.log("Updating " + logics.length + " logic nodes");
+				for (var j=0;j<logics.length;j++)
+				{
+					logics[j].addToWorldLogic(that.world);
+				}
+			}, function(err) { });
 			
 		} else {
 			return PromiseUtil.createDummyPromise(config);
@@ -360,6 +369,8 @@ define([
 		var that = this;
 		this._prepare(config);
 		var promises = [];
+
+		console.log("updated!");
 
 		// skybox
 		promises.push(this._updateSkybox(config.skybox, options));

@@ -299,8 +299,6 @@ function(
 			type = DynamicLoader.getTypeForRef(ref);
 			handlerClass = ConfigHandler.getHandler(type);
 			
-			console.log("get handler for [" + type + "] is " + handlerClass);
-
 			if (handlerClass) {
 				if (this._handlers == null) {
 					this._handlers = {};

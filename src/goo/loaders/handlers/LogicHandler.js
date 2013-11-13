@@ -26,20 +26,39 @@ define([
 
 	LogicHandler.prototype._prepare = function(config) {
 		// there are no defaults for this.
-		console.log("Prepare bananan");
 		_.defaults(config, { });
 	};
 
 	LogicHandler.prototype._create = function(ref) {
-		return null;
+		// it is not known what logic node type it's going to be yet, so can't create it.	
+		console.log("LogicHandler:create");
+		return { is_dummy_of_unknown_type: true };
 	};
 
 	LogicHandler.prototype.update = function(ref, config) {
-		console.log("Creating " + ref + " with config " + config);
+		
+		console.log("LogicHandler:update");
+		var obj;
+		switch (config.type)
+		{
+			case "LogicNodeTime": obj = new LogicNodeTime(config); break;
+			case "LogicNodeSine": obj = new LogicNodeSine(config); break;
+			default:
+				console.warn("unknown logic node type " + config.type);
+				return;
+		}
+		
+		// Special way of just reconfiguring the objects without needing to re-create them.
+		var that = this;
+		return PromiseUtil.createDummyPromise().then(function() {
+			console.log("upp dating");
+			that._objects[ref] = obj;
+		}, function() {
+		
+		});
 	};
 
 	LogicHandler.prototype.remove = function(ref) {
-		// this._objects[ref].stop();
 		delete this._objects[ref];
 	};
 

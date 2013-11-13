@@ -2,11 +2,12 @@ define(
        [
        'goo/logic/LogicLayer',
        'goo/logic/LogicNode',
-       'goo/logic/LogicInterface'
+       'goo/logic/LogicInterface',
+       'goo/logic/LogicNodes'
        ]
        ,
 	/** @lends */
-	function (LogicLayer, LogicNode, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 	"use strict";
 
 	/**
@@ -70,6 +71,8 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, 0);
 		}
 	}
+
+	LogicNodes.registerType("LogicNodeTime", LogicNodeTime);
 	
 	return LogicNodeTime;
 });

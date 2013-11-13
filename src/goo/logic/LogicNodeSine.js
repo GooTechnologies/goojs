@@ -2,11 +2,12 @@ define(
        [
        'goo/logic/LogicLayer',
        'goo/logic/LogicNode',
+       'goo/logic/LogicNodes',
        'goo/logic/LogicInterface'
        ]
        ,
 	/** @lends */
-	function (LogicLayer, LogicNode, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 	"use strict";
 
 	/**
@@ -30,6 +31,8 @@ define(
 	LogicNodeSine.logicInterface = new LogicInterface();
 	LogicNodeSine.outportSine = LogicNodeSine.logicInterface.addOutputProperty("Sine", "float");
 	LogicNodeSine.inportPhase = LogicNodeSine.logicInterface.addInputProperty("Phase", "float", 0);
+	
+	LogicNodes.registerType("LogicNodeSine", LogicNodeSine);
 	
 	return LogicNodeSine;
 });
