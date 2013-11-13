@@ -1,11 +1,9 @@
 define([
-	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component'
 ],
 	/** @lends */
 		function (
-		Transform,
 		Vector3,
 		Component
 		) {
