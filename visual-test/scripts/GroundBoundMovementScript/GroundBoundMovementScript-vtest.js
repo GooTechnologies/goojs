@@ -1,0 +1,227 @@
+require.config({
+	paths: {
+		"goo": "../../../src/goo"
+	}
+});
+
+require([
+	'goo/entities/GooRunner',
+	'goo/entities/World',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Camera',
+	'goo/shapes/ShapeCreator',
+	'goo/entities/components/CameraComponent',
+	'goo/scripts/OrbitCamControlScript',
+	'goo/entities/EntityUtils',
+	'goo/entities/components/ScriptComponent',
+	'goo/renderer/MeshData',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/math/Vector3',
+	'goo/renderer/light/PointLight',
+	'goo/renderer/light/DirectionalLight',
+	'goo/renderer/light/SpotLight',
+	'goo/entities/components/LightComponent',
+	'goo/shapes/TerrainSurface',
+	'goo/shapes/Sphere',
+	'goo/scripts/WASDControlScript',
+	'goo/scripts/MouseLookControlScript',
+	'goo/scripts/WorldFittedTerrainScript',
+	'goo/scripts/GroundBoundMovementScript',
+	'goo/renderer/TextureCreator',
+	'goo/util/CanvasUtils'
+], function (
+	GooRunner,
+	World,
+	Material,
+	ShaderLib,
+	Camera,
+	ShapeCreator,
+	CameraComponent,
+	OrbitCamControlScript,
+	EntityUtils,
+	ScriptComponent,
+	MeshData,
+	MeshRendererComponent,
+	Vector3,
+	PointLight,
+	DirectionalLight,
+	SpotLight,
+	LightComponent,
+	TerrainSurface,
+	Sphere,
+	WASDControlScript,
+	MouseLookControlScript,
+	WorldFittedTerrainScript,
+	GroundBoundMovementScript,
+	TextureCreator,
+	CanvasUtils
+	) {
+	'use strict';
+
+	var goo;
+	var worldFittedTerrainScript = new WorldFittedTerrainScript();
+
+
+	function addSpheres(goo, worldFittedTerrainScript, dims) {
+		/*jshint loopfunc: true */
+		var meshData = new Sphere(32, 32);
+
+		var nSpheres = 4;
+		var ak = Math.PI * 2 / nSpheres;
+		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
+			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			material.uniforms.color = [
+				Math.cos(k) * 0.5 + 0.5,
+				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
+				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
+			];
+			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+			sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
+
+			var groundBoundMovementScript = new GroundBoundMovementScript();
+			groundBoundMovementScript.setTerrainSystem(worldFittedTerrainScript);
+
+			var scripts = new ScriptComponent();
+			(function(i) {
+				scripts.scripts.push({
+					run: function(entity) {
+						var translation = entity.transformComponent.transform.translation;
+
+						translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.minX*0.5+dims.maxX*0.5;
+						translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.maxZ*0.5+dims.minZ*0.5;
+
+						entity.transformComponent.setUpdated();
+					}
+				});
+			})(i);
+			scripts.scripts.push(groundBoundMovementScript);
+			sphereEntity.setComponent(scripts);
+
+			sphereEntity.addToWorld();
+
+			var light1 = new PointLight();
+			light1.color.set(0.1, 0.1,0.1);
+			var light1Entity = goo.world.createEntity('light');
+			light1Entity.setComponent(new LightComponent(light1));
+			light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+			light1Entity.addToWorld();
+		}
+	}
+
+	function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
+		var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
+		var material = Material.createMaterial(ShaderLib.texturedLit, '');
+
+		var texture = new TextureCreator().loadTexture2D(txPath);
+		material.setTexture('DIFFUSE_MAP', texture);
+
+		material.materialState.ambient = [
+			0.310305785123966943,
+			0.310305785123966943,
+			0.386363636363636367,
+			1
+		];
+		material.materialState.diffuse = [
+			0.25909090909090909,
+			0.24909090909090909,
+			0.29909090909090909,
+			1
+		];
+		material.cullState.frontFace = "CW";
+		material.cullState.cullFace = "Back";
+		//      material.cullState.enabled = false;
+		//    emissive: materialData.uniforms.materialEmissive,
+		material.materialState.specular = [0.0, 0.0, 0.0, 1];
+		material.materialState.emissive = [0, 0, 0, 1];
+		material.materialState.shininess = 0.1;
+
+		var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+		surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+		surfaceEntity.transformComponent.setUpdated();
+		surfaceEntity.addToWorld();
+	}
+
+	function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
+		var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
+		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		material.wireframe = true;
+		var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+		surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+		surfaceEntity.transformComponent.setUpdated();
+		surfaceEntity.addToWorld();
+	}
+
+	function worldFittedTerrainScriptDemo() {
+		var canvasUtils = new CanvasUtils();
+
+		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+
+			var dim1 = {
+				minX: 0,
+				maxX: 50,
+				minY: -5,
+				maxY: 15,
+				minZ: 0,
+				maxZ: 50
+			};
+
+			var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
+
+			buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
+
+			addSpheres(goo, worldFittedTerrainScript, dim1);
+
+			// Add camera
+			var camera = new Camera(45, 1, 1, 1000);
+			var cameraEntity = goo.world.createEntity("CameraEntity");
+			cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
+			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+			cameraEntity.setComponent(new CameraComponent(camera));
+			cameraEntity.addToWorld();
+
+			// Camera control set up
+			var scripts = new ScriptComponent();
+			scripts.scripts.push(new WASDControlScript({
+				domElement : goo.renderer.domElement,
+				walkSpeed : 25.0,
+				crawlSpeed : 10.0
+			}));
+			scripts.scripts.push(new MouseLookControlScript({
+				domElement : goo.renderer.domElement
+			}));
+			scripts.scripts.push(worldFittedTerrainScript);
+			cameraEntity.setComponent(scripts);
+		});
+
+		canvasUtils.loadCanvasFromPath('../../resources/checker_slope.png', function(canvas) {
+			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+
+			var dim = {
+				minX: -20,
+				maxX: 0,
+				minY: -1,
+				maxY: 0,
+				minZ: -20,
+				maxZ: 0
+			};
+
+			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
+			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
+			addSpheres(goo, worldFittedTerrainScript, dim);
+		});
+
+	}
+
+	function init() {
+		goo = new GooRunner();
+		goo.renderer.domElement.id = 'goo';
+		document.body.appendChild(goo.renderer.domElement);
+		worldFittedTerrainScriptDemo(goo);
+	}
+
+	init();
+});

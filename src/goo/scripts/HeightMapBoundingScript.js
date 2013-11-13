@@ -77,7 +77,7 @@ define(['goo/math/MathUtils'],
 			} else {
 				p3 = {x:xc, y:yc, z:this.getAt(xc, yc)};
 			}
-			return [p1, p2, p3]
+			return [p1, p2, p3];
 		};
 
 

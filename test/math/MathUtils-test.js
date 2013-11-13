@@ -118,7 +118,7 @@ define([
 			p1 = [1, 0, 0];
 			p2 = [0, 1, 0];
 			p3 = [0, 0, 1];
-			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual(+);
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([1, 1, 1]);
 
 		});
 

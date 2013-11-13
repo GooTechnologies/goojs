@@ -27,6 +27,7 @@ require([
     'goo/scripts/WASDControlScript',
     'goo/scripts/MouseLookControlScript',
     'goo/scripts/WorldFittedTerrainScript',
+	'goo/scripts/GroundBoundMovementScript',
     'goo/renderer/TextureCreator',
     'goo/util/CanvasUtils'
 ], function (
@@ -52,6 +53,7 @@ require([
     WASDControlScript,
     MouseLookControlScript,
     WorldFittedTerrainScript,
+	GroundBoundMovementScript,
     TextureCreator,
     CanvasUtils
     ) {
@@ -78,6 +80,9 @@ require([
             sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
 
+			var groundBoundMovementScript = new GroundBoundMovementScript();
+			groundBoundMovementScript.setTerrainSystem(worldFittedTerrainScript);
+
 			var scripts = new ScriptComponent();
             (function(i) {
                 scripts.scripts.push({
@@ -91,7 +96,7 @@ require([
                     }
                 });
             })(i);
-            scripts.scripts.push(worldFittedTerrainScript);
+            scripts.scripts.push(groundBoundMovementScript);
             sphereEntity.setComponent(scripts);
 
             sphereEntity.addToWorld();
@@ -230,7 +235,7 @@ require([
             scripts.scripts.push(new MouseLookControlScript({
                 domElement : goo.renderer.domElement
             }));
-            scripts.scripts.push(worldFittedTerrainScript);
+        //    scripts.scripts.push(worldFittedTerrainScript);
             cameraEntity.setComponent(scripts);
         });
 

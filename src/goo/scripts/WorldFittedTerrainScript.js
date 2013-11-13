@@ -1,9 +1,7 @@
 define([
-	'goo/scripts/HeightMapBoundingScript',
-	'goo/math/Vector3',
-	'goo/math/Matrix3x3'
+	'goo/scripts/HeightMapBoundingScript'
 	],
-	function(HeightMapBoundingScript, Vector3, Matrix3x3) {
+	function(HeightMapBoundingScript) {
 		"use strict";
 
 		var _defaults = {
@@ -122,7 +120,7 @@ define([
          * @returns (Float) height in units
          */
 
-        WorldFittedTerrainScript.prototype.getGroundHeightAtPos = function(pos) {
+        WorldFittedTerrainScript.prototype.getTerrainHeightAt = function(pos) {
             var heightData = this.getHeightDataForPosition(pos);
             if (heightData === null) {
                 return null;
@@ -141,7 +139,7 @@ define([
          * @returns (Float) diff between lowest and highest points in quad
          */
 
-        WorldFittedTerrainScript.prototype.getGroundSlopeAtPos = function(pos) {
+        WorldFittedTerrainScript.prototype.getTerrainSlopeAt = function(pos) {
             var heightData = this.getHeightDataForPosition(pos);
             if (heightData === null) {
                 return null;
@@ -171,9 +169,7 @@ define([
             return max-min;
         };
 
-
-
-		WorldFittedTerrainScript.prototype.getGroundNormalAt = function(pos) {
+		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
 			var heightData = this.getHeightDataForPosition(pos);
 			var dims = heightData.dimensions;
 
@@ -181,19 +177,7 @@ define([
 			var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
 			var n = heightData.script.getNormalAt(x, y);
 			return [n[0]*(dims.maxX - dims.minX), n[1]*(dims.maxY - dims.minY), n[2]*(dims.maxZ - dims.minZ)];
-	};
-
-
-
-
-        WorldFittedTerrainScript.prototype.run = function(entity) {
-            var transform = entity.transformComponent.transform;
-            var groundHeight = this.getGroundHeightAtPos(transform.translation.data);
-            if (groundHeight) {
-				transform.translation.data[1] = groundHeight;
-            }
-        };
-
+		};
 
         return WorldFittedTerrainScript;
 

@@ -34,5 +34,6 @@ define([
 	'test/entities/Bus-test',
 	'test/statemachine/actions/InBoxAction-test',
 	'test/scripts/HeightMapBoundingScript-test',
-	'test/scripts/WorldFittedTerrainScript-test'
+	'test/scripts/WorldFittedTerrainScript-test',
+	'test/scripts/GroundBoundMovementScript-test'
 ], function() {});
