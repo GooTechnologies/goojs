@@ -232,7 +232,7 @@ function (
 				this.shiftClipTime(World.time - this.lastTimeOfPause);
 			}
 			//this.accumulatedDelay += World.time - this.lastTimeOfPause;
-			console.log(this.accumulatedDelay); // rogue comment
+			// console.log(this.accumulatedDelay); // rogue comment
 		}
 		this.paused = false;
 	};
