@@ -70,7 +70,7 @@ define([
 	DebugDrawHelper.update = function(renderables, component, camPosition) {
 		if(component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
-			if((camera.far / camera.near) !== renderables[1].farNear) {
+			if(renderables.length > 1 && (camera.far / camera.near) !== renderables[1].farNear) {
 				renderables[1].meshData = CameraDebug.buildFrustum(camera.far / camera.near);
 				renderables[1].farNear = camera.far / camera.near;
 			}
