@@ -15,10 +15,12 @@ define(
 	function LogicNodeSine() {
                 LogicNode.call(this);
                 this.logicInterface = LogicNodeSine.logicInterface;
+                this.type = "LogicNodeSine";
                 this._time = 0;
 	}
 	
 	LogicNodeSine.prototype = Object.create(LogicNode.prototype);
+        LogicNodeSine.editorName = "Sine";
 
 	LogicNodeSine.prototype.onPropertyWrite = function(portID, value)
 	{

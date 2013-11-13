@@ -17,12 +17,15 @@ define(
                 LogicNode.call(this);
                 this.wantsProcessCall = true;
                 this.logicInterface = LogicNodeTime.logicInterface;
+                this.type = "LogicNodeTime";
                 this._time = 0;
                 this._running = true;
 	}
 
 	// Logic interface set-up	
 	LogicNodeTime.prototype = Object.create(LogicNode.prototype);
+
+	LogicNodeTime.editorName = "Time";
 	LogicNodeTime.logicInterface = new LogicInterface();
 	
 	// ports
