@@ -82,9 +82,9 @@ define([
 
 		// updating materials
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
-		if (renderables[1]) DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
+		if (renderables[1]) { DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component); }
 		// updating the transform on the second element which is assumed to need this
-		if (renderables[1]) DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
+		if (renderables[1]) { DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component); }
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
@@ -93,8 +93,8 @@ define([
 
 		// keeping scale for directional light mesh since scale is meaningless for it
 		if (component.light && component.light instanceof DirectionalLight) {
-			if (renderables[1]) renderables[1].transform.scale.scale(scale); // not enough scale!
-			if (renderables[1]) renderables[1].transform.update();
+			if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
+			if (renderables[1]) { renderables[1].transform.update(); }
 		}
 	};
 
