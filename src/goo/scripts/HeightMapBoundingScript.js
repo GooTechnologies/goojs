@@ -1,5 +1,6 @@
 define(['goo/math/MathUtils'],
-	function(MathUtils) {
+	function(
+        MathUtils) {
 
 		"use strict";
 
@@ -86,13 +87,6 @@ define(['goo/math/MathUtils'],
 			var tri = this.getTriangleAt(x, y);
 			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
 			return find.z;
-		};
-
-		// get the normal of the triangle at point
-		HeightMapBoundingScript.prototype.getNormalAt = function(x, y) {
-			var tri = this.getTriangleAt(x, y);
-			return MathUtils.getTriangleNormal(tri[0].x, tri[0].y, tri[0].z, tri[1].x, tri[1].y, tri[1].z,tri[2].x, tri[2].y, tri[2].z);
-
 		};
 
 		HeightMapBoundingScript.prototype.run = function(entity) {

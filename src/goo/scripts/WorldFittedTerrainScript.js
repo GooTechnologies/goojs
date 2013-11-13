@@ -1,8 +1,14 @@
 define([
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scripts/HeightMapBoundingScript',
+    'goo/math/Vector3'
 	],
-	function(HeightMapBoundingScript) {
+	function(HeightMapBoundingScript,
+             Vector3) {
 		"use strict";
+
+
+        var calcVec1 = new Vector3();
+        var calcVec2 = new Vector3();
 
 		var _defaults = {
 			minX: 0,
@@ -133,50 +139,28 @@ define([
             return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
         };
 
-        /**
-         * @method Looks through height data and returns the steepness of the ground at a given position
-         * @param (Array) pos Position as [x, y, z]
-         * @returns (Float) diff between lowest and highest points in quad
-         */
-
-        WorldFittedTerrainScript.prototype.getTerrainSlopeAt = function(pos) {
-            var heightData = this.getHeightDataForPosition(pos);
-            if (heightData === null) {
-                return null;
-            }
-            var dims = heightData.dimensions;
-
-            var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
-            var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
-
-            var points = [
-                heightData.script.getAt(Math.ceil(x), Math.ceil(y)),
-                heightData.script.getAt(Math.ceil(x), Math.floor(y)),
-                heightData.script.getAt(Math.floor(x), Math.ceil(y)),
-                heightData.script.getAt(Math.floor(x), Math.floor(y))
-            ];
-
-            var min = Infinity;
-            var max = -Infinity;
-            for (var i = 0; i < points.length; i++) {
-                if (points[i] < min) {
-					min = points[i];
-				}
-                if (points[i] > max) {
-					max = points[i];
-				}
-            }
-            return max-min;
-        };
-
 		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
 			var heightData = this.getHeightDataForPosition(pos);
+            if (!heightData) {
+                return null;
+            }
 			var dims = heightData.dimensions;
 
 			var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
 			var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
-			var n = heightData.script.getNormalAt(x, y);
-			return [n[0]*(dims.maxX - dims.minX), n[1]*(dims.maxY - dims.minY), n[2]*(dims.maxZ - dims.minZ)];
+            var tri = heightData.script.getTriangleAt(x, y);
+
+            var wx = (dims.maxX - dims.minX);
+            var hy = (dims.maxY - dims.minY);
+            var wz = (dims.maxZ - dims.minZ);
+
+            calcVec1.set(wx*(tri[1].x-tri[0].x), wz*(tri[1].z-tri[0].z), hy*(tri[1].y-tri[0].y));
+            calcVec2.set(wx*(tri[2].x-tri[0].x), wz*(tri[2].z-tri[0].z), hy*(tri[2].y-tri[0].y));
+            calcVec1.cross(calcVec2);
+            if (calcVec1.data[1] < 0) calcVec1.muld(-1, -1, -1);
+
+            calcVec1.muld(wx/heightData.sideQuadCount, hy/heightData.sideQuadCount , wz/heightData.sideQuadCount);
+			return calcVec1.normalize();
 		};
 
         return WorldFittedTerrainScript;
