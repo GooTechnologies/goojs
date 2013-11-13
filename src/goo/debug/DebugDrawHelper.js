@@ -40,14 +40,14 @@ define([
 	var cameraDebug = new CameraDebug();
 	var meshRendererDebug = new MeshRendererDebug();
 
-	DebugDrawHelper.getRenderablesFor = function(component) {
+	DebugDrawHelper.getRenderablesFor = function(component, options) {
 		var meshes, material;
-		if(component.type === 'LightComponent') {
-			meshes = lightDebug.getMesh(component.light);
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 
+		if(component.type === 'LightComponent') {
+			meshes = lightDebug.getMesh(component.light, options);
+			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
-			meshes = cameraDebug.getMesh(component.camera);
+			meshes = cameraDebug.getMesh(component.camera, options);
 			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 
 			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
@@ -57,18 +57,14 @@ define([
 			meshes = meshRendererDebug.getMesh();
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		}
-		return [
-		 {
-			 meshData: meshes[0],
-			 transform: new Transform(),
-			 materials: [material]
-		 },
-		 {
-			 meshData: meshes[1],
-			 transform: new Transform(),
-			 materials: [material]
-		 }
-		];
+
+		return meshes.map(function (mesh) {
+			return {
+				meshData: mesh,
+				transform: new Transform(),
+				materials: [material]
+			};
+		});
 	};
 
 	DebugDrawHelper.update = function(renderables, component, camPosition) {
@@ -81,15 +77,16 @@ define([
 			component.camera.changedProperties = false;
 		}
 		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
-		DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
-		DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
+
+		if (renderables[1]) DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
+		if (renderables[1]) DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
 
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 		renderables[0].transform.scale.setd(scale,scale,scale);
 		renderables[0].transform.update();
 		if (component.light && component.light instanceof DirectionalLight) {
-			renderables[1].transform.scale.scale(scale);
-			renderables[1].transform.update();
+			if (renderables[1]) renderables[1].transform.scale.scale(scale);
+			if (renderables[1]) renderables[1].transform.update();
 		}
 	};
 

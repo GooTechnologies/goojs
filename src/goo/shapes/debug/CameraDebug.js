@@ -19,9 +19,9 @@ define([
 		this._camera = CameraDebug.buildCamera();
 	}
 
-	CameraDebug.prototype.getMesh = function(camera) {
+	CameraDebug.prototype.getMesh = function(camera, options) {
 		var farNear = camera.far / camera.near;
-		return [this._camera, CameraDebug.buildFrustum(farNear)];
+		return options.full ? [this._camera, CameraDebug.buildFrustum(farNear)] : [this._camera];
 	};
 
 	CameraDebug.buildFrustum = function(farNear) {
