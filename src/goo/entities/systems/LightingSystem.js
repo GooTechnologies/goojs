@@ -64,6 +64,7 @@ function (
 	 * Disables overriding of lights tracked by the system
 	 */
 	LightingSystem.prototype.clearOverrideLights = function () {
+		this.overrideLights = undefined;
 		SystemBus.emit('goo.setLights', this.lights);
 		this._needsUpdate = true;
 	};
