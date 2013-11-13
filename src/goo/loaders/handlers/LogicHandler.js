@@ -36,8 +36,6 @@ define([
 	};
 
 	LogicHandler.prototype.update = function(ref, config) {
-		
-		console.log("LogicHandler:update");
 		var obj;
 		switch (config.type)
 		{
@@ -51,7 +49,6 @@ define([
 		// Special way of just reconfiguring the objects without needing to re-create them.
 		var that = this;
 		return PromiseUtil.createDummyPromise().then(function() {
-			console.log("upp dating");
 			that._objects[ref] = obj;
 		}, function() {
 		
