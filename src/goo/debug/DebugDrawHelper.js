@@ -68,6 +68,9 @@ define([
 	};
 
 	DebugDrawHelper.update = function(renderables, component, camPosition) {
+		// major refactoring needed here
+
+		// rebuilding camera frustum if needed
 		if(component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
 			if(renderables.length > 1 && (camera.far / camera.near) !== renderables[1].farNear) {
@@ -76,16 +79,21 @@ define([
 			}
 			component.camera.changedProperties = false;
 		}
-		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
 
+		// updating materials
+		DebugDrawHelper[component.type].updateMaterial(renderables[0].materials[0], component);
 		if (renderables[1]) DebugDrawHelper[component.type].updateMaterial(renderables[1].materials[0], component);
+		// updating the transform on the second element which is assumed to need this
 		if (renderables[1]) DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component);
 
+		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 		renderables[0].transform.scale.setd(scale,scale,scale);
 		renderables[0].transform.update();
+
+		// keeping scale for directional light mesh since scale is meaningless for it
 		if (component.light && component.light instanceof DirectionalLight) {
-			if (renderables[1]) renderables[1].transform.scale.scale(scale);
+			if (renderables[1]) renderables[1].transform.scale.scale(scale); // not enough scale!
 			if (renderables[1]) renderables[1].transform.update();
 		}
 	};
