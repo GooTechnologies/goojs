@@ -4,7 +4,8 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Cylinder',
 	'goo/shapes/Torus',
-	'goo/shapes/Disk'
+	'goo/shapes/Disk',
+	'goo/shapes/Cone'
 ],
 /** @lends */
 
@@ -14,15 +15,15 @@ function (
 	Sphere,
 	Cylinder,
 	Torus,
-	Disk
+	Disk,
+	Cone
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Factory for shape creation.
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
-
 	function ShapeCreatorMemoized() {
 	}
 
@@ -155,6 +156,28 @@ function (
 				});
 			} else {
 				return new Disk(options.radialSamples, radius, options.pointiness);
+			}
+		} else {
+			return oldMeshData;
+		}
+	};
+
+	ShapeCreatorMemoized.createCone = function (options, oldMeshData) {
+		options = options || {};
+		options.radialSamples = options.radialSamples || 8;
+		options.height = typeof options.height === 'undefined' ? 0 : options.height;
+		var radius = 1;
+
+		if (!oldMeshData ||
+			options.radialSamples !== oldMeshData.radialSamples ||
+			options.height !== oldMeshData.height ||
+			radius !== oldMeshData.radius) {
+			if (options.height === Math.floor(options.height)) {
+				return cacheOrCreate('cone', options, function() {
+					return new Cone(options.radialSamples, radius, options.height);
+				});
+			} else {
+				return new Cone(options.radialSamples, radius, options.height);
 			}
 		} else {
 			return oldMeshData;
