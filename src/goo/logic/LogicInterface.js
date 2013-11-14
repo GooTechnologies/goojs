@@ -36,6 +36,20 @@ define(
 	LogicInterface.prototype.getPorts = function() {
 		return this.ports;
 	}
+	
+	/**
+	* Computes a name for the port that can be saved in the data model without having it confused when (other) ports are added/removed
+	*/
+	LogicInterface.makePortDataName = function(port) {
+		if (port.dataname !== undefined)
+			return port.dataname;
+		else
+			return "dn-" + port.name;
+	}
+	
+	LogicInterface.assignPortDataName = function(port, dataname) {
+		port.dataname = dataname;
+	}
 
 	return LogicInterface;
 });
