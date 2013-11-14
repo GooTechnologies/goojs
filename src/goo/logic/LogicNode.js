@@ -36,11 +36,9 @@ define(
 	 */
 	LogicNode.prototype.addToWorldLogic = function(world) {
 	
-	        console.log("cykel1 " + this.logicInstance);
 	        if (this.logicInstance != null)
 	                this.logicInstance.remove();
 
-                console.log("pump");	                
 		this.logicInstance = world.logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
 		
 	}
