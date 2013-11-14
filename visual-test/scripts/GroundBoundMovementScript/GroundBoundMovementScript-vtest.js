@@ -15,6 +15,7 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/components/MovementComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
@@ -41,6 +42,7 @@ require([
 	OrbitCamControlScript,
 	EntityUtils,
 	ScriptComponent,
+	MovementComponent,
 	MeshData,
 	MeshRendererComponent,
 	Vector3,
@@ -67,6 +69,37 @@ require([
 		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
 
+
+		var randomWalk = function(groundBoundMovementScript) {
+			function applySelection(selection) {
+
+				switch (selection) {
+					case 1:
+						groundBoundMovementScript.applyForward(Math.round(1-Math.random()*2));
+						break;
+					case 2:
+						groundBoundMovementScript.applyStrafe(Math.round(1-Math.random()*2));
+
+						break;
+					case 3:
+						groundBoundMovementScript.applyJump(1);
+
+						break;
+					case 4:
+						groundBoundMovementScript.applyTurn(1-Math.random()*2);
+						break;
+				}
+
+				setTimeout(function() {
+					selection = Math.ceil(Math.random()*4);
+					applySelection(selection);
+				}, 1000+Math.random()*2000);
+			}
+
+			applySelection(3);
+		};
+
+
 		var nSpheres = 4;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
@@ -80,34 +113,27 @@ require([
 			sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
 
+			sphereEntity.setComponent(new MovementComponent());
+
 			var groundBoundMovementScript = new GroundBoundMovementScript();
 			groundBoundMovementScript.setTerrainSystem(worldFittedTerrainScript);
 
 			var scripts = new ScriptComponent();
-			(function(i) {
-				scripts.scripts.push({
-					run: function(entity) {
-						var translation = entity.transformComponent.transform.translation;
-
-						translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.minX*0.5+dims.maxX*0.5;
-						translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.maxZ*0.5+dims.minZ*0.5;
-
-						entity.transformComponent.setUpdated();
-					}
-				});
-			})(i);
 			scripts.scripts.push(groundBoundMovementScript);
 			sphereEntity.setComponent(scripts);
-
 			sphereEntity.addToWorld();
+			randomWalk(groundBoundMovementScript);
 
-			var light1 = new PointLight();
-			light1.color.set(0.1, 0.1,0.1);
-			var light1Entity = goo.world.createEntity('light');
-			light1Entity.setComponent(new LightComponent(light1));
-			light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
-			light1Entity.addToWorld();
+
+
+
 		}
+		var light1 = new PointLight();
+		light1.color.set(0.1, 0.1,0.1);
+		var light1Entity = goo.world.createEntity('light');
+		light1Entity.setComponent(new LightComponent(light1));
+		light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+		light1Entity.addToWorld();
 	}
 
 	function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
@@ -153,19 +179,19 @@ require([
 		surfaceEntity.addToWorld();
 	}
 
-	function worldFittedTerrainScriptDemo() {
+	function groundBoundMovementScriptDemo() {
 		var canvasUtils = new CanvasUtils();
 
 		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim1 = {
-				minX: 0,
-				maxX: 50,
-				minY: -5,
+				minX: -150,
+				maxX: 150,
+				minY: -15,
 				maxY: 15,
-				minZ: 0,
-				maxZ: 50
+				minZ: -150,
+				maxZ: 150
 			};
 
 			var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
@@ -202,8 +228,8 @@ require([
 			var dim = {
 				minX: -20,
 				maxX: 0,
-				minY: -1,
-				maxY: 0,
+				minY: 25,
+				maxY: 28,
 				minZ: -20,
 				maxZ: 0
 			};
@@ -220,7 +246,7 @@ require([
 		goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-		worldFittedTerrainScriptDemo(goo);
+		groundBoundMovementScriptDemo();
 	}
 
 	init();

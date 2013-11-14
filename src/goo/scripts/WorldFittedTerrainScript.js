@@ -36,16 +36,6 @@ define([
 				throw { name: "Terrain Exception", message: "Heightmap data is not a square" };
 			}
 
-        /*  Write tests for this stuff
-            function checkTerrainSpatialConflict(dim) {
-
-            }
-
-            for (var i = 0; i < heightMapData.length; i++) {
-                checkTerrainSpatialConflict(heightMapData[i].dimensions)
-            }
-        */
-
 			return true;
 		}
 
@@ -76,8 +66,8 @@ define([
 
 		/**
 		 * @method Adds a block of height data from an image at given dimensions and stores the script in an array.
-		 * @param (String) file to load height data from
-		 * @param (Object) dimensions to fit the data within
+		 * @param heightMatrix (Array) file to load height data from
+		 * @param dimensions (Object) dimensions to fit the data within
 		 */
 
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
@@ -88,7 +78,7 @@ define([
 
 		/**
 		 * @method Returns the script relevant to a given position
-		 * @param (Array) pos data, typically use entity transform.data
+		 * @param pos (Array) data, typically use entity transform.data
 		 * @returns (Object) container object with script and its world dimensions
 		 */
 
@@ -108,10 +98,10 @@ define([
 
         /**
          * Adjusts coordinates to from heightMap to fit the dimensions of raw displacement data.
-         * @param axPos
-         * @param axMin
-         * @param axMax
-         * @param quadCount
+         * @param axPos {Number}
+         * @param axMin {Number}
+         * @param axMax {Number}
+         * @param quadCount {Number}
          * @return {Number}
          */
 
@@ -122,10 +112,10 @@ define([
 
 		/**
 		 * Returns coordinates from raw displacement space to fit the dimensions of a registered heightMap.
-		 * @param axPos
-		 * @param axMin
-		 * @param axMax
-		 * @param quadCount
+		 * @param axPos {Number}
+		 * @param axMin {Number}
+		 * @param axMax {Number}
+		 * @param quadCount {Number}
 		 * @return {Number}
 		 */
 
@@ -137,7 +127,7 @@ define([
 
 		/**
          * @method Looks through height data and returns the elevation of the ground at a given position
-         * @param (Array) pos Position as [x, y, z]
+         * @param pos (Array) Position as [x, y, z]
          * @returns (Float) height in units
          */
 
@@ -153,6 +143,12 @@ define([
             var matrixHeight = heightData.script.getPreciseHeight(tx, tz);
             return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
         };
+
+		/**
+		 * Returns the a normalized terrain normal for the provided position
+		 * @param pos {Array} the position as [x, y, z]
+		 * @returns {Vector3} the normal vector
+		 */
 
 		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
 			var heightData = this.getHeightDataForPosition(pos);
