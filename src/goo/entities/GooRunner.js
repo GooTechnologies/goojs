@@ -226,7 +226,10 @@ function (
 			}
 			if(this._picking.doPick) {
 				var cc = this.renderer.clearColor.data;
-				this._picking.clearColorStore = cc.slice();
+				this._picking.clearColorStore[0] = cc[0];
+				this._picking.clearColorStore[1] = cc[1];
+				this._picking.clearColorStore[2] = cc[2];
+				this._picking.clearColorStore[3] = cc[3];
 				this.renderer.setClearColor(0,0,0,1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
