@@ -1,6 +1,12 @@
 define(
+	[
+	"goo/logic/LogicInterface"
+	]
+	,
 	/** @lends */
-	function (
+	function 
+	(
+		LogicInterface
 	) {
 	
 	"use strict";
@@ -20,17 +26,70 @@ define(
 	* returned can then be used to make connections through connectEndPoints
 	* 
 	* @param iface The interface descriptor (LogicInterface) for the object 'instance'
-	* @param instance The object that exposes the logic interface definedy by iface
+	* @param instance The object that exposes the logic interface defined by iface.
+	* @param name The name (ref) for adding connections by name. Supply null for automatically generated name.
 	* @param wantsProcessCall If the instance passed wants processLogic per-frame calls
 	* @return An instance descriptor 
 	*/
-	LogicLayer.prototype.addInterfaceInstance = function(iface, instance, wantsProcessCall) {
-		// create the instance description
-		var instDesc = { id: this._instanceID, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
-		this._logicInterfaces[this._instanceID++] = instDesc;
+	LogicLayer.prototype.addInterfaceInstance = function(iface, instance, name, wantsProcessCall) {
 		
-		console.log("The interface " + instDesc + " and " + instDesc.iface.getPorts() + " and " + iface);
+		// if wished, autogenerate name.
+		if (name === null)
+			name = "_auto-" + this._instanceID;
+		
+		// create the instance description
+		var instDesc = { id: this._instanceID, name: name, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
+		this._instanceID++;
+		
+		// also supply self-destructing code
+		var _this = this;
+		instDesc.remove = function() {
+			delete _this._logicInterfaces[name];
+		}
+		instDesc.getPorts = function() {
+			return iface.getPorts(); 
+		}
+
+		this._logicInterfaces[name] = instDesc;
+
 		return instDesc;
+	}
+	
+	LogicLayer.resolvePortID = function(instDesc, portName)
+	{
+		if (typeof portName == "number")
+			return portName;
+			
+		// could be good to actually figure out if we need to do this.
+		// if realPortid is a number, no need to do all this
+		var ports = instDesc.getPorts();
+		for (var j=0;j<ports.length;j++)
+		{
+			if (LogicInterface.makePortDataName(ports[j]) == portName)
+			{
+				return ports[j].id;
+			}
+		}
+		
+		console.log("Failed to resolve port");
+	}
+	
+	LogicLayer.prototype.addConnectionByName = function(instDesc, sourcePort, targetName, targetPort) {
+		//
+		// Adding connection here which will be in unresolved state
+		// [targetName, targetPort]
+		//
+		// (TODO: When resolved a 3rd column is adedd containing the direct pointer)
+		
+		sourcePort = LogicLayer.resolvePortID(instDesc, sourcePort);
+		
+		if (instDesc.outConnections === undefined)
+			instDesc.outConnections = {}
+		
+		if (instDesc.outConnections[sourcePort] === undefined)
+			instDesc.outConnections[sourcePort] = [];
+		
+		instDesc.outConnections[sourcePort].push([targetName, targetPort]);
 	}
 	
 	/**
@@ -38,6 +97,7 @@ define(
 	* was created with). All connected objects get the onPropertyWrite call.
 	*/
 	LogicLayer.writeValue = function(instDesc, portID, value) {
+
 		// See if there are any connections at all
 		if (instDesc.outConnections === undefined)
 			return;
@@ -45,10 +105,28 @@ define(
 		var cArr = instDesc.outConnections[portID];
 		if (cArr === undefined)
 			return;
-		
+			
+		if (cArr.length == 0)
+			delete instDesc.outConnections;
+				
 		// Write to all connected instances	
 		for (var i = 0;i < cArr.length;i++)
-			cArr[i][0].obj.onPropertyWrite(cArr[i][1], value);
+		{
+			var tconn = cArr[i];
+			var tgt = instDesc.layer._logicInterfaces[tconn[0]];
+			if (tgt === undefined)
+				continue; // unresolved.
+			
+			// unmapped
+			if (tconn.length == 2)
+			{
+				var realPortId = LogicLayer.resolvePortID(tgt, tconn[1]);
+				tconn.push(realPortId);
+			}
+			
+			// use mapped port name
+			tgt.obj.onPropertyWrite(cArr[i][2], value);
+		}
 	}
 
 	/**
@@ -66,7 +144,13 @@ define(
 		
 		// Write to all connected instances	
 		for (var i = 0;i < cArr.length;i++)
-			cArr[i][0].obj.onEvent(cArr[i][1]);
+		{
+			var tgt = instDesc.layer._logicInterfaces[cArr[i][0]];
+			if (tgt === undefined)
+				continue; // unresolved.
+		
+			tgt.obj.onEvent(cArr[i][1]);
+		}
 	}
 	
 	LogicLayer.prototype.process = function(tpf) {
@@ -77,7 +161,6 @@ define(
 		}
 	}
 	
-	
 	/**
 	* For all objects that follow the convention of having an logicInstance property for their connections
 	* (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance
@@ -87,21 +170,11 @@ define(
 		this.connectEndpoints(sourceObj.logicInstance, sourcePort, destObj.logicInstance, destPort);	
 	}
 	
-
 	/**
 	* Connects two objects through their instance descriptors and port names.
 	*/
 	LogicLayer.prototype.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
-		// Note: An option might be to store this in a connection list in this layer
-		//       (which was the original idea), but write into the sourceInst description instead.
-		if (sourceInst.outConnections == undefined)
-			sourceInst.outConnections = {};
-		if (sourceInst.outConnections[sourcePort] == undefined)
-			sourceInst.outConnections[sourcePort] = [];
-		
-		var connectionDef = [destInst, destPort];
-		sourceInst.outConnections[sourcePort].push(connectionDef);	
-		console.log("Connected from sourcePort to destPort " + sourcePort + "/" + destPort + " dest inst=" + destInst);
+		this.addConnectionByName(sourceInst, sourcePort, destInst.name, destPort);
 	}
 	
 	return LogicLayer;

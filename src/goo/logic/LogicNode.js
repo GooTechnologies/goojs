@@ -15,6 +15,9 @@ define(
 			writable : false
 		});
 		
+		// create default configuration.
+		this.config = { ref: ('unconf-' + this.id) };
+
 		this.name = name !== undefined ? name : 'Logic_' + this.id;
 
                 // If instantiated in a logic layer.
@@ -32,8 +35,26 @@ define(
 	 * @param {world} World to add it to
 	 */
 	LogicNode.prototype.addToWorldLogic = function(world) {
-		this.logicInstance = world.logicLayer.addInterfaceInstance(this.logicInterface, this, this.wantsProcessCall);
+	
+	        console.log("cykel1 " + this.logicInstance);
+	        if (this.logicInstance != null)
+	                this.logicInstance.remove();
+
+                console.log("pump");	                
+		this.logicInstance = world.logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
+		
 	}
+	
+	LogicNode.prototype.configure = function(newConfig) {
+	        this.onConfigure(newConfig);
+	        this.config = newConfig;
+        }
+        
+        /**
+        * Override me
+        */
+        LogicNode.prototype.onConfigure = function(newConfig) {
+        };
 
 	LogicNode.instanceCount = 0;
 

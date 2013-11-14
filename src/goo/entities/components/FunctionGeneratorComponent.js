@@ -34,7 +34,7 @@ function (
 
 	// Adding
 	FunctionGeneratorComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
-		this.logicInstance = logicLayer.addInterfaceInstance(FunctionGeneratorComponent.logicInterface, this, true);
+		this.logicInstance = logicLayer.addInterfaceInstance(FunctionGeneratorComponent.logicInterface, this, null, true);
 	}
 
 	FunctionGeneratorComponent.prototype.processLogic = function(tpf) {

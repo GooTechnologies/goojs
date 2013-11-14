@@ -24,7 +24,7 @@ define(
 	}
 	
 	LogicInterface.prototype.addInputEvent = function(name_) {
-		this.ports.push({ id: ++this.portID, input: false, property: false, event: true, name: name_ });
+		this.ports.push({ id: ++this.portID, input: true, property: false, event: true, name: name_ });
 		return this.portID;
 	}
 

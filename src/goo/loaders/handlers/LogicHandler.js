@@ -2,6 +2,8 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/logic/LogicNodeTime',
 	'goo/logic/LogicNodeSine',
+	'goo/logic/LogicNodeDebug',
+	'goo/logic/LogicNodes',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -9,6 +11,8 @@ define([
 	ConfigHandler,
 	LogicNodeTime,
 	LogicNodeSine,
+	LogicNodeDebug,
+	LogicNodes,
 	RSVP,
 	PromiseUtil,
 	_
@@ -36,23 +40,31 @@ define([
 	};
 
 	LogicHandler.prototype.update = function(ref, config) {
-		var obj;
-		switch (config.type)
+		// Special way of just reconfiguring the objects without needing to re-create them.
+		var obj = this._objects[ref];
+		if (obj === undefined)
 		{
-			case "LogicNodeTime": obj = new LogicNodeTime(config); break;
-			case "LogicNodeSine": obj = new LogicNodeSine(config); break;
-			default:
-				console.warn("unknown logic node type " + config.type);
-				return;
+			var fn = LogicNodes.getClass(config.type);
+			obj = new fn();
 		}
 		
-		// Special way of just reconfiguring the objects without needing to re-create them.
-		var that = this;
-		return PromiseUtil.createDummyPromise().then(function() {
-			that._objects[ref] = obj;
-		}, function() {
+		// apply new config.
+		obj.configure(config);
+		obj.addToWorldLogic(this.world);		
 		
-		});
+		if (config.connections !== undefined)
+		{
+			// need to add connections every time since adding to world logic erases
+			// previously stored connections (with 'obj' as source)
+		        for (var i=0;i<config.connections.length;i++)
+		        {
+		                var conn = config.connections[i];
+        		        this.world.logicLayer.addConnectionByName(obj.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
+                        }
+                }
+		
+		this._objects[ref] = obj;
+		return PromiseUtil.createDummyPromise(obj);
 	};
 
 	LogicHandler.prototype.remove = function(ref) {
