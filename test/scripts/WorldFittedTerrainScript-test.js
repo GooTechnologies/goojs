@@ -77,6 +77,30 @@ define([
 
 		});
 
+		it('verifies return axis to world dimensions', function() {
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 0, 1, 2);
+			expect(displacedAxis).toEqual(0);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 30, 45, 5);
+			expect(displacedAxis).toEqual(30);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(5, 30, 45, 5);
+			expect(displacedAxis).toEqual(45);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0.5, 0, 10, 1);
+			expect(displacedAxis).toEqual(5);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0.2, 1, 11, 2);
+			expect(displacedAxis).toEqual(2);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 10, 20, 2);
+			expect(displacedAxis).toEqual(10);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(2, 10, 20, 2);
+			expect(displacedAxis).toEqual(20);
+
+		});
+
 		it ('looks for positions on positive displaced heightMatrix', function() {
 			var dimensions = {
 				minX: 100,

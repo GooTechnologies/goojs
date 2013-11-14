@@ -110,6 +110,34 @@ require([
         }
     }
 
+	function addNormalPointers(goo, worldFittedTerrainScript, dims) {
+		/*jshint loopfunc: true */
+		var meshData = new Sphere(32, 32);
+
+		var nSpheres = 20;
+		var ak = Math.PI * 2 / nSpheres;
+		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
+			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			material.uniforms.color = [
+				Math.cos(k/nSpheres) * 0.5 + 0.5,
+				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
+				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
+			];
+			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+
+			var px = dims.maxX*0.5+dims.minX*0.5;
+			var pz = dims.minZ+(i/nSpheres*(dims.maxZ-dims.minZ));
+			var py = worldFittedTerrainScript.getTerrainHeightAt([px, dims.minY, pz]);
+
+			sphereEntity.transformComponent.transform.translation.setd(px,py,pz);
+			sphereEntity.transformComponent.transform.scale.setd(0.3, 0.3, 3);
+
+			var normal = worldFittedTerrainScript.getTerrainNormalAt([px, py, pz]);
+			sphereEntity.transformComponent.transform.rotation.lookAt(normal, Vector3.UNIT_Y);
+			sphereEntity.addToWorld();
+		}
+	}
+
     function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
         var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
         var material = Material.createMaterial(ShaderLib.texturedLit, '');
@@ -173,7 +201,7 @@ require([
             buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
 
             addSpheres(goo, worldFittedTerrainScript, dim1);
-
+			addNormalPointers(goo, worldFittedTerrainScript, dim1);
             var dim2 = {
                 minX: 50,
                 maxX: 75,
@@ -186,6 +214,7 @@ require([
             var terrainData2 = worldFittedTerrainScript.addHeightData(matrix, dim2);
             buildSurfaceMesh(terrainData2.script.matrixData, terrainData2.dimensions, "terrain_mesh_2", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim2);
+			addNormalPointers(goo, worldFittedTerrainScript, dim2);
 
             var dim3 = {
                 minX: -50,
@@ -200,7 +229,7 @@ require([
             buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../resources/heightmap_small.png');
         //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
-
+			addNormalPointers(goo, worldFittedTerrainScript, dim3);
             var dim4 = {
                 minX: -40,
                 maxX: 0,
@@ -213,7 +242,7 @@ require([
             var terrainData4 = worldFittedTerrainScript.addHeightData(matrix, dim4);
             buildSurfaceMesh(terrainData4.script.matrixData, terrainData4.dimensions, "terrain_mesh_4", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim4);
-
+			addNormalPointers(goo, worldFittedTerrainScript, dim4);
 
 
 
@@ -221,7 +250,7 @@ require([
             var camera = new Camera(45, 1, 1, 1000);
             var cameraEntity = goo.world.createEntity("CameraEntity");
             cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
-            cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+            cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Z);
             cameraEntity.setComponent(new CameraComponent(camera));
             cameraEntity.addToWorld();
 
@@ -259,7 +288,26 @@ require([
 			buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
+			addNormalPointers(goo, worldFittedTerrainScript, dim);
 
+		//	var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+
+			dim = {
+				minX: 0,
+				maxX: 20,
+				minY: -30,
+				maxY: -5,
+				minZ: 0,
+				maxZ: 20
+			};
+
+			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
+
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_6", goo.world, '../../resources/check.png');
+			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
+
+			addSpheres(goo, worldFittedTerrainScript, dim);
+			addNormalPointers(goo, worldFittedTerrainScript, dim);
 		});
 
     }

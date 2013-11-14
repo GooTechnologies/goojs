@@ -107,7 +107,7 @@ define([
 		};
 
         /**
-         * Adjusts coordinates to fit the dimensions of a registered heightMap.
+         * Adjusts coordinates to from heightMap to fit the dimensions of raw displacement data.
          * @param axPos
          * @param axMin
          * @param axMax
@@ -118,6 +118,21 @@ define([
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
 			var matrixPos = axPos-axMin;
 			return quadCount*matrixPos/(axMax - axMin);
+		};
+
+		/**
+		 * Returns coordinates from raw displacement space to fit the dimensions of a registered heightMap.
+		 * @param axPos
+		 * @param axMin
+		 * @param axMax
+		 * @param quadCount
+		 * @return {Number}
+		 */
+
+		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
+			var quadSize = (axMax-axMin) / quadCount;
+			var insidePos = axPos * quadSize;
+			return axMin+insidePos;
 		};
 
 		/**
@@ -150,17 +165,21 @@ define([
 			var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
             var tri = heightData.script.getTriangleAt(x, y);
 
-            var wx = (dims.maxX - dims.minX);
-            var hy = (dims.maxY - dims.minY);
-            var wz = (dims.maxZ - dims.minZ);
+			for (var i = 0; i < tri.length; i++) {
+				tri[i].x = this.returnToWorldDimensions(tri[i].x, dims.minX, dims.maxX, heightData.sideQuadCount);
+				tri[i].z = this.returnToWorldDimensions(tri[i].z, dims.minY, dims.maxY, 1);
+				tri[i].y = this.returnToWorldDimensions(tri[i].y, dims.minZ, dims.maxZ, heightData.sideQuadCount);
+			}
 
-            calcVec1.set(wx*(tri[1].x-tri[0].x), wz*(tri[1].z-tri[0].z), hy*(tri[1].y-tri[0].y));
-            calcVec2.set(wx*(tri[2].x-tri[0].x), wz*(tri[2].z-tri[0].z), hy*(tri[2].y-tri[0].y));
+            calcVec1.set((tri[1].x-tri[0].x), (tri[1].z-tri[0].z), (tri[1].y-tri[0].y));
+            calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));
             calcVec1.cross(calcVec2);
-            if (calcVec1.data[1] < 0) calcVec1.muld(-1, -1, -1);
+            if (calcVec1.data[1] < 0) {
+				calcVec1.muld(-1, -1, -1);
+			}
 
-            calcVec1.muld(wx/heightData.sideQuadCount, hy/heightData.sideQuadCount , wz/heightData.sideQuadCount);
-			return calcVec1.normalize();
+			calcVec1.normalize();
+			return calcVec1;
 		};
 
         return WorldFittedTerrainScript;
