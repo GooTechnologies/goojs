@@ -47,10 +47,7 @@ define(
 		        LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, this._time);
 
 		        if (old < 1 && this._time >= 1)
-		        {
 		        	LogicLayer.fireEvent(this.logicInstance, LogicNodeTime.outEventReached1);
-		        	console.log("LogicNodeTime fired reached1 event");
-			}
 		}
 	}
 	
@@ -66,7 +63,6 @@ define(
 		}
 		else if (event == LogicNodeTime.inEventReset)
 		{
-			console.log("LogicNodeTime got reset event");
 			this._time = 0;
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, 0);
 		}
