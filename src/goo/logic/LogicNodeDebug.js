@@ -30,7 +30,7 @@ define(
 	
 	LogicNodeDebug.prototype.onEvent = function(portID)
 	{
-		console.log("LogicNodeDebug (" + this.logicInstance.name + ") event " + portID); 
+		console.log("LogicNodeDebug (" + this.logicInstance.name + ") event on port " + portID); 
 	}
 	
 	LogicNodeDebug.logicInterface = new LogicInterface();

@@ -145,11 +145,19 @@ define(
 		// Write to all connected instances	
 		for (var i = 0;i < cArr.length;i++)
 		{
-			var tgt = instDesc.layer._logicInterfaces[cArr[i][0]];
+			var tconn = cArr[i];
+			var tgt = instDesc.layer._logicInterfaces[tconn[0]];
 			if (tgt === undefined)
 				continue; // unresolved.
-		
-			tgt.obj.onEvent(cArr[i][1]);
+
+			// unmapped
+			if (tconn.length == 2)
+			{
+				var realPortId = LogicLayer.resolvePortID(tgt, tconn[1]);
+				tconn.push(realPortId);
+			}
+
+			tgt.obj.onEvent(cArr[i][2]);
 		}
 	}
 	
