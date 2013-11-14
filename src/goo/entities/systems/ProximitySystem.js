@@ -15,7 +15,7 @@ function (
 	 * @param {RenderSystem} renderSystem
 	 */
 	function ProximitySystem() {
-		System.call(this, 'ProximitySystem', ['ProximityComponent', 'MeshDataComponent', 'MeshRendererComponent']);
+		System.call(this, 'ProximitySystem', ['ProximityComponent']);
 
 		this.collections = {
 			red: { name: 'red', collection: [] },
