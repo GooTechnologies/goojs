@@ -13,6 +13,7 @@ define([
 	"goo/entities/systems/AnimationSystem",
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
+	'goo/entities/systems/MovementSystem',
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -32,7 +33,9 @@ function (
 	AnimationSystem,
 	LightDebugSystem,
 	CameraDebugSystem,
+	MovementSystem,
 	GameUtils,
+
 	Logo
 ) {
 	"use strict";
@@ -70,6 +73,7 @@ function (
 		this.world.setSystem(new AnimationSystem());
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
+		this.world.setSystem(new MovementSystem());
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
