@@ -9,7 +9,8 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/logic/LogicNodeRandom',
-	'goo/logic/LogicNodeVec3'
+	'goo/logic/LogicNodeVec3',
+	'goo/logic/LogicNodeMultiply'
 ], function(
 	ConfigHandler,
 	LogicNodeTime,
