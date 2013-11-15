@@ -13,7 +13,6 @@ define([
 		beforeEach(function() {
 			heightAtPos = undefined;
 			terrainScript = new WorldFittedTerrainScript();
-
 		});
 
 		var heightMatrix = [[0, 0, 0, 0], [0, 0.5, 0.5, 0], [0.5, 1, 1, 0.5], [1, 1, 1, 1]];
@@ -31,17 +30,17 @@ define([
 
 		it ('looks for positions on a default dimensions heightMatrix', function() {
 			terrainScript.addHeightData(heightMatrix);
-			heightAtPos = terrainScript.getGroundHeightAtPos([0,0,0]);
+			heightAtPos = terrainScript.getTerrainHeightAt([1,1,1]);
 			expect(heightAtPos).toEqual(0);
-			heightAtPos = terrainScript.getGroundHeightAtPos([100,50,100]);
-			expect(heightAtPos).toEqual(50);
+			heightAtPos = terrainScript.getTerrainHeightAt([99.99,49,99.99]);
+			expect(heightAtPos).toBeCloseTo(49.9924);
 		});
 
 		it ('looks outside default dimensions', function() {
 			terrainScript.addHeightData(heightMatrix);
-			heightAtPos = terrainScript.getGroundHeightAtPos([-1,0,0]);
+			heightAtPos = terrainScript.getTerrainHeightAt([-1,0,0]);
 			expect(heightAtPos).toEqual(null);
-			heightAtPos = terrainScript.getGroundHeightAtPos([100,50,101]);
+			heightAtPos = terrainScript.getTerrainHeightAt([100,50,101]);
 			expect(heightAtPos).toEqual(null);
 		});
 
@@ -78,6 +77,30 @@ define([
 
 		});
 
+		it('verifies return axis to world dimensions', function() {
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 0, 1, 2);
+			expect(displacedAxis).toEqual(0);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 30, 45, 5);
+			expect(displacedAxis).toEqual(30);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(5, 30, 45, 5);
+			expect(displacedAxis).toEqual(45);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0.5, 0, 10, 1);
+			expect(displacedAxis).toEqual(5);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0.2, 1, 11, 2);
+			expect(displacedAxis).toEqual(2);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(0, 10, 20, 2);
+			expect(displacedAxis).toEqual(10);
+
+			var displacedAxis = terrainScript.returnToWorldDimensions(2, 10, 20, 2);
+			expect(displacedAxis).toEqual(20);
+
+		});
+
 		it ('looks for positions on positive displaced heightMatrix', function() {
 			var dimensions = {
 				minX: 100,
@@ -88,12 +111,12 @@ define([
 				maxZ: 200
 			};
 			terrainScript.addHeightData(heightMatrix, dimensions);
-			heightAtPos = terrainScript.getGroundHeightAtPos([100,50,100]);
+			heightAtPos = terrainScript.getTerrainHeightAt([100,50,100]);
 			expect(heightAtPos).toEqual(dimensions.minY);
-			heightAtPos = terrainScript.getGroundHeightAtPos([200,100,200]);
+			heightAtPos = terrainScript.getTerrainHeightAt([200,100,200]);
 			expect(heightAtPos).toEqual(dimensions.maxY);
-            heightAtPos = terrainScript.getGroundHeightAtPos([166.666,100,100]);
-            expect(heightAtPos).toBeCloseTo(dimensions.minY+0.5*(dimensions.maxY-dimensions.minY));
+            heightAtPos = terrainScript.getTerrainHeightAt([150,100,150]);
+            expect(heightAtPos).toBeCloseTo(87.5);
 		});
 
         it ('looks for positions on negative displaced heightMatrix', function() {
@@ -106,11 +129,11 @@ define([
                 maxZ: -200
             };
             terrainScript.addHeightData(heightMatrix, dimensions);
-            heightAtPos = terrainScript.getGroundHeightAtPos([-200,-150,-200]);
+            heightAtPos = terrainScript.getTerrainHeightAt([-200,-150,-200]);
             expect(heightAtPos).toEqual(dimensions.maxY);
-            heightAtPos = terrainScript.getGroundHeightAtPos([-300,-150,-300]);
+            heightAtPos = terrainScript.getTerrainHeightAt([-300,-150,-300]);
             expect(heightAtPos).toEqual(dimensions.minY);
-            heightAtPos = terrainScript.getGroundHeightAtPos([-233.333,-150,-200]);
+            heightAtPos = terrainScript.getTerrainHeightAt([-225,-150,-200]);
             expect(heightAtPos).toBeCloseTo(dimensions.minY+0.5*(dimensions.maxY-dimensions.minY));
         });
 

@@ -1,8 +1,14 @@
 define([
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scripts/HeightMapBoundingScript',
+    'goo/math/Vector3'
 	],
-	function(HeightMapBoundingScript) {
+	function(HeightMapBoundingScript,
+             Vector3) {
 		"use strict";
+
+
+        var calcVec1 = new Vector3();
+        var calcVec2 = new Vector3();
 
 		var _defaults = {
 			minX: 0,
@@ -13,7 +19,7 @@ define([
 			maxZ: 100
 		};
 
-		function validateTerrainProperties(properties, heightMatrix, heightMapData) {
+		function validateTerrainProperties(properties, heightMatrix) {
 			if (properties.minX > properties.maxX) {
 				throw { name: "Terrain Exception", message: "minX is larger than maxX" };
 			}
@@ -29,16 +35,6 @@ define([
 			if (heightMatrix.length !== heightMatrix[0].length) {
 				throw { name: "Terrain Exception", message: "Heightmap data is not a square" };
 			}
-
-        /*  Write tests for this stuff
-            function checkTerrainSpatialConflict(dim) {
-
-            }
-
-            for (var i = 0; i < heightMapData.length; i++) {
-                checkTerrainSpatialConflict(heightMapData[i].dimensions)
-            }
-        */
 
 			return true;
 		}
@@ -70,19 +66,19 @@ define([
 
 		/**
 		 * @method Adds a block of height data from an image at given dimensions and stores the script in an array.
-		 * @param (String) file to load height data from
-		 * @param (Object) dimensions to fit the data within
+		 * @param heightMatrix (Array) file to load height data from
+		 * @param dimensions (Object) dimensions to fit the data within
 		 */
 
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
-            var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData)
+            var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData);
 			this.heightMapData.push(scriptContainer);
             return scriptContainer;
 		};
 
 		/**
 		 * @method Returns the script relevant to a given position
-		 * @param (Array) pos data, typically use entity transform.data
+		 * @param pos (Array) data, typically use entity transform.data
 		 * @returns (Object) container object with script and its world dimensions
 		 */
 
@@ -101,11 +97,11 @@ define([
 		};
 
         /**
-         * Adjusts coordinates to fit the dimensions of a registered heightMap.
-         * @param axPos
-         * @param axMin
-         * @param axMax
-         * @param quadCount
+         * Adjusts coordinates to from heightMap to fit the dimensions of raw displacement data.
+         * @param axPos {Number}
+         * @param axMin {Number}
+         * @param axMax {Number}
+         * @param quadCount {Number}
          * @return {Number}
          */
 
@@ -115,12 +111,27 @@ define([
 		};
 
 		/**
+		 * Returns coordinates from raw displacement space to fit the dimensions of a registered heightMap.
+		 * @param axPos {Number}
+		 * @param axMin {Number}
+		 * @param axMax {Number}
+		 * @param quadCount {Number}
+		 * @return {Number}
+		 */
+
+		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
+			var quadSize = (axMax-axMin) / quadCount;
+			var insidePos = axPos * quadSize;
+			return axMin+insidePos;
+		};
+
+		/**
          * @method Looks through height data and returns the elevation of the ground at a given position
-         * @param (Array) pos Position as [x, y, z]
+         * @param pos (Array) Position as [x, y, z]
          * @returns (Float) height in units
          */
 
-        WorldFittedTerrainScript.prototype.getGroundHeightAtPos = function(pos) {
+        WorldFittedTerrainScript.prototype.getTerrainHeightAt = function(pos) {
             var heightData = this.getHeightDataForPosition(pos);
             if (heightData === null) {
                 return null;
@@ -129,50 +140,43 @@ define([
 
             var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
             var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
-            var matrixHeight = heightData.script.getInterpolated(tx, tz);
+            var matrixHeight = heightData.script.getPreciseHeight(tx, tz);
             return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
         };
 
-        /**
-         * @method Looks through height data and returns the steepness of the ground at a given position
-         * @param (Array) pos Position as [x, y, z]
-         * @returns (Float) diff between lowest and highest points in quad
-         */
+		/**
+		 * Returns the a normalized terrain normal for the provided position
+		 * @param pos {Array} the position as [x, y, z]
+		 * @returns {Vector3} the normal vector
+		 */
 
-        WorldFittedTerrainScript.prototype.getGroundSlopeAtPos = function(pos) {
-            var heightData = this.getHeightDataForPosition(pos);
-            if (heightData === null) {
+		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
+			var heightData = this.getHeightDataForPosition(pos);
+            if (!heightData) {
                 return null;
             }
-            var dims = heightData.dimensions;
+			var dims = heightData.dimensions;
 
-            var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
-            var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+			var x = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
+			var y = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
+            var tri = heightData.script.getTriangleAt(x, y);
 
-            var points = [
-                heightData.script.getAt(Math.ceil(x), Math.ceil(y)),
-                heightData.script.getAt(Math.ceil(x), Math.floor(y)),
-                heightData.script.getAt(Math.floor(x), Math.ceil(y)),
-                heightData.script.getAt(Math.floor(x), Math.floor(y))
-            ];
+			for (var i = 0; i < tri.length; i++) {
+				tri[i].x = this.returnToWorldDimensions(tri[i].x, dims.minX, dims.maxX, heightData.sideQuadCount);
+				tri[i].z = this.returnToWorldDimensions(tri[i].z, dims.minY, dims.maxY, 1);
+				tri[i].y = this.returnToWorldDimensions(tri[i].y, dims.minZ, dims.maxZ, heightData.sideQuadCount);
+			}
 
-            var min = Infinity;
-            var max = -Infinity;
-            for (var i = 0; i < points.length; i++) {
-                if (points[i] < min) min = points[i];
-                if (points[i] > max) max = points[i];
-            }
-            return max-min;
-        };
+            calcVec1.set((tri[1].x-tri[0].x), (tri[1].z-tri[0].z), (tri[1].y-tri[0].y));
+            calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));
+            calcVec1.cross(calcVec2);
+            if (calcVec1.data[1] < 0) {
+				calcVec1.muld(-1, -1, -1);
+			}
 
-        WorldFittedTerrainScript.prototype.run = function(entity) {
-            var translation = entity.transformComponent.transform.translation;
-            var groundHeight = this.getGroundHeightAtPos(translation.data);
-            if (groundHeight) {
-                translation.data[1] = groundHeight;
-            }
-        };
-
+			calcVec1.normalize();
+			return calcVec1;
+		};
 
         return WorldFittedTerrainScript;
 

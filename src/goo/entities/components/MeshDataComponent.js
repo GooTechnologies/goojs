@@ -1,10 +1,10 @@
 define([
-	'goo/renderer/bounds/BoundingSphere',
+	'goo/renderer/bounds/BoundingBox',
 	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
-	BoundingSphere,
+	BoundingBox,
 	Component
 ) {
 	"use strict";
@@ -22,7 +22,7 @@ function (
 		 * @type {BoundingVolume}
 		 * @default
 		 */
-		this.modelBound = new BoundingSphere();
+		this.modelBound = new BoundingBox();
 		/** Automatically compute bounding fit
 		 * @type {boolean}
 		 * @default

@@ -226,6 +226,16 @@ function () {
 
 		// assuming the point is inside the triangle
 		var totalArea = t1Area + t2Area + t3Area;
+		if (!totalArea) {
+
+			if (p[0] === t1[0] && p[2] === t1[2]) {
+				return t1;
+			} else if (p[0] === t2[0] && p[2] === t2[2]) {
+				return t2;
+			} else if (p[0] === t3[0] && p[2] === t3[2]) {
+				return t3;
+			}
+		}
 
 		p.z = (t1Area * t1.z + t2Area * t2.z + t3Area * t3.z) / totalArea;
 		return p;
