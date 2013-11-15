@@ -40,7 +40,6 @@ define(
 	                this.logicInstance.remove();
 
 		this.logicInstance = world.logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
-		
 	}
 	
 	LogicNode.prototype.configure = function(newConfig) {

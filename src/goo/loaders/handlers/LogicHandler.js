@@ -3,15 +3,19 @@ define([
 	'goo/logic/LogicNodeTime',
 	'goo/logic/LogicNodeSine',
 	'goo/logic/LogicNodeDebug',
+	'goo/logic/LogicNodeComponent',
 	'goo/logic/LogicNodes',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/logic/LogicNodeRandom',
+	'goo/logic/LogicNodeVec3'
 ], function(
 	ConfigHandler,
 	LogicNodeTime,
 	LogicNodeSine,
 	LogicNodeDebug,
+	LogicNodeComponent,
 	LogicNodes,
 	RSVP,
 	PromiseUtil,

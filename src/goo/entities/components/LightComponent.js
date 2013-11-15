@@ -21,12 +21,12 @@ define(['goo/entities/components/Component', 'goo/logic/LogicInterface'],
 	};
 
 	// Logic interface set-up	
-	LightComponent.logicInterface = new LogicInterface();
+	LightComponent.logicInterface = new LogicInterface("Light");
 	LightComponent.inportIntensity = LightComponent.logicInterface.addInputProperty("Intensity", "float");
 	LightComponent.inportRange = LightComponent.logicInterface.addInputProperty("Range", "float");
 	
-	LightComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
-		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this, null, false);
+	LightComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
+		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this, interfaceName, false);
 	}
 	
 	LightComponent.prototype.onPropertyWrite = function(propID, value) {

@@ -25,11 +25,13 @@ define(
 
 	LogicNodeSine.prototype.onPropertyWrite = function(portID, value)
 	{
-		LogicLayer.writeValue(this.logicInstance, LogicNodeSine.outportSine, Math.sin(value));
+		LogicLayer.writeValue(this.logicInstance, LogicNodeSine.outportSin, Math.sin(value));
+		LogicLayer.writeValue(this.logicInstance, LogicNodeSine.outportCos, Math.cos(value));
 	}
 	
 	LogicNodeSine.logicInterface = new LogicInterface();
-	LogicNodeSine.outportSine = LogicNodeSine.logicInterface.addOutputProperty("Sine", "float");
+	LogicNodeSine.outportSin = LogicNodeSine.logicInterface.addOutputProperty("Sine", "float");
+	LogicNodeSine.outportCos = LogicNodeSine.logicInterface.addOutputProperty("Cosine", "float");
 	LogicNodeSine.inportPhase = LogicNodeSine.logicInterface.addInputProperty("Phase", "float", 0);
 	
 	LogicNodes.registerType("LogicNodeSine", LogicNodeSine);

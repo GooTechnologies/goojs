@@ -205,9 +205,9 @@ require([
 		ll.connectObjectsWithLogic(lbTime, LogicNodeTime.outPropTime, lbSine, LogicNodeSine.inportPhase);
 		ll.connectObjectsWithLogic(lbTime, LogicNodeTime.outEventReached1, lbTime, LogicNodeTime.inEventReset);
 
-		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportSine, l1.lightComponent, LightComponent.inportIntensity);
-		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportSine, l2.lightComponent, LightComponent.inportIntensity);
-		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportSine, l3.lightComponent, LightComponent.inportIntensity);
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportSin, l1.lightComponent, LightComponent.inportIntensity);
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportCos, l2.lightComponent, LightComponent.inportIntensity);
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportCos, l3.lightComponent, LightComponent.inportIntensity);
 		
 		/*
 		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l1.lightComponent, LightComponent.inportIntensity);

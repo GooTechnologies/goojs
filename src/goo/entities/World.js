@@ -133,9 +133,10 @@ function (
 		// Somewhat hacky way of having all the component with logic interfaces get their
 		// node in the logic world.
 		var logicLayer = this.logicLayer;
-		entity.forEachComponent(function(comp) {
+		var counter = 0;
+		entity.forEachComponent(function(comp, index) {
 			if (comp.insertIntoLogicLayer !== undefined)
-				comp.insertIntoLogicLayer(logicLayer);
+				comp.insertIntoLogicLayer(logicLayer, entity.name + "~" + (counter++));
 		});
 	};
 	

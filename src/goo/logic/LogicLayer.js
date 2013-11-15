@@ -36,7 +36,7 @@ define(
 		// if wished, autogenerate name.
 		if (name === null)
 			name = "_auto-" + this._instanceID;
-		
+
 		// create the instance description
 		var instDesc = { id: this._instanceID, name: name, obj: instance, iface: iface, layer: this, wantsProcess: wantsProcessCall };
 		this._instanceID++;
@@ -71,8 +71,42 @@ define(
 			}
 		}
 		
-		console.log("Failed to resolve port");
+		return null;
 	}
+	
+	LogicLayer.prototype.resolveTargetAndPortID = function(targetRef, portName)
+	{
+		var tgt = this._logicInterfaces[targetRef];
+		
+		// See if the port exists directly at that node.
+		var directAttempt = LogicLayer.resolvePortID(tgt, portName);
+		if (directAttempt !== null)
+		{
+			console.log("Direct attempt succeeded");
+			return {target: tgt, portID: directAttempt};
+		}
+		else if (tgt.obj.entityRef !== undefined) // these are proxy nodes.
+		{
+			for (var i=0;i<100;i++)
+			{
+				// Go throug components and try resolving them to entity components.
+				// Brute force by <entityname>~<componentIndex> and we know they have that
+				// name once instantiated. Once we fail to find a component, abort.
+				var compIName = tgt.obj.entityRef + "~" + i;
+				var compInterface = this._logicInterfaces[compIName];
+				
+				if (compInterface === undefined)
+					break;
+					
+				var compAttempt = LogicLayer.resolvePortID(compInterface, portName);
+				if (compAttempt !== null)
+				{
+					return {target: compInterface, portID: compAttempt};
+				}	
+			}
+		}
+		return null;
+	}			
 	
 	LogicLayer.prototype.addConnectionByName = function(instDesc, sourcePort, targetName, targetPort) {
 		//
@@ -113,19 +147,22 @@ define(
 		for (var i = 0;i < cArr.length;i++)
 		{
 			var tconn = cArr[i];
-			var tgt = instDesc.layer._logicInterfaces[tconn[0]];
-			if (tgt === undefined)
-				continue; // unresolved.
 			
 			// unmapped
 			if (tconn.length == 2)
 			{
-				var realPortId = LogicLayer.resolvePortID(tgt, tconn[1]);
-				tconn.push(realPortId);
+				var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
+				if (out == null)
+				{
+					continue;
+				}
+								
+				tconn.push(out.target);
+				tconn.push(out.portID);					
 			}
 			
-			// use mapped port name
-			tgt.obj.onPropertyWrite(cArr[i][2], value);
+			// use mapped target & port name
+			tconn[2].obj.onPropertyWrite(tconn[3], value);
 		}
 	}
 

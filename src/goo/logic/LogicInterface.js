@@ -7,30 +7,34 @@ define(
 	 * @class Describes all the inputs / outputs for this logic interface. Typically one instance of this class exists for every class that
 	 *        implements logic.
 	 */
-	function LogicInterface() {
+	function LogicInterface(name) {
 		this.ports = [];
-		this.portID = 0;
-		// This interface is what binds (otherwise anonymous) endpoints in the logic layer to something named
+		
+		// Name builds the data name prefix
+		if (name === undefined)
+			this.dn_pfx = "";
+		else
+			this.dn_pfx = name + "-";
 	}
 	
 	LogicInterface.prototype.addInputProperty = function(name_, valueType, defaultValue) {
-		this.ports.push({ id: ++this.portID, input: true, property: true, event:false, name: name_, type: valueType, def: defaultValue });
-		return this.portID;
+		this.ports.push({ id: ++LogicInterface.portID, input: true, property: true, event:false, name: (this.dn_pfx + name_), type: valueType, def: defaultValue });
+		return LogicInterface.portID;
 	}
 	
 	LogicInterface.prototype.addOutputProperty = function(name_, valueType) {
-		this.ports.push({ id: ++this.portID, input: false, property: true, event:false, name: name_, type: valueType });
-		return this.portID;
+		this.ports.push({ id: ++LogicInterface.portID, input: false, property: true, event:false, name: (this.dn_pfx + name_), type: valueType });
+		return LogicInterface.portID;
 	}
 	
 	LogicInterface.prototype.addInputEvent = function(name_) {
-		this.ports.push({ id: ++this.portID, input: true, property: false, event: true, name: name_ });
-		return this.portID;
+		this.ports.push({ id: ++LogicInterface.portID, input: true, property: false, event: true, name: (this.dn_pfx + name_) });
+		return LogicInterface.portID;
 	}
 
 	LogicInterface.prototype.addOutputEvent = function(name_) {
-		this.ports.push({ id: ++this.portID, input: false, property: false, event: true, name: name_ });
-		return this.portID;
+		this.ports.push({ id: ++LogicInterface.portID, input: false, property: false, event: true, name: (this.dn_pfx + name_) });
+		return LogicInterface.portID;
 	}
 	
 	LogicInterface.prototype.getPorts = function() {
@@ -44,12 +48,19 @@ define(
 		if (port.dataname !== undefined)
 			return port.dataname;
 		else
+		{
 			return "dn-" + port.name;
+		}
 	}
 	
 	LogicInterface.assignPortDataName = function(port, dataname) {
 		port.dataname = dataname;
 	}
 
+	/**
+	* Globally unique port id counter
+	*/
+	LogicInterface.portID = 0;
+	
 	return LogicInterface;
 });

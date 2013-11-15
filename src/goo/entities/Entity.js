@@ -81,7 +81,7 @@ function () {
 	
 	Entity.prototype.forEachComponent = function(f) {
 		for (var i=0;i<this._components.length;i++)
-			f(this._components[i]);
+			f(this._components[i], i);
 	}
 	
 	/**

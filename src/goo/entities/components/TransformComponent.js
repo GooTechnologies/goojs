@@ -47,10 +47,16 @@ function (
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
+	TransformComponent.logicInterface = new LogicInterface("Xform");
+	TransformComponent.inportPos = TransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 	
-	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer) {
-//		this.logicInterface = new LogicInterface(logicLayer);
-//		this.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
+	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
+		this.logicInstance = logicLayer.addInterfaceInstance(TransformComponent.logicInterface, this, interfaceName, false);
+	}
+	
+	TransformComponent.prototype.onPropertyWrite = function(portID, value) {
+		if (portID == TransformComponent.inportPos)
+			this.setTranslation(value);
 	}
 
 	/**
