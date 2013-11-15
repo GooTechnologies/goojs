@@ -1,14 +1,22 @@
 define([
-	'goo/scripts/GroundBoundMovementScript'
+	'goo/scripts/GroundBoundMovementScript',
+	'goo/entities/components/MovementComponent',
+	'goo/entities/systems/MovementSystem',
+	'goo/entities/components/TransformComponent'
 ], function(
-	GroundBoundMovementScript
+	GroundBoundMovementScript,
+	MovementComponent,
+	MovementSystem,
+	TransformComponent
 	) {
 	'use strict';
 
 
 
 	describe('Movement script tests', function() {
+		var movementSystem = new MovementSystem();
 		var groundBoundMovementScript;
+		var entity;
 
 		function getHeight() {
 			return 0;
@@ -18,36 +26,99 @@ define([
 			getTerrainHeightAt:getHeight
 		};
 
-		var setEntityData = function(entity, data) {
+		var setEntityTranformData = function(entity, data) {
 			entity.transformComponent.transform.translation.data = data;
-		};
-
-		var entity = {
-			transformComponent:{
-				transform:{
-					translation:{
-						data:[]
-					}
-				}
-			}
 		};
 
 		beforeEach(function() {
 			groundBoundMovementScript = new GroundBoundMovementScript();
-			setEntityData(entity, [0, 0, 0]);
+			entity = {
+				transformComponent: new TransformComponent(),
+				movementComponent: new MovementComponent(),
+				_world:{tpf:0.1}
+			};
+			setEntityTranformData(entity, [0, 0, 0]);
+
+			groundBoundMovementScript.gravity = -2;
+			groundBoundMovementScript.jumpImpulse = 4;
+			groundBoundMovementScript.accLerp = 0.1;
+			groundBoundMovementScript.rotLerp = 0.1;
 		});
 
 		it ('finds ground contact when below ground', function() {
 
-			setEntityData(entity, [0, -1, 0]);
+			setEntityTranformData(entity, [0, -1, 0]);
 			groundBoundMovementScript.setTerrainSystem(mockGround);
 			groundBoundMovementScript.run(entity);
-
 			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
-
 
 		});
 
+
+		it ('finds velocity curvature after jump to match', function() {
+
+			setEntityTranformData(entity, [0, -1, 0]);
+			groundBoundMovementScript.setTerrainSystem(mockGround);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
+
+			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
+
+			groundBoundMovementScript.applyJump(1);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(4);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(0.4);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(2);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(0.6);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(0.6);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(-2);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(0.4);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(-4);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(0);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toEqual(-6);
+			expect(entity.transformComponent.transform.translation.data[1]).toBeCloseTo(-0.6);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
+			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
+
+			groundBoundMovementScript.run(entity);
+			movementSystem.applyMovementToEntity(entity);
+
+			expect(entity.movementComponent.getVelocity()[1]).toBeCloseTo(0);
+			expect(entity.transformComponent.transform.translation.data[1]).toEqual(0);
+		});
 
 	});
 

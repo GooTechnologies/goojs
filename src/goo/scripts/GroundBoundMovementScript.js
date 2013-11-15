@@ -1,17 +1,29 @@
 define([
 	'goo/math/Vector3'
 ],
-	function(Vector3) {
+	function(Vector3
+		) {
 		"use strict";
 
-
+		var calcVec = new Vector3();
 
 		function GroundBoundMovementScript() {
-			this.gravity = -0.281;
-			this.jumpImpulse = 5.2;
-			this.groundContact = 0;
+			this.gravity = -9.81;
+			this.worldFloor = -99999999;
+			this.jumpImpulse = 95;
+			this.accLerp = 0.1;
+			this.rotLerp = 0.1;
+			this.modForward = 1;
+			this.modStrafe = 0.7;
+			this.modBack = 0.4;
+			this.modTurn = 0.3;
+
+			this.groundContact = 1;
+			this.targetVelocity = new Vector3();
+			this.targetHeading = new Vector3();
 			this.acceleration = new Vector3();
 			this.torque = new Vector3();
+			this.groundHeight = 0;
 			this.controlState = {
 				run:0,
 				strafe:0,
@@ -28,8 +40,12 @@ define([
 			return this.terrainSystem;
 		};
 
-		GroundBoundMovementScript.prototype.getTerrainHeightBeneath = function(entity) {
-			return this.getTerrainSystem().getTerrainHeightAt(entity.transformComponent.transform.translation.data);
+		GroundBoundMovementScript.prototype.getTerrainHeight = function(entity) {
+			var height = this.getTerrainSystem().getTerrainHeightAt(entity.transformComponent.transform.translation.data);
+			if (height === null) {
+				height = this.worldFloor;
+			}
+			return height;
 		};
 
 		GroundBoundMovementScript.prototype.applyForward = function(amount) {
@@ -49,38 +65,80 @@ define([
 			this.controlState.turn = amount;
 		};
 
-		GroundBoundMovementScript.prototype.applyControlStateToMovement = function(entity) {
-			this.acceleration.data[0] = this.controlState.strafe*0.05;
-			this.acceleration.data[1] = this.gravity+this.controlState.jump*this.jumpImpulse*this.groundContact;
-			this.acceleration.data[2] = this.controlState.run*0.05;
-			this.torque.data[1] = this.controlState.turn;
+		GroundBoundMovementScript.prototype.updateTargetVelocities = function() {
+			var strafe = this.controlState.strafe;
 
-			entity.movementComponent.setVelocity(this.acceleration);
-			entity.movementComponent.setRotationVelocity(this.torque);
+			var up = this.gravity;
+			if (this.groundContact) {
+				if (this.controlState.jump) {
+					up = this.jumpImpulse;
+					this.controlState.jump = 0;
+				} else {
+					up = 0;
+				}
+			}
 
+			var run = this.controlState.run;
+			this.targetVelocity.setd(strafe, up, run);
+
+			var pitch = 0;
+			var yaw = this.controlState.turn;
+			var roll = 0;
+			this.targetHeading.setd(pitch, yaw, roll);
+		};
+
+		GroundBoundMovementScript.prototype.computeAcceleration = function(current, target) {
+			calcVec.set(target);
+			calcVec.sub(current);
+			calcVec.lerp(target, this.accLerp);
+			calcVec.data[1] = target.data[1]; // Ground is not soft...
+			return calcVec;
+		};
+
+		GroundBoundMovementScript.prototype.computeTorque = function(current, target) {
+			calcVec.set(target);
+			calcVec.sub(current);
+			calcVec.lerp(target, this.rotLerp);
+			return calcVec;
+		};
+
+		GroundBoundMovementScript.prototype.updateVelocities = function(entity) {
+			var currentVelocity = entity.movementComponent.getVelocity();
+			var currentRotVel = entity.movementComponent.getRotationVelocity();
+			this.acceleration.set(this.computeAcceleration(currentVelocity, this.targetVelocity));
+			this.torque.set(this.computeTorque(currentRotVel, this.targetHeading));
+		};
+
+		GroundBoundMovementScript.prototype.applyAccelerations = function(entity) {
+			entity.movementComponent.addVelocity(this.acceleration);
+			entity.movementComponent.addRotationVelocity(this.torque);
+		};
+
+		GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
+			this.groundHeight = this.getTerrainHeight(entity);
+			if (transform.translation.data[1] <= this.groundHeight) {
+				this.groundContact = 1;
+			} else {
+				this.groundContact = 0;
+			}
+		};
+
+		GroundBoundMovementScript.prototype.applyGroundContact = function(entity, transform) {
+			if (this.groundHeight >= transform.translation.data[1]) {
+				transform.translation.data[1] = this.groundHeight;
+				if (entity.movementComponent.velocity.data[1] < 0) {
+					entity.movementComponent.velocity.data[1] = 0;
+				}
+			}
 		};
 
 		GroundBoundMovementScript.prototype.run = function(entity) {
-
-			var groundHeight = this.getTerrainHeightBeneath(entity);
 			var transform = entity.transformComponent.transform;
-			if (transform.translation.data[1] < groundHeight) {
-				this.groundContact = 1;
-				transform.translation.data[1] = groundHeight;
-
-			} else {
-				this.groundContact = 0;
-				this.controlState.jump = 0;
-
-			}
-
-			transform.translation.addv(entity.movementComponent.getVelocity());
-		//	var angles = transform.rotation.toAngles();
-		//	angles.add(entity.movementComponent.getRotationVelocity());
-		//	transform.rotation.fromAngles(angles);
-			this.applyControlStateToMovement(entity);
-			entity.transformComponent.setUpdated();
-		//	console.log("Running Movement:", entity)
+			this.checkGroundContact(entity, transform);
+			this.updateTargetVelocities();
+			this.updateVelocities(entity);
+			this.applyAccelerations(entity);
+			this.applyGroundContact(entity, transform);
 		};
 
 
