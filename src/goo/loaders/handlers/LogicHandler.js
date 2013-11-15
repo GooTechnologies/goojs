@@ -24,7 +24,7 @@ define([
 ) {
 	"use strict";
 
-	function LogicHandler() {
+	function LogicHandler()  {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
 	}
@@ -35,39 +35,38 @@ define([
 
 	LogicHandler.prototype._prepare = function(config) {
 		// there are no defaults for this.
-		_.defaults(config, { });
+		_.defaults(config, {});
 	};
 
 	LogicHandler.prototype._create = function(ref) {
 		// it is not known what logic node type it's going to be yet, so can't create it.	
 		console.log("LogicHandler:create");
-		return { is_dummy_of_unknown_type: true };
+		return {
+			is_dummy_of_unknown_type: true
+		};
 	};
 
 	LogicHandler.prototype.update = function(ref, config) {
 		// Special way of just reconfiguring the objects without needing to re-create them.
 		var obj = this._objects[ref];
-		if (obj === undefined)
-		{
+		if (obj === undefined) {
 			var fn = LogicNodes.getClass(config.type);
 			obj = new fn();
 		}
-		
+
 		// apply new config.
 		obj.configure(config);
-		obj.addToWorldLogic(this.world);		
-		
-		if (config.connections !== undefined)
-		{
+		obj.addToWorldLogic(this.world);
+
+		if (config.connections !== undefined) {
 			// need to add connections every time since adding to world logic erases
 			// previously stored connections (with 'obj' as source)
-		        for (var i=0;i<config.connections.length;i++)
-		        {
-		                var conn = config.connections[i];
-        		        this.world.logicLayer.addConnectionByName(obj.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
-                        }
-                }
-		
+			for (var i = 0; i < config.connections.length; i++) {
+				var conn = config.connections[i];
+				this.world.getSystem('LogicSystem').logicLayer.addConnectionByName(obj.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
+			}
+		}
+
 		this._objects[ref] = obj;
 		return PromiseUtil.createDummyPromise(obj);
 	};
@@ -82,7 +81,7 @@ define([
 			return false;
 		}
 		while (len--) {
-			if(a[len] !== b[len]) {
+			if (a[len] !== b[len]) {
 				return false;
 			}
 		}

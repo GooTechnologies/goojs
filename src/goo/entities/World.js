@@ -1,15 +1,13 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent',
-	'goo/logic/LogicLayer'
+	'goo/entities/components/TransformComponent'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
-	TransformComponent,
-	LogicLayer
+	TransformComponent
 ) {
 	"use strict";
 
@@ -31,8 +29,6 @@ function (
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
 		
-		this.logicLayer = new LogicLayer();
-
 		this.time = 0.0;
 
 		/** Time since last frame in seconds
@@ -129,19 +125,6 @@ function (
 				this.addEntity(children[i].entity, recursive);
 			}
 		}
-		
-		// Somewhat hacky way of having all the component with logic interfaces get their
-		// node in the logic world.
-		var logicLayer = this.logicLayer;
-		var counter = 0;
-		entity.forEachComponent(function(comp, index) {
-			if (comp.insertIntoLogicLayer !== undefined)
-				comp.insertIntoLogicLayer(logicLayer, entity.name + "~" + (counter++));
-		});
-	};
-	
-	World.prototype.connectComponents = function(sourceComponentInstance, sourcePort, destComponentInstance, destPort) {
-		LogicLayer.connectEndpoints(sourceComponentInstance.logicInstance, sourcePort, destComponentInstance.logicInstance, destPort);
 	};
 	
 
@@ -175,8 +158,6 @@ function (
 				this._recursiveRemoval(children[i].entity, recursive);
 			}
 		}
-		
-		// TODO: Remove logic nodes too!
 	};
 
 	World.prototype._recursiveRemoval = function (entity, recursive) {
@@ -252,8 +233,6 @@ function (
 				system._process(this.tpf);
 			}
 		}
-		
-		this.logicLayer.process(this.tpf);
 	};
 
 	World.prototype._check = function (entities, callback) {
