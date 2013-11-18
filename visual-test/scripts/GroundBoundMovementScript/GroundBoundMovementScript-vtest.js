@@ -64,41 +64,45 @@ require([
 	var goo;
 	var worldFittedTerrainScript = new WorldFittedTerrainScript();
 
+	var randomWalk = function(groundBoundMovementScript) {
+		function applySelection(selection) {
+			switch (selection) {
+				case 1:
+					groundBoundMovementScript.applyForward(Math.round(1-Math.random()*2));
+					break;
+				case 2:
+					groundBoundMovementScript.applyStrafe(Math.round(1-Math.random()*2));
+					break;
+				case 3:
+					groundBoundMovementScript.applyJump(1);
+					break;
+				case 4:
+					groundBoundMovementScript.applyTurn(1-Math.random()*2);
+					break;
+			}
+
+			setTimeout(function() {
+				selection = Math.ceil(Math.random()*4);
+				applySelection(selection);
+			}, 1000+Math.random()*2000);
+		}
+		applySelection(3);
+	};
+
+	function addMovementToEntity(entity, terrainScript) {
+		entity.setComponent(new MovementComponent());
+		var groundBoundMovementScript = new GroundBoundMovementScript();
+		groundBoundMovementScript.setTerrainSystem(terrainScript);
+		var scripts = new ScriptComponent();
+		scripts.scripts.push(groundBoundMovementScript);
+		entity.setComponent(scripts);
+		entity.addToWorld();
+		randomWalk(groundBoundMovementScript);
+	}
 
 	function addSpheres(goo, worldFittedTerrainScript, dims) {
 		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
-
-
-		var randomWalk = function(groundBoundMovementScript) {
-			function applySelection(selection) {
-
-				switch (selection) {
-					case 1:
-						groundBoundMovementScript.applyForward(Math.round(1-Math.random()*2));
-						break;
-					case 2:
-						groundBoundMovementScript.applyStrafe(Math.round(1-Math.random()*2));
-
-						break;
-					case 3:
-						groundBoundMovementScript.applyJump(1);
-
-						break;
-					case 4:
-						groundBoundMovementScript.applyTurn(1-Math.random()*2);
-						break;
-				}
-
-				setTimeout(function() {
-					selection = Math.ceil(Math.random()*4);
-					applySelection(selection);
-				}, 1000+Math.random()*2000);
-			}
-
-			applySelection(3);
-		};
-
 
 		var nSpheres = 4;
 		var ak = Math.PI * 2 / nSpheres;
@@ -111,25 +115,108 @@ require([
 			];
 			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 			sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
-
-			sphereEntity.setComponent(new MovementComponent());
-
-			var groundBoundMovementScript = new GroundBoundMovementScript();
-			groundBoundMovementScript.setTerrainSystem(worldFittedTerrainScript);
-
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(groundBoundMovementScript);
-			sphereEntity.setComponent(scripts);
-			sphereEntity.addToWorld();
-			randomWalk(groundBoundMovementScript);
-
-
-
-
+			sphereEntity.transformComponent.transform.scale.setd(2, 3, 5);
+			addMovementToEntity(sphereEntity, worldFittedTerrainScript);
 		}
+	}
+
+	function addCar(goo, worldFittedTerrainScript, dims) {
+		/*jshint loopfunc: true */
+		var meshData = new Sphere(32, 32);
+
+		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		material.uniforms.color = [0.98, 0.6, 0.2];
+
+		var rootEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		rootEntity.transformComponent.transform.translation.setd(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+		rootEntity.transformComponent.transform.scale.setd(1, 1, 1);
+
+		var body = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		body.transformComponent.transform.translation.setd(0,0.7,0);
+		body.transformComponent.transform.scale.setd(2.2, 1.4, 5);
+		rootEntity.transformComponent.attachChild(body.transformComponent);
+
+		var wheel1 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		wheel1.transformComponent.transform.translation.setd(1,0.4,2.0);
+		wheel1.transformComponent.transform.scale.setd(0.3, 1, 1);
+		rootEntity.transformComponent.attachChild(wheel1.transformComponent);
+
+		var wheel2 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		wheel2.transformComponent.transform.translation.setd(-1,0.4,2.0);
+		wheel2.transformComponent.transform.scale.setd(0.3, 1, 1);
+		rootEntity.transformComponent.attachChild(wheel2.transformComponent);
+
+		var wheel3 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		wheel3.transformComponent.transform.translation.setd(1,0.4,-2.0);
+		wheel3.transformComponent.transform.scale.setd(0.3, 1, 1);
+		rootEntity.transformComponent.attachChild(wheel3.transformComponent);
+
+		var wheel4 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		wheel4.transformComponent.transform.translation.setd(-1,0.4,-2.0);
+		wheel4.transformComponent.transform.scale.setd(0.3, 1, 1);
+		rootEntity.transformComponent.attachChild(wheel4.transformComponent);
+
+		var light1 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		light1.transformComponent.transform.translation.setd(0.8,1, 2.4);
+		light1.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		rootEntity.transformComponent.attachChild(light1.transformComponent);
+
+		var light2 = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		light2.transformComponent.transform.translation.setd(-0.8,1, 2.4);
+		light2.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		rootEntity.transformComponent.attachChild(light2.transformComponent);
+
+		var coup = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		coup.transformComponent.transform.translation.setd(0,0.6,-0.12);
+		coup.transformComponent.transform.scale.setd(0.8, 1.3, 0.4);
+		body.transformComponent.attachChild(coup.transformComponent);
+
+		addMovementToEntity(rootEntity, worldFittedTerrainScript);
+	}
+
+
+	function addBiped(goo, worldFittedTerrainScript, dims) {
+		/*jshint loopfunc: true */
+		var meshData = new Sphere(32, 32);
+
+		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		material.uniforms.color = [0.98, 0.6, 0.2];
+
+		var rootEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		rootEntity.transformComponent.transform.translation.setd(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+		rootEntity.transformComponent.transform.scale.setd(1, 1, 1);
+
+		var chest = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		chest.transformComponent.transform.translation.setd(0,1.5,0);
+		chest.transformComponent.transform.scale.setd(1.7, 1.6, 1.3);
+		rootEntity.transformComponent.attachChild(chest.transformComponent);
+
+		var armr = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		armr.transformComponent.transform.translation.setd(-0.6,-0.2,-0.1);
+		armr.transformComponent.transform.scale.setd(0.3, 0.9, 0.3);
+		chest.transformComponent.attachChild(armr.transformComponent);
+
+		var arml = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		arml.transformComponent.transform.translation.setd(0.6,-0.2,-0.1);
+		arml.transformComponent.transform.scale.setd(0.3, 0.9, 0.3);
+		chest.transformComponent.attachChild(arml.transformComponent);
+
+		var head = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		head.transformComponent.transform.translation.setd(0,2.6,0);
+		head.transformComponent.transform.scale.setd(0.8, 0.8, 0.8);
+		rootEntity.transformComponent.attachChild(head.transformComponent);
+
+		var nose = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		nose.transformComponent.transform.translation.setd(0,0,0.7);
+		nose.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		head.transformComponent.attachChild(nose.transformComponent);
+
+		addMovementToEntity(rootEntity, worldFittedTerrainScript);
+	}
+
+	function addLight(dims) {
 		var light1 = new PointLight();
-		light1.color.set(0.1, 0.1,0.1);
+		light1.color.set(0.8, 0.7,0.61);
 		var light1Entity = goo.world.createEntity('light');
 		light1Entity.setComponent(new LightComponent(light1));
 		light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
@@ -168,7 +255,7 @@ require([
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 	}
-
+/*
 	function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
 		var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
@@ -178,17 +265,17 @@ require([
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 	}
-
+ */
 	function groundBoundMovementScriptDemo() {
 		var canvasUtils = new CanvasUtils();
 
-		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+		canvasUtils.loadCanvasFromPath('../../resources/heightmap_walled.png', function(canvas) {
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim1 = {
 				minX: -150,
 				maxX: 150,
-				minY: -35,
+				minY: -55,
 				maxY: -15,
 				minZ: -150,
 				maxZ: 150
@@ -196,9 +283,14 @@ require([
 
 			var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
 
-			buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
+		//	buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
+			buildTexturedGround(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world, '../../resources/heightmap_walled.png');
+
 
 			addSpheres(goo, worldFittedTerrainScript, dim1);
+			addBiped(goo, worldFittedTerrainScript, dim1);
+			addCar(goo, worldFittedTerrainScript, dim1);
+			addLight(dim1);
 
 			// Add camera
 			var camera = new Camera(45, 1, 1, 1000);
@@ -238,6 +330,7 @@ require([
 				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
 			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 			addSpheres(goo, worldFittedTerrainScript, dim);
+			addLight(dim);
 		});
 
 	}
