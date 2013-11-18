@@ -226,6 +226,17 @@ define(
 		};
 
 		/**
+		* For all logic objects (i.e. those who added logicInstances and passed themselves along)
+		*/		
+		LogicLayer.prototype.forEachLogicObject = function(f) {
+			for (var i in this._logicInterfaces) {
+				var o = this._logicInterfaces[i].obj;
+				if (o !== undefined)
+					f(o);
+			}
+		};
+
+		/**
 		 * For all objects that follow the convention of having an logicInstance property for their connections
 		 * (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance
 		 * in the objects passed in and connects their endpoints.

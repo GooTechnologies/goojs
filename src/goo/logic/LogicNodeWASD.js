@@ -38,8 +38,6 @@ define(
 					this.AIsDown = false;
 				}
 			}.bind(this);
-			document.addEventListener('keydown', this.eventListenerDown);
-			document.addEventListener('keyup', this.eventListenerUp);
 		}
 
 		LogicNodeWASD.prototype = Object.create(LogicNode.prototype);
@@ -48,6 +46,20 @@ define(
 		LogicNodeWASD.prototype.onConfigure = function(config) {
 			this._running = true;
 		};
+		
+		LogicNodeWASD.prototype.onSystemStarted = function()
+		{
+			console.log("WASD: Adding event listeners");
+			document.addEventListener('keydown', this.eventListenerDown);
+			document.addEventListener('keyup', this.eventListenerUp);
+		}
+		
+		LogicNodeWASD.prototype.onSystemStopped = function(stopForPause)
+		{
+			console.log("WASD: Removing event listeners");
+			document.removeEventListener('keydown', this.eventListenerDown);
+			document.removeEventListener('keyup', this.eventListenerUp);
+		}
 
 		// Process
 		LogicNodeWASD.prototype.processLogic = function(tpf) {

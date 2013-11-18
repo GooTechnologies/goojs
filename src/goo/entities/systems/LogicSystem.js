@@ -58,12 +58,23 @@ function (
 				e.inserted = true;
 			}
 		}
+		
+		// notify system start.
+		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStarted !== undefined) o.onSystemStarted(); });
+		
 	};
 	LogicSystem.prototype.pause = function () {
 		this.passive = true;
+
+		// notify system stop for pause
+		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(true); });
 	};
+	
 	LogicSystem.prototype.stop = function () {
 		this.passive = true;
+
+		// notify system (full) stop
+		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(false); });
 		this.logicLayer.clear();
 		
 		// now that logic layer is cleared, need to put them back in on play.

@@ -64,6 +64,8 @@ define(
 		 * Override me
 		 */
 		LogicNode.prototype.onConfigure = function(newConfig) {};
+		LogicNode.prototype.onSystemStarted = function() {};
+		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
 
 		LogicNode.instanceCount = 0;
 
