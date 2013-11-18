@@ -1,22 +1,52 @@
 define([
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/Matrix3x3'
 ],
-	function(Vector3
+	function(Vector3,
+			 Matrix3x3
 		) {
 		"use strict";
 
 		var calcVec = new Vector3();
+		var calcMat = new Matrix3x3();
+		var _defaults = {
+			gravity:-9.81,
+			worldFloor:-Infinity,
+			jumpImpulse:95,
+			accLerp:0.1,
+			rotLerp:0.1,
+			modForward:1,
+			modStrafe:0.7,
+			modBack:0.4,
+			modTurn:0.3,
+			groundRoll:false,
+			groundPitch:false
+		};
 
-		function GroundBoundMovementScript() {
-			this.gravity = -9.81;
-			this.worldFloor = -99999999;
-			this.jumpImpulse = 95;
-			this.accLerp = 0.1;
-			this.rotLerp = 0.1;
-			this.modForward = 1;
-			this.modStrafe = 0.7;
-			this.modBack = 0.4;
-			this.modTurn = 0.3;
+
+		/**
+		 * @class a script for handling common scenario movement over a terrain
+		 *
+		 * @constructor
+		 */
+
+		function GroundBoundMovementScript(properties) {
+
+			properties = properties || {};
+			for(var key in _defaults) {
+				if(typeof(_defaults[key]) === 'boolean') {
+					this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
+				}
+				else if (!isNaN(_defaults[key])) {
+					this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
+				}
+				else if(_defaults[key] instanceof Vector3) {
+					this[key] = (properties[key]) ? new Vector3(properties[key]) : new Vector3().set(_defaults[key]);
+				}
+				else {
+					this[key] = properties[key] || _defaults[key];
+				}
+			}
 
 			this.groundContact = 1;
 			this.targetVelocity = new Vector3();
@@ -28,7 +58,13 @@ define([
 				run:0,
 				strafe:0,
 				jump:0,
-				turn:0
+				yaw:0,
+				roll:0,
+				pitch:0
+			};
+			this.groundInfluence = {
+				pitch:0,
+				roll:0
 			};
 		}
 
@@ -40,13 +76,18 @@ define([
 			return this.terrainSystem;
 		};
 
-		GroundBoundMovementScript.prototype.getTerrainHeight = function(entity) {
-			var height = this.getTerrainSystem().getTerrainHeightAt(entity.transformComponent.transform.translation.data);
+		GroundBoundMovementScript.prototype.getTerrainHeight = function(translation) {
+			var height = this.getTerrainSystem().getTerrainHeightAt(translation.data);
 			if (height === null) {
 				height = this.worldFloor;
 			}
 			return height;
 		};
+
+		GroundBoundMovementScript.prototype.getTerrainNormal = function(translation) {
+			return this.getTerrainSystem().getTerrainNormalAt(translation.data);
+		};
+
 
 		GroundBoundMovementScript.prototype.applyForward = function(amount) {
 			this.controlState.run = amount;
@@ -58,11 +99,10 @@ define([
 
 		GroundBoundMovementScript.prototype.applyJump = function(amount) {
 			this.controlState.jump = amount;
-			console.log("jump", amount);
 		};
 
 		GroundBoundMovementScript.prototype.applyTurn = function(amount) {
-			this.controlState.turn = amount;
+			this.controlState.yaw = amount;
 		};
 
 		GroundBoundMovementScript.prototype.applyJumpImpulse = function(up) {
@@ -77,6 +117,8 @@ define([
 			return up;
 		};
 
+
+
 		GroundBoundMovementScript.prototype.applyDirectionalModulation = function(strafe, up, run) {
 			strafe *= this.modStrafe;
 			if (run > 0) {
@@ -88,13 +130,12 @@ define([
 		};
 
 		GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
-			yaw *= this.modTurn;
-			return [pitch, yaw, roll];
+			return [pitch+this.groundInfluence.pitch, yaw*this.modTurn, roll+this.groundInfluence.roll];
 		};
 
 		GroundBoundMovementScript.prototype.updateTargetVectors = function() {
 			this.targetVelocity.set(this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run));
-			this.targetHeading.set(this.applyTorqueModulation(0, this.controlState.turn, 0));
+			this.targetHeading.set(this.applyTorqueModulation(this.controlState.pitch, this.controlState.yaw, this.controlState.roll));
 		};
 
 		GroundBoundMovementScript.prototype.computeAcceleration = function(current, target) {
@@ -124,10 +165,26 @@ define([
 			entity.movementComponent.addRotationVelocity(this.torque);
 		};
 
+		GroundBoundMovementScript.prototype.applyGroundVectorToControlState = function(pitchAxis, rollAxis, transform) {
+			var groundNormal = this.getTerrainNormal(transform.translation);
+			var entityAngles = transform.rotation.toAngles();
+			calcMat.fromAngles(groundNormal.data[1], groundNormal.data[2],groundNormal.data[0]);
+		//	calcMat.applyPost(entityAngles);
+
+			// TODO: Apply the movement control vector by normals, then apply the jump impulse after transform forward.
+
+			transform.rotation.rotateX(pitchAxis * (groundNormal.data[0] - entityAngles.data[0]));
+			transform.rotation.rotateZ(rollAxis * (groundNormal.data[2] - entityAngles.data[2]));
+
+		};
+
 		GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
-			this.groundHeight = this.getTerrainHeight(entity);
+			this.groundHeight = this.getTerrainHeight(transform.translation);
 			if (transform.translation.data[1] <= this.groundHeight) {
 				this.groundContact = 1;
+				if (this.groundRoll || this.groundPitch) {
+					this.applyGroundVectorToControlState(this.groundRoll, this.groundPitch, transform);
+				}
 			} else {
 				this.groundContact = 0;
 			}
