@@ -36,11 +36,23 @@ define(
 		 * @param {world} World to add it to
 		 */
 		LogicNode.prototype.addToWorldLogic = function(world) {
+			// Cleanup of previous; this will also remove connections so we always need to (re-) add them.
 			if (this.logicInstance !== null) {
 				this.logicInstance.remove();
 			}
 
-			this.logicInstance = world.getSystem('LogicSystem').logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
+			var logicLayer = world.getSystem('LogicSystem').logicLayer;
+			
+			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
+			
+			if (this.config.connections !== undefined) {
+				// need to add connections every time since adding to world logic erases
+				// previously stored connections (with 'obj' as source)
+				for (var i = 0; i < this.config.connections.length; i++) {
+					var conn = this.config.connections[i];
+					logicLayer.addConnectionByName(this.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
+				}
+			}
 		};
 
 		LogicNode.prototype.configure = function(newConfig) {

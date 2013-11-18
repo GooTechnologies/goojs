@@ -18,8 +18,7 @@ define(
 			this._instanceID = 0;
 		}
 
-		LogicLayer.prototype.stop = function() {
-			// TODO: should we do this?
+		LogicLayer.prototype.clear = function() {
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
@@ -57,6 +56,7 @@ define(
 			// also supply self-destructing code
 			var _this = this;
 			instDesc.remove = function() {
+				delete this.outConnections;
 				delete _this._logicInterfaces[name];
 			};
 			instDesc.getPorts = function() {
@@ -98,6 +98,7 @@ define(
 				};
 			} else if (tgt.obj.entityRef !== undefined) // these are proxy nodes.
 			{
+				console.log("Resolving entity ref " + tgt.obj.entityRef);
 				for (var i = 0; i < 100; i++) {
 					// Go throug components and try resolving them to entity components.
 					// Brute force by <entityname>~<componentIndex> and we know they have that
@@ -146,7 +147,6 @@ define(
 		 * was created with). All connected objects get the onPropertyWrite call.
 		 */
 		LogicLayer.writeValue = function(instDesc, portID, value) {
-
 			// See if there are any connections at all
 			if (instDesc.outConnections === undefined) {
 				return;
@@ -160,7 +160,7 @@ define(
 			if (cArr.length === 0) {
 				delete instDesc.outConnections;
 			}
-
+			
 			// Write to all connected instances	
 			for (var i = 0; i < cArr.length; i++) {
 				var tconn = cArr[i];
@@ -169,6 +169,7 @@ define(
 				if (tconn.length === 2) {
 					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
 					if (out == null) {
+						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
 						continue;
 					}
 

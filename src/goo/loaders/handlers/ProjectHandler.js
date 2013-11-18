@@ -282,11 +282,8 @@ define([
 				promises.push(handleLogicRef(config.logicRefs[i]));
 			}
 
-			console.log("and it was " + config.logicRefs.length + " logics");
-			console.log("making " + promises.length + " promises");
-
 			return RSVP.all(promises).then(function(logics) {
-				console.log("Updating " + logics.length + " logic nodes");
+				console.log("Updated " + logics.length + " logic nodes: adding to world logic.");
 				for (var j = 0; j < logics.length; j++) {
 					logics[j].addToWorldLogic(that.world);
 				}

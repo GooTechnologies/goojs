@@ -58,16 +58,6 @@ define([
 
 		// apply new config.
 		obj.configure(config);
-		obj.addToWorldLogic(this.world);
-
-		if (config.connections !== undefined) {
-			// need to add connections every time since adding to world logic erases
-			// previously stored connections (with 'obj' as source)
-			for (var i = 0; i < config.connections.length; i++) {
-				var conn = config.connections[i];
-				this.world.getSystem('LogicSystem').logicLayer.addConnectionByName(obj.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
-			}
-		}
 
 		this._objects[ref] = obj;
 		return PromiseUtil.createDummyPromise(obj);
