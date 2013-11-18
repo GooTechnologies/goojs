@@ -65,10 +65,7 @@ define([
 			this.controlState.turn = amount;
 		};
 
-		GroundBoundMovementScript.prototype.updateTargetVelocities = function() {
-			var strafe = this.controlState.strafe;
-
-			var up = this.gravity;
+		GroundBoundMovementScript.prototype.applyJumpImpulse = function(up) {
 			if (this.groundContact) {
 				if (this.controlState.jump) {
 					up = this.jumpImpulse;
@@ -77,14 +74,27 @@ define([
 					up = 0;
 				}
 			}
+			return up;
+		};
 
-			var run = this.controlState.run;
-			this.targetVelocity.setd(strafe, up, run);
+		GroundBoundMovementScript.prototype.applyDirectionalModulation = function(strafe, up, run) {
+			strafe *= this.modStrafe;
+			if (run > 0) {
+				run *=this.modForward;
+			} else {
+				run *=this.modBack;
+			}
+			return [strafe, this.applyJumpImpulse(up), run];
+		};
 
-			var pitch = 0;
-			var yaw = this.controlState.turn;
-			var roll = 0;
-			this.targetHeading.setd(pitch, yaw, roll);
+		GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
+			yaw *= this.modTurn;
+			return [pitch, yaw, roll];
+		};
+
+		GroundBoundMovementScript.prototype.updateTargetVectors = function() {
+			this.targetVelocity.set(this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run));
+			this.targetHeading.set(this.applyTorqueModulation(0, this.controlState.turn, 0));
 		};
 
 		GroundBoundMovementScript.prototype.computeAcceleration = function(current, target) {
@@ -135,7 +145,7 @@ define([
 		GroundBoundMovementScript.prototype.run = function(entity) {
 			var transform = entity.transformComponent.transform;
 			this.checkGroundContact(entity, transform);
-			this.updateTargetVelocities();
+			this.updateTargetVectors();
 			this.updateVelocities(entity);
 			this.applyAccelerations(entity);
 			this.applyGroundContact(entity, transform);

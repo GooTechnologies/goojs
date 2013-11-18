@@ -4,7 +4,7 @@ define(['goo/entities/systems/System'],
 		"use strict";
 
 		/**
-		 * @class Processes all entities with movement components,adding movement
+		 * @class Processes all entities with movement components.
 		 */
 		function MovementSystem() {
 			System.call(this, 'MovementSystem', ['MovementComponent']);
@@ -21,7 +21,6 @@ define(['goo/entities/systems/System'],
 			transform.rotation.rotateX(rotVel.data[0]*tpf);
 			transform.rotation.rotateY(rotVel.data[1]*tpf);
 			transform.rotation.rotateZ(rotVel.data[2]*tpf);
-
 		};
 
 		MovementSystem.prototype.applyMovementToEntity = function(entity) {
