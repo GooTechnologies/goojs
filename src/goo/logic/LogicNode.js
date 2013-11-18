@@ -36,17 +36,17 @@ define(
 		 * @param {world} World to add it to
 		 */
 		LogicNode.prototype.addToWorldLogic = function(world) {
-
-			if (this.logicInstance != null)
+			if (this.logicInstance !== null) {
 				this.logicInstance.remove();
+			}
 
 			this.logicInstance = world.getSystem('LogicSystem').logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
-		}
+		};
 
 		LogicNode.prototype.configure = function(newConfig) {
 			this.onConfigure(newConfig);
 			this.config = newConfig;
-		}
+		};
 
 		/**
 		 * Override me

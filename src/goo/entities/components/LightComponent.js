@@ -27,12 +27,15 @@ define(['goo/entities/components/Component', 'goo/logic/LogicInterface'],
 	
 	LightComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
 		this.logicInstance = logicLayer.addInterfaceInstance(LightComponent.logicInterface, this, interfaceName, false);
-	}
+	};
 	
 	LightComponent.prototype.onPropertyWrite = function(propID, value) {
-		if (propID == LightComponent.inportIntensity)
+		if (propID === LightComponent.inportIntensity) {
 			this.light.intensity = value;
-	}
+		} else if (propID === LightComponent.inportRange) {
+			this.light.range = value;
+		}
+	};
 
 	return LightComponent;
 });

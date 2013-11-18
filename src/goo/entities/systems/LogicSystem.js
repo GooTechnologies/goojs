@@ -30,7 +30,7 @@ function (
 		var counter = 0;
 		entity.forEachComponent(function(comp, index) {
 			if (comp.insertIntoLogicLayer !== undefined) {
-				comp.insertIntoLogicLayer(logicLayer, entity.name + "~" + (counter++));
+				comp.insertIntoLogicLayer(logicLayer, entity.name + '~' + (counter++));
 			}
 		});
 	};
@@ -50,6 +50,7 @@ function (
 	};
 	LogicSystem.prototype.stop = function () {
 		this.passive = true;
+		this.logicLayer.stop();
 	};
 
 	return LogicSystem;

@@ -10,7 +10,9 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/logic/LogicNodeRandom',
 	'goo/logic/LogicNodeVec3',
-	'goo/logic/LogicNodeMultiply'
+	'goo/logic/LogicNodeMultiply',
+	'goo/logic/LogicNodeWASD',
+	'goo/logic/LogicNodeAdd'
 ], function(
 	ConfigHandler,
 	LogicNodeTime,

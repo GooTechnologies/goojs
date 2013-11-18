@@ -32,9 +32,9 @@ define(
 		LogicNodeTime.outPropTime = LogicNodeTime.logicInterface.addOutputProperty("Time", "float");
 
 		// events
-		LogicNodeTime.outEventReached1 = LogicNodeTime.logicInterface.addOutputEvent("Reached1");
+		LogicNodeTime.outEventReached1 = LogicNodeTime.logicInterface.addOutputEvent(">1");
 		LogicNodeTime.inEventStart = LogicNodeTime.logicInterface.addInputEvent("Start");
-		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Sop");
+		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Stop");
 		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 
 		LogicNodeTime.prototype.onConfigure = function(config) {

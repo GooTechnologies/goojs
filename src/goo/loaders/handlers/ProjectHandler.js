@@ -267,37 +267,36 @@ define([
 	};
 
 	ProjectHandler.prototype._updateLogicNodes = function(config) {
-	
+
 		var that = this;
 		var promises = [];
 		if (config.logicRefs && Array.isArray(config.logicRefs) && config.logicRefs.length > 0) {
-		
+
 			var handleLogicRef = function(entityRef) {
-				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
+				return that.getConfig(entityRef).then(function(entityConfig) {
 					return that.updateObject(entityRef, entityConfig, that.options);
-				}));
+				});
 			};
 
-			for (var i = 0; i < config.logicRefs.length; i++) 
+			for (var i = 0; i < config.logicRefs.length; i++) {
 				promises.push(handleLogicRef(config.logicRefs[i]));
-				
+			}
+
 			console.log("and it was " + config.logicRefs.length + " logics");
 			console.log("making " + promises.length + " promises");
-			
-			return RSVP.all(promises).then(function(logics) { 
+
+			return RSVP.all(promises).then(function(logics) {
 				console.log("Updating " + logics.length + " logic nodes");
-				for (var j=0;j<logics.length;j++)
-				{
+				for (var j = 0; j < logics.length; j++) {
 					logics[j].addToWorldLogic(that.world);
 				}
-			}, function(err) { });
-			
+			}, function(err) {});
+
 		} else {
 			return PromiseUtil.createDummyPromise(config);
 		}
-		
-	};
 
+	};
 	ProjectHandler.prototype._updatePosteffects = function(config) {
 		var that = this;
 
