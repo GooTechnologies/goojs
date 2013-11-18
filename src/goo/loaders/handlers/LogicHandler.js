@@ -58,6 +58,7 @@ define([
 
 		// apply new config.
 		obj.configure(config);
+		obj.addToWorldLogic(this.world);
 
 		this._objects[ref] = obj;
 		return PromiseUtil.createDummyPromise(obj);
