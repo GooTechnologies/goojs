@@ -91,13 +91,13 @@ define(
 			// See if the port exists directly at that node.
 			var directAttempt = LogicLayer.resolvePortID(tgt, portName);
 			if (directAttempt !== null) {
-				console.log("Direct attempt succeeded");
+				// direct connection.
 				return {
 					target: tgt,
 					portID: directAttempt
 				};
-			} else if (tgt.obj.entityRef !== undefined) // these are proxy nodes.
-			{
+			} else if (tgt.obj.entityRef !== undefined) {
+				// this case is for proxy nodes.
 				console.log("Resolving entity ref " + tgt.obj.entityRef);
 				for (var i = 0; i < 100; i++) {
 					// Go throug components and try resolving them to entity components.
@@ -119,6 +119,8 @@ define(
 					}
 				}
 			}
+			
+			console.warn("Failed resolving target&portid to " + targetRef + ":" + portName);
 			return null;
 		};
 
