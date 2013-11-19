@@ -219,7 +219,7 @@ define(
 
 		LogicLayer.prototype.process = function(tpf) {
 			for (var i in this._logicInterfaces) {
-				if (this._logicInterfaces[i].wantsProcess) {
+				if (this._logicInterfaces[i].wantsProcess && this._logicInterfaces[i].obj.processLogic) {
 					this._logicInterfaces[i].obj.processLogic(tpf);
 				}
 			}

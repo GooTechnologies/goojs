@@ -15,27 +15,19 @@ define(
 		 */
 		function LogicNodeWASD() {
 			LogicNode.call(this);
-			this.wantsProcessCall = true;
 			this.logicInterface = LogicNodeWASD.logicInterface;
 			this.type = "LogicNodeWASD";
-			this._running = true;
 
-			this.WIsDown = false;
-			this.AIsDown = false;
 			this.eventListenerDown = function(event) {
-				if (event.which === 87) {
-					this.WIsDown = true;
-				}
-				if (event.which === 65) {
-					this.AIsDown = true;
+				var keyEvent = LogicNodeWASD.downKeys[String.fromCharCode(event.which).toLowerCase()];
+				if (keyEvent) {
+					LogicLayer.fireEvent(this.logicInstance, keyEvent);
 				}
 			}.bind(this);
 			this.eventListenerUp = function(event) {
-				if (event.which === 87) {
-					this.WIsDown = false;
-				}
-				if (event.which === 65) {
-					this.AIsDown = false;
+				var keyEvent = LogicNodeWASD.upKeys[String.fromCharCode(event.which).toLowerCase()];
+				if (keyEvent) {
+					LogicLayer.fireEvent(this.logicInstance, keyEvent);
 				}
 			}.bind(this);
 		}
@@ -43,45 +35,31 @@ define(
 		LogicNodeWASD.prototype = Object.create(LogicNode.prototype);
 		LogicNodeWASD.editorName = "WASD";
 
-		LogicNodeWASD.prototype.onConfigure = function(config) {
-			this._running = true;
-		};
-		
-		LogicNodeWASD.prototype.onSystemStarted = function()
-		{
+		LogicNodeWASD.prototype.onSystemStarted = function() {
 			console.log("WASD: Adding event listeners");
 			document.addEventListener('keydown', this.eventListenerDown);
 			document.addEventListener('keyup', this.eventListenerUp);
-		}
-		
-		LogicNodeWASD.prototype.onSystemStopped = function(stopForPause)
-		{
+		};
+
+		LogicNodeWASD.prototype.onSystemStopped = function(stopForPause) {
 			console.log("WASD: Removing event listeners");
 			document.removeEventListener('keydown', this.eventListenerDown);
 			document.removeEventListener('keyup', this.eventListenerUp);
-		}
-
-		// Process
-		LogicNodeWASD.prototype.processLogic = function(tpf) {
-			if (this._running) {
-				if (this.WIsDown) {
-					LogicLayer.writeValue(this.logicInstance, LogicNodeWASD.outportW, 1);
-				} else {
-					LogicLayer.writeValue(this.logicInstance, LogicNodeWASD.outportW, 0);
-				}
-				if (this.AIsDown) {
-					LogicLayer.writeValue(this.logicInstance, LogicNodeWASD.outportA, -1);
-				} else {
-					LogicLayer.writeValue(this.logicInstance, LogicNodeWASD.outportA, 0);
-				}
-			}
 		};
 
 		LogicNodeWASD.logicInterface = new LogicInterface();
-		LogicNodeWASD.outportW = LogicNodeWASD.logicInterface.addOutputProperty("W", "float");
-		LogicNodeWASD.outportS = LogicNodeWASD.logicInterface.addOutputProperty("S", "float");
-		LogicNodeWASD.outportA = LogicNodeWASD.logicInterface.addOutputProperty("A", "float");
-		LogicNodeWASD.outportD = LogicNodeWASD.logicInterface.addOutputProperty("D", "float");
+		LogicNodeWASD.downKeys = {
+			'w': LogicNodeWASD.logicInterface.addOutputEvent("W-down"),
+			'a': LogicNodeWASD.logicInterface.addOutputEvent("A-down"),
+			's': LogicNodeWASD.logicInterface.addOutputEvent("S-down"),
+			'd': LogicNodeWASD.logicInterface.addOutputEvent("D-down")
+		};
+		LogicNodeWASD.upKeys = {
+			'w': LogicNodeWASD.logicInterface.addOutputEvent("W-up"),
+			'a': LogicNodeWASD.logicInterface.addOutputEvent("A-up"),
+			's': LogicNodeWASD.logicInterface.addOutputEvent("S-up"),
+			'd': LogicNodeWASD.logicInterface.addOutputEvent("D-up")
+		};
 
 		LogicNodes.registerType("LogicNodeWASD", LogicNodeWASD);
 
