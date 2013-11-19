@@ -134,7 +134,7 @@ define([
 		image.addEventListener('load', function () {
 			image.dataReady = true;
 
-            if(window.URL.revokeObjectURL)
+            if(window.URL && window.URL.revokeObjectURL != undefined)
             {
 			    window.URL.revokeObjectURL(image.src);
             }
