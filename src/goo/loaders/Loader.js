@@ -133,7 +133,12 @@ define([
 
 		image.addEventListener('load', function () {
 			image.dataReady = true;
-			window.URL.revokeObjectURL(image.src);
+
+            if(window.URL.revokeObjectURL)
+            {
+			    window.URL.revokeObjectURL(image.src);
+            }
+
 			promise.resolve(image);
 		}, false);
 
