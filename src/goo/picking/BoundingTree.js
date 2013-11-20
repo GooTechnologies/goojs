@@ -167,18 +167,20 @@ function (BoundingBox, BoundingSphere, Vector3) {
 			// This is a leaf node. We can therefore check each primitive this node contains. If an intersection occurs, place it in the list.
 			var data = entity.meshDataComponent.meshData;
 
-			var points = null;
+			var vertices = null;
 			for ( var i = this.start; i < this.end; i++) {
-				points = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, points);
-				for ( var t = 0; t < points.length; t++) {
-					worldTransform.matrix.applyPostPoint(points[t]);
+				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
+				for ( var t = 0; t < vertices.length; t++) {
+					worldTransform.matrix.applyPostPoint(vertices[t]);
 				}
 				var vecStore = new Vector3();
-				if (ray.intersects(points, false, vecStore)) {
+				if (ray.intersects(vertices, false, vecStore)) {
 					result.distances = result.distances || [];
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
 					result.points.push(vecStore);
+					result.vertices = result.vertices || [];
+					result.vertices.push(vertices);
 
 					// result.hits = result.hits || [];
 					// result.hits.push({
