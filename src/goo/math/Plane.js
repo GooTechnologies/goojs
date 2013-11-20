@@ -41,8 +41,8 @@ function (
 	 * @return this plane for chaining
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.set(pointB).subtractLocal(pointA);
-		this.normal.crossLocal(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z).normalizeLocal();
+		this.normal.set(pointB).sub(pointA);
+		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
 		this.constant = this.normal.dot(pointA);
 		return this;
 	};
@@ -60,7 +60,7 @@ function (
 		}
 
 		var dotProd = this.normal.dot(unitVector) * 2;
-		result.set(unitVector).subtractLocal(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd);
+		result.set(unitVector).sub([this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd]);
 		return result;
 	};
 
