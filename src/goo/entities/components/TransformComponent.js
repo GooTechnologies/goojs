@@ -49,6 +49,7 @@ function (
 	TransformComponent.logicInterface = new LogicInterface("Transform");
 	TransformComponent.inportPos = TransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 	TransformComponent.inportRot = TransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0,0,0));
+	TransformComponent.inportScale = TransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1,1,1));
 	
 	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
 		this.logicInstance = logicLayer.addInterfaceInstance(TransformComponent.logicInterface, this, interfaceName, false);
@@ -59,6 +60,8 @@ function (
 			this.setTranslation(value);
 		} else if (portID === TransformComponent.inportRot) {
 			this.setRotation(value[0], value[1], value[2]);
+		} else if (portID === TransformComponent.inportScale) {
+			this.setScale(value);
 		}
 	};
 
