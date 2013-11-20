@@ -12,7 +12,8 @@ define([
 	'goo/logic/LogicNodeVec3',
 	'goo/logic/LogicNodeMultiply',
 	'goo/logic/LogicNodeWASD',
-	'goo/logic/LogicNodeAdd'
+	'goo/logic/LogicNodeAdd',
+	'goo/logic/LogicNodeFloat'
 ], function(
 	ConfigHandler,
 	LogicNodeTime,
@@ -56,10 +57,9 @@ define([
 			obj = new fn();
 		}
 
-		// apply new config.
-		obj.configure(config);
 		obj.addToWorldLogic(this.world);
-
+		obj.configure(config);
+		
 		this._objects[ref] = obj;
 		return PromiseUtil.createDummyPromise(obj);
 	};

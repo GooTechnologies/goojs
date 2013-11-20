@@ -9,6 +9,7 @@ define(
 	 */
 	function LogicInterface(name) {
 		this.ports = [];
+		this.configOpts = [];
 		
 		// Name builds the data name prefix
 		if (name === undefined)
@@ -35,6 +36,18 @@ define(
 	LogicInterface.prototype.addOutputEvent = function(name_) {
 		this.ports.push({ id: ++LogicInterface.portID, input: false, property: false, event: true, name: (this.dn_pfx + name_) });
 		return LogicInterface.portID;
+	}
+
+	/*
+	* The config entry here is an object containing all the parameters that go into the automatically 
+	* generated goo-property-edit when editing the schematics
+	*/
+	LogicInterface.prototype.addConfigEntry = function(conf) {
+		this.configOpts.push(conf);
+	}
+	
+	LogicInterface.prototype.getConfigEntries = function() {
+		return this.configOpts;
 	}
 	
 	LogicInterface.prototype.getPorts = function() {

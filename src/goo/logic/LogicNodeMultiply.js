@@ -38,6 +38,8 @@ define(
 		LogicNodeMultiply.inportY = LogicNodeMultiply.logicInterface.addInputProperty("y", "float", 0);
 
 		LogicNodes.registerType("LogicNodeMultiply", LogicNodeMultiply);
+		
+		
 
 		return LogicNodeMultiply;
 	});

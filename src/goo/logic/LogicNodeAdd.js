@@ -29,11 +29,11 @@ define(
 			else if (portID == LogicNodeAdd.inportY)
 				this._y = value;
 
-			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportProduct, this._x + this._y);
+			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportSum, this._x + this._y);
 		}
 
 		LogicNodeAdd.logicInterface = new LogicInterface();
-		LogicNodeAdd.outportProduct = LogicNodeAdd.logicInterface.addOutputProperty("product", "float");
+		LogicNodeAdd.outportSum = LogicNodeAdd.logicInterface.addOutputProperty("sum", "float");
 		LogicNodeAdd.inportX = LogicNodeAdd.logicInterface.addInputProperty("x", "float", 0);
 		LogicNodeAdd.inportY = LogicNodeAdd.logicInterface.addInputProperty("y", "float", 0);
 
