@@ -87,6 +87,10 @@ define(
 
 		LogicLayer.prototype.resolveTargetAndPortID = function(targetRef, portName) {
 			var tgt = this._logicInterfaces[targetRef];
+			
+			// can't be resolved right away, not added yet.
+			if (tgt === undefined)
+				return;
 
 			// See if the port exists directly at that node.
 			var directAttempt = LogicLayer.resolvePortID(tgt, portName);

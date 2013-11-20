@@ -22,7 +22,7 @@ define(
 		LogicNodeFloat.prototype = Object.create(LogicNode.prototype);
 		LogicNodeFloat.editorName = "Float";
 
-		LogicNode.prototype.onConfigure = function(newConfig)
+		LogicNodeFloat.prototype.onConfigure = function(newConfig)
 		{
 			if (newConfig.config !== undefined)
 			{
@@ -31,11 +31,11 @@ define(
 			}
 		}		
 
-		LogicNode.prototype.onSystemStarted = function() {
+		LogicNodeFloat.prototype.onSystemStarted = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 		}
 		
-		LogicNode.prototype.onSystemStopped = function(stopForPause) {
+		LogicNodeFloat.prototype.onSystemStopped = function(stopForPause) {
 		}
 
 		LogicNodes.registerType("LogicNodeFloat", LogicNodeFloat);
