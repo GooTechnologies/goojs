@@ -23,7 +23,8 @@ define([
 		}
 
 		var mockGround = {
-			getTerrainHeightAt:getHeight
+			getTerrainHeightAt:getHeight,
+			getTerrainNormalAt:function(){return {data:[0, 1, 0]};}
 		};
 
 		var setEntityTranformData = function(entity, data) {

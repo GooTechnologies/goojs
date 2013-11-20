@@ -1,14 +1,11 @@
 define([
-	'goo/math/Vector3',
-	'goo/math/Matrix3x3'
+	'goo/math/Vector3'
 ],
-	function(Vector3,
-			 Matrix3x3
+	function(Vector3
 		) {
 		"use strict";
 
 		var calcVec = new Vector3();
-		var calcMat = new Matrix3x3();
 		var _defaults = {
 			gravity:-9.81,
 			worldFloor:-Infinity,
@@ -63,8 +60,8 @@ define([
 				pitch:0
 			};
 			this.groundInfluence = {
-				pitch:0,
-				roll:0
+				x:0,
+				z:0
 			};
 		}
 
@@ -130,7 +127,7 @@ define([
 		};
 
 		GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
-			return [pitch+this.groundInfluence.pitch, yaw*this.modTurn, roll+this.groundInfluence.roll];
+			return [pitch, yaw*this.modTurn, roll];
 		};
 
 		GroundBoundMovementScript.prototype.updateTargetVectors = function() {
@@ -165,16 +162,12 @@ define([
 			entity.movementComponent.addRotationVelocity(this.torque);
 		};
 
-		GroundBoundMovementScript.prototype.applyGroundVectorToControlState = function(pitchAxis, rollAxis, transform) {
+		GroundBoundMovementScript.prototype.computeGroundVectorAxisInfluence = function(transform) {
 			var groundNormal = this.getTerrainNormal(transform.translation);
-			var entityAngles = transform.rotation.toAngles();
-			calcMat.fromAngles(groundNormal.data[1], groundNormal.data[2],groundNormal.data[0]);
-		//	calcMat.applyPost(entityAngles);
+		//	var entityAngles = transform.rotation.toAngles();
 
-			// TODO: Apply the movement control vector by normals, then apply the jump impulse after transform forward.
-
-			transform.rotation.rotateX(pitchAxis * (groundNormal.data[0] - entityAngles.data[0]));
-			transform.rotation.rotateZ(rollAxis * (groundNormal.data[2] - entityAngles.data[2]));
+			this.groundInfluence.x = groundNormal.data[0];
+			this.groundInfluence.z = groundNormal.data[2];
 
 		};
 
@@ -182,9 +175,13 @@ define([
 			this.groundHeight = this.getTerrainHeight(transform.translation);
 			if (transform.translation.data[1] <= this.groundHeight) {
 				this.groundContact = 1;
+				this.computeGroundVectorAxisInfluence(transform);
+			/*
 				if (this.groundRoll || this.groundPitch) {
-					this.applyGroundVectorToControlState(this.groundRoll, this.groundPitch, transform);
+                    // Ground may apply orientation influences here
 				}
+				*/
+
 			} else {
 				this.groundContact = 0;
 			}
