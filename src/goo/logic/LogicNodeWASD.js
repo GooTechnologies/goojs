@@ -18,14 +18,24 @@ define(
 			this.logicInterface = LogicNodeWASD.logicInterface;
 			this.type = "LogicNodeWASD";
 
+			var preventRepeat = {};
 			this.eventListenerDown = function(event) {
-				var keyEvent = LogicNodeWASD.downKeys[String.fromCharCode(event.which).toLowerCase()];
+				var character = String.fromCharCode(event.which).toLowerCase();
+				if (preventRepeat[character]) {
+					return;
+				}
+				var keyEvent = LogicNodeWASD.downKeys[character];
 				if (keyEvent) {
+					preventRepeat[character] = true;
 					LogicLayer.fireEvent(this.logicInstance, keyEvent);
 				}
 			}.bind(this);
 			this.eventListenerUp = function(event) {
-				var keyEvent = LogicNodeWASD.upKeys[String.fromCharCode(event.which).toLowerCase()];
+				var character = String.fromCharCode(event.which).toLowerCase();
+				if (preventRepeat[character]) {
+					preventRepeat[character] = false;
+				}
+				var keyEvent = LogicNodeWASD.upKeys[character];
 				if (keyEvent) {
 					LogicLayer.fireEvent(this.logicInstance, keyEvent);
 				}
