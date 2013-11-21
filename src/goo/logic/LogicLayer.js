@@ -62,6 +62,10 @@ define(
 			instDesc.remove = function() {
 				delete this.outConnections;
 				delete _this._logicInterfaces[name];
+				
+				// nice n^2 algo here to remove all instances.
+				_this.unresolveAllConnections();
+
 			};
 			instDesc.getPorts = function() {
 				return iface.getPorts();
@@ -71,6 +75,26 @@ define(
 
 			return instDesc;
 		};
+
+
+
+		LogicLayer.prototype.unresolveAllConnections = function() {
+			// Un-do all connection resolving. Processes all instances, all ports and all connections
+			for (var n in this._logicInterfaces)
+			{
+				var ports = this._logicInterfaces[n].outConnections;
+				if (ports === undefined)
+					continue;
+				for (var p in ports)
+				{
+					var cx = ports[p];
+					for (var i=0;i<cx.length;i++)
+						if (cx[i].length > 2)
+							cx[i] = [cx[i][0], cx[i][1]];
+				}
+			}
+		}
+
 
 		LogicLayer.resolvePortID = function(instDesc, portName) {
 			if (typeof portName === "number") {
