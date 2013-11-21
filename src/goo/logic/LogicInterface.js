@@ -62,7 +62,13 @@ define(
 			return port.dataname;
 		else
 		{
-			return "dn-" + port.name;
+			var prefix = port.input ? "in-" : "out-";
+			if (port.property)
+				prefix += "prop-";
+			if (port.event)
+				prefix += "event-";
+				
+			return prefix + port.name;
 		}
 	}
 	

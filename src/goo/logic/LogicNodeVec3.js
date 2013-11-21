@@ -23,30 +23,23 @@ define(
 		LogicNodeVec3.prototype = Object.create(LogicNode.prototype);
 		LogicNodeVec3.editorName = "Vec3";
 
-		LogicNodeVec3.prototype.onPropertyWrite = function(portID, value) {
-			if (portID == LogicNodeVec3.inportX)
-				this._x = value;
-			else if (portID == LogicNodeVec3.inportY)
-				this._y = value;
-			else if (portID == LogicNodeVec3.inportZ)
-				this._z = value;
-			else if (portID == LogicnodeVec3.inportVec3)
-			{
-				this._x = value.x;
-				this._y = value.y;
-				this._z = value.z;
-			}
-
-			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportVec3, new Vector3(this._x, this._y, this._z));
-			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportX, this._x);
-			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportY, this._y);
-			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportZ, this._z);
+		LogicNodeVec3.prototype.onInputChanged = function(instDesc, portID, value) {
+		
+			var x = LogicLayer.readPort(instDesc, LogicNodeVec3.inportX);
+			var y = LogicLayer.readPort(instDesc, LogicNodeVec3.inportY);
+			var z = LogicLayer.readPort(instDesc, LogicNodeVec3.inportZ);
+			var xyz = LogicLayer.readPort(instDesc, LogicNodeVec3.inportVec3);
+			
+			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportVec3, new Vector3(x, y, z));
+			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportX, xyz.x);
+			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportY, xyz.y);
+			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportZ, xyz.z);
 		}
 
 		LogicNodeVec3.logicInterface = new LogicInterface();
 		
-		LogicNodeVec3.outportVec3 = LogicNodeVec3.logicInterface.addOutputProperty("xyz", "Vector3");
-		LogicNodeVec3.inportVec3 = LogicNodeVec3.logicInterface.addInputProperty("xyz", "Vector3");
+		LogicNodeVec3.outportVec3 = LogicNodeVec3.logicInterface.addOutputProperty("xyz", "Vector3", new Vector3(0,0,0));
+		LogicNodeVec3.inportVec3 = LogicNodeVec3.logicInterface.addInputProperty("xyz", "Vector3", new Vector3(0,0,0));
 		LogicNodeVec3.inportX = LogicNodeVec3.logicInterface.addInputProperty("x", "float", 0);
 		LogicNodeVec3.inportY = LogicNodeVec3.logicInterface.addInputProperty("y", "float", 0);
 		LogicNodeVec3.inportZ = LogicNodeVec3.logicInterface.addInputProperty("z", "float", 0);

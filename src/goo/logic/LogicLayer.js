@@ -16,12 +16,15 @@ define(
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
+			this._updateRound = 0;
+			this._nextFrameNotifications = [];
 		}
 
 		LogicLayer.prototype.clear = function() {
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
+			this._nextFrameNotifications = [];
 		};
 
 		/**
@@ -49,10 +52,11 @@ define(
 				obj: instance,
 				iface: iface,
 				layer: this,
-				wantsProcess: wantsProcessCall
+				wantsProcess: wantsProcessCall,
 			};
+			
 			this._instanceID++;
-
+			
 			// also supply self-destructing code
 			var _this = this;
 			instDesc.remove = function() {
@@ -183,22 +187,58 @@ define(
 					tconn.push(out.portID);
 				}
 				
-				var tobj = tconn[2].obj;
-	
-				if (tobj._portValues !== undefined)
-				{
-					// set it up with a reader.
-					tobj._portValues = {};
-					tobj.readInput = function(port) { return tobj._portValues[port]; }
-				}
+				var targetDesc = tconn[2];
+				if (targetDesc._portValues === undefined)
+					targetDesc._portValues = {};
+				if (targetDesc._lastNotification === undefined)
+					targetDesc._lastNotification = {};
 					
-				// write port value.
-				var old = tobj._portValue[tconn[3]];
-				tobj._portValue[tconn[3]] = value;
+				// this is the resolved real port id
+				var portID = tconn[3];
 				
-				tobj.onPropertyChanged(tconn[3], value);
+				var old = targetDesc._portValues[portID];
+				targetDesc._portValues[portID] = value;
+				
+				if (old !== value)
+				{
+					var tlayer = targetDesc.layer;
+
+					if (targetDesc._lastNotification[portID] !== tlayer._updateRound)
+					{
+						targetDesc._lastNotification[portID] = tlayer._updateRound;
+						targetDesc.obj.onInputChanged(targetDesc, portID, value);
+					}
+					else
+					{
+						tlayer._nextFrameNotifications.push([targetDesc, portID, value]);
+					}
+				}
 			}
 		};
+		
+		LogicLayer.readPort = function(instDesc, portID) {
+			// 2 step lookup. note that value will first be
+			// _portValue if it exists. 
+			var value = instDesc._portValues;
+			if (value !== undefined)
+				value = value[portID];
+			else
+				instDesc._portValues = {};
+				
+			if (value !== undefined)
+				return value;
+			
+			// default value - here we could look up editable. Unfortunately
+			// if the default specifies 'undefined' value, reading from it will
+			// repeatedly end up in this loop.
+			var ports = instDesc.iface.getPorts();
+			for (var n in ports)
+				if (ports[n].id == portID)
+					return instDesc._portValues[portID] = ports[n].def;
+					
+			console.log("Could not find the port [" + portID + "]!");
+			return undefined;
+		}
 
 		/**
 		 * Fire an event.
@@ -240,11 +280,26 @@ define(
 		};
 
 		LogicLayer.prototype.process = function(tpf) {
+		
+			// last frame queued property update notifications, see writeValue
+			var not = this._nextFrameNotifications;
+			this._nextFrameNotifications = [];
+
+			for (var i=0;i<not.length;i++)
+			{
+				var ne = not[i];
+				ne[0]._lastNotification[ne[1]] = this._updateRound;
+				ne[0].obj.onInputChanged(ne[0], ne[1], ne[2]); 
+			}
+			
+			
 			for (var i in this._logicInterfaces) {
 				if (this._logicInterfaces[i].wantsProcess && this._logicInterfaces[i].obj.processLogic) {
 					this._logicInterfaces[i].obj.processLogic(tpf);
 				}
 			}
+			
+			this._updateRound++;
 		};
 
 		/**

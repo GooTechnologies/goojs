@@ -22,7 +22,7 @@ define(
 		LogicNodeDebug.prototype = Object.create(LogicNode.prototype);
 		LogicNodeDebug.editorName = "Debug";
 
-		LogicNodeDebug.prototype.onPropertyWrite = function(portID, value) {
+		LogicNodeDebug.prototype.onInputChanged = function(instDesc, portID, value) {
 			console.log("LogicNodeDebug (" + this.logicInstance.name + ") value port " + portID + " = [" + value + "]");
 		};
 

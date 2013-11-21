@@ -17,19 +17,16 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeAdd.logicInterface;
 			this.type = "LogicNodeAdd";
-			this._x = this._y = 0;
 		}
 
 		LogicNodeAdd.prototype = Object.create(LogicNode.prototype);
 		LogicNodeAdd.editorName = "Add";
 
-		LogicNodeAdd.prototype.onPropertyWrite = function(portID, value) {
-			if (portID == LogicNodeAdd.inportX)
-				this._x = value;
-			else if (portID == LogicNodeAdd.inportY)
-				this._y = value;
-
-			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportSum, this._x + this._y);
+		LogicNodeAdd.prototype.onInputChanged = function(instDesc, portID, value) {
+			var out = LogicLayer.readPort(instDesc, LogicNodeAdd.inportX) +
+			          LogicLayer.readPort(instDesc, LogicNodeAdd.inportY);
+			
+			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportSum, out);
 		}
 
 		LogicNodeAdd.logicInterface = new LogicInterface();

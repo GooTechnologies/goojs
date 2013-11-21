@@ -66,8 +66,8 @@ define(
 		LogicNode.prototype.onConfigure = function(newConfig) {};
 		LogicNode.prototype.onSystemStarted = function() {};
 		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
-		LogicNode.prototype.onPropertyChanged = function() { console.log("onPropertyChanged on " + this.config.ref); }
-
+		LogicNode.prototype.onInputChanged = function(instDesc, port, nv) { console.log("onInputChanged on " + this.config.ref + " port " + port + " nv=" + nv); }
+		
 		LogicNode.instanceCount = 0;
 
 		return LogicNode;

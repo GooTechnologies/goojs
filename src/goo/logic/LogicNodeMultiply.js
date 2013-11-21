@@ -23,13 +23,10 @@ define(
 		LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMultiply.editorName = "Multiply";
 
-		LogicNodeMultiply.prototype.onPropertyWrite = function(portID, value) {
-			if (portID == LogicNodeMultiply.inportX)
-				this._x = value;
-			else if (portID == LogicNodeMultiply.inportY)
-				this._y = value;
-
-			LogicLayer.writeValue(this.logicInstance, LogicNodeMultiply.outportProduct, this._x * this._y);
+		LogicNodeMultiply.prototype.onInputChanged = function(instDesc, portID, value) {
+			var x = LogicLayer.readPort(this.logicInstance, LogicNodeMultiply.inportX);
+			var y = LogicLayer.readPort(this.logicInstance, LogicNodeMultiply.inportY);
+			LogicLayer.writeValue(this.logicInstance, LogicNodeMultiply.outportProduct, x * y);
 		}
 
 		LogicNodeMultiply.logicInterface = new LogicInterface();

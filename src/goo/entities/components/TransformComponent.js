@@ -55,7 +55,7 @@ function (
 		this.logicInstance = logicLayer.addInterfaceInstance(TransformComponent.logicInterface, this, interfaceName, false);
 	};
 	
-	TransformComponent.prototype.onPropertyWrite = function(portID, value) {
+	TransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 		if (portID === TransformComponent.inportPos) {
 			this.setTranslation(value);
 		} else if (portID === TransformComponent.inportRot) {

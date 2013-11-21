@@ -13,7 +13,8 @@ define([
 	'goo/logic/LogicNodeMultiply',
 	'goo/logic/LogicNodeWASD',
 	'goo/logic/LogicNodeAdd',
-	'goo/logic/LogicNodeFloat'
+	'goo/logic/LogicNodeFloat',
+	'goo/logic/LogicNodeInt'
 ], function(
 	ConfigHandler,
 	LogicNodeTime,
