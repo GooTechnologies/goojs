@@ -182,9 +182,21 @@ define(
 					tconn.push(out.target);
 					tconn.push(out.portID);
 				}
-
-				// use mapped target & port name
-				tconn[2].obj.onPropertyWrite(tconn[3], value);
+				
+				var tobj = tconn[2].obj;
+	
+				if (tobj._portValues !== undefined)
+				{
+					// set it up with a reader.
+					tobj._portValues = {};
+					tobj.readInput = function(port) { return tobj._portValues[port]; }
+				}
+					
+				// write port value.
+				var old = tobj._portValue[tconn[3]];
+				tobj._portValue[tconn[3]] = value;
+				
+				tobj.onPropertyChanged(tconn[3], value);
 			}
 		};
 

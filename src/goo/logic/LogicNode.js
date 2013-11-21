@@ -66,6 +66,7 @@ define(
 		LogicNode.prototype.onConfigure = function(newConfig) {};
 		LogicNode.prototype.onSystemStarted = function() {};
 		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
+		LogicNode.prototype.onPropertyChanged = function() { console.log("onPropertyChanged on " + this.config.ref); }
 
 		LogicNode.instanceCount = 0;
 
