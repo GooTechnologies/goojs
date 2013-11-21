@@ -72,7 +72,7 @@ function (
 		this.logicInstance = logicLayer.addInterfaceInstance(MeshRendererComponent.logicInterface, this, interfaceName, false);
 	};
 	
-	MeshRendererComponent.prototype.onPropertyWrite = function(portID, value) {
+	MeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 		if (portID === MeshRendererComponent.inportAmbient && this.materials.length > 0) {
 			this.materials[0].materialState.ambient[0] = value[0];
 			this.materials[0].materialState.ambient[1] = value[1];
