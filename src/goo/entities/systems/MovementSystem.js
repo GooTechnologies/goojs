@@ -28,7 +28,6 @@ define(['goo/entities/systems/System'],
 			var rotVel = entity.movementComponent.getRotationVelocity();
 			var velocity = entity.movementComponent.getVelocity();
 			var transform = entity.transformComponent.transform;
-			transform.rotation.applyPost(velocity);
 			this.addVelocityToTransform(velocity, transform, tpf);
 			this.addRotToTransform(rotVel, transform, tpf);
 			entity.transformComponent.setUpdated();

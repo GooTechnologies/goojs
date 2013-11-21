@@ -15,14 +15,11 @@ define([
 			modForward:1,
 			modStrafe:0.7,
 			modBack:0.4,
-			modTurn:0.3,
-			groundRoll:false,
-			groundPitch:false
+			modTurn:0.3
 		};
 
-
 		/**
-		 * @class a script for handling common scenario movement over a terrain
+		 * @class a script for handling movement and jumping over a terrain
 		 *
 		 * @constructor
 		 */
@@ -51,6 +48,7 @@ define([
 			this.acceleration = new Vector3();
 			this.torque = new Vector3();
 			this.groundHeight = 0;
+			this.groundNormal = new Vector3();
 			this.controlState = {
 				run:0,
 				strafe:0,
@@ -59,12 +57,12 @@ define([
 				roll:0,
 				pitch:0
 			};
-			this.groundInfluence = {
-				x:0,
-				z:0
-			};
 		}
 
+		/**
+		 *
+		 * @param terrainSystem
+		 */
 		GroundBoundMovementScript.prototype.setTerrainSystem = function(terrainSystem) {
 			this.terrainSystem = terrainSystem;
 		};
@@ -114,8 +112,6 @@ define([
 			return up;
 		};
 
-
-
 		GroundBoundMovementScript.prototype.applyDirectionalModulation = function(strafe, up, run) {
 			strafe *= this.modStrafe;
 			if (run > 0) {
@@ -130,13 +126,23 @@ define([
 			return [pitch, yaw*this.modTurn, roll];
 		};
 
-		GroundBoundMovementScript.prototype.updateTargetVectors = function() {
+		GroundBoundMovementScript.prototype.applyGroundNormalInfluence = function() {
+			var groundModX = Math.abs(Math.cos(this.groundNormal.data[0]));
+			var groundModZ = Math.abs(Math.cos(this.groundNormal.data[2]));
+			this.targetVelocity.data[0] *= groundModX;
+			this.targetVelocity.data[2] *= groundModZ;
+		};
+
+		GroundBoundMovementScript.prototype.updateTargetVectors = function(transform) {
 			this.targetVelocity.set(this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run));
+			transform.rotation.applyPost(this.targetVelocity);
+			this.applyGroundNormalInfluence();
 			this.targetHeading.set(this.applyTorqueModulation(this.controlState.pitch, this.controlState.yaw, this.controlState.roll));
 		};
 
-		GroundBoundMovementScript.prototype.computeAcceleration = function(current, target) {
+		GroundBoundMovementScript.prototype.computeAcceleration = function(entity, current, target) {
 			calcVec.set(target);
+			entity.transformComponent.transform.rotation.applyPost(calcVec);
 			calcVec.sub(current);
 			calcVec.lerp(target, this.accLerp);
 			calcVec.data[1] = target.data[1]; // Ground is not soft...
@@ -153,7 +159,7 @@ define([
 		GroundBoundMovementScript.prototype.updateVelocities = function(entity) {
 			var currentVelocity = entity.movementComponent.getVelocity();
 			var currentRotVel = entity.movementComponent.getRotationVelocity();
-			this.acceleration.set(this.computeAcceleration(currentVelocity, this.targetVelocity));
+			this.acceleration.set(this.computeAcceleration(entity, currentVelocity, this.targetVelocity));
 			this.torque.set(this.computeTorque(currentRotVel, this.targetHeading));
 		};
 
@@ -162,26 +168,15 @@ define([
 			entity.movementComponent.addRotationVelocity(this.torque);
 		};
 
-		GroundBoundMovementScript.prototype.computeGroundVectorAxisInfluence = function(transform) {
-			var groundNormal = this.getTerrainNormal(transform.translation);
-		//	var entityAngles = transform.rotation.toAngles();
-
-			this.groundInfluence.x = groundNormal.data[0];
-			this.groundInfluence.z = groundNormal.data[2];
-
+		GroundBoundMovementScript.prototype.updateGroundNormal = function(transform) {
+			this.groundNormal.set(this.getTerrainNormal(transform.translation));
 		};
 
 		GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
 			this.groundHeight = this.getTerrainHeight(transform.translation);
 			if (transform.translation.data[1] <= this.groundHeight) {
 				this.groundContact = 1;
-				this.computeGroundVectorAxisInfluence(transform);
-			/*
-				if (this.groundRoll || this.groundPitch) {
-                    // Ground may apply orientation influences here
-				}
-				*/
-
+				this.updateGroundNormal(transform);
 			} else {
 				this.groundContact = 0;
 			}
@@ -199,7 +194,7 @@ define([
 		GroundBoundMovementScript.prototype.run = function(entity) {
 			var transform = entity.transformComponent.transform;
 			this.checkGroundContact(entity, transform);
-			this.updateTargetVectors();
+			this.updateTargetVectors(transform);
 			this.updateVelocities(entity);
 			this.applyAccelerations(entity);
 			this.applyGroundContact(entity, transform);
