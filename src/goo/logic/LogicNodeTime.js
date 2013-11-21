@@ -40,7 +40,7 @@ define(
 		LogicNodeTime.prototype.onConfigure = function(config) {
 			this._time = 0;
 			this._running = true;
-		}
+		};
 
 		// Process
 		LogicNodeTime.prototype.processLogic = function(tpf) {
@@ -49,22 +49,23 @@ define(
 				this._time += tpf;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, this._time);
 
-				if (old < 1 && this._time >= 1)
+				if (old < 1 && this._time >= 1) {
 					LogicLayer.fireEvent(this.logicInstance, LogicNodeTime.outEventReached1);
+				}
 			}
-		}
+		};
 
 		// should they have args too?
 		LogicNodeTime.prototype.onEvent = function(event) {
-			if (event == LogicNodeTime.inEventStart) {
+			if (event === LogicNodeTime.inEventStart) {
 				this._running = true;
-			} else if (event == LogicNodeTime.inEventStop) {
+			} else if (event === LogicNodeTime.inEventStop) {
 				this._running = false;
-			} else if (event == LogicNodeTime.inEventReset) {
+			} else if (event === LogicNodeTime.inEventReset) {
 				this._time = 0;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, 0);
 			}
-		}
+		};
 
 		LogicNodes.registerType("LogicNodeTime", LogicNodeTime);
 

@@ -1,6 +1,14 @@
-define(['goo/entities/components/Component'],
-	/** @lends */
-	function (Component) {
+define([
+	'goo/entities/components/Component',
+	'goo/math/Vector3',
+	'goo/logic/LogicInterface'
+],
+/** @lends */
+function (
+	Component,
+	Vector3,
+	LogicInterface
+) {
 	"use strict";
 
 	/**
@@ -54,6 +62,31 @@ define(['goo/entities/components/Component'],
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
+
+	MeshRendererComponent.logicInterface = new LogicInterface("Material");
+	MeshRendererComponent.inportShadows = MeshRendererComponent.logicInterface.addInputEvent("toggle-shadows");
+	MeshRendererComponent.inportHidden = MeshRendererComponent.logicInterface.addInputEvent("toggle-hidden");
+	MeshRendererComponent.inportAmbient = MeshRendererComponent.logicInterface.addInputProperty("ambient", "Vector3", new Vector3(0.5,0.0,0.0));
+	
+	MeshRendererComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
+		this.logicInstance = logicLayer.addInterfaceInstance(MeshRendererComponent.logicInterface, this, interfaceName, false);
+	};
+	
+	MeshRendererComponent.prototype.onPropertyWrite = function(portID, value) {
+		if (portID === MeshRendererComponent.inportAmbient && this.materials.length > 0) {
+			this.materials[0].materialState.ambient[0] = value[0];
+			this.materials[0].materialState.ambient[1] = value[1];
+			this.materials[0].materialState.ambient[2] = value[2];
+		}
+	};
+
+	MeshRendererComponent.prototype.onEvent = function(event) {
+		if (event === MeshRendererComponent.inportShadows) {
+			this.castShadows = !this.castShadows;
+		} else if (event === MeshRendererComponent.inportHidden) {
+			this.hidden = !this.hidden;
+		}
+	};
 
 	/**
 	 * Update world bounding

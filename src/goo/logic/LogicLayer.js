@@ -213,11 +213,17 @@ define(
 
 				// unmapped
 				if (tconn.length === 2) {
-					var realPortId = LogicLayer.resolvePortID(tgt, tconn[1]);
-					tconn.push(realPortId);
+					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
+					if (out == null) {
+						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
+						continue;
+					}
+
+					tconn.push(out.target);
+					tconn.push(out.portID);
 				}
 
-				tgt.obj.onEvent(cArr[i][2]);
+				tconn[2].obj.onEvent(tconn[3]);
 			}
 		};
 
