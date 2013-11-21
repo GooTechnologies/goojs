@@ -42,7 +42,6 @@ define(
 			else
 				this.value = this.defValue;
 				
-			console.log("now it is " + this.value);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
 		}
 
