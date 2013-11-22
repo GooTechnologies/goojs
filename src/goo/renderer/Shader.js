@@ -40,12 +40,14 @@ function (
 		}
 
 		this.originalShaderDefinition = shaderDefinition;
-		// shaderDefinition = this.shaderDefinition = Util.clone(shaderDefinition);
 		this.shaderDefinition = shaderDefinition;
 
 		this.name = name;
-		this.origVertexSource = this.vertexSource = shaderDefinition.vshader;
-		this.origFragmentSource = this.fragmentSource = shaderDefinition.fshader;
+		this.origVertexSource = shaderDefinition.vshader;
+		this.origFragmentSource = shaderDefinition.fshader;
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+
 
 		this.shaderProgram = null;
 
@@ -89,6 +91,7 @@ function (
 
 		this.overridePrecision = shaderDefinition.precision || null;
 		this.processors = shaderDefinition.processors;
+		this.builder = shaderDefinition.builder;
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
@@ -116,6 +119,7 @@ function (
 		return new Shader(this.name, Util.clone({
 			precision: this.precision,
 			processors: this.processors,
+			builder: this.builder,
 			defines: this.defines,
 			attributes: this.attributes,
 			uniforms: this.uniforms,
@@ -251,8 +255,8 @@ function (
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
-		this.vertexSource = this.origVertexSource;
-		this.fragmentSource = this.origFragmentSource;
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
 
 	Shader.prototype._investigateShaders = function () {
@@ -315,6 +319,11 @@ function (
 
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
+
+		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
+		// console.log(this.vertexSource);
+		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
+		// console.log(this.fragmentSource);
 
 		var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
 		var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
@@ -500,6 +509,7 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		var IDENTITY_MATRIX = new Matrix4x4();
+		var tmpMatrix = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
@@ -512,6 +522,12 @@ function (
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 			uniformCall.uniformMatrix4fv(matrix);
+		};
+		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			Matrix4x4.invert(matrix, tmpMatrix);
+			Matrix4x4.transpose(tmpMatrix, tmpMatrix);
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
@@ -599,6 +615,9 @@ function (
 		defaultCallbacks[Shader.TIME] = function (uniformCall) {
 			uniformCall.uniform1f(World.time);
 		};
+		defaultCallbacks[Shader.TPF] = function (uniformCall) {
+			uniformCall.uniform1f(World.tpf);
+		};
 
 		defaultCallbacks[Shader.RESOLUTION] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform2f(shaderInfo.renderer.viewportWidth, shaderInfo.renderer.viewportHeight);
@@ -625,6 +644,7 @@ function (
 	Shader.VIEW_PROJECTION_MATRIX = 'VIEW_PROJECTION_MATRIX';
 	Shader.VIEW_PROJECTION_INVERSE_MATRIX = 'VIEW_PROJECTION_INVERSE_MATRIX';
 	Shader.WORLD_MATRIX = 'WORLD_MATRIX';
+	Shader.NORMAL_MATRIX = 'NORMAL_MATRIX';
 	for (var i = 0; i < 8; i++) {
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
@@ -640,6 +660,7 @@ function (
 	Shader.MAIN_FAR_PLANE = 'FAR_PLANE';
 	Shader.MAIN_DEPTH_SCALE = 'DEPTH_SCALE';
 	Shader.TIME = 'TIME';
+	Shader.TPF = 'TPF';
 	Shader.RESOLUTION = 'RESOLUTION';
 
 	Shader.DIFFUSE_MAP = 'DIFFUSE_MAP';
@@ -651,11 +672,11 @@ function (
 	Shader.EMISSIVE_MAP = 'EMISSIVE_MAP';
 	Shader.DEPTH_MAP = 'DEPTH_MAP';
 
-	Shader.DEFAULT_AMBIENT = [0, 0, 0, 1.0];
+	Shader.DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
 	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
-	Shader.DEFAULT_DIFFUSE = [1, 1, 1, 1];
-	Shader.DEFAULT_SPECULAR = [0.8, 0.8, 0.8, 1.0];
-	Shader.DEFAULT_SHININESS = 16.0;
+	Shader.DEFAULT_DIFFUSE = [0.8, 0.8, 0.8, 1.0];
+	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 1.0];
+	Shader.DEFAULT_SHININESS = 64.0;
 
 	Shader.prototype.defaultCallbacks = {};
 	setupDefaultCallbacks(Shader.prototype.defaultCallbacks);

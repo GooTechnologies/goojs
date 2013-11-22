@@ -13,6 +13,8 @@ define([
 	PromiseUtil,
 	ArrayUtil
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041, bitwise: false */
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);

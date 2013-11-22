@@ -29,7 +29,25 @@ define([
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('machine', MachineHandler);
 
+	MachineHandler.prototype.remove = function(ref) {
+		var machine = this._objects[ref];
+		if (machine) {
+			machine.removeFromParent();
+		}
+		delete this._objects[ref];
+	};
+
 	MachineHandler.prototype._updateActions = function(state, stateConfig) {
+		// first remove actions that are only in the machine
+		for (var i = 0; i < state._actions.length; i++) {
+			var action = state._actions[i];
+			var exists = stateConfig.actions.some(function(actionConfig) {
+				return actionConfig.id === action.id;
+			});
+			if (!exists) { state._actions.splice(i, 1); i--; }
+		}
+
+		// update existing actions or add new ones
 		for (var j = 0; j < stateConfig.actions.length; j++) {
 			var actionConfig = stateConfig.actions[j];
 			var action = state.getAction(actionConfig.id);
@@ -50,6 +68,7 @@ define([
 	};
 
 	MachineHandler.prototype._updateTransitions = function(realState, stateConfig) {
+		// remove all existing transitions first?
 		var transitions = stateConfig.transitions;
 		for (var i = 0; i < transitions.length; i++) {
 			var transition = transitions[i];
@@ -81,7 +100,7 @@ define([
 			promises.push(update(machineRef));
 		}
 
-		if (promises.length>0) {
+		if (promises.length > 0) {
 			return RSVP.all(promises).then(function(realMachines) {
 				realMachines.forEach(function(realMachine) {
 					realState.addMachine(realMachine);
@@ -94,13 +113,24 @@ define([
 	};
 
 	MachineHandler.prototype.update = function(ref, config) {
-
 		var realMachine = this._objects[ref];
 		if (!realMachine) {
 			realMachine = this._objects[ref] = new Machine(config.name);
 		}
-		
+
 		realMachine.setInitialState(config.initialState);
+
+		// remove states that are on the machine and not in the config
+		if (realMachine._states) {
+			var stateKeys = Object.keys(realMachine._states);
+			for (var i = 0; i < stateKeys.length; i++) {
+				var realState = realMachine._states[stateKeys[i]];
+				var exists = config.states.some(function(stateConfig) {
+					return stateConfig.id === realState.uuid;
+				});
+				if (!exists) { realMachine.removeState(realState.uuid); }
+			}
+		}
 
 		// states
 		var promises = [];

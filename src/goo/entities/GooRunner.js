@@ -13,6 +13,7 @@ define([
 	"goo/entities/systems/AnimationSystem",
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
+	'goo/entities/systems/MovementSystem',
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -32,7 +33,9 @@ function (
 	AnimationSystem,
 	LightDebugSystem,
 	CameraDebugSystem,
+	MovementSystem,
 	GameUtils,
+
 	Logo
 ) {
 	"use strict";
@@ -46,6 +49,7 @@ function (
 	 * @param {boolean} [parameters.antialias=true]
 	 * @param {boolean} [parameters.stencil=false]
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false]
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
 	 * @param {boolean} [parameters.logo=true]
@@ -69,6 +73,7 @@ function (
 		this.world.setSystem(new AnimationSystem());
 		this.world.setSystem(new LightDebugSystem());
 		this.world.setSystem(new CameraDebugSystem());
+		this.world.setSystem(new MovementSystem());
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
@@ -199,6 +204,7 @@ function (
 
 		this.world.time += this.world.tpf;
 		World.time = this.world.time;
+		World.tpf = this.world.tpf;
 		this.start = time;
 
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
@@ -308,6 +314,11 @@ function (
 		return div;
 	};
 
+	/**
+	 * Enable misc debug configurations for inspecting aspects of the scene on hotkeys.
+	 * @private
+	 */
+
 	GooRunner.prototype._addDebugKeys = function () {
 		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
@@ -358,11 +369,12 @@ function (
 		}.bind(this), false);
 	};
 
-	/*
+	/**
 	 * Adds an event listener to the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
+
 	GooRunner.prototype.addEventListener = function(type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
@@ -376,11 +388,12 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Removes an event listener to the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
+
 	GooRunner.prototype.removeEventListener = function(type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
@@ -416,17 +429,18 @@ function (
 		}
 	};
 
-	/*
+	/**
 	 * Enables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
+
 	GooRunner.prototype._enableEvent = function(type) {
 		if(this._events[type]) {
 			return;
 		}
 		var func = function(e) {
-			var x = e.offsetX;
-			var y = e.offsetY;
+			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
+			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function(id, depth) {
 				var entity = this.world.entityManager.getEntityById(id);
@@ -443,10 +457,11 @@ function (
 		this._events[type] = func;
 	};
 
-	/*
+	/**
 	 * Disables event listening on the goorunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
+
 	GooRunner.prototype._disableEvent = function(type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
@@ -473,11 +488,20 @@ function (
 	};
 
 	/**
-	 * Takes snapshot at next rendercall
+	 * Takes an image snapshot from the 3d scene at next rendercall
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
 	};
+
+	/**
+	 * Requests a pick from screenspace coordinates. A successful pick returns id and depth of the pick target.
+	 *
+	 * @param {Number} x screen coordinate
+	 * @param {Number} y screen coordinate
+	 * @param {Function} callback to handle the pick result
+	 * @param {Boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
+	 */
 
 	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;

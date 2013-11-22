@@ -3,6 +3,13 @@ GooJS
 
 Goo Engine in JavaScript
 
+TL;DR
+-----
+
+    npm install
+    npm install -g coffee-script  # On Unixy systems prefix with sudo
+    cake init-git
+
 Install dependencies
 --------------------
 
@@ -14,6 +21,10 @@ Optionally, if you want to runt Grunt using just the `grunt` command,
 install Grunt globally (may need to be run as root):
 
     npm install -g grunt-cli
+
+To be able to run Cake directly from the command-line, install it globally:
+
+    npm install -g coffee-script
 
 Style checks
 ------------

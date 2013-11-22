@@ -1,13 +1,9 @@
 define([
-	'goo/statemachine/actions/Action',
-	'goo/statemachine/FSMUtil',
-	'goo/util/ObjectUtil'
+	'goo/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	FSMUtil,
-	_
+	Action
 ) {
 	"use strict";
 
@@ -34,30 +30,29 @@ function(
 	};
 
 	WASDAction._keys = {
-		87:'w',
-		65:'a',
-		83:'s',
-		68:'d',
-		38:'up',
-		37:'left',
-		40:'down',
-		39:'right',
-		32:'space'
+		87: 'w',
+		65: 'a',
+		83: 's',
+		68: 'd'
 	};
 
-	WASDAction.external = (function(){
+	WASDAction.external = (function() {
 		var transitions = [];
 		for (var keycode in WASDAction._keys) {
 			var keyname = WASDAction._keys[keycode];
 			transitions.push({
-				name: keyname,
+				key: keyname,
+				name: 'Key ' + keyname.toUpperCase(),
 				description: "Key '" + keyname + "' pressed"
 			});
 		}
 
 		return {
-			transitions:transitions,
-			parameters: []
+			name: 'WASD Keys Listener',
+			description: 'A 4-in-1 key down listener',
+			canTransition: true,
+			parameters: [],
+			transitions: transitions
 		};
 	})();
 
@@ -68,12 +63,12 @@ function(
 	WASDAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			var keyKeys = _.keys(WASDAction._keys);
+			//var keyKeys = _.keys(WASDAction._keys); // unused
 
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];
 				if (typeof target === 'string') {
-					fsm.send(target, {});
+					fsm.send(target);
 				}
 			}
 			this.keysPressed = [];

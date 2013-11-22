@@ -225,5 +225,52 @@ define([
 			return entity;
 		};
 
+		/**
+		 * Returns an array of all this entity's children
+		 * @param entity
+		 * @returns {Entity[]}
+		 */
+		EntityUtils.getChildren = function (entity) {
+			return entity.transformComponent.children.map(function(childTransformComponent) {
+				return childTransformComponent.entity;
+			});
+		};
+
+		/* UNTESTED!!!
+		/**
+		 * Returns the merged bounding box of the entity and its children
+		 * @param entity
+		 * /
+		EntityUtils.getTotalBoundingBox = function (entity) {
+			var mergedWorldBound = new BoundingBox();
+			var first = true;
+			EntityUtils.traverse(entity, function (entity) {
+				if (entity.meshRendererComponent) {
+					if (first) {
+						var boundingVolume = entity.meshRendererComponent.worldBound;
+						if(boundingVolume instanceof BoundingBox) {
+							boundingVolume.clone(mergedWorldBound);
+						} else {
+							mergedWorldBound.center.setv(boundingVolume.center);
+							mergedWorldBound.xExtent = mergedWorldBound.yExtent = mergedWorldBound.zExtent = boundingVolume.radius;
+							first = false;
+						}
+					} else {
+						mergedWorldBound.merge(entity.meshRendererComponent.worldBound);
+					}
+				}
+			});
+
+			// if the whole hierarchy lacked mesh renderer components return
+			// a tiny bounding box centered around the coordinates of the parent
+			if (first) {
+				var translation = entity.transformComponent.worldTransform.translation;
+				mergedWorldBound = new BoundingBox(new Vector3().copy(translation), 0.001, 0.001, 0.001);
+			}
+
+			return mergedWorldBound;
+		};
+		*/
+
 		return EntityUtils;
 	});

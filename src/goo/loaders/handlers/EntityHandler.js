@@ -13,6 +13,8 @@ define([
 	_,
 	EntityUtils
 ) {
+	"use strict";
+
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -20,7 +22,7 @@ define([
 	EntityHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('entity', EntityHandler);
 
-	EntityHandler.prototype._prepare = function(config) {};
+	EntityHandler.prototype._prepare = function(/*config*/) {};
 
 	EntityHandler.prototype._create = function(ref) {
 		var object = this.world.createEntity(ref);
@@ -28,19 +30,19 @@ define([
 		return object;
 	};
 
-	EntityHandler.prototype.update = function(ref, config) {
+	EntityHandler.prototype.update = function(ref, config, options) {
 		function equalityFilter(entity) {
 			return entity.ref === ref;
 		}
 
 		var object = this.world.entityManager.getEntityByName(ref);
-		if(object == null) {
+		if(!object) {
 			var filtered = this.world._addedEntities.filter(equalityFilter);
-			if(filtered != null) {
+			if(filtered) {
 				object = filtered[0];
 			}
 		}
-		if(object == null) {
+		if(!object) {
 			object = this._create(ref);
 		}
 
@@ -56,7 +58,7 @@ define([
 			var componentConfig = config.components[componentName];
 			var handlerClass = ComponentHandler.getHandler(componentName);
 			if (handlerClass) {
-				if (this._componentHandlers == null) {
+				if (!this._componentHandlers) {
 					this._componentHandlers = {};
 				}
 				var handler = this._componentHandlers[componentName];
@@ -68,6 +70,7 @@ define([
 						options: _.clone(this.options)
 					});
 				} else {
+					/*jshint -W055*/
 					handler = this._componentHandlers[componentName] = new handlerClass(
 						this.world,
 						this.getConfig,
@@ -75,8 +78,8 @@ define([
 						this.options
 					);
 				}
-				var promise = handler.update(object, componentConfig);
-				if (promise == null || promise.then == null) {
+				var promise = handler.update(object, componentConfig, options);
+				if (!promise || !promise.then) {
 					console.error("Handler for " + componentName + " did not return promise");
 				} else {
 					promises.push(promise);
@@ -86,7 +89,7 @@ define([
 			}
 		}
 		if (promises.length) {
-			return RSVP.all(promises).then(function(components) {
+			return RSVP.all(promises).then(function(/*components*/) {
 				return object;
 			});
 		} else {

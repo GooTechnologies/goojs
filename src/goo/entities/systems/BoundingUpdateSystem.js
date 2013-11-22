@@ -40,19 +40,20 @@ function (
 				this._computeWorldBound = null;
 				return;
 			}
-			for (var i = 0; i < entities.length; i++) {
+
+			//this._worldBound = new BoundingSphere(new Vector3(0, 0, 0), 0); // optional for including the center of the scene into the world bound
+			this._worldBound = entities[0].meshRendererComponent.worldBound.clone();
+
+			for (var i = 1; i < entities.length; i++) {
 				var mrc = entities[i].meshRendererComponent;
-				if (i === 0) {
-					mrc.worldBound.clone(this._worldBound);
-				} else {
-					this._worldBound = this._worldBound.merge(mrc.worldBound);
-				}
+				this._worldBound = this._worldBound.merge(mrc.worldBound);
 			}
 			this._computeWorldBound(this._worldBound);
 			this._computeWorldBound = null;
 		}
 	};
 
+	// function named get actually does a set
 	BoundingUpdateSystem.prototype.getWorldBound = function (callback) {
 		this._computeWorldBound = callback;
 	};

@@ -26,7 +26,8 @@ require([
 	'goo/shapes/Sphere',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scripts/HeightMapBoundingScript',
+	'goo/util/CanvasUtils'
 ], function (
 	GooRunner,
 	World,
@@ -49,7 +50,8 @@ require([
 	Sphere,
 	WASDControlScript,
 	MouseLookControlScript,
-	HeightMapBoundingScript
+	HeightMapBoundingScript,
+	CanvasUtils
 	) {
 	'use strict';
 
@@ -90,8 +92,12 @@ require([
 	}
 
 	function heightMapBoundingScriptDemo(goo) {
-		var heightMapBoundingScript = new HeightMapBoundingScript('../../resources/heightmap_small.png', function() {
-			var matrix = heightMapBoundingScript.getMatrix();
+		var canvasUtils = new CanvasUtils();
+
+		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+			var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
+
 			var meshData = Surface.createFromHeightMap(matrix);
 
 			var material = Material.createMaterial(ShaderLib.simpleLit, '');

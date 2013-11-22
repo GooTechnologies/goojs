@@ -17,6 +17,8 @@ function(
 	ShowAction.prototype.constructor = ShowAction;
 
 	ShowAction.external = {
+		name: 'Show',
+		description: 'Makes an entity visible',
 		parameters: [],
 		transitions: []
 	};

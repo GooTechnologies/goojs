@@ -1,7 +1,5 @@
 define([
-	'goo/util/StringUtil',
-	'goo/util/ObjectUtil',
-
+	/*
 	'goo/statemachine/actions/LogVariableAction',
 	'goo/statemachine/actions/SetVariableAction',
 	'goo/statemachine/actions/AddPositionAction',
@@ -30,22 +28,82 @@ define([
 	//'goo/statemachine/actions/TweenRotationAction',
 	//'goo/statemachine/actions/KeyPressAction',
 	//'goo/statemachine/actions/SetCssPropertyAction',
-	//'goo/statemachine/actions/WaitAction',
+
 	'goo/statemachine/actions/KeyUpAction',
 	'goo/statemachine/actions/SetLightRangeAction',
 
-	'goo/statemachine/actions/WASDAction',
 	// 'goo/statemachine/actions/TransformAction',
 	'goo/statemachine/actions/MoveAction',
 	'goo/statemachine/actions/RotateAction'
+    */
 
+	'goo/statemachine/actions/MoveAction',
+	'goo/statemachine/actions/RotateAction',
+	'goo/statemachine/actions/ScaleAction',
+	'goo/statemachine/actions/LookAtAction',
+
+	'goo/statemachine/actions/TweenMoveAction',
+	'goo/statemachine/actions/TweenRotationAction',
+	'goo/statemachine/actions/TweenScaleAction',
+	'goo/statemachine/actions/TweenLookAtAction',
+
+	'goo/statemachine/actions/HideAction',
+	'goo/statemachine/actions/ShowAction',
+	'goo/statemachine/actions/RemoveAction',
+	'goo/statemachine/actions/AddLightAction',
+	'goo/statemachine/actions/RemoveLightAction',
+
+	'goo/statemachine/actions/InBoxAction',
+	'goo/statemachine/actions/CompareDistanceAction',
+
+	'goo/statemachine/actions/SetClearColorAction',
+	//'goo/statemachine/actions/SuspendFSMAction',
+	//'goo/statemachine/actions/ResumeFSMAction',
+
+	'goo/statemachine/actions/InFrustumAction',
+	'goo/statemachine/actions/TransitionAction',
+	'goo/statemachine/actions/EmitAction',
+	'goo/statemachine/actions/EvalAction',
+
+	'goo/statemachine/actions/SwitchCameraAction',
+	'goo/statemachine/actions/LogMessageAction',
+	'goo/statemachine/actions/PauseAnimationAction',
+	'goo/statemachine/actions/ResumeAnimationAction',
+	'goo/statemachine/actions/SetAnimationAction',
+
+	'goo/statemachine/actions/MouseUpAction',
+	'goo/statemachine/actions/MouseDownAction',
+	'goo/statemachine/actions/MouseMoveAction',
+	'goo/statemachine/actions/KeyUpAction',
+	'goo/statemachine/actions/KeyDownAction',
+	'goo/statemachine/actions/KeyPressedAction',
+	'goo/statemachine/actions/WASDAction',
+	'goo/statemachine/actions/ArrowsAction',
+
+	'goo/statemachine/actions/SetRenderTargetAction',
+	'goo/statemachine/actions/WaitAction',
+	'goo/statemachine/actions/RandomTransitionAction',
+	'goo/statemachine/actions/ShakeAction',
+	'goo/statemachine/actions/SmokeAction',
+	'goo/statemachine/actions/FireAction',
+	'goo/statemachine/actions/RemoveParticlesAction',
+	'goo/statemachine/actions/DollyZoomAction',
+	'goo/statemachine/actions/TweenTextureOffsetAction',
+	'goo/statemachine/actions/PickAction',
+
+	'goo/statemachine/actions/SoundFadeInAction',
+	'goo/statemachine/actions/SoundFadeOutAction',
+
+	'goo/statemachine/actions/TransitionOnMessageAction',
+	'goo/statemachine/actions/TweenLightColorAction',
+	'goo/statemachine/actions/CollidesAction',
+	'goo/statemachine/actions/TagAction'
 ],
 /** @lends */
 function(
-	StringUtil,
-	_
+
 ) {
-	"use strict";
+	'use strict';
 
 	var _actions = {};
 
@@ -59,7 +117,7 @@ function(
 		return _actions[name];
 	};
 
-	Actions.allActions = function() {
+	Actions.allActions = function () {
 		var actions = {};
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
@@ -69,23 +127,11 @@ function(
 		return actions;
 	};
 
-	Actions.menuItems = function() {
-		var keys = _.keys(_actions).sort();
-		var items = {};
-		for (var i = 0; i < keys.length; i++) {
-			var key = keys[i];
-			items[StringUtil.uncapitalize(key)] = { name: key };
-		}
-		return items;
-	};
-
-	function registerAll(args) {
-		var actionsStartIndex = 2;
+	function registerAll (args) {
+		var actionsStartIndex = 0;
 		for (var i = actionsStartIndex; i < args.length; i++) {
 			var arg = args[i];
-			var stringedFun = arg.toString();
-			var type = stringedFun.substring(9, stringedFun.indexOf('('));
-			Actions.register(type, arg);
+			Actions.register(arg.external.name, arg);
 		}
 	}
 

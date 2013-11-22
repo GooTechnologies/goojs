@@ -12,44 +12,41 @@ function(
 	function KeyDownAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (event.which === this.key) {
-				this.updated = true;
-				if (this.keyVariable) {
-					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
+			if (this.key) {
+				if (event.which === +this.key) {
+					this.updated = true;
 				}
 			}
 		}.bind(this);
 	}
 
 	KeyDownAction.prototype = Object.create(Action.prototype);
-
-	KeyDownAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.keydown };
-		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.getKey(key);
-		this.keyVariable = settings.keyVariable;
-	};
+	KeyDownAction.prototype.constructor = KeyDownAction;
 
 	KeyDownAction.external = {
+		name: 'Key Down',
+		description: 'Listens for a key press and performs a transition',
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for'
-		}, {
-			name: 'Key variable',
-			key: 'keyVariable',
-			type: 'identifier',
-			description: 'Variable to store the key in'
+			description: 'Key to listen for',
+			'default': 'A'
 		}],
-
 		transitions: [{
-			name: 'keydown',
-			description: 'Fired on key down'
+			key: 'keydown',
+			name: 'Key down',
+			description: 'State to transition to when the key is pressed'
 		}]
+	};
+
+	KeyDownAction.prototype.configure = function (settings) {
+		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
 	KeyDownAction.prototype._setup = function() {
@@ -59,9 +56,7 @@ function(
 	KeyDownAction.prototype._run = function(fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.keydown);
 		}
 	};
 

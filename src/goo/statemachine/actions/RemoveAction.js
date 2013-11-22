@@ -15,6 +15,8 @@ function(
 	RemoveAction.prototype.constructor = RemoveAction;
 
 	RemoveAction.external = {
+		name: 'Remove',
+		description: 'Removes the entity from the world',
 		parameters: [{
 			name: 'Recursive',
 			key: 'recursive',
@@ -27,7 +29,7 @@ function(
 
 	RemoveAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.remove(this.recursive);
+		entity.removeFromWorld(this.recursive);
 	};
 
 	return RemoveAction;

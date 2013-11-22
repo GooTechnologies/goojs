@@ -14,7 +14,7 @@ function (
 	 */
 	function AnimationSystem() {
 		System.call(this, 'AnimationSystem', ['AnimationComponent']);
-		this.entities = null;
+		this.entities = [];
 	}
 
 	AnimationSystem.prototype = Object.create(System.prototype);
@@ -31,13 +31,22 @@ function (
 	};
 
 	AnimationSystem.prototype.pause = function () {
+		this.passive = true;
+		var len = this.entities.length;
+		while (len--) {
+			this.entities[len].animationComponent.pause();
+		}
+	};
+	AnimationSystem.prototype.stop = function() {
+		this.passive = true;
 		for (var i = 0; i < this.entities.length; i++) {
 			var entity = this.entities[i];
-			entity.animationComponent.pause();
+			entity.animationComponent.stop();
 		}
 	};
 
 	AnimationSystem.prototype.resume = function () {
+		this.passive = false;
 		for (var i = 0; i < this.entities.length; i++) {
 			var entity = this.entities[i];
 			entity.animationComponent.resume();

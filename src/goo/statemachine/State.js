@@ -10,6 +10,7 @@ function (
 	function State(uuid) {
 		this.uuid = uuid;
 		this._fsm = null;
+		this.parent = null;
 		this._actions = [];
 		this._machines = [];
 		this._transitions = {};
@@ -21,6 +22,9 @@ function (
 			getTpf: function () {
 				return this._fsm.entity._world.tpf;
 			}.bind(this),
+			getTime: function () {
+				return this._fsm.system.time;
+			}.bind(this),
 			getState: function () {
 				return this;
 			}.bind(this),
@@ -30,13 +34,15 @@ function (
 			getOwnerEntity: function () {
 				return this._fsm.entity;
 			}.bind(this),
-			send: function (channels, data) {
-				if (typeof channels === 'string' && this._transitions[channels]) {
-					this.requestTransition(this._transitions[channels]);
+			send: function (channels/*, data*/) {
+				if (channels) {
+					if (typeof channels === 'string' && this._transitions[channels]) {
+						this.requestTransition(this._transitions[channels]);
+					}
+					/*else {
+					 this._fsm._bus.emit(channels, data);
+					 }*/
 				}
-				/*else {
-				 this._fsm._bus.emit(channels, data);
-				 }*/
 			}.bind(this),
 			addListener: function (channelName, callback) {
 				this._fsm._bus.addListener(channelName, callback);
@@ -63,6 +69,9 @@ function (
 				} else {
 					this._fsm.applyOnVariable(name, fun);
 				}
+			}.bind(this),
+			getEvalProxy: function () {
+				return this._fsm.system.evalProxy;
 			}.bind(this)
 		};
 	}
@@ -75,8 +84,14 @@ function (
 		}
 	};
 
+	State.prototype.isCurrentState = function () {
+		return this === this.parent.getCurrentState();
+	};
+
 	State.prototype.requestTransition = function (target) {
-		this.transitionTarget = target;
+		if (this.isCurrentState()) {
+			this.transitionTarget = target;
+		}
 	};
 
 	State.prototype.setTransition = function (eventName, target) {
@@ -124,6 +139,24 @@ function (
 		}
 	};
 
+	State.prototype.ready = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].ready();
+		}
+		for (var i = 0; i < this._actions.length; i++) {
+			this._actions[i].ready(this.proxy);
+		}
+	};
+
+	State.prototype.cleanup = function () {
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].cleanup();
+		}
+		for (var i = 0; i < this._actions.length; i++) {
+			this._actions[i].cleanup(this.proxy);
+		}
+	};
+
 	State.prototype.enter = function () {
 		// on enter of self
 		for (var i = 0; i < this._actions.length; i++) {
@@ -161,6 +194,24 @@ function (
 		this._actions.push(action);
 	};
 
+	State.prototype.recursiveRemove = function () {
+		this.removeAllActions();
+		for (var i = 0; i < this._machines.length; i++) {
+			this._machines[i].recursiveRemove();
+		}
+		this._machines = [];
+	};
+
+	State.prototype.removeAllActions = function () {
+		for (var i = 0; i < this._actions.length; i++) {
+			var action = this._actions[i];
+			if (action.onDestroy) {
+				action.onDestroy(this.proxy);
+			}
+		}
+		this._actions = [];
+	};
+
 	State.prototype.removeAction = function (action) {
 		if (action.onDestroy) {
 			action.onDestroy(this.proxy);
@@ -170,8 +221,17 @@ function (
 	};
 
 	State.prototype.addMachine = function (machine) {
-		machine._fsm = this._fsm;
-		this._machines.push(machine);
+		var index = this._machines.indexOf(machine);
+		if (index === -1) {
+			machine._fsm = this._fsm;
+			machine.parent = this;
+			this._machines.push(machine);
+		}
+	};
+
+	State.prototype.removeMachine = function (machine) {
+		machine.recursiveRemove();
+		ArrayUtil.remove(this._machines, machine);
 	};
 
 	return State;

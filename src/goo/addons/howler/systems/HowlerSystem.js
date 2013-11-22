@@ -20,7 +20,7 @@ function(
 		System.call(this, 'HowlerSystem', ['HowlerComponent']);
 
 		this.settings = settings || {};
-		this.settings.scale = this.settings.scale || 1;
+		this.settings.scale = this.settings.scale || 0.1;
 	}
 
 	HowlerSystem.prototype = Object.create(System.prototype);

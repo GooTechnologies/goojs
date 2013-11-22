@@ -289,6 +289,8 @@ function (
 		// Default setup
 
 		this.clearColor = new Vector4();
+		// You need 64 bits for number equality
+		this._clearColor = new Float64Array(4);
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 		this.context.clearDepth(1);
 		this.context.clearStencil(0);
@@ -379,7 +381,7 @@ function (
 		}
 
 		var aspect = this.domElement.width / this.domElement.height;
-		if (camera && camera.aspect !== aspect) {
+		if (camera && camera.aspect !== aspect && camera.projectionMode === 0) {
 			camera.aspect = aspect;
 			camera.setFrustumPerspective();
 			camera.onFrameChange();
@@ -431,7 +433,17 @@ function (
 	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
-		this.clearColor.set(r, g, b, a);
+		if (this._clearColor[0] === r
+			&& this._clearColor[1] === g
+			&& this._clearColor[2] === b
+			&& this._clearColor[3] === a) {
+				return;
+			}
+		this._clearColor[0] = r;
+		this._clearColor[1] = g;
+		this._clearColor[2] = b;
+		this._clearColor[3] = a;
+		this.clearColor.seta(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -502,6 +514,9 @@ function (
 
 			for (var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
 			}
@@ -621,12 +636,6 @@ function (
 				material.errorOnce = false;
 			}
 
-			if (this.shadowHandler.shadowResults.length > 0) {
-				material.setTexture('SHADOW_MAP', this.shadowHandler.shadowResults);
-			} else if (material.getTexture('SHADOW_MAP')) {
-				material.removeTexture('SHADOW_MAP');
-			}
-
 			if (material.wireframe && flatOrWire !== 'wire') {
 				if (!meshData.wireframeData) {
 					meshData.wireframeData = meshData.buildWireframeData();
@@ -653,7 +662,7 @@ function (
 			// Check for caching of shader that use defines
 			var shader = material.shader;
 			if (shader.processors || shader.defines) {
-			// Call processors
+				// Call processors
 				if (shader.processors) {
 					for (var j = 0; j < shader.processors.length; j++) {
 						shader.processors[j](shader, renderInfo);
@@ -674,15 +683,11 @@ function (
 
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 				if (!shaderCache[defineKey]) {
+					if (shader.builder) {
+						shader.builder(shader, renderInfo);
+					}
 					shader = material.shader = shader.clone();
-					// shader = material.shader = shader.cloneOriginal();
 					shaderCache[defineKey] = shader;
-					// if (shader.processors) {
-						// for (var j = 0; j < shader.processors.length; j++) {
-							// shader.processors[j](shader, renderInfo);
-						// }
-					// }
-					//console.log('Shader not in cache, adding:', defineKey, shader.name);
 				} else {
 					shader = shaderCache[defineKey];
 					if (shader !== material.shader) {
@@ -703,24 +708,44 @@ function (
 			this.updateTextures(material);
 			this.updateLineAndPointSettings(material);
 
-			if (meshData.getIndexBuffer() !== null) {
-				this.bindData(meshData.getIndexData());
-				if (meshData.getIndexLengths() !== null) {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
-				}
-			} else {
-				if (meshData.getIndexLengths() !== null) {
-					this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
-				} else {
-					this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
-				}
-			}
+			this._checkDualTransparency(material, meshData);
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
 
 			this.info.calls++;
 			this.info.vertices += meshData.vertexCount;
 			this.info.indices += meshData.indexCount;
+		}
+	};
+
+	Renderer.prototype._drawBuffers = function (meshData) {
+		if (meshData.getIndexBuffer() !== null) {
+			this.bindData(meshData.getIndexData());
+			if (meshData.getIndexLengths() !== null) {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawElementsVBO(meshData.getIndexBuffer(), meshData.getIndexModes(), [meshData.getIndexBuffer().length]);
+			}
+		} else {
+			if (meshData.getIndexLengths() !== null) {
+				this.drawArraysVBO(meshData.getIndexModes(), meshData.getIndexLengths());
+			} else {
+				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
+			}
+		}
+	};
+
+	Renderer.prototype._checkDualTransparency = function (material, meshData) {
+		if (material.dualTransparency) {
+			var savedCullFace = material.cullState.cullFace;
+			var newCullFace = savedCullFace === 'Front' ? 'Back' : 'Front';
+			material.cullState.cullFace = newCullFace;
+
+			this.updateCulling(material);
+			this._drawBuffers(meshData);
+
+			material.cullState.cullFace = savedCullFace;
 		}
 	};
 
@@ -776,7 +801,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
@@ -824,7 +849,7 @@ function (
 					pickList.push(entity);
 				}
 			}
-			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, this.hardwarePicking.pickingMaterial);
+			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
 
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);

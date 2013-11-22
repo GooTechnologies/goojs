@@ -178,5 +178,68 @@ function () {
 		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
 	};
 
+	/**
+	 * Returns true if the 2 values supplied are approximately the same
+	 * @param v1
+	 * @param v2
+	 * @param tolerance
+	 * @returns {boolean}
+	 */
+	MathUtils.closeTo = function(v1, v2, tolerance) {
+		tolerance = typeof tolerance !== 'undefined' ? tolerance : 0.001;
+		return Math.abs(v1 - v2) <= tolerance;
+	};
+
+	/**
+	 * Returns the sign of the supplied parameter
+	 * @param value
+	 * @returns {number}
+	 */
+	MathUtils.sign = function (value) {
+		return value < 0 ? -1 : value > 0 ? 1 : 0;
+	};
+
+	/**
+	 * Computes the area of a 2D triangle
+	 * @param {Vector2} t1 First point of the triangle
+	 * @param {Vector2} t2 Second point of the triangle
+	 * @param {Vector2} t3 Third point of the triangle
+	 * @returns {number}
+	 */
+	MathUtils.triangleArea = function (t1, t2, t3) {
+		return Math.abs(t1.x * t2.y + t2.x * t3.y + t3.x * t1.y
+			- t2.y * t3.x - t3.y * t1.x - t1.y * t2.x) / 2;
+	};
+
+	/**
+	 * Computes the height of a point located inside a triangle. Height is assumed to bound to the Z axis.
+	 * @param {Vector3} t1 First point of the triangle
+	 * @param {Vector3} t2 Second point of the triangle
+	 * @param {Vector3} t3 Third point of the triangle
+	 * @param {Vector3} p The point for which to compute the height
+	 * @returns {Vector3}
+	 */
+	MathUtils.barycentricInterpolation = function (t1, t2, t3, p) {
+		var t1Area = MathUtils.triangleArea(t2, t3, p);
+		var t2Area = MathUtils.triangleArea(t1, t3, p);
+		var t3Area = MathUtils.triangleArea(t1, t2, p);
+
+		// assuming the point is inside the triangle
+		var totalArea = t1Area + t2Area + t3Area;
+		if (!totalArea) {
+
+			if (p[0] === t1[0] && p[2] === t1[2]) {
+				return t1;
+			} else if (p[0] === t2[0] && p[2] === t2[2]) {
+				return t2;
+			} else if (p[0] === t3[0] && p[2] === t3[2]) {
+				return t3;
+			}
+		}
+
+		p.z = (t1Area * t1.z + t2Area * t2.z + t3Area * t3.z) / totalArea;
+		return p;
+	};
+
 	return MathUtils;
 });

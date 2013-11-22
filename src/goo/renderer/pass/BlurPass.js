@@ -1,8 +1,16 @@
 define([
-	'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget', 'goo/renderer/Util', 'goo/renderer/shaders/ShaderLib'], function(
-	Material, FullscreenUtil, RenderTarget,
-	Util, ShaderLib) {
+	'goo/renderer/Material',
+	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/RenderTarget',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib'
+], function(
+	Material,
+	FullscreenUtil,
+	RenderTarget,
+	Util,
+	ShaderLib
+) {
 	"use strict";
 
 	/**
@@ -10,7 +18,6 @@ define([
 	 * settings: {
 	 *     target : null,
 	 *     strength : 1.0,
-	 *     kernelSize : 25,
 	 *     sigma : 4.0,
 	 *     sizeX : 256,
 	 *     sizeY : 256
@@ -22,8 +29,8 @@ define([
 
 		this.target = settings.target !== undefined ? settings.target : null;
 		var strength = settings.strength !== undefined ? settings.strength : 1.0;
-		var kernelSize = settings.kernelSize !== undefined ? settings.kernelSize : 25;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
+		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
 		var sizeX = settings.sizeX !== undefined ? settings.sizeX : 256;
 		var sizeY = settings.sizeY !== undefined ? settings.sizeY : 256;
 
@@ -57,12 +64,12 @@ define([
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', readBuffer);
-		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurX;
+		this.convolutionMaterial.uniforms.uImageIncrement = BlurPass.blurY;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetX, true);
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', this.renderTargetX);
-		this.convolutionShader.uniforms.uImageIncrement = BlurPass.blurY;
+		this.convolutionMaterial.uniforms.uImageIncrement = BlurPass.blurX;
 
 		renderer.render(this.renderable, FullscreenUtil.camera, [], this.renderTargetY, true);
 

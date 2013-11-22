@@ -9,6 +9,8 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
+	"use strict";
+
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

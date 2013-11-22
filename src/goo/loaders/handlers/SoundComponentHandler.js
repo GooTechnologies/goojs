@@ -9,14 +9,16 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
-	'use strict';
+	"use strict";
+
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
 
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
-	SoundComponentHandler.prototype.contructor = SoundComponentHandler;
+	SoundComponentHandler._type = 'howler';
+	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 
 	SoundComponentHandler.prototype._create = function(entity) {
 		var component = new HowlerComponent();

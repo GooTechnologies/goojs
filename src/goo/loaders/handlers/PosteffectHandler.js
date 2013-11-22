@@ -19,7 +19,8 @@ define([
 	BloomPass,
 	_
 ) {
-	'use strict';
+	"use strict";
+
 	function PosteffectHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -31,6 +32,10 @@ define([
 	ConfigHandler._registerClass('posteffect', PosteffectHandler);
 
 	PosteffectHandler.prototype._prepare = function(config) {
+		if (!config.name || !PassLib[config.name]) {
+			console.error('Unknown posteffect name: ' + config.name);
+			return;
+		}
 		var pass = PassLib[config.name];
 		_.defaults(config, {
 			enabled: true,
@@ -47,7 +52,8 @@ define([
 
 	PosteffectHandler.prototype._create = function(ref, config) {
 		if (!config.name || !PassLib[config.name]) {
-			throw new Error('Unknown posteffect name: ' + config.name);
+			console.error('Unknown posteffect name: ' + config.name);
+			return;
 		}
 		this._objects[ref] = PassLib[config.name];
 		this._objects[ref].create();
@@ -55,6 +61,10 @@ define([
 	};
 
 	PosteffectHandler.prototype.update = function(ref, config) {
+		if (!config.name || !PassLib[config.name]) {
+			console.error('Unknown posteffect name: ' + config.name);
+			return PromiseUtil.createDummyPromise();
+		}
 		var object = this._objects[ref] || this._create(ref, config);
 		this._prepare(config);
 		object.update(config);

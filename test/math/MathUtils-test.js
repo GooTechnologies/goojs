@@ -1,4 +1,12 @@
-define(["goo/math/MathUtils", "goo/math/Vector3"], function(MathUtils, Vector3) {
+define([
+	'goo/math/MathUtils',
+	'goo/math/Vector3',
+	'goo/math/Vector2'
+	], function(
+		MathUtils,
+		Vector3,
+		Vector2
+	) {
 	"use strict";
 
 	describe("MathUtils", function() {
@@ -79,5 +87,40 @@ define(["goo/math/MathUtils", "goo/math/Vector3"], function(MathUtils, Vector3) 
 			expect(MathUtils.nearestHigherPowerOfTwo(256)).toEqual(256);
 			expect(MathUtils.nearestHigherPowerOfTwo(257)).toEqual(512);
 		});
+
+		it('can compute the area of a triangle', function() {
+			expect(MathUtils.triangleArea(new Vector2(5, 5), new Vector2(5, 6), new Vector2(7, 5))).toBeCloseTo(1.0);
+		});
+
+		it('can do barycentric interpolation', function() {
+			var t1 = new Vector3(2, 2, 30);
+			var t2 = new Vector3(4, 2, 40);
+			var t3 = new Vector3(2, 6, 50);
+
+			expect(MathUtils.barycentricInterpolation(t1, t2, t3, new Vector3(2, 4, 123)).z).toBeCloseTo(40);
+			expect(MathUtils.barycentricInterpolation(t1, t2, t3, new Vector3(3, 2, 123)).z).toBeCloseTo(35);
+			expect(MathUtils.barycentricInterpolation(
+				t1, t2, t3, new Vector3((t1.x + t2.x + t3.x) / 3, (t1.y + t2.y + t3.y) / 3, 123)).z
+			).toBeCloseTo(40);
+		});
+
+		it('gets the correct triangle normal', function() {
+			var p1 = [0, 0, 0];
+			var p2 = [0, 1, 0];
+			var p3 = [1, 1, 0];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([0, 0,-1]);
+
+			p1 = [0, 0, 0];
+			p2 = [0, 0, 1];
+			p3 = [1, 0, 1];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([0, 1, 0]);
+
+			p1 = [1, 0, 0];
+			p2 = [0, 1, 0];
+			p3 = [0, 0, 1];
+			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([1, 1, 1]);
+
+		});
+
 	});
 });

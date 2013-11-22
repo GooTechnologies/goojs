@@ -168,6 +168,7 @@ function (
 		var diff = this.vec.setv(this.center).subv(bs.center);
 		var rsum = this.radius + bs.radius;
 		return diff.dot(diff) <= rsum * rsum;
+		//return this.center.distanceSquared(bs.center) <= rsum * rsum;
 	};
 
 	BoundingSphere.prototype.intersectsRay = function (ray) {

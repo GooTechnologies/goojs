@@ -15,6 +15,8 @@ function(
 	PauseAnimationAction.prototype.constructor = PauseAnimationAction;
 
 	PauseAnimationAction.external = {
+		name: 'Pause Animation',
+		description: 'Pauses animations',
 		parameters: [{
 			name: 'On all',
 			key: 'onAll',

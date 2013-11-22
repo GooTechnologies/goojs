@@ -19,6 +19,8 @@ define([
 	PromiseUtil,
 	_
 ) {
+	"use strict";
+
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -70,6 +72,14 @@ define([
 		});
 	};
 
+
+	AnimationLayersHandler.prototype.remove = function(ref) {
+		if (this._objects[ref]) {
+			delete this._objects[ref];
+		}
+	};
+
+
 	AnimationLayersHandler.prototype._create = function(ref) {
 		return this._objects[ref] = [];
 	};
@@ -96,21 +106,22 @@ define([
 
 		var promises = [];
 
-		function getState(key, ref) {
+		function getState(key, ref, transitions) {
 			return that.getConfig(ref).then(function(config) {
 				return that.updateObject(ref, config, that.options).then(function(state) {
 					return {
 						state: state,
 						ref: ref,
 						config: config,
-						key: key
+						key: key,
+						transitions: transitions
 					};
 				});
 			});
 		}
 
 		for (var stateKey in layerConfig.states) {
-			promises.push(getState(stateKey, layerConfig.states[stateKey].stateRef));
+			promises.push(getState(stateKey, layerConfig.states[stateKey].stateRef, layerConfig.states[stateKey].transitions));
 		}
 
 		return RSVP.all(promises).then(function(stateObjects) {
@@ -120,8 +131,9 @@ define([
 				layer._steadyStates[stateObject.key] = stateObject.state;
 			}
 			for(var i = 0; i < stateObjects.length; i++) {
-				var transitions = stateObjects[i].config.transitions;
+				var transitions = stateObjects[i].transitions;
 				var state = stateObjects[i].state;
+				state._transitions = {};
 				if (transitions) {
 					for (var key in transitions) {
 						var transitionConfig = transitions[key];
@@ -137,6 +149,7 @@ define([
 				}
 			}
 		}).then(function() {
+			layer._transitions = {};
 			if (layerConfig.transitions) {
 				for (var transitionKey in layerConfig.transitions) {
 					var transitionConfig = layerConfig.transitions[transitionKey];

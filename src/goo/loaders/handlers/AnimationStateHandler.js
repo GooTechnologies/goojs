@@ -17,13 +17,14 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
+	"use strict";
 
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
 	}
 	AnimationStateHandler.prototype = Object.create(ConfigHandler);
-	AnimationStateHandler.prototype.construcor = AnimationStateHandler;
+	AnimationStateHandler.prototype.constructor = AnimationStateHandler;
 	ConfigHandler._registerClass('animstate', AnimationStateHandler);
 
 	AnimationStateHandler.prototype.update = function(ref, config) {
@@ -33,6 +34,12 @@ define([
 			object._sourceTree = source;
 			return object;
 		});
+	};
+
+	AnimationStateHandler.prototype.remove = function(ref) {
+		if (this._objects[ref]) {
+			delete this._objects[ref];
+		}
 	};
 
 	AnimationStateHandler.prototype._create = function(ref) {
@@ -73,7 +80,8 @@ define([
 					return this.getConfig(cfg.clipRef).then(function(config) {
 						return that.updateObject(cfg.clipRef, config, that.options);
 					}).then(function(clip) {
-						return source.initFromClip(clip, cfg.filter, cfg.channels);
+						source.initFromClip(clip, cfg.filter, cfg.channels);
+						return source;
 					});
 				} else {
 					return PromiseUtil.createDummyPromise(source);

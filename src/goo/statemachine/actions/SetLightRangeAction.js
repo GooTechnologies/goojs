@@ -16,6 +16,8 @@ function(Action) {
 	};
 
 	SetLightRangeAction.external = {
+		name: 'Set Light Range',
+		description: 'Sets the range of a light',
 		parameters: [{
 			name: 'Entity',
 			key: 'entity',
@@ -32,7 +34,7 @@ function(Action) {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: []

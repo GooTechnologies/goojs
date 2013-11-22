@@ -1,10 +1,11 @@
 define([
-		'goo/util/rsvp'
-	],
-	/** @lends */
-	function(
-		RSVP
-	) {
+	'goo/util/rsvp'
+],
+/** @lends */
+function(
+	RSVP
+) {
+	"use strict";
 
 	/**
 	 * @class Subclass of Promise. Wrapper class around an XHR call.
@@ -55,9 +56,6 @@ define([
 		if (options.responseType) {
 			request.responseType = options.responseType;
 		}
-
-		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
 
 		request.onreadystatechange = function () {
 			if ( request.readyState === 4 ) {

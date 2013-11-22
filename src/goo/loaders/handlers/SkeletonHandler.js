@@ -13,6 +13,8 @@ define([
 		JsonUtils,
 		pu
 ) {
+	"use strict";
+
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -55,7 +57,7 @@ define([
 		return pu.createDummyPromise(skeleton);
 	};
 
-	SkeletonHandler.prototype.remove = function(ref) {};
+	SkeletonHandler.prototype.remove = function(/*ref*/) {};
 
 	return SkeletonHandler;
 });

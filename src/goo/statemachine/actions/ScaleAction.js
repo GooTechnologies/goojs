@@ -15,45 +15,61 @@ function(
 	ScaleAction.prototype.constructor = ScaleAction;
 
 	ScaleAction.external = {
+		name: 'Scale',
+		description: 'Scales the entity',
 		parameters: [{
 			name: 'Scale',
 			key: 'scale',
-			type: 'vec3',
+			type: 'position',
 			description: 'Move',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add/multiply, otherwise set',
-			'default': 'absolute'
+			description: 'If true add/multiply the current scaling',
+			'default': true
 		}, {
 			name: 'Multiply',
 			key: 'multiply',
 			type: 'boolean',
 			description: 'If true multiply, otherwise add',
-			'default': true
+			'default': false
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
-			'default': true
+			description: 'Repeat this action every frame',
+			'default': false
 		}],
 		transitions: []
 	};
 
-	ScaleAction.prototype._run = function(fsm) {
+	ScaleAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
 		if (this.relative) {
 			if (this.multiply) {
-				transform.translation.mul(this.translation);
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 10;
+					transform.scale.data[0] *= this.scale[0] * tpf;
+					transform.scale.data[1] *= this.scale[1] * tpf;
+					transform.scale.data[2] *= this.scale[2] * tpf;
+				} else {
+					transform.scale.mul(this.scale);
+				}
 			} else {
-				transform.translation.add(this.translation);
+				if (this.everyFrame) {
+					var tpf = fsm.getTpf() * 10;
+					transform.scale.data[0] += this.scale[0] * tpf;
+					transform.scale.data[1] += this.scale[1] * tpf;
+					transform.scale.data[2] += this.scale[2] * tpf;
+				} else {
+					transform.scale.add(this.scale);
+				}
 			}
 		} else {
-			transform.translation.set(this.scale);
+			transform.scale.set(this.scale);
 		}
 
 		entity.transformComponent.setUpdated();

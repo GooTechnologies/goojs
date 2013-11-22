@@ -128,7 +128,7 @@ function (
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
-		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array) {
+		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array || data instanceof Float32Array) {
 			width = width || image.width;
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
@@ -154,6 +154,7 @@ function (
 				};
 			}
 		}
+		this.setNeedsUpdate();
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

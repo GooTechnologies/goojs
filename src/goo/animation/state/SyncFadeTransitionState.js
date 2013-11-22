@@ -21,5 +21,11 @@ function (FadeTransitionState) {
 		this._targetState.resetClips(this._sourceState._globalStartTime);
 	};
 
+	SyncFadeTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		FadeTransitionState.prototype.shiftClipTime.call(this, shiftTime);
+		this._targetState.shiftClipTime(this._sourceState._globalStartTime + shiftTime);
+		this._sourceState.shiftClipTime(shiftTime);
+	};
+
 	return SyncFadeTransitionState;
 });

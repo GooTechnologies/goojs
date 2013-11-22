@@ -26,13 +26,13 @@ define([
 		this._directionalLightMesh = LightDebug._buildDirectionalLightMesh();
 	}
 
-	LightDebug.prototype.getMesh = function(light) {
+	LightDebug.prototype.getMesh = function(light, options) {
 		if (light instanceof PointLight) {
-			return [this._ball, this._pointLightMesh];
+			return options.full ? [this._ball, this._pointLightMesh] : [this._ball];
 		} else if (light instanceof SpotLight) {
-			return [this._ball, this._spotLightMesh];
+			return options.full ? [this._ball, this._spotLightMesh] : [this._ball];
 		} else if (light instanceof DirectionalLight) {
-			return [this._ball, this._directionalLightMesh];
+			return options.full ? [this._ball, this._directionalLightMesh] : [this._ball];
 		}
 	};
 

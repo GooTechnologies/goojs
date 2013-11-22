@@ -38,12 +38,12 @@ function(
 			name: 'Tolerance',
 			key: 'tolerance',
 			type: 'float',
-			'default': 0.0001
+			'default': 0.001
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: [{

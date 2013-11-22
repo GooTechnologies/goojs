@@ -34,14 +34,14 @@ function(
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': false
 		}],
 		transitions: []
 	};
 
 	AddVariableAction.prototype._run = function(fsm) {
-		fsm.applyToVariable(this.variable, function(v) {
+		fsm.applyOnVariable(this.variable, function(v) {
 			return v + FSMUtil.getValue(this.amount, fsm);
 		}.bind(this));
 	};

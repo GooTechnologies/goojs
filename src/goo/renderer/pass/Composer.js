@@ -28,7 +28,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 		this.readBuffer = this.renderTarget2;
 
 		this.passes = [];
-
+		this._clearColor = [0,0,0,1];
 		this.copyPass = new FullscreenPass(ShaderLib.copy);
 	}
 
@@ -40,6 +40,13 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 
 	Composer.prototype.addPass = function (pass) {
 		this.passes.push(pass);
+	};
+
+	Composer.prototype.setClearColor = function(color) {
+		this._clearColor[0] = color[0];
+		this._clearColor[1] = color[1];
+		this._clearColor[2] = color[2];
+		this._clearColor[3] = color[3];
 	};
 
 	Composer.prototype.render = function (renderer, delta, camera, lights) {
@@ -55,7 +62,7 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 				continue;
 			}
 
-			pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive, camera, lights);
+			pass.render(renderer, this.writeBuffer, this.readBuffer, delta, maskActive, camera, lights, this._clearColor);
 
 			if (pass.needsSwap) {
 				if (maskActive) {

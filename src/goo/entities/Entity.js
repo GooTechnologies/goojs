@@ -48,18 +48,13 @@ function () {
 	}
 
 	/**
-	 * Set component of a certain type on entity. Existing component of the same type will be overwritten.
+	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
 	 * @param {Component} component Component to set on the entity
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			for (var i = 0; i < this._components.length; i++) {
-				if (this._components[i].type === component.type) {
-					this._components[i] = component;
-					break;
-				}
-			}
+			return ;
 		} else {
 			this._components.push(component);
 		}

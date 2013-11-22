@@ -15,6 +15,8 @@ define([
 	RSVP,
 	_
 ) {
+	"use strict";
+
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -22,7 +24,7 @@ define([
 	ShaderHandler.prototype = Object.create(ConfigHandler.prototype);
 	ConfigHandler._registerClass('shader', ShaderHandler);
 
-	ShaderHandler.prototype._create = function(ref) {};
+	ShaderHandler.prototype._create = function(/*ref*/) {};
 
 	ShaderHandler.prototype.update = function(ref, config) {
 		var shaderDefinition;
@@ -88,7 +90,7 @@ define([
 		});
 	};
 
-	ShaderHandler.prototype.remove = function(ref) {};
+	ShaderHandler.prototype.remove = function(/*ref*/) {};
 
 	ShaderHandler.prototype._getDefaultShaderDefinition = function() {
 		return {

@@ -114,9 +114,7 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 	 */
 	TransformChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new TransformData();
-		rVal.setRotation(this._rotations[index]);
-		rVal.setScale(this._scales[index]);
-		rVal.setTranslation(this._translations[index]);
+		this.setCurrentSample(index, 0.0, rVal);
 		return rVal;
 	};
 

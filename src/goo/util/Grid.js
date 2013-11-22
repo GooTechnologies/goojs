@@ -21,6 +21,7 @@ function(
 	ShaderLib,
 	Util
 ) {
+	"use strict";
 
 	var _defaultGrid = {
 		stepX: 1,

@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	Vector3
 ) {
 	"use strict";
 
@@ -15,23 +17,19 @@ function(
 	LookAtAction.prototype.constructor = LookAtAction;
 
 	LookAtAction.external = {
+		name: 'Look At',
+		description: 'Reorients an entity so that it\'s facing a specific point',
 		parameters: [{
-			name: 'Look at entity',
-			key: 'lookAtEntity',
-			type: 'entity',
-			description: 'Entity to look at',
-			'default': null
-		}, {
-			name: 'Look at point',
-			key: 'lookAtPoint',
+			name: 'Look at position',
+			key: 'lookAt',
 			type: 'position',
-			description: 'Point to look at',
+			description: 'Position to look at',
 			'default': [0, 0, 0]
 		}, {
 			name: 'On every frame',
 			key: 'everyFrame',
 			type: 'boolean',
-			description: 'Do this action every frame',
+			description: 'Repeat this action every frame',
 			'default': true
 		}],
 		transitions: []
@@ -40,15 +38,9 @@ function(
 	LookAtAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
-		var transform = transformComponent.transform;
 
-		if (this.lookAtEntity) {
-			transform.lookAt(this.lookAtEntity.transformComponent.transform.translation);
-			transformComponent.setUpdated();
-		} else if (this.lookAtPoint) {
-			transformComponent.transform.lookAt(this.lookAtPoint);
-			transformComponent.setUpdated();
-		}
+		transformComponent.transform.lookAt(new Vector3(this.lookAt), Vector3.UNIT_Y);
+		transformComponent.setUpdated();
 	};
 
 	return LookAtAction;

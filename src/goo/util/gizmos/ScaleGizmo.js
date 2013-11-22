@@ -5,7 +5,8 @@ define([
 	'goo/shapes/Box',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function(
 	Gizmo,
 	MeshData,
@@ -13,12 +14,13 @@ define([
 	Box,
 	Transform,
 	Renderer,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
 	'use strict';
-	function ScaleGizmo(world) {
-		Gizmo.call(this, world, 'ScaleGizmo');
-		this._boxMesh = new Box();
+	function ScaleGizmo(gizmoRenderSystem) {
+		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
+		this._boxMesh = new Box(1.4, 1.4, 1.4);
 		this._arrowMesh = this._buildArrowMesh();
 		this._scale = 1;
 		this._transformScale = new Vector3();
@@ -66,8 +68,14 @@ define([
 	ScaleGizmo.prototype._scaleUniform = function() {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
-		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1],this._scale);
-		this._transformScale.muld(scale,scale,scale);
+		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1], this._scale);
+
+		var boundEntityTranslation = this.gizmoRenderSystem.entity.transformComponent.worldTransform.translation;
+		var mainCameraTranslation = Renderer.mainCamera.translation;
+		var cameraEntityDistance = mainCameraTranslation.distance(boundEntityTranslation);
+		scale += cameraEntityDistance / 200000 * MathUtils.sign(scale - 1);
+
+		this._transformScale.muld(scale, scale, scale);
 	};
 
 	ScaleGizmo.prototype._scaleNonUniform = function() {
@@ -89,7 +97,7 @@ define([
 		result.div(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
-		result.setv(line).muld(d,d,d);
+		result.setv(line).muld(d, d, d);
 		var scale = Math.pow(1 + d, this._scale);
 
 		switch(this._activeHandle.axis) {
@@ -106,7 +114,7 @@ define([
 	};
 
 	ScaleGizmo.prototype._buildBox = function() {
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._boxMesh,
 			materials: [this._buildMaterialForAxis(3)],
 			transform: new Transform(),
@@ -122,7 +130,7 @@ define([
 			transform.setRotationXYZ(Math.PI/2, 0, 0);
 		}
 
-		this.renderables.push({
+		this.addRenderable({
 			meshData: this._arrowMesh,
 			materials: [this._buildMaterialForAxis(dim)],
 			transform: transform,
@@ -145,13 +153,13 @@ define([
 
 		// Box
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 10);
+		transform.translation.setd(0, 0, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 
 		// Line
 		var transform = new Transform();
-		transform.scale.setd(1, 1, 10);
+		transform.scale.setd(1, 1, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh2Data, transform);
 

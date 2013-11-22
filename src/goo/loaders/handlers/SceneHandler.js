@@ -5,6 +5,8 @@ define([
 	ConfigHandler,
 	RSVP
 ) {
+	"use strict";
+
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

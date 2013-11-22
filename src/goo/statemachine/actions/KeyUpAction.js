@@ -12,60 +12,53 @@ function(
 	function KeyUpAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
+		this.everyFrame = true;
 		this.updated = false;
 		this.eventListener = function(event) {
-			if (!this.key || event.which === this.key) {
+			if (!this.key || event.which === +this.key) {
 				this.updated = true;
-				if (this.keyVariable) {
-					//fsm.applyToVariable(this.keyVariable, function() { return event.which; });
-				}
 			}
 		}.bind(this);
 	}
 
 	KeyUpAction.prototype = Object.create(Action.prototype);
-
-	KeyUpAction.prototype.configure = function(settings) {
-		this.everyFrame = true;
-		this.eventToEmit = { channel: settings.transitions.keyup };
-		var key = settings.key || 'a';
-		this.key = (typeof key === 'number') ? key : FSMUtil.keys[key];
-		this.keyVariable = settings.keyVariable;
-	};
+	KeyUpAction.prototype.constructor = KeyUpAction;
 
 	KeyUpAction.external = {
+		name: 'Key Up',
+		description: 'Listens for a key release and performs a transition',
+		canTransition: true,
 		parameters: [{
 			name: 'Key',
 			key: 'key',
 			type: 'key',
-			description: 'Key to listen for'
-		}, {
-			name: 'Key variable',
-			key: 'keyVariable',
-			type: 'identifier',
-			description: 'Variable to store the key in'
+			description: 'Key to listen for',
+			'default': 'A'
 		}],
-
 		transitions: [{
-			name: 'keyup',
-			description: 'Fired on key up'
+			key: 'keyup',
+			name: 'Key up',
+			description: 'State to transition to when the key is released'
 		}]
 	};
 
-	KeyUpAction.prototype._setup = function() {
+	KeyUpAction.prototype.configure = function (settings) {
+		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.transitions = { keyup: settings.transitions.keyup };
+	};
+
+	KeyUpAction.prototype._setup = function () {
 		document.addEventListener('keyup', this.eventListener);
 	};
 
-	KeyUpAction.prototype._run = function(fsm) {
+	KeyUpAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
-			if (this.eventToEmit) {
-				fsm.send(this.eventToEmit.channel, this.eventToEmit.data);
-			}
+			fsm.send(this.transitions.keyup);
 		}
 	};
 
-	KeyUpAction.prototype.exit = function() {
+	KeyUpAction.prototype.exit = function () {
 		document.removeEventListener('keyup', this.eventListener);
 	};
 

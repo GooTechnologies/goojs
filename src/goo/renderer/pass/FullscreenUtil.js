@@ -1,6 +1,14 @@
-define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'],
-	/** @lends */
-	function (ShapeCreator, Camera, Vector3) {
+define([
+	'goo/shapes/ShapeCreator',
+	'goo/renderer/Camera',
+	'goo/math/Vector3'
+],
+/** @lends */
+function (
+	ShapeCreator,
+	Camera,
+	Vector3
+) {
 	"use strict";
 
 	/**
@@ -11,7 +19,7 @@ define(['goo/shapes/ShapeCreator', 'goo/renderer/Camera', 'goo/math/Vector3'],
 
 	var camera = new Camera();
 	camera.projectionMode = Camera.Parallel;
-	camera.setFrustum(-1, 1, -1, 1, 1, -1);
+	camera.setFrustum(0, 1, -1, 1, 1, -1);
 	camera._left.copy(Vector3.UNIT_X).invert();
 	camera._up.copy(Vector3.UNIT_Y);
 	camera._direction.copy(Vector3.UNIT_Z);

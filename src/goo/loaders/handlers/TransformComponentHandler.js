@@ -15,6 +15,8 @@ define([
 	_,
 	ArrayUtil
 ) {
+	"use strict";
+
 	/*jshint eqeqeq: false, -W041 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);

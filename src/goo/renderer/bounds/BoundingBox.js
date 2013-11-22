@@ -1,12 +1,14 @@
 define([
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingVolume',
+	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	Vector3,
 	BoundingVolume,
+	BoundingSphere,
 	MathUtils
 ) {
 	"use strict";
@@ -21,6 +23,7 @@ function (
 	function BoundingBox(center, xExtent, yExtent, zExtent) {
 		BoundingVolume.call(this, center);
 
+		// x/y/z Extent is actually width/height/depth * 0.5
 		this.xExtent = xExtent !== undefined ? xExtent : 1;
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
@@ -454,8 +457,10 @@ function (
 	BoundingBox.prototype.merge = function (bv) {
 		if (bv instanceof BoundingBox) {
 			return this.mergeBox(bv.center, bv.xExtent, bv.yExtent, bv.zExtent, this);
-		} else {
+		} else if(bv instanceof BoundingSphere) {
 			return this.mergeBox(bv.center, bv.radius, bv.radius, bv.radius, this);
+		} else {
+			return this;
 		}
 	};
 

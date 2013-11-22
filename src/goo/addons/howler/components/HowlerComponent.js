@@ -21,12 +21,13 @@ function(
 		}
 	};
 
-	HowlerComponent.prototype.playSound = function(soundIdx, sprite, callback) {
-		this.sounds[soundIdx].play(sprite, callback);
+	HowlerComponent.prototype.playSound = function(soundIndex, sprite, callback) {
+		console.log(this.sounds[soundIndex].play);
+		this.sounds[soundIndex].play(sprite, callback);
 	};
 
-	HowlerComponent.prototype.getSound = function(soundIdx) {
-		return this.sounds[soundIdx];
+	HowlerComponent.prototype.getSound = function(soundIndex) {
+		return this.sounds[soundIndex];
 	};
 
 	return HowlerComponent;

@@ -3,6 +3,8 @@ define([
 ], function(
 	RSVP
 ) /* @lends */ {
+	"use strict";
+
 	var PromiseUtil = {};
 
 	/**
@@ -16,7 +18,7 @@ define([
 	PromiseUtil.createDummyPromise = function(arg, error) {
 		var promise;
 		promise = new RSVP.Promise();
-		if (error != null) {
+		if (error) {
 			promise.reject(error);
 		} else {
 			promise.resolve(arg);

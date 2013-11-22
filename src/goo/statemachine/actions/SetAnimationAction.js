@@ -14,14 +14,12 @@ function(
 	SetAnimationAction.prototype.constructor = SetAnimationAction;
 
 	SetAnimationAction.external = {
+		name: 'Set Animation',
+		description: 'Transitions between animations',
 		parameters: [{
 			name:'Animation',
 			key:'animation',
-			type:'string'
-		}, {
-			name:'On every frame',
-			key:'everyFrame',
-			type:'boolean'
+			type:'animstate'
 		}],
 		transitions:[]
 	};

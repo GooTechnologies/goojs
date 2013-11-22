@@ -8,49 +8,84 @@ function(
 	Action,
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
-	function TweenAction(settings) {
-		settings = settings || {};
-		this.everyFrame = settings.everyFrame || true;
-
-		this.script = settings.script || "$('button').css('padding-left', this.x + 'px');";
-		this.time = settings.time || 1000;
-		this.event = settings.event || 'dummy';
-		this.from = settings.from || {
-			x: 0
-		};
-		this.to = settings.to || {
-			x: 100
-		};
-		this.easing = settings.easing || window.TWEEN.Easing.Elastic.InOut;
-		this.tween = new window.TWEEN.Tween();
-
-		this.external = {
-			script: ['string', 'Tween action'],
-			time: ['int', 'Time'],
-			event: ['string', 'Send event'],
-			from: ['json', 'From'],
-			to: ['json', 'To'],
-			easing: ['function', 'Easing']
-		};
+	function TweenAction(/*id, settings*/) {
+		Action.apply(this, arguments);
 	}
 
 	TweenAction.prototype = Object.create(Action.prototype);
+	TweenAction.prototype.constructor = TweenAction;
 
-	TweenAction.prototype.onCreate = function(fsm) {
-		var that = this;
-		this.tween.from(FSMUtil.clone(this.from)).to(this.to, this.time).easing(this.easing).onUpdate(function() {
-			/* jshint evil: true */
-			eval(that.script);
-		}).onComplete(function() {
-			fsm.handle(this.event);
-			console.log('complete:', this.event);
-		}.bind(this)).start();
+	TweenAction.external = {
+		name: 'Tween',
+		description: 'Tween anything',
+		canTransition: true,
+		parameters: [{
+			name: 'To',
+			key: 'to',
+			type: 'number',
+			description: 'Value to tween to',
+			'default': 0
+		}, {
+			name: 'Object',
+			key: 'objectName',
+			type: 'string',
+			description: 'Object',
+			'default': ''
+		}, {
+			name: 'Property',
+			key: 'propertyName',
+			type: 'string',
+			description: 'Property',
+			'default': ''
+		}, {
+			name: 'Time',
+			key: 'time',
+			type: 'number',
+			description: 'Time it takes for this tween to complete',
+			'default': 1000
+		}, {
+			name: 'Easing type',
+			key: 'easing1',
+			type: 'dropdown',
+			description: 'Easing type',
+			'default': 'Linear',
+			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
+		}, {
+			name: 'Direction',
+			key: 'easing2',
+			type: 'dropdown',
+			description: 'Easing direction',
+			'default': 'In',
+			options: ['In', 'Out', 'InOut']
+		}],
+		transitions: [{
+			key: 'complete',
+			name: 'On Completion',
+			description: 'State to transition to when the tween completes'
+		}]
 	};
 
-	TweenAction.prototype.onDestroy = function() {
-		this.tween.stop();
+	TweenAction.prototype.configure = function (settings) {
+		this.to = settings.to;
+		this.objectName = settings.objectName;
+		this.propertyName = settings.propertyName;
+		this.time = settings.time;
+		if (settings.easing1 === 'Linear') {
+			this.easing = window.TWEEN.Easing.Linear.None;
+		} else {
+			this.easing = window.TWEEN.Easing[settings.easing1][settings.easing2];
+		}
+		this.eventToEmit = { channel: settings.transitions.complete };
+	};
+
+	TweenAction.prototype._run = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+
+		var object = eval('entity.' + this.objectName);
+		var from = object[this.propertyName];
+		FSMUtil.createComposableTween(entity, this.propertyName, from, this.to, this.time);
 	};
 
 	return TweenAction;

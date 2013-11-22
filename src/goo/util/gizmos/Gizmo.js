@@ -22,15 +22,16 @@ define([
 	Vector3
 ) {
 	'use strict';
-	function Gizmo(name) {
+	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
+		this.gizmoRenderSystem = gizmoRenderSystem;
 		this._colors = [
 			[1, 0.1, 0.3],
 			[0.2, 1, 0.3],
 			[0.2, 0.3, 1],
 			[0.8, 0.8, 0.8]
 		];
-		this._gizmoSize = 1 / 50;
+		this._gizmoSize = 1 / 60;
 
 		this._plane = new Plane();
 		this._line = new Vector3();
@@ -73,10 +74,30 @@ define([
 		return Gizmo.handleStore[id - 16000];
 	};
 
+	Gizmo.prototype.getRenderable = function(id) {
+		for (var i = 0; i < this.renderables.length; i++) {
+			var renderable = this.renderables[i];
+			if (renderable.id === id) {
+				return renderable;
+			}
+		}
+	};
+
 	Gizmo.prototype.activate = function(properties) {
 		this._activeHandle = properties.data;
 		this._mouse.oldPosition[0] = properties.x;
 		this._mouse.oldPosition[1] = properties.y;
+
+		this._activeRenderable = this.getRenderable(properties.id);
+
+		this._activeRenderable.materials[0].uniforms.color = [1, 1, 0];
+	};
+
+	Gizmo.prototype.deactivate = function() {
+		if (this._activeRenderable) {
+			var originalColor = this._activeRenderable.originalColor;
+			this._activeRenderable.materials[0].uniforms.color = [originalColor[0], originalColor[1], originalColor[2]];
+		}
 	};
 
 	Gizmo.prototype.copyTransform = function(transform) {
@@ -184,15 +205,21 @@ define([
 		this._line.normalize();
 	};
 
+	Gizmo.prototype.addRenderable = function(renderable) {
+		renderable.originalColor = renderable.materials[0].uniforms.color;
+		this.renderables.push(renderable);
+	};
+
 	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {
 		var material = Material.createMaterial(Gizmo._shaderDef, axis+'Material');
 		material.uniforms.color = this._colors[axis];
 
 		if(opacity !== undefined && opacity < 1.0) {
-			material.depthState.write = true;
-			material.depthState.enabled = false;
+			// material.depthState.write = true;
+			// material.depthState.enabled = false;
 			material.blendState.blending = 'CustomBlending';
 			material.uniforms.opacity = opacity;
+			material.renderQueue = 3000;
 		}
 		material.cullState.enabled = false;
 
@@ -231,7 +258,7 @@ define([
 			'}'//
 		].join('\n'),
 		fshader : [//
-			ShaderBuilder.light.prefragment,
+			// ShaderBuilder.light.prefragment,
 
 			'varying vec3 normal;',
 			'varying vec3 viewPosition;',
@@ -247,7 +274,7 @@ define([
 			' vec3 lVector = normalize(light);',
 			' float dotProduct = dot(N, lVector);',
 			' float diffuse = max(dotProduct, 0.0);',
-			' final_color.rgb *= (0.7*diffuse+0.3);',
+			' final_color.rgb *= (0.5*diffuse+0.5);',
 
 			' final_color.a = opacity;',
 			'	gl_FragColor = final_color;',

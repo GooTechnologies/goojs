@@ -23,10 +23,10 @@ function (AbstractTransitionState) {
 		AbstractTransitionState.prototype.update.call(this, globalTime);
 
 		// update both of our states
-		if (this._sourceState !== null) {
+		if (this._sourceState) {
 			this._sourceState.update(globalTime);
 		}
-		if (this._targetState !== null) {
+		if (this._targetState) {
 			this._targetState.update(globalTime);
 		}
 	};
@@ -37,18 +37,28 @@ function (AbstractTransitionState) {
 	 */
 	FadeTransitionState.prototype.postUpdate = function () {
 		// post update both of our states
-		if (this._sourceState !== null) {
+		if (this._sourceState) {
 			this._sourceState.postUpdate();
 		}
-		if (this._targetState !== null) {
+		if (this._targetState) {
 			this._targetState.postUpdate();
 		}
 	};
 
 	FadeTransitionState.prototype.resetClips = function(globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);
-		if(this._targetState !== null) {
+		if(this._targetState) {
 			this._targetState.resetClips(globalTime);
+		}
+	};
+
+	FadeTransitionState.prototype.shiftClipTime = function(shiftTime) {
+		AbstractTransitionState.prototype.shiftClipTime.call(this, shiftTime);
+		if(this._targetState) {
+			this._targetState.shiftClipTime(shiftTime);
+		}
+		if(this._sourceState) {
+			this._sourceState.shiftClipTime(shiftTime);
 		}
 	};
 

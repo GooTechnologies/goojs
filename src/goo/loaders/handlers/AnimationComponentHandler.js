@@ -12,11 +12,14 @@ function(
 	RSVP,
 	pu
 ) {
+	"use strict";
+
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
 
 	AnimationComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	AnimationComponentHandler.prototype.constructor = AnimationComponentHandler;
 	ComponentHandler._registerClass('animation', AnimationComponentHandler);
 
 	AnimationComponentHandler.prototype._prepare = function(/*config*/) {};
@@ -27,12 +30,18 @@ function(
 		return component;
 	};
 
-	AnimationComponentHandler.prototype.update = function(entity, config) {
+	AnimationComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 
 		var p1, p2;
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
-
+		if (options && options.animation && options.animation.paused !== undefined) {
+			if (options.animation.paused) {
+				component.stop();
+			} else {
+				component.resume();
+			}
+		}
 		var layersRef = config.layersRef;
 		var poseRef = config.poseRef;
 		var promises = [];
@@ -60,6 +69,11 @@ function(
 		promises.push(p2);
 
 		return RSVP.all(promises).then(function() {
+			/*var paused = component.paused;
+			component.paused = false;
+			component.resetClips();
+			component.update();
+			component.paused = paused;*/
 			return component;
 		});
 	};

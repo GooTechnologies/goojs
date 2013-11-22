@@ -17,6 +17,8 @@ function(
 	HideAction.prototype.constructor = HideAction;
 
 	HideAction.external = {
+		name: 'Hide',
+		description: 'Hides an entity and its children',
 		parameters: [],
 		transitions: []
 	};

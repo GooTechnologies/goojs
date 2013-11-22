@@ -71,27 +71,27 @@ function (
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
 		var count = this.renderList.length = 0;
-		for(var i = 0; i < entities.length; i++) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
-				if(entity.hasComponent(componentName) && (this.doRender[componentName] || entity.getComponent(componentName).forceDebug)) {
+				if (entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
 					var renderables;
+					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
-					if(tree[componentName]) {
+					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
 						renderables = tree[componentName];
 					} else {
-						renderables = DebugDrawHelper.getRenderablesFor(component);
-						renderables[0].id = entity.id;
-						renderables[1].id = entity.id;
+						renderables = DebugDrawHelper.getRenderablesFor(component, options);
+						renderables.forEach(function (renderable) { renderable.id = entity.id; });
 						tree[componentName] = renderables;
 					}
-					renderables[0].transform.copy(entity.transformComponent.worldTransform);
-					renderables[1].transform.copy(entity.transformComponent.worldTransform);
-					DebugDrawHelper.update(renderables, component, this.scale);
-					this.renderList[count++] = renderables[0];
-					this.renderList[count++] = renderables[1];
+					renderables.forEach(function (renderable) { renderable.transform.copy(entity.transformComponent.worldTransform); });
+					DebugDrawHelper.update(renderables, component, this.camera.translation);
+					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
+					//this.renderList[count++] = renderables[0];
+					//this.renderList[count++] = renderables[1];
 				}
 			}
 		}

@@ -26,6 +26,7 @@ define([
 			machine1.addState(state1);
 
 			state1.addAction({
+				ready: function () {},
 				enter: function() { gotData1 += 123; },
 				exit: function() {},
 				update: function() {}
@@ -40,6 +41,7 @@ define([
 			machine2.addState(state2);
 
 			state2.addAction({
+				ready: function () {},
 				enter: function() { gotData2 += 234; },
 				exit: function() {},
 				update: function() {}
@@ -48,6 +50,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -61,6 +64,7 @@ define([
 
 			var state1 = new State('first');
 			state1.addAction({
+				ready: function () {},
 				enter: function() { gotData1 += 123; },
 				exit: function() {},
 				update: function() {}
@@ -68,6 +72,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() { gotData2 += 234; },
 				exit: function() {},
 				update: function() {}
@@ -80,6 +85,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(0);
@@ -91,6 +97,7 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() {},
 				update: function() { gotData1 += 123; }
@@ -103,6 +110,7 @@ define([
 			// set up machine 2
 			var state2 = new State('entry');
 			state2.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() {},
 				update: function() { gotData2 += 234; }
@@ -115,6 +123,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// do update
 			fsmComponent.update();
@@ -132,6 +141,7 @@ define([
 			var state1 = new State('entry');
 			machine1.addState(state1);
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData1 += 123; },
 				update: function(proxy) { proxy.send('toSecond'); }
@@ -141,6 +151,7 @@ define([
 			var state2 = new State('second');
 			machine1.addState(state2);
 			state2.addAction({
+				ready: function () {},
 				enter: function() { gotData2 += 234; },
 				exit: function() {},
 				update: function() { gotData3 += 345; }
@@ -150,6 +161,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -168,6 +180,7 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData1 += 123; },
 				update: function(proxy) { proxy.send('toSecond'); }
@@ -176,6 +189,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() { gotData2 += 234; },
 				exit: function() {},
 				update: function() { gotData3 += 345; }
@@ -184,6 +198,7 @@ define([
 
 			var state2_1 = new State('third');
 			state2_1.addAction({
+				ready: function () {},
 				enter: function() { gotData4 += 456; },
 				exit: function() {},
 				update: function() { gotData5 += 567; }
@@ -202,6 +217,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -222,6 +238,7 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() { gotData1 += 123; },
 				exit: function() {},
 				update: function(proxy) { proxy.send('toSecond'); }
@@ -230,6 +247,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData2 += 234; },
 				update: function() {}
@@ -238,13 +256,17 @@ define([
 
 			var state2_1 = new State('third');
 			state2_1.addAction({
+				ready: function () {},
 				enter: function() { gotData3 += 345; },
 				exit: function() { gotData4 += 456; },
 				update: function(proxy) {proxy.send('toEntry'); }
 			});
 			state2_1.setTransition('toEntry', 'entry');
 
-			state2.addMachine(state2_1);
+			var machine1_1 = new Machine();
+			machine1_1.addState(state2_1);
+
+			state2.addMachine(machine1_1);
 
 			var machine1 = new Machine();
 			machine1.addState(state1);
@@ -254,6 +276,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -273,17 +296,20 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData[0] += 123; },
 				update: function() { gotData[1] += 234; }
 			});
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData[2] += 345; },
 				update: function(proxy) { gotData[3] += 456; proxy.send('toSecond'); }
 			});
 			state1.setTransition('toSecond', 'second');
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData[4] += 567; },
 				update: function() { gotData[5] += 678; }
@@ -291,6 +317,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() {},
 				update: function() {}
@@ -304,6 +331,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -325,6 +353,7 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData[0] += 123; },
 				update: function(proxy) { proxy.send('toSecond'); }
@@ -333,6 +362,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() { gotData[1] += 234; },
 				exit: function() {},
 				update: function() { gotData[2] += 345; }
@@ -340,6 +370,7 @@ define([
 			// {
 				var state2_1 = new State('third');
 				state2_1.addAction({
+					ready: function () {},
 					enter: function() { gotData[3] += 456; },
 					exit: function() {},
 					update: function() { gotData[4] += 567; }
@@ -347,6 +378,7 @@ define([
 			    // {
 					var state2_1_1 = new State('fourth');
 					state2_1_1.addAction({
+						ready: function () {},
 						enter: function() { gotData[5] += 678; },
 						exit: function() {},
 						update: function() { gotData[6] += 789; }
@@ -368,6 +400,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();
@@ -390,6 +423,7 @@ define([
 			// set up machine 1
 			var state1 = new State('entry');
 			state1.addAction({
+				ready: function () {},
 				enter: function() { gotData[0] += 123; },
 				exit: function() { gotData[1] += 234; },
 				update: function(proxy) { proxy.send('toSecond'); }
@@ -398,6 +432,7 @@ define([
 
 			var state2 = new State('second');
 			state2.addAction({
+				ready: function () {},
 				enter: function() {},
 				exit: function() { gotData[2] += 345; },
 				update: function() { gotData[3] += 456; }
@@ -405,6 +440,7 @@ define([
 			// {
 				var state2_1 = new State('third');
 				state2_1.addAction({
+					ready: function () {},
 					enter: function() {},
 					exit: function() { gotData[4] += 567; },
 					update: function() { gotData[5] += 678; }
@@ -412,6 +448,7 @@ define([
 				// {
 					var state2_1_1 = new State('fourth');
 					state2_1_1.addAction({
+						ready: function () {},
 						enter: function() {},
 						exit: function() { gotData[6] += 789; },
 						update: function(proxy) { proxy.send('toEntry'); }
@@ -434,6 +471,7 @@ define([
 
 			// init
 			fsmComponent.init();
+			fsmComponent.doEnter();
 
 			// jump to second state
 			fsmComponent.update();

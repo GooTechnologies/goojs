@@ -15,6 +15,8 @@ define([
 	PromiseUtil,
 	_
 ) {
+	"use strict";
+
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -80,6 +82,7 @@ define([
 			object.blendState = Util.clone(config.blendState);
 			object.cullState = Util.clone(config.cullState);
 			object.depthState = Util.clone(config.depthState);
+			object.dualTransparency = config.dualTransparency || false;
 			if (config.renderQueue === -1) {
 				object.renderQueue = null;
 			} else {
