@@ -193,12 +193,12 @@ define(
 
 			instDesc.outConnections[sourcePort].push([targetName, targetPort]);
 		};
-
-		/**
-		 * Writes a value using an instance descriptor and a portID (which must be registered through the interface the instance
-		 * was created with). All connected objects get the onPropertyWrite call.
-		 */
-		LogicLayer.writeValue = function(instDesc, portID, value) {
+		
+		
+		//
+		// func(instDesc, portID) called on all targets
+		//
+		LogicLayer.doConnections = function(instDesc, portID, func) {
 			// See if there are any connections at all
 			if (instDesc.outConnections === undefined) {
 				if (instDesc.proxyRef === undefined)
@@ -225,7 +225,7 @@ define(
 					return;
 					
 				console.log(added + " connections imported from proxy object");
-				LogicLayer.writeValue(instDesc, portID, value);
+				LogicLayer.doConnections(instDesc, portID, func);
 				return;
 			}
 			
@@ -254,22 +254,31 @@ define(
 					tconn.push(out.portID);
 				}
 				
-				var targetDesc = tconn[2];
+				// function instDesc, portID
+				func(tconn[2], tconn[3]);
+			}
+		}
+
+		/**
+		 * Writes a value using an instance descriptor and a portID (which must be registered through the interface the instance
+		 * was created with). All connected objects get the onPropertyWrite call.
+		 */
+		LogicLayer.writeValue = function(instDesc, outPortID, value) {
+			//
+			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
+			
+				// wirite
 				if (targetDesc._portValues === undefined)
 					targetDesc._portValues = {};
 				if (targetDesc._lastNotification === undefined)
 					targetDesc._lastNotification = {};
 					
-				// this is the resolved real port id
-				var portID = tconn[3];
-				
 				var old = targetDesc._portValues[portID];
 				targetDesc._portValues[portID] = value;
 				
 				if (old !== value)
 				{
 					var tlayer = targetDesc.layer;
-
 					if (targetDesc._lastNotification[portID] !== tlayer._updateRound)
 					{
 						targetDesc._lastNotification[portID] = tlayer._updateRound;
@@ -280,7 +289,7 @@ define(
 						tlayer._nextFrameNotifications.push([targetDesc, portID, value]);
 					}
 				}
-			}
+			});
 		};
 		
 		LogicLayer.readPort = function(instDesc, portID) {
@@ -311,39 +320,10 @@ define(
 		 * Fire an event.
 		 * @param portId The port connecting the event. (Returned when registering the event port)
 		 */
-		LogicLayer.fireEvent = function(instDesc, portID) {
-			// See if there are any connections at all
-			if (instDesc.outConnections === undefined) {
-				return;
-			}
-
-			var cArr = instDesc.outConnections[portID];
-			if (cArr === undefined) {
-				return;
-			}
-
-			// Write to all connected instances	
-			for (var i = 0; i < cArr.length; i++) {
-				var tconn = cArr[i];
-				var tgt = instDesc.layer._logicInterfaces[tconn[0]];
-				if (tgt === undefined) {
-					continue; // unresolved.
-				}
-
-				// unmapped
-				if (tconn.length === 2) {
-					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
-					if (out == null) {
-						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
-						continue;
-					}
-
-					tconn.push(out.target);
-					tconn.push(out.portID);
-				}
-
-				tconn[2].obj.onEvent(tconn[3]);
-			}
+		LogicLayer.fireEvent = function(instDesc, outPortID) {
+			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
+				targetDesc.obj.onEvent(portID);
+			});
 		};
 
 		LogicLayer.prototype.process = function(tpf) {
