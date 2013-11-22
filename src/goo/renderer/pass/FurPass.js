@@ -342,28 +342,25 @@ function (
 			'	vec3 tangent = normalize(T);',
 			'	vec3 color = texCol.rgb;',
 			// stuff from ShaderBuilder.light.fragment
-			"#if MAX_DIRECTIONAL_LIGHTS > 0",
-			"for(int i = 0; i < MAX_DIRECTIONAL_LIGHTS; i++) {",
-				"vec4 lDirection = vec4(-directionalLightDirection[i], 0.0);",
-				"vec3 dirVector = normalize(lDirection.xyz);",
-				// diffuse
-				'float TdotL = dot(tangent, dirVector);',
-				// TODO: Read through stuff to find out why I set this magic number.
-				'if (TdotL > -0.3) {',
-					'float TdotE = dot(tangent, normalize(viewPosition));',
-					'float sinTL = sin(acos(TdotL));',
-					'float sinTE = sin(acos(TdotE));',
-					'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
-					'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, materialSpecularPower), 0.0);',
-					// "Simple shadow effect"
-					'float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
-					'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
-				'}',
-				'else {',
-					'color *= materialAmbient.r;',
-				'}',
+
+			"vec4 lDirection = vec4(-directionalLightDirection1, 0.0);",
+			"vec3 dirVector = normalize(lDirection.xyz);",
+			// diffuse
+			'float TdotL = dot(tangent, dirVector);',
+			// TODO: Read through stuff to find out why I set this magic number.
+			'if (TdotL > -0.3) {',
+				'float TdotE = dot(tangent, normalize(viewPosition));',
+				'float sinTL = sin(acos(TdotL));',
+				'float sinTE = sin(acos(TdotE));',
+				'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
+				'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, materialSpecularPower), 0.0);',
+				// "Simple shadow effect"
+				'float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
+				'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
 			'}',
-			'#endif',
+			'else {',
+				'color *= materialAmbient.r;',
+			'}',
 			'	gl_FragColor = vec4(color, 1.0);',
 			'}'//
 		].join("\n")

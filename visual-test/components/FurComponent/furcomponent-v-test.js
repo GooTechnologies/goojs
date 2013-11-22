@@ -10,8 +10,7 @@ require([
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
-	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/WASDControlScript',
+	'goo/scripts/FlyControlScript',
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FurPass',
@@ -30,8 +29,7 @@ function(
 	Camera,
 	CameraComponent,
 	ScriptComponent,
-	MouseLookControlScript,
-	WASDControlScript,
+	FlyControlScript,
 	Composer,
 	RenderPass,
 	FurPass,
@@ -98,12 +96,7 @@ function(
 
 		cameraEntity.setComponent(new CameraComponent(camera));
 		var cameraScript = new ScriptComponent();
-		cameraScript.scripts.push(new WASDControlScript({
-			domElement: document.body
-		}));
-		cameraScript.scripts.push(new MouseLookControlScript({
-			domElement: document.body
-		}));
+		cameraScript.scripts.push(new FlyControlScript());
 		cameraEntity.setComponent(cameraScript);
 		cameraEntity.addToWorld();
 	}
