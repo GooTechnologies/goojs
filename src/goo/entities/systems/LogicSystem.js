@@ -53,6 +53,7 @@ function (
 				e.entity.forEachComponent(function(comp, index) {
 					if (comp.insertIntoLogicLayer !== undefined) {
 						comp.insertIntoLogicLayer(logicLayer, k + '~' + (counter++));
+						LogicLayer.setupConnectionProxySource(comp.logicInstance, e.entity);
 					}
 				});
 				e.inserted = true;

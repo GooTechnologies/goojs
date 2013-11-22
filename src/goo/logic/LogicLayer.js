@@ -18,6 +18,7 @@ define(
 			this._instanceID = 0;
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
+			this._outputForwarding = {};
 		}
 
 		LogicLayer.prototype.clear = function() {
@@ -25,6 +26,7 @@ define(
 			this._connectionsBySource = {};
 			this._instanceID = 0;
 			this._nextFrameNotifications = [];
+			this._outputForwarding = {};
 		};
 
 		/**
@@ -75,8 +77,12 @@ define(
 
 			return instDesc;
 		};
-
-
+		
+		LogicLayer.setupConnectionProxySource = function(instDesc, proxyRef)
+		{
+			// entityRef used by targets
+			instDesc.proxyRef = proxyRef;
+		}
 
 		LogicLayer.prototype.unresolveAllConnections = function() {
 			// Un-do all connection resolving. Processes all instances, all ports and all connections
@@ -161,12 +167,24 @@ define(
 			// Adding connection here which will be in unresolved state
 			// [targetName, targetPort]
 			//
-			// (TODO: When resolved a 3rd column is adedd containing the direct pointer)
-
-			sourcePort = LogicLayer.resolvePortID(instDesc, sourcePort);
+			// resolved have 4 columns
 
 			if (instDesc.outConnections === undefined) {
 				instDesc.outConnections = {};
+			}
+
+			// This is a proxy object for an entity component. Whenever it wants
+			// to send outputs, it needs to look up through _outputForwarding
+			if (instDesc.obj !== undefined && instDesc.obj.entityRef !== undefined)
+			{
+				// note that in this case we are not using resolved connection
+				// names. connections are then magically trickeried
+				this._outputForwarding[instDesc.obj.entityRef] = instDesc;
+			}
+			else
+			{
+				// if not proxy always resolve
+				sourcePort = LogicLayer.resolvePortID(instDesc, sourcePort);
 			}
 
 			if (instDesc.outConnections[sourcePort] === undefined) {
@@ -183,9 +201,34 @@ define(
 		LogicLayer.writeValue = function(instDesc, portID, value) {
 			// See if there are any connections at all
 			if (instDesc.outConnections === undefined) {
+				if (instDesc.proxyRef === undefined)
+					return;
+				
+				// leads to the proxying object for this (linked together by proxyRef)
+				var next = instDesc.layer._outputForwarding[instDesc.proxyRef];
+				if (next === undefined || next.outConnections === undefined)
+					return;
+				
+				var added = 0;
+				for (var cn in next.outConnections)
+				{
+					var c = next.outConnections[cn];
+					if (LogicLayer.resolvePortID(instDesc, cn) != null)
+					{
+						for (var i=0;i<c.length;i++)
+							instDesc.layer.addConnectionByName(instDesc, cn, c[i][0], c[i][1]);
+						added += c.length;
+					}
+				}
+				
+				if (added == 0)
+					return;
+					
+				console.log(added + " connections imported from proxy object");
+				LogicLayer.writeValue(instDesc, portID, value);
 				return;
 			}
-
+			
 			var cArr = instDesc.outConnections[portID];
 			if (cArr === undefined) {
 				return;
