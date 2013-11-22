@@ -28,7 +28,7 @@ function (
 
 	LogicSystem.prototype.inserted = function (entity) {
 		this._entities[entity.name] = {entity: entity, inserted:false };
-	}
+	};
 
 	LogicSystem.prototype.deleted = function (entity) {
 		delete this._entities[entity.name];
@@ -62,8 +62,8 @@ function (
 		
 		// notify system start.
 		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStarted !== undefined) o.onSystemStarted(); });
-		
 	};
+	
 	LogicSystem.prototype.pause = function () {
 		this.passive = true;
 

@@ -74,9 +74,9 @@ function (
 	
 	MeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 		if (portID === MeshRendererComponent.inportAmbient && this.materials.length > 0) {
-			this.materials[0].materialState.ambient[0] = value[0];
-			this.materials[0].materialState.ambient[1] = value[1];
-			this.materials[0].materialState.ambient[2] = value[2];
+			this.materials[0].uniforms.materialAmbient[0] = value[0];
+			this.materials[0].uniforms.materialAmbient[1] = value[1];
+			this.materials[0].uniforms.materialAmbient[2] = value[2];
 		}
 	};
 
