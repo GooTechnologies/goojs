@@ -220,9 +220,9 @@ function (
 	};
 
 	AnimationComponent.prototype.stop = function() {
-		this.resetClips();
+		/*this.resetClips();
 		this.paused = false;
-		this.update();
+		this.update();*/
 		this.paused = true;
 		this.lastTimeOfPause = -1;
 	};
