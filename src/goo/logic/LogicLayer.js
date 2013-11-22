@@ -195,20 +195,27 @@ define(
 		};
 		
 		
-		//
-		// func(instDesc, portID) called on all targets
-		//
+		/**
+		* Resolve all outgoing connections from the logic instance instDesc and
+		* call the provided callback function on each connected target.
+		*/
 		LogicLayer.doConnections = function(instDesc, portID, func) {
 			// See if there are any connections at all
 			if (instDesc.outConnections === undefined) {
+			
+				// If the instDesc has a proxyRef value it means that outgoing connections
+				// should be imported from that referenced object. Entity components
+				// always do this; importing connections from LogicNodes.
 				if (instDesc.proxyRef === undefined)
 					return;
 				
-				// leads to the proxying object for this (linked together by proxyRef)
 				var next = instDesc.layer._outputForwarding[instDesc.proxyRef];
 				if (next === undefined || next.outConnections === undefined)
 					return;
 				
+				// See if any of the outgoing connections matches port:ids 
+				// with what this current node offers. Required as the proxy
+				// entity can map to different interfaces.
 				var added = 0;
 				for (var cn in next.outConnections)
 				{
@@ -224,6 +231,8 @@ define(
 				if (added == 0)
 					return;
 					
+				// If any ports matched up, it means outConnections can't be undefined
+				// any more and it's safe to recurse in and try again.
 				console.log(added + " connections imported from proxy object");
 				LogicLayer.doConnections(instDesc, portID, func);
 				return;
@@ -238,23 +247,24 @@ define(
 				delete instDesc.outConnections;
 			}
 			
-			// Write to all connected instances	
+			// Connections can be encountered as unresolved [x, y] or resolved [x, y, z, w].
+			// Resolved connections contain pointers to the actual objects.
+			
 			for (var i = 0; i < cArr.length; i++) {
 				var tconn = cArr[i];
 
-				// unmapped
+				// unresolved
 				if (tconn.length === 2) {
 					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
 					if (out == null) {
 						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
 						continue;
 					}
-
 					tconn.push(out.target);
 					tconn.push(out.portID);
 				}
 				
-				// function instDesc, portID
+				// now resolved.
 				func(tconn[2], tconn[3]);
 			}
 		}
