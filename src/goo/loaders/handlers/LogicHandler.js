@@ -12,8 +12,17 @@ define([
 	'goo/logic/LogicNodeVec3',
 	'goo/logic/LogicNodeMultiply',
 	'goo/logic/LogicNodeWASD',
+	'goo/logic/LogicNodeWASD2',
+	'goo/logic/LogicNodeMouse',
 	'goo/logic/LogicNodeAdd',
+	'goo/logic/LogicNodeSub',
 	'goo/logic/LogicNodeFloat',
+	'goo/logic/LogicNodeApplyMatrix',
+	'goo/logic/LogicNodeConstVec3',
+	'goo/logic/LogicNodeVec3Add',
+	'goo/logic/LogicNodeRotationMatrix',
+	'goo/logic/LogicNodeMultiplyFloat',
+	'goo/logic/LogicNodeMax',
 	'goo/logic/LogicNodeInt'
 ], function(
 	ConfigHandler,

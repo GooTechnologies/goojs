@@ -1,15 +1,19 @@
 define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
+	'goo/math/Matrix3x3',
 	'goo/entities/components/Component',
-	'goo/logic/LogicInterface'
+	'goo/logic/LogicInterface',
+	'goo/logic/LogicLayer'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
+	Matrix3x3,
 	Component,
-	LogicInterface
+	LogicInterface,
+	LogicLayer
 ) {
 	"use strict";
 
@@ -50,6 +54,8 @@ function (
 	TransformComponent.inportPos = TransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 	TransformComponent.inportRot = TransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0,0,0));
 	TransformComponent.inportScale = TransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1,1,1));
+	TransformComponent.outportPos = TransformComponent.logicInterface.addOutputProperty("outpos", "Vector3", new Vector3());
+	TransformComponent.outportRot = TransformComponent.logicInterface.addOutputProperty("rotmat", "Matrix3", new Matrix3x3());
 	
 	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
 		this.logicInstance = logicLayer.addInterfaceInstance(TransformComponent.logicInterface, this, interfaceName, false);
@@ -63,6 +69,8 @@ function (
 		} else if (portID === TransformComponent.inportScale) {
 			this.setScale(value);
 		}
+		LogicLayer.writeValue(this.logicInstance, TransformComponent.outportPos, this.transform.translation.clone());
+		LogicLayer.writeValue(this.logicInstance, TransformComponent.outportRot, this.transform.rotation.clone());
 	};
 
 	/**

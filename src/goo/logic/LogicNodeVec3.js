@@ -34,7 +34,7 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportX, xyz.x);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportY, xyz.y);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportZ, xyz.z);
-		}
+		};
 
 		LogicNodeVec3.logicInterface = new LogicInterface();
 		

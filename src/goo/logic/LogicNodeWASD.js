@@ -46,13 +46,11 @@ define(
 		LogicNodeWASD.editorName = "WASD";
 
 		LogicNodeWASD.prototype.onSystemStarted = function() {
-			console.log("WASD: Adding event listeners");
 			document.addEventListener('keydown', this.eventListenerDown);
 			document.addEventListener('keyup', this.eventListenerUp);
 		};
 
 		LogicNodeWASD.prototype.onSystemStopped = function(stopForPause) {
-			console.log("WASD: Removing event listeners");
 			document.removeEventListener('keydown', this.eventListenerDown);
 			document.removeEventListener('keyup', this.eventListenerUp);
 		};
