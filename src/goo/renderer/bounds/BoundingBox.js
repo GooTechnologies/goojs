@@ -218,6 +218,7 @@ function (
 	};
 
 	BoundingBox.prototype.intersectsBoundingBox = function (bb) {
+		// TODO: use this.min/max instead of center-extent diffs
 		if (this.center.x + this.xExtent < bb.center.x - bb.xExtent || this.center.x - this.xExtent > bb.center.x + bb.xExtent) {
 			return false;
 		} else if (this.center.y + this.yExtent < bb.center.y - bb.yExtent || this.center.y - this.yExtent > bb.center.y + bb.yExtent) {
@@ -230,13 +231,37 @@ function (
 	};
 
 	BoundingBox.prototype.intersectsSphere = function (bs) {
-		if (Math.abs(this.center.x - bs.center.x) < bs.radius + this.xExtent
-				&& Math.abs(this.center.y - bs.center.y) < bs.radius + this.yExtent
-				&& Math.abs(this.center.z - bs.center.z) < bs.radius + this.zExtent) {
-			return true;
+		// this.min/max aren't updated properly; have to do it here for now
+		this.min.x = this.center.x - this.xExtent;
+		this.min.y = this.center.y - this.yExtent;
+		this.min.z = this.center.z - this.zExtent;
+
+		this.max.x = this.center.x + this.xExtent;
+		this.max.y = this.center.y + this.yExtent;
+		this.max.z = this.center.z + this.zExtent;
+
+		var rs = Math.pow(bs.radius, 2);
+		var dmin = 0;
+
+		if (bs.center.x < this.min.x) {
+			dmin += Math.pow(bs.center.x - this.min.x, 2);
+		} else if (bs.center.x > this.max.x) {
+			dmin += Math.pow(bs.center.x - this.max.x, 2);
 		}
 
-		return false;
+		if (bs.center.y < this.min.y) {
+			dmin += Math.pow(bs.center.y - this.min.y, 2);
+		} else if (bs.center.y > this.max.y) {
+			dmin += Math.pow(bs.center.y - this.max.y, 2);
+		}
+
+		if (bs.center.z < this.min.z) {
+			dmin += Math.pow(bs.center.z - this.min.z, 2);
+		} else if (bs.center.z > this.max.z) {
+			dmin += Math.pow(bs.center.z - this.max.z, 2);
+		}
+
+		return dmin <= rs;
 	};
 
 	BoundingBox.prototype.testStaticAABBAABB = function (bb, contact) {
