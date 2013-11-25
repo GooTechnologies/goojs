@@ -1,7 +1,6 @@
 {
     "created": "2013-09-20T09:57:16.335000", 
     "entityRefs": [
-        "Zombie_Hazmat/entities/Zombie_0.entity", 
         "Zombie_Hazmat/entities/RootNode.entity"
     ], 
     "id": "project-39bdeb70-b975-467c-8b7e-6281db7434ad", 
