@@ -24,7 +24,7 @@ require([
 	'goo/statemachine/FSMSystem',
 	'goo/statemachine/State',
 	'goo/statemachine/Machine',
-	'goo/statemachine/actions/MouseClickAction',
+	'goo/statemachine/actions/MouseDownAction',
 	'goo/statemachine/actions/SetLightRangeAction'
 ], function (
 	GooRunner,
@@ -46,25 +46,22 @@ require([
 	FSMSystem,
 	State,
 	Machine,
-	MouseClickAction,
+	MouseDownAction,
 	SetLightRangeAction
 	) {
 	'use strict';
 
 	function getFSMComponent(entity) {
 		var fsmComponent = new FSMComponent();
-		// create action tied to listen to pick events
-		// tie pick event to a channel
-
 		var machine = new Machine('switch');
 
 		var stateOn = new State('on');
-		stateOn.addAction(new MouseClickAction(null, { transitions: { click: 'toOff' } }));
+		stateOn.addAction(new MouseDownAction(null, { transitions: { mouseLeftDown: 'toOff' } }));
 		stateOn.addAction(new SetLightRangeAction(null, { entity: entity, range: 1, everyFrame: false }));
 		stateOn.setTransition('toOff', 'off');
 
 		var stateOff = new State('off');
-		stateOff.addAction(new MouseClickAction(null, { transitions: { click: 'toOn' } }));
+		stateOff.addAction(new MouseDownAction(null, { transitions: { mouseLeftDown: 'toOn' } }));
 		stateOff.addAction(new SetLightRangeAction(null, { entity: entity, range: 10, everyFrame: false }));
 		stateOff.setTransition('toOn', 'on');
 
