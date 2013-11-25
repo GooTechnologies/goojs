@@ -22,7 +22,6 @@ function(
 	};
 
 	HowlerComponent.prototype.playSound = function(soundIndex, sprite, callback) {
-		console.log(this.sounds[soundIndex].play);
 		this.sounds[soundIndex].play(sprite, callback);
 	};
 
