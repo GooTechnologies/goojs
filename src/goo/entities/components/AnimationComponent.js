@@ -170,6 +170,9 @@ function (
 	 */
 	AnimationComponent.prototype.getCurrentSourceData = function () {
 		// set up our layer blending.
+		if (this.layers.length === 0) {
+			return [];
+		}
 		var last = this.layers.length - 1;
 		this.layers[0]._layerBlender = null;
 		for ( var i = 0; i < last; i++) {
@@ -217,9 +220,9 @@ function (
 	};
 
 	AnimationComponent.prototype.stop = function() {
-		this.resetClips();
+		/*this.resetClips();
 		this.paused = false;
-		this.update();
+		this.update();*/
 		this.paused = true;
 		this.lastTimeOfPause = -1;
 	};

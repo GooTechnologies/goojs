@@ -41,8 +41,8 @@ function(
 		for (var keycode in ArrowsAction._keys) {
 			var keyname = ArrowsAction._keys[keycode];
 			transitions.push({
-				name: keyname,
-				key: 'Key ' + keyname.toUpperCase(),
+				name: 'Key ' + keyname.toUpperCase(),
+				key: keyname,
 				description: "Key '" + keyname + "' pressed"
 			});
 		}

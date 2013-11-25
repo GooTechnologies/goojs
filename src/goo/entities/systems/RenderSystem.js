@@ -155,6 +155,17 @@ function (
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
 			}
+			if (key === 'lit') {
+				this._debugMaterials[key]._textureMaps = {
+					EMISSIVE_MAP: null,
+					DIFFUSE_MAP: null,
+					SPECULAR_MAP: null,
+					NORMAL_MAP: null,
+					AO_MAP: null,
+					LIGHT_MAP: null,
+					TRANSPARENCY_MAP: null
+				};
+			}
 		} else {
 			this._debugMaterials[key] = Material.createEmptyMaterial(null, key);
 			this._debugMaterials[key].flat = true;

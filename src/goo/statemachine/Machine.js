@@ -104,7 +104,9 @@ function (
 	};
 
 	Machine.prototype.removeFromParent = function () {
-		this.parent.removeMachine(this);
+		if (this.parent) {
+			this.parent.removeMachine(this);
+		}
 	};
 
 	Machine.prototype.recursiveRemove = function () {

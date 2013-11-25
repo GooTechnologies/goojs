@@ -18,7 +18,7 @@ function (
 		System.call(this, 'ProximitySystem', ['ProximityComponent']);
 
 		this.collections = {
-			Red: { name: 'Ted', collection: [] },
+			Red: { name: 'Red', collection: [] },
 			Blue: { name: 'Blue', collection: [] },
 			Green: { name: 'Green', collection: [] },
 			Yellow: { name: 'Yellow', collection: [] }

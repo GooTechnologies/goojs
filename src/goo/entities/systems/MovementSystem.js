@@ -4,7 +4,7 @@ define(['goo/entities/systems/System'],
 		"use strict";
 
 		/**
-		 * @class Processes all entities with movement components,adding movement
+		 * @class Processes all entities with movement components.
 		 */
 		function MovementSystem() {
 			System.call(this, 'MovementSystem', ['MovementComponent']);
@@ -12,27 +12,34 @@ define(['goo/entities/systems/System'],
 
 		MovementSystem.prototype = Object.create(System.prototype);
 
-		MovementSystem.prototype.applyMovementToEntity = function (dRot, dTrans, entity) {
-			entity.transformComponent.transform.translation.add(dTrans);
-			var angles = entity.transformComponent.transform.rotation.toAngles();
-			angles.add(dRot);
-			entity.transformComponent.transform.rotation.fromAngles(angles);
+
+		MovementSystem.prototype.addVelocityToTransform = function(vel, transform, tpf) {
+			transform.translation.add_d(vel.data[0]*tpf, vel.data[1]*tpf, vel.data[2]*tpf);
+		};
+
+		MovementSystem.prototype.addRotToTransform = function(rotVel, transform, tpf) {
+			transform.rotation.rotateX(rotVel.data[0]*tpf);
+			transform.rotation.rotateY(rotVel.data[1]*tpf);
+			transform.rotation.rotateZ(rotVel.data[2]*tpf);
+		};
+
+		MovementSystem.prototype.applyMovementToEntity = function(entity) {
+			var tpf = entity._world.tpf;
+			var rotVel = entity.movementComponent.getRotationVelocity();
+			var velocity = entity.movementComponent.getVelocity();
+			var transform = entity.transformComponent.transform;
+			this.addVelocityToTransform(velocity, transform, tpf);
+			this.addRotToTransform(rotVel, transform, tpf);
+			entity.transformComponent.setUpdated();
 		};
 
 		MovementSystem.prototype.process = function (entities) {
 			var i, movementComponent;
 			for (i = 0; i < entities.length; i++) {
 				movementComponent = entities[i].movementComponent;
-				this.applyMovementToEntity(movementComponent.getRotation(), movementComponent.getVelocity(), entities[i]);
-
-				movementComponent._updated = false;
-				if (movementComponent._dirty) {
-					movementComponent.updateTransform();
-				}
+				this.applyMovementToEntity(entities[i]);
 			}
 		};
-
-
 
 		return MovementSystem;
 	});

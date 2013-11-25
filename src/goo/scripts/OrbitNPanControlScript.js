@@ -157,6 +157,7 @@ define([
 
 		MathUtils.cartesianToSpherical(x, y, z, this.spherical);
 		this.targetSpherical.setv(this.spherical);
+		// REVIEW: Is this necessary? It's always set in run loop
 		MathUtils.sphericalToCartesian(this.spherical.x, this.spherical.y, this.spherical.z, this.cartesian);
 	};
 

@@ -150,6 +150,8 @@ define([
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
+				ShaderBuilder.SKYBOX = null;
+				ShaderBuilder.SKYSPHERE = null;
 				return PromiseUtil.createDummyPromise();
 			}
 			var that = this;
@@ -160,6 +162,8 @@ define([
 								type: 'Sphere',
 								message: 'The skysphere needs an image to display.'
 							});
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = null;
 							return;
 						}
 						images = images[0];
@@ -172,6 +176,8 @@ define([
 							});
 							skybox.meshRendererComponent.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = null;
 							return;
 						}
 						var w = images[0].width;
@@ -185,6 +191,8 @@ define([
 								});
 								skybox.meshRendererComponent.hidden = true;
 								material.setTexture('DIFFUSE_MAP', null);
+								ShaderBuilder.SKYBOX = null;
+								ShaderBuilder.SKYSPHERE = null;
 								return;
 							}
 							img.setAttribute('data-ref', imageUrls[i]);

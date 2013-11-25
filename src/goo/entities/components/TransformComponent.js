@@ -87,8 +87,18 @@ function (
 	 * @param {number} z
 	 * @return {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.setRotation = function (x,y,z) {
-		this.transform.rotation.fromAngles(x,y,z);
+	TransformComponent.prototype.setRotation = function () {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			var arg0 = arguments[0];
+			if (arg0 instanceof Vector3) {
+				this.transform.rotation.fromAngles(arg0.x,arg0.y,arg0.z);
+			} else if (arg0.length === 3) {
+				this.transform.rotation.fromAngles(arg0[0],arg0[1],arg0[2]);
+			}
+		} else {
+			this.transform.rotation.fromAngles(arguments[0], arguments[1], arguments[2]);
+		}
+
 		this._dirty = true;
 		return this;
 	};

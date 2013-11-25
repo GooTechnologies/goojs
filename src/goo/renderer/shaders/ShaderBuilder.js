@@ -48,13 +48,13 @@ function(
 
 			if (ShaderBuilder.SKYBOX && material.uniforms.reflectivity > 0) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
-			} else {
+			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
 				material.removeTexture('ENVIRONMENT_CUBE');
 			}
 			if (ShaderBuilder.SKYSPHERE && material.uniforms.reflectivity > 0) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
-			} else {
+			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
 				material.removeTexture('ENVIRONMENT_SPHERE');
 			}
 
@@ -65,7 +65,7 @@ function(
 			}
 
 			for (var type in textureMaps) {
-				if (textureMaps[type] === undefined) {
+				if (textureMaps[type] === undefined || textureMaps[type] === null) {
 					continue;
 				}
 
