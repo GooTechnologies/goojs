@@ -164,11 +164,6 @@ function(
 	};
 
 	FlyControlScript.prototype.updateButtonState = function(event, down) {
-		if (this.domElement !== document) {
-			this.domElement.focus();
-		}
-
-
 		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 			this.mouseState.buttonDown = down;
 
