@@ -251,7 +251,7 @@ require([
 			0.29909090909090909,
 			1
 		];
-		material.cullState.frontFace = "CW";
+
 		material.cullState.cullFace = "Back";
 		//      material.cullState.enabled = false;
 		//    emissive: materialData.uniforms.materialEmissive,
