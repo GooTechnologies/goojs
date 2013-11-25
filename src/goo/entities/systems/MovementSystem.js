@@ -14,7 +14,6 @@ define(['goo/entities/systems/System'],
 
 		MovementSystem.prototype = Object.create(System.prototype);
 
-
 		MovementSystem.prototype.addVelocityToTransform = function(vel, transform, tpf) {
 			transform.translation.add_d(vel.data[0]*tpf, vel.data[1]*tpf, vel.data[2]*tpf);
 		};

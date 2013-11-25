@@ -20,7 +20,7 @@ define([
 
 		/**
 		 * @class a script for handling basic movement and jumping over a terrain.
-		 *
+		 * The standard usage of this script will likely also need some input listener and camera handling.
 		 * @constructor
 		 */
 
@@ -60,21 +60,22 @@ define([
 		}
 
 		/**
-		 * Sets the terrain system. This script requires that the terrain system can provide
-		 * height and normal for a given position when applicable.
-		 * @param terrainSystem
+		 * Sets the terrain script. This class requires that the terrain system can provide
+		 * height and normal for a given position when applicable. Without a terrain system the
+		 * script will fallback to the worldFloor height. (Defaults to -Infinity).
+		 * @param {WorldFittedTerrainScript} terrainScript
 		 */
-		GroundBoundMovementScript.prototype.setTerrainSystem = function(terrainSystem) {
-			this.terrainSystem = terrainSystem;
+		GroundBoundMovementScript.prototype.setTerrainSystem = function(terrainScript) {
+			this.terrainScript = terrainScript;
 		};
 
 
 		/**
 		 * Returns the terrain system.
-		 * @returns {*}
+		 * @returns {WorldFittedTerrainScript} terrainScript
 		 */
 		GroundBoundMovementScript.prototype.getTerrainSystem = function() {
-			return this.terrainSystem;
+			return this.terrainScript;
 		};
 
 
@@ -82,7 +83,7 @@ define([
 		 * Get the terrain height for a given translation. Or if no terrain is present
 		 * return the world floor height.
 		 * @private
-		 * @param translation
+		 * @param {Vector3} translation
 		 * @returns {Number} Height of graound
 		 */
 		GroundBoundMovementScript.prototype.getTerrainHeight = function(translation) {
@@ -96,7 +97,7 @@ define([
 		/**
 		 * Get the ground normal for a given translation.
 		 * @private
-		 * @param translation
+		 * @param {Vector3} translation
 		 * @returns {Vector3} The terrain normal vector.
 		 */
 		GroundBoundMovementScript.prototype.getTerrainNormal = function(translation) {
@@ -106,7 +107,7 @@ define([
 		/**
 		 * Request script to move along its forward axis. Becomes
 		 * backwards with negative amount.
-		 * @param amount
+		 * @param {number} amount
 		 */
 		GroundBoundMovementScript.prototype.applyForward = function(amount) {
 			this.controlState.run = amount;
@@ -114,7 +115,7 @@ define([
 
 		/**
 		 * Applies strafe amount for sideways input.
-		 * @param amount
+		 * @param {number} amount
 		 */
 		GroundBoundMovementScript.prototype.applyStrafe = function(amount) {
 			this.controlState.strafe = amount;
@@ -122,7 +123,7 @@ define([
 
 		/**
 		 * Applies jump input.
-		 * @param amount
+		 * @param {number} amount
 		 */
 		GroundBoundMovementScript.prototype.applyJump = function(amount) {
 			this.controlState.jump = amount;
@@ -130,7 +131,7 @@ define([
 
 		/**
 		 * Applies turn input for rotation around the y-axis.
-		 * @param amount
+		 * @param {number} amount
 		 */
 
 		GroundBoundMovementScript.prototype.applyTurn = function(amount) {
@@ -140,7 +141,7 @@ define([
 		/**
 		 * Called when movement state is updated if requirmeents for jumping are met.
 		 * @private
-		 * @param up
+		 * @param [number} up
 		 * @returns {*}
 		 */
 		GroundBoundMovementScript.prototype.applyJumpImpulse = function(up) {
@@ -159,9 +160,9 @@ define([
 		/**
 		 * Modulates the movement state with given circumstances and input
 		 * @private
-		 * @param strafe
-		 * @param up
-		 * @param run
+		 * @param {number} strafe
+		 * @param {number} up
+		 * @param {number} run
 		 * @returns {Array} The modulated directional movement state
 		 */
 		GroundBoundMovementScript.prototype.applyDirectionalModulation = function(strafe, up, run) {
@@ -178,9 +179,9 @@ define([
 		/**
 		 * Modulates the rotational movement state.
 		 * @private
-		 * @param pitch
-		 * @param yaw
-		 * @param roll
+		 * @param {number} pitch
+		 * @param {number} yaw
+		 * @param {number} roll
 		 * @returns {Array}
 		 */
 		GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
@@ -204,7 +205,7 @@ define([
 		/**
 		 * Updates the movement vectors for this frame
 		 * @private
-		 * @param transform
+		 * @param {Vector3} transform
 		 */
 		GroundBoundMovementScript.prototype.updateTargetVectors = function(transform) {
 			this.targetVelocity.set(this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run));
@@ -216,9 +217,9 @@ define([
 		/**
 		 * Computes the acceleration for the frame.
 		 * @private
-		 * @param entity
-		 * @param current
-		 * @param target
+		 * @param {Entity} entity
+		 * @param {Vector3} current
+		 * @param {Vector3} target
 		 * @returns {Vector3}
 		 */
 		GroundBoundMovementScript.prototype.computeAcceleration = function(entity, current, target) {
@@ -234,8 +235,8 @@ define([
 		/**
 		 * Computes the torque for the frame.
 		 * @private
-		 * @param current
-		 * @param target
+		 * @param {Vector3} current
+		 * @param {Vector3} target
 		 * @returns {Vector3}
 		 */
 		GroundBoundMovementScript.prototype.computeTorque = function(current, target) {
@@ -248,7 +249,7 @@ define([
 		/**
 		 * Updates the velocity vectors for the frame.
 		 * @private
-		 * @param entity
+		 * @param {Entity} entity
 		 */
 		GroundBoundMovementScript.prototype.updateVelocities = function(entity) {
 			var currentVelocity = entity.movementComponent.getVelocity();
@@ -260,7 +261,7 @@ define([
 		/**
 		 * Applies the acceleration to the movement component of the entity
 		 * @private
-		 * @param entity
+		 * @param {Entity} entity
 		 */
 		GroundBoundMovementScript.prototype.applyAccelerations = function(entity) {
 			entity.movementComponent.addVelocity(this.acceleration);
@@ -270,7 +271,7 @@ define([
 		/**
 		 * Updates the value of the ground normal
 		 * @private
-		 * @param transform
+		 * @param {Transform} transform
 		 */
 		GroundBoundMovementScript.prototype.updateGroundNormal = function(transform) {
 			this.groundNormal.set(this.getTerrainNormal(transform.translation));
@@ -279,8 +280,8 @@ define([
 		/**
 		 * Checks if the criteria of ground contact is relevant this frame.
 		 * @private
-		 * @param entity
-		 * @param transform
+		 * @param {Entity} entity
+		 * @param {Transform} transform
 		 */
 		GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
 			this.groundHeight = this.getTerrainHeight(transform.translation);
@@ -295,8 +296,8 @@ define([
 		/**
 		 * Applies the rules of ground contact
 		 * @private
-		 * @param entity
-		 * @param transform
+		 * @param {Entity} entity
+		 * @param {Transform} transform
 		 */
 		GroundBoundMovementScript.prototype.applyGroundContact = function(entity, transform) {
 			if (this.groundHeight >= transform.translation.data[1]) {
@@ -310,7 +311,7 @@ define([
 		/**
 		 * Updates this script with a frame
 		 * @private
-		 * @param entity
+		 * @param {Entity} entity
 		 */
 		GroundBoundMovementScript.prototype.run = function(entity) {
 			var transform = entity.transformComponent.transform;
