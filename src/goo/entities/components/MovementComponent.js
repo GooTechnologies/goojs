@@ -12,7 +12,7 @@ define([
 		/**
 		 * @class Holds the movement parameters of an entity.
 		 * Typically useful for anything which has a speed and/or
-		 * rotation and is influenced by forces or other mechanics.
+		 * rotation.
 		 */
 		function MovementComponent() {
 			this.type = 'MovementComponent';
