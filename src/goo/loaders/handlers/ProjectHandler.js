@@ -274,34 +274,6 @@ define([
 		}
 	};
 
-	ProjectHandler.prototype._updateLogicNodes = function(config) {
-
-		var that = this;
-		var promises = [];
-		if (config.logicRefs && Array.isArray(config.logicRefs) && config.logicRefs.length > 0) {
-
-			var handleLogicRef = function(entityRef) {
-				return that.getConfig(entityRef).then(function(entityConfig) {
-					return that.updateObject(entityRef, entityConfig, that.options);
-				});
-			};
-
-			for (var i = 0; i < config.logicRefs.length; i++) {
-				promises.push(handleLogicRef(config.logicRefs[i]));
-			}
-
-			return RSVP.all(promises).then(function(logics) {
-				console.log("Updated " + logics.length + " logic nodes: adding to world logic.");
-				for (var j = 0; j < logics.length; j++) {
-					logics[j].addToWorldLogic(that.world);
-				}
-			}, function(err) {});
-
-		} else {
-			return PromiseUtil.createDummyPromise(config);
-		}
-
-	};
 	ProjectHandler.prototype._updatePosteffects = function(config) {
 		var that = this;
 
@@ -382,7 +354,6 @@ define([
 		// entity refs
 		if (!options || !options.shallow) {
 			promises.push(this._updateEntities(config));
-			promises.push(this._updateLogicNodes(config));
 		}
 
 		// posteffect refs

@@ -1,12 +1,14 @@
 define([
 	'goo/logic/LogicInterface',
 	'goo/logic/LogicLayer',
+	'goo/logic/LogicNodes',
 	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
 	LogicInterface,
 	LogicLayer,
+	LogicNodes,
 	Component
 ) {
 	"use strict";
@@ -22,10 +24,33 @@ function (
 		this.parent = null;
 		this._time = 0;
 		this.logicInstance = null;
+		
+		// these used to be global but aren't any longer.
 		this.logicLayer = null;
+		this.nodes = {};
 	}
-
+	
 	LogicComponent.prototype = Object.create(Component.prototype);
+	
+	LogicComponent.prototype.configure = function(conf)
+	{
+		console.log("Making new logic layer");
+		this.logicLayer = new LogicLayer();
+		this.nodes = {};
+		
+		for (var k in conf.logicNodes)
+		{
+			var ln = conf.logicNodes[k];
+			var fn = LogicNodes.getClass(ln.type);
+			obj = new fn();
+			
+			abj.addToWorldLogic();
+			obj.configure(ln);
+			
+			console.log("Configured " + k);
+			this.nodes[k] = obj;
+		}
+	}
 	
 	// Output ports from this component	
 	LogicComponent.logicInterface = new LogicInterface();

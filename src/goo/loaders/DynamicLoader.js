@@ -10,6 +10,7 @@ define([
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
+	'goo/loaders/handlers/LogicComponentHandler',
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
@@ -31,7 +32,6 @@ define([
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
 	'goo/loaders/handlers/PosteffectHandler',
-	'goo/loaders/handlers/LogicHandler'
 ],
 /** @lends */
 function(
@@ -62,8 +62,8 @@ function(
 		'machine',
 		'posteffect',
 		'animstate',
-		'sound',
-		'logicnode'];
+		'sound'
+	];
 
 	//var _text_types = ['vert', 'frag']; // unused
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
