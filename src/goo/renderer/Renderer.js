@@ -363,8 +363,8 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-		Renderer.mainCamera = newCam.camera;
+	SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+		Renderer.mainCamera = camera;
 	});
 
 	/**

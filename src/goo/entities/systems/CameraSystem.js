@@ -9,7 +9,7 @@ function (
 	SystemBus,
 	Renderer
 ) {
-	'use strict';
+	"use strict";
 
 	/**
 	 * @class Updates cameras/cameracomponents with ther transform component transforms
@@ -24,15 +24,13 @@ function (
 
 	CameraSystem.prototype.findMainCamera = function () {
 		var mainCamera = null;
-		var mainCameraEntity = null;
 		for (var i = 0; i < this._activeEntities.length; i++) {
 			var cameraComponent = this._activeEntities[i].cameraComponent;
 			if (!mainCamera || cameraComponent.isMain) {
 				mainCamera = cameraComponent.camera;
-				mainCameraEntity = this._activeEntities[i];
 			}
 		}
-		SystemBus.emit('goo.setCurrentCamera', { camera: mainCamera, entity: mainCameraEntity });
+		SystemBus.emit('goo.setCurrentCamera', mainCamera);
 		Renderer.mainCamera = mainCamera;
 	};
 

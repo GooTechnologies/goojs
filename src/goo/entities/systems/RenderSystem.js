@@ -15,7 +15,7 @@ function (
 	ShaderLib,
 	Util
 ) {
-	'use strict';
+	"use strict";
 
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
@@ -40,10 +40,9 @@ function (
 		this.lights = [];
 		this.currentTpf = 0.0;
 
-		// stop using this pattern!
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
 		});
 
 		SystemBus.addListener('goo.setLights', function (lights) {

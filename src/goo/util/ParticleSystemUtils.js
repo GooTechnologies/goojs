@@ -24,7 +24,7 @@ define([
 
 		// Set particle component
 		var particleComponent = new ParticleComponent({
-			particleCount : particleParameters.particleCount || 500
+			particleCount : 500
 		});
 
 		particleComponent.emitters.push(new ParticleEmitter(particleParameters));
@@ -136,7 +136,7 @@ define([
 
 	ParticleSystemUtils.createPlanktonTexture = function(size, options) {
 		size = size || 64;
-
+		console.log(size);
 		options = options || {};
 		options.nPoints = typeof options.nPoints !== 'undefined' ? options.nPoints : 10;
 		options.minRadius = typeof options.minRadius !== 'undefined' ? options.minRadius : 2;
@@ -166,54 +166,6 @@ define([
 		}
 
 		soup(options.nPoints);
-
-		var imageData = con2d.getImageData(0, 0, size, size).data;
-		imageData = new Uint8Array(imageData);
-
-		var texture = new Texture(imageData, null, size, size);
-		return texture;
-	};
-
-	ParticleSystemUtils.createSnowflakeTexture = function(size, options) {
-		size = size || 64;
-
-		options = options || {};
-
-		var canvas = document.createElement('canvas');
-		document.body.appendChild(canvas);
-		canvas.width = size;
-		canvas.height = size;
-		var con2d = canvas.getContext('2d');
-
-		function replicateRotated(n, fun) {
-			var ak = 2 * Math.PI / n;
-			for (var i = 0; i < n; i++) {
-				con2d.rotate(ak);
-				fun();
-			}
-		}
-
-		function subSnow1() {
-			con2d.beginPath();
-			con2d.moveTo(0, 0);
-			con2d.lineTo(0, 90);
-
-			for (var i = 0; i < 6; i++) {
-				con2d.moveTo(0, 25 + i * 10); con2d.lineTo(16 - i * 1.5, 35 + i * 10);
-				con2d.moveTo(0, 25 + i * 10); con2d.lineTo(-(16 - i * 1.5), 35 + i * 10);
-			}
-
-			con2d.stroke();
-		}
-
-		con2d.strokeStyle = '#FFF';
-		con2d.lineWidth = 4;
-		con2d.lineCap = 'round';
-
-		con2d.translate(size / 2, size / 2);
-		con2d.scale(size / 100 / 2, size / 100 / 2);
-		replicateRotated(7, subSnow1);
-
 
 		var imageData = con2d.getImageData(0, 0, size, size).data;
 		imageData = new Uint8Array(imageData);

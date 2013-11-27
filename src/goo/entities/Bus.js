@@ -1,7 +1,7 @@
 define(['goo/util/ArrayUtil'],
 	/** @lends */
 	function (ArrayUtil) {
-	'use strict';
+	"use strict";
 
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: {} };
@@ -14,7 +14,7 @@ define(['goo/util/ArrayUtil'],
 	 * @param {Object} data
 	 */
 	Bus.prototype.emit = function (channels, data) {
-		if (typeof channels === 'string') {
+		if (typeof channels === "string") {
 			channels = [channels];
 		}
 

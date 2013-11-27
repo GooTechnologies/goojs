@@ -48,10 +48,9 @@ function (
 		this.currentTpf = 0.0;
 		this.scale = 20;
 
-		// no more that!
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
+			that.camera = camera;
 		});
 
 		SystemBus.addListener('goo.setLights', function (lights) {

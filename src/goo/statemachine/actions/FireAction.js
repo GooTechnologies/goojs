@@ -2,6 +2,7 @@ define([
 	'goo/statemachine/actions/Action',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
 	'goo/util/ParticleSystemUtils',
 	'goo/entities/EntityUtils'
@@ -11,11 +12,12 @@ function(
 	Action,
 	Material,
 	ShaderLib,
+	TextureCreator,
 	ParticleLib,
 	ParticleSystemUtils,
 	EntityUtils
 ) {
-	'use strict';
+	"use strict";
 
 	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);
