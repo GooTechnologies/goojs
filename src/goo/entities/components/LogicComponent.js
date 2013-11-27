@@ -52,6 +52,12 @@ function (
 		}
 	}
 	
+	LogicComponent.prototype.process = function(tpf)
+	{
+		if (this.logicLayer != null)
+			this.logicLayer.process(tpf);
+	}
+	
 	// Output ports from this component	
 	LogicComponent.logicInterface = new LogicInterface();
 

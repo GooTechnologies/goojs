@@ -35,6 +35,10 @@ function (
 	};
 
 	LogicSystem.prototype.process = function (entities, tpf) {
+		for (var e in entities)
+			if (e.logicComponent !== undefined)
+				e.logicComponent.process(tpf);
+		
 		this.logicLayer.process(tpf);
 	};
 

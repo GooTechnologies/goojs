@@ -3,6 +3,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/logic/LogicNodeDebug',
 	'goo/logic/LogicNodeRandom',
 	'goo/logic/LogicNodeVec3',
 	'goo/logic/LogicNodeMultiply',
@@ -37,16 +38,15 @@ define(['goo/loaders/handlers/ComponentHandler',
 	LogicComponentHandler.prototype.constructor = LogicComponentHandler;
 	ComponentHandler._registerClass('logic', LogicComponentHandler);
 
-
 	LogicComponentHandler.prototype._create = function(entity, config) {
-		var component = new LogicComponent(light);
-		component.configure(config);
-		entity.setComponent(component);
-		return component;
+		var c = new LogicComponent();
+		c.configure(config);
+		entity.setComponent(c);
+		return c;
 	};
 
 	LogicComponentHandler.prototype.update = function(entity, config) {
-		return pu.createDummyPromise(component);
+		return pu.createDummyPromise(entity.logicComponent);
 	};
 
 	return LogicComponentHandler;
