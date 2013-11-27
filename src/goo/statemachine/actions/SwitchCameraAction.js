@@ -40,12 +40,18 @@ function(
 		var world = fsm.getOwnerEntity()._world;
 		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {
-			SystemBus.emit('goo.setCurrentCamera', cameraEntity.cameraComponent.camera);
+			SystemBus.emit('goo.setCurrentCamera', {
+				camera: cameraEntity.cameraComponent.camera,
+				entity: cameraEntity
+			});
 		}
 	};
 
 	SwitchCameraAction.prototype.cleanup = function (fsm) {
-		SystemBus.emit('goo.setCurrentCamera', this._camera);
+		SystemBus.emit('goo.setCurrentCamera', {
+			camera: this._camera,
+			entity: null
+		});
 	};
 
 	return SwitchCameraAction;

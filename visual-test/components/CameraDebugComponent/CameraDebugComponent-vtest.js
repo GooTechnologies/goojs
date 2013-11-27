@@ -51,7 +51,10 @@ require([
 
 	function setMainCamera(id, cameraEntities) {
 		var mainCamera = cameraEntities[id].getComponent('CameraComponent').camera;
-		SystemBus.emit('goo.setCurrentCamera', mainCamera);
+		SystemBus.emit('goo.setCurrentCamera', {
+			camera: mainCamera,
+			entity: cameraEntities[id]
+		});
 	}
 
 	function addSpheres(goo, nSpheres) {

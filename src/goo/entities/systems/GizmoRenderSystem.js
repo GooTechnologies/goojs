@@ -80,9 +80,10 @@ function (
 		}.bind(this);
 
 
+		// no more that!
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-			that.camera = camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			that.camera = newCam.camera;
 		});
 	}
 
