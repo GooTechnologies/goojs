@@ -439,7 +439,6 @@ function (
 			return;
 		}
 		var func = function(e) {
-			// REVIEW: is it preferable to polyfill browsers to a common standard than introduce new vars? http://jsperf.com/undefined-check-vs-guard
 			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
 			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
 			this._eventTriggered[type] = e;
