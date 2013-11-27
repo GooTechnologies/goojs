@@ -65,7 +65,7 @@ function(
 			}
 
 			for (var type in textureMaps) {
-				if (textureMaps[type] === undefined) {
+				if (textureMaps[type] === undefined || textureMaps[type] === null) {
 					continue;
 				}
 

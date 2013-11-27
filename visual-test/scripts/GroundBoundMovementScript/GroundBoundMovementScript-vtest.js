@@ -89,9 +89,9 @@ require([
 		applySelection(3);
 	};
 
-	function addMovementToEntity(entity, terrainScript) {
+	function addMovementToEntity(entity, terrainScript, movementProperties) {
 		entity.setComponent(new MovementComponent());
-		var groundBoundMovementScript = new GroundBoundMovementScript();
+		var groundBoundMovementScript = new GroundBoundMovementScript(movementProperties);
 		groundBoundMovementScript.setTerrainSystem(terrainScript);
 		var scripts = new ScriptComponent();
 		scripts.scripts.push(groundBoundMovementScript);
@@ -171,7 +171,18 @@ require([
 		coup.transformComponent.transform.scale.setd(0.8, 1.3, 0.4);
 		body.transformComponent.attachChild(coup.transformComponent);
 
-		addMovementToEntity(rootEntity, worldFittedTerrainScript);
+		var movementProperties = {
+			modStrafe:4,
+			modForward:7,
+			modBack:3,
+			modturn:0.7,
+			accLerp:0.01,
+			rotLerp:0.4,
+			groundRoll:true,
+			groundPitch:true
+		};
+
+		addMovementToEntity(rootEntity, worldFittedTerrainScript, movementProperties);
 	}
 
 
@@ -289,6 +300,9 @@ require([
 
 			addSpheres(goo, worldFittedTerrainScript, dim1);
 			addBiped(goo, worldFittedTerrainScript, dim1);
+			addCar(goo, worldFittedTerrainScript, dim1);
+			addCar(goo, worldFittedTerrainScript, dim1);
+			addCar(goo, worldFittedTerrainScript, dim1);
 			addCar(goo, worldFittedTerrainScript, dim1);
 			addLight(dim1);
 

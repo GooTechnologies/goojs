@@ -514,6 +514,9 @@ function (
 
 			for (var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
 			}
