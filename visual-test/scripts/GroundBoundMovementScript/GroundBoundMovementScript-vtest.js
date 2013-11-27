@@ -82,7 +82,7 @@ require([
 			}
 
 			setTimeout(function() {
-				selection = Math.ceil(Math.random()*4);
+				selection = Math.ceil(Math.random()*Math.random()*4);
 				applySelection(selection);
 			}, 1000+Math.random()*2000);
 		}
@@ -173,13 +173,11 @@ require([
 
 		var movementProperties = {
 			modStrafe:4,
-			modForward:7,
+			modForward:27,
 			modBack:3,
 			modturn:0.7,
 			accLerp:0.01,
-			rotLerp:0.4,
-			groundRoll:true,
-			groundPitch:true
+			rotLerp:0.4
 		};
 
 		addMovementToEntity(rootEntity, worldFittedTerrainScript, movementProperties);
@@ -253,7 +251,7 @@ require([
 			0.29909090909090909,
 			1
 		];
-		material.cullState.frontFace = "CW";
+
 		material.cullState.cullFace = "Back";
 		//      material.cullState.enabled = false;
 		//    emissive: materialData.uniforms.materialEmissive,

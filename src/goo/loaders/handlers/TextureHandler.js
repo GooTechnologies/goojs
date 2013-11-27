@@ -96,7 +96,7 @@ define([
 			texture.setNeedsUpdate();
 			if (!config.url) {
 				console.log("Texture " + ref + " has no url");
-
+				texture.setImage();
 				return pu.createDummyPromise(texture);
 			} else if (reload || config.url !== texture.a && (!texture.image || !texture.image.src || config.url !== texture.image.src.slice(-config.url.length))) {
 				if (type in TextureHandler.loaders) {

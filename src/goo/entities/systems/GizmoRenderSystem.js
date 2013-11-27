@@ -71,9 +71,11 @@ function (
 			if(!this.activeGizmo) {
 				return;
 			}
+			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
+			var y = (evt.offsetY !== undefined) ? evt.offsetY : evt.layerY;
 			this.activeGizmo.update([
-				evt.layerX / this.viewportWidth,
-				evt.layerY / this.viewportHeight
+				x / this.viewportWidth,
+				y / this.viewportHeight
 			]);
 		}.bind(this);
 

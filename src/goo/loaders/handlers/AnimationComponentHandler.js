@@ -69,11 +69,11 @@ function(
 		promises.push(p2);
 
 		return RSVP.all(promises).then(function() {
-			var paused = component.paused;
+			/*var paused = component.paused;
 			component.paused = false;
 			component.resetClips();
 			component.update();
-			component.paused = paused;
+			component.paused = paused;*/
 			return component;
 		});
 	};

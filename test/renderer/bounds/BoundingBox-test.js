@@ -152,7 +152,7 @@ define([
 
 			it('intersects a bounding sphere', function() {
 				var boundingBox = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
-				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 12);
+				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 15);
 
 				expect(boundingBox.intersects(boundingSphere)).toBeTruthy();
 			});
@@ -160,7 +160,7 @@ define([
 			it('does not intersect a bounding sphere', function() {
 				var boundingBox = new BoundingBox(new Vector3(0, 0, 0), 10, 10, 10);
 				var boundingSphere = new BoundingSphere(new Vector3(20, 20, 0), 12);
-				// the distance between bounding box and the bounding sphere should be 12 - sqrt(10*10*2) > 0
+				// the distance between bounding box and the bounding sphere should be 12 - sqrt(10*10*2) < 0
 
 				expect(boundingBox.intersects(boundingSphere)).toBeFalsy();
 			});

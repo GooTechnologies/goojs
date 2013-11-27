@@ -34,6 +34,8 @@ function() {
 			}
 		}
 
+        if(!document.createElementNS) return "";
+
 		var xmlns = 'http://www.w3.org/2000/svg';
 		var svg = document.createElementNS(xmlns, 'svg');
 		svg.setAttribute('version', '1.1');

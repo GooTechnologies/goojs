@@ -53,6 +53,7 @@ require([
 		pointLight.color.data[1] = 0.0;
 		pointLight.color.data[2] = 0.2;
 		pointLight.range = 5;
+		pointLight.shadowSettings.shadowType = 'PCF';
 
 		var pointLightEntity = goo.world.createEntity('pointLight');
 		pointLightEntity.setComponent(new LightComponent(pointLight));
@@ -92,6 +93,7 @@ require([
 		directionalLight.color.data[2] = 0.0;
 		directionalLight.intensity = 0.25;
 		directionalLight.shadowSettings.size = 10;
+		directionalLight.shadowSettings.shadowType = 'PCF';
 
 		var directionalLightEntity = goo.world.createEntity('directionalLight');
 		directionalLightEntity.setComponent(new LightComponent(directionalLight));
@@ -129,6 +131,7 @@ require([
 		spotLight.angle = 35;
 		spotLight.penumbra = 0;
 		spotLight.range = 20;
+		spotLight.shadowSettings.shadowType = 'PCF';
 
 		var spotLightEntity = goo.world.createEntity('spotLight');
 		spotLightEntity.setComponent(new LightComponent(spotLight));

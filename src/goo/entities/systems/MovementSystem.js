@@ -5,13 +5,14 @@ define(['goo/entities/systems/System'],
 
 		/**
 		 * @class Processes all entities with movement components.
+		 * This system applies movement vectors for translation and rotation
+		 * to the transform of the entity which has it every frame.
 		 */
 		function MovementSystem() {
 			System.call(this, 'MovementSystem', ['MovementComponent']);
 		}
 
 		MovementSystem.prototype = Object.create(System.prototype);
-
 
 		MovementSystem.prototype.addVelocityToTransform = function(vel, transform, tpf) {
 			transform.translation.add_d(vel.data[0]*tpf, vel.data[1]*tpf, vel.data[2]*tpf);
@@ -28,7 +29,6 @@ define(['goo/entities/systems/System'],
 			var rotVel = entity.movementComponent.getRotationVelocity();
 			var velocity = entity.movementComponent.getVelocity();
 			var transform = entity.transformComponent.transform;
-			transform.rotation.applyPost(velocity);
 			this.addVelocityToTransform(velocity, transform, tpf);
 			this.addRotToTransform(rotVel, transform, tpf);
 			entity.transformComponent.setUpdated();

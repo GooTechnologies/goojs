@@ -164,12 +164,7 @@ function(
 	};
 
 	FlyControlScript.prototype.updateButtonState = function(event, down) {
-		if (this.domElement !== document) {
-			this.domElement.focus();
-		}
-
-
-		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
+		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button || (event.button === 0 && altKey))) {
 			this.mouseState.buttonDown = down;
 
 			event.preventDefault();
@@ -190,7 +185,11 @@ function(
 		}
 	};
 
+	var shiftKey, altKey;
+
 	var mousedown = function(event) {
+		shiftKey = event.shiftKey;
+		altKey = event.altKey;
 		this.resetMouseState();
 		this.updateButtonState(event, true);
 	};

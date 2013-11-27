@@ -27,6 +27,7 @@ require([
     'goo/scripts/WASDControlScript',
     'goo/scripts/MouseLookControlScript',
     'goo/scripts/WorldFittedTerrainScript',
+	'goo/entities/components/MovementComponent',
 	'goo/scripts/GroundBoundMovementScript',
     'goo/renderer/TextureCreator',
     'goo/util/CanvasUtils'
@@ -53,6 +54,7 @@ require([
     WASDControlScript,
     MouseLookControlScript,
     WorldFittedTerrainScript,
+	MovementComponent,
 	GroundBoundMovementScript,
     TextureCreator,
     CanvasUtils
@@ -80,6 +82,7 @@ require([
             sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
 
+			sphereEntity.setComponent(new MovementComponent());
 			var groundBoundMovementScript = new GroundBoundMovementScript();
 			groundBoundMovementScript.setTerrainSystem(worldFittedTerrainScript);
 
@@ -157,7 +160,7 @@ require([
             0.29909090909090909,
             1
         ];
-        material.cullState.frontFace = "CW";
+     //   material.cullState.frontFace = "CW";
         material.cullState.cullFace = "Back";
   //      material.cullState.enabled = false;
         //    emissive: materialData.uniforms.materialEmissive,
