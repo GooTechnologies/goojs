@@ -34,7 +34,6 @@ function (
 	
 	LogicComponent.prototype.configure = function(conf)
 	{
-		console.log("Making new logic layer");
 		this.logicLayer = new LogicLayer();
 		this.nodes = {};
 		
@@ -42,12 +41,11 @@ function (
 		{
 			var ln = conf.logicNodes[k];
 			var fn = LogicNodes.getClass(ln.type);
-			obj = new fn();
+			var obj = new fn();
 			
-			abj.addToWorldLogic();
+			obj.addToWorldLogic();
 			obj.configure(ln);
 			
-			console.log("Configured " + k);
 			this.nodes[k] = obj;
 		}
 	}

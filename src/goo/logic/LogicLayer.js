@@ -136,7 +136,6 @@ define(
 				};
 			} else if (tgt.obj.entityRef !== undefined) {
 				// this case is for proxy nodes.
-				console.log("Resolving entity ref " + tgt.obj.entityRef);
 				for (var i = 0; i < 100; i++) {
 					// Go throug components and try resolving them to entity components.
 					// Brute force by <entityname>~<componentIndex> and we know they have that
@@ -233,7 +232,6 @@ define(
 					
 				// If any ports matched up, it means outConnections can't be undefined
 				// any more and it's safe to recurse in and try again.
-				console.log(added + " connections imported from proxy object");
 				LogicLayer.doConnections(instDesc, portID, func);
 				return;
 			}
@@ -267,6 +265,7 @@ define(
 				// now resolved.
 				func(tconn[2], tconn[3]);
 			}
+			
 		}
 
 		/**
@@ -276,7 +275,6 @@ define(
 		LogicLayer.writeValue = function(instDesc, outPortID, value) {
 			//
 			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
-			
 				// wirite
 				if (targetDesc._portValues === undefined)
 					targetDesc._portValues = {};
@@ -350,7 +348,10 @@ define(
 			}
 			
 			
+			var c= 0;
 			for (var i in this._logicInterfaces) {
+				c++;
+				console.log(this._logicInterfaces[i]);
 				if (this._logicInterfaces[i].wantsProcess && this._logicInterfaces[i].obj.processLogic) {
 					this._logicInterfaces[i].obj.processLogic(tpf);
 				}

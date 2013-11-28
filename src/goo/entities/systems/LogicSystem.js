@@ -35,9 +35,12 @@ function (
 	};
 
 	LogicSystem.prototype.process = function (entities, tpf) {
-		for (var e in entities)
+		for (var i=0;i<entities.length;i++)
+		{
+			var e = entities[i];
 			if (e.logicComponent !== undefined)
 				e.logicComponent.process(tpf);
+		}
 		
 		this.logicLayer.process(tpf);
 	};
@@ -52,7 +55,6 @@ function (
 			var e = this._entities[k];
 			if (!e.inserted)
 			{
-				console.log("Inserting entity into logic layer");
 				var counter = 0;
 				e.entity.forEachComponent(function(comp, index) {
 					if (comp.insertIntoLogicLayer !== undefined) {

@@ -46,7 +46,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	};
 
 	LogicComponentHandler.prototype.update = function(entity, config) {
-		return pu.createDummyPromise(entity.logicComponent);
+		var component = ComponentHandler.prototype.update.call(this, entity, config);
+		component.configure(config);
+		return pu.createDummyPromise(component);
 	};
 
 	return LogicComponentHandler;

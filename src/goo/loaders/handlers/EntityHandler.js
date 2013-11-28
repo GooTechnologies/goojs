@@ -63,6 +63,7 @@ define([
 				}
 				var handler = this._componentHandlers[componentName];
 				if (handler) {
+					console.log("bacock");
 					_.extend(handler, {
 						world: this._world,
 						getConfig: this.getConfig,
@@ -78,6 +79,7 @@ define([
 						this.options
 					);
 				}
+				
 				var promise = handler.update(object, componentConfig, options);
 				if (!promise || !promise.then) {
 					console.error("Handler for " + componentName + " did not return promise");

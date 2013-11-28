@@ -41,7 +41,7 @@ define(
 				this.logicInstance.remove();
 			}
 			
-			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.ref, this.wantsProcessCall);
+			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.id, this.wantsProcessCall);
 			
 			if (this.config.connections !== undefined) {
 				// need to add connections every time since adding to world logic erases
