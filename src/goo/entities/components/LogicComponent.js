@@ -43,8 +43,8 @@ function (
 			var fn = LogicNodes.getClass(ln.type);
 			var obj = new fn();
 			
-			obj.addToWorldLogic();
 			obj.configure(ln);
+			obj.addToLogicLayer(this.logicLayer);
 			
 			this.nodes[k] = obj;
 		}

@@ -348,10 +348,7 @@ define(
 			}
 			
 			
-			var c= 0;
 			for (var i in this._logicInterfaces) {
-				c++;
-				console.log(this._logicInterfaces[i]);
 				if (this._logicInterfaces[i].wantsProcess && this._logicInterfaces[i].obj.processLogic) {
 					this._logicInterfaces[i].obj.processLogic(tpf);
 				}
