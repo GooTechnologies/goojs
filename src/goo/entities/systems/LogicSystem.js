@@ -45,21 +45,22 @@ function (
 		this.logicLayer.process(tpf);
 	};
 
-	LogicSystem.prototype.play = function () {
-		this.passive = false;
-		
-		// notify system start.
-		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStarted; });
-	}
 	
 	LogicSystem.prototype.forEachLogicObject = function(f) {
 		for (var n in this._entities)
 		{
-			var e = this._entities[n];
+			var e = this._entities[n].entity;
 			if (e.logicComponent !== undefined)
 				e.logicComponent.logicLayer.forEachLogicObject(f);
 		}
-	}
+	};
+	
+	LogicSystem.prototype.play = function () {
+		this.passive = false;
+		
+		// notify system start.
+		this.forEachLogicObject(function(o) { if (o.onSystemStarted !== undefined) o.onSystemStarted(); });
+	};
 	
 	LogicSystem.prototype.pause = function () {
 		this.passive = true;
