@@ -63,7 +63,6 @@ define([
 				}
 				var handler = this._componentHandlers[componentName];
 				if (handler) {
-					console.log("bacock");
 					_.extend(handler, {
 						world: this._world,
 						getConfig: this.getConfig,

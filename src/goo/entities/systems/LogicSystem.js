@@ -48,41 +48,31 @@ function (
 	LogicSystem.prototype.play = function () {
 		this.passive = false;
 		
-		// insert all non-inserted entities.
-		var logicLayer = this.logicLayer;
-		for (var k in this._entities)
-		{
-			var e = this._entities[k];
-			if (!e.inserted)
-			{
-				var counter = 0;
-				e.entity.forEachComponent(function(comp, index) {
-					if (comp.insertIntoLogicLayer !== undefined) {
-						comp.insertIntoLogicLayer(logicLayer, k + '~' + (counter++));
-						LogicLayer.setupConnectionProxySource(comp.logicInstance, e.entity);
-					}
-				});
-				e.inserted = true;
-			}
-		}
-		
 		// notify system start.
-		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStarted !== undefined) o.onSystemStarted(); });
-	};
+		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStarted; });
+	}
+	
+	LogicSystem.prototype.forEachLogicObject = function(f) {
+		for (var n in this._entities)
+		{
+			var e = this._entities[n];
+			if (e.logicComponent !== undefined)
+				e.logicComponent.logicLayer.forEachLogicObject(f);
+		}
+	}
 	
 	LogicSystem.prototype.pause = function () {
 		this.passive = true;
 
 		// notify system stop for pause
-		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(true); });
+		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(true); });
 	};
 	
 	LogicSystem.prototype.stop = function () {
 		this.passive = true;
 
 		// notify system (full) stop
-		this.logicLayer.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(false); });
-		this.logicLayer.clear();
+		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(false); });
 		
 		// now that logic layer is cleared, need to put them back in on play.
 		for (var k in this._entities)

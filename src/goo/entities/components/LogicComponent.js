@@ -34,7 +34,15 @@ function (
 	
 	LogicComponent.prototype.configure = function(conf)
 	{
+		// cleanup.
+		for (var x in this.nodes)
+		{
+			if (this.nodes[x].onSystemStopped !== undefined)
+				this.nodes[x].onSystemStopped(false);
+		}
+
 		this.logicLayer = new LogicLayer();
+		
 		this.nodes = {};
 		
 		for (var k in conf.logicNodes)
