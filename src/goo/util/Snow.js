@@ -21,6 +21,7 @@ function (
 
 	function Snow(gooRunner) {
 		this.velocity = 10;
+		this.height = 25;
 
 		// put this in some subroutine
 		this.material = Material.createMaterial(ShaderLib.particles);
@@ -45,7 +46,7 @@ function (
 					// camera
 					vec3.copy(Renderer.mainCamera.translation);
 					vec3.data[0] += Math.random() * 1000 - 500;
-					vec3.data[1] += 25; // put higher than camera
+					vec3.data[1] += that.height; // put higher than camera
 					vec3.data[2] += Math.random() * 1000 - 500;
 				},
 				getEmissionVelocity: function(vec3) {
@@ -71,7 +72,12 @@ function (
 	Snow.prototype.setEmissionVelocity = function(velocity) {
 		if (velocity) {
 			this.velocity = velocity;
-			console.log(this.velocity);
+		}
+	};
+
+	Snow.prototype.setEmissionHeight = function(height) {
+		if (height) {
+			this.height = height;
 		}
 	};
 

@@ -349,6 +349,7 @@ define([
 					//weatherState.snow.snow.setSpawnArea(config.spawnP1, config.spawnP2);
 					weatherState.snow.snow.setEmissionVelocity(config.velocity);
 					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
+					weatherState.snow.snow.setEmissionHeight(config.height);
 				} else {
 					// add
 					console.log('snow add');
