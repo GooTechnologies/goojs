@@ -3,7 +3,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
-	'goo/logic/LogicNodeComponent',
+	'goo/logic/LogicNodeEntityProxy',
 	'goo/logic/LogicNodeDebug',
 	'goo/logic/LogicNodeRandom',
 	'goo/logic/LogicNodeVec3',
@@ -20,7 +20,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/logic/LogicNodeRotationMatrix',
 	'goo/logic/LogicNodeMultiplyFloat',
 	'goo/logic/LogicNodeMax',
-	'goo/logic/LogicNodeInt'
+	'goo/logic/LogicNodeInt',
+	'goo/logic/LogicNodeInput',
+	'goo/logic/LogicNodeOutput'
 
 ], function(
 	ComponentHandler,

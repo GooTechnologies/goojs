@@ -54,6 +54,10 @@ define(
 		return this.ports;
 	}
 	
+	LogicInterface.makeDynamicId = function() {
+		return ++LogicInterface.portID;
+	}
+	
 	/**
 	* Computes a name for the port that can be saved in the data model without having it confused when (other) ports are added/removed
 	*/

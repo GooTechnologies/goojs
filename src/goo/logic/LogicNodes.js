@@ -22,13 +22,15 @@ define(
 		};
 
 		LogicNodes.getInterfaceByName = function(name) {
-			return LogicNodes.types[name].fn.logicInterface;
+			if (LogicNodes.types[name] !== undefined)
+				return LogicNodes.types[name].fn.logicInterface;
+			return null;
 		};
 
 		LogicNodes.getClass = function(name) {
 			if (LogicNodes.types[name] == undefined)
 				return function() {
-					console.err("LogicNode type [" + name + "] does not exist.");
+					console.error("LogicNode type [" + name + "] does not exist.");
 					return null;
 				}
 
