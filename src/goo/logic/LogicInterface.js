@@ -39,11 +39,11 @@ define(
 	}
 	
 	LogicInterface.createDynamicInput = function(name_) {
-		return { id: LogicInterface.makeDynamicId(), input: true, property: true, event: true, name: "$" + name_ };
+		return { id: LogicInterface.makeDynamicId(), input: true, property: true, event: true, dynamic: true, name: name_ };
 	}
 
 	LogicInterface.createDynamicOutput = function(name_) {
-		return { id: LogicInterface.makeDynamicId(), input: false, property: true, event: true, name: "$" + name_ };
+		return { id: LogicInterface.makeDynamicId(), input: false, property: true, event: true, dynamic: true, name: name_ };
 	}
 
 	/*
@@ -83,10 +83,10 @@ define(
 				prefix += "prop-";
 			if (port.event)
 				prefix += "event-";
-			
-			// preserve dynamic prefix even when tagged.
-			var dyn = port.name.charAt(0) == '$' ? "$" : "";
-				
+
+			// tag dynamic ports with $ at the start so they can be routed
+			// properly.
+			var dyn = port.dynamic == true ? "$" : "";
 			return dyn + prefix + port.name;
 		}
 	}
