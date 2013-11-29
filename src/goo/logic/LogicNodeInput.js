@@ -17,15 +17,29 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeInput.logicInterface;
 			this.type = "LogicNodeInput";
+			this.dummyInport = null;
 		}
 
 		LogicNodeInput.prototype = Object.create(LogicNode.prototype);
 		LogicNodeInput.editorName = "Input";
-
+		
+		// Configure new output.
+		LogicNodeInput.prototype.onConfigure = function(newConfig) {
+			this.dummyInport = LogicInterface.createDynamicInput(newConfig.config.Name);
+		};
+		
+		LogicNodeInput.prototype.onInputChanged = function(instDesc, portID, value) {
+			// this will be the dummy inport getting values written.
+			LogicLayer.writeValue(this.logicInstance, LogicNodeInput.outportInput, value);
+		};
+		
 		LogicNodes.registerType("LogicNodeInput", LogicNodeInput);
 
 		LogicNodeInput.logicInterface = new LogicInterface();
+		
+		// TODO: This should be a both, not property/event.		
 		LogicNodeInput.outportInput = LogicNodeInput.logicInterface.addOutputProperty("Input", "any");
+		
 		LogicNodeInput.logicInterface.addConfigEntry({name: 'Name', type: 'string', label: 'Name'});
 		return LogicNodeInput;
 	}

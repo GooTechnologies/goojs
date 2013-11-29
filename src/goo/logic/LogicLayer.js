@@ -132,15 +132,33 @@ define(
 			if (tgt === undefined)
 				return;
 
-			// See if the port exists directly at that node.
-			var directAttempt = LogicLayer.resolvePortID(tgt, portName);
-			if (directAttempt !== null) {
-				// direct connection.
-				return {
-					target: tgt,
-					portID: directAttempt
-				};
-			} else if (tgt.obj.entityRef !== undefined) {
+
+			// First check the proxy cases.
+			if (tgt.obj.entityRef !== undefined) 
+			{
+				// Dynamic ports are created by input/output nodes.
+				if (LogicInterface.isDynamicPortName(portName))
+				{
+					var logicLayer2 = this.logicSystem.getLayerByEntity(tgt.obj.entityRef);
+					for (var n in logicLayer2._logicInterfaces)
+					{
+						var l = logicLayer2._logicInterfaces[n];
+						if (l.obj.type == "LogicNodeInput")
+							console.log(l);
+							
+						if (l.obj.type == "LogicNodeInput" && l.obj.dummyInport != null && LogicInterface.makePortDataName(l.obj.dummyInport))
+						{
+							return {
+								target: l,
+								portID: portName
+							};
+						}
+					}
+				}
+				
+				console.warn("Failed entityRef resolve attempt, should delay!");
+				return null;
+			/*
 				// this case is for proxy nodes.
 				for (var i = 0; i < 100; i++) {
 					// Go throug components and try resolving them to entity components.
@@ -161,6 +179,17 @@ define(
 						};
 					}
 				}
+			*/
+			}
+
+			// See if the port exists directly at that node.
+			var directAttempt = LogicLayer.resolvePortID(tgt, portName);
+			if (directAttempt !== null) {
+				// direct connection.
+				return {
+					target: tgt,
+					portID: directAttempt
+				};
 			}
 			
 			console.warn("Failed resolving target&portid to " + targetRef + ":" + portName);
@@ -257,6 +286,7 @@ define(
 					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
 					if (out == null) {
 						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
+						// TODO: Queue write.
 						continue;
 					}
 					tconn.push(out.target);

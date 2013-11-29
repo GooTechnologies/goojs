@@ -44,6 +44,18 @@ function (
 		}
 	};
 
+	LogicSystem.prototype.getLayerByEntity = function(entityName) {
+		var e = this._entities[entityName];
+		if (e === undefined) 
+			return e;
+			
+		var c = e.entity.logicComponent;
+		if (c === undefined) 
+			return c;
+			
+		return c.logicLayer;
+	}
+
 
 	LogicSystem.prototype.makeOutputWriteFn = function(sourceEntity, outPortDesc) {
 		// Lets do this the really slow and stupid way for now! 
