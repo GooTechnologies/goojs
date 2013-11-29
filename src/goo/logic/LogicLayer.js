@@ -13,7 +13,6 @@ define(
 		 * @class Handles the logic layer of the world.
 		 */
 		function LogicLayer(ownerEntity) {
-			console.log("Entity ", ownerEntity, " gets its own logic layer");
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
@@ -79,10 +78,7 @@ define(
 			
 			// HACK: Pick up LogicNodeEntityProxy entityRef and store it in the description too.
 			if (instance.entityRef !== undefined)
-			{
-				console.warn("Doing the proxy ref through hack!");
 				instDesc.proxyRef = instance.entityRef;
-			}
 				
 			this._logicInterfaces[name] = instDesc;
 
