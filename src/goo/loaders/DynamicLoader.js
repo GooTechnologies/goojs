@@ -70,6 +70,8 @@ function(
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
 	var _url_types = ['mp3', 'wav'];
+	var _all_binary_types = _texture_types.concat(_image_types).concat(_binary_types).concat(_url_types);
+	var _binary_file_properties = ['url', 'binaryRef']; // refs pointing to 'real' binaries, not original filenames etc
 
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
@@ -172,22 +174,34 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.loadFromBundle = function(ref, bundleName, options) {
+
 		var that = this;
 		if (options == null) {
 			options = {};
 		}
 		_.defaults(options, this.options);
-		return this._loadRef(bundleName).then(function(data) {
-			if (options.noCache) {
-				that._configs = data;
-			} else {
-				_.extend(that._configs, data);
-			}
-			if (that._configs[ref] == null) {
-				throw new Error("" + ref + " not found in bundle " + bundleName + ". Available keys: \n" + (_.keys(that._configs).join('\n')));
-			}
-			return that.load(ref, options);
-		});
+
+		var loadRefPromise = function() {
+			return that._loadRef(bundleName).then(function(data) {
+				if (options.noCache) {
+					that._configs = data;
+				} else {
+					_.extend(that._configs, data);
+				}
+				if (that._configs[ref] == null) {
+					throw new Error("" + ref + " not found in bundle " + bundleName + ". Available keys: \n" + (_.keys(that._configs).join('\n')));
+				}
+				return that.load(ref, options);
+			});
+		};
+
+		// Can currently only preload binaries when loading project.project
+		// TODO enable preloading of specific binaries?
+		if (options.preloadBinaries && ref == 'project.project') {
+			return this._preloadBinaries(bundleName, options).then(loadRefPromise);
+		} else {
+			return loadRefPromise();
+		}
 	};
 
 	/**
@@ -206,6 +220,109 @@ function(
 			options = {};
 		}
 		return this.update(ref, null, options);
+	};
+
+	DynamicLoader.prototype._preloadBinaries = function (bundleName, options) {
+		if (options == null) {
+			options = {};
+		}
+		_.defaults(options, this.options);
+		var that = this;
+
+		// Get the flat root.bundle file containing all references
+		return this._loadRef(bundleName).then(function(bundleRefs) {
+
+			// Get a list of the configs that are currently in the scene
+			var projectDict = bundleRefs['project.project']
+
+			// Array containing the references currently in the scene
+			var entityRefs = projectDict['entityRefs'];
+
+			// TODO add screenshots if wanted
+
+			var stringInArray = function(str, arr) {
+				if (typeof(str) != 'string') {
+					return false;
+				}
+				for (var i=0; i<arr.length; i++) {
+					if (str.indexOf(arr[i], str.length - arr[i].length) != -1) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			// Get all child references and binaries within a given reference
+			var traverseConfig = function(rootConfig) {
+				var childRefs = [];
+				var binaries = [];
+				var traverse = function(config) {
+					for (var property in config) {
+						var value = config[property];
+						if (stringInArray(property, _binary_file_properties)) {
+							// If the property points to a binary, add the value
+							binaries.push(value);
+						} else if (stringInArray(value, _json_types)) {
+							// If JSON (config), add children
+							childRefs.push(value);
+						} else {
+							if (value && typeof(value) == 'object') {
+								// If the value is a dictionary, recursively traverse deeper
+								traverse(value);
+							}	
+						}
+					}
+				};
+				traverse(rootConfig);
+				return {'childRefs': childRefs, 'binaries': binaries};
+			};
+
+
+			// Get all binaries from a reference and its config's children
+			var getBinariesFromRef = function(rootRef) {
+				var binaries = [];
+				var traverse = function(ref) {
+					var config = bundleRefs[ref];
+					if (config != undefined) {
+						// Traverse config, looking for binaries and child references
+						var configTraversalResult = traverseConfig(config);
+						var childRefs = configTraversalResult.childRefs;
+						// Add the found binaries
+						binaries = binaries.concat(configTraversalResult.binaries);
+						// Traverse the found children
+						for (var i=0; i<childRefs.length; i++) {
+							if (childRefs[i] != ref) {
+								traverse(childRefs[i]);
+							}
+						}
+					}
+				};
+				traverse(rootRef);
+				return binaries;
+			}
+
+			var binaries = [];
+			for (var i=0; i<entityRefs.length; i++) {
+				binaries = binaries.concat(getBinariesFromRef(entityRefs[i]));
+			}
+
+			var loadPromises = [];
+			var handled = 0;
+			var loadRef = function(ref) {
+				loadPromises.push(that._loadRef(ref).then(function(config) {
+					handled++;
+					if (options.progressCallback && options.progressCallback.call) {
+						options.progressCallback.call(null, handled, loadPromises.length);
+					}
+				}));
+			};	
+
+			for (var i=0; i<binaries.length; i++) {
+				loadRef(binaries[i]);
+			}
+		
+			return RSVP.all(loadPromises);
+		});
 	};
 
 	/**
@@ -256,9 +373,9 @@ function(
 				}
 			}
 
-			promises.push(that._handle(ref, config, options));
-
-			return RSVP.all(promises);
+			// Concat the last promise (returns new array) rather than pushing it to the promises array
+			// to prevent off-by-one error in progress callback.
+			return RSVP.all(promises.concat(that._handle(ref, config, options)));
 		}).then(function() {
 			return that._configs;
 		}).then(null, function(err) {
@@ -339,6 +456,7 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
+
 		var promise, url,
 			that = this;
 		// Do not create a request to load the reference if it is a shader
