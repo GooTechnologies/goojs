@@ -344,7 +344,11 @@ define([
 		snow: function(config, weatherState) {
 			if (config.enabled) {
 				if (weatherState.snow && weatherState.snow.enabled) {
-					console.log('snow adjust');
+//					console.log('snow adjust');
+
+					//weatherState.snow.snow.setSpawnArea(config.spawnP1, config.spawnP2);
+					weatherState.snow.snow.setEmissionVelocity(config.velocity);
+					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
 				} else {
 					// add
 					console.log('snow add');
@@ -355,7 +359,7 @@ define([
 			} else {
 				if (weatherState.snow && weatherState.snow.enabled) {
 					// remove
-					console.log('snow remove');
+//					console.log('snow remove');
 					weatherState.snow.snow.remove();
 					weatherState.snow.enabled = false;
 					delete weatherState.snow.snow;

@@ -20,9 +20,11 @@ function (
 	'use strict';
 
 	function Snow(gooRunner) {
+		this.velocity = 10;
+
 		// put this in some subroutine
 		this.material = Material.createMaterial(ShaderLib.particles);
-		var texture = ParticleSystemUtils.createSnowflakeTexture(64);
+		var texture = ParticleSystemUtils.createFlareTexture(64); //Snowflake
 		texture.generateMipmaps = true;
 		this.material.setTexture('DIFFUSE_MAP', texture);
 		this.material.blendState.blending = 'AdditiveBlending';
@@ -30,15 +32,26 @@ function (
 		this.material.depthState.write = false;
 		this.material.renderQueue = 2002;
 
+		// actually needed
+		var that = this;
+
 		// and this too
 		this.particleCloudEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
 			ParticleLib.getSnow({
-				getPosition: function(vec3) {
+				getEmissionPoint: function(vec3) {
+					// either camera or some predefined area
+
+					// camera
 					vec3.copy(Renderer.mainCamera.translation);
 					vec3.data[0] += Math.random() * 1000 - 500;
-					vec3.data[1] += 15;
+					vec3.data[1] += 25; // put higher than camera
 					vec3.data[2] += Math.random() * 1000 - 500;
+				},
+				getEmissionVelocity: function(vec3) {
+					vec3.data[0] = (Math.random() - 0.5) * 2;
+					vec3.data[1] = -(Math.random() + 1) * that.velocity;
+					vec3.data[2] = (Math.random() - 0.5) * 2;
 				}
 			}),
 			this.material
@@ -53,6 +66,21 @@ function (
 
 		this.particleCloudEntity.addToWorld();
 		//SystemBus.addListener('goo.setCurrentCamera', this.onCameraChange);
+	};
+
+	Snow.prototype.setEmissionVelocity = function(velocity) {
+		if (velocity) {
+			this.velocity = velocity;
+			console.log(this.velocity);
+		}
+	};
+
+	Snow.prototype.setReleaseRatePerSecond = function(releaseRatePerSecond) {
+		if (releaseRatePerSecond) {
+			var particleComponent = this.particleCloudEntity.particleComponent;
+			var emitter = particleComponent.emitters[0];
+			emitter.releaseRatePerSecond = releaseRatePerSecond;
+		}
 	};
 
 	Snow.prototype.remove = function() {
