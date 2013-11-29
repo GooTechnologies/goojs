@@ -16,18 +16,19 @@ function (
 	/**
 	*
 	 */
-	function LogicComponent() {
+	function LogicComponent(entity) {
 	
 		Component.call(this);
 		
 		this.type = 'LogicComponent';
 		this.parent = null;
-		this._time = 0;
 		this.logicInstance = null;
 		
 		// these used to be global but aren't any longer.
 		this.logicLayer = null;
 		this.nodes = {};
+		
+		this._entity = entity;
 	}
 	
 	LogicComponent.prototype = Object.create(Component.prototype);
@@ -41,7 +42,7 @@ function (
 				this.nodes[x].onSystemStopped(false);
 		}
 
-		this.logicLayer = new LogicLayer();
+		this.logicLayer = new LogicLayer(this._entity);;
 		
 		this.nodes = {};
 		

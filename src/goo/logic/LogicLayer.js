@@ -12,13 +12,17 @@ define(
 		/**
 		 * @class Handles the logic layer of the world.
 		 */
-		function LogicLayer(entityManager) {
+		function LogicLayer(ownerEntity) {
+			console.log("Entity ", ownerEntity, " gets its own logic layer");
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
 			this._outputForwarding = {};
+
+			this.ownerEntity = ownerEntity;
+			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
 		}
 
 		LogicLayer.prototype.clear = function() {
@@ -72,18 +76,19 @@ define(
 			instDesc.getPorts = function() {
 				return iface.getPorts();
 			};
-
+			
+			// HACK: Pick up LogicNodeEntityProxy entityRef and store it in the description too.
+			if (instance.entityRef !== undefined)
+			{
+				console.warn("Doing the proxy ref through hack!");
+				instDesc.proxyRef = instance.entityRef;
+			}
+				
 			this._logicInterfaces[name] = instDesc;
 
 			return instDesc;
 		};
 		
-		LogicLayer.setupConnectionProxySource = function(instDesc, proxyRef)
-		{
-			// entityRef used by targets
-			instDesc.proxyRef = proxyRef;
-		}
-
 		LogicLayer.prototype.unresolveAllConnections = function() {
 			// Un-do all connection resolving. Processes all instances, all ports and all connections
 			for (var n in this._logicInterfaces)
@@ -106,6 +111,10 @@ define(
 			if (typeof portName === "number") {
 				return portName;
 			}
+			
+			if (LogicInterface.isDynamicPortName(portName)) {
+				return portName;
+			}
 
 			// could be good to actually figure out if we need to do this.
 			// if realPortid is a number, no need to do all this
@@ -116,6 +125,7 @@ define(
 				}
 			}
 
+			console.warn("Unable to resolve port [" + portName + "]!");
 			return null;
 		};
 
@@ -172,8 +182,8 @@ define(
 				instDesc.outConnections = {};
 			}
 
-			// This is a proxy object for an entity component. Whenever it wants
-			// to send outputs, it needs to look up through _outputForwarding
+			// This is a proxy object for an entity component. Whenever the actual component logic wants
+			// to send outputs, it needs to look itself up in _outputForwarding and send it here instead.
 			if (instDesc.obj !== undefined && instDesc.obj.entityRef !== undefined)
 			{
 				// note that in this case we are not using resolved connection
@@ -215,7 +225,6 @@ define(
 				// See if any of the outgoing connections matches port:ids 
 				// with what this current node offers. Required as the proxy
 				// entity can map to different interfaces.
-				var added = 0;
 				for (var cn in next.outConnections)
 				{
 					var c = next.outConnections[cn];
@@ -223,13 +232,9 @@ define(
 					{
 						for (var i=0;i<c.length;i++)
 							instDesc.layer.addConnectionByName(instDesc, cn, c[i][0], c[i][1]);
-						added += c.length;
 					}
 				}
 				
-				if (added == 0)
-					return;
-					
 				// If any ports matched up, it means outConnections can't be undefined
 				// any more and it's safe to recurse in and try again.
 				LogicLayer.doConnections(instDesc, portID, func);
@@ -298,6 +303,16 @@ define(
 					}
 				}
 			});
+		};
+		
+		/**
+		* 
+		*/
+		LogicLayer.writeValueToLayerOutput = function(outNodeDesc, outPortDesc, value) {
+			// TODO: Cache writeFn
+			var writeFn = outNodeDesc.layer.logicSystem.makeOutputWriteFn(outNodeDesc.layer.ownerEntity, outPortDesc);
+			writeFn(value);
+			
 		};
 		
 		LogicLayer.readPort = function(instDesc, portID) {

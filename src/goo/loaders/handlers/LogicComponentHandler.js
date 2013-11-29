@@ -42,7 +42,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	ComponentHandler._registerClass('logic', LogicComponentHandler);
 
 	LogicComponentHandler.prototype._create = function(entity, config) {
-		var c = new LogicComponent();
+		var c = new LogicComponent(entity);
 		c.configure(config);
 		entity.setComponent(c);
 		return c;

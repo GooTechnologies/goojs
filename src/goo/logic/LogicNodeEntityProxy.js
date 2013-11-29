@@ -25,6 +25,7 @@ define(
 
 		LogicEntityProxy.prototype.onConfigure = function(config) {
 			this.entityRef = config.entityRef;
+			
 		};
 
 		LogicEntityProxy.prototype.onPropertyWrite = function(portID, value) {};

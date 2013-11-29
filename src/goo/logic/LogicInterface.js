@@ -37,6 +37,14 @@ define(
 		this.ports.push({ id: ++LogicInterface.portID, input: false, property: false, event: true, name: (this.dn_pfx + name_) });
 		return LogicInterface.portID;
 	}
+	
+	LogicInterface.createDynamicInput = function(name_) {
+		return { id: LogicInterface.makeDynamicId(), input: true, property: true, event: true, name: "$" + name_ };
+	}
+
+	LogicInterface.createDynamicOutput = function(name_) {
+		return { id: LogicInterface.makeDynamicId(), input: false, property: true, event: true, name: "$" + name_ };
+	}
 
 	/*
 	* The config entry here is an object containing all the parameters that go into the automatically 
@@ -53,6 +61,10 @@ define(
 	LogicInterface.prototype.getPorts = function() {
 		return this.ports;
 	}
+	
+	LogicInterface.isDynamicPortName = function(name) {
+		return name[0] == "$";
+	};
 	
 	LogicInterface.makeDynamicId = function() {
 		return ++LogicInterface.portID;
@@ -71,8 +83,11 @@ define(
 				prefix += "prop-";
 			if (port.event)
 				prefix += "event-";
+			
+			// preserve dynamic prefix even when tagged.
+			var dyn = port.name.charAt(0) == '$' ? "$" : "";
 				
-			return prefix + port.name;
+			return dyn + prefix + port.name;
 		}
 	}
 	

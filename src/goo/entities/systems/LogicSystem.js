@@ -2,14 +2,16 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/renderer/Renderer',
-	'goo/logic/LogicLayer'
+	'goo/logic/LogicLayer',
+	'goo/logic/LogicInterface'
 ],
 	/** @lends */
 function (
 	System,
 	SystemBus,
 	Renderer,
-	LogicLayer
+	LogicLayer,
+	LogicInterface
 ) {
 	"use strict";
 
@@ -20,7 +22,6 @@ function (
 		System.call(this, 'LogicSystem', null);
 
 		this.passive = true;
-		this.logicLayer = new LogicLayer();
 		this._entities = {};
 	}
 
@@ -41,10 +42,34 @@ function (
 			if (e.logicComponent !== undefined)
 				e.logicComponent.process(tpf);
 		}
-		
-		this.logicLayer.process(tpf);
 	};
 
+
+	LogicSystem.prototype.makeOutputWriteFn = function(sourceEntity, outPortDesc) {
+		// Lets do this the really slow and stupid way for now! 
+		
+		// TODO: Make sure this function is cached and only generated once
+		//       
+		var matches = [];
+		this.forEachLogicObject(function(o) {
+			//
+			if (o.type === "LogicNodeEntityProxy" && o.entityRef == sourceEntity.name)
+			{
+				// Need to construct a dynamic port to get the right naming scheme (data names)
+				var tmpPort = LogicInterface.createDynamicOutput(outPortDesc.name);				
+				matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
+			}
+		});
+		
+		return function(v) { 
+			for (var i=0;i<matches.length;i++)
+			{
+				LogicLayer.writeValue(matches[i][0], matches[i][1], v);
+			}
+		};
+	};
+	
+	
 	
 	LogicSystem.prototype.forEachLogicObject = function(f) {
 		for (var n in this._entities)
