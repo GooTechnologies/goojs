@@ -343,7 +343,12 @@ function (
 			'	vec3 color = texCol.rgb;',
 			// stuff from ShaderBuilder.light.fragment
 
-			"vec4 lDirection = vec4(-directionalLightDirection1, 0.0);",
+			"vec3 materialDiffuse = vec3(0.9,0,0);",
+			"vec3 materialSpecular = vec3(0.9,0,0);",
+			"vec3 materialAmbient = vec3(0.1,0,0);",
+			"float materialSpecularPower = 120.0;",
+
+			"vec4 lDirection = vec4(0, 1, 1, 0.0);",
 			"vec3 dirVector = normalize(lDirection.xyz);",
 			// diffuse
 			'float TdotL = dot(tangent, dirVector);',

@@ -11,6 +11,7 @@ require([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/scripts/FlyControlScript',
+	'goo/scripts/OrbitNPanControlScript',
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FurPass',
@@ -30,6 +31,7 @@ function(
 	CameraComponent,
 	ScriptComponent,
 	FlyControlScript,
+	OrbitNPanControlScript,
 	Composer,
 	RenderPass,
 	FurPass,
@@ -48,8 +50,10 @@ function(
 
 	var gui;
 
+	var goo;
+
 	function init() {
-		var goo = new GooRunner({
+		goo = new GooRunner({
 			showStats: true,
 			logo: "bottomleft"
 		});
@@ -61,34 +65,35 @@ function(
 		var light = new DirectionalLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 10, 5);
+		lightEntity.transformComponent.transform.translation.set(0, 1, 1);
 		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 		lightEntity.addToWorld();
 
-		addFPSCamera(goo);
+		setupCamera();
 
-		var boxEntity = createBoxEntity(goo, 2);
-		boxEntity.transformComponent.setTranslation(0,0,-3);
-		boxEntity.meshRendererComponent.materials[0].materialState.ambient = [0.2, 0.2, 0.2, 1.0];
-		boxEntity.addToWorld();
+		addAssets();
 
-		createFurRenderingRoutine(goo);
+		createFurRenderingRoutine();
 	}
 
-	function createBoxEntity(goo, size) {
-		//var meshData = ShapeCreator.createSphere(40, 40, size);
-		var meshData = ShapeCreator.createBox(size, size, size);
+	function addAssets() {
+		createPrimitive(4);
+	}
+
+	function createPrimitive(size) {
+		var meshData = ShapeCreator.createSphere(40, 40, size);
+		//var meshData = ShapeCreator.createBox(size, size, size);
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		TextureCreator.clearCache();
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		entity.meshRendererComponent.materials.push(material);
-
+		entity.addToWorld();
 		return entity;
 	}
 
-	function addFPSCamera(goo) {
+	function setupCamera() {
 		// Add camera
 		var camera = new Camera(90, 1, 0.1, 1000);
 
@@ -96,24 +101,28 @@ function(
 
 		cameraEntity.setComponent(new CameraComponent(camera));
 		var cameraScript = new ScriptComponent();
-		cameraScript.scripts.push(new FlyControlScript());
+		cameraScript.scripts.push(new OrbitNPanControlScript());
 		cameraEntity.setComponent(cameraScript);
 		cameraEntity.addToWorld();
 	}
 
-	function loadModels(goo) {
+	function loadModels() {
 		var loader = new DynamicLoader({
 			world: goo.world,
 			rootPath: "../../resources/models/LowPolyFighter/"
 		});
 
-		loader.load("project.project").then(function(){
-			console.log("This is where the FurComponent is supposed to be added to the correct entity.");
+		loader.load("project.project").then(function(configs) {
+			console.log(configs);
+
+			// NOTE: The dynamic loader sets up some other rendering routine after finishing the load.
+			// Setting up the rendering routine afterwards to override it.
+			createFurRenderingRoutine();
 		});
 
 	}
 
-	function createFurRenderingRoutine(goo) {
+	function createFurRenderingRoutine() {
 
 		var renderList = goo.world.getSystem('RenderSystem').renderList;
 		var composer = new Composer();
@@ -127,7 +136,7 @@ function(
 
 		var furFolder = gui.addFolder("Fur settings");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 20);
-		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 1);
+		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 3);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);
 		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);
@@ -136,6 +145,8 @@ function(
 
 		composer.addPass(regularPass);
 		composer.addPass(furPass);
+
+		console.log(goo.world.getSystem('RenderSystem').composers);
 
 		goo.world.getSystem('RenderSystem').composers.push(composer);
 	}
