@@ -38,6 +38,19 @@ define([
 	ConfigHandler._registerClass('texture', TextureHandler);
 	TextureHandler.prototype.constructor = TextureHandler;
 
+	TextureHandler.minFilters = [
+		'NearestNeighborNoMipMaps',
+		'NearestNeighborNearestMipMap',
+		'NearestNeighborLinearMipMap',
+		'BilinearNoMipMaps',
+		'BilinearNearestMipMap',
+		'Trilinear'
+	];
+	TextureHandler.magFilters = [
+		'NearestNeighbor',
+		'Bilinear'
+	];
+
 	TextureHandler.loaders = {
 		dds: DdsLoader,
 		crn: CrunchLoader, // TODO: not working atm.
@@ -84,8 +97,12 @@ define([
 
 			texture.wrapS = config.wrapU;
 			texture.wrapT = config.wrapV;
-			texture.magFilter = config.magFilter;
-			texture.minFilter = config.minFilter;
+			if (TextureHandler.magFilters.indexOf(config.magFilter) !== -1) {
+				texture.magFilter = config.magFilter;
+			}
+			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
+				texture.minFilter = config.minFilter;
+			}
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
 			texture.offset.set(config.offset);
@@ -96,7 +113,7 @@ define([
 			texture.setNeedsUpdate();
 			if (!config.url) {
 				console.log("Texture " + ref + " has no url");
-
+				texture.setImage();
 				return pu.createDummyPromise(texture);
 			} else if (reload || config.url !== texture.a && (!texture.image || !texture.image.src || config.url !== texture.image.src.slice(-config.url.length))) {
 				if (type in TextureHandler.loaders) {

@@ -164,11 +164,6 @@ function(
 	};
 
 	FlyControlScript.prototype.updateButtonState = function(event, down) {
-		if (this.domElement !== document) {
-			this.domElement.focus();
-		}
-
-
 		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 			this.mouseState.buttonDown = down;
 
@@ -237,6 +232,7 @@ function(
 		var transform = transformComponent.transform;
 
 		var orient = transform.rotation;
+		// REVIEW: This could be done after early return
 		orient.toAngles(this.calcVector);
 		this.rotY = this.calcVector.x;
 		this.rotX = this.calcVector.y;

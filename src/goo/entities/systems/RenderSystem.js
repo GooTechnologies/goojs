@@ -15,7 +15,7 @@ function (
 	ShaderLib,
 	Util
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
@@ -40,9 +40,10 @@ function (
 		this.lights = [];
 		this.currentTpf = 0.0;
 
+		// stop using this pattern!
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-			that.camera = camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			that.camera = newCam.camera;
 		});
 
 		SystemBus.addListener('goo.setLights', function (lights) {
@@ -154,6 +155,17 @@ function (
 			this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
+			}
+			if (key === 'lit') {
+				this._debugMaterials[key]._textureMaps = {
+					EMISSIVE_MAP: null,
+					DIFFUSE_MAP: null,
+					SPECULAR_MAP: null,
+					NORMAL_MAP: null,
+					AO_MAP: null,
+					LIGHT_MAP: null,
+					TRANSPARENCY_MAP: null
+				};
 			}
 		} else {
 			this._debugMaterials[key] = Material.createEmptyMaterial(null, key);

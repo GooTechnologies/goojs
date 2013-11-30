@@ -1,9 +1,11 @@
 define([
-	'goo/statemachine/actions/Action'
+	'goo/statemachine/actions/Action',
+	'goo/statemachine/FSMUtil'
 ],
 /** @lends */
 function(
-	Action
+	Action,
+	FSMUtil
 ) {
 	"use strict";
 
@@ -43,6 +45,11 @@ function(
 			name: 'Key pressed',
 			description: 'State to transition to when the key is pressed'
 		}]
+	};
+
+	KeyPressedAction.prototype.configure = function (settings) {
+		this.key = settings.key ? FSMUtil.getKey(settings.key) : null;
+		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
 	KeyPressedAction.prototype._setup = function() {

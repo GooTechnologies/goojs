@@ -365,8 +365,8 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-		Renderer.mainCamera = camera;
+	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+		Renderer.mainCamera = newCam.camera;
 	});
 
 	/**
@@ -376,11 +376,18 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var adjustWidth = this.domElement.offsetWidth / this.downScale;
-		var adjustHeight = this.domElement.offsetHeight / this.downScale;
-		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
-			this.setSize(adjustWidth, adjustHeight);
-		}
+
+        if(document.querySelector)
+        {
+            var adjustWidth = this.domElement.offsetWidth / this.downScale;
+            var adjustHeight = this.domElement.offsetHeight / this.downScale;
+            if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
+                this.setSize(adjustWidth, adjustHeight);
+            }
+        } else
+        {
+            this.setSize(window.innerWidth, window.innerHeight);
+        }
 
 		var aspect = this.domElement.width / this.domElement.height;
 		if (camera && camera.aspect !== aspect && camera.projectionMode === 0) {
@@ -516,6 +523,9 @@ function (
 
 			for (var i = 0; i < renderList.length; i++) {
 				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
 				this.fillRenderInfo(renderable, renderInfo);
 				this.renderMesh(renderInfo);
 			}

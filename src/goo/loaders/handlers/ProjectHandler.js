@@ -17,7 +17,8 @@ define([
 	'goo/entities/EntityUtils',
 	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/Snow'
 ], function(
 	ConfigHandler,
 	RSVP,
@@ -37,7 +38,8 @@ define([
 	EntityUtils,
 	SystemBus,
 	ArrayUtil,
-	_
+	_,
+	Snow
 ) {
 	"use strict";
 
@@ -54,6 +56,7 @@ define([
 
 		this._composer = null;
 		this._passes = [];
+		this.weatherState = {};
 	}
 
 	ProjectHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -76,7 +79,6 @@ define([
 	};
 
 	ProjectHandler.prototype._create = function(/*ref*/) {};
-
 
 	ProjectHandler.prototype._createSkybox = function(goo, shape, textures, rotation, mapping) {
 		var mapping = mapping ? Sphere.TextureModes.Projected : Sphere.TextureModes.Chromeball;
@@ -150,6 +152,8 @@ define([
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
 				material.setTexture('DIFFUSE_MAP', null);
+				ShaderBuilder.SKYBOX = null;
+				ShaderBuilder.SKYSPHERE = null;
 				return PromiseUtil.createDummyPromise();
 			}
 			var that = this;
@@ -160,6 +164,8 @@ define([
 								type: 'Sphere',
 								message: 'The skysphere needs an image to display.'
 							});
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = null;
 							return;
 						}
 						images = images[0];
@@ -172,6 +178,8 @@ define([
 							});
 							skybox.meshRendererComponent.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
+							ShaderBuilder.SKYBOX = null;
+							ShaderBuilder.SKYSPHERE = null;
 							return;
 						}
 						var w = images[0].width;
@@ -185,6 +193,8 @@ define([
 								});
 								skybox.meshRendererComponent.hidden = true;
 								material.setTexture('DIFFUSE_MAP', null);
+								ShaderBuilder.SKYBOX = null;
+								ShaderBuilder.SKYSPHERE = null;
 								return;
 							}
 							img.setAttribute('data-ref', imageUrls[i]);
@@ -330,6 +340,43 @@ define([
 		}
 	};
 
+	ProjectHandler.weatherHandlers = {
+		snow: function(config, weatherState) {
+			if (config.enabled) {
+				if (weatherState.snow && weatherState.snow.enabled) {
+//					console.log('snow adjust');
+
+					//weatherState.snow.snow.setSpawnArea(config.spawnP1, config.spawnP2);
+					weatherState.snow.snow.setEmissionVelocity(config.velocity);
+					weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
+					weatherState.snow.snow.setEmissionHeight(config.height);
+				} else {
+					// add
+					console.log('snow add');
+					weatherState.snow = weatherState.snow || {};
+					weatherState.snow.enabled = true;
+					weatherState.snow.snow = new Snow(this.world.gooRunner);
+				}
+			} else {
+				if (weatherState.snow && weatherState.snow.enabled) {
+					// remove
+//					console.log('snow remove');
+					weatherState.snow.snow.remove();
+					weatherState.snow.enabled = false;
+					delete weatherState.snow.snow;
+				} else {
+				    // do nothing
+				}
+			}
+		}
+	};
+
+	ProjectHandler.prototype._updateWeather = function(config) {
+		for (var key in config) {
+			ProjectHandler.weatherHandlers[key].bind(this)(config[key], this.weatherState);
+		}
+	};
+
 	// Returns a promise which resolves when updating is done
 	ProjectHandler.prototype.update = function(ref, config, options) {
 		var that = this;
@@ -346,6 +393,11 @@ define([
 
 		// posteffect refs
 		promises.push(this._updatePosteffects(config));
+
+		// weather
+		if (config.weather) {
+			this._updateWeather(config.weather);
+		}
 
 		return RSVP.all(promises).then(function(results) {
 			var renderer = that.world.gooRunner.renderer;

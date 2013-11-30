@@ -129,7 +129,7 @@ define([
 
 		for (var i = 0; i < this.verts.length; i += 3) {
 			var x = (this.verts[i + 0] - bounds.minX) / extentX;
-			var y = (this.verts[i + 1] - bounds.minY) / extentY;
+			var y = (this.verts[i + 2] - bounds.minY) / extentY;
 			tex.push(x, y);
 		}
 
@@ -147,8 +147,8 @@ define([
 		for (var i = 3; i < verts.length; i += 3) {
 			minX = minX < verts[i + 0] ? minX : verts[i + 0];
 			maxX = maxX > verts[i + 0] ? maxX : verts[i + 0];
-			minY = minY < verts[i + 1] ? minY : verts[i + 1];
-			maxY = maxY > verts[i + 1] ? maxY : verts[i + 1];
+			minY = minY < verts[i + 2] ? minY : verts[i + 2];
+			maxY = maxY > verts[i + 2] ? maxY : verts[i + 2];
 		}
 
 		return {
@@ -176,9 +176,31 @@ define([
 				verts.push(i * xScale, heightMap[i][j]*yScale, j * zScale);
 			}
 		}
+		verts.reverse();
 
 		return new Surface(verts, heightMap[0].length);
 	};
+
+	/**
+	 * @description Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
+	 * @param {number} xSize x axis size in units
+	 * @param {number} ySize y axis size in numbers
+	 * @param {number} xCount x axis vertex count
+	 * @param {number} yCount y axis vertex count
+	 * @returns {Surface} The surface mesh
+	 */
+	Surface.createTessellatedFlat = function(xSize, ySize, xCount, yCount) {
+
+		var verts = [];
+		for (var i = 0; i < xCount; i++) {
+			for (var j = 0; j < yCount; j++) {
+				verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+			}
+		}
+		var surface = new Surface(verts, xCount);
+		return surface;
+	};
+
 
 	return Surface;
 });

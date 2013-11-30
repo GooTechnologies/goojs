@@ -103,8 +103,6 @@ require([
 			var material = Material.createMaterial(ShaderLib.simpleLit, '');
 			material.wireframe = true;
 			var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
-			surfaceEntity.transformComponent.transform.scale.setd(1, 1, -1);
-			surfaceEntity.transformComponent.transform.setRotationXYZ(Math.PI/2, 0, 0);
 			surfaceEntity.transformComponent.setUpdated();
 			surfaceEntity.addToWorld();
 

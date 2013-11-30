@@ -12,7 +12,7 @@ function (
 	ParticleLib.getSmoke = function(options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 1;
-		options.spread = typeof options.spread !== 'undefined' ? options.speed : 2;
+		options.spread = typeof options.spread !== 'undefined' ? options.spread : 2;
 		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 2;
 		options.color = options.color || [0, 0, 0];
 
@@ -82,6 +82,58 @@ function (
 				timeOffset : 0.5,
 				size : 3.0,
 				color : [0, 0, 0, 0]
+			}]
+		};
+	};
+
+	ParticleLib.getSnow = function(options) {
+		options = options || {};
+		options.scale = typeof options.scale !== 'undefined' ? options.scale : 2;
+		options.spread = typeof options.spread !== 'undefined' ? options.spread : 50;
+		options.velocity = typeof options.velocity !== 'undefined' ? options.velocity : 3;
+		options.color = options.color || [1, 1, 1];
+
+		return {
+			particleCount: 1000,
+			totalParticlesToSpawn : -1,
+			releaseRatePerSecond : 50,
+			minLifetime : 15.0,
+			maxLifetime : 25.0,
+			getEmissionPoint: function (particle, particleEntity) {
+				var vec3 = particle.position;
+				options.getEmissionPoint(vec3);
+				//vec3.data[0] = Math.random() * (options.spread * 2) - options.spread;
+				//vec3.data[1] = options.position;
+				//vec3.data[2] = Math.random() * (options.spread * 2) - options.spread;
+				return vec3;
+			},
+			getEmissionVelocity: function (particle, particleEntity) {
+				// not nice, will end up a square
+				var vec3 = particle.velocity;
+				options.getEmissionVelocity(vec3);
+//				vec3.data[0] = (Math.random() - 0.5) * options.scale; // wind
+//				vec3.data[1] = -(Math.random() + 1) * options.velocity * options.scale;
+//				vec3.data[2] = (Math.random() - 0.5) * options.scale; // wind
+				return vec3;
+				//return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 18 / 180, 8);
+			},
+			timeline : [{
+				timeOffset : 0.0,
+				spin : 0,
+				mass : 1,
+				size : 1.0 * options.scale,
+				color : [options.color[0], options.color[1], options.color[2], 0.0]
+			}, {
+				timeOffset : 0.05,
+				color : [options.color[0], options.color[1], options.color[2], 1.0]
+			}, {
+				timeOffset : 0.70,
+				color : [options.color[0], options.color[1], options.color[2], 0.8]
+			}, {
+				timeOffset : 0.25,
+				spin: 5,
+				size : 0.5 * options.scale,
+				color : [options.color[0], options.color[1], options.color[2], 0]
 			}]
 		};
 	};

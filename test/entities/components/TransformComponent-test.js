@@ -1,9 +1,15 @@
 define([
 	'goo/entities/World',
-	'goo/entities/systems/TransformSystem'
+	'goo/entities/components/TransformComponent',
+	'goo/entities/systems/TransformSystem',
+	'goo/math/Matrix3x3',
+	'goo/math/Vector3'
 ], function(
 	World,
-	TransformSystem
+	TransformComponent,
+	TransformSystem,
+	Matrix3x3,
+	Vector3
 ) {
 	'use strict';
 
@@ -54,6 +60,23 @@ define([
 			expect(childEntity.transformComponent.parent).toBeNull();
 			expect(parentEntity.transformComponent.children)
 				.not.toContain(childEntity.transformComponent);
+		});
+
+		it('setRotation with x, y, z', function() {
+			var tc = new TransformComponent();
+			tc.setRotation(0, 0, 0);
+			expect(tc.transform.rotation).toEqual(new Matrix3x3());
+		});
+		it('setRotation with Vector3', function() {
+			var tc = new TransformComponent();
+			var vec = new Vector3(0, 0, 0);
+			tc.setRotation(vec);
+			expect(tc.transform.rotation).toEqual(new Matrix3x3());
+		});
+		it('setRotation with array', function() {
+			var tc = new TransformComponent();
+			tc.setRotation([0, 0, 0]);
+			expect(tc.transform.rotation).toEqual(new Matrix3x3());
 		});
 	});
 });

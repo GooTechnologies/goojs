@@ -257,6 +257,9 @@ function () {
 	GameUtils.initPointerLockShims = function (global) {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
+
+        if(!global.MouseEvent) return;
+
 		var mouseEventPrototype = global.MouseEvent.prototype;
 
 		if (!("movementX" in mouseEventPrototype)) {

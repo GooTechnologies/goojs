@@ -1,13 +1,15 @@
 define([
 	'goo/statemachine/actions/Action',
-	'goo/entities/systems/ProximitySystem'
+	'goo/entities/systems/ProximitySystem',
+	'goo/entities/EntityUtils'
 ],
 /** @lends */
 function(
 	Action,
-	ProximitySystem
+	ProximitySystem,
+	EntityUtils
 ) {
-	"use strict";
+	'use strict';
 
 	function CollidesAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -21,6 +23,7 @@ function(
 	CollidesAction.external = {
 		name: 'Collides',
 		description: 'Checks for collisions with other entities; Collisions are based on the entities\' bounding volumes',
+		canTransition: true,
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
@@ -54,14 +57,30 @@ function(
 		var proximitySystem = world.getSystem('ProximitySystem');
 		var collection = proximitySystem.getFor(this.tag);
 
-		var worldBound = entity.meshRendererComponent.worldBound;
-		for (var i = 0; i < collection.length; i++) {
-			if (worldBound.intersects(collection[i].meshRendererComponent.worldBound)) {
-				fsm.send(this.transitions.collides);
-				return;
+		var collides = false;
+		EntityUtils.traverse(entity, function(entity) {
+			var worldBound;
+			if (entity.meshRendererComponent) {
+				worldBound = entity.meshRendererComponent.worldBound;
+				for (var i = 0; i < collection.length; i++) {
+					EntityUtils.traverse(collection[i], function(entity) {
+						if (entity.meshRendererComponent && worldBound.intersects(entity.meshRendererComponent.worldBound)) {
+							collides = true;
+							return false;
+						}
+					});
+					if (collides) {
+						return false;
+					}
+				}
 			}
+		});
+
+		if (collides) {
+			fsm.send(this.transitions.collides);
+		} else {
+			fsm.send(this.transitions.notCollides);
 		}
-		fsm.send(this.transitions.notCollides);
 	};
 
 	return CollidesAction;
