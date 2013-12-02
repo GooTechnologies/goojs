@@ -72,6 +72,15 @@ function (
 	Snow.prototype.setEmissionVelocity = function(velocity) {
 		if (velocity) {
 			this.velocity = velocity;
+
+			// change velocity of all particles in the particle system
+			// hack, but necessary for this particular situation
+			var particleComponent = this.particleCloudEntity.particleComponent;
+			var particles = particleComponent.particles;
+
+			for (var i = 0; i < particles.length; i++) {
+				particles[i].velocity[1] = -(Math.random() + 1) * this.velocity; //this.velocity;
+			}
 		}
 	};
 
