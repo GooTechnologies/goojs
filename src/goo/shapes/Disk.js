@@ -40,14 +40,10 @@ define(['goo/renderer/MeshData'],
 		var tex = [];
 		var indices = [];
 
-		verts.push(0, 0, this.pointiness);
-		norms.push(0, 0, 1);
-		tex.push(0.5, 0.5);
-
 		var slope = Math.atan2(this.radius, this.pointiness);
 
 		var ak = Math.PI * 2 / this.nSegments;
-		for (var i = 1, k = 0; i <= this.nSegments; i++, k += ak) {
+		for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
 			verts.push(
 				Math.cos(k) * this.radius,
 				Math.sin(k) * this.radius,
@@ -62,8 +58,12 @@ define(['goo/renderer/MeshData'],
 				Math.cos(k) * 0.5 + 0.5,
 				Math.sin(k) * 0.5 + 0.5);
 
-			indices.push(0, i, (i + 1) % this.nSegments + 1);
+			indices.push(this.nSegments, i, (i + 1) % this.nSegments);
 		}
+
+		verts.push(0, 0, this.pointiness);
+		norms.push(0, 0, 1);
+		tex.push(0.5, 0.5);
 
 		this.getAttributeBuffer(MeshData.POSITION).set(verts);
 		this.getAttributeBuffer(MeshData.NORMAL).set(norms);
