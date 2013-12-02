@@ -44,7 +44,7 @@ function (
 					// either camera or some predefined area
 
 					// camera
-					vec3.copy(Renderer.mainCamera.translation);
+					vec3.copy(Renderer.mainCamera.translation ? Renderer.mainCamera.translation : new Vector3());
 					vec3.data[0] += Math.random() * 1000 - 500;
 					vec3.data[1] += that.height; // put higher than camera
 					vec3.data[2] += Math.random() * 1000 - 500;
@@ -63,7 +63,7 @@ function (
 			newCam.entity.attachChild(this.particleCloudEntity);
 		}.bind(this);
 
-		this.particleCloudEntity.transformComponent.transform.translation.copy(Renderer.mainCamera.translation);
+		this.particleCloudEntity.transformComponent.transform.translation.copy(Renderer.mainCamera.translation ? Renderer.mainCamera.translation : new Vector3());
 
 		this.particleCloudEntity.addToWorld();
 		//SystemBus.addListener('goo.setCurrentCamera', this.onCameraChange);
