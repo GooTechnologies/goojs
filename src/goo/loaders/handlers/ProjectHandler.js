@@ -377,9 +377,19 @@ define([
 	};
 
 	ProjectHandler.prototype._updateWeather = function(config) {
+		// update
 		for (var key in config) {
 			ProjectHandler.weatherHandlers[key].update.bind(this)(config[key], this.weatherState);
 		}
+
+		// cleanup whatever magically made it into weather state and avoided the above update loop
+		/*
+		for (var key in this.weatherState) {
+			if (!config[key]) {
+				ProjectHandler.weatherHandlers[key].remove.bind(this)(this.weatherState);
+			}
+		}
+		*/
 	};
 
 	ProjectHandler.prototype._removeWeather = function() {

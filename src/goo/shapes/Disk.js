@@ -21,9 +21,9 @@ define(['goo/renderer/MeshData'],
 		this.pointiness = pointiness || 0;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
-		MeshData.call(this, attributeMap, this.nSegments + 1, this.nSegments + 2);
+		MeshData.call(this, attributeMap, this.nSegments + 1, this.nSegments * 3);
 
-		this.indexModes = ['TriangleFan'];
+		this.indexModes = ['Triangles'];
 
 		this.rebuild();
 	}
@@ -43,7 +43,6 @@ define(['goo/renderer/MeshData'],
 		verts.push(0, 0, this.pointiness);
 		norms.push(0, 0, 1);
 		tex.push(0.5, 0.5);
-		indices.push(0);
 
 		var slope = Math.atan2(this.radius, this.pointiness);
 
@@ -63,9 +62,8 @@ define(['goo/renderer/MeshData'],
 				Math.cos(k) * 0.5 + 0.5,
 				Math.sin(k) * 0.5 + 0.5);
 
-			indices.push(i);
+			indices.push(0, i, (i + 1) % this.nSegments + 1);
 		}
-		indices.push(1);
 
 		this.getAttributeBuffer(MeshData.POSITION).set(verts);
 		this.getAttributeBuffer(MeshData.NORMAL).set(norms);
