@@ -50,28 +50,6 @@ function (
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
-	TransformComponent.logicInterface = new LogicInterface("Transform");
-	TransformComponent.inportPos = TransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
-	TransformComponent.inportRot = TransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0,0,0));
-	TransformComponent.inportScale = TransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1,1,1));
-	TransformComponent.outportPos = TransformComponent.logicInterface.addOutputProperty("outpos", "Vector3", new Vector3());
-	TransformComponent.outportRot = TransformComponent.logicInterface.addOutputProperty("rotmat", "Matrix3", new Matrix3x3());
-	
-	TransformComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-		this.logicInstance = logicLayer.addInterfaceInstance(TransformComponent.logicInterface, this, interfaceName, false);
-	};
-	
-	TransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
-		if (portID === TransformComponent.inportPos) {
-			this.setTranslation(value);
-		} else if (portID === TransformComponent.inportRot) {
-			this.setRotation(value[0], value[1], value[2]);
-		} else if (portID === TransformComponent.inportScale) {
-			this.setScale(value);
-		}
-		LogicLayer.writeValue(this.logicInstance, TransformComponent.outportPos, this.transform.translation.clone());
-		LogicLayer.writeValue(this.logicInstance, TransformComponent.outportRot, this.transform.rotation.clone());
-	};
 
 	/**
 	 * Set this transform's translation.

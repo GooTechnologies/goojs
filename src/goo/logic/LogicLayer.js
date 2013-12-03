@@ -124,7 +124,7 @@ define(
 			console.warn("Unable to resolve port [" + portName + "]!");
 			return null;
 		};
-
+		
 		LogicLayer.prototype.resolveTargetAndPortID = function(targetRef, portName) {
 			var tgt = this._logicInterfaces[targetRef];
 			
@@ -132,56 +132,26 @@ define(
 			if (tgt === undefined)
 				return;
 
-
 			// First check the proxy cases.
-			if (tgt.obj.entityRef !== undefined) 
+			if (tgt.obj.entityRef !== undefined && LogicInterface.isDynamicPortName(portName))
 			{
-				// Dynamic ports are created by input/output nodes.
-				if (LogicInterface.isDynamicPortName(portName))
+				var logicLayer2 = this.logicSystem.getLayerByEntity(tgt.obj.entityRef);
+				for (var n in logicLayer2._logicInterfaces)
 				{
-					var logicLayer2 = this.logicSystem.getLayerByEntity(tgt.obj.entityRef);
-					for (var n in logicLayer2._logicInterfaces)
+					var l = logicLayer2._logicInterfaces[n];
+					if (l.obj.type == "LogicNodeInput")
+						console.log(l);
+						
+					if (l.obj.type == "LogicNodeInput" && l.obj.dummyInport != null && LogicInterface.makePortDataName(l.obj.dummyInport))
 					{
-						var l = logicLayer2._logicInterfaces[n];
-						if (l.obj.type == "LogicNodeInput")
-							console.log(l);
-							
-						if (l.obj.type == "LogicNodeInput" && l.obj.dummyInport != null && LogicInterface.makePortDataName(l.obj.dummyInport))
-						{
-							return {
-								target: l,
-								portID: portName
-							};
-						}
-					}
-				}
-				
-				console.warn("Failed entityRef resolve attempt, should delay!");
-				return null;
-			/*
-				// this case is for proxy nodes.
-				for (var i = 0; i < 100; i++) {
-					// Go throug components and try resolving them to entity components.
-					// Brute force by <entityname>~<componentIndex> and we know they have that
-					// name once instantiated. Once we fail to find a component, abort.
-					var compIName = tgt.obj.entityRef + "~" + i;
-					var compInterface = this._logicInterfaces[compIName];
-
-					if (compInterface === undefined) {
-						break;
-					}
-
-					var compAttempt = LogicLayer.resolvePortID(compInterface, portName);
-					if (compAttempt !== null) {
 						return {
-							target: compInterface,
-							portID: compAttempt
+							target: l,
+							portID: portName
 						};
 					}
 				}
-			*/
 			}
-
+				
 			// See if the port exists directly at that node.
 			var directAttempt = LogicLayer.resolvePortID(tgt, portName);
 			if (directAttempt !== null) {
@@ -338,7 +308,6 @@ define(
 			// TODO: Cache writeFn
 			var writeFn = outNodeDesc.layer.logicSystem.makeOutputWriteFn(outNodeDesc.layer.ownerEntity, outPortDesc);
 			writeFn(value);
-			
 		};
 		
 		LogicLayer.readPort = function(instDesc, portID) {
@@ -373,6 +342,15 @@ define(
 			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
 				targetDesc.obj.onEvent(portID);
 			});
+		};
+
+
+		LogicLayer.resolveEntityRef = function(instDesc, entityRef) {
+			console.log('resolveEntityByRef = ' + entityRef);
+			if (entityRef == '[self]')
+				return instDesc.layer.ownerEntity
+			else
+				return instDesc.layer.logicSystem.resolveEntityRef(entityRef);
 		};
 
 		LogicLayer.prototype.process = function(tpf) {

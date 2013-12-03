@@ -13,29 +13,29 @@ define(
 		/**
 		 * @class Logic node that calculates sine
 		 */
-		function LogicEntityProxy() {
+		function LogicNodeEntityProxy() {
 			LogicNode.call(this);
-			this.logicInterface = LogicEntityProxy.logicInterface;
+			this.logicInterface = LogicNodeEntityProxy.logicInterface;
 			this.type = "LogicNodeEntityProxy";
 			this._time = 0;
 		}
 
-		LogicEntityProxy.prototype = Object.create(LogicNode.prototype);
-		LogicEntityProxy.editorName = "EntityProxy";
+		LogicNodeEntityProxy.prototype = Object.create(LogicNode.prototype);
+		LogicNodeEntityProxy.editorName = "EntityProxy";
 
-		LogicEntityProxy.prototype.onConfigure = function(config) {
+		LogicNodeEntityProxy.prototype.onConfigure = function(config) {
 			this.entityRef = config.entityRef;
-			
 		};
 
-		LogicEntityProxy.prototype.onPropertyWrite = function(portID, value) {};
-		LogicEntityProxy.prototype.onEvent = function(portID) {};
+		LogicNodeEntityProxy.prototype.onPropertyWrite = function(portID, value) {};
+		LogicNodeEntityProxy.prototype.onEvent = function(portID) {};
 
 		// Empty.	
-		LogicEntityProxy.logicInterface = new LogicInterface("Component Proxy");
+		LogicNodeEntityProxy.logicInterface = new LogicInterface("Component Proxy");
+		LogicNodeEntityProxy.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
 
-		LogicNodes.registerType("LogicNodeEntityProxy", LogicEntityProxy);
+		LogicNodes.registerType("LogicNodeEntityProxy", LogicNodeEntityProxy);
 
-		return LogicEntityProxy;
+		return LogicNodeEntityProxy;
 	});
 	

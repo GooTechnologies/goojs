@@ -43,6 +43,13 @@ function (
 				e.logicComponent.process(tpf);
 		}
 	};
+	
+	/**
+	* Called when proxy entities want to resolve their entities. Called from LogicLayer.
+	*/
+	LogicSystem.prototype.resolveEntityRef = function(entityRef) {
+		return this._entities[entityRef];
+	}
 
 	LogicSystem.prototype.getLayerByEntity = function(entityName) {
 		var e = this._entities[entityName];
@@ -80,9 +87,7 @@ function (
 			}
 		};
 	};
-	
-	
-	
+
 	LogicSystem.prototype.forEachLogicObject = function(f) {
 		for (var n in this._entities)
 		{
