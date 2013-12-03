@@ -141,16 +141,17 @@ function(
 		this.world.Step(tpf, 2, 2);
 
 		for (var i = 0; i < entities.length; i++) {
-
-			var position = entities[i].body.GetPosition();
-			entities[i].transformComponent.transform.translation.y = position.get_y() - entities[i].physics2DComponent.offsetY;
-			entities[i].transformComponent.transform.translation.x = position.get_x() - entities[i].physics2DComponent.offsetX;
-			//	entities[i].transformComponent.transform.translation.z = 0;
-			entities[i].transformComponent.setUpdated();
-			entities[i].transformComponent.transform.rotation.z = entities[i].body.GetAngle();
+			var e = entities[i];
+			var tc = e.transformComponent, t = tc.transform;
+			var position = e.body.GetPosition();
+			t.translation.y = position.get_y() - e.physics2DComponent.offsetY;
+			t.translation.x = position.get_x() - e.physics2DComponent.offsetX;
+			//	t.translation.z = 0;
+			tc.setUpdated();
+			t.rotation.z = e.body.GetAngle();
 
 			if (position.get_y() > 100) {
-				entities[i].body.ApplyForce(new Box2D.b2Vec2(0, -100), entities[i].body.GetPosition());
+				e.body.ApplyForce(new Box2D.b2Vec2(0, -100), position);
 			}
 		}
 	};
