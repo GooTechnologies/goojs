@@ -3,17 +3,13 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/entities/components/Component',
-	'goo/logic/LogicInterface',
-	'goo/logic/LogicLayer'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
 	Matrix3x3,
-	Component,
-	LogicInterface,
-	LogicLayer
+	Component
 ) {
 	"use strict";
 
