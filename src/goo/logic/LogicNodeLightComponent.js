@@ -25,7 +25,7 @@ define(
 		LogicNodeLightComponent.editorName = "LightComponent";
 
 		LogicNodeLightComponent.prototype.onConfigure = function(config) {
-			this.entityRef = config.config.entityRef;
+			this.entityRef = config.entityRef;
 		};
 
 		// Logic interface set-up	

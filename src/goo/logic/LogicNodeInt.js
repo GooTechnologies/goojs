@@ -33,7 +33,7 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
 		}
 		
-		LogicNodeInt.prototype.onEvent = function(evt, args)
+		LogicNodeInt.prototype.onEvent = function(instDesc, evt)
 		{
 			if (evt == LogicNodeInt.ineventIncrease)
 				this.value = this.value + 1;

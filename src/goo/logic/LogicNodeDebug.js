@@ -26,7 +26,7 @@ define(
 			console.log("LogicNodeDebug (" + this.logicInstance.name + ") value port " + portID + " = [" + value + "]");
 		};
 
-		LogicNodeDebug.prototype.onEvent = function(portID) {
+		LogicNodeDebug.prototype.onEvent = function(instDesc, portID) {
 			console.log("LogicNodeDebug (" + this.logicInstance.name + ") event on port " + portID);
 		};
 

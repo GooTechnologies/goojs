@@ -340,7 +340,7 @@ define(
 		 */
 		LogicLayer.fireEvent = function(instDesc, outPortID) {
 			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
-				targetDesc.obj.onEvent(portID);
+				targetDesc.obj.onEvent(targetDesc, portID);
 			});
 		};
 

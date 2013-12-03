@@ -56,7 +56,7 @@ define(
 		};
 
 		// should they have args too?
-		LogicNodeTime.prototype.onEvent = function(event) {
+		LogicNodeTime.prototype.onEvent = function(instDesc, event) {
 			if (event === LogicNodeTime.inEventStart) {
 				this._running = true;
 			} else if (event === LogicNodeTime.inEventStop) {

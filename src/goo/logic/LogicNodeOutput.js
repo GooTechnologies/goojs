@@ -27,9 +27,7 @@ define(
 			LogicLayer.writeValueToLayerOutput(this.logicInstance, this.realOutport, value);
 		};
 
-		LogicNodeOutput.prototype.onEvent = function(portID) {
-
-		};
+		LogicNodeOutput.prototype.onEvent = function(instDesc, portID) { };
 
 		// Configure new output.
 		LogicNode.prototype.onConfigure = function(newConfig) {

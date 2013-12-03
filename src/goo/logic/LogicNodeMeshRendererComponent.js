@@ -39,7 +39,7 @@ define(
 			}
 		};
 
-		LogicNodeMeshRendererComponent.prototype.onEvent = function(event) {
+		LogicNodeMeshRendererComponent.prototype.onEvent = function(instDesc, event) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 

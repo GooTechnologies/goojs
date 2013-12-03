@@ -26,8 +26,8 @@ define(
 			this.entityRef = config.entityRef;
 		};
 
-		LogicNodeEntityProxy.prototype.onPropertyWrite = function(portID, value) {};
-		LogicNodeEntityProxy.prototype.onEvent = function(portID) {};
+		LogicNodeEntityProxy.prototype.onPropertyWrite = function(instDesc, portID, value) {};
+		LogicNodeEntityProxy.prototype.onEvent = function(instDesc, portID) {};
 
 		// Empty.	
 		LogicNodeEntityProxy.logicInterface = new LogicInterface("Component Proxy");
