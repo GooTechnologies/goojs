@@ -61,7 +61,6 @@ function (
 	
 	LogicComponent.prototype.process = function(tpf)
 	{
-		console.log("Process eeet " + tpf);
 		if (this.logicLayer != null)
 			this.logicLayer.process(tpf);
 	}

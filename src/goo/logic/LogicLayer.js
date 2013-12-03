@@ -346,7 +346,6 @@ define(
 
 
 		LogicLayer.resolveEntityRef = function(instDesc, entityRef) {
-			console.log('resolveEntityByRef = ' + entityRef);
 			if (entityRef == '[self]')
 				return instDesc.layer.ownerEntity
 			else

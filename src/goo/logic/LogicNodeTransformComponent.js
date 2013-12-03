@@ -29,16 +29,15 @@ define(
 		};
 
 		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
-		
-			console.log("entity ref is ", this.entityRef, this.config);
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
-				
+			var transformComponent = entity.transformComponent;
+			
 			if (portID === LogicNodeTransformComponent.inportPos) {
-				entity.transformComponent.setTranslation(value);
+				transformComponent.setTranslation(value);
 			} else if (portID === LogicNodeTransformComponent.inportRot) {
-				entity.transformComponent.setRotation(value[0], value[1], value[2]);
+				transformComponent.setRotation(value[0], value[1], value[2]);
 			} else if (portID === LogicNodeTransformComponent.inportScale) {
-				entity.transformComponent.setScale(value);
+				transformComponent.setScale(value);
 			}
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTransformComponent.outportPos, entity.transformComponent.transform.translation.clone());
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTransformComponent.outportRot, entity.transformComponent.transform.rotation.clone());

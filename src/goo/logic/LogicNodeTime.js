@@ -20,7 +20,6 @@ define(
 			this.type = "LogicNodeTime";
 			this._time = 0;
 			this._running = true;
-			console.log("Create time");
 		}
 
 		// Logic interface set-up	
@@ -39,7 +38,6 @@ define(
 		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 
 		LogicNodeTime.prototype.onConfigure = function(config) {
-			console.log("config");
 			this._time = 0;
 			this._running = true;
 		};

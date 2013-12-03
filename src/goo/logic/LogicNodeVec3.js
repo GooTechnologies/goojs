@@ -38,7 +38,6 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportX, x);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportY, y);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportZ, z);
-			console.log("Vec3 on Input Change");
 		};
 
 		LogicNodeVec3.logicInterface = new LogicInterface();
