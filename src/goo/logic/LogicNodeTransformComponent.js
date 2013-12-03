@@ -36,7 +36,6 @@ define(
 		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 		
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
-			console.log('Resolved entity to ' + entity);
 		
 			if (portID === LogicNodeTransformComponent.inportPos) {
 				entity.transformComponent.setTranslation(value);
@@ -49,7 +48,6 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTransformComponent.outportRot, entity.transformComponent.transform.rotation.clone());
 		};
 		
-
 		LogicNodeTransformComponent.logicInterface = new LogicInterface("Transform");
 		LogicNodeTransformComponent.inportPos = LogicNodeTransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
 		LogicNodeTransformComponent.inportRot = LogicNodeTransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0,0,0));
