@@ -101,7 +101,7 @@ function (
 			maxLifetime : 25.0,
 			getEmissionPoint: function (particle, particleEntity) {
 				var vec3 = particle.position;
-				options.getPosition(vec3);
+				options.getEmissionPoint(vec3);
 				//vec3.data[0] = Math.random() * (options.spread * 2) - options.spread;
 				//vec3.data[1] = options.position;
 				//vec3.data[2] = Math.random() * (options.spread * 2) - options.spread;
@@ -110,9 +110,10 @@ function (
 			getEmissionVelocity: function (particle, particleEntity) {
 				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				vec3.data[0] = (Math.random() - 0.5) * options.scale; // wind
-				vec3.data[1] = -(Math.random() + 1) * options.velocity * options.scale;
-				vec3.data[2] = (Math.random() - 0.5) * options.scale; // wind
+				options.getEmissionVelocity(vec3);
+//				vec3.data[0] = (Math.random() - 0.5) * options.scale; // wind
+//				vec3.data[1] = -(Math.random() + 1) * options.velocity * options.scale;
+//				vec3.data[2] = (Math.random() - 0.5) * options.scale; // wind
 				return vec3;
 				//return ParticleUtils.getRandomVelocityOffY(vec3, 0, Math.PI * 18 / 180, 8);
 			},

@@ -57,6 +57,11 @@ define([
 		return RSVP.all(promises).then(function(urls) {
 			if (!isEqual(urls, object._urls)) {
 				object.urls(urls);
+				var howlerLoaded = new RSVP.Promise();
+				object.on('load', function() {
+					howlerLoaded.resolve(object);
+				});
+				return howlerLoaded;
 			}
 			return object;
 		});

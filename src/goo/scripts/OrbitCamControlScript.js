@@ -271,9 +271,9 @@ function (
 					case 'transform':
 						var scale = ev.gesture.scale;
 						if (scale < 1) {
-							that.zoom(that.zoomSpeed * 1);
-						} else if (scale > 1) {
 							that.zoom(that.zoomSpeed * -1);
+						} else if (scale > 1) {
+							that.zoom(that.zoomSpeed * 1);
 						}
 						break;
 					case 'touch':

@@ -84,7 +84,7 @@ define([
 		 * return the world floor height.
 		 * @private
 		 * @param {Vector3} translation
-		 * @returns {Number} Height of graound
+		 * @returns {Number} Height of ground
 		 */
 		GroundBoundMovementScript.prototype.getTerrainHeight = function(translation) {
 			var height = this.getTerrainSystem().getTerrainHeightAt(translation.data);
@@ -139,7 +139,7 @@ define([
 		};
 
 		/**
-		 * Called when movement state is updated if requirmeents for jumping are met.
+		 * Called when movement state is updated if requirements for jumping are met.
 		 * @private
 		 * @param [number} up
 		 * @returns {*}
@@ -172,7 +172,7 @@ define([
 			} else {
 				run *=this.modBack;
 			}
-			return [strafe, this.applyJumpImpulse(up), run];
+            this.targetVelocity.set(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 		};
 
 
@@ -185,7 +185,7 @@ define([
 		 * @returns {Array}
 		 */
 		GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
-			return [pitch, yaw*this.modTurn, roll];
+            this.targetHeading.set(pitch, yaw*this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 		};
 
 		/**
@@ -208,10 +208,10 @@ define([
 		 * @param {Vector3} transform
 		 */
 		GroundBoundMovementScript.prototype.updateTargetVectors = function(transform) {
-			this.targetVelocity.set(this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run));
+			this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run);
 			transform.rotation.applyPost(this.targetVelocity);
 			this.applyGroundNormalInfluence();
-			this.targetHeading.set(this.applyTorqueModulation(this.controlState.pitch, this.controlState.yaw, this.controlState.roll));
+			this.applyTorqueModulation(this.controlState.pitch, this.controlState.yaw, this.controlState.roll);
 		};
 
 		/**

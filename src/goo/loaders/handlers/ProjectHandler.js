@@ -343,34 +343,60 @@ define([
 	};
 
 	ProjectHandler.weatherHandlers = {
-		snow: function(config, weatherState) {
-			if (config.enabled) {
-				if (weatherState.snow && weatherState.snow.enabled) {
-					console.log('snow adjust');
+		snow: {
+			update: function(config, weatherState) {
+				if (config.enabled) {
+					if (weatherState.snow && weatherState.snow.enabled) {
+						// adjust snow
+						weatherState.snow.snow.setEmissionVelocity(config.velocity);
+						weatherState.snow.snow.setReleaseRatePerSecond(config.rate);
+						weatherState.snow.snow.setEmissionHeight(config.height);
+					} else {
+						// add snow
+						weatherState.snow = weatherState.snow || {};
+						weatherState.snow.enabled = true;
+						weatherState.snow.snow = new Snow(this.world.gooRunner);
+					}
 				} else {
-					// add
-					console.log('snow add');
-					weatherState.snow = weatherState.snow || {};
-					weatherState.snow.enabled = true;
-					weatherState.snow.snow = new Snow(this.world.gooRunner);
+					if (weatherState.snow && weatherState.snow.enabled) {
+						// remove snow
+						weatherState.snow.snow.remove();
+						weatherState.snow.enabled = false;
+						delete weatherState.snow.snow;
+					} else {
+						// do nothing
+					}
 				}
-			} else {
-				if (weatherState.snow && weatherState.snow.enabled) {
-					// remove
-					console.log('snow remove');
+			},
+			remove: function(weatherState) {
+				if (weatherState.snow.snow) {
 					weatherState.snow.snow.remove();
 					weatherState.snow.enabled = false;
 					delete weatherState.snow.snow;
-				} else {
-				    // do nothing
 				}
 			}
 		}
 	};
 
 	ProjectHandler.prototype._updateWeather = function(config) {
+		// update
 		for (var key in config) {
-			ProjectHandler.weatherHandlers[key].bind(this)(config[key], this.weatherState);
+			ProjectHandler.weatherHandlers[key].update.bind(this)(config[key], this.weatherState);
+		}
+
+		// cleanup whatever magically made it into weather state and avoided the above update loop
+		/*
+		for (var key in this.weatherState) {
+			if (!config[key]) {
+				ProjectHandler.weatherHandlers[key].remove.bind(this)(this.weatherState);
+			}
+		}
+		*/
+	};
+
+	ProjectHandler.prototype._removeWeather = function() {
+	    for (var key in this.weatherState) {
+			ProjectHandler.weatherHandlers[key].remove.bind(this)(this.weatherState);
 		}
 	};
 
@@ -395,7 +421,10 @@ define([
 
 		// weather
 		if (config.weather) {
+			// the config.weather might be empty and weather might not exist in which case it doesn't get removed
 			this._updateWeather(config.weather);
+		} else {
+			this._removeWeather();
 		}
 
 		return RSVP.all(promises).then(function(results) {
