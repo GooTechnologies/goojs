@@ -24,33 +24,25 @@ define(
 		LogicNodeLightComponent.prototype = Object.create(LogicNode.prototype);
 		LogicNodeLightComponent.editorName = "LightComponent";
 
-		LogicNodeLightComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-			this.logicInstance = logicLayer.addInterfaceInstance(LogicNodeLightComponent.logicInterface, this, interfaceName, false);
-		};
-		
 		LogicNodeLightComponent.prototype.onConfigure = function(config) {
 			this.entityRef = config.config.entityRef;
 		};
 
 		// Logic interface set-up	
-		LightNodeLightComponent.logicInterface = new LogicInterface("LightComponent");
-		LightNodeLightComponent.inportIntensity = LightNodeLightComponent.logicInterface.addInputProperty("Intensity", "float");
-		LightNodeLightComponent.inportRange = LightNodeLightComponent.logicInterface.addInputProperty("Range", "float");
+		LogicNodeLightComponent.logicInterface = new LogicInterface("LightComponent");
+		LogicNodeLightComponent.inportIntensity = LogicNodeLightComponent.logicInterface.addInputProperty("Intensity", "float");
+		LogicNodeLightComponent.inportRange = LogicNodeLightComponent.logicInterface.addInputProperty("Range", "float");
 
-		LightNodeLightComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-			this.logicInstance = logicLayer.addInterfaceInstance(LightNodeLightComponent.logicInterface, this, interfaceName, false);
-		};
-
-		LightNodeLightComponent.prototype.onInputChanged = function(instDesc, propID, value) {
+		LogicNodeLightComponent.prototype.onInputChanged = function(instDesc, propID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
-			if (propID === LightNodeLightComponent.inportIntensity) {
+			if (propID === LogicNodeLightComponent.inportIntensity) {
 				entity.lightComponent.light.intensity = value;
-			} else if (propID === LightNodeLightComponent.inportRange) {
+			} else if (propID === LogicNodeLightComponent.inportRange) {
 				entity.lightComponent.light.range = value;
 			}
 		};
 
-		LogicNodeLightNodeLightComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
+		LogicNodeLightComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
 		LogicNodes.registerType("LightComponent", LogicNodeLightComponent);
 		return LogicNodeLightComponent;
 	});

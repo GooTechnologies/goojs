@@ -33,7 +33,7 @@ define(
 
 		// Configure new output.
 		LogicNode.prototype.onConfigure = function(newConfig) {
-			this.realOutport = LogicInterface.createDynamicOutput(newConfig.config.Name);
+			this.realOutport = LogicInterface.createDynamicOutput(newConfig.Name);
 		};
 
 		LogicNodes.registerType("LogicNodeOutput", LogicNodeOutput);

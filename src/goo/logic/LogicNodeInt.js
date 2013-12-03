@@ -26,8 +26,8 @@ define(
 
 		LogicNodeInt.prototype.onConfigure = function(newConfig)
 		{
-			if (newConfig.config !== undefined && newConfig.config.value !== undefined)
-				this.defValue = newConfig.config.value;
+			if (newConfig.value !== undefined)
+				this.defValue = newConfig.value;
 
 			this.value = this.defValue;				
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);

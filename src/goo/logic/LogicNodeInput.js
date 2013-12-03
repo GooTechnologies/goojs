@@ -25,7 +25,7 @@ define(
 		
 		// Configure new output.
 		LogicNodeInput.prototype.onConfigure = function(newConfig) {
-			this.dummyInport = LogicInterface.createDynamicInput(newConfig.config.Name);
+			this.dummyInport = LogicInterface.createDynamicInput(newConfig.Name);
 		};
 		
 		LogicNodeInput.prototype.onInputChanged = function(instDesc, portID, value) {

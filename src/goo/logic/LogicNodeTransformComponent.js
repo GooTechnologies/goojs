@@ -19,24 +19,20 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeTransformComponent.logicInterface;
 			this.type = "TransformComponent";
-			this.entity = null;
 		}
 
 		LogicNodeTransformComponent.prototype = Object.create(LogicNode.prototype);
 		LogicNodeTransformComponent.editorName = "TransformComponent";
 
-		LogicNodeTransformComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-			this.logicInstance = logicLayer.addInterfaceInstance(LogicNodeTransformComponent.logicInterface, this, interfaceName, false);
-		};
-		
 		LogicNodeTransformComponent.prototype.onConfigure = function(config) {
-			this.entityRef = config.config.entityRef;
+			this.entityRef = config.entityRef;
 		};
 
 		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 		
+			console.log("entity ref is ", this.entityRef, this.config);
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
-		
+				
 			if (portID === LogicNodeTransformComponent.inportPos) {
 				entity.transformComponent.setTranslation(value);
 			} else if (portID === LogicNodeTransformComponent.inportRot) {

@@ -24,9 +24,9 @@ define(
 
 		LogicNodeFloat.prototype.onConfigure = function(newConfig)
 		{
-			if (newConfig.config !== undefined)
+			if (newConfig.value !== undefined)
 			{
-				this.value = newConfig.config.value;
+				this.value = newConfig.value;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 			}
 		}		

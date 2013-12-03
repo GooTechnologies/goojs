@@ -48,7 +48,9 @@ function (
 	* Called when proxy entities want to resolve their entities. Called from LogicLayer.
 	*/
 	LogicSystem.prototype.resolveEntityRef = function(entityRef) {
-		return this._entities[entityRef];
+		var e = this._entities[entityRef];
+		if (e !== undefined)
+			return e.entity;
 	}
 
 	LogicSystem.prototype.getLayerByEntity = function(entityName) {

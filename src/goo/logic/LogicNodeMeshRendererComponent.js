@@ -19,51 +19,42 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMeshRendererComponent.logicInterface;
 			this.type = "MeshRendererComponent";
-			this.entity = null;
 		}
 
 		LogicNodeMeshRendererComponent.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMeshRendererComponent.editorName = "MeshRendererComponent";
 
-		LogicNodeMeshRendererComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-			this.logicInstance = logicLayer.addInterfaceInstance(LogicNodeMeshRendererComponent.logicInterface, this, interfaceName, false);
-		};
-		
 		LogicNodeMeshRendererComponent.prototype.onConfigure = function(config) {
-			this.entityRef = config.config.entityRef;
+			this.entityRef = config.entityRef;
 		};
 
-		MeshRendererComponent.logicInterface = new LogicInterface("Material");
-		MeshRendererComponent.inportShadows = MeshRendererComponent.logicInterface.addInputEvent("toggle-shadows");
-		MeshRendererComponent.inportHidden = MeshRendererComponent.logicInterface.addInputEvent("toggle-hidden");
-		MeshRendererComponent.inportAmbient = MeshRendererComponent.logicInterface.addInputProperty("ambient", "Vector3", new Vector3(0.5,0.0,0.0));
-
-		MeshRendererComponent.prototype.insertIntoLogicLayer = function(logicLayer, interfaceName) {
-			this.logicInstance = logicLayer.addInterfaceInstance(MeshRendererComponent.logicInterface, this, interfaceName, false);
-		};
-
-		MeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeMeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 			
-			if (portID === MeshRendererComponent.inportAmbient && comp.materials.length > 0) {
+			if (portID === LogicNodeMeshRendererComponent.inportAmbient && comp.materials.length > 0) {
 				comp.meshRendererComponent.materials[0].uniforms.materialAmbient[0] = value[0];
 				comp.materials[0].uniforms.materialAmbient[1] = value[1];
 				comp.materials[0].uniforms.materialAmbient[2] = value[2];
 			}
 		};
 
-		MeshRendererComponent.prototype.onEvent = function(event) {
+		LogicNodeMeshRendererComponent.prototype.onEvent = function(event) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 
-			if (event === MeshRendererComponent.inportShadows) {
+			if (event === LogicNodeMeshRendererComponent.inportShadows) {
 				comp.castShadows = !comp.castShadows;
-			} else if (event === MeshRendererComponent.inportHidden) {
+			} else if (event === LogicNodeMeshRendererComponent.inportHidden) {
 				comp.hidden = !comp.hidden;
 			}
 		};
 
+		LogicNodeMeshRendererComponent.logicInterface = new LogicInterface("Material");
+		LogicNodeMeshRendererComponent.inportShadows = LogicNodeMeshRendererComponent.logicInterface.addInputEvent("toggle-shadows");
+		LogicNodeMeshRendererComponent.inportHidden = LogicNodeMeshRendererComponent.logicInterface.addInputEvent("toggle-hidden");
+		LogicNodeMeshRendererComponent.inportAmbient = LogicNodeMeshRendererComponent.logicInterface.addInputProperty("ambient", "Vector3", new Vector3(0.5,0.0,0.0));
+		LogicNodeMeshRendererComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
 		LogicNodes.registerType("MeshRendererComponent", LogicNodeMeshRendererComponent);
 
 		return LogicNodeMeshRendererComponent;

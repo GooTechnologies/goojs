@@ -11,13 +11,12 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that lets you access the logic layer of a different entity.
 		 */
 		function LogicNodeEntityProxy() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeEntityProxy.logicInterface;
 			this.type = "LogicNodeEntityProxy";
-			this._time = 0;
 		}
 
 		LogicNodeEntityProxy.prototype = Object.create(LogicNode.prototype);

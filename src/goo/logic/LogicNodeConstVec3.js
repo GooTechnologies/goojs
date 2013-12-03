@@ -23,8 +23,8 @@ define(
 		LogicNodeConstVec3.editorName = "ConstVec3";
 
 		LogicNodeConstVec3.prototype.onConfigure = function(newConfig) {
-			if (newConfig.config !== undefined) {
-				this.value = newConfig.config.value;
+			if (newConfig.value !== undefined) {
+				this.value = newConfig.value;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeConstVec3.outportVec, new Vector3(this.x, this.y, this.z));
 			}
 		};

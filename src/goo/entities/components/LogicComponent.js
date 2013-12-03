@@ -53,7 +53,7 @@ function (
 			var obj = new fn();
 			
 			obj.configure(ln);
-			obj.addToLogicLayer(this.logicLayer);
+			obj.addToLogicLayer(this.logicLayer, ln.id);
 			
 			this.nodes[k] = obj;
 		}
@@ -61,18 +61,11 @@ function (
 	
 	LogicComponent.prototype.process = function(tpf)
 	{
+		console.log("Process eeet " + tpf);
 		if (this.logicLayer != null)
 			this.logicLayer.process(tpf);
 	}
 	
-	// Output ports from this component	
-	LogicComponent.logicInterface = new LogicInterface();
-
-	// Adding
-	LogicComponent.prototype.insertIntoLogicLayer = function(logicLayer, name) {
-		this.logicInstance = logicLayer.addInterfaceInstance(LogicComponent.logicInterface, this, name, true);
-	}
-
 	return LogicComponent;
 
 });

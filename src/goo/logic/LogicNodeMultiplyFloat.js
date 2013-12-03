@@ -24,9 +24,8 @@ define(
 		LogicNodeMultiplyFloat.editorName = "MultiplyFloat";
 
 		LogicNodeMultiplyFloat.prototype.onConfigure = function(newConfig) {
-			if (newConfig.config !== undefined) {
-				this.value = newConfig.config.value;
-				// LogicLayer.writeValue(this.logicInstance, LogicNodeMultiplyFloat.outportProduct, this.value);
+			if (newConfig.value !== undefined) {
+				this.value = newConfig.value;
 			}
 		};
 

@@ -35,27 +35,31 @@ define(
 		 *
 		 * @param {world} World to add it to
 		 */
-		LogicNode.prototype.addToLogicLayer = function(logicLayer) {
+		LogicNode.prototype.addToLogicLayer = function(logicLayer, withId) {
 			// Cleanup of previous; this will also remove connections so we always need to (re-) add them.
 			if (this.logicInstance !== null) {
 				this.logicInstance.remove();
 			}
 			
-			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, this.config.id, this.wantsProcessCall);
+			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, withId, this.wantsProcessCall);
 			
-			if (this.config.connections !== undefined) {
-				// need to add connections every time since adding to world logic erases
-				// previously stored connections (with 'obj' as source)
-				for (var i = 0; i < this.config.connections.length; i++) {
-					var conn = this.config.connections[i];
+			if (this.connections !== undefined) {
+				// data comes from configure call.
+				for (var i = 0; i < this.connections.length; i++) {
+					var conn = this.connections[i];
 					logicLayer.addConnectionByName(this.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
 				}
+				
+				// this prevents duplicate adding.
+				delete this.connections;
 			}
 		};
 
-		LogicNode.prototype.configure = function(newConfig) {
-			this.onConfigure(newConfig);
-			this.config = newConfig;
+		LogicNode.prototype.configure = function(nodeData) {
+			var c = (nodeData.config !== undefined) ? nodeData.config : {};
+			this.onConfigure(c);
+			this.config = c;
+			this.connections = nodeData.connections;
 		};
 
 		/**
