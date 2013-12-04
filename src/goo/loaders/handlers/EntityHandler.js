@@ -46,13 +46,6 @@ define([
 			object = this._create(ref);
 		}
 
-		// hide/unhide entities and their descendants
-		if (!!config.hidden) {
-			EntityUtils.hide(object);
-		} else {
-			EntityUtils.show(object);
-		}
-
 		var promises = [];
 		for (var componentName in config.components) {
 			var componentConfig = config.components[componentName];
@@ -88,6 +81,14 @@ define([
 				console.warn("No componentHandler for " + componentName);
 			}
 		}
+
+		// hide/unhide entities and their descendants
+		if (!!config.hidden) {
+			EntityUtils.hide(object);
+		} else {
+			EntityUtils.show(object);
+		}
+
 		if (promises.length) {
 			return RSVP.all(promises).then(function(/*components*/) {
 				return object;
