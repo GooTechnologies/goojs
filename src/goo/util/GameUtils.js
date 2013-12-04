@@ -258,7 +258,7 @@ function () {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 
-        if(!global.MouseEvent) return;
+        if(!global.MouseEvent) { return; }
 
 		var mouseEventPrototype = global.MouseEvent.prototype;
 

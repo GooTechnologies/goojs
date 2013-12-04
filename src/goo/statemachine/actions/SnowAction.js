@@ -4,8 +4,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils',
-	'goo/entities/EntityUtils'
+	'goo/util/ParticleSystemUtils'
 ],
 /** @lends */
 function(
@@ -14,8 +13,7 @@ function(
 	ShaderLib,
 	TextureCreator,
 	ParticleLib,
-	ParticleSystemUtils,
-	EntityUtils
+	ParticleSystemUtils
 ) {
 	"use strict";
 
@@ -39,7 +37,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
-		if (!SmokeAction.material) {
+		if (!SnowAction.material) {
 			SnowAction.material = Material.createMaterial(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
@@ -52,10 +50,10 @@ function(
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
-			ParticleLib.getSmoke(),
-			SmokeAction.material
+			ParticleLib.getSmoke(), // change to snow
+			SnowAction.material
 		);
-		particleSystemEntity.name = '_ParticleSystemSmoke';
+		particleSystemEntity.name = '_ParticleSystemSnow';
 		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
 
 		particleSystemEntity.addToWorld();
