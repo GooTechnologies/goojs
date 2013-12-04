@@ -47,6 +47,7 @@ define([
 		}
 
 		var promises = [];
+		// Adding components to the object
 		for (var componentName in config.components) {
 			var componentConfig = config.components[componentName];
 			var handlerClass = ComponentHandler.getHandler(componentName);
@@ -81,6 +82,9 @@ define([
 				console.warn("No componentHandler for " + componentName);
 			}
 		}
+
+		// REVIEW : The move of this block to here is because the transformcomponent has all the children connections?
+		// And those ones are only created after doing all those promise stuff above? Plus that the renderComponent has to be there also I guess.
 
 		// hide/unhide entities and their descendants
 		if (!!config.hidden) {
