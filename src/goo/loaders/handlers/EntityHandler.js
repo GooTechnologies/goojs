@@ -83,18 +83,13 @@ define([
 			}
 		}
 
-		// REVIEW : The move of this block to here is because the transformcomponent has all the children connections?
-		// And those ones are only created after doing all those promise stuff above? Plus that the renderComponent has to be there also I guess.
-
-		// hide/unhide entities and their descendants
-		if (!!config.hidden) {
-			EntityUtils.hide(object);
-		} else {
-			EntityUtils.show(object);
-		}
-
 		if (promises.length) {
 			return RSVP.all(promises).then(function(/*components*/) {
+				if (!!config.hidden) {
+					EntityUtils.hide(object);
+				} else {
+					EntityUtils.show(object);
+				}
 				return object;
 			});
 		} else {
