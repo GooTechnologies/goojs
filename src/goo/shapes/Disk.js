@@ -4,10 +4,10 @@ define(['goo/renderer/MeshData'],
 	"use strict";
 
 	/**
-	 * @class A disk
+	 * @class A disk shape
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk
-	 * @param {number} [pointiness=0] By default a disk is flat, however, its center can be raised above the disk's outer edge
+	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.
 	 */
 	function Disk(nSegments, radius, pointiness) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
@@ -42,6 +42,7 @@ define(['goo/renderer/MeshData'],
 
 		var slope = Math.atan2(this.radius, this.pointiness);
 
+		// REVIEW: ak is short for..?  - Gifv descriptive var names plz!
 		var ak = Math.PI * 2 / this.nSegments;
 		for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
 			verts.push(
