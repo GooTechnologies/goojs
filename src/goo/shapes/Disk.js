@@ -42,22 +42,21 @@ define(['goo/renderer/MeshData'],
 
 		var slope = Math.atan2(this.radius, this.pointiness);
 
-		// REVIEW: ak is short for..?  - Gifv descriptive var names plz!
-		var ak = Math.PI * 2 / this.nSegments;
-		for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
+		var angleIncrement = Math.PI * 2 / this.nSegments;
+		for (var i = 0, angle = 0; i < this.nSegments; i++, angle += angleIncrement) {
 			verts.push(
-				Math.cos(k) * this.radius,
-				Math.sin(k) * this.radius,
+				Math.cos(angle) * this.radius,
+				Math.sin(angle) * this.radius,
 				0);
 
 			norms.push(
-				Math.cos(k) * Math.cos(slope),
-				Math.sin(k) * Math.cos(slope),
+				Math.cos(angle) * Math.cos(slope),
+				Math.sin(angle) * Math.cos(slope),
 				Math.sin(slope));
 
 			tex.push(
-				Math.cos(k) * 0.5 + 0.5,
-				Math.sin(k) * 0.5 + 0.5);
+				Math.cos(angle) * 0.5 + 0.5,
+				Math.sin(angle) * 0.5 + 0.5);
 
 			indices.push(this.nSegments, i, (i + 1) % this.nSegments);
 		}
