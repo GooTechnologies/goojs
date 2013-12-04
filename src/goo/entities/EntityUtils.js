@@ -10,7 +10,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/MeshData',
 	'goo/math/Transform',
-	'goo/entities/components/CSSTransformComponent'
+	'goo/entities/components/CSSTransformComponent',
+	'goo/entities/components/HTMLComponent'
 ],
 	/** @lends */
 	function (
@@ -25,7 +26,8 @@ define([
 		Material,
 		MeshData,
 		Transform,
-		CSSTransformComponent
+		CSSTransformComponent,
+		HTMLComponent
 	) {
 		"use strict";
 
@@ -228,6 +230,12 @@ define([
 
 			entity.setComponent(new CSSTransformComponent(domElement));
 
+			return entity;
+		};
+
+		EntityUtils.createHTMLEntity = function (world, domElement) {
+			var entity = world.createEntity();
+			entity.setComponent(new HTMLComponent(domElement));
 			return entity;
 		};
 
