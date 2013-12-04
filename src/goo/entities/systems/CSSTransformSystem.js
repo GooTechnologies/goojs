@@ -76,7 +76,7 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 			scale = [scale, -scale, scale].join(',');
 
 			if(component.faceCamera) {
-				entity.transformComponent.worldTransform.matrix.getTranslation(this.tmpVector);
+				entkity.transformComponent.worldTransform.matrix.getTranslation(this.tmpVector);
 				this.tmpMatrix.copy(camera.getViewInverseMatrix());
 				this.tmpMatrix.setTranslation(this.tmpVector);
 			} else {

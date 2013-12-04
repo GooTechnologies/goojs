@@ -51,7 +51,7 @@ require([
 		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
-	function debuggerDemo(goo) {
+	function htmlDemo(goo) {
 		createShapes(goo);
 
 		// Add camera
@@ -61,15 +61,24 @@ require([
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
-
-		new Debugger(true, true).inject(goo);
 	}
 
 	function init() {
+
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
-		debuggerDemo(goo);
+		
+		var el = document.getElementById('html1');
+		
+		var e = EntityUtils.createHTMLEntity(goo.world, el);
+		e.transformComponent.setTranslation(0, 0, -30);
+		
+		e.addToWorld();
+		
+		console.log(e);
+		
+		htmlDemo(goo);
 	}
 
 	init();

@@ -69,7 +69,6 @@ function (
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer));
-		this.world.setSystem(new HTMLSystem(this.renderer));
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
@@ -80,6 +79,7 @@ function (
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
+		this.world.setSystem(new HTMLSystem(this.renderer));
 
 		this.doProcess = true;
 		this.doRender = true;

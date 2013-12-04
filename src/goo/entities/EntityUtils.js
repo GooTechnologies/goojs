@@ -26,7 +26,8 @@ define([
 		Material,
 		MeshData,
 		Transform,
-		CSSTransformComponent
+		CSSTransformComponent,
+		HTMLComponent
 	) {
 		"use strict";
 

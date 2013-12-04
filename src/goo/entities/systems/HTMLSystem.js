@@ -15,8 +15,6 @@ define(
 		System.call(this, "HTMLSystem", ["TransformComponent", "HTMLComponent"]);
 		this.renderer = renderer;
 		
-		console.log("Creating HTML renderer");
-
 		/*
 		if(document.querySelector)
 		{
@@ -24,22 +22,43 @@ define(
 			    this.containerDom = document.querySelector("#cam1");
 			    this.containerDom2 = document.querySelector("#cam2");
 		}
-
-		this.tmpMatrix = new Matrix4x4();
-		this.tmpMatrix2 = new Matrix4x4();
-		this.tmpVector = new Vector3();
 		*/
+
+		this.tmpVector = new Vector3();
 	}
 
 	HTMLSystem.prototype = Object.create(System.prototype);
 
+	// Copied from CSSTransformComponent
+	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
+	var setStyle = function (element, property, style) {
+		for (var j = 0; j < prefixes.length; j++) {
+			element.style[prefixes[j] + property] = style;
+		}
+	};
 
 	HTMLSystem.prototype.process = function (entities) {
 		if (entities.length === 0) {
 			return;
 		}
+		
+		
+		var camera = Renderer.mainCamera;
+		var screenWidth = this.renderer.domElement.width;
+		var screenHeight = this.renderer.domElement.height;
+		
+		
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			var component = entity.getComponent('HTMLComponent');
 
-		console.log("Updating HTMLSystem");
+			// compute world position.
+			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
+			
+			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + this.tmpVector.x + 'px, ' + this.tmpVector.y + 'px)');
+			
+			// project
+		}
 	};
 
 	return HTMLSystem;
