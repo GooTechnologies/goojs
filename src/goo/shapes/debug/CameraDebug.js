@@ -20,65 +20,72 @@ define([
 	}
 
 	CameraDebug.prototype.getMesh = function(camera, options) {
-		var farNear = camera.far / camera.near;
-		return options.full ? [this._camera, CameraDebug.buildFrustum(farNear)] : [this._camera];
+		return options.full ? [this._camera, CameraDebug.buildFrustum(camera)] : [this._camera];
 	};
 
-	CameraDebug.buildFrustum = function(farNear) {
-		var angle = Math.PI / 4;
-		var far = 1;
-		var near = far / farNear;
-		var aspect = 1;
+	CameraDebug.buildFrustum = function(camera) {
+		var near = camera.near;
+		var far = camera.far;
+		var aspect = camera.aspect;
+		var tanFar, tanNear;
 
-		var tan = Math.tan(angle);
+		if (camera.projectionMode === 0) {
+			var tan = Math.tan(camera.fov/2 * Math.PI/180);
+			tanFar = tan * far;
+			tanNear = tan * near;
+		} else {
+			var size = camera.size || 100;
+			tanFar = size;
+			tanNear = size;
+		}
 
 		var f0, f1, f2, f3;
 		f0 = {
-			x: -tan * far * aspect,
-			y:  tan * far,
+			x: -tanFar * aspect,
+			y:  tanFar,
 			z: -far
 		};
 
 		f1 = {
-			x: -tan * far * aspect,
-			y: -tan * far,
+			x: -tanFar * aspect,
+			y: -tanFar,
 			z: -far
 		};
 
 		f2 = {
-			x:  tan * far * aspect,
-			y: -tan * far,
+			x:  tanFar * aspect,
+			y: -tanFar,
 			z: -far
 		};
 
 		f3 = {
-			x:  tan * far * aspect,
-			y:  tan * far,
+			x:  tanFar * aspect,
+			y:  tanFar,
 			z: -far
 		};
 
 		var n0, n1, n2, n3;
 		n0 = {
-			x: -tan * near * aspect,
-			y:  tan * near,
+			x: -tanNear * aspect,
+			y:  tanNear,
 			z: -near
 		};
 
 		n1 = {
-			x: -tan * near * aspect,
-			y: -tan * near,
+			x: -tanNear * aspect,
+			y: -tanNear,
 			z: -near
 		};
 
 		n2 = {
-			x:  tan * near * aspect,
-			y: -tan * near,
+			x:  tanNear * aspect,
+			y: -tanNear,
 			z: -near
 		};
 
 		n3 = {
-			x:  tan * near * aspect,
-			y:  tan * near,
+			x:  tanNear * aspect,
+			y:  tanNear,
 			z: -near
 		};
 
