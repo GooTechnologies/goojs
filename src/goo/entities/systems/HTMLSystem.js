@@ -55,7 +55,10 @@ define(
 			// compute world position.
 			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
 			
-			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + this.tmpVector.x + 'px, ' + this.tmpVector.y + 'px)');
+			var fx = Math.floor(this.tmpVector.x);
+			var fy = Math.floor(this.tmpVector.y);
+			
+			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
 			
 			// project
 		}

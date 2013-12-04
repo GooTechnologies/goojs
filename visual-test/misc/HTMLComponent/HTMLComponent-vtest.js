@@ -69,14 +69,16 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 		
-		var el = document.getElementById('html1');
+		var el1 = document.getElementById('html1');
+		var el2 = document.getElementById('html2');
 		
-		var e = EntityUtils.createHTMLEntity(goo.world, el);
-		e.transformComponent.setTranslation(0, 0, -30);
+		var ent1 = EntityUtils.createHTMLEntity(goo.world, el1);
+		var ent2 = EntityUtils.createHTMLEntity(goo.world, el2);
+		ent1.transformComponent.setTranslation(0, 0, -30);
+		ent2.transformComponent.setTranslation(-10, 0, -30);
 		
-		e.addToWorld();
-		
-		console.log(e);
+		ent1.addToWorld();
+		ent2.addToWorld();
 		
 		htmlDemo(goo);
 	}
