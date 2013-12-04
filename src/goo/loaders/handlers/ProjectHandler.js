@@ -231,11 +231,13 @@ define([
 			});
 		}
 	};
+	
 
 	ProjectHandler.prototype._updateEntities = function(config) {
 		var that = this;
 
 		var promises = [];
+		
 		if (config.entityRefs && Array.isArray(config.entityRefs) && config.entityRefs.length > 0) {
 			var handleEntityRef = function(entityRef) {
 				return promises.push(that.getConfig(entityRef).then(function(entityConfig) {
@@ -403,6 +405,8 @@ define([
 		var that = this;
 		this._prepare(config);
 		var promises = [];
+
+		console.log("updated!");
 
 		// skybox
 		promises.push(this._updateSkybox(config.skybox, options));

@@ -1,6 +1,13 @@
-define(['goo/entities/components/Component'],
-	/** @lends */
-	function (Component) {
+define([
+	'goo/entities/components/Component',
+	'goo/math/Vector3',
+],
+/** @lends */
+function (
+	Component,
+	Vector3,
+	LogicInterface
+) {
 	"use strict";
 
 	/**
@@ -54,6 +61,7 @@ define(['goo/entities/components/Component'],
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
+
 
 	/**
 	 * Update world bounding

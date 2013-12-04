@@ -9,8 +9,9 @@ define(['goo/entities/components/Component'],
 	 */
 	function LightComponent(light) {
 		this.type = 'LightComponent';
-
 		this.light = light;
+		this.logicInstance = null;
+		Component.call(this);
 	}
 
 	LightComponent.prototype = Object.create(Component.prototype);

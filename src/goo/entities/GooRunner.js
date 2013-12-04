@@ -14,6 +14,7 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/entities/systems/MovementSystem',
+	'goo/entities/systems/LogicSystem',
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -34,6 +35,7 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	MovementSystem,
+	LogicSystem,
 	GameUtils,
 
 	Logo
@@ -64,6 +66,7 @@ function (
 		this.renderer = new Renderer(parameters);
 
 		this.world.setSystem(new ScriptSystem(this.renderer));
+		this.world.setSystem(new LogicSystem());
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer));
