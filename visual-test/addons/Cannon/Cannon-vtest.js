@@ -46,7 +46,7 @@ require([
 
 		var cannonSystem = new CannonSystem();
 		goo.world.setSystem(cannonSystem);
-		
+
 		function addPrimitives() {
 			for (var i=0;i<20;i++) {
 				var x = Math.random() * 16 - 8;
@@ -65,11 +65,11 @@ require([
 				}
 			}
 		}
-		
+
 		addPrimitives();
-		
+
 		document.addEventListener('keypress', addPrimitives, false);
-		
+
 		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {
 		// 	mass: 1
 		// });
