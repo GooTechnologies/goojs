@@ -10,6 +10,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
+	'goo/entities/components/ScriptComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/HTMLComponent',
 	'goo/renderer/Texture',
@@ -22,6 +23,7 @@ require([
 	ShaderLib,
 	Camera,
 	ShapeCreator,
+	ScriptComponent,
 	CameraComponent,
 	HTMLComponent,
 	Texture,
@@ -35,7 +37,19 @@ require([
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
+		return entity;
 	}
+
+
+	var moveScript = new ScriptComponent([{run: function(ent, tpf) { 
+		if (ent.atime == undefined)
+			ent.atime = tpf;
+		else
+			ent.atime += tpf;
+			
+		ent.transformComponent.setTranslation(Math.sin(ent.atime)*10, Math.cos(ent.atime)*10, -300);
+	} }]);
+	
 
 	function createShapes(goo) {
 		var material = Material.createMaterial(ShaderLib.textured);
@@ -48,7 +62,7 @@ require([
 		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), material, -10, 0, -30);
 		createMesh(goo, ShapeCreator.createBox(3, 3, 3), material, -10, 10, -30);
 		createMesh(goo, ShapeCreator.createQuad(3, 3), material, 0, -7, -20);
-		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30);
+		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30).setComponent(moveScript);
 	}
 
 	function htmlDemo(goo) {
@@ -79,6 +93,8 @@ require([
 		
 		ent1.addToWorld();
 		ent2.addToWorld();
+		
+		ent1.setComponent(moveScript);
 		
 		htmlDemo(goo);
 	}
