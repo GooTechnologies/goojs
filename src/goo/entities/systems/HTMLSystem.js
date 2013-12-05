@@ -11,19 +11,8 @@ define(
 	"use strict";
 
 	function HTMLSystem (renderer) {
-	
 		System.call(this, "HTMLSystem", ["TransformComponent", "HTMLComponent"]);
 		this.renderer = renderer;
-		
-		/*
-		if(document.querySelector)
-		{
-			    this.viewDom = document.querySelector("#view");
-			    this.containerDom = document.querySelector("#cam1");
-			    this.containerDom2 = document.querySelector("#cam2");
-		}
-		*/
-
 		this.tmpVector = new Vector3();
 	}
 
@@ -42,11 +31,9 @@ define(
 			return;
 		}
 		
-		
 		var camera = Renderer.mainCamera;
 		var screenWidth = this.renderer.domElement.width;
 		var screenHeight = this.renderer.domElement.height;
-		
 		
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
@@ -56,7 +43,7 @@ define(
 			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
 			
 			var fx = Math.floor(this.tmpVector.x);
-			var fy = Math.floor(this.tmpVector.y);
+			var fy = Math.floor(screenHeight - this.tmpVector.y);
 			
 			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
 			
