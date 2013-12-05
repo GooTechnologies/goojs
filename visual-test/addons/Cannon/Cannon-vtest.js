@@ -11,8 +11,8 @@ require([
 	'goo/entities/World',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
-	'goo/addons/cannon/systems/CannonjsSystem',
-	'goo/addons/cannon/components/CannonjsComponent',
+	'goo/addons/cannon/CannonSystem',
+	'goo/addons/cannon/CannonComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent'
 ], function (
@@ -28,8 +28,8 @@ require([
 	World,
 	OrbitCamControlScript,
 	Vector3,
-	CannonjsSystem,
-	CannonjsComponent,
+	CannonSystem,
+	CannonComponent,
 	PointLight,
 	LightComponent
 ) {
@@ -44,25 +44,32 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		var cannonSystem = new CannonjsSystem();
+		var cannonSystem = new CannonSystem();
 		goo.world.setSystem(cannonSystem);
-
-		for (var i=0;i<20;i++) {
-			var x = Math.random() * 16 - 8;
-			var y = Math.random() * 16 + 8;
-			var z = Math.random() * 16 - 8;
-			if (Math.random() < 0.5) {
-				var boxEntity = createEntity(goo, ShapeCreator.createBox(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {
-					mass: 1
-				});
-				boxEntity.transformComponent.transform.translation.set(x, y, z);
-			} else {
-				var sphereEntity = createEntity(goo, ShapeCreator.createSphere(10, 10, 1+Math.random()), {
-					mass: 1
-				});
-				sphereEntity.transformComponent.transform.translation.set(x, y, z);
+		
+		function addPrimitives() {
+			for (var i=0;i<20;i++) {
+				var x = Math.random() * 16 - 8;
+				var y = Math.random() * 16 + 8;
+				var z = Math.random() * 16 - 8;
+				if (Math.random() < 0.5) {
+					var boxEntity = createEntity(goo, ShapeCreator.createBox(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {
+						mass: 1
+					});
+					boxEntity.transformComponent.transform.translation.set(x, y, z);
+				} else {
+					var sphereEntity = createEntity(goo, ShapeCreator.createSphere(10, 10, 1+Math.random()), {
+						mass: 1
+					});
+					sphereEntity.transformComponent.transform.translation.set(x, y, z);
+				}
 			}
 		}
+		
+		addPrimitives();
+		
+		document.addEventListener('keypress', addPrimitives, false);
+		
 		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {
 		// 	mass: 1
 		// });
@@ -120,12 +127,8 @@ require([
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		entity.meshRendererComponent.materials.push(material);
-
-		var cannonComponent = new CannonjsComponent(settings);
-		entity.setComponent(cannonComponent);
-
+		entity.setComponent(new CannonComponent(settings));
 		entity.addToWorld();
-
 		return entity;
 	}
 
