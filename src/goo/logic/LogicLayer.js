@@ -12,7 +12,7 @@ define(
 		/**
 		 * @class Handles the logic layer of the world.
 		 */
-		function LogicLayer(ownerEntity) {
+		function LogicLayer(world, ownerEntity) {
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
@@ -20,8 +20,9 @@ define(
 			this._nextFrameNotifications = [];
 			this._outputForwarding = {};
 
+			this.world = world;
 			this.ownerEntity = ownerEntity;
-			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
+			this.logicSystem = world.getSystem("LogicSystem");
 		}
 
 		LogicLayer.prototype.clear = function() {
@@ -374,7 +375,11 @@ define(
 			
 			this._updateRound++;
 		};
-
+		
+		LogicLayer.getWorld = function(instDesc) {
+			return instDesc.layer.world;
+		}
+		
 		/**
 		* For all logic objects (i.e. those who added logicInstances and passed themselves along)
 		*/		
@@ -385,7 +390,17 @@ define(
 					f(o);
 			}
 		};
-
+		
+		/**
+		* Calls cleanup on all logic objects.
+		*/
+		LogicLayer.prototype.cleanup = function() {
+			this.forEachLogicObject(function(obj) {
+				if (obj.cleanup !== undefined)
+					obj.cleanup();
+			});
+		}
+		
 		/**
 		 * For all objects that follow the convention of having an logicInstance property for their connections
 		 * (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance

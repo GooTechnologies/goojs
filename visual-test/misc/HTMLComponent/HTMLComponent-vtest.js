@@ -47,7 +47,7 @@ require([
 		else
 			ent.atime += tpf;
 			
-		ent.transformComponent.setTranslation(Math.sin(ent.atime)*10, Math.cos(ent.atime)*10, -300);
+		ent.transformComponent.setTranslation(Math.sin(ent.atime)*10, Math.cos(ent.atime)*10, -40);
 	} }]);
 	
 

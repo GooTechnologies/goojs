@@ -41,8 +41,11 @@ function (
 			if (this.nodes[x].onSystemStopped !== undefined)
 				this.nodes[x].onSystemStopped(false);
 		}
+		
+		if (this.logicLayer != null)
+			this.logicLayer.cleanup();
 
-		this.logicLayer = new LogicLayer(this._entity);;
+		this.logicLayer = new LogicLayer(this._entity._world, this._entity);
 		
 		this.nodes = {};
 		
@@ -50,7 +53,7 @@ function (
 		{
 			var ln = conf.logicNodes[k];
 			var fn = LogicNodes.getClass(ln.type);
-			var obj = new fn();
+			var obj = new fn(ln, this._entity._world);
 			
 			obj.configure(ln);
 			obj.addToLogicLayer(this.logicLayer, ln.id);
