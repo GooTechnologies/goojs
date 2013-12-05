@@ -48,7 +48,7 @@ require([
 		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), material, -10, 0, -30);
 		createMesh(goo, ShapeCreator.createBox(3, 3, 3), material, -10, 10, -30);
 		createMesh(goo, ShapeCreator.createQuad(3, 3), material, 0, -7, -20);
-		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30);
+		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 10, -30);
 	}
 
 	function htmlDemo(goo) {
@@ -74,7 +74,7 @@ require([
 		
 		var ent1 = EntityUtils.createHTMLEntity(goo.world, el1);
 		var ent2 = EntityUtils.createHTMLEntity(goo.world, el2);
-		ent1.transformComponent.setTranslation(0, 0, -30);
+		ent1.transformComponent.setTranslation(0, 10, -30);
 		ent2.transformComponent.setTranslation(-10, 0, -30);
 		
 		ent1.addToWorld();
