@@ -28,7 +28,8 @@ function (
 			}
 		};
 
-		//window.goor = engine;
+		// actions triggered by this system typically need to run after all other systems do their job
+		this.priority = 1000;
 	}
 
 	FSMSystem.prototype = Object.create(System.prototype);

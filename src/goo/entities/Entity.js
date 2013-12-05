@@ -98,13 +98,13 @@ function () {
 		var component = this[getTypeAttributeName(type)];
 		var index = this._components.indexOf(component);
 		if (index !== -1) {
-			var component = this._components[index];
+			var component = this._components[index]; // overriding previous variable
 			if (component.type === 'TransformComponent') {
 				component.entity = undefined;
 			}
 			this._components.splice(index, 1);
 		}
-		delete this[getTypeAttributeName(type)];
+		delete this[getTypeAttributeName(type)]; // could cache this
 
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'removedComponent');
