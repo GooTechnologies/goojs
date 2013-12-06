@@ -30,13 +30,20 @@ define(
 		LogicNodeHTML.prototype.onConfigure = function(newConfig)
 		{
 			this.cleanup();
-			
 			this.domElement = document.createElement('div');
 			this.domElement.id = "LogicNodeHTML_" + (LogicNodeHTML.idCounter++);
 			this.domElement.style.position = 'absolute';
+			this.domElement.style.left = '0px';
+			this.domElement.style.top = '0px';
 			this.domElement.style.zIndex = 5000;
 			this.domElement.innerHTML = newConfig.html;
 			this.elementParent.appendChild(this.domElement);
+		}
+		
+		LogicNodeHTML.prototype.onConnected = function(instDesc) {
+			// If domElement hasn't been created here, something is really wrong, so we should have the id and be
+			// ready to output it.
+			LogicLayer.writeValue(instDesc, LogicNodeHTML.logicInterface.outputElementId, this.domElement.id);
 		}
 		
 		LogicNodeHTML.prototype.cleanup = function() {
@@ -55,6 +62,8 @@ define(
 
 		LogicNodeHTML.logicInterface = new LogicInterface();
 		LogicNodeHTML.logicInterface.addConfigEntry({name: 'html', type: 'text', label: 'Content'});
+		LogicNodeHTML.logicInterface.outputElementId = LogicNodeHTML.logicInterface.addOutputProperty("elementId", "string", 0);
+
 		LogicNodes.registerType("LogicNodeHTML", LogicNodeHTML);
 
 		return LogicNodeHTML;

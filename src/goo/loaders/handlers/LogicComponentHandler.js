@@ -26,7 +26,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/logic/LogicNodeInt',
 	'goo/logic/LogicNodeInput',
 	'goo/logic/LogicNodeOutput',
-	'goo/logic/LogicNodeHTML'
+	'goo/logic/LogicNodeHTML',
+	'goo/logic/LogicNodeHTMLComponent'
 
 ], function(
 	ComponentHandler,

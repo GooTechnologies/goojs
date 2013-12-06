@@ -41,12 +41,13 @@ define(
 
 			// compute world position.
 			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
-			
+/*			if (this.tmpVector.z > 0)
+				continue;
+*/
 			var fx = Math.floor(this.tmpVector.x);
 			var fy = Math.floor(screenHeight - this.tmpVector.y);
 			
 			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
-			
 			// project
 		}
 	};

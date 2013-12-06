@@ -70,6 +70,11 @@ define(
 		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
 		LogicNode.prototype.onInputChanged = function(instDesc, port, nv) { console.log("onInputChanged on " + this.config.id + " port " + port + " nv=" + nv); }
 		
+		/**
+		* Called when all nodes are added and connected.
+		*/
+		LogicNode.prototype.onConnected = function(instDesc) {};
+		
 		LogicNode.instanceCount = 0;
 
 		return LogicNode;

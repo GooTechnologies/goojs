@@ -60,6 +60,12 @@ function (
 			
 			this.nodes[k] = obj;
 		}
+		
+		for (var k in conf.logicNodes)
+		{
+			var obj = this.nodes[k];
+			obj.onConnected(obj.logicInstance);
+		}
 	}
 	
 	LogicComponent.prototype.process = function(tpf)
