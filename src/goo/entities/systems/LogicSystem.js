@@ -1,128 +1,131 @@
 define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
-	'goo/renderer/Renderer',
-	'goo/logic/LogicLayer',
-	'goo/logic/LogicInterface'
-],
+		'goo/entities/systems/System',
+		'goo/entities/SystemBus',
+		'goo/renderer/Renderer',
+		'goo/logic/LogicLayer',
+		'goo/logic/LogicInterface'
+	],
 	/** @lends */
-function (
-	System,
-	SystemBus,
-	Renderer,
-	LogicLayer,
-	LogicInterface
-) {
-	"use strict";
+	function(
+		System,
+		SystemBus,
+		Renderer,
+		LogicLayer,
+		LogicInterface
+	) {
+		"use strict";
 
-	/**
-	 * @class Updates cameras/cameracomponents with ther transform component transforms
-	 */
-	function LogicSystem() {
-		System.call(this, 'LogicSystem', null);
+		/**
+		 * @class Updates cameras/cameracomponents with ther transform component transforms
+		 */
+		function LogicSystem() {
+			System.call(this, 'LogicSystem', null);
 
-		this.passive = true;
-		this._entities = {};
-	}
-
-	LogicSystem.prototype = Object.create(System.prototype);
-
-	LogicSystem.prototype.inserted = function (entity) {
-		this._entities[entity.name] = {entity: entity, inserted:false };
-	};
-
-	LogicSystem.prototype.deleted = function (entity) {
-		delete this._entities[entity.name];
-	};
-
-	LogicSystem.prototype.process = function (entities, tpf) {
-		for (var i=0;i<entities.length;i++)
-		{
-			var e = entities[i];
-			if (e.logicComponent !== undefined)
-				e.logicComponent.process(tpf);
+			this.passive = true;
+			this._entities = {};
 		}
-	};
-	
-	/**
-	* Called when proxy entities want to resolve their entities. Called from LogicLayer.
-	*/
-	LogicSystem.prototype.resolveEntityRef = function(entityRef) {
-		var e = this._entities[entityRef];
-		if (e !== undefined)
-			return e.entity;
-	}
 
-	LogicSystem.prototype.getLayerByEntity = function(entityName) {
-		var e = this._entities[entityName];
-		if (e === undefined) 
-			return e;
-			
-		var c = e.entity.logicComponent;
-		if (c === undefined) 
-			return c;
-			
-		return c.logicLayer;
-	}
+		LogicSystem.prototype = Object.create(System.prototype);
 
+		LogicSystem.prototype.inserted = function(entity) {
+			this._entities[entity.name] = {
+				entity: entity,
+				inserted: false
+			};
+		};
 
-	LogicSystem.prototype.makeOutputWriteFn = function(sourceEntity, outPortDesc) {
-		// Lets do this the really slow and stupid way for now! 
-		
-		// TODO: Make sure this function is cached and only generated once
-		//       
-		var matches = [];
-		this.forEachLogicObject(function(o) {
-			//
-			if (o.type === "LogicNodeEntityProxy" && o.entityRef == sourceEntity.name)
-			{
-				// Need to construct a dynamic port to get the right naming scheme (data names)
-				var tmpPort = LogicInterface.createDynamicOutput(outPortDesc.name);				
-				matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
-			}
-		});
-		
-		return function(v) { 
-			for (var i=0;i<matches.length;i++)
-			{
-				LogicLayer.writeValue(matches[i][0], matches[i][1], v);
+		LogicSystem.prototype.deleted = function(entity) {
+			delete this._entities[entity.name];
+		};
+
+		LogicSystem.prototype.process = function(entities, tpf) {
+			for (var i = 0; i < entities.length; i++) {
+				var e = entities[i];
+				if (e.logicComponent !== undefined)
+					e.logicComponent.process(tpf);
 			}
 		};
-	};
 
-	LogicSystem.prototype.forEachLogicObject = function(f) {
-		for (var n in this._entities)
-		{
-			var e = this._entities[n].entity;
-			if (e.logicComponent !== undefined)
-				e.logicComponent.logicLayer.forEachLogicObject(f);
+		/**
+		 * Called when proxy entities want to resolve their entities. Called from LogicLayer.
+		 */
+		LogicSystem.prototype.resolveEntityRef = function(entityRef) {
+			var e = this._entities[entityRef];
+			if (e !== undefined)
+				return e.entity;
 		}
-	};
-	
-	LogicSystem.prototype.play = function () {
-		this.passive = false;
-		
-		// notify system start.
-		this.forEachLogicObject(function(o) { if (o.onSystemStarted !== undefined) o.onSystemStarted(); });
-	};
-	
-	LogicSystem.prototype.pause = function () {
-		this.passive = true;
 
-		// notify system stop for pause
-		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(true); });
-	};
-	
-	LogicSystem.prototype.stop = function () {
-		this.passive = true;
+		LogicSystem.prototype.getLayerByEntity = function(entityName) {
+			var e = this._entities[entityName];
+			if (e === undefined)
+				return e;
 
-		// notify system (full) stop
-		this.forEachLogicObject(function(o) { if (o.onSystemStopped !== undefined) o.onSystemStopped(false); });
-		
-		// now that logic layer is cleared, need to put them back in on play.
-		for (var k in this._entities)
-			this._entities[k].inserted = false;
-	};
+			var c = e.entity.logicComponent;
+			if (c === undefined)
+				return c;
 
-	return LogicSystem;
-});
+			return c.logicLayer;
+		}
+
+
+		LogicSystem.prototype.makeOutputWriteFn = function(sourceEntity, outPortDesc) {
+			// Lets do this the really slow and stupid way for now! 
+
+			// TODO: Make sure this function is cached and only generated once
+			//       
+			var matches = [];
+			this.forEachLogicObject(function(o) {
+				// Look for entities that point to this here.
+				if (o.type === "LogicNodeEntityProxy" && o.entityRef == sourceEntity.name) {
+					matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
+				}
+			});
+
+			return function(v) {
+				for (var i = 0; i < matches.length; i++) {
+					LogicLayer.writeValue(matches[i][0], matches[i][1], v);
+				}
+			};
+		};
+
+		LogicSystem.prototype.forEachLogicObject = function(f) {
+			for (var n in this._entities) {
+				var e = this._entities[n].entity;
+				if (e.logicComponent !== undefined)
+					e.logicComponent.logicLayer.forEachLogicObject(f);
+			}
+		};
+
+		LogicSystem.prototype.play = function() {
+			this.passive = false;
+
+			// notify system start.
+			this.forEachLogicObject(function(o) {
+				if (o.onSystemStarted !== undefined) o.onSystemStarted();
+			});
+		};
+
+		LogicSystem.prototype.pause = function() {
+			this.passive = true;
+
+			// notify system stop for pause
+			this.forEachLogicObject(function(o) {
+				if (o.onSystemStopped !== undefined) o.onSystemStopped(true);
+			});
+		};
+
+		LogicSystem.prototype.stop = function() {
+			this.passive = true;
+
+			// notify system (full) stop
+			this.forEachLogicObject(function(o) {
+				if (o.onSystemStopped !== undefined) o.onSystemStopped(false);
+			});
+
+			// now that logic layer is cleared, need to put them back in on play.
+			for (var k in this._entities)
+				this._entities[k].inserted = false;
+		};
+
+		return LogicSystem;
+	});

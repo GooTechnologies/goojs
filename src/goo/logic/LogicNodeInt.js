@@ -33,7 +33,7 @@ define(
 		};
 
 		LogicNodeInt.prototype.onEvent = function(instDesc, evt) {
-			
+
 			if (evt === LogicNodeInt.ineventIncrease) {
 				this.value = this.value + 1;
 			} else if (evt === LogicNodeInt.ineventDecrease) {
