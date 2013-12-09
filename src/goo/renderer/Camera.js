@@ -78,6 +78,7 @@ function(
 
 		this.projectionMode = Camera.Perspective;
 		this.lockedRatio = false;
+		this.aspect = aspect || 1;
 
 		this._updateMVMatrix = true;
 		this._updateInverseMVMatrix = true;
