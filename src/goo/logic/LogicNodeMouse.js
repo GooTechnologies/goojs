@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -49,7 +48,7 @@ define(
 			document.addEventListener('mousedown', this.eventMouseDown, false);
 		};
 
-		LogicNodeMouse.prototype.onSystemStopped = function(stopForPause) {
+		LogicNodeMouse.prototype.onSystemStopped = function() {
 			document.removeEventListener('mousemove', this.eventMouseMove);
 			document.removeEventListener('mousedown', this.eventMouseDown);
 		};

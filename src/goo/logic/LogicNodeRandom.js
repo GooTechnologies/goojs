@@ -29,7 +29,7 @@ define(
 		LogicNodeRandom.outPropRandom = LogicNodeRandom.logicInterface.addOutputProperty("Random0_1", "float");
 
 		// Process
-		LogicNodeRandom.prototype.processLogic = function(tpf) {
+		LogicNodeRandom.prototype.processLogic = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeRandom.outPropRandom, Math.random());
 		};
 

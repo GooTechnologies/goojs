@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -35,8 +34,6 @@ define(
 		LogicNodeMultiply.inportY = LogicNodeMultiply.logicInterface.addInputProperty("y", "float", 0);
 
 		LogicNodes.registerType("LogicNodeMultiply", LogicNodeMultiply);
-		
-		
 
 		return LogicNodeMultiply;
 	});

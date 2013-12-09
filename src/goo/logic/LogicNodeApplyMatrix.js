@@ -24,9 +24,9 @@ define(
 		LogicNodeApplyMatrix.prototype = Object.create(LogicNode.prototype);
 		LogicNodeApplyMatrix.editorName = "ApplyMatrix";
 
-		LogicNodeApplyMatrix.prototype.onInputChanged = function(instDesc, portID, value) {
-			var vec = LogicLayer.readPort(this.logicInstance, LogicNodeApplyMatrix.inportX);
-			var mat = LogicLayer.readPort(this.logicInstance, LogicNodeApplyMatrix.inportY);
+		LogicNodeApplyMatrix.prototype.onInputChanged = function(instDesc) {
+			var vec = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportX);
+			var mat = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportY);
 			this.vec.copy(vec);
 			mat.applyPost(this.vec);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeApplyMatrix.outportProduct, this.vec);
@@ -38,8 +38,8 @@ define(
 		LogicNodeApplyMatrix.inportY = LogicNodeApplyMatrix.logicInterface.addInputProperty("mat", "Matrix3", new Matrix3x3());
 
 		LogicNodes.registerType("LogicNodeApplyMatrix", LogicNodeApplyMatrix);
-		
-		
+
+
 
 		return LogicNodeApplyMatrix;
 	});

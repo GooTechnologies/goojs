@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -22,29 +21,30 @@ define(
 		LogicNodeFloat.prototype = Object.create(LogicNode.prototype);
 		LogicNodeFloat.editorName = "Float";
 
-		LogicNodeFloat.prototype.onConfigure = function(newConfig)
-		{
-			if (newConfig.value !== undefined)
-			{
+		LogicNodeFloat.prototype.onConfigure = function(newConfig) {
+			if (newConfig.value !== undefined) {
 				this.value = newConfig.value;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 			}
-		}		
+		};
 
 		LogicNodeFloat.prototype.onSystemStarted = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
-		}
-		
-		LogicNodeFloat.prototype.onSystemStopped = function(stopForPause) {
-		}
+		};
+
+		LogicNodeFloat.prototype.onSystemStopped = function() {};
 
 		LogicNodes.registerType("LogicNodeFloat", LogicNodeFloat);
 
 		LogicNodeFloat.logicInterface = new LogicInterface();
 		LogicNodeFloat.outportFloat = LogicNodeFloat.logicInterface.addOutputProperty("value", "float");
-		LogicNodeFloat.logicInterface.addConfigEntry({name: 'value', type: 'float', label: 'Value'});
-		
-		
+		LogicNodeFloat.logicInterface.addConfigEntry({
+			name: 'value',
+			type: 'float',
+			label: 'Value'
+		});
+
+
 		return LogicNodeFloat;
 	}
 );

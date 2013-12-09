@@ -37,7 +37,7 @@ define(
 		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Stop");
 		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 
-		LogicNodeTime.prototype.onConfigure = function(config) {
+		LogicNodeTime.prototype.onConfigure = function() {
 			this._time = 0;
 			this._running = true;
 		};

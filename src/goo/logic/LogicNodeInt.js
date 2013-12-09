@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -24,33 +23,32 @@ define(
 		LogicNodeInt.prototype = Object.create(LogicNode.prototype);
 		LogicNodeInt.editorName = "Int";
 
-		LogicNodeInt.prototype.onConfigure = function(newConfig)
-		{
-			if (newConfig.value !== undefined)
+		LogicNodeInt.prototype.onConfigure = function(newConfig) {
+			if (newConfig.value !== undefined) {
 				this.defValue = newConfig.value;
+			}
 
-			this.value = this.defValue;				
+			this.value = this.defValue;
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
-		}
-		
-		LogicNodeInt.prototype.onEvent = function(instDesc, evt)
-		{
-			if (evt == LogicNodeInt.ineventIncrease)
+		};
+
+		LogicNodeInt.prototype.onEvent = function(instDesc, evt) {
+			if (evt === LogicNodeInt.ineventIncrease) {
 				this.value = this.value + 1;
-			else if (evt == LogicNodeInt.ineventDecrease)
+			} else if (evt === LogicNodeInt.ineventDecrease) {
 				this.value = this.value - 1;
-			else
+			} else {
 				this.value = this.defValue;
-				
+			}
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
-		}
+		};
 
 		LogicNodeInt.prototype.onSystemStarted = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
-		}
-		
-		LogicNodeInt.prototype.onSystemStopped = function(stopForPause) {
-		}
+		};
+
+		LogicNodeInt.prototype.onSystemStopped = function() {};
 
 		LogicNodes.registerType("LogicNodeInt", LogicNodeInt);
 
@@ -59,8 +57,12 @@ define(
 		LogicNodeInt.ineventIncrease = LogicNodeInt.logicInterface.addInputEvent("increase");
 		LogicNodeInt.ineventDecrease = LogicNodeInt.logicInterface.addInputEvent("decrease");
 		LogicNodeInt.outportInt = LogicNodeInt.logicInterface.addOutputProperty("value", "int");
-		LogicNodeInt.logicInterface.addConfigEntry({name: 'value', type: 'int', label: 'Value'});
-		
+		LogicNodeInt.logicInterface.addConfigEntry({
+			name: 'value',
+			type: 'int',
+			label: 'Value'
+		});
+
 		return LogicNodeInt;
 	}
 );

@@ -24,8 +24,8 @@ define(
 
 		LogicNodeAdd.prototype.onInputChanged = function(instDesc, portID, value) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeAdd.inportX) +
-			          LogicLayer.readPort(instDesc, LogicNodeAdd.inportY);
-			
+				LogicLayer.readPort(instDesc, LogicNodeAdd.inportY);
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportSum, out);
 		}
 

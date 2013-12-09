@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -24,10 +23,10 @@ define(
 		LogicNodeOutput.editorName = "Output";
 
 		LogicNodeOutput.prototype.onInputChanged = function(instDesc, portID, value) {
-			LogicLayer.writeValueToLayerOutput(this.logicInstance, this.realOutport, value);
+			LogicLayer.writeValueToLayerOutput(instDesc, this.realOutport, value);
 		};
 
-		LogicNodeOutput.prototype.onEvent = function(instDesc, portID) { };
+		LogicNodeOutput.prototype.onEvent = function() { };
 
 		// Configure new output.
 		LogicNode.prototype.onConfigure = function(newConfig) {
