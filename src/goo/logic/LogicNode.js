@@ -10,7 +10,7 @@ define(
 		function LogicNode() {
 			// Generated the same way as entities are, except different naming.
 			Object.defineProperty(this, 'id', {
-				value: LogicNode.instanceCount++,
+				value: LogicNode._instanceCount++,
 				writable: false
 			});
 
@@ -63,14 +63,28 @@ define(
 		};
 
 		/**
-		 * Override me
+		 * Called after getting new configuration data; before getting added to world.
 		 */
 		LogicNode.prototype.onConfigure = function(newConfig) {};
-		LogicNode.prototype.onSystemStarted = function() {};
-		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
-		LogicNode.prototype.onInputChanged = function(instDesc, port, nv) { console.log("onInputChanged on " + this.config.id + " port " + port + " nv=" + nv); }
 		
-		LogicNode.instanceCount = 0;
+		/**
+		 * When logic system is started.
+		 */
+		LogicNode.prototype.onSystemStarted = function() {};
+		
+		/**
+		 * Called when system is stopped.
+		 * @param stopForPause If true, world has been paused. Otherwise stopped & reset.
+		 */
+		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
+		
+		/**
+		 * Called when node receives an input value.
+		 */
+		LogicNode.prototype.onInputChanged = function(instDesc, port, nv) {};
+		
+		
+		LogicNode._instanceCount = 0;
 
 		return LogicNode;
 	});

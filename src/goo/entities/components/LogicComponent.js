@@ -14,8 +14,8 @@ function (
 	"use strict";
 
 	/**
-	*
-	 */
+	* A Logic Component that embeds a LogicLayer and processes it every frame.
+	*/
 	function LogicComponent(entity) {
 	
 		Component.call(this);

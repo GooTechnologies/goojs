@@ -19,23 +19,23 @@ define(
 	}
 	
 	LogicInterface.prototype.addInputProperty = function(name_, valueType, defaultValue) {
-		this.ports.push({ id: ++LogicInterface.portID, input: true, property: true, event:false, name: (this.dn_pfx + name_), type: valueType, def: defaultValue });
-		return LogicInterface.portID;
+		this.ports.push({ id: ++LogicInterface._portID, input: true, property: true, event:false, name: (this.dn_pfx + name_), type: valueType, def: defaultValue });
+		return LogicInterface._portID;
 	}
 	
 	LogicInterface.prototype.addOutputProperty = function(name_, valueType) {
-		this.ports.push({ id: ++LogicInterface.portID, input: false, property: true, event:false, name: (this.dn_pfx + name_), type: valueType });
-		return LogicInterface.portID;
+		this.ports.push({ id: ++LogicInterface._portID, input: false, property: true, event:false, name: (this.dn_pfx + name_), type: valueType });
+		return LogicInterface._portID;
 	}
 	
 	LogicInterface.prototype.addInputEvent = function(name_) {
-		this.ports.push({ id: ++LogicInterface.portID, input: true, property: false, event: true, name: (this.dn_pfx + name_) });
-		return LogicInterface.portID;
+		this.ports.push({ id: ++LogicInterface._portID, input: true, property: false, event: true, name: (this.dn_pfx + name_) });
+		return LogicInterface._portID;
 	}
 
 	LogicInterface.prototype.addOutputEvent = function(name_) {
-		this.ports.push({ id: ++LogicInterface.portID, input: false, property: false, event: true, name: (this.dn_pfx + name_) });
-		return LogicInterface.portID;
+		this.ports.push({ id: ++LogicInterface._portID, input: false, property: false, event: true, name: (this.dn_pfx + name_) });
+		return LogicInterface._portID;
 	}
 	
 	LogicInterface.createDynamicInput = function(name_) {
@@ -67,11 +67,12 @@ define(
 	};
 	
 	LogicInterface.makeDynamicId = function() {
-		return ++LogicInterface.portID;
+		return ++LogicInterface._portID;
 	}
 	
 	/**
 	* Computes a name for the port that can be saved in the data model without having it confused when (other) ports are added/removed
+	* @param port Port description object as returned by createDynamicInput/Output or from the getPorts() array.
 	*/
 	LogicInterface.makePortDataName = function(port) {
 		if (port.dataname !== undefined)
@@ -98,7 +99,7 @@ define(
 	/**
 	* Globally unique port id counter
 	*/
-	LogicInterface.portID = 0;
+	LogicInterface._portID = 0;
 	
 	return LogicInterface;
 });

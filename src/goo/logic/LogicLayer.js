@@ -304,7 +304,10 @@ define(
 		};
 		
 		/**
-		* 
+		* Use this to write a layer to an output node, they need to be treated specially. 
+		* @param outNodeDesc instDesc of the output node
+		* @param outPortDesc Port id of the output port
+		* @param value Value to write
 		*/
 		LogicLayer.writeValueToLayerOutput = function(outNodeDesc, outPortDesc, value) {
 			// TODO: Cache writeFn
@@ -312,8 +315,14 @@ define(
 			writeFn(value);
 		};
 		
+		/**
+		* Read a (possibly cached) value from an input port on a particular node.
+		* @param instDesc instDesc of the node to read from
+		* @param portID portID of interest
+		* @return Returns the value at the port
+		*/
 		LogicLayer.readPort = function(instDesc, portID) {
-			// 2 step lookup. note that value will first be
+			// 2-step lookup. note that value will first be
 			// _portValue if it exists. 
 			var value = instDesc._portValues;
 			if (value !== undefined)

@@ -12,6 +12,7 @@ define(
 		LogicNodes.types = {};
 
 		/**
+		 * Register a new logic node. All logic nodes must call this to registrer themselves. 
 		 */
 		LogicNodes.registerType = function(name, fn) {
 			LogicNodes.types[name] = {
