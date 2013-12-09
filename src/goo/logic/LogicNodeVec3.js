@@ -11,7 +11,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that provides a Vec3.
 		 */
 		function LogicNodeVec3() {
 			LogicNode.call(this);

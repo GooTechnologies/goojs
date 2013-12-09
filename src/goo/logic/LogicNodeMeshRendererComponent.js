@@ -12,7 +12,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that connects to the MeshRendererComponent of an entity.
 		 */
 		function LogicNodeMeshRendererComponent() {
 			LogicNode.call(this);

@@ -13,7 +13,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that connects to the transform component of an entity.
 		 */
 		function LogicNodeTransformComponent() {
 			LogicNode.call(this);

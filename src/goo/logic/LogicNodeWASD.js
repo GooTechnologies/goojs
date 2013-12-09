@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node handling WASD input
 		 */
 		function LogicNodeWASD() {
 			LogicNode.call(this);

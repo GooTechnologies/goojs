@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node to be used as layer output.
 		 */
 		function LogicNodeOutput() {
 			LogicNode.call(this);

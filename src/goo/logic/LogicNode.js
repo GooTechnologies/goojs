@@ -1,13 +1,13 @@
 define(
-	['goo/logic/LogicInterface'],
 	/** @lends */
-	function(LogicInterface) {
+	function() {
 		"use strict";
 
 		/**
 		 * @class Base class/module for all logic boxes
 		 */
 		function LogicNode() {
+
 			// Generated the same way as entities are, except different naming.
 			Object.defineProperty(this, 'id', {
 				value: LogicNode._instanceCount++,
@@ -40,16 +40,16 @@ define(
 			if (this.logicInstance !== null) {
 				this.logicInstance.remove();
 			}
-			
+
 			this.logicInstance = logicLayer.addInterfaceInstance(this.logicInterface, this, withId, this.wantsProcessCall);
-			
+
 			if (this.connections !== undefined) {
 				// data comes from configure call.
 				for (var i = 0; i < this.connections.length; i++) {
 					var conn = this.connections[i];
 					logicLayer.addConnectionByName(this.logicInstance, conn.sourcePort, conn.targetRef, conn.targetPort);
 				}
-				
+
 				// this prevents duplicate adding.
 				delete this.connections;
 			}
@@ -63,27 +63,31 @@ define(
 		};
 
 		/**
-		 * Called after getting new configuration data; before getting added to world.
+		 * Called after getting new configuration data; before getting added to world. Override
+		 * this function and not configure.
+		 * @param newConfig The new configuration data.
 		 */
-		LogicNode.prototype.onConfigure = function(newConfig) {};
-		
+		LogicNode.prototype.onConfigure = function() {};
+
 		/**
 		 * When logic system is started.
 		 */
 		LogicNode.prototype.onSystemStarted = function() {};
-		
+
 		/**
 		 * Called when system is stopped.
 		 * @param stopForPause If true, world has been paused. Otherwise stopped & reset.
 		 */
-		LogicNode.prototype.onSystemStopped = function(stopForPause) {};
-		
+		LogicNode.prototype.onSystemStopped = function() {};
+
 		/**
 		 * Called when node receives an input value.
+		 * @param instDesc Instance description
+		 * @param port Port ID
+		 * @param nv New value on that particular port.
 		 */
-		LogicNode.prototype.onInputChanged = function(instDesc, port, nv) {};
-		
-		
+		LogicNode.prototype.onInputChanged = function() {};
+
 		LogicNode._instanceCount = 0;
 
 		return LogicNode;

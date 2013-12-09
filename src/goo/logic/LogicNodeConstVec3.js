@@ -11,7 +11,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node to provide a const Vec3
 		 */
 		function LogicNodeConstVec3() {
 			LogicNode.call(this);
@@ -33,28 +33,28 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeConstVec3.outportVec, new Vector3(this.x, this.y, this.z));
 		};
 
-		LogicNodeConstVec3.prototype.onSystemStopped = function(stopForPause) {};
-
 		LogicNodes.registerType("LogicNodeConstVec3", LogicNodeConstVec3);
 
 		LogicNodeConstVec3.logicInterface = new LogicInterface();
 		LogicNodeConstVec3.outportVec = LogicNodeConstVec3.logicInterface.addOutputProperty("xyz", "Vector3");
+
 		LogicNodeConstVec3.logicInterface.addConfigEntry({
 			name: 'x',
 			type: 'float',
 			label: 'X'
 		});
+
 		LogicNodeConstVec3.logicInterface.addConfigEntry({
 			name: 'y',
 			type: 'float',
 			label: 'Y'
 		});
+
 		LogicNodeConstVec3.logicInterface.addConfigEntry({
 			name: 'z',
 			type: 'float',
 			label: 'Z'
 		});
-
 
 		return LogicNodeConstVec3;
 	}

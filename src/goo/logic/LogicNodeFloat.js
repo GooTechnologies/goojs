@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that provides a float value.
 		 */
 		function LogicNodeFloat() {
 			LogicNode.call(this);
@@ -31,8 +31,6 @@ define(
 		LogicNodeFloat.prototype.onSystemStarted = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 		};
-
-		LogicNodeFloat.prototype.onSystemStopped = function() {};
 
 		LogicNodes.registerType("LogicNodeFloat", LogicNodeFloat);
 

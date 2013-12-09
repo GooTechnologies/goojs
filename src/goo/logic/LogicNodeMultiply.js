@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that multiplies two inputs.
 		 */
 		function LogicNodeMultiply() {
 			LogicNode.call(this);
@@ -22,11 +22,11 @@ define(
 		LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMultiply.editorName = "Multiply";
 
-		LogicNodeMultiply.prototype.onInputChanged = function(instDesc, portID, value) {
-			var x = LogicLayer.readPort(this.logicInstance, LogicNodeMultiply.inportX);
-			var y = LogicLayer.readPort(this.logicInstance, LogicNodeMultiply.inportY);
-			LogicLayer.writeValue(this.logicInstance, LogicNodeMultiply.outportProduct, x * y);
-		}
+		LogicNodeMultiply.prototype.onInputChanged = function(instDesc) {
+			var x = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportX);
+			var y = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportY);
+			LogicLayer.writeValue(instDesc, LogicNodeMultiply.outportProduct, x * y);
+		};
 
 		LogicNodeMultiply.logicInterface = new LogicInterface();
 		LogicNodeMultiply.outportProduct = LogicNodeMultiply.logicInterface.addOutputProperty("product", "float");

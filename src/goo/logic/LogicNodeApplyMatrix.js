@@ -12,7 +12,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node for vector < matrix computation
 		 */
 		function LogicNodeApplyMatrix() {
 			LogicNode.call(this);

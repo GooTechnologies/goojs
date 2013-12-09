@@ -3,15 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node to add values.
 		 */
 		function LogicNodeAdd() {
 			LogicNode.call(this);
@@ -22,12 +21,12 @@ define(
 		LogicNodeAdd.prototype = Object.create(LogicNode.prototype);
 		LogicNodeAdd.editorName = "Add";
 
-		LogicNodeAdd.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeAdd.prototype.onInputChanged = function(instDesc) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeAdd.inportX) +
 				LogicLayer.readPort(instDesc, LogicNodeAdd.inportY);
 
 			LogicLayer.writeValue(this.logicInstance, LogicNodeAdd.outportSum, out);
-		}
+		};
 
 		LogicNodeAdd.logicInterface = new LogicInterface();
 		LogicNodeAdd.outportSum = LogicNodeAdd.logicInterface.addOutputProperty("sum", "float");

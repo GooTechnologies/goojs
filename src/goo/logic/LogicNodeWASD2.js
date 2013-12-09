@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node handling WASD input
 		 */
 		function LogicNodeWASD2() {
 			LogicNode.call(this);
@@ -56,10 +56,22 @@ define(
 
 		LogicNodeWASD2.logicInterface = new LogicInterface();
 		LogicNodeWASD2.downKeys = {
-			'w': { port: LogicNodeWASD2.logicInterface.addOutputProperty("W", "float", 0), value: 1},
-			'a': { port: LogicNodeWASD2.logicInterface.addOutputProperty("A", "float", 0), value: 1},
-			's': { port: LogicNodeWASD2.logicInterface.addOutputProperty("S", "float", 0), value: -1},
-			'd': { port: LogicNodeWASD2.logicInterface.addOutputProperty("D", "float", 0), value: -1}
+			'w': {
+				port: LogicNodeWASD2.logicInterface.addOutputProperty("W", "float", 0),
+				value: 1
+			},
+			'a': {
+				port: LogicNodeWASD2.logicInterface.addOutputProperty("A", "float", 0),
+				value: 1
+			},
+			's': {
+				port: LogicNodeWASD2.logicInterface.addOutputProperty("S", "float", 0),
+				value: -1
+			},
+			'd': {
+				port: LogicNodeWASD2.logicInterface.addOutputProperty("D", "float", 0),
+				value: -1
+			}
 		};
 
 		LogicNodes.registerType("LogicNodeWASD2", LogicNodeWASD2);

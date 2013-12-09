@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that provides an integer.
 		 */
 		function LogicNodeInt() {
 			LogicNode.call(this);
@@ -33,6 +33,7 @@ define(
 		};
 
 		LogicNodeInt.prototype.onEvent = function(instDesc, evt) {
+			
 			if (evt === LogicNodeInt.ineventIncrease) {
 				this.value = this.value + 1;
 			} else if (evt === LogicNodeInt.ineventDecrease) {

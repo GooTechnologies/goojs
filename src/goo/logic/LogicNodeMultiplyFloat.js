@@ -6,11 +6,11 @@ define(
 		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that multiplies two floats.
 		 */
 		function LogicNodeMultiplyFloat() {
 			LogicNode.call(this);
