@@ -14,7 +14,7 @@ function() {
 	Logo.white = '#FFFFFF';
 
 	var defaults = {
-		color: Logo.blue,
+		color: Logo.white,
 		shadow: false
 	};
 

@@ -36,5 +36,6 @@ define([
 	'test/scripts/HeightMapBoundingScript-test',
 	'test/scripts/WorldFittedTerrainScript-test',
 	'test/scripts/GroundBoundMovementScript-test',
-	'test/entities/components/MovementComponent-test'
+	'test/entities/components/MovementComponent-test',
+	'test/entities/World-test',
 ], function() {});

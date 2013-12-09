@@ -39,7 +39,7 @@ define(['goo/renderer/Renderer',
 			renderList = this.renderList;
 		}
 		if (this.renderToScreen) {
-			renderer.render(renderList, camera, lights);
+			renderer.render(renderList, camera, lights, null, this.clear, this.overrideMaterial);
 		} else {
 			renderer.render(renderList, camera, lights, readBuffer, this.clear, this.overrideMaterial);
 		}

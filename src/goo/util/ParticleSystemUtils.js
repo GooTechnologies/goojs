@@ -53,7 +53,6 @@ define([
 		// options array of (fraction, alpha)
 
 		var canvas = document.createElement('canvas');
-		document.body.appendChild(canvas);
 		canvas.width = size;
 		canvas.height = size;
 		var con2d = canvas.getContext('2d');
@@ -84,7 +83,6 @@ define([
 		options.trailEndRadius = typeof options.trailEndRadius !== 'undefined' ? options.trailEndRadius : 4;
 
 		var canvas = document.createElement('canvas');
-		document.body.appendChild(canvas);
 		canvas.width = size;
 		canvas.height = size;
 		var con2d = canvas.getContext('2d');
@@ -143,7 +141,6 @@ define([
 		options.maxRadius = typeof options.maxRadius !== 'undefined' ? options.maxRadius : 5;
 
 		var canvas = document.createElement('canvas');
-		document.body.appendChild(canvas);
 		canvas.width = size;
 		canvas.height = size;
 		var con2d = canvas.getContext('2d');
@@ -180,7 +177,6 @@ define([
 		options = options || {};
 
 		var canvas = document.createElement('canvas');
-		document.body.appendChild(canvas);
 		canvas.width = size;
 		canvas.height = size;
 		var con2d = canvas.getContext('2d');

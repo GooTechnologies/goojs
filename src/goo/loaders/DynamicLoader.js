@@ -70,6 +70,7 @@ function(
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
 	var _url_types = ['mp3', 'wav'];
+	// REVIEW: Never used
 	var _all_binary_types = _texture_types.concat(_image_types).concat(_binary_types).concat(_url_types);
 	var _binary_file_properties = ['url', 'binaryRef']; // refs pointing to 'real' binaries, not original filenames etc
 
@@ -232,11 +233,13 @@ function(
 		// Get the flat root.bundle file containing all references
 		return this._loadRef(bundleName).then(function(bundleRefs) {
 
+			// REVIEW: dict feels like python, it's a config
+			// Also, you're not using it, entityRefs = bundleRefs['project.project']['entityRefs']
 			// Get a list of the configs that are currently in the scene
-			var projectDict = bundleRefs['project.project']
+			var projectDict = bundleRefs['project.project'];
 
 			// Array containing the references currently in the scene
-			var entityRefs = projectDict['entityRefs'];
+			var entityRefs = projectDict.entityRefs;
 
 			// TODO add screenshots if wanted
 
@@ -250,7 +253,27 @@ function(
 					}
 				}
 				return false;
+			};
+
+			// REVIEW: If you look at the data model, sound actually has an array of urls, which won't
+			// be caught in this traverse. Although sounds can't be preloaded yet I guess.
+			// I think you should update _getRefsFromConfig to include url(s) and do
+			// DynamicLoader.isBinaryRef and so on on the flat array
+			// Perhaps even merge the two traverses into one
+			// I think it would make the code look cleaner
+			/*
+			function traverse(config) {
+				if (config != undefined) {
+					refs = DynamicLoader._getRefsFromConfig(config)
+					for (var i = 0; i < refs.length; i++) {
+						// If it's not a json, it's a binary, sort of
+						if (DynamicLoader.isJSONRef(refs[i]) traverse(bundleRefs[refs[i]]);
+						else loadRef(refs[i]);
+					}
+				}
 			}
+			traverse(rootConfig);
+			*/
 
 			// Get all child references and binaries within a given reference
 			var traverseConfig = function(rootConfig) {
@@ -269,14 +292,13 @@ function(
 							if (value && typeof(value) == 'object') {
 								// If the value is a dictionary, recursively traverse deeper
 								traverse(value);
-							}	
+							}
 						}
 					}
 				};
 				traverse(rootConfig);
 				return {'childRefs': childRefs, 'binaries': binaries};
 			};
-
 
 			// Get all binaries from a reference and its config's children
 			var getBinariesFromRef = function(rootRef) {
@@ -299,7 +321,7 @@ function(
 				};
 				traverse(rootRef);
 				return binaries;
-			}
+			};
 
 			var binaries = [];
 			for (var i=0; i<entityRefs.length; i++) {
@@ -309,18 +331,19 @@ function(
 			var loadPromises = [];
 			var handled = 0;
 			var loadRef = function(ref) {
-				loadPromises.push(that._loadRef(ref).then(function(config) {
+				loadPromises.push(that._loadRef(ref).then(function(config) { // REVIEW: config is never used
 					handled++;
 					if (options.progressCallback && options.progressCallback.call) {
+						// REVIEW: Why not just options.progressCallback(handled, loadPromises.length)?
 						options.progressCallback.call(null, handled, loadPromises.length);
 					}
 				}));
-			};	
+			};
 
 			for (var i=0; i<binaries.length; i++) {
 				loadRef(binaries[i]);
 			}
-		
+
 			return RSVP.all(loadPromises);
 		});
 	};
