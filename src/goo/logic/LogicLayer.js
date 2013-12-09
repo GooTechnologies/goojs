@@ -10,7 +10,8 @@ define(
 		"use strict";
 
 		/**
-		 * @class Handles the logic layer of the world.
+		 * @class Handles a logic layer, which is a container for Logic Nodes and connections. It handles resolving and executing
+		 *        connections, as well as cross-layer connections (through LogicSystem). Each LogicLayer has an entity owner.
 		 */
 		function LogicLayer(ownerEntity) {
 			this._logicInterfaces = {};
@@ -19,8 +20,9 @@ define(
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
 			this._outputForwarding = {};
-
 			this.ownerEntity = ownerEntity;
+			
+			// Hax to get LogicSystem
 			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
 		}
 
@@ -353,11 +355,11 @@ define(
 		};
 
 		LogicLayer.prototype.process = function(tpf) {
-		
-			// last frame queued property update notifications, see writeValue
+			// First of all process queued property update notifications from last frame.
+			// These are limited to one per frame and queued up if more should happen.
+			// Reason for this being avoiding cyclic and infinite update loops.
 			var not = this._nextFrameNotifications;
 			this._nextFrameNotifications = [];
-
 			for (var i=0;i<not.length;i++)
 			{
 				var ne = not[i];
@@ -365,7 +367,7 @@ define(
 				ne[0].obj.onInputChanged(ne[0], ne[1], ne[2]); 
 			}
 			
-			
+			// ...then update all logic objects
 			for (var i in this._logicInterfaces) {
 				if (this._logicInterfaces[i].wantsProcess && this._logicInterfaces[i].obj.processLogic) {
 					this._logicInterfaces[i].obj.processLogic(tpf);
