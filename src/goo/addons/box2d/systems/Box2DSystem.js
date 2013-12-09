@@ -17,7 +17,7 @@ function(
 		System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);
 
 		this.SCALE = 0.5;
-		this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9));
+		this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
 
 		this.sortVertexesClockWise = function (a, b) {
 			var aAngle = Math.atan2(a.get_y(), a.get_x());
@@ -25,14 +25,20 @@ function(
 			return aAngle > bAngle ? 1 : -1;
 		};
 
+		// Defaulted to recommended values 8 and 3
+		this.velocityIterations = 8;
+		this.positionIterations = 3;
+
+		var FLOAT_SIZE = 4;
+
 		this.createPolygonShape = function (vertices) {
 			var shape = new Box2D.b2PolygonShape();
-			var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
+			var buffer = Box2D.allocate(vertices.length * FLOAT_SIZE * 2, 'float', Box2D.ALLOC_STACK);
 			var offset = 0;
 			for (var i = 0; i < vertices.length; i++) {
-				Box2D.setValue(buffer + (offset), vertices[i].get_x(), 'float'); // x
-				Box2D.setValue(buffer + (offset + 4), vertices[i].get_y(), 'float'); // y
-				offset += 8;
+				Box2D.setValue(buffer + (offset), vertices[i].get_x(), 'float');
+				Box2D.setValue(buffer + (offset + FLOAT_SIZE), vertices[i].get_y(), 'float');
+				offset += FLOAT_SIZE * 2;
 			}
 			var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
 			shape.Set(ptr_wrapped, vertices.length);
@@ -43,7 +49,7 @@ function(
 	Box2DSystem.prototype = Object.create(System.prototype);
 
 	Box2DSystem.prototype.inserted = function (entity) {
-		var p = entity.physics2DComponent;
+		var p = entity.box2DComponent;
 		var height = 0;
 		var width = 0;
 
@@ -57,17 +63,15 @@ function(
 			var meshData = entity.meshDataComponent.meshData;
 
 			var verts = meshData.getAttributeBuffer('POSITION');
-			//console.log(verts)
 			var i = 0;
 			var polygon = [];
-			var minY = 10000;
-			var maxY = -10000;
-			var minX = 10000;
-			var maxX = -10000;
+			var minY = Infinity;
+			var maxY = -Infinity;
+			var minX = Infinity;
+			var maxX = -Infinity;
 			while (i <= verts.length - 3) {
 				var x = verts[i];
 				var y = verts[++i];
-				// var z = verts[++i];
 
 				if (y < minY) {
 					minY = y;
@@ -93,8 +97,8 @@ function(
 			//polygon.sort(this.sortVertexesClockWise)
 
 			shape = this.createPolygonShape(polygon);
-			height = Math.abs(maxY - minY);
-			width = Math.abs(maxX - minX);
+			height = maxY - minY;
+			width = maxX - minX;
 		} else if (p.shape === "polygon") {
 			var polygon = [];
 			var i = 0;
@@ -104,8 +108,6 @@ function(
 				++i;
 			}
 			shape = this.createPolygonShape(polygon);
-
-			console.log(polygon);
 		}
 
 		var fd = new Box2D.b2FixtureDef();
@@ -120,6 +122,8 @@ function(
 		}
 
 		bd.set_position(new Box2D.b2Vec2(entity.transformComponent.transform.translation.x + p.offsetX, entity.transformComponent.transform.translation.y + p.offsetY));
+		var rotAngles = entity.transformComponent.transform.rotation.toAngles();
+		bd.set_angle(rotAngles.z);
 		var body = this.world.CreateBody(bd);
 		body.CreateFixture(fd);
 		body.SetLinearDamping(0.95);
@@ -127,32 +131,35 @@ function(
 
 		p.body = body;
 		p.world = this.world;
+		// should not be stored on the entity level
 		entity.body = body;
 		entity.body.h = height;
 		entity.body.w = width;
 	};
 
-	Box2DSystem.prototype.deleted = function (/*entity*/) {
-		// remove entity.body from physics
+	Box2DSystem.prototype.deleted = function (entity) {
+		this.world.DestroyBody(entity.body);
 	};
 
 	Box2DSystem.prototype.process = function (entities, tpf) {
-		// step
-		this.world.Step(tpf, 2, 2);
+		// do physics steps in a Worker
+		this.world.Step(tpf, this.velocityIterations, this.positionIterations);
 
 		for (var i = 0; i < entities.length; i++) {
-			var e = entities[i];
-			var tc = e.transformComponent, t = tc.transform;
-			var position = e.body.GetPosition();
-			t.translation.y = position.get_y() - e.physics2DComponent.offsetY;
-			t.translation.x = position.get_x() - e.physics2DComponent.offsetX;
-			//	t.translation.z = 0;
-			tc.setUpdated();
-			t.rotation.z = e.body.GetAngle();
-
-			if (position.get_y() > 100) {
-				e.body.ApplyForce(new Box2D.b2Vec2(0, -100), position);
+			var entity = entities[i];
+			var transformComponent = entity.transformComponent;
+			var transform = transformComponent.transform;
+			var position = entity.body.GetPosition();
+			var posX = position.get_x();
+			var posY = position.get_y();
+			if (posY < -10) {
+				entity.removeFromWorld();
+				continue;
 			}
+			transform.translation.x = posX - entity.box2DComponent.offsetX;
+			transform.translation.y = posY - entity.box2DComponent.offsetY;
+			transformComponent.setRotation(0, 0, entity.body.GetAngle());
+			transformComponent.setUpdated();
 		}
 	};
 
