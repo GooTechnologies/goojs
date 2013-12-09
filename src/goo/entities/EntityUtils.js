@@ -137,7 +137,13 @@ define([
 			var pointer = entity;
 			while (pointer.transformComponent.parent) {
 				pointer = pointer.transformComponent.parent.entity;
-				if (pointer.hidden) { return ; }
+				if (pointer.hidden) {
+					// extra check and set needed might be needed
+					if (entity.meshRendererComponent) {
+						entity.meshRendererComponent.hidden = true;
+					}
+					return;
+				}
 			}
 
 			EntityUtils.traverse(entity, function(entity) {

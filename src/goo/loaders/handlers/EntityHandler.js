@@ -47,6 +47,7 @@ define([
 		}
 
 		var promises = [];
+		// Adding components to the object
 		for (var componentName in config.components) {
 			var componentConfig = config.components[componentName];
 			var handlerClass = ComponentHandler.getHandler(componentName);
@@ -71,7 +72,6 @@ define([
 						this.options
 					);
 				}
-				
 				var promise = handler.update(object, componentConfig, options);
 				if (!promise || !promise.then) {
 					console.error("Handler for " + componentName + " did not return promise");
@@ -83,15 +83,13 @@ define([
 			}
 		}
 
-		// hide/unhide entities and their descendants
-		if (!!config.hidden) {
-			EntityUtils.hide(object);
-		} else {
-			EntityUtils.show(object);
-		}
-
 		if (promises.length) {
 			return RSVP.all(promises).then(function(/*components*/) {
+				if (!!config.hidden) {
+					EntityUtils.hide(object);
+				} else {
+					EntityUtils.show(object);
+				}
 				return object;
 			});
 		} else {

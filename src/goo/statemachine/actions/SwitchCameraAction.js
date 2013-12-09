@@ -32,7 +32,7 @@ function(
 		transitions: []
 	};
 
-	SwitchCameraAction.prototype.ready = function (fsm) {
+	SwitchCameraAction.prototype.ready = function (/*fsm*/) {
 		this._camera = Renderer.mainCamera;
 	};
 
@@ -47,7 +47,7 @@ function(
 		}
 	};
 
-	SwitchCameraAction.prototype.cleanup = function (fsm) {
+	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
 		SystemBus.emit('goo.setCurrentCamera', {
 			camera: this._camera,
 			entity: null
