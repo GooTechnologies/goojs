@@ -21,10 +21,10 @@ define(
 		LogicNodeSub.prototype = Object.create(LogicNode.prototype);
 		LogicNodeSub.editorName = "Sub";
 
-		LogicNodeSub.prototype.onInputChanged = function(instDesc /*, portID, value */) {
+		LogicNodeSub.prototype.onInputChanged = function(instDesc /*, portID, value */ ) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeSub.inportX) -
-			          LogicLayer.readPort(instDesc, LogicNodeSub.inportY);
-			
+				LogicLayer.readPort(instDesc, LogicNodeSub.inportY);
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeSub.outportSum, out);
 		};
 

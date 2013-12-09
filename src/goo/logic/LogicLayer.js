@@ -59,7 +59,7 @@ define(
 				obj: instance,
 				iface: iface,
 				layer: this,
-				wantsProcess: wantsProcessCall,
+				wantsProcess: wantsProcessCall
 			};
 
 			this._instanceID++;

@@ -3,7 +3,7 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {

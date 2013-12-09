@@ -41,8 +41,9 @@ define([
 		LogicSystem.prototype.process = function(entities, tpf) {
 			for (var i = 0; i < entities.length; i++) {
 				var e = entities[i];
-				if (e.logicComponent !== undefined)
+				if (e.logicComponent !== undefined) {
 					e.logicComponent.process(tpf);
+				}
 			}
 		};
 
@@ -51,22 +52,24 @@ define([
 		 */
 		LogicSystem.prototype.resolveEntityRef = function(entityRef) {
 			var e = this._entities[entityRef];
-			if (e !== undefined)
+			if (e !== undefined) {
 				return e.entity;
-		}
+			}
+		};
 
 		LogicSystem.prototype.getLayerByEntity = function(entityName) {
 			var e = this._entities[entityName];
-			if (e === undefined)
+			if (e === undefined) {
 				return e;
+			}
 
 			var c = e.entity.logicComponent;
-			if (c === undefined)
+			if (c === undefined) {
 				return c;
+			}
 
 			return c.logicLayer;
-		}
-
+		};
 
 		LogicSystem.prototype.makeOutputWriteFn = function(sourceEntity, outPortDesc) {
 			// Lets do this the really slow and stupid way for now! 
@@ -76,7 +79,7 @@ define([
 			var matches = [];
 			this.forEachLogicObject(function(o) {
 				// Look for entities that point to this here.
-				if (o.type === "LogicNodeEntityProxy" && o.entityRef == sourceEntity.name) {
+				if (o.type === "LogicNodeEntityProxy" && o.entityRef === sourceEntity.name) {
 					matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
 				}
 			});
@@ -91,8 +94,9 @@ define([
 		LogicSystem.prototype.forEachLogicObject = function(f) {
 			for (var n in this._entities) {
 				var e = this._entities[n].entity;
-				if (e.logicComponent !== undefined)
+				if (e.logicComponent !== undefined) {
 					e.logicComponent.logicLayer.forEachLogicObject(f);
+				}
 			}
 		};
 
@@ -101,7 +105,9 @@ define([
 
 			// notify system start.
 			this.forEachLogicObject(function(o) {
-				if (o.onSystemStarted !== undefined) o.onSystemStarted();
+				if (o.onSystemStarted !== undefined) {
+					o.onSystemStarted();
+				}
 			});
 		};
 
@@ -110,7 +116,9 @@ define([
 
 			// notify system stop for pause
 			this.forEachLogicObject(function(o) {
-				if (o.onSystemStopped !== undefined) o.onSystemStopped(true);
+				if (o.onSystemStopped !== undefined) {
+					o.onSystemStopped(true);
+				}
 			});
 		};
 
@@ -119,12 +127,15 @@ define([
 
 			// notify system (full) stop
 			this.forEachLogicObject(function(o) {
-				if (o.onSystemStopped !== undefined) o.onSystemStopped(false);
+				if (o.onSystemStopped !== undefined) {
+					o.onSystemStopped(false);
+				}
 			});
 
 			// now that logic layer is cleared, need to put them back in on play.
-			for (var k in this._entities)
+			for (var k in this._entities) {
 				this._entities[k].inserted = false;
+			}
 		};
 
 		return LogicSystem;

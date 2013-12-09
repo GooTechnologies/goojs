@@ -48,7 +48,7 @@ define(
 				var old = this._time;
 				this._time += tpf;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, this._time);
-				
+
 				if (old < 1 && this._time >= 1) {
 					LogicLayer.fireEvent(this.logicInstance, LogicNodeTime.outEventReached1);
 				}
