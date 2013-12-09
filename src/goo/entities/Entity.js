@@ -78,7 +78,7 @@ function () {
 	Entity.prototype.hasComponent = function (type) {
 		return this[getTypeAttributeName(type)] !== undefined;
 	};
-	
+
 	/**
 	 * Retrieve a component of a specific type
 	 *
