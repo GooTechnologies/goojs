@@ -1,14 +1,12 @@
 define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/entities/components/Component',
+	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
-	Matrix3x3,
 	Component
 ) {
 	"use strict";
@@ -18,8 +16,6 @@ function (
 	 * down the tree.
 	 */
 	function TransformComponent() {
-		Component.call(this);
-		
 		this.type = 'TransformComponent';
 
 		/** Parent transformcomponent in the "scene graph"
@@ -42,7 +38,6 @@ function (
 
 		this._dirty = true;
 		this._updated = false;
-		
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);
