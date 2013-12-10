@@ -76,7 +76,7 @@ function (
 				color : [0, 0, 0, 1]
 			}, {
 				timeOffset : 0.5,
-				size : 3.0,
+				size : 3.0 * options.scale,
 				color : [0, 0, 0, 0]
 			}]
 		};
