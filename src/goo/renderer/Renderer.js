@@ -383,15 +383,15 @@ function (
 			adjustHeight = window.innerHeight / this.downScale;
 		}
 
-		var savedWidth = adjustWidth;
-		var savedHeight = adjustHeight;
+		var fullWidth = adjustWidth;
+		var fullHeight = adjustHeight;
 
 		if (camera && camera.lockedRatio === true && camera.aspect) {
 			adjustWidth = adjustHeight * camera.aspect;
 		}
 
 		var aspect = adjustWidth / adjustHeight;
-		this.setSize(adjustWidth, adjustHeight, savedWidth, savedHeight);
+		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
 
 		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;
@@ -408,21 +408,30 @@ function (
 	 * Sets this.domElement.width and height using the parameters.
 	 * Then it calls this.setViewport(0, 0, width, height);
 	 * Finally it resets the hardwarePicking.pickingTarget
-	 * @param {number} width
-	 * @param {number} height
+	 * @param {number} width aspect ratio corrected width
+	 * @param {number} height aspect ratio corrected height
+	 * @param {number} [fullWidth] full viewport width
+	 * @param {number} [fullHeight] full viewport height
 	 */
-	Renderer.prototype.setSize = function (width, height, sw, sh) {
-		this.domElement.width = sw;
-		this.domElement.height = sh;
-
-		if (width > sw) {
-			var mult = sw / width;
-			width = sw;
-			height = sh * mult;
+	Renderer.prototype.setSize = function (width, height, fullWidth, fullHeight) {
+		if (fullWidth === undefined) {
+			fullWidth = width;
+		}
+		if (fullHeight === undefined) {
+			fullHeight = height;
 		}
 
-		var w = (sw - width) * 0.5;
-		var h = (sh - height) * 0.5;
+		this.domElement.width = fullWidth;
+		this.domElement.height = fullHeight;
+
+		if (width > fullWidth) {
+			var mult = fullWidth / width;
+			width = fullWidth;
+			height = fullHeight * mult;
+		}
+
+		var w = (fullWidth - width) * 0.5;
+		var h = (fullHeight - height) * 0.5;
 
 		if (w !== this.viewportX || h !== this.viewportY ||
 			width !== this.viewportWidth || height !== this.viewportHeight) {
