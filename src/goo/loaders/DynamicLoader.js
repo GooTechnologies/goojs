@@ -10,6 +10,7 @@ define([
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
+	'goo/loaders/handlers/LogicComponentHandler',
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
