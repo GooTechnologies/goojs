@@ -76,23 +76,30 @@ function (
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
+				// REVIEW: This loop has performance bottlenecks
 				if (entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
 					var renderables;
+					// REVIEW: here
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
 						renderables = tree[componentName];
 					} else {
+						// REVIEW: here
 						renderables = DebugDrawHelper.getRenderablesFor(component, options);
+						// REVIEW: here
 						renderables.forEach(function (renderable) { renderable.id = entity.id; });
 						tree[componentName] = renderables;
 					}
+					// REVIEW: here
 					renderables.forEach(function (renderable) { renderable.transform.copy(entity.transformComponent.worldTransform); });
 					DebugDrawHelper.update(renderables, component, this.camera.translation);
+					// REVIEW: and here
 					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
 					//this.renderList[count++] = renderables[0];
 					//this.renderList[count++] = renderables[1];
+					// REVIEW: But maybe they're too small to matter.
 				}
 			}
 		}
