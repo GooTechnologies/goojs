@@ -25,6 +25,9 @@ define(
 		// Logic interface set-up	
 		LogicNodeHTMLComponent.logicInterface = new LogicInterface("HTML");
 		LogicNodeHTMLComponent.inportElementId = LogicNodeHTMLComponent.logicInterface.addInputProperty("elementId", "string");
+		LogicNodeHTMLComponent.inportAlpha = LogicNodeHTMLComponent.logicInterface.addInputProperty("alpha", "float");
+		LogicNodeHTMLComponent.inportVisible = LogicNodeHTMLComponent.logicInterface.addInputProperty("visible", "bool");
+
 		LogicNodeHTMLComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
 
 		LogicNodeHTMLComponent.prototype.onConfigure = function(config) {
@@ -42,7 +45,6 @@ define(
 		LogicNodeHTMLComponent.prototype.setupEntity = function(instDesc) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var elementId = LogicLayer.readPort(instDesc, LogicNodeHTMLComponent.inportElementId);
-			console.log("setting up entity ", entity, " with ", elementId);
 			
 			entity.clearComponent("HTMLComponent");
 			entity.setComponent(new HTMLComponent(document.getElementById(elementId)));
