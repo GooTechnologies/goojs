@@ -19,7 +19,6 @@ define(
 			this._instanceID = 0;
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
-			this._outputForwarding = {};
 			this.ownerEntity = ownerEntity;
 
 			// Hax to get LogicSystem
@@ -31,7 +30,6 @@ define(
 			this._connectionsBySource = {};
 			this._instanceID = 0;
 			this._nextFrameNotifications = [];
-			this._outputForwarding = {};
 		};
 
 		/**
@@ -175,28 +173,20 @@ define(
 			// Adding connection here which will be in unresolved state
 			// [targetName, targetPort]
 			//
-			// resolved have 4 columns
+			// when resolved they will have 4 columns
 
 			if (instDesc.outConnections === undefined) {
 				instDesc.outConnections = {};
 			}
 
-			// This is a proxy object for an entity component. Whenever the actual component logic wants
-			// to send outputs, it needs to look itself up in _outputForwarding and send it here instead.
-			if (instDesc.obj !== undefined && instDesc.obj.entityRef !== undefined) {
-				// note that in this case we are not using resolved connection
-				// names. connections are then magically trickeried
-				this._outputForwarding[instDesc.obj.entityRef] = instDesc;
-			} else {
-				// if not proxy always resolve
-				sourcePort = LogicLayer.resolvePortID(instDesc, sourcePort);
+			// resolve from name
+			var sourcePortID = LogicLayer.resolvePortID(instDesc, sourcePort);
+			
+			if (instDesc.outConnections[sourcePortID] === undefined) {
+				instDesc.outConnections[sourcePortID] = [];
 			}
 
-			if (instDesc.outConnections[sourcePort] === undefined) {
-				instDesc.outConnections[sourcePort] = [];
-			}
-
-			instDesc.outConnections[sourcePort].push([targetName, targetPort]);
+			instDesc.outConnections[sourcePortID].push([targetName, targetPort]);
 		};
 
 
@@ -205,36 +195,8 @@ define(
 		 * call the provided callback function on each connected target.
 		 */
 		LogicLayer.doConnections = function(instDesc, portID, func) {
-			// See if there are any connections at all
+		
 			if (instDesc.outConnections === undefined) {
-
-				// If the instDesc has a proxyRef value it means that outgoing connections
-				// should be imported from that referenced object. Entity components
-				// always do this; importing connections from LogicNodes.
-				if (instDesc.proxyRef === undefined) {
-					return;
-				}
-
-				var next = instDesc.layer._outputForwarding[instDesc.proxyRef];
-				if (next === undefined || next.outConnections === undefined) {
-					return;
-				}
-
-				// See if any of the outgoing connections matches port:ids 
-				// with what this current node offers. Required as the proxy
-				// entity can map to different interfaces.
-				for (var cn in next.outConnections) {
-					var c = next.outConnections[cn];
-					if (LogicLayer.resolvePortID(instDesc, cn) !== null) {
-						for (var i = 0; i < c.length; i++) {
-							instDesc.layer.addConnectionByName(instDesc, cn, c[i][0], c[i][1]);
-						}
-					}
-				}
-
-				// If any ports matched up, it means outConnections can't be undefined
-				// any more and it's safe to recurse in and try again.
-				LogicLayer.doConnections(instDesc, portID, func);
 				return;
 			}
 
