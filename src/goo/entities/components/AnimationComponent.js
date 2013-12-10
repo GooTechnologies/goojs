@@ -220,9 +220,9 @@ function (
 	};
 
 	AnimationComponent.prototype.stop = function() {
-		/*this.resetClips();
-		this.paused = false;
-		this.update();*/
+		if (this._skeletonPose) {
+			this._skeletonPose.setToBindPose();
+		}
 		this.paused = true;
 		this.lastTimeOfPause = -1;
 	};
@@ -234,8 +234,6 @@ function (
 			} else {
 				this.shiftClipTime(World.time - this.lastTimeOfPause);
 			}
-			//this.accumulatedDelay += World.time - this.lastTimeOfPause;
-			// console.log(this.accumulatedDelay); // rogue comment
 		}
 		this.paused = false;
 	};
