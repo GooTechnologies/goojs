@@ -69,18 +69,12 @@ function(
 		promises.push(p2);
 
 		return RSVP.all(promises).then(function() {
-			/*var paused = component.paused;
-			component.paused = false;
-			component.resetClips();
-			component.update();
-			component.paused = paused;*/
 			return component;
 		});
 	};
 
 	AnimationComponentHandler.prototype._getAnimationLayers = function(ref) {
 		var that = this;
-		//console.log("GetAnimationLayers " + ref);
 		return this.getConfig(ref).then(function(config) {
 			return that.updateObject(ref, config, that.options);
 		});
