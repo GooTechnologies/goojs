@@ -864,8 +864,8 @@ function (
 		if (!skipUpdateBuffer) {
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var x = Math.floor(clientX / pickingResolutionDivider);
-				var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
+				var x = Math.floor((clientX - this.viewportX) / pickingResolutionDivider);
+				var y = Math.floor((this.viewportHeight - (clientY - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
@@ -894,8 +894,8 @@ function (
 			return;
 		}
 		var pickingResolutionDivider = 4;
-		var x = Math.floor(clientX / pickingResolutionDivider);
-		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
+		var x = Math.floor((clientX - this.viewportX) / pickingResolutionDivider);
+		var y = Math.floor((this.viewportHeight - (clientY - this.viewportY)) / pickingResolutionDivider);
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 
