@@ -107,6 +107,13 @@ define([
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
 			settings = settings || {};
+			// REVIEW: It's bad style to modify the settings object provided by the caller.
+			// I.e. if the caller does:
+			//   var s = {};
+			//   EntityUtils.clone(w, e, s);
+			// ...he wouldn't expect s to have changed.
+			// REVIEW: `settings.shareData || true` will evaluate to true if shareData is false,
+			// which means that the setting will always be true.
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
