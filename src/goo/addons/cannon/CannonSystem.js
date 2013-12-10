@@ -24,12 +24,19 @@ function(
 	var CANNON = window.CANNON;
 
 	/**
-	 * @class Handles integration with Cannon.js
-	 * @desc Depends on the global CANNON object.
-	 * Load cannon.js using a <script> tag before using this system.
+	 * @class Handles integration with Cannon.js.
+	 * Depends on the global CANNON object, 
+	 * so load cannon.js using a script tag before using this system.
+	 * See also {@link CannonComponent}
+	 * @extends System
+	 * @param [Object] settings. The settings object can contain the following properties:
+	 * @param {number} settings.stepFrequency (defaults to 60)
+	 * @example
+	 * var cannonSystem = new CannonSystem({stepFrequency:60});
+	 * goo.world.setSystem(cannonSystem);
 	 */
-	function CannonjsSystem(settings) {
-		System.call(this, 'CannonjsSystem', ['CannonjsComponent', 'TransformComponent']);
+	function CannonSystem(settings) {
+		System.call(this, 'CannonSystem', ['CannonComponent', 'TransformComponent']);
 
 		settings = settings || {};
 
@@ -42,10 +49,10 @@ function(
 		this.quat = new Quaternion();
 	}
 
-	CannonjsSystem.prototype = Object.create(System.prototype);
+	CannonSystem.prototype = Object.create(System.prototype);
 
-	CannonjsSystem.prototype.createShape = function(entity) {
-		var cannonComponent = entity.cannonjsComponent;
+	CannonSystem.prototype.createShape = function(entity) {
+		var cannonComponent = entity.cannonComponent;
 		var transformComponent = entity.transformComponent;
 
 		var shape;
@@ -110,13 +117,13 @@ function(
 		return shape;
 	};
 
-	CannonjsSystem.prototype.inserted = function(entity) {
-		var cannonComponent = entity.cannonjsComponent;
+	CannonSystem.prototype.inserted = function(entity) {
+		var cannonComponent = entity.cannonComponent;
 		var transformComponent = entity.transformComponent;
 
 		var shape = this.createShape(entity);
 		if (!shape) {
-			entity.clearComponent('CannonjsComponent');
+			entity.clearComponent('CannonComponent');
 			return;
 		}
 
@@ -130,25 +137,23 @@ function(
 		this.world.add(body);
 	};
 
-	CannonjsSystem.prototype.deleted = function(entity) {
-		var cannonComponent = entity.cannonjsComponent;
+	CannonSystem.prototype.deleted = function(entity) {
+		var cannonComponent = entity.cannonComponent;
 
 		if (cannonComponent) {
 			this.world.remove(cannonComponent.body);
 		}
 	};
 
-	CannonjsSystem.prototype.process = function(entities /*, tpf */) {
+	CannonSystem.prototype.process = function(entities /*, tpf */) {
 		this.world.step(1 / this.stepFrequency);
 
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var cannonComponent = entity.cannonjsComponent;
+			var cannonComponent = entity.cannonComponent;
 
 			var position = cannonComponent.body.position;
-			entity.transformComponent.transform.translation.x = position.x;
-			entity.transformComponent.transform.translation.y = position.y;
-			entity.transformComponent.transform.translation.z = position.z;
+			entity.transformComponent.setTranslation( position.x, position.y, position.z);
 
 			var cannonQuat = cannonComponent.body.quaternion;
 			this.quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
@@ -157,5 +162,5 @@ function(
 		}
 	};
 
-	return CannonjsSystem;
+	return CannonSystem;
 });

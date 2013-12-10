@@ -9,12 +9,12 @@ function() {
 	function Logo() {
 	}
 	/** @type {string} */
-	Logo.blue = "#2A3276";
+	Logo.blue = '#2A3276';
 	/** @type {string} */
-	Logo.white = "#FFFFFF";
+	Logo.white = '#FFFFFF';
 
 	var defaults = {
-		color: Logo.blue,
+		color: Logo.white,
 		shadow: false
 	};
 
@@ -34,7 +34,7 @@ function() {
 			}
 		}
 
-        if(!document.createElementNS) return "";
+        if(!document.createElementNS) { return ''; }
 
 		var xmlns = 'http://www.w3.org/2000/svg';
 		var svg = document.createElementNS(xmlns, 'svg');

@@ -98,40 +98,41 @@ define([
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
 
-
-		// optional touch controls... requires Hammer.js v2
-		if (typeof (window.Hammer) !== "undefined") {
-			// Disable warning that we call `Hammer()`, not `new Hammer()`
-			//jshint newcap:false
-			var hammertime = window.Hammer(this.domElement, {
-				transform_always_block : true,
-				transform_min_scale : 1
-			});
-
-			hammertime.on('touch drag transform release', function (ev) {
-				if (ev.gesture && ev.gesture.pointerType !== 'mouse') {
-					switch (ev.type) {
-						case 'transform':
-							var scale = ev.gesture.scale;
-							if (scale < 1) {
-								that.applyWheel(that.zoomSpeed * -1);
-							} else if (scale > 1) {
-								that.applyWheel(that.zoomSpeed * 1);
-							}
-							break;
-						case 'touch':
-							that.updateButtonState(2, true);
-							break;
-						case 'release':
-							that.updateButtonState(2, false);
-							break;
-						case 'drag':
-							that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
-							break;
-					}
-				}
-			});
-		}
+		// Touch controls
+		this.domElement.addEventListener('touchstart', function(event) {
+			var button = event.targetTouches.length;
+			that.updateButtonState(1, button === 2);
+			that.updateButtonState(2, button === 1);
+		});
+		this.domElement.addEventListener('touchend', function(event) {
+			var button = event.targetTouches.length;
+			that.updateButtonState(1, button === 2);
+			that.updateButtonState(2, button === 1);
+		});
+		var oldDistance = 0;
+		this.domElement.addEventListener('touchmove', function(event) {
+			var cx, cy, distance;
+			var touches = event.targetTouches;
+			var x1 = touches[0].clientX;
+			var y1 = touches[0].clientY;
+			if (touches.length === 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+				distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+			} else {
+				cx = x1;
+				cy = y1;
+			}
+			that.updateDeltas(cx, cy);
+			var scale = (distance - oldDistance) / Math.max(that.domElement.height, that.domElement.width);
+			scale /= 3;
+			if (touches.length === 2 && Math.abs(scale) > 0.3) {
+				that.applyWheel(that.zoomSpeed * scale);
+				oldDistance = distance;
+			}
+		});
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {

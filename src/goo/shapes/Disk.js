@@ -4,10 +4,10 @@ define(['goo/renderer/MeshData'],
 	"use strict";
 
 	/**
-	 * @class A disk
+	 * @class A disk shape
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk
-	 * @param {number} [pointiness=0] By default a disk is flat, however, its center can be raised above the disk's outer edge
+	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.
 	 */
 	function Disk(nSegments, radius, pointiness) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
@@ -42,21 +42,21 @@ define(['goo/renderer/MeshData'],
 
 		var slope = Math.atan2(this.radius, this.pointiness);
 
-		var ak = Math.PI * 2 / this.nSegments;
-		for (var i = 0, k = 0; i < this.nSegments; i++, k += ak) {
+		var angleIncrement = Math.PI * 2 / this.nSegments;
+		for (var i = 0, angle = 0; i < this.nSegments; i++, angle += angleIncrement) {
 			verts.push(
-				Math.cos(k) * this.radius,
-				Math.sin(k) * this.radius,
+				Math.cos(angle) * this.radius,
+				Math.sin(angle) * this.radius,
 				0);
 
 			norms.push(
-				Math.cos(k) * Math.cos(slope),
-				Math.sin(k) * Math.cos(slope),
+				Math.cos(angle) * Math.cos(slope),
+				Math.sin(angle) * Math.cos(slope),
 				Math.sin(slope));
 
 			tex.push(
-				Math.cos(k) * 0.5 + 0.5,
-				Math.sin(k) * 0.5 + 0.5);
+				Math.cos(angle) * 0.5 + 0.5,
+				Math.sin(angle) * 0.5 + 0.5);
 
 			indices.push(this.nSegments, i, (i + 1) % this.nSegments);
 		}

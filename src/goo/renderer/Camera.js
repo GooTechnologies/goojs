@@ -77,6 +77,8 @@ function(
 		this._newDirection = new Vector3();
 
 		this.projectionMode = Camera.Perspective;
+		this.lockedRatio = false;
+		this.aspect = aspect || 1;
 
 		this._updateMVMatrix = true;
 		this._updateInverseMVMatrix = true;
@@ -216,7 +218,7 @@ function(
 	 * @param top
 	 * @param bottom
 	 */
-	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom) {
+	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom, aspect) {
 		if (near !== undefined && near !== null) {
 			this.near = near;
 		}
@@ -236,11 +238,14 @@ function(
 		if (bottom !== undefined && bottom !== null) {
 			this.bottom = bottom;
 		}
+		if (aspect !== undefined && aspect !== null) {
+			this.aspect = aspect;
+		}
 
 		this._frustumNear = this.near;
 		this._frustumFar = this.far;
-		this._frustumLeft = this.left;
-		this._frustumRight = this.right;
+		this._frustumLeft = this.left * this.aspect;
+		this._frustumRight = this.right * this.aspect;
 		this._frustumTop = this.top;
 		this._frustumBottom = this.bottom;
 

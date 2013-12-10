@@ -148,6 +148,7 @@ define([
 		_fillAttributeBuffer(MeshData.TANGENT, data.tangents);
 		_fillAttributeBuffer(MeshData.COLOR, data.colors);
 
+
 		if (meshData.type === MeshData.SKINMESH) {
 			_fillAttributeBuffer(MeshData.WEIGHTS, data.weights);
 		}

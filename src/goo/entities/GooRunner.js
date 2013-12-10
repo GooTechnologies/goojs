@@ -68,14 +68,14 @@ function (
 		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
-		this.world.setSystem(new CSSTransformSystem(this.renderer));
+		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
-		this.world.setSystem(new LightDebugSystem());
-		this.world.setSystem(new CameraDebugSystem());
-		this.world.setSystem(new MovementSystem());
+		this.world.setSystem(new LightDebugSystem()); // Go away!
+		this.world.setSystem(new CameraDebugSystem()); // Go away!
+		this.world.setSystem(new MovementSystem()); // Go away!
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);

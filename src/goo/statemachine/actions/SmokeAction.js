@@ -30,7 +30,7 @@ function(
 
 	SmokeAction.external = {
 		name: 'Smoke',
-		description: 'Makes the entity emit smoke',
+		description: 'Makes the entity emit smoke. To cancel the smoke emitter use the "Remove Particles" action',
 		parameters: [{
 			name: 'Color',
 			key: 'color',

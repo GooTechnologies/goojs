@@ -41,22 +41,28 @@ function(
 		transitions: []
 	};
 
-	SetRenderTargetAction.prototype._run = function (fsm) {
+	SetRenderTargetAction.prototype.ready = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-
-		// add portal system if it's not already added
 		var world = entity._world;
 		if (!world.getSystem('PortalSystem')) {
-			var renderingSystem = world.getSystem('RenderSystem');
+			var renderSystem = world.getSystem('RenderSystem');
 			var renderer = world.gooRunner.renderer;
-			world.setSystem(new PortalSystem(renderer, renderingSystem));
+			world.setSystem(new PortalSystem(renderer, renderSystem));
 		}
+	};
+
+	SetRenderTargetAction.prototype._run = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		var world = entity._world;
 
 		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+
+		if (!cameraEntity || !cameraEntity.cameraComponent || !cameraEntity.cameraComponent.camera) { return; }
 		var camera = cameraEntity.cameraComponent.camera;
 
 		var portalMaterial = Material.createMaterial(ShaderLib.textured, '');
 
+		if (!entity.meshRendererComponent) { return; }
 		this.oldMaterials = entity.meshRendererComponent.materials;
 		entity.meshRendererComponent.materials = [portalMaterial];
 
@@ -66,7 +72,15 @@ function(
 
 	SetRenderTargetAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		entity.meshRendererComponent.materials = this.oldMaterials;
+		if (this.oldMaterials) {
+			entity.meshRendererComponent.materials = this.oldMaterials;
+		}
+
+		this.oldMaterials = null;
+
+		entity.clearComponent('portalComponent');
+
+		// would remove the entire system, but the engine does not support that
 	};
 
 	return SetRenderTargetAction;

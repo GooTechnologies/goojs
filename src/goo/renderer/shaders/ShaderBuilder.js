@@ -97,7 +97,8 @@ function(
 					attribute === 'JOINT_COUNT' ||
 					attribute === 'WEIGHTS' ||
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
-					attribute === 'ENVIRONMENT_TYPE') {
+					attribute === 'ENVIRONMENT_TYPE' ||
+					attribute === 'WRAP_AROUND') {
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
@@ -381,6 +382,7 @@ function(
 							'float pointDiffuseWeightFull = max(dotProduct, 0.0);',
 							'float pointDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
 
+							'float wrapRGB = 1.0;',
 							'vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapRGB);',
 						'#else',
 							'float pointDiffuseWeight = max(dotProduct, 0.0);',
@@ -416,6 +418,7 @@ function(
 							'float dirDiffuseWeightFull = max(dotProduct, 0.0);',
 							'float dirDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
 
+							'float wrapRGB = 1.0;',
 							'vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapRGB);',
 						'#else',
 							'float dirDiffuseWeight = max(dotProduct, 0.0);',
@@ -472,6 +475,7 @@ function(
 								'float spotDiffuseWeightFull = max(dotProduct, 0.0);',
 								'float spotDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
 
+								'float wrapRGB = 1.0;',
 								'vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapRGB);',
 							'#else',
 								'float spotDiffuseWeight = max(dotProduct, 0.0);',
