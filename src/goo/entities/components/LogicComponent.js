@@ -63,7 +63,6 @@ define([
 				var obj = this.nodes[k];
 				obj.onConnected(obj.logicInstance);
 			}
-			}
 		};
 
 		LogicComponent.prototype.process = function(tpf) {

@@ -88,6 +88,8 @@ define(
 		 */
 		LogicNode.prototype.onInputChanged = function() {};
 
+		LogicNode.prototype.onConnected = function() {};
+
 		LogicNode._instanceCount = 0;
 
 		return LogicNode;
