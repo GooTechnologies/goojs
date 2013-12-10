@@ -2,13 +2,14 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LogicComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
 	'goo/logic/LogicNodeEntityProxy',
 	'goo/logic/LogicNodeTransformComponent',
 	'goo/logic/LogicNodeMeshRendererComponent',
 	'goo/logic/LogicNodeLightComponent',
 	'goo/logic/LogicNodeDebug',
 	'goo/logic/LogicNodeRandom',
+	'goo/logic/LogicNodeTime',
+	'goo/logic/LogicNodeSine',
 	'goo/logic/LogicNodeVec3',
 	'goo/logic/LogicNodeMultiply',
 	'goo/logic/LogicNodeWASD',
@@ -33,8 +34,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	ComponentHandler,
 	LogicComponent,
 	RSVP,
-	pu,
-	_
+	pu
 ) {
 	"use strict";
 

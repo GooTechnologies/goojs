@@ -3,15 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that multiplies two floats.
 		 */
 		function LogicNodeMultiplyFloat() {
 			LogicNode.call(this);
@@ -29,10 +28,10 @@ define(
 			}
 		};
 
-		LogicNodeMultiplyFloat.prototype.onInputChanged = function(instDesc, portID, value) {
-			var x = LogicLayer.readPort(this.logicInstance, LogicNodeMultiplyFloat.inportX);
+		LogicNodeMultiplyFloat.prototype.onInputChanged = function(instDesc) {
+			var x = LogicLayer.readPort(instDesc, LogicNodeMultiplyFloat.inportX);
 			var y = this.value;
-			LogicLayer.writeValue(this.logicInstance, LogicNodeMultiplyFloat.outportProduct, x * y);
+			LogicLayer.writeValue(instDesc, LogicNodeMultiplyFloat.outportProduct, x * y);
 		};
 
 		LogicNodeMultiplyFloat.logicInterface = new LogicInterface();

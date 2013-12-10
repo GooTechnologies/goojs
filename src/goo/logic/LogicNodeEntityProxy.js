@@ -3,11 +3,10 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/entities/components/LightComponent',
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, LightComponent) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
@@ -26,15 +25,15 @@ define(
 			this.entityRef = config.entityRef;
 		};
 
-		LogicNodeEntityProxy.prototype.onPropertyWrite = function(instDesc, portID, value) {};
-		LogicNodeEntityProxy.prototype.onEvent = function(instDesc, portID) {};
-
 		// Empty.	
 		LogicNodeEntityProxy.logicInterface = new LogicInterface("Component Proxy");
-		LogicNodeEntityProxy.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
+		LogicNodeEntityProxy.logicInterface.addConfigEntry({
+			name: 'entityRef',
+			type: 'entityRef',
+			label: 'Entity'
+		});
 
 		LogicNodes.registerType("LogicNodeEntityProxy", LogicNodeEntityProxy);
 
 		return LogicNodeEntityProxy;
 	});
-	

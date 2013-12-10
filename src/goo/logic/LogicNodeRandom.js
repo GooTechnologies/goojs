@@ -10,8 +10,8 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node implementing a time counter. Processed every frame and time is increased. Output
-		 *        can be read through the "Time" port
+		 * @class Logic node implementing a random value. Every frame a new random value is written
+		 *        to its output.
 		 */
 		function LogicNodeRandom() {
 			LogicNode.call(this);
@@ -29,7 +29,7 @@ define(
 		LogicNodeRandom.outPropRandom = LogicNodeRandom.logicInterface.addOutputProperty("Random0_1", "float");
 
 		// Process
-		LogicNodeRandom.prototype.processLogic = function(tpf) {
+		LogicNodeRandom.prototype.processLogic = function() {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeRandom.outPropRandom, Math.random());
 		};
 

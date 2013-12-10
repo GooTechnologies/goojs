@@ -64,7 +64,6 @@ define( /** @lends */ function() {
 	ComponentHandler.prototype.update = function(entity, config) {
 		this._prepare(config);
 		var object;
-		
 		// REVIEW: I would prefer ===
 		// ANSWER: entity !== null && entity !== undefined is unseemly
 		if(entity == null || entity[this.constructor._type + "Component"] == null) {

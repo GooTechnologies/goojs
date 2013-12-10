@@ -3,15 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that computes the max of two inputs.
 		 */
 		function LogicNodeMax() {
 			LogicNode.call(this);
@@ -22,12 +21,12 @@ define(
 		LogicNodeMax.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMax.editorName = "Max";
 
-		LogicNodeMax.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeMax.prototype.onInputChanged = function(instDesc) {
 			var val1 = LogicLayer.readPort(instDesc, LogicNodeMax.inportX);
 			var val2 = LogicLayer.readPort(instDesc, LogicNodeMax.inportY);
 			var out = Math.max(val1, val2);
-			
-			LogicLayer.writeValue(this.logicInstance, LogicNodeMax.outportSum, out);
+
+			LogicLayer.writeValue(instDesc, LogicNodeMax.outportSum, out);
 		};
 
 		LogicNodeMax.logicInterface = new LogicInterface();

@@ -3,15 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node handling WASD input
 		 */
 		function LogicNodeWASD() {
 			LogicNode.call(this);
@@ -50,7 +49,7 @@ define(
 			document.addEventListener('keyup', this.eventListenerUp);
 		};
 
-		LogicNodeWASD.prototype.onSystemStopped = function(stopForPause) {
+		LogicNodeWASD.prototype.onSystemStopped = function() {
 			document.removeEventListener('keydown', this.eventListenerDown);
 			document.removeEventListener('keyup', this.eventListenerUp);
 		};

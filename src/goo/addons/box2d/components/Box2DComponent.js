@@ -5,7 +5,7 @@ define([
 function(
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	function Box2DComponent(settings) {
 		this.type = 'Box2DComponent';
@@ -16,12 +16,12 @@ function(
 
 		this.settings = settings || {};
 
-		this.shape = settings.shape ? settings.shape : "box";
+		this.shape = settings.shape ? settings.shape : 'box';
 		this.width = settings.width ? settings.width : 1;
 		this.height = settings.height ? settings.height : 1;
 		this.radius = settings.radius ? settings.radius : 1;
-		this.vertices = settings.vertices ? settings.vertices : [0,1,2,2,0,2];
-		this.movable = settings.movable === true ? true : false;
+		this.vertices = settings.vertices ? settings.vertices : [0, 1, 2, 2, 0, 2];
+		this.movable = settings.movable === false ? false : true;
 		this.friction = settings.friction ? settings.friction : 1;
 		this.offsetX = settings.offsetX ? settings.offsetX : 0;
 		this.offsetY = settings.offsetY ? settings.offsetY : 0;

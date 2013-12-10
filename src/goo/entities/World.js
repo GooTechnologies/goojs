@@ -28,7 +28,7 @@ function (
 		 */
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
-		
+
 		this.time = 0.0;
 
 		/** Time since last frame in seconds
@@ -70,7 +70,14 @@ function (
 	 * @param {System} system
 	 */
 	World.prototype.setSystem = function (system) {
-		this._systems.push(system);
+		var priority = system.priority;
+
+		for (var i = 0; i < this._systems.length; i++) {
+			if (this._systems[i].priority > priority) {
+				break;
+			}
+		}
+		this._systems.splice(i, 0, system);
 	};
 
 	/**
@@ -126,7 +133,6 @@ function (
 			}
 		}
 	};
-	
 
 	/**
 	 * Remove an entity from the world
@@ -203,7 +209,8 @@ function (
 			}
 			if (observer.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.addedComponent(entity, entity._components[i]);				}
+					observer.addedComponent(entity, entity._components[i]);
+				}
 			}
 		});
 		this._check(this._changedEntities, function (observer, event) {

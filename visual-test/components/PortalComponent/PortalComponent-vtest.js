@@ -60,7 +60,7 @@ require([
 		quadEntity.setComponent(portalComponent);
 		quadEntity.addToWorld();
 
-		return portalComponent;
+		return quadEntity;
 	}
 
 	function addSpheres(goo, nSpheres) {
@@ -138,32 +138,55 @@ require([
 		// basic setup
 		addSpheres(goo, 15);
 		addLight(goo);
-		var camera0 = addUserCamera(goo);
 
-		// create 2 more cameras
-		var camera1 = addSpinningCamera(goo, 0);
-		var camera2 = addSpinningCamera(goo, Math.PI);
+		// create a user camera
+		var userCamera = addUserCamera(goo);
 
-		// add the portal system tot the world
+		// create one more camera
+		var spinningCamera = addSpinningCamera(goo, 0);
+
+		// add the portal system to the world
 		addPortalSystem(goo);
 
-		// add portals
-		var pickingMaterial = Material.createEmptyMaterial(ShaderLib.simpleLit, 'pickingMaterial');
-		pickingMaterial.blendState = {
+		// override material for one of the portals
+		var overrideMaterial = Material.createEmptyMaterial(ShaderLib.simpleLit, 'overrideMaterial');
+		overrideMaterial.blendState = {
 			blending: 'NoBlending',
 			blendEquation: 'AddEquation',
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
 
-		//var portalComponent0 =
-		addPortal(goo, camera1, -3,  3, 2, 5, { preciseRecursion: true });
-		var portalComponent1 = addPortal(goo, camera2,  3,  3, 2, 5, { preciseRecursion: true, autoUpdate: false }, pickingMaterial);
-		//var portalComponent2 =
-		addPortal(goo, camera0,  0, -3, 2, 5, { preciseRecursion: true });
+		// add portals
+		var userCameraPortalEntity = addPortal(goo, userCamera, -3,  3, 2, 5, { preciseRecursion: true, alwaysRender: true });
+		var overridenMaterialPortalEntity = addPortal(goo, userCamera,  3,  3, 2, 5,
+			{ preciseRecursion: true, autoUpdate: false, alwaysRender: true }, overrideMaterial);
+		var spinningCameraEntity = addPortal(goo, spinningCamera, -3, -3, 2, 5, { preciseRecursion: true, alwaysRender: true });
+		var addRemovePortalEntity = addPortal(goo, userCamera,  3, -3, 2, 5, { preciseRecursion: true, alwaysRender: true });
+		var storedPortalComponent = addRemovePortalEntity.portalComponent;
 
-		document.addEventListener('mousedown', function() {
-			portalComponent1.requestUpdate();
+		// setup some interaction
+		document.addEventListener('keypress', function(e) {
+			switch (e.which) {
+				case 49:
+					console.log('redrawing');
+					overridenMaterialPortalEntity.portalComponent.requestUpdate();
+					break;
+				case 50:
+					if (addRemovePortalEntity.portalComponent) {
+						addRemovePortalEntity.clearComponent('PortalComponent');
+						console.log('cleared');
+					} else {
+						addRemovePortalEntity.setComponent(storedPortalComponent);
+						console.log('added');
+					}
+					break;
+				default:
+					console.log(
+						'1 - request redraw of the non-auto updated portal\n' +
+						'2 - add/remove a portal component on one of the portals'
+					);
+			}
 		});
 	}
 

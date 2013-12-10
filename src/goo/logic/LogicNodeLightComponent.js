@@ -3,17 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/entities/components/LightComponent',
-		'goo/math/Vector3',
-		'goo/math/Matrix3x3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, LightComponent, Vector3, Matrix3x3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic nnode that calculates sine
+		 * @class Logic node connecting to the LightComponent of an entity
 		 */
 		function LogicNodeLightComponent() {
 			LogicNode.call(this);

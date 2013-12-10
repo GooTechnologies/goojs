@@ -3,15 +3,14 @@ define(
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicNode',
 		'goo/logic/LogicNodes',
-		'goo/logic/LogicInterface',
-		'goo/math/Vector3'
+		'goo/logic/LogicInterface'
 	],
 	/** @lends */
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that subtracts inputs.
 		 */
 		function LogicNodeSub() {
 			LogicNode.call(this);
@@ -22,10 +21,10 @@ define(
 		LogicNodeSub.prototype = Object.create(LogicNode.prototype);
 		LogicNodeSub.editorName = "Sub";
 
-		LogicNodeSub.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeSub.prototype.onInputChanged = function(instDesc /*, portID, value */ ) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeSub.inportX) -
-			          LogicLayer.readPort(instDesc, LogicNodeSub.inportY);
-			
+				LogicLayer.readPort(instDesc, LogicNodeSub.inportY);
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeSub.outportSum, out);
 		};
 

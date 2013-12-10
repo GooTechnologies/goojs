@@ -11,7 +11,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that provides a Vec3.
 		 */
 		function LogicNodeVec3() {
 			LogicNode.call(this);
@@ -23,7 +23,7 @@ define(
 		LogicNodeVec3.prototype = Object.create(LogicNode.prototype);
 		LogicNodeVec3.editorName = "Vec3";
 
-		LogicNodeVec3.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeVec3.prototype.onInputChanged = function(instDesc) {
 			var x = LogicLayer.readPort(instDesc, LogicNodeVec3.inportX);
 			var y = LogicLayer.readPort(instDesc, LogicNodeVec3.inportY);
 			var z = LogicLayer.readPort(instDesc, LogicNodeVec3.inportZ);
@@ -33,7 +33,7 @@ define(
 				y = xyz.y;
 				z = xyz.z;
 			}
-			
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportVec3, new Vector3(x, y, z));
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportX, x);
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3.outportY, y);
@@ -41,7 +41,7 @@ define(
 		};
 
 		LogicNodeVec3.logicInterface = new LogicInterface();
-		
+
 		LogicNodeVec3.outportVec3 = LogicNodeVec3.logicInterface.addOutputProperty("xyz", "Vector3");
 		LogicNodeVec3.inportVec3 = LogicNodeVec3.logicInterface.addInputProperty("xyz", "Vector3", null);
 		LogicNodeVec3.inportX = LogicNodeVec3.logicInterface.addInputProperty("x", "float", 0);

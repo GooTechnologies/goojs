@@ -31,8 +31,8 @@ function (
 		this.preRenderers = [];
 		this.composers = [];
 		this.doRender = {
-			CameraComponent: true,
-			LightComponent: true,
+			CameraComponent: false,
+			LightComponent: false,
 			MeshRendererComponent: false
 		};
 		this.inserted();

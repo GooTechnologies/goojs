@@ -72,7 +72,6 @@ define([
 						this.options
 					);
 				}
-				
 				var promise = handler.update(object, componentConfig, options);
 				if (!promise || !promise.then) {
 					console.error("Handler for " + componentName + " did not return promise");

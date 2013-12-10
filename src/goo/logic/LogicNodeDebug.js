@@ -10,7 +10,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that writes output to the console.
 		 */
 		function LogicNodeDebug() {
 			LogicNode.call(this);

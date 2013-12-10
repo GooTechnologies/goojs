@@ -13,7 +13,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that connects to the transform component of an entity.
 		 */
 		function LogicNodeTransformComponent() {
 			LogicNode.call(this);
@@ -31,7 +31,7 @@ define(
 		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var transformComponent = entity.transformComponent;
-			
+
 			if (portID === LogicNodeTransformComponent.inportPos) {
 				transformComponent.setTranslation(value);
 			} else if (portID === LogicNodeTransformComponent.inportRot) {
@@ -42,14 +42,18 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTransformComponent.outportPos, entity.transformComponent.transform.translation.clone());
 			LogicLayer.writeValue(this.logicInstance, LogicNodeTransformComponent.outportRot, entity.transformComponent.transform.rotation.clone());
 		};
-		
+
 		LogicNodeTransformComponent.logicInterface = new LogicInterface("Transform");
-		LogicNodeTransformComponent.inportPos = LogicNodeTransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0,0,0));
-		LogicNodeTransformComponent.inportRot = LogicNodeTransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0,0,0));
-		LogicNodeTransformComponent.inportScale = LogicNodeTransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1,1,1));
+		LogicNodeTransformComponent.inportPos = LogicNodeTransformComponent.logicInterface.addInputProperty("position", "Vector3", new Vector3(0, 0, 0));
+		LogicNodeTransformComponent.inportRot = LogicNodeTransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0, 0, 0));
+		LogicNodeTransformComponent.inportScale = LogicNodeTransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1, 1, 1));
 		LogicNodeTransformComponent.outportPos = LogicNodeTransformComponent.logicInterface.addOutputProperty("outpos", "Vector3", new Vector3());
 		LogicNodeTransformComponent.outportRot = LogicNodeTransformComponent.logicInterface.addOutputProperty("rotmat", "Matrix3", new Matrix3x3());
-		LogicNodeTransformComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
+		LogicNodeTransformComponent.logicInterface.addConfigEntry({
+			name: 'entityRef',
+			type: 'entityRef',
+			label: 'Entity'
+		});
 
 
 		LogicNodes.registerType("TransformComponent", LogicNodeTransformComponent);

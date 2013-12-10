@@ -12,7 +12,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that constructs a rotation matrix.
 		 */
 		function LogicNodeRotationMatrix() {
 			LogicNode.call(this);
@@ -24,11 +24,11 @@ define(
 		LogicNodeRotationMatrix.prototype = Object.create(LogicNode.prototype);
 		LogicNodeRotationMatrix.editorName = "RotationMatrix";
 
-		LogicNodeRotationMatrix.prototype.onInputChanged = function(instDesc, portID, value) {
-			var vec = LogicLayer.readPort(this.logicInstance, LogicNodeRotationMatrix.inportX);
+		LogicNodeRotationMatrix.prototype.onInputChanged = function(instDesc) {
+			var vec = LogicLayer.readPort(instDesc, LogicNodeRotationMatrix.inportX);
 			var mat = new Matrix3x3();
-			mat.fromAngles(vec.x,vec.y,vec.z);
-			LogicLayer.writeValue(this.logicInstance, LogicNodeRotationMatrix.outportProduct, mat);
+			mat.fromAngles(vec.x, vec.y, vec.z);
+			LogicLayer.writeValue(instDesc, LogicNodeRotationMatrix.outportProduct, mat);
 		};
 
 		LogicNodeRotationMatrix.logicInterface = new LogicInterface();
@@ -36,8 +36,8 @@ define(
 		LogicNodeRotationMatrix.outportProduct = LogicNodeRotationMatrix.logicInterface.addOutputProperty("mat", "Matrix3", new Matrix3x3());
 
 		LogicNodes.registerType("LogicNodeRotationMatrix", LogicNodeRotationMatrix);
-		
-		
+
+
 
 		return LogicNodeRotationMatrix;
 	});

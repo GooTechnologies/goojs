@@ -11,7 +11,7 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node that calculates sine
+		 * @class Logic node that adds Vec3 inputs.
 		 */
 		function LogicNodeVec3Add() {
 			LogicNode.call(this);
@@ -22,13 +22,13 @@ define(
 		LogicNodeVec3Add.prototype = Object.create(LogicNode.prototype);
 		LogicNodeVec3Add.editorName = "AddVec3";
 
-		LogicNodeVec3Add.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeVec3Add.prototype.onInputChanged = function(instDesc) {
 			var vec1 = LogicLayer.readPort(instDesc, LogicNodeVec3Add.inportX);
 			var vec2 = LogicLayer.readPort(instDesc, LogicNodeVec3Add.inportY);
 
 			var vec = new Vector3();
 			vec.copy(vec1).add(vec2);
-			
+
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3Add.outportSum, vec);
 		};
 

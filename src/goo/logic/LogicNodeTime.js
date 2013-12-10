@@ -37,7 +37,7 @@ define(
 		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Stop");
 		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 
-		LogicNodeTime.prototype.onConfigure = function(config) {
+		LogicNodeTime.prototype.onConfigure = function() {
 			this._time = 0;
 			this._running = true;
 		};
@@ -48,7 +48,7 @@ define(
 				var old = this._time;
 				this._time += tpf;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeTime.outPropTime, this._time);
-				
+
 				if (old < 1 && this._time >= 1) {
 					LogicLayer.fireEvent(this.logicInstance, LogicNodeTime.outEventReached1);
 				}
