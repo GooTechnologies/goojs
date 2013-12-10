@@ -13,16 +13,15 @@ define(
 		 * @class Handles a logic layer, which is a container for Logic Nodes and connections. It handles resolving and executing
 		 *        connections, as well as cross-layer connections (through LogicSystem). Each LogicLayer has an entity owner.
 		 */
-		function LogicLayer(ownerEntity) {
+		function LogicLayer(world, ownerEntity) {
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
+			this.world = world;
 			this.ownerEntity = ownerEntity;
-
-			// Hax to get LogicSystem
-			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
+			this.logicSystem = world.getSystem("LogicSystem");
 		}
 
 		LogicLayer.prototype.clear = function() {
@@ -349,20 +348,21 @@ define(
 
 			this._updateRound++;
 		};
-
+		
+		LogicLayer.getWorld = function(instDesc) {
+			return instDesc.layer.world;
+		}
+		
 		/**
-		 * For all logic objects (i.e. those who added logicInstances and passed themselves along)
-		 * @param f Function to call for every object.
-		 */
-		LogicLayer.prototype.forEachLogicObject = function(f) {
-			for (var i in this._logicInterfaces) {
-				var o = this._logicInterfaces[i].obj;
-				if (o !== undefined) {
-					f(o);
-				}
-			}
-		};
-
+		* Calls cleanup on all logic objects.
+		*/
+		LogicLayer.prototype.cleanup = function() {
+			this.forEachLogicObject(function(obj) {
+				if (obj.cleanup !== undefined)
+					obj.cleanup();
+			});
+		}
+		
 		/**
 		 * For all objects that follow the convention of having an logicInstance property for their connections
 		 * (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance

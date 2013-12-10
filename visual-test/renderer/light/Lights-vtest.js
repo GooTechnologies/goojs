@@ -16,6 +16,9 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
+	'goo/logic/LogicLayer',
+	'goo/logic/LogicNodeTime',
+	'goo/logic/LogicNodeSine',
 	'goo/debug/LightPointer',
 	'goo/entities/components/LightDebugComponent'
 ], function (
@@ -36,6 +39,9 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
+	LogicLayer,
+	LogicNodeTime,
+	LogicNodeSine,
 	LightPointer,
 	LightDebugComponent
 	) {
@@ -78,6 +84,7 @@ require([
 		});
 
 		pointlightGui.open();
+		return pointLightEntity;
 	}
 
 	function addDirectionalLight(goo) {
@@ -111,6 +118,7 @@ require([
 		});
 
 		directionallightGui.open();
+		return directionalLightEntity;
 	}
 
 	function addSpotLight(goo) {
@@ -130,6 +138,10 @@ require([
 		spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
 
 		spotLightEntity.addToWorld();
+		
+		
+                		
+		
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
@@ -158,6 +170,7 @@ require([
 		});
 
 		spotLightGui.open();
+		return spotLightEntity;
 	}
 
 	function lightPointerDemo(goo) {
@@ -176,10 +189,31 @@ require([
 			}
 		}
 
-		addPointLight(goo);
-		addDirectionalLight(goo);
-		addSpotLight(goo);
+		var l1 = addPointLight(goo);
+		var l2 = addDirectionalLight(goo);
+		var l3 = addSpotLight(goo);
 
+
+		var lbTime = new LogicNodeTime();
+		lbTime.addToWorldLogic(goo.world);
+		
+		var lbSine = new LogicNodeSine();
+		lbSine.addToWorldLogic(goo.world);
+		
+		
+		var ll = goo.world.logicLayer;
+		ll.connectObjectsWithLogic(lbTime, LogicNodeTime.outPropTime, lbSine, LogicNodeSine.inportPhase);
+		ll.connectObjectsWithLogic(lbTime, LogicNodeTime.outEventReached1, lbTime, LogicNodeTime.inEventReset);
+
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportSin, l1.lightComponent, LightComponent.inportIntensity);
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportCos, l2.lightComponent, LightComponent.inportIntensity);
+		ll.connectObjectsWithLogic(lbSine, LogicNodeSine.outportCos, l3.lightComponent, LightComponent.inportIntensity);
+		
+		/*
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l1.lightComponent, LightComponent.inportIntensity);
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l2.lightComponent, LightComponent.inportIntensity);
+		goo.world.connectComponents(entityF.functionGeneratorComponent, FunctionGeneratorComponent.outportSine, l3.lightComponent, LightComponent.inportIntensity);
+		*/
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");

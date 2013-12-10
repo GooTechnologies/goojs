@@ -10,9 +10,8 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/ScriptComponent',
 	'goo/entities/components/CameraComponent',
-	'goo/entities/components/HTMLComponent',
+	'goo/entities/components/FunctionGeneratorComponent',
 	'goo/renderer/Texture',
 	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
@@ -23,9 +22,8 @@ require([
 	ShaderLib,
 	Camera,
 	ShapeCreator,
-	ScriptComponent,
 	CameraComponent,
-	HTMLComponent,
+	FunctionGeneratorComponent,
 	Texture,
 	EntityUtils,
 	Vector3,
@@ -37,19 +35,7 @@ require([
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
-		return entity;
 	}
-
-
-	var moveScript = new ScriptComponent([{run: function(ent, tpf) { 
-		if (ent.atime == undefined)
-			ent.atime = tpf;
-		else
-			ent.atime += tpf;
-			
-		ent.transformComponent.setTranslation(Math.sin(ent.atime)*10, Math.cos(ent.atime)*10, -40);
-	} }]);
-	
 
 	function createShapes(goo) {
 		var material = Material.createMaterial(ShaderLib.textured);
@@ -62,10 +48,10 @@ require([
 		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), material, -10, 0, -30);
 		createMesh(goo, ShapeCreator.createBox(3, 3, 3), material, -10, 10, -30);
 		createMesh(goo, ShapeCreator.createQuad(3, 3), material, 0, -7, -20);
-		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30).setComponent(moveScript);
+		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
-	function htmlDemo(goo) {
+	function debuggerDemo(goo) {
 		createShapes(goo);
 
 		// Add camera
@@ -75,28 +61,22 @@ require([
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
+
+		new Debugger(true, true).inject(goo);
 	}
 
 	function init() {
-
 		var goo = new GooRunner();
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 		
-		var el1 = document.getElementById('html1');
-		var el2 = document.getElementById('html2');
+		var entity1 = EntityUtils.createTypicalEntity(goo.world);
+		entity1.setComponent(new FunctionGeneratorComponent());
+		entity1.addToWorld();
 		
-		var ent1 = EntityUtils.createHTMLEntity(goo.world, el1);
-		var ent2 = EntityUtils.createHTMLEntity(goo.world, el2);
-		ent1.transformComponent.setTranslation(0, 0, -30);
-		ent2.transformComponent.setTranslation(-10, 0, -30);
-		
-		ent1.addToWorld();
-		ent2.addToWorld();
-		
-		ent1.setComponent(moveScript);
-		
-		htmlDemo(goo);
+	//	goo.world.addEntityConnection(entity1, "FunctionGeneratorComponent.functionValue", entity2, "PrintValueComponent.floatInput");
+
+		debuggerDemo(goo);
 	}
 
 	init();
