@@ -77,7 +77,9 @@ function () {
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasComponent = function (type) {
-		return this[getTypeAttributeName(type)] !== undefined;
+		var typeAttributeName = getTypeAttributeName(type);
+		var component = this[typeAttributeName];
+		return !!component && this._components.indexOf(component) > -1;
 	};
 
 	/**
@@ -87,7 +89,10 @@ function () {
 	 * @returns {Component} component with requested type or undefined if not present
 	 */
 	Entity.prototype.getComponent = function (type) {
-		return this[getTypeAttributeName(type)];
+		var typeAttributeName = getTypeAttributeName(type);
+		if (this.hasComponent(type)) {
+			return this[typeAttributeName];
+		}
 	};
 
 	/**
@@ -99,11 +104,7 @@ function () {
 		var typeAttributeName = getTypeAttributeName(type);
 		var component = this[typeAttributeName];
 
-		// REVIEW: Ponder entity.clearComponent('_components');
-		// I see now that hasComponent has the same weakness.
-		// How about if component and this._components.indexOf(component) > -1
-		// Probably even put that in hasComponent
-		if (component) {
+		if (!!component && this._components.indexOf(component) > -1) {
 			// inform the component it's being detached from the entity
 			if (component.detached) {
 				component.detached(this);

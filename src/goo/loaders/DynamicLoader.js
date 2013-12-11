@@ -69,6 +69,8 @@ function(
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
 	var _audio_types = ['mp3', 'wav'];
+	// REVIEW: concat takes multiple arrays as input
+	// _asset_types = _texture_types.concat(_imageTypes, _binary_types, _audio_types);
 	var _asset_types = _texture_types.concat(_image_types)
 									.concat(_binary_types)
 									.concat(_audio_types);
@@ -169,6 +171,8 @@ function(
 	 * @param {string} ref Ref of object to load
 	 * @param {string} bundleName name of the bundle (including extension)
 	 * @param {object} options See {DynamicLoader.update}
+	 // REVIEW: You can load things after starting the engine, loading
+	 // binaries before loading bundle configs is more accurate
 	 * @param {boolean} [options.preloadBinaries] Load binaries before starting engine
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
@@ -259,6 +263,7 @@ function(
 			var loadBinariesFromRef = function(ref) {
 
 				var traverseRef = function(ref) {
+					// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
 					if(ref !== undefined) {
 						// Get config from ref
 						var config = bundleRefs[ref];
@@ -483,6 +488,13 @@ function(
 		var _refs = [];
 		var traverse = function(key, value) {
 			var _key;
+			/* REVIEW: what about lowercase refs and urls?
+			 * https://docs.google.com/a/gooengine.com/spreadsheet/ccc?key=0AkxI1qc8lXvrdHBlaGRhV1RhS2R1SU8tT2pJNVJFUGc#gid=17
+			 * concat also works for single values
+			 * if (key.toLowerCase().test(/(url|ref)s?$/) {
+			 *  _ref = _refs.concat(value);
+			 * } else ...
+			 */
 			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
 				_refs = _refs.concat(value);
 			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {

@@ -11,6 +11,12 @@ define([
 ) {
 	"use strict";
 
+	var Button = {
+		LEFT: 0,
+		MIDDLE: 1,
+		RIGHT: 2
+	};
+
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
 	/**
 	 * @class Enables camera to orbit around a point in 3D space using the right mouse button, while panning with the middle button.
@@ -100,16 +106,16 @@ define([
 
 		// Touch controls
 		this.domElement.addEventListener('touchstart', function(event) {
-			// REVIEW can we enumerate the numbers for states/buttons?
-			// lines like below are a bit confusing to read. 
-			var button = event.targetTouches.length;
-			that.updateButtonState(1, button === 2);
-			that.updateButtonState(2, button === 1);
+			var pan = (event.targetTouches.length === 2);
+			var orbit = (event.targetTouches.length === 1);
+			that.updateButtonState(Button.MIDDLE, pan);
+			that.updateButtonState(Button.RIGHT, orbit);
 		});
 		this.domElement.addEventListener('touchend', function(event) {
-			var button = event.targetTouches.length;
-			that.updateButtonState(1, button === 2);
-			that.updateButtonState(2, button === 1);
+			var pan = (event.targetTouches.length === 2);
+			var orbit = (event.targetTouches.length === 1);
+			that.updateButtonState(Button.MIDDLE, pan);
+			that.updateButtonState(Button.RIGHT, orbit);
 		});
 		var oldDistance = 0;
 		this.domElement.addEventListener('touchmove', function(event) {
@@ -138,7 +144,7 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) { // REVIEW would be nice to change '2' and '0' to something readable
+		if (buttonIndex === Button.RIGHT || buttonIndex === Button.LEFT && this.altKey) { // REVIEW would be nice to change '2' and '0' to something readable
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
 		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
 			this.panState.buttonDown = down;

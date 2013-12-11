@@ -78,7 +78,6 @@ function(
 
 		this.oldMaterials = null;
 
-		// REVIEW: This breaks the engine. The fix should be in the engine though. Write the fix, write the test to prove it. =)
 		entity.clearComponent('portalComponent');
 
 		// would remove the entire system, but the engine does not support that
