@@ -140,9 +140,9 @@ define(
 				var logicLayer2 = this.logicSystem.getLayerByEntity(tgt.obj.entityRef);
 				for (var n in logicLayer2._logicInterfaces) {
 					var l = logicLayer2._logicInterfaces[n];
-					if (l.obj.type === "LogicNodeInput") {
-						console.log(l);
-					}
+					// if (l.obj.type === "LogicNodeInput") {
+					// 	console.log(l);
+					// }
 
 					if (l.obj.type === "LogicNodeInput" && l.obj.dummyInport !== null && LogicInterface.makePortDataName(l.obj.dummyInport)) {
 						return {
@@ -180,7 +180,7 @@ define(
 
 			// resolve from name
 			var sourcePortID = LogicLayer.resolvePortID(instDesc, sourcePort);
-			
+
 			if (instDesc.outConnections[sourcePortID] === undefined) {
 				instDesc.outConnections[sourcePortID] = [];
 			}
@@ -194,7 +194,7 @@ define(
 		 * call the provided callback function on each connected target.
 		 */
 		LogicLayer.doConnections = function(instDesc, portID, func) {
-		
+
 			if (instDesc.outConnections === undefined) {
 				return;
 			}
