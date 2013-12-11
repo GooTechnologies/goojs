@@ -1,85 +1,45 @@
 {
-	"layers" : {
-	"DEFAULT":{
-		"defaultState":"idle",
-		"states": {
-			"idle": {
-				"clipSource": {
-					"clipRef":"animations/idle.clip",
-					"loopCount":-1,
-					"type":"Clip"
+	"layers": {
+		"DEFAULT": {
+			"defaultState": "idle",
+			"states": {
+				"idle": {
+					"stateRef": "animations/idle.animstate"
+				},
+				"backflip_to_uppercut": {
+					"stateRef": "animations/backflip_to_uppercut.animstate"
+				},
+				"gangnam_style": {
+					"stateRef": "animations/gangnam_style.animstate"
+				},
+				"injured_walk": {
+					"stateRef": "animations/injured_walk.animstate"
+				},
+				"running_jump": {
+					"stateRef": "animations/running_jump.animstate"
+				},
+				"running": {
+					"stateRef": "animations/running.animstate"
+				},
+				"samba_dancing": {
+					"stateRef": "animations/samba_dancing.animstate"
+				},
+				"skinning_test": {
+					"stateRef": "animations/skinning_test.animstate"
+				},
+				"uppercut_jab": {
+					"stateRef": "animations/uppercut_jab.animstate"
+				},
+				"walking": {
+					"stateRef": "animations/walking.animstate"
 				}
 			},
-			"backflip_to_uppercut": {
-				"clipSource": {
-					"clipRef":"animations/backflip_to_uppercut.clip",
-					"loopCount":-1,
-					"type":"Clip"
+			"transitions": {
+				"*": {
+					"type": "Fade",
+					"fadeTime": 2
 				}
-			},
-			"gangnam_style": {
-				"clipSource": {
-					"clipRef":"animations/gangnam_style.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"injured_walk": {
-				"clipSource": {
-					"clipRef":"animations/injured_walk.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"running_jump": {
-				"clipSource": {
-					"clipRef":"animations/running_jump.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"running": {
-				"clipSource": {
-					"clipRef":"animations/running.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"samba_dancing": {
-				"clipSource": {
-					"clipRef":"animations/samba_dancing.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"skinning_test": {
-				"clipSource": {
-					"clipRef":"animations/skinning_test.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"uppercut_jab": {
-				"clipSource": {
-					"clipRef":"animations/uppercut_jab.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			},
-			"walking": {
-				"clipSource": {
-					"clipRef":"animations/walking.clip",
-					"loopCount":-1,
-					"type":"Clip"
-				}
-			}
-		},
-		"transitions": {
-			"*" : {
-				"type": "Fade",
-				"fadeTime": 2.0
 			}
 		}
-	}
 	}
 }

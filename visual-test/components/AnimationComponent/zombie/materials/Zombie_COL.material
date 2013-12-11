@@ -1,6 +1,6 @@
 {
 "name":"Zombie_COL",
-"shaderRef":"shaders/uberShader.shader",
+"shaderRef":"GOO_ENGINE_SHADERS/uber",
 "texturesMapping":{
 "DIFFUSE_MAP":"textures/Zombie_diffuse.texture",
 "NORMAL_MAP":"textures/Zombie_normal.texture",
