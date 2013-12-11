@@ -68,10 +68,10 @@ function(
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
-	var _url_types = ['mp3', 'wav'];
-	// REVIEW: Never used
-	var _all_binary_types = _texture_types.concat(_image_types).concat(_binary_types).concat(_url_types);
-	var _binary_file_properties = ['url', 'binaryRef']; // refs pointing to 'real' binaries, not original filenames etc
+	var _audio_types = ['mp3', 'wav'];
+	var _asset_types = _texture_types.concat(_image_types)
+									.concat(_binary_types)
+									.concat(_audio_types);
 
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
@@ -169,12 +169,12 @@ function(
 	 * @param {string} ref Ref of object to load
 	 * @param {string} bundleName name of the bundle (including extension)
 	 * @param {object} options See {DynamicLoader.update}
+	 * @param {boolean} [options.preloadBinaries] Load binaries before starting engine
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 *
 	 */
 	DynamicLoader.prototype.loadFromBundle = function(ref, bundleName, options) {
-
 		var that = this;
 		if (options == null) {
 			options = {};
@@ -197,7 +197,7 @@ function(
 
 		// Can currently only preload binaries when loading project.project
 		// TODO enable preloading of specific binaries?
-		if (options.preloadBinaries && ref == 'project.project') {
+		if (options.preloadBinaries === true && ref === 'project.project') {
 			return this._preloadBinaries(bundleName, options).then(loadRefPromise);
 		} else {
 			return loadRefPromise();
@@ -232,115 +232,58 @@ function(
 		// Get the flat root.bundle file containing all references
 		return this._loadRef(bundleName).then(function(bundleRefs) {
 
-			// REVIEW: dict feels like python, it's a config
-			// Also, you're not using it, entityRefs = bundleRefs['project.project']['entityRefs']
-			// Get a list of the configs that are currently in the scene
-			var projectDict = bundleRefs['project.project'];
+			if(!bundleRefs['project.project']) {
+				throw new Error('project.project missing in bundle');
+			}
 
 			// Array containing the references currently in the scene
-			var entityRefs = projectDict.entityRefs;
+			var entityRefs = bundleRefs['project.project'].entityRefs;
 
-			// TODO add screenshots if wanted
-
-			var stringInArray = function(str, arr) {
-				if (typeof(str) != 'string') {
-					return false;
-				}
-				for (var i=0; i<arr.length; i++) {
-					if (str.indexOf(arr[i], str.length - arr[i].length) != -1) {
-						return true;
-					}
-				}
-				return false;
-			};
-
-			// REVIEW: If you look at the data model, sound actually has an array of urls, which won't
-			// be caught in this traverse. Although sounds can't be preloaded yet I guess.
-			// I think you should update _getRefsFromConfig to include url(s) and do
-			// DynamicLoader.isBinaryRef and so on on the flat array
-			// Perhaps even merge the two traverses into one
-			// I think it would make the code look cleaner
-			/*
-			function traverse(config) {
-				if (config != undefined) {
-					refs = DynamicLoader._getRefsFromConfig(config)
-					for (var i = 0; i < refs.length; i++) {
-						// If it's not a json, it's a binary, sort of
-						if (DynamicLoader.isJSONRef(refs[i]) traverse(bundleRefs[refs[i]]);
-						else loadRef(refs[i]);
-					}
-				}
-			}
-			traverse(rootConfig);
-			*/
-
-			// Get all child references and binaries within a given reference
-			var traverseConfig = function(rootConfig) {
-				var childRefs = [];
-				var binaries = [];
-				var traverse = function(config) {
-					for (var property in config) {
-						var value = config[property];
-						if (stringInArray(property, _binary_file_properties)) {
-							// If the property points to a binary, add the value
-							binaries.push(value);
-						} else if (stringInArray(value, _json_types)) {
-							// If JSON (config), add children
-							childRefs.push(value);
-						} else {
-							if (value && typeof(value) == 'object') {
-								// If the value is a dictionary, recursively traverse deeper
-								traverse(value);
-							}
-						}
-					}
-				};
-				traverse(rootConfig);
-				return {'childRefs': childRefs, 'binaries': binaries};
-			};
-
-			// Get all binaries from a reference and its config's children
-			var getBinariesFromRef = function(rootRef) {
-				var binaries = [];
-				var traverse = function(ref) {
-					var config = bundleRefs[ref];
-					if (config != undefined) {
-						// Traverse config, looking for binaries and child references
-						var configTraversalResult = traverseConfig(config);
-						var childRefs = configTraversalResult.childRefs;
-						// Add the found binaries
-						binaries = binaries.concat(configTraversalResult.binaries);
-						// Traverse the found children
-						for (var i=0; i<childRefs.length; i++) {
-							if (childRefs[i] != ref) {
-								traverse(childRefs[i]);
-							}
-						}
-					}
-				};
-				traverse(rootRef);
-				return binaries;
-			};
-
-			var binaries = [];
-			for (var i=0; i<entityRefs.length; i++) {
-				binaries = binaries.concat(getBinariesFromRef(entityRefs[i]));
+			if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
+				console.warn('No entity refs in project:', bundleRefs['project.project']);
+				return;
 			}
 
 			var loadPromises = [];
 			var handled = 0;
 			var loadRef = function(ref) {
-				loadPromises.push(that._loadRef(ref).then(function(config) { // REVIEW: config is never used
+				loadPromises.push(that._loadRef(ref).then(function() {
 					handled++;
-					if (options.progressCallback && options.progressCallback.call) {
-						// REVIEW: Why not just options.progressCallback(handled, loadPromises.length)?
-						options.progressCallback.call(null, handled, loadPromises.length);
+					if (typeof(options.progressCallback) === 'function') {
+						options.progressCallback(handled, loadPromises.length);
 					}
 				}));
 			};
 
-			for (var i=0; i<binaries.length; i++) {
-				loadRef(binaries[i]);
+
+			var loadBinariesFromRef = function(ref) {
+
+				var traverseRef = function(ref) {
+					if(ref !== undefined) {
+						// Get config from ref
+						var config = bundleRefs[ref];
+
+						if(config !== undefined) {
+							// Get array of all refs in config
+							var refs = that._getRefsFromConfig(config);
+
+							for(var i = 0, _len = refs.length; i < _len; i++) {
+								// Load found binary or traverse child refs
+								if(DynamicLoader.isAssetRef(refs[i])) {
+									loadRef(refs[i]);
+								} else if(DynamicLoader.isJSONRef(refs[i])) {
+									traverseRef(refs[i]);
+								}
+							}
+						}
+					}
+				};
+
+				traverseRef(ref);
+			};
+
+			for(var i = 0; i < entityRefs.length; i++) {
+				loadBinariesFromRef(entityRefs[i]);
 			}
 
 			return RSVP.all(loadPromises);
@@ -514,7 +457,7 @@ function(
 			promise = this._ajax.loadImage(url);
 		} else if (DynamicLoader.isBinaryRef(ref)) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader.isUrlRef(ref)) {
+		} else if (DynamicLoader.isAudioRef(ref)) {
 			promise = PromiseUtil.createDummyPromise(url);
 		} else {
 			promise = this._ajax.load(url);
@@ -540,9 +483,9 @@ function(
 		var _refs = [];
 		var traverse = function(key, value) {
 			var _key;
-			if (StringUtil.endsWith(key, 'Refs')) {
+			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
 				_refs = _refs.concat(value);
-			} else if (StringUtil.endsWith(key, 'Ref')) {
+			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {
 				_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
@@ -569,6 +512,11 @@ function(
 		return _.indexOf(_json_types, type) >= 0;
 	};
 
+	DynamicLoader.isAssetRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		return _.indexOf(_asset_types, type) >= 0;
+	};
+
 	/**
 	 * Images that the browser can handle (jpg, png, gif)
 	 */
@@ -588,9 +536,9 @@ function(
 	/**
 	 * Lazy loaded media (sound)
 	 */
-	DynamicLoader.isUrlRef = function(ref) {
+	DynamicLoader.isAudioRef = function(ref) {
 		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_url_types, type) >= 0;
+		return _.indexOf(_audio_types, type) >= 0;
 	};
 
 	/**
