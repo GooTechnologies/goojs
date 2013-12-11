@@ -100,6 +100,8 @@ define([
 
 		// Touch controls
 		this.domElement.addEventListener('touchstart', function(event) {
+			// REVIEW can we enumerate the numbers for states/buttons?
+			// lines like below are a bit confusing to read. 
 			var button = event.targetTouches.length;
 			that.updateButtonState(1, button === 2);
 			that.updateButtonState(2, button === 1);
@@ -136,7 +138,7 @@ define([
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) {
+		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) { // REVIEW would be nice to change '2' and '0' to something readable
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
 		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
 			this.panState.buttonDown = down;
