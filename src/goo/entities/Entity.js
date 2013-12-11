@@ -72,7 +72,7 @@ function () {
 	/**
 	 * Checks if a component of a specific type is present or not
 	 *
-	 * @param {string} type Type of component to check for (eg. 'transformComponent')
+	 * @param {string} type Type of component to check for (eg. 'meshDataComponent')
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasComponent = function (type) {
@@ -90,24 +90,31 @@ function () {
 	};
 
 	/**
-	 * Remove a component of a specific type from entity.
+	 * Remove a component of a specific type from entity
 	 *
-	 * @param {string} type Type of component to remove (eg. 'transformComponent')
+	 * @param {string} type Type of component to remove (eg. 'meshDataComponent')
 	 */
 	Entity.prototype.clearComponent = function (type) {
-		var component = this[getTypeAttributeName(type)];
-		var index = this._components.indexOf(component);
-		if (index !== -1) {
-			var component = this._components[index]; // overriding previous variable
-			if (component.type === 'TransformComponent') {
+		var typeAttributeName = getTypeAttributeName(type);
+		var component = this[typeAttributeName];
+
+		if (component) {
+			// should instead call component.detached/removedFromEntity and not treat this special case here
+			if (typeAttributeName === 'TransformComponent') {
 				component.entity = undefined;
 			}
-			this._components.splice(index, 1);
-		}
-		delete this[getTypeAttributeName(type)]; // could cache this
 
-		if (this._world.entityManager.containsEntity(this)) {
-			this._world.changedEntity(this, component, 'removedComponent');
+			// removing from dense array
+			var index = this._components.indexOf(component);
+			this._components.splice(index, 1);
+
+			// removing from entity
+			delete this[typeAttributeName];
+
+			// notifying the world of the change
+			if (this._world.entityManager.containsEntity(this)) {
+				this._world.changedEntity(this, component, 'removedComponent');
+			}
 		}
 	};
 
@@ -115,6 +122,7 @@ function () {
 	 * @returns {string} Name of entity
 	 */
 	Entity.prototype.toString = function () {
+		// should also return a list of its components
 		return this.name;
 	};
 
