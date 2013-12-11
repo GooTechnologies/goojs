@@ -98,6 +98,10 @@ function () {
 		var typeAttributeName = getTypeAttributeName(type);
 		var component = this[typeAttributeName];
 
+		// REVIEW: Ponder entity.clearComponent('_components');
+		// I see now that hasComponent has the same weakness.
+		// How about if component and this._components.indexOf(component) > -1
+		// Probably even put that in hasComponent
 		if (component) {
 			// should instead call component.detached/removedFromEntity and not treat this special case here
 			if (typeAttributeName === 'TransformComponent') {

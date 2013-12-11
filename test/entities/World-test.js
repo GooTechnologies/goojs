@@ -60,37 +60,65 @@ define([
 			expect(world._systems).toEqual([systemB, systemC, systemA]);
 		});
 
-		it('clears a nonexistent component and notifies other systems of the change', function() {
-			var called = 0;
-
+		describe('with components', function() {
 			// Cucumber system
 			function CucumberSystem() {
 				System.call(this, 'CucumberSystem', ['CucumberComponent']);
 			}
-
 			CucumberSystem.prototype = Object.create(System.prototype);
-
-			CucumberSystem.prototype.updated = function(entity, component) {
-				called += 1;
-			};
+			CucumberSystem.prototype.inserted = function() {};
+			CucumberSystem.prototype.deleted = function() {};
+			CucumberSystem.prototype.addedComponent = function() {};
+			CucumberSystem.prototype.removedComponent = function() {};
 
 			// Cucumber component
 			function CucumberComponent() {
 				this.type = 'CucumberComponent';
 			}
 
+			var cucumberComponent, cucumberSystem, entity;
+
+			beforeEach(function() {
+				entity = world.createEntity();
+				entity.addToWorld();
+				// Process to prevent TransformComponent trigger addedComponent call on CucumberSystem
+				world.process();
+
+				cucumberSystem = new CucumberSystem();
+				world.setSystem(cucumberSystem);
+				cucumberComponent = new CucumberComponent();
+
+				spyOn(cucumberSystem, 'inserted');
+				spyOn(cucumberSystem, 'deleted');
+				spyOn(cucumberSystem, 'addedComponent');
+				spyOn(cucumberSystem, 'removedComponent');
+			});
+
 			CucumberComponent.prototype = Object.create(Component.prototype);
 
-
-			var cucumberSystem = new CucumberSystem();
-			var cucumberComponent = new CucumberComponent();
-			var entity = world.createEntity();
-			world.setSystem(cucumberSystem);
-			entity.setComponent(cucumberComponent);
-			world.process();
-			entity.clearComponent('PickleComponent');
-			world.process();
-			expect(called).toBe(0);
+			it('get added call when components in the interest list are added', function() {
+				entity.setComponent(cucumberComponent);
+				world.process();
+				expect(cucumberSystem.inserted).toHaveBeenCalled();
+				expect(cucumberSystem.addedComponent).toHaveBeenCalled();
+			});
+			it('gets deleted call when components in the interest list are deleted', function() {
+				entity.setComponent(cucumberComponent);
+				world.process();
+				entity.clearComponent('CucumberComponent');
+				world.process();
+				expect(cucumberSystem.deleted).toHaveBeenCalled();
+				expect(cucumberSystem.removedComponent).toHaveBeenCalled();
+			});
+			it('gets no update calls when deleting a non existant component', function() {
+				entity.clearComponent('CucumberComponent');
+				world.process();
+				expect(cucumberSystem.inserted).not.toHaveBeenCalled();
+				expect(cucumberSystem.deleted).not.toHaveBeenCalled();
+				expect(cucumberSystem.addedComponent).not.toHaveBeenCalled();
+				expect(cucumberSystem.removedComponent).not.toHaveBeenCalled();
+			});
 		});
+
 	});
 });
