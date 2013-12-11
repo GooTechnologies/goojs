@@ -19,6 +19,44 @@ define(function() {
 		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
+	/**
+	 * Returns the string from the beginning of the string until the specified stop string. The stop string
+	 * is not included in the returned string.
+	 *
+	 * If the specified stop string is not found, the whole string is returned.
+	 *
+	 * @param {string} string
+	 * @param {string} stopString
+	 */
+	StringUtil.getUntil = function(string, stopString) {
+		var stopIndex = string.indexOf(stopString);
+		if (stopIndex === -1) {
+			return string;
+		} else {
+			return string.slice(0, stopIndex);
+		}
+	};
+
+	/**
+	 * Returns the string from the index of the start string until the end of the string. The start character is
+	 * not included in the returned string.
+	 *
+	 * If the specified start string is not found in the string, an empty string is returned.
+	 *
+	 * @param {string} string
+	 * @param {string} startString
+	 */
+	StringUtil.getFrom = function(string, startString) {
+		var startIndex = string.indexOf(startString);
+		if (startIndex === -1) {
+			return '';
+		} else {
+			// Adding offset equal to the length of the start string,
+			// to not include the start string in the returned string.
+			return string.slice(startIndex + startString.length, string.length);
+		}
+	};
+
 	StringUtil.getIndexedName = function(base, takenNames, separator){
 		if (!separator) {
 			separator = '_';
