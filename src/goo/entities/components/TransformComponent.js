@@ -18,6 +18,7 @@ function (
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
+		this.entity = null;
 		/** Parent transformcomponent in the "scene graph"
 		 * @type {TransformComponent}
 		 * @default
@@ -120,6 +121,22 @@ function (
 	 */
 	TransformComponent.prototype.setUpdated = function () {
 		this._dirty = true;
+	};
+
+	/**
+	 * Handles attaching itself to an entity. Should only be called by the engine.
+	 * @param entity
+	 */
+	TransformComponent.prototype.attached = function (entity) {
+		this.entity = entity;
+	};
+
+	/**
+	 * Handles detaching itself to an entity. Should only be called by the engine.
+	 * @param entity
+	 */
+	TransformComponent.prototype.detached = function (/*entity*/) {
+		this.entity = undefined; // used to be 'undefined' when it was handled in Entity; should instead be null
 	};
 
 	/**

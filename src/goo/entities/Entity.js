@@ -54,14 +54,15 @@ function () {
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			return ;
+			return;
 		} else {
 			this._components.push(component);
 		}
 		this[getTypeAttributeName(component.type)] = component;
 
-		if (component.type === 'TransformComponent') {
-			component.entity = this;
+		// inform the component it's being attached to an entity
+		if (component.attached) {
+			component.attached(this);
 		}
 
 		if (this._world.entityManager.containsEntity(this)) {
@@ -103,9 +104,9 @@ function () {
 		// How about if component and this._components.indexOf(component) > -1
 		// Probably even put that in hasComponent
 		if (component) {
-			// should instead call component.detached/removedFromEntity and not treat this special case here
-			if (typeAttributeName === 'TransformComponent') {
-				component.entity = undefined;
+			// inform the component it's being detached from the entity
+			if (component.detached) {
+				component.detached(this);
 			}
 
 			// removing from dense array
