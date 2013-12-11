@@ -8,6 +8,8 @@ function(
 ) {
 	"use strict";
 
+	var Ammo = window.Ammo; // make jslint happy
+
 	/**
 	 * @class Adds Ammo physics to a Goo entity.
 	 * Ammo is a powerful physics engine converted from the c language project Bullet
@@ -28,13 +30,13 @@ function(
 		this.useBounds = settings.useBounds !== undefined ? settings.useBounds : false;
 		this.linearDamping = settings.linearDamping !== undefined ? settings.linearDamping : 0;
 		this.angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0;
-		
+
 		this.ammoTransform = new Ammo.btTransform();
 		this.quaternion = new Quaternion();
 	}
 	AmmoComponent.prototype = Object.create(Component.prototype);
 
-	AmmoComponent.prototype.process = function(entity, tpf) {
+	AmmoComponent.prototype.process = function(entity) {
 		var tc = entity.transformComponent;
 		entity.ammoComponent.body.getMotionState().getWorldTransform(this.ammoTransform);
 		var ammoQuat = this.ammoTransform.getRotation();
@@ -42,7 +44,7 @@ function(
 		tc.transform.rotation.copyQuaternion(this.quaternion);
 		var origin = this.ammoTransform.getOrigin();
 		tc.setTranslation(origin.x(), origin.y(), origin.z());
-	}
+	};
 
 
 	return AmmoComponent;

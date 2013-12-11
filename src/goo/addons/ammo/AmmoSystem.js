@@ -1,23 +1,13 @@
 define([
-	'goo/entities/systems/System',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData'
+	'goo/entities/systems/System'
 ],
 /** @lends */
 function(
-	System,
-	BoundingBox,
-	BoundingSphere,
-	Box,
-	Quad,
-	Sphere,
-	MeshData
+	System
 ) {
 	"use strict";
+
+	var Ammo = window.Ammo; // make jslint happy
 
 	/**
 	 * @class Handles integration with Ammo.js.
@@ -97,14 +87,14 @@ function(
 		iMesh.set_m_numTriangles( meshData.indexCount / 3 );
 		iMesh.set_m_triangleIndexBase( indexBuffer );
 		iMesh.set_m_triangleIndexStride( intByteSize * 3 );
-		
+
 		iMesh.set_m_numVertices( meshData.vertexCount );
 		iMesh.set_m_vertexBase( vertexBuffer );
 		iMesh.set_m_vertexStride( floatByteSize * 3 );
 
 		var triangleIndexVertexArray = new Ammo.btTriangleIndexVertexArray();
 		triangleIndexVertexArray.addIndexedMesh( iMesh); // indexedMesh, indexType = PHY_INTEGER = 2 seems optional
-		
+
 		// bvh = Bounding Volume Hierarchy
 		return new Ammo.btBvhTriangleMeshShape( triangleIndexVertexArray, true, true ); // btStridingMeshInterface, useQuantizedAabbCompression, buildBvh
 	};
@@ -115,7 +105,7 @@ function(
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
-			e.ammoComponent.process( e, tpf);;
+			e.ammoComponent.process( e, tpf);
 		}
 	};
 
