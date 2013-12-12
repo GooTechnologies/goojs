@@ -117,17 +117,13 @@ define(function() {
 		return btoa(hash).replace('/', '_').replace('+', '-');
 	};
 
+	// used in generating ids
+	var idCounter = +new Date();
+
+	// returns an almost unique id
 	StringUtil.getUniqueId = function() {
-		// unsure if needs 2 separate cases
-		if (arguments.length === 0) {
-			return StringUtil.hashCode(new Date() + '_nothing!_');
-		} else {
-			var stringedArguments = '';
-			for (var i = 1; i < arguments.length; i++) {
-				stringedArguments += arguments[i];
-			}
-			return StringUtil.hashCode(arguments[0] + '' + stringedArguments);
-		}
+		var stringedArguments = Array.prototype.slice.call(arguments, 0).join('');
+		return StringUtil.hashCode(idCounter + '' + stringedArguments);
 	};
 
 	return StringUtil;
