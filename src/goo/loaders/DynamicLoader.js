@@ -228,7 +228,15 @@ function(
 		return this.update(ref, null, options);
 	};
 
-	DynamicLoader.prototype._loadBinariesFromEntities = function(entityRefs, options) {
+	/**
+	 *
+	 * @param {Array.<string>} entityRefs Array of references to entities in the scene.
+	 * @param {object} options See {DynamicLoader.update}
+	 * @param {object} bundle Associative array containing all configs , already loaded
+	 * @returns {RSVP.Promise}
+	 * @private
+	 */
+	DynamicLoader.prototype._loadBinariesFromEntities = function(entityRefs, options, bundle) {
 		var that = this;
 		var loadPromises = [];
 		var handled = 0;
@@ -243,27 +251,65 @@ function(
 
 		var ajaxRecursive = function(ref) {
 			var traverseRef = function(ref) {
-				// Get config from ref
-				that._loadRef(ref).then(function(config) {
-					if (config !== undefined) {
-						// Get array of all refs in config
-						var refs = that._getRefsFromConfig(config);
-						for (var i = 0, _len = refs.length; i < _len; i++) {
-							// Load found binary or traverse child refs
-							if (DynamicLoader.isAssetRef(refs[i])) {
-								addBinaryRef(refs[i]);
-							} else if (DynamicLoader.isJSONRef(refs[i])) {
-								traverseRef(refs[i]);
+				// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
+				if(ref !== undefined) {
+					// Get config from ref
+					that._loadRef(ref).then(function(config) {
+						if (config !== undefined) {
+							// Get array of all refs in config
+							var refs = that._getRefsFromConfig(config);
+							for (var i = 0, _len = refs.length; i < _len; i++) {
+								// Load found binary or traverse child refs
+								if (DynamicLoader.isAssetRef(refs[i])) {
+									addBinaryRef(refs[i]);
+								} else if (DynamicLoader.isJSONRef(refs[i])) {
+									traverseRef(refs[i]);
+								}
 							}
 						}
-					}
-				});
+					});
+				}
 			};
 			traverseRef(ref);
 		};
 
-		for (var i = 0; i < entityRefs.length; i++) {
-			ajaxRecursive(entityRefs[i]);
+		var bundleRecursive = function(ref) {
+			var traverseRef = function(ref) {
+				// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
+				if(ref !== undefined) {
+					// Get config from ref
+					var config = bundle[ref];
+					if(config !== undefined) {
+						// Get array of all refs in config
+						var refs = that._getRefsFromConfig(config);
+						for(var i = 0, _len = refs.length; i < _len; i++) {
+							// Load found binary or traverse child refs
+							if(DynamicLoader.isAssetRef(refs[i])) {
+								addBinaryRef(refs[i]);
+							} else if(DynamicLoader.isJSONRef(refs[i])) {
+								traverseRef(refs[i]);
+							}
+						}
+					}
+				}
+			};
+			traverseRef(ref);
+		};
+
+		/*
+		If loading from a bundle, get the configs directly from the bundle
+		rather than using ajax gets.
+
+		The two recursive functions adds promises for the binary files into the loadPromises array.
+		*/
+		if (bundle !== null) {
+			for (var i = 0; i < entityRefs.length; i++) {
+				bundleRecursive(entityRefs[i]);
+			}
+		} else {
+			for (var i = 0; i < entityRefs.length; i++) {
+				ajaxRecursive(entityRefs[i]);
+			}
 		}
 
 		return RSVP.all(loadPromises);
@@ -283,7 +329,7 @@ function(
 				console.warn('No entity refs in project:', project);
 				return;
 			}
-			return that._loadBinariesFromEntities(entityRefs, options);
+			return that._loadBinariesFromEntities(entityRefs, options, null);
 		});
 	};
 
@@ -309,50 +355,7 @@ function(
 				return;
 			}
 
-			var loadPromises = [];
-			var handled = 0;
-			var loadRef = function(ref) {
-				loadPromises.push(that._loadRef(ref).then(function() {
-					handled++;
-					if (typeof(options.progressCallback) === 'function') {
-						options.progressCallback(handled, loadPromises.length);
-					}
-				}));
-			};
-
-
-			var loadBinariesFromRef = function(ref) {
-
-				var traverseRef = function(ref) {
-					// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
-					if(ref !== undefined) {
-						// Get config from ref
-						var config = bundleRefs[ref];
-
-						if(config !== undefined) {
-							// Get array of all refs in config
-							var refs = that._getRefsFromConfig(config);
-
-							for(var i = 0, _len = refs.length; i < _len; i++) {
-								// Load found binary or traverse child refs
-								if(DynamicLoader.isAssetRef(refs[i])) {
-									loadRef(refs[i]);
-								} else if(DynamicLoader.isJSONRef(refs[i])) {
-									traverseRef(refs[i]);
-								}
-							}
-						}
-					}
-				};
-
-				traverseRef(ref);
-			};
-
-			for(var i = 0; i < entityRefs.length; i++) {
-				loadBinariesFromRef(entityRefs[i]);
-			}
-
-			return RSVP.all(loadPromises);
+			return that._loadBinariesFromEntities(entityRefs, options, bundleRefs);
 		});
 	};
 
