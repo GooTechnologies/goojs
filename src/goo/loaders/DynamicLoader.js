@@ -229,18 +229,19 @@ function(
 	};
 
 	/**
-	 *
+	 * Recursively traverses all entities and loads the binary files referenced.
+	 * A promise which resolves when all binary files are loaded is returned.
 	 * @param {Array.<string>} entityRefs Array of references to entities in the scene.
 	 * @param {object} options See {DynamicLoader.update}
 	 * @param {object} bundle Associative array containing all configs , already loaded
-	 * @returns {RSVP.Promise}
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
 	DynamicLoader.prototype._loadBinariesFromEntities = function(entityRefs, options, bundle) {
 		var that = this;
 		var loadPromises = [];
 		var handled = 0;
-		var addBinaryRef = function(ref) {
+		var loadBinaryRef = function(ref) {
 			loadPromises.push(that._loadRef(ref).then(function() {
 				handled++;
 				if (typeof(options.progressCallback) === 'function') {
@@ -261,7 +262,7 @@ function(
 							for (var i = 0, _len = refs.length; i < _len; i++) {
 								// Load found binary or traverse child refs
 								if (DynamicLoader.isAssetRef(refs[i])) {
-									addBinaryRef(refs[i]);
+									loadBinaryRef(refs[i]);
 								} else if (DynamicLoader.isJSONRef(refs[i])) {
 									traverseRef(refs[i]);
 								}
@@ -285,7 +286,7 @@ function(
 						for(var i = 0, _len = refs.length; i < _len; i++) {
 							// Load found binary or traverse child refs
 							if(DynamicLoader.isAssetRef(refs[i])) {
-								addBinaryRef(refs[i]);
+								loadBinaryRef(refs[i]);
 							} else if(DynamicLoader.isJSONRef(refs[i])) {
 								traverseRef(refs[i]);
 							}
@@ -315,6 +316,13 @@ function(
 		return RSVP.all(loadPromises);
 	};
 
+	/**
+	 * Performs pre-loading of binary files from the project reference.
+	 * @param {string} ref
+	 * @param {object} options See {DynamicLoader.update}
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
+	 * @private
+	 */
 	DynamicLoader.prototype._preloadBinariesFromProjectRef = function(ref, options) {
 		if (options == null) {
 			options = {};
@@ -333,6 +341,13 @@ function(
 		});
 	};
 
+	/**
+	 * Performs pre-loading of binary files from the bundle reference.
+	 * @param {string} bundleName
+	 * @param {object} options See {DynamicLoader.update}
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
+	 * @private
+	 */
 	DynamicLoader.prototype._preloadBinariesFromBundle = function (bundleName, options) {
 		if (options == null) {
 			options = {};
