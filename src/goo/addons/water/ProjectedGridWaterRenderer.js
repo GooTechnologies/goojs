@@ -216,6 +216,7 @@ function (
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
+			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
 			normalMap: 'NORMAL_MAP',
 			reflection: 'REFLECTION_MAP',
@@ -261,6 +262,7 @@ function (
 			'uniform mat4 viewMatrix;', //
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
+			'uniform mat4 normalMatrix;',
 			'uniform vec3 cameraPosition;', //
 			'uniform float time;',
 			'uniform vec3 sunDirection;',
@@ -316,12 +318,8 @@ function (
 
 			'	texCoord0 = worldPos.xz * 2.0;',//
 
-			'	mat3 normalMatrix = mat3(worldMatrix);',
-
-			' vec3 n = normalize(normalMatrix * vertexNormal);',
-			// '	vec3 n = normalize(normalMatrix * normal);',
-			// '	vec3 n = normalize(normalMatrix * vertexNormal;',
-			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
+			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal, 0.0)).xyz);',
+			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	mat3 rotMat = mat3(t, b, n);',
 
@@ -374,14 +372,6 @@ function (
 			'    return noise/4.0-1.0;',
 			'}',
 
-			'void sunLight(const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse,',
-			'              inout vec3 diffuseColor, inout vec3 specularColor){',
-			'    vec3 reflection = normalize(reflect(-sunDir, surfaceNormal));',
-			'    float direction = max(0.0, dot(eyeDirection, reflection));',
-			'    specularColor += pow(direction, shiny)*sunColor*spec;',
-			'    diffuseColor += max(dot(sunDir, surfaceNormal),0.0)*sunColor*diffuse;',
-			'}',
-
 			'void main(void)',//
 			'{',//
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
@@ -430,7 +420,12 @@ function (
 			'	else {',
 			'		vec3 diffuse = vec3(0.0);',
 			'		vec3 specular = vec3(0.0);',
-			'	    sunLight(normalVector, localView, 100.0, 2.0, 0.4, diffuse, specular);',
+			// '	    sunLight(normalVector, localView, 100.0, 2.0, 0.4, diffuse, specular);',
+
+			'		vec3 sunreflection = normalize(reflect(-sunDir, normalVector));',
+			'		float direction = max(0.0, dot(localView, sunreflection));',
+			'		specular += pow(direction, 100.0)*sunColor * 2.0;',
+			'		diffuse += max(dot(sunDir, normalVector),0.0)*sunColor*0.4;',
 
 			'		vec4 endColor = mix(waterColorX,reflectionColor,fresnelTerm);',
 			'		gl_FragColor = mix(vec4(diffuse*0.0 + specular, 1.0) + mix(endColor,reflectionColor,fogDist), fogColor, fogDist);',

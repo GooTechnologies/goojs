@@ -101,19 +101,30 @@ define(function() {
 	Js implementation of Java's hashcode (sort of). Somewhat useful for creating
 	unique ideas that contain [A-Za-z0-9-_]
 	*/
-	StringUtil.hashCode = function(str){
+	StringUtil.hashCode = function(str) {
 		var hash = 0;
+
 		if (str.length === 0) {
 			return hash;
 		}
+
 		for (var i = 0; i < str.length; i++) {
 			var character = str.charCodeAt(i);
-			hash = ((hash<<5)-hash)+character;
+			hash = ((hash << 5) - hash) + character;
 			hash = hash & hash; // Convert to 32bit integer
 		}
+
 		return btoa(hash).replace('/', '_').replace('+', '-');
 	};
 
+	// used in generating ids
+	var idCounter = +new Date();
+
+	// returns an almost unique id
+	StringUtil.getUniqueId = function() {
+		var stringedArguments = Array.prototype.slice.call(arguments, 0).join('');
+		return StringUtil.hashCode(idCounter + '' + stringedArguments);
+	};
 
 	return StringUtil;
 });
