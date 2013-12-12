@@ -37,19 +37,25 @@ function(
 
 	AmmoSystem.prototype.inserted = function(entity) {
 		var ammoComponent = entity.ammoComponent;
-		var trans = entity.transformComponent.transform.translation;
+		var gtransform = entity.transformComponent.transform;
+		var gpos = entity.transformComponent.transform.translation;
 
 		if (false) {
 			entity.clearComponent('AmmoComponent');
 			return;
 		}
 
-		var transform = new Ammo.btTransform();
-		transform.setIdentity(); // TODO: is this needed ?
-		transform.setOrigin(new Ammo.btVector3( trans.x, trans.y, trans.z));
-		var motionState = new Ammo.btDefaultMotionState( transform );
+		var atransform = new Ammo.btTransform();
+		atransform.setIdentity(); // TODO: is this needed ?
+		atransform.setOrigin(new Ammo.btVector3( gpos.x, gpos.y, gpos.z));
+		ammoComponent.quaternion.fromRotationMatrix(gtransform.rotation);
+		var q = ammoComponent.quaternion;
+		atransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		var motionState = new Ammo.btDefaultMotionState( atransform );
 		var bvhTriangleMeshShape = this.calculateTriangleMeshShape( entity); // bvh = Bounding Volume Hierarchy
+		
 		var localInertia = new Ammo.btVector3(0, 0, 0);
+		bvhTriangleMeshShape.calculateLocalInertia( ammoComponent.mass, localInertia );
 
 		var info = new Ammo.btRigidBodyConstructionInfo(ammoComponent.mass, motionState, bvhTriangleMeshShape, localInertia);
 		var rigidBody = new Ammo.btRigidBody( info );

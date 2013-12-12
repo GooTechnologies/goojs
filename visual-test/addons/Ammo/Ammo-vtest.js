@@ -56,12 +56,12 @@ require([
 					var boxEntity = createEntity(goo, ShapeCreator.createBox(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {
 						mass: 1
 					});
-					boxEntity.transformComponent.transform.translation.set(x, y, z);
+					boxEntity.transformComponent.setTranslation(x, y, z);
 				} else {
 					var sphereEntity = createEntity(goo, ShapeCreator.createSphere(10, 10, 1+Math.random()), {
 						mass: 1
 					});
-					sphereEntity.transformComponent.transform.translation.set(x, y, z);
+					sphereEntity.transformComponent.setTranslation(x, y, z);
 				}
 			}
 		}
@@ -73,40 +73,28 @@ require([
 		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {
 		// 	mass: 1
 		// });
-		// torusEntity.transformComponent.transform.translation.set(-2, 8, 0);
+		// torusEntity.transformComponent.setTranslation(-2, 8, 0);
 
-		var floorEntity = createEntity(goo, ShapeCreator.createBox(5, 5, 5), {
-			mass: 0
-		});
+		var floorEntity = createEntity(goo, ShapeCreator.createBox(5, 5, 5), {mass: 0});
 		floorEntity.transformComponent.transform.translation.y = -7.5;
 
-		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {
-			mass: 0
-		});
-		floorEntity.transformComponent.transform.translation.set(0,-5,10);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {
-			mass: 0
-		});
-		floorEntity.transformComponent.transform.translation.set(0,-5,-10);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {
-			mass: 0
-		});
-		floorEntity.transformComponent.transform.translation.set(10,-5,0);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {
-			mass: 0
-		});
-		floorEntity.transformComponent.transform.translation.set(-10,-5,0);
+		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {mass: 0});
+		floorEntity.transformComponent.setTranslation(0,-5,10);
+		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {mass: 0});
+		floorEntity.transformComponent.setTranslation(0,-5,-10);
+		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {mass: 0});
+		floorEntity.transformComponent.setTranslation(10,-5,0);
+		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {mass: 0});
+		floorEntity.transformComponent.setTranslation(-10,-5,0);
 
-		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {
-			mass: 0
-		});
+		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {mass: 0});
 		planeEntity.transformComponent.transform.translation.y = -10;
 		planeEntity.transformComponent.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 100, -10);
+		lightEntity.transformComponent.setTranslation(0, 100, -10);
 		lightEntity.addToWorld();
 
 		var camera = new Camera(45, 1, 0.1, 1000);
