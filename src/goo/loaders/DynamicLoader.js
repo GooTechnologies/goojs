@@ -202,7 +202,7 @@ function(
 		// Can currently only preload binaries when loading project.project
 		// TODO enable preloading of specific binaries?
 		if (options.preloadBinaries === true && ref === 'project.project') {
-			return this._preloadBinaries(bundleName, options).then(loadRefPromise);
+			return this._preloadBinariesFromBundle(bundleName, options).then(loadRefPromise);
 		} else {
 			return loadRefPromise();
 		}
@@ -222,11 +222,72 @@ function(
 	DynamicLoader.prototype.load = function(ref, options) {
 		if (options == null) {
 			options = {};
+		} else if (options.preloadBinaries === true && ref === 'project.project') {
+			this._preloadBinariesFromProjectRef(ref, options);
 		}
 		return this.update(ref, null, options);
 	};
 
-	DynamicLoader.prototype._preloadBinaries = function (bundleName, options) {
+	DynamicLoader.prototype._loadBinariesFromEntities = function(entityRefs, options) {
+		var that = this;
+		var loadPromises = [];
+		var handled = 0;
+		var addBinaryRef = function(ref) {
+			loadPromises.push(that._loadRef(ref).then(function() {
+				handled++;
+				if (typeof(options.progressCallback) === 'function') {
+					options.progressCallback(handled, loadPromises.length);
+				}
+			}));
+		};
+
+		var ajaxRecursive = function(ref) {
+			var traverseRef = function(ref) {
+				// Get config from ref
+				that._loadRef(ref).then(function(config) {
+					if (config !== undefined) {
+						// Get array of all refs in config
+						var refs = that._getRefsFromConfig(config);
+						for (var i = 0, _len = refs.length; i < _len; i++) {
+							// Load found binary or traverse child refs
+							if (DynamicLoader.isAssetRef(refs[i])) {
+								addBinaryRef(refs[i]);
+							} else if (DynamicLoader.isJSONRef(refs[i])) {
+								traverseRef(refs[i]);
+							}
+						}
+					}
+				});
+			};
+			traverseRef(ref);
+		};
+
+		for (var i = 0; i < entityRefs.length; i++) {
+			ajaxRecursive(entityRefs[i]);
+		}
+
+		return RSVP.all(loadPromises);
+	};
+
+	DynamicLoader.prototype._preloadBinariesFromProjectRef = function(ref, options) {
+		if (options == null) {
+			options = {};
+		}
+		_.defaults(options, this.options);
+		var that = this;
+
+		return this._loadRef(ref).then(function(project) {
+			// Array containing the references currently in the scene
+			var entityRefs = project.entityRefs;
+			if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
+				console.warn('No entity refs in project:', project);
+				return;
+			}
+			return that._loadBinariesFromEntities(entityRefs, options);
+		});
+	};
+
+	DynamicLoader.prototype._preloadBinariesFromBundle = function (bundleName, options) {
 		if (options == null) {
 			options = {};
 		}
@@ -314,6 +375,7 @@ function(
 		if (options == null) {
 			options = {};
 		}
+
 		_.defaults(options, this.options, {
 			recursive: true
 		});
