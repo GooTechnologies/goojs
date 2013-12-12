@@ -70,9 +70,7 @@ require([
 
 		document.addEventListener('keypress', addPrimitives, false);
 
-		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {
-		// 	mass: 1
-		// });
+		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {mass: 1});
 		// torusEntity.transformComponent.setTranslation(-2, 8, 0);
 
 		var floorEntity = createEntity(goo, ShapeCreator.createBox(5, 5, 5), {mass: 0});
@@ -88,6 +86,7 @@ require([
 		floorEntity.transformComponent.setTranslation(-10,-5,0);
 
 		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {mass: 0});
+		//var planeEntity = createEntity(goo, ShapeCreator.createBox(1000, 1000, 1), {mass: 0});
 		planeEntity.transformComponent.transform.translation.y = -10;
 		planeEntity.transformComponent.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 

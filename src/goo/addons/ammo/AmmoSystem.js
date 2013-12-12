@@ -29,80 +29,25 @@ function(
 		var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
 		var solver = new Ammo.btSequentialImpulseConstraintSolver();
-		var ammoWorld = this.ammoWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, overlappingPairCache, solver, collisionConfiguration );
-		ammoWorld.setGravity(new Ammo.btVector3(0, this.settings.gravity || -9.81, 0));
+		this.ammoWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, overlappingPairCache, solver, collisionConfiguration );
+		this.ammoWorld.setGravity(new Ammo.btVector3(0, this.settings.gravity || -9.81, 0));
 	}
 
 	AmmoSystem.prototype = Object.create(System.prototype);
 
 	AmmoSystem.prototype.inserted = function(entity) {
-		var ammoComponent = entity.ammoComponent;
-		var gtransform = entity.transformComponent.transform;
-		var gpos = entity.transformComponent.transform.translation;
-
-		if (false) {
-			entity.clearComponent('AmmoComponent');
-			return;
+		if (entity.ammoComponent) {
+			entity.ammoComponent.initialize(entity);
+			this.ammoWorld.addRigidBody( entity.ammoComponent.body);
+		} else {
+			console.log('Warning: missing entity.ammoComponent');
 		}
-
-		var atransform = new Ammo.btTransform();
-		atransform.setIdentity(); // TODO: is this needed ?
-		atransform.setOrigin(new Ammo.btVector3( gpos.x, gpos.y, gpos.z));
-		ammoComponent.quaternion.fromRotationMatrix(gtransform.rotation);
-		var q = ammoComponent.quaternion;
-		atransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		var motionState = new Ammo.btDefaultMotionState( atransform );
-		var bvhTriangleMeshShape = this.calculateTriangleMeshShape( entity); // bvh = Bounding Volume Hierarchy
-		
-		var localInertia = new Ammo.btVector3(0, 0, 0);
-		bvhTriangleMeshShape.calculateLocalInertia( ammoComponent.mass, localInertia );
-
-		var info = new Ammo.btRigidBodyConstructionInfo(ammoComponent.mass, motionState, bvhTriangleMeshShape, localInertia);
-		var rigidBody = new Ammo.btRigidBody( info );
-		this.ammoWorld.addRigidBody( ammoComponent.body = rigidBody);
 	};
 
 	AmmoSystem.prototype.deleted = function(entity) {
 		if (entity.ammoComponent) {
 			this.ammoWorld.remove(entity.ammoComponent.body);
 		}
-	};
-
-	AmmoSystem.prototype.calculateTriangleMeshShape = function(entity, scale) {
-		scale = scale || 1;
-		var floatByteSize = 4;
-		var use32bitIndices = true;
-		var intByteSize = use32bitIndices ? 4 : 2;
-		var intType = use32bitIndices ? "i32" : "i16";
-
-		var meshData = entity.meshDataComponent.meshData;
-
-		var vertices = meshData.dataViews.POSITION;
-		var vertexBuffer = Ammo.allocate( floatByteSize * vertices.length, "float", Ammo.ALLOC_NORMAL );
-		for ( var i = 0, il = vertices.length; i < il; i ++ ) {
-			Ammo.setValue( vertexBuffer + i * floatByteSize, scale * vertices[ i ], 'float' );
-		}
-
-		var indices = meshData.indexData.data;
-		var indexBuffer = Ammo.allocate( intByteSize * indices.length, intType, Ammo.ALLOC_NORMAL );
-		for ( var i = 0, il = indices.length; i < il; i ++ ) {
-			Ammo.setValue( indexBuffer + i * intByteSize, indices[ i ], intType );
-		}
-
-		var iMesh = new Ammo.btIndexedMesh();
-		iMesh.set_m_numTriangles( meshData.indexCount / 3 );
-		iMesh.set_m_triangleIndexBase( indexBuffer );
-		iMesh.set_m_triangleIndexStride( intByteSize * 3 );
-
-		iMesh.set_m_numVertices( meshData.vertexCount );
-		iMesh.set_m_vertexBase( vertexBuffer );
-		iMesh.set_m_vertexStride( floatByteSize * 3 );
-
-		var triangleIndexVertexArray = new Ammo.btTriangleIndexVertexArray();
-		triangleIndexVertexArray.addIndexedMesh( iMesh); // indexedMesh, indexType = PHY_INTEGER = 2 seems optional
-
-		// bvh = Bounding Volume Hierarchy
-		return new Ammo.btBvhTriangleMeshShape( triangleIndexVertexArray, true, true ); // btStridingMeshInterface, useQuantizedAabbCompression, buildBvh
 	};
 
 	var fixedTime = 1/60;
