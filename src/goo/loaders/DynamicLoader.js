@@ -260,11 +260,15 @@ function(
 							// Get array of all refs in config
 							var refs = that._getRefsFromConfig(config);
 							for (var i = 0, _len = refs.length; i < _len; i++) {
+								var ref = refs[i];
+								if (!ref) {
+									return;
+								}
 								// Load found binary or traverse child refs
-								if (DynamicLoader.isAssetRef(refs[i])) {
-									loadBinaryRef(refs[i]);
-								} else if (DynamicLoader.isJSONRef(refs[i])) {
-									traverseRef(refs[i]);
+								if (DynamicLoader.isAssetRef(ref)) {
+									loadBinaryRef(ref);
+								} else if (DynamicLoader.isJSONRef(ref)) {
+									traverseRef(ref);
 								}
 							}
 						}
@@ -284,11 +288,15 @@ function(
 						// Get array of all refs in config
 						var refs = that._getRefsFromConfig(config);
 						for(var i = 0, _len = refs.length; i < _len; i++) {
+							var ref = refs[i];
+							if (!ref) {
+								return;
+							}
 							// Load found binary or traverse child refs
-							if(DynamicLoader.isAssetRef(refs[i])) {
-								loadBinaryRef(refs[i]);
-							} else if(DynamicLoader.isJSONRef(refs[i])) {
-								traverseRef(refs[i]);
+							if(DynamicLoader.isAssetRef(ref)) {
+								loadBinaryRef(ref);
+							} else if(DynamicLoader.isJSONRef(ref)) {
+								traverseRef(ref);
 							}
 						}
 					}
