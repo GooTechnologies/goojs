@@ -358,7 +358,7 @@ function(
 									'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
 									'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
 									);
-									}
+								}
 						fragment.push(
 							'}',
 							'shadow = clamp(shadow, 0.0, 1.0);'
@@ -600,7 +600,7 @@ function(
 			'int z = 3*int(vertexJointIDs.z);',
 			'int w = 3*int(vertexJointIDs.w);',
 
-			'mat4 mat = mat4(0.0);',
+			'mat4 mat = mat4(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);',
 
 			'mat += mat4(',
 			'	jointPalette[x+0].x, jointPalette[x+1].x, jointPalette[x+2].x, 0,',

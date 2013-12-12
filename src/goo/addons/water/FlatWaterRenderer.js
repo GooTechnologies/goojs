@@ -220,6 +220,7 @@ function (
 			viewMatrix: Shader.VIEW_MATRIX,
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
+	        normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
 
 			normalMap: 'NORMAL_MAP',
@@ -265,6 +266,7 @@ function (
 			'uniform mat4 viewMatrix;', //
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
+			'uniform mat4 normalMatrix;',
 			'uniform vec3 cameraPosition;', //
 			'uniform float waterScale;',
 
@@ -278,10 +280,8 @@ function (
 
 			'	texCoord0 = worldPos.xz * waterScale;',//
 
-			'	mat3 normalMatrix = mat3(worldMatrix);',
-
-			'	vec3 n = normalize(normalMatrix * vec3(vertexNormal.x, vertexNormal.y, -vertexNormal.z));',
-			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
+			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal.x, vertexNormal.y, -vertexNormal.z, 0.0)).xyz);',
+			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	mat3 rotMat = mat3(t, b, n);',
 

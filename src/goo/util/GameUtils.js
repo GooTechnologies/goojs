@@ -108,9 +108,17 @@ function () {
 	 * @param {Element} [global=window] The global element (for compatibility checks and patching)
 	 */
 	GameUtils.initAllShims = function (global) {
-		this.initAnimationShims();
-		this.initFullscreenShims(global);
-		this.initPointerLockShims(global);
+		GameUtils.initWebGLShims();
+		GameUtils.initAnimationShims();
+		GameUtils.initFullscreenShims(global);
+		GameUtils.initPointerLockShims(global);
+	};
+
+	/**
+	 * Handle missing WebGL features like IE 11 Uint8ClampedArray
+	 */
+	GameUtils.initWebGLShims = function () {
+		window.Uint8ClampedArray = window.Uint8ClampedArray || window.Uint8Array;
 	};
 
 	/**
@@ -258,7 +266,9 @@ function () {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 
-        if(!global.MouseEvent) { return; }
+		if (!global.MouseEvent) {
+			return;
+		}
 
 		var mouseEventPrototype = global.MouseEvent.prototype;
 

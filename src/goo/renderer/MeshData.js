@@ -796,7 +796,7 @@ function (
 		'TEXCOORD2': MeshData.createAttribute(2, 'Float'),
 		'TEXCOORD3': MeshData.createAttribute(2, 'Float'),
 		'WEIGHTS': MeshData.createAttribute(4, 'Float'),
-		'JOINTIDS': MeshData.createAttribute(4, 'Short')
+		'JOINTIDS': MeshData.createAttribute(4, 'Float')
 	};
 
 	function buildMap(types) {

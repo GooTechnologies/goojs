@@ -35,7 +35,6 @@ function (
 	CameraDebugSystem,
 	MovementSystem,
 	GameUtils,
-
 	Logo
 ) {
 	"use strict";
@@ -60,6 +59,8 @@ function (
 	function GooRunner (parameters) {
 		parameters = parameters || {};
 
+		GameUtils.initAllShims();
+
 		this.world = new World(this);
 		this.renderer = new Renderer(parameters);
 
@@ -80,8 +81,6 @@ function (
 
 		this.doProcess = true;
 		this.doRender = true;
-
-		GameUtils.initAllShims();
 
 		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
