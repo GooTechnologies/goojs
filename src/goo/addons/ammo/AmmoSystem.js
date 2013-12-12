@@ -37,7 +37,7 @@ function(
 
 	AmmoSystem.prototype.inserted = function(entity) {
 		var ammoComponent = entity.ammoComponent;
-		var etc = entity.transformComponent;
+		var trans = entity.transformComponent.transform.translation;
 
 		if (false) {
 			entity.clearComponent('AmmoComponent');
@@ -46,7 +46,7 @@ function(
 
 		var transform = new Ammo.btTransform();
 		transform.setIdentity(); // TODO: is this needed ?
-		transform.setOrigin(new Ammo.btVector3( etc.x, etc.y, etc.z)); // TODO; set based on transformComponent
+		transform.setOrigin(new Ammo.btVector3( trans.x, trans.y, trans.z));
 		var motionState = new Ammo.btDefaultMotionState( transform );
 		var bvhTriangleMeshShape = this.calculateTriangleMeshShape( entity); // bvh = Bounding Volume Hierarchy
 		var localInertia = new Ammo.btVector3(0, 0, 0);
