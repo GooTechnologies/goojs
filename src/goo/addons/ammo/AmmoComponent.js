@@ -63,7 +63,11 @@ function(
 		}
 
 		var localInertia = new Ammo.btVector3(0, 0, 0);
-		shape.calculateLocalInertia( this.mass, localInertia );
+
+		// rigidbody is dynamic if and only if mass is non zero, otherwise static
+		if(this.mass !== 0.0) {
+			shape.calculateLocalInertia( this.mass, localInertia );
+		}
 
 		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
 		this.body = new Ammo.btRigidBody( info );
