@@ -241,6 +241,10 @@ function(
 		var that = this;
 		var loadPromises = [];
 		var handled = 0;
+
+		// REVIEW: This method could theoretically cause "regressing progress"
+		// Better strategy: First get a list of all the binaries for a ref, 
+		// Then start loading them and sending back progress. 
 		var loadBinaryRef = function(ref) {
 			loadPromises.push(that._loadRef(ref).then(function() {
 				handled++;
@@ -250,6 +254,9 @@ function(
 			}));
 		};
 
+		// REVIEW: This can be generalized. _loadRef always checks the cache for the config
+		// and if we're loading a bundle, the cache is filled with the bundle stuff already
+		// so these two methods should only be one
 		var ajaxRecursive = function(ref) {
 			var traverseRef = function(ref) {
 				// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
@@ -287,7 +294,10 @@ function(
 					if(config !== undefined) {
 						// Get array of all refs in config
 						var refs = that._getRefsFromConfig(config);
-						for(var i = 0, _len = refs.length; i < _len; i++) {
+						//REVIEW: Why would you remove the whitespace between for and ( ?
+						// See https://sites.google.com/a/gooengine.com/wiki/code-style-guidelines/whitespace for guidelines
+						// Apply throughout this function
+						for (var i = 0, _len = refs.length; i < _len; i++) {
 							var ref = refs[i];
 							if (!ref) {
 								continue;
