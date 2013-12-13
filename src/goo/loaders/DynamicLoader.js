@@ -262,7 +262,7 @@ function(
 							for (var i = 0, _len = refs.length; i < _len; i++) {
 								var ref = refs[i];
 								if (!ref) {
-									return;
+									continue;
 								}
 								// Load found binary or traverse child refs
 								if (DynamicLoader.isAssetRef(ref)) {
@@ -290,7 +290,7 @@ function(
 						for(var i = 0, _len = refs.length; i < _len; i++) {
 							var ref = refs[i];
 							if (!ref) {
-								return;
+								continue;
 							}
 							// Load found binary or traverse child refs
 							if(DynamicLoader.isAssetRef(ref)) {
