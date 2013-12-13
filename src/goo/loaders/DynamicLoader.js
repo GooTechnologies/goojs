@@ -185,7 +185,7 @@ function(
 		}
 		_.defaults(options, this.options);
 
-		return that._loadRef(bundleName).then(function(data) {
+		var bundlePromise = that._loadRef(bundleName).then(function(data) {
 			if (options.noCache) {
 				that._configs = data;
 			} else {
@@ -197,13 +197,16 @@ function(
 			}
 
 			if (options.preloadBinaries === true) {
-				return this._preloadBinariesFromRef(ref, options).then(function() {
-					that.load(ref, options);
+				return that._preloadBinariesFromRef(ref, options).then(function() {
+					options.preloadBinaries = false;
+					return that.load(ref, options);
 				});
 			} else {
 				return that.load(ref, options);
 			}
 		});
+
+		return bundlePromise;
 	};
 
 	/**
@@ -218,10 +221,13 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.load = function(ref, options) {
+		var that = this;
 		if (options == null) {
 			options = {};
 		} else if (options.preloadBinaries === true && ref === 'project.project') {
-			this._preloadBinariesFromRef(ref, options);
+			return this._preloadBinariesFromRef(ref, options).then(function() {
+				that.update(ref, null, options);
+			});
 		}
 		return this.update(ref, null, options);
 	};
@@ -254,9 +260,7 @@ function(
 			var refPromises = [];
 			var traverseRef = function(ref) {
 				if (ref !== undefined) {
-					var refPromise = that._loadRef(ref);
-					refPromises.push(refPromise);
-					refPromise.then(function(config) {
+					var refPromise = that._loadRef(ref).then(function(config) {
 						if (config !== undefined) {
 							var refs = that._getRefsFromConfig(config);
 							for (var i = 0, _len = refs.length; i < _len; i++) {
@@ -273,6 +277,7 @@ function(
 							}
 						}
 					});
+					refPromises.push(refPromise);
 				}
 			};
 			traverseRef(ref);
@@ -286,14 +291,14 @@ function(
 			traversalPromises.push(traverseRecursive(entityRefs[i]));
 		}
 
-		RSVP.all(traversalPromises).then(function() {
+		var traversalComplete = RSVP.all(traversalPromises).then(function() {
 			// Load all the binaryRefs, adding promises to the loadPromises array.
 			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
 				loadBinaryRef(binaryRefs[i]);
 			}
 		});
 
-		return RSVP.all(loadPromises);
+		return RSVP.all(loadPromises.concat(traversalComplete));
 	};
 
 	/**
@@ -310,7 +315,7 @@ function(
 		_.defaults(options, this.options);
 		var that = this;
 
-		return this._loadRef(ref).then(function(config) {
+		return that._loadRef(ref).then(function(config) {
 			var entityRefs;
 			if (ref === 'project.project') {
 				entityRefs = config.entityRefs;
@@ -319,7 +324,7 @@ function(
 					return;
 				}
 			} else {
-				entityRefs = this._getRefsFromConfig(config);
+				entityRefs = that._getRefsFromConfig(config);
 			}
 			return that._loadBinariesFromEntityRefs(entityRefs, options);
 		});
