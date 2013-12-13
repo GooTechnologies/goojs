@@ -22,6 +22,7 @@ function(
 	 * @extends Component
 	 * @param {Object} [settings] The settings object can contain the following properties:
 	 * @param {number} [settings.mass=0] (0 means immovable)
+	 * @param {number} [settings.activationState=0] (4 means never disable, useful for vehicles)
 	 * @param {boolean} [settings.useBounds=false] use the model bounds or use the real (must-be-convex) vertices
 	 * @example
 	 * var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createBox(20, 10, 1));
@@ -71,6 +72,9 @@ function(
 
 		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
 		this.body = new Ammo.btRigidBody( info );
+		if( this.settings.activationState ) {
+			this.body.setActivationState( this.settings.activationState);
+		}
 	};
 
 
