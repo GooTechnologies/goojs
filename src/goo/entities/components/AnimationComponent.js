@@ -52,10 +52,17 @@ function (
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
+	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
 	 * @returns {boolean} true if a transition was found and started
 	 */
-	AnimationComponent.prototype.transitionTo = function(stateKey) {
-		return this.layers[0].transitionTo(stateKey);
+	AnimationComponent.prototype.transitionTo = function(stateKey, allowDirectSwitch) {
+		if (this.layers[0].transitionTo(stateKey)) {
+			return true;
+		}
+		if (!allowDirectSwitch) {
+			return false;
+		}
+		return this.layers[0].setCurrentStateByName(stateKey);
 	};
 	/**
 	 * Get available states

@@ -27,7 +27,7 @@ function(
 	SetAnimationAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (typeof this.animation === 'string' && entity.animationComponent) {
-			entity.animationComponent.transitionTo(this.animation);
+			entity.animationComponent.transitionTo(this.animation, true);
 		}
 	};
 
