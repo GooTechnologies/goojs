@@ -185,27 +185,25 @@ function(
 		}
 		_.defaults(options, this.options);
 
-		var loadRefPromise = function() {
-			return that._loadRef(bundleName).then(function(data) {
-				if (options.noCache) {
-					that._configs = data;
-				} else {
-					_.extend(that._configs, data);
-				}
-				if (that._configs[ref] == null) {
-					throw new Error("" + ref + " not found in bundle " + bundleName + ". Available keys: \n" + (_.keys(that._configs).join('\n')));
-				}
-				return that.load(ref, options);
-			});
-		};
+		return that._loadRef(bundleName).then(function(data) {
+			if (options.noCache) {
+				that._configs = data;
+			} else {
+				_.extend(that._configs, data);
+			}
 
-		// Can currently only preload binaries when loading project.project
-		// TODO enable preloading of specific binaries?
-		if (options.preloadBinaries === true && ref === 'project.project') {
-			return this._preloadBinariesFromBundle(bundleName, options).then(loadRefPromise);
-		} else {
-			return loadRefPromise();
-		}
+			if (that._configs[ref] == null) {
+				throw new Error(ref + ' not found in bundle ' + bundleName + '. Available keys: \n' + (_.keys(that._configs).join('\n')));
+			}
+
+			if (options.preloadBinaries === true) {
+				return this._preloadBinariesFromRef(ref, options).then(function() {
+					that.load(ref, options);
+				});
+			} else {
+				return that.load(ref, options);
+			}
+		});
 	};
 
 	/**
@@ -223,7 +221,7 @@ function(
 		if (options == null) {
 			options = {};
 		} else if (options.preloadBinaries === true && ref === 'project.project') {
-			this._preloadBinariesFromProjectRef(ref, options);
+			this._preloadBinariesFromRef(ref, options);
 		}
 		return this.update(ref, null, options);
 	};
@@ -237,43 +235,38 @@ function(
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
-	DynamicLoader.prototype._loadBinariesFromEntities = function(entityRefs, options, bundle) {
+	DynamicLoader.prototype._loadBinariesFromEntityRefs = function(entityRefs, options) {
 		var that = this;
+		var binaryRefs = [];
 		var loadPromises = [];
 		var handled = 0;
 
-		// REVIEW: This method could theoretically cause "regressing progress"
-		// Better strategy: First get a list of all the binaries for a ref, 
-		// Then start loading them and sending back progress. 
 		var loadBinaryRef = function(ref) {
 			loadPromises.push(that._loadRef(ref).then(function() {
 				handled++;
 				if (typeof(options.progressCallback) === 'function') {
-					options.progressCallback(handled, loadPromises.length);
+					options.progressCallback(handled, binaryRefs.length);
 				}
 			}));
 		};
 
-		// REVIEW: This can be generalized. _loadRef always checks the cache for the config
-		// and if we're loading a bundle, the cache is filled with the bundle stuff already
-		// so these two methods should only be one
-		var ajaxRecursive = function(ref) {
+		var traverseRecursive = function(ref) {
+			var refPromises = [];
 			var traverseRef = function(ref) {
-				// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
-				if(ref !== undefined) {
-					// Get config from ref
-					that._loadRef(ref).then(function(config) {
+				if (ref !== undefined) {
+					var refPromise = that._loadRef(ref);
+					refPromises.push(refPromise);
+					refPromise.then(function(config) {
 						if (config !== undefined) {
-							// Get array of all refs in config
 							var refs = that._getRefsFromConfig(config);
 							for (var i = 0, _len = refs.length; i < _len; i++) {
 								var ref = refs[i];
 								if (!ref) {
 									continue;
 								}
-								// Load found binary or traverse child refs
+
 								if (DynamicLoader.isAssetRef(ref)) {
-									loadBinaryRef(ref);
+									binaryRefs.push(ref);
 								} else if (DynamicLoader.isJSONRef(ref)) {
 									traverseRef(ref);
 								}
@@ -283,114 +276,55 @@ function(
 				}
 			};
 			traverseRef(ref);
+
+			return RSVP.all(refPromises);
 		};
 
-		var bundleRecursive = function(ref) {
-			var traverseRef = function(ref) {
-				// REVIEW: Perhaps overly safe. It will only be undefined if entityRefs array is corrupted.
-				if(ref !== undefined) {
-					// Get config from ref
-					var config = bundle[ref];
-					if(config !== undefined) {
-						// Get array of all refs in config
-						var refs = that._getRefsFromConfig(config);
-						//REVIEW: Why would you remove the whitespace between for and ( ?
-						// See https://sites.google.com/a/gooengine.com/wiki/code-style-guidelines/whitespace for guidelines
-						// Apply throughout this function
-						for (var i = 0, _len = refs.length; i < _len; i++) {
-							var ref = refs[i];
-							if (!ref) {
-								continue;
-							}
-							// Load found binary or traverse child refs
-							if(DynamicLoader.isAssetRef(ref)) {
-								loadBinaryRef(ref);
-							} else if(DynamicLoader.isJSONRef(ref)) {
-								traverseRef(ref);
-							}
-						}
-					}
-				}
-			};
-			traverseRef(ref);
-		};
-
-		/*
-		If loading from a bundle, get the configs directly from the bundle
-		rather than using ajax gets.
-
-		The two recursive functions adds promises for the binary files into the loadPromises array.
-		*/
-		if (bundle !== null) {
-			for (var i = 0; i < entityRefs.length; i++) {
-				bundleRecursive(entityRefs[i]);
-			}
-		} else {
-			for (var i = 0; i < entityRefs.length; i++) {
-				ajaxRecursive(entityRefs[i]);
-			}
+		// Traverse to find all binary references, storing them in the binaryRefs array.
+		var traversalPromises = [];
+		for (var i = 0, _len = entityRefs.length; i < _len; i++) {
+			traversalPromises.push(traverseRecursive(entityRefs[i]));
 		}
+
+		RSVP.all(traversalPromises).then(function() {
+			// Load all the binaryRefs, adding promises to the loadPromises array.
+			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
+				loadBinaryRef(binaryRefs[i]);
+			}
+		});
 
 		return RSVP.all(loadPromises);
 	};
 
 	/**
-	 * Performs pre-loading of binary files from the project reference.
-	 * @param {string} ref
+	 * Performs pre-loading of all binary files recursively found from the given reference.
+	 * @param {string} ref Reference to load from.
 	 * @param {object} options See {DynamicLoader.update}
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
-	DynamicLoader.prototype._preloadBinariesFromProjectRef = function(ref, options) {
+	DynamicLoader.prototype._preloadBinariesFromRef = function(ref, options) {
 		if (options == null) {
 			options = {};
 		}
 		_.defaults(options, this.options);
 		var that = this;
 
-		return this._loadRef(ref).then(function(project) {
-			// Array containing the references currently in the scene
-			var entityRefs = project.entityRefs;
-			if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
-				console.warn('No entity refs in project:', project);
-				return;
+		return this._loadRef(ref).then(function(config) {
+			var entityRefs;
+			if (ref === 'project.project') {
+				entityRefs = config.entityRefs;
+				if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
+					console.warn('No entity refs in project:', config);
+					return;
+				}
+			} else {
+				entityRefs = this._getRefsFromConfig(config);
 			}
-			return that._loadBinariesFromEntities(entityRefs, options, null);
+			return that._loadBinariesFromEntityRefs(entityRefs, options);
 		});
 	};
 
-	/**
-	 * Performs pre-loading of binary files from the bundle reference.
-	 * @param {string} bundleName
-	 * @param {object} options See {DynamicLoader.update}
-	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
-	 * @private
-	 */
-	DynamicLoader.prototype._preloadBinariesFromBundle = function (bundleName, options) {
-		if (options == null) {
-			options = {};
-		}
-		_.defaults(options, this.options);
-		var that = this;
-
-		// Get the flat root.bundle file containing all references
-		return this._loadRef(bundleName).then(function(bundleRefs) {
-
-			if(!bundleRefs['project.project']) {
-				throw new Error('project.project missing in bundle');
-			}
-
-			// Array containing the references currently in the scene
-			var entityRefs = bundleRefs['project.project'].entityRefs;
-
-			if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
-				console.warn('No entity refs in project:', bundleRefs['project.project']);
-				return;
-			}
-
-			return that._loadBinariesFromEntities(entityRefs, options, bundleRefs);
-		});
-	};
 
 	/**
 	 * Update an object in the world with an updated config. The object can be of any
