@@ -579,7 +579,7 @@ function(
 			/* REVIEW: what about lowercase refs and urls?
 			 * https://docs.google.com/a/gooengine.com/spreadsheet/ccc?key=0AkxI1qc8lXvrdHBlaGRhV1RhS2R1SU8tT2pJNVJFUGc#gid=17
 			 * concat also works for single values
-			 * if (key.toLowerCase().test(/(url|ref)s?$/) {
+			 * if (/(url|ref)s?$/.test(key.toLowerCase()) {
 			 *  _ref = _refs.concat(value);
 			 * } else ...
 			 */
