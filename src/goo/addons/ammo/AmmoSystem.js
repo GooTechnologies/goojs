@@ -26,6 +26,7 @@ function(
 	function AmmoSystem(settings) {
 		System.call(this, 'AmmoSystem', ['AmmoComponent', 'TransformComponent']);
 		this.settings = settings || {};
+		this.fixedTime = 1/(this.settings.stepFrequency || 60);
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
@@ -51,13 +52,12 @@ function(
 		}
 	};
 
-	var fixedTime = 1/60;
 	AmmoSystem.prototype.process = function(entities, tpf) {
-		this.ammoWorld.stepSimulation( tpf, Math.floor(tpf / fixedTime)+1, fixedTime);
+		this.ammoWorld.stepSimulation( tpf, 10, this.fixedTime);
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
-			e.ammoComponent.process( e, tpf);
+			e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
 		}
 	};
 

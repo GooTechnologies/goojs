@@ -4,11 +4,13 @@ define([
 	'goo/addons/ammo/calculateTriangleMeshShape',
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
-	'goo/shapes/Sphere'
+	'goo/shapes/Sphere',
+	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere'
 ],
 /** @lends */
 function(
-	Component, Quaternion, calculateTriangleMeshShape, Box, Quad, Sphere
+	Component, Quaternion, calculateTriangleMeshShape, Box, Quad, Sphere, BoundingBox, BoundingSphere
 ) {
 	"use strict";
 
@@ -22,7 +24,6 @@ function(
 	 * @extends Component
 	 * @param {Object} [settings] The settings object can contain the following properties:
 	 * @param {number} [settings.mass=0] (0 means immovable)
-	 * @param {number} [settings.activationState=0] (4 means never disable, useful for vehicles)
 	 * @param {boolean} [settings.useBounds=false] use the model bounds or use the real (must-be-convex) vertices
 	 * @example
 	 * var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createBox(20, 10, 1));
@@ -40,7 +41,7 @@ function(
 
 	AmmoComponent.prototype.initialize = function(entity) {
 		var gooTransform = entity.transformComponent.transform;
-		var gooPos = entity.transformComponent.transform.translation;
+		var gooPos = gooTransform.translation;
 
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
@@ -50,17 +51,32 @@ function(
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
 
-		var meshData = entity.meshDataComponent.meshData;
 		var shape;
-		if (meshData instanceof Box) {
-			shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, meshData.zExtent));
-		} else if (meshData instanceof Sphere) {
-			shape = new Ammo.btSphereShape(meshData.radius);
-		} else if (meshData instanceof Quad) {
-			// there doesn't seem to be a plane shape in Ammo
-			shape = new Ammo.btBoxShape(new Ammo.btVector3( 1000, 1000, 1 )); //new Ammo.btPlane();
+		if( entity.meshDataComponent && entity.meshDataComponent.meshData)
+		{
+			var meshData = entity.meshDataComponent.meshData;
+			if (meshData instanceof Box) {
+				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, meshData.zExtent));
+			} else if (meshData instanceof Sphere) {
+				shape = new Ammo.btSphereShape(meshData.radius);
+			} else if (meshData instanceof Quad) {
+				// there doesn't seem to be a Quad shape in Ammo
+				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, 0.01 )); //new Ammo.btPlane();
+			} else {
+				if (this.useBounds || this.mass > 0) {
+					entity.meshDataComponent.computeBoundFromPoints();
+					var bound = entity.meshDataComponent.modelBound;
+					if (bound instanceof BoundingBox) {
+						shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
+					} else if (bound instanceof BoundingSphere) {
+						shape = new Ammo.btSphereShape( bound.radius);
+					}
+				} else {
+					shape = calculateTriangleMeshShape( entity); // this can only be used for static meshes, i.e. mass == 0.
+				}
+			}
 		} else {
-			shape = calculateTriangleMeshShape( entity); // bvh = Bounding Volume Hierarchy
+			shape = new Ammo.btCompoundShape();
 		}
 
 		var localInertia = new Ammo.btVector3(0, 0, 0);
@@ -72,13 +88,10 @@ function(
 
 		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
 		this.body = new Ammo.btRigidBody( info );
-		if( this.settings.activationState ) {
-			this.body.setActivationState( this.settings.activationState);
-		}
 	};
 
 
-	AmmoComponent.prototype.process = function(entity) {
+	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
 		var tc = entity.transformComponent;
 		this.body.getMotionState().getWorldTransform(this.ammoTransform);
 		var ammoQuat = this.ammoTransform.getRotation();
