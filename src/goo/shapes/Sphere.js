@@ -60,7 +60,16 @@ function (
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
 		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
-		var verts = ((samples) - 2) * (this.radialSamples + 1) + 2;
+
+		// If Projected & Linear use shared pole vertices the uv-mapping will get too distorted, so let them
+		// have full 'rings' of vertices for a straighter texture mapping.
+		this._useSharedPoleVertices = (this.textureMode !== Sphere.TextureModes.Projected) &&
+		                              (this.textureMode !== Sphere.TextureModes.Linear);
+
+		// sharedVert = pole vertex that represents a whole layer. When not using shared vertices,
+		// full layers are used for both poles.
+		var sharedVerts = this._useSharedPoleVertices ? 2 : 0;
+		var verts = (samples - sharedVerts) * (this.radialSamples + 1) + sharedVerts;
 		var tris = 6 * ((samples) - 2) * this.radialSamples;
 
 		MeshData.call(this, attributeMap, verts, tris);
@@ -96,12 +105,21 @@ function (
 		afSin[this.radialSamples] = afSin[0];
 		afCos[this.radialSamples] = afCos[0];
 
+		// z range to generate vertices for. If sharing pole vertices, skip those layers.
+		var zBegin = 0;
+		var zEnd = this.zSamples;
+
+		if (this._useSharedPoleVertices) {
+			zBegin = 1;
+			zEnd = this.zSamples - 1;
+		}
+
 		// generate the sphere itself
 		var i = 0;
 		var tempVa = new Vector3();
 		var tempVb = new Vector3();
 		var tempVc = new Vector3();
-		for (var iZ = 1; iZ < this.zSamples - 1; iZ++) {
+		for (var iZ = zBegin; iZ < zEnd; iZ++) {
 			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi/2, pi/2)
 			var fZFraction = Math.sin(fAFraction); // in (-1,1)
 			var fZ = this.radius * fZFraction;
@@ -137,11 +155,18 @@ function (
 					norms[i * 3 + 2] = -kNormal.z;
 				}
 
+				// When not having shared pole vertices: ajustment of u at the poles for linear & projected modes.
+				// This is because at the pole we squeeze a quad into a triangle, so this centers the pointy end of it.
+				var uOffset = 0;
+				if (!this._useSharedPoleVertices && (iZ === zBegin || iZ === (zEnd - 1))) {
+					uOffset = 0.5 * fInvRS;
+				}
+
 				if (this.textureMode === Sphere.TextureModes.Linear) {
-					texs[i * 2 + 0] = fRadialFraction;
+					texs[i * 2 + 0] = fRadialFraction + uOffset;
 					texs[i * 2 + 1] = 0.5 * (fZFraction + 1.0);
 				} else if (this.textureMode === Sphere.TextureModes.Projected) {
-					texs[i * 2 + 0] = fRadialFraction;
+					texs[i * 2 + 0] = fRadialFraction + uOffset;
 					texs[i * 2 + 1] = (MathUtils.HALF_PI + Math.asin(fZFraction)) / Math.PI;
 				} else if (this.textureMode === Sphere.TextureModes.Polar) {
 					var r = (MathUtils.HALF_PI - Math.abs(fAFraction)) / Math.PI;
@@ -222,62 +247,72 @@ function (
 			i++;
 		}
 
+		if (this.textureMode !== Sphere.TextureModes.Projected) {
+			// south pole
+			vbuf[i * 3 + 0] = 0;
+			vbuf[i * 3 + 1] = 0;
+			vbuf[i * 3 + 2] = -this.radius;
 
-		// south pole
-		vbuf[i * 3 + 0] = 0;
-		vbuf[i * 3 + 1] = 0;
-		vbuf[i * 3 + 2] = -this.radius;
+			if (!this.viewInside) {
+				norms[i * 3 + 0] = 0;
+				norms[i * 3 + 1] = 0;
+				norms[i * 3 + 2] = -1;
+			} else {
+				norms[i * 3 + 0] = 0;
+				norms[i * 3 + 1] = 0;
+				norms[i * 3 + 2] = 1;
+			}
 
-		if (!this.viewInside) {
-			norms[i * 3 + 0] = 0;
-			norms[i * 3 + 1] = 0;
-			norms[i * 3 + 2] = -1;
-		} else {
-			norms[i * 3 + 0] = 0;
-			norms[i * 3 + 1] = 0;
-			norms[i * 3 + 2] = 1;
-		}
+			if (this.textureMode === Sphere.TextureModes.Polar || this.textureMode === Sphere.TextureModes.Chromeball) {
+				texs[i * 2 + 0] = 0.5;
+				texs[i * 2 + 1] = 0.5;
+			} else {
+				texs[i * 2 + 0] = 0.5;
+				texs[i * 2 + 1] = 0.0;
+			}
 
-		if (this.textureMode === Sphere.TextureModes.Polar || this.textureMode === Sphere.TextureModes.Chromeball) {
-			texs[i * 2 + 0] = 0.5;
-			texs[i * 2 + 1] = 0.5;
-		} else {
-			texs[i * 2 + 0] = 0.5;
-			texs[i * 2 + 1] = 0.0;
-		}
+			i++;
 
-		i++;
+			// north pole
+			vbuf[i * 3 + 0] = 0;
+			vbuf[i * 3 + 1] = 0;
+			vbuf[i * 3 + 2] = this.radius;
 
-		// north pole
-		vbuf[i * 3 + 0] = 0;
-		vbuf[i * 3 + 1] = 0;
-		vbuf[i * 3 + 2] = this.radius;
+			if (!this.viewInside) {
+				norms[i * 3 + 0] = 0;
+				norms[i * 3 + 1] = 0;
+				norms[i * 3 + 2] = 1;
+			} else {
+				norms[i * 3 + 0] = 0;
+				norms[i * 3 + 1] = 0;
+				norms[i * 3 + 2] = -1;
+			}
 
-		if (!this.viewInside) {
-			norms[i * 3 + 0] = 0;
-			norms[i * 3 + 1] = 0;
-			norms[i * 3 + 2] = 1;
-		} else {
-			norms[i * 3 + 0] = 0;
-			norms[i * 3 + 1] = 0;
-			norms[i * 3 + 2] = -1;
-		}
-
-		if (this.textureMode === Sphere.TextureModes.Polar) {
-			texs[i * 2 + 0] = 0.5;
-			texs[i * 2 + 1] = 0.5;
-		} else if (this.textureMode === Sphere.TextureModes.Chromeball) {
-			texs[i * 2 + 0] = 1;
-			texs[i * 2 + 1] = -0.5;
-		} else {
-			texs[i * 2 + 0] = 0.5;
-			texs[i * 2 + 1] = 1.0;
+			if (this.textureMode === Sphere.TextureModes.Polar) {
+				texs[i * 2 + 0] = 0.5;
+				texs[i * 2 + 1] = 0.5;
+			} else if (this.textureMode === Sphere.TextureModes.Chromeball) {
+				texs[i * 2 + 0] = 1;
+				texs[i * 2 + 1] = -0.5;
+			} else {
+				texs[i * 2 + 0] = 0.5;
+				texs[i * 2 + 1] = 1.0;
+			}
 		}
 
 		// generate connectivity
 		var index = 0;
-		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
-		for (var iZ = 0, iZStart = 0; iZ < samples - 3; iZ++) {
+
+		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples + 1 : this.zSamples;
+
+		var iZStart = 0;
+		if (!this._useSharedPoleVertices) {
+			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be 
+			// used only for the pole.
+			iZStart = this.radialSamples + 1;
+		}
+
+		for (var iZ = 0; iZ < samples - 3; iZ++) {
 			var i0 = iZStart;
 			var i1 = i0 + 1;
 			iZStart += this.radialSamples + 1;
@@ -304,28 +339,55 @@ function (
 
 		// south pole triangles
 		for (var i = 0; i < this.radialSamples; i++) {
-			if (!this.viewInside) {
-				indices[index++] = i;
-				indices[index++] = this.vertexCount - 2;
-				indices[index++] = i + 1;
+
+			var i0, i1, i2;
+			if (!this._useSharedPoleVertices) {
+				i0 = i;
+				i1 = i + this.radialSamples + 2;
+				i2 = i + this.radialSamples + 1;
 			} else {
-				indices[index++] = i;
-				indices[index++] = i + 1;
-				indices[index++] = this.vertexCount - 2;
+				i0 = i;
+				i1 = this.vertexCount - 2;
+				i2 = i + 1;
+			}
+
+			if (!this.viewInside) {
+				indices[index++] = i0;
+				indices[index++] = i1;
+				indices[index++] = i2;
+			} else {
+				indices[index++] = i0;
+				indices[index++] = i2;
+				indices[index++] = i1;
 			}
 		}
 
 		// north pole triangles
-		var iOffset = (samples - 3) * (this.radialSamples + 1);
+		// - point iOffset point to the start of the last generated ring of vertices
+		var iOffset = (zEnd - zBegin - 1) * (this.radialSamples + 1);
 		for (var i = 0; i < this.radialSamples; i++) {
-			if (!this.viewInside) {
-				indices[index++] = i + iOffset;
-				indices[index++] = i + 1 + iOffset;
-				indices[index++] = this.vertexCount - 1;
+
+			var i0, i1, i2;
+			if (!this._useSharedPoleVertices) {
+				// as we are in the last pole ring (with iOffset added), step back to the 
+				// next-to-last as there is no pole vertex in this mode.
+				i0 = i + iOffset - this.radialSamples - 1;
+				i1 = i + iOffset - this.radialSamples;
+				i2 = i + iOffset;
 			} else {
-				indices[index++] = i + iOffset;
-				indices[index++] = this.vertexCount - 1;
-				indices[index++] = i + 1 + iOffset;
+				i0 = i + iOffset;
+				i1 = i + 1 + iOffset;
+				i2 = this.vertexCount - 1;
+			}
+
+			if (!this.viewInside) {
+				indices[index++] = i0;
+				indices[index++] = i1;
+				indices[index++] = i2;
+			} else {
+				indices[index++] = i0;
+				indices[index++] = i2;
+				indices[index++] = i1;
 			}
 		}
 		return this;
