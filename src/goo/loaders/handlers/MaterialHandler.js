@@ -127,6 +127,11 @@ define([
 						object.removeTexture(textureType);
 					}
 				}
+				for (var type in object._textureMaps) {
+					if (!config.texturesMapping[type]) {
+						object.removeTexture(type);
+					}
+				}
 			}
 			if (promises.length) {
 				return RSVP.all(promises).then(function(textures) {
