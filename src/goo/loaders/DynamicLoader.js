@@ -235,84 +235,59 @@ function(
 	/**
 	 * Recursively traverses all entities and loads the binary files referenced.
 	 * A promise which resolves when all binary files are loaded is returned.
-	 * @param {Array.<string>} entityRefs Array of references to entities in the scene.
+	 * @param {Array.<string>} references Array of references to entities in the scene.
 	 * @param {object} options See {DynamicLoader.update}
 	 * @param {object} bundle Associative array containing all configs , already loaded
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
-	DynamicLoader.prototype._loadBinariesFromEntityRefs = function(entityRefs, options) {
-		// REVIEW: Not necessarily entityRefs
+	DynamicLoader.prototype._loadBinariesFromRefs = function(references, options) {
 		var that = this;
 		var binaryRefs = [];
-		var loadPromises = [];
 		var handled = 0;
 
 		var loadBinaryRef = function(ref) {
-			loadPromises.push(that._loadRef(ref).then(function() {
+			 return that._loadRef(ref).then(function() {
 				handled++;
 				if (typeof(options.progressCallback) === 'function') {
 					options.progressCallback(handled, binaryRefs.length);
 				}
-			}));
+			});
 		};
 
 		var traverseRecursive = function(ref) {
 			var refPromises = [];
 			var traverseRef = function(ref) {
-				// REVIEW: I doubt this one will ever be undefined
-				if (ref !== undefined) {
-					var refPromise = that._loadRef(ref).then(function(config) {
-						// REVIEW: I doubt this one will ever be undefined either
-						if (config !== undefined) {
-							var refs = that._getRefsFromConfig(config);
-							// REVIEW: for (var i = 0; i < refs.length; i++)
-							for (var i = 0, _len = refs.length; i < _len; i++) {
-								var ref = refs[i];
-								// REVIEW: Should also never happen
-								if (!ref) {
-									continue;
-								}
-
-								if (DynamicLoader.isAssetRef(ref)) {
-									binaryRefs.push(ref);
-								} else if (DynamicLoader.isJSONRef(ref)) {
-									traverseRef(ref);
-								}
-							}
+				var refPromise = that._loadRef(ref).then(function(config) {
+					var refs = that._getRefsFromConfig(config);
+					for (var i = 0, _len = refs.length; i < _len; i++) {
+						var ref = refs[i];
+						if (DynamicLoader.isAssetRef(ref)) {
+							binaryRefs.push(ref);
+						} else if (DynamicLoader.isJSONRef(ref)) {
+							traverseRef(ref);
 						}
-					});
-					refPromises.push(refPromise);
-				}
+					}
+				});
+				refPromises.push(refPromise);
 			};
 			traverseRef(ref);
-
 			return RSVP.all(refPromises);
 		};
 
 		// Traverse to find all binary references, storing them in the binaryRefs array.
 		var traversalPromises = [];
-		for (var i = 0, _len = entityRefs.length; i < _len; i++) {
-			traversalPromises.push(traverseRecursive(entityRefs[i]));
+		for (var i = 0, _len = references.length; i < _len; i++) {
+			traversalPromises.push(traverseRecursive(references[i]));
 		}
 
-		/* REVIEW: Let loadBinaryRef return a promise, and then:
 		return RSVP.all(traversalPromises).then(function() {
 			var promises = [];
-			for (var i = 0; i < binaryRefs.length; i++) {
-				promises.push(loadBinaryRef(binaryRefs[i]);
+			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
+				promises.push(loadBinaryRef(binaryRefs[i]));
 			}
 			return RSVP.all(promises);
-		})
-		*/
-		var traversalComplete = RSVP.all(traversalPromises).then(function() {
-			// Load all the binaryRefs, adding promises to the loadPromises array.
-			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
-				loadBinaryRef(binaryRefs[i]);
-			}
 		});
-
-		return RSVP.all(loadPromises.concat(traversalComplete));
 	};
 
 	/**
@@ -323,28 +298,21 @@ function(
 	 * @private
 	 */
 	DynamicLoader.prototype._preloadBinariesFromRef = function(ref, options) {
-		// REVIEW: Options are never null, that's how you got here in the first place
-		if (options == null) {
-			options = {};
-		}
 		_.defaults(options, this.options);
 		var that = this;
 
 		return that._loadRef(ref).then(function(config) {
-			var entityRefs;
+			var references;
 			if (ref === 'project.project') {
-				entityRefs = config.entityRefs;
-				// REVIEW: IMO if (entityRefs.length > 0) would be good enough
-				if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
+				references = config.entityRefs;
+				if (references.length === 0) {
 					console.warn('No entity refs in project:', config);
-					// REVIEW: If you don't return an empty promise, it will break
-					return;
+					return PromiseUtil.createDummyPromise(null);
 				}
 			} else {
-				// REVIEW: Not necessarily entityRefs
-				entityRefs = that._getRefsFromConfig(config);
+				references = that._getRefsFromConfig(config);
 			}
-			return that._loadBinariesFromEntityRefs(entityRefs, options);
+			return that._loadBinariesFromRefs(references, options);
 		});
 	};
 
