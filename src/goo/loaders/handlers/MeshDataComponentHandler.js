@@ -29,7 +29,6 @@ define([
 
 	MeshDataComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
-			meshRef: null
 		});
 	};
 

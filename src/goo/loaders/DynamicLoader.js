@@ -522,10 +522,12 @@ function(
 			 *  _ref = _refs.concat(value);
 			 * } else ...
 			 */
+
 			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
 				_refs = _refs.concat(value);
 			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {
-				_refs.push(value);
+				if (value != null) // Bug caused some meshRefs to be null
+					_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
 					if (!value.hasOwnProperty(_key)) {
