@@ -117,6 +117,7 @@ define(function() {
 		return btoa(hash).replace('/', '_').replace('+', '-');
 	};
 
+	// REVIEW: idCounter is only updated on declaration, same session will always have the same seed
 	// used in generating ids
 	var idCounter = +new Date();
 
