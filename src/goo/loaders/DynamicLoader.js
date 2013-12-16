@@ -263,7 +263,11 @@ function(
 					for (var i = 0, _len = refs.length; i < _len; i++) {
 						var ref = refs[i];
 						if (DynamicLoader.isAssetRef(ref)) {
-							binaryRefs.push(ref);
+							// There can be duplicate references of binary files ( textures )
+							// Only add unique references.
+							if (binaryRefs.indexOf(ref) === -1) {
+								binaryRefs.push(ref);
+							}
 						} else if (DynamicLoader.isJSONRef(ref)) {
 							traverseRef(ref);
 						}
