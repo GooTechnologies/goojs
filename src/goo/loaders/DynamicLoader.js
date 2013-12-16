@@ -242,6 +242,7 @@ function(
 	 * @private
 	 */
 	DynamicLoader.prototype._loadBinariesFromEntityRefs = function(entityRefs, options) {
+		// REVIEW: Not necessarily entityRefs
 		var that = this;
 		var binaryRefs = [];
 		var loadPromises = [];
@@ -259,12 +260,16 @@ function(
 		var traverseRecursive = function(ref) {
 			var refPromises = [];
 			var traverseRef = function(ref) {
+				// REVIEW: I doubt this one will ever be undefined
 				if (ref !== undefined) {
 					var refPromise = that._loadRef(ref).then(function(config) {
+						// REVIEW: I doubt this one will ever be undefined either
 						if (config !== undefined) {
 							var refs = that._getRefsFromConfig(config);
+							// REVIEW: for (var i = 0; i < refs.length; i++)
 							for (var i = 0, _len = refs.length; i < _len; i++) {
 								var ref = refs[i];
+								// REVIEW: Should also never happen
 								if (!ref) {
 									continue;
 								}
@@ -291,6 +296,15 @@ function(
 			traversalPromises.push(traverseRecursive(entityRefs[i]));
 		}
 
+		/* REVIEW: Let loadBinaryRef return a promise, and then:
+		return RSVP.all(traversalPromises).then(function() {
+			var promises = [];
+			for (var i = 0; i < binaryRefs.length; i++) {
+				promises.push(loadBinaryRef(binaryRefs[i]);
+			}
+			return RSVP.all(promises);
+		})
+		*/
 		var traversalComplete = RSVP.all(traversalPromises).then(function() {
 			// Load all the binaryRefs, adding promises to the loadPromises array.
 			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
@@ -309,6 +323,7 @@ function(
 	 * @private
 	 */
 	DynamicLoader.prototype._preloadBinariesFromRef = function(ref, options) {
+		// REVIEW: Options are never null, that's how you got here in the first place
 		if (options == null) {
 			options = {};
 		}
@@ -319,11 +334,14 @@ function(
 			var entityRefs;
 			if (ref === 'project.project') {
 				entityRefs = config.entityRefs;
+				// REVIEW: IMO if (entityRefs.length > 0) would be good enough
 				if(!entityRefs || (typeof entityRefs.length === 'number' && entityRefs.length === 0) ) {
 					console.warn('No entity refs in project:', config);
+					// REVIEW: If you don't return an empty promise, it will break
 					return;
 				}
 			} else {
+				// REVIEW: Not necessarily entityRefs
 				entityRefs = that._getRefsFromConfig(config);
 			}
 			return that._loadBinariesFromEntityRefs(entityRefs, options);
