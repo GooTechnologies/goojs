@@ -224,7 +224,7 @@ function(
 		var that = this;
 		if (options == null) {
 			options = {};
-		} else if (options.preloadBinaries === true && ref === 'project.project') {
+		} else if (options.preloadBinaries === true) {
 			return this._preloadBinariesFromRef(ref, options).then(function() {
 				return that.update(ref, null, options);
 			});
