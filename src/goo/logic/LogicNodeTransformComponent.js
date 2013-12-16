@@ -25,7 +25,7 @@ define(
 		LogicNodeTransformComponent.editorName = "TransformComponent";
 
 		LogicNodeTransformComponent.prototype.onConfigure = function(config) {
-			this.entityRef = config.entityRef;
+			this.entityRef = config.entityRef; //
 		};
 
 		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {

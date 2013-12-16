@@ -22,7 +22,7 @@ define(
 		LogicNodeInput.prototype = Object.create(LogicNode.prototype);
 		LogicNodeInput.editorName = "Input";
 
-		// Configure new output.
+		// Configure new input.
 		LogicNodeInput.prototype.onConfigure = function(newConfig) {
 			this.dummyInport = LogicInterface.createDynamicInput(newConfig.Name);
 		};

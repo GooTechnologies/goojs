@@ -17,7 +17,7 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeVec3.logicInterface;
 			this.type = "LogicNodeVec3";
-			this._x = this._y = this._z = 0;
+			this._x = this._y = this._z = 0; // REVIEW: unused?
 		}
 
 		LogicNodeVec3.prototype = Object.create(LogicNode.prototype);

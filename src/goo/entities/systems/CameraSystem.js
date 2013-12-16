@@ -12,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Updates cameras/cameracomponents with ther transform component transforms
+	 * @class Updates cameras/cameracomponents with their transform component transforms
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);

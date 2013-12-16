@@ -15,7 +15,7 @@ define(
 		 */
 		function LogicLayer(ownerEntity) {
 			this._logicInterfaces = {};
-			this._connectionsBySource = {};
+			this._connectionsBySource = {}; // REVIEW: unused?
 			this._instanceID = 0;
 			this._updateRound = 0;
 			this._nextFrameNotifications = [];
@@ -90,12 +90,12 @@ define(
 			// Un-do all connection resolving. Processes all instances, all ports and all connections
 			for (var n in this._logicInterfaces) {
 				var ports = this._logicInterfaces[n].outConnections;
-				if (ports === undefined) {
+				if (ports === undefined) { // REVIEW: not really needed, the for loop below would not blow up or execute anything if ports were undefined
 					continue;
 				}
 
 				for (var p in ports) {
-					var cx = ports[p];
+					var cx = ports[p]; // REVIEW: why is an element of 'ports' called 'cx'? what is a cx?
 					for (var i = 0; i < cx.length; i++) {
 						if (cx[i].length > 2) {
 							cx[i] = [cx[i][0], cx[i][1]];
@@ -186,7 +186,7 @@ define(
 				instDesc.outConnections[sourcePortID] = [];
 			}
 
-			instDesc.outConnections[sourcePortID].push([targetName, targetPort]);
+			instDesc.outConnections[sourcePortID].push([targetName, targetPort]); // REVIEW: so this is a 'cx'
 		};
 
 
@@ -239,7 +239,7 @@ define(
 		LogicLayer.writeValue = function(instDesc, outPortID, value) {
 			//
 			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
-				// wirite
+				// write
 				if (targetDesc._portValues === undefined) {
 					targetDesc._portValues = {};
 				}
@@ -306,7 +306,7 @@ define(
 			}
 
 			console.log("Could not find the port [" + portID + "]!");
-			return undefined;
+			return undefined; // REVIEW: returns undefined anyway
 		};
 
 		/**

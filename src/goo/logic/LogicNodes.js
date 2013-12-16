@@ -1,8 +1,9 @@
 define(
 	/** @lends */
-	function(LogicNodes) {
+	function() {
 		"use strict";
 
+		// REVIEW: description needs updating
 		/**
 		 * @class Base class/module for all logic boxes
 		 */
@@ -12,7 +13,7 @@ define(
 		LogicNodes.types = {};
 
 		/**
-		 * Register a new logic node. All logic nodes must call this to registrer themselves.
+		 * Register a new logic node. All logic nodes must call this to register themselves.
 		 */
 		LogicNodes.registerType = function(name, fn) {
 			LogicNodes.types[name] = {

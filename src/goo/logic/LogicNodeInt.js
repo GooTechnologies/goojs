@@ -30,7 +30,7 @@ define(
 
 			this.value = this.defValue;
 		};
-		
+
 		LogicNodeInt.prototype.onConnected = function(instDesc) {
 			LogicLayer.writeValue(instDesc, LogicNodeInt.outportInt, this.value);
 		};

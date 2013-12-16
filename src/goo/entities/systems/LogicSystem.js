@@ -15,6 +15,7 @@ define([
 	) {
 		"use strict";
 
+		// REVIEW: this description seems inaccurate
 		/**
 		 * @class Updates cameras/cameracomponents with ther transform component transforms
 		 */
@@ -30,7 +31,7 @@ define([
 		LogicSystem.prototype.inserted = function(entity) {
 			this._entities[entity.name] = {
 				entity: entity,
-				inserted: false
+				inserted: false // REVIEW: is this ever accessed? seems to start off false and be reset to false again in .stop, several lines below
 			};
 		};
 
@@ -55,6 +56,7 @@ define([
 			if (e !== undefined) {
 				return e.entity;
 			}
+			// REVIEW: no need to check, function returns undefined anyways
 		};
 
 		LogicSystem.prototype.getLayerByEntity = function(entityName) {
@@ -81,6 +83,7 @@ define([
 				// Look for entities that point to this here.
 				if (o.type === "LogicNodeEntityProxy" && o.entityRef === sourceEntity.name) {
 					matches.push([o.logicInstance, LogicInterface.makePortDataName(outPortDesc)]);
+					// REVIEW: use objects instead of arrays when representing pairs ('0' and '1' are harder to read than some proper names)
 				}
 			});
 
@@ -94,7 +97,7 @@ define([
 		LogicSystem.prototype.forEachLogicObject = function(f) {
 			for (var n in this._entities) {
 				var e = this._entities[n].entity;
-				if (e.logicComponent !== undefined) {
+				if (e.logicComponent !== undefined) { // REVIEW: can this ever be undefined?
 					e.logicComponent.logicLayer.forEachLogicObject(f);
 				}
 			}

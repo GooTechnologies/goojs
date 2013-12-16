@@ -16,7 +16,7 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMultiply.logicInterface;
 			this.type = "LogicNodeMultiply";
-			this._x = this._y = 0;
+			this._x = this._y = 0; // REVIEW: unused ?
 		}
 
 		LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);

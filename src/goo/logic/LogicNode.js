@@ -7,7 +7,6 @@ define(
 		 * @class Base class/module for all logic boxes
 		 */
 		function LogicNode() {
-
 			// Generated the same way as entities are, except different naming.
 			Object.defineProperty(this, 'id', {
 				value: LogicNode._instanceCount++,
@@ -16,7 +15,7 @@ define(
 
 			// create default configuration.
 			this.config = {
-				ref: ('unconf-' + this.id)
+				ref: 'unconf-' + this.id
 			};
 
 			this.name = name !== undefined ? name : 'Logic_' + this.id;
@@ -30,7 +29,7 @@ define(
 		}
 
 		/**
-		 * Add the logic node to the world's logic layer. This is necessary a necessary step for allowing
+		 * Add the logic node to the world's logic layer. This is a necessary step for allowing
 		 * connections. This should be called by logic node implementations.
 		 *
 		 * @param {world} World to add it to

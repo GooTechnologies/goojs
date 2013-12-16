@@ -16,7 +16,7 @@ define(
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMultiplyFloat.logicInterface;
 			this.type = "LogicNodeMultiplyFloat";
-			this._x = this._y = 0;
+			this._x = this._y = 0; // REVIEW: unused?
 		}
 
 		LogicNodeMultiplyFloat.prototype = Object.create(LogicNode.prototype);
