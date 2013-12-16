@@ -18,7 +18,7 @@ function(
 
 	TagAction.external = {
 		name: 'Tag',
-		description: 'Sets a tag on the entity',
+		description: 'Sets a tag on the entity. Use tags to be able to capture collision events with the \'Collides\' action',
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
