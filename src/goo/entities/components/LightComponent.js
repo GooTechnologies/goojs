@@ -11,6 +11,8 @@ define(['goo/entities/components/Component'],
 		this.type = 'LightComponent';
 
 		this.light = light;
+
+		this.hidden = false;
 	}
 
 	LightComponent.prototype = Object.create(Component.prototype);

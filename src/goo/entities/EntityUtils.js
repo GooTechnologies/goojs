@@ -151,6 +151,9 @@ define([
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = entity.hidden;
 				}
+				if (entity.lightComponent) {
+					entity.lightComponent.hidden = entity.hidden;
+				}
 			});
 		};
 
@@ -165,6 +168,9 @@ define([
 			EntityUtils.traverse(entity, function(entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = true;
+				}
+				if (entity.lightComponent) {
+					entity.lightComponent.hidden = true;
 				}
 			});
 		};
