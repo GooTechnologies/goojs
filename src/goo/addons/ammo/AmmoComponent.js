@@ -66,13 +66,14 @@ function(
 				if (this.useBounds || this.mass > 0) {
 					entity.meshDataComponent.computeBoundFromPoints();
 					var bound = entity.meshDataComponent.modelBound;
+					var scale = gooTransform.scale.x;
 					if (bound instanceof BoundingBox) {
-						shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
+						shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
 					} else if (bound instanceof BoundingSphere) {
-						shape = new Ammo.btSphereShape( bound.radius);
+						shape = new Ammo.btSphereShape( bound.radius*scale);
 					}
 				} else {
-					shape = calculateTriangleMeshShape( entity); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape( entity, gooTransform.scale.x); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
