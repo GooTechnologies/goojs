@@ -247,7 +247,7 @@ function (
 			i++;
 		}
 
-		if (this.textureMode !== Sphere.TextureModes.Projected) {
+		if (this._useSharedPoleVertices) {
 			// south pole
 			vbuf[i * 3 + 0] = 0;
 			vbuf[i * 3 + 1] = 0;
