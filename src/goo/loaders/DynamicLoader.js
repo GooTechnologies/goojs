@@ -226,7 +226,7 @@ function(
 			options = {};
 		} else if (options.preloadBinaries === true && ref === 'project.project') {
 			return this._preloadBinariesFromRef(ref, options).then(function() {
-				that.update(ref, null, options);
+				return that.update(ref, null, options);
 			});
 		}
 		return this.update(ref, null, options);
