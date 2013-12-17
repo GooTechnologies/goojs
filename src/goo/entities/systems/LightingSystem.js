@@ -94,6 +94,15 @@ function (
 		this._needsUpdate = true;
 	};
 
+	/* REVIEW: Fair enough, since simplepartitioner does it every frame
+	 * The systembus thing might be a bit slow though
+	 * How about uncomment setLights in clearOverride, then loop in a more performant way
+	 * like in partitioner. Reuse this.lights.
+	 var index = 0;
+	 this.lights[index++] = light;
+	 ...
+	 this.lights.length = index;
+	 */
 	LightingSystem.prototype.process = function (entities) {
 		if (!this.overrideLights) {
 			var lights = [];
