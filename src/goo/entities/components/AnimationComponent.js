@@ -44,7 +44,7 @@ function (
 
 		this.paused = false;
 		this.lastTimeOfPause = null;
-		this.accumulatedDelay = 0;
+		// this.accumulatedDelay = 0; // most probably unused
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -243,6 +243,21 @@ function (
 			}
 		}
 		this.paused = false;
+	};
+
+	AnimationComponent.prototype.clone = function() {
+		var cloned = new AnimationComponent();
+
+		cloned.layers = this.layers.map(function(layer) {
+			return layer.clone();
+		});
+
+		//this._triggerCallbacks = {};
+
+		//this.paused = false;
+		//this.lastTimeOfPause = null;
+
+		return cloned;
 	};
 
 	return AnimationComponent;

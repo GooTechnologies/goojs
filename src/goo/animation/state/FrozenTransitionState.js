@@ -12,6 +12,7 @@ function (AbstractTransitionState) {
 	}
 
 	FrozenTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
+	FrozenTransitionState.prototype.constructor = FrozenTransitionState;
 
 	/**
 	 * Update this state using the current global time.

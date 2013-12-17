@@ -28,6 +28,7 @@ function (
 	}
 
 	AbstractTransitionState.prototype = Object.create(AbstractState.prototype);
+	AbstractTransitionState.prototype.constructor = AbstractTransitionState;
 
 	/**
 	 * Update this state using the current global time.

@@ -78,10 +78,11 @@ function (
 				var componentName = this._interestComponents[j];
 				if (entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
-					var renderables;
+
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
+					var renderables;
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
 						renderables = tree[componentName];
 					} else {

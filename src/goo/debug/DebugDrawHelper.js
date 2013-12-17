@@ -43,7 +43,7 @@ define([
 	DebugDrawHelper.getRenderablesFor = function(component, options) {
 		var meshes, material;
 
-		if(component.type === 'LightComponent') {
+		if (component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light, options);
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
@@ -71,9 +71,9 @@ define([
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
-		if(component.camera && component.camera.changedProperties) {
+		if (component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
-			if(renderables.length > 1 &&
+			if (renderables.length > 1 &&
 				((camera.far / camera.near) !== renderables[1].farNear ||
 					camera.fov !== renderables[1].fov ||
 					camera.size !== renderables[1].size ||
@@ -122,8 +122,8 @@ define([
 	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
-			var r = light.range;
-			transform.scale.setd(r,r,r);
+			var range = light.range;
+			transform.scale.setd(range, range, range);
 			if (light instanceof SpotLight) {
 				var angle = light.angle * Math.PI / 180;
 				var tan = Math.tan(angle / 2);

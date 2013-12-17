@@ -7,7 +7,6 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/debug/DebugDrawHelper',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
@@ -22,7 +21,6 @@ function (
 	Shader,
 	ShaderLib,
 	Util,
-	DebugDrawHelper,
 	Transform,
 	Grid,
 	Quad

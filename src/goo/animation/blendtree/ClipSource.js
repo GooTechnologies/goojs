@@ -33,7 +33,7 @@ function (
 	 * @param {string[]} [channelNames]
 	 */
 	ClipSource.prototype.setFilter = function(filter, channelNames) {
-		if(filter && channelNames) {
+		if (filter && channelNames) {
 			this._filter = (['Exclude', 'Include'].indexOf(filter) > -1) ? filter : null;
 			for (var i = 0; i < channelNames.length; i++) {
 				this._filterChannels[channelNames[i]] = true;
@@ -49,7 +49,7 @@ function (
 	 */
 	ClipSource.prototype.setTime = function (globalTime) {
 		var instance = this._clipInstance;
-		if(!instance._startTime) {
+		if (!instance._startTime) {
 			instance._startTime = globalTime;
 		}
 
@@ -152,6 +152,23 @@ function (
 			}
 		}
 		return rVal;
+	};
+
+	ClipSource.prototype.clone = function() {
+	    var cloned = new ClipSource(this._clip);
+
+		cloned._clipInstance = this._clipInstance.clone();
+
+		cloned._filter = this._filter;
+
+		for (var key in this._filterChannels) {
+			cloned._filterChannels[key] = this._filterChannels[key];
+		}
+
+		cloned._startTime = this._startTime;
+		cloned._endTime = this._endTime;
+
+		return cloned;
 	};
 
 	return ClipSource;

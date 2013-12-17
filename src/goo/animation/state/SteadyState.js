@@ -18,6 +18,7 @@ function (AbstractState) {
 	}
 
 	SteadyState.prototype = Object.create(AbstractState.prototype);
+	SteadyState.prototype.constructor = SteadyState;
 
 	/*
 	 * Updates the states clip instances
@@ -54,5 +55,18 @@ function (AbstractState) {
 	SteadyState.prototype.setTimeScale = function (timeScale) {
 		this._sourceTree.setTimeScale(timeScale);
 	};
+
+	SteadyState.prototype.clone = function () {
+		var cloned = new SteadyState(this._name);
+
+		for (var key in this._transitions) {
+			cloned._transitions[key] = this._transitions[key];
+		}
+
+		cloned._sourceTree = this._sourceTree.clone();
+
+		return cloned;
+	};
+
 	return SteadyState;
 });

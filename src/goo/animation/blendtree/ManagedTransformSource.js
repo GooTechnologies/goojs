@@ -11,7 +11,7 @@ function (
 	TransformChannel,
 	TransformData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class This tree source maintains its own source data, which can be modified directly using setJointXXX. This source is meant to be used for
@@ -120,6 +120,15 @@ function (
 	 */
 	ManagedTransformSource.prototype.getSourceData = function () {
 		return this._data;
+	};
+
+	ManagedTransformSource.prototype.clone = function() {
+		var clonedData = {};
+		for (var key in this._data) {
+			clonedData[key] = this._data[key].clone();
+		}
+
+		return new ManagedTransformSource(this._sourceName, clonedData);
 	};
 
 	return ManagedTransformSource;

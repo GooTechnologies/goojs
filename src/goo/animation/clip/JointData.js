@@ -42,5 +42,9 @@ function (TransformData) {
 		return TransformData.prototype.blend.call(this, blendTo, blendWeight, rVal);
 	};
 
+	JointData.prototype.clone = function () {
+		return new JointData(this);
+	};
+
 	return JointData;
 });

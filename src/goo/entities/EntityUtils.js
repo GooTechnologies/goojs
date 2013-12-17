@@ -10,7 +10,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/MeshData',
 	'goo/math/Transform',
-	'goo/entities/components/CSSTransformComponent'
+	'goo/entities/components/CSSTransformComponent',
+	'goo/entities/components/AnimationComponent'
 ],
 	/** @lends */
 	function (
@@ -25,7 +26,8 @@ define([
 		Material,
 		MeshData,
 		Transform,
-		CSSTransformComponent
+		CSSTransformComponent,
+		AnimationComponent
 	) {
 		"use strict";
 
@@ -34,6 +36,24 @@ define([
 		 * @description Only used to define the class. Should never be instantiated.
 		 */
 		function EntityUtils() {
+		}
+
+		function cloneSkeletonPose(skeletonPose, settings) {
+			settings.skeletonMap = settings.skeletonMap || {
+				originals: [],
+				clones:[]
+			};
+			var idx = settings.skeletonMap.originals.indexOf(skeletonPose);
+			var clonedSkeletonPose;
+			if (idx === -1) {
+				clonedSkeletonPose = skeletonPose.clone();
+				settings.skeletonMap.originals.push(skeletonPose);
+				settings.skeletonMap.clones.push(clonedSkeletonPose);
+			} else {
+				clonedSkeletonPose = settings.skeletonMap.clones[idx];
+			}
+
+			return clonedSkeletonPose;
 		}
 
 		function cloneEntity (world, entity, settings) {
@@ -47,7 +67,7 @@ define([
 					var meshDataComponent = new MeshDataComponent(component.meshData);
 					meshDataComponent.modelBound = new component.modelBound.constructor();
 					if (component.currentPose) {
-						meshDataComponent.currentPose = component.currentPose;
+						meshDataComponent.currentPose = cloneSkeletonPose(component.currentPose, settings);
 					}
 					newEntity.setComponent(meshDataComponent);
 				} else if (component instanceof MeshRendererComponent) {
@@ -56,6 +76,11 @@ define([
 						meshRendererComponent.materials.push(component.materials[j]);
 					}
 					newEntity.setComponent(meshRendererComponent);
+
+				} else if (component instanceof AnimationComponent) {
+					var clonedAnimationComponent = component.clone();
+					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
+					newEntity.setComponent(clonedAnimationComponent);
 				} else {
 					newEntity.setComponent(component);
 				}
@@ -83,7 +108,7 @@ define([
 		EntityUtils.clone = function (world, entity, settings) {
 			settings = settings || {};
 			settings.shareData = settings.shareData || true;
-			settings.shareMaterial = settings.shareMaterial || true;
+			settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
 
 			return cloneEntity(world, entity, settings);

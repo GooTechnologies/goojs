@@ -13,6 +13,7 @@ function (AbstractTransitionState) {
 	}
 
 	FadeTransitionState.prototype = Object.create(AbstractTransitionState.prototype);
+	FadeTransitionState.prototype.constructor = FadeTransitionState;
 
 	/**
 	 * @description Update this state using the current global time.
