@@ -18,6 +18,7 @@ function(
 	 * @extends System
 	 * @param [Object] settings. The settings object can contain the following properties:
 	 * @param {number} settings.gravity (defaults to -9.81)
+	 * @param {number} settings.maxSubSteps (defaults to 5)
 	 * @param {number} settings.stepFrequency (defaults to 60)
 	 * @example
 	 * var ammoSystem = new AmmoSystem({stepFrequency:60});
@@ -27,6 +28,7 @@ function(
 		System.call(this, 'AmmoSystem', ['AmmoComponent', 'TransformComponent']);
 		this.settings = settings || {};
 		this.fixedTime = 1/(this.settings.stepFrequency || 60);
+		this.maxSubSteps = settings.maxSubSteps;
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
@@ -53,11 +55,13 @@ function(
 	};
 
 	AmmoSystem.prototype.process = function(entities, tpf) {
-		this.ammoWorld.stepSimulation( tpf, 10, this.fixedTime);
+		this.ammoWorld.stepSimulation( tpf, this.maxSubSteps, this.fixedTime);
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
-			e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
+			if( e.ammoComponent.mass > 0) {
+				e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
+			}
 		}
 	};
 
