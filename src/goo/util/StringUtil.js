@@ -123,6 +123,7 @@ define(function() {
 
 	// returns an almost unique id
 	StringUtil.getUniqueId = function() {
+		idCounter++;
 		var stringedArguments = Array.prototype.slice.call(arguments, 0).join('');
 		return StringUtil.hashCode(idCounter + '' + stringedArguments);
 	};
