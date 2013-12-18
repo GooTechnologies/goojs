@@ -25,6 +25,8 @@ define([
 		this.vehicle.setCoordinateSystem(0,1,2); // choose coordinate system
 		this.wheelDir = new Ammo.btVector3(0,-1,0);
 		this.wheelAxle = new Ammo.btVector3(-1,0,0);
+
+		//chassis.ammoComponent.body.setAngularFactor(new Ammo.btVector3(0,1,0)); restrict angular movement
 	}
 	VehicleHelper.prototype.resetAtPos = function( x, y, z) {
 		var b = this.chassis.ammoComponent.body;
@@ -72,7 +74,7 @@ define([
 		wheel.set_m_wheelsDampingRelaxation(2.3);
 		wheel.set_m_wheelsDampingCompression(4.4);
 		wheel.set_m_frictionSlip(1000);
-		wheel.set_m_rollInfluence(0.1); // 1.0
+		wheel.set_m_rollInfluence(0.01); // this value controls how easily a vehicle can tipp over. Lower values tipp less :)
 	};
 	VehicleHelper.prototype.updateWheelTransform = function() {
 		for(var i=0;i<this.vehicle.getNumWheels();i++){

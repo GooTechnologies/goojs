@@ -81,6 +81,16 @@ require([
 		});
 		EntityUtils.createTypicalEntity(goo.world, new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
 
+		/* shift center of gravity, felt kinda useless to me
+			var box = createEntity(goo, ShapeCreator.createBox(2, 2, 4), undefined, [0, 0.6, 0]);
+			var compound = EntityUtils.createTypicalEntity(goo.world, [0,7,0]);
+			compound.transformComponent.attachChild(box.transformComponent);
+			compound.setComponent(new AmmoComponent({mass:150}));
+			compound.addToWorld();
+			goo.world.process();
+			var chassis = compound;
+		*/
+
 		var chassis = createEntity(goo, ShapeCreator.createBox(2, 1, 4), {mass: 150}, [13, 2, 10]);
 		var vehicleHelper = new VehicleHelper( goo, ammoSystem, chassis, 0.5, 0.3, true);
 		vehicleHelper.setWheelAxle( -1, 0, 0);
