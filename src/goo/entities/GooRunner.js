@@ -173,7 +173,7 @@ function (
 		}
 	};
 
-	var tpfSmoothingArrary = [];
+	var tpfSmoothingArray = [];
 	var tpfIndex = 0;
 
 	GooRunner.prototype._updateFrame = function (time) {
@@ -192,13 +192,13 @@ function (
 		tpf = Math.max(Math.min(tpf, 0.5), 0.0001);
 
 		// Smooth out the tpf
-		tpfSmoothingArrary[tpfIndex] = tpf;
+		tpfSmoothingArray[tpfIndex] = tpf;
 		tpfIndex = (tpfIndex + 1) % this.tpfSmoothingCount;
 		var avg = 0;
-		for (var i = 0; i < tpfSmoothingArrary.length; i++) {
-			avg += tpfSmoothingArrary[i];
+		for (var i = 0; i < tpfSmoothingArray.length; i++) {
+			avg += tpfSmoothingArray[i];
 		}
-		avg /= tpfSmoothingArrary.length;
+		avg /= tpfSmoothingArray.length;
 		this.world.tpf = avg;
 
 		this.world.time += this.world.tpf;
