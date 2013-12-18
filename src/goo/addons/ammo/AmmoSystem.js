@@ -28,7 +28,7 @@ function(
 		System.call(this, 'AmmoSystem', ['AmmoComponent', 'TransformComponent']);
 		this.settings = settings || {};
 		this.fixedTime = 1/(this.settings.stepFrequency || 60);
-		this.maxSubSteps = settings.maxSubSteps;
+		this.maxSubSteps = this.settings.maxSubSteps || 5;
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
