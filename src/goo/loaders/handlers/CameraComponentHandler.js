@@ -62,9 +62,10 @@ define([
 		// Perhaps change the engine so it draws just black if
 		// there is no camera?
 		/*jshint eqeqeq: false, -W041*/
-		if (entity != null && entity.cameraComponent != null && entity.cameraComponent.camera != null) {
+
+		/*if (entity != null && entity.cameraComponent != null && entity.cameraComponent.camera != null) {
 			this.world.removeEntity(entity.cameraComponent.camera);
-		}
+		}*/
 		return ComponentHandler.prototype.remove.call(this, entity);
 	};
 
