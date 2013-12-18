@@ -11,7 +11,8 @@ require([
 	'goo/math/Vector3',
 	'goo/addons/ammo/AmmoSystem',
 	'goo/addons/ammo/AmmoComponent',
-	'goo/renderer/light/PointLight'
+	'goo/renderer/light/PointLight',
+	'VehicleHelper'
 ], function (
 	GooRunner,
 	EntityUtils,
@@ -25,10 +26,10 @@ require([
 	Vector3,
 	AmmoSystem,
 	AmmoComponent,
-	PointLight
+	PointLight,
+	VehicleHelper
 ) {
 	"use strict";
-	var Ammo = window.Ammo; // make jslint happy
 
 	var ammoSystem;
 	function init() {
@@ -39,7 +40,7 @@ require([
 		ammoSystem = new AmmoSystem();
 		goo.world.setSystem(ammoSystem);
 
-		function addPrimitives(e) {
+		function addPrimitives() {
 			for (var i=0;i<20;i++) {
 				var x = Math.random() * 16 - 8, y = Math.random() * 16 + 8, z = Math.random() * 16 - 8;
 				if (Math.random() < 0.5) {
@@ -65,6 +66,9 @@ require([
 			if( keys[32]) {
 				addPrimitives();
 			}
+			if( keys[82]) { // r
+				vehicleHelper.resetAtPos(0, 4, 0);
+			}
 		}
 		document.body.addEventListener('keyup', keyHandler, false);
 		document.body.addEventListener('keydown', keyHandler, false);
@@ -78,66 +82,21 @@ require([
 		EntityUtils.createTypicalEntity(goo.world, new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
 
 		var chassis = createEntity(goo, ShapeCreator.createBox(2, 1, 4), {mass: 150}, [13, 2, 10]);
-		var vehicle = createVehicle( goo, chassis);
+		var vehicleHelper = new VehicleHelper( goo, ammoSystem, chassis, 0.5, 0.3, true);
+		vehicleHelper.setWheelAxle( -1, 0, 0);
+		vehicleHelper.addFrontWheel( [ -1, 0.0,  1.0] );
+		vehicleHelper.addFrontWheel( [  1, 0.0,  1.0]);
+		vehicleHelper.addRearWheel(  [ -1, 0.0, -1.0]);
+		vehicleHelper.addRearWheel(  [  1, 0.0, -1.0]);
 
 		goo.callbacksPreProcess.push(function() {
-			var gEngineForce =  keys[38] * 500 + keys[40] * -300;
-			var gVehicleSteering = keys[37] * 0.3 + keys[39] * -0.3;
-			vehicle.setSteeringValue(gVehicleSteering,0);
-			vehicle.setSteeringValue(gVehicleSteering,1);
-			vehicle.applyEngineForce(gEngineForce,2);
-			vehicle.applyEngineForce(gEngineForce,3);
-			//vehicle.setBrake(gBreakingForce,2);
-			//vehicle.setBrake(gBreakingForce,3);
+			vehicleHelper.setSteeringValue( keys[37] * 0.3 + keys[39] * -0.3);
+			vehicleHelper.applyEngineForce( keys[38] * 1500 + keys[40] * -500, true);
+			vehicleHelper.updateWheelTransform();
 
 			camScript.lookAtPoint.set( chassis.transformComponent.transform.translation);
 			camScript.dirty = true;
-
-			for(var i=0;i<vehicle.getNumWheels();i++){
-			  // synchronize the wheels with the (interpolated) chassis worldtransform
-			  vehicle.updateWheelTransform(i,true);
-			}
 		});
-
-	}
-
-	function createVehicle(goo, chassis) {
-		goo.world.process(); // or body is undefined
-		chassis.ammoComponent.body.setActivationState( 4); // 4 means to never deactivate the vehicle
-
-		var tuning = new Ammo.btVehicleTuning();
-		var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoSystem.ammoWorld);
-		var vehicle = new Ammo.btRaycastVehicle(tuning, chassis.ammoComponent.body, vehicleRaycaster);
-		ammoSystem.ammoWorld.addVehicle(vehicle);
-		vehicle.setCoordinateSystem(0,1,2); // choose coordinate system
-
-		var wheelDir = new Ammo.btVector3(0,-1,0);
-		var wheelAxle = new Ammo.btVector3(-1,0,0);
-
-		function addWheel( x,y,z, isFrontWheel, wheelRadius, suspension) {
-			createTire( goo, wheelRadius, [x, y-suspension, z], chassis);
-			var wheel = vehicle.addWheel(new Ammo.btVector3(x, y, z),wheelDir,wheelAxle,suspension,wheelRadius,tuning,isFrontWheel);
-			wheel.set_m_suspensionStiffness(20);
-			wheel.set_m_wheelsDampingRelaxation(2.3);
-			wheel.set_m_wheelsDampingCompression(4.4);
-			wheel.set_m_frictionSlip(1000);
-			wheel.set_m_rollInfluence(0.1); // 1.0
-		}
-		addWheel( -1, 0.0,  1.0, true,  0.5, 0.3);
-		addWheel(  1, 0.0,  1.0, true,  0.5, 0.3);
-		addWheel( -1, 0.0, -1.0, false, 0.5, 0.3);
-		addWheel(  1, 0.0, -1.0, false, 0.5, 0.3);
-		return vehicle;
-	}
-
-	function createTire(goo, radius, pos, parent) {
-		var material = Material.createMaterial(ShaderLib.simpleLit);
-		var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createCylinder(20, radius), material, pos);
-		entity.transformComponent.transform.setRotationXYZ(0, -Math.PI/2, 0);
-		entity.transformComponent.setScale( 1, 1, 0.5);
-		entity.addToWorld();
-		parent.transformComponent.attachChild( entity.transformComponent );
-		return entity;
 	}
 
 	var texture = new TextureCreator().loadTexture2D('../../resources/goo.png');
@@ -145,7 +104,9 @@ require([
 	material.setTexture('DIFFUSE_MAP', texture);
 	function createEntity(goo, meshData, ammoSettings, pos) {
 		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material, pos);
-		entity.setComponent(new AmmoComponent(ammoSettings));
+		if( ammoSettings !== undefined) {
+			entity.setComponent(new AmmoComponent(ammoSettings));
+		}
 		entity.addToWorld();
 		return entity;
 	}
