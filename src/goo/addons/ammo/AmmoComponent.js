@@ -39,21 +39,9 @@ function(
 	}
 	AmmoComponent.prototype = Object.create(Component.prototype);
 
-	AmmoComponent.prototype.initialize = function(entity) {
-		var gooTransform = entity.transformComponent.transform;
-		var gooPos = gooTransform.translation;
-
-		var ammoTransform = new Ammo.btTransform();
-		ammoTransform.setIdentity(); // TODO: is this needed ?
-		ammoTransform.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
-		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
-		var q = this.gooQuaternion;
-		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
-
+	AmmoComponent.prototype.getAmmoShapefromGooShape = function(entity, scale) {
 		var shape;
-		if( entity.meshDataComponent && entity.meshDataComponent.meshData)
-		{
+		if( entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			var meshData = entity.meshDataComponent.meshData;
 			if (meshData instanceof Box) {
 				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, meshData.zExtent));
@@ -66,19 +54,46 @@ function(
 				if (this.useBounds || this.mass > 0) {
 					entity.meshDataComponent.computeBoundFromPoints();
 					var bound = entity.meshDataComponent.modelBound;
-					var scale = gooTransform.scale.x;
 					if (bound instanceof BoundingBox) {
 						shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
 					} else if (bound instanceof BoundingSphere) {
 						shape = new Ammo.btSphereShape( bound.radius*scale);
 					}
 				} else {
-					shape = calculateTriangleMeshShape( entity, gooTransform.scale.x); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape( entity, scale); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
-			shape = new Ammo.btCompoundShape();
+			var shape = new Ammo.btCompoundShape();
+			var c = entity.transformComponent.children;
+			for(var i=0; i<c.length; i++) {
+				var childAmmoShape = this.getAmmoShapefromGooShape( c[i].entity );
+				var localTrans = new Ammo.btTransform();
+				localTrans.setIdentity();
+				var gooTransform = c[i].transform;
+				var gooPos = gooTransform.translation;
+				localTrans.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+				// TODO: also setRotation ?
+				shape.addChildShape(localTrans,childAmmoShape);
+			}
 		}
+		return shape;
+	};
+
+
+	AmmoComponent.prototype.initialize = function(entity) {
+		var gooTransform = entity.transformComponent.transform;
+		var gooPos = gooTransform.translation;
+
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity(); // TODO: is this needed ?
+		ammoTransform.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
+		var q = this.gooQuaternion;
+		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+
+		var shape = this.getAmmoShapefromGooShape(entity, gooTransform.scale.x);
 
 		var localInertia = new Ammo.btVector3(0, 0, 0);
 
