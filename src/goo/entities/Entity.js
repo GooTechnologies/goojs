@@ -30,17 +30,21 @@ function () {
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
 	 * @param {boolean} [recursive=true] Add children recursively
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
 		this._world.addEntity(this, recursive);
+		return this;
 	};
 
 	/**
 	 * Remove entity from the world.
 	 * @param {boolean} [recursive=true] Remove children recursively
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
 		this._world.removeEntity(this, recursive);
+		return this;
 	};
 
 	function getTypeAttributeName(type) {
@@ -51,6 +55,7 @@ function () {
 	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
 	 * @param {Component} component Component to set on the entity
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
@@ -68,6 +73,8 @@ function () {
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
+
+		return this;
 	};
 
 	/**
@@ -99,6 +106,7 @@ function () {
 	 * Remove a component of a specific type from entity
 	 *
 	 * @param {string} type Type of component to remove (eg. 'meshDataComponent')
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.clearComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -122,6 +130,8 @@ function () {
 				this._world.changedEntity(this, component, 'removedComponent');
 			}
 		}
+
+		return this;
 	};
 
 	/**
