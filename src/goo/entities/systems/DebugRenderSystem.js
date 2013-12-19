@@ -60,6 +60,7 @@ function (
 
 		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
 		this.selectionActive = false;
+		this.oldSelectionActive = false;
 	}
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
