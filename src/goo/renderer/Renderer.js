@@ -374,14 +374,18 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
+		var devicePixelRatio = window.devicePixelRatio || 1;
+
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
-			adjustWidth = this.domElement.offsetWidth / this.downScale;
-			adjustHeight = this.domElement.offsetHeight / this.downScale;
+			adjustWidth = this.domElement.offsetWidth;
+			adjustHeight = this.domElement.offsetHeight;
 		} else {
-			adjustWidth = window.innerWidth / this.downScale;
-			adjustHeight = window.innerHeight / this.downScale;
+			adjustWidth = window.innerWidth;
+			adjustHeight = window.innerHeight;
 		}
+		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
+		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
 
 		var fullWidth = adjustWidth;
 		var fullHeight = adjustHeight;
