@@ -43,15 +43,15 @@ define([
 	DebugDrawHelper.getRenderablesFor = function(component, options) {
 		var meshes, material;
 
-		if(component.type === 'LightComponent') {
+		if (component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light, options);
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera, options);
 			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 
-			material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1];
-			material.uniforms.materialDiffuse = [0.8, 0.8, 0.8, 1];
+			material.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1];
+			material.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
@@ -71,11 +71,21 @@ define([
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
-		if(component.camera && component.camera.changedProperties) {
+		if (component.camera && component.camera.changedProperties) {
 			var camera = component.camera;
-			if(renderables.length > 1 && (camera.far / camera.near) !== renderables[1].farNear) {
-				renderables[1].meshData = CameraDebug.buildFrustum(camera.far / camera.near);
+			if (renderables.length > 1 &&
+				((camera.far / camera.near) !== renderables[1].farNear ||
+					camera.fov !== renderables[1].fov ||
+					camera.size !== renderables[1].size ||
+					camera.aspect !== renderables[1].aspect ||
+					camera.projectionMode !== renderables[1].projectionMode
+				)) {
+				renderables[1].meshData = CameraDebug.buildFrustum(camera);
 				renderables[1].farNear = camera.far / camera.near;
+				renderables[1].fov = camera.fov;
+				renderables[1].size = camera.size;
+				renderables[1].aspect = camera.aspect;
+				renderables[1].projectionMode = camera.projectionMode;
 			}
 			component.camera.changedProperties = false;
 		}
@@ -112,8 +122,8 @@ define([
 	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
-			var r = light.range;
-			transform.scale.setd(r,r,r);
+			var range = light.range;
+			transform.scale.setd(range, range, range);
 			if (light instanceof SpotLight) {
 				var angle = light.angle * Math.PI / 180;
 				var tan = Math.tan(angle / 2);
@@ -128,12 +138,12 @@ define([
 	};
 
 	DebugDrawHelper.CameraComponent.updateTransform = function(transform, component) {
-		var camera = component.camera;
-		var z = camera.far;
-		var y = z * Math.tan(camera.fov/2 * Math.PI/180);
-		var x = y * camera.aspect;
-		transform.scale.setd(x, y, z);
-		transform.update();
+		// var camera = component.camera;
+		// var z = camera.far;
+		// var y = z * Math.tan(camera.fov/2 * Math.PI/180);
+		// var x = y * camera.aspect;
+		// transform.scale.setd(x, y, z);
+		// transform.update();
 	};
 
 	return DebugDrawHelper;

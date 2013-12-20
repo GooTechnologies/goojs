@@ -431,7 +431,8 @@ function (
 		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
-	var errorRegExp = /\bERROR: \d+:(\d+):\s(.+)\b/g;
+	var errorRegExp = /\b\d+:(\d+):\s(.+)\b/g;
+	var errorRegExpIE = /\((\d+),\s*\d+\):\s(.+)/g;
 
 	Shader.prototype._getShader = function (context, type, source) {
 		var shader = context.createShader(type);
@@ -446,6 +447,9 @@ function (
 
 			errorRegExp.lastIndex = 0;
 			var errorMatcher = errorRegExp.exec(infoLog);
+			if (errorMatcher === null) {
+				errorMatcher = errorRegExpIE.exec(infoLog);
+			}
 			if (errorMatcher !== null) {
 				while (errorMatcher !== null) {
 					var splitSource = source.split('\n');

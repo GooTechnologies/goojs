@@ -6,16 +6,12 @@ define([
 		MeshData,
 		MathUtils
 	) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * REVIEW: This doesn't seem correct
-	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
-	 * while the width defines the x-axis. The z-axis will always be 0.
-	 * @param {number} [width=1] Total width of quad.
-	 * @param {number} [height=1] Total height of quad.
-	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
-	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
+	 * @class A polygon shape.
+	 * @param {Array} verts Array of vertices
+	 * @param {Array} indices Array of indices
 	 */
 	function FilledPolygon(verts, indices) {
 		this.verts = verts;
@@ -29,11 +25,9 @@ define([
 
 	FilledPolygon.prototype = Object.create(MeshData.prototype);
 
-
-	// REVIEW: Some more informing variable names would be nice
 	function getTriangulation(p) {
 		var n = p.length / 3;
-		if(n<3) { return []; }
+		if(n < 3) { return []; }
 		var tgs = [];
 		var avl = [];
 		for(var i=0; i<n; i++) { avl.push(i); }

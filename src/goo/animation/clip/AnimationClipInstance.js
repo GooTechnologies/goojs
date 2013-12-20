@@ -59,5 +59,15 @@ function (
 		return rVal;
 	};
 
+	AnimationClipInstance.prototype.clone = function () {
+		var cloned = new AnimationClipInstance();
+
+		cloned._active = this._active;
+		cloned._loopCount = this._loopCount;
+		cloned._timeScale = this._timeScale;
+
+		return cloned;
+	};
+
 	return AnimationClipInstance;
 });

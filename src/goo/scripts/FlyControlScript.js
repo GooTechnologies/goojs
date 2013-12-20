@@ -141,18 +141,6 @@ function(
 		}
 	};
 
-	FlyControlScript.prototype.setupKeyControls = function() {
-		var that = this;
-		this.domElement.setAttribute('tabindex', -1);
-		this.domElement.addEventListener('keydown', function(event) {
-			that.updateKeys(event, true);
-		}, false);
-
-		this.domElement.addEventListener('keyup', function(event) {
-			that.updateKeys(event, false);
-		}, false);
-	};
-
 	FlyControlScript.prototype.resetMouseState = function() {
 		this.mouseState = {
 			buttonDown: false,
@@ -164,11 +152,6 @@ function(
 	};
 
 	FlyControlScript.prototype.updateButtonState = function(event, down) {
-		if (this.domElement !== document) {
-			this.domElement.focus();
-		}
-
-
 		if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
 			this.mouseState.buttonDown = down;
 
@@ -190,7 +173,33 @@ function(
 		}
 	};
 
+	var keydown = function(event) {
+		this.updateKeys(event, true);
+	};
+
+	var keyup = function(event) {
+		this.updateKeys(event, false);
+	};
+
+	FlyControlScript.prototype.setupKeyControls = function() {
+		this.domElement.setAttribute('tabindex', -1);
+		var boundKeyDown = keydown.bind(this);
+		var boundKeyUp = keyup.bind(this);
+		this.domElement.addEventListener('keydown', boundKeyDown, false);
+		this.domElement.addEventListener('keyup', boundKeyUp, false);
+
+	};
+
+	FlyControlScript.prototype.tearDownKeyControls = function() {
+		var boundKeyDown = keydown.bind(this);
+		var boundKeyUp = keyup.bind(this);
+		this.domElement.removeEventListener('keydown', boundKeyDown, false);
+		this.domElement.removeEventListener('keyup', boundKeyUp, false);
+	};
+
 	var mousedown = function(event) {
+		this.setupKeyControls();
+		this.domElement.focus();
 		this.resetMouseState();
 		this.updateButtonState(event, true);
 	};
@@ -201,6 +210,7 @@ function(
 
 	var mouseup = function(event) {
 		this.updateButtonState(event, false);
+		this.tearDownKeyControls();
 	};
 
 	FlyControlScript.prototype.setupMouseControls = function() {
@@ -209,8 +219,8 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		document.addEventListener('mousemove', boundMouseMove, false);
-		document.addEventListener('mouseup', boundMouseUp, false);
+		this.domElement.addEventListener('mousemove', boundMouseMove, false);
+		this.domElement.addEventListener('mouseup', boundMouseUp, false);
 		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
@@ -226,8 +236,7 @@ function(
 		if (env) {
 			if (!this.domElement && env.domElement)  {
 				this.domElement = env.domElement;
-				this.setupMouseControls();
-				this.setupKeyControls();
+				this.setupMouseControls(); // Mouse down in turn sets up key controls
 			}
 		}
 		var transformComponent = entity.transformComponent;

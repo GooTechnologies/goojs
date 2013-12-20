@@ -104,7 +104,7 @@ define([
 			attributeMap.WEIGHTS = MeshData.createAttribute(4, 'Float');
 		}
 		if (weightsPerVert > 0 && data.joints) {
-			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Short');
+			attributeMap.JOINTIDS = MeshData.createAttribute(4, 'Float');
 		}
 		if (data.textureCoords && data.textureCoords.length > 0) {
 			for (var texIdx = 0; texIdx < data.textureCoords.length; texIdx++) {
@@ -147,6 +147,7 @@ define([
 		_fillAttributeBuffer(MeshData.NORMAL, data.normals);
 		_fillAttributeBuffer(MeshData.TANGENT, data.tangents);
 		_fillAttributeBuffer(MeshData.COLOR, data.colors);
+
 
 		if (meshData.type === MeshData.SKINMESH) {
 			_fillAttributeBuffer(MeshData.WEIGHTS, data.weights);

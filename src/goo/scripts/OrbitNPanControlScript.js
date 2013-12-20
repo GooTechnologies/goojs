@@ -11,6 +11,12 @@ define([
 ) {
 	"use strict";
 
+	var Button = {
+		LEFT: 0,
+		MIDDLE: 1,
+		RIGHT: 2
+	};
+
 // REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
 	/**
 	 * @class Enables camera to orbit around a point in 3D space using the right mouse button, while panning with the middle button.
@@ -98,44 +104,47 @@ define([
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
 
-
-		// optional touch controls... requires Hammer.js v2
-		if (typeof (window.Hammer) !== "undefined") {
-			// Disable warning that we call `Hammer()`, not `new Hammer()`
-			//jshint newcap:false
-			var hammertime = window.Hammer(this.domElement, {
-				transform_always_block : true,
-				transform_min_scale : 1
-			});
-
-			hammertime.on('touch drag transform release', function (ev) {
-				if (ev.gesture && ev.gesture.pointerType !== 'mouse') {
-					switch (ev.type) {
-						case 'transform':
-							var scale = ev.gesture.scale;
-							if (scale < 1) {
-								that.applyWheel(that.zoomSpeed * 1);
-							} else if (scale > 1) {
-								that.applyWheel(that.zoomSpeed * -1);
-							}
-							break;
-						case 'touch':
-							that.updateButtonState(2, true);
-							break;
-						case 'release':
-							that.updateButtonState(2, false);
-							break;
-						case 'drag':
-							that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
-							break;
-					}
-				}
-			});
-		}
+		// Touch controls
+		this.domElement.addEventListener('touchstart', function(event) {
+			var pan = (event.targetTouches.length === 2);
+			var orbit = (event.targetTouches.length === 1);
+			that.updateButtonState(Button.MIDDLE, pan);
+			that.updateButtonState(Button.RIGHT, orbit);
+		});
+		this.domElement.addEventListener('touchend', function(event) {
+			var pan = (event.targetTouches.length === 2);
+			var orbit = (event.targetTouches.length === 1);
+			that.updateButtonState(Button.MIDDLE, pan);
+			that.updateButtonState(Button.RIGHT, orbit);
+		});
+		var oldDistance = 0;
+		this.domElement.addEventListener('touchmove', function(event) {
+			var cx, cy, distance;
+			var touches = event.targetTouches;
+			var x1 = touches[0].clientX;
+			var y1 = touches[0].clientY;
+			if (touches.length === 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+				distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+			} else {
+				cx = x1;
+				cy = y1;
+			}
+			that.updateDeltas(cx, cy);
+			var scale = (distance - oldDistance) / Math.max(that.domElement.height, that.domElement.width);
+			scale /= 3;
+			if (touches.length === 2 && Math.abs(scale) > 0.3) {
+				that.applyWheel(that.zoomSpeed * scale);
+				oldDistance = distance;
+			}
+		});
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === 2 || buttonIndex === 0 && this.altKey) {
+		if (buttonIndex === Button.RIGHT || buttonIndex === Button.LEFT && this.altKey) { // REVIEW would be nice to change '2' and '0' to something readable
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
 		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
 			this.panState.buttonDown = down;

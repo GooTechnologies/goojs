@@ -97,5 +97,9 @@ function (
 		}
 	};
 
+	SkeletonPose.prototype.clone = function () {
+		return new SkeletonPose(this._skeleton);
+	};
+
 	return SkeletonPose;
 });

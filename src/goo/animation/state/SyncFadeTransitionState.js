@@ -15,6 +15,7 @@ function (FadeTransitionState) {
 	}
 
 	SyncFadeTransitionState.prototype = Object.create(FadeTransitionState.prototype);
+	SyncFadeTransitionState.prototype.constructor = SyncFadeTransitionState;
 
 	SyncFadeTransitionState.prototype.resetClips = function(globalTime) {
 		FadeTransitionState.prototype.resetClips.call(this, globalTime);

@@ -7,7 +7,6 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/debug/DebugDrawHelper',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
@@ -22,7 +21,6 @@ function (
 	Shader,
 	ShaderLib,
 	Util,
-	DebugDrawHelper,
 	Transform,
 	Grid,
 	Quad
@@ -77,9 +75,10 @@ function (
 			transform: this.transform
 		};
 
+		// stop using this pattern - use instead .bind()
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-			that.camera = camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			that.camera = newCam.camera;
 		});
 
 		SystemBus.addListener('goo.setLights', function (lights) {

@@ -256,40 +256,21 @@ function (
 		this.domElement.addEventListener('dragstart', function (event) {
 			event.preventDefault();
 		}, false);
-
-		// optional touch controls... requires Hammer.js v2
-		if (typeof (window.Hammer) !== "undefined") {
-			// Disable warning that we call `Hammer()`, not `new Hammer()`
-			//jshint newcap:false
-			var hammertime = window.Hammer(this.domElement, {
-				transform_always_block : true,
-				transform_min_scale : 1
-			});
-
-			hammertime.on('touch drag transform release', function (ev) {
-				switch (ev.type) {
-					case 'transform':
-						var scale = ev.gesture.scale;
-						if (scale < 1) {
-							that.zoom(that.zoomSpeed * 1);
-						} else if (scale > 1) {
-							that.zoom(that.zoomSpeed * -1);
-						}
-						break;
-					case 'touch':
-						that.updateButtonState(0, true);
-						break;
-					case 'release':
-						that.updateButtonState(0, false);
-						break;
-					case 'drag':
-						that.updateDeltas(ev.gesture.center.pageX, ev.gesture.center.pageY);
-						that.lastTimeMoved = Date.now();
-						break;
-				}
-			});
-		}
 		this.domElement.oncontextmenu = function() { return false; };
+
+		// Touch controls
+		this.domElement.addEventListener('touchstart', function() {
+			that.updateButtonState(0, true);
+		});
+		this.domElement.addEventListener('touchend', function() {
+			that.updateButtonState(0, false);
+		});
+		this.domElement.addEventListener('touchmove', function(event) {
+			var touches = event.targetTouches;
+			var cx = touches[0].clientX;
+			var cy = touches[0].clientY;
+			that.updateDeltas(cx, cy);
+		});
 	};
 
 	OrbitCamControlScript.prototype.updateVelocity = function (time) {

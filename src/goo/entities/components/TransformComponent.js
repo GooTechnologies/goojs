@@ -18,6 +18,7 @@ function (
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
+		this.entity = null;
 		/** Parent transformcomponent in the "scene graph"
 		 * @type {TransformComponent}
 		 * @default
@@ -87,8 +88,18 @@ function (
 	 * @param {number} z
 	 * @return {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.setRotation = function (x,y,z) {
-		this.transform.rotation.fromAngles(x,y,z);
+	TransformComponent.prototype.setRotation = function () {
+		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+			var arg0 = arguments[0];
+			if (arg0 instanceof Vector3) {
+				this.transform.rotation.fromAngles(arg0.x,arg0.y,arg0.z);
+			} else if (arg0.length === 3) {
+				this.transform.rotation.fromAngles(arg0[0],arg0[1],arg0[2]);
+			}
+		} else {
+			this.transform.rotation.fromAngles(arguments[0], arguments[1], arguments[2]);
+		}
+
 		this._dirty = true;
 		return this;
 	};
@@ -110,6 +121,22 @@ function (
 	 */
 	TransformComponent.prototype.setUpdated = function () {
 		this._dirty = true;
+	};
+
+	/**
+	 * Handles attaching itself to an entity. Should only be called by the engine.
+	 * @param entity
+	 */
+	TransformComponent.prototype.attached = function (entity) {
+		this.entity = entity;
+	};
+
+	/**
+	 * Handles detaching itself to an entity. Should only be called by the engine.
+	 * @param entity
+	 */
+	TransformComponent.prototype.detached = function (/*entity*/) {
+		this.entity = undefined; // used to be 'undefined' when it was handled in Entity; should instead be null
 	};
 
 	/**

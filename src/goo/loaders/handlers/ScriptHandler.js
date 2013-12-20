@@ -3,6 +3,7 @@ define([
 	'goo/util/rsvp',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/scripts/OrbitNPanControlScript',
+	'goo/scripts/FlyControlScript',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil'
@@ -11,6 +12,7 @@ define([
 	RSVP,
 	OrbitCamControlScript,
 	OrbitNPanControlScript,
+	FlyControlScript,
 	WASDControlScript,
 	BasicControlScript,
 	PromiseUtil
@@ -23,6 +25,7 @@ define([
 	ScriptHandler.scripts = {
 		OrbitCamControlScript: OrbitCamControlScript,
 		OrbitNPanControlScript: OrbitNPanControlScript,
+		FlyControlScript: FlyControlScript,
 		WASDControlScript: WASDControlScript,
 		BasicControlScript: BasicControlScript
 	};

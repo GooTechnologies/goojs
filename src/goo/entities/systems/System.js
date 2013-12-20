@@ -1,7 +1,7 @@
 define(
 /** @lends */
 function() {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Creates a new System
@@ -23,19 +23,34 @@ function() {
 
 		this._activeEntities = [];
 		this.passive = false;
+
+		/**
+		 * Priority of a system. The lower the number the higher the priority is. By default a systems has priority 0. Internal goo systems (like TransformSystem and CameraSystem) should have negative priority.
+		 * @type {number}
+		 */
+		this.priority = 0;
 	}
 
 	/**
+	 * Called when an entity is added to the world and systems need to be informed
 	 * @param entity
 	 */
 	System.prototype.added = function(entity) {
 		this._check(entity);
 	};
 
+	/**
+	 * Called when an entity gets/loses components
+	 * @param entity
+	 */
 	System.prototype.changed = function(entity) {
 		this._check(entity);
 	};
 
+	/**
+	 * Called when an entity is removed from the world
+	 * @param entity
+	 */
 	System.prototype.removed = function(entity) {
 		var index = this._activeEntities.indexOf(entity);
 		if (index !== -1) {
@@ -51,8 +66,7 @@ function() {
 	}
 
 	/**
-	 * Check if a system is interested in an entity based on its interests list.
-	 *
+	 * Checks if a system is interested in an entity based on its interests list and adds or removed the entity from the system's index
 	 * @param entity {Entity} to check if the system is interested in
 	 */
 	System.prototype._check = function(entity) {
@@ -87,10 +101,12 @@ function() {
 	};
 
 	System.prototype._process = function(tpf) {
-		if (this.process) {
+		if (this.process) { // are there systems without a this.process?
 			this.process(this._activeEntities, tpf);
 		}
 	};
+
+
 
 	return System;
 });

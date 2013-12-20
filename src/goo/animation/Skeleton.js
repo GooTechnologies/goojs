@@ -18,7 +18,7 @@ function (
 		this._joints = joints;
 	}
 
-	Skeleton.prototype.copy = function() {
+	Skeleton.prototype.clone = function() {
 		var name = this._name;
 		var jointArray = this._joints;
 		var joints = [];
@@ -36,5 +36,6 @@ function (
 		}
 		return new Skeleton(name, joints);
 	};
+
 	return Skeleton;
 });

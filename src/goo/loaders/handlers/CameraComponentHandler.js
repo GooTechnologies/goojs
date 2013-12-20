@@ -27,7 +27,11 @@ define([
 		return _.defaults(config, {
 			fov: 45,
 			near: 1,
-			far: 10000
+			far: 10000,
+			projectionMode: 0,
+			size: 100,
+			aspect: 1,
+			lockedRatio: false
 		});
 	};
 
@@ -40,7 +44,15 @@ define([
 
 	CameraComponentHandler.prototype.update = function(entity, config) {
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		component.camera.setFrustumPerspective(config.fov, config.aspect || 1, config.near, config.far);
+		component.camera.setProjectionMode(config.projectionMode);
+		component.camera.lockedRatio = config.lockedRatio || false;
+		if (config.projectionMode === 0) {
+			component.camera.setFrustumPerspective(config.fov, config.aspect || 1, config.near, config.far);
+		} else {
+			var size = config.size;
+			component.camera.setFrustum(config.near, config.far, -size, size, size, -size, config.aspect || 1);
+			component.camera.size = size;
+		}
 		return pu.createDummyPromise(component);
 	};
 
@@ -50,9 +62,10 @@ define([
 		// Perhaps change the engine so it draws just black if
 		// there is no camera?
 		/*jshint eqeqeq: false, -W041*/
-		if (entity != null && entity.cameraComponent != null && entity.cameraComponent.camera != null) {
+
+		/*if (entity != null && entity.cameraComponent != null && entity.cameraComponent.camera != null) {
 			this.world.removeEntity(entity.cameraComponent.camera);
-		}
+		}*/
 		return ComponentHandler.prototype.remove.call(this, entity);
 	};
 

@@ -12,7 +12,7 @@ define([
 		/**
 		 * @class Holds the movement parameters of an entity.
 		 * Typically useful for anything which has a speed and/or
-		 * rotation and is influenced by forces or other mechanics.
+		 * rotation.
 		 */
 		function MovementComponent() {
 			this.type = 'MovementComponent';
@@ -23,7 +23,7 @@ define([
 		MovementComponent.prototype = Object.create(Component.prototype);
 
 		/**
-		 * Adds velocity to movemet. Typically useful for things such as gravity and slingshots.
+		 * Adds velocity to movement. Typically useful for things such as gravity and slingshots.
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
 
@@ -32,7 +32,7 @@ define([
 		};
 
 		/**
-		 * Adds velocity to movemet. Typically useful for things such as gravity and slingshots.
+		 * Adds velocity to movement. Typically useful for things such as gravity and slingshots.
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
 
@@ -50,7 +50,7 @@ define([
 		};
 
 		/**
-		 * Adds rotational velocity to movemet. Typically useful for spinning or turning things.
+		 * Adds rotational velocity to movement. Typically useful for spinning or turning things.
 		 * @param {Vector3} vec3 rotational velocity impulse vector.
 		 */
 
@@ -58,7 +58,7 @@ define([
 			this.rotationVelocity.add(vec3);
 		};
 		/**
-		 * Sets rotational velocity of the movemet.
+		 * Sets rotational velocity of the movement.
 		 * @param {Vector3} vec3 rotational velocity vector.
 		 */
 

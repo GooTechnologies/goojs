@@ -140,7 +140,7 @@ assuming those ../tool and ../examples exist:
 
     cp out/release/goo-$GOO_VERSION/lib/goo-require.js ../tool/template/lib/goo-require.js
     cp out/release/goo-$GOO_VERSION/lib/goo-require.js ../tool/content/libs/goo-require.js
-    cp out/release/goo-$GOO_VERSION/lib/goo.js ../examples/lib/goo.js 
+    cp out/release/goo-$GOO_VERSION/lib/goo.js ../examples/lib/goo.js
 
 Make sure the examples and the tool work with the new version.
 
@@ -154,3 +154,12 @@ Copy the release to Dropbox:
     cp goo-$GOO_VERSION.zip ~/Dropbox/Goo\ Technologies\ AB/2.\ Research\ \&\ Development/Releases/
 
 Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download
+
+## Building
+To build a regular goo minified version, run
+
+	grunt
+
+To build a combined require and goo minified version , run
+
+	grunt -bundle-require -minify

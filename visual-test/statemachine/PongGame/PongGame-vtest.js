@@ -81,6 +81,8 @@ require([
 
 			var stateMoving = new State('moving');
 
+			fsmComponent.defineVariable('px', 0);
+			fsmComponent.defineVariable('py', 0);
 			fsmComponent.defineVariable('dx', 9);
 			fsmComponent.defineVariable('dy', 11);
 
@@ -126,17 +128,6 @@ require([
 		addWall(goo,     0,  dy/2, dx + 1,  1);
 		addWall(goo,  dx/2,     0,  1, dy + 1);
 		addWall(goo,     0, -dy/2, dx + 1,  1);
-	}
-
-	function addPaddle(goo, x, y, z) {
-		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
-		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
-		boxEntity.transformComponent.transform.translation.setd(x, y, z);
-		boxEntity.setComponent(getFSMComponent(boxEntity));
-		boxEntity.addToWorld();
-
-		return boxEntity;
 	}
 
 	function getColor(x, y, z) {

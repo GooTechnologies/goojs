@@ -10,7 +10,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/MeshData',
 	'goo/math/Transform',
-	'goo/entities/components/CSSTransformComponent'
+	'goo/entities/components/CSSTransformComponent',
+	'goo/entities/components/AnimationComponent'
 ],
 	/** @lends */
 	function (
@@ -25,7 +26,8 @@ define([
 		Material,
 		MeshData,
 		Transform,
-		CSSTransformComponent
+		CSSTransformComponent,
+		AnimationComponent
 	) {
 		"use strict";
 
@@ -34,6 +36,24 @@ define([
 		 * @description Only used to define the class. Should never be instantiated.
 		 */
 		function EntityUtils() {
+		}
+
+		function cloneSkeletonPose(skeletonPose, settings) {
+			settings.skeletonMap = settings.skeletonMap || {
+				originals: [],
+				clones:[]
+			};
+			var idx = settings.skeletonMap.originals.indexOf(skeletonPose);
+			var clonedSkeletonPose;
+			if (idx === -1) {
+				clonedSkeletonPose = skeletonPose.clone();
+				settings.skeletonMap.originals.push(skeletonPose);
+				settings.skeletonMap.clones.push(clonedSkeletonPose);
+			} else {
+				clonedSkeletonPose = settings.skeletonMap.clones[idx];
+			}
+
+			return clonedSkeletonPose;
 		}
 
 		function cloneEntity (world, entity, settings) {
@@ -47,7 +67,7 @@ define([
 					var meshDataComponent = new MeshDataComponent(component.meshData);
 					meshDataComponent.modelBound = new component.modelBound.constructor();
 					if (component.currentPose) {
-						meshDataComponent.currentPose = component.currentPose;
+						meshDataComponent.currentPose = cloneSkeletonPose(component.currentPose, settings);
 					}
 					newEntity.setComponent(meshDataComponent);
 				} else if (component instanceof MeshRendererComponent) {
@@ -56,6 +76,11 @@ define([
 						meshRendererComponent.materials.push(component.materials[j]);
 					}
 					newEntity.setComponent(meshRendererComponent);
+
+				} else if (component instanceof AnimationComponent) {
+					var clonedAnimationComponent = component.clone();
+					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
+					newEntity.setComponent(clonedAnimationComponent);
 				} else {
 					newEntity.setComponent(component);
 				}
@@ -82,8 +107,15 @@ define([
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
 			settings = settings || {};
+			// REVIEW: It's bad style to modify the settings object provided by the caller.
+			// I.e. if the caller does:
+			//   var s = {};
+			//   EntityUtils.clone(w, e, s);
+			// ...he wouldn't expect s to have changed.
+			// REVIEW: `settings.shareData || true` will evaluate to true if shareData is false,
+			// which means that the setting will always be true.
 			settings.shareData = settings.shareData || true;
-			settings.shareMaterial = settings.shareMaterial || true;
+			settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
 
 			return cloneEntity(world, entity, settings);
@@ -137,13 +169,22 @@ define([
 			var pointer = entity;
 			while (pointer.transformComponent.parent) {
 				pointer = pointer.transformComponent.parent.entity;
-				if (pointer.hidden) { return ; }
+				if (pointer.hidden) {
+					// extra check and set needed might be needed
+					if (entity.meshRendererComponent) {
+						entity.meshRendererComponent.hidden = true;
+					}
+					return;
+				}
 			}
 
 			EntityUtils.traverse(entity, function(entity) {
 				if (entity.hidden) { return false; }
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = entity.hidden;
+				}
+				if (entity.lightComponent) {
+					entity.lightComponent.hidden = entity.hidden;
 				}
 			});
 		};
@@ -159,6 +200,9 @@ define([
 			EntityUtils.traverse(entity, function(entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = true;
+				}
+				if (entity.lightComponent) {
+					entity.lightComponent.hidden = true;
 				}
 			});
 		};

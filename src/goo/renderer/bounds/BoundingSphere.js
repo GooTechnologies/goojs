@@ -155,13 +155,37 @@ function (
 	};
 
 	BoundingSphere.prototype.intersectsBoundingBox = function (bb) {
-		if (Math.abs(bb.center.x - this.center.x) < this.radius + bb.xExtent
-				&& Math.abs(bb.center.y - this.center.y) < this.radius + bb.yExtent
-				&& Math.abs(bb.center.z - this.center.z) < this.radius + bb.zExtent) {
-			return true;
+		// bb.min/max aren't updated properly; have to do it here for now
+		bb.min.x = bb.center.x - bb.xExtent;
+		bb.min.y = bb.center.y - bb.yExtent;
+		bb.min.z = bb.center.z - bb.zExtent;
+
+		bb.max.x = bb.center.x + bb.xExtent;
+		bb.max.y = bb.center.y + bb.yExtent;
+		bb.max.z = bb.center.z + bb.zExtent;
+
+		var rs = Math.pow(this.radius, 2);
+		var dmin = 0;
+
+		if (this.center.x < bb.min.x) {
+			dmin += Math.pow(this.center.x - bb.min.x, 2);
+		} else if (this.center.x > bb.max.x) {
+			dmin += Math.pow(this.center.x - bb.max.x, 2);
 		}
 
-		return false;
+		if (this.center.y < bb.min.y) {
+			dmin += Math.pow(this.center.y - bb.min.y, 2);
+		} else if (this.center.y > bb.max.y) {
+			dmin += Math.pow(this.center.y - bb.max.y, 2);
+		}
+
+		if (this.center.z < bb.min.z) {
+			dmin += Math.pow(this.center.z - bb.min.z, 2);
+		} else if (this.center.z > bb.max.z) {
+			dmin += Math.pow(this.center.z - bb.max.z, 2);
+		}
+
+		return dmin <= rs;
 	};
 
 	BoundingSphere.prototype.intersectsSphere = function (bs) {

@@ -117,8 +117,6 @@ define([
 		}
 	};
 
-
-
 	RotationGizmo.prototype._rotateOnScreen = function(dx, dy) {
 		this._rotation.setIdentity();
 
@@ -166,43 +164,8 @@ define([
 			this.transform.rotation
 		);
 	};
-	// --- experimental functions go here
-	function step (size) {
-		return function (x) {
-			return Math.floor(x / size) * size;
-		};
-	}
 
-	var step8thpi = step(Math.PI / 8);
-
-	function inter(x, fromStart, fromEnd, toStart, toEnd) {
-		var fraction = (x - fromStart) / (fromEnd - fromStart);
-		return fraction * (toEnd - toStart) + toStart;
-	}
-
-	function inclinedType1 (size, t) {
-		return function (x) {
-			x += size / 2 + t;
-			if (x < 0) {
-				x -= size + t*2;
-				x *= -1;
-				var intr = Math.floor(x / size) * size;
-				var frac = x % size - t;
-
-				return -(frac < t || frac > size - t ?
-					intr + inter(frac, -t, t, 0, size) - size :
-					intr);
-			} else {
-				var intr = Math.floor(x / size) * size;
-				var frac = x % size - t;
-
-				return frac < t || frac > size - t ?
-					intr + inter(frac, -t, t, 0, size) - size :
-					intr;
-			}
-		};
-	}
-
+	// --- functions for snapping to certain angles go here
 	function inclinedType2 (size, t) {
 		return function (x) {
 			var z = x % size;
@@ -217,8 +180,6 @@ define([
 	}
 
 	var inclined8thpi = inclinedType2(Math.PI / 4, Math.PI / 16);
-	var identitate = function(x) { return x; };
-	var simpleSmooth = function(x) { x *= 10; return x + Math.sin(x); };
 	var tranFun = inclined8thpi;
 	// ---
 

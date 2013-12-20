@@ -31,7 +31,7 @@ define(["goo/math/Matrix4x4", "goo/math/Vector3", "goo/math/Vector4", "goo/math/
 
 			expect(a).toEqual(new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
 			expect(Matrix4x4.invert(b)).toEqual(new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
-			expect(function() { c.invert(); }).toThrow();
+			expect(c.invert()).toEqual(c);
 		});
 
 		it("can determine orthogonality", function() {

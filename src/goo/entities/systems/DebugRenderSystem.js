@@ -31,8 +31,8 @@ function (
 		this.preRenderers = [];
 		this.composers = [];
 		this.doRender = {
-			CameraComponent: true,
-			LightComponent: true,
+			CameraComponent: false,
+			LightComponent: false,
 			MeshRendererComponent: false
 		};
 		this.inserted();
@@ -48,9 +48,10 @@ function (
 		this.currentTpf = 0.0;
 		this.scale = 20;
 
+		// no more that!
 		var that = this;
-		SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-			that.camera = camera;
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			that.camera = newCam.camera;
 		});
 
 		SystemBus.addListener('goo.setLights', function (lights) {
@@ -59,6 +60,7 @@ function (
 
 		this.selectionRenderable = DebugDrawHelper.getRenderablesFor({ type: 'MeshRendererComponent' });
 		this.selectionActive = false;
+		this.oldSelectionActive = false;
 	}
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
@@ -77,9 +79,11 @@ function (
 				var componentName = this._interestComponents[j];
 				if (entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
-					var renderables;
+
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
+
+					var renderables;
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
 						renderables = tree[componentName];
 					} else {
@@ -87,11 +91,10 @@ function (
 						renderables.forEach(function (renderable) { renderable.id = entity.id; });
 						tree[componentName] = renderables;
 					}
+
 					renderables.forEach(function (renderable) { renderable.transform.copy(entity.transformComponent.worldTransform); });
 					DebugDrawHelper.update(renderables, component, this.camera.translation);
 					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
-					//this.renderList[count++] = renderables[0];
-					//this.renderList[count++] = renderables[1];
 				}
 			}
 		}

@@ -30,17 +30,21 @@ function () {
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
 	 * @param {boolean} [recursive=true] Add children recursively
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
 		this._world.addEntity(this, recursive);
+		return this;
 	};
 
 	/**
 	 * Remove entity from the world.
 	 * @param {boolean} [recursive=true] Remove children recursively
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
 		this._world.removeEntity(this, recursive);
+		return this;
 	};
 
 	function getTypeAttributeName(type) {
@@ -51,32 +55,38 @@ function () {
 	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
 	 * @param {Component} component Component to set on the entity
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			return ;
+			return;
 		} else {
 			this._components.push(component);
 		}
 		this[getTypeAttributeName(component.type)] = component;
 
-		if (component.type === 'TransformComponent') {
-			component.entity = this;
+		// inform the component it's being attached to an entity
+		if (component.attached) {
+			component.attached(this);
 		}
 
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
+
+		return this;
 	};
 
 	/**
 	 * Checks if a component of a specific type is present or not
 	 *
-	 * @param {string} type Type of component to check for (eg. 'transformComponent')
+	 * @param {string} type Type of component to check for (eg. 'meshDataComponent')
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasComponent = function (type) {
-		return this[getTypeAttributeName(type)] !== undefined;
+		var typeAttributeName = getTypeAttributeName(type);
+		var component = this[typeAttributeName];
+		return !!component && this._components.indexOf(component) > -1;
 	};
 
 	/**
@@ -86,35 +96,49 @@ function () {
 	 * @returns {Component} component with requested type or undefined if not present
 	 */
 	Entity.prototype.getComponent = function (type) {
-		return this[getTypeAttributeName(type)];
+		var typeAttributeName = getTypeAttributeName(type);
+		if (this.hasComponent(type)) {
+			return this[typeAttributeName];
+		}
 	};
 
 	/**
-	 * Remove a component of a specific type from entity.
+	 * Remove a component of a specific type from entity
 	 *
-	 * @param {string} type Type of component to remove (eg. 'transformComponent')
+	 * @param {string} type Type of component to remove (eg. 'meshDataComponent')
+	 * @returns {Entity} Returns itself to allow chaining
 	 */
 	Entity.prototype.clearComponent = function (type) {
-		var component = this[getTypeAttributeName(type)];
-		var index = this._components.indexOf(component);
-		if (index !== -1) {
-			var component = this._components[index];
-			if (component.type === 'TransformComponent') {
-				component.entity = undefined;
-			}
-			this._components.splice(index, 1);
-		}
-		delete this[getTypeAttributeName(type)];
+		var typeAttributeName = getTypeAttributeName(type);
+		var component = this[typeAttributeName];
 
-		if (this._world.entityManager.containsEntity(this)) {
-			this._world.changedEntity(this, component, 'removedComponent');
+		if (!!component && this._components.indexOf(component) > -1) {
+			// inform the component it's being detached from the entity
+			if (component.detached) {
+				component.detached(this);
+			}
+
+			// removing from dense array
+			var index = this._components.indexOf(component);
+			this._components.splice(index, 1);
+
+			// removing from entity
+			delete this[typeAttributeName];
+
+			// notifying the world of the change
+			if (this._world.entityManager.containsEntity(this)) {
+				this._world.changedEntity(this, component, 'removedComponent');
+			}
 		}
+
+		return this;
 	};
 
 	/**
 	 * @returns {string} Name of entity
 	 */
 	Entity.prototype.toString = function () {
+		// should also return a list of its components
 		return this.name;
 	};
 

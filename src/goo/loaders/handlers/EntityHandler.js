@@ -2,6 +2,7 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
+	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
@@ -9,6 +10,7 @@ define([
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
+	StringUtil,
 	pu,
 	_,
 	EntityUtils
@@ -30,6 +32,25 @@ define([
 		return object;
 	};
 
+	EntityHandler.prototype._getHandler = function(componentName) {
+		if (!this._componentHandlers) {
+			this._componentHandlers = {};
+		}
+		if (!this._componentHandlers[componentName]) {
+			var handlerClass = ComponentHandler.getHandler(componentName);
+			if (handlerClass) {
+				/*jshint -W055*/
+				this._componentHandlers[componentName] = new handlerClass(
+					this.world,
+					this.getConfig,
+					this.updateObject,
+					this.options
+				);
+			}
+		}
+		return this._componentHandlers[componentName];
+	};
+
 	EntityHandler.prototype.update = function(ref, config, options) {
 		function equalityFilter(entity) {
 			return entity.ref === ref;
@@ -46,38 +67,12 @@ define([
 			object = this._create(ref);
 		}
 
-		// hide/unhide entities and their descendants
-		if (!!config.hidden) {
-			EntityUtils.hide(object);
-		} else {
-			EntityUtils.show(object);
-		}
-
 		var promises = [];
+		// Adding components to the object
 		for (var componentName in config.components) {
 			var componentConfig = config.components[componentName];
-			var handlerClass = ComponentHandler.getHandler(componentName);
-			if (handlerClass) {
-				if (!this._componentHandlers) {
-					this._componentHandlers = {};
-				}
-				var handler = this._componentHandlers[componentName];
-				if (handler) {
-					_.extend(handler, {
-						world: this._world,
-						getConfig: this.getConfig,
-						updateObject: this.updateObject,
-						options: _.clone(this.options)
-					});
-				} else {
-					/*jshint -W055*/
-					handler = this._componentHandlers[componentName] = new handlerClass(
-						this.world,
-						this.getConfig,
-						this.updateObject,
-						this.options
-					);
-				}
+			var handler = this._getHandler(componentName);
+			if (handler) {
 				var promise = handler.update(object, componentConfig, options);
 				if (!promise || !promise.then) {
 					console.error("Handler for " + componentName + " did not return promise");
@@ -88,8 +83,33 @@ define([
 				console.warn("No componentHandler for " + componentName);
 			}
 		}
+		// Remove components
+		object._components.forEach(function(component) {
+			var type = component.type;
+			type = type.slice(0, type.lastIndexOf('Component'));
+			type = StringUtil.uncapitalize(type);
+			if (!config.components[type]) {
+				handler = this._getHandler(type);
+				if(handler) {
+					var promise = handler.remove(object, options);
+					if (!promise || !promise.then) {
+						console.error("Handler for " + componentName + " did not return promise");
+					} else {
+						promises.push(promise);
+					}
+				} else {
+					console.warn("No componentHandler for " + componentName);
+				}
+			}
+		}.bind(this));
+
 		if (promises.length) {
 			return RSVP.all(promises).then(function(/*components*/) {
+				if (!!config.hidden) {
+					EntityUtils.hide(object);
+				} else {
+					EntityUtils.show(object);
+				}
 				return object;
 			});
 		} else {

@@ -164,5 +164,13 @@ function (
 		}
 	};
 
+	BinaryLERPSource.prototype.clone = function() {
+		return new BinaryLERPSource (
+			this._sourceA,
+			this._sourceB,
+			this._blendWeight
+		);
+	};
+
 	return BinaryLERPSource;
 });

@@ -2,7 +2,6 @@ define([
 	'goo/statemachine/actions/Action',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
 	'goo/util/ParticleSystemUtils',
 	'goo/entities/EntityUtils'
@@ -12,12 +11,11 @@ function(
 	Action,
 	Material,
 	ShaderLib,
-	TextureCreator,
 	ParticleLib,
 	ParticleSystemUtils,
 	EntityUtils
 ) {
-	"use strict";
+	'use strict';
 
 	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -30,7 +28,7 @@ function(
 
 	FireAction.external = {
 		name: 'Fire',
-		description: 'Makes the entity emit fire',
+		description: 'Makes the entity emit fire. To "extinguish" the fire use the "Remove Particles" action',
 		parameters: [{
 			name: 'Start Color',
 			key: 'startColor',

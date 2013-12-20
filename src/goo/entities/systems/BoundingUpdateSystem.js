@@ -42,12 +42,22 @@ function (
 			}
 
 			//this._worldBound = new BoundingSphere(new Vector3(0, 0, 0), 0); // optional for including the center of the scene into the world bound
-			this._worldBound = entities[0].meshRendererComponent.worldBound.clone();
 
-			for (var i = 1; i < entities.length; i++) {
-				var mrc = entities[i].meshRendererComponent;
-				this._worldBound = this._worldBound.merge(mrc.worldBound);
+			// generally we don't want particle systems to end up in our world bound computing since they have huge world bounds and can mess up stuff
+			for (var i = 0; i < entities.length; i++) {
+				if (!entities[i].particleComponent) {
+					this._worldBound = entities[i].meshRendererComponent.worldBound.clone();
+					break;
+				}
 			}
+
+			for (; i < entities.length; i++) {
+				if (!entities[i].particleComponent) {
+					var mrc = entities[i].meshRendererComponent;
+					this._worldBound = this._worldBound.merge(mrc.worldBound);
+				}
+			}
+
 			this._computeWorldBound(this._worldBound);
 			this._computeWorldBound = null;
 		}

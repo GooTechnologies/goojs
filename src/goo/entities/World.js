@@ -70,7 +70,14 @@ function (
 	 * @param {System} system
 	 */
 	World.prototype.setSystem = function (system) {
-		this._systems.push(system);
+		var priority = system.priority;
+
+		for (var i = 0; i < this._systems.length; i++) {
+			if (this._systems[i].priority > priority) {
+				break;
+			}
+		}
+		this._systems.splice(i, 0, system);
 	};
 
 	/**

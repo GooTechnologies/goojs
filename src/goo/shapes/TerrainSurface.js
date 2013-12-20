@@ -57,7 +57,7 @@ define([
 					var downRight = (i + 1) * this.vertsPerLine + (j + 1);
 					var upRight = (i + 0) * this.vertsPerLine + (j + 1);
 
-					indices.push(upLeft, downLeft, upRight, upRight, downLeft, downRight);
+					indices.push(downLeft, upLeft, upRight, downLeft, upRight, downRight);
 
 					normals = MathUtils.getTriangleNormal(
 						this.verts[upLeft * 3 + 0],

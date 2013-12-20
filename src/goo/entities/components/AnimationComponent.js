@@ -44,7 +44,7 @@ function (
 
 		this.paused = false;
 		this.lastTimeOfPause = null;
-		this.accumulatedDelay = 0;
+		// this.accumulatedDelay = 0; // most probably unused
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -52,10 +52,17 @@ function (
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info
 	 * @param {string} stateKey
+	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
 	 * @returns {boolean} true if a transition was found and started
 	 */
-	AnimationComponent.prototype.transitionTo = function(stateKey) {
-		return this.layers[0].transitionTo(stateKey);
+	AnimationComponent.prototype.transitionTo = function(stateKey, allowDirectSwitch) {
+		if (this.layers[0].transitionTo(stateKey)) {
+			return true;
+		}
+		if (!allowDirectSwitch) {
+			return false;
+		}
+		return this.layers[0].setCurrentStateByName(stateKey);
 	};
 	/**
 	 * Get available states
@@ -220,9 +227,9 @@ function (
 	};
 
 	AnimationComponent.prototype.stop = function() {
-		this.resetClips();
-		this.paused = false;
-		this.update();
+		if (this._skeletonPose) {
+			this._skeletonPose.setToBindPose();
+		}
 		this.paused = true;
 		this.lastTimeOfPause = -1;
 	};
@@ -234,10 +241,23 @@ function (
 			} else {
 				this.shiftClipTime(World.time - this.lastTimeOfPause);
 			}
-			//this.accumulatedDelay += World.time - this.lastTimeOfPause;
-			// console.log(this.accumulatedDelay); // rogue comment
 		}
 		this.paused = false;
+	};
+
+	AnimationComponent.prototype.clone = function() {
+		var cloned = new AnimationComponent();
+
+		cloned.layers = this.layers.map(function(layer) {
+			return layer.clone();
+		});
+
+		//this._triggerCallbacks = {};
+
+		//this.paused = false;
+		//this.lastTimeOfPause = null;
+
+		return cloned;
 	};
 
 	return AnimationComponent;

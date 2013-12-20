@@ -10,6 +10,7 @@ define([
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
+	'goo/loaders/handlers/LogicComponentHandler',
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
@@ -67,7 +68,12 @@ function(
 	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
-	var _url_types = ['mp3', 'wav'];
+	var _audio_types = ['mp3', 'wav'];
+	// REVIEW: concat takes multiple arrays as input
+	// _asset_types = _texture_types.concat(_imageTypes, _binary_types, _audio_types);
+	var _asset_types = _texture_types.concat(_image_types)
+									.concat(_binary_types)
+									.concat(_audio_types);
 
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
@@ -165,6 +171,9 @@ function(
 	 * @param {string} ref Ref of object to load
 	 * @param {string} bundleName name of the bundle (including extension)
 	 * @param {object} options See {DynamicLoader.update}
+	 // REVIEW: You can load things after starting the engine, loading
+	 // binaries before loading bundle configs is more accurate
+	 * @param {boolean} [options.preloadBinaries] Load binaries before starting engine
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 *
@@ -175,17 +184,29 @@ function(
 			options = {};
 		}
 		_.defaults(options, this.options);
-		return this._loadRef(bundleName).then(function(data) {
+
+		var bundlePromise = that._loadRef(bundleName).then(function(data) {
 			if (options.noCache) {
 				that._configs = data;
 			} else {
 				_.extend(that._configs, data);
 			}
+
 			if (that._configs[ref] == null) {
-				throw new Error("" + ref + " not found in bundle " + bundleName + ". Available keys: \n" + (_.keys(that._configs).join('\n')));
+				throw new Error(ref + ' not found in bundle ' + bundleName + '. Available keys: \n' + (_.keys(that._configs).join('\n')));
 			}
-			return that.load(ref, options);
+
+			if (options.preloadBinaries === true) {
+				return that._preloadBinariesFromRef(ref, options).then(function() {
+					options.preloadBinaries = false;
+					return that.load(ref, options);
+				});
+			} else {
+				return that.load(ref, options);
+			}
 		});
+
+		return bundlePromise;
 	};
 
 	/**
@@ -200,11 +221,105 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype.load = function(ref, options) {
+		var that = this;
 		if (options == null) {
 			options = {};
+		} else if (options.preloadBinaries === true) {
+			return this._preloadBinariesFromRef(ref, options).then(function() {
+				return that.update(ref, null, options);
+			});
 		}
 		return this.update(ref, null, options);
 	};
+
+	/**
+	 * Recursively traverses all entities and loads the binary files referenced.
+	 * A promise which resolves when all binary files are loaded is returned.
+	 * @param {Array.<string>} references Array of references to entities in the scene.
+	 * @param {object} options See {DynamicLoader.update}
+	 * @param {object} bundle Associative array containing all configs , already loaded
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
+	 * @private
+	 */
+	DynamicLoader.prototype._loadBinariesFromRefs = function(references, options) {
+		var that = this;
+		var binaryRefs = [];
+		var handled = 0;
+
+		var loadBinaryRef = function(ref) {
+			 return that._loadRef(ref).then(function() {
+				handled++;
+				if (typeof(options.progressCallback) === 'function') {
+					options.progressCallback(handled, binaryRefs.length);
+				}
+			});
+		};
+
+		var traverseRecursive = function(ref) {
+			var refPromises = [];
+			var traverseRef = function(ref) {
+				var refPromise = that._loadRef(ref).then(function(config) {
+					var refs = that._getRefsFromConfig(config);
+					for (var i = 0, _len = refs.length; i < _len; i++) {
+						var ref = refs[i];
+						if (DynamicLoader.isAssetRef(ref)) {
+							// There can be duplicate references of binary files ( textures )
+							// Only add unique references.
+							if (binaryRefs.indexOf(ref) === -1) {
+								binaryRefs.push(ref);
+							}
+						} else if (DynamicLoader.isJSONRef(ref)) {
+							traverseRef(ref);
+						}
+					}
+				});
+				refPromises.push(refPromise);
+			};
+			traverseRef(ref);
+			return RSVP.all(refPromises);
+		};
+
+		// Traverse to find all binary references, storing them in the binaryRefs array.
+		var traversalPromises = [];
+		for (var i = 0, _len = references.length; i < _len; i++) {
+			traversalPromises.push(traverseRecursive(references[i]));
+		}
+
+		return RSVP.all(traversalPromises).then(function() {
+			var promises = [];
+			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
+				promises.push(loadBinaryRef(binaryRefs[i]));
+			}
+			return RSVP.all(promises);
+		});
+	};
+
+	/**
+	 * Performs pre-loading of all binary files recursively found from the given reference.
+	 * @param {string} ref Reference to load from.
+	 * @param {object} options See {DynamicLoader.update}
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
+	 * @private
+	 */
+	DynamicLoader.prototype._preloadBinariesFromRef = function(ref, options) {
+		_.defaults(options, this.options);
+		var that = this;
+
+		return that._loadRef(ref).then(function(config) {
+			var references;
+			if (ref === 'project.project') {
+				references = config.entityRefs;
+				if (references.length === 0) {
+					console.warn('No entity refs in project:', config);
+					return PromiseUtil.createDummyPromise(null);
+				}
+			} else {
+				references = that._getRefsFromConfig(config);
+			}
+			return that._loadBinariesFromRefs(references, options);
+		});
+	};
+
 
 	/**
 	 * Update an object in the world with an updated config. The object can be of any
@@ -225,6 +340,7 @@ function(
 		if (options == null) {
 			options = {};
 		}
+
 		_.defaults(options, this.options, {
 			recursive: true
 		});
@@ -254,9 +370,9 @@ function(
 				}
 			}
 
-			promises.push(that._handle(ref, config, options));
-
-			return RSVP.all(promises);
+			// Concat the last promise (returns new array) rather than pushing it to the promises array
+			// to prevent off-by-one error in progress callback.
+			return RSVP.all(promises.concat(that._handle(ref, config, options)));
 		}).then(function() {
 			return that._configs;
 		}).then(null, function(err) {
@@ -337,6 +453,7 @@ function(
 	 *
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, noCache) {
+
 		var promise, url,
 			that = this;
 		// Do not create a request to load the reference if it is a shader
@@ -372,7 +489,7 @@ function(
 			promise = this._ajax.loadImage(url);
 		} else if (DynamicLoader.isBinaryRef(ref)) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader.isUrlRef(ref)) {
+		} else if (DynamicLoader.isAudioRef(ref)) {
 			promise = PromiseUtil.createDummyPromise(url);
 		} else {
 			promise = this._ajax.load(url);
@@ -398,10 +515,19 @@ function(
 		var _refs = [];
 		var traverse = function(key, value) {
 			var _key;
-			if (StringUtil.endsWith(key, 'Refs')) {
+			/* REVIEW: what about lowercase refs and urls?
+			 * https://docs.google.com/a/gooengine.com/spreadsheet/ccc?key=0AkxI1qc8lXvrdHBlaGRhV1RhS2R1SU8tT2pJNVJFUGc#gid=17
+			 * concat also works for single values
+			 * if (/(url|ref)s?$/.test(key.toLowerCase()) {
+			 *  _ref = _refs.concat(value);
+			 * } else ...
+			 */
+
+			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
 				_refs = _refs.concat(value);
-			} else if (StringUtil.endsWith(key, 'Ref')) {
-				_refs.push(value);
+			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {
+				if (value != null) // Bug caused some meshRefs to be null
+					_refs.push(value);
 			} else if (value instanceof Object) {
 				for (_key in value) {
 					if (!value.hasOwnProperty(_key)) {
@@ -427,6 +553,11 @@ function(
 		return _.indexOf(_json_types, type) >= 0;
 	};
 
+	DynamicLoader.isAssetRef = function(ref) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		return _.indexOf(_asset_types, type) >= 0;
+	};
+
 	/**
 	 * Images that the browser can handle (jpg, png, gif)
 	 */
@@ -446,9 +577,9 @@ function(
 	/**
 	 * Lazy loaded media (sound)
 	 */
-	DynamicLoader.isUrlRef = function(ref) {
+	DynamicLoader.isAudioRef = function(ref) {
 		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_url_types, type) >= 0;
+		return _.indexOf(_audio_types, type) >= 0;
 	};
 
 	/**

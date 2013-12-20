@@ -363,8 +363,8 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (camera) {
-		Renderer.mainCamera = camera;
+	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+		Renderer.mainCamera = newCam.camera;
 	});
 
 	/**
@@ -374,16 +374,36 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var adjustWidth = this.domElement.offsetWidth / this.downScale;
-		var adjustHeight = this.domElement.offsetHeight / this.downScale;
-		if (adjustWidth !== this.domElement.width || adjustHeight !== this.domElement.height) {
-			this.setSize(adjustWidth, adjustHeight);
+		var devicePixelRatio = window.devicePixelRatio || 1;
+
+		var adjustWidth, adjustHeight;
+		if (document.querySelector) {
+			adjustWidth = this.domElement.offsetWidth;
+			adjustHeight = this.domElement.offsetHeight;
+		} else {
+			adjustWidth = window.innerWidth;
+			adjustHeight = window.innerHeight;
+		}
+		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
+		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
+
+		var fullWidth = adjustWidth;
+		var fullHeight = adjustHeight;
+
+		if (camera && camera.lockedRatio === true && camera.aspect) {
+			adjustWidth = adjustHeight * camera.aspect;
 		}
 
-		var aspect = this.domElement.width / this.domElement.height;
-		if (camera && camera.aspect !== aspect && camera.projectionMode === 0) {
+		var aspect = adjustWidth / adjustHeight;
+		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+
+		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;
-			camera.setFrustumPerspective();
+			if (camera.projectionMode === 0) {
+				camera.setFrustumPerspective();
+			} else {
+				camera.setFrustum();
+			}
 			camera.onFrameChange();
 		}
 	};
@@ -392,14 +412,35 @@ function (
 	 * Sets this.domElement.width and height using the parameters.
 	 * Then it calls this.setViewport(0, 0, width, height);
 	 * Finally it resets the hardwarePicking.pickingTarget
-	 * @param {number} width
-	 * @param {number} height
+	 * @param {number} width aspect ratio corrected width
+	 * @param {number} height aspect ratio corrected height
+	 * @param {number} [fullWidth] full viewport width
+	 * @param {number} [fullHeight] full viewport height
 	 */
-	Renderer.prototype.setSize = function (width, height) {
-		this.domElement.width = width;
-		this.domElement.height = height;
+	Renderer.prototype.setSize = function (width, height, fullWidth, fullHeight) {
+		if (fullWidth === undefined) {
+			fullWidth = width;
+		}
+		if (fullHeight === undefined) {
+			fullHeight = height;
+		}
 
-		this.setViewport(0, 0, width, height);
+		this.domElement.width = fullWidth;
+		this.domElement.height = fullHeight;
+
+		if (width > fullWidth) {
+			var mult = fullWidth / width;
+			width = fullWidth;
+			height = fullHeight * mult;
+		}
+
+		var w = (fullWidth - width) * 0.5;
+		var h = (fullHeight - height) * 0.5;
+
+		if (w !== this.viewportX || h !== this.viewportY ||
+			width !== this.viewportWidth || height !== this.viewportHeight) {
+			this.setViewport(w, h, width, height);
+		}
 
 		if (this.hardwarePicking !== null) {
 			this.hardwarePicking.pickingTarget = null;
@@ -836,8 +877,9 @@ function (
 		if (!skipUpdateBuffer) {
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var x = Math.floor(clientX / pickingResolutionDivider);
-				var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
+				var devicePixelRatio = window.devicePixelRatio || 1;
+				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
+				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
 				this.context.scissor(x, y, 1, 1);
 			}
@@ -865,9 +907,10 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
+		var devicePixelRatio = window.devicePixelRatio || 1;
 		var pickingResolutionDivider = 4;
-		var x = Math.floor(clientX / pickingResolutionDivider);
-		var y = Math.floor((this.viewportHeight - clientY) / pickingResolutionDivider);
+		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
+		var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 
 		this.readPixels(x, y, 1, 1, this.hardwarePicking.pickingBuffer);
 

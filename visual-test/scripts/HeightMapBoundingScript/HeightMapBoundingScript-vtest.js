@@ -103,8 +103,6 @@ require([
 			var material = Material.createMaterial(ShaderLib.simpleLit, '');
 			material.wireframe = true;
 			var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
-			surfaceEntity.transformComponent.transform.scale.setd(1, 1, -1);
-			surfaceEntity.transformComponent.transform.setRotationXYZ(Math.PI/2, 0, 0);
 			surfaceEntity.transformComponent.setUpdated();
 			surfaceEntity.addToWorld();
 
@@ -119,8 +117,8 @@ require([
 			// Add camera
 			var camera = new Camera(45, 1, 1, 1000);
 			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+			cameraEntity.transformComponent.transform.translation.set(0, 10, 0);
+			cameraEntity.transformComponent.transform.lookAt(new Vector3(30, 0, 30), Vector3.UNIT_Y);
 			cameraEntity.setComponent(new CameraComponent(camera));
 			cameraEntity.addToWorld();
 
@@ -134,7 +132,7 @@ require([
 			scripts.scripts.push(new MouseLookControlScript({
 				domElement : goo.renderer.domElement
 			}));
-			scripts.scripts.push(heightMapBoundingScript);
+			//scripts.scripts.push(heightMapBoundingScript);
 			cameraEntity.setComponent(scripts);
 		});
 	}

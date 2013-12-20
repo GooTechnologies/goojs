@@ -103,7 +103,7 @@ require([
 		for (var i = 0; i < nSamples; i++) {
 			mat.push([]);
 			for (var j = 0; j < nSamples; j++) {
-				var closest = sparseHeightMapBoundingScript.getClosest(i, j);
+				var closest = sparseHeightMapBoundingScript.getClosest(j, i);
 				mat[i].push(closest);
 			}
 		}
@@ -126,6 +126,7 @@ require([
 	}
 
 	function sparseHeightMapBoundingScriptDemo(goo) {
+		// add terrain
 		var elevationData = randomTerrain(goo, 50, 100, 100);
 		var sparseHeightMapBoundingScript = new SparseHeightMapBoundingScript(elevationData);
 
@@ -133,26 +134,26 @@ require([
 		var meshData = Surface.createFromHeightMap(matrix);
 
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		material.wireframe = true;
+		//material.wireframe = true;
 		var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
-		surfaceEntity.transformComponent.transform.scale.setd(1, 1, -1);
-		surfaceEntity.transformComponent.transform.setRotationXYZ(Math.PI/2, 0, 0);
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 
+		// add spheres
 		addSpheres(goo, sparseHeightMapBoundingScript);
 
-		var light1 = new PointLight();
-		var light1Entity = goo.world.createEntity('light');
-		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set(0, 100, 0);
-		light1Entity.addToWorld();
+		// add light
+		var light = new PointLight();
+		var lightEntity = goo.world.createEntity('light');
+		lightEntity.setComponent(new LightComponent(light));
+		lightEntity.transformComponent.transform.translation.set(0, 100, 0);
+		lightEntity.addToWorld();
 
 		// Add camera
 		var camera = new Camera(45, 1, 1, 1000);
 		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+		cameraEntity.transformComponent.transform.translation.set(0, 30, 0);
+		cameraEntity.transformComponent.transform.lookAt(new Vector3(40, 0, 40), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));
 		cameraEntity.addToWorld();
 

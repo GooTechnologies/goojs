@@ -35,7 +35,6 @@ function (
 	CameraDebugSystem,
 	MovementSystem,
 	GameUtils,
-
 	Logo
 ) {
 	"use strict";
@@ -60,28 +59,28 @@ function (
 	function GooRunner (parameters) {
 		parameters = parameters || {};
 
+		GameUtils.initAllShims();
+
 		this.world = new World(this);
 		this.renderer = new Renderer(parameters);
 
 		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
-		this.world.setSystem(new CSSTransformSystem(this.renderer));
+		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
-		this.world.setSystem(new LightDebugSystem());
-		this.world.setSystem(new CameraDebugSystem());
-		this.world.setSystem(new MovementSystem());
+		this.world.setSystem(new LightDebugSystem()); // Go away!
+		this.world.setSystem(new CameraDebugSystem()); // Go away!
+		this.world.setSystem(new MovementSystem()); // Go away!
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
 
 		this.doProcess = true;
 		this.doRender = true;
-
-		GameUtils.initAllShims();
 
 		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
 
@@ -174,7 +173,7 @@ function (
 		}
 	};
 
-	var tpfSmoothingArrary = [];
+	var tpfSmoothingArray = [];
 	var tpfIndex = 0;
 
 	GooRunner.prototype._updateFrame = function (time) {
@@ -193,13 +192,13 @@ function (
 		tpf = Math.max(Math.min(tpf, 0.5), 0.0001);
 
 		// Smooth out the tpf
-		tpfSmoothingArrary[tpfIndex] = tpf;
+		tpfSmoothingArray[tpfIndex] = tpf;
 		tpfIndex = (tpfIndex + 1) % this.tpfSmoothingCount;
 		var avg = 0;
-		for (var i = 0; i < tpfSmoothingArrary.length; i++) {
-			avg += tpfSmoothingArrary[i];
+		for (var i = 0; i < tpfSmoothingArray.length; i++) {
+			avg += tpfSmoothingArray[i];
 		}
-		avg /= tpfSmoothingArrary.length;
+		avg /= tpfSmoothingArray.length;
 		this.world.tpf = avg;
 
 		this.world.time += this.world.tpf;

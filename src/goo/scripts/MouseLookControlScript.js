@@ -29,8 +29,8 @@ define([
 
 			this.domElement = properties.domElement || null;
 
-			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.01;
-			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.01;
+			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeedHorizontal : 0.01;
+			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.01;
 
 			this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 			this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;

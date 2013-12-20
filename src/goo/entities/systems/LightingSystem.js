@@ -15,13 +15,14 @@ function (
 	function LightingSystem() {
 		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
 
-		this.lights = [];
 		this.overrideLights = null;
 		this._needsUpdate = true;
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
 
+	// does this really need exist? can't inserted and deleted be used instead?
+	/*
 	LightingSystem.prototype.addedComponent = function (entity, component) {
 		if (component.type !== 'LightComponent') {
 			return;
@@ -44,11 +45,35 @@ function (
 		var index = this.lights.indexOf(component.light);
 		if (index !== -1) {
 			this.lights.splice(index, 1);
+			if (!this.overrideLights) {
+				SystemBus.emit('goo.setLights', this.lights);
+			}
+		}
+	};
+	//*/
+
+	//
+	/*
+	LightingSystem.prototype.inserted = function() {
+		if (this.lights.indexOf(component.light) === -1) {
+			entity.transformComponent.setUpdated();
+			this.lights.push(component.light);
+			if (!this.overrideLights) {
+				SystemBus.emit('goo.setLights', this.lights);
+			}
+		}
+	};
+
+	LightingSystem.prototype.deleted = function() {
+		var index = this.lights.indexOf(component.light);
+		if (index !== -1) {
+			this.lights.splice(index, 1);
 			if(!this.overrideLights) {
 				SystemBus.emit('goo.setLights', this.lights);
 			}
 		}
 	};
+	*/
 
 	/**
 	 * Replaces the lights tracked by the system with custom ones.
@@ -65,12 +90,23 @@ function (
 	 */
 	LightingSystem.prototype.clearOverrideLights = function () {
 		this.overrideLights = undefined;
-		SystemBus.emit('goo.setLights', this.lights);
+		//SystemBus.emit('goo.setLights', this.lights);
 		this._needsUpdate = true;
 	};
 
+	/* REVIEW: Fair enough, since simplepartitioner does it every frame
+	 * The systembus thing might be a bit slow though
+	 * How about uncomment setLights in clearOverride, then loop in a more performant way
+	 * like in partitioner. Reuse this.lights.
+	 var index = 0;
+	 this.lights[index++] = light;
+	 ...
+	 this.lights.length = index;
+	 */
 	LightingSystem.prototype.process = function (entities) {
 		if (!this.overrideLights) {
+			var lights = [];
+
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
 				var transformComponent = entity.transformComponent;
@@ -79,8 +115,14 @@ function (
 				if (transformComponent._updated || this._needsUpdate) {
 					lightComponent.updateLight(transformComponent.worldTransform);
 				}
+
+				if (!lightComponent.hidden) {
+					lights.push(lightComponent.light);
+				}
 			}
 			this._needsUpdate = false;
+
+			SystemBus.emit('goo.setLights', lights);
 		}
 	};
 

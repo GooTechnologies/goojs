@@ -222,5 +222,30 @@ function (
 		}
 	};
 
+	AnimationLayer.prototype.clone = function() {
+		var cloned = new AnimationLayer(this._name);
+
+
+		for (var key in this._steadyStates) {
+			cloned._steadyStates[key] = this._steadyStates[key].clone();
+			if (this._steadyStates[key] === this._currentState) {
+				cloned._currentState = cloned._steadyStates[key];
+			}
+		}
+
+		for (var key in this._transitions) {
+			cloned._transitions[key] = this._transitions[key];
+		}
+
+		for (var key in this._transitionStates) {
+			cloned._transitionStates[key] = new this._transitionStates[key].constructor();
+		}
+
+		//this._currentState = null;
+		//this._layerBlender = null;
+
+		return cloned;
+	};
+
 	return AnimationLayer;
 });
