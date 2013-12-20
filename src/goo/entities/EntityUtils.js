@@ -56,7 +56,7 @@ define([
 			return clonedSkeletonPose;
 		}
 
-		function cloneEntity (world, entity, settings) {
+		function cloneEntity(world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
 
 			for (var i=0;i<entity._components.length;i++) {

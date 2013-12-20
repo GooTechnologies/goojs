@@ -420,7 +420,7 @@ define([
 			var minY = minmaxArray[2];
 			var maxY = minmaxArray[3];
 			var minDepth = minmaxArray[4];
-			var debugColor = [0, 0, 255];
+			// var debugColor = [0, 0, 255];
 			var width = this.renderer.width;
 
 			for (var y = maxY; y >= minY; y--) {

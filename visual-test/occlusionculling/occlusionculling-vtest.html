@@ -3,80 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<meta name="description" content="Goo Software Occlusion Culling. Cubemap by Emil Persson, aka Humus. http://www.humus.name">
-<title>Occlusion Culling Developing Application</title>
-<script type="text/javascript" src="../lib/dat.gui.min.js"></script>
+<title>Occlusion Culling</title>
+
+<!-- disable native mobile pinch-to-zoom, replacing with the Goo Engine zoom -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta property="og:title" content="Occlusion Culling Lab"/>
+<meta property="og:updated_time" content="2013-12-20T09:30:51.869000"/>
+<meta property="og:site_name" content="Goo Create"/>
+<meta property="og:type" content="website"/>
+
+<link rel="stylesheet" type="text/css" href="style/style.css">
+
 <script src="../../../lib/require.js"></script>
-    <script src="../../../lib/goo.js"></script>
-    <script src="occlusionculling-vtest.js"></script>
+<script src="../../../lib/goo.js"></script>
 
-<style>
+<script src="js/loadScene.js"></script>
 
-	#goo
-	{
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        bottom: 0px;
-        right: 0px;
-        width: 100%;
-        height: 100%;
-	}
-
-    #fullscreen {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        bottom: 0px;
-        right: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 1000;
-
-        -webkit-transition: opacity 0.5s ease-in, -webkit-transform 0.5s ease-in;
-        -moz-transition: opacity 0.5s ease-in, -moz-transform 0.5s ease-in;
-        -o-transition: opacity 0.5s ease-in, -o-transform 0.5s ease-in;
-        transition: opacity 0.5s ease-in, transform 0.5s ease-in;
-    }
-    #fullscreen.fade-out {
-        opacity: 0;
-        -webkit-transform: translate(0, -100%);
-        -moz-transform: translate(0, -100%);
-        -o-transform: translate(0, -100%);
-        transform: translate(0, -100%);
-    }
-    #fullscreen.fade-in {
-        opacity: 1;
-        -webkit-transform: translate(0, 0%);
-        -moz-transform: translate(0, 0%);
-        -o-transform: translate(0, 0%);
-        transform: translate(0, 0%);
-    }
-
-	#debugcanvas
-    {
-        position : absolute;
-        top: 0px;
-        left: 0px;
-        bottom: 0px;
-        right: 0px;
-        width: 100%;
-        height: 100%;
-        image-rendering: optimizeSpeed;
-        image-rendering: optimize-contrast;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: -o-crisp-edges;
-        image-rendering: -webkit-optimize-contrast;
-        -ms-interpolation-mode: nearest-neighbor;
-		transform : scaley(-1);
-		-moz-transform: scaley(-1);
-		-webkit-transform: scaley(-1);
-        padding : 0;
-        opacity: 0.7;
-	}
-
-</style>
 </head>
+
 <body>
+	<div id="loadingOverlay">
+		<div id="loadingMessage">
+			<h2>Loading project</h2>
+			<div id="progressBar">
+				<div id="progress"></div>
+			</div>
+		</div>
+	</div>
+	
 </body>
+
 </html>

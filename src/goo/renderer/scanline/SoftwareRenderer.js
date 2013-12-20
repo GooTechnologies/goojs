@@ -156,29 +156,27 @@ define([
 	*	@returns {Array.<Entity>} visibleEntities The array of entities which are visible after occlusion culling has been applied.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
+
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix, cameraViewProjectionMatrix);
 		var cameraNearZInWorld = -this.camera.near;
 		var visibleEntities = [];
 
-		for (var i = 0; i < renderList.length; i++) {
-			var entity = renderList[i];
-			if (entity.meshRendererComponent.cullMode !== 'NeverOcclusionCull') {
-				var cull;
-				var bound;
-				var ocludeeComponent = entity.occludeeComponent;
-				if (ocludeeComponent) {
-					bound = entity.occludeeComponent.modelBound;
-				} else {
-					bound = entity.modelBound;
-				}
+		for (var i = 0, _len = renderList.length; i < _len; i++) {
 
+			var entity = renderList[i];
+			// If the entity does not have an occludeeComponent, it should not be able to to be culled.
+			var occludeeComponent = entity.occludeeComponent;
+			if (occludeeComponent) {
+				var cull = false;
+				var bound = occludeeComponent.modelBound;
 				if (bound instanceof BoundingSphere) {
 					cull = this.boundingSphereModule.occlusionCull(entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld);
 				} else if (bound instanceof BoundingBox) {
 					cull = this.boundingBoxModule.occlusionCull(entity, cameraViewProjectionMatrix);
 				}
+
 				if (!cull) {
 					visibleEntities.push(entity);
 				}

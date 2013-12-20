@@ -23,8 +23,56 @@ define([
 			*/
 			this.occluderList = [];
 			this.renderer = new SoftwareRenderer(parameters);
-			this.debugContext = parameters.debugContext;
-			this.imagedata = this.debugContext.createImageData(parameters.width, parameters.height);
+
+			if (parameters.debugContext !== undefined) {
+				this.debugContext = parameters.debugContext;
+				this.imagedata = this.debugContext.createImageData(parameters.width, parameters.height);
+				// Process function with debug writes.
+				this.processFunc = function (camera, entities, renderList) {
+					// View frustum culling
+					this._viewFrustumCuller.process(camera, entities, renderList);
+					// Find and add the Occluders in the view frustum.
+					this._addVisibleOccluders(renderList);
+					// Render the depth buffer using occluder geometries.
+					this.renderer.render(this.occluderList);
+
+					// TODO: Remove later , used for debugging.
+					this.renderer.copyDepthToColor();
+
+					// Perform the occlusion culling, an array
+					var visibleList = this.renderer.performOcclusionCulling(renderList);
+					renderList.length = 0;
+					// Copy the visible entities to the renderlist.
+					for (var i = 0; i < visibleList.length; i++) {
+						renderList[i] = visibleList[i];
+					}
+
+					// TODO: Remove later , used for debugging.
+					this._writeDebugData();
+				};
+			} else {
+				// NO DEBUGGING
+				this.processFunc = function (camera, entities, renderList) {
+					// View frustum culling
+					this._viewFrustumCuller.process(camera, entities, renderList);
+
+					// Find and add the Occluders in the view frustum.
+					this._addVisibleOccluders(renderList);
+
+					// Render the depth buffer using occluder geometries.
+					this.renderer.render(this.occluderList);
+
+					// Perform the occlusion culling, an array
+					var visibleList = this.renderer.performOcclusionCulling(renderList);
+					renderList.length = 0;
+					// Copy the visible entities to the renderlist.
+					for (var i = 0; i < visibleList.length; i++) {
+						renderList[i] = visibleList[i];
+					}
+				};
+			}
+
+
 		}
 
 		OcclusionPartitioner.prototype.added = function (entity) {
@@ -38,26 +86,7 @@ define([
 		};
 
 		OcclusionPartitioner.prototype.process = function (camera, entities, renderList) {
-			// View frustum culling
-			this._viewFrustumCuller.process(camera, entities, renderList);
-			// Find and add the Occluders in the view frustum.
-			this._addVisibleOccluders(renderList);
-			// Render the depth buffer using occluder geometries.
-			this.renderer.render(this.occluderList);
-
-			// TODO: Remove later , used for debugging.
-			//this.renderer.copyDepthToColor();
-
-			// Perform the occlusion culling, an array
-			var visibleList = this.renderer.performOcclusionCulling(renderList);
-			renderList.length = 0;
-			// Copy the visible entities to the renderlist.
-			for (var i = 0; i < visibleList.length; i++) {
-				renderList[i] = visibleList[i];
-			}
-
-			// TODO: Remove later , used for debugging.
-			//this._writeDebugData();
+			this.processFunc(camera, entities, renderList);
 		};
 
 		/**
