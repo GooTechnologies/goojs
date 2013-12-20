@@ -199,6 +199,7 @@ function(
 
 	var mousedown = function(event) {
 		this.setupKeyControls();
+		this.domElement.focus();
 		this.resetMouseState();
 		this.updateButtonState(event, true);
 	};
@@ -218,8 +219,8 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		document.addEventListener('mousemove', boundMouseMove, false);
-		document.addEventListener('mouseup', boundMouseUp, false);
+		this.domElement.addEventListener('mousemove', boundMouseMove, false);
+		this.domElement.addEventListener('mouseup', boundMouseUp, false);
 		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
