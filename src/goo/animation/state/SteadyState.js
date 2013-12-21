@@ -57,6 +57,7 @@ function (AbstractState) {
 	};
 
 	SteadyState.prototype.clone = function () {
+        // REVIEW: this._name is undefined, however this.name exists.
 		var cloned = new SteadyState(this._name);
 
 		for (var key in this._transitions) {
