@@ -9,6 +9,7 @@ define([
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
 	'goo/renderer/MeshData',
+	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent',
 	'goo/entities/components/AnimationComponent'
@@ -25,6 +26,7 @@ define([
 		Light,
 		Material,
 		MeshData,
+		BoundingBox,
 		Transform,
 		CSSTransformComponent,
 		AnimationComponent
@@ -280,11 +282,10 @@ define([
 			});
 		};
 
-		/* UNTESTED!!!
 		/**
 		 * Returns the merged bounding box of the entity and its children
 		 * @param entity
-		 * /
+		 */
 		EntityUtils.getTotalBoundingBox = function (entity) {
 			var mergedWorldBound = new BoundingBox();
 			var first = true;
@@ -297,8 +298,8 @@ define([
 						} else {
 							mergedWorldBound.center.setv(boundingVolume.center);
 							mergedWorldBound.xExtent = mergedWorldBound.yExtent = mergedWorldBound.zExtent = boundingVolume.radius;
-							first = false;
 						}
+						first = false;
 					} else {
 						mergedWorldBound.merge(entity.meshRendererComponent.worldBound);
 					}
@@ -309,12 +310,11 @@ define([
 			// a tiny bounding box centered around the coordinates of the parent
 			if (first) {
 				var translation = entity.transformComponent.worldTransform.translation;
-				mergedWorldBound = new BoundingBox(new Vector3().copy(translation), 0.001, 0.001, 0.001);
+				mergedWorldBound = new BoundingBox(translation.clone(), 0.001, 0.001, 0.001);
 			}
 
 			return mergedWorldBound;
 		};
-		*/
 
 		return EntityUtils;
 	});
