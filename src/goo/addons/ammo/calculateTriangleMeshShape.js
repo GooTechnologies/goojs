@@ -4,7 +4,7 @@ define( [], function(){
 
 	// TODO: instead of using this scale parameter, "simply" scale the vertices with the real entity transform
 	return function(entity, scale) {
-		scale = scale || 1;
+		scale = scale || [1,1,1];
 		var floatByteSize = 4;
 		var use32bitIndices = true;
 		var intByteSize = use32bitIndices ? 4 : 2;
@@ -15,7 +15,7 @@ define( [], function(){
 		var vertices = meshData.dataViews.POSITION;
 		var vertexBuffer = Ammo.allocate( floatByteSize * vertices.length, "float", Ammo.ALLOC_NORMAL );
 		for ( var i = 0, il = vertices.length; i < il; i ++ ) {
-			Ammo.setValue( vertexBuffer + i * floatByteSize, scale * vertices[ i ], 'float' );
+			Ammo.setValue( vertexBuffer + i * floatByteSize, scale[i%3] * vertices[ i ], 'float' );
 		}
 
 		var indices = meshData.indexData.data;

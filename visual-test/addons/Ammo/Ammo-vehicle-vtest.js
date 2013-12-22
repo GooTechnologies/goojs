@@ -91,7 +91,7 @@ require([
 			var chassis = compound;
 		*/
 
-		var chassis = createEntity(goo, ShapeCreator.createBox(2, 1, 4), {mass: 150}, [13, 2, 10]);
+		var chassis = createEntity(goo, ShapeCreator.createBox(2, 1, 4), {mass: 150, showBounds:true, useWorldBounds:true}, [13, 2, 10]);
 		var vehicleHelper = new VehicleHelper( goo, ammoSystem, chassis, 0.5, 0.3, true);
 		vehicleHelper.setWheelAxle( -1, 0, 0);
 		vehicleHelper.addFrontWheel( [ -1, 0.0,  1.0] );
