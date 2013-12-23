@@ -9,7 +9,7 @@ function (
 	Joint,
 	Matrix4x4
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
@@ -26,17 +26,17 @@ function (
 		var jointCount = this._skeleton._joints.length;
 
 		// init local transforms
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._localTransforms[i] = new Transform();
 		}
 
 		// init global transforms
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._globalTransforms[i] = new Transform();
 		}
 
 		// init palette
-		for ( var i = 0; i < jointCount; i++) {
+		for (var i = 0; i < jointCount; i++) {
 			this._matrixPalette[i] = new Matrix4x4();
 		}
 

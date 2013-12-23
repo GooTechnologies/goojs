@@ -28,7 +28,7 @@ function (
 		 * @default
 		 */
 		this.autoCompute = true;
-		this.currentPose = null;
+		this.currentPose = null; // SkeletonPose
 	}
 
 	MeshDataComponent.prototype = Object.create(Component.prototype);

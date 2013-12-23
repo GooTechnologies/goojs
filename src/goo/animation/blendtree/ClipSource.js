@@ -7,7 +7,7 @@ function (
 	MathUtils,
 	AnimationClipInstance
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A blend tree leaf node that samples and returns values from the channels of an AnimationClip.

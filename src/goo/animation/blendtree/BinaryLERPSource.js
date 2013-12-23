@@ -115,7 +115,7 @@ function (
 
 		var rVal = store ? store : {};
 
-		for ( var key in sourceAData) {
+		for (var key in sourceAData) {
 			var dataA = sourceAData[key];
 			var dataB = sourceBData[key];
 			if (!isNaN(dataA)) {

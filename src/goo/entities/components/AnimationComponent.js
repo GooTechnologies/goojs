@@ -15,7 +15,7 @@ function (
 	TransformData,
 	TriggerData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Holds the animation data.
@@ -44,6 +44,7 @@ function (
 
 		this.paused = false;
 		this.lastTimeOfPause = null;
+		// REVIEW : Cannot find any usage of it in GooJS or the CreateFrontend. Remove it instead? 
 		// this.accumulatedDelay = 0; // most probably unused
 	}
 
@@ -134,7 +135,7 @@ function (
 					if (value.armed) {
 						// pull callback(s) for the current trigger key, if exists, and call.
 						// TODO: Integrate with GameMaker somehow
-						for ( var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
+						for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
 							if (callbacks && callbacks.length) {
 								for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
@@ -251,6 +252,9 @@ function (
 		cloned.layers = this.layers.map(function(layer) {
 			return layer.clone();
 		});
+
+		// REVIEW : Are these outcommented variable writes supposed to be removed? They seem to be the
+		// default values put from the constructor. But why should the entity which is being cloned (this) be reset?
 
 		//this._triggerCallbacks = {};
 

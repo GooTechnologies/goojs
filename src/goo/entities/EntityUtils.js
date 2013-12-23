@@ -31,7 +31,7 @@ define([
 		CSSTransformComponent,
 		AnimationComponent
 	) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Utilities for entity creation etc
@@ -40,6 +40,13 @@ define([
 		function EntityUtils() {
 		}
 
+		/**
+		* REVIEW : Proof read this please.
+		* @description Returns a clone of the given SkeletonPose. Also stores the cloned poses into settings, in order not to 
+		* clone multiple instances of the same SkeletonPose.
+		* @param {SkeletonPose} skeletonPose
+		* @param {Object} settings
+		*/
 		function cloneSkeletonPose(skeletonPose, settings) {
 			settings.skeletonMap = settings.skeletonMap || {
 				originals: [],
@@ -61,7 +68,7 @@ define([
 		function cloneEntity(world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
 
-			for (var i=0;i<entity._components.length;i++) {
+			for (var i = 0; i < entity._components.length; i++) {
 				var component = entity._components[i];
 				if (component instanceof TransformComponent) {
 					newEntity.transformComponent.transform.copy(component.transform);
@@ -73,8 +80,12 @@ define([
 					}
 					newEntity.setComponent(meshDataComponent);
 				} else if (component instanceof MeshRendererComponent) {
+					// REVIEW: Should the cloned new meshrendercomponent not get all the set member varialbes from the
+					// cloned component? Now it gets defaulted from the constructor instead. The materials are also shared.
+					// Maybe this is something to be pushed to another story, to actually use the settings sent to cloneEntity, as 
+					// stated in the old review comment in clone() 
 					var meshRendererComponent = new MeshRendererComponent();
-					for (var j=0;j<component.materials.length;j++) {
+					for (var j = 0; j < component.materials.length; j++) {
 						meshRendererComponent.materials.push(component.materials[j]);
 					}
 					newEntity.setComponent(meshRendererComponent);
@@ -87,7 +98,7 @@ define([
 					newEntity.setComponent(component);
 				}
 			}
-			for (var j=0;j<entity.transformComponent.children.length;j++) {
+			for (var j = 0; j < entity.transformComponent.children.length; j++) {
 				var child = entity.transformComponent.children[j];
 				var clonedChild = cloneEntity(world, child.entity, settings);
 				newEntity.transformComponent.attachChild(clonedChild.transformComponent);
@@ -293,7 +304,7 @@ define([
 				if (entity.meshRendererComponent) {
 					if (first) {
 						var boundingVolume = entity.meshRendererComponent.worldBound;
-						if(boundingVolume instanceof BoundingBox) {
+						if (boundingVolume instanceof BoundingBox) {
 							boundingVolume.clone(mergedWorldBound);
 						} else {
 							mergedWorldBound.center.setv(boundingVolume.center);

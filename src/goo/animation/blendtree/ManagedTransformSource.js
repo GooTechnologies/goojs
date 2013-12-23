@@ -13,6 +13,9 @@ function (
 ) {
 	'use strict';
 
+	// REVIEW : Update class description, setJointXXX doesnt exist anymore , guessing that the setXXX (Translation, scale , rotation etc) are the
+	// new ways instead of setJointXXX? 
+
 	/**
 	 * @class This tree source maintains its own source data, which can be modified directly using setJointXXX. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically. Originally implemented BlendTreeSource.

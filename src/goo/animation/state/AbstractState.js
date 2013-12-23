@@ -3,7 +3,7 @@ define([
 /** @lends */
 function (
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Base class for a state in our animation system

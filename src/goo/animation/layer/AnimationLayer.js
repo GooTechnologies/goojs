@@ -7,7 +7,7 @@ function (
 	SteadyState,
 	World
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
@@ -92,7 +92,7 @@ function (
 		if (cState && cState._transitions) {
 			transition = cState._transitions[state] || cState._transitions['*'];
 		}
-		if(!transition && this._transitions) {
+		if (!transition && this._transitions) {
 			transition = this._transitions[state] || this._transitions['*'];
 		}
 		if (cState instanceof SteadyState && transition) {
@@ -152,6 +152,7 @@ function (
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
 	};
+
 	/**
 	 * Force the current state of the machine to the state with the given name.
 	 * @param {AbstractState} stateName the name of our state. If null, or is not present in this state machine, the current state is not changed.
@@ -241,6 +242,7 @@ function (
 			cloned._transitionStates[key] = new this._transitionStates[key].constructor();
 		}
 
+		// REVIEW : Stray forgotten out-commented resets?
 		//this._currentState = null;
 		//this._layerBlender = null;
 

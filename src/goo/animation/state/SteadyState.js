@@ -14,7 +14,8 @@ function (AbstractState) {
 
 		this._name = name;
 		this._transitions = {};
-		this._sourceTree = null;
+		// sourceTree is a ManagedTransformSource, initiated in AnimationStateHandler
+		this._sourceTree = null; 
 	}
 
 	SteadyState.prototype = Object.create(AbstractState.prototype);
@@ -25,7 +26,7 @@ function (AbstractState) {
 	 */
 	SteadyState.prototype.update = function (globalTime) {
 		if (!this._sourceTree.setTime(globalTime)) {
-			if(this.onFinished) {
+			if (this.onFinished) {
 				this.onFinished();
 			}
 		}
