@@ -37,7 +37,7 @@ define([
 			for (var i = 0; i < this.entities.length; i++) {
 				var entity = this.entities[i];
 				if(entity.hasComponent('MarkerComponent')) {
-					var transform = entity.transformComponent.transform;
+					var transform = entity.transformComponent.worldTransform;
 
 					var renderableMarker = {
 						meshData: entity.markerComponent.meshData,

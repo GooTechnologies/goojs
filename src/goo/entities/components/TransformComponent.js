@@ -144,7 +144,7 @@ function (
 	 *
 	 * @param {TransformComponent} childComponent child transform component to attach
 	 */
-	TransformComponent.prototype.attachChild = function (childComponent) {
+	TransformComponent.prototype.attachChild = function (childComponent, keepTransform) {
 		var component = this;
 		while(component) {
 			if (component === childComponent) {
@@ -156,6 +156,13 @@ function (
 		if (childComponent.parent) {
 			childComponent.parent.detachChild(childComponent);
 		}
+
+		if (keepTransform) {
+			childComponent.updateTransform();
+			this.updateWorldTransform();
+			childComponent.transform.multiply(this.worldTransform.invert(), childComponent.transform);
+		}
+
 		childComponent.parent = this;
 		this.children.push(childComponent);
 	};

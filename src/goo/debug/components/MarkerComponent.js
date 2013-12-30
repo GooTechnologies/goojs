@@ -16,7 +16,7 @@ function(
 	function MarkerComponent(hostEntity) {
 		this.type = 'MarkerComponent';
 
-		var hostModelBound = hostEntity.meshDataComponent.modelBound;
+		var hostModelBound = hostEntity.meshRendererComponent.worldBound;
 		//this.meshData = ShapeCreator.createBox(hostModelBound.radius * 2, hostModelBound.radius * 2, hostModelBound.radius * 2);
 		this.meshData = BoundingVolumeMeshBuilder.build(hostModelBound);
 	}
