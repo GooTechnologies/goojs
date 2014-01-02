@@ -43,8 +43,8 @@ function(
 			entityWorldTranslation.copy(entity.transformComponent.transform.translation);
 
 			var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
-			for (var i = 0; i < sounds.length; i++) {
-				sounds[i].pos3d(
+			for (var j = 0; j < sounds.length; j++) {
+				sounds[j].pos3d(
 					soundTranslation.data[0] * this.settings.scale,
 					soundTranslation.data[1] * this.settings.scale,
 					soundTranslation.data[2] * this.settings.scale
