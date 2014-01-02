@@ -110,10 +110,11 @@ function(
 			shape = this.createPolygonShape(polygon);
 		}
 
-		var fd = new Box2D.b2FixtureDef();
+		var fd = new Box2D.b2FixtureDef(); // fd?
 		fd.set_shape(shape);
 		fd.set_density(1.0);
 		fd.set_friction(p.friction);
+		fd.set_restitution(p.restitution);
 
 		var bd = new Box2D.b2BodyDef();
 

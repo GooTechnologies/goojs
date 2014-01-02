@@ -23,6 +23,7 @@ function(
 		this.vertices = settings.vertices ? settings.vertices : [0, 1, 2, 2, 0, 2];
 		this.movable = settings.movable === false ? false : true;
 		this.friction = settings.friction ? settings.friction : 1;
+		this.restitution = settings.restitution ? settings.restitution : 0;
 		this.offsetX = settings.offsetX ? settings.offsetX : 0;
 		this.offsetY = settings.offsetY ? settings.offsetY : 0;
 	}
