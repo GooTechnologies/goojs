@@ -16,7 +16,6 @@ function (
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
-
 		this.mainCamera = null;
 	}
 

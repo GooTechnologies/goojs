@@ -71,6 +71,10 @@ function (
 		var upperBound = this.upperBound;
 		var mainCamera = this.mainCamera;
 
+		if (mainCamera == null) {
+			return;
+		}
+
 		if (!this.freezeProjector) {
 			mainCamera.copy(camera);
 			// mainCamera.setFrustumPerspective(null, null, 10.0, 300.0);

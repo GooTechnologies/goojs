@@ -42,13 +42,15 @@ function(
 			var entityWorldTranslation = new Vector3();
 			entityWorldTranslation.copy(entity.transformComponent.transform.translation);
 
-			var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
-			for (var j = 0; j < sounds.length; j++) {
-				sounds[j].pos3d(
-					soundTranslation.data[0] * this.settings.scale,
-					soundTranslation.data[1] * this.settings.scale,
-					soundTranslation.data[2] * this.settings.scale
-				);
+			if (Renderer.mainCamera != null) {
+				var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
+				for (var j = 0; j < sounds.length; j++) {
+					sounds[j].pos3d(
+						soundTranslation.data[0] * this.settings.scale,
+						soundTranslation.data[1] * this.settings.scale,
+						soundTranslation.data[2] * this.settings.scale
+					);
+				}
 			}
 		}
 	};

@@ -182,6 +182,9 @@ define([
 		if(this.panState.buttonDown) {
 			var c = Renderer.mainCamera;
 
+			if (c == null) {
+				return;
+			}
 
 			c.getScreenCoordinates(this.panState.lastPos, 1, 1, u);
 			u.x -= (mouseX - this.panState.lastX) / this.viewportWidth;

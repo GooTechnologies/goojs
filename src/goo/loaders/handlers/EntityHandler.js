@@ -93,12 +93,12 @@ define([
 				if(handler) {
 					var promise = handler.remove(object, options);
 					if (!promise || !promise.then) {
-						console.error("Handler for " + componentName + " did not return promise");
+						console.error("Handler for " + type + " did not return promise");
 					} else {
 						promises.push(promise);
 					}
 				} else {
-					console.warn("No componentHandler for " + componentName);
+					console.warn("No componentHandler for " + type);
 				}
 			}
 		}.bind(this));

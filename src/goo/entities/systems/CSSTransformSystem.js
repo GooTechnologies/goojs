@@ -50,6 +50,10 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 		var camera = Renderer.mainCamera;
 
+		if (camera == null) {
+			return;
+		}
+
 		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * this.renderer.domElement.offsetHeight;
 		setStyle(this.viewDom, 'perspective', fov + 'px');
 
