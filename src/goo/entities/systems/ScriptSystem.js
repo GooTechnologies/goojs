@@ -14,6 +14,8 @@ define(['goo/entities/systems/System'],
 			viewportWidth: 0,
 			viewportHeight: 0
 		};
+
+		this.priority = 500;
 	}
 
 	ScriptSystem.prototype = Object.create(System.prototype);
