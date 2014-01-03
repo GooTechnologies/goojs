@@ -269,6 +269,7 @@ function (
 			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
 			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
+		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
 
 		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
 		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
@@ -1189,8 +1190,8 @@ function (
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.capabilities.maxTexureSize || image.height > this.capabilities.maxTexureSize)) {
-					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexureSize);
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}
 
