@@ -33,7 +33,8 @@ function (
 		this.doRender = {
 			CameraComponent: false,
 			LightComponent: false,
-			MeshRendererComponent: false
+			MeshRendererComponent: false,
+			SkeletonPose: false
 		};
 		this.inserted();
 
@@ -73,6 +74,7 @@ function (
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
 		var count = this.renderList.length = 0;
+		var renderables;
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
@@ -83,7 +85,6 @@ function (
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
 					var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
 
-					var renderables;
 					if (tree[componentName] && ((tree[componentName].length === 2 && options.full) || (tree[componentName].length === 1 && !options.full))) {
 						renderables = tree[componentName];
 					} else {
@@ -97,7 +98,24 @@ function (
 					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
 				}
 			}
+			// Skeleton debug
+			if (this.doRender.SkeletonPose && entity.meshDataComponent && entity.meshDataComponent.currentPose) {
+				var pose = entity.meshDataComponent.currentPose;
+				var tree = this._renderablesTree[entity.id] = this._renderablesTree[entity.id] || {};
+				if (tree.skeleton) {
+					renderables = tree.skeleton;
+				} else {
+					renderables = DebugDrawHelper.getRenderablesFor(pose);
+					renderables.forEach(function (renderable) { renderable.id = entity.id; });
+					tree.skeleton = renderables;
+				}
+				renderables.forEach(function (renderable) {
+					renderable.transform.copy(entity.transformComponent.worldTransform);
+					this.renderList[count++] = renderable;
+				}.bind(this));
+			}
 		}
+
 		if (this.selectionActive) {
 			this.renderList[count++] = this.selectionRenderable[0];
 		}

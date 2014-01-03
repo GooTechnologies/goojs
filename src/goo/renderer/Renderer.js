@@ -586,6 +586,11 @@ function (
 			renderInfo.meshData = renderable.meshData;
 			renderInfo.materials = renderable.materials;
 			renderInfo.transform = renderable.transform;
+			if(renderable.currentPose) {
+				renderInfo.currentPose = renderable.currentPose;
+			} else {
+				delete renderInfo.currentPose;
+			}
 		}
 
 		renderInfo.renderable = renderable;

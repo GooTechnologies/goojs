@@ -2,6 +2,7 @@ define([
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/MeshRendererComponent',
+	'goo/animation/SkeletonPose',
 
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
@@ -10,6 +11,7 @@ define([
 	'goo/shapes/debug/LightDebug',
 	'goo/shapes/debug/CameraDebug',
 	'goo/shapes/debug/MeshRendererDebug',
+	'goo/shapes/debug/SkeletonDebug',
 	'goo/renderer/Material',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
@@ -19,6 +21,7 @@ define([
 	LightComponent,
 	CameraComponent,
 	MeshRendererComponent,
+	SkeletonPose,
 
 	PointLight,
 	DirectionalLight,
@@ -27,6 +30,7 @@ define([
 	LightDebug,
 	CameraDebug,
 	MeshRendererDebug,
+	SkeletonDebug,
 	Material,
 	Util,
 	ShaderLib,
@@ -39,6 +43,7 @@ define([
 	var lightDebug = new LightDebug();
 	var cameraDebug = new CameraDebug();
 	var meshRendererDebug = new MeshRendererDebug();
+	var skeletonDebug = new SkeletonDebug();
 
 	DebugDrawHelper.getRenderablesFor = function(component, options) {
 		var meshes, material;
@@ -56,6 +61,33 @@ define([
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
 			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
+		} else if (component instanceof SkeletonPose) {
+			meshes = skeletonDebug.getMesh(component, options);
+			var materials = [
+				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial'),
+				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial')
+			];
+			var renderables = [];
+			var len = materials.length;
+			while (len--) {
+				var material = materials[len];
+				material.depthState = {
+					enabled: false,
+					write: false
+				};
+				material.renderQueue = 3000;
+				material.uniforms.materialDiffuse = [0,0,0,1];
+				material.uniforms.materialDiffuse[len] = 0.8;
+				material.uniforms.materialAmbient = [0,0,0,1];
+				material.uniforms.materialAmbient[len] = 0.5;
+				renderables[len] = {
+					meshData: meshes[len],
+					transform: new Transform(),
+					materials: [material],
+					currentPose: component
+				};
+			}
+			return renderables;
 		}
 
 		return meshes.map(function (mesh) {
@@ -137,7 +169,7 @@ define([
 		material.uniforms.color = material.uniforms.color || [1, 1, 1];
 	};
 
-	DebugDrawHelper.CameraComponent.updateTransform = function(transform, component) {
+	DebugDrawHelper.CameraComponent.updateTransform = function(/*transform, component*/) {
 		// var camera = component.camera;
 		// var z = camera.far;
 		// var y = z * Math.tan(camera.fov/2 * Math.PI/180);
