@@ -265,11 +265,29 @@ function (
 		this.domElement.addEventListener('touchend', function() {
 			that.updateButtonState(0, false);
 		});
+		var oldDistance = 0;
 		this.domElement.addEventListener('touchmove', function(event) {
+			var cx, cy, distance;
 			var touches = event.targetTouches;
-			var cx = touches[0].clientX;
-			var cy = touches[0].clientY;
-			that.updateDeltas(cx, cy);
+			var x1 = touches[0].clientX;
+			var y1 = touches[0].clientY;
+			if (touches.length === 2) {
+				var x2 = touches[1].clientX;
+				var y2 = touches[1].clientY;
+				cx = (x1 + x2) / 2;
+				cy = (y1 + y2) / 2;
+				distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+			} else {
+				cx = x1;
+				cy = y1;
+				that.updateDeltas(cx, cy);
+			}
+			var scale = (distance - oldDistance) / Math.max(that.domElement.height, that.domElement.width);
+			scale /= 3;
+			if (touches.length === 2 && Math.abs(scale) > 0.3) {
+				that.applyWheel(that.zoomSpeed * scale);
+				oldDistance = distance;
+			}
 		});
 	};
 
