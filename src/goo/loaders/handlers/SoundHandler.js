@@ -56,11 +56,15 @@ define([
 		}
 		return RSVP.all(promises).then(function(urls) {
 			if (!isEqual(urls, object._urls)) {
-				object.urls(urls);
 				var howlerLoaded = new RSVP.Promise();
 				object.on('load', function() {
 					howlerLoaded.resolve(object);
 				});
+				object.on('loaderror', function(e) {
+					howlerLoaded.reject("Error loading sound for " + ref);
+				});
+				object.urls(urls);
+
 				return howlerLoaded;
 			}
 			return object;

@@ -401,8 +401,9 @@ function(
 		if (options == null) {
 			options = {};
 		}
-		if (this._objects[ref]) {
-			if(this._objects[ref].then) {
+		var cachedObject = this._objects[ref];
+		if (cachedObject && !cachedObject.isRejected) {
+			if (cachedObject instanceof RSVP.Promise) {
 				// The object is already being handled in this update cycle, avoid duplicate handling
 				// Object cache is reset when a new update call is initiated by the user
 				return this._objects[ref];

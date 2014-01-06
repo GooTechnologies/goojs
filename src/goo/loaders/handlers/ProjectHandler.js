@@ -415,6 +415,7 @@ define([
 		// posteffect refs
 		promises.push(this._updatePosteffects(config));
 
+		// REVIEW: This is asynchronous, for consistency the returned promise should not resolve until it's done
 		// weather
 		if (config.weather) {
 			// the config.weather might be empty and weather might not exist in which case it doesn't get removed

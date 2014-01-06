@@ -55,7 +55,7 @@ define([
 	SoundComponentHandler.prototype._getSound = function(ref) {
 		var that = this;
 		return this.getConfig(ref).then(function(config) {
-			return that.updateObject(ref, config, that.options);
+			return that.updateObject(ref, config);
 		});
 	};
 
