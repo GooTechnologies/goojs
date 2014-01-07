@@ -55,6 +55,7 @@ define([
 		this.detailZoom = properties.detailZoom || 0.15;
 		this.zoomDistanceFactor = properties.zoomDistanceFactor || 0.035;
 		OrbitCamControlScript.call(this, properties);
+		this.name = 'OrbitNPanControlScript';
 		this.panState = {
 			buttonDown : false,
 			lastX: NaN,
@@ -182,7 +183,7 @@ define([
 		if(this.panState.buttonDown) {
 			var c = Renderer.mainCamera;
 
-			if (c == null) {
+			if (c === null || c === undefined) {
 				return;
 			}
 
