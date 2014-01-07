@@ -34,6 +34,11 @@ function(
 	 */
 
 	function Camera(fov, aspect, near, far) {
+		fov = typeof fov !== 'undefined' ? fov : 45;
+		aspect = typeof aspect !== 'undefined' ? aspect : 1;
+		near = typeof near !== 'undefined' ? near : 1;
+		far = typeof far !== 'undefined' ? far : 1000;
+
 		// These need an onFrameChange() after being modified
 		this.translation = new Vector3(0, 0, 0);
 		this._left = new Vector3(-1, 0, 0);
@@ -78,7 +83,7 @@ function(
 
 		this.projectionMode = Camera.Perspective;
 		this.lockedRatio = false;
-		this.aspect = aspect || 1;
+		this.aspect = aspect;
 
 		this._updateMVMatrix = true;
 		this._updateInverseMVMatrix = true;
