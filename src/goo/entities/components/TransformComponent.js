@@ -173,11 +173,16 @@ function (
 	 * Detach a child transform from this component tree
 	 *
 	 * @param {TransformComponent} childComponent child transform component to detach
+	 * @param {boolean} keepTransform If enabled, the child's position, rotation and scale will appear unaffected
 	 */
-	TransformComponent.prototype.detachChild = function (childComponent) {
+	TransformComponent.prototype.detachChild = function (childComponent, keepTransform) {
 		if (childComponent === this) {
 			console.warn('attachChild: An object can\'t be removed from itself.');
 			return;
+		}
+
+		if (keepTransform) {
+			childComponent.transform.copy(childComponent.worldTransform);
 		}
 
 		var index = this.children.indexOf(childComponent);
