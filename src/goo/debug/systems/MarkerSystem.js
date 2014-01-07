@@ -4,7 +4,9 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/ShapeCreator',
 	'goo/debug/components/MarkerComponent',
-	'goo/renderer/Renderer'],
+	'goo/renderer/Renderer',
+	'goo/math/Transform'
+],
 	/** @lends */
 	function (
 		System,
@@ -12,9 +14,10 @@ define([
 		ShaderLib,
 		ShapeCreator,
 		MarkerComponent,
-		Renderer
+		Renderer,
+		Transform
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Processes all entities with a marker component
@@ -25,7 +28,6 @@ define([
 		this.material = Material.createMaterial(ShaderLib.simpleColored, '');
 		this.material.depthState.enabled = false;
 		this.material.shader.uniforms.color = [0.0, 1.0, 0.0];
-		//this.material.wireframe = true;
 
 		this.goo = goo;
 		this.renderer = this.goo.renderer;
@@ -37,7 +39,11 @@ define([
 			for (var i = 0; i < this.entities.length; i++) {
 				var entity = this.entities[i];
 				if(entity.hasComponent('MarkerComponent')) {
-					var transform = entity.transformComponent.worldTransform;
+					var transform = new Transform();
+					transform.copy(entity.transformComponent.worldTransform);
+					transform.setRotationXYZ(0, 0, 0);
+					transform.scale.setd(1, 1, 1);
+					transform.update();
 
 					var renderableMarker = {
 						meshData: entity.markerComponent.meshData,
