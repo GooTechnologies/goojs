@@ -221,7 +221,7 @@ define([
 		};
 
 		/**
-		 * Creates an entity with an optional MeshData, MeshRenderer, Camera and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
+		 * Creates an entity with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
 		 * @param {World} world
 		 * @param {MeshData} [meshData]
 		 * @param {Material} [material]
