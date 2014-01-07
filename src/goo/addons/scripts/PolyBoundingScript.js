@@ -41,6 +41,24 @@ define([],
 	};
 
 	/**
+	 * Checks if a point is inside any collidable
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	PolyBoundingScript.prototype.inside = function(x, y, z) {
+		for (var i = 0; i < this.collidables.length; i++) {
+			var collidable = this.collidables[i];
+
+			if(collidable.bottom <= y && collidable.top >= y) {
+				if(window.PolyK.ContainsPoint(collidable.poly, x, z)) {
+					return window.PolyK.ClosestEdge(collidable.poly, x, z);
+				}
+			}
+		}
+	};
+
+	/**
 	 * The standard `run` routine of the script. Checks for collisions and repositions the host entity accordingly.
 	 * The entity's coordinates are obtained from the translation of its transformComponent. All collisions are performed against these coordinates only.
 	 * @param {Entity} entity
