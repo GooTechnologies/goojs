@@ -102,6 +102,9 @@ function (
 
 		this.dirty = true;
 
+		this.detailZoom = properties.detailZoom || 0.15;
+		this.zoomDistanceFactor = properties.zoomDistanceFactor || 0.035;
+
 
 		this.mouseState = {
 			buttonDown : false,
@@ -201,6 +204,7 @@ function (
 
 	OrbitCamControlScript.prototype.applyWheel = function (e) {
 		var delta = (this.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+		delta *= this.zoomDistanceFactor * this.targetSpherical.x;
 		this.zoom(this.zoomSpeed * delta);
 	};
 
@@ -257,6 +261,7 @@ function (
 			event.preventDefault();
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
+		var oldDistance = 0;
 
 		// Touch controls
 		this.domElement.addEventListener('touchstart', function() {
@@ -264,8 +269,8 @@ function (
 		});
 		this.domElement.addEventListener('touchend', function() {
 			that.updateButtonState(0, false);
+			oldDistance = 0;
 		});
-		var oldDistance = 0;
 		this.domElement.addEventListener('touchmove', function(event) {
 			var cx, cy, distance;
 			var touches = event.targetTouches;
@@ -284,8 +289,10 @@ function (
 			}
 			var scale = (distance - oldDistance) / Math.max(that.domElement.height, that.domElement.width);
 			scale /= 3;
-			if (touches.length === 2 && Math.abs(scale) > 0.3) {
-				that.applyWheel(that.zoomSpeed * scale);
+			if (oldDistance === 0) {
+				oldDistance = distance;
+			} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
+				that.applyWheel({ wheelDelta: scale });
 				oldDistance = distance;
 			}
 		});
