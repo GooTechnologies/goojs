@@ -217,6 +217,7 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
+
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
 			this.renderer.clear();
@@ -227,7 +228,7 @@ function (
 			for (var i = 0; i < this.renderSystems.length; i++) {
 				this.renderSystems[i].render(this.renderer);
 			}
-			if(this._picking.doPick) {
+			if(this._picking.doPick && Renderer.mainCamera) {
 				var cc = this.renderer.clearColor.data;
 				this._picking.clearColorStore[0] = cc[0];
 				this._picking.clearColorStore[1] = cc[1];
