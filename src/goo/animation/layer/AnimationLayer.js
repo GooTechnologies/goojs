@@ -242,10 +242,6 @@ function (
 			cloned._transitionStates[key] = new this._transitionStates[key].constructor();
 		}
 
-		// REVIEW : Stray forgotten out-commented resets?
-		//this._currentState = null;
-		//this._layerBlender = null;
-
 		return cloned;
 	};
 

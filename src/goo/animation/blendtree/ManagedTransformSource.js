@@ -13,13 +13,10 @@ function (
 ) {
 	'use strict';
 
-	// REVIEW : Update class description, setJointXXX doesnt exist anymore , guessing that the setXXX (Translation, scale , rotation etc) are the
-	// new ways instead of setJointXXX? 
-
 	/**
-	 * @class This tree source maintains its own source data, which can be modified directly using setJointXXX. This source is meant to be used for
-	 *        controlling a particular joint or set of joints programatically. Originally implemented BlendTreeSource.
-	 * @param sourceName optional: name of source we were initialized from, if given.
+	 * @class This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
+	 *        controlling a particular joint or set of joints programatically.
+	 * @param {string} [sourceName] Name of source we were initialized from, if given.
 	 */
 	function ManagedTransformSource (sourceName) {
 		this._sourceName = sourceName ? sourceName : null;

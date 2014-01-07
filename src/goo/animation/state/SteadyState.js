@@ -14,8 +14,7 @@ function (AbstractState) {
 
 		this._name = name;
 		this._transitions = {};
-		// sourceTree is a ManagedTransformSource, initiated in AnimationStateHandler
-		this._sourceTree = null; 
+		this._sourceTree = null;
 	}
 
 	SteadyState.prototype = Object.create(AbstractState.prototype);
@@ -58,7 +57,6 @@ function (AbstractState) {
 	};
 
 	SteadyState.prototype.clone = function () {
-        // REVIEW: this._name is undefined, however this.name exists.
 		var cloned = new SteadyState(this._name);
 
 		for (var key in this._transitions) {

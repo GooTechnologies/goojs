@@ -44,8 +44,6 @@ function (
 
 		this.paused = false;
 		this.lastTimeOfPause = null;
-		// REVIEW : Cannot find any usage of it in GooJS or the CreateFrontend. Remove it instead? 
-		// this.accumulatedDelay = 0; // most probably unused
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -252,15 +250,6 @@ function (
 		cloned.layers = this.layers.map(function(layer) {
 			return layer.clone();
 		});
-
-		// REVIEW : Are these outcommented variable writes supposed to be removed? They seem to be the
-		// default values put from the constructor. But why should the entity which is being cloned (this) be reset?
-
-		//this._triggerCallbacks = {};
-
-		//this.paused = false;
-		//this.lastTimeOfPause = null;
-
 		return cloned;
 	};
 

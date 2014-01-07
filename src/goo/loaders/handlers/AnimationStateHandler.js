@@ -29,7 +29,7 @@ define([
 
 	AnimationStateHandler.prototype.update = function(ref, config) {
 		var object = this._objects[ref] || this._create(ref);
-		object.name = config.name;
+		object._name = config.name;
 		return this._parseClipSource(config.clipSource, object._sourceTree).then(function(source) {
 			object._sourceTree = source;
 			return object;

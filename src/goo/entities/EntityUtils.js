@@ -40,10 +40,10 @@ define([
 		function EntityUtils() {
 		}
 
-		/**
-		* REVIEW : Proof read this please.
+		/*
 		* @description Returns a clone of the given SkeletonPose. Also stores the cloned poses into settings, in order not to 
 		* clone multiple instances of the same SkeletonPose.
+		* @private
 		* @param {SkeletonPose} skeletonPose
 		* @param {Object} settings
 		*/
