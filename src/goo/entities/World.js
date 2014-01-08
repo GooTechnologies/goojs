@@ -128,7 +128,11 @@ function (
 		entity.setComponent(new TransformComponent());
 		for (var i = 0; i < arguments.length; i++) {
 			var arg = arguments[i];
-			if (arg instanceof MeshData) {
+			if (typeof arg === 'string') {
+				entity.name = arg;
+			} else if (Array.isArray(arg) && arg.length === 3) {
+				entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+			} else if (arg instanceof MeshData) {
 				var meshDataComponent = new MeshDataComponent(arg);
 				entity.setComponent(meshDataComponent);
 				// attach mesh renderer component for backwards compatibility reasons
@@ -144,10 +148,6 @@ function (
 				entity.setComponent(new LightComponent(arg));
 			} else if (arg instanceof Camera) {
 				entity.setComponent(new CameraComponent(arg));
-			} else if (typeof arg === 'string') {
-				entity.name = arg;
-			} else if (Array.isArray(arg) && arg.length === 3) {
-				entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
 			} else if (typeof arg.run === 'function') {
 				if (!entity.hasComponent('ScriptComponent')) {
 					entity.setComponent(new ScriptComponent());
