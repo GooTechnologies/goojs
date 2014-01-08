@@ -168,17 +168,19 @@ function (BoundingBox, BoundingSphere, Vector3) {
 			var data = entity.meshDataComponent.meshData;
 
 			var vertices = null;
+			var vecStore = new Vector3();
 			for ( var i = this.start; i < this.end; i++) {
 				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
 				for ( var t = 0; t < vertices.length; t++) {
 					worldTransform.matrix.applyPostPoint(vertices[t]);
 				}
-				var vecStore = new Vector3();
 				if (ray.intersects(vertices, false, vecStore)) {
 					result.distances = result.distances || [];
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
-					result.points.push(vecStore);
+					var vec = new Vector3();
+					vec.setv(vecStore);
+					result.points.push(vec);
 					result.vertices = result.vertices || [];
 					result.vertices.push(vertices);
 
