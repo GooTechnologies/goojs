@@ -69,11 +69,7 @@ function(
 	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
 	var _binary_types = ['dat', 'bin'];
 	var _audio_types = ['mp3', 'wav'];
-	// REVIEW: concat takes multiple arrays as input
-	// _asset_types = _texture_types.concat(_imageTypes, _binary_types, _audio_types);
-	var _asset_types = _texture_types.concat(_image_types)
-									.concat(_binary_types)
-									.concat(_audio_types);
+	var _asset_types = _texture_types.concat(_image_types, _binary_types, _audio_types);
 
 	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
@@ -171,9 +167,7 @@ function(
 	 * @param {string} ref Ref of object to load
 	 * @param {string} bundleName name of the bundle (including extension)
 	 * @param {object} options See {DynamicLoader.update}
-	 // REVIEW: You can load things after starting the engine, loading
-	 // binaries before loading bundle configs is more accurate
-	 * @param {boolean} [options.preloadBinaries] Load binaries before starting engine
+	 * @param {boolean} [options.preloadBinaries] Load binaries before loading bundle configs
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 *
@@ -516,19 +510,15 @@ function(
 		var _refs = [];
 		var traverse = function(key, value) {
 			var _key;
-			/* REVIEW: what about lowercase refs and urls?
-			 * https://docs.google.com/a/gooengine.com/spreadsheet/ccc?key=0AkxI1qc8lXvrdHBlaGRhV1RhS2R1SU8tT2pJNVJFUGc#gid=17
-			 * concat also works for single values
-			 * if (/(url|ref)s?$/.test(key.toLowerCase()) {
-			 *  _ref = _refs.concat(value);
-			 * } else ...
-			 */
 
-			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
-				_refs = _refs.concat(value);
-			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {
-				if (value != null) // Bug caused some meshRefs to be null
-					_refs.push(value);
+			// Find child refs. Example regexp matches:
+			// is 'url', 'imageUrls' or 'urls' but not 'realUrl'
+			// is 'binaryRef' or 'soundRefs' but not 'ref'
+
+			if (/(^url|[\S]+ref)s?|Urls$/i.test(key)) {
+				if (value !== null && value !== undefined) {
+					_refs = _refs.concat(value)
+				}
 			} else if (value instanceof Object) {
 				for (_key in value) {
 					if (!value.hasOwnProperty(_key)) {
