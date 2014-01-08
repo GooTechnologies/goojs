@@ -89,10 +89,12 @@ define([
 	};
 	VehicleHelper.prototype.addDefaultWheels = function() {
 		// var bound = entity.meshDataComponent.modelBound;
-		this.addFrontWheel( -0.5, 0.0,  1.0); // TODO: position wheels based on bound
-		this.addFrontWheel(  0.5, 0.0,  1.0);
-		this.addRearWheel( -0.5, 0.0, -1.0);
-		this.addRearWheel(  0.5, 0.0, -1.0);
+		var bound = EntityUtils.getTotalBoundingBox( this.chassis);
+		this.wheelRadius = bound.xExtent / 3;
+		this.addFrontWheel( [bound.xExtent, 0.0,  bound.zExtent]);
+		this.addFrontWheel([-bound.xExtent, 0.0,  bound.zExtent]);
+		this.addRearWheel(  [bound.xExtent, 0.0, -bound.zExtent]);
+		this.addRearWheel( [-bound.xExtent, 0.0, -bound.zExtent]);
 	};
 	VehicleHelper.prototype.createDebugTire = function(pos, isFrontWheel) {
 		var material = Material.createMaterial(ShaderLib.simpleLit);
