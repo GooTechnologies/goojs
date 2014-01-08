@@ -17,6 +17,7 @@ define([
 	 * @param {number} [length=1] Total length of box.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
+	 * @param {Enum} [textureMode=Box.TextureModes.Uniform] Texture wrapping mode.
 	 */
 	function Box(width, height, length, tileX, tileY, textureMode) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
