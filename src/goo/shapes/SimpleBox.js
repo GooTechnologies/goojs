@@ -39,14 +39,14 @@ MeshData) {
 
 		this.getAttributeBuffer(MeshData.POSITION).set([
 			-xExtent, -yExtent, -zExtent,
-			xExtent, -yExtent, -zExtent,
-			xExtent, yExtent, -zExtent,
-			-xExtent, yExtent, -zExtent,
+			 xExtent, -yExtent, -zExtent,
+			 xExtent,  yExtent, -zExtent,
+			-xExtent,  yExtent, -zExtent,
 
-			-xExtent, -yExtent, zExtent,
-			xExtent, -yExtent, zExtent,
-			xExtent, yExtent, zExtent,
-			-xExtent, yExtent, zExtent
+			-xExtent, -yExtent,  zExtent,
+			 xExtent, -yExtent,  zExtent,
+			 xExtent,  yExtent,  zExtent,
+			-xExtent,  yExtent,  zExtent
 		]);
 
 		this.getIndexBuffer().set([
