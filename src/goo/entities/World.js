@@ -1,13 +1,31 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent'
+	'goo/entities/components/TransformComponent',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/CameraComponent',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
+	'goo/renderer/Camera',
+	'goo/renderer/light/Light',
+	'goo/renderer/Material',
+	'goo/renderer/MeshData'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
-	TransformComponent
+	TransformComponent,
+	MeshDataComponent,
+	MeshRendererComponent,
+	CameraComponent,
+	LightComponent,
+	ScriptComponent,
+	Camera,
+	Light,
+	Material,
+	MeshData
 ) {
 	"use strict";
 
@@ -96,13 +114,47 @@ function (
 	};
 
 	/**
-	 * Creates a new {@link Entity}
-	 *
+	 * Creates a new {@link Entity} with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters can be given in any order.
+	 * @param {World} world
+	 * @param {MeshData} [meshData]
+	 * @param {Material} [material]
+	 * @param {String} [name]
+	 * @param {Camera} [camera]
+	 * @param {Light} [light]
 	 * @returns {Entity}
 	 */
-	World.prototype.createEntity = function (name) {
-		var entity = new Entity(this, name);
+	World.prototype.createEntity = function () {
+		var entity = new Entity(this);
 		entity.setComponent(new TransformComponent());
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (arg instanceof MeshData) {
+				var meshDataComponent = new MeshDataComponent(arg);
+				entity.setComponent(meshDataComponent);
+				// attach mesh renderer component for backwards compatibility reasons
+				if (!entity.hasComponent('MeshRendererComponent')) {
+					entity.setComponent(new MeshRendererComponent());
+				}
+			} else if (arg instanceof Material) {
+				if (!entity.hasComponent('MeshRendererComponent')) {
+					entity.setComponent(new MeshRendererComponent());
+				}
+				entity.meshRendererComponent.materials.push(arg);
+			} else if (arg instanceof Light) {
+				entity.setComponent(new LightComponent(arg));
+			} else if (arg instanceof Camera) {
+				entity.setComponent(new CameraComponent(arg));
+			} else if (typeof arg === 'string') {
+				entity.name = arg;
+			} else if (Array.isArray(arg) && arg.length === 3) {
+				entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
+			} else if (typeof arg.run === 'function') {
+				if (!entity.hasComponent('ScriptComponent')) {
+					entity.setComponent(new ScriptComponent());
+				}
+				entity.scriptComponent.scripts.push(arg);
+			}
+		}
 		return entity;
 	};
 

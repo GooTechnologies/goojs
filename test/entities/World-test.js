@@ -1,15 +1,25 @@
 define([
 	'goo/entities/World',
 	'goo/entities/systems/System',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/shapes/Box',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Camera',
+	'goo/renderer/light/PointLight'
 ], function(
 	World,
 	System,
-	Component
+	Component,
+	Box,
+	Material,
+	ShaderLib,
+	Camera,
+	PointLight
 ) {
 	'use strict';
 
-	describe('systems', function() {
+	describe('World with Systems', function() {
 		var world;
 		beforeEach(function() {
 			world = new World();
@@ -60,7 +70,7 @@ define([
 			expect(world._systems).toEqual([systemB, systemC, systemA]);
 		});
 
-		describe('with components', function() {
+		describe('World with components', function() {
 			// Cucumber system
 			function CucumberSystem() {
 				System.call(this, 'CucumberSystem', ['CucumberComponent']);
@@ -117,6 +127,19 @@ define([
 				expect(cucumberSystem.deleted).not.toHaveBeenCalled();
 				expect(cucumberSystem.addedComponent).not.toHaveBeenCalled();
 				expect(cucumberSystem.removedComponent).not.toHaveBeenCalled();
+			});
+			it('can create a typical entity holding all sorts of stuff in random order', function() {
+				var camera = new Camera(45, 1, 1, 1000);
+				var meshData = new Box();
+				var material = Material.createMaterial(ShaderLib.simple);
+				var light = new PointLight();
+				var entity = world.createEntity(camera, meshData, {run:function(){}}, 'entitate', material, light);
+				expect(entity.toString()).toBe('entitate');
+				expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
+				expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
+				expect(entity.hasComponent('LightComponent')).toBeTruthy();
+				expect(entity.hasComponent('CameraComponent')).toBeTruthy();
+				expect(entity.hasComponent('ScriptComponent')).toBeTruthy();
 			});
 		});
 

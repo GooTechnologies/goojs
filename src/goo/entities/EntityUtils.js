@@ -228,6 +228,7 @@ define([
 		 * @param {String} [name]
 		 * @param {Camera} [camera]
 		 * @param {Light} [light]
+		 * @returns {Entity}
 		 */
 		EntityUtils.createTypicalEntity = function (world) {
 			// Create entity
