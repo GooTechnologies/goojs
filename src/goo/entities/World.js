@@ -115,7 +115,6 @@ function (
 
 	/**
 	 * Creates a new {@link Entity} with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters can be given in any order.
-	 * @param {World} world
 	 * @param {MeshData} [meshData]
 	 * @param {Material} [material]
 	 * @param {String} [name]
