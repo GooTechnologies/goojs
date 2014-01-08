@@ -517,7 +517,7 @@ function(
 
 			if (/(^url|[\S]+ref)s?|Urls$/i.test(key)) {
 				if (value !== null && value !== undefined) {
-					_refs = _refs.concat(value)
+					_refs = _refs.concat(value);
 				}
 			} else if (value instanceof Object) {
 				for (_key in value) {
