@@ -79,7 +79,6 @@ define([
 			expect(entity.hasComponent('CameraComponent')).toBeTruthy();
 			expect(entity.hasComponent('ScriptComponent')).toBeTruthy();
 		});
-
 		it('can get the root entity', function() {
 			var e1 = world.createEntity();
 			var e2 = world.createEntity();
@@ -91,6 +90,26 @@ define([
 			expect(EntityUtils.getRoot(e1)).toBe(e1);
 			expect(EntityUtils.getRoot(e2)).toBe(e1);
 			expect(EntityUtils.getRoot(e3)).toBe(e1);
+		});
+		it('can get the total bounding box', function() {
+			var e1 = world.createEntity(meshData);
+			var e2 = world.createEntity(meshData, [10,10,10]);
+			e1.transformComponent.attachChild(e2.transformComponent);
+			var e3 = world.createEntity(meshData, [10,10,10]);
+			e2.transformComponent.attachChild(e3.transformComponent);
+			world.process();
+			var es = [e1,e2,e3,e1,e2,e3];
+			for( var i=0; i<es.length; i++ ) {
+				var e = es[i];
+				e.transformComponent.updateTransform();
+				e.transformComponent.updateWorldTransform();
+				e.meshDataComponent.computeBoundFromPoints();
+				e.meshRendererComponent.updateBounds(e.meshDataComponent.modelBound, e.transformComponent.worldTransform);
+			}
+			var bb = EntityUtils.getTotalBoundingBox(e1);
+			expect(bb.xExtent).toBe(10.5);
+			expect(bb.yExtent).toBe(10.5);
+			expect(bb.zExtent).toBe(10.5);
 		});
 	});
 });
