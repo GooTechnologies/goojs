@@ -102,6 +102,9 @@ function (
 	 this.lights[index++] = light;
 	 ...
 	 this.lights.length = index;
+
+	 POST-REVIEW: Creating new arrays is faster and more elegant than reusing old ones and modifying their length.
+	 http://jsperf.com/length-vs-new-array3
 	 */
 	LightingSystem.prototype.process = function (entities) {
 		if (!this.overrideLights) {
