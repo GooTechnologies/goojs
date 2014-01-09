@@ -27,7 +27,7 @@ define(['goo/renderer/Renderer',
 	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights, clearColor) {
 		camera = camera || Renderer.mainCamera;
 
-		if (camera == null) {
+		if (!camera) {
 			return;
 		}
 

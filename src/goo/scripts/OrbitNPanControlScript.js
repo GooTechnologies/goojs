@@ -180,7 +180,7 @@ define([
 		if(this.panState.buttonDown) {
 			var c = Renderer.mainCamera;
 
-			if (c === null || c === undefined) {
+			if (!c) {
 				return;
 			}
 

@@ -42,7 +42,7 @@ function(
 			var entityWorldTranslation = new Vector3();
 			entityWorldTranslation.copy(entity.transformComponent.transform.translation);
 
-			if (Renderer.mainCamera != null) {
+			if (Renderer.mainCamera) {
 				var soundTranslation = Renderer.mainCamera.getViewMatrix().applyPostPoint(entityWorldTranslation);
 				for (var j = 0; j < sounds.length; j++) {
 					sounds[j].pos3d(

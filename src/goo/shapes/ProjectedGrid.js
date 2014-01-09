@@ -71,7 +71,7 @@ function (
 		var upperBound = this.upperBound;
 		var mainCamera = this.mainCamera;
 
-		if (mainCamera == null) {
+		if (!mainCamera) {
 			return;
 		}
 

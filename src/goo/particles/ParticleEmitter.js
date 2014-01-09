@@ -55,7 +55,7 @@ function (ParticleUtils, Renderer) {
 	// Was: function (particle, particleEntity)
 	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle) {
 		var camera = Renderer.mainCamera;
-		if (camera != null) {
+		if (camera) {
 			particle.bbX.setv(camera._left);
 			particle.bbY.setv(camera._up);
 		}

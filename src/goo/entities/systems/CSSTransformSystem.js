@@ -50,7 +50,7 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 		var camera = Renderer.mainCamera;
 
-		if (camera == null) {
+		if (!camera) {
 			return;
 		}
 
