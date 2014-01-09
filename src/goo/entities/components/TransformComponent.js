@@ -39,6 +39,16 @@ function (
 
 		this._dirty = true;
 		this._updated = false;
+
+		this.api = {
+			setTranslation: this.setTranslation.bind(this),
+			setScale: this.setScale.bind(this),
+			addTranslation: this.addTranslation.bind(this),
+			setRotation: this.setRotation.bind(this),
+			lookAt: this.lookAt.bind(this)
+			// add child // but with different signature
+			// remove child // but with different signature
+		};
 	}
 
 	TransformComponent.prototype = Object.create(Component.prototype);

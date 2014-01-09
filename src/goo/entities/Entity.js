@@ -70,6 +70,8 @@ function () {
 			component.attached(this);
 		}
 
+		component.applyAPI(this);
+
 		if (this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
@@ -118,6 +120,9 @@ function () {
 				component.detached(this);
 			}
 
+			// removing API
+			component.removeAPI(this);
+
 			// removing from dense array
 			var index = this._components.indexOf(component);
 			this._components.splice(index, 1);
@@ -138,7 +143,7 @@ function () {
 	 * @returns {string} Name of entity
 	 */
 	Entity.prototype.toString = function () {
-		// should also return a list of its components
+		// should also return a list of its components or something more descriptive than just the name
 		return this.name;
 	};
 

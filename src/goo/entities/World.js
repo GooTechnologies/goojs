@@ -258,6 +258,8 @@ function (
 			if (observer.added) {
 				observer.added(entity);
 			}
+
+			// not in use by any system
 			if (observer.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
 					observer.addedComponent(entity, entity._components[i]);
@@ -278,6 +280,8 @@ function (
 			if (observer.removed) {
 				observer.removed(entity);
 			}
+
+			// not in use by any system
 			if (observer.removedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
 					observer.removedComponent(entity, entity._components[i]);

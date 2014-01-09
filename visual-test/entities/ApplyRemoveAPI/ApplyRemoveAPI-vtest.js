@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -21,7 +15,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/LightComponent',
-	'../lib/V'
+	'../../lib/V'
 ], function(
 	GooRunner,
 	World,
@@ -43,20 +37,20 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../resources";
+	var resourcePath = "../../resources";
 
 	var gui = new window.dat.GUI();
 
 	function anisotropicDemo(goo) {
 		var boxEntity1 = createBoxEntity(goo, 3);
-		boxEntity1.transformComponent.setTranslation(0, 0, 0);
+		boxEntity1.setTranslation(0, 0, 0);
 
 		var boxEntity2 = createBoxEntity(goo, 2);
-		boxEntity2.transformComponent.setTranslation(3, 0, 0);
+		boxEntity2.setTranslation(3, 0, 0);
 		boxEntity1.transformComponent.attachChild(boxEntity2.transformComponent);
 
 		var boxEntity3 = createBoxEntity(goo, 1);
-		boxEntity3.transformComponent.setTranslation(2, 0, 0);
+		boxEntity3.setTranslation(2, 0, 0);
 		boxEntity2.transformComponent.attachChild(boxEntity3.transformComponent);
 
 		boxEntity1.addToWorld();
@@ -82,8 +76,8 @@ require([
 		var light = new DirectionalLight();
 		var lightEntity = goo.world.createEntity('light');
 		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(1, 10, 1);
-		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+		lightEntity.setTranslation(1, 10, 1);
+		lightEntity.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 		lightEntity.addToWorld();
 
 		V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
