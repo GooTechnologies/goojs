@@ -72,7 +72,9 @@ define([
 	};
 
 	SoundHandler.prototype.remove = function(ref) {
-		this._objects[ref].stop();
+		if (this._objects[ref]) {
+			this._objects[ref].stop();
+		}
 		delete this._objects[ref];
 	};
 
