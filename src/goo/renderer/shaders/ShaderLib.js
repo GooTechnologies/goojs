@@ -1363,7 +1363,8 @@ define([
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.DIFFUSE_MAP,
-			color: [1.0, 1.0, 1.0]
+			color: [1.0, 1.0, 1.0],
+			amount: 1.0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1381,15 +1382,16 @@ define([
 		].join("\n"),
 		fshader: [
 			"uniform vec3 color;",
+			"uniform float amount;",
 			"uniform sampler2D tDiffuse;",
 
 			"varying vec2 vUv;",
 			"void main() {",
-				"vec4 texel = texture2D( tDiffuse, vUv );",
+				"gl_FragColor = texture2D( tDiffuse, vUv );",
 				"vec3 luma = vec3( 0.299, 0.587, 0.114 );",
-				"float v = dot( texel.xyz, luma );",
+				"float v = dot( gl_FragColor.rgb, luma );",
 
-				"gl_FragColor = vec4( v * color, texel.w );",
+				"gl_FragColor.rgb = mix(gl_FragColor.rgb, v * color, amount);",
 			"}"
 		].join("\n")
 	};
@@ -1780,7 +1782,8 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			tDiffuse : Shader.DIFFUSE_MAP,
 			brightness: 0,
-			contrast: 0
+			contrast: 0,
+			saturation: 0
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -1800,6 +1803,7 @@ define([
 			"uniform sampler2D tDiffuse;",
 			"uniform float brightness;",
 			"uniform float contrast;",
+			"uniform float saturation;",
 
 			"varying vec2 vUv;",
 
@@ -1812,6 +1816,60 @@ define([
 				"} else {",
 					"gl_FragColor.rgb = (gl_FragColor.rgb - 0.5) * (1.0 + contrast) + 0.5;",
 				"}",
+
+				"vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), gl_FragColor.rgb));",
+				"gl_FragColor.rgb = mix(gl_FragColor.rgb, gray, -saturation);",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.hsb = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			hue: 0,
+			saturation: 0,
+			brightness: 0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			"uniform sampler2D tDiffuse;",
+			"uniform float hue;",
+			"uniform float saturation;",
+			"uniform float brightness;",
+
+			"varying vec2 vUv;",
+
+			ShaderFragment.methods.hsv,
+
+			"void main() {",
+				'gl_FragColor = texture2D(tDiffuse, vUv);',
+				'vec3 fragHSV = rgb2hsv(gl_FragColor.rgb).xyz;',
+				'fragHSV.x += hue * 0.5;',
+				'fragHSV.y *= saturation + 1.0 - max(brightness, 0.0) * 2.0;',
+				'fragHSV.z *= min(brightness + 1.0, 1.0);',
+				'fragHSV.z += max(brightness, 0.0);',
+				'fragHSV.xyz = clamp(fragHSV.xyz, vec3(-10.0, 0.0, 0.0), vec3(10.0, 1.0, 1.0));',
+				'gl_FragColor.rgb = hsv2rgb(fragHSV);',
 			"}"
 		].join("\n")
 	};
