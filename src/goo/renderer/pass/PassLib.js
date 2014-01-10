@@ -457,11 +457,12 @@ define([
 			options: [
 				{
 					key: 'width',
-					type: 'int',
+					type: 'float',
 					control: 'slider',
 					name: 'Width',
 					min: 0,
 					max: 10,
+					decimals: 1,
 					'default': 2
 				},
 				{
@@ -469,9 +470,80 @@ define([
 					type: 'int',
 					control: 'slider',
 					name: 'Spread',
-					min: 0,
+					min: 1,
 					max: 50,
 					'default': 8
+				}
+			]
+		};
+	}());
+	PassLib.Dot = (function() {
+		var shader, pass;
+		return {
+			name: 'DotScreen',
+			create: function() {
+				shader = Util.clone(ShaderLib.dotscreen);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.angle !== undefined) {
+					shader.uniforms.angle = options.angle;
+				}
+				if(options.scale !== undefined) {
+					shader.uniforms.scale = options.scale;
+				}
+				if(options.sizex !== undefined) {
+					shader.uniforms.tSize[0] = options.sizex;
+				}
+				if(options.sizey !== undefined) {
+					shader.uniforms.tSize[1] = options.sizey;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'angle',
+					type: 'float',
+					control: 'slider',
+					name: 'Angle',
+					min: 0,
+					max: 10,
+					decimals: 2,
+					'default': 1.57
+				},
+				{
+					key: 'scale',
+					type: 'float',
+					control: 'slider',
+					name: 'Scale',
+					min: 0,
+					max: 10,
+					decimals: 2,
+					'default': 1
+				},
+				{
+					key: 'sizex',
+					type: 'int',
+					control: 'slider',
+					name: 'SizeX',
+					min: 0,
+					max: 1024,
+					'default': 256
+				},
+				{
+					key: 'sizey',
+					type: 'int',
+					control: 'slider',
+					name: 'SizeY',
+					min: 0,
+					max: 1024,
+					'default': 256
 				}
 			]
 		};
