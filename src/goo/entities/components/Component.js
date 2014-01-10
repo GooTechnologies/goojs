@@ -13,7 +13,8 @@ define(
 		 */
 		this.enabled = true;
 
-		this.api = {};
+		//this.api = {}; // should be static (although it contains bound methods)
+		this.installedAPI = {};
 	}
 
 	/**
@@ -21,10 +22,15 @@ define(
 	 * @param entity
 	 */
 	Component.prototype.applyAPI = function (entity) {
+		if (!this.installedAPI) {
+			this.installedAPI = {};
+		}
+
 		var api = this.api;
 		for (var key in api) {
 			if (typeof entity[key] === 'undefined') {
 				entity[key] = api[key];
+				this.installedAPI[key] = true;
 			} else {
 				console.warn('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
 			}
@@ -36,11 +42,9 @@ define(
 	 * @param entity
 	 */
 	Component.prototype.removeAPI = function (entity) {
-		var api = this.api;
-		for (var key in api) {
-			if (entity[key] === this.prototype[key]) {
-				delete entity[key];
-			}
+		var installedAPI = this.installedAPI;
+		for (var key in installedAPI) {
+			delete entity[key];
 		}
 	};
 
