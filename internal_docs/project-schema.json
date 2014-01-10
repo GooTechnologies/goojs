@@ -1,0 +1,43 @@
+{
+  "RefListItem": {
+    "id": "RefListItem",
+    "properties": {
+      "sortValue": {
+        "type": "number"
+      },
+      "ref": {
+        "type": "string"
+      }
+    },
+    "additionalProperties":false,
+    "required": [
+      "sortValue",
+      "ref"
+    ]
+  },
+  "Project": {
+    "id": "Project",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "assets": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "RefListItem"
+        }
+      },
+      "publishedUrl": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "assets"
+    ]
+  }
+}

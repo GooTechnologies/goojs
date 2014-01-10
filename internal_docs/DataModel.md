@@ -13,6 +13,7 @@ Terminology
 - JSON object = Config
 
 
+
 - Binaries
  - Immutable
  - Potentially stored in S3, or sliced
@@ -27,7 +28,7 @@ Terminology
  - Mutable
  - Key is generated, not necessarily readable
  - All objects have a name property (use within engine) (readable)
- ? An object is a potentially reusable resource
+ - An object is a potentially reusable resource
   - E.g. texture, potentially reusable, materialComponent, not reusable, tied to an entity
   - A skybox should be a separate object
   - Post effects?
