@@ -164,6 +164,7 @@ define([
 	PassLib.Grain = (function() {
 		var shader, pass;
 		return {
+			name: 'Film Grain',
 			create: function() {
 				shader = Util.clone(ShaderLib.film);
 				return pass = new FullscreenPass(shader);
@@ -200,7 +201,7 @@ define([
 					key: 'sIntensity',
 					type: 'int',
 					control: 'slider',
-					name: "Intensity",
+					name: "Line Intensity",
 					min: 0,
 					max: 100,
 					'default': 50
@@ -209,10 +210,42 @@ define([
 					key: 'sCount',
 					type: 'int',
 					control: 'slider',
-					name: "Count",
+					name: "Line Count",
 					min: 1,
 					max: 4096,
 					'default': 1024
+				}
+			]
+		};
+	}());
+	PassLib.Noise = (function() {
+		var shader, pass;
+		return {
+			create: function() {
+				shader = Util.clone(ShaderLib.noise);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.nIntensity !== undefined) {
+					shader.uniforms.nIntensity = options.nIntensity / 100;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'nIntensity',
+					type: 'int',
+					control: 'slider',
+					name: 'Noise',
+					min: 0,
+					max: 100,
+					'default': 50
 				}
 			]
 		};
@@ -358,6 +391,7 @@ define([
 	PassLib.Colorify = (function() {
 		var shader, pass;
 		return {
+			name: 'Tint',
 			create: function() {
 				shader = Util.clone(ShaderLib.colorify);
 				return pass = new FullscreenPass(shader);
@@ -393,6 +427,51 @@ define([
 					max: 1,
 					decimals: 2,
 					'default': 1
+				}
+			]
+		};
+	}());
+	PassLib.Hatch = (function() {
+		var shader, pass;
+		return {
+			name: 'CrossHatch',
+			create: function() {
+				shader = Util.clone(ShaderLib.hatch);
+				return pass = new FullscreenPass(shader);
+			},
+			update: function(config) {
+				var options = config.options;
+				if(options.width !== undefined) {
+					shader.uniforms.width = options.width;
+				}
+				if(options.spread !== undefined) {
+					shader.uniforms.spread = options.spread;
+				}
+				if (config.enabled !== undefined) {
+					pass.enabled = config.enabled;
+				}
+			},
+			get: function() {
+				return pass;
+			},
+			options: [
+				{
+					key: 'width',
+					type: 'int',
+					control: 'slider',
+					name: 'Width',
+					min: 0,
+					max: 10,
+					'default': 2
+				},
+				{
+					key: 'spread',
+					type: 'int',
+					control: 'slider',
+					name: 'Spread',
+					min: 0,
+					max: 50,
+					'default': 8
 				}
 			]
 		};

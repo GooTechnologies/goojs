@@ -1237,11 +1237,51 @@ define([
 		"	vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx * 100.0, 0.0, 1.0 );",
 		"	vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );",
 		"	cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;",
-		"	cResult = cTextureScreen.rgb + clamp( nIntensity, 0.0,1.0 ) * ( cResult - cTextureScreen.rgb );",
+		"	cResult = cTextureScreen.rgb + nIntensity * ( cResult - cTextureScreen.rgb );",
 		"	if( grayscale ) {",
 		"		cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );",
 		"	}",
 		"	gl_FragColor = vec4( cResult, cTextureScreen.a );",
+		"}"].join('\n')
+	};
+
+	ShaderLib.noise = {
+		attributes : ShaderLib.copy.attributes,
+		uniforms : {
+			tDiffuse : Shader.DIFFUSE_MAP,
+			time : function() {
+				return World.time;
+			},
+			// noise effect intensity value (0 = no effect, 1 = full effect)
+			nIntensity : 0.5,
+			grayscale : 0,
+			$link : ShaderLib.copy.uniforms
+		},
+		vshader : ShaderLib.copy.vshader,
+		fshader : [
+		"uniform float time;",
+		"uniform bool grayscale;",
+		"uniform float nIntensity;",
+		"uniform sampler2D tDiffuse;",
+
+		"varying vec2 texCoord0;",
+
+		"void main() {",
+		"	vec4 cTextureScreen = texture2D( tDiffuse, texCoord0 );",
+		"	float x = texCoord0.x * texCoord0.y * time * 1000.0;",
+
+		"	vec3 cResult;",
+		"	if ( !grayscale ) {",
+			"	float y = fract(sin(dot(vec2(mod( x + 20.0, 87.0 ), mod( x + 150.0, 23.0 )), vec2(12.9898,78.233))) * 43758.5453);",
+			"	float z = fract(sin(dot(vec2(mod( x + 30.0, 19.0 ), mod( x + 200.0, 103.0 )), vec2(12.9898,78.233))) * 43758.5453);",
+			"	x = fract(sin(dot(vec2(mod( x, 13.0 ), mod( x + 50.0, 123.0 )), vec2(12.9898,78.233))) * 43758.5453);",
+			"	cResult = vec3(x, y, z);",
+		"	} else {",
+			"	x = fract(sin(dot(vec2(mod( x, 13.0 ), mod( x + 50.0, 123.0 )), vec2(12.9898,78.233))) * 43758.5453);",
+			"	cResult = vec3(x);",
+		"	}",
+
+		"	gl_FragColor = vec4( mix(cTextureScreen.rgb, cResult, nIntensity), cTextureScreen.a );",
 		"}"].join('\n')
 	};
 
@@ -1392,6 +1432,75 @@ define([
 				"float v = dot( gl_FragColor.rgb, luma );",
 
 				"gl_FragColor.rgb = mix(gl_FragColor.rgb, v * color, amount);",
+			"}"
+		].join("\n")
+	};
+
+	ShaderLib.hatch = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			width: 0.0,
+			spread: 10.0,
+			replace: true
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			"uniform sampler2D tDiffuse;",
+			"uniform float width;",
+			"uniform float spread;",
+			"uniform bool replace;",
+
+			"varying vec2 vUv;",
+			"void main() {",
+				"gl_FragColor = texture2D( tDiffuse, vUv );",
+
+				'float lum = length(gl_FragColor.rgb);',
+				'vec3 mult = vec3(1.0, 1.0, 1.0);',
+				'if (lum < 1.00) {',
+					'if (mod(gl_FragCoord.x + gl_FragCoord.y, spread) <= width) {',
+						'mult = vec3(0.0, 0.0, 0.0);',
+					'}',
+				'}',
+				'if (lum < 0.75) {',
+					'if (mod(gl_FragCoord.x - gl_FragCoord.y, spread) <= width) {',
+						'mult = vec3(0.0, 0.0, 0.0);',
+					'}',
+				'}',
+				'if (lum < 0.50) {',
+					'if (mod(gl_FragCoord.x + gl_FragCoord.y - 5.0, spread) <= width) {',
+						'mult = vec3(0.0, 0.0, 0.0);',
+					'}',
+				'}',
+				'if (lum < 0.3) {',
+					'if (mod(gl_FragCoord.x - gl_FragCoord.y - 5.0, spread) <= width) {',
+						'mult = vec3(0.0, 0.0, 0.0);',
+					'}',
+				'}',
+				'if (replace) {',
+					'gl_FragColor.rgb = mult;',
+				'} else {',
+					'gl_FragColor.rgb *= mult;',
+				'}',
 			"}"
 		].join("\n")
 	};
