@@ -317,7 +317,7 @@ define([
 					if (!posteffects[j]) {
 						continue;
 					}
-					var posteffect = posteffects[j].get();
+					var posteffect = posteffects[j];
 					if (posteffect.enabled && !enabled) {
 						enabled = true;
 					}

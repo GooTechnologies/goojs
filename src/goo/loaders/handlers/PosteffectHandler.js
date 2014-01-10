@@ -56,8 +56,8 @@ define([
 			console.error('Unknown posteffect name: ' + config.name);
 			return;
 		}
-		this._objects[ref] = PassLib[config.name];
-		this._objects[ref].create();
+		this._objects[ref] = new PassLib[config.name]();
+		//this._objects[ref].create();
 		return this._objects[ref];
 	};
 
