@@ -6,11 +6,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/Camera',
-	'goo/renderer/light/Light',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData'
+	'goo/entities/components/ScriptComponent'
 ],
 /** @lends */
 function (
@@ -21,11 +17,7 @@ function (
 	MeshRendererComponent,
 	CameraComponent,
 	LightComponent,
-	ScriptComponent,
-	Camera,
-	Light,
-	Material,
-	MeshData
+	ScriptComponent
 ) {
 	"use strict";
 
@@ -122,6 +114,7 @@ function (
 	 * @param {Light} [light]
 	 * @returns {Entity}
 	 */
+	// This method checks it's arguments by properties because otherwise we get a circular dependency with require.
 	World.prototype.createEntity = function () {
 		var entity = new Entity(this);
 		entity.setComponent(new TransformComponent());
@@ -131,21 +124,21 @@ function (
 				entity.name = arg;
 			} else if (Array.isArray(arg) && arg.length === 3) {
 				entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
-			} else if (arg instanceof MeshData) {
+			} else if (arg.primitiveCounts !== undefined && arg.attributeMap !== undefined) { // arg instanceof MeshData
 				var meshDataComponent = new MeshDataComponent(arg);
 				entity.setComponent(meshDataComponent);
 				// attach mesh renderer component for backwards compatibility reasons
 				if (!entity.hasComponent('MeshRendererComponent')) {
 					entity.setComponent(new MeshRendererComponent());
 				}
-			} else if (arg instanceof Material) {
+			} else if (arg.shader !== undefined && arg.uniforms !== undefined) { // arg instanceof Material
 				if (!entity.hasComponent('MeshRendererComponent')) {
 					entity.setComponent(new MeshRendererComponent());
 				}
 				entity.meshRendererComponent.materials.push(arg);
-			} else if (arg instanceof Light) {
+			} else if (arg.intensity !== undefined && arg.specularIntensity !== undefined) { // arg instanceof Light
 				entity.setComponent(new LightComponent(arg));
-			} else if (arg instanceof Camera) {
+			} else if (arg.projectionMode !== undefined && arg.modelView !== undefined) { // arg instanceof Camera
 				entity.setComponent(new CameraComponent(arg));
 			} else if (typeof arg.run === 'function') {
 				if (!entity.hasComponent('ScriptComponent')) {
