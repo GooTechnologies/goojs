@@ -293,25 +293,6 @@ define([
 			}
 
 			return RSVP.all(promises).then(function(posteffects) {
-				var composer, renderPass, outPass;
-				if(!that._composer) {
-					composer = that._composer = new Composer();
-					//mainRenderSystem.composers.push(composer);
-					renderPass = new RenderPass(mainRenderSystem.renderList);
-					//renderPass.clearColor = new Vector4(0, 0, 0, 0);
-					// Regular copy
-					var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
-					//outPass.material.blendState.blending = 'CustomBlending';
-					outPass.renderToScreen = true;
-					//outPass.clear = { color: false, depth: true, stencil: true };
-					//outPass.clear = true;
-				} else {
-					composer = that._composer;
-					renderPass = composer.passes[0];
-					outPass = composer.passes[composer.passes.length - 1];
-				}
-				composer.passes = [];
-				composer.addPass(renderPass);
 				var enabled = false;
 				for (var j = 0; j < posteffects.length; j++) {
 					if (!posteffects[j]) {
@@ -321,15 +302,46 @@ define([
 					if (posteffect.enabled && !enabled) {
 						enabled = true;
 					}
-					composer.addPass(posteffect);
 				}
-				composer.addPass(outPass);
+
 				if (enabled) {
+					var composer, renderPass, outPass;
+					if(!that._composer) {
+						composer = that._composer = new Composer();
+						//mainRenderSystem.composers.push(composer);
+						renderPass = new RenderPass(mainRenderSystem.renderList);
+						//renderPass.clearColor = new Vector4(0, 0, 0, 0);
+						// Regular copy
+						var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+						//outPass.material.blendState.blending = 'CustomBlending';
+						outPass.renderToScreen = true;
+						//outPass.clear = { color: false, depth: true, stencil: true };
+						//outPass.clear = true;
+					} else {
+						composer = that._composer;
+						renderPass = composer.passes[0];
+						outPass = composer.passes[composer.passes.length - 1];
+					}
+					composer.passes = [];
+					composer.addPass(renderPass);
+					for (var j = 0; j < posteffects.length; j++) {
+						if (!posteffects[j]) {
+							continue;
+						}
+						var posteffect = posteffects[j];
+						if (posteffect.enabled) {
+							composer.addPass(posteffect);
+						}
+					}
+					composer.addPass(outPass);
+
 					if (mainRenderSystem.composers.indexOf(composer) === -1) {
 						mainRenderSystem.composers.push(composer);
 					}
 				} else {
-					ArrayUtil.remove(mainRenderSystem.composers, composer);
+					if (that._composer) {
+						ArrayUtil.remove(mainRenderSystem.composers, that._composer);
+					}
 				}
 			}).then(null, function(err) {
 				return console.error("Error updating posteffects: " + err);

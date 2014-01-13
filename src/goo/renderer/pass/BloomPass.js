@@ -30,11 +30,13 @@ define([
 		var strength = settings.strength !== undefined ? settings.strength : 0.0;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 4.0;
 		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
-		var sizeX = settings.sizeX !== undefined ? settings.sizeX : 256;
-		var sizeY = settings.sizeY !== undefined ? settings.sizeY : 256;
+		this.downsampleAmount = settings.downsampleAmount !== undefined ? Math.max(settings.downsampleAmount, 1) : 4;
 
-		this.renderTargetX = new RenderTarget(sizeX, sizeY);
-		this.renderTargetY = new RenderTarget(sizeX, sizeY);
+		var width = window.innerWidth || 1024;
+		var height = window.innerHeight || 1024;
+		this.updateSize({
+			x: 0, y: 0, width: width, height: height
+		});
 
 		this.renderable = {
 			meshData : FullscreenUtil.quad,
@@ -62,6 +64,13 @@ define([
 		this.clear = false;
 		this.needsSwap = false;
 	}
+
+	BloomPass.prototype.updateSize = function(size) {
+		var sizeX = size.width / this.downsampleAmount;
+		var sizeY = size.height / this.downsampleAmount;
+		this.renderTargetX = new RenderTarget(sizeX, sizeY);
+		this.renderTargetY = new RenderTarget(sizeX, sizeY);
+	};
 
 	BloomPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 		// Brightness & contrast

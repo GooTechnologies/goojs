@@ -1,8 +1,16 @@
-define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/shaders/ShaderLib'],
-	/** @lends */
-	function (RenderTarget, FullscreenPass,
-	ShaderLib) {
+define([
+	'goo/renderer/pass/RenderTarget',
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/entities/SystemBus'
+],
+/** @lends */
+function (
+	RenderTarget,
+	FullscreenPass,
+	ShaderLib,
+	SystemBus
+) {
 	"use strict";
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
@@ -13,23 +21,28 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
 	function Composer(renderTarget) {
-		this.renderTarget1 = renderTarget;
+		this.writeBuffer = renderTarget;
 
-		if (this.renderTarget1 === undefined) {
+		if (this.writeBuffer === undefined) {
 			var width = window.innerWidth || 1;
 			var height = window.innerHeight || 1;
 
-			this.renderTarget1 = new RenderTarget(width, height);
+			this.writeBuffer = new RenderTarget(width, height);
 		}
 
-		this.renderTarget2 = this.renderTarget1.clone();
-
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+		this.readBuffer = this.writeBuffer.clone();
 
 		this.passes = [];
 		this._clearColor = [0,0,0,1];
 		this.copyPass = new FullscreenPass(ShaderLib.copy);
+
+		this.size = null;
+		this.dirty = false;
+
+		SystemBus.addListener('goo.viewportResize', function (size) {
+			this.dirty = true;
+			this.size = size;
+		}.bind(this), true);
 	}
 
 	Composer.prototype.swapBuffers = function () {
@@ -38,8 +51,22 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 		this.writeBuffer = tmp;
 	};
 
+	Composer.prototype._checkPassResize = function (pass, size) {
+		if (!pass.viewportSize || pass.viewportSize.x !== size.x ||
+			pass.viewportSize.y !== size.y ||
+			pass.viewportSize.width !== size.width ||
+			pass.viewportSize.height !== size.height) {
+			return true;
+		}
+		return false;
+	};
+
 	Composer.prototype.addPass = function (pass) {
 		this.passes.push(pass);
+		if (pass.updateSize && this.size && this._checkPassResize(pass, this.size)) {
+			pass.updateSize(this.size);
+			pass.viewportSize = this.size;
+		}
 	};
 
 	Composer.prototype.setClearColor = function(color) {
@@ -49,9 +76,31 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 		this._clearColor[3] = color[3];
 	};
 
+	Composer.prototype.updateSize = function() {
+		var size = this.size;
+		if (!size) {
+			return;
+		}
+		var width = size.width;
+		var height = size.height;
+		this.writeBuffer = new RenderTarget(width, height);
+		this.readBuffer = this.writeBuffer.clone();
+
+		for (var i = 0, il = this.passes.length; i < il; i++) {
+			var pass = this.passes[i];
+			if (pass.updateSize && this._checkPassResize(pass, size)) {
+				pass.updateSize(size);
+				pass.viewportSize = size;
+			}
+		}
+		// console.log('UPDATED SIZE COMPOSER: ', size);
+	};
+
 	Composer.prototype.render = function (renderer, delta, camera, lights) {
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+		if (this.dirty) {
+			this.updateSize();
+			this.dirty = false;
+		}
 
 		var maskActive = false;
 		var pass, i, il = this.passes.length;

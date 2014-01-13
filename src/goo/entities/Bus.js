@@ -12,18 +12,19 @@ define(['goo/util/ArrayUtil'],
 	 *
 	 * @param {String | String[]} channel(s) addressed
 	 * @param {Object} data
+	 * @param {boolean} [storeEmit=false] Store the emit data for transmitting to future listeners
 	 */
-	Bus.prototype.emit = function (channels, data) {
+	Bus.prototype.emit = function (channels, data, storeEmit) {
 		if (typeof channels === 'string') {
 			channels = [channels];
 		}
 
 		for (var i = 0; i < channels.length; i++) {
-			this._emitToSingle(channels[i], data);
+			this._emitToSingle(channels[i], data, storeEmit);
 		}
 	};
 
-	Bus.prototype._getNode = function(channelName) {
+	Bus.prototype._getNode = function(channelName, storeEmit) {
 		var node = this.trie;
 		var channelPath = channelName.split('.');
 
@@ -33,16 +34,27 @@ define(['goo/util/ArrayUtil'],
 			if(node.children[channelSub]) {
 				node = node.children[channelSub];
 			} else {
-				return;
+				if (storeEmit) {
+					var newNode = { listeners: [], children: [] };
+					node.children[channelSub] = newNode;
+					node = newNode;
+				} else {
+					return;
+				}
 			}
 		}
 
 		return node;
 	};
 
-	Bus.prototype._emitToSingle = function(channelName, data) {
-		var node = this._getNode(channelName);
-		if(node) { this._emitToAll(node, data); }
+	Bus.prototype._emitToSingle = function(channelName, data, storeEmit) {
+		var node = this._getNode(channelName, storeEmit);
+		if (node) {
+			this._emitToAll(node, data);
+			if (storeEmit) {
+				node.latestData = data;
+			}
+		}
 	};
 
 	Bus.prototype._emitToAll = function(node, data) {
@@ -59,8 +71,9 @@ define(['goo/util/ArrayUtil'],
 	/**
 	 * Register callback for a channel
 	 * @param {String} channelName
+	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
 	 */
-	Bus.prototype.addListener = function (channelName, callback) {
+	Bus.prototype.addListener = function (channelName, callback, retrieveLatestEmit) {
 		var node = this.trie;
 		var channelPath = channelName.split('.');
 
@@ -78,6 +91,9 @@ define(['goo/util/ArrayUtil'],
 
 		if(node.listeners.indexOf(callback) === -1) {
 			node.listeners.push(callback);
+			if (retrieveLatestEmit && node.latestData) {
+				callback(node.latestData);
+			}
 		}
 	};
 

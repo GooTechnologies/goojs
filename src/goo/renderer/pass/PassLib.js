@@ -3,14 +3,12 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
-	'goo/renderer/pass/SSAOPass',
 	'goo/renderer/Util'
 ], function(
 	ShaderLib,
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
-	SSAOPass,
 	Util
 ) {
 	'use strict';
@@ -77,6 +75,48 @@ define([
 			min: -100,
 			max: 100,
 			'default': 0
+		}
+	];
+
+	function Blur() {
+		BlurPass.call(this, arguments);
+	}
+	Blur.prototype = Object.create(BlurPass.prototype);
+	Blur.prototype.constructor = Blur;
+
+	Blur.prototype.update = function(config) {
+		var options = config.options || {};
+		if (options.opacity !== undefined) {
+			this.copyMaterial.uniforms.opacity = options.opacity / 100;
+		}
+		if (options.size !== undefined) {
+			this.blurX = [0.001953125 * options.size, 0.0];
+			this.blurY = [0.0, 0.001953125 * options.size];
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+	Blur.label = 'Blur';
+	Blur.options = [
+		{
+			key: 'opacity',
+			name: 'Amount',
+			type: 'int',
+			control: 'slider',
+			min: 0,
+			max: 100,
+			'default': 100
+		},
+		{
+			key: 'size',
+			name: 'Size',
+			type: 'float',
+			control: 'slider',
+			min: 0.0,
+			max: 5,
+			decimals: 1,
+			'default': 1
 		}
 	];
 
@@ -197,10 +237,39 @@ define([
 			key: 'sCount',
 			type: 'int',
 			control: 'slider',
-			name: "Count",
+			name: "Line Count",
 			min: 1,
 			max: 4096,
 			'default': 1024
+		}
+	];
+
+	function Noise() {
+		FullscreenPass.call(this, Util.clone(ShaderLib.noise));
+	}
+	Noise.prototype = Object.create(FullscreenPass.prototype);
+	Noise.prototype.constructor = Noise;
+
+	Noise.prototype.update = function(config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if(options.nIntensity !== undefined) {
+			shader.uniforms.nIntensity = options.nIntensity / 100;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+	Noise.label = 'Noise';
+	Noise.options = [
+		{
+			key: 'nIntensity',
+			type: 'int',
+			control: 'slider',
+			name: 'Noise',
+			min: 0,
+			max: 100,
+			'default': 50
 		}
 	];
 
@@ -352,7 +421,7 @@ define([
 			this.enabled = config.enabled;
 		}
 	};
-	Colorify.label = 'Colorify';
+	Colorify.label = 'Tint';
 	Colorify.options = [
 		{
 			key: 'color',
@@ -540,9 +609,11 @@ define([
 
 	return {
 		Bloom: Bloom,
+		Blur: Blur,
 		Vignette: Vignette,
 		Sepia: Sepia,
 		Grain: Grain,
+		Noise: Noise,
 		RgbShift: RgbShift,
 		Bleach: Bleach,
 		HSB: HSB,

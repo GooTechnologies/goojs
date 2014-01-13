@@ -41,7 +41,7 @@ define([
 			enabled: true,
 			options: {}
 		});
-		config.presentationName = pass.name || config.name;
+		config.label = pass.label || config.name;
 		var defaults = pass.options;
 		for(var i = 0; i < defaults.length; i++) {
 			var option = defaults[i];

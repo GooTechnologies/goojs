@@ -60,6 +60,7 @@ function (
 			_canvas.width = 500;
 			_canvas.height = 500;
 		}
+		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
 
 		this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
@@ -465,6 +466,14 @@ function (
 		this.viewportHeight = height !== undefined ? height : this.domElement.height;
 
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
+
+		// console.log('EMIT VIEWPORTSIZE');
+		SystemBus.emit('goo.viewportResize', {
+			x: this.viewportX,
+			y: this.viewportY,
+			width: this.viewportWidth,
+			height: this.viewportHeight
+		}, true);
 	};
 
 	/**
