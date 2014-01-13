@@ -265,7 +265,7 @@ function(
 								binaryRefs.push(ref);
 							}
 						} else if (DynamicLoader.isJSONRef(ref)) {
-							if (traversedRefs.indexOf(ref) == -1) {
+							if (traversedRefs.indexOf(ref) === -1) {
 								traverseRef(ref);
 								traversedRefs.push(ref);
 							}
