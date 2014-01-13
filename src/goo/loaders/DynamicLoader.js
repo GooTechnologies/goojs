@@ -250,7 +250,9 @@ function(
 		};
 
 		var traverseRecursive = function(ref) {
+			var traversedRefs = [];
 			var refPromises = [];
+
 			var traverseRef = function(ref) {
 				var refPromise = that._loadRef(ref).then(function(config) {
 					var refs = that._getRefsFromConfig(config);
@@ -263,13 +265,18 @@ function(
 								binaryRefs.push(ref);
 							}
 						} else if (DynamicLoader.isJSONRef(ref)) {
-							traverseRef(ref);
+							if (traversedRefs.indexOf(ref) == -1) {
+								traverseRef(ref);
+								traversedRefs.push(ref);
+							}
 						}
 					}
 				});
 				refPromises.push(refPromise);
 			};
+
 			traverseRef(ref);
+
 			return RSVP.all(refPromises);
 		};
 
@@ -531,8 +538,6 @@ function(
 		traverse("", config);
 		return _refs;
 	};
-
-
 
 	DynamicLoader.getTypeForRef = function(ref) {
 		return ref.split('.').pop().toLowerCase();
