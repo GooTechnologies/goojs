@@ -1,7 +1,7 @@
-define(
+define(['goo/entities/managers/Manager'],
 	/** @lends */
-	function () {
-	"use strict";
+	function (Manager) {
+	'use strict';
 
 	/**
 	 * @class Main handler of all entities in the world.
@@ -12,6 +12,8 @@ define(
 		this._entitiesById = [];
 		this._entityCount = 0;
 	}
+
+	EntityManager.prototype = Object.create(Manager.prototype);
 
 	EntityManager.prototype.added = function (entity) {
 		if (!this.containsEntity(entity)) {

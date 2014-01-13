@@ -12,7 +12,10 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent'
+	'goo/entities/components/ScriptComponent',
+	'goo/entities/Entity',
+	'goo/entities/systems/TransformSystem',
+	'goo/entities/managers/Manager'
 ], function(
 	World,
 	System,
@@ -27,7 +30,10 @@ define([
 	MeshRendererComponent,
 	CameraComponent,
 	LightComponent,
-	ScriptComponent
+	ScriptComponent,
+	Entity,
+	TransformSystem,
+	Manager
 ) {
 	'use strict';
 
@@ -180,6 +186,39 @@ define([
 			var entity = world.createEntity();
 
 			expect(entity.transformComponent).toBeTruthy();
+		});
+
+		it('adds an entity using the \'add\' function', function() {
+			var entity = new Entity(world);
+
+			world.add(entity);
+			world.process();
+			expect(world.getEntities()).toContain(entity);
+		});
+
+		it('adds a system using the \'add\' function', function() {
+			var system = new TransformSystem();
+
+			world.add(system);
+			expect(world._systems).toContain(system);
+		});
+
+		it('adds a manager using the \'add\' function', function() {
+			function FishManager() {
+			}
+			FishManager.prototype = Object.create(Manager.prototype);
+
+			var manager = new FishManager();
+
+			world.add(manager);
+			expect(world._managers).toContain(manager);
+		});
+
+		it('registers a component using the \'add\' function', function() {
+			var component = new TransformComponent();
+
+			world.add(component);
+			expect(world._components).toContain(component);
 		});
 	});
 });

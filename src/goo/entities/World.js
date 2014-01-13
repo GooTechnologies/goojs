@@ -1,13 +1,19 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent'
+	'goo/entities/components/TransformComponent',
+	'goo/entities/managers/Manager',
+	'goo/entities/systems/System',
+	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
-	TransformComponent
+	TransformComponent,
+	Manager,
+	System,
+	Component
 ) {
 	'use strict';
 
@@ -41,6 +47,28 @@ function (
 
 	World.time = 0.0;
 	World.tpf = 1.0;
+
+	/**
+	 * Universal shorthand for adding managers, systems, entities and registering components
+	 */
+	//! AT: again, 'set' vs 'add' - entities are added to the world, systems/managers are set
+	World.prototype.add = function () {
+		for (var i = 0; i < arguments.length; i++) {
+			var argument = arguments[i];
+
+			if (argument instanceof Entity) {
+				this.addEntity(argument);
+			} else if (argument instanceof Manager) {
+				this.setManager(argument);
+			} else if (argument instanceof System) {
+				this.setSystem(argument);
+			} else if (argument instanceof Component) {
+			    this.registerComponent(argument);
+			}
+		}
+
+		return this;
+	};
 
 	/**
 	 * Registers a component type. This is necessary to allow automatic creation of components from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on)
