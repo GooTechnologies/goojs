@@ -42,19 +42,28 @@ function (
 	World.time = 0.0;
 	World.tpf = 1.0;
 
+	/**
+	 * Registers a component type. This is necessary to allow automatic creation of components from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on)
+	 *
+	 * @param {Component} componentConstructor
+	 * @returns {World} Returns self to allow chaining
+	 */
 	World.prototype.registerComponent = function (componentConstructor) {
 		if (this._components.indexOf(componentConstructor) === -1) {
 			this._components.push(componentConstructor);
 		}
+		return this;
 	};
 
 	/**
 	 * Adds a Manager to the world
 	 *
 	 * @param {Manager} manager
+	 * @returns {World} Returns self to allow chaining
 	 */
 	World.prototype.setManager = function (manager) {
 		this._managers.push(manager);
+		return this;
 	};
 
 	/**
@@ -76,6 +85,7 @@ function (
 	 * Adds a {@link System} to the world
 	 *
 	 * @param {System} system
+	 * @returns {World} Returns self to allow chaining
 	 */
 	World.prototype.setSystem = function (system) {
 		var priority = system.priority;
@@ -86,6 +96,8 @@ function (
 			}
 		}
 		this._systems.splice(i, 0, system);
+
+		return this;
 	};
 
 	/**
@@ -144,6 +156,7 @@ function (
 	 *
 	 * @param {Entity} entity Entity to add
 	 * @param {boolean} [recursive=true] If entity hierarchy should be added recursively
+	 * @returns {World} Returns self to allow chaining
 	 */
 	World.prototype.addEntity = function (entity, recursive) {
 		if (this._addedEntities.indexOf(entity) === -1) {
@@ -156,6 +169,8 @@ function (
 				this.addEntity(children[i].entity, recursive);
 			}
 		}
+
+		return this;
 	};
 
 	/**
@@ -163,6 +178,7 @@ function (
 	 *
 	 * @param {Entity} entity Entity to remove
 	 * @param {boolean} [recursive=true] If entity hierarchy should be removed recursively
+	 * @returns {World} Returns self to allow chaining
 	 */
 	World.prototype.removeEntity = function (entity, recursive) {
 		if (this._removedEntities.indexOf(entity) === -1) {
@@ -188,6 +204,8 @@ function (
 				this._recursiveRemoval(children[i].entity, recursive);
 			}
 		}
+
+		return this;
 	};
 
 	World.prototype._recursiveRemoval = function (entity, recursive) {
