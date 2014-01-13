@@ -1,7 +1,7 @@
 define(['goo/entities/components/Component'],
 /** @lends */
 function(Component) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Contains scripts to be executed each frame when set on an active entity
@@ -32,6 +32,21 @@ function(Component) {
 			if (script && script.run && (script.enabled === undefined || script.enabled)) {
 				script.run(entity, tpf, environment);
 			}
+		}
+	};
+
+	ScriptComponent.applyOnEntity = function(obj, entity) {
+		if (obj instanceof Function || obj.run instanceof Function) {
+			var scriptComponent;
+			if (!entity.scriptComponent) {
+				scriptComponent = new ScriptComponent();
+				entity.setComponent(scriptComponent);
+			} else {
+				scriptComponent = entity.scriptComponent;
+			}
+			scriptComponent.scripts.push(obj.run instanceof Function ? obj : { run: obj });
+
+			return true;
 		}
 	};
 

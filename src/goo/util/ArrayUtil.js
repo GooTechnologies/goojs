@@ -64,5 +64,20 @@ define([], function() {
 		}
 	};
 
+	/**
+	 * Returns the first element in the supplied array for which the supplied predicate is true
+	 * @param array
+	 * @param predicate
+	 * @returns {*}
+	 */
+	ArrayUtil.find = function(array, predicate) {
+		for (var i = 0; i < array.length; i++) {
+			if (predicate(array[i])) {
+				return array[i];
+			}
+		}
+		return null;
+	};
+
 	return ArrayUtil;
 });

@@ -1,13 +1,15 @@
 define([
 	'goo/entities/components/Component',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/renderer/Camera'
 ],
 /** @lends */
 function (
 	Component,
-	Vector3
+	Vector3,
+	Camera
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Holds a camera.
@@ -23,7 +25,10 @@ function (
 		this.dirVec = new Vector3(0, 0, -1);
 	}
 
+	CameraComponent.type = 'CameraComponent';
+
 	CameraComponent.prototype = Object.create(Component.prototype);
+	CameraComponent.prototype.constructor = CameraComponent;
 
 	/**
 	 * @param {number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z
@@ -61,6 +66,14 @@ function (
 		transform.matrix.getTranslation(this.camera.translation);
 
 		this.camera.update();
+	};
+
+	CameraComponent.applyOnEntity = function(obj, entity) {
+		if (obj instanceof Camera) {
+			var cameraComponent = new CameraComponent(obj);
+			entity.setComponent(cameraComponent);
+			return true;
+		}
 	};
 
 	return CameraComponent;

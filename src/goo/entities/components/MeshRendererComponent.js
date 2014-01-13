@@ -1,7 +1,13 @@
-define(['goo/entities/components/Component'],
+define([
+	'goo/entities/components/Component',
+	'goo/renderer/Material'
+],
 	/** @lends */
-	function (Component) {
-	"use strict";
+	function (
+		Component,
+		Material
+	) {
+	'use strict';
 
 	/**
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
@@ -63,6 +69,15 @@ define(['goo/entities/components/Component'],
 	 */
 	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
 		this.worldBound = bounding.transform(transform, this.worldBound);
+	};
+
+	MeshRendererComponent.applyOnEntity = function(obj, entity) {
+		if (obj instanceof Material) {
+			var meshRendererComponent = new MeshRendererComponent();
+			meshRendererComponent.materials.push(obj);
+			entity.setComponent(meshRendererComponent);
+			return true;
+		}
 	};
 
 	return MeshRendererComponent;

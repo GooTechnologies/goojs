@@ -112,7 +112,7 @@ define([
 		}
 
 		/**
-		 * Clone entity hierarcy with optional settings for sharing data and callbacks
+		 * Clone entity hierarchy with optional settings for sharing data and callbacks
 		 * @param {World} world
 		 * @param {Entity} entity The entity to clone
 		 * @param {Object} [settings]
@@ -163,6 +163,7 @@ define([
 			return entity;
 		};
 
+		//! AT: undocumented and used only once, in MeshBuilder
 		EntityUtils.updateWorldTransform = function (transformComponent) {
 			transformComponent.updateWorldTransform();
 
@@ -230,6 +231,8 @@ define([
 		 * @param {Light} [light]
 		 * @returns {Entity}
 		 */
+
+		//! AT: this can be removed - all that this offers can be obtained through world.createEntity
 		EntityUtils.createTypicalEntity = function (world) {
 			// Create entity
 			var entity = world.createEntity();
@@ -275,6 +278,7 @@ define([
 			return entity;
 		};
 
+		//! AT: undocumented and probably not used
 		EntityUtils.createDOMEntity = function (world, domElement) {
 			var entity = world.createEntity();
 

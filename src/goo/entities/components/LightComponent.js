@@ -1,7 +1,13 @@
-define(['goo/entities/components/Component'],
+define([
+	'goo/entities/components/Component',
+	'goo/renderer/light/Light'
+],
 	/** @lends */
-	function (Component) {
-	"use strict";
+	function (
+		Component,
+		Light
+	) {
+	'use strict';
 
 	/**
 	 * @class Defines a light
@@ -19,6 +25,14 @@ define(['goo/entities/components/Component'],
 
 	LightComponent.prototype.updateLight = function (transform) {
 		this.light.update(transform);
+	};
+
+	LightComponent.applyOnEntity = function(obj, entity) {
+		if (obj instanceof Light) {
+			var lightComponent = new LightComponent(obj);
+			entity.setComponent(lightComponent);
+			return true;
+		}
 	};
 
 	return LightComponent;

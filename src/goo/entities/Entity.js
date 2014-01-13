@@ -1,7 +1,11 @@
-define(
+define([
+	'goo/entities/components/Component'
+],
 /** @lends */
-function () {
-	"use strict";
+function (
+	Component
+	) {
+	'use strict';
 
 	/**
 	 * @class A gameworld object and container of components
@@ -26,6 +30,33 @@ function () {
 
 		this.hidden = false;
 	}
+
+	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
+	/**
+	 * Sets components on the entity or tries to create and set components out of the supplied parameters
+	 * @returns {Entity} Returns self to allow chaining
+	 */
+	Entity.prototype.set = function() {
+		for (var i = 0; i < arguments.length; i++) {
+			var argument = arguments[i];
+			if (argument instanceof Component) {
+				this.setComponent(argument);
+			} else {
+				// ask all components if they are compatible with the given data
+				var components = this._world._components;
+				for (var j = 0; j < components.length; j++) {
+					var component = components[j];
+					var applied = component.applyOnEntity(argument, this);
+					if (applied) {
+						break;
+					}
+				}
+			}
+		}
+
+		// allow chaining
+		return this;
+	};
 
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
@@ -143,7 +174,7 @@ function () {
 	 * @returns {string} Name of entity
 	 */
 	Entity.prototype.toString = function () {
-		// should also return a list of its components or something more descriptive than just the name
+		//! AT: should also return a list of its components or something more descriptive than just the name
 		return this.name;
 	};
 

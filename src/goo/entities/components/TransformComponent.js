@@ -9,7 +9,7 @@ function (
 	Vector3,
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Holds the transform of an entity. It also allows for a scene graph to be created, where transforms are inherited
@@ -51,7 +51,10 @@ function (
 		};
 	}
 
+	TransformComponent.type = 'TransformComponent';
+
 	TransformComponent.prototype = Object.create(Component.prototype);
+	TransformComponent.prototype.constructor = TransformComponent;
 
 	/**
 	 * Set this transform's translation.
@@ -220,6 +223,15 @@ function (
 		}
 		this._dirty = false;
 		this._updated = true;
+	};
+
+	TransformComponent.applyOnEntity = function(obj, entity) {
+		if (Array.isArray(obj) && obj.length === 3) {
+			var transformComponent = new TransformComponent();
+			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);
+			entity.setComponent(transformComponent);
+			return true;
+		}
 	};
 
 	return TransformComponent;

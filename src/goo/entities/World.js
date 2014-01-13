@@ -1,25 +1,15 @@
 define([
 	'goo/entities/Entity',
 	'goo/entities/managers/EntityManager',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent'
+	'goo/entities/components/TransformComponent'
 ],
 /** @lends */
 function (
 	Entity,
 	EntityManager,
-	TransformComponent,
-	MeshDataComponent,
-	MeshRendererComponent,
-	CameraComponent,
-	LightComponent,
-	ScriptComponent
+	TransformComponent
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Main handler for an entity world
@@ -45,10 +35,18 @@ function (
 		 * @type {number}
 		 */
 		this.tpf = 1.0;
+
+		this._components = [];
 	}
 
 	World.time = 0.0;
 	World.tpf = 1.0;
+
+	World.prototype.registerComponent = function (componentConstructor) {
+		if (this._components.indexOf(componentConstructor) === -1) {
+			this._components.push(componentConstructor);
+		}
+	};
 
 	/**
 	 * Adds a Manager to the world
@@ -91,7 +89,7 @@ function (
 	};
 
 	/**
-	 * Retrive a {@link System} of type 'type'
+	 * Retrieve a {@link System} of type 'type'
 	 *
 	 * @param {String} type Type of system to retrieve
 	 * @returns System
@@ -114,39 +112,21 @@ function (
 	 * @param {Light} [light]
 	 * @returns {Entity}
 	 */
-	// This method checks it's arguments by properties because otherwise we get a circular dependency with require.
 	World.prototype.createEntity = function () {
 		var entity = new Entity(this);
-		entity.setComponent(new TransformComponent());
 		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (typeof arg === 'string') {
-				entity.name = arg;
-			} else if (Array.isArray(arg) && arg.length === 3) {
-				entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
-			} else if (arg.primitiveCounts !== undefined && arg.attributeMap !== undefined) { // arg instanceof MeshData
-				var meshDataComponent = new MeshDataComponent(arg);
-				entity.setComponent(meshDataComponent);
-				// attach mesh renderer component for backwards compatibility reasons
-				if (!entity.hasComponent('MeshRendererComponent')) {
-					entity.setComponent(new MeshRendererComponent());
-				}
-			} else if (arg.shader !== undefined && arg.uniforms !== undefined) { // arg instanceof Material
-				if (!entity.hasComponent('MeshRendererComponent')) {
-					entity.setComponent(new MeshRendererComponent());
-				}
-				entity.meshRendererComponent.materials.push(arg);
-			} else if (arg.intensity !== undefined && arg.specularIntensity !== undefined) { // arg instanceof Light
-				entity.setComponent(new LightComponent(arg));
-			} else if (arg.projectionMode !== undefined && arg.modelView !== undefined) { // arg instanceof Camera
-				entity.setComponent(new CameraComponent(arg));
-			} else if (typeof arg.run === 'function') {
-				if (!entity.hasComponent('ScriptComponent')) {
-					entity.setComponent(new ScriptComponent());
-				}
-				entity.scriptComponent.scripts.push(arg);
+			if (typeof arguments[i] === 'string') { // does not cover new String()
+				entity.name = arguments[i];
+			} else {
+				entity.set(arguments[i]);
 			}
 		}
+
+		// separate treatment
+		if (!entity.transformComponent) {
+			entity.setComponent(new TransformComponent());
+		}
+
 		return entity;
 	};
 
@@ -232,7 +212,7 @@ function (
 	 */
 	World.prototype.changedEntity = function (entity, component, eventType) {
 		var event = {
-			entity : entity
+			entity: entity
 		};
 		if (component !== undefined) {
 			event.component = component;

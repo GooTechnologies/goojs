@@ -1,13 +1,15 @@
 define([
 	'goo/renderer/bounds/BoundingBox',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/renderer/MeshData'
 ],
 /** @lends */
 function (
 	BoundingBox,
-	Component
+	Component,
+	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
@@ -31,7 +33,10 @@ function (
 		this.currentPose = null; // SkeletonPose
 	}
 
+	MeshDataComponent.type = 'MeshDataComponent';
+
 	MeshDataComponent.prototype = Object.create(Component.prototype);
+	MeshDataComponent.prototype.constructor = MeshDataComponent;
 
 	/**
 	 * Set the bounding volume type (sphere, box etc)
@@ -54,6 +59,14 @@ function (
 				this.modelBound.computeFromPoints(verts);
 				this.autoCompute = false;
 			}
+		}
+	};
+
+	MeshDataComponent.applyOnEntity = function(obj, entity) {
+		if (obj instanceof MeshData) {
+			var meshDataComponent = new MeshDataComponent(obj);
+			entity.setComponent(meshDataComponent);
+			return true;
 		}
 	};
 

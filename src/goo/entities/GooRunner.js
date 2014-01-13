@@ -14,6 +14,14 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/entities/systems/MovementSystem',
+
+	'goo/entities/components/TransformComponent',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/CameraComponent',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
+
 	'goo/util/GameUtils',
 	'goo/util/Logo'
 ],
@@ -34,10 +42,18 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	MovementSystem,
+
+	TransformComponent,
+	MeshDataComponent,
+	MeshRendererComponent,
+	CameraComponent,
+	LightComponent,
+	ScriptComponent,
+
 	GameUtils,
 	Logo
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Standard setup of entity system to use as base for small projects/demos
@@ -64,6 +80,7 @@ function (
 		this.world = new World(this);
 		this.renderer = new Renderer(parameters);
 
+		// do this is a method called setupSystems
 		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
@@ -78,6 +95,13 @@ function (
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
+
+		// register components - do it in a separate method; can be an array
+		this.world.registerComponent(TransformComponent);
+		this.world.registerComponent(MeshDataComponent);
+//		this.world.registerComponent(MeshRendererComponent);
+//		this.world.registerComponent(CameraComponent);
+//		this.world.registerComponent(LightComponent);
 
 		this.doProcess = true;
 		this.doRender = true;

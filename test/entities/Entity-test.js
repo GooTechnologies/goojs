@@ -1,13 +1,35 @@
 define([
 	'goo/entities/World',
 	'goo/entities/Entity',
+	'goo/entities/components/Component',
+	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent'
-], function(
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/CameraComponent',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/ScriptComponent',
+	'goo/shapes/Box',
+	'goo/math/Vector3',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Camera',
+	'goo/renderer/light/PointLight'
+], function (
 	World,
 	Entity,
+	Component,
+	TransformComponent,
 	MeshDataComponent,
-	MeshRendererComponent
+	MeshRendererComponent,
+	CameraComponent,
+	LightComponent,
+	ScriptComponent,
+	Box,
+	Vector3,
+	Material,
+	ShaderLib,
+	Camera,
+	PointLight
 ) {
 	'use strict';
 
@@ -16,6 +38,13 @@ define([
 		beforeEach(function() {
 			world = new World();
 			Entity.entityCount = 0;
+
+			world.registerComponent(TransformComponent);
+			world.registerComponent(MeshDataComponent);
+			world.registerComponent(MeshRendererComponent);
+			world.registerComponent(CameraComponent);
+			world.registerComponent(LightComponent);
+			world.registerComponent(ScriptComponent);
 		});
 
 		it('addToWorld', function() {
@@ -184,6 +213,159 @@ define([
 			expect(entity.hasComponent('MeshRendererComponent')).toBe(false);
 		});
 
+		it('installs the api of a component', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+			expect(entity.setTranslation).toBeTruthy();
+		});
+
+		it('removed the api of a component', function() {
+			var entity = world.createEntity();
+			entity.clearComponent('TransformComponent');
+			expect(entity.setTranslation).toBeFalsy();
+		});
+
+		it('does not override existing methods on install', function() {
+			var a = 0;
+			function FishComponent() {
+				this.type = 'FishComponent';
+				this.api = {
+					swim: function() { a += 123; }
+				};
+			}
+			FishComponent.prototype = Object.create(Component.prototype);
+
+
+			var b = 0;
+			function BananaComponent() {
+				this.type = 'BananaComponent';
+				this.api = {
+					swim: function() { b += 234; }
+				};
+			}
+			BananaComponent.prototype = Object.create(Component.prototype);
+
+
+			var entity = new Entity(world);
+
+			entity.setComponent(new FishComponent());
+			entity.setComponent(new BananaComponent());
+
+			entity.swim();
+
+			expect(a).toEqual(123);
+			expect(b).toEqual(0);
+		});
+
+		it('does not remove what it did not manage to install', function() {
+			var a = 0;
+			function FishComponent() {
+				this.type = 'FishComponent';
+				this.api = {
+					swim: function() { a += 123; }
+				};
+			}
+			FishComponent.prototype = Object.create(Component.prototype);
+
+
+			var b = 0;
+			function BananaComponent() {
+				this.type = 'BananaComponent';
+				this.api = {
+					swim: function() { b += 234; }
+				};
+			}
+			BananaComponent.prototype = Object.create(Component.prototype);
+
+
+			var entity = new Entity(world);
+
+			entity.setComponent(new FishComponent());
+			entity.setComponent(new BananaComponent());
+
+			entity.clearComponent('BananaComponent');
+
+			expect(entity.swim).toBeTruthy();
+
+			entity.swim();
+
+			expect(a).toEqual(123);
+		});
+
+		//! AT: these should stay in their respective component test files
+		it('returns itself after calling set()', function() {
+			var entity = new Entity(world);
+			var translation = [1, 2, 3];
+			var sameEntity = entity.set(translation);
+
+			expect(sameEntity).toEqual(entity);
+		});
+
+		it('sets a TransformComponent', function() {
+			var entity = new Entity(world);
+			var transformComponent = new TransformComponent();
+			entity.set(transformComponent);
+
+			expect(entity.transformComponent).toBe(transformComponent);
+		});
+
+		// ---
+		it('sets a TransformComponent when trying to add an array', function() {
+			var entity = new Entity(world);
+			var translation = [1, 2, 3];
+			entity.set(translation);
+
+			expect(entity.transformComponent).toBeTruthy();
+			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+		});
+
+		it('sets a MeshDataComponent when trying to add a mesh', function() {
+			var entity = new Entity(world);
+			var meshData = new Box();
+			entity.set(meshData);
+
+			expect(entity.meshDataComponent).toBeTruthy();
+			expect(entity.meshDataComponent.meshData).toEqual(meshData);
+		});
+
+		it('sets a MeshRendererComponent when trying to add a material', function() {
+			var entity = new Entity(world);
+			var material = Material.createMaterial(ShaderLib.simple);
+			entity.set(material);
+
+			expect(entity.meshRendererComponent).toBeTruthy();
+			expect(entity.meshRendererComponent.materials).toEqual([material]);
+		});
+
+		it('sets a CameraComponent when trying to add a camera', function() {
+			var entity = new Entity(world);
+			var camera = new Camera();
+			entity.set(camera);
+
+			expect(entity.cameraComponent).toBeTruthy();
+			expect(entity.cameraComponent.camera).toBe(camera);
+		});
+
+		it('sets a LightComponent when trying to add a light', function() {
+			var entity = new Entity(world);
+			var light = new PointLight();
+			entity.set(light);
+
+			expect(entity.lightComponent).toBeTruthy();
+			expect(entity.lightComponent.light).toBe(light);
+		});
+
+		it('sets a ScriptComponent when trying to some functions / objects with a run function', function() {
+			var entity = new Entity(world);
+			var script1 = { run: function () { } };
+			var script2 = function () { };
+
+			entity.set(script1, script2);
+
+			expect(entity.scriptComponent).toBeTruthy();
+			expect(entity.scriptComponent.scripts).toEqual([script1, { run: script2 }]);
+		});
+
 		/*
 		it('cannot clear a transform component', function() {
 			var entity = world.createEntity();
@@ -195,7 +377,5 @@ define([
 			expect(entity.hasComponent('TransformComponent')).toBe(true);
 		});
 		*/
-
-		it('')
 	});
 });

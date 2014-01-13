@@ -92,10 +92,10 @@ define([
 			expect(EntityUtils.getRoot(e3)).toBe(e1);
 		});
 		it('can get the total bounding box', function() {
-			var e1 = world.createEntity(meshData);
-			var e2 = world.createEntity(meshData, [10,10,10]);
+			var e1 = EntityUtils.createTypicalEntity(world, meshData);
+			var e2 = EntityUtils.createTypicalEntity(world, meshData, [10,10,10]);
 			e1.transformComponent.attachChild(e2.transformComponent);
-			var e3 = world.createEntity(meshData, [10,10,10]);
+			var e3 = EntityUtils.createTypicalEntity(world, meshData, [10,10,10]);
 			e2.transformComponent.attachChild(e3.transformComponent);
 			world.process();
 			var es = [e1,e2,e3,e1,e2,e3];
