@@ -125,7 +125,7 @@ function(
 			this.shape = this.getAmmoShapefromGooShape(entity, gooTransform);
 		}
 
-		if(false == isTrigger){
+		if(false == this.isTrigger){
 			var motionState = new Ammo.btDefaultMotionState( ammoTransform );
 			var localInertia = new Ammo.btVector3(0, 0, 0);
 
