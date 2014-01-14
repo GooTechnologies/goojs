@@ -45,6 +45,7 @@ function(
 		this.useWorldTransform = settings.useWorldTransform !== undefined ? settings.useWorldTransform : false;
 		this.ammoTransform = new Ammo.btTransform();
 		this.gooQuaternion = new Quaternion();
+		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
 	}
 	AmmoComponent.prototype = Object.create(Component.prototype);
 
@@ -114,30 +115,29 @@ function(
 		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
 		var q = this.gooQuaternion;
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
-
-		var shape;
+		
+		this.shape;
 		if(this.useWorldBounds) {
 			entity._world.process();
-			shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
+			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
 			this.difference = this.center.clone().sub( gooTransform.translation).invert();
 		} else {
-			shape = this.getAmmoShapefromGooShape(entity, gooTransform);
+			this.shape = this.getAmmoShapefromGooShape(entity, gooTransform);
 		}
 
+		if(false == isTrigger){
+			var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+			var localInertia = new Ammo.btVector3(0, 0, 0);
 
-		var localInertia = new Ammo.btVector3(0, 0, 0);
+			// rigidbody is dynamic if and only if mass is non zero, otherwise static
+			if(this.mass !== 0.0) {
+				this.shape.calculateLocalInertia( this.mass, localInertia );
+			}
 
-		// rigidbody is dynamic if and only if mass is non zero, otherwise static
-		if(this.mass !== 0.0) {
-			shape.calculateLocalInertia( this.mass, localInertia );
+			var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, this.shape, localInertia);
+			this.body = new Ammo.btRigidBody( info );
 		}
-
-		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
-		this.body = new Ammo.btRigidBody( info );
-
 	};
-
 
 	AmmoComponent.prototype.showBounds = function(entity) {
 		// entity.meshRendererComponent.worldBound
@@ -159,8 +159,6 @@ function(
 		bv.addToWorld();
 		this.bv = bv;
 	};
-
-
 
 	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
 		var tc = entity.transformComponent;
@@ -186,4 +184,3 @@ function(
 	};
 	return AmmoComponent;
 });
-
