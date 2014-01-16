@@ -171,16 +171,21 @@ define([
 						images = images[0];
 						images.setAttribute('data-ref', imageUrls[0]);
 					} else {
-						if (images.length < 6) {
+						if (images[0] === '') {
 							SystemBus.emit('goo.error.skybox', {
 								type: 'Box',
-								message: 'The skybox needs six images of the same size to display'
+								message: 'The skybox needs an image to display.'
 							});
 							skybox.meshRendererComponent.hidden = true;
 							material.setTexture('DIFFUSE_MAP', null);
 							ShaderBuilder.SKYBOX = null;
 							ShaderBuilder.SKYSPHERE = null;
 							return;
+						}
+						if (images.length < 6) {
+							for (var i = 0; i < 6; i++) {
+								images[i] = images[i] || images[0]
+							}
 						}
 						var w = images[0].width;
 						var h = images[0].height;
