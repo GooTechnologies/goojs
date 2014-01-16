@@ -1,3 +1,9 @@
+require.config({
+	paths: {
+		"goo": "../../../src/goo"
+	}
+});
+
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -62,7 +68,7 @@ require([
 		var meshData = Surface.createFromHeightMap(matrix);
 
 		var material = Material.createMaterial(ShaderLib.texturedLit, '');
-		var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
+		var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var boxEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
 		boxEntity.addToWorld();

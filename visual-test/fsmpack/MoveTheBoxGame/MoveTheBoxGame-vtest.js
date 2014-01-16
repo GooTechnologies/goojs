@@ -20,13 +20,14 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/statemachine/FSMComponent',
-	'goo/statemachine/FSMSystem',
-	'goo/statemachine/State',
-	'goo/statemachine/Machine',
-	'goo/statemachine/actions/KeyDownAction',
-	'goo/statemachine/actions/KeyUpAction',
-	'goo/statemachine/actions/AddPositionAction'
+
+	'fsmpack/statemachine/FSMComponent',
+	'fsmpack/statemachine/FSMSystem',
+	'fsmpack/statemachine/State',
+	'fsmpack/statemachine/Machine',
+	'fsmpack/statemachine/actions/KeyDownAction',
+	'fsmpack/statemachine/actions/KeyUpAction',
+	'fsmpack/statemachine/actions/AddPositionAction'
 ], function (
 	GooRunner,
 	World,

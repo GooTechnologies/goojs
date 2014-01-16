@@ -1,3 +1,9 @@
+require.config({
+	paths: {
+		"goo": "../../../src/goo"
+	}
+});
+
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
