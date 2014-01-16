@@ -29,8 +29,8 @@ function(
 
 		this.domElement = properties.domElement || null;
 
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
+		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeedHorizontal : 0.005;
+		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.005;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : 2;
@@ -191,6 +191,9 @@ function(
 	};
 
 	FlyControlScript.prototype.tearDownKeyControls = function() {
+		// REVIEW boundKeyDown won't be the same function here as in setupKeyControls due to bind
+		// Not sure I like the whole setup and teardown all the time either
+		// The way it is now we get a whole heap of keyup and down listeners
 		var boundKeyDown = keydown.bind(this);
 		var boundKeyUp = keyup.bind(this);
 		this.domElement.removeEventListener('keydown', boundKeyDown, false);
@@ -219,6 +222,7 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
+		// REVIEW This will cause mouseup outside of canvas to not fire
 		this.domElement.addEventListener('mousemove', boundMouseMove, false);
 		this.domElement.addEventListener('mouseup', boundMouseUp, false);
 		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
