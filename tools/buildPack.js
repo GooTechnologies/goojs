@@ -87,52 +87,60 @@ function getOptimizerConfig(ignoreList, outBaseDir) {
 	return config;
 }
 
-// get tha pack name
-console.log('get tha pack name'.grey);
-var packName = process.argv[2];
+//exports.pack = function(packName) {
+	// get tha pack name
+	console.log('get tha pack name'.grey);
+	var packName = process.argv[2];
 
-// out base dir
-console.log('out base dir'.grey);
-var outBaseDir = 'out';
+	// out base dir
+	console.log('out base dir'.grey);
+	var outBaseDir = 'out';
 
-// get all dependencies
-console.log('get all dependencies'.grey);
-var tree = madge('src/' + packName + '/', { format: 'amd' }).tree;
+	// get all dependencies
+	console.log('get all dependencies'.grey);
+	var tree = madge('src/' + packName + '/', { format: 'amd' }).tree;
 
-// get modules and dependencies
-console.log('get modules and engine dependencies'.grey);
-var modulesAndDependencies = getModulesAndDependencies(tree);
+	// get modules and dependencies
+	console.log('get modules and engine dependencies'.grey);
+	var modulesAndDependencies = getModulesAndDependencies(tree);
 
-// get the source for the pack
-console.log('get the source for the pack'.grey);
-var packStr = buildPack(modulesAndDependencies.moduleList, packName);
+	// get the source for the pack
+	console.log('get the source for the pack'.grey);
+	var packStr = buildPack(modulesAndDependencies.moduleList, packName);
 
-// add the pack
-console.log('add the pack');
-fs.writeFile('src/' + packName + '/' + packName + '.js', packStr, function () {
+	// add the pack
+	console.log('add the pack');
+	fs.writeFile('src/' + packName + '/' + packName + '.js', packStr, function (err) {
+		if (err) {
+			console.error('Error while writing the pack'.red);
+			console.error(err);
+			process.exit(1);
+		}
 
-	// get the config for the optimizer
-	console.log('get the config for the optimizer'.grey);
-	var optimizerConfig = getOptimizerConfig(modulesAndDependencies.ignoreList, outBaseDir);
+		// get the config for the optimizer
+		console.log('get the config for the optimizer'.grey);
+		var optimizerConfig = getOptimizerConfig(modulesAndDependencies.ignoreList, outBaseDir);
 
-	// optimize!
-	console.log('optimize!');
-	requirejs.optimize(optimizerConfig, function (buildResponse) {
-		// buildResponse is just a text output of the modules included.
+		// optimize!
+		console.log('optimize!');
+		requirejs.optimize(optimizerConfig, function (buildResponse) {
+			// buildResponse is just a text output of the modules included.
 
-		console.log('Done'.green);
+			console.log('Done'.green);
 
-		console.log('Pack Name: '.grey, packName);
+			console.log('Pack Name: '.grey, packName);
 
-		console.log('Module List'.grey);
-		console.log(modulesAndDependencies.moduleList);
+			console.log('Module List'.grey);
+			console.log(modulesAndDependencies.moduleList);
 
-		console.log('-----'.grey);
-		console.log('Ignore List.grey');
-		console.log(modulesAndDependencies.ignoreList);
-	}, function(err) {
-		// optimization err callback
-		// :(
-		console.error(err.red);
+			console.log('-----'.grey);
+			console.log('Ignore List'.grey);
+			console.log(modulesAndDependencies.ignoreList);
+		}, function(err) {
+			// optimization err callback
+			// :(
+			console.error(err.red);
+		});
 	});
-});
+//};
+

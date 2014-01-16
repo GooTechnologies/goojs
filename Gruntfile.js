@@ -1,6 +1,8 @@
 var glob = require('glob');
-var _ = require('underscore')
-var fs = require('fs')
+var _ = require('underscore');
+var fs = require('fs');
+//var buildPack = require('./tools/buildPack');
+var colors = require('colors');
 
 module.exports = function(grunt) {
 	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
@@ -136,7 +138,19 @@ module.exports = function(grunt) {
 
 		fs.writeFileSync('src/goo.js', 'define([\n' +
 			_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
-		'\n], function() {});\n')
+		'\n], function() {});\n');
 	});
 
+	/*
+	grunt.registerTask('pack', 'Creates a pack', function() {
+		//! AT: writeFile (in buildPack.js) fails for some unknown reason if .pack() is exported
+		// this is unused - use 'node tools/buildPack.js <somepack>' instead
+		var packName = grunt.option('name');
+		if (!packName) {
+			console.error('Please specify a pack name using the -name option'.red);
+		} else {
+			buildPack.pack(packName);
+		}
+	});
+	*/
 };
