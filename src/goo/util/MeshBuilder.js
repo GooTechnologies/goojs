@@ -27,17 +27,17 @@ define([
 	}
 
 	MeshBuilder.prototype.addEntity = function (entity) {
-		EntityUtils.traverse(entity, function () {
+		EntityUtils.traverse(entity, function (entity) {
 			if (entity.transformComponent._dirty) {
 				entity.transformComponent.updateTransform();
 			}
 		});
-		EntityUtils.traverse(entity, function () {
+		EntityUtils.traverse(entity, function (entity) {
 			if (entity.transformComponent._dirty) {
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
-		EntityUtils.traverse(entity, function () {
+		EntityUtils.traverse(entity, function (entity) {
 			if (entity.meshDataComponent) {
 				this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}
@@ -53,7 +53,9 @@ define([
 		}
 
 		var attributeMap = meshData.attributeMap;
-		for (var key in attributeMap) {
+		var keys = Object.keys(attributeMap);
+		for (var ii = 0, l = keys.length; ii < l; ii++) {
+			var key = keys[ii];
 			var map = attributeMap[key];
 			var attribute = this.vertexData[key];
 			if (!attribute) {
@@ -73,7 +75,7 @@ define([
 			var viewLength = view.length;
 			var array = attribute.array;
 			if (key === MeshData.POSITION) {
-				for (var i = 0; i < viewLength; i += 3) {
+				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.matrix.applyPostPoint(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
@@ -81,7 +83,7 @@ define([
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.NORMAL) {
-				for (var i = 0; i < viewLength; i += 3) {
+				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
@@ -89,12 +91,13 @@ define([
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.TANGENT) {
-				for (var i = 0; i < viewLength; i += 3) {
+				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					transform.rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[this.vertexCounter * map.count + i + 3] = view[i + 3];
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {
@@ -111,8 +114,7 @@ define([
 
 		if(meshData.indexLengths) {
 			this.indexLengths = this.indexLengths.concat(meshData.indexLengths);
-		}
-		else {
+		} else {
 			this.indexLengths = this.indexLengths.concat(meshData.getIndexBuffer().length);
 		}
 
@@ -135,6 +137,23 @@ define([
 
 		meshData.indexLengths = this.indexLengths;
 		meshData.indexModes = this.indexModes;
+
+		// Diet down the index arrays
+		var indexMode = meshData.indexModes[0];
+		var indexCount = 0;
+		var indexModes = [];
+		var indexLengths = [];
+		for (var i = 0; i < meshData.indexModes.length; i++) {
+			var mode = meshData.indexModes[i];
+			indexCount += meshData.indexLengths[i];
+			if (indexMode !== mode || i === meshData.indexModes.length - 1) {
+				indexModes.push(indexMode);
+				indexLengths.push(indexCount);
+				indexMode = mode;
+			}
+		}
+		meshData.indexLengths = indexLengths;
+		meshData.indexModes = indexModes;
 
 		this.meshDatas.push(meshData);
 

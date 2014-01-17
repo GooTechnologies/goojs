@@ -172,8 +172,12 @@ function (
 			// record.attributes = this.attributes;
 			// record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
-			for (var key in this.attributes) {
-				var attribute = attributeMap[this.attributes[key]];
+
+			var attributes = this.attributes;
+			var keys = Object.keys(attributes);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var key = keys[i];
+				var attribute = attributeMap[attributes[key]];
 				if (!attribute) {
 					// TODO: log or what?
 					continue;
