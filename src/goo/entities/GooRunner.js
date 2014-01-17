@@ -99,9 +99,9 @@ function (
 		// register components - do it in a separate method; can be an array
 		this.world.registerComponent(TransformComponent);
 		this.world.registerComponent(MeshDataComponent);
-//		this.world.registerComponent(MeshRendererComponent);
-//		this.world.registerComponent(CameraComponent);
-//		this.world.registerComponent(LightComponent);
+		this.world.registerComponent(MeshRendererComponent);
+		this.world.registerComponent(CameraComponent);
+		this.world.registerComponent(LightComponent);
 
 		this.doProcess = true;
 		this.doRender = true;
