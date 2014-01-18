@@ -11,7 +11,7 @@ define([
 	ComponentHandler,
 	RSVP,
 	StringUtil,
-	pu,
+	PromiseUtil,
 	_,
 	EntityUtils
 ) {
@@ -100,7 +100,7 @@ define([
 		}.bind(this));
 
 		if (promises.length) {
-			return RSVP.all(promises).then(function(/*components*/) {
+			return PromiseUtil.optimisticAll(promises).then(function(/*components*/) {
 				if (!!config.hidden) {
 					EntityUtils.hide(object);
 				} else {
@@ -110,7 +110,7 @@ define([
 			});
 		} else {
 			console.error("No promises in " + ref + " ", config);
-			return pu.createDummyPromise(object);
+			return PromiseUtil.createDummyPromise(object);
 		}
 	};
 
