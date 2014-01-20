@@ -41,31 +41,43 @@ function (
 		this._updated = false;
 
 		this.api = {
-			setTranslation: function() {
+			setTranslation: function () {
 				TransformComponent.prototype.setTranslation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
-			setScale: function() {
+			setScale: function () {
 				TransformComponent.prototype.setScale.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
-			addTranslation: function() {
+			addTranslation: function () {
 				TransformComponent.prototype.addTranslation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
-			setRotation: function() {
+			setRotation: function () {
 				TransformComponent.prototype.setRotation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
 			lookAt: function() {
 				TransformComponent.prototype.lookAt.apply(this, arguments);
 				return this.entity;
+			}.bind(this),
+
+			// attachChild: Entity | Selection, boolean -> this
+			attachChild: function (entity) {
+				this.attachChild(entity.transformComponent);
+				return this.entity;
+			}.bind(this),
+
+			// detachChild: Entity | Selection, boolean -> this
+			detachChild: function (entity) {
+				this.detachChild(entity.transformComponent);
+				return this.entity;
 			}.bind(this)
 
-			// add child // but with different signature
-			// remove child // but with different signature
+			// traverse ?
+			// traverseUp ?
 
-			// parent: -> Entity/Selection ?
+			// parent: -> Entity/Selection ? // should return the 'bigger' type
 			// children -> Entity[]/Selection ?
 			// parents: -> Entity[]/Selection ?
 		};
@@ -139,6 +151,7 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
+	 *
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} up Up vector.
 	 * @return {TransformComponent} Self for chaining.
@@ -158,6 +171,7 @@ function (
 
 	/**
 	 * Handles attaching itself to an entity. Should only be called by the engine.
+	 * @private
 	 * @param entity
 	 */
 	TransformComponent.prototype.attached = function (entity) {
@@ -166,10 +180,11 @@ function (
 
 	/**
 	 * Handles detaching itself to an entity. Should only be called by the engine.
+	 * @private
 	 * @param entity
 	 */
 	TransformComponent.prototype.detached = function (/*entity*/) {
-		this.entity = undefined; // used to be 'undefined' when it was handled in Entity; should instead be null
+		this.entity = undefined; //! AT: used to be 'undefined' when it was handled in Entity; should instead be null
 	};
 
 	/**
@@ -246,6 +261,7 @@ function (
 	};
 
 	TransformComponent.applyOnEntity = function(obj, entity) {
+		//! AT: add support for Vector3, and generic {x, y, z} objects
 		if (Array.isArray(obj) && obj.length === 3) {
 			var transformComponent = new TransformComponent();
 			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);

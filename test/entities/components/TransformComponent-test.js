@@ -130,5 +130,34 @@ define([
 			expect(entity.setRotation(new Vector3(1, 2, 3))).toBe(entity);
 			expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
 		});
+
+		it('returns the parent host entity when calling attachChild/detachChild on it', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			expect(parent.attachChild(child)).toBe(parent);
+			expect(parent.detachChild(child)).toBe(parent);
+		});
+
+		it('calls TransformComponent.attachChild from the injected "pair" method', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			parent.attachChild(child);
+
+			expect(parent.transformComponent.children).toEqual([child.transformComponent]);
+			expect(child.transformComponent.parent).toEqual(parent.transformComponent);
+		});
+
+		it('calls TransformComponent.detachChild from the injected "pair" method', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			parent.attachChild(child);
+			parent.detachChild(child);
+
+			expect(parent.transformComponent.children).toEqual([]);
+			expect(child.transformComponent.parent).toBeFalsy();
+		});
 	});
 });

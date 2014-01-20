@@ -64,7 +64,7 @@ define([
 	/**
 	 * Update world bounding
 	 *
-	 * @param {BoundingVolume} bounding Bounding volumen in local space
+	 * @param {BoundingVolume} bounding Bounding volume in local space
 	 * @param {Transform} transform Transform to apply to local bounding -> world bounding
 	 */
 	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
@@ -72,6 +72,9 @@ define([
 	};
 
 	MeshRendererComponent.applyOnEntity = function(obj, entity) {
+		//! AT: add support for multiple materials
+		// or a texture
+		// or a {r, g, b} object
 		if (obj instanceof Material) {
 			var meshRendererComponent = new MeshRendererComponent();
 			meshRendererComponent.materials.push(obj);
