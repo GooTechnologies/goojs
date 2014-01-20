@@ -183,21 +183,19 @@ function(
 
 	FlyControlScript.prototype.setupKeyControls = function() {
 		this.domElement.setAttribute('tabindex', -1);
-		var boundKeyDown = keydown.bind(this);
-		var boundKeyUp = keyup.bind(this);
-		this.domElement.addEventListener('keydown', boundKeyDown, false);
-		this.domElement.addEventListener('keyup', boundKeyUp, false);
-
+		if (!this.keydown) {
+			this.keydown = keydown.bind(this);
+		}
+		if (!this.keyup) {
+			this.keyup = keyup.bind(this);
+		}
+		this.domElement.addEventListener('keydown', this.keydown, false);
+		this.domElement.addEventListener('keyup', this.keyup, false);
 	};
 
 	FlyControlScript.prototype.tearDownKeyControls = function() {
-		// REVIEW boundKeyDown won't be the same function here as in setupKeyControls due to bind
-		// Not sure I like the whole setup and teardown all the time either
-		// The way it is now we get a whole heap of keyup and down listeners
-		var boundKeyDown = keydown.bind(this);
-		var boundKeyUp = keyup.bind(this);
-		this.domElement.removeEventListener('keydown', boundKeyDown, false);
-		this.domElement.removeEventListener('keyup', boundKeyUp, false);
+		this.domElement.removeEventListener('keydown', this.keydown, false);
+		this.domElement.removeEventListener('keyup', this.keyup, false);
 	};
 
 	var mousedown = function(event) {
@@ -222,10 +220,9 @@ function(
 		var boundMouseUp = mouseup.bind(this);
 
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		// REVIEW This will cause mouseup outside of canvas to not fire
 		this.domElement.addEventListener('mousemove', boundMouseMove, false);
 		this.domElement.addEventListener('mouseup', boundMouseUp, false);
-		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
+		this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
 		// https://code.google.com/p/chromium/issues/detail?id=244289
