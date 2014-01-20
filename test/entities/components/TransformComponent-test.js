@@ -112,5 +112,23 @@ define([
 			entity.clearComponent('transformComponent');
 			expect(transformComponent.entity).toBeFalsy();
 		});
+
+		it('returns the parent host entity when calling setTranslation on it', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+
+			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
+		});
+
+		it('returns the parent host entity when calling any transform related method on it', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+
+			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.setScale(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.addTranslation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.setRotation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
+		});
 	});
 });

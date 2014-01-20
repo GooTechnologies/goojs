@@ -41,13 +41,33 @@ function (
 		this._updated = false;
 
 		this.api = {
-			setTranslation: this.setTranslation.bind(this),
-			setScale: this.setScale.bind(this),
-			addTranslation: this.addTranslation.bind(this),
-			setRotation: this.setRotation.bind(this),
-			lookAt: this.lookAt.bind(this)
+			setTranslation: function() {
+				TransformComponent.prototype.setTranslation.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			setScale: function() {
+				TransformComponent.prototype.setScale.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			addTranslation: function() {
+				TransformComponent.prototype.addTranslation.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			setRotation: function() {
+				TransformComponent.prototype.setRotation.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			lookAt: function() {
+				TransformComponent.prototype.lookAt.apply(this, arguments);
+				return this.entity;
+			}.bind(this)
+
 			// add child // but with different signature
 			// remove child // but with different signature
+
+			// parent: -> Entity/Selection ?
+			// children -> Entity[]/Selection ?
+			// parents: -> Entity[]/Selection ?
 		};
 	}
 
