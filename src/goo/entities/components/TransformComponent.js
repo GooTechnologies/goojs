@@ -74,8 +74,30 @@ function (
 				return this.entity;
 			}.bind(this)
 
-			// traverse ?
-			// traverseUp ?
+			/* untested!
+			// NB! either keep these or selection.children().each() / selection.parents().each()
+			traverse: function (callback, level) {
+				level = level !== undefined ? level : 0;
+
+				if (callback(this.entity, level) !== false) {
+					for (var i = 0; i < this.children.length; i++) {
+						var childEntity = this.children[i].entity;
+						childEntity.traverse(callback, level + 1);
+					}
+				}
+
+				return this.entity;
+			}.bind(this),
+
+			traverseUp: function (callback) {
+				var transformComponent = this;
+				while (transformComponent.parent && callback(transformComponent.entity) !== false) {
+					transformComponent = transformComponent.parent;
+				}
+
+				return this.entity;
+			}.bind(this)
+			*/
 
 			// parent: -> Entity/Selection ? // should return the 'bigger' type
 			// children -> Entity[]/Selection ?
@@ -261,10 +283,26 @@ function (
 	};
 
 	TransformComponent.applyOnEntity = function(obj, entity) {
-		//! AT: add support for Vector3, and generic {x, y, z} objects
+		var transformComponent = entity.transformComponent;
+
+		if (!transformComponent) {
+			transformComponent = new TransformComponent();
+		}
+
+		var matched = false;
 		if (Array.isArray(obj) && obj.length === 3) {
-			var transformComponent = new TransformComponent();
 			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);
+			matched = true;
+		} else if (obj instanceof Vector3) {
+			transformComponent.transform.translation.setd(obj.data[0], obj.data[1], obj.data[2]);
+			matched = true;
+		} else if (typeof obj === 'object' &&
+			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
+			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
+			matched = true;
+		}
+
+		if (matched) {
 			entity.setComponent(transformComponent);
 			return true;
 		}
