@@ -23,7 +23,7 @@ function(
 	BoundingSphere,
 	BoundingVolume
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.

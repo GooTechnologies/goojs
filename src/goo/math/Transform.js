@@ -199,9 +199,13 @@ function (
 	/**
 	 * Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
-	 * @param {Vector3} up Up vector.
+	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
 	Transform.prototype.lookAt = function (position, up) {
+		if (!up) {
+			up = Vector3.UNIT_Y;
+		}
+
 		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};
