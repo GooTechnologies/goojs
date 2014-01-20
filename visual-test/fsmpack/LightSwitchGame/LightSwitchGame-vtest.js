@@ -1,6 +1,7 @@
 require.config({
 	paths: {
-		"goo": "../../../src/goo"
+		"goo": "../../../src/goo",
+		"fsmpack": "../../../src/fsmpack"
 	}
 });
 
