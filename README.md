@@ -47,6 +47,9 @@ you'll get an error anyway.
 
 This also means that `git commit file.js` may not actually check file.js.
 
+Note: If you get a TypeError on Windows when running the JSHint script, try doing a SET HOME=%HOMEPATH% before running it.
+
+
 Tests
 -----
 
