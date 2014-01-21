@@ -11,6 +11,17 @@ define(['goo/entities/managers/Manager'],
 
 		this._entitiesById = [];
 		this._entityCount = 0;
+
+		this.api = {
+			id: function () {
+				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
+				return ret; //new EntitySelection(ret);
+			}.bind(this),
+			name: function () {
+				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
+				return ret; //new EntitySelection(ret);
+			}.bind(this)
+		};
 	}
 
 	EntityManager.prototype = Object.create(Manager.prototype);
@@ -89,8 +100,11 @@ define(['goo/entities/managers/Manager'],
 	/**
 	 * Get all entities on top level based on the transform scenegraph
 	 *
+	 * @deprecated
 	 * @returns {Array} Array containing all top entities
 	 */
+	//! AT: this assumes that every entity has a transform component
+	// also, it is not used anywhere
 	EntityManager.prototype.getTopEntities = function () {
 		var entities = [];
 		for (var i in this._entitiesById) {

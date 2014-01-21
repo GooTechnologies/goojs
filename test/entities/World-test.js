@@ -220,5 +220,44 @@ define([
 			world.add(component);
 			expect(world._components).toContain(component);
 		});
+
+		// api installing
+		it('installs the api of a manager', function() {
+			var world = new World();
+			expect(world.by.id).toBeTruthy();
+			expect(world.by.name).toBeTruthy();
+		});
+
+		it('does not override existing methods on install', function() {
+			var a = 0;
+			function FishManager() {
+				this.type = 'FishManager';
+				this.api = {
+					color: function() { a += 123; }
+				};
+			}
+			FishManager.prototype = Object.create(Manager.prototype);
+
+
+			var b = 0;
+			function BananaManager() {
+				this.type = 'BananaManager';
+				this.api = {
+					color: function() { b += 234; }
+				};
+			}
+			BananaManager.prototype = Object.create(Manager.prototype);
+
+
+			var world = new World();
+
+			world.setManager(new FishManager());
+			world.setManager(new BananaManager());
+
+			world.by.color();
+
+			expect(a).toEqual(123);
+			expect(b).toEqual(0);
+		});
 	});
 });
