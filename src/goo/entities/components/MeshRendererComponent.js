@@ -72,12 +72,21 @@ define([
 	};
 
 	MeshRendererComponent.applyOnEntity = function(obj, entity) {
-		//! AT: add support for multiple materials
+		var meshRendererComponent = entity.meshRendererComponent;
+
+		if (!meshRendererComponent) {
+			meshRendererComponent = new MeshRendererComponent();
+		}
+
 		// or a texture
 		// or a {r, g, b} object
+		var matched = false;
 		if (obj instanceof Material) {
-			var meshRendererComponent = new MeshRendererComponent();
 			meshRendererComponent.materials.push(obj);
+			matched = true;
+		}
+
+		if (matched) {
 			entity.setComponent(meshRendererComponent);
 			return true;
 		}

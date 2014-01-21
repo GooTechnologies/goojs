@@ -180,7 +180,6 @@ define([
 			var translation = [1, 2, 3];
 			entity.set(translation);
 
-			expect(entity.transformComponent).toBeTruthy();
 			expect(entity.transformComponent).toBe(transformComponent);
 			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
 		});

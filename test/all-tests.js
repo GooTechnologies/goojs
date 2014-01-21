@@ -38,4 +38,5 @@ define([
 	'test/scripts/GroundBoundMovementScript-test',
 	'test/entities/components/MovementComponent-test',
 	'test/entities/World-test',
+	'test/entities/components/MeshRendererComponent-test'
 ], function() {});
