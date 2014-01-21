@@ -127,6 +127,10 @@ create a new branch:
 
     git checkout -b release-x.y  # replace x.y with major and minor version number
 
+Otherwise just check out the existing branch:
+
+    git checkout release-x.y  # replace x.y with major and minor version number
+
 Then create a release (the GOO_VERSION variable is just there to make the commands below work):
 
     export GOO_VERSION=0.5.0
@@ -155,8 +159,6 @@ Tag the release:
 Copy the release to Dropbox:
 
     cp goo-$GOO_VERSION.zip ~/Dropbox/Goo\ Technologies\ AB/2.\ Research\ \&\ Development/Releases/
-
-Upload goo-<version>.zip to the Download page: https://www.gooengine.com/download
 
 ## Building
 To build a regular goo minified version, run
