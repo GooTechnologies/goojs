@@ -12,14 +12,16 @@ function (
 	 * @param {World} world A {@link World} reference
 	 * @param {String} [name] Entity name
 	 */
-	function Entity(world, name) {
+	function Entity(world, name, id) {
+		Entity.entityCount++;
 		this._world = world;
 		this._components = [];
+		this.id = id !== undefined ? id : Entity.entityCount;
 
-		Object.defineProperty(this, 'id', {
+		/*Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,
 			writable : false
-		});
+		});*/
 		this.name = name !== undefined ? name : 'Entity_' + this.id;
 
 		/** Set to true to skip rendering (move to meshrenderercomponent)
