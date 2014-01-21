@@ -1,4 +1,8 @@
-define( /** @lends */ function() {
+define([
+	'goo/util/PromiseUtil'
+], /* @lends */ function(
+	PromiseUtil
+) {
 	"use strict";
 
 	/**
@@ -13,44 +17,65 @@ define( /** @lends */ function() {
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @param {object} options
 	 * @returns {ComponentHandler}
 	 *
 	 */
-	function ConfigHandler(world, getConfig, updateObject, options) {
+	function ConfigHandler(world, getConfig, updateObject) {
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
-		this.options = options;
+		this._objects = {};
 	}
 
-	/*jshint -W099*/
-	/**
-	 * Update engine object based on the config. Should be overridden in subclasses.
-	 * This method is called by #{DynamicLoader} to load new resources into the engine.
-	 *
-	 * @example
-	 * class MyResourceHandler
-	 *		@_register('myResource')
-	 * ...
-	 * 	update: (entity, config)->
-	 * 		component = super(entity, config)
-	 *
-	 * @param {string} ref The ref of this config
-	 * @param {object} config
-	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
+	/*
+	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
+	 * @param {string} ref
+	 * @returns {object} the newly created Entity, Material or other engine object
+	 * @private
 	 */
-	ConfigHandler.prototype.update = function(/*ref, config*/) {};
-
+	ConfigHandler.prototype._create = function(ref) {
+		return this._objects[ref] = {};
+	};
 
 	/**
 	 * Remove the engine object denoted by the given ref. Should be overridden in subclasses.
 	 * This method is called by #{DynamicLoader} to remove resources from the engine.
 	 * Synchronous, returns nothing.
-	 * 
-	 * @param {string} ref The ref of this config
+	 * @param {string} ref
+	 * @private
 	 */
-	ConfigHandler.prototype.remove = function(/*ref, config*/) {};
+	ConfigHandler.prototype._remove = function(ref) {
+		delete this._objects[ref];
+	};
+
+	/*
+	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
+	 * @param {object} config
+	 * @private
+	 */
+	ConfigHandler.prototype._prepare = function(config) {
+		config = config;
+	};
+
+	/**
+	 * Update engine object based on the config. Should be overridden in subclasses.
+	 * This method is called by #{DynamicLoader} to load new resources into the engine.
+	 *
+	 * @param {string} ref The ref of this config
+	 * @param {object} config
+	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
+	 */
+	ConfigHandler.prototype.update = function(ref, config/*, options*/) {
+		if (!config) {
+			this._remove(ref);
+			return PromiseUtil.createDummyPromise();
+		}
+		if (!this._objects[ref]) {
+			this._objects[ref] = this._create(ref);
+		}
+		this._prepare(config);
+		return PromiseUtil.createDummyPromise(this._objects[ref]);
+	};
 
 	ConfigHandler.handlerClasses = {};
 

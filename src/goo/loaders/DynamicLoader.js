@@ -85,6 +85,9 @@ function(
 			'mp3',
 			'wav',
 			'ogg'
+		],
+		bundle: [
+			'bundle'
 		]
 	};
 	_types.asset = _types.texture.concat(
@@ -93,7 +96,7 @@ function(
 		_types.audio
 	);
 
-	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
+	var ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
 	 * @class Class to load objects into the engine, or to update objects based on the data model.
@@ -168,7 +171,6 @@ function(
 	 * @param {object} options {@see DynamicLoader.update}
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
-	 *
 	 */
 	DynamicLoader.prototype.load = function(ref, options) {
 		options = options || {};
@@ -176,7 +178,7 @@ function(
 		if (options.preloadBinaries === true) {
 			this._loadBinariesFromRefs(ref, options).then(update);
 		} else {
-			return update;
+			return update();
 		}
 	};
 
@@ -253,7 +255,6 @@ function(
 	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 	 * @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
-	 *
 	 */
 	DynamicLoader.prototype.update = function(ref, config, options) {
 		var that = this;
@@ -267,10 +268,12 @@ function(
 		// Load ref to config
 		return this._loadRef(ref, options)
 		// Handle config to object
-		.then(that._handle)
+		.then(function(config) {
+			return that._handle(ref, config, options);
+		})
 		// Return all the configs
-		.then(function() {
-			return that._configs;
+		.then(function(object) {
+			return object || that._configs[ref];
 		})
 		.then(null, function(err) {
 			console.error("Error updating " + ref + " " + err);
@@ -284,15 +287,41 @@ function(
 	 *
 	 * @param {string} ref Ref of object to update
 	 * @returns {RSVP.Promise} The promise is resolved when the object is removed, with no argument
-	 *
 	 */
 	DynamicLoader.prototype.remove = function(ref) {
 		delete this._objects[ref];
 		return this._handle(ref, null);
 	};
 
-	// Load/update an object with the given reference into the engine
-	// TODO: Add special handling for bundles
+	/*
+	 * Gets cached handler for type or creates a new one
+	 * @param {string} type
+	 * @returns {ConfigHandler}
+	 * @private
+	 */
+	DynamicLoader.prototype._getHandler = function(type) {
+		var handler = this._handlers[type];
+		if (handler) { return handler; }
+		var Handler = ConfigHandler.getHandler(type);
+		if (Handler) {
+			return this._handlers[type] = new Handler(
+				this._world,
+				this._loadRef.bind(this),
+				this._handle.bind(this)
+			);
+		}
+		return null;
+	};
+
+	/*
+	 * Handles a ref with its loaded config, i e calls the proper config handler
+	 * to create or update the object
+	 *
+	 * @param {string} ref
+	 * @param {object} config
+	 * @param {object} options
+	 * @private
+	 */
 	DynamicLoader.prototype._handle = function(ref, config, options) {
 		var that = this;
 		var cachedObject = this._objects[ref];
@@ -301,35 +330,33 @@ function(
 			return this._objects[ref];
 		} else {
 			var type = DynamicLoader.getTypeForRef(ref);
-			var handler = this._handlers[type];
 
-			if (!handler) {
-				// Create new instance of handler and store it
-				var Handler = ConfigHandler.getHandler(type);
-				if (!Handler) {
-					console.warn("No handler for type " + type);
-					return PromiseUtil.createDummyPromise(null);
-				}
-				handler = this._handlers[type] = new Handler(
-					this._world,
-					this._loadRef.bind(this),
-					this._handle.bind(this),
-					options
-				);
+			if (DynamicLoader._isRefTypeInGroup(ref, 'bundle')) {
+				delete this._configs[ref];
+				this.preload(config);
+				return PromiseUtil.createDummyPromise(this._configs);
 			}
 
-			if (config != null) {
-				// Update object
-				this._objects[ref] = handler.update(ref, config, options).then(
-					function(object) {
-						return that._objects[ref] = object;
-					}
-				);
-			} else {
+			var handler = this._getHandler(type);
+			if (!handler) {
+				console.warn("No handler for type " + type);
+				return PromiseUtil.createDummyPromise(null);
+			}
+
+			if (!config) {
 				// Remove object
 				handler.remove(ref);
 				return PromiseUtil.createDummyPromise(null);
 			}
+
+			// Update object
+			this._objects[ref] = handler.update(ref, config, options).then(
+				function(object) {
+					that._objects[ref] = object;
+					return object;
+				}
+			);
+			return this._objects[ref];
 		}
 	};
 
@@ -344,7 +371,7 @@ function(
 	DynamicLoader.prototype._loadRef = function(ref, options) {
 		var that = this;
 		// Don't load engine shaders through ajax
-		if (ref.indexOf(_ENGINE_SHADER_PREFIX) === 0) {
+		if (ref.indexOf(ENGINE_SHADER_PREFIX) === 0) {
 			this._configs[ref] = PromiseUtil.createDummyPromise(null);
 			return this._configs[ref];
 		}
@@ -390,7 +417,7 @@ function(
 		})
 		.then(null, function(e) {
 			console.error(e);
-			delete this._configs[ref];
+			delete that._configs[ref];
 			throw e;
 		});
 
