@@ -87,6 +87,31 @@ function getOptimizerConfig(ignoreList, outBaseDir) {
 	return config;
 }
 
+function wrap(fileName, head, tail) {
+	fs.readFile(fileName, function (err, data) {
+		if (err) { throw err; }
+		var wrapped = head + data + tail;
+		fs.writeFile(fileName, wrapped, function (err) {
+			if (err) { throw err; }
+			console.log('Done wrapping'.green);
+		});
+	});
+}
+
+function getHeadWrapping() {
+	return '(function(window){function f(){\n';
+}
+
+function getTailWrapping(packName) {
+	return '\n' +
+		'}if(window.localStorage&&window.localStorage.gooPath){\n' +
+			'window.require.config({\n' +
+				'paths:{"' + packName + '":"/goo/' + packName + '"}\n' +
+			'});\n' +
+		'}else f()\n' +
+		'})(window,undefined)';
+}
+
 //exports.pack = function(packName) {
 	// get tha pack name
 	console.log('get tha pack name'.grey);
@@ -126,7 +151,7 @@ function getOptimizerConfig(ignoreList, outBaseDir) {
 		requirejs.optimize(optimizerConfig, function (buildResponse) {
 			// buildResponse is just a text output of the modules included.
 
-			console.log('Done'.green);
+			console.log('Done optimizing'.green);
 
 			console.log('Pack Name: '.grey, packName);
 
@@ -136,6 +161,8 @@ function getOptimizerConfig(ignoreList, outBaseDir) {
 			console.log('-----'.grey);
 			console.log('Ignore List'.grey);
 			console.log(modulesAndDependencies.ignoreList);
+
+			wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(), getTailWrapping(packName));
 		}, function(err) {
 			// optimization err callback
 			// :(
