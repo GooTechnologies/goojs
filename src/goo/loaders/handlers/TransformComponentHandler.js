@@ -92,7 +92,7 @@ define([
 		var that = this;
 
 		function attachChild(component, ref) {
-			that.getConfig(ref).then(function(config) {
+			return that.getConfig(ref, options).then(function(config) {
 				return that.updateObject(ref, config, options);
 			}).then(function(entity) {
 				if (entity && entity.transformComponent) {
