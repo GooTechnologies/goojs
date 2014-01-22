@@ -29,11 +29,10 @@ define([
 
 	/*
 	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
-	 * @param {string} ref
 	 * @returns {object} the newly created Entity, Material or other engine object
 	 * @private
 	 */
-	ConfigHandler.prototype._create = function(/*ref*/) {
+	ConfigHandler.prototype._create = function() {
 		return {};
 	};
 
@@ -71,7 +70,7 @@ define([
 			return PromiseUtil.createDummyPromise();
 		}
 		if (!this._objects[ref]) {
-			this._objects[ref] = this._create(ref);
+			this._objects[ref] = this._create();
 		}
 		this._prepare(config);
 		return PromiseUtil.createDummyPromise(this._objects[ref]);

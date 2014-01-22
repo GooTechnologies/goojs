@@ -39,10 +39,8 @@ define([
 	 * @returns {Entity}
 	 * @private
 	 */
-	EntityHandler.prototype._create = function(ref) {
-		var object = this.world.createEntity();
-		object.id = ref;
-		return object;
+	EntityHandler.prototype._create = function() {
+		return this.world.createEntity();
 	};
 
 	/*
@@ -69,6 +67,7 @@ define([
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
 			if (!entity) { return; }
+			entity.id = ref;
 			var promises = [];
 
 			// Adding/updating components
