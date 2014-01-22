@@ -86,7 +86,7 @@ define([
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @param {object} config
 	 * @param {object} options
-	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	TransformComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;

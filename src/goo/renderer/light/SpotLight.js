@@ -36,6 +36,7 @@ function (
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);
+	SpotLight.prototype.constructor = SpotLight;
 
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);

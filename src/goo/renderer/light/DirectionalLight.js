@@ -21,6 +21,7 @@ function (
 	}
 
 	DirectionalLight.prototype = Object.create(Light.prototype);
+	DirectionalLight.prototype.constructor = DirectionalLight;
 
 	DirectionalLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);

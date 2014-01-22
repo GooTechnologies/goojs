@@ -18,6 +18,7 @@ define([
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);
+	PointLight.prototype.constructor = PointLight;
 
 	PointLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
