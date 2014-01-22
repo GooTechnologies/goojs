@@ -8,6 +8,7 @@ define([], function () {
 	function Selection() {
 		this.stack = [];
 
+		//! AT: may rather use toArray
 		if (arguments.length === 1) {
 			var argument = arguments[0];
 			if (argument instanceof Selection) {
@@ -147,8 +148,10 @@ define([], function () {
 	 * @param that
 	 * @returns {Selection} Returns self to allow chaining
 	 */
-	Selection.prototype.and = function (that) {
-		// convert that to array
+	Selection.prototype.and = function () {
+		if (top === null) { return this; }
+
+		var that = toArray.apply(null, arguments);
 
 		var union = this.top.concat(that);
 		union = removeDuplicates(union);
@@ -164,7 +167,9 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.intersects = function (that) {
-		// convert that to array
+		if (top === null) { return this; }
+
+		var that = toArray.apply(null, arguments);
 
 		var intersection = [];
 
@@ -203,6 +208,8 @@ define([], function () {
 	 */
 	Selection.prototype.without = function (that) {
 		if (top === null) { return this; }
+
+		var that = toArray.apply(null, arguments);
 
 		var difference = [];
 
@@ -287,6 +294,32 @@ define([], function () {
 		}
 
 		return newArray;
+	}
+
+	/**
+	 * Converts anything (nothing, a Selection, an array or more arguments) to an array
+	 * @private
+	 * @returns {*}
+	 */
+	function toArray() {
+		if (arguments.length === 1) {
+			var argument = arguments[0];
+			if (argument instanceof Selection) {
+				if (argument.top) {
+					return argument.top;
+				} else {
+					return [];
+				}
+			} else if (Array.isArray(argument)) {
+				return argument;
+			} else {
+				return [argument];
+			}
+		} else if (arguments.length > 1) {
+			return Array.prototype.slice.call(arguments, 0);
+		} else {
+			return [];
+		}
 	}
 
 	return Selection;
