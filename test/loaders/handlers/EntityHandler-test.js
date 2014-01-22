@@ -1,9 +1,11 @@
 define([
 	'goo/entities/World',
+	'goo/entities/Entity',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs'
 ], function(
 	World,
+	Entity,
 	DynamicLoader,
 	Configs
 ) {
@@ -13,7 +15,7 @@ define([
 		waitsFor(function() { return promise.isResolved; }, 'promise does not get resolved', time);
 	}
 
-	describe('DynamicLoader', function() {
+	describe('EntityHandler', function() {
 		var loader;
 		beforeEach(function() {
 			var world = new World();
@@ -23,23 +25,13 @@ define([
 				ajax: false
 			});
 		});
-
-		it('loads bundle', function() {
-			// Create a bundlewrapper to preload and skip ajax
+		it('loads an entity', function() {
 			var config = Configs.entity();
-			var bundleWrapper = {};
-			var bundleRef = Configs.randomRef('bundle');
-			bundleWrapper[bundleRef] = Configs.get();
-
-			loader.preload(bundleWrapper);
-			// Load bundle
-			var p = loader.load(bundleRef).then(function() {
-				var keys = Object.keys(loader._configs);
-
-				expect(keys).toContain(config.id);
-				expect(loader._configs[config.id].components).toBeDefined();
+			loader.preload(Configs.get());
+			var p = loader.load(config.id).then(function(entity) {
+				expect(entity).toEqual(jasmine.any(Entity));
+				expect(entity.id).toBe(config.id);
 			});
-
 			wait(p);
 		});
 	});
