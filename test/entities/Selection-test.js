@@ -101,9 +101,56 @@ define([
 		// map
 		// reduce
 
-		// and
-		// intersects
-		// without
+		describe('and', function () {
+			it('concatenates two selection with common elements', function () {
+				var array1 = [11, 22, 33, 44, 55];
+				var array2 = [33, 44, 55, 66, 77];
+
+				var selection = new Selection(array1);
+				selection.and(array2);
+
+				array1.forEach(function (element) {
+					expect(selection.contains(element)).toBeTruthy();
+				});
+
+				array2.forEach(function (element) {
+					expect(selection.contains(element)).toBeTruthy();
+				});
+
+				expect(selection.size()).toEqual(7);
+			});
+		});
+
+		describe('intersects', function () {
+			it('intersects two selection with common elements', function () {
+				var array1 = [11, 22, 33, 44, 55];
+				var array2 = [33, 44, 55, 66, 77];
+
+				var selection = new Selection(array1);
+				selection.intersects(array2);
+
+				expect(selection.contains(33)).toBeTruthy();
+				expect(selection.contains(44)).toBeTruthy();
+				expect(selection.contains(55)).toBeTruthy();
+
+				expect(selection.size()).toEqual(3);
+			});
+		});
+
+		describe('without', function () {
+			it('subtracts a collection from another', function () {
+				var array1 = [11, 22, 33, 44, 55];
+				var array2 = [33, 44, 55, 66, 77];
+
+				var selection = new Selection(array1);
+				selection.without(array2);
+
+				expect(selection.contains(11)).toBeTruthy();
+				expect(selection.contains(22)).toBeTruthy();
+
+				expect(selection.size()).toEqual(2);
+			});
+		});
 
 		// andSelf
 		// end

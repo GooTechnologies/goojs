@@ -24,7 +24,7 @@ define([], function () {
 		}
 
 		if (this.stack.length > 0) {
-			removeDuplicates(this.stack[0]);
+			this.stack[0] = removeDuplicates(this.stack[0]);
 		}
 
 		this.top = this.stack.length === 0 ? null : this.stack[0];
@@ -45,6 +45,16 @@ define([], function () {
 		if (top === null) { return false; }
 
 		return this.top.indexOf(element) !== -1;
+	};
+
+	/**
+	 * Returns the size of this selection
+	 * @returns {number}
+	 */
+	Selection.prototype.size = function () {
+		if (top === null) { return 0; }
+
+		return this.top.length;
 	};
 
 	/**
@@ -140,14 +150,10 @@ define([], function () {
 	Selection.prototype.and = function (that) {
 		// convert that to array
 
-		// remove duplicates
-
-		var union;
-
-		union = this.top.concat([]);
-		Array.prototype.push.apply(union, that);
-
+		var union = this.top.concat(that);
+		union = removeDuplicates(union);
 		this.stack.push(union);
+		this.top = union;
 
 		return this;
 	};
@@ -172,6 +178,9 @@ define([], function () {
 		if (that.length > this.top.length) {
 			shortArray = this.top;
 			longArray = that;
+		} else {
+			shortArray = that;
+			longArray = this.top;
 		}
 
 		for (var i = 0; i < shortArray.length; i++) {
@@ -223,7 +232,10 @@ define([], function () {
 
 		var prev = this.stack[this.stack.length - 2];
 
-		// add it with union
+		var union = prev.concat(this.top);
+
+		this.stack.push(union);
+		this.top = union;
 
 		return this;
 	};
@@ -262,7 +274,7 @@ define([], function () {
 		return this.top === null ? [] : this.top.concat([]);
 	};
 
-	//! AT: slow
+	//! AT: slow //will be faster for EntitySelection
 	function removeDuplicates(array) {
 		var newArray = [];
 
