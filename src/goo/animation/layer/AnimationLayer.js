@@ -19,8 +19,9 @@ function (
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
 	 */
-	function AnimationLayer (name) {
+	function AnimationLayer (name, key) {
 		this._name = name;
+		this._key = key;
 
 		this._steadyStates = {};
 		this._currentState = null;
