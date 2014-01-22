@@ -88,7 +88,6 @@ define([
 	 */
 	AnimationLayersHandler.prototype.update = function(ref, config, options) {
 		var that = this;
-
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
 			var promises = [];
 			if (options && options.animation && options.animation.shallow) {

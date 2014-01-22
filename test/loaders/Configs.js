@@ -38,6 +38,25 @@ define([
 			bundle[entity.id] = entity;
 			return entity;
 		},
+		skeleton: function() {
+			var skeleton = Configs.gooObject('skeleton', 'Dummy');
+			skeleton.joints = {};
+			for (var i = 0; i < 6; i++) {
+				skeleton.joints[Configs.randomRef()] = {
+					index: i,
+					parentIndex: i > 0 ? i - 1 : -32768,
+					name: 'Joint_'+i,
+					inverseBindPose: [
+						1,0,0,0,
+						0,1,0,0,
+						0,0,1,0,
+						0,0,0,1
+					]
+				};
+			}
+			bundle[skeleton.id] = skeleton;
+			return skeleton;
+		},
 		animation: function() {
 			var layers = Configs.gooObject('animation', 'Dummy');
 
@@ -85,7 +104,7 @@ define([
 			clip.binaryRef = Configs.binary(128);
 
 			clip.channels = {};
-			for(var i = 0; i < 5; i++) {
+			for(var i = 0; i < 6; i++) {
 				clip.channels[Configs.randomRef()] = Configs.clipChannel(i);
 			}
 			bundle[clip.id] = clip;
@@ -163,6 +182,13 @@ define([
 						darkness: 0.5
 					});
 				}
+				return config;
+			},
+			animation: function() {
+				var config = {
+					layersRef: Configs.animation().id,
+					poseRef: Configs.skeleton().id
+				};
 				return config;
 			}
 		},

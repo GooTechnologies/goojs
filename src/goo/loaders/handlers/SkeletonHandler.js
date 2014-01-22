@@ -4,60 +4,62 @@ define([
 	'goo/animation/Skeleton',
 	'goo/animation/SkeletonPose',
 	'goo/loaders/JsonUtils',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ], function(
 		ConfigHandler,
 		Joint,
 		Skeleton,
 		SkeletonPose,
 		JsonUtils,
-		pu
+		pu,
+		_
 ) {
 	"use strict";
 
+	/*
+	 * @class Handler for loading skeletons into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 */
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
 
 	SkeletonHandler.prototype = Object.create(ConfigHandler.prototype);
+	SkeletonHandler.prototype.constructor = SkeletonHandler;
 	ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
-	SkeletonHandler.prototype._create = function(skeletonConfig) {
-		var joints = [];
-		for (var i = 0; i < skeletonConfig.joints.length; i++) {
-			var jointConfig = skeletonConfig.joints[i];
-			var joint = new Joint(jointConfig.name);
-			joint._index = Math.round(jointConfig.index);
-			joint._parentIndex = Math.round(jointConfig.parentIndex);
-			var parseTransform;
-			if (jointConfig.inverseBindPose.matrix) {
-				parseTransform = JsonUtils.parseTransformMatrix;
-			} else if (jointConfig.inverseBindPose.rotation.length === 4) {
-				parseTransform = JsonUtils.parseTransformQuat;
-			} else if (jointConfig.inverseBindPose.rotation.length === 3) {
-				parseTransform = JsonUtils.parseTransformEuler;
-			} else {
-				parseTransform = JsonUtils.parseTransform;
-			}
-			joint._inverseBindPose.copy(parseTransform(jointConfig.inverseBindPose));
-			if (!jointConfig.inverseBindPose.matrix) {
-				joint._inverseBindPose.update();
-			}
-			joints.push(joint);
+	/*
+	 * Adds/updates/removes a skeleton. A new Skeleton is always created, but skeletons
+	 * are rarely updated.
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
+	 */
+	SkeletonHandler.prototype.update = function(ref, config/*, options*/) {
+		if (!config) {
+			return pu.createDummyPromise();
 		}
+		var joints = [];
+		_.forEach(config.joints, function(jointConfig) {
+			var joint = new Joint(jointConfig.name);
+			joint._index = jointConfig.index;
+			joint._parentIndex = jointConfig.parentIndex;
+			joint._inverseBindPose.matrix.copy(JsonUtils.parseMatrix4(jointConfig.inverseBindPose));
 
-		var skeleton = new Skeleton(skeletonConfig.name, joints);
+			joints.push(joint);
+		}, null, 'index');
+
+		var skeleton = new Skeleton(config.name, joints);
 		var pose = new SkeletonPose(skeleton);
 		pose.setToBindPose();
-		return pose;
-	};
 
-	SkeletonHandler.prototype.update = function(ref, config) {
-		var skeleton = this._create(config);
-		return pu.createDummyPromise(skeleton);
+		return pu.createDummyPromise(pose);
 	};
-
-	SkeletonHandler.prototype.remove = function(/*ref*/) {};
 
 	return SkeletonHandler;
 });
