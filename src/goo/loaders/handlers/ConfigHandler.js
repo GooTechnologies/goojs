@@ -56,6 +56,19 @@ define([
 		config = config;
 	};
 
+	/*
+	 * Loads object for given ref
+	 * @param {string} ref
+	 * @param {object} options
+	 * @private
+	 */
+	ConfigHandler.prototype._load = function(ref, options) {
+		var update = this.updateObject.bind(this);
+		return this.getConfig(ref, options).then(function(config) {
+			return update(ref, config, options);
+		});
+	};
+
 	/**
 	 * Update engine object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{DynamicLoader} to load new resources into the engine.

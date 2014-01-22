@@ -52,6 +52,19 @@ define([
 		entity.clearComponent(this._type);
 	};
 
+	/*
+	 * Loads object for given ref
+	 * @param {string} ref
+	 * @param {object} options
+	 * @private
+	 */
+	ComponentHandler.prototype._load = function(ref, options) {
+		var update = this.updateObject.bind(this);
+		return this.getConfig(ref, options).then(function(config) {
+			return update(ref, config, options);
+		});
+	};
+
 	/**
 	 * Update engine component object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{EntityHandler} to load new component configs into the engine.

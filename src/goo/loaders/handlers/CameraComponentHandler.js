@@ -77,6 +77,7 @@ define([
 	 */
 	CameraComponentHandler.prototype.update = function(entity, config, options) {
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			component.camera.setProjectionMode(config.projectionMode);
 			component.camera.lockedRatio = config.lockedRatio || false;
 			if (config.projectionMode === 0) {
