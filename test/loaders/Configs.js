@@ -38,6 +38,84 @@ define([
 			bundle[entity.id] = entity;
 			return entity;
 		},
+		animation: function() {
+			var layers = Configs.gooObject('animation', 'Dummy');
+
+			layers.layers = {};
+
+			for (var i = 5; i >= 0; i--) {
+				var layerKey = Configs.randomRef();
+
+				layers.layers[layerKey] = {
+					sortValue: i,
+					blendWeight: 1,
+					defaultState: 'default',
+					states: {
+						'default': {
+							stateRef: Configs.animstate().id
+						}
+					},
+					transitions: {
+						'*': {
+							type: 'Fade',
+							fadeTime: 1.2
+						}
+					}
+				};
+			}
+
+			bundle[layers.id] = layers;
+			return layers;
+		},
+		animstate: function() {
+			var state = Configs.gooObject('animstate', 'Dummy');
+
+			state.clipSource = {
+				type: 'Clip',
+				clipRef: Configs.clip().id,
+				loopCount: -1,
+				timeScale: 1
+			};
+
+			bundle[state.id] = state;
+			return state;
+		},
+		clip: function() {
+			var clip = Configs.gooObject('clip', 'Dummy');
+			clip.binaryRef = Configs.binary(128);
+
+			clip.channels = {};
+			for(var i = 0; i < 5; i++) {
+				clip.channels[Configs.randomRef()] = Configs.clipChannel(i);
+			}
+			bundle[clip.id] = clip;
+			return clip;
+		},
+		clipChannel: function(index, samples) {
+			index = (index !== undefined) ? index : 0;
+			samples = samples || 4;
+
+			var channel = {
+				blendType: 'Linear',
+				jointIndex: index,
+				name: 'dummy_joint_'+index,
+				times: [0,samples,'float32'],
+				translationSamples: [4, samples * 3, 'float32'],
+				rotationSamples: [16, samples * 4, 'float32'],
+				scaleSamples: [32, samples * 3, 'float32'],
+				type: 'Joint'
+			};
+			return channel;
+		},
+		binary: function(size) {
+			var arr = new Float32Array(size);
+			for (var i = 0; i < size; i++) {
+				arr[i] = i / size;
+			}
+			var ref = Configs.randomRef('bin');
+			bundle[ref] = arr.buffer;
+			return ref;
+		},
 		component: {
 			transform: function(translation, rotation, scale) {
 				translation = (translation) ? translation.slice() : [0,0,0];
