@@ -39,5 +39,7 @@ define([
 	'test/entities/components/MovementComponent-test',
 	'test/entities/World-test',
 	'test/entities/components/MeshRendererComponent-test',
-	'test/renderer/Light-test'
+	'test/renderer/Light-test',
+	'test/entities/Selection-test',
+	'test/entities/EntitySelection-test'
 ], function() {});

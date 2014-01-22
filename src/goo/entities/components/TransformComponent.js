@@ -1,13 +1,15 @@
 define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/entities/EntitySelection'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
-	Component
+	Component,
+	EntitySelection
 ) {
 	'use strict';
 
@@ -72,6 +74,14 @@ function (
 			detachChild: function (entity) {
 				this.detachChild(entity.transformComponent);
 				return this.entity;
+			}.bind(this),
+
+			children: function () {
+				return new EntitySelection(this.entity).children();
+			}.bind(this),
+
+			parent: function () {
+				return new EntitySelection(this.entity).parent();
 			}.bind(this)
 
 			/* untested!
@@ -99,9 +109,7 @@ function (
 			}.bind(this)
 			*/
 
-			// parent: -> Entity/Selection ? // should return the 'bigger' type
-			// children -> Entity[]/Selection ?
-			// parents: -> Entity[]/Selection ?
+			// parents: -> Entity[]/Selection ? // the whole history of parents?
 		};
 	}
 
