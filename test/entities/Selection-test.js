@@ -97,9 +97,41 @@ define([
 			});
 		});
 
-		// filter
-		// map
-		// reduce
+		describe('filter', function () {
+			it('filters out elements', function () {
+				var array = [11, 22, 33, 44, 55];
+				var selection = new Selection(array);
+
+				var predicate = function (element) { return element % 2 === 0; };
+				selection.filter(predicate);
+
+				expect(selection.toArray()).toEqual(array.filter(predicate));
+			});
+		});
+
+		describe('map', function () {
+			it('gets a new selection by applying a function over every element of the previous selection', function () {
+				var array = [11, 22, 33, 44, 55];
+				var selection = new Selection(array);
+
+				var fun = function (element) { return element * 10; };
+				selection.map(fun);
+
+				expect(selection.toArray()).toEqual(array.map(fun));
+			});
+		});
+
+		describe('reduce', function () {
+			it('reduces the elements in a selection', function () {
+				var array = [11, 22, 33, 44, 55];
+				var selection = new Selection(array);
+
+				var fun = function (prev, cur) { return prev + cur; };
+				selection.reduce(fun, 123);
+
+				expect(selection.toArray()).toEqual([array.reduce(fun, 123)]);
+			});
+		});
 
 		describe('and', function () {
 			it('concatenates two selection with common elements', function () {
@@ -152,9 +184,53 @@ define([
 			});
 		});
 
-		// andSelf
-		// end
+		describe('andSelf', function () {
+			it('add the previous selection to the current one', function () {
+				var array = [11, 22, 33, 44, 55];
 
-		// toArray
+				var selection = new Selection(array);
+				selection.map(function (element) { return element * 10; });
+				selection.andSelf();
+
+				array.forEach(function (element) {
+					expect(selection.contains(element)).toBeTruthy();
+					expect(selection.contains(element * 10)).toBeTruthy();
+				});
+
+				expect(selection.size()).toEqual(array.length * 2);
+			});
+		});
+
+		describe('end', function () {
+			it('revert back to a previous selection', function () {
+				var array = [11, 22, 33, 44, 55];
+
+				var selection = new Selection(array);
+				selection.map(function (element) { return element * 10; });
+				selection.end();
+
+				array.forEach(function (element) {
+					expect(selection.contains(element)).toBeTruthy();
+				});
+
+				expect(selection.size()).toEqual(array.length);
+			});
+		});
+
+		describe('toArray', function () {
+			it('converts a selection to an array', function () {
+				var array = [11, 22, 33, 44, 55];
+
+				var selection = new Selection(array);
+
+				expect(selection.toArray()).toEqual(array);
+			});
+
+			it('converts an empty selection to an empty array', function () {
+				var selection = new Selection();
+
+				expect(selection.toArray()).toEqual([]);
+			});
+		});
 	});
 });

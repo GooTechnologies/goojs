@@ -133,7 +133,7 @@ define([], function () {
 		//! AT: this check should be done automatically before each method
 		if (top === null) { return this; }
 
-		var top = this.top.reduce(fun, initialValue);
+		var top = [this.top.reduce(fun, initialValue)];
 		this.stack.push(top);
 		this.top = top;
 
@@ -233,7 +233,7 @@ define([], function () {
 		var prev = this.stack[this.stack.length - 2];
 
 		var union = prev.concat(this.top);
-
+		union = removeDuplicates(union);
 		this.stack.push(union);
 		this.top = union;
 
