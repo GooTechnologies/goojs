@@ -30,6 +30,7 @@ define([
 	}
 
 	EntityHandler.prototype = Object.create(ConfigHandler.prototype);
+	EntityHandler.prototype.constructor = EntityHandler;
 	ConfigHandler._registerClass('entity', EntityHandler);
 
 	/*
@@ -65,38 +66,35 @@ define([
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	EntityHandler.prototype.update = function(ref, config, options) {
-		if (!config) {
-			this._remove(ref);
-			return PromiseUtil.createDummyPromise(null);
-		}
-		ConfigHandler.prototype.update.apply(this, arguments);
-		var entity = this._objects[ref];
-		var promises = [];
+		var that = this;
+		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
+			if (!entity) { return; }
+			var promises = [];
 
-		// Adding/updating components
-		for (var type in config.components) {
-			var p = this._updateComponent(entity, type, config.components[type], options);
-			if (p) { promises.push(p); }
-			else { console.error("Error handling component " + name); }
-		}
-
-		// Removing components
-		var components = entity._components;
-		for(var i = 0; i < components.length; i++) {
-			var type = this._getComponentType(components[i]);
-			if (!config.components[type]) {
-				this._updateComponent(entity, type, null, options);
+			// Adding/updating components
+			for (var type in config.components) {
+				var p = that._updateComponent(entity, type, config.components[type], options);
+				if (p) { promises.push(p); }
+				else { console.error("Error handling component " + name); }
 			}
-		}
 
-		// When all is done, hide or show and return
-		return PromiseUtil.optimisticAll(promises).then(function(/*components*/) {
-			if (config.hidden) {
-				EntityUtils.hide(entity);
-			} else {
-				EntityUtils.show(entity);
+			// Removing components
+			var components = entity._components;
+			for(var i = 0; i < components.length; i++) {
+				var type = that._getComponentType(components[i]);
+				if (!config.components[type]) {
+					that._updateComponent(entity, type, null, options);
+				}
 			}
-			return entity;
+			// When all is done, hide or show and return
+			return PromiseUtil.optimisticAll(promises).then(function(/*components*/) {
+				if (config.hidden) {
+					EntityUtils.hide(entity);
+				} else {
+					EntityUtils.show(entity);
+				}
+				return entity;
+			});
 		});
 	};
 

@@ -33,8 +33,8 @@ define([
 	 * @returns {object} the newly created Entity, Material or other engine object
 	 * @private
 	 */
-	ConfigHandler.prototype._create = function(ref) {
-		return this._objects[ref] = {};
+	ConfigHandler.prototype._create = function(/*ref*/) {
+		return {};
 	};
 
 	/**
