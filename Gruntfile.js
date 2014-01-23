@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 
 		wrapperHead +=
 			'/* Goo Engine ' + engineVersion + '\n' +
-			' * Copyright 2013 Goo Technologies AB\n' +
+			' * Copyright 2014 Goo Technologies AB\n' +
 			' */\n' +
 			'(function(window) {';
 
