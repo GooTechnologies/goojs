@@ -129,8 +129,13 @@ function(
 					meshBuilder.addMeshData(entity.meshDataComponent.meshData, calcTransform);
 
 					if (removeOld) {
-						entity.clearComponent('meshDataComponent');
-						entity.clearComponent('meshRendererComponent');
+						// Remove empty leaf children
+						if (entity._components.length === 3 && entity.transformComponent.children.length === 0) {
+							entity.removeFromWorld();
+						} else {
+							entity.clearComponent('meshDataComponent');
+							entity.clearComponent('meshRendererComponent');
+						}
 					} else {
 						entity.skip = true;
 						entity.hidden = true;
