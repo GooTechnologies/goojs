@@ -77,6 +77,9 @@ function(
 			'png',
 			'gif'
 		],
+		video: [
+			'mp4'
+		],
 		binary: [
 			'dat',
 			'bin'
@@ -397,6 +400,8 @@ function(
 
 		if (DynamicLoader._isRefTypeInGroup(ref, 'image')) {
 			promise = this._ajax.loadImage(url);
+		} else if (DynamicLoader._isRefTypeInGroup(ref, 'video')) {
+			promise = this._ajax.loadVideo(url);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary')) {
 			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'texture')) {

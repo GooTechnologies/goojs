@@ -81,7 +81,7 @@ define([
 	/*
 	 * Creates a (somewhat) empty material.
 	 * @param {string} ref will be the entity's id
-	 * @returns {Entity}
+	 * @returns {Material}
 	 * @private
 	 */
 	MaterialHandler.prototype._create = function() {
@@ -93,7 +93,7 @@ define([
 	 * @param {string} ref
 	 * @param {object|null} config
 	 * @param {object} options
-	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
+	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
 	 */
 	MaterialHandler.prototype.update = function(ref, config, options) {
 		var that = this;
@@ -137,7 +137,6 @@ define([
 				material.shader = Material.createShader(ShaderLib[shaderName]);
 				return material;
 			}
-			console.log(shaderRef);
 			var p = that._load(shaderRef, options).then(function(shader) {
 				material.shader = shader;
 			}).then(null, function(err) {

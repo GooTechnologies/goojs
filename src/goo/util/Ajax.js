@@ -21,7 +21,7 @@ function(
 	function Ajax(progressCallback) {
 		this._loadStack = [];
 		this._callback = progressCallback;
-
+		this._imageCache = {};
 	}
 
 	/**
@@ -142,20 +142,24 @@ function(
 	 *   // handle {@link Image} image
 	 * });
 	 * @param {string} url Path to whatever shall be loaded.
+	 * @param {boolean} [needsProgress=false]
+	 * @param {boolean} [reload=false]
 	 * @returns {RSVP.Promise} The promise is resolved with an Image object.
 	 */
-	Ajax.prototype.loadImage = function (url, needsProgress) {
+	Ajax.prototype.loadImage = function (url, needsProgress, reload) {
+		if (this._imageCache[url] && !reload) {
+			return this._imageCache[url];
+		}
 		window.URL = window.URL || window.webkitURL;
 		var promise = new RSVP.Promise();
 		var image = new Image();
+		this._imageCache[url] = image;
 
 		image.addEventListener('load', function () {
 			image.dataReady = true;
-
-            if(window.URL && window.URL.revokeObjectURL != undefined)
-            {
-                window.URL.revokeObjectURL(image.src);
-            }
+			if(window.URL && window.URL.revokeObjectURL !== undefined) {
+				window.URL.revokeObjectURL(image.src);
+			}
 
 			promise.resolve(image);
 		}, false);
@@ -164,7 +168,6 @@ function(
 			console.log(e);
 			promise.reject('Ajax.loadImage(): Couldn\'t load from [' + url + ']');
 		}, false);
-
 
 		if (needsProgress) {
 			// Loading image as binary, then base64 encoding them. Needed to listen to progress
@@ -181,6 +184,23 @@ function(
 		} else {
 			image.src = url;
 		}
+		return promise;
+	};
+
+	Ajax.prototype.loadVideo = function (url, reload) {
+		if (this._imageCache[url] && !reload) {
+			return this._imageCache[url];
+		}
+		var promise = new RSVP.Promise();
+		var video = document.createElement('video');
+		this._imageCache[url] = video;
+		video.addEventListener('canplay', function() {
+			video.dataReady = true;
+			promise.resolve(video);
+		}, false);
+		video.addEventListener('onerror', function(e) {
+			promise.reject('Coult not load video from ' + url + ', ' + e);
+		}, false);
 		return promise;
 	};
 

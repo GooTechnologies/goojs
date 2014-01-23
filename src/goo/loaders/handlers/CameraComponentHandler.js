@@ -35,6 +35,7 @@ define([
 	/*
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
+	 * @returns {object}
 	 * @private
 	 */
 	CameraComponentHandler.prototype._prepare = function(config) {
@@ -54,7 +55,7 @@ define([
 	};
 
 	/*
-	 * Create camera component object based on the config.
+	 * Create camera component object.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {CameraComponent} the created component object
 	 * @private

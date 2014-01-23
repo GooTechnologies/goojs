@@ -17,14 +17,29 @@ define([
 ) {
 	"use strict";
 
+	/*
+	 * @class For handling loading of meshrenderercomponents
+	 * @constructor
+	 * @param {World} world The goo world
+	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @extends ComponentHandler
+	 */
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._type = 'MeshRendererComponent';
 	}
 
 	MeshRendererComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
 	MeshRendererComponentHandler.prototype.constructor = MeshRendererComponentHandler;
+	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
 
+	/*
+	 * Prepare component. Set defaults on config here.
+	 * @param {object} config
+	 * @returns {object}
+	 * @private
+	 */
 	MeshRendererComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
 			materialRefs: [],
@@ -35,6 +50,12 @@ define([
 		});
 	};
 
+	/*
+	 * Create meshrenderer component.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @returns {MeshRendererComponent} the created component object
+	 * @private
+	 */
 	MeshRendererComponentHandler.prototype._create = function(entity) {
 		var component = new MeshRendererComponent();
 		entity.setComponent(component);
