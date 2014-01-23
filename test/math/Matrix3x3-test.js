@@ -31,7 +31,8 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 
 			expect(a).toEqual(new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
 			expect(Matrix3x3.invert(b)).toEqual(new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
-			expect(function() { c.invert(); }).toThrow();
+			expect(c.invert()).toEqual(c);
+			//expect(function() { c.invert(); }).toThrow();
 		});
 
 		it("can determine orthogonality", function() {
