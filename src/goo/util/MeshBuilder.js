@@ -1,12 +1,14 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
+        // 'goo/math/Matrix3x3',
         'goo/entities/EntityUtils'
         ],
 	/* @lends */
 	function (
 		MeshData,
 		Vector3,
+		// Matrix3x3,
 		EntityUtils
 	) {
 	"use strict";
@@ -44,6 +46,7 @@ define([
 		});
 	};
 
+	// var normalMatrix = new Matrix3x3();
 	var vert = new Vector3();
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
@@ -51,6 +54,11 @@ define([
 		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
 			this._generateMesh();
 		}
+
+		var matrix = transform.matrix;
+		var rotation = transform.rotation;
+		// Matrix3x3.invert(transform.rotation, normalMatrix);
+		// Matrix3x3.transpose(normalMatrix, normalMatrix);
 
 		var attributeMap = meshData.attributeMap;
 		var keys = Object.keys(attributeMap);
@@ -77,7 +85,7 @@ define([
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.matrix.applyPostPoint(vert);
+					matrix.applyPostPoint(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
@@ -85,7 +93,7 @@ define([
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.rotation.applyPost(vert);
+					rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
@@ -93,7 +101,7 @@ define([
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += map.count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.rotation.applyPost(vert);
+					rotation.applyPost(vert);
 					array[this.vertexCounter * map.count + i + 0] = vert[0];
 					array[this.vertexCounter * map.count + i + 1] = vert[1];
 					array[this.vertexCounter * map.count + i + 2] = vert[2];
