@@ -94,6 +94,7 @@ define([
 				});
 
 				expect(sum).toBeCloseTo(array.slice(0, 3).reduce(function (prev, cur) { return prev + cur; }, 0));
+				expect(selection.toArray()).toEqual(array);
 			});
 		});
 

@@ -67,10 +67,11 @@ define([], function () {
 		//! AT: this check should be done automatically before each method
 		if (top === null) { return this; }
 
-		//! AT: fun is already a function; can't avoid the function calls
-		var top = this.top.some(fun);
-		this.stack.push(top);
-		this.top = top;
+		for (var i = 0; i < this.top.length; i++) {
+			if (fun(this.top[i]) === false) {
+				break;
+			}
+		}
 
 		return this;
 	};
