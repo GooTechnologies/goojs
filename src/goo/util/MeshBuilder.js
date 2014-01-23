@@ -88,25 +88,25 @@ define([
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					matrix.applyPostPoint(vert);
-					array[vertexPos + i + 0] = vert[0];
-					array[vertexPos + i + 1] = vert[1];
-					array[vertexPos + i + 2] = vert[2];
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert[0];
-					array[vertexPos + i + 1] = vert[1];
-					array[vertexPos + i + 2] = vert[2];
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert[0];
-					array[vertexPos + i + 1] = vert[1];
-					array[vertexPos + i + 2] = vert[2];
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
 					array[vertexPos + i + 3] = view[i + 3];
 				}
 			} else {
