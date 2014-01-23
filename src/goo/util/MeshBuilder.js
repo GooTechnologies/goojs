@@ -82,34 +82,36 @@ define([
 			var view = meshData.getAttributeBuffer(key);
 			var viewLength = view.length;
 			var array = attribute.array;
+			var count = map.count;
+			var vertexPos = this.vertexCounter * count;
 			if (key === MeshData.POSITION) {
-				for (var i = 0; i < viewLength; i += map.count) {
+				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					matrix.applyPostPoint(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[vertexPos + i + 0] = vert[0];
+					array[vertexPos + i + 1] = vert[1];
+					array[vertexPos + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.NORMAL) {
-				for (var i = 0; i < viewLength; i += map.count) {
+				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+					array[vertexPos + i + 0] = vert[0];
+					array[vertexPos + i + 1] = vert[1];
+					array[vertexPos + i + 2] = vert[2];
 				}
 			} else if (key === MeshData.TANGENT) {
-				for (var i = 0; i < viewLength; i += map.count) {
+				for (var i = 0; i < viewLength; i += count) {
 					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
-					array[this.vertexCounter * map.count + i + 3] = view[i + 3];
+					array[vertexPos + i + 0] = vert[0];
+					array[vertexPos + i + 1] = vert[1];
+					array[vertexPos + i + 2] = vert[2];
+					array[vertexPos + i + 3] = view[i + 3];
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {
-					array[this.vertexCounter * map.count + i] = view[i];
+					array[vertexPos + i] = view[i];
 				}
 			}
 		}
@@ -153,11 +155,18 @@ define([
 		var indexLengths = [];
 		for (var i = 0; i < meshData.indexModes.length; i++) {
 			var mode = meshData.indexModes[i];
-			indexCount += meshData.indexLengths[i];
-			if (indexMode !== mode || i === meshData.indexModes.length - 1) {
+			if (indexMode !== mode) {
 				indexModes.push(indexMode);
 				indexLengths.push(indexCount);
 				indexMode = mode;
+				indexCount = 0;
+			}
+			indexCount += meshData.indexLengths[i];
+			if (i === meshData.indexModes.length - 1) {
+				indexModes.push(mode);
+				indexLengths.push(indexCount);
+				indexMode = mode;
+				indexCount = 0;
 			}
 		}
 		meshData.indexLengths = indexLengths;

@@ -17,11 +17,20 @@ function(
 ) {
 	"use strict";
 
+	/**
+	 * @class Runs a mesh combine optimization on the whole scene, based on
+	 * material, components etc
+	 * @param {World} gooWorld An instance of a goo.world object
+	 * @param {number} [gridCount=1] Number of grid segments to split the world in during combine
+	 */
 	function EntityCombiner(gooWorld, gridCount) {
 		this.world = gooWorld;
 		this.gridCount = gridCount || 1;
 	}
 
+	/**
+	 * Runs the combiner
+	 */
 	EntityCombiner.prototype.combine = function() {
 		this.world.process();
 
@@ -33,10 +42,14 @@ function(
 	EntityCombiner.prototype._combineList = function(entities) {
 		var removeOld = true;
 
-		var baseSubs = new Map();
+		var root = this.world.createEntity('root');
+		root.addToWorld();
 		for (var i = 0; i < entities.length; i++) {
-			this._buildSubs(entities[i], baseSubs);
+			root.attachChild(entities[i]);
 		}
+
+		var baseSubs = new Map();
+		this._buildSubs(root, baseSubs);
 
 		var keys = baseSubs.getKeys();
 		for (var i = 0; i < keys.length; i++) {
@@ -47,8 +60,8 @@ function(
 		}
 	};
 
-	EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
-		if (entity.animationComponent || entity.particleComponent) {
+	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
+		if (entity.hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
 
@@ -59,7 +72,8 @@ function(
 			baseSubs.put(entity, subs);
 		}
 
-		if (entity.meshDataComponent && entity.meshRendererComponent && entity.meshRendererComponent.worldBound) {
+		if (entity.meshDataComponent && entity.meshRendererComponent &&
+			entity.meshRendererComponent.worldBound) {
 			subs.push(entity);
 		}
 
@@ -105,7 +119,6 @@ function(
 		}
 
 		var sets = entities.getKeys();
-
 		for (var i = 0; i < sets.length; i++) {
 			var material = sets[i];
 			var entities2 = entities.get(material);
@@ -126,6 +139,7 @@ function(
 					} else {
 						calcTransform.setIdentity();
 					}
+
 					meshBuilder.addMeshData(entity.meshDataComponent.meshData, calcTransform);
 
 					if (removeOld) {
@@ -144,7 +158,7 @@ function(
 				var meshDatas = meshBuilder.build();
 
 				for (var key in meshDatas) {
-					var entity = EntityUtils.createTypicalEntity(this.world, meshDatas[key], material);
+					var entity = this.world.createEntity(meshDatas[key], material);
 					entity.addToWorld();
 					root.attachChild(entity);
 				}
@@ -152,7 +166,7 @@ function(
 		}
 	};
 
-	EntityCombiner.prototype._calculateBounds = function (entities) {
+	EntityCombiner.prototype._calculateBounds = function(entities) {
 		var first = true;
 		var wb = new BoundingBox();
 		for (var i = 0; i < entities.length; i++) {
@@ -178,7 +192,7 @@ function(
 				}
 			});
 		}
-		return Math.max(wb.xExtent, wb.zExtent)*2.0;
+		return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 	};
 
 	function Map() {
