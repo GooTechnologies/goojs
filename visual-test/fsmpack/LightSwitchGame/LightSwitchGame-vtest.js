@@ -1,10 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo",
-		"fsmpack": "../../../src/fsmpack"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
