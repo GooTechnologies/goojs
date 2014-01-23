@@ -1,11 +1,11 @@
 define([
 	'goo/entities/World',
-	'goo/renderer/Shader',
+	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs'
 ], function(
 	World,
-	Shader,
+	Texture,
 	DynamicLoader,
 	Configs
 ) {
@@ -15,24 +15,24 @@ define([
 		waitsFor(function() { return promise.isResolved; }, 'promise does not get resolved', time);
 	}
 
-	describe('ShaderHandler', function() {
+	describe('TextureHandler', function() {
 		var loader;
 		beforeEach(function() {
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: './',
-				ajax: false
+				rootPath: 'loaders/res/',
+				ajax: true
 			});
 		});
-		it('loads a shader', function() {
-			var config = Configs.shader();
+		it('loads a texture with an image', function() {
+			var config = Configs.texture();
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(shader) {
-				expect(shader).toEqual(jasmine.any(Shader));
+			var p = loader.load(config.id).then(function(texture) {
+				expect(texture).toEqual(jasmine.any(Texture));
+				expect(texture.image).toEqual(jasmine.any(Image));
 			});
-			wait(p);
+			wait(p, 1000);
 		});
 	});
-
 });

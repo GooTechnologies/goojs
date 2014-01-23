@@ -2,12 +2,14 @@ define([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
+	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs'
 ], function(
 	World,
 	Material,
 	Shader,
+	Texture,
 	DynamicLoader,
 	Configs
 ) {
@@ -23,19 +25,33 @@ define([
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: './',
-				ajax: false
+				rootPath: 'loaders/res/',
+				ajax: true
 			});
 		});
 		it('loads a material with a shader', function() {
 			var config = Configs.material();
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(material) {
-				console.log(material);
 				expect(material).toEqual(jasmine.any(Material));
 				expect(material.shader).toEqual(jasmine.any(Shader));
 			});
 			wait(p);
+		});
+		it('loads a material with a shader and a texture', function() {
+			var config = Configs.material();
+			config.texturesMapping.DIFFUSE_MAP = {
+				enabled: true,
+				textureRef: Configs.texture().id
+			};
+			loader.preload(Configs.get());
+			var p = loader.load(config.id).then(function(material) {
+				var texture = material.getTexture('DIFFUSE_MAP');
+				expect(material.shader).toEqual(jasmine.any(Shader));
+				expect(texture).toEqual(jasmine.any(Texture));
+				expect(texture.image).toEqual(jasmine.any(Image));
+			});
+			wait(p, 1000);
 		});
 	});
 });

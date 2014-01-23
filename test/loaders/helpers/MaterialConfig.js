@@ -18,6 +18,7 @@ define([
 						enabled: true
 					}
 				},
+				texturesMapping: {},
 				shaderRef: this.shader().id,
 				blendState: {
 					blending: 'NoBlending',
@@ -37,6 +38,21 @@ define([
 				renderQueue: -1
 			});
 			return material;
+		},
+		texture: function() {
+			var texture = this.gooObject('texture', 'Dummy');
+			_.extend(texture, {
+				magFilter: 'Bilinear',
+				minFilter: 'Trilinear',
+				offset: [0,0],
+				repeat: [1,1],
+				imageRef: 'checker.png',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
+				anisotropy: 1,
+				flipY: true
+			});
+			return texture;
 		},
 		shader: function() {
 			var shader = this.gooObject('shader', 'Dummy');
