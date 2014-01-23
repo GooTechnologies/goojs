@@ -155,7 +155,7 @@ define([
 		});
 
 		describe('intersects', function () {
-			it('intersects two selection with common elements', function () {
+			it('intersects two selections with common elements', function () {
 				var array1 = [11, 22, 33, 44, 55];
 				var array2 = [33, 44, 55, 66, 77];
 

@@ -1,15 +1,29 @@
 define([
 	'goo/entities/EntitySelection',
 	'goo/entities/World',
-	'goo/entities/components/TransformComponent'
+	'goo/entities/components/TransformComponent',
+	'goo/entities/Entity'
 ], function (
 	EntitySelection,
 	World,
-	TransformComponent
+	TransformComponent,
+	Entity
 ) {
 	'use strict';
 
 	describe('EntitySelection', function () {
+		function someEntity() {
+			return new Entity();
+		}
+
+		function someEntities(n) {
+			var entities = [];
+			for (var i = 0; i < n; i++) {
+				entities.push(someEntity());
+			}
+			return entities;
+		}
+
 		var world;
 
 		beforeEach(function () {
@@ -106,6 +120,60 @@ define([
 				expect(children.contains(child11)).toBeTruthy();
 				expect(children.contains(child12)).toBeTruthy();
 				expect(children.contains(child31)).toBeTruthy();
+			});
+		});
+
+		describe('and', function () {
+			it('concatenates two selections with common elements', function () {
+				var entities = someEntities(7);
+				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
+				var array2 = [entities[2], entities[3], entities[4], entities[5], entities[6]];
+
+				var selection = new EntitySelection(array1);
+				selection.and(array2);
+
+				array1.forEach(function (entity) {
+					expect(selection.contains(entity)).toBeTruthy();
+				});
+
+				array2.forEach(function (entity) {
+					expect(selection.contains(entity)).toBeTruthy();
+				});
+
+				expect(selection.size()).toEqual(7);
+			});
+		});
+
+		describe('intersects', function () {
+			it('intersects two selection with common entities', function () {
+				var entities = someEntities(7);
+				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
+				var array2 = [entities[2], entities[3], entities[4], entities[5], entities[6]];
+
+				var selection = new EntitySelection(array1);
+				selection.intersects(array2);
+
+				expect(selection.contains(entities[2])).toBeTruthy();
+				expect(selection.contains(entities[3])).toBeTruthy();
+				expect(selection.contains(entities[4])).toBeTruthy();
+
+				expect(selection.size()).toEqual(3);
+			});
+		});
+
+		describe('without', function () {
+			it('subtracts a collection from another', function () {
+				var entities = someEntities(7);
+				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
+				var array2 = [entities[2], entities[3], entities[4], entities[5], entities[6]];
+
+				var selection = new EntitySelection(array1);
+				selection.without(array2);
+
+				expect(selection.contains(entities[0])).toBeTruthy();
+				expect(selection.contains(entities[1])).toBeTruthy();
+
+				expect(selection.size()).toEqual(2);
 			});
 		});
 	});
