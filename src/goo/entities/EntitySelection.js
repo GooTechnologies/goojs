@@ -1,6 +1,11 @@
 define(['goo/entities/Selection'], function (Selection) {
 	'use strict';
 
+	/**
+	 * A specialised selection object for entities
+	 * @extends Selection
+	 * @constructor
+	 */
 	function EntitySelection() {
 		Selection.apply(this, arguments);
 	}
@@ -8,12 +13,11 @@ define(['goo/entities/Selection'], function (Selection) {
 	EntitySelection.prototype = Object.create(Selection.prototype);
 	EntitySelection.prototype.constructor = EntitySelection;
 
-
-
-	// all of these should be optimised for entities since they have ids
-	// momentarily their base class counterparts are used instead
-
-	// set ops
+	/**
+	 * Adds entities to this selection. Any resulting duplicates are removed.
+	 * @param entities {Entity | Entity[] | Entity... | EntitySelection} The entities to add
+	 * @returns {EntitySelection} Returns self to allow chaining
+	 */
 	EntitySelection.prototype.and = function (that) {
 		var union;
 
@@ -51,7 +55,11 @@ define(['goo/entities/Selection'], function (Selection) {
 		return this;
 	};
 
-
+	/**
+	 * Returns the common elements between this selection and the given parameter(s)
+	 * @param entities {Entity | Entity[] | Entity... | EntitySelection}
+	 * @returns {EntitySelection} Returns self to allow chaining
+	 */
 	EntitySelection.prototype.intersects = function (that) {
 		var intersection;
 
@@ -88,7 +96,12 @@ define(['goo/entities/Selection'], function (Selection) {
 		return this;
 	};
 
-	EntitySelection.prototype.without = function (that) {
+	/**
+	 * Removes entities from the current selection
+	 * @param entities {Entity | Entity[] | Entity... | EntitySelection} Entities to remove from the selection
+	 * @returns {EntitySelection} Returns self to allow chaining
+	 */
+	EntitySelection.prototype.without = function () {
 		var difference;
 
 		var that = toArray.apply(null, arguments);
@@ -152,7 +165,7 @@ define(['goo/entities/Selection'], function (Selection) {
 
 
 	/**
-	 * Converts anything (nothing, a Selection, an array or more arguments) to an array
+	 * Converts anything (nothing, an EntitySelection, an array or more arguments) to an array
 	 * @private
 	 * @returns {*}
 	 */

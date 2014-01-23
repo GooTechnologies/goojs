@@ -2,7 +2,7 @@ define([], function () {
 	'use strict';
 
 	/**
-	 * Generic Selection object
+	 * Generic selection class
 	 * @constructor
 	 */
 	function Selection() {
@@ -126,9 +126,9 @@ define([], function () {
 	};
 
 	/**
-	 *
-	 * @param fun
-	 * @param initialValue
+	 * Reduces the entire selection to a single element by applying a function on every element and an accumulated value
+	 * @param fun The function used to reduce the selection
+	 * @param initialValue The value used for the first call of `fun`
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.reduce = function (fun, initialValue) {
@@ -142,11 +142,9 @@ define([], function () {
 		return this;
 	};
 
-
-	// set ops
 	/**
-	 *
-	 * @param that
+	 * Adds elements to this selection. Any resulting duplicates are removed.
+	 * @param elements {Element | Element[] | Element... | Selection} The element(s) to add
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.and = function () {
@@ -163,8 +161,8 @@ define([], function () {
 	};
 
 	/**
-	 *
-	 * @param that
+	 * Returns the common elements between this selection and the given parameter(s)
+	 * @param elements {Element | Element[] | Element... | Selection}
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.intersects = function (that) {
@@ -203,11 +201,11 @@ define([], function () {
 	};
 
 	/**
-	 *
-	 * @param that
+	 * Removes elements from the current selection
+	 * @param elements {Element | Element[] | Element... | Selection} Elements to remove from the selection
 	 * @returns {Selection} Returns self to allow chaining
 	 */
-	Selection.prototype.without = function (that) {
+	Selection.prototype.without = function () {
 		if (top === null) { return this; }
 
 		var that = toArray.apply(null, arguments);
@@ -227,10 +225,8 @@ define([], function () {
 		return this;
 	};
 
-
-	// stack ops
 	/**
-	 * Adds the previous selection to the current selection
+	 * Adds the previous selection to the current selection. Resulting duplicates are removed.
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.andSelf = function () {
@@ -268,7 +264,7 @@ define([], function () {
 
 	/**
 	 * Returns the first object of the selection
-	 * @returns {*}
+	 * @returns {Element}
 	 */
 	Selection.prototype.first = function () {
 		return this.top === null ? null : this.top[0];
