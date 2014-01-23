@@ -1,7 +1,55 @@
-Changes since 0.5.0
+v0.7.0 --- 2014-01-23
 
-Additions:
-EntityUtils.createTypicalEntity can now handle scripts ( arguments with a run function )
+Added:
+ + Made engine IE compliant
+ + Light cookies
+ + More post effects: blur, hatch, HSV, noise
+ + Added refraction to übershader
+ + World fitted terrain script
+ + Movement component
+ + New shape: Cone
+ + Systems can now be prioritized
+ + Support for cloning entities with animations
+ + Entities may preserve their world coordinates when attached/detached from a parent entity
+ + Components may now inject methods in their host entities - TransformComponent injects its setTranslation, addTranslation, lookAt, setRotation, setScale attachChild and detachChild
+ + Correct handling of device pixel ratio
+ + Automatic rescaling of RenderTargets for post effects when window scales
+ + Added camera aspect ratio locking
+ + Various fixes and performance improvements
+
+Experimental additions:
+ + Logic System
+ + Beta support for AmmoComponent to add realistic physical behavior to entities
+ + World has `add` method for adding entities/managers/systems and registering components
+ + Entity has `set` method for adding/or modifying data supported by registered components
+
+Changes:
+ * Bounding boxes are now the default bounding volumes
+ * Methods in Entity and World that did not return anything now return themselves to allow chaining
+ * Tweaked default parameters of Lights, Camera and .lookAt
+
+Deprecated:
+ - EntityUtils.createTypicalEntity(); use world.createEntity() instead
+
+
+v0.6.0 --- 2013-11-06
+
+Added:
+ + Fog
+ + Global ambient
+ + Opacity discard
+ + Separate specularity
+ + EntityUtils.hide / show
+ + Handling of dual transparency
+ + Support for custom start time and end time in animation clips
+ + New texture mapping for the cylinder
+ + Added Hammer touch support to OrbitNPan control script
+
+Fixes:
+ * Various
+
+Removals:
+ - Removed unused/underused/undocumented classes
 
 
 v0.5.0 --- 2013-09-23
