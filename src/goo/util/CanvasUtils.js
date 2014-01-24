@@ -20,7 +20,6 @@ define([],
 		CanvasUtils.prototype.loadCanvasFromPath = function(canvasPath, callback) {
 			// have the image load
 			var img = new Image();
-			img.src = canvasPath;
 
 			// create an off screen canvas
 			var canvas = document.createElement('canvas');
@@ -35,6 +34,11 @@ define([],
 				context.drawImage(img, 0, 0);
 				callback(canvas);
 			};
+			img.onerror = function() {
+				console.error('Unable to load: ' + canvasPath);
+			};
+
+			img.src = canvasPath;
 		};
 
 		/**
