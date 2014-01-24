@@ -24,9 +24,10 @@ else:
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version, '--bundle-require'])
+
 # building packs
-subprocess.check_call(['node', 'tools/buildPack.js', 'fsmpack'])
-subprocess.check_call(['node', 'tools/buildPack.js', 'geometrypack'])
+subprocess.check_call(['node', 'tools/buildPack.js', 'fsmpack', version])
+subprocess.check_call(['node', 'tools/buildPack.js', 'geometrypack', version])
 
 subprocess.check_call([command, 'jsdoc'])
 subprocess.check_call([command, 'visualtoc'])
