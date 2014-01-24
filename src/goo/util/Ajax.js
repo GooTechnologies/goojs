@@ -51,9 +51,8 @@ function(
 	 * @param {object} options
 	 * @param {string} options.url
 	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
-	 * @private
 	 */
-	Ajax.prototype._get = function(options) {
+	Ajax.prototype.get = function(options) {
 		options = options || {};
 		var url = options.url || '';
 
@@ -139,7 +138,7 @@ function(
 			ajaxProperties.responseType = Ajax.ARRAY_BUFFER;
 		}
 
-		return this._cache[path] = this._get(ajaxProperties)
+		return this._cache[path] = this.get(ajaxProperties)
 		.then(function(request) {
 			if (typeInGroup(type, 'bundle')) {
 				var bundle = JSON.parse(request.response);

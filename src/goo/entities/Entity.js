@@ -13,7 +13,6 @@ function (
 	 * @param {String} [name] Entity name
 	 */
 	function Entity(world, name, id) {
-		Entity.entityCount++;
 		this._world = world;
 		this._components = [];
 		this.id = id !== undefined ? id : Entity.entityCount;
@@ -31,6 +30,7 @@ function (
 		this.skip = false;
 
 		this.hidden = false;
+		Entity.entityCount++;
 	}
 
 	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
