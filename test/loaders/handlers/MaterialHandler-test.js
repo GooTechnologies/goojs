@@ -2,6 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
+	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs'
@@ -9,6 +10,7 @@ define([
 	World,
 	Material,
 	Shader,
+	ShaderLib,
 	Texture,
 	DynamicLoader,
 	Configs
@@ -50,6 +52,16 @@ define([
 				expect(material.shader).toEqual(jasmine.any(Shader));
 				expect(texture).toEqual(jasmine.any(Texture));
 				expect(texture.image).toEqual(jasmine.any(Image));
+			});
+			wait(p, 1000);
+		});
+		it('loads a material with an engine shader', function() {
+			var config = Configs.material();
+			config.shaderRef = 'GOO_ENGINE_SHADERS/uber';
+			loader.preload(Configs.get());
+			var p = loader.load(config.id).then(function(material) {
+				expect(material.shader.shaderDefinition).toBe(ShaderLib.uber);
+				console.log(material.shader);
 			});
 			wait(p, 1000);
 		});
