@@ -60,10 +60,9 @@ define([
 	 * @returns {CameraComponent} the created component object
 	 * @private
 	 */
-	CameraComponentHandler.prototype._create = function(entity) {
+	CameraComponentHandler.prototype._create = function() {
 		var camera = new Camera(45, 1, 1, 1000);
 		var component = new CameraComponent(camera);
-		entity.setComponent(component);
 		return component;
 	};
 

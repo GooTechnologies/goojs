@@ -55,10 +55,8 @@ define([
 	 * @returns {TransformComponent} the created component object
 	 * @private
 	 */
-	TransformComponentHandler.prototype._create = function(entity) {
-		var component = new TransformComponent();
-		entity.setComponent(component);
-		return component;
+	TransformComponentHandler.prototype._create = function() {
+		return new TransformComponent();
 	};
 
 	/*

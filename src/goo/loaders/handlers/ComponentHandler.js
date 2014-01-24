@@ -39,7 +39,7 @@ define([
 	 * @private
 	 * @abstract
 	 */
-	ComponentHandler.prototype._create = function(/*entity*/) {
+	ComponentHandler.prototype._create = function() {
 		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
 	};
 
@@ -83,7 +83,8 @@ define([
 		}
 		var component = entity.getComponent(this._type);
 		if(!component) {
-			component = this._create(entity);
+			component = this._create();
+			entity.setComponent(component);
 		}
 		this._prepare(config);
 

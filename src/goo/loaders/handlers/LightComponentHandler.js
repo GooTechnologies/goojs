@@ -75,14 +75,11 @@ define(['goo/loaders/handlers/ComponentHandler',
 
 	/*
 	 * Create light component object based on the config.
-	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {LightComponent} the created component object
 	 * @private
 	 */
-	LightComponentHandler.prototype._create = function(entity) {
-		var component = new LightComponent();
-		entity.setComponent(component);
-		return component;
+	LightComponentHandler.prototype._create = function() {
+		return new LightComponent();
 	};
 
 	/**
