@@ -5,17 +5,18 @@ define([
 function (
 	Vector3
 	) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class A plain lightsource in the scene, to be handled in the shader.
+	 * @class A plain light source in the scene, to be handled in the shader.
+	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function Light () {
+	function Light (color) {
 		/** @type {Vector3} */
 		this.translation = new Vector3();
 
 		/** @type {Vector3} */
-		this.color = new Vector3(1, 1, 1);
+		this.color = color || new Vector3(1, 1, 1);
 
 		/** @type {number} */
 		this.intensity = 1;

@@ -21,6 +21,7 @@ define([
 		beforeEach(function() {
 			world = new World();
 			world.setSystem(new TransformSystem());
+			world.registerComponent(TransformComponent);
 		});
 
 		it('can attach a child component via the transformComponent', function() {
@@ -111,6 +112,85 @@ define([
 			entity.setComponent(transformComponent);
 			entity.clearComponent('transformComponent');
 			expect(transformComponent.entity).toBeFalsy();
+		});
+
+		it('returns the parent host entity when calling setTranslation on it', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+
+			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
+		});
+
+		it('returns the parent host entity when calling any transform related method on it', function() {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+
+			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.setScale(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.addTranslation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.setRotation(new Vector3(1, 2, 3))).toBe(entity);
+			expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
+		});
+
+		it('returns the parent host entity when calling attachChild/detachChild on it', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			expect(parent.attachChild(child)).toBe(parent);
+			expect(parent.detachChild(child)).toBe(parent);
+		});
+
+		it('calls TransformComponent.attachChild from the injected "pair" method', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			parent.attachChild(child);
+
+			expect(parent.transformComponent.children).toEqual([child.transformComponent]);
+			expect(child.transformComponent.parent).toEqual(parent.transformComponent);
+		});
+
+		it('calls TransformComponent.detachChild from the injected "pair" method', function() {
+			var parent = world.createEntity();
+			var child = world.createEntity();
+
+			parent.attachChild(child);
+			parent.detachChild(child);
+
+			expect(parent.transformComponent.children).toEqual([]);
+			expect(child.transformComponent.parent).toBeFalsy();
+		});
+
+
+
+		it('sets a TransformComponent when trying to add a 3 element array', function() {
+			var entity = new Entity(world);
+			var translation = [1, 2, 3];
+			entity.set(translation);
+
+			expect(entity.transformComponent).toBeTruthy();
+			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+		});
+
+		it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function() {
+			var entity = new Entity(world);
+			var transformComponent = new TransformComponent();
+			entity.set(transformComponent);
+
+			var translation = [1, 2, 3];
+			entity.set(translation);
+
+			expect(entity.transformComponent).toBe(transformComponent);
+			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+		});
+
+		it('sets a TransformComponent when trying to add a {x, y, z} object', function() {
+			var entity = new Entity(world);
+			var translation = { x: 1, y: 2, z: 3 };
+			entity.set(translation);
+
+			expect(entity.transformComponent).toBeTruthy();
+			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
 		});
 	});
 });

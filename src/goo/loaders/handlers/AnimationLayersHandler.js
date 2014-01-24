@@ -92,7 +92,7 @@ define([
 
 		if (!layer) {
 			layer = new AnimationLayer(layerConfig.name);
-			layer._layerBlender = new LayerLERPBlender();
+			//layer._layerBlender = new LayerLERPBlender();
 		} else {
 			layer._name = layerConfig.name;
 		}

@@ -46,25 +46,29 @@ function(
 
 			shader.defines = shader.defines || {};
 
-			if (ShaderBuilder.SKYBOX && material.uniforms.reflectivity > 0) {
+			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
 			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
 				material.removeTexture('ENVIRONMENT_CUBE');
 			}
-			if (ShaderBuilder.SKYSPHERE && material.uniforms.reflectivity > 0) {
+			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
 			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
 				material.removeTexture('ENVIRONMENT_SPHERE');
 			}
 
-			for (var attribute in attributeMap) {
+			var keys = Object.keys(attributeMap);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var attribute = keys[i];
 				if (!shader.defines[attribute]) {
 					shader.defines[attribute] = true;
 				}
 			}
 
-			for (var type in textureMaps) {
+			var keys = Object.keys(textureMaps);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var type = keys[i];
 				if (textureMaps[type] === undefined || textureMaps[type] === null) {
 					continue;
 				}
@@ -89,7 +93,9 @@ function(
 			}
 
 			// Exclude in a nicer way
-			for (var attribute in shader.defines) {
+			var keys = Object.keys(shader.defines);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var attribute = keys[i];
 				if (attribute === 'MAX_POINT_LIGHTS' ||
 					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
 					attribute === 'MAX_SPOT_LIGHTS' ||
@@ -260,7 +266,8 @@ function(
 
 				fragment.push(
 					'{',
-						'float shadow = 1.0;'
+						'float shadow = 1.0;',
+						'vec3 normalizedViewPosition = normalize(viewPosition);'
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
@@ -390,7 +397,7 @@ function(
 
 						'totalDiffuse += materialDiffuse.rgb * pointLightColor'+i+'.rgb * pointDiffuseWeight * lDistance * shadow;',
 
-						'vec3 pointHalfVector = normalize(lVector + normalize(viewPosition));',
+						'vec3 pointHalfVector = normalize(lVector + normalizedViewPosition);',
 						'float pointDotNormalHalf = max(dot(N, pointHalfVector), 0.0);',
 						'float pointSpecularWeight = pointLightColor'+i+'.a * specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);',
 
@@ -409,9 +416,7 @@ function(
 					);
 
 					fragment.push(
-						'vec4 lDirection = vec4(-directionalLightDirection'+i+', 0.0);',
-						'vec3 dirVector = normalize(lDirection.xyz);',
-
+						'vec3 dirVector = normalize(-directionalLightDirection'+i+');',
 						'float dotProduct = dot(N, dirVector);',
 
 						'#ifdef WRAP_AROUND',
@@ -434,7 +439,7 @@ function(
 					fragment.push(
 						'totalDiffuse += materialDiffuse.rgb * directionalLightColor'+i+'.rgb * dirDiffuseWeight * shadow * cookie;',
 
-						'vec3 dirHalfVector = normalize(dirVector + normalize(viewPosition));',
+						'vec3 dirHalfVector = normalize(dirVector + normalizedViewPosition);',
 						'float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);',
 						'float dirSpecularWeight = directionalLightColor'+i+'.a * specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);',
 
@@ -491,7 +496,7 @@ function(
 					fragment.push(
 							'totalDiffuse += materialDiffuse.rgb * spotLightColor'+i+'.rgb * spotDiffuseWeight * lDistance * spotEffect * shadow * cookie;',
 
-							'vec3 spotHalfVector = normalize(lVector + normalize(viewPosition));',
+							'vec3 spotHalfVector = normalize(lVector + normalizedViewPosition);',
 							'float spotDotNormalHalf = max(dot(N, spotHalfVector), 0.0);',
 							'float spotSpecularWeight = spotLightColor'+i+'.a * specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);',
 

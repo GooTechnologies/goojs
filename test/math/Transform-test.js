@@ -135,6 +135,31 @@ define([
 
 			expect(t3.matrix).toBeEqualToMatrix(t.matrix);
 		});
+
+		it('defaults up parameter of lookAt to UNIT_Y', function() {
+			var transform1 = new Transform();
+			var transform2 = new Transform();
+
+			transform1.lookAt(new Vector3(1, 2, 3));
+			transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Y);
+
+			transform1.update();
+			transform2.update();
+
+			expect(transform1.matrix.equals(transform2.matrix)).toBeTruthy();
+
+			// --- check to see if other up vector can be set
+			var transform1 = new Transform();
+			var transform2 = new Transform();
+
+			transform1.lookAt(new Vector3(1, 2, 3));
+			transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Z);
+
+			transform1.update();
+			transform2.update();
+
+			expect(transform1.matrix.equals(transform2.matrix)).toBeFalsy();
+		});
 	});
 
 });

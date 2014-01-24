@@ -64,7 +64,7 @@ function(
 				worldBound = entity.meshRendererComponent.worldBound;
 				for (var i = 0; i < collection.length; i++) {
 					EntityUtils.traverse(collection[i], function(entity) {
-						if (entity.meshRendererComponent && worldBound.intersects(entity.meshRendererComponent.worldBound)) {
+						if (entity.meshRendererComponent && entity.meshRendererComponent.worldBound && worldBound.intersects(entity.meshRendererComponent.worldBound)) {
 							collides = true;
 							return false;
 						}

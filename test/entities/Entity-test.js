@@ -310,15 +310,6 @@ define([
 		});
 
 		// ---
-		it('sets a TransformComponent when trying to add an array', function() {
-			var entity = new Entity(world);
-			var translation = [1, 2, 3];
-			entity.set(translation);
-
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
-		});
-
 		it('sets a MeshDataComponent when trying to add a mesh', function() {
 			var entity = new Entity(world);
 			var meshData = new Box();

@@ -29,6 +29,8 @@ function (
 		this._changedEntities = [];
 		this._removedEntities = [];
 
+		this.by = {};
+
 		/** Main keeper of entities
 		 * @type {EntityManager}
 		 */
@@ -91,6 +93,7 @@ function (
 	 */
 	World.prototype.setManager = function (manager) {
 		this._managers.push(manager);
+		manager.applyAPI(this.by);
 		return this;
 	};
 
