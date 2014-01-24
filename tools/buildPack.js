@@ -98,8 +98,11 @@ function wrap(fileName, head, tail) {
 	});
 }
 
-function getHeadWrapping() {
-	return '(function(window){function f(){\n';
+function getHeadWrapping(packName, version) {
+	return '/* Goo Engine ' + packName + ' ' + version + '\n' +
+		' * Copyright 2014 Goo Technologies AB\n' +
+		' */\n' +
+		'(function(window){function f(){\n';
 }
 
 function getTailWrapping(packName) {
@@ -113,9 +116,13 @@ function getTailWrapping(packName) {
 }
 
 //exports.pack = function(packName) {
-	// get tha pack name
+	// get the pack name
 	console.log('get tha pack name'.grey);
 	var packName = process.argv[2];
+
+	// get the version
+	console.log('get tha version'.grey);
+	var version = process.argv[3];
 
 	// out base dir
 	console.log('out base dir'.grey);
@@ -162,7 +169,7 @@ function getTailWrapping(packName) {
 			console.log('Ignore List'.grey);
 			console.log(modulesAndDependencies.ignoreList);
 
-			wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(), getTailWrapping(packName));
+			wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName));
 		}, function(err) {
 			// optimization err callback
 			// :(
