@@ -47,60 +47,6 @@ function(
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
 
-	var _types = {
-		text: [
-			'vert',
-			'frag' // + Scripts in the future
-		],
-		json: [
-			'shader',
-			'script',
-			'entity',
-			'material',
-			'scene',
-			'mesh',
-			'texture',
-			'skeleton',
-			'animation',
-			'clip',
-			'bundle',
-			'project',
-			'machine',
-			'posteffect',
-			'animstate',
-			'sound'
-		],
-		texture: _.keys(ConfigHandler.getHandler('texture').loaders),
-		image: [
-			'jpg',
-			'jpeg',
-			'png',
-			'gif'
-		],
-		video: [
-			'mp4'
-		],
-		binary: [
-			'dat',
-			'bin'
-		],
-		audio: [
-			'mp3',
-			'wav',
-			'ogg'
-		],
-		bundle: [
-			'bundle'
-		]
-	};
-	_types.asset = _types.texture.concat(
-		_types.image,
-		_types.binary,
-		_types.audio
-	);
-
-	var ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
-
 	/**
 	 * @class Class to load objects into the engine, or to update objects based on the data model.
 	 *
@@ -108,8 +54,8 @@ function(
 	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {string} parameters.rootPath The root path from where to get resources.
-	 * @param {boolean} [parameters.ajax=true] If true, load resources from the server if not found in the cache.
-	 *
+	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath].
+	 * Here you can overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {
 		if(options.world) {
@@ -122,14 +68,10 @@ function(
 		} else {
 			throw new Error("rootPath must be defined");
 		}
-		if (options.ajax !== false) {
-			this._ajax = new Ajax();
-		}
+		this._ajax = options.ajax || new Ajax(this._rootPath);
 
 		// Will hold the engine objects
 		this._objects = {};
-		// Will hold the configs
-		this._configs = {};
 		// Will hold instances of handler classes by type
 		this._handlers = {};
 	}
@@ -143,13 +85,9 @@ function(
 	 * 	the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
-	 */
-	DynamicLoader.prototype.preload = function(configs, clear) {
-		if (clear) {
-			this._configs = _.extend({}, configs);
-		} else {
-			return _.extend(this._configs, configs);
-		}
+	 **/
+	 DynamicLoader.prototype.preload = function(bundle, clear) {
+		this._ajax.prefill(bundle, clear);
 	};
 
 	/*
@@ -157,7 +95,6 @@ function(
 	 */
 	DynamicLoader.prototype.clear = function() {
 		var refs = Object.keys(this._objects);
-		this._configs = {};
 		this._objects = {};
 		// Remove all objects from engine
 		for(var i = 0; i < refs.length; i++) {
@@ -263,11 +200,6 @@ function(
 		var that = this;
 		options = options || {};
 
-		if (config) {
-			this._configs[ref] = config;
-		}
-		//delete this._objects[ref];
-
 		// Load ref to config
 		return this._loadRef(ref, options)
 		// Handle config to object
@@ -276,7 +208,7 @@ function(
 		})
 		// Return all the configs
 		.then(function(object) {
-			return object || that._configs[ref];
+			return object;
 		})
 		.then(null, function(err) {
 			console.error("Error updating " + ref + " " + err);
@@ -372,61 +304,7 @@ function(
 	 * @private
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, options) {
-		var that = this;
-		// Don't load engine shaders through ajax
-		if (ref.indexOf(ENGINE_SHADER_PREFIX) === 0) {
-			this._configs[ref] = PromiseUtil.createDummyPromise(null);
-			return this._configs[ref];
-		}
-
-		// Check if it's alreay loaded
-		if (this._configs[ref]) {
-			if(this._configs[ref].then) {
-				return this._configs[ref];
-			}
-			if (!options.noCache) {
-				return PromiseUtil.createDummyPromise(this._configs[ref]);
-			}
-		}
-
-		if (!this._ajax) {
-			// There is no config loaded for this ref, and we don't have the means to load it
-			return PromiseUtil.createDummyPromise(null);
-		}
-
-		// Load ref with ajax
-		var url = this._rootPath + ref;
-		var promise;
-
-		if (DynamicLoader._isRefTypeInGroup(ref, 'image')) {
-			promise = this._ajax.loadImage(url);
-		} else if (DynamicLoader._isRefTypeInGroup(ref, 'video')) {
-			promise = this._ajax.loadVideo(url);
-		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary')) {
-			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader._isRefTypeInGroup(ref, 'texture')) {
-			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader._isRefTypeInGroup(ref, 'audio')) {
-			promise = PromiseUtil.createDummyPromise(url);
-		} else {
-			promise = this._ajax.load(url);
-		}
-
-		this._configs[ref] = promise.then(function(data) {
-			if (DynamicLoader._isRefTypeInGroup(ref, 'json')) {
-				that._configs[ref] = JSON.parse(data);
-			} else {
-				that._configs[ref] = data;
-			}
-			return that._configs[ref];
-		})
-		.then(null, function(e) {
-			console.error(e);
-			delete that._configs[ref];
-			throw e;
-		});
-
-		return this._configs[ref];
+		return this._ajax.load(ref, options.noCache);
 	};
 
 	/*
@@ -481,7 +359,7 @@ function(
 	 */
 	DynamicLoader._isRefTypeInGroup = function(ref, group) {
 		var type = DynamicLoader.getTypeForRef(ref);
-		return type && _types[group] && _.indexOf(_types[group], type) >= 0;
+		return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 	};
 
 	/**
@@ -495,17 +373,6 @@ function(
 		return this._objects[ref];
 	};
 
-	/*
-	 * Set the root path for this loader.
-	 *
-	 * @param path
-	 */
-	DynamicLoader.prototype._setRootPath = function(path) {
-		this._rootPath = path;
-		if (path.length > 1 && path.charAt(path.length - 1) !== '/') {
-			this._rootPath += '/';
-		}
-	};
 
 	return DynamicLoader;
 });
