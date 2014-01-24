@@ -56,6 +56,9 @@ function (
 		var meshData = new TerrainSurface(matrix, xw, yw, zw);
 		var material = Material.createMaterial(terrainShader, 'Terrain');
 
+		material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
+		material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
+
 		// ShaderBuilder.GLOBAL_AMBIENT = [1.0, 0.25, 0.35];
 		ShaderBuilder.GLOBAL_AMBIENT = [0.15, 0.15, 0.2];
 		ShaderBuilder.USE_FOG = true;
@@ -65,27 +68,36 @@ function (
 		var texturenorm = new TextureCreator().loadTexture2D(resourcePath + '/normals.png');
 		material.setTexture('NORMAL_MAP2', texturenorm);
 
+		var anisotropy = 4;
 		var grass1 = new TextureCreator().loadTexture2D(resourcePath + '/grass1.jpg', {
-			anisotropy: 16
+			anisotropy: anisotropy
 		});
 		var grass2 = new TextureCreator().loadTexture2D(resourcePath + '/grass2.jpg', {
-			anisotropy: 16
+			anisotropy: anisotropy
 		});
 		var grass3 = new TextureCreator().loadTexture2D(resourcePath + '/grass3.jpg', {
-			anisotropy: 16
+			anisotropy: anisotropy
 		});
 		var stone = new TextureCreator().loadTexture2D(resourcePath + '/stone.jpg', {
-			anisotropy: 16
+			anisotropy: anisotropy
 		});
 		material.setTexture('GROUND_MAP1', grass1);
 		material.setTexture('GROUND_MAP2', grass2);
 		material.setTexture('GROUND_MAP3', grass3);
 		material.setTexture('GROUND_MAP4', stone);
 
-		var grass1n = new TextureCreator().loadTexture2D(resourcePath + '/grass1n.jpg');
-		var grass2n = new TextureCreator().loadTexture2D(resourcePath + '/grass2n.jpg');
-		var grass3n = new TextureCreator().loadTexture2D(resourcePath + '/grass3n.jpg');
-		var stonen = new TextureCreator().loadTexture2D(resourcePath + '/stonen.jpg');
+		var grass1n = new TextureCreator().loadTexture2D(resourcePath + '/grass1n.jpg', {
+			anisotropy: anisotropy
+		});
+		var grass2n = new TextureCreator().loadTexture2D(resourcePath + '/grass2n.jpg', {
+			anisotropy: anisotropy
+		});
+		var grass3n = new TextureCreator().loadTexture2D(resourcePath + '/grass3n.jpg', {
+			anisotropy: anisotropy
+		});
+		var stonen = new TextureCreator().loadTexture2D(resourcePath + '/stonen.jpg', {
+			anisotropy: anisotropy
+		});
 		material.setTexture('GROUND_MAP1_NORMALS', grass1n);
 		material.setTexture('GROUND_MAP2_NORMALS', grass2n);
 		material.setTexture('GROUND_MAP3_NORMALS', grass3n);
@@ -301,7 +313,7 @@ function (
 				'float noise = 1.0 - snoise(texCoord0 * vec2(8.0));',
 				'float noise2 = snoise(texCoord0 * vec2(10.0) + vec2(100.0, 100.0));',
 
-				'const float NMUL = 1.0;',
+				'const float NMUL = 1.2;',
 				'const float FADEMUL = 0.13;',
 
 				'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
