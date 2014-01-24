@@ -2,10 +2,11 @@
 /*global jasmine:true */
 require.config({
 	paths: {
-		"goo": "../src/goo",
-		"test": "../test",
-		"lib": "../lib",
-		"goo/lib": "../lib"
+		'goo': '../src/goo',
+		'fsmpack': '../src/fsmpack',
+		'test': '../test',
+		'lib': '../lib',
+		'goo/lib': '../lib'
 	},
 	waitSeconds: 5
 });
