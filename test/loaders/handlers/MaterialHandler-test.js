@@ -27,8 +27,7 @@ define([
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: 'loaders/res/',
-				ajax: true
+				rootPath: 'loaders/res/'
 			});
 		});
 		it('loads a material with a shader', function() {
@@ -61,7 +60,6 @@ define([
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(material) {
 				expect(material.shader.shaderDefinition).toBe(ShaderLib.uber);
-				console.log(material.shader);
 			});
 			wait(p, 1000);
 		});

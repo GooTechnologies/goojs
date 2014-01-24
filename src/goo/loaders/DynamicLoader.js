@@ -64,11 +64,10 @@ function(
 			throw new Error("World argument cannot be null");
 		}
 		if (options.rootPath) {
-			this._setRootPath(options.rootPath);
+			this._ajax = options.ajax || new Ajax(options.rootPath);
 		} else {
 			throw new Error("rootPath must be defined");
 		}
-		this._ajax = options.ajax || new Ajax(this._rootPath);
 
 		// Will hold the engine objects
 		this._objects = {};

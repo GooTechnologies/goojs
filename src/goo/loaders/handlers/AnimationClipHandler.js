@@ -57,16 +57,12 @@ function(
 	AnimationClipHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(clip) {
-			if (config.binaryRef) {
-				return that.getConfig(config.binaryRef, options).then(function(bindata) {
-					if (!bindata) {
-						throw new Error("Binary clip data was empty");
-					}
-					return that._updateAnimationClip(config, bindata, clip);
-				});
-			} else {
-				return that._updateAnimationClip(config, null, clip);
-			}
+			return that.getConfig(config.binaryRef, options).then(function(bindata) {
+				if (!bindata) {
+					throw new Error("Binary clip data was empty");
+				}
+				return that._updateAnimationClip(config, bindata, clip);
+			});
 		});
 	};
 

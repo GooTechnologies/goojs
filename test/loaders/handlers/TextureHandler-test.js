@@ -21,8 +21,7 @@ define([
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: 'loaders/res/',
-				ajax: true
+				rootPath: 'loaders/res/'
 			});
 		});
 		it('loads a texture with an image', function() {

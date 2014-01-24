@@ -26,7 +26,6 @@ define([
 	 */
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
 
 	MaterialHandler.prototype = Object.create(ConfigHandler.prototype);

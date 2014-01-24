@@ -34,7 +34,6 @@ define([
 			var p = loader.load(config.id).then(function(entity) {
 				expect(entity.meshRendererComponent).toEqual(jasmine.any(MeshRendererComponent));
 				expect(entity.meshRendererComponent.materials[0]).toEqual(jasmine.any(Material));
-				console.log(entity);
 			});
 			wait(p);
 		});
@@ -54,12 +53,10 @@ define([
 
 				var keys = Object.keys(sortMaterials).sort();
 				for (var i = 0; i < keys.length; i++) {
-					console.log(keys[i],i);
 					expect(sortMaterials[keys[i]]).toBe(materials[i]);
 				}
 				expect(entity.meshRendererComponent).toEqual(jasmine.any(MeshRendererComponent));
 				expect(entity.meshRendererComponent.materials[0]).toEqual(jasmine.any(Material));
-				console.log(entity);
 			});
 			wait(p);
 		});
