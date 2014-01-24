@@ -2,7 +2,6 @@ var glob = require('glob');
 var _ = require('underscore');
 var fs = require('fs');
 //var buildPack = require('./tools/buildPack');
-var colors = require('colors');
 
 module.exports = function(grunt) {
 	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
