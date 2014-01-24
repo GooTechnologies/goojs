@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -24,7 +18,6 @@ require([
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
-	'goo/shapes/FilledPolygon',
 	'goo/debug/Debugger',
 	'../../lib/V'
 ], function (
@@ -47,7 +40,6 @@ require([
 	Box2DSystem,
 	Box2DComponent,
 	MathUtils,
-	FilledPolygon,
 	Debugger,
 	V
 	) {
