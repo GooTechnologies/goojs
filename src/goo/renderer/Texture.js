@@ -141,7 +141,11 @@ function (
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
-					this.type = 'UnsignedShort4444';
+					this.type = 'UnsignedShort565';
+					this.format = 'RGB';
+				} else if (data instanceof Float32Array) {
+					this.type = 'Float';
+					this.format = 'Alpha';
 				}
 			} else {
 				throw "Data textures need width and height";

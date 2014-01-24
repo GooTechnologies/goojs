@@ -11,6 +11,17 @@ define(['goo/entities/managers/Manager'],
 
 		this._entitiesById = [];
 		this._entityCount = 0;
+
+		this.api = {
+			id: function () {
+				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
+				return ret; //new EntitySelection(ret);
+			}.bind(this),
+			name: function () {
+				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
+				return ret; //new EntitySelection(ret);
+			}.bind(this)
+		};
 	}
 
 	EntityManager.prototype = Object.create(Manager.prototype);

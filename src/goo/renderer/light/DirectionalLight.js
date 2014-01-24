@@ -7,14 +7,15 @@ function (
 	Vector3,
 	Light
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A directional light. So far it has the same effect as {@link Light}
 	 * @extends Light
+	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
 	function DirectionalLight () {
-		Light.call(this);
+		Light.apply(this, arguments);
 
 		/** @type {Vector3} */
 		this.direction = new Vector3();

@@ -7,7 +7,7 @@ function (
 	Vector3,
 	Light
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class
@@ -18,9 +18,10 @@ function (
 	 * The angle property is also known as the outer angle or falloff. The exponent property is also known as
 	 * the inner angle or hotspot.
 	 * @extends Light
+	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
 	function SpotLight () {
-		Light.call(this);
+		Light.apply(this, arguments);
 
 		/* @type {Vector3} */
 		this.direction = new Vector3();
