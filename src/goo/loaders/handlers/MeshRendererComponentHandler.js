@@ -54,7 +54,6 @@ define([
 
 	/*
 	 * Create meshrenderer component.
-	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {MeshRendererComponent} the created component object
 	 * @private
 	 */

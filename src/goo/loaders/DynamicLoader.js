@@ -112,12 +112,17 @@ function(
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
 	DynamicLoader.prototype.load = function(ref, options) {
+		var that = this;
+		function load() {
+			return that._loadRef(ref, options).then(function(config) {
+				return that._handle(ref, config, options);
+			});
+		}
 		options = options || {};
-		var update = this.update.bind(this, ref, null, options);
 		if (options.preloadBinaries === true) {
-			this._loadBinariesFromRefs(ref, options).then(update);
+			return this._loadBinariesFromRefs(ref, options).then(load);
 		} else {
-			return update();
+			return load();
 		}
 	};
 
@@ -199,10 +204,7 @@ function(
 		var that = this;
 		options = options || {};
 
-		// Load ref to config
-		return this._loadRef(ref, options)
-		// Handle config to object
-		.then(function(config) {
+		return this._ajax.update(ref, config).then(function(config) {
 			return that._handle(ref, config, options);
 		})
 		// Return all the configs
@@ -266,9 +268,8 @@ function(
 			var type = DynamicLoader.getTypeForRef(ref);
 
 			if (DynamicLoader._isRefTypeInGroup(ref, 'bundle')) {
-				delete this._configs[ref];
-				this.preload(config);
-				return PromiseUtil.createDummyPromise(this._configs);
+				// Do nothing
+				return PromiseUtil.createDummyPromise();
 			}
 
 			var handler = this._getHandler(type);

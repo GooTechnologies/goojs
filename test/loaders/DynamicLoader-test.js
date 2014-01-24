@@ -19,25 +19,22 @@ define([
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: './',
-				ajax: false
+				rootPath: './'
 			});
 		});
 
 		it('loads bundle', function() {
 			// Create a bundlewrapper to preload and skip ajax
 			var config = Configs.entity();
-			var bundleWrapper = {};
 			var bundleRef = Configs.randomRef('bundle');
-			bundleWrapper[bundleRef] = Configs.get();
 
-			loader.preload(bundleWrapper);
+			loader.update(bundleRef, Configs.get());
 			// Load bundle
 			var p = loader.load(bundleRef).then(function() {
-				var keys = Object.keys(loader._configs);
+				var keys = Object.keys(loader._ajax._cache);
 
 				expect(keys).toContain(config.id);
-				expect(loader._configs[config.id].components).toBeDefined();
+				expect(loader._ajax._cache[config.id].components).toBeDefined();
 			});
 
 			wait(p);

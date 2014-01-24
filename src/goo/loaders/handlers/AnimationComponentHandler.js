@@ -29,14 +29,11 @@ function(
 
 	/*
 	 * Create animation component.
-	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {AnimationComponent} the created component object
 	 * @private
 	 */
-	AnimationComponentHandler.prototype._create = function(entity) {
-		var component = new AnimationComponent();
-		entity.setComponent(component);
-		return component;
+	AnimationComponentHandler.prototype._create = function() {
+		return new AnimationComponent();
 	};
 
 	/**

@@ -87,6 +87,18 @@ define([
 					};
 				}
 				return config;
+			},
+			meshData: function(shape, options) {
+				if (shape) {
+					return {
+						shape: shape,
+						shadeOptions: options
+					};
+				}
+				return {
+					meshRef: this.mesh().id,
+					poseRef: this.skeleton().id
+				};
 			}
 		},
 		attachChild: function(parent, child) {

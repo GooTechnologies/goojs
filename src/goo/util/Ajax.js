@@ -96,6 +96,7 @@ function(
 	 */
 	Ajax.prototype.load = function(path, reload) {
 		var that = this;
+		var type = path.slice(path.lastIndexOf('.')+1).toLowerCase();
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 		}
@@ -109,13 +110,18 @@ function(
 		}
 
 		if (this._cache[path] && !reload) {
-			return PromiseUtil.createDummyPromise(this._cache[path]);
+			return PromiseUtil.createDummyPromise(this._cache[path]).then(function(config) {
+				if (typeInGroup(type, 'bundle')) {
+					that.prefill(config, reload);
+					return null;
+				}
+				return config;
+			});
 		}
 
 		if (this._rootPath) {
 			path = this._rootPath + path;
 		}
-		var type = path.slice(path.lastIndexOf('.')+1).toLowerCase();
 
 		if (typeInGroup(type, 'image')) {
 			return this._cache[path] = this._loadImage(path);
@@ -147,6 +153,11 @@ function(
 		}).then(null, function(err) {
 			throw new Error('Could not load data from ' + path + ', ' + err);
 		});
+	};
+
+	Ajax.prototype.update = function(path, config) {
+		this._cache[path] = config;
+		return PromiseUtil.createDummyPromise(config);
 	};
 
 	/**

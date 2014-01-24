@@ -57,7 +57,7 @@ define([
 			if (attacher[key] instanceof Function) {
 				attachee[key] = attacher[key].bind(Configs);
 			} else if (attacher[key] instanceof Object) {
-				attachee[key] = {};
+				attachee[key] = attachee[key] || {};
 				attach(attachee[key], attacher[key]);
 			} else {
 				attachee[key] = attacher[key];
