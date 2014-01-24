@@ -71,6 +71,22 @@ define([
 					poseRef: this.skeleton().id
 				};
 				return config;
+			},
+			meshRenderer: function() {
+				var config = {
+					cullMode: 'Dynamic',
+					castShadows: true,
+					receiveShadow: true,
+					reflectable: true,
+					materials: {}
+				};
+				for (var i = 2; i >= 0; i--) {
+					config.materials[this.randomRef()] = {
+						sortValue: Math.random(),
+						materialRef: this.material().id
+					};
+				}
+				return config;
 			}
 		},
 		attachChild: function(parent, child) {

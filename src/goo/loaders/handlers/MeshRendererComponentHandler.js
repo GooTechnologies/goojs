@@ -34,6 +34,8 @@ define([
 	MeshRendererComponentHandler.prototype.constructor = MeshRendererComponentHandler;
 	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
 
+	MeshRendererComponentHandler.DEFAULT_MATERIAL = Material.createMaterial(ShaderLib.uber, 'Default material');
+
 	/*
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
@@ -46,7 +48,7 @@ define([
 			cullMode: 'Dynamic',
 			castShadows: true,
 			receiveShadows: true,
-			hidden: false
+			reflectable: true
 		});
 	};
 
@@ -56,68 +58,49 @@ define([
 	 * @returns {MeshRendererComponent} the created component object
 	 * @private
 	 */
-	MeshRendererComponentHandler.prototype._create = function(entity) {
-		var component = new MeshRendererComponent();
-		entity.setComponent(component);
-		return component;
+	MeshRendererComponentHandler.prototype._create = function() {
+		return new MeshRendererComponent();
 	};
 
-	MeshRendererComponentHandler.prototype.update = function(entity, config) {
+	/**
+	 * Update engine meshrenderercomponent object based on the config.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+	 */
+	 MeshRendererComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 
-		var promise;
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			// Component settings
+			component.cullMode = config.cullMode;
+			component.castShadows = config.castShadows;
+			component.receiveShadows = config.receiveShadows;
+			component.isReflectable = config.reflectable;
 
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		var materialRefs = config.materialRefs;
-		if (!materialRefs || materialRefs.length === 0) {
-			//console.log('No material refs in config for ' + entity.ref + ', creating default');
-			var defaultShader = Material.createShader(ShaderLib.uber, 'DefaultShader');
-			var material = new Material();
-			material.shader = defaultShader;
+			// Materials
+			var materials = config.materials;
+			if(!materials || !Object.keys(materials).length) {
+				var selectionMaterial = component.materials.filter(function(material) {
+					return material.name === 'gooSelectionIndicator';
+				});
+				component.materials = [MeshRendererComponentHandler.DEFAULT_MATERIAL].concat(selectionMaterial);
+				return component;
+			}
 
-			promise = pu.createDummyPromise([material]);
-		} else {
 			var promises = [];
-			var pushPromise = function(materialRef) {
-				return promises.push(that._getMaterial(materialRef));
-			};
-			for (var i = 0; i < materialRefs.length; i++) {
-				pushPromise(materialRefs[i]);
-			}
-			promise = RSVP.all(promises);
-		}
-		return promise.then(function(materials) {
-			var key, value;
-			if (component.materials && component.materials.length) {
-				var selectMaterial;
-				for (var i = 0; i < component.materials.length; i++) {
-					var material = component.materials[i];
-					if (material.name === 'gooSelectionIndicator') {
-						selectMaterial = material;
-						break;
-					}
-				}
-				if (selectMaterial) {
-					materials.push(selectMaterial);
-				}
-			}
-			component.materials = materials;
-			for (key in config) {
-				value = config[key];
-				if (key !== 'materials' && key !== 'hidden' && component.hasOwnProperty(key)) {
-					component[key] = _.clone(value);
-				}
-			}
-			return component;
-		}).then(null, function(err) {
-			return console.error("Error handling materials " + err);
-		});
-	};
-
-	MeshRendererComponentHandler.prototype._getMaterial = function(ref) {
-		var that = this;
-		return this.getConfig(ref).then(function(config) {
-			return that.updateObject(ref, config, that.options);
+			_.forEach(materials, function(item) {
+				promises.push(that._load(item.materialRef, options));
+			}, null, 'sortValue');
+			return RSVP.all(promises).then(function(materials) {
+				var selectionMaterial = component.materials.filter(function(material) {
+					return material.name === 'gooSelectionIndicator';
+				});
+				materials.concat(selectionMaterial);
+				component.materials = materials;
+				return component;
+			});
 		});
 	};
 
