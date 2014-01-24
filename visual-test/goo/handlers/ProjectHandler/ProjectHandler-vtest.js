@@ -1,13 +1,6 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/loaders/DynamicLoader',
-	'goo/statemachine/FSMSystem',
 	'goo/util/Skybox',
 	'goo/renderer/Camera',
 	'goo/math/Vector3',
@@ -30,7 +23,6 @@ require([
 ], function (
 	GooRunner,
 	DynamicLoader,
-	FSMSystem,
 	Skybox,
 	Camera,
 	Vector3,
