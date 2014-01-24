@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/loaders/DynamicLoader',
 	'js/createWorld',

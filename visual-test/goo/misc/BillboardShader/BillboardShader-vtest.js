@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -22,7 +16,6 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/Surface',
 	'goo/renderer/TextureCreator',
 	'../../lib/V'
 ], function (
@@ -43,7 +36,6 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	Surface,
 	TextureCreator,
 	V
 	) {

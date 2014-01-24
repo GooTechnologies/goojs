@@ -1,13 +1,7 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/loaders/DynamicLoader',
-	'goo/statemachine/FSMSystem'
+	'fsmpack/statemachine/FSMSystem'
 ], function (
 	GooRunner,
 	DynamicLoader,

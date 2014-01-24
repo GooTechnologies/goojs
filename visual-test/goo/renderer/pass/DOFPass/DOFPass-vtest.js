@@ -1,8 +1,4 @@
-require({
-	paths: {
-		'goo': '/js/goo'
-	}
-},[
+require([
 	'goo/entities/GooRunner',
 	'goo/loaders/DynamicLoader',
 	'goo/math/Vector3',

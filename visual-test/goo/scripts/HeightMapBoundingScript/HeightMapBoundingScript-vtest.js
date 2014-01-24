@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -22,7 +16,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/Surface',
+	'geometrypack/Surface',
 	'goo/shapes/Sphere',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
