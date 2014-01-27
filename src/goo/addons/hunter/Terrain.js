@@ -16,7 +16,9 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/addons/water/FlatWaterRenderer',
 	'goo/entities/EntityUtils',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/scripts/WorldFittedTerrainScript',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/addons/hunter/Vegetation'
 ],
 /** @lends */
 function (
@@ -37,18 +39,34 @@ function (
 	ShaderFragment,
 	FlatWaterRenderer,
 	EntityUtils,
-	ShaderLib
+	WorldFittedTerrainScript,
+	ShaderLib,
+	Vegetation
 ) {
 	"use strict";
 
-	var resourcePath = '/goo/addons/hunter/resources';
+	// var resourcePath = 'resources';
+	var resourcePath = 'res/images';
 
 	function Terrain(goo) {
 		var canvasUtils = new CanvasUtils();
 
 		canvasUtils.loadCanvasFromPath(resourcePath + '/height128.png', function(canvas) {
+            var dim = {
+                minX: -64,
+                maxX: 64,
+                minY: 0,
+                maxY: 50,
+                minZ: -64,
+                maxZ: 64
+            };
+
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 			this._buildMesh(goo, matrix, 128, 50, 128);
+
+			var ws = new WorldFittedTerrainScript();
+            var terrainData1 = ws.addHeightData(matrix, dim);
+			var vegetation = new Vegetation(goo, ws);
 		}.bind(this));
 	}
 
@@ -112,7 +130,7 @@ function (
 		surfaceEntity.addToWorld();
 
 		surfaceEntity.meshRendererComponent.cullMode = 'Never';
-	}
+	};
 
 	var terrainShader = {
 		processors: [
@@ -314,7 +332,7 @@ function (
 				'float noise2 = snoise(texCoord0 * vec2(10.0) + vec2(100.0, 100.0));',
 
 				'const float NMUL = 1.2;',
-				'const float FADEMUL = 0.13;',
+				'const float FADEMUL = 0.1;',
 
 				'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
 				'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
