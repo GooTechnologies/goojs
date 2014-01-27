@@ -19,6 +19,8 @@ define(['goo/entities/Selection'], function (Selection) {
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.and = function (that) {
+		if (this.top === null) { return this; }
+
 		var union;
 
 		var that = toArray.apply(null, arguments);
@@ -61,6 +63,8 @@ define(['goo/entities/Selection'], function (Selection) {
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.intersects = function (that) {
+		if (this.top === null) { return this; }
+
 		var intersection;
 
 		var that = toArray.apply(null, arguments);
@@ -102,6 +106,8 @@ define(['goo/entities/Selection'], function (Selection) {
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.without = function () {
+		if (this.top === null) { return this; }
+
 		var difference;
 
 		var that = toArray.apply(null, arguments);

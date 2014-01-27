@@ -36,6 +36,13 @@ define([
 		});
 
 		describe('children', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.children(someEntity());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('gets a selection of child entities of a one entity selection', function () {
 				var parent = world.createEntity();
 				var child1 = world.createEntity();
@@ -79,6 +86,13 @@ define([
 		});
 
 		describe('parent', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.parent(someEntity());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('gets a list of child entities of a one entity selection', function () {
 				var parent = world.createEntity();
 				var child1 = world.createEntity();
@@ -122,6 +136,13 @@ define([
 		});
 
 		describe('and', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.and(someEntity());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('concatenates two selections with common elements', function () {
 				var entities = someEntities(7);
 				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
@@ -143,6 +164,13 @@ define([
 		});
 
 		describe('intersects', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.intersects(someEntity());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('intersects two selection with common entities', function () {
 				var entities = someEntities(7);
 				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
@@ -160,6 +188,13 @@ define([
 		});
 
 		describe('without', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.without(someEntity());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('subtracts a collection from another', function () {
 				var entities = someEntities(7);
 				var array1 = [entities[0], entities[1], entities[2], entities[3], entities[4]];
@@ -176,6 +211,20 @@ define([
 		});
 
 		describe('andSelf', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new EntitySelection();
+				selection.andSelf();
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
+			it('returns itself when applied to an selection that has only one stack entry', function () {
+				var selection = new EntitySelection(someEntities(5));
+				selection.andSelf();
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('add the previous selection to the current one', function () {
 				var entities = someEntities(5);
 				var children = [];
