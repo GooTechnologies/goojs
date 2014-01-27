@@ -433,6 +433,10 @@ define([
 		}
 
 		// posteffect refs
+		
+		if (options.noEnvironment === true)
+			return RSVP.all(promises);
+			
 		promises.push(this._updatePosteffects(config));
 
 		// REVIEW: This is asynchronous, for consistency the returned promise should not resolve until it's done
