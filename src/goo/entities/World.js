@@ -4,7 +4,8 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/entities/managers/Manager',
 	'goo/entities/systems/System',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/entities/EntitySelection'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	TransformComponent,
 	Manager,
 	System,
-	Component
+	Component,
+	EntitySelection
 ) {
 	'use strict';
 
@@ -30,6 +32,7 @@ function (
 		this._removedEntities = [];
 
 		this.by = {};
+		this._installDefaultSelectors();
 
 		/** Main keeper of entities
 		 * @type {EntityManager}
@@ -49,6 +52,28 @@ function (
 
 	World.time = 0.0;
 	World.tpf = 1.0;
+
+	World.prototype._installDefaultSelectors = function () {
+		this.by.system = function (systemType) {
+			var system = this.getSystem(systemType);
+			return new EntitySelection(system._activeEntities);
+		}.bind(this);
+
+		this.by.component = function (componentType) {
+			//! AT: slow unless using another data structure for fast access
+			var collection = [];
+			var entities = this.entityManager.getEntities();
+
+			for (var i = 0; i < entities.length; i++) {
+				var entity = entities[i];
+				if (entity[componentType]) {
+					collection.push(entity);
+				}
+			}
+
+			return new EntitySelection(collection);
+		}.bind(this);
+	};
 
 	/**
 	 * Universal shorthand for adding managers, systems, entities and registering components
