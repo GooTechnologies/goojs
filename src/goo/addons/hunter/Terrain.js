@@ -47,11 +47,11 @@ function (
 ) {
 	"use strict";
 
-	// var resourcePath = 'resources';
-	var resourcePath = 'res/images';
+	//var resourcePath = 'res/images';
 
 	function Terrain(goo) {
 		var canvasUtils = new CanvasUtils();
+		var resourcePath = window.hunterResources;
 
 		canvasUtils.loadCanvasFromPath(resourcePath + '/height128.png', function(canvas) {
             var dim = {
@@ -75,6 +75,9 @@ function (
 	}
 
 	Terrain.prototype._buildMesh = function(goo, matrix, xw, yw, zw) {
+	
+		var resourcePath = window.hunterResources;
+	
 		var meshData = new TerrainSurface(matrix, xw, yw, zw);
 		var material = Material.createMaterial(terrainShader, 'Terrain');
 
