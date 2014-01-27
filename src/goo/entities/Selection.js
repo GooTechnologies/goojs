@@ -43,7 +43,7 @@ define([], function () {
 	 * @returns {boolean}
 	 */
 	Selection.prototype.contains = function (element) {
-		if (top === null) { return false; }
+		if (this.top === null) { return false; }
 
 		return this.top.indexOf(element) !== -1;
 	};
@@ -53,7 +53,7 @@ define([], function () {
 	 * @returns {number}
 	 */
 	Selection.prototype.size = function () {
-		if (top === null) { return 0; }
+		if (this.top === null) { return 0; }
 
 		return this.top.length;
 	};
@@ -65,7 +65,7 @@ define([], function () {
 	 */
 	Selection.prototype.each = function (fun) {
 		//! AT: this check should be done automatically before each method
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		for (var i = 0; i < this.top.length; i++) {
 			if (fun(this.top[i]) === false) {
@@ -83,7 +83,7 @@ define([], function () {
 	 */
 	Selection.prototype.filter = function (predicate) {
 		//! AT: this check should be done automatically before each method
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var top = this.top.filter(predicate);
 		this.stack.push(top);
@@ -99,7 +99,7 @@ define([], function () {
 	 */
 	Selection.prototype.map = function (fun) {
 		//! AT: this check should be done automatically before each method
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var top = this.top.map(fun);
 		this.stack.push(top);
@@ -115,7 +115,7 @@ define([], function () {
 	 */
 	Selection.prototype.flatMap = function (fun) {
 		//! AT: this check should be done automatically before each method
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var map = this.top.map(fun);
 		var flatMap = map.reduce(function (prev, cur) { return prev.concat(cur); }, []);
@@ -133,7 +133,7 @@ define([], function () {
 	 */
 	Selection.prototype.reduce = function (fun, initialValue) {
 		//! AT: this check should be done automatically before each method
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var top = [this.top.reduce(fun, initialValue)];
 		this.stack.push(top);
@@ -148,7 +148,7 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.and = function () {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var that = toArray.apply(null, arguments);
 
@@ -166,7 +166,7 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.intersects = function (that) {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var that = toArray.apply(null, arguments);
 
@@ -206,7 +206,7 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.without = function () {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		var that = toArray.apply(null, arguments);
 
@@ -230,7 +230,7 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.andSelf = function () {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		if (this.stack.length <= 1) { return this; }
 
@@ -249,7 +249,7 @@ define([], function () {
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.end = function () {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		this.stack.pop();
 
@@ -266,8 +266,25 @@ define([], function () {
 	 * Returns the first object of the selection
 	 * @returns {Element}
 	 */
+	//! AT: this may not be so crucial to have // might as well just use .get
 	Selection.prototype.first = function () {
 		return this.top === null ? null : this.top[0];
+	};
+
+	/**
+	 * Returns the element on
+	 * @param {number} [index]
+	 * @returns {Array}
+	 */
+	Selection.prototype.get = function (index) {
+		if (typeof index !== 'number') {
+			return this.top === null ? [] : this.top.concat([]);
+		}
+		if (index < 0) {
+			return this.top === null ? undefined : this.top[this.top.length + index - 1];
+		} else {
+			return this.top === null ? undefined : this.top[index];
+		}
 	};
 
 	/**

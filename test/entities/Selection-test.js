@@ -99,6 +99,13 @@ define([
 		});
 
 		describe('filter', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.filter(function (element) { return true; });
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('filters out elements', function () {
 				var array = [11, 22, 33, 44, 55];
 				var selection = new Selection(array);
@@ -111,6 +118,13 @@ define([
 		});
 
 		describe('map', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.map(function (element) { return 1; });
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('gets a new selection by applying a function over every element of the previous selection', function () {
 				var array = [11, 22, 33, 44, 55];
 				var selection = new Selection(array);
@@ -123,6 +137,13 @@ define([
 		});
 
 		describe('reduce', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.reduce(function (element) { return 1; });
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('reduces the elements in a selection', function () {
 				var array = [11, 22, 33, 44, 55];
 				var selection = new Selection(array);
@@ -135,6 +156,13 @@ define([
 		});
 
 		describe('and', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.and(someObject());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('concatenates two selection with common elements', function () {
 				var array1 = [11, 22, 33, 44, 55];
 				var array2 = [33, 44, 55, 66, 77];
@@ -155,6 +183,13 @@ define([
 		});
 
 		describe('intersects', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.intersects(someObject());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('intersects two selections with common elements', function () {
 				var array1 = [11, 22, 33, 44, 55];
 				var array2 = [33, 44, 55, 66, 77];
@@ -171,6 +206,13 @@ define([
 		});
 
 		describe('without', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.without(someObject());
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('subtracts a collection from another', function () {
 				var array1 = [11, 22, 33, 44, 55];
 				var array2 = [33, 44, 55, 66, 77];
@@ -186,6 +228,20 @@ define([
 		});
 
 		describe('andSelf', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.andSelf();
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
+			it('returns itself when applied to an selection that has only one stack entry', function () {
+				var selection = new Selection(someObjects(5));
+				selection.andSelf();
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('add the previous selection to the current one', function () {
 				var array = [11, 22, 33, 44, 55];
 
@@ -203,6 +259,13 @@ define([
 		});
 
 		describe('end', function () {
+			it('returns itself when applied to an empty selection', function () {
+				var selection = new Selection();
+				selection.end();
+				expect(selection).toEqual(selection);
+				expect(selection).toBe(selection);
+			});
+
 			it('revert back to a previous selection', function () {
 				var array = [11, 22, 33, 44, 55];
 

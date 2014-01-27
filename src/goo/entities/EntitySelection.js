@@ -136,7 +136,7 @@ define(['goo/entities/Selection'], function (Selection) {
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.andSelf = function () {
-		if (top === null) { return this; }
+		if (this.top === null) { return this; }
 
 		if (this.stack.length <= 1) { return this; }
 
