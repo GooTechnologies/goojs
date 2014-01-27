@@ -28,8 +28,6 @@ define([
 			var config = Configs.mesh();
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(mesh) {
-				console.log(config);
-				console.log(mesh);
 				expect(mesh).toEqual(jasmine.any(MeshData));
 				for (var key in config.attributes) {
 					var view = mesh.dataViews[key];

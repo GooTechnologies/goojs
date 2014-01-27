@@ -93,7 +93,6 @@ define([
 
 				return loader.update(config.id, newConfig);
 			}).then(function(entity) {
-				console.log(entity);
 				expect(entity.transformComponent).toBe(component);
 
 				var t = entity.transformComponent.transform;

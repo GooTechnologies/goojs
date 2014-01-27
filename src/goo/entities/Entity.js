@@ -30,6 +30,7 @@ function (
 		this.skip = false;
 
 		this.hidden = false;
+		this.static = false;
 		Entity.entityCount++;
 	}
 

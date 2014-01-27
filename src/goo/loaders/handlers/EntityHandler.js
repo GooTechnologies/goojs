@@ -48,13 +48,13 @@ define([
 	 * @param {ref}
 	 * @private
 	 */
-	EntityHandler.prototype._remove = function(ref) {
+	/*EntityHandler.prototype._remove = function(ref) {
 		var entity = this._objects[ref];
 		if (entity) {
-			entity.removeFromWorld();
+			//entity.removeFromWorld();
 			delete this._objects[ref];
 		}
-	};
+	};*/
 
 	/*
 	 * Adds/updates/removes an entity
@@ -68,6 +68,7 @@ define([
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
 			if (!entity) { return; }
 			entity.id = ref;
+			entity.static = !!config.static;
 			var promises = [];
 
 			// Adding/updating components

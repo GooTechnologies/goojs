@@ -2,7 +2,8 @@ define([
 	'loaders/helpers/EntityConfig',
 	'loaders/helpers/AnimationConfig',
 	'loaders/helpers/MaterialConfig',
-	'loaders/helpers/MeshConfig'
+	'loaders/helpers/MeshConfig',
+	'loaders/helpers/SceneConfig'
 ], function(
 ) {
 	'use strict';

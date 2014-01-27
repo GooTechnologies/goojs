@@ -32,7 +32,6 @@ define([
 			var config = Configs.entity(['meshData']);
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(entity) {
-				console.log(entity.meshDataComponent);
 				expect(entity.meshDataComponent).toEqual(jasmine.any(MeshDataComponent));
 				expect(entity.meshDataComponent.meshData).toEqual(jasmine.any(MeshData));
 				expect(entity.meshDataComponent.currentPose).toEqual(jasmine.any(SkeletonPose));
@@ -44,7 +43,6 @@ define([
 			config.components.meshData = Configs.component.meshData('Sphere');
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(entity) {
-				console.log(entity.meshDataComponent);
 				expect(entity.meshDataComponent).toEqual(jasmine.any(MeshDataComponent));
 				expect(entity.meshDataComponent.meshData).toEqual(jasmine.any(MeshData));
 			});
