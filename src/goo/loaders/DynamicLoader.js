@@ -10,7 +10,7 @@ define([
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
-	'goo/loaders/handlers/LogicComponentHandler',
+//	'goo/loaders/handlers/LogicComponentHandler',
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
@@ -27,8 +27,8 @@ define([
 	'goo/loaders/handlers/ProjectHandler',
 	'goo/loaders/handlers/ScriptComponentHandler',
 	'goo/loaders/handlers/ScriptHandler',
-	'goo/loaders/handlers/FSMComponentHandler',
-	'goo/loaders/handlers/MachineHandler',
+	//'goo/loaders/handlers/FSMComponentHandler',
+	//'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
 	'goo/loaders/handlers/PosteffectHandler'
@@ -59,7 +59,7 @@ function(
 		'clip',
 		'bundle',
 		'project',
-		'machine',
+		//'machine',
 		'posteffect',
 		'animstate',
 		'sound'];
@@ -543,6 +543,12 @@ function(
 		return ref.split('.').pop().toLowerCase();
 	};
 
+	//! AT: needs better name
+	DynamicLoader.registerJSON = function(ext) {
+		if (_json_types.indexOf(ext) === -1) {
+			_json_types.push(ext);
+		}
+	};
 
 	DynamicLoader.isJSONRef = function(ref) {
 		var type = DynamicLoader.getTypeForRef(ref);

@@ -106,11 +106,8 @@ define([
 	/**
 	 * Get all entities on top level based on the transform scenegraph
 	 *
-	 * @deprecated
 	 * @returns {Array} Array containing all top entities
 	 */
-	//! AT: this assumes that every entity has a transform component
-	// also, it is not used anywhere
 	EntityManager.prototype.getTopEntities = function () {
 		var entities = [];
 		for (var i in this._entitiesById) {

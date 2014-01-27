@@ -102,6 +102,7 @@ function (
 		this.world.registerComponent(MeshRendererComponent);
 		this.world.registerComponent(CameraComponent);
 		this.world.registerComponent(LightComponent);
+		this.world.registerComponent(ScriptComponent);
 
 		this.doProcess = true;
 		this.doRender = true;
