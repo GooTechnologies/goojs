@@ -47,19 +47,25 @@ function(
 			vegetationList[i] = meshData;
 		}
 
-		var startX = 0;
-		var startZ = 0;
+		var startX = 10;
+		var startZ = 10;
 
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 		var spread = 30.0;
 		var count = 5000;
-		for (var x = 0; x < count; x++) {
+		while (count > 0) {
 			var xx = (Math.random() * 2.0 - 1.0) * spread + startX;
 			var zz = (Math.random() * 2.0 - 1.0) * spread + startZ;
 			var pos = [xx, 10, zz];
 			var yy = worldScript.getTerrainHeightAt(pos);
 			var norm = worldScript.getTerrainNormalAt(pos);
+			if (yy === null) {
+				yy = 0;
+			}
+			if (norm === null) {
+				norm = new Vector3(0,1,0);
+			}
 			var slope = norm.dot(Vector3.UNIT_Y);
 			if (slope < 0.9) {
 				continue;
@@ -77,8 +83,12 @@ function(
 
 			transform.update();
 
-			var meshData = vegetationList[Math.floor(Math.random()*vegetationList.length)];
+			var rand = ((Math.random()+Math.random()-1)/2.0) + 0.5;
+			var vegetationType = Math.floor(rand*vegetationList.length);
+			var meshData = vegetationList[vegetationType];
 			meshBuilder.addMeshData(meshData, transform);
+
+			count--;
 		}
 		var meshDatas = meshBuilder.build();
 
@@ -90,6 +100,7 @@ function(
 		material.uniforms.discardThreshold = 0.1;
 		material.blendState.blending = 'CustomBlending';
 		material.uniforms.materialAmbient = [1.0, 1.0, 1.0, 1.0];
+		material.renderQueue = 3001;
 
 
 		for (var key in meshDatas) {
@@ -99,7 +110,17 @@ function(
 	}
 
 	var types = [
-		// full
+		{ w: 1, h: 0.5, tx: 0.00, ty: 0.875, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.25, ty: 0.875, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.50, ty: 0.875, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.25, ty: 0.75, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.50, ty: 0.75, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.50, ty: 0.25, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.50, ty: 0.375, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.75, ty: 0.25, tw: 0.25, th: 0.125 },
+		{ w: 1, h: 0.5, tx: 0.75, ty: 0.375, tw: 0.25, th: 0.125 },
+
 		{ w: 1, h: 1, tx: 0.00, ty: 0.00, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.25, ty: 0.00, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.00, ty: 0.25, tw: 0.25, th: 0.25 },
@@ -108,20 +129,8 @@ function(
 		{ w: 1, h: 1, tx: 0.25, ty: 0.50, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.50, ty: 0.50, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.75, ty: 0.50, tw: 0.25, th: 0.25 },
+
 		{ w: 2, h: 2, tx: 0.75, ty: 0.75, tw: 0.25, th: 0.25 },
-
-		// half
-		{ w: 1, h: 0.5, tx: 0.00, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.25, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.25, ty: 0.75, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.75, tw: 0.25, th: 0.125 },
-
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.25, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.375, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.75, ty: 0.25, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.75, ty: 0.375, tw: 0.25, th: 0.125 }
 	];
 
 	Vegetation.prototype.createBase = function(type) {
@@ -202,7 +211,7 @@ function(
 
 		'void main(void) {',
 			'vec3 swayPos = vertexPosition;',
-			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.15 + 0.1;',
+			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.1 + 0.08;',
 		'	vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
 		'	vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
