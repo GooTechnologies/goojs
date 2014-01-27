@@ -23,9 +23,12 @@ function(
 	 * @param {World} gooWorld An instance of a goo.world object
 	 * @param {number} [gridCount=1] Number of grid segments to split the world in during combine
 	 */
-	function EntityCombiner(gooWorld, gridCount) {
+	function EntityCombiner(gooWorld, gridCount, removeOldData, keepEntities) {
 		this.world = gooWorld;
 		this.gridCount = gridCount || 1;
+		this.gridSize = 1;
+		this.removeOldData = removeOldData !== undefined ? removeOldData : true;
+		this.keepEntities = keepEntities !== undefined ? keepEntities : false;
 	}
 
 	/**
@@ -35,13 +38,13 @@ function(
 		this.world.process();
 
 		var topEntities = this.world.entityManager.getTopEntities();
-		this.gridSize = this._calculateBounds(topEntities) / this.gridCount;
+		if (this.gridSize > 1) {
+			this.gridSize = this._calculateBounds(topEntities) / this.gridCount;
+		}
 		this._combineList(topEntities);
 	};
 
 	EntityCombiner.prototype._combineList = function(entities) {
-		var removeOld = true;
-
 		var root = this.world.createEntity('root');
 		root.addToWorld();
 		for (var i = 0; i < entities.length; i++) {
@@ -56,7 +59,7 @@ function(
 			var entity = keys[i];
 			var combineList = baseSubs.get(entity);
 
-			this._combine(entity, combineList, removeOld);
+			this._combine(entity, combineList);
 		}
 	};
 
@@ -83,7 +86,7 @@ function(
 		}
 	};
 
-	EntityCombiner.prototype._combine = function(root, combineList, removeOld) {
+	EntityCombiner.prototype._combine = function(root, combineList) {
 		var rootTransform = root.transformComponent.worldTransform;
 		var invertTransform = new Transform();
 		var calcTransform = new Transform();
@@ -100,9 +103,11 @@ function(
 			key2.sort();
 			key2 = key2.join('_');
 
-			var xBucket = entity.meshRendererComponent.worldBound.center.x / this.gridSize;
-			var zBucket = entity.meshRendererComponent.worldBound.center.z / this.gridSize;
-			key2 = key2 + '_' + Math.round(xBucket) + '_' + Math.round(zBucket);
+			if (this.gridSize > 1) {
+				var xBucket = entity.meshRendererComponent.worldBound.center.x / this.gridSize;
+				var zBucket = entity.meshRendererComponent.worldBound.center.z / this.gridSize;
+				key2 = key2 + '_' + Math.round(xBucket) + '_' + Math.round(zBucket);
+			}
 
 			var set = entities.get(key);
 			if (!set) {
@@ -142,13 +147,13 @@ function(
 
 					meshBuilder.addMeshData(entity.meshDataComponent.meshData, calcTransform);
 
-					if (removeOld) {
+					if (this.removeOldData) {
+						entity.clearComponent('meshDataComponent');
+						entity.clearComponent('meshRendererComponent');
+
 						// Remove empty leaf children
-						if (entity._components.length === 3 && entity.transformComponent.children.length === 0) {
+						if (!this.keepEntities && entity._components.length === 3 && entity.transformComponent.children.length === 0) {
 							entity.removeFromWorld();
-						} else {
-							entity.clearComponent('meshDataComponent');
-							entity.clearComponent('meshRendererComponent');
 						}
 					} else {
 						entity.skip = true;
