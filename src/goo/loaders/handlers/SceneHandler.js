@@ -9,6 +9,13 @@ define([
 ) {
 	"use strict";
 
+	/*
+	 * @class Handler for loading scene into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 */
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -17,6 +24,10 @@ define([
 	SceneHandler.prototype.constructor = SceneHandler;
 	ConfigHandler._registerClass('scene', SceneHandler);
 
+	/*
+	 * Removes the scene, i e removes all entities in scene from engine world
+	 * @param {ref}
+	 */
 	SceneHandler.prototype._remove = function(ref) {
 		//Todo Clear engine
 		var scene = this._objects[ref];
@@ -33,12 +44,12 @@ define([
 
 	/*
 	 * Creates an empty scene which will hold some scene data
-	 * @param {string} ref will be the entity's id
 	 * @returns {Entity}
 	 * @private
 	 */
 	SceneHandler.prototype._create = function() {
 		return {
+			id: null,
 			entities: [],
 			posteffects: [],
 			environment: null
@@ -55,25 +66,32 @@ define([
 	SceneHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(scene) {
+			scene.id = ref;
 			var promises = [];
 			promises.push(that._handleEntities(config, scene, options));
-			if (config.posteffectsRef) {
-				promises.push(that._handlePostEffects(config, scene, options));
+			/*if (config.posteffectsRef) {
+				promises.push(that._handlePosteffects(config, scene, options));
 			}
 			if (config.environmentRef) {
 				promises.push(that._handleEnvironment(config, scene, options));
-			}
+			}*/
 			return RSVP.all(promises).then(function() {
 				return scene;
 			});
 		});
 	};
 
+	/*
+	 * Adding and removing entities to the engine and thereby the scene
+	 * @param {object} config
+	 * @param {object} scene
+	 * @param {object} options
+	 */
 	SceneHandler.prototype._handleEntities = function(config, scene, options) {
 		var promises = [];
 
-		for (var i = 0; i < config.entityRefs.length; i++) {
-			promises.push(this._load(config.entityRefs[i], options));
+		for (var key in config.entityRefs) {
+			promises.push(this._load(config.entityRefs[key], options));
 		}
 		return RSVP.all(promises).then(function(entities) {
 			// Adding new entities
@@ -95,21 +113,31 @@ define([
 		});
 	};
 
+	/*
+	 * Handling posteffects, to be implemented
+	 * @param {object} config
+	 * @param {object} scene
+	 * @param {object} options
+	 */
 	SceneHandler.prototype._handlePosteffects = function(config, scene, options) {
 		var that = this;
-		return this._load(config.posteffectsRef).then(function() {
+		return this._load(config.posteffectsRef, options).then(function() {
 			// Do stuff with the posteffects
 		});
 	};
 
+	/*
+	 * Handling environment, to be implemented
+	 * @param {object} config
+	 * @param {object} scene
+	 * @param {object} options
+	 */
 	SceneHandler.prototype._handleEnvironment = function(config, scene, options) {
 		var that = this;
 		return this._load(config.environmentRef).then(function() {
 			// Do stuff with environment;
 		});
 	};
-
-	SceneHandler.prototype.remove = function(/*ref*/) {};
 
 	return SceneHandler;
 

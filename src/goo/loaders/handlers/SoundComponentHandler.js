@@ -13,49 +13,35 @@ define([
 
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._type = 'HowlerComponent';
 	}
 
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('sound', SoundComponentHandler);
-	SoundComponentHandler._type = 'howler';
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
+	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
-	SoundComponentHandler.prototype._create = function(entity) {
-		var component = new HowlerComponent();
-		entity.setComponent(component);
-		return component;
+
+	SoundComponentHandler.prototype._create = function() {
+		return new HowlerComponent();
 	};
 
-	SoundComponentHandler.prototype.update = function(entity, config) {
+	SoundComponentHandler.prototype.update = function(entity, config, options) {
 		if (!window.Howl) {
 			throw new Error('Howler is missing');
 		}
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		for (var i = 0; i < component.sounds.length; i++) {
-			component.sounds[i].stop();
-		}
-		component.sounds = [];
-
-		var soundRefs = config.soundRefs;
-		if (soundRefs) {
+		var that = this;
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			for (var i = 0; i < component.sounds.length; i++) {
+				component.sounds[i].stop();
+			}
 			var promises = [];
-
-			for (var i = 0; i < soundRefs.length; i++) {
-				promises.push(this._getSound(soundRefs[i]));
+			for (var key in config.soundRefs) {
+				promises.push(that._load(config.soundRefs[key], options));
 			}
 			return RSVP.all(promises).then(function(sounds) {
 				component.sounds = sounds;
 				return component;
 			});
-		} else {
-			return PromiseUtil.createDummyPromise(component);
-		}
-	};
-
-	SoundComponentHandler.prototype._getSound = function(ref) {
-		var that = this;
-		return this.getConfig(ref).then(function(config) {
-			return that.updateObject(ref, config);
 		});
 	};
 

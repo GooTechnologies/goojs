@@ -27,7 +27,7 @@ define([
 	'goo/loaders/handlers/ProjectHandler',
 	'goo/loaders/handlers/ScriptComponentHandler',
 	'goo/loaders/handlers/ScriptHandler',
-	'goo/loaders/handlers/FSMComponentHandler',
+	'goo/loaders/handlers/StateMachineComponentHandler',
 	'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
@@ -140,7 +140,7 @@ function(
 
 			// Load the binary and increase progress tick on finished loading
 			function load(ref) {
-				return that._loadRef(ref).then(function() {
+				return that._loadRef(ref, options).then(function() {
 					handled++;
 					if (options.progressCallback instanceof Function) {
 						options.progressCallback(handled, refs.length);
@@ -159,7 +159,7 @@ function(
 
 			// Loads config for traversal
 			function loadFn(ref) {
-				promises.push(that._loadRef(ref).then(traverseFn));
+				promises.push(that._loadRef(ref, options).then(traverseFn));
 			}
 
 			// Looks through config for binaries

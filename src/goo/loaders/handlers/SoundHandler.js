@@ -13,69 +13,73 @@ define([
 
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
 
 	SoundHandler.prototype = Object.create(ConfigHandler.prototype);
-	ConfigHandler._registerClass('sound', SoundHandler);
 	SoundHandler.prototype.constructor = SoundHandler;
+	ConfigHandler._registerClass('sound', SoundHandler);
+
+	SoundHandler.prototype.remove = function(ref) {
+		var sound = this._objects[ref];
+		if (sound) {
+			sound.stop();
+		}
+		delete this._objects[ref];
+	};
 
 	SoundHandler.prototype._prepare = function(config) {
 		_.defaults(config, {
 			loop: false,
-			urls: [],
+			audioRefs: [],
 			volume: 1.0,
 			name: "A Sound"
 		});
 	};
 
-	SoundHandler.prototype._create = function(ref) {
+	SoundHandler.prototype._create = function() {
 		var howl = new window.Howl({});
 		howl._loaded = true;
-		return this._objects[ref] = howl;
+		return howl;
 	};
 
-	SoundHandler.prototype.update = function(ref, config) {
+	SoundHandler.prototype.update = function(ref, config, options) {
 		if (!window.Howl) {
 			throw new Error('Howler is missing');
 		}
-		this._prepare(config);
-		var object = this._objects[ref] || this._create(ref, config);
+		var that = this;
 
-		var promises = [];
-		for (var key in config) {
-			if(key === 'urls') {
-				continue;
-			}
-			if (object[key] instanceof Function) {
-				object[key](config[key]);
-			}
-		}
-		for (var i = 0; i < config.urls.length; i++) {
-			promises.push(this.getConfig(config.urls[i]));
-		}
-		return RSVP.all(promises).then(function(urls) {
-			if (!isEqual(urls, object._urls)) {
+		ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
+			sound.loop(config.loop);
+			sound.volume(config.volume);
+			var promises = [];
+			_.forEach(config.audioRefs, function(ref) {
+				promises.push(that.getConfig(ref));
+			}, 'sortValue');
+			RSVP.all(promises).then(function(paths) {
+				if (isEqual(paths, sound._urls)) {
+					return sound;
+				}
+
 				var howlerLoaded = new RSVP.Promise();
-				object.on('load', function() {
-					howlerLoaded.resolve(object);
-				});
-				object.on('loaderror', function(e) {
-					howlerLoaded.reject("Error loading sound for " + ref);
-				});
-				object.urls(urls);
+				function onLoad() {
+					howlerLoaded.resolve(sound);
+					sound.off('load', onLoad);
+					sound.off('loaderror', onError);
+				}
+				function onError() {
+					howlerLoaded.reject('Error loading sound for ' + ref);
+					sound.off('load', onLoad);
+					sound.off('loaderror', onError);
+				}
+				sound.on('load', onLoad);
+				sound.on('loaderror', onError);
+				sound.urls(paths);
 
 				return howlerLoaded;
-			}
-			return object;
+			}).then(function(sound) {
+				return sound;
+			});
 		});
-	};
-
-	SoundHandler.prototype.remove = function(ref) {
-		if (this._objects[ref]) {
-			this._objects[ref].stop();
-		}
-		delete this._objects[ref];
 	};
 
 	function isEqual(a, b) {

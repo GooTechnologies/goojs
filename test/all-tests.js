@@ -1,5 +1,5 @@
 define([
-	'test/math/MathUtils-test',
+	/*'test/math/MathUtils-test',
 	'test/math/Matrix-test',
 	'test/math/Matrix2x2-test',
 	'test/math/Matrix3x3-test',
@@ -52,9 +52,10 @@ define([
 	'test/loaders/handlers/AnimationComponentHandler-test',
 	'test/loaders/handlers/ShaderHandler-test',
 	'test/loaders/handlers/MaterialHandler-test',
-	'test/loaders/handlers/TextureHandler-test',
+	'test/loaders/handlers/TextureHandler-test',*/
 	'test/loaders/handlers/MeshRendererComponentHandler-test',
 	'test/loaders/handlers/MeshDataComponentHandler-test',
 	'test/loaders/handlers/MeshDataHandler-test',
-	'test/loaders/handlers/SceneHandler-test'
+	'test/loaders/handlers/SceneHandler-test',
+	'test/loaders/handlers/ProjectHandler-test'
 ], function() {});

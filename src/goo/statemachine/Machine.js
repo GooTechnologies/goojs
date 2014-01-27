@@ -8,7 +8,7 @@ function (
 	function Machine(name) {
 		this.name = name;
 		this._fsm = null;
-		this._states = null;
+		this._states = {};
 		this.initialState = 'entry';
 		this.currentState = null;
 		this.parent = null;

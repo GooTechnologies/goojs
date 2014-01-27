@@ -77,9 +77,9 @@ define([
 	 * @param {object} config
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
-	ConfigHandler.prototype.update = function(ref, config/*, options*/) {
+	ConfigHandler.prototype.update = function(ref, config, options) {
 		if (!config) {
-			this._remove(ref);
+			this._remove(ref, options);
 			return PromiseUtil.createDummyPromise();
 		}
 		if (!this._objects[ref]) {
