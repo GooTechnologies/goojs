@@ -1,19 +1,17 @@
 define([
 	'goo/entities/EntitySelection',
 	'goo/entities/World',
-	'goo/entities/components/TransformComponent',
-	'goo/entities/Entity'
+	'goo/entities/components/TransformComponent'
 ], function (
 	EntitySelection,
 	World,
-	TransformComponent,
-	Entity
+	TransformComponent
 ) {
 	'use strict';
 
 	describe('EntitySelection', function () {
 		function someEntity() {
-			return new Entity();
+			return world.createEntity();
 		}
 
 		function someEntities(n) {
@@ -174,6 +172,33 @@ define([
 				expect(selection.contains(entities[1])).toBeTruthy();
 
 				expect(selection.size()).toEqual(2);
+			});
+		});
+
+		describe('andSelf', function () {
+			it('add the previous selection to the current one', function () {
+				var entities = someEntities(5);
+				var children = [];
+
+				var selection = new EntitySelection(entities);
+				// attach some children
+				selection.each(function (entity) {
+					var child = someEntity();
+					children.push(child);
+					entity.attachChild(child);
+				});
+
+				// get those children // very artificial test
+				selection.children();
+
+				selection.andSelf();
+
+				entities.forEach(function (entity) {
+					expect(selection.contains(entity)).toBeTruthy();
+					expect(selection.contains(entity.children().first())).toBeTruthy();
+				});
+
+				expect(selection.size()).toEqual(entities.length * 2);
 			});
 		});
 	});

@@ -125,6 +125,19 @@ define(['goo/entities/Selection'], function (Selection) {
 		return this;
 	};
 
+	/**
+	 * Adds the previous selection to the current selection. Resulting duplicates are removed.
+	 * @returns {EntitySelection} Returns self to allow chaining
+	 */
+	EntitySelection.prototype.andSelf = function () {
+		if (top === null) { return this; }
+
+		if (this.stack.length <= 1) { return this; }
+
+		var prev = this.stack[this.stack.length - 2];
+
+		return this.and.apply(this, prev);
+	};
 
 	//! AT: the transform component/system should install these
 	/**
