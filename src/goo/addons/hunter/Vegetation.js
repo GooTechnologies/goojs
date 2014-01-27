@@ -93,7 +93,7 @@ function(
 		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
-		var texture = new TextureCreator().loadTexture2D('res/images/grassatlas_0_DIF.dds');
+		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/grassatlas_0_DIF.dds');
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		material.cullState.enabled = false;
