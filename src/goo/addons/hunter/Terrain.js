@@ -274,7 +274,7 @@ function (
 
 				ShaderBuilder.light.vertex,
 
-					'noise = sin(vWorldPos.x);',
+					'noise = (sin(vWorldPos.x * 0.2) + sin(vWorldPos.z * 0.2))*0.25+0.5;',
 					'noise2 = 0.0;',
 				'}'
 			].join('\n');
