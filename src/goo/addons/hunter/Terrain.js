@@ -18,7 +18,8 @@ define([
 	'goo/entities/EntityUtils',
 	'goo/scripts/WorldFittedTerrainScript',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/addons/hunter/Vegetation'
+	'goo/addons/hunter/Vegetation',
+	'goo/addons/hunter/Forrest'
 ],
 /** @lends */
 function (
@@ -41,7 +42,8 @@ function (
 	EntityUtils,
 	WorldFittedTerrainScript,
 	ShaderLib,
-	Vegetation
+	Vegetation,
+	Forrest
 ) {
 	"use strict";
 
@@ -66,7 +68,9 @@ function (
 
 			var ws = new WorldFittedTerrainScript();
             var terrainData1 = ws.addHeightData(matrix, dim);
+
 			var vegetation = new Vegetation(goo, ws);
+			var forrest = new Forrest(goo, ws);
 		}.bind(this));
 	}
 
@@ -228,6 +232,9 @@ function (
 				'varying vec4 color;',
 				'#endif',
 
+				'varying float noise;',
+				'varying float noise2;',
+
 				ShaderBuilder.light.prevertex,
 
 				'void main(void) {',
@@ -262,6 +269,9 @@ function (
 				'#endif',
 
 				ShaderBuilder.light.vertex,
+
+					'noise = sin(vWorldPos.x);',
+					'noise2 = 0.0;',
 				'}'
 			].join('\n');
 		},
@@ -307,6 +317,9 @@ function (
 				'varying vec2 texCoord1; //Use for lightmap',
 				'#endif',
 
+				'varying float noise;',
+				'varying float noise2;',
+
 				ShaderBuilder.light.prefragment,
 				ShaderFragment.noise2d,
 
@@ -328,11 +341,8 @@ function (
 				'float slope = clamp(1.0 - dot(landNormal, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
 				'slope = smoothstep(0.0, 0.1, slope);',
 
-				'float noise = 1.0 - snoise(texCoord0 * vec2(8.0));',
-				'float noise2 = snoise(texCoord0 * vec2(10.0) + vec2(100.0, 100.0));',
-
 				'const float NMUL = 1.2;',
-				'const float FADEMUL = 0.1;',
+				// 'const float FADEMUL = 0.1;',
 
 				'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
 				'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
@@ -349,21 +359,26 @@ function (
 
 				// 'N = normalize(landNormal);',
 
-				'vec4 tex1 = texture2D(groundMap1, coord);',
-				'vec4 tex2 = texture2D(groundMap1, coord2);',
-				'vec4 g1 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
+				'vec4 g1 = texture2D(groundMap1, coord);',
+				'vec4 g2 = texture2D(groundMap2, coord);',
+				'vec4 g3 = texture2D(groundMap3, coord);',
+				'vec4 mountain = texture2D(groundMap4, coord);',
 
-				'tex1 = texture2D(groundMap2, coord);',
-				'tex2 = texture2D(groundMap2, coord2);',
-				'vec4 g2 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
+				// 'vec4 tex1 = texture2D(groundMap1, coord);',
+				// 'vec4 tex2 = texture2D(groundMap1, coord2);',
+				// 'vec4 g1 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
 
-				'tex1 = texture2D(groundMap3, coord);',
-				'tex2 = texture2D(groundMap3, coord2);',
-				'vec4 g3 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
+				// 'tex1 = texture2D(groundMap2, coord);',
+				// 'tex2 = texture2D(groundMap2, coord2);',
+				// 'vec4 g2 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
 
-				'tex1 = texture2D(groundMap4, coord);',
-				'tex2 = texture2D(groundMap4, coord2);',
-				'vec4 mountain = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
+				// 'tex1 = texture2D(groundMap3, coord);',
+				// 'tex2 = texture2D(groundMap3, coord2);',
+				// 'vec4 g3 = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
+
+				// 'tex1 = texture2D(groundMap4, coord);',
+				// 'tex2 = texture2D(groundMap4, coord2);',
+				// 'vec4 mountain = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
 
 				'final_color = mix(g1, g2, smoothstep(0.0, 1.0, noise));',
 				'final_color = mix(final_color, g3, smoothstep(0.5, 1.0, noise2));',

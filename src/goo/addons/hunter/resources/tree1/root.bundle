@@ -1,0 +1,523 @@
+{
+  "textures/veg_Aspen_Trunk_bot_dif.dds.texture": {
+    "wrapV": "Repeat",
+    "wrapU": "Repeat",
+    "url": "images/veg_Aspen_Trunk_bot_dif.dds",
+    "repeat": [
+      1,
+      1
+    ],
+    "ref": "textures/veg_Aspen_Trunk_bot_dif.dds.texture",
+    "offset": [
+      0,
+      0
+    ],
+    "name": "veg_Aspen_Trunk_bot_dif.dds",
+    "minFilter": "Trilinear",
+    "magFilter": "Bilinear",
+    "flipY": false,
+    "fileName": "images/veg_Aspen_Trunk_bot_dif.dds",
+    "anisotropy": 1
+  },
+  "textures/veg_Aspen_Trunk_bot_nrm.dds.texture": {
+    "wrapV": "Repeat",
+    "wrapU": "Repeat",
+    "url": "images/veg_Aspen_Trunk_bot_nrm.dds",
+    "repeat": [
+      1,
+      1
+    ],
+    "ref": "textures/veg_Aspen_Trunk_bot_nrm.dds.texture",
+    "offset": [
+      0,
+      0
+    ],
+    "name": "veg_Aspen_Trunk_bot_nrm.dds",
+    "minFilter": "Trilinear",
+    "magFilter": "Bilinear",
+    "flipY": false,
+    "fileName": "images/veg_Aspen_Trunk_bot_nrm.dds",
+    "anisotropy": 1
+  },
+  "textures/veg_Aspen_Foliage_dif.dds.texture": {
+    "wrapV": "Repeat",
+    "wrapU": "Repeat",
+    "url": "images/veg_Aspen_Foliage_dif.dds",
+    "repeat": [
+      1,
+      1
+    ],
+    "ref": "textures/veg_Aspen_Foliage_dif.dds.texture",
+    "offset": [
+      0,
+      0
+    ],
+    "name": "veg_Aspen_Foliage_dif.dds",
+    "minFilter": "Trilinear",
+    "magFilter": "Bilinear",
+    "flipY": false,
+    "fileName": "images/veg_Aspen_Foliage_dif.dds",
+    "anisotropy": 1
+  },
+  "textures/veg_Aspen_Foliage_nrm.dds.texture": {
+    "wrapV": "Repeat",
+    "wrapU": "Repeat",
+    "url": "images/veg_Aspen_Foliage_nrm.dds",
+    "repeat": [
+      1,
+      1
+    ],
+    "ref": "textures/veg_Aspen_Foliage_nrm.dds.texture",
+    "offset": [
+      0,
+      0
+    ],
+    "name": "veg_Aspen_Foliage_nrm.dds",
+    "minFilter": "Trilinear",
+    "magFilter": "Bilinear",
+    "flipY": false,
+    "fileName": "images/veg_Aspen_Foliage_nrm.dds",
+    "anisotropy": 1
+  },
+  "meshes/pasted__polySurface7_MSHShape.mesh": {
+    "name": "pasted__polySurface7_MSHShape",
+    "vertexCount": 360,
+    "indexLengths": [
+      1350
+    ],
+    "indexModes": [
+      "Triangles"
+    ],
+    "colors": [],
+    "type": "Mesh",
+    "binaryRef": "binaries/data.bin",
+    "ref": "meshes/pasted__polySurface7_MSHShape.mesh",
+    "vertices": [
+      0,
+      1080,
+      "float32"
+    ],
+    "normals": [
+      4320,
+      1080,
+      "float32"
+    ],
+    "textureCoords": [
+      [
+        8640,
+        720,
+        "float32"
+      ]
+    ],
+    "indices": [
+      11520,
+      1350,
+      "uint16"
+    ]
+  },
+  "meshes/polySurface224_MSHShape.mesh": {
+    "name": "polySurface224_MSHShape",
+    "vertexCount": 1503,
+    "indexLengths": [
+      2898
+    ],
+    "indexModes": [
+      "Triangles"
+    ],
+    "colors": [],
+    "type": "Mesh",
+    "binaryRef": "binaries/data.bin",
+    "ref": "meshes/polySurface224_MSHShape.mesh",
+    "vertices": [
+      14220,
+      4509,
+      "float32"
+    ],
+    "normals": [
+      32256,
+      4509,
+      "float32"
+    ],
+    "textureCoords": [
+      [
+        50292,
+        3006,
+        "float32"
+      ],
+      [
+        62316,
+        3006,
+        "float32"
+      ]
+    ],
+    "indices": [
+      74340,
+      2898,
+      "uint16"
+    ]
+  },
+  "entities/Veg_T01_aspenM_LOD2-Whole_root.entity": {
+    "components": {
+      "transform": {
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "translation": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "name": "Veg_T01_aspenM_LOD2-Whole_root",
+    "ref": "entities/Veg_T01_aspenM_LOD2-Whole_root.entity"
+  },
+  "materials/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH_Material.material": {
+    "uniforms": {
+      "discardThreshold": {
+        "enabled": false,
+        "value": 0
+      },
+      "fresnel": {
+        "enabled": true,
+        "value": 0
+      },
+      "materialAmbient": {
+        "enabled": true,
+        "value": [
+          0.3,
+          0.3,
+          0.3,
+          1
+        ]
+      },
+      "materialDiffuse": {
+        "enabled": true,
+        "value": [
+          0.8,
+          0.8,
+          0.8,
+          1
+        ]
+      },
+      "materialEmissive": {
+        "enabled": true,
+        "value": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "materialSpecular": {
+        "enabled": true,
+        "value": [
+          0.6,
+          0.6,
+          0.6,
+          1
+        ]
+      },
+      "materialSpecularPower": {
+        "enabled": true,
+        "value": 64
+      },
+      "normalMultiplier": {
+        "enabled": true,
+        "value": 1
+      },
+      "opacity": {
+        "enabled": true,
+        "value": 1
+      },
+      "reflectivity": {
+        "enabled": true,
+        "value": 0
+      }
+    },
+    "texturesMapping": {
+      "DIFFUSE_MAP": {
+        "enabled": true,
+        "textureRef": "textures/veg_Aspen_Trunk_bot_dif.dds.texture"
+      },
+      "NORMAL_MAP": {
+        "enabled": true,
+        "textureRef": "textures/veg_Aspen_Trunk_bot_nrm.dds.texture"
+      }
+    },
+    "shaderRef": "GOO_ENGINE_SHADERS/uber",
+    "renderQueue": 1000,
+    "ref": "materials/Material.material",
+    "name": "Blank",
+    "depthState": {
+      "enabled": true,
+      "write": true
+    },
+    "cullState": {
+      "cullFace": "Back",
+      "enabled": true,
+      "frontFace": "CCW"
+    },
+    "blendState": {
+      "blendDst": "OneMinusSrcAlphaFactor",
+      "blendEquation": "AddEquation",
+      "blendSrc": "SrcAlphaFactor",
+      "blending": "NoBlending"
+    },
+    "materialName": "materials/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH_Material.material"
+  },
+  "entities/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH.entity": {
+    "components": {
+      "meshData": {
+        "meshRef": "meshes/pasted__polySurface7_MSHShape.mesh"
+      },
+      "meshRenderer": {
+        "castShadows": true,
+        "cullMode": "Dynamic",
+        "hidden": false,
+        "materialRefs": [
+          "materials/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH_Material.material"
+        ],
+        "receiveShadows": true
+      },
+      "transform": {
+        "parentRef": "entities/Veg_T01_aspenM_LOD2-Whole_root.entity",
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          10,
+          10,
+          10
+        ],
+        "translation": [
+          8.828180325246348e-44,
+          0,
+          0
+        ]
+      }
+    },
+    "name": "_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH",
+    "ref": "entities/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH.entity"
+  },
+  "materials/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH_Material.material": {
+    "uniforms": {
+      "discardThreshold": {
+        "enabled": true,
+        "value": 0.5
+      },
+      "fresnel": {
+        "enabled": true,
+        "value": 0
+      },
+      "materialAmbient": {
+        "enabled": true,
+        "value": [
+          0.4,
+          0.4,
+          0.4,
+          1
+        ]
+      },
+      "materialDiffuse": {
+        "enabled": true,
+        "value": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ]
+      },
+      "materialEmissive": {
+        "enabled": true,
+        "value": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "materialSpecular": {
+        "enabled": true,
+        "value": [
+          0.2,
+          0.2,
+          0.2,
+          1
+        ]
+      },
+      "materialSpecularPower": {
+        "enabled": true,
+        "value": 64
+      },
+      "normalMultiplier": {
+        "enabled": true,
+        "value": 1
+      },
+      "opacity": {
+        "enabled": true,
+        "value": 1
+      },
+      "reflectivity": {
+        "enabled": true,
+        "value": 0
+      }
+    },
+    "texturesMapping": {
+      "DIFFUSE_MAP": {
+        "enabled": true,
+        "textureRef": "textures/veg_Aspen_Foliage_dif.dds.texture"
+      },
+      "NORMAL_MAP": {
+        "enabled": true,
+        "textureRef": "textures/veg_Aspen_Foliage_nrm.dds.texture"
+      }
+    },
+    "shaderRef": "GOO_ENGINE_SHADERS/uber",
+    "renderQueue": 1000,
+    "ref": "materials/Material.material",
+    "name": "Blank",
+    "depthState": {
+      "enabled": true,
+      "write": true
+    },
+    "cullState": {
+      "cullFace": "Back",
+      "enabled": false,
+      "frontFace": "CCW"
+    },
+    "blendState": {
+      "blendDst": "OneMinusSrcAlphaFactor",
+      "blendEquation": "AddEquation",
+      "blendSrc": "SrcAlphaFactor",
+      "blending": "NoBlending"
+    },
+    "materialName": "materials/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH_Material.material"
+  },
+  "entities/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH.entity": {
+    "components": {
+      "meshData": {
+        "meshRef": "meshes/polySurface224_MSHShape.mesh"
+      },
+      "meshRenderer": {
+        "castShadows": true,
+        "cullMode": "Dynamic",
+        "hidden": false,
+        "materialRefs": [
+          "materials/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH_Material.material"
+        ],
+        "receiveShadows": true
+      },
+      "transform": {
+        "parentRef": "entities/Veg_T01_aspenM_LOD2-Whole_root.entity",
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          10,
+          10,
+          10
+        ],
+        "translation": [
+          8.828180325246348e-44,
+          -2.8602120671905595e-14,
+          2.620428128287408e-43
+        ]
+      }
+    },
+    "name": "_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH",
+    "ref": "entities/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH.entity"
+  },
+  "Veg_T01_aspenM_LOD2-Whole.group": {
+    "libraryRefs": [
+      "textures/veg_Aspen_Trunk_bot_dif.dds.texture",
+      "textures/veg_Aspen_Trunk_bot_nrm.dds.texture",
+      "textures/veg_Aspen_Foliage_dif.dds.texture",
+      "textures/veg_Aspen_Foliage_nrm.dds.texture",
+      "meshes/pasted__polySurface7_MSHShape.mesh",
+      "meshes/polySurface224_MSHShape.mesh",
+      "entities/Veg_T01_aspenM_LOD2-Whole_root.entity",
+      "materials/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH_Material.material",
+      "entities/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH.entity",
+      "materials/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH_Material.material",
+      "entities/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH.entity",
+      "images/veg_Aspen_Trunk_bot_dif.dds",
+      "images/veg_Aspen_Trunk_bot_nrm.dds",
+      "images/veg_Aspen_Foliage_dif.dds",
+      "images/veg_Aspen_Foliage_nrm.dds",
+      "binaries/data.bin"
+    ],
+    "name": "Veg_T01_aspenM_LOD2-Whole",
+    "ref": "Veg_T01_aspenM_LOD2-Whole.group"
+  },
+  "project.project": {
+    "view": [],
+    "useFog": false,
+    "skybox": {
+      "environmentType": 1,
+      "imageUrls": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "rotation": 0,
+      "shape": "Box"
+    },
+    "shareButtons": false,
+    "screenshot": "images/screenshot.png",
+    "ref": "project.project",
+    "public": true,
+    "parent": null,
+    "own": [
+      "YwIhdYJBR96vrRnDRSexOg"
+    ],
+    "originalLicenseType": null,
+    "name": "Goon",
+    "modified": "2013-12-11T21:09:06.095000",
+    "licenseType": "CC0",
+    "id": "yJFerc0xRM60-F0L-Sm6FA",
+    "groupRefs": [
+      "Veg_T01_aspenM_LOD2-Whole.group"
+    ],
+    "globalAmbient": [
+      0,
+      0,
+      0
+    ],
+    "fogNear": 0,
+    "fogFar": 1000,
+    "fogColor": [
+      1,
+      1,
+      1
+    ],
+    "entityRefs": [
+      "entities/Veg_T01_aspenM_LOD2-Whole_root.entity",
+      "entities/_Veg_T01_aspenM_LOD2_Whole_pasted__polySurface7_MSH.entity",
+      "entities/_Veg_T01_aspenM_LOD2_Whole_polySurface224_MSH.entity"
+    ],
+    "edit": [],
+    "deleted": false,
+    "created": "2013-12-11T21:08:23.089000",
+    "backgroundColor": [
+      0.75,
+      0.76,
+      0.78,
+      1
+    ]
+  }
+}

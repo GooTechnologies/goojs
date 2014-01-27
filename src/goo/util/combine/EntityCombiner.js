@@ -1,5 +1,6 @@
 define([
 	'goo/entities/EntityUtils',
+	'goo/entities/Entity',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
 	'goo/math/Vector3',
@@ -9,6 +10,7 @@ define([
 /** @lends */
 function(
 	EntityUtils,
+	Entity,
 	MeshBuilder,
 	Transform,
 	Vector3,
@@ -45,10 +47,13 @@ function(
 	};
 
 	EntityCombiner.prototype._combineList = function(entities) {
-		var root = this.world.createEntity('root');
-		root.addToWorld();
-		for (var i = 0; i < entities.length; i++) {
-			root.attachChild(entities[i]);
+		var root = entities;
+		if (entities instanceof Entity === false) {
+			root = this.world.createEntity('root');
+			root.addToWorld();
+			for (var i = 0; i < entities.length; i++) {
+				root.attachChild(entities[i]);
+			}
 		}
 
 		var baseSubs = new Map();
@@ -152,7 +157,7 @@ function(
 						entity.clearComponent('meshRendererComponent');
 
 						// Remove empty leaf children
-						if (!this.keepEntities && entity._components.length === 3 && entity.transformComponent.children.length === 0) {
+						if (!this.keepEntities && entity._components.length === 1 && entity.transformComponent.children.length === 0) {
 							entity.removeFromWorld();
 						}
 					} else {

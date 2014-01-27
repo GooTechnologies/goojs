@@ -143,10 +143,10 @@ function (
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
 					this.type = 'UnsignedShort565';
-					this.format = 'RGB';
+					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
 					this.type = 'Float';
-					this.format = 'Alpha';
+					this.format = settings.format || 'RGBA';
 				}
 			} else {
 				throw "Data textures need width and height";
