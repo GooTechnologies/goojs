@@ -52,12 +52,13 @@ function(
 	function Forrest(goo, worldScript) {
 			var loader = new DynamicLoader({
 				world: goo.world,
-				rootPath: 'res/images/tree1',
+				rootPath: window.hunterResources + '/tree1',
 			});
 
 			loader.loadFromBundle('project.project', 'root.bundle', {
 				recursive: false,
-				preloadBinaries: true
+				preloadBinaries: true,
+				noEnvironment: true
 			}).then(function(configs) {
 
 				goo.world.process();
@@ -210,9 +211,9 @@ function(
 		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
-		var texture = new TextureCreator().loadTexture2D('res/images/veg_treeImpostors_full_alpha_0_dif.dds');
+		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_full_alpha_0_dif.dds');
 		material.setTexture('DIFFUSE_MAP', texture);
-		var texture = new TextureCreator().loadTexture2D('res/images/veg_treeImpostors_0_nrm.dds');
+		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_0_nrm.dds');
 		material.setTexture('NORMAL_MAP', texture);
 
 		// material.cullState.enabled = false;

@@ -85,11 +85,12 @@ function (
 		material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 
 		// ShaderBuilder.GLOBAL_AMBIENT = [1.0, 0.25, 0.35];
+/*
 		ShaderBuilder.GLOBAL_AMBIENT = [0.15, 0.15, 0.2];
 		ShaderBuilder.USE_FOG = true;
 		ShaderBuilder.FOG_SETTINGS = [50, 160];
 		ShaderBuilder.FOG_COLOR = [0.8,0.82,0.9];
-
+*/
 		var texturenorm = new TextureCreator().loadTexture2D(resourcePath + '/normals.png');
 		material.setTexture('NORMAL_MAP2', texturenorm);
 
