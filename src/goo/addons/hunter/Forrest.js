@@ -174,7 +174,7 @@ function(
 				norm = new Vector3(0,1,0);
 			}
 			var slope = norm.dot(Vector3.UNIT_Y);
-			if (slope < 0.9 || yy > 12) {
+			if (slope < 0.9 || yy > 13) {
 				continue;
 			}
 
@@ -242,17 +242,10 @@ function(
 
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
-		// transform.translation.x = (Math.random() * 2.0 - 1.0) * spread;
-		transform.translation.y = type.h * 0.5 - type.h * 0.05;
-		// transform.translation.z = (Math.random() * 2.0 - 1.0) * spread;
+		transform.translation.y = type.h * 0.5 - type.h * 0.2;
 		transform.update();
 
 		meshBuilder.addMeshData(meshData, transform);
-
-		// transform.setRotationXYZ(0, Math.PI * 0.5, 0);
-		// transform.update();
-
-		// meshBuilder.addMeshData(meshData, transform);
 
 		var meshDatas = meshBuilder.build();
 
