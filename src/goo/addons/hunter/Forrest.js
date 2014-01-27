@@ -55,6 +55,9 @@ function(
 				rootPath: window.hunterResources + '/tree1',
 			});
 
+			var startX = 20;
+			var startZ = 20;
+
 			loader.loadFromBundle('project.project', 'root.bundle', {
 				recursive: false,
 				preloadBinaries: true,
@@ -76,8 +79,8 @@ function(
 					vec.normalize();
 					var dist = Math.random() * 15 + 10;
 					vec.muld(dist, dist, dist);
-					vec.x += 10;
-					vec.z += 10;
+					vec.x += startX;
+					vec.z += startZ;
 					xx = vec.x;
 					zz = vec.z;
 					vec.y = 10;
@@ -99,22 +102,11 @@ function(
 					transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
 
 					transform.translation.setd(xx, yy, zz);
-
 					transform.update();
-
-					// var meshData = vegetationList[Math.floor(Math.random()*vegetationList.length)];
-					// meshBuilder.addMeshData(meshData, transform);
 
 					var clone = EntityUtils.clone(goo.world, root);
 					clone.transformComponent.transform.copy(transform);
 					newRoot.attachChild(clone);
-
-					// clone.setComponent(new ScriptComponent({
-					// 	run: function(entity, tpf) {
-					// 		entity.transformComponent.transform.translation.x = Math.sin(entity._world.time);
-					// 		entity.transformComponent.setUpdated();
-					// 	}
-					// }));
 
 					count--;
 				}
@@ -124,28 +116,28 @@ function(
 
 				goo.world.process();
 
-				var count = 0;
-				console.log('---------- before -------------');
-				EntityUtils.traverse(newRoot, function(entity, level) {
-					// console.log(level, entity.name, entity._components);
-					count++;
-				});
-				console.log('before count: ', count);
+				// var count = 0;
+				// console.log('---------- before -------------');
+				// EntityUtils.traverse(newRoot, function(entity, level) {
+				// 	// console.log(level, entity.name, entity._components);
+				// 	count++;
+				// });
+				// console.log('before count: ', count);
 
 				var combiner = new EntityCombiner(goo.world, 1);
 				console.time('combine');
 				combiner._combineList(newRoot);
 				console.timeEnd('combine');
 
-				goo.world.process();
+				// goo.world.process();
 
-				var count = 0;
-				console.log('---------- after -------------');
-				EntityUtils.traverse(newRoot, function(entity, level) {
-					// console.log(level, entity.name, entity._components);
-					count++;
-				});
-				console.log('after count: ', count);
+				// var count = 0;
+				// console.log('---------- after -------------');
+				// EntityUtils.traverse(newRoot, function(entity, level) {
+				// 	// console.log(level, entity.name, entity._components);
+				// 	count++;
+				// });
+				// console.log('after count: ', count);
 
 			}).then(null, function(e) {
 				console.error('Failed to load scene: ' + e);
@@ -157,9 +149,6 @@ function(
 			vegetationList[i] = meshData;
 		}
 
-		var startX = 0;
-		var startZ = 0;
-
 		var meshBuilder = new MeshBuilder();
 		var vec = new Vector3();
 		var transform = new Transform();
@@ -169,10 +158,10 @@ function(
 			var zz = (Math.random() * 2.0 - 1.0);
 			vec.setd(xx, 0, zz);
 			vec.normalize();
-			var dist = Math.random() * 30 + 25;
+			var dist = Math.random() * 30 + 30;
 			vec.muld(dist, dist, dist);
-			vec.x += 10;
-			vec.z += 10;
+			vec.x += startX;
+			vec.z += startZ;
 			xx = vec.x;
 			zz = vec.z;
 			vec.y = 10;
@@ -185,24 +174,22 @@ function(
 				norm = new Vector3(0,1,0);
 			}
 			var slope = norm.dot(Vector3.UNIT_Y);
-			if (slope < 0.9) {
+			if (slope < 0.9 || yy > 12) {
 				continue;
 			}
 
 			var size = Math.random() * 0.4 + 0.8;
 			transform.scale.setd(size, size, size);
+
 			transform.translation.setd(0, 0, 0);
-			var angle = Math.random() * Math.PI * 0.5;
-			var anglex = Math.sin(angle);
-			var anglez = Math.cos(angle);
-			// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
-			// transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
+
+			vec.x -= 32;
 			vec.y = 0;
+			vec.z -= 32;
 			vec.normalize();
 			transform.lookAt(vec, Vector3.UNIT_Y);
 
 			transform.translation.setd(xx, yy, zz);
-
 			transform.update();
 
 			var meshData = vegetationList[Math.floor(Math.random()*vegetationList.length)];
@@ -217,9 +204,10 @@ function(
 		material.setTexture('NORMAL_MAP', texture);
 
 		// material.cullState.enabled = false;
-		material.uniforms.discardThreshold = 0.8;
+		material.uniforms.discardThreshold = 0.6;
 		material.blendState.blending = 'CustomBlending';
-		material.uniforms.materialAmbient = [0.5, 0.5, 0.5, 1.0];
+		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
+		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
 		material.renderQueue = 3000;
 
 		for (var key in meshDatas) {
@@ -230,6 +218,8 @@ function(
 
 	var types = [
 		{ w: 7, h: 7, tx: 0.00, ty: 0.875, tw: 0.125, th: 0.125 },
+		{ w: 7, h: 7, tx: 0.125, ty: 0.750, tw: 0.125, th: 0.125 },
+		{ w: 7, h: 7, tx: 0.25, ty: 0.625, tw: 0.125, th: 0.125 },
 	];
 
 	Forrest.prototype.createBase = function(type) {

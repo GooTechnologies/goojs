@@ -47,12 +47,12 @@ function(
 			vegetationList[i] = meshData;
 		}
 
-		var startX = 10;
-		var startZ = 10;
+		var startX = 13;
+		var startZ = 13;
 
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
-		var spread = 30.0;
+		var spread = 35.0;
 		var count = 5000;
 		while (count > 0) {
 			var xx = (Math.random() * 2.0 - 1.0) * spread + startX;
