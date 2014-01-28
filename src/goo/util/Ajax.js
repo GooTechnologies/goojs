@@ -231,7 +231,9 @@ function(
 			'machine',
 			'posteffects',
 			'animstate',
-			'sound'
+			'sound',
+			'environment',
+			'skybox'
 		],
 		image: [
 			'jpg',

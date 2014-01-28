@@ -31,7 +31,9 @@ define([
 	//'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
-	'goo/loaders/handlers/PosteffectsHandler'
+	'goo/loaders/handlers/PosteffectsHandler',
+	'goo/loaders/handlers/EnvironmentHandler',
+	'goo/loaders/handlers/SkyboxHandler'
 ],
 /** @lends */
 function(

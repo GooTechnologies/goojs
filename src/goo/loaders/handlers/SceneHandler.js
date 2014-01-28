@@ -72,9 +72,9 @@ define([
 			if (config.posteffectsRef) {
 				promises.push(that._handlePosteffects(config, scene, options));
 			}
-			/*if (config.environmentRef) {
+			if (config.environmentRef) {
 				promises.push(that._handleEnvironment(config, scene, options));
-			}*/
+			}
 			return RSVP.all(promises).then(function() {
 				return scene;
 			});

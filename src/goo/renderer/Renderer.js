@@ -338,6 +338,10 @@ function (
 
 		// Hardware picking
 		this.hardwarePicking = null;
+
+		SystemBus.addListener('goo.setClearColor', function(color) {
+			this.setClearColor.apply(this, color);
+		}.bind(this));
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {

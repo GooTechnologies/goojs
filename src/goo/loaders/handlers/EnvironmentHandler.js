@@ -2,7 +2,7 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
-	'goo/renderer/shader/ShaderBuilder',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow' // TODO Should move!
 ], function(
 	ConfigHandler,
@@ -28,7 +28,7 @@ define([
 	ConfigHandler._registerClass('environment', EnvironmentHandler);
 
 	EnvironmentHandler.prototype._prepare = function(config) {
-		_.extend(config, {
+		_.defaults(config, {
 			backgroundColor: [0,0,0,1],
 			globalAmbient: [0,0,0,1],
 			fog: {
@@ -57,7 +57,10 @@ define([
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
 			object.backgroundColor = config.backgroundColor.slice();
-			object.globalAmbient = config.globalAmbient.slice();
+			object.globalAmbient = config.globalAmbient.slice(0,3);
+
+			object.fog = _.deepClone(config.fog);
+
 
 
 			// Background color
@@ -65,8 +68,10 @@ define([
 
 			// Fog and ambient
 			ShaderBuilder.GLOBAL_AMBIENT = object.globalAmbient;
-			ShaderBuilder.USE_FOG = object.useFog;
-			ShaderBuilder.FOG_COLOR = object.fogColor;
+			ShaderBuilder.USE_FOG = object.fog.enabled;
+			ShaderBuilder.FOG_COLOR = object.fog.color;
+			ShaderBuilder.FOG_SETTINGS = [object.fog.near, config.fog.far];
+
 
 			// Weather
 			for (var key in object.weather) {
