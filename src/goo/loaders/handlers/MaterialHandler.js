@@ -79,7 +79,6 @@ define([
 
 	/*
 	 * Creates a (somewhat) empty material.
-	 * @param {string} ref will be the entity's id
 	 * @returns {Material}
 	 * @private
 	 */

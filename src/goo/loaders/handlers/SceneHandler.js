@@ -1,21 +1,11 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/ArrayUtil',
-	'goo/util/rsvp',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util'
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	ArrayUtil,
-	RSVP,
-	Composer,
-	RenderPass,
-	FullscreenPass,
-	ShaderLib,
-	Util
+	RSVP
 ) {
 	"use strict";
 
@@ -28,11 +18,6 @@ define([
 	 */
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._composer = new Composer();
-		var renderSystem = this.world.getSystem('RenderSystem');
-		this._renderPass = new RenderPass(renderSystem.renderList),
-		this._outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
-		this._outPass.renderToScreen = true;
 	}
 
 	SceneHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -129,36 +114,13 @@ define([
 	};
 
 	/*
-	 * Handling posteffects, to be implemented
+	 * Handling posteffects
 	 * @param {object} config
 	 * @param {object} scene
 	 * @param {object} options
 	 */
 	SceneHandler.prototype._handlePosteffects = function(config, scene, options) {
-		var that = this;
-		return this._load(config.posteffectsRef, options).then(function(posteffects) {
-			var enabled = posteffects.some(function(effect) { return effect.enabled; });
-			var renderSystem = that.world.getSystem('RenderSystem');
-			var composer = that._composer;
-			// If there are any enabled, add them
-			if (enabled) {
-				composer.passes = [];
-				composer.addPass(that._renderPass);
-				for(var i = 0; i < posteffects.length; i++) {
-					var posteffect = posteffects[i];
-					if (posteffect && posteffect.enabled) {
-						composer.addPass(posteffects[i]);
-					}
-				}
-				composer.addPass(that._outPass);
-				if (renderSystem.composers.indexOf(composer) === -1) {
-					renderSystem.composers.push(composer);
-				}
-			} else {
-				// No posteffects, remove composer
-				ArrayUtil.remove(renderSystem.composers, that._composer);
-			}
-		});
+		return this._load(config.posteffectsRef, options);
 	};
 
 	/*

@@ -320,7 +320,9 @@ function(
 				// Refs
 				if (value instanceof Object) {
 					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
-						refs.push(value[keys[i]]);
+						if (value[keys[i]]) {
+							refs.push(value[keys[i]]);
+						}
 					}
 				} else if (value) {
 					// Ref

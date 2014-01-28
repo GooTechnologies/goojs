@@ -6,8 +6,7 @@ define([
 	'goo/fsmpack/statemachine/State',
 	'goo/fsmpack/statemachine/Machine',
 	'goo/fsmpack/statemachine/actions/Actions',
-	'goo/util/rsvp',
-	'goo/loaders/DynamicLoader'
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	JsonUtils,
@@ -16,11 +15,17 @@ define([
 	State,
 	Machine,
 	Actions,
-	RSVP,
-	DynamicLoader
+	RSVP
 ) {
 	'use strict';
 
+	/*
+	 * @class Handler for loading materials into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 */
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -29,6 +34,11 @@ define([
 	MachineHandler.prototype.constructor = MachineHandler;
 	ConfigHandler._registerClass('machine', MachineHandler);
 
+	/*
+	 * Removes a machine
+	 * @param {ref}
+	 * @private
+	 */
 	MachineHandler.prototype._remove = function(ref) {
 		var machine = this._objects[ref];
 		if (machine) {
@@ -37,11 +47,23 @@ define([
 		delete this._objects[ref];
 	};
 
-	MachineHandler.prototype._create = function() {
+	/*
+	 * Creates an empty machine
+	 * @returns {Machine}
+	 * @private
+	 */
+	 MachineHandler.prototype._create = function() {
 		return new Machine();
 	};
 
-	MachineHandler.prototype.update = function(ref, config, options) {
+	/*
+	 * Adds/updates/removes a machine
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
+	 */
+	 MachineHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(machine) {
 			machine.name = config.name;
@@ -64,6 +86,12 @@ define([
 		});
 	};
 
+	/*
+	 * Update actions on a state
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
 	MachineHandler.prototype._updateActions = function(state, stateConfig) {
 		// Remove old actions
 		for (var i = 0; i < state._actions.length; i++) {
@@ -94,6 +122,12 @@ define([
 		state._actions = actions;
 	};
 
+	/*
+	 * Update transitions on the machine
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
 	MachineHandler.prototype._updateTransitions = function(state, stateConfig) {
 		state._transitions = {};
 		for (var key in stateConfig.transitions) {
@@ -102,6 +136,12 @@ define([
 		}
 	};
 
+	/*
+	 * Update states on the machine. This includes loading childMachines
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
 	MachineHandler.prototype._updateState = function(machine, stateConfig) {
 		var state = machine._states[stateConfig.id];
 		if (!state) {

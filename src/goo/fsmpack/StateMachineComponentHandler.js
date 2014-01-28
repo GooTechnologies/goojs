@@ -9,9 +9,16 @@ define([
 	) {
 	"use strict";
 
+	/*
+	 * @class For handling loading of state machine components
+	 * @constructor
+	 * @param {World} world The goo world
+	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @extends ComponentHandler
+	 */
 	function StateMachineComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		// TODO Change to StateMachineComponent;
 		this._type = 'StateMachineComponent';
 	}
 
@@ -19,12 +26,23 @@ define([
 	StateMachineComponentHandler.prototype.constructor = StateMachineComponentHandler;
 	ComponentHandler._registerClass('stateMachine', StateMachineComponentHandler);
 
+	/*
+	 * Create statemachine component 
+	 * @returns {StateMachineComponent} the created component object
+	 * @private
+	 */
 	StateMachineComponentHandler.prototype._create = function() {
-		// TODO change
 		return new StateMachineComponent();
 	};
 
-	StateMachineComponentHandler.prototype.update = function(entity, config, options) {
+	/**
+	 * Update engine statemachine component object based on the config.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+	 */
+	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			var promises = [];
