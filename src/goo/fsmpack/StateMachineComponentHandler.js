@@ -1,10 +1,10 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/statemachine/FSMComponent',
+	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/util/rsvp'
 ], function(
 	ComponentHandler,
-	FSMComponent,
+	StateMachineComponent,
 	RSVP
 	) {
 	"use strict";
@@ -12,7 +12,7 @@ define([
 	function StateMachineComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		// TODO Change to StateMachineComponent;
-		this._type = 'FSMComponent';
+		this._type = 'StateMachineComponent';
 	}
 
 	StateMachineComponentHandler.prototype = Object.create(ComponentHandler.prototype);
@@ -21,7 +21,7 @@ define([
 
 	StateMachineComponentHandler.prototype._create = function() {
 		// TODO change
-		return new FSMComponent();
+		return new StateMachineComponent();
 	};
 
 	StateMachineComponentHandler.prototype.update = function(entity, config, options) {

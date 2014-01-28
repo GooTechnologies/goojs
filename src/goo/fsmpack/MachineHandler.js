@@ -28,7 +28,6 @@ define([
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	MachineHandler.prototype.constructor = MachineHandler;
 	ConfigHandler._registerClass('machine', MachineHandler);
-	DynamicLoader.registerJSON('machine');
 
 	MachineHandler.prototype._remove = function(ref) {
 		var machine = this._objects[ref];

@@ -28,8 +28,8 @@ function(
 	};
 
 	SuspendFSMAction.prototype._run = function(/*fsm*/) {
-		if (this.entity && this.entity.fSMComponent) {
-			this.entity.fSMComponent.pause();
+		if (this.entity && this.entity.stateMachineComponent) {
+			this.entity.stateMachineComponent.pause();
 		}
 	};
 

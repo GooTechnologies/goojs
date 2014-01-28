@@ -1,8 +1,8 @@
 require([
-	"goo/fsmpack/FSMComponentHandler",
+	"goo/fsmpack/StateMachineComponentHandler",
 	"goo/fsmpack/MachineHandler",
-	"goo/fsmpack/statemachine/FSMComponent",
-	"goo/fsmpack/statemachine/FSMSystem",
+	"goo/fsmpack/statemachine/StateMachineComponent",
+	"goo/fsmpack/statemachine/StateMachineSystem",
 	"goo/fsmpack/statemachine/FSMUtil",
 	"goo/fsmpack/statemachine/Machine",
 	"goo/fsmpack/statemachine/State",

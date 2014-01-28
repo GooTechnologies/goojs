@@ -12,10 +12,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class FSMComponent
+	 * @class StateMachineComponent
 	 */
-	function FSMComponent() {
-		this.type = 'FSMComponent';
+	function StateMachineComponent() {
+		this.type = 'StateMachineComponent';
 
 		this._machines = [];
 		this.entity = null;
@@ -26,57 +26,57 @@ function (
 		this.active = true;
 	}
 
-	FSMComponent.prototype = Object.create(Component.prototype);
+	StateMachineComponent.prototype = Object.create(Component.prototype);
 
-	FSMComponent.vars = {};
+	StateMachineComponent.vars = {};
 
-	FSMComponent.getVariable = function (name) {
-		return FSMComponent.vars[name];
+	StateMachineComponent.getVariable = function (name) {
+		return StateMachineComponent.vars[name];
 	};
 
-	FSMComponent.prototype.getVariable = function (name) {
+	StateMachineComponent.prototype.getVariable = function (name) {
 		if (this.vars[name] !== undefined) {
 			return this.vars[name];
 		} else {
-			return FSMComponent.getVariable(name);
+			return StateMachineComponent.getVariable(name);
 		}
 	};
 
-	FSMComponent.applyOnVariable = function (name, fun) {
-		FSMComponent.vars[name] = fun(FSMComponent.vars[name]);
+	StateMachineComponent.applyOnVariable = function (name, fun) {
+		StateMachineComponent.vars[name] = fun(StateMachineComponent.vars[name]);
 	};
 
-	FSMComponent.prototype.applyOnVariable = function (name, fun) {
+	StateMachineComponent.prototype.applyOnVariable = function (name, fun) {
 		if (this.vars[name] !== undefined) {
 			this.vars[name] = fun(this.vars[name]);
 		} else {
-			FSMComponent.applyOnVariable(name, fun);
+			StateMachineComponent.applyOnVariable(name, fun);
 		}
 	};
 
-	FSMComponent.prototype.defineVariable = function (name, initialValue) {
+	StateMachineComponent.prototype.defineVariable = function (name, initialValue) {
 		this.vars[name] = initialValue;
 	};
 
-	FSMComponent.prototype.removeVariable = function (name) {
+	StateMachineComponent.prototype.removeVariable = function (name) {
 		delete this.vars[name];
 	};
 
-	FSMComponent.applyOnVariable = function (name, fun) {
+	StateMachineComponent.applyOnVariable = function (name, fun) {
 		if (this.vars[name]) {
 			this.vars[name] = fun(this.vars[name]);
-		} else if (FSMComponent.vars[name]) {
-			FSMComponent.applyOnVariable(name, fun);
+		} else if (StateMachineComponent.vars[name]) {
+			StateMachineComponent.applyOnVariable(name, fun);
 		}
 	};
 
-	FSMComponent.prototype.addMachine = function (machine) {
+	StateMachineComponent.prototype.addMachine = function (machine) {
 		machine._fsm = this;
 		machine.parent = this;
 		this._machines.push(machine);
 	};
 
-	FSMComponent.prototype.removeMachine = function (machine) {
+	StateMachineComponent.prototype.removeMachine = function (machine) {
 		machine.recursiveRemove();
 		ArrayUtil.remove(this._machines, machine);
 	};
@@ -84,7 +84,7 @@ function (
 	/**
 	 * Resets all state machines to their initial state
 	 */
-	FSMComponent.prototype.init = function () {
+	StateMachineComponent.prototype.init = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			machine.setRefs(this);
@@ -93,7 +93,7 @@ function (
 		}
 	};
 
-	FSMComponent.prototype.doEnter = function () {
+	StateMachineComponent.prototype.doEnter = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			machine.enter();
@@ -103,7 +103,7 @@ function (
 	/**
 	 * Kills the state machines triggering exit functions in all current states
 	 */
-	FSMComponent.prototype.kill = function () {
+	StateMachineComponent.prototype.kill = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			machine.kill();
@@ -113,7 +113,7 @@ function (
 	/**
 	 * Performs a cleanup; undoes any changes not undone by exit methods
 	 */
-	FSMComponent.prototype.cleanup = function () {
+	StateMachineComponent.prototype.cleanup = function () {
 		for (var i = 0; i < this._machines.length; i++) {
 			var machine = this._machines[i];
 			machine.cleanup();
@@ -123,7 +123,7 @@ function (
 	/**
 	 * Updates the state machines
 	 */
-	FSMComponent.prototype.update = function () {
+	StateMachineComponent.prototype.update = function () {
 		if (this.active) {
 			for (var i = 0; i < this._machines.length; i++) {
 				var machine = this._machines[i];
@@ -135,7 +135,7 @@ function (
 	/**
 	 * Stops updating the state machines
 	 */
-	FSMComponent.prototype.pause = function () {
+	StateMachineComponent.prototype.pause = function () {
 		this.active = false;
 		SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.pause');
 	};
@@ -143,10 +143,10 @@ function (
 	/**
 	 * Resumes updating the state machines
 	 */
-	FSMComponent.prototype.play = function () {
+	StateMachineComponent.prototype.play = function () {
 		this.active = true;
 		SystemBus.emit('goo.entity.' + this.entity.name + '.fsm.play');
 	};
 
-	return FSMComponent;
+	return StateMachineComponent;
 });

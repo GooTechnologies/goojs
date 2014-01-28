@@ -11,8 +11,8 @@ function (
 	/**
 	 * @class Processes all entities with a FSM component
 	 */
-	function FSMSystem(engine) {
-		System.call(this, 'FSMSystem', ['FSMComponent']);
+	function StateMachineSystem(engine) {
+		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
 
 		this.engine = engine;
 		this.resetRequest = false;
@@ -32,17 +32,17 @@ function (
 		this.priority = 1000;
 	}
 
-	FSMSystem.prototype = Object.create(System.prototype);
+	StateMachineSystem.prototype = Object.create(System.prototype);
 
-	FSMSystem.prototype.process = function (entities, tpf) {
-		var fsmComponent;
+	StateMachineSystem.prototype.process = function (entities, tpf) {
+		var component;
 
 		if (this.resetRequest) {
 			this.resetRequest = false;
 			for (var i = 0; i < entities.length; i++) {
-				fsmComponent = entities[i].fSMComponent;
-				fsmComponent.kill();
-				fsmComponent.cleanup();
+				component = entities[i].stateMachineComponent;
+				component.kill();
+				component.cleanup();
 			}
 			this.time = 0;
 			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
@@ -55,32 +55,32 @@ function (
 		if (this.entered) {
 			this.entered = false;
 			for (var i = 0; i < entities.length; i++) {
-				fsmComponent = entities[i].fSMComponent;
-				fsmComponent.init();
-				fsmComponent.doEnter();
+				component = entities[i].stateMachineComponent;
+				component.init();
+				component.doEnter();
 			}
 		}
 
 		if (window.TWEEN) { window.TWEEN.update(this.time * 1000); } // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
-			fsmComponent = entities[i].fSMComponent;
-			fsmComponent.update(tpf);
+			component = entities[i].stateMachineComponent;
+			component.update(tpf);
 		}
 	};
 
-	FSMSystem.prototype.inserted = function (entity) {
-		var fsmComponent = entity.fSMComponent;
+	StateMachineSystem.prototype.inserted = function (entity) {
+		var component = entity.stateMachineComponent;
 
-		fsmComponent.entity = entity;
-		fsmComponent.system = this;
-		fsmComponent.init();
+		component.entity = entity;
+		component.system = this;
+		component.init();
 	};
 
 	/**
 	 * Stops updating the entities
 	 */
-	FSMSystem.prototype.pause = function () {
+	StateMachineSystem.prototype.pause = function () {
 		this.passive = true;
 		this.paused = true;
 	};
@@ -88,7 +88,7 @@ function (
 	/**
 	 * Resumes updating the entities
 	 */
-	FSMSystem.prototype.play = function () {
+	StateMachineSystem.prototype.play = function () {
 		this.passive = false;
 		if (!this.paused) {
 			this.entered = true;
@@ -99,11 +99,11 @@ function (
 	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	FSMSystem.prototype.reset = function () {
+	StateMachineSystem.prototype.reset = function () {
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;
 	};
 
-	return FSMSystem;
+	return StateMachineSystem;
 });

@@ -260,5 +260,6 @@ function(
 	Ajax.types.asset = Ajax.types.image.concat(
 		Ajax.types.binary
 	);
+
 	return Ajax;
 });
