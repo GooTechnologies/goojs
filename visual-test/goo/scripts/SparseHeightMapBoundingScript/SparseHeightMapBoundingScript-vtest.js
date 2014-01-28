@@ -17,7 +17,7 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/shapes/Sphere',
-	'geometrypack/Surface',
+	'goo/geometrypack/Surface',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/SparseHeightMapBoundingScript'

@@ -22,7 +22,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'geometrypack/FilledPolygon',
+	'goo/geometrypack/FilledPolygon',
 	'goo/renderer/TextureCreator'
 ], function (
 	GooRunner,
