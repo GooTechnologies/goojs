@@ -93,7 +93,7 @@ define([
 				expect(selection).toBe(selection);
 			});
 
-			it('gets a list of child entities of a one entity selection', function () {
+			it('does not allow duplicates entities when getting parents', function () {
 				var parent = world.createEntity();
 				var child1 = world.createEntity();
 				var child2 = world.createEntity();
@@ -101,16 +101,15 @@ define([
 				parent.attachChild(child1);
 				parent.attachChild(child2);
 
-				var selection = new EntitySelection(parent);
+				var selection = new EntitySelection(child1, child2);
 
-				var children = selection.children();
+				var parents = selection.parent();
 
-				expect(children.contains(parent)).toBeFalsy();
-				expect(children.contains(child1)).toBeTruthy();
-				expect(children.contains(child2)).toBeTruthy();
+				expect(parents.contains(parent)).toBeTruthy();
+				expect(parents.size()).toEqual(1);
 			});
 
-			it('gets a list of child entities of a multiple entity selection', function () {
+			it('gets a list of parent entities of a multiple entity selection', function () {
 				var parent1 = world.createEntity();
 				var parent2 = world.createEntity();
 				var parent3 = world.createEntity();
@@ -122,16 +121,16 @@ define([
 				parent1.attachChild(child12);
 				parent3.attachChild(child31);
 
-				var selection = new EntitySelection(parent1, parent2, parent3);
+				var selection = new EntitySelection(child11, child12, child31);
 
-				var children = selection.children();
+				var parents = selection.parent();
 
-				expect(children.contains(parent1)).toBeFalsy();
-				expect(children.contains(parent2)).toBeFalsy();
-				expect(children.contains(parent3)).toBeFalsy();
-				expect(children.contains(child11)).toBeTruthy();
-				expect(children.contains(child12)).toBeTruthy();
-				expect(children.contains(child31)).toBeTruthy();
+				expect(parents.contains(parent1)).toBeTruthy();
+				expect(parents.contains(parent2)).toBeFalsy();
+				expect(parents.contains(parent3)).toBeTruthy();
+				expect(parents.contains(child11)).toBeFalsy();
+				expect(parents.contains(child12)).toBeFalsy();
+				expect(parents.contains(child31)).toBeFalsy();
 			});
 		});
 

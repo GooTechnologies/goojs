@@ -152,8 +152,17 @@ define(['goo/entities/Selection'], function (Selection) {
 	EntitySelection.prototype.parent = function () {
 		if (this.top === null) { return this; }
 
+		var hashTable = [];
+
 		var parents = this.top.filter(function (entity) {
-			return !!entity.transformComponent.parent;
+			if (!entity.transformComponent.parent) {
+				return false;
+			} else if (hashTable[entity.transformComponent.parent.entity.id]) {
+				return false;
+			} else {
+				hashTable[entity.transformComponent.parent.entity.id] = true;
+				return true;
+			}
 		}).map(function (entity) {
 			return entity.transformComponent.parent.entity;
 		});
