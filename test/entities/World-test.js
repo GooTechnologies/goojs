@@ -295,5 +295,31 @@ define([
 			var selection = world.by.system('TransformSystem');
 			expect(selection.toArray()).toEqual([entity1, entity3]);
 		});
+
+		it('gets a list of entities that have a specific tag', function () {
+			var world = new World();
+
+			var entity1 = world.createEntity().setTag('t1').addToWorld();
+			var entity2 = world.createEntity().setTag('t2').addToWorld();
+			var entity3 = world.createEntity().setTag('t1').addToWorld();
+
+			world.process();
+
+			var selection = world.by.tag('t1');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
+
+		it('gets a list of entities that have a specific attribute', function () {
+			var world = new World();
+
+			var entity1 = world.createEntity().setAttribute('a1', 10).addToWorld();
+			var entity2 = world.createEntity().setAttribute('a2', {}).addToWorld();
+			var entity3 = world.createEntity().setAttribute('a1', '20').addToWorld();
+
+			world.process();
+
+			var selection = world.by.attribute('a1');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
 	});
 });

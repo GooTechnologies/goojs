@@ -59,19 +59,30 @@ function (
 			return new EntitySelection(system._activeEntities);
 		}.bind(this);
 
+		//! AT: all these queries are slow unless using another data structure for fast access
+		// these data structures would have to be maintained in dedicated managers that would then install these methods on world.by
 		this.by.component = function (componentType) {
-			//! AT: slow unless using another data structure for fast access
-			var collection = [];
 			var entities = this.entityManager.getEntities();
 
-			for (var i = 0; i < entities.length; i++) {
-				var entity = entities[i];
-				if (entity[componentType]) {
-					collection.push(entity);
-				}
-			}
+			return new EntitySelection(entities.filter(function (entity) {
+				return !!entity[componentType];
+			}));
+		}.bind(this);
 
-			return new EntitySelection(collection);
+		this.by.tag = function (tag) {
+			var entities = this.entityManager.getEntities();
+
+			return new EntitySelection(entities.filter(function (entity) {
+				return entity.hasTag(tag);
+			}));
+		}.bind(this);
+
+		this.by.attribute = function (attribute) {
+			var entities = this.entityManager.getEntities();
+
+			return new EntitySelection(entities.filter(function (entity) {
+				return entity.hasAttribute(attribute);
+			}));
 		}.bind(this);
 	};
 
