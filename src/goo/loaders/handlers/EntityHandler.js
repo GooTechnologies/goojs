@@ -68,6 +68,7 @@ define([
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
 			if (!entity) { return; }
 			entity.id = ref;
+			entity.name = config.name;
 			entity.static = !!config.static;
 			var promises = [];
 

@@ -229,7 +229,7 @@ function(
 			'bundle',
 			'project',
 			'machine',
-			'posteffect',
+			'posteffects',
 			'animstate',
 			'sound'
 		],

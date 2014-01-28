@@ -16,6 +16,7 @@ function (
 		this._world = world;
 		this._components = [];
 		this.id = id !== undefined ? id : Entity.entityCount;
+		this._index = Entity.entityCount;
 
 		/*Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,

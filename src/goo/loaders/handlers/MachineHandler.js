@@ -51,7 +51,7 @@ define([
 
 			// Remove old states
 			for (var key in machine._states) {
-				if (!config.state[key]) {
+				if (!config.states[key]) {
 					machine.removeState(key);
 				}
 			}
@@ -100,7 +100,7 @@ define([
 		state._transitions = {};
 		for (var key in stateConfig.transitions) {
 			var transition = stateConfig.transitions[key];
-			state.setTransition(transition.eventName, transition.targetState);
+			state.setTransition(transition.id, transition.targetState);
 		}
 	};
 

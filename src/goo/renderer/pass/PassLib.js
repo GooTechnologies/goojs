@@ -13,8 +13,9 @@ define([
 ) {
 	'use strict';
 
-	function Bloom() {
-		BloomPass.call(this, arguments);
+	function Bloom(id) {
+		BloomPass.call(this);
+		this.id = id;
 	}
 	Bloom.prototype = Object.create(BloomPass.prototype);
 	Bloom.prototype.constructor = Bloom;
@@ -78,8 +79,9 @@ define([
 		}
 	];
 
-	function Blur() {
+	function Blur(id) {
 		BlurPass.call(this, arguments);
+		this.id = id;
 	}
 	Blur.prototype = Object.create(BlurPass.prototype);
 	Blur.prototype.constructor = Blur;
@@ -120,8 +122,9 @@ define([
 		}
 	];
 
-	function Vignette() {
+	function Vignette(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.vignette));
+		this.id = id;
 	}
 	Vignette.prototype = Object.create(FullscreenPass.prototype);
 	Vignette.prototype.construcor = Vignette;
@@ -163,8 +166,9 @@ define([
 		}
 	];
 
-	function Sepia() {
+	function Sepia(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.sepia));
+		this.id = id;
 	}
 	Sepia.prototype = Object.create(FullscreenPass.prototype);
 	Sepia.prototype.constructor = Sepia;
@@ -191,8 +195,9 @@ define([
 		}
 	];
 
-	function Grain() {
+	function Grain(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.film));
+		this.id = id;
 	}
 	Grain.prototype = Object.create(FullscreenPass.prototype);
 	Grain.prototype.constructor = Grain;
@@ -244,8 +249,9 @@ define([
 		}
 	];
 
-	function Noise() {
+	function Noise(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.noise));
+		this.id = id;
 	}
 	Noise.prototype = Object.create(FullscreenPass.prototype);
 	Noise.prototype.constructor = Noise;
@@ -273,8 +279,9 @@ define([
 		}
 	];
 
-	function RgbShift() {
+	function RgbShift(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.rgbshift));
+		this.id = id;
 	}
 	RgbShift.prototype = Object.create(FullscreenPass.prototype);
 	RgbShift.prototype.constructor = RgbShift;
@@ -316,8 +323,9 @@ define([
 		}
 	];
 
-	function Bleach() {
+	function Bleach(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.bleachbypass));
+		this.id = id;
 	}
 	Bleach.prototype = Object.create(FullscreenPass.prototype);
 	Bleach.prototype.constructor = Bleach;
@@ -346,8 +354,9 @@ define([
 		}
 	];
 
-	function HSB() {
+	function HSB(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.hsb));
+		this.id = id;
 	}
 	HSB.prototype = Object.create(FullscreenPass.prototype);
 	HSB.prototype.constructor = HSB;
@@ -402,8 +411,9 @@ define([
 		}
 	];
 
-	function Colorify() {
+	function Colorify(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.colorify));
+		this.id = id;
 	}
 	Colorify.prototype = Object.create(FullscreenPass.prototype);
 	Colorify.prototype.constructor = Colorify;
@@ -441,8 +451,9 @@ define([
 		}
 	];
 
-	function Hatch() {
+	function Hatch(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.hatch));
+		this.id = id;
 	}
 	Hatch.prototype = Object.create(FullscreenPass.prototype);
 	Hatch.prototype.constructor = Hatch;
@@ -483,8 +494,9 @@ define([
 		}
 	];
 
-	function Dot() {
+	function Dot(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.dotscreen));
+		this.id = id;
 	}
 	Dot.prototype = Object.create(FullscreenPass.prototype);
 	Dot.prototype.constructor = Dot;
@@ -551,8 +563,9 @@ define([
 		}
 	];
 
-	function Contrast() {
+	function Contrast(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLib.brightnesscontrast));
+		this.id = id;
 	}
 	Contrast.prototype = Object.create(FullscreenPass.prototype);
 	Contrast.prototype.constructor = Contrast;
