@@ -190,7 +190,7 @@ define([
 			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
 		});
 
-		it ('gets an EntitySelection of children', function () {
+		it('gets an EntitySelection of children', function () {
 			var parent = world.createEntity();
 			var child1 = world.createEntity();
 			var child2 = world.createEntity();
@@ -204,7 +204,7 @@ define([
 			expect(children.contains(child2)).toBeTruthy();
 		});
 
-		it ('gets an EntitySelection of parent', function () {
+		it('gets an EntitySelection of parent', function () {
 			var parent = world.createEntity();
 			var child = world.createEntity();
 
@@ -213,6 +213,78 @@ define([
 			var parentSelection = child.parent();
 
 			expect(parentSelection.contains(parent)).toBeTruthy();
+		});
+
+		it('traverses the children of an entity with a callback', function () {
+			var child21 = world.createEntity('child21');
+			var child22 = world.createEntity('child22');
+
+			var child1 = world.createEntity('child1');
+			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+			var traversed = [];
+			parent.traverse(function (entity) {
+				traversed.push(entity);
+			});
+
+			expect(traversed).toEqual([parent, child1, child2, child21, child22]);
+		});
+
+		it('traverses the children of an entity with a callback until false is returned', function () {
+			var child21 = world.createEntity('child21');
+			var child22 = world.createEntity('child22');
+
+			var child1 = world.createEntity('child1');
+			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+			var traversed = [];
+			parent.traverse(function (entity) {
+				traversed.push(entity);
+				if (traversed.length >= 3) {
+					return false;
+				}
+			});
+
+			expect(traversed).toEqual([parent, child1, child2]);
+		});
+
+		it('traverses the parents of an entity with a callback', function () {
+			var child21 = world.createEntity('child21');
+			var child22 = world.createEntity('child22');
+
+			var child1 = world.createEntity('child1');
+			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+			var traversed = [];
+			child22.traverseUp(function (entity) {
+				traversed.push(entity);
+			});
+
+			expect(traversed).toEqual([child22, child2, parent]);
+		});
+
+		it('traverses the parents of an entity with a callback until false is returned', function () {
+			var child21 = world.createEntity('child21');
+			var child22 = world.createEntity('child22');
+
+			var child1 = world.createEntity('child1');
+			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+			var traversed = [];
+			child22.traverseUp(function (entity) {
+				traversed.push(entity);
+				return false;
+			});
+
+			expect(traversed).toEqual([child22]);
 		});
 	});
 });

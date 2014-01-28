@@ -82,10 +82,8 @@ function (
 
 			parent: function () {
 				return new EntitySelection(this.entity).parent();
-			}.bind(this)
+			}.bind(this),
 
-			/* untested!
-			// NB! either keep these or selection.children().each() / selection.parents().each()
 			traverse: function (callback, level) {
 				level = level !== undefined ? level : 0;
 
@@ -101,15 +99,12 @@ function (
 
 			traverseUp: function (callback) {
 				var transformComponent = this;
-				while (transformComponent.parent && callback(transformComponent.entity) !== false) {
+				while (callback(transformComponent.entity) !== false && transformComponent.parent) {
 					transformComponent = transformComponent.parent;
 				}
 
 				return this.entity;
 			}.bind(this)
-			*/
-
-			// parents: -> Entity[]/Selection ? // the whole history of parents?
 		};
 	}
 
