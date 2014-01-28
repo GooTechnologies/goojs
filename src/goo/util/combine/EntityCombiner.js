@@ -24,6 +24,8 @@ function(
 	 * material, components etc
 	 * @param {World} gooWorld An instance of a goo.world object
 	 * @param {number} [gridCount=1] Number of grid segments to split the world in during combine
+	 * @param {boolean} [removeOldData=true] Remove old data which is now unused after combining
+	 * @param {boolean} [keepEntities=false] Keep all entities even if they are unused after combine
 	 */
 	function EntityCombiner(gooWorld, gridCount, removeOldData, keepEntities) {
 		this.world = gooWorld;
