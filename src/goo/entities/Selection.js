@@ -281,7 +281,7 @@ define([], function () {
 			return this.top === null ? [] : this.top.concat([]);
 		}
 		if (index < 0) {
-			return this.top === null ? undefined : this.top[this.top.length + index - 1];
+			return this.top === null ? undefined : this.top[this.top.length + index];
 		} else {
 			return this.top === null ? undefined : this.top[index];
 		}

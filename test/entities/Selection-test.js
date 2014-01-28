@@ -70,6 +70,13 @@ define([
 			});
 		});
 
+		describe('contains', function () {
+			it('returns false when applied to an empty selection', function () {
+				var selection = new Selection();
+				expect(selection.contains(123)).toBeFalsy();
+			});
+		});
+
 		describe('each', function () {
 			it('iterates over every element', function () {
 				var array = [11, 22, 33];
@@ -294,6 +301,32 @@ define([
 				var selection = new Selection();
 
 				expect(selection.toArray()).toEqual([]);
+			});
+		});
+
+		describe('get', function () {
+			it('gets the whole array when called with no arguments', function () {
+				var array = [11, 22, 33, 44, 55];
+
+				var selection = new Selection(array);
+
+				expect(selection.get()).toEqual(array);
+			});
+
+			it('gets an element at a specific position', function () {
+				var array = [11, 22, 33, 44, 55];
+
+				var selection = new Selection(array);
+
+				expect(selection.get(1)).toEqual(22);
+			});
+
+			it('gets an element at a specific position when called with a negative index', function () {
+				var array = [11, 22, 33, 44, 55];
+
+				var selection = new Selection(array);
+
+				expect(selection.get(-1)).toEqual(55);
 			});
 		});
 	});
