@@ -272,6 +272,22 @@ define([], function () {
 	};
 
 	/**
+	 * Clones the selection and its history
+	 * @returns {Selection} Returns a copy of this selection object
+	 */
+	Selection.prototype.clone = function () {
+		var clone = new Selection();
+
+		//! AT: the array pointed by top is read only it can be shallow copied
+		clone.top = this.top;
+
+		// this array however is modified
+		clone.stack = this.stack.concat([]);
+
+		return clone;
+	};
+
+	/**
 	 * Returns the element on
 	 * @param {number} [index]
 	 * @returns {Array}
