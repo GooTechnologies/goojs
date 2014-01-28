@@ -15,7 +15,8 @@ define([
 	'goo/noise/ValueNoise',
 	'goo/shapes/TerrainSurface',
 	'goo/shapes/ShapeCreator',
-	'goo/renderer/shaders/ShaderBuilder'
+	'goo/renderer/shaders/ShaderBuilder',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function(
@@ -35,11 +36,17 @@ function(
 	ValueNoise,
 	TerrainSurface,
 	ShapeCreator,
-	ShaderBuilder
+	ShaderBuilder,
+	RSVP
 ) {
 	"use strict";
 
-	function Vegetation(goo, worldScript) {
+	function Vegetation() {		
+	}
+
+	Vegetation.prototype.init = function(goo, worldScript) {
+		var promise = new RSVP.Promise();
+
 		// var meshData = this.createBase(1.0, 0.5);
 		var vegetationList = [];
 		for (var i = 0; i < types.length; i++) {
@@ -93,7 +100,9 @@ function(
 		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
-		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/grassatlas_0_DIF.dds');
+		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/grassatlas_0_DIF_test.dds', null, function() {
+			promise.resolve();
+		});
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		material.cullState.enabled = false;
@@ -102,12 +111,13 @@ function(
 		material.uniforms.materialAmbient = [1.0, 1.0, 1.0, 1.0];
 		material.renderQueue = 3001;
 
-
 		for (var key in meshDatas) {
 			var entity = goo.world.createEntity(meshDatas[key], material);
 			entity.addToWorld();
 		}
-	}
+
+		return promise;
+	};
 
 	var types = [
 		{ w: 1, h: 0.5, tx: 0.00, ty: 0.875, tw: 0.25, th: 0.125 },

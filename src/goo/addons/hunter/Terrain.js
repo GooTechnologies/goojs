@@ -19,7 +19,8 @@ define([
 	'goo/scripts/WorldFittedTerrainScript',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/addons/hunter/Vegetation',
-	'goo/addons/hunter/Forrest'
+	'goo/addons/hunter/Forrest',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function (
@@ -43,13 +44,17 @@ function (
 	WorldFittedTerrainScript,
 	ShaderLib,
 	Vegetation,
-	Forrest
+	Forrest,
+	RSVP
 ) {
 	"use strict";
 
-	//var resourcePath = 'res/images';
+	function Terrain() {
+	}
 
-	function Terrain(goo) {
+	Terrain.prototype.init = function (goo) {
+		var promise = new RSVP.Promise();
+
 		var canvasUtils = new CanvasUtils();
 		var resourcePath = window.hunterResources;
 
@@ -69,10 +74,16 @@ function (
 			var ws = new WorldFittedTerrainScript();
             var terrainData1 = ws.addHeightData(matrix, dim);
 
-			var vegetation = new Vegetation(goo, ws);
-			var forrest = new Forrest(goo, ws);
+			var vegetationPromise = new Vegetation().init(goo, ws);
+			var forrestPromise = new Forrest().init(goo, ws);
+
+			RSVP.all([vegetationPromise, forrestPromise]).then(function() {
+				promise.resolve();
+			});
 		}.bind(this));
-	}
+
+		return promise;
+	};
 
 	Terrain.prototype._buildMesh = function(goo, matrix, xw, yw, zw) {
 	
