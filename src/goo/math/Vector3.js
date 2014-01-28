@@ -329,6 +329,19 @@ function (
 		return sum;
 	};
 
+	Vector3.dotv = function (lhs, rhs) {
+		var ldata = lhs.data;
+		var rdata = rhs.data;
+
+		var sum = 0.0;
+
+		sum += ldata[0] * rdata[0];
+		sum += ldata[1] * rdata[1];
+		sum += ldata[2] * rdata[2];
+
+		return sum;
+	};
+
 	/**
 	 * Computes the dot product between two vectors. Equivalent of "return this•rhs;".
 	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for

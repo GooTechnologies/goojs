@@ -23,7 +23,7 @@ define([
 	'goo/util/rsvp'
 ],
 /** @lends */
-function (
+function(
 	Material,
 	Camera,
 	Vector3,
@@ -49,30 +49,31 @@ function (
 ) {
 	"use strict";
 
-	function Terrain() {
-	}
+	function Terrain() {}
 
-	Terrain.prototype.init = function (goo) {
+	Terrain.prototype.init = function(goo) {
 		var promise = new RSVP.Promise();
 
 		var canvasUtils = new CanvasUtils();
 		var resourcePath = window.hunterResources;
 
 		canvasUtils.loadCanvasFromPath(resourcePath + '/height128.png', function(canvas) {
-            var dim = {
-                minX: -64,
-                maxX: 64,
-                minY: 0,
-                maxY: 50,
-                minZ: -64,
-                maxZ: 64
-            };
+			var dim = {
+				minX: -64,
+				maxX: 64,
+				minY: 0,
+				maxY: 50,
+				minZ: -64,
+				maxZ: 64
+			};
 
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
-			this._buildMesh(goo, matrix, 128, 50, 128);
+			this._buildMesh(goo, matrix, dim, 128, 128);
+
+			// promise.resolve();
 
 			var ws = new WorldFittedTerrainScript();
-            var terrainData1 = ws.addHeightData(matrix, dim);
+			var terrainData1 = ws.addHeightData(matrix, dim);
 
 			var vegetationPromise = new Vegetation().init(goo, ws);
 			var forrestPromise = new Forrest().init(goo, ws);
@@ -85,23 +86,79 @@ function (
 		return promise;
 	};
 
-	Terrain.prototype._buildMesh = function(goo, matrix, xw, yw, zw) {
-	
+	Terrain.prototype._buildMesh = function(goo, matrix, dim, widthPoints, lengthPoints) {
+		var xw = dim.maxX - dim.minX;
+		var yw = dim.maxY - dim.minY;
+		var zw = dim.maxZ - dim.minZ;
+
+		// --- Physics Start ---
+		var floatByteSize = 4;
+		var heightBuffer = Ammo.allocate(floatByteSize * widthPoints * lengthPoints, "float", Ammo.ALLOC_NORMAL);
+
+		for (var z = 0; z < lengthPoints; z++) {
+			for (var x = 0; x < widthPoints; x++) {
+				Ammo.setValue(heightBuffer + (z * widthPoints + x) * floatByteSize, matrix[x][z] * yw, 'float');
+			}
+		}
+
+		var heightScale = 1.0;
+		var minHeight = dim.minY;
+		var maxHeight = dim.maxY;
+		var upAxis = 1; // 0 => x, 1 => y, 2 => z
+		var heightDataType = 0; //PHY_FLOAT;
+		var flipQuadEdges = false;
+
+		var shape = new Ammo.btHeightfieldTerrainShape(
+			widthPoints,
+			lengthPoints,
+			heightBuffer,
+			heightScale,
+			minHeight,
+			maxHeight,
+			upAxis,
+			heightDataType,
+			flipQuadEdges
+		);
+
+		var sx = xw / widthPoints;
+		var sz = zw / lengthPoints;
+		var sy = 1.0;
+
+		var sizeVector = new Ammo.btVector3(sx, sy, sz);
+		shape.setLocalScaling(sizeVector);
+
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity(); // TODO: is this needed ?
+		ammoTransform.setOrigin(new Ammo.btVector3( 0, yw /2, 0 ));
+		// ammoTransform.setOrigin(new Ammo.btVector3( xw / 2, 0, zw / 2 ));
+		// this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
+		// var q = this.gooQuaternion;
+		// ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+		var localInertia = new Ammo.btVector3(0, 0, 0);
+
+		var mass = 0;
+		// rigidbody is dynamic if and only if mass is non zero, otherwise static
+		// if(mass !== 0.0) {
+			// shape.calculateLocalInertia( mass, localInertia );
+		// }
+
+		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+		var body = new Ammo.btRigidBody(info);
+
+		goo.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
+		// --- Physics End ---
+
+
+
 		var resourcePath = window.hunterResources;
-	
+
 		var meshData = new TerrainSurface(matrix, xw, yw, zw);
 		var material = Material.createMaterial(terrainShader, 'Terrain');
 
 		material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 		material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 
-		// ShaderBuilder.GLOBAL_AMBIENT = [1.0, 0.25, 0.35];
-/*
-		ShaderBuilder.GLOBAL_AMBIENT = [0.15, 0.15, 0.2];
-		ShaderBuilder.USE_FOG = true;
-		ShaderBuilder.FOG_SETTINGS = [50, 160];
-		ShaderBuilder.FOG_COLOR = [0.8,0.82,0.9];
-*/
 		var texturenorm = new TextureCreator().loadTexture2D(resourcePath + '/normals.png');
 		material.setTexture('NORMAL_MAP2', texturenorm);
 
@@ -285,8 +342,8 @@ function (
 
 				ShaderBuilder.light.vertex,
 
-					'noise = (sin(vWorldPos.x * 0.2) + sin(vWorldPos.z * 0.2))*0.25+0.5;',
-					'noise2 = 0.0;',
+				'noise = (sin(vWorldPos.x * 0.2) + sin(vWorldPos.z * 0.2))*0.25+0.5;',
+				'noise2 = 0.0;',
 				'}'
 			].join('\n');
 		},
@@ -296,11 +353,11 @@ function (
 
 				'uniform sampler2D groundMap1;',
 				'uniform sampler2D groundMap2;',
-				'uniform sampler2D groundMap3;',
+				// 'uniform sampler2D groundMap3;',
 				'uniform sampler2D groundMap4;',
 				'uniform sampler2D groundMapN1;',
 				'uniform sampler2D groundMapN2;',
-				'uniform sampler2D groundMapN3;',
+				// 'uniform sampler2D groundMapN3;',
 				'uniform sampler2D groundMapN4;',
 
 				// '#ifdef NORMAL_MAP',
@@ -361,11 +418,11 @@ function (
 
 				'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
 				'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
-				'vec3 n3 = texture2D(groundMapN3, coord).xyz * vec3(2.0) - vec3(1.0);', 'n3.z = NMUL;',
+				// 'vec3 n3 = texture2D(groundMapN3, coord).xyz * vec3(2.0) - vec3(1.0);', 'n3.z = NMUL;',
 				'vec3 mountainN = texture2D(groundMapN4, coord).xyz * vec3(2.0) - vec3(1.0);', 'mountainN.z = NMUL;',
 
 				'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, noise));',
-				'tangentNormal = mix(tangentNormal, n3, smoothstep(0.5, 1.0, noise2));',
+				// 'tangentNormal = mix(tangentNormal, n3, smoothstep(0.5, 1.0, noise2));',
 				'tangentNormal = mix(tangentNormal, mountainN, slope);',
 
 				'vec3 worldNormal = (tangentToWorld * tangentNormal);',
@@ -376,7 +433,7 @@ function (
 
 				'vec4 g1 = texture2D(groundMap1, coord);',
 				'vec4 g2 = texture2D(groundMap2, coord);',
-				'vec4 g3 = texture2D(groundMap3, coord);',
+				// 'vec4 g3 = texture2D(groundMap3, coord);',
 				'vec4 mountain = texture2D(groundMap4, coord);',
 
 				// 'vec4 tex1 = texture2D(groundMap1, coord);',
@@ -396,7 +453,7 @@ function (
 				// 'vec4 mountain = mix(tex1, tex2, min(length(viewPosition) * FADEMUL, 1.0));',
 
 				'final_color = mix(g1, g2, smoothstep(0.0, 1.0, noise));',
-				'final_color = mix(final_color, g3, smoothstep(0.5, 1.0, noise2));',
+				// 'final_color = mix(final_color, g3, smoothstep(0.5, 1.0, noise2));',
 
 				'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
 				'slope = smoothstep(0.0, 0.1, slope);',
