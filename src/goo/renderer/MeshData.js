@@ -374,8 +374,9 @@ function (
 		return this.indexModes;
 	};
 
+	//! AT: unused and undocumented; remove?
 	MeshData.prototype.resetVertexCount = function () {
-		this.vertexCount = this.vertexCountStore;
+		this.vertexCount = this._vertexCountStore;
 	};
 
 	/**
