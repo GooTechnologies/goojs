@@ -126,6 +126,8 @@ function(
 			combiner._combineList(newRoot);
 			console.timeEnd('combine');
 
+			console.log(newRoot);
+
 			this.loadLODTrees(goo, worldScript).then(function() {
 				promise.resolve();
 			});
