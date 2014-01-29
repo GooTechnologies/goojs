@@ -123,24 +123,23 @@ define([
 			// Shader
 			if (config.wireframe) {
 				material.shader = Material.createShader(ShaderLib.simple);
-				return material;
+			} else {
+				var shaderRef = config.shaderRef;
+				if (!shaderRef) {
+					material.shader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
+				}
+				else if (shaderRef.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
+					var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
+					material.shader = Material.createShader(ShaderLib[shaderName]);
+				} else {
+					var p = that._load(shaderRef, options).then(function(shader) {
+						material.shader = shader;
+					}).then(null, function(err) {
+						throw new Error('Error loading shader: ' + err);
+					});
+					promises.push(p);
+				}
 			}
-			var shaderRef = config.shaderRef;
-			if (!shaderRef) {
-				material.shader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
-				return material;
-			}
-			if (shaderRef.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
-				var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
-				material.shader = Material.createShader(ShaderLib[shaderName]);
-				return material;
-			}
-			var p = that._load(shaderRef, options).then(function(shader) {
-				material.shader = shader;
-			}).then(null, function(err) {
-				throw new Error('Error loading shader: ' + err);
-			});
-			promises.push(p);
 
 			// Textures
 			function addTexture(type, ref, options) {

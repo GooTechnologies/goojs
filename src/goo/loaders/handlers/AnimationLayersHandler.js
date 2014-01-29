@@ -59,7 +59,7 @@ define([
 			if (layer._layerBlender) {
 				layer._layerBlender._blendWeight = layerCfg.blendWeight;
 			}
-			this._setDefaultState(layer, layerCfg.defaultState);
+			this._setInitialState(layer, layerCfg.initialState);
 		}
 		return PromiseUtil.createDummyPromise(layers);
 	};
@@ -69,7 +69,7 @@ define([
 	 * @param {AnimationLayer} layer
 	 * @param {string} name
 	 */
-	AnimationLayersHandler.prototype._setDefaultState = function(layer, name) {
+	AnimationLayersHandler.prototype._setInitialState = function(layer, name) {
 		if (name && layer._steadyStates[name]) {
 			if (layer._currentState !== layer._steadyStates[name]) {
 				layer.setCurrentStateByName(name, true);
@@ -211,7 +211,7 @@ define([
 			.then(fillStates)
 			.then(fillTransitions)
 			.then(function() {
-				that._setDefaultState(layer, layerConfig.defaultState);
+				that._setInitialState(layer, layerConfig.initialState);
 				return layer;
 			});
 	};

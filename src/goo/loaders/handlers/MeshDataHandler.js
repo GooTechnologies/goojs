@@ -119,25 +119,21 @@ define([
 	MeshDataHandler.prototype._fillMeshData = function(meshData, config, bindata) {
 		var skinned = meshData.type === MeshData.SKINMESH;
 
-		var _fillAttributeBuffer = function(attr, data) {
-			meshData.getAttributeBuffer(attr).set(ArrayUtil.getTypedArray(bindata, data));
-		};
-
 		for (var key in config.attributes) {
 			if (key === 'JOINTIDS') {
 				//Special handling later
 				continue;
 			}
 			var data = config.attributes[key].value;
-			_fillAttributeBuffer(key, data);
+			meshData.getAttributeBuffer(key).set(ArrayUtil.getTypedArray(bindata, data));
 		}
 
 		/* Remapping the joints. This will enable us to have skeleton with hundreds of joints even
 		 * though meshes can only have ~70
 		 */
-		if (skinned && config.joints && config.joints.length > 0) {
+		if (skinned && config.attributes.JOINTIDS) {
 			var buffer = meshData.getAttributeBuffer(MeshData.JOINTIDS);
-			var jointData = ArrayUtil.getTypedArray(bindata, config.joints);
+			var jointData = ArrayUtil.getTypedArray(bindata, config.attributes.JOINTIDS.value);
 
 			// Map skeleton joint index local joint index
 			var localJointMap = [];

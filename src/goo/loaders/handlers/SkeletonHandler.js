@@ -33,7 +33,7 @@ define([
 	ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
 	/*
-	 * Adds/updates/removes a skeleton. A new Skeleton is always created, but skeletons
+	 * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
 	 * are rarely updated.
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -41,24 +41,27 @@ define([
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	SkeletonHandler.prototype.update = function(ref, config/*, options*/) {
-		if (!config) {
-			return pu.createDummyPromise();
+		if (!this._objects[ref]) {
+			if (!config) {
+				return pu.createDummyPromise();
+			}
+			var joints = [];
+			_.forEach(config.joints, function(jointConfig) {
+				var joint = new Joint(jointConfig.name);
+				joint._index = jointConfig.index;
+				joint._parentIndex = jointConfig.parentIndex;
+				joint._inverseBindPose.matrix.copy(JsonUtils.parseMatrix4(jointConfig.inverseBindPose));
+
+				joints.push(joint);
+			}, null, 'index');
+
+			var skeleton = new Skeleton(config.name, joints);
+			var pose = new SkeletonPose(skeleton);
+			pose.setToBindPose();
+			this._objects[ref] = pose;
 		}
-		var joints = [];
-		_.forEach(config.joints, function(jointConfig) {
-			var joint = new Joint(jointConfig.name);
-			joint._index = jointConfig.index;
-			joint._parentIndex = jointConfig.parentIndex;
-			joint._inverseBindPose.matrix.copy(JsonUtils.parseMatrix4(jointConfig.inverseBindPose));
 
-			joints.push(joint);
-		}, null, 'index');
-
-		var skeleton = new Skeleton(config.name, joints);
-		var pose = new SkeletonPose(skeleton);
-		pose.setToBindPose();
-
-		return pu.createDummyPromise(pose);
+		return pu.createDummyPromise(this._objects[ref]);
 	};
 
 	return SkeletonHandler;
