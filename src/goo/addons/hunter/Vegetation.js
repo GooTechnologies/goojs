@@ -195,6 +195,8 @@ function(
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			discardThreshold: -0.01,
+			fogSettings: [0, 220],
+			fogColor: [1, 1, 1],
 			time : Shader.TIME
 		},
 		builder: function (shader, shaderInfo) {
@@ -238,6 +240,8 @@ function(
 			return [
 		'uniform sampler2D diffuseMap;',
 		'uniform float discardThreshold;',
+		'uniform vec2 fogSettings;',
+		'uniform vec3 fogColor;',
 
 		ShaderBuilder.light.prefragment,
 
@@ -254,6 +258,9 @@ function(
 		'	vec3 N = normalize(normal);',
 
 			ShaderBuilder.light.fragment,
+
+			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 
 		'	gl_FragColor = final_color;',
 		'}'//
