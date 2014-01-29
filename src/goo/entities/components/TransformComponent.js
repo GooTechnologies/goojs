@@ -228,7 +228,7 @@ function (
 	 * Attach a child transform to this component tree
 	 *
 	 * @param {TransformComponent} childComponent Child transform component to attach
-	 * @param {boolean} keepTransform If enabled, the child's position, rotation and scale will appear unaffected
+	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent, keepTransform) {
 		var component = this;
@@ -258,7 +258,7 @@ function (
 	 * Detach a child transform from this component tree
 	 *
 	 * @param {TransformComponent} childComponent child transform component to detach
-	 * @param {boolean} keepTransform If enabled, the child's position, rotation and scale will appear unaffected
+	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
 	 */
 	TransformComponent.prototype.detachChild = function (childComponent, keepTransform) {
 		if (childComponent === this) {
