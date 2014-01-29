@@ -145,6 +145,7 @@ function(
 
 		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
 		var body = new Ammo.btRigidBody(info);
+		body.setFriction(1);
 
 		goo.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
 		// --- Physics End ---

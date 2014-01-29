@@ -1501,8 +1501,8 @@ function (
 			} else if (blending === 'SubtractiveBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
-				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
-				context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE_MINUS_SRC_COLOR);
+				context.blendEquation(WebGLRenderingContext.FUNC_REVERSE_SUBTRACT);
+				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE);
 			} else if (blending === 'MultiplyBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
