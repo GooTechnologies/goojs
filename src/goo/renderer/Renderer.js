@@ -271,6 +271,7 @@ function (
 			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
 		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
 
 		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
 		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
@@ -1230,12 +1231,12 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
+			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize, i);
+					this.checkRescale(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 				}
-				texture.image.width = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 

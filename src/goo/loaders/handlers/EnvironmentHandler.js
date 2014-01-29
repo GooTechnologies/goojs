@@ -74,17 +74,16 @@ define([
 
 
 			// Weather
-			for (var key in object.weather) {
-				var handler = EnvironmentHandler.weatherHandler[key];
+			for (var key in config.weather) {
+				var handler = EnvironmentHandler.weatherHandlers[key];
 				if (handler) {
-					handler.update.call(that, object.weather[key], object.weatherState);
+					handler.update.call(that, config.weather[key], object.weatherState);
 				}
 			}
 
 			// Skybox
 			if(config.skyboxRef) {
 				return that._load(config.skyboxRef, options).then(function(/*skybox*/) {
-					//that._setSkybox(skybox);
 					return object;
 				});
 			}
@@ -114,8 +113,6 @@ define([
 						weatherState.snow.snow.remove();
 						weatherState.snow.enabled = false;
 						delete weatherState.snow.snow;
-					} else {
-						// do nothing
 					}
 				}
 			},

@@ -160,6 +160,7 @@ define([
 			skyTex.setImage(images);
 			skyTex.image.width = w;
 			skyTex.image.height = h;
+			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
 			that._show(that._skybox, config.enabled);
 			return that._skybox;
