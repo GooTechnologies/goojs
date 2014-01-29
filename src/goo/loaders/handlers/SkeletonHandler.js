@@ -3,7 +3,6 @@ define([
 	'goo/animation/Joint',
 	'goo/animation/Skeleton',
 	'goo/animation/SkeletonPose',
-	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ], function(
@@ -11,7 +10,6 @@ define([
 		Joint,
 		Skeleton,
 		SkeletonPose,
-		JsonUtils,
 		pu,
 		_
 ) {
@@ -50,7 +48,16 @@ define([
 				var joint = new Joint(jointConfig.name);
 				joint._index = jointConfig.index;
 				joint._parentIndex = jointConfig.parentIndex;
-				joint._inverseBindPose.matrix.copy(JsonUtils.parseMatrix4(jointConfig.inverseBindPose));
+				// TODO migrate to column major
+				var flipped = jointConfig.inverseBindPose.map(function(val, idx, arr) {
+					if (idx !== 15) {
+						idx = idx * 4 % 15;
+					}
+					return arr[idx];
+				});
+				console.log(jointConfig.inverseBindPose);
+				console.log(flipped);
+				joint._inverseBindPose.matrix.data.set(flipped);
 
 				joints.push(joint);
 			}, null, 'index');

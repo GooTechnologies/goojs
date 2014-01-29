@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/animation/clip/AnimationClip',
-	'goo/loaders/JsonUtils',
 	'goo/animation/clip/JointChannel',
 	'goo/animation/clip/TransformChannel',
 	'goo/animation/clip/InterpolatedFloatChannel',
@@ -12,7 +11,6 @@ define([
 function(
 	ConfigHandler,
 	AnimationClip,
-	JsonUtils,
 	JointChannel,
 	TransformChannel,
 	InterpolatedFloatChannel,

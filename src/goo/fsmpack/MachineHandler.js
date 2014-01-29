@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/fsmpack/statemachine/State',
@@ -9,7 +8,6 @@ define([
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
-	JsonUtils,
 	PromiseUtil,
 	_,
 	State,

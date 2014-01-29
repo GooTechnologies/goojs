@@ -2,14 +2,12 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/MeshData',
 	'goo/animation/SkeletonPose',
-	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ], function(
 	ConfigHandler,
 	MeshData,
 	SkeletonPose,
-	JsonUtils,
 	PromiseUtil,
 	ArrayUtil
 ) {
