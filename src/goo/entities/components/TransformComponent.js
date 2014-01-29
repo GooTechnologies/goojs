@@ -178,11 +178,23 @@ function (
 	 * Sets the transform to look in a specific direction.
 	 *
 	 * @param {Vector3} position Target position.
-	 * @param {Vector3} up Up vector.
+	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.lookAt = function (position, up) {
-		this.transform.lookAt(position, up);
+		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
+		if (arguments.length === 3) {
+			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
+		} else {
+			if (Array.isArray(position)) {
+				position = new Vector3(position);
+			}
+			if (Array.isArray(up)) {
+				up = new Vector3(up);
+			}
+			this.transform.lookAt(position, up);
+		}
+
 		this._dirty = true;
 		return this;
 	};
