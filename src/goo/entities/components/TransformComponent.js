@@ -315,6 +315,9 @@ function (
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
 			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
 			matched = true;
+		} else if (obj instanceof Transform) {
+			transformComponent.transform = obj;
+			matched = true;
 		}
 
 		if (matched) {

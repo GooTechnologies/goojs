@@ -3,13 +3,15 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/math/Matrix3x3',
 	'goo/math/Vector3',
-	'goo/entities/Entity'
+	'goo/entities/Entity',
+	'goo/math/Transform'
 ], function(
 	World,
 	TransformComponent,
 	Matrix3x3,
 	Vector3,
-	Entity
+	Entity,
+	Transform
 ) {
 	'use strict';
 
@@ -159,35 +161,46 @@ define([
 		});
 
 
+		describe('.applyOnEntity', function () {
+			it('sets a TransformComponent when trying to add a 3 element array', function () {
+				var entity = new Entity(world);
+				var translation = [1, 2, 3];
+				entity.set(translation);
 
-		it('sets a TransformComponent when trying to add a 3 element array', function () {
-			var entity = new Entity(world);
-			var translation = [1, 2, 3];
-			entity.set(translation);
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
-		});
+			it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
+				var entity = new Entity(world);
+				var transformComponent = new TransformComponent();
+				entity.set(transformComponent);
 
-		it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
-			var entity = new Entity(world);
-			var transformComponent = new TransformComponent();
-			entity.set(transformComponent);
+				var translation = [1, 2, 3];
+				entity.set(translation);
 
-			var translation = [1, 2, 3];
-			entity.set(translation);
+				expect(entity.transformComponent).toBe(transformComponent);
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 
-			expect(entity.transformComponent).toBe(transformComponent);
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
-		});
+			it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
+				var entity = new Entity(world);
+				var translation = { x: 1, y: 2, z: 3 };
+				entity.set(translation);
 
-		it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
-			var entity = new Entity(world);
-			var translation = { x: 1, y: 2, z: 3 };
-			entity.set(translation);
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			it('sets a TransformComponent when trying to add a Transform', function () {
+				var entity = new Entity(world);
+				var transform = new Transform();
+				transform.translation.setd(1, 2, 3);
+				entity.set(transform);
+
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 		});
 
 		it('gets an EntitySelection of children', function () {
@@ -215,76 +228,80 @@ define([
 			expect(parentSelection.contains(parent)).toBeTruthy();
 		});
 
-		it('traverses the children of an entity with a callback', function () {
-			var child21 = world.createEntity('child21');
-			var child22 = world.createEntity('child22');
+		describe('traverse', function () {
+			it('traverses the children of an entity with a callback', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
 
-			var child1 = world.createEntity('child1');
-			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
 
-			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
 
-			var traversed = [];
-			parent.traverse(function (entity) {
-				traversed.push(entity);
+				var traversed = [];
+				parent.traverse(function (entity) {
+					traversed.push(entity);
+				});
+
+				expect(traversed).toEqual([parent, child1, child2, child21, child22]);
 			});
 
-			expect(traversed).toEqual([parent, child1, child2, child21, child22]);
+			it('traverses the children of an entity with a callback until false is returned', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				parent.traverse(function (entity) {
+					traversed.push(entity);
+					if (traversed.length >= 3) {
+						return false;
+					}
+				});
+
+				expect(traversed).toEqual([parent, child1, child2]);
+			});
 		});
 
-		it('traverses the children of an entity with a callback until false is returned', function () {
-			var child21 = world.createEntity('child21');
-			var child22 = world.createEntity('child22');
+		describe('traverseUp', function () {
+			it('traverses the parents of an entity with a callback', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
 
-			var child1 = world.createEntity('child1');
-			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
 
-			var parent = world.createEntity().attachChild(child1).attachChild(child2);
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
 
-			var traversed = [];
-			parent.traverse(function (entity) {
-				traversed.push(entity);
-				if (traversed.length >= 3) {
+				var traversed = [];
+				child22.traverseUp(function (entity) {
+					traversed.push(entity);
+				});
+
+				expect(traversed).toEqual([child22, child2, parent]);
+			});
+
+			it('traverses the parents of an entity with a callback until false is returned', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				child22.traverseUp(function (entity) {
+					traversed.push(entity);
 					return false;
-				}
+				});
+
+				expect(traversed).toEqual([child22]);
 			});
-
-			expect(traversed).toEqual([parent, child1, child2]);
-		});
-
-		it('traverses the parents of an entity with a callback', function () {
-			var child21 = world.createEntity('child21');
-			var child22 = world.createEntity('child22');
-
-			var child1 = world.createEntity('child1');
-			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
-
-			var parent = world.createEntity().attachChild(child1).attachChild(child2);
-
-			var traversed = [];
-			child22.traverseUp(function (entity) {
-				traversed.push(entity);
-			});
-
-			expect(traversed).toEqual([child22, child2, parent]);
-		});
-
-		it('traverses the parents of an entity with a callback until false is returned', function () {
-			var child21 = world.createEntity('child21');
-			var child22 = world.createEntity('child22');
-
-			var child1 = world.createEntity('child1');
-			var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
-
-			var parent = world.createEntity().attachChild(child1).attachChild(child2);
-
-			var traversed = [];
-			child22.traverseUp(function (entity) {
-				traversed.push(entity);
-				return false;
-			});
-
-			expect(traversed).toEqual([child22]);
 		});
 	});
 });
