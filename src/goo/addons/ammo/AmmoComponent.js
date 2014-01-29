@@ -43,8 +43,10 @@ function(
 		this.useBounds = settings.useBounds !== undefined ? settings.useBounds : false;
 		this.useWorldBounds = settings.useWorldBounds !== undefined ? settings.useWorldBounds : false;
 		this.useWorldTransform = settings.useWorldTransform !== undefined ? settings.useWorldTransform : false;
+		this.linearFactor = settings.linearFactor !== undefined ? settings.linearFactor : new Ammo.btVector3(1,1,1);
 		this.ammoTransform = new Ammo.btTransform();
 		this.gooQuaternion = new Quaternion();
+		this.onInitializeBody = settings.onInitializeBody; 
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
 		this.shape = undefined;
 	}
@@ -59,7 +61,7 @@ function(
 			if (meshData instanceof Box) {
 				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, meshData.zExtent));
 			} else if (meshData instanceof Sphere) {
-				shape = new Ammo.btSphereShape(meshData.radius);
+				shape = new Ammo.btSphereShape(meshData.radius * scale.x);
 			} else if (meshData instanceof Quad) {
 				// there doesn't seem to be a Quad shape in Ammo
 				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, 0.01 )); //new Ammo.btPlane();
@@ -135,7 +137,12 @@ function(
 			}
 
 			var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, this.shape, localInertia);
+			this.localInertia = localInertia;
 			this.body = new Ammo.btRigidBody( info );
+			this.body.setLinearFactor(this.linearFactor);
+			
+			if (this.onInitializeBody)
+				this.onInitializeBody(this.body);
 		}
 	};
 
