@@ -124,27 +124,27 @@ define([
 			}
 
 			var images = textures.map(function(texture) { return texture ? texture.image : null; });
-			var w, h;
+			if (!images[0]) {
+				SystemBus.emit('goo.error.skybox', {
+					type: 'Box',
+					message: 'The skybox needs an image to display.'
+				});
+				that._hide();
+				return;
+			}
+			var w = images[0].width;
+			var h = images[0].height;
+			if (w !== h) {
+				SystemBus.emit('goo.error.skybox', {
+					type: 'Box',
+					message: 'The skybox needs square images to display'
+				});
+				that._hide();
+				return;
+			}
 			// Check that images are valid for skybox
 			for (var i = 0; i < images.length; i++) {
 				var img = images[i] || images[0];
-				if (!img) {
-					continue;
-				}
-				// Get first image size
-				if (w === undefined) {
-					w = img.width;
-					h = img.height;
-					// Only square images allowed
-					if (w !== h) {
-						SystemBus.emit('goo.error.skybox', {
-							type: 'Box',
-							message: 'The skybox needs square images to display'
-						});
-						that._hide();
-						return;
-					}
-				}
 				// Have to be same size
 				if (w !== img.width || h !== img.height) {
 					SystemBus.emit('goo.error.skybox', {
@@ -181,8 +181,8 @@ define([
 		}
 		if (skyshape) {
 			renderSystem.added(skyshape);
+			skyshape.hidden = !!enabled;
 		}
-		skyshape.hidden = !!enabled;
 		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
 		ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;
 
