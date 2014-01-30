@@ -130,7 +130,7 @@ module.exports = function(grunt) {
 
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function() {
-		var sourceFiles = glob.sync('**/*.js', {cwd: 'src/goo/'})
+		var sourceFiles = glob.sync('!(*pack)/**/*.js', {cwd: 'src/goo/', nonegate: true })
 		var allModules = _.map(sourceFiles, function(f) {
 			return 'goo/' + f.replace(/\.js/, '');
 		});

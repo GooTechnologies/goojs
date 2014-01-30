@@ -26,8 +26,9 @@ function getModulesAndDependencies(tree) {
 
 		moduleList.push(slash(module));
 
+		var re = /goo\/[^\/]+pack\//
 		dependencies.forEach(function(dependency) {
-			if (dependency.substr(0, 4) === 'goo/') {
+			if (!re.test(dependency)) {
 				if (ignoreList.indexOf(dependency) === -1) {
 					ignoreList.push(dependency);
 				}
@@ -54,7 +55,7 @@ function buildPack(moduleList, packName) {
 
 	moduleList.forEach(function (moduleName) {
 		if (packName !== moduleName) {
-			lines.push('\t"' + packName + '/' + moduleName + '",');
+			lines.push('\t"goo/' + packName + '/' + moduleName + '",');
 		}
 	});
 
@@ -79,7 +80,7 @@ function getOptimizerConfig(ignoreList, outBaseDir) {
 
 	var config = {
 		baseUrl: 'src/',
-		name: packName + '/' + packName,
+		name: 'goo/' + packName + '/' + packName,
 		out: outBaseDir + '/' + packName + '.js',
 		paths: paths
 	};
@@ -109,7 +110,7 @@ function getTailWrapping(packName) {
 	return '\n' +
 		'}if(window.localStorage&&window.localStorage.gooPath){\n' +
 			'window.require.config({\n' +
-				'paths:{"' + packName + '":"/goo/' + packName + '"}\n' +
+				'paths:{goo:localStorage.gooPath}\n' +
 			'});\n' +
 		'}else f()\n' +
 		'})(window,undefined)';
@@ -130,7 +131,7 @@ function getTailWrapping(packName) {
 
 	// get all dependencies
 	console.log('get all dependencies'.grey);
-	var tree = madge('src/' + packName + '/', { format: 'amd' }).tree;
+	var tree = madge('src/goo/' + packName + '/', { format: 'amd' }).tree;
 
 	// get modules and dependencies
 	console.log('get modules and engine dependencies'.grey);
@@ -142,7 +143,7 @@ function getTailWrapping(packName) {
 
 	// add the pack
 	console.log('add the pack');
-	fs.writeFile('src/' + packName + '/' + packName + '.js', packStr, function (err) {
+	fs.writeFile('src/goo/' + packName + '/' + packName + '.js', packStr, function (err) {
 		if (err) {
 			console.error('Error while writing the pack'.red);
 			console.error(err);
