@@ -2,6 +2,7 @@ define([
 	'goo/scripts/HeightMapBoundingScript',
     'goo/math/Vector3'
 	],
+    /** @lends */
 	function(HeightMapBoundingScript,
              Vector3) {
 		"use strict";
@@ -65,7 +66,7 @@ define([
 		}
 
 		/**
-		 * @method Adds a block of height data from an image at given dimensions and stores the script in an array.
+		 * Adds a block of height data from an image at given dimensions and stores the script in an array.
 		 * @param heightMatrix (Array) file to load height data from
 		 * @param dimensions (Object) dimensions to fit the data within
 		 */
@@ -77,7 +78,7 @@ define([
 		};
 
 		/**
-		 * @method Returns the script relevant to a given position
+		 * Returns the script relevant to a given position
 		 * @param pos (Array) data, typically use entity transform.data
 		 * @returns (Object) container object with script and its world dimensions
 		 */
@@ -126,7 +127,7 @@ define([
 		};
 
 		/**
-         * @method Looks through height data and returns the elevation of the ground at a given position
+         * Looks through height data and returns the elevation of the ground at a given position
          * @param pos (Array) Position as [x, y, z]
          * @returns (Float) height in units
          */
