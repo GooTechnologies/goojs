@@ -1,5 +1,5 @@
 define([
-	'fsmpack/statemachine/actions/Action',
+	'goo/fsmpack/statemachine/actions/Action',
 	'goo/entities/components/PortalComponent',
 	'goo/entities/systems/PortalSystem',
 	'goo/math/Vector3',

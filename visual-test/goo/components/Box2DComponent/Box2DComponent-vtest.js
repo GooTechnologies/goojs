@@ -18,7 +18,7 @@ require([
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
-	'geometrypack/FilledPolygon',
+	'goo/geometrypack/FilledPolygon',
 	'../../lib/V'
 ], function (
 	GooRunner,

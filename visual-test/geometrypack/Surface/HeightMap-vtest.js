@@ -16,7 +16,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'geometrypack/Surface',
+	'goo/geometrypack/Surface',
 	'goo/renderer/TextureCreator'
 ], function (
 	GooRunner,

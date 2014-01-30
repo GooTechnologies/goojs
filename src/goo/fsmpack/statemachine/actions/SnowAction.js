@@ -1,5 +1,5 @@
 define([
-	'fsmpack/statemachine/actions/Action',
+	'goo/fsmpack/statemachine/actions/Action',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',

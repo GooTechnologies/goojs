@@ -1,6 +1,6 @@
 define([
-	'fsmpack/statemachine/actions/Action',
-	'fsmpack/statemachine/FSMUtil'
+	'goo/fsmpack/statemachine/actions/Action',
+	'goo/fsmpack/statemachine/FSMUtil'
 	],
 /** @lends */
 function(

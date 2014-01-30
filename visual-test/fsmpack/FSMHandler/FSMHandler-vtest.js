@@ -1,7 +1,7 @@
 require([
 	'goo/entities/GooRunner',
 	'goo/loaders/DynamicLoader',
-	'fsmpack/statemachine/FSMSystem'
+	'goo/fsmpack/statemachine/FSMSystem'
 ], function (
 	GooRunner,
 	DynamicLoader,

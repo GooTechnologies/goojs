@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/MeshData',
-	'geometrypack/PolyLine'
+	'goo/geometrypack/PolyLine'
 	],
 	/** @lends */
 	function (

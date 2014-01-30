@@ -2,9 +2,9 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
-	'fsmpack/statemachine/State',
-	'fsmpack/statemachine/Machine',
-	'fsmpack/statemachine/actions/Actions',
+	'goo/fsmpack/statemachine/State',
+	'goo/fsmpack/statemachine/Machine',
+	'goo/fsmpack/statemachine/actions/Actions',
 	'goo/util/rsvp',
 	'goo/loaders/DynamicLoader'
 ], function(

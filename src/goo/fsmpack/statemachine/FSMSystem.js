@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'fsmpack/statemachine/actions/Actions'
+	'goo/fsmpack/statemachine/actions/Actions'
 ],
 /** @lends */
 function (

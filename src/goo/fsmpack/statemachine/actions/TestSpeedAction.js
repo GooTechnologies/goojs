@@ -1,4 +1,4 @@
-define(['fsmpack/statemachine/actions/Action'],
+define(['goo/fsmpack/statemachine/actions/Action'],
 /** @lends */
 function(Action) {
 	"use strict";

@@ -1,5 +1,5 @@
 define([
-	'fsmpack/statemachine/actions/Action',
+	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Quaternion',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'

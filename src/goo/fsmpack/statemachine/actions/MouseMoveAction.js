@@ -1,5 +1,5 @@
 define([
-	'fsmpack/statemachine/actions/Action'
+	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
 	function(

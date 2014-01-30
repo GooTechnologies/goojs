@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/MeshData',
-	'geometrypack/Surface'
+	'goo/geometrypack/Surface'
 ],
 	/** @lends */
 	function (

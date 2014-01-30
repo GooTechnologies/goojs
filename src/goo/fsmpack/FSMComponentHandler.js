@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'fsmpack/statemachine/FSMComponent',
+	'goo/fsmpack/statemachine/FSMComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'

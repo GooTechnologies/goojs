@@ -15,13 +15,13 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 
-	'fsmpack/statemachine/FSMComponent',
-	'fsmpack/statemachine/FSMSystem',
-	'fsmpack/statemachine/State',
-	'fsmpack/statemachine/Machine',
-	'fsmpack/statemachine/actions/KeyDownAction',
-	'fsmpack/statemachine/actions/KeyUpAction',
-	'fsmpack/statemachine/actions/AddPositionAction'
+	'goo/fsmpack/statemachine/FSMComponent',
+	'goo/fsmpack/statemachine/FSMSystem',
+	'goo/fsmpack/statemachine/State',
+	'goo/fsmpack/statemachine/Machine',
+	'goo/fsmpack/statemachine/actions/KeyDownAction',
+	'goo/fsmpack/statemachine/actions/KeyUpAction',
+	'goo/fsmpack/statemachine/actions/AddPositionAction'
 ], function (
 	GooRunner,
 	World,

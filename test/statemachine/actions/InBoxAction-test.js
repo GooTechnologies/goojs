@@ -1,5 +1,5 @@
 define([
-	'fsmpack/statemachine/actions/InBoxAction'
+	'goo/fsmpack/statemachine/actions/InBoxAction'
 ], function(
 	InBoxAction
 	) {

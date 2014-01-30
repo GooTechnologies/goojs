@@ -1,7 +1,7 @@
 define([
-	'fsmpack/statemachine/FSMComponent',
-	'fsmpack/statemachine/Machine',
-	'fsmpack/statemachine/State'
+	'goo/fsmpack/statemachine/FSMComponent',
+	'goo/fsmpack/statemachine/Machine',
+	'goo/fsmpack/statemachine/State'
 ], function(
 	FSMComponent,
 	Machine,
