@@ -67,9 +67,9 @@ define([
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(skybox) {
 			if (config.box) {
-				that._updateBox(config.box, options, skybox);
+				return that._updateBox(config.box, options, skybox);
 			} else if (config.sphere) {
-				that._updateSphere(config.sphere, options, skybox);
+				return that._updateSphere(config.sphere, options, skybox);
 			}
 		});
 	};

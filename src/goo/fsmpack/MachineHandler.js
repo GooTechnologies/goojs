@@ -65,7 +65,6 @@ define([
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(machine) {
 			machine.name = config.name;
-			machine.setInitialState(config.initialState);
 
 			// Remove old states
 			for (var key in machine._states) {
@@ -79,6 +78,7 @@ define([
 				promises.push(that._updateState(machine, config.states[key]));
 			}
 			return RSVP.all(promises).then(function() {
+				machine.setInitialState(config.initialState);
 				return machine;
 			});
 		});
@@ -141,11 +141,14 @@ define([
 	 * @private
 	 */
 	MachineHandler.prototype._updateState = function(machine, stateConfig) {
-		var state = machine._states[stateConfig.id];
-		if (!state) {
+		var state;
+		if (machine._states && machine._states[stateConfig.id]) {
+			state = machine._states[stateConfig.id];
+		} else {
 			state = new State(stateConfig.id);
 			machine.addState(state);
 		}
+
 		state.name = stateConfig.name;
 
 		// Actions

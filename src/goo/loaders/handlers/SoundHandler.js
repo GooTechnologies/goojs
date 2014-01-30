@@ -88,7 +88,7 @@ define([
 				var format = formats[i];
 				var path = config.audioRefs[format];
 				if (path) {
-					promises.push(that.getConfig(path));
+					promises.push(that.getConfig(path, options));
 				}
 			}
 			return RSVP.all(promises).then(function(paths) {

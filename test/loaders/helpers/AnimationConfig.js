@@ -32,7 +32,7 @@ define([
 				layers.layers[layerKey] = {
 					sortValue: i,
 					blendWeight: 1,
-					defaultState: 'default',
+					initialState: 'default',
 					states: {
 						'default': {
 							stateRef: this.animstate().id

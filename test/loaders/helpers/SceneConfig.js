@@ -1,5 +1,7 @@
 define([
+	'goo/util/ObjectUtil'
 ], function(
+	_
 ) {
 	'use strict';
 
@@ -28,6 +30,49 @@ define([
 			}
 			project.mainSceneRef = scene.sceneRef;
 			return project;
+		},
+		skybox: function(type) {
+			var config = this.gooObject('skybox', 'Dummy');
+			if (type === 'sphere') {
+				config.sphere = {
+					enabled: true,
+					sphereRef: this.texture().id
+				};
+			} else {
+				config.box = {
+					enabled: true,
+					topRef: this.texture().id,
+					bottomRef: this.texture().id,
+					leftRef: this.texture().id,
+					rightRef: this.texture().id,
+					frontRef: this.texture().id,
+					backRef: this.texture().id
+				};
+			}
+			return config;
+		},
+		environment: function() {
+			var config = this.gooObject('environment', 'Dummy');
+			_.extend(config, {
+				backgroundColor: [1,1,1],
+				globalAmbient: [0.5,0.5,0.5],
+				skyboxRef: this.skybox().id,
+				fog: {
+					enabled: true,
+					color: [1,0,0],
+					near: 1,
+					far: 100
+				},
+				weather: {
+					snow: {
+						velocity: 10,
+						rate: 2,
+						enabled: true,
+						height: 100
+					}
+				}
+			});
+			return config;
 		}
 	};
 });

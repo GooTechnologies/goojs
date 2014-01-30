@@ -1,11 +1,11 @@
 require([
-	"goo/fsmpack/StateMachineComponentHandler",
 	"goo/fsmpack/MachineHandler",
-	"goo/fsmpack/statemachine/StateMachineComponent",
-	"goo/fsmpack/statemachine/StateMachineSystem",
+	"goo/fsmpack/StateMachineComponentHandler",
 	"goo/fsmpack/statemachine/FSMUtil",
 	"goo/fsmpack/statemachine/Machine",
 	"goo/fsmpack/statemachine/State",
+	"goo/fsmpack/statemachine/StateMachineComponent",
+	"goo/fsmpack/statemachine/StateMachineSystem",
 	"goo/fsmpack/statemachine/actions/Action",
 	"goo/fsmpack/statemachine/actions/Actions",
 	"goo/fsmpack/statemachine/actions/AddLightAction",
@@ -73,6 +73,6 @@ require([
 	"goo/fsmpack/statemachine/actions/TweenScaleAction",
 	"goo/fsmpack/statemachine/actions/TweenTextureOffsetAction",
 	"goo/fsmpack/statemachine/actions/WASDAction",
-	"goo/fsmpack/statemachine/actions/WaitAction",
+	"goo/fsmpack/statemachine/actions/WaitAction"
 ], function () {
 });
