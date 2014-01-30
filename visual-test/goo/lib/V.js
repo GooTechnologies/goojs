@@ -72,8 +72,10 @@ define([
 
 		},
 
-		addLight: function(goo) {
-
+		addLights: function(goo) {
+			var world = goo.world;
+			world.createEntity(new PointLight(), [100, 100, 100]).addToWorld();
+			world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
 		}
 	};
 

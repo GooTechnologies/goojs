@@ -1,13 +1,15 @@
 define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/entities/EntitySelection'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
-	Component
+	Component,
+	EntitySelection
 ) {
 	'use strict';
 
@@ -72,10 +74,16 @@ function (
 			detachChild: function (entity) {
 				this.detachChild(entity.transformComponent);
 				return this.entity;
-			}.bind(this)
+			}.bind(this),
 
-			/* untested!
-			// NB! either keep these or selection.children().each() / selection.parents().each()
+			children: function () {
+				return new EntitySelection(this.entity).children();
+			}.bind(this),
+
+			parent: function () {
+				return new EntitySelection(this.entity).parent();
+			}.bind(this),
+
 			traverse: function (callback, level) {
 				level = level !== undefined ? level : 0;
 
@@ -91,17 +99,12 @@ function (
 
 			traverseUp: function (callback) {
 				var transformComponent = this;
-				while (transformComponent.parent && callback(transformComponent.entity) !== false) {
+				while (callback(transformComponent.entity) !== false && transformComponent.parent) {
 					transformComponent = transformComponent.parent;
 				}
 
 				return this.entity;
 			}.bind(this)
-			*/
-
-			// parent: -> Entity/Selection ? // should return the 'bigger' type
-			// children -> Entity[]/Selection ?
-			// parents: -> Entity[]/Selection ?
 		};
 	}
 
@@ -175,11 +178,23 @@ function (
 	 * Sets the transform to look in a specific direction.
 	 *
 	 * @param {Vector3} position Target position.
-	 * @param {Vector3} up Up vector.
+	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.lookAt = function (position, up) {
-		this.transform.lookAt(position, up);
+		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
+		if (arguments.length === 3) {
+			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
+		} else {
+			if (Array.isArray(position)) {
+				position = new Vector3(position);
+			}
+			if (Array.isArray(up)) {
+				up = new Vector3(up);
+			}
+			this.transform.lookAt(position, up);
+		}
+
 		this._dirty = true;
 		return this;
 	};
@@ -213,7 +228,7 @@ function (
 	 * Attach a child transform to this component tree
 	 *
 	 * @param {TransformComponent} childComponent Child transform component to attach
-	 * @param {boolean} keepTransform If enabled, the child's position, rotation and scale will appear unaffected
+	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent, keepTransform) {
 		var component = this;
@@ -243,7 +258,7 @@ function (
 	 * Detach a child transform from this component tree
 	 *
 	 * @param {TransformComponent} childComponent child transform component to detach
-	 * @param {boolean} keepTransform If enabled, the child's position, rotation and scale will appear unaffected
+	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
 	 */
 	TransformComponent.prototype.detachChild = function (childComponent, keepTransform) {
 		if (childComponent === this) {
@@ -299,6 +314,9 @@ function (
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
 			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
+			matched = true;
+		} else if (obj instanceof Transform) {
+			transformComponent.transform = obj;
 			matched = true;
 		}
 

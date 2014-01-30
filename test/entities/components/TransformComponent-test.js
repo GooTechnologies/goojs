@@ -1,17 +1,17 @@
 define([
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
-	'goo/entities/systems/TransformSystem',
 	'goo/math/Matrix3x3',
 	'goo/math/Vector3',
-	'goo/entities/Entity'
+	'goo/entities/Entity',
+	'goo/math/Transform'
 ], function(
 	World,
 	TransformComponent,
-	TransformSystem,
 	Matrix3x3,
 	Vector3,
-	Entity
+	Entity,
+	Transform
 ) {
 	'use strict';
 
@@ -20,7 +20,6 @@ define([
 
 		beforeEach(function() {
 			world = new World();
-			world.setSystem(new TransformSystem());
 			world.registerComponent(TransformComponent);
 		});
 
@@ -67,7 +66,7 @@ define([
 		});
 
 		// bad spec names
-		it('setRotation with x, y, z', function() {
+		it('setRotation with x, y, z', function () {
 			// tc?
 			var tc = new TransformComponent();
 			// useless test as the rotation matrix is 0 by default anyways
@@ -75,7 +74,7 @@ define([
 			expect(tc.transform.rotation).toEqual(new Matrix3x3());
 		});
 
-		it('setRotation with Vector3', function() {
+		it('setRotation with Vector3', function () {
 			var tc = new TransformComponent();
 			// vec?
 			// useless test; it's based on (0, 0, 0) or default values; it's so easy to accidentally get default values and the tests would not do their job
@@ -84,7 +83,7 @@ define([
 			expect(tc.transform.rotation).toEqual(new Matrix3x3());
 		});
 
-		it('setRotation with array', function() {
+		it('setRotation with array', function () {
 			var tc = new TransformComponent();
 			// useless test
 			tc.setRotation([0, 0, 0]);
@@ -92,7 +91,7 @@ define([
 		});
 		//
 
-		it('handles attaching itself to an entity', function() {
+		it('handles attaching itself to an entity', function () {
 			var transformComponent = new TransformComponent();
 			var world = new World();
 			var entity = new Entity();
@@ -103,7 +102,7 @@ define([
 		});
 
 		// should it ever be detached? since it's enforced and there are so many dependencies probably not
-		it('handles detaching itself from an entity', function() {
+		it('handles detaching itself from an entity', function () {
 			var transformComponent = new TransformComponent();
 			var world = new World();
 			var entity = new Entity();
@@ -114,14 +113,14 @@ define([
 			expect(transformComponent.entity).toBeFalsy();
 		});
 
-		it('returns the parent host entity when calling setTranslation on it', function() {
+		it('returns the parent host entity when calling setTranslation on it', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new TransformComponent());
 
 			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
 		});
 
-		it('returns the parent host entity when calling any transform related method on it', function() {
+		it('returns the parent host entity when calling any transform related method on it', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new TransformComponent());
 
@@ -132,7 +131,7 @@ define([
 			expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
 		});
 
-		it('returns the parent host entity when calling attachChild/detachChild on it', function() {
+		it('returns the parent host entity when calling attachChild/detachChild on it', function () {
 			var parent = world.createEntity();
 			var child = world.createEntity();
 
@@ -140,7 +139,7 @@ define([
 			expect(parent.detachChild(child)).toBe(parent);
 		});
 
-		it('calls TransformComponent.attachChild from the injected "pair" method', function() {
+		it('calls TransformComponent.attachChild from the injected "pair" method', function () {
 			var parent = world.createEntity();
 			var child = world.createEntity();
 
@@ -150,7 +149,7 @@ define([
 			expect(child.transformComponent.parent).toEqual(parent.transformComponent);
 		});
 
-		it('calls TransformComponent.detachChild from the injected "pair" method', function() {
+		it('calls TransformComponent.detachChild from the injected "pair" method', function () {
 			var parent = world.createEntity();
 			var child = world.createEntity();
 
@@ -162,35 +161,147 @@ define([
 		});
 
 
+		describe('.applyOnEntity', function () {
+			it('sets a TransformComponent when trying to add a 3 element array', function () {
+				var entity = new Entity(world);
+				var translation = [1, 2, 3];
+				entity.set(translation);
 
-		it('sets a TransformComponent when trying to add a 3 element array', function() {
-			var entity = new Entity(world);
-			var translation = [1, 2, 3];
-			entity.set(translation);
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
+				var entity = new Entity(world);
+				var transformComponent = new TransformComponent();
+				entity.set(transformComponent);
+
+				var translation = [1, 2, 3];
+				entity.set(translation);
+
+				expect(entity.transformComponent).toBe(transformComponent);
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
+
+			it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
+				var entity = new Entity(world);
+				var translation = { x: 1, y: 2, z: 3 };
+				entity.set(translation);
+
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
+
+			it('sets a TransformComponent when trying to add a Transform', function () {
+				var entity = new Entity(world);
+				var transform = new Transform();
+				transform.translation.setd(1, 2, 3);
+				entity.set(transform);
+
+				expect(entity.transformComponent).toBeTruthy();
+				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
 		});
 
-		it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function() {
-			var entity = new Entity(world);
-			var transformComponent = new TransformComponent();
-			entity.set(transformComponent);
+		it('gets an EntitySelection of children', function () {
+			var parent = world.createEntity();
+			var child1 = world.createEntity();
+			var child2 = world.createEntity();
 
-			var translation = [1, 2, 3];
-			entity.set(translation);
+			parent.attachChild(child1);
+			parent.attachChild(child2);
 
-			expect(entity.transformComponent).toBe(transformComponent);
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			var children = parent.children();
+
+			expect(children.contains(child1)).toBeTruthy();
+			expect(children.contains(child2)).toBeTruthy();
 		});
 
-		it('sets a TransformComponent when trying to add a {x, y, z} object', function() {
-			var entity = new Entity(world);
-			var translation = { x: 1, y: 2, z: 3 };
-			entity.set(translation);
+		it('gets an EntitySelection of parent', function () {
+			var parent = world.createEntity();
+			var child = world.createEntity();
 
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			parent.attachChild(child);
+
+			var parentSelection = child.parent();
+
+			expect(parentSelection.contains(parent)).toBeTruthy();
+		});
+
+		describe('traverse', function () {
+			it('traverses the children of an entity with a callback', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				parent.traverse(function (entity) {
+					traversed.push(entity);
+				});
+
+				expect(traversed).toEqual([parent, child1, child2, child21, child22]);
+			});
+
+			it('traverses the children of an entity with a callback until false is returned', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				parent.traverse(function (entity) {
+					traversed.push(entity);
+					if (traversed.length >= 3) {
+						return false;
+					}
+				});
+
+				expect(traversed).toEqual([parent, child1, child2]);
+			});
+		});
+
+		describe('traverseUp', function () {
+			it('traverses the parents of an entity with a callback', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				child22.traverseUp(function (entity) {
+					traversed.push(entity);
+				});
+
+				expect(traversed).toEqual([child22, child2, parent]);
+			});
+
+			it('traverses the parents of an entity with a callback until false is returned', function () {
+				var child21 = world.createEntity('child21');
+				var child22 = world.createEntity('child22');
+
+				var child1 = world.createEntity('child1');
+				var child2 = world.createEntity('child2').attachChild(child21).attachChild(child22);
+
+				var parent = world.createEntity().attachChild(child1).attachChild(child2);
+
+				var traversed = [];
+				child22.traverseUp(function (entity) {
+					traversed.push(entity);
+					return false;
+				});
+
+				expect(traversed).toEqual([child22]);
+			});
 		});
 	});
 });

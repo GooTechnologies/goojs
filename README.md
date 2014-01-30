@@ -165,6 +165,13 @@ To build a regular goo minified version, run
 
 	grunt
 
-To build a combined require and goo minified version , run
+To build a combined require and goo minified version, run
 
 	grunt -bundle-require -minify
+
+To build individual packs run
+
+    node tools/buildPack.js packName
+
+Where `packname` is any "pack folder" from `src/` (*fsmpack*, *geometrypack*, ...)
+

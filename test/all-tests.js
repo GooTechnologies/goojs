@@ -40,6 +40,8 @@ define([
 	'test/entities/World-test',
 	'test/entities/components/MeshRendererComponent-test',
 	'test/renderer/Light-test',
+	'test/entities/Selection-test',
+	'test/entities/EntitySelection-test',
 	'test/loaders/DynamicLoader-test',
 	'test/loaders/handlers/TransformComponentHandler-test',
 	'test/loaders/handlers/CameraComponentHandler-test',

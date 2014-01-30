@@ -260,4 +260,66 @@ define([
 			expect(b).toEqual(0);
 		});
 	});
+
+	describe('Default selectors', function () {
+		it('gets a list of entities with a programmerComponent', function () {
+			function ProgrammerComponent() {
+				this.type = 'programmerComponent';
+			}
+
+			ProgrammerComponent.prototype = Object.create(Component.prototype);
+			ProgrammerComponent.constructor = ProgrammerComponent;
+
+			var world = new World();
+
+			var entity1 = world.createEntity().set(new ProgrammerComponent()).addToWorld();
+			var entity2 = world.createEntity().addToWorld();
+			var entity3 = world.createEntity().set(new ProgrammerComponent()).addToWorld();
+
+			world.process();
+
+			var selection = world.by.component('programmerComponent');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
+
+		it('gets a list of entities that are tracked by the TransformSystem', function () {
+			var world = new World();
+			world.add(new TransformSystem());
+
+			var entity1 = world.createEntity().addToWorld();
+			var entity2 = new Entity(world).addToWorld();
+			var entity3 = world.createEntity().addToWorld();
+
+			world.process();
+
+			var selection = world.by.system('TransformSystem');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
+
+		it('gets a list of entities that have a specific tag', function () {
+			var world = new World();
+
+			var entity1 = world.createEntity().setTag('t1').addToWorld();
+			var entity2 = world.createEntity().setTag('t2').addToWorld();
+			var entity3 = world.createEntity().setTag('t1').addToWorld();
+
+			world.process();
+
+			var selection = world.by.tag('t1');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
+
+		it('gets a list of entities that have a specific attribute', function () {
+			var world = new World();
+
+			var entity1 = world.createEntity().setAttribute('a1', 10).addToWorld();
+			var entity2 = world.createEntity().setAttribute('a2', {}).addToWorld();
+			var entity3 = world.createEntity().setAttribute('a1', '20').addToWorld();
+
+			world.process();
+
+			var selection = world.by.attribute('a1');
+			expect(selection.toArray()).toEqual([entity1, entity3]);
+		});
+	});
 });

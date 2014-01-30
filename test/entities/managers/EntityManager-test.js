@@ -204,12 +204,12 @@ define([
 			});
 
 			it('gets an entity by its id', function() {
-				expect(world.by.id(entity1.id)).toEqual(entity1);
-				expect(world.by.id(entity3.id)).toEqual(entity3);
+				expect(world.by.id(entity1.id).first()).toEqual(entity1);
+				expect(world.by.id(entity3.id).first()).toEqual(entity3);
 			});
 
 			it('tries to get a non-added entity by its id', function() {
-				expect(world.by.id(entity2.id)).toBeUndefined();
+				expect(world.by.id(entity2.id).first()).toBeUndefined();
 			});
 		});
 
@@ -225,12 +225,12 @@ define([
 			});
 
 			it('gets an entity by its id', function() {
-				expect(world.by.name(entity1.name)).toEqual(entity1);
-				expect(world.by.name(entity3.name)).toEqual(entity3);
+				expect(world.by.name(entity1.name).first()).toEqual(entity1);
+				expect(world.by.name(entity3.name).first()).toEqual(entity3);
 			});
 
 			it('tries to get a non-added entity by its id', function() {
-				expect(world.by.name(entity2.name)).toBeUndefined();
+				expect(world.by.name(entity2.name).first()).toBeUndefined();
 			});
 		});
 	});

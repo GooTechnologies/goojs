@@ -134,10 +134,9 @@ define([
 			return cloneEntity(world, entity, settings);
 		};
 
-		// * @deprecated Use entity.traverse instead
 		/**
 		 * Traverse entity hierarchy with callback
-
+		 * @deprecated Use entity.traverse instead
 		 * @param {Entity} entity The entity to begin traversing from
 		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
 		 * The traversing can be stopped from propagating if the callback returns false.

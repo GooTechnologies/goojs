@@ -1,6 +1,12 @@
-define(['goo/entities/managers/Manager'],
+define([
+	'goo/entities/managers/Manager',
+	'goo/entities/EntitySelection'
+	],
 	/** @lends */
-	function (Manager) {
+	function (
+		Manager,
+		EntitySelection
+	) {
 	'use strict';
 
 	/**
@@ -15,11 +21,11 @@ define(['goo/entities/managers/Manager'],
 		this.api = {
 			id: function () {
 				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
-				return ret; //new EntitySelection(ret);
+				return new EntitySelection(ret); // just entity
 			}.bind(this),
 			name: function () {
 				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
-				return ret; //new EntitySelection(ret);
+				return new EntitySelection(ret); // just entity
 			}.bind(this)
 		};
 	}
@@ -89,6 +95,7 @@ define(['goo/entities/managers/Manager'],
 	 *
 	 * @returns {Array} Array containing all entities in the world
 	 */
+	//! AT: this need to return an EntitySelection object
 	EntityManager.prototype.getEntities = function () {
 		var entities = [];
 		for(var i in this._entitiesById) {

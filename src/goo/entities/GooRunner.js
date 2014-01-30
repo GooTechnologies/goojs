@@ -124,6 +124,7 @@ function (
 		this.callbacks = [];
 		this.callbacksPreProcess = [];
 		this.callbacksPreRender = [];
+		this.callbacksNextFrame = [];
 		this._takeSnapshots = [];
 
 		var that = this;
@@ -230,6 +231,11 @@ function (
 		World.time = this.world.time;
 		World.tpf = this.world.tpf;
 		this.start = time;
+
+		for (var i = 0; i < this.callbacksNextFrame.length; i++) {
+			this.callbacksNextFrame[i](this.world.tpf);
+		}
+		this.callbacksNextFrame = [];
 
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
 			this.callbacksPreProcess[i](this.world.tpf);

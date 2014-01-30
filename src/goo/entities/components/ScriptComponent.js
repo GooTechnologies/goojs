@@ -36,7 +36,7 @@ function(Component) {
 	};
 
 	ScriptComponent.applyOnEntity = function(obj, entity) {
-		if (obj instanceof Function || obj.run instanceof Function) {
+		if (obj instanceof Function || (obj && obj.run instanceof Function)) {
 			var scriptComponent;
 			if (!entity.scriptComponent) {
 				scriptComponent = new ScriptComponent();
