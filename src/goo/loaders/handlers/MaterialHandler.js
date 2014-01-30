@@ -163,7 +163,7 @@ define([
 				}
 			}
 			for (var type in material._textureMaps) {
-				if (!config.textureMapping[type]) {
+				if (!config.texturesMapping[type]) {
 					material.removeTexture(type);
 				}
 			}
