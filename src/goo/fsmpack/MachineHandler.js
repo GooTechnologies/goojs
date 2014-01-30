@@ -2,33 +2,44 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil',
 	'goo/fsmpack/statemachine/State',
 	'goo/fsmpack/statemachine/Machine',
 	'goo/fsmpack/statemachine/actions/Actions',
-	'goo/util/rsvp',
-	'goo/loaders/DynamicLoader'
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	JsonUtils,
 	PromiseUtil,
+	_,
 	State,
 	Machine,
 	Actions,
-	RSVP,
-	DynamicLoader
+	RSVP
 ) {
 	'use strict';
 
+	/*
+	 * @class Handler for loading materials into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 */
 	function MachineHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
+	MachineHandler.prototype.constructor = MachineHandler;
 	ConfigHandler._registerClass('machine', MachineHandler);
-	DynamicLoader.registerJSON('machine');
 
-	MachineHandler.prototype.remove = function(ref) {
+	/*
+	 * Removes a machine
+	 * @param {ref}
+	 * @private
+	 */
+	MachineHandler.prototype._remove = function(ref) {
 		var machine = this._objects[ref];
 		if (machine) {
 			machine.removeFromParent();
@@ -36,114 +47,137 @@ define([
 		delete this._objects[ref];
 	};
 
-	MachineHandler.prototype._updateActions = function(state, stateConfig) {
-		// first remove actions that are only in the machine
-		for (var i = 0; i < state._actions.length; i++) {
-			var action = state._actions[i];
-			var exists = stateConfig.actions.some(function(actionConfig) {
-				return actionConfig.id === action.id;
-			});
-			if (!exists) { state._actions.splice(i, 1); i--; }
-		}
+	/*
+	 * Creates an empty machine
+	 * @returns {Machine}
+	 * @private
+	 */
+	 MachineHandler.prototype._create = function() {
+		return new Machine();
+	};
 
-		// update existing actions or add new ones
-		for (var j = 0; j < stateConfig.actions.length; j++) {
-			var actionConfig = stateConfig.actions[j];
-			var action = state.getAction(actionConfig.id);
+	/*
+	 * Adds/updates/removes a machine
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
+	 */
+	 MachineHandler.prototype.update = function(ref, config, options) {
+		var that = this;
+		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(machine) {
+			machine.name = config.name;
 
-			if (action === undefined) {
-				// New action
-				var ActionClass = Actions.actionForType(actionConfig.type);
-				if (ActionClass instanceof Function) {
-					action = new ActionClass(actionConfig.id, actionConfig.options);
-					state.addAction(action);
+			// Remove old states
+			for (var key in machine._states) {
+				if (!config.states[key]) {
+					machine.removeState(key);
 				}
 			}
-			else {
-				// Update properties on existing action
-				action.configure(actionConfig.options);
+			// Update existing states and create new ones
+			var promises = [];
+			for (var key in config.states) {
+				promises.push(that._updateState(machine, config.states[key]));
 			}
-		}
-	};
-
-	MachineHandler.prototype._updateTransitions = function(realState, stateConfig) {
-		// remove all existing transitions first?
-		var transitions = stateConfig.transitions;
-		for (var i = 0; i < transitions.length; i++) {
-			var transition = transitions[i];
-			realState.setTransition(transition.id, transition.targetState);
-		}
-	};
-
-	MachineHandler.prototype._updateState = function(realMachine, stateConfig) {
-		var realState = realMachine._states ? realMachine._states[stateConfig.id] : undefined;
-		if (realState === undefined) {
-			realState = new State(stateConfig.id);
-			realMachine.addState(realState);
-		}
-		realState.name = stateConfig.name;
-		this._updateActions(realState, stateConfig);
-		this._updateTransitions(realState, stateConfig);
-
-		var that = this;
-		function update(ref) {
-			return that.getConfig(ref).then(function(config) {
-				return that.updateObject(ref, config);
+			return RSVP.all(promises).then(function() {
+				machine.setInitialState(config.initialState);
+				return machine;
 			});
-		}
-
-		// machine refs
-		var promises = [];
-		for (var j = 0; j < stateConfig.machineRefs.length; j++) {
-			var machineRef = stateConfig.machineRefs[j];
-			promises.push(update(machineRef));
-		}
-
-		if (promises.length > 0) {
-			return RSVP.all(promises).then(function(realMachines) {
-				realMachines.forEach(function(realMachine) {
-					realState.addMachine(realMachine);
-				});
-			});
-		}
-		else {
-			return PromiseUtil.createDummyPromise(realState);
-		}
-	};
-
-	MachineHandler.prototype.update = function(ref, config) {
-		var realMachine = this._objects[ref];
-		if (!realMachine) {
-			realMachine = this._objects[ref] = new Machine(config.name);
-		}
-
-		realMachine.setInitialState(config.initialState);
-
-		// remove states that are on the machine and not in the config
-		if (realMachine._states) {
-			var stateKeys = Object.keys(realMachine._states);
-			for (var i = 0; i < stateKeys.length; i++) {
-				var realState = realMachine._states[stateKeys[i]];
-				var exists = config.states.some(function(stateConfig) {
-					return stateConfig.id === realState.uuid;
-				});
-				if (!exists) { realMachine.removeState(realState.uuid); }
-			}
-		}
-
-		// states
-		var promises = [];
-		for (var i = 0; i < config.states.length; i++) {
-			promises.push(this._updateState(realMachine, config.states[i]));
-		}
-
-		// vars
-		// ...
-
-		return RSVP.all(promises).then(function() {
-			return realMachine;
 		});
 	};
+
+	/*
+	 * Update actions on a state
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
+	MachineHandler.prototype._updateActions = function(state, stateConfig) {
+		// Remove old actions
+		for (var i = 0; i < state._actions.length; i++) {
+			var action = state._actions[i];
+			if (!stateConfig.actions[action.id]) {
+				state.removeAction(action);
+				i--;
+			}
+		}
+
+		// Update new and existing ones
+		// For actions, order is (or will be) important
+		var actions = [];
+		_.forEach(stateConfig.actions, function(actionConfig) {
+			var action = state.getAction(actionConfig.id);
+			if (!action) {
+				var Action = Actions.actionForType(actionConfig.type);
+				action = new Action(actionConfig.id, actionConfig.options);
+				if (action.onCreate) {
+					action.onCreate(state.proxy);
+				}
+				//state.addAction(action);
+			} else {
+				action.configure(actionConfig.options);
+			}
+			actions.push(action);
+		}, 'sortValue');
+		state._actions = actions;
+	};
+
+	/*
+	 * Update transitions on the machine
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
+	MachineHandler.prototype._updateTransitions = function(state, stateConfig) {
+		state._transitions = {};
+		for (var key in stateConfig.transitions) {
+			var transition = stateConfig.transitions[key];
+			state.setTransition(transition.id, transition.targetState);
+		}
+	};
+
+	/*
+	 * Update states on the machine. This includes loading childMachines
+	 * @param {State} state
+	 * @param {object} config
+	 * @private
+	 */
+	MachineHandler.prototype._updateState = function(machine, stateConfig) {
+		var state;
+		if (machine._states && machine._states[stateConfig.id]) {
+			state = machine._states[stateConfig.id];
+		} else {
+			state = new State(stateConfig.id);
+			machine.addState(state);
+		}
+		state.name = stateConfig.name;
+
+		// Actions
+		this._updateActions(state, stateConfig);
+		// Transitions
+		this._updateTransitions(state, stateConfig);
+		// Child machines
+		// Removing
+		for (var i = 0; i < state._machines; i++) {
+			var childMachine = state._machines[i];
+			if(!stateConfig.childMachines[childMachine.id]) {
+				state.removeMachine(childMachine);
+				i--;
+			}
+		}
+		// Updating
+		var promises = [];
+		for (var key in stateConfig.childMachines) {
+			promises.push(this._load(stateConfig.childMachines[key]));
+		}
+		return RSVP.all(promises).then(function(machines) {
+			for (var i = 0; i < machines; i++) {
+				state.addMachine(machines[i]);
+			}
+			return state;
+		});
+	};
+
 
 	return MachineHandler;
 });
