@@ -80,7 +80,7 @@ function(
 		this.vegType = 0;
 
 		this.patchSize = 10;
-		this.patchDensity = 20;
+		this.patchDensity = 18;
 		this.gridSize = 9;
 		// this.patchSize = 5;
 		// this.patchDensity = 10;
@@ -113,14 +113,17 @@ function(
 
 	Vegetation.prototype.circleVegetation = function(xx, zz) {
 		this.vegType++;
-		this.vegType %= 15;
+		this.vegType %= 12;
 		this.currentX = -10000;
 		this.currentZ = -10000;
 	};
 
 
-	Vegetation.prototype.getVegetationType = function(xx, zz) {
+	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
 		if (this.vegType === 0) {
+			if (slope < 0.95) {
+				return Math.random() < 0.5 ? 0 : 2;
+			}
 			var mx = (Math.sin(xx * 0.1) * 0.5 + 0.5);
 			// var my = (Math.sin(yy * 0.1) * 0.5 + 0.5);
 			var mz = (Math.sin(zz * 0.15) * 0.5 + 0.5);
@@ -214,7 +217,7 @@ function(
 				var size = Math.random() * 0.4 + 0.8;
 				transform.scale.setd(size, size, size);
 				transform.translation.setd(0, 0, 0);
-				var angle = Math.random() * Math.PI * 0.5;
+				var angle = Math.random() * Math.PI * 2.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setd(anglex, 0.0, anglez);
@@ -222,7 +225,7 @@ function(
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
 
-				var vegetationType = this.getVegetationType(xx, zz);
+				var vegetationType = this.getVegetationType(xx, zz, slope);
 				var meshData = this.vegetationList[vegetationType];
 				meshBuilder.addMeshData(meshData, transform);
 			}
