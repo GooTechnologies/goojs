@@ -43,6 +43,36 @@ define([
 ) {
 	"use strict";
 
+	var TRANSPARENT_IMG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA'+
+		'/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAADUlEQVQI12P4//8/AwAI/AL+XJ/P2gAAAABJRU5ErkJggg==';
+
+
+
+	/** 
+	 * REVIEW: Put this somewhere nicer
+	 */ 
+	function imageFromDataURI(dataURI) {
+		var promise = new RSVP.Promise();
+		var image = new Image();
+		var mime = dataURI.split(',')[0];
+		var mimeString = mime.split(':')[1].split(';')[0];
+		
+		image.type = mimeString;
+		image.dataReady = false;
+
+		image.onload = function(){
+			image.dataReady = true;
+			promise.resolve(image);
+		}
+
+		image.onerror = function() {
+			promise.reject(this.error);
+		}
+
+		image.src = dataURI;
+		return promise;
+	}
+
 	/*jshint eqeqeq: false, -W041 */
 	/**
 	 * @class
@@ -95,7 +125,9 @@ define([
 		if (skyboxConfig) {
 			var shape = skyboxConfig.shape.toLowerCase();
 			var rotation = skyboxConfig.rotation * MathUtils.DEG_TO_RAD;
-			var imageUrls = skyboxConfig.imageUrls;
+			var imageUrls = _.clone(skyboxConfig.imageUrls);
+
+			
 			var type = (this._skybox) ? this._skybox.name.split('_')[1] : null;
 			if (!shape || type !== shape || type === 'sphere' && skyboxConfig.environmentType !== this._skyboxGeographic) {
 				if(this._skybox) {
@@ -148,6 +180,9 @@ define([
 				if(imageUrls[i] && imageUrls[i] !== '') {
 					promises.push(this.getConfig(imageUrls[i]));
 				}
+				else {
+					promises.push(imageFromDataURI(TRANSPARENT_IMG));
+				}
 			}
 			if (!promises.length) {
 				skybox.meshRendererComponent.hidden = true;
@@ -186,17 +221,6 @@ define([
 						var h = images[0].height;
 						for (var i = 0; i < 6; i++) {
 							var img = images[i];
-							if (w !== img.width || h !== img.height) {
-								SystemBus.emit('goo.error.skybox', {
-									type: 'Box',
-									message: 'The skybox needs six images of the same size to display'
-								});
-								skybox.meshRendererComponent.hidden = true;
-								material.setTexture('DIFFUSE_MAP', null);
-								ShaderBuilder.SKYBOX = null;
-								ShaderBuilder.SKYSPHERE = null;
-								return;
-							}
 							img.setAttribute('data-ref', imageUrls[i]);
 						}
 					}
@@ -208,8 +232,19 @@ define([
 					}
 					texture.setImage(images);
 					if (type === Skybox.BOX && images.length) {
-						texture.image.width = images[0].width;
-						texture.image.height = images[0].height;
+						var maxSize = that.world.gooRunner.renderer.maxTextureSize;
+						
+						var maxw = 0, maxh = 0;
+						for (var i = 0; i < 6; i++) {
+							maxw = Math.max(maxw, images[i].width);
+							maxh = Math.max(maxh, images[i].height);
+						}
+						for (var i = 0; i < 6; i++) {
+							Util.scaleImage(texture, images[i], maxw, maxh, 2048, i);
+						}				
+
+						texture.image.width = maxw;
+						texture.image.height = maxh;
 						texture.image.dataReady = true;
 					}
 					texture.setNeedsUpdate();

@@ -139,5 +139,36 @@ function () {
 		throw new Error("Unable to copy obj! Its type isn't supported.");
 	};
 
+
+	
+	Util.scaleImage = function(texture, image, width, height, maxSize, index) {
+		var newWidth = Util.nearestPowerOfTwo(width);
+		var newHeight = Util.nearestPowerOfTwo(height);
+		newWidth = Math.min(newWidth, maxSize);
+		newHeight = Math.min(newHeight, maxSize);
+
+
+		if (image.width !== newWidth || image.height !== newHeight) {
+			var canvas = document.createElement('canvas'); // !!!!!
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			if (image.getAttribute) {
+				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
+			}
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			document.body.appendChild(canvas);
+			canvas.dataReady = true;
+			canvas.src = image.src;
+			if (index === undefined) {
+				texture.image = canvas;
+			} else {
+				texture.image.data[index] = canvas;
+			}
+			canvas.parentNode.removeChild(canvas);
+		}		
+	}
+
+
 	return Util;
 });
