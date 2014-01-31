@@ -72,18 +72,43 @@ function(
 
 			// promise.resolve();
 
-			var ws = new WorldFittedTerrainScript();
-			var terrainData1 = ws.addHeightData(matrix, dim);
+			this.ws = new WorldFittedTerrainScript();
+			var terrainData1 = this.ws.addHeightData(matrix, dim);
 
-			var vegetationPromise = new Vegetation().init(goo, ws);
-			var forrestPromise = new Forrest().init(goo, ws);
+			this.vegetation = new Vegetation();
+			var vegetationPromise = this.vegetation.init(goo.world, this.ws);
+			var forrestPromise = new Forrest().init(goo, this.ws);
 
 			RSVP.all([vegetationPromise, forrestPromise]).then(function() {
 				promise.resolve();
 			});
+
+			// RSVP.all([vegetationPromise]).then(function() {
+				// promise.resolve();
+			// });
 		}.bind(this));
 
 		return promise;
+	};
+
+	Terrain.prototype.circleVegetation = function() {
+		if (this.vegetation) {
+			this.vegetation.circleVegetation();
+		}
+	};
+
+
+	Terrain.prototype.getHeightAt = function(x, z) {
+		if (this.ws) {
+			return this.ws.getTerrainHeightAt([x, 0, z]);
+		}
+		return 0;
+	};
+
+	Terrain.prototype.update = function(x, z) {
+		if (this.vegetation) {
+			this.vegetation.update(x, z);
+		}
 	};
 
 	Terrain.prototype._buildMesh = function(goo, matrix, dim, widthPoints, lengthPoints) {
@@ -156,6 +181,7 @@ function(
 
 		var meshData = new TerrainSurface(matrix, xw, yw, zw);
 		var material = Material.createMaterial(terrainShader, 'Terrain');
+		// var material = Material.createMaterial(ShaderLib.simpleLit, 'Terrain');
 
 		material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 		material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
