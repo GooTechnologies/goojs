@@ -229,9 +229,41 @@ define([
 
 			plVerts.push(p0123[0], p0123[1], p0123[2]);
 		}
-
+		plVerts = verts.slice(0,3).concat(plVerts);
 		return new PolyLine(plVerts);
 	};
+
+
+	PolyLine.fromQuadraticSpline = function(verts, nSegments, closed) {
+		if(verts.length % 3 !== 0 && (verts.length / 3) % 2 !== 0) {
+			console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromQuadraticSpline');
+			return ;
+		}
+		var newVerts = [];
+		for (var i = 0; i < verts.length-6; i+=6) {
+			var p1 = verts.slice(i, i+3);
+			var p2 = verts.slice(i+3, i+6);
+			var p3 = verts.slice(i+6, i+9);
+			
+			newVerts.push.apply(newVerts, [
+				p1[0],
+				p1[1],
+				p1[2],
+
+				p1[0]+2/3*(p2[0]-p1[0]), 
+				p1[1]+2/3*(p2[1]-p1[1]), 
+				p1[2]+2/3*(p2[2]-p1[2]),
+
+				p3[0]+2/3*(p2[0]-p3[0]), 
+				p3[1]+2/3*(p2[1]-p3[1]), 
+				p3[2]+2/3*(p2[2]-p3[2]),
+			]);
+		}
+
+		newVerts.push.apply(newVerts, verts.slice(verts.length-3,verts.length));
+		return PolyLine.fromCubicSpline(newVerts, nSegments, closed);
+	}
+
 
 	/**
 	 * @description Creates a polyLine that approximates a given cubic spline
