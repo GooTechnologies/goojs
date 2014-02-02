@@ -590,7 +590,7 @@ function (
 			if(renderable.meshDataComponent.currentPose) {
 				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
 			} else {
-				delete renderInfo.currentPose;
+				renderInfo.currentPose = undefined;
 			}
 		} else {
 			renderInfo.meshData = renderable.meshData;
@@ -599,7 +599,7 @@ function (
 			if(renderable.currentPose) {
 				renderInfo.currentPose = renderable.currentPose;
 			} else {
-				delete renderInfo.currentPose;
+				renderInfo.currentPose = undefined;
 			}
 		}
 

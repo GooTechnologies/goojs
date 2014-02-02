@@ -201,19 +201,19 @@ function (
 
 	Shader.prototype._bindUniforms = function (shaderInfo) {
 		if (this.uniforms) {
-			try {
+			// try {
 				this.textureIndex = 0;
 				var names = Object.keys(this.uniforms);
 				for (var i = 0, l = names.length; i < l; i++) {
 					this._bindUniform(names[i], shaderInfo);
 				}
-				this.errorOnce = false;
-			} catch (err) {
-				if (this.errorOnce === false) {
-					console.error(err.stack);
-					this.errorOnce = true;
-				}
-			}
+				// this.errorOnce = false;
+			// } catch (err) {
+			// 	if (this.errorOnce === false) {
+			// 		console.error(err.stack);
+			// 		this.errorOnce = true;
+			// 	}
+			// }
 		}
 	};
 
