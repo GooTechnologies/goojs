@@ -55,7 +55,6 @@ function(
 		this.world = world;
 		this.worldScript = worldScript;
 
-		// var meshData = this.createBase(1.0, 0.5);
 		this.vegetationList = [];
 		for (var i = 0; i < types.length; i++) {
 			var meshData = this.createBase(types[i]);
@@ -70,7 +69,6 @@ function(
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.cullState.enabled = false;
-		// material.uniforms.discardThreshold = 0.25;
 		material.uniforms.discardThreshold = 0.2;
 		material.blendState.blending = 'CustomBlending';
 		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
@@ -82,9 +80,6 @@ function(
 		this.patchSize = 10;
 		this.patchDensity = 18;
 		this.gridSize = 9;
-		// this.patchSize = 5;
-		// this.patchDensity = 10;
-		// this.gridSize = 15;
 
 		this.patchSpacing = this.patchSize / this.patchDensity; 
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -120,20 +115,20 @@ function(
 
 
 	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
+		if (slope < 0.9) {
+			return -1;
+		}
+
 		if (this.vegType === 0) {
-			if (slope < 0.95) {
+			if (slope < 0.94) {
 				return Math.random() < 0.5 ? 0 : 2;
 			}
 			var mx = (Math.sin(xx * 0.1) * 0.5 + 0.5);
-			// var my = (Math.sin(yy * 0.1) * 0.5 + 0.5);
 			var mz = (Math.sin(zz * 0.15) * 0.5 + 0.5);
 			var tt = (mx + mz) / 2.0;
 			var vegetationType = Math.floor(tt * this.vegetationList.length);
 			var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
 			vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*4, 0, this.vegetationList.length-1));
-			// var vegetationType = Math.floor(rand*this.vegetationList.length);
-			// var vegetationType = MathUtils.moduloPositive(patchX, 3);
-			// var vegetationType = MathUtils.moduloPositive(patchX, this.vegetationList.length);
 
 			return vegetationType;
 		}
@@ -171,13 +166,8 @@ function(
 				patchZ *= this.patchSize;
 
 				var entity = this.grid[modX][modZ];
-				if (entity) {
-					// unload cell
-				}
-
 				var meshData = this.createPatch(patchX, patchZ);
 				entity.meshDataComponent.meshData = meshData;
-				// entity.meshDataComponent.modelBound.center.setd(patchX, 0, patchZ);
 				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
@@ -210,7 +200,9 @@ function(
 					norm = Vector3.UNIT_Y;
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
-				if (slope < 0.9) {
+
+				var vegetationType = this.getVegetationType(xx, zz, slope);
+				if (vegetationType < 0) {
 					continue;
 				}
 
@@ -225,7 +217,6 @@ function(
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
 
-				var vegetationType = this.getVegetationType(xx, zz, slope);
 				var meshData = this.vegetationList[vegetationType];
 				meshBuilder.addMeshData(meshData, transform);
 			}
@@ -310,8 +301,12 @@ function(
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			discardThreshold: -0.01,
-			fogSettings: [0, 220],
-			fogColor: [1, 1, 1],
+			fogSettings: function() {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function() {
+				return ShaderBuilder.FOG_COLOR;
+			},
 			time : Shader.TIME
 		},
 		builder: function (shader, shaderInfo) {
@@ -339,7 +334,7 @@ function(
 
 		'void main(void) {',
 			'vec3 swayPos = vertexPosition;',
-			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.1 + 0.08;',
+			'swayPos.x += sin(time * 0.9 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.1 + 0.08;',
 		'	vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
 		'	vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',

@@ -97,7 +97,6 @@ function(
 				}
 
 				var size = (Math.random() * 0.6 + 0.7) * 0.03;
-				// var size = (Math.random() * 0.4 + 0.8) * 0.03;
 				transform.scale.setd(size, size, size);
 				transform.translation.setd(0, 0, 0);
 				var angle = Math.random() * Math.PI * 0.5;
@@ -176,17 +175,6 @@ function(
 				continue;
 			}
 
-			var size = Math.random() * 0.4 + 0.8;
-			transform.scale.setd(size, size, size);
-
-			transform.translation.setd(0, 0, 0);
-
-			vec.x -= 32;
-			vec.y = 0;
-			vec.z -= 32;
-			vec.normalize();
-			transform.lookAt(vec, Vector3.UNIT_Y);
-
 			transform.translation.setd(xx, yy, zz);
 			transform.update();
 
@@ -206,7 +194,7 @@ function(
 		// material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.6;
 		material.blendState.blending = 'CustomBlending';
-		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
+		material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1.0];
 		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
 		material.renderQueue = 3000;
 
@@ -225,33 +213,36 @@ function(
 	];
 
 	Forrest.prototype.createBase = function(type) {
-		var meshData = ShapeCreator.createQuad(type.w, type.h, 1, 1);
-		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float'),
-		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
-		TangentGenerator.addTangentBuffer(meshData);
-		// meshData.rebuild();
+		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
+		attributeMap.BASE = MeshData.createAttribute(1, 'Float');
+		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
+		var meshData = new MeshData(attributeMap, 4, 6);
 
+		meshData.getAttributeBuffer(MeshData.POSITION).set([
+			0, -type.h * 0.1, 0, 
+			0, -type.h * 0.1, 0, 
+			0, -type.h * 0.1, 0, 
+			0, -type.h * 0.1, 0
+		]);
 		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
 			type.tx, type.ty,
 			type.tx, type.ty + type.th,
 			type.tx + type.tw, type.ty + type.th,
 			type.tx + type.tw, type.ty
 		]);
-
 		meshData.getAttributeBuffer('BASE').set([
-			0, 1 * type.h, 1 * type.h, 0
+			0, type.h, type.h, 0
+		]);
+		meshData.getAttributeBuffer('OFFSET').set([
+			-type.w*0.5, 0, 
+			-type.w*0.5, type.h, 
+			type.w*0.5, type.h, 
+			type.w*0.5, 0
 		]);
 
-		var meshBuilder = new MeshBuilder();
-		var transform = new Transform();
-		transform.translation.y = type.h * 0.5 - type.h * 0.2;
-		transform.update();
+		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
 
-		meshBuilder.addMeshData(meshData, transform);
-
-		var meshDatas = meshBuilder.build();
-
-		return meshDatas[0];
+		return meshData;
 	};
 
 	var vegetationShader = {
@@ -260,21 +251,22 @@ function(
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-	        vertexTangent: MeshData.TANGENT,
-			vertexNormal : MeshData.NORMAL,
 			vertexUV0 : MeshData.TEXCOORD0,
-			base : 'BASE'
+			base : 'BASE',
+			offset : 'OFFSET'
 		},
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-	        normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			normalMap : Shader.NORMAL_MAP,
 			discardThreshold: -0.01,
-			fogSettings: [0, 220],
-			fogColor: [1, 1, 1],
+			fogSettings: function() {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function() {
+				return ShaderBuilder.FOG_COLOR;
+			},
 			time : Shader.TIME
 		},
 		builder: function (shader, shaderInfo) {
@@ -283,14 +275,11 @@ function(
 		vshader: function () {
 			return [
 		'attribute vec3 vertexPosition;',
-		'attribute vec4 vertexTangent;',
-		'attribute vec3 vertexNormal;',
 		'attribute vec2 vertexUV0;',
 		'attribute float base;',
+		'attribute vec2 offset;',
 
 		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform mat4 normalMatrix;',
 		'uniform vec3 cameraPosition;',
 		'uniform float time;',
 
@@ -304,18 +293,23 @@ function(
 		'varying vec2 texCoord0;',
 
 		'void main(void) {',
-			'mat4 nMatrix = normalMatrix;',
 			'vec3 swayPos = vertexPosition;',
+
+			'vec3 nn = cameraPosition - swayPos.xyz;',
+			'nn.y = 0.0;',
+			'normal = normalize(nn);',
+			'tangent = cross(vec3(0.0, 1.0, 0.0), normal);',
+			'binormal = cross(normal, tangent);',
+			'swayPos.xz += tangent.xz * offset.x;',
+			'swayPos.y += offset.y;',
+
 			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.02 + 0.01;',
-		'	vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
+
+		'	vec4 worldPos = vec4(swayPos, 1.0);',
 		'	vWorldPos = worldPos.xyz;',
 		'	gl_Position = viewProjectionMatrix * worldPos;',
 
 			ShaderBuilder.light.vertex,
-
-		'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
-		'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
-		'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 
 		'	texCoord0 = vertexUV0;',
 		'	viewPosition = cameraPosition - worldPos.xyz;',
@@ -345,14 +339,10 @@ function(
 			'if (final_color.a < discardThreshold) discard;',
 			// 'final_color = vec4(1.0);',
 
-		// '	vec3 N = normalize(normal);',
 			'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 			'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
-			// 'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz;',
-			// 'tangentNormal.xy *= normalMultiplier;',
 			'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 			'vec3 N = normalize(worldNormal);',
-			// 'vec3 N = normalize(normal);',
 
 			// 'final_color = vec4(N, 1.0);',
 			ShaderBuilder.light.fragment,
