@@ -50,7 +50,7 @@ function(
 
 	AmmoSystem.prototype.deleted = function(entity) {
 		if (entity.ammoComponent) {
-			this.ammoWorld.removeRidigBody(entity.ammoComponent.body);
+			this.ammoWorld.removeRigidBody(entity.ammoComponent.body);
 		}
 	};
 
