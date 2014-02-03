@@ -48,16 +48,7 @@ define([
 				var joint = new Joint(jointConfig.name);
 				joint._index = jointConfig.index;
 				joint._parentIndex = jointConfig.parentIndex;
-				// TODO migrate to column major
-				var flipped = jointConfig.inverseBindPose.map(function(val, idx, arr) {
-					if (idx !== 15) {
-						idx = idx * 4 % 15;
-					}
-					return arr[idx];
-				});
-				console.log(jointConfig.inverseBindPose);
-				console.log(flipped);
-				joint._inverseBindPose.matrix.data.set(flipped);
+				joint._inverseBindPose.matrix.data.set(jointConfig.inverseBindPose);
 
 				joints.push(joint);
 			}, null, 'index');

@@ -1,9 +1,11 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
+	SystemBus,
 	ArrayUtil,
 	RSVP
 ) {
@@ -70,10 +72,20 @@ define([
 			var promises = [];
 			promises.push(that._handleEntities(config, scene, options));
 			if (config.posteffectsRef) {
-				promises.push(that._handlePosteffects(config, scene, options));
+				promises.push(that._load(config.posteffectsRef, options));
 			}
 			if (config.environmentRef) {
-				promises.push(that._handleEnvironment(config, scene, options));
+				promises.push(that._load(config.environmentRef, options));
+			}
+			if (config.initialCameraRef) {
+				promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {
+					if (cameraEntity && cameraEntity.cameraComponent) {
+						SystemBus.emit('goo.setCurrentCamera', {
+							camera: cameraEntity.cameraComponent.camera,
+							entity: cameraEntity
+						});
+					}
+				}));
 			}
 			return RSVP.all(promises).then(function() {
 				return scene;

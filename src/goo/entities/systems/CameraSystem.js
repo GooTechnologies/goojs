@@ -36,11 +36,11 @@ function (
 	};
 
 	CameraSystem.prototype.inserted = function () {
-		this.findMainCamera();
+		//this.findMainCamera();
 	};
 
 	CameraSystem.prototype.deleted = function () {
-		this.findMainCamera();
+		//this.findMainCamera();
 	};
 
 	CameraSystem.prototype.process = function (entities) {
