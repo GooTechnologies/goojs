@@ -473,14 +473,14 @@ function (
 			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
 			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
 			this._eventTriggered[type] = e;
-			this.pick(x, y, function(id, depth) {
-				var entity = this.world.entityManager.getEntityById(id);
+			this.pick(x, y, function(index, depth) {
+				var entity = this.world.entityManager.getEntityByIndex(index);
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,
 					x: x,
 					y: y,
-					id: id
+					id: index
 				});
 			}.bind(this));
 		}.bind(this);

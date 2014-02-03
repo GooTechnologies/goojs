@@ -74,16 +74,18 @@ define([
 
 			// Adding/updating components
 			for (var type in config.components) {
-				var p = that._updateComponent(entity, type, config.components[type], options);
-				if (p) { promises.push(p); }
-				else { console.error("Error handling component " + name); }
+				if (config.components[type] != null) {
+					var p = that._updateComponent(entity, type, config.components[type], options);
+					if (p) { promises.push(p); }
+					else { console.error("Error handling component " + name); }
+				}
 			}
 
 			// Removing components
 			var components = entity._components;
 			for(var i = 0; i < components.length; i++) {
 				var type = that._getComponentType(components[i]);
-				if (!config.components[type]) {
+				if (config.components[type] == null) {
 					that._updateComponent(entity, type, null, options);
 				}
 			}

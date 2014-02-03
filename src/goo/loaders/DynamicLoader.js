@@ -56,7 +56,7 @@ function(
 	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {string} parameters.rootPath The root path from where to get resources.
-	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath].
+	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath)].
 	 * Here you can overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {
@@ -65,10 +65,13 @@ function(
 		} else {
 			throw new Error("World argument cannot be null");
 		}
-		if (options.rootPath) {
-			this._ajax = options.ajax || new Ajax(options.rootPath);
+		if (options.ajax) {
+			this._ajax = options.ajax;
+		}
+		else if (options.rootPath) {
+			this._ajax = new Ajax(options.rootPath);
 		} else {
-			throw new Error("rootPath must be defined");
+			throw new Error("ajax or rootPath must be defined");
 		}
 
 		// Will hold the engine objects
