@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -27,7 +26,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -49,7 +47,7 @@ require([
 		quadMaterial.blendState.blending = 'AlphaBlending';
 		quadMaterial.renderQueue = 2001;
 
-		var quadEntity = EntityUtils.createTypicalEntity(goo.world, quadMeshData, quadMaterial);
+		var quadEntity = goo.world.createEntity(quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.setd(x, y, z);
 		quadEntity.addToWorld();
 	}
@@ -57,7 +55,7 @@ require([
 	function addBox(goo) {
 		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
 		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
+		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(0, 0, 0);
 		boxEntity.addToWorld();
 	}
@@ -66,7 +64,7 @@ require([
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
 		var lampMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		lampMaterial.uniforms.color = [1.0, 0.8, 0.1];
-		var lampEntity = EntityUtils.createTypicalEntity(goo.world, lampMeshData, lampMaterial);
+		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial);
 
 		var light = new PointLight();
 		light.range = 10;

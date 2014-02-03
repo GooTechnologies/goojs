@@ -13,7 +13,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -33,7 +32,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -60,7 +58,7 @@ require([
 		var material = Material.createMaterial(ShaderLib.simple, '');
 		//var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 		//material.setTexture('DIFFUSE_MAP', texture);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
+		var boxEntity = goo.world.createEntity(meshData, material);
 		boxEntity.addToWorld();
 
 		var light = new PointLight();

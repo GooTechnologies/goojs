@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -27,7 +26,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -45,7 +43,7 @@ require([
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
 		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial, '');
 		normalsEntity.transformComponent.transform = entity.transformComponent.transform;
 		normalsEntity.addToWorld();
 	}
@@ -55,20 +53,20 @@ require([
 
 		// add pointy disk
 		var pointyDiskMeshData = new Disk(64, 4, 8);
-		var pointyDiskEntity = EntityUtils.createTypicalEntity(goo.world, pointyDiskMeshData, material, 'Pointy Disk');
+		var pointyDiskEntity = goo.world.createEntity(pointyDiskMeshData, material, 'Pointy Disk');
 		pointyDiskEntity.transformComponent.transform.translation.setd(-9, 0, 0);
 		pointyDiskEntity.addToWorld();
 		addNormalsToWorld(goo, pointyDiskEntity);
 
 		// add flat disk
 		var flatDiskMeshData = new Disk(64, 4, 0);
-		var flatDiskEntity = EntityUtils.createTypicalEntity(goo.world, flatDiskMeshData, material, 'Flat Disk');
+		var flatDiskEntity = goo.world.createEntity(flatDiskMeshData, material, 'Flat Disk');
 		flatDiskEntity.addToWorld();
 		addNormalsToWorld(goo, flatDiskEntity);
 
 		// add inversly pointy disk
 		var ipointyDiskMeshData = new Disk(64, 4, -4);
-		var iPointyDiskEntity = EntityUtils.createTypicalEntity(goo.world, ipointyDiskMeshData, material, '-Pointy Disk');
+		var iPointyDiskEntity = goo.world.createEntity(ipointyDiskMeshData, material, '-Pointy Disk');
 		iPointyDiskEntity.transformComponent.transform.translation.setd(9, 0, 0);
 		iPointyDiskEntity.addToWorld();
 		addNormalsToWorld(goo, iPointyDiskEntity);

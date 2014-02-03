@@ -4,7 +4,6 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/Camera',
@@ -18,7 +17,6 @@ require([
 	TextureCreator,
 	ScriptComponent,
 	ShapeCreator,
-	EntityUtils,
 	LightComponent,
 	PointLight,
 	Camera,
@@ -33,7 +31,7 @@ require([
 
 	function createBox(size, x, y, textureUrl, goo) {
 		var meshData = ShapeCreator.createBox(size, size, size, 1, 1);
-		var box = EntityUtils.createTypicalEntity(goo.world, meshData);
+
 		var texture = new TextureCreator({
 			verticalFlip : true
 		}).loadTexture2D(resourcePath + textureUrl);
@@ -42,10 +40,7 @@ require([
 		material.shader = Material.createShader(ShaderLib.texturedLit, 'BoxShader');
 		material.setTexture('DIFFUSE_MAP', texture);
 
-		box.meshRendererComponent.materials.push(material);
-		box.addToWorld();
-
-		box.transformComponent.transform.translation.set(x, y, 0);
+		var box = goo.world.createEntity(meshData, material, [x, y, 0]).addToWorld();
 	}
 
 	function init() {

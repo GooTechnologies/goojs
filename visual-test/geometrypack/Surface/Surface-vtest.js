@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -26,7 +25,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -66,15 +64,15 @@ require([
 			0, 0, 2], 20);
 
 		// generator material
-		var generatorMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var generatorMaterial = Material.createMaterial(ShaderLib.simpleColored);
 
 		// x generator
-		var xGeneratorEntity = EntityUtils.createTypicalEntity(goo.world, xGenerator, generatorMaterial, '');
+		var xGeneratorEntity = goo.world.createEntity(xGenerator, generatorMaterial);
 		xGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
 		xGeneratorEntity.addToWorld();
 
 		// y generator
-		var yGeneratorEntity = EntityUtils.createTypicalEntity(goo.world, yGenerator, generatorMaterial, '');
+		var yGeneratorEntity = goo.world.createEntity(yGenerator, generatorMaterial);
 		yGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
 		yGeneratorEntity.addToWorld();
 
@@ -82,16 +80,16 @@ require([
 		var surfaceMeshData = xGenerator.mul(yGenerator);
 
 		// surface material
-		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit, '');
+		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit);
 
 		// surface entity
-		var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, surfaceMeshData, surfaceMaterial, '');
+		var surfaceEntity = goo.world.createEntity(surfaceMeshData, surfaceMaterial);
 		surfaceEntity.addToWorld();
 
 		var normalsMeshData = surfaceMeshData.getNormalsMeshData(6);
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored);
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.addToWorld();
 
 		var light1 = new PointLight();
@@ -110,7 +108,7 @@ require([
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
+		var cameraEntity = goo.world.createEntity('CameraEntity');
 		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));

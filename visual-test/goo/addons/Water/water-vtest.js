@@ -1,6 +1,5 @@
 require([
 	'goo/entities/GooRunner',
-	'goo/entities/EntityUtils',
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
@@ -19,7 +18,6 @@ require([
 	'goo/renderer/MeshData'
 ], function (
 	GooRunner,
-	EntityUtils,
 	Material,
 	Camera,
 	CameraComponent,
@@ -53,9 +51,8 @@ require([
 		for (var x = 0; x < count; x++) {
 			for (var y = 0; y < count*2; y++) {
 				for (var z = 0; z < count; z++) {
-					var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
+					var entity = goo.world.createEntity(meshData, material);
 					entity.transformComponent.transform.translation.setd((x-count/2)*15, (y-count/2)*15 - 10, (z-count/2)*15);
-					entity.meshRendererComponent.materials.push(material);
 					entity.addToWorld();
 				}
 			}
@@ -86,9 +83,8 @@ require([
 		loadSkybox(goo);
 
 		var meshData = ShapeCreator.createQuad(200, 200, 10, 10);
-		var waterEntity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		var material = Material.createMaterial(ShaderLib.simple, 'mat');
-		waterEntity.meshRendererComponent.materials.push(material);
+		var material = Material.createMaterial(ShaderLib.simple);
+		var waterEntity = goo.world.createEntity(meshData, material);
 		waterEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
 		waterEntity.addToWorld();
 
@@ -145,9 +141,8 @@ require([
 
 	function createBox (goo, shader, w, h, d) {
 		var meshData = ShapeCreator.createBox(w, h, d);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		var material = Material.createMaterial(shader, 'mat');
-		entity.meshRendererComponent.materials.push(material);
+		var material = Material.createMaterial(shader);
+		var entity = goo.world.createEntity(meshData, material);
 		return entity;
 	}
 

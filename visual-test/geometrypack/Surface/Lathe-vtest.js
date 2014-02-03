@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -26,7 +25,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -52,14 +50,14 @@ require([
 
 		var latheMeshData = section.lathe(20);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		var latheEntity = EntityUtils.createTypicalEntity(goo.world, latheMeshData, material, '');
+		var material = Material.createMaterial(ShaderLib.simpleLit);
+		var latheEntity = goo.world.createEntity(latheMeshData, material);
 		latheEntity.addToWorld();
 
 		var normalsMeshData = latheMeshData.getNormalsMeshData(4);
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored);
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.addToWorld();
 
 		var light = new PointLight();
@@ -70,7 +68,7 @@ require([
 
 		// camera
 		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
+		var cameraEntity = goo.world.createEntity('CameraEntity');
 		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
 		cameraEntity.setComponent(new CameraComponent(camera));

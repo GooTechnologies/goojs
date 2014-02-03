@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -27,7 +26,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -167,12 +165,9 @@ require([
 		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
 
 		var nSpheres = 15;
-		for(var i = 0; i < nSpheres; i++) {
-			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
-				sphereEntity.addToWorld();
+		for (var i = 0; i < nSpheres; i++) {
+			for (var j = 0; j < nSpheres; j++) {
+				goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]).addToWorld();
 			}
 		}
 

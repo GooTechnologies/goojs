@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -29,7 +28,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -63,7 +61,7 @@ require([
 					j / nBoxes,
 					0.2
 				];
-				var boxEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+				var boxEntity = goo.world.createEntity(meshData, material);
 
 				var x = (i - nBoxes / 2) * (boxDim + 10);
 				var y = (j - nBoxes / 2) * (boxDim + 10);

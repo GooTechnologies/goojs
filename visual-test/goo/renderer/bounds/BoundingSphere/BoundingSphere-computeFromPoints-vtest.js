@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -23,7 +22,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -59,9 +57,7 @@ require([
 		material2.wireframe = true;
 
 		// wrap shapeMeshData in an entity
-		var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
-		shapeEntity.meshRendererComponent.materials.push(material1);
-		shapeEntity.addToWorld();
+		var shapeEntity = goo.world.createEntity(shapeMeshData, material1).addToWorld();
 
 		// bounding sphere
 		var boundingSphere = new BoundingSphere();
@@ -72,10 +68,7 @@ require([
 		var zCenter = boundingSphere.center.data[2];
 
 		var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
-		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-		sphereEntity.meshRendererComponent.materials.push(material2);
-		sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		sphereEntity.addToWorld();
+		var sphereEntity = goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera
 		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));

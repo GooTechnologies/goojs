@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -25,7 +24,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -48,10 +46,7 @@ require([
 		var zCenter = boundingSphere.center.data[2];
 
 		var sphereMeshData = ShapeCreator.createSphere(16, 16, radius);
-		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-		sphereEntity.meshRendererComponent.materials.push(material2);
-		sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		sphereEntity.addToWorld();
+		var sphereEntity = goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function addBoundingBoxToWorld(goo, boundingBox) {
@@ -67,10 +62,7 @@ require([
 		var zCenter = boundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.meshRendererComponent.materials.push(material2);
-		boxEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		boxEntity.addToWorld();
+		var boxEntity = goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function boundingSphereDemo(goo) {
@@ -90,12 +82,8 @@ require([
 		material1.uniforms.color = [0.3, 0.6, 0.9];
 
 		// wrap shapeMeshData-s entities entity
-		var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
-		shape1Entity.meshRendererComponent.materials.push(material1);
-		shape1Entity.addToWorld();
-		var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
-		shape2Entity.meshRendererComponent.materials.push(material1);
-		shape2Entity.addToWorld();
+		var shape1Entity = goo.world.createEntity(shape1MeshData, material1).addToWorld();
+		var shape2Entity = goo.world.createEntity(shape2MeshData, material1).addToWorld();
 
 		// bounding sphere for shape 1
 		var boundingSphere1 = new BoundingSphere();

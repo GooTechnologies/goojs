@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -35,7 +34,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -112,7 +110,7 @@ require([
 	function addWall(goo, x, y, dx, dy) {
 		var boxMeshData = ShapeCreator.createBox(dx, dy, 1);
 		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData, boxMaterial);
+		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(x, y, 0);
 		//boxEntity.setComponent(getFSMComponent(boxEntity)); //enable this for weirdness
 		boxEntity.addToWorld();
@@ -139,7 +137,7 @@ require([
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
 		var lampMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		lampMaterial.uniforms.color = color;
-		var lampEntity = EntityUtils.createTypicalEntity(goo.world, lampMeshData, lampMaterial, 'lamp1');
+		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial, 'lamp1');
 
 		var light = new PointLight();
 		light.color = new Vector3(color[0], color[1], color[2]);

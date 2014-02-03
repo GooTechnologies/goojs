@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -23,7 +22,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -44,8 +42,7 @@ require([
 		material2.wireframe = true;
 
 		// wrap shapeMeshData in an entity
-		var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
-		shapeEntity.meshRendererComponent.materials.push(material1);
+		var shapeEntity = goo.world.createEntity(shapeMeshData, material1);
 		shapeEntity.addToWorld();
 
 		// bounding box
@@ -59,8 +56,8 @@ require([
 		var zCenter = boundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.meshRendererComponent.materials.push(material2);
+		var boxEntity = goo.world.createEntity(boxMeshData, material2);
+
 		boxEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
 		boxEntity.addToWorld();
 

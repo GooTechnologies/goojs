@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -28,7 +27,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -47,7 +45,7 @@ require([
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
 		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = EntityUtils.createTypicalEntity(goo.world, normalsMeshData, normalsMaterial, '');
+		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial, '');
 		normalsEntity.transformComponent.transform = entity.transformComponent.transform;
 		normalsEntity.addToWorld();
 	}
@@ -59,14 +57,14 @@ require([
 
 		// add normal cone
 		var normalConeMeshData = new Cone(8, 4, 8);
-		var normalConeEntity = EntityUtils.createTypicalEntity(goo.world, normalConeMeshData, material, 'Pointy Cone');
+		var normalConeEntity = goo.world.createEntity(normalConeMeshData, material, 'Pointy Cone');
 		normalConeEntity.transformComponent.transform.translation.setd(-4.5, 0, 0);
 		normalConeEntity.addToWorld();
 		addNormalsToWorld(goo, normalConeEntity);
 
 		// add flat cone
 		var flatConeMeshData = new Cone(64, 4, 0);
-		var flatConeEntity = EntityUtils.createTypicalEntity(goo.world, flatConeMeshData, material, 'Flat Cone');
+		var flatConeEntity = goo.world.createEntity(flatConeMeshData, material, 'Flat Cone');
 		flatConeEntity.transformComponent.transform.translation.setd( 4.5, 0, 0);
 		flatConeEntity.addToWorld();
 		addNormalsToWorld(goo, flatConeEntity);

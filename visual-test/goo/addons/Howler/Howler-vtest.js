@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -29,7 +28,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -66,7 +64,7 @@ require([
 		var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 
-		var cubeEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		var cubeEntity = goo.world.createEntity(meshData, material);
 		cubeEntity.addToWorld();
 
 		cubeEntity.setComponent(new ScriptComponent({
@@ -91,7 +89,7 @@ require([
 
 		// create fixed sphere
 		meshData = ShapeCreator.createSphere(32, 32);
-		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		var sphereEntity = goo.world.createEntity(meshData, material);
 		sphereEntity.transformComponent.transform.translation.setd(0, 0, 5);
 		sphereEntity.transformComponent.setUpdated();
 		sphereEntity.addToWorld();
