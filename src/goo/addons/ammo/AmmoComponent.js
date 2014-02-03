@@ -101,7 +101,8 @@ function(
 		//shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
 		return shape;
 	};
-
+	
+	
 	AmmoComponent.prototype.initialize = function(entity) {
 		var gooTransform = entity.transformComponent.transform;
 
@@ -110,7 +111,7 @@ function(
 		}
 
 		var gooPos = gooTransform.translation;
-
+		
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
 		ammoTransform.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
@@ -166,6 +167,16 @@ function(
 		bv.addToWorld();
 		this.bv = bv;
 	};
+
+	AmmoComponent.prototype.setPhysicalTransform = function(transform) {
+		var gooPos = transform.translation;
+		this.ammoTransform.setIdentity(); // TODO: is this needed ?
+		this.ammoTransform.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+		this.gooQuaternion.fromRotationMatrix(transform.rotation);
+		var q = this.gooQuaternion;
+		this.ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		this.body.setWorldTransform(this.ammoTransform);
+	}
 
 	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
 		var tc = entity.transformComponent;
