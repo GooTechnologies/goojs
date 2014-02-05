@@ -1233,7 +1233,12 @@ function (
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					if (image.data[i]) {
+						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					}
+					else {
+						Util.getBlankImage(texture, this.clearColor, image.width, image.height, this.maxCubemapSize, i);
+					}
 				}
 				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
 				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
@@ -1269,29 +1274,7 @@ function (
 	};
 
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
-		var newWidth = Util.nearestPowerOfTwo(width);
-		var newHeight = Util.nearestPowerOfTwo(height);
-		newWidth = Math.min(newWidth, maxSize);
-		newHeight = Math.min(newHeight, maxSize);
-		if (width !== newWidth || height !== newHeight) {
-			var canvas = document.createElement('canvas'); // !!!!!
-			canvas.width = newWidth;
-			canvas.height = newHeight;
-			if (image.getAttribute) {
-				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
-			}
-			var ctx = canvas.getContext('2d');
-			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
-			document.body.appendChild(canvas);
-			canvas.dataReady = true;
-			canvas.src = image.src;
-			if (index === undefined) {
-				texture.image = canvas;
-			} else {
-				texture.image.data[index] = canvas;
-			}
-			canvas.parentNode.removeChild(canvas);
-		}
+		Util.scaleImage(texture, image, width, height, maxSize, index);
 	};
 
 	Renderer.prototype.getGLWrap = function (wrap) {

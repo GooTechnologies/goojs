@@ -21,6 +21,7 @@ define([
 	 */
 	function EnvironmentHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._cache = {};
 	}
 
 	EnvironmentHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -56,7 +57,7 @@ define([
 	EnvironmentHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
-			object.backgroundColor = config.backgroundColor.slice();
+			object.backgroundColor = config.backgroundColor.slice(0);
 			object.globalAmbient = config.globalAmbient.slice(0,3);
 
 			object.fog = _.deepClone(config.fog);
@@ -82,8 +83,9 @@ define([
 			}
 
 			// Skybox
-			if(config.skyboxRef) {
+			if(config.skyboxRef && config.skyboxRef != that._cache.skyboxRef) {
 				return that._load(config.skyboxRef, options).then(function(/*skybox*/) {
+					that._cache.skyboxRef = config.skyboxRef;
 					return object;
 				});
 			}
