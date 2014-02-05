@@ -96,8 +96,8 @@ define([
 				var selectionMaterial = component.materials.filter(function(material) {
 					return material.name === 'gooSelectionIndicator';
 				});
-				materials.concat(selectionMaterial);
-				component.materials = materials;
+				
+				component.materials = materials.concat(selectionMaterial);
 				return component;
 			});
 		});

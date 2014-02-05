@@ -89,7 +89,10 @@ function (
 						renderables = tree[componentName];
 					} else {
 						renderables = DebugDrawHelper.getRenderablesFor(component, options);
-						renderables.forEach(function (renderable) { renderable.id = entity.id; });
+						renderables.forEach(function (renderable) { 
+							renderable.id = entity.id; 
+							renderable._index = entity._index;
+						});
 						tree[componentName] = renderables;
 					}
 
