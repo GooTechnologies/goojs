@@ -66,9 +66,9 @@ define([
 	SkyboxHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(skybox) {
-			if (config.box) {
+			if (config.box && config.box.enabled) {
 				return that._updateBox(config.box, options, skybox);
-			} else if (config.sphere) {
+			} else if (config.sphere && config.sphere.enabled) {
 				return that._updateSphere(config.sphere, options, skybox);
 			}
 		});
