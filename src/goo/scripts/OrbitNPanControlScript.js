@@ -221,6 +221,8 @@ define([
 			this.dirty = true;
 		}
 		OrbitCamControlScript.prototype.run.call(this, entity, tpf, env);
+
+
 		if (env) {
 			this.viewportWidth = env.viewportWidth;
 			this.viewportHeight = env.viewportHeight;
