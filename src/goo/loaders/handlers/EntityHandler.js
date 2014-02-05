@@ -48,13 +48,13 @@ define([
 	 * @param {ref}
 	 * @private
 	 */
-	/*EntityHandler.prototype._remove = function(ref) {
+	EntityHandler.prototype._remove = function(ref) {
 		var entity = this._objects[ref];
 		if (entity) {
-			//entity.removeFromWorld();
+			entity.removeFromWorld();
 			delete this._objects[ref];
 		}
-	};*/
+	};
 
 	/*
 	 * Adds/updates/removes an entity

@@ -52,9 +52,10 @@ define([
 	SceneHandler.prototype._create = function() {
 		return {
 			id: null,
-			entities: [],
+			entities: {},
 			posteffects: [],
-			environment: null
+			environment: null,
+			initialCameraRef: null
 		};
 	};
 
@@ -77,7 +78,7 @@ define([
 			if (config.environmentRef) {
 				promises.push(that._load(config.environmentRef, options));
 			}
-			if (config.initialCameraRef) {
+			if (config.initialCameraRef && config.initialCameraRef !== scene.initialCameraRef) {
 				promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {
 					if (cameraEntity && cameraEntity.cameraComponent) {
 						SystemBus.emit('goo.setCurrentCamera', {
@@ -85,6 +86,7 @@ define([
 							entity: cameraEntity
 						});
 					}
+					scene.initialCameraRef = config.initialCameraRef;
 				}));
 			}
 			return RSVP.all(promises).then(function() {
@@ -102,26 +104,40 @@ define([
 	SceneHandler.prototype._handleEntities = function(config, scene, options) {
 		var promises = [];
 
-		for (var key in config.entityRefs) {
+		var addedEntityIds = _.clone(config.entityRefs);
+		var removedEntityIds = [];
+
+		for (var id in scene.entities) {
+			var engineEntity = scene.entities[id];
+			if (addedEntityIds[id]) {
+				delete addedEntityIds[id];
+			}
+			else {
+				removedEntityIds[id] = id;
+			}
+		}
+
+		for (var key in addedEntityIds) {
 			promises.push(this._load(config.entityRefs[key], options));
 		}
+
 		return RSVP.all(promises).then(function(entities) {
 			// Adding new entities
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
-				if (scene.entities.indexOf(entity) === -1) {
-					entity.addToWorld();
-					scene.entities.push(entity);
-				}
+				entity.addToWorld();
+				scene.entities[entity.id] = entity;
 			}
+			
 			// Removing old entities
-			for (var i = 0; i < scene.entities.length; i++) {
-				var entity = scene.entities[i];
-				if (entities.indexOf(entity) === -1) {
-					entity.removeFromWorld();
-					ArrayUtil.remove(scene.entities, entity);
-				}
-			}
+			// This is handled by EntityHandler
+			// for (var id in removedEntityIds) {
+			// 	var entity = scene.entities[id];
+			// 	if (entity) {
+			// 		entity.removeFromWorld();
+			// 		delete scene.entities[id];
+			// 	}
+			// }
 		});
 	};
 
