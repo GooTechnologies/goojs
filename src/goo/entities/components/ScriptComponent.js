@@ -1,6 +1,12 @@
-define(['goo/entities/components/Component'],
+define([
+	'goo/entities/components/Component',
+	'goo/entities/SystemBus'
+],
 /** @lends */
-function(Component) {
+function (
+	Component,
+	SystemBus
+	) {
 	'use strict';
 
 	/**
@@ -25,17 +31,71 @@ function(Component) {
 
 	ScriptComponent.prototype = Object.create(Component.prototype);
 
-	ScriptComponent.prototype.run = function(entity, tpf, environment) {
-		var script;
-		for ( var i = 0, max = this.scripts.length; i < max; i++) {
-			script = this.scripts[i];
-			if (script && script.run && (script.enabled === undefined || script.enabled)) {
-				script.run(entity, tpf, environment);
+	/**
+	 * Runs the .setup method on each script; called when the ScriptComponent is attached to the entity or when the entity is added to the world
+	 * @private
+	 * @param entity
+	 */
+	ScriptComponent.prototype.setup = function (entity) {
+		var commonEnvironment = {
+			getEntity: function () {
+				return entity;
+			},
+			getSystemBus: function () {
+				return SystemBus;
+			}
+		};
+
+		for (var i = 0; i < this.scripts.length; i++) {
+			var script = this.scripts[i];
+
+			script.environment = commonEnvironment;
+
+			if (script.setup) {
+				script.setup(script.parameters, script.environment);
 			}
 		}
 	};
 
-	ScriptComponent.applyOnEntity = function(obj, entity) {
+	/**
+	 * Runs the update function on every script attached to this entity
+	 * @private
+	 * @param entity {Entity}
+	 * @param tpf {number}
+	 * @param environment
+	 */
+	ScriptComponent.prototype.run = function (entity, tpf, environment) {
+		for (var i = 0; i < this.scripts.length; i++) {
+			var script = this.scripts[i];
+			if (script && script.run && (script.enabled === undefined || script.enabled)) {
+				script.run(entity, tpf, environment, script.parameters);
+			} else if (script.update) {
+				script.update(script.parameters, script.environment);
+			}
+		}
+	};
+
+	/**
+	 * Reverts any changes done by setup; called when the entity loses its ScriptComponent or is removed from the world
+	 * @private
+	 */
+	ScriptComponent.prototype.cleanup = function () {
+		for (var i = 0; i < this.scripts.length; i++) {
+			var script = this.scripts[i];
+			if (script.cleanup) {
+				script.cleanup(script.parameters, script.environment);
+			}
+		}
+	};
+
+	/**
+	 * Attempts to add a script to an entity. The object can be a { run: Function } object or a Function. The entity is supposed to get a ScriptComponent with a script created out of the passed object
+	 * @private
+	 * @param obj {Function | { run: Function }}
+	 * @param entity {Entity}
+	 * @returns {boolean}
+	 */
+	ScriptComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof Function || (obj && obj.run instanceof Function)) {
 			var scriptComponent;
 			if (!entity.scriptComponent) {
