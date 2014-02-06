@@ -8,9 +8,6 @@ function (
 ) {
 	"use strict";
 
-	/**
-	 * @class Processes all entities with a FSM component
-	 */
 	function FSMSystem(engine) {
 		System.call(this, 'FSMSystem', ['FSMComponent']);
 
