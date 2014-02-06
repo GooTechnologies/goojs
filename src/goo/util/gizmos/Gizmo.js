@@ -22,6 +22,10 @@ define([
 	Vector3
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
 		this.gizmoRenderSystem = gizmoRenderSystem;

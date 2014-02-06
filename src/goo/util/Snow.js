@@ -21,6 +21,9 @@ function (
 	) {
 	'use strict';
 
+	/**
+	* @class
+	*/
 	function Snow(gooRunner) {
 		this.velocity = 10;
 		this.height = 25;

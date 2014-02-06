@@ -7,6 +7,10 @@ function(
 ) {
 	"use strict";
 
+
+	/**
+	* @class
+	*/
 	function AtlasNode(w, h) {
 		this.isLeaf = true;
 		this.isSet = false;

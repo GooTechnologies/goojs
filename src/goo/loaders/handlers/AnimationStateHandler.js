@@ -19,6 +19,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

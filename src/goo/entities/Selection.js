@@ -3,6 +3,7 @@ define([], function () {
 
 	/**
 	 * Generic selection class
+	 * @class
 	 * @constructor
 	 */
 	function Selection() {

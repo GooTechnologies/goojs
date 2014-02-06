@@ -22,6 +22,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

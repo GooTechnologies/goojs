@@ -19,6 +19,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

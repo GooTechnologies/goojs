@@ -7,6 +7,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

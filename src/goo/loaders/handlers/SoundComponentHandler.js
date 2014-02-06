@@ -11,6 +11,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

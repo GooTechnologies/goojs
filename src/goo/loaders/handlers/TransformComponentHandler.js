@@ -18,6 +18,9 @@ define([
 	"use strict";
 
 	/*jshint eqeqeq: false, -W041 */
+	/**
+	* @class
+	*/
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

@@ -18,6 +18,10 @@ define([
 	Ray
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);

@@ -6,6 +6,9 @@ define([
 	ShaderLib) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function NesPass(textureUrl) {
 		this.material = Material.createMaterial(nesShader);
 

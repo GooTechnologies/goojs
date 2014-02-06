@@ -17,6 +17,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

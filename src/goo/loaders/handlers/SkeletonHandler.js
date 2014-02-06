@@ -15,6 +15,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

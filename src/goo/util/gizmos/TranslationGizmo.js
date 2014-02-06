@@ -16,6 +16,10 @@ define([
 	Renderer
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 

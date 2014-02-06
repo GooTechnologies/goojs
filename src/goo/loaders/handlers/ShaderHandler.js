@@ -17,6 +17,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

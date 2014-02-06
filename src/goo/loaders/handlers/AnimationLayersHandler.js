@@ -21,6 +21,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

@@ -16,6 +16,9 @@ define([
 	"use strict";
 
 	/*jshint eqeqeq: false, -W041, bitwise: false */
+	/**
+	* @class
+	*/
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

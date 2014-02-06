@@ -11,6 +11,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

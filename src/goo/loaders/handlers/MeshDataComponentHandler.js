@@ -19,6 +19,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

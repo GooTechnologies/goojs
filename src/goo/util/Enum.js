@@ -27,6 +27,9 @@ define(function () {
 	};
 	Object.freeze(Symbol.prototype);
 
+	/**
+	* @class
+	*/
 	function Enum(obj) {
 		if (arguments.length === 1 && obj !== null && typeof obj === "object") {
 			Object.keys(obj).forEach(function (name) {

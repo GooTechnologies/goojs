@@ -18,6 +18,10 @@ define([
 	MathUtils
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 		this._boxMesh = new Box(1.4, 1.4, 1.4);

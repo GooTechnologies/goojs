@@ -24,6 +24,9 @@ function (
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SSAOPass(renderList) {
 		this.depthPass = new RenderPass(renderList);
 		this.depthPass.clearColor.set(1,1,1,1);

@@ -14,6 +14,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

@@ -11,6 +11,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

@@ -10,6 +10,9 @@ define([
 		FullscreenPass, BlurPass) {
 		"use strict";
 
+		/**
+		* @class
+		*/
 		function DepthPass(renderList, outShader) {
 			this.depthPass = new RenderPass(renderList);
 			var packDepthMaterial = Material.createMaterial(packDepth);
