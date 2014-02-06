@@ -39,7 +39,21 @@ require([
 
 	var gui = new window.dat.GUI();
 
-	function anisotropicDemo(goo) {
+	function createBoxEntity(goo, size) {
+		var meshData = ShapeCreator.createBox(size, size, size);
+		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var entity = goo.world.createEntity(meshData, material);
+
+		TextureCreator.clearCache();
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
+		material.setTexture('DIFFUSE_MAP', texture);
+
+		return entity;
+	}
+
+	function applyRemoveAPIDemo() {
+		var goo = V.initGoo();
+
 		var boxEntity1 = createBoxEntity(goo, 3);
 		boxEntity1.setTranslation(0, 0, 0);
 
@@ -71,39 +85,10 @@ require([
 			}
 		});
 
-		var light = new DirectionalLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.setTranslation(1, 10, 1);
-		lightEntity.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-		lightEntity.addToWorld();
+		V.addLights();
 
-		V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
+		V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 	}
 
-	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createBox(size, size, size);
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		var entity = goo.world.createEntity(meshData, material);
-
-		TextureCreator.clearCache();
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
-		material.setTexture('DIFFUSE_MAP', texture);
-
-		return entity;
-	}
-
-	function init() {
-		var goo = new GooRunner({
-			showStats: true,
-			toolMode: true,
-			logo: 'bottomleft'
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		anisotropicDemo(goo);
-	}
-
-	init();
+	applyRemoveAPIDemo();
 });

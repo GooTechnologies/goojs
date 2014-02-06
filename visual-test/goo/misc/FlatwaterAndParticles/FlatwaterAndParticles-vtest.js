@@ -171,25 +171,11 @@ require([
 		boxEntity.addToWorld();
 	}
 
-	function addLight(goo) {
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('Light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 10, 0);
-		lightEntity.addToWorld();
-	}
+	function flatwaterAndParticlesDemo() {
+		var goo = V.initGoo();
 
-	function addCamera(goo) {
-		V.addOrbitCamera(goo, new Vector3(60, Math.PI / 2, 0));
-	}
-
-	function flatwaterAndParticlesDemo(goo) {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		addCamera(goo);
-		addLight(goo);
+		V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
+		V.addLights();
 
 		addBox(goo);
 		var waterRenderer = addWater(goo, 0);
@@ -200,13 +186,5 @@ require([
 		}
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		flatwaterAndParticlesDemo(goo);
-	}
-
-	init();
+	flatwaterAndParticlesDemo();
 });

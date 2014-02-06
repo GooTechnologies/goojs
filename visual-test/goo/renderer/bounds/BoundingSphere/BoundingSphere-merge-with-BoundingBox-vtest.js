@@ -1,32 +1,18 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Transform',
 	'../../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
 	BoundingBox,
 	Vector3,
 	BoundingSphere,
@@ -46,7 +32,7 @@ require([
 		var zCenter = boundingSphere.center.data[2];
 
 		var sphereMeshData = ShapeCreator.createSphere(16, 16, radius);
-		var sphereEntity = goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function addBoundingBoxToWorld(goo, boundingBox) {
@@ -62,10 +48,12 @@ require([
 		var zCenter = boundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
-	function boundingSphereDemo(goo) {
+	function boundingSphereDemo() {
+		var goo = V.initGoo();
+
 		var transform = new Transform();
 
 		var shape1MeshData = ShapeCreator.createQuad();
@@ -82,8 +70,8 @@ require([
 		material1.uniforms.color = [0.3, 0.6, 0.9];
 
 		// wrap shapeMeshData-s entities entity
-		var shape1Entity = goo.world.createEntity(shape1MeshData, material1).addToWorld();
-		var shape2Entity = goo.world.createEntity(shape2MeshData, material1).addToWorld();
+		goo.world.createEntity(shape1MeshData, material1).addToWorld();
+		goo.world.createEntity(shape2MeshData, material1).addToWorld();
 
 		// bounding sphere for shape 1
 		var boundingSphere1 = new BoundingSphere();
@@ -103,16 +91,8 @@ require([
 		addBoundingSphereToWorld(goo, mergedBoundingSphere);
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		boundingSphereDemo(goo);
-	}
-
-	init();
+	boundingSphereDemo();
 });

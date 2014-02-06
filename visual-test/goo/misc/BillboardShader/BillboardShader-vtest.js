@@ -1,39 +1,17 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/renderer/TextureCreator',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
 	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	TextureCreator,
 	V
 	) {
@@ -47,54 +25,43 @@ require([
 		quadMaterial.blendState.blending = 'AlphaBlending';
 		quadMaterial.renderQueue = 2001;
 
-		var quadEntity = goo.world.createEntity(quadMeshData, quadMaterial);
-		quadEntity.transformComponent.transform.translation.setd(x, y, z);
-		quadEntity.addToWorld();
+		goo.world.createEntity(quadMeshData, quadMaterial, [x, y, z]).addToWorld();
 	}
 
 	function addBox(goo) {
 		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
 		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
-		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
-		boxEntity.transformComponent.transform.translation.setd(0, 0, 0);
-		boxEntity.addToWorld();
+		goo.world.createEntity(boxMeshData, boxMaterial).addToWorld();
 	}
 
 	function addLamp(goo, x, y, z) {
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
 		var lampMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
 		lampMaterial.uniforms.color = [1.0, 0.8, 0.1];
-		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial);
 
 		var light = new PointLight();
 		light.range = 10;
-		lampEntity.setComponent(new LightComponent(light));
-		lampEntity.transformComponent.transform.translation.setd(x, y, z);
-		lampEntity.addToWorld();
+
+		goo.world.createEntity(lampMeshData, lampMaterial, light, [x, y, z]).addToWorld();
 
 		addHalo(goo, x, y, z);
 	}
 
 	function addLamps(goo) {
 		var nLamps = 5;
-		for(var i = 0; i < nLamps; i++) {
+		for (var i = 0; i < nLamps; i++) {
 			addLamp(goo, (i - ((nLamps - 1) / 2)) * 4, 5, 0);
 		}
 	}
 
-	function addCamera(goo) {
-		V.addOrbitCamera(goo, new Vector3(20, Math.PI / 2, 0));
-	}
+	function billboardShaderDemo() {
+		var goo = V.initGoo();
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-		addCamera(goo);
 		addLamps(goo);
 		addBox(goo);
 	}
 
-	init();
+	billboardShaderDemo();
 });

@@ -1,6 +1,4 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
@@ -18,8 +16,6 @@ require([
 	'goo/shapes/Sphere',
 	'../../lib/V'
 ], function(
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
@@ -41,10 +37,8 @@ require([
 
 	var resourcePath = "../../resources";
 
-	var goo = new GooRunner();
-
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
+	var goo = V.initGoo();
+	var world = goo.world;
 
 	var boxMesh = new Box();
 	var sphereMesh = new Sphere(32, 32);
@@ -53,8 +47,6 @@ require([
 	var material = Material.createMaterial(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 
-
-	var world = goo.world;
 
 	var box1 = world.createEntity(boxMesh, material).addToWorld();
 	var box2 = world.createEntity(boxMesh, material, [2, 2, 0]).addToWorld();
@@ -67,7 +59,7 @@ require([
 	sphere2.addTranslation(0, 4, 0);
 
 
-	V.addLights(goo);
+	V.addLights();
 
-	V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
+	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 });

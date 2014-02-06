@@ -1,40 +1,18 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/entities/components/LightComponent',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/debug/Debugger',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	LightComponent,
 	Box2DSystem,
 	Box2DComponent,
 	MathUtils,
@@ -52,12 +30,6 @@ require([
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
 		material.materialState.diffuse = [r, g, b, 1];
 		return material;
-	}
-
-	function addLight(goo) {
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity(light, [40, 40, 40]);
-		lightEntity.addToWorld();
 	}
 
 	function addOriginShape(goo) {
@@ -210,6 +182,7 @@ require([
 	}
 
 	function transformComponentDemo() {
+		goo = V.initGoo();
 		world = goo.world;
 
 		boxMeshData = ShapeCreator.createBox();
@@ -222,23 +195,15 @@ require([
 		createBoxTower2();
 
 		// add light
-		addLight(goo);
+		V.addLights();
 
 		// add camera
-		V.addOrbitCamera(goo, new Vector3(30, Math.PI / 2, 0.3), new Vector3(0, 0, 0));
+		V.addOrbitCamera(new Vector3(30, Math.PI / 2, 0.3));
 
 		setupGUI();
 
 		new Debugger(true, true).inject(goo);
 	}
 
-	function init() {
-		goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		transformComponentDemo();
-	}
-
-	init();
+	transformComponentDemo();
 });

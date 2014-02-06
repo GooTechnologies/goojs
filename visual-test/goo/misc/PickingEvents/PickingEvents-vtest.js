@@ -1,70 +1,20 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
-	Material,
-	ShaderLib,
-	Camera,
-	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
-	Vector3,
-	PointLight,
-	LightComponent,
 	V
 	) {
 	'use strict';
-
-	function addSpheres(goo, nSpheres) {
-		var sphereMeshData = ShapeCreator.createSphere(32, 32);
-
-		for(var i = 0; i < nSpheres; i++) {
-			for(var j = 0; j < nSpheres; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
-				sphereMaterial.uniforms.color = [i / nSpheres, j / nSpheres, 0.3];
-				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.addToWorld();
-			}
-		}
-	}
-
-	function addLight(goo) {
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(100, 100, 100);
-		lightEntity.addToWorld();
-	}
 
 	function swapChannels(colors) {
 		var tmp;
 		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;
 	}
 
-	function pickingEventsDemo(goo) {
-		// basic setup
-		addSpheres(goo, 15);
-		addLight(goo);
-		V.addOrbitCamera(goo, new Vector3(25, Math.PI / 4, 0));
+	function pickingEventsDemo() {
+		var goo = V.initGoo();
+		V.addColoredSpheres();
+		V.addLights();
+		V.addOrbitCamera();
 
 		// pick events
 		/*goo.setEventHandlers({
@@ -100,6 +50,7 @@ require([
 			lastEntity = evt.entity;
 			lastDepth = evt.depth;
 		});
+
 		goo.addEventListener('click', function(evt) {
 			console.log('Entity is '+evt.entity+' at '+evt.depth);
 			if(evt.entity) {
@@ -109,15 +60,5 @@ require([
 		});
 	}
 
-	function init() {
-		var goo = new GooRunner({
-			showStats: true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		pickingEventsDemo(goo);
-	}
-
-	init();
+	pickingEventsDemo();
 });
