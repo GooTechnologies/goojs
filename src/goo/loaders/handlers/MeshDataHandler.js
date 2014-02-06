@@ -5,7 +5,9 @@ define([
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	MeshData,
 	SkeletonPose,

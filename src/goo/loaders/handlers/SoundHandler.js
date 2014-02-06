@@ -3,7 +3,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,

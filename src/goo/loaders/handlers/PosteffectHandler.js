@@ -8,7 +8,9 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/util/ObjectUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,

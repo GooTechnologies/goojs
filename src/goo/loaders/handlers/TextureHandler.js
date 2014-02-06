@@ -9,7 +9,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	TextureCreator,
 	Texture,

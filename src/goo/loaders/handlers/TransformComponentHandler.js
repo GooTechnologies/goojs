@@ -6,7 +6,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil'
-], function(
+], 
+/** @lends */
+function(
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,

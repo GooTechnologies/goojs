@@ -6,7 +6,9 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	Material,
 	MeshData,

@@ -3,7 +3,9 @@ define([
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+], 
+/** @lends */
+function(
 	ComponentHandler,
 	HowlerComponent,
 	RSVP,

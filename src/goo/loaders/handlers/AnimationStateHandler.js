@@ -7,7 +7,9 @@ define([
 	'goo/animation/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	SteadyState,
 	ClipSource,

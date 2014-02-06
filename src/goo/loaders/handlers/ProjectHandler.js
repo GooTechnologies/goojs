@@ -19,7 +19,9 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/Snow'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
