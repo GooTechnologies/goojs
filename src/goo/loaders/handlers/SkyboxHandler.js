@@ -45,7 +45,6 @@ define([
 		this._skysphere.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', this._skysphereTexture);
 
 		this._activeSkyshape = null;
-		this._cache = {};
 	}
 
 	SkyboxHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -83,32 +82,29 @@ define([
 		var that = this;
 
 		if (config.sphereRef) {
-			if (config.sphereRef !== this._cache.sphereRef) {
-				return this._load(config.sphereRef, options).then(function(texture) {
-					if (!texture || !texture.image) {
-						SystemBus.emit('goo.error.skybox', {
-							type: 'Sphere',
-							message: 'The skysphere needs an image to display.'
-						});
-						that._hide();
-						return;
-					}
-					var skyTex = that._skysphereTexture;
-					skybox.textures = [texture];
-					skyTex.setImage(texture.image);
-					skyTex.setNeedsUpdate();
-					that._show(that._skysphere, config.enabled);
-					that._cache.sphereRef = config.sphereRef;
-					return that._skysphere;
-				});
-			}
-			else {
-				that._show(that._skysphere, config.enabled);
-			}
+			return this._load(config.sphereRef, options).then(function(texture) {
+				if (!texture || !texture.image) {
+					SystemBus.emit('goo.error.skybox', {
+						type: 'Sphere',
+						message: 'The skysphere needs an image to display.'
+					});
+					that._hide();
+					return;
+				}
+				var skyTex = that._skysphereTexture;
+				skybox.textures = [texture];
+				skyTex.setImage(texture.image);
+
+				if (config.enabled)
+					that._show(that._skysphere);
+				else
+					that._hide(that._skysphere);
+				return that._skysphere;
+			});
 		}
 		else {
 			that._skysphereTexture.setImage(null);
-			that._skysphereTexture.setNeedsUpdate();
+			that._hide(that._skysphere)
 		}
 		return PromiseUtil.createDummyPromise(that._skysphere);
 	};
@@ -131,20 +127,6 @@ define([
 	SkyboxHandler.prototype._updateBox = function(config, options, skybox) {
 		var that = this;
 
-		// If no change was made, don't load anything		
-		if (this._cache.box) {
-			var equals = 0;
-			for (var i = 0; i < sides.length; i++) {
-				var side = sides[i];
-				if (this._cache.box[side] == config[side])
-					equals++;
-			}
-			if (equals === sides.length) {
-				that._show(that._skybox, config.enabled);
-				return PromiseUtil.createDummyPromise(that._skybox);
-			}
-		}
-
 		var promises = sides.map(function(side) {
 			return config[side] ? that._load(config[side], options) : PromiseUtil.createDummyPromise();
 		});
@@ -157,13 +139,12 @@ define([
 				return that._skybox;
 			}
 
-
 			var images = textures.map(function(texture) { return texture ? texture.image : null; });
 
 			// If no textures were found, clear skybox and return
 			if (images.filter(Boolean).length === 0) {
 				that._skyboxTexture.setImage(null);
-				that._skyboxTexture.setNeedsUpdate();
+				that._hide(that._skybox);
 				return that._skybox;
 			}
 
@@ -184,45 +165,26 @@ define([
 			skyTex.image.height = h;
 			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
-			that._show(that._skybox, config.enabled);
-
-			that._cache.box = {}
-			for (var i = 0; i < sides.length; i++) {
-				var side = sides[i];
-				that._cache.box[side] == config[side];
-			}
+			if (config.enabled) 
+				that._show(that._skybox);
+			else
+				that._hide(that._skybox);
 
 			return that._skybox;
 		});
 	};
 
-	SkyboxHandler.prototype._hide = function() {
-		this._show();
+	SkyboxHandler.prototype._hide = function(skyshape) {
+		var renderSystem = this.world.getSystem('RenderSystem');
+		renderSystem.removed(skyshape);
 	};
 
-	SkyboxHandler.prototype._show = function(skyshape, enabled) {
-		if (this._activeSkyshape === skyshape) {
-			if (skyshape) 
-				this._activeSkyshape.meshRendererComponent.hidden = !enabled;
-			return;
-		}
-		if (enabled) {
-			var renderSystem = this.world.getSystem('RenderSystem');
-			if (this._activeSkyshape) {
-				renderSystem.removed(this._activeSkyshape);
-			}
-			if (skyshape) {
-				renderSystem.added(skyshape);
-				skyshape.meshRendererComponent.hidden = !enabled;
-			}
-			ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
-			ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;
+	SkyboxHandler.prototype._show = function(skyshape) {
+		var renderSystem = this.world.getSystem('RenderSystem');
+		renderSystem.added(skyshape);
 
-			this._activeSkyshape = skyshape;
-		}
-		else {
-			skyshape.hidden = !enabled;
-		}
+		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
+		ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;
 	};
 
 });

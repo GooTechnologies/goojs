@@ -1237,7 +1237,7 @@ function (
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 					}
 					else {
-						Util.getBlankImage(texture, this.clearColor, image.width, image.height, this.maxCubemapSize, i);
+						Util.getBlankImage(texture, [.3, .3, .3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
 				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
