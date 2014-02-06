@@ -74,5 +74,156 @@ require([
 	"goo/fsmpack/statemachine/actions/TweenTextureOffsetAction",
 	"goo/fsmpack/statemachine/actions/WASDAction",
 	"goo/fsmpack/statemachine/actions/WaitAction",
-], function () {
+], function (
+	FSMComponentHandler,
+	MachineHandler,
+	FSMComponent,
+	FSMSystem,
+	FSMUtil,
+	Machine,
+	State,
+	Action,
+	Actions,
+	AddLightAction,
+	AddPositionAction,
+	AddVariableAction,
+	ArrowsAction,
+	CollidesAction,
+	CompareDistanceAction,
+	DollyZoomAction,
+	EmitAction,
+	EvalAction,
+	FireAction,
+	GetPositionAction,
+	GuiButtonAction,
+	HideAction,
+	InBoxAction,
+	InFrustumAction,
+	KeyDownAction,
+	KeyPressedAction,
+	KeyUpAction,
+	LogMessageAction,
+	LookAtAction,
+	MouseDownAction,
+	MouseMoveAction,
+	MouseUpAction,
+	MoveAction,
+	MultiplyVariableAction,
+	NumberCompareAction,
+	PauseAnimationAction,
+	PickAction,
+	RandomTransitionAction,
+	RemoveAction,
+	RemoveLightAction,
+	RemoveParticlesAction,
+	ResumeAnimationAction,
+	ResumeFSMAction,
+	RotateAction,
+	ScaleAction,
+	SetAnimationAction,
+	SetClearColorAction,
+	SetCssPropertyAction,
+	SetLightRangeAction,
+	SetPositionAction,
+	SetRenderTargetAction,
+	SetRotationAction,
+	SetVariableAction,
+	ShakeAction,
+	ShowAction,
+	SmokeAction,
+	SnowAction,
+	SoundFadeInAction,
+	SoundFadeOutAction,
+	SuspendFSMAction,
+	SwitchCameraAction,
+	TagAction,
+	TestAngleAction,
+	TestSpeedAction,
+	TransitionAction,
+	TransitionOnMessageAction,
+	TweenAction,
+	TweenLightColorAction,
+	TweenLookAtAction,
+	TweenMoveAction,
+	TweenRotationAction,
+	TweenScaleAction,
+	TweenTextureOffsetAction,
+	WASDAction,
+	WaitAction
+) {
+	goo.FSMComponentHandler = FSMComponentHandler;
+	goo.MachineHandler = MachineHandler;
+	goo.FSMComponent = FSMComponent;
+	goo.FSMSystem = FSMSystem;
+	goo.FSMUtil = FSMUtil;
+	goo.Machine = Machine;
+	goo.State = State;
+	goo.Action = Action;
+	goo.Actions = Actions;
+	goo.AddLightAction = AddLightAction;
+	goo.AddPositionAction = AddPositionAction;
+	goo.AddVariableAction = AddVariableAction;
+	goo.ArrowsAction = ArrowsAction;
+	goo.CollidesAction = CollidesAction;
+	goo.CompareDistanceAction = CompareDistanceAction;
+	goo.DollyZoomAction = DollyZoomAction;
+	goo.EmitAction = EmitAction;
+	goo.EvalAction = EvalAction;
+	goo.FireAction = FireAction;
+	goo.GetPositionAction = GetPositionAction;
+	goo.GuiButtonAction = GuiButtonAction;
+	goo.HideAction = HideAction;
+	goo.InBoxAction = InBoxAction;
+	goo.InFrustumAction = InFrustumAction;
+	goo.KeyDownAction = KeyDownAction;
+	goo.KeyPressedAction = KeyPressedAction;
+	goo.KeyUpAction = KeyUpAction;
+	goo.LogMessageAction = LogMessageAction;
+	goo.LookAtAction = LookAtAction;
+	goo.MouseDownAction = MouseDownAction;
+	goo.MouseMoveAction = MouseMoveAction;
+	goo.MouseUpAction = MouseUpAction;
+	goo.MoveAction = MoveAction;
+	goo.MultiplyVariableAction = MultiplyVariableAction;
+	goo.NumberCompareAction = NumberCompareAction;
+	goo.PauseAnimationAction = PauseAnimationAction;
+	goo.PickAction = PickAction;
+	goo.RandomTransitionAction = RandomTransitionAction;
+	goo.RemoveAction = RemoveAction;
+	goo.RemoveLightAction = RemoveLightAction;
+	goo.RemoveParticlesAction = RemoveParticlesAction;
+	goo.ResumeAnimationAction = ResumeAnimationAction;
+	goo.ResumeFSMAction = ResumeFSMAction;
+	goo.RotateAction = RotateAction;
+	goo.ScaleAction = ScaleAction;
+	goo.SetAnimationAction = SetAnimationAction;
+	goo.SetClearColorAction = SetClearColorAction;
+	goo.SetCssPropertyAction = SetCssPropertyAction;
+	goo.SetLightRangeAction = SetLightRangeAction;
+	goo.SetPositionAction = SetPositionAction;
+	goo.SetRenderTargetAction = SetRenderTargetAction;
+	goo.SetRotationAction = SetRotationAction;
+	goo.SetVariableAction = SetVariableAction;
+	goo.ShakeAction = ShakeAction;
+	goo.ShowAction = ShowAction;
+	goo.SmokeAction = SmokeAction;
+	goo.SnowAction = SnowAction;
+	goo.SoundFadeInAction = SoundFadeInAction;
+	goo.SoundFadeOutAction = SoundFadeOutAction;
+	goo.SuspendFSMAction = SuspendFSMAction;
+	goo.SwitchCameraAction = SwitchCameraAction;
+	goo.TagAction = TagAction;
+	goo.TestAngleAction = TestAngleAction;
+	goo.TestSpeedAction = TestSpeedAction;
+	goo.TransitionAction = TransitionAction;
+	goo.TransitionOnMessageAction = TransitionOnMessageAction;
+	goo.TweenAction = TweenAction;
+	goo.TweenLightColorAction = TweenLightColorAction;
+	goo.TweenLookAtAction = TweenLookAtAction;
+	goo.TweenMoveAction = TweenMoveAction;
+	goo.TweenRotationAction = TweenRotationAction;
+	goo.TweenScaleAction = TweenScaleAction;
+	goo.TweenTextureOffsetAction = TweenTextureOffsetAction;
+	goo.WASDAction = WASDAction;
+	goo.WaitAction = WaitAction;
 });
