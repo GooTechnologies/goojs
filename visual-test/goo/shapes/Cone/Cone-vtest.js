@@ -1,6 +1,4 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
@@ -19,8 +17,6 @@ require([
 	'goo/shapes/Cone',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
@@ -41,33 +37,24 @@ require([
 	) {
 	'use strict';
 
-	function addNormalsToWorld(goo, entity) {
-		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
-		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial, '');
-		normalsEntity.transformComponent.transform = entity.transformComponent.transform;
-		normalsEntity.addToWorld();
-	}
+	function coneDemo() {
+		var goo = V.initGoo();
 
-	function coneDemo(goo) {
 		var material = Material.createMaterial(ShaderLib.texturedLit, '');
 		var texture = new TextureCreator().loadTexture2D('../../resources/cone.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		// add normal cone
 		var normalConeMeshData = new Cone(8, 4, 8);
-		var normalConeEntity = goo.world.createEntity(normalConeMeshData, material, 'Pointy Cone');
-		normalConeEntity.transformComponent.transform.translation.setd(-4.5, 0, 0);
-		normalConeEntity.addToWorld();
-		addNormalsToWorld(goo, normalConeEntity);
+		var normalConeEntity = goo.world.createEntity(normalConeMeshData, material, 'Pointy Cone', [-4.5, 0, 0]).addToWorld();
+		V.showNormals(normalConeEntity);
 
 		// add flat cone
 		var flatConeMeshData = new Cone(64, 4, 0);
 		var flatConeEntity = goo.world.createEntity(flatConeMeshData, material, 'Flat Cone');
 		flatConeEntity.transformComponent.transform.translation.setd( 4.5, 0, 0);
 		flatConeEntity.addToWorld();
-		addNormalsToWorld(goo, flatConeEntity);
+		V.showNormals(flatConeEntity);
 
 		// add lights
 		var light = new PointLight();
@@ -76,17 +63,10 @@ require([
 		lightEntity.transformComponent.transform.translation.set(0, 10, 10);
 		lightEntity.addToWorld();
 
-		// camera
-		V.addOrbitCamera(goo, new Vector3(25, Math.PI / 2, 0));
+		V.addLights();
+
+		V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		coneDemo(goo);
-	}
-
-	init();
+	coneDemo();
 });

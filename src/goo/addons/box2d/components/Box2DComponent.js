@@ -7,6 +7,10 @@ function(
 ) {
 	'use strict';
 
+
+	/**
+	* @class Box2DComponent
+	*/
 	function Box2DComponent(settings) {
 		this.type = 'Box2DComponent';
 

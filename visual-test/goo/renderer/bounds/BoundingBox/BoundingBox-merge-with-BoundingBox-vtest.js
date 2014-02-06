@@ -46,7 +46,9 @@ require([
 		return meshData;
 	}
 
-	function boundingBoxDemo(goo) {
+	function boundingBoxDemo() {
+		var goo = V.initGoo();
+
 		var shape1MeshData = ShapeCreator.createSphere();
 		var shape2MeshData = buildCustomTriangle([0, 0, 4, 0, 3, 5, 0, 0, 6]);
 
@@ -58,8 +60,8 @@ require([
 		material2.wireframe = true;
 
 		// wrap shapeMeshData-s entities entity
-		var shape1Entity = goo.world.createEntity(shape1MeshData, material1).addToWorld();
-		var shape2Entity = goo.world.createEntity(shape2MeshData, material1).addToWorld();
+		goo.world.createEntity(shape1MeshData, material1).addToWorld();
+		goo.world.createEntity(shape2MeshData, material1).addToWorld();
 
 		// bounding box for shape 1
 		var boundingBox1 = new BoundingBox();
@@ -80,19 +82,11 @@ require([
 		var zCenter = mergedBoundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		boundingBoxDemo(goo);
-	}
-
-	init();
+	boundingBoxDemo();
 });

@@ -160,7 +160,9 @@ require([
 		lightsState.spotLightOn = false;
 	}
 
-	function lightPointerDemo(goo) {
+	function lightPointerDemo() {
+		var goo = V.initGoo();
+
 		// add spheres to cast light on
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
@@ -198,19 +200,8 @@ require([
 		});
 
 		// camera
-		V.addOrbitCamera(goo, 20);
+		V.addOrbitCamera();
 	}
 
-	function init() {
-		var goo = new GooRunner({
-			showStats: true,
-			toolMode: true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		lightPointerDemo(goo);
-	}
-
-	init();
+	lightPointerDemo();
 });

@@ -61,12 +61,10 @@ require([
 		lampEntity.addToWorld();
 	}
 
-	function flatwaterAndParticlesDemo(goo) {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+	function flatwaterAndParticlesDemo() {
+		var goo = V.initGoo();
 
-		V.addOrbitCamera(goo, new Vector3(60, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
 
 		addTexturedBox(goo, 0, 0, 0);
 
@@ -74,13 +72,5 @@ require([
 		addLamp(goo, -10, 5, 0);
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		flatwaterAndParticlesDemo(goo);
-	}
-
-	init();
+	flatwaterAndParticlesDemo();
 });

@@ -25,12 +25,7 @@ require([
 
 	var resourcePath = "../../resources";
 
-	var goo = new GooRunner();
-
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
-
-	// ---
+	var goo = V.initGoo();
 	var world = goo.world;
 
 	var simpleColored = Material.createMaterial(ShaderLib.simpleColored);
@@ -65,7 +60,7 @@ require([
 	torus.set(new Torus(32, 32, 0.1, 0.5));
 
 
-	V.addLights(goo);
+	V.addLights();
 
-	V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
+	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 });

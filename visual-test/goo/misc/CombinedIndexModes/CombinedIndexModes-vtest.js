@@ -73,7 +73,9 @@ require([
 		return entity;
 	}
 	//--------
-	function indexModesDemo(goo) {
+	function combinedIndexModesDemo() {
+		var goo = V.initGoo();
+
 		var modes = [
 			{ v: [0, 0, 0, 1, 0, 0,	1, 1, 0, 0, 2, 0], i: [], m: 'Points'},
 			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 0, 2, 0, 3], m: 'Lines'},
@@ -94,23 +96,11 @@ require([
 		}
 
 		// light
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(-1, -3, -5);
-		lightEntity.addToWorld();
+		V.addLights();
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(35, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(35, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		indexModesDemo(goo);
-	}
-
-	init();
+	combinedIndexModesDemo();
 });

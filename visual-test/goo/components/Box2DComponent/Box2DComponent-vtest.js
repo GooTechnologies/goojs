@@ -1,40 +1,18 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/entities/components/LightComponent',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/geometrypack/FilledPolygon',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	LightComponent,
 	Box2DSystem,
 	Box2DComponent,
 	MathUtils,
@@ -138,14 +116,6 @@ require([
 		entity.setComponent(box2DComponent);
 		entity.addToWorld();
 		return entity;
-	};
-
-	function addLight(goo) {
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.setd(40, 40, 40);
-		lightEntity.addToWorld();
 	}
 
 	function createPipe(pipeY) {
@@ -165,6 +135,8 @@ require([
 	}
 
 	function box2DDemo() {
+		gooRunner = V.initGoo();
+
 		// add box2D system to world
 		gooRunner.world.setSystem(new Box2DSystem());
 
@@ -192,10 +164,10 @@ require([
 		createPipe(pipeY);
 
 		// add light
-		addLight(gooRunner);
+		V.addLights();
 
 		// add camera
-		V.addOrbitCamera(gooRunner, new Vector3(20, Math.PI / 2, 0.3), new Vector3(0, 7.5, 0));
+		V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0.3), new Vector3(0, 7.5, 0));
 
 		// setup some interaction
 		setupKeys(pipeY);
@@ -225,13 +197,5 @@ require([
 		});
 	}
 
-	function init() {
-		gooRunner = new GooRunner();
-		gooRunner.renderer.domElement.id = 'goo';
-		document.body.appendChild(gooRunner.renderer.domElement);
-
-		box2DDemo();
-	}
-
-	init();
+	box2DDemo();
 });
