@@ -152,14 +152,10 @@ define([
 			var textureRef;
 			for (var type in config.texturesMapping) {
 				textureRef = config.texturesMapping[type];
-				if(!textureRef) {
+				if(!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
 					material.removeTexture(type);
-				} else if (textureRef.enabled === undefined) {
-					promises.push(addTexture(type, textureRef, options));
-				} else if (textureRef.enabled) {
-					promises.push(addTexture(type, textureRef.textureRef, options));
 				} else {
-					material.removeTexture(type);
+					promises.push(addTexture(type, textureRef.textureRef, options));
 				}
 			}
 			for (var type in material._textureMaps) {
