@@ -19,14 +19,25 @@ module.exports = function(grunt) {
 
 	// Returns the code to add at the start and end of the minified file
 	function getWrapper() {
+		var global = grunt.option('global');
 		var wrapperHead = '';
 		var wrapperTail = '';
 
 		wrapperHead +=
 			'/* Goo Engine ' + engineVersion + '\n' +
 			' * Copyright 2014 Goo Technologies AB\n' +
-			' */\n' +
-			'(function(window) {';
+			' */\n';
+
+		if (global) {
+			var customRequire = fs.readFileSync('tools/customRequire.js');
+			wrapperHead += customRequire;
+		}
+
+		wrapperHead += '(function(window) {';
+
+		if (global) {
+			wrapperHead += 'window.goo = {};'
+		}
 
 		if (bundleRequire) {
 			wrapperTail += 'window.requirejs=requirejs;';
@@ -128,6 +139,13 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', ['minify']);
 	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);
 
+
+	//! AT: no better place to put this
+	function extractFilename(path) {
+		var index = path.lastIndexOf('/');
+		return index === -1 ? path : path.substr(index + 1);
+	}
+
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function() {
 		var sourceFiles = glob.sync('!(*pack)/**/*.js', {cwd: 'src/goo/', nonegate: true })
@@ -135,9 +153,30 @@ module.exports = function(grunt) {
 			return 'goo/' + f.replace(/\.js/, '');
 		});
 
-		fs.writeFileSync('src/goo.js', 'define([\n' +
-			_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
-		'\n], function() {});\n');
+		var global = grunt.option('global');
+
+		if (global) {
+			var lines = [];
+			lines.push('define([');
+			lines.push(_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n'));
+			lines.push('], function (');
+
+			var fileNames = allModules.map(extractFilename);
+
+			lines.push('\t' + fileNames.join(',\n\t'));
+			lines.push(') {');
+			fileNames.forEach(function (fileName) {
+				lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
+			});
+
+			lines.push('});require(["goo"], function() {})')
+
+			fs.writeFileSync('src/goo.js', lines.join('\n'));
+		} else {
+			fs.writeFileSync('src/goo.js', 'define([\n' +
+				_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
+				'\n], function() {});\n');
+		}
 	});
 
 	/*

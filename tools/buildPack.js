@@ -43,6 +43,16 @@ function getModulesAndDependencies(tree) {
 }
 
 /**
+ * Extracts the name of a file from a complete path
+ * @param path
+ * @returns {string}
+ */
+function extractFilename(path) {
+	var index = path.lastIndexOf('/');
+	return index === -1 ? path : path.substr(index + 1);
+}
+
+/**
  * Builds an empty module that requires every other module in the pack
  * @param moduleList
  * @param packName
@@ -59,7 +69,23 @@ function buildPack(moduleList, packName) {
 		}
 	});
 
-	lines.push('], function () {');
+	if (global) {
+		lines.push('], function (');
+
+		var fileNames = moduleList.filter(function (moduleName) { return packName !== moduleName; })
+			.map(extractFilename);
+
+		lines.push('\t' + fileNames.join(',\n\t'));
+
+		lines.push(') {');
+
+		fileNames.forEach(function (fileName) {
+			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
+		});
+	} else {
+		lines.push('], function () {');
+	}
+
 	lines.push('});');
 
 	var str = lines.join('\n');
@@ -118,12 +144,20 @@ function getTailWrapping(packName) {
 
 //exports.pack = function(packName) {
 	// get the pack name
-	console.log('get tha pack name'.grey);
+	console.log('get the pack name'.grey);
 	var packName = process.argv[2];
+	if (!packName) {
+		console.error('Expecting pack name as first parameter'.red);
+		process.exit(1);
+	}
+
+	// get global
+	console.log('get global'.grey);
+	var global = process.argv[3] === 'global';
 
 	// get the version
-	console.log('get tha version'.grey);
-	var version = process.argv[3];
+	console.log('get the version'.grey);
+	var version = process.argv[4] || '';
 
 	// out base dir
 	console.log('out base dir'.grey);
