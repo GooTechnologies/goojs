@@ -1,9 +1,21 @@
 define([
 	'goo/renderer/MeshData'
-], function(
+],
+/** @lends */
+function(
 	MeshData
 ) {
 	'use strict';
+
+	/**
+	 * @class MeshData for a Grid.
+	 * @param {number} [xSegments=10] Number of columns.
+	 * @param {number} [ySegments=10] Number of rows.
+	 * @param {number} [width=1] Total width of the Grid.
+	 * @param {number} [height=1] Total height of the Grid.
+	 * @extends MeshData
+	 * @example var meshData = new Grid( 10, 10, 10, 10);
+	 */
 	function Grid(xSegments, ySegments, width, height) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
