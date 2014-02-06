@@ -3,7 +3,7 @@ define([
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,

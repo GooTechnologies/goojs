@@ -9,7 +9,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,

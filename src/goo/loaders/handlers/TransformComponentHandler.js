@@ -6,7 +6,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,

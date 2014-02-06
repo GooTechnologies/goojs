@@ -7,7 +7,7 @@ define([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,

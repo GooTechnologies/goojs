@@ -3,7 +3,9 @@ define([
 	'goo/entities/components/ScriptComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	ScriptComponent,
 	RSVP,

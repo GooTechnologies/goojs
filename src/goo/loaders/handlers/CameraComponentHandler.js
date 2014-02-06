@@ -5,7 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,

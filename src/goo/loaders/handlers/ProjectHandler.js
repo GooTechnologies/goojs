@@ -19,7 +19,7 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/Snow'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,

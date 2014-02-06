@@ -6,7 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,

@@ -1,7 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/rsvp'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,

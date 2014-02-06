@@ -5,7 +5,7 @@ define([
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
