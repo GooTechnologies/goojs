@@ -180,7 +180,7 @@ define([
 			} else {
 				// Blank
 				console.warn('Texture ' + ref + ' has no imageRef');
-				texture.setImage(TextureHandler.WHITE, 1, 1);
+				// texture.setImage(TextureHandler.WHITE, 1, 1);
 				ret = texture;
 
 			}
