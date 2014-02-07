@@ -34,7 +34,7 @@ define([
 			globalAmbient: [0,0,0,1],
 			fog: {
 				enabled: false,
-				color: [1,1,1,1],
+				color: [1,1,1],
 				near: 10,
 				far: 1000
 			}
@@ -70,7 +70,7 @@ define([
 			// Fog and ambient
 			ShaderBuilder.GLOBAL_AMBIENT = object.globalAmbient;
 			ShaderBuilder.USE_FOG = object.fog.enabled;
-			ShaderBuilder.FOG_COLOR = object.fog.color;
+			ShaderBuilder.FOG_COLOR = object.fog.color.slice(0,3);
 			ShaderBuilder.FOG_SETTINGS = [object.fog.near, config.fog.far];
 
 

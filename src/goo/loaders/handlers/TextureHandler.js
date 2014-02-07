@@ -179,8 +179,8 @@ define([
 				}
 			} else {
 				// Blank
-				console.error('Texture ' + ref + ' has no imageRef');
-				//texture.setImage(TextureHandler.WHITE, 1, 1);
+				console.warn('Texture ' + ref + ' has no imageRef');
+				texture.setImage(TextureHandler.WHITE, 1, 1);
 				ret = texture;
 
 			}
