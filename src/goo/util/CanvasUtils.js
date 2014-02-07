@@ -4,6 +4,9 @@ define([],
 
 		"use strict";
 
+		/**
+		* @class
+		*/
 		function CanvasUtils() {
 
 		}

@@ -1,4 +1,7 @@
-define([], function() {
+define([],
+/** @lends */
+function() {
+
 	"use strict";
 
 	var ArrayUtil = {};
@@ -8,14 +11,14 @@ define([], function() {
 	 */
 
 
-	/** 
+	/**
 	 * Create a typed array view on an ArrayBuffer, using the supplied pointer. Notice that this
-	 * does not copy any elements, if you make changes to the returned array, the original 
-	 * ArrayBuffer will be modified. 
-	 * 
+	 * does not copy any elements, if you make changes to the returned array, the original
+	 * ArrayBuffer will be modified.
+	 *
 	 * @param {ArrayBuffer} arrayBuffer
 	 * @param {Array} pointer Array [start, length, format] where start is the start byte offset
-	 * in the buffer, length is the number of values of the given format, and format is a string 
+	 * in the buffer, length is the number of values of the given format, and format is a string
 	 * denoting the data format:
 	 * 'float32' creates a Float32Array
 	 * 'uint32'

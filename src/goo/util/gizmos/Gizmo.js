@@ -9,7 +9,9 @@ define([
 	'goo/math/Plane',
 	'goo/math/Ray',
 	'goo/math/Vector3'
-], function(
+],
+/** @lends */
+function(
 	ShaderBuilder,
 	MeshData,
 	Shader,

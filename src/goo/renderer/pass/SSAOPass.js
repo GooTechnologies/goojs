@@ -10,6 +10,7 @@ define([
 	'goo/renderer/pass/BlurPass',
 	'goo/renderer/shaders/ShaderLib'
 ],
+/** @lends */
 function (
 	Material,
 	RenderTarget,

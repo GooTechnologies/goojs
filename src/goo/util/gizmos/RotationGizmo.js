@@ -7,7 +7,9 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Ray'
-], function(
+],
+/** @lends */
+function(
 	Gizmo,
 	Sphere,
 	Torus,

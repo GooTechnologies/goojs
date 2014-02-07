@@ -6,7 +6,9 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Transform',
 	'goo/renderer/Renderer'
-], function(
+], 
+/** @lends */
+function(
 	Gizmo,
 	MeshData,
 	MeshBuilder,

@@ -1,5 +1,5 @@
 // adapted from https://github.com/rauschma/enums
-define(function () {
+define(/** @lends */function () {
 	"use strict";
 
 	function copyOwnFrom(target, source) {

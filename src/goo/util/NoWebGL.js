@@ -1,7 +1,7 @@
 define([
 	'goo/util/Logo'
 ],
-/** lends */
+/** @lends */
 function(Logo) {
 	'use strict';
 

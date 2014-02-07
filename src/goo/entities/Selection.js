@@ -1,4 +1,6 @@
-define([], function () {
+define([],
+	/** @lends */
+	function () {
 	'use strict';
 
 	/**

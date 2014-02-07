@@ -1,9 +1,16 @@
 define([
-	'goo/renderer/TextureCreator', 'goo/renderer/Material', 'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/TextureCreator',
+	'goo/renderer/Material',
+	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/shaders/ShaderLib'],
-	function (
-	TextureCreator, Material, FullscreenUtil,
-	ShaderLib) {
+	/** @lends */
+function (
+	TextureCreator,
+	Material,
+	FullscreenUtil,
+	ShaderLib
+) {
+
 	"use strict";
 
 	/**

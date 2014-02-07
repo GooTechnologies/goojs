@@ -7,7 +7,9 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-], function(
+], 
+/** @lends */
+function(
 	Gizmo,
 	MeshData,
 	MeshBuilder,
