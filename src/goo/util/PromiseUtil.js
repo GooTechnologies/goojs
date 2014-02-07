@@ -2,12 +2,9 @@ define([
 	'goo/util/rsvp'
 ], function(
 	RSVP
-) /** @lends */ {
+) /* @lends */ {
 	"use strict";
 
-	/**
-	* @class
-	*/
 	var PromiseUtil = {};
 
 	/**

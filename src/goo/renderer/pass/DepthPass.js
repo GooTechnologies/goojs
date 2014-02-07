@@ -2,9 +2,9 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/MeshData', 'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderFragment', 
-	'goo/renderer/pass/RenderPass', 
-	'goo/renderer/pass/FullscreenPass', 
+	'goo/renderer/shaders/ShaderFragment',
+	'goo/renderer/pass/RenderPass',
+	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BlurPass'
 ],
 
@@ -12,11 +12,11 @@ define([
 function (
 	Material,
 	RenderTarget,
-	MeshData, 
-	Shader, 
+	MeshData,
+	Shader,
 	ShaderFragment,
 	RenderPass,
-	FullscreenPass, 
+	FullscreenPass,
 	BlurPass
 ) {
 
