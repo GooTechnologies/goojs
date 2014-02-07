@@ -266,7 +266,7 @@ function(
 			fogColor: function() {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			shadowDarkness: 0.5
+			shadowDarkness: 0.0
 		},
 		builder: function(shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -316,6 +316,7 @@ function(
 				'uniform sampler2D groundMap2;',
 				// 'uniform sampler2D groundMap3;',
 				'uniform sampler2D groundMap4;',
+
 				'uniform sampler2D groundMapN1;',
 				'uniform sampler2D groundMapN2;',
 				// 'uniform sampler2D groundMapN3;',
@@ -359,6 +360,7 @@ function(
 
 				'vec3 worldNormal = vec3(landNormal.x + tangentNormal.x, landNormal.y, landNormal.z + tangentNormal.y);',
 				'vec3 N = normalize(worldNormal);',
+				'N = normalize(landNormal);',
 
 				'vec4 g1 = texture2D(groundMap1, coord);',
 				'vec4 g2 = texture2D(groundMap2, coord);',
