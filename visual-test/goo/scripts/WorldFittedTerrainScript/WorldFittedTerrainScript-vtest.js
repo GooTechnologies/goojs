@@ -7,7 +7,6 @@ require([
     'goo/shapes/ShapeCreator',
     'goo/entities/components/CameraComponent',
     'goo/scripts/OrbitCamControlScript',
-    'goo/entities/EntityUtils',
     'goo/entities/components/ScriptComponent',
     'goo/renderer/MeshData',
     'goo/entities/components/MeshRendererComponent',
@@ -34,7 +33,6 @@ require([
     ShapeCreator,
     CameraComponent,
     OrbitCamControlScript,
-    EntityUtils,
     ScriptComponent,
     MeshData,
     MeshRendererComponent,
@@ -72,7 +70,7 @@ require([
                 Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
                 Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
             ];
-            var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+            var sphereEntity = goo.world.createEntity(meshData, material);
             sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
 			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
 
@@ -120,7 +118,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+			var sphereEntity = goo.world.createEntity(meshData, material);
 
 			var px = dims.maxX*0.5+dims.minX*0.5;
 			var pz = dims.minZ+(i/nSpheres*(dims.maxZ-dims.minZ));
@@ -162,7 +160,7 @@ require([
         material.materialState.emissive = [0, 0, 0, 1];
         material.materialState.shininess = 0.1;
 
-        var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+        var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
         surfaceEntity.addToWorld();
@@ -170,9 +168,9 @@ require([
 
     function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
         var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-        var material = Material.createMaterial(ShaderLib.simpleLit, '');
+        var material = Material.createMaterial(ShaderLib.simpleLit);
         material.wireframe = true;
-        var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
+        var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
         surfaceEntity.addToWorld();

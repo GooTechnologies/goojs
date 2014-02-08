@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -28,7 +27,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -162,7 +160,9 @@ require([
 		lightsState.spotLightOn = false;
 	}
 
-	function lightPointerDemo(goo) {
+	function lightPointerDemo() {
+		var goo = V.initGoo();
+
 		// add spheres to cast light on
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
@@ -171,9 +171,7 @@ require([
 		var nSpheres = 15;
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
+				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]);
 				sphereEntity.addToWorld();
 			}
 		}
@@ -202,19 +200,8 @@ require([
 		});
 
 		// camera
-		V.addOrbitCamera(goo, 20);
+		V.addOrbitCamera();
 	}
 
-	function init() {
-		var goo = new GooRunner({
-			showStats: true,
-			toolMode: true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		lightPointerDemo(goo);
-	}
-
-	init();
+	lightPointerDemo();
 });

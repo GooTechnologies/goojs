@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
@@ -29,7 +28,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	Shader,
@@ -182,19 +180,14 @@ require([
 		var nSpheres = 5;
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
+				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]);
 				sphereEntity.meshRendererComponent.castShadows = true;
 				sphereEntity.addToWorld();
 			}
 		}
 
 		var boxMeshData = ShapeCreator.createBox(30, 30, 0.5);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.transformComponent.transform.translation.set(0, 0, -6);
-		boxEntity.meshRendererComponent.materials.push(sphereMaterial);
-		boxEntity.addToWorld();
+		var boxEntity = goo.world.createEntity(boxMeshData, sphereMaterial, [0, 0, -6]).addToWorld();
 
 		addPointLight(goo);
 		addDirectionalLight(goo);

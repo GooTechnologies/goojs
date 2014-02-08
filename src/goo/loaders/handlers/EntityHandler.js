@@ -6,7 +6,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
-], /* @lends */ function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,

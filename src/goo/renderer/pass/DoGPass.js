@@ -5,6 +5,7 @@ define([
 		'goo/renderer/Util',
 		'goo/renderer/shaders/ShaderLib'
 	],
+	/** @lends */
 	function(
 	Material,
 		FullscreenUtil,
@@ -14,15 +15,16 @@ define([
 	) {
 	"use strict";
 
-	/*
-	*	Difference of Gaussian Filter pass.
-	*	Usable for edge detection.
+	/**
+	* @class
+	* Difference of Gaussian Filter pass.
+	* Usable for edge detection.
 	*
-	*	A lower sigma will create thinner edgelines, tune to get the sweetspot.
-	*	Maximum sigma is 2.5.
+	* A lower sigma will create thinner edgelines, tune to get the sweetspot.
+	* Maximum sigma is 2.5.
 	*
-	*	http://en.wikipedia.org/wiki/Difference_of_Gaussians
-	*	http://www.tara.tcd.ie/bitstream/2262/12840/1/eg07.pdf , Adaptive Abstraction of 3D Scenes in Real-Time by Redmond and Dingliana, 2007
+	* http://en.wikipedia.org/wiki/Difference_of_Gaussians
+	* http://www.tara.tcd.ie/bitstream/2262/12840/1/eg07.pdf , Adaptive Abstraction of 3D Scenes in Real-Time by Redmond and Dingliana, 2007
 	*/
 	function DoGPass(settings) {
 		settings = settings || {};

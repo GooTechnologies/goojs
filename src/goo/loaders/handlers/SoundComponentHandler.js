@@ -2,7 +2,9 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/util/rsvp'
-], function(
+], 
+/** @lends */
+function(
 	ComponentHandler,
 	HowlerComponent,
 	RSVP

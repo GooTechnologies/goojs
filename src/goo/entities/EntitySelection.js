@@ -1,8 +1,10 @@
-define(['goo/entities/Selection'], function (Selection) {
+define(['goo/entities/Selection'],
+	/** @lends */
+	function (Selection) {
 	'use strict';
 
 	/**
-	 * A specialised selection object for entities
+	 * @class A specialised selection object for entities
 	 * @extends Selection
 	 * @constructor
 	 */

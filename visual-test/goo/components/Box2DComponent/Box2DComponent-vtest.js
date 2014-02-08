@@ -1,42 +1,18 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/entities/components/LightComponent',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/geometrypack/FilledPolygon',
 	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	EntityUtils,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	LightComponent,
 	Box2DSystem,
 	Box2DComponent,
 	MathUtils,
@@ -68,7 +44,7 @@ require([
 		var worldHeight = 0.1;
 		var meshData = ShapeCreator.createBox(width, worldHeight, worldHeight * 5);
 		var material = getRandomColoredMaterial();
-		var entity = EntityUtils.createTypicalEntity(gooRunner.world, meshData, material, [x, y, 0]);
+		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 		entity.transformComponent.transform.rotation.rotateZ(angle);
 
 		var box2DComponent = new Box2DComponent({
@@ -87,7 +63,7 @@ require([
 
 		var meshData = ShapeCreator.createCylinder(32, radius);
 		var material = getRandomColoredMaterial();
-		var entity = EntityUtils.createTypicalEntity(gooRunner.world, meshData, material, [x, y, 0]);
+		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var box2DComponent = new Box2DComponent({
 			radius: radius,
@@ -104,7 +80,7 @@ require([
 
 		var meshData = ShapeCreator.createBox(width, height, width);
 		var material = getRandomColoredMaterial();
-		var entity = EntityUtils.createTypicalEntity(gooRunner.world, meshData, material, [x, y, 0]);
+		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var box2DComponent = new Box2DComponent({
 			width: width,
@@ -125,7 +101,7 @@ require([
 			-0.3, 0.5, 0];
 		var meshData = new FilledPolygon(verts);
 		var material = getRandomColoredMaterial();
-		var entity = EntityUtils.createTypicalEntity(gooRunner.world, meshData, material, [x, y, 0]);
+		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var verts = [
 			0, 0,
@@ -140,28 +116,18 @@ require([
 		entity.setComponent(box2DComponent);
 		entity.addToWorld();
 		return entity;
-	};
-
-	function addLight(goo) {
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.setd(40, 40, 40);
-		lightEntity.addToWorld();
 	}
 
 	function createPipe(pipeY) {
 		var pipeScale = 200;
 		var meshData = ShapeCreator.createCylinder(32, 1);
 		var material = getRandomColoredMaterial();
-		var moveAroundScript = {
-			run: function(entity/*, tpf*/) {
-				var oldY = entity.transformComponent.transform.translation.y;
-				entity.transformComponent.transform.translation.setd(Math.sin(gooRunner.world.time) * sceneWidth, oldY, 0);
-				entity.transformComponent.setUpdated();
-			}
+		var moveAroundScript = function(entity/*, tpf*/) {
+			var oldY = entity.transformComponent.transform.translation.y;
+			entity.transformComponent.transform.translation.setd(Math.sin(gooRunner.world.time) * sceneWidth, oldY, 0);
+			entity.transformComponent.setUpdated();
 		};
-		pipeEntity = EntityUtils.createTypicalEntity(gooRunner.world, meshData, material, [0, pipeY + pipeScale / 2, 0], moveAroundScript);
+		pipeEntity = gooRunner.world.createEntity(meshData, material, [0, pipeY + pipeScale / 2, 0], moveAroundScript);
 		pipeEntity.transformComponent.transform.rotation.rotateX(Math.PI / 2);
 		pipeEntity.transformComponent.transform.scale.setd(1, 1, pipeScale);
 		pipeEntity.addToWorld();
@@ -169,6 +135,8 @@ require([
 	}
 
 	function box2DDemo() {
+		gooRunner = V.initGoo();
+
 		// add box2D system to world
 		gooRunner.world.setSystem(new Box2DSystem());
 
@@ -196,10 +164,10 @@ require([
 		createPipe(pipeY);
 
 		// add light
-		addLight(gooRunner);
+		V.addLights();
 
 		// add camera
-		V.addOrbitCamera(gooRunner, new Vector3(20, Math.PI / 2, 0.3), new Vector3(0, 7.5, 0));
+		V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0.3), new Vector3(0, 7.5, 0));
 
 		// setup some interaction
 		setupKeys(pipeY);
@@ -229,13 +197,5 @@ require([
 		});
 	}
 
-	function init() {
-		gooRunner = new GooRunner();
-		gooRunner.renderer.domElement.id = 'goo';
-		document.body.appendChild(gooRunner.renderer.domElement);
-
-		box2DDemo();
-	}
-
-	init();
+	box2DDemo();
 });

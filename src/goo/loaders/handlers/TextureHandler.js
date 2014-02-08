@@ -9,7 +9,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	TextureCreator,
 	Texture,
@@ -32,6 +34,9 @@ define([
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
 	 */
+	/**
+	* @class
+	*/
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

@@ -1,13 +1,13 @@
 require([
 	'goo/loaders/DynamicLoader',
+	'goo/entities/EntityUtils',
 	'js/createWorld',
-	'js/drawSkeleton',
-	'goo/entities/EntityUtils'
+	'js/drawSkeleton'
 ], function(
 	DynamicLoader,
+	EntityUtils,
 	createWorld,
-	drawSkeleton,
-	EntityUtils
+	drawSkeleton
 ) {
 	'use strict';
 

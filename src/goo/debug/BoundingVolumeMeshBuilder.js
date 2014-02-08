@@ -15,6 +15,9 @@ function (
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function BoundingVolumeMeshBuilder() {
 	}
 

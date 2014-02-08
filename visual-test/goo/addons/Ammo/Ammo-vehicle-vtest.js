@@ -1,6 +1,5 @@
 require([
 	'goo/entities/GooRunner',
-	'goo/entities/EntityUtils',
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
@@ -15,7 +14,6 @@ require([
 	'VehicleHelper'
 ], function (
 	GooRunner,
-	EntityUtils,
 	Material,
 	Camera,
 	ShapeCreator,
@@ -73,17 +71,17 @@ require([
 		document.body.addEventListener('keyup', keyHandler, false);
 		document.body.addEventListener('keydown', keyHandler, false);
 
-		EntityUtils.createTypicalEntity(goo.world, new PointLight(), [0, 100, -10]).addToWorld();
+		goo.world.createEntity(new PointLight(), [0, 100, -10]).addToWorld();
 
-		var camScript=new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(40, 0, Math.PI/4)
+		var camScript = new OrbitCamControlScript({
+			domElement: goo.renderer.domElement,
+			spherical: new Vector3(40, 0, Math.PI/4)
 		});
-		EntityUtils.createTypicalEntity(goo.world, new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
+		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
 
 		/* shift center of gravity, felt kinda useless to me
 			var box = createEntity(goo, ShapeCreator.createBox(2, 2, 4), undefined, [0, 0.6, 0]);
-			var compound = EntityUtils.createTypicalEntity(goo.world, [0,7,0]);
+			var compound = goo.world.createEntity([0,7,0]);
 			compound.transformComponent.attachChild(box.transformComponent);
 			compound.setComponent(new AmmoComponent({mass:150}));
 			compound.addToWorld();
@@ -113,8 +111,8 @@ require([
 	var material = Material.createMaterial(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 	function createEntity(goo, meshData, ammoSettings, pos) {
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material, pos);
-		if( ammoSettings !== undefined) {
+		var entity = goo.world.createEntity(meshData, material, pos);
+		if (ammoSettings !== undefined) {
 			entity.setComponent(new AmmoComponent(ammoSettings));
 		}
 		entity.addToWorld();

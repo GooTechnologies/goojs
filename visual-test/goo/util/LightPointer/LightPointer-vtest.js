@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -26,7 +25,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -154,12 +152,9 @@ require([
 		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
 
 		var nSpheres = 15;
-		for(var i = 0; i < nSpheres; i++) {
-			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
-				sphereEntity.meshRendererComponent.materials.push(sphereMaterial);
-				sphereEntity.addToWorld();
+		for (var i = 0; i < nSpheres; i++) {
+			for (var j = 0; j < nSpheres; j++) {
+				goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]).addToWorld();
 			}
 		}
 
@@ -168,17 +163,17 @@ require([
 		addSpotLight(goo);
 
 		document.body.addEventListener('keypress', function(e) {
-			switch(e.keyCode) {
+			switch (e.keyCode) {
 				case 49:
-					if(lightsState.spotLightOn) { removeSpotLight(goo);	}
+					if (lightsState.spotLightOn) { removeSpotLight(goo); }
 					else { addSpotLight(goo); }
 					break;
 				case 50:
-					if(lightsState.pointLightOn) { removePointLight(goo); }
+					if (lightsState.pointLightOn) { removePointLight(goo); }
 					else { addPointLight(goo); }
 					break;
 				case 51:
-					if(lightsState.directionalLightOn) { removeDirectionalLight(goo); }
+					if (lightsState.directionalLightOn) { removeDirectionalLight(goo); }
 					else { addDirectionalLight(goo); }
 					break;
 				default:

@@ -7,7 +7,9 @@ define([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	OrbitCamControlScript,
@@ -19,6 +21,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

@@ -1,8 +1,10 @@
-/** 
- * Everything we need from underscore.js. Convenience stuff, copied straight off. 
+/**
+ * Everything we need from underscore.js. Convenience stuff, copied straight off.
  * For documentation, see http://underscorejs.org. Gotta love open source.
  */
-define([], function() {
+define([],
+	/** @lends */
+	function() {
 	"use strict";
 
 	var _ = {};

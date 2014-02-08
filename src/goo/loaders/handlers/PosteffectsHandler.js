@@ -10,7 +10,9 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
 	'goo/renderer/pass/PassLib'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	ArrayUtil,
 	RSVP,

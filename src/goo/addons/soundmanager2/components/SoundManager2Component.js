@@ -7,6 +7,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SoundManager2Component(settings) {
 		this.type = 'SoundManager2Component';
 

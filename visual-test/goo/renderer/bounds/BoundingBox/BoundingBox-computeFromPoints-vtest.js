@@ -1,39 +1,25 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
 	'../../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	EntityUtils,
-	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
 	BoundingBox,
 	Vector3,
 	V
 	) {
 	'use strict';
 
-	function boundingBoxDemo(goo) {
+	function boundingBoxDemo() {
+		var goo = V.initGoo();
+
 		var shapeMeshData = ShapeCreator.createSphere();
 
 		// shape and boundingBox material
@@ -44,9 +30,7 @@ require([
 		material2.wireframe = true;
 
 		// wrap shapeMeshData in an entity
-		var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
-		shapeEntity.meshRendererComponent.materials.push(material1);
-		shapeEntity.addToWorld();
+		goo.world.createEntity(shapeMeshData, material1).addToWorld();
 
 		// bounding box
 		var boundingBox = new BoundingBox();
@@ -59,22 +43,11 @@ require([
 		var zCenter = boundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.meshRendererComponent.materials.push(material2);
-		boxEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		boxEntity.addToWorld();
+		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		boundingBoxDemo(goo);
-	}
-
-	init();
+	boundingBoxDemo();
 });

@@ -1,14 +1,7 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
@@ -17,16 +10,9 @@ require([
 	'goo/math/Transform',
 	'../../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	EntityUtils,
-	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
 	BoundingBox,
@@ -48,10 +34,7 @@ require([
 		var zCenter = boundingSphere.center.data[2];
 
 		var sphereMeshData = ShapeCreator.createSphere(16, 16, radius);
-		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-		sphereEntity.meshRendererComponent.materials.push(material2);
-		sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		sphereEntity.addToWorld();
+		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function addBoundingBoxToWorld(goo, boundingBox) {
@@ -67,13 +50,12 @@ require([
 		var zCenter = boundingBox.center.data[2];
 
 		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
-		var boxEntity = EntityUtils.createTypicalEntity(goo.world, boxMeshData);
-		boxEntity.meshRendererComponent.materials.push(material2);
-		boxEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		boxEntity.addToWorld();
+		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
-	function boundingBoxDemo(goo) {
+	function boundingBoxDemo() {
+		var goo = V.initGoo();
+
 		var transform = new Transform();
 
 		var shape1MeshData = ShapeCreator.createSphere();
@@ -90,12 +72,8 @@ require([
 		material1.uniforms.color = [0.3, 0.6, 0.9];
 
 		// wrap shapeMeshData-s entities entity
-		var shape1Entity = EntityUtils.createTypicalEntity(goo.world, shape1MeshData);
-		shape1Entity.meshRendererComponent.materials.push(material1);
-		shape1Entity.addToWorld();
-		var shape2Entity = EntityUtils.createTypicalEntity(goo.world, shape2MeshData);
-		shape2Entity.meshRendererComponent.materials.push(material1);
-		shape2Entity.addToWorld();
+		goo.world.createEntity(shape1MeshData, material1).addToWorld();
+		goo.world.createEntity(shape2MeshData, material1).addToWorld();
 
 		// bounding box for shape 1
 		var boundingBox1 = new BoundingBox();
@@ -115,16 +93,8 @@ require([
 		addBoundingBoxToWorld(goo, mergedBoundingBox);
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		boundingBoxDemo(goo);
-	}
-
-	init();
+	boundingBoxDemo();
 });

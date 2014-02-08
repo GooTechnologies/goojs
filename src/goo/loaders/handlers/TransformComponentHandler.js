@@ -7,7 +7,9 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil',
 	'goo/util/rsvp'
-], function(
+], 
+/** @lends */
+function(
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,

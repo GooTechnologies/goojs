@@ -9,7 +9,9 @@ define([
 	'goo/renderer/pass/BlurPass',
 	'goo/renderer/Util',
 	'goo/util/Skybox'
-], function (
+],
+/** @lends */
+function (
 	Material,
 	RenderTarget,
 	MeshData,
@@ -23,6 +25,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function DOFPass(renderList, outShader) {
 		this.depthPass = new RenderPass(renderList, function(item) {
 			return !(item instanceof Skybox);

@@ -21,12 +21,7 @@ require([
 ) {
 	'use strict';
 
-	var goo = new GooRunner();
-
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
-
-	// ---
+	var goo = V.initGoo();
 	var world = goo.world;
 
 	// get some meshes
@@ -57,7 +52,7 @@ require([
 	torus.set(material);
 
 
-	V.addLights(goo);
+	V.addLights();
 
-	V.addOrbitCamera(goo, new Vector3(15, Math.PI / 2, 0.3));
+	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 });

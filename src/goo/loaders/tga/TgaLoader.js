@@ -6,6 +6,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function TgaLoader() {
 		this.header = null;
 		this.offset = 0;

@@ -14,7 +14,6 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/scripts/FlyControlScript',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
 
 	'goo/renderer/OcclusionPartitioner',
@@ -30,7 +29,6 @@ require([
 	ScriptComponent,
 	FlyControlScript,
 	ShapeCreator,
-	EntityUtils,
 	Vector3,
 
 	OcclusionPartitioner,

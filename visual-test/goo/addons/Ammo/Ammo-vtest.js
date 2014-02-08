@@ -1,6 +1,5 @@
 require([
 	'goo/entities/GooRunner',
-	'goo/entities/EntityUtils',
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
@@ -17,7 +16,6 @@ require([
 	'goo/entities/components/LightComponent'
 ], function (
 	GooRunner,
-	EntityUtils,
 	Material,
 	Camera,
 	CameraComponent,
@@ -94,7 +92,7 @@ require([
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material, pos);
+		var entity = goo.world.createEntity(meshData, material, pos);
 		entity.setComponent(new AmmoComponent(ammoSettings));
 		entity.addToWorld();
 		return entity;

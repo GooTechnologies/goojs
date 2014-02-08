@@ -1,8 +1,11 @@
-define([], function () {
+define([],
+	/** @lends */
+	function () {
 	'use strict';
 
 	/**
 	 * Generic selection class
+	 * @class
 	 * @constructor
 	 */
 	function Selection() {

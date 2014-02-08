@@ -3,6 +3,7 @@ define([
 	'goo/entities/components/AnimationComponent',
 	'goo/util/rsvp'
 ],
+/** @lends */
 function(
 	ComponentHandler,
 	AnimationComponent,

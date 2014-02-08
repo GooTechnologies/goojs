@@ -1,5 +1,5 @@
 define(
-	/* @lends */
+	/** @lends */
 	function () {
 	"use strict";
 

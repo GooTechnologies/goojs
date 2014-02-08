@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -24,7 +23,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -70,13 +68,12 @@ require([
 
 	function createBoxEntity(goo, anisotropy) {
 		var meshData = ShapeCreator.createBox(100, 1, 100, 200, 200);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var entity = goo.world.createEntity(meshData, material);
 		TextureCreator.clearCache();
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/font.png');
 		texture.anisotropy = anisotropy;
 		material.setTexture('DIFFUSE_MAP', texture);
-		entity.meshRendererComponent.materials.push(material);
 
 		return entity;
 	}

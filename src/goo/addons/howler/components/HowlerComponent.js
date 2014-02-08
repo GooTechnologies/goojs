@@ -7,6 +7,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function HowlerComponent() {
 		this.type = 'HowlerComponent';
 

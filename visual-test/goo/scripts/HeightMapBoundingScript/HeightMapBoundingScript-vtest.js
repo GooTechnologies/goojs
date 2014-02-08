@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -31,7 +30,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -62,7 +60,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+			var sphereEntity = goo.world.createEntity(meshData, material);
 			sphereEntity.transformComponent.transform.translation.setd(i, 0, 0);
 
 			var scripts = new ScriptComponent();
@@ -96,7 +94,7 @@ require([
 
 			var material = Material.createMaterial(ShaderLib.simpleLit, '');
 			material.wireframe = true;
-			var surfaceEntity = EntityUtils.createTypicalEntity(goo.world, meshData, material, '');
+			var surfaceEntity = goo.world.createEntity(meshData, material, '');
 			surfaceEntity.transformComponent.setUpdated();
 			surfaceEntity.addToWorld();
 

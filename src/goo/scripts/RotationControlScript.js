@@ -1,6 +1,8 @@
 define([
 	'goo/math/Matrix3x3'
-], /* @lends */ function (
+],
+/** @lends */
+function (
 	Matrix3x3
 ) {
 	'use strict';

@@ -18,8 +18,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Material',
 	'goo/renderer/Texture',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/EntityUtils'
+	'goo/shapes/ShapeCreator'
 ], function (
 	GooRunner,
 	DynamicLoader,
@@ -40,13 +39,12 @@ require([
 	ShaderLib,
 	Material,
 	Texture,
-	ShapeCreator,
-	EntityUtils
+	ShapeCreator
 	) {
 	'use strict';
 
 	function createMesh(goo, meshData, material, x, y, z) {
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		var entity = goo.world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
 	}

@@ -6,7 +6,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Texture',
-	'goo/entities/EntityUtils',
 	'goo/math/Vector3',
 	'goo/debug/Debugger'
 ], function (
@@ -17,14 +16,13 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	Texture,
-	EntityUtils,
 	Vector3,
 	Debugger
 ) {
 	'use strict';
 
 	function createMesh(goo, meshData, material, x, y, z) {
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		var entity = goo.world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
 	}

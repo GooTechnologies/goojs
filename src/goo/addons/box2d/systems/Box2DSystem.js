@@ -11,7 +11,7 @@ function(
 	/**
 	 * @class Physics simulation using Box2D.
 	 * @desc Depends on the global Box2D object.
-	 * Load box2d.js using a <script> tag before using this system.
+	 * Load box2d.js using a &lt;script&gt; tag before using this system.
 	 */
 	function Box2DSystem() {
 		System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);

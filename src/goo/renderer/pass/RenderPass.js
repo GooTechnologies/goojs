@@ -1,8 +1,13 @@
-define(['goo/renderer/Renderer',
-	'goo/math/Vector4'],
-	/** @lends */
-	function (Renderer,
-	Vector4) {
+define([
+	'goo/renderer/Renderer',
+	'goo/math/Vector4'
+],
+/** @lends */
+function (
+	Renderer,
+	Vector4
+) {
+
 	"use strict";
 
 	/**

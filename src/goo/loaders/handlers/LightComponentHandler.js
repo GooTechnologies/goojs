@@ -7,7 +7,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	LightComponent,
 	PointLight,

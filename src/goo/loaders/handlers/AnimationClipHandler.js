@@ -8,6 +8,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
+/** @lends */
 function(
 	ConfigHandler,
 	AnimationClip,

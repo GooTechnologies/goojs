@@ -3,7 +3,9 @@ define([
 	'goo/entities/components/ScriptComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	ScriptComponent,
 	RSVP,
@@ -11,6 +13,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'ScriptComponent';

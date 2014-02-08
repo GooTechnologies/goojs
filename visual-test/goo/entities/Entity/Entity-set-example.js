@@ -17,12 +17,7 @@ require([
 ) {
 	'use strict';
 
-	var goo = new GooRunner();
-
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
-
-	// ---
+	var goo = V.initGoo();
 	var world = goo.world;
 
 	var box = new Box();
@@ -38,5 +33,5 @@ require([
 	var lightEntity = world.createEntity().set(light, [0, 1, 0]).addToWorld();
 	var spinningEntity = world.createEntity().set(box, material, [-2, 0, 0], script).addToWorld();
 
-	V.addOrbitCamera(goo);
+	V.addOrbitCamera();
 });

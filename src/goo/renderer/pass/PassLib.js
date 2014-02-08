@@ -4,7 +4,9 @@ define([
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
 	'goo/renderer/Util'
-], function(
+],
+/** @lends */
+function(
 	ShaderLib,
 	FullscreenPass,
 	BloomPass,
@@ -12,6 +14,8 @@ define([
 	Util
 ) {
 	'use strict';
+
+	/** @class */
 
 	function Bloom(id) {
 		BloomPass.call(this);

@@ -7,7 +7,6 @@ require([
 	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -26,7 +25,6 @@ require([
 	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
-	EntityUtils,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -68,14 +66,16 @@ require([
 		y = y || 0;
 		z = z || 0;
 		var material = Material.createMaterial(ShaderLib.simple, '');
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData, material);
+		var entity = goo.world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
 		console.log('Added', entity);
 		return entity;
 	}
 	//--------
-	function indexModesDemo(goo) {
+	function combinedIndexModesDemo() {
+		var goo = V.initGoo();
+
 		var modes = [
 			{ v: [0, 0, 0, 1, 0, 0,	1, 1, 0, 0, 2, 0], i: [], m: 'Points'},
 			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 0, 2, 0, 3], m: 'Lines'},
@@ -96,23 +96,11 @@ require([
 		}
 
 		// light
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(-1, -3, -5);
-		lightEntity.addToWorld();
+		V.addLights();
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(35, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(35, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		indexModesDemo(goo);
-	}
-
-	init();
+	combinedIndexModesDemo();
 });

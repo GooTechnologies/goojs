@@ -3,7 +3,9 @@ define([
 	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
 	'goo/util/rsvp'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	SystemBus,
 	ArrayUtil,

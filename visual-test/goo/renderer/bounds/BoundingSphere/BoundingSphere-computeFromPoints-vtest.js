@@ -1,30 +1,16 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/EntityUtils',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
 	'../../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	EntityUtils,
-	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
 	BoundingSphere,
@@ -48,7 +34,9 @@ require([
 		return meshData;
 	}
 
-	function boundingSphereDemo(goo) {
+	function boundingSphereDemo() {
+		var goo = V.initGoo();
+
 		var shapeMeshData = buildCustomTriangle([0, -1, 0, 1, 0, 0, 0, 1, 0]);
 
 		// shape and boundingBox material
@@ -59,9 +47,7 @@ require([
 		material2.wireframe = true;
 
 		// wrap shapeMeshData in an entity
-		var shapeEntity = EntityUtils.createTypicalEntity(goo.world, shapeMeshData);
-		shapeEntity.meshRendererComponent.materials.push(material1);
-		shapeEntity.addToWorld();
+		goo.world.createEntity(shapeMeshData, material1).addToWorld();
 
 		// bounding sphere
 		var boundingSphere = new BoundingSphere();
@@ -72,22 +58,11 @@ require([
 		var zCenter = boundingSphere.center.data[2];
 
 		var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
-		var sphereEntity = EntityUtils.createTypicalEntity(goo.world, sphereMeshData);
-		sphereEntity.meshRendererComponent.materials.push(material2);
-		sphereEntity.transformComponent.transform.translation.setd(xCenter, yCenter, zCenter);
-		sphereEntity.addToWorld();
+		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera
-		V.addOrbitCamera(goo, new Vector3(5, Math.PI / 2, 0));
+		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		boundingSphereDemo(goo);
-	}
-
-	init();
+	boundingSphereDemo();
 });

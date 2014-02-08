@@ -4,8 +4,15 @@ function (
 ) {
 	'use strict';
 
+	/**
+	* @class Library of particles
+	*/
 	var ParticleLib = {};
 
+
+	/**
+	* Smoke particles
+	*/
 	ParticleLib.getSmoke = function(options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 1;
@@ -42,6 +49,9 @@ function (
 		};
 	};
 
+	/**
+	* Fire particles
+	*/
 	ParticleLib.getFire = function(options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 1;
@@ -83,6 +93,9 @@ function (
 		};
 	};
 
+	/**
+	* Snow particles
+	*/
 	ParticleLib.getSnow = function(options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 2;

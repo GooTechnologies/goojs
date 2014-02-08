@@ -10,6 +10,7 @@ define([
 	'goo/renderer/pass/BlurPass',
 	'goo/renderer/shaders/ShaderLib'
 ],
+/** @lends */
 function (
 	Material,
 	RenderTarget,
@@ -24,6 +25,9 @@ function (
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SSAOPass(renderList) {
 		this.depthPass = new RenderPass(renderList);
 		this.depthPass.clearColor.set(1,1,1,1);
