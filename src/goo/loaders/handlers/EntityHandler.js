@@ -77,7 +77,9 @@ define([
 				if (config.components[type] != null) {
 					var p = that._updateComponent(entity, type, config.components[type], options);
 					if (p) { promises.push(p); }
-					else { console.error("Error handling component " + name); }
+					else { 
+						console.error("Error handling component " + type); 
+					}
 				}
 			}
 
