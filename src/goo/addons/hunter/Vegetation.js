@@ -45,7 +45,7 @@ function(
 ) {
 	"use strict";
 
-	function Vegetation() {		
+	function Vegetation() {
 		this.calcVec = new Vector3();
 	}
 
@@ -81,7 +81,7 @@ function(
 		this.patchDensity = 18;
 		this.gridSize = 9;
 
-		this.patchSpacing = this.patchSize / this.patchDensity; 
+		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
 		var dummyMesh = this.createPatch(0, 0);
@@ -106,7 +106,7 @@ function(
 		return promise;
 	};
 
-	Vegetation.prototype.circleVegetation = function(xx, zz) {
+	Vegetation.prototype.circleVegetation = function() {
 		this.vegType++;
 		this.vegType %= 12;
 		this.currentX = -10000;
@@ -144,7 +144,7 @@ function(
 			return;
 		}
 
-		console.time('vegetation update');
+		// console.time('vegetation update');
 
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -175,7 +175,7 @@ function(
 		this.currentX = newX;
 		this.currentZ = newZ;
 
-		console.timeEnd('vegetation update');
+		// console.timeEnd('vegetation update');
 	};
 
 	Vegetation.prototype.createPatch = function(patchX, patchZ) {
@@ -183,7 +183,7 @@ function(
 		var transform = new Transform();
 
 		var patchDensity = this.patchDensity;
-		var patchSpacing = this.patchSpacing; 
+		var patchSpacing = this.patchSpacing;
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
@@ -276,7 +276,7 @@ function(
 		{ w: 1, h: 1, tx: 0.00, ty: 0.00, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.25, ty: 0.00, tw: 0.25, th: 0.25 },
 		{ w: 1, h: 1, tx: 0.00, ty: 0.25, tw: 0.25, th: 0.25 },
-		{ w: 1, h: 1, tx: 0.25, ty: 0.25, tw: 0.25, th: 0.25 },
+		{ w: 1, h: 1, tx: 0.25, ty: 0.25, tw: 0.25, th: 0.25 }
 		// { w: 1, h: 1, tx: 0.00, ty: 0.50, tw: 0.25, th: 0.25 },
 		// { w: 1, h: 1, tx: 0.25, ty: 0.50, tw: 0.25, th: 0.25 },
 		// { w: 1, h: 1, tx: 0.50, ty: 0.50, tw: 0.25, th: 0.25 },
@@ -314,74 +314,73 @@ function(
 		},
 		vshader: function () {
 			return [
-		'attribute vec3 vertexPosition;',
-		'attribute vec3 vertexNormal;',
-		'attribute vec2 vertexUV0;',
-		'attribute float base;',
+			'attribute vec3 vertexPosition;',
+			'attribute vec3 vertexNormal;',
+			'attribute vec2 vertexUV0;',
+			'attribute float base;',
 
-		'uniform mat4 viewProjectionMatrix;',
-		'uniform mat4 worldMatrix;',
-		'uniform vec3 cameraPosition;',
-		'uniform float time;',
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
+			'uniform float time;',
 
-		ShaderBuilder.light.prevertex,
+			ShaderBuilder.light.prevertex,
 
-		'varying vec3 normal;',
-		'varying vec3 vWorldPos;',
-		'varying vec3 viewPosition;',
-		'varying vec2 texCoord0;',
-		'varying float dist;',
+			'varying vec3 normal;',
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'varying vec2 texCoord0;',
+			'varying float dist;',
 
-		'void main(void) {',
-			'vec3 swayPos = vertexPosition;',
-			'swayPos.x += sin(time * 0.9 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.1 + 0.08;',
-		'	vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
-		'	vWorldPos = worldPos.xyz;',
-		'	gl_Position = viewProjectionMatrix * worldPos;',
+			'void main(void) {',
+				'vec3 swayPos = vertexPosition;',
+				'swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;',
+				'vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
+				'vWorldPos = worldPos.xyz;',
+				'gl_Position = viewProjectionMatrix * worldPos;',
 
-			ShaderBuilder.light.vertex,
+				ShaderBuilder.light.vertex,
 
-		'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-		'	texCoord0 = vertexUV0;',
-		'	viewPosition = cameraPosition - worldPos.xyz;',
-			'dist = 1.0 - smoothstep(35.0, 40.0, length(viewPosition.xz));',
-		'}'//
+				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+				'texCoord0 = vertexUV0;',
+				'viewPosition = cameraPosition - worldPos.xyz;',
+				'dist = 1.0 - smoothstep(35.0, 40.0, length(viewPosition.xz));',
+			'}'
 		].join('\n');
 		},
 		fshader: function () {
 			return [
-		'uniform sampler2D diffuseMap;',
-		'uniform float discardThreshold;',
-		'uniform vec2 fogSettings;',
-		'uniform vec3 fogColor;',
+			'uniform sampler2D diffuseMap;',
+			'uniform float discardThreshold;',
+			'uniform vec2 fogSettings;',
+			'uniform vec3 fogColor;',
 
-		ShaderBuilder.light.prefragment,
+			ShaderBuilder.light.prefragment,
 
-		'varying vec3 normal;',
-		'varying vec3 vWorldPos;',
-		'varying vec3 viewPosition;',
-		'varying vec2 texCoord0;',
-		'varying float dist;',
+			'varying vec3 normal;',
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+			'varying vec2 texCoord0;',
+			'varying float dist;',
 
-		'void main(void)',
-		'{',
-		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
-		// '	final_color.a *= dist;',
-			'if (final_color.a < discardThreshold) discard;',
-		'	final_color.a = min(final_color.a, dist);',
-			'if (final_color.a <= 0.0) discard;',
+			'void main(void)',
+			'{',
+				'vec4 final_color = texture2D(diffuseMap, texCoord0);',
+				'if (final_color.a < discardThreshold) discard;',
+				'final_color.a = min(final_color.a, dist);',
+				'if (final_color.a <= 0.0) discard;',
 
-		'	vec3 N = normalize(normal);',
+				'vec3 N = normalize(normal);',
 
-			ShaderBuilder.light.fragment,
+				ShaderBuilder.light.fragment,
 
-		'	final_color.a = pow(final_color.a, 0.5);',
+				'final_color.a = pow(final_color.a, 0.5);',
 
-			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+				'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+				'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 
-		'	gl_FragColor = final_color;',
-		'}'//
+				'gl_FragColor = final_color;',
+			'}'
 		].join('\n');
 		}
 	};
