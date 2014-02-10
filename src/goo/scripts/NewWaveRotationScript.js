@@ -1,6 +1,15 @@
 define([], function () {
 	'use strict';
 
+	var external = {
+		name: 'FPCamControlScript',
+		description: '',
+		parameters: [{
+			key: 'fraction',
+			name: 'Speed'
+		}]
+	};
+
 	return function () {
 		var mouseState, actualState, entity;
 
@@ -40,6 +49,6 @@ define([], function () {
 			setup: setup,
 			update: update,
 			cleanup: cleanup
-		}
+		};
 	};
 });

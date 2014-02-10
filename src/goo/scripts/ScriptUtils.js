@@ -1,5 +1,5 @@
 define([], function () {
-	'use script';
+	'use strict';
 
 	var ScriptUtils = {};
 
@@ -27,6 +27,8 @@ define([], function () {
 			var capitalisedKey = key.toUpperCase(0) + key.substr(1);
 			return capitalisedKey.replace(/([A-Z])/g, ' $1');
 		}
+
+		if (!specs) { return; }
 
 		specs.forEach(function (spec) {
 			if (typeof spec.name === 'undefined') {

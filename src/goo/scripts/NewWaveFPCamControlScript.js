@@ -3,7 +3,8 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils',
 	'goo/util/GameUtils',
-	'goo/scripts/ScriptUtils'
+	'goo/scripts/ScriptUtils',
+	'goo/scripts/Scripts'
 ],
 	/** @lends */
 	function (
@@ -11,9 +12,11 @@ define([
 	Matrix3x3,
 	MathUtils,
 	GameUtils,
-	ScriptUtils
+	ScriptUtils,
+	Scripts
 ) {
 	'use strict';
+	/*jshint validthis: true */
 
 	/**
 	 * @class Enables mouse rotation of an entity.
@@ -23,32 +26,36 @@ define([
 	 * @param {number} [properties.turnSpeedVertical=0.01]
 	 */
 
-	var external = [{
-		key: 'domElement',
-	}, {
-		key: 'turnSpeedHorizontal',
-		'default': 0.01
-	}, {
-		key: 'turnSpeedVertical',
-		'default': 0.01
-	}, {
-		key: 'maxAscent',
-		'default': 89.95 * MathUtils.DEG_TO_RAD
-	}, {
-		key: 'minAscent',
-		'default': -89.95 * MathUtils.DEG_TO_RAD
-	}, {
-		key: 'domElement'
-	}];
+	var external = {
+		name: 'FPCamControlScript',
+		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
+		parameters: [{
+			key: 'domElement'
+		}, {
+			key: 'turnSpeedHorizontal',
+			'default': 0.01
+		}, {
+			key: 'turnSpeedVertical',
+			'default': 0.01
+		}, {
+			key: 'maxAscent',
+			'default': 89.95 * MathUtils.DEG_TO_RAD
+		}, {
+			key: 'minAscent',
+			'default': -89.95 * MathUtils.DEG_TO_RAD
+		}, {
+			key: 'domElement'
+		}]
+	};
 
-	return function () {
+	var cons = function () {
 		var calcVector;
 		var rotX, rotY;
 		var pointerLocked;
 		var mouseState;
 
 		function setup(parameters, env) {
-			ScriptUtils.fillDefaultValues(parameters, external);
+			ScriptUtils.fillDefaultValues(parameters, external.parameters);
 
 			calcVector = new Vector3();
 			rotX = 0.0;
@@ -86,7 +93,7 @@ define([
 					rotY = parameters.minAscent;
 				}
 			}
-			//Matrix3x3.combine(this.calcMat1, thisCalcMat2, transform.rotation);
+
 			transform.rotation.fromAngles(rotY, rotX, 0.0);
 
 			// set our component updated.
@@ -137,4 +144,8 @@ define([
 			cleanup: cleanup
 		};
 	};
+
+	Scripts.register(external, cons);
+
+	return cons;
 });
