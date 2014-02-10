@@ -42,7 +42,7 @@ function (
 		 * @default 0.5
 		 */
 		this.radius = radius !== undefined ? radius : 0.5;
-	
+
 		if (typeof textureMode === 'string') {
 			textureMode = Sphere.TextureModes[textureMode];
 		}
