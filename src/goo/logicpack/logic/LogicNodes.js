@@ -14,6 +14,7 @@ define(
 
 		/**
 		 * Register a new logic node. All logic nodes must call this to register themselves.
+		 * @private
 		 */
 		LogicNodes.registerType = function(name, fn) {
 			LogicNodes.types[name] = {

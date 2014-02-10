@@ -11,7 +11,8 @@ define(
 
 		/**
 		 * @class Logic node implementing a random value. Every frame a new random value is written
-		 *        to its output.
+		 * to its output.
+		 * @private
 		 */
 		function LogicNodeRandom() {
 			LogicNode.call(this);

@@ -331,7 +331,7 @@ define([],
 
 	/**
 	 * Converts anything (nothing, a Selection, an array or more arguments) to an array
-	 * @memberOf Selectio#
+	 * @memberOf Selection#
 	 * @private
 	 * @returns {*}
 	 */
