@@ -46,6 +46,7 @@ function(
 		this.ammoTransform = new Ammo.btTransform();
 		this.gooQuaternion = new Quaternion();
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
+		this.shape = undefined;
 	}
 	AmmoComponent.prototype = Object.create(Component.prototype);
 
@@ -116,7 +117,6 @@ function(
 		var q = this.gooQuaternion;
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 		
-		this.shape;
 		if(this.useWorldBounds) {
 			entity._world.process();
 			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
