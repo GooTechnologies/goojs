@@ -196,6 +196,7 @@ define(['goo/entities/Selection'],
 
 	/**
 	 * Converts anything (nothing, an EntitySelection, an array or more arguments) to an array
+	 * @memberOf EntitySelection#
 	 * @private
 	 * @returns {*}
 	 */

@@ -38,6 +38,7 @@ define([
 
 	/**
 	 * @class Processes all entities with a light debug component
+	 * @deprecated
 	 */
 	function LightDebugSystem() {
 		System.call(this, 'LightDebugSystem', ['LightDebugComponent']);

@@ -121,6 +121,7 @@ define([
 
 	/**
 	 * Builds and appends the GUI for the debugger
+	 * @memberOf Debugger#
 	 * @private
 	 * @param {boolean} ownREPL True if the debugger should supply its own REPL
 	 */
@@ -159,6 +160,7 @@ define([
 
 	/**
 	 * Transforms a string into an array of regexps
+	 * @memberOf Debugger#
 	 * @private
 	 * @param {String} str
 	 * @returns {Array}
@@ -187,6 +189,7 @@ define([
 
 	/**
 	 * Walks on the property tree of an object and return a string containing properties matched by a list of interests
+	 * @memberOf Debugger#
 	 * @private
 	 * @param {Object} obj Root object to start the walk from
 	 * @param {RegExp[]} interests A list of Regexps to filter the properties the walker is visiting
@@ -244,6 +247,7 @@ define([
 
 	/**
 	 * Takes away the marker component of the previously picked entity and sets a marker component on the current picked entity
+	 * @memberOf Debugger#
 	 * @private
 	 * @param picked
 	 * @param oldPicked
@@ -268,6 +272,7 @@ define([
 
 	/**
 	 * Builds the interest list and performs the walk on the supplied entity
+	 * @memberOf Debugger#
 	 * @private
 	 * @param {Entity} entity
 	 */
