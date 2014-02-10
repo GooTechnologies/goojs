@@ -27,10 +27,10 @@ function(
 
 	/**
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
-	 * @param {Number} fov the full vertical angle of view, in degrees.
-	 * @param {Number} aspect aspect ratio
-	 * @param {Number} near near plane distance
-	 * @param {Number} far far plane distance
+	 * @param {Number} [fov] the full vertical angle of view, in degrees.
+	 * @param {Number} [aspect] aspect ratio
+	 * @param {Number} [near] near plane distance
+	 * @param {Number} [far] far plane distance
 	 */
 
 	function Camera(fov, aspect, near, far) {

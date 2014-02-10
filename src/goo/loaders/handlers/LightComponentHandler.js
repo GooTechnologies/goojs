@@ -52,7 +52,6 @@ function(
 				fov: 55,
 				size: 400,
 				near: 1,
-				/** @type {number} */
 				far: 1000,
 				resolution: [512, 512],
 				upVector: [0,1,0],
