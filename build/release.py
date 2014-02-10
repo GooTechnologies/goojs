@@ -56,7 +56,6 @@ for directory in (
 	shutil.copytree(source, release_dir + '/' + destination)
 
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
-shutil.copy('out/goo-require.js', release_dir + '/lib/goo-require.js')
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')
