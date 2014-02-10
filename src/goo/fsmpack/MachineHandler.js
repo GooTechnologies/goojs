@@ -77,7 +77,7 @@ define([
 			// Update existing states and create new ones
 			var promises = [];
 			for (var key in config.states) {
-				promises.push(that._updateState(machine, config.states[key]));
+				promises.push(that._updateState(machine, config.states[key], options));
 			}
 			return RSVP.all(promises).then(function() {
 				machine.setInitialState(config.initialState);
@@ -142,7 +142,7 @@ define([
 	 * @param {object} config
 	 * @private
 	 */
-	MachineHandler.prototype._updateState = function(machine, stateConfig) {
+	MachineHandler.prototype._updateState = function(machine, stateConfig, options) {
 		var state;
 		if (machine._states && machine._states[stateConfig.id]) {
 			state = machine._states[stateConfig.id];
@@ -168,7 +168,7 @@ define([
 		// Updating
 		var promises = [];
 		for (var key in stateConfig.childMachines) {
-			promises.push(this._load(stateConfig.childMachines[key]));
+			promises.push(this._load(stateConfig.childMachines[key].machineRef, options));
 		}
 		return RSVP.all(promises).then(function(machines) {
 			for (var i = 0; i < machines; i++) {
