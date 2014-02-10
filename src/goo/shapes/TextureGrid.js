@@ -1,8 +1,12 @@
 define(['goo/renderer/MeshData'],
 	/** @lends */
 	function (MeshData) {
+
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function TextureGrid(matrix, textureUnitsPerLine) {
 	    this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;

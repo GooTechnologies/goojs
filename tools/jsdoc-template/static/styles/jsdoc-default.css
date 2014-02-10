@@ -325,3 +325,13 @@ table.summary a.summaryLink, table.summary a.summaryLink:visited {
 nav img.logo {
 	display: block;
 }
+
+.rating {
+	border: solid;
+	border-width: 1px;
+   	border-radius: 2px;
+   	border-color: #999;
+   	display: inline-block;
+   	padding: 5px;
+
+}

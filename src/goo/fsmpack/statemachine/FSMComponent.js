@@ -11,9 +11,6 @@ function (
 ) {
 	'use strict';
 
-	/**
-	 * @class FSMComponent
-	 */
 	function FSMComponent() {
 		this.type = 'FSMComponent';
 

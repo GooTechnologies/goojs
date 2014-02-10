@@ -401,7 +401,7 @@ function (
 	};
 
 	/**
-	 * Adds an event listener to the goorunner
+	 * Adds an event listener to the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
@@ -420,7 +420,7 @@ function (
 	};
 
 	/**
-	 * Removes an event listener to the goorunner
+	 * Removes an event listener to the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
@@ -461,7 +461,7 @@ function (
 	};
 
 	/**
-	 * Enables event listening on the goorunner
+	 * Enables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
 
@@ -489,7 +489,7 @@ function (
 	};
 
 	/**
-	 * Disables event listening on the goorunner
+	 * Disables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 */
 
@@ -519,14 +519,14 @@ function (
 	};
 
 	/**
-	 * Takes an image snapshot from the 3d scene at next rendercall
+	 * Takes an image snapshot from the 3d scene at next render call
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
 	};
 
 	/**
-	 * Requests a pick from screenspace coordinates. A successful pick returns id and depth of the pick target.
+	 * Requests a pick from screen space coordinates. A successful pick returns id and depth of the pick target.
 	 *
 	 * @param {Number} x screen coordinate
 	 * @param {Number} y screen coordinate

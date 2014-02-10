@@ -5,6 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
 ],
+/** @lends */
 function(
 	ComponentHandler,
 	AnimationComponent,
@@ -14,6 +15,9 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

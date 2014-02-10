@@ -6,7 +6,9 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Transform',
 	'goo/renderer/Renderer'
-], function(
+],
+/** @lends */
+function(
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -16,6 +18,10 @@ define([
 	Renderer
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 

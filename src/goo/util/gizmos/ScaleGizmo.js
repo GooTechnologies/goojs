@@ -7,7 +7,9 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-], function(
+],
+/** @lends */
+function(
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -18,6 +20,10 @@ define([
 	MathUtils
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 		this._boxMesh = new Box(1.4, 1.4, 1.4);

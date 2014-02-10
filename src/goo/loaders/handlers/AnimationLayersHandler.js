@@ -8,7 +8,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */ 
+function(
 	ConfigHandler,
 	AnimationLayer,
 	LayerLERPBlender,
@@ -21,6 +23,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

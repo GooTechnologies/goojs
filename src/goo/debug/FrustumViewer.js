@@ -10,7 +10,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
 	],
-	/* @lends */
+	/** @lends */
 	function (
 		MeshData,
 		MeshBuilder,
@@ -25,6 +25,9 @@ define([
 	) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function FrustumViewer() {
 	}
 

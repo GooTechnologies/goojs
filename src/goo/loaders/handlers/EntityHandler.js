@@ -6,7 +6,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
-], function(
+], 
+/** @lends */
+function(
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
@@ -17,6 +19,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -88,7 +93,9 @@ define([
 			var type = component.type;
 			type = type.slice(0, type.lastIndexOf('Component'));
 			type = StringUtil.uncapitalize(type);
-			if (type === 'howler') type = 'sound'; // Discrepancy for some reason
+			if (type === 'howler') {
+				type = 'sound'; // Discrepancy for some reason
+			}
 			if (!config.components[type]) {
 				handler = this._getHandler(type);
 				if(handler) {

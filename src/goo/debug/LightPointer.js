@@ -12,7 +12,7 @@ define([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
 	],
-	/* @lends */
+	/** @lends */
 	function (
 		MeshData,
 		MeshBuilder,
@@ -29,6 +29,9 @@ define([
 	) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function LightPointer() {
 	}
 

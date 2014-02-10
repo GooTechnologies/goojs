@@ -8,7 +8,9 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
@@ -21,6 +23,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function PosteffectHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

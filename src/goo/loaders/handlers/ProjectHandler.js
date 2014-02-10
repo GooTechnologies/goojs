@@ -19,7 +19,9 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/Snow'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
@@ -163,7 +165,7 @@ define([
 						material.setTexture('DIFFUSE_MAP', null);
 						ShaderBuilder.SKYBOX = null;
 						ShaderBuilder.SKYSPHERE = null;
-					}
+					};
 					if (type === Skybox.SPHERE) {
 						if (imageUrls[0] === '') {
 							SystemBus.emit('goo.error.skybox', {

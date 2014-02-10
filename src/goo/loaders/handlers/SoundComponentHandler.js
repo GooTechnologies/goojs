@@ -3,7 +3,9 @@ define([
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	HowlerComponent,
 	RSVP,
@@ -11,6 +13,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

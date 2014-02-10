@@ -1,12 +1,17 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/rsvp'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

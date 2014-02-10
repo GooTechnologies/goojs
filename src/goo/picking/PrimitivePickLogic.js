@@ -3,6 +3,9 @@ define(['goo/picking/BoundingTree'],
 function (BoundingTree) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function PrimitivePickLogic () {
 	}
 

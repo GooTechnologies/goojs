@@ -6,7 +6,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	MeshRendererComponent,
 	Material,
@@ -17,6 +19,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

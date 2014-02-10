@@ -22,9 +22,9 @@ function(
 
 	/**
 	 * @class Adds Ammo physics to a Goo entity.
-	 * Ammo is a powerful physics engine converted from the c language project Bullet
-	 * use Ammo.js if you need to support any 3D shape ( trimesh )
-	 * See also {@link AmmoSystem}
+	 * Ammo is a powerful physics engine converted from the C language project Bullet
+	 * use Ammo.js if you need to support any 3D shape (trimesh).
+	 * Also see {@link AmmoSystem}.
 	 * @extends Component
 	 * @param {Object} [settings] The settings object can contain the following properties:
 	 * @param {number} [settings.mass=0] (0 means immovable)

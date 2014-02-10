@@ -9,6 +9,9 @@ define([
 	) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function RegularPolygon(nSegments, radius) {
 		this.nSegments = nSegments || 5;
 		this.radius = radius || 1;

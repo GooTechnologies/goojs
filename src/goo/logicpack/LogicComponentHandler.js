@@ -28,7 +28,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/logic/LogicNodeInput',
 	'goo/logic/LogicNodeOutput'
 
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	LogicComponent,
 	RSVP,
@@ -36,6 +38,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function LogicComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

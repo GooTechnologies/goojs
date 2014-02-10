@@ -7,7 +7,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	LightComponent,
 	PointLight,
@@ -20,6 +22,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
@@ -47,7 +52,6 @@ define(['goo/loaders/handlers/ComponentHandler',
 				fov: 55,
 				size: 400,
 				near: 1,
-				/** @type {number} */
 				far: 1000,
 				resolution: [512, 512],
 				upVector: [0,1,0],

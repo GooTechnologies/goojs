@@ -9,7 +9,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	TextureCreator,
 	Texture,
@@ -29,6 +31,9 @@ define([
 	 {bool} dontWaitForTextures if true, return promise that resolves once the texture object is created, don't wait
 	 for the image to load. Defaults to false.
 	 */
+	/**
+	* @class
+	*/
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

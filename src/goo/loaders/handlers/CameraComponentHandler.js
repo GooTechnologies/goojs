@@ -5,7 +5,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	CameraComponent,
 	Camera,
@@ -15,6 +17,9 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function CameraComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}
