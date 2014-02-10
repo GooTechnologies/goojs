@@ -78,7 +78,7 @@ function buildPack(moduleList, packName) {
 		lines.push('\t' + fileNames.join(',\n\t'));
 
 		lines.push(') {');
-
+		lines.push('if (!window.goo) { return; }');
 		fileNames.forEach(function (fileName) {
 			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
 		});
@@ -151,13 +151,9 @@ function getTailWrapping(packName) {
 		process.exit(1);
 	}
 
-	// get global
-	console.log('get global'.grey);
-	var global = process.argv[3] === 'global';
-
 	// get the version
 	console.log('get the version'.grey);
-	var version = process.argv[4] || '';
+	var version = process.argv[3] || '';
 
 	// out base dir
 	console.log('out base dir'.grey);
