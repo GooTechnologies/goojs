@@ -88,6 +88,7 @@ function (
 
 	/**
 	 * Universal shorthand for adding managers, systems, entities and registering components
+	 * @returns {World} Returns self to allow chaining
 	 */
 	//! AT: again, 'set' vs 'add' - entities are added to the world, systems/managers are set
 	World.prototype.add = function () {
@@ -137,7 +138,7 @@ function (
 	 * Retrieve a manager of type 'type'
 	 *
 	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'
-	 * @returns manager
+	 * @returns {Manager}
 	 */
 	World.prototype.getManager = function (type) {
 		for (var i = 0; i < this._managers.length; i++) {
@@ -171,7 +172,7 @@ function (
 	 * Retrieve a {@link System} of type 'type'
 	 *
 	 * @param {String} type Type of system to retrieve
-	 * @returns System
+	 * @returns {System}
 	 */
 	World.prototype.getSystem = function (type) {
 		for (var i = 0; i < this._systems.length; i++) {
@@ -212,7 +213,7 @@ function (
 	/**
 	 * Get all entities in world
 	 *
-	 * @returns All entities existing in world
+	 * @returns {Entity[]} All entities existing in world
 	 */
 	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();

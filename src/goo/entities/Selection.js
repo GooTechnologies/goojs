@@ -112,7 +112,7 @@ define([],
 	};
 
 	/**
-	 *
+	 * @private
 	 * @param fun
 	 * @returns {Selection} Returns self to allow chaining
 	 */
@@ -291,8 +291,8 @@ define([],
 	};
 
 	/**
-	 * Returns the element on
-	 * @param {number} [index]
+	 * Returns the element on the specified position or the whole selection as an array if position is not given
+	 * @param {number} [index] Index of the desired element; can handle negative indices (Ex: -1 is the last element)
 	 * @returns {Array}
 	 */
 	Selection.prototype.get = function (index) {
