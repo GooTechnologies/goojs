@@ -6,7 +6,9 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	Material,
 	MeshData,
@@ -17,6 +19,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

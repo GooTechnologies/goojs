@@ -20,7 +20,7 @@ function(
 	 * @param {number} [settings.angularDamping=0] (not supported at the moment)
 	 * @example
 	 * var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createBox(20, 10, 1));
-	 * entity.setComponent(new CannonComponent(settings));test
+	 * entity.setComponent(new CannonComponent(settings));
 	 */
 	function CannonComponent(settings) {
 		this.type = 'CannonComponent';

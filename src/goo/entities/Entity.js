@@ -8,13 +8,17 @@ function (
 	'use strict';
 
 	/**
-	 * @class A gameworld object and container of components
+	 * @class An entity is the basic object in the [World]{@link World}, and a container of [Components]{@link Component}.
 	 * @param {World} world A {@link World} reference
 	 * @param {String} [name] Entity name
 	 */
 	function Entity(world, name) {
 		this._world = world;
 		this._components = [];
+
+		//! AT: not sure if this tags/attributes abstraction is really needed or if they are just glorified properties
+		this._tags = {};
+		this._attributes = {};
 
 		Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,
@@ -167,6 +171,74 @@ function (
 			}
 		}
 
+		return this;
+	};
+
+	/**
+	 * Adds a tag to the entity
+	 * @param tag
+	 * @returns {Entity} Returns self to allow chaining
+	 */
+	Entity.prototype.setTag = function (tag) {
+		this._tags[tag] = true;
+		return this;
+	};
+
+	/**
+	 * Checks whether an entity has a tag or not
+	 * @param tag
+	 * @returns {boolean}
+	 */
+	Entity.prototype.hasTag = function (tag) {
+		return !!this._tags[tag];
+	};
+
+	/**
+	 * Clears a tag on an entity
+	 * @param tag
+	 * @returns {Entity} Returns self to allow chaining
+	 */
+	Entity.prototype.clearTag = function (tag) {
+		delete this._tags[tag];
+		return this;
+	};
+
+	/**
+	 * Sets an attribute and its value on the entity
+	 * @param attribute
+	 * @param value
+	 * @returns {Entity} Returns self to allow chaining
+	 */
+	Entity.prototype.setAttribute = function (attribute, value) {
+		this._attributes[attribute] = value;
+		return this;
+	};
+
+	/**
+	 * Checks whether an entity has an attribute or not
+	 * @param tag
+	 * @returns {boolean}
+	 */
+	Entity.prototype.hasAttribute = function (attribute) {
+		return typeof this._attributes[attribute] !== 'undefined';
+	};
+
+	/**
+	 * Gets the value of the specified attribute
+	 * @param attribute
+	 * @returns {*}
+	 */
+	Entity.prototype.getAttribute = function (attribute) {
+		return this._attributes[attribute];
+	};
+
+	/**
+	 * Clears an attribute of the entity
+	 * @param attribute
+	 * @returns {Entity} Returns self to allow chaining
+	 */
+	Entity.prototype.clearAttribute = function (attribute) {
+		delete this._attributes[attribute];
 		return this;
 	};
 

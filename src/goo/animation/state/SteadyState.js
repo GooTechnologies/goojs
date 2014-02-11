@@ -20,6 +20,14 @@ function (AbstractState) {
 	SteadyState.prototype = Object.create(AbstractState.prototype);
 	SteadyState.prototype.constructor = SteadyState;
 
+	/**
+	 * Sets the clipsource of the steadystate
+	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} clipSource
+	 */
+	SteadyState.prototype.setClipSource = function (clipSource) {
+		this._sourceTree = clipSource;
+	};
+
 	/*
 	 * Updates the states clip instances
 	 */

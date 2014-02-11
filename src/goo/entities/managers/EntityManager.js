@@ -1,6 +1,12 @@
-define(['goo/entities/managers/Manager'],
+define([
+	'goo/entities/managers/Manager',
+	'goo/entities/EntitySelection'
+	],
 	/** @lends */
-	function (Manager) {
+	function (
+		Manager,
+		EntitySelection
+	) {
 	'use strict';
 
 	/**
@@ -11,6 +17,17 @@ define(['goo/entities/managers/Manager'],
 
 		this._entitiesById = [];
 		this._entityCount = 0;
+
+		this.api = {
+			id: function () {
+				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
+				return new EntitySelection(ret); // just entity
+			}.bind(this),
+			name: function () {
+				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
+				return new EntitySelection(ret); // just entity
+			}.bind(this)
+		};
 	}
 
 	EntityManager.prototype = Object.create(Manager.prototype);
@@ -78,6 +95,7 @@ define(['goo/entities/managers/Manager'],
 	 *
 	 * @returns {Array} Array containing all entities in the world
 	 */
+	//! AT: this need to return an EntitySelection object
 	EntityManager.prototype.getEntities = function () {
 		var entities = [];
 		for(var i in this._entitiesById) {

@@ -19,7 +19,9 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/Snow'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
@@ -47,6 +49,7 @@ define([
 	/**
 	 * @class
 	 * @constructor
+	 * @private
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -158,6 +161,12 @@ define([
 			}
 			var that = this;
 			return RSVP.all(promises).then(function(images) {
+					var clearSkybox = function() {
+						skybox.meshRendererComponent.hidden = true;
+						material.setTexture('DIFFUSE_MAP', null);
+						ShaderBuilder.SKYBOX = null;
+						ShaderBuilder.SKYSPHERE = null;
+					};
 					if (type === Skybox.SPHERE) {
 						if (imageUrls[0] === '') {
 							SystemBus.emit('goo.error.skybox', {
@@ -171,30 +180,32 @@ define([
 						images = images[0];
 						images.setAttribute('data-ref', imageUrls[0]);
 					} else {
-						if (images.length < 6) {
+						if (images[0] === '') {
 							SystemBus.emit('goo.error.skybox', {
 								type: 'Box',
-								message: 'The skybox needs six images of the same size to display'
+								message: 'The skybox needs an image to display.'
 							});
-							skybox.meshRendererComponent.hidden = true;
-							material.setTexture('DIFFUSE_MAP', null);
-							ShaderBuilder.SKYBOX = null;
-							ShaderBuilder.SKYSPHERE = null;
+							clearSkybox();
 							return;
 						}
 						var w = images[0].width;
 						var h = images[0].height;
 						for (var i = 0; i < 6; i++) {
-							var img = images[i];
+							var img = images[i] = images[i] || images[0];
+							if (img.width !== img.height) {
+								SystemBus.emit('goo.error.skybox', {
+									type: 'Box',
+									message: 'The skybox needs square images to display'
+								});
+								clearSkybox();
+								return;
+							}
 							if (w !== img.width || h !== img.height) {
 								SystemBus.emit('goo.error.skybox', {
 									type: 'Box',
 									message: 'The skybox needs six images of the same size to display'
 								});
-								skybox.meshRendererComponent.hidden = true;
-								material.setTexture('DIFFUSE_MAP', null);
-								ShaderBuilder.SKYBOX = null;
-								ShaderBuilder.SKYSPHERE = null;
+								clearSkybox();
 								return;
 							}
 							img.setAttribute('data-ref', imageUrls[i]);

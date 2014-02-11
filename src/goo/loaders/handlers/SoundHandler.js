@@ -3,7 +3,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	RSVP,
 	PromiseUtil,
@@ -11,6 +13,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

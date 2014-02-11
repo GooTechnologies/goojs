@@ -2,14 +2,18 @@ define([
 	'goo/animation/clip/JointChannel',
 	'goo/animation/clip/JointData',
 	'goo/animation/clip/JointChannel',
-	'goo/animation/clip/JointData'
+	'goo/animation/clip/JointData',
+	'goo/math/Vector3',
+	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
 	JointChannel,
 	JointData,
 	TransformChannel,
-	TransformData
+	TransformData,
+	Vector3,
+	Quaternion
 ) {
 	'use strict';
 
@@ -36,6 +40,21 @@ function (
 	};
 
 	/**
+	 * Gets the translation of the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * @param {string} channelName
+	 * @param {Vector3} [store] to store the result in
+	 * @returns new Vector3 with result or store
+	 */
+	ManagedTransformSource.prototype.getTranslation = function (channelName, store) {
+		var channel = this._data[channelName];
+		if (channel instanceof TransformData) {
+			store = store || new Vector3();
+			store.setv(channel._translation);
+		}
+		return store;
+	};
+
+	/**
 	 * @description Sets a scale to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} scale the scale to set
@@ -45,6 +64,21 @@ function (
 		if (channel instanceof TransformData) {
 			channel._scale.setv(scale);
 		}
+	};
+
+	/**
+	 * @description Gets the scale from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * @param {string} channelName
+	 * @param {Vector3} [store] to store the result in
+	 * @returns {Vector3} new vector with result or store
+	 */
+	ManagedTransformSource.prototype.getScale = function (channelName, store) {
+		var channel = this._data[channelName];
+		if (channel instanceof TransformData) {
+			store = store || new Vector3();
+			store.setv(channel._scale);
+		}
+		return store;
 	};
 
 	/**
@@ -60,6 +94,20 @@ function (
 	};
 
 	/**
+	 * @description Gets rotation from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * @param {string} channelName
+	 * @param {Quaternion} [store] to store the result in
+	 */
+	ManagedTransformSource.prototype.getRotation = function (channelName, store) {
+		var channel = this._data[channelName];
+		if (channel instanceof TransformData) {
+			store = store || new Quaternion();
+			store.setv(channel._rotation);
+		}
+		return store;
+	};
+
+	/**
 	 * @description Setup transform data for specific joints on this source, using the first frame from a given clip.
 	 * @param {AnimationClip} clip the animation clip to pull data from
 	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
@@ -69,8 +117,12 @@ function (
 			for ( var i = 0, max = channelNames.length; i < max; i++) {
 				var channelName = channelNames[i];
 				var channel = clip.findChannelByName(channelName);
-				var data = channel.getData(0);
-				this._data[channelName] = data;
+				if (channel) {
+					var data = channel.getData(0);
+					this._data[channelName] = data;
+				} else {
+					console.error('Channel not in clip: '+channelName);
+				}
 			}
 		} else {
 			for ( var i = 0, max = clip._channels.length; i < max; i++) {
@@ -122,6 +174,10 @@ function (
 		return this._data;
 	};
 
+
+	/**
+	* @returns {ManagedTransformSource}
+	*/
 	ManagedTransformSource.prototype.clone = function() {
 		var clonedData = {};
 		for (var key in this._data) {

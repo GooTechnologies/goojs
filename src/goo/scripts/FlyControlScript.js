@@ -12,7 +12,7 @@ function(
 	"use strict";
 
 	/**
-	 * @class Flycam
+	 * @class
 	 * @param {Object} [properties]
 	 * @param {Element} [properties.domElement] Element to add mouse listeners to
 	 * @param {number} [properties.turnSpeedHorizontal=0.01]
@@ -29,8 +29,8 @@ function(
 
 		this.domElement = properties.domElement || null;
 
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeed : 0.005;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeed : 0.005;
+		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeedHorizontal : 0.005;
+		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.005;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : 2;
@@ -183,18 +183,19 @@ function(
 
 	FlyControlScript.prototype.setupKeyControls = function() {
 		this.domElement.setAttribute('tabindex', -1);
-		var boundKeyDown = keydown.bind(this);
-		var boundKeyUp = keyup.bind(this);
-		this.domElement.addEventListener('keydown', boundKeyDown, false);
-		this.domElement.addEventListener('keyup', boundKeyUp, false);
-
+		if (!this.keydown) {
+			this.keydown = keydown.bind(this);
+		}
+		if (!this.keyup) {
+			this.keyup = keyup.bind(this);
+		}
+		this.domElement.addEventListener('keydown', this.keydown, false);
+		this.domElement.addEventListener('keyup', this.keyup, false);
 	};
 
 	FlyControlScript.prototype.tearDownKeyControls = function() {
-		var boundKeyDown = keydown.bind(this);
-		var boundKeyUp = keyup.bind(this);
-		this.domElement.removeEventListener('keydown', boundKeyDown, false);
-		this.domElement.removeEventListener('keyup', boundKeyUp, false);
+		this.domElement.removeEventListener('keydown', this.keydown, false);
+		this.domElement.removeEventListener('keyup', this.keyup, false);
 	};
 
 	var mousedown = function(event) {
@@ -221,7 +222,7 @@ function(
 		this.domElement.addEventListener('mousedown', boundMouseDown, false);
 		this.domElement.addEventListener('mousemove', boundMouseMove, false);
 		this.domElement.addEventListener('mouseup', boundMouseUp, false);
-		// this.domElement.addEventListener('mouseout', boundMouseUp, false);
+		this.domElement.addEventListener('mouseout', boundMouseUp, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
 		// https://code.google.com/p/chromium/issues/detail?id=244289

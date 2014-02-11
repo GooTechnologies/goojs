@@ -2,6 +2,9 @@ define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix
 function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function CSSTransformSystem (renderer) {
 		System.call(this, "CSSTransformSystem", ["TransformComponent", "CSSTransformComponent"]);
 

@@ -4,7 +4,8 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/entities/managers/Manager',
 	'goo/entities/systems/System',
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/entities/EntitySelection'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	TransformComponent,
 	Manager,
 	System,
-	Component
+	Component,
+	EntitySelection
 ) {
 	'use strict';
 
@@ -28,6 +30,9 @@ function (
 		this._addedEntities = [];
 		this._changedEntities = [];
 		this._removedEntities = [];
+
+		this.by = {};
+		this._installDefaultSelectors();
 
 		/** Main keeper of entities
 		 * @type {EntityManager}
@@ -48,8 +53,42 @@ function (
 	World.time = 0.0;
 	World.tpf = 1.0;
 
+	World.prototype._installDefaultSelectors = function () {
+		this.by.system = function (systemType) {
+			var system = this.getSystem(systemType);
+			return new EntitySelection(system._activeEntities);
+		}.bind(this);
+
+		//! AT: all these queries are slow unless using another data structure for fast access
+		// these data structures would have to be maintained in dedicated managers that would then install these methods on world.by
+		this.by.component = function (componentType) {
+			var entities = this.entityManager.getEntities();
+
+			return new EntitySelection(entities.filter(function (entity) {
+				return !!entity[componentType];
+			}));
+		}.bind(this);
+
+		this.by.tag = function (tag) {
+			var entities = this.entityManager.getEntities();
+
+			return new EntitySelection(entities.filter(function (entity) {
+				return entity.hasTag(tag);
+			}));
+		}.bind(this);
+
+		this.by.attribute = function (attribute) {
+			var entities = this.entityManager.getEntities();
+
+			return new EntitySelection(entities.filter(function (entity) {
+				return entity.hasAttribute(attribute);
+			}));
+		}.bind(this);
+	};
+
 	/**
 	 * Universal shorthand for adding managers, systems, entities and registering components
+	 * @returns {World} Returns self to allow chaining
 	 */
 	//! AT: again, 'set' vs 'add' - entities are added to the world, systems/managers are set
 	World.prototype.add = function () {
@@ -91,6 +130,7 @@ function (
 	 */
 	World.prototype.setManager = function (manager) {
 		this._managers.push(manager);
+		manager.applyAPI(this.by);
 		return this;
 	};
 
@@ -98,7 +138,7 @@ function (
 	 * Retrieve a manager of type 'type'
 	 *
 	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'
-	 * @returns manager
+	 * @returns {Manager}
 	 */
 	World.prototype.getManager = function (type) {
 		for (var i = 0; i < this._managers.length; i++) {
@@ -132,7 +172,7 @@ function (
 	 * Retrieve a {@link System} of type 'type'
 	 *
 	 * @param {String} type Type of system to retrieve
-	 * @returns System
+	 * @returns {System}
 	 */
 	World.prototype.getSystem = function (type) {
 		for (var i = 0; i < this._systems.length; i++) {
@@ -173,7 +213,7 @@ function (
 	/**
 	 * Get all entities in world
 	 *
-	 * @returns All entities existing in world
+	 * @returns {Entity[]} All entities existing in world
 	 */
 	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();

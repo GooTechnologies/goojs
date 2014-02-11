@@ -6,7 +6,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
@@ -18,6 +20,10 @@ define([
 	"use strict";
 
 	/*jshint eqeqeq: false, -W041 */
+	/**
+	* @class
+	* @private
+	*/
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

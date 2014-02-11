@@ -7,7 +7,9 @@ define([
 	'goo/animation/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	SteadyState,
 	ClipSource,
@@ -19,6 +21,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

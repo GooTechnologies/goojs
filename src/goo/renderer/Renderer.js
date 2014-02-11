@@ -747,9 +747,13 @@ function (
 				} else {
 					shader = shaderCache[defineKey];
 					if (shader !== material.shader) {
-						for (var key in material.shader.uniforms) {
-							shader.uniforms[key] = material.shader.uniforms[key];
+						var uniforms = material.shader.uniforms;
+						var keys = Object.keys(uniforms);
+						for (var ii = 0, l = keys.length; ii < l; ii++) {
+							var key = keys[ii];
+							shader.uniforms[key] = uniforms[key];
 						}
+
 						material.shader = shader;
 					}
 				}

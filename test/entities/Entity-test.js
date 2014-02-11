@@ -310,15 +310,6 @@ define([
 		});
 
 		// ---
-		it('sets a TransformComponent when trying to add an array', function() {
-			var entity = new Entity(world);
-			var translation = [1, 2, 3];
-			entity.set(translation);
-
-			expect(entity.transformComponent).toBeTruthy();
-			expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
-		});
-
 		it('sets a MeshDataComponent when trying to add a mesh', function() {
 			var entity = new Entity(world);
 			var meshData = new Box();
@@ -377,5 +368,51 @@ define([
 			expect(entity.hasComponent('TransformComponent')).toBe(true);
 		});
 		*/
+
+		describe('tags', function () {
+			it('sets a tag on an entity', function () {
+				var entity = new Entity();
+				entity.setTag('t1');
+				expect(entity.hasTag('t1')).toBeTruthy();
+				expect(entity.hasTag('t2')).toBeFalsy();
+			});
+
+			it('clears a tag on an entity', function () {
+				var entity = new Entity();
+				entity.setTag('t1').setTag('t3');
+				entity.clearTag('t1').clearTag('t2');
+				expect(entity.hasTag('t1')).toBeFalsy();
+				expect(entity.hasTag('t2')).toBeFalsy();
+				expect(entity.hasTag('t3')).toBeTruthy();
+			});
+		});
+
+		describe('attributes', function () {
+			it('sets an attribute on an entity', function () {
+				var entity = new Entity();
+				entity.setAttribute('a1', 123);
+
+				expect(entity.hasAttribute('a1')).toBeTruthy();
+				expect(entity.getAttribute('a1')).toEqual(123);
+
+				expect(entity.hasAttribute('a2')).toBeFalsy();
+				expect(entity.getAttribute('a2')).toBeUndefined();
+			});
+
+			it('clears an attribute on an entity', function () {
+				var entity = new Entity();
+				entity.setAttribute('a1', 123).setAttribute('a3', 'asd');
+				entity.clearAttribute('a1').clearAttribute('a2');
+
+				expect(entity.hasAttribute('a1')).toBeFalsy();
+				expect(entity.getAttribute('a1')).toBeUndefined();
+
+				expect(entity.hasAttribute('a2')).toBeFalsy();
+				expect(entity.getAttribute('a2')).toBeUndefined();
+
+				expect(entity.hasAttribute('a3')).toBeTruthy();
+				expect(entity.getAttribute('a3')).toEqual('asd');
+			});
+		});
 	});
 });

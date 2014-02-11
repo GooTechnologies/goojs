@@ -5,7 +5,9 @@ define([
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	MeshData,
 	SkeletonPose,
@@ -16,6 +18,10 @@ define([
 	"use strict";
 
 	/*jshint eqeqeq: false, -W041, bitwise: false */
+	/**
+	* @class
+	* @private
+	*/
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

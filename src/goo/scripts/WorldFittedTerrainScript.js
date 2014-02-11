@@ -2,6 +2,7 @@ define([
 	'goo/scripts/HeightMapBoundingScript',
     'goo/math/Vector3'
 	],
+    /** @lends */
 	function(HeightMapBoundingScript,
              Vector3) {
 		"use strict";
@@ -65,9 +66,9 @@ define([
 		}
 
 		/**
-		 * @method Adds a block of height data from an image at given dimensions and stores the script in an array.
-		 * @param heightMatrix (Array) file to load height data from
-		 * @param dimensions (Object) dimensions to fit the data within
+		 * Adds a block of height data from an image at given dimensions and stores the script in an array.
+		 * @param {Array} [heightMatrix] file to load height data from
+		 * @param {Object} [dimensions] dimensions to fit the data within
 		 */
 
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
@@ -77,9 +78,9 @@ define([
 		};
 
 		/**
-		 * @method Returns the script relevant to a given position
-		 * @param pos (Array) data, typically use entity transform.data
-		 * @returns (Object) container object with script and its world dimensions
+		 * Returns the script relevant to a given position
+		 * @param {Array} [pos] data, typically use entity transform.data
+		 * @returns {Object} container object with script and its world dimensions
 		 */
 
 		WorldFittedTerrainScript.prototype.getHeightDataForPosition = function(pos) {
@@ -98,10 +99,10 @@ define([
 
         /**
          * Adjusts coordinates to from heightMap to fit the dimensions of raw displacement data.
-         * @param axPos {Number}
-         * @param axMin {Number}
-         * @param axMax {Number}
-         * @param quadCount {Number}
+         * @param {Number} axPos
+         * @param {Number} axMin
+         * @param {Number} axMax
+         * @param {Number} quadCount
          * @return {Number}
          */
 
@@ -112,10 +113,10 @@ define([
 
 		/**
 		 * Returns coordinates from raw displacement space to fit the dimensions of a registered heightMap.
-		 * @param axPos {Number}
-		 * @param axMin {Number}
-		 * @param axMax {Number}
-		 * @param quadCount {Number}
+		 * @param {Number} axPos
+		 * @param {Number} axMin
+		 * @param {Number} axMax
+		 * @param {Number} quadCount
 		 * @return {Number}
 		 */
 
@@ -126,9 +127,9 @@ define([
 		};
 
 		/**
-         * @method Looks through height data and returns the elevation of the ground at a given position
-         * @param pos (Array) Position as [x, y, z]
-         * @returns (Float) height in units
+         * Looks through height data and returns the elevation of the ground at a given position
+         * @param {Array} pos Position as [x, y, z]
+         * @returns {Number} height in units
          */
 
         WorldFittedTerrainScript.prototype.getTerrainHeightAt = function(pos) {
@@ -146,7 +147,7 @@ define([
 
 		/**
 		 * Returns the a normalized terrain normal for the provided position
-		 * @param pos {Array} the position as [x, y, z]
+		 * @param {Array} [pos] the position as [x, y, z]
 		 * @returns {Vector3} the normal vector
 		 */
 

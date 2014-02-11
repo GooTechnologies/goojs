@@ -8,6 +8,7 @@ function (JointChannel, ClipSource) {
 	 *        filters this result set, excluding any channels whose names do not match those in our enabledChannels list.
 	 * @param clip our source clip.
 	 * @param manager the manager used to track clip state.
+	 * @private
 	 */
 	function InclusiveClipSource (clip) {
 		ClipSource.call(this, clip);

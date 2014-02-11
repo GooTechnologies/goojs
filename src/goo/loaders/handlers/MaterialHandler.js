@@ -6,7 +6,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	Material,
 	Util,
@@ -17,6 +19,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};

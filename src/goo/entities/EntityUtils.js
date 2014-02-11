@@ -136,6 +136,7 @@ define([
 
 		/**
 		 * Traverse entity hierarchy with callback
+		 * @deprecated Use entity.traverse instead
 		 * @param {Entity} entity The entity to begin traversing from
 		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
 		 * The traversing can be stopped from propagating if the callback returns false.
@@ -223,6 +224,7 @@ define([
 
 		/**
 		 * Creates an entity with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
+		 * @deprecated Use world.createEntity instead
 		 * @param {World} world
 		 * @param {MeshData} [meshData]
 		 * @param {Material} [material]
@@ -289,6 +291,7 @@ define([
 
 		/**
 		 * Returns an array of all this entity's children
+		 * @deprecated Use entity.children.toArray() instead
 		 * @param entity
 		 * @returns {Entity[]}
 		 */

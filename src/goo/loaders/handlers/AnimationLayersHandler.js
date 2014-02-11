@@ -8,7 +8,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	AnimationLayer,
 	LayerLERPBlender,
@@ -21,6 +23,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -92,7 +98,7 @@ define([
 
 		if (!layer) {
 			layer = new AnimationLayer(layerConfig.name);
-			layer._layerBlender = new LayerLERPBlender();
+			//layer._layerBlender = new LayerLERPBlender();
 		} else {
 			layer._name = layerConfig.name;
 		}

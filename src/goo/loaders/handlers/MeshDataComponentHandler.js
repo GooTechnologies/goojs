@@ -7,7 +7,9 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil'
-], function(
+],
+/** @lends */
+function(
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,
@@ -19,6 +21,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 	}

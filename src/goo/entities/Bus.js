@@ -3,6 +3,9 @@ define(['goo/util/ArrayUtil'],
 	function (ArrayUtil) {
 	'use strict';
 
+	/**
+	* @class
+	*/
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: {} };
 	}

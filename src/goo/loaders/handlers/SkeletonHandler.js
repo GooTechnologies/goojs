@@ -5,7 +5,9 @@ define([
 	'goo/animation/SkeletonPose',
 	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 		ConfigHandler,
 		Joint,
 		Skeleton,
@@ -15,6 +17,10 @@ define([
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
 	}

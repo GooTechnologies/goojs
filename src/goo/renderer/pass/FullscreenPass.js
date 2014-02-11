@@ -3,6 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/shaders/ShaderLib'
 ],
+/** @lends */
 function (
 	Material,
 	FullscreenUtil,
@@ -10,6 +11,7 @@ function (
 ) {
 	"use strict";
 
+	/** @class */
 	function FullscreenPass(shader) {
 		this.material = Material.createMaterial(shader || ShaderLib.simple);
 		this.useReadBuffer = true;

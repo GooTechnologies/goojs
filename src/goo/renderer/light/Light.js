@@ -5,17 +5,18 @@ define([
 function (
 	Vector3
 	) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class A plain lightsource in the scene, to be handled in the shader.
+	 * @class A plain light source in the scene, to be handled in the shader.
+	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function Light () {
+	function Light (color) {
 		/** @type {Vector3} */
 		this.translation = new Vector3();
 
 		/** @type {Vector3} */
-		this.color = new Vector3(1, 1, 1);
+		this.color = color || new Vector3(1, 1, 1);
 
 		/** @type {number} */
 		this.intensity = 1;
@@ -39,7 +40,7 @@ function (
 		 * @property {number[]} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
 		 * @property {number} darkness shadow contribution
-		 * @property {string} shadowType possible values <strong>'VSM'</strong> = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
+		 * @property {string} shadowType possible values 'VSM' = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
 		 */
 		this.shadowSettings = {
 			size: 100,

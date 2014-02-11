@@ -117,7 +117,9 @@ function (
 
 		// cycle through, pulling out and applying those we know about
 		if (data) {
-			for ( var key in data) {
+			var keys = Object.keys(data);
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var key = keys[i];
 				var value = data[key];
 				if (value instanceof JointData) {
 					if (pose && value._jointIndex >= 0) {

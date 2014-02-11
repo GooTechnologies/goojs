@@ -121,7 +121,7 @@ define([
 			});
 
 			it('tries to get a non-added entity by its name', function() {
-				expect(entityManager.getEntityByName(entity2.id)).toBeUndefined();
+				expect(entityManager.getEntityByName(entity2.name)).toBeUndefined();
 			});
 		});
 
@@ -134,7 +134,7 @@ define([
 				entity3 = world.createEntity();
 			});
 
-			it('adds an entity and gets all entities', function() {
+			it('adds an entity and gets all entities', function () {
 				entityManager.added(entity1);
 				expect(entityManager.getEntities().length).toEqual(1);
 				expect(entityManager.getEntities()).toContain(entity1);
@@ -143,7 +143,7 @@ define([
 				expect(entityManager.getEntities()).not.toContain('fishbowl');
 			});
 
-			it('adds two entities and gets all entities', function() {
+			it('adds two entities and gets all entities', function () {
 				entityManager.added(entity1);
 				entityManager.added(entity2);
 				expect(entityManager.getEntities().length).toEqual(2);
@@ -153,7 +153,7 @@ define([
 				expect(entityManager.getEntities()).not.toContain('fishbowl');
 			});
 
-			it('adds two entities, removed one and gets all entities', function() {
+			it('adds two entities, removed one and gets all entities', function () {
 				entityManager.added(entity1);
 				entityManager.added(entity2);
 				entityManager.removed(entity1);
@@ -165,7 +165,7 @@ define([
 			});
 		});
 
-		it('can get top entities', function() {
+		it('can get top entities', function () {
 			var entity1 = world.createEntity('entity1');
 			var entity2 = world.createEntity('entity2');
 			entity2.transformComponent.attachChild(entity1.transformComponent);
@@ -176,7 +176,7 @@ define([
 			expect(entityManager.getTopEntities()).not.toContain(entity1);
 		});
 
-		it('can get the number of entities that the Entity Manager holds', function() {
+		it('can get the number of entities that the Entity Manager holds', function () {
 			var entity1 = world.createEntity('entity1');
 			var entity2 = world.createEntity('entity2');
 
@@ -190,6 +190,48 @@ define([
 
 			entityManager.removed(entity2);
 			expect(entityManager.size()).toBe(1);
+		});
+
+		describe('by.id', function() {
+			var world;
+			var entity1, entity2, entity3;
+			beforeEach(function() {
+				world = new World();
+				entity1 = world.createEntity().addToWorld();
+				entity2 = world.createEntity();
+				entity3 = world.createEntity().addToWorld();
+				world.process();
+			});
+
+			it('gets an entity by its id', function() {
+				expect(world.by.id(entity1.id).first()).toEqual(entity1);
+				expect(world.by.id(entity3.id).first()).toEqual(entity3);
+			});
+
+			it('tries to get a non-added entity by its id', function() {
+				expect(world.by.id(entity2.id).first()).toBeUndefined();
+			});
+		});
+
+		describe('by.name', function() {
+			var world;
+			var entity1, entity2, entity3;
+			beforeEach(function() {
+				world = new World();
+				entity1 = world.createEntity().addToWorld();
+				entity2 = world.createEntity();
+				entity3 = world.createEntity().addToWorld();
+				world.process();
+			});
+
+			it('gets an entity by its id', function() {
+				expect(world.by.name(entity1.name).first()).toEqual(entity1);
+				expect(world.by.name(entity3.name).first()).toEqual(entity3);
+			});
+
+			it('tries to get a non-added entity by its id', function() {
+				expect(world.by.name(entity2.name).first()).toBeUndefined();
+			});
 		});
 	});
 });

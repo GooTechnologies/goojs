@@ -1,11 +1,15 @@
 define([
 	'goo/animation/state/SteadyState',
-	'goo/entities/World'
+	'goo/animation/layer/LayerLERPBlender',
+	'goo/entities/World',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	SteadyState,
-	World
+	LayerLERPBlender,
+	World,
+	MathUtils
 ) {
 	'use strict';
 
@@ -20,7 +24,7 @@ function (
 
 		this._steadyStates = {};
 		this._currentState = null;
-		this._layerBlender = null;
+		this._layerBlender = new LayerLERPBlender();
 		this._transitions = {};
 		this._transitionStates = {};
 	}
@@ -33,6 +37,26 @@ function (
 	 */
 	AnimationLayer.prototype.getStates = function() {
 		return Object.keys(this._steadyStates);
+	};
+
+	/**
+	 * Add a state to the layer with the associated stateKey
+	 * @param {string} stateKey
+	 * @param {SteadyState} state
+	 */
+	AnimationLayer.prototype.setState = function(stateKey, state) {
+		this._steadyStates[stateKey] = state;
+	};
+
+	/**
+	 * Sets the blend weight of a layer. This will not affect the base
+	 * layer in the animation component.
+	 * @param {number} weight Should be between 0 and 1 and will be clamped
+	 */
+	AnimationLayer.prototype.setBlendWeight = function(weight) {
+		if (this._layerBlender) {
+			this._layerBlender._blendWeight = MathUtils.clamp(weight, 0, 1);
+		}
 	};
 
 	/**
@@ -59,6 +83,7 @@ function (
 
 	/**
 	 * Does the updating before animations are applied
+	 * @private
 	 */
 	AnimationLayer.prototype.update = function(globalTime) {
 		if(this._currentState) {
@@ -68,6 +93,7 @@ function (
 
 	/**
 	 * Does the updating after animations are applied
+	 * @private
 	 */
 	AnimationLayer.prototype.postUpdate = function() {
 		if (this._currentState) {
@@ -190,6 +216,7 @@ function (
 	/**
 	 * Update the layer blender in this animation layer to properly point to the previous layer.
 	 * @param {Object} previousLayer the layer before this layer in the animation manager.
+	 * @private
 	 */
 	AnimationLayer.prototype.updateLayerBlending = function (previousLayer) {
 		if (this._layerBlender) {
@@ -223,6 +250,9 @@ function (
 		}
 	};
 
+	/**
+	 * @returns {AnimationLayer}
+	 */
 	AnimationLayer.prototype.clone = function() {
 		var cloned = new AnimationLayer(this._name);
 

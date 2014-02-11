@@ -9,6 +9,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
+/** @lends */
 function(
 	ConfigHandler,
 	AnimationClip,
@@ -22,6 +23,10 @@ function(
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._objects = {};
@@ -33,6 +38,7 @@ function(
 	AnimationClipHandler.prototype._create = function(ref) {
 		return this._objects[ref] = new AnimationClip();
 	};
+
 
 	AnimationClipHandler.prototype.update = function(ref, config) {
 		var object = this._objects[ref] || this._create(ref);
