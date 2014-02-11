@@ -21,6 +21,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);

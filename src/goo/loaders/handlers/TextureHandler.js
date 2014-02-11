@@ -33,6 +33,7 @@ function(
 	 */
 	/**
 	* @class
+	* @private
 	*/
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);

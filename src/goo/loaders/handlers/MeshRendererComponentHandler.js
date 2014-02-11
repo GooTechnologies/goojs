@@ -21,6 +21,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);

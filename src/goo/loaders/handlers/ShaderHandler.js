@@ -21,6 +21,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);

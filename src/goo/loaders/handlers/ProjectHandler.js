@@ -49,6 +49,7 @@ function(
 	/**
 	 * @class
 	 * @constructor
+	 * @private
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);

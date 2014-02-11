@@ -25,6 +25,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function PosteffectHandler() {
 		ConfigHandler.apply(this, arguments);

@@ -15,6 +15,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);

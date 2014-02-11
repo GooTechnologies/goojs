@@ -9,7 +9,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ],
-/** @lends */ 
+/** @lends */
 function(
 	ConfigHandler,
 	AnimationLayer,
@@ -25,6 +25,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);

@@ -23,6 +23,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);

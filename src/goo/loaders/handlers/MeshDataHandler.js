@@ -20,6 +20,7 @@ function(
 	/*jshint eqeqeq: false, -W041, bitwise: false */
 	/**
 	* @class
+	* @private
 	*/
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);

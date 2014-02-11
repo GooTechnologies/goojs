@@ -11,6 +11,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);

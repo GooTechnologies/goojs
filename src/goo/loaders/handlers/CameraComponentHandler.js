@@ -19,6 +19,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function CameraComponentHandler() {
 		ComponentHandler.apply(this, arguments);

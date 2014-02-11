@@ -6,7 +6,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -21,6 +21,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);

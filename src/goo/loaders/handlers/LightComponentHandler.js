@@ -24,6 +24,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);

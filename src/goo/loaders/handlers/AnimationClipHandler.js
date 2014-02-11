@@ -25,6 +25,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);

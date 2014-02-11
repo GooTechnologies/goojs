@@ -463,6 +463,7 @@ function (
 	/**
 	 * Enables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @private
 	 */
 
 	GooRunner.prototype._enableEvent = function(type) {
@@ -491,6 +492,7 @@ function (
 	/**
 	 * Disables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @private
 	 */
 
 	GooRunner.prototype._disableEvent = function(type) {

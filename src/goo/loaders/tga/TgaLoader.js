@@ -8,6 +8,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function TgaLoader() {
 		this.header = null;

@@ -15,6 +15,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);

@@ -22,6 +22,7 @@ function(
 	/*jshint eqeqeq: false, -W041 */
 	/**
 	* @class
+	* @private
 	*/
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);

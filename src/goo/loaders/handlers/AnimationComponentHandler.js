@@ -17,6 +17,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);

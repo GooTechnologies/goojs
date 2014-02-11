@@ -15,6 +15,7 @@ define( /** @lends */ function() {
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @param {object} options
 	 * @returns {ComponentHandler}
+	 * @private
 	 *
 	 */
 	function ConfigHandler(world, getConfig, updateObject, options) {

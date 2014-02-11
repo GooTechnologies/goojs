@@ -23,6 +23,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
