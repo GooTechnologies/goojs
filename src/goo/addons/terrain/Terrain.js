@@ -146,7 +146,7 @@ function(
 		var tw = textures[0].image.width;
 		var th = textures[0].image.height;
 
-		var entity = world.createEntity();
+		var entity = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
 		for (var i = 0; i < textures.length; i++) {
@@ -156,8 +156,8 @@ function(
 			// var material = Material.createMaterial(terrainShaderDef, 'clipmap'+i);
 			var material = Material.createMaterial(Util.clone(terrainShaderDef), 'clipmap'+i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
-			// material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
-			material.uniforms.materialDiffuse = [1.2, 1.2, 1.2, 1.0];
+			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
+			// material.uniforms.materialDiffuse = [1.2, 1.2, 1.2, 1.0];
 
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', normalMap);
@@ -487,7 +487,7 @@ function(
 				'vec4 final_color = vec4(1.0);',
 	
 				'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
-				'N.y = 0.5;',
+				'N.y = 0.25;',
 				'N.z = -N.z;',
 				'N = normalize(N);',
 
@@ -500,7 +500,7 @@ function(
 				'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
 				'vec3 mountainN = texture2D(groundMapN4, coord).xyz * vec3(2.0) - vec3(1.0);', 'mountainN.z = NMUL;',
 
-				'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 0.0));',
+				'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
 				'tangentNormal = mix(tangentNormal, mountainN, slope);',
 
 				'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
@@ -509,7 +509,7 @@ function(
 				'vec4 g2 = texture2D(groundMap2, coord);',
 				'vec4 mountain = texture2D(groundMap4, coord);',
 
-				'final_color = mix(g1, g2, smoothstep(0.0, 1.0, 0.0));',
+				'final_color = mix(g1, g2, smoothstep(0.0, 1.0, 1.0));',
 
 				'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
 				'slope = smoothstep(0.0, 0.1, slope);',
