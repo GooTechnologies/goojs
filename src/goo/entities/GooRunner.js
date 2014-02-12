@@ -257,7 +257,9 @@ function (
 			}
 
 			for (var i = 0; i < this.renderSystems.length; i++) {
-				this.renderSystems[i].render(this.renderer);
+				if (!this.renderSystems[i].passive) {
+					this.renderSystems[i].render(this.renderer);
+				}
 			}
 			if(this._picking.doPick && Renderer.mainCamera) {
 				var cc = this.renderer.clearColor.data;
@@ -268,7 +270,7 @@ function (
 				this.renderer.setClearColor(0,0,0,1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
-					if (this.renderSystems[i].renderToPick) {
+					if (this.renderSystems[i].renderToPick && !this.renderSystems[i].passive) {
 						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
 					}
 				}

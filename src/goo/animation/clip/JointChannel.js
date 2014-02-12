@@ -12,7 +12,7 @@ function (TransformChannel, JointData) {
 	 * @param {number[]} translations the translations to set on this channel at each time offset.
 	 * @param {number[]} scales the scales to set on this channel at each time offset.
 	 */
-	function JointChannel (jointName, jointIndex, times, rotations, translations, scales, blendType) {
+	function JointChannel (jointIndex, jointName, times, rotations, translations, scales, blendType) {
 		TransformChannel.call(this, jointName, times, rotations, translations, scales, blendType);
 
 		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes. 

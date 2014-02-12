@@ -21,6 +21,7 @@ function(
 
 		this.settings = settings || {};
 		this.settings.scale = this.settings.scale || 0.1;
+		this.entities = [];
 	}
 
 	HowlerSystem.prototype = Object.create(System.prototype);
@@ -34,6 +35,7 @@ function(
 	};
 
 	HowlerSystem.prototype.process = function(entities) {
+		this.entities = entities;
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var howlerComponent = entity.howlerComponent;
