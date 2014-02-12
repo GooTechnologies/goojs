@@ -6,6 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -18,6 +19,7 @@ define([
 	ShaderLib,
 	Camera,
 	Sphere,
+	Box,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -59,18 +61,25 @@ define([
 		return cameraEntity;
 	};
 
-	V.addColoredSpheres = function(nSpheres) {
-		nSpheres = nSpheres || 15;
+	V.addColoredShapes = function(nShapes, meshData, rotation) {
+		nShapes = nShapes || 15;
+		rotation = rotation || [0, 0, 0];
 
-		var sphereMeshData = new Sphere(32, 32);
-
-		for (var i = 0; i < nSpheres; i++) {
-			for (var j = 0; j < nSpheres; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
-				sphereMaterial.uniforms.color = [i / nSpheres, j / nSpheres, 0.3];
-				V.goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]).addToWorld();
+		for (var i = 0; i < nShapes; i++) {
+			for (var j = 0; j < nShapes; j++) {
+				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
+				sphereMaterial.uniforms.color = [i / nShapes, j / nShapes, 0.3];
+				V.goo.world.createEntity(meshData, sphereMaterial, [i - nShapes/2, j - nShapes/2, 0]).setRotation(rotation).addToWorld();
 			}
 		}
+	};
+
+	V.addColoredSpheres = function(nSpheres) {
+		V.addColoredShapes(nSpheres, new Sphere(32, 32));
+	};
+
+	V.addColoredBoxes = function(nBoxes) {
+		V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
 	V.addLights = function () {

@@ -37,19 +37,13 @@ require([
 
 	var goo = V.initGoo();
 
-	V.addColoredSpheres();
-
-	V.addColoredSpheres();
-
 	V.addLights();
 
+	V.addColoredSpheres();
+
 	// add camera
-	var camera = new Camera(45, 1, 1, 1000);
-	var cameraEntity = goo.world.createEntity("CameraEntity");
-	cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
-	cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-	cameraEntity.setComponent(new CameraComponent(camera));
-	cameraEntity.addToWorld();
+	var camera = new Camera();
+	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0, 0, 20]).lookAt([0, 0, 0]).addToWorld();
 
 	// camera control set up
 	var scripts = new ScriptComponent();

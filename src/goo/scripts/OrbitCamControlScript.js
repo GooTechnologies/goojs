@@ -1,9 +1,15 @@
 define([
-	'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+],
 /** @lends */
 function (
-	Vector2, Vector3, MathUtils) {
-	"use strict";
+	Vector2,
+	Vector3,
+	MathUtils
+	) {
+	'use strict';
 
 	var _defaults = {
 		domElement: null,
@@ -15,7 +21,7 @@ function (
 		dragOnly: true,
 		dragButton: -1,
 
-		worldUpVector: new Vector3(0,1,0),
+		worldUpVector: new Vector3(0, 1, 0),
 
 		baseDistance: 15,
 		minZoomDistance: 1,
@@ -74,6 +80,8 @@ function (
 	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+
+		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];

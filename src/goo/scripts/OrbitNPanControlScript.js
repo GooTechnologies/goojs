@@ -54,7 +54,7 @@ define([
 		OrbitCamControlScript.call(this, properties);
 		this.name = 'OrbitNPanControlScript';
 		this.panState = {
-			buttonDown : false,
+			buttonDown: false,
 			lastX: NaN,
 			lastY: NaN,
 			lastPos: new Vector3()

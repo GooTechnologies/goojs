@@ -40,11 +40,11 @@ require([
 
 		goo.addEventListener('mousemove', function(evt) {
 			if(evt.entity && lastEntity !== evt.entity) {
-				console.log('Entity is '+evt.entity+' at '+evt.depth);
+				console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
 				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
 				swapChannels(color);
 				if(lastEntity && lastDepth) {
-					console.log('Last entity was '+lastEntity+' at '+lastDepth);
+					console.log('Last entity was ' + lastEntity + ' at ' + lastDepth);
 				}
 			}
 			lastEntity = evt.entity;
@@ -52,7 +52,7 @@ require([
 		});
 
 		goo.addEventListener('click', function(evt) {
-			console.log('Entity is '+evt.entity+' at '+evt.depth);
+			console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
 			if(evt.entity) {
 				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
 				swapChannels(color);
