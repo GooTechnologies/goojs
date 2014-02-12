@@ -75,9 +75,19 @@ function(
 
 			// promise.resolve();
 
+			var terrainQuery = {
+				getHeightAt: function(pos) {
+					return this.ws.getTerrainHeightAt(pos);
+				}.bind(this),
+				getNormalAt: function(pos) {
+					return this.ws.getTerrainNormalAt(pos);
+				}.bind(this)
+			};
+
 			this.vegetation = new Vegetation();
-			var vegetationPromise = this.vegetation.init(goo.world, this.ws);
-			var forrestPromise = new Forrest().init(goo, this.ws);
+			this.forrest = new Forrest();
+			var vegetationPromise = this.vegetation.init(goo.world, terrainQuery);
+			var forrestPromise = this.forrest.init(goo.world, terrainQuery);
 
 			RSVP.all([vegetationPromise, forrestPromise]).then(function() {
 				promise.resolve();
@@ -108,6 +118,9 @@ function(
 	Terrain.prototype.update = function(x, z) {
 		if (this.vegetation) {
 			this.vegetation.update(x, z);
+		}
+		if (this.forrest) {
+			this.forrest.update(x, z);
 		}
 	};
 

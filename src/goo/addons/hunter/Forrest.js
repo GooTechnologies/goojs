@@ -19,8 +19,10 @@ define([
 	'goo/entities/EntityUtils',
 	'goo/util/combine/EntityCombiner',
 	'goo/util/TangentGenerator',
+	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/shaders/ShaderBuilder',
+	'goo/math/MathUtils',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -45,143 +47,112 @@ function(
 	EntityUtils,
 	EntityCombiner,
 	TangentGenerator,
+	MeshDataComponent,
 	ScriptComponent,
 	ShaderBuilder,
+	MathUtils,
 	RSVP
 ) {
 	"use strict";
 
 	function Forrest() {
+		this.calcVec = new Vector3();
 		this.startX = 20;
 		this.startZ = 20;
 	}
 
-	Forrest.prototype.init = function(goo, worldScript) {
+	Forrest.prototype.init = function(world, terrainQuery) {
 		var promise = new RSVP.Promise();
 
-		var loader = new DynamicLoader({
-			world: goo.world,
-			rootPath: window.hunterResources + '/tree1',
-		});
+		// var loader = new DynamicLoader({
+		// 	world: world,
+		// 	rootPath: window.hunterResources + '/tree1',
+		// });
 
-		loader.loadFromBundle('project.project', 'root.bundle', {
-			recursive: false,
-			preloadBinaries: true,
-			noEnvironment: true
-		}).then(function(configs) {
-			goo.world.process();
+		// loader.loadFromBundle('project.project', 'root.bundle', {
+		// 	recursive: false,
+		// 	preloadBinaries: true,
+		// 	noEnvironment: true
+		// }).then(function(configs) {
+		// 	world.process();
 
-			var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
+		// 	var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
 
-			var newRoot = goo.world.createEntity('newroot');
-			var vec = new Vector3();
-			var transform = new Transform();
-			var count = 15;
-			while (count > 0) {
-				var xx = (Math.random() * 2.0 - 1.0);
-				var zz = (Math.random() * 2.0 - 1.0);
-				vec.setd(xx, 0, zz);
-				vec.normalize();
-				var dist = Math.random() * 15 + 10;
-				vec.muld(dist, dist, dist);
-				vec.x += this.startX;
-				vec.z += this.startZ;
-				xx = vec.x;
-				zz = vec.z;
-				vec.y = 10;
-				var yy = worldScript.getTerrainHeightAt(vec.data);
-				var norm = worldScript.getTerrainNormalAt(vec.data);
-				var slope = norm.dot(Vector3.UNIT_Y);
-				if (slope < 0.9) {
-					continue;
-				}
+			// var newRoot = goo.world.createEntity('newroot');
+			// var vec = new Vector3();
+			// var transform = new Transform();
+			// var count = 15;
+			// while (count > 0) {
+			// 	var xx = (Math.random() * 2.0 - 1.0);
+			// 	var zz = (Math.random() * 2.0 - 1.0);
+			// 	vec.setd(xx, 0, zz);
+			// 	vec.normalize();
+			// 	var dist = Math.random() * 15 + 10;
+			// 	vec.muld(dist, dist, dist);
+			// 	vec.x += this.startX;
+			// 	vec.z += this.startZ;
+			// 	xx = vec.x;
+			// 	zz = vec.z;
+			// 	vec.y = 10;
+			// 	var yy = terrainQuery.getHeightAt(vec.data);
+			// 	var norm = terrainQuery.getNormalAt(vec.data);
+			// 	var slope = norm.dot(Vector3.UNIT_Y);
+			// 	if (slope < 0.9) {
+			// 		continue;
+			// 	}
 
-				var size = (Math.random() * 0.6 + 0.7) * 0.03;
-				transform.scale.setd(size, size, size);
-				transform.translation.setd(0, 0, 0);
-				var angle = Math.random() * Math.PI * 0.5;
-				var anglex = Math.sin(angle);
-				var anglez = Math.cos(angle);
-				// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
-				transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
+			// 	var size = (Math.random() * 0.6 + 0.7) * 0.03;
+			// 	transform.scale.setd(size, size, size);
+			// 	transform.translation.setd(0, 0, 0);
+			// 	var angle = Math.random() * Math.PI * 0.5;
+			// 	var anglex = Math.sin(angle);
+			// 	var anglez = Math.cos(angle);
+			// 	// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
+			// 	transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
 
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
+			// 	transform.translation.setd(xx, yy, zz);
+			// 	transform.update();
 
-				var clone = EntityUtils.clone(goo.world, root);
-				clone.transformComponent.transform.copy(transform);
-				newRoot.attachChild(clone);
+			// 	var clone = EntityUtils.clone(goo.world, root);
+			// 	clone.transformComponent.transform.copy(transform);
+			// 	newRoot.attachChild(clone);
 
-				count--;
-			}
+			// 	count--;
+			// }
 
-			root.removeFromWorld();
-			newRoot.addToWorld();
+			// root.removeFromWorld();
+			// newRoot.addToWorld();
 
-			goo.world.process();
+			// goo.world.process();
 
-			var combiner = new EntityCombiner(goo.world, 1);
-			console.time('combine');
-			combiner._combineList(newRoot);
-			console.timeEnd('combine');
+			// var combiner = new EntityCombiner(goo.world, 1);
+			// console.time('combine');
+			// combiner._combineList(newRoot);
+			// console.timeEnd('combine');
 
-			console.log(newRoot);
+			// console.log(newRoot);
 
-			this.loadLODTrees(goo, worldScript).then(function() {
-				promise.resolve();
-			});
-		}.bind(this)).then(null, function(e) {
-			console.error('Failed to load scene: ' + e);
+		// }.bind(this)).then(null, function(e) {
+		// 	console.error('Failed to load scene: ' + e);
+		// });
+
+		this.loadLODTrees(world, terrainQuery).then(function() {
+			promise.resolve();
 		});
 
 		return promise;
 	};
 
-	Forrest.prototype.loadLODTrees = function(goo, worldScript) {
+	Forrest.prototype.loadLODTrees = function(world, terrainQuery) {
 		var promise = new RSVP.Promise();
 
-		var vegetationList = [];
+		this.terrainQuery = terrainQuery;
+
+		this.vegetationList = [];
 		for (var i = 0; i < types.length; i++) {
 			var meshData = this.createBase(types[i]);
-			vegetationList[i] = meshData;
+			this.vegetationList[i] = meshData;
 		}
-
-		var meshBuilder = new MeshBuilder();
-		var vec = new Vector3();
-		var transform = new Transform();
-		var count = 500;
-		for (var x = 0; x < count; x++) {
-			var xx = (Math.random() * 2.0 - 1.0);
-			var zz = (Math.random() * 2.0 - 1.0);
-			vec.setd(xx, 0, zz);
-			vec.normalize();
-			var dist = Math.random() * 30 + 30;
-			vec.muld(dist, dist, dist);
-			vec.x += this.startX;
-			vec.z += this.startZ;
-			xx = vec.x;
-			zz = vec.z;
-			vec.y = 10;
-			var yy = worldScript.getTerrainHeightAt(vec.data);
-			if (yy === null) {
-				yy = 0;
-			}
-			var norm = worldScript.getTerrainNormalAt(vec.data);
-			if (norm === null) {
-				norm = new Vector3(0,1,0);
-			}
-			var slope = norm.dot(Vector3.UNIT_Y);
-			if (slope < 0.9 || yy > 13) {
-				continue;
-			}
-
-			transform.translation.setd(xx, yy, zz);
-			transform.update();
-
-			var meshData = vegetationList[Math.floor(Math.random()*vegetationList.length)];
-			meshBuilder.addMeshData(meshData, transform);
-		}
-		var meshDatas = meshBuilder.build();
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
 		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_full_alpha_0_dif_small.dds', null, function() {
@@ -190,26 +161,170 @@ function(
 		material.setTexture('DIFFUSE_MAP', texture);
 		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_0_nrm_small.dds');
 		material.setTexture('NORMAL_MAP', texture);
-
-		// material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.6;
-		material.blendState.blending = 'CustomBlending';
+		// material.blendState.blending = 'CustomBlending';
 		material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1.0];
 		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
 		material.renderQueue = 3000;
+		this.material = material;
+		this.vegType = 0;
 
-		for (var key in meshDatas) {
-			var entity = goo.world.createEntity(meshDatas[key], material);
-			entity.addToWorld();
+		this.patchSize = 60; //25;
+		this.patchDensity = 20; //5;
+		this.gridSize = 11;
+
+		this.patchSpacing = this.patchSize / this.patchDensity;
+		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+		this.grid = [];
+		var dummyMesh = this.createPatch(0, 0);
+		for (var x = 0; x < this.gridSize; x++) {
+			this.grid[x] = [];
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = world.createEntity(this.material);
+				var meshDataComponent = new MeshDataComponent(dummyMesh);
+				meshDataComponent.modelBound.xExtent = this.patchSize;
+				meshDataComponent.modelBound.yExtent = 500;
+				meshDataComponent.modelBound.zExtent = this.patchSize;
+				meshDataComponent.autoCompute = false;
+				entity.set(meshDataComponent);
+				entity.addToWorld();
+				this.grid[x][z] = entity;
+				entity.meshRendererComponent.hidden = true;
+			}
 		}
+
+		this.currentX = -10000;
+		this.currentZ = -10000;
 
 		return promise;
 	};
 
+	Forrest.prototype.getVegetationType = function(xx, zz, slope) {
+		if (slope < 0.9) {
+			return -1;
+		}
+
+		var diffx = xx - this.startX;
+		var diffz = zz - this.startZ;
+		if (diffx * diffx + diffz * diffz < 25 * 25) {
+			return -1;
+		}
+
+		if (this.vegType === 0) {
+			var mx = (Math.sin(xx * 0.1) * 0.5 + 0.25);
+			var mz = (Math.sin(zz * 0.15) * 0.5 + 0.25);
+			var tt = (mx + mz) / 2.0;
+			var vegetationType = Math.floor(tt * this.vegetationList.length);
+			var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
+			vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*5, -1, this.vegetationList.length-1));
+
+			return vegetationType;
+		}
+
+		return this.vegType-1;
+	};
+
+	Forrest.prototype.update = function(x, z) {
+		var newX = Math.floor(x / this.patchSize);
+		var newZ = Math.floor(z / this.patchSize);
+
+		if (this.currentX === newX && this.currentZ === newZ) {
+			return;
+		}
+
+		// console.time('vegetation update');
+
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var patchX = newX + x;
+				var patchZ = newZ + z;
+
+				var diffX = patchX - this.currentX;
+				var diffZ = patchZ - this.currentZ;
+				if (diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
+					continue;
+				}
+
+				patchX -= this.gridSizeHalf;
+				patchZ -= this.gridSizeHalf;
+				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+				patchX *= this.patchSize;
+				patchZ *= this.patchSize;
+
+				var entity = this.grid[modX][modZ];
+				var meshData = this.createPatch(patchX, patchZ);
+				if (!meshData) {
+					entity.meshRendererComponent.hidden = true;
+				} else {
+					entity.meshRendererComponent.hidden = false;
+					entity.meshDataComponent.meshData = meshData;
+					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				}
+			}
+		}
+
+		this.currentX = newX;
+		this.currentZ = newZ;
+
+		// console.timeEnd('vegetation update');
+	};
+
+	Forrest.prototype.createPatch = function(patchX, patchZ) {
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+
+		var patchDensity = this.patchDensity;
+		var patchSpacing = this.patchSpacing;
+		var pos = [0, 10, 0];
+		for (var x = 0; x < patchDensity; x++) {
+			for (var z = 0; z < patchDensity; z++) {
+				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
+				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
+				pos[0] = xx;
+				pos[2] = zz;
+				var yy = this.terrainQuery.getHeightAt(pos);
+				var norm = this.terrainQuery.getNormalAt(pos);
+				if (yy === null) {
+					yy = 0;
+				}
+				if (norm === null) {
+					norm = Vector3.UNIT_Y;
+				}
+				var slope = norm.dot(Vector3.UNIT_Y);
+
+				var vegetationType = this.getVegetationType(xx, zz, slope);
+				if (vegetationType < 0) {
+					continue;
+				}
+
+				var size = Math.random() * 0.4 + 0.8;
+				transform.scale.setd(size, size, size);
+				transform.translation.setd(0, 0, 0);
+				var angle = Math.random() * Math.PI * 2.0;
+				var anglex = Math.sin(angle);
+				var anglez = Math.cos(angle);
+				this.calcVec.setd(anglex, 0.0, anglez);
+				transform.lookAt(this.calcVec, norm);
+				transform.translation.setd(xx, yy, zz);
+				transform.update();
+
+				var meshData = this.vegetationList[vegetationType];
+				meshBuilder.addMeshData(meshData, transform);
+
+				// console.count('tree');
+			}
+		}
+		var meshDatas = meshBuilder.build();
+
+		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
 	var types = [
-		{ w: 7, h: 7, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
-		{ w: 7, h: 7, tx: 0.25, ty: 0.5, tw: 0.25, th: 0.25 },
-		{ w: 7, h: 7, tx: 0.5, ty: 0.25, tw: 0.25, th: 0.25 },
+		{ w: 9, h: 9, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
+		{ w: 8, h: 8, tx: 0.00, ty: 0.5, tw: 0.25, th: 0.25 },
+		{ w: 9, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 },
 	];
 
 	Forrest.prototype.createBase = function(type) {
@@ -244,6 +359,60 @@ function(
 
 		return meshData;
 	};
+
+	// Forrest.prototype.createBase = function(type) {
+	// 	var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
+	// 	attributeMap.BASE = MeshData.createAttribute(1, 'Float');
+	// 	attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
+	// 	var meshData = new MeshData(attributeMap, 8, 12);
+
+	// 	meshData.getAttributeBuffer(MeshData.POSITION).set([
+	// 		0, -type.h * 0.1, 0, 
+	// 		0, -type.h * 0.1, 0, 
+	// 		0, -type.h * 0.1, 0, 
+	// 		0, -type.h * 0.1, 0,
+
+	// 		-type.w * 0.4, type.h * 0.5, -type.w * 0.4, 
+	// 		type.w * 0.4, type.h * 0.5, -type.w * 0.4, 
+	// 		type.w * 0.4, type.h * 0.5, type.w * 0.4, 
+	// 		-type.w * 0.4, type.h * 0.5, type.w * 0.4
+	// 	]);
+	// 	meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
+	// 		type.tx, type.ty,
+	// 		type.tx, type.ty + type.th,
+	// 		type.tx + type.tw, type.ty + type.th,
+	// 		type.tx + type.tw, type.ty,
+
+	// 		type.tx, type.ty + type.th*0.6,
+	// 		type.tx, type.ty + type.th*0.9,
+	// 		type.tx + type.tw, type.ty + type.th*0.9,
+	// 		type.tx + type.tw, type.ty + type.th*0.6
+	// 	]);
+	// 	meshData.getAttributeBuffer('BASE').set([
+	// 		0, type.h, type.h, 0,
+
+	// 		type.h*0.5, type.h*0.5, type.h*0.5, type.h*0.5
+	// 	]);
+	// 	meshData.getAttributeBuffer('OFFSET').set([
+	// 		-type.w*0.5, 0, 
+	// 		-type.w*0.5, type.h, 
+	// 		type.w*0.5, type.h, 
+	// 		type.w*0.5, 0,
+
+	// 		0, 0, 
+	// 		0, 0, 
+	// 		0, 0, 
+	// 		0, 0
+	// 	]);
+
+	// 	meshData.getIndexBuffer().set([
+	// 		0, 3, 1, 1, 3, 2,
+
+	// 		4, 7, 5, 5, 7, 6
+	// 	]);
+
+	// 	return meshData;
+	// };
 
 	var vegetationShader = {
 		processors: [

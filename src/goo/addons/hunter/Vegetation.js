@@ -49,11 +49,11 @@ function(
 		this.calcVec = new Vector3();
 	}
 
-	Vegetation.prototype.init = function(world, worldScript) {
+	Vegetation.prototype.init = function(world, terrainQuery) {
 		var promise = new RSVP.Promise();
 
 		this.world = world;
-		this.worldScript = worldScript;
+		this.terrainQuery = terrainQuery;
 
 		this.vegetationList = [];
 		for (var i = 0; i < types.length; i++) {
@@ -78,7 +78,7 @@ function(
 		this.vegType = 0;
 
 		this.patchSize = 10;
-		this.patchDensity = 18;
+		this.patchDensity = 15;
 		this.gridSize = 9;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -91,12 +91,13 @@ function(
 				var entity = this.world.createEntity(this.material);
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
 				meshDataComponent.modelBound.xExtent = this.patchSize;
-				meshDataComponent.modelBound.yExtent = 50;
+				meshDataComponent.modelBound.yExtent = 500;
 				meshDataComponent.modelBound.zExtent = this.patchSize;
 				meshDataComponent.autoCompute = false;
 				entity.set(meshDataComponent);
 				entity.addToWorld();
 				this.grid[x][z] = entity;
+				entity.meshRendererComponent.hidden = true;
 			}
 		}
 
@@ -167,8 +168,13 @@ function(
 
 				var entity = this.grid[modX][modZ];
 				var meshData = this.createPatch(patchX, patchZ);
-				entity.meshDataComponent.meshData = meshData;
-				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				if (!meshData) {
+					entity.meshRendererComponent.hidden = true;
+				} else {
+					entity.meshRendererComponent.hidden = false;
+					entity.meshDataComponent.meshData = meshData;
+					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				}
 			}
 		}
 
@@ -191,8 +197,8 @@ function(
 				var zz = patchZ + (z + Math.random()*0.5) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz;
-				var yy = this.worldScript.getTerrainHeightAt(pos);
-				var norm = this.worldScript.getTerrainNormalAt(pos);
+				var yy = this.terrainQuery.getHeightAt(pos);
+				var norm = this.terrainQuery.getNormalAt(pos);
 				if (yy === null) {
 					yy = 0;
 				}
@@ -219,6 +225,8 @@ function(
 
 				var meshData = this.vegetationList[vegetationType];
 				meshBuilder.addMeshData(meshData, transform);
+
+				// console.count('grass');
 			}
 		}
 		var meshDatas = meshBuilder.build();
@@ -246,14 +254,25 @@ function(
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 		transform.translation.y = type.h * 0.5 - type.h * 0.1;
+			transform.translation.z = -type.w * 0.1;
 		transform.update();
 
 		meshBuilder.addMeshData(meshData, transform);
 
-		transform.setRotationXYZ(0, Math.PI * 0.5, 0);
+		// transform.setRotationXYZ(0, Math.PI * 0.5, 0);
+			transform.setRotationXYZ(0, Math.PI * 0.3, 0);
+			transform.translation.x = type.w * 0.1;
+			transform.translation.z = type.w * 0.1;
 		transform.update();
 
 		meshBuilder.addMeshData(meshData, transform);
+
+			transform.setRotationXYZ(0, -Math.PI * 0.3, 0);
+			transform.translation.x = -type.w * 0.1;
+			transform.translation.z = type.w * 0.1;
+			transform.update();
+
+			meshBuilder.addMeshData(meshData, transform);
 
 		var meshDatas = meshBuilder.build();
 
