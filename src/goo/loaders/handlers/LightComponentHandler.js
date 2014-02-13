@@ -48,7 +48,6 @@ function(
 		_.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
-			attenuate: true,
 			shadowCaster: false,
 			lightCookie: null
 		});
@@ -58,12 +57,10 @@ function(
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				type: 'Blur',
-				projection: (config.type === 'DirectionalLight') ? 'Parallel' : 'Perspective',
+				shadowType: 'Blur',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
-				upVector: [0,1,0],
 				darkness: 0.5
 			});
 			var settings = config.shadowSettings;
