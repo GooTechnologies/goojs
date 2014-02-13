@@ -10,10 +10,22 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @class Vector with 3 components.
+	 * @class Vector with 3 components.  Used to store 3D translation and directions.  It also contains common 3D Vector operations.
 	 * @extends Vector
-	 * @description Creates a new vector.
-	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
+	 * @description Creates a new Vector3 by passing in either a current Vector3, Number Array, or a set of three Numbers.  The original arguments are not modified.
+	 * @param {Vector3|Number[]|x,y,z} arguments Initial values for the components.
+	 * @example 
+	 * // Passing in three Numbers
+	 * var v1 = new Vector3(1,2,3);
+	 * 
+	 * // Passing in an existing Vector3
+	 * var v2 = new Vector3(v1); // (1,2,3)
+	 *
+	 * // Passing in a Number Array
+	 * var v3 = new Vector3([4,5,6]);
+	 *
+	 * // Passing in no arguments
+	 * var v4 = new Vector3(); // (0,0,0)
 	 */
 
 	function Vector3() {
@@ -46,9 +58,9 @@ function (
 
 	/**
 	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector3|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector3|number[]|numbers} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector3|number[]|numbers} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -105,12 +117,24 @@ function (
 	};
 
 	/**
-	 * Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
-	 *            every component.
+	 * Adds 'rhs' to the current Vector3. Equivalent to "return (this += rhs);".  Original argument is unchanged.
+	 * @param {Vector3|Number[]|Number} rhs Vector3, Array of Numbers, or single Number. For a single Number, the value is repeated for
+	 * every component.
 	 * @return {Vector3} Self for chaining.
+	 * @example
+	 * // Passing in an existing Vector3
+	 * var v1 = new Vector3(1,2,3);
+	 * var v2 = new Vector3(4,5,6);
+	 * v2.add(v1); // (5,7,9)
+	 *
+	 * // Passing in a Number Array
+	 * v3 = new Vector3(); // (0,0,0)
+	 * v3.add([1,2,3]); // (1,2,3)
+	 *
+	 * // Passing in a Number
+	 * v4 = new Vector3(); // (0,0,0)
+	 * v4.add(5); // (5,5,5)
 	 */
-
 	Vector3.prototype.add = function (rhs) {
 		return Vector3.add(this, rhs, this);
 	};

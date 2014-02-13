@@ -379,7 +379,7 @@ function (
 		var devicePixelRatio = window.devicePixelRatio || 1;
 
 		var adjustWidth, adjustHeight;
-		if (document.querySelector) {
+		if (document.querySelector && this.domElement.style.width !== "" && this.domElement.style.height !== "") {
 			adjustWidth = this.domElement.offsetWidth;
 			adjustHeight = this.domElement.offsetHeight;
 		} else {
