@@ -46,7 +46,6 @@ function(
 	 */
 	MeshRendererComponentHandler.prototype._prepare = function(config) {
 		return _.defaults(config, {
-			materialRefs: [],
 			cullMode: 'Dynamic',
 			castShadows: true,
 			receiveShadows: true,
