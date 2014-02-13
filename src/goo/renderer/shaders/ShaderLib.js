@@ -2393,7 +2393,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
 			id : function(shaderInfo) {
-				return shaderInfo.renderable._index?shaderInfo.renderable._index + 1:shaderInfo.renderable.id;
+				return shaderInfo.renderable._index!=null?shaderInfo.renderable._index + 1:shaderInfo.renderable.id + 1;
 			}
 		},
 		processors: [
