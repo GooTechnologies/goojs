@@ -59,6 +59,8 @@ function (
 			_canvas = document.createElement('canvas');
 			_canvas.width = 500;
 			_canvas.height = 500;
+			_canvas.style.width = '100%';
+			_canvas.style.height = '100%';
 		}
 		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
