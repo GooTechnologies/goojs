@@ -8,16 +8,15 @@ function(
 	"use strict";
 
 	/**
-	 * @class A Material defines the look of an object
-	 * @param {String} name Material name
+	 * @class A Material defines the look of an object.
+	 * @param {String} name Material name.
 	 */
 	function Material(name) {
-		/**
+		/** Material name.
 		 * @type {String}
 		 */
 		this.name = name;
-
-		/** Shader to use when rendering
+		/** [Shader]{@link Shader} to use when rendering.
 		 * @type {Shader}
 		 */
 		this.shader = null;
