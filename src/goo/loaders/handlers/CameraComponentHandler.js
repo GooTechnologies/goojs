@@ -44,15 +44,18 @@ function(
 		_.defaults(config, {
 			near: 1,
 			far: 10000,
-			projectionMode: 0,
+			projectionMode: 'Perspective',
 			aspect: 1,
 			lockedRatio: false
 		});
-		if (config.projectionMode === 0 && config.fov === undefined) {
+		if (config.projectionMode === 'Perspective' && config.fov === undefined) {
 			config.fov = 45;
 		}
-		if (config.projectionMode === 1 && config.size === undefined) {
+		if (config.projectionMode === 'Parallel' && config.size === undefined) {
 			config.size = 100;
+		}
+		if (config.projectionMode !== 'Perspective' && config.projectionMode !== 'Parallel') {
+			config.projectionMode = 'Perspective';
 		}
 	};
 
@@ -80,9 +83,9 @@ function(
 	CameraComponentHandler.prototype.update = function(entity, config, options) {
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
-			component.camera.setProjectionMode(config.projectionMode);
+			component.camera.setProjectionMode(Camera[config.projectionMode]);
 			component.camera.lockedRatio = config.lockedRatio || false;
-			if (config.projectionMode === 0) {
+			if (config.projectionMode === 'Perspective') {
 				component.camera.setFrustumPerspective(config.fov, config.aspect || 1, config.near, config.far);
 			} else {
 				var size = config.size;
