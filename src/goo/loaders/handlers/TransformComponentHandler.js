@@ -97,6 +97,7 @@ function(
 			}).then(function(entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
+					entity.addToWorld();
 				} else {
 					console.error('Failed to add child to transform component');
 				}
