@@ -60,7 +60,7 @@ require([
 		cameraEntity.setComponent(scripts);
 	}
 
-	function noiseMaterial(goo, entities) {
+	function noiseMaterialDemo(goo, entities) {
 		var radius = 2;
 		var sphereMeshData = ShapeCreator.createSphere(64, 64, radius);
 
@@ -70,12 +70,9 @@ require([
 		var perFragmentSphere = goo.world.createEntity(sphereMeshData, perFragmentMaterial, [0, 0, 0]);
 		perFragmentSphere.addToWorld();
 
-
 		for (var i= 0; i < entities.length; i++) {
 			entities[i].meshRendererComponent.materials = [perFragmentMaterial];
 		}
-
-
 		// DAT GUI SETUP
 		var pervertData = {
 			color1: [255, 0, 0],
@@ -124,7 +121,7 @@ require([
 			perFragmentMaterial.shader.uniforms.scale[2] = pervertData.scaleZ;
 		});
 
-		var timeRange = 2.0;
+		var timeRange = 30.0;
 		controller = perFragGUIFolder.add(pervertData, 'timeMultiplier', -timeRange, timeRange);
 		controller.onChange(function() {
 			perFragmentMaterial.shader.uniforms.timeMultiplier = pervertData.timeMultiplier;
@@ -141,7 +138,6 @@ require([
 			debugKeys: true
 		});
 		goo.renderer.domElement.id = 'goo';
-		goo.renderer.setClearColor(0.7, 0.7, 0.715, 1);
 		document.body.appendChild(goo.renderer.domElement);
 
 		var loader = new DynamicLoader({world: goo.world, rootPath: './'});
@@ -150,7 +146,7 @@ require([
 			entities.push(loader.getCachedObjectForRef('Starship1/entities/Main_frame_Material0.entity'));
 			entities.push(loader.getCachedObjectForRef('Starship1/entities/Main_frame_Material1.entity'));
 			entities.push(loader.getCachedObjectForRef('Starship1/entities/Main_frame_Material2.entity'));
-			noiseMaterial(goo, entities);
+			noiseMaterialDemo(goo, entities);
 		});
 
 	}

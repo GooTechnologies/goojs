@@ -482,73 +482,21 @@ define([
 		].join('\n')
 	};
 
-	ShaderLib.perVertexNoise3d = {
+	ShaderLib.perFragmentNoise3d = {
+		processors: [
+			ShaderBuilder.light.processor
+		],
+		defines: {
+			NORMAL: true
+		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexNormal : MeshData.NORMAL
 		},
 		uniforms : {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
-			color : [1.0, 1.0, 1.0],
-			opacity : 1.0,
-			time : function(){
-				return World.time;
-			},
-			tpf : function() {
-				return World.tpf;
-			},
-			timeMultiplier : 1.0
-		},
-		vshader : [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-			'uniform float time;',
-			'uniform float tpf;',
-			'uniform float timeMultiplier;',
-
-			'varying float noise3d;',
-			'varying vec2 texCoord0;',
-
-			ShaderFragment.noise3d,
-
-			'void main(void) {',
-			'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			'	texCoord0 = vertexUV0;',
-			'	noise3d = snoise(vertexPosition * time * timeMultiplier);',
-			'	gl_Position = pos;',
-			'}'//
-		].join('\n'),
-		fshader : [//
-			'uniform vec3 color;',
-			'uniform float opacity;',
-			'uniform float time;',
-			'uniform float timeMultiplier;',
-
-			'varying float noise3d;',
-			'varying vec2 texCoord0;',
-
-			'void main(void)',
-			'{',
-			'	if (opacity == 0.0) {',
-			'		discard;',
-			'	}',
-			'	vec3 noise3dcolor = noise3d * color;',
-			'	gl_FragColor = vec4(noise3dcolor, opacity);',
-			'}'//
-		].join('\n')
-	};
-
-	ShaderLib.perFragmentNoise3d = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
-		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
+			cameraPosition : Shader.CAMERA,
 			color1 : [1.0, 0.0, 0.0],
 			color2 : [0.0, 1.0, 0.0],
 			color3 : [0.0, 0.0, 1.0],
@@ -560,55 +508,93 @@ define([
 			translation : [0.0, 0.0, 1.0],
 			scale : [1.0, 1.0, 1.0]
 		},
-		vshader : [
+		builder: function (shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function () {
+			return [
 			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
+			'attribute vec3 vertexNormal;',
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
+
+			ShaderBuilder.light.prevertex,
+			'varying vec3 normal;',
+			'varying vec3 vWorldPos;',
+			'varying vec3 viewPosition;',
+
 			'uniform float time;',
 			'uniform float timeMultiplier;',
-
 			'uniform vec3 scale;',
 			'uniform vec3 translation;',
 
-			'varying vec2 texCoord0;',
 			'varying vec3 vPos;',
 
 			'void main(void) {',
-			'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			'	gl_Position = pos;',
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+			'	vWorldPos = worldPos.xyz;',
+			'	gl_Position = viewProjectionMatrix * worldPos;',
+				ShaderBuilder.light.vertex,
+			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
+			'	viewPosition = cameraPosition - worldPos.xyz;',
+			//'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			//'	gl_Position = pos;',
 			'	vPos = scale * vertexPosition + translation * time * timeMultiplier;',
+			//'	vPos = (scale * viewPosition) + translation * time * timeMultiplier;',
 			'}'//
-		].join('\n'),
-		fshader : [//
-			'uniform vec3 color1;',
-			'uniform vec3 color2;',
-			'uniform vec3 color3;',
-			'uniform vec3 scale;',
+		].join('\n');
+		},
+		fshader: function() {
+			return [//
 
-			'uniform float opacity;',
-			'uniform float time;',
-			'uniform float timeMultiplier;',
+				'#ifdef SPECULAR_MAP',
+				'uniform sampler2D specularMap;',
+				'#ifdef TEXCOORD0',
+				'varying vec2 texCoord0;',
+				'#endif',
+				'#endif',
 
-			ShaderFragment.noise3d,
+				'uniform float opacity;',
+				ShaderBuilder.light.prefragment,
+				'#ifdef NORMAL',
+				'varying vec3 normal;',
+				'#endif',
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
 
-			'varying vec3 vPos;',
+				'uniform vec3 color1;',
+				'uniform vec3 color2;',
+				'uniform vec3 color3;',
+				'uniform vec3 scale;',
+				'uniform float time;',
+				'uniform float timeMultiplier;',
 
-			'void main(void)',
-			'{',
-			'	if (opacity == 0.0) {',
-			'		discard;',
-			'	}',
+				ShaderFragment.noise3d,
 
-			'	float noiseValue = snoise(vPos);',
-			'	vec3 finalColor = smoothstep(color1, mix(color2, color3, noiseValue), vec3(noiseValue));',
-			//'	vec3 c12 = mix(color1, color2, noiseValue);',
-			//'	vec3 c23 = mix(color2, color3, noiseValue);',
-			//'	vec3 finalColor = mix(c12, c23, 0.5);',
-			'	gl_FragColor = vec4(finalColor, opacity);',
-			'}'//
-		].join('\n')
+				'varying vec3 vPos;',
+
+				'void main(void)',
+				'{',
+				'	if (opacity == 0.0) {',
+				'		discard;',
+				'	}',
+				' #ifdef NORMAL',
+				'	vec3 N = normalize(normal);',
+				' #else',
+				' vec3 N = vec3(0,0,1);',
+				' #endif',
+				'	float noiseValue = snoise(vPos);',
+				'	vec3 finalColor = smoothstep(color1, mix(color2, color3, noiseValue), vec3(noiseValue));',
+				//'	gl_FragColor = vec4(finalColor, opacity);',
+				'	vec4 final_color = vec4(finalColor, 1.0);',
+					ShaderBuilder.light.fragment,
+				'	final_color.a = opacity;',
+				'	gl_FragColor = final_color;',
+				'}'//
+			].join('\n');
+		}
 	};
 
 	ShaderLib.simpleColored = {
