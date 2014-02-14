@@ -1,3 +1,4 @@
+
 define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
@@ -478,6 +479,132 @@ define([
 		'{',
 		'	gl_FragColor = vec4(1.0);',
 		'}'//
+		].join('\n')
+	};
+
+	ShaderLib.perVertexNoise3d = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			color : [1.0, 1.0, 1.0],
+			opacity : 1.0,
+			time : function(){
+				return World.time;
+			},
+			tpf : function() {
+				return World.tpf;
+			},
+			timeMultiplier : 1.0
+		},
+		vshader : [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform float time;',
+			'uniform float tpf;',
+			'uniform float timeMultiplier;',
+
+			'varying float noise3d;',
+			'varying vec2 texCoord0;',
+
+			ShaderFragment.noise3d,
+
+			'void main(void) {',
+			'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'	texCoord0 = vertexUV0;',
+			'	noise3d = snoise(vertexPosition * time * timeMultiplier);',
+			'	gl_Position = pos;',
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'uniform vec3 color;',
+			'uniform float opacity;',
+			'uniform float time;',
+			'uniform float timeMultiplier;',
+
+			'varying float noise3d;',
+			'varying vec2 texCoord0;',
+
+			'void main(void)',
+			'{',
+			'	if (opacity == 0.0) {',
+			'		discard;',
+			'	}',
+			'	vec3 noise3dcolor = noise3d * color;',
+			'	gl_FragColor = vec4(noise3dcolor, opacity);',
+			'}'//
+		].join('\n')
+	};
+
+	ShaderLib.perFragmentNoise3d = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			color1 : [1.0, 0.0, 0.0],
+			color2 : [0.0, 1.0, 0.0],
+			color3 : [0.0, 0.0, 1.0],
+			opacity : 1.0,
+			time : function(){
+				return World.time;
+			},
+			timeMultiplier : 1.0,
+			translation : [1.0, 0.0, 0.0],
+			scale : [1.0, 1.0, 1.0]
+		},
+		vshader : [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewProjectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform float time;',
+			'uniform float timeMultiplier;',
+
+			'uniform vec3 scale;',
+			'uniform vec3 translation;',
+
+			'varying vec2 texCoord0;',
+			'varying vec3 vPos;',
+
+			'void main(void) {',
+			'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+			'	gl_Position = pos;',
+			'	vPos = scale * vertexPosition + translation * time * timeMultiplier;',
+			'}'//
+		].join('\n'),
+		fshader : [//
+			'uniform vec3 color1;',
+			'uniform vec3 color2;',
+			'uniform vec3 color3;',
+			'uniform vec3 scale;',
+
+			'uniform float opacity;',
+			'uniform float time;',
+			'uniform float timeMultiplier;',
+
+			ShaderFragment.noise3d,
+
+			'varying vec3 vPos;',
+
+			'void main(void)',
+			'{',
+			'	if (opacity == 0.0) {',
+			'		discard;',
+			'	}',
+
+			'	float noiseValue = snoise(vPos);',
+			'	vec3 noise3dcolor = smoothstep(color1, color2, vec3(noiseValue));',
+			'	gl_FragColor = vec4(noise3dcolor, opacity);',
+			'}'//
 		].join('\n')
 	};
 

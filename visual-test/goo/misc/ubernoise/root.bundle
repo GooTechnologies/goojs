@@ -1,0 +1,782 @@
+{
+    "Starship1/Starship1.group": {
+        "libraryRefs": [
+            "Starship1/binaries/1392384065_data.bin",
+            "Starship1/entities/Main_frame_Material0.entity",
+            "Starship1/meshes/Main_frame_Material2.mesh",
+            "Starship1/materials/warm_plastic_mode_000.material",
+            "Starship1/materials/unnamed.material",
+            "Starship1/materials/warm_plastic_model_.material",
+            "Starship1/entities/RootNode.entity",
+            "Starship1/entities/Main_frame_Material2.entity",
+            "Starship1/meshes/Main_frame_Material0.mesh",
+            "Starship1/entities/Main_frame_Material1.entity",
+            "Starship1/meshes/Main_frame_Material1.mesh",
+            "Starship1/binaries/1392384104_data.bin"
+        ],
+        "name": "Starship1",
+        "ref": "Starship1/Starship1.group"
+    },
+    "Starship1/entities/Main_frame_Material0.entity": {
+        "components": {
+            "meshData": {
+                "meshRef": "Starship1/meshes/Main_frame_Material0.mesh"
+            },
+            "meshRenderer": {
+                "castShadows": true,
+                "cullMode": "Dynamic",
+                "materialRefs": [
+                    "Starship1/materials/unnamed.material"
+                ],
+                "receiveShadows": true,
+                "reflectable": false
+            },
+            "transform": {
+                "parentRef": "Starship1/entities/RootNode.entity",
+                "rotation": [
+                    -90.00000933453803,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.9999999999999999,
+                    0.9999999999999999
+                ],
+                "translation": [
+                    0.0,
+                    40.50262451171875,
+                    6.880669116973877
+                ]
+            }
+        },
+        "name": "Main_frame_Material0",
+        "nodeType": "Mesh"
+    },
+    "Starship1/entities/Main_frame_Material1.entity": {
+        "components": {
+            "meshData": {
+                "meshRef": "Starship1/meshes/Main_frame_Material1.mesh"
+            },
+            "meshRenderer": {
+                "castShadows": true,
+                "cullMode": "Dynamic",
+                "materialRefs": [
+                    "Starship1/materials/warm_plastic_mode_000.material"
+                ],
+                "receiveShadows": true,
+                "reflectable": false
+            },
+            "transform": {
+                "parentRef": "Starship1/entities/RootNode.entity",
+                "rotation": [
+                    -90.00000933453803,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.9999999999999999,
+                    0.9999999999999999
+                ],
+                "translation": [
+                    0.0,
+                    40.50262451171875,
+                    6.880669116973877
+                ]
+            }
+        },
+        "name": "Main_frame_Material1",
+        "nodeType": "Mesh"
+    },
+    "Starship1/entities/Main_frame_Material2.entity": {
+        "components": {
+            "meshData": {
+                "meshRef": "Starship1/meshes/Main_frame_Material2.mesh"
+            },
+            "meshRenderer": {
+                "castShadows": true,
+                "cullMode": "Dynamic",
+                "hidden": false,
+                "materialRefs": [
+                    "Starship1/materials/warm_plastic_model_.material"
+                ],
+                "receiveShadows": true,
+                "reflectable": false
+            },
+            "transform": {
+                "parentRef": "Starship1/entities/RootNode.entity",
+                "rotation": [
+                    -90.00000933453803,
+                    0,
+                    0
+                ],
+                "scale": [
+                    1,
+                    0.9999999999999999,
+                    0.9999999999999999
+                ],
+                "translation": [
+                    0,
+                    40.50262451171875,
+                    6.880669116973877
+                ]
+            }
+        },
+        "name": "Main_frame_Material2",
+        "nodeType": "Mesh",
+        "ref": "Starship1/entities/Main_frame_Material2.entity"
+    },
+    "Starship1/entities/RootNode.entity": {
+        "components": {
+            "transform": {
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        "name": "Starship1",
+        "nodeType": "Null"
+    },
+    "Starship1/materials/unnamed.material": {
+        "blendState": {
+            "blendDst": "OneMinusSrcAlphaFactor",
+            "blendEquation": "AddEquation",
+            "blendSrc": "SrcAlphaFactor",
+            "blending": "NoBlending"
+        },
+        "cullState": {
+            "cullFace": "Back",
+            "enabled": true,
+            "frontFace": "CCW"
+        },
+        "depthState": {
+            "enabled": true,
+            "write": true
+        },
+        "name": "unnamed",
+        "ref": "Starship1/materials/unnamed.material",
+        "renderQueue": -1,
+        "shaderRef": "GOO_ENGINE_SHADERS/uber",
+        "texturesMapping": {},
+        "type": "Phong",
+        "uniforms": {
+            "discardThreshold": {
+                "enabled": false,
+                "value": 0
+            },
+            "etaRatio": {
+                "enabled": true,
+                "value": 0
+            },
+            "fresnel": {
+                "enabled": true,
+                "value": 0
+            },
+            "materialAmbient": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialDiffuse": {
+                "enabled": true,
+                "value": [
+                    0.6400000000000001,
+                    0.6400000000000001,
+                    0.6400000000000001,
+                    1
+                ]
+            },
+            "materialEmissive": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialSpecular": {
+                "enabled": true,
+                "value": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    1
+                ]
+            },
+            "materialSpecularPower": {
+                "enabled": true,
+                "value": 12.3
+            },
+            "normalMultiplier": {
+                "enabled": true,
+                "value": 1
+            },
+            "opacity": {
+                "enabled": true,
+                "value": 1
+            },
+            "reflectivity": {
+                "enabled": true,
+                "value": 0
+            },
+            "refractivity": {
+                "enabled": true,
+                "value": 0
+            }
+        }
+    },
+    "Starship1/materials/warm_plastic_mode_000.material": {
+        "blendState": {
+            "blendDst": "OneMinusSrcAlphaFactor",
+            "blendEquation": "AddEquation",
+            "blendSrc": "SrcAlphaFactor",
+            "blending": "NoBlending"
+        },
+        "cullState": {
+            "cullFace": "Back",
+            "enabled": true,
+            "frontFace": "CCW"
+        },
+        "depthState": {
+            "enabled": true,
+            "write": true
+        },
+        "name": "warm_plastic_mode_000",
+        "ref": "Starship1/materials/warm_plastic_mode_000.material",
+        "renderQueue": -1,
+        "shaderRef": "GOO_ENGINE_SHADERS/uber",
+        "texturesMapping": {},
+        "type": "Lambert",
+        "uniforms": {
+            "discardThreshold": {
+                "enabled": false,
+                "value": 0
+            },
+            "etaRatio": {
+                "enabled": true,
+                "value": 0
+            },
+            "fresnel": {
+                "enabled": true,
+                "value": 0
+            },
+            "materialAmbient": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialDiffuse": {
+                "enabled": true,
+                "value": [
+                    0.55408,
+                    0.48784000000000005,
+                    0.46392,
+                    1
+                ]
+            },
+            "materialEmissive": {
+                "enabled": true,
+                "value": [
+                    0.0048482,
+                    0.0042686,
+                    0.0040593,
+                    1
+                ]
+            },
+            "materialSpecular": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialSpecularPower": {
+                "enabled": true,
+                "value": 1
+            },
+            "normalMultiplier": {
+                "enabled": true,
+                "value": 1
+            },
+            "opacity": {
+                "enabled": true,
+                "value": 1
+            },
+            "reflectivity": {
+                "enabled": true,
+                "value": 0
+            },
+            "refractivity": {
+                "enabled": true,
+                "value": 0
+            }
+        }
+    },
+    "Starship1/materials/warm_plastic_model_.material": {
+        "blendState": {
+            "blendDst": "OneMinusSrcAlphaFactor",
+            "blendEquation": "AddEquation",
+            "blendSrc": "SrcAlphaFactor",
+            "blending": "NoBlending"
+        },
+        "cullState": {
+            "cullFace": "Back",
+            "enabled": true,
+            "frontFace": "CCW"
+        },
+        "depthState": {
+            "enabled": true,
+            "write": true
+        },
+        "name": "warm_plastic_model_",
+        "ref": "Starship1/materials/warm_plastic_model_.material",
+        "renderQueue": -1,
+        "shaderRef": "GOO_ENGINE_SHADERS/uber",
+        "texturesMapping": {},
+        "type": "Lambert",
+        "uniforms": {
+            "discardThreshold": {
+                "enabled": false,
+                "value": 0
+            },
+            "etaRatio": {
+                "enabled": true,
+                "value": 0
+            },
+            "fresnel": {
+                "enabled": true,
+                "value": 0
+            },
+            "materialAmbient": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialDiffuse": {
+                "enabled": true,
+                "value": [
+                    0.55408,
+                    0.48784000000000005,
+                    0.46392,
+                    1
+                ]
+            },
+            "materialEmissive": {
+                "enabled": true,
+                "value": [
+                    0.0048482,
+                    0.0042686,
+                    0.0040593,
+                    1
+                ]
+            },
+            "materialSpecular": {
+                "enabled": true,
+                "value": [
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            "materialSpecularPower": {
+                "enabled": true,
+                "value": 1
+            },
+            "normalMultiplier": {
+                "enabled": true,
+                "value": 1
+            },
+            "opacity": {
+                "enabled": true,
+                "value": 1
+            },
+            "reflectivity": {
+                "enabled": true,
+                "value": 0
+            },
+            "refractivity": {
+                "enabled": true,
+                "value": 0
+            }
+        }
+    },
+    "Starship1/meshes/Main_frame_Material0.mesh": {
+        "binaryRef": "Starship1/binaries/1392384104_data.bin",
+        "boundingVolume": {
+            "max": [
+                -4.282809,
+                -9.771584,
+                -0.960061
+            ],
+            "min": [
+                -7.52272,
+                -13.66503,
+                -1.695941
+            ],
+            "type": "BoundingBox"
+        },
+        "colors": [],
+        "indexLengths": [
+            24309
+        ],
+        "indexModes": [
+            "Triangles"
+        ],
+        "indices": [
+            1246772,
+            24309,
+            "uint16"
+        ],
+        "name": "Main_frame_Material0",
+        "normals": [
+            1348828,
+            13359,
+            "float32"
+        ],
+        "tangents": [],
+        "textureCoords": [],
+        "type": "Mesh",
+        "vertexCount": 4453,
+        "vertices": [
+            1295392,
+            13359,
+            "float32"
+        ]
+    },
+    "Starship1/meshes/Main_frame_Material1.mesh": {
+        "binaryRef": "Starship1/binaries/1392384104_data.bin",
+        "boundingVolume": {
+            "max": [
+                5.035931,
+                2.020101,
+                -2.787179
+            ],
+            "min": [
+                -2.973626,
+                -13.674179,
+                -21.516027
+            ],
+            "type": "BoundingBox"
+        },
+        "colors": [],
+        "indexLengths": [
+            117516
+        ],
+        "indexModes": [
+            "Triangles"
+        ],
+        "indices": [
+            1402264,
+            117516,
+            "uint16"
+        ],
+        "name": "Main_frame_Material1",
+        "normals": [
+            1881940,
+            61161,
+            "float32"
+        ],
+        "tangents": [],
+        "textureCoords": [],
+        "type": "Mesh",
+        "vertexCount": 20387,
+        "vertices": [
+            1637296,
+            61161,
+            "float32"
+        ]
+    },
+    "Starship1/meshes/Main_frame_Material2.mesh": {
+        "binaryRef": "Starship1/binaries/1392384104_data.bin",
+        "boundingVolume": {
+            "max": [
+                19.071642,
+                36.225445,
+                16.478724
+            ],
+            "min": [
+                -9.519713,
+                -15.925277,
+                -39.729458
+            ],
+            "type": "BoundingBox"
+        },
+        "colors": [],
+        "indexLengths": [
+            181977
+        ],
+        "indexModes": [
+            "Triangles"
+        ],
+        "indices": [
+            0,
+            181977,
+            "uint16"
+        ],
+        "name": "Main_frame_Material2",
+        "normals": [
+            805364,
+            110352,
+            "float32"
+        ],
+        "tangents": [],
+        "textureCoords": [],
+        "type": "Mesh",
+        "vertexCount": 36784,
+        "vertices": [
+            363956,
+            110352,
+            "float32"
+        ]
+    },
+    "entities/DirectionalLight.entity": {
+        "components": {
+            "light": {
+                "attenuate": true,
+                "color": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "direction": [
+                    0,
+                    0,
+                    0
+                ],
+                "intensity": 1,
+                "lightCookie": null,
+                "shadowCaster": true,
+                "shadowSettings": {
+                    "darkness": 0,
+                    "far": 149,
+                    "fov": 55,
+                    "near": 1,
+                    "projection": "Parallel",
+                    "resolution": [
+                        2048,
+                        2048
+                    ],
+                    "shadowType": "VSM",
+                    "size": 137,
+                    "type": "Blur",
+                    "upVector": [
+                        0,
+                        1,
+                        0
+                    ]
+                },
+                "specularIntensity": 1,
+                "type": "DirectionalLight"
+            },
+            "transform": {
+                "rotation": [
+                    -37.91476940352347,
+                    -14.671032893775827,
+                    28.195440950446592
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "translation": [
+                    -18.475128173828125,
+                    55.09540557861328,
+                    27.50591278076172
+                ]
+            }
+        },
+        "name": "DirectionalLight",
+        "ref": "entities/DirectionalLight.entity"
+    },
+    "entities/SpotLight.entity": {
+        "components": {
+            "light": {
+                "angle": 56,
+                "attenuate": true,
+                "color": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "direction": [
+                    0,
+                    0,
+                    0
+                ],
+                "intensity": 2.21,
+                "lightCookie": null,
+                "penumbra": 15,
+                "range": 65.4,
+                "shadowCaster": true,
+                "shadowSettings": {
+                    "darkness": 0,
+                    "far": 65.4,
+                    "fov": 56,
+                    "near": 1,
+                    "projection": "Perspective",
+                    "resolution": [
+                        1024,
+                        1024
+                    ],
+                    "shadowType": "VSM",
+                    "size": 400,
+                    "type": "Blur",
+                    "upVector": [
+                        0,
+                        1,
+                        0
+                    ]
+                },
+                "specularIntensity": 0.58,
+                "type": "SpotLight"
+            },
+            "transform": {
+                "rotation": [
+                    -36.864515120512706,
+                    87.01838587514665,
+                    0
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ],
+                "translation": [
+                    45.43119812011719,
+                    71.46151733398438,
+                    5.313058853149414
+                ]
+            }
+        },
+        "name": "SpotLight",
+        "ref": "entities/SpotLight.entity"
+    },
+    "missing_libraryRefs": [],
+    "posteffects/Vignette.posteffect": {
+        "enabled": true,
+        "label": "Vignette",
+        "name": "Vignette",
+        "options": {
+            "darkness": 0.31,
+            "offset": 0.8
+        },
+        "ref": "posteffects/Vignette.posteffect"
+    },
+    "project.project": {
+        "backgroundColor": [
+            0.75,
+            0.76,
+            0.78,
+            1
+        ],
+        "created": "2014-02-14T13:19:44.532000+00:00",
+        "deleted": false,
+        "edit": [],
+        "entityRefs": [
+            "Starship1/entities/Main_frame_Material0.entity",
+            "Starship1/entities/RootNode.entity",
+            "Starship1/entities/Main_frame_Material2.entity",
+            "Starship1/entities/Main_frame_Material1.entity",
+            "entities/DirectionalLight.entity"
+        ],
+        "fogColor": [
+            1,
+            1,
+            1
+        ],
+        "fogFar": 1000,
+        "fogNear": 0,
+        "globalAmbient": [
+            0,
+            0,
+            0
+        ],
+        "groupRefs": [
+            "root.group",
+            "Starship1/Starship1.group"
+        ],
+        "id": "jj8ZKOWBS8SvcPRUVS8FpQ",
+        "licenseType": "CC0",
+        "modified": "2014-02-14T13:47:56.003000+00:00",
+        "name": "The Space Ship",
+        "originalLicenseType": null,
+        "own": [
+            "1234"
+        ],
+        "parent": null,
+        "posteffectRefs": [
+            "posteffects/Vignette.posteffect"
+        ],
+        "public": true,
+        "ref": "project.project",
+        "skybox": {
+            "attribution": {
+                "link": "http://www.humus.name",
+                "name": "Humus"
+            },
+            "environmentType": 1,
+            "imageUrls": [
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/posx.jpg",
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/negx.jpg",
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/posy.jpg",
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/negy.jpg",
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/posz.jpg",
+                "GOO_ASSET_LIBRARY/images/humus/Nalovardo/negz.jpg"
+            ],
+            "ref": "environment/Dusk.skybox",
+            "rotation": 0,
+            "shape": "Box"
+        },
+        "useFog": false,
+        "view": [],
+        "weather": {
+            "snow": {
+                "enabled": false,
+                "height": 25,
+                "rate": 10,
+                "velocity": 10
+            }
+        }
+    },
+    "root.group": {
+        "libraryRefs": [
+            "entities/SpotLight.entity",
+            "entities/DirectionalLight.entity",
+            "posteffects/Vignette.posteffect"
+        ],
+        "name": "root",
+        "ref": "root.group"
+    }
+}
