@@ -13,11 +13,12 @@ function(
 	function SoundComponent() {
 		this.type = "SoundComponent";
 		this.sounds = [];
-		this._outNode = AudioContext.createGain();
+		this._outDryNode = AudioContext.createGain();
+		this._outWetNode = AudioContext.createGain();
 		this.connectTo();
 		this._pannerNode = AudioContext.createPanner();
 
-		this._pannerNode.connect(this._outNode);
+		this._pannerNode.connect(this._outDryNode);
 		this._oldPosition = new Vector3();
 		this._position = new Vector3();
 		this._orientation = new Vector3();
@@ -31,7 +32,7 @@ function(
 	 */
 	SoundComponent.prototype.addSound = function(sound) {
 		if (this.sounds.indexOf(sound) === -1) {
-			sound.connectTo(this._pannerNode);
+			sound.connectTo([this._pannerNode, this._outWetNode]);
 			this.sounds.push(sound);
 		}
 	};
@@ -44,12 +45,18 @@ function(
 		}
 	};
 
-	SoundComponent.prototype.connectTo = function(node) {
-		this._outNode.disconnect();
-		this._outNode.connect(node || AudioContext.destination);
+	SoundComponent.prototype.connectTo = function(nodes) {
+		this._outDryNode.disconnect();
+		this._outWetNode.disconnect();
+		if (nodes && nodes.dry) {
+			this._outDryNode.connect(nodes.dry);
+		}
+		if (nodes && nodes.wet) {
+			this._outWetNode.connect(nodes.wet);
+		}
 	};
 
-	SoundComponent.prototype.update = function(settings, transform, tpf) {
+	SoundComponent.prototype.process = function(settings, transform, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 

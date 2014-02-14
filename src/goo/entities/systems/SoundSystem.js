@@ -21,7 +21,12 @@ function(
 		this.entities = [];
 		this._outNode = AudioContext.createGain();
 		this._outNode.connect(AudioContext.destination);
-		this._wetNode = AudioContext.convolverNode;
+		this._wetNode = AudioContext.createGain();
+		this._wetNode.connect(this._outNode);
+		this._wetNode.gain.value = 0.2;
+		this._convolver = AudioContext.createConvolver();
+		this._convolver.connect(this._wetNode);
+
 		this._listener = AudioContext.listener;
 
 		this._position = new Vector3();
@@ -48,7 +53,10 @@ function(
 	SoundSystem.prototype.constructor = SoundSystem;
 
 	SoundSystem.prototype.inserted = function(entity) {
-		entity.soundComponent.connectTo(this._outNode);
+		entity.soundComponent.connectTo({
+			dry: this._outNode,
+			wet: this._convolver
+		});
 	};
 
 	SoundSystem.prototype.deleted = function(entity) {
@@ -68,11 +76,21 @@ function(
 		}
 	};
 
+	SoundSystem.prototype.setReverb = function(audioBuffer) {
+		this._wetNode.disconnect();
+		if(!audioBuffer && this._wetNode) {
+			this._convolver.buffer = null;
+		} else {
+			this._convolver.buffer = audioBuffer;
+			this._wetNode.connect(this._outNode);
+		}
+	};
+
 	SoundSystem.prototype.process = function(entities, tpf) {
 		this.entities = entities;
 		for (var i = 0; i < entities.length; i++) {
 			var component = entities[i].soundComponent;
-			component.update(this._settings, entities[i].transformComponent.worldTransform, tpf);
+			component.process(this._settings, entities[i].transformComponent.worldTransform, tpf);
 		}
 		if (this._camera) {
 			var cam = this._camera;

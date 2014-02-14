@@ -280,7 +280,7 @@ function(
 			var handler = this._getHandler(type);
 			if (!handler) {
 				console.warn("No handler for type " + type);
-				return PromiseUtil.createDummyPromise(null);
+				return PromiseUtil.createDummyPromise(config);
 			}
 
 			if (!config) {

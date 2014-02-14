@@ -1,5 +1,6 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
+	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
@@ -7,6 +8,7 @@ define([
 /** @lends */
 function(
 	TextureHandler,
+	AudioContext,
 	PromiseUtil,
 	_,
 	RSVP
@@ -118,22 +120,18 @@ function(
 			});
 		}
 
-		if (this._rootPath) {
-			path = this._rootPath + path;
+		var url = (this._rootPath) ? this._rootPath + path : path;
+		if (typeInGroup(type, 'image')) {
+			return this._cache[path] = this._loadImage(url);
+		} else if (typeInGroup(type, 'video')) {
+			return this._cache[path] = this._loadVideo(url);
+		} else if (typeInGroup(type, 'audio')) {
+			return this._cache[path] = this._loadAudio(url);
 		}
 
 		var ajaxProperties = {
-			url: path
+			url: url
 		};
-
-		if (typeInGroup(type, 'image')) {
-			return this._cache[path] = this._loadImage(path);
-		} else if (typeInGroup(type, 'video')) {
-			return this._cache[path] = this._loadVideo(path);
-		} else if (typeInGroup(type, 'audio')) {
-			ajaxProperties.responseType = Ajax.ARRAY_BUFFER;
-		}
-
 
 		if (typeInGroup(type, 'binary')) {
 			ajaxProperties.responseType = Ajax.ARRAY_BUFFER;
@@ -205,6 +203,23 @@ function(
 			promise.reject('Coult not load video from ' + url + ', ' + e);
 		}, false);
 		return promise;
+	};
+
+	Ajax.prototype._loadAudio = function (url) {
+		var ajaxProperties = {
+			url: url,
+			responseType: Ajax.ARRAY_BUFFER
+		};
+		return this.get(ajaxProperties)
+		.then(function(request) {
+			var promise = new RSVP.Promise();
+			AudioContext.decodeAudioData(request.response, function(audioBuffer) {
+				promise.resolve(audioBuffer);
+			});
+			return promise;
+		}).then(null, function(err) {
+			throw new Error('Could not load data from ' + url + ', ' + err);
+		});
 	};
 
 	// TODO Put this somewhere nicer

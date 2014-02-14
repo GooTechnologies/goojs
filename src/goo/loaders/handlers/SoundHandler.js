@@ -25,7 +25,6 @@ function(
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._decodedCache = {};
 	}
 
 	SoundHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -79,21 +78,7 @@ function(
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
 			sound.update(config);
-
-			var ref = config.audioRefs.wav;
-			var promise;
-			if (that._decodedCache[ref]) {
-				promise = PromiseUtil.createDummyPromise(that._decodedCache[ref]);
-			} else {
-				promise = that.getConfig(ref).then(function(buffer) {
-					var p = new RSVP.Promise();
-					AudioContext.decodeAudioData(buffer, function(audioBuffer) {
-						p.resolve(audioBuffer);
-					});
-					return p;
-				});
-			}
-			return promise.then(function(audioBuffer) {
+			return that.getConfig(config.audioRefs.wav).then(function(audioBuffer) {
 				sound.setAudioBuffer(audioBuffer);
 				return sound;
 			});
