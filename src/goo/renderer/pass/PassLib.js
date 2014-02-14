@@ -555,6 +555,88 @@ function(
 		}
 	];
 
+	function GodRays() {
+		FullscreenPass.call(this, Util.clone(ShaderLib.godrays));
+	}
+	GodRays.prototype = Object.create(FullscreenPass.prototype);
+	GodRays.prototype.constructor = GodRays;
+
+	GodRays.prototype.update = function(config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if(options.lightX !== undefined) {
+			shader.uniforms.lightX = options.lightX;
+		}
+		if(options.lightY !== undefined) {
+			shader.uniforms.lightY = options.lightY;
+		}
+		if(options.weight !== undefined) {
+			shader.uniforms.weight = options.weight;
+		}
+		if(options.decay !== undefined) {
+			shader.uniforms.decay = options.decay;
+		}
+		if(options.falloff !== undefined) {
+			shader.uniforms.falloff = options.falloff;
+		}
+
+	};
+	GodRays.label = 'GodRays';
+	GodRays.options = [
+		{
+			key: 'lightX',
+			type: 'float',
+			control: 'slider',
+			name: 'lightX',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 0.5
+		},
+		{
+			key: 'lightY',
+			type: 'float',
+			control: 'slider',
+			name: 'lightY',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 0.5
+		},
+		{
+			key: 'decay',
+			type: 'float',
+			control: 'slider',
+			name: 'decay',
+			min: 0,
+			max: 10,
+			decimals: 2,
+			'default': 1
+		},
+		{
+			key: 'weight',
+			type: 'float',
+			control: 'slider',
+			name: 'weight',
+			min: 0,
+			max: 0.0001,
+			decimals: 7,
+			'default': 0.000001
+		},
+		{
+			key: 'falloff',
+			type: 'float',
+			control: 'slider',
+			name: 'falloff',
+			min: 0.1,
+			max: 100,
+			decimals: 2,
+			'default': 1
+		}
+	];
+
+
+
 	function Contrast() {
 		FullscreenPass.call(this, Util.clone(ShaderLib.brightnesscontrast));
 	}
@@ -612,6 +694,7 @@ function(
 	];
 
 	return {
+		GodRays: GodRays,
 		Bloom: Bloom,
 		Blur: Blur,
 		Vignette: Vignette,

@@ -2435,5 +2435,71 @@ define([
 		].join("\n")
 	};
 
+
+	ShaderLib.godrays = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			hue: 0,
+			saturation: 0,
+			brightness: 0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vUv = vertexUV0;",
+				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
+			"}"
+		].join("\n"),
+		fshader: [
+			"uniform sampler2D tDiffuse;",
+			"uniform float lightX;",
+			"uniform float lightY;",
+			"uniform float lightSize;",
+			"uniform int numSamples;",
+			"uniform float decay;",
+			"uniform float weight;",
+			"uniform float falloff;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+
+				'vec2 lightPos = vec2(lightX, lightY);',
+				'vec2 screenPos = vec2(vUv.x, vUv.y);',
+
+				'vec2 lightToFrag = screenPos-lightPos;',
+
+				'lightToFrag /= float(200);',
+
+				'vec4 color = texture2D(tDiffuse, vUv);',
+				'float varyingDecay = decay;',
+				'for (int i=0; i<200; i++) {',
+					'screenPos -= lightToFrag;',
+					'color += weight * varyingDecay * texture2D(tDiffuse, screenPos);',
+					'varyingDecay += falloff;',
+				'}',
+
+				'gl_FragColor = color;',
+
+
+			"}"
+		].join("\n")
+	};
+
 	return ShaderLib;
 });
