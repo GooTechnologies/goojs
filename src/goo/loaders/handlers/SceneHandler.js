@@ -2,6 +2,7 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
+	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -9,6 +10,7 @@ function(
 	ConfigHandler,
 	SystemBus,
 	ArrayUtil,
+	_,
 	RSVP
 ) {
 	"use strict";
@@ -110,7 +112,7 @@ function(
 		var removedEntityIds = [];
 
 		for (var id in scene.entities) {
-			var engineEntity = scene.entities[id];
+			//var engineEntity = scene.entities[id];
 			if (addedEntityIds[id]) {
 				delete addedEntityIds[id];
 			}
@@ -130,7 +132,7 @@ function(
 				entity.addToWorld();
 				scene.entities[entity.id] = entity;
 			}
-			
+
 			// Removing old entities
 			// This is handled by EntityHandler
 			// for (var id in removedEntityIds) {

@@ -1,12 +1,14 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/howler/components/HowlerComponent',
+	'goo/entities/components/SoundComponent',
+	'goo/sound/AudioContext',
 	'goo/util/rsvp'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,
-	HowlerComponent,
+	SoundComponent,
+	AudioContext,
 	RSVP
 ) {
 	"use strict";
@@ -21,8 +23,7 @@ function(
 	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		// TODO Make a sound component instead
-		this._type = 'HowlerComponent';
+		this._type = 'SoundComponent';
 	}
 
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
@@ -32,12 +33,11 @@ function(
 
 	/*
 	 * Creates sound component
-	 * @returns {HowlerComponent} Should be soundcomponent
+	 * @returns {SoundComponent} Should be soundcomponent
 	 * @private
 	 */
 	SoundComponentHandler.prototype._create = function() {
-		// TODO Sound component
-		return new HowlerComponent();
+		return new SoundComponent();
 	};
 
 	/**
@@ -48,9 +48,6 @@ function(
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
-		if (!window.Howl) {
-			throw new Error('Howler is missing');
-		}
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			// Stop all sounds
@@ -64,7 +61,9 @@ function(
 			}
 			return RSVP.all(promises).then(function(sounds) {
 				// Set updates sounds
-				component.sounds = sounds;
+				for (var i = 0; i < sounds.length; i++) {
+					component.addSound(sounds[i]);
+				}
 				return component;
 			});
 		});

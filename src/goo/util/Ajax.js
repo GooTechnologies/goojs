@@ -122,17 +122,18 @@ function(
 			path = this._rootPath + path;
 		}
 
+		var ajaxProperties = {
+			url: path
+		};
+
 		if (typeInGroup(type, 'image')) {
 			return this._cache[path] = this._loadImage(path);
 		} else if (typeInGroup(type, 'video')) {
 			return this._cache[path] = this._loadVideo(path);
 		} else if (typeInGroup(type, 'audio')) {
-			return this._cache[path] = PromiseUtil.createDummyPromise(path);
+			ajaxProperties.responseType = Ajax.ARRAY_BUFFER;
 		}
 
-		var ajaxProperties = {
-			url: path
-		};
 
 		if (typeInGroup(type, 'binary')) {
 			ajaxProperties.responseType = Ajax.ARRAY_BUFFER;

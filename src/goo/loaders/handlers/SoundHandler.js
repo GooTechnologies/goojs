@@ -1,5 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/sound/AudioContext',
+	'goo/sound/Sound',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -7,6 +9,8 @@ define([
 /** @lends */
 function(
 	ConfigHandler,
+	AudioContext,
+	Sound,
 	RSVP,
 	PromiseUtil,
 	_
@@ -21,6 +25,7 @@ function(
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._decodedCache = {};
 	}
 
 	SoundHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -60,9 +65,7 @@ function(
 	 * @private
 	 */
 	SoundHandler.prototype._create = function() {
-		var howl = new window.Howl({});
-		howl._loaded = true;
-		return howl;
+		return new Sound();
 	};
 
 	/*
@@ -72,66 +75,30 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
-	 SoundHandler.prototype.update = function(ref, config, options) {
-		if (!window.Howl) {
-			throw new Error('Howler is missing');
-		}
+	SoundHandler.prototype.update = function(ref, config, options) {
 		var that = this;
-
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
-			// Settings
-			sound.loop(config.loop);
-			sound.volume(config.volume);
-			// TODO Sprites
-			// Audio files
-			var promises = [];
-			var formats = ['mp3', 'wav', 'ogg'];
-			for (var i = 0; i < formats.length; i++) {
-				var format = formats[i];
-				var path = config.audioRefs[format];
-				if (path) {
-					promises.push(that.getConfig(path, options));
-				}
-			}
-			return RSVP.all(promises).then(function(paths) {
-				if (isEqual(paths, sound._urls)) {
-					return sound;
-				}
-				// Wait for howler to load
-				var howlerLoaded = new RSVP.Promise();
-				function onLoad() {
-					howlerLoaded.resolve(sound);
-					sound.off('load', onLoad);
-					sound.off('loaderror', onError);
-				}
-				function onError() {
-					howlerLoaded.reject('Error loading sound for ' + ref);
-					sound.off('load', onLoad);
-					sound.off('loaderror', onError);
-				}
-				sound.on('load', onLoad);
-				sound.on('loaderror', onError);
-				sound.urls(paths);
+			sound.update(config);
 
-				return howlerLoaded;
-			}).then(function(sound) {
+			var ref = config.audioRefs.wav;
+			var promise;
+			if (that._decodedCache[ref]) {
+				promise = PromiseUtil.createDummyPromise(that._decodedCache[ref]);
+			} else {
+				promise = that.getConfig(ref).then(function(buffer) {
+					var p = new RSVP.Promise();
+					AudioContext.decodeAudioData(buffer, function(audioBuffer) {
+						p.resolve(audioBuffer);
+					});
+					return p;
+				});
+			}
+			return promise.then(function(audioBuffer) {
+				sound.setAudioBuffer(audioBuffer);
 				return sound;
 			});
 		});
 	};
-
-	function isEqual(a, b) {
-		var len = a.length;
-		if (len !== b.length) {
-			return false;
-		}
-		while (len--) {
-			if(a[len] !== b[len]) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	return SoundHandler;
 });

@@ -14,6 +14,7 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/entities/systems/MovementSystem',
+	'goo/entities/systems/SoundSystem',
 
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshDataComponent',
@@ -21,6 +22,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/components/SoundComponent',
 
 	'goo/util/GameUtils',
 	'goo/util/Logo'
@@ -42,6 +44,7 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	MovementSystem,
+	SoundSystem,
 
 	TransformComponent,
 	MeshDataComponent,
@@ -49,6 +52,7 @@ function (
 	CameraComponent,
 	LightComponent,
 	ScriptComponent,
+	SoundComponent,
 
 	GameUtils,
 	Logo
@@ -92,6 +96,7 @@ function (
 		this.world.setSystem(new LightDebugSystem()); // Go away!
 		this.world.setSystem(new CameraDebugSystem()); // Go away!
 		this.world.setSystem(new MovementSystem()); // Go away!
+		this.world.setSystem(new SoundSystem());
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
