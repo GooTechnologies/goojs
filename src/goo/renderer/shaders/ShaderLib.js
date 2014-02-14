@@ -539,10 +539,7 @@ define([
 				ShaderBuilder.light.vertex,
 			'	normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 			'	viewPosition = cameraPosition - worldPos.xyz;',
-			//'	vec4 pos = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
-			//'	gl_Position = pos;',
-			'	vPos = scale * vertexPosition + translation * time * timeMultiplier;',
-			//'	vPos = (scale * viewPosition) + translation * time * timeMultiplier;',
+			'	vPos = scale * vWorldPos + translation * time * timeMultiplier;',
 			'}'//
 		].join('\n');
 		},
@@ -587,7 +584,6 @@ define([
 				' #endif',
 				'	float noiseValue = snoise(vPos);',
 				'	vec3 finalColor = smoothstep(color1, mix(color2, color3, noiseValue), vec3(noiseValue));',
-				//'	gl_FragColor = vec4(finalColor, opacity);',
 				'	vec4 final_color = vec4(finalColor, 1.0);',
 					ShaderBuilder.light.fragment,
 				'	final_color.a = opacity;',
