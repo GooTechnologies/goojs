@@ -557,7 +557,7 @@ define([
 				return World.time;
 			},
 			timeMultiplier : 1.0,
-			translation : [1.0, 0.0, 0.0],
+			translation : [0.0, 0.0, 1.0],
 			scale : [1.0, 1.0, 1.0]
 		},
 		vshader : [
@@ -602,8 +602,11 @@ define([
 			'	}',
 
 			'	float noiseValue = snoise(vPos);',
-			'	vec3 noise3dcolor = smoothstep(color1, color2, vec3(noiseValue));',
-			'	gl_FragColor = vec4(noise3dcolor, opacity);',
+			'	vec3 finalColor = smoothstep(color1, mix(color2, color3, noiseValue), vec3(noiseValue));',
+			//'	vec3 c12 = mix(color1, color2, noiseValue);',
+			//'	vec3 c23 = mix(color2, color3, noiseValue);',
+			//'	vec3 finalColor = mix(c12, c23, 0.5);',
+			'	gl_FragColor = vec4(finalColor, opacity);',
 			'}'//
 		].join('\n')
 	};

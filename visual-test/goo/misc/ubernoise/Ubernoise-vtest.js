@@ -145,7 +145,7 @@ require([
 		document.body.appendChild(goo.renderer.domElement);
 
 		var loader = new DynamicLoader({world: goo.world, rootPath: './'});
-		loader.loadFromBundle('project.project', 'root.bundle').then(function(configs) {
+		loader.loadFromBundle('project.project', 'root.bundle').then(function() {
 			var entities = [];
 			entities.push(loader.getCachedObjectForRef('Starship1/entities/Main_frame_Material0.entity'));
 			entities.push(loader.getCachedObjectForRef('Starship1/entities/Main_frame_Material1.entity'));
